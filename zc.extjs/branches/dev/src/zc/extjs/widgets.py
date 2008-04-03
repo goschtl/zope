@@ -13,14 +13,14 @@
 ##############################################################################
 
 import decimal
-import zope.interface
+import zc.extjs.interfaces
+import zope.app.form
+import zope.app.form.browser.interfaces
+import zope.app.form.interfaces
 import zope.cachedescriptors.property
 import zope.component
+import zope.interface
 import zope.schema.interfaces
-import zope.app.form
-import zope.app.form.interfaces
-import zope.app.form.browser.interfaces
-import zc.extjs.interfaces
 
 
 class Base(zope.app.form.InputWidget):
