@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope" package="zc.extjs">
+
+  <include file="tests.zcml" />
+
+  <include package="zope.app.server" />
+  <include package="zc.selenium" />
+
+  <adapter 
+     factory="zc.extjs.selenium.SeleniumTests" 
+     name="zc.extjs.tests.SeleniumTests.html"
+     permission="zope.Public"
+     />
+
+</configure>

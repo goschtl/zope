@@ -1,0 +1,27 @@
+Release history
+***************
+
+This package is in a somewhat experimental state.  I *think* it's stable
+enough that future changes are unlikely to break things.  
+
+Future work
+===========
+
+- Better documentation and tests for the javascript part of the
+  implementation.
+
+- More widgets.
+
+- Support for "live search" combo boxes that make ajax calls to update
+  results as people refine searches.
+
+
+0.2.0 (2008-04-03)
+==================
+
+Renamed the widget _toValue method to value and made it public.
+
+0.1 (2008-03-??)
+================
+
+Initial public release.
