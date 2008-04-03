@@ -252,6 +252,12 @@ class InputDecimal(Base):
 
     widget_constructor = 'zc.extjs.widgets.InputDecimal'
 
+    def js_config(self):
+        result = Base.js_config(self)
+        if self.required:
+            result['allowBlank'] = False
+        return result
+
     def _is_missing(self, raw):
         return not raw
 

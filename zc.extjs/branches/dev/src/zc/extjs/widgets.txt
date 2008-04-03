@@ -589,6 +589,49 @@ of values is included in the Javascript config:
     >>> w.getInputValue()
     u'C'
 
+Decimals
+--------
+
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> f = zope.schema.Decimal(
+    ...    __name__='f', title=u'label', description=u'hint')
+    >>> w = zc.extjs.widgets.InputDecimal(f, request)
+    >>> pprint(w.js_config(), width=1)
+    {'allowBlank': False,
+     'fieldHint': u'hint',
+     'fieldLabel': u'label',
+     'id': 'field.f',
+     'itemCls': 'zc-required-field',
+     'name': 'field.f',
+     'widget_constructor': 'zc.extjs.widgets.InputDecimal'}
+
+Note that we use a custom widget constructor, which provides
+decimal-specific validation on the client.
+
+    >>> import decimal
+    >>> w.formValue(None), w.formValue(decimal.Decimal("42.1"))
+    (None, u'42.1')
+
+    >>> w.required, w.hasInput(), w.hasValidInput()
+    (True, False, False)
+    >>> w.getInputValue()
+    Traceback (most recent call last):
+    ...
+    MissingInputError: ('field.f', u'label', None)
+
+    >>> request.form['field.f'] = u'xxx'
+    >>> w.required, w.hasInput(), w.hasValidInput()
+    (True, True, False)
+    >>> w.getInputValue()
+    Traceback (most recent call last):
+    ...
+    ConversionError: (u"Invalid decimal: u'xxx'", None)
+
+    >>> request.form['field.f'] = u'33.1'
+    >>> w.required, w.hasInput(), w.hasValidInput()
+    (True, True, True)
+    >>> w.getInputValue()
+    Decimal("33.1")
 
 Hidden fields
 -------------
