@@ -132,7 +132,7 @@ expected.  We could have used createDelegate instead:
    });
 
 form_panel(config)
-==========================
+==================
 
 Asynchronously create a form panel by loading formlib-based form definitions
 from a server.
