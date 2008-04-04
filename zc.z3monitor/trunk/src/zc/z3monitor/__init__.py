@@ -14,7 +14,7 @@
 """Zope 3 Monitor Server
 """
 
-import os, re, time, traceback
+import errno, logging, os, re, time, traceback, socket
 
 import ZODB.ActivityMonitor
 import ZODB.interfaces
@@ -221,7 +221,18 @@ def initialize(opened_event):
 
     port = int(config['port'])
     import zc.ngi.async
-    zc.ngi.async.listener(('', port), Server)
+    try:
+        zc.ngi.async.listener(('', port), Server)
+    except socket.error, e:
+        if e.args[0] == errno.EADDRINUSE:
+            # this might be a zopectl debug.  Don't kill the process just
+            # because somebody else has our port.
+            logging.warning(
+                'unable to start z3monitor server because port %d is in use.',
+                port)
+        else:
+            raise
+        
 
 @zope.component.adapter(
     zope.traversing.interfaces.IContainmentRoot,

@@ -1,3 +1,4 @@
+=====================
 Zope 3 Monitor Server
 =====================
 
@@ -110,7 +111,7 @@ We also need to enable activity monitoring in the databases:
     >>> other.setActivityMonitor(ZODB.ActivityMonitor.ActivityMonitor())
 
 Process Information
--------------------
+===================
 
 To get information about the process overall, use the monitor
 command:
@@ -176,7 +177,7 @@ If we set some additional input, we'll see it:
     >>> conn2.close()
 
 Database Information
---------------------
+====================
 
 To get information about a database, use the dbinfo command:
 
@@ -251,7 +252,7 @@ data for the last 10 seconds:
     -> CLOSE
 
 ZEO cache statistics
---------------------
+====================
 
 You can get ZEO cache statistics using the zeocache command.
 
@@ -288,7 +289,7 @@ You can specify a database name:
     -> CLOSE
 
 ZEO Cache status
-----------------
+================
 
 The zeostatus command lets you get information about ZEO connection status:
 

@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 name = 'zc.z3monitor'
 
 long_description = (open('src/zc/z3monitor/README.txt').read() +
-                    "\n\nCHANGES\n=======\n\n" +
-                    open('CHANGES.txt').read())
+                    "\n\n" +
+                    open('src/zc/z3monitor/CHANGES.txt').read())
 
 setup(
     name = name,
-    version = '0.4.1',
+    version = '0.5',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     license = 'ZPL 2.1',
