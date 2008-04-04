@@ -35,6 +35,8 @@ class PreferenceGroup(PageletEditForm):
     group = ViewPageTemplateFile('group.pt')
     template = ViewPageTemplateFile('edit.pt')
 
+    category = False
+
     @property
     def label(self):
         return self.context.__title__
@@ -51,6 +53,10 @@ class PreferenceGroup(PageletEditForm):
         context = self.context
         request = self.request
 
+        self.hasFields = bool(schema.getFields(context.__schema__))
+        if self.hasFields:
+            super(PreferenceGroup, self).update()
+
         if IPreferenceCategory.providedBy(context):
             subgroups = []
 
@@ -63,6 +69,8 @@ class PreferenceGroup(PageletEditForm):
 
             self.subgroups = [{'group': group, 'view': view}
                               for t, group, view in subgroups]
+
+            self.category = True
         else:
             subgroups = []
             for name, group in context.items():
@@ -82,9 +90,6 @@ class PreferenceGroup(PageletEditForm):
             if subgroups:
                 self.editable = True
 
-        self.hasFields = bool(schema.getFields(context.__schema__))
-        if self.hasFields:
-            super(PreferenceGroup, self).update()
 
     form_result = u''
 

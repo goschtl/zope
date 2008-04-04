@@ -5,13 +5,13 @@
 
   <tal:block tal:content="structure view/form_result" />
   
-  <tal:block tal:condition="view/editable">
+  <div class="frame" tal:condition="view/editable" tal:omit-tag="not:view/category">
     <tal:block repeat="group view/subgroups">
       <div tal:condition="nocall:group/view"
 	   tal:content="structure python:group['view'].render(True)"></div>
       <br />
     </tal:block>
-  </tal:block>
+  </div>
 
   <div class="topframe" tal:condition="not:view/editable">
     <tal:block repeat="group view/subgroups">
