@@ -193,12 +193,12 @@ class AgentThreadPool(object):
 
 _dispatchers = {}
 
-def get(uuid, default=None):
+def get(uuid=None, default=None):
     if uuid is None:
         uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
     return _dispatchers.get(uuid, default)
 
-def pop(uuid):
+def pop(uuid=None):
     if uuid is None:
         uuid = zope.component.getUtility(zc.async.interfaces.IUUID)
     return _dispatchers.pop(uuid)
@@ -304,8 +304,12 @@ class Dispatcher(object):
                             da.deactivate()
                         else:
                             zc.async.utils.log.error(
-                                'UUID %s already activated in queue %s (oid %s): '
-                                'another process?',
+                                'UUID %s already activated in queue %s '
+                                '(oid %s): another process?  To stop '
+                                'poll attempts in this process, set '
+                                '``zc.async.dispatcher.get().activated = '
+                                "False``.  To stop polls permanently, don't "
+                                'start a zc.async.dispatcher!',
                                 self.UUID, queue.name, queue._p_oid)
                             continue
                     da.activate()

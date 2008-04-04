@@ -244,6 +244,7 @@ class IAgent(zope.interface.common.sequence.IFiniteSequence):
     def index(item):
         """return index, or raise ValueError if item is not in queue"""
 
+
 class IQueue(zc.queue.interfaces.IQueue):
 
     parent = zope.interface.Attribute(

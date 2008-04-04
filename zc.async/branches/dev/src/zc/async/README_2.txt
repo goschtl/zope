@@ -75,12 +75,13 @@ provided to its constructor.
 
 The UUID we register here is a UUID of the instance, which is expected
 to uniquely identify the process when in production. It is stored in
-INSTANCE_HOME/etc/uuid.txt.
+the file specified by the ZC_ASYNC_UUID environment variable (or in
+``os.join(os.getcwd(), 'uuid.txt')`` if this is not specified, for easy
+experimentation.
 
     >>> import uuid
     >>> import os
-    >>> f = open(os.path.join(
-    ...     os.environ.get("INSTANCE_HOME"), 'etc', 'uuid.txt'))
+    >>> f = open(os.environ["ZC_ASYNC_UUID"])
     >>> uuid_hex = f.readline().strip()
     >>> f.close()
     >>> uuid = uuid.UUID(uuid_hex)

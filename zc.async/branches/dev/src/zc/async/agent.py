@@ -16,7 +16,9 @@ class Agent(zc.async.utils.Base):
 
     zope.interface.implements(zc.async.interfaces.IAgent)
 
-    def __init__(self, chooser=chooseFirst, size=3):
+    def __init__(self, chooser=None, size=3):
+        if chooser is None:
+            chooser = chooseFirst
         self.chooser = chooser
         self.size = size
         self._data = zc.queue.PersistentQueue()

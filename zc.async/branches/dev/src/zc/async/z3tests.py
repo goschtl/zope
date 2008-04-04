@@ -7,9 +7,9 @@ import zc.async.tests
 def setUp(test):
     zc.async.tests.modSetUp(test)
     # make the uuid stable for these tests
-    f = open(os.path.join(
-        os.environ["INSTANCE_HOME"], 'etc', 'uuid.txt'), 'w')
-    f.writelines(('d10f43dc-ffdf-11dc-abd4-0017f2c49bdd',)) # ...random...
+    f = open(os.environ["ZC_ASYNC_UUID"], 'w')
+    # make this stable for test purposes
+    f.writelines(('d10f43dc-ffdf-11dc-abd4-0017f2c49bdd',))
     f.close()
     zc.async.instanceuuid.UUID = zc.async.instanceuuid.getUUID()
 

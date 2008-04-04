@@ -213,7 +213,7 @@ class Quotas(zc.dict.Dict):
         super(Quotas, self).pop(name)
 
 
-class Queue(persistent.Persistent):
+class Queue(zc.async.utils.Base):
     zope.interface.implements(zc.async.interfaces.IQueue)
 
     def __init__(self):

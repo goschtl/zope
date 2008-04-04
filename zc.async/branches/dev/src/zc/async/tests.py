@@ -1,5 +1,4 @@
 import os
-import shutil
 import unittest
 
 from zope.testing import doctest, module
@@ -11,23 +10,15 @@ import zc.async.testing
 
 def uuidSetUp(test):
     import zc.async.interfaces
-    test.globs['old_instance_home'] = os.environ.get("INSTANCE_HOME")
-    os.environ['INSTANCE_HOME'] = os.path.join(os.path.dirname(
-        zc.async.interfaces.__file__), '_test_tmp')
-    os.mkdir(os.environ['INSTANCE_HOME'])
-    os.mkdir(os.path.join(os.environ['INSTANCE_HOME'], 'etc'))
+    os.environ['ZC_ASYNC_UUID'] = os.path.join(os.path.dirname(
+        zc.async.interfaces.__file__), 'uuid.txt')
     import zc.async.instanceuuid
     uuid = zc.async.instanceuuid.getUUID()
     if uuid != zc.async.instanceuuid.UUID: # test run changed it...
         zc.async.instanceuuid.UUID = uuid
 
 def uuidTearDown(test):
-    shutil.rmtree(os.environ['INSTANCE_HOME'])
-    if test.globs['old_instance_home'] is None:
-        del os.environ['INSTANCE_HOME']
-    else:
-        os.environ['INSTANCE_HOME'] = test.globs['old_instance_home']
-    del test.globs['old_instance_home']
+    os.remove(os.environ['ZC_ASYNC_UUID'])
 
 def modSetUp(test):
     uuidSetUp(test)

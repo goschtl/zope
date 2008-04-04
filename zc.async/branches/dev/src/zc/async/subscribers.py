@@ -1,29 +1,28 @@
-import os
+import threading
+import time
+import signal
 import transaction
-import transaction.interfaces
-import ZODB.interfaces
-import twisted.internet.reactor
+import twisted.internet.selectreactor
 import zope.component
-import zope.event
 import zope.app.appsetup.interfaces
 import zc.twist
 
-import zc.async.datamanager
 import zc.async.interfaces
-import zc.async.engine
+import zc.async.queue
+import zc.async.agent
+import zc.async.dispatcher
+import zc.async.utils
 
-NAME = 'zc.async.datamanager'
+class QueueInstaller(object):
 
-class InstallerAndNotifier(object):
-
-    def __init__(self, name=NAME,
-                 factory=lambda *args: zc.async.datamanager.DataManager(),
-                 get_folder=lambda r: r):
+    def __init__(self, queues=('',),
+                 factory=lambda *args: zc.async.queue.Queue(),
+                 db_name=None):
         zope.component.adapter(
             zope.app.appsetup.interfaces.IDatabaseOpenedEvent)(self)
-        self.name = name
+        self.db_name = db_name
         self.factory = factory
-        self.get_folder = get_folder
+        self.queues = queues
 
     def __call__(self, ev):
         db = ev.database
@@ -33,62 +32,81 @@ class InstallerAndNotifier(object):
         try:
             try:
                 root = conn.root()
-                folder = self.get_folder(root)
-                tm.commit()
-                if self.name not in folder:
-                    folder[self.name] = self.factory(conn, folder)
-                    if folder[self.name]._p_jar is None:
-                        conn.add(folder[self.name])
-                elif not zc.async.interfaces.IDataManager.providedBy(
-                    folder[self.name]):
-                    raise RuntimeError(
-                        'IDataManager not found') # TODO better error
-                zope.event.notify(
-                    zc.async.interfaces.DataManagerAvailable(folder[self.name]))
-                tm.commit()
+                if zc.async.interfaces.KEY not in root:
+                    if self.db_name is not None:
+                        other = conn.get_connection(self.db_name)
+                        queues = other.root()[
+                            zc.async.interfaces.KEY] = zc.async.queue.Queues()
+                        other.add(queues)
+                    else:
+                        queues = zc.async.queue.Queues()
+                    root[zc.async.interfaces.KEY] = queues
+                    tm.commit()
+                    zc.async.utils.log.info('queues collection added')
+                else:
+                    queues = root[zc.async.interfaces.KEY]
+                for queue_name in self.queues:
+                    if queue_name not in queues:
+                        queues[queue_name] = self.factory(conn, queue_name)
+                        tm.commit()
+                        zc.async.utils.log.info('queue %r added', queue_name)
             except:
                 tm.abort()
                 raise
         finally:
             conn.close()
 
-basicInstallerAndNotifier = InstallerAndNotifier()
+queue_installer = QueueInstaller()
 
-class SeparateDBCreation(object):
-    def __init__(self, db_name='zc.async', name=NAME,
-                 factory=zc.async.datamanager.DataManager,
-                 get_folder=lambda r:r):
-        self.db_name = db_name
-        self.name = name
-        self.factory = factory
-        self.get_folder = get_folder
+@zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
+def installThreadedDispatcher(ev):
+    reactor = twisted.internet.selectreactor.SelectReactor()
+    # reactor._handleSignals()
+    curr_sigint_handler = signal.getsignal(signal.SIGINT)
+    def sigint_handler(*args):
+        reactor.callFromThread(reactor.stop)
+        time.sleep(0.5) # bah, a guess, but Works For Me (So Far)
+        curr_sigint_handler(*args)
+    def handler(*args):
+        reactor.callFromThread(reactor.stop)
+    signal.signal(signal.SIGINT, sigint_handler)
+    signal.signal(signal.SIGTERM, handler)
+    # Catch Ctrl-Break in windows
+    if getattr(signal, "SIGBREAK", None) is not None:
+        signal.signal(signal.SIGBREAK, handler)
+    dispatcher = zc.async.dispatcher.Dispatcher(ev.database, reactor)
+    def start():
+        dispatcher.activate()
+        reactor.run(installSignalHandlers=0)
+    thread = threading.Thread(target=start)
+    thread.setDaemon(True)
+    thread.start()
 
-    def __call__(self, conn, folder):
-        conn2 = conn.get_connection(self.db_name)
-        tm = transaction.interfaces.ITransactionManager(conn)
-        root = conn2.root()
-        folder = self.get_folder(root)
-        tm.commit()
-        if self.name in folder:
-            raise ValueError('data manager already exists in separate database',
-                             self.db_name, folder, self.name)
-        dm = folder[self.name] = self.factory()
-        conn2.add(dm)
-        tm.commit()
-        return dm
+class AgentInstaller(object):
 
-installerAndNotifier = InstallerAndNotifier(factory=SeparateDBCreation())
+    def __init__(self, agent_name='', chooser=None, size=3, queue_names=None):
+        zope.component.adapter(
+            zc.async.interfaces.IDispatcherActivated)(self)
+        self.queue_names = queue_names
+        self.agent_name = agent_name
+        self.chooser = chooser
+        self.size = size
 
-@zope.component.adapter(zc.async.interfaces.IDataManagerAvailableEvent)
-def installTwistedEngine(ev):
-    engine = zc.async.engine.Engine(
-        zope.component.getUtility(
-            zc.async.interfaces.IUUID, 'instance'),
-        zc.async.datamanager.Worker)
-    dm = ev.object
-    twisted.internet.reactor.callLater(
-        0,
-        zc.twist.Partial(engine.poll, dm))
-    twisted.internet.reactor.addSystemEventTrigger(
-        'before', 'shutdown', zc.twist.Partial(
-            engine.tearDown, dm))
+    def __call__(self, ev):
+        dispatcher = ev.object
+        if (self.queue_names is None or
+            dispatcher.parent.name in self.queue_names):
+            if self.agent_name not in dispatcher:
+                dispatcher[self.agent_name] = zc.async.agent.Agent(
+                    chooser=self.chooser, size=self.size)
+                zc.async.utils.log.info(
+                    'agent %r added to queue %r',
+                    self.agent_name,
+                    dispatcher.parent.name)
+            else:
+                zc.async.utils.log.info(
+                    'agent %r already in queue %r',
+                    self.agent_name,
+                    dispatcher.parent.name)
+
+agent_installer = AgentInstaller('main')

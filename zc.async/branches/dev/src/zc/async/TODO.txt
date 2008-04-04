@@ -1,10 +1,10 @@
-- Make a test showing the queues in another database.
-- Write the z3monitor code.
+
+- Write the z3monitor tests.
 - Write a stress test.
-- Make the README an introductory text, and move the current one to the side.
+- Finish the README_2 docs.
+- Write a way to use alone, with a separate zdaemon script.
 - Write a way to use with Zope 3 (in particular, something that waits for the
- database opened event that Zope 3 fires).  *Separate* from main code, with a
-  separate test runner and a separate list of eggs.
+ database opened event that Zope 3 fires).
 - remove subscribers.py, or make it part of the Zope 3 bit above.
 - write basic zcml (necessary adapters) and full (more policy) zcml
 
@@ -14,4 +14,5 @@ For future versions:
   section of the README).
 - Write a Zope 3 request/context munger that sets security context and site
   based on current values.
-- Maybe become friendly to Medusa.
+- queues should be pluggable like agent with filter
+- show how to broadcast, maybe add conveniences
