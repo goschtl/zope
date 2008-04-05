@@ -77,7 +77,7 @@ If we ininstall, then the directories are removed.
     >>> os.path.exists('/var/run/foo')
     False
 
-The log and run directories are only removed if they are non-empty.
+The log and run directories are only removed if they are empty.
 To see that, we'll put a file in each of the directories created:
 
     >>> print system(join('bin', 'buildout')), # doctest: +ELLIPSIS
