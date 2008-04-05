@@ -542,7 +542,7 @@ XXX see monitor.txt for sketch of zc.z3monitor monitoring.
         A Python time zone library
     
     - rwproperty
-        A small package of desriptor conveniences
+        A small package of descriptor conveniences
     
     - uuid
         The uuid module included in Python 2.5
@@ -556,9 +556,8 @@ XXX see monitor.txt for sketch of zc.z3monitor monitoring.
     - zc.twist
         Conveniences for working with Twisted and the ZODB
     
-    - zc.twisted
-        A setuptools-friendly Twisted distribution, hopefully to be replaced
-        with a normal Twisted distribution when it is ready.
+    - twisted
+        The Twisted internet library.
     
     - ZConfig
         A general configuration package coming from the Zope project with which

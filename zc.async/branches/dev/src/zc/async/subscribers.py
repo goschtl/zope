@@ -1,10 +1,8 @@
 import threading
-import time
 import signal
 import transaction
 import twisted.internet.selectreactor
 import zope.component
-import zope.app.appsetup.interfaces
 import zc.twist
 
 import zc.async.interfaces
@@ -18,8 +16,9 @@ class QueueInstaller(object):
     def __init__(self, queues=('',),
                  factory=lambda *args: zc.async.queue.Queue(),
                  db_name=None):
-        zope.component.adapter(
-            zope.app.appsetup.interfaces.IDatabaseOpenedEvent)(self)
+        # This IDatabaseOpenedEvent will be from zope.app.appsetup if that
+        # package is around
+        zope.component.adapter(zc.async.interfaces.IDatabaseOpenedEvent)(self)
         self.db_name = db_name
         self.factory = factory
         self.queues = queues
@@ -57,34 +56,57 @@ class QueueInstaller(object):
             conn.close()
 
 queue_installer = QueueInstaller()
+multidb_queue_installer = QueueInstaller(db_name='async')
 
-@zope.component.adapter(zope.app.appsetup.interfaces.IDatabaseOpenedEvent)
-def installThreadedDispatcher(ev):
-    reactor = twisted.internet.selectreactor.SelectReactor()
-    # reactor._handleSignals()
-    curr_sigint_handler = signal.getsignal(signal.SIGINT)
-    def sigint_handler(*args):
-        reactor.callFromThread(reactor.stop)
-        time.sleep(0.5) # bah, a guess, but Works For Me (So Far)
-        curr_sigint_handler(*args)
-    def handler(*args):
-        reactor.callFromThread(reactor.stop)
-    signal.signal(signal.SIGINT, sigint_handler)
-    signal.signal(signal.SIGTERM, handler)
-    # Catch Ctrl-Break in windows
-    if getattr(signal, "SIGBREAK", None) is not None:
-        signal.signal(signal.SIGBREAK, handler)
-    dispatcher = zc.async.dispatcher.Dispatcher(ev.database, reactor)
-    def start():
-        dispatcher.activate()
-        reactor.run(installSignalHandlers=0)
-    thread = threading.Thread(target=start)
-    thread.setDaemon(True)
-    thread.start()
+class ThreadedDispatcherInstaller(object):
+    def __init__(self,
+                 poll_interval=5,
+                 reactor_factory=twisted.internet.selectreactor.SelectReactor):
+        self.poll_interval = poll_interval
+        self.reactor_factory = reactor_factory
+        # This IDatabaseOpenedEvent will be from zope.app.appsetup if that
+        # package is around
+        zope.component.adapter(zc.async.interfaces.IDatabaseOpenedEvent)(self)
+
+    def __call__(self, ev):
+        reactor = self.reactor_factory()
+        dispatcher = zc.async.dispatcher.Dispatcher(
+            ev.database, reactor, poll_interval=self.poll_interval)
+        def start():
+            dispatcher.activate()
+            reactor.run(installSignalHandlers=0)
+        thread = threading.Thread(target=start)
+        thread.setDaemon(True)
+        thread.start()
+    
+        # The above is really sufficient. This signal registration, below, is
+        # an optimization. The dispatcher, on its next run, will eventually
+        # figure out that it is looking at a previous incarnation of itself if
+        # these handlers don't get to clean up.
+        # We do this with signal handlers rather than atexit.register because
+        # we want to clean up before the database is closed, if possible. ZODB
+        # does not provide an appropriate hook itself as of this writing.
+        curr_sigint_handler = signal.getsignal(signal.SIGINT)
+        def sigint_handler(*args):
+            reactor.callFromThread(reactor.stop)
+            thread.join(3)
+            curr_sigint_handler(*args)
+    
+        def handler(*args):
+            reactor.callFromThread(reactor.stop)
+            raise SystemExit()
+    
+        signal.signal(signal.SIGINT, sigint_handler)
+        signal.signal(signal.SIGTERM, handler)
+        # Catch Ctrl-Break in windows
+        if getattr(signal, "SIGBREAK", None) is not None:
+            signal.signal(signal.SIGBREAK, handler)
+
+threaded_dispatcher_installer = ThreadedDispatcherInstaller()
 
 class AgentInstaller(object):
 
-    def __init__(self, agent_name='', chooser=None, size=3, queue_names=None):
+    def __init__(self, agent_name, chooser=None, size=3, queue_names=None):
         zope.component.adapter(
             zc.async.interfaces.IDispatcherActivated)(self)
         self.queue_names = queue_names

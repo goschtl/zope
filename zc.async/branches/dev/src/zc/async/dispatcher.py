@@ -451,6 +451,8 @@ class Dispatcher(object):
     def activate(self, threaded=False):
         if self.activated:
             raise ValueError('already activated')
+        zc.async.utils.log.info('attempting to activate dispatcher %s',
+                                self.UUID)
         self.activated = datetime.datetime.utcnow()
         # in case this is a restart, we clear old data
         self.polls.clear()
@@ -489,6 +491,8 @@ class Dispatcher(object):
                 self.dead_pools.append(queue_pools.pop(name))
         conn_delta -= 1
         self.db.setPoolSize(self.db.getPoolSize() + conn_delta)
+        zc.async.utils.log.info('deactivated dispatcher %s',
+                                self.UUID)
 
     # these methods are used for monitoring and analysis
 

@@ -364,7 +364,7 @@ The db's pool size has returned to the original value.
 
     >>> import ZODB.FileStorage
     >>> storage = ZODB.FileStorage.FileStorage(
-    ...     'HistoricalConnectionTests.fs', create=True)
+    ...     'main.fs', create=True)
     >>> from ZODB.DB import DB 
     >>> db = DB(storage) 
     >>> conn = db.open()

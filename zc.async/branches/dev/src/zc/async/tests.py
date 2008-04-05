@@ -33,6 +33,8 @@ def modTearDown(test):
     zc.async.testing.tearDownDatetime()
     module.tearDown(test)
     zope.component.testing.tearDown(test)
+    import signal
+    signal.signal(signal.SIGINT, signal.default_int_handler)
     if 'storage' in test.globs:
         test.globs['db'].close()
         test.globs['storage'].close()
@@ -116,6 +118,7 @@ def test_suite():
             'queue.txt',
             'agent.txt',
             'dispatcher.txt',
+            'subscribers.txt',
             'README.txt',
             'README_2.txt',
             setUp=modSetUp, tearDown=modTearDown,

@@ -5,6 +5,25 @@ import zope.component.interfaces
 import zc.queue.interfaces
 from zc.async.i18n import _
 
+# this is our only direct dependency on anything in zope.app, which is
+# only used by our convenience subscribers.  Since we don't really need this,
+# or zope.app, we make this import optional and provide some replacements if
+# necessary.
+try:
+    from zope.app.appsetup.interfaces import (IDatabaseOpenedEvent,
+                                              DatabaseOpened)
+except ImportError:
+    class IDatabaseOpenedEvent(zope.interface.Interface):
+        """The main database has been opened."""
+    
+        database = zope.interface.Attribute("The main database.")
+    
+    class DatabaseOpened(object):
+        zope.interface.implements(IDatabaseOpenedEvent)
+    
+        def __init__(self, database):
+            self.database = database
+
 # TODO: these interfaces are not particularly complete.  The other
 # documentation is more accurate at the moment.
 
