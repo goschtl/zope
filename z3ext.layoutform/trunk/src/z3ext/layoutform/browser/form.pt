@@ -28,7 +28,7 @@
 	<div class="z-form-fieldset">
 	  <metal:block define-macro="widget-rows">
 	    <metal:block metal:define-slot="extra-top" />
-	    
+
 	    <tal:block tal:repeat="widget view/widgets/values">
 	      <div class="z-form-field" metal:define-macro="widget-row"
 		   tal:define="error widget/error|nothing"
