@@ -58,6 +58,7 @@ setup (
             ],
         app = [
             'z3c.baseregistry',
+            'z3c.contents',
             'z3c.form',
             'z3c.formui',
             'z3c.layer.pagelet',
@@ -69,6 +70,7 @@ setup (
             'z3c.jsonrpc',
             'z3c.jsonrpcproxy',
             'z3c.jsontree',
+            'z3c.table',
             'z3c.xmlhttp',
             'zam.api',
             'zam.skin',
