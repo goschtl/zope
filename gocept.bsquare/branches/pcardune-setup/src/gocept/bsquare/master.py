@@ -49,7 +49,7 @@ def make_factory(svn_url):
 
 
 def configure(svn_url, http_port=8010, allowForce=False,
-              svnuser = None, svnpassword = None,
+              svnuser = None, svnpasswd = None,
               pollinterval = 30,
               poller = None, makefactory = make_factory):
     """Creates a buildout master configuration.
@@ -64,7 +64,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
         c['change_source'] = SVNPoller(svn_url,
                                        split_file=split_file,
                                        svnuser=svnuser,
-                                       svnpassword=svnpassword,
+                                       svnpasswd=svnpasswd,
                                        pollinterval=pollinterval)
     else:
         c['change_source'] = poller
