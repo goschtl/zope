@@ -7,7 +7,7 @@
   <z3c:pagelet
       name="contents.html"
       for="zope.app.component.interfaces.ISiteManagementFolder"
-      class=".browser.SiteManagement"
+      class="z3c.contents.browser.Contents"
       permission="zope.ManageSite"
       layer="zam.api.layer.ISiteManagerPluginLayer"
       />
@@ -21,7 +21,7 @@
   <z3c:pagelet
       name="contents.html"
       for="zope.app.component.interfaces.ILocalSiteManager"
-      class=".browser.SiteManagement"
+      class="z3c.contents.browser.Contents"
       permission="zope.ManageSite"
       layer="zam.api.layer.ISiteManagerPluginLayer"
       />
