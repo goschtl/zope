@@ -1,0 +1,8 @@
+0.1.0 2008-04-07
+----------------
+Added the options to configure:
+- svnuser = None, svnpassword = None,
+- pollinterval = 30,
+- poller = None,
+- makefactory = make_factory
+to help override them

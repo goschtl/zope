@@ -48,7 +48,10 @@ def make_factory(svn_url):
     return f
 
 
-def configure(svn_url, http_port=8010, allowForce=False):
+def configure(svn_url, http_port=8010, allowForce=False,
+              svnuser = None, svnpassword = None,
+              pollinterval = 30,
+              poller = None, makefactory = make_factory):
     """Creates a buildout master configuration.
 
     The configuration returned is almost functional. You just need to add
@@ -57,16 +60,24 @@ def configure(svn_url, http_port=8010, allowForce=False):
     """
     c = {}
     c['slavePortnum'] = 8989
-    c['change_source'] = SVNPoller(svn_url, split_file=split_file, pollinterval=30)
-    c['schedulers'] = [] 
+    if poller is None:
+        c['change_source'] = SVNPoller(svn_url,
+                                       split_file=split_file,
+                                       svnuser=svnuser,
+                                       svnpassword=svnpassword,
+                                       pollinterval=pollinterval)
+    else:
+        c['change_source'] = poller
+    c['schedulers'] = []
     c['builders'] = []
 
     slow_lock = locks.SlaveLock("cpu", maxCount=2)
 
     projects = open("project-list.cfg", "rb").readlines()
     projects = [x.strip() for x in projects]
+
     for project in projects:
-        f = make_factory(svn_url)
+        f = makefactory(svn_url)
         c['builders'].append({
             'name': project,
             'slavename': 'local',
@@ -77,7 +88,7 @@ def configure(svn_url, http_port=8010, allowForce=False):
         del f
 
         c['schedulers'].append(Scheduler(
-            project, "%s/trunk" % project, 30, [project]))
+            project, "%s/trunk" % project, pollinterval+10, [project]))
         c['schedulers'].append(Nightly(
             "%s nightly" % project, [project], hour=[3],
             branch="%s/trunk" % project))
