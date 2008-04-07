@@ -20,9 +20,8 @@
 	<td colspan="2">
 	  <br />
 	  <hr />
-	  <a tal:attributes="href string:${layout/@@absolute_url}/../../"
-	     i18n:translate="">
-	    Back to principals management panel</a>
+	  <a tal:attributes="href string:${layoutcontext/@@absolute_url}/"
+	     i18n:translate="">Back to principals management panel</a>
 	</td>
       </tr>
     </table>
