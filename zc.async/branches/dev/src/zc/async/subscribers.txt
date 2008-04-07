@@ -190,31 +190,8 @@ how it deactivates the dispatcher's agents collection in the ZODB.
     >>> db.database_name = ''
     >>> async_db.database_name = 'async'
 
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
-    ...
-
-    >>> from zc.async.instanceuuid import UUID
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
 
     >>> import time
     >>> def get_poll(count = None):
@@ -226,15 +203,4 @@ how it deactivates the dispatcher's agents collection in the ZODB.
     ...         time.sleep(0.1)
     ...     else:
     ...         assert False, 'no poll!'
-    ... 
-
-    >>> import zc.async.interfaces
-    >>> def wait_for_result(job):
-    ...     for i in range(30):
-    ...         t = transaction.begin()
-    ...         if job.status == zc.async.interfaces.COMPLETED:
-    ...             return job.result
-    ...         time.sleep(0.1)
-    ...     else:
-    ...         assert False, 'job never completed'
     ...

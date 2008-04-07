@@ -283,32 +283,6 @@ The ``poll`` command uses patterns we've seen above.
 
 .. [#setUp] See the discussion in other documentation to explain this code.
 
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
-    ...
-
-    >>> import zc.async.testing
-    >>> reactor = zc.async.testing.Reactor()
-    >>> reactor.start() # this mokeypatches datetime.datetime.now 
-
     >>> import ZODB.FileStorage
     >>> storage = ZODB.FileStorage.FileStorage(
     ...     'zc_async.fs', create=True)
@@ -317,17 +291,19 @@ The ``poll`` command uses patterns we've seen above.
     >>> conn = db.open()
     >>> root = conn.root()
 
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
+
+    >>> import zc.async.testing
+    >>> reactor = zc.async.testing.Reactor()
+    >>> reactor.start() # this mokeypatches datetime.datetime.now 
+
     >>> import zc.async.queue
     >>> import zc.async.interfaces
     >>> mapping = root[zc.async.interfaces.KEY] = zc.async.queue.Queues()
     >>> queue = mapping[''] = zc.async.queue.Queue()
     >>> import transaction
     >>> transaction.commit()
-
-    >>> from zc.async.instanceuuid import UUID
-    >>> import zope.component
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
 
     >>> import zc.async.dispatcher
     >>> dispatcher = zc.async.dispatcher.Dispatcher(db, reactor)

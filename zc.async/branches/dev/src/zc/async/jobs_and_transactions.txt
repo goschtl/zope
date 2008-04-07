@@ -264,31 +264,5 @@ Footnotes
     >>> db = DB()
     >>> conn = db.open()
     >>> root = conn.root()
-
-    You must have two adapter registrations: IConnection to
-    ITransactionManager, and IPersistent to IConnection.  We will also
-    register IPersistent to ITransactionManager because the adapter is
-    designed for it.
-
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    We also need to adapt Function and Method to IPartial.
-
-    >>> import zc.async.job
-    >>> import zc.async.interfaces
-    >>> import zope.component
-    >>> import types
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()

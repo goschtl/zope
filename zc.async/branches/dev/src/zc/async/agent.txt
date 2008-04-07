@@ -97,43 +97,14 @@ Now we can claim another job.
 This particular agent invites you to provide a function to choose jobs.
 The default one simply chooses the first available job in the queue.
 
-.. [#setUp]
+.. [#setUp] First we'll get a database and the necessary registrations.
 
     >>> from ZODB.tests.util import DB
     >>> db = DB()
     >>> conn = db.open()
     >>> root = conn.root()
-
-    You must have two adapter registrations: IConnection to
-    ITransactionManager, and IPersistent to IConnection.  We will also
-    register IPersistent to ITransactionManager because the adapter is
-    designed for it.
-
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    We need to be able to get data manager partials for functions and methods;
-    normal partials for functions and methods; and a data manager for a partial.
-    Here are the necessary registrations.
-
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
-    ...
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
 
     Now we need a queue.
 
@@ -146,10 +117,9 @@ The default one simply chooses the first available job in the queue.
 
     Now we need an activated dispatcher agents collection.
     
-    >>> import uuid
-    >>> UUID = uuid.uuid1()
-    >>> queue.dispatchers.register(UUID)
-    >>> da = queue.dispatchers[UUID]
+    >>> import zc.async.instanceuuid
+    >>> queue.dispatchers.register(zc.async.instanceuuid.UUID)
+    >>> da = queue.dispatchers[zc.async.instanceuuid.UUID]
     >>> da.activate()
 
     And now we need an agent.
@@ -160,13 +130,6 @@ The default one simply chooses the first available job in the queue.
     'main'
     >>> agent.parent is da
     True
-
-    We need a UUID utility.
-
-    >>> import zope.interface
-    >>> zope.interface.classImplements(uuid.UUID, zc.async.interfaces.IUUID)
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
 
 .. [#test_completed]
 

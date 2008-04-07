@@ -933,31 +933,23 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
     register IPersistent to ITransactionManager because the adapter is
     designed for it.
 
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
+    We also need to be able to get data manager partials for functions and
+    methods; normal partials for functions and methods; and a data manager for
+    a partial. Here are the necessary registrations.
 
-    We need to be able to get data manager partials for functions and methods;
-    normal partials for functions and methods; and a data manager for a partial.
-    Here are the necessary registrations.
+    The dispatcher will look for a UUID utility, so we also need one of these.
+    
+    The ``zc.async.configure.base`` function performs all of these
+    registrations. If you are working with zc.async without ZCML you might want
+    to use it or ``zc.async.configure.minimal`` as a convenience.
 
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
-    ...
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
+
+    Now we'll set up the database, and make some policy decisions.  As
+    the subsequent ``configuration`` sections discuss, some helpers are
+    available for you to set this stuff up if you'd like, though it's not too
+    onerous to do it by hand.
 
     We'll use a test reactor that we can control.
 
@@ -987,23 +979,22 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
     >>> import transaction
     >>> transaction.commit()
 
-    The dispatcher will look for a UUID utility.
-    
-    >>> from zc.async.instanceuuid import UUID
-    >>> import zope.component
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
-
     Now we can instantiate, activate, and perform some reactor work in order
     to let the dispatcher register with the queue.
 
     >>> import zc.async.dispatcher
     >>> dispatcher = zc.async.dispatcher.Dispatcher(db, reactor)
-    >>> dispatcher.UUID == UUID
-    True
     >>> dispatcher.activate()
     >>> reactor.time_flies(1)
     1
+
+    The UUID is set on the dispatcher.
+
+    >>> import zope.component
+    >>> import zc.async.interfaces
+    >>> UUID = zope.component.getUtility(zc.async.interfaces.IUUID)
+    >>> dispatcher.UUID == UUID
+    True
 
     Here's an agent named 'main'
 

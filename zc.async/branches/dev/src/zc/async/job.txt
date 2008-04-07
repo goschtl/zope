@@ -772,41 +772,15 @@ Footnotes
 =========
 
 .. [#set_up] We'll actually create the state that the text needs here.
+    One thing to notice is that the ``zc.async.configure.base`` registers
+    the Job class as an adapter from functions and methods.
 
     >>> from ZODB.tests.util import DB
     >>> db = DB()
     >>> conn = db.open()
     >>> root = conn.root()
-
-    You must have two adapter registrations: IConnection to
-    ITransactionManager, and IPersistent to IConnection.  We will also
-    register IPersistent to ITransactionManager because the adapter is
-    designed for it.
-
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    The job class can be registered as an adapter for
-    functions and methods.  It needs to be for expected simple usage of
-    addCallbacks.
-
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
 
 .. [#verify] Verify interface
 

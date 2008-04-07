@@ -50,7 +50,9 @@ necessary adapter registrations [#setUp]_.
 
 Here's the reactor.  The _handleSignals just lets the reactor handle signals.
 In most real world usage you'll need to be more careful, hooking into
-the signal handling of your larger app.
+the signal handling of your larger app.  Look at the code in
+``zc.async.subscribers.ThreadedDispatcherInstaller`` for an example that should
+be sufficient for Zope.
 
     >>> import twisted.internet.selectreactor
     >>> reactor = twisted.internet.selectreactor.SelectReactor()
@@ -63,7 +65,8 @@ faster when this document is run as a test.
     >>> import zc.async.dispatcher
     >>> dispatcher = zc.async.dispatcher.Dispatcher(
     ...     db, reactor, poll_interval=0.5)
-    >>> dispatcher.UUID is UUID
+    >>> import zc.async.instanceuuid
+    >>> dispatcher.UUID is zc.async.instanceuuid.UUID
     True
     >>> dispatcher.reactor is reactor
     True
@@ -336,13 +339,7 @@ We can get a report on the reactor's status.
 When we stop the reactor, the dispatcher also deactivates.
 
     >>> reactor.callFromThread(reactor.stop)
-    >>> for i in range(30):
-    ...     if not dispatcher.activated:
-    ...         break
-    ...     time.sleep(0.1)
-    ... else:
-    ...     assert False, 'dispatcher did not deactivate'
-    ...
+    >>> thread.join(3)
 
     >>> pprint.pprint(dispatcher.getStatusInfo()) # doctest: +ELLIPSIS
     {'poll interval': datetime.timedelta(0, 0, 500000),
@@ -369,43 +366,8 @@ The db's pool size has returned to the original value.
     >>> db = DB(storage) 
     >>> conn = db.open()
     >>> root = conn.root()
-
-    You must have two adapter registrations: IConnection to
-    ITransactionManager, and IPersistent to IConnection.  We will also
-    register IPersistent to ITransactionManager because the adapter is
-    designed for it.
-
-    >>> from zc.twist import transactionManager, connection
-    >>> import zope.component
-    >>> zope.component.provideAdapter(transactionManager)
-    >>> zope.component.provideAdapter(connection)
-    >>> import ZODB.interfaces
-    >>> zope.component.provideAdapter(
-    ...     transactionManager, adapts=(ZODB.interfaces.IConnection,))
-
-    We need to be able to get data manager partials for functions and methods;
-    normal partials for functions and methods; and a data manager for a partial.
-    Here are the necessary registrations.
-
-    >>> import zope.component
-    >>> import types
-    >>> import zc.async.interfaces
-    >>> import zc.async.job
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.FunctionType,),
-    ...     provides=zc.async.interfaces.IJob)
-    >>> zope.component.provideAdapter(
-    ...     zc.async.job.Job,
-    ...     adapts=(types.MethodType,),
-    ...     provides=zc.async.interfaces.IJob)
-    ...
-
-    Now we need a UUID.  We'll use the instanceuuid.
-    
-    >>> from zc.async.instanceuuid import UUID
-    >>> zope.component.provideUtility(
-    ...     UUID, zc.async.interfaces.IUUID, '')
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
 
 .. [#get_poll]
 
