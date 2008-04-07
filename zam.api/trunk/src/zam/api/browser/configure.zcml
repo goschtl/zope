@@ -21,7 +21,7 @@
   <z3c:pagelet
       name="contents.html"
       for="zope.traversing.interfaces.IContainmentRoot"
-      class="z3c.contents.browser.ContentsPage"
+      class="z3c.contents.browser.Contents"
       permission="zope.ManageSite"
       layer="zam.api.layer.ISiteManagerPluginLayer"
       />

@@ -103,6 +103,7 @@
 
   <!-- z3c component -->
   <include package="z3c.breadcrumb" />
+  <include package="z3c.contents" />
   <include package="z3c.form" />
   <include package="z3c.formui" />
   <include package="z3c.layer.pagelet" />
