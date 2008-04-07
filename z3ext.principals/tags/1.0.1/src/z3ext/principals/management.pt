@@ -1,0 +1,43 @@
+<tal:block i18n:domain="z3ext">
+  <h1 tal:content="context/__title__">User management.</h1>
+  <div class="pageDescription" tal:content="context/__description__"></div>
+
+  <div class="topframe" tal:on-error="nothing"
+       tal:define="factories view/factories"
+       tal:condition="factories">
+    <h1 i18n:translate="">Create principal</h1>
+      
+    <ul class="listing">
+      <li tal:repeat="factory factories">
+	<div class="icon" 
+	     tal:define="icon factory/@@zmi_icon|nothing" 
+	     tal:content="structure icon">
+	</div>
+	<div class="details">
+	  <a tal:attributes="href string:${factory/name}/" 
+	     tal:content="factory/title">Add new principal.</a>
+	  <div><tal:block tal:content="factory/description" /> &nbsp;</div>
+	</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="frame">
+    <form action="@@index.html" method="post">
+      <h1 tal:content="view/label">View</h1>
+
+      <div class="fieldset">
+	<tal:block tal:define="widget nocall:view/principal_widget">
+	  <metal:block use-macro="context/@@form_macros/widget_row" />
+	</tal:block>
+	
+	<hr />
+	<div class="z-form-controls"> 
+          <input class="z-form-button" type="submit" 
+		 value="View principal" name="form.view" 
+		 i18n:attributes="value" />
+	</div>
+      </div>
+    </form>
+  </div>
+</tal:block>
