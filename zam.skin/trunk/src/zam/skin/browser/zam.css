@@ -454,9 +454,9 @@ div.sideBarBoxSpacer {
 }
 
 /*---[ table ]---------------------------------------------------------------*/
-/* Styles for tables that act as lists of objects. */
+/* Styles for tables that list contents. */
 
-table.list {
+table.contents {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -464,35 +464,35 @@ table.list {
     border-collapse: collapse;
 }
 
-table.list tr {
+table.contents tr {
     border-bottom: 1px solid #ffffff;
 }
 
-table.list tr.even {
+table.contents tr.even {
     background-color: #E6E1D9;
 }
 
-table.list tr.even td.sorted-on {
+table.contents tr.even td.sorted-on {
     background-color: #D5CCBD;
 }
 
-table.list tr.odd {
+table.contents tr.odd {
     background-color: #F2F0EC;
 }
 
-table.list tr.odd td.sorted-on {
+table.contents tr.odd td.sorted-on {
     background-color: #DFD9CE;
 }
 
-table.list tr.selected {
+table.contents tr.selected {
     background-color: #BCAE98;
 }
 
-table.list tr.selected td.sorted-on {
+table.contents tr.selected td.sorted-on {
     background-color: #AE9E84;
 }
 
-table.list th {
+table.contents th {
     color: #666666;
     border-color: #999999;
     border-bottom-width: 1px;
@@ -501,7 +501,7 @@ table.list th {
     text-align: left;
     background: url(./img/tableHeaderBG.gif) repeat-x left top;
 }
-table.list thead.verticaltext th {
+table.contents thead.verticaltext th {
     text-align: left;
     writing-mode: tb-rl;
     filter: flipv fliph;
@@ -509,19 +509,19 @@ table.list thead.verticaltext th {
     background: transparent;
 }
 
-table.list th.sorted-on {
+table.contents th.sorted-on {
     background-color: #D5CCBD;
 }
 
-table.list td {
+table.contents td {
     padding: 3px 4px;
 }
 
-table.list .centered {
+table.contents .centered {
     text-align: center;
 }
 
-table.list .right {
+table.contents .right {
     text-align: right;
 }
 
