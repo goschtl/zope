@@ -111,6 +111,7 @@
   <include package="z3c.menu.ready2go" />
   <include package="z3c.macro" />
   <include package="z3c.pagelet" />
+  <include package="z3c.table" />
 
 
   <!-- zam configuration -->
