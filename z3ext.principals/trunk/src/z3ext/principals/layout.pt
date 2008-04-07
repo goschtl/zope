@@ -1,8 +1,8 @@
-<div id="z-portal-workspace" i18n:domain="">
+<div id="z-portal-workspace" i18n:domain="z3ext">
   <div class="page"
        tal:define="rendered view/render;
 		   oldcontext nocall:context;
-		   context nocall:layoutcontext;
+		   context nocall:layoutcontext/__principal__;
 		   userinfo provider:z3ext.principals-information;
 		   context nocall:oldcontext;
 		   navigation maincontext/@@navigation;

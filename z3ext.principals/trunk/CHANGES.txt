@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-1.0.1 (2008-03-??)
+1.0.1 (2008-04-07)
 ------------------
 
 - Rename principals configlet to `principals`
+
+- Fix UI for principal preferences layout
 
 
 1.0.0 (2008-03-24)
