@@ -56,9 +56,7 @@ class ScriptSetup:
             ws = []
 
         # setup script default vars
-        defaults = options.get('defaults', '').strip()
-        if defaults:
-            defaults = '(%s) + ' % defaults
+        arguments = options.get('arguments', '').strip()
 
         wd = options.get('working-directory', options['location'])
 
@@ -68,7 +66,7 @@ class ScriptSetup:
             [(options['script'], module, method)],
             ws, executable, self.buildout['buildout']['bin-directory'],
             extra_paths = extra_paths,
-            arguments = defaults,
+            arguments = arguments,
             initialization = initialization,
             )
 

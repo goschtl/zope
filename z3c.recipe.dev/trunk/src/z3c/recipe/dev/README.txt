@@ -230,6 +230,11 @@ module
 method
   The ``method`` which get called from the ``module``.
 
+arguments
+  Use the option ``arguments`` to pass arguments to the script.
+  All the string will be copied to the script 1:1.
+  So what you enter here is what you get.
+
 
 Test
 ****
@@ -247,8 +252,10 @@ And let's define a python module which we use for our test:
 
   >>> write('hello', 'helloworld.py',
   ... """
-  ... def helloWorld():
+  ... def helloWorld(*args):
   ...     print 'Hello World'
+  ...     for a in args:
+  ...         print a
   ... """)
 
 Alos add a `__init__` to the `hello` package:
@@ -303,3 +310,64 @@ Now we can call the script:
 
   >>> print system(join('bin', 'helloworld')),
   Hello World
+
+
+Test with parameters
+********************
+
+Of the same script defined above.
+
+Use the option `arguments = ` to pass arguments to the script.
+All the string will be copied to the script 1:1.
+So what you enter here is what you get.
+
+We'll create a `buildout.cfg` file that defines our script:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... develop = hello
+  ... parts = helloworld
+  ...
+  ... [helloworld]
+  ... recipe = z3c.recipe.dev:script
+  ... eggs = hello
+  ... module = hello.helloworld
+  ... method = helloWorld
+  ... arguments = 'foo', 'bar'
+  ...
+  ... ''' % globals())
+
+Let's run buildout again:
+
+  >>> print system(join('bin', 'buildout')),
+  Develop: '/sample-buildout/hello'
+  Uninstalling helloworld.
+  Installing helloworld.
+  Generated script '/sample-buildout/bin/helloworld'.
+
+And check the script again. Now we see the `helloWorld()` method is used:
+
+  >>> cat('bin', 'helloworld-script.py')
+  #!C:\Python24\python.exe
+  <BLANKLINE>
+  import sys
+  sys.path[0:0] = [
+    '/sample-buildout/hello',
+    ]
+  <BLANKLINE>
+  import os
+  sys.argv[0] = os.path.abspath(sys.argv[0])
+  <BLANKLINE>
+  <BLANKLINE>
+  import hello.helloworld
+  <BLANKLINE>
+  if __name__ == '__main__':
+      hello.helloworld.helloWorld('foo', 'bar')
+
+Now we can call the script:
+
+  >>> print system(join('bin', 'helloworld')),
+  Hello World
+  foo
+  bar
