@@ -16,7 +16,9 @@
 $Id$
 """
 from zope.component import queryMultiAdapter
-from z3ext.preferences.interfaces import IPreferenceGroup, IRootPreferences
+from z3ext.preferences.interfaces import IRootPreferences
+from z3ext.preferences.interfaces import IPreferenceGroup
+from z3ext.preferences.interfaces import IPreferenceCategory
 
 
 class Navigation(object):
@@ -67,6 +69,10 @@ class Navigation(object):
                 if prefs.__id__ == self.context.__id__:
                     info['selected'] = True
                     info['items'] = self._process(prefs, [prefs], level+1)
+
+                if IPreferenceCategory.providedBy(prefs) and not info['items']:
+                    if not self._process(prefs, [prefs], level+1):
+                        continue
 
                 data.append(info)
 
