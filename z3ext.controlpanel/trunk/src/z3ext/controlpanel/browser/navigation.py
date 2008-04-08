@@ -27,6 +27,19 @@ class Navigation(ViewletManagerBase):
 
         context = self.context
 
+        # search configlet
+        while not IConfiglet.providedBy(context):
+            context = getattr(context, '__parent__', None)
+            if context is None:
+                break
+
+        if context is not None:
+            self.context = context
+        else:
+            self.data = []
+            self.isRoot = True
+            return
+
         self.isRoot = IRootConfiglet.providedBy(context)
         if self.isRoot:
             return
