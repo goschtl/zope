@@ -50,12 +50,28 @@ def make_factory(svn_url):
 
 def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
-              pollinterval = 30,
+              pollinterval = 30, nightlyhour=3,
               poller = None, makefactory = make_factory):
     """Creates a buildout master configuration.
 
     The configuration returned is almost functional. You just need to add
     slaves.
+
+    Options are as follows:
+    * svn_url: URL of the SVN repository
+    * http_port: where buildbot will listen as an HTTP server
+    * allowForce: allow force builds (True/False)
+    * svnuser: username to be passed to svn
+    * svnpasswd: password to be passed to svn
+    * pollinterval: interval in seconds to poll the svn repo for changes
+    * nightlyhour: run nightly builds at this hour
+    * poller: custom poller object instance to be used instead of SVNPoller
+    * makefactory:
+      * can a simple callable factory that gets the svn_url
+      * can be a dict of factories getting svn_url keyed by project name
+        * ``__default__`` is a special key, bsquare reverts to this factory
+          first when there is none for a project
+        * bsquare reverts to make_factory as last
 
     """
     c = {}
@@ -77,7 +93,12 @@ def configure(svn_url, http_port=8010, allowForce=False,
     projects = [x.strip() for x in projects]
 
     for project in projects:
-        f = makefactory(svn_url)
+        if isinstance(make_factory, dict):
+            f = makefactory.get(project,
+                                makefactory.get('__default__', make_factory))
+            f = f(svn_url)
+        else:
+            f = makefactory(svn_url)
         c['builders'].append({
             'name': project,
             'slavename': 'local',
@@ -90,7 +111,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
         c['schedulers'].append(Scheduler(
             project, "%s/trunk" % project, pollinterval+10, [project]))
         c['schedulers'].append(Nightly(
-            "%s nightly" % project, [project], hour=[3],
+            "%s nightly" % project, [project], hour=[nightlyhour],
             branch="%s/trunk" % project))
 
     # Status display(s)
