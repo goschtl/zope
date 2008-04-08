@@ -217,7 +217,7 @@ class Queue(zc.async.utils.Base):
     zope.interface.implements(zc.async.interfaces.IQueue)
 
     def __init__(self):
-        self._queue = zc.queue.CompositePersistentQueue()
+        self._queue = zc.queue.CompositeQueue()
         self._held = BTrees.OOBTree.OOBTree()
         self.quotas = Quotas()
         self.quotas.__parent__ = self

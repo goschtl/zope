@@ -1,6 +1,7 @@
 import os
 import unittest
 from zope.testing import doctest, module
+import zope.component.testing
 
 import zc.async.tests
 
@@ -18,6 +19,11 @@ def test_suite():
         doctest.DocFileSuite(
             'monitor.txt',
             setUp=setUp, tearDown=zc.async.tests.modTearDown,
+            optionflags=doctest.INTERPRET_FOOTNOTES),
+        doctest.DocFileSuite(
+            'README_3.txt',
+            setUp=zope.component.testing.setUp,
+            tearDown=zope.component.testing.tearDown,
             optionflags=doctest.INTERPRET_FOOTNOTES),
         ))
 

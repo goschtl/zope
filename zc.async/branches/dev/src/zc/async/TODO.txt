@@ -1,12 +1,10 @@
-
+- make trace log only write changes or occasionally
+- make data structure for old polls more efficient
+- make period for polls and jobs shorter
+- make failures reduce to small size (eliminate stack?)
+- make full tracebacks write to log, or at least an option
 - Write the z3monitor tests.
 - Write a stress test.
-- Finish the README_2 docs.
-- Write a way to use alone, with a separate zdaemon script.
-- Write a way to use with Zope 3 (in particular, something that waits for the
- database opened event that Zope 3 fires).
-- remove subscribers.py, or make it part of the Zope 3 bit above.
-- write basic zcml (necessary adapters) and full (more policy) zcml
 
 For future versions:
 

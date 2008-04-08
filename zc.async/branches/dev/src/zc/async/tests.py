@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from zope.testing import doctest, module
+from zope.testing import doctest, module, loggingsupport
 import zope.component
 import zope.component.testing
 import zope.component.eventtesting
@@ -25,10 +25,16 @@ def modSetUp(test):
     zope.component.testing.setUp(test)
     module.setUp(test, 'zc.async.doctest_test')
     zope.component.eventtesting.setUp(test)
+    test.globs['event_logs'] = loggingsupport.InstalledHandler(
+        'zc.async.events')
+    test.globs['trace_logs'] = loggingsupport.InstalledHandler(
+        'zc.async.trace')
 
 def modTearDown(test):
     import transaction
     transaction.abort()
+    import zc.async.dispatcher
+    zc.async.dispatcher.clear()
     uuidTearDown(test)
     zc.async.testing.tearDownDatetime()
     module.tearDown(test)
@@ -43,6 +49,9 @@ def modTearDown(test):
         test.globs['async_db'].close()
         test.globs['async_storage'].close()
         test.globs['async_storage'].cleanup()
+    for logs in (test.globs['event_logs'], test.globs['trace_logs']):
+        logs.clear()
+        logs.uninstall()
 
 def test_instanceuuid():
     """This module provides access to a UUID that is intended to uniquely

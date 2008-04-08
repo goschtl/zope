@@ -144,14 +144,21 @@ class AgentThreadPool(object):
                     # should come before 'completed' for threading dance
                     if isinstance(job.result, twisted.python.failure.Failure):
                         info['failed'] = True
+                        info['result'] = job.result.getTraceback(
+                            elideFrameworkCode=True, detail='verbose')
+                    else:
+                        info['result'] = repr(job.result)
                     info['completed'] = datetime.datetime.utcnow()
-                    info['result'] = repr(job.result)
                 finally:
                     local.job = None
                     transaction.abort()
                     conn.close()
-                zc.async.utils.tracelog.info(
-                    '%s %s in thread %d with result %s',
+                if info['failed']:
+                    log = zc.async.utils.tracelog.error
+                else:
+                    log = zc.async.utils.tracelog.info
+                log(
+                    '%s %s in thread %d with result:\n%s',
                     info['call'],
                     info['failed'] and 'failed' or 'succeeded',
                     info['thread'], info['result'])
