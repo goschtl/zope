@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="zope.bforest",
-    version="1.1",
+    version="1.1.1",
     license="ZPL 2.1",
     author="Zope Project",
     author_email="zope3-dev@zope.org",

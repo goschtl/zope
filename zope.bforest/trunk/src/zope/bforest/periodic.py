@@ -20,7 +20,7 @@ class Abstract(zope.bforest.bforest.AbstractBForest):
     _inner_period = _period = None
     def period(self, value):
         self._period = value
-        self._inner_period = self._period / len(self.buckets)
+        self._inner_period = self._period / (len(self.buckets) - 1)
     period = property(
         lambda self: self._period, period)
     

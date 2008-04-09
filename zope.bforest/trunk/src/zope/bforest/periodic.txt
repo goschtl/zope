@@ -19,7 +19,7 @@ We will also imagine that we control the time with a function called setNow.
     >>> import datetime
     >>> from zope.bforest import utils
     >>> setNow(datetime.datetime(2006, 9, 11, 22, 51, tzinfo=utils.UTC))
-    >>> d = BForest(datetime.timedelta(hours=3), count=3)
+    >>> d = BForest(datetime.timedelta(hours=3), count=4)
     >>> d.last_rotation
     datetime.datetime(2006, 9, 11, 22, 51, tzinfo=<UTC>)
 
@@ -27,24 +27,51 @@ Now let's put in some keys and advance time.
 
     >>> first_hour = {KeyGenerator(): ValueGenerator()}
     >>> d.update(first_hour)
-    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
+    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(minutes=50))
+    >>> fifty_minutes_in_to_first_hour = {KeyGenerator(): ValueGenerator()}
+    >>> d.update(fifty_minutes_in_to_first_hour)
+    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(minutes=10))
     >>> second_hour = {KeyGenerator(): ValueGenerator()}
     >>> d.update(second_hour)
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> third_hour = {KeyGenerator(): ValueGenerator()}
     >>> d.update(third_hour)
     >>> current = first_hour.copy()
+    >>> current.update(fifty_minutes_in_to_first_hour)
     >>> current.update(second_hour)
     >>> current.update(third_hour)
     >>> d == current
     True
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
-    >>> d == current
-    True
     >>> fourth_hour = {KeyGenerator(): ValueGenerator()}
     >>> d.update(fourth_hour)
     >>> current.update(fourth_hour)
+
+So, now, three hours have passed since our first key.  Two hours and ten
+minutes have passed since our second key.  Each bucket has an effective
+period of (period/(bucket count - 1))--one hour, in our example.  We can't
+discard the first bucket yet, because the second key hasn't been in for the
+minimum of three hours.
+
+    >>> d == current
+    True
+
+If we go to the next hour then we'll be able to discard the first
+bucket, though.  The first key will have been in for four hours, and the
+second key for three hours and 10 minutes.  As we said, the period
+provided in the instantiation is intended to be the minimum length the
+value is held.  Assuming that the rotation is triggered precisely every
+bucket period (which will not be the case in actual use, typically), the
+maximum length is ((bucket count/(bucket count -1)) * period).
+
+    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
+    >>> fifth_hour = {KeyGenerator(): ValueGenerator()}
+    >>> current.update(fifth_hour)
+    >>> d.update(fifth_hour)
+    >>> d == current
+    False
     >>> del current[first_hour.keys()[0]]
+    >>> del current[fifty_minutes_in_to_first_hour.keys()[0]]
     >>> d == current
     True
 
@@ -54,34 +81,36 @@ update, __delitem__, pop, and popitem.  We've seen update; here are examples
 of the rest.
 
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
-    >>> fifth_hour = {KeyGenerator(): ValueGenerator()}
-    >>> d[fifth_hour.keys()[0]] = fifth_hour.values()[0] # __setitem__
-    >>> current.update(fifth_hour)
+    >>> sixth_hour = {KeyGenerator(): ValueGenerator()}
+    >>> d[sixth_hour.keys()[0]] = sixth_hour.values()[0] # __setitem__
+    >>> current.update(sixth_hour)
     >>> del current[second_hour.keys()[0]]
     >>> d == current
     True
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
-    >>> del d[fifth_hour.keys()[0]] # __delitem__
-    >>> d == fourth_hour
-    True
-    >>> sixth_hour = {KeyGenerator(): ValueGenerator()}
-    >>> d[sixth_hour.keys()[0]] = sixth_hour.values()[0]
-    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
-    >>> d.pop(sixth_hour.keys()[0]) == sixth_hour.values()[0] # pop
-    True
-    >>> d == {}
+    >>> del d[sixth_hour.keys()[0]] # __delitem__
+    >>> current = fourth_hour.copy()
+    >>> current.update(fifth_hour)
+    >>> d == current
     True
     >>> seventh_hour = {KeyGenerator(): ValueGenerator()}
     >>> d[seventh_hour.keys()[0]] = seventh_hour.values()[0]
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
+    >>> d.pop(seventh_hour.keys()[0]) == seventh_hour.values()[0] # pop
+    True
+    >>> d == fifth_hour
+    True
+    >>> eighth_hour = {KeyGenerator(): ValueGenerator()}
+    >>> d[eighth_hour.keys()[0]] = eighth_hour.values()[0]
+    >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> d.rotateBucket()
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
-    >>> ninth_hour = {KeyGenerator(): ValueGenerator()}
-    >>> d[ninth_hour.keys()[0]] = ninth_hour.values()[0]
+    >>> tenth_hour = {KeyGenerator(): ValueGenerator()}
+    >>> d[tenth_hour.keys()[0]] = tenth_hour.values()[0]
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> out = dict((d.popitem(),))
-    >>> out == ninth_hour
+    >>> out == tenth_hour
     True
-    >>> d == {}
+    >>> d == eighth_hour
     True
 
