@@ -1,0 +1,195 @@
+;-*-Doctest-*-
+
+====================
+Persistent Factories
+====================
+
+z3c.persistentfactory provides a PersistentFactory class that wraps a
+method in a persistent wrapper.  It also provides a function decorator
+for use on class method definitions such that a persistent factory
+will be used when the method is accessed on instance of the class.
+
+Also see declarartions.txt for details about a mixin Declarer class
+for classes implementing callable instances whose declarations should
+pickle and persist correctly.
+
+Factory
+=======
+
+The factory module provides a persistent declarer class for creating
+callable objects wrapping a instance method as factories in the
+persistent registry.
+
+Create an object with a method that has declarations.
+
+    >>> from z3c.persistentfactory import testing
+    >>> bar = testing.Bar()
+
+Verify that the instance method has declarations.
+
+    >>> from zope import interface, component
+    >>> tuple(interface.implementedBy(bar.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    >>> component.adaptedBy(bar.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+
+Wrap the instance method in a persistent factory.
+
+    >>> from z3c.persistentfactory import factory
+    >>> bar_factory = factory.PersistentFactory(bar.factory)
+
+Pickle and unpickle the factory to verify everything is pickleable.
+
+    >>> import pickle
+    >>> bar_factory = pickle.loads(pickle.dumps(bar_factory))
+
+The factory's __call__ method is the original instance method of the
+original object, not a method of the persistent factory object.
+
+    >>> bar_factory.__call__
+    <bound method Bar.factory of
+    <z3c.persistentfactory.testing.Bar object at ...>>
+    >>> bar_factory.__call__.im_self.__class__ is bar.__class__
+    True
+
+The factory is callable.
+
+    >>> bar_factory()
+    <z3c.persistentfactory.testing.Bar object at ...>
+
+The factory has the same declarations as the original method.
+
+    >>> tuple(interface.implementedBy(bar_factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    >>> component.adaptedBy(bar_factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+
+If the wrapped method's declarations haven't been overridden, then
+changes to the wrapped method's adapts declarations are reflected in
+the factory.  Unfortunately, the zope.interface implementation for
+checking implementer declarations checks the factory's instance
+dictionary directly, so changes to the wrapped method's implements
+declarations aren't reflected in the factory.  This means that any
+changes to the wrapped methods implements declaration that need to be
+reflected in existing persistent factories will require migrating the
+existing factories.
+
+    >>> _ = interface.implementer(testing.IFoo)(bar.factory.im_func)
+    >>> _ = component.adapter(testing.IBar)(bar.factory.im_func)
+
+    >>> tuple(interface.implementedBy(bar.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(bar.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+    >>> tuple(interface.implementedBy(bar_factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    >>> component.adaptedBy(bar_factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+The wrapped method's declarations can be overridden in the factory.
+
+    >>> _ = interface.implementer(testing.IBaz)(bar_factory)
+    >>> _ = component.adapter(testing.IQux)(bar_factory)
+
+    >>> tuple(interface.implementedBy(bar_factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
+    >>> component.adaptedBy(bar_factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
+
+Overriding the wrapped method's declarations in the factory doesn't
+modify the declarations on the wrapped method.
+
+    >>> tuple(interface.implementedBy(bar.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(bar.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+However, Once the wrapped method's declarations have been overriden in
+the factory, the factory no longer reflects any changes in the wrapped
+method's declarations.
+
+    >>> _ = interface.implementer(testing.IQux)(bar.factory.im_func)
+    >>> _ = component.adapter(testing.IBaz)(bar.factory.im_func)
+
+    >>> tuple(interface.implementedBy(bar.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
+    >>> component.adaptedBy(bar.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
+
+    >>> tuple(interface.implementedBy(bar_factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
+    >>> component.adaptedBy(bar_factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
+
+Decorator
+=========
+
+A decorator is provided that will return the decorated method wrapped
+in a persistent factory when the method is accessed on an instance.
+
+The Baz class uses the decorator in the python code.  Note that the
+factory decorator must come before the declaration decorators so that
+it will be run last and will reflect the declarations.
+
+    >>> baz = testing.Baz()
+
+On an instance, the method is replaced with a persistent factory on
+first access.
+
+    >>> baz.factory
+    <z3c.persistentfactory.factory.PersistentFactory
+    object at ...>
+
+Pickle and unpickle the object to verify everything is pickleable.
+
+    >>> baz = pickle.loads(pickle.dumps(baz))
+
+The factory is the same object on subsequent accesses.
+
+    >>> baz.factory is baz.factory
+    True
+
+The factory's __call__ method is an instance method of the original
+object, not a method of the persistent factory object.
+
+    >>> baz.factory.__call__
+    <bound method Baz.factory of
+    <z3c.persistentfactory.testing.Baz object at ...>>
+
+The factory is callable and calls the wrapped method.
+
+    >>> baz.factory()
+    <z3c.persistentfactory.testing.Baz object at ...>
+
+The declarations of the factory reflect the declarations on the
+wrapped method.
+
+    >>> tuple(interface.implementedBy(baz.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    >>> component.adaptedBy(baz.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+
+The declarations can be overridden in the factory.
+
+    >>> _ = interface.implementer(testing.IFoo)(baz.factory)
+    >>> _ = component.adapter(testing.IBar)(baz.factory)
+
+Pickle and unpickle again to verify the pickleability of factory
+declarations.
+
+    >>> baz = pickle.loads(pickle.dumps(baz))
+
+The declaration changes are reflected on the factory.
+
+    >>> tuple(interface.implementedBy(baz.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(baz.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+But the class methods declarations are unaffected.
+
+    >>> tuple(interface.implementedBy(testing.Baz.factory))
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    >>> component.adaptedBy(testing.Baz.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
