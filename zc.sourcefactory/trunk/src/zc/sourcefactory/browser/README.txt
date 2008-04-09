@@ -9,7 +9,7 @@ terms and term objects.
 Simple use
 ==========
 
-Let's start with a simple source factory::
+Let's start with a simple source factory:
 
   >>> import zc.sourcefactory.basic
   >>> class DemoSource(zc.sourcefactory.basic.BasicSourceFactory):
@@ -19,7 +19,7 @@ Let's start with a simple source factory::
   >>> list(source)
   ['a', 'b', 'c', 'd']
 
-We need a request first, then we can adapt the source to ITerms::
+We need a request first, then we can adapt the source to ITerms:
 
   >>> from zope.publisher.browser import TestRequest
   >>> import zope.app.form.browser.interfaces
@@ -30,7 +30,7 @@ We need a request first, then we can adapt the source to ITerms::
   >>> terms
   <zc.sourcefactory.browser.source.FactoredTerms object at 0x...>
 
-For each value we get a factored term::
+For each value we get a factored term:
 
   >>> terms.getTerm('a')
   <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
@@ -46,7 +46,7 @@ Unicode values are allowed as well:
   >>> terms.getTerm(u'\xd3')
   <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
 
-Our terms are ITitledTokenizedTerm-compatible::
+Our terms are ITitledTokenizedTerm-compatible:
 
   >>> import zope.schema.interfaces
   >>> zope.schema.interfaces.ITitledTokenizedTerm.providedBy(
@@ -54,13 +54,13 @@ Our terms are ITitledTokenizedTerm-compatible::
   True
 
 In the most simple case, the title of a term is the string representation of
-the object::
+the object:
 
   >>> terms.getTerm('a').title
   u'a'
 
 If an adapter from the value to IDCDescriptiveProperties exists, the title
-will be retrieved from this adapter::
+will be retrieved from this adapter:
 
   >>> import persistent
   >>> class MyObject(persistent.Persistent):
@@ -82,7 +82,7 @@ Extended use: provide your own titles
 
 Instead of relying on string representation or IDCDescriptiveProperties
 adapters you can specify the `getTitle` method on the source factory to
-determine the title for a value::
+determine the title for a value:
 
   >>> class DemoSourceWithTitles(DemoSource):
   ...     def getTitle(self, value):
@@ -105,7 +105,7 @@ Extended use: provide your own tokens
 
 Instead of relying on default adapters to generate tokens for your values, you
 can override the `getToken` method on the source factory to determine the
-token for a value::
+token for a value:
 
   >>> class DemoObjectWithToken(object):
   ...     token = None
@@ -130,7 +130,7 @@ token for a value::
   >>> terms3.getTerm(o2).token
   'two'
 
-Looking up by the custom tokens works as well::
+Looking up by the custom tokens works as well:
 
   >>> terms3.getValue("one") is o1
   True
@@ -150,7 +150,7 @@ Value mapping sources
 Contextual sources
 ==================
 
-Let's start with an object that we can use as the context::
+Let's start with an object that we can use as the context:
 
   >>> zip_to_city = {'06112': 'Halle',
   ...                '06844': 'Dessau'}
@@ -167,14 +167,14 @@ Let's start with an object that we can use as the context::
   >>> sorted(list(source))
   ['06112', '06844']
 
-Let's look at the terms::
+Let's look at the terms:
 
   >>> terms = zope.component.getMultiAdapter(
   ...     (source, request), zope.app.form.browser.interfaces.ITerms)
   >>> terms
   <zc.sourcefactory.browser.source.FactoredContextualTerms object at 0x...>
 
-For each value we get a factored term with the right title from the context::
+For each value we get a factored term with the right title from the context:
 
   >>> terms.getTerm('06112')
   <zc.sourcefactory.browser.source.FactoredTerm object at 0x...>
@@ -187,7 +187,7 @@ For each value we get a factored term with the right title from the context::
   >>> terms.getTerm('06844').token
   'token-06844'
 
-And in reverse we can get the value for a given token as well::
+And in reverse we can get the value for a given token as well:
 
   >>> terms.getValue('token-06844')
   '06844'

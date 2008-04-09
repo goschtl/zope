@@ -19,21 +19,21 @@ Simple case
 -----------
 
 In the most simple case, you only have to provide a method that returns a list
-of values and derive from `BasicSourceFactory`::
+of values and derive from `BasicSourceFactory`:
 
   >>> import zc.sourcefactory.basic
   >>> class MyStaticSource(zc.sourcefactory.basic.BasicSourceFactory):
   ...     def getValues(self):
   ...         return ['a', 'b', 'c']
 
-When calling the source factory, we get a source::
+When calling the source factory, we get a source:
 
   >>> source = MyStaticSource()
   >>> import zope.schema.interfaces
   >>> zope.schema.interfaces.ISource.providedBy(source)
   True
 
-The values match our `getValues`-method of the factory::
+The values match our `getValues`-method of the factory:
 
   >>> list(source)
   ['a', 'b', 'c']
@@ -49,7 +49,7 @@ Contextual sources
 Sometimes we need context to determine the values. In this case, the
 `getValues`-method gets a parameter `context`.
 
-Let's assume we have a small object containing data to be used by the source::
+Let's assume we have a small object containing data to be used by the source:
 
   >>> class Context(object):
   ...      values = []
@@ -60,13 +60,13 @@ Let's assume we have a small object containing data to be used by the source::
   ...     def getValues(self, context):
   ...         return context.values
 
-When instanciating, we get a ContextSourceBinder::
+When instanciating, we get a ContextSourceBinder:
 
   >>> binder = MyDynamicSource()
   >>> zope.schema.interfaces.IContextSourceBinder.providedBy(binder)
   True
 
-Binding it to a context, we get a source::
+Binding it to a context, we get a source:
 
   >>> context = Context()
   >>> source = binder(context)
@@ -76,7 +76,7 @@ Binding it to a context, we get a source::
   >>> list(source)
   []
 
-Modifying the context also modifies the data in the source::
+Modifying the context also modifies the data in the source:
 
   >>> context.values = [1,2,3,4]
   >>> list(source)
@@ -96,7 +96,7 @@ piece by piece.
 
 This is useful if you want to have more specific sources (by subclassing) that
 share the same basic origin of the data but have different filters applied to
-it::
+it:
 
   >>> class FilteringSource(zc.sourcefactory.basic.BasicSourceFactory):
   ...     def getValues(self):
@@ -107,7 +107,7 @@ it::
   >>> list(source)
   [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
 
-Subclassing modifies the filter, not the original data::
+Subclassing modifies the filter, not the original data:
 
   >>> class OtherFilteringSource(FilteringSource):
   ...     def filterValue(self, value):
@@ -116,14 +116,14 @@ Subclassing modifies the filter, not the original data::
   >>> list(source)
   [2, 4, 6, 8, 10, 12, 14, 16, 18]
 
-The "in" operator gets applied also to filtered values::
+The "in" operator gets applied also to filtered values:
 
   >>> 2 in source
   True
   >>> 3 in source
   False
 
-The "len" also gets applied to filtered values::
+The "len" also gets applied to filtered values:
 
   >>> len(source)
   9
@@ -154,21 +154,21 @@ Simple case
 -----------
 
 In the most simple case, you only have to provide a method that returns a list
-of values and derive from `BasicSourceFactory`::
+of values and derive from `BasicSourceFactory`:
 
   >>> import zc.sourcefactory.basic
   >>> class MyStaticSource(zc.sourcefactory.basic.BasicSourceFactory):
   ...     def getValues(self):
   ...         return ['a', 'b', 'c']
 
-When calling the source factory, we get a source::
+When calling the source factory, we get a source:
 
   >>> source = MyStaticSource()
   >>> import zope.schema.interfaces
   >>> zope.schema.interfaces.ISource.providedBy(source)
   True
 
-The values match our `getValues`-method of the factory::
+The values match our `getValues`-method of the factory:
 
   >>> list(source)
   ['a', 'b', 'c']

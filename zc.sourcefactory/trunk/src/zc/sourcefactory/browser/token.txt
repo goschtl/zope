@@ -5,11 +5,11 @@ Tokens
 Tokens are an identifying representation of an object, suitable for
 transmission amongs URL-encoded data.
 
-The sourcefactory package provides a few standard generators for tokens::
+The sourcefactory package provides a few standard generators for tokens:
 
   >>> import zc.sourcefactory.browser.token
 
-We have generators for strings::
+We have generators for strings:
 
   >>> zc.sourcefactory.browser.token.fromString('somestring')
   '1f129c42de5e4f043cbd88ff6360486f'
@@ -39,7 +39,7 @@ Persistent
   '1234'
 
 If an object is persistent but has not been added to a database yet, it will
-be added to the database of it's __parent__::
+be added to the database of it's __parent__:
 
   >>> root = getRootFolder()
   >>> p1 = PersistentDummy()
@@ -55,7 +55,7 @@ If an object has no parent, we fail:
   ValueError: Can not determine OID for <PersistentDummy object at 0x...>
 
 Security proxied objects are unwrapped to get to their oid or connection
-attribute::
+attribute:
 
   >>> from zope.security.proxy import ProxyFactory
   >>> p3 = PersistentDummy()
