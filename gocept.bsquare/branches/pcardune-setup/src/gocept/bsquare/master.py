@@ -51,7 +51,8 @@ def make_factory(svn_url):
 def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
               pollinterval = 30, nightlyhour=3,
-              poller = None, makefactory = make_factory):
+              poller = None, makefactory = make_factory,
+              maxConcurrent = 2):
     """Creates a buildout master configuration.
 
     The configuration returned is almost functional. You just need to add
@@ -72,6 +73,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
         * ``__default__`` is a special key, bsquare reverts to this factory
           first when there is none for a project
         * bsquare reverts to make_factory as last
+    * maxConcurrent: maximum number of concurrent builds
 
     """
     c = {}
@@ -87,7 +89,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
     c['schedulers'] = []
     c['builders'] = []
 
-    slow_lock = locks.SlaveLock("cpu", maxCount=2)
+    slow_lock = locks.SlaveLock("cpu", maxCount=maxConcurrent)
 
     projects = open("project-list.cfg", "rb").readlines()
     projects = [x.strip() for x in projects]
