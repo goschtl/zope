@@ -1,195 +1,92 @@
 ;-*-Doctest-*-
 
-====================
-Persistent Factories
-====================
+=====================
+z3c.persistentfactory
+=====================
 
-z3c.persistentfactory provides a PersistentFactory class that wraps a
-method in a persistent wrapper.  It also provides a function decorator
-for use on class method definitions such that a persistent factory
-will be used when the method is accessed on instance of the class.
+The ZCA and the ZODB are a good combination where components require
+persistent state.  ZCA factories or handlers typically retrieve any
+persistent state required from the persistent objects being adapted.
+If the persistent state required is not specific to the objects being
+adapted, a common solution is to register a persistent utility which
+is then looked up in the factory or handler.  The persistent utility
+approach requires, however, that the one appropriate utility is looked
+up which requires support in the ZCA registrations either in the
+interface provided or the utility name.
 
-Also see declarartions.txt for details about a mixin Declarer class
-for classes implementing callable instances whose declarations should
-pickle and persist correctly.
+In some cases, however, it is more consistent with the object oriented
+semantics of Python and the ZCA to think of the factory or handler as
+an instance method of a persistent object.  With this approach the
+non-context specific persistent state can be accessed on self.
 
-Factory
-=======
+Instance Method Event Handler
+=============================
 
-The factory module provides a persistent declarer class for creating
-callable objects wrapping a instance method as factories in the
-persistent registry.
-
-Create an object with a method that has declarations.
-
-    >>> from z3c.persistentfactory import testing
-    >>> bar = testing.Bar()
-
-Verify that the instance method has declarations.
-
-    >>> from zope import interface, component
-    >>> tuple(interface.implementedBy(bar.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-    >>> component.adaptedBy(bar.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-
-Wrap the instance method in a persistent factory.
-
-    >>> from z3c.persistentfactory import factory
-    >>> bar_factory = factory.PersistentFactory(bar.factory)
-
-Pickle and unpickle the factory to verify everything is pickleable.
-
-    >>> import pickle
-    >>> bar_factory = pickle.loads(pickle.dumps(bar_factory))
-
-The factory's __call__ method is the original instance method of the
-original object, not a method of the persistent factory object.
-
-    >>> bar_factory.__call__
-    <bound method Bar.factory of
-    <z3c.persistentfactory.testing.Bar object at ...>>
-    >>> bar_factory.__call__.im_self.__class__ is bar.__class__
-    True
-
-The factory is callable.
-
-    >>> bar_factory()
-    <z3c.persistentfactory.testing.Bar object at ...>
-
-The factory has the same declarations as the original method.
-
-    >>> tuple(interface.implementedBy(bar_factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-    >>> component.adaptedBy(bar_factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-
-If the wrapped method's declarations haven't been overridden, then
-changes to the wrapped method's adapts declarations are reflected in
-the factory.  Unfortunately, the zope.interface implementation for
-checking implementer declarations checks the factory's instance
-dictionary directly, so changes to the wrapped method's implements
-declarations aren't reflected in the factory.  This means that any
-changes to the wrapped methods implements declaration that need to be
-reflected in existing persistent factories will require migrating the
-existing factories.
-
-    >>> _ = interface.implementer(testing.IFoo)(bar.factory.im_func)
-    >>> _ = component.adapter(testing.IBar)(bar.factory.im_func)
-
-    >>> tuple(interface.implementedBy(bar.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-    >>> component.adaptedBy(bar.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-
-    >>> tuple(interface.implementedBy(bar_factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-    >>> component.adaptedBy(bar_factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-
-The wrapped method's declarations can be overridden in the factory.
-
-    >>> _ = interface.implementer(testing.IBaz)(bar_factory)
-    >>> _ = component.adapter(testing.IQux)(bar_factory)
-
-    >>> tuple(interface.implementedBy(bar_factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
-    >>> component.adaptedBy(bar_factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
-
-Overriding the wrapped method's declarations in the factory doesn't
-modify the declarations on the wrapped method.
-
-    >>> tuple(interface.implementedBy(bar.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-    >>> component.adaptedBy(bar.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-
-However, Once the wrapped method's declarations have been overriden in
-the factory, the factory no longer reflects any changes in the wrapped
-method's declarations.
-
-    >>> _ = interface.implementer(testing.IQux)(bar.factory.im_func)
-    >>> _ = component.adapter(testing.IBaz)(bar.factory.im_func)
-
-    >>> tuple(interface.implementedBy(bar.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
-    >>> component.adaptedBy(bar.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
-
-    >>> tuple(interface.implementedBy(bar_factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
-    >>> component.adaptedBy(bar_factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
-
-Decorator
-=========
-
-A decorator is provided that will return the decorated method wrapped
-in a persistent factory when the method is accessed on an instance.
+One example where this may be useful is where some non-context
+persistent state is tightly coupled to some event handlers in such a
+way where instance methods are better semantics.
 
 The Baz class uses the decorator in the python code.  Note that the
 factory decorator must come before the declaration decorators so that
 it will be run last and will reflect the declarations.
 
+    >>> from z3c.persistentfactory import testing
     >>> baz = testing.Baz()
 
-On an instance, the method is replaced with a persistent factory on
-first access.
+Register the persistent factory wrapped instance method as a handler.
 
-    >>> baz.factory
-    <z3c.persistentfactory.factory.PersistentFactory
-    object at ...>
+    >>> from zope import component
+    >>> component.provideHandler(factory=baz.factory)
+ 
+The method adapts IFoo, so create an object providing IFoo to be used
+as the event.
 
-Pickle and unpickle the object to verify everything is pickleable.
+    >>> component.adaptedBy(baz.factory)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
 
-    >>> baz = pickle.loads(pickle.dumps(baz))
+    >>> from zope import interface
+    >>> foo = testing.Foo()
+    >>> interface.alsoProvides(foo, testing.IFoo)
 
-The factory is the same object on subsequent accesses.
+When the event is notified, the method is called with the event as an
+argument.
 
-    >>> baz.factory is baz.factory
-    True
-
-The factory's __call__ method is an instance method of the original
-object, not a method of the persistent factory object.
-
-    >>> baz.factory.__call__
-    <bound method Baz.factory of
+    >>> import zope.event
+    >>> zope.event.notify(foo)
+    Called <bound method Baz.factory of
     <z3c.persistentfactory.testing.Baz object at ...>>
+      args: (<z3c.persistentfactory.testing.Foo object at ...>,)
+      kwargs: {}
 
-The factory is callable and calls the wrapped method.
+Instance Method Adapter Factory
+===============================
 
-    >>> baz.factory()
-    <z3c.persistentfactory.testing.Baz object at ...>
+Another example is where an adapter factory needs to look up
+persistent state specific to the objects being adapted but where that
+state can't be stored on the adapted objects them selves.  The
+component storing the shared persistent state can register one of it's
+instance methods as the adapter factory which will look up the
+necessary persistent state on self.
 
-The declarations of the factory reflect the declarations on the
-wrapped method.
+Register the persistent factory wrapped instance method as an adapter
+factory.
 
-    >>> tuple(interface.implementedBy(baz.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-    >>> component.adaptedBy(baz.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-
-The declarations can be overridden in the factory.
-
-    >>> _ = interface.implementer(testing.IFoo)(baz.factory)
-    >>> _ = component.adapter(testing.IBar)(baz.factory)
-
-Pickle and unpickle again to verify the pickleability of factory
-declarations.
-
-    >>> baz = pickle.loads(pickle.dumps(baz))
-
-The declaration changes are reflected on the factory.
+    >>> component.provideAdapter(factory=baz.factory)
+ 
+The method implements IBar.
 
     >>> tuple(interface.implementedBy(baz.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
-    >>> component.adaptedBy(baz.factory)
     (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
 
-But the class methods declarations are unaffected.
+When the adapter is looked up, the metod is called with the object to
+be adapted as an argument.
 
-    >>> tuple(interface.implementedBy(testing.Baz.factory))
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
-    >>> component.adaptedBy(testing.Baz.factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> result = component.getAdapter(foo, testing.IBar)
+    Called <bound method Baz.factory of
+    <z3c.persistentfactory.testing.Baz object at ...>>
+      args: (<z3c.persistentfactory.testing.Foo object at ...>,)
+      kwargs: {}
+    >>> result
+    (<bound method Baz.factory of
+     <z3c.persistentfactory.testing.Baz object at ...>>,
+     (<z3c.persistentfactory.testing.Foo object at ...>,), {})
