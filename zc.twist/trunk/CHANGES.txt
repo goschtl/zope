@@ -16,7 +16,7 @@
   change is the reason for the bump to 1.1; this release has no new
   features.
 
-* setup.py uses os.path rather than assuming *nix paths
+* setup.py uses os.path
 
 * C extension uses older comment style and has less cruft.
 
