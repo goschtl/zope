@@ -33,13 +33,13 @@ Stabilization
  - Provide RAID-aware blob storage implementation that ignores requests on a
    shared file system that were handled already and are consistent.
 
-- Disallow packing while a storage is recovering.
+ - Disallow packing while a storage is recovering.
 
-- Disallow recovering multiple storages in parallel.
+ - Disallow recovering multiple storages in parallel.
 
-- manager client: setup correctly so that invalidations do not trigger errors
+ - manager client: setup correctly so that invalidations do not trigger errors
 
-- manager client: provide current recovery message for a storage that is
+ - manager client: provide current recovery message for a storage that is
   recovering
 
 - allow zeoraid to startup `quickly` even when a backend zeo server is not
@@ -50,9 +50,6 @@ Stabilization
 
 Feature-completeness
 --------------------
-
- - Rebuild storage using the copy mechanism in ZODB to get all historic
-   records completely. (Only rebuild completely, not incrementally)
 
  - Rebuild/recover with blobs!
 
@@ -67,9 +64,6 @@ Cleanup
  - Offer the `read only` option through ZConfig schema
 
  - Remove print statements and provide logging.
-
- - Make manager script that works like zopectl and has a buildout recipe that
-   can talk to a specific RAID server.
 
  - XXX pack may never be run while a storage is recovering.
 
