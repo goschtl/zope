@@ -99,7 +99,7 @@ proper place too.  It would have looked something like this in the
 zdaemon.conf::
 
     <environment>
-      ZC_ASYNC_UUID /Users/gary/opt/classifieds/parts/classifieds/uuid.txt
+      ZC_ASYNC_UUID /path/to/uuid.txt
     </environment>
 
 (Other tools, such as supervisor, also can work, of course; their spellings are
@@ -117,6 +117,7 @@ Now let's define our site-zcml-alike.
     ...            >
     ... <include package="zope.component" file="meta.zcml" />
     ... <include package="zope.component" />
+    ... <include package="zc.z3monitor" />
     ... <include package="zc.async" file="multidb_dispatcher_policy.zcml" />
     ...
     ... <!-- this is usually handled in Zope applications by the
@@ -161,10 +162,28 @@ We can ask for a job to be performed, and get the result.
     >>> wait_for_result(job)
     42
 
-TODO look at files, maybe even use telnetlib to show that you can get over to
-the monitor port, for amusement.
+We can connect to the monitor server with telnet.
 
-Now we'll "shut down" with a CTRL-C, or SIGINT.
+    >>> import telnetlib
+    >>> tn = telnetlib.Telnet('127.0.0.1', monitor_port)
+    >>> tn.write('async status\n') # immediately disconnects
+    >>> print tn.read_all() # doctest: +ELLIPSIS
+    {
+        "poll interval": {
+            "seconds": ...
+        }, 
+        "status": "RUNNING", 
+        "time since last poll": {
+            "seconds": ...
+        }, 
+        "uptime": {
+            "seconds": ...
+        }, 
+        "uuid": "..."
+    }
+    <BLANKLINE>
+
+Now we'll "shut down" with a CTRL-C, or SIGINT, and clean up.
 
     >>> import signal
     >>> if getattr(os, 'getpid', None) is not None: # UNIXEN, not Windows
@@ -193,8 +212,6 @@ Now we'll "shut down" with a CTRL-C, or SIGINT.
     >>> da = queue.dispatchers[uuid]
     >>> bool(da.activated)
     False
-
-Now we'll clean up.
 
     >>> db.close()
     >>> db.databases['async'].close()
@@ -260,7 +277,7 @@ Now we'll clean up.
     >>> zope.event.notify(zc.async.interfaces.DatabaseOpened(db))
 
     >>> import time
-    >>> def get_poll(count = None):
+    >>> def get_poll(count=None): # just a helper used later, not processing
     ...     if count is None:
     ...         count = len(dispatcher.polls)
     ...     for i in range(30):
@@ -271,7 +288,7 @@ Now we'll clean up.
     ...         assert False, 'no poll!'
     ... 
 
-    >>> def wait_for_result(job):
+    >>> def wait_for_result(job): # just a helper used later, not processing
     ...     for i in range(30):
     ...         t = transaction.begin()
     ...         if job.status == zc.async.interfaces.COMPLETED:

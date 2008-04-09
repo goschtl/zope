@@ -296,7 +296,7 @@ class Job(zc.async.utils.Base):
                 tm.abort()
                 ct += 1
                 if ct >= 5:
-                    res = self._complete(twisted.python.failure.Failure(), tm)
+                    res = self._complete(zc.twist.Failure(), tm)
                     self.resumeCallbacks()
                 else:
                     continue
@@ -305,7 +305,7 @@ class Job(zc.async.utils.Base):
                 raise
             except:
                 tm.abort()
-                res = self._complete(twisted.python.failure.Failure(), tm)
+                res = self._complete(zc.twist.Failure(), tm)
                 self.resumeCallbacks()
             else:
                 if self._status == zc.async.interfaces.CALLBACKS:
@@ -332,7 +332,7 @@ class Job(zc.async.utils.Base):
             raise zc.async.interfaces.BadStatusError(
                 'can only call fail on a job with NEW, PENDING, ASSIGNED, or '
                 'ACTIVE status')
-        self._complete(twisted.python.failure.Failure(e),
+        self._complete(zc.twist.Failure(e),
                        transaction.interfaces.ITransactionManager(self))
         self.resumeCallbacks()
 

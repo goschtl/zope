@@ -104,7 +104,7 @@ a failure, because the wrapped call raises an exception.
     >>> transaction.commit()
     >>> res = j()
     >>> j.result
-    <twisted.python.failure.Failure exceptions.RuntimeError>
+    <zc.twist.Failure exceptions.RuntimeError>
 
 These are standard twisted Failures, except that frames in the stored
 traceback have been converted to reprs, so that we don't keep references
@@ -889,6 +889,8 @@ Footnotes
     >>> res = j()
     >>> root['demo'].counter # it was not rolled back automatically
     2
+    >>> j.result
+    <zc.twist.Failure exceptions.RuntimeError>
     >>> print j.result.getTraceback() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     Traceback (most recent call last):
     ...

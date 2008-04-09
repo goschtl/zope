@@ -216,11 +216,7 @@ class Periodic(persistent.Persistent):
 
     def __nonzero__(self):
         for b in self._data.buckets:
-            try:
-                iter(b).next()
-            except StopIteration:
-                pass
-            else:
+            for ignore in b:
                 return True
         return False
 

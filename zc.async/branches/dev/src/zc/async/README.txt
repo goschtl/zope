@@ -313,9 +313,9 @@ demostrated a bit below, but here's a summary.
   completion, either to success or an exception.
 
 - You can look at the result of the call (once COMPLETED).  It might be
-  the result you expect, or a twisted.python.failure.Failure, which is a
-  way to safely communicate exceptions across connections and machines
-  and processes.
+  the result you expect, or a zc.twist.Failure, which is a
+  subclass of twisted.python.failure.Failure, way to safely communicate
+  exceptions across connections and machines and processes.
 
 -------
 Results
@@ -389,7 +389,7 @@ What happens if a call raises an exception?  The return value is a Failure.
     >>> wait_for(job)
     >>> t = transaction.begin()
     >>> job.result
-    <twisted.python.failure.Failure exceptions.NameError>
+    <zc.twist.Failure exceptions.NameError>
 
 Failures can provide useful information such as tracebacks.
 
@@ -442,7 +442,7 @@ a subsequent callback.
     >>> transaction.commit()
     >>> wait_for(job)
     >>> job.result
-    <twisted.python.failure.Failure exceptions.NameError>
+    <zc.twist.Failure exceptions.NameError>
     >>> callback1.result
     'I handled a name error'
     >>> callback2.result
@@ -1064,7 +1064,7 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
     >>> transaction.commit()
     >>> wait_for(job)
     >>> job.result
-    <twisted.python.failure.Failure zc.async.interfaces.AbortedError>
+    <zc.twist.Failure zc.async.interfaces.AbortedError>
     >>> import sys
     >>> job.result.printTraceback(sys.stdout) # doctest: +NORMALIZE_WHITESPACE
     Traceback (most recent call last):
@@ -1135,11 +1135,18 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
      'shortest active': None,
      'shortest failed': ('\x00\...', 'unnamed'),
      'shortest successful': ('\x00...', 'unnamed'),
-     'started': 12,
-     'statistics end': datetime.datetime(2006, 8, 10, 15, 44, 22, 211),
-     'statistics start': datetime.datetime(...),
-     'successful': 10,
+     'started': 10,
+     'statistics end': datetime.datetime(2006, 8, 10, 15, 46, 52, 211),
+     'statistics start': datetime.datetime(2006, 8, 10, 15, 56, 52, 211),
+     'successful': 8,
      'unknown': 0}
+
+    Although, wait a second--the 'statistics end', the 'started', and the
+    'successful' values have changed!  Why?
+    
+    To keep memory from rolling out of control, the dispatcher by default
+    only keeps 10 to 12.5 minutes worth of poll information in memory.  For
+    the rest, keep logs and look at them (...and rotate them!).
 
     The ``getActiveJobIds`` list shows the new task--which is completed, but
     not as of the last poll, so it's still in the list.
@@ -1172,9 +1179,9 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
      'shortest active': None,
      'shortest failed': ('\x00\...', 'unnamed'),
      'shortest successful': ('\x00...', 'unnamed'),
-     'started': 24,
-     'statistics end': datetime.datetime(2006, 8, 10, 15, 44, 22, 211),
+     'started': 22,
+     'statistics end': datetime.datetime(2006, 8, 10, 15, 46, 52, 211),
      'statistics start': datetime.datetime(2006, 8, 10, 15, 57, 47, 211),
-     'successful': 22,
+     'successful': 20,
      'unknown': 0}
     >>> reactor.stop()

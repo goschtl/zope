@@ -228,10 +228,24 @@ class Dispatcher(object):
         # None at some point, to default to the installed Twisted reactor.
         self.poll_interval = poll_interval
         self.UUID = uuid
+        # we keep these small so that memory usage doesn't balloon too big.
+        # for polls, about 10 minutes at 5 seconds a poll with a fairly large
+        # poll size of maybe 300 bytes means 12 polls/minute, or 120 polls,
+        # * 300 == 36000, about 36K.  Not too bad.  Jobs can take much more
+        # memory depending on the result--a failure takes a lot of memory, for
+        # instance--and there's no real way to guess how many we would get in
+        # a given period of time.  With a wild guess of an average of a K per
+        # job, and storage of 20 minutes, we would get 240K for 12 jobs a
+        # minute, or 1.2M for a job a second, and so on.  That's much bigger,
+        # but we still have a long way to go before we have noticeable memory
+        # consumption on typical production machines.
+        # We keep jobs longer than polls because you may want to find out
+        # about active jobs in a given poll, and jobs will begin their
+        # timeout period when they are begun, so we give a bit of cushion.
         self.polls = zc.async.utils.Periodic(
-            period=datetime.timedelta(hours=2), buckets=3)
+            period=datetime.timedelta(minutes=10), buckets=5) # max of 12.5 min
         self.jobs = zope.bforest.periodic.OOBForest(
-            period=datetime.timedelta(hours=3), count=4)
+            period=datetime.timedelta(minutes=20), count=9) # max of 22.5 min
         self._activated = set()
         self.queues = {}
         self.dead_pools = []
@@ -250,8 +264,7 @@ class Dispatcher(object):
                 self.UUID, agent.name, agent._p_oid,
                 agent.queue.name,
                 agent.queue._p_oid, exc_info=True)
-            return zc.twist.sanitize(
-                twisted.python.failure.Failure())
+            return zc.twist.Failure()
         res = self._commit(
             'Error trying to commit getting a job for UUID %s from '
             'agent %s (oid %s) in queue %s (oid %s)' % (
@@ -275,8 +288,7 @@ class Dispatcher(object):
                         'Repeated transaction error trying to commit in '
                         'zc.async: %s', 
                         debug_string, exc_info=True)
-                    return zc.twist.sanitize(
-                        twisted.python.failure.Failure())
+                    return zc.twist.Failure()
                 retry += 1
             except zc.twist.EXPLOSIVE_ERRORS:
                 transaction.abort()
@@ -286,8 +298,7 @@ class Dispatcher(object):
                 zc.async.utils.log.error(
                     'Error trying to commit: %s', 
                     debug_string, exc_info=True)
-                return zc.twist.sanitize(
-                    twisted.python.failure.Failure())
+                return zc.twist.Failure()
             else:
                 break
 
@@ -348,8 +359,7 @@ class Dispatcher(object):
                     except zc.twist.EXPLOSIVE_ERRORS:
                         raise
                     except:
-                        agent_info['error'] = zc.twist.sanitize(
-                            twisted.python.failure.Failure())
+                        agent_info['error'] = zc.twist.Failure()
                         transaction.abort()
                         continue
                     pool = pools.get(name)
@@ -426,11 +436,16 @@ class Dispatcher(object):
                     self.db.setPoolSize(self.db.getPoolSize() + conn_delta)
         finally:
             transaction.abort()
+            try:
+                last = self.polls.first()
+            except ValueError:
+                last = None
             self.polls.add(poll_info)
             for info in started_jobs:
                 info['poll id'] = poll_info.key
-            zc.async.utils.tracelog.info(
-                'poll %s: %r', poll_info.key, poll_info)
+            if last is None or last != poll_info:
+                zc.async.utils.tracelog.debug(
+                    'poll %s: %r', poll_info.key, poll_info)
 
     def directPoll(self):
         if not self.activated:

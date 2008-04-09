@@ -20,7 +20,7 @@ class Encoder(simplejson.JSONEncoder):
                   }
             res = dict((k, v) for k, v in tmp.items() if v)
             if not res:
-                res['seconds'] = 0
+                res['seconds'] = 0.0
             return res
         # TODO the spelling of this conditional is to support our test setup
         # shenanigans.  originally was ``isinstance(obj, datetime.datetime)``.

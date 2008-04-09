@@ -20,9 +20,11 @@ setup(
         'uuid',
         'zc.queue',
         'zc.dict>=1.2.1',
-        'zc.twist>=1.1',
-        'Twisted>=8.0.1', # 8.0 was setuptools compatible
-        'zope.bforest>=1.1',
+        'zc.twist>=1.2',
+        'Twisted>=8.0.1', # 8.0 was setuptools compatible, 8.0.1 had bugfixes.
+        # note that Twisted builds with warnings, at least with py2.4.  It
+        # seems to still build ok.
+        'zope.bforest>=1.1.1',
         'zope.component',
         'zope.i18nmessageid',
         'zope.interface',
