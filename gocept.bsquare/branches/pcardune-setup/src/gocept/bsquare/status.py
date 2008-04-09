@@ -94,7 +94,8 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
                 self._builder_status(builder),
                 activity, builder.getName())
             data += '<p><a href="%s">This builder is currently %s.</a></p>' % (
-                request.childLink("../builders/" + urllib.quote(name)), activity)
+                request.childLink("../builders/" + urllib.quote(builder.name)),
+                activity)
             data += "<ul>"
             for x in range(1,6):
                 build = builder.getBuild(-x)
