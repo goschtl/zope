@@ -43,3 +43,26 @@ You can also use context-dependent sources::
   True
   >>> 1 in bound_source
   False
+
+
+Scaling
+-------
+
+Sometimes the number of items available through a source is very large.  So
+large that you only want to access them if absolutely neccesary.  One such
+occasion is with truth-testing a source.  By default Python will call
+__nonzero__ to get the boolean value of an object, but if that isn't available
+__len__ is called to see what it returns.  That might be very expensive, so we
+want to make sure it isn't called.
+
+  >>> class ExpensiveSource(object):
+  ...     def __len__(self):
+  ...         raise RuntimeError("oops, don't want to call __len__")
+  ...
+  ...     def __iter__(self):
+  ...         return iter(xrange(999999))
+
+  >>> expensive_source = ExpensiveSource()
+  >>> mapped_source = ValueMappingSource(expensive_source, map)
+  >>> bool(mapped_source)
+  True

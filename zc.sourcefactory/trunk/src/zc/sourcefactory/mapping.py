@@ -71,3 +71,8 @@ class ValueMappingSource(object):
 
     def __len__(self):
         return len(self.base)
+
+    def __nonzero__(self):
+        for dummy in self.base:
+            return True
+        return False
