@@ -4,6 +4,8 @@ Changelog
 0.2 - Unreleased
 ----------------
 
+* Improve README.txt with clearer examples
+
 0.1 - 2008-04-08
 ----------------
 
