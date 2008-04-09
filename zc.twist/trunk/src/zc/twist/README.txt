@@ -197,6 +197,11 @@ Other errors are returned to the deferred as well, as sanitized failures
     ...
     ...TypeError: unsupported operand type(s) for +=: 'int' and 'str'
 
+The failure is sanitized in that the traceback is gone and the frame values
+are turned in to reprs.  If you pickle the failure then it truncates the
+reprs to a maximum of 20 characters plus "[...]" to indicate the
+truncation[#show_sanitation]_.
+
 The call tries to be a good connection citizen, waiting for a connection
 if the pool is at its maximum size.  This code relies on the twisted
 reactor; we'll use a `time_flies` function, which takes seconds to move
@@ -415,6 +420,107 @@ Footnotes
     we'll use the old demo for the rest of the discussion.
 
     >>> demo = root['demo']
+
+.. [#show_sanitation] Before pickling, the failure includes full information
+    about before and after the exception was caught, as well as locals and
+    globals.  Everything has been repr'd, though, and the traceback object
+    removed.
+    
+    >>> print res.getTraceback() # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File ".../zc/twist/__init__.py", line ..., in __call__
+        get_connection(db, reactor=self.getReactor()).addCallback(
+      File ".../twisted/internet/defer.py", line ..., in addCallback
+        callbackKeywords=kw)
+      File ".../twisted/internet/defer.py", line ..., in addCallbacks
+        self._runCallbacks()
+      File ".../twisted/internet/defer.py", line ..., in _runCallbacks
+        self.result = callback(self.result, *args, **kw)
+    --- <exception caught here> ---
+      File ".../zc/twist/__init__.py", line ..., in _call
+        res = call(*args, **kwargs)
+      File "<doctest README.txt[...]>", line ..., in __call__
+        self.count += amount
+    exceptions.TypeError: unsupported operand type(s) for +=: 'int' and 'str'
+    <BLANKLINE>
+
+    (The failure traceback at "verbose" detail is wildly verbose--this example
+    takes out more than 90% of the text, just so you know.)
+
+    >>> print res.getTraceback(detail='verbose') # doctest: +ELLIPSIS
+    *--- Failure #... (pickled) ---
+    .../zc/twist/__init__.py:...: __call__(...)
+     [ Locals ]...
+      args : "('I do not add well with integers',)...
+     ( Globals )...
+      Partial : "<class 'zc.twist.Partial'>...
+    .../twisted/internet/defer.py:...: addCallback(...)
+     [ Locals ]...
+      args : '(<Deferred at ...
+     ( Globals )...
+      Deferred : '<class twisted.internet.defer.Deferred at ...
+    .../twisted/internet/defer.py:...: addCallbacks(...)
+     [ Locals ]...
+     ( Globals )...
+    .../twisted/internet/defer.py:...: _runCallbacks(...)
+     [ Locals ]...
+     ( Globals )...
+    --- <exception caught here> ---
+    .../zc/twist/__init__.py:...: _call(...)
+     [ Locals ]...
+      args : "['I do not add well with integers']...
+     ( Globals )...
+      Partial : "<class 'zc.twist.Partial'>...
+    <doctest README.txt[...]>:...: __call__(...)
+     [ Locals ]...
+      amount : "'I do not add well with integers'...
+     ( Globals )...
+      Partial : "<class 'zc.twist.Partial'>...
+    exceptions.TypeError: unsupported operand type(s) for +=: 'int' and 'str'
+    *--- End of Failure #... ---
+    <BLANKLINE>
+
+    After pickling, the failure only includes information for when the
+    exception was caught and beyond (after the "--- <exception caught
+    here> ---" lines above), does not have globals, and has local reprs
+    truncated to a maximum of 20 characters plus "[...]" to indicate the
+    truncation. This addresses past problems of large pickle size for
+    failures, which can cause performance problems.
+
+    >>> import pickle
+    >>> print pickle.loads(pickle.dumps(res)).getTraceback()
+    ... # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File ".../zc/twist/__init__.py", line ..., in _call
+        res = call(*args, **kwargs)
+      File "<doctest README.txt[...]>", line ..., in __call__
+        self.count += amount
+    exceptions.TypeError: unsupported operand type(s) for +=: 'int' and 'str'
+    <BLANKLINE>
+
+    >>> print pickle.loads(pickle.dumps(res)).getTraceback(detail='verbose')
+    ... # doctest: +ELLIPSIS
+    *--- Failure #... (pickled) ---
+    /Users/gary/opt/zc.twist/src/zc/twist/__init__.py:232: _call(...)
+     [ Locals ]
+      tm : '<transaction._manager[...]'
+      call : '<zc.twist.README.Demo[...]'
+      d : '<Deferred at ...[...]'
+      kwargs : '{}'
+      self : '<zc.twist.Partial obj[...]'
+      args : "['I do not add well w[...]"
+      conn : '<Connection at ...[...]'
+     ( Globals )
+    <doctest README.txt[...]>:...: __call__(...)
+     [ Locals ]
+      amount : "'I do not add well wi[...]"
+      self : '<zc.twist.README.Demo[...]'
+     ( Globals )
+    exceptions.TypeError: unsupported operand type(s) for +=: 'int' and 'str'
+    *--- End of Failure #... ---
+    <BLANKLINE>
+
+
 
 .. [#relies_on_twisted_reactor] We monkeypatch twisted.internet.reactor
     (and revert it in another footnote below).

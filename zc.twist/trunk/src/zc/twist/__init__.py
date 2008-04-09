@@ -1,6 +1,4 @@
-import random
-import types
-import warnings
+import copy, random, types, warnings
 
 import ZODB.interfaces
 import ZODB.POSException
@@ -97,18 +95,15 @@ def availableConnectionCount(db, version=''):
 
 missing = object()
 
-def get_connection(db, deferred=None, backoff=None, reactor=None):
+def get_connection(db, deferred=None, backoff=0, reactor=None):
     if deferred is None:
         deferred = twisted.internet.defer.Deferred()
-    if backoff is None:
-        backoff = random.random() / 10 # max of 1/10 of a second
-    else:
-        backoff *= 2
+    backoff += random.random() / 20.0 + .05 # .05 to .10 of a second
     # if this is taking too long (i.e., the cumulative backoff is taking
-    # about a second) then we'll just take one.  This might be a bad idea:
-    # we'll have to see in practice.  Otherwise, if the backoff isn't too
-    # long and we don't have a connection within our limit, try again
-    # later.
+    # more than half a second) then we'll just take one.  This might be
+    # a bad idea: we'll have to see in practice.  Otherwise, if the
+    # backoff isn't too long and we don't have a connection within our
+    # limit, try again later.
     if backoff < .5 and not availableConnectionCount(db):
         if reactor is None:
             reactor = twisted.internet.reactor
@@ -119,12 +114,57 @@ def get_connection(db, deferred=None, backoff=None, reactor=None):
         transaction_manager=transaction.TransactionManager()))
     return deferred
 
+def truncate(str):
+    if len(str) > 21: # 64 bit int or so
+        str = str[:21]+"[...]"
+    return str
+
+class Failure(twisted.python.failure.Failure):
+
+    sanitized = False
+
+    def __init__(self, exc_value=None, exc_type=None, exc_tb=None):
+        twisted.python.failure.Failure.__init__(
+            self, exc_value, exc_type, exc_tb)
+        self.__dict__ = twisted.python.failure.Failure.__getstate__(self)
+
+    def cleanFailure(self):
+        pass # already done
+
+    def __getstate__(self):
+        res = self.__dict__
+        if not self.sanitized:
+            res = copy.deepcopy(res)
+            res['stack'] = []
+            res['frames'] = [
+                [
+                    v[0], v[1], v[2],
+                    [(j[0], truncate(j[1])) for j in v[3]],
+                    [] # [(j[0], truncate(j[1])) for j in v[4]]
+                ] for v in self.frames
+            ]
+
+            res['sanitized'] = True
+        return res
+
+    def printTraceback(
+        self, file=None, elideFrameworkCode=0, detail='default'):
+        return twisted.python.failure.Failure.printTraceback(
+            self, file, elideFrameworkCode or self.sanitized, detail)
+            
+class _Dummy: # twisted.python.failure.Failure is an old-style class
+    pass # so we use old-style hacks instead of __new__
+
 def sanitize(failure):
     # failures may have some bad things in the traceback frames.  This
     # converts everything to strings
-    state = failure.__getstate__()
-    failure.__dict__.update(state)
-    return failure
+    if not isinstance(failure, Failure):
+        res = _Dummy()
+        res.__class__ = Failure
+        res.__dict__ = failure.__getstate__()
+    else:
+        res = failure
+    return res
 
 class Partial(object):
 
@@ -196,7 +236,7 @@ class Partial(object):
             db = conn.db()
             conn.close()
             if self.attempt_count >= 5: # TODO configurable
-                res = sanitize(twisted.python.failure.Failure())
+                res = Failure()
                 d.errback(res)
             else:
                 get_connection(db, reactor=self.getReactor()).addCallback(
@@ -204,13 +244,13 @@ class Partial(object):
         except EXPLOSIVE_ERRORS:
             tm.abort()
             conn.close()
-            res = sanitize(twisted.python.failure.Failure())
+            res = Failure()
             d.errback(res)
             raise
         except:
             tm.abort()
             conn.close()
-            res = sanitize(twisted.python.failure.Failure())
+            res = Failure()
             d.errback(res)
         else:
             conn.close()

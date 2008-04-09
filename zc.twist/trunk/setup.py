@@ -13,7 +13,7 @@ methodwrapper = Extension(
 
 setup(
     name='zc.twist',
-    version='1.1',
+    version='1.2',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
