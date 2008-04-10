@@ -71,3 +71,21 @@ declarations.
     (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
     >>> component.adaptedBy(bar_unpickled)
     (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+The declarations of the class are isolated from the declarations on an
+instance.
+    
+    >>> tuple(interface.implementedBy(declarations.Declarer))
+    ()
+    >>> component.adaptedBy(declarations.Declarer)
+
+Classes the use Declarer as a base class can have declarations.
+
+    >>> class Qux(declarations.Declarer):
+    ...     interface.implements(testing.IQux)
+    ...     component.adapts(testing.IBaz)
+
+    >>> tuple(interface.implementedBy(Qux))
+    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
+    >>> component.adaptedBy(Qux)
+    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)

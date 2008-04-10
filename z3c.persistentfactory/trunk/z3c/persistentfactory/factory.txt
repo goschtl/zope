@@ -65,15 +65,11 @@ The factory has the same declarations as the original method.
     >>> component.adaptedBy(bar_factory)
     (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
 
-If the wrapped method's declarations haven't been overridden, then
-changes to the wrapped method's adapts declarations are reflected in
-the factory.  Unfortunately, the zope.interface implementation for
-checking implementer declarations checks the factory's instance
-dictionary directly, so changes to the wrapped method's implements
-declarations aren't reflected in the factory.  This means that any
-changes to the wrapped methods implements declaration that need to be
-reflected in existing persistent factories will require migrating the
-existing factories.
+Changes to the wrapped method's declarations are not reflected in the
+factory's declarations even if the wrapped method's declarations
+haven't been overridden.  This means that any changes to the wrapped
+methods implements declaration that need to be reflected in existing
+persistent factories will require migrating the existing factories.
 
     >>> _ = interface.implementer(testing.IFoo)(bar.factory.im_func)
     >>> _ = component.adapter(testing.IBar)(bar.factory.im_func)
@@ -86,7 +82,7 @@ existing factories.
     >>> tuple(interface.implementedBy(bar_factory))
     (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
     >>> component.adaptedBy(bar_factory)
-    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
 
 The wrapped method's declarations can be overridden in the factory.
 

@@ -10,7 +10,7 @@ class PersistentFactory(declarations.Declarer, persistent.Persistent):
     def __init__(self, method):
         self.context = method.im_self
         self.__name__ = method.__name__
-        self.__implemented__ = interface.implementedBy(method)
+        super(PersistentFactory, self).__init__()
 
     @property
     def __call__(self):
