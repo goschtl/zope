@@ -1,7 +1,16 @@
 Changelog
 =========
 
-0.2 - Unreleased
+0.3 - 2008-04-10
+----------------
+
+* Declarer's declarations don't track with changes to the
+  class method's declarations.
+
+* Isolate declarations on the declarer's class from declarations on
+  instances.
+
+0.2 - 2008-04-09
 ----------------
 
 * Improve README.txt with clearer examples
