@@ -1,0 +1,91 @@
+;-*-Doctest-*-
+
+=======================
+Pickleable Declarations
+=======================
+
+The implements declaration class in zope.interface only pickles a
+reference to a class to inherit from if available.  For declarations
+on persistent factories, we need a implements declaration that pickles
+and unpickles with the interfaces it includes.
+
+Create a sample object.
+
+    >>> from z3c.persistentfactory import testing
+    >>> foo = testing.Foo()
+
+Before any declarations have been made, the object doesn't implement
+or adapt anything.
+
+    >>> from zope import interface, component
+    >>> interface.implementedBy(foo)
+    Traceback (most recent call last):
+    TypeError: ('ImplementedBy called for non-factory',
+    <z3c.persistentfactory.testing.Foo object at ...>)
+    >>> component.adaptedBy(foo)
+
+Declare the interfaces the object implements and adapts.
+
+    >>> _ = interface.implementer(testing.IFoo)(foo)
+    >>> _ = component.adapter(testing.IBar)(foo)
+
+Now the objects declarations can be inspected.
+
+    >>> tuple(interface.implementedBy(foo))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(foo)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+The implements declaration doesn't survive pickling and unpickling.
+
+    >>> import pickle
+    >>> foo_unpickled = pickle.loads(pickle.dumps(foo))
+    >>> tuple(interface.implementedBy(foo_unpickled))
+    ()
+    >>> component.adaptedBy(foo_unpickled)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+Replace the implements declaration with a pickleable declaration.
+    
+    >>> from z3c.persistentfactory import declarations
+    >>> foo.__implemented__ = declarations.Implements(*foo.__implemented__)
+
+Now the implements declaration survives pickling and unpickling.
+
+    >>> foo_unpickled = pickle.loads(pickle.dumps(foo))
+    >>> tuple(interface.implementedBy(foo_unpickled))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(foo_unpickled)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+A mixin class is provided that supports pickleable implements
+declarations.
+
+    >>> bar = declarations.Declarer()
+
+    >>> _ = interface.implementer(testing.IFoo)(bar)
+    >>> _ = component.adapter(testing.IBar)(bar)
+
+    >>> bar_unpickled = pickle.loads(pickle.dumps(bar))
+    >>> tuple(interface.implementedBy(bar_unpickled))
+    (<InterfaceClass z3c.persistentfactory.testing.IFoo>,)
+    >>> component.adaptedBy(bar_unpickled)
+    (<InterfaceClass z3c.persistentfactory.testing.IBar>,)
+
+The declarations of the class are isolated from the declarations on an
+instance.
+    
+    >>> tuple(interface.implementedBy(declarations.Declarer))
+    ()
+    >>> component.adaptedBy(declarations.Declarer)
+
+Classes the use Declarer as a base class can have declarations.
+
+    >>> class Qux(declarations.Declarer):
+    ...     interface.implements(testing.IQux)
+    ...     component.adapts(testing.IBaz)
+
+    >>> tuple(interface.implementedBy(Qux))
+    (<InterfaceClass z3c.persistentfactory.testing.IQux>,)
+    >>> component.adaptedBy(Qux)
+    (<InterfaceClass z3c.persistentfactory.testing.IBaz>,)
