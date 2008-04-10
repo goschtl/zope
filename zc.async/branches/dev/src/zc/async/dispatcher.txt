@@ -42,7 +42,8 @@ The twisted reactors provide these necessary methods.  You can also write
 your own reactor.
 
 For this example, we will use the twisted select reactor running in another
-thread.  
+thread.  Other doctests in this package use a test reactor defined in the
+zc.async.testing module, as an example of a write-your-own reactor.
 
 To instantiate the dispatcher, we need a reactor and a db.  We'll create it,
 then start it off in the thread.  We'll assume we already have the db and the
@@ -159,8 +160,8 @@ This accomplished the following things.
     >>> evs[0].object._p_oid == queue.dispatchers[dispatcher.UUID]._p_oid
     True
 
-- Lastly, the dispatcher made its first ping.  A ping means that the
-  dispatcher changes a datetime to record that it is alive.  
+- The dispatcher made its first ping. A ping means that the dispatcher changes
+  a datetime to record that it is alive. 
 
     >>> queue.dispatchers[dispatcher.UUID].last_ping is not None
     True
@@ -176,6 +177,17 @@ This accomplished the following things.
     datetime.timedelta(0, 30)
     >>> queue.dispatchers[dispatcher.UUID].ping_death_interval
     datetime.timedelta(0, 60)
+
+- We have some log entries.  (We're using some magic log handlers inserted by
+  setup code in tests.py here.)
+  
+    >>> print event_logs # doctest: +ELLIPSIS
+    zc.async.events INFO
+      attempting to activate dispatcher ...
+
+    >>> print trace_logs # doctest: +ELLIPSIS
+    zc.async.trace DEBUG
+      poll ...
 
 So the dispatcher is running now.  It still won't do any jobs until we tell
 it the kind of jobs it should perform.  Let's add in our default agent, with
@@ -234,8 +246,34 @@ That's cool.  We have a poll object that has a record of this too.
                    'new jobs': [('\x00...', 'unnamed')],
                    'size': 3}}}
 
-[#getPollInfo]_ Notice our ``new jobs`` has a value in it now.  We can get
-some information about that job from the dispatcher.
+We also have some log entries.
+
+    >>> info = debug = None
+    >>> for r in reversed(trace_logs.records):
+    ...     if info is None and r.levelname == 'INFO':
+    ...         info = r
+    ...     elif debug is None and r.levelname == 'DEBUG':
+    ...         debug = r
+    ...     elif info is not None and debug is not None:
+    ...         break
+    ... else:
+    ...     assert False, 'could not find'
+    ...
+    >>> print info.getMessage() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <zc.async.job.Job (oid ..., db 'unnamed')
+     ``<built-in function mul>(14, 3)``> succeeded in thread ... with result:
+    42
+
+    >>> print debug.getMessage() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    poll ...:
+      {'':
+        {'main':
+          {'active jobs': [], 'error': None,
+           'new jobs': [('\x...', 'unnamed')], 'len': 0, 'size': 3}}}
+    
+
+[#getPollInfo]_ Notice our ``new jobs`` from the poll and the log has a value
+in it now. We can get some information about that job from the dispatcher.
 
     >>> info = dispatcher.getJobInfo(*poll['']['main']['new jobs'][0])
     >>> pprint.pprint(info)
@@ -253,7 +291,8 @@ some information about that job from the dispatcher.
      >>> info['poll id'] is not None
      True
 
-Notice that the result is a repr.
+Notice that the result is a repr.  If this had been a failure, it would have
+been a (very) verbose traceback [#show_error]_.
 
 As seen in other documents in zc.async, the job can also be a method of a
 persistent object, affecting a persistent object.
@@ -311,18 +350,20 @@ We use a new test convenience , wait_for_annotation, defined in the footnotes
     >>> wait_for_result(job4)
     "reply is 'HIYA'.  Locally it is MISSING."
 
-We can analyze the work the dispatcher has done.  the records for this
-generally only go back about a day.
+We can analyze the work the dispatcher has done. The records for this generally
+only go back about ten or twelve minutes--just enough to get a feel for the
+current health of the dispatcher. Use the log if you want more long-term
+analysis.
 
     >>> pprint.pprint(dispatcher.getStatistics()) # doctest: +ELLIPSIS
-    {'failed': 0,
+    {'failed': 1,
      'longest active': None,
-     'longest failed': None,
+     'longest failed': ('\x00...', 'unnamed'),
      'longest successful': ('\x00...', 'unnamed'),
      'shortest active': None,
-     'shortest failed': None,
+     'shortest failed': ('\x00...', 'unnamed'),
      'shortest successful': ('\x00...', 'unnamed'),
-     'started': 5,
+     'started': 6,
      'statistics end': datetime.datetime(...),
      'statistics start': datetime.datetime(...),
      'successful': 5,
@@ -413,6 +454,39 @@ The db's pool size has returned to the original value.
     ...     before=poll.utc_timestamp + datetime.timedelta(seconds=0.4)
     ...     ) is poll
     True
+
+.. [#show_error] OK, so you want to see a verbose traceback?  OK, you asked
+    for it. We're eliding more than 90% of this, and this is a small one,
+    believe it or not. Rotate your logs!
+    
+    Notice that all of the values in the logs are reprs.
+
+    >>> bad_job = queue.put(
+    ...     zc.async.job.Job(operator.mul, 14, None))
+    >>> transaction.commit()
+
+    >>> wait_for_result(bad_job)
+    <zc.twist.Failure exceptions.TypeError>
+    
+    >>> for r in reversed(trace_logs.records):
+    ...     if r.levelname == 'ERROR':
+    ...         break
+    ... else:
+    ...     assert False, 'could not find log'
+    ...
+    >>> print r.getMessage() # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    <zc.async.job.Job (oid ..., db 'unnamed')
+     ``<built-in function mul>(14, None)``> failed in thread ... with result:
+    *--- Failure #... (pickled) ---
+    .../zc/async/job.py:...: _call_with_retry(...)
+     [ Locals ]...
+     ( Globals )...
+    .../zc/async/job.py:...: <lambda>(...)
+     [ Locals ]...
+     ( Globals )...
+    exceptions.TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'
+    *--- End of Failure #... ---
+    <BLANKLINE>
 
 .. [#wait_for_annotation]
 

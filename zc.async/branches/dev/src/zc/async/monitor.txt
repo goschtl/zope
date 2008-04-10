@@ -1,7 +1,7 @@
 Monitoring Dispatchers
 ======================
 
-A process's zc.async dispatcher[#setUp]_ can be monitored in-process via
+A process's zc.async dispatcher [#setUp]_ can be monitored in-process via
 zc.z3monitor plugins.  Let's imagine we have a connection over which we
 can send text messages to the monitor server [#z3monitor_setup]_.
 

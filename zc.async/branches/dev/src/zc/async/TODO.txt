@@ -1,16 +1,14 @@
-- make trace log only write changes or occasionally
-- make data structure for old polls more efficient
-- make period for polls and jobs shorter
-- make failures reduce to small size (eliminate stack?)
-- make full tracebacks write to log, or at least an option
 - Write the z3monitor tests.
-- Write a stress test.
+- See if combined README + README_2 + README_3 makes a comprehensible document
 
 For future versions:
 
-- TTW Management and logging views, as in zasync (see goals in the "History"
-  section of the README).
-- Write a Zope 3 request/context munger that sets security context and site
-  based on current values.
 - queues should be pluggable like agent with filter
 - show how to broadcast, maybe add conveniences
+- show how to use with collapsing jobs (hint to future self: use external queue
+  to put in work, and have job(s) just pull what they can see from queue)
+
+For some other package, maybe:
+
+- TTW Management and logging views, as in zasync (see goals in the "History"
+  section of the README).

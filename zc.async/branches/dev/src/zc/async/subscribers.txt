@@ -1,6 +1,6 @@
 The subscribers module provides several conveniences for starting and
 configuring zc.async.  Let's assume we have a database and all of the
-necessary adapters and utilities registered[#setUp]_.
+necessary adapters and utilities registered [#setUp]_.
 
 The first helper we'll discuss is ``threaded_dispatcher_installer``.  This can be
 used as a subscriber to a DatabaseOpened event, as defined by zope.app.appsetup

@@ -1,18 +1,13 @@
 ============================
-Configuration Without Zope 3
+Configuration without Zope 3
 ============================
 
 This section discusses setting up zc.async without Zope 3. Since Zope 3 is
 ill-defined, we will be more specific: this describes setting up zc.async
 without ZCML, without any zope.app packages, and with as few dependencies as
-possible. A casual way of describing the dependencies is "ZODB and
-zope.component"[#specific_dependencies]_.
-
-The next section, `Configuration With Zope 3`_, still tries to limit
-dependencies, but includes both ZCML and indirect and direct dependencies on a
-few "zope.app.*" packages like zope.app.appsetup. It still is minimal enough
-that someone wanting to avoid ZCML, for instance, might still find valuable
-information.
+possible. A casual way of describing the dependencies is "ZODB, Twisted and
+zope.component," though we directly depend on some smaller packages and
+indirectly on others [#specific_dependencies]_.
 
 You may have one or two kinds of configurations for your software using
 zc.async. The simplest approach is to have all processes able both to put items
@@ -46,13 +41,13 @@ Required Component Registrations
 --------------------------------
 
 The required registrations can be installed for you by the
-``zc.async.configure.base`` function. Most other documents in this package,
-such as those in the "Usage" section (found in README.txt), use this in their
+``zc.async.configure.base`` function. Most other examples in this package,
+such as those in the `Usage`_ section, use this in their
 test setup. 
 
-**Again, for a quick start, you might just want to use the helper
-``zc.async.configure.base`` function, and move on to the ``Required ZODB Set
-Up``_ section below.**
+Again, for a quick start, you might just want to use the helper
+``zc.async.configure.base`` function, and move on to the `Required ZODB Set
+Up`_ section below.
 
 Here, though, we will go over each required registration to briefly explain
 what they are.
@@ -104,9 +99,9 @@ specifically provided to its constructor.
 
 The UUID we register here is a UUID of the instance, which is expected
 to uniquely identify the process when in production. It is stored in
-the file specified by the ZC_ASYNC_UUID environment variable (or in
+the file specified by the ``ZC_ASYNC_UUID`` environment variable (or in
 ``os.join(os.getcwd(), 'uuid.txt')`` if this is not specified, for easy
-experimentation).
+initial experimentation with the package).
 
     >>> import uuid
     >>> import os
@@ -180,11 +175,11 @@ A Queue
 
 All we must have for a client to be able to put jobs in a queue is...a queue.
 
-For a quick start, the ``zc.async.subscribers`` module provides some a subscriber to
+For a quick start, the ``zc.async.subscribers`` module provides a subscriber to
 a DatabaseOpened event that does the right dance. See
 ``multidb_queue_installer`` and ``queue_installer`` in that module, and you can
-see that in use in the Zope 3 configuration section (in README_3). For now,
-though, we're taking things step by step and explaining what's going on.
+see that in use in `Configuration with Zope 3`_. For now, though, we're taking
+things step by step and explaining what's going on.
 
 Dispatchers look for queues in a mapping off the root of the database in 
 a key defined as a constant: zc.async.interfaces.KEY.  This mapping should
@@ -235,22 +230,22 @@ Quotas are demonstrated in the usage section.  For configuration, you
 should know these characteristics:
 
 - you cannot add a job with a quota name that is not defined in the
-  queue[#undefined_quota_name]_;
+  queue [#undefined_quota_name]_;
 
 - you cannot add a quota name to a job in a queue if the quota name is not
-  defined in the queue[#no_mutation_to_undefined]_;
+  defined in the queue [#no_mutation_to_undefined]_;
 
-- you can create and remove quotas on the queue[#create_remove_quotas]_;
+- you can create and remove quotas on the queue [#create_remove_quotas]_;
 
 - you can remove quotas if pending jobs have their quota names--the quota name
-  is then ignored[#remove_quotas]_;
+  is then ignored [#remove_quotas]_;
 
-- quotas default to a size of 1[#default_size]_;
+- quotas default to a size of 1 [#default_size]_;
 
-- this can be changed at creation or later[#change_size]_; and
+- this can be changed at creation or later [#change_size]_; and
 
 - decreasing the size of a quota while the old quota size is filled will
-  not affect the currently running jobs[#decreasing_affects_future]_.
+  not affect the currently running jobs [#decreasing_affects_future]_.
 
 Multiple Queues
 ---------------
@@ -284,15 +279,15 @@ Daemonization
 You often want to daemonize your software, so that you can restart it if
 there's a problem, keep track of it and monitor it, and so on.  ZDaemon
 (http://pypi.python.org/pypi/zdaemon) and Supervisor (http://supervisord.org/)
-are two fairly simple ways of doing this for both client and client/server
-processes.  If your main application can be packaged as a setuptools
-distribution (egg or source release or even development egg) then you can
-have your main application as a zc.async client and your dispatchers running
-a separate zc.async-only main loop that simply includes your main application
-as a dependency, so the necessary software is around.  You may have to do a
-bit more configuration on the client/server side to mimic global registries
-such as zope.component registrations and so on between the client and the
-client/servers, but this shouldn't be too bad.
+are two fairly simple-to-use ways of doing this for both client and
+client/server processes. If your main application can be packaged as a
+setuptools distribution (egg or source release or even development egg) then
+you can have your main application as a zc.async client and your dispatchers
+running a separate zc.async-only main loop that simply includes your main
+application as a dependency, so the necessary software is around. You may have
+to do a bit more configuration on the client/server side to mimic global
+registries such as zope.component registrations and so on between the client
+and the client/servers, but this shouldn't be too bad.
 
 UUID File Location
 ------------------
@@ -327,7 +322,7 @@ dispatcher--means doing everything described above, plus a bit more.  You
 need to set up and start a reactor and dispatcher; configure agents as desired
 to get the dispatcher to do some work; and optionally configure logging.
 
-For a quick start, the ``zc.async.subscribers`` module have some conveniences
+For a quick start, the ``zc.async.subscribers`` module has some conveniences
 to start a threaded reactor and dispatcher, and to install agents.  You might
 want to look at those to get started.  They are also used in the Zope 3
 configuration (README_3).  Meanwhile, this document continues to go
@@ -374,11 +369,13 @@ The testing module also has a reactor on which the `Usage` section relies, if
 you would like to see a minimal contract.
 
 Configuring the basics is fairly simple, as we'll see in a moment.  The
-trickiest part is to handle signals cleanly.  Here we install signal
-handlers in the main thread using ``reactor._handleSignals``.  This may
-work in some real-world applications, but if your application already
-needs to handle signals you may need a more careful approach. Again, see
-``zc.async.subscribers`` for some options you can explore.
+trickiest part is to handle signals cleanly. It is also optional! The
+dispatcher will eventually figure out that there was not a clean shut down
+before and take care of it. Here, though, essentially as an optimization, we
+install signal handlers in the main thread using ``reactor._handleSignals``.
+``reactor._handleSignals`` may work in some real-world applications, but if
+your application already needs to handle signals you may need a more careful
+approach. Again, see ``zc.async.subscribers`` for some options you can explore.
 
     >>> import twisted.internet.selectreactor
     >>> reactor = twisted.internet.selectreactor.SelectReactor()
@@ -428,7 +425,7 @@ It has one agent--the one placed by our subscriber.
     ['main']
     >>> agent = dispatcher_agents['main']
 
-Now we have our agent!  But...what is it[#stop_reactor]_?
+Now we have our agent!  But...what is it [#stop_config_reactor]_?
 
 ------
 Agents
@@ -509,8 +506,9 @@ Confugure the standard Python logging module as usual to send these logs where
 you need.  Be sure to auto-rotate the trace logs.
 
 The package supports monitoring using zc.z3monitor, but using this package
-includes more Zope 3 dependencies, so it is not included here.  If you would
-like to use it, see monitor.txt and README_3.
+includes more Zope 3 dependencies, so it is not included here. If you would
+like to use it, see monitor.txt in the package and our next section:
+`Configuration with Zope 3`_.
 
     >>> reactor.stop()
 
@@ -582,6 +580,13 @@ like to use it, see monitor.txt and README_3.
     
     - zope.testing
         Testing extensions and helpers.
+
+    The next section, `Configuration With Zope 3`_, still tries to limit
+    dependencies--we only rely on additional packages zc.z3monitor, simplejson,
+    and zope.app.appsetup ourselves--but as of this writing zope.app.appsetup
+    ends up dragging in a large chunk of zope.app.* packages. Hopefully that
+    will be refactored in Zope itself, and our full Zope 3 configuration can
+    benefit from the reduced indirect dependencies.
 
 .. [#undefined_quota_name]
 
@@ -721,8 +726,8 @@ like to use it, see monitor.txt and README_3.
     ...         assert False, 'no poll!'
     ... 
 
-.. [#stop_reactor] We don't want the live dispatcher for our demos, actually.
-    See dispatcher.txt to see the live dispatcher actually in use.
+.. [#stop_config_reactor] We don't want the live dispatcher for our demos,
+    actually.  See dispatcher.txt to see the live dispatcher actually in use.
 
     >>> reactor.callFromThread(reactor.stop)
     >>> for i in range(30):

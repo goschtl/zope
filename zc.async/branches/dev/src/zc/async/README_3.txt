@@ -1,5 +1,5 @@
 =========================
-Configuration With Zope 3
+Configuration with Zope 3
 =========================
 
 Our last main section can be the shortest yet, both because we've already
@@ -16,13 +16,13 @@ or zc.twist.connection.
 For a client/server combination, use zcml that is something like the
 basic_dispatcher_policy.zcml, make sure you have access to the database with
 the queues, configure logging and monitoring as desired, configure the
-ZC_ASYNC_UUID environmental variable in zdaemon.conf if you are in production,
-and start up! Getting started is really pretty easy. You can even start a
-dispatcher-only version by not starting any servers in zcml.
+``ZC_ASYNC_UUID`` environmental variable in zdaemon.conf if you are in
+production, and start up! Getting started is really pretty easy. You can even
+start a dispatcher-only version by not starting any servers in zcml.
 
 We'll look at this by making a zope.conf-alike and a site.zcml-alike.  We'll
 need a place to put some files, so we'll use a temporary directory.  This, and
-the comments in the files that we set up. are the primary differences between
+the comments in the files that we set up, are the primary differences between
 our examples and a real set up.
 
 So, without further ado, here is the text of our zope.conf-alike, and of our
@@ -105,7 +105,7 @@ zdaemon.conf::
 (Other tools, such as supervisor, also can work, of course; their spellings are
 different and are "left as an exercise to the reader" at the moment.)
 
-We'll do that "by hand":
+We'll do that by hand:
 
     >>> os.environ['ZC_ASYNC_UUID'] = os.path.join(dir, 'uuid.txt')
 
@@ -134,7 +134,7 @@ the policy in "multidb_dispatcher_policy.zcml".  You'll see that most of that
 comes from code in subscribers.py, which can be adjusted easily.
 
 If we process these files, and wait for a poll, we've got a working
-set up[#process]_.
+set up [#process]_.
 
     >>> import zc.async.dispatcher
     >>> dispatcher = zc.async.dispatcher.get()
@@ -217,6 +217,9 @@ Now we'll "shut down" with a CTRL-C, or SIGINT, and clean up.
     >>> db.databases['async'].close()
     >>> import shutil
     >>> shutil.rmtree(dir)
+
+Hopefully zc.async will be an easy-to-configure, easy-to-use, and useful tool
+for you! Good luck!
 
 .. ......... ..
 .. Footnotes ..

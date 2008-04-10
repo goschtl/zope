@@ -40,8 +40,8 @@ thread or another process.  Here are some example core use cases.
   quick fix to move the work out-of-band.
 
 Many of these core use cases involve end-users being able to start potentially
-expensive processes, on demand.  None of them are explicitly about scheduled
-tasks, though scheduled tasks can benefit from this package.
+expensive processes, on demand. Basic scheduled tasks are also provided by this
+package, though recurrence must be something you arrange.
 
 Multiple processes can claim and perform jobs.  Jobs can be (manually)
 decomposed for serial or parallel processing of the component parts.
@@ -57,9 +57,9 @@ that zc.async has absolutely no backwards comapatibility with zasync.
 Design Overview
 ===============
 
------
-Usage
------
+---------------
+Overview: Usage
+---------------
 
 Looking at the design from the perspective of regular usage, your code
 obtains a ``queue``, which is a place to queue jobs to be performed
@@ -79,15 +79,15 @@ object can be simply persisted and polled to see when the job
 is complete; or it can be configured to do additional work when it
 completes.
 
----------
-Mechanism
----------
+-------------------
+Overview: Mechanism
+-------------------
 
 Multiple processes, typically spread across multiple machines, can use
 ZEO to connect to the queue and claim and perform work.  As with other
 collections of processes that share a database with ZEO, these processes
 generally should share the same software (though some variations on this
-constraint might be theoretically possible).
+constraint should be possible).
 
 A process that should claim and perform work, in addition to a database
 connection and the necessary software, needs a ``dispatcher`` with a
@@ -127,9 +127,8 @@ dispatcher then asks the reactor to call itself again in a few seconds.
 Reading More
 ============
 
-This document continues on with four other main sections: `Usage`_,
-`Configuration Without Zope 3`_, `Configuration With Zope 3`_, and
-`Tips and Tricks`.
+This document continues on with three other main sections: `Usage`_,
+`Configuration without Zope 3`_, and `Configuration with Zope 3`_.
 
 Other documents in the package are primarily geared as maintainer
 documentation, though the author has tried to make them readable and
@@ -154,7 +153,7 @@ So, let's assume we have a queue installed into a ZODB, with hidden
 dispatchers, reactors and agents all waiting to fulfill jobs placed into
 the queue.  We start with a connection object, ``conn``, and some
 convenience functions introduced along the way that help us simulate
-time passing and work being done[#usageSetUp]_.
+time passing and work being done [#usageSetUp]_.
 
 -------------------
 Obtaining the queue
@@ -162,8 +161,8 @@ Obtaining the queue
 
 First, how do we get the queue?  Your installation may have some
 conveniences.  For instance, the Zope 3 configuration described below
-makes it possible to get the primary queue with a call to
-``zope.component.getUtility(zc.async.interfaces.IQueue)``.
+makes it possible to get the primary queue with an adaptation call like
+``zc.async.interfaces.IQueue(a_persistent_object_with_db_connection)``.
 
 But failing that, queues are always exected to be in a zc.async.queue.Queues
 mapping found off the ZODB root in a key defined by the constant
@@ -178,11 +177,10 @@ zc.async.interfaces.KEY.
     >>> isinstance(queues, zc.async.queue.Queues)
     True
 
-As the name implies, ``queues`` is a collection of queues.  It's
-possible to have multiple queues, as a tool to distribute and control
-work.  We will assume a convention of a queue being available in the ''
-(empty string).  This is followed in the Zope 3 configuration discussed
-below.
+As the name implies, ``queues`` is a collection of queues. As discussed later,
+it's possible to have multiple queues, as a tool to distribute and control
+work. We will assume a convention of a queue being available in the '' (empty
+string).
 
     >>> queues.keys()
     ['']
@@ -202,6 +200,10 @@ commit the transaction.
     >>> import transaction
     >>> transaction.commit()
 
+Note that this won't really work in an interactive session: the callable needs
+to be picklable, as discussed above, so ``send_message`` would need to be
+a module global, for instance.
+
 The ``put`` returned a job.  Now we need to wait for the job to be
 performed.  We would normally do this by really waiting.  For our
 examples, we will use a helper function called ``wait_for`` to wait for
@@ -213,8 +215,8 @@ the job to be completed [#wait_for]_.
 We also could have used the method of a persistent object.  Here's another
 quick example.
 
-First we define a simple persistent.Persistent subclass and put it in the
-database[#commit_for_multidatabase]_.
+First we define a simple persistent.Persistent subclass and put an instance of
+it in the database [#commit_for_multidatabase]_.
 
     >>> import persistent
     >>> class Demo(persistent.Persistent):
@@ -238,9 +240,10 @@ Now we can put the ``demo.increase`` method in the queue.
 
 The method was called, and the persistent object modified!
 
-To reiterate, only persistent callables and the methods of persistent
-objects can be used.  This rules out, for instance, closures.  As we'll
-see below, the job instance can help us out there.
+To reiterate, only pickleable callables such as global functions and the
+methods of persistent objects can be used. This rules out, for instance,
+lambdas and other functions created dynamically. As we'll see below, the job
+instance can help us out there somewhat by offering closure-like features.
 
 ---------------
 Scheduled Calls
@@ -275,9 +278,9 @@ without a timezone is considered to be in the UTC timezone.
     True
 
 If you set a time that has already passed, it will be run as if it had
-been set to run as soon as possible[#already_passed]_...unless the job
+been set to run as soon as possible [#already_passed]_...unless the job
 has already timed out, in which case the job fails with an
-abort[#already_passed_timed_out]_.
+abort [#already_passed_timed_out]_.
 
 The queue's `put` method is the essential API.  Other methods are used
 to introspect, but are not needed for basic usage.
@@ -295,9 +298,9 @@ Overview
 The result of a call to `put` returns an IJob.  The
 job represents the pending result.  This object has a lot of
 functionality that's explored in other documents in this package, and
-demostrated a bit below, but here's a summary.  
+demonstrated a bit below, but here's a summary.  
 
-- You can introspect it to look at, and even modify, the call and its
+- You can introspect, and even modify, the call and its
   arguments.
 
 - You can specify that the job should be run serially with others
@@ -405,15 +408,16 @@ Callbacks
 ---------
 
 You can register callbacks to handle the result of a job, whether a
-Failure or another result.  These callbacks can be thought of as the
-"except" "else" or "finally" clauses of a "try" statement.  Each
-callback receives the job's current result as input, and its output
-becomes the job's new result (and therefore the input of the next
-callback, if any).
+Failure or another result.
 
-Note that, during execution of a callback, there is no guarantee that
+Note that, unlike callbacks on a Twisted deferred, these callbacks do not
+change the result of the original job. Since callbacks are jobs, you can chain
+results, but generally callbacks for the same job all get the same result as
+input.
+
+Also ote that, during execution of a callback, there is no guarantee that
 the callback will be processed on the same machine as the main call.  Also,
-the ``local`` functions will not work.
+some of the ``local`` functions, discussed below, will not work as desired.
 
 Here's a simple example of reacting to a success.
 
@@ -448,8 +452,20 @@ a subsequent callback.
     >>> callback2.result
     'I handled a name error: SCRIBBLED'
 
+Advanced Techniques and Tools
+=============================
+
+**Important**
+
+The job and its functionality described above are the core zc.async tools.
+
+The following are advanced techniques and tools of various complexities. You
+can use zc.async very productively without ever understanding or using them. If
+the following do not make sense to you now, please just move on for now.
+
+--------------
 zc.async.local
-==============
+--------------
 
 Jobs always run their callables in a thread, within the context of a
 connection to the ZODB. The callables have access to five special
@@ -468,7 +484,7 @@ available off of zc.async.local.
     middle of other work.
     
     As a simple rule, only send immutable objects like strings or
-    numbers as values[#setLiveAnnotation]_.
+    numbers as values [#setLiveAnnotation]_.
 
 ``zc.async.local.getLiveAnnotation(name, default=None, timeout=0, poll=1, job=None)``
     The ``getLiveAnnotation`` tells the agent to get an annotation for a job,
@@ -477,15 +493,15 @@ available off of zc.async.local.
     middle of other work.  
     
     As a simple rule, only ask for annotation values that will be
-    immutable objects like strings or numbers[#getLiveAnnotation]_.
+    immutable objects like strings or numbers [#getLiveAnnotation]_.
 
-    If the ``timeout`` argument is set to a positive float or int, the
-    function will wait that at least that number of seconds until an
-    annotation of the given name is available. Otherwise, it will return
-    the ``default`` if the name is not present in the annotations.   The
-    ``poll`` argument specifies approximately how often to poll for the
-    annotation, in seconds, though as the timeout period approaches the
-    next poll will be min(poll, remaining seconds to timeout).
+    If the ``timeout`` argument is set to a positive float or int, the function
+    will wait that at least that number of seconds until an annotation of the
+    given name is available. Otherwise, it will return the ``default`` if the
+    name is not present in the annotations. The ``poll`` argument specifies
+    approximately how often to poll for the annotation, in seconds (to be more
+    precise, a subsequent poll will be min(poll, remaining seconds until
+    timeout) seconds away).
 
 ``zc.async.local.getReactor()``
     The ``getReactor`` function returns the job's dispatcher's reactor.  The
@@ -542,8 +558,9 @@ an annotation, then waits for our flag to finish.
 [#stats_2]_ ``getReactor`` and ``getDispatcher`` are for advanced use
 cases and are not explored further here.
 
+----------
 Job Quotas
-==========
+----------
 
 One class of asynchronous jobs are ideally serialized.  For instance,
 you may want to reduce or eliminate the chance of conflict errors when
@@ -633,8 +650,15 @@ Quotas can be configured for limits greater than one at a time, if desired.
 This may be valuable when a needed resource is only available in limited
 numbers at a time.
 
+Note that, while quotas are valuable tools for doing serialized work such as
+updating a text index, other optimization features sometimes useful for this
+sort of task, such as collapsing similar jobs, are not provided directly by
+this package. This functionality could be trivially built on top of zc.async,
+however [#idea_for_collapsing_jobs]_.
+
+--------------
 Returning Jobs
-==============
+--------------
 
 Our examples so far have done work directly.  What if the job wants to
 orchestrate other work?  One way this can be done is to return another
@@ -644,7 +668,6 @@ break up the work of long running processes; to be more cooperative to
 other jobs; and to make parts of a job that can be parallelized available
 to more workers.
 
----------------
 Serialized Work
 ---------------
 
@@ -678,7 +701,6 @@ somewhat more complicated to follow, but can allow for a cleaner
 separation of code: dividing code that does work from code that
 orchestrates the jobs.  We'll see an example of the idea below.
 
------------------
 Parallelized Work
 -----------------
 
@@ -722,8 +744,6 @@ with MVCC turned on.
     ...     job.args.append(result)
     ...     if len(job.args) == 3: # all results are in
     ...         zc.async.local.getJob().queue.put(job)
-    ...     return result # unnecessary; just keeps this job's result
-    ...     # from changing
     ...
     >>> def main_job():
     ...     job = zc.async.job.Job(post_process)
@@ -733,6 +753,10 @@ with MVCC turned on.
     ...             zc.async.job.Job(callback, job))
     ...     return job
     ...
+
+That may be a bit mind-blowing at first.  The trick to catch here is that,
+because the main_job returns a job, the result of that job will become the
+result of the main_job once the returned (``post_process``) job is done.
 
 Now we'll put this in and let it cook.
 
@@ -750,13 +774,12 @@ Now we'll put this in and let it cook.
 
 Ta-da!
 
-A further polish to this solution would eliminate the chance for conflict
-errors by making the callbacks put their work into jobs with
-serialized_ids.  You'd also probably want to deal with the possibility of
-one or more of the jobs generating a Failure.
+For real-world usage, you'd also probably want to deal with the possibility of
+one or more of the jobs generating a Failure, among other edge cases.
 
+-------------------
 Returning Deferreds
-===================
+-------------------
 
 What if you want to do work that doesn't require a ZODB connection?  You
 can also return a Twisted deferred (twisted.internet.defer.Deferred).
@@ -787,8 +810,10 @@ making network calls using Twisted or zc.ngi, for instance.
 Conclusion
 ==========
 
-This concludes our discussion of zc.async usage.  The next section shows
-how to configure zc.async without Zope 3[#stop_reactor]_.
+This concludes our discussion of zc.async usage. The `next section`_ shows how
+to configure zc.async without Zope 3 [#stop_usage_reactor]_.
+
+.. _next section: `Configuration without Zope 3`_
 
 .. ......... ..
 .. Footnotes ..
@@ -1030,7 +1055,7 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
 
 .. [#commit_for_multidatabase] We commit before we do the next step as a
     good practice, in case the queue is from a different database than
-    the root.  See the `Tips and Tricks`_ section for a discussion about
+    the root.  See the configuration sections for a discussion about
     why putting the queue in another database might be a good idea. 
     
     Rather than committing the transaction,
@@ -1169,7 +1194,14 @@ how to configure zc.async without Zope 3[#stop_reactor]_.
      >>> info['poll id'] is not None
      True
 
-.. [#stop_reactor] 
+.. [#idea_for_collapsing_jobs] For instance, here is one approach.  Imagine
+    you are queueing the job of indexing documents. If the same document has a
+    request to index, the job could simply walk the queue and remove (``pull``)
+    similar tasks, perhaps aggregating any necessary data. Since the jobs are
+    serial because of a quota, no other worker should be trying to work on
+    those jobs.
+
+.. [#stop_usage_reactor] 
 
     >>> pprint.pprint(dispatcher.getStatistics()) # doctest: +ELLIPSIS
     {'failed': 2,
