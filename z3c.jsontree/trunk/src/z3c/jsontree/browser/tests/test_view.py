@@ -25,6 +25,7 @@ from zope.configuration.xmlconfig import XMLConfig
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
 from zope.app.component import testing
+from zope.app.folder import Folder
 
 from z3c.testing import TestCase
 from z3c.jsontree.browser.tests import util
@@ -80,6 +81,19 @@ class TestJSONTreeView(testing.PlacefulSetup, TestCase):
         ultree = view.tree
         check_xml(ultree, util.read_output('tree_2.txt'))
 
+    def test_simple_tree_view_3(self):
+        """This test includes cyrillic letters and maxItems."""
+        context = self.rootFolder['folder1']
+        for i in range(55):
+            context[str(i)] = Folder()
+        
+        subFolder = context['1']
+        request = TestRequest()
+        view = SimpleJSONTreeView(subFolder, request)
+        view.update()
+        ultree = view.tree
+        check_xml(ultree, util.read_output('tree_3.txt'))
+
     def test_generic_tree_view_1(self):
         context = self.rootFolder['folder1']
         request = TestRequest()
@@ -96,6 +110,19 @@ class TestJSONTreeView(testing.PlacefulSetup, TestCase):
         view.update()
         ultree = view.tree
         check_xml(ultree, util.read_output('tree_2.txt'))
+
+    def test_generic_tree_view_3(self):
+        """This test includes cyrillic letters and maxItems."""
+        context = self.rootFolder['folder1']
+        for i in range(55):
+            context[str(i)] = Folder()
+        
+        subFolder = context['1']
+        request = TestRequest()
+        view = GenericJSONTreeView(subFolder, request)
+        view.update()
+        ultree = view.tree
+        check_xml(ultree, util.read_output('tree_3.txt'))
 
 
 def test_suite():

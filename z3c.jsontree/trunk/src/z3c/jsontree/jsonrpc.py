@@ -16,60 +16,43 @@ $Id:$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.traversing import api
-from zope.security.interfaces import Unauthorized
-from zope.security.interfaces import Forbidden
 from zope.traversing.browser import absoluteURL
-from zope.app.container.interfaces import IReadContainer
 
 from z3c.jsonrpc.publisher import MethodPublisher
 
 from z3c.jsontree.interfaces import JSON_TREE_ID
 from z3c.jsontree.interfaces import JSON_TREE_VIEW_NAME
 from z3c.jsontree import base
+from z3c.jsontree import subitem
 from z3c.jsontree import util
 
 
-class JSONTreeItems(MethodPublisher, base.IdGenerator):
+class NoneJSONTreeItems(MethodPublisher, base.IdGenerator):
+    """Returns no items.
+    
+    Default JSON adapter for all objects.
+    """
+
+    def loadJSONTreeItems(self, id):
+        """Returns child information for the object with the given path in a 
+        JSON format."""
+        return {'treeChilds': {'id':id, 'childs':[]}}
+
+
+class JSONTreeItems(subitem.SubItemMixin, MethodPublisher,
+    base.IdGenerator):
     """Returns the data of the childs from the path for the json tree.
     
     This is a simple implementation which uses the traversal concept.
     If you need to lookup items for other conponents then containers,
     e.g. for a widget, you need to implement your own child loader class.
+    
+    This is the default JSON adapter for IReadContainer.
     """
 
     viewName = JSON_TREE_VIEW_NAME
     z3cJSONTreeId = JSON_TREE_ID
     linkHandler = ''
-
-    @property
-    def subItems(self):
-        """Returns a list of items for the given context."""
-        items = []
-        keys = []
-        append = items.append
-        if IReadContainer.providedBy(self.context):
-            try:
-                keys = list(self.context.keys())
-            except(Unauthorized, Forbidden):
-                return items
-        for name in keys:
-            # Only include items we can traverse to
-            subItem = api.traverse(self.context, name, None)
-            if subItem is not None:
-                append(subItem)
-        return items
-
-    def hasSubItems(self, item):
-        """Returns a True or False if the sub item has subitems."""
-        res = False
-        if IReadContainer.providedBy(item):
-            try:
-                if len(item) > 0:
-                    res = True
-            except(Unauthorized, Forbidden):
-                pass
-        return res
 
     def getIconURL(self, item, request, name='icon'):
         return util.getIconURL(item, request, name=name)
@@ -81,9 +64,9 @@ class JSONTreeItems(MethodPublisher, base.IdGenerator):
         childs = []
         append = childs.append
 
-        for subItem in self.subItems:
+        for name, subItem, hasSubItems in self.getSubItems(self.context):
 
-            if self.hasSubItems(subItem):
+            if hasSubItems:
                 hasChilds = True
             else:
                 hasChilds = False
@@ -91,7 +74,7 @@ class JSONTreeItems(MethodPublisher, base.IdGenerator):
             info = {}
             url = absoluteURL(subItem, self.request)
             info['id'] = self.getId(subItem)
-            info['content'] = api.getName(subItem)
+            info['content'] = name
             info['url'] = url +'/'+ self.viewName
             info['iconURL'] = util.getIconURL(subItem, self.request)
             info['linkHandler'] = self.linkHandler

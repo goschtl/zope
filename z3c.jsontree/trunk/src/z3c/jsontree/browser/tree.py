@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 import zope.interface
 import zope.component
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.http import IHTTPRequest
 from zope.viewlet.interfaces import IViewlet
 
 from z3c.jsontree import interfaces
@@ -55,7 +56,7 @@ class LITagProvider(base.ProviderBase, base.IdGenerator):
     """LI tag content provider."""
 
     zope.interface.implements(interfaces.ILITagProvider)
-    zope.component.adapts(zope.interface.Interface, IBrowserRequest, 
+    zope.component.adapts(zope.interface.Interface, IHTTPRequest, 
         interfaces.ITemplateRenderer)
 
 
@@ -63,12 +64,14 @@ class ULTagProvider(base.ProviderBase, base.IdGenerator):
     """UL tag contet provider."""
 
     zope.interface.implements(interfaces.IULTagProvider)
-    zope.component.adapts(zope.interface.Interface, IBrowserRequest, 
+    zope.component.adapts(zope.interface.Interface, IHTTPRequest, 
         interfaces.ITemplateRenderer)
 
 
 class TreeProvider(base.ProviderBase, base.IdGenerator):
     """UL tag contet provider."""
+
+    name = u'[top]'
 
     zope.interface.implements(interfaces.ITreeProvider)
     zope.component.adapts(zope.interface.Interface, IBrowserRequest, 

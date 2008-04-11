@@ -36,6 +36,20 @@ STATE_COLLAPSED = 'collapsed'
 STATE_STATIC = 'static'
 
 
+class ITreeItems(zope.interface.Interface):
+    """Knows the items listed in tree for the given context."""
+
+    def __init__(context, provider):
+        """Adapts the context and the request.
+        
+        This allows to use different adapters for different layers on the same
+        context.
+        """
+
+    subItems = zope.interface.Attribute(
+        """List of (name, item, hasSubItems) tuple.""")
+
+
 class IElementProvider(IContentProvider):
 
     state = zope.interface.Attribute(
@@ -103,10 +117,10 @@ class ITreeProvider(IElementProvider):
 class ITreeRenderer(zope.interface.Interface):
     """Knows how to render elements fo the tree items."""
 
-    def renderLI(item):
+    def renderLI(name, item):
         """Renders <LI> tags."""
 
-    def renderUL(item, childTags=None):
+    def renderUL(name, item, childTags=None):
         """Renders <li> tag including rendered child tags."""
 
     tree = zope.interface.Attribute(

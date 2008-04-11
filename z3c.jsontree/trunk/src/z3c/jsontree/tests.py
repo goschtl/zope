@@ -22,14 +22,18 @@ import zope.interface
 import zope.component
 from zope.testing import doctest
 from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.container.interfaces import IReadContainer
 from zope.app.testing import setup
 
 import z3c.testing
 import z3c.jsonrpc.testing
+from z3c.jsonrpc.interfaces import IJSONRPCRequest
 from z3c.jsontree import browser
 from z3c.template.zcml import TemplateFactory
 from z3c.template.interfaces import IContentTemplate
 from z3c.jsontree import interfaces
+from z3c.jsontree import subitem
 from z3c.jsontree.browser import tree
 
 
@@ -65,28 +69,44 @@ class IconStub(object):
         return self
 
 
+def setUpAdapters():
+    # register icon resource
+    zope.component.provideAdapter(ResourceStub,
+        name='z3cJSONTreeCollapsedIcon')
+    zope.component.provideAdapter(ResourceStub,
+        name='z3cJSONTreeExpandedIcon')
+    zope.component.provideAdapter(ResourceStub,
+        name='z3cJSONTreeStaticIcon')
+
+    # register icon
+    zope.component.provideAdapter(IconStub('z3cJSONTreeCollapsedIcon'),
+        (zope.interface.Interface, zope.interface.Interface),
+        provides=zope.interface.Interface, name='z3cJSONTreeCollapsedIcon')
+    zope.component.provideAdapter(IconStub('z3cJSONTreeExpandedIcon'),
+        (zope.interface.Interface, zope.interface.Interface),
+        provides=zope.interface.Interface, name='z3cJSONTreeExpandedIcon')
+    zope.component.provideAdapter(IconStub('z3cJSONTreeStaticIcon'),
+        (zope.interface.Interface, zope.interface.Interface),
+        provides=zope.interface.Interface, name='z3cJSONTreeStaticIcon')
+
+    # setup adapters
+    zope.component.provideAdapter(subitem.NoneTreeItems,
+        (zope.interface.Interface, IBrowserRequest))
+    zope.component.provideAdapter(subitem.ContainerTreeItems,
+        (IReadContainer, IBrowserRequest))
+    zope.component.provideAdapter(subitem.NoneTreeItems,
+        (zope.interface.Interface, IJSONRPCRequest))
+    zope.component.provideAdapter(subitem.ContainerTreeItems,
+        (IReadContainer, IJSONRPCRequest))
+
+
 class TestSimpleJSONTree(z3c.testing.InterfaceBaseTest):
 
     def setUp(test):
         setup.placefulSetUp(True)
-        # register icon resource
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeCollapsedIcon')
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeExpandedIcon')
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeStaticIcon')
-
-        # register icon
-        zope.component.provideAdapter(IconStub('z3cJSONTreeCollapsedIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeCollapsedIcon')
-        zope.component.provideAdapter(IconStub('z3cJSONTreeExpandedIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeExpandedIcon')
-        zope.component.provideAdapter(IconStub('z3cJSONTreeStaticIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeStaticIcon')
+        
+        # setup adapters
+        setUpAdapters()
 
     def tearDown(test):
         setup.placefulTearDown()
@@ -105,24 +125,9 @@ class TestGenericJSONTree(z3c.testing.InterfaceBaseTest):
 
     def setUp(test):
         setup.placefulSetUp(True)
-        # register icon resource
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeCollapsedIcon')
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeExpandedIcon')
-        zope.component.provideAdapter(ResourceStub,
-            name='z3cJSONTreeStaticIcon')
-
-        # register icon
-        zope.component.provideAdapter(IconStub('z3cJSONTreeCollapsedIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeCollapsedIcon')
-        zope.component.provideAdapter(IconStub('z3cJSONTreeExpandedIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeExpandedIcon')
-        zope.component.provideAdapter(IconStub('z3cJSONTreeStaticIcon'),
-            (zope.interface.Interface, zope.interface.Interface),
-            provides=zope.interface.Interface, name='z3cJSONTreeStaticIcon')
+        
+        # setup adapters
+        setUpAdapters()
 
         # register tree content provider
         zope.component.provideAdapter(tree.TreeProvider, name='tree')
@@ -149,11 +154,15 @@ class TestGenericJSONTree(z3c.testing.InterfaceBaseTest):
         return (None, TestRequest())
 
 
+def setUp(test):
+    # setup adapters
+    setUpAdapters()
+    
+
 def test_suite():
     return unittest.TestSuite((
         z3c.jsonrpc.testing.FunctionalDocFileSuite('README.txt',
-            setUp=z3c.jsonrpc.testing.setUp,
-            tearDown=z3c.jsonrpc.testing.tearDown,
+            setUp=setUp,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         unittest.makeSuite(TestSimpleJSONTree),

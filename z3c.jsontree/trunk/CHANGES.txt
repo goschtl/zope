@@ -5,4 +5,7 @@ CHANGES
 Version 0.5.0 (unreleased)
 -------------------------
 
+- implemented ITreeItems adapter which is responsible for list all items listed
+  in tree
+
 - Initial Release

@@ -20,12 +20,9 @@ import string
 import zope.interface
 import zope.component
 from zope.traversing import api
-from zope.security.interfaces import Unauthorized
-from zope.security.interfaces import Forbidden
 from zope.traversing.browser import absoluteURL
 from zope.traversing.namespace import getResource
 from zope.contentprovider.interfaces import IContentProvider
-from zope.app.container.interfaces import IReadContainer
 from zope.app.component import hooks
 
 from z3c.template.template import getPageTemplate
@@ -42,10 +39,54 @@ from z3c.jsontree.interfaces import JSON_LI_CSS_STATIC
 from z3c.jsontree.interfaces import STATE_EXPANDED
 from z3c.jsontree.interfaces import STATE_COLLAPSED
 from z3c.jsontree.interfaces import STATE_STATIC
+from z3c.jsontree import subitem
 from z3c.jsontree import util
 
 
-class TreeBase(object):
+class IdGenerator(object):
+    """This mixin class generates Object Ids based on the the objects path.
+
+    Note: The objects must be traversable by it's path. You can implement a 
+    a custom path traverse concept in the getObjectByPath it you need to use
+    another traverse concept.
+
+    This ids must conform the w3c recommendation described in:
+    http://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
+    """
+
+    def getId(self, item):
+        """Returns the DOM id for a given object.
+
+        Note: we encode the upper case letters because the Dom element id are 
+        not case sensitive in HTML. We prefix each upper case letter with ':'.
+        """
+        path = api.getPath(item)
+        newPath = u''
+        for letter in path:
+            if letter in string.uppercase:
+                newPath += ':' + letter
+            else:
+                newPath += letter
+
+        # we use a dot as a root representation, this avoids to get the same id
+        # for the ul and the first li tag
+        if newPath == '/':
+            newPath = '.'
+        # add additinal dot which separates the tree id and the path, is used
+        # for get the tree id out of the string in the javascript using
+        # ids = id.split("."); treeId = ids[0];
+        id = self.z3cJSONTreeId +'.'+ newPath
+        # convert '/' path separator to marker '::', because the path '/'' is  
+        # not allowed as DOM id. See also:
+        # http://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
+        return id.replace('/', '::')
+
+    def id(self):
+        """Returns the DOM id for a given context."""
+        return self.getId(self.context)
+
+
+class TreeBase(subitem.SubItemMixin):
     """Tree iterator base implementation."""
 
     root = None
@@ -78,36 +119,12 @@ class TreeBase(object):
         self.context = context
         self.request = request
 
-    def getSubItems(self, item):
-        items = []
-        append = items.append
-        if IReadContainer.providedBy(item):
-            keys = list(item.keys())
-        else:
-            keys = []
-        for name in keys:
-            # Only include items we can traverse to
-            subItem = api.traverse(item, name, None)
-            if subItem is not None:
-                append(subItem)
-        return items
-
     def getIconURL(self, item, request, name='icon'):
         return util.getIconURL(item, request, name=name)
 
     def getParents(self):
         root = self.getRoot()
         return util.getParentsFromContextToObject(self.context, root)
-
-    def hasSubItems(self, item):
-        res = False
-        if IReadContainer.providedBy(item):
-            try:
-                if len(item) > 0:
-                    res = True
-            except(Unauthorized, Forbidden):
-                pass
-        return res
 
     def update(self):
         """Returns HTML code for representing a <ul> tag tree with the 
@@ -120,6 +137,10 @@ class TreeBase(object):
         If we access the tree via a virtual host, the root is adjusted to
         the right root object.
 
+        The childTags get used in every implementation of this package. The
+        items in the childTags can get rendered with the python renderer which
+        uses inline code or with the template based renderer which is probably 
+        slower then the python renderer becaue of it's tal usage.
         """
         childTags = None
         stackItem = self.context
@@ -129,21 +150,101 @@ class TreeBase(object):
             tagList = []
             append = tagList.append
 
-            for subItem in self.getSubItems(item):
-                if self.hasSubItems(subItem):
-
+            for name, subItem, hasSubItems in self.getSubItems(item):
+                if hasSubItems:
                     if subItem == stackItem:
-                        append(self.renderUL(subItem, childTags))
+                        append(self.renderUL(name, subItem, childTags))
                     else:
-                        append(self.renderUL(subItem))
-
+                        append(self.renderUL(name, subItem))
                 else:
-                    append(self.renderLI(subItem))
+                    append(self.renderLI(name, subItem))
 
             childTags = ' '.join(tagList)
             stackItem = item
 
         self.childTags = childTags
+
+
+class ProviderBase(object):
+    """Base class for tag element provider."""
+
+    template = getPageTemplate()
+
+    root = None
+    state = None
+    name = None
+    childTags = None
+    iconName = 'icon'
+
+    z3cJSONTreeId = JSON_TREE_ID
+    z3cJSONTreeName = JSON_TREE_ID
+    z3cJSONTreeClass = JSON_TREE_ID
+
+    viewName = JSON_TREE_VIEW_NAME
+
+    # LI tag CSS names
+    collapsedCSSName = JSON_LI_CSS_COLLAPSED
+    expandedCSSName = JSON_LI_CSS_EXPANDED
+    staticCSSName = JSON_LI_CSS_STATIC
+
+    # toggle icon names
+    collapsedIconName = JSON_TOGGLE_ICON_COLLAPSED
+    expandedIconNamen = JSON_TOGGLE_ICON_EXPANDED
+    staticIconName = JSON_TOGGLE_ICON_STATIC
+
+    def __init__(self, context, request, view):
+        self.context = context
+        self.request = request
+        self.view = view
+
+    @property
+    def className(self):
+        if self.state == STATE_COLLAPSED:
+            return self.collapsedCSSName
+        elif self.state == STATE_EXPANDED:
+            return self.expandedCSSName
+        else:
+            return self.staticCSSName
+
+    @property
+    def toggleIcon(self):
+        """Returns a toggle icon including settings for json url."""
+        if self.state == STATE_COLLAPSED:
+            iconName = self.collapsedIconName
+        elif self.state == STATE_EXPANDED:
+            iconName = self.expandedIconNamen
+        else:
+            iconName = self.staticIconName
+        icon = zope.component.getMultiAdapter((self.context, self.request), 
+            name=iconName)
+        resource = getResource(icon.context, icon.rname, self.request)
+        src = resource()
+        longDescURL = absoluteURL(self.context, self.request)
+        return ('<img src="%s" alt="toggle icon" width="%s" height="%s" ' 
+                'border="0" longDesc="%s" />' % (src, icon.width, 
+                   icon.height, longDescURL))
+
+    def icon(self):
+        """Returns a toggle icon including settings for json url."""
+        icon = zope.component.queryMultiAdapter((self.context, self.request), 
+            name=self.iconName)
+        if icon is not None:
+            resource = getResource(icon.context, icon.rname, self.request)
+            src = resource()
+            longDescURL = absoluteURL(self.context, self.request)
+            return ('<img src="%s" alt="toggle icon" width="%s" height="%s" ' 
+                    'border="0" />' % (src, icon.width, icon.height))
+        return u''
+
+    @property
+    def url(self):
+        return absoluteURL(self.context, self.request) +'/'+ self.viewName
+
+    def update(self):
+        pass
+
+    def render(self):
+        return self.template()
 
 
 class PythonRenderer(object):
@@ -184,8 +285,7 @@ class PythonRenderer(object):
                 'border="0" longDesc="%s" />' % (src, icon.width, 
                    icon.height, longDescURL))
 
-    def renderLI(self, item):
-        name = api.getName(item)
+    def renderLI(self, name, item):
         url = absoluteURL(item, self.request) +'/'+ self.viewName
         iconURL = self.getIconURL(item, self.request)
         id = self.getId(item)
@@ -200,9 +300,8 @@ class PythonRenderer(object):
         res += '</li>'
         return res
 
-    def renderUL(self, item, childTags=None):
+    def renderUL(self, name, item, childTags=None):
         """Renders <li> tag with already rendered child tags."""
-        name = api.getName(item)
         url = absoluteURL(item, self.request) +'/'+ self.viewName
         iconURL = self.getIconURL(item, self.request)
         id = self.getId(item)
@@ -281,15 +380,16 @@ class TemplateRenderer(object):
     ulProviderName = 'ul'
     treeProviderName = 'tree'
 
-    def renderLI(self, item):
+    def renderLI(self, name, item):
         provider = zope.component.getMultiAdapter(
             (item, self.request, self), IContentProvider, 
             self.liProviderName)
+        provider.name = name
         provider.state = STATE_STATIC
         provider.update()
         return provider.render()
 
-    def renderUL(self, item, childTags=None):
+    def renderUL(self, name, item, childTags=None):
         """Renders <li> tag with already rendered child tags."""
         if item == self.context:
             state = STATE_COLLAPSED
@@ -302,6 +402,7 @@ class TemplateRenderer(object):
         provider = zope.component.getMultiAdapter(
             (item, self.request, self), IContentProvider, 
             self.ulProviderName)
+        provider.name = name
         provider.childTags = childTags
         provider.state = state
         provider.update()
@@ -325,132 +426,3 @@ class TemplateRenderer(object):
         provider.state = state
         provider.update()
         return provider.render()
-
-
-class IdGenerator(object):
-    """This mixin class generates Object Ids based on the the objects path.
-
-    Note: The objects must be traversable by it's path. You can implement a 
-    a custom path traverse concept in the getObjectByPath it you need to use
-    another traverse concept.
-
-    This ids must conform the w3c recommendation described in:
-    http://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
-    """
-
-    def getId(self, item):
-        """Returns the DOM id for a given object.
-
-        Note: we encode the upper case letters because the Dom element id are 
-        not case sensitive in HTML. We prefix each upper case letter with ':'.
-        """
-        path = api.getPath(item)
-        newPath = u''
-        for letter in path:
-            if letter in string.uppercase:
-                newPath += ':' + letter
-            else:
-                newPath += letter
-
-        # we use a dot as a root representation, this avoids to get the same id
-        # for the ul and the first li tag
-        if newPath == '/':
-            newPath = '.'
-        # add additinal dot which separates the tree id and the path, is used
-        # for get the tree id out of the string in the javascript using
-        # ids = id.split("."); treeId = ids[0];
-        id = self.z3cJSONTreeId +'.'+ newPath
-        # convert '/' path separator to marker '::', because the path '/'' is  
-        # not allowed as DOM id. See also:
-        # http://www.w3.org/TR/1999/REC-html401-19991224/types.html#type-name
-        return id.replace('/', '::')
-
-    def id(self):
-        """Returns the DOM id for a given context."""
-        return self.getId(self.context)
-
-
-class ProviderBase(object):
-    """Base class for element provider."""
-
-    template = getPageTemplate()
-
-    root = None
-    state = None
-    childTags = None
-    iconName = 'icon'
-
-    z3cJSONTreeId = JSON_TREE_ID
-    z3cJSONTreeName = JSON_TREE_ID
-    z3cJSONTreeClass = JSON_TREE_ID
-
-    viewName = JSON_TREE_VIEW_NAME
-
-    # LI tag CSS names
-    collapsedCSSName = JSON_LI_CSS_COLLAPSED
-    expandedCSSName = JSON_LI_CSS_EXPANDED
-    staticCSSName = JSON_LI_CSS_STATIC
-
-    # toggle icon names
-    collapsedIconName = JSON_TOGGLE_ICON_COLLAPSED
-    expandedIconNamen = JSON_TOGGLE_ICON_EXPANDED
-    staticIconName = JSON_TOGGLE_ICON_STATIC
-
-    def __init__(self, context, request, view):
-        self.context = context
-        self.request = request
-        self.view = view
-
-    @property
-    def className(self):
-        if self.state == STATE_COLLAPSED:
-            return self.collapsedCSSName
-        elif self.state == STATE_EXPANDED:
-            return self.expandedCSSName
-        else:
-            return self.staticCSSName
-
-    @property
-    def toggleIcon(self):
-        """Returns a toggle icon including settings for json url."""
-        if self.state == STATE_COLLAPSED:
-            iconName = self.collapsedIconName
-        elif self.state == STATE_EXPANDED:
-            iconName = self.expandedIconNamen
-        else:
-            iconName = self.staticIconName
-        icon = zope.component.getMultiAdapter((self.context, self.request), 
-            name=iconName)
-        resource = getResource(icon.context, icon.rname, self.request)
-        src = resource()
-        longDescURL = absoluteURL(self.context, self.request)
-        return ('<img src="%s" alt="toggle icon" width="%s" height="%s" ' 
-                'border="0" longDesc="%s" />' % (src, icon.width, 
-                   icon.height, longDescURL))
-
-    def icon(self):
-        """Returns a toggle icon including settings for json url."""
-        icon = zope.component.queryMultiAdapter((self.context, self.request), 
-            name=self.iconName)
-        if icon is not None:
-            resource = getResource(icon.context, icon.rname, self.request)
-            src = resource()
-            longDescURL = absoluteURL(self.context, self.request)
-            return ('<img src="%s" alt="toggle icon" width="%s" height="%s" ' 
-                    'border="0" />' % (src, icon.width, icon.height))
-        return u''
-
-    @property
-    def name(self):
-        return api.getName(self.context) or u'[top]'
-
-    @property
-    def url(self):
-        return absoluteURL(self.context, self.request) +'/'+ self.viewName
-
-    def update(self):
-        pass
-
-    def render(self):
-        return self.template()
-
