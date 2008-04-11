@@ -236,3 +236,21 @@ class IBatchProvider(IContentProvider):
 
     def render():
         """Plain render method without keyword arguments."""
+
+class IColumnHeader(zope.interface.Interface):
+    """Multi-adapter for header rendering."""
+
+    def update():
+        """Override this method in subclasses if required"""
+
+    def render():
+        """Override this method in subclasses"""
+
+    def getQueryStringArgs():
+        """
+        Because the header will most often be used to add links for sorting the
+        columns it may also be necessary to collect other query arguments from
+        the request.
+
+        The initial use case here is to maintain a search term.
+        """

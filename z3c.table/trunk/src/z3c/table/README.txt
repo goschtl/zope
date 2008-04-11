@@ -97,9 +97,7 @@ Now we can register a column for our table:
   >>> class TitleColumn(column.Column):
   ... 
   ...     weight = 10
-  ... 
-  ...     def renderHeadCell(self):
-  ...         return u'Title'
+  ...     header = u'Title'
   ... 
   ...     def renderCell(self, item):
   ...         return u'Title: %s' % item.title
@@ -244,7 +242,6 @@ Register and render the table again:
       </tr>
     </tbody>
   </table>
-
 
 Setup columns
 -------------
@@ -722,7 +719,7 @@ method:
   1
 
   >>> titleColumn.header
-  u''
+  u'Title'
 
   >>> titleColumn.cssClasses
   {}
@@ -792,7 +789,7 @@ in traversing:
 
 And add some more items to our container:
 
-  >>> container[u'sixt'] = Content('Sixt', 6)
+  >>> container[u'sixth'] = Content('Sixth', 6)
   >>> container[u'seventh'] = Content('Seventh', 7)
   >>> container[u'eighth'] = Content('Eighth', 8)
   >>> container[u'ninth'] = Content('Ninth', 9)
@@ -869,12 +866,12 @@ Now let's show the full table without batching:
         <td>number: 7</td>
       </tr>
       <tr>
-        <td>Sixt item</td>
-        <td>number: 6</td>
-      </tr>
-      <tr>
         <td>Sixteenth item</td>
         <td>number: 16</td>
+      </tr>
+      <tr>
+        <td>Sixth item</td>
+        <td>number: 6</td>
       </tr>
       <tr>
         <td>Tenth item</td>
@@ -1029,7 +1026,7 @@ if you need to cache batches etc.
     </thead>
     <tbody>
       <tr>
-        <td>Sixt item</td>
+        <td>Sixth item</td>
         <td>number: 6</td>
       </tr>
       <tr>
@@ -1362,7 +1359,28 @@ A sequence table can be used if we need to provide a table for a sequence
 of items instead of a mapping. Define the same sequence of items we used before
 we added the other 1000 items: 
 
-  >>> dataSequence = sorted(container.values())[:20]
+  >>> dataSequence = []
+  >>> dataSequence.append(Content('Zero', 0))
+  >>> dataSequence.append(Content('First', 1))
+  >>> dataSequence.append(Content('Second', 2))
+  >>> dataSequence.append(Content('Third', 3))
+  >>> dataSequence.append(Content('Fourth', 4))
+  >>> dataSequence.append(Content('Fifth', 5))
+  >>> dataSequence.append(Content('Sixth', 6))
+  >>> dataSequence.append(Content('Seventh', 7))
+  >>> dataSequence.append(Content('Eighth', 8))
+  >>> dataSequence.append(Content('Ninth', 9))
+  >>> dataSequence.append(Content('Tenth', 10))
+  >>> dataSequence.append(Content('Eleventh', 11))
+  >>> dataSequence.append(Content('Twelfth', 12))
+  >>> dataSequence.append(Content('Thirteenth', 13))
+  >>> dataSequence.append(Content('Fourteenth', 14))
+  >>> dataSequence.append(Content('Fifteenth', 15))
+  >>> dataSequence.append(Content('Sixteenth', 16))
+  >>> dataSequence.append(Content('Seventeenth', 17))
+  >>> dataSequence.append(Content('Eighteenth', 18))
+  >>> dataSequence.append(Content('Nineteenth', 19))
+  >>> dataSequence.append(Content('Twentieth', 20))
 
 Now let's define a new SequenceTable:
 
@@ -1423,7 +1441,11 @@ And update and render the sequence table:
         <td>number: 4</td>
       </tr>
       <tr>
-        <td>Sixt item</td>
+        <td>Fifth item</td>
+        <td>number: 5</td>
+      </tr>
+      <tr>
+        <td>Sixth item</td>
         <td>number: 6</td>
       </tr>
       <tr>
@@ -1566,6 +1588,61 @@ And we set the sort order to ``reverse`` even if we use batching:
     </tbody>
   </table>
 
+Headers
+-------
+
+We can change the rendering of the header of, e.g, the Title column by
+registering a IHeaderColumn adapter. This may be useful for adding links to
+column headers for an existing table implementation.
+
+We'll use a fresh almost empty container.
+
+  >>> container = Container()
+  >>> root['container-1'] = container
+  >>> container[u'first'] = Content('First', 1)
+  >>> container[u'second'] = Content('Second', 2)
+  >>> container[u'third'] = Content('Third', 3)
+
+  >>> class myTableClass(table.Table):
+  ...     pass
+
+  >>> myTable = myTableClass(container, request)
+
+  >>> class TitleColumn(column.Column):
+  ... 
+  ...     header = u'Title'
+  ... 
+  ...     def renderCell(self, item):
+  ...         return item.title
+
+Now we can register a column adapter directly to our table class.
+
+  >>> zope.component.provideAdapter(TitleColumn,
+  ...     (None, None, myTableClass), provides=interfaces.IColumn,
+  ...      name='titleColumn')
+
+And add a registration for a column header - we'll use here the proveded generic
+sorting header implementation.
+
+  >>> from z3c.table.header import SortingColumnHeader
+  >>> zope.component.provideAdapter(SortingColumnHeader,
+  ...     (None, None, interfaces.ITable, interfaces.IColumn),
+  ...     provides=interfaces.IColumnHeader)
+
+Now we can render the table and we shall see a link in the header. Note that it
+is set to switch to descending as the the table initially will display the first
+column as ascending.
+
+  >>> myTable.update()
+  >>> print myTable.render()
+  <table>
+   <thead>
+    <tr>
+     <th><a
+      href="?table-sortOrder=descending&table-sortOn=table-titleColumn-0"
+      title="Sort">Title</a></th>
+  ...
+  </table>
 
 Miscellaneous
 -------------

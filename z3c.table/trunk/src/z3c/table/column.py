@@ -62,6 +62,7 @@ def safeGetAttr(obj, attr, default):
         return default
 
 
+
 class Column(zope.location.Location):
     """Column provider."""
 
@@ -95,6 +96,11 @@ class Column(zope.location.Location):
 
     def renderHeadCell(self):
         """Header cell content."""
+        header = zope.component.queryMultiAdapter((self.context,
+            self.request, self.table, self), interfaces.IColumnHeader)
+        if header:
+            header.update()
+            return header.render()
         return self.header
 
     def renderCell(self, item):
@@ -121,7 +127,6 @@ class NoneCell(Column):
 
 
 # predefined columns
-
 class NameColumn(Column):
     """Name column."""
 

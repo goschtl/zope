@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.table',
-    version='0.5.0',
+    version='0.5.0dev',
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Modular table rendering implementation for Zope3",
@@ -55,7 +55,7 @@ setup (
             'zope.app.testing',
             'zope.publisher',
             'zope.security',
-            'zope.testbrowser',
+            'zope.testing',
             ],
         ),
     install_requires = [
@@ -63,6 +63,7 @@ setup (
         'z3c.batching',
         'zope.component',
         'zope.contentprovider',
+        'zope.dublincore',
         'zope.i18nmessageid',
         'zope.interface',
         'zope.location',
