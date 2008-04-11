@@ -3,6 +3,12 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
 
+
+  <!-- configure additional z3c packages -->
+  <include package="z3c.contents" />
+  <include package="z3c.table" />
+
+
   <!-- use app configuration from zam.api -->
   <include package="zam.api" file="app.zcml" />
 

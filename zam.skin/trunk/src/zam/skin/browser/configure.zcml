@@ -172,4 +172,18 @@
       template="index.pt"
       />
 
+  <z3c:pagelet
+      name="contents.html"
+      for="zope.traversing.interfaces.IContainmentRoot"
+      class="z3c.contents.browser.Contents"
+      permission="zope.ManageSite"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <defaultView
+      for="zope.traversing.interfaces.IContainmentRoot"
+      name="contents.html"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
 </configure>
