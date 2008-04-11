@@ -30,3 +30,12 @@ def isGroup(group):
 
 def isMemberAwareGroup(group):
     return IMemberAwareGroup.providedBy(group.__principal__)
+
+
+class PrincipalChecker(object):
+
+    def __init__(self, iface):
+        self.iface = iface
+
+    def __call__(self, group):
+        return self.iface.providedBy(group.__principal__)

@@ -37,6 +37,7 @@ from zope.app.security.protectclass import \
 from interfaces import IPreferenceGroup
 from preference import PreferenceGroup
 from preferencetype import PreferenceType
+from utils import PrincipalChecker
 
 
 class IPreferenceGroupDirective(interface.Interface):
@@ -48,6 +49,11 @@ class IPreferenceGroupDirective(interface.Interface):
             Id of the preference group used to access the group. The id should
             be a valid path in the preferences tree.""",
         required=True)
+
+    for_ = fields.GlobalInterface(
+        title=u"For",
+        description=u"Principal interface to use this preference for.",
+        required=False)
 
     schema = fields.GlobalInterface(
         title=u"Schema",
@@ -94,13 +100,17 @@ class IPreferenceGroupDirective(interface.Interface):
 
 class PreferenceGroupDirective(object):
 
-    def __init__(self, _context, id=None, schema=interface.Interface,
-                 title=u'', description=u'', category=False, 
+    def __init__(self, _context, id, title,
+                 for_=None, schema=interface.Interface,
+                 description=u'', category=False,
                  class_=None, provides=[], permission=CheckerPublic,
                  tests=(), order = 9999):
 
         Class = PreferenceType(str(id), schema, class_, title, description)
         Class.order = order
+
+        if interface.interfaces.IInterface.providedBy(for_):
+            tests = tests + (PrincipalChecker(for_),)
 
         group = Class(tests)
 
@@ -114,7 +124,8 @@ class PreferenceGroupDirective(object):
 
         self.require(_context, permission, interface=(IPreferenceGroup, schema))
         self.require(_context, 'z3ext.ModifyPreference', set_schema=(schema,))
-        self.require(_context, CheckerPublic, interface=(IEnumerableMapping,))
+        self.require(_context, CheckerPublic,
+                     interface=(IEnumerableMapping,), attributes=('isAvailable',))
 
         _context.action(
             discriminator=('z3ext:preferences', group),

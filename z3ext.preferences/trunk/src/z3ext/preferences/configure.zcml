@@ -51,6 +51,7 @@
      description="These are all the preferences related to common portal settings."
      provides="z3ext.preferences.interfaces.IPreferenceCategory" />
 
+  <!-- browser views -->
   <include package=".browser" />
 
 </configure>

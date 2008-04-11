@@ -44,7 +44,7 @@ class PreferenceGroup(object):
         self.__tests__ = tests
         self.__subgroups__ = ()
 
-    def __bind__(self, parent=None, principal=None):
+    def __bind__(self, principal=None, parent=None):
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
 
@@ -139,7 +139,7 @@ class PreferenceGroup(object):
         group = queryUtility(IPreferenceGroup, id, default)
         if group is default:
             return default
-        return group.__bind__(self)
+        return group.__bind__(parent=self)
 
     def items(self):
         id = self.__id__
@@ -151,7 +151,7 @@ class PreferenceGroup(object):
             name = id + key
             group = queryUtility(IPreferenceGroup, name)
             if group is not None:
-                items.append((name, group.__bind__(self)))
+                items.append((name, group.__bind__(parent=self)))
         return items
 
     def __getitem__(self, key):
@@ -175,7 +175,7 @@ class PreferenceGroup(object):
             name = id + key
             group = queryUtility(IPreferenceGroup, name)
             if group is not None:
-                yield group.__bind__(self)
+                yield group.__bind__(parent=self)
 
     def values(self):
         return [group for id, group in self.items()]

@@ -379,6 +379,38 @@ And the tree can built again by carefully constructing the id:
   >>> interfaces.IPreferenceCategory.providedBy(prefs['ZMISettings2']['Folder'])
   False
 
+We can define preference group for principal type
+
+  >>> class IMyPrincipal(zope.interface.Interface):
+  ...   pass
+
+Now let's register preference for for this type of principal
+
+  >>> context = xmlconfig.string('''
+  ... <configure
+  ...   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+  ...   i18n_domain="test">
+  ...
+  ...   <z3ext:preferenceGroup
+  ...     id="ZMISettings2.Folder10"
+  ...     for="z3ext.preferences.README.IMyPrincipal"
+  ...     title="Folder Settings"
+  ...     schema="z3ext.preferences.README.IFolderSettings" />
+  ...
+  ...     </configure>''', context)
+
+  >>> p = component.getUtility(interfaces.IPreferenceGroup, 'ZMISettings2.Folder10')
+  >>> new_prefs = p.__bind__()
+  >>> new_prefs.isAvailable()
+  False
+
+Now let's mark our principal
+
+  >>> zope.interface.alsoProvides(principal, IMyPrincipal)
+  >>> new_prefs = p.__bind__()
+  >>> new_prefs.isAvailable()
+  True
+
 
 Simple Python-Level Access
 --------------------------

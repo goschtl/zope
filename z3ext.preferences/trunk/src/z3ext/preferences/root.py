@@ -42,8 +42,8 @@ class PersonalPreferences(PreferenceGroup):
             return False
         return True
 
-    def __bind__(self, parent=None, principal=None):
-        clone = super(PersonalPreferences, self).__bind__(parent, principal)
+    def __bind__(self, principal=None, parent=None):
+        clone = super(PersonalPreferences, self).__bind__(principal, parent)
 
         rmanager = IPrincipalRoleManager(clone, None)
         if rmanager is not None:

@@ -71,6 +71,9 @@ class IPreferenceGroup(ILocation):
     def remove(name):
         """ remove subgroup name """
 
+    def __bind__(principal=None, parent=None):
+        """ bind preferences """
+
 
 class IPreferenceCategory(interface.Interface):
     """A collection of preference groups.
@@ -90,5 +93,5 @@ class IBound(interface.Interface):
 class IRootPreferences(interface.Interface):
     """ root preferences """
 
-    def __bind__(parent=None, principal=None):
+    def __bind__(principal=None, parent=None):
         """ bind preferences """
