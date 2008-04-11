@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.0 (unreleased)
--------------------------
+Version 0.5.0dev (unreleased)
+-----------------------------
 
 - Update CSS, use overflow: auto; for ISideBar boxes
 

@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zam.skin',
-    version='0.5.0',
+    version='0.5.0dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Zope 3 Application Management skin",
@@ -113,9 +113,11 @@ setup (
         ),
     install_requires = [
         'setuptools',
+        'z3c.jsonrpc',
         'z3c.pagelet',
         'zam.api',
         'zope.app.component',
+        'zope.component',
         'zope.interface',
         'zope.publisher',
         'zope.traversing',
