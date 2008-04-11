@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-  <include package="zope.app.component" file="meta.zcml" />
-  <adapter name="form.html"
-           factory="zc.extjs.form_example.FormExample"
-           permission="zope.View"
-           />
-</configure>
