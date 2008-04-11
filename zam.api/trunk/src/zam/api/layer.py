@@ -18,7 +18,6 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 from zope.viewlet.interfaces import IViewletManager
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from z3c.menu.ready2go import interfaces
 import z3c.layer.ready2go
 
 

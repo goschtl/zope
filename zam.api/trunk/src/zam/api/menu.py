@@ -15,15 +15,9 @@
 $Id: layer.py 197 2007-04-13 05:03:32Z rineichen $
 """
 
-import zope.component
 from zope.contentprovider.interfaces import IContentProvider
-from zope.traversing.interfaces import IContainmentRoot
-from zope.traversing import api
 from zope.viewlet.interfaces import IViewletManager
-from zope.app.component import hooks
 
-import z3c.pagelet.interfaces
-import z3c.form.interfaces
 from z3c.menu.ready2go import item
 
 from zam.api import interfaces

@@ -16,14 +16,8 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 __docformat__ = "reStructuredText"
 
-import base64
-import binascii
-
 import zope.component
 import zope.interface
-from zope.publisher.interfaces import NotFound
-from zope.traversing.interfaces import IContainmentRoot
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.renderer import rest
 from z3c.pagelet import browser
 from z3c.form import button
