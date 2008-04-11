@@ -40,7 +40,7 @@ def make_factory(svn_url):
                 description=['building'],
                 descriptionDone=['build']))
     f.addStep(Compile(name="test",
-                command='bin/test --exit-with-status',
+                command='if [ -e bin/test ]; then bin/test --exit-with-status; fi',
                 description=['testing'],
                 descriptionDone=['tests']))
 
