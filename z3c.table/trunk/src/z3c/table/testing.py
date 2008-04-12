@@ -23,6 +23,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.security import checker
 from zope.app.testing import setup
 
+import z3c.table.value
 
 class DublinCoreAdapterStub(object):
     """Dublin core adapter stub."""
@@ -45,9 +46,15 @@ class DublinCoreAdapterStub(object):
     modified = datetime.datetime(2002, 2, 2, 2, 2, 2)
 
 
+def setUpAdapters():
+    zope.component.provideAdapter(z3c.table.value.ValuesForContainer)
+    zope.component.provideAdapter(z3c.table.value.ValuesForSequence)
+
+
 def setUp(test):
     test.globs['root'] = setup.placefulSetUp(True)
     zope.component.provideAdapter(DublinCoreAdapterStub)
+    setUpAdapters()
 
 
 def tearDown(test):

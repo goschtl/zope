@@ -45,7 +45,7 @@ class BatchProvider(object):
     Note, the additional factor 3 is the placeholder for the first, current and
     last item.
 
-    Such a batch look like:
+    Such a batch looks like:
 
     Renders the link for the first batch, spacers, the amount of links for 
     previous batches, the current batch link, spacers, the amount of links for 

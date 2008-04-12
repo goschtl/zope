@@ -25,6 +25,12 @@ from zope.contentprovider.interfaces import IContentProvider
 _ = zope.i18nmessageid.MessageFactory('z3c')
 
 
+class IValues(zope.interface.Interface):
+    """Table value adapter."""
+
+    values = zope.interface.Attribute('Iterable table row data sequence.')
+
+
 class ITable(IContentProvider):
     """Table provider"""
 

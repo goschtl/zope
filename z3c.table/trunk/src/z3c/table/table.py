@@ -100,7 +100,9 @@ class Table(zope.location.Location):
 
     @property
     def values(self):
-        return self.context.values()
+        adapter = zope.component.getMultiAdapter(
+            (self.context, self.request, self), interfaces.IValues)
+        return adapter.values
 
 # setup
 
@@ -322,7 +324,3 @@ class SequenceTable(Table):
     """
 
     zope.interface.implements(interfaces.ISequenceTable)
-
-    @property
-    def values(self):
-        return self.context

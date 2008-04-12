@@ -29,8 +29,16 @@ from z3c.table import column
 from z3c.table import batch
 
 
+class FakeContainer(object):
+    def values(self):
+        pass
+
+
 # table
 class TestTable(z3c.testing.InterfaceBaseTest):
+
+    def setUp(test):
+        testing.setUpAdapters()
 
     def getTestInterface(self):
         return interfaces.ITable
@@ -39,7 +47,22 @@ class TestTable(z3c.testing.InterfaceBaseTest):
         return table.Table
 
     def getTestPos(self):
-        return ({}, TestRequest())
+        return (FakeContainer(), TestRequest())
+
+
+class TestSequenceTable(z3c.testing.InterfaceBaseTest):
+
+    def setUp(test):
+        testing.setUpAdapters()
+
+    def getTestInterface(self):
+        return interfaces.ITable
+
+    def getTestClass(self):
+        return table.SequenceTable
+
+    def getTestPos(self):
+        return (None, TestRequest())
 
 
 # column
@@ -134,6 +157,7 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         unittest.makeSuite(TestTable),
+        unittest.makeSuite(TestSequenceTable),
         unittest.makeSuite(TestColumn),
         unittest.makeSuite(TestNoneCell),
         unittest.makeSuite(TestNameColumn),
