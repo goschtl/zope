@@ -80,12 +80,16 @@ class ServiceSetup:
 
         # setup service name
         defaultName = 'Zope3 %s' % self.name
+        defaultDescription = 'Zope3 windows service for %s' % self.name
+        displayName = options.get('name', defaultName)
+        serviceName = str(hash(displayName))
+        description = options.get('description', defaultDescription)
         self.winServiceVars = [
             ("<<PYTHON>>", self.executable),
             ("<<RUNZOPE>>", self.runScript),
-            ("<<SERVICE_DISPLAY_NAME>>", options.get('name', defaultName)),
-            ("<<SERVICE_DESCRIPTION>>", options.get('description',
-                defaultName)),
+            ("<<SERVICE_NAME>>", serviceName),
+            ("<<SERVICE_DISPLAY_NAME>>", displayName),
+            ("<<SERVICE_DESCRIPTION>>", description),
             ]
         self.runZopeVars = []
 

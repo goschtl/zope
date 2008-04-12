@@ -17,11 +17,9 @@ Usage:
 
   Installation
 
-    The Zope service should be installed by the Zope Windows
-    installer. You can manually install, uninstall the service from
-    the commandline.
+    You can manually install, uninstall the service from the commandline.
 
-      zopeservice.py [options] install|update|remove|start [...]
+      python bin\winservice.py [options] install|update|remove|start [...]
            |stop|restart [...]|debug [...]
 
     Options for 'install' and 'update' commands only:
@@ -86,6 +84,12 @@ import win32service
 import win32event
 import win32process
 
+# these are replacements from winservice recipe
+PYTHON = r'<<PYTHON>>'
+PYTHONDIR = os.path.split(PYTHON)[0]
+PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
+PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
+
 
 # the max seconds we're allowed to spend backing off
 BACKOFF_MAX = 300
@@ -126,7 +130,7 @@ class NullOutput:
         return []
 
 
-class Service(win32serviceutil.ServiceFramework):
+class Zope3Service(win32serviceutil.ServiceFramework):
     """ A class representing a Windows NT service that can manage an
     instance-home-based Zope/ZEO/ZRS processes """
 
@@ -136,14 +140,12 @@ class Service(win32serviceutil.ServiceFramework):
     # each instance.  The below-defined start_cmd (and _svc_display_name_
     # and _svc_name_) are just examples.
 
-    _svc_name_ = r'Zope-Instance'
-    _svc_display_name_ = r'Zope instance at C:\Zope-Instance'
+    _svc_name_ = '<<SERVICE_NAME>>'
+    _svc_display_name_ = r'<<SERVICE_DISPLAY_NAME>>'
+    _svc_description_ = r'<<SERVICE_DESCRIPTION>>'
 
-    start_cmd = (
-        r'"C:\Program Files\Zope-2.7.0-a1\bin\python.exe" '
-        r'"C:\Program Files\Zope-2.7.0-a1\lib\python\Zope\Startup\run.py" '
-        r'-C "C:\Zope-Instance\etc\zope.conf"'
-        )
+    _exe_name_ = PYTHONSERVICE_EXE
+    start_cmd = '"%s" "%s"' % (PYTHONW, r'<<RUNZOPE>>')
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -288,28 +290,10 @@ class Service(win32serviceutil.ServiceFramework):
             servicemanager.PYS_SERVICE_STOPPED,
             (self._svc_name_, ' (%s) ' % self._svc_display_name_))
 
-# these are replacements from winservice recipe
-PYTHON = r'<<PYTHON>>'
-PYTHONDIR = os.path.split(PYTHON)[0]
-PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
-PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
-RUNZOPE = r'<<RUNZOPE>>'
-SERVICE_NAME = str(hash(SERVICE_DISPLAY_NAME))
-SERVICE_DISPLAY_NAME = '<<SERVICE_DISPLAY_NAME>>'
-SERVICE_DESCRIPTION =  '<<SERVICE_DESCRIPTION>>'
-
-
-class InstanceService(Service):
-    start_cmd = '"%s" "%s"' % (PYTHONW, RUNZOPE)
-    _svc_name_ = SERVICE_NAME
-    _svc_display_name_ = SERVICE_DISPLAY_NAME
-    _svc_description_ = SERVICE_DESCRIPTION
-    _exe_name_ = PYTHONSERVICE_EXE
-
 
 if __name__ == '__main__':
     import win32serviceutil
     if os.path.exists(PYTHONSERVICE_EXE):
         # This ensures that pythonservice.exe is registered...
         os.system('"%s" -register' % PYTHONSERVICE_EXE)
-    win32serviceutil.HandleCommandLine(InstanceService)
+    win32serviceutil.HandleCommandLine(Zope3Service)
