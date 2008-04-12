@@ -26,7 +26,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.recipe.winservice',
-    version = '0.5.0dev',
+    version = '0.5.0',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 windows service installer',
@@ -38,13 +38,13 @@ setup(
     license = 'ZPL 2.1',
     keywords = 'zope zope3 z3c deploy recipe windows service',
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Zope Public License',
         'Programming Language :: Python',
         'Natural Language :: English',
-        'Operating System :: OS Independent',
+        'Operating System :: Microsoft :: Windows',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
     url = 'http://pypi.python.org/pypi/z3c.recipe.winservice',
