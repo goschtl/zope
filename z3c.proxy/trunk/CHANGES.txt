@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Unreleased
-----------
+Version 0.5.0 (2008-04-12)
+--------------------------
 
 - Initial Release
