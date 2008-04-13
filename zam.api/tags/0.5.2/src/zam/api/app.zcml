@@ -1,0 +1,140 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <!-- This is the general app.zcml and can be reused as base for
+       all different app configuration setup in zam.* and zamplugin.* packages.
+  -->
+
+  <!-- load meta configuration for exclude -->
+  <include package="zc.configuration" file="meta.zcml" />
+
+  <!-- exclude will prevent from include -->
+  <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
+  <exclude package="zope.app.authentication" file="groupfolder.zcml" />
+  <exclude package="zope.app.authentication" file="principalfolder.zcml" />
+  <exclude package="zope.app.authentication.browser" />
+  <exclude package="zope.app.authentication.browser" file="configure.zcml" />
+  <exclude package="zope.app.authentication.browser" file="groupfolder.zcml" />
+  <exclude package="zope.app.authentication.browser" file="httpplugins.zcml" />
+  <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
+  <exclude package="zope.app.authentication.browser" file="session.zcml" />
+  <exclude package="zope.app.broken" file="browser.zcml" />
+  <exclude package="zope.app.container.browser" />
+  <exclude package="zope.app.error.browser" />
+  <exclude package="zope.app.folder.browser" />
+  <exclude package="zope.app.i18n.browser" />
+  <exclude package="zope.app.intid.browser" />
+  <exclude package="zope.app.securitypolicy.browser" />
+  <exclude package="zope.app.session" file="browser.zcml" />
+  <exclude package="zope.dublincore.browser" />
+
+
+  <!-- meta configure -->
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="zope.app.component.browser" file="meta.zcml" />
+  <include package="zope.app.container.browser" file="meta.zcml" />
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
+  <include package="zope.app.publication" file="meta.zcml" />
+  <include package="zope.app.publisher" file="meta.zcml" />
+  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.i18n" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+
+
+  <!-- load 3rd party meta configuration -->
+  <include package="z3c.baseregistry" file="meta.zcml" />
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.zrtresource" file="meta.zcml" />
+
+
+  <!-- vocabulary setup, that's bad and weird, because this is meta configuration -->
+  <include package="zope.app.schema" />
+
+
+  <!-- bootstrap Database -->
+  <include package="zope.app.appsetup" />
+  <include package="zope.app.zopeappgenerations" />
+
+  <!-- zope server -->
+  <include package="zope.app.server" />
+  <include package="zope.app.twisted" />
+  <include package="zope.app.wsgi" />
+
+
+  <!-- zope packages -->
+  <include package="zope.annotation" />
+  <include package="zope.component" />
+  <include package="zope.contentprovider" />
+  <include package="zope.dublincore" />
+  <include package="zope.error" />
+  <include package="zope.location" />
+  <include package="zope.publisher" />
+  <include package="zope.securitypolicy" />
+  <include package="zope.session" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+
+
+  <!-- zope app package configuration -->
+  <include package="zope.app.authentication" />
+  <include package="zope.app.broken" />
+  <include package="zope.app.component" />
+  <include package="zope.app.container" />
+  <include package="zope.app.folder" />
+  <include package="zope.app.http" />
+  <include package="zope.app.intid" />
+  <include package="zope.app.keyreference" />
+  <include package="zope.app.principalannotation" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.publisher" />
+  <include package="zope.app.publisher.browser" />
+  <include package="zope.app.security" />
+  <include package="zope.app.securitypolicy" />
+  <include package="zope.app.session" />
+
+
+  <!-- z3c component -->
+  <include package="z3c.breadcrumb" />
+  <include package="z3c.form" />
+  <include package="z3c.formui" />
+  <include package="z3c.layer.pagelet" />
+  <include package="z3c.layer.ready2go" />
+  <include package="z3c.menu.ready2go" />
+  <include package="z3c.macro" />
+  <include package="z3c.pagelet" />
+
+
+  <!-- zam configuration -->
+  <include package="zam.api" />
+
+
+  <!-- Setup charset negotiation -->
+  <!-- from zope.app.i18n -->
+  <!-- fix dependency in zope and move this to another package -->
+  <adapter
+      factory="zope.publisher.http.HTTPCharsets"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IUserPreferredCharsets"
+      />
+
+  <adapter
+      factory="zope.app.publisher.browser.ModifiableBrowserLanguages"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
+      />
+
+  <class class="zope.publisher.http.HTTPRequest">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+</configure>

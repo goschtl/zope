@@ -1,0 +1,117 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zope">
+
+  <!-- This is the general zam.api ftesting.zcml and can be used for mixin
+       ftesting setup for any kind of zam plugins.
+  -->
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
+
+  <!-- load app configuration from zam.api -->
+  <include package="zam.api" file="app.zcml" />
+
+
+  <!-- setup public test site (no login required for simple test setup) -->
+  <class class=".testing.ZAMTestSite">
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageSite"
+        attributes="setSiteManager"
+        />
+    <require
+        permission="zope.Public"
+        attributes="title"
+        interface="zope.app.container.interfaces.IContained"
+        />
+    <require
+        permission="zope.ManageSite"
+        set_schema=".testing.IZAMTestSite"
+        />
+  </class>
+
+
+  <!-- load security policy -->
+  <include package="zope.securitypolicy" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <role id="zope.Anonymous"
+      title="Everybody"
+      description="All users have this role implicitly"
+      />
+  <role
+      id="zope.Manager"
+      title="Site Manager"
+      />
+  <role
+      id="zope.Member"
+      title="Site Member"
+      />
+
+  <grant
+      permission="zope.View"
+      role="zope.Anonymous"
+      />
+  <grant
+      permission="zope.app.dublincore.view"
+      role="zope.Anonymous"
+      />
+  <grantAll
+      role="zope.Manager"
+      />
+
+
+  <!-- setup principals -->
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+
+  <unauthenticatedGroup
+      id="zope.Anybody"
+      title="Unauthenticated Users"
+      />
+
+  <authenticatedGroup
+      id="zope.Authenticated"
+      title="Authenticated Users"
+      />
+
+  <everybodyGroup
+      id="zope.Everybody"
+      title="All Users"
+      />
+
+  <!-- setup test principals -->
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
+  <grant
+      role="zope.Manager"
+      principal="zope.mgr"
+      />
+
+  <principal
+      id="zope.globalmgr"
+      title="Manager"
+      login="globalmgr"
+      password="globalmgrpw"
+      />
+  <grant
+      role="zope.Manager"
+      principal="zope.globalmgr"
+      />
+
+</configure>
