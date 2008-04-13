@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+
+Version 0.5.1 (2008-04-13)
+--------------------------
+
+- Added new plugin layer for zamplugin.contents plugin
+
+Version 0.5.0 (2008-04-11)
+--------------------------
+
+- Now plugin provides it's own management form. By default the PluginManagement
+  page can be used which is a mixin of IContentProvider and IForm. This makes 
+  it possible to write intelligent plugin management views which can do more 
+  then just install and uninstall.
+
+- Initial Release

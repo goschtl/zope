@@ -1,0 +1,36 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <!-- IGlobalMenu -->
+  <viewlet
+      name="Root"
+      for="*"
+      class=".menu.RootMenuItem"
+      manager=".menu.IGlobalMenu"
+      layer=".layer.IZAMCoreLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Plugins"
+      for="*"
+      class=".menu.ZAMRootPluginsMenuItem"
+      manager=".menu.IGlobalMenu"
+      layer=".layer.IZAMCoreLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IContextMenu -->
+  <viewlet
+      name="Plugins"
+      for="zope.location.interfaces.ISite"
+      class=".menu.PluginsMenuItem"
+      manager=".menu.IContextMenu"
+      layer=".layer.IZAMCoreLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>
