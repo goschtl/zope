@@ -2,24 +2,56 @@
 README
 ======
 
-This package contains the Zope Application Management skin. This skin supports 
-a modular application management UI without any dependency to the old skin
-implementations. The goal of this new skin is to support a more modular
-concept which allows us to register only what we need.
+This package provides the error utility pages. The zam.skin is used as basic 
+skin for this test.
 
-Login as manager first:
+First login as manager:
 
   >>> from zope.testbrowser.testing import Browser
-  >>> manager = Browser()
-  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> mgr = Browser()
+  >>> mgr.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the page.html view which is registred in the
-ftesting.zcml file with our skin:
+And go to the plugins page at the site root:
 
-  >>> manager = Browser()
-  >>> manager.handleErrors = False
-  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> skinURL = 'http://localhost/++skin++ZAM/index.html'
-  >>> manager.open(skinURL)
-  >>> manager.url
-  'http://localhost/++skin++ZAM/index.html'
+  >>> rootURL = 'http://localhost/++skin++ZAM'
+  >>> mgr.open(rootURL + '/plugins.html')
+  >>> mgr.url
+  'http://localhost/++skin++ZAM/plugins.html'
+
+and install the error plugins:
+
+  >>> mgr.getControl(name='zamplugin.error.buttons.install').click()
+  >>> print mgr.contents
+  <!DOCTYPE ...
+  ...
+    <h1>ZAM Plugin Management</h1>
+    <fieldset id="pluginManagement">
+      <strong class="installedPlugin">Error reporting utility</strong>
+      <div class="description">ZAM Error reporting utility.</div>
+  ...
+
+Now you can see that we can access the error utility at the site root:
+
+  >>> mgr.open(rootURL + '/++etc++site/default/RootErrorReportingUtility')
+  >>> print mgr.contents
+  <!DOCTYPE ...
+  ...
+  <div id="content">
+    <div>
+    <h3>Exception Log (most recent first)</h3>
+    <p>This page lists the exceptions that have occurred in this
+      site recently.</p>
+    <div>
+      <em> No exceptions logged. </em>
+  <BLANKLINE>
+    </div>
+    <!-- just offer reload button -->
+    <form action="." method="get">
+      <div class="row">
+        <div class="controls">
+          <input type="submit" name="submit" value="Refresh" />
+        </div>
+      </div>
+    </form>
+  </div>
+  ...

@@ -1,21 +1,15 @@
 <configure
+    xmlns:meta="http://namespaces.zope.org/meta"
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="zope">
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
 
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.skin" file="ftesting.zcml" />
 
-
-  <!-- exclude will prevent from include -->
-  <exclude package="zope.app.error.browser" />
-
-  <!-- zope app package configuration -->
-  <include package="zope.error" />
-
-
-  <!-- zam skin configuration -->
-  <include package="zamplugin.error" />
+  <!-- load app configuration -->
+  <include package="zamplugin.error" file="app.zcml" />
 
 </configure>
