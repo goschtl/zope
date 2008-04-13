@@ -68,7 +68,6 @@ setup (
         'z3c.sampledata',
         'z3c.template',
         'zam.api',
-        'zam.skin',
         'zope.component',
         'zope.exceptions',
         'zope.interface',

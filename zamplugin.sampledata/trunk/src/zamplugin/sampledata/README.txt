@@ -2,24 +2,44 @@
 README
 ======
 
-This package contains the Zope Application Management skin. This skin supports 
-a modular application management UI without any dependency to the old skin
-implementations. The goal of this new skin is to support a more modular
-concept which allows us to register only what we need.
+This package provides sampledata pages for the z3c.sampledata implementation. 
+The zam.skin is used as basic skin for this test.
 
-Login as manager first:
+First login as manager:
 
   >>> from zope.testbrowser.testing import Browser
-  >>> manager = Browser()
-  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> mgr = Browser()
+  >>> mgr.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the page.html view which is registred in the
-ftesting.zcml file with our skin:
+And go to the plugins page at the site root:
 
-  >>> manager = Browser()
-  >>> manager.handleErrors = False
-  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
-  >>> skinURL = 'http://localhost/++skin++ZAM/index.html'
-  >>> manager.open(skinURL)
-  >>> manager.url
-  'http://localhost/++skin++ZAM/index.html'
+  >>> rootURL = 'http://localhost/++skin++ZAM'
+  >>> mgr.open(rootURL + '/plugins.html')
+  >>> mgr.url
+  'http://localhost/++skin++ZAM/plugins.html'
+
+and install the error plugins:
+
+  >>> mgr.getControl(name='zamplugin.sampledata.buttons.install').click()
+  >>> print mgr.contents
+  <!DOCTYPE ...
+  ...
+    <h1>ZAM Plugin Management</h1>
+    <fieldset id="pluginManagement">
+      <strong class="installedPlugin">Sample data configuration views</strong>
+      <div class="description">ZAM sample data configuration views utility.</div>
+  ...
+
+Now you can see that we can access the error utility at the site root:
+
+  >>> mgr.open(rootURL + '/sampledata.html')
+  >>> print mgr.contents
+  <!DOCTYPE ...
+  ...
+  <div id="content">
+    <h1>Sample Data Generation</h1>
+    <div class="row">Select the sample manager</div>
+      </div>
+    </div>
+  </div>
+  ...
