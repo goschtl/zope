@@ -7,10 +7,6 @@
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.skin" file="ftesting.zcml" />
 
-  <!-- include z3c configuration -->
-  <include package="z3c.table" />
-  <include package="z3c.contents" />
-
   <!-- zamplugin configuration -->
   <include package="zamplugin.contents" />
 
