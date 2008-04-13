@@ -23,15 +23,6 @@
       />
 
   <viewlet
-      name="Server control"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
-      class=".menu.ServerControlMenuItem"
-      manager="zam.api.menu.IContextMenu"
-      layer="zam.api.layer.IControlPluginLayer"
-      permission="zope.ManageServices"
-      />
-
-  <viewlet
       name="ZODB Control"
       for="zope.app.applicationcontrol.interfaces.IApplicationControl"
       class=".menu.ZODBControlMenuItem"

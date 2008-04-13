@@ -19,22 +19,6 @@
       />
 
 
-  <!-- Server control -->
-  <z3c:pagelet
-      name="servercontrol.html"
-      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
-      class=".servercontrol.ServerControl"
-      permission="zope.ManageApplication"
-      layer="zam.api.layer.IControlPluginLayer"
-      />
-
-  <z3c:template
-      for=".servercontrol.ServerControl"
-      template="servercontrol.pt"
-      layer="zam.api.layer.IControlPluginLayer"
-      />
-
-
   <!-- ZODB control -->
   <z3c:pagelet
       name="ZODBControl.html"

@@ -13,7 +13,8 @@
       provides="zam.api.interfaces.IPluginManagement"
       />
 
-  <!-- make sure we bootstrap the evolver -->
+  <!-- make sure we bootstrap the evolver even if the plugin is not installed.
+       This allows us to bootstrap important automatic evolvers -->
   <include package="zope.app.generations" file="subscriber.zcml" />
 
   <registerIn registry="zamplugin.control.plugin.ControlBaseRegistry">

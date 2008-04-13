@@ -16,7 +16,6 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 __docformat__ = "reStructuredText"
 
-import zope.component
 from zope.traversing.api import getRoot
 from zope.app.applicationcontrol.interfaces import IApplicationControl
 
@@ -59,22 +58,15 @@ class RuntimeMenuItem(AppControlContextMenuItem):
     weight = 1
 
 
-class ServerControlMenuItem(AppControlContextMenuItem):
-    """Server control menu item."""
-
-    viewName = 'servercontrol.html'
-    weight = 2
-
-
 class ZODBControlMenuItem(AppControlContextMenuItem):
     """ZODB control menu item."""
 
     viewName = 'ZODBControl.html'
-    weight = 3
+    weight = 2
 
 
 class GenerationsMenuItem(AppControlContextMenuItem):
     """Generation management menu item."""
 
     viewName = 'generations.html'
-    weight = 4
+    weight = 3
