@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+Version 0.5.1 (2008-04-13)
+--------------------------
 
 - Cleanup ftesting configuration, make it possbile to load ftesting.zcml
   additional to the app.zcml configuration.
