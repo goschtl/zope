@@ -1,0 +1,18 @@
+=======
+CHANGES
+=======
+
+Version 0.5.1 (2008-04-13)
+--------------------------
+
+- Cleanup ftesting configuration, make it possbile to load ftesting.zcml
+  additional to the app.zcml configuration.
+
+Version 0.5.0 (2008-04-13)
+--------------------------
+
+- Moved contens.html page to zamplugin.contents
+
+- Update CSS, use overflow: auto; for ISideBar boxes
+
+- Initial Release
