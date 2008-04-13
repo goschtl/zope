@@ -25,7 +25,6 @@ from zope.viewlet import viewlet
 from zope.app.component import hooks
 
 from z3c.pagelet import browser
-from zam.api import interfaces
 
 
 class IndexPage(browser.BrowserPagelet):
