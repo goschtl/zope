@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for IContentsPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.contents.plugin.ContentsPlugin
+           zam.api.layer.IContentsPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <include file="browser.zcml" />
+  <include file="menu.zcml" />
+
+</configure>
