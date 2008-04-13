@@ -1,0 +1,72 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for IControlPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.control.plugin.ControlPlugin
+           zam.api.layer.IControlPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <!-- make sure we bootstrap the evolver even if the plugin is not installed.
+       This allows us to bootstrap important automatic evolvers -->
+  <include package="zope.app.generations" file="subscriber.zcml" />
+
+  <registerIn registry="zamplugin.control.plugin.ControlBaseRegistry">
+
+    <class
+        class=".applicationcontrol.ApplicationControl">
+      <require
+          permission="zope.ManageApplication"
+          interface="zope.app.applicationcontrol.interfaces.IApplicationControl"
+          />
+    </class>
+
+
+    <!-- configure zope defaults (we do not include original configure.zcml -->
+    <adapter 
+        for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+        provides="zope.app.applicationcontrol.interfaces.IRuntimeInfo"
+        factory="zope.app.applicationcontrol.runtimeinfo.RuntimeInfo"
+        permission="zope.ManageApplication"
+        />
+
+    <!-- configure zope defaults (we do not include original configure.zcml -->
+    <utility 
+        component="zope.app.applicationcontrol.zopeversion.ZopeVersionUtility"
+        provides="zope.app.applicationcontrol.interfaces.IZopeVersion"
+        />
+
+    <!-- re-configure some crapy zope core components -->
+    <adapter
+        factory=".applicationcontrol.ApplicationControl"
+        provides="zope.app.applicationcontrol.interfaces.IApplicationControl"
+        locate="True"
+        />
+
+    <adapter
+        name="etc"
+        factory=".namespace.etc"
+        for="*"
+        provides="zope.traversing.interfaces.ITraversable"
+        />
+    <view
+        name="etc"
+        factory=".namespace.etc"
+        for="*"
+        type="zope.interface.Interface"
+        provides="zope.traversing.interfaces.ITraversable"
+        />
+
+    <include file="menu.zcml" />
+    <include package=".browser" />
+
+  </registerIn>
+
+
+</configure>
