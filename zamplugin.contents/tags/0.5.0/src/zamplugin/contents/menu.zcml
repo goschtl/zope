@@ -1,0 +1,20 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <zope:registerIn registry="zamplugin.contents.plugin.ContentsBaseRegistry">
+
+    <!-- IContextMenu -->
+    <viewlet
+        name="Contents"
+        for="zope.app.container.interfaces.IReadContainer"
+        class=".menu.ContentsMenuItem"
+        manager="zam.api.menu.IContextMenu"
+        layer="zam.api.layer.IContentsPluginLayer"
+        permission="zope.ManageContent"
+        />
+
+  </zope:registerIn>
+
+</configure>
