@@ -3,10 +3,12 @@ CHANGES
 =======
 
 
-Version 0.5.2dev (unreleased)
------------------------------
+Version 0.5.2 (2008-04-11)
+--------------------------
 
-- ...
+- Simplify ftesting setup, removed duplicated configuration. Make it better
+  reusable. Now we can include app.zcml and mixin ftesting.zcml at the same 
+  time in plugin tests.
 
 Version 0.5.1 (2008-04-13)
 --------------------------
