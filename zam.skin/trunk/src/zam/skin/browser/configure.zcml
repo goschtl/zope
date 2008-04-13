@@ -173,17 +173,17 @@
       />
 
   <z3c:pagelet
+      for="*"
       name="contents.html"
-      for="zope.traversing.interfaces.IContainmentRoot"
-      class="z3c.contents.browser.Contents"
-      permission="zope.ManageSite"
+      permission="zope.ManageContent"
+      class=".NoneContentsPage"
       layer="zam.skin.layer.IZAMSkinLayer"
       />
 
-  <defaultView
-      for="zope.traversing.interfaces.IContainmentRoot"
-      name="contents.html"
+  <z3c:template
+      for=".NoneContentsPage"
       layer="zam.skin.layer.IZAMSkinLayer"
+      template="contents.pt"
       />
 
 </configure>

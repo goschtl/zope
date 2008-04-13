@@ -29,12 +29,11 @@ from zam.api import interfaces
 
 
 class IndexPage(browser.BrowserPagelet):
-    """Index page."""
+    """Missing index.html page."""
 
-    zope.interface.implements(interfaces.IRootMenuItemPage)
 
-    def __init__(self, context, request):
-        super(IndexPage, self).__init__(context, request)
+class NoneContentsPage(browser.BrowserPagelet):
+    """Missing contents.html page."""
 
 
 class SiteURL(BrowserPage):
