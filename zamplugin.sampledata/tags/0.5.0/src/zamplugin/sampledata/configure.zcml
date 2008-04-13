@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for ISampleDataPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.sampledata.plugin.SampleDataPlugin
+           zam.api.layer.ISampleDataPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+
+  <registerIn registry="zamplugin.sampledata.plugin.SampleDataBaseRegistry">
+
+    <include file="browser.zcml" />
+    <include file="menu.zcml" />
+
+  </registerIn>
+
+</configure>
