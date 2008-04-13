@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zope">
+
+  <!-- use ftesting configuration from zam.api -->
+  <include package="zam.api" file="ftesting.zcml" />
+
+
+  <!-- zam skin configuration -->
+  <include package="zam.api" />
+  <include package="zam.skin" />
+
+
+  <!-- configure defaults -->
+  <browser:defaultSkin name="ZAM" />
+  <browser:defaultView name="index.html" />
+
+</configure>
