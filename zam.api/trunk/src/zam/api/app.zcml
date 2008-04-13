@@ -116,15 +116,15 @@
   <include package="zam.api" />
 
 
-  <!-- from zope.app.i18n move this to another package -->
   <!-- Setup charset negotiation -->
+  <!-- from zope.app.i18n -->
+  <!-- fix dependency in zope and move this to another package -->
   <adapter
       factory="zope.publisher.http.HTTPCharsets"
       for="zope.publisher.interfaces.http.IHTTPRequest"
       provides="zope.i18n.interfaces.IUserPreferredCharsets"
       />
 
-  <!-- Setup charset negotiation --><!-- move this to another package -->
   <adapter
       factory="zope.app.publisher.browser.ModifiableBrowserLanguages"
       for="zope.publisher.interfaces.http.IHTTPRequest"
