@@ -25,15 +25,6 @@
 
   <!-- IContextMenu -->
   <viewlet
-      name="Contents"
-      for="zope.traversing.interfaces.IContainmentRoot"
-      class=".menu.ContentsMenuItem"
-      manager=".menu.IContextMenu"
-      layer=".layer.IZAMCoreLayer"
-      permission="zope.ManageServices"
-      />
-
-  <viewlet
       name="Plugins"
       for="zope.location.interfaces.ISite"
       class=".menu.PluginsMenuItem"

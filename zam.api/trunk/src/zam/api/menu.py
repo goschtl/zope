@@ -56,14 +56,6 @@ class ZAMRootPluginsMenuItem(item.GlobalMenuItem):
     weight = 1
 
 
-class ContentsMenuItem(item.ContextMenuItem):
-    """ZAM global contents.html menu item."""
-
-    viewName = 'contents.html'
-    viewInterface = interfaces.IRootMenuItemPage
-    weight = 1
-
-
 class PluginsMenuItem(item.ContextMenuItem):
     """ZAM site plugins menu item."""
 
