@@ -15,6 +15,8 @@ import os
 import logging
 from subprocess import call
 
+from pkg_resources import component_re # Is this a public interface?
+
 _marker = object()
 _here = os.path.dirname(__file__)
 
@@ -33,7 +35,7 @@ class PackageNameTranslator:
         'python-imaging'
         >>> trans.source_to_egg('python-imaging')
         'PIL'
-    
+
     A global translation where the binary and source translations are different:
 
         >>> trans.egg_to_source('vanguardistas.builder')
@@ -45,7 +47,7 @@ class PackageNameTranslator:
 
         >>> trans.source_to_egg('somesource')
         'someegg'
-    
+
     A debiam package name can only be lowercase, so the default package translation should guess only lowercase names
     (http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Package)
 
@@ -106,11 +108,169 @@ class PackageNameTranslator:
         return 'python-%s' % egg_name.lower()
 
 
+def egg_to_deb(version):
+    """Converts an egg version to debian format to preserve sorting rules.
+
+    We try to convert egg versions to debian versions here in a way that
+    preserves sorting rules and takes into account egg ideosynchracies. We also
+    try to maintain readability of the version numbers and so do not aim for
+    perfection (It's highly doubtful we could attain it anyway).
+
+    Setup a testing function:
+
+        >>> from pkg_resources import parse_version
+        >>> def test_gt(v1, v2):
+        ...     st_gt = parse_version(v1) > parse_version(v2)
+        ...     v1_c, v2_c = egg_to_deb(v1), egg_to_deb(v2)
+        ...     dpkg_gt = _dpkg_is_gt(v1_c, v2_c)
+        ...     print "Dpkgized versions:", v1_c, v2_c
+        ...     if st_gt == dpkg_gt:
+        ...         if st_gt:
+        ...             print "Greater Than"
+        ...         else:
+        ...             print "Not Greater Than"
+        ...     else:
+        ...         print "ERROR: setuptools and dpkg do not agree."
+        ...     if _dpkg_is_gt(v1, v2) == st_gt:
+        ...         print "Dpkg understands setuptools version"
+        ...     else:
+        ...         print "Dpkg would have got this comparison wrong using only setuptools versions."
+
+    These are the cases we want to fix:
+
+        >>> test_gt('2.8.0', '2.8.0dev1')
+        Dpkgized versions: 2.8.0 2.8.0~~dev1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0pre1', '2.8.0a1')
+        Dpkgized versions: 2.8.0~c~pre1 2.8.0~a1
+        Greater Than
+        Dpkg understands setuptools version
+
+        >>> test_gt('2.8.0d1', '2.8.0pre1')
+        Dpkgized versions: 2.8.0~d1 2.8.0~c~pre1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0a1', '2.8.0dev1')
+        Dpkgized versions: 2.8.0~a1 2.8.0~~dev1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0-1', '2.8.0rc1')
+        Dpkgized versions: 2.8.0-1 2.8.0~c~rc1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+
+        >>> test_gt('2.8.1', '2.8.0-1')
+        Dpkgized versions: 2.8.1 2.8.0-1
+        Greater Than
+        Dpkg understands setuptools version
+
+        >>> test_gt('2.8.0', '2.8.0a1')
+        Dpkgized versions: 2.8.0 2.8.0~a1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0', '2.8.0pre1')
+        Dpkgized versions: 2.8.0 2.8.0~c~pre1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0preview1', '2.8.0a1')
+        Dpkgized versions: 2.8.0~c~preview1 2.8.0~a1
+        Greater Than
+        Dpkg understands setuptools version
+
+        >>> test_gt('2.8.0', '2.8.0rc1')
+        Dpkgized versions: 2.8.0 2.8.0~c~rc1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0', '2.8.0RC1')
+        Dpkgized versions: 2.8.0 2.8.0~c~rc1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0possible', '2.8.0rc1') # even duplicate the bugs...
+        Dpkgized versions: 2.8.0~possible 2.8.0~c~rc1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0rc1', '2.8.0RC1')
+        Dpkgized versions: 2.8.0~c~rc1 2.8.0~c~rc1
+        Not Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+        >>> test_gt('2.8.0cat', '2.8.0rc1')
+        Dpkgized versions: 2.8.0~cat 2.8.0~c~rc1
+        Greater Than
+        Dpkg would have got this comparison wrong using only setuptools versions.
+
+    """
+    version = version.lower()
+    result = []
+    for part in component_re.split(version):
+        if not part or part.isdigit() or part == '.' or part == '-':
+            result.append(part)
+            continue
+        result.append('~')
+        if part in ['pre', 'preview', 'rc']:
+            # ok. so because of the way setuptools does this, we can't manage to preserve the original
+            # version number and maintain sort order
+            result.append('c~')
+        if part == 'dev':
+            result.append('~')
+        result.append(part)
+    return ''.join(result)
+
+
 def version_compare(egg, source):
-    if _dpkg_is_gt(egg.version, source.version):
-        logging.debug("%s is greater than %s" % (egg.version, source.version))
+    """Compare an egg and deb version.
+
+    Returns None if the comparison is meaningless.
+
+        >>> class VersionStub:
+        ...     pass
+
+        >>> source = VersionStub()
+        >>> egg =VersionStub()
+
+    A normal comparison returning >:
+
+        >>> egg.version = '2'
+        >>> source.version = '1'
+        >>> version_compare(egg, source)
+        '>'
+
+    We don't yet know how to decide on less than (Changing this is a TODO):
+
+        >>> egg.version = '1'
+        >>> source.version = '2'
+        >>> version_compare(egg, source) is None
+        True
+
+    But we can do some complex compares correctly:
+
+        >>> egg.version = '1.0a1'
+        >>> source.version = '1.0~~dev1'
+        >>> version_compare(egg, source)
+        '>'
+
+        >>> egg.version = '1.0b1'
+        >>> source.version = '1.0~a1'
+        >>> version_compare(egg, source)
+        '>'
+
+
+    """
+    dpkgized = egg_to_deb(egg.version)
+    if _dpkg_is_gt(dpkgized, source.version):
+        logging.debug("%s (dpkgized: %s) is greater than %s" % (egg.version, dpkgized, source.version))
         return '>'
-    logging.debug("%s is NOT greater than %s" % (egg.version, source.version))
+    logging.debug("%s (dpkgized: %s) is NOT greater than %s" % (egg.version, dpkgized, source.version))
     return None # Dunno!!!
 
 def _dpkg_is_gt(v1, v2):

@@ -24,7 +24,7 @@ setuptools_debian_operators = {'>=': '>=',
                                '<': '<<',
                                '==': '=',
                                '!=': None, # != not supported by debian, use conflicts in future for this
-                               '<=': '<='} 
+                               '<=': '<='}
 
 def parse_args(argv):
     """Parse the command line arguments"""
@@ -40,7 +40,7 @@ def parse_args(argv):
     assert options.depends ^ options.conflicts
     assert os.path.exists(options.egginfo), options.egginfo
     return options
-    
+
 def get_debian_dependencies(file):
     """Returns a list of the format of the dpkg dependency info."""
     pydeps = []
@@ -57,7 +57,8 @@ def get_debian_dependencies(file):
                 op = setuptools_debian_operators[op]
                 if op is None:
                     continue
-                pydeps.append('%s (%s %s)' % (bin_pkg, op, version))
+                dpkg_version = translator.egg_to_deb(version)
+                pydeps.append('%s (%s %s)' % (bin_pkg, op, dpkg_version))
         else:
             pydeps.append(bin_pkg)
     # Let's depend on the namespace pacakges as well.
@@ -74,15 +75,15 @@ def get_debian_dependencies(file):
 
 def deps(argv=sys.argv):
     """Run the dependency calculation program.
-    
+
         >>> import os
         >>> here = os.path.dirname(__file__)
         >>> ex1 = os.path.join(here, 'tests', 'dummy.foo.egg-info')
         >>> exitcode = deps(['bin', '--egg_info', ex1, '--depends'])
-        python-foo (>> 0.1), python-foobar, python-bar (<< 0.3), python-dummy
+        python-foo (>> 0.1), python-foobar, python-bar (<< 0.3~c~pre1), python-dummy
         >>> exitcode
         0
-        
+
         >>> exitcode = deps(['bin', '--egg_info', ex1, '--conflicts'])
         <BLANKLINE>
         >>> exitcode
