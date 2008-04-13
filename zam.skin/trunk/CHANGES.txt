@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-Version 0.5.0dev (unreleased)
------------------------------
+Version 0.5.0 (2008-04-13)
+--------------------------
+
+- Moved contens.html page to zamplugin.contents
 
 - Update CSS, use overflow: auto; for ISideBar boxes
 
