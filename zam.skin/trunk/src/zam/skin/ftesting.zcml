@@ -7,14 +7,7 @@
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.api" file="ftesting.zcml" />
 
-
-  <!-- zam skin configuration -->
-  <include package="zam.api" />
-  <include package="zam.skin" />
-
-
-  <!-- configure defaults -->
-  <browser:defaultSkin name="ZAM" />
-  <browser:defaultView name="index.html" />
+  <!-- include app configuration -->
+  <include package="zam.skin" file="app.zcml" />
 
 </configure>
