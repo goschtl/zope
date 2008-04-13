@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Application Control
 
-$Id: applicationcontrol.py 67630 2006-04-27 00:54:03Z jim $"""
+$Id:$"""
 __docformat__ = 'restructuredtext'
 
 import time

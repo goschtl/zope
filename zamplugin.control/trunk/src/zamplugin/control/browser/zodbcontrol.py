@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """ Server Control View
 
-$Id: zodbcontrol.py 73536 2007-03-25 08:17:24Z dobe $
+$Id:$
 """
 __docformat__ = 'restructuredtext'
 

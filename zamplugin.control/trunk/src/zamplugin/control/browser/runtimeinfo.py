@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Define runtime information view component for Application Control
 
-$Id: runtimeinfo.py 74321 2007-04-21 11:35:21Z ctheune $
+$Id:$
 """
 __docformat__ = 'restructuredtext'
 

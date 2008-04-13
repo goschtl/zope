@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
+$Id:$
 """
 __docformat__ = "reStructuredText"
 

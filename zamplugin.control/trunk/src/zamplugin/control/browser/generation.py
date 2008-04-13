@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """UI for browsing database schema managers
 
-$Id: managers.py 73669 2007-03-27 07:35:13Z dobe $
+$Id:$
 """
 __docformat__ = 'restructuredtext'
 
