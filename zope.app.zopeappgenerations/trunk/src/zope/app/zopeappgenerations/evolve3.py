@@ -39,7 +39,7 @@ def evolve(context):
     - Group folders should no longer be registered.
 
     - PAUs that use group folders should use their contents name, not their
-    (formerly) registered name.
+      (formerly) registered name.
 
     Group folders used by multiple PAUs were not supported, and are not
     supported with this evolution.
