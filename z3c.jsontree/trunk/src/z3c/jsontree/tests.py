@@ -91,13 +91,13 @@ def setUpAdapters():
 
     # setup adapters
     zope.component.provideAdapter(subitem.NoneTreeItems,
-        (zope.interface.Interface, IBrowserRequest))
+        (zope.interface.Interface, IBrowserRequest, interfaces.ISubItemAware))
     zope.component.provideAdapter(subitem.ContainerTreeItems,
-        (IReadContainer, IBrowserRequest))
+        (IReadContainer, IBrowserRequest, interfaces.ISubItemAware))
     zope.component.provideAdapter(subitem.NoneTreeItems,
-        (zope.interface.Interface, IJSONRPCRequest))
+        (zope.interface.Interface, IJSONRPCRequest, interfaces.ISubItemAware))
     zope.component.provideAdapter(subitem.ContainerTreeItems,
-        (IReadContainer, IJSONRPCRequest))
+        (IReadContainer, IJSONRPCRequest, interfaces.ISubItemAware))
 
 
 class TestSimpleJSONTree(z3c.testing.InterfaceBaseTest):
