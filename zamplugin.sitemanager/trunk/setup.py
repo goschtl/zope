@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='zamplugin.sitemanager',
-    version='0.5.0',
+    version='0.5.0dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Site manager support for Zope Application Management",
@@ -91,7 +91,6 @@ setup (
         'z3c.xmlhttp',
         'z3c.zrtresource',
         'zam.api',
-        'zam.skin',
         'zc.configuration',
         'zope.app.component',
         'zope.app.http',

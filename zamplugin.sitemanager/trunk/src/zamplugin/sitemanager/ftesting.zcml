@@ -1,16 +1,15 @@
 <configure
+    xmlns:meta="http://namespaces.zope.org/meta"
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="zope">
+
+  <!-- Turn on the devmode -->
+  <meta:provides feature="devmode" />
 
   <!-- use ftesting configuration from zam.api -->
   <include package="zam.skin" file="ftesting.zcml" />
 
-  <!-- load 3rd party configuration -->
-  <include package="z3c.contents" />
-
-  <!-- zamplugin configuration -->
-  <include package="zamplugin.sitemanager" />
+  <!-- load app configuration -->
+  <include package="zamplugin.sitemanager" file="app.zcml" />
 
 </configure>

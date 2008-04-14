@@ -10,7 +10,7 @@
         file="js/z3c.xmlhttp-0.5.0.js"
         layer="zam.api.layer.ISiteManagerPluginLayer"
         />
-  
+
     <viewlet
         name="z3c.xmlhttp.js"
         for="*"

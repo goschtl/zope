@@ -17,7 +17,7 @@
       template="registration.pt"
       layer="zam.api.layer.ISiteManagerPluginLayer"
       />
-      
+
 
   <z3c:pagelet
       for="*"
