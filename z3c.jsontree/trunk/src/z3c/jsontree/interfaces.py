@@ -36,10 +36,14 @@ STATE_COLLAPSED = 'collapsed'
 STATE_STATIC = 'static'
 
 
+class ISubItemAware(zope.interface.Interface):
+    """Sub item aware object."""
+
+
 class ITreeItems(zope.interface.Interface):
     """Knows the items listed in tree for the given context."""
 
-    def __init__(context, provider):
+    def __init__(context, request, tree):
         """Adapts the context and the request.
         
         This allows to use different adapters for different layers on the same

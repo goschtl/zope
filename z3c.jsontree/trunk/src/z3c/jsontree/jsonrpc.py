@@ -39,7 +39,7 @@ class NoneJSONTreeItems(MethodPublisher, base.IdGenerator):
         return {'treeChilds': {'id':id, 'childs':[]}}
 
 
-class JSONTreeItems(subitem.SubItemMixin, MethodPublisher,
+class JSONTreeItems(subitem.SubItemAware, MethodPublisher,
     base.IdGenerator):
     """Returns the data of the childs from the path for the json tree.
     

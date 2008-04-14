@@ -86,7 +86,7 @@ class IdGenerator(object):
         return self.getId(self.context)
 
 
-class TreeBase(subitem.SubItemMixin):
+class TreeBase(subitem.SubItemAware):
     """Tree iterator base implementation."""
 
     root = None
@@ -225,14 +225,13 @@ class ProviderBase(object):
                    icon.height, longDescURL))
 
     def icon(self):
-        """Returns a toggle icon including settings for json url."""
+        """Returns a additional named icon for the given context."""
         icon = zope.component.queryMultiAdapter((self.context, self.request), 
             name=self.iconName)
         if icon is not None:
             resource = getResource(icon.context, icon.rname, self.request)
             src = resource()
-            longDescURL = absoluteURL(self.context, self.request)
-            return ('<img src="%s" alt="toggle icon" width="%s" height="%s" ' 
+            return ('<img src="%s" alt="icon" width="%s" height="%s" ' 
                     'border="0" />' % (src, icon.width, icon.height))
         return u''
 

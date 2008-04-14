@@ -30,12 +30,14 @@ from z3c.jsontree import interfaces
 _ = zope.i18nmessageid.MessageFactory('z3c')
 
 
-class SubItemMixin(object):
+class SubItemAware(object):
     """Base class for sub item lookup."""
+
+    zope.interface.implements(interfaces.ISubItemAware)
 
     def getSubItems(self, item):
         """Delegate call to ITreeItems adapter."""
-        adapter = zope.component.getMultiAdapter((item, self.request),
+        adapter = zope.component.getMultiAdapter((item, self.request, self),
             interfaces.ITreeItems)
         return adapter.subItems
 
@@ -45,9 +47,10 @@ class TreeItemsMixin(object):
 
     zope.interface.implements(interfaces.ITreeItems)
 
-    def __init__(self, context, request):
+    def __init__(self, context, request, tree):
         self.context = context
         self.request = request
+        self.tree = tree
 
 
 class NoneTreeItems(TreeItemsMixin):
