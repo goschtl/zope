@@ -62,6 +62,7 @@ setup (
             'zope.pagetemplate',
             'zope.publisher',
             'zope.testbrowser',
+            'zope.testing',
             ],
         ),
     install_requires = [
@@ -72,6 +73,9 @@ setup (
         'zope.app.component',
         'zope.app.container',
         'zope.component',
+        'zope.contentprovider',
+        'zope.i18n',
+        'zope.i18nmessageid',
         'zope.interface',
         'zope.proxy',
         'zope.publisher',
