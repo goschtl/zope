@@ -33,7 +33,7 @@ setup (
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
-    keywords = "zope3 z3c xmlhttp XMLHttpRequestproxy javascript js ajax",
+    keywords = "zope3 z3c xhr xmlhttp XMLHttp request proxy javascript js ajax",
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
