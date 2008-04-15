@@ -7,15 +7,15 @@
 
   <!-- javascript resource files for z3c.jsonrpc layer -->
   <resource
-      name="jsonrpcproxy.js"
-      file="js/jsonrpcproxy-0.5.0.js"
+      name="z3c.jsonrpcproxy.js"
+      file="js/z3c.jsonrpcproxy-0.5.0.js"
       layer="z3c.jsonrpcproxy.layer.IJSONRPCBrowserLayer"
       />
 
 
   <!-- javascript viewlets for z3c.jsonrpc layer -->
   <viewlet
-      name="jsonrpcproxy.js"
+      name="z3c.jsonrpcproxy.js"
       for="*"
       manager="z3c.jsonrpcproxy.browser.IJavaScript"
       class=".browser.JSONRPCProxyJavaScriptViewlet"

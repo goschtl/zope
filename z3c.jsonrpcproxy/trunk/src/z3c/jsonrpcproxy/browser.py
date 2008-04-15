@@ -23,4 +23,4 @@ class IJavaScript(IViewletManager):
     """JavaScript viewlet manager."""
 
 
-JSONRPCProxyJavaScriptViewlet = JavaScriptViewlet('jsonrpcproxy.js')
+JSONRPCProxyJavaScriptViewlet = JavaScriptViewlet('z3c.jsonrpcproxy.js')

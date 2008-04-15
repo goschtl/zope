@@ -48,13 +48,10 @@ setup (
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['z3c'],
-    extras_require = dict(
-        test = [
-            'z3c.coverage',
-            ],
-        ),
     install_requires = [
         'setuptools',
+        'zope.viewlet',
+        'z3c.xmlhttp',
         ],
     zip_safe = False,
 )
