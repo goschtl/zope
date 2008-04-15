@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.0dev (unreleased)
------------------------------
+Version 0.5.0 (2008-04-11)
+--------------------------
 
 - bugfix: adjust ITreeItems adapter. Added additional discriminator which 
   prevents to get missused as /@@/ adapter if configured with base registry
