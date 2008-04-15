@@ -2,8 +2,7 @@
 README
 ======
 
-This package contains the site manager part for the Zope Application 
-Management.
+This package contains a navigation for the Zope Application Management.
 
 Login as manager first:
 

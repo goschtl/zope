@@ -24,13 +24,13 @@
 
   <configure package="z3c.jsonrpcproxy">
     <resource
-        name="jsonrpcproxy.js"
-        file="js/jsonrpcproxy-0.5.0.js"
+        name="z3c.jsonrpcproxy.js"
+        file="js/z3c.jsonrpcproxy-0.5.0.js"
         layer="zam.api.layer.INavigationPluginLayer"
         />
 
     <viewlet
-        name="jsonrpcproxy.js"
+        name="z3c.jsonrpcproxy.js"
         for="*"
         manager="zam.api.layer.IJavaScript"
         class=".browser.JSONRPCProxyJavaScriptViewlet"
