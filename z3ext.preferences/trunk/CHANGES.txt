@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.1.1 (2008-04-15)
+------------------
+
+- Use 'z3ext.ManagePreference' as default preference permission
+
+
 1.1.0 (2008-04-11)
 ------------------
 

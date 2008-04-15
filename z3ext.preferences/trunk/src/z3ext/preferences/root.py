@@ -16,7 +16,6 @@
 $Id$
 """
 from zope import interface
-from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from i18n import _
@@ -41,13 +40,3 @@ class PersonalPreferences(PreferenceGroup):
         if IUnauthenticatedPrincipal.providedBy(self.__principal__):
             return False
         return True
-
-    def __bind__(self, principal=None, parent=None):
-        clone = super(PersonalPreferences, self).__bind__(principal, parent)
-
-        rmanager = IPrincipalRoleManager(clone, None)
-        if rmanager is not None:
-            rmanager.assignRoleToPrincipal(
-                'preference.Owner', clone.__principal__.id)
-
-        return clone

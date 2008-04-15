@@ -102,9 +102,8 @@ class PreferenceGroupDirective(object):
 
     def __init__(self, _context, id, title,
                  for_=None, schema=interface.Interface,
-                 description=u'', category=False,
-                 class_=None, provides=[], permission=CheckerPublic,
-                 tests=(), order = 9999):
+                 description=u'', category=False, class_=None, provides=[],
+                 permission='z3ext.ModifyPreference', tests=(), order = 9999):
 
         Class = PreferenceType(str(id), schema, class_, title, description)
         Class.order = order

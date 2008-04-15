@@ -5,13 +5,13 @@
 
   <autoinclude package="z3ext.preferences" />
 
+  <permission
+     id="z3ext.ModifyPreference"
+     title="Modify preference" />
+
   <role
      id="preference.Owner"
      title="Preference group owner" />
-
-  <permission
-     id="z3ext.ModifyPreference"
-     title="Modifye preference" />
 
   <grant
      permission="z3ext.ModifyPreference"
@@ -29,9 +29,8 @@
                   zope.interface.common.mapping.IEnumerableMapping" />
   </class>
 
-  <class class=".preference.PreferenceGroup">
-    <implements interface="zope.annotation.interfaces.IAttributeAnnotatable" />
-  </class>
+  <!-- preference group roles -->
+  <adapter factory=".roles.PreferenceGroupRoles" />
 
   <!-- preference group publisher -->
   <adapter

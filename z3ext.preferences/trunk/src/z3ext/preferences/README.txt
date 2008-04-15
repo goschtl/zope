@@ -428,12 +428,10 @@ Security
 --------
 
 You might already wonder under which permissions the preferences are
-available. They are actually available publicly (`CheckerPublic`), but that
-is not a problem, since the available values are looked up specifically for
-the current user. And why should a user not have full access to his/her
-preferences? But sometimes we need preferences which can be changed
+available. They are actually available with z3ext.ManagePreference
+permission. But sometimes we need preferences which can be changed
 only by manager. In this case we can provide default permission or
-even set security checks on field level, like in <class /> directive.
+even set security checks on attribute level, like in <class /> directive.
 
   >>> import zope.security
   >>> context = xmlconfig.file('meta.zcml', zope.security, context)
