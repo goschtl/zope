@@ -1,0 +1,13 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <include file="authenticator.zcml" />
+  <include file="credential.zcml" />
+  <include file="group.zcml" />
+  <include file="user.zcml" />
+  <include file="login.zcml" />
+
+</configure>

@@ -1,0 +1,122 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <!-- IAuthenticator -->
+  <viewlet
+      name="Group Container"
+      for="z3c.authenticator.interfaces.IAuthenticator"
+      class=".menu.AddGroupContainerMenuItem"
+      manager="zam.api.menu.IAddMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+  <viewlet
+      name="User Container"
+      for="z3c.authenticator.interfaces.IAuthenticator"
+      class=".menu.AddUserContainerMenuItem"
+      manager="zam.api.menu.IAddMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+  <viewlet
+      name="Contents"
+      for="z3c.authenticator.interfaces.IAuthenticator"
+      class=".menu.ContentsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+  <viewlet
+      name="Edit"
+      for="z3c.authenticator.interfaces.IAuthenticator"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IUserContainer -->
+  <viewlet
+      name="User"
+      for="z3c.authenticator.interfaces.IUserContainer"
+      class=".menu.AddUserMenuItem"
+      manager="zam.api.menu.IAddMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+  <viewlet
+      name="Contents"
+      for="z3c.authenticator.interfaces.IUserContainer"
+      class=".menu.ContentsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IUser -->
+  <viewlet
+      name="Edit"
+      for="z3c.authenticator.interfaces.IUser"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IGroupContainer -->
+  <viewlet
+      name="Group"
+      for="z3c.authenticator.interfaces.IGroupContainer"
+      class=".menu.AddGroupMenuItem"
+      manager="zam.api.menu.IAddMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+  <viewlet
+      name="Contents"
+      for="z3c.authenticator.interfaces.IGroupContainer"
+      class=".menu.ContentsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IGroup -->
+  <viewlet
+      name="Edit"
+      for="z3c.authenticator.interfaces.IGroup"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- ISessionCredentialsPlugin -->
+  <viewlet
+      name="Edit"
+      for="z3c.authenticator.interfaces.ISessionCredentialsPlugin"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IHTTPBasicAuthCredentialsPlugin -->
+  <viewlet
+      name="Edit"
+      for="z3c.authenticator.interfaces.IHTTPBasicAuthCredentialsPlugin"
+      class=".menu.EditMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.IAuthenticatorPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>

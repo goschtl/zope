@@ -1,0 +1,42 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <configure package="z3c.authenticator.browser">
+
+    <!-- IAuthenticator -->
+    <z3c:pagelet
+        name="addAuthenticator.html"
+        for="..interfaces.IAuthenticator"
+        class=".authenticator.AuthenticatorAddForm"
+        permission="zope.ManageServices"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+
+    <z3c:pagelet
+        name="edit.html"
+        for="..interfaces.IAuthenticator"
+        class=".authenticator.AuthenticatorEditForm"
+        permission="zope.ManageServices"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+
+    <z3c:pagelet
+        name="contents.html"
+        for="..interfaces.IAuthenticator"
+        class="z3c.contents.browser.ContentsPage"
+        permission="zope.ManageSite"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+
+    <defaultView
+        for="..interfaces.IAuthenticator"
+        name="contents.html"
+        layer="zam.api.layer.IAuthenticatorPluginLayer"
+        />
+
+  </configure>
+
+</configure>
