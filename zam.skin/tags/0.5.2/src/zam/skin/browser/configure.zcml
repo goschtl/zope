@@ -1,0 +1,163 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <page
+      name="siteURL"
+      for="*"
+      class=".SiteURL"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <page
+      for="*"
+      name="SelectedManagementView.html"
+      permission="zope.Public"
+      class=".ManagementViewSelector"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <!-- resource -->
+  <resource
+      name="jquery-1.2.1.min.js"
+      file="js/jquery-1.2.1.min.js"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <resource
+      name="zam-0.0.1.js"
+      file="js/zam-0.0.1.js"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <resource
+      name="divmenu-0.5.0.js"
+      file="js/divmenu-0.5.0.js"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <zrt-resource
+      name="zam.css"
+      file="zam.css"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <configure package="z3c.formui">
+    <resource
+        name="div-form.css"
+        file="div-form.css"
+        layer="zam.skin.layer.IZAMSkinLayer"
+        />
+  </configure>
+
+  <resource
+      name="favicon.png"
+      file="favicon.png"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <resourceDirectory
+      name="img"
+      directory="img"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <resourceDirectory
+      name="divMenuImages"
+      directory="divmenu"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <!-- viewlet managers -->
+  <viewletManager
+      name="ICSS"
+      provides="zam.api.layer.ICSS"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="zam.api.layer.IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="ISideBar"
+      provides="zam.api.layer.ISideBar"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      template="sidebar.pt"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      permission="zope.Public"
+      />
+
+  <!-- viewlets -->
+  <viewlet
+      name="jquery-1.2.1.min.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".JQueryMin121JavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      weight="0"
+      />
+
+  <viewlet
+      name="zam.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".ZAMJavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      weight="1000"
+      />
+
+  <viewlet
+      name="divmenu.js"
+      for="*"
+      manager="zam.api.layer.IJavaScript"
+      class=".DivMenuJavaScriptViewlet"
+      permission="zope.Public"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      weight="1000"
+      />
+
+  <!-- CSS -->
+  <viewlet
+      name="zam.css"
+      for="*"
+      manager="zam.api.layer.ICSS"
+      class=".ZAMCSSViewlet"
+      permission="zope.Public"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      weight="0"
+      />
+
+  <configure package="z3c.formui">
+    <viewlet
+        name="div-form.css"
+        for="*"
+        manager="zam.api.layer.ICSS"
+        class=".browser.DivFormCSSViewlet"
+        permission="zope.Public"
+        layer="zam.skin.layer.IZAMSkinLayer"
+        weight="10"
+      />
+  </configure>
+
+  <!-- main template -->
+  <z3c:layout
+      for="*"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="template.pt"
+      />
+
+  <include file="index.zcml" />
+
+</configure>
