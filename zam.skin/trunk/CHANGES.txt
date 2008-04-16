@@ -5,7 +5,7 @@ CHANGES
 Version 0.5.3dev (unreleased)
 -----------------------------
 
-- ...
+- Removed duplicated zam.api configure.zcml file include
 
 Version 0.5.2 (2008-04-16)
 --------------------------
