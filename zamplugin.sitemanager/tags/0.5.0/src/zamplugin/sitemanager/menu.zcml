@@ -1,0 +1,65 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zam">
+
+  <!-- IAddMenu -->
+  <viewlet
+      name="Registration"
+      for="*"
+      class=".menu.RegistrationAddMenuItem"
+      manager="zam.api.menu.IAddMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IGlobalMenu -->
+  <viewlet
+      name="Site Manager"
+      for="*"
+      class=".menu.GlobalSiteManagerMenuItem"
+      manager="zam.api.menu.IGlobalMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+
+  <!-- IContextMenu -->
+  <viewlet
+      name="Contents"
+      for="zope.app.component.interfaces.ISiteManagementFolder"
+      class=".menu.SiteManagementFolderContentsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Contents"
+      for="zope.app.component.interfaces.ILocalSiteManager"
+      class=".menu.LocalSiteManagerContentsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Registrations"
+      for="zope.app.component.interfaces.ILocalSiteManager"
+      class=".menu.RegistrationsMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+  <viewlet
+      name="Registration"
+      for="*"
+      class=".menu.RegistrationMenuItem"
+      manager="zam.api.menu.IContextMenu"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      permission="zope.ManageServices"
+      />
+
+</configure>

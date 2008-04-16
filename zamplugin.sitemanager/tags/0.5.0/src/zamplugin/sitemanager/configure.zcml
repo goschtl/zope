@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zam">
+
+  <!-- z3c configuration if not already configured-->
+  <include package="z3c.xmlhttp" />
+  <include package="z3c.json" />
+  <include package="z3c.jsonrpc" file="meta.zcml" />
+  <include package="z3c.jsonrpc" />
+  <include package="z3c.jsonrpcproxy" />
+  <include package="z3c.jsontree" />
+
+  <include file="plugin.zcml" />
+
+  <!-- plugin management for ISiteManagerPluginLayer -->
+  <adapter
+      factory="zam.api.browser.plugin.PluginManagement"
+      for="zamplugin.sitemanager.plugin.SiteManagerPlugin
+           zam.api.layer.ISiteManagerPluginLayer
+           zope.app.component.interfaces.ISite"
+      provides="zam.api.interfaces.IPluginManagement"
+      />
+
+  <registerIn registry="zamplugin.sitemanager.plugin.SiteManagerBaseRegistry">
+
+    <view
+        name="etc"
+        type="zam.api.layer.ISiteManagerPluginLayer"
+        provides="zope.traversing.interfaces.ITraversable" for="*"
+        factory="zope.traversing.namespace.etc"
+        />
+
+    <include file="browser.zcml" />
+    <include file="menu.zcml" />
+    <include file="registration.zcml" />
+    <include file="navigation.zcml" />
+
+  </registerIn>
+
+
+</configure>

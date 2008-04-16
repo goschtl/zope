@@ -1,0 +1,35 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      name="contents.html"
+      for="zope.app.component.interfaces.ISiteManagementFolder"
+      class="z3c.contents.browser.Contents"
+      permission="zope.ManageSite"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+  <defaultView
+      for="zope.app.component.interfaces.ISiteManagementFolder"
+      name="contents.html"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+  <z3c:pagelet
+      name="contents.html"
+      for="zope.app.component.interfaces.ILocalSiteManager"
+      class="z3c.contents.browser.Contents"
+      permission="zope.ManageSite"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+  <defaultView
+      for="zope.app.component.interfaces.ILocalSiteManager"
+      name="contents.html"
+      layer="zam.api.layer.ISiteManagerPluginLayer"
+      />
+
+</configure>
