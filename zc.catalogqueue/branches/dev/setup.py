@@ -22,14 +22,19 @@ def read(rname):
                              )).read()
 
 long_description = (
-        read('src/zc/?/README.txt')
+        read('src/zc/catalogqueue/README.txt')
+        + '\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' +
+        read('src/zc/catalogqueue/queue.txt')
         + '\n' +
         'Download\n'
-        '--------\n'
+        '********\n'
         )
 
 setup(
-    name = '',
+    name = 'zc.catalogqueue',
     version = '0.1',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
@@ -40,7 +45,10 @@ setup(
     packages = find_packages('src'),
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
-    install_requires = ['setuptools'],
+    install_requires = [
+        'setuptools',
+        'ZODB3',
+        ],
     zip_safe = False,
     entry_points=entry_points,
     include_package_data = True,
