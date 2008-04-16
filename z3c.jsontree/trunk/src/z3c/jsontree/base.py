@@ -305,7 +305,7 @@ class PythonRenderer(object):
         iconURL = self.getIconURL(item, self.request)
         id = self.getId(item)
 
-        if item == self.context:
+        if item is self.context:
             state = STATE_COLLAPSED
             liClass = self.collapsedCSSName
         else:
@@ -390,7 +390,7 @@ class TemplateRenderer(object):
 
     def renderUL(self, name, item, childTags=None):
         """Renders <li> tag with already rendered child tags."""
-        if item == self.context:
+        if item is self.context:
             state = STATE_COLLAPSED
         else:
             state = STATE_EXPANDED
