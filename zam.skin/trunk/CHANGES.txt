@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.2dev (2008-04-16)
------------------------------
+Version 0.5.2 (2008-04-16)
+--------------------------
 
 - bugfix: Move the existing index.html and contents.html page to index.zcml
   This allows us to exclude them with the zc.configuration <exclude> directive
