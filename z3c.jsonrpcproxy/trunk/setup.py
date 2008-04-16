@@ -50,6 +50,7 @@ setup (
     namespace_packages = ['z3c'],
     install_requires = [
         'setuptools',
+        'zope.publisher',
         'zope.viewlet',
         'z3c.xmlhttp',
         ],
