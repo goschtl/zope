@@ -1,0 +1,49 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="z3c">
+
+  <!-- generation -->
+  <include package=".generations" />
+
+  <!-- register interface for apidoc -->
+  <interface interface=".interfaces.IResource" />
+  <interface interface=".interfaces.IResourceTraversable" />
+
+  <!-- IResource -->
+  <class class=".resource.Resource">
+    <implements 
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require permission="zope.Public"
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require permission="zope.ManageContent" 
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <adapter
+      factory=".adapter.getResource"
+      trusted="True"
+      />
+
+  <!-- traverser ++resource++ -->
+  <view
+      name="resource" type="*"
+      for=".interfaces.IResourceTraversable"
+      provides="zope.traversing.interfaces.ITraversable"
+      factory=".namespace.resource"
+      />
+
+  <adapter
+      name="resource"
+      for=".interfaces.IResourceTraversable"
+      provides="zope.traversing.interfaces.ITraversable"
+      factory=".namespace.resource"
+      />
+
+
+  <include package=".browser" />
+
+</configure>
