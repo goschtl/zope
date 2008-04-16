@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 0.5.0 (2008-04-11)
+Version 0.5.0 (2008-04-16)
 --------------------------
 
 - bugfix: adjust ITreeItems adapter. Added additional discriminator which 
