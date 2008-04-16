@@ -9,5 +9,4 @@
   <!-- Apply the patches -->
   <class class=".discussion.ReplyCreatedEvent" />
 
-
 </configure>
