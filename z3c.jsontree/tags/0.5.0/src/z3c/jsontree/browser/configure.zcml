@@ -1,0 +1,66 @@
+<configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <!-- provider and template for content providers -->
+  <zope:adapter
+      name="tree"
+      factory=".tree.TreeProvider"
+      />
+  <z3c:template
+      template="tree.pt"
+      for="z3c.jsontree.interfaces.ITreeProvider"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <zope:adapter
+      name="li"
+      factory=".tree.LITagProvider"
+      />
+  <z3c:template
+      template="li.pt"
+      for="z3c.jsontree.interfaces.ILITagProvider"
+      layer="zope.publisher.interfaces.http.IHTTPRequest"
+      />
+
+  <zope:adapter
+      name="ul"
+      factory=".tree.ULTagProvider"
+      />
+  <z3c:template
+      template="ul.pt"
+      for="z3c.jsontree.interfaces.IULTagProvider"
+      layer="zope.publisher.interfaces.http.IHTTPRequest"
+      />
+
+  <resourceDirectory
+      name="z3cJSONTreeIMG"
+      directory="img"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <!-- default icons -->
+  <icon
+      name="z3cJSONTreeCollapsedIcon"
+      for="zope.interface.Interface"
+      file="img/z3cJSONTreeCollapsed.gif"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <icon
+      name="z3cJSONTreeExpandedIcon"
+      for="zope.interface.Interface"
+      file="img/z3cJSONTreeExpanded.gif"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <icon
+      name="z3cJSONTreeStaticIcon"
+      for="zope.interface.Interface"
+      file="img/z3cJSONTreeStatic.gif"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+</configure>
