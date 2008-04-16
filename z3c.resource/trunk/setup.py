@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.resource',
-    version='0.5.0',
+    version='0.5.1dev',
     author = "Roger Ineichen, Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Local resource container implementation for Zope3",
