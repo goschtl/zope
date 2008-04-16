@@ -35,7 +35,7 @@ long_description = (
 
 setup(
     name = 'zc.catalogqueue',
-    version = '0.1',
+    version = '0.2dev',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = '',
