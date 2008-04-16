@@ -1,0 +1,209 @@
+;-*-Doctest-*-
+
+=============
+Metric Scales
+=============
+
+One of the main uses of the metrics will be sorting.  As such, an
+index that efficiently weights query results for sorting is required.
+The weights, however, will need to change over time.  For example, a
+project with 10 comments today should have a higher score than a
+project with 10 comments last month.
+
+Reindexing all objects on a periodic basis is, however, unscalable,
+especially when the indexing involves touching multiple objects per
+object indexed as will be the case with the metric indexes.  As such,
+the index needs to store a number representing the date and those
+numbers need to increase relative to each other over time on an
+exponential scale.
+
+If a comment today needs to be worth as much as two comments a month
+ago, then a comment a month ago needs to be worth as much as two
+comments two months ago.  Thus a comment today needs to be worth as
+much as 4 comments two months ago.
+
+The scale ratio of 10 and the scale unit of one year means any two
+dates one year apart will always have a ratio of 10.
+
+    >>> import datetime
+    >>> from z3c.metrics import scale
+    >>> one_year = scale.one_day*365
+    >>> datetime_scale = scale.ExponentialDatetimeScale(
+    ...     scale_unit=one_year, scale_ratio=10,
+    ...     min_unit=scale.one_day)
+
+    >>> epoch_num = datetime_scale.fromValue(scale.epoch)
+    >>> datetime_scale.toValue(epoch_num) == scale.epoch
+    True
+
+The minimum guaranteed granularity is one day.
+
+    >>> datetime_scale.fromValue(
+    ...     scale.epoch+scale.one_day) == epoch_num+1
+    True
+    >>> datetime_scale.toValue(
+    ...     epoch_num+1) == scale.epoch+scale.one_day
+    True
+
+The number for a date one year from the epoch will be 10 times the
+number for the epoch.
+
+    >>> datetime_scale.fromValue(scale.epoch+one_year) == epoch_num*10
+    True
+    >>> datetime_scale.toValue(epoch_num*10) == scale.epoch+one_year
+    True
+
+Likewise, the number for a date two years from the epoch will be 10
+times the number for the date one year away and in turn 100 times the
+number for the epoch which is two years away.
+
+    >>> datetime_scale.fromValue(
+    ...     scale.epoch+one_year*2) == epoch_num*100
+    True
+    >>> datetime_scale.toValue(epoch_num*100) == scale.epoch+one_year*2
+    True
+
+Reserved Overhead
+=================
+
+If we're using integer indexes for efficiency, then we also need to
+guarantee a minimum granularity at a beginning or minimum date.  For
+example, a beginning date may be based on the oldest object in the
+application and the minimum granularity may be a day.  IOW, the
+integer representing the begining date must be the integer immediately
+preceding the integer representing the beginning date plus one day.
+Otherwise, two dates a day apart would have the same value and
+weighting.
+
+Multiple metrics will be included in the indexes with corresponding
+weights.  Furthermore, some metrics, such as comments and forums, will
+include multiple dates.  So a given index may have several metrics
+multiplied by many dates multiplied by various weights.  As such,
+there's a certain amount of numeric overhead for which room must be
+reserved in addition to reserving enough room for the exponential
+date scale over the expected maximum life of the project.
+
+A ratio of 10 over a year means a very narrow range of years for
+integer values.
+
+    >>> import sys
+    >>> (datetime_scale.toValue(sys.maxint)-scale.epoch
+    ...  ).days/365
+    7
+
+We can calculate the maximum ratio we can use if we project some
+maximums for the application:
+
+  - maximum total count of dates across all metrics for an object
+    
+    If we assume one metric may record the dates of all posts in a
+    forum, then the maximum for that one metric might be 100,000
+    posts.  Assuming the rest of the metrics record an insignificant
+    number of dates relative to that one metric, we can use 100,000 as
+    our maximum here.
+
+    >>> count_max = 100000
+ 
+  - maximum average metric weight across all the metrics
+
+    If we assume that we have a maximum metric that we need to be 1000
+    times heavier than the minimum metric, then the maximum weight
+    would be 1000.  Assuming that the rest of the metrics are
+    scattered about the lower end, then we can use 100 as our maximum
+    here.
+
+    >>> weight_max_avg = 100
+
+  - maximum range of dates indexed
+
+    We can assume that the appliction will never have record dates in
+    a range wider than 10 years in its current form.
+
+    >>> units_max = 10
+
+By these numbers, the overhead we need to reserve above the maximum
+integer is the maximum count times the maximum average weight.
+
+    >>> reserved = count_max*weight_max_avg
+
+The domain of 32 bit integers doesn't accomodate these estimats even
+with a scale ratio of 1.1.  The first date itself exceeds the domain
+by a factor of almost 18, not to mentention any dates after the first.
+
+    >>> min_num = scale.ExponentialDatetimeScale(
+    ...     scale_unit=one_year, scale_ratio=1.1,
+    ...     min_unit=scale.one_day).fromValue(scale.epoch)
+    >>> min_num/((2**31-1)/float(reserved))
+    17.8...
+
+In order to accomodate 10 years of dates with a guaranteed minimum
+granularity of one day, one would have to reduce the capacity
+estimations by at least 170.  The maximum average weight could, for
+example be restricted to 10 and the maximum total count to 5000.
+
+Even without a minimum guaranteed granularity, for example, that the
+greatest decay of the value of comments a year ago versus comments
+today is such 17 comments that are one year old would have the same
+metric score as 10 comments today.  They could decay slower than that,
+1.5 for example, but decaying any faster than that runs the risk of
+numeric errors.
+
+Without a minimum guaranteed granularity, it works with with a ratio
+of 1.5.
+
+    >>> from BTrees import IIBTree
+    >>> datetime_scale = scale.ExponentialDatetimeScale(
+    ...     scale_unit=one_year, scale_ratio=1.5)
+    >>> max_datetime_num = datetime_scale.fromValue(
+    ...     scale.epoch+one_year*units_max)
+    >>> _ = IIBTree.IIBTree({0: int(
+    ...      max_datetime_num*count_max*weight_max_avg)})
+
+It doesn't, however, work with with a ratio of 2.
+
+    >>> datetime_scale = scale.ExponentialDatetimeScale(
+    ...     scale_unit=one_year, scale_ratio=2)
+    >>> max_datetime_num = datetime_scale.fromValue(
+    ...     scale.epoch+one_year*units_max)
+    >>> _ = IIBTree.IIBTree({0: int(
+    ...      max_datetime_num*count_max*weight_max_avg)})
+    Traceback (most recent call last):
+    TypeError: expected integer value
+
+Furthermore, in the cases above the absense of a minimum guaranteed
+granularity means that dates close to the beginning date will have the
+same value.  In this case, even with a high ratio like 10, even dates
+100 days past the epoch have the same value as the epoch itself.
+
+    >>> datetime_scale = scale.ExponentialDatetimeScale(
+    ...     scale_unit=one_year, scale_ratio=10)
+    >>> int(datetime_scale.fromValue(scale.epoch+scale.one_day*100)
+    ...     ) == datetime_scale.fromValue(scale.epoch)
+    True
+
+Floating Point Numbers
+======================
+
+If we could use floats, such as in ZODB 3.8 with IFBTrees, then the
+range is much larger both because the maximum float is much larger
+than the maximum integer and because there's no need to guarantee any
+granularity as granularity is effectively constant.
+
+Find the largest float.
+
+    >>> i = 2
+    >>> from BTrees import family64
+    >>> btree = family64.IF.BTree({0:0})
+    >>> max_float = 10
+    >>> while 1:
+    ...     btree[0] = max_float*10
+    ...     if btree[0] == scale.inf: break
+    ...     max_float = btree[0]
+
+In this case, reserving room for our estimates, we can see that
+maximum date range is at least 2 times that of our esimtated maximum
+or 20 years even with a ratio of 10.
+
+    >>> max_datetime = datetime_scale.toValue(max_float/reserved)
+    >>> (max_datetime-scale.epoch).days/365 > 2*units_max
+    True

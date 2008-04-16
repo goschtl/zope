@@ -1,0 +1,292 @@
+;-*-Doctest-*-
+
+=========================
+ZCML Metric Configuration
+=========================
+
+Create a root container and site.
+
+    >>> from z3c.metrics import testing
+    >>> root = testing.setUpRoot()
+
+Create a principal as a creator.
+
+    >>> from zope import component
+    >>> from zope.app.security import interfaces as security_ifaces
+    >>> authentication = component.getUtility(
+    ...     security_ifaces.IAuthentication)
+    >>> baz_creator = testing.Principal()
+    >>> authentication['baz_creator'] = baz_creator
+
+Create one document before any metrics are added to any indexes.
+
+    >>> from z3c.metrics import scale
+    >>> foo_doc = testing.Document()
+    >>> foo_doc.created = scale.epoch
+    >>> foo_doc.creators = ('baz_creator',)
+    >>> root['foo_doc'] = foo_doc
+
+Create a descendant of the document that will be included in the score
+for the document.
+
+    >>> now = scale.epoch+scale.one_year*2
+    >>> foo_desc = testing.Descendant()
+    >>> foo_desc.created = now
+    >>> foo_desc.creators = ('baz_creator',)
+    >>> foo_doc['foo_desc'] = foo_desc
+
+    >>> from zope.configuration import xmlconfig
+    >>> context = xmlconfig.string("""
+    ... <configure
+    ...    xmlns="http://namespaces.zope.org/zope"
+    ...    xmlns:metrics="http://namespaces.zope.org/metrics"
+    ...    i18n_domain="zope">
+    ...   <include package="zope.app.component" file="meta.zcml" />
+    ...   <include package="z3c.metrics" file="meta.zcml" />
+    ... 
+    ...   <utility
+    ...      factory="z3c.metrics.testing.FooDocIndex"
+    ...      provides="z3c.metrics.testing.IFooDocIndex" />
+    ...   <utility
+    ...      factory="z3c.metrics.testing.BarDocIndex"
+    ...      provides="z3c.metrics.testing.IBarDocIndex" />
+    ...   <utility
+    ...      factory="z3c.metrics.testing.CreatorIndex"
+    ...      provides="z3c.metrics.testing.ICreatorIndex" />
+    ... 
+    ...   <metrics:self
+    ...      for="z3c.metrics.testing.IDocument"
+    ...      interface="z3c.metrics.interfaces.ICreated"
+    ...      field_name="created">
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.IFooDocIndex" /> 
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.IBarDocIndex"
+    ...        weight="2" />
+    ...   </metrics:self>
+    ... 
+    ...   <metrics:other
+    ...      for="z3c.metrics.testing.IDocument
+    ...           z3c.metrics.testing.IDescendant"
+    ...      interface="z3c.metrics.interfaces.ICreated"
+    ...      field_name="created"
+    ...      field_callable="True">
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.IBarDocIndex" />
+    ...   </metrics:other>
+    ... 
+    ...   <metrics:other
+    ...      for="zope.app.security.interfaces.IPrincipal
+    ...           z3c.metrics.testing.IDocument"
+    ...      interface="z3c.metrics.interfaces.ICreated"
+    ...      field_name="created">
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.ICreatorIndex"
+    ...        weight="2" />
+    ...   </metrics:other>
+    ... 
+    ...   <metrics:other
+    ...      for="zope.app.security.interfaces.IPrincipal
+    ...           z3c.metrics.testing.IDescendant"
+    ...      interface="z3c.metrics.interfaces.ICreated"
+    ...      field_name="created"
+    ...      field_callable="True">
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.ICreatorIndex" />
+    ...   </metrics:other>
+    ... 
+    ...   <metrics:init
+    ...     for="zope.app.security.interfaces.IPrincipal">
+    ...     <metrics:weighted
+    ...        utility_interface="z3c.metrics.testing.ICreatorIndex" /> 
+    ...   </metrics:init>
+    ... 
+    ... </configure>
+    ... """)
+
+    >>> foo_doc_index = component.getUtility(testing.IFooDocIndex)
+    >>> bar_doc_index = component.getUtility(testing.IBarDocIndex)
+    >>> creator_index = component.getUtility(testing.ICreatorIndex)
+
+Set the scales for the indexes.  The defaults for scales is a half
+life of one unit.  In the case of a datetime scale, the half life is
+one year.
+
+    >>> one_year_scale = scale.ExponentialDatetimeScale()
+    >>> foo_doc_index.scale = one_year_scale
+    >>> creator_index.scale = one_year_scale
+
+Specify a half life of two years for the second document index.
+
+    >>> two_year_scale = scale.ExponentialDatetimeScale(
+    ...     scale_unit=scale.one_year*2)
+    >>> bar_doc_index.scale = two_year_scale
+
+The indexes have no metrics yet, so they have no scores for the
+documents.
+
+    >>> foo_doc_index.getScoreFor(foo_doc)
+    Traceback (most recent call last):
+    KeyError: ...
+    >>> bar_doc_index.getScoreFor(foo_doc)
+    Traceback (most recent call last):
+    KeyError: ...
+    >>> creator_index.getScoreFor(baz_creator)
+    Traceback (most recent call last):
+    KeyError: ...
+
+Build scores for the document.
+
+    >>> foo_doc_index.buildScoreFor(foo_doc)
+    >>> bar_doc_index.buildScoreFor(foo_doc)
+
+Now the document has different scores in both indexes.
+
+    >>> foo_doc_index.getScoreFor(foo_doc, query=now)
+    0.25
+    >>> bar_doc_index.getScoreFor(foo_doc, query=now)
+    2.0
+
+Build the score for the creator.
+
+    >>> creator_index.buildScoreFor(baz_creator)
+
+Now the creators have scores in the creator index.
+
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    1.5
+
+Add a new creator.
+
+    >>> qux_creator = testing.Principal()
+    >>> authentication['qux_creator'] = qux_creator
+
+The new creator now also has the correct score
+
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    0.0
+
+Create a new document with two creators.
+
+    >>> bar_doc = testing.Document()
+    >>> bar_doc.created = now
+    >>> bar_doc.creators = ('baz_creator', 'qux_creator')
+    >>> root['bar_doc'] = bar_doc
+
+The indexes have scores for the new document.
+
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    1.0
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    2.0
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    3.5
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    2.0
+
+The scores are the same if rebuilt.
+
+    >>> foo_doc_index.buildScoreFor(bar_doc)
+    >>> bar_doc_index.buildScoreFor(bar_doc)
+    >>> creator_index.buildScoreFor(baz_creator)
+    >>> creator_index.buildScoreFor(qux_creator)
+
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    1.0
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    2.0
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    3.5
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    2.0
+
+Later, add two descendants for this document.
+
+    >>> now = scale.epoch+scale.one_year*4
+    >>> bar_desc = testing.Descendant()
+    >>> bar_desc.created = now
+    >>> bar_doc['bar_desc'] = bar_desc
+    >>> baz_desc = testing.Descendant()
+    >>> baz_desc.created = now
+    >>> bar_doc['baz_desc'] = baz_desc
+
+The scores reflect the addtions.
+
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    0.25
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    3.0
+
+The scores for the other document also reflect the advance of time.
+
+    >>> foo_doc_index.getScoreFor(foo_doc, query=now)
+    0.0625
+    >>> bar_doc_index.getScoreFor(foo_doc, query=now)
+    1.0
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    0.875
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    0.5
+
+The scores are the same if rebuilt.
+
+    >>> foo_doc_index.buildScoreFor(foo_doc)
+    >>> bar_doc_index.buildScoreFor(foo_doc)
+    >>> foo_doc_index.buildScoreFor(bar_doc)
+    >>> bar_doc_index.buildScoreFor(bar_doc)
+    >>> creator_index.buildScoreFor(baz_creator)
+    >>> creator_index.buildScoreFor(qux_creator)
+
+    >>> foo_doc_index.getScoreFor(foo_doc, query=now)
+    0.0625
+    >>> bar_doc_index.getScoreFor(foo_doc, query=now)
+    1.0
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    0.25
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    3.0
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    0.875
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    0.5
+
+Remove one of the descendants.
+
+    >>> del bar_doc['bar_desc']
+
+The scores reflect the deletion of the descendant.
+
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    0.25
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    2.0
+
+The scores are the same if rebuilt.
+
+    >>> foo_doc_index.buildScoreFor(bar_doc)
+    >>> bar_doc_index.buildScoreFor(bar_doc)
+
+    >>> foo_doc_index.getScoreFor(bar_doc, query=now)
+    0.25
+    >>> bar_doc_index.getScoreFor(bar_doc, query=now)
+    2.0
+
+Remove one of the documents.
+
+    >>> del root['bar_doc']
+
+The document indexes no longer have scores for the document.
+
+    >>> foo_doc_index.getScoreFor(bar_doc)
+    Traceback (most recent call last):
+    KeyError: ...
+    >>> bar_doc_index.getScoreFor(bar_doc)
+    Traceback (most recent call last):
+    KeyError: ...
+
+The creator indexes reflect the change.
+
+    >>> creator_index.getScoreFor(baz_creator, query=now)
+    0.375
+    >>> creator_index.getScoreFor(qux_creator, query=now)
+    0.0

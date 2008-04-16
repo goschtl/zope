@@ -1,0 +1,130 @@
+;-*-Doctest-*-
+
+======
+Events
+======
+    >>> from zope.interface import verify
+    >>> from zope.app.container import contained, sample
+    >>> from z3c.metrics import interfaces, index
+
+Build Score
+===========
+
+    >>> verify.verifyClass(
+    ...     interfaces.IBuildScoreEvent, index.BuildScoreEvent)
+    True
+    >>> event = index.BuildScoreEvent(None)
+    >>> verify.verifyObject(interfaces.IBuildScoreEvent, event)
+    True
+    >>> interfaces.IChangeScoreEvent.implementedBy(
+    ...     index.BuildScoreEvent)
+    False
+    >>> interfaces.IChangeScoreEvent.providedBy(event)
+    False
+    >>> verify.verifyClass(
+    ...     interfaces.IAddValueEvent, index.BuildScoreEvent)
+    True
+    >>> verify.verifyObject(interfaces.IAddValueEvent, event)
+    True
+    >>> interfaces.IInitScoreEvent.implementedBy(index.BuildScoreEvent)
+    False
+    >>> interfaces.IInitScoreEvent.providedBy(event)
+    False
+    >>> interfaces.IRemoveValueEvent.implementedBy(
+    ...     index.BuildScoreEvent)
+    False
+    >>> interfaces.IRemoveValueEvent.providedBy(event)
+    False
+
+Object Added
+============
+
+    >>> verify.verifyClass(
+    ...     interfaces.IChangeScoreEvent, contained.ObjectAddedEvent)
+    True
+    >>> event = contained.ObjectAddedEvent(contained.Contained())
+    >>> verify.verifyObject(interfaces.IChangeScoreEvent, event)
+    True
+    >>> interfaces.IBuildScoreEvent.implementedBy(
+    ...     contained.ObjectAddedEvent)
+    False
+    >>> interfaces.IBuildScoreEvent.providedBy(event)
+    False
+    >>> verify.verifyClass(
+    ...     interfaces.IAddValueEvent, contained.ObjectAddedEvent)
+    True
+    >>> verify.verifyObject(interfaces.IAddValueEvent, event)
+    True
+    >>> verify.verifyClass(
+    ...     interfaces.IInitScoreEvent, contained.ObjectAddedEvent)
+    True
+    >>> verify.verifyObject(interfaces.IInitScoreEvent, event)
+    True
+    >>> interfaces.IRemoveValueEvent.implementedBy(
+    ...     contained.ObjectAddedEvent)
+    False
+    >>> interfaces.IRemoveValueEvent.providedBy(event)
+    False
+
+Object Removed
+==============
+
+    >>> verify.verifyClass(
+    ...     interfaces.IChangeScoreEvent, contained.ObjectRemovedEvent)
+    True
+    >>> event = contained.ObjectRemovedEvent(contained.Contained())
+    >>> verify.verifyObject(interfaces.IChangeScoreEvent, event)
+    True
+    >>> interfaces.IBuildScoreEvent.implementedBy(
+    ...     contained.ObjectRemovedEvent)
+    False
+    >>> interfaces.IBuildScoreEvent.providedBy(event)
+    False
+    >>> verify.verifyClass(
+    ...     interfaces.IRemoveValueEvent, contained.ObjectRemovedEvent)
+    True
+    >>> verify.verifyObject(interfaces.IRemoveValueEvent, event)
+    True
+    >>> interfaces.IInitScoreEvent.implementedBy(
+    ...     contained.ObjectRemovedEvent)
+    False
+    >>> interfaces.IInitScoreEvent.providedBy(event)
+    False
+    >>> interfaces.IAddValueEvent.implementedBy(
+    ...     contained.ObjectRemovedEvent)
+    False
+    >>> interfaces.IAddValueEvent.providedBy(event)
+    False
+
+Object Moved
+============
+
+    >>> verify.verifyClass(
+    ...     interfaces.IChangeScoreEvent, contained.ObjectMovedEvent)
+    True
+    >>> container = sample.SampleContainer()
+    >>> event = contained.ObjectMovedEvent(
+    ...     object=contained.Contained(), oldParent=container,
+    ...     oldName='', newParent=container, newName='')
+    >>> verify.verifyObject(interfaces.IChangeScoreEvent, event)
+    True
+    >>> interfaces.IBuildScoreEvent.implementedBy(
+    ...     contained.ObjectMovedEvent)
+    False
+    >>> interfaces.IBuildScoreEvent.providedBy(event)
+    False
+    >>> interfaces.IInitScoreEvent.implementedBy(
+    ...     contained.ObjectMovedEvent)
+    False
+    >>> interfaces.IInitScoreEvent.providedBy(event)
+    False
+    >>> interfaces.IAddValueEvent.implementedBy(
+    ...     contained.ObjectMovedEvent)
+    False
+    >>> interfaces.IAddValueEvent.providedBy(event)
+    False
+    >>> interfaces.IRemoveValueEvent.implementedBy(
+    ...     contained.ObjectMovedEvent)
+    False
+    >>> interfaces.IRemoveValueEvent.providedBy(event)
+    False

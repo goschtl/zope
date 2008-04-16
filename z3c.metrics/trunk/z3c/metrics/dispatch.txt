@@ -1,0 +1,346 @@
+;-*-Doctest-*-
+
+==============
+Event Dispatch
+==============
+
+Metrics frequently require handling one event but only when that event
+happens in relation to some other context.  For example, one metric
+might concern comments but only when added as a descendant of a
+particular type of content and not when added as a descendant of other
+types of content.  As such, metrics frequently require dispatching
+events to other contexts.
+
+Containers
+==========
+
+IObjectMovedEvents are dispatched to containers of the moved object
+that have changed as a result of the move.  If the object moved
+contains other objects, the event is only dispatched to the ancestors
+of the moved container itself and is not dispatched to descendants of
+the moved container.  If the object is moved from one container to
+another, the event is only dispatches to the ancestors that have
+changed.
+
+Events are dispatched to the ancestors by the
+dispatch.dispatchToAncestors event handler.
+
+Create a root container and site.
+
+    >>> from z3c.metrics import testing
+    >>> root = testing.setUpRoot()
+
+Use an event handler to capture events for inspection.
+
+    >>> from zope import interface, component
+    >>> from z3c.metrics import interfaces
+    >>> ancestor_events = []
+    >>> def captureEvent(obj, event, ancestor):
+    ...     ancestor_events.append((obj, event, ancestor))
+    >>> component.provideHandler(
+    ...     factory=captureEvent,
+    ...     adapts=[interface.Interface,
+    ...             interfaces.IChangeScoreEvent,
+    ...             interface.Interface])
+
+Add an object to the root.
+
+    >>> from zope.app.folder import folder
+    >>> foo = folder.Folder()
+    >>> root['foo'] = foo
+
+The event is dispatched to the root but not to the object added
+itself.
+
+    >>> obj, event, ancestor = ancestor_events.pop()
+    >>> obj is foo
+    True
+    >>> ancestor is root
+    True
+
+No other events have been dispatched.
+    
+    >>> len(ancestor_events)
+    0
+
+Add another object as a child of the child of root.
+
+    >>> bar = folder.Folder()
+    >>> foo['bar'] = bar
+
+Since the object has two ancestors, the event is dispatched to both.
+
+    >>> obj, event, ancestor = ancestor_events.pop(0)
+    >>> obj is bar
+    True
+
+The first event dispatched is for the immediate parent.
+
+    >>> ancestor is foo
+    True
+
+The last event is dispatched to the parent closest to root.
+
+    >>> obj, event, ancestor = ancestor_events.pop()
+    >>> obj is bar
+    True
+    >>> ancestor is root
+    True
+
+No more events have been dispatched.
+    
+    >>> len(ancestor_events)
+    0
+
+Move an object from one container to another.
+
+    >>> root['bar'] = bar
+
+The event is dispatched only to the ancestors that have changed.
+
+    >>> obj, event, ancestor = ancestor_events.pop()
+    >>> obj is bar
+    True
+
+The only ancestor that has changed is the one that previously
+contained the object since root already contained it both before and
+after the move.
+
+    >>> ancestor is foo
+    True
+
+No more events have been dispatched.
+    
+    >>> len(ancestor_events)
+    0
+
+Removing an object will dispatch the event to all ancestors.
+
+    >>> del root['bar']
+
+The event is dispatched to the root.
+
+    >>> obj, event, ancestor = ancestor_events.pop()
+    >>> obj is bar
+    True
+    >>> ancestor is root
+    True
+
+No more events have been dispatched.
+    
+    >>> len(ancestor_events)
+    0
+
+A rename should dispatch no events at all since no ancestors have
+changed.
+
+    >>> root['bar'] = foo
+    >>> len(ancestor_events)
+    0
+
+Descendants
+===========
+
+For rebuilding scores, IBuildScoreEvents are dispatched to
+sublocations of the object as an inverse of descendant dispatch.
+
+Events are dispatched to the creators by the
+dispatch.dispatchToDescendants event handler.
+
+Use an event handler to capture events dispatched to creators.
+
+    >>> descendant_events = []
+    >>> def captureDescendantEvent(obj, event, descendant):
+    ...     descendant_events.append((obj, event, descendant))
+    >>> component.provideHandler(
+    ...     factory=captureDescendantEvent,
+    ...     adapts=[interface.Interface,
+    ...             interfaces.IBuildScoreEvent,
+    ...             interface.Interface])
+
+Create a heirarchy of contained objects.
+
+    >>> baz = folder.Folder()
+    >>> foo['baz'] = baz
+
+    >>> bah = folder.Folder()
+    >>> baz['bah'] = bah
+
+    >>> qux = folder.Folder()
+    >>> root['qux'] = qux
+
+No events have been dispatched before the event is notified.
+
+    >>> len(descendant_events)
+    0
+
+Notify the IBuildScoreEvent on the root container.
+
+    >>> import zope.event
+    >>> from z3c.metrics import index
+    >>> zope.event.notify(index.BuildScoreEvent(foo))
+
+The event is dispatched to the contained objects.
+    
+    >>> len(descendant_events)
+    3
+    >>> descendant_events[0][2] is foo
+    True
+    >>> descendant_events[1][2] is foo
+    True
+    >>> descendant_events[2][2] is foo
+    True
+    >>> descendants = [event[0] for event in descendant_events]
+    >>> foo in descendants
+    False
+    >>> bar in descendants
+    True
+    >>> baz in descendants
+    True
+    >>> bah in descendants
+    True
+    >>> qux in descendants
+    False
+
+Creators
+========
+
+IObjectMovedEvents are dispatched to the creators of the moved object.
+Events are dispatched to the creators by the
+dispatch.dispatchToCreators event handler.
+
+Use an event handler to capture events dispatched to creators.
+
+    >>> from zope.app.security import interfaces as security_ifaces
+    >>> creator_events = []
+    >>> def captureCreatorEvent(obj, event, ancestor):
+    ...     creator_events.append((obj, event, ancestor))
+    >>> component.provideHandler(
+    ...     factory=captureCreatorEvent,
+    ...     adapts=[interface.Interface,
+    ...             interfaces.IChangeScoreEvent,
+    ...             security_ifaces.IPrincipal])
+
+Create principals to be the creators.
+
+    >>> from z3c.metrics import testing
+    >>> authentication = component.getUtility(
+    ...     security_ifaces.IAuthentication)
+    >>> baz = testing.Principal()
+    >>> authentication['baz'] = baz
+
+    >>> qux = testing.Principal()
+    >>> authentication['qux'] = qux
+
+Create a root container.
+
+    >>> root = testing.setUpRoot()
+
+Set the creators for an object.
+
+    >>> bah = folder.Folder()
+    >>> interface.alsoProvides(bah, interfaces.ICreated)
+    >>> bah.creators = ['baz', 'qux']
+
+Before we add the created object to the container, no events have been
+dispatched.
+
+    >>> len(creator_events)
+    0
+
+Add the created object ot the container.
+
+    >>> root['bah'] = bah
+
+    >>> obj, event, creator = creator_events.pop(0)
+    >>> obj is bah
+    True
+    >>> creator is baz
+    True
+
+    >>> obj, event, creator = creator_events.pop(0)
+    >>> obj is bah
+    True
+    >>> creator is qux
+    True
+
+    >>> len(creator_events)
+    0
+
+Events for objects with no creators are not dispatched to creators,
+only to ancestors.
+
+    >>> quux = folder.Folder()
+    >>> root['quux'] = quux
+
+    >>> len(creator_events)
+    0
+
+TODO: Add support for tracking changes to the creators of an object
+using a grouparchy.schema.event field.
+
+Created
+=======
+
+For rebuilding scores, IBuildScoreEvents are dispatched to objects
+created by the creator as an inverse of creator dispatch.  Events are
+dispatched to the created objects by the dispatch.dispatchToCreated
+event handler.
+
+Use an event handler to capture events dispatched to creators.
+
+    >>> from zope.app.security import interfaces as security_ifaces
+    >>> created_events = []
+    >>> def captureCreatedEvent(obj, event, ancestor):
+    ...     created_events.append((obj, event, ancestor))
+    >>> component.provideHandler(
+    ...     factory=captureCreatedEvent,
+    ...     adapts=[interface.Interface,
+    ...             interfaces.IBuildScoreEvent,
+    ...             security_ifaces.IPrincipal])
+
+Add a principal as a creator of more than one object.
+
+    >>> foo = folder.Folder()
+    >>> interface.alsoProvides(foo, interfaces.ICreated)
+    >>> foo.creators = ['qux']
+    >>> root['foo'] = foo
+
+Notify the IBuildScoreEvent for a creator with one created object.
+
+    >>> import zope.event
+    >>> from z3c.metrics import index
+    >>> zope.event.notify(index.BuildScoreEvent(baz))
+
+The event is dispatched to the created objects.
+
+    >>> created, event, creator = created_events.pop(0)
+    >>> creator is baz
+    True
+    >>> created is bah
+    True
+    >>> len(created_events)
+    0
+
+Notify the IBuildScoreEvent for a creator with two created objects.
+
+    >>> import zope.event
+    >>> from z3c.metrics import index
+    >>> zope.event.notify(index.BuildScoreEvent(qux))
+
+The event is dispatched to the created objects.
+
+    >>> created, event, creator = created_events.pop(0)
+    >>> creator is qux
+    True
+    >>> created is bah
+    True
+
+    >>> created, event, creator = created_events.pop(0)
+    >>> creator is qux
+    True
+    >>> created is foo
+    True
+
+    >>> len(created_events)
+    0

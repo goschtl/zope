@@ -1,0 +1,115 @@
+;-*-Doctest-*-
+
+==============
+Metric Indexes
+==============
+
+Create the index with the scale used to normalize scores at query
+time.
+
+    >>> from z3c.metrics import scale, testing
+    >>> foo_index = testing.Index(scale=scale.ExponentialScale())
+
+Before an object has been added to the score index, retrieving its
+score raises an error.
+
+    >>> foo_index.getScoreFor(0)
+    Traceback (most recent call last):
+    KeyError: ...
+
+Once the object is added, it's score is set the the initial score of
+the index.
+
+    >>> foo_index.buildScoreFor(0)
+    >>> foo_index.getScoreFor(0) == foo_index.initial
+    True
+
+Indexes also report containment.
+
+    >>> 0 in foo_index
+    True
+
+    >>> 1 in foo_index
+    False
+
+Incremental Indexing
+====================
+
+Under normal operation, metric indexes are updated incrementally, adding
+the relevant score for a releveant event to the value stored in the index.
+
+Increment the score.
+
+    >>> foo_index.changeScoreFor(0, 1)
+    >>> foo_index.getScoreFor(0)
+    1.0
+
+The score can be decremented.
+
+    >>> foo_index.changeScoreFor(0, -1)
+    >>> foo_index.getScoreFor(0)
+    0.0
+
+The score can be changed by any value.
+
+    >>> foo_index.changeScoreFor(0, 3)
+    >>> foo_index.getScoreFor(0)
+    3.0
+
+Reindexing
+==========
+
+The score for an individual object can be rebuilt if needed for
+maintenance.  The score is rebuilt using events and there are no
+subscribers for this index, so in this case the score will simply be
+removed.
+set back to the initial value.
+
+After reindexing the object, it has the appropriate value.
+
+    >>> foo_index.buildScoreFor(0)
+    >>> foo_index.getScoreFor(0) == foo_index.initial
+    True
+
+Changing the Scale
+==================
+
+TODO
+
+Scoring Results
+===============
+
+TODO
+
+Infinity
+========
+
+Pickle protocol 1 raises an error on infinite values.
+
+    >>> import pickle
+    >>> foo_index._scores[id(0)] = scale.inf
+    >>> pickle.dumps(foo_index, 1)
+    Traceback (most recent call last):
+    SystemError: frexp() result out of range
+
+As such, trying the change the score by a value that will result in
+the infinite float will raise an error.
+
+    >>> foo_index.buildScoreFor(0)
+    >>> foo_index.changeScoreFor(0, scale.inf)
+    Traceback (most recent call last):
+    ScoreError: Adding inf to 0.0 for 0 is too large
+
+The previous value will be resotred leaving the index pickleable.
+
+    >>> foo_index.getScoreFor(0) == foo_index.initial
+    True
+    >>> _ = pickle.dumps(foo_index, 1)
+
+Removing
+========
+
+Finally, objects can also be removed from the index.
+
+    >>> foo_index.initScoreFor(0)
+    >>> foo_index.removeScoreFor(0)

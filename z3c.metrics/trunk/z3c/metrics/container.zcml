@@ -1,0 +1,17 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <class class="zope.app.container.contained.ObjectMovedEvent">
+    <implements interface=".interfaces.IChangeScoreEvent"  />
+  </class>  
+
+  <class class="zope.app.container.contained.ObjectAddedEvent">
+    <implements interface=".interfaces.IInitScoreEvent"  />
+  </class>  
+
+  <class class="zope.app.container.contained.ObjectRemovedEvent">
+    <implements interface=".interfaces.IRemoveValueEvent"  />
+  </class>  
+
+</configure>

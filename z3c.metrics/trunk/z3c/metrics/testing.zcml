@@ -1,0 +1,26 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <include package="zope.app.component" file="meta.zcml" />
+
+  <adapter
+      for="zope.interface.Interface" 
+      provides="zope.component.interfaces.ISiteManager"
+      factory="zope.app.component.site.SiteManagerAdapter"
+      />
+
+  <adapter
+      provides="zope.app.location.interfaces.ISublocations"
+      for="zope.app.container.interfaces.IReadContainer"
+      factory="zope.app.container.contained.ContainerSublocations"
+      />
+
+  <utility
+     factory=".testing.Authentication"
+     provides="zope.app.security.interfaces.IAuthentication"
+     />
+
+  <include package="." />
+
+</configure>

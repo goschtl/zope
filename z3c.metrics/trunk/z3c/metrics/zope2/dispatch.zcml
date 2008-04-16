@@ -1,0 +1,24 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <subscriber 
+     handler="z3c.metrics.dispatch.dispatchToAncestors" 
+     for="OFS.interfaces.IItem
+          z3c.metrics.interfaces.IChangeScoreEvent"
+     />
+  <subscriber 
+     handler="z3c.metrics.dispatch.dispatchToDescendants" 
+     for="OFS.interfaces.IObjectManager
+          z3c.metrics.interfaces.IBuildScoreEvent"
+     />
+  <subscriber 
+     handler="z3c.metrics.dispatch.dispatchToDescendants" 
+     for="OFS.interfaces.IObjectManager
+          z3c.metrics.interfaces.IBuildScoreEvent
+          OFS.interfaces.IObjectManager"
+     />
+
+  <subscriber handler=".discussion.dispatchToReplies" />
+
+</configure>

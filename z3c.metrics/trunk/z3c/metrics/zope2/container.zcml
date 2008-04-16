@@ -1,0 +1,23 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="zope">
+
+  <adapter factory=".ofs.getAncestors" />
+
+  <class class="zope.app.container.contained.ObjectAddedEvent">
+    <implements interface="z3c.metrics.interfaces.IAddValueEvent"  />
+  </class>  
+
+  <class class="zope.app.container.contained.ObjectMovedEvent">
+    <implements interface="z3c.metrics.interfaces.IChangeScoreEvent"  />
+  </class>
+
+  <class class="zope.app.container.contained.ObjectRemovedEvent">
+    <implements interface="z3c.metrics.interfaces.IRemoveValueEvent"  />
+  </class>  
+
+  <class class="z3c.metrics.index.BuildScoreEvent">
+    <implements interface=".index.IAddSelfValueEvent"  />
+  </class>  
+
+</configure>

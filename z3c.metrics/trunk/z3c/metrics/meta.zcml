@@ -1,0 +1,33 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/metrics">
+    
+    <meta:groupingDirective
+       name="init"
+       schema=".meta.IMetric"
+       handler=".meta.InitMetric" />
+       />
+
+    <meta:groupingDirective
+       name="self"
+       schema=".meta.IAttributeMetric"
+       handler=".meta.SelfMetric" />
+       />
+
+    <meta:groupingDirective
+       name="other"
+       schema=".meta.IAttributeMetric"
+       handler=".meta.OtherMetric" />
+       />
+      
+    <meta:directive
+       name="weighted"
+       schema=".interfaces.IUtilityWeightedSubscription"
+       handler=".meta.weighted"
+       />
+
+  </meta:directives>
+
+</configure>
