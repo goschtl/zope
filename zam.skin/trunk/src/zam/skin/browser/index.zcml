@@ -1,0 +1,34 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="zam">
+
+  <z3c:pagelet
+      for="zope.traversing.interfaces.IContainmentRoot"
+      name="index.html"
+      permission="zope.ManageContent"
+      class=".index.IndexPage"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <z3c:template
+      for=".index.IndexPage"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="index.pt"
+      />
+
+  <z3c:pagelet
+      for="zope.traversing.interfaces.IContainmentRoot"
+      name="contents.html"
+      permission="zope.ManageContent"
+      class=".index.NoneContentsPage"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      />
+
+  <z3c:template
+      for=".index.NoneContentsPage"
+      layer="zam.skin.layer.IZAMSkinLayer"
+      template="contents.pt"
+      />
+
+</configure>

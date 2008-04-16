@@ -158,32 +158,6 @@
       template="template.pt"
       />
 
-  <z3c:pagelet
-      for="*"
-      name="index.html"
-      permission="zope.ManageContent"
-      class=".IndexPage"
-      layer="zam.skin.layer.IZAMSkinLayer"
-      />
-
-  <z3c:template
-      for=".IndexPage"
-      layer="zam.skin.layer.IZAMSkinLayer"
-      template="index.pt"
-      />
-
-  <z3c:pagelet
-      for="*"
-      name="contents.html"
-      permission="zope.ManageContent"
-      class=".NoneContentsPage"
-      layer="zam.skin.layer.IZAMSkinLayer"
-      />
-
-  <z3c:template
-      for=".NoneContentsPage"
-      layer="zam.skin.layer.IZAMSkinLayer"
-      template="contents.pt"
-      />
+  <include file="index.zcml" />
 
 </configure>

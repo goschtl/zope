@@ -24,16 +24,6 @@ from zope.traversing.browser import absoluteURL
 from zope.viewlet import viewlet
 from zope.app.component import hooks
 
-from z3c.pagelet import browser
-
-
-class IndexPage(browser.BrowserPagelet):
-    """Missing index.html page."""
-
-
-class NoneContentsPage(browser.BrowserPagelet):
-    """Missing contents.html page."""
-
 
 class SiteURL(BrowserPage):
 
