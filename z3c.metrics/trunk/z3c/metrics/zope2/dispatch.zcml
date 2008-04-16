@@ -20,5 +20,11 @@
      />
 
   <subscriber handler=".discussion.dispatchToReplies" />
+  <subscriber 
+     handler=".discussion.dispatchToReplies"
+     for="Products.CMFCore.interfaces.IDiscussable
+          z3c.metrics.interfaces.IBuildScoreEvent
+          z3c.metrics.dispatch.ICreatedDispatchEvent"
+     />
 
 </configure>

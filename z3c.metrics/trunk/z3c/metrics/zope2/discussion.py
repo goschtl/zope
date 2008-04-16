@@ -62,11 +62,14 @@ def dispatchToDiscussed(obj, event):
 
 @component.adapter(cmf_ifaces.IDiscussable,
                    interfaces.IBuildScoreEvent)
-def dispatchToReplies(obj, event):
+def dispatchToReplies(obj, event, dispatched=None):
     portal_discussion = cmf_utils.getToolByName(
         obj, 'portal_discussion')
+    if dispatched is None:
+        # For creator dispatch
+        dispatched = obj
     for reply in portal_discussion.getDiscussionFor(obj).getReplies():
         for _ in component.subscribers(
-            [reply, event, obj], None):
+            [reply, event, dispatched], None):
             pass # Just make sure the handlers run
     
