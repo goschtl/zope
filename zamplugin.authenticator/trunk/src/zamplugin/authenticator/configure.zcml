@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     i18n_domain="zam">
 
+  <include package="z3c.authenticator" />
   <include file="plugin.zcml" />
 
   <!-- plugin management for IAuthenticatorPluginLayer -->

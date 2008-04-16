@@ -21,9 +21,14 @@ from zope.app.testing import functional
 functional.defineLayer('TestLayer', 'ftesting.zcml')
 
 
+def getRootFolder():
+    return functional.FunctionalTestSetup().getRootFolder()
+
+
 def test_suite():
     suite = unittest.TestSuite()
-    s = functional.FunctionalDocFileSuite('README.txt')
+    s = functional.FunctionalDocFileSuite('README.txt',
+        globs = {'getRootFolder': getRootFolder})
     s.layer = TestLayer
     suite.addTest(s)
 
