@@ -60,11 +60,14 @@ def isPythonPackage(path):
     return False
 
 def distributionForPackage(package):
+
     package_filename = package.__file__
     for path in sys.path:
         if package_filename.startswith(path):
             break
-    return list(find_distributions(path, True))[0]
+    dists = list(find_distributions(path, True))
+    assert dists, "No distributions found for package %s/%s" % (path, package_filename)
+    return dists[0]
 
 def distributionForDottedName(dotted_name):
     return distributionForPackage(resolve(dotted_name))

@@ -230,7 +230,8 @@ also broadcasts itself as a plugin for ``basepackage``.
 
 So, once again, we must first set up our testing infrastructure::
 
-    >>> ws = install_projects(['BasePackage', 'FooPackage', 'TestDirective'],
+    >>> ws = install_projects(['BasePackage', 'FooPackage', 'TestDirective',
+    ...                        'base2', 'base2_plug'],
     ...                       target_dir)
     >>> for dist in ws:
     ...   dist.activate()
@@ -297,3 +298,13 @@ should accurately reflect that the ``FooPackage`` ZCML has been loaded::
     ...                        package=basepackage)
     >>> pprint(test_log)
     [u'foo has been loaded']
+
+
+``base2`` is a namespace package. ``base2.plug`` is a package that
+defines a plugin for base2.
+
+    >>> import base2
+    >>> dummy = xmlconfig.file(resource_filename('base2', 'configure.zcml'),
+    ...                        package=base2)
+    >>> pprint(test_log)
+    [u'base2.plug has been loaded']
