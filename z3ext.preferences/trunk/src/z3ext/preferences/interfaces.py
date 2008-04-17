@@ -19,6 +19,8 @@ from zope import schema, interface
 from zope.configuration import fields
 from zope.location.interfaces import ILocation
 
+ANNOTATION_KEY = 'zope.app.user.UserPreferences'
+
 
 class UnboundPreferenceGroup(Exception):
     """ Prefernce group is not bound to principal """
@@ -95,3 +97,11 @@ class IRootPreferences(interface.Interface):
 
     def __bind__(principal=None, parent=None):
         """ bind preferences """
+
+
+class IDataStorage(interface.Interface):
+    """ data storage, set/get values as attributes """
+
+
+class IPortalPreferences(IPreferenceCategory):
+    """ portal preferences """

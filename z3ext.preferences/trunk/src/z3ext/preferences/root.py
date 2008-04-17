@@ -16,11 +16,12 @@
 $Id$
 """
 from zope import interface
+from zope.app.component.hooks import getSite
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
 from i18n import _
 from preference import PreferenceGroup
-from interfaces import IRootPreferences, IPreferenceCategory
+from interfaces import IBound, IRootPreferences, IPreferenceCategory
 
 
 class PersonalPreferences(PreferenceGroup):
@@ -36,7 +37,13 @@ class PersonalPreferences(PreferenceGroup):
     def __init__(self):
         self.__subgroups__ = ()
 
+    def __bind__(self, principal=None, parent=None):
+        if parent is None:
+            parent = getSite()
+        return super(PersonalPreferences, self).__bind__(principal, parent)
+
     def isAvailable(self):
-        if IUnauthenticatedPrincipal.providedBy(self.__principal__):
+        if (not IBound.providedBy(self) or
+            IUnauthenticatedPrincipal.providedBy(self.__principal__)):
             return False
         return True

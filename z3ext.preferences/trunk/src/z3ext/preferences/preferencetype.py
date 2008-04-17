@@ -106,7 +106,7 @@ class DataProperty(object):
         return self.schema
 
     def __set__(self, inst, value):
-        raise AttributeError("Can't set __schema__")
+        raise AttributeError("Can't change __schema__")
 
 
 class PreferenceProperty(object):
@@ -121,6 +121,8 @@ class PreferenceProperty(object):
     ...    default = u'default value')
     >>> field.__name__ = 'attr1'
 
+    >>> from z3ext.preferences.storage import DataStorage
+
     Now we need content class
 
     >>> from z3ext.preferences.preferencetype import PreferenceProperty
@@ -131,7 +133,7 @@ class PreferenceProperty(object):
     Lets create class instance and add field values storage
 
     >>> ob = Content()
-    >>> ob.data = {}
+    >>> ob.data = DataStorage({}, None)
     
     By default we should get field default value
 
@@ -151,7 +153,7 @@ class PreferenceProperty(object):
 
     If storage contains field value we shuld get it
 
-    >>> ob.data['attr1'] = u'value2'
+    >>> ob.data.attr1 = u'value2'
     >>> ob.attr1
     u'value2'
 
@@ -180,7 +182,7 @@ class PreferenceProperty(object):
         if inst is None:
             return self
 
-        value = inst.data.get(self._name, _marker)
+        value = getattr(inst.data, self._name, _marker)
         if value is _marker:
             return self._field.default
 
@@ -189,10 +191,10 @@ class PreferenceProperty(object):
     def __set__(self, inst, value):
         field = self._field.bind(inst)
         field.validate(value)
-        if field.readonly and self._name in inst.data:
+        if field.readonly and hasattr(inst.data, self._name):
             raise ValueError(self._name, _(u'Field is readonly'))
-        inst.data[self._name] = value
+        setattr(inst.data, self._name, value)
 
     def __delete__(self, inst):
-        if self._name in inst.data:
-            del inst.data[self._name]
+        if hasattr(inst.data, self._name):
+            delattr(inst.data, self._name)

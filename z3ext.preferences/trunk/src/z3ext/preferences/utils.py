@@ -14,7 +14,33 @@
 """
 
 $Id$
+
+  >>> from zope import interface
+  >>> from zope.security.interfaces import IPrincipal, IGroup
+  >>> class P(object):
+  ...   interface.implements(IPrincipal)
+
+  >>> class Prefs(object):
+  ...     __principal__ = None
+
+  >>> prefs = Prefs()
+  >>> prefs.__principal__ = P()
+
+  >>> import utils
+  >>> print utils.isUser(prefs)
+  True
+  >>> print utils.isGroup(prefs)
+  False
+
+  >>> interface.directlyProvides(prefs.__principal__, IGroup)
+  >>> print utils.isUser(prefs)
+  False
+  >>> print utils.isGroup(prefs)
+  True
+  >>> print utils.isMemberAwareGroup(prefs)
+  False
 """
+
 from zope import interface
 from zope.security.interfaces import IPrincipal, IGroup, IMemberAwareGroup
 

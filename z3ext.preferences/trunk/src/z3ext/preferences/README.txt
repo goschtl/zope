@@ -59,6 +59,11 @@ our preferences:
   ...     IZMIUserSettings,
   ...     title=u"ZMI User Settings", description=u"")
 
+We should set 'preferenceID' to schema with preference group id,
+This value is used by data storage to store data in annotations
+
+  >>> IZMIUserSettings.setTaggedValue('preferenceID', 'ZMISettings')
+
 Now we can instantiate the preference group.
 
   >>> settings = settingsClass()
@@ -68,7 +73,7 @@ We can't change schema for preference group:
   >>> settings.__schema__ = IZMIUserSettings
   Traceback (most recent call last):
   ...
-  AttributeError: Can't set __schema__
+  AttributeError: Can't change __schema__
 
 
 Note that the preferences group provides the interface it is representing:
@@ -118,20 +123,25 @@ settings:
   >>> class PrincipalAnnotations(dict):
   ...     zope.interface.implements(IAnnotations)
   ...     data = {}
-  ...     def __new__(class_, principal, context):
+  ...     def __new__(class_, principal):
   ...         try:
   ...             annotations = class_.data[principal.id]
   ...         except KeyError:
   ...             annotations = dict.__new__(class_)
   ...             class_.data[principal.id] = annotations
   ...         return annotations
-  ...     def __init__(self, principal, context):
+  ...     def __init__(self, principal):
   ...         pass
 
   >>> from zope import component
+  >>> component.provideAdapter(PrincipalAnnotations, (Principal,), IAnnotations)
+
+Also we need IDataStorage for preferenceGroup schema, because preference group
+doesn't use IAnnotations directly.
+
+  >>> from z3ext.preferences import storage
   >>> component.provideAdapter(
-  ...     PrincipalAnnotations,
-  ...     (Principal, zope.interface.Interface), IAnnotations)
+  ...     storage.getDefaultStorage, (Principal, zope.interface.Interface))
 
 And now we need bind preferences to principal. We can just call __bind__
 method in this case preference will use principal from current interaction.
@@ -146,7 +156,7 @@ method in this case preference will use principal from current interaction.
 Or we can explicitly set principal, this is usefull when we want to know
 preferences for principal.
 
-  >>> settings = settings.__bind__(principal=principal)
+  >>> settings = settings.__bind__(principal)
   >>> interfaces.IBound.providedBy(nsettings)
   True
 
@@ -198,6 +208,8 @@ can adjust the look and feel of the folder contents view:
   ...     "ZMISettings.Folder",
   ...     IFolderSettings,
   ...     title=u"Folder Content View Settings")
+
+  >>> IFolderSettings.setTaggedValue('preferenceID', 'ZMISettings.Folder')
 
   >>> folderSettings = folderSettingsClass()
 
@@ -284,7 +296,7 @@ Then the system sets up a root preference group:
   ...     id="ZMISettings"
   ...     schema="z3ext.preferences.README.IZMIUserSettings"
   ...     title="ZMI User Settings" />
-  ... 
+  ...
   ...   <z3ext:preferenceGroup
   ...     id="ZMISettings.Folder"
   ...     schema="z3ext.preferences.README.IFolderSettings"
@@ -296,10 +308,24 @@ Now we can use the preference system in its intended way. We access the folder
 settings as follows:
 
   >>> prefs = component.getUtility(interfaces.IPreferenceGroup)
+  >>> prefs.isAvailable()
+  False
+
+  >>> prefs['ZMISettings']['Folder'].isAvailable()
+  False
+
 
 Don't forget to bind preferences to principal
 
-  >>> prefs = prefs.__bind__(principal=principal)
+  >>> prefs = prefs.__bind__(principal)
+  >>> prefs.isAvailable()
+  True
+
+  >>> p = prefs['ZMISettings']['Folder'].__bind__(parent=prefs)
+
+  >>> prefs['ZMISettings']['Folder'].isAvailable()
+  True
+
   >>> prefs['ZMISettings']['Folder'].sortedBy
   'size'
 
@@ -323,6 +349,11 @@ Don't forget to bind preferences to principal
 
 
 Let's register the ZMI settings again under a new name via ZCML:
+
+  >>> class IZMIUserSettings2(IZMIUserSettings):
+  ...     pass
+
+  >>> IZMIUserSettings2.setTaggedValue('preferenceID', 'ZMISettings.Folder')
 
   >>> context = xmlconfig.string('''
   ... <configure
@@ -411,17 +442,18 @@ Now let's mark our principal
   >>> new_prefs.isAvailable()
   True
 
+  >>> prefs['ZMISettings2'].remove('Folder10')
+
 
 Simple Python-Level Access
 --------------------------
 
 If a site is set, getting the user preferences is very simple:
 
-  >>> prefs2 = component.getUtility(interfaces.IPreferenceGroup, 'ZMISettings.Folder')
-  >>> prefs2 = prefs2.__bind__(principal=principal)
+  >>> prefs2 = IFolderSettings(principal)
 
   >>> prefs2.sortedBy
-  'size'
+  'name'
 
 
 Security
@@ -451,8 +483,9 @@ even set security checks on attribute level, like in <class /> directive.
   ...      schema="z3ext.preferences.README.IZMIUserSettings"
   ...      provides="z3ext.preferences.interfaces.IPreferenceCategory"
   ...      permission="zope.View">
+  ...    <allow attributes="email" />
   ...    <require
-  ...      attributes="showZopeLogo" permission="zope.Manage" />
+  ...      attributes="showZopeLogo" permission="zope.Manage" set_attributes="skin" />
   ...   </z3ext:preferenceGroup>
   ...
   ... </configure>''', context)

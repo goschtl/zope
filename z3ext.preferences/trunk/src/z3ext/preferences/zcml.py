@@ -22,10 +22,11 @@ from zope.schema.interfaces import IField
 
 from zope.security.zcml import Permission
 from zope.security.checker import Checker, CheckerPublic
+from zope.security.interfaces import IPrincipal
 
 from zope.interface.common.mapping import IEnumerableMapping
 
-from zope.component.zcml import utility
+from zope.component.zcml import utility, adapter
 from zope.component.interface import provideInterface
 
 from zope.configuration import fields
@@ -59,7 +60,7 @@ class IPreferenceGroupDirective(interface.Interface):
         title=u"Schema",
         description=u"Schema of the preference group used defining the "
                     u"preferences of the group.",
-        required=False)
+        required=True)
 
     title = fields.MessageID(
         title=u"Title",
@@ -98,11 +99,20 @@ class IPreferenceGroupDirective(interface.Interface):
         required = False)
 
 
+class PreferenceGroupAdapter(object):
+
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self, principal, context=None):
+        prefs = getUtility(IPreferenceGroup, self.name)
+        return prefs.__bind__(principal, context)
+
+
 class PreferenceGroupDirective(object):
 
-    def __init__(self, _context, id, title,
-                 for_=None, schema=interface.Interface,
-                 description=u'', category=False, class_=None, provides=[],
+    def __init__(self, _context, id, schema, title,
+                 for_=None, description=u'', class_=None, provides=[],
                  permission='z3ext.ModifyPreference', tests=(), order = 9999):
 
         Class = PreferenceType(str(id), schema, class_, title, description)
@@ -114,6 +124,10 @@ class PreferenceGroupDirective(object):
         group = Class(tests)
 
         utility(_context, IPreferenceGroup, group, name=id)
+        adapter(_context, (PreferenceGroupAdapter(id),), schema,
+                (for_ or IPrincipal,))
+        adapter(_context, (PreferenceGroupAdapter(id),), schema,
+                (for_ or IPrincipal, interface.Interface))
 
         interface.classImplements(Class, *provides)
 
@@ -126,8 +140,10 @@ class PreferenceGroupDirective(object):
         self.require(_context, CheckerPublic,
                      interface=(IEnumerableMapping,), attributes=('isAvailable',))
 
+        schema.setTaggedValue('preferenceID', id)
+
         _context.action(
-            discriminator=('z3ext:preferences', group),
+            discriminator=('z3ext:preferences', schema),
             callable=addSubgroup, args=(group,))
 
     def require(self, _context,

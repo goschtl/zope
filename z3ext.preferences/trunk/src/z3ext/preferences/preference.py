@@ -15,21 +15,14 @@
 
 $Id$
 """
-from BTrees.OOBTree import OOBTree
-
 from zope import interface
-from zope.interface.common.mapping import IEnumerableMapping
-from zope.component import getGlobalSiteManager
-from zope.component import queryUtility, getMultiAdapter
 from zope.cachedescriptors.property import Lazy
+from zope.interface.common.mapping import IEnumerableMapping
 from zope.security.management import getInteraction
-from zope.annotation.interfaces import IAnnotations
-from zope.app.component.hooks import getSite
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.component import queryUtility, getMultiAdapter, getGlobalSiteManager
 
-from interfaces import IPreferenceGroup, IBound, UnboundPreferenceGroup
-
-pref_key = 'zope.app.user.UserPreferences'
+from interfaces import UnboundPreferenceGroup
+from interfaces import IPreferenceGroup, IBound, IDataStorage
 
 _marker = object()
 
@@ -48,25 +41,15 @@ class PreferenceGroup(object):
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
 
-        if parent is None:
-            parent = getSite()
-
+        # set parent
         clone.__parent__ = parent
 
+        # set principal
         if principal is None:
             if IBound.providedBy(parent):
                 clone.__principal__ = parent.__principal__
             else:
-                principal = getInteraction().participations[0].principal
-
-                auth = queryUtility(IAuthentication)
-                if auth is not None:
-                    try:
-                        principal = auth.getPrincipal(principal.id)
-                    except PrincipalLookupError:
-                        pass
-
-                clone.__principal__ = principal
+                clone.__principal__ = getInteraction().participations[0].principal
         else:
             clone.__principal__ = principal
 
@@ -78,18 +61,7 @@ class PreferenceGroup(object):
         if not IBound.providedBy(self):
             raise UnboundPreferenceGroup()
 
-        ann = getMultiAdapter((self.__principal__, self), IAnnotations)
-
-        # If no preferences exist, create the root preferences object.
-        if  ann.get(pref_key) is None:
-            ann[pref_key] = OOBTree()
-        prefs = ann[pref_key]
-
-        # If no entry for the group exists, create a new entry.
-        if self.__id__ not in prefs.keys():
-            prefs[self.__id__] = OOBTree()
-
-        return prefs[self.__id__]
+        return getMultiAdapter((self.__principal__, self), IDataStorage)
 
     def isAvailable(self):
         if IPreferenceGroup.providedBy(self.__parent__):
@@ -97,10 +69,7 @@ class PreferenceGroup(object):
                 return False
 
         for test in self.__tests__:
-            if callable(test):
-                if not test(self):
-                    return False
-            elif not bool(test):
+            if not test(self):
                 return False
 
         return True
@@ -118,6 +87,8 @@ class PreferenceGroup(object):
                 name = id + grp_id
 
                 group = queryUtility(IPreferenceGroup, name)
+
+                # this code for support z3c.baseregistry package
                 if group is None:
                     group = getGlobalSiteManager().queryUtility(
                         IPreferenceGroup, name)
@@ -139,7 +110,7 @@ class PreferenceGroup(object):
         group = queryUtility(IPreferenceGroup, id, default)
         if group is default:
             return default
-        return group.__bind__(parent=self)
+        return group.__bind__(self.__principal__, self)
 
     def items(self):
         id = self.__id__
@@ -151,7 +122,7 @@ class PreferenceGroup(object):
             name = id + key
             group = queryUtility(IPreferenceGroup, name)
             if group is not None:
-                items.append((name, group.__bind__(parent=self)))
+                items.append((name, group.__bind__(self.__principal__, self)))
         return items
 
     def __getitem__(self, key):
@@ -175,7 +146,7 @@ class PreferenceGroup(object):
             name = id + key
             group = queryUtility(IPreferenceGroup, name)
             if group is not None:
-                yield group.__bind__(parent=self)
+                yield group.__bind__(self.__principal__, self)
 
     def values(self):
         return [group for id, group in self.items()]

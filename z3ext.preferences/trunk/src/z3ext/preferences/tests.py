@@ -36,6 +36,9 @@ def test_suite():
             globs={'pprint': doctestunit.pprint},
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite(
+            'z3ext.preferences.utils',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        doctest.DocTestSuite(
             'z3ext.preferences.preferencetype',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))

@@ -17,6 +17,9 @@
      permission="z3ext.ModifyPreference"
      role="preference.Owner" />
 
+  <!-- default preference group storage -->
+  <adapter factory=".storage.getDefaultStorage" />
+
   <!-- root preference group -->
   <utility
      provides=".interfaces.IPreferenceGroup"
@@ -48,7 +51,7 @@
      id="portal"
      title="Portal preferences"
      description="These are all the preferences related to common portal settings."
-     provides="z3ext.preferences.interfaces.IPreferenceCategory" />
+     schema="z3ext.preferences.interfaces.IPortalPreferences" />
 
   <!-- browser views -->
   <include package=".browser" />

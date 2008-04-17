@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.2.0 (2008-04-18)
+------------------
+
+- 'schema' field for z3ext:preferenceGroup is required now
+
+- Added adapter for IPrincipal to 'schema' with automatic binding
+
+
 1.1.1 (2008-04-15)
 ------------------
 
@@ -51,4 +59,4 @@ CHANGES
 0.9.0 (2008-02-01)
 ------------------
 
-- Initial release.
+- Initial release
