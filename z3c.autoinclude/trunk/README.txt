@@ -1,10 +1,12 @@
-This package adds a new ZCML directive: "includeDependencies". This
-directive searches through the dependencies in your setup.py file
-(install_requires), and includes the meta.zcml and configure.zcml
-files in those packages that it finds. Inclusion order matches the
-order in the setup.py file. You can pass a path for the package you
-want to include dependencies for, but typically you pass in the
-current package, as follows::
+This package adds two new ZCML directives: "includeDependencies"
+and "includePlugins".
+
+The "includeDependencies" directive searches through the dependencies
+in your setup.py file (install_requires), and includes the meta.zcml
+and configure.zcml files in those packages that it finds. Inclusion
+order matches the order in the setup.py file. You can pass a path for
+the package you want to include dependencies for, but typically you
+pass in the current package, as follows::
 
   <includeDependencies package="." />
 
@@ -25,15 +27,31 @@ out of the box. The grokproject command will automatically add the
 You can then stop worrying about manual ZCML inclusion in the vast
 majority of cases.
 
-The ``includeDependencies`` directive automatically includes
-``configure.zcml`` and ``meta.zcml`` files that in the main package
-directories. In some cases, a package may use unusual names or
+The "includePlugins" directive uses entry points to find installed
+packages that broadcast themselves as plugins to a particular base
+package. You can pass a path for the package you want to include
+plugins for, but typically you pass in the current package, as
+follows::
+
+  <includePlugins package="." />
+
+To broadcast a package as a plugin to a base package called "my_base",
+add the following lines to the plugin package's ``setup.py``::
+
+  entry_points="""
+  [z3c.autoinclude.plugin]
+  target = my_base
+  """
+
+The z3c.autoinclude directives automatically include
+``configure.zcml`` and ``meta.zcml`` files that live in the main
+package directories. In some cases, a package may use unusual names or
 locations for its ZCML files. In that case you will need to modify
 your package's ``configure.zcml`` and ``meta.zcml`` yourself to
 include the ZCML using the manual ``include`` directive.
 
-To make the ``includeDependencies`` directive available for use in
-your application or framework, you need to include it (in your
+To make the z3c.autoinclude directives available for use in your
+application or framework, you need to include it (in your
 ``meta.zcml`` for instance), like this::
 
   <include package="z3c.autoinclude" file="meta.zcml" />
