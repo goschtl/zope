@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.recipe.runscript',
-    version='0.1.0',
+    version='0.1.1',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A recipe that runs any script to install a part.",
@@ -32,6 +32,8 @@ setup (
         + '\n\n' +
         'Detailed Documentation\n'
         '**********************'
+        + '\n\n' +
+        read('src', 'z3c', 'recipe', 'runscript', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),

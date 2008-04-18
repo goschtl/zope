@@ -2,7 +2,13 @@
 CHANGES
 =======
 
-Version 0.1.0 (??/??/2007)
--------------------------
+Version 0.1.1 (2008-04-18)
+--------------------------
+
+- Bug: Fix release to include CHANGES.txt.
+
+
+Version 0.1.0 (2007-07-30)
+--------------------------
 
 - Initial Release
