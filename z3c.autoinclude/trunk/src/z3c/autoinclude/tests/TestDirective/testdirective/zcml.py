@@ -3,6 +3,10 @@ from zope.schema import TextLine
 
 test_log = []
 
+def clear_test_log():
+    while test_log:
+        test_log.pop()
+
 class ITestDirective(Interface):
     """Auto-include any ZCML in the dependencies of this package."""
     

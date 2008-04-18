@@ -1,13 +1,12 @@
-import os
-from zope.dottedname.resolve import resolve
-from pkg_resources import resource_exists
-from pkg_resources import get_provider
-from pkg_resources import get_distribution
 import logging
+import os
+from pkg_resources import find_distributions
+import sys
+from zope.dottedname.resolve import resolve
 
 log = logging.getLogger("z3c.autoinclude")
 
-class IncludeFinder(object):
+class DistributionManager(object):
     def __init__(self, dist):
         self.context = dist
 
@@ -36,28 +35,6 @@ class IncludeFinder(object):
             path = os.path.join(dist_path, *ns_dottedname.split('.'))
             result.extend(subpackageDottedNames(path, ns_dottedname))
         return result
-
-    def includableInfo(self, include_candidates):
-        """Return the packages in the dependencies which are includable.
-
-        include_candidates - a list of include files we are looking for
-
-        Returns a dictionary with the include candidates as keys, and lists
-        of dotted names of packages that contain the include candidates as
-        values.
-        """
-        result = {}
-        for req in self.context.requires():
-            include_finder = IncludeFinder(get_provider(req))
-            for dotted_name in include_finder.dottedNames():
-                module = resolve(dotted_name)
-                for candidate in include_candidates:
-                    candidate_path = os.path.join(
-                        os.path.dirname(module.__file__), candidate)
-                    if os.path.isfile(candidate_path):
-                        result.setdefault(candidate, []).append(dotted_name)
-        return result
-
     
 def subpackageDottedNames(package_path, ns_dottedname=None):
     # we do not look for subpackages in zipped eggs
@@ -82,17 +59,18 @@ def isPythonPackage(path):
             return True
     return False
 
-def package_includes(project_name, zcml_filenames=None):
-    """
-    Convenience function for finding zcml to load from requirements for
-    a given project. Takes a project name. DistributionNotFound errors
-    will be raised for uninstalled projects.
-    """
-    if zcml_filenames is None:
-        zcml_filenames = ['meta.zcml', 'configure.zcml', 'overrides.zcml']
-    dist = get_distribution(project_name)
-    include_finder = IncludeFinder(dist)
-    return include_finder.includableInfo(zcml_filenames)
+def distributionForPackage(package):
+
+    package_filename = package.__file__
+    for path in sys.path:
+        if package_filename.startswith(path):
+            break
+    dists = list(find_distributions(path, True))
+    assert dists, "No distributions found for package %s/%s" % (path, package_filename)
+    return dists[0]
+
+def distributionForDottedName(dotted_name):
+    return distributionForPackage(resolve(dotted_name))
 
 def debug_includes(dist, include_type, dotted_names):
     if not dotted_names:

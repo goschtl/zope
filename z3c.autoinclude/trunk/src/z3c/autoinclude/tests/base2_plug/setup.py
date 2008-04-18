@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.0'
 
-setup(name='TestDirective',
+setup(name='base2_plug',
       version=version,
       description="",
       long_description="""\
@@ -15,15 +15,15 @@ setup(name='TestDirective',
       url='',
       license='',
       package_data = {'': ['*.zcml',]},
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      packages=find_packages(),
+      namespace_packages=['base2'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          'setuptools',
+          'TestDirective',
       ],
       entry_points="""
       # -*- Entry points: -*-
-      [z3c.autoinclude.plugin]
-      target = basepackage
       """,
       )

@@ -2,9 +2,36 @@
 Auto inclusion of zcml files
 ============================
 
-This package provides a facility to automatically include zcml
-dependencies such as configure.zcml and meta.zcml based on
-install_requires in the project's setup.py.
+This package provides a facility to automatically load zcml files
+such as configure.zcml and meta.zcml for a project's dependencies
+and extension packages.
+
+Autoinclusion is signalled by custom zcml directives defined in
+z3c.autoinclude's meta.zcml file.
+
+To trigger autoinclusion of a package's dependencies, include the
+following directive::
+
+  <includeDependencies package='.' />
+
+To trigger autoinclusion of a package's extensions, include the
+following directive::
+
+  <includePlugins package='.' />
+
+And to signal a package as an extension to a base package, use
+the following entry point (in your project's setup.py)::
+
+  [z3c.autoinclude.plugin]
+  target = basepackage.dotted.modulename
+
+
+Automatic inclusion of package dependencies
+===========================================
+
+The z3c.autoinclude.dependency module uses an egg's install_requires
+information (in the project's setup.py) to find and implicitly load
+zcml from all dependencies of a project.
 
 We have created a test environment to simulate setuptools
 dependencies.
@@ -61,17 +88,17 @@ We can turn this requirement into a distribution::
     >>> from pkg_resources import get_provider
     >>> b_dist = get_provider(reqs[0])
 
-We can adapt a distribution to an IncludeFinder::
+We can adapt a distribution to a DependencyFinder::
 
-    >>> from z3c.autoinclude.include import IncludeFinder
-    >>> a_include_finder = IncludeFinder(a_dist)
-    >>> b_include_finder = IncludeFinder(b_dist)
-    >>> xyz_include_finder = IncludeFinder(xyz_dist)
-    >>> sibling_include_finder = IncludeFinder(sibling_dist)
+    >>> from z3c.autoinclude.dependency import DependencyFinder
+    >>> a_include_finder = DependencyFinder(a_dist)
+    >>> b_include_finder = DependencyFinder(b_dist)
+    >>> xyz_include_finder = DependencyFinder(xyz_dist)
+    >>> sibling_include_finder = DependencyFinder(sibling_dist)
 
 The include finder provides functionality to determine what namespace
 packages exist in the distribution. In the case of ``APackage``, there
-are no namespace package::
+are no namespace packages::
 
     >>> a_include_finder.namespaceDottedNames()
     []
@@ -180,3 +207,104 @@ Note that it will not catch DistributionNotFound errors::
      ...
      DistributionNotFound: NonexistentPackage
 
+Now let's just clean up our test log in preparation for the next test::
+
+    >>> from testdirective.zcml import clear_test_log
+    >>> clear_test_log()
+    >>> pprint(test_log)
+    []
+
+
+=========================================
+Automatic inclusion of extension packages
+=========================================
+
+There is additional functionality for registering and autoincluding
+extension packages for a particular platform.
+
+In this test environment, ``BasePackage`` provides the ``basepackage``
+module which we will treat as our platform.  ``FooPackage`` wants to
+broadcast itself as a plugin for ``basepackage`` and thereby register
+its ZCML as a candidate for automatic inclusion. ``TestDirective``
+also broadcasts itself as a plugin for ``basepackage``.
+
+So, once again, we must first set up our testing infrastructure::
+
+    >>> ws = install_projects(['BasePackage', 'FooPackage', 'TestDirective',
+    ...                        'base2', 'base2_plug'],
+    ...                       target_dir)
+    >>> for dist in ws:
+    ...   dist.activate()
+    ...   if dist.project_name == 'FooPackage':
+    ...     foo_dist = dist
+    ...   elif dist.project_name == 'BasePackage':
+    ...     base_dist = dist
+
+Given a module name, we can ask for distributions which have been broadcast
+themselves as plugging into that module via entry points::
+
+    >>> from z3c.autoinclude.plugin import find_plugins
+    >>> sorted(find_plugins('basepackage'))
+    [FooPackage 0.0 (...), TestDirective 0.0 (...)]
+
+Armed with a valid module name we can find the ZCML files within it
+which must be loaded::
+
+    >>> from z3c.autoinclude.plugin import zcml_to_include
+    >>> zcml_to_include('foo')
+    ['configure.zcml']
+
+By default the function looks for the standard ZCML files ``meta.zcml``,
+``configure.zcml``, and ``overrides.zcml`` but this behavior can be
+overridden::
+
+    >>> zcml_to_include('foo', ['meta.zcml'])
+    []
+
+Finally, we know how to get a list of all module dottednames within
+a distribution, through the DistributionManager adapter::
+
+    >>> from z3c.autoinclude.utils import DistributionManager
+    >>> DistributionManager(foo_dist).dottedNames()
+    ['foo']
+
+So between these functions we can now get a dictionary of all
+extension modules which must be loaded for each ZCML group given
+a base platform.
+
+For consistency, we use the same API as with dependency autoinclusion.
+This time we adapt a base platform (represented by a string referring
+to an importable dotted module name) to a PluginFinder and call its
+`includableInfo` method::
+
+    >>> from z3c.autoinclude.plugin import PluginFinder
+    >>> pprint(PluginFinder('basepackage').includableInfo(['configure.zcml',
+    ...                                                    'meta.zcml']))
+    {'configure.zcml': ['foo'], 'meta.zcml': ['testdirective']}
+
+``FooPackage`` has a test-logging directive in its configure.zcml
+which is defined in meta.zcml in ``TestDirective``.  ``FooPackage``
+does not know anything about ``TestDirective`` and does not explicitly
+include its ZCML; so for the test-logging directive to succeed when
+the ZCML of ``FooPackage`` is loaded, the meta.zcml from ``TestDirective``
+must be loaded first.  Since ``TestDirective`` offers itself as a
+plugin for ``BasePackage`` and zcmlgroups are loaded in the
+conventional order with all meta.zcml first, none of this should
+explode when we load the ZCML from ``BasePackage`` and the test log
+should accurately reflect that the ``FooPackage`` ZCML has been loaded::
+
+    >>> import basepackage
+    >>> dummy = xmlconfig.file(resource_filename('basepackage', 'configure.zcml'),
+    ...                        package=basepackage)
+    >>> pprint(test_log)
+    [u'foo has been loaded']
+
+
+``base2`` is a namespace package. ``base2.plug`` is a package that
+defines a plugin for base2.
+
+#    >>> import base2
+#    >>> dummy = xmlconfig.file(resource_filename('base2', 'configure.zcml'),
+#    ...                        package=base2)
+#    >>> pprint(test_log)
+#    [u'base2.plug has been loaded']

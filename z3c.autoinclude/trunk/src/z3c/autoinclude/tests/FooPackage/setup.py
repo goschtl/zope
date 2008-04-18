@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.0'
 
-setup(name='TestDirective',
+setup(name='FooPackage',
       version=version,
       description="",
       long_description="""\
@@ -19,7 +19,7 @@ setup(name='TestDirective',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+	'z3c.autoinclude',
       ],
       entry_points="""
       # -*- Entry points: -*-
