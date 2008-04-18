@@ -299,7 +299,6 @@ should accurately reflect that the ``FooPackage`` ZCML has been loaded::
     >>> pprint(test_log)
     [u'foo has been loaded']
 
-
 ``base2`` is a namespace package. ``base2.plug`` is a package that
 defines a plugin for base2; it extends ``base2``s namespace.
 
@@ -312,3 +311,20 @@ defines a plugin for base2; it extends ``base2``s namespace.
     >>> dummy = xmlconfig.file(filename, package=base2)
     >>> pprint(test_log)
     [u'base2.plug has been loaded']
+
+
+=================
+Utility functions
+=================
+
+Though this isn't the best place for these tests, I don't want to
+extract out the testing infrastructure right now; so let's just
+test the z3c.autoinclude.utils module right here.
+
+distributionForPackage is a function that takes a module object
+and returns the setuptools distribution object that contains
+the module.
+
+    >>> from z3c.autoinclude.utils import distributionForPackage
+    >>> distributionForPackage(base2)
+    base2 0.0 (base2-0.0...egg)
