@@ -301,10 +301,14 @@ should accurately reflect that the ``FooPackage`` ZCML has been loaded::
 
 
 ``base2`` is a namespace package. ``base2.plug`` is a package that
-defines a plugin for base2.
+defines a plugin for base2; it extends ``base2``s namespace.
 
-#    >>> import base2
-#    >>> dummy = xmlconfig.file(resource_filename('base2', 'configure.zcml'),
-#    ...                        package=base2)
-#    >>> pprint(test_log)
-#    [u'base2.plug has been loaded']
+    >>> clear_test_log()
+    >>> import base2
+    >>> from pkg_resources import Requirement, resource_filename
+    >>> req = Requirement.parse('base2')
+    >>> import os
+    >>> filename = resource_filename(req, os.path.join('base2', 'configure.zcml'))
+    >>> dummy = xmlconfig.file(filename, package=base2)
+    >>> pprint(test_log)
+    [u'base2.plug has been loaded']
