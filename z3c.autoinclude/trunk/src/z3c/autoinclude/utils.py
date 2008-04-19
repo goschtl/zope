@@ -1,6 +1,7 @@
 import logging
 import os
 from pkg_resources import find_distributions
+from setuptools import find_packages
 import sys
 from zope.dottedname.resolve import resolve
 
@@ -60,14 +61,27 @@ def isPythonPackage(path):
     return False
 
 def distributionForPackage(package):
-
     package_filename = package.__file__
+    package_dottedname = package.__name__
+    valid_dists_for_package = []
     for path in sys.path:
-        if package_filename.startswith(path):
-            break
-    dists = list(find_distributions(path, True))
-    assert dists, "No distributions found for package %s/%s" % (path, package_filename)
-    return dists[0]
+        dists = find_distributions(path, True)
+        for dist in dists:
+            if not os.path.isdir(dist.location):
+                continue
+            packages = find_packages(dist.location)
+            try:
+                ns_packages = dist.get_metadata_lines('namespace_packages.txt')
+            except IOError:
+                ns_packages = []
+            if package_dottedname in ns_packages:
+                continue
+            if package_dottedname not in packages:
+                continue
+            valid_dists_for_package.append(dist)
+    assert valid_dists_for_package, "No distributions found for package %s." % package_filename
+    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude cowardly refuses to guess." % package_filename
+    return valid_dists_for_package[0]
 
 def distributionForDottedName(dotted_name):
     return distributionForPackage(resolve(dotted_name))
