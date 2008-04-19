@@ -327,6 +327,7 @@ the module.
 
 It should find the correct distribution for a package whose namespace
 is extended by other packages in the environment::
+
     >>> from z3c.autoinclude.utils import distributionForPackage
     >>> distributionForPackage(base2)
     base2 0.0 (...base2-0.0...egg)
@@ -334,6 +335,7 @@ is extended by other packages in the environment::
 It should also find the correct distribution for namespace packages,
 even if the namespace being extended is a module defined in another
 package in the environment::
+
     >>> import base2.plug
     >>> distributionForPackage(base2.plug)
     base2-plug 0.0 (...base2_plug-0.0...egg)
@@ -341,6 +343,7 @@ package in the environment::
 While we're at it, it should also find the correct distribution for
 packages whose distribution name has no bearing on the name of the
 package contained within it::
+
     >>> import basepackage
     >>> distributionForPackage(basepackage)
     BasePackage 0.0 (...BasePackage-0.0...egg)
