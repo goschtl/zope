@@ -327,4 +327,4 @@ the module.
 
     >>> from z3c.autoinclude.utils import distributionForPackage
     >>> distributionForPackage(base2)
-    base2 0.0 (base2-0.0...egg)
+    base2 0.0 (...base2-0.0...egg)
