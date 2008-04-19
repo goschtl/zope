@@ -61,7 +61,6 @@ def isPythonPackage(path):
     return False
 
 def distributionForPackage(package):
-    package_filename = package.__file__
     package_dottedname = package.__name__
     valid_dists_for_package = []
     for path in sys.path:
@@ -79,8 +78,8 @@ def distributionForPackage(package):
             if package_dottedname not in packages:
                 continue
             valid_dists_for_package.append(dist)
-    assert valid_dists_for_package, "No distributions found for package %s." % package_filename
-    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude cowardly refuses to guess." % package_filename
+    assert valid_dists_for_package, "No distributions found for package %s." % package_dottedname
+    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude cowardly refuses to guess." % package_dottedname
     return valid_dists_for_package[0]
 
 def distributionForDottedName(dotted_name):
