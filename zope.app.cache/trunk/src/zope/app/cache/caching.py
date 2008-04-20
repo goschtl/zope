@@ -18,11 +18,11 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import classProvides
-from zope.component import ComponentLookupError
+from zope.component import ComponentLookupError, getUtility
 from zope.schema.interfaces import IVocabularyFactory
-from zope.app import zapi
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.component.vocabulary import UtilityVocabulary
+from zope.traversing.api import getPath
 
 def getCacheForObject(obj):
     """Returns the cache associated with `obj` or ``None``."""
@@ -32,12 +32,12 @@ def getCacheForObject(obj):
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None
-    return zapi.getUtility(ICache, cache_id)
+    return getUtility(ICache, cache_id)
 
 def getLocationForCache(obj):
     """Returns the location to be used for caching the object or ``None``."""
     try:
-        return zapi.getPath(obj)
+        return getPath(obj)
     except (ComponentLookupError, TypeError):
         return None
 
