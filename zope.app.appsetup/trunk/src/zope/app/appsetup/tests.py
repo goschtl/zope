@@ -18,13 +18,14 @@ $Id$
 import unittest
 import transaction
 
+import zope.component
+
 from ZODB.tests.util import DB
 from zope.testing import doctest
-from zope.traversing.api import traverse
+from zope.traversing.api import traverse, getPath
 from zope.error.interfaces import IErrorReportingUtility
 from zope.error.error import ErrorReportingUtility
 
-from zope.app import zapi
 from zope.app.component import hooks
 from zope.app.component.testing import PlacefulSetup
 from zope.app.folder import rootFolder, Folder
@@ -104,11 +105,12 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         ensureUtility(sub_folder, IErrorReportingUtility,
                      'ErrorReporting', ErrorReportingUtility,
                      'ErrorReporting', asObject=True)
-    
+
         # Make sure it was created on the sub folder, not the root folder
-        got_utility = zapi.getUtility(IErrorReportingUtility, name='ErrorReporting',
-                context=sub_folder)
-        got_path = zapi.getPath(got_utility)
+        got_utility = zope.component.getUtility(IErrorReportingUtility,
+                                                name='ErrorReporting',
+                                                context=sub_folder)
+        got_path = getPath(got_utility)
         self.assertEquals("/sub_folder/++etc++site/default/ErrorReporting", got_path)
 
     def test_ensureUtility(self):
