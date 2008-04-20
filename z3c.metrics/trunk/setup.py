@@ -29,8 +29,6 @@ setup(name='z3c.metrics',
           'zope.interface',
           'zope.component',
           'ZODB3',
-          'z3c.persistentfactory',
-          'grouparchy.schema',
       ],
       entry_points="""
       # -*- Entry points: -*-
