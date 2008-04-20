@@ -22,15 +22,23 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.annotation.attribute import AttributeAnnotations
 
 from zope.app.cache.interfaces import ICacheable, ICache
-from zope.app.cache.caching import getCacheForObject
+from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.testing import ztapi, placelesssetup
 
+from zope.traversing.interfaces import IPhysicallyLocatable
+
+
 class ObjectStub(object):
-    implements(IAttributeAnnotatable)
+    implements(IAttributeAnnotatable,
+               IPhysicallyLocatable)
+
+    def getPath(self):
+        return '/cached-object'
 
 class CacheStub(object):
     implements(ICache)
+
 
 class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
 
@@ -48,6 +56,10 @@ class Test(placelesssetup.PlacelessSetup, unittest.TestCase):
         self.assertEquals(getCacheForObject(obj), None)
         ICacheable(obj).setCacheId("my_cache")
         self.assertEquals(getCacheForObject(obj), self._cache)
+
+    def testGetLocationForCache(self):
+        obj = ObjectStub()
+        self.assertEqual(getLocationForCache(obj), '/cached-object')
 
 
 def test_suite():
