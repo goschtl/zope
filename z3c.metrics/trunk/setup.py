@@ -32,5 +32,4 @@ setup(name='z3c.metrics',
       ],
       entry_points="""
       # -*- Entry points: -*-
-      """,
-      )
+      """)
