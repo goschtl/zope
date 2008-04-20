@@ -7,6 +7,8 @@ from OFS import SimpleItem
 from Products.ZCatalog import interfaces as zcatalog_ifaces
 from Products.PluginIndexes import interfaces as plugidx_ifaces
 from Products.PluginIndexes.TextIndex import Vocabulary
+from Products.GenericSetup import interfaces as gs_ifaces
+from Products.GenericSetup.PluginIndexes import exportimport
 
 from z3c.metrics import interfaces, index
 from z3c.metrics.zope2 import scale
@@ -27,8 +29,13 @@ class InitIndexScoreEvent(index.IndexesScoreEvent):
 class RemoveIndexScoreEvent(index.IndexesScoreEvent):
     interface.implements(IRemoveScoreEvent)
 
+class IMetricsIndex(interfaces.IIndex,
+                    plugidx_ifaces.IPluggableIndex):
+    """sro"""
+
 class MetricsIndex(index.Index, SimpleItem.SimpleItem):
-    interface.implements(plugidx_ifaces.IPluggableIndex)
+    """A Metrics Index in a ZCatalog"""
+    interface.implements(IMetricsIndex)
 
     def __init__(self, id, extra=None, caller=None):
         self.id = id
@@ -95,24 +102,20 @@ class MetricsIndex(index.Index, SimpleItem.SimpleItem):
         event = RemoveIndexScoreEvent(obj, [self])
         component.subscribers([obj, event], None)
 
-# XXX Old notes
+class MetricsIndexNodeAdapter(exportimport.PluggableIndexNodeAdapter):
+    component.adapts(IMetricsIndex, gs_ifaces.ISetupEnviron)
 
-# This is a tough call.  We can't depend on event ordering
-# adding the object to the catalog before the event that adds
-# the object to the metric index.
+    __used_for__ = interfaces.IIndex
 
-# The solution below is to add the object to the catalog
-# without actually indexing it yet so that it has an id in the
-# catalog.
+    def _exportNode(self):
+        """Export the object as a DOM node.
+        """
+        node = self._getObjectNode('index')
+        return node
 
-# A more appropriate solution might be to fire an event when
-# the object is added to the catalog and subscribe to that
-# event rather than to IObjectAddedEvent.  This solution would
-# involve, however, monkey pacthing CMFCatalogAware.
+    def _importNode(self, node):
+        """Prevent the index from being cleared.
+        """
+        pass
 
-# So the choice is between monkey patch or abusing the
-# catalog.  Until there is obvious reason otherwise, we'll
-# abuse the catalog.
-
-# On second thought, let's just make the score index an actual
-# index in the catalog
+    node = property(_exportNode, _importNode)
