@@ -24,13 +24,13 @@ from zope.interface import alsoProvides
 from zope.security.interfaces import (
     IGroup, IGroupAwarePrincipal, IMemberAwareGroup)
 
-from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 import zope.app.container.constraints
 import zope.app.container.interfaces
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 import zope.app.security.vocabulary
-from zope.app.security.interfaces import IAuthenticatedGroup, IEveryoneGroup
+from zope.app.security.interfaces import (
+    IAuthentication, IAuthenticatedGroup, IEveryoneGroup)
 from zope.app.authentication import principalfolder, interfaces
 
 
@@ -293,7 +293,8 @@ class GroupInformation(persistent.Persistent):
 
             if check:
                 try:
-                    nocycles(new, [], zapi.principals().getPrincipal)
+                    principalsUtility = component.getUtility(IAuthentication)
+                    nocycles(new, [], principalsUtility.getPrincipal)
                 except GroupCycle:
                     # abort
                     self.setPrincipals(old, False)

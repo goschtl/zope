@@ -24,7 +24,6 @@ from zope.event import notify
 from zope.schema import Text, TextLine, Password, Choice
 from zope.publisher.interfaces import IRequest
 
-from zope.app import zapi
 from zope.app.container.interfaces import DuplicateIDError
 from zope.app.container.contained import Contained
 from zope.app.container.constraints import contains, containers
@@ -141,7 +140,7 @@ class InternalPrincipal(Persistent, Contained):
     passwordManagerName = property(getPasswordManagerName)
 
     def _getPasswordManager(self):
-        return zapi.getUtility(
+        return component.getUtility(
             interfaces.IPasswordManager, self.passwordManagerName)
 
     def getPassword(self):

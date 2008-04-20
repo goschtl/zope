@@ -20,11 +20,11 @@ __docformat__ = "reStructuredText"
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema import getFieldsInOrder
-from zope.app.zapi import getName, getPath
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser.interfaces import ISourceQueryView
 from zope.app.authentication.i18n import ZopeMessageFactory as _
+from zope.traversing.api import getName, getPath
 
 
 search_label = _('search-button', 'Search')
