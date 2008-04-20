@@ -1,2 +1,0 @@
-<h1>Hello World Message Add Form</h1>
-<div metal:use-macro="macro:form" />
