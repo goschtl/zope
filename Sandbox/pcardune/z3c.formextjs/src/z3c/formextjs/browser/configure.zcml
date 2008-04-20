@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjs">
+
+  <viewletManager
+      name="z3c.formjs.ext.JSFormViewletManager"
+      provides=".IJSFormViewletManager"
+      class=".ExtJSFormViewletManager"
+      layer="z3c.formjs.extjs.interfaces.IExtJSFormLayer"
+      permission="zope.Public"
+      />
+
+  <viewlet
+      name="z3c.formjs.ext.ExtJSFormViewlet"
+      for="*"
+      manager=".IJSFormViewletManager"
+      class=".ExtJSFormViewlet"
+      permission="zope.Public"
+      layer="z3c.formjs.extjs.interfaces.IExtJSFormLayer"
+      weight="1"
+      />
+
+  <viewlet
+      name="z3c.formjs.ext.ExtJSWidgetsViewlet"
+      for="*"
+      manager=".IJSFormViewletManager"
+      class=".ExtJSWidgetsViewlet"
+      permission="zope.Public"
+      layer="z3c.formjs.extjs.interfaces.IExtJSFormLayer"
+      weight="2"
+      />
+
+  <z3c:widgetTemplate
+      mode="input"
+      widget="z3c.form.interfaces.ITextWidget"
+      layer="z3c.formjs.extjs.interfaces.IExtJSFormLayer"
+      template="text_input.pt"
+      />
+
+</configure>
