@@ -20,9 +20,8 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface
 from zope.schema import Int
 
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.demo.widget.interfaces import IDemoWidget
-
 
 class IReadDemoIntWidget(Interface):
     """Widget read interface."""
