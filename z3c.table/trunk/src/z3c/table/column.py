@@ -16,6 +16,8 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+from urllib import urlencode
+
 import zope.interface
 import zope.location
 import zope.i18nmessageid
@@ -299,6 +301,44 @@ class LinkColumn(Column):
         return '<a href="%s"%s%s>%s</a>' % (self.getLinkURL(item),
             self.getLinkTarget(item), self.getLinkCSS(item),
             self.getLinkConent(item))
+
+
+class SelectedItemColumn(LinkColumn):
+    """Link which can set an item."""
+
+    selectedItem = None
+
+    @property
+    def viewURL(self):
+        return '%s/%s' % (absoluteURL(self.context, self.request),
+            self.table.__name__)
+
+    def getItemKey(self, item):
+        return '%s-selectedItems' % self.id
+
+    def getItemValue(self, item):
+        return api.getName(item)
+
+    def getSortKey(self, item):
+        """Returns the sort key used for column sorting."""
+        return self.getLinkConent(item)
+
+    def getLinkConent(self, item):
+        """Setup link content."""
+        return self.linkContent or api.getName(item)
+
+    def getLinkURL(self, item):
+        """Setup link url."""
+        return '%s?%s' % (self.viewURL,
+            urlencode({self.getItemKey(item): self.getItemValue(item)}))
+
+    def update(self):
+        items = [item for item in self.table.values
+                 if self.getItemValue(item) in self.request.get(
+                     self.getItemKey(item), [])]
+        if len(items):
+            self.selectedItem = items.pop()
+            self.table.selectedItems = [self.selectedItem]
 
 
 class ContentsLinkColumn(LinkColumn):
