@@ -1,9 +1,49 @@
-SVN integration
-===============
+Version Control Synchronization
+===============================
 
-z3c.vcsync can work with SVN as a backend. At the time of writing,
-this is the only version control backend that is supported. Here we
-show how to integrate your aplication with SVN.
+This package contains code that helps with handling synchronization of
+persistent content with a version control system. 
+
+This can be useful in software that needs to be able to work
+offline. The web application runs on a user's laptop that may be away
+from an internet connection. When connected again, the user syncs with
+a version control server, receiving updates that may have been made by
+others, and committing their own changes.
+
+Another advantage is that the version control system always contains a
+history of how content developed over time. The version-control based
+content can also be used for other purposes independent of the
+application.
+
+While this package has been written with other version control systems
+in mind, it has only been developed to work with SVN so far. Examples
+below are all given with SVN.
+
+The synchronization sequence is as follows:
+ 
+1) save persistent state (IState) to svn checkout (ICheckout) on the
+   same machine as the Zope application.
+
+2) ``svn up``. Subversion merges in changed made by others users that
+   were checked into the svn server.
+
+3) Any svn conflicts are automatically resolved.
+
+4) reload changes in svn checkout into persistent Python objects
+
+5) ``svn commit``.
+
+This is all happening in a single step. It can happen over and over
+again in a reasonably safe manner, as after the synchronization has
+concluded, the state of the persistent objects and that of the local
+SVN checkout will always be in sync.
+
+During synchronisation, the system tries to take care only to
+synchronize those objects and files that have changed. That is, in
+step 1) only applies those objects that have been modified, added or
+removed will have an effect on the checkout. In step 4) only those
+files that have been changed, added or removed on the filesystem due
+to the ``up`` action will change the persistent object state.
 
 The tree to synchronize
 -----------------------
@@ -44,16 +84,36 @@ Grok container will work. Let's now set up the tree::
   >>> data['sub'] = Container()
   >>> data['sub']['qux'] = Item(payload=3)
 
-The tree is represented by a special ``IState`` object, which allows
-the synchronizer to ask which objects have changed (or been added)
-since the last synchronization (when ``last_revision_nr`` is updated),
-and which objects have been removed (or moved from their original
-location). In a real application you could implement this using an
-index on the revision nr, so that they can be looked up quickly. Event
-handlers for ``IObjectMovedEvent`` and ``IObjectRemovedEvent`` can be
-used to track which objects were removed. Here we will use a simpler,
-less efficient, implementation that goes through the entire tree to
-find changes::
+As part of the synchronization procedure we need the ability to export
+persistent python objects to the version control checkout directory in
+the form of files and directories.
+ 
+Content is represented by an object that provides ``IState``. Two methods
+need to be implemented:
+
+* ``objects(revision_nr)``: any object that has been modified (or
+  added) since the synchronization for ``revision_nr``. Returning 'too
+  many' objects (objects that weren't modified) is safe, though less
+  efficient as they will then be re-exported.
+
+  Typically in your application this would be implemented by doing
+  a catalog search, so that they can be looked up quickly.
+
+* ``removed(revision_nr)``: any path that has had an object removed
+  from it since revision_nr.  It is safe to return paths that have
+  been removed and have since been replaced by a different object with
+  the same name. It is also safe to return 'too many' paths, though
+  less efficient as the objects in these paths may be re-exported
+  unnecessarily.
+
+  Typically in your application you would maintain a list of removed
+  objects by hooking into ``IObjectMovedEvent`` and
+  ``IObjectRemovedEvent`` and recording the paths of all objects that
+  were moved or removed. After an export it is safe to purge this
+  list.
+
+In this example, we will use a simpler, less efficient, implementation
+that goes through the entire tree to find changes::
 
   >>> from zope.interface import implements
   >>> from z3c.vcsync.interfaces import IState
@@ -227,5 +287,3 @@ The ``.test`` files have the payload data we expect::
   2
   >>> print wc.join('root').join('sub').join('qux.test').read()
   3
-
-        
