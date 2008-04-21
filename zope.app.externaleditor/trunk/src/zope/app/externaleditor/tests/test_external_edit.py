@@ -16,11 +16,12 @@ $Id$
 import unittest
 from base64 import encodestring
 
+from zope.component import queryMultiAdapter
 from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest
 from zope.filerepresentation.interfaces import IReadFile
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi
 from zope.app.container.contained import contained
@@ -60,12 +61,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         env = {'HTTP_AUTHORIZATION':
                basic}
         request = TestRequest(environ=env)
-        container = zapi.traverse(self.rootFolder, 'folder1')
+        container = traverse(self.rootFolder, 'folder1')
         file = EditableFile('Foobar', 'text/plain')
         self.assertEqual(file.contentType, 'text/plain')
         self.assertEqual(file.data, 'Foobar')
         file = contained(file, container, 'file')
-        view = zapi.queryMultiAdapter((file, request), name='external_edit')
+        view = queryMultiAdapter((file, request), name='external_edit')
         self.failIf(view is None)
         expected = """\
 url:http://127.0.0.1/folder1/file
