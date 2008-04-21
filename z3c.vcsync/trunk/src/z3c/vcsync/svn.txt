@@ -1,0 +1,164 @@
+SVN integration
+===============
+
+z3c.vcsync can work with SVN as a backend. Here we test the SVN
+backend in particular.
+
+Let's grok this package first::
+
+  >>> import grok.testing
+  >>> grok.testing.grok('z3c.vcsync')
+
+We will track the current SVN revision number globally, starting at
+0::
+
+  >>> last_revision_nr = 0
+
+Let's define a simple item::
+
+  >>> class Item(object):
+  ...   def __init__(self, payload):
+  ...     self.payload = payload
+  ...   def _get_payload(self):
+  ...     return self._payload
+  ...   def _set_payload(self, value):
+  ...     self._payload = value
+  ...     self.revision_nr = last_revision_nr
+  ...   payload = property(_get_payload, _set_payload)
+  
+For the item w define a serializer of an item to the filesystem::
+
+  >>> import grok
+  >>> from z3c.vcsync.interfaces import ISerializer
+  >>> class ItemSerializer(grok.Adapter):
+  ...     grok.provides(ISerializer)
+  ...     grok.context(Item)
+  ...     def serialize(self, f):
+  ...         f.write(str(self.context.payload))
+  ...         f.write('\n')
+  ...     def name(self):
+  ...         return self.context.__name__ + '.test'
+
+We also define a parser to load an object from the filesystem into
+Python again::
+
+  >>> from z3c.vcsync.interfaces import IParser
+  >>> class ItemParser(grok.GlobalUtility):
+  ...   grok.provides(IParser)
+  ...   grok.name('.test')
+  ...   def __call__(self, object, path):
+  ...      object.payload = int(path.read())
+
+We define a way to create new items as they appear on the filesystem::
+
+  >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from zope import component
+  >>> class ItemFactory(grok.GlobalUtility):
+  ...   grok.provides(IVcFactory)
+  ...   grok.name('.test')
+  ...   def __call__(self, path):
+  ...       parser = component.getUtility(IParser, '.test')
+  ...       item = Item(None) # dummy payload
+  ...       parser(item, path)
+  ...       return item
+
+We grok those components::
+
+  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  True
+  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  True
+  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  True
+
+We also need a parser and factory for setting up containers::
+
+  >>> class ContainerParser(grok.GlobalUtility):
+  ...     grok.provides(IParser)
+  ...     def __call__(self, object, path):
+  ...         pass
+
+  >>> class ContainerFactory(grok.GlobalUtility):
+  ...     grok.provides(IVcFactory)
+  ...     def __call__(self, path):
+  ...         return Container()
+
+  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  True
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  True
+
+We create a test SVN repository now and create a svn path to a
+checkout::
+
+  >>> repo, wc = svn_repo_wc()
+
+We can now initialize the ``SvnCheckout`` object with the SVN path to
+the checkout we just created::
+
+  >>> from z3c.vcsync.svn import SvnCheckout
+  >>> checkout = SvnCheckout(wc)
+
+Now that we have the SVN end set up, we'll set up the state of the
+Python objects that we want to synchronize with SVN::
+
+  >>> data = Container()
+  >>> data.__name__ = 'root'
+  >>> data['foo'] = Item(payload=1)
+  >>> data['bar'] = Item(payload=2)
+  >>> data['sub'] = Container()
+  >>> data['sub']['qux'] = Item(payload=3)
+
+We need to set up a state object for this content::
+
+  >>> class TestState(object):
+  ...     def __init__(self, root):
+  ...         self.root = root
+  ...     def removed(self, revision_nr):
+  ...         return []
+  ...     def objects(self, revision_nr):
+  ...         for container in self._containers(revision_nr):
+  ...             for value in container.values():
+  ...                 if isinstance(value, Container):
+  ...                     continue
+  ...                 if value.revision_nr >= revision_nr:
+  ...                     yield value
+  ...     def _containers(self, revision_nr):
+  ...         return self._containers_helper(self.root)
+  ...     def _containers_helper(self, container):
+  ...         yield container
+  ...         for obj in container.values():
+  ...             if not isinstance(obj, Container):
+  ...                 continue
+  ...             for sub_container in self._containers_helper(obj):
+  ...                 yield sub_container
+
+  >>> state = TestState(data)
+
+Let's now construct a synchronizer from the SVN checkout and the state::
+
+  >>> from z3c.vcsync import Synchronizer
+  >>> s = Synchronizer(checkout, state)
+
+We'll synchronize for the first time now::
+
+  >>> info = s.sync(last_revision_nr, "synchronize")
+
+Let's introduce some helper functions that help us present the paths
+in a more readable form, relative to the base::
+
+  >>> def pretty_path(path):
+  ...     return path.relto(wc)
+  >>> def pretty_paths(paths):
+  ...     return sorted([pretty_path(path) for path in paths])
+
+The state of the python objects can now be found in the working copy::
+
+  >>> pretty_paths(wc.listdir())
+  ['root']
+  >>> pretty_paths(wc.join('root').listdir())
+  ['root/bar.test', 'root/foo.test', 'root/sub']
+  >>> pretty_paths(wc.join('root').join('sub').listdir())
+  ['root/sub/qux.test']
+
+        

@@ -3,6 +3,7 @@ from zope.testing import doctest, cleanup
 import tempfile
 import shutil
 import py.path
+from py.__.path.svn import svncommon
 from datetime import datetime
 import grok
 
@@ -85,12 +86,32 @@ class Container(object):
     def __delitem__(self, name):
         del self._data[name]
 
+def svn_repo_wc():
+    """Create an empty SVN repository.
+
+    Based on an internal testing function of the py library.
+    """    
+    repo = py.test.ensuretemp('testrepo')
+    wcdir = py.test.ensuretemp('wc')
+    if not repo.listdir():
+        repo.ensure(dir=1)
+        py.process.cmdexec('svnadmin create "%s"' %
+                           svncommon._escape_helper(repo))
+        wcdir.ensure(dir=1)
+        wc = py.path.svnwc(wcdir)
+        if py.std.sys.platform == 'win32':
+            repo = '/' + str(repo).replace('\\', '/')
+        wc.checkout(url='file://%s' % repo)
+    else:
+        wc = py.path.svnwc(wcdir)
+    return "file://%s" % repo, wc
+
 def setUpZope(test):
-    pass
+    _test_dirs = []
 
 def cleanUpZope(test):
     for dirpath in _test_dirs:
-        shutil.rmtree(dirpath)
+        shutil.rmtree(dirpath, ignore_errors=True)
     cleanup.cleanUp()
 
 _test_dirs = []
@@ -112,7 +133,8 @@ globs = {'Container': Container,
          'TestCheckout': TestCheckout,
          'TestState': TestState,
          'create_test_dir': create_test_dir,
-         'rel_paths': rel_paths}
+         'rel_paths': rel_paths,
+         'svn_repo_wc': svn_repo_wc}
 
 def test_suite():
     suite = unittest.TestSuite([
@@ -121,7 +143,15 @@ def test_suite():
         setUp=setUpZope,
         tearDown=cleanUpZope,
         globs=globs,
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE)])
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
+
+        doctest.DocFileSuite(
+        'svn.txt',
+        setUp=setUpZope,
+        tearDown=cleanUpZope,
+        globs=globs,
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
+        ])
     return suite
 
 if __name__ == '__main__':
