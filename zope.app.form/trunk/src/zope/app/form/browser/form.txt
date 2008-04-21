@@ -123,8 +123,8 @@ Before we run the directive, make sure that no view exists:
 
   >>> from zope.publisher.browser import TestRequest
 
-  >>> from zope.app import zapi
-  >>> zapi.queryMultiAdapter((Anything(), TestRequest()), name='name.html')
+  >>> from zope.component import queryMultiAdapter
+  >>> queryMultiAdapter((Anything(), TestRequest()), name='name.html')
 
 Now that we know that the view did not exist before the registration, let's
 execute the form directive:
@@ -164,7 +164,7 @@ execute the form directive:
 
 and try to look up the view again:
 
-  >>> zapi.queryMultiAdapter(
+  >>> queryMultiAdapter(
   ...     (Anything(), TestRequest()), name='name.html') #doctest:+ELLIPSIS
   <zope.app.pagetemplate.simpleviewclass.SimpleViewClass from edit.pt ...>
 
