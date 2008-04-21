@@ -18,11 +18,12 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 import transaction
-from zope.app import zapi
+from zope.component import getUtilitiesFor, queryUtility
 from zope.schema import getFieldNamesInOrder, getFields
 from zope.app.container.interfaces import IReadContainer
 from zope.publisher.http import status_reasons
 from zope.app.form.utility import setUpWidget, no_value
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 from interfaces import IDAVNamespace, IDAVWidget
 from opaquenamespaces import IDAVOpaqueNamespaces
@@ -46,7 +47,7 @@ class PROPPATCH(object):
 
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
-        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
+        for ns, iface in getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
@@ -59,7 +60,7 @@ class PROPPATCH(object):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = zapi.absoluteURL(self.context, self.request)
+        resource_url = absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
@@ -143,7 +144,7 @@ class PROPPATCH(object):
 
     def _handleSet(self, prop):
         ns = prop.namespaceURI
-        iface = zapi.queryUtility(IDAVNamespace, ns)
+        iface = queryUtility(IDAVNamespace, ns)
         if not iface:
             # opaque DAV properties
             if self.oprops is not None:
@@ -185,7 +186,7 @@ class PROPPATCH(object):
         ns = prop.namespaceURI
         if not prop.localName in self.avail_props.get(ns, []):
             return 200
-        iface = zapi.queryUtility(IDAVNamespace, ns)
+        iface = queryUtility(IDAVNamespace, ns)
         if not iface:
             # opaque DAV properties
             if self.oprops is None:

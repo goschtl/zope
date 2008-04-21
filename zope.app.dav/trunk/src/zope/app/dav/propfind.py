@@ -17,10 +17,12 @@ __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
 from xml.parsers import expat
+from zope.component import getUtilitiesFor, queryMultiAdapter, queryUtility
 from zope.schema import getFieldNamesInOrder, getFields
-from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.form.utility import setUpWidgets
+from zope.security import proxy
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 from interfaces import IDAVWidget, IDAVNamespace
 from opaquenamespaces import IDAVOpaqueNamespaces
@@ -45,7 +47,7 @@ class PROPFIND(object):
 
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
-        for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
+        for ns, iface in getUtilitiesFor(IDAVNamespace):
             _avail_props[ns] = getFieldNamesInOrder(iface)
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
@@ -70,7 +72,7 @@ class PROPFIND(object):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = zapi.absoluteURL(self.context, self.request)
+        resource_url = absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
@@ -81,7 +83,7 @@ class PROPFIND(object):
                 pass
 
         self.xmldoc = xmldoc
-            
+
         resp = minidom.Document()
         ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
@@ -115,7 +117,7 @@ class PROPFIND(object):
             return
         subdepth = (depth == '1') and '0' or 'infinity'
         for id, obj in self.context.items():
-            pfind = zapi.queryMultiAdapter((obj, self.request), name='PROPFIND')
+            pfind = queryMultiAdapter((obj, self.request), name='PROPFIND')
             if pfind is None:
                 continue
             pfind.setDepth(subdepth)
@@ -133,7 +135,7 @@ class PROPFIND(object):
                   if e.nodeType == e.ELEMENT_NODE]
         for node in childs:
             ns = node.namespaceURI
-            iface = zapi.queryUtility(IDAVNamespace, ns)
+            iface = queryUtility(IDAVNamespace, ns)
             value = props.get(ns, {'iface': iface, 'props': []})
             value['props'].append(node.localName)
             props[ns] = value
@@ -142,7 +144,7 @@ class PROPFIND(object):
     def _handleAllprop(self):
         props = {}
         for ns, properties in self.avail_props.items():
-            iface = zapi.queryUtility(IDAVNamespace, ns)
+            iface = queryUtility(IDAVNamespace, ns)
             props[ns] = {'iface': iface, 'props': properties}
         return props
 
@@ -262,7 +264,7 @@ class PROPFIND(object):
                     # Get the widget value here
                     el.appendChild(resp.createTextNode(value))
                 else:
-                    if zapi.isinstance(value, minidom.Node):
+                    if proxy.isinstance(value, minidom.Node):
                         el.appendChild(
                             el.ownerDocument.importNode(value, True))
                     else:
