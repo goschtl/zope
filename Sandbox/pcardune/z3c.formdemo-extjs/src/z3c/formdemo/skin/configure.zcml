@@ -18,6 +18,13 @@
       name="Z3CTableFormDemo"
       />
 
+  <!-- extjs layout demo skin -->
+  <zope:interface
+      interface="z3c.formdemo.skin.IExtJSDemoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CExtJSFormDemo"
+      />
+
   <!-- resource -->
   <zrt-resource
       name="demo.css"

@@ -72,6 +72,7 @@ setup (
         'setuptools',
         'z3c.csvvocabulary',
         'z3c.form',
+        'z3c.formextjs',
         'z3c.formui',
         'z3c.layer',
         'z3c.pagelet',

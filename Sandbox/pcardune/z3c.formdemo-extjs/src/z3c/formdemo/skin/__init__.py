@@ -22,6 +22,7 @@ from z3c.pagelet import browser
 from z3c.formui import interfaces
 from z3c.formdemo import layer
 
+from z3c.formextjs.interfaces import IExtJSFormLayer, IJavaScript
 
 class IDivDemoBrowserSkin(interfaces.IDivFormLayer,
                           layer.IDemoBrowserLayer):
@@ -31,10 +32,14 @@ class ITableDemoBrowserSkin(interfaces.ITableFormLayer,
                             layer.IDemoBrowserLayer):
     """The ``Z3CTableFormDemo`` browser skin."""
 
+class IExtJSDemoBrowserSkin(IExtJSFormLayer,
+                            layer.IDemoBrowserLayer):
+    """The ``Z3CExtJSFormDemo`` browser skin."""
+
 class ICSS(interfaces.ICSS):
     """CSS viewlet manager."""
 
-class IJavaScript(IViewletManager):
+class IJavaScript(IJavaScript):
     """JavaScript viewlet manager."""
 
 
