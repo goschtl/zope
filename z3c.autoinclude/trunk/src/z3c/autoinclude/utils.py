@@ -66,7 +66,6 @@ def distributionForPackage(package):
             if not isUnzippedEgg(dist.location):
                 continue
             packages = find_packages(dist.location) # TODO: don't use setuptools here; look for ``top_level.txt`` metadata instead
-            import pdb; pdb.set_trace()
             ns_packages = namespaceDottedNames(dist)
             if package_dottedname in ns_packages:
                 continue
