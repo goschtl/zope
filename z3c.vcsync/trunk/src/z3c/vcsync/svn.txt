@@ -99,7 +99,8 @@ infrastructure::
   >>> grok.testing.grok('z3c.vcsync')
   
 We need to provide a serializer for the Item class that takes an item
-and writes it to the filesystem::
+and writes it to the filesystem to a file with a particular extension
+(``.test``)::
 
   >>> import grok
   >>> from z3c.vcsync.interfaces import ISerializer

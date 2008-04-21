@@ -86,6 +86,9 @@ class Container(object):
     def __delitem__(self, name):
         del self._data[name]
 
+    def __repr__(self):
+        return "<Container %s>" % (self.__name__)
+
 def svn_repo_wc():
     """Create an empty SVN repository.
 
@@ -140,6 +143,13 @@ def test_suite():
     suite = unittest.TestSuite([
         doctest.DocFileSuite(
         'README.txt',
+        setUp=setUpZope,
+        tearDown=cleanUpZope,
+        globs=globs,
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
+
+        doctest.DocFileSuite(
+        'importexport.txt',
         setUp=setUpZope,
         tearDown=cleanUpZope,
         globs=globs,

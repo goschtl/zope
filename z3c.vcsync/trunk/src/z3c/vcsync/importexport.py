@@ -4,58 +4,55 @@ import tempfile, zipfile
 from zope.app.container.interfaces import IContainer
 from z3c.vcsync.interfaces import IVcDump, IVcFactory
 from zope.component import getUtility
-
-def export_state(state, path):
-    export_helper(state.root, path)
     
-def export_helper(obj, path):
-    for obj in obj.values():
+def export(root, path):
+    for obj in root.values():
         IVcDump(obj).save(path)
         if IContainer.providedBy(obj):
-            export_helper(obj, path.join(obj.__name__))
+            export(obj, path.join(obj.__name__))
 
-def export_state_zip(state, name, zippath):
+def export_zip(root, name, zippath):
     tmp_dir = py.path.local(tempfile.mkdtemp())
     try:
         save_path = tmp_dir.join(name)
         save_path.ensure(dir=True)
-        export_state(state, save_path)
+        export(root, save_path)
         zf = zipfile.ZipFile(zippath.strpath, 'w')
-        export_state_zip_helper(zf, tmp_dir, save_path)
+        _export_zip_helper(zf, tmp_dir, save_path)
         zf.close()
     finally:
         tmp_dir.remove()
     
-def export_state_zip_helper(zf, save_path, path):
+def _export_zip_helper(zf, save_path, path):
     if path.check(dir=True):
         zf.writestr(path.relto(save_path) + '/', '')
         for p in path.listdir():
-            export_state_zip_helper(zf, save_path, p)
+            _export_zip_helper(zf, save_path, p)
     else:
         zf.write(path.strpath, path.relto(save_path))
 
-def import_state(state, path, modified_function=None):
-    modified_objects = import_helper(state.root, path)
+def import_(root, path, modified_function=None):
+    modified_objects = _import_helper(root, path)
     if modified_function is not None:
         for obj in modified_objects:
             modified_function(obj)
 
-def import_helper(obj, path):
+def _import_helper(obj, path):
     modified_objects = []
     for p in path.listdir():
         factory = getUtility(IVcFactory, name=p.ext)
         name = p.purebasename
         if name not in obj:
             obj[name] = new_obj = factory(p)
+            modified_objects.append(new_obj)
         else:
             new_obj = obj[name]
-        modified_objects.append(new_obj)
         if p.check(dir=True) and IContainer.providedBy(new_obj):
-            r = import_helper(new_obj, p)
+            r = _import_helper(new_obj, p)
             modified_objects.extend(r)
     return modified_objects
 
-def import_state_zip(state, name, zippath, modified_function=None):
+def import_zip(root, name, zippath, modified_function=None):
     tmp_dir = py.path.local(tempfile.mkdtemp())
     try:
         zf = zipfile.ZipFile(zippath.strpath, 'r')
@@ -71,8 +68,8 @@ def import_state_zip(state, name, zippath, modified_function=None):
                 new_path.write(zf.read(p))
             else:
                 new_path.ensure(dir=True)
-        import_state(state, tmp_dir.join(name),
-                     modified_function=modified_function)
+        import_(root, tmp_dir.join(name),
+                modified_function=modified_function)
         zf.close()
     finally:
         tmp_dir.remove()
