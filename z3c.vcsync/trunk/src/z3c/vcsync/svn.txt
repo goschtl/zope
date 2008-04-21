@@ -1,20 +1,26 @@
 SVN integration
 ===============
 
-z3c.vcsync can work with SVN as a backend. Here we test the SVN
-backend in particular.
+z3c.vcsync can work with SVN as a backend. At the time of writing,
+this is the only version control backend that is supported. Here we
+show how to integrate your aplication with SVN.
 
-Let's grok this package first::
+The tree to synchronize
+-----------------------
 
-  >>> import grok.testing
-  >>> grok.testing.grok('z3c.vcsync')
-
-We will track the current SVN revision number globally, starting at
-0::
+Content objects need to track the revision number after which it was
+last changed, so that later we can find all objects that have
+changed. In a real application we would typically track this in some
+content object (such as the application root), but here we will just
+track it globally::
 
   >>> last_revision_nr = 0
 
-Let's define a simple item::
+An item contains some payload data, and maintains the SVN revision
+after which it was changed. In a real program you would typically
+maintain the revision number of objects by using an annotation and
+listening to ``IObjectModifiedEvent``, but we will use a property
+here::
 
   >>> class Item(object):
   ...   def __init__(self, payload):
@@ -25,82 +31,11 @@ Let's define a simple item::
   ...     self._payload = value
   ...     self.revision_nr = last_revision_nr
   ...   payload = property(_get_payload, _set_payload)
-  
-For the item w define a serializer of an item to the filesystem::
 
-  >>> import grok
-  >>> from z3c.vcsync.interfaces import ISerializer
-  >>> class ItemSerializer(grok.Adapter):
-  ...     grok.provides(ISerializer)
-  ...     grok.context(Item)
-  ...     def serialize(self, f):
-  ...         f.write(str(self.context.payload))
-  ...         f.write('\n')
-  ...     def name(self):
-  ...         return self.context.__name__ + '.test'
-
-We also define a parser to load an object from the filesystem into
-Python again::
-
-  >>> from z3c.vcsync.interfaces import IParser
-  >>> class ItemParser(grok.GlobalUtility):
-  ...   grok.provides(IParser)
-  ...   grok.name('.test')
-  ...   def __call__(self, object, path):
-  ...      object.payload = int(path.read())
-
-We define a way to create new items as they appear on the filesystem::
-
-  >>> from z3c.vcsync.interfaces import IVcFactory
-  >>> from zope import component
-  >>> class ItemFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
-  ...   grok.name('.test')
-  ...   def __call__(self, path):
-  ...       parser = component.getUtility(IParser, '.test')
-  ...       item = Item(None) # dummy payload
-  ...       parser(item, path)
-  ...       return item
-
-We grok those components::
-
-  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
-  True
-  >>> grok.testing.grok_component('ItemParser', ItemParser)
-  True
-  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
-  True
-
-We also need a parser and factory for setting up containers::
-
-  >>> class ContainerParser(grok.GlobalUtility):
-  ...     grok.provides(IParser)
-  ...     def __call__(self, object, path):
-  ...         pass
-
-  >>> class ContainerFactory(grok.GlobalUtility):
-  ...     grok.provides(IVcFactory)
-  ...     def __call__(self, path):
-  ...         return Container()
-
-  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
-  True
-  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
-  True
-
-We create a test SVN repository now and create a svn path to a
-checkout::
-
-  >>> repo, wc = svn_repo_wc()
-
-We can now initialize the ``SvnCheckout`` object with the SVN path to
-the checkout we just created::
-
-  >>> from z3c.vcsync.svn import SvnCheckout
-  >>> checkout = SvnCheckout(wc)
-
-Now that we have the SVN end set up, we'll set up the state of the
-Python objects that we want to synchronize with SVN::
+We also have a ``Container`` class, set up before this test
+started. It is a class that implements enough of the dictionary API
+and implements the ``IContainer`` interface. A normal Zope 3 folder or
+Grok container will work. Let's now set up the tree::
 
   >>> data = Container()
   >>> data.__name__ = 'root'
@@ -109,9 +44,21 @@ Python objects that we want to synchronize with SVN::
   >>> data['sub'] = Container()
   >>> data['sub']['qux'] = Item(payload=3)
 
-We need to set up a state object for this content::
+The tree is represented by a special ``IState`` object, which allows
+the synchronizer to ask which objects have changed (or been added)
+since the last synchronization (when ``last_revision_nr`` is updated),
+and which objects have been removed (or moved from their original
+location). In a real application you could implement this using an
+index on the revision nr, so that they can be looked up quickly. Event
+handlers for ``IObjectMovedEvent`` and ``IObjectRemovedEvent`` can be
+used to track which objects were removed. Here we will use a simpler,
+less efficient, implementation that goes through the entire tree to
+find changes::
 
+  >>> from zope.interface import implements
+  >>> from z3c.vcsync.interfaces import IState
   >>> class TestState(object):
+  ...     implements(IState)
   ...     def __init__(self, root):
   ...         self.root = root
   ...     def removed(self, revision_nr):
@@ -133,26 +80,136 @@ We need to set up a state object for this content::
   ...             for sub_container in self._containers_helper(obj):
   ...                 yield sub_container
 
+Now that we have an implementation of ``IState`` that works for our
+state, let's create our ``state`` object::
+
   >>> state = TestState(data)
 
-Let's now construct a synchronizer from the SVN checkout and the state::
+Reading from and writing to the filesystem
+------------------------------------------
+
+To integrate with the synchronization machinery, we need a way to dump
+a Python object to the filesystem (to an SVN working copy), and to
+parse it back to an object again.
+
+Let's grok this package first, as it provides some of the required
+infrastructure::
+
+  >>> import grok.testing
+  >>> grok.testing.grok('z3c.vcsync')
+  
+We need to provide a serializer for the Item class that takes an item
+and writes it to the filesystem::
+
+  >>> import grok
+  >>> from z3c.vcsync.interfaces import ISerializer
+  >>> class ItemSerializer(grok.Adapter):
+  ...     grok.provides(ISerializer)
+  ...     grok.context(Item)
+  ...     def serialize(self, f):
+  ...         f.write(str(self.context.payload))
+  ...         f.write('\n')
+  ...     def name(self):
+  ...         return self.context.__name__ + '.test'
+
+We also need to provide a parser to load an object from the filesystem
+back into Python, overwriting the previously existing object::
+
+  >>> from z3c.vcsync.interfaces import IParser
+  >>> class ItemParser(grok.GlobalUtility):
+  ...   grok.provides(IParser)
+  ...   grok.name('.test')
+  ...   def __call__(self, object, path):
+  ...      object.payload = int(path.read())
+
+Sometimes there is no previously existing object in the Python tree,
+and we need to add it. To do this we implement a factory (where we use
+the parser for the real work)::
+
+  >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from zope import component
+  >>> class ItemFactory(grok.GlobalUtility):
+  ...   grok.provides(IVcFactory)
+  ...   grok.name('.test')
+  ...   def __call__(self, path):
+  ...       parser = component.getUtility(IParser, '.test')
+  ...       item = Item(None) # dummy payload
+  ...       parser(item, path)
+  ...       return item
+
+Both parser and factory are registered per extension, in this case
+``.test``. This is the name of the utility.
+
+We register these components::
+
+  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  True
+  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  True
+  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  True
+
+We also need a parser and factory for containers, registered for the
+empty extension (thus no special utility name). These can be very
+simple::
+
+  >>> class ContainerParser(grok.GlobalUtility):
+  ...     grok.provides(IParser)
+  ...     def __call__(self, object, path):
+  ...         pass
+
+  >>> class ContainerFactory(grok.GlobalUtility):
+  ...     grok.provides(IVcFactory)
+  ...     def __call__(self, path):
+  ...         return Container()
+
+  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  True
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  True
+
+Setting up the SVN repository
+-----------------------------
+
+Now we need an SVN repository to synchronize with. We create a test
+SVN repository now and create a svn path to a checkout::
+
+  >>> repo, wc = svn_repo_wc()
+
+We can now initialize the ``SvnCheckout`` object with the SVN path to
+the checkout we just created::
+
+  >>> from z3c.vcsync.svn import SvnCheckout
+  >>> checkout = SvnCheckout(wc)
+
+Constructing the synchronizer
+-----------------------------
+
+Now that we have the checkout and the state, we can set up a synchronizer::
 
   >>> from z3c.vcsync import Synchronizer
   >>> s = Synchronizer(checkout, state)
+
+Synchronization
+---------------
 
 We'll synchronize for the first time now::
 
   >>> info = s.sync(last_revision_nr, "synchronize")
 
-Let's introduce some helper functions that help us present the paths
-in a more readable form, relative to the base::
+We will now examine the SVN checkout to see whether the
+synchronization was success.
+
+We first introduce some helper functions that help us present the
+paths in a more readable form, relative to the base of the checkout::
 
   >>> def pretty_path(path):
   ...     return path.relto(wc)
   >>> def pretty_paths(paths):
   ...     return sorted([pretty_path(path) for path in paths])
 
-The state of the python objects can now be found in the working copy::
+We see that the structure containers and items  has been translated to the
+same structure of directories and ``.test`` files on the filesystem::
 
   >>> pretty_paths(wc.listdir())
   ['root']
@@ -160,5 +217,14 @@ The state of the python objects can now be found in the working copy::
   ['root/bar.test', 'root/foo.test', 'root/sub']
   >>> pretty_paths(wc.join('root').join('sub').listdir())
   ['root/sub/qux.test']
+
+The ``.test`` files have the payload data we expect::
+  
+  >>> print wc.join('root').join('foo.test').read()
+  1
+  >>> print wc.join('root').join('bar.test').read()
+  2
+  >>> print wc.join('root').join('sub').join('qux.test').read()
+  3
 
         
