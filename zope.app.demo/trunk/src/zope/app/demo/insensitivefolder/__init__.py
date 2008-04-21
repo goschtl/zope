@@ -17,32 +17,31 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import adapts
+from zope.component import adapts, queryMultiAdapter
 from zope.component.interfaces import IFactory
 from zope.interface import implements, implementedBy
-from zope.interface import directlyProvides, directlyProvidedBy 
+from zope.interface import directlyProvides, directlyProvidedBy
 from zope.publisher.interfaces import NotFound
 
-from zope.app import zapi
 from zope.app.folder import Folder
 from zope.app.folder.interfaces import IFolder
 from zope.app.container.traversal import ContainerTraverser
 from zope.app.container.interfaces import IReadContainer
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 class CaseInsensitiveContainerTraverser(ContainerTraverser):
     adapts(IReadContainer)
 
     def publishTraverse(self, request, name):
         """See zope.publisher.interfaces.browser.IBrowserPublisher"""
-        subob = self._guessTraverse(name) 
+        subob = self._guessTraverse(name)
         if subob is None:
-            view = zapi.queryMultiAdapter((self.context, request), name=name)
+            view = queryMultiAdapter((self.context, request), name=name)
             if view is not None:
                 return view
 
             raise NotFound(self.context, name, request)
-         
+
         return subob
 
     def _guessTraverse(self, name):

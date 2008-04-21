@@ -17,11 +17,12 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 from zope.interface import implements
+from zope.component import queryMultiAdapter
 
-from zope.app import zapi
 from zope.app.component.hooks import getSite
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.publisher.interfaces.browser import IBrowserMenu
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 
 class RecentlyOpened(object):
@@ -31,7 +32,7 @@ class RecentlyOpened(object):
     items in a container.
     """
     implements(IBrowserMenu)
-    
+
     def __init__(self, id, title=u'', description=u''):
         self.id = id
         self.title = title
@@ -41,11 +42,11 @@ class RecentlyOpened(object):
         """Return menu item entries in a TAL-friendly form."""
         result = []
         site = getSite()
-        url = zapi.absoluteURL(site, request)        
+        url = absoluteURL(site, request)
 
         for name, item in object.items():
             dc = IZopeDublinCore(item, None)
-            zmi_icon = zapi.queryMultiAdapter((item, request), name='zmi_icon')
+            zmi_icon = queryMultiAdapter((item, request), name='zmi_icon')
 
             result.append(
                 {'title': name,
@@ -55,5 +56,5 @@ class RecentlyOpened(object):
                  'icon': zmi_icon and zmi_icon.url() or None,
                  'extra': {},
                  'submenu': None})
-    
+
         return result
