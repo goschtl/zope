@@ -1,12 +1,15 @@
 Changes
 =======
 
-0.2.1 (unreleased)
+0.3 (unreleased)
+----------------
+
+0.2.1 (2008-04-21)
 ------------------
 
 * Fixed bug which prevented proper inclusion of packages when the base package's namespace has been extended by other installed packages.
- * Rewrote ``distributionForPackage`` function.
- * Added additional tests for ``includePlugins`` and utility functions.
+* Rewrote ``distributionForPackage`` function.
+* Added additional tests for ``includePlugins`` and utility functions.
 * Fixed bug which made z3c.autoinclude look for ZCML in namespaces of nested namespace packages (eg, if there happened to -- improperly -- be an x/y/configure.zcml in a x.y.z package with an x.y namespace, it would have been included; this is incorrect.) 
 
 0.2 (2008-04-18)
