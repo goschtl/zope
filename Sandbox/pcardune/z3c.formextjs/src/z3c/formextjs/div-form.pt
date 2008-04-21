@@ -1,4 +1,0 @@
-<h1>EXTJS SKIN</h1>
-<div id="test"></div>
-<div tal:attributes="id view/id"></div>
-<div tal:replace="structure provider:z3c.formextjs.JSFormViewletManager"></div>
