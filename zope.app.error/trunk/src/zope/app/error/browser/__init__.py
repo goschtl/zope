@@ -15,9 +15,10 @@
 
 $Id$
 """
+from zope.component import getUtility
 from zope.publisher.browser import BrowserView
+from zope.traversing.browser.absoluteurl import absoluteURL
 
-from zope.app import zapi
 from zope.error.interfaces import IErrorReportingUtility
 from zope.error.interfaces import ILocalErrorReportingUtility
 
@@ -42,8 +43,8 @@ class ErrorRedirect(BrowserView):
         # redirect the browser to the site root "/@@errorRedirect.html"
         # to handle redirection to the site error logger instead
         try:
-            err = zapi.getUtility(IErrorReportingUtility)
-            url = zapi.absoluteURL(err, self.request)
+            err = getUtility(IErrorReportingUtility)
+            url = absoluteURL(err, self.request)
         except TypeError:
             url = self.request.getApplicationURL() + "/@@errorRedirect.html"
         else:
