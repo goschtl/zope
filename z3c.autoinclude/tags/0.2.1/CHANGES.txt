@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2.1 (unreleased)
+0.2.1 (2008-4-21)
 ------------------
 
 * Fixed bug which prevented proper inclusion of packages when the base package's namespace has been extended by other installed packages.
