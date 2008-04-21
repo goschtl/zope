@@ -1,10 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
-    i18n_domain="z3c.formjs">
+    xmlns:zope="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.formextjs">
 
   <viewletManager
-      name="z3c.formjs.ext.JSFormViewletManager"
+      name="z3c.formextjs.JSFormViewletManager"
       provides=".IJSFormViewletManager"
       class=".ExtJSFormViewletManager"
       layer="z3c.formextjs.interfaces.IExtJSFormLayer"
@@ -31,11 +32,26 @@
       weight="2"
       />
 
-  <z3c:widgetTemplate
-      mode="input"
-      widget="z3c.form.interfaces.ITextWidget"
-      layer="z3c.formextjs.interfaces.IExtJSFormLayer"
-      template="text_input.pt"
+  <zope:adapter
+      for="zope.interface.Interface
+	   z3c.formextjs.interfaces.IExtJSFormLayer
+	   zope.interface.Interface
+	   zope.interface.Interface
+	   z3c.form.interfaces.ITextWidget"
+      provides="zope.pagetemplate.interfaces.IPageTemplate"
+      name="input"
+      factory=".InputWidgetTemplate"
+      />
+
+  <zope:adapter
+      for="zope.interface.Interface
+	   z3c.formextjs.interfaces.IExtJSFormLayer
+	   zope.interface.Interface
+	   zope.interface.Interface
+	   z3c.form.interfaces.ITextAreaWidget"
+      provides="zope.pagetemplate.interfaces.IPageTemplate"
+      name="input"
+      factory=".TextAreaInputWidget"
       />
 
 </configure>
