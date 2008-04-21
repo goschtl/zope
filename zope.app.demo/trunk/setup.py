@@ -27,7 +27,6 @@ setup(
                       "zope.app.preference",
                       "zope.app.publisher",
                       "zope.app.security",
-                      "zope.app.zapi",
                       "zope.component",
                       "zope.dublincore",
                       "zope.event",
