@@ -59,6 +59,9 @@ def isPythonPackage(path):
 
 def distributionForPackage(package):
     package_dottedname = package.__name__
+    return distributionForDottedName(package_dottedname)
+
+def distributionForDottedName(package_dottedname):
     valid_dists_for_package = []
     for path in sys.path:
         dists = find_distributions(path, True)
@@ -76,8 +79,6 @@ def distributionForPackage(package):
     assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude refuses to guess." % package_dottedname
     return valid_dists_for_package[0]
 
-def distributionForDottedName(dotted_name):
-    return distributionForPackage(resolve(dotted_name))
 
 def namespaceDottedNames(dist):
     """
