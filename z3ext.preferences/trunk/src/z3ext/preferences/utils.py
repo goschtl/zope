@@ -42,6 +42,7 @@ $Id$
 """
 
 from zope import interface
+from zope.security import checkPermission
 from zope.security.interfaces import IPrincipal, IGroup, IMemberAwareGroup
 
 
@@ -65,3 +66,12 @@ class PrincipalChecker(object):
 
     def __call__(self, group):
         return self.iface.providedBy(group.__principal__)
+
+
+class PermissionChecker(object):
+
+    def __init__(self, permission):
+        self.permission = permission
+
+    def __call__(self, prefs):
+        return checkPermission(self.permission, prefs)

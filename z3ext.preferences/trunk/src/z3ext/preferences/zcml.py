@@ -19,6 +19,7 @@ from zope import interface
 from zope.schema import Int
 from zope.component import getUtility, queryUtility, getGlobalSiteManager
 from zope.schema.interfaces import IField
+from zope.location.interfaces import ILocation
 
 from zope.security.zcml import Permission
 from zope.security.checker import Checker, CheckerPublic
@@ -38,7 +39,7 @@ from zope.app.security.protectclass import \
 from interfaces import IPreferenceGroup
 from preference import PreferenceGroup
 from preferencetype import PreferenceType
-from utils import PrincipalChecker
+from utils import PrincipalChecker, PermissionChecker
 
 
 class IPreferenceGroupDirective(interface.Interface):
@@ -121,6 +122,8 @@ class PreferenceGroupDirective(object):
         if interface.interfaces.IInterface.providedBy(for_):
             tests = tests + (PrincipalChecker(for_),)
 
+        tests = tuple(tests) + (PermissionChecker(permission),)
+
         group = Class(tests)
 
         utility(_context, IPreferenceGroup, group, name=id)
@@ -135,10 +138,13 @@ class PreferenceGroupDirective(object):
         self._context = _context
         self._permission = permission
 
-        self.require(_context, permission, interface=(IPreferenceGroup, schema))
-        self.require(_context, 'z3ext.ModifyPreference', set_schema=(schema,))
+        self.require(_context, permission,
+                     interface=(IPreferenceGroup, schema), set_schema=(schema,))
         self.require(_context, CheckerPublic,
-                     interface=(IEnumerableMapping,), attributes=('isAvailable',))
+                     interface=(IEnumerableMapping, ILocation),
+                     attributes=('isAvailable',
+                                 '__id__', '__schema__',
+                                 '__title__', '__description__'))
 
         schema.setTaggedValue('preferenceID', id)
 
