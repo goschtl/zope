@@ -142,7 +142,16 @@ class RadioColumn(Column):
     """Radio column."""
 
     header = _('X')
-    selectedItem = None
+
+    @apply
+    def selectedItem():
+        # use the items form the table
+        def get(self):
+            if len(self.table.selectedItems):
+                return list(self.table.selectedItems).pop()
+        def set(self, value):
+            self.table.selectedItems = [value]
+        return property(get, set)
 
     def getSortKey(self, item):
         return api.getName(item)
@@ -159,7 +168,6 @@ class RadioColumn(Column):
                      self.getItemKey(item), [])]
         if len(items):
             self.selectedItem = items.pop()
-            self.table.selectedItems = [self.selectedItem]
 
     def renderCell(self, item):
         selected = u''
@@ -175,7 +183,15 @@ class CheckBoxColumn(Column):
 
     header = _('X')
     weight = 10
-    selectedItems = []
+
+    @apply
+    def selectedItems():
+        # use the items form the table
+        def get(self):
+            return self.table.selectedItems
+        def set(self, values):
+            self.table.selectedItems = values
+        return property(get, set)
 
     def getSortKey(self, item):
         return api.getName(item)
@@ -189,9 +205,7 @@ class CheckBoxColumn(Column):
     def update(self):
         self.selectedItems = [item for item in self.table.values
                               if self.getItemValue(item)
-                              in self.request.get(
-                                self.getItemKey(item), [])]
-        self.table.selectedItems = self.selectedItems
+                              in self.request.get(self.getItemKey(item), [])]
 
     def renderCell(self, item):
         selected = u''

@@ -5,7 +5,13 @@ CHANGES
 Version 0.5.1dev (unreleased)
 -----------------------------
 
-- ...
+- Implemented SelectedItemColumn
+
+- Fix CheckBoxColumn, use always the correct selectedItems. Use always real
+  selectedItems form the table
+
+- Fix RadioColumn, use always the correct selectedItem from the selectedItems 
+  list. Use always the first selectedItems form the tables selectedItems
 
 Version 0.5.0 (2008-04-13)
 --------------------------
