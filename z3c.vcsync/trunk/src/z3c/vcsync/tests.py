@@ -156,7 +156,7 @@ def test_suite():
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
 
         doctest.DocFileSuite(
-        'svn.txt',
+        'README.txt',
         setUp=setUpZope,
         tearDown=cleanUpZope,
         globs=globs,
