@@ -65,7 +65,8 @@ def distributionForPackage(package):
         for dist in dists:
             if not isUnzippedEgg(dist.location):
                 continue
-            packages = find_packages(dist.location)
+            packages = find_packages(dist.location) # TODO: don't use setuptools here; look for ``top_level.txt`` metadata instead
+            import pdb; pdb.set_trace()
             ns_packages = namespaceDottedNames(dist)
             if package_dottedname in ns_packages:
                 continue
@@ -73,7 +74,7 @@ def distributionForPackage(package):
                 continue
             valid_dists_for_package.append(dist)
     assert valid_dists_for_package, "No distributions found for package %s." % package_dottedname
-    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude cowardly refuses to guess." % package_dottedname
+    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude refuses to guess." % package_dottedname
     return valid_dists_for_package[0]
 
 def distributionForDottedName(dotted_name):
