@@ -14,11 +14,8 @@ class DistributionManager(object):
     def namespaceDottedNames(self):
         """Return dotted names of all namespace packages in distribution.
         """
-        try:
-            return list(self.context.get_metadata_lines('namespace_packages.txt'))
-        except IOError:
-            return []
-        
+        return namespaceDottedNames(self.context)
+
     def dottedNames(self):
         """Return dotted names of all relevant packages in a distribution.
 
@@ -39,7 +36,7 @@ class DistributionManager(object):
     
 def subpackageDottedNames(package_path, ns_dottedname=None):
     # we do not look for subpackages in zipped eggs
-    if not os.path.isdir(package_path):
+    if not isUnzippedEgg(package_path):
         return []
 
     result = []
@@ -66,13 +63,10 @@ def distributionForPackage(package):
     for path in sys.path:
         dists = find_distributions(path, True)
         for dist in dists:
-            if not os.path.isdir(dist.location):
+            if not isUnzippedEgg(dist.location):
                 continue
             packages = find_packages(dist.location)
-            try:
-                ns_packages = dist.get_metadata_lines('namespace_packages.txt')
-            except IOError:
-                ns_packages = []
+            ns_packages = namespaceDottedNames(dist)
             if package_dottedname in ns_packages:
                 continue
             if package_dottedname not in packages:
@@ -84,6 +78,25 @@ def distributionForPackage(package):
 
 def distributionForDottedName(dotted_name):
     return distributionForPackage(resolve(dotted_name))
+
+def namespaceDottedNames(dist):
+    """
+    Return a list of dotted names of all namespace packages in a distribution.
+    """
+    try:
+        ns_dottednames = list(dist.get_metadata_lines('namespace_packages.txt'))
+    except IOError:
+        ns_dottednames = []
+    return ns_dottednames
+
+def isUnzippedEgg(path):
+    """
+    Check whether a filesystem path points to an unzipped egg; z3c.autoinclude
+    does not support zipped eggs or python libraries that are not packaged as
+    eggs. This function can be called on e.g. entries in sys.path or the
+    location of a distribution object.
+    """
+    return os.path.isdir(path)
 
 def debug_includes(dist, include_type, dotted_names):
     if not dotted_names:
