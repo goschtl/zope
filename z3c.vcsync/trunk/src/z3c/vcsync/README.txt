@@ -258,6 +258,11 @@ We'll synchronize for the first time now::
 
   >>> info = s.sync(last_revision_nr, "synchronize")
 
+We can now update the last_revision_nr with the revision number we
+have just synchronized to::
+
+  >>> last_revision_nr = info.revision_nr
+
 We will now examine the SVN checkout to see whether the
 synchronization was success.
 
@@ -287,3 +292,63 @@ The ``.test`` files have the payload data we expect::
   2
   >>> print wc.join('root').join('sub').join('qux.test').read()
   3
+
+Synchronization back into objects
+---------------------------------
+
+Let's now try the reverse: we will change the SVN content from another
+checkout, and synchronize the changes back into the object tree.
+
+We will store away last_revision_nr for a while, as we will now
+temporarily work with another checkout and state, which track a
+different revision_nr::
+
+  >>> last_revision_nr1 = last_revision_nr
+
+We have a second, empty tree that we will load objects into. This
+state hasn't synchronized since the revision number was 0::
+
+  >>> last_revision_nr = 0
+  >>> data2 = Container()
+  >>> data2.__name__ = 'root'
+  >>> state2 = TestState(data2)
+
+We make another checkout of the repository::
+
+  >>> import py
+  >>> wc2 = py.test.ensuretemp('wc2')
+  >>> wc2 = py.path.svnwc(wc2)
+  >>> wc2.checkout(repo)
+  >>> checkout2 = SvnCheckout(wc2)
+
+Let's synchronize::
+
+  >>> s2 = Synchronizer(checkout2, state2)
+  >>> info2 = s2.sync(last_revision_nr, "synchronize")
+  >>> last_revision_nr = info2.revision_nr
+
+The state of objects in the tree must now mirror that of the original state::
+
+  >>> sorted(data2.keys())    
+  ['bar', 'foo', 'root', 'sub']
+
+Now we will change some of these objects, and synchronize again::
+
+  >>> data2['bar'].payload = 20
+  >>> data2['sub']['qux'].payload = 30
+  >>> info2 = s2.sync(last_revision_nr, "synchronize")
+  >>> last_revision_nr = info2.revision_nr
+
+We can now synchronize the original tree again::
+
+  >>> last_revision_nr2 = last_revision_nr
+  >>> last_revision_nr = last_revision_nr1
+  >>> info = s.sync(last_revision_nr, "synchronize")
+  >>> last_revision_nr = info.revision_nr
+
+We should see the changes reflected into the original tree::
+
+  >>> data['bar'].payload
+  20
+  >>> data['sub']['qux'].payload
+  30
