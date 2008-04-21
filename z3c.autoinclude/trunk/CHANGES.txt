@@ -1,7 +1,12 @@
 Changes
 =======
 
-0.3 (unreleased)
+0.2.1 (unreleased)
+------------------
+
+* Fixed bug which prevented proper inclusion of packages when the base package's namespace has been extended by other installed packages.
+ * Rewrote ``distributionForPackage`` function.
+ * Added additional tests for ``includePlugins`` and utility functions.
 
 0.2 (2008-04-18)
 ----------------

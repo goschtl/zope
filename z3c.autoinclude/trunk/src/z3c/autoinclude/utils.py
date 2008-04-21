@@ -79,7 +79,6 @@ def distributionForDottedName(package_dottedname):
     assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude refuses to guess." % package_dottedname
     return valid_dists_for_package[0]
 
-
 def namespaceDottedNames(dist):
     """
     Return a list of dotted names of all namespace packages in a distribution.

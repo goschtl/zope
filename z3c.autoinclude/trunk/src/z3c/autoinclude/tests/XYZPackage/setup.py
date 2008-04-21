@@ -18,7 +18,7 @@ setup(name='XYZPackage',
       url='',
       license="''",
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['x.y'],
+      namespace_packages=['x', 'x.y'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
