@@ -359,9 +359,9 @@ the publisher):
 
 Now, we'll get the catalog:
 
-  >>> from zope.app import zapi
+  >>> import zope.component
   >>> from zope.app.catalog.interfaces import ICatalog
-  >>> catalog = zapi.getUtility(ICatalog)
+  >>> catalog = zope.component.getUtility(ICatalog)
 
 And search it to find the names of all of the documents that contain
 the word 'now':
