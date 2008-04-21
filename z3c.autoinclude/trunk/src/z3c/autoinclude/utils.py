@@ -31,7 +31,10 @@ class DistributionManager(object):
         result = []
         for ns_dottedname in ns_dottednames:
             path = os.path.join(dist_path, *ns_dottedname.split('.'))
-            result.extend(subpackageDottedNames(path, ns_dottedname))
+            subpackages = subpackageDottedNames(path, ns_dottedname)
+            for subpackage in subpackages:
+                if subpackage not in ns_dottednames:
+                    result.append(subpackage)
         return result
     
 def subpackageDottedNames(package_path, ns_dottedname=None):
