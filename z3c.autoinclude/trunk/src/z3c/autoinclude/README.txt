@@ -109,10 +109,10 @@ are no namespace packages::
     ['b']
 
 ``XYZPackage`` has a namespace package too, ``x.y`` (``x`` is also
-implicitly a namespace package)::
+a namespace package)::
 
     >>> xyz_include_finder.namespaceDottedNames()
-    ['x.y']
+    ['x', 'x.y']
 
 We can also get the dotted names of the actual packages that we want
 to inspect in a distribution. For a project without namespace packages,
