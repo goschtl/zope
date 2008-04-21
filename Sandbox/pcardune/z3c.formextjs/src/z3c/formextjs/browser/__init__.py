@@ -3,7 +3,6 @@ import os.path, sys
 from zope.viewlet.interfaces import IViewletManager
 from zope.viewlet.viewlet import ViewletBase
 from zope.viewlet.manager import WeightOrderedViewletManager
-from zope.documenttemplate.untrusted import UntrustedHTML
 
 
 def package_home(gdict):
@@ -79,10 +78,10 @@ class ExtJSWidgetsViewlet(FormAwareViewlet):
         return self.template(self, **globals())
 
 
-class ExtJSButtonsViewlet(FormAwareViewlet):
-    """Viewlet that add JS hooks for displaying buttons."""
+## class ExtJSButtonsViewlet(FormAwareViewlet):
+##     """Viewlet that add JS hooks for displaying buttons."""
 
-    template = PythonTemplateFile('form-buttons-viewlet.pyt')
+##     template = PythonTemplateFile('form-buttons-viewlet.pyt')
 
-    def render(self):
-        return self.template(self, **globals())
+##     def render(self):
+##         return self.template(self, **globals())

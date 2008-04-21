@@ -24,3 +24,6 @@ class IExtJSFormLayer(IBrowserRequest):
 
 class ICSS(IViewletManager):
     """CSS viewlet manager."""
+
+class IJavaScript(IViewletManager):
+    """JavaScript viewlet manager."""

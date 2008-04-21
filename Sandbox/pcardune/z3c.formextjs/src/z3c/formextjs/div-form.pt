@@ -1,7 +1,6 @@
 <h1>EXTJS SKIN</h1>
 <div id="test"></div>
 <div tal:attributes="id view/id"></div>
-<tal:var tal:define="unused resource_library:ext-all" />
 <div tal:replace="structure provider:z3c.formjs.ext.JSFormViewletManager"></div>
 
 <form tal:condition="nothing" action="." method="post" enctype="multipart/form-data" class="blahblahblah"

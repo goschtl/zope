@@ -24,11 +24,8 @@ def read(*rnames):
     return xml.sax.saxutils.escape(text)
 
 chapters = '\n'.join(
-    [read('src', 'z3c', 'formjs', name)
-    for name in ('README.txt',
-                 'jsaction.txt',
-                 'jsvalidator.txt',
-                 'jsevent.txt')])
+    [read('src', 'z3c', 'formextjs', name)
+    for name in ('README.txt',)])
 
 setup (
     name='z3c.formextjs',
