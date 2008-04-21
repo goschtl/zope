@@ -23,6 +23,7 @@ from z3c.formui import interfaces
 from z3c.formdemo import layer
 
 from z3c.formextjs.interfaces import IExtJSFormLayer, IJavaScript
+from z3c.formextjs.interfaces import ICSS as IFormExtCSS
 
 class IDivDemoBrowserSkin(interfaces.IDivFormLayer,
                           layer.IDemoBrowserLayer):
@@ -36,7 +37,7 @@ class IExtJSDemoBrowserSkin(IExtJSFormLayer,
                             layer.IDemoBrowserLayer):
     """The ``Z3CExtJSFormDemo`` browser skin."""
 
-class ICSS(interfaces.ICSS):
+class ICSS(interfaces.ICSS, IFormExtCSS):
     """CSS viewlet manager."""
 
 class IJavaScript(IJavaScript):
