@@ -24,6 +24,7 @@ setup(name='base2_plug',
           'TestDirective',
       ],
       entry_points="""
-      # -*- Entry points: -*-
+      [z3c.autoinclude.plugin]
+      target = base2
       """,
       )
