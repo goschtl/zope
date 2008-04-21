@@ -142,7 +142,7 @@ globs = {'Container': Container,
 def test_suite():
     suite = unittest.TestSuite([
         doctest.DocFileSuite(
-        'README.txt',
+        'internal.txt',
         setUp=setUpZope,
         tearDown=cleanUpZope,
         globs=globs,
