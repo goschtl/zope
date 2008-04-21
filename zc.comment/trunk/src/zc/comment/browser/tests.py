@@ -16,17 +16,61 @@
 
 """
 __docformat__ = "reStructuredText"
-
+import os
 import unittest
-
+import zope.component
+import zope.interface
+import zope.app.form.interfaces
+import zope.app.testing.functional
+import zope.publisher.browser
 from zope.app.form.browser.tests import test_browserwidget
+from zope.app.testing.functional import ZCMLLayer
 
 import zc.comment.interfaces
 import zc.comment.browser.widget
 
 
-class TestBase(object):
+CommentsLayer = ZCMLLayer(
+    os.path.join(
+        os.path.split(zc.comment.browser.__file__)[0], 'ftesting.zcml'),
+    __name__, 'CommentsLayer', allow_teardown=True)
 
+
+class IFace(zope.interface.Interface):
+    foo = zc.comment.interfaces.CommentText(
+        title=u"Foo",
+        description=u"Foo description",
+        )
+
+class Face(object):
+    foo = (u"Foo<br />\n"
+           u"\n"
+           u"Bar &lt; &amp; &gt;")
+
+
+class WidgetConfigurationTestCase(unittest.TestCase):
+    """Check that configure.zcml sets up the widgets as expected."""
+
+    def setUp(self):
+        super(WidgetConfigurationTestCase, self).setUp()
+        self.field = IFace["foo"]
+        self.bound_field = self.field.bind(Face())
+        self.request = zope.publisher.browser.TestRequest()
+
+    def test_display_widget_lookup(self):
+        w = zope.component.getMultiAdapter(
+            (self.bound_field, self.request),
+             zope.app.form.interfaces.IDisplayWidget)
+        self.failUnless(isinstance(w, zc.comment.browser.widget.Display))
+
+    def test_input_widget_lookup(self):
+        w = zope.component.getMultiAdapter(
+            (self.bound_field, self.request),
+             zope.app.form.interfaces.IInputWidget)
+        self.failUnless(isinstance(w, zc.comment.browser.widget.Input))
+
+
+class TestBase(object):
     _FieldFactory = zc.comment.interfaces.CommentText
 
 
@@ -112,4 +156,9 @@ def test_suite():
                 InputWidgetTestCase,
                 ):
         suite.addTest(unittest.makeSuite(cls))
+
+    widgetConfig = unittest.makeSuite(WidgetConfigurationTestCase)
+    widgetConfig.layer = CommentsLayer
+    suite.addTest(widgetConfig)
+
     return suite

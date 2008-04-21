@@ -16,14 +16,17 @@
 
 $Id: tests.py 678 2005-02-22 21:49:28Z gary $
 """
-
 import unittest
 from zope.testing import doctest
+from zope.app.testing import placelesssetup
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-            'comment.txt'),))
+            'README.txt',
+            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

@@ -4,5 +4,6 @@
   <include package="zope.app.zcmlfiles" file="ftesting.zcml" />
 
   <include package="zc.comment" />
+  <include package="zc.comment.browser" />
 
 </configure>

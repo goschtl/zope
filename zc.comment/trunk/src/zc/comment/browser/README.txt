@@ -67,15 +67,15 @@ and the user who made it:
      <label for="form.comment">
         <span class="required">*</span><span>[[zc.comment][New Comment]]</span>
       </label>
-      ...<textarea class="zc-comment-text" 
-                   style="width: 50ex; height: 6em;" 
-                   cols="60" id="form.comment" 
+      ...<textarea class="zc-comment-text"
+                   style="width: 50ex; height: 6em;"
+                   cols="60" id="form.comment"
                    name="form.comment" rows="15" ></textarea></div>
     ...
-        <input type="submit" 
-               id="form.actions.41646420436f6d6d656e74" 
-               name="form.actions.41646420436f6d6d656e74" 
-               value="[[zc.comment][Add Comment]]" 
+        <input type="submit"
+               id="form.actions.41646420436f6d6d656e74"
+               name="form.actions.41646420436f6d6d656e74"
+               value="[[zc.comment][Add Comment]]"
                class="button" />
     ...
 
@@ -127,15 +127,15 @@ Now, we'll add another comment.
       <span class="required">*</span><span>[[zc.comment][New Comment]]</span>
     </label>
     ...
-    ...<textarea class="zc-comment-text" 
-                 style="width: 50ex; height: 6em;" 
-                 cols="60" 
-                 id="form.comment" 
-                 name="form.comment" 
+    ...<textarea class="zc-comment-text"
+                 style="width: 50ex; height: 6em;"
+                 cols="60"
+                 id="form.comment"
+                 name="form.comment"
                  rows="15" ></textarea>...
-        <input type="submit" 
-               id="form.actions.41646420436f6d6d656e74" 
-               name="form.actions.41646420436f6d6d656e74" 
-               value="[[zc.comment][Add Comment]]" 
+        <input type="submit"
+               id="form.actions.41646420436f6d6d656e74"
+               name="form.actions.41646420436f6d6d656e74"
+               value="[[zc.comment][Add Comment]]"
                class="button" />
     ...

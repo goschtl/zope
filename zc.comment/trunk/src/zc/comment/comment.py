@@ -12,24 +12,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""comment adapter
+"""Simple comments implementation as an annotation to commentable objects.
 
-$Id: comment.py 9472 2006-04-28 04:41:20Z gary $
+$Id$
 """
-import datetime, UserList, pytz
-
-from persistent.list import PersistentList
-from zope import interface, component, event
+import datetime
+import persistent
+import persistent.list
+import pytz
 import zope.annotation.interfaces
+import zope.component
+import zope.event
+import zope.interface
+import zope.location
 import zope.security.management
 import zope.publisher.interfaces
+from zope.annotation import factory
 
 from zc.comment import interfaces
 
-marker = 'zc.comment'
-
-class Comment(object):
-    interface.implements(interfaces.IComment)
+class Comment(persistent.Persistent):
+    zope.interface.implements(interfaces.IComment)
 
     def __init__(self, body):
         if not isinstance(body, unicode):
@@ -41,31 +44,27 @@ class Comment(object):
             [p.principal.id for p in interaction.participations
              if zope.publisher.interfaces.IRequest.providedBy(p)])
 
-class Comments(object, UserList.UserList):
-    interface.implements(interfaces.IComments)
-    component.adapts(interfaces.ICommentable)
+
+class Comments(zope.location.Location, persistent.list.PersistentList):
+    zope.interface.implements(interfaces.IComments)
+    zope.component.adapts(interfaces.ICommentable)
+
     def pop(self):
         raise AttributeError
     pop = property(pop)
     __setitem__ = __delitem__ = __setslice__ = __delslice__ = __iadd__ = pop
     insert = append = remove = reverse = sort = extend = pop
 
-    def __init__(self, context):
-        self.__parent__ = context # so we can acquire grants
-        self.context = context
-        self.annotations = zope.annotation.interfaces.IAnnotations(
-            self.context)
-        self.data = self.annotations.get(marker)
-        if self.data is None:
-            self.data = []
-    
     def add(self, body):
-        if self.annotations.get(marker) is None:
-            self.data = self.annotations[marker] = PersistentList()
-        self.data.append(Comment(body))
-        event.notify(interfaces.CommentAdded(self.context, body))
+        super(Comments, self).append(Comment(body))
+        zope.event.notify(interfaces.CommentAdded(self.__parent__, body))
 
     def clear(self): # XXX no test
-        if marker in self.annotations:
-            del self.annotations[marker]
-        
+        persistent.list.PersistentList.__init__(self)
+
+    def __repr__(self):
+        return '<%s (%i) for %r>' %(
+            self.__class__.__name__, len(self), self.__parent__)
+
+
+CommentsFactory = factory(Comments)
