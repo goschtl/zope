@@ -56,12 +56,22 @@ class IState(Interface):
     This is object represents the state and contains information about
     what objects in the state have been changed/added, or
     removed. This information is used to determine what to synchronize
-    to the filesystem.
+    to the filesystem. It also keeps track of the last revision
+    number used to synchronize.
     
     Implement this for the state structure (such as a container tree)
     you want to export.
     """
     root = Attribute('The root container')
+
+    def set_revision_rr():
+        """The last revision number that this state was synchronized with.
+        """
+
+    def set_revision_rr(nr):
+        """Store the last revision number that this state was synchronized
+        with.
+        """
 
     def objects(revision_nr):
         """Objects modified/added in state since revision_nr.

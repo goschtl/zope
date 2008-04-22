@@ -105,7 +105,8 @@ class Synchronizer(object):
         self.state = state
         self._to_remove = []
 
-    def sync(self, revision_nr, message='', modified_function=None):
+    def sync(self, message='', modified_function=None):
+        revision_nr = self.state.get_revision_nr()
         # store these to report in SynchronizationInfo below
         objects_removed = list(self.state.removed(revision_nr))
         root = self.state.root
@@ -137,7 +138,14 @@ class Synchronizer(object):
                 modified_function(obj)
         # and commit the checkout state
         self.checkout.commit(message)
-        return SynchronizationInfo(self.checkout.revision_nr(),
+
+        # we retrieve the revision number to which we just synchronized
+        revision_nr = self.checkout.revision_nr()
+        
+        # we store the new revision number in the state
+        self.state.set_revision_nr(revision_nr)
+        # and we return some informatino about happened
+        return SynchronizationInfo(revision_nr,
                                    objects_removed, objects_changed,
                                    files_removed, files_changed)
 
@@ -225,18 +233,26 @@ class Synchronizer(object):
         return self.checkout.path.join(*steps)
 
 class AllState(object):
-    """A special state object.
-
+    """Report all state as changed.
+    
     It reports all objects in the state as modified, and reports nothing
-    removed.
+    removed. It actually completely ignores revision numbers. This
+    implementation is not something you'd typically want to use in your
+    own applications, but is useful for testing purposes.
     """
     grok.implements(IState)
 
     def __init__(self, root):
         self.root = root
 
+    def set_revision_nr(self, revision_nr):
+        pass
+
+    def get_revision_nr(self):
+        return 0
+    
     def objects(self, revision_nr):
-        for container in self._containers(revision_nr):
+        for container in self._containers():
             for item in container.values():
                 if not IContainer.providedBy(item):
                     yield item
@@ -245,7 +261,7 @@ class AllState(object):
     def removed(self, revision_nr):
         return []
     
-    def _containers(self, revision_nr):
+    def _containers(self):
         return self._containers_helper(self.root)
 
     def _containers_helper(self, container):

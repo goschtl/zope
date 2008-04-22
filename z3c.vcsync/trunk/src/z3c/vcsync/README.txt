@@ -45,51 +45,18 @@ removed will have an effect on the checkout. In step 4) only those
 files that have been changed, added or removed on the filesystem due
 to the ``up`` action will change the persistent object state.
 
-The tree to synchronize
------------------------
-
-Content objects need to track the revision number after which it was
-last changed, so that later we can find all objects that have
-changed. In a real application we would typically track this in some
-content object (such as the application root), but here we will just
-track it globally::
-
-  >>> last_revision_nr = 0
-
-An item contains some payload data, and maintains the SVN revision
-after which it was changed. In a real program you would typically
-maintain the revision number of objects by using an annotation and
-listening to ``IObjectModifiedEvent``, but we will use a property
-here::
-
-  >>> class Item(object):
-  ...   def __init__(self, payload):
-  ...     self.payload = payload
-  ...   def _get_payload(self):
-  ...     return self._payload
-  ...   def _set_payload(self, value):
-  ...     self._payload = value
-  ...     self.revision_nr = last_revision_nr
-  ...   payload = property(_get_payload, _set_payload)
-
-We also have a ``Container`` class, set up before this test
-started. It is a class that implements enough of the dictionary API
-and implements the ``IContainer`` interface. A normal Zope 3 folder or
-Grok container will work. Let's now set up the tree::
-
-  >>> data = Container()
-  >>> data.__name__ = 'root'
-  >>> data['foo'] = Item(payload=1)
-  >>> data['bar'] = Item(payload=2)
-  >>> data['sub'] = Container()
-  >>> data['sub']['qux'] = Item(payload=3)
-
-As part of the synchronization procedure we need the ability to export
-persistent python objects to the version control checkout directory in
-the form of files and directories.
+State
+-----
  
-Content is represented by an object that provides ``IState``. Two methods
-need to be implemented:
+Content to synchronize is represented by an object that provides
+``IState``. The following methods need to be implemented:
+
+* ``get_revision_nr()``: return the last revision number that the
+   application was synchronized with. The state typically stores this
+   the application object.
+
+* ``set_revision_nr(nr)``: store the last revision number that the
+  application was synchronized with.
 
 * ``objects(revision_nr)``: any object that has been modified (or
   added) since the synchronization for ``revision_nr``. Returning 'too
@@ -113,7 +80,8 @@ need to be implemented:
   list.
 
 In this example, we will use a simpler, less efficient, implementation
-that goes through the entire tree to find changes::
+that goes through a content to find changes. It tracks the
+revision number as a special attribute of the root object::
 
   >>> from zope.interface import implements
   >>> from z3c.vcsync.interfaces import IState
@@ -121,6 +89,13 @@ that goes through the entire tree to find changes::
   ...     implements(IState)
   ...     def __init__(self, root):
   ...         self.root = root
+  ...     def set_revision_nr(self, nr):
+  ...         self.root.nr = nr
+  ...     def get_revision_nr(self):
+  ...         try:
+  ...             return self.root.nr
+  ...         except AttributeError:
+  ...             return 0
   ...     def removed(self, revision_nr):
   ...         return []
   ...     def objects(self, revision_nr):
@@ -139,6 +114,53 @@ that goes through the entire tree to find changes::
   ...                 continue
   ...             for sub_container in self._containers_helper(obj):
   ...                 yield sub_container
+
+
+The content
+-----------
+
+Now that we have something that can synchronize a tree of content in
+containers, let's actually build ourselves a tree of content.
+
+An item contains some payload data, and maintains the SVN revision
+after which it was changed. In a real application you would typically
+maintain the revision number of objects by using an annotation and
+listening to ``IObjectModifiedEvent``, but we will use a property
+here::
+
+  >>> class Item(object):
+  ...   def __init__(self, payload):
+  ...     self.payload = payload
+  ...   def _get_payload(self):
+  ...     return self._payload
+  ...   def _set_payload(self, value):
+  ...     self._payload = value
+  ...     self.revision_nr = get_revision_nr()
+  ...   payload = property(_get_payload, _set_payload)
+
+This code needs a global ``get_revision_nr`` function available to get access
+to the revision number of last synchronization. For now we'll just define
+this to return 0, but we will change this later::
+
+  >>> def get_revision_nr():
+  ...    return 0
+
+Besides the ``Item`` class, we also have a ``Container`` class, set up
+before this test started. It is a class that implements enough of the
+dictionary API and implements the ``IContainer`` interface. A normal
+Zope 3 folder or Grok container will also work. Let's now set up the
+tree::
+
+  >>> data = Container()
+  >>> data.__name__ = 'root'
+  >>> data['foo'] = Item(payload=1)
+  >>> data['bar'] = Item(payload=2)
+  >>> data['sub'] = Container()
+  >>> data['sub']['qux'] = Item(payload=3)
+
+As part of the synchronization procedure we need the ability to export
+persistent python objects to the version control checkout directory in
+the form of files and directories.
 
 Now that we have an implementation of ``IState`` that works for our
 state, let's create our ``state`` object::
@@ -251,31 +273,42 @@ Now that we have the checkout and the state, we can set up a synchronizer::
   >>> from z3c.vcsync import Synchronizer
   >>> s = Synchronizer(checkout, state)
 
+Let's make ``s`` the current synchronizer as well. We need this in
+this example to get back to the last revision number::
+
+  >>> current_synchronizer = s
+
+It's now time to set up our ``get_revision_nr`` function a bit better,
+making use of the information in the current synchronizer. In actual
+applications we'd probably get the revision number directly from the
+content, and there would be no need to get back to the synchronizer
+(it doesn't need to be persistent but can be constructed on demand)::
+
+  >>> def get_revision_nr():
+  ...    return current_synchronizer.state.get_revision_nr()
+
 Synchronization
 ---------------
 
 We'll synchronize for the first time now::
 
-  >>> info = s.sync(last_revision_nr, "synchronize")
-
-We can now update the last_revision_nr with the revision number we
-have just synchronized to::
-
-  >>> last_revision_nr = info.revision_nr
+  >>> info = s.sync("synchronize")
 
 We will now examine the SVN checkout to see whether the
-synchronization was success.
+synchronization was successful.
 
-We first introduce some helper functions that help us present the
-paths in a more readable form, relative to the base of the checkout::
+To do this we'll introduce some helper functions that help us present
+the paths in a more readable form, relative to the base of the
+checkout::
 
   >>> def pretty_path(path):
   ...     return path.relto(wc)
   >>> def pretty_paths(paths):
   ...     return sorted([pretty_path(path) for path in paths])
 
-We see that the structure containers and items  has been translated to the
-same structure of directories and ``.test`` files on the filesystem::
+We see that the Python object structure of containers and items has
+been translated to the same structure of directories and ``.test``
+files on the filesystem::
 
   >>> pretty_paths(wc.listdir())
   ['root']
@@ -299,14 +332,7 @@ Synchronization back into objects
 Let's now try the reverse: we will change the SVN content from another
 checkout, and synchronize the changes back into the object tree.
 
-We will store away last_revision_nr for a while, as we will now
-temporarily work with another checkout and state, which track a
-different revision_nr::
-
-  >>> last_revision_nr1 = last_revision_nr
-
-We have a second, empty tree that we will load objects into. This
-state hasn't synchronized since the revision number was 0::
+We have a second, empty tree that we will load objects into::
 
   >>> last_revision_nr = 0
   >>> data2 = Container()
@@ -321,11 +347,18 @@ We make another checkout of the repository::
   >>> wc2.checkout(repo)
   >>> checkout2 = SvnCheckout(wc2)
 
-Let's synchronize::
+Let's make a synchronizer for this new checkout and state::
 
   >>> s2 = Synchronizer(checkout2, state2)
-  >>> info2 = s2.sync(last_revision_nr, "synchronize")
-  >>> last_revision_nr = info2.revision_nr
+
+This is now the current synchronizer (so that our ``get_revision_nr``
+works properly)::
+
+  >>> current_synchronizer = s2
+
+Now we'll synchronize::
+
+  >>> info = s2.sync("synchronize")
 
 The state of objects in the tree must now mirror that of the original state::
 
@@ -336,15 +369,12 @@ Now we will change some of these objects, and synchronize again::
 
   >>> data2['bar'].payload = 20
   >>> data2['sub']['qux'].payload = 30
-  >>> info2 = s2.sync(last_revision_nr, "synchronize")
-  >>> last_revision_nr = info2.revision_nr
+  >>> info2 = s2.sync("synchronize")
 
 We can now synchronize the original tree again::
 
-  >>> last_revision_nr2 = last_revision_nr
-  >>> last_revision_nr = last_revision_nr1
-  >>> info = s.sync(last_revision_nr, "synchronize")
-  >>> last_revision_nr = info.revision_nr
+  >>> current_synchronizer = s
+  >>> info = s.sync("synchronize")
 
 We should see the changes reflected into the original tree::
 

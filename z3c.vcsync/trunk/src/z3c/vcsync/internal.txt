@@ -700,7 +700,7 @@ modified::
 
   >>> def f(obj):
   ...   print "modified:", obj.__name__
-  >>> info = s.sync(None, message='', modified_function=f)
+  >>> info = s.sync(message='', modified_function=f)
   modified: alpha
   >>> info.revision_nr
   9
