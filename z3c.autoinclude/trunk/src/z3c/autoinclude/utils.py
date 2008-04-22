@@ -90,6 +90,8 @@ def namespaceDottedNames(dist):
         ns_dottednames = list(dist.get_metadata_lines('namespace_packages.txt'))
     except IOError:
         ns_dottednames = []
+    except KeyError:
+        ns_dottednames = []
     return ns_dottednames
 
 def isUnzippedEgg(path):
