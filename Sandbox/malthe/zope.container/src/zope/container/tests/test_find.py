@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,10 +16,10 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
-from zope.app.container.interfaces import IReadContainer
-from zope.app.container.interfaces import IObjectFindFilter
-from zope.app.container.find import FindAdapter, SimpleIdFindFilter
-from zope.app.container.find import SimpleInterfacesFindFilter
+from zope.container.interfaces import IReadContainer
+from zope.container.interfaces import IObjectFindFilter
+from zope.container.find import FindAdapter, SimpleIdFindFilter
+from zope.container.find import SimpleInterfacesFindFilter
 from zope.interface import implements, Interface, directlyProvides
 
 class FakeContainer(object):

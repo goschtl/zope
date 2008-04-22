@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit test logic for setting up and tearing down basic infrastructure
+"""Container constraint tests
 
-$Id$
+$Id: test_constraints.py 40495 2005-12-02 17:51:22Z efge $
 """
-from zope.app.testing import ztapi
-from zope.app.container.interfaces import IWriteContainer, INameChooser
-from zope.app.container.contained import NameChooser
+import unittest
+from zope.testing import doctest, module
 
-class PlacelessSetup(object):
+def setUp(test):
+    module.setUp(test, 'zope.container.property_txt')
 
-    def setUp(self):
-        ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
+def tearDown(test):
+    module.tearDown(test, 'zope.container.property_txt')
+
+def test_suite():
+    return unittest.TestSuite((
+        doctest.DocFileSuite('../property.txt',
+                             setUp=setUp, tearDown=tearDown),
+        ))
+
+if __name__ == '__main__': unittest.main()

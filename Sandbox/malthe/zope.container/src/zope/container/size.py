@@ -1,7 +1,6 @@
-
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -18,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.container.i18n import ZopeMessageFactory as _
+from zope.container.i18n import ZopeMessageFactory as _
 from zope.size.interfaces import ISized
 from zope.interface import implements
 

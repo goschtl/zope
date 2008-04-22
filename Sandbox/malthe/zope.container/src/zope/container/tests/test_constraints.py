@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,29 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""FS-based directory implementation tests for containers
+"""Container constraint tests
 
 $Id$
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-import zope.app.container.directory
+import unittest
+from zope.testing import doctest, module
 
-class Directory(object):
-    pass
- 
-class Test(TestCase):
+def setUp(test):
+    module.setUp(test, 'zope.container.constraints_txt')
 
-    def test_Cloner(self):
-        d = Directory()
-        d.a = 1
-        clone = zope.app.container.directory.Cloner(d)('foo')
-        self.assert_(clone != d)
-        self.assertEqual(clone.__class__, d.__class__)
+def tearDown(test):
+    module.tearDown(test, 'zope.container.constraints_txt')
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
+    return unittest.TestSuite((
+        doctest.DocTestSuite('zope.container.constraints'),
+        doctest.DocFileSuite('../constraints.txt',
+                             setUp=setUp, tearDown=tearDown),
         ))
 
-if __name__=='__main__':
-    main(defaultTest='test_suite')
+if __name__ == '__main__': unittest.main()

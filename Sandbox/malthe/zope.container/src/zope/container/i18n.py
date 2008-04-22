@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,24 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Container constraint tests
+"""Customization of zope.i18n for the Zope application server
 
 $Id$
 """
-import unittest
-from zope.testing import doctest, module
+__docformat__ = 'restructuredtext'
 
-def setUp(test):
-    module.setUp(test, 'zope.app.container.constraints_txt')
-
-def tearDown(test):
-    module.tearDown(test, 'zope.app.container.constraints_txt')
-
-def test_suite():
-    return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.container.constraints'),
-        doctest.DocFileSuite('../constraints.txt',
-                             setUp=setUp, tearDown=tearDown),
-        ))
-
-if __name__ == '__main__': unittest.main()
+# import this as _ to create i18n messages in the zope domain
+from zope.i18nmessageid import MessageFactory
+ZopeMessageFactory = MessageFactory('zope')
