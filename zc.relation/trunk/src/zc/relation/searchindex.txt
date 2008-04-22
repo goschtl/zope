@@ -191,7 +191,7 @@ That's all we'll do now.
 
     >>> import zc.relation.searchindex
     >>> catalog.addSearchIndex(
-    ...     zc.relation.searchindex.TransposingTransitive(
+    ...     zc.relation.searchindex.TransposingTransitiveMembership(
     ...         'token', 'children', names=('children',)))
 
 Now we should have a search index installed.

@@ -13,10 +13,27 @@ _marker = object()
 class TransposingTransitive(persistent.Persistent):
     zope.interface.implements(zc.relation.interfaces.IQueryFactory)
 
-    def __init__(self, name1, name2):
+    def __init__(self, name1, name2, static=()):
         self.names = [name1, name2] # a list so we can use index
+        if getattr(static, 'items', None) is not None:
+            static = static.items()
+        self.static = tuple(sorted(static))
 
     def __call__(self, query, catalog):
+        # check static values, if any.  we want to be permissive here. (as
+        # opposed to finding searchindexes in the catalog's
+        # _getSearchIndexResults method)
+        for k, v in self.static:
+            if k in query:
+                if isinstance(v, zc.relation.catalog.Any):
+                    if isinstance(query[k], zc.relation.catalog.Any):
+                        if query[k].source.issubset(v.source):
+                            continue
+                    elif query[k] in v:
+                        continue
+                elif v == query[k]:
+                    continue
+            return None
         static = []
         name = other = _marker
         for nm, val in query.items():
@@ -50,7 +67,8 @@ class TransposingTransitive(persistent.Persistent):
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and
-                set(self.names) == set(other.names))
+                set(self.names) == set(other.names)
+                and self.static == other.static)
 
     def __ne__(self, other):
         return not self.__eq__(other)
