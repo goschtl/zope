@@ -72,11 +72,22 @@ class TestMailerConnection(object):
         self.host = host
         self.port = port
 
+    does_esmtp = True
+
     def login(self, username, password):
         pass
 
     def sendmail(self, fromaddr, toaddr, message):
         sentMails.append((fromaddr, toaddr, message))
+
+    def ehlo(self):
+        return 200, ''
+
+    def helo(self):
+        return 200, ''
+
+    def has_extn(self, query):
+        return False
 
     def quit(self):
         pass

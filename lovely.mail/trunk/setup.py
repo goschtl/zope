@@ -16,7 +16,7 @@ long_description=(
 name = 'lovely.mail'
 setup(
     name = name,
-    version = '0.1.2',
+    version = '0.1.3',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     license = "ZPL 2.1",
