@@ -1,8 +1,8 @@
 class AlgebraCompiler:
     """
-    Actual compilation of the Algebra to Python is done
+	Actual compilation of the Algebra to Python is done
     in each Algebra class/object at the moment
-    """
+	"""
     def __init__(self, engine):
         self.engine = engine
     
@@ -10,8 +10,9 @@ class AlgebraCompiler:
         pass
     
     def compile(self, alg):
-        #print alg
-        #print
+        #print '-> algcode begin'
+        #print alg.__class__, alg
         code = alg.compile()
         #print code
-        return compile(code,'<string>','eval')
+        #print '-> algcode end'
+        return compile(code, '<string>', 'eval')

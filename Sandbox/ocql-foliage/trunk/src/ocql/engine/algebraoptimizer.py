@@ -9,7 +9,7 @@ class EliminateMake:
         self.algebra = algebra
     
     def applicable(self, alg):
-        return isinstance(alg,self.algebra.Make) and \
+        return isinstance(alg, self.algebra.Make) and \
             alg.coll1==alg.coll2 
     
     def __call__(self, alg):

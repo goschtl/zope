@@ -7,7 +7,7 @@
 
 import copy
 from collections import deque
-from ocql.engine.queryobject import *
+from queryobject import *
 
 #this is the wired query:
 """
@@ -60,56 +60,59 @@ class QueryParser:
         metadata = self.metadata
         #TODO: f-ing wrong place for this
         metadata.symbols = SymbolContainer()
+
+        from parse_ocql import parse
+        x = parse(query, metadata)
         
-        WIRED = Query(
-            metadata,
-            set,
-            [
-                In(
-                    metadata,
-                    Identifier(metadata,'c'),
-                    Identifier(metadata,'ICurses')
-                    ),
-                In(
-                    metadata,
-                    Identifier(metadata,'d'),
-                    Identifier(metadata,'IDepartments')
-                    ),
-                Eq(
-                    metadata,
-                    Property(metadata,
-                        Identifier(metadata,'d'),
-                        Identifier(metadata,'name')),
-                    StringConstant(metadata,'"Computing Science"')
-                    ),
-                Eq(
-                    metadata,
-                    Identifier(metadata,'d'),
-                    Quanted(
-                        metadata,
-                        Some(metadata),
-                        Property(metadata, 
-                            Identifier(metadata, 'c'),
-                            Identifier(metadata, 'runBy'))
-                        )
-                    ),
-                Le(
-                    metadata,
-                    NumericConstant(metadata, '1'),
-                    Property(metadata,
-                        Identifier(metadata, 'c'),
-                        Identifier(metadata, 'credits'))
-                    ),
-                Le(
-                    metadata,
-                    Property(metadata,
-                        Identifier(metadata, 'c'),
-                        Identifier(metadata, 'credits')),
-                    NumericConstant(metadata, '3')
-                    ),
-            ],
-            Identifier(metadata, 'c')
-        )
-        x = WIRED
-        #x.setMetadata(self.metadata)
+#        WIRED = Query(
+#            metadata,
+#            set,
+#            [
+#                In(
+#                    metadata,
+#                    Identifier(metadata,'c'),
+#                    Identifier(metadata,'ICurses')
+#                    ),
+#                In(
+#                    metadata,
+#                    Identifier(metadata,'d'),
+#                    Identifier(metadata,'IDepartments')
+#                    ),
+#                Eq(
+#                    metadata,
+#                    Property(metadata,
+#                        Identifier(metadata,'d'),
+#                        Identifier(metadata,'name')),
+#                    StringConstant(metadata,'"Computing Science"')
+#                    ),
+#                Eq(
+#                    metadata,
+#                    Identifier(metadata,'d'),
+#                    Quanted(
+#                        metadata,
+#                        Some(metadata),
+#                        Property(metadata, 
+#                            Identifier(metadata, 'c'),
+#                            Identifier(metadata, 'runBy'))
+#                        )
+#                    ),
+#                Le(
+#                    metadata,
+#                    NumericConstant(metadata, '1'),
+#                    Property(metadata,
+#                        Identifier(metadata, 'c'),
+#                        Identifier(metadata, 'credits'))
+#                    ),
+#                Le(
+#                    metadata,
+#                    Property(metadata,
+#                        Identifier(metadata, 'c'),
+#                        Identifier(metadata, 'credits')),
+#                    NumericConstant(metadata, '3')
+#                    ),
+#            ],
+#            Identifier(metadata, 'c')
+#        )
+#        x = WIRED
+#        #x.setMetadata(self.metadata)
         return x

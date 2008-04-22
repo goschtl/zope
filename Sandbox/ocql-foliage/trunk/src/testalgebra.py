@@ -51,7 +51,7 @@ class Single(BaseAlgebra):
             return '['+self.expr.compile()+']'
 
     def __repr__(self):
-        return 'Single(%s,%s)'%(self.klass,self.expr)
+        return 'Single(%s,%s)'%(self.klass, self.expr)
 
     def walk(self):
         yield self
@@ -81,7 +81,7 @@ class Union(BaseAlgebra):
                 self.coll2.compile())
 
     def __repr__(self):
-        return 'Union(%s,%s,%s)'%(self.klass,self.coll1,self.coll2)
+        return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
     def walk(self):
         yield self
@@ -89,6 +89,19 @@ class Union(BaseAlgebra):
             yield t
         for t in self.coll2.walk():
             yield t
+
+#class Differ:
+#    def __init__(self, klass, start, enf):
+#        self.klass = klass
+#        self.start = start
+#        self.end = end
+#    
+#    def compile(self):
+#        if self.klass == set:
+#            return 'set(range(%s,%s))' % (self.start.compile(),self.end.compile())
+#        if self.klass == list:
+#            return 'range(%s,%s)' % (self.start.compile(),self.end.compile())
+        
 
 class Iter(BaseAlgebra):
     def __init__(self, klass, func, coll):
@@ -104,20 +117,20 @@ class Iter(BaseAlgebra):
             # You can place here some specialized code...
             if self.klass == set:
                 return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(),self.coll.compile())
+                    (self.func.compile(), self.coll.compile())
             if self.klass == list:
                 return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(),self.coll.compile())
+                    (self.func.compile(), self.coll.compile())
         else:
             if self.klass == set:
                 return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(),self.coll.compile())
+                    (self.func.compile(), self.coll.compile())
             if self.klass == list:
                 return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(),self.coll.compile())
+                    (self.func.compile(), self.coll.compile())
 
     def __repr__(self):
-        return "Iter(%s,%s,%s)"%(self.klass,self.func,self.coll)
+        return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
     def walk(self):
         yield self
@@ -143,7 +156,7 @@ class Select(BaseAlgebra):
                 self.coll.compile())
 
     def __repr__(self):
-        return "Select(%s,%s,%s)"%(self.klass,self.func,self.coll)
+        return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
     def walk(self):
         yield self
@@ -175,7 +188,7 @@ class Reduce(BaseAlgebra):
                 self.expr.compile())
 
     def __repr__(self):
-        return "Reduce(%s,%s,%s,%s,%s)"%(self.klass,self.expr,self.func,self.aggreg,self.coll)
+        return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
 
     def walk(self):
         yield self
@@ -200,18 +213,6 @@ class Reduce(BaseAlgebra):
 #        if self.klass == list:
 #            return 'filter(%s,%s)' % (self.coll1.compile(),self.coll2.compile())
 #
-#class Differ:
-#    def __init__(self, klass, start, enf):
-#        self.klass = klass
-#        self.start = start
-#        self.end = end
-#    
-#    def compile(self):
-#        if self.klass == set:
-#            return 'set(range(%s,%s))' % (self.start.compile(),self.end.compile())
-#        if self.klass == list:
-#            return 'range(%s,%s)' % (self.start.compile(),self.end.compile())
-        
 class Range(BaseAlgebra):
     def __init__(self, klass, start, enf):
         self.klass = klass
@@ -251,7 +252,7 @@ class Make(BaseAlgebra):
             self.expr.compile())
     
     def __repr__(self):
-        return "Make(%s,%s,%s)" %(self.coll1,self.coll2,self.expr)
+        return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
 
     def walk(self):
         yield self
@@ -275,7 +276,7 @@ class If(BaseAlgebra):
             self.expr2.compile())
     
     def __repr__(self):
-        return "If(%s,%s,%s)" % (self.cond,self.expr1,self.expr2)
+        return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
 
     def walk(self):
         yield self
@@ -300,7 +301,7 @@ class Lambda(BaseAlgebra):
             self.expr.compile())
 
     def __repr__(self):
-        return "Lambda %s: %s" %(self.var,self.expr)
+        return "Lambda %s: %s" %(self.var, self.expr)
 
     def walk(self):
         yield self
@@ -345,7 +346,7 @@ class Binary(BaseAlgebra):
                            self.right.compile())
 
     def __repr__(self):
-        return "%s%s%s" % (self.left,self.op.op,self.right)
+        return "%s%s%s" % (self.left, self.op.op, self.right)
 
     def walk(self):
         yield self
@@ -365,7 +366,7 @@ class Operator(BaseAlgebra):
             '<=': 'operator.le', '>=': 'operator.ge',
             '==': 'operator.eq', '~=': 'operator.ne',
             }
-    def __init__(self,op):
+    def __init__(self, op):
         self.op = op
         
     def compile(self):

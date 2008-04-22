@@ -55,7 +55,7 @@ class hasClassWith(Expression):
     
     def __init__(self, metadata, expr, klass, conditional):
         self.metadata = metadata
-        self.expression = expression
+        self.expression = expr
         self.klass = klass
         self.conditional = conditional
 
@@ -137,7 +137,7 @@ class Query(Expression):
                         firstTerm.expression.rewrite(algebra)
                         ) # FIXME: ?set? must be determined by type(firstTerm.expression)
                 )
-            elif isinstance(firstTerm,Alias):
+            elif isinstance(firstTerm, Alias):
                 rv = Query(
                     self.metadata,
                     self.collection_type,
@@ -145,7 +145,7 @@ class Query(Expression):
                         self.metadata,
                         firstTerm.identifier,
                         firstTerm.expression
-                        )]+self.terms[1:], 
+                        )]+self.terms[1:],
                     self.target).rewrite(algebra)
             else:
                 rv = algebra.If(
@@ -226,15 +226,17 @@ class Binary(Expression):
 # Sets and properties
 class Union(Binary):
     def rewrite(self, algebra):
-        algebra.Union(
-            left.rewrite(algebra),
-            right.rewrite(algebra))
+        return algebra.Union(
+            self.left.get_collection_type(),
+            self.left.rewrite(algebra),
+            self.right.rewrite(algebra))
 
 class Differ(Binary):
     def rewrite(self, algebra):
-        algebra.Differ(
-            left.rewrite(algebra),
-            right.rewrite(algebra))
+        return algebra.Differ(
+            self.left.get_collection_type(),
+            self.left.rewrite(algebra),
+            self.right.rewrite(algebra))
 
 class And(Binary):
     def get_operator(self, algebra):
@@ -275,19 +277,19 @@ class Arithmetic(Binary):
     pass
 
 class Add(Arithmetic):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('+')
 
 class Mul(Arithmetic):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('*')
 
 class Sub(Arithmetic):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('-')
 
 class Div(Arithmetic):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('/')
 
 #
@@ -312,9 +314,9 @@ class Count(Aggregate):
         return algebra.Reduce(
             bag, # FIXME milyen bag
             0,
-            algebra.Lambda('i',algebra.Constant(1)),
-            algebra.Operator('+'), 
-            make(bag,set,self.expression.rewrite(algebra))
+            algebra.Lambda('i', algebra.Constant(1)),
+            algebra.Operator('+'),
+            make(bag, set, self.expression.rewrite(algebra))
             # FIXME ?set? must be determined by type(self.expression)
         )
 
@@ -414,41 +416,41 @@ class Condition(Expression):
         self.right = right
 
     def rewrite(self, algebra):
-        if isinstance(self.left,Quanted):
+        if isinstance(self.left, Quanted):
             return self.left.rewrite(
                 algebra,
                 self.right,
                 self)
-        if isinstance(self.right,Quanted):
+        if isinstance(self.right, Quanted):
             return self.right.rewrite(
                 algebra,
                 self.left,
                 self)
         else:
-            return algebra.Binary(self.left.rewrite(algebra),self.get_operator(algebra),self.right.rewrite(algebra))
+            return algebra.Binary(self.left.rewrite(algebra), self.get_operator(algebra), self.right.rewrite(algebra))
 
 class Eq(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('==')
 
 class Ne(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('!=')
 
 class Lt(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('<')
 
 class Gt(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('>')
 
 class Le(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('<=')
 
 class Ge(Condition):
-    def get_operator(self,algebra):
+    def get_operator(self, algebra):
         return algebra.Operator('>=')
 
 # TODO: missing:
