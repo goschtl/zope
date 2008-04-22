@@ -44,14 +44,14 @@ def principalsGetter(context, formatter):
     principals = zapi.principals()
     return [principals.getPrincipal(pid) for pid in context.principal_ids]
 
-def principalsFormatter(value, context, formatter): 
+def principalsFormatter(value, context, formatter):
     return ', '.join([v.title for v in value])
 
 columns = [
     SortableColumn(
         _('comment_column-date','Date'), lambda c, f: c.date, dateFormatter),
     SortableColumn(
-        _('comment_column-principals', 'Principals'), principalsGetter, 
+        _('comment_column-principals', 'Principals'), principalsGetter,
         principalsFormatter),
     zc.table.column.GetterColumn( # XXX escape?
         _('comment_column-comment', 'Comment'), lambda c, f: c.body)

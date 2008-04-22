@@ -70,8 +70,10 @@ class ICommentAdded(zope.lifecycleevent.interfaces.IObjectModifiedEvent):
     """Somone added a comment to some content
     """
 
-    comment = zope.schema.Text(
-        title=u"The comment entered")
+    comment = zope.schema.Object(
+        title=u'Comment',
+        description=u'The comment object that has been created.',
+        schema=IComment)
 
 
 class CommentAdded(zope.lifecycleevent.ObjectModifiedEvent):

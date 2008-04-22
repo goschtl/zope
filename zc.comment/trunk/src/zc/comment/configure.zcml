@@ -14,7 +14,6 @@
   <adapter
       factory=".comment.CommentsFactory"
       trusted="True"
-       permission="zope.View"
       />
 
 </configure>

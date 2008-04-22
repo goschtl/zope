@@ -27,16 +27,18 @@ import zope.interface
 import zope.location
 import zope.security.management
 import zope.publisher.interfaces
+from zope.schema.fieldproperty import FieldProperty
 from zope.annotation import factory
 
 from zc.comment import interfaces
 
-class Comment(persistent.Persistent):
+class Comment(zope.location.Location, persistent.Persistent):
     zope.interface.implements(interfaces.IComment)
+    body = FieldProperty(interfaces.IComment['body'])
+    date = FieldProperty(interfaces.IComment['date'])
+    principal_ids = FieldProperty(interfaces.IComment['principal_ids'])
 
     def __init__(self, body):
-        if not isinstance(body, unicode):
-            raise ValueError("comment body must be unicode")
         self.body = body
         self.date = datetime.datetime.now(pytz.utc)
         interaction = zope.security.management.getInteraction()
@@ -56,10 +58,11 @@ class Comments(zope.location.Location, persistent.list.PersistentList):
     insert = append = remove = reverse = sort = extend = pop
 
     def add(self, body):
-        super(Comments, self).append(Comment(body))
-        zope.event.notify(interfaces.CommentAdded(self.__parent__, body))
+        comment = Comment(body)
+        super(Comments, self).append(comment)
+        zope.event.notify(interfaces.CommentAdded(self.__parent__, comment))
 
-    def clear(self): # XXX no test
+    def clear(self):
         persistent.list.PersistentList.__init__(self)
 
     def __repr__(self):

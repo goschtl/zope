@@ -1,3 +1,4 @@
+=============
 Commenting UI
 =============
 
@@ -18,6 +19,7 @@ object:
 
 Let's visit the object and click on the comments tab:
 
+    >>> browser.handleErrors = False
     >>> browser.getLink('number').click()
     >>> browser.getLink('[[zc.comment][Comments]]').click()
 

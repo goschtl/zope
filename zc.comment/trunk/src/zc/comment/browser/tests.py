@@ -17,14 +17,20 @@
 """
 __docformat__ = "reStructuredText"
 import os
+import persistent
+import pytz
+import re
 import unittest
 import zope.component
 import zope.interface
+import zope.interface.common.idatetime
 import zope.app.form.interfaces
 import zope.app.testing.functional
 import zope.publisher.browser
+import zope.testing.renormalizing
+import zc.table
 from zope.app.form.browser.tests import test_browserwidget
-from zope.app.testing.functional import ZCMLLayer
+from zope.app.testing.functional import FunctionalDocFileSuite, ZCMLLayer
 
 import zc.comment.interfaces
 import zc.comment.browser.widget
@@ -46,6 +52,20 @@ class Face(object):
     foo = (u"Foo<br />\n"
            u"\n"
            u"Bar &lt; &amp; &gt;")
+
+
+class MyContent(persistent.Persistent):
+    x = 0
+
+@zope.component.adapter(zope.publisher.interfaces.IRequest)
+@zope.interface.implementer(zope.interface.common.idatetime.ITZInfo)
+def requestToTZInfo(request):
+    return pytz.timezone('US/Eastern')
+
+def formatterFactory(*args, **kw):
+    return zc.table.table.FormFullFormatter(*args, **kw)
+zope.interface.directlyProvides(formatterFactory,
+                                zc.table.interfaces.IFormatterFactory)
 
 
 class WidgetConfigurationTestCase(unittest.TestCase):
@@ -151,14 +171,24 @@ class InputWidgetTestCase(TestBase, test_browserwidget.BrowserWidgetTest):
 
 
 def test_suite():
-    suite = unittest.TestSuite()
+    suites = []
     for cls in (DisplayWidgetTestCase,
                 InputWidgetTestCase,
                 ):
-        suite.addTest(unittest.makeSuite(cls))
+        suites.append(unittest.makeSuite(cls))
 
     widgetConfig = unittest.makeSuite(WidgetConfigurationTestCase)
     widgetConfig.layer = CommentsLayer
-    suite.addTest(widgetConfig)
+    suites.append(widgetConfig)
 
-    return suite
+    checker = zope.testing.renormalizing.RENormalizing([
+        (re.compile(r'\d\d\d\d \d\d? \d\d?\s+\d\d:\d\d:\d\d( [+-]\d+)?'),
+         'YYYY MM DD  HH:MM:SS'),
+        ])
+
+    readme = FunctionalDocFileSuite(
+        os.path.join('README.txt'), checker=checker)
+    readme.layer = CommentsLayer
+    suites.append(readme)
+
+    return unittest.TestSuite(suites)
