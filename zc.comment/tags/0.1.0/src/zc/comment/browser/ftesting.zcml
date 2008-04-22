@@ -1,0 +1,44 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zc.comment">
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.zcmlfiles" file="ftesting.zcml" />
+
+  <include package="zc.comment" />
+  <include package="zc.comment.browser" />
+
+  <include package="zc.resourcelibrary" file="meta.zcml" />
+  <include package="zc.resourcelibrary" />
+  <include package="zope.formlib" />
+  <include package="zc.comment" />
+  <include package="zc.table" />
+
+  <utility component="zc.comment.browser.tests.formatterFactory" />
+  <adapter factory="zc.comment.browser.tests.requestToTZInfo" />
+
+  <class class="zc.comment.browser.tests.MyContent">
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <implements interface="zc.comment.interfaces.ICommentable" />
+  </class>
+
+  <browser:addMenuItem
+      class="zc.comment.browser.tests.MyContent"
+      title="Content"
+      permission="zope.ManageContent"
+      />
+
+  <unauthenticatedPrincipal id="zope.anybody" title="Unauthenticated User" />
+
+  <!-- Load a "default" i18n domain for debugging purposes
+       production sites shouldn't do this -->
+  <include package="zope.app.i18n.tests" />
+
+  <securityPolicy
+      component="zope.security.simplepolicies.PermissiveSecurityPolicy" />
+
+
+</configure>

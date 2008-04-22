@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".comment.Comment">
+      <require permission="zope.Public"
+               interface=".interfaces.IComment"/>
+  </class>
+
+  <class class=".comment.Comments">
+      <require permission="zope.Public"
+               interface=".interfaces.IComments"/>
+  </class>
+
+  <adapter
+      factory=".comment.CommentsFactory"
+      trusted="True"
+      />
+
+</configure>

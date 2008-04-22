@@ -1,0 +1,17 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="zc.intranet">
+<head>
+</head>
+<body>
+<div metal:fill-slot="body" tal:define="empty not:view/formatter/items">
+  <div metal:use-macro="view/template:default/macros/form" >
+    <div metal:fill-slot="extra_info">
+      <div tal:condition="empty" 
+          i18n:translate="">No comments have been made.</div>
+      <table tal:condition="not:empty" tal:replace="structure view/formatter">
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

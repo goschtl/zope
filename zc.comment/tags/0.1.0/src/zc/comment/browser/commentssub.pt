@@ -1,0 +1,11 @@
+<div tal:define="empty not:view/formatter/items">
+    <h5>Comments</h5>
+    <div tal:condition="empty">
+       No comments have been made.
+    </div>
+    <table class="listing" tal:condition="not:empty">
+      <thead tal:content="structure view/formatter/renderHeaders"></thead>
+      <tbody tal:content="structure view/formatter/renderRows"></tbody>
+    </table>
+    <div metal:use-macro="view/template:default/macros/form" />
+</div>
