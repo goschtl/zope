@@ -19,7 +19,8 @@ __docformat__ = 'restructuredtext'
 
 import transaction
 
-from zope.app import zapi
+import zope.component
+
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
 
@@ -160,7 +161,7 @@ class Managers(object):
            """
 
         self.managers = managers = dict(
-            zapi.getUtilitiesFor(ISchemaManager))
+            zope.component.getUtilitiesFor(ISchemaManager))
         db = self._getdb()
         conn = db.open()
         try:

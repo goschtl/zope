@@ -16,7 +16,8 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.app import zapi
+import zope.component
+
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.renderer.rest import ReStructuredTextToHTMLRenderer
 
@@ -25,12 +26,12 @@ class ManagerDetails(object):
 
     This method needs to use the component architecture, so
     we'll set it up:
-    
+
       >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> setUp()
-    
+
     We need to define some schema managers.  We'll define just one:
-    
+
       >>> from zope.app.generations.generations import SchemaManager
       >>> from zope.app.testing import ztapi
       >>> app1 = SchemaManager(0, 3, 'zope.app.generations.demo')
@@ -66,7 +67,7 @@ class ManagerDetails(object):
 
     def getEvolvers(self):
         id = self.id
-        manager = zapi.getUtility(ISchemaManager, id)
+        manager = zope.component.getUtility(ISchemaManager, id)
 
         evolvers = []
 
@@ -80,7 +81,7 @@ class ManagerDetails(object):
                 renderer = ReStructuredTextToHTMLRenderer(
                     unicode(info), self.request)
                 info = renderer.render()
-                
+
             evolvers.append({'from': gen, 'to': gen+1, 'info': info})
 
         return evolvers

@@ -21,6 +21,7 @@ import logging
 
 import transaction
 
+import zope.component
 import zope.interface
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
@@ -171,8 +172,7 @@ class Context(object):
 
 def findManagers():
     # Hook to let Chris use this for Zope 2
-    import zope.app
-    return zope.app.zapi.getUtilitiesFor(ISchemaManager)
+    return zope.component.getUtilitiesFor(ISchemaManager)
 
 def PersistentDict():
     # Another hook to let Chris use this for Zope 2
