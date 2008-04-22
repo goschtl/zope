@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup (
     name='zc.comment',
-    version='0.0.1dev',
+    version='0.1.0',
     author = "Zope Community",
     author_email = "zope-dev@zope.org",
     description = "A simple comment package.",
