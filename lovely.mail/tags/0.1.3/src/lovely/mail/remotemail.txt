@@ -1,0 +1,108 @@
+Lovely Delayed Mail and Mail Testing
+====================================
+
+  >>> from lovely.mail import testing
+  
+  >>> from zope import component
+  >>> from zope.sendmail.mailer import SMTPMailer
+  >>> component.provideUtility(SMTPMailer(),
+  ...              name='lovely-mailer')
+  
+  >>> from zope.sendmail.delivery import QueuedMailDelivery
+  >>> component.provideUtility(QueuedMailDelivery('some_path'),
+  ...              name='lovely-mail-delivery')
+
+Now we set up testing. This is the code which should go into you
+setUp-function for your tests.
+
+  >>> testing.setUpSMTPTesting('lovely-mailer', 'lovely-mail-delivery', unit_test=True)
+
+Testing simply replaces the smtp mailer of the utility to a test smtp mailer.
+
+  >>> from zope.sendmail.interfaces import IMailer, IMailDelivery
+  >>> mailer = component.getUtility(IMailer, 'lovely-mailer')
+  >>> mailer.smtp
+  <class 'lovely.mail.testing.TestMailerConnection'>
+
+
+And the mail delivery gets a temporary directory.
+
+  >>> delivery = component.getUtility(IMailDelivery, 'lovely-mail-delivery')
+  >>> delivery._queuePath != 'some_path'
+  True
+
+Testing provides a list with already sent mails.
+
+  >>> testing.sentMails
+  []
+
+Testing the sendmail function
+
+  >>> from lovely.mail.remotemail import sendmail
+  >>> from pprint import pprint
+
+Test if non-delayed mails still work correctly
+
+  >>> sendmail('subject', 'me@gmail.org', ['you@gmail.org'], 'my mail body')
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  [('me@gmail.org',
+      ('you@gmail.org',),
+      'Message-Id: ...\nFrom: me@gmail.org\nTo: you@gmail.org\n...\nmy mail body')]
+
+  If we provide tuples for the addresses we get this :
+
+  >>> sendmail('subject', ('ich', 'me@gmail.org'), [('du','you@gmail.org',)], 'my mail body')
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  [('ich <me@gmail.org>',
+      ('du <you@gmail.org>',),
+      'Message-Id: ...\nFrom: ich <me@gmail.org>\nTo: du <you@gmail.org>\n...\nmy mail body')]
+
+Testing with delay
+  
+Creating a remote task service, registered it under the name `TestTaskService`:
+
+  >>> from lovely import remotetask
+  >>> from lovely.remotetask import interfaces
+  
+  >>> service = remotetask.TaskService()
+  >>> component.provideUtility(service, interfaces.ITaskService)
+  >>> service.getAvailableTasks()
+  {}
+
+  >>> from lovely.mail.remotemail import RemoteMail
+  >>> component.provideUtility( RemoteMail(), interfaces.ITask, name='remotemail')
+  >>> service.getAvailableTasks()
+  {u'remotemail': <lovely.mail.remotemail.RemoteMail object at ...>}
+  
+  >>> sendmail('subject', 'me@gmail.org', ['you@gmail.org'], 'my mail body', delay=10)
+  
+  >>> service.process(0)
+  
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  []
+  
+  >>> service.process(10)
+  
+  >>> testing.sentMails = []
+  >>> testing.triggerMail()
+  >>> pprint(testing.sentMails)
+  [('me@gmail.org',
+      ('you@gmail.org',),
+      'Message-Id: ...\nFrom: me@gmail.org\nTo: you@gmail.org\n...\nmy mail body')]
+
+And clean up.
+
+  >>> testing.tearDownSMTPTesting()
+  >>> mailer.smtp
+  <class smtplib.SMTP at ...>
+  >>> delivery._queuePath == 'some_path'
+  True
+  >>> testing.sentMails
+  []
+
