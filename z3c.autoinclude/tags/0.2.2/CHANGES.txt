@@ -1,0 +1,27 @@
+Changes
+=======
+
+0.2.2 (2008-04-22)
+------------------
+
+* Gracefully catch KeyErrors in ``namespaceForDottedName``; get_metadata_lines will sometimes throw this for certain distribution types, apparently. In particular, some systems' version of Python itself will be wrapped in a distribution which throws this error, resulting in system-dependent unresumable breakage of z3c.autoinclude prior to this fix.
+
+0.2.1 (2008-04-21)
+------------------
+
+* Fixed bug which prevented proper inclusion of packages when the base package's namespace has been extended by other installed packages.
+* Rewrote ``distributionForPackage`` function.
+* Added additional tests for ``includePlugins`` and utility functions.
+* Fixed bug which made z3c.autoinclude look for ZCML in namespaces of nested namespace packages (eg, if there happened to -- improperly -- be an x/y/configure.zcml in a x.y.z package with an x.y namespace, it would have been included; this is incorrect.) 
+
+0.2 (2008-04-18)
+----------------
+
+* Added new directive ``includePlugins``.
+* Renamed ``autoinclude`` directive to ``includeDependencies``.
+* Deprecated ``autoinclude`` directive.
+
+0.1 (2008-02-25)
+----------------
+
+* Initial public release.
