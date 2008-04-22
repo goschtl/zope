@@ -1,8 +1,10 @@
 Changes
 =======
 
-0.3 (unreleased)
-----------------
+0.2.2 (2008-04-22)
+------------------
+
+* Gracefully catch KeyErrors in ``namespaceForDottedName``; get_metadata_lines will sometimes throw this for certain distribution types, apparently. In particular, some systems' version of Python itself will be wrapped in a distribution which throws this error, resulting in system-dependent unresumable breakage of z3c.autoinclude prior to this fix.
 
 0.2.1 (2008-04-21)
 ------------------
