@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -20,7 +20,7 @@ _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
            'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'TRACE']
            # 'GET', 'HEAD', 'POST' are always available. See OPTIONS() method.
 
-from zope.app import zapi
+from zope.component import queryMultiAdapter
 
 class OPTIONS(object):
     """`OPTIONS` handler for all objects
@@ -36,7 +36,7 @@ class OPTIONS(object):
         # interfaces for HTTP methods. This way we can even list verbs that
         # are not in the lists above.
         for m in _allowed_methods:
-            view = zapi.queryMultiAdapter((self.context, self.request), name=m)
+            view = queryMultiAdapter((self.context, self.request), name=m)
             if view is not None:
                 allowed.append(m)
 

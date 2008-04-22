@@ -13,8 +13,8 @@
 
 $Id$
 """
+from zope.component import getAdapters
 from zope.interface import Interface
-from zope.app import zapi
 from zope.app.publication.http import IMethodNotAllowed
 
 
@@ -28,7 +28,7 @@ class MethodNotAllowedView(object):
         self.request = request
         self.allow = [
             name for name, adapter
-            in zapi.getAdapters((error.object, error.request), Interface)
+            in getAdapters((error.object, error.request), Interface)
             if hasattr(adapter, name)]
         self.allow.sort()
 
