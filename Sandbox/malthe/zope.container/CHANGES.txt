@@ -1,0 +1,9 @@
+=======
+CHANGES
+=======
+
+3.6.0 (unreleased)
+------------------
+
+- Initial creation of package based on parts in ``zope.app.container``
+  that do not depend on the ZODB.
