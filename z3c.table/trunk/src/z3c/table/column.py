@@ -300,13 +300,13 @@ class LinkColumn(Column):
 
     def getLinkCSS(self, item):
         """Setup link css."""
-        return self.linkCSS and ' css="%s"' % self.linkCSS or ''
+        return self.linkCSS and ' class="%s"' % self.linkCSS or ''
 
     def getLinkTarget(self, item):
         """Setup link css."""
         return self.linkTarget and ' target="%s"' % self.linkTarget or ''
 
-    def getLinkConent(self, item):
+    def getLinkContent(self, item):
         """Setup link content."""
         return self.linkContent or api.getName(item)
 
@@ -314,7 +314,7 @@ class LinkColumn(Column):
         # setup a tag
         return '<a href="%s"%s%s>%s</a>' % (self.getLinkURL(item),
             self.getLinkTarget(item), self.getLinkCSS(item),
-            self.getLinkConent(item))
+            self.getLinkContent(item))
 
 
 class SelectedItemColumn(LinkColumn):
@@ -335,9 +335,9 @@ class SelectedItemColumn(LinkColumn):
 
     def getSortKey(self, item):
         """Returns the sort key used for column sorting."""
-        return self.getLinkConent(item)
+        return self.getLinkContent(item)
 
-    def getLinkConent(self, item):
+    def getLinkContent(self, item):
         """Setup link content."""
         return self.linkContent or api.getName(item)
 

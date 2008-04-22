@@ -15,6 +15,7 @@ Let's create a sample container which we can use as our iterable context:
   >>> class Container(btree.BTreeContainer):
   ...     """Sample container."""
   >>> container = Container()
+  >>> root['container'] = container
 
 and create a sample content object which we use as container item:
 
@@ -609,3 +610,222 @@ And test the attribute access:
   >>> badColumn = column.addColumn(simpleTable, ForbiddenAttributeColumn, u'x')
   >>> badColumn.renderCell(protectedItem)
   u'missing'
+
+
+LinkColumn
+----------
+
+Let's define a table using the LinkColumn. This column allows us to write
+columns which can point to a page with the item as context:
+
+  >>> class MyLinkColumns(column.LinkColumn):
+  ...     linkName = 'myLink.html'
+  ...     linkTarget = '_blank'
+  ...     linkCSS = 'myClass'
+
+  >>> class MyLinkTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, MyLinkColumns, u'link',
+  ...                              weight=1),
+  ...             column.addColumn(self, NumberColumn, name=u'number',
+  ...                              weight=2, header=u'Number')
+  ...             ]
+
+Now create, update and render our table:
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> myLinkTable = MyLinkTable(container, request)
+  >>> myLinkTable.__parent__ = container
+  >>> myLinkTable.__name__ = u'myLinkTable.html'
+  >>> myLinkTable.update()
+  >>> print myLinkTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="http://127.0.0.1/container/first/myLink.html" target="_blank" class="myClass">first</a></td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/fourth/myLink.html" target="_blank" class="myClass">fourth</a></td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/second/myLink.html" target="_blank" class="myClass">second</a></td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/third/myLink.html" target="_blank" class="myClass">third</a></td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/zero/myLink.html" target="_blank" class="myClass">zero</a></td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+ContentsLinkColumn
+------------------
+
+There are some predefined link columns available. This one will generate a 
+``contents.html`` link for each item:
+
+  >>> class ContentsLinkTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.ContentsLinkColumn, u'link',
+  ...                              weight=1),
+  ...             column.addColumn(self, NumberColumn, name=u'number',
+  ...                              weight=2, header=u'Number')
+  ...             ]
+
+  >>> contentsLinkTable = ContentsLinkTable(container, request)
+  >>> contentsLinkTable.__parent__ = container
+  >>> contentsLinkTable.__name__ = u'contentsLinkTable.html'
+  >>> contentsLinkTable.update()
+  >>> print contentsLinkTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="http://127.0.0.1/container/first/contents.html">first</a></td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/fourth/contents.html">fourth</a></td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/second/contents.html">second</a></td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/third/contents.html">third</a></td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/zero/contents.html">zero</a></td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+IndexLinkColumn
+---------------
+
+This one will generate a ``index.html`` link for each item:
+
+  >>> class IndexLinkTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.IndexLinkColumn, u'link',
+  ...                              weight=1),
+  ...             column.addColumn(self, NumberColumn, name=u'number',
+  ...                              weight=2, header=u'Number')
+  ...             ]
+
+  >>> indexLinkTable = IndexLinkTable(container, request)
+  >>> indexLinkTable.__parent__ = container
+  >>> indexLinkTable.__name__ = u'indexLinkTable.html'
+  >>> indexLinkTable.update()
+  >>> print indexLinkTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="http://127.0.0.1/container/first/index.html">first</a></td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/fourth/index.html">fourth</a></td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/second/index.html">second</a></td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/third/index.html">third</a></td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/zero/index.html">zero</a></td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+EditLinkColumn
+--------------
+
+And this one will generate a ``edit.html`` link for each item:
+
+  >>> class EditLinkTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, column.EditLinkColumn, u'link',
+  ...                              weight=1),
+  ...             column.addColumn(self, NumberColumn, name=u'number',
+  ...                              weight=2, header=u'Number')
+  ...             ]
+
+  >>> editLinkTable = EditLinkTable(container, request)
+  >>> editLinkTable.__parent__ = container
+  >>> editLinkTable.__name__ = u'editLinkTable.html'
+  >>> editLinkTable.update()
+  >>> print editLinkTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Number</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="http://127.0.0.1/container/first/edit.html">first</a></td>
+        <td>number: 1</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/fourth/edit.html">fourth</a></td>
+        <td>number: 4</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/second/edit.html">second</a></td>
+        <td>number: 2</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/third/edit.html">third</a></td>
+        <td>number: 3</td>
+      </tr>
+      <tr>
+        <td><a href="http://127.0.0.1/container/zero/edit.html">zero</a></td>
+        <td>number: 0</td>
+      </tr>
+    </tbody>
+  </table>
