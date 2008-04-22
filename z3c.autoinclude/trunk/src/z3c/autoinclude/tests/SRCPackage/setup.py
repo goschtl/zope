@@ -3,7 +3,7 @@ import sys, os
 
 version = '0.0'
 
-setup(name='APackage',
+setup(name='SRCPackage',
       version=version,
       description="",
       long_description="""\
@@ -15,7 +15,8 @@ setup(name='APackage',
       url='',
       license='',
       package_data = {'': ['*.zcml',]},
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      packages=find_packages('src', exclude=['ez_setup', 'examples', 'tests']),
+      package_dir={'': 'src'},
       include_package_data=True,
       zip_safe=False,
       install_requires=[
