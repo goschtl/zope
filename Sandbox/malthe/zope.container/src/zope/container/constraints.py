@@ -153,7 +153,7 @@ __docformat__ = 'restructuredtext'
 
 import sys
 
-from zope.container.property import readproperty
+from zope.cachedescriptors.property import readproperty
 from zope.dottedname.resolve import resolve
 import zope.schema
 from zope.interface import providedBy
