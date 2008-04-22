@@ -20,9 +20,9 @@ import zope.schema
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.interfaces import TraversalError
+from zope.traversing.api import getPath, getRoot, traverse
 from zope.dottedname.resolve import resolve
 
-from zope.app import zapi
 from zope.app.form.browser import TextWidget, MultiSelectWidget
 from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
@@ -36,9 +36,9 @@ class PathWidget(TextWidget):
 
     def _toFieldValue(self, input):
         path = super(PathWidget, self)._toFieldValue(input)
-        root = zapi.getRoot(self.context.context)
+        root = getRoot(self.context.context)
         try:
-            proxy = zapi.traverse(root, path)
+            proxy = traverse(root, path)
         except TraversalError, e:
             raise ConversionError(_('path is not correct !'), e)
         else:
@@ -47,7 +47,7 @@ class PathWidget(TextWidget):
     def _toFormValue(self, value):
         if value is None:
             return ''
-        return zapi.getPath(value)
+        return getPath(value)
 
 class DottedNameWidget(TextWidget):
     """ Checks if the input is a resolvable class. """
