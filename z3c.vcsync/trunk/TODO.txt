@@ -1,3 +1,5 @@
+* use grokcore.component instead of grok.
+
 * tests for unicode support in path names.
 
 * tests for various nasty synchronization cases with conflicts.
