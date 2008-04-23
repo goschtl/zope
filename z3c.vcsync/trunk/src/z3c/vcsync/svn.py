@@ -108,7 +108,7 @@ def _resolve_helper(path):
             continue
         try:
             for conflict in p.status().conflict:
-                mine = p.join(conflict.basename + '.mine')
+                mine, revs = conflict_info(conflict)
                 conflict.write(mine.read())
                 conflict._svn('resolved')
         # XXX This is a horrible hack to skip status of R. This
@@ -118,3 +118,13 @@ def _resolve_helper(path):
         except NotImplementedError:
             pass
         _resolve_helper(p)
+    
+def conflict_info(conflict):
+    path = conflict.dirpath()
+    name = conflict.basename
+    mine = path.join(name + '.mine')
+    name_pattern = name + '.r'
+    revs = {}
+    for rev in path.listdir(name_pattern + '*'):
+        revs[int(rev.basename[len(name_pattern):])] = rev
+    return mine, revs

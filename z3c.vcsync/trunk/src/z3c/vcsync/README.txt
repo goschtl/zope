@@ -415,3 +415,18 @@ resolved value appear as well::
   >>> info = s2.sync("synchronize")
   >>> data2['bar'].payload
   200
+
+Conflicts in subdirectories should also be resolved properly::
+
+  >>> data['sub']['qux'].payload = 35 
+  >>> current_synchronizer = s2
+  >>> data2['sub']['qux'].payload = 36
+  >>> info = s2.sync("Synchronize")
+  >>> current_synchronizer = s
+  >>> info = s.sync("Synchronize")
+  >>> data['sub']['qux'].payload
+  35
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+  >>> data2['sub']['qux'].payload
+  35
