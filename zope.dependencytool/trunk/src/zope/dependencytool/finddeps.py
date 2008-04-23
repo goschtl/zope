@@ -285,6 +285,14 @@ def showDependencies(path, zcml=False, long=False, all=False, packages=False):
     else:
         deps = getCleanedDependencies(path, zcml, packages)
 
+    width = 80
+    if "COLUMNS" in os.environ:
+        try:
+            width = int(os.environ["COLUMNS"])
+        except ValueError:
+            pass
+    avail = width - 11
+
     if long:
         print '='*(8+len(path))
         print "Module: " + path
@@ -295,8 +303,8 @@ def showDependencies(path, zcml=False, long=False, all=False, packages=False):
             print '-'*len(dep.name)
             for file, lineno in dep.occurences:
                 file = stripZopePrefix(file)
-                if len(file) >= 69:
-                    file = '...' + file[:69-3]
+                if len(file) >= avail:
+                    file = '...' + file[:avail-3]
                 print '  %s, Line %s' %(file, lineno)
             print
 
