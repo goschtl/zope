@@ -120,9 +120,9 @@ you happen to have it anyway (as we it is needed for synchronization).
 
 The factory to create the item::
 
-  >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from z3c.vcsync.interfaces import IFactory
   >>> class ItemFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   grok.name('.test')
   ...   def __call__(self, path):
   ...       payload = int(path.read())
@@ -133,7 +133,7 @@ The factory to create the item::
 The factory to create the container::
 
   >>> class ContainerFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   def __call__(self, path):
   ...       return Container()
   >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)

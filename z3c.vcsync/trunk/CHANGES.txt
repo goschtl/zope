@@ -7,12 +7,24 @@ z3c.vcsync changes
 Features added
 ~~~~~~~~~~~~~~
 
+* The API has been cleaned up and revised. This will break code that
+  uses this library, but so far I don't think that is many people
+  yet. :)
+
+* A major refactoring of the tests, including real SVN tests. This
+  requires SVN to be installed on the system where the tests are being
+  run, including the ``svn-admin`` command.
+
+* ``IState`` objects now need to implement methods to access and
+  maintain the revision number of the last revision.
+
 * The developer must now also implement ``IParser`` utilities for
-  files that can be synchronized (besides ``IVcFactory``. The
-  ``IParser`` utility overwrites the existing object instead of
-  creating a new one. This allows synchronization to be a bit nicer
-  and not remove and recreate objects unnecessarily, which makes it
-  harder to implement things like references between objects.
+  files that can be synchronized (besides ``IFactory``, which used to
+  be called ``IVcFactory``. The ``IParser`` utility overwrites the
+  existing object instead of creating a new one. This allows
+  synchronization to be a bit nicer and not remove and recreate
+  objects unnecessarily, which makes it harder to implement things
+  like references between objects.
 
 * Add a facility to pass a special function along that is called for
   all objects created or modified during the synchronization (or

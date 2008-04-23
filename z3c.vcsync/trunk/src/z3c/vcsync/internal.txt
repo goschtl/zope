@@ -320,10 +320,10 @@ extension::
 To have the ability to create new objects, a factory is registered for
 the ``.test`` extension as well, implemented in terms of ``ItemParser``::
 
-  >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from z3c.vcsync.interfaces import IFactory
   >>> from zope import component
   >>> class ItemFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   grok.name('.test')
   ...   def __call__(self, path):
   ...       parser = component.getUtility(IParser, '.test')
@@ -348,7 +348,7 @@ actually do something in this example, we could optimize it and remove
 the use of ``IParser`` here, but we won't do this for consistency::
 
   >>> class ContainerFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   def __call__(self, path):
   ...       parser = component.getUtility(IParser, '')
   ...       container = Container()
@@ -626,7 +626,7 @@ And a parser and factory for it::
   >>> grok.testing.grok_component('Item2Parser', Item2Parser)
   True 
   >>> class Item2Factory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   grok.name('.test2')
   ...   def __call__(self, path):
   ...       parser = component.getUtility(IParser, '.test2')

@@ -7,18 +7,18 @@ from zope.component import queryUtility, getUtility, queryAdapter
 from zope.app.container.interfaces import IContainer
 from zope.traversing.interfaces import IPhysicallyLocatable
 
-from z3c.vcsync.interfaces import (IVcDump, ISerializer, IParser,
-                                   IState, IVcFactory, ISynchronizer,
+from z3c.vcsync.interfaces import (IDump, ISerializer, IParser,
+                                   IState, IFactory, ISynchronizer,
                                    ISynchronizationInfo)
 
 import grok
 
-class VcDump(grok.Adapter):
-    """General VcDump for arbitrary objects.
+class Dump(grok.Adapter):
+    """General dump for arbitrary objects.
 
     Can be overridden for specific objects (such as containers).
     """
-    grok.provides(IVcDump)
+    grok.provides(IDump)
     grok.context(Interface)
 
     def save(self, path):
@@ -30,8 +30,8 @@ class VcDump(grok.Adapter):
         f.close()
         return path
     
-class ContainerVcDump(grok.Adapter):
-    grok.provides(IVcDump)
+class ContainerDump(grok.Adapter):
+    grok.provides(IDump)
     grok.context(IContainer)
         
     def save(self, path):
@@ -182,7 +182,7 @@ class Synchronizer(object):
         # now save all files that have been modified/added
         root = self.state.root
         for obj in self.state.objects(revision_nr):
-            IVcDump(obj).save(self._get_container_path(root, obj))
+            IDump(obj).save(self._get_container_path(root, obj))
 
     def load(self, revision_nr):
         # remove all objects that have been removed in the checkout
@@ -219,7 +219,7 @@ class Synchronizer(object):
                 parser = getUtility(IParser, name=ext)
                 parser(container[name], file_path)
             else:
-                factory = getUtility(IVcFactory, name=ext)
+                factory = getUtility(IFactory, name=ext)
                 container[name] = factory(file_path)
             modified_objects.append(container[name])
         return modified_objects

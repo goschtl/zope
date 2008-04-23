@@ -209,10 +209,10 @@ Sometimes there is no previously existing object in the Python tree,
 and we need to add it. To do this we implement a factory (where we use
 the parser for the real work)::
 
-  >>> from z3c.vcsync.interfaces import IVcFactory
+  >>> from z3c.vcsync.interfaces import IFactory
   >>> from zope import component
   >>> class ItemFactory(grok.GlobalUtility):
-  ...   grok.provides(IVcFactory)
+  ...   grok.provides(IFactory)
   ...   grok.name('.test')
   ...   def __call__(self, path):
   ...       parser = component.getUtility(IParser, '.test')
@@ -242,7 +242,7 @@ simple::
   ...         pass
 
   >>> class ContainerFactory(grok.GlobalUtility):
-  ...     grok.provides(IVcFactory)
+  ...     grok.provides(IFactory)
   ...     def __call__(self, path):
   ...         return Container()
 

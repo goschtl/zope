@@ -11,7 +11,7 @@ from zope.interface import implements, Interface
 from zope.app.container.interfaces import IContainer
 from zope.exceptions.interfaces import DuplicationError
 
-from z3c.vcsync.interfaces import (ISerializer, IVcDump, IVcFactory,
+from z3c.vcsync.interfaces import (ISerializer, IDump, IFactory,
                                    IState, ICheckout)
 from z3c.vcsync import vc
 

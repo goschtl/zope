@@ -2,12 +2,12 @@ import py
 import tempfile, zipfile
 
 from zope.app.container.interfaces import IContainer
-from z3c.vcsync.interfaces import IVcDump, IVcFactory
+from z3c.vcsync.interfaces import IDump, IFactory
 from zope.component import getUtility
     
 def export(root, path):
     for obj in root.values():
-        IVcDump(obj).save(path)
+        IDump(obj).save(path)
         if IContainer.providedBy(obj):
             export(obj, path.join(obj.__name__))
 
@@ -40,7 +40,7 @@ def import_(root, path, modified_function=None):
 def _import_helper(obj, path):
     modified_objects = []
     for p in path.listdir():
-        factory = getUtility(IVcFactory, name=p.ext)
+        factory = getUtility(IFactory, name=p.ext)
         name = p.purebasename
         if name not in obj:
             obj[name] = new_obj = factory(p)

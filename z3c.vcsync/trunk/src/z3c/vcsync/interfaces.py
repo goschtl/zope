@@ -29,7 +29,7 @@ class IParser(Interface):
         path - the path to update from
         """
 
-class IVcFactory(Interface):
+class IFactory(Interface):
     """Load object from the filesystem into a new object.
 
     Implement this interface as a (global) utility, registered with
@@ -211,7 +211,12 @@ class ISynchronizationInfo(Interface):
         The paths are filesystem paths (py.path objects)
         """
 
-class IVcDump(Interface):
+class IDump(Interface):
+    """Dump an object to the filesystem.
+
+    Usually there should be no need to implement this interface in your
+    application.
+    """
     def save(checkout, path):
         """Save context object to path in checkout.
 
