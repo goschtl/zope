@@ -216,7 +216,7 @@ provide IPageTemplate adapter for pagelet
   >>> print pagelet.render()
   <div>My pagelet</div>
   <BLANKLINE>
-  
+
 Now we need to clean up the custom module.
 
   >>> del sys.modules['custom']

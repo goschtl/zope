@@ -158,9 +158,6 @@ def layoutDirective(
     contentType='text/html', class_ = None, layout = '', 
     title='', description='', **kwargs):
 
-    if for_ is interface.Interface:
-        raise ConfigurationError('for should be valid interface or object')
-
     if not layout:
         layout = None
     elif layout == '.':
