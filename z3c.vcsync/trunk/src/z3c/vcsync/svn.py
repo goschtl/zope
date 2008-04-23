@@ -39,7 +39,7 @@ class SvnCheckout(object):
         self._updated_revision_nr = None
         
     def resolve(self):
-        _resolve_helper(self.path)
+        self._resolve_helper(self.path)
 
     def commit(self, message):
         revision_nr = self.path.commit(message)
@@ -57,7 +57,20 @@ class SvnCheckout(object):
 
     def revision_nr(self):
         return self._revision_nr
-    
+
+    def _found(self, path, content):
+        """Store conflicting/lost content in found directory.
+
+        path - the path in the original tree. This is translated to
+               a found path with the same structure.
+        content - the file content
+        """
+        found = self.path.ensure('found', dir=True)
+        rel_path = path.relto(self.path)
+        save_path = found.join(*rel_path.split(path.sep))
+        save_path.ensure()
+        save_path.write(content)
+
     def _update_files(self, revision_nr):
         """Go through svn log and update self._files and self._removed.
         """
@@ -102,29 +115,33 @@ class SvnCheckout(object):
                     files.add(path)                
         return files, removed
 
-def _resolve_helper(path):
-    for p in path.listdir():
-        if not p.check(dir=True):
-            continue
-        try:
-            for conflict in p.status().conflict:
-                mine, revs = conflict_info(conflict)
-                conflict.write(mine.read())
-                conflict._svn('resolved')
-        # XXX This is a horrible hack to skip status of R. This
-        # is not supported by Py 0.9.0, and raises a NotImplementedError.
-        # This has been fixed on the trunk of Py.
-        # When we upgrade to a new release of Py this can go away
-        except NotImplementedError:
-            pass
-        _resolve_helper(p)
+    def _resolve_helper(self, path):
+        for p in path.listdir():
+            if not p.check(dir=True):
+                continue
+            try:
+                for conflict in p.status().conflict:
+                    mine, other = conflict_info(conflict)
+                    conflict.write(mine.read())
+                    self._found(conflict, other.read())
+                    conflict._svn('resolved')
+            # XXX This is a horrible hack to skip status of R. This
+            # is not supported by Py 0.9.0, and raises a NotImplementedError.
+            # This has been fixed on the trunk of Py.
+            # When we upgrade to a new release of Py this can go away
+            except NotImplementedError:
+                pass
+            self._resolve_helper(p)
     
 def conflict_info(conflict):
     path = conflict.dirpath()
     name = conflict.basename
     mine = path.join(name + '.mine')
     name_pattern = name + '.r'
-    revs = {}
+    revs = []
     for rev in path.listdir(name_pattern + '*'):
-        revs[int(rev.basename[len(name_pattern):])] = rev
-    return mine, revs
+        revs.append((int(rev.basename[len(name_pattern):]), rev))
+    # find the most recent rev
+    rev_nr, other = sorted(revs)[-1]
+    return mine, other
+    

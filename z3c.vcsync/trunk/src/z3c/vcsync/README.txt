@@ -393,11 +393,13 @@ at the same time::
   >>> current_synchronizer = s2
   >>> data2['bar'].payload = 250
 
-Let's synchronize the second tree first::
+Let's synchronize the second tree first. This won't generate a
+conflict yet by itself, but sets up for it::
 
   >>> info = s2.sync("synchronize")
 
-Now we'll synchronize the first tree::
+Now we'll synchronize the first tree. This will generate a conflict, as
+we saved a different value from the second tree::
 
   >>> current_synchronizer = s
   >>> info = s.sync("synchronize")
@@ -411,13 +413,30 @@ this synchronized last::
 When we synchronize from the second tree again, we will see the
 resolved value appear as well::
 
-  >>> current_synchronizer = s
+  >>> current_synchronizer = s2
   >>> info = s2.sync("synchronize")
   >>> data2['bar'].payload
   200
 
+The other version of the conflicting object is not gone. It is stored
+under a special ``found`` directory. We'll synchronize this as well::
+
+  >>> found_data = Container()
+  >>> found_data.__name__ = 'found'
+  >>> found_state = TestState(found_data)
+  >>> found_s = Synchronizer(checkout, found_state)
+  >>> current_synchronizer = found_s
+  >>> info = found_s.sync("synchronize")
+
+We see the conflicting value that was stored by the second tree in
+here::
+
+  >>> found_data['root']['bar'].payload
+  250
+
 Conflicts in subdirectories should also be resolved properly::
 
+  >>> current_synchronizer = s
   >>> data['sub']['qux'].payload = 35 
   >>> current_synchronizer = s2
   >>> data2['sub']['qux'].payload = 36
@@ -430,3 +449,11 @@ Conflicts in subdirectories should also be resolved properly::
   >>> info = s2.sync("Synchronize")
   >>> data2['sub']['qux'].payload
   35
+
+The found version in this case will reside in the same subdirectory,
+``sub``::
+
+  >>> current_synchronizer = found_s
+  >>> info = found_s.sync("Synchronize")
+  >>> found_data['root']['sub']['qux'].payload
+  36
