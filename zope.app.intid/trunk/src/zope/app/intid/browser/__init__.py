@@ -16,8 +16,8 @@
 $Id$
 """
 from zope.security.proxy import removeSecurityProxy
-from zope.app import zapi
-    
+from zope.traversing.api import traverse, getPath
+
 
 class IntIdsView(object):
 
@@ -26,10 +26,10 @@ class IntIdsView(object):
 
     def populate(self):
         # TODO: I think this should be moved to the functional test.
-        self.context.register(zapi.traverse(self.context, "/"))
-        self.context.register(zapi.traverse(self.context, "/++etc++site"))
+        self.context.register(traverse(self.context, "/"))
+        self.context.register(traverse(self.context, "/++etc++site"))
         self.request.response.redirect('index.html')
 
     def _items(self):
         """return all items and their path (for testing only!)"""
-        return [(uid, zapi.getPath(ref())) for uid, ref in self.context.items()]
+        return [(uid, getPath(ref())) for uid, ref in self.context.items()]

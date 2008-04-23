@@ -28,10 +28,12 @@ from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.location.interfaces import ILocation
 
+from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
 
+from zope.traversing.api import traverse
+
 from zope.app.testing import setup, ztapi
-from zope.app import zapi
 from zope.app.component.hooks import setSite
 
 from zope.app.intid import IntIds
@@ -191,7 +193,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         ReferenceSetupMixin.setUp(self)
 
-        sm = zapi.getSiteManager(self.root)
+        sm = getSiteManager(self.root)
         self.utility = setup.addUtility(sm, '1', IIntIds, IntIds())
 
         self.root['folder1'] = Folder()
@@ -269,7 +271,7 @@ class TestFunctionalIntIds(BrowserTestCase):
         self.basepath = '/++etc++site/default'
         root = self.getRootFolder()
 
-        sm = zapi.traverse(root, '/++etc++site')
+        sm = traverse(root, '/++etc++site')
         setup.addUtility(sm, 'intid', IIntIds, IntIds())
         commit()
 
