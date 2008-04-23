@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 
+from zope.component import getGlobalSiteManager
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
 from zope.i18n.interfaces import ITranslationDomain
@@ -28,8 +29,8 @@ from zope.interface import implements, classImplements
 from zope.interface.verify import verifyObject
 from zope.testing.doctestunit import DocTestSuite
 from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.i18n import interfaces
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.app.i18n.translationdomain import TranslationDomain
@@ -228,15 +229,15 @@ class TestTranslationDomain(TestITranslationDomain,
         domain.domain = 'default'
 
 class TestTranslationDomainInAction(unittest.TestCase):
-    
+
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        gsm = zapi.getGlobalSiteManager()
+        gsm = getGlobalSiteManager()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
         de_catalog.setMessage('long_greeting', 'Guten Tag!', 10)
-        
+
         # register global translation domain and add the catalog.
         domain = GlobalTranslationDomain('default')
         domain.addCatalog(de_catalog)
@@ -249,14 +250,13 @@ class TestTranslationDomainInAction(unittest.TestCase):
         de_catalog.setMessage('short_greeting', 'Hallo Welt!', 10)
         td['de-default-1'] = de_catalog
 
-        mgr = setup.createSiteManager(
-            zapi.traverse(self.rootFolder, 'folder1'))
+        mgr = setup.createSiteManager(traverse(self.rootFolder, 'folder1'))
         setup.addUtility(
             mgr, 'default', interfaces.ILocalTranslationDomain, td)
 
         self.trans1 = td
         self.trans = domain
-        
+
     def tearDown(self):
         setup.placefulTearDown()
 
