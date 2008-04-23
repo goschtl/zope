@@ -285,6 +285,7 @@ def showDependencies(path, zcml=False, long=False, all=False, packages=False):
     else:
         deps = getCleanedDependencies(path, zcml, packages)
 
+    # $COLUMNS is not normally exported by the shell.
     width = 80
     if "COLUMNS" in os.environ:
         try:
