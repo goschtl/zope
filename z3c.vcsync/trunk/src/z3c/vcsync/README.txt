@@ -382,3 +382,36 @@ We should see the changes reflected into the original tree::
   20
   >>> data['sub']['qux'].payload
   30
+
+Conflicts
+---------
+
+Let's now generate a conflict: we change the same object in both trees
+at the same time::
+
+  >>> data['bar'].payload = 200
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 250
+
+Let's synchronize the second tree first::
+
+  >>> info = s2.sync("synchronize")
+
+Now we'll synchronize the first tree::
+
+  >>> current_synchronizer = s
+  >>> info = s.sync("synchronize")
+
+The conflict will have been resolved in favor of the first tree, as
+this synchronized last::
+
+  >>> data['bar'].payload
+  200
+
+When we synchronize from the second tree again, we will see the
+resolved value appear as well::
+
+  >>> current_synchronizer = s
+  >>> info = s2.sync("synchronize")
+  >>> data2['bar'].payload
+  200
