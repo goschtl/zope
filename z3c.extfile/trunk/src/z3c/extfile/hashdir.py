@@ -3,7 +3,7 @@ import os
 import stat
 import tempfile
 import shutil
-from types import StringType
+from types import StringTypes, UnicodeType
 import interfaces
 from zope import interface
 from persistent import Persistent
@@ -60,8 +60,10 @@ class HashDir(Persistent):
         return os.listdir(self.var)
 
     def getPath(self, digest):
-        if  type(digest) != StringType or len(digest) != 40:
+        if type(digest) not in StringTypes or len(digest) != 40:
             raise ValueError, repr(digest)
+        if type(self.var) is UnicodeType:
+            digest = unicode(digest)
         path = os.path.join(self.var, digest)
         if not os.path.isfile(path):
             raise KeyError, digest
@@ -82,7 +84,7 @@ class ReadFile(object):
 
     def __init__(self, name, bufsize=-1):
         self.name = name
-        self.digest = os.path.split(self.name)[1]
+        self.digest = str(os.path.split(self.name)[1])
         self.bufsize=bufsize
         self._v_len = None
         self._v_file = None

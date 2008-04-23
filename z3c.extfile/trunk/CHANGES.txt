@@ -2,6 +2,13 @@
 Changes for z3c.extfile
 =======================
 
+0.2.0a3 (2008-04-23)
+====================
+
+- if path in hashdir utility is given as unicode, keep the path
+  unicode and convert only digests of files to strings. Fixes a bug
+  reported by Yuang Hong.
+
 0.2.0a2 (2008-02-16)
 ====================
 
