@@ -676,7 +676,7 @@ the payload of the ``hoi`` item::
 
   >>> container2['hoi'].payload = 3000
  
-Next, we willl add a new ``alpha`` file to the checkout when we do an
+Next, we will add a new ``alpha`` file to the checkout when we do an
 ``up()``, so again we simulate the actions of our version control system::
 
   >>> alpha_path = root.join('alpha.test').ensure()
