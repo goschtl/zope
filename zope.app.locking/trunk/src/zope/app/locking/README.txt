@@ -299,7 +299,7 @@ the current locks for a principal, or all current locks:
   <...LockInfo...>
 
   >>> from zope.app.locking.interfaces import ILockTracker
-  >>> from zope.app.zapi import getUtility
+  >>> from zope.component import getUtility
   >>> util = getUtility(ILockTracker)
   >>> verifyObject(ILockTracker, util)
   True
