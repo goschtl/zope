@@ -19,13 +19,14 @@ __docformat__ = 'restructuredtext'
 
 import re
 from persistent import Persistent
-from zope.app import zapi
+import zope.component
 from zope.app.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.security.untrustedpython.interpreter import CompiledProgram
+from zope.traversing.api import getPath, getParent
 
 
 class IPythonPage(Interface):
@@ -163,7 +164,7 @@ class PythonPage(Contained, Persistent):
         if self.__parent__ is None:
             filename = 'N/A'
         else:
-            filename = zapi.getPath(self)
+            filename = getPath(self)
         return filename
 
     def setSource(self, source):
@@ -222,9 +223,10 @@ class PythonPage(Contained, Persistent):
 
         kw['request'] = request
         kw['script'] = self
-        kw['context'] = zapi.getParent(self)
+        kw['context'] = getParent(self)
 
-        interpreter = zapi.queryUtility(IInterpreter, 'text/server-python')
+        interpreter = zope.component.queryUtility(IInterpreter,
+                                                  'text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)
 
 def _print_usrc(match):
