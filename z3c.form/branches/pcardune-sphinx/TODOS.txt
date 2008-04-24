@@ -1,0 +1,28 @@
+=====
+TODOS
+=====
+
+Framework
+---------
+
+- There is only hidden widget templates registered for ``ITextWidget``
+  and ``ISelectWidget``. We have to define more hidden widgets.
+
+
+Documentation
+-------------
+
+
+Samples
+-------
+
+Write some samples to show the power of the new widget and form framework.
+
+- Object name as an additional field in an add form
+
+
+Improvements
+------------
+
+Add explicit difference between error and confirmation message e.g.
+"There were some errors." and "No changes were applied."
