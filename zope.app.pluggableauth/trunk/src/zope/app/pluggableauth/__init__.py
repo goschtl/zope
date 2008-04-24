@@ -31,11 +31,11 @@ from BTrees.OIBTree import OIBTree
 
 from zope.interface import implements
 from zope.component.interfaces import IViewFactory
+from zope.component import queryMultiAdapter
 from zope.deprecation import deprecated
-from zope.traversing.api import getPath
+from zope.traversing.api import getName, getPath
 from zope.location import locate
 
-from zope.app import zapi
 from zope.app.component import queryNextUtility
 from zope.app.container.interfaces import IOrderedContainer
 from zope.app.container.interfaces import IContainerNamesContainer, INameChooser
@@ -64,7 +64,7 @@ class PluggableAuthentication(OrderedContainer):
         if not hide_deprecation_warning:
             warn("The `pluggableauth` module has been deprecated in favor of "
                  "the new `pas` code, which is much more modular and powerful.",
-                 DeprecationWarning, 2)        
+                 DeprecationWarning, 2)
         self.earmark = earmark
         # The earmark is used as a token which can uniquely identify
         # this authentication utility instance even if the utility moves
@@ -80,7 +80,7 @@ class PluggableAuthentication(OrderedContainer):
     def authenticate(self, request):
         """ See `IAuthentication`. """
         for ps_key, ps in self.items():
-            loginView = zapi.queryMultiAdapter((ps, request), name="login")
+            loginView = queryMultiAdapter((ps, request), name="login")
             if loginView is not None:
                 principal = loginView.authenticate()
                 if principal is not None:
@@ -233,11 +233,11 @@ def PluggableAuthenticationAddSubscriber(self, event):
     if self.earmark is None:
         # we manufacture what is intended to be a globally unique
         # earmark if one is not provided in __init__
-        myname = zapi.name(self)
+        myname = getName(self)
         rand_id = gen_key()
         t = int(time.time())
         self.earmark = '%s-%s-%s' % (myname, rand_id, t)
-                
+
 
 class IBTreePrincipalSource(
     ILoginPasswordPrincipalSource,

@@ -19,7 +19,6 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface.verify import verifyObject
 
-from zope.app import zapi
 from zope.app.testing import ztapi, setup
 
 from zope.app.component.testing import PlacefulSetup
