@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 1.5.2 (2008-04-24)
+--------------------------
+
+- Refactoring: Fixed failing tests due to widget layout changes in z3c.form
+  1.8.2.
+
 Version 1.5.1 (2007-10-30)
 --------------------------
 

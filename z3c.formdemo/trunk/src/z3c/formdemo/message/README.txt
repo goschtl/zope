@@ -51,18 +51,15 @@ is shown:
 
   >>> testing.printElement(user, "//h1")
   <h1>
-    A <span id="form-widgets-what" class="select-widget required choice-field">
-    <span class="selected-option">cool</span>
-  </span>
+    A <span id="form-widgets-what"
+            class="select-widget required choice-field"><span
+            class="selected-option">cool</span></span>
    Hello World
     from <span id="form-widgets-who"
-               class="text-widget required textline-field">
-    Stephan
-  </span>
+               class="text-widget required textline-field">Stephan</span>
   <BLANKLINE>
-    on <span id="form-widgets-when" class="text-widget required date-field">
-    7/1/07
-  </span>
+    on <span id="form-widgets-when"
+             class="text-widget required date-field">7/1/07</span>
   !
   </h1>
 
@@ -98,17 +95,14 @@ Of course, the view shows the latest data:
 
   >>> testing.printElement(user, "//h1")
   <h1>
-    A <span id="form-widgets-what" class="select-widget required choice-field">
-    <span class="selected-option">best</span>
-  </span>
+    A <span id="form-widgets-what"
+            class="select-widget required choice-field"><span
+      class="selected-option">best</span></span>
    Hello World
     from <span id="form-widgets-who"
-               class="text-widget required textline-field">
-    Roger
-  </span>
+               class="text-widget required textline-field">Roger</span>
   <BLANKLINE>
-    on <span id="form-widgets-when" class="text-widget required date-field">
-    7/1/07
-  </span>
+    on <span id="form-widgets-when"
+             class="text-widget required date-field">7/1/07</span>
   !
   </h1>

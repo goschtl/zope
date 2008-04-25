@@ -46,20 +46,16 @@ When the page returns, we see a row with the entry of Stephan Richter, ...
   >>> testing.printElement(user, "//table/tbody/tr[2]")
   <tr class="even"><td class="sorted-on">
       <span id="candidate-0-widgets-lastName"
-            class="text-widget required textline-field">
-        Richter
-      </span>
+            class="text-widget required textline-field">Richter</span>
     </td>
     <td class="">
       <span id="candidate-0-widgets-firstName"
-            class="text-widget required textline-field">
-        Stephan
-      </span>
+            class="text-widget required textline-field">Stephan</span>
     </td>
     <td class="">
-      <span id="candidate-0-widgets-rating" class="select-widget choice-field">
-        <span class="selected-option">good</span>
-      </span>
+      <span id="candidate-0-widgets-rating"
+            class="select-widget choice-field"><span
+        class="selected-option">good</span></span>
     </td>
     <td class="">
       <input type="submit" ... value="Edit" /></td>

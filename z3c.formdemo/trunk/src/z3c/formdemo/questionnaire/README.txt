@@ -58,50 +58,44 @@ screen. Now the table has an entry:
   >>> testing.printElement(user, "//table/tbody/tr[1]")
   <tr class="odd"><td class="sorted-on">
       <span id="form-widgets-name"
-            class="text-widget required textline-field">
-        Stephan Richter
-      </span>
+            class="text-widget required textline-field">Stephan Richter</span>
     </td>
     <td class="right">
-      <span id="form-widgets-age" class="text-widget required int-field">
-        27
-      </span>
+      <span id="form-widgets-age"
+            class="text-widget required int-field">27</span>
     </td>
     <td class="right">
-      <span id="form-widgets-zope2" class="radio-widget required bool-field">
-        <span class="selected-option">yes</span>
-      </span>
+      <span id="form-widgets-zope2"
+            class="radio-widget required bool-field"><span
+        class="selected-option">yes</span></span>
     </td>
     <td class="right">
-      <span id="form-widgets-plone" class="radio-widget required bool-field">
-        <span class="selected-option">no</span>
-      </span>
+      <span id="form-widgets-plone"
+            class="radio-widget required bool-field"><span
+        class="selected-option">no</span></span>
     </td>
     <td class="right">
-      <span id="form-widgets-zope3" class="radio-widget required bool-field">
-        <span class="selected-option">yes</span>
-      </span>
+      <span id="form-widgets-zope3"
+            class="radio-widget required bool-field"><span
+        class="selected-option">yes</span></span>
     </td>
     <td class="right">
-      <span id="form-widgets-five" class="radio-widget required bool-field">
-        <span class="selected-option">no</span>
-      </span>
+      <span id="form-widgets-five"
+            class="radio-widget required bool-field"><span
+        class="selected-option">no</span></span>
     </td>
     <td class="right">
       <span id="form-widgets-contributor"
-            class="radio-widget required bool-field">
-        <span class="selected-option">yes</span>
-      </span>
+            class="radio-widget required bool-field"><span
+        class="selected-option">yes</span></span>
     </td>
     <td class="right">
-      <span id="form-widgets-years" class="text-widget int-field">
-        5
-      </span>
+      <span id="form-widgets-years"
+            class="text-widget int-field">5</span>
     </td>
     <td class="right">
-      <span id="form-widgets-zopeId" class="text-widget textline-field">
-        srichter
-      </span>
+      <span id="form-widgets-zopeId"
+            class="text-widget textline-field">srichter</span>
     </td>
   </tr>
 

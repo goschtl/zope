@@ -101,20 +101,15 @@ Clicking on any data item, brings us to the message display screen:
   <h1>
     A
     <span id="form-widgets-what"
-          class="select-widget required choice-field">
-      <span class="selected-option">cool</span>
-    </span>
+          class="select-widget required choice-field"><span
+      class="selected-option">cool</span></span>
     Hello World
     from
     <span id="form-widgets-who"
-          class="text-widget required textline-field">
-      Stephan
-    </span>
+          class="text-widget required textline-field">Stephan</span>
     on
     <span id="form-widgets-when"
-          class="text-widget required date-field">
-      7/1/07
-    </span>
+          class="text-widget required date-field">7/1/07</span>
     !
   </h1>
 
@@ -152,20 +147,15 @@ Of course, the view shows the latest data:
   <h1>
     A
     <span id="form-widgets-what"
-          class="select-widget required choice-field">
-      <span class="selected-option">best</span>
-    </span>
+          class="select-widget required choice-field"><span
+      class="selected-option">best</span></span>
     Hello World
     from
     <span id="form-widgets-who"
-          class="text-widget required textline-field">
-      Roger
-    </span>
+          class="text-widget required textline-field">Roger</span>
     on
     <span id="form-widgets-when"
-          class="text-widget required date-field">
-      7/1/07
-    </span>
+          class="text-widget required date-field">7/1/07</span>
     !
   </h1>
 
