@@ -9,8 +9,7 @@
 
 """
 from zope.interface import Interface, implements
-from grokcore.component.components import Adapter, GlobalUtility
-from grokcore.component.directive import provides, name
+from five.grokkers import grok
 
 class IFiveClub(Interface):
     pass
@@ -18,7 +17,7 @@ class IFiveClub(Interface):
 class ITinyClub(Interface):
     pass
 
-class FiveInchClub(GlobalUtility):
-    implements(IFiveClub, ITinyClub)
-    provides(IFiveClub)
-    name('five_inch')
+class FiveInchClub(grok.GlobalUtility):
+    grok.implements(IFiveClub, ITinyClub)
+    grok.provides(IFiveClub)
+    grok.name('five_inch')

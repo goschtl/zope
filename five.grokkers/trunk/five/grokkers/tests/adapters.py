@@ -8,9 +8,7 @@
 
 """
 from zope.interface import Interface
-from zope.component import adapts
-from grokcore.component.components import Adapter
-from grokcore.component.directive import provides, context
+from five.grokkers import grok
 from OFS.interfaces import ISimpleItem
 
 class IId(Interface):
@@ -18,9 +16,9 @@ class IId(Interface):
     def id():
         """Returns the ID of the object"""
 
-class SimpleItemIdAdapter(Adapter):
-    provides(IId)
-    context(ISimpleItem)
+class SimpleItemIdAdapter(grok.Adapter):
+    grok.provides(IId)
+    grok.context(ISimpleItem)
     
     def id(self):
         return self.context.getId()
