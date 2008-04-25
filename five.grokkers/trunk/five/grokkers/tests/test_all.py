@@ -23,6 +23,9 @@ def test_suite():
             module='five.grokkers.tests.adapters',
             setUp=setUp, tearDown=testing.tearDown),
 
+        doctestunit.DocTestSuite(
+            module='five.grokkers.tests.utilities',
+            setUp=setUp, tearDown=testing.tearDown),
         # Integration tests that use ZopeTestCase
         #ztc.ZopeDocFileSuite(
         #    'README.txt', package='something.foo',
