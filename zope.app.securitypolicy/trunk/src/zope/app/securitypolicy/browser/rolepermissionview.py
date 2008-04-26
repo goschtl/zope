@@ -17,12 +17,12 @@ $Id$
 """
 from datetime import datetime
 
+from zope.component import getUtilitiesFor, getUtility
 from zope.i18n import translate
 from zope.interface import implements
 from zope.exceptions.interfaces import UserError
 from zope.i18nmessageid import ZopeMessageFactory as _
 
-from zope.app import zapi
 from zope.app.security.interfaces import IPermission
 from zope.securitypolicy.interfaces import Unset, Allow, Deny
 from zope.securitypolicy.interfaces import IRole, IRolePermissionManager
@@ -43,7 +43,7 @@ class RolePermissionView(object):
         if roles is None:
             roles = [
                 (translate(role.title, context=self.request).strip(), role)
-                for name, role in zapi.getUtilitiesFor(IRole)]
+                for name, role in getUtilitiesFor(IRole)]
             roles.sort()
             roles = self._roles = [role for name, role in roles]
         return roles
@@ -53,7 +53,7 @@ class RolePermissionView(object):
         if permissions is None:
             permissions = [
                 (translate(perm.title, context=self.request).strip(), perm)
-                for name, perm in zapi.getUtilitiesFor(IPermission)
+                for name, perm in getUtilitiesFor(IPermission)
                 if name != 'zope.Public']
             permissions.sort()
             permissions = self._permissions = [perm
@@ -82,12 +82,12 @@ class RolePermissionView(object):
 
     def permissionForID(self, pid):
         roles = self.roles()
-        perm = zapi.getUtility(IPermission, pid)
+        perm = getUtility(IPermission, pid)
         return PermissionRoles(perm, self.context.__parent__, roles)
 
     def roleForID(self, rid):
         permissions = self.permissions()
-        role = zapi.getUtility(IRole, rid)
+        role = getUtility(IRole, rid)
         return RolePermissions(role, self.context.__parent__, permissions)
 
 

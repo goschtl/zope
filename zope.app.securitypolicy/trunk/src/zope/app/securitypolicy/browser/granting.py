@@ -18,6 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.schema
+from zope.component import getUtilitiesFor
 from zope.schema.vocabulary import SimpleTerm
 from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.securitypolicy.interfaces import Allow, Unset, Deny
@@ -26,7 +27,6 @@ from zope.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.securitypolicy.interfaces import IRole
 from zope.securitypolicy.vocabulary import GrantVocabulary
 
-from zope.app import zapi
 from zope.app.security.vocabulary import PrincipalSource
 from zope.app.form.utility import setUpWidget
 from zope.app.form.browser import RadioWidget
@@ -155,14 +155,14 @@ class Granting(object):
             principal = self.principal_widget.getInputValue()
         except MissingInputError:
             return u''
-        
+
         self.principal = principal
 
         # Make sure we can use the principal id in a form by base64ing it
         principal_token = unicode(principal).encode('base64').strip().replace(
             '=', '_')
 
-        roles = [role for name, role in zapi.getUtilitiesFor(IRole)]
+        roles = [role for name, role in getUtilitiesFor(IRole)]
         roles.sort(lambda x, y: cmp(x.title, y.title))
         principal_roles = IPrincipalRoleManager(self.context)
 
@@ -176,7 +176,7 @@ class Granting(object):
                         principal_roles.getSetting(role.id, principal))
             self.roles.append(getattr(self, name+'_widget'))
 
-        perms = [perm for name, perm in zapi.getUtilitiesFor(IPermission)]
+        perms = [perm for name, perm in getUtilitiesFor(IPermission)]
         perms.sort(lambda x, y: cmp(x.title, y.title))
         principal_perms = IPrincipalPermissionManager(self.context)
 
