@@ -1,5 +1,5 @@
 from martian.directive import MultipleTimesDirective
-from martian.directive import BaseTextDirective,
+from martian.directive import BaseTextDirective
 from martian.directive import SingleValue
 from martian.directive import ClassDirectiveContext
 
