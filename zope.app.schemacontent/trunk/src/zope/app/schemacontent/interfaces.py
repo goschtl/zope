@@ -16,8 +16,8 @@
 $Id$
 """
 from zope.app.container.interfaces import IAdding
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.app.publisher.interfaces.browser import IBrowserMenuItem
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.interface import Interface, Attribute
 from zope.schema import TextLine, Bool, Choice
 
