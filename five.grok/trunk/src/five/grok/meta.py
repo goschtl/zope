@@ -1,15 +1,15 @@
 import martian
 from martian import util
 from zope import interface, component
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
 from five import grok
-from five.grok.util import get_default_permission, make_checker
+from five.grok.util import get_default_permission
 from grokcore.component.meta import get_context, get_name_classname
 from grokcore.component.util import determine_class_directive
+from Products.Five.security import protectClass
+from Globals import InitializeClass as initializeClass
 
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-                                               #IBrowserRequest,
-                                               #IBrowserPublisher,
-                                               #IBrowserSkinType)
 
 class ViewGrokker(martian.ClassGrokker):
     component_class = grok.View
@@ -68,10 +68,17 @@ class ViewGrokker(martian.ClassGrokker):
 
         permission = get_default_permission(factory)
         config.action(
-            discriminator=('protectName', factory, '__call__'),
-            callable=make_checker,
-            args=(factory, factory, permission),
-            )
+            discriminator = ('five:protectClass', factory),
+            callable = protectClass,
+            args = (factory, permission)
+        )
+
+        # Protect the class
+        config.action(
+            discriminator = ('five:initialize:class', factory),
+            callable = initializeClass,
+            args = (factory,)
+        )
 
         return True
 

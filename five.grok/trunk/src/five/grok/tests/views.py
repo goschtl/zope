@@ -11,7 +11,7 @@ Setup a fake request:
 
 We should now be able to find the view:
 
-  >>> view = item.unrestrictedTraverse('@@theview')
+  >>> view = item.unrestrictedTraverse('@@aview')
   >>> view()
   'item'
 
@@ -21,8 +21,8 @@ from OFS.interfaces import ISimpleItem
 
 class SimpleItemView(grok.View):
     grok.context(ISimpleItem)
-    grok.name('theview')
+    grok.name('aview')
+    grok.require('zope2.ViewManagementScreens')
         
     def __call__(self):
         return self.context.getId()
-        

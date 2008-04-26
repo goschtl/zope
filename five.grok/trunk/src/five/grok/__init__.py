@@ -4,3 +4,4 @@ from grokcore.component.directive import name, provides, context
 from zope.interface import implements
 
 from components import View
+from directive import require
