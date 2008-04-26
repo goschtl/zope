@@ -1,7 +1,7 @@
 import martian
 from martian import util
 from zope import interface, component
-from five.grok import grok
+from five import grok
 from five.grok.util import get_default_permission, make_checker
 from grokcore.component.meta import get_context, get_name_classname
 from grokcore.component.util import determine_class_directive

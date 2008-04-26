@@ -9,7 +9,7 @@
 
 """
 from zope.interface import Interface, implements
-from five.grok import grok
+from five import grok
 
 class IFiveClub(Interface):
     pass

@@ -16,7 +16,7 @@ We should now be able to find the view:
   'item'
 
 """
-from five.grok import grok
+from five import grok
 from OFS.interfaces import ISimpleItem
 
 class SimpleItemView(grok.View):
