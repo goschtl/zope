@@ -1,4 +1,4 @@
-"""Testing five.grokkers Views.
+"""Testing five.grok Views.
 
   >>> from OFS.SimpleItem import SimpleItem
   >>> item = SimpleItem()
@@ -16,7 +16,7 @@ We should now be able to find the view:
   'item'
 
 """
-from five.grokkers import grok
+from five.grok import grok
 from OFS.interfaces import ISimpleItem
 
 class SimpleItemView(grok.View):

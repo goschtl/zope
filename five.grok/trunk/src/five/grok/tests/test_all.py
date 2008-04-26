@@ -5,15 +5,15 @@ from zope.component import testing
 from Testing import ZopeTestCase
 from Products.Five import zcml
 import Products.Five
-import five.grokkers
+import five.grok
 
 def setUp(test=None):
     testing.setUp(test)
     zcml.load_config('meta.zcml', package=Products.Five)
     zcml.load_config('configure.zcml', package=Products.Five)
-    zcml.load_config('meta.zcml', package=five.grokkers)
-    zcml.load_config('configure.zcml', package=five.grokkers)
-    zcml.load_config('configure.zcml', package=five.grokkers.tests)
+    zcml.load_config('meta.zcml', package=five.grok)
+    zcml.load_config('configure.zcml', package=five.grok)
+    zcml.load_config('configure.zcml', package=five.grok.tests)
 
 def test_suite():
     return unittest.TestSuite([
@@ -24,15 +24,15 @@ def test_suite():
             #setUp=testing.setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
-            module='five.grokkers.tests.adapters',
+            module='five.grok.tests.adapters',
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
-            module='five.grokkers.tests.utilities',
+            module='five.grok.tests.utilities',
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
-            module='five.grokkers.tests.views',
+            module='five.grok.tests.views',
             setUp=setUp, tearDown=testing.tearDown),
             
         # Integration tests that use ZopeTestCase

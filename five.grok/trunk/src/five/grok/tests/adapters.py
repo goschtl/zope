@@ -8,7 +8,7 @@
 
 """
 from zope.interface import Interface
-from five.grokkers import grok
+from five.grok import grok
 from OFS.interfaces import ISimpleItem
 
 class IId(Interface):
