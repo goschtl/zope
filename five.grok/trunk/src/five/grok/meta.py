@@ -1,5 +1,6 @@
 import martian
 from martian import util
+from martian.error import GrokError
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
