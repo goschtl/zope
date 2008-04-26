@@ -17,7 +17,6 @@ $Id$
 """
 import copy
 from zope.app.i18n import ZopeMessageFactory as _
-from zope.app import zapi
 from zope.app.form.browser.add import AddView
 from zope.app.form.browser.editview import EditView
 from zope.app.form.browser.submit import Update
@@ -26,6 +25,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.schemacontent.interfaces import IContentComponentDefinition
 from zope.app.schemacontent.content import ContentComponentInstance
 from zope.component.interfaces import ComponentLookupError
+from zope.component import getUtility, getUtilitiesFor
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema import getFieldsInOrder, Choice
@@ -101,8 +101,8 @@ class ContentComponentPermissionEdit(EditView):
                 set_perm_id = setPermWidget.getInputValue()
 
                 # get the right permission from the given id
-                get_perm = zapi.getUtility(IPermission, get_perm_id)
-                set_perm = zapi.getUtility(IPermission, set_perm_id)
+                get_perm = getUtility(IPermission, get_perm_id)
+                set_perm = getUtility(IPermission, set_perm_id)
 
                 # set the permission back to the instance
                 perms[name] = (get_perm, set_perm)
@@ -143,7 +143,7 @@ class AddContentComponentInstanceView(AddView):
             self.context.contentName = content_name
 
         matching = [util
-                    for name, util in zapi.getUtilitiesFor(
+                    for name, util in getUtilitiesFor(
                                                   IContentComponentDefinition)
                     if name == type_name]
 
