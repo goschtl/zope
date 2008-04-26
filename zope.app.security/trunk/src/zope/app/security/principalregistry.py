@@ -15,11 +15,11 @@
 
 $Id$
 """
+from zope.component import getUtility
 from zope.interface import implements
 
 from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app import zapi
 from zope.security.interfaces import IGroupAwarePrincipal
 import zope.security.management
 from zope.app.security import interfaces
@@ -164,7 +164,7 @@ class Principal(PrincipalBase):
         self.__pw = pw
 
     def __getPasswordManager(self):
-        return zapi.getUtility(IPasswordManager, self.__pwManagerName)
+        return getUtility(IPasswordManager, self.__pwManagerName)
 
     def getLogin(self):
         return self.__login

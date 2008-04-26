@@ -17,12 +17,12 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from zope.app import zapi
 from zope.app.form.browser.interfaces import ITerms
-from zope.app.security.interfaces import IPrincipalSource
+from zope.app.security.interfaces import IAuthentication, IPrincipalSource
 
 class Term(object):
 
@@ -42,7 +42,7 @@ class PrincipalTerms(object):
         if principal_id not in self.context:
             raise LookupError(principal_id)
 
-        auth = zapi.principals()
+        auth = getUtility(IAuthentication)
         principal = auth.getPrincipal(principal_id)
 
         if principal is None:

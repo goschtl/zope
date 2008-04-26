@@ -19,7 +19,7 @@ import unittest
 from zope.configuration.config import ConfigurationConflictError
 from zope.configuration import xmlconfig
 
-from zope.app import zapi
+from zope.component import getUtility
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
@@ -58,7 +58,7 @@ class TestPermissionDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
         context = xmlconfig.file("perm.zcml", zope.app.security.tests)
-        perm = zapi.getUtility(IPermission, "Can.Do.It")
+        perm = getUtility(IPermission, "Can.Do.It")
         self.failUnless(perm.id.endswith('Can.Do.It'))
         self.assertEqual(perm.title, 'A Permissive Permission')
         self.assertEqual(perm.description,
