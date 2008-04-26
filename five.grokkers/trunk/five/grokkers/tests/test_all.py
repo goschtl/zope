@@ -4,11 +4,15 @@ from zope.testing import doctestunit
 from zope.component import testing
 from Testing import ZopeTestCase
 from Products.Five import zcml
+import Products.Five
 import five.grokkers
 
 def setUp(test=None):
     testing.setUp(test)
+    zcml.load_config('meta.zcml', package=Products.Five)
+    zcml.load_config('configure.zcml', package=Products.Five)
     zcml.load_config('meta.zcml', package=five.grokkers)
+    zcml.load_config('configure.zcml', package=five.grokkers)
     zcml.load_config('configure.zcml', package=five.grokkers.tests)
 
 def test_suite():
@@ -27,9 +31,9 @@ def test_suite():
             module='five.grokkers.tests.utilities',
             setUp=setUp, tearDown=testing.tearDown),
 
-        #doctestunit.DocTestSuite(
-            #module='five.grokkers.tests.views',
-            #setUp=setUp, tearDown=testing.tearDown),
+        doctestunit.DocTestSuite(
+            module='five.grokkers.tests.views',
+            setUp=setUp, tearDown=testing.tearDown),
             
         # Integration tests that use ZopeTestCase
         #ztc.ZopeDocFileSuite(

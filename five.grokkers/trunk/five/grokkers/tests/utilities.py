@@ -1,4 +1,4 @@
-"""Testing that grokcore adapters work under Zope2
+"""Testing that grokcore utilities work under Zope2
 
   >>> from zope import component
   >>> club = component.getUtility(IFiveClub, 'five_inch')
