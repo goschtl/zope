@@ -8,7 +8,7 @@
   True
 
 """
-from zope.interface import Interface, implements
+from zope.interface import Interface
 from five import grok
 
 class IFiveClub(Interface):

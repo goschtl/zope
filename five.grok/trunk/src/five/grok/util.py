@@ -1,15 +1,6 @@
-import urllib
+from martian.error import GrokError
 
-import zope.location.location
-from zope import component
-from zope.traversing.browser.interfaces import IAbsoluteURL
-from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
-
-from zope.security.checker import NamesChecker, defineChecker
-from zope.security.interfaces import IPermission
-
-from martian.error import GrokError, GrokImportError
-from martian.util import class_annotation, methods_from_class, scan_for_classes
+from martian.util import class_annotation
 
 def get_default_permission(factory):
     """Determine the default permission for a view.

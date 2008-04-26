@@ -1,14 +1,7 @@
-from martian.directive import (OnceDirective,
-                               MultipleTimesDirective, BaseTextDirective,
-                               SingleValue, SingleTextDirective,
-                               MultipleTextDirective,
-                               MarkerDirective,
-                               InterfaceDirective,
-                               InterfaceOrClassDirective,
-                               ModuleDirectiveContext,
-                               OptionalValueDirective,
-                               ClassDirectiveContext,
-                               ClassOrModuleDirectiveContext)
+from martian.directive import MultipleTimesDirective
+from martian.directive import BaseTextDirective,
+from martian.directive import SingleValue
+from martian.directive import ClassDirectiveContext
 
 class RequireDirective(BaseTextDirective, SingleValue, MultipleTimesDirective):
 

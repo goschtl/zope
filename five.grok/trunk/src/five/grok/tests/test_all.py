@@ -2,9 +2,12 @@ import unittest
 
 from zope.testing import doctestunit
 from zope.component import testing
+
 from Testing import ZopeTestCase
-from Products.Five import zcml
+
 import Products.Five
+from Products.Five import zcml
+
 import five.grok
 
 def setUp(test=None):

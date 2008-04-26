@@ -22,3 +22,4 @@ class TestViews(ZopeTestCase.ZopeTestCase):
         
 def test_suite():
     return unittest.makeSuite(TestViews)
+
