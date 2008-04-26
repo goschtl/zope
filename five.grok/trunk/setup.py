@@ -3,7 +3,7 @@ import os
 
 version = '0.1'
 
-setup(name='five.grokkers',
+setup(name='five.grok',
       version=version,
       description="",
       long_description=open("README.txt").read() + "\n" +
@@ -18,15 +18,15 @@ setup(name='five.grokkers',
       author_email='',
       url='',
       license='GPL',
-      packages=find_packages(exclude=['ez_setup']),
+      packages=find_packages('src', exclude=['ez_setup']),
+      package_dir={'': 'src'},
       namespace_packages=['five'],
       include_package_data=True,
-      zip_safe=False,
+      zip_safe=False,	
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'grokcore.component',
       ],
       entry_points="""
-      # -*- Entry points: -*-
       """,
       )
