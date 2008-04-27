@@ -23,8 +23,8 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.container.contained import Contained
 
 from zope.app.workflow.interfaces import IProcessDefinition
@@ -94,7 +94,7 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
         manager = ContentWorkflowsManager()
         manager._registry = {IFace1: ('default',), IFace2: ('default',)}
         self.default['manager'] = manager
-        return zapi.traverse(self.default, 'manager')
+        return traverse(self.default, 'manager')
 
     def test_getProcessDefinitionNamesForObject(self):
         manager = self.getManager()

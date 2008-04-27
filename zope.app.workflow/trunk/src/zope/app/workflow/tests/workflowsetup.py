@@ -15,9 +15,10 @@
 
 $Id$
 """
+from zope.component import getGlobalSiteManager
 from zope.interface import implements
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import setup
@@ -26,12 +27,12 @@ from zope.app.testing import setup
 class WorkflowSetup(PlacefulSetup):
 
     def setUp(self):
-        self.root_sm = zapi.getGlobalSiteManager()
+        self.root_sm = getGlobalSiteManager()
 
         self.sm = PlacefulSetup.setUp(self, site=True)
-        self.default = zapi.traverse(self.sm, "default")
+        self.default = traverse(self.sm, "default")
         self.cm = self.default.registrationManager
 
         self.sm1 = self.makeSite('folder1')
-        self.default1 = zapi.traverse(self.sm1, "default")
+        self.default1 = traverse(self.sm1, "default")
         self.cm1 = self.default1.registrationManager

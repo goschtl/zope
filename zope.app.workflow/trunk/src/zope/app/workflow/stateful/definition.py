@@ -25,6 +25,7 @@ from zope.security.checker import CheckerPublic
 from zope.event import notify
 from zope.component.interfaces import ObjectEvent
 from zope.lifecycleevent import modified
+from zope.traversing.api import getParents
 
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
@@ -50,7 +51,7 @@ class StatesContainer(ProcessDefinitionElementContainer):
 
 class NoLocalProcessDefinition(Exception):
     """No local process definition found"""
-    
+
 
 class StateNamesVocabulary(SimpleVocabulary):
     """Vocabulary providing the names of states in a local process definition.
@@ -65,7 +66,7 @@ class StateNamesVocabulary(SimpleVocabulary):
         if hasattr(context, 'getProcessDefinition'):
             return context.getProcessDefinition().getStateNames()
         else:
-            for obj in zapi.getParents(context):
+            for obj in getParents(context):
                 if IStatefulProcessDefinition.providedBy(obj):
                     return obj.getStateNames()
         raise NoLocalProcessDefinition('No local process definition found.')

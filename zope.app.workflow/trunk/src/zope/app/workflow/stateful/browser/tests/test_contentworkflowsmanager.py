@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional Tests for ContentWorkflowsManager
 
-$Id$   
+$Id$
 """
 import unittest
 import re
@@ -21,8 +21,8 @@ import re
 from transaction import commit
 from zope.interface import Interface
 from zope.component.interface import nameToInterface
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.testing.setup import addUtility
 
@@ -38,12 +38,12 @@ class Test(BrowserTestCase):
         self.basepath = '/++etc++site/default'
         root = self.getRootFolder()
 
-        sm = zapi.traverse(root, '/++etc++site')
+        sm = traverse(root, '/++etc++site')
         addUtility(sm,
                    'dummy-definition',
                    IStatefulProcessDefinition,
                    StatefulProcessDefinition()
-                   ) 
+                   )
         commit()
 
         response = self.publish(
@@ -67,10 +67,10 @@ class Test(BrowserTestCase):
         body = ' '.join(response.getBody().split())
         self.assert_(body.find(
             '<option value="zope.app.folder.interfaces.IFolder">'
-            ) >= 0)        
+            ) >= 0)
         self.assert_(body.find(
             '<option value="zope.app.file.interfaces.IFile">'
-            ) >= 0)        
+            ) >= 0)
 
         response = self.publish(
             self.basepath + '/mgr/index.html',
@@ -84,7 +84,7 @@ class Test(BrowserTestCase):
 
         self.assertEqual(response.getStatus(), 200)
         root = self.getRootFolder()
-        mgr = zapi.traverse(root, self.basepath+'/mgr')
+        mgr = traverse(root, self.basepath+'/mgr')
         ifaces = mgr.getInterfacesForProcessName('dummy-definition')
 
         self.assert_(nameToInterface(

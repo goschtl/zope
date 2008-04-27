@@ -18,7 +18,6 @@ $Id$
 import unittest
 import re
 
-from zope.app import zapi
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.testing import AppWorkflowLayer
