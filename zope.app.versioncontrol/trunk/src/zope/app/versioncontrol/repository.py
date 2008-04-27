@@ -27,8 +27,8 @@ import zope.event
 import zope.interface
 import zope.datetime
 from zope.annotation.interfaces import IAnnotations
+from zope.traversing.api import getPath
 
-from zope.app import zapi
 from zope.app.versioncontrol import nonversioned, utility, event
 from zope.app.versioncontrol.history import VersionHistory
 from zope.app.versioncontrol.interfaces import VersionControlError
@@ -188,7 +188,7 @@ class Repository(persistent.Persistent):
         # Save an audit record of the action being performed.
         history.addLogEntry(version_id,
                             ACTION_CHECKIN,
-                            zapi.getPath(object),
+                            getPath(object),
                             message is None and 'Initial checkin.' or message
                             )
 
@@ -214,7 +214,7 @@ class Repository(persistent.Persistent):
                 )
 
         history = self.getVersionHistory(info.history_id)
-        ob_path = zapi.getPath(object)
+        ob_path = getPath(object)
 
         # Save an audit record of the action being performed.
         history.addLogEntry(info.version_id,
@@ -249,7 +249,7 @@ class Repository(persistent.Persistent):
                 )
 
         history = self.getVersionHistory(info.history_id)
-        ob_path = zapi.getPath(object)
+        ob_path = getPath(object)
 
         branch = 'mainline'
         if info.sticky is not None and info.sticky[0] == 'B':
@@ -280,7 +280,7 @@ class Repository(persistent.Persistent):
                 )
 
         history = self.getVersionHistory(info.history_id)
-        ob_path = zapi.getPath(object)
+        ob_path = getPath(object)
 
         version = history.getVersionById(info.version_id)
 
@@ -370,10 +370,7 @@ class Repository(persistent.Persistent):
             self.replaceState(object, version.copyState())
             declare_checked_in(object)
 
-            history.addLogEntry(version_id,
-                                ACTION_UPDATE,
-                                zapi.getPath(object)
-                                )
+            history.addLogEntry(version_id, ACTION_UPDATE, getPath(object))
 
         # Update bookkeeping information.
         info = utility.VersionInfo(info.history_id, version_id, CHECKED_IN)
