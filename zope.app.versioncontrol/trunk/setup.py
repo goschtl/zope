@@ -17,6 +17,7 @@ setup(
                               'zope.component']),
     install_requires = ['setuptools',
                         'ZODB3',
+                        'zope.datetime',
                         'zope.location',
                         'zope.security'],
     zip_safe = False,
