@@ -23,7 +23,7 @@ from twisted.application import internet
 from twisted.internet import reactor, interfaces
 
 from zope.interface import implements
-from zope.app import zapi
+from zope.component import getUtility
 from zope.app.twisted.interfaces import IServerType, ISSLServerType, \
      ISSHServerType
 
@@ -149,7 +149,7 @@ class ServerFactory(object):
     def create(self, database):
         """Return a server based on the server types defined via ZCML."""
 
-        servertype = zapi.getUtility(IServerType, self.type)
+        servertype = getUtility(IServerType, self.type)
         ip, port = self.address
         return servertype.create(
             '%s:%s:%d' % (self.type, ip or 'localhost', port),
@@ -174,7 +174,7 @@ class SSLServerFactory(object):
     def create(self, database):
         """Return a server based on the server types defined via ZCML."""
 
-        servertype = zapi.getUtility(IServerType, self.type)
+        servertype = getUtility(IServerType, self.type)
 
         return servertype.create(
             self.type,
@@ -201,7 +201,7 @@ class SSHServerFactory(object):
     def create(self, database):
         """Return a server based on the server types defined via ZCML."""
 
-        servertype = zapi.getUtility(IServerType, self.type)
+        servertype = getUtility(IServerType, self.type)
 
         return servertype.create(
             self.type,
