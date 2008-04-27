@@ -19,7 +19,6 @@ import unittest
 
 from zope.interface import implements, directlyProvides
 from zope.interface.interface import InterfaceClass
-from zope.app import zapi
 
 from zope.app.tree.filters import OnlyInterfacesFilter, AllButInterfacesFilter
 

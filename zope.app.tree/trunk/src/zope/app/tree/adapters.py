@@ -25,8 +25,8 @@ from zope.component.interfaces import ComponentLookupError
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
 from zope.location.interfaces import ILocation
+from zope.traversing.api import getParents
 
-from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.component.interfaces import ISite
 
@@ -69,7 +69,7 @@ class LocationUniqueId(object):
             # always try to be unique
             return str(id(context))
         parents = [context.__name__]
-        parents += [parent.__name__ for parent in zapi.getParents(context)
+        parents += [parent.__name__ for parent in getParents(context)
                     if parent.__name__]
         return '\\'.join(parents)
 

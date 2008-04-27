@@ -15,8 +15,8 @@
 
 $Id$
 """
+from zope.component import getUtility
 from zope.interface import implements
-from zope.app import zapi
 from zope.app.tree.interfaces import INode, IUniqueId, IChildObjects
 from zope.app.tree.interfaces import ITreeStateEncoder
 
@@ -113,7 +113,7 @@ class Node(object):
         nodes = []
         if row_state is None:
             row_state = []
-        encoder = zapi.getUtility(ITreeStateEncoder)
+        encoder = getUtility(ITreeStateEncoder)
 
         if self.hasChildren() and len(row_state) > maxdepth:
             maxdepth = len(row_state)
