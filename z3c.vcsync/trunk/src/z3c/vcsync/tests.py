@@ -224,6 +224,14 @@ def test_suite():
         tearDown=cleanUpZope,
         globs=globs,
         optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
+
+        doctest.DocFileSuite(
+        'conflict.txt',
+        setUp=setUpZope,
+        tearDown=cleanUpZope,
+        globs=globs,
+        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
+
         ])
     return suite
 
