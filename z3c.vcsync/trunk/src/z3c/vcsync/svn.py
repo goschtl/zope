@@ -71,6 +71,20 @@ class SvnCheckout(object):
         save_path.ensure()
         save_path.write(content)
 
+    def _found_container(self, path):
+        """Store conflicting/lost container in found directory.
+
+        path - the path in the original tree. This is translated to
+               a found path with the same structure.
+        """
+        found = self.path.ensure('found', dir=True)
+        rel_path = path.relto(self.path)
+        save_path = found.join(*rel_path.split(path.sep))
+        py.path.local(path.strpath).copy(save_path)
+        save_path.add()
+        for new_path in save_path.visit():
+            new_path.add()
+            
     def _update_files(self, revision_nr):
         """Go through svn log and update self._files and self._removed.
         """
@@ -120,11 +134,17 @@ class SvnCheckout(object):
             if not p.check(dir=True):
                 continue
             try:
+                # resolve any direct conflicts
                 for conflict in p.status().conflict:
                     mine, other = conflict_info(conflict)
                     conflict.write(mine.read())
                     self._found(conflict, other.read())
                     conflict._svn('resolved')
+                # move any status unknown directories away
+                for unknown in p.status().unknown:
+                    if unknown.check(dir=True):
+                        self._found_container(unknown)
+                        unknown.remove()
             # XXX This is a horrible hack to skip status of R. This
             # is not supported by Py 0.9.0, and raises a NotImplementedError.
             # This has been fixed on the trunk of Py.

@@ -89,6 +89,7 @@ revision number as a special attribute of the root object::
   ...     implements(IState)
   ...     def __init__(self, root):
   ...         self.root = root
+  ...         self._removed = []
   ...     def set_revision_nr(self, nr):
   ...         self.root.nr = nr
   ...     def get_revision_nr(self):
@@ -97,7 +98,7 @@ revision number as a special attribute of the root object::
   ...         except AttributeError:
   ...             return 0
   ...     def removed(self, revision_nr):
-  ...         return []
+  ...         return self._removed
   ...     def objects(self, revision_nr):
   ...         for container in self._containers(revision_nr):
   ...             for value in container.values():
@@ -457,3 +458,58 @@ The found version in this case will reside in the same subdirectory,
   >>> info = found_s.sync("Synchronize")
   >>> found_data['root']['sub']['qux'].payload
   36
+
+Folder conflicts
+----------------
+
+Let's now examine a case of a conflict in case of containers.
+
+A user (we'll call him ``user1``) creates a new container in ``data``
+with some content in it, and synchronize it::
+
+  >>> current_synchronizer = s
+  >>> data['folder'] = Container()
+  >>> data['folder']['content'] = Item(14)
+  >>> info = s.sync("Synchronize")
+
+We'll synchronize this into ``data2`` so that the second user (``user2``) has
+access to it::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+
+``user1`` now throws away ``folder`` in ``data`` and synchronizes this,
+causing ``folder`` to be gone in SVN::
+
+  >>> current_synchronizer = s
+  >>> from z3c.vcsync.vc import get_object_path
+  >>> state._removed.append(get_object_path(data, data['folder']))
+  >>> del data['folder']
+  >>> info = s.sync("Synchronize")
+
+Meanwhile, ``user2`` happily alters data in ``folder`` by changing
+``content`` in instance 2::
+
+  >>> current_synchronizer = s2
+  >>> data2['folder']['content'].payload = 15
+
+Now ``user2`` does a synchronization too::
+
+  >>> info = s2.sync("Synchronize")
+
+All changes ``user2`` made are now gone, as ``folder`` is gone::
+
+  >>> 'folder' in data2
+  False
+
+The folder with its content can however be retrieved in the found data
+section::
+
+  >>> found_s = Synchronizer(checkout, found_state)
+  >>> current_synchronizer = found_s
+  >>> info = found_s.sync("synchronize")
+  >>> found_data['root']['folder']['content'].payload
+  15
+
+
+
