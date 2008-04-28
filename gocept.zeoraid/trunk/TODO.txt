@@ -44,9 +44,6 @@ Stabilization
 
 - Pack may never be run while a storage is recovering.
 
-- Blobs: Hard links created for the multiple backend storages need to be
-  tracked and cleaned up.
-
 - Windows support
 
 Feature-completeness
@@ -55,6 +52,15 @@ Feature-completeness
 - Recovery with blob support.
 
 - Support undo.
+
+Blob support
+-------------
+
+- Create flag `shared-blob-dir` for RAIDStorage
+- Functionality for shared blob-dir
+- Functionality for unshared blob-dir
+  - clean up unconsumed hard links
+  - clean up temporary directories
 
 Cleanup
 -------
