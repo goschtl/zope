@@ -12,7 +12,6 @@ from z3c.indexing.dispatch.interfaces import IDispatcher
 from z3c.indexing.dispatch.interfaces import ITransactionalDispatcher
 from z3c.indexing.dispatch.interfaces import IQueueReducer
 
-from z3c.indexing.dispatch.reducer import QueueReducer
 from z3c.indexing.dispatch.queue import TransactionalDispatcher
 from z3c.indexing.dispatch.queue import getDispatcher
 from z3c.indexing.dispatch.constants import INDEX, REINDEX, UNINDEX
@@ -129,53 +128,6 @@ class QueueTests(CleanUp, TestCase):
         dispatcher._optimize()                # and try again...
         self.assertEqual(dispatcher.getState(), [(INDEX, 'foo', None), (REINDEX, 'foo', None), (INDEX, 'foo', 'bar')])
 
-    def testRealQueueReducer(self):
-        provideUtility(QueueReducer())
-        dispatcher = self.dispatcher
-        dispatcher.index('foo')
-        dispatcher.reindex('foo')
-        dispatcher.unindex('foo')
-        dispatcher.index('foo', 'bar')
-        dispatcher._optimize()
-        self.assertEqual(dispatcher.getState(), [(INDEX, 'foo', None)])
-
-
-class QueueReducerTests(TestCase):
-
-    def testReduceQueue(self):
-        reducer = QueueReducer()
-
-        queue = [(REINDEX, 'A', None), (REINDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', None)])
-
-        queue = [(INDEX, 'A', None), (REINDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(INDEX, 'A', None)])
-
-        queue = [(INDEX, 'A', None), (UNINDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [])
-
-        queue = [(UNINDEX, 'A', None), (INDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', None)])
-
-    def testReduceQueueWithAttributes(self):
-        reducer = QueueReducer()
-
-        queue = [(REINDEX, 'A', None), (REINDEX, 'A', ('a','b'))]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', None)])
-
-        queue = [(REINDEX, 'A', ('a','b')), (REINDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', None)])
-
-        queue = [(REINDEX, 'A', ('a','b')), (REINDEX, 'A', ('b','c'))]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', ('a', 'c', 'b'))])
-
-        queue = [(INDEX, 'A', None), (REINDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(INDEX, 'A', None)])
-
-        queue = [(REINDEX, 'A', ('a','b')), (UNINDEX, 'A', None), (INDEX, 'A', None)]
-        self.failUnlessEqual(reducer.optimize(queue), [(REINDEX, 'A', None)])
-
-
 class QueueThreadTests(TestCase):
     """ thread tests modeled after zope.thread doctests """
 
@@ -261,7 +213,6 @@ class QueueThreadTests(TestCase):
 def test_suite():
     return TestSuite([
         makeSuite(QueueTests),
-        makeSuite(QueueReducerTests),
         makeSuite(QueueThreadTests),
     ])
 

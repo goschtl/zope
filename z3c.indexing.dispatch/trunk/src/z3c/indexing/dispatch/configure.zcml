@@ -5,10 +5,6 @@
   
   <utility factory=".queue.getDispatcher" />
 
-  <!-- configure queue reducer -->
-  
-  <utility factory=".reducer.QueueReducer" />
-
   <!-- set queue to commit after request ends -->
   
   <subscriber handler=".queue.commit" />
