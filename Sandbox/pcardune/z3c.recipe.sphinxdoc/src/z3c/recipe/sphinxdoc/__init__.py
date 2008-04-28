@@ -24,9 +24,9 @@ import zc.buildout.easy_install
 import pkg_resources
 
 confPyTemplate = """
-templates_path = ['.templates']
+templates_path = ['%(templatesDir)s']
 source_suffix = '.txt'
-master_doc = 'index'
+master_doc = '%(indexDoc)s'
 project = '%(project)s'
 copyright = '%(copyright)s'
 version = '%(version)s'
@@ -34,9 +34,15 @@ release = '%(release)s'
 today_fmt = '%%B %%d, %%Y'
 pygments_style = 'sphinx'
 html_style = 'default.css'
-html_static_path = ['.static']
+html_static_path = ['%(staticDir)s']
 html_last_updated_fmt = '%%b %%d, %%Y'
 """
+
+arg_template = """[
+  '-c', '%(CONFPATH)s',
+  '%(SRCPATH)s',
+  '%(BUILDPATH)s',
+  ]"""
 
 class ZopeOrgSetup(object):
 
@@ -60,22 +66,15 @@ class ZopeOrgSetup(object):
 
         #for each egg listed as a buildout option, create a configuration space.
         for doc in docs:
-            projectDir = join(installDir, doc.project_name)
-            if not os.path.isdir(projectDir):
-                os.mkdir(projectDir)
-            installed.append(projectDir)
-            confPyPath = join(projectDir, 'conf.py')
-            confPy = open(confPyPath, 'w')
-            confPy.write(confPyTemplate % {'project':doc.project_name,
-                                           'copyright':'some copyright',
-                                           'version': doc._version,
-                                           'release': doc._version})
-            confPy.close()
-            installed.append(confPyPath)
+            partDir = join(installDir, doc.project_name)
+            if not os.path.isdir(partDir):
+                os.mkdir(partDir)
+            installed.append(partDir)
 
             recipeDir = dirname(__file__)
 
-            staticDir = join(projectDir, '.static')
+            #create static directory
+            staticDir = join(partDir, '.static')
             if not os.path.isdir(staticDir):
                 os.mkdir(staticDir)
             installed.append(staticDir)
@@ -83,7 +82,8 @@ class ZopeOrgSetup(object):
                         join(staticDir, 'default.css'))
             installed.append(join(staticDir, 'default.css'))
 
-            templatesDir = join(projectDir, '.templates')
+            #create tempaltes directory
+            templatesDir = join(partDir, '.templates')
             if not os.path.isdir(templatesDir):
                 os.mkdir(templatesDir)
             installed.append(templatesDir)
@@ -91,11 +91,33 @@ class ZopeOrgSetup(object):
                         join(templatesDir, 'layout.html'))
             installed.append(join(templatesDir, 'layout.html'))
 
+
+            #create conf.py
+            confPyPath = join(partDir, 'conf.py')
+            confPy = open(confPyPath, 'w')
+            confPy.write(confPyTemplate % dict(project=doc.project_name,
+                                               copyright='some copyright',
+                                               version=doc._version,
+                                               release=doc._version,
+                                               staticDir=staticDir,
+                                               templatesDir=templatesDir,
+                                               indexDoc=self.options.get('indexDoc','index')
+                                               ))
+            confPy.close()
+            installed.append(confPyPath)
+
             buildDir = self.options.get('build-dir',
-                                        os.path.join(projectDir, 'build'))
+                                        os.path.join(partDir, 'build'))
             if not os.path.isdir(buildDir):
                 os.mkdir(buildDir)
 
+            defaults = self.options.get('defaults', '').strip()
+            if defaults:
+                defaults = '(%s) + ' % defaults
+
+            args = arg_template % dict(CONFPATH=partDir,
+                                       SRCPATH=".",
+                                       BUILDPATH=buildDir)
             installed.extend(zc.buildout.easy_install.scripts(
                 [(self.options['script'],
                   'sphinx',
@@ -104,15 +126,13 @@ class ZopeOrgSetup(object):
                 self.options['executable'],
                 self.buildout['buildout']['bin-directory'],
                 extra_paths=self.egg.extra_paths,
-                #                arguments = defaults,
-                initialization = "print 'foo'",
+                ## arguments = defaults + args,
+                initialization = "import sys; sys.argv.extend(%s)" % args,
                 ))
 
         return installed
 
     update = install
-    ## def update(self):
-    ##     logging.getLogger(self.name).info('Updating???')
 
 
 def runSphinx():
