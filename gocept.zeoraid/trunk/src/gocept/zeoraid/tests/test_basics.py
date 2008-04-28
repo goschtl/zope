@@ -678,6 +678,17 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
             oid, self._storage.lastTransaction())
         self.assertEquals(expected, stored_file_name)
 
+    def test_blob_cache_hit(self):
+        # XXX Check that a blob isn't loaded twice if it's in the cache
+        # already.
+        self.assert_(False)
+
+    def test_blob_cache_cannot_link(self):
+        self.assert_(False)
+
+    def test_blob_cache_locking(self):
+        self.assert_(False)
+
     def test_storeBlob_degrading1(self):
         oid = self._storage.new_oid()
         handle, blob_file_name = tempfile.mkstemp()
