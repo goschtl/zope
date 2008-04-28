@@ -30,7 +30,7 @@ checker = zope.testing.renormalizing.RENormalizing([
 class DummyMailer(object):
     """A dummy mailer."""
 
-    zope.interface.implements(zope.sendmail.interfaces.IMailer)
+    zope.interface.implements(zope.sendmail.interfaces.IMailDelivery)
 
     def send(self, fromaddr, toaddr, msg):
         print "(%s -> %s)" % (fromaddr, toaddr)

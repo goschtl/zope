@@ -44,5 +44,5 @@ def send_registration_mail(registration, event):
     """
     email = gocept.registration.interfaces.IConfirmationEmail(registration)
     config = gocept.registration.interfaces.IEmailConfiguration(registration)
-    mailer = zope.component.getUtility(zope.sendmail.interfaces.IMailer)
+    mailer = zope.component.getUtility(zope.sendmail.interfaces.IMailDelivery)
     mailer.send(config.addr_from, [registration.email], email.message)
