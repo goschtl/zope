@@ -4,10 +4,10 @@ Changes
 0.2.0 (unreleased)
 ------------------
 
- * ...
+- Use IMailDelivery interface instead of IMailer.
 
 
 0.1.0 (2008-03-28)
 ------------------
 
- * Initial release.
+- Initial release.
