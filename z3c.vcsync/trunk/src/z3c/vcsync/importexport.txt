@@ -16,7 +16,9 @@ We define a very simple content object we want to export::
   ...   def __repr__(self):
   ...     return "<Item %s with payload %s>" % (self.__name__, self.payload)
 
-We have already defined a ``Container`` object before.
+We have already defined a ``Container`` object before::
+
+  >>> from z3c.vcsync.tests import Container
 
 Let's set up some objects to export::
 
@@ -61,6 +63,7 @@ Now we can export our tree to the filesystem by passing the root
 object to the ``export`` function:
 
   >>> from z3c.vcsync import export
+  >>> from z3c.vcsync.tests import create_test_dir
   >>> target = create_test_dir()
   >>> export(data, target)
 

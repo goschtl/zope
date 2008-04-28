@@ -64,9 +64,10 @@ We can now use the adapter::
 Export persistent state to version control system checkout
 ----------------------------------------------------------
 
-Let's imagine we have this object structure consisting of a container
-with some items and sub-containers in it::
+We have a object structure consisting of a container with some
+items and sub-containers in it::
 
+  >>> from z3c.vcsync.tests import Container
   >>> data = Container()
   >>> data.__name__ = 'root'
   >>> data['foo'] = Item(payload=1)
@@ -83,15 +84,17 @@ This object structure has some test payload data::
 
 We have a checkout in testpath on the filesystem::
 
+  >>> from z3c.vcsync.tests import create_test_dir, TestCheckout
   >>> testpath = create_test_dir()
   >>> checkout = TestCheckout(testpath)
 
 We also have a test state representing the object data::
 
-  >>> state = TestState(data)
+  >>> from z3c.vcsync.tests import TestAllState
+  >>> state = TestAllState(data)
 
 The test state will always return a list of all objects. We pass in
-``None`` for the revision_nr here, as the TestState ignores this
+``None`` for the revision_nr here, as the ``TestAllState`` ignores this
 information anyway::
 
   >>> sorted([obj.__name__ for obj in state.objects(None)])
@@ -378,7 +381,7 @@ Let's load up the contents from the filesystem now, into a new container::
 In order to load into a different container, we need to set up a new
 synchronizer with a new state::
 
-  >>> s = Synchronizer(checkout, TestState(container2))
+  >>> s = Synchronizer(checkout, TestAllState(container2))
 
 We can now do the loading::
 

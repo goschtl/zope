@@ -6,12 +6,13 @@ import py.path
 from py.__.path.svn import svncommon
 from datetime import datetime
 import grok
+from zope import component
 
 from zope.interface import implements, Interface
 from zope.app.container.interfaces import IContainer
 from zope.exceptions.interfaces import DuplicationError
 
-from z3c.vcsync.interfaces import (ISerializer, IDump, IFactory,
+from z3c.vcsync.interfaces import (ISerializer, IDump, IFactory, IParser,
                                    IState, ICheckout)
 from z3c.vcsync import vc
 
@@ -47,14 +48,79 @@ class TestCheckout(object):
     def revision_nr(self):
         return self._revision_nr
  
-class TestState(vc.AllState):
+class TestAllState(vc.AllState):
     
     def __init__(self, root):
-        super(TestState, self).__init__(root)
+        super(TestAllState, self).__init__(root)
         self.removed_paths = []
 
     def removed(self, revision_nr):
         return self.removed_paths
+
+class Item(object):
+    def __init__(self, payload):
+        self.payload = payload
+    def _get_payload(self):
+        return self._payload
+    def _set_payload(self, value):
+        self._payload = value
+        self.revision_nr = self.get_revision_nr()
+    payload = property(_get_payload, _set_payload)
+
+class TestState(object):
+    implements(IState)
+    def __init__(self, root):
+        self.root = root
+        self._removed = []
+    def set_revision_nr(self, nr):
+        self.root.nr = nr
+    def get_revision_nr(self):
+        try:
+            return self.root.nr
+        except AttributeError:
+            return 0
+    def removed(self, revision_nr):
+        return self._removed
+    def objects(self, revision_nr):
+        for container in self._containers(revision_nr):
+            for value in container.values():
+                if isinstance(value, Container):
+                    continue
+                if value.revision_nr >= revision_nr:
+                    yield value
+    def _containers(self, revision_nr):
+        return self._containers_helper(self.root)
+    def _containers_helper(self, container):
+        yield container
+        for obj in container.values():
+            if not isinstance(obj, Container):
+                continue
+            for sub_container in self._containers_helper(obj):
+                yield sub_container
+
+class ItemSerializer(grok.Adapter):
+    grok.provides(ISerializer)
+    grok.context(Item)
+    def serialize(self, f):
+        f.write(str(self.context.payload))
+        f.write('\n')
+    def name(self):
+        return self.context.__name__ + '.test'
+
+class ItemParser(grok.GlobalUtility):
+    grok.provides(IParser)
+    grok.name('.test')
+    def __call__(self, object, path):
+        object.payload = int(path.read())
+
+class ItemFactory(grok.GlobalUtility):
+  grok.provides(IFactory)
+  grok.name('.test')
+  def __call__(self, path):
+      parser = component.getUtility(IParser, '.test')
+      item = Item(None) # dummy payload
+      parser(item, path)
+      return item
 
 class Container(object):
     implements(IContainer)
@@ -88,6 +154,16 @@ class Container(object):
 
     def __repr__(self):
         return "<Container %s>" % (self.__name__)
+
+class ContainerParser(grok.GlobalUtility):
+    grok.provides(IParser)
+    def __call__(self, object, path):
+        pass
+
+class ContainerFactory(grok.GlobalUtility):
+    grok.provides(IFactory)
+    def __call__(self, path):
+        return Container()
 
 def svn_repo_wc():
     """Create an empty SVN repository.
@@ -124,20 +200,7 @@ def create_test_dir():
     _test_dirs.append(dirpath)
     return py.path.local(dirpath)
 
-def rel_paths(checkout, paths):
-    result = []
-    start = len(checkout.path.strpath)
-    for path in paths:
-        result.append(path.strpath[start:])
-    return sorted(result)
-
-
-globs = {'Container': Container,
-         'TestCheckout': TestCheckout,
-         'TestState': TestState,
-         'create_test_dir': create_test_dir,
-         'rel_paths': rel_paths,
-         'svn_repo_wc': svn_repo_wc}
+globs = {}
 
 def test_suite():
     suite = unittest.TestSuite([

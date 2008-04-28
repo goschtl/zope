@@ -83,39 +83,7 @@ In this example, we will use a simpler, less efficient, implementation
 that goes through a content to find changes. It tracks the
 revision number as a special attribute of the root object::
 
-  >>> from zope.interface import implements
-  >>> from z3c.vcsync.interfaces import IState
-  >>> class TestState(object):
-  ...     implements(IState)
-  ...     def __init__(self, root):
-  ...         self.root = root
-  ...         self._removed = []
-  ...     def set_revision_nr(self, nr):
-  ...         self.root.nr = nr
-  ...     def get_revision_nr(self):
-  ...         try:
-  ...             return self.root.nr
-  ...         except AttributeError:
-  ...             return 0
-  ...     def removed(self, revision_nr):
-  ...         return self._removed
-  ...     def objects(self, revision_nr):
-  ...         for container in self._containers(revision_nr):
-  ...             for value in container.values():
-  ...                 if isinstance(value, Container):
-  ...                     continue
-  ...                 if value.revision_nr >= revision_nr:
-  ...                     yield value
-  ...     def _containers(self, revision_nr):
-  ...         return self._containers_helper(self.root)
-  ...     def _containers_helper(self, container):
-  ...         yield container
-  ...         for obj in container.values():
-  ...             if not isinstance(obj, Container):
-  ...                 continue
-  ...             for sub_container in self._containers_helper(obj):
-  ...                 yield sub_container
-
+  >>> from z3c.vcsync.tests import TestState
 
 The content
 -----------
@@ -129,28 +97,23 @@ maintain the revision number of objects by using an annotation and
 listening to ``IObjectModifiedEvent``, but we will use a property
 here::
 
-  >>> class Item(object):
-  ...   def __init__(self, payload):
-  ...     self.payload = payload
-  ...   def _get_payload(self):
-  ...     return self._payload
-  ...   def _set_payload(self, value):
-  ...     self._payload = value
-  ...     self.revision_nr = get_revision_nr()
-  ...   payload = property(_get_payload, _set_payload)
+  >>> from z3c.vcsync.tests import Item
 
-This code needs a global ``get_revision_nr`` function available to get access
+This code needs a ``get_revision_nr`` method available to get access
 to the revision number of last synchronization. For now we'll just define
 this to return 0, but we will change this later::
 
-  >>> def get_revision_nr():
+  >>> def get_revision_nr(self):
   ...    return 0
+  >>> Item.get_revision_nr = get_revision_nr
 
-Besides the ``Item`` class, we also have a ``Container`` class, set up
-before this test started. It is a class that implements enough of the
-dictionary API and implements the ``IContainer`` interface. A normal
-Zope 3 folder or Grok container will also work. Let's now set up the
-tree::
+Besides the ``Item`` class, we also have a ``Container`` class::
+
+  >>> from z3c.vcsync.tests import Container
+
+It is a class that implements enough of the dictionary API and
+implements the ``IContainer`` interface. A normal Zope 3 folder or
+Grok container will also work. Let's now set up the tree::
 
   >>> data = Container()
   >>> data.__name__ = 'root'
@@ -185,44 +148,21 @@ We need to provide a serializer for the Item class that takes an item
 and writes it to the filesystem to a file with a particular extension
 (``.test``)::
 
-  >>> import grok
-  >>> from z3c.vcsync.interfaces import ISerializer
-  >>> class ItemSerializer(grok.Adapter):
-  ...     grok.provides(ISerializer)
-  ...     grok.context(Item)
-  ...     def serialize(self, f):
-  ...         f.write(str(self.context.payload))
-  ...         f.write('\n')
-  ...     def name(self):
-  ...         return self.context.__name__ + '.test'
+  >>> from z3c.vcsync.tests import ItemSerializer
 
 We also need to provide a parser to load an object from the filesystem
 back into Python, overwriting the previously existing object::
 
-  >>> from z3c.vcsync.interfaces import IParser
-  >>> class ItemParser(grok.GlobalUtility):
-  ...   grok.provides(IParser)
-  ...   grok.name('.test')
-  ...   def __call__(self, object, path):
-  ...      object.payload = int(path.read())
+  >>> from z3c.vcsync.tests import ItemParser
 
 Sometimes there is no previously existing object in the Python tree,
 and we need to add it. To do this we implement a factory (where we use
 the parser for the real work)::
 
-  >>> from z3c.vcsync.interfaces import IFactory
-  >>> from zope import component
-  >>> class ItemFactory(grok.GlobalUtility):
-  ...   grok.provides(IFactory)
-  ...   grok.name('.test')
-  ...   def __call__(self, path):
-  ...       parser = component.getUtility(IParser, '.test')
-  ...       item = Item(None) # dummy payload
-  ...       parser(item, path)
-  ...       return item
-
 Both parser and factory are registered per extension, in this case
 ``.test``. This is the name of the utility.
+
+  >>> from z3c.vcsync.tests import ItemFactory
 
 We register these components::
 
@@ -237,16 +177,7 @@ We also need a parser and factory for containers, registered for the
 empty extension (thus no special utility name). These can be very
 simple::
 
-  >>> class ContainerParser(grok.GlobalUtility):
-  ...     grok.provides(IParser)
-  ...     def __call__(self, object, path):
-  ...         pass
-
-  >>> class ContainerFactory(grok.GlobalUtility):
-  ...     grok.provides(IFactory)
-  ...     def __call__(self, path):
-  ...         return Container()
-
+  >>> from z3c.vcsync.tests import ContainerParser, ContainerFactory
   >>> grok.testing.grok_component('ContainerParser', ContainerParser)
   True
   >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
@@ -258,6 +189,7 @@ Setting up the SVN repository
 Now we need an SVN repository to synchronize with. We create a test
 SVN repository now and create a svn path to a checkout::
 
+  >>> from z3c.vcsync.tests import svn_repo_wc
   >>> repo, wc = svn_repo_wc()
 
 We can now initialize the ``SvnCheckout`` object with the SVN path to
@@ -279,14 +211,15 @@ this example to get back to the last revision number::
 
   >>> current_synchronizer = s
 
-It's now time to set up our ``get_revision_nr`` function a bit better,
+It's now time to set up our ``get_revision_nr`` method a bit better,
 making use of the information in the current synchronizer. In actual
 applications we'd probably get the revision number directly from the
 content, and there would be no need to get back to the synchronizer
 (it doesn't need to be persistent but can be constructed on demand)::
 
-  >>> def get_revision_nr():
+  >>> def get_revision_nr(self):
   ...    return current_synchronizer.state.get_revision_nr()
+  >>> Item.get_revision_nr = get_revision_nr
 
 Synchronization
 ---------------
@@ -458,6 +391,8 @@ The found version in this case will reside in the same subdirectory,
   >>> info = found_s.sync("Synchronize")
   >>> found_data['root']['sub']['qux'].payload
   36
+
+Let's recreate this conflict again.
 
 Folder conflicts
 ----------------
