@@ -160,8 +160,10 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
                                             blob_dir=blob_dir,
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
-        self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
-                                                           self._storages)
+        blob_dir = tempfile.mkdtemp()
+        self._blob_dirs.append(blob_dir)
+        self._storage = gocept.zeoraid.storage.RAIDStorage(
+            'teststorage', self._storages, blob_dir=blob_dir)
 
     def tearDown(self):
         self._storage.close()
@@ -672,6 +674,9 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
             oid, self._storage.lastTransaction())
         self.assertEquals('I am a happy blob.',
                           open(stored_file_name, 'r').read())
+        expected = self._storage.blob_fshelper.getBlobFilename(
+            oid, self._storage.lastTransaction())
+        self.assertEquals(expected, stored_file_name)
 
     def test_storeBlob_degrading1(self):
         oid = self._storage.new_oid()

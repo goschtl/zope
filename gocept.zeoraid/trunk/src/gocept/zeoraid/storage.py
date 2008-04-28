@@ -72,6 +72,8 @@ class RAIDStorage(object):
                               ZEO.interfaces.IServeable,
                               )
 
+    blob_fshelper = None
+
     closed = False
     _transaction = None
 
@@ -390,7 +392,59 @@ class RAIDStorage(object):
 
     def loadBlob(self, oid, serial):
         """Return the filename of the Blob data for this OID and serial."""
-        return self._apply_single_storage('loadBlob', (oid, serial))
+        # XXX needs some refactoring
+        blob_filename = self.blob_fshelper.getBlobFilename(oid, serial)
+        if os.path.exists(blob_filename):
+            return blob_filename
+
+        backend_filename = self._apply_single_storage('loadBlob',
+                                                      (oid, serial))
+        lock_filename = blob_filename + '.lock'
+        self.blob_fshelper.createPathForOID(oid)
+        try:
+            lock = ZODB.lock_file.LockFile(lock_filename)
+        except ZODB.lock_file.LockError:
+            while True:
+                time.sleep(0.1)
+                try:
+                    lock = ZODB.lock_file.LockFile(lock_filename)
+                except ZODB.lock_file.LockError:
+                    pass
+                else:
+                    # We have the lock. We should be able to get the file now.
+                    lock.close()
+                    try:
+                        os.remove(lock_filename)
+                    except OSError:
+                        pass
+                    break
+
+            if os.path.exists(blob_filename):
+                return blob_filename
+
+            return None # XXX see ClientStorage
+
+        try:
+            try:
+                os.link(backend_filename, blob_filename)
+            except OSError:
+                ZODB.blob.copied("Copied blob file %r to %r.",
+                                 backend_filename, blob_filename)
+                file1 = open(backend_filename, 'rb')
+                file2 = open(blob_filename, 'wb')
+                try:
+                    ZODB.utils.cp(file1, file2)
+                finally:
+                    file1.close()
+                    file2.close()
+        finally:
+            lock.close()
+            try:
+                os.remove(lock_filename)
+            except OSError:
+                pass
+
+        return blob_filename
 
     def temporaryDirectory(self):
         """Return a directory that should be used for uncommitted blob data.
