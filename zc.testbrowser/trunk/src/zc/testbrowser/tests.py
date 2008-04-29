@@ -76,8 +76,11 @@ class TestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
     def do_POST(self):
         body = self.rfile.read(int(self.headers['content-length']))
-        values = cgi.parse_qs(body)
-        self.wfile
+        type, params = cgi.parse_header(self.headers['content-type'])
+        if type == 'multipart/form-data':
+            values = cgi.parse_multipart(StringIO(body), params)
+        else:
+            values = cgi.parse_qs(body)
         self.send_response(200)
         self.send_header('Content-type', 'text/plain')
         self.end_headers()

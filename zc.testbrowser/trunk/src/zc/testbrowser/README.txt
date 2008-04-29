@@ -931,6 +931,18 @@ But when sending an image, you can also specify the coordinate you clicked:
 #    >>> browser.contents
 #    "...'image-value.x': ['50']...'image-value.y': ['25']..."
 
+Another interesting aspect of submitting a form is the correct submission of
+the file data.
+
+    >>> browser.open('controls.html')
+    >>> ctrl = browser.getControl('File Control')
+    >>> import cStringIO
+    >>> ctrl.add_file(cStringIO.StringIO('File contents'),
+    ...               'text/plain', 'test.txt')
+    >>> browser.getControl('Submit This').click()
+    >>> browser.contents
+    "...'file-value': ['File contents'],..."
+
 Forms
 -----
 

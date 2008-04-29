@@ -3,6 +3,7 @@ import re
 import simplejson
 import socket
 import telnetlib
+import tempfile
 import time
 import urlparse
 import zc.testbrowser.browser
@@ -404,6 +405,21 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
                             % self.type)
         if isinstance(file, str):
             file = StringIO(file)
+        # Instead of honoring the filename, we are storing the data in a
+        # temporary file and reference it:
+        fn = os.path.join(tempfile.mkdtemp(), os.path.split(filename)[1])
+        dataFile = open(fn, 'w')
+        dataFile.write(file.read())
+        dataFile.close()
+        file.seek(0)
+        # Due to a security feature for user-generated Javascript code,
+        # browsers do not allow the file upload field's value attribute to be
+        # set. But, if we execute the Javascript directly via MozRepl, then
+        # this security restriction does not exist.
+        id = self.browser.execute('tb_tokens[%s].id' % self.token)
+        self.browser.execute(
+            'content.document.getElementById("%s").value = %s' % (
+            id, simplejson.dumps(fn)))
         # HTML only supports ever setting one file for one input control
         self._file = (file, content_type, filename)
 
