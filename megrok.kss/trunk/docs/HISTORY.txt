@@ -1,0 +1,13 @@
+Changelog for megrok.kss
+
+    (name of developer listed in brackets)
+
+megrok.kss - 0.2 Unreleased
+
+    - ...
+   
+megrok.kss - 0.1 Released 2008-04-30
+  
+    - basic kss.core support
+      [gotcha]
+
