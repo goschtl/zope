@@ -28,7 +28,7 @@ setup(name='megrok.kss',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok>=0.12',
-                        'kss.core==1.4',
+                        'kss.core>=1.4<1.4.99',
                         # -*- Extra requirements: -*-
                         ],
       entry_points="""
