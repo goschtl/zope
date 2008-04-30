@@ -106,7 +106,9 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
             forker.shutdown_zeo_server(server)
         for pid in self._pids:
             os.waitpid(pid, 0)
-        # XXX delete filestorage files
+        for file in self._server_storage_files:
+            if os.path.exists(file):
+                os.unlink(file)
 
 class ReplicationStorageTests(BasicStorage.BasicStorage,
         TransactionalUndoStorage.TransactionalUndoStorage,
@@ -151,7 +153,7 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
             self._storage.storages_optimal[index]]
 
     def setUp(self):
-        self._blob_dirs = []
+        self.temp_paths = []
         self._servers = []
         self._storages = []
         self._pids = []
@@ -165,7 +167,7 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
                 zconf, port)
             self._pids.append(pid)
             blob_dir = tempfile.mkdtemp()
-            self._blob_dirs.append(blob_dir)
+            self.temp_paths.append(blob_dir)
             self._servers.append(adminaddr)
             self._storages.append(ZEOOpener(zport, storage='1',
                                             cache_size=12,
@@ -173,7 +175,7 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         blob_dir = tempfile.mkdtemp()
-        self._blob_dirs.append(blob_dir)
+        self.temp_paths.append(blob_dir)
         self._storage = gocept.zeoraid.storage.RAIDStorage(
             'teststorage', self._storages, blob_dir=blob_dir)
 
@@ -183,11 +185,14 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
             forker.shutdown_zeo_server(server)
         for pid in self._pids:
             os.waitpid(pid, 0)
+        for path in self.temp_paths:
+            shutil.rmtree(path)
 
 
 class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
 
     def setUp(self):
+        self.temp_paths = []
         self._servers = []
         self._storages = []
         self._pids = []
@@ -909,6 +914,34 @@ class FailingStorageTestBase(object):
         self.assert_(storage.blob_fshelper.isSecure(
             storage.temporaryDirectory()))
         shutil.rmtree(working_dir)
+
+    def test_readonly(self):
+        working_dir = tempfile.mkdtemp()
+        self.temp_paths.append(working_dir)
+
+        storage = ZODB.config.storageFromString("""
+        %%import gocept.zeoraid
+        <raidstorage>
+          read-only false
+          <filestorage foo>
+            path %(wd)s/Data.fs
+          </filestorage>
+        </raidstorage>
+        """ % {'wd': working_dir})
+        self.assertEquals(False, storage.isReadOnly())
+        storage.close()
+
+        storage = ZODB.config.storageFromString("""
+        %%import gocept.zeoraid
+        <raidstorage>
+          read-only true
+          <filestorage foo>
+            path %(wd)s/Data.fs
+          </filestorage>
+        </raidstorage>
+        """ % {'wd': working_dir})
+        self.assertEquals(True, storage.isReadOnly())
+        storage.close()
 
     def test_supportsUndo_required(self):
         class Opener(object):

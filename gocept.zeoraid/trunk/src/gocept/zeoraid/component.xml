@@ -47,6 +47,13 @@ this into a stateless RAID server that can be made HA easily (hot-standby).
             </description>
         </key>
 
+        <key name="read-only" required="no"
+             datatype="boolean" default="false">
+            <description>
+                Whether the RAID should be opened in read-only mode.
+            </description>
+        </key>
+
         <multisection 
             type="ZODB.storage" 
             name="+"

@@ -18,7 +18,7 @@ Stabilization
 Cleanup
 -------
 
-- Offer the `read only` option on RAIDStorage through ZConfig schema.
+- XXX review
 
 Future
 ======

@@ -592,7 +592,7 @@ class RAIDStorage(object):
             result = method(*args, **kw)
         except ZODB.POSException.StorageError:
             # Handle StorageErrors first, otherwise they would be swallowed
-            # when POSErrors are.
+            # when POSErrors are handled.
             reliable = False
         except (ZODB.POSException.POSError,
                 transaction.interfaces.TransactionError), e:
@@ -601,9 +601,9 @@ class RAIDStorage(object):
             raise
         except Exception:
             reliable = False
-        if (expect_connected and
-            isinstance(storage, ZEO.ClientStorage.ClientStorage) and
-            not storage.is_connected()):
+
+        if (isinstance(storage, ZEO.ClientStorage.ClientStorage) and
+            expect_connected and not storage.is_connected()):
             reliable = False
 
         if not reliable:

@@ -17,6 +17,7 @@
 import ZODB.config
 import gocept.zeoraid.storage
 
+
 class Storage(ZODB.config.BaseConfig):
 
     def open(self):
@@ -24,4 +25,5 @@ class Storage(ZODB.config.BaseConfig):
             self.name,
             self.config.storages,
             blob_dir=self.config.blob_dir,
+            read_only=self.config.read_only,
             shared_blob_dir=self.config.shared_blob_dir)
