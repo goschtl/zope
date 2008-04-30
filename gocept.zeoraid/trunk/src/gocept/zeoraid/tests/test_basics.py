@@ -224,6 +224,16 @@ class FailingStorageTestBase(object):
     def _disable_storage(self, index):
         self._storage.raid_disable(self._storage.storages_optimal[index])
 
+    def test_apply_storage_disconnect(self):
+        backend_name = self._storage.storages_optimal[0]
+        backend_storage = self._storage.storages[backend_name]
+        backend_storage.close()
+
+        reliable, oid = self._storage._RAIDStorage__apply_storage(
+            backend_name, 'new_oid')
+        self.assertEquals(False, reliable)
+        self.assertEquals([backend_name], self._storage.storages_degraded)
+
     def test_close(self):
         self._storage.close()
         self.assertEquals(self._storage.closed, True)

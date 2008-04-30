@@ -12,9 +12,6 @@ Stabilization
 
 - Disallow recovering multiple storages in parallel.
 
-- The exception branch for ClientDisconnected (StorageError) is not tested
-  during unit/functional tests (__apply_storage)
-
 Cleanup
 -------
 
