@@ -705,7 +705,7 @@ class RAIDStorage(object):
             self, storage, self._finalize_recovery,
             recover_blobs=(self.blob_fshelper and not self.shared_blob_dir))
         for msg in recovery():
-            logger.info(str(msg))
+            logger.debug(str(msg))
 
     def _finalize_recovery(self, storage):
         self._write_lock.acquire()
