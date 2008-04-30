@@ -1,0 +1,14 @@
+=====================
+Known bugs and issues
+=====================
+
+
+Compatibility with ZODB `versions`
+==================================
+
+ZEORaid is not compatible with ZODB's `version` feature as it is deprecated
+and actively being removed.
+
+ZEORaid has API-compatibility with those releases of the ZODB that provide and
+use versions but will actively prevent any usage of the version features.
+

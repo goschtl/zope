@@ -1,0 +1,74 @@
+All valid front end configurations can be combined with all valid back end
+configurations.
+
+Front end configuration
+=======================
+
+No support or no blob support configured
+----------------------------------------
+
+- andere einstellungen sind irrelevant, sollten auf `unconfigured` stehen
+
+Blobs via ZEO protocol
+----------------------
+
+ClientStorage options:
+
+- blob-dir configured to a seperate physical directory on each client
+
+- shared-blob-dir set to `false`
+
+Blobs via file system shared with ZEORaid
+-----------------------------------------
+
+- blob-dir configured to a directory shared between the zeo clients and the
+  RAIDStorage's blob-directory (read/write for all participants)
+
+- shared-blob-dir set to `true`
+
+
+Back end configuration
+======================
+
+RAIDStorage and back-ends with a single shared file system
+----------------------------------------------------------
+
+- blob-dir configured to a directory shared between raidstorage,
+  clientstorages and back-end servers (read/write for all participants)
+
+- shared-blob-dir for raidstorage and clientstorages set to `true`
+
+
+RAIDStorage via storage API and back-ends with individual shared file systems
+-----------------------------------------------------------------------------
+
+- RAIDStorage and ClientStorages have separate blob directories
+
+- each ClientStorage shares its blob directory with its ZEO server
+
+- RAIDStorage has shared-blob-dir set to false
+
+- ClientStorages have shared-blob-dir set to true
+
+
+RAIDStorage via storage API and back end via ZEO protocol
+---------------------------------------------------------
+
+- blob-dir configured to separate directories in raidstorage, clientstorages
+  and back-end servers
+
+- shared-blob-dir for raidstorage and clientstorages set to `false`
+
+
+Invalid combinations: mixture of shared and non-shared
+------------------------------------------------------
+
+- The raidstorage having a shared directory with the zeo clients but the zeo
+  clients not sharing with the back end servers is unsupported.
+
+- The raidstorage using the storage API against zeo clients which share their
+  blob directory is unsupported.
+
+Warning: ZEORaid can not automatically detect those invalid combinations and
+might destroy data if those are configured.
+

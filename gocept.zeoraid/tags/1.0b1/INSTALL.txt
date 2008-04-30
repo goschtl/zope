@@ -1,0 +1,90 @@
+==================
+Installing ZEORaid
+==================
+
+Note: These are preliminary instructions for installing the test releases for
+ZEORaid. The actual deployment mechanisms are not yet in place and will be
+documented in this file in the future.
+
+
+Quick installation
+==================
+
+This installation procedure will install a ZEORaid server connected to 2 local ZEO
+servers.
+
+You can tweak the settings in `parts/*` to 
+
+1. Check out the ZEORaid code and buildout:
+
+  $ svn co svn://svn.zope.org/repos/main/gocept.zeoraid/tags/1.0a1 gocept.zeoraid
+
+2. Copy the `buildout.cfg.example` file to `buildout.cfg`:
+
+  $ cp buildout.cfg.example buildout.cfg
+
+3. Bootstrap and run the buildout with Python 2.4:
+
+  $ python2.4 bootstrap.py
+  $ bin/buildout
+
+4. Start the servers:
+
+  $ bin/server1 start
+  $ bin/server2 start
+  $ bin/zeoraid start
+
+Run the tests
+=============
+
+You might want to run the test suite to make sure that ZEORaid works as
+expected on your platform:
+
+  $ bin/test -vv --all
+
+If you see *any* test failures please report them as bugs.
+
+
+Reporting bugs
+==============
+
+The bug tracker lives at http://bugs.launchpad.net/gocept.zeoraid
+
+Please file bugs there and provide tracebacks.
+
+
+Customizing your configuration
+==============================
+
+The parts directory contains the configuration for ZEORaid and the two ZEO
+servers. Those appear like normal ZEO server configurations and can be tweaked
+by you to experiment with different settings.
+
+Note that those settings are overridden when re-running buildout.
+
+If you want to connect ZEORaid to existing ZEO servers, please remember:
+
+ - ZEORaid needs the `gocept-iteration` branch to run on both the ZEORaid
+   server and the backend ZEO servers. This branch will be merged to the trunk
+   after completion and review and should be available in the final ZODB 3.9
+   release.
+
+ - Keep backups of your data. ZEORaid has good unit test coverage but hasn't
+   seen live action yet, so keep this in mind.
+
+
+Accessing the management script
+===============================
+
+The management script is still a bit rough. Here's how you call it:
+
+  $ bin/client src/gocept/zeoraid/manage.py <command> [args]
+
+The available commands are:
+
+  details
+  status
+  disable [storage]
+  recover [storage]
+
+The script currently always expects ZEORaid to run on localhost:8100.
