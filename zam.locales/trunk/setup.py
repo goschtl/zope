@@ -53,16 +53,20 @@ setup (
         test = [
             'zope.testing',
             ],
+        extract = [
+            'zam.api',
+            'zam.skin',
+            'zamplugin.control',
+            'zamplugin.contents',
+            'zamplugin.error',
+            'zamplugin.navigation',
+            'zamplugin.sampledata',
+            'zamplugin.sitemanager',
+            ],
         ),
     install_requires = [
         'setuptools',
-        'zam.api',
-        'zam.skin',
-        'zamplugin.control',
-        'zamplugin.error',
-        'zamplugin.navigation',
-        'zamplugin.sampledata',
-        'zamplugin.sitemanager',
+        'zope.i18nmessageid',
         ],
     zip_safe = False,
 )
