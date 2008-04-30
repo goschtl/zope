@@ -2,11 +2,18 @@
 megrok.kss
 **********
 
-Grokkish support for KSS
+Grokkish support for KSS.
 
 There is a `tutorial
 <http://grok.zope.org/documentation/how-to/adding-ajax-with-kss-to-grok>`_.
 
+****
+Grok
+****
+
+`Grok <http://grok.zope.org>`_ is a web application framework for Python developers. It is aimed at both 
+beginners and very experienced web developers. Grok has an emphasis on agile development. 
+Grok is easy and powerful.
 
 **************************
 Kinetic Style Sheets (KSS)
