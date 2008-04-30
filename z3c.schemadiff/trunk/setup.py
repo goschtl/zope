@@ -26,7 +26,7 @@ setup(name='z3c.schemadiff',
       long_description=read('README.txt'),
       keywords = "zope3 diff schema",
       classifiers = [
-          'Development Status :: 1 - Alpha',
+          'Development Status :: 4 - Beta',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
