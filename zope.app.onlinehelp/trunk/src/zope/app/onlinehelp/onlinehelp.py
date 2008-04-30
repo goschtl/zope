@@ -22,11 +22,12 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+from zope.component import getGlobalSiteManager, getUtilitiesFor
 from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
 from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.api import traverse
 
-from zope.app import zapi
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 
@@ -76,8 +77,7 @@ class OnlineHelp(OnlineHelpTopic):
     'Help 2'
 
     Additionally it should appear as a utility
-    >>> from zope.app import zapi
-    >>> topic = zapi.getUtility(IOnlineHelpTopic,'help2')
+    >>> topic = component.getUtility(IOnlineHelpTopic,'help2')
     >>> topic.title
     'Help 2'
 
@@ -90,7 +90,7 @@ class OnlineHelp(OnlineHelpTopic):
     False
 
     But it is available as a utility
-    >>> topic = zapi.getUtility(IOnlineHelpTopic,'missing/help3')
+    >>> topic = component.getUtility(IOnlineHelpTopic,'missing/help3')
     >>> topic.title
     'Help 3'
 
@@ -137,12 +137,12 @@ class OnlineHelp(OnlineHelpTopic):
         # add topic to onlinehelp hierarchy
         parent = None
         try:
-            parent = zapi.traverse(self, parent_path)
+            parent = traverse(self, parent_path)
             parent[id] = topic
         except KeyError:
             pass
 
-        for t in zapi.getUtilitiesFor(IOnlineHelpTopic):
+        for t in getUtilitiesFor(IOnlineHelpTopic):
             if parent is None:
                 if t[1].getTopicPath() == parent_path:
                     t[1][id] = topic
@@ -150,8 +150,8 @@ class OnlineHelp(OnlineHelpTopic):
                 topic[t[1].id] = t[1]
 
         # Add topic to utilities registry
-        #utils = zapi.getService(Utilities)
+        #utils = getService(Utilities)
         #utils.provideUtility(IOnlineHelpTopic, topic, topic.getTopicPath())
 
-        zapi.getGlobalSiteManager().registerUtility(
+        getGlobalSiteManager().registerUtility(
             topic, IOnlineHelpTopic, topic.getTopicPath())

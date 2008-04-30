@@ -17,10 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.component import getUtility
 from zope.i18n import translate
 from zope.publisher.browser import BrowserView
+from zope.traversing.api import getPath, joinPath
 
-from zope.app import zapi
 from zope.app.onlinehelp.interfaces import IOnlineHelp
 
 class OnlineHelpTopicTreeView(BrowserView):
@@ -28,7 +29,7 @@ class OnlineHelpTopicTreeView(BrowserView):
 
     def __init__(self, context, request):
         super(OnlineHelpTopicTreeView, self).__init__(context, request)
-        self.onlinehelp = zapi.getUtility(IOnlineHelp, "OnlineHelp")
+        self.onlinehelp = getUtility(IOnlineHelp, "OnlineHelp")
 
     def getTopicTree(self):
         """Return the tree of help topics.
@@ -119,20 +120,20 @@ class OnlineHelpTopicTreeView(BrowserView):
         title = translate(topic.title, context=self.request,
                 default=topic.title)
         if topic.parentPath:
-            url = zapi.joinPath(topic.parentPath, topic.id)
+            url = joinPath(topic.parentPath, topic.id)
         else:
             url = topic.id
         return '<a href="/++help++/%s">%s</a>\n' % (url, title)
 
     def isExpanded(self, topic):
         if topic.parentPath:
-            path = zapi.joinPath(topic.parentPath, topic.id)
+            path = joinPath(topic.parentPath, topic.id)
         else:
             path = topic.id
         try:
-            if zapi.getPath(self.context).startswith('/' + path):
+            if getPath(self.context).startswith('/' + path):
                 return True
         except:
-            # TODO: fix it, functional test doesn't like zapi.getPath? ri
+            # TODO: fix it, functional test doesn't like getPath? ri
             pass
         return False

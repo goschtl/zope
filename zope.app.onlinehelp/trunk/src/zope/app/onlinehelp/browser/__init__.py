@@ -17,11 +17,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.component import createObject, getMultiAdapter
 from zope.security.proxy import removeSecurityProxy
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserView
+from zope.traversing.api import getName, getParent
 
-from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
@@ -36,9 +37,8 @@ class OnlineHelpTopicView(BrowserView):
 
     def topicContent(self):
         """ render the source of the help topic """
-        source = zapi.createObject(self.context.type,
-                                   self.context.source)
-        view = zapi.getMultiAdapter((source, self.request))
+        source = createObject(self.context.type, self.context.source)
+        view = getMultiAdapter((source, self.request))
         html = view.render()
         return html
 
@@ -67,7 +67,7 @@ class ContextHelpView(BrowserView):
     def getContextualTopicView(self):
         """Retrieve and render the source of a context help topic """
         topic = self.getContextHelpTopic()
-        view = zapi.getMultiAdapter((topic, self.request), name='index.html')
+        view = getMultiAdapter((topic, self.request), name='index.html')
         return view.renderTopic()
 
     def getContextHelpTopic(self):
@@ -93,14 +93,12 @@ class ContextHelpView(BrowserView):
         if IBrowserView.providedBy(help_context):
             # called from a view
             self.topic = getTopicFor(
-                zapi.getParent(help_context),
-                zapi.getName(help_context)
+                getParent(help_context),
+                getName(help_context)
                 )
             if self.topic is None:
                 # nothing found for view try context only
-                self.topic = getTopicFor(
-                    zapi.getParent(help_context)
-                    )
+                self.topic = getTopicFor(getParent(help_context))
         else:
             # called without view
             self.topic = getTopicFor(help_context)

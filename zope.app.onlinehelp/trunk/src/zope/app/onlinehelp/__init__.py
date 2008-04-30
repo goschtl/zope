@@ -22,9 +22,9 @@ __docformat__ = 'restructuredtext'
 import os
 
 import zope
+from zope.component import getUtilitiesFor
 from zope.interface import providedBy
 from zope.testing import cleanup
-from zope.app import zapi
 
 from interfaces import IOnlineHelpTopic
 from onlinehelp import OnlineHelp
@@ -119,7 +119,7 @@ def getTopicFor(obj, view=None):
     """
     topic = None
     for interface in providedBy(obj):
-        for t in zapi.getUtilitiesFor(IOnlineHelpTopic):
+        for t in getUtilitiesFor(IOnlineHelpTopic):
             if t[1].interface==interface and t[1].view==view:
                 topic = t[1]
                 break

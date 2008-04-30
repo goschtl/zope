@@ -22,6 +22,7 @@ import os
 
 from persistent import Persistent
 from zope.interface import implements
+from zope.component import getGlobalService, servicenames
 from zope.configuration.exceptions import ConfigurationError
 from zope.contenttype import guess_content_type
 
@@ -462,7 +463,7 @@ def OnlineHelpTopicFactory(name, schema, label, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapters)
+    s = getGlobalService(servicenames.Adapters)
     s.register((for_, layer), Interface, name, class_)
 
 
