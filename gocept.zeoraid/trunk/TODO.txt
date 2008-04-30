@@ -20,8 +20,6 @@ Cleanup
 
 - Offer the `read only` option on RAIDStorage through ZConfig schema.
 
-- Remove print statements and provide logging.
-
 Future
 ======
 
