@@ -451,18 +451,7 @@ class RAIDStorage(object):
             return None # XXX see ClientStorage
 
         try:
-            try:
-                os.link(backend_filename, blob_filename)
-            except OSError:
-                ZODB.blob.copied("Copied blob file %r to %r.",
-                                 backend_filename, blob_filename)
-                file1 = open(backend_filename, 'rb')
-                file2 = open(blob_filename, 'wb')
-                try:
-                    ZODB.utils.cp(file1, file2)
-                finally:
-                    file1.close()
-                    file2.close()
+            optimistic_copy(backend_filename, blob_filename)
         finally:
             lock.close()
             try:
@@ -770,3 +759,20 @@ class RAIDStorage(object):
                     os.remove(path)
             except OSError:
                 pass
+
+
+def optimistic_copy(source, target):
+    """Try creating a hard link to source at target. Fall back to copying the
+    file.
+    """
+    try:
+        os.link(source, target)
+    except OSError:
+        ZODB.blob.copied("Copied blob file %r to %r.", source, target)
+        file1 = open(source, 'rb')
+        file2 = open(target, 'wb')
+        try:
+            ZODB.utils.cp(file1, file2)
+        finally:
+            file1.close()
+            file2.close()

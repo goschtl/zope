@@ -13,8 +13,13 @@
 ##############################################################################
 """Online storage recovery."""
 
+import tempfile
+
 import transaction
 import ZODB.utils
+import ZODB.POSException
+
+import gocept.zeoraid.storage
 
 
 def continuous_storage_iterator(storage):
@@ -44,10 +49,11 @@ class Recovery(object):
 
     """
 
-    def __init__(self, source, target, finalize):
+    def __init__(self, source, target, finalize, recover_blobs=True):
         self.source = source
         self.target = target
         self.finalize = finalize
+        self.recover_blobs = hasattr(source, 'loadBlob') and recover_blobs
 
     def __call__(self):
         """Performs recovery."""
@@ -104,6 +110,21 @@ class Recovery(object):
             self.target.tpc_begin(txn_info, txn_info.tid, txn_info.status)
 
             for r in txn_info:
+                if self.recover_blobs:
+                    try:
+                        blob_file_name = self.source.loadBlob(
+                            r.oid, txn_info.tid)
+                    except ZODB.POSException.POSKeyError:
+                        pass
+                    else:
+                        handle, temp_file_name = tempfile.mkstemp(
+                            dir=self.target.temporaryDirectory())
+                        gocept.zeoraid.storage.optimistic_copy(blob_file_name,
+                                                               temp_file_name)
+                        self.target.storeBlob(
+                            r.oid, r.tid, r.data, temp_file_name, r.version,
+                            txn_info)
+                        continue
                 self.target.restore(r.oid, r.tid, r.data, r.version,
                                     r.data_txn, txn_info)
 

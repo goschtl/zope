@@ -23,11 +23,6 @@ Stabilization
 - The exception branch for ClientDisconnected (StorageError) is not tested
   during unit/functional tests (__apply_storage)
 
-Feature-completeness
---------------------
-
-- Recovery with blob support.
-
 Cleanup
 -------
 
@@ -63,3 +58,6 @@ Future
 
 - Allow ZEORaid to startup `quickly` even when a backend zeo server is not
   available (thread-parallelize the opening of storages?)
+
+- When recovering a non-shared blob storage, validate old transactions' blob
+  files in addition to their meta data.

@@ -13,16 +13,20 @@
 ##############################################################################
 """Test harness for online recovery."""
 
+import os
 import unittest
 import tempfile
 import threading
 import time
+import shutil
 
 import transaction
 import ZODB.FileStorage
+import ZODB.blob
 import ZODB.utils
 import ZODB.tests.MinPO
 import ZODB.tests.StorageTestBase
+import ZODB.POSException
 
 import gocept.zeoraid.recovery
 
@@ -44,6 +48,21 @@ def compare(test, source, target):
             for name in 'oid', 'tid', 'data', 'version', 'data_txn':
                 test.assertEquals(getattr(source_record, name),
                                   getattr(target_record, name))
+
+            if not hasattr(source, 'loadBlob'):
+                continue
+            try:
+                source_file_name = source.loadBlob(
+                    source_record.oid, source_record.tid)
+            except ZODB.POSException.POSKeyError:
+                test.assertRaises(
+                    ZODB.POSException.POSKeyError,
+                    target.loadBlob, target_record.oid, target_record.tid)
+            else:
+                target_file_name = target.loadBlob(
+                    target_record.oid, target_record.tid)
+                test.assertEquals(open(source_file_name, 'rb').read(),
+                                  open(target_file_name, 'rb').read())
 
 
 class ContinuousStorageIterator(ZODB.tests.StorageTestBase.StorageTestBase):
@@ -89,6 +108,8 @@ class ContinuousStorageIterator(ZODB.tests.StorageTestBase.StorageTestBase):
 
 class OnlineRecovery(unittest.TestCase):
 
+    use_blobs = False
+
     def store(self, storages, tid=None, status=' ', user=None,
               description=None, extension={}):
         oid = storages[0].new_oid()
@@ -105,8 +126,16 @@ class OnlineRecovery(unittest.TestCase):
         try:
             for storage in storages:
                 storage.tpc_begin(t, tid, status)
-                # Store an object
-                r1 = storage.store(oid, ZODB.utils.z64, data, '', t)
+                if self.use_blobs:
+                    handle, blob_file_name = tempfile.mkstemp()
+                    os.close(handle)
+                    blob_file = open(blob_file_name, 'wb')
+                    blob_file.write('I am a happy blob.')
+                    blob_file.close()
+                    r1 = storage.storeBlob(
+                        oid, ZODB.utils.z64, data, blob_file_name, '', t)
+                else:
+                    r1 = storage.store(oid, ZODB.utils.z64, data, '', t)
                 # Finish the transaction
                 r2 = storage.tpc_vote(t)
                 tid = ZODB.tests.StorageTestBase.handle_serials(oid, r1, r2)
@@ -269,8 +298,50 @@ class OnlineRecovery(unittest.TestCase):
         self.compare(self.source, self.target)
 
 
+class OnlineBlobStorageRecovery(OnlineRecovery):
+
+    shared = False
+
+    def setUp(self):
+        source_blob_dir = tempfile.mkdtemp()
+        if self.shared:
+            target_blob_dir = source_blob_dir
+        else:
+            target_blob_dir = tempfile.mkdtemp()
+        self.source = ZODB.blob.BlobStorage(
+            source_blob_dir,
+            ZODB.FileStorage.FileStorage(tempfile.mktemp()))
+        self.target = ZODB.blob.BlobStorage(
+            target_blob_dir,
+            ZODB.FileStorage.FileStorage(tempfile.mktemp()))
+        self.recovery = gocept.zeoraid.recovery.Recovery(
+            self.source, self.target, lambda target: None)
+
+    def tearDown(self):
+        self.source.close()
+        self.source.cleanup()
+        shutil.rmtree(self.source.fshelper.base_dir)
+        self.target.close()
+        self.target.cleanup()
+        if not self.shared:
+            shutil.rmtree(self.target.fshelper.base_dir)
+
+
+class OnlineBlobRecovery(OnlineBlobStorageRecovery):
+
+    use_blobs = True
+
+
+class OnlineSharedBlobRecovery(OnlineBlobRecovery):
+
+    shared = True
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ContinuousStorageIterator))
     suite.addTest(unittest.makeSuite(OnlineRecovery))
+    suite.addTest(unittest.makeSuite(OnlineBlobStorageRecovery))
+    suite.addTest(unittest.makeSuite(OnlineBlobRecovery))
+    suite.addTest(unittest.makeSuite(OnlineSharedBlobRecovery))
     return suite
