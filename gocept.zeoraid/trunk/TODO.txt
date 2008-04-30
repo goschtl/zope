@@ -20,6 +20,8 @@ Cleanup
 
 - XXX review
 
+- reduce superfluous logging output from tests
+
 Future
 ======
 
