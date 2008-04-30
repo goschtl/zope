@@ -7,7 +7,9 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 import martian
 from martian import util
+
 from grok.util import get_default_permission, make_checker
+from grok.meta import get_context
 
 from kss.core import KSSView
 
@@ -23,8 +25,7 @@ class KSSActionsGrokker(martian.ClassGrokker):
     component_class = KSSActions
 
     def grok(self, name, factory, module_info, config, **kw):
-        context = module_info.getAnnotation('grok.context', None)
-        view_context = util.determine_class_context(factory, context)
+        view_context = get_context(module_info, factory)
         # XXX We should really not make __FOO__ methods available to
         # the outside -- need to discuss how to restrict such things.
         methods = util.methods_from_class(factory)
