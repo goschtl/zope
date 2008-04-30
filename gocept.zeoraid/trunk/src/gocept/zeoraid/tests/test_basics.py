@@ -18,6 +18,9 @@ import tempfile
 import os
 import time
 import shutil
+import stat
+import threading
+import sys
 
 import zope.interface.verify
 
@@ -44,6 +47,7 @@ import ZODB.config
 # Uncomment this to get helpful logging from the ZEO servers on the console
 #import logging
 #logging.getLogger().addHandler(logging.StreamHandler())
+#logging.getLogger().setLevel(0)
 
 
 class ZEOOpener(object):
@@ -130,9 +134,9 @@ class ReplicationStorageTests(BasicStorage.BasicStorage,
         self.assertEquals('teststorage', self._storage.getName())
 
 
-class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
+class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
 
-    backend_count = None
+    backend_count = 2
 
     def _backend(self, index):
         return self._storage.storages[
@@ -173,9 +177,36 @@ class FailingStorageTestsBase(StorageTestBase.StorageTestBase):
             os.waitpid(pid, 0)
 
 
-class FailingStorageTests2Backends(FailingStorageTestsBase):
+class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
 
-    backend_count = 2
+    def setUp(self):
+        self._servers = []
+        self._storages = []
+        self._pids = []
+        blob_dir = tempfile.mkdtemp()
+        for i in xrange(self.backend_count):
+            port = get_port()
+            zconf = forker.ZEOConfig(('', port))
+            zport, adminaddr, pid, path = forker.start_zeo_server(
+                """%%import gocept.zeoraid.tests
+                <failingstorage 1>
+                  blob-dir %s
+                </failingstorage>""" % blob_dir,
+                zconf, port)
+            self._pids.append(pid)
+            self._servers.append(adminaddr)
+            self._storages.append(ZEOOpener(zport, storage='1',
+                                            cache_size=12,
+                                            blob_dir=blob_dir,
+                                            shared_blob_dir=True,
+                                            min_disconnect_poll=0.5, wait=1,
+                                            wait_timeout=60))
+        self._storage = gocept.zeoraid.storage.RAIDStorage(
+            'teststorage', self._storages, blob_dir=blob_dir,
+            shared_blob_dir=True)
+
+
+class FailingStorageTestBase(object):
 
     def _disable_storage(self, index):
         self._storage.raid_disable(self._storage.storages_optimal[index])
@@ -660,34 +691,34 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self._storage.tpc_begin(t)
         self.assertEquals('optimal', self._storage.raid_status())
 
-    def test_blob_usage(self):
+    def store_blob(self, blob_file_name=None):
         oid = self._storage.new_oid()
-        handle, blob_file_name = tempfile.mkstemp()
-        open(blob_file_name, 'w').write('I am a happy blob.')
+        if blob_file_name is None:
+            handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'wb').write('I am a happy blob.')
         t = transaction.Transaction()
         self._storage.tpc_begin(t)
         self._storage.storeBlob(
           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
-        stored_file_name = self._storage.loadBlob(
-            oid, self._storage.lastTransaction())
+        tid = self._storage.lastTransaction()
+        return oid, tid
+
+    def test_blob_usage(self):
+        oid, tid = self.store_blob()
+        stored_file_name = self._storage.loadBlob(oid, tid)
         self.assertEquals('I am a happy blob.',
-                          open(stored_file_name, 'r').read())
-        expected = self._storage.blob_fshelper.getBlobFilename(
-            oid, self._storage.lastTransaction())
+                          open(stored_file_name, 'rb').read())
+        expected = self._storage.blob_fshelper.getBlobFilename(oid, tid)
         self.assertEquals(expected, stored_file_name)
 
-    def test_blob_cache_hit(self):
-        # XXX Check that a blob isn't loaded twice if it's in the cache
-        # already.
-        self.assert_(False)
-
-    def test_blob_cache_cannot_link(self):
-        self.assert_(False)
-
-    def test_blob_cache_locking(self):
-        self.assert_(False)
+        # Check that a blob isn't loaded twice now that it's in the cache.
+        old_mtime = os.stat(stored_file_name)[stat.ST_MTIME]
+        time.sleep(1) # mtime has a granularity of 1 second
+        stored_file_name = self._storage.loadBlob(oid, tid)
+        new_mtime = os.stat(stored_file_name)[stat.ST_MTIME]
+        self.assertEquals(old_mtime, new_mtime)
 
     def test_storeBlob_degrading1(self):
         oid = self._storage.new_oid()
@@ -795,12 +826,19 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
           oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
-
         last_transaction = self._storage.lastTransaction()
+
+        # Find file name, clean up cache.
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        os.remove(stored_file_name)
+
         self._disable_storage(0)
         stored_file_name = self._storage.loadBlob(oid, last_transaction)
         self.assertEquals('I am a happy blob.',
                           open(stored_file_name, 'r').read())
+
+        # Clean up cache.
+        os.remove(stored_file_name)
 
         self._disable_storage(0)
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
@@ -821,6 +859,8 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         # Clear cache.
         stored_file_name = self._storage.loadBlob(oid, last_transaction)
         os.unlink(stored_file_name)
+        b0_filename = self._backend(0).loadBlob(oid, last_transaction)
+        os.unlink(b0_filename)
 
         self._backend(0).fail('loadBlob')
         stored_file_name = self._storage.loadBlob(oid, last_transaction)
@@ -830,11 +870,19 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
 
         # Clear cache.
         os.unlink(stored_file_name)
+        b0_filename = self._backend(0).loadBlob(oid, last_transaction)
+        os.unlink(b0_filename)
 
         self._backend(0).fail('loadBlob')
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.loadBlob, oid, last_transaction)
         self.assertEquals('failed', self._storage.raid_status())
+
+    def test_storeBlob_temporary_files(self):
+        tmp = tempfile.mkdtemp()
+        self.assertEquals([], os.listdir(tmp))
+        self.store_blob(os.path.join(tmp, 'foo'))
+        self.assertEquals([], os.listdir(tmp))
 
     def test_temporaryDirectory(self):
         working_dir = tempfile.mkdtemp()
@@ -1113,6 +1161,130 @@ class FailingStorageTests2Backends(FailingStorageTestsBase):
         self.assertEquals('optimal', self._storage.raid_status())
 
 
+class FailingStorageTests(FailingStorageTestBase,
+                          FailingStorageTestSetup):
+
+    def test_blob_cache_cannot_link(self):
+        called_broken = []
+        def broken_link(foo, bar):
+            called_broken.append(True)
+            raise OSError
+
+        oid, tid = self.store_blob()
+        good_link = os.link
+        os.link = broken_link
+        try:
+            stored_file_name = self._storage.loadBlob(oid, tid)
+            self.assertEquals([True], called_broken)
+            self.assertEquals('I am a happy blob.',
+                              open(stored_file_name, 'rb').read())
+        finally:
+            os.link = good_link
+
+    def test_blob_cache_locking(self):
+        return_value = []
+        def try_loadBlob():
+            return_value.append(self._storage.loadBlob(oid, tid))
+
+        oid, tid = self.store_blob()
+        stored_file_name = self._storage.loadBlob(oid, tid)
+        os.remove(stored_file_name)
+        lock_filename = stored_file_name + '.lock'
+
+        # Test race condition that the lock is held during loadBlob() but the
+        # file isn't put in place by the other party.
+        lock = ZODB.lock_file.LockFile(lock_filename)
+        thread = threading.Thread(target=try_loadBlob)
+        thread.start()
+        time.sleep(0.5)
+        self.assert_(thread.isAlive())
+        lock.close()
+        os.remove(lock_filename)
+        time.sleep(0.5)
+        self.assert_(not thread.isAlive())
+        self.assertEquals([None], return_value)
+
+        # Test race condition that the lock is held during loadBlob() and the
+        # file is put in place correctly by the other party.
+        return_value = []
+        lock = ZODB.lock_file.LockFile(lock_filename)
+        thread = threading.Thread(target=try_loadBlob)
+        thread.start()
+        time.sleep(0.5)
+        self.assert_(thread.isAlive())
+        blob_file = open(stored_file_name, 'wb')
+        blob_file.write('I am an unhappy blob.')
+        blob_file.close()
+        lock.close()
+        os.remove(lock_filename)
+        time.sleep(0.5)
+        self.assert_(not thread.isAlive())
+        self.assertEquals([stored_file_name], return_value)
+        self.assertEquals('I am an unhappy blob.',
+                          open(stored_file_name, 'rb').read())
+
+        thread.join()
+
+
+class FailingStorageSharedBlobTests(FailingStorageTestBase,
+                                    FailingStorageSharedBlobTestSetup):
+
+    def test_loadBlob_file_missing(self):
+        oid, tid = self.store_blob()
+        stored_file_name = self._storage.loadBlob(oid, tid)
+        os.remove(stored_file_name)
+        self.assertRaises(ZODB.POSException.POSKeyError,
+                          self._storage.loadBlob, oid, tid)
+
+    def test_loadBlob_degrading1(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        last_transaction = self._storage.lastTransaction()
+
+        self._disable_storage(0)
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+        self._disable_storage(0)
+        self.assertEquals('failed', self._storage.raid_status())
+
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+    def test_loadBlob_degrading2(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        last_transaction = self._storage.lastTransaction()
+
+        self._backend(0).fail('loadBlob')
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+        self.assertEquals('optimal', self._storage.raid_status())
+
+        self._backend(1).fail('loadBlob')
+        stored_file_name = self._storage.loadBlob(oid, last_transaction)
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+        self.assertEquals('optimal', self._storage.raid_status())
+
+
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
                                  ThreadTests.ThreadTests):
@@ -1122,5 +1294,6 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
-    suite.addTest(unittest.makeSuite(FailingStorageTests2Backends))
+    suite.addTest(unittest.makeSuite(FailingStorageTests))
+    suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
     return suite

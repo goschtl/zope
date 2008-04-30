@@ -25,7 +25,9 @@ import zope.proxy
 class Opener(ZODB.config.BaseConfig):
 
     def open(self):
-        blob_dir = tempfile.mkdtemp()
+        blob_dir = self.config.blob_dir
+        if blob_dir is None:
+            blob_dir = tempfile.mkdtemp()
         file_handle, file_name = tempfile.mkstemp()
         fs = ZODB.FileStorage.FileStorage(file_name)
         return FailingStorage(blob_dir, fs)

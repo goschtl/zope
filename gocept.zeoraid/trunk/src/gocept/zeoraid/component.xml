@@ -39,6 +39,14 @@ this into a stateless RAID server that can be made HA easily (hot-standby).
             </description>
         </key>
 
+        <key name="shared-blob-dir" required="no"
+             datatype="boolean" default="false">
+            <description>
+                Whether the blob directory is shared with the back end
+                storages.
+            </description>
+        </key>
+
         <multisection 
             type="ZODB.storage" 
             name="+"

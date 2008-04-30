@@ -19,6 +19,7 @@ import logging
 import tempfile
 import os
 import os.path
+import shutil
 
 import zope.interface
 
@@ -87,11 +88,17 @@ class RAIDStorage(object):
     # for generating new TIDs.
     _last_tid = None
 
-    def __init__(self, name, openers, read_only=False, blob_dir=None):
+    def __init__(self, name, openers, read_only=False, blob_dir=None,
+                 shared_blob_dir=False):
         self.__name__ = name
         self.read_only = read_only
+        self.shared_blob_dir = shared_blob_dir
         self.storages = {}
         self._threads = set()
+        # Temporary files and directories that should be removed at the end of
+        # the two-phase commit. The list must only be modified while holding
+        # the commit lock.
+        self.tmp_paths = []
 
         if blob_dir is not None:
             self.blob_fshelper = ZODB.blob.FilesystemHelper(blob_dir)
@@ -171,14 +178,14 @@ class RAIDStorage(object):
     def getSize(self):
         """An approximate size of the database, in bytes."""
         try:
-            return self._apply_single_storage('getSize')
+            return self._apply_single_storage('getSize')[0]
         except gocept.zeoraid.interfaces.RAIDError:
             return 0
 
     def history(self, oid, version='', size=1):
         """Return a sequence of history information dictionaries."""
         assert version is ''
-        return self._apply_single_storage('history', (oid, size))
+        return self._apply_single_storage('history', (oid, size))[0]
 
     def isReadOnly(self):
         """Test whether a storage allows committing new transactions."""
@@ -193,22 +200,22 @@ class RAIDStorage(object):
     def __len__(self):
         """The approximate number of objects in the storage."""
         try:
-            return self._apply_single_storage('__len__')
+            return self._apply_single_storage('__len__')[0]
         except gocept.zeoraid.interfaces.RAIDError:
             return 0
 
     def load(self, oid, version=''):
         """Load data for an object id and version."""
         assert version is ''
-        return self._apply_single_storage('load', (oid,))
+        return self._apply_single_storage('load', (oid,))[0]
 
     def loadBefore(self, oid, tid):
         """Load the object data written before a transaction id."""
-        return self._apply_single_storage('loadBefore', (oid, tid))
+        return self._apply_single_storage('loadBefore', (oid, tid))[0]
 
     def loadSerial(self, oid, serial):
         """Load the object record for the give transaction id."""
-        return self._apply_single_storage('loadSerial', (oid, serial))
+        return self._apply_single_storage('loadSerial', (oid, serial))[0]
 
     @ensure_writable
     def new_oid(self):
@@ -286,6 +293,7 @@ class RAIDStorage(object):
                 self._apply_all_storages('tpc_abort', (transaction,))
                 self._transaction = None
             finally:
+                self._tpc_cleanup()
                 self._commit_lock.release()
         finally:
             self._write_lock.release()
@@ -340,6 +348,7 @@ class RAIDStorage(object):
                 return self._tid
             finally:
                 self._transaction = None
+                self._tpc_cleanup()
                 self._commit_lock.release()
         finally:
             self._write_lock.release()
@@ -372,8 +381,8 @@ class RAIDStorage(object):
             # Client storages expect to be the only ones operating on the blob
             # file. We need to create individual appearances of the original
             # file so that they can move the file to their cache location.
-            yield (oid, oldserial, data, blob, '', transaction)
             base_dir = tempfile.mkdtemp(dir=os.path.dirname(blob))
+            self.tmp_paths.append(base_dir)
             copies = 0
             while True:
                 # We need to create a new directory to make sure that
@@ -385,6 +394,10 @@ class RAIDStorage(object):
 
         self._write_lock.acquire()
         try:
+            # The back end storages receive links to the blob file and take
+            # care of them appropriately. We have to remove the original link
+            # to the blob file ourselves.
+            self.tmp_paths.append(blob)
             self._apply_all_storages('storeBlob', get_blob_data)
             return self._tid
         finally:
@@ -397,8 +410,13 @@ class RAIDStorage(object):
         if os.path.exists(blob_filename):
             return blob_filename
 
-        backend_filename = self._apply_single_storage('loadBlob',
-                                                      (oid, serial))
+        if self.shared_blob_dir:
+            # We're using a back end shared directory. If the file isn't here,
+            # it's not anywhere.
+            raise ZODB.POSException.POSKeyError("No blob file", oid, serial)
+
+        backend_filename = self._apply_single_storage(
+            'loadBlob', (oid, serial))[0]
         lock_filename = blob_filename + '.lock'
         self.blob_fshelper.createPathForOID(oid)
         try:
@@ -470,18 +488,18 @@ class RAIDStorage(object):
 
     def undoLog(self, first=0, last=-20, filter=None):
         """Return a sequence of descriptions for undoable transactions."""
-        return self._apply_single_storage('undoLog', (first, last, filter))
+        return self._apply_single_storage('undoLog', (first, last, filter))[0]
 
     def undoInfo(self, first=0, last=-20, specification=None):
         """Return a sequence of descriptions for undoable transactions."""
-        return self._apply_single_storage('undoInfo',
-                                          (first, last, specification))
+        return self._apply_single_storage(
+            'undoInfo', (first, last, specification))[0]
 
     # IStorageCurrentRecordIteration
 
     def record_iternext(self, next=None):
         """Iterate over the records in a storage."""
-        return self._apply_single_storage('record_iternext', (next,))
+        return self._apply_single_storage('record_iternext', (next,))[0]
 
     # IStorageIteration
 
@@ -489,14 +507,14 @@ class RAIDStorage(object):
         """Return an IStorageTransactionInformation iterator."""
         # XXX This should really include fail-over for iterators over storages
         # that degrade or recover while this iterator is running.
-        return self._apply_single_storage('iterator', (start, stop))
+        return self._apply_single_storage('iterator', (start, stop))[0]
 
     # IServeable
 
     # Note: We opt to not implement lastInvalidations until ClientStorage does.
     # def lastInvalidations(self, size):
     #    """Get recent transaction invalidations."""
-    #    return self._apply_single_storage('lastInvalidations', (size,))
+    #    return self._apply_single_storage('lastInvalidations', (size,))[0]
 
     def tpc_transaction(self):
         """The current transaction being committed."""
@@ -504,7 +522,7 @@ class RAIDStorage(object):
 
     def getTid(self, oid):
         """The last transaction to change an object."""
-        return self._apply_single_storage('getTid', (oid,))
+        return self._apply_single_storage('getTid', (oid,))[0]
 
     def getExtensionMethods(self):
         # This method isn't officially part of the interface but it is supported.
@@ -606,14 +624,15 @@ class RAIDStorage(object):
             reliable, result = self.__apply_storage(
                 name, method_name, args, kw)
             if reliable:
-                return result
+                return result, name
 
         # We could not determine a result from any storage.
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
     @ensure_open_storage
     def _apply_all_storages(self, method_name, args=(), kw={},
-                            expect_connected=True):
+                            expect_connected=True, exclude=(),
+                            ignore_noop=False):
         """Calls the given method on all optimal backend storages in order.
 
         `args` can be given as an n-tupel with the positional arguments that
@@ -637,7 +656,11 @@ class RAIDStorage(object):
                     yield static_arguments
             argument_iterable = dummy_generator()
 
-        for name in self.storages_optimal[:]:
+        applicable_storages = self.storages_optimal[:]
+        applicable_storages = [storage for storage in applicable_storages
+                               if storage not in exclude]
+
+        for name in applicable_storages:
             try:
                 args = argument_iterable.next()
                 reliable, result = self.__apply_storage(
@@ -674,8 +697,10 @@ class RAIDStorage(object):
         if results:
             return results[0]
 
-        # We could not determine a result from any storage because all of them
-        # failed.
+        # We did not get any reliable result, making this call effectively a
+        # no-op.
+        if ignore_noop:
+            return
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
     def _recover_impl(self, name):
@@ -726,3 +751,14 @@ class RAIDStorage(object):
             *(time.gmtime(now)[:5] + (now % 60,)))
         new_ts = new_ts.laterThan(old_ts)
         return repr(new_ts)
+
+    def _tpc_cleanup(self):
+        while self.tmp_paths:
+            path = self.tmp_paths.pop()
+            try:
+                if os.path.isdir(path):
+                    shutil.rmtree(path)
+                else:
+                    os.remove(path)
+            except OSError:
+                pass

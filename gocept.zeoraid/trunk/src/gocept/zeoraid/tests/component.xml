@@ -8,6 +8,13 @@
         name="failingstorage"
         implements="ZODB.storage"
         datatype=".Opener">
+
+      <key name="blob-dir" required="no">
+        <description>
+          Path name to the blob cache directory.
+        </description>
+      </key>
+
     </sectiontype>
 
 </component>

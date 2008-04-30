@@ -23,4 +23,5 @@ class Storage(ZODB.config.BaseConfig):
         return gocept.zeoraid.storage.RAIDStorage(
             self.name,
             self.config.storages,
-            blob_dir=self.config.blob_dir)
+            blob_dir=self.config.blob_dir,
+            shared_blob_dir=self.config.shared_blob_dir)
