@@ -1,1 +1,1 @@
-from grokker import KSSActions
+from components import KSSActions

@@ -2,7 +2,6 @@ from zope import component
 from zope import interface
 
 from zope.publisher.browser import BrowserPage
-from zope.publisher.publish import mapply
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 import martian
@@ -11,15 +10,7 @@ from martian import util
 from grok.util import get_default_permission, make_checker
 from grok.meta import get_context
 
-from kss.core import KSSView
-
-class KSSActions(KSSView):
-   
-    def __call__(self):
-        view_name = self.__view_name__
-        method = getattr(self, view_name)
-        method_result = mapply(method, (), self.request)
-        return self.render()
+from components import KSSActions
 
 class KSSActionsGrokker(martian.ClassGrokker):
     component_class = KSSActions
