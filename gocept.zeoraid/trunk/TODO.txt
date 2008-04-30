@@ -8,17 +8,9 @@ TODO
 Stabilization
 -------------
 
-- Compatibility to which ZODB clients and which ZEO servers? Best would be to
-  support Zope 2.9 and Zope 3.4.
-
 - Disallow packing while a storage is recovering.
 
 - Disallow recovering multiple storages in parallel.
-
-- Manager client: setup correctly so that invalidations do not trigger errors
-
-- Manager client: provide current recovery message for a storage that is
-  recovering
 
 - The exception branch for ClientDisconnected (StorageError) is not tested
   during unit/functional tests (__apply_storage)
@@ -61,3 +53,6 @@ Future
 
 - When recovering a non-shared blob storage, validate old transactions' blob
   files in addition to their meta data.
+
+- Manager client: provide current recovery message for a storage that is
+  recovering
