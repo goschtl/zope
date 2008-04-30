@@ -387,6 +387,11 @@ class Link(SetattrErrorsMixin):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
+        # Handle simple named anchors.
+        if self.mech_link.url.startswith('#'):
+            self.browser.url + self.mech_link.url
+            self.browser._changed()
+            return
         self.browser._start_timer()
         self.browser.mech_browser.follow_link(self.mech_link)
         self.browser._stop_timer()

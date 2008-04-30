@@ -150,6 +150,7 @@ function tb_follow_link(token) {
 
 function tb_set_checked(token, checked) {
     var input = tb_tokens[token];
+    var tagName = input.tagName;
 //  XXX: yes, it would be nice to handle checkbox checking via mouse events, but
 //  sometimes tests run too fast, and Firefox misses the mouse clicks
 //    var changed = false;
@@ -163,11 +164,16 @@ function tb_set_checked(token, checked) {
 //                           0, null);
 //        input.dispatchEvent(evt);
 //    }
-    input.checked = checked;
-    type = input.getAttribute('type');
-    value = input.getAttribute('value')
-    if (type == 'checkbox' && value == null) {
-        input.setAttribute('value', 'on');
+    if (tagName == 'OPTION') {
+        input.selected = checked;
+    }
+    else {
+        input.checked = checked;
+        type = input.getAttribute('type');
+        value = input.getAttribute('value')
+        if (type == 'checkbox' && value == null) {
+            input.setAttribute('value', 'on');
+        }
     }
 }
 

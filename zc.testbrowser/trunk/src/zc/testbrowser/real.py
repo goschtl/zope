@@ -314,7 +314,6 @@ class Link(zc.testbrowser.browser.SetattrErrorsMixin):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token)
-        self.browser.wait()
         self.browser._changed()
 
     @property
@@ -516,9 +515,11 @@ class ListControl(Control):
     def getControl(self, label=None, value=None, index=None):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        # XXX: this method is broken and isn't tested
+        context_token = self.token
+        if self.type in ('checkbox', 'radio'):
+            context_token = None
         return self.browser.getControl(
-            label, value, index, self.token, ".//input | .//option")
+            label, value, index, context_token, ".//input | .//option")
 
 
 class SubmitControl(Control):
@@ -528,7 +529,6 @@ class SubmitControl(Control):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token)
-        self.browser.wait()
         self.browser._changed()
 
 
@@ -539,7 +539,6 @@ class ImageControl(Control):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token, *coord)
-        self.browser.wait()
         self.browser._changed()
 
     @property
@@ -601,9 +600,9 @@ class ItemControl(zc.testbrowser.browser.SetattrErrorsMixin):
     def click(self):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
-        # XXX this should really click on the control, like the other click()
-        # methods
-        self.mech_item.selected = not self.mech_item.selected
+        if self.disabled:
+            raise AttributeError('item is disabled')
+        self.selected = not self.selected
 
     def __repr__(self):
         tagName = self.browser.execute('tb_tokens[%s].tagName' % self.token)
@@ -676,7 +675,6 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
             button = self.browser.getControlToken(
                 label, name, index, self.token)
             self.browser.js.tb_click_token(button, *coord)
-        self.browser.wait()
         self.browser._changed()
 
     def getControl(self, label=None, name=None, index=None):

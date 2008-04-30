@@ -16,6 +16,7 @@ from setuptools import setup, find_packages
 
 long_description = (
     open('README.txt').read()
+    + open('CHANGES.txt').read()
     + '.. contents::\n\n\n'
     + open(os.path.join('src', 'zc', 'testbrowser', 'README.txt')).read()
     )
@@ -26,7 +27,7 @@ setup(
     url = 'http://pypi.python.org/pypi/zc.testbrowser',
     license = 'ZPL 2.1',
     description = 'Programmable web browser for functional black-box testing '
-        'of web applications',
+                  'of web applications',
     author = 'Zope Corporation and Contributors',
     author_email = 'zope3-dev@zope.org',
     long_description = long_description,
