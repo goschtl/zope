@@ -50,6 +50,14 @@ import ZODB.config
 #logging.getLogger().setLevel(0)
 
 
+def fail(obj, name):
+    old_method = getattr(obj, name)
+    def failing_method(*args, **kw):
+        setattr(obj, name, old_method)
+        raise Exception()
+    setattr(obj, name, failing_method)
+
+
 class ZEOOpener(object):
 
     def __init__(self, name, **kwargs):
@@ -1283,6 +1291,35 @@ class FailingStorageSharedBlobTests(FailingStorageTestBase,
         self.assertEquals('I am a happy blob.',
                           open(stored_file_name, 'r').read())
         self.assertEquals('optimal', self._storage.raid_status())
+
+    def test_storeBlob_degrading2(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        fail(self._backend(0), 'storeBlob')
+        self._storage.storeBlob(
+          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
+        self.assertEquals('degraded', self._storage.raid_status())
+        self._storage.tpc_vote(t)
+        self._storage.tpc_finish(t)
+        stored_file_name = self._storage.loadBlob(
+            oid, self._storage.lastTransaction())
+        self.assertEquals('I am a happy blob.',
+                          open(stored_file_name, 'r').read())
+
+    def test_storeBlob_degrading2_both(self):
+        oid = self._storage.new_oid()
+        handle, blob_file_name = tempfile.mkstemp()
+        open(blob_file_name, 'w').write('I am a happy blob.')
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        fail(self._backend(0), 'storeBlob')
+        fail(self._backend(1), 'storeBlob')
+        self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
+                          self._storage.storeBlob,
+                          oid, ZODB.utils.z64, 'foo', blob_file_name, '', t)
 
 
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,

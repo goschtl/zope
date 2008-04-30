@@ -394,11 +394,19 @@ class RAIDStorage(object):
 
         self._write_lock.acquire()
         try:
-            # The back end storages receive links to the blob file and take
-            # care of them appropriately. We have to remove the original link
-            # to the blob file ourselves.
-            self.tmp_paths.append(blob)
-            self._apply_all_storages('storeBlob', get_blob_data)
+            if self.shared_blob_dir:
+                result, storage = self._apply_single_storage(
+                    'storeBlob',
+                    (oid, oldserial, data, blob, version, transaction))
+                self._apply_all_storages(
+                    'store', (oid, oldserial, data, version, transaction),
+                    exclude=(storage,), ignore_noop=True)
+            else:
+                # The back end storages receive links to the blob file and
+                # take care of them appropriately. We have to remove the
+                # original link to the blob file ourselves.
+                self.tmp_paths.append(blob)
+                self._apply_all_storages('storeBlob', get_blob_data)
             return self._tid
         finally:
             self._write_lock.release()
