@@ -2,6 +2,26 @@
 Changes
 =======
 
+3.5.2 (2008-04-30)
+------------------
+
+- Updated CHANGES.txt.
+
+
+3.5.1 (2008-04-28)
+------------------
+
+- Reverted changes in 3.5.0.
+
+
+3.5.0
+-----
+
+- Added the capability for exceptions to be formatted line-by-line.
+  Unfortunately, also introduced a bug cause each line of the exception to be
+  its own log message.
+
+
 3.4.0 (2007-10-02)
 ------------------
 
