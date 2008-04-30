@@ -1,0 +1,15 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:omit-tag=""
+      i18n:domain="z3c.schemadiff">
+
+  <fieldset>
+    <legend i18n:translate="">Diff</legend>
+    
+    <div class="diff" tal:repeat="table options/tables">
+      <h4 tal:content="table/title" />
+    <table tal:replace="structure table/html" />
+    </div>
+  </fieldset>
+</html>
+

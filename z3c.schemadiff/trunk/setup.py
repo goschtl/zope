@@ -1,0 +1,51 @@
+##############################################################################
+#
+# Copyright (c) 2008 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
+import os
+from setuptools import setup, find_packages, Extension
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+setup(name='z3c.schemadiff',
+      version = '0.1',
+      author='Zope Corporation and Contributors',
+      author_email='zope3-dev@zope.org',
+      description='Zope Diff Tool',
+      long_description=read('README.txt'),
+      keywords = "zope3 diff schema",
+      classifiers = [
+          'Development Status :: 1 - Alpha',
+          'Environment :: Web Environment',
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Topic :: Internet :: WWW/HTTP',
+          'Framework :: Zope3'],
+      url='http://cheeseshop.python.org/pypi/z3c.schemadiff',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      namespace_packages=['z3c', ],
+      install_requires=['setuptools',
+                        'zope.interface',
+                        'zope.schema',
+                        'zope.component',
+                        'zope.pagetemplate',
+                        ],
+      include_package_data = True,
+      zip_safe = False,
+      )
