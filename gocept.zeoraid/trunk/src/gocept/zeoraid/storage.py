@@ -529,7 +529,6 @@ class RAIDStorage(object):
 
     # IRAIDStorage
 
-    # XXX
     @ensure_open_storage
     def raid_status(self):
         if self.storage_recovering:
@@ -540,18 +539,15 @@ class RAIDStorage(object):
             return 'failed'
         return 'degraded'
 
-    # XXX
     @ensure_open_storage
     def raid_details(self):
         return [self.storages_optimal, self.storage_recovering, self.storages_degraded]
 
-    # XXX
     @ensure_open_storage
     def raid_disable(self, name):
         self._degrade_storage(name, fail=False)
         return 'disabled %r' % (name,)
 
-    # XXX
     @ensure_open_storage
     def raid_recover(self, name):
         if name not in self.storages_degraded:
@@ -605,7 +601,9 @@ class RAIDStorage(object):
             raise
         except Exception:
             reliable = False
-        if expect_connected and not storage.is_connected():
+        if (expect_connected and
+            isinstance(storage, ZEO.ClientStorage.ClientStorage) and
+            not storage.is_connected()):
             reliable = False
 
         if not reliable:
@@ -704,7 +702,8 @@ class RAIDStorage(object):
         storage = self.openers[name].open()
         self.storages[name] = storage
         recovery = gocept.zeoraid.recovery.Recovery(
-            self, storage, self._finalize_recovery)
+            self, storage, self._finalize_recovery,
+            recover_blobs=(self.blob_fshelper and not self.shared_blob_dir))
         for msg in recovery():
             logger.info(str(msg))
 
