@@ -14,7 +14,6 @@
 ##############################################################################
 
 import sha
-
 import zope.publisher.interfaces.http
 
 import zope.app.authentication.session
