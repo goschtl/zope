@@ -7,3 +7,10 @@ scripts.
 
 .. contents::
 
+Releases
+********
+
+0.1 (2008-05-01)
+================
+
+Initial release.
