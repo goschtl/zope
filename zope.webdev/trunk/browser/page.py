@@ -19,10 +19,10 @@ __docformat__ = "reStructuredText"
 import datetime
 import pytz
 
+import zope.component
 import zope.interface
 import zope.app.component.interfaces.registration
 from zope.formlib import form
-from zope.app import zapi
 from zope.app import apidoc
 from zope.webdev import interfaces, page
 from zope.webdev.browser import base, package
@@ -60,7 +60,7 @@ class PackageOverview(object):
     title = _("Pages")
 
     def icon(self):
-        return zapi.getAdapter(self.request, name='page.png')()
+        return zope.component.getAdapter(self.request, name='page.png')()
 
     def pages(self):
         """Return PT-friendly info dictionaries for all pages."""
@@ -70,7 +70,9 @@ class PackageOverview(object):
                 pages.append({
                     'name': page.name,
                     'for':  apidoc.utilities.getPythonPath(page.for_),
-                    'absolute_url': zapi.getView(page, 'absolute_url', self.request)(),
+                    'absolute_url': zope.component.getView(page,
+                                                           'absolute_url',
+                                                           self.request)(),
                     })
 
         return pages

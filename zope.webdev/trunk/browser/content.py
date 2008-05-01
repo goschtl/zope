@@ -17,15 +17,16 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.component
 import zope.interface
 import zope.schema
 from zope.security import proxy, checker
 from zope.formlib import form
 from zope.app import apidoc
-from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.form import utility
 from zope.app.form.interfaces import IInputWidget
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.webdev import interfaces, content
 from zope.webdev.interfaces import _
@@ -131,8 +132,8 @@ class Permissions(form.FormBase):
             set_perm_id = setPermWidget.getInputValue()
 
             # get the right permission from the given id
-            get_perm = zapi.getUtility(IPermission, get_perm_id)
-            set_perm = zapi.getUtility(IPermission, set_perm_id)
+            get_perm = zope.component.getUtility(IPermission, get_perm_id)
+            set_perm = zope.component.getUtility(IPermission, set_perm_id)
 
             # set the permission back to the instance
             perms[name] = (get_perm, set_perm)
@@ -157,13 +158,13 @@ class PackageOverview(object):
     title = _('Content Component Definitions')
 
     def icon(self):
-        return zapi.getAdapter(self.request, name='content.png')()
+        return zope.component.getAdapter(self.request, name='content.png')()
 
     def definitions(self):
         """Return PT-friendly info dictionaries for all definitions."""
         return [
             {'name': value.name,
              'schema': apidoc.utilities.getPythonPath(value.schema),
-             'url': zapi.absoluteURL(value, self.request)}
+             'url': absoluteURL(value, self.request)}
             for value in self.context.values()
             if interfaces.IContentComponentDefinition.providedBy(value)]

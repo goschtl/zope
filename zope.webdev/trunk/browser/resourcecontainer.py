@@ -19,10 +19,10 @@ __docformat__ = "reStructuredText"
 import datetime
 import pytz
 
+import zope.component
 import zope.interface
 import zope.app.component.interfaces.registration
 from zope.formlib import form
-from zope.app import zapi
 from zope.app import apidoc
 from zope.webdev import interfaces, resourcecontainer
 from zope.webdev.browser import base, package
@@ -60,7 +60,8 @@ class PackageOverview(object):
     title = _("ResourceContainers")
 
     def icon(self):
-        return zapi.getAdapter(self.request, name='resourcecontainer.png')()
+        return zope.component.getAdapter(self.request,
+                                         name='resourcecontainer.png')()
 
     def containers(self):
         """Return PT-friendly info dictionaries for all containers."""
@@ -69,7 +70,9 @@ class PackageOverview(object):
             if interfaces.IResourceContainer.providedBy(container):
                 containers.append({
                     'name': container.name,
-                    'absolute_url': zapi.getView(container, 'absolute_url', self.request)(),
+                    'absolute_url': zope.component.getView(container,
+                                                           'absolute_url',
+                                                           self.request)(),
                     })
 
         return containers

@@ -37,7 +37,7 @@ from zope.component import provideAdapter
 from zope.security.checker import NamesChecker
 from zope.interface import Interface
 import zope.app.component.interfaces.registration
-from zope.app import zapi
+from zope.traversing.api import getParent
 
 _marker = object()
 
@@ -68,13 +68,13 @@ class ResourceContainer(BTreeContainer):
 def registerResourceDirectory(container):
     factory = DirectoryResourceFactory(container)
     provideAdapter(factory,self.layers,Interface,name=self.name)
-    
+
 class ResourceDirectoryRegistration(
     zope.app.component.site.AdapterRegistration):
 
     provided = zope.interface.Interface
     with=()
-    
+
     def __init__(self, container):
         self.container = container
 
@@ -85,12 +85,12 @@ class ResourceDirectoryRegistration(
     @property
     def required(self):
         return self.container.layers[0]
-    
+
     @property
     def component(self):
         factory =  DirectoryResourceFactory(self.container)
         return factory
-    
+
 
 
 class DirectoryResource(Resource):
@@ -98,7 +98,7 @@ class DirectoryResource(Resource):
     implements(IBrowserPublisher)
 
     def __init__(self, container, request):
-        
+
         self.__container = container
         self.request = request
         self.__name__ = self.__container.__name__
@@ -163,7 +163,7 @@ class ZODBFileResource(FileResource):
         lmh = rfc1123_date(dt2ts(lastModified))
         response.setHeader('Content-Type', self.context.contentType)
         response.setHeader('Last-Modified', lmh)
-        
+
     def HEAD(self):
         self._setHeaders()
         return ''
@@ -172,7 +172,7 @@ class ZODBFileResource(FileResource):
         """Default document"""
         self._setHeaders()
         return self.context.data
-    
+
 
 class ResourceFactory(object):
 
@@ -192,7 +192,7 @@ class ResourceFactory(object):
 
 
 def registerResourceDirectory(container):
-    package = zapi.getParent(container)
+    package = getParent(container)
     reg = ResourceDirectoryRegistration(container)
     package.registrationManager.addRegistration(reg)
     reg.status = zope.app.component.interfaces.registration.ActiveStatus
@@ -202,7 +202,7 @@ def reregisterResourceDirectory(container):
     for reg in registered.registrations():
         reg.status = zope.app.component.interfaces.registration.InactiveStatus
         reg.status = zope.app.component.interfaces.registration.ActiveStatus
-        
+
 
 def handleResourceDirectoryModification(event, container):
     reregisterResourceDirectory(container)

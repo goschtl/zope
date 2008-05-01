@@ -19,20 +19,19 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.component
 
 from zope.interface import implements
 from zope.interface.interfaces import IInterface
 from zope.schema.interfaces import ITokenizedTerm
 from zope.component.interfaces import IFactory
 
-from zope.app import zapi
 from zope.app.component.vocabulary import UtilityVocabulary
 from zope.security.management import getInteraction
-from zope.app import zapi
-from zope.app.schema.vocabulary import IVocabularyFactory 
+from zope.app.schema.vocabulary import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary,SimpleTerm
 
-# TODO: this vocabulary should go to zope.app.component where the IFactory 
+# TODO: this vocabulary should go to zope.app.component where the IFactory
 # is located.
 class FactoryTerm(object):
     """A term representing a factory.
@@ -172,9 +171,9 @@ class FactoryVocabulary(UtilityVocabulary):
         if nameOnly is not False:
             nameOnly = True
         if isinstance(interface, (str, unicode)):
-            interface = zapi.getUtility(IInterface, interface)
+            interface = zope.component.getUtility(IInterface, interface)
         self.interface = interface
-        utils = zapi.getUtilitiesFor(IFactory)
+        utils = zope.component.getUtilitiesFor(IFactory)
         factories = []
         for name, factory in utils:
             if interface in factory.getInterfaces():

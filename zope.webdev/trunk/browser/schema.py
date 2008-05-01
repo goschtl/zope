@@ -18,8 +18,8 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.interface
+import zope.component
 from zope.formlib import form
-from zope.app import zapi
 
 from zope.webdev import interfaces, schema
 from zope.webdev.browser import base, package
@@ -46,7 +46,7 @@ class PackageOverview(object):
     title = _('Schemas')
 
     def icon(self):
-        return zapi.getAdapter(self.request, name='schema.png')()
+        return zope.component.getAdapter(self.request, name='schema.png')()
 
     def schemas(self):
         """Return PT-friendly info dictionaries for all schemas."""

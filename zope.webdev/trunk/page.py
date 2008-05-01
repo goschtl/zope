@@ -25,8 +25,8 @@ import zope.app.component.interfaces.registration
 import zope.app.container.contained
 import zope.app.module.manager
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.traversing.api import getName, getParent
 from zope.app.publisher.interfaces.browser import IBrowserView
-from zope.app import zapi
 from zope.app import publisher
 from zope.app.presentation import zpt, registration
 from zope.webdev import interfaces
@@ -100,7 +100,7 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
 
     @property
     def name(self):
-        return zapi.name(self.page)
+        return getName(self.page)
 
     @property
     def with(self):
@@ -136,7 +136,7 @@ class MakeViewClass(object):
         return class_(context, request)
 
 def registerPage(page):
-    package = zapi.getParent(page)
+    package = getParent(page)
     reg = PageRegistration(page)
     package.registrationManager.addRegistration(reg)
     reg.status = zope.app.component.interfaces.registration.ActiveStatus
@@ -146,7 +146,7 @@ def reregisterPage(page):
     for reg in registered.registrations():
         reg.status = zope.app.component.interfaces.registration.InactiveStatus
         reg.status = zope.app.component.interfaces.registration.ActiveStatus
-        
+
 
 def handlePageModification(event, page):
     reregisterPage(page)
@@ -158,10 +158,10 @@ class PageRegistered(zope.app.component.registration.Registered):
     Because we do magic to return the TemplateviewFactory dynamically because
     of TTW code, we have changed to comparison in the adapter by overriding.
     """
-    
+
     def registrations(self):
-        rm = zapi.getParent(self.registerable).registrationManager
+        rm = getParent(self.registerable).registrationManager
         return [reg for reg in rm.values()
                 if (IComponentRegistration.providedBy(reg) and
-                    reg.component.cls.page is self.registerable)]    
-                    
+                    reg.component.cls.page is self.registerable)]
+

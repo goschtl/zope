@@ -23,8 +23,9 @@ import zope.event
 from zope.formlib import form
 from zope.interface.common import idatetime
 from zope.app import component
-from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.traversing.api import getName
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.webdev.interfaces import _
 
@@ -40,7 +41,7 @@ class UtilityAddFormBase(form.AddForm):
         object = super(UtilityAddFormBase, self).add(object)
 
         # Add registration
-        name = zapi.getName(object)
+        name = getName(object)
         package = self.context.context
         registration = component.site.UtilityRegistration(
             name, self.interface, object)
@@ -50,7 +51,7 @@ class UtilityAddFormBase(form.AddForm):
         return object
 
     def nextURL(self):
-        return zapi.absoluteURL(self.context.context, self.request)
+        return absoluteURL(self.context.context, self.request)
 
 
 def haveEditFlag(form, action):

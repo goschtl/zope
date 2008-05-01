@@ -21,7 +21,6 @@ import zope.schema
 import zope.app.event.objectevent
 from zope import viewlet
 from zope.formlib import form
-from zope.app import zapi
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.webdev import interfaces
 from zope.webdev.browser import pagelet, base

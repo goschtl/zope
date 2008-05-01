@@ -17,12 +17,13 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.component
 import zope.interface
 from zope.formlib import form
 from zope.schema import Choice
 from zope.schema import TextLine
-from zope.app import zapi
 from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
+from zope.traversing.api import getName
 
 from zope.webdev.interfaces import _
 from zope.webdev.browser import base, package
@@ -59,18 +60,18 @@ class AddForm(base.UtilityAddFormBase):
 
 
 class PackageOverview(object):
-    """A pagelet that serves as the overview of the database adapters in the 
+    """A pagelet that serves as the overview of the database adapters in the
     package overview."""
     zope.interface.implements(package.IPackageOverviewPagelet)
 
     title = _('Database adapters')
 
     def icon(self):
-        return zapi.getAdapter(self.request, name='rdb.png')()
+        return zope.component.getAdapter(self.request, name='rdb.png')()
 
     def definitions(self):
         """Return PT-friendly info dictionaries for all database adapters."""
         return [
-            {'name': zapi.getName(value), 'dsn': value.dsn}
+            {'name': getName(value), 'dsn': value.dsn}
             for value in self.context.values()
             if IManageableZopeDatabaseAdapter.providedBy(value)]

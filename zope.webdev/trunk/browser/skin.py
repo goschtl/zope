@@ -17,13 +17,15 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import zope.component
 import zope.interface
 import zope.security.proxy
 from zope import viewlet
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.traversing.api import getName, getParent
+from zope.traversing.browser.absoluteurl import absoluteURL
 
-from zope.app import zapi
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
 from zope.app.component import hooks
 from zope.app.publisher.browser import BrowserView
@@ -68,7 +70,7 @@ class MenuDropDown(object):
 
     def __init__(self, *args, **kwargs):
         super(MenuDropDown, self).__init__(*args, **kwargs)
-        self.menu = zapi.getUtility(IBrowserMenu, name=self.menu_id)
+        self.menu = zope.component.getUtility(IBrowserMenu, name=self.menu_id)
 
     @property
     def state(self):
@@ -115,7 +117,7 @@ class HelpHeaderTool(object):
     title = u'Help'
 
     def icon_url(self):
-        return zapi.getAdapter(self.request, name='help.png')()
+        return zope.component.getAdapter(self.request, name='help.png')()
 
     def url(self):
         return '++help++'
@@ -127,11 +129,11 @@ class ExitHeaderTool(object):
     title = u'Exit'
 
     def icon_url(self):
-        return zapi.getAdapter(self.request, name='exit.png')()
+        return zope.component.getAdapter(self.request, name='exit.png')()
 
     def url(self):
         site = hooks.getSite()
-        url = zapi.absoluteURL(site, self.request)
+        url = absoluteURL(site, self.request)
         # Remove the WebDev skin, since it does not work for all of Zope 3
         url = url.replace('/++skin++WebDev', '')
         return url + '/@@SelectedManagementView.html'
@@ -148,21 +150,21 @@ class Breadcrumbs(BrowserView):
             if interfaces.IPackage.providedBy(obj):
                 passedPackage = True
 
-            name = zapi.name(obj)
+            name = getName(obj)
             # Special case for adding view
             if name == '+':
                 name = _('Add')
 
             # Get the info for the current object
             info = {'name': name,
-                    'url': zapi.absoluteURL(obj, self.request),
+                    'url': absoluteURL(obj, self.request),
                     'icon': None}
-            zmi_icon = zapi.queryMultiAdapter(
+            zmi_icon = zope.component.queryMultiAdapter(
                 (obj, self.request), name='zmi_icon')
             if zmi_icon:
                 info['icon'] = zmi_icon()
             result.append(info)
-            obj = zapi.getParent(obj)
+            obj = getParent(obj)
 
         result.reverse()
         return result

@@ -8,7 +8,6 @@ Instantiate resource containers.
   >>> from zope.webdev.resourcecontainer import ResourceContainer
   >>> from zope.webdev.interfaces import IResourceContainer
   >>> from zope.interface.verify import verifyObject
-  >>> from zope.app import zapi
   >>> rc = ResourceContainer(u'resources')
   >>> verifyObject(IResourceContainer, rc)
   True
