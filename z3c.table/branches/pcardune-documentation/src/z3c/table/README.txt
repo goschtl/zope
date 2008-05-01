@@ -2,92 +2,119 @@
 Z3C Table
 =========
 
-The goal of this package is to offer a modular table rendering library. We use 
-the content provider pattern and the column are implemented as adapters which 
-will give us a powerfull base conept.
+The goal of the ``z3c.table`` package is to offer a modular table
+rendering library. We use the content provider pattern with columns
+implemented as adapters.  This gives us a powerfull base concept.
 
 
-Some important concepts we use
-------------------------------
+Important Requirements
+----------------------
 
-- separate implementation in update render parts, This allows to manipulate 
+- separate implementation in update render parts, This allows to manipulate
   data after update call and before we render them.
 
-- allow to use page templates if needed. By default all is done in python.
+- We can use page templates if needed, but everything is done in
+  Python by default.
 
-- allow to use the rendered batch outside the existing table HTML part.
+- We can render batching navigation separately from the table itself.
+
 
 No skins
 --------
 
-This package does not provide any kind of template or skin support. Most the 
-time if you need to render a table, you will use a own skin concept. This means
-you can render the table or batch within your own tamplates. This will ensure
-that we have as less dependencies as possible in this package and the package
-can get reused with any skin concept.
+This package does not provide any kind of templates or skins. Most of
+the time, when you need to render a nice looking table, you will end
+up writing your own custom skin or template anyway.  Having no
+templates or skins ensures that ``z3c.table`` has very few package
+dependencies and is thereby easily reusable.
 
 
 Note
 ----
 
-As you probably know, batching is only possible after sorting columns. This is 
-a nightmare if it comes to performance. The reason is, all data need to get 
-sorted before the batch can start at the given position. And sorting can most 
-the time only be done by touching each object. This means you have to take care
-if you are using a large set of data, even if you use batching.
+As you probably know, when batching of table rows is combined with
+sorting of table columns, a full sort of all the data must be done
+before batches can be created.  This can cause performance problems
+with large data sets.  It is recommended that when working with large
+data sets, you either do not combine batching and sorting, or provide
+some intelligent caching method for storing sort order.
 
 
-Sample data setup
+Sample Data Setup
 -----------------
 
-Let's create a sample container which we can use as our iterable context:
+Tables are often used to display normalized bits of data.  For
+example, we might want to display information about files in a folder.
+Each file has a title, a size and a file type.  Our table would then
+have a row for each file and a column for each normalized bit of data
+about the file (title, size, and type).  Thus the context of a table is
+always some iterable data structure that represents the rows of the
+table.  Let's create a sample folder that we can use as our
+iterable context:
 
   >>> from zope.app.container import btree
-  >>> class Container(btree.BTreeContainer):
-  ...     """Sample container."""
-  ...     __name__ = u'container'
-  >>> container = Container()
+  >>> class Folder(btree.BTreeContainer):
+  ...     """Sample folder."""
+  ...     __name__ = u'folder'
+  >>> folder = Folder()
 
-and set a parent for the container:
+XXX: not sure we need to put the folder anywhere yet.  Nor do we need
+to give it a __name__ value.  We shouldn't need to locate it.
+and set a parent for the folder:
 
-  >>> root['container'] = container
+  >>> root['folder'] = folder
 
-and create a sample content object which we use as container item:
+Now we will create a sample ``File`` object to store in our folders.
 
-  >>> class Content(object):
-  ...     """Sample content."""
-  ...     def __init__(self, title, number):
+  >>> class File(object):
+  ...     """Sample file."""
+  ...     def __init__(self, title, size, type=None):
   ...         self.title = title
-  ...         self.number = number
+  ...         self.number = size
+  ...         self.type = type
 
-Now setup some items:
+Now we'll go ahead and set up our folder with some files.
 
-  >>> container[u'first'] = Content('First', 1)
-  >>> container[u'second'] = Content('Second', 2)
-  >>> container[u'third'] = Content('Third', 3)
+  >>> folder[u'first'] = File('First', 1)
+  >>> folder[u'second'] = File('Second', 2)
+  >>> folder[u'third'] = File('Third', 3)
 
 
-Table
------
+Creating Tables
+---------------
 
-Create a test request and represent the table:
+Now that we have some sample data to work with, we can now create a
+table.  Since tables are UI components, they use both a context and a
+request.  These are taken as arguments to the ``Table`` class's
+constructor.
 
   >>> from zope.publisher.browser import TestRequest
   >>> from z3c.table import table
   >>> request = TestRequest()
-  >>> plainTable = table.Table(container, request)
+  >>> plainTable = table.Table(folder, request)
 
-Now we can update and render the table. As you can see with an empty container
-we will not get anything whihc looks like a table. We just get an empty string:
+Once the table has been instantiated, we can update and render
+it. Since we have not specified any columns for the table to render,
+the table just renders to an empty string:
 
   >>> plainTable.update()
   >>> plainTable.render()
   u''
 
+XXX: don't forget to mention the ``ITable`` interface.
+
+Creating Columns
+----------------
+
+Since we may want the same type of column to appear in many different
+tables, the definition for a column lives separately from the table
+itself.  Every type of column is represented as its own class
+implementing the ``IColumn`` interface.
 
 Column Adapter
 --------------
 
+Let's go ahead and create a column for the table.
 Now we can register a column for our table:
 
   >>> import zope.component
@@ -95,10 +122,10 @@ Now we can register a column for our table:
   >>> from z3c.table import column
 
   >>> class TitleColumn(column.Column):
-  ... 
+  ...
   ...     weight = 10
   ...     header = u'Title'
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return u'Title: %s' % item.title
 
@@ -171,19 +198,19 @@ Colspan
 Now let's show how we can define a colspan condition of 2 for an column:
 
   >>> class ColspanColumn(column.NameColumn):
-  ... 
+  ...
   ...     weight = 999
-  ... 
+  ...
   ...     def getColspan(self, item):
   ...         # colspan condition
   ...         if item.__name__ == 'first':
   ...             return 2
   ...         else:
   ...             return 0
-  ... 
+  ...
   ...     def renderHeadCell(self):
   ...         return u'Colspan'
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return u'colspan: %s' % item.title
 
@@ -206,7 +233,7 @@ But if we set the column as first row, it weill render the colspan correct:
 
   >>> class CorrectColspanColumn(ColspanColumn):
   ...     """Colspan with correct weight."""
-  ... 
+  ...
   ...     weight = 0
 
 Register and render the table again:
@@ -247,14 +274,14 @@ Setup columns
 -------------
 
 The existing implementation allows us to define a table in a class without
-to use the modular adapter pattern for columns. 
+to use the modular adapter pattern for columns.
 
 First we need to define a column which cna render a value for our items:
 
   >>> class SimpleColumn(column.Column):
-  ... 
+  ...
   ...     weight = 0
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return item.title
 
@@ -262,7 +289,7 @@ Let's define our table which defines the columns explicit. you can also see,
 that we do not return the columns in the correct order:
 
   >>> class PrivateTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
   ...         firstColumn.__name__ = u'title'
@@ -276,7 +303,7 @@ that we do not return the columns in the correct order:
 Now we can create, update and render the table and see that this renders a nice
 table too:
 
-  >>> privateTable = PrivateTable(container, request) 
+  >>> privateTable = PrivateTable(folder, request)
   >>> privateTable.update()
   >>> print privateTable.render()
   <table>
@@ -306,18 +333,18 @@ table too:
 Cascading Style Sheet
 ---------------------
 
-Our table and column implementation supports css class assignment. Let's define 
+Our table and column implementation supports css class assignment. Let's define
 a table and columns with some css class values:
 
   >>> class CSSTable(table.Table):
-  ... 
+  ...
   ...     cssClasses = {'table': 'table',
   ...                   'thead': 'thead',
   ...                   'tbody': 'tbody',
   ...                   'th': 'th',
   ...                   'tr': 'tr',
   ...                   'td': 'td'}
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
   ...         firstColumn.__name__ = u'title'
@@ -335,7 +362,7 @@ Now let's see if we got the cs class assigned which we defined in the table and
 column. Note that the ``th`` and ``td`` got CSS declarations from the table and
 from the column.
 
-  >>> cssTable = CSSTable(container, request) 
+  >>> cssTable = CSSTable(folder, request)
   >>> cssTable.update()
   >>> print cssTable.render()
   <table class="table">
@@ -370,17 +397,17 @@ classes. Let's define a table including other CSS classes. For even/odd support,
 we only need to define the ``cssClassEven`` and ``cssClassOdd`` CSS classes:
 
   >>> class AlternatingTable(table.Table):
-  ... 
+  ...
   ...     cssClasses = {'table': 'table',
   ...                   'thead': 'thead',
   ...                   'tbody': 'tbody',
   ...                   'th': 'th',
   ...                   'tr': 'tr',
   ...                   'td': 'td'}
-  ... 
+  ...
   ...     cssClassEven = u'even'
   ...     cssClassOdd = u'odd'
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
   ...         firstColumn.__name__ = u'title'
@@ -394,10 +421,10 @@ we only need to define the ``cssClassEven`` and ``cssClassOdd`` CSS classes:
   ...         secondColumn.header = u'The second column'
   ...         return [secondColumn, firstColumn]
 
-Now update and render the new table. As you can see the given ``tr`` class get 
+Now update and render the new table. As you can see the given ``tr`` class get
 used additional to the even and odd classes:
 
-  >>> alternatingTable = AlternatingTable(container, request) 
+  >>> alternatingTable = AlternatingTable(folder, request)
   >>> alternatingTable.update()
   >>> print alternatingTable.render()
   <table class="table">
@@ -431,18 +458,18 @@ Another table feature is the support for sorting data given from columns. Since
 sorting table data is an important feature, we offer this by default. But it
 only gets used if there is a sortOn value set. You can set this value at class
 level by adding a defaultSortOn value or set it as a request value. We show you
-how to do this later. We also need a columns which allows us to do a better 
+how to do this later. We also need a columns which allows us to do a better
 sort sample. Our new sorting column will use the content items number value
 for sorting:
 
   >>> class NumberColumn(column.Column):
-  ... 
+  ...
   ...     header = u'Number'
   ...     weight = 20
-  ... 
+  ...
   ...     def getSortKey(self, item):
   ...         return item.number
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return 'number: %s' % item.number
 
@@ -450,7 +477,7 @@ for sorting:
 Now let's setup a table:
 
   >>> class SortingTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         firstColumn = TitleColumn(self.context, self.request, self)
   ...         firstColumn.__name__ = u'title'
@@ -462,12 +489,12 @@ Now let's setup a table:
 
 We also need some more container items which we can use for sorting:
 
-  >>> container[u'fourth'] = Content('Fourth', 4)
-  >>> container[u'zero'] = Content('Zero', 0)
+  >>> folder[u'fourth'] = File('Fourth', 4)
+  >>> folder[u'zero'] = File('Zero', 0)
 
 And render them without set a sortOn value:
 
-  >>> sortingTable = SortingTable(container, request) 
+  >>> sortingTable = SortingTable(folder, request)
   >>> sortingTable.update()
   >>> print sortingTable.render()
   <table>
@@ -583,7 +610,7 @@ We can also reverse the sort order:
     </tbody>
   </table>
 
-The table implementation is also able to get the sort criteria given from a 
+The table implementation is also able to get the sort criteria given from a
 request. Let's setup such a request:
 
   >>> sorterRequest = TestRequest(form={'table-sortOn': 'table-number-1',
@@ -592,7 +619,7 @@ request. Let's setup such a request:
 and another time, update and render. As you can see the new table get sorted
 by the second column and ordered in reverse order:
 
-  >>> requestSortedTable = SortingTable(container, sorterRequest)
+  >>> requestSortedTable = SortingTable(folder, sorterRequest)
   >>> requestSortedTable.update()
   >>> print requestSortedTable.render()
   <table>
@@ -630,8 +657,8 @@ by the second column and ordered in reverse order:
 Class based Table setup
 -----------------------
 
-There is a more elegant way to define table rows at class level. We offer 
-a method which you can use if you need to define some columns called 
+There is a more elegant way to define table rows at class level. We offer
+a method which you can use if you need to define some columns called
 ``addTable``. Before we define the table. let's define some cell renderer:
 
   >>> def headCellRenderer():
@@ -643,17 +670,17 @@ a method which you can use if you need to define some columns called
 Now we can define our table and use the custom cell renderer:
 
   >>> class AddColumnTable(table.Table):
-  ... 
+  ...
   ...     cssClasses = {'table': 'table',
   ...                   'thead': 'thead',
   ...                   'tbody': 'tbody',
   ...                   'th': 'th',
   ...                   'tr': 'tr',
   ...                   'td': 'td'}
-  ... 
+  ...
   ...     cssClassEven = u'even'
   ...     cssClassOdd = u'odd'
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, TitleColumn, u'title',
@@ -665,7 +692,7 @@ Now we can define our table and use the custom cell renderer:
   ...                              cssClasses = {'th':'thCol', 'td':'tdCol'})
   ...             ]
 
-  >>> addColumnTable = AddColumnTable(container, request)
+  >>> addColumnTable = AddColumnTable(folder, request)
   >>> addColumnTable.update()
   >>> print addColumnTable.render()
   <table class="table">
@@ -752,11 +779,11 @@ and the second column
 Batching
 --------
 
-Or table implements a concept for batching out of the box. If the amount of 
-row items is smaller then the given ``startBatchingAt`` size, the table starts 
+Or table implements a concept for batching out of the box. If the amount of
+row items is smaller then the given ``startBatchingAt`` size, the table starts
 to batch at this size. Let's define a new Table:
 
-We need to configure our batch provider for the next step first. See the 
+We need to configure our batch provider for the next step first. See the
 section ``BatchProvider`` below for more infos about batch rendering:
 
   >>> from zope.configuration.xmlconfig import XMLConfig
@@ -766,7 +793,7 @@ section ``BatchProvider`` below for more infos about batch rendering:
   >>> XMLConfig('configure.zcml', z3c.table)()
 
   >>> class BatchingTable(table.Table):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, TitleColumn, u'title',
@@ -779,31 +806,31 @@ section ``BatchProvider`` below for more infos about batch rendering:
 
 Now we can create our table:
 
-  >>> batchingTable = BatchingTable(container, request)
+  >>> batchingTable = BatchingTable(folder, request)
 
 We also need to give the table a location and a name like we normaly setup
 in traversing:
 
-  >>> batchingTable.__parent__ = container
+  >>> batchingTable.__parent__ = folder
   >>> batchingTable.__name__ = u'batchingTable.html'
 
-And add some more items to our container:
+And add some more items to our folder:
 
-  >>> container[u'sixth'] = Content('Sixth', 6)
-  >>> container[u'seventh'] = Content('Seventh', 7)
-  >>> container[u'eighth'] = Content('Eighth', 8)
-  >>> container[u'ninth'] = Content('Ninth', 9)
-  >>> container[u'tenth'] = Content('Tenth', 10)
-  >>> container[u'eleventh'] = Content('Eleventh', 11)
-  >>> container[u'twelfth '] = Content('Twelfth', 12)
-  >>> container[u'thirteenth'] = Content('Thirteenth', 13)
-  >>> container[u'fourteenth'] = Content('Fourteenth', 14)
-  >>> container[u'fifteenth '] = Content('Fifteenth', 15)
-  >>> container[u'sixteenth'] = Content('Sixteenth', 16)
-  >>> container[u'seventeenth'] = Content('Seventeenth', 17)
-  >>> container[u'eighteenth'] = Content('Eighteenth', 18)
-  >>> container[u'nineteenth'] = Content('Nineteenth', 19)
-  >>> container[u'twentieth'] = Content('Twentieth', 20)
+  >>> folder[u'sixth'] = File('Sixth', 6)
+  >>> folder[u'seventh'] = File('Seventh', 7)
+  >>> folder[u'eighth'] = File('Eighth', 8)
+  >>> folder[u'ninth'] = File('Ninth', 9)
+  >>> folder[u'tenth'] = File('Tenth', 10)
+  >>> folder[u'eleventh'] = File('Eleventh', 11)
+  >>> folder[u'twelfth '] = File('Twelfth', 12)
+  >>> folder[u'thirteenth'] = File('Thirteenth', 13)
+  >>> folder[u'fourteenth'] = File('Fourteenth', 14)
+  >>> folder[u'fifteenth '] = File('Fifteenth', 15)
+  >>> folder[u'sixteenth'] = File('Sixteenth', 16)
+  >>> folder[u'seventeenth'] = File('Seventeenth', 17)
+  >>> folder[u'eighteenth'] = File('Eighteenth', 18)
+  >>> folder[u'nineteenth'] = File('Nineteenth', 19)
+  >>> folder[u'twentieth'] = File('Twentieth', 20)
 
 Now let's show the full table without batching:
 
@@ -925,7 +952,7 @@ the value get initialized by the ``batchSize`` value:
   5
 
 Now we can update and render the table again. But you will see that we only get
-a table size of 5 rows which is correct. But the order doesn't depend on the 
+a table size of 5 rows which is correct. But the order doesn't depend on the
 numbers we see in cells:
 
   >>> batchingTable.update()
@@ -1008,12 +1035,12 @@ we have ``4`` batched row data available:
   >>> len(batchingTable.rows.batches)
   4
 
-We can set such a batch as row values, then this batch data are used for 
-rendering. But take care, if we update the table, our rows get overriden 
+We can set such a batch as row values, then this batch data are used for
+rendering. But take care, if we update the table, our rows get overriden
 and reset to the previous values. this means you can set any bath as rows
 data and only render them. This is possbile since the update method sorted all
 items and all batch contain ready to use data. This concept could be important
-if you need to cache batches etc. 
+if you need to cache batches etc.
 
   >>> batchingTable.rows = batchingTable.rows.batches[1]
   >>> print batchingTable.render()
@@ -1086,10 +1113,10 @@ reset:
 
 This means you can probably update all batches, cache them and use them alter.
 but this is not usfull for normal usage in a page without an enhanced concept
-which is not a part of this implementation. This also means, there must be 
+which is not a part of this implementation. This also means, there must be
 another way to set the batch index. Yes there is, there are two other ways how
-we can set the batch position. We can set a batch position by set the 
-``batchStart`` value in our table or we can use a request variable. Let's show 
+we can set the batch position. We can set a batch position by set the
+``batchStart`` value in our table or we can use a request variable. Let's show
 the first one first:
 
   >>> batchingTable.batchStart = 6
@@ -1127,21 +1154,21 @@ the first one first:
   </table>
 
 We can also set the batch position by using the batchStart value in a request.
-Note that we need the table ``prefix`` and column ``__name__`` like we use in 
+Note that we need the table ``prefix`` and column ``__name__`` like we use in
 the sorting concept:
 
   >>> batchingRequest = TestRequest(form={'table-batchStart': '11',
   ...                                     'table-batchSize': '5',
   ...                                     'table-sortOn': 'table-number-1'})
-  >>> requestBatchingTable = BatchingTable(container, batchingRequest)
+  >>> requestBatchingTable = BatchingTable(folder, batchingRequest)
 
 We also need to give the table a location and a name like we normaly setup
 in traversing:
 
-  >>> requestBatchingTable.__parent__ = container
+  >>> requestBatchingTable.__parent__ = folder
   >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
 
-Note; our table needs to start batching at smaller amount of items then we 
+Note; our table needs to start batching at smaller amount of items then we
 have by default otherwise we don't get a batch:
 
   >>> requestBatchingTable.startBatchingAt = 5
@@ -1185,7 +1212,7 @@ BatchProvider
 The batch provider allows us to render the batch HTML independent of our
 table. This means by default the batch get not rendered in the render method.
 You can change this in your custom table implementation and return the batch
-and the table in the render method. 
+and the table in the render method.
 
 As we can see, our table rows provides IBatch if it come to batching:
 
@@ -1194,7 +1221,7 @@ As we can see, our table rows provides IBatch if it come to batching:
   True
 
 Let's check some batch variables before we render our test. htis let us compare
-the rendered result. For more information about batching see the README.txt in 
+the rendered result. For more information about batching see the README.txt in
 z3c.batching:
 
   >>> requestBatchingTable.rows.start
@@ -1209,7 +1236,7 @@ z3c.batching:
   >>> len(requestBatchingTable.rows.batches)
   4
 
-We use our previous batching table and render the batch with the built in 
+We use our previous batching table and render the batch with the built in
 ``renderBatch`` method:
 
   >>> requestBatchingTable.update()
@@ -1223,22 +1250,22 @@ Now let's add more items that we can test the skipped links in large batches:
 
   >>> for i in range(1000):
   ...     idx = i+20
-  ...     container[str(idx)] = Content(str(idx), idx)
+  ...     folder[str(idx)] = File(str(idx), idx)
 
-Now let's test the batching table again with the new amount of items and 
+Now let's test the batching table again with the new amount of items and
 the same ``startBatchingAt`` of 5 but starting the batch at item ``100``
 and sorted on the second numbered column:
 
   >>> batchingRequest = TestRequest(form={'table-batchStart': '100',
   ...                                     'table-batchSize': '5',
   ...                                     'table-sortOn': 'table-number-1'})
-  >>> requestBatchingTable = BatchingTable(container, batchingRequest)
+  >>> requestBatchingTable = BatchingTable(folder, batchingRequest)
   >>> requestBatchingTable.startBatchingAt = 5
 
 We also need to give the table a location and a name like we normaly setup
 in traversing:
 
-  >>> requestBatchingTable.__parent__ = container
+  >>> requestBatchingTable.__parent__ = folder
   >>> requestBatchingTable.__name__ = u'requestBatchingTable.html'
 
   >>> requestBatchingTable.update()
@@ -1323,7 +1350,7 @@ As you can see the spacer get changed now:
   xxx
   <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
 
-None previous and next batch size. Probably it doesn't make sense but let's 
+None previous and next batch size. Probably it doesn't make sense but let's
 show what happens if we set the previous and next batch size to 0 (zero):
 
   >>> from z3c.table.batch import BatchProvider
@@ -1355,37 +1382,37 @@ Update the table and render the batch:
 SequenceTable
 -------------
 
-A sequence table can be used if we need to provide a table for a sequence 
+A sequence table can be used if we need to provide a table for a sequence
 of items instead of a mapping. Define the same sequence of items we used before
-we added the other 1000 items: 
+we added the other 1000 items:
 
   >>> dataSequence = []
-  >>> dataSequence.append(Content('Zero', 0))
-  >>> dataSequence.append(Content('First', 1))
-  >>> dataSequence.append(Content('Second', 2))
-  >>> dataSequence.append(Content('Third', 3))
-  >>> dataSequence.append(Content('Fourth', 4))
-  >>> dataSequence.append(Content('Fifth', 5))
-  >>> dataSequence.append(Content('Sixth', 6))
-  >>> dataSequence.append(Content('Seventh', 7))
-  >>> dataSequence.append(Content('Eighth', 8))
-  >>> dataSequence.append(Content('Ninth', 9))
-  >>> dataSequence.append(Content('Tenth', 10))
-  >>> dataSequence.append(Content('Eleventh', 11))
-  >>> dataSequence.append(Content('Twelfth', 12))
-  >>> dataSequence.append(Content('Thirteenth', 13))
-  >>> dataSequence.append(Content('Fourteenth', 14))
-  >>> dataSequence.append(Content('Fifteenth', 15))
-  >>> dataSequence.append(Content('Sixteenth', 16))
-  >>> dataSequence.append(Content('Seventeenth', 17))
-  >>> dataSequence.append(Content('Eighteenth', 18))
-  >>> dataSequence.append(Content('Nineteenth', 19))
-  >>> dataSequence.append(Content('Twentieth', 20))
+  >>> dataSequence.append(File('Zero', 0))
+  >>> dataSequence.append(File('First', 1))
+  >>> dataSequence.append(File('Second', 2))
+  >>> dataSequence.append(File('Third', 3))
+  >>> dataSequence.append(File('Fourth', 4))
+  >>> dataSequence.append(File('Fifth', 5))
+  >>> dataSequence.append(File('Sixth', 6))
+  >>> dataSequence.append(File('Seventh', 7))
+  >>> dataSequence.append(File('Eighth', 8))
+  >>> dataSequence.append(File('Ninth', 9))
+  >>> dataSequence.append(File('Tenth', 10))
+  >>> dataSequence.append(File('Eleventh', 11))
+  >>> dataSequence.append(File('Twelfth', 12))
+  >>> dataSequence.append(File('Thirteenth', 13))
+  >>> dataSequence.append(File('Fourteenth', 14))
+  >>> dataSequence.append(File('Fifteenth', 15))
+  >>> dataSequence.append(File('Sixteenth', 16))
+  >>> dataSequence.append(File('Seventeenth', 17))
+  >>> dataSequence.append(File('Eighteenth', 18))
+  >>> dataSequence.append(File('Nineteenth', 19))
+  >>> dataSequence.append(File('Twentieth', 20))
 
 Now let's define a new SequenceTable:
 
   >>> class SequenceTable(table.SequenceTable):
-  ... 
+  ...
   ...     def setUpColumns(self):
   ...         return [
   ...             column.addColumn(self, TitleColumn, u'title',
@@ -1405,7 +1432,7 @@ Now we can create our table adapting our sequence:
 We also need to give the table a location and a name like we normaly setup
 in traversing:
 
-  >>> sequenceTable.__parent__ = container
+  >>> sequenceTable.__parent__ = folder
   >>> sequenceTable.__name__ = u'sequenceTable.html'
 
 And update and render the sequence table:
@@ -1512,7 +1539,7 @@ the ``start batch at`` size to ``5``:
 
   >>> sequenceTable.startBatchingAt = 5
 
-And the ``batchSize`` to ``5``. 
+And the ``batchSize`` to ``5``.
 
   >>> sequenceTable.batchSize = 5
 
@@ -1552,7 +1579,7 @@ a table size of 5 rows:
     </tbody>
   </table>
 
-And we set the sort order to ``reverse`` even if we use batching: 
+And we set the sort order to ``reverse`` even if we use batching:
 
   >>> sequenceTable.sortOrder = u'reverse'
   >>> sequenceTable.update()
@@ -1595,23 +1622,23 @@ We can change the rendering of the header of, e.g, the Title column by
 registering a IHeaderColumn adapter. This may be useful for adding links to
 column headers for an existing table implementation.
 
-We'll use a fresh almost empty container.
+We'll use a fresh almost empty folder.
 
-  >>> container = Container()
-  >>> root['container-1'] = container
-  >>> container[u'first'] = Content('First', 1)
-  >>> container[u'second'] = Content('Second', 2)
-  >>> container[u'third'] = Content('Third', 3)
+  >>> folder = Folder()
+  >>> root['folder-1'] = folder
+  >>> folder[u'first'] = File('First', 1)
+  >>> folder[u'second'] = File('Second', 2)
+  >>> folder[u'third'] = File('Third', 3)
 
   >>> class myTableClass(table.Table):
   ...     pass
 
-  >>> myTable = myTableClass(container, request)
+  >>> myTable = myTableClass(folder, request)
 
   >>> class TitleColumn(column.Column):
-  ... 
+  ...
   ...     header = u'Title'
-  ... 
+  ...
   ...     def renderCell(self, item):
   ...         return item.title
 
@@ -1655,10 +1682,10 @@ Test if the getWeight method returns 0 (zero) on AttributeError:
   >>> getWeight(None)
   0
 
-Try to call a simple table and call renderBatch which should return an empty 
+Try to call a simple table and call renderBatch which should return an empty
 string:
 
-  >>> simpleTable = table.Table(container, request)
+  >>> simpleTable = table.Table(folder, request)
   >>> simpleTable.renderBatch()
   u''
 
@@ -1691,14 +1718,14 @@ Test if we can set additional kws in addColumn
 
   >>> simpleColumn.counter
   99
-  
+
 The NoneCell class provides some methods which never get. But this methods must
-be there because the interfaces defines them. Let's test the default values 
-and make coverage report happy. 
+be there because the interfaces defines them. Let's test the default values
+and make coverage report happy.
 
-Let's get an container item first:
+Let's get an folder item first:
 
-  >>> firstItem = container[u'first']
+  >>> firstItem = folder[u'first']
   >>> noneCellColumn = column.addColumn(simpleTable, column.NoneCell, u'none')
   >>> noneCellColumn.renderCell(firstItem)
   u''
@@ -1712,7 +1739,7 @@ Let's get an container item first:
   >>> noneCellColumn.renderCell(firstItem)
   u''
 
-The default ``Column`` implementation raises an NotImplementedError if we 
+The default ``Column`` implementation raises an NotImplementedError if we
 do not override the renderCell method:
 
   >>> defaultColumn = column.addColumn(simpleTable, column.Column, u'default')
