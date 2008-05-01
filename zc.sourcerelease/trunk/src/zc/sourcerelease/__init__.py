@@ -66,6 +66,8 @@ def source_release(args=None):
         name = url_parts[-2]
     elif len(url_parts) > 2 and url_parts[-2] in ('tags', 'branches'):
         name = url_parts[-3]
+        if url_parts[-2] == 'tags':
+            name = name + '_' + url_parts[-1]
     else:
         name = url_parts[-1]
     t1 = tempfile.mkdtemp('source-release1')

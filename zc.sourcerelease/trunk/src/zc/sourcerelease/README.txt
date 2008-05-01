@@ -270,7 +270,7 @@ tags.
     ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
     ...     '/tags/1.0.1 buildout.cfg'),
     ... # doctest: +ELLIPSIS
-    Creating source release in svnsample.tgz
+    Creating source release in svnsample_1.0.1.tgz
     svn: URL ... doesn't exist
     ...
 

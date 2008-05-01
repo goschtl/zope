@@ -8,7 +8,8 @@ New Features
 ++++++++++++
 
 When trunk, tags or branches is in the svn url, try to compile a
-better name instead of e.g. trunk.tgz.
+better name instead of e.g. trunk.tgz.  For tags, use
+name_version.tgz.
 
 Bugs Fixed
 ++++++++++
