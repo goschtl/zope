@@ -6,8 +6,7 @@ version = '0.1'
 setup(name='megrok.rdb',
       version=version,
       description="SQLAlchemy based RDB support for Grok.",
-      long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
+      long_description=open("README.txt").read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
@@ -26,6 +25,7 @@ setup(name='megrok.rdb',
       install_requires=[
           'setuptools',
           'SQLAlchemy',
+          'collective.lead', # needs elro-tcp branch for now
       ],
       entry_points="""
       # -*- Entry points: -*-
