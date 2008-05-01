@@ -17,9 +17,9 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 import zope.interface
+import zope.component
 from zope.app.apidoc import utilities
 from zope.app import location
-from zope.app import zapi
 
 from zope.tutorial import interfaces
 
@@ -35,14 +35,15 @@ class TutorialManager(utilities.ReadContainerBase):
 
     def get(self, key, default=None):
         """See zope.app.container.interfaces.IReadContainer"""
-        utility = zapi.queryUtility(interfaces.ITutorial, key, default)
+        utility = zope.component.queryUtility(interfaces.ITutorial,
+                                              key, default)
         if utility != default:
             utility = location.LocationProxy(utility, self, key)
         return utility
 
     def items(self):
         """See zope.app.container.interfaces.IReadContainer"""
-        items = list(zapi.getUtilitiesFor(interfaces.ITutorial))
+        items = list(zope.component.getUtilitiesFor(interfaces.ITutorial))
         items.sort()
         return [(name, location.LocationProxy(tutorial, self, name))
                 for name, tutorial in items]

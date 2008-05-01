@@ -23,8 +23,9 @@ import time
 import types
 import zope.proxy
 import zope.testbrowser
+from zope.component import getUtility
+from zope.traversing.api import getName
 from zope.app import annotation
-from zope.app import zapi
 from zope.app import container
 from zope.app.apidoc.utilities import renderText
 from zope.app.component import hooks
@@ -87,7 +88,7 @@ class TutorialSession(location.Location):
     def initialize(self):
         """See interfaces.ITutorialSession"""
         # Create a parts stack
-        tutorial = zapi.getUtility(interfaces.ITutorial, name=self.tutorialName)
+        tutorial = getUtility(interfaces.ITutorial, name=self.tutorialName)
         text = open(tutorial.path, 'r').read()
         parser = doctest.DocTestParser()
         parts = parser.parse(text)
@@ -165,7 +166,7 @@ class TutorialSessionManager(container.btree.BTreeContainer):
         super(TutorialSessionManager, self).__init__()
 
     def createSession(self):
-        session = TutorialSession(zapi.getName(self))
+        session = TutorialSession(getName(self))
         chooser = container.interfaces.INameChooser(self)
         name = chooser.chooseName(u'session', session)
         self[name] = session
@@ -179,7 +180,7 @@ class sessionsNamespace(object):
     """Used to traverse the `++sessions++` namespace"""
 
     def __init__(self, ob=None, request=None):
-        tutorialName = zapi.name(ob)
+        tutorialName = getName(ob)
         manager = SESSIONMANAGER_CACHE.get(tutorialName)
         if manager is None:
             manager = TutorialSessionManager()

@@ -13,9 +13,9 @@ meta-configuration:
 Now we can run the directive. First, let's make sure that no tutorials have
 been registered yet:
 
-  >>> from zope.app import zapi
+  >>> import zope.component
   >>> from zope.tutorial import interfaces
-  >>> list(zapi.getUtilitiesFor(interfaces.ITutorial))
+  >>> list(zope.component.getUtilitiesFor(interfaces.ITutorial))
   []
 
 Now run the registration code:
@@ -34,6 +34,6 @@ Now run the registration code:
 Note that this file is not really a functional test-browser test, so it would
 not actually work in the Web interface. Now the tutorial is available:
 
-  >>> list(zapi.getUtilitiesFor(interfaces.ITutorial))
+  >>> list(zope.component.getUtilitiesFor(interfaces.ITutorial))
   [(u'zope_tutorial_directive',
     <Tutorial title=u'zope:tutorial Directive', file=u'directives.txt'>)]
