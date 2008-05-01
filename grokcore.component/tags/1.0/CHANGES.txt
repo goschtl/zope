@@ -1,0 +1,9 @@
+Changes
+=======
+
+1.0 (2008-05-01)
+----------------
+
+* Created ``grokcore.component`` in March 2008 by factoring basic
+  component base classes and their directives and grokkers out of
+  Grok.

@@ -1,0 +1,4 @@
+CREDITS
+=======
+
+See the CREDITS file in the main ``grok`` project itself.
