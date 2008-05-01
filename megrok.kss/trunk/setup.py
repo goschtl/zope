@@ -8,7 +8,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 long_description = (
-        read('docs', 'README.txt')
+        read('docs', 'README.txt') + '\n' +
+        read('docs', 'HISTORY.txt') + '\n' +
+        read('docs', 'CREDITS.txt')
         )
 
 setup(name='megrok.kss',

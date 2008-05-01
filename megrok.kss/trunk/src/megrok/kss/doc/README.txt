@@ -41,11 +41,11 @@ How to add KSS support to your grok app
    <link tal:attributes="href static/app.kss" rel="kinetic-stylesheet" type="text/kss" />
 
 
-- create a KSSActions view with code like::
+- create a KSSAction view with code like::
    
-        from megrok.kss import KSSActions
+        from megrok.kss import KSSAction
         
-        class AppKSS(KSSActions):
+        class AppKSS(KSSAction):
 
             def welcome(self):
                 core = self.getCommandSet('core')
