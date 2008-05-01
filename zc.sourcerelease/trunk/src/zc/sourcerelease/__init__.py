@@ -61,6 +61,9 @@ def source_release(args=None):
         section, option = name.split(':')
         clopts.append((section, option, value))
     
+    if url.endswith('/'):
+        # Remove ending slash
+        url = url[:-1]
     url_parts = url.split('/')
     if len(url_parts) > 1 and url_parts[-1] == 'trunk':
         name = url_parts[-2]
