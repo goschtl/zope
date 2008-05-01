@@ -1,0 +1,3 @@
+- need much better tests
+
+- no tests at all for lazy ``copy`` right now, which is a delicate dance!
