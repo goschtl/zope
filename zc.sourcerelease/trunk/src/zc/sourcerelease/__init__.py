@@ -61,13 +61,19 @@ def source_release(args=None):
         section, option = name.split(':')
         clopts.append((section, option, value))
     
-    name = url.split('/')[-1]
+    url_parts = url.split('/')
+    if len(url_parts) > 1 and url_parts[-1] == 'trunk':
+        name = url_parts[-2]
+    elif len(url_parts) > 2 and url_parts[-2] in ('tags', 'branches'):
+        name = url_parts[-3]
+    else:
+        name = url_parts[-1]
     t1 = tempfile.mkdtemp('source-release1')
     t2 = tempfile.mkdtemp('source-release2')
     co1 = os.path.join(t1, name)
     co2 = os.path.join(t2, name)
     here = os.getcwd()
-    print 'Creating source release.'
+    print 'Creating source release in %s.tgz' % name
     sys.stdout.flush()
     try:
 

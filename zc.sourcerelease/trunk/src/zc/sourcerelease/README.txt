@@ -79,7 +79,7 @@ We'll run the release script against this sample directory:
     >>> print system(join('bin', 'buildout-source-release')
     ...        +' file://'+sample+' buildout.cfg'),
     ... # doctest: +ELLIPSIS
-    Creating source release.
+    Creating source release in sample.tgz
     ...
 
 We end up with a tar file:
@@ -194,7 +194,7 @@ simple sample in subversion. Let's try to install it:
     ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
     ...     ' release.cfg'),
     ... # doctest: +ELLIPSIS
-    Creating source release.
+    Creating source release in svnsample.tgz
     ... The referenced section, 'repos', was not defined.
 
 The svnsample config, release.cfg, has::
@@ -214,7 +214,7 @@ server. First, we'll put the sample eggs back on the link server:
     ...     ' release.cfg'+
     ...     ' repos:svnsample='+link_server),
     ... # doctest: +ELLIPSIS
-    Creating source release.
+    Creating source release in svnsample.tgz
     ...
 
     >>> ls('.')
@@ -244,6 +244,36 @@ server. First, we'll put the sample eggs back on the link server:
     >>> print system(join('svntest', 'svnsample', 'bin', 'sample')),
     sample from svn called
 
+When making a source release of a subversion export, we want to make
+sure it has a decent name instead of trunk.tgz.  We check this with
+some locations that do not actually exist, but are fine for testing.
+We can handle the default subversion convention of trunk, branches and
+tags.
+
+    >>> print system(join('bin', 'buildout-source-release')+' '+
+    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
+    ...     '/trunk buildout.cfg'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in svnsample.tgz
+    svn: URL ... doesn't exist
+    ...
+
+    >>> print system(join('bin', 'buildout-source-release')+' '+
+    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
+    ...     '/branches/1.0 buildout.cfg'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in svnsample.tgz
+    svn: URL ... doesn't exist
+    ...
+
+    >>> print system(join('bin', 'buildout-source-release')+' '+
+    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
+    ...     '/tags/1.0.1 buildout.cfg'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in svnsample.tgz
+    svn: URL ... doesn't exist
+    ...
+
 You can specify a different configuration file of course.  Let's
 create one with an error as it contains an absolute path for the
 eggs-directory.
@@ -265,7 +295,7 @@ We'll run the release script against this configuration file:
     >>> print system(join('bin', 'buildout-source-release')
     ...        +' file://'+sample+' wrong.cfg'),
     ... # doctest: +ELLIPSIS
-    Creating source release.
+    Creating source release in sample.tgz
     Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
 
 
