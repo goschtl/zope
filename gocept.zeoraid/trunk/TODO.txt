@@ -53,3 +53,7 @@ Future
 
 - Manager client: provide current recovery message for a storage that is
   recovering
+
+- Allow combination of multiple ZEORaid servers that know of each other and
+  can be used for automatic fallback. Need to investigate how the automatic
+  fail-over to multiple servers of ClientStorage works.
