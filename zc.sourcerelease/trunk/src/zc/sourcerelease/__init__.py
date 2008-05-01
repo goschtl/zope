@@ -1,4 +1,4 @@
-##############################################################################
+#############################################################################
 #
 # Copyright (c) 2006 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -40,7 +40,7 @@ def _relative(path, to):
             break
         to = d
     
-    while path and path != to:
+    while path and path != to and path != '/':
         path, base = os.path.split(path)
         if base:
             rel.insert(0, base)
@@ -85,7 +85,8 @@ def source_release(args=None):
         eggs_directory = buildout['buildout']['eggs-directory']
         reggs = _relative(eggs_directory, co1)
         if reggs is None:
-            print 'Invalid eggs directory', eggs_directory
+            print 'Invalid eggs directory (perhaps not a relative path)', \
+                eggs_directory
             sys.exit(0)
 
         buildout.bootstrap([])

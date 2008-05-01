@@ -244,6 +244,30 @@ server. First, we'll put the sample eggs back on the link server:
     >>> print system(join('svntest', 'svnsample', 'bin', 'sample')),
     sample from svn called
 
+You can specify a different configuration file of course.  Let's
+create one with an error as it contains an absolute path for the
+eggs-directory.
+
+    >>> write(sample, 'wrong.cfg', 
+    ... '''
+    ... [buildout]
+    ... parts = sample
+    ... find-links = %(link_server)s
+    ... eggs-directory = /somewhere/shared-eggs
+    ... 
+    ... [sample]
+    ... recipe = zc.recipe.egg
+    ... eggs = sample1
+    ... ''' % globals())
+
+We'll run the release script against this configuration file:
+
+    >>> print system(join('bin', 'buildout-source-release')
+    ...        +' file://'+sample+' wrong.cfg'),
+    ... # doctest: +ELLIPSIS
+    Creating source release.
+    Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
+
 
 .. [#zip_in_future] It is possible that an option will be added in the
   future to generate zip files rather than tar archives.
