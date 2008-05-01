@@ -31,6 +31,8 @@ You can run the demo by downloading just the securitytool package
 Then access the demo site using:
 
 - http://localhost:8080/++skin++SecurityTool/securityMatrix.html
+- user: admin
+- password: admin
 
 There are some folders added with permissions and roles applied to show
 the settings in the demo. 
