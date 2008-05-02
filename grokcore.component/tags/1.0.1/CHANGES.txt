@@ -1,0 +1,25 @@
+Changes
+=======
+
+1.0.1 (2008-05-02)
+------------------
+
+* The grokkers for adapters and global utilities did not use the
+  correct value for the *provided* interface in the configuration
+  action discriminator.  Because of this, uninformative and
+  potentially wrong conflict errors would occur, as well as no
+  conflict where a conflict should have occurred.
+
+* The grokker for the ``global_utility()`` directive did immediate
+  registrations instead of generating configuration actions.
+  Therefore it did not provoke ``ConflictErrors`` for conflicting
+  registrations.
+
+* Improved documentation
+
+1.0 (2008-05-01)
+----------------
+
+* Created ``grokcore.component`` in March 2008 by factoring basic
+  component base classes and their directives and grokkers out of
+  Grok.
