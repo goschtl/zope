@@ -1,0 +1,16 @@
+<tr>
+  <td style="padding-right:5px;">
+    <span tal:content="context/label" i18n:translate="" />
+    <tal:block replace="structure view/widgets/object|nothing" />
+  </td>
+  <td style="padding-right:5px;">
+    <b tal:content="context/operatorLabel|nothing" i18n:translate="" />
+  </td>
+  <td style="padding-right:5px;">
+    <tal:block replace="structure view/widgets/value/render" />
+    <tal:block replace="structure view/widgets/connectorName/render" />
+  </td>
+  <td style="padding-right:5px;">
+	<input tal:replace="structure view/actions/remove/render" />
+  </td>
+</tr>
