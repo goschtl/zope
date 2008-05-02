@@ -53,6 +53,6 @@ def main(args=None):
                 dest = 'authorized_keys2'
 
             dest = os.path.join(sshdir, dest)
+            os.chown(keypath, uid, gid)
+            os.chmod(keypath, 0755)
             os.rename(keypath, dest)
-            os.chown(dest, uid, gid)
-            os.chmod(dest, 0755)
