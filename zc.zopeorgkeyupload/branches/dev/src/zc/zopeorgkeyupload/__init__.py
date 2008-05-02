@@ -85,11 +85,11 @@ class Publication:
             
 
         if v1keys:
-            open(self.tmp, 'w').write(''.join(v1keys))
+            writef(self.tmp, ''.join(v1keys))
             os.path.rename(self.tmp, os.path.join(self.keydir, login+'-1'))
 
         if v2keys:
-            open(self.tmp, 'w').write(''.join(v2keys))
+            writef(self.tmp, ''.join(v2keys))
             os.rename(self.tmp, os.path.join(self.keydir, login+'-2'))
             
         return ("Your keys have been uploaded.\n"
@@ -106,7 +106,12 @@ class Publication:
     
     def getDefaultTraversal(self, request, ob):
         return self, ()
-                                                                                                
+
+def writef(path, data):
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT, 0600)
+    os.write(fd, data)
+    os.close(fd)
+
 
 key_form = """
 <html>
