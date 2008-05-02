@@ -6,6 +6,7 @@ from collective.lead.interfaces import IDatabase
 from megrok.rdb.components import Model
 from megrok.rdb.interfaces import IDatabase as IRdbDatabase
 
+
 class Database(grok.GlobalUtility, DatabaseBase):
     grok.implements(IRdbDatabase)
     grok.provides(IDatabase)
@@ -17,7 +18,7 @@ class Database(grok.GlobalUtility, DatabaseBase):
         # XXXX missing 'url' gets turned into an AttributeError for `_url`
         # instead of `url`, which sucks.
         return self.url
-    
+
     def _setup_tables(self, metadata, tables):
         self.metadata = metadata = Model.metadata
         Model.metadata.create_all(self._engine)
