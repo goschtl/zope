@@ -5,5 +5,5 @@
   <include package="megrok.kss" />
 
   <!-- Register the test fixtures -->
-  <grok:grok package="megrok.kss.tests.kssactions" />
+  <grok:grok package="megrok.kss.tests.kss" />
 </configure>

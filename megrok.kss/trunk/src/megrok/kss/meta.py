@@ -5,21 +5,22 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 import martian
 from martian import util
-import grok
+
 from grok.util import get_default_permission, make_checker
 from grok.util import determine_class_directive
-from grok.meta import get_context
 
-from components import KSSActions, KSSActionsForView
+from components import KSS
 
-class KSSBaseGrokker(martian.ClassGrokker):
-    grok.baseclass()
 
-    def process_grok(self, name, factory, module_info, config, view_context,
-                     **kw):
+class KSSGrokker(martian.ClassGrokker):
+    component_class = KSS
+
+    def grok(self, name, factory, module_info, config, **kw):
+        view_context = determine_class_directive('grok.view', factory,
+                                                 module_info)
         methods = util.methods_from_class(factory)
         default_permission = get_default_permission(factory)
-        
+
         for method in methods:
             name = method.__name__
             if name.startswith('__'):
@@ -51,26 +52,5 @@ class KSSBaseGrokker(martian.ClassGrokker):
                                '__call__'),
                 callable=make_checker,
                 args=(factory, method_view, permission))
-
-
-class KSSActionsGrokker(KSSBaseGrokker):
-    """This is a default KSSAction view, self.context is the content object"""
-    component_class = KSSActions
-
-    def grok(self, name, factory, module_info, config, **kw):
-        view_context = get_context(module_info, factory)
-        self.process_grok(name, factory, module_info, config, view_context)
-
-        return True
-
-
-class KSSActionsForViewGrokker(KSSBaseGrokker):
-    """A KSS Action for a view. This has self.view which holds a view class"""
-    component_class = KSSActionsForView
-
-    def grok(self, name, factory, module_info, config, **kw):
-        view_context = determine_class_directive('grok.view', factory,
-                                                 module_info)
-        self.process_grok(name, factory, module_info, config, view_context)
 
         return True

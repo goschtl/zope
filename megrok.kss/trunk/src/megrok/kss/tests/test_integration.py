@@ -13,7 +13,7 @@ def setUp(test):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocTestSuite('megrok.kss.tests.kssactions',
+    suite.addTest(doctest.DocTestSuite('megrok.kss.tests.kss',
                                         optionflags=doctest.NORMALIZE_WHITESPACE))
     suite.layer = IntegrationLayer
     return suite
