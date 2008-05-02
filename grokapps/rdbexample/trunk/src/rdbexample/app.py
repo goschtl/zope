@@ -49,7 +49,7 @@ class Department(rdb.Model):
 
 
 class DepartmentList(grok.View):
-    grok.name('index')
+    grok.name('index.html')
     grok.context(Faculty)
 
     def render(self):
