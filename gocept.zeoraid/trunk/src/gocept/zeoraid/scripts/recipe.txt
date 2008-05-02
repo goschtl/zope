@@ -13,13 +13,13 @@ configuration data.
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
-    ... parts = zodb server
+    ... parts = zodb zeoraid
     ...
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
     ... 
-    ... [server]
+    ... [zeoraid]
     ... recipe = gocept.zeoraid:server
     ... zeo.conf = 
     ...    <zeo>
@@ -49,20 +49,20 @@ Here we specified a minimal ZEORAID configuration. When we run the buildout:
     Generated script '/sample-buildout/bin/fsrefs'.
     Generated script '/sample-buildout/bin/repozo'.
     Generated script '/sample-buildout/bin/fsoids'.
-    Installing server.
-    Generated script '/sample-buildout/bin/server'.
-    Generated script '/sample-buildout/bin/server-raid-1'.
+    Installing zeoraid.
+    Generated script '/sample-buildout/bin/zeoraid'.
+    Generated script '/sample-buildout/bin/zeoraid-1-manage'.
 
 We get 2 things.  We get a directory in parts containing ZEO and
 zdaemon configuration files:
 
-    >>> ls('parts', 'server')
+    >>> ls('parts', 'zeoraid')
     -  zdaemon.conf
     -  zeo.conf
 
 Let's look at the configuration files:
 
-    >>> cat('parts', 'server', 'zeo.conf')
+    >>> cat('parts', 'zeoraid', 'zeo.conf')
     %import gocept.zeoraid
     <BLANKLINE>
     <zeo>
@@ -97,16 +97,16 @@ Let's look at the scripts that were generated in our bin directory:
     -  mkzeoinst
     -  repozo
     -  runzeo
-    -  server
-    -  server-raid-1
     -  zeoctl
     -  zeopack
     -  zeopasswd
+    -  zeoraid
+    -  zeoraid-1-manage
 
 
 We have an additional RAID control script:
 
-    >>> cat('bin', 'server-raid-1')
+    >>> cat('bin', 'zeoraid-1-manage')
     #!/.../python
     <BLANKLINE>
     import sys
@@ -149,13 +149,13 @@ buildout:
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
-    ... parts = zodb server
+    ... parts = zodb zeoraid
     ... 
     ... [zodb]
     ... recipe = zc.recipe.egg:script
     ... eggs = ZODB3
     ... 
-    ... [server]
+    ... [zeoraid]
     ... recipe = gocept.zeoraid:server
     ... zeo.conf = 
     ...    <zeo>
@@ -182,27 +182,27 @@ buildout:
     ... ''' % globals())
 
     >>> print system(buildout),
-    Uninstalling server.
+    Uninstalling zeoraid.
     Updating zodb.
-    Installing server.
-    Generated script '/sample-buildout/rc/demo-server'.
-    Generated script '/sample-buildout/rc/demo-server-raid-main'.
+    Installing zeoraid.
+    Generated script '/sample-buildout/rc/demo-zeoraid'.
+    Generated script '/sample-buildout/rc/demo-zeoraid-main-manage'.
 
 Now, the parts directory and the control script will be gone:
 
     >>> import os
-    >>> os.path.exists(join('parts', 'server'))
+    >>> os.path.exists(join('parts', 'zeoraid'))
     False
-    >>> os.path.exists(join('bin', 'server'))
+    >>> os.path.exists(join('bin', 'zeoraid'))
     False
 
 Instead, the control script will be in the rc directory:
 
     >>> ls('rc')
-    -  demo-server
-    -  demo-server-raid-main
+    -  demo-zeoraid
+    -  demo-zeoraid-main-manage
 
-    >>> cat('rc', 'demo-server-raid-main')
+    >>> cat('rc', 'demo-zeoraid-main-manage')
     #!/.../python
     <BLANKLINE>
     import sys

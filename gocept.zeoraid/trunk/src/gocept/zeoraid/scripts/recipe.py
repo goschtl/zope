@@ -80,7 +80,7 @@ class ZEORAIDServer(object):
         # Create RAID control scripts for all RAID storages
         requirements, working_set = self.egg.working_set()
         for storage in storages:
-            script_name = rc + '-raid-' + storage
+            script_name = '%s-%s-manage' % (rc, storage)
             paths.append(os.path.join(self.options['rc-directory'],
                                       script_name))
             zc.buildout.easy_install.scripts(

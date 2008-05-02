@@ -2,6 +2,12 @@
 Change History
 ==============
 
+1.0b2 (????-??-??)
+------------------
+
+- Changed the recipe's name pattern for management client scripts to
+  <partname>-<storagename>-manage.
+
 1.0b1 (2008-04-30)
 ------------------
 
