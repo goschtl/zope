@@ -35,9 +35,13 @@ def test_suite():
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
+            module='five.grok.tests.subscribers',
+            setUp=setUp, tearDown=testing.tearDown),
+
+        doctestunit.DocTestSuite(
             module='five.grok.tests.views',
             setUp=setUp, tearDown=testing.tearDown),
-            
+
         # Integration tests that use ZopeTestCase
         #ztc.ZopeDocFileSuite(
         #    'README.txt', package='something.foo',

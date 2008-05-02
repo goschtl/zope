@@ -1,8 +1,14 @@
-Changelog
-=========
+Changelog for five.grok
+-----------------------
 
-0.1 - Unreleased
-----------------
+    (name of developer listed in brackets)
 
-* Initial release
+five.grok - 0.1 Unreleased
+
+    - Added tests for grok.subscriber directive
+      [kamon]
+
+    - Initial release (tests for adapters and utilities, initial support for
+      views)
+      [regebro, gotcha]
 
