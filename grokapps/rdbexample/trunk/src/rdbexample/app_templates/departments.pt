@@ -1,0 +1,11 @@
+<html>
+  <body>
+    <h1>Departments of faculty <span
+        tal:replace="context/__parent__/title"/></h1>
+
+    <ul>
+      <li tal:repeat="department context/values"
+        tal:content="department/title"/>
+    </ul>
+  </body>
+</html>

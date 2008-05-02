@@ -34,7 +34,7 @@ class Faculty(rdb.Model):
     grok.traversable('departments')
 
     id = Column('id', Integer, primary_key=True)
-    title = Column('email', String(50))
+    title = Column('title', String(50))
 
     departments = relation('Department',
                            backref='faculty',
@@ -46,14 +46,16 @@ class Department(rdb.Model):
 
     id = Column('id', Integer, primary_key=True)
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
+    title = Column('title', String(50))
+
+
+class FacultyIndex(grok.View):
+    grok.name('index.html')
+    grok.context(Faculty)
+    grok.template('faculty')
 
 
 class DepartmentList(grok.View):
     grok.name('index.html')
-    grok.context(Faculty)
-
-    def render(self):
-        result = "Faculty: %s - %s " % (self.context.id, self.context.title)
-        for department in self.context.departments.values():
-            result += department.title + '\n'
-        return result
+    grok.context(Departments)
+    grok.template('departments')

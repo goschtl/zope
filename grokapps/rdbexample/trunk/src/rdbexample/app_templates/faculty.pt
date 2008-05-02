@@ -1,0 +1,5 @@
+<html>
+  <body>
+    <h1>Faculty: <span tal:content="context/title"/></h1>
+  </body>
+</html>
