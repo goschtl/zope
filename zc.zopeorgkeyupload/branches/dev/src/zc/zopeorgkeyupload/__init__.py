@@ -50,7 +50,8 @@ class Publication:
 
         if not authorized:
             cred.needLogin('ZopeCVSAdmin')
-            return "You need to register with zope.org."
+            return ("You need to register with www.zope.org and log in\n"
+                    "here with your www.zope.org login and password.")
 
         try:
             pwd.getpwnam(login)
@@ -79,13 +80,17 @@ class Publication:
                 return key_form % (
                     'The key you uploaded is not properly formatted!<br />')
 
+        if not (v1keys or v2keys):
+                return key_form % 'The file you uploaded had no keys!<br />'
+            
+
         if v1keys:
             open(self.tmp, 'w').write(''.join(v1keys))
             os.path.rename(self.tmp, os.path.join(self.keydir, login+'-1'))
 
         if v2keys:
             open(self.tmp, 'w').write(''.join(v2keys))
-            os.rename(self.tmp, os.path.join(self.keydir, login+'-1'))
+            os.rename(self.tmp, os.path.join(self.keydir, login+'-2'))
             
         return ("Your keys have been uploaded.\n"
                 "It may take a few minutes for them to become effective.")
