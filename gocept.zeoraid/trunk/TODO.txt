@@ -34,9 +34,6 @@ Future
 - Allow online reconfiguration of the RAID storage (e.g. for adding or
   removing new backend servers).
 
-- Document how to make the RAID server itself reliable (leveraging the
-  statelessness of ZEORaid and a hot standby).
-
 - Verify parallel/backend invalidations + optimize invalidations that they get
   passed on only once.
 
