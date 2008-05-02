@@ -1,0 +1,42 @@
+import grok
+from zope.schema.interfaces import IField
+from zope.interface import Interface
+from zope.interface.interface import InterfaceClass
+from zope.interface.interfaces import IInterface
+from zope.component import getUtility
+from sqlalchemy.types import String, Integer
+from collective.lead.interfaces import IDatabase
+from megrok.rdb import Model
+from zope.schema import Int
+from zope.schema import Text
+from zope.schema import TextLine
+
+@grok.adapter(Model)
+@grok.implementer(IInterface)
+def schema_from_model(model):
+    table = model.__table__
+    bases = (Interface,)
+    attrs = {}
+    for i, column in enumerate(table.columns):
+        field = IField(column.type)
+        print column.name
+        field.__name__ = field.title = unicode(column.name)
+        field.order = 2 - i
+        attrs[column.name] = field
+
+    return InterfaceClass(name=model.__table__.name,
+                          bases=bases,
+                          attrs=attrs,
+                          __doc__='Generated from metadata')
+
+@grok.adapter(String)
+@grok.implementer(IField)
+def field_from_sa_string(s):
+    return TextLine(__name__ = u'__dummy__',
+                title = u'__dummy__')
+
+@grok.adapter(Integer)
+@grok.implementer(IField)
+def field_from_sa_integer(i):
+    return Int(__name__ = u'__dummy__',
+                title = u'__dummy__')

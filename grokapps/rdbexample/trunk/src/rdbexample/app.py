@@ -1,6 +1,8 @@
 import grok
 from megrok import rdb
 
+from zope.interface.interfaces import IInterface
+
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
@@ -14,8 +16,10 @@ class Database(rdb.Database):
 class RDBExample(grok.Application, grok.Model):
 
     def traverse(self, name):
-        return rdb.query(Faculty).get(int(name))
-
+        try:
+            return rdb.query(Faculty).get(int(name))
+        except ValueError:
+            return None
 
 class Index(grok.View):
 
@@ -48,6 +52,13 @@ class Department(rdb.Model):
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
     title = Column('title', String(50))
 
+from megrok.rdb.schema import schema_from_model
+
+class DepartmentList(grok.View):
+    grok.name('index.html')
+    grok.context(Departments)
+    grok.template('departments')
+
 
 class FacultyIndex(grok.View):
     grok.name('index.html')
@@ -55,7 +66,13 @@ class FacultyIndex(grok.View):
     grok.template('faculty')
 
 
-class DepartmentList(grok.View):
-    grok.name('index.html')
-    grok.context(Departments)
-    grok.template('departments')
+class AddFaculty(grok.AddForm):
+    grok.context(RDBExample)
+
+    @property
+    def form_fields(self):
+        return grok.Fields(schema_from_model(Faculty()))
+
+    @grok.action('add')
+    def handle_add(self, *args, **kw):
+        print kw
