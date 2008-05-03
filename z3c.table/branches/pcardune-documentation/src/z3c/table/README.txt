@@ -84,8 +84,8 @@ Creating Tables
 ---------------
 
 Now that we have some sample data to work with, we can now create a
-table.  Since tables are UI components, they use both a context and a
-request.  These are taken as arguments to the ``Table`` class's
+table.  Since tables are UI components, they require both a context
+and a request.  These are taken as arguments to the ``Table`` class's
 constructor.
 
   >>> from zope.publisher.browser import TestRequest
@@ -101,7 +101,15 @@ the table just renders to an empty string:
   >>> plainTable.render()
   u''
 
-XXX: don't forget to mention the ``ITable`` interface.
+We should also note that the ``Table`` class is an implementation of
+the ``ITable`` interface.  It will be more interesting to look at what
+``ITable`` provides when we have some columns.
+
+  >>> from z3c.table import interfaces
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.ITable, plainTable)
+  True
+
 
 Creating Columns
 ----------------
@@ -109,18 +117,11 @@ Creating Columns
 Since we may want the same type of column to appear in many different
 tables, the definition for a column lives separately from the table
 itself.  Every type of column is represented as its own class
-implementing the ``IColumn`` interface.
+implementing the ``IColumn`` interface.  To help us define a column,
+there is the ``Column`` baseclass.  A simple column that displays the
+current items title would look something like this:
 
-Column Adapter
---------------
-
-Let's go ahead and create a column for the table.
-Now we can register a column for our table:
-
-  >>> import zope.component
-  >>> from z3c.table import interfaces
   >>> from z3c.table import column
-
   >>> class TitleColumn(column.Column):
   ...
   ...     weight = 10
@@ -129,8 +130,21 @@ Now we can register a column for our table:
   ...     def renderCell(self, item):
   ...         return u'Title: %s' % item.title
 
+The ``header`` attribute is the text that appears in column's header,
+typically a ``<th>`` tag.  The ``weight`` attribute specifies the
+order of the column in the table, relative to the weights of other
+columns.  The ``renderCell`` method does the heavy lifting, returning
+the html structure that will appear inside the table cell, typically a
+``<td>`` tag.  The ``renderCell`` method must be provided by
+subclasses of ``Column``.
+
+
+Adding a Column to a Table Using Adapters
+-----------------------------------------
+
 Now we can register our column adapter.
 
+  >>> import zope.component
   >>> zope.component.provideAdapter(TitleColumn,
   ...     (None, None, interfaces.ITable), provides=interfaces.IColumn,
   ...      name='firstColumn')
