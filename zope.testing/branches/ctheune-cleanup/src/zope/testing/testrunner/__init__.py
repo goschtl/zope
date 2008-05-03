@@ -2615,7 +2615,7 @@ if sys.version_info < (2, 4):
 
 def test_suite():
 
-    import renormalizing
+    from zope.testing import renormalizing
     checker = renormalizing.RENormalizing([
         # 2.5 changed the way pdb reports exceptions
         (re.compile(r"<class 'exceptions.(\w+)Error'>:"),
