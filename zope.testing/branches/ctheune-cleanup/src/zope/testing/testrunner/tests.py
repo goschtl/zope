@@ -107,7 +107,8 @@ def test_suite():
         setUp=setUp, tearDown=tearDown,
         optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE,
         checker=checker),
-        doctest.DocTestSuite('zope.testing.testrunner')
+        doctest.DocTestSuite('zope.testing.testrunner'),
+        doctest.DocTestSuite('zope.testing.testrunner.coverage')
         ]
 
     if sys.platform == 'win32':

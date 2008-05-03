@@ -91,9 +91,9 @@ directories that should be covered.
   ...   package = None
   ...   test_path = [('/myproject/src/blah/foo', ''),
   ...                ('/myproject/src/blah/bar', '')]
-
-  >>> from zope.testing import testrunner
-  >>> ignore = testrunner.TestIgnore(FauxOptions())
+  >>> from zope.testing.testrunner import coverage
+  >>> from zope.testing.testrunner import test_dirs
+  >>> ignore = coverage.TestIgnore(test_dirs(FauxOptions(), {}))
   >>> ignore._test_dirs
   ['/myproject/src/blah/foo/', '/myproject/src/blah/bar/']
 
