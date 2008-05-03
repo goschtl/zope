@@ -20,9 +20,22 @@ class Model(Context):
                 raise TypeError('%r is an invalid keyword argument for %s' %
                                 (k, type(self).__name__))
             setattr(self, k, kwargs[k])
-    
+
+def default_keyfunc(node):
+    primary_keys = node.__table__.primary_key.keys()
+    if len(primary_keys) == 1:
+        return getattr(node, primary_keys[0])
+    else:
+        raise RuntimeError("don't know how to do keying with composite primary keys")
+
 class Container(Context, MappedCollection):
     implements(IContainer)
 
     def __init__(self, *args, **kw):
-        MappedCollection.__init__(self, keyfunc=lambda node:node.id)
+        if hasattr(self, '__rdb_key__'):
+            keyfunc = lambda node:getattr(node, self.__rdb_key__)
+        elif hasattr(self, 'keyfunc'):
+            keyfunc = self.keyfunc
+        else:
+            keyfunc = default_keyfunc
+        MappedCollection.__init__(self, keyfunc=keyfunc)
