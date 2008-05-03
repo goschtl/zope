@@ -3,7 +3,13 @@
   >>> from OFS.SimpleItem import SimpleItem
   >>> item = SimpleItem()
   >>> item.id = 'item'
-  >>> IId(item).id()
+  >>> adapted = IId(item)
+  >>> isinstance(adapted, SimpleItemIdAdapter)
+  True
+  >>> IId.providedBy(adapted)
+  True
+  
+  >>> adapted.id()
   'item'
 
 """
@@ -17,8 +23,8 @@ class IId(Interface):
         """Returns the ID of the object"""
 
 class SimpleItemIdAdapter(grok.Adapter):
-    grok.provides(IId)
+    grok.implements(IId)
     grok.context(ISimpleItem)
-    
+
     def id(self):
         return self.context.getId()
