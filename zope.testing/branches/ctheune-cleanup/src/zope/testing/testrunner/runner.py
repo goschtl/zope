@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004-2006 Zope Corporation and Contributors.
+# Copyright (c) 2004-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -35,6 +35,7 @@ from zope.testing.testrunner.find import find_tests, test_dirs
 from zope.testing.testrunner.find import StartUpFailure, import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 from zope.testing.testrunner.coverage import TestTrace
+from zope.testing.testrunner.refcount import TrackRefs
 from zope.testing.testrunner.options import get_options
 
 real_pdb_set_trace = pdb.set_trace
@@ -73,6 +74,7 @@ def run_tests(options, tests, name, failures, errors):
     sumrc = 0
     if options.report_refcounts:
         if options.verbose:
+            # XXX This code path is untested
             track = TrackRefs()
         rc = sys.gettotalrefcount()
 
