@@ -56,8 +56,9 @@ class ZopeOrgSetup(object):
 
     def install(self):
         installed = []
-        eggs, workingSet = self.egg.working_set(('Sphinx',))
-        docs = [workingSet.find(pkg_resources.Requirement.parse(spec)) for spec in eggs]
+        eggs, workingSet = self.egg.working_set()
+        docs = [workingSet.find(pkg_resources.Requirement.parse(spec))
+                for spec in eggs]
 
         # Create parts directory for configuration files.
         installDir = join(self.buildout['buildout']['parts-directory'], self.name)
@@ -133,7 +134,3 @@ class ZopeOrgSetup(object):
         return installed
 
     update = install
-
-
-def runSphinx():
-    print "this would be running sphinx."
