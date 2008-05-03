@@ -2165,37 +2165,6 @@ def test_suite():
 
     return unittest.TestSuite(suites)
 
-def main():
-    default = [
-        '--path', os.path.split(sys.argv[0])[0],
-        '--tests-pattern', '^testrunner$',
-        ]
-    run(default)
-
-if __name__ == '__main__':
-
-    # if --resume_layer is in the arguments, we are being run from the
-    # test runner's own tests.  We need to adjust the path in hopes of
-    # not getting a different version installed in the system python.
-    if len(sys.argv) > 1 and sys.argv[1] == '--resume-layer':
-        sys.path.insert(0,
-            os.path.split(
-                os.path.split(
-                    os.path.split(
-                        os.path.abspath(sys.argv[0])
-                        )[0]
-                    )[0]
-                )[0]
-            )
-
-    # Hm, when run as a script, we need to import the testrunner under
-    # its own name, so that there's the imported flavor has the right
-    # real_pdb_set_trace.
-    import zope.testing.testrunner
-    from zope.testing import doctest
-
-    main()
-
 # Test the testrunner
 ###############################################################################
 
