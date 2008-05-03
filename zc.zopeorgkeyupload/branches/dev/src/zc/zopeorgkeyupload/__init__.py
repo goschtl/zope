@@ -10,7 +10,7 @@ import zope.security.interfaces
 zope.component.provideAdapter(zope.publisher.http.HTTPCharsets)
 
 v1re = re.compile(r'\d+ \d+ \d+').match
-command = r'command="/usr/local/bin/scm $SSH_ORIGINAL_COMMAND\" '
+command = r'command="/usr/local/bin/scm $SSH_ORIGINAL_COMMAND" '
 
 class Publication:
 
@@ -73,9 +73,9 @@ class Publication:
             if line.strip().startswith('#'):
                 continue
             if line.strip().split()[0] in ('ssh-dss', 'ssh-rsa'):
-                v2keys.append(command+line)
+                v2keys.append(command+line+'\n')
             elif v1re(line):
-                v1keys.append(command+line)
+                v1keys.append(command+line+'\n')
             else:
                 return key_form % (
                     'The key you uploaded is not properly formatted!<br />')
