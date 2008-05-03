@@ -79,41 +79,16 @@ class Runner(object):
 
     def run(self):
         self.configure()
+
+        if self.options.fail:
+            return True
+
         self.setup_features()
-        self.shutdown_features()
-
-        # Set the default logging policy.
-        # XXX There are no tests for this logging behavior.
-        # It's not at all clear that the test runner should be doing this.
-        configure_logging()
-
         # Control reporting flags during run
         old_reporting_flags = doctest.set_unittest_reportflags(0)
 
-        # Check to see if we are being run as a subprocess. If we are,
-        # then use the resume-layer and defaults passed in.
-        if len(self.args) > 1 and self.args[1] == '--resume-layer':
-            self.args.pop(1)
-            resume_layer = self.args.pop(1)
-            resume_number = int(self.args.pop(1))
-            self.defaults = []
-            while len(self.args) > 1 and self.args[1] == '--default':
-                self.args.pop(1)
-                self.defaults.append(self.args.pop(1))
-
-            sys.stdin = FakeInputContinueGenerator()
-        else:
-            resume_layer = resume_number = None
-
-        options = get_options(self.args, self.defaults)
-        if options.fail:
-            return True
-
+        options = self.options
         output = options.output
-
-        options.testrunner_defaults = self.defaults
-        options.resume_layer = resume_layer
-        options.resume_number = resume_number
 
         # Make sure we start with real pdb.set_trace.  This is needed
         # to make tests of the test runner work properly. :)
@@ -167,6 +142,8 @@ class Runner(object):
                 # attempt to unlink a still-open file.
                 os.close(oshandle)
 
+        self.shutdown_features()
+
         if options.profile and not options.resume_layer:
             stats = profiler.loadStats(prof_glob)
             stats.sort_stats('cumulative', 'calls')
@@ -188,8 +165,35 @@ class Runner(object):
         if self.args is None:
             self.args = sys.argv[:]
 
+        # Check to see if we are being run as a subprocess. If we are,
+        # then use the resume-layer and defaults passed in.
+        if len(self.args) > 1 and self.args[1] == '--resume-layer':
+            self.args.pop(1)
+            resume_layer = self.args.pop(1)
+            resume_number = int(self.args.pop(1))
+            self.defaults = []
+            while len(self.args) > 1 and self.args[1] == '--default':
+                self.args.pop(1)
+                self.defaults.append(self.args.pop(1))
+
+            sys.stdin = FakeInputContinueGenerator()
+        else:
+            resume_layer = resume_number = None
+
+        options = get_options(self.args, self.defaults)
+
+        options.testrunner_defaults = self.defaults
+        options.resume_layer = resume_layer
+        options.resume_number = resume_number
+
+        self.options = options
+
     def setup_features(self):
-        pass
+        # Set the default logging policy.
+        # XXX There are no tests for this logging behavior.
+        # It's not at all clear that the test runner should be doing this.
+        configure_logging()
+
 
     def find_tests(self):
         pass
