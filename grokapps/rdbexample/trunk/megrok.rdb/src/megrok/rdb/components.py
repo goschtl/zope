@@ -5,7 +5,7 @@ from sqlalchemy.schema import MetaData
 from zope.interface import implements
 
 from grokcore.component import Context
-from zope.app.container.interfaces import IContainer
+from grok.interfaces import IContainer
 
 _lcl_metadata = MetaData()
 
@@ -28,7 +28,7 @@ def default_keyfunc(node):
     else:
         raise RuntimeError("don't know how to do keying with composite primary keys")
 
-class Container(Context, MappedCollection):
+class Container(MappedCollection):
     implements(IContainer)
 
     def __init__(self, *args, **kw):
