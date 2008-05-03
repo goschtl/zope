@@ -23,17 +23,34 @@ class RDBExample(grok.Application, grok.Model):
 class FacultyList(grok.View):
     grok.name('index')
     grok.context(RDBExample)
-    grok.template('facultylist')
+
+    def render(self):
+        result = ""
+        for faculty in rdb.query(Faculty).all():
+            result += "%i - %s\n" % (faculty.id, faculty.title)
+        return result
 
 
 class Departments(rdb.Container):
     pass
 
 
-class Faculty(rdb.Model):
+class DepartmentTraverse(grok.Traverser):
+    grok.context(Departments)
+    def traverse(self, name):
+        try:
+            return self.context[int(name)]
+        except ValueError:
+            return None
 
+class Faculty(rdb.Model):
     # rdb.table_name('faculty') is the default
     __tablename__ = 'faculty'
+
+    # XXX note that rdb.Model s don't support traversal using traverse methods;
+    # it does work using external grok.Traversers
+    def traverse(self, name):
+        pass
 
     grok.traversable('departments')
 
@@ -44,6 +61,12 @@ class Faculty(rdb.Model):
                            backref='faculty',
                            collection_class=Departments)
 
+class FacultyTraverse(grok.Traverser):
+    grok.context(Faculty)
+
+    def traverse(self, name):
+        if name == 'departments':
+            return self.context.departments
 
 class Department(rdb.Model):
     __tablename__ = 'department'
@@ -52,7 +75,13 @@ class Department(rdb.Model):
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
     title = Column('title', String(50))
 
-from megrok.rdb.schema import schema_from_model
+
+class DepartmentView(grok.View):
+    grok.name('index')
+    grok.context(Department)
+
+    def render(self):
+        return "Department: %i - %s" % (self.context.id, self.context.title)
 
 class DepartmentList(grok.View):
     grok.name('index')
@@ -61,6 +90,16 @@ class DepartmentList(grok.View):
     def render(self):
         result = "Faculty: %s - %s " % (self.context.id, self.context.title)
         for department in self.context.departments.values():
+            result += department.title + '\n'
+        return result
+
+class DepartmentsView(grok.View):
+    grok.name('index')
+    grok.context(Departments)
+
+    def render(self):
+        result = ""
+        for department in self.context.values():
             result += department.title + '\n'
         return result
 
