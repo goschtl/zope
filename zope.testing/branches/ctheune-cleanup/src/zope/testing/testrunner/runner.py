@@ -86,7 +86,6 @@ class Runner(object):
         self.setup_features()
 
         options = self.options
-        output = options.output
 
         # Make sure we start with real pdb.set_trace.  This is needed
         # to make tests of the test runner work properly. :)
@@ -95,9 +94,10 @@ class Runner(object):
         if (options.profile
             and sys.version_info[:3] <= (2,4,1)
             and __debug__):
-            output.error('Because of a bug in Python < 2.4.1, profiling '
-                         'during tests requires the -O option be passed to '
-                         'Python (not the test runner).')
+            self.options.output.error(
+                'Because of a bug in Python < 2.4.1, profiling '
+                'during tests requires the -O option be passed to '
+                'Python (not the test runner).')
             sys.exit()
 
         if options.coverage:
@@ -145,7 +145,7 @@ class Runner(object):
         if options.profile and not options.resume_layer:
             stats = profiler.loadStats(prof_glob)
             stats.sort_stats('cumulative', 'calls')
-            output.profiler_stats(stats)
+            self.options.output.profiler_stats(stats)
 
         if tracer:
             coverdir = os.path.join(os.getcwd(), options.coverage)
