@@ -3,6 +3,8 @@ from megrok import rdb
 
 from zope.interface.interfaces import IInterface
 
+
+
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
@@ -34,7 +36,7 @@ class FacultyList(grok.View):
 
 
 class Departments(rdb.Container):
-    rdb.key('title')
+    rdb.key('id')
 
 class Faculty(rdb.Model):
     # rdb.table_name('faculty') is the default
@@ -56,13 +58,25 @@ class Department(rdb.Model):
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
     title = Column('title', String(50))
 
+class AddDepartment(grok.AddForm):
+    grok.context(Departments)
+
+    @property
+    def form_fields(self):
+        return rdb.Fields(Department)
+
+    @grok.action('add')
+    def handle_add(self, *args, **kw):
+        d = Department(**kw)
+        self.context.set(d)
+
 
 class DepartmentView(grok.View):
     grok.name('index')
     grok.context(Department)
 
     def render(self):
-        return "Department: %i - %s" % (self.context.id, self.context.title)
+        return "Department: %r - %r" % (self.context.id, self.context.title)
 
 class DepartmentList(grok.View):
     grok.name('index')
@@ -89,8 +103,10 @@ class AddFaculty(grok.AddForm):
 
     @property
     def form_fields(self):
-        return rdb.Fields(Faculty())
+        return rdb.Fields(Faculty)
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
-        print kw
+        f = Faculty(**kw)
+        rdb.session().save(f)
+        #import pdb; pdb.set_trace()
