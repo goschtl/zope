@@ -84,8 +84,6 @@ class Runner(object):
             return True
 
         self.setup_features()
-        # Control reporting flags during run
-        old_reporting_flags = doctest.set_unittest_reportflags(0)
 
         options = self.options
         output = options.output
@@ -154,7 +152,7 @@ class Runner(object):
             r = tracer.results()
             r.write_results(summary=True, coverdir=coverdir)
 
-        doctest.set_unittest_reportflags(old_reporting_flags)
+        doctest.set_unittest_reportflags(self.old_reporting_flags)
 
         if failed and options.exitwithstatus:
             sys.exit(1)
@@ -193,6 +191,9 @@ class Runner(object):
         # XXX There are no tests for this logging behavior.
         # It's not at all clear that the test runner should be doing this.
         configure_logging()
+
+        # Control reporting flags during run
+        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
 
 
     def find_tests(self):
@@ -246,7 +247,7 @@ class Runner(object):
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
 
-        old_reporting_flags = doctest.set_unittest_reportflags(0)
+        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
         reporting_flags = 0
         if options.ndiff:
             reporting_flags = doctest.REPORT_NDIFF
@@ -266,7 +267,7 @@ class Runner(object):
         if reporting_flags:
             doctest.set_unittest_reportflags(reporting_flags)
         else:
-            doctest.set_unittest_reportflags(old_reporting_flags)
+            doctest.set_unittest_reportflags(self.old_reporting_flags)
 
 
         # Add directories to the path
@@ -366,7 +367,7 @@ class Runner(object):
 
             output.modules_with_import_problems(import_errors)
 
-        doctest.set_unittest_reportflags(old_reporting_flags)
+        doctest.set_unittest_reportflags(self.old_reporting_flags)
 
         if options.gc_option:
             gc.set_debug(old_flags)
