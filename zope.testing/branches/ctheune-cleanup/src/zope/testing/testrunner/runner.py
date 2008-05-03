@@ -16,18 +16,18 @@
 $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 """
 
+import cStringIO
+import gc
+import glob
 import logging
 import os
 import pdb
 import sys
-import unittest
-import gc
-import time
-import threading
-import glob
 import tempfile
-import cStringIO
+import threading
+import time
 import traceback
+import unittest
 
 from zope.testing import doctest
 from zope.testing.testrunner.profiling import available_profilers
