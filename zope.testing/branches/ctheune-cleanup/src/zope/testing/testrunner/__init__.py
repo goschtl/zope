@@ -20,7 +20,14 @@ import sys
 import unittest
 
 
-from zope.testing.testrunner.runner import run
+from zope.testing.testrunner.runner import Runner
+
+def run(defaults=None, args=None):
+    # This function is here to make the whole test runner compatible before
+    # the large refactoring.
+    runner = Runner(defaults, args)
+    failed = runner.run()
+    return failed
 
 
 ###############################################################################

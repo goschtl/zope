@@ -61,6 +61,127 @@ class EndRun(Exception):
     """
 
 
+class Runner(object):
+    """The test runner.
+
+    It is the central point of this package and responsible for finding and
+    executing tests as well as configuring itself from the (command-line)
+    options passed into it.
+
+    """
+
+    def __init__(self, defaults=None, args=None):
+        self.defaults = defaults
+        self.args = args
+
+    def run(self):
+        args = self.args
+        defaults = self.defaults
+
+        if args is None:
+            args = sys.argv[:]
+
+        # Set the default logging policy.
+        # XXX There are no tests for this logging behavior.
+        # It's not at all clear that the test runner should be doing this.
+        configure_logging()
+
+        # Control reporting flags during run
+        old_reporting_flags = doctest.set_unittest_reportflags(0)
+
+        # Check to see if we are being run as a subprocess. If we are,
+        # then use the resume-layer and defaults passed in.
+        if len(args) > 1 and args[1] == '--resume-layer':
+            args.pop(1)
+            resume_layer = args.pop(1)
+            resume_number = int(args.pop(1))
+            defaults = []
+            while len(args) > 1 and args[1] == '--default':
+                args.pop(1)
+                defaults.append(args.pop(1))
+
+            sys.stdin = FakeInputContinueGenerator()
+        else:
+            resume_layer = resume_number = None
+
+        options = get_options(args, defaults)
+        if options.fail:
+            return True
+
+        output = options.output
+
+        options.testrunner_defaults = defaults
+        options.resume_layer = resume_layer
+        options.resume_number = resume_number
+
+        # Make sure we start with real pdb.set_trace.  This is needed
+        # to make tests of the test runner work properly. :)
+        pdb.set_trace = real_pdb_set_trace
+
+        if (options.profile
+            and sys.version_info[:3] <= (2,4,1)
+            and __debug__):
+            output.error('Because of a bug in Python < 2.4.1, profiling '
+                         'during tests requires the -O option be passed to '
+                         'Python (not the test runner).')
+            sys.exit()
+
+        if options.coverage:
+            tracer = TestTrace(test_dirs(options, {}), trace=False, count=True)
+            tracer.start()
+        else:
+            tracer = None
+
+        if options.profile:
+            prof_prefix = 'tests_profile.'
+            prof_suffix = '.prof'
+            prof_glob = prof_prefix + '*' + prof_suffix
+
+            # if we are going to be profiling, and this isn't a subprocess,
+            # clean up any stale results files
+            if not options.resume_layer:
+                for file_name in glob.glob(prof_glob):
+                    os.unlink(file_name)
+
+            # set up the output file
+            oshandle, file_path = tempfile.mkstemp(prof_suffix, prof_prefix, '.')
+            profiler = available_profilers[options.profile](file_path)
+            profiler.enable()
+
+        try:
+            try:
+                failed = not run_with_options(options)
+            except EndRun:
+                failed = True
+        finally:
+            if tracer:
+                tracer.stop()
+            if options.profile:
+                profiler.disable()
+                profiler.finish()
+                # We must explicitly close the handle mkstemp returned, else on
+                # Windows this dies the next time around just above due to an
+                # attempt to unlink a still-open file.
+                os.close(oshandle)
+
+        if options.profile and not options.resume_layer:
+            stats = profiler.loadStats(prof_glob)
+            stats.sort_stats('cumulative', 'calls')
+            output.profiler_stats(stats)
+
+        if tracer:
+            coverdir = os.path.join(os.getcwd(), options.coverage)
+            r = tracer.results()
+            r.write_results(summary=True, coverdir=coverdir)
+
+        doctest.set_unittest_reportflags(old_reporting_flags)
+
+        if failed and options.exitwithstatus:
+            sys.exit(1)
+
+        return failed
+
+
 def run_tests(options, tests, name, failures, errors):
     repeat = options.repeat or 1
     repeat_range = iter(range(repeat))
@@ -250,110 +371,6 @@ def resume_tests(options, layer_name, layers, failures, errors):
         rantotal += ran
 
     return rantotal
-
-def run(defaults=None, args=None):
-    if args is None:
-        args = sys.argv[:]
-
-    # Set the default logging policy.
-    # XXX There are no tests for this logging behavior.
-    # It's not at all clear that the test runner should be doing this.
-    configure_logging()
-
-    # Control reporting flags during run
-    old_reporting_flags = doctest.set_unittest_reportflags(0)
-
-    # Check to see if we are being run as a subprocess. If we are,
-    # then use the resume-layer and defaults passed in.
-    if len(args) > 1 and args[1] == '--resume-layer':
-        args.pop(1)
-        resume_layer = args.pop(1)
-        resume_number = int(args.pop(1))
-        defaults = []
-        while len(args) > 1 and args[1] == '--default':
-            args.pop(1)
-            defaults.append(args.pop(1))
-
-        sys.stdin = FakeInputContinueGenerator()
-    else:
-        resume_layer = resume_number = None
-
-    options = get_options(args, defaults)
-    if options.fail:
-        return True
-
-    output = options.output
-
-    options.testrunner_defaults = defaults
-    options.resume_layer = resume_layer
-    options.resume_number = resume_number
-
-    # Make sure we start with real pdb.set_trace.  This is needed
-    # to make tests of the test runner work properly. :)
-    pdb.set_trace = real_pdb_set_trace
-
-    if (options.profile
-        and sys.version_info[:3] <= (2,4,1)
-        and __debug__):
-        output.error('Because of a bug in Python < 2.4.1, profiling '
-                     'during tests requires the -O option be passed to '
-                     'Python (not the test runner).')
-        sys.exit()
-
-    if options.coverage:
-        tracer = TestTrace(test_dirs(options, {}), trace=False, count=True)
-        tracer.start()
-    else:
-        tracer = None
-
-    if options.profile:
-        prof_prefix = 'tests_profile.'
-        prof_suffix = '.prof'
-        prof_glob = prof_prefix + '*' + prof_suffix
-
-        # if we are going to be profiling, and this isn't a subprocess,
-        # clean up any stale results files
-        if not options.resume_layer:
-            for file_name in glob.glob(prof_glob):
-                os.unlink(file_name)
-
-        # set up the output file
-        oshandle, file_path = tempfile.mkstemp(prof_suffix, prof_prefix, '.')
-        profiler = available_profilers[options.profile](file_path)
-        profiler.enable()
-
-    try:
-        try:
-            failed = not run_with_options(options)
-        except EndRun:
-            failed = True
-    finally:
-        if tracer:
-            tracer.stop()
-        if options.profile:
-            profiler.disable()
-            profiler.finish()
-            # We must explicitly close the handle mkstemp returned, else on
-            # Windows this dies the next time around just above due to an
-            # attempt to unlink a still-open file.
-            os.close(oshandle)
-
-    if options.profile and not options.resume_layer:
-        stats = profiler.loadStats(prof_glob)
-        stats.sort_stats('cumulative', 'calls')
-        output.profiler_stats(stats)
-
-    if tracer:
-        coverdir = os.path.join(os.getcwd(), options.coverage)
-        r = tracer.results()
-        r.write_results(summary=True, coverdir=coverdir)
-
-    doctest.set_unittest_reportflags(old_reporting_flags)
-
-    if failed and options.exitwithstatus:
-        sys.exit(1)
-
-    return failed
 
 def run_with_options(options, found_suites=None):
     """Find and run tests
