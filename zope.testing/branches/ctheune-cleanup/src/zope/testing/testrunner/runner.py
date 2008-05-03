@@ -188,59 +188,58 @@ class Runner(object):
         Returns True if there where failures or False if all tests passed.
 
         """
-        options = self.options
         found_suites = self.found_suites
 
         global _layer_name_cache
         _layer_name_cache.clear() # Reset to enforce test isolation
 
-        output = options.output
+        output = self.options.output
 
-        if options.resume_layer:
+        if self.options.resume_layer:
             original_stderr = sys.stderr
             sys.stderr = sys.stdout
-        elif options.verbose:
-            if options.all:
+        elif self.options.verbose:
+            if self.options.all:
                 msg = "Running tests at all levels"
             else:
-                msg = "Running tests at level %d" % options.at_level
+                msg = "Running tests at level %d" % self.options.at_level
             output.info(msg)
 
         old_threshold = gc.get_threshold()
-        if options.gc:
-            if len(options.gc) > 3:
+        if self.options.gc:
+            if len(self.options.gc) > 3:
                 output.error("Too many --gc options")
                 sys.exit(1)
-            if options.gc[0]:
+            if self.options.gc[0]:
                 output.info("Cyclic garbage collection threshold set to: %s" %
-                            repr(tuple(options.gc)))
+                            repr(tuple(self.options.gc)))
             else:
                 output.info("Cyclic garbage collection is disabled.")
 
-            gc.set_threshold(*options.gc)
+            gc.set_threshold(*self.options.gc)
 
         old_flags = gc.get_debug()
-        if options.gc_option:
+        if self.options.gc_option:
             new_flags = 0
-            for op in options.gc_option:
+            for op in self.options.gc_option:
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
 
         self.old_reporting_flags = doctest.set_unittest_reportflags(0)
         reporting_flags = 0
-        if options.ndiff:
+        if self.options.ndiff:
             reporting_flags = doctest.REPORT_NDIFF
-        if options.udiff:
+        if self.options.udiff:
             if reporting_flags:
                 output.error("Can only give one of --ndiff, --udiff, or --cdiff")
                 sys.exit(1)
             reporting_flags = doctest.REPORT_UDIFF
-        if options.cdiff:
+        if self.options.cdiff:
             if reporting_flags:
                 output.error("Can only give one of --ndiff, --udiff, or --cdiff")
                 sys.exit(1)
             reporting_flags = doctest.REPORT_CDIFF
-        if options.report_only_first_failure:
+        if self.options.report_only_first_failure:
             reporting_flags |= doctest.REPORT_ONLY_FIRST_FAILURE
 
         if reporting_flags:
@@ -250,11 +249,11 @@ class Runner(object):
 
 
         # Add directories to the path
-        for path in options.path:
+        for path in self.options.path:
             if path not in sys.path:
                 sys.path.append(path)
 
-        tests_by_layer_name = find_tests(options, found_suites)
+        tests_by_layer_name = find_tests(self.options, found_suites)
 
         ran = 0
         failures = []
@@ -266,10 +265,10 @@ class Runner(object):
 
         if 'unit' in tests_by_layer_name:
             tests = tests_by_layer_name.pop('unit')
-            if (not options.non_unit) and not options.resume_layer:
-                if options.layer:
+            if (not self.options.non_unit) and not self.options.resume_layer:
+                if self.options.layer:
                     should_run = False
-                    for pat in options.layer:
+                    for pat in self.options.layer:
                         if pat('unit'):
                             should_run = True
                             break
@@ -277,13 +276,13 @@ class Runner(object):
                     should_run = True
 
                 if should_run:
-                    if options.list_tests:
+                    if self.options.list_tests:
                         output.list_of_tests(tests, 'unit')
                     else:
                         output.info("Running unit tests:")
                         nlayers += 1
                         try:
-                            ran += run_tests(options, tests, 'unit', failures, errors)
+                            ran += run_tests(self.options, tests, 'unit', failures, errors)
                         except EndRun:
                             self.failed = True
                             return
@@ -291,21 +290,21 @@ class Runner(object):
         setup_layers = {}
 
         layers_to_run = list(ordered_layers(tests_by_layer_name))
-        if options.resume_layer is not None:
+        if self.options.resume_layer is not None:
             layers_to_run = [
                 (layer_name, layer, tests)
                 for (layer_name, layer, tests) in layers_to_run
-                if layer_name == options.resume_layer
+                if layer_name == self.options.resume_layer
             ]
-        elif options.layer:
+        elif self.options.layer:
             layers_to_run = [
                 (layer_name, layer, tests)
                 for (layer_name, layer, tests) in layers_to_run
-                if filter(None, [pat(layer_name) for pat in options.layer])
+                if filter(None, [pat(layer_name) for pat in self.options.layer])
             ]
 
 
-        if options.list_tests:
+        if self.options.list_tests:
             for layer_name, layer, tests in layers_to_run:
                 output.list_of_tests(tests, layer_name)
             self.failed = False
@@ -316,26 +315,26 @@ class Runner(object):
         for layer_name, layer, tests in layers_to_run:
             nlayers += 1
             try:
-                ran += run_layer(options, layer_name, layer, tests,
+                ran += run_layer(self.options, layer_name, layer, tests,
                                  setup_layers, failures, errors)
             except EndRun:
                 self.failed = True
                 return
             except CanNotTearDown:
                 setup_layers = None
-                if not options.resume_layer:
-                    ran += resume_tests(options, layer_name, layers_to_run,
+                if not self.options.resume_layer:
+                    ran += resume_tests(self.options, layer_name, layers_to_run,
                                         failures, errors)
                     break
 
         if setup_layers:
-            if options.resume_layer == None:
+            if self.options.resume_layer == None:
                 output.info("Tearing down left over layers:")
-            tear_down_unneeded(options, (), setup_layers, True)
+            tear_down_unneeded(self.options, (), setup_layers, True)
 
         total_time = time.time() - start_time
 
-        if options.resume_layer:
+        if self.options.resume_layer:
             sys.stdout.close()
             # Communicate with the parent.  The protocol is obvious:
             print >> original_stderr, ran, len(failures), len(errors)
@@ -345,7 +344,7 @@ class Runner(object):
                 print >> original_stderr, ' '.join(str(test).strip().split('\n'))
 
         else:
-            if options.verbose:
+            if self.options.verbose:
                 output.tests_with_errors(errors)
                 output.tests_with_failures(failures)
 
@@ -356,10 +355,10 @@ class Runner(object):
 
         doctest.set_unittest_reportflags(self.old_reporting_flags)
 
-        if options.gc_option:
+        if self.options.gc_option:
             gc.set_debug(old_flags)
 
-        if options.gc:
+        if self.options.gc:
             gc.set_threshold(*old_threshold)
 
         self.failed = bool(import_errors or failures or errors)
