@@ -37,66 +37,7 @@ import unittest
 from zope.testing import doctest
 from zope.testing.testrunner.formatter import OutputFormatter, ColorfulOutputFormatter
 from zope.testing.testrunner.formatter import terminal_has_colors
-
-available_profilers = {}
-
-try:
-    import cProfile
-    import pstats
-except ImportError:
-    pass
-else:
-    class CProfiler(object):
-        """cProfiler"""
-        def __init__(self, filepath):
-            self.filepath = filepath
-            self.profiler = cProfile.Profile()
-            self.enable = self.profiler.enable
-            self.disable = self.profiler.disable
-
-        def finish(self):
-            self.profiler.dump_stats(self.filepath)
-
-        def loadStats(self, prof_glob):
-            stats = None
-            for file_name in glob.glob(prof_glob):
-                if stats is None:
-                    stats = pstats.Stats(file_name)
-                else:
-                    stats.add(file_name)
-            return stats
-
-    available_profilers['cProfile'] = CProfiler
-
-# some Linux distributions don't include the profiler, which hotshot uses
-try:
-    import hotshot
-    import hotshot.stats
-except ImportError:
-    pass
-else:
-    class HotshotProfiler(object):
-        """hotshot interface"""
-
-        def __init__(self, filepath):
-            self.profiler = hotshot.Profile(filepath)
-            self.enable = self.profiler.start
-            self.disable = self.profiler.stop
-
-        def finish(self):
-            self.profiler.close()
-
-        def loadStats(self, prof_glob):
-            stats = None
-            for file_name in glob.glob(prof_glob):
-                loaded = hotshot.stats.load(file_name)
-                if stats is None:
-                    stats = loaded
-                else:
-                    stats.add(loaded)
-            return stats
-
-    available_profilers['hotshot'] = HotshotProfiler
+from zope.testing.testrunner.profiling import available_profilers
 
 
 real_pdb_set_trace = pdb.set_trace
