@@ -112,14 +112,15 @@ the TestSpecifyingNoLayer was run and setup/torn down around the
 TestSpecifyingBaseLayer tests.
 
 >>> from zope.testing.testrunner import Runner
->>> runner = Runner(options=fresh_options(), found_suites=[umbrella_suite])
->>> succeeded = runner.run_tests()
+>>> runner = Runner(options=fresh_options(), args=[], found_suites=[umbrella_suite])
+>>> succeeded = runner.run()
 Running unit tests:
-    Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
-    Set up BaseLayer in N.NNN seconds.
-    Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+  Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+Running BaseLayer tests:
+  Set up BaseLayer in N.NNN seconds.
+  Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
 Tearing down left over layers:
-    Tear down BaseLayer in N.NNN seconds.
+  Tear down BaseLayer in N.NNN seconds.
 Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
 
 Now lets specify a layer in the suite containing TestSpecifyingNoLayer
@@ -127,8 +128,9 @@ and run the tests again. This demonstrates the other method of specifying
 a layer. This is generally how you specify what layer doctests need.
 
 >>> no_layer_suite.layer = BaseLayer
->>> runner = Runner(options=fresh_options(), found_suites=[umbrella_suite])
->>> succeeded = runner.run_tests()
+>>> runner = Runner(options=fresh_options(), args=[], found_suites=[umbrella_suite])
+>>> succeeded = runner.run()
+Running BaseLayer tests:
   Set up BaseLayer in N.NNN seconds.
   Ran 4 tests with 0 failures and 0 errors in N.NNN seconds.
 Tearing down left over layers:
@@ -145,16 +147,19 @@ both the BaseLayer and TopLayer environments are setup when the
 TestSpecifyingNoLayer tests are run.
 
 >>> TestSpecifyingNoLayer.layer = TopLayer
->>> runner = Runner(options=fresh_options(), found_suites=[umbrella_suite])
->>> succeeded = runner.run_tests()
+>>> runner = Runner(options=fresh_options(), args=[], found_suites=[umbrella_suite])
+>>> succeeded = runner.run()
+Running BaseLayer tests:
   Set up BaseLayer in N.NNN seconds.
   Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+Running TopLayer tests:
   Set up TopLayer in N.NNN seconds.
   Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
 Tearing down left over layers:
   Tear down TopLayer in N.NNN seconds.
   Tear down BaseLayer in N.NNN seconds.
 Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+
 
 If we inspect our trace of what methods got called in what order, we can
 see that the layer setup and teardown methods only got called once. We can
@@ -227,22 +232,24 @@ methods are called in the correct order.
 ...         pass
 >>> suite = unittest.makeSuite(DeepTest)
 >>> log_handler.clear()
->>> runner = Runner(options=fresh_options(), found_suites=[suite])
->>> succeeded = runner.run_tests()
-  Set up A in 0.000 seconds.
-  Set up B in 0.000 seconds.
-  Set up C in 0.000 seconds.
-  Set up D in 0.000 seconds.
-  Set up E in 0.000 seconds.
-  Set up F in 0.000 seconds.
-  Ran 1 tests with 0 failures and 0 errors in 0.003 seconds.
+>>> runner = Runner(options=fresh_options(), args=[], found_suites=[suite])
+>>> succeeded = runner.run()
+Running F tests:
+  Set up A in N.NNN seconds.
+  Set up B in N.NNN seconds.
+  Set up C in N.NNN seconds.
+  Set up D in N.NNN seconds.
+  Set up E in N.NNN seconds.
+  Set up F in N.NNN seconds.
+  Ran 1 tests with 0 failures and 0 errors in N.NNN seconds.
 Tearing down left over layers:
-  Tear down F in 0.000 seconds.
-  Tear down E in 0.000 seconds.
-  Tear down D in 0.000 seconds.
-  Tear down C in 0.000 seconds.
-  Tear down B in 0.000 seconds.
-  Tear down A in 0.000 seconds.
+  Tear down F in N.NNN seconds.
+  Tear down E in N.NNN seconds.
+  Tear down D in N.NNN seconds.
+  Tear down C in N.NNN seconds.
+  Tear down B in N.NNN seconds.
+  Tear down A in N.NNN seconds.
+
 
 >>> report()
 A.setUp
@@ -269,4 +276,3 @@ D.tearDown
 C.tearDown
 B.tearDown
 A.tearDown
-
