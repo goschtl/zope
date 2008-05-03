@@ -87,6 +87,7 @@ class Runner(object):
             return True
 
         self.setup_features()
+        self.find_tests()
 
         # Some system tools like profilers are really bad with stack frames.
         # E.g. hotshot doesn't like it when we leave the stack frame that we
@@ -95,7 +96,6 @@ class Runner(object):
             init()
 
         try:
-            self.find_tests()
             self.run_tests()
         finally:
             for shutdown in self.early_shutdown:
