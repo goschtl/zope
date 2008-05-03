@@ -15,10 +15,12 @@
 
 $Id$
 """
+
 import os
 import sys
 import unittest
 from zope.testing import doctest, testrunner
+
 
 def test_suite():
     return unittest.TestSuite((
@@ -26,9 +28,5 @@ def test_suite():
         doctest.DocFileSuite('formparser.txt'),
         doctest.DocTestSuite('zope.testing.loggingsupport'),
         doctest.DocTestSuite('zope.testing.server'),
-        testrunner.test_suite(),
         doctest.DocFileSuite('setupstack.txt'),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
