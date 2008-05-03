@@ -31,6 +31,10 @@ def test_suite():
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
+            module='five.grok.tests.multiadapter',
+            setUp=setUp, tearDown=testing.tearDown),
+
+        doctestunit.DocTestSuite(
             module='five.grok.tests.utilities',
             setUp=setUp, tearDown=testing.tearDown),
 
