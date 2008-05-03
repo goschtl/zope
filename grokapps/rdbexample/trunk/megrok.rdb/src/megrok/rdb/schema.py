@@ -11,6 +11,9 @@ from zope.schema import Int
 from zope.schema import Text
 from zope.schema import TextLine
 
+def Fields(model):
+    return grok.Fields(IInterface(model))
+
 @grok.adapter(Model)
 @grok.implementer(IInterface)
 def schema_from_model(model):
@@ -19,9 +22,9 @@ def schema_from_model(model):
     attrs = {}
     for i, column in enumerate(table.columns):
         field = IField(column.type)
-        print column.name
         field.__name__ = field.title = unicode(column.name)
-        field.order = 2 - i
+        field.required = not column.nullable
+        field.order = i
         attrs[column.name] = field
 
     return InterfaceClass(name=model.__table__.name,
