@@ -36,7 +36,7 @@ class FacultyList(grok.View):
 
 
 class Departments(rdb.Container):
-    rdb.key('id')
+    rdb.key('title')
 
 class Faculty(rdb.Model):
     # rdb.table_name('faculty') is the default

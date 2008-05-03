@@ -39,10 +39,3 @@ class Container(MappedCollection):
         else:
             keyfunc = default_keyfunc
         MappedCollection.__init__(self, keyfunc=keyfunc)
-
-    # XXX DIRTY HACK XXX
-    def traverse(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            return self[int(name)]
