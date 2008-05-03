@@ -16,10 +16,6 @@
 $Id$
 """
 
-# Too bad: For now, we depend on zope.testing.  This is because
-# we want to use the latest, greatest doctest, which zope.testing
-# provides.  Then again, zope.testing is generally useful.
-
 import gc
 import glob
 import logging
