@@ -77,33 +77,21 @@ class Runner(object):
         self.found_suites = found_suites
         self.options = options
 
+        self.late_initializers = []
+        self.early_shutdown = []
+
     def run(self):
         self.configure()
-
         if self.options.fail:
             return True
 
         self.setup_features()
 
-        # Make sure we start with real pdb.set_trace.  This is needed
-        # to make tests of the test runner work properly. :)
-        pdb.set_trace = real_pdb_set_trace
-
-        if self.options.profile:
-            prof_prefix = 'tests_profile.'
-            prof_suffix = '.prof'
-            prof_glob = prof_prefix + '*' + prof_suffix
-
-            # if we are going to be profiling, and this isn't a subprocess,
-            # clean up any stale results files
-            if not self.options.resume_layer:
-                for file_name in glob.glob(prof_glob):
-                    os.unlink(file_name)
-
-            # set up the output file
-            oshandle, file_path = tempfile.mkstemp(prof_suffix, prof_prefix, '.')
-            profiler = available_profilers[self.options.profile](file_path)
-            profiler.enable()
+        # Some system tools like profilers are really bad with stack frames.
+        # E.g. hotshot doesn't like it when we leave the stack frame that we
+        # called start() from.
+        for init in self.late_initializers:
+            init()
 
         try:
             try:
@@ -112,22 +100,9 @@ class Runner(object):
             except EndRun:
                 failed = True
         finally:
-            if self.tracer:
-                self.tracer.stop()
-            if self.options.profile:
-                profiler.disable()
-                profiler.finish()
-                # We must explicitly close the handle mkstemp returned, else on
-                # Windows this dies the next time around just above due to an
-                # attempt to unlink a still-open file.
-                os.close(oshandle)
-
-        if self.options.profile and not self.options.resume_layer:
-            stats = profiler.loadStats(prof_glob)
-            stats.sort_stats('cumulative', 'calls')
-            self.options.output.profiler_stats(stats)
-
-        self.shutdown_features()
+            for shutdown in self.early_shutdown:
+                shutdown()
+            self.shutdown_features()
 
         if failed and self.options.exitwithstatus:
             sys.exit(1)
@@ -162,6 +137,10 @@ class Runner(object):
         self.options = options
 
     def setup_features(self):
+        # Make sure we start with real pdb.set_trace.  This is needed
+        # to make tests of the test runner work properly. :)
+        pdb.set_trace = real_pdb_set_trace
+
         # Set the default logging policy.
         # XXX There are no tests for this logging behavior.
         # It's not at all clear that the test runner should be doing this.
@@ -187,6 +166,21 @@ class Runner(object):
                 'Python (not the test runner).')
             sys.exit()
 
+        if self.options.profile:
+            self.prof_prefix = 'tests_profile.'
+            self.prof_suffix = '.prof'
+            self.prof_glob = self.prof_prefix + '*' + self.prof_suffix
+            # if we are going to be profiling, and this isn't a subprocess,
+            # clean up any stale results files
+            if not self.options.resume_layer:
+                for file_name in glob.glob(self.prof_glob):
+                    os.unlink(file_name)
+            # set up the output file
+            self.oshandle, self.file_path = tempfile.mkstemp(self.prof_suffix,
+                                                             self.prof_prefix, '.')
+            self.profiler = available_profilers[self.options.profile](self.file_path)
+            self.late_initializers.append(self.profiler.enable)
+            self.early_shutdown.append(self.profiler.disable)
 
     def find_tests(self):
         pass
@@ -370,13 +364,24 @@ class Runner(object):
         return bool(import_errors or failures or errors)
 
     def shutdown_features(self):
+        if self.options.profile:
+            self.profiler.finish()
+            # We must explicitly close the handle mkstemp returned, else on
+            # Windows this dies the next time around just above due to an
+            # attempt to unlink a still-open file.
+            os.close(self.oshandle)
+            if not self.options.resume_layer:
+                stats = self.profiler.loadStats(self.prof_glob)
+                stats.sort_stats('cumulative', 'calls')
+                self.options.output.profiler_stats(stats)
+
         if self.tracer:
+            self.tracer.stop()
             coverdir = os.path.join(os.getcwd(), self.options.coverage)
             r = self.tracer.results()
             r.write_results(summary=True, coverdir=coverdir)
 
         doctest.set_unittest_reportflags(self.old_reporting_flags)
-
 
 
 def run_tests(options, tests, name, failures, errors):
@@ -854,5 +859,3 @@ class FakeInputContinueGenerator:
         print '*'*70
         print
         return 'c\n'
-
-
