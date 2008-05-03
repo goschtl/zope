@@ -14,16 +14,16 @@ class Database(rdb.Database):
 
 
 class RDBExample(grok.Application, grok.Model):
-
     def traverse(self, name):
         try:
             return rdb.query(Faculty).get(int(name))
         except ValueError:
             return None
 
-class Index(grok.View):
-
+class FacultyList(grok.View):
+    grok.name('index')
     grok.context(RDBExample)
+    grok.template('facultylist')
 
 
 class Departments(rdb.Container):
@@ -55,23 +55,21 @@ class Department(rdb.Model):
 from megrok.rdb.schema import schema_from_model
 
 class DepartmentList(grok.View):
-    grok.name('index.html')
-    grok.context(Departments)
-    grok.template('departments')
-
-
-class FacultyIndex(grok.View):
-    grok.name('index.html')
+    grok.name('index')
     grok.context(Faculty)
-    grok.template('faculty')
 
+    def render(self):
+        result = "Faculty: %s - %s " % (self.context.id, self.context.title)
+        for department in self.context.departments.values():
+            result += department.title + '\n'
+        return result
 
 class AddFaculty(grok.AddForm):
     grok.context(RDBExample)
 
     @property
     def form_fields(self):
-        return grok.Fields(schema_from_model(Faculty()))
+        return rdb.Fields(Faculty())
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
