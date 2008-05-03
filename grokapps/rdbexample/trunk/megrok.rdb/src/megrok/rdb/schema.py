@@ -12,17 +12,18 @@ from zope.schema import Text
 from zope.schema import TextLine
 
 def Fields(model):
-    return grok.Fields(IInterface(model))
+    return grok.Fields(schema_from_model(model))
 
-@grok.adapter(Model)
-@grok.implementer(IInterface)
 def schema_from_model(model):
     table = model.__table__
     bases = (Interface,)
     attrs = {}
     for i, column in enumerate(table.columns):
+        if len(column.foreign_keys) or column.primary_key:
+            continue
         field = IField(column.type)
-        field.__name__ = field.title = unicode(column.name)
+        field.__name__ = str(column.name)
+        field.title = unicode(column.name)
         field.required = not column.nullable
         field.order = i
         attrs[column.name] = field

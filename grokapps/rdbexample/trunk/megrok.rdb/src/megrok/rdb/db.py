@@ -1,5 +1,7 @@
 import grok
 
+from zope import component
+
 from collective.lead import Database as DatabaseBase
 from collective.lead.interfaces import IDatabase
 
@@ -26,3 +28,6 @@ class Database(grok.GlobalUtility, DatabaseBase):
 
     def setup(self, metadata):
         pass
+
+def session(name='megrok.rdb'):
+    return component.getUtility(IDatabase, name).session
