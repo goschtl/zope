@@ -95,23 +95,23 @@ TestSpecifyingBaseLayer and TestSpecifyingNoLayer.
 
 Before we can run the tests, we need to setup some helpers.
 
->>> from zope.testing import testrunner
+>>> from zope.testing.testrunner import runner, options
 >>> from zope.testing.loggingsupport import InstalledHandler
 >>> import logging
 >>> log_handler = InstalledHandler('zope.testing.tests')
 >>> def log(msg):
 ...     logging.getLogger('zope.testing.tests').info(msg)
 >>> def fresh_options():
-...     options = testrunner.get_options(['--test-filter', '.*'])
-...     options.resume_layer = None
-...     options.resume_number = 0
-...     return options
+...     opts = options.get_options(['--test-filter', '.*'])
+...     opts.resume_layer = None
+...     opts.resume_number = 0
+...     return opts
 
 Now we run the tests. Note that the BaseLayer was not setup when
 the TestSpecifyingNoLayer was run and setup/torn down around the
 TestSpecifyingBaseLayer tests.
 
->>> succeeded = testrunner.run_with_options(fresh_options(), [umbrella_suite])
+>>> succeeded = runner.run_with_options(fresh_options(), [umbrella_suite])
 Running unit tests:
     Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
     Set up BaseLayer in N.NNN seconds.
@@ -125,7 +125,7 @@ and run the tests again. This demonstrates the other method of specifying
 a layer. This is generally how you specify what layer doctests need.
 
 >>> no_layer_suite.layer = BaseLayer
->>> succeeded = testrunner.run_with_options(fresh_options(), [umbrella_suite])
+>>> succeeded = runner.run_with_options(fresh_options(), [umbrella_suite])
   Set up BaseLayer in N.NNN seconds.
   Ran 4 tests with 0 failures and 0 errors in N.NNN seconds.
 Tearing down left over layers:
@@ -142,7 +142,7 @@ both the BaseLayer and TopLayer environments are setup when the
 TestSpecifyingNoLayer tests are run.
 
 >>> TestSpecifyingNoLayer.layer = TopLayer
->>> succeeded = testrunner.run_with_options(fresh_options(), [umbrella_suite])
+>>> succeeded = runner.run_with_options(fresh_options(), [umbrella_suite])
   Set up BaseLayer in N.NNN seconds.
   Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
   Set up TopLayer in N.NNN seconds.
@@ -193,7 +193,7 @@ BaseLayer.tearDown
 Now lets stack a few more layers to ensure that our setUp and tearDown
 methods are called in the correct order.
 
->>> from zope.testing.testrunner import name_from_layer
+>>> from zope.testing.testrunner.find import name_from_layer
 >>> class A(object):
 ...     def setUp(cls):
 ...         log('%s.setUp' % name_from_layer(cls))
@@ -223,7 +223,7 @@ methods are called in the correct order.
 ...         pass
 >>> suite = unittest.makeSuite(DeepTest)
 >>> log_handler.clear()
->>> succeeded = testrunner.run_with_options(fresh_options(), [suite])
+>>> succeeded = runner.run_with_options(fresh_options(), [suite])
   Set up A in 0.000 seconds.
   Set up B in 0.000 seconds.
   Set up C in 0.000 seconds.

@@ -126,7 +126,7 @@ a subprocess:
     <BLANKLINE>
     <BLANKLINE>
     Tests with errors:
-       runTest (zope.testing.testrunner.SetUpLayerFailure)
+       runTest (zope.testing.testrunner.runner.SetUpLayerFailure)
     Total: 1 tests, 0 failures, 1 errors in 0.210 seconds.
     True
 
