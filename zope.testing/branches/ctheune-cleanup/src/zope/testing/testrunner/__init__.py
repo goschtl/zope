@@ -38,6 +38,7 @@ import traceback
 import types
 import unittest
 
+from zope.testing import doctest
 from zope.testing.testrunner.formatter import OutputFormatter, ColorfulOutputFormatter
 from zope.testing.testrunner.formatter import terminal_has_colors
 
@@ -2167,7 +2168,3 @@ def test_suite():
 
 # Test the testrunner
 ###############################################################################
-
-# Delay import to give main an opportunity to fix up the path if
-# necessary
-from zope.testing import doctest
