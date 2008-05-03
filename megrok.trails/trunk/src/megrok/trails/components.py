@@ -40,7 +40,7 @@ class TrailAbsoluteURLFactory(object):
 
     Therefore, the code below calls this *class* like:
 
-        TrialAbsoluteURLFactory(trail)
+        TrailAbsoluteURLFactory(trail)
 
     in order to return an *instance* of this class that the Zope
     multi-adapter component logic will later call like:
