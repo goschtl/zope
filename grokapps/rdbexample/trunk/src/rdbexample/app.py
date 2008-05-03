@@ -3,8 +3,6 @@ from megrok import rdb
 
 from zope.interface.interfaces import IInterface
 
-from zope.location.location import located
-
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
@@ -18,11 +16,10 @@ class Database(rdb.Database):
 class RDBExample(grok.Application, grok.Model):
     def traverse(self, name):
         try:
-            return located(rdb.query(Faculty).get(int(name)), self, name)
-        except KeyError:
-            return None
+            key = int(name)
         except ValueError:
             return None
+        return rdb.query(Faculty).get(key)
 
 class FacultyList(grok.View):
     grok.name('index')
@@ -39,25 +36,9 @@ class FacultyList(grok.View):
 class Departments(rdb.Container):
     rdb.key('title')
 
-
-class DepartmentTraverse(grok.Traverser):
-    grok.context(Departments)
-    def traverse(self, name):
-        try:
-            return located(self.context[int(name)], self.context, name)
-        except KeyError:
-            return None
-        except ValueError:
-            return None
-
 class Faculty(rdb.Model):
     # rdb.table_name('faculty') is the default
     __tablename__ = 'faculty'
-
-    # XXX note that rdb.Model s don't support traversal using traverse methods;
-    # it does work using external grok.Traversers
-    def traverse(self, name):
-        pass
 
     grok.traversable('departments')
 
@@ -67,13 +48,6 @@ class Faculty(rdb.Model):
     departments = relation('Department',
                            backref='faculty',
                            collection_class=Departments)
-
-class FacultyTraverse(grok.Traverser):
-    grok.context(Faculty)
-
-    def traverse(self, name):
-        if name == 'departments':
-            return located(self.context.departments, self.context, name)
 
 class Department(rdb.Model):
     __tablename__ = 'department'
