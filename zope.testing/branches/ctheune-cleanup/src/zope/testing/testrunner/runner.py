@@ -85,13 +85,11 @@ class Runner(object):
 
         self.setup_features()
 
-        options = self.options
-
         # Make sure we start with real pdb.set_trace.  This is needed
         # to make tests of the test runner work properly. :)
         pdb.set_trace = real_pdb_set_trace
 
-        if (options.profile
+        if (self.options.profile
             and sys.version_info[:3] <= (2,4,1)
             and __debug__):
             self.options.output.error(
@@ -100,31 +98,30 @@ class Runner(object):
                 'Python (not the test runner).')
             sys.exit()
 
-        if options.coverage:
-            tracer = TestTrace(test_dirs(options, {}), trace=False, count=True)
+        if self.options.coverage:
+            tracer = TestTrace(test_dirs(self.options, {}), trace=False, count=True)
             tracer.start()
         else:
             tracer = None
 
-        if options.profile:
+        if self.options.profile:
             prof_prefix = 'tests_profile.'
             prof_suffix = '.prof'
             prof_glob = prof_prefix + '*' + prof_suffix
 
             # if we are going to be profiling, and this isn't a subprocess,
             # clean up any stale results files
-            if not options.resume_layer:
+            if not self.options.resume_layer:
                 for file_name in glob.glob(prof_glob):
                     os.unlink(file_name)
 
             # set up the output file
             oshandle, file_path = tempfile.mkstemp(prof_suffix, prof_prefix, '.')
-            profiler = available_profilers[options.profile](file_path)
+            profiler = available_profilers[self.options.profile](file_path)
             profiler.enable()
 
         try:
             try:
-                self.options = options
                 self.find_tests()
                 failed = self.run_tests()
             except EndRun:
@@ -132,7 +129,7 @@ class Runner(object):
         finally:
             if tracer:
                 tracer.stop()
-            if options.profile:
+            if self.options.profile:
                 profiler.disable()
                 profiler.finish()
                 # We must explicitly close the handle mkstemp returned, else on
@@ -142,19 +139,19 @@ class Runner(object):
 
         self.shutdown_features()
 
-        if options.profile and not options.resume_layer:
+        if self.options.profile and not self.options.resume_layer:
             stats = profiler.loadStats(prof_glob)
             stats.sort_stats('cumulative', 'calls')
             self.options.output.profiler_stats(stats)
 
         if tracer:
-            coverdir = os.path.join(os.getcwd(), options.coverage)
+            coverdir = os.path.join(os.getcwd(), self.options.coverage)
             r = tracer.results()
             r.write_results(summary=True, coverdir=coverdir)
 
         doctest.set_unittest_reportflags(self.old_reporting_flags)
 
-        if failed and options.exitwithstatus:
+        if failed and self.options.exitwithstatus:
             sys.exit(1)
 
         return failed
