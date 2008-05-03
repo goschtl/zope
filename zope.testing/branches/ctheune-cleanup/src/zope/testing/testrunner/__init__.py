@@ -39,6 +39,9 @@ from zope.testing.testrunner.formatter import OutputFormatter, ColorfulOutputFor
 from zope.testing.testrunner.formatter import terminal_has_colors
 from zope.testing.testrunner.profiling import available_profilers
 from zope.testing.testrunner.coverage import TestTrace
+from zope.testing.testrunner.find import find_tests, test_dirs
+from zope.testing.testrunner.find import StartUpFailure, import_name
+from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 
 real_pdb_set_trace = pdb.set_trace
 
@@ -47,52 +50,8 @@ class EndRun(Exception):
     """Indicate that the existing run call should stop
 
     Used to prevent additional test output after post-mortem debugging.
+
     """
-
-def strip_py_ext(options, path):
-    """Return path without its .py (or .pyc or .pyo) extension, or None.
-
-    If options.usecompiled is false:
-        If path ends with ".py", the path without the extension is returned.
-        Else None is returned.
-
-    If options.usecompiled is true:
-        If Python is running with -O, a .pyo extension is also accepted.
-        If Python is running without -O, a .pyc extension is also accepted.
-    """
-    if path.endswith(".py"):
-        return path[:-3]
-    if options.usecompiled:
-        if __debug__:
-            # Python is running without -O.
-            ext = ".pyc"
-        else:
-            # Python is running with -O.
-            ext = ".pyo"
-        if path.endswith(ext):
-            return path[:-len(ext)]
-    return None
-
-def contains_init_py(options, fnamelist):
-    """Return true iff fnamelist contains a suitable spelling of __init__.py.
-
-    If options.usecompiled is false, this is so iff "__init__.py" is in
-    the list.
-
-    If options.usecompiled is true, then "__init__.pyo" is also acceptable
-    if Python is running with -O, and "__init__.pyc" is also acceptable if
-    Python is running without -O.
-    """
-    if "__init__.py" in fnamelist:
-        return True
-    if options.usecompiled:
-        if __debug__:
-            # Python is running without -O.
-            return "__init__.pyc" in fnamelist
-        else:
-            # Python is running with -O.
-            return "__init__.pyo" in fnamelist
-    return False
 
 
 def run(defaults=None, args=None):
@@ -211,7 +170,7 @@ def run_with_options(options, found_suites=None):
     """
 
     global _layer_name_cache
-    _layer_name_cache = {} # Reset to enforce test isolation
+    _layer_name_cache.clear() # Reset to enforce test isolation
 
     output = options.output
 
@@ -273,8 +232,6 @@ def run_with_options(options, found_suites=None):
     for path in options.path:
         if path not in sys.path:
             sys.path.append(path)
-
-    remove_stale_bytecode(options)
 
     tests_by_layer_name = find_tests(options, found_suites)
 
@@ -824,254 +781,11 @@ def order_by_bases(layers):
                 result.append(layer)
     return result
 
-_layer_name_cache = {}
-
-def name_from_layer(layer):
-    """Determine a name for the Layer using the namespace to avoid conflicts.
-
-    We also cache a name -> layer mapping to enable layer_from_name to work
-    in cases where the layer cannot be imported (such as layers defined
-    in doctests)
-    """
-    if layer.__module__ == '__builtin__':
-        name = layer.__name__
-    else:
-        name = layer.__module__ + '.' + layer.__name__
-    _layer_name_cache[name] = layer
-    return name
-
-def find_tests(options, found_suites=None):
-    """Creates a dictionary mapping layer name to a suite of tests to be run
-    in that layer.
-
-    Passing a list of suites using the found_suites parameter will cause
-    that list of suites to be used instead of attempting to load them from
-    the filesystem. This is useful for unit testing the test runner.
-    """
-    suites = {}
-    if found_suites is None:
-        found_suites = find_suites(options)
-    for suite in found_suites:
-        for test, layer_name in tests_from_suite(suite, options):
-            suite = suites.get(layer_name)
-            if not suite:
-                suite = suites[layer_name] = unittest.TestSuite()
-            suite.addTest(test)
-    return suites
-
-def tests_from_suite(suite, options, dlevel=1, dlayer='unit'):
-    """Returns a sequence of (test, layer_name)
-
-    The tree of suites is recursively visited, with the most specific
-    layer taking precedence. So if a TestCase with a layer of 'foo' is
-    contained in a TestSuite with a layer of 'bar', the test case would be
-    returned with 'foo' as the layer.
-
-    Tests are also filtered out based on the test level and test selection
-    filters stored in the options.
-    """
-    level = getattr(suite, 'level', dlevel)
-    layer = getattr(suite, 'layer', dlayer)
-    if not isinstance(layer, basestring):
-        layer = name_from_layer(layer)
-
-    if isinstance(suite, unittest.TestSuite):
-        for possible_suite in suite:
-            for r in tests_from_suite(possible_suite, options, level, layer):
-                yield r
-    elif isinstance(suite, StartUpFailure):
-        yield (suite, None)
-    else:
-        if level <= options.at_level:
-            for pat in options.test:
-                if pat(str(suite)):
-                    yield (suite, layer)
-                    break
-
-
-def find_suites(options):
-    for fpath, package in find_test_files(options):
-        for (prefix, prefix_package) in options.prefix:
-            if fpath.startswith(prefix) and package == prefix_package:
-                # strip prefix, strip .py suffix and convert separator to dots
-                noprefix = fpath[len(prefix):]
-                noext = strip_py_ext(options, noprefix)
-                assert noext is not None
-                module_name = noext.replace(os.path.sep, '.')
-                if package:
-                    module_name = package + '.' + module_name
-
-                for filter in options.module:
-                    if filter(module_name):
-                        break
-                else:
-                    continue
-
-                try:
-                    module = import_name(module_name)
-                except KeyboardInterrupt:
-                    raise
-                except:
-                    suite = StartUpFailure(
-                        options, module_name,
-                        sys.exc_info()[:2]
-                        + (sys.exc_info()[2].tb_next.tb_next,),
-                        )
-                else:
-                    try:
-                        suite = getattr(module, options.suite_name)()
-                        if isinstance(suite, unittest.TestSuite):
-                            check_suite(suite, module_name)
-                        else:
-                            raise TypeError(
-                                "Invalid test_suite, %r, in %s"
-                                % (suite, module_name)
-                                )
-                    except KeyboardInterrupt:
-                        raise
-                    except:
-                        suite = StartUpFailure(
-                            options, module_name, sys.exc_info()[:2]+(None,))
-
-
-                yield suite
-                break
-
-
-def check_suite(suite, module_name):
-    """Check for bad tests in a test suite.
-
-    "Bad tests" are those that do not inherit from unittest.TestCase.
-
-    Note that this function is pointless on Python 2.5, because unittest itself
-    checks for this in TestSuite.addTest.  It is, however, useful on earlier
-    Pythons.
-    """
-    for x in suite:
-        if isinstance(x, unittest.TestSuite):
-            check_suite(x, module_name)
-        elif not isinstance(x, unittest.TestCase):
-            raise TypeError(
-                "Invalid test, %r,\nin test_suite from %s"
-                % (x, module_name)
-                )
 
 
 
 
-class StartUpFailure(unittest.TestCase):
-    """Empty test case added to the test suite to indicate import failures."""
 
-    def __init__(self, options, module, exc_info):
-        if options.post_mortem:
-            post_mortem(exc_info)
-        self.module = module
-        self.exc_info = exc_info
-
-
-def find_test_files(options):
-    found = {}
-    for f, package in find_test_files_(options):
-        if f not in found:
-            found[f] = 1
-            yield f, package
-
-identifier = re.compile(r'[_a-zA-Z]\w*$').match
-def find_test_files_(options):
-    tests_pattern = options.tests_pattern
-    test_file_pattern = options.test_file_pattern
-
-    # If options.usecompiled, we can accept .pyc or .pyo files instead
-    # of .py files.  We'd rather use a .py file if one exists.  `root2ext`
-    # maps a test file path, sans extension, to the path with the best
-    # extension found (.py if it exists, else .pyc or .pyo).
-    # Note that "py" < "pyc" < "pyo", so if more than one extension is
-    # found, the lexicographically smaller one is best.
-
-    # Found a new test file, in directory `dirname`.  `noext` is the
-    # file name without an extension, and `withext` is the file name
-    # with its extension.
-    def update_root2ext(dirname, noext, withext):
-        key = os.path.join(dirname, noext)
-        new = os.path.join(dirname, withext)
-        if key in root2ext:
-            root2ext[key] = min(root2ext[key], new)
-        else:
-            root2ext[key] = new
-
-    for (p, package) in test_dirs(options, {}):
-        for dirname, dirs, files in walk_with_symlinks(options, p):
-            if dirname != p and not contains_init_py(options, files):
-                continue    # not a plausible test directory
-            root2ext = {}
-            dirs[:] = filter(identifier, dirs)
-            d = os.path.split(dirname)[1]
-            if tests_pattern(d) and contains_init_py(options, files):
-                # tests directory
-                for file in files:
-                    noext = strip_py_ext(options, file)
-                    if noext and test_file_pattern(noext):
-                        update_root2ext(dirname, noext, file)
-
-            for file in files:
-                noext = strip_py_ext(options, file)
-                if noext and tests_pattern(noext):
-                    update_root2ext(dirname, noext, file)
-
-            winners = root2ext.values()
-            winners.sort()
-            for file in winners:
-                yield file, package
-
-def walk_with_symlinks(options, dir):
-    # TODO -- really should have test of this that uses symlinks
-    #         this is hard on a number of levels ...
-    for dirpath, dirs, files in os.walk(dir):
-        dirs.sort()
-        files.sort()
-        dirs[:] = [d for d in dirs if d not in options.ignore_dir]
-        yield (dirpath, dirs, files)
-        for d in dirs:
-            p = os.path.join(dirpath, d)
-            if os.path.islink(p):
-                for sdirpath, sdirs, sfiles in walk_with_symlinks(options, p):
-                    yield (sdirpath, sdirs, sfiles)
-
-compiled_sufixes = '.pyc', '.pyo'
-def remove_stale_bytecode(options):
-    if options.keepbytecode:
-        return
-    for (p, _) in options.test_path:
-        for dirname, dirs, files in walk_with_symlinks(options, p):
-            for file in files:
-                if file[-4:] in compiled_sufixes and file[:-1] not in files:
-                    fullname = os.path.join(dirname, file)
-                    options.output.info("Removing stale bytecode file %s"
-                                        % fullname)
-                    os.unlink(fullname)
-
-
-def test_dirs(options, seen):
-    if options.package:
-        for p in options.package:
-            p = import_name(p)
-            for p in p.__path__:
-                p = os.path.abspath(p)
-                if p in seen:
-                    continue
-                for (prefix, package) in options.prefix:
-                    if p.startswith(prefix) or p == prefix[:-1]:
-                        seen[p] = 1
-                        yield p, package
-                        break
-    else:
-        for dpath in options.test_path:
-            yield dpath
-
-
-def import_name(name):
-    __import__(name)
-    return sys.modules[name]
 
 def configure_logging():
     """Initialize the logging module."""
