@@ -57,6 +57,9 @@ setup (
             'zope.security',
             'zope.testing',
             ],
+        docs = [
+            'Sphinx',
+            ],
         ),
     install_requires = [
         'setuptools',

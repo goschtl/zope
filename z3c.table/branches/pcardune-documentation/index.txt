@@ -1,0 +1,20 @@
+Welcome to z3c.table's documentation!
+=====================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   src/z3c/table/README
+   src/z3c/table/column
+   CHANGES
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
