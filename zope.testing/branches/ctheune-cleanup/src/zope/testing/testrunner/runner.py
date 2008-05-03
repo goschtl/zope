@@ -76,6 +76,7 @@ class Runner(object):
         self.args = args
         self.found_suites = found_suites
         self.options = options
+        self.failed = True
 
         self.late_initializers = []
         self.early_shutdown = []
@@ -94,17 +95,12 @@ class Runner(object):
             init()
 
         try:
-            try:
-                self.find_tests()
-                failed = self.run_tests()
-            except EndRun:
-                failed = True
+            self.find_tests()
+            self.run_tests()
         finally:
             for shutdown in self.early_shutdown:
                 shutdown()
             self.shutdown_features()
-
-        return failed
 
     def configure(self):
         if self.args is None:
@@ -286,7 +282,11 @@ class Runner(object):
                     else:
                         output.info("Running unit tests:")
                         nlayers += 1
-                        ran += run_tests(options, tests, 'unit', failures, errors)
+                        try:
+                            ran += run_tests(options, tests, 'unit', failures, errors)
+                        except EndRun:
+                            self.failed = True
+                            return
 
         setup_layers = {}
 
@@ -308,7 +308,8 @@ class Runner(object):
         if options.list_tests:
             for layer_name, layer, tests in layers_to_run:
                 output.list_of_tests(tests, layer_name)
-            return False
+            self.failed = False
+            return
 
         start_time = time.time()
 
@@ -317,6 +318,9 @@ class Runner(object):
             try:
                 ran += run_layer(options, layer_name, layer, tests,
                                  setup_layers, failures, errors)
+            except EndRun:
+                self.failed = True
+                return
             except CanNotTearDown:
                 setup_layers = None
                 if not options.resume_layer:
@@ -358,7 +362,7 @@ class Runner(object):
         if options.gc:
             gc.set_threshold(*old_threshold)
 
-        return bool(import_errors or failures or errors)
+        self.failed = bool(import_errors or failures or errors)
 
     def shutdown_features(self):
         if self.options.profile:
@@ -505,6 +509,7 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
         return run_tests(options, tests, layer_name, failures, errors)
 
 class SetUpLayerFailure(unittest.TestCase):
+
     def runTest(self):
         "Layer set up failure."
 

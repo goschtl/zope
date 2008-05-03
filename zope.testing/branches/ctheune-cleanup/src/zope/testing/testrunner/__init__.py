@@ -27,10 +27,10 @@ def run(defaults=None, args=None):
     # This function is here to make the whole test runner compatible before
     # the large refactoring.
     runner = Runner(defaults, args)
-    failed = runner.run()
-    if failed and runner.options.exitwithstatus:
+    runner.run()
+    if runner.failed and runner.options.exitwithstatus:
         sys.exit(1)
-    return failed
+    return runner.failed
 
 
 ###############################################################################
