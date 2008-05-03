@@ -82,12 +82,6 @@ class Runner(object):
         self.setup_features()
         self.shutdown_features()
 
-        args = self.args
-        defaults = self.defaults
-
-        if args is None:
-            args = sys.argv[:]
-
         # Set the default logging policy.
         # XXX There are no tests for this logging behavior.
         # It's not at all clear that the test runner should be doing this.
@@ -98,26 +92,26 @@ class Runner(object):
 
         # Check to see if we are being run as a subprocess. If we are,
         # then use the resume-layer and defaults passed in.
-        if len(args) > 1 and args[1] == '--resume-layer':
-            args.pop(1)
-            resume_layer = args.pop(1)
-            resume_number = int(args.pop(1))
-            defaults = []
-            while len(args) > 1 and args[1] == '--default':
-                args.pop(1)
-                defaults.append(args.pop(1))
+        if len(self.args) > 1 and self.args[1] == '--resume-layer':
+            self.args.pop(1)
+            resume_layer = self.args.pop(1)
+            resume_number = int(self.args.pop(1))
+            self.defaults = []
+            while len(self.args) > 1 and self.args[1] == '--default':
+                self.args.pop(1)
+                self.defaults.append(self.args.pop(1))
 
             sys.stdin = FakeInputContinueGenerator()
         else:
             resume_layer = resume_number = None
 
-        options = get_options(args, defaults)
+        options = get_options(self.args, self.defaults)
         if options.fail:
             return True
 
         output = options.output
 
-        options.testrunner_defaults = defaults
+        options.testrunner_defaults = self.defaults
         options.resume_layer = resume_layer
         options.resume_number = resume_number
 
@@ -191,7 +185,8 @@ class Runner(object):
         return failed
 
     def configure(self):
-        pass
+        if self.args is None:
+            self.args = sys.argv[:]
 
     def setup_features(self):
         pass
