@@ -3,6 +3,8 @@ from megrok import rdb
 
 from zope.interface.interfaces import IInterface
 
+from zope.location.location import located
+
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
@@ -16,7 +18,9 @@ class Database(rdb.Database):
 class RDBExample(grok.Application, grok.Model):
     def traverse(self, name):
         try:
-            return rdb.query(Faculty).get(int(name))
+            return located(rdb.query(Faculty).get(int(name)), self, name)
+        except KeyError:
+            return None
         except ValueError:
             return None
 
@@ -27,19 +31,22 @@ class FacultyList(grok.View):
     def render(self):
         result = ""
         for faculty in rdb.query(Faculty).all():
-            result += "%i - %s\n" % (faculty.id, faculty.title)
+            result += "%s - %s (%s)" % (faculty.id, faculty.title,
+                                        self.url(str(faculty.id)))
         return result
 
 
 class Departments(rdb.Container):
-    pass
+    rdb.key('title')
 
 
 class DepartmentTraverse(grok.Traverser):
     grok.context(Departments)
     def traverse(self, name):
         try:
-            return self.context[int(name)]
+            return located(self.context[int(name)], self.context, name)
+        except KeyError:
+            return None
         except ValueError:
             return None
 
@@ -66,7 +73,7 @@ class FacultyTraverse(grok.Traverser):
 
     def traverse(self, name):
         if name == 'departments':
-            return self.context.departments
+            return located(self.context.departments, self.context, name)
 
 class Department(rdb.Model):
     __tablename__ = 'department'
