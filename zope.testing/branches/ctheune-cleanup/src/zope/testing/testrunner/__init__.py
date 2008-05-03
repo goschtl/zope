@@ -28,6 +28,8 @@ def run(defaults=None, args=None):
     # the large refactoring.
     runner = Runner(defaults, args)
     failed = runner.run()
+    if failed and runner.options.exitwithstatus:
+        sys.exit(1)
     return failed
 
 

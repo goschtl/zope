@@ -104,9 +104,6 @@ class Runner(object):
                 shutdown()
             self.shutdown_features()
 
-        if failed and self.options.exitwithstatus:
-            sys.exit(1)
-
         return failed
 
     def configure(self):
