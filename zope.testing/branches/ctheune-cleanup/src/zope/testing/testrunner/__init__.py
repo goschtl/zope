@@ -40,12 +40,6 @@ from zope.testing.testrunner.formatter import terminal_has_colors
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
 from zope.testing.testrunner.runner import run, EndRun
 
-def dependencies(bases, result):
-    # XXX unused?
-    for base in bases:
-        result[base] = 1
-        dependencies(base.__bases__, result)
-
 
 class TrackRefs(object):
     """Object to track reference counts across test runs."""
