@@ -89,21 +89,6 @@ class Runner(object):
         # to make tests of the test runner work properly. :)
         pdb.set_trace = real_pdb_set_trace
 
-        if (self.options.profile
-            and sys.version_info[:3] <= (2,4,1)
-            and __debug__):
-            self.options.output.error(
-                'Because of a bug in Python < 2.4.1, profiling '
-                'during tests requires the -O option be passed to '
-                'Python (not the test runner).')
-            sys.exit()
-
-        if self.options.coverage:
-            tracer = TestTrace(test_dirs(self.options, {}), trace=False, count=True)
-            tracer.start()
-        else:
-            tracer = None
-
         if self.options.profile:
             prof_prefix = 'tests_profile.'
             prof_suffix = '.prof'
@@ -127,8 +112,8 @@ class Runner(object):
             except EndRun:
                 failed = True
         finally:
-            if tracer:
-                tracer.stop()
+            if self.tracer:
+                self.tracer.stop()
             if self.options.profile:
                 profiler.disable()
                 profiler.finish()
@@ -137,19 +122,12 @@ class Runner(object):
                 # attempt to unlink a still-open file.
                 os.close(oshandle)
 
-        self.shutdown_features()
-
         if self.options.profile and not self.options.resume_layer:
             stats = profiler.loadStats(prof_glob)
             stats.sort_stats('cumulative', 'calls')
             self.options.output.profiler_stats(stats)
 
-        if tracer:
-            coverdir = os.path.join(os.getcwd(), self.options.coverage)
-            r = tracer.results()
-            r.write_results(summary=True, coverdir=coverdir)
-
-        doctest.set_unittest_reportflags(self.old_reporting_flags)
+        self.shutdown_features()
 
         if failed and self.options.exitwithstatus:
             sys.exit(1)
@@ -191,6 +169,23 @@ class Runner(object):
 
         # Control reporting flags during run
         self.old_reporting_flags = doctest.set_unittest_reportflags(0)
+
+        # Set up code coverage analysis
+        if self.options.coverage:
+            self.tracer = TestTrace(test_dirs(self.options, {}), trace=False, count=True)
+            self.tracer.start()
+        else:
+            self.tracer = None
+
+        # Setup profiling
+        if (self.options.profile
+            and sys.version_info[:3] <= (2,4,1)
+            and __debug__):
+            self.options.output.error(
+                'Because of a bug in Python < 2.4.1, profiling '
+                'during tests requires the -O option be passed to '
+                'Python (not the test runner).')
+            sys.exit()
 
 
     def find_tests(self):
@@ -375,7 +370,13 @@ class Runner(object):
         return bool(import_errors or failures or errors)
 
     def shutdown_features(self):
-        pass
+        if self.tracer:
+            coverdir = os.path.join(os.getcwd(), self.options.coverage)
+            r = self.tracer.results()
+            r.write_results(summary=True, coverdir=coverdir)
+
+        doctest.set_unittest_reportflags(self.old_reporting_flags)
+
 
 
 def run_tests(options, tests, name, failures, errors):
