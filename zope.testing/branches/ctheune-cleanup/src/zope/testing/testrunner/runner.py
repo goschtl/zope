@@ -95,6 +95,8 @@ class Runner(object):
 
         self.show_report = True
 
+        self.features = []
+
     def run(self):
         self.configure()
         if self.options.fail:
@@ -103,21 +105,37 @@ class Runner(object):
         self.setup_features()
         self.find_tests()
 
+        # Global setup
+        for feature in self.features:
+            feature.global_setup()
+
+        # Late setup
+        #
         # Some system tools like profilers are really bad with stack frames.
         # E.g. hotshot doesn't like it when we leave the stack frame that we
         # called start() from.
         for init in self.late_initializers:
             init()
+        for feature in self.features:
+            feature.late_setup()
 
         try:
             self.run_tests()
         finally:
             for shutdown in self.early_shutdown:
                 shutdown()
+            # Early teardown
+            for feature in reversed(self.features):
+                feature.early_teardown()
+            # Global teardown
+            for feature in reversed(self.features):
+                feature.global_teardown()
             self.shutdown_features()
 
         if self.show_report:
             self.report()
+            for feature in self.features:
+                feature.report()
 
     def configure(self):
         if self.args is None:
