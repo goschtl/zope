@@ -1,1 +1,1 @@
-from components import KSS
+from megrok.kss.components import KSS
