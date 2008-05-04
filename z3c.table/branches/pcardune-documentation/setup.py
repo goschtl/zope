@@ -59,6 +59,7 @@ setup (
             ],
         docs = [
             'Sphinx',
+            'z3c.recipe.sphinxdoc',
             ],
         ),
     install_requires = [

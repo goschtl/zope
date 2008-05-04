@@ -142,7 +142,9 @@ subclasses of ``Column``.
 Adding a Column to a Table Using Adapters
 -----------------------------------------
 
-Now we can register our column adapter.
+One way we can add a column to a table is using an adapter.  Although
+this may seem like overkill at first, it makes tables easily
+pluggable.  Let's register our column as an adapter.
 
   >>> import zope.component
   >>> zope.component.provideAdapter(TitleColumn,

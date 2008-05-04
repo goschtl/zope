@@ -6,9 +6,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   src/z3c/table/README
-   src/z3c/table/column
-   CHANGES
+   z3c/table/README
+   z3c/table/column
 
 
 Indices and tables
