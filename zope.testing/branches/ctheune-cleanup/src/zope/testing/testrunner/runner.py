@@ -40,6 +40,7 @@ import zope.testing.testrunner.doctest
 import zope.testing.testrunner.logsupport
 import zope.testing.testrunner.selftest
 import zope.testing.testrunner.profiling
+import zope.testing.testrunner.timing
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -173,6 +174,7 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
         self.features.append(zope.testing.testrunner.doctest.DocTest(self))
         self.features.append(zope.testing.testrunner.profiling.Profiling(self))
+        self.features.append(zope.testing.testrunner.timing.Timing(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
@@ -201,14 +203,6 @@ class Runner(object):
             for op in self.options.gc_option:
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
-
-        # Set up time measurement
-        def start_time_recording():
-            self.start_time = time.time()
-        def stop_time_recording():
-            self.total_time = time.time() - self.start_time
-        self.late_initializers.append(start_time_recording)
-        self.early_shutdown.append(stop_time_recording)
 
     def find_tests(self):
         global _layer_name_cache
