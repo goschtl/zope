@@ -35,7 +35,7 @@ from zope.testing.testrunner.profiling import available_profilers
 from zope.testing.testrunner.find import find_tests, test_dirs
 from zope.testing.testrunner.find import StartUpFailure, import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
-from zope.testing.testrunner.coverage import TestTrace
+from zope.testing.testrunner import coverage
 from zope.testing.testrunner.refcount import TrackRefs
 from zope.testing.testrunner.options import get_options
 
@@ -164,6 +164,14 @@ class Runner(object):
 
         self.options = options
 
+        # XXX I moved this here mechanically.
+        self.test_directories = test_dirs(self.options, {})
+
+        self.features.append(coverage.Coverage(self))
+
+        # Remove all features that aren't activated
+        self.features = [f for f in self.features if f.active]
+
     def setup_features(self):
         # Make sure we start with real pdb.set_trace.  This is needed
         # to make tests of the test runner work properly. :)
@@ -176,13 +184,6 @@ class Runner(object):
 
         # Control reporting flags during run
         self.old_reporting_flags = doctest.set_unittest_reportflags(0)
-
-        # Set up code coverage analysis
-        if self.options.coverage:
-            self.tracer = TestTrace(test_dirs(self.options, {}), trace=False, count=True)
-            self.tracer.start()
-        else:
-            self.tracer = None
 
         # Setup profiling
         if (self.options.profile
@@ -390,9 +391,6 @@ class Runner(object):
                 self.profiler_stats = self.profiler.loadStats(self.prof_glob)
                 self.profiler_stats.sort_stats('cumulative', 'calls')
 
-        if self.tracer:
-            self.tracer.stop()
-
         doctest.set_unittest_reportflags(self.old_reporting_flags)
 
     def report(self):
@@ -419,11 +417,6 @@ class Runner(object):
 
         if self.options.profile and not self.options.resume_layer:
             self.options.output.profiler_stats(self.profiler_stats)
-
-        if self.tracer:
-            coverdir = os.path.join(os.getcwd(), self.options.coverage)
-            r = self.tracer.results()
-            r.write_results(summary=True, coverdir=coverdir)
 
 
 def run_tests(options, tests, name, failures, errors):

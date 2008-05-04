@@ -28,6 +28,10 @@ class IFeature(zope.interface.Interface):
     order.
     """
 
+    active = zope.interface.Attribute(
+      "Flag whether this feature is activated. If it is not activated than "
+      "its methods won't be called by the runner.")
+
     def global_setup():
         """Executed once when the test runner is being set up."""
 
@@ -67,7 +71,7 @@ class IFeature(zope.interface.Interface):
 
     def report():
         """Executed once after all tests have been run and all setup was
-        teared down.
+        torn down.
 
         This is the only method that should produce output.
 

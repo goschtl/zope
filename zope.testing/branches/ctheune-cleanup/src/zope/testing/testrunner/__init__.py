@@ -20,12 +20,15 @@ import sys
 import unittest
 
 
-from zope.testing.testrunner.runner import Runner
+import zope.testing.testrunner.interfaces
+
 
 
 def run(defaults=None, args=None):
     # This function is here to make the whole test runner compatible before
     # the large refactoring.
+    # XXX Bah. Lazy import to avoid circular/early import problems
+    from zope.testing.testrunner.runner import Runner
     runner = Runner(defaults, args)
     runner.run()
     if runner.failed and runner.options.exitwithstatus:

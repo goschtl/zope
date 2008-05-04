@@ -21,6 +21,8 @@ import sys
 import os.path
 import threading
 
+import zope.testing.testrunner.feature
+
 
 # For some reason, the doctest module resets the trace callable randomly, thus
 # disabling the coverage. Simply disallow the code from doing this. A real
@@ -118,3 +120,34 @@ if sys.platform == 'win32':
     class TestIgnore(OldTestIgnore):
         def _filenameFormat(self, filename):
             return os.path.normcase(os.path.abspath(filename))
+
+
+class Coverage(zope.testing.testrunner.feature.Feature):
+
+    tracer = None
+    directory = None
+
+    def __init__(self, runner):
+        super(Coverage, self).__init__(runner)
+        self.active = bool(runner.options.coverage)
+
+    def global_setup(self):
+        """Executed once when the test runner is being set up."""
+        self.directory = os.path.join(os.getcwd(), self.runner.options.coverage)
+        self.tracer = TestTrace(self.runner.test_directories,
+                                trace=False, count=True)
+
+    def late_setup(self):
+        """Executed once right before the actual tests get executed and after
+        all global setups have happened."""
+        self.tracer.start()
+
+    def early_teardown(self):
+        """Executed once directly after all tests."""
+        self.tracer.stop()
+
+    def report(self):
+        """Executed once after all tests have been run and all setup was
+        torn down."""
+        r = self.tracer.results()
+        r.write_results(summary=True, coverdir=self.directory)

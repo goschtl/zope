@@ -111,7 +111,7 @@ Now we run the tests. Note that the BaseLayer was not setup when
 the TestSpecifyingNoLayer was run and setup/torn down around the
 TestSpecifyingBaseLayer tests.
 
->>> from zope.testing.testrunner import Runner
+>>> from zope.testing.testrunner.runner import Runner
 >>> runner = Runner(options=fresh_options(), args=[], found_suites=[umbrella_suite])
 >>> succeeded = runner.run()
 Running unit tests:
