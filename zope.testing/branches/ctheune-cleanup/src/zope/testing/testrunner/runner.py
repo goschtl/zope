@@ -30,7 +30,6 @@ import traceback
 import unittest
 
 from zope.testing import doctest
-from zope.testing.testrunner.profiling import available_profilers
 from zope.testing.testrunner.find import find_tests, test_dirs
 from zope.testing.testrunner.find import StartUpFailure, import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
@@ -40,6 +39,7 @@ import zope.testing.testrunner.coverage
 import zope.testing.testrunner.doctest
 import zope.testing.testrunner.logsupport
 import zope.testing.testrunner.selftest
+import zope.testing.testrunner.profiling
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -172,37 +172,12 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.logsupport.Logging(self))
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
         self.features.append(zope.testing.testrunner.doctest.DocTest(self))
+        self.features.append(zope.testing.testrunner.profiling.Profiling(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
 
     def setup_features(self):
-        # Setup profiling
-        if (self.options.profile
-            and sys.version_info[:3] <= (2,4,1)
-            and __debug__):
-            self.options.output.error(
-                'Because of a bug in Python < 2.4.1, profiling '
-                'during tests requires the -O option be passed to '
-                'Python (not the test runner).')
-            sys.exit()
-
-        if self.options.profile:
-            self.prof_prefix = 'tests_profile.'
-            self.prof_suffix = '.prof'
-            self.prof_glob = self.prof_prefix + '*' + self.prof_suffix
-            # if we are going to be profiling, and this isn't a subprocess,
-            # clean up any stale results files
-            if not self.options.resume_layer:
-                for file_name in glob.glob(self.prof_glob):
-                    os.unlink(file_name)
-            # set up the output file
-            self.oshandle, self.file_path = tempfile.mkstemp(self.prof_suffix,
-                                                             self.prof_prefix, '.')
-            self.profiler = available_profilers[self.options.profile](self.file_path)
-            self.late_initializers.append(self.profiler.enable)
-            self.early_shutdown.append(self.profiler.disable)
-
         # Setup garbage collection threshold
         self.old_threshold = gc.get_threshold()
         if self.options.gc:
@@ -226,7 +201,6 @@ class Runner(object):
             for op in self.options.gc_option:
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
-
 
         # Set up time measurement
         def start_time_recording():
@@ -349,16 +323,6 @@ class Runner(object):
         if self.options.gc:
             gc.set_threshold(*self.old_threshold)
 
-        if self.options.profile:
-            self.profiler.finish()
-            # We must explicitly close the handle mkstemp returned, else on
-            # Windows this dies the next time around just above due to an
-            # attempt to unlink a still-open file.
-            os.close(self.oshandle)
-            if not self.options.resume_layer:
-                self.profiler_stats = self.profiler.loadStats(self.prof_glob)
-                self.profiler_stats.sort_stats('cumulative', 'calls')
-
     def report(self):
         if self.options.resume_layer:
             sys.stdout.close()
@@ -380,9 +344,6 @@ class Runner(object):
 
             self.options.output.modules_with_import_problems(
                 self.import_errors)
-
-        if self.options.profile and not self.options.resume_layer:
-            self.options.output.profiler_stats(self.profiler_stats)
 
 
 def run_tests(options, tests, name, failures, errors):
