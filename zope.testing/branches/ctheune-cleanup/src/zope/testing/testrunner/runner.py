@@ -102,7 +102,6 @@ class Runner(object):
         if self.options.fail:
             return True
 
-        self.setup_features()
         # Global setup
         for feature in self.features:
             feature.global_setup()
@@ -126,7 +125,6 @@ class Runner(object):
             # Global teardown
             for feature in reversed(self.features):
                 feature.global_teardown()
-            self.shutdown_features()
 
         if self.show_report:
             self.report()
@@ -174,9 +172,6 @@ class Runner(object):
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
-
-    def setup_features(self):
-        pass
 
     def find_tests(self):
         global _layer_name_cache
@@ -283,9 +278,6 @@ class Runner(object):
             tear_down_unneeded(self.options, (), setup_layers, True)
 
         self.failed = bool(self.import_errors or self.failures or self.errors)
-
-    def shutdown_features(self):
-        pass
 
     def report(self):
         if self.options.resume_layer:
