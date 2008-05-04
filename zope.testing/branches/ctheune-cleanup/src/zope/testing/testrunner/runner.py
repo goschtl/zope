@@ -199,6 +199,29 @@ class Runner(object):
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
 
+        # Set up doctest support
+        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
+        reporting_flags = 0
+        if self.options.ndiff:
+            reporting_flags = doctest.REPORT_NDIFF
+        if self.options.udiff:
+            if reporting_flags:
+                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
+                sys.exit(1)
+            reporting_flags = doctest.REPORT_UDIFF
+        if self.options.cdiff:
+            if reporting_flags:
+                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
+                sys.exit(1)
+            reporting_flags = doctest.REPORT_CDIFF
+        if self.options.report_only_first_failure:
+            reporting_flags |= doctest.REPORT_ONLY_FIRST_FAILURE
+
+        if reporting_flags:
+            doctest.set_unittest_reportflags(reporting_flags)
+        else:
+            doctest.set_unittest_reportflags(self.old_reporting_flags)
+
     def find_tests(self):
         pass
 
@@ -228,28 +251,6 @@ class Runner(object):
             else:
                 msg = "Running tests at level %d" % self.options.at_level
             output.info(msg)
-
-        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
-        reporting_flags = 0
-        if self.options.ndiff:
-            reporting_flags = doctest.REPORT_NDIFF
-        if self.options.udiff:
-            if reporting_flags:
-                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
-                sys.exit(1)
-            reporting_flags = doctest.REPORT_UDIFF
-        if self.options.cdiff:
-            if reporting_flags:
-                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
-                sys.exit(1)
-            reporting_flags = doctest.REPORT_CDIFF
-        if self.options.report_only_first_failure:
-            reporting_flags |= doctest.REPORT_ONLY_FIRST_FAILURE
-
-        if reporting_flags:
-            doctest.set_unittest_reportflags(reporting_flags)
-        else:
-            doctest.set_unittest_reportflags(self.old_reporting_flags)
 
         # Add directories to the path
         for path in self.options.path:
@@ -356,11 +357,11 @@ class Runner(object):
 
             output.modules_with_import_problems(import_errors)
 
-        doctest.set_unittest_reportflags(self.old_reporting_flags)
-
         self.failed = bool(import_errors or failures or errors)
 
     def shutdown_features(self):
+        doctest.set_unittest_reportflags(self.old_reporting_flags)
+
         if self.options.gc_option:
             gc.set_debug(self.old_flags)
 
