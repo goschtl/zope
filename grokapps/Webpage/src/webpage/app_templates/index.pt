@@ -1,0 +1,8 @@
+<html metal:use-macro="context/@@headerfooter/macros/standard">
+<div metal:fill-slot="content">
+  <h2>Welcome to Web page</h2>
+
+  <p>This is the front page for the Web page.</p>
+  
+</div>
+</html>

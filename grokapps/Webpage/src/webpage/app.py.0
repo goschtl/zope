@@ -1,0 +1,46 @@
+import grok
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
+##
+## The application
+##
+
+class Webpage(grok.Application, grok.Container):
+    pass
+
+#
+# Views for this application
+# 
+
+class Index(grok.View):
+    pass # see app_templates/index.pt
+
+class About(grok.View):
+    pass
+
+class HeaderFooter(grok.View):
+    pass
+
+
+
+##
+## The mobile layer
+##
+
+
+class MobileLayer(IDefaultBrowserLayer):
+    pass
+
+class MobileSkin(grok.Skin):
+    grok.name('mobile') # optional
+    grok.layer(MobileLayer)
+    
+#
+# Views in this layer
+#
+    
+class MobileHeaderFooter(grok.View):
+    grok.name('headerfooter') # important
+    grok.layer(MobileLayer)
+    
+

@@ -1,0 +1,42 @@
+<metal:block define-macro="standard"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Web page (Mobile)</title>
+  <meta http-equiv="Content-Type"
+      content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" 
+        tal:attributes="href static/style.css" />
+  <link rel="stylesheet" type="text/css"
+        tal:attributes="href static/mobile.css" />
+  <style metal:define-slot="extracss" tal:omit-tag=""></style>
+</head>
+<body>
+<metal:block define-slot="body">
+<div id="header">
+  <metal:block define-slot="header">
+    <h2>Web page</h2>
+    <hr />
+  </metal:block>
+</div>
+
+<div id="content">
+  <metal:block define-slot="content">
+    walk all over me
+  </metal:block>
+</div>
+
+<div id="footer">
+  <metal:block define-slot="footer">
+    <p>&copy; Grok.<br />
+    You are currently using the mobile version of this page.
+    <a href="#" tal:attributes="href python:view.url().replace('++skin++mobile/','')">Switch to normal web version</a>
+    </p>
+  </metal:block>
+</div>
+
+</metal:block>
+<script metal:define-slot="extrajs" tal:omit-tag=""></script>
+</body>
+</html>
+</metal:block>

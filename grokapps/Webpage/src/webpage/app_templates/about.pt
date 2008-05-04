@@ -1,0 +1,9 @@
+<html metal:use-macro="context/@@headerfooter/macros/standard">
+<div metal:fill-slot="content">
+  <h3>About</h3>
+  
+  <p>This is an example Grok application that shows the magic of layers
+  and what they can be used for.</p>
+  
+</div>
+</html>

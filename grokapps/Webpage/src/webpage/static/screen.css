@@ -1,0 +1,16 @@
+#content {
+  padding:10px;
+  background-color:#efefef;
+}
+
+#header h1 {
+	width: 419px;
+	height: 73px;
+	background-image: url(logo.png);
+	}
+#header h1 span {
+	display: block;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+	}

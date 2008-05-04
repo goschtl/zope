@@ -1,0 +1,8 @@
+<html metal:use-macro="context/@@headerfooter/macros/standard">
+<div metal:fill-slot="content">
+  <h2>Mobile Web page</h2>
+
+  <p>Now with mobile specific front end.</p>
+  
+</div>
+</html>
