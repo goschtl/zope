@@ -358,15 +358,15 @@ class Runner(object):
 
         doctest.set_unittest_reportflags(self.old_reporting_flags)
 
+        self.failed = bool(import_errors or failures or errors)
+
+    def shutdown_features(self):
         if self.options.gc_option:
             gc.set_debug(self.old_flags)
 
         if self.options.gc:
             gc.set_threshold(*self.old_threshold)
 
-        self.failed = bool(import_errors or failures or errors)
-
-    def shutdown_features(self):
         if self.options.profile:
             self.profiler.finish()
             # We must explicitly close the handle mkstemp returned, else on
