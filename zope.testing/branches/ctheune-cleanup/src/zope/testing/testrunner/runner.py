@@ -39,9 +39,7 @@ from zope.testing.testrunner.options import get_options
 import zope.testing.testrunner.coverage
 import zope.testing.testrunner.doctest
 import zope.testing.testrunner.logsupport
-
-
-real_pdb_set_trace = pdb.set_trace
+import zope.testing.testrunner.selftest
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -170,6 +168,7 @@ class Runner(object):
         # XXX I moved this here mechanically.
         self.test_directories = test_dirs(self.options, {})
 
+        self.features.append(zope.testing.testrunner.selftest.SelfTest(self))
         self.features.append(zope.testing.testrunner.logsupport.Logging(self))
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
         self.features.append(zope.testing.testrunner.doctest.DocTest(self))
@@ -178,10 +177,6 @@ class Runner(object):
         self.features = [f for f in self.features if f.active]
 
     def setup_features(self):
-        # Make sure we start with real pdb.set_trace.  This is needed
-        # to make tests of the test runner work properly. :)
-        pdb.set_trace = real_pdb_set_trace
-
         # Setup profiling
         if (self.options.profile
             and sys.version_info[:3] <= (2,4,1)
