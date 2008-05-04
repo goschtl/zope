@@ -87,9 +87,6 @@ class Runner(object):
         self.options = options
         self.failed = True
 
-        self.late_initializers = []
-        self.early_shutdown = []
-
         self.ran = 0
         self.failures = []
         self.errors = []
@@ -116,16 +113,12 @@ class Runner(object):
         # Some system tools like profilers are really bad with stack frames.
         # E.g. hotshot doesn't like it when we leave the stack frame that we
         # called start() from.
-        for init in self.late_initializers:
-            init()
         for feature in self.features:
             feature.late_setup()
 
         try:
             self.run_tests()
         finally:
-            for shutdown in self.early_shutdown:
-                shutdown()
             # Early teardown
             for feature in reversed(self.features):
                 feature.early_teardown()
