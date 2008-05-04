@@ -248,20 +248,6 @@ class Runner(object):
         self.early_shutdown.append(stop_time_recording)
 
     def find_tests(self):
-        pass
-
-    def run_tests(self):
-        """Find and run tests
-
-        Passing a list of suites using the found_suites parameter will cause
-        that list of suites to be used instead of attempting to load them from
-        the filesystem. This is useful for unit testing the test runner.
-
-        Returns True if there where failures or False if all tests passed.
-
-        """
-        found_suites = self.found_suites
-
         global _layer_name_cache
         _layer_name_cache.clear() # Reset to enforce test isolation
 
@@ -282,14 +268,23 @@ class Runner(object):
             if path not in sys.path:
                 sys.path.append(path)
 
-        tests_by_layer_name = find_tests(self.options, found_suites)
-
-        self.import_errors = tests_by_layer_name.pop(None, None)
-
+        self.tests_by_layer_name = find_tests(self.options, self.found_suites)
+        self.import_errors = self.tests_by_layer_name.pop(None, None)
+        # XXX move to reporting
         output.import_errors(self.import_errors)
 
-        if 'unit' in tests_by_layer_name:
-            tests = tests_by_layer_name.pop('unit')
+    def run_tests(self):
+        """Find and run tests
+
+        Passing a list of suites using the found_suites parameter will cause
+        that list of suites to be used instead of attempting to load them from
+        the filesystem. This is useful for unit testing the test runner.
+
+        Returns True if there where failures or False if all tests passed.
+
+        """
+        if 'unit' in self.tests_by_layer_name:
+            tests = self.tests_by_layer_name.pop('unit')
             if (not self.options.non_unit) and not self.options.resume_layer:
                 if self.options.layer:
                     should_run = False
@@ -302,9 +297,9 @@ class Runner(object):
 
                 if should_run:
                     if self.options.list_tests:
-                        output.list_of_tests(tests, 'unit')
+                        self.options.output.list_of_tests(tests, 'unit')
                     else:
-                        output.info("Running unit tests:")
+                        self.options.output.info("Running unit tests:")
                         self.nlayers += 1
                         try:
                             self.ran += run_tests(self.options, tests, 'unit',
@@ -315,7 +310,7 @@ class Runner(object):
 
         setup_layers = {}
 
-        layers_to_run = list(ordered_layers(tests_by_layer_name))
+        layers_to_run = list(ordered_layers(self.tests_by_layer_name))
         if self.options.resume_layer is not None:
             layers_to_run = [
                 (layer_name, layer, tests)
@@ -331,7 +326,7 @@ class Runner(object):
 
         if self.options.list_tests:
             for layer_name, layer, tests in layers_to_run:
-                output.list_of_tests(tests, layer_name)
+                self.options.output.list_of_tests(tests, layer_name)
             self.failed = False
             self.show_report = False
             return
@@ -353,7 +348,7 @@ class Runner(object):
 
         if setup_layers:
             if self.options.resume_layer == None:
-                output.info("Tearing down left over layers:")
+                self.options.output.info("Tearing down left over layers:")
             tear_down_unneeded(self.options, (), setup_layers, True)
 
         self.failed = bool(self.import_errors or self.failures or self.errors)
