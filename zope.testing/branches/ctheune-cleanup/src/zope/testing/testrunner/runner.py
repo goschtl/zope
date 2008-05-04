@@ -175,6 +175,30 @@ class Runner(object):
             self.late_initializers.append(self.profiler.enable)
             self.early_shutdown.append(self.profiler.disable)
 
+        # Setup garbage collection threshold
+        self.old_threshold = gc.get_threshold()
+        if self.options.gc:
+            if len(self.options.gc) > 3:
+                output.error("Too many --gc options")
+                sys.exit(1)
+            if self.options.gc[0]:
+                self.options.output.info(
+                    "Cyclic garbage collection threshold set to: %s" %
+                    repr(tuple(self.options.gc)))
+            else:
+                self.options.output.info(
+                    "Cyclic garbage collection is disabled.")
+
+            gc.set_threshold(*self.options.gc)
+
+        # Set garbage collection debug flags
+        self.old_flags = gc.get_debug()
+        if self.options.gc_option:
+            new_flags = 0
+            for op in self.options.gc_option:
+                new_flags |= getattr(gc, op)
+            gc.set_debug(new_flags)
+
     def find_tests(self):
         pass
 
@@ -205,26 +229,6 @@ class Runner(object):
                 msg = "Running tests at level %d" % self.options.at_level
             output.info(msg)
 
-        old_threshold = gc.get_threshold()
-        if self.options.gc:
-            if len(self.options.gc) > 3:
-                output.error("Too many --gc options")
-                sys.exit(1)
-            if self.options.gc[0]:
-                output.info("Cyclic garbage collection threshold set to: %s" %
-                            repr(tuple(self.options.gc)))
-            else:
-                output.info("Cyclic garbage collection is disabled.")
-
-            gc.set_threshold(*self.options.gc)
-
-        old_flags = gc.get_debug()
-        if self.options.gc_option:
-            new_flags = 0
-            for op in self.options.gc_option:
-                new_flags |= getattr(gc, op)
-            gc.set_debug(new_flags)
-
         self.old_reporting_flags = doctest.set_unittest_reportflags(0)
         reporting_flags = 0
         if self.options.ndiff:
@@ -246,7 +250,6 @@ class Runner(object):
             doctest.set_unittest_reportflags(reporting_flags)
         else:
             doctest.set_unittest_reportflags(self.old_reporting_flags)
-
 
         # Add directories to the path
         for path in self.options.path:
@@ -356,10 +359,10 @@ class Runner(object):
         doctest.set_unittest_reportflags(self.old_reporting_flags)
 
         if self.options.gc_option:
-            gc.set_debug(old_flags)
+            gc.set_debug(self.old_flags)
 
         if self.options.gc:
-            gc.set_threshold(*old_threshold)
+            gc.set_threshold(*self.old_threshold)
 
         self.failed = bool(import_errors or failures or errors)
 

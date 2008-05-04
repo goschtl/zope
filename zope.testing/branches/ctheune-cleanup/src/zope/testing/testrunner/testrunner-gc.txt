@@ -18,8 +18,8 @@ using the --gc option with a value of zero.
     
     >>> sys.argv = 'test --tests-pattern ^gc0$ --gc 0 -vv'.split()
     >>> _ = testrunner.run(defaults)
-    Running tests at level 1
     Cyclic garbage collection is disabled.
+    Running tests at level 1
     Running unit tests:
       Running:
         make_sure_gc_is_disabled (gc0)
@@ -31,8 +31,8 @@ by providing a low threshold:
     
     >>> sys.argv = 'test --tests-pattern ^gc1$ --gc 1 -vv'.split()
     >>> _ = testrunner.run(defaults)
-    Running tests at level 1
     Cyclic garbage collection threshold set to: (1,)
+    Running tests at level 1
     Running unit tests:
       Running:
         make_sure_gc_threshold_is_one (gc1)
@@ -45,8 +45,8 @@ values:
     >>> sys.argv = ('test --tests-pattern ^gcset$ --gc 701 --gc 11 --gc 9 -vv'
     ...             .split())
     >>> _ = testrunner.run(defaults)
-    Running tests at level 1
     Cyclic garbage collection threshold set to: (701, 11, 9)
+    Running tests at level 1
     Running unit tests:
       Running:
         make_sure_gc_threshold_is_701_11_9 (gcset)
