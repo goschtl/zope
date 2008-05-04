@@ -765,13 +765,13 @@ Then run the tests:
       Tear down samplelayers.Layer122 in 0.000 seconds.
       Tear down samplelayers.Layer12 in 0.000 seconds.
       Tear down samplelayers.Layer1 in 0.000 seconds.
-    Total: 213 tests, 0 failures, 0 errors in N.NNN seconds.
     <BLANKLINE>
     Test-modules with import problems:
       sample2.sampletests_i
       sample2.sample21.sampletests_i
       sample2.sample22.sampletests_i
       sample2.sample23.sampletests_i
+    Total: 213 tests, 0 failures, 0 errors in N.NNN seconds.
     True
 
 

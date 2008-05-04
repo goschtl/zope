@@ -150,8 +150,6 @@ class Runner(object):
                 feature.global_teardown()
 
         if self.show_report:
-            if self.do_run_tests:
-                self.report()
             for feature in self.features:
                 feature.report()
 
@@ -256,16 +254,6 @@ class Runner(object):
             tear_down_unneeded(self.options, (), setup_layers, True)
 
         self.failed = bool(self.import_errors or self.failures or self.errors)
-
-    def report(self):
-        if not self.options.resume_layer:
-            if self.options.verbose:
-                self.options.output.tests_with_errors(self.errors)
-                self.options.output.tests_with_failures(self.failures)
-
-            if self.nlayers != 1:
-                self.options.output.totals(self.ran, len(self.failures),
-                                           len(self.errors), self.total_time)
 
 
 def run_tests(options, tests, name, failures, errors):

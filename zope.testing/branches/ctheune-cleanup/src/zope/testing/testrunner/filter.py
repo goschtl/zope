@@ -54,3 +54,16 @@ class Filter(zope.testing.testrunner.feature.Feature):
             else:
                 msg = "Running tests at level %d" % self.runner.options.at_level
             self.runner.options.output.info(msg)
+
+    def report(self):
+        if not self.runner.do_run_tests:
+            return
+        if self.runner.options.resume_layer:
+            return
+        if self.runner.options.verbose:
+            self.runner.options.output.tests_with_errors(self.runner.errors)
+            self.runner.options.output.tests_with_failures(self.runner.failures)
+
+        if self.runner.nlayers != 1:
+            self.runner.options.output.totals(self.runner.ran, len(self.runner.failures),
+                                       len(self.runner.errors), self.runner.total_time)
