@@ -26,10 +26,10 @@ class Filter(zope.testing.testrunner.feature.Feature):
     active = True
 
     def global_setup(self):
-        tests = self.runner.tests_by_layer_name
+        layers = self.runner.tests_by_layer_name
         options = self.runner.options
 
-        if 'unit' in tests:
+        if 'unit' in layers:
             # We start out assuming unit tests should run and look for reasons
             # why they shouldn't be run.
             should_run = True
@@ -46,7 +46,21 @@ class Filter(zope.testing.testrunner.feature.Feature):
                 should_run = False
 
             if not should_run:
-                tests.pop('unit')
+                layers.pop('unit')
+
+        if self.runner.options.resume_layer is not None:
+            for name in list(layers):
+                if name != self.runner.options.resume_layer:
+                    layers.pop(name)
+        elif self.runner.options.layer:
+            for name in list(layers):
+                for pat in self.runner.options.layer:
+                    if pat(name):
+                        # This layer matches a pattern selecting this layer
+                        break
+                else:
+                    # No pattern matched this name so we remove it
+                    layers.pop(name)
 
         if self.runner.options.verbose:
             if self.runner.options.all:

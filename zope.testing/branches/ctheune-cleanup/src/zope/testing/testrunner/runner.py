@@ -220,19 +220,6 @@ class Runner(object):
 
         layers_to_run = list(self.ordered_layers())
 
-        if self.options.resume_layer is not None:
-            layers_to_run = [
-                (layer_name, layer, tests)
-                for (layer_name, layer, tests) in layers_to_run
-                if layer_name == self.options.resume_layer
-            ]
-        elif self.options.layer:
-            layers_to_run = [
-                (layer_name, layer, tests)
-                for (layer_name, layer, tests) in layers_to_run
-                if filter(None, [pat(layer_name) for pat in self.options.layer])
-            ]
-
         for layer_name, layer, tests in layers_to_run:
             self.nlayers += 1
             try:
@@ -413,9 +400,11 @@ def resume_tests(options, layer_name, layers, failures, errors):
                 ])
 
         subin, subout, suberr = os.popen3(args)
+        subout_total = ''
         while True:
             try:
                 for l in subout:
+                    subout_total += l
                     sys.stdout.write(l)
             except IOError, e:
                 if e.errno == errno.EINTR:
@@ -435,7 +424,8 @@ def resume_tests(options, layer_name, layers, failures, errors):
             raise
         except:
             raise SubprocessError(
-                'No subprocess summary found', line+suberr.read())
+                'No subprocess summary found', subout_total)
+                #'No subprocess summary found', line+suberr.read())
 
         while nfail > 0:
             nfail -= 1
