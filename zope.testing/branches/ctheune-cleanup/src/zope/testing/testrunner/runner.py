@@ -41,6 +41,7 @@ import zope.testing.testrunner.logsupport
 import zope.testing.testrunner.selftest
 import zope.testing.testrunner.profiling
 import zope.testing.testrunner.timing
+import zope.testing.testrunner.garbagecollection
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -102,11 +103,11 @@ class Runner(object):
             return True
 
         self.setup_features()
-        self.find_tests()
-
         # Global setup
         for feature in self.features:
             feature.global_setup()
+
+        self.find_tests()
 
         # Late setup
         #
@@ -168,27 +169,12 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.doctest.DocTest(self))
         self.features.append(zope.testing.testrunner.profiling.Profiling(self))
         self.features.append(zope.testing.testrunner.timing.Timing(self))
+        self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
 
     def setup_features(self):
-        # Setup garbage collection threshold
-        self.old_threshold = gc.get_threshold()
-        if self.options.gc:
-            if len(self.options.gc) > 3:
-                output.error("Too many --gc options")
-                sys.exit(1)
-            if self.options.gc[0]:
-                self.options.output.info(
-                    "Cyclic garbage collection threshold set to: %s" %
-                    repr(tuple(self.options.gc)))
-            else:
-                self.options.output.info(
-                    "Cyclic garbage collection is disabled.")
-
-            gc.set_threshold(*self.options.gc)
-
         # Set garbage collection debug flags
         self.old_flags = gc.get_debug()
         if self.options.gc_option:
@@ -306,9 +292,6 @@ class Runner(object):
     def shutdown_features(self):
         if self.options.gc_option:
             gc.set_debug(self.old_flags)
-
-        if self.options.gc:
-            gc.set_threshold(*self.old_threshold)
 
     def report(self):
         if self.options.resume_layer:
