@@ -21,7 +21,7 @@ import zope.testing.testrunner.feature
 
 
 class Filter(zope.testing.testrunner.feature.Feature):
-    """Filters all tests registered until now."""
+    """Filters and orders all tests registered until now."""
 
     active = True
 

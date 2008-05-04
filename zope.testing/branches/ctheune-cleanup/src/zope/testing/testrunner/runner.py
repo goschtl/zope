@@ -43,6 +43,7 @@ import zope.testing.testrunner.profiling
 import zope.testing.testrunner.timing
 import zope.testing.testrunner.filter
 import zope.testing.testrunner.garbagecollection
+import zope.testing.testrunner.listing
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -95,10 +96,19 @@ class Runner(object):
         self.nlayers = 0
 
         self.show_report = True
+        self.do_run_tests = True
 
         self.features = []
 
         self.tests_by_layer_name = {}
+
+    def ordered_layers(self):
+        layer_names = dict([(layer_from_name(layer_name), layer_name)
+                            for layer_name in self.tests_by_layer_name
+                            if layer_name != 'unit'])
+        for layer in order_by_bases(layer_names):
+            layer_name = layer_names[layer]
+            yield layer_name, layer, self.tests_by_layer_name[layer_name]
 
     def register_tests(self, tests):
         """Registers tests."""
@@ -139,7 +149,8 @@ class Runner(object):
             feature.late_setup()
 
         try:
-            self.run_tests()
+            if self.do_run_tests:
+                self.run_tests()
         finally:
             # Early teardown
             for feature in reversed(self.features):
@@ -149,7 +160,8 @@ class Runner(object):
                 feature.global_teardown()
 
         if self.show_report:
-            self.report()
+            if self.do_run_tests:
+                self.report()
             for feature in self.features:
                 feature.report()
 
@@ -193,6 +205,7 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
         self.features.append(zope.testing.testrunner.find.Find(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
+        self.features.append(zope.testing.testrunner.listing.Listing(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
@@ -205,21 +218,19 @@ class Runner(object):
         """
         if 'unit' in self.tests_by_layer_name:
             tests = self.tests_by_layer_name.pop('unit')
-            if self.options.list_tests:
-                self.options.output.list_of_tests(tests, 'unit')
-            else:
-                self.options.output.info("Running unit tests:")
-                self.nlayers += 1
-                try:
-                    self.ran += run_tests(self.options, tests, 'unit',
-                                          self.failures, self.errors)
-                except EndRun:
-                    self.failed = True
-                    return
+            self.options.output.info("Running unit tests:")
+            self.nlayers += 1
+            try:
+                self.ran += run_tests(self.options, tests, 'unit',
+                                      self.failures, self.errors)
+            except EndRun:
+                self.failed = True
+                return
 
         setup_layers = {}
 
-        layers_to_run = list(ordered_layers(self.tests_by_layer_name))
+        layers_to_run = list(self.ordered_layers())
+
         if self.options.resume_layer is not None:
             layers_to_run = [
                 (layer_name, layer, tests)
@@ -232,13 +243,6 @@ class Runner(object):
                 for (layer_name, layer, tests) in layers_to_run
                 if filter(None, [pat(layer_name) for pat in self.options.layer])
             ]
-
-        if self.options.list_tests:
-            for layer_name, layer, tests in layers_to_run:
-                self.options.output.list_of_tests(tests, layer_name)
-            self.failed = False
-            self.show_report = False
-            return
 
         for layer_name, layer, tests in layers_to_run:
             self.nlayers += 1
@@ -629,12 +633,6 @@ class TestResult(unittest.TestResult):
             self.options.output.test_threads(test, new_threads)
 
 
-def ordered_layers(tests_by_layer_name):
-    layer_names = dict([(layer_from_name(layer_name), layer_name)
-                        for layer_name in tests_by_layer_name])
-    for layer in order_by_bases(layer_names):
-        layer_name = layer_names[layer]
-        yield layer_name, layer, tests_by_layer_name[layer_name]
 
 
 def layer_from_name(layer_name):
