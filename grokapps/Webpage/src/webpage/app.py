@@ -1,5 +1,8 @@
 import grok
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.app.publication.interfaces import IBeforeTraverseEvent
+from zope.publisher.browser import applySkin
+
 
 ##
 ## The application
@@ -43,5 +46,14 @@ class MobileHeaderFooter(grok.View):
     grok.name('headerfooter') # important
     grok.layer(MobileLayer)
 
+class MobileIndex(grok.View):
+    grok.name('index')
+    grok.layer(MobileLayer)
 
 
+        
+
+@grok.subscribe(Webpage, IBeforeTraverseEvent)
+def handle(obj, event):
+    if event.request.get('HTTP_USER_AGENT').find('Nokia') > -1:
+        applySkin(event.request, MobileLayer)

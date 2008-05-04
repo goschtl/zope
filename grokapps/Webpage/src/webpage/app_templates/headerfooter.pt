@@ -9,7 +9,6 @@
         tal:attributes="href static/style.css" />
   <link rel="stylesheet" type="text/css" media="screen"
         tal:attributes="href static/screen.css" />
-  <style metal:define-slot="extracss" tal:omit-tag=""></style>
 </head>
 <body>
 <metal:block define-slot="body">
@@ -29,13 +28,11 @@
 <div id="footer">
   <metal:block define-slot="footer">
     <p>&copy; Grok.
-    <a href="#">Switch to normal web version</a>
     </p>
   </metal:block>
 </div>
 
 </metal:block>
-<script metal:define-slot="extrajs" tal:omit-tag=""></script>
 </body>
 </html>
 </metal:block>
