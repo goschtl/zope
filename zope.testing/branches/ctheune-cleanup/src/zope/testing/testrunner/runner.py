@@ -41,6 +41,7 @@ import zope.testing.testrunner.logsupport
 import zope.testing.testrunner.selftest
 import zope.testing.testrunner.profiling
 import zope.testing.testrunner.timing
+import zope.testing.testrunner.filter
 import zope.testing.testrunner.garbagecollection
 
 
@@ -191,44 +192,30 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
         self.features.append(zope.testing.testrunner.find.Find(self))
+        self.features.append(zope.testing.testrunner.filter.Filter(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
 
     def run_tests(self):
-        """Find and run tests
-
-        Passing a list of suites using the found_suites parameter will cause
-        that list of suites to be used instead of attempting to load them from
-        the filesystem. This is useful for unit testing the test runner.
+        """Run all tests that were registered.
 
         Returns True if there where failures or False if all tests passed.
 
         """
         if 'unit' in self.tests_by_layer_name:
             tests = self.tests_by_layer_name.pop('unit')
-            if (not self.options.non_unit) and not self.options.resume_layer:
-                if self.options.layer:
-                    should_run = False
-                    for pat in self.options.layer:
-                        if pat('unit'):
-                            should_run = True
-                            break
-                else:
-                    should_run = True
-
-                if should_run:
-                    if self.options.list_tests:
-                        self.options.output.list_of_tests(tests, 'unit')
-                    else:
-                        self.options.output.info("Running unit tests:")
-                        self.nlayers += 1
-                        try:
-                            self.ran += run_tests(self.options, tests, 'unit',
-                                                  self.failures, self.errors)
-                        except EndRun:
-                            self.failed = True
-                            return
+            if self.options.list_tests:
+                self.options.output.list_of_tests(tests, 'unit')
+            else:
+                self.options.output.info("Running unit tests:")
+                self.nlayers += 1
+                try:
+                    self.ran += run_tests(self.options, tests, 'unit',
+                                          self.failures, self.errors)
+                except EndRun:
+                    self.failed = True
+                    return
 
         setup_layers = {}
 
