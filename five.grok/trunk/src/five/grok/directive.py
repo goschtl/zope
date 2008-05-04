@@ -1,22 +1,40 @@
-from martian.directive import MultipleTimesDirective
-from martian.directive import BaseTextDirective
-from martian.directive import SingleValue
-from martian.directive import ClassDirectiveContext
+import martian
+import martian.directive
 
-class RequireDirective(BaseTextDirective, SingleValue, MultipleTimesDirective):
+class RequireDirectiveStore(martian.directive.StoreMultipleTimes):
 
-    def store(self, frame, value):
-        super(RequireDirective, self).store(frame, value)
-        values = frame.f_locals.get(self.local_name, [])
+    def get(self, directive, component, default):
+        permissions = getattr(component, directive.dotted_name(), default)
+        if (permissions is default) or not permissions:
+            return default
+        if len(permissions) > 1:
+            raise GrokError('grok.require was called multiple times in '
+                            '%r. It may only be set once for a class.'
+                            % component, component)
+        return permissions[0]
 
+    def pop(self, locals_, directive):
+        return locals_[directive.dotted_name()].pop()
+
+
+class require(martian.Directive):
+    scope = martian.CLASS
+    store = RequireDirectiveStore()
+    validate = martian.validateText
+
+    def __call__(self, func):
         # grok.require can be used both as a class-level directive and
         # as a decorator for methods.  Therefore we return a decorator
         # here, which may be used for methods, or simply ignored when
         # used as a directive.
-        def decorator(func):
-            permission = values.pop()
-            func.__grok_require__ = permission
-            return func
-        return decorator
-    
-require = RequireDirective('grok.require', ClassDirectiveContext()) 
+        frame = sys._getframe(1)
+        permission = self.store.pop(frame.f_locals, self)
+        self.set(func, [permission])
+        return func
+
+
+class layer(martian.Directive):
+    scope = martian.CLASS_OR_MODULE
+    store = martian.ONCE
+    validate = martian.validateInterfaceOrClass
+

@@ -21,7 +21,7 @@ The decorated event handling function can also be called directly:
 
 """
 import zope.event
-import grokcore.component as grok
+from five import grok
 from zope.component.interfaces import IObjectEvent, ObjectEvent
 
 from OFS.interfaces import ISimpleItem

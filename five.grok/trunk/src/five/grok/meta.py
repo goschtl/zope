@@ -1,13 +1,12 @@
 import martian
-from martian import util
+from martian.util import methods_from_class
 from martian.error import GrokError
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from five import grok
-from five.grok.util import get_default_permission
-from grokcore.component.meta import get_context, get_name_classname
-from grokcore.component.util import determine_class_directive
+from five.grok import util
+
 from Products.Five.security import protectClass
 from Globals import InitializeClass as initializeClass
 
@@ -16,21 +15,9 @@ class ViewGrokker(martian.ClassGrokker):
     component_class = grok.View
 
     def grok(self, name, factory, module_info, config, **kw):
-        view_context = get_context(module_info, factory)
+        view_context = grok.context.get(factory, module_info.getModule())
 
         factory.module_info = module_info
-
-        #if util.check_subclass(factory, components.GrokForm):
-            ## setup form_fields from context class if we've encountered a form
-            #if getattr(factory, 'form_fields', None) is None:
-                #factory.form_fields = formlib.get_auto_fields(view_context)
-
-            #if not getattr(factory.render, 'base_method', False):
-                #raise GrokError(
-                    #"It is not allowed to specify a custom 'render' "
-                    #"method for form %r. Forms either use the default "
-                    #"template or a custom-supplied one." % factory,
-                    #factory)
 
         # find templates
         templates = module_info.getAnnotation('grok.templates', None)
@@ -43,20 +30,18 @@ class ViewGrokker(martian.ClassGrokker):
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
-        methods = util.methods_from_class(factory)
+        methods = methods_from_class(factory)
         for method in methods:
-            if getattr(method, '__grok_require__', None) is not None:
+            if grok.require.get(method) is not None:
                 raise GrokError('The @grok.require decorator is used for '
                                 'method %r in view %r. It may only be used '
                                 'for XML-RPC methods.'
                                 % (method.__name__, factory), factory)
 
         # grab layer from class or module
-        view_layer = determine_class_directive('grok.layer',
-                                               factory, module_info,
-                                               default=IDefaultBrowserLayer)
+        view_layer = grok.directive.layer.get(factory, module_info.getModule())
 
-        view_name = get_name_classname(factory)
+        view_name = util.get_name_classname(factory)
         # __view_name__ is needed to support IAbsoluteURL on views
         factory.__view_name__ = view_name
         adapts = (view_context, view_layer)
@@ -67,7 +52,7 @@ class ViewGrokker(martian.ClassGrokker):
             args=(factory, adapts, interface.Interface, view_name),
             )
 
-        permission = get_default_permission(factory)
+        permission = grok.require.get(factory)
         config.action(
             discriminator = ('five:protectClass', factory),
             callable = protectClass,
