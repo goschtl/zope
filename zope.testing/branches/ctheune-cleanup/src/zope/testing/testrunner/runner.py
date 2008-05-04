@@ -35,11 +35,14 @@ from zope.testing.testrunner.profiling import available_profilers
 from zope.testing.testrunner.find import find_tests, test_dirs
 from zope.testing.testrunner.find import StartUpFailure, import_name
 from zope.testing.testrunner.find import name_from_layer, _layer_name_cache
-from zope.testing.testrunner import coverage
 from zope.testing.testrunner.refcount import TrackRefs
 from zope.testing.testrunner.options import get_options
+import zope.testing.testrunner.coverage
+import zope.testing.testrunner.doctest
+
 
 real_pdb_set_trace = pdb.set_trace
+
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
 
@@ -167,7 +170,8 @@ class Runner(object):
         # XXX I moved this here mechanically.
         self.test_directories = test_dirs(self.options, {})
 
-        self.features.append(coverage.Coverage(self))
+        self.features.append(zope.testing.testrunner.coverage.Coverage(self))
+        self.features.append(zope.testing.testrunner.doctest.DocTest(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
@@ -181,9 +185,6 @@ class Runner(object):
         # XXX There are no tests for this logging behavior.
         # It's not at all clear that the test runner should be doing this.
         configure_logging()
-
-        # Control reporting flags during run
-        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
 
         # Setup profiling
         if (self.options.profile
@@ -235,28 +236,6 @@ class Runner(object):
                 new_flags |= getattr(gc, op)
             gc.set_debug(new_flags)
 
-        # Set up doctest support
-        self.old_reporting_flags = doctest.set_unittest_reportflags(0)
-        reporting_flags = 0
-        if self.options.ndiff:
-            reporting_flags = doctest.REPORT_NDIFF
-        if self.options.udiff:
-            if reporting_flags:
-                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
-                sys.exit(1)
-            reporting_flags = doctest.REPORT_UDIFF
-        if self.options.cdiff:
-            if reporting_flags:
-                output.error("Can only give one of --ndiff, --udiff, or --cdiff")
-                sys.exit(1)
-            reporting_flags = doctest.REPORT_CDIFF
-        if self.options.report_only_first_failure:
-            reporting_flags |= doctest.REPORT_ONLY_FIRST_FAILURE
-
-        if reporting_flags:
-            doctest.set_unittest_reportflags(reporting_flags)
-        else:
-            doctest.set_unittest_reportflags(self.old_reporting_flags)
 
         # Set up time measurement
         def start_time_recording():
@@ -373,8 +352,6 @@ class Runner(object):
         self.failed = bool(self.import_errors or self.failures or self.errors)
 
     def shutdown_features(self):
-        doctest.set_unittest_reportflags(self.old_reporting_flags)
-
         if self.options.gc_option:
             gc.set_debug(self.old_flags)
 
@@ -390,8 +367,6 @@ class Runner(object):
             if not self.options.resume_layer:
                 self.profiler_stats = self.profiler.loadStats(self.prof_glob)
                 self.profiler_stats.sort_stats('cumulative', 'calls')
-
-        doctest.set_unittest_reportflags(self.old_reporting_flags)
 
     def report(self):
         if self.options.resume_layer:
