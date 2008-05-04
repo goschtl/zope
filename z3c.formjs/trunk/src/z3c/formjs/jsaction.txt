@@ -15,7 +15,7 @@ Javascript Buttons
 ------------------
 
 Before we can write a form that uses Javascript buttons, we have to define
-them first. One common way to define buttons in ``z3c.form`` is to write an
+them first. One common way to define buttons in ``z3c.form`` is to write a
 schema describing them; so let's do that now:
 
   >>> import zope.interface
@@ -111,10 +111,12 @@ output:
 Forms with Javascript Buttons
 -----------------------------
 
-The next step is create the form. Luckily we do not need any fields to render
-a form. Also, instead of using usual ``z3c.form.button.handler()`` function,
-we now have a special handler decorator that connects a button to a Javascript
-event. The output of the handler itself is a string that is used as the
+The next step is create the form. Luckily we do not need any fields to
+render a form. Also, instead of using usual
+``z3c.form.button.handler()`` function, we now have a special handler
+decorator that connects a button to a Javascript event, along with an
+additional decorator that creates the button at the same time. The
+output of the handler itself is a string that is used as the
 Javascript script that is executed.
 
   >>> from z3c.form import button, form
@@ -129,6 +131,12 @@ Javascript script that is executed.
   ...     @jsaction.handler(buttons['dblhello'], event=jsevent.DBLCLICK)
   ...     def showDoubleHelloWorldMessage(self, event, selector):
   ...         return 'alert("%s");' % selector.widget.title
+  ...
+  ...     @jsaction.buttonAndHandler(u"Click Me")
+  ...     def handleClickMe(self, event, selector):
+  ...         return 'alert("You clicked the Click Me button.");'
+
+
 
 The ``handler()`` decorator takes two arguments, the button (acting as the DOM
 element selector) and the event to which to bind the action. By default the
@@ -165,7 +173,7 @@ Once the action manager is updated, the buttons should be available as
 actions:
 
   >>> actions.keys()
-  ['hello', 'dblhello']
+  ['hello', 'dblhello', '436c69636b204d65']
   >>> actions['hello']
   <JSButtonAction 'form.buttons.hello' u'Hello World!'>
 
@@ -287,6 +295,11 @@ We can now render the form:
         <input type="button" id="form-buttons-dblhello"
                name="form.buttons.dblhello" class="button-widget jsbutton-field"
                value="Double Hello World!" />
+      </div>
+      <div class="action">
+        <input type="button" id="form-buttons-436c69636b204d65"
+         name="form.buttons.436c69636b204d65"
+         class="button-widget jsbutton-field" value="Click Me" />
       </div>
     </body>
   </html>
