@@ -105,8 +105,8 @@ mode, for dotted names of objects that define a layer.  In an
 extension of Python regexp notation, a leading "!" is stripped and
 causes the sense of the remaining regexp to be negated (so "!bc"
 matches any string that does not match "bc", and vice versa).  The
-layer named 'unit' is reserved for unit tests, however, take note of
-the --unit and non-unit options.
+layer named 'zope.testing.testrunner.layer.UnitTests' is reserved for
+unit tests, however, take note of the --unit and non-unit options.
 """)
 
 searching.add_option(
@@ -578,7 +578,8 @@ def get_options(args=None, defaults=None):
         options.unit = options.non_unit = False
 
     if options.unit:
-        options.layer = ['unit']
+        # XXX Argh.
+        options.layer = ['zope.testing.testrunner.layer.UnitTests']
     if options.layer:
         options.layer = map(compile_filter, options.layer)
 

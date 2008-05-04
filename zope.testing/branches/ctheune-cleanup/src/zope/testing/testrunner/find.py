@@ -20,7 +20,9 @@ import re
 import os
 import unittest
 import sys
+
 import zope.testing.testrunner.feature
+import zope.testing.testrunner.layer
 
 identifier = re.compile(r'[_a-zA-Z]\w*$').match
 
@@ -258,7 +260,8 @@ def import_name(name):
     return sys.modules[name]
 
 
-def tests_from_suite(suite, options, dlevel=1, dlayer='unit'):
+def tests_from_suite(suite, options, dlevel=1,
+                     dlayer=zope.testing.testrunner.layer.UnitTests):
     """Returns a sequence of (test, layer_name)
 
     The tree of suites is recursively visited, with the most specific

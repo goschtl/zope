@@ -114,14 +114,17 @@ TestSpecifyingBaseLayer tests.
 >>> from zope.testing.testrunner.runner import Runner
 >>> runner = Runner(options=fresh_options(), args=[], found_suites=[umbrella_suite])
 >>> succeeded = runner.run()
-Running unit tests:
-  Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
 Running BaseLayer tests:
   Set up BaseLayer in N.NNN seconds.
   Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
-Tearing down left over layers:
+Running zope.testing.testrunner.layer.UnitTests tests:
   Tear down BaseLayer in N.NNN seconds.
+  Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+  Ran 2 tests with 0 failures and 0 errors in N.NNN seconds.
+Tearing down left over layers:
+  Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
 Total: 4 tests, 0 failures, 0 errors in N.NNN seconds.
+
 
 Now lets specify a layer in the suite containing TestSpecifyingNoLayer
 and run the tests again. This demonstrates the other method of specifying

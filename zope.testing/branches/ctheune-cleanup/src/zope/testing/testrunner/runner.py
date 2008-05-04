@@ -104,8 +104,7 @@ class Runner(object):
 
     def ordered_layers(self):
         layer_names = dict([(layer_from_name(layer_name), layer_name)
-                            for layer_name in self.tests_by_layer_name
-                            if layer_name != 'unit'])
+                            for layer_name in self.tests_by_layer_name])
         for layer in order_by_bases(layer_names):
             layer_name = layer_names[layer]
             yield layer_name, layer, self.tests_by_layer_name[layer_name]
@@ -204,20 +203,7 @@ class Runner(object):
         Returns True if there where failures or False if all tests passed.
 
         """
-        if 'unit' in self.tests_by_layer_name:
-            tests = self.tests_by_layer_name.pop('unit')
-            self.options.output.info("Running unit tests:")
-            for feature in self.features:
-                feature.layer_setup('unit')
-            try:
-                self.ran += run_tests(self.options, tests, 'unit',
-                                      self.failures, self.errors)
-            except EndRun:
-                self.failed = True
-                return
-
         setup_layers = {}
-
         layers_to_run = list(self.ordered_layers())
 
         for layer_name, layer, tests in layers_to_run:
@@ -499,12 +485,9 @@ class TestResult(unittest.TestResult):
         self.options = options
         # Calculate our list of relevant layers we need to call testSetUp
         # and testTearDown on.
-        if layer_name != 'unit':
-            layers = []
-            gather_layers(layer_from_name(layer_name), layers)
-            self.layers = order_by_bases(layers)
-        else:
-            self.layers = []
+        layers = []
+        gather_layers(layer_from_name(layer_name), layers)
+        self.layers = order_by_bases(layers)
         count = 0
         for test in tests:
             count += test.countTestCases()
@@ -587,8 +570,6 @@ class TestResult(unittest.TestResult):
                              t not in self._threads)]
         if new_threads:
             self.options.output.test_threads(test, new_threads)
-
-
 
 
 def layer_from_name(layer_name):

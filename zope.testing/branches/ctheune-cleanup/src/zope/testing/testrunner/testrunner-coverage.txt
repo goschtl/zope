@@ -16,8 +16,6 @@ directory name given as the parameter will be used to hold the reports.
 
     >>> from zope.testing import testrunner
     >>> testrunner.run(defaults)
-    Running unit tests:
-      Ran 192 tests with 0 failures and 0 errors in 0.125 seconds.
     Running samplelayers.Layer1 tests:
       Set up samplelayers.Layer1 in 0.000 seconds.
       Ran 9 tests with 0 failures and 0 errors in 0.003 seconds.
@@ -45,10 +43,14 @@ directory name given as the parameter will be used to hold the reports.
       Tear down samplelayers.Layer121 in 0.000 seconds.
       Set up samplelayers.Layer122 in 0.000 seconds.
       Ran 34 tests with 0 failures and 0 errors in 0.025 seconds.
+    Running zope.testing.testrunner.layer.UnitTests tests:
+      Tear down samplelayers.Layer122 in N.NNN seconds.
+      Tear down samplelayers.Layer12 in N.NNN seconds.
+      Tear down samplelayers.Layer1 in N.NNN seconds.
+      Set up zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
+      Ran 192 tests with 0 failures and 0 errors in N.NNN seconds.
     Tearing down left over layers:
-      Tear down samplelayers.Layer122 in 0.000 seconds.
-      Tear down samplelayers.Layer12 in 0.000 seconds.
-      Tear down samplelayers.Layer1 in 0.000 seconds.
+      Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.
     lines   cov%   module   (path)
     ...
        52    92%   sample1.sampletests.test1   (testrunner-ex/sample1/sampletests/test1.py)

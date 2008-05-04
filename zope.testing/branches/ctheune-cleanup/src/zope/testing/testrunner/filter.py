@@ -20,6 +20,9 @@ import time
 import zope.testing.testrunner.feature
 
 
+UNITTEST_LAYER = 'zope.testing.testrunner.layer.UnitTests'
+
+
 class Filter(zope.testing.testrunner.feature.Feature):
     """Filters and orders all tests registered until now."""
 
@@ -29,7 +32,7 @@ class Filter(zope.testing.testrunner.feature.Feature):
         layers = self.runner.tests_by_layer_name
         options = self.runner.options
 
-        if 'unit' in layers:
+        if UNITTEST_LAYER in layers:
             # We start out assuming unit tests should run and look for reasons
             # why they shouldn't be run.
             should_run = True
@@ -37,7 +40,7 @@ class Filter(zope.testing.testrunner.feature.Feature):
                 if options.layer:
                     should_run = False
                     for pat in options.layer:
-                        if pat('unit'):
+                        if pat(UNITTEST_LAYER):
                             should_run = True
                             break
                 else:
@@ -46,7 +49,7 @@ class Filter(zope.testing.testrunner.feature.Feature):
                 should_run = False
 
             if not should_run:
-                layers.pop('unit')
+                layers.pop(UNITTEST_LAYER)
 
         if self.runner.options.resume_layer is not None:
             for name in list(layers):
