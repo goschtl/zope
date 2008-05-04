@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Timing support.
+"""Test runner statistics
 
 $Id: __init__.py 86218 2008-05-03 14:17:26Z ctheune $
 """
@@ -20,9 +20,11 @@ import time
 import zope.testing.testrunner.feature
 
 
-class Timing(zope.testing.testrunner.feature.Feature):
+class Statistics(zope.testing.testrunner.feature.Feature):
 
     active = True
+    layers_run = 0
+    tests_run = 0
 
     def late_setup(self):
         self.start_time = time.time()
@@ -31,4 +33,16 @@ class Timing(zope.testing.testrunner.feature.Feature):
         self.end_time = time.time()
 
     def global_teardown(self):
-        self.runner.total_time = self.end_time - self.start_time
+        self.total_time = self.end_time - self.start_time
+
+    def layer_setup(self, layer):
+        self.layers_run += 1
+
+    def report(self):
+        if not self.runner.do_run_tests:
+            return
+        if self.layers_run == 1:
+            return
+        self.runner.options.output.totals(
+            self.runner.ran, len(self.runner.failures), len(self.runner.errors),
+            self.total_time)

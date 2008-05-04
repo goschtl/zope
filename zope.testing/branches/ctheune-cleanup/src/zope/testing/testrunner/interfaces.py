@@ -47,10 +47,16 @@ class IFeature(zope.interface.Interface):
 
         """
 
-    def test_setup():
+    def layer_setup(layer):
+        """Executed once after a layer was set up."""
+
+    def layer_teardown(layer):
+        """Executed once after a layer was run."""
+
+    def test_setup(test):
         """Executed once before each test."""
 
-    def test_teardown():
+    def test_teardown(test):
         """Executed once after each test."""
 
     def early_teardown():

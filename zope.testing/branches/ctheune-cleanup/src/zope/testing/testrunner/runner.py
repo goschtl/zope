@@ -40,10 +40,10 @@ import zope.testing.testrunner.doctest
 import zope.testing.testrunner.logsupport
 import zope.testing.testrunner.selftest
 import zope.testing.testrunner.profiling
-import zope.testing.testrunner.timing
 import zope.testing.testrunner.filter
 import zope.testing.testrunner.garbagecollection
 import zope.testing.testrunner.listing
+import zope.testing.testrunner.statistics
 import zope.testing.testrunner.subprocess
 
 
@@ -94,7 +94,6 @@ class Runner(object):
         self.ran = 0
         self.failures = []
         self.errors = []
-        self.nlayers = 0
 
         self.show_report = True
         self.do_run_tests = True
@@ -188,13 +187,13 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
         self.features.append(zope.testing.testrunner.doctest.DocTest(self))
         self.features.append(zope.testing.testrunner.profiling.Profiling(self))
-        self.features.append(zope.testing.testrunner.timing.Timing(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
         self.features.append(zope.testing.testrunner.find.Find(self))
         self.features.append(zope.testing.testrunner.subprocess.SubProcess(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
         self.features.append(zope.testing.testrunner.listing.Listing(self))
+        self.features.append(zope.testing.testrunner.statistics.Statistics(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
@@ -208,7 +207,8 @@ class Runner(object):
         if 'unit' in self.tests_by_layer_name:
             tests = self.tests_by_layer_name.pop('unit')
             self.options.output.info("Running unit tests:")
-            self.nlayers += 1
+            for feature in self.features:
+                feature.layer_setup('unit')
             try:
                 self.ran += run_tests(self.options, tests, 'unit',
                                       self.failures, self.errors)
@@ -221,7 +221,8 @@ class Runner(object):
         layers_to_run = list(self.ordered_layers())
 
         for layer_name, layer, tests in layers_to_run:
-            self.nlayers += 1
+            for feature in self.features:
+                feature.layer_setup(layer)
             try:
                 self.ran += run_layer(self.options, layer_name, layer, tests,
                                       setup_layers, self.failures, self.errors)
@@ -434,7 +435,6 @@ def resume_tests(options, layer_name, layers, failures, errors):
         rantotal += ran
 
     return rantotal
-
 
 
 def tear_down_unneeded(options, needed, setup_layers, optional=False):

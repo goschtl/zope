@@ -40,6 +40,14 @@ class Feature(object):
         """
         pass
 
+    def layer_setup(self, layer):
+        """Executed once after a layer was set up."""
+        pass
+
+    def layer_teardown(self, layer):
+        """Executed once after a layer was run."""
+        pass
+
     def test_setup(self):
         """Executed once before each test."""
         pass

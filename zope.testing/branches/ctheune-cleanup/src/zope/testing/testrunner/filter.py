@@ -77,7 +77,3 @@ class Filter(zope.testing.testrunner.feature.Feature):
         if self.runner.options.verbose:
             self.runner.options.output.tests_with_errors(self.runner.errors)
             self.runner.options.output.tests_with_failures(self.runner.failures)
-
-        if self.runner.nlayers != 1:
-            self.runner.options.output.totals(self.runner.ran, len(self.runner.failures),
-                                       len(self.runner.errors), self.runner.total_time)
