@@ -47,3 +47,10 @@ class Filter(zope.testing.testrunner.feature.Feature):
 
             if not should_run:
                 tests.pop('unit')
+
+        if self.runner.options.verbose:
+            if self.runner.options.all:
+                msg = "Running tests at all levels"
+            else:
+                msg = "Running tests at level %d" % self.runner.options.at_level
+            self.runner.options.output.info(msg)

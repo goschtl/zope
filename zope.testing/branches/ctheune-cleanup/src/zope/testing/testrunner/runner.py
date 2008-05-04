@@ -44,6 +44,7 @@ import zope.testing.testrunner.timing
 import zope.testing.testrunner.filter
 import zope.testing.testrunner.garbagecollection
 import zope.testing.testrunner.listing
+import zope.testing.testrunner.subprocess
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -129,17 +130,6 @@ class Runner(object):
         for feature in self.features:
             feature.global_setup()
 
-        # XXX Where should this go?
-        if self.options.resume_layer:
-            self.original_stderr = sys.stderr
-            sys.stderr = sys.stdout
-        elif self.options.verbose:
-            if self.options.all:
-                msg = "Running tests at all levels"
-            else:
-                msg = "Running tests at level %d" % self.options.at_level
-            self.options.output.info(msg)
-
         # Late setup
         #
         # Some system tools like profilers are really bad with stack frames.
@@ -204,6 +194,7 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
         self.features.append(zope.testing.testrunner.find.Find(self))
+        self.features.append(zope.testing.testrunner.subprocess.SubProcess(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
         self.features.append(zope.testing.testrunner.listing.Listing(self))
 
@@ -267,16 +258,7 @@ class Runner(object):
         self.failed = bool(self.import_errors or self.failures or self.errors)
 
     def report(self):
-        if self.options.resume_layer:
-            sys.stdout.close()
-            # Communicate with the parent.  The protocol is obvious:
-            print >> self.original_stderr, self.ran, len(self.failures), len(self.errors)
-            for test, exc_info in self.failures:
-                print >> self.original_stderr, ' '.join(str(test).strip().split('\n'))
-            for test, exc_info in self.errors:
-                print >> self.original_stderr, ' '.join(str(test).strip().split('\n'))
-
-        else:
+        if not self.options.resume_layer:
             if self.options.verbose:
                 self.options.output.tests_with_errors(self.errors)
                 self.options.output.tests_with_failures(self.failures)
@@ -284,7 +266,6 @@ class Runner(object):
             if self.nlayers != 1:
                 self.options.output.totals(self.ran, len(self.failures),
                                            len(self.errors), self.total_time)
-
 
 
 def run_tests(options, tests, name, failures, errors):
