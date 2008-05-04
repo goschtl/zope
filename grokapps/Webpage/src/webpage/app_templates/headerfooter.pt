@@ -13,10 +13,8 @@
 <body>
 <metal:block define-slot="body">
 <div id="header">
-  <metal:block define-slot="header">
     <h1><span>Web page</span></h1>
     <hr />
-  </metal:block>
 </div>
 
 <div id="content">
@@ -26,10 +24,8 @@
 </div>
 
 <div id="footer">
-  <metal:block define-slot="footer">
     <p>&copy; Grok.
     </p>
-  </metal:block>
 </div>
 
 </metal:block>

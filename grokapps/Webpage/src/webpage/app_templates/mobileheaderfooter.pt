@@ -14,10 +14,8 @@
 <body>
 <metal:block define-slot="body">
 <div id="header">
-  <metal:block define-slot="header">
     <h2>Web page</h2>
     <hr />
-  </metal:block>
 </div>
 
 <div id="content">
@@ -27,13 +25,11 @@
 </div>
 
 <div id="footer">
-  <metal:block define-slot="footer">
     <p>&copy; Grok.<br />
     You are currently using the mobile version of this page.
     <a tal:attributes="href python:view.url().replace('++skin++mobile/','')"
       >Switch to normal web version</a>
     </p>
-  </metal:block>
 </div>
 
 </metal:block>
