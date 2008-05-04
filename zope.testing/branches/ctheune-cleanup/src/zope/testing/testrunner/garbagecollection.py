@@ -50,3 +50,26 @@ class Threshold(zope.testing.testrunner.feature.Feature):
 
     def global_teardown(self):
         gc.set_threshold(*self.old_threshold)
+
+
+class Debug(zope.testing.testrunner.feature.Feature):
+    """Manages garbage collection debug flags."""
+
+    def __init__(self, runner):
+        super(Debug, self).__init__(runner)
+        self.flags = self.runner.options.gc_option
+        self.active = bool(self.flags)
+
+        if not self.active:
+            return
+
+    def global_setup(self):
+        # Set garbage collection debug flags
+        self.old_flags = gc.get_debug()
+        new_flags = 0
+        for op in self.flags:
+            new_flags |= getattr(gc, op)
+        gc.set_debug(new_flags)
+
+    def global_teardown(self):
+        gc.set_debug(self.old_flags)

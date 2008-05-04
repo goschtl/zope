@@ -170,18 +170,13 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.profiling.Profiling(self))
         self.features.append(zope.testing.testrunner.timing.Timing(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
+        self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
 
     def setup_features(self):
-        # Set garbage collection debug flags
-        self.old_flags = gc.get_debug()
-        if self.options.gc_option:
-            new_flags = 0
-            for op in self.options.gc_option:
-                new_flags |= getattr(gc, op)
-            gc.set_debug(new_flags)
+        pass
 
     def find_tests(self):
         global _layer_name_cache
@@ -290,8 +285,7 @@ class Runner(object):
         self.failed = bool(self.import_errors or self.failures or self.errors)
 
     def shutdown_features(self):
-        if self.options.gc_option:
-            gc.set_debug(self.old_flags)
+        pass
 
     def report(self):
         if self.options.resume_layer:
