@@ -20,7 +20,7 @@ import re
 import os
 import unittest
 import sys
-
+import zope.testing.testrunner.feature
 
 identifier = re.compile(r'[_a-zA-Z]\w*$').match
 
@@ -323,3 +323,27 @@ def name_from_layer(layer):
         name = layer.__module__ + '.' + layer.__name__
     _layer_name_cache[name] = layer
     return name
+
+
+class Find(zope.testing.testrunner.feature.Feature):
+    """Finds tests and registers them with the test runner."""
+
+    active = True
+
+    def global_setup(self):
+        # Add directories to the path
+        for path in self.runner.options.path:
+            if path not in sys.path:
+                sys.path.append(path)
+
+        tests = find_tests(self.runner.options, self.runner.found_suites)
+        self.import_errors = tests.pop(None, None)
+        self.runner.register_tests(tests)
+
+        # XXX move to reporting ???
+        self.runner.options.output.import_errors(self.import_errors)
+        self.runner.import_errors = bool(self.import_errors)
+
+    def report(self):
+        self.runner.options.output.modules_with_import_problems(
+            self.import_errors)

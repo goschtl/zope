@@ -97,16 +97,37 @@ class Runner(object):
 
         self.features = []
 
+        self.tests_by_layer_name = {}
+
+    def register_tests(self, tests):
+        """Registers tests."""
+        # XXX To support multiple features that find tests this shouldn't be
+        # an update but merge the various layers individually.
+        self.tests_by_layer_name.update(tests)
+
     def run(self):
         self.configure()
         if self.options.fail:
             return True
 
+        # XXX Hacky to support existing code.
+        self.layer_name_cache = _layer_name_cache
+        self.layer_name_cache.clear()
+
         # Global setup
         for feature in self.features:
             feature.global_setup()
 
-        self.find_tests()
+        # XXX Where should this go?
+        if self.options.resume_layer:
+            self.original_stderr = sys.stderr
+            sys.stderr = sys.stdout
+        elif self.options.verbose:
+            if self.options.all:
+                msg = "Running tests at all levels"
+            else:
+                msg = "Running tests at level %d" % self.options.at_level
+            self.options.output.info(msg)
 
         # Late setup
         #
@@ -158,7 +179,7 @@ class Runner(object):
 
         self.options = options
 
-        # XXX I moved this here mechanically.
+        # XXX I moved this here mechanically. Move to find feature?
         self.test_directories = test_dirs(self.options, {})
 
         self.features.append(zope.testing.testrunner.selftest.SelfTest(self))
@@ -169,35 +190,10 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.timing.Timing(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
         self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
+        self.features.append(zope.testing.testrunner.find.Find(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
-
-    def find_tests(self):
-        global _layer_name_cache
-        _layer_name_cache.clear() # Reset to enforce test isolation
-
-        output = self.options.output
-
-        if self.options.resume_layer:
-            self.original_stderr = sys.stderr
-            sys.stderr = sys.stdout
-        elif self.options.verbose:
-            if self.options.all:
-                msg = "Running tests at all levels"
-            else:
-                msg = "Running tests at level %d" % self.options.at_level
-            output.info(msg)
-
-        # Add directories to the path
-        for path in self.options.path:
-            if path not in sys.path:
-                sys.path.append(path)
-
-        self.tests_by_layer_name = find_tests(self.options, self.found_suites)
-        self.import_errors = self.tests_by_layer_name.pop(None, None)
-        # XXX move to reporting
-        output.import_errors(self.import_errors)
 
     def run_tests(self):
         """Find and run tests
@@ -298,8 +294,6 @@ class Runner(object):
                 self.options.output.totals(self.ran, len(self.failures),
                                            len(self.errors), self.total_time)
 
-            self.options.output.modules_with_import_problems(
-                self.import_errors)
 
 
 def run_tests(options, tests, name, failures, errors):
