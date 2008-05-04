@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import sys
 import os
 import os.path
 from os.path import join, dirname
@@ -38,12 +39,6 @@ html_static_path = ['%(staticDir)s']
 html_last_updated_fmt = '%%b %%d, %%Y'
 """
 
-arg_template = """[
-  '-c', '%(CONFPATH)s',
-  '%(SRCPATH)s',
-  '%(BUILDPATH)s',
-  ]"""
-
 class ZopeOrgSetup(object):
 
     def __init__(self, buildout, name, options):
@@ -65,6 +60,7 @@ class ZopeOrgSetup(object):
         if not os.path.isdir(installDir):
             os.mkdir(installDir)
 
+        projectsData = {}
         #for each egg listed as a buildout option, create a configuration space.
         for doc in docs:
             partDir = join(installDir, doc.project_name)
@@ -112,25 +108,30 @@ class ZopeOrgSetup(object):
             if not os.path.isdir(buildDir):
                 os.mkdir(buildDir)
 
-            defaults = self.options.get('defaults', '').strip()
-            if defaults:
-                defaults = '(%s) + ' % defaults
+            projectsData[doc.project_name] = ['-q','-c',partDir,
+                                              doc.location, buildDir]
 
-            args = arg_template % dict(CONFPATH=partDir,
-                                       SRCPATH=".",
-                                       BUILDPATH=buildDir)
-            installed.extend(zc.buildout.easy_install.scripts(
-                [(self.options['script'],
-                  'sphinx',
-                  'main')],
-                workingSet,
-                self.options['executable'],
-                self.buildout['buildout']['bin-directory'],
-                extra_paths=self.egg.extra_paths,
-                ## arguments = defaults + args,
-                initialization = "import sys; sys.argv.extend(%s)" % args,
-                ))
+        installed.extend(zc.buildout.easy_install.scripts(
+            [(self.options['script'],
+              'z3c.recipe.sphinxdoc',
+              'main'),
+             ],
+            workingSet,
+            self.options['executable'],
+            self.buildout['buildout']['bin-directory'],
+            extra_paths=self.egg.extra_paths,
+            arguments = "%r" % projectsData,
+            ))
 
         return installed
 
     update = install
+
+
+def main(projects):
+    startArgs = sys.argv[:]
+    import sphinx
+    for project, args in projects.items():
+        print "building docs for", project, "---> sphinx-build", " ".join(args)
+        sphinx.main(argv=sys.argv+args)
+

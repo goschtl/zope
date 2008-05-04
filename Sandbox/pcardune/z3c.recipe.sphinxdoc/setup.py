@@ -58,9 +58,6 @@ setup(
     entry_points="""
     [zc.buildout]
     default = z3c.recipe.sphinxdoc:ZopeOrgSetup
-
-    [console_scripts]
-    sphinxdoc = z3c.recipe.sphinxdoc:runSphinx
     """,
     zip_safe=False,
     include_package_data=True,
