@@ -70,7 +70,7 @@ url
 Example usage
 =============
 
-We have a package ``orange`` that depends on the package ``colour``.  
+We have a package ``orange`` that depends on the package ``colour``::
 
     >>> import os.path
     >>> import z3c.recipe.eggbasket.tests as testdir
