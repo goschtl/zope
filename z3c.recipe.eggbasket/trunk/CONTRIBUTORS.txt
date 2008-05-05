@@ -1,2 +1,4 @@
-Grok Team, Author
+Grok Team:
 
+Maurits van Rees
+Tim Terlegard
