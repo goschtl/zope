@@ -82,4 +82,6 @@ class Recipe(Eggs):
         # will remove all returned files upon reinstall.
         return tuple()
 
-    update = install
+    def update(self):
+        # This recipe only needs to be called once.
+        pass
