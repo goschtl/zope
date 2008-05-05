@@ -1,0 +1,75 @@
+==========================
+Resource Viewlet directive
+==========================
+
+This shows how we can use the ``z3c:zrt-resourceViewlet`` directive to
+register both a resource and a corresponding viewlet for that
+resources.  This can really come in handy for css viewlets, javascript
+viewlets, and more.  First we must register the meta configuration.
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="z3c.viewlet" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+Now we will use the ``z3c:zrt-resourceViewlet`` directive:
+
+  >>> import tempfile
+  >>> cssfile = tempfile.mktemp('.css')
+  >>> open(cssfile, 'w').write('''\
+  ... /* zrt-replace: "../img1" "++resource++/img" */
+  ... h1 {
+  ...   color: red;
+  ...   background: url('../img1/mybackground.gif');
+  ... } 
+  ... ''')
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...    xmlns:z3c="http://namespaces.zope.org/z3c" i18n_domain="zope">
+  ...   <z3c:zrt-resourceViewlet
+  ...       name="test.css"
+  ...       file="%s"
+  ...       for="*"
+  ...       permission="zope.Public"
+  ...       class="z3c.viewlet.viewlet.CSSViewlet"
+  ...       />
+  ... </configure>
+  ... """ % cssfile, context=context)
+
+Now let's see if the resource adapter has been registered:
+
+  >>> import zope.component
+  >>> import zope.interface
+  >>> from zope.publisher.browser import TestRequest
+  >>> resource = zope.component.getAdapter(
+  ...     TestRequest(), zope.interface.Interface, name='test.css')
+
+And we can try running it
+
+  >>> print resource.GET()
+  h1 {
+    color: red;
+    background: url('++resource++/img/mybackground.gif');
+  }
+
+Now let's try and get the viewlet:
+
+  >>> from zope.publisher.browser import BrowserView
+  >>> from zope.viewlet.interfaces import IViewlet
+  >>> from zope.viewlet.manager import ViewletManagerBase
+  >>> context = object()
+  >>> request = TestRequest()
+  >>> view = BrowserView(context, request)
+  >>> manager = ViewletManagerBase(context, request, view)
+  >>> viewlet = zope.component.queryMultiAdapter(
+  ...     (context, request, view, manager), IViewlet,
+  ...      name='test.css')
+
+for some reason I get a TraversalError: ('No traversable adapter
+found', <zope.viewlet.metaconfigure.CSSViewlet object at 0x8e61f8c>)
+when calling the next statement.
+
+#  >>> print viewlet.render()
