@@ -36,12 +36,11 @@ class IDocument(zope.interface.Interface):
     template = zope.interface.Attribute(
         "The page template for generating the basic RML.")
 
-    fields = zope.interface.Attribute(
+    field_schema = zope.interface.Attribute(
         "A schema describing which fields are available for substitution.")
 
-    blocks = zope.interface.Attribute(
+    block_schema = zope.interface.Attribute(
         "A schema describing which blocks of RML are available")
-
 
     def renderRML(fields=None, blocks=None):
         """Return RML ready to be rendered."""

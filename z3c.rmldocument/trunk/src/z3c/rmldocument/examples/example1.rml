@@ -9,7 +9,7 @@
     </pageTemplate>
   </template>
   <story>
-    <heading tal:content="data/salutation"/>
+    <heading tal:content="fields/salutation"/>
 
     <tal:block replace="structure blocks/introduction"/>
 

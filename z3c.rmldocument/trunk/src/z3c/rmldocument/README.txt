@@ -26,7 +26,6 @@ customize the document on a per-document basis, e.g. with the client's name.
   ...     salutation = zope.schema.TextLine(title=u"Salutation")
   ...     years = zope.schema.Int(title=u"Years to go")
 
-
   >>> class Contract(object):
   ...     zope.interface.implements(IContractBlocks, IContractData)
   ...     introduction = """<para>
