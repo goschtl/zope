@@ -1,20 +1,70 @@
+Goal of this recipe
+===================
+
+You have an egg (for example ``grok``) that has a lot of dependencies.
+Other eggs that it depends on are found on the cheeseshop, on
+sourceforge, and perhaps on some more servers.  When even one of these
+servers is down, other people (or you yourself) cannot install that
+egg.  Or perhaps your egg depends on a specific version of another egg
+and that version is removed from the cheeseshop for some bad reason.
+
+In other words: there are multiple points of failure.  Interested
+users want to try your egg, the install fails because a server is
+down, they are disappointed, leave and never come back.
+
+The goal of this recipe is to avoid having those multiple points of
+failure.  You create a tarball containing all eggs that your egg
+depends on.  A package like zc.sourcerelease_ can help here. You
+upload that tarball somewhere.  In your buildout you point this recipe
+to your egg and the url of the tarball, for example like this::
+
+  [buildout]
+  parts = eggbasket
+
+  [eggbasket]
+  recipe = z3c.recipe.eggbasket
+  eggs = grok
+  url = http://grok.zope.org/releaseinfo/grok-eggs-0.12.tgz
+
+The part using this recipe should usually be the first in line.  What
+the recipe then does is install your egg and all its dependencies
+using only the eggs found in that tarball.  After that you can let the
+rest of the buildout parts do their work.
+
+.. _zc.sourcerelease: http://pypi.python.org/pypi/zc.sourcerelease
+
+
+Limitations
+===========
+
+1. This approach still leaves you with multiple points of failure:
+
+   - the cheeseshop must be up so the end user can install this recipe
+
+   - the server with your tarball must be up.
+
+2. Before buildout calls the install method of this recipe to do the
+   actual work, all buildout parts are initialized.  This means that
+   all eggs and dependencies used by all recipes are installed.  This
+   can already involve a lot of eggs and also multiple points of
+   failure.  Workaround: you can first explicitly install the part
+   that uses this recipe.  So with the buildout snippet from above
+   that would be::
+   
+     bin/buildout install eggbasket
+
+
 Supported options
 =================
 
 The recipe supports the following options:
 
-.. Note to recipe author!
-   ----------------------
-   For each option the recipe uses you shoud include a description
-   about the purpose of the option, the format and semantics of the
-   values it accepts, whether it is mandatory or optional and what the
-   default value is if it is omitted.
+eggs
+    One or more eggs that you want to install with a tarball.
 
-option1
-    Description for ``option1``...
-
-option2
-    Description for ``option2``...
+url
+    Url where we can get a tarball that contains the mentioned eggs
+    and their dependencies.
 
 
 Example usage
