@@ -1,11 +1,7 @@
-from martian.directive import (OnceDirective, SingleTextDirective,
-                               SingleValue,
-                               ClassDirectiveContext)
+from martian import Directive, CLASS, ONCE
 
-class RdbKeyDirective(SingleTextDirective, OnceDirective):
-    """
-    Directive that accepts a string to be used as the lookup key
-    """
-    pass
+class key(Directive):
+    scope = CLASS
+    store = ONCE
+    default = u''
 
-key = RdbKeyDirective('rdb.key', ClassDirectiveContext())

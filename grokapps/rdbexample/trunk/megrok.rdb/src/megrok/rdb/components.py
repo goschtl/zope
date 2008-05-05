@@ -7,6 +7,8 @@ from zope.interface import implements
 from grokcore.component import Context
 from grok.interfaces import IContainer
 
+from megrok.rdb import directive
+
 _lcl_metadata = MetaData()
 
 class Model(Context):
@@ -32,8 +34,9 @@ class Container(MappedCollection):
     implements(IContainer)
 
     def __init__(self, *args, **kw):
-        if hasattr(self, '__rdb_key__'):
-            keyfunc = lambda node:getattr(node, self.__rdb_key__)
+        rdb_key = directive.key.get(self)
+        if rdb_key:
+            keyfunc = lambda node:getattr(node, rdb_key)
         elif hasattr(self, 'keyfunc'):
             keyfunc = self.keyfunc
         else:
