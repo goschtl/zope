@@ -31,8 +31,8 @@ class Recipe(Eggs):
 
         if not distributions_are_installed_in_dir(distributions,
                                                   options['eggs-directory']):
-            log.info("Grok is not installed. "
-                     "A grok tarball will be downloaded.")
+            log.info("Distributions are not installed. "
+                     "A tarball will be downloaded.")
             url = self.options.get('url')
             tarball_name = url.split('/')[-1]
             log.info("Downloading %s ..." % url)
@@ -50,15 +50,15 @@ class Recipe(Eggs):
                     return tuple()
                 tarball.close()
                 log.info("Finished downloading.")
-                log.info("Installing eggs to %s which will take a while..."
-                         % options['eggs-directory'])
+                log.info("Extracting tarball contents...")
 
                 try:
-                    tf = tarfile.open(temp_tarball_name,
-                                      'r:gz')
-                except tarfile.ReadError:
+                    tf = tarfile.open(temp_tarball_name, 'r:gz')
+                except tarfile.ReadError, e:
                     # Likely the download location is wrong and gives a 404.
+                    # Or the tarball is not zipped.
                     log.error("No correct tarball found at %s." % url)
+                    log.error("The error was: %s" % e)
                     return tuple()
 
                 links = []
@@ -67,7 +67,8 @@ class Recipe(Eggs):
                     links.append(os.path.join(extraction_dir, name))
                 tf.close()
 
-                log.info("installing grok.  This will take a while...")
+                log.info("Installing eggs to %s which will take a while..."
+                         % options['eggs-directory'])
                 result = install_distributions(
                     distributions, options['eggs-directory'],
                     links = links)

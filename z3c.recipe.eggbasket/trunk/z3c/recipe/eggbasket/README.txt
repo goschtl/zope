@@ -70,40 +70,91 @@ url
 Example usage
 =============
 
-.. Note to recipe author!
-   ----------------------
-   zc.buildout provides a nice testing environment which makes it
-   relatively easy to write doctests that both demonstrate the use of
-   the recipe and test it.
-   You can find examples of recipe doctests from the PyPI, e.g.
-   
-     http://pypi.python.org/pypi/zc.recipe.egg
+We have a package ``orange`` that depends on the package ``colour``.  
 
-   The PyPI page for zc.buildout contains documentation about the test
-   environment.
+    >>> import os.path
+    >>> import z3c.recipe.eggbasket.tests as testdir
+    >>> orange = os.path.join(os.path.dirname(testdir.__file__), 'orange')
+    >>> colour = os.path.join(os.path.dirname(testdir.__file__), 'colour')
 
-     http://pypi.python.org/pypi/zc.buildout#testing-support
+We create source distributions for them in a directory::
 
-   Below is a skeleton doctest that you can start with when building
-   your own tests.
+    >>> colours = tmpdir('colours')
+    >>> sdist(orange, colours)
+    >>> sdist(colour, colours)
+    >>> ls(colours)
+    -  colour-0.1.zip
+    -  orange-0.1.zip
 
-We'll start by creating a buildout that uses the recipe::
+We will define a buildout template that uses the recipe::
 
-    >>> write('buildout.cfg',
-    ... """
+    >>> buildout_template = """
     ... [buildout]
-    ... parts = test1
+    ... parts = basket
     ...
-    ... [test1]
+    ... [basket]
     ... recipe = z3c.recipe.eggbasket
-    ... option1 = %(foo)s
-    ... option2 = %(bar)s
-    ... """ % { 'foo' : 'value1', 'bar' : 'value2'})
+    ... eggs = %(eggs)s
+    ... url = %(url)s
+    ... """
 
-Running the buildout gives us::
+We'll start by creating a buildout that does not specify an egg::
+
+    >>> write('buildout.cfg', buildout_template % { 'eggs': '', 'url' : 'http://nowhere'})
+
+In this case the recipe will do nothing.  So the url does not get
+used.  Running the buildout gives us::
 
     >>> print system(buildout)
-    Installing test1.
-    Unused options for test1: 'option2' 'option1'.
+    Installing basket.
+    Unused options for basket: 'url'.
+    <BLANKLINE>
 
+Next we will specify an egg but not refer to a bad url::
 
+    >>> write('buildout.cfg', buildout_template % { 'eggs': 'orange', 'url' : 'http://nowhere'})
+    >>> print system(buildout)
+    Uninstalling basket.
+    Installing basket.
+    Couldn't find index page for 'orange' (maybe misspelled?)
+    Getting distribution for 'orange'.
+    basket: Distributions are not installed. A tarball will be downloaded.
+    basket: Downloading http://nowhere ...
+    basket: Url not found: http://nowhere.
+    <BLANKLINE>
+
+So now we create a tar ball in a directory::
+
+    >>> import tarfile
+    >>> tarserver = tmpdir('tarserver')
+    >>> cd(tarserver)
+    >>> tarball = tarfile.open('colours.tgz', 'w:gz')
+    >>> tarball.add(colours)
+    >>> tarball.list(verbose=False)
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/colour-0.1.zip
+    >>> tarball.close()
+    >>> ls(tarserver)
+    -  colours.tgz
+
+We make it available on a url and use it in our buildout::
+
+    >>> cd(sample_buildout)
+    >>> tarball_url = 'file://' + tarserver + '/colours.tgz'
+    >>> write('buildout.cfg', buildout_template % { 'eggs': 'orange', 'url' : tarball_url})
+    >>> print system(buildout)
+    Uninstalling basket.
+    Installing basket.
+    Couldn't find index page for 'orange' (maybe misspelled?)
+    Getting distribution for 'orange'.
+    basket: Distributions are not installed. A tarball will be downloaded.
+    basket: Downloading .../tarserver/colours.tgz ...
+    basket: Finished downloading.
+    basket: Extracting tarball contents...
+    basket: Installing eggs to .../sample-buildout/eggs which will take a while...
+    Getting distribution for 'orange'.
+    Got orange 0.1.
+    Getting distribution for 'colour'.
+    Got colour 0.1.
+    <BLANKLINE>
