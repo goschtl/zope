@@ -165,13 +165,15 @@ def handler(field, event=jsevent.CLICK):
         return func
     return createHandler
 
+
 def buttonAndHandler(title, **kwargs):
     # Add the title to button constructor keyword arguments
     kwargs['title'] = title
     # Extract directly provided interfaces:
     provides = kwargs.pop('provides', ())
     # Create button and add it to the button manager
-    jsButton = JSButton(**kwargs)
+    factory = kwargs.pop('factory', JSButton)
+    jsButton = factory(**kwargs)
     zope.interface.alsoProvides(jsButton, provides)
     frame = sys._getframe(1)
     f_locals = frame.f_locals
@@ -179,7 +181,6 @@ def buttonAndHandler(title, **kwargs):
     f_locals['buttons'] += button.Buttons(jsButton)
     # Return the handler decorator
     return handler(button)
-
 
 
 @zope.interface.implementer(zope.interface.Interface)
