@@ -1,6 +1,8 @@
 0.1.0 (xxxx-xx-xx)
 ==================
 
+ - Added tests.  [maurits]
+
  - Initial implementation.  [maurits, timte]
 
- - Created recipe with ZopeSkel [Grok Team].
+ - Created recipe with ZopeSkel.  [Grok Team].

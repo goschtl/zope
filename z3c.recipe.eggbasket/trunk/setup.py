@@ -34,7 +34,7 @@ long_description = (
 entry_point = 'z3c.recipe.eggbasket:Recipe'
 entry_points = {"zc.buildout": ["default = %s" % entry_point]}
 
-tests_require=['zope.testing']
+tests_require=['zope.testing', 'zc.recipe.egg']
 
 setup(name='z3c.recipe.eggbasket',
       version=version,
