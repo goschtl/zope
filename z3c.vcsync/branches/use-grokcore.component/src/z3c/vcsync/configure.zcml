@@ -1,3 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/grok">
+  <include package="zope.app.container" />
+  <include package="grokcore.component" name="meta.zcml" />
   <grok package="." />
 </configure>

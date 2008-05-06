@@ -11,7 +11,8 @@ setup(name='z3c.vcsync',
       zip_safe=False,
       install_requires=[
         'setuptools',
-        'grok',
+        'grokcore.component',
+        'zope.app.container',
         'py',
       ],
       entry_points="""

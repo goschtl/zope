@@ -9,8 +9,8 @@ To start
 
 Let's first grok this package::
 
-  >>> import grok.testing
-  >>> grok.testing.grok('z3c.vcsync')
+  >>> from grokcore.component import testing
+  >>> testing.grok('z3c.vcsync')
 
 Serialization
 -------------
@@ -31,6 +31,7 @@ just carries an integer payload attribute::
 We will use an ISerializer adapter to serialize it to a file. Let's
 define the adapter::
 
+  >>> import grokcore.component as grok
   >>> from z3c.vcsync.interfaces import ISerializer
   >>> class ItemSerializer(grok.Adapter):
   ...     grok.provides(ISerializer)
@@ -51,7 +52,7 @@ Let's test our adapter::
 
 Let's register the adapter::
 
-  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  >>> testing.grok_component('ItemSerializer', ItemSerializer)
   True
 
 We can now use the adapter::
@@ -263,7 +264,7 @@ We will need an ``ISerializer`` adapter for ``OtherItem`` too::
   ...         f.write('\n')
   ...     def name(self):
   ...         return self.context.__name__ + '.other'
-  >>> grok.testing.grok_component('OtherItemSerializer', OtherItemSerializer)
+  >>> testing.grok_component('OtherItemSerializer', OtherItemSerializer)
   True
 
 Note that the extension we serialize to is ``.other``.
@@ -317,7 +318,7 @@ extension::
   ...   grok.name('.test')
   ...   def __call__(self, object, path):
   ...      object.payload = int(path.read())
-  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  >>> testing.grok_component('ItemParser', ItemParser)
   True
  
 To have the ability to create new objects, a factory is registered for
@@ -333,7 +334,7 @@ the ``.test`` extension as well, implemented in terms of ``ItemParser``::
   ...       item = Item(None) # dummy payload
   ...       parser(item, path)
   ...       return item
-  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  >>> testing.grok_component('ItemFactory', ItemFactory)
   True
 
 Now for containers. They are registered for an empty extension::
@@ -342,7 +343,7 @@ Now for containers. They are registered for an empty extension::
   ...   grok.provides(IParser)
   ...   def __call__(self, object, path):
   ...       pass # do nothing with existing containers
-  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  >>> testing.grok_component('ContainerParser', ContainerParser)
   True
 
 We implement ``ContainerFactory`` in terms of
@@ -357,7 +358,7 @@ the use of ``IParser`` here, but we won't do this for consistency::
   ...       container = Container()
   ...       parser(container, path)
   ...       return container
-  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  >>> testing.grok_component('ContainerFactory', ContainerFactory)
   True
 
 We need to maintain a list of everything modified or added, and a list
@@ -626,7 +627,7 @@ And a parser and factory for it::
   ...   grok.name('.test2')
   ...   def __call__(self, object, path):
   ...      object.payload = int(path.read()) ** 2
-  >>> grok.testing.grok_component('Item2Parser', Item2Parser)
+  >>> testing.grok_component('Item2Parser', Item2Parser)
   True 
   >>> class Item2Factory(grok.GlobalUtility):
   ...   grok.provides(IFactory)
@@ -636,7 +637,7 @@ And a parser and factory for it::
   ...       item = Item2(None) # dummy payload
   ...       parser(item, path)
   ...       return item
-  >>> grok.testing.grok_component('Item2Factory', Item2Factory)
+  >>> testing.grok_component('Item2Factory', Item2Factory)
   True
 
 Now we define an update function that replaces ``hoi.test`` with

@@ -37,13 +37,13 @@ Writing to the filesystem
 First we need to grok this package itself (normally done when you use
 it)::
 
-  >>> import grok.testing
-  >>> grok.testing.grok('z3c.vcsync')
+  >>> from grokcore.component import testing
+  >>> testing.grok('z3c.vcsync')
 
 In order to be able to export instances of ``Item``, we need to set up
 an ``ISerializer``::
 
-  >>> import grok
+  >>> import grokcore.component as grok
   >>> from z3c.vcsync.interfaces import ISerializer
   >>> class ItemSerializer(grok.Adapter):
   ...     grok.provides(ISerializer)
@@ -53,7 +53,7 @@ an ``ISerializer``::
   ...         f.write('\n')
   ...     def name(self):
   ...         return self.context.__name__ + '.test'
-  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  >>> testing.grok_component('ItemSerializer', ItemSerializer)
   True
 
 Exporting
@@ -130,7 +130,7 @@ The factory to create the item::
   ...   def __call__(self, path):
   ...       payload = int(path.read())
   ...       return Item(payload)
-  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  >>> testing.grok_component('ItemFactory', ItemFactory)
   True
 
 The factory to create the container::
@@ -139,7 +139,7 @@ The factory to create the container::
   ...   grok.provides(IFactory)
   ...   def __call__(self, path):
   ...       return Container()
-  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  >>> testing.grok_component('ContainerFactory', ContainerFactory)
   True
 
 Importing

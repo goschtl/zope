@@ -42,19 +42,19 @@ each user). Let's represent this tree in ``state1`` first::
 Let's make sure we can save and load the objects by grokking the
 right serializers, parser and factories::
 
-  >>> import grok  
+  >>> from grokcore.component import testing
   >>> from z3c.vcsync.tests import (ItemSerializer, ItemParser, ItemFactory, 
   ...    ContainerParser, ContainerFactory)
-  >>> grok.testing.grok('z3c.vcsync')
-  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  >>> testing.grok('z3c.vcsync')
+  >>> testing.grok_component('ItemSerializer', ItemSerializer)
   True
-  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  >>> testing.grok_component('ItemParser', ItemParser)
   True
-  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  >>> testing.grok_component('ItemFactory', ItemFactory)
   True
-  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  >>> testing.grok_component('ContainerParser', ContainerParser)
   True
-  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  >>> testing.grok_component('ContainerFactory', ContainerFactory)
   True
 
 Let's set up an SVN repository and initial checkout::

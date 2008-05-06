@@ -141,8 +141,8 @@ parse it back to an object again.
 Let's grok this package first, as it provides some of the required
 infrastructure::
 
-  >>> import grok.testing
-  >>> grok.testing.grok('z3c.vcsync')
+  >>> from grokcore.component import testing
+  >>> testing.grok('z3c.vcsync')
   
 We need to provide a serializer for the Item class that takes an item
 and writes it to the filesystem to a file with a particular extension
@@ -166,11 +166,11 @@ Both parser and factory are registered per extension, in this case
 
 We register these components::
 
-  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  >>> testing.grok_component('ItemSerializer', ItemSerializer)
   True
-  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  >>> testing.grok_component('ItemParser', ItemParser)
   True
-  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  >>> testing.grok_component('ItemFactory', ItemFactory)
   True
 
 We also need a parser and factory for containers, registered for the
@@ -178,9 +178,9 @@ empty extension (thus no special utility name). These can be very
 simple::
 
   >>> from z3c.vcsync.tests import ContainerParser, ContainerFactory
-  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  >>> testing.grok_component('ContainerParser', ContainerParser)
   True
-  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  >>> testing.grok_component('ContainerFactory', ContainerFactory)
   True
 
 Setting up the SVN repository

@@ -5,7 +5,7 @@ import shutil
 import py.path
 from py.__.path.svn import svncommon
 from datetime import datetime
-import grok
+import grokcore.component as grok
 from zope import component
 
 from zope.interface import implements, Interface
