@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.2 (2008-05-06)
+------------------
+
+- Do not include permission checker for zope.Public permission
+
+
 1.2.1 (2008-04-22)
 ------------------
 

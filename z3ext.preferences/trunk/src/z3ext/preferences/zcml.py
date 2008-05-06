@@ -122,7 +122,8 @@ class PreferenceGroupDirective(object):
         if interface.interfaces.IInterface.providedBy(for_):
             tests = tests + (PrincipalChecker(for_),)
 
-        tests = tuple(tests) + (PermissionChecker(permission),)
+        if permission != 'zope.Public':
+            tests = tuple(tests) + (PermissionChecker(permission),)
 
         group = Class(tests)
 
