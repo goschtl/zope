@@ -1,0 +1,15 @@
+=======
+CHANGES
+=======
+
+1.0.2 (2008-05-06)
+------------------
+
+- Made sure that __stringConverter gets (re)set only when needed
+  (only on encoding change) otherwise it just bloats ZODB
+
+
+1.0.1 (2008-02-20)
+------------------
+
+- Package eggification
