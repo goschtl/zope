@@ -75,7 +75,9 @@ class ImportFinder:
     def visitFrom(self, stmt):
         """Will be called for 'from foo import bar' statements
         """
-        module_name, names = stmt.asList()
+        # XXX take first two items of statement list as in Python 2.5 this
+        # list contains more information items.
+        module_name, names = stmt.asList()[:2]
         if module_name == '__future__':
             # we don't care what's imported from the future
             return
@@ -289,9 +291,9 @@ class ImportDatabase:
         return result
 
 
-def main():
+def main(path=None):
     try:
-        path = sys.argv[1]
+        path = path or sys.argv[1]
     except IndexError:
         print "No path supplied"
         sys.exit(1)
@@ -325,4 +327,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
