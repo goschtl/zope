@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
@@ -324,6 +323,3 @@ def main(path=None):
         for line in lines:
             names = ', '.join(line2names[line])
             print "%s:%s: %s" % (path, line, names)
-
-if __name__ == '__main__':
-    main()
