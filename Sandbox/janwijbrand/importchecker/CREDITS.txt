@@ -1,0 +1,4 @@
+Credits
+=======
+
+* Martijn Faassen (original developer)
