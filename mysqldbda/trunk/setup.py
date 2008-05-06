@@ -24,10 +24,10 @@ def read(*rnames):
 setup(name='mysqldbda',
       version = '1.0.1',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='MySQL Database adapter',
       long_description=(
-          read('README.txt')
+          read('src','mysqldbda','README.txt')
           + '\n\n' +
           'Detailed Dcoumentation\n' +
           '======================\n'
@@ -45,16 +45,16 @@ setup(name='mysqldbda',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.batching',
+      url='http://pypi.python.org/pypi/mysqldbda',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       install_requires = ['setuptools',
                           'zope.interface',
                           'zope.schema',
-			  'zope.rdb',
-			  'zope.publisher',
-			  'zope.app.form',
+                          'zope.rdb',
+                          'zope.publisher',
+                          'zope.app.form',
                           ],
       include_package_data = True,
       zip_safe = False,
