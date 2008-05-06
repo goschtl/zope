@@ -5,6 +5,7 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext">
 
+  <!-- layouts -->
   <z3ext:layout
      layout="portal"
      name="workspace"
@@ -35,6 +36,7 @@
      title="View"
      permission="zope.Public" />
 
+  <!-- root preferences view -->
   <z3ext:pagelet
      for="..interfaces.IRootPreferences"
      name="index.html"
@@ -42,27 +44,39 @@
      class=".index.PreferencesView"
      permission="zope.View" />
 
-  <browser:page
+  <!-- preference category view -->
+  <z3ext:pagelet
+     name="index.html"
+     for="..interfaces.IPreferenceCategory"
+     template="category.pt"
+     class=".category.PreferenceCategory"
+     permission="zope.Public" />
+
+  <!-- preference group view -->
+  <z3ext:pagelet
      name="index.html"
      for="..interfaces.IPreferenceGroup"
      class=".group.PreferenceGroup"
      permission="zope.Public" />
 
-  <browser:view
+  <z3ext:pagelet
+     name="view.html"
      for="..interfaces.IPreferenceGroup"
-     class=".view.PreferenceGroupView"
-     provides=".interfaces.IPreferenceGroupView"
+     template="group.pt"
      permission="zope.Public" />
 
-  <adapter
-     zcml:condition="installed z3c.breadcrumb"
-     factory=".breadcrumb.PreferenceGroupBreadcrumb" />
-
-  <browser:page
-     name="navigation"
+  <!-- navigation -->
+  <browser:viewletManager
+     name="z3ext.preferences-navigation"
+     provides=".interfaces.IPreferencesNavigation"
      for="..interfaces.IPreferenceGroup"
      template="navigation.pt"
      class=".navigation.Navigation"
      permission="zope.Public" />
+
+  <!-- breadcrumb -->
+  <adapter
+     zcml:condition="installed z3c.breadcrumb"
+     factory=".breadcrumb.PreferenceGroupBreadcrumb" />
 
 </configure>

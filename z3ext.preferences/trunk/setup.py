@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.2.2dev'
+version='1.3.0dev'
 
 
 setup(name = 'z3ext.preferences',
@@ -66,6 +66,8 @@ setup(name = 'z3ext.preferences',
 			  'zope.cachedescriptors',
 			  'zope.pagetemplate',
                           'zope.i18nmessageid',
+			  'zope.viewlet',
+			  'zope.contentprovider',
 			  'zope.app.security',
                           'zope.app.component',
 			  'zope.app.publisher',

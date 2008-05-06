@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-1.2.2 (2008-05-06)
+1.3.0 (2008-05-06)
 ------------------
+
+- UI refactoring
 
 - Do not include permission checker for zope.Public permission
 

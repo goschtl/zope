@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,30 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" interfaces relateds to view preference groups
+""" 
 
 $Id$
 """
-from zope import interface
+from zope.viewlet.interfaces import IViewletManager
 
 
-class IPreferences(interface.Interface):
-    """ preferences """
-
-
-class IPreferenceGroupView(interface.Interface):
-    """ group view """
-
-    def isAvailable():
-        """ is this view available """
-
-    def render():
-        """ render view """
-
-
-class IPreferenceGroupPreview(IPreferenceGroupView):
-    """ group preview """
-
-
-class IDefaultPreferenceGroupView(interface.Interface):
-    """ default preference view """
+class IPreferencesNavigation(IViewletManager):
+    """ preferences navigation viewlet manager """

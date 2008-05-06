@@ -16,16 +16,18 @@
 $Id$
 """
 from zope.component import queryMultiAdapter
+from zope.viewlet.manager import ViewletManagerBase
 from z3ext.preferences.interfaces import IRootPreferences
 from z3ext.preferences.interfaces import IPreferenceGroup
 from z3ext.preferences.interfaces import IPreferenceCategory
 
 
-class Navigation(object):
+class Navigation(ViewletManagerBase):
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
+    def update(self):
+        super(Navigation, self).update()
+
+        context = self.context
 
         self.isRoot = IRootPreferences.providedBy(context)
         if self.isRoot:
@@ -78,8 +80,9 @@ class Navigation(object):
 
             return data
 
-    def __call__(self):
+    def render(self):
         if self.isRoot:
-            return ''
+            return u''
         else:
-            return self.index()
+            return super(Navigation, self).render()
+
