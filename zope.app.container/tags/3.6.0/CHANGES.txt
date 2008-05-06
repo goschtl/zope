@@ -1,0 +1,50 @@
+=======
+CHANGES
+=======
+
+3.6.0 (2008-05-06)
+------------------
+
+- Added an ``IBTreeContainer`` interface that allows an argument to the
+  ``items``, ``keys``, and ``values`` methods with the same semantics as for
+  a BTree object.  The extended interface is implemented by the
+  ``BTreeContainer`` class.
+
+3.5.3 (2007-11-09)
+------------------
+
+- Send ``IObjectModifiedEvent`` when changing the title through the
+  ``@@contents.html`` view.
+
+  This fixes https://bugs.edge.launchpad.net/zope3/+bug/98483.
+
+3.5.2 (2007-11-01)
+------------------
+
+- Reactivated functional tests.
+
+3.5.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` and ``IRolePermissionManager`` deprecation
+  warning.
+
+3.5.0 (2007-10-11)
+------------------
+
+- Updated package meta-data.
+
+3.5.0a1 (2007-06-29)
+--------------------
+
+* Updated bootstrap script to current version.
+
+* Store length of ``BTreeContainer`` in its own ``Length`` object for faster
+  ``__len__`` implementation of huge containers.
+
+
+3.4.0a1 (2007-04-22)
+--------------------
+
+- Initial release as a separate project, corresponds to ``zope.app.container``
+  from Zope 3.4.0a1.
