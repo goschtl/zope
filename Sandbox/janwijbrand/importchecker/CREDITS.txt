@@ -2,3 +2,6 @@ Credits
 =======
 
 * Martijn Faassen (original developer)
+* Philipp von Weitershausen
+* Jan-Wijbrand Kolman (packaging)
+* various comitters on svn.zope.org.
