@@ -1,0 +1,103 @@
+Functional test of megrok.responseheaders
+********************************
+
+:Test-Layer: functional
+
+Create an instance in Zope of the sample application code::
+
+   >>> from grok import grok
+   >>> from megrok.responseheaders.ftests import sample
+   >>> grok('megrok.responseheaders.ftests.sample') # sets up views
+   
+   >>> root = getRootFolder()
+   >>> root['sample'] = sample.Sample()
+   >>> root['sample'].__name__
+   u'sample'
+   
+Create a request and get to the view:
+
+   >>> from zope.testbrowser.testing import Browser
+   >>> browser = Browser()
+   >>> browser.handleErrors = False
+   >>> browser.open("http://localhost/sample")
+   >>> browser.contents
+   'Index view'
+   >>> browser.headers.get('Cache-Control','not set')
+   'not set'
+   
+The index view doesn't set any headers with megrok.responseheaders but
+the sample application defines two other views. One called 'do' 
+another called 'dont':
+
+   >>> # 'dont' actually sets the expires headers 24 hours back
+   >>> browser.open('http://localhost/sample/dont')
+   >>> browser.headers.get('Cache-Control')
+   'private'
+
+   >>> browser.open('http://localhost/sample/do')
+   >>> cc = browser.headers.get('Cache-control')
+   >>> expect_seconds = 60*60*24 * 10 # directive sets days=10
+   >>> expect_cc = 'public,max-age=%s' % expect_seconds
+   >>> cc
+   'public,max-age=864000'
+   >>> expect_cc
+   'public,max-age=864000'
+   >>> expires = browser.headers.get('Expires')
+   >>> from zope.datetime import rfc1123_date
+   >>> from time import time
+   >>> expect_expires = rfc1123_date(time() + 10 * 24 * 3600)
+   >>> # To avoid differences in the second don't compare them directly
+   >>> assert expect_expires[:23] == expires[:23], "%r != %r" % (expect_expires[:23], expires[:23])
+   >>> expect_expires[:23] == expires[:23]
+   True
+   
+   
+We have another cached view that uses the http_cache_control directive
+like like: 'http_cache_control(seconds=1, minutes=1, hours=1, days=1,
+years=1)'
+
+   >>> browser.open('http://localhost/sample/do2')
+   >>> cc = browser.headers.get('Cache-control')
+   >>> expect_seconds = 1 + 60 + 60*60 + 60*60*24 + 60*60*24*365
+   >>> expect_cc = 'public,max-age=%s' % expect_seconds
+   >>> cc
+   'public,max-age=31626061'
+   >>> expect_cc
+   'public,max-age=31626061'
+   >>> expires = browser.headers.get('Expires')
+   >>> expect_expires = rfc1123_date(time() + expect_seconds)
+   >>> # To avoid differences in the second don't compare them directly
+   >>> expect_expires[:23] == expires[:23]
+   True   
+
+megrok.responseheaders also supports the ability to set the Content-Type header 
+quite conveniently. 
+
+The default content type of a view when you don't use page templates is
+to return 'text/plain'
+
+   >>> browser.open('http://localhost/sample/index')
+   >>> browser.headers.get('Content-Type')
+   'text/plain'
+   
+When you use a page template on a view, it defaults to text/html with
+charset utf-8:
+
+   >>> browser.open('http://localhost/sample/template1')
+   >>> browser.headers.get('Content-Type')
+   'text/html;charset=utf-8'
+   
+Template2 contains a <meta> tag that sets a content type different
+from 'text/html;charset=utf-8' but the actual header that is sent from
+the server is 'text/html;charset=utf-8':
+
+   >>> browser.open('http://localhost/sample/template2')
+   >>> browser.headers.get('Content-Type')
+   'text/html;charset=utf-8'
+   
+In template3 we use megrok.responseheaders to override the content type and not
+let Grok guess it from the fact that the template is html.
+
+   >>> browser.open('http://localhost/sample/template3')
+   >>> browser.headers.get('Content-Type')
+   'application/xhtml+xml;charset=utf-8'

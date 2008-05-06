@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title>Template2</title>
+    
+    <!-- stupid but good for the test. -->
+    <!-- In fact, Grok ignores this tag -->
+    <meta type="http-equiv" content="text/plain; charset=latin1" />
+    
+  </head>
+  <body>
+  Template2
+  </body>
+</html>
