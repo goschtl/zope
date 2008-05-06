@@ -295,12 +295,14 @@ Then the system sets up a root preference group:
   ...   <z3ext:preferenceGroup
   ...     id="ZMISettings"
   ...     schema="z3ext.preferences.README.IZMIUserSettings"
-  ...     title="ZMI User Settings" />
+  ...     title="ZMI User Settings"
+  ...     permission="zope.Public" />
   ...
   ...   <z3ext:preferenceGroup
   ...     id="ZMISettings.Folder"
   ...     schema="z3ext.preferences.README.IFolderSettings"
-  ...     title="Folder Content View Settings" />
+  ...     title="Folder Content View Settings"
+  ...     permission="zope.Public" />
   ...
   ... </configure>''', context)
 
@@ -364,6 +366,7 @@ Let's register the ZMI settings again under a new name via ZCML:
   ...      id="ZMISettings2"
   ...      title="ZMI Settings NG"
   ...      schema="z3ext.preferences.README.IZMIUserSettings"
+  ...      permission="zope.Public"
   ...      provides="z3ext.preferences.interfaces.IPreferenceCategory" />
   ...
   ...     </configure>''', context)
@@ -426,6 +429,7 @@ Now let's register preference for for this type of principal
   ...     id="ZMISettings2.Folder10"
   ...     for="z3ext.preferences.README.IMyPrincipal"
   ...     title="Folder Settings"
+  ...     permission="zope.Public"
   ...     schema="z3ext.preferences.README.IFolderSettings" />
   ...
   ...     </configure>''', context)
