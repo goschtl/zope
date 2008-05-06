@@ -51,8 +51,10 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
     __NUMBERtypes = (0, 5, 4, 9, 3, 8, 1, 13)
     __TIMEtypes = (11)
 
-    # Default string converter
-    __stringConverter =  MySQLStringConverter('UTF-8')
+    def __init__(self, *args, **kw):
+        super(MySQLdbAdapter, self).__init__(*args, **kw)
+        # Default string converter
+        self.__stringConverter =  MySQLStringConverter(self.getEncoding())
 
     def _connection_factory(self):
         """Create a MySQLdb DBI connection based on the DSN"""
@@ -64,7 +66,11 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
                             user=conn_info['username'],
                             passwd=conn_info['password'],
                             port=int(conn_info['port'] or '3306'))
-        self.__stringConverter = MySQLStringConverter(self.getEncoding())
+
+        if self.__stringConverter.encoding != self.getEncoding():
+            #avoid resetting this everytime, otherwise the adapter
+            #gets modified on each connection and that causes ZODB conflicts
+            self.__stringConverter = MySQLStringConverter(self.getEncoding())
         return connection
 
     def getConverter(self, type):
@@ -75,6 +81,10 @@ class MySQLdbAdapter(ZopeDatabaseAdapter):
 
     def identity(self, x):
         return x
+
+    def setEncoding(self, encoding):
+        super(MySQLdbAdapter, self).setEncoding(encoding)
+        self.__stringConverter = MySQLStringConverter(self.getEncoding())
 
     def __call__(self):
         connection = ZopeDatabaseAdapter.__call__(self)
