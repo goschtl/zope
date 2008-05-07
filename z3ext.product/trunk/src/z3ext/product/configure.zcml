@@ -4,7 +4,7 @@
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    i18n_domain="z3ext.product">
 
-  <autoinclude package="z3ext.product" />
+  <includeDependencies package="z3ext.product" />
 
   <permission
      id="z3ext.ManageProducts"

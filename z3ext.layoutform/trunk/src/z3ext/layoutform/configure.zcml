@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:z3c="http://namespaces.zope.org/z3c">
 
-  <autoinclude package="z3ext.layoutform" />
+  <includeDependencies package="z3ext.layoutform" />
 
   <include package=".browser" />
 
