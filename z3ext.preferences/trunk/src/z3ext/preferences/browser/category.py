@@ -17,6 +17,7 @@ $Id$
 """
 from zope import schema, interface
 from zope.component import getMultiAdapter
+from z3ext.layoutform import PageletEditForm
 
 from group import PreferenceGroup
 
@@ -47,7 +48,7 @@ class PreferenceCategory(PreferenceGroup):
 
     def renderForm(self):
         if bool(schema.getFields(self.context.__schema__)):
-            return super(PreferenceCategory, self).render()
+            return PageletEditForm.render(self)
         else:
             return u''
 
