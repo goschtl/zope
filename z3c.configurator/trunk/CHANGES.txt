@@ -1,0 +1,26 @@
+=======
+CHANGES
+=======
+
+Version 0.5.2dev (unreleased)
+-----------------------------
+
+- Added possibility to apply only specific named plugins in confugure.
+
+- New option to configure allows to have namespaced data to resolve
+  naming conflicts.
+
+- Added a page to call configurators TTW. This is the first step
+  towards mergin z3c.configurator and z3c.sampledata into one package.
+
+- bugfix: Defining recursive dependent names in IConfigurationPlugin 
+  dependencies, ends in recursive plugin lookup.
+
+- bugfix: SchemaConfigurationPluginBase now implements
+  ISchemaConfigurationPluginBase.
+
+
+Version 1.1.1 (unknown)
+-----------------------
+
+- Initial Release
