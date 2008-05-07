@@ -180,7 +180,7 @@ def buttonAndHandler(title, **kwargs):
     buttons = f_locals.setdefault('buttons', button.Buttons())
     f_locals['buttons'] += button.Buttons(jsButton)
     # Return the handler decorator
-    return handler(button)
+    return handler(jsButton)
 
 
 @zope.interface.implementer(zope.interface.Interface)
@@ -203,6 +203,7 @@ def createSubscriptionsForWidget(event):
         widget.form.jsSubscriptions = jsevent.JSSubscriptions()
         zope.interface.alsoProvides(
             widget.form, interfaces.IHaveJSSubscriptions)
+
     # Step 4: Add the subscription to the form:
     for event, handler in handlers:
         widget.form.jsSubscriptions.subscribe(event, selector, handler)
