@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 0.5.2dev (unreleased)
+Version 1.1.2dev (unreleased)
 -----------------------------
 
 - Added possibility to apply only specific named plugins in confugure.
