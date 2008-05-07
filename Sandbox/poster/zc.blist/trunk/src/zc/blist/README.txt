@@ -30,7 +30,7 @@ size).  Specify a big cache if you are using these to store a lot of data and
 are frequently iterating or changing.
 
 These sequences return slices as iterators, and add some helpful iteration
-methods.
+methods.  __eq__ compares identity.
 
 Other than that, these sequences work like a standard Python sequence. Therefore
 this file is not geared towards users of the data structure but implementers.
@@ -90,178 +90,14 @@ The So-So
 =========
 
 - ``count``, ``__eq__``, and other methods load all buckets and items, and are
-  brute force in Python. Lists and tuples will load all items, and is brute
-  force in C.
+  brute force, and in Python. In contrast, lists and tuples will load all
+  items, and is brute force in C.
 
 The Bad
 =======
 
-- This will create a lot of Persistent objects for one blist, which can cause
-  cache eviction problems.
+- This will create a lot of Persistent objects for one blist, which may cause
+  cache eviction problems depending on circumstances and usage.
 
-==================
-Regression Testing
-==================
+- Did I mention that this was in Python, not C?  That's fixable, at least.
 
-We'll use a `matches` function to compare a bucket sequence with a standard
-Python list to which the same modifications have made.  This also checks for
-bucket health [#matches]_.
-
-    >>> import zc.blist
-    >>> b = zc.blist.BList(bucket_size=5, index_size=4) # we want > 3 so min is > 1
-    >>> matches(b, [])
-    True
-    >>> b.append(0)
-    >>> matches(b, [0])
-    True
-    >>> del b[0]
-    >>> matches(b, [])
-    True
-    >>> b.extend(range(10))
-    >>> comparison = range(10)
-    >>> matches(b, comparison)
-    True
-    >>> b.reverse()
-    >>> comparison.reverse()
-    >>> matches(b, comparison)
-    True
-    >>> for i in range(10):
-    ...     b[i] = i+10
-    ...     comparison[i] = i+10
-    ...
-    >>> matches(b, comparison)
-    True
-    >>> b[5:10] = [9, 8, 7, 6, 5]
-    >>> comparison[5:10] = [9, 8, 7, 6, 5]
-    >>> matches(b, comparison)
-    True
-    >>> b[0:0] = [-3, -2, -1]
-    >>> comparison[0:0] = [-3, -2, -1]
-    >>> matches(b, comparison)
-    True
-    >>> b.extend(range(90, 100))
-    >>> comparison.extend(range(90,100))
-    >>> matches(b, comparison)
-    True
-    >>> b[10:10] = range(20, 90)
-    >>> comparison[10:10] = range(20, 90)
-    >>> matches(b, comparison)
-    True
-    >>> b[b.index(82)]
-    82
-    >>> del b[:4]
-    >>> del comparison[:4]
-    >>> matches(b, comparison)
-    True
-    >>> comparison[2:10:2] = [100, 102, 104, 106]
-    >>> b[2:10:2] = [100, 102, 104, 106]
-    >>> matches(b, comparison)
-    True
-    >>> del b[1:88]
-    >>> del comparison[1:88]
-    >>> matches(b, comparison)
-    True
-    >>> list(b[:])
-    [11, 99]
-    >>> b[0] = 0
-    >>> b[2] = 100
-    >>> b[3] = 101
-    >>> b[4] = 102
-    >>> matches(b, [0, 99, 100, 101, 102])
-    True
-
-Switching two values is most efficiently done with slice notation.
-
-    >>> b[:] = range(1000)
-    >>> b[5:996:990] = (b[995], b[5])
-    >>> list(b[:7])
-    [0, 1, 2, 3, 4, 995, 6]
-    >>> list(b[994:])
-    [994, 5, 996, 997, 998, 999]
-    >>> comparison = range(1000)
-    >>> comparison[5] = 995
-    >>> comparison[995] = 5
-    >>> matches(b, comparison)
-    True
-
-We'll test some of the other methods
-
-    >>> b.pop(995) == comparison.pop(995)
-    True
-    >>> matches(b, comparison)
-    True
-    >>> b.insert(995, 5)
-    >>> comparison.insert(995, 5)
-    >>> matches(b, comparison)
-    True
-
-These are some more stress and regression tests.
-
-    >>> del b[900:]
-    >>> del comparison[900:]
-    >>> matches(b, comparison)
-    True
-
-    >>> del comparison[::2]
-    >>> del b[::2] # 1
-    >>> matches(b, comparison)
-    True
-    >>> del b[::2] # 2
-    >>> del comparison[::2]
-    >>> matches(b, comparison)
-    True
-    >>> del b[::2] # 3
-    >>> del comparison[::2]
-    >>> matches(b, comparison)
-    True
-
-XXX lots more to test, especially exceptions.
-
-.. [#matches] 
-    >>> def checkIndex(ix, b, previous, previous_ix=0):
-    ...     computed = 0
-    ...     if len(previous) < previous_ix+1:
-    ...         previous.append(None)
-    ...         assert len(previous) >= previous_ix + 1
-    ...     # assert isinstance(ix, zc.blist.Index)
-    ...     assert b.data is ix or len(ix) <= b.index_size
-    ...     assert b.data is ix or len(ix) >= b.index_size // 2
-    ...     assert ix.minKey() == 0
-    ...     for k, v in ix.items():
-    ...         v = b._mapping[v]
-    ...         assert computed == k
-    ...         assert v.parent == ix.identifier
-    ...         p = previous[previous_ix]
-    ...         if p is not None:
-    ...             p = p.identifier
-    ...         assert v.previous == p
-    ...         assert (v.previous is None or
-    ...                 previous[previous_ix].next == v.identifier)
-    ...         assert (v.next is None or
-    ...                 b._mapping[v.next].previous == v.identifier)
-    ...         computed += v.contained_len(b)
-    ...         if isinstance(v, zc.blist.Index):
-    ...             checkIndex(v, b, previous, previous_ix+1)
-    ...         else:
-    ...             assert isinstance(v, zc.blist.Bucket)
-    ...             assert len(v) <= b.bucket_size
-    ...             assert len(v) >= b.bucket_size // 2
-    ...         previous[previous_ix] = v
-    ...     
-    >>> def matches(b, result):
-    ...     assert list(b) == result, repr(list(b)) + ' != ' + repr(result)
-    ...     res = []
-    ...     for i in range(len(b)):
-    ...         res.append(b[i])
-    ...     assert res == result, repr(res) + ' != ' + repr(result)
-    ...     #assert set(result) == set(b.children)
-    ...     #children_errors = [(k, [b._mapping.get(i) for i in v]) for k, v in
-    ...     #                   b.children.items() if len(v) != 1]
-    ...     #assert children_errors == [], repr(children_errors)
-    ...     # we'll check the buckets internally while we are here
-    ...     assert b.data.parent is None
-    ...     assert b.data.previous is None and b.data.next is None
-    ...     if isinstance(b.data, zc.blist.Index):
-    ...         checkIndex(b.data, b, [None])
-    ...     return True
-    ...

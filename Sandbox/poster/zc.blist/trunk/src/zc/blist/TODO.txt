@@ -1,3 +1,4 @@
-- need much better tests
+- need much better tests.  Leaning towards randomly-generated test suite, in
+  part.
 
-- no tests at all for lazy ``copy`` right now, which is a delicate dance!
+- ...someday... maybe push some of this to C.

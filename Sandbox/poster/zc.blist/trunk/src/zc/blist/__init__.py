@@ -13,7 +13,9 @@
 ##############################################################################
 import sys
 import random
+import itertools
 
+import ZODB.POSException
 import persistent
 import persistent.list
 import BTrees.OOBTree
@@ -72,7 +74,7 @@ class Collections(persistent.Persistent):
         return iter(self._collections)
 
     def add(self, collection):
-        if collection not in self._collections:
+        if collection not in self:
             self._collections += (collection,)
 
     def remove(self, collection):
@@ -91,6 +93,15 @@ class Collections(persistent.Persistent):
 
     def __getitem__(self, key):
         return self._collections.__getitem__(key)
+
+    def __contains__(self, val):
+        for item in self._collections:
+            if val is item:
+                return True
+        return False
+
+    def __nonzero__(self):
+        return bool(self._collections)
 
 class AbstractData(persistent.Persistent):
     def __init__(self, collection, identifier=None, previous=None, next=None,
@@ -155,12 +166,12 @@ class Bucket(persistent.list.PersistentList, AbstractData):
             # move some right
             moved = self[move_index:]
             right[0:0] = moved
-            del left[move_index:]
+            del self[move_index:]
         else:
             # move some left
             move_index -= len_left
             moved = right[:move_index]
-            left.extend(moved)
+            self.extend(moved)
             del right[:move_index]
 
     @method
@@ -212,6 +223,11 @@ class Index(BTrees.family32.II.Bucket, AbstractData):
                  identifier, previous=None, next=None, parent=None):
         AbstractData.__init__(
             self, collection, identifier, previous, next, parent)
+
+    def _p_resolveConflict(self, oldstate, committedstate, newstate):
+        # disable conflict resolution; thinking about its effect in terms of
+        # balancing the tree makes my head hurt.
+        raise ZODB.POSException.ConflictError()
 
     def index(self, other):
         for k, v in self.items():
@@ -317,7 +333,7 @@ class BList(persistent.Persistent):
         res.index_size = self.index_size
         res.family = self.family
         res._mapping = self.family.IO.BTree()
-        res._top_index = 0
+        res._top_index = self._top_index
         res._mapping.update(self._mapping)
         for v in self._mapping.values():
             v.collections.add(res)
@@ -496,12 +512,14 @@ class BList(persistent.Persistent):
 
     # __setitem__ helpers
 
-    def _reindex(self, start_bucket, stop_bucket, recurse=False):
-        bucket = start_bucket
+    def _reindex(self, start_bucket, stop_bucket_id, recurse=False):
+        if start_bucket is None:
+            return
+        bucket = self._mapping[start_bucket.identifier]
         k = None
         stopped = False
         while bucket is not None and bucket.identifier != self._top_index:
-            stopped = stopped or bucket is stop_bucket
+            stopped = stopped or bucket.identifier == stop_bucket_id
             parent = self._mapping[bucket.parent]
             if k is None:
                 k = parent.index(bucket.identifier)
@@ -516,8 +534,8 @@ class BList(persistent.Persistent):
             except ValueError:
                 k = None
                 if recurse:
-                    self._reindex(parent, self._mapping[stop_bucket.parent],
-                                  recurse)
+                    self._reindex(
+                        parent, self._mapping[stop_bucket_id].parent, recurse)
                 if stopped:
                     break
             else:
@@ -593,15 +611,17 @@ class BList(persistent.Persistent):
                 self._top_index = 0
                 start_bucket = self._mapping[
                     self._top_index] = Bucket(self, self._top_index)
+                start_bucket_id = self._top_index
                 start_ix = 0
             elif stop != start:
                 # we're supposed to delete
-                start_bucket, start_ix = self._get_bucket(start)
-                stop_bucket, stop_ix = self._get_bucket(stop)
-                bucket = start_bucket
+                bucket, start_ix = self._get_bucket(start)
+                start_bucket_id = bucket.identifier
+                _stop_bucket, stop_ix = self._get_bucket(stop)
+                stop_bucket_id = _stop_bucket.identifier
                 ix = start_ix
                 while True:
-                    if bucket is stop_bucket:
+                    if bucket.identifier == stop_bucket_id:
                         removed = bucket[ix:stop_ix]
                         if removed:
                             bucket = self._mutable(bucket)
@@ -616,15 +636,16 @@ class BList(persistent.Persistent):
                         break
                     bucket = self._mapping[bucket_ix]
                     ix = 0
-                bucket = start_bucket
+                bucket = self._mapping[start_bucket_id]
                 ix = start_ix
                 # populate old buckets with new values, until we are out of
                 # new values or old buckets
                 while value:
                     items = shift_sequence(
                         value, self.bucket_size - len(bucket))
+                    bucket = self._mutable(bucket)
                     bucket[ix:ix] = items
-                    if bucket is stop_bucket or not value:
+                    if bucket.identifier == stop_bucket_id or not value:
                         stop_ix = len(items)
                         break
                     bucket = self._mapping[bucket.next]
@@ -654,9 +675,9 @@ class BList(persistent.Persistent):
                 fill_maximum = self.bucket_size
                 fill_minimum = fill_maximum // 2
 
-                original_stop_bucket = stop_bucket
+                original_stop_bucket_id = stop_bucket_id
 
-                while start_bucket is not None:
+                while start_bucket_id is not None:
 
                     # We'll get the buckets rotated so that any
                     # bucket that has members will be above the fill ratio
@@ -676,11 +697,14 @@ class BList(persistent.Persistent):
                         # fill_minimum
 
                     len_bucket = len(bucket)
+                    stop_bucket = self._mapping[stop_bucket_id]
                     len_stop = len(stop_bucket)
                     if (bucket is not stop_bucket and
                         len_stop and (
                             len_bucket < fill_minimum or
                             len_stop < fill_minimum)):
+                        bucket = self._mutable(bucket)
+                        stop_bucket = self._mutable(stop_bucket)
                         bucket.rotate(stop_bucket)
                         len_bucket = len(bucket)
                         len_stop = len(stop_bucket)
@@ -692,15 +716,19 @@ class BList(persistent.Persistent):
 
                     if ((bucket is stop_bucket or not len_stop) and
                         bucket.previous is None and stop_bucket.next is None):
-                        if self.data is not bucket:
-                            self._mapping.clear()
-                            self._mapping[bucket.identifier] = bucket
+                        if bucket.identifier != self._top_index:
+                            # get rid of unnecessary parents
+                            p = bucket
+                            while p.identifier != self._top_index:
+                                p = self._mapping[p.parent]
+                                del self._mapping[p.identifier]
+                            # this is now the top of the tree
                             self._top_index = bucket.identifier 
                             bucket.parent = None
                         else:
                             assert bucket.parent is None
                         bucket.next = None
-                        stop_bucket = None
+                        stop_bucket = stop_bucket_id = None
                         break
 
                     # now these are the possible states:
@@ -734,22 +762,34 @@ class BList(persistent.Persistent):
                             previous is not None and
                             len(next) + len_bucket > fill_maximum):
                             # work with previous
-                            previous = self._mapping[previous]
+                            previous = self._mutable(self._mapping[previous])
+                            bucket = self._mutable(bucket)
                             previous.rotate(bucket)
-                            if bucket is start_bucket:
-                                bucket = start_bucket = previous
+                            if bucket.identifier == start_bucket_id:
+                                bucket = previous
+                                start_bucket_id = previous.identifier
                             if not bucket:
                                 bucket = previous
                                 assert bucket
                         else:
                             # work with next
+                            bucket = self._mutable(bucket)
+                            next = self._mutable(next)
                             bucket.rotateRight(next)
-                            stop_bucket = next
+                            stop_bucket_id = next.identifier
 
                     # OK, now we need to adjust pointers and get rid of
                     # empty buckets.  We'll go level-by-level.
 
-                    reindex_start = start_bucket
+                    # we keep track of the bucket to reindex on separately from
+                    # the start_index because we may have to move it to a
+                    # previous bucket if the start_bucket is deleted to make
+                    # sure that the next bucket is indexed correctly all the
+                    # way up.
+                    reindex_start = self._mapping[start_bucket_id]
+                    # we need to stash these because they may be removed
+                    start_bucket_parent = self._mapping[start_bucket_id].parent
+                    stop_bucket_parent = self._mapping[stop_bucket_id].parent
 
                     b = bucket
                     while b is not None:
@@ -757,37 +797,41 @@ class BList(persistent.Persistent):
                         if next is not None:
                             next = self._mapping[next]
                         if not b: # it is empty
-                            parent = self._mapping[b.parent]
+                            parent = self._mutable(self._mapping[b.parent])
                             ix = parent.index(b.identifier)
                             del parent[ix]
-                            if b.previous is not None:
-                                self._mapping[b.previous].next = b.next
+                            previous = b.previous
+                            if previous is not None:
+                                previous = self._mutable(
+                                    self._mapping[previous])
+                                previous.next = b.next
                             if next is not None: # next defined at loop start
+                                next = self._mutable(next)
                                 next.previous = b.previous
-                            if b is reindex_start:
-                                reindex_start = next
+                            if b.identifier == reindex_start.identifier:
+                                if previous is not None:
+                                    reindex_start = previous
+                                else:
+                                    reindex_start = next
+                            assert not b.shared
                             del self._mapping[b.identifier]
-                        if b is stop_bucket:
+                        if b.identifier == stop_bucket_id:
                             break
                         b = next
 
-                    self._reindex(reindex_start, stop_bucket)
+                    self._reindex(reindex_start, stop_bucket_id)
 
                     # now we get ready for the next round...
 
-                    start_bucket = start_bucket.parent
-                    if start_bucket is not None:
-                        start_bucket = self._mapping[start_bucket]
-                    stop_bucket = stop_bucket.parent
-                    if stop_bucket is not None:
-                        stop_bucket = self._mapping[stop_bucket]
+                    start_bucket_id = start_bucket_parent
+                    stop_bucket_id = stop_bucket_parent
                     bucket = bucket.parent
                     if bucket is not None:
                         bucket = self._mapping[bucket]
                     fill_maximum = self.index_size
                     fill_minimum = fill_maximum // 2
                     
-                assert stop_bucket is None
+                assert stop_bucket_id is None
 
                 if not value:
                     return # we're done; don't fall through to add story
@@ -796,12 +840,13 @@ class BList(persistent.Persistent):
                     # some more left.  we'll set things up so the
                     # standard insert story should work for the remaining
                     # values.
-                    start_bucket = original_stop_bucket
+                    start_bucket_id = original_stop_bucket_id
                     start_ix = stop_ix
                     # ...now continue with add story
 
             else:
-                start_bucket, start_ix = self._get_bucket(start)
+                _start_bucket, start_ix = self._get_bucket(start)
+                start_bucket_id = _start_bucket.identifier
             # this is the add story.
 
             # So, we have a start_bucket and a start_ix: we're supposed
@@ -811,15 +856,15 @@ class BList(persistent.Persistent):
             fill_maximum = self.bucket_size
             fill_minimum = fill_maximum // 2
 
-            # Clean out the ones after start_ix in the start_bucket, if
+            # Clean out the ones after start_ix in the start bucket, if
             # any.  
 
-            moved = start_bucket[start_ix:]
+            bucket = self._mapping[start_bucket_id]
+            moved = bucket[start_ix:]
             value.extend(moved)
-            start_bucket = self._mutable(start_bucket)
-            del start_bucket[start_ix:]
+            bucket = self._mutable(bucket)
+            del bucket[start_ix:]
             ix = start_ix
-            bucket = start_bucket
             created = []
 
             # Start filling at the ix.  Fill until we reached len
@@ -851,6 +896,7 @@ class BList(persistent.Persistent):
                 # contents of the previous bucket and this one--that way
                 # there's not any empty bucket to have to handle.
                 previous = self._mapping[bucket.previous]
+                assert not previous.shared
                 assert len(previous) + len(bucket) >= 2 * fill_minimum
                 previous.balance(bucket)
 
@@ -861,15 +907,17 @@ class BList(persistent.Persistent):
             # we add a level at the top and continue.
 
             if not created:
-                self._reindex(start_bucket, bucket)
+                self._reindex(
+                    self._mapping[start_bucket_id], bucket.identifier)
                 return
 
             value = created
             fill_maximum = self.index_size
             fill_minimum = fill_maximum // 2
 
+            start_bucket = self._mutable(self._mapping[start_bucket_id])
             while value:
-                if start_bucket.identifier == self._top_index: # the top
+                if start_bucket_id == self._top_index: # the top
                     assert start_bucket.parent is None
                     self._top_index = identifier = self._generateId()
                     parent = self._mapping[identifier] = Index(
@@ -878,10 +926,12 @@ class BList(persistent.Persistent):
                     start_bucket.parent = parent.identifier
                     start_ix = 0
                     bucket = start_bucket = parent
+                    start_bucket_id = identifier
                 else:
-                    parent = self._mapping[start_bucket.parent]
+                    parent = self._mutable(self._mapping[start_bucket.parent])
                     start_ix = parent.index(start_bucket.identifier)
                     bucket = start_bucket = parent
+                    start_bucket_id = start_bucket.identifier
                     value.extend(
                         self._mapping[i] for i in
                         start_bucket.values(start_ix, excludemin=True))
@@ -901,6 +951,7 @@ class BList(persistent.Persistent):
                 length = fill_maximum - len(bucket)
                 while value:
                     for o in shift_sequence(value, length):
+                        assert not o.shared # these are newly created
                         bucket[ix] = o.identifier
                         o.parent = bucket.identifier
                         ix += o.contained_len(self)
@@ -925,21 +976,21 @@ class BList(persistent.Persistent):
                     # just split the contents of the previous bucket and
                     # this one--that way there's not any empty bucket to
                     # have to handle.
-                    assert (len(self._mapping[bucket.previous]) + len(bucket) >=
-                            2 * fill_minimum)
-                    self._mapping[bucket.previous].balance(bucket)
+                    previous = self._mapping[bucket.previous]
+                    assert (len(previous) + len(bucket) >= 2 * fill_minimum)
+                    assert not previous.shared # I *think* this is an
+                    # invariant; otherwise need to doublecheck and then use
+                    # _mutable
+                    previous.balance(bucket)
                 value = created
             if start_bucket.identifier != self._top_index:
                 # we need to correct the indices of the parents.
-                self._reindex(start_bucket, bucket, recurse=True)
+                self._reindex(start_bucket, bucket.identifier, recurse=True)
 
         else:
             # replace one set with a set of equal length
             changed = []
             index = start
-            removed = {}
-            problems = set()
-            added = {}
             error = None
             value_ct = 0
             for v in value:
@@ -952,14 +1003,6 @@ class BList(persistent.Persistent):
                     break
                 bucket, ix = self._get_bucket(index)
                 old = bucket[ix]
-                if old in removed:
-                    removed[old].add(bucket)
-                else:
-                    removed[old] = set((bucket,))
-                if v in added:
-                    added[v].add(bucket.identifier)
-                else:
-                    added[v] = set((bucket.identifier,))
                 bucket[ix] = v
                 changed.append((bucket, ix, old))
                 index += stride
@@ -969,11 +1012,6 @@ class BList(persistent.Persistent):
                             'attempt to assign sequence of size %d to '
                             'extended slice of size %d' % (
                             value_ct, (stop - start) / stride))
-            if not error and problems:
-                problems.difference_update(removed)
-                if problems:
-                    error = ValueError('item(s) already in collection',
-                        problems)
             if error:
                 for bucket, ix, old in changed:
                     bucket[ix] = old
@@ -982,7 +1020,12 @@ class BList(persistent.Persistent):
 #    I want eq and ne but don't care much about the rest
 
     def __eq__(self, other):
-        return isinstance(other, Sequence) and tuple(self) == tuple(other)
+        if self.__class__ is not other.__class__ or len(self) != len(other):
+            return False
+        for s, o in itertools.izip(self, other):
+            if s != o:
+                return False
+        return True
 
     def __ne__(self, other):
         return not self.__eq__(other)
