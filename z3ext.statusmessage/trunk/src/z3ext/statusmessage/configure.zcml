@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <autoinclude package="z3ext.statusmessage" />
+  <includeDependencies package="z3ext.statusmessage" />
 
   <utility
      name="info"
