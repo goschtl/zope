@@ -171,7 +171,86 @@ The found version in this case will reside in the same subdirectory,
   >>> found_data['root']['sub']['qux'].payload
   36
 
-Let's recreate this conflict again.
+Re-occurrence of a conflict
+---------------------------
+
+If a conflict occurs for the same file the second time, and the file
+was already in the ``found`` directory, the file in the found
+directory is overwritten with the latest version::
+
+  >>> current_synchronizer = s1
+  >>> data1['bar'].payload = 201
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 251
+  >>> info = s2.sync("Synchronize")
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("Synchronize")
+
+The conflict will be resolved in favor of the last synchronization::
+
+  >>> data1['bar'].payload
+  201
+
+The ``found`` directory will contain the other part of the conflict
+(having overwritten the previous value)::
+
+  >>> current_synchronizer = found_s
+  >>> info = found_s.sync("synchronize")
+  >>> found_data['root']['bar'].payload
+  251
+
+Conflicting file conflicts
+--------------------------
+
+The ``found`` directory can have files removed in it by a user. What
+if a user removes a file from the ``found`` directory, and at the same
+time, another user creates a conflict that causes this file to be
+re-created?
+
+Let's synchronize the found directory for the second user::
+
+  >>> found_data2 = Container()
+  >>> found_data2.__name__ = 'found'
+  >>> found_state2 = TestState(found_data2)
+  >>> found_s2 = Synchronizer(checkout2, found_state2)
+  >>> current_synchronizer2 = found_s2
+  >>> info = found_s2.sync("synchronize")
+
+We currently already have a conflicting object in ``found``::
+
+  >>> found_data2['root']['bar'].payload
+  251
+
+Now the user throws away the ``bar`` object from ``found``::
+
+  >>> from z3c.vcsync.vc import get_object_path
+  >>> found_state2._removed.append(
+  ...    get_object_path(found_data2, found_data2['root']['bar']))
+  >>> del found_data2['root']['bar']
+
+Now let's generate a conflict on ``bar`` again::
+
+  >>> current_synchronizer = s1
+  >>> data1['bar'].payload = 202
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 252
+  >>> info = s2.sync("Synchronize")
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("Synchronize")
+
+We synchronize the throwing away of ``bar`` in ``found``, generating
+a potential conflict in the ``found`` directory::
+
+  >>> current_synchronizer = found_s2
+  >>> 'bar' in found_data2['root']
+  False
+  >>> info = found_s2.sync("synchronize")
+
+The result should be that the found object is there, updated to the
+new conflict::
+
+  >>> found_data2['root']['bar'].payload
+  252
 
 Folder conflicts
 ----------------
@@ -196,7 +275,6 @@ access to it::
 causing ``folder`` to be gone in SVN::
 
   >>> current_synchronizer = s1
-  >>> from z3c.vcsync.vc import get_object_path
   >>> state1._removed.append(get_object_path(data1, data1['folder']))
   >>> del data1['folder']
   >>> info = s1.sync("Synchronize")
@@ -225,4 +303,11 @@ section::
   >>> found_data['root']['folder']['content'].payload
   15
 
+Conflicting directory conflicts
+-------------------------------
+
+A directory was removed in the conflict directory: should be all right
+
+A directory was removed in the conflict directory, but more conflicts
+created files within that directory.
 
