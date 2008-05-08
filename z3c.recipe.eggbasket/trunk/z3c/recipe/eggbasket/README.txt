@@ -106,6 +106,10 @@ In this case the recipe will do nothing.  So the url does not get
 used.  Running the buildout gives us::
 
     >>> print system(buildout)
+    Upgraded:
+      zc.buildout version 1.0.1;
+    restarting.
+    Generated script '/sample-buildout/bin/buildout'.
     Installing basket.
     Unused options for basket: 'url'.
     <BLANKLINE>
@@ -132,8 +136,8 @@ So now we create a tar ball in a directory::
     >>> tarball.add(colours)
     >>> tarball.list(verbose=False)
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/
-    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/colour-0.1.zip
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
     >>> tarball.close()
     >>> ls(tarserver)
     -  colours.tgz
