@@ -21,7 +21,7 @@ roles, groups or specifically assigned permissions will be displayed.
     >>> from zope.app import zapi
     >>> from pprint import pprint
     >>> from zope.interface import providedBy
-    >>> from z3c.securitytool.securitytool import getViews
+    >>> from z3c.securitytool.securitytool import *
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> from z3c.securitytool.interfaces import IPrincipalDetails
     >>> from z3c.securitytool.interfaces import IPermissionDetails
@@ -56,11 +56,12 @@ context to a SecurityChecker Object.
 Ok. Lets now see how the security tool represents the permissions for
 a certain context level and Interface.
 
-The `getPermissionSettingsForAllViews` method takes a tuple of interfaces
+The 'getPermissionSettingsForAllViews' method takes a tuple of interfaces
 as an argument to determine what views registered at this context level.
 
 Since nothing should be registerd for only zope.interface.Interface we
 should recieve an empty set, of permissions, roles and groups.
+
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
 
@@ -71,6 +72,7 @@ and Interface.
 
 Now lets see what the actual securityMatrix looks like in the context level
 of folder1.
+
     >>> ifaces = tuple(providedBy(folder1))
     >>> pprint(ifaces)
     (<InterfaceClass z3c.securitytool.interfaces.ISecurityChecker>,)
@@ -141,91 +143,17 @@ is used to populate the main securitytool page.
          u'absolute_url': 'zope.Public'},
         set(['zope.Public'])]
 
-Following are the helper functions used within the securitytool, These
-contain a set of common functionality that is used in many places.
-
-Lets see if the `hasPermissionSetting` method returns True if there is
-a permission or role and False if there is not.
-
-   >>> from z3c.securitytool.securitytool import *
-   >>> hasPermissionSetting({'permissions':'Allow'})
-   True
-
-We need to make some dummy objects to test the `hasPermissionSetting` method
-
-    >>> emptySettings = {'permissions': [],
-    ...                  'roles': {},
-    ...                  'groups': {}}
-
-    >>> fullSettings = {'permissions': 'Allow',
-    ...                  'roles': {},
-    ...                  'groups': {}}
-
-We also need to make sure the recursive functionality works for this method
-
-     >>> hasPermissionSetting({'permissions':{},'roles':{},
-     ...                                 'groups':{'group1':emptySettings,
-     ...                                           'group2':fullSettings}})
-     True
-
-    >>> from zope.securitypolicy.interfaces import Allow, Unset, Deny
-
-    >>> prinPermMap = ({'principal':'daniel',
-    ...                 'permission':'takeOverTheWORLD',
-    ...                 'setting':  Allow})
-
-    >>> rolePermMap = ({'role':'Janitor',
-    ...                 'permission':'takeOverTheWORLD',
-    ...                 'setting':  Allow})
-
-    >>> prinRoleMap = ({'principal':'daniel',
-    ...                 'role':'Janitor',
-    ...                 'setting':  Allow})
-
-
-Lets test the method with our new dummy data
-    >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
-    ...                                          'takeOverTheWORLD')
-    'Allow'
-
-And we also need to test the roleProvidesPermission
-    >>> roleProvidesPermission([rolePermMap], 'Janitor', 'takeOverTheWORLD')
-    'Allow'
-
-And we also need to test the roleProvidesPermission
-    >>> principalRoleProvidesPermission([prinRoleMap],
-    ...                                 [rolePermMap],
-    ...                                 'daniel',
-    ...                                 'takeOverTheWORLD')
-    ('Janitor', 'Allow')
-
-See janitors CAN take over the world!!!!!
-
-And of course the rendered name to display on the page template
-If we do not receive a name that means we are on the root level.
-
-    >>> renderedName(None)
-    u'Root Folder'
-
-    >>> renderedName('Daniel')
-    'Daniel'
-
-    >>> folder1.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
-
-Now we test the meat of the SecurityChecker Class
-
-    >>> settings = {'principalPermissions': [prinPermMap],
-    ...             'rolePermissions'     : [rolePermMap],
-    ...             'principalRoles'      : [prinRoleMap]}
-
-
-    >>> permDetails = PermissionDetails(folder1)
 
 Lets see what the principalDetails look like for the principal Daniel
 and the context of 'Folder1'.
 
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
     >>> matrix = prinDetails('zope.daniel')
+
+Below we check to make sure the groups data structure from the user daniel
+is returned as expected. This is the data used to populate the groups
+section on the User Details page.
+
     >>> pprint(matrix['groups'])
     {'zope.group1':
           {'groups': {},
@@ -278,6 +206,11 @@ and the context of 'Folder1'.
                    {'permission': 'concord.ReadIssue',
                     'setting': 'Allow'}]}}}
 
+
+Here we check to make sure the permission tree is created
+properly. The permission tree is used to display the levels of
+inheritance that were traversed to attain the permission displayed.
+
     >>> pprint(matrix['permissionTree'])
     [{u'Folder1_2': {'name': None,
                      'parentList': [u'Folder1', 'Root Folder'],
@@ -302,6 +235,10 @@ and the context of 'Folder1'.
                                         'principal': 'zope.daniel',
                                         'setting': PermissionSetting: Deny}]}}]
 
+
+The permissions section of the matrix displays the final say on
+whether or not the user has permissions at this context level.
+
     >>> pprint(matrix['permissions'])
     [{'setting': PermissionSetting: Allow,
       'permission': 'concord.CreateArticle'},
@@ -312,7 +249,17 @@ and the context of 'Folder1'.
      {'setting': PermissionSetting: Deny,
       'permission': 'concord.DeleteArticle'}]
 
-The roleTree is stored as a list so to consistently view the data
+The roles section of the matrix displays the final say on whether or
+not the user has the role assigned at this context level.
+
+    >>> pprint(matrix['roles'])
+    {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
+     'zope.Writer': [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
+                     {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
+                     {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
+
+The roleTree structure is used to display the roles attained at each
+level of traversal. The roleTree is stored as a list so to consistently test the data
 properly we will create a dictionary out of it.    
 
     >>> tmpDict = {}
@@ -340,15 +287,9 @@ properly we will create a dictionary out of it.
      'roles': [{'principal': 'zope.daniel',
                 'role': 'zope.Janitor',
                 'setting': PermissionSetting: Allow}]}
-
-    >>> pprint(matrix['roles'])
-    {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
-     'zope.Writer': [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
-                     {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
-                     {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
     
-
 Now lets see what the permission details returns
+
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
     >>> from z3c.securitytool.interfaces import IPermissionDetails
     >>> permAdapter = zapi.getMultiAdapter((root[u'Folder1'],
@@ -377,6 +318,83 @@ Now lets see what the permission details returns
      'roleTree': [],
      'roles': {}}
 
+
+Following are the helper functions used within the securitytool, These
+contain a set of common functionality that is used in many places.
+Lets see if the 'hasPermissionSetting' method returns True if there is
+a permission or role and False if there is not.
+
+   >>> hasPermissionSetting({'permissions':'Allow'})
+   True
+
+We need to make some dummy objects to test the 'hasPermissionSetting' method
+
+    >>> emptySettings = {'permissions': [],
+    ...                  'roles': {},
+    ...                  'groups': {}}
+
+    >>> fullSettings = {'permissions': 'Allow',
+    ...                  'roles': {},
+    ...                  'groups': {}}
+
+We also need to make sure the recursive functionality works for this method
+
+     >>> hasPermissionSetting({'permissions':{},'roles':{},
+     ...                                 'groups':{'group1':emptySettings,
+     ...                                           'group2':fullSettings}})
+     True
+
+    >>> from zope.securitypolicy.interfaces import Allow, Unset, Deny
+    >>> prinPermMap = ({'principal':'daniel',
+    ...                 'permission':'takeOverTheWORLD',
+    ...                 'setting':  Allow})
+
+    >>> rolePermMap = ({'role':'Janitor',
+    ...                 'permission':'takeOverTheWORLD',
+    ...                 'setting':  Allow})
+
+    >>> prinRoleMap = ({'principal':'daniel',
+    ...                 'role':'Janitor',
+    ...                 'setting':  Allow})
+
+
+Lets test the method with our new dummy data
+    >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
+    ...                                          'takeOverTheWORLD')
+    'Allow'
+
+And we also need to test the roleProvidesPermission
+    >>> roleProvidesPermission([rolePermMap], 'Janitor', 'takeOverTheWORLD')
+    'Allow'
+
+And we also need to test the roleProvidesPermission
+    >>> principalRoleProvidesPermission([prinRoleMap],
+    ...                                 [rolePermMap],
+    ...                                 'daniel',
+    ...                                 'takeOverTheWORLD')
+    ('Janitor', 'Allow')
+
+See janitors CAN take over the world!!!!!
+
+And of course the rendered name to display on the page template
+If we do not receive a name that means we are on the root level.
+
+    >>> renderedName(None)
+    u'Root Folder'
+
+    >>> renderedName('Daniel')
+    'Daniel'
+
+    >>> folder1.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
+
+Now we test the meat of the SecurityChecker Class
+
+    >>> settings = {'principalPermissions': [prinPermMap],
+    ...             'rolePermissions'     : [rolePermMap],
+    ...             'principalRoles'      : [prinRoleMap]}
+
+    >>> permDetails = PermissionDetails(folder1)
+
 TestBrowser Smoke Tests
 -----------------------
 
@@ -393,6 +411,7 @@ Lets make sure all the views work properly. Just a simple smoke test
     >>> manager.open(server + '/@@securityMatrix.html')
 
 First we will check if the main page is available
+
     >>> manager.open(server + '/@@securityMatrix.html')
 
     >>> manager.open(server + '/Folder1/@@securityMatrix.html')
@@ -400,6 +419,7 @@ First we will check if the main page is available
     >>> manager.open(server + '/Folder1/Folder2/Folder3/@@securityMatrix.html')
 
 Now lets send the filter variable so our test is complete
+
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes')
 
@@ -412,11 +432,13 @@ And with the selected permission
 
 
 Here we send an invalid selectedPermisson ( just for coverage ) ;)
+
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.dummy')
 
 And with the None permission
+
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=None')
