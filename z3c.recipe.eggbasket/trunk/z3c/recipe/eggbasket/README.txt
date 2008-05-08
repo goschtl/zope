@@ -110,7 +110,7 @@ used.  Running the buildout gives us::
     Unused options for basket: 'url'.
     <BLANKLINE>
 
-Next we will specify an egg but not refer to a bad url::
+Next we will specify an egg but refer to a bad url::
 
     >>> write('buildout.cfg', buildout_template % { 'eggs': 'orange', 'url' : 'http://nowhere'})
     >>> print system(buildout)
