@@ -63,7 +63,7 @@ setup(name='z3c.recipe.eggbasket',
                         'zc.recipe.egg',
                         ],
       tests_require=tests_require,
-      extras_require=dict(tests=tests_require),
+      extras_require=dict(test=tests_require),
       test_suite = 'z3c.recipe.eggbasket.tests.test_docs.test_suite',
       entry_points=entry_points,
       )
