@@ -2,23 +2,26 @@
 Detailed Documentation
 ======================
 
-On the page you will be able to select the desired skin from all the
-available skins on the system.  On initial load of the securitytool
-you will only see permissions for IBrowserRequest and your current 
-context. The interesting information is when you select the skins.
-A future release of this tool will offer a selection to view  all
-information for all skins as well as each skin individually.
-You can also truncate the results by selecting the permission from
-the filter select box. When you click on the "Allow" or "Deny" security
-tool will explain where these permissions were specified whether by
-role, group, or in local context.
+On the main  page of the securityTool you will be able to select
+the desired skin from all the available skins on the system.
+On initial load of the securitytool you will only see permissions
+for IBrowserRequest and your current context. The interesting
+information is when you select the skins. A future release of
+this tool will offer a selection to view  all information for all
+skins as well as each skin individually. You can also truncate the
+results by selecting the permission from the filter select box.
+When you click on the "Allow" or "Deny" security tool will explain
+where these permissions were specified whether by role, group, or
+in local context.
 
 When you click on a user-name all the permissions inherited from
-roles, groups or specifically assigned will be displayed.
+roles, groups or specifically assigned permissions will be displayed.
 
     >>> import zope
     >>> from zope.app import zapi
     >>> from pprint import pprint
+    >>> from zope.interface import providedBy
+    >>> from z3c.securitytool.securitytool import getViews
     >>> from z3c.securitytool.interfaces import ISecurityChecker
     >>> from z3c.securitytool.interfaces import IPrincipalDetails
     >>> from z3c.securitytool.interfaces import IPermissionDetails
@@ -32,24 +35,42 @@ Lets make sure the items were added with demoSetup.py
     >>> sorted(root.keys())
     [u'Folder1']
 
+To retrieve the permission settings for the folder we must first adapt the
+context to a SecurityChecker Object.
+
     >>> folder1 = ISecurityChecker(root['Folder1'])
 
-The security tool uses a tuple of interfaces to determine what views
-are registered at this context level. Since nothing should be
-registerd for only zope.interface.Interface we should recieve an empty
-set, of permissions, roles and groups.
-
-    >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
-    [{}, {}, set([])]
+    >>> pprint(dir(folder1))
+    ['__class__',
+     '__component_adapts__',
+    ...
+     'aggregateMatrices',
+     'context',
+     'getPermissionSettingsForAllViews',
+     'getReadPerm',
+     'populateMatrix',
+     'populatePermissionMatrix',
+     'updateRolePermissionSetting']
         
 
-Now lets see what the actual securityMatrix looks like in the context level
-of folder1. We first get the interfaces registered for this context
+Ok. Lets now see how the security tool represents the permissions for
+a certain context level and Interface.
+
+The `getPermissionSettingsForAllViews` method takes a tuple of interfaces
+as an argument to determine what views registered at this context level.
+
+Since nothing should be registerd for only zope.interface.Interface we
+should recieve an empty set, of permissions, roles and groups.
+    >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
+    [{}, {}, set([])]
+
+
+We first get the interfaces registered for this context
 level and then list all the view names that are registered for this context
 and Interface.
 
-    >>> from zope.interface import providedBy
-    >>> from z3c.securitytool.securitytool import getViews
+Now lets see what the actual securityMatrix looks like in the context level
+of folder1.
     >>> ifaces = tuple(providedBy(folder1))
     >>> pprint(ifaces)
     (<InterfaceClass z3c.securitytool.interfaces.ISecurityChecker>,)
@@ -66,7 +87,8 @@ and Interface.
      u'vh',
      u'view']
 
-
+The following data structure returned from getPermissionSettingsForAllViews
+is used to populate the main securitytool page.
 
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
     >>> pprint(permDetails)
