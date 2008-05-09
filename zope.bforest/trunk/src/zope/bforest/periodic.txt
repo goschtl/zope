@@ -36,7 +36,7 @@ Now let's put in some keys and advance time.
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> third_hour = {KeyGenerator(): ValueGenerator()}
     >>> d.update(third_hour)
-    >>> current = first_hour.copy()
+    >>> current = BForest._treemodule.BTree(first_hour.copy())
     >>> current.update(fifty_minutes_in_to_first_hour)
     >>> current.update(second_hour)
     >>> current.update(third_hour)
@@ -89,7 +89,7 @@ of the rest.
     True
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> del d[sixth_hour.keys()[0]] # __delitem__
-    >>> current = fourth_hour.copy()
+    >>> current = BForest._treemodule.BTree(fourth_hour.copy())
     >>> current.update(fifth_hour)
     >>> d == current
     True
@@ -98,7 +98,7 @@ of the rest.
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> d.pop(seventh_hour.keys()[0]) == seventh_hour.values()[0] # pop
     True
-    >>> d == fifth_hour
+    >>> d == BForest._treemodule.BTree(fifth_hour)
     True
     >>> eighth_hour = {KeyGenerator(): ValueGenerator()}
     >>> d[eighth_hour.keys()[0]] = eighth_hour.values()[0]
@@ -109,8 +109,8 @@ of the rest.
     >>> d[tenth_hour.keys()[0]] = tenth_hour.values()[0]
     >>> setNow(datetime.datetime.now(utils.UTC) + datetime.timedelta(hours=1))
     >>> out = dict((d.popitem(),))
-    >>> out == tenth_hour
+    >>> d == BForest._treemodule.BTree(tenth_hour)
     True
-    >>> d == eighth_hour
+    >>> out == eighth_hour
     True
 

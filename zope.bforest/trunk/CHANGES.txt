@@ -2,6 +2,28 @@
 CHANGES
 =======
 
+1.2 (2008-05-09)
+----------------
+
+Bugfixes:
+
+- added omitted __ne__ implementation.
+
+Features:
+
+- added minKey, maxKey, like BTrees.
+
+- gave itervalues, iteritems, and iterkeys same extra arguments as BTrees'
+  values, items, and keys: min, max, excludemin, excludemax.
+
+- changed implementation of iter[...] functions to try to only wake up buckets
+  as needed.
+
+Incompatible Changes:
+
+- changed definition of __eq__: now compares contents *and* order.  Tries to
+  only wake up buckets as needed.
+
 1.1.1 (2008-04-09)
 ------------------
 

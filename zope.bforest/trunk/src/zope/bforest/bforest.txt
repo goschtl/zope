@@ -31,38 +31,28 @@ a new bforest creates two composite btree buckets.
     >>> d.get(dummy_key, 42)
     42
 
-Now we'll populate it.  We'll first create a dictionary we'll use to compare.
+Now we'll populate it.  We'll first create a BTree we'll use to compare.
 
-    >>> original = {}
+    >>> original = BForest._treemodule.BTree()
     >>> for i in range(10):
     ...     original[KeyGenerator()] = ValueGenerator()
     ... 
     >>> d.update(original)
     >>> d == original
     True
-    >>> d_keys = list(d.keys())
-    >>> d_keys.sort()
-    >>> o_keys = original.keys()
-    >>> o_keys.sort()
-    >>> d_keys == o_keys
+    >>> list(d) == list(original)
     True
-    >>> d_values = list(d.values())
-    >>> d_values.sort()
-    >>> o_values = original.values()
-    >>> o_values.sort()
-    >>> o_values == d_values
+    >>> list(d.keys()) == list(original.keys())
     True
-    >>> d_items = list(d.items())
-    >>> d_items.sort()
-    >>> o_items = original.items()
-    >>> o_items.sort()
-    >>> o_items == d_items
+    >>> list(d.values()) == list(original.values())
     True
-    >>> key, value = d.popitem()
-    >>> value == original.pop(key)
+    >>> list(d.items()) == list(original.items())
     True
-    >>> key, value = original.popitem()
-    >>> value == d.pop(key)
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
+    True
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
     True
     >>> len(d) == len(original)
     True
@@ -75,29 +65,19 @@ Now let's rotate the buckets.
 
     >>> d == original
     True
-    >>> d_keys = list(d.keys())
-    >>> d_keys.sort()
-    >>> o_keys = original.keys()
-    >>> o_keys.sort()
-    >>> d_keys == o_keys
+    >>> list(d) == list(original)
     True
-    >>> d_values = list(d.values())
-    >>> d_values.sort()
-    >>> o_values = original.values()
-    >>> o_values.sort()
-    >>> o_values == d_values
+    >>> list(d.keys()) == list(original.keys())
     True
-    >>> d_items = list(d.items())
-    >>> d_items.sort()
-    >>> o_items = original.items()
-    >>> o_items.sort()
-    >>> o_items == d_items
+    >>> list(d.values()) == list(original.values())
     True
-    >>> key, value = d.popitem()
-    >>> value == original.pop(key)
+    >>> list(d.items()) == list(original.items())
     True
-    >>> key, value = original.popitem()
-    >>> value == d.pop(key)
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
+    True
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
     True
     >>> len(d) == len(original)
     True
@@ -105,7 +85,7 @@ Now let's rotate the buckets.
 Now we'll make a new dictionary to represent changes made after the bucket
 rotation.
 
-    >>> second = {}
+    >>> second = BForest._treemodule.BTree()
     >>> for i in range(10):
     ...     key = KeyGenerator()
     ...     value = ValueGenerator()
@@ -114,37 +94,85 @@ rotation.
     ... 
     >>> original.update(second)
 
-...and we'll do almost the exact same test as above, first.
+...and we'll do the exact same test as above, first.
 
     >>> d == original
     True
-    >>> d_keys = list(d.keys())
-    >>> d_keys.sort()
-    >>> o_keys = original.keys()
-    >>> o_keys.sort()
-    >>> d_keys == o_keys
+    >>> list(d) == list(original)
     True
-    >>> d_values = list(d.values())
-    >>> d_values.sort()
-    >>> o_values = original.values()
-    >>> o_values.sort()
-    >>> o_values == d_values
+    >>> list(d.keys()) == list(original.keys())
     True
-    >>> d_items = list(d.items())
-    >>> d_items.sort()
-    >>> o_items = original.items()
-    >>> o_items.sort()
-    >>> o_items == d_items
+    >>> list(d.values()) == list(original.values())
     True
-    >>> key, value = d.popitem()
-    >>> ignore = second.pop(key, None) # keep second up-to-date
-    >>> value == original.pop(key)
+    >>> list(d.items()) == list(original.items())
     True
-    >>> key, value = original.popitem()
-    >>> ignore = second.pop(key, None) # keep second up-to-date
-    >>> value == d.pop(key)
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
     True
+    >>> if original_min in second:
+    ...     _ = second.pop(original_min)
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
+    True
+    >>> if original_min in second:
+    ...     _ = second.pop(original_min)
     >>> len(d) == len(original)
+    True
+
+The bforest offers ``itervalues``, ``iterkeys``, and ``iteritems`` that have
+the same extended arguments as BTrees' ``values``, ``keys``, and ``items``.
+
+    >>> list(d.itervalues()) == list(original.values())
+    True
+    >>> list(d.iteritems()) == list(original.items())
+    True
+    >>> list(d.iterkeys()) == list(original.keys())
+    True
+
+    >>> keys = list(original)
+    >>> mid = keys[len(keys)//2]
+    >>> list(d.itervalues(min=mid)) == list(original.itervalues(min=mid))
+    True
+    >>> list(d.itervalues(max=mid)) == list(original.itervalues(max=mid))
+    True
+    >>> list(d.itervalues(min=mid, excludemin=True)) == list(
+    ...     original.itervalues(min=mid, excludemin=True))
+    True
+    >>> list(d.itervalues(max=mid, excludemax=True)) == list(
+    ...     original.itervalues(max=mid, excludemax=True))
+    True
+
+    >>> list(d.iterkeys(min=mid)) == list(original.iterkeys(min=mid))
+    True
+    >>> list(d.iterkeys(max=mid)) == list(original.iterkeys(max=mid))
+    True
+    >>> list(d.iterkeys(min=mid, excludemin=True)) == list(
+    ...     original.iterkeys(min=mid, excludemin=True))
+    True
+    >>> list(d.iterkeys(max=mid, excludemax=True)) == list(
+    ...     original.iterkeys(max=mid, excludemax=True))
+    True
+
+    >>> list(d.iteritems(min=mid)) == list(original.iteritems(min=mid))
+    True
+    >>> list(d.iteritems(max=mid)) == list(original.iteritems(max=mid))
+    True
+    >>> list(d.iteritems(min=mid, excludemin=True)) == list(
+    ...     original.iteritems(min=mid, excludemin=True))
+    True
+    >>> list(d.iteritems(max=mid, excludemax=True)) == list(
+    ...     original.iteritems(max=mid, excludemax=True))
+    True
+
+It also offers maxKey and minKey, like BTrees.
+
+    >>> d.maxKey() == original.maxKey()
+    True
+    >>> d.minKey() == original.minKey()
+    True
+    >>> d.maxKey(mid) == original.maxKey(mid)
+    True
+    >>> d.minKey(mid) == original.minKey(mid)
     True
 
 Now if we rotate the buckets, the first set of items will be gone, but the 
@@ -158,7 +186,7 @@ second will remain.
 
 Let's set a value, check the copy behavior,  and then rotate it one more time.
 
-    >>> third = {KeyGenerator(): ValueGenerator()}
+    >>> third = BForest._treemodule.BTree({KeyGenerator(): ValueGenerator()})
     >>> d.update(third)
     >>> copy = d.copy()
     >>> copy == d
@@ -192,8 +220,8 @@ We'll make a value in one bucket that we'll override in another.
     >>> second == d
     True
 
-The tree method converts the bforest to a btree as efficiently as I know how
-for a common case of more items in buckets than buckets.
+The tree method converts the bforest to a btree efficiently for a common case
+of more items in buckets than buckets.
 
     >>> tree = d.tree()
     >>> d_items = list(d.items())
@@ -233,7 +261,9 @@ but here are some additional cases
     False
     >>> d > dict(second)
     False
-    >>> second.popitem()[0] in d
+    >>> original_min = second.minKey()
+    >>> del second[original_min]
+    >>> original_min in d
     True
     >>> d > second
     True

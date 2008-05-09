@@ -11,8 +11,6 @@
 #
 ##############################################################################
 """objects with dict API comprised of multiple btrees.
-
-$Id: bforest.py 33325 2005-07-15 01:09:43Z poster $
 """
 
 import persistent
@@ -64,6 +62,7 @@ class AbstractBForest(persistent.Persistent):
     def __delitem__(self, key):
         found = False
         for b in self.buckets:
+            # we delete all, in case one bucket is masking an old value
             try:
                 del b[key]
             except KeyError:
@@ -77,11 +76,13 @@ class AbstractBForest(persistent.Persistent):
         self.buckets[0].update(d)
     
     def keys(self):
-        union = self._treemodule.union
         buckets = self.buckets
         if len(buckets) == 1:
             res = buckets[0].keys()
-        else: # TODO: use multiunion for I* flavors
+        elif getattr(self._treemodule, 'multiunion', None) is not None:
+            return self._treemodule.multiunion(buckets)
+        else:
+            union = self._treemodule.union
             res = union(buckets[0], buckets[1])
             for b in buckets[2:]:
                 res = union(res, b)
@@ -100,40 +101,110 @@ class AbstractBForest(persistent.Persistent):
 
     def values(self):
         return self.tree().values()
+
+    def maxKey(self, key=None):
+        res = m = self._marker
+        if key is None:
+            args = ()
+        else:
+            args = (key,)
+        for b in self.buckets:
+            try:
+                v = b.maxKey(*args)
+            except ValueError:
+                pass
+            else:
+                if res is m or v > res:
+                    res = v
+        if res is m:
+            raise ValueError('no key')
+        return res
+
+    def minKey(self, key=None):
+        res = m = self._marker
+        if key is None:
+            args = ()
+        else:
+            args = (key,)
+        for b in self.buckets:
+            try:
+                v = b.minKey(*args)
+            except ValueError:
+                pass
+            else:
+                if res is m or v < res:
+                    res = v
+        if res is m:
+            raise ValueError('no key')
+        return res
+
+    def iteritems(self, min=None, max=None, excludemin=False, excludemax=False):
+        # this approach might be slower than simply iterating over self.keys(),
+        # but it has a chance of waking up fewer objects in the ZODB, if the
+        # iteration stops early.
+        sources = []
+        for b in self.buckets:
+            i = iter(b.items(min, max, excludemin, excludemax))
+            try:
+                first = i.next()
+            except StopIteration:
+                pass
+            else:
+                sources.append([first, i])
+        scratch = self._treemodule.Bucket()
+        while sources:
+            for ((k, v), i) in sources:
+                scratch.setdefault(k, v)
+            k = scratch.minKey()
+            yield k, scratch[k]
+            for i in range(len(sources)-1, -1, -1):
+                source = sources[i]
+                if source[0][0] == k:
+                    try:
+                        source[0] = source[1].next()
+                    except StopIteration:
+                        del sources[i]
+            scratch.clear()
     
-    def iteritems(self):
-        for key in self.keys():
-            yield key, self[key]
-    
-    def iterkeys(self):
-        return iter(self.keys())
+    def iterkeys(self,
+                 min=None, max=None, excludemin=False, excludemax=False):
+        return (k for k, v in self.iteritems(min, max, excludemin, excludemax))
     
     __iter__ = iterkeys
     
-    def itervalues(self):
-        for key in self.keys():
-            yield self[key]
-    
-    def has_key(self, key): 
-        try:
-            self[key]
-        except KeyError:
-            return False
-        else:
-            return True
+    def itervalues(self,
+                   min=None, max=None, excludemin=False, excludemax=False):
+        return (v for k, v in self.iteritems(min, max, excludemin, excludemax))
     
     def __eq__(self, other):
-        if not isinstance(other, dict):
-            if (isinstance(other, AbstractBForest) and 
-                self._treemodule is not other._treemodule):
+        # we will declare contents and its ordering to define equality.  More
+        # restrictive definitions can be wrapped around this one.
+        if getattr(other, 'iteritems', None) is None:
+            return False
+        si = self.iteritems()
+        so = other.iteritems()
+        while 1:
+            try:
+                k, v = si.next()
+            except StopIteration:
+                try:
+                    so.next()
+                except StopIteration:
+                    return True
                 return False
             try:
-                other = dict(other)
-            except (TypeError, ValueError):
+                ok, ov = so.next()
+            except StopIteration:
                 return False
-        return dict(self)==other # :-/
-    
+            else:
+                if ok != k or ov != v:
+                    return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __gt__(self, other):
+        # TODO blech, change this
         if not isinstance(other, dict):
             try:
                 other = dict(other)
@@ -142,6 +213,7 @@ class AbstractBForest(persistent.Persistent):
         return dict(self) > other
 
     def __lt__(self, other):
+        # TODO blech, change this
         if not isinstance(other, dict):
             try:
                 other = dict(other)
@@ -150,6 +222,7 @@ class AbstractBForest(persistent.Persistent):
         return dict(self) < other
         
     def __ge__(self, other):
+        # TODO blech, change this
         if not isinstance(other, dict):
             try:
                 other = dict(other)
@@ -158,6 +231,7 @@ class AbstractBForest(persistent.Persistent):
         return dict(self) >= other
         
     def __le__(self, other):
+        # TODO blech, change this
         if not isinstance(other, dict):
             try:
                 other = dict(other)
@@ -166,6 +240,15 @@ class AbstractBForest(persistent.Persistent):
         return dict(self) <= other
 
     def __len__(self):
+        # keeping track of a separate length is currently considered to be
+        # somewhat expensive per write and not necessarily always valuable
+        # (that is, we don't always care what the length is). Therefore, we
+        # have this quite expensive default approach. If you need a len often
+        # and cheaply then you'll need to wrap the BForest and keep track of it
+        # yourself.  This is expensive both because it wakes up every BTree and
+        # bucket in the BForest, which might be quite a few objects; and
+        # because of the merge necessary to create the composite tree (which
+        # eliminates duplicates from the count).
         return len(self.tree())
     
     def setdefault(self, key, failobj=None):
@@ -188,24 +271,18 @@ class AbstractBForest(persistent.Persistent):
             return res
     
     def popitem(self):
-        for b in self.buckets:
-            try:
-                key = b.minKey()
-            except ValueError:
-                pass
-            else:
-                val = b[key]
-                del b[key]
-                return key, val
-        else:
-            raise KeyError('popitem():dictionary is empty')
-                        
+        key = self.minKey()
+        val = self.pop(key)
+        return key, val
+
     def __contains__(self, key):
         for b in self.buckets:
             if b.has_key(key):
                 return True
         return False
-    
+
+    has_key = __contains__
+
     def copy(self):
         # this makes an exact copy, including the individual state of each 
         # bucket.  If you want a dict, cast it to a dict, or if you want
