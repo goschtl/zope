@@ -1,0 +1,283 @@
+===========
+BForest API
+===========
+
+BForests are dictionary-like objects that use multiple BTrees for a backend and
+support rotation of the composite trees.  This supports various implementations 
+of timed member expirations, enabling caches and semi-persistent storage.  A
+useful and simple subclass would be to promote a key-value pair to the
+first (newest) bucket whenever the key is accessed, for instance.  It also is
+useful with disabling the rotation capability.
+
+Like btrees, bforests come in four flavors: Integer-Integer (IIBForest), 
+Integer-Object (IOBForest), Object-Integer (OIBForest), and Object-Object
+(OOBForest).  The examples here will deal with them in the abstract: we will
+create classes from the imaginary and representative BForest class, and
+generate keys from KeyGenerator and values from ValueGenerator.  From the 
+examples you should be able to extrapolate usage of all four types.
+
+First let's instantiate a bforest and look at an empty example.  By default,
+a new bforest creates two composite btree buckets.
+
+    >>> d = BForest()
+    >>> list(d.keys())
+    []
+    >>> list(d.values())
+    []
+    >>> len(d.buckets)
+    2
+    >>> dummy_key = KeyGenerator()
+    >>> d.get(dummy_key)
+    >>> d.get(dummy_key, 42)
+    42
+
+Now we'll populate it.  We'll first create a BTree we'll use to compare.
+
+    >>> original = BForest._treemodule.BTree()
+    >>> for i in range(10):
+    ...     original[KeyGenerator()] = ValueGenerator()
+    ... 
+    >>> d.update(original)
+    >>> d == original
+    True
+    >>> list(d) == list(original)
+    True
+    >>> list(d.keys()) == list(original.keys())
+    True
+    >>> list(d.values()) == list(original.values())
+    True
+    >>> list(d.items()) == list(original.items())
+    True
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
+    True
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
+    True
+    >>> len(d) == len(original)
+    True
+
+Now let's rotate the buckets.
+
+    >>> d.rotateBucket()
+
+...and we'll do the exact same test as above, first.
+
+    >>> d == original
+    True
+    >>> list(d) == list(original)
+    True
+    >>> list(d.keys()) == list(original.keys())
+    True
+    >>> list(d.values()) == list(original.values())
+    True
+    >>> list(d.items()) == list(original.items())
+    True
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
+    True
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
+    True
+    >>> len(d) == len(original)
+    True
+
+Now we'll make a new dictionary to represent changes made after the bucket
+rotation.
+
+    >>> second = BForest._treemodule.BTree()
+    >>> for i in range(10):
+    ...     key = KeyGenerator()
+    ...     value = ValueGenerator()
+    ...     second[key] = value
+    ...     d[key] = value
+    ... 
+    >>> original.update(second)
+
+...and we'll do the exact same test as above, first.
+
+    >>> d == original
+    True
+    >>> list(d) == list(original)
+    True
+    >>> list(d.keys()) == list(original.keys())
+    True
+    >>> list(d.values()) == list(original.values())
+    True
+    >>> list(d.items()) == list(original.items())
+    True
+    >>> original_min = original.minKey()
+    >>> d.popitem() == (original_min, original.pop(original_min))
+    True
+    >>> if original_min in second:
+    ...     _ = second.pop(original_min)
+    >>> original_min = original.minKey()
+    >>> d.pop(original_min) == original.pop(original_min)
+    True
+    >>> if original_min in second:
+    ...     _ = second.pop(original_min)
+    >>> len(d) == len(original)
+    True
+
+The bforest offers ``itervalues``, ``iterkeys``, and ``iteritems`` that have
+the same extended arguments as BTrees' ``values``, ``keys``, and ``items``.
+
+    >>> list(d.itervalues()) == list(original.values())
+    True
+    >>> list(d.iteritems()) == list(original.items())
+    True
+    >>> list(d.iterkeys()) == list(original.keys())
+    True
+
+    >>> keys = list(original)
+    >>> mid = keys[len(keys)//2]
+    >>> list(d.itervalues(min=mid)) == list(original.itervalues(min=mid))
+    True
+    >>> list(d.itervalues(max=mid)) == list(original.itervalues(max=mid))
+    True
+    >>> list(d.itervalues(min=mid, excludemin=True)) == list(
+    ...     original.itervalues(min=mid, excludemin=True))
+    True
+    >>> list(d.itervalues(max=mid, excludemax=True)) == list(
+    ...     original.itervalues(max=mid, excludemax=True))
+    True
+
+    >>> list(d.iterkeys(min=mid)) == list(original.iterkeys(min=mid))
+    True
+    >>> list(d.iterkeys(max=mid)) == list(original.iterkeys(max=mid))
+    True
+    >>> list(d.iterkeys(min=mid, excludemin=True)) == list(
+    ...     original.iterkeys(min=mid, excludemin=True))
+    True
+    >>> list(d.iterkeys(max=mid, excludemax=True)) == list(
+    ...     original.iterkeys(max=mid, excludemax=True))
+    True
+
+    >>> list(d.iteritems(min=mid)) == list(original.iteritems(min=mid))
+    True
+    >>> list(d.iteritems(max=mid)) == list(original.iteritems(max=mid))
+    True
+    >>> list(d.iteritems(min=mid, excludemin=True)) == list(
+    ...     original.iteritems(min=mid, excludemin=True))
+    True
+    >>> list(d.iteritems(max=mid, excludemax=True)) == list(
+    ...     original.iteritems(max=mid, excludemax=True))
+    True
+
+It also offers maxKey and minKey, like BTrees.
+
+    >>> d.maxKey() == original.maxKey()
+    True
+    >>> d.minKey() == original.minKey()
+    True
+    >>> d.maxKey(mid) == original.maxKey(mid)
+    True
+    >>> d.minKey(mid) == original.minKey(mid)
+    True
+
+Now if we rotate the buckets, the first set of items will be gone, but the 
+second will remain.
+
+    >>> d.rotateBucket()
+    >>> d == original
+    False
+    >>> d == second
+    True
+
+Let's set a value, check the copy behavior,  and then rotate it one more time.
+
+    >>> third = BForest._treemodule.BTree({KeyGenerator(): ValueGenerator()})
+    >>> d.update(third)
+    >>> copy = d.copy()
+    >>> copy == d
+    True
+    >>> copy != second # because second doesn't have the values of third
+    True
+    >>> list(copy.buckets[0].items()) == list(d.buckets[0].items())
+    True
+    >>> list(copy.buckets[1].items()) == list(d.buckets[1].items())
+    True
+    >>> copy[KeyGenerator()] = ValueGenerator()
+    >>> copy == d
+    False
+    >>> d.rotateBucket()
+    >>> d == third
+    True
+    >>> d.clear()
+    >>> d == BForest() == {}
+    True
+    
+    >>> d.update(second)
+
+We'll make a value in one bucket that we'll override in another.
+
+    >>> d[third.keys()[0]] = ValueGenerator()
+    >>> d.rotateBucket()
+    >>> d.update(third)
+    >>> second.update(third)
+    >>> d == second
+    True
+    >>> second == d
+    True
+
+The tree method converts the bforest to a btree efficiently for a common case
+of more items in buckets than buckets.
+
+    >>> tree = d.tree()
+    >>> d_items = list(d.items())
+    >>> d_items.sort()
+    >>> t_items = list(tree.items())
+    >>> t_items.sort()
+    >>> t_items == d_items
+    True
+
+Finally, comparisons work similarly to dicts but in a simpleminded 
+way--improvements welcome!  We've already looked at a lot of examples above,
+but here are some additional cases
+
+    >>> d == None
+    False
+    >>> d == [1, 2]
+    False
+    >>> d != None
+    True
+    >>> None == d
+    False
+    >>> d != None
+    True
+    >>> d >= second
+    True
+    >>> d >= dict(second)
+    True
+    >>> d <= second
+    True
+    >>> d <= dict(second)
+    True
+    >>> d > second
+    False
+    >>> d > dict(second)
+    False
+    >>> d < second
+    False
+    >>> d > dict(second)
+    False
+    >>> original_min = second.minKey()
+    >>> del second[original_min]
+    >>> original_min in d
+    True
+    >>> d > second
+    True
+    >>> d < second
+    False
+    >>> d >= second
+    True
+    >>> d <= second
+    False
+    >>> second < d
+    True
+    >>> second > d
+    False
+    >>> second <= d
+    True
+    >>> second >= d
+    False

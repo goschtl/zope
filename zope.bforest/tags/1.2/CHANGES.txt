@@ -1,0 +1,49 @@
+=======
+CHANGES
+=======
+
+1.2 (2008-05-09)
+----------------
+
+Bugfixes:
+
+- added omitted __ne__ implementation.
+
+Features:
+
+- added minKey, maxKey, like BTrees.
+
+- gave itervalues, iteritems, and iterkeys same extra arguments as BTrees'
+  values, items, and keys: min, max, excludemin, excludemax.
+
+- changed implementation of iter[...] functions to try to only wake up buckets
+  as needed.
+
+Incompatible Changes:
+
+- changed definition of __eq__: now compares contents *and* order.  Tries to
+  only wake up buckets as needed.
+
+1.1.1 (2008-04-09)
+------------------
+
+Bugfix:
+
+- periodic variant was pseudo-guaranteeing maximum period, not minimum
+  period, contradicting documentation.  Changed implementation and test to
+  match documentation (i.e., guarantees minimum period; maximum period is
+  a bit fuzzy, as described in docs).
+
+1.1 (2008-03-08)
+----------------
+
+Features: 
+
+- added periodic variant
+
+- added L-variants
+
+1.0 (?)
+-------
+
+Initial release
