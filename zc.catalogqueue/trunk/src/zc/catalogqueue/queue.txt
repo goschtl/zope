@@ -25,6 +25,12 @@ processed yet, these have some initial values:
     >>> queue.totalProcessed
     0
 
+The length of the queue provides access to the number of pending cataloging
+events:
+
+    >>> len(queue)
+    0
+
 Queues are used in 2 ways.  As content are modified, we call add,
 update, and remove methods on the queue:
 
@@ -56,12 +62,15 @@ update, and remove methods on the queue:
     >>> queue.update(0)
 
 At this point, we've added several events, but haven't processed the queue, so
-we expect the ``lastProcessedTime`` and ``totalProcessed`` to be unchanged:
+we expect ``lastProcessedTime``, ``totalProcessed`` to be unchanged, but the
+queue length to reflect the pending tasks:
 
     >>> print queue.lastProcessedTime
     None
     >>> queue.totalProcessed
     0
+    >>> len(queue)
+    6
 
 Periodically, we call process on the queue.  We need to pass an ids
 object and a collection of injection (catalog) objects:
@@ -114,6 +123,11 @@ The processing information has been updated on the queue:
 
     >>> previous_time = queue.lastProcessedTime
 
+The length of the queue now indicates that no further events are pending:
+
+    >>> len(queue)
+    0
+
 If we process the queue without additional events, we'll just get 0
 back:
 
@@ -129,12 +143,15 @@ The historical processing information is updated:
     >>> queue.totalProcessed
     6
 
-    >>> previous_time = queue.lastProcessedTime
+    >>> len(queue)
+    0
 
 Of course, the limit argument limits how many events we process:
 
     >>> for i in range(10):
     ...     queue.update(i)
+    >>> len(queue)
+    10
     >>> queue.process(Ids(), [Injection('cat1')], 5)
     cat1 indexing 1 object 1
     cat1 indexing 2 object 2
@@ -143,6 +160,8 @@ Of course, the limit argument limits how many events we process:
     5
     >>> queue.totalProcessed
     11
+    >>> len(queue)
+    5
 
     >>> queue.process(Ids(), [Injection('cat1')], 5)
     cat1 indexing 5 object 5
@@ -153,6 +172,8 @@ Of course, the limit argument limits how many events we process:
     5
     >>> queue.totalProcessed
     16
+    >>> len(queue)
+    0
 
 (Remember that 0 isn't processed because it can't be found.)
 

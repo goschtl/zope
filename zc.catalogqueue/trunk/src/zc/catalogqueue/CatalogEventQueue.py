@@ -133,6 +133,7 @@ class CatalogEventQueue(Persistent):
         data = self._data
         current = data.get(uid)
         if current is not None:
+            delta = 0
             generation, current = current
             if current in ADDED_EVENTS and etype is ADDED:
                 raise TypeError("Attempt to add an object that is already "
@@ -146,11 +147,13 @@ class CatalogEventQueue(Persistent):
                 etype = CHANGED_ADDED
                 
         else:
+            delta = 1
             generation = 0
 
         data[uid] = generation+1, etype
 
         self._p_changed = 1
+        return delta
 
     def getEvent(self, uid):
         state = self._data.get(uid)

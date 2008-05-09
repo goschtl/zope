@@ -6,10 +6,13 @@ Change History
 
 Added some processing state information as attributes of the queue object:
 
-``lastProcessedTime``
+``ICatalogQueue.__len__()``
+  Return the number of pending cataloging events.
+
+``ICatalogQueue.lastProcessedTime``
   Time of the last successful processing.
 
-``totalProcessed``
+``ICatalogQueue.totalProcessed``
   Total number of cataloging events processed.
 
 

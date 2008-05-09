@@ -37,6 +37,9 @@ class ICatalogQueue(zope.interface.Interface):
         zope.index.interfaces.IInjection objects to be updated.
         """
 
+    def __len__():
+        """Return the number of unprocessed cataloging events."""
+
     lastProcessedTime = zope.interface.Attribute(
         """Time the queue was last processed.
 

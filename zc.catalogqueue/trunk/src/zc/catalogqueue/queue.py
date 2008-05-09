@@ -14,6 +14,7 @@
 
 from zc.catalogqueue.CatalogEventQueue import REMOVED, CHANGED, ADDED
 
+import BTrees.Length
 import datetime
 import logging
 import persistent
@@ -35,13 +36,18 @@ class CatalogQueue(persistent.Persistent):
     _buckets = 1009 # Maybe configurable someday
 
     def __init__(self):
+        self._length = BTrees.Length.Length()
         self._queues = [
             zc.catalogqueue.CatalogEventQueue.CatalogEventQueue()
             for i in range(self._buckets)
             ]
 
+    def __len__(self):
+        return self._length()
+
     def _notify(self, id, event):
-        self._queues[hash(id) % self._buckets].update(id, event)
+        self._length.change(
+            self._queues[hash(id) % self._buckets].update(id, event))
 
     def add(self, id):
         self._notify(id, ADDED)
@@ -67,6 +73,7 @@ class CatalogQueue(persistent.Persistent):
                         for catalog in catalogs:
                             catalog.index_doc(id, ob)
                 done += 1
+                self._length.change(-1)
 
             if done >= limit:
                 break
