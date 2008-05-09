@@ -72,6 +72,8 @@ class Navigation(grok.Viewlet):
 
 class Login(grok.Viewlet):
     grok.viewletmanager(LeftSidebar)
+    grok.context(App)
+    grok.view(Index)
     grok.order(2)
 
 class MainArea(grok.ViewletManager):
