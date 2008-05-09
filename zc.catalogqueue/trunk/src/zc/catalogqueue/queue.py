@@ -14,17 +14,23 @@
 
 from zc.catalogqueue.CatalogEventQueue import REMOVED, CHANGED, ADDED
 
+import datetime
 import logging
 import persistent
+import pytz
 import zc.catalogqueue.CatalogEventQueue
 import zc.catalogqueue.interfaces
 import zope.interface
 
 logger = logging.getLogger(__name__)
 
+
 class CatalogQueue(persistent.Persistent):
 
     zope.interface.implements(zc.catalogqueue.interfaces.ICatalogQueue)
+
+    lastProcessedTime = None
+    totalProcessed = 0
 
     _buckets = 1009 # Maybe configurable someday
 
@@ -64,5 +70,8 @@ class CatalogQueue(persistent.Persistent):
 
             if done >= limit:
                 break
+
+        self.lastProcessedTime = datetime.datetime.now(pytz.UTC)
+        self.totalProcessed += done
 
         return done

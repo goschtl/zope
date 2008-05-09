@@ -46,8 +46,10 @@ setup(
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
     install_requires = [
+        'pytz',
         'setuptools',
         'ZODB3',
+        'zope.interface',
         ],
     zip_safe = False,
     entry_points=entry_points,

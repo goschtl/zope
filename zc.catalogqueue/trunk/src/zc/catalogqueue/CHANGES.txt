@@ -1,6 +1,18 @@
 Change History
 **************
 
+0.2 (unreleased)
+================
+
+Added some processing state information as attributes of the queue object:
+
+``lastProcessedTime``
+  Time of the last successful processing.
+
+``totalProcessed``
+  Total number of cataloging events processed.
+
+
 0.1 (2008-04-16)
 ================
 

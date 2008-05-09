@@ -15,6 +15,16 @@ zc.catalogqueue.interfaces.ICatalogQueue utilities.
     [<InterfaceClass zc.catalogqueue.interfaces.ICatalogQueue>,
      <InterfaceClass persistent.interfaces.IPersistent>]
 
+There are some bits of information that the queue maintains regarding its own
+processing state.  The time of last processing and the total number of
+cataloging events processed are available.  Since this queue hasn't been
+processed yet, these have some initial values:
+
+    >>> print queue.lastProcessedTime
+    None
+    >>> queue.totalProcessed
+    0
+
 Queues are used in 2 ways.  As content are modified, we call add,
 update, and remove methods on the queue:
 
@@ -44,6 +54,14 @@ update, and remove methods on the queue:
 
     >>> queue.update(0)
     >>> queue.update(0)
+
+At this point, we've added several events, but haven't processed the queue, so
+we expect the ``lastProcessedTime`` and ``totalProcessed`` to be unchanged:
+
+    >>> print queue.lastProcessedTime
+    None
+    >>> queue.totalProcessed
+    0
 
 Periodically, we call process on the queue.  We need to pass an ids
 object and a collection of injection (catalog) objects:
@@ -87,11 +105,31 @@ There are a number of things to note about this example:
 
 - The number of objects processed is returned.
 
+The processing information has been updated on the queue:
+
+    >>> queue.lastProcessedTime  # doctest: +ELLIPSIS
+    datetime.datetime(... tzinfo=<UTC>)
+    >>> queue.totalProcessed
+    6
+
+    >>> previous_time = queue.lastProcessedTime
+
 If we process the queue without additional events, we'll just get 0
 back:
 
     >>> queue.process(Ids(), [Injection('cat1'), Injection('cat2')], 10)
     0
+
+The historical processing information is updated:
+
+    >>> queue.lastProcessedTime  # doctest: +ELLIPSIS
+    datetime.datetime(... tzinfo=<UTC>)
+    >>> queue.lastProcessedTime > previous_time
+    True
+    >>> queue.totalProcessed
+    6
+
+    >>> previous_time = queue.lastProcessedTime
 
 Of course, the limit argument limits how many events we process:
 
@@ -103,6 +141,8 @@ Of course, the limit argument limits how many events we process:
     cat1 indexing 3 object 3
     cat1 indexing 4 object 4
     5
+    >>> queue.totalProcessed
+    11
 
     >>> queue.process(Ids(), [Injection('cat1')], 5)
     cat1 indexing 5 object 5
@@ -111,6 +151,8 @@ Of course, the limit argument limits how many events we process:
     cat1 indexing 8 object 8
     cat1 indexing 9 object 9
     5
+    >>> queue.totalProcessed
+    16
 
 (Remember that 0 isn't processed because it can't be found.)
 

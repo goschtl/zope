@@ -36,4 +36,22 @@ class ICatalogQueue(zope.interface.Interface):
         Catalogs is a multi-iterable collection of
         zope.index.interfaces.IInjection objects to be updated.
         """
-        
+
+    lastProcessedTime = zope.interface.Attribute(
+        """Time the queue was last processed.
+
+        This represents the time when the last successful call to `process()`
+        returned.  If this is ``None``, the queue has not been processed since
+        this field was added.  This may simply mean that the queue was last
+        processed before the implementation supported tracking this.
+
+        """)
+
+    totalProcessed = zope.interface.Attribute(
+        """Number of cataloging events processed.
+
+        A value of 0 may be caused by the last processing having happened
+        before this information was tracked.  If ``lastProcessedTime`` is set,
+        this value may be considered valid, even if 0.
+
+        """)
