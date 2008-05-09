@@ -1,8 +1,11 @@
 Changes
 =======
 
-1.0a5 (2008-04-??)
+1.0a5 (2008-05-??)
 ------------------
+
+- Bugfix: Fixed setting the value on text area for the real test
+  browser. Thanks to Taylor Sittler for the bug report and fix.
 
 - Bugfix: Fixed handling of named anchor links in mechanize implementation.
 

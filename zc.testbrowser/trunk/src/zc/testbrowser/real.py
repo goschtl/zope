@@ -375,7 +375,7 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
 
         def fget(self):
             if self.type == 'textarea':
-                return self.browser.execute('tb_tokens[%s].innerHTML'
+                return self.browser.execute('tb_tokens[%s].value'
                                             % self.token)
             return self.browser.execute(
                 'tb_tokens[%s].getAttribute("value")' % self.token)
@@ -388,7 +388,7 @@ class Control(zc.testbrowser.browser.SetattrErrorsMixin):
                 self.add_file(value, content_type=self.content_type,
                               filename=self.filename)
             elif self.type == 'textarea':
-                self.browser.execute('tb_tokens[%s].innerHTML = %r'
+                self.browser.execute('tb_tokens[%s].value = %r'
                                      % (self.token, value))
             elif self.type == 'checkbox' and len(self.mech_control.items) == 1:
                 self.mech_control.items[0].selected = bool(value)
