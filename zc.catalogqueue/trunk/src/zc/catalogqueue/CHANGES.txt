@@ -1,7 +1,7 @@
 Change History
 **************
 
-0.2 (unreleased)
+0.2 (2008-05-09)
 ================
 
 Added some processing state information as attributes of the queue object:
