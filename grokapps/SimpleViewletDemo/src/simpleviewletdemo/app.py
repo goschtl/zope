@@ -94,7 +94,7 @@ class AddFruit(grok.Viewlet):
 
     def update(self):
         self.form = getMultiAdapter((self.context, self.request), name='addfruitform')
-        form = self.form.update_form()
+        self.form.update_form()
         if self.request.method == 'POST':
             app = get_application(self.context)
             self.__parent__.redirect(self.__parent__.url(obj=app))
