@@ -15,6 +15,10 @@ Added some processing state information as attributes of the queue object:
 ``ICatalogQueue.totalProcessed``
   Total number of cataloging events processed.
 
+A new function, ``zc.catalogqueue.queue.addLengthSupport()``, has been added
+to help evolve instances created with ``zc.catalogqueue`` version 0.1.  Old
+instances must be evolved to be used with the new version.
+
 
 0.1 (2008-04-16)
 ================
