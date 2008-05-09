@@ -79,7 +79,7 @@ There are a number of things to note about this example:
 
 - Each object is processed only once.
 
-- What happens depends on th elast event.
+- What happens depends on the last event.
 
 - Object 0 wasn't indexed because queryObject returned None.  We
   ignore events for objects that have been removed from the intid
@@ -93,7 +93,7 @@ back:
     >>> queue.process(Ids(), [Injection('cat1'), Injection('cat2')], 10)
     0
 
-Of course, the limit argument limites how many events we process:
+Of course, the limit argument limits how many events we process:
 
     >>> for i in range(10):
     ...     queue.update(i)
