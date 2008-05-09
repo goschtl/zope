@@ -40,6 +40,8 @@ class ICatalogQueue(zope.interface.Interface):
     def __len__():
         """Return the number of unprocessed cataloging events."""
 
+    # We're not using zope.schema in order to keep dependencies to a minimum.
+
     lastProcessedTime = zope.interface.Attribute(
         """Time the queue was last processed.
 
