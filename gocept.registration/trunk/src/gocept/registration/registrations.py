@@ -25,9 +25,12 @@ class Registrations(zope.app.container.btree.BTreeContainer):
 
     zope.interface.implements(gocept.registration.interfaces.IRegistrations)
 
+    def _createHash(self, email, data=None):
+        return sha.new(email+datetime.datetime.now().isoformat()).hexdigest()
+
     def register(self, email, data=None):
         """Create a new registration for the given email address and data."""
-        hash = sha.new(email+datetime.datetime.now().isoformat()).hexdigest()
+        hash = self._createHash(email, data)
         self[hash] = registration = Registration(hash, email, data)
         return registration
 
