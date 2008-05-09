@@ -1,0 +1,22 @@
+<html>
+<head>
+    <tal:head content="structure provider:head" />
+</head>
+<body>
+
+<div id="header">
+    <tal:header content="structure provider:header" />
+</div>
+<div id="left">
+    <tal:left content="structure provider:left" />
+</div>
+<div id="main">
+    <tal:main content="structure provider:main" />
+</div>
+<div style="clear:both" />
+<div id="footer">
+    <tal:footer content="structure provider:footer" />
+</div>
+
+</body>
+</html>

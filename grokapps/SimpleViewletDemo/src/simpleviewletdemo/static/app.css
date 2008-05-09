@@ -1,0 +1,8 @@
+#header { background-color: #888; height: 70px; padding: 2em; }
+#left { background-color: #f00; height: 400px; width: 20%;
+        float: left; padding: 1em; }
+#main { background-color: #0f0; height: 400px; width: 70%;
+        float: left; padding: 1em; }
+#footer { background-color: #0ff; height: 50px; padding: 1em; }
+#adminbar { padding-left: 22%; margin-top: 60px; }
+.portlet { border-style: solid; margin-bottom: 2em; padding: 1em; }

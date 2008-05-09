@@ -1,0 +1,14 @@
+<div class="portlet">
+    <p>
+        <a href="#" tal:attributes="href view/__parent__/application_url">
+            Navigation
+        </a>
+    </p>
+    <ul>
+        <li tal:repeat="item view/items">
+            <a href="#"
+                tal:content="item/title"
+                tal:attributes="href item/url" />
+        </li>
+    </ul>
+</div>

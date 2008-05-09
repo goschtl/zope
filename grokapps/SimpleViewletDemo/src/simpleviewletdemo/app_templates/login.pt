@@ -1,0 +1,5 @@
+<div class="portlet">
+    <p>Login<p>
+    User<br /><input type="text" size="20" /><br />
+    Password<br /><input type="text" size="20" />
+</div>
