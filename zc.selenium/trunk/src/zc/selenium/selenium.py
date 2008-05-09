@@ -41,15 +41,15 @@ def run_zope(config, port):
     from zope.app.server.main import main
     main(["-C", config, "-X", "http0/address=" + port] + sys.argv[1:])
 
-def run_tests(zope_thread, auto_start, browser_name, port):
+def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     start_time = time.time()
 
     # wait for the server to start
     old_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(5)
-    url = ('http://localhost:%s/@@/selenium/TestRunner.html'
-           '?test=tests%%2FTestSuite.html&resultsUrl=/@@/selenium_results'
-           % port)
+    url = base_url %{'port': port}
+    url += ('/@@/selenium/TestRunner.html'
+           '?test=tests%2FTestSuite.html&resultsUrl=/@@/selenium_results')
     time.sleep(1)
     while zope_thread.isAlive():
         try:
@@ -69,7 +69,6 @@ def run_tests(zope_thread, auto_start, browser_name, port):
         extra = '&auto=true'
     else:
         extra = ''
-
     browser.open(url + extra)
 
     # wait for the test results to come in (the reason we don't do a
@@ -150,6 +149,9 @@ def parseOptions():
     parser.add_option('-r', '--random-port', dest='random_port',
                       action='store_true',
                       help='use a random port for the server')
+    parser.add_option('-u', '--base-url', dest='base_url',
+                      default='http://localhost:%(port)s/',
+                      help='The base URL of the Zope site (may contain skin).')
 
     options, positional = parser.parse_args()
     options.config = config
@@ -178,7 +180,8 @@ def main():
     zope_thread.setDaemon(True)
     zope_thread.start()
     test_result = run_tests(
-        zope_thread, options.auto_start, options.browser, options.port)
+        zope_thread, options.auto_start, options.browser, options.port,
+        options.base_url)
 
     if options.keep_running or not options.auto_start:
         while True:

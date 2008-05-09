@@ -1,0 +1,22 @@
+=======
+CHANGES
+=======
+
+
+1.1.0 (2008-??-??)
+------------------
+
+- Feature: Added a `--base-url` option to the selenium script, so that one is
+  not depndent to include the default layer in the default skin. (Who does
+  this? What a security hole!)
+
+- Bug: Added documentation on how to setup `zc.selenium`.
+
+- First public release.
+
+
+1.0.0 (200?-??-??)
+------------------
+
+- Internal release.
+
