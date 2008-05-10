@@ -51,6 +51,10 @@ class CatalogQueue(persistent.Persistent):
             length = self._length
         except AttributeError:
             length = self._length = BTrees.Length.Length()
+            change = 0
+            for queue in self._queues:
+                change += len(queue)
+
         length.change(change)
 
     def _notify(self, id, event):
@@ -90,17 +94,3 @@ class CatalogQueue(persistent.Persistent):
         self.totalProcessed += done
 
         return done
-
-
-def addLengthSupport(queue):
-    """Update an older CatalogQueue to include the length support.
-
-    This should be called by generations that need to update catalog queues.
-
-    """
-    try:
-        queue._length
-    except AttributeError:
-        queue._length = BTrees.Length.Length()
-        for subqueue in queue._queues:
-            queue._length.change(len(subqueue))
