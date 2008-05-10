@@ -5,4 +5,7 @@ CHANGES
 Unreleased
 ----------
 
+- Implemented update concept. The new update method allows to update the 
+  iplocation data based on a file upload or a file path. Added tests
+
 - Initial Release

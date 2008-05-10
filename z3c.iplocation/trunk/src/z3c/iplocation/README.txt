@@ -219,6 +219,59 @@ We can now lookup locations:
   21.0
 
 
+update
+------
+
+An existing IPLocator can get updated with new data. If we do this, we will 
+remove all existing data. Take care if you are using custom added data which
+are not in the original ipligence data file.
+
+Let's get the existing maxLocator and update them with the lite data file.
+
+  >>> file = open(os.path.join(dirpath, 'ipligence-lite-demo.txt'), 'r')
+  >>> maxLocator.update(file)
+  Traceback (most recent call last):
+  ...
+  ValueError: Must use a ipligence location class.
+
+As you can see, you must use a location class for update the data:
+
+  >>> maxLocator.update(file, ipligence.MaxLocation)
+  Traceback (most recent call last):
+  ...
+  ValueError: Wrong ipligence location class used or skipped the wrong amount of skipLines.
+
+But you have to use the right ipligence location class:
+
+  >>> file = open(os.path.join(dirpath, 'ipligence-lite-demo.txt'), 'r')
+  >>> maxLocator.update(file, ipligence.LiteLocation)
+
+Now we must get the lite location as result for the given IP:
+
+  >>> liteLocator.get('24.225.10.88')
+  <LiteLocation 24.225.0.0-24.225.255.255 u'UNITED STATES'>
+
+Since we skip first 5 lines by default in the update method, let's check
+the amount of locations which must be 42:
+
+  >>> len(liteLocator._locations)
+  42
+
+reset
+-----
+
+The locator offers also a reset method which will remove all existing data and
+can setup a clean empty locator. This method is used on initialization and 
+before the data get updated like shown in the sample above. 
+
+  >>> liteLocator.reset()
+
+After the reset, the locator is empty and doesn't return any location:
+
+  >>> liteLocator.get('24.225.10.88') is None
+  True
+
+
 Converting IPs to Decimals
 --------------------------
 

@@ -16,9 +16,13 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
+import csv
+import StringIO
 import persistent
 import zope.app.intid
 import zope.interface
+import zope.location
 from BTrees import IOBTree, IFBTree, OIBTree
 from zc.catalog import index
 from zope.app.container import contained
@@ -66,10 +70,33 @@ class IPLocator(contained.Contained, persistent.Persistent):
 
     def __init__(self):
         super(IPLocator, self).__init__()
+        self.reset()
+
+    def reset(self):
         self._locations = OIBTree.OITreeSet()
         self._ids = zope.app.intid.IntIds()
         self._ipFrom = index.ValueIndex()
         self._ipTo = index.ValueIndex()
+
+    def update(self, file, klass=None, skipLines=5):
+        self.reset()
+        counter = 0
+        if klass is None:
+            raise ValueError("Must use a ipligence location class.")
+        try:
+            # probably we've got file upload data from a form
+            if isinstance(file, str):
+                reader = csv.reader(StringIO.StringIO(file))
+            else:
+                reader = csv.reader(file)
+            for row in reader:
+                counter += 1
+                if skipLines < counter:
+                    loc = klass(*row)
+                    self.add(loc, loc.decimalFrom, loc.decimalTo)
+        except TypeError:
+            raise ValueError("Wrong ipligence location class used or skipped "
+                             "the wrong amount of skipLines.")
 
     def get(self, ip, default=None):
         """See interfaces.IIPLocator"""
@@ -92,6 +119,8 @@ class IPLocator(contained.Contained, persistent.Persistent):
         if location in self._locations.keys():
             return
         self._locations.insert(location)
+        # give em a location and prevent to run into NotYet errors in IIntIds
+        zope.location.locate(location, self)
         uid = self._ids.register(location)
         self._ipFrom.index_doc(uid, fromDecimal or getDecimal(location.ipFrom))
         self._ipTo.index_doc(uid, toDecimal or getDecimal(location.ipTo))
