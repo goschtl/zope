@@ -7,6 +7,11 @@ zc.catalogqueue.queue.CatalogQueue object:
     >>> import zc.catalogqueue.queue
     >>> queue = zc.catalogqueue.queue.CatalogQueue()
 
+We can pass a queue size.  It should be a prime number. The default is
+1009, which is a bit large.
+
+    >>> queue = zc.catalogqueue.queue.CatalogQueue(11)
+
 Typically, queues are registered as
 zc.catalogqueue.interfaces.ICatalogQueue utilities.
 
