@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+name = 'zc.catalogqueue'
+version = '0.4dev'
+
 import os
 from setuptools import setup, find_packages
 
@@ -34,8 +37,8 @@ long_description = (
         )
 
 setup(
-    name = 'zc.catalogqueue',
-    version = '0.2dev',
+    name = name,
+    version = version,
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = '',
