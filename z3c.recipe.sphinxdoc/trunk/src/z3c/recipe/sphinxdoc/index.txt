@@ -14,9 +14,7 @@ Usage Instructions
 
 Suppose you have a package called ``z3c.form``.  In the ``setup.py``
 for ``z3c.form`` it is recommended that you add a ``docs`` section
-to the extras_require argument.  It should look something like this:
-
-.. code-block:: python
+to the extras_require argument.  It should look something like this::
 
     extras_require = dict(
         docs = ['Sphinx',
