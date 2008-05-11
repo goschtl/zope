@@ -6,9 +6,15 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   README
    jsaction
-   jsvalidator
    jsevent
+   jsfunction
+   ajax
+   jsclientevent
+   jswidget
+   jsvalidator
+   jsswitch
    jqueryrenderer
 
 Indices and tables

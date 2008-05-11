@@ -66,13 +66,14 @@ setup (
     namespace_packages = ['z3c'],
     extras_require = dict(
         test = ['zope.testing', 'zope.app.testing', 'z3c.coverage'],
+        docs = ['Sphinx', 'z3c.recipe.sphinxdoc'],
         ),
     install_requires = [
         'jquery.layer',
         'setuptools',
         'z3c.form',
         'z3c.formui',
-	'z3c.traverser',
+        'z3c.traverser',
         'zope.app.pagetemplate',
         'zope.component',
         'zope.interface',

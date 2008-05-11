@@ -115,12 +115,12 @@ publishTraverse method which will override any attempt to adapt to a diferent
 traverser.  But if you provide the pluggable traverser as a view on the form,
 then using the @@ symbols to force a view lookup rather than a publishTraverse
 call will bypass BrowserPage's publishTraverse method.  In ZCML, the pluggable
-traverser gets registered as a named adatper like so:
+traverser gets registered as a named adatper like so::
 
   <adapter
       trusted="True"
       for=".interfaces.IFormTraverser
-	   zope.publisher.interfaces.browser.IBrowserRequest"
+           zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
       factory="z3c.traverser.browser.PluggableBrowserTraverser"
       permission="zope.Public"
