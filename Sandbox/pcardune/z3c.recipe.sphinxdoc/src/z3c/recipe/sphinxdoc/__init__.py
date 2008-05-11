@@ -112,7 +112,8 @@ class ZopeOrgSetup(object):
 
             srcDir = os.path.join(doc.location,
                                   srcDirs.get(doc.project_name,
-                                              self.options.get('src-dir','')))
+                                              self.options.get('src-dir',
+                                                               doc.project_name.replace('.','/'))))
 
             projectsData[doc.project_name] = ['-q','-c',partDir,
                                               srcDir, buildDir]
