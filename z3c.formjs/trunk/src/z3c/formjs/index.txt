@@ -1,7 +1,8 @@
 Welcome to z3c.formjs's documentation!
-====================================
+======================================
 
 Contents:
+
 .. toctree::
    :maxdepth: 2
 
