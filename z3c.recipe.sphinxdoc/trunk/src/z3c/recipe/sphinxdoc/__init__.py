@@ -14,13 +14,10 @@
 
 import sys
 import os
-import os.path
-from os.path import join, dirname
+from os.path import join, dirname, isdir
 from email import parser
-import logging
 
 import shutil
-import zc.buildout
 import zc.recipe.egg
 import zc.buildout.easy_install
 import pkg_resources
@@ -58,7 +55,7 @@ class ZopeOrgSetup(object):
 
         # Create parts directory for configuration files.
         installDir = join(self.buildout['buildout']['parts-directory'], self.name)
-        if not os.path.isdir(installDir):
+        if not isdir(installDir):
             os.mkdir(installDir)
 
         srcDirs = eval(self.options.get('src-dirs','{}'))
@@ -67,7 +64,7 @@ class ZopeOrgSetup(object):
         #for each egg listed as a buildout option, create a configuration space.
         for doc in docs:
             partDir = join(installDir, doc.project_name)
-            if not os.path.isdir(partDir):
+            if not isdir(partDir):
                 os.mkdir(partDir)
             installed.append(partDir)
 
@@ -75,7 +72,7 @@ class ZopeOrgSetup(object):
 
             #create static directory
             staticDir = join(partDir, '.static')
-            if not os.path.isdir(staticDir):
+            if not isdir(staticDir):
                 os.mkdir(staticDir)
             installed.append(staticDir)
             shutil.copy(join(recipeDir,'default.css'),
@@ -84,7 +81,7 @@ class ZopeOrgSetup(object):
 
             #create tempaltes directory
             templatesDir = join(partDir, '.templates')
-            if not os.path.isdir(templatesDir):
+            if not isdir(templatesDir):
                 os.mkdir(templatesDir)
             installed.append(templatesDir)
             shutil.copy(join(recipeDir,'layout.html'),
@@ -108,14 +105,14 @@ class ZopeOrgSetup(object):
             installed.append(confPyPath)
 
             buildDir = self.options.get('build-dir',
-                                        os.path.join(partDir, 'build'))
-            if not os.path.isdir(buildDir):
+                                        join(partDir, 'build'))
+            if not isdir(buildDir):
                 os.mkdir(buildDir)
 
-            srcDir = os.path.join(doc.location,
-                                  srcDirs.get(doc.project_name,
-                                              self.options.get('src-dir',
-                                                               doc.project_name.replace('.','/'))))
+            srcDir = join(doc.location,
+                          srcDirs.get(doc.project_name,
+                                      self.options.get('src-dir',
+                                                       doc.project_name.replace('.','/'))))
 
             projectsData[doc.project_name] = ['-q','-c',partDir,
                                               srcDir, buildDir]
