@@ -98,7 +98,7 @@ class ZopeOrgSetup(object):
                                                release=doc._version,
                                                staticDir=staticDir,
                                                templatesDir=templatesDir,
-                                               indexDoc=self.options.get('indexDoc','index')
+                                               indexDoc=self.options.get('index-doc','index')
                                                ))
             confPy.close()
             installed.append(confPyPath)
@@ -108,8 +108,10 @@ class ZopeOrgSetup(object):
             if not os.path.isdir(buildDir):
                 os.mkdir(buildDir)
 
+            srcDir = os.path.join(doc.location, self.options.get('src-dir',''))
+
             projectsData[doc.project_name] = ['-q','-c',partDir,
-                                              doc.location, buildDir]
+                                              srcDir, buildDir]
 
         installed.extend(zc.buildout.easy_install.scripts(
             [(self.options['script'],
@@ -129,7 +131,6 @@ class ZopeOrgSetup(object):
 
 
 def main(projects):
-    startArgs = sys.argv[:]
     import sphinx
     for project, args in projects.items():
         print "building docs for", project, "---> sphinx-build", " ".join(args)
