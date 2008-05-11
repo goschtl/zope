@@ -5,7 +5,9 @@ CHANGES
 Version 0.3.1 (unreleased)
 --------------------------
 
-- ...
+- Feature: When AJAX handlers return complex data structures (dictionaries,
+  lists and tuples), the data is automatically converted into JSON
+  format before delivery.
 
 Version 0.3.0 (2007-10-03)
 -------------------------

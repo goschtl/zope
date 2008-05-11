@@ -81,6 +81,7 @@ setup (
         'zope.publisher',
         'zope.schema',
         'zope.traversing',
+        'simplejson',
         ],
     dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
