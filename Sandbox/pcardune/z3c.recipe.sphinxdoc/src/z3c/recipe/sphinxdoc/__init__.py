@@ -60,6 +60,8 @@ class ZopeOrgSetup(object):
         if not os.path.isdir(installDir):
             os.mkdir(installDir)
 
+        srcDirs = eval(self.options.get('src-dirs','{}'))
+
         projectsData = {}
         #for each egg listed as a buildout option, create a configuration space.
         for doc in docs:
@@ -108,7 +110,9 @@ class ZopeOrgSetup(object):
             if not os.path.isdir(buildDir):
                 os.mkdir(buildDir)
 
-            srcDir = os.path.join(doc.location, self.options.get('src-dir',''))
+            srcDir = os.path.join(doc.location,
+                                  srcDirs.get(doc.project_name,
+                                              self.options.get('src-dir','')))
 
             projectsData[doc.project_name] = ['-q','-c',partDir,
                                               srcDir, buildDir]
