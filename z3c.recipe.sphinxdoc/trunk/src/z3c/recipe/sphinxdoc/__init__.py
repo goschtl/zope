@@ -16,6 +16,7 @@ import sys
 import os
 import os.path
 from os.path import join, dirname
+from email import parser
 import logging
 
 import shutil
@@ -60,6 +61,8 @@ class ZopeOrgSetup(object):
         if not os.path.isdir(installDir):
             os.mkdir(installDir)
 
+        srcDirs = eval(self.options.get('src-dirs','{}'))
+
         projectsData = {}
         #for each egg listed as a buildout option, create a configuration space.
         for doc in docs:
@@ -88,14 +91,15 @@ class ZopeOrgSetup(object):
                         join(templatesDir, 'layout.html'))
             installed.append(join(templatesDir, 'layout.html'))
 
+            metadata = dict(parser.Parser().parsestr('\n'.join(doc._get_metadata('PKG-INFO'))).items())
 
             #create conf.py
             confPyPath = join(partDir, 'conf.py')
             confPy = open(confPyPath, 'w')
-            confPy.write(confPyTemplate % dict(project=doc.project_name,
-                                               copyright='some copyright',
-                                               version=doc._version,
-                                               release=doc._version,
+            confPy.write(confPyTemplate % dict(project=metadata.get('Name', doc.project_name),
+                                               copyright=metadata.get('Author', 'Zope Community'),
+                                               version=metadata.get('Version', doc.version),
+                                               release=metadata.get('Version', doc.version),
                                                staticDir=staticDir,
                                                templatesDir=templatesDir,
                                                indexDoc=self.options.get('index-doc','index')
@@ -108,7 +112,10 @@ class ZopeOrgSetup(object):
             if not os.path.isdir(buildDir):
                 os.mkdir(buildDir)
 
-            srcDir = os.path.join(doc.location, self.options.get('src-dir',''))
+            srcDir = os.path.join(doc.location,
+                                  srcDirs.get(doc.project_name,
+                                              self.options.get('src-dir',
+                                                               doc.project_name.replace('.','/'))))
 
             projectsData[doc.project_name] = ['-q','-c',partDir,
                                               srcDir, buildDir]

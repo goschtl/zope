@@ -1,9 +1,1 @@
-z3c.recipe.sphinxdoc
-====================
-
-Introduction
-------------
-
-How to use this recipe
-----------------------
-
+See src/z3c/recipe/sphinxdoc/index.txt for more information.
