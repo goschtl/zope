@@ -20,7 +20,6 @@ import sha
 import zope.app.container.btree
 import zope.interface
 
-
 class Registrations(zope.app.container.btree.BTreeContainer):
 
     zope.interface.implements(gocept.registration.interfaces.IRegistrations)
