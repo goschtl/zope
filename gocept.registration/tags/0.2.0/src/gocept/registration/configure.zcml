@@ -1,0 +1,6 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <subscriber handler=".email.send_registration_mail" />
+  <adapter factory=".email.ConfirmationEmail" />
+
+</configure>

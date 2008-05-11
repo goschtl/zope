@@ -1,0 +1,18 @@
+Changes
+=======
+
+0.2.0 (2008-05-10)
+------------------
+
+- Feature: Made coverage report available for package.
+
+- Feature: Implement a testing registrations component that produces a
+  predictable hash.
+
+- Feature: Use ``IMailDelivery`` interface instead of ``IMailer``.
+
+
+0.1.0 (2008-03-28)
+------------------
+
+- Initial release.
