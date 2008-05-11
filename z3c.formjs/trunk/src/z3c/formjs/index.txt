@@ -1,0 +1,19 @@
+Welcome to z3c.formjs's documentation!
+====================================
+
+Contents:
+.. toctree::
+   :maxdepth: 2
+
+   jsaction
+   jsvalidator
+   jsevent
+   jqueryrenderer
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
