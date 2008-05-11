@@ -35,7 +35,7 @@ setup(
     version='0.1.0dev',
     author="Paul Carduner",
     description="Use Sphinx to build documentation for zope.org.",
-    long_description=(read('README.txt')
+    long_description=(read(os.path.join('src','z3c','recipe','sphinxdoc','index.txt'))
                       +'\n\n'+
                       read('CHANGES.txt')),
     license="ZPL 2.1",
