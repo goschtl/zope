@@ -148,16 +148,12 @@ Now we are ready to update and render the form:
         <div class="row">
           <label for="form-widgets-name">Name</label>
           <span id="form-widgets-name"
-                class="text-widget required textline-field">
-            Stephan
-          </span>
+                class="text-widget required textline-field">Stephan</span>
         </div>
         <div class="row">
           <label for="form-widgets-age">Age</label>
           <span id="form-widgets-age"
-                class="text-widget required int-field">
-            27
-          </span>
+                class="text-widget required int-field">27</span>
         </div>
       </form>
     </body>
@@ -228,9 +224,7 @@ Once the value is saved, the widget becomes a display widget again:
   <span id="form-widgets-age"
         class="text-widget required int-field"
         onclick="$.get('/switchWidget',
-          function(html){switchWidget(&quot;form-widgets-age&quot;, html)} )">
-    25
-  </span>
+          function(html){switchWidget(&quot;form-widgets-age&quot;, html)} )">25</span>
 
 Alternatively to selecting the widget by name, you can also specify the widget
 id:

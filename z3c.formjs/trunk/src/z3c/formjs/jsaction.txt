@@ -282,6 +282,8 @@ We can now render the form:
               function(){alert("Hello World!");});
           $("#form-buttons-dblhello").bind("dblclick",
               function(){alert("Double Hello World!");});
+          $("#form-buttons-436c69636b204d65").bind("click",
+              function(){alert("You clicked the Click Me button.");});
         })
       </script>
     </head>
