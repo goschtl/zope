@@ -37,12 +37,8 @@ class LanguageSession(Session):
 
     def getLanguage(self):
         """Returns the language form the session."""
-        spd = self.__getitem__(sessionPkgDataId)
-        lang = spd.get('language', None)
-        if lang:
-            return lang
-        else:
-            return None
+        spd = self.get(sessionPkgDataId, {})
+        return spd.get('language', None)
 
     def setLanguage(self, language):
         """Set the language to the session."""

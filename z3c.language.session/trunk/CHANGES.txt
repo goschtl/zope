@@ -2,13 +2,13 @@
 CHANGES
 =======
 
-1.0.1dev (unreleased)
----------------------
+Version 1.0.1 (2008-05-13)
+--------------------------
 
-- ...
+- prevent create a SessionData obejct suring getLanguage call
 
 
-1.0.0 (2007-01-21)
-------------------
+Version 1.0.0 (2007-01-21)
+--------------------------
 
 - Initial Release
