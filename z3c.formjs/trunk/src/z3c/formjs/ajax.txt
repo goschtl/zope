@@ -35,8 +35,7 @@ python object.
   >>> class PingForm(ajax.AJAXRequestHandler, form.Form):
   ...
   ...     @ajax.handler
-  ...     def pingBack(self):
-  ...         message = self.request.get('message', 'Nothing to ping back.')
+  ...     def pingBack(self, message=u'Nothing to ping back.'):
   ...         return "from %r: %s" % (self, message)
   ...
   ...     @ajax.handler
