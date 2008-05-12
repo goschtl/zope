@@ -5,6 +5,166 @@ ISO 8601 utility functions
 This package collects together functions supporting the data formats described
 in ISO 8601.
 
+For the parsing functions, both the "verbose" and "short" forms of ISO 8601
+times are accepted.  The verbose form includes hyphens in the date and colons
+in the time, and the short form omits both.  For each function, we'll start
+with verbose examples, and will then repeat all of the examples in short form.
+The verbose form is generally preferred in practice since it is substantially
+more readable for humans.
+
+
+Parsing date/time values
+---------------------------------------------------
+
+There is a function that parses text and returns date/time values:
+
+    >>> from zc.iso8601.parse import datetime
+
+This function does not support or accept values that include time zone
+information:
+
+    >>> datetime(u"2006-12-02T23:40:42Z")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42Z'
+
+    >>> datetime(u"2006-12-02T23:40:42+00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42+00:00'
+
+    >>> datetime(u"2006-12-02T23:40:42-00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-00:00'
+
+    >>> datetime(u"2006-12-02T23:40:42-01:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-01:00'
+
+For times that don't include zone offsets, the results are as expected:
+
+    >>> datetime(u"2006-12-02T23:40:42")
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+The seconds field, as shown above, is optional.  If omitted, the seconds field
+of the time will be zero:
+
+    >>> datetime(u"2006-12-02T23:40")
+    datetime.datetime(2006, 12, 2, 23, 40)
+
+When the seconds are specified, fractional seconds are supported:
+
+    >>> datetime(u"2008-05-12T14:30:32.000")
+    datetime.datetime(2008, 5, 12, 14, 30, 32)
+
+    >>> datetime(u"2008-05-12T14:30:32.5")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 500000)
+
+    >>> datetime(u"2008-05-12T14:30:32.01")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+    >>> datetime(u"2008-05-12T14:30:32.000001")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 1)
+
+Fractional seconds smaller than 1 microsecond are simply thrown away:
+
+    >>> datetime(u"2008-05-12T14:30:32.00000099999")
+    datetime.datetime(2008, 5, 12, 14, 30, 32)
+
+If a space is used instead of the "T" separator, the input is still
+interpreted properly:
+
+    >>> datetime(u"2006-12-02 23:40:42")
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+    >>> datetime(u"2008-05-12 14:30:32.01")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+Surrounding whitespace is ignored, and multiple whitespace characters between
+the date and time fields is collapsed and treated as if the extra whitespace
+characters were not present:
+
+    >>> datetime(u"""
+    ...   2006-12-02
+    ...   \t\r\f
+    ...   23:40:42
+    ... """)
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+    >>> datetime(u"""
+    ...   2008-05-12
+    ...   \t\r\f
+    ...   14:30:32.01
+    ... """)
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+Other whitespace is considered an error:
+
+    >>> datetime(u"  2006 -12-02  23:40:42  ")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006 -12-02 23:40:42'
+
+Now, let's look at how the same examples do in the short form:
+
+    >>> datetime(u"200612-02T23:40:42Z")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42Z'
+
+    >>> datetime(u"200612-02T23:40:42+00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42+00:00'
+
+    >>> datetime(u"200612-02T23:40:42-00:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-00:00'
+
+    >>> datetime(u"200612-02T23:40:42-01:00")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-01:00'
+
+    >>> datetime(u"200612-02T23:40:42")
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+    >>> datetime(u"200612-02T23:40")
+    datetime.datetime(2006, 12, 2, 23, 40)
+
+    >>> datetime(u"200805-12T14:30:32.000")
+    datetime.datetime(2008, 5, 12, 14, 30, 32)
+
+    >>> datetime(u"200805-12T14:30:32.5")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 500000)
+
+    >>> datetime(u"200805-12T14:30:32.01")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+    >>> datetime(u"20080512T14:30:32.000001")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 1)
+
+    >>> datetime(u"20080512T14:30:32.00000099999")
+    datetime.datetime(2008, 5, 12, 14, 30, 32)
+
+    >>> datetime(u"20061202 23:40:42")
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+    >>> datetime(u"20080512 143032.01")
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+    >>> datetime(u"""
+    ...   20061202
+    ...   \t\r\f
+    ...   234042
+    ... """)
+    datetime.datetime(2006, 12, 2, 23, 40, 42)
+
+    >>> datetime(u"""
+    ...   20080512
+    ...   \t\r\f
+    ...   143032.01
+    ... """)
+    datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
+
+    >>> datetime(u"  2006 1202  234042  ")
+    Traceback (most recent call last):
+    ValueError: could not parse ISO 8601 datetime: u'2006 1202 234042'
+
 
 Parsing date/time values with time zone information
 ---------------------------------------------------
@@ -13,12 +173,6 @@ There is a function that parses text and returns date/time values with time
 zone offsets:
 
     >>> from zc.iso8601.parse import datetimetz
-
-Both the "verbose" and "short" forms of ISO 8601 times are accepted.  The
-verbose form includes hyphens in the date and colons in the time, and the
-short form omits them.  We'll start with verbose examples, and will then
-repeat all of the examples in short form.  The verbose form is generally
-preferred in practice since it is substantially more readable for humans.
 
 Times in UTC may be encoded using either the "Z" notation or "+00:00" (or
 "-00:00").  Let try a few examples:
