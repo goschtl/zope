@@ -14,7 +14,7 @@ more readable for humans.
 
 
 Parsing date/time values
----------------------------------------------------
+------------------------
 
 There is a function that parses text and returns date/time values:
 

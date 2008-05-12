@@ -4,15 +4,14 @@ import os
 import setuptools
 
 
-def read(path):
-    return open(path).read()
+here = os.path.dirname(os.path.abspath(__file__))
 
+def read(path):
+    return open(os.path.join(here, path)).read()
 
 def long_description():
-    here = os.path.dirname(os.path.abspath(__file__))
-    paths = [os.path.join(here, "src/zc/iso8601", fn)
-             for fn in "README.txt", "CHANGES.txt"]
-    return "\n\n".join([open(path).read() for path in paths])
+    return "\n\n".join([read("README.txt"),
+                        read("src/zc/iso8601/CHANGES.txt")])
 
 
 setuptools.setup(
