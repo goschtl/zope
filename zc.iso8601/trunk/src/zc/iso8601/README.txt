@@ -104,44 +104,44 @@ Other whitespace is considered an error:
 
 Now, let's look at how the same examples do in the short form:
 
-    >>> datetime(u"200612-02T23:40:42Z")
+    >>> datetime(u"20061202T234042Z")
     Traceback (most recent call last):
-    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42Z'
+    ValueError: could not parse ISO 8601 datetime: u'20061202T234042Z'
 
-    >>> datetime(u"200612-02T23:40:42+00:00")
+    >>> datetime(u"20061202T234042+0000")
     Traceback (most recent call last):
-    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42+00:00'
+    ValueError: could not parse ISO 8601 datetime: u'20061202T234042+0000'
 
-    >>> datetime(u"200612-02T23:40:42-00:00")
+    >>> datetime(u"20061202T234042-0000")
     Traceback (most recent call last):
-    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-00:00'
+    ValueError: could not parse ISO 8601 datetime: u'20061202T234042-0000'
 
-    >>> datetime(u"200612-02T23:40:42-01:00")
+    >>> datetime(u"20061202T234042-0100")
     Traceback (most recent call last):
-    ValueError: could not parse ISO 8601 datetime: u'2006-12-02T23:40:42-01:00'
+    ValueError: could not parse ISO 8601 datetime: u'20061202T234042-0100'
 
-    >>> datetime(u"200612-02T23:40:42")
+    >>> datetime(u"20061202T234042")
     datetime.datetime(2006, 12, 2, 23, 40, 42)
 
-    >>> datetime(u"200612-02T23:40")
+    >>> datetime(u"20061202T2340")
     datetime.datetime(2006, 12, 2, 23, 40)
 
-    >>> datetime(u"200805-12T14:30:32.000")
+    >>> datetime(u"20080512T143032.000")
     datetime.datetime(2008, 5, 12, 14, 30, 32)
 
-    >>> datetime(u"200805-12T14:30:32.5")
+    >>> datetime(u"20080512T143032.5")
     datetime.datetime(2008, 5, 12, 14, 30, 32, 500000)
 
-    >>> datetime(u"200805-12T14:30:32.01")
+    >>> datetime(u"20080512T143032.01")
     datetime.datetime(2008, 5, 12, 14, 30, 32, 10000)
 
-    >>> datetime(u"20080512T14:30:32.000001")
+    >>> datetime(u"20080512T143032.000001")
     datetime.datetime(2008, 5, 12, 14, 30, 32, 1)
 
-    >>> datetime(u"20080512T14:30:32.00000099999")
+    >>> datetime(u"20080512T143032.00000099999")
     datetime.datetime(2008, 5, 12, 14, 30, 32)
 
-    >>> datetime(u"20061202 23:40:42")
+    >>> datetime(u"20061202 234042")
     datetime.datetime(2006, 12, 2, 23, 40, 42)
 
     >>> datetime(u"20080512 143032.01")
