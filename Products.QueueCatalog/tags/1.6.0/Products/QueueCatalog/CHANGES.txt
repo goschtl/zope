@@ -1,0 +1,81 @@
+QueueCatalog Product Changelog
+
+  QueueCatalog 1.5 (2007/12/15)
+   
+    - Replaced validateValue call with proper validate call. This
+      makes QueueCatalog compatible with Zope 2.9 
+
+  QueueCatalog 1.4 (2006/05/09)
+
+    - Added a second catalog queue conflict resolution strategy and made
+      the strategy configurable via the 'Configure' ZMI tab. The new policy
+      can be tried when ZODB conflict errors emanating from the catalog
+      queue buckets become a problem. It attempts to avoid conflicts by
+      doing even more guessing about what the behavior should be, rather
+      than deeming a conflicting situation as too insane to handle and 
+      raising a ConflictError.
+
+    - Removed all uses of zLOG in favor of the Python logging module
+
+    - Updated some help screens
+
+    - Added a dependencies document
+
+    - Updated the tests to run on Zope 2.8+
+
+    - Factored out queue conflict testing after changing it to use a quick 
+      and dirty FileStorage, and expanding it a little.
+
+    - Removed the security declaration for a method named refreshCatalog
+      which was added in version 1.0 - this is the wrong place to apply
+      product-specific settings for a product the QueueCatalog is not
+      dependent on.
+
+    - CVS-only, tag 'QueueCatalog-post-1_3-error-logging'
+
+    - When performing deferred indexing, don't attempt (again) to
+      assign brains metadata
+
+    - When indexing an object raises an Exception, log it, and remove
+      the object from the queue
+
+  QueueCatalog 1.3 (2004/11/22)
+
+    - Released by ctheune at:
+      http://zope.org/Members/ctheune/QueueCatalog/1.3/QueueCatalog-1.3.tar.gz
+
+    - CVS tag 'QueueCatalog-1_3'
+
+    - QueueCatalog.py: Made the immediate processing of DELETE-Requests
+      more efficient.  Christian Theune <ct@gocept.com>
+
+    - QueueCatalog.py: Proxied ZCatalog.Indexes attribute.
+
+    - QueueCatalog.py: Corrected a permission declaration typo for
+      'manage_size'.
+
+    - QueueCatalog.py: Modified 'manage_queue' to display a list of queued
+      items (limit 100 items).
+
+  QueueCatalog 1.2 (2003/11/06)
+
+    - CVS-only release, tag 'QueueCatalog-1_2'
+
+    - Add uidForObject hook which allows the underlying catalog to specify
+      uids for new objects being indexed. If this hook is not implemented,
+      uids are abs paths as before.
+
+  QueueCatalog 1.1 (2003/08/06)
+
+    - CVS-only release, tag 'QueueCatalog-1_1'
+
+    - Fix brown-paper bag error which prevented queue processing from
+      *ever* working.
+
+  QueueCatalog 1.0 (2003/06/25)
+
+    - CVS-only release, tag 'QueueCatalog-1_0'
+
+	- QueueCatalog.py (QueueCatalog.refreshCatalog): Added
+	  refreshCatalog method that queues the reindexing. Plone uses this
+	  method on portal creation.  Sidnei da Silva  <sidnei@x3ng.com>
