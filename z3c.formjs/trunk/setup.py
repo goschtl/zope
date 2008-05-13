@@ -72,7 +72,6 @@ setup (
         'jquery.layer',
         'setuptools',
         'z3c.form',
-        'z3c.formui',
         'z3c.traverser',
         'zope.app.pagetemplate',
         'zope.component',
