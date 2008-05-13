@@ -8,11 +8,7 @@ Things that need to be done
   with a preference setting, possibly allowing a different editor to
   be plugged in.
 
-- Update to FCKeditor 2.3.2 (or newer).  This involves risk for existing
-  projects, so should be done on a branch to allow testing prior to
-  merging with the trunk.
-
-  Better: fetch FCKeditor separately instead of including it in the
+- Fetch FCKeditor separately instead of including it in the
   zope.html checkout.
 
 - Add support for FCKeditor plugins; it would be cool to have the

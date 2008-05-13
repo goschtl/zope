@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.1.0 (1008-05-05)
+------------------
+
+- Use FCKeditor 2.6
+
+- rtSpellChecker plugin added to FCKEditor (Firefox 2 spellchecking support)
+
+
 1.0.1 (2007-11-02)
 ------------------
 
