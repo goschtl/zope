@@ -7,7 +7,7 @@ CHANGES
 
 - Use FCKeditor 2.6
 
-- rtSpellChecker plugin added to FCKEditor (Firefox 2 spellchecking support)
+- Use versioned directories for javascript to cache-bust
 
 
 1.0.1 (2007-11-02)
