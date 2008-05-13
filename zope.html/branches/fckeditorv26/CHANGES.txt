@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2007-11-02)
+------------------
+
+- Package data update.
+
+- Updated code to work with packages in Zope 3.4 release.
+
+
+1.0.0 (2007-10-29)
+------------------
+
+- Initial release.
