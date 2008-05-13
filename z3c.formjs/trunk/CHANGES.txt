@@ -5,6 +5,13 @@ CHANGES
 Version 0.3.1 (unreleased)
 --------------------------
 
+- Feature: There is now a viewlet manager already registered with all
+  the viewlets necessary to use z3c.formjs.  You can now just do:
+
+    <script tal:replace="structure
+                         provider:z3c.formjs.interfaces.IDynamicJavaScript">
+    </script>
+
 - Feature: When AJAX handlers return complex data structures (dictionaries,
   lists and tuples), the data is automatically converted into JSON
   format before delivery.
