@@ -8,7 +8,9 @@ CLASSIFIERS = [
     'Framework :: Zope2',
 ]
 
-version = '1.5'
+
+long_description = open(os.path.join('Products', 'QueueCatalog', 'README.txt')).read()
+version = open(os.path.join('Products', 'QueueCatalog', 'version.txt')).read().strip()
 
 setup(name='Products.QueueCatalog',
       version=version,
