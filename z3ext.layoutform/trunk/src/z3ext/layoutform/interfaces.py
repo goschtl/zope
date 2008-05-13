@@ -11,13 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" z3ext.layout interfaces
+""" z3ext.layoutform interfaces
 
 $Id$
 """
 from zope import interface
+from zope.i18nmessageid import MessageFactory
 from z3c.form.interfaces import IFormLayer
 from z3ext.layout.interfaces import IPagelet
+
+_ = MessageFactory('z3ext')
 
 
 class ILayoutFormLayer(IFormLayer):

@@ -27,7 +27,7 @@ from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 import interfaces
-from i18n import _
+from interfaces import _
 
 
 class PageletAddForm(form.AddForm, BrowserPagelet):
