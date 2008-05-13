@@ -107,6 +107,15 @@ output:
     })
   </script>
 
+The z3c.formjs package provides a viewlet manager with this viewlet
+already registered for it.  The viewlet manager has the name
+``z3c.formjs.interfaces.IDynamicJavaScript`` and can be rendered in
+any template with the following:
+
+  <script tal:replace="structure
+                       provider:z3c.formjs.interfaces.IDynamicJavaScript">
+  </script>
+
 
 Forms with Javascript Buttons
 -----------------------------

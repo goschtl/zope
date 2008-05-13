@@ -18,6 +18,7 @@ $Id: $
 __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
+from zope.viewlet.interfaces import IViewletManager
 
 from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
 from z3c.form.interfaces import ISelectionManager, IForm
@@ -142,6 +143,12 @@ class IHaveJSFunctions(zope.interface.Interface):
         description=u"Attribute holding the JS Functions Manager.",
         schema = IJSFunctions,
         required=True)
+
+# -----[ JavaScript Viewlet Manager ]-----------------------------------------
+
+class IDynamicJavaScript(IViewletManager):
+    """Viewlet manager for dynamically generated javascript."""
+
 
 # -----[ Widgets ]------------------------------------------------------------
 
