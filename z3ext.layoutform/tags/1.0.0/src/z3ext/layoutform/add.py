@@ -70,8 +70,8 @@ class PageletAddForm(form.AddForm, BrowserPagelet):
 
     def nextURL(self):
         if self._addedObject is None:
-	    return '%s/@@SelectedManagementView.html'%\
-                absoluteURL(self.context, self.request)
+            return '%s/@@SelectedManagementView.html'%\
+                   absoluteURL(self.context, self.request)
         else:
             return absoluteURL(self._addedObject, self.request) + '/'
 
