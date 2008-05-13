@@ -78,7 +78,7 @@ JSON string.
   {"requestKeys": ["CONTENT_LENGTH", "HTTP_HOST",
                    "SERVER_URL", "GATEWAY_INTERFACE"],
    "requestVals": ["0", "127.0.0.1",
-                   "http://127.0.0.1", "TestFooInterface/1.0"],
+                   "http:\/\/127.0.0.1", "TestFooInterface\/1.0"],
    "class": "PingForm",
    "size": 4}
 
