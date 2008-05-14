@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.2.3 (2008-05-14)
+------------------
+
+- Replace 'autoinclude' with 'includeDependendcies'
+
+- Tests updated
+
+
 1.2.2 (2008-04-08)
 ------------------
 
@@ -73,4 +81,4 @@ CHANGES
 1.0.0 (2007-26-07)
 ------------------
 
-- Initial release.
+- Initial release

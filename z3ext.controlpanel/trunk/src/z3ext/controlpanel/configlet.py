@@ -41,10 +41,7 @@ class Configlet(Location):
 
     def isAvailable(self):
         for test in self.__tests__:
-            if callable(test):
-                if not test(self):
-                    return False
-            elif not bool(test):
+            if not test(self):
                 return False
 
         if IConfiglet.providedBy(self.__parent__):

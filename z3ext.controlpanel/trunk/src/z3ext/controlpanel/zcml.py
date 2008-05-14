@@ -92,11 +92,15 @@ class ConfigletDirective(object):
         ConfigletClass = ConfigletType(
             str(name), schema, class_, title, description)
 
+        for test in tests:
+            if not callable(test):
+                raise ConfigurationError("Test should be callable.")
+
         if permission == 'zope.Public':
             configlet = ConfigletClass(tuple(tests))
         else:
-            configlet = ConfigletClass(
-                (PermissionChecker(permission),) + tuple(tests))
+            configlet = ConfigletClass((
+                PermissionChecker(permission),) + tuple(tests))
 
         utility(_context, IConfiglet, configlet, name=name)
 

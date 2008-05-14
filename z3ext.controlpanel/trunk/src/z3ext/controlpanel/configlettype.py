@@ -18,7 +18,7 @@ $Id$
 import sys
 from zope.schema import getFields
 
-from z3ext.controlpanel.i18n import _
+from z3ext.controlpanel.interfaces import _
 from z3ext.controlpanel.configlet import Configlet
 
 _marker = object()
@@ -159,7 +159,7 @@ class ConfigletProperty(object):
     >>> ob.attr1 = u'value1'
     Traceback (most recent call last):
     ...
-    ValueError: ('attr1', 'field is readonly')
+    ValueError: ('attr1', u'Field is readonly')
 
     """
 

@@ -17,6 +17,9 @@ $Id$
 """
 from zope import schema, interface
 from zope.location.interfaces import ILocation
+from zope.i18nmessageid import MessageFactory
+
+_ = MessageFactory('z3ext')
 
 
 class ICategory(interface.Interface):

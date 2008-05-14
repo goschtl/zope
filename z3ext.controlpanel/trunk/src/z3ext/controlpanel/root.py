@@ -23,9 +23,8 @@ from zope.security.interfaces import Unauthorized
 from zope.app.component.hooks import getSite
 from zope.app.component.interfaces import ISite
 
-from i18n import _
 from configlet import Configlet
-from interfaces import IConfiglet, IRootConfiglet, ICategory
+from interfaces import _, IConfiglet, IRootConfiglet, ICategory
 
 
 class RootConfiglet(Configlet):

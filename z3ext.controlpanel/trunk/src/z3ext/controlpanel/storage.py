@@ -43,8 +43,10 @@ class DataStorage(object):
         return storage
 
     def __getitem__(self, name):
-        try:
-            return self._data[name]
-        except KeyError:
-            self._data[name] = OOBTree()
-            return self._data[name]
+        data = self._data.get(name)
+
+        if data is None:
+            data = OOBTree()
+            self._data[name] = data
+
+        return data
