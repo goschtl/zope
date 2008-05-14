@@ -1,5 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:five="http://namespaces.zope.org/five"
     i18n_domain="lovely.remotetask">
 
   <class class=".service.TaskService">
@@ -38,8 +40,9 @@
       factory=".task.EchoTask"
       name="echo" />
 
-  <include file="xmlrpc.zcml" />
-
+  <include zcml:condition="not-installed Products.Five" file="xmlrpc.zcml" />
+  <five:registerPackage zcml:condition="installed Products.Five" package="." initialize=".initialize" />
+  
   <include package=".browser" />
   <include package=".generations" />
 

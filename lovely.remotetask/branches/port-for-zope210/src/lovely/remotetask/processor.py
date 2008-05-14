@@ -28,6 +28,15 @@ from zope.security import management
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.api import traverse
 
+try:
+    from ZPublisher.HTTPRequest import HTTPRequest
+    from ZPublisher.HTTPResponse import HTTPResponse
+    import ZPublisher
+    from types import StringType
+    ZOPE2=True
+except ImportError:
+    ZOPE2=False
+
 from lovely.remotetask import interfaces
 
 THREAD_STARTUP_WAIT = 0.05
@@ -92,7 +101,7 @@ class SimpleProcessor(object):
             log.error('Processor: ``%s()`` caused an error!' %method)
             log.exception(error)
             return errorValue is ERROR_MARKER and error or errorValue
-
+            
     def processNext(self, jobid=None):
         return self.call('processNext', args=(None, jobid))
 
@@ -104,6 +113,37 @@ class SimpleProcessor(object):
             if not result:
                 time.sleep(self.waitTime)
 
+class SimpleZope2Processor(SimpleProcessor):
+    """ SimpleProcessor for Zope2 """
+    
+    zope.interface.implements(interfaces.IProcessor)
+
+    def call(self, method, args=(), errorValue=ERROR_MARKER):
+        path = [method] + self.servicePath[:]
+        path.reverse()
+        response = HTTPResponse()
+        env = { 'SERVER_NAME': 'dummy',
+                'SERVER_PORT': '8080',
+                'PATH_INFO': '/' + '/'.join(path) }
+        request = HTTPRequest(None, env, response)
+        conn = self.db.open()
+        root = conn.root()
+        request['PARENTS'] = [root[ZopePublication.root_name]]
+        try:
+            try:
+                ZPublisher.Publish.publish(request,'Zope2', [None])
+            except Exception, error:
+                # This thread should never crash, thus a blank except
+                log.error('Processor: ``%s()`` caused an error!' %method)
+                log.exception(error)
+                return errorValue is ERROR_MARKER and error or errorValue
+        finally:
+            request.close()
+            conn.close()
+            if not request.response.body:
+                time.sleep(1)
+            else:
+                return request.response.body
 
 class MultiProcessor(SimpleProcessor):
     """Multi-threaded Job Processor
@@ -150,3 +190,34 @@ class MultiProcessor(SimpleProcessor):
                 thread.start()
                 # Give the thread some time to start up:
                 time.sleep(THREAD_STARTUP_WAIT)
+
+class MultiZope2Processor(MultiProcessor, SimpleZope2Processor):
+    """Multi-threaded Job Processor
+
+    This processor can work on multiple jobs at the same time.
+    
+    WARNING: This still does not work correctly in Zope2
+    """
+    zope.interface.implements(interfaces.IProcessor)
+
+    def __init__(self, *args, **kwargs):
+        self.maxThreads = kwargs.pop('maxThreads', 5)
+        super(MultiZope2Processor, self).__init__(*args, **kwargs)
+        self.threads = []
+
+    def hasJobsWaiting(self):
+        value = self.call('hasJobsWaiting', errorValue=False)
+        if isinstance(value, StringType):
+            if value == 'True':
+                return True
+            else:
+                return False
+        return value
+
+    def claimNextJob(self):
+        value = self.call('claimNextJob', errorValue=None)
+        try:
+            value = int(value)
+        except ValueError:
+            pass
+        return value

@@ -27,7 +27,6 @@ import zope.interface
 from BTrees.IOBTree import IOBTree
 from zope import component
 from zope.app import zapi
-from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
 from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
@@ -35,6 +34,15 @@ from zope.component.interfaces import ComponentLookupError
 from lovely.remotetask import interfaces, job, task, processor
 
 log = logging.getLogger('lovely.remotetask')
+
+try:
+    from Products import Five
+    from App.config import getConfiguration
+    ZOPE2 = True
+    del Five
+except ImportError:
+    from zope.app.appsetup.product import getProductConfiguration
+    ZOPE2 = False
 
 storage = threading.local()
 
@@ -46,7 +54,11 @@ class TaskService(contained.Contained, persistent.Persistent):
     zope.interface.implements(interfaces.ITaskService)
 
     taskInterface = interfaces.ITask
-    processorFactory = processor.SimpleProcessor
+    if not ZOPE2:
+        processorFactory = processor.SimpleProcessor
+    else:
+        processorFactory = processor.SimpleZope2Processor
+        
     processorArguments = {'waitTime': 1.0}
 
     _scheduledJobs  = None
@@ -159,10 +171,13 @@ class TaskService(contained.Contained, persistent.Persistent):
         if self._scheduledQueue == None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
-        servicePath = [parent.__name__ for parent in zapi.getParents(self)
-                       if parent.__name__]
+        if not ZOPE2:
+            servicePath = [parent.__name__ for parent in zapi.getParents(self)
+                            if parent.__name__]
+            servicePath.append(self.__name__)
+        else:
+            servicePath = [path for path in self.getPhysicalPath() if path]
         servicePath.reverse()
-        servicePath.append(self.__name__)
         # Start the thread running the processor inside.
         processor = self.processorFactory(
             self._p_jar.db(), servicePath, **self.processorArguments)
@@ -196,11 +211,16 @@ class TaskService(contained.Contained, persistent.Persistent):
         """Return name of the processing thread."""
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
-        path = [parent.__name__ for parent in zapi.getParents(self)
-                if parent.__name__]
-        path.append('remotetasks')
-        path.reverse()
-        path.append(self.__name__)
+        if not ZOPE2:
+            path = [parent.__name__ for parent in zapi.getParents(self)
+                    if parent.__name__]
+            path.append('remotetasks')
+            path.reverse()
+            path.append(self.__name__)
+        else:
+            path = [path for path in self.getPhysicalPath() if path]
+            path.append('remotetasks')
+            path.reverse()
         return '.'.join(path)
 
     def hasJobsWaiting(self, now=None):
@@ -334,11 +354,24 @@ def getAutostartServiceNames():
     """get a list of services to start"""
 
     serviceNames = []
-    config = getProductConfiguration('lovely.remotetask')
-    if config is not None:
-        serviceNames = [name.strip()
-                        for name in config.get('autostart', '').split(',')]
+    # this does not work in Zope 2, because there is no "getProductConfiguration"
+    # Services has to be started in custom code 
+    if not ZOPE2:
+        config = getProductConfiguration('lovely.remotetask')
+        if config is not None:
+            serviceNames = [name.strip()
+                            for name in config.get('autostart', '').split(',')]
+    else:
+        config = getConfiguration().product_config
+        if config is not None:
+            task_config = config.get('lovely.remotetask', None)
+            if task_config:
+                autostart = task_config.get('autostart', '')
+                serviceNames = [name.strip()
+                                for name in autostart.split(',')]
+
     return serviceNames
+
 
 
 def bootStrapSubscriber(event):
@@ -404,3 +437,4 @@ def bootStrapSubscriber(event):
         if (siteName == "*" or serviceName == "*") and serviceCount == 0:
             msg = 'no services started by directive %s'
             log.warn(msg % name)
+

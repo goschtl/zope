@@ -35,6 +35,12 @@ except ImportError:
     # But still support the old location if we can't get it from the new:
     from zope.app.session.interfaces import ISession
 
+try:
+    from Products import Five
+    ZOPE2 = True
+except ImportError:
+    ZOPE2 = False
+
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.container.contained import contained
 
@@ -202,9 +208,13 @@ class DatetimeColumn(column.GetterColumn):
 
     def renderCell(self, item, formatter):
         date = self.getter(item, formatter)
-        dformat = formatter.request.locale.dates.getFormatter(
-            'dateTime', 'medium')
-        return date and dformat.format(date) or '[not set]'
+        if not ZOPE2:
+            dformat = formatter.request.locale.dates.getFormatter(
+                'dateTime', 'medium')
+            return date and dformat.format(date) or '[not set]'
+        else:
+            # request has no 'locale' 
+            return date or '[not set]'
 
     def getSortKey(self, item, formatter):
         return self.getter(item, formatter)
@@ -396,6 +406,14 @@ class JobsOverview(BrowserPage):
         return self.template()
 
 from zope.publisher.interfaces import IPublishTraverse
+try:
+    from Products import Five
+    from Acquisition import aq_base, aq_inner
+    ZOPE2 = True
+    del Five
+except ImportError:
+    ZOPE2 = False
+    
 
 class ServiceJobTraverser(object):
     zope.interface.implements(IPublishTraverse)
@@ -415,5 +433,10 @@ class ServiceJobTraverser(object):
                                                 name=name)
         if view is not None:
             return view
-        raise NotFound(self.context, name, request)
+        else:
+            if ZOPE2:
+                obj = getattr(aq_base(aq_inner(self.context)), name, None)
+                if obj is not None:
+                    return obj
+            raise NotFound(self.context, name, request)
 

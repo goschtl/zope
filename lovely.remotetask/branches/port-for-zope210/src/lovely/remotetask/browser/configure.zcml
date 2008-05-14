@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:zope="http://namespaces.zope.org/zope">
 
   <resourceDirectory
@@ -8,6 +9,7 @@
       />
 
   <addMenuItem
+      zcml:condition="not-installed Products.Five"
       class="..service.TaskService"
       title="Remote Task Service"
       description="A Remote Task Service"
@@ -15,6 +17,7 @@
       />
 
   <page
+      zcml:condition="not-installed Products.Five"
       name="jobs.html"
       for="..interfaces.ITaskService"
       class=".service.JobsOverview"
@@ -23,6 +26,7 @@
       />
 
   <page
+      zcml:condition="not-installed Products.Five"
       name="detail"
       for="..interfaces.IJob"
       permission="zope.ManageContent"
@@ -30,6 +34,7 @@
       />
 
   <page
+      zcml:condition="not-installed Products.Five"
       name="detail"
       for="..interfaces.ICronJob"
       permission="zope.Public"
@@ -37,6 +42,7 @@
       />
 
   <page
+      zcml:condition="not-installed Products.Five"
       name="editjob"
       for="..interfaces.ICronJob"
       permission="zope.ManageContent"
@@ -45,6 +51,7 @@
       />
 
   <page
+      zcml:condition="not-installed Products.Five"
       name="addcronjob.html"
       for="..interfaces.ITaskService"
       class=".job.AddCronJob"
@@ -60,5 +67,7 @@
       factory=".service.ServiceJobTraverser"
       permission="zope.Public"
       />
+
+  <include file="zope210compat.zcml" zcml:condition="installed Products.Five" /> 
 
 </configure>
