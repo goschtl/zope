@@ -19,10 +19,6 @@ from zope import interface
 from zope.publisher.interfaces.browser import IBrowserPage
 
 
-class ILayoutLayer(interface.Interface):
-    """ A layer that contains all registration of this package. """
-
-
 class IPagelet(IBrowserPage):
     """ pagelet """
 

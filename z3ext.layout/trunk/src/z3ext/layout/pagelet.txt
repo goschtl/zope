@@ -5,7 +5,7 @@ Pagelet directive
 Show how we can use the pagelet directive. Register the meta configuration for 
 the directive.
 
-  >>> import os, sys, tempfile
+  >>> import os, tempfile
   >>> from zope import interface, component
   >>> from zope.configuration import xmlconfig
   >>> import z3ext.layout
@@ -17,19 +17,13 @@ We need also a custom pagelet class:
   >>> class MyPagelet(BrowserPagelet):
   ...     """Custom pagelet"""
 
-Make them available under the fake package ``custom``:
-
-  >>> sys.modules['custom'] = type(
-  ...     'Module', (), 
-  ...     {'MyPagelet': MyPagelet})()
-
 Register a pagelet within the directive with minimal attributes:
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
   ...       name="index.html"
-  ...       class="custom.MyPagelet"
+  ...       class="z3ext.layout.TESTS.MyPagelet"
   ...       permission="zope.Public"
   ...       />
   ... </configure>
@@ -37,15 +31,14 @@ Register a pagelet within the directive with minimal attributes:
 
 Let's get the pagelet
 
-  >>> import zope.component
   >>> from zope.publisher.browser import TestRequest
-  >>> pagelet = zope.component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='index.html')
 
 and check them:
 
   >>> pagelet
-  <z3ext.layout.zcml.PageletClass from <class 'MyPagelet'> ...>
+  <z3ext.layout.zcml.PageletClass from <class 'z3ext.layout.TESTS.MyPagelet'> ...>
 
   >>> pagelet.context
   <object object at ...>
@@ -65,20 +58,12 @@ adds BrowserPagetlet to bases classes. Let's define some more components...
   >>> class Content(object):
   ...     zope.interface.implements(IContent)
 
-register the new classes in the custom module...
-
-  >>> sys.modules['custom'].IContent = IContent
-  >>> sys.modules['custom'].Content = Content
-  >>> sys.modules['custom'].SecondPagelet = SecondPagelet
-
-and use them in the directive:
-
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
   ...       name="custom.html"
-  ...       class="custom.SecondPagelet"
-  ...       for="custom.IContent"
+  ...       class="z3ext.layout.TESTS.SecondPagelet"
+  ...       for="z3ext.layout.TESTS.IContent"
   ...       permission="zope.Public"
   ...       label="my Label" />
   ... </configure>
@@ -93,7 +78,7 @@ Get the pagelet for the new content object
 and check them:
 
   >>> pagelet
-  <z3ext.layout.zcml.PageletClass from <class 'SecondPagelet'> ...>
+  <z3ext.layout.zcml.PageletClass from <class 'z3ext.layout.TESTS.SecondPagelet'> ...>
 
   >>> pagelet.label
   u'my Label'
@@ -103,36 +88,29 @@ Such a interface must be inherited from IPagelet.
 
   >>> class NewPagelet(BrowserPagelet):
   ...     """New pagelet"""
-  >>> sys.modules['custom'] = type(
-  ...     'Module', (), 
-  ...     {'NewPagelet': NewPagelet})()
-
 
 Now register the pagelet within a interface.
 
   >>> class INewPagelet(interface.Interface):
   ...     """New pagelet interface."""
-  >>> sys.modules['custom'] = type(
-  ...     'Module', (), 
-  ...     {'INewPagelet': INewPagelet, 'NewPagelet': NewPagelet})()
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
   ...       name="new.html"
-  ...       class="custom.NewPagelet"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
   ...       permission="zope.Public"
-  ...       provides="custom.INewPagelet" />
+  ... provides="z3ext.layout.TESTS.INewPagelet" />
   ... </configure>
   ... """, context)
 
 And if we get the pagelet, we can see that the object provides the new 
 pagelet interface:
 
-  >>> pagelet = zope.component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='new.html')
   >>> pagelet
-  <z3ext.layout.zcml.PageletClass from <class 'NewPagelet'> ...>
+  <z3ext.layout.zcml.PageletClass from <class 'z3ext.layout.TESTS.NewPagelet'> ...>
 
   >>> INewPagelet.providedBy(pagelet)
   True
@@ -147,7 +125,7 @@ We can create pagelet without specific class
   ... </configure>
   ... """, context) 
 
-  >>> pagelet = zope.component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='noclass.html')
   >>> pagelet
   <z3ext.layout.zcml.PageletClass from None ...>
@@ -181,7 +159,7 @@ We can create pagelet with template:
   ... </configure>
   ... """%template, context)
 
-  >>> pagelet = zope.component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='template.html')
   >>> pagelet
   <z3ext.layout.zcml.PageletClass from None ...>
@@ -198,7 +176,7 @@ Pagelet rendering
 We should use page template as template for pagelet or we should
 provide IPageTemplate adapter for pagelet
 
-  >>> pagelet = zope.component.queryMultiAdapter((object(), TestRequest()), 
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='noclass.html')
   >>> pagelet.render()
   Traceback (most recent call last):
@@ -213,10 +191,33 @@ provide IPageTemplate adapter for pagelet
   >>> component.getSiteManager().registerAdapter(
   ...     getPT, (pagelet.__class__, interface.Interface), IPageTemplate, '')
 
-  >>> print pagelet.render()
+  >>> print pagelet()
   <div>My pagelet</div>
   <BLANKLINE>
 
-Now we need to clean up the custom module.
+We can redirect during pagelet rendering, in this case render method
+doesn't call.
 
-  >>> del sys.modules['custom']
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
+  ...     name='noclass.html')
+  >>> pagelet.redirect('/')
+  >>> pagelet.isRedirected
+  True
+  >>> pagelet()
+  u''
+
+We can get default pagelet view for content. First register default view
+
+  >>> from zope.component.interfaces import IDefaultViewName
+  >>> component.getSiteManager().registerAdapter(
+  ...     'index.html', (interface.Interface, interface.Interface),
+  ...     IDefaultViewName)
+
+  >>> view = component.getMultiAdapter(
+  ...     (object(), TestRequest()), z3ext.layout.interfaces.IPagelet)
+
+  >>> view
+  <z3ext.layout.zcml.PageletClass from <class 'z3ext.layout.TESTS.MyPagelet'> ...>
+
+  >>> view.__name__
+  u'index.html'

@@ -38,7 +38,7 @@
      title="Portal layout (z3ext.layout)"
      description="Default portal layout, registered for IDefaultBrowserLayer"
      for="zope.app.component.interfaces.ISite"
-     template="layoutpage.pt" />
+     template="layoutportal.pt" />
 
   <!-- Registering documentation with API doc -->
   <configure

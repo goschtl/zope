@@ -16,10 +16,13 @@
 $Id$
 """
 import unittest, doctest
-from zope import interface
+from zope import interface, component
 from zope.testing.doctestunit import DocFileSuite
 from zope.app.testing import setup
 from zope.app.container.sample import SampleContainer
+
+from z3ext.layout import pagelet
+
 
 class IFolder1(interface.Interface):
     pass
@@ -44,10 +47,13 @@ def setUp(test):
     root = setup.placefulSetUp(site=True)
     root.__name__ = 'root'
     test.globs['root'] = root
+    component.provideAdapter(pagelet.queryPagelet)
+    setup.setUpTestAsModule(test, 'z3ext.layout.TESTS')
 
 
 def tearDown(test):
     setup.placefulTearDown()
+    setup.tearDownTestAsModule(test)
 
 
 def test_suite():
@@ -59,6 +65,7 @@ def test_suite():
                 ),
             doctest.DocFileSuite(
                 'pagelet.txt',
+            setUp=setUp, tearDown=tearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
                 ),
             ))
