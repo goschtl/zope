@@ -12,11 +12,13 @@ from megrok.kss.components import KSS
 
 class KSSGrokker(martian.ClassGrokker):
     component_class = KSS
+    directives = [
+        grok.view.bind(),
+        grok.require.bind(name='class_permission'),
+        ]
 
-    def grok(self, name, factory, module_info, config, **kw):
-        view_context = grok.view.get(factory, module_info.getModule())
+    def execute(self, factory, config, view, class_permission, **kw):
         methods = martian.util.methods_from_class(factory)
-        default_permission = grok.require.get(factory)
 
         for method in methods:
             name = method.__name__
@@ -26,16 +28,12 @@ class KSSGrokker(martian.ClassGrokker):
             # Create a new class with a __view_name__ attribute so the
             # KSSServerAction class knows what method to call.
 
-            #We should allow name directives on methods
-            #view_name = util.class_annotation(factory, 'grok.name',
-            #                                  factory_name)
-
             method_view = type(
                 factory.__name__, (factory, BrowserPage),
                 {'__view_name__': name}
                 )
 
-            adapts = (view_context, IDefaultBrowserLayer)
+            adapts = (view, IDefaultBrowserLayer)
             config.action(
                 discriminator=('adapter', adapts, interface.Interface, name),
                 callable=component.provideAdapter,
@@ -45,9 +43,9 @@ class KSSGrokker(martian.ClassGrokker):
             # Protect method_view with either the permission that was
             # set on the method, the default permission from the class
             # level or zope.Public.
-            permission = grok.require.get(method)
+            permission = grok.require.bind().get(method)
             if permission is None:
-                permission = default_permission
+                permission = class_permission
 
             config.action(
                 discriminator=('protectName', method_view, '__call__'),
