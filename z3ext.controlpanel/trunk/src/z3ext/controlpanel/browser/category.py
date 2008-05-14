@@ -26,7 +26,7 @@ class CategoryView(object):
         super(CategoryView, self).update()
 
         request = self.request
-	context = self.context
+        context = self.context
 
         data = self.process(context, request)
 
