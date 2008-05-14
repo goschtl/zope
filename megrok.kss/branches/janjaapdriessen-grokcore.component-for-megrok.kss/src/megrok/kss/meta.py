@@ -28,6 +28,9 @@ class KSSGrokker(martian.ClassGrokker):
             # Create a new class with a __view_name__ attribute so the
             # KSSServerAction class knows what method to call.
 
+            # TODO: We should allow name directives on methods
+            #view_name = grok.name.bind(default=name).get(method)
+
             method_view = type(
                 factory.__name__, (factory, BrowserPage),
                 {'__view_name__': name}
