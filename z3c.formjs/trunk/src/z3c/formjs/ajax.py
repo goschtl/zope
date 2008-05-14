@@ -17,7 +17,7 @@ $Id: $
 """
 __docformat__ = "reStructuredText"
 import sys
-import simplejson
+import cjson
 import zope.component
 import zope.interface
 from zope.publisher.interfaces import NotFound
@@ -50,7 +50,7 @@ class AJAXHandler(object):
         result = self.func(view)
         if type(result) in (dict, list, set):
             try:
-                result = simplejson.dumps(result)
+                result = cjson.encode(result)
             except TypeError:
                 result = str(result)
         return result

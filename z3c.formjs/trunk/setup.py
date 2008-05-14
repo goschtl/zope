@@ -80,7 +80,7 @@ setup (
         'zope.publisher',
         'zope.schema',
         'zope.traversing',
-        'simplejson',
+        'python-cjson',
         ],
     dependency_links = ['http://download.zope.org/distribution'],
     zip_safe = False,
