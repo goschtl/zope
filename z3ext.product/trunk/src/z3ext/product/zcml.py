@@ -58,7 +58,7 @@ class ProductDirective(ConfigletDirective):
             test = ProductTest()
             tests = (test,) + tuple(tests)
         else:
-            tests = (False,)
+            tests = (NotConfigurable,)
 
         # create component registry
         registry = ProductRegistry(name, title)
@@ -93,3 +93,6 @@ class ProductTest(object):
 
     def __call__(self, *args, **kw):
         return self.product.isInstalled()
+
+def NotConfigurable(configlet):
+    return False
