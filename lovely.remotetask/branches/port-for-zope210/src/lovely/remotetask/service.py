@@ -354,8 +354,6 @@ def getAutostartServiceNames():
     """get a list of services to start"""
 
     serviceNames = []
-    # this does not work in Zope 2, because there is no "getProductConfiguration"
-    # Services has to be started in custom code 
     if not ZOPE2:
         config = getProductConfiguration('lovely.remotetask')
         if config is not None:
