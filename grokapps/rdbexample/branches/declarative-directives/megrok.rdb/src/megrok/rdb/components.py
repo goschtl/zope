@@ -34,7 +34,7 @@ class Container(MappedCollection):
     implements(IContainer)
 
     def __init__(self, *args, **kw):
-        rdb_key = directive.key.get(self)
+        rdb_key = directive.key.bind().get(self)
         if rdb_key:
             keyfunc = lambda node:getattr(node, rdb_key)
         elif hasattr(self, 'keyfunc'):
