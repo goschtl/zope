@@ -15,6 +15,17 @@ ways:
 2. They also allow to move expensive operations to other servers. This is
    valuable, for example, when converting videos on high-traffic sites.
 
+Notes for Zope 2.10 users
+-------------------------
+
+If you are using buildout, don't forget to add fakezope2eggs to the buildout.cfg
+
+[fakezope2eggs]
+recipe = affinitic.recipe.fakezope2eggs
+additional-fake-eggs = ZODB3
+
+Please note, Zope 2.10 compatibility is written with intention to get at least something working. 
+
 Installation
 ------------
 

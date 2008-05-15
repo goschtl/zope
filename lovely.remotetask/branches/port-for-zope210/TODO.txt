@@ -3,3 +3,10 @@
 =============================
 
 - remove zope.app.session dependency
+
+
+2.10 compatibility:
+
+- try cron jobs (not tested yet)
+- MultiProcessor does not work yet
+
