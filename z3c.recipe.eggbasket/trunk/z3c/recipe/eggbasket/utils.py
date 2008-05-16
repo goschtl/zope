@@ -1,3 +1,4 @@
+import sys
 import tempfile
 import shutil
 import tarfile
@@ -30,26 +31,40 @@ def distributions_are_installed_in_dir(distributions, target_dir):
     return result
 
 
-def create_source_tarball():
-    # These variables need to be configurable:
-    egg = 'grok'
-    version = '0.13'
-    config_file_name = 'buildout.cfg'
+def create_source_tarball(egg=None, versionfile='buildout.cfg'):
+    # XXX We may want to add command line argument handling.
+
+    if egg is None:
+        # XXX Having a way to read the setup.py in the current
+        # directory and get an egg name and perhaps version number
+        # from there would be cool.  For now:
+        print "Please provide an egg name."
+        sys.exit(1)
+
+    # XXX This may be a bit too hard coded.
+    # Perhaps try to read something from the buildout config.
     links = ['http://download.zope.org/distribution/']
 
     import zc.buildout.easy_install
     import zc.buildout.buildout
     import os
 
-    # Read the buildout file.
-    here = os.getcwd()
-    config_file = os.path.join(here, config_file_name)
-    config = zc.buildout.buildout._open(here, config_file, [])
+    # Read the buildout/versions file.  versionfile can be a file in
+    # the current working directory or on some url.  zc.buildout
+    # nicely takes care of that for us.
+    config = zc.buildout.buildout._open(os.getcwd(), versionfile, [])
 
     # Get the version information.
-    versions = config['buildout'].get('versions')
-    if version is not None:
-        versions = config[versions]
+    buildout = config.get('buildout')
+    if buildout is None:
+        versions = config.get('versions')
+    else:
+        versions = buildout.get('versions')
+        if versions is not None:
+            versions = config.get(versions)
+    if versions is None:
+        print "Could not get versions from %s." % versionfile
+        sys.exit(1)
 
     try:
         # Make temporary directories for the cache and the destination
@@ -60,18 +75,34 @@ def create_source_tarball():
         # Set the download cache directory:
         zc.buildout.easy_install.download_cache(cache)
 
+        main_egg_version = versions.get(egg)
+        if main_egg_version is None:
+            print ("Error: the main egg (%s) has not been pinned in the "
+                   "version file (%s)." % (egg, versionfile))
+            sys.exit(1)
+
         # Install the main egg, which pulls all dependencies into the
         # download cache.
+        print ("Will get main egg (%s) version %s and dependencies "
+               "with versions as listed in %s." %
+               (egg, main_egg_version, versionfile))
+        print "This could take a while..."
         ws = zc.buildout.easy_install.install(
             [egg], dest, versions=versions,
             links=links)
 
         # Create tarball in current directory.
-        directory_name = '%s-eggs-%s' % (egg, version)
-        egg_tar = tarfile.open(directory_name + '.tgz', 'w:gz')
+        directory_name = '%s-eggs-%s' % (egg, main_egg_version)
+        tar_name = directory_name + '.tgz'
+        print "Creating", tar_name
+        egg_tar = tarfile.open(tar_name, 'w:gz')
         egg_tar.add(cache, directory_name)
-        # TODO: actually add latest version of grok egg
+
+        # TODO: perhaps actually add latest version of grok egg if it
+        # is not there already, though currently the code should have
+        # failed already when this it is not available.
         egg_tar.close()
+        print "Done."
     finally:
         shutil.rmtree(dest)
         shutil.rmtree(cache)

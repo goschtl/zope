@@ -14,9 +14,25 @@ down, they are disappointed, leave and never come back.
 
 The goal of this recipe is to avoid having those multiple points of
 failure.  You create a tarball containing all eggs that your egg
-depends on.  A package like zc.sourcerelease_ can help here. You
-upload that tarball somewhere.  In your buildout you point this recipe
-to your egg and the url of the tarball, for example like this::
+depends on.  A package like zc.sourcerelease_ can help here, but our
+recipe can also create such a tar ball.  Include it in a buildout like
+this::
+
+  [buildout]
+  parts = releasemaker
+
+  [releasemaker]
+  recipe = zc.recipe.egg
+  eggs = z3c.recipe.eggbasket
+  arguments =
+      egg = 'grok',
+      versionfile = 'http://grok.zope.org/releaseinfo/grok-0.12.cfg'
+
+Note the comma that separates the arguments.
+
+After you have made that tar ball, you need to upload it somewhere.
+In your buildout you point this recipe to your egg and the url of the
+tarball, for example like this::
 
   [buildout]
   parts = eggbasket
@@ -67,6 +83,21 @@ url
     and their dependencies.
 
 
+The releasemaker script supports the following options:
+
+egg
+    The main egg that we want to bundle up with its dependencies.
+    This is required.
+
+versionfile
+    Config file that contains the wanted versions of the main egg and
+    its dependencies.  An example is the grok version file:
+    http://grok.zope.org/releaseinfo/grok-0.12.cfg
+    This file is parsed by zc.buildout, so you can for example extend
+    other files.  And the file can be a url or the name of a file in
+    the current directory.
+
+
 Example usage
 =============
 
@@ -107,7 +138,7 @@ used.  Running the buildout gives us::
 
     >>> print system(buildout)
     Upgraded:
-      zc.buildout version 1.0.1;
+      zc.buildout version ...;
     restarting.
     Generated script '/sample-buildout/bin/buildout'.
     Installing basket.

@@ -31,10 +31,7 @@ long_description = (
     'Download\n'
     '********\n'
     )
-entry_point = 'z3c.recipe.eggbasket:Recipe'
-entry_points = {"zc.buildout": ["default = %s" % entry_point]}
 
-tests_require=['zope.testing', 'zc.recipe.egg']
 
 setup(name='z3c.recipe.eggbasket',
       version=version,
@@ -59,11 +56,13 @@ setup(name='z3c.recipe.eggbasket',
       zip_safe=False,
       install_requires=['setuptools',
                         'zc.buildout',
-                        # -*- Extra requirements: -*-
                         'zc.recipe.egg',
                         ],
-      tests_require=tests_require,
-      extras_require=dict(test=tests_require),
-      test_suite = 'z3c.recipe.eggbasket.tests.test_docs.test_suite',
-      entry_points=entry_points,
+      tests_require=['zope.testing', 'zc.recipe.egg'],
+      test_suite='z3c.recipe.eggbasket.tests.test_docs.test_suite',
+      entry_points={
+        "zc.buildout":
+            ["default = z3c.recipe.eggbasket:Recipe"],
+        'console_scripts':
+            ['releasemaker = z3c.recipe.eggbasket:utils.create_source_tarball']},
       )

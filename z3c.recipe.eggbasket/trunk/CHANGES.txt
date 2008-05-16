@@ -1,9 +1,9 @@
 0.2.0 (unreleased)
 ==================
 
- - Started adding function create_source_tarball for creating the kind
-   of source tarball that we are expecting.  Not hooked up anywhere yet.
-   [maurits]
+ - Added function create_source_tarball for creating the kind of
+   source tarball that we are expecting.  The releasemaker console
+   script calls this.  [maurits]
 
 
 0.1.0 (2008-05-06)
