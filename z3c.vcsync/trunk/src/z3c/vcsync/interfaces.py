@@ -64,11 +64,11 @@ class IState(Interface):
     """
     root = Attribute('The root container')
 
-    def set_revision_rr():
+    def get_revision_nr():
         """The last revision number that this state was synchronized with.
         """
 
-    def set_revision_rr(nr):
+    def set_revision_nr(nr):
         """Store the last revision number that this state was synchronized
         with.
         """
