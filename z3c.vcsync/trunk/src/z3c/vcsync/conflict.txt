@@ -308,6 +308,6 @@ Conflicting directory conflicts
 
 A directory was removed in the conflict directory: should be all right
 
-A directory was removed in the conflict directory, but more conflicts
+XXX A directory was removed in the conflict directory, but more conflicts
 created files within that directory.
 

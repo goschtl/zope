@@ -1,8 +1,5 @@
-* use grokcore.component instead of grok.
+* use grokcore.component instead of grok. This now works
+  experimentally on a branch, but we're waiting for a release of Grok
+  that uses grokcore.component before we switch over.
 
 * tests for unicode support in path names.
-
-* tests for various nasty synchronization cases with conflicts.
-
-* load optimizations - only load those objects that the version
-  control system marks as new, removed, or updated, instead of everything.

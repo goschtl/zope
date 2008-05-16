@@ -75,7 +75,7 @@ Bugs fixed
 
 * When resolving objects in the ZODB, a path was generated that has
   separators that are actually dependent on the operating system in
-  use (``/`` for *nix, but ``\`` for windows). This caused
+  use (``/`` for Unices, but ``\`` for windows). This caused
   synchronization to fail on Windows, completely flattening
   hierarchies. Now use os.path.sep to be platform-independent.
 

@@ -159,10 +159,10 @@ Sometimes there is no previously existing object in the Python tree,
 and we need to add it. To do this we implement a factory (where we use
 the parser for the real work)::
 
+  >>> from z3c.vcsync.tests import ItemFactory
+
 Both parser and factory are registered per extension, in this case
 ``.test``. This is the name of the utility.
-
-  >>> from z3c.vcsync.tests import ItemFactory
 
 We register these components::
 
@@ -316,5 +316,15 @@ We should see the changes reflected into the original tree::
   >>> data['sub']['qux'].payload
   30
 
+More information
+----------------
 
+To learn more about the APIs you can use and need to implement, see
+``interfaces.py``.
+
+To learn about using ``z3c.vcsync`` to import and export content, see
+``importexport.txt``.
+
+More low-level information may be gleaned from ``conflicts.txt`` and
+``internal.txt``.
 
