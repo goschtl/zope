@@ -71,6 +71,15 @@ Notes:
 
         $ ldconfig YOURBUILDOUTFOLDER/parts/openoffice/program
 
+    If you still face the same error, you might try::
+
+        $  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"YOURBUILDOUTFOLDER/parts/openoffice/program"
+
+    Be careful that the first time you will run soffice in server mode, openoffice will oblige you to pass throught a wizard run first openoffice on your
+normal display or copy an .openoffice2 folder in the home of the user which is running the command.
+
+    This recipe requires rpm2cpio and cpio to be installed on your system.
+
 Authors:
 --------
 
