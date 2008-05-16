@@ -1,34 +1,48 @@
-All valid front end configurations can be combined with all valid back end
-configurations.
+========================
+Using blobs with ZEORaid
+========================
 
-Front end configuration
-=======================
+ZEORaid supports the usage of blobs under different scenarios. This file
+describes the various valid and invalid configuration scenarios and documents how
+ZEORaid behaves under those conditions.
+
+We split the configuration scenarios in two parts: front end configuration and
+back end configuration. Any of the front end configurations can be combined
+with all backend configurations.
+
+Valid front end configurations
+==============================
+
+Front end configuration describes how blobs are transferred between the ZEO
+clients and the ZEORaid server.
 
 No support or no blob support configured
 ----------------------------------------
 
-- andere einstellungen sind irrelevant, sollten auf `unconfigured` stehen
+The ZEO client does not support blobs or doesn't have blob support configured.
+In this case any configuration on the ZEORaid server becomes irrelevant. We
+recommend to not configure blob support on the ZEORaid server to avoid
+accidental inconsistencies.
 
 Blobs via ZEO protocol
 ----------------------
 
-ClientStorage options:
-
-- blob-dir configured to a seperate physical directory on each client
-
-- shared-blob-dir set to `false`
+The ZEO clients all contain a separate directory as a `cache` for blobs. The
+option `shared-blob-dir` is set to `false`. This causes the blobs to be
+transferred to and from the ZEORaid server via the ZEO protocol.
 
 Blobs via file system shared with ZEORaid
 -----------------------------------------
 
-- blob-dir configured to a directory shared between the zeo clients and the
-  RAIDStorage's blob-directory (read/write for all participants)
+The ZEO clients are configured with a `blob-dir` that points to a directory
+that is shared between all ClientStorages and the RAIDStorage's
+`blob-directory` on the ZEORaid server.
 
-- shared-blob-dir set to `true`
+The ClientStorages are configured with `shared-blob-dir` set to `true`.
 
 
-Back end configuration
-======================
+Valid back end configurations
+=============================
 
 RAIDStorage and back-ends with a single shared file system
 ----------------------------------------------------------
@@ -59,9 +73,11 @@ RAIDStorage via storage API and back end via ZEO protocol
 
 - shared-blob-dir for raidstorage and clientstorages set to `false`
 
+Invalid back end configurations
+===============================
 
-Invalid combinations: mixture of shared and non-shared
-------------------------------------------------------
+Mixture of shared and non-shared
+--------------------------------
 
 - The raidstorage having a shared directory with the zeo clients but the zeo
   clients not sharing with the back end servers is unsupported.
