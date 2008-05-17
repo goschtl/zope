@@ -18,9 +18,8 @@ $Id: interfaces.py 9482 2006-04-28 04:44:31Z gary $
 """
 from zope import interface, schema
 import zope.interface.common.sequence
+import zope.interface.common.mapping
 import zope.component.interfaces
-
-from zc.security.search import SimplePrincipalSource
 
 from i18n import _
 
@@ -90,8 +89,7 @@ class ILogEntry(interface.Interface):
         required=True, readonly=True)
 
     principal_ids = schema.Tuple(
-        value_type=schema.Choice(
-            source=SimplePrincipalSource()),
+        value_type=schema.TextLine(),
         title=_("Principals"),
         description=_(
             """The ids of the principals who triggered this log entry"""),

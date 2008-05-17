@@ -45,7 +45,7 @@ def copierSetUp(test):
     class DummyPrincipal(object):
         interface.implements(zope.security.interfaces.IPrincipal)
         def __init__(self, id, title, description):
-            self.id = id
+            self.id = unicode(id)
             self.title = title
             self.description = description
     

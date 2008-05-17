@@ -35,7 +35,7 @@ create an object with a log, then actually make a log.
     >>> class DummyPrincipal(object):
     ...     interface.implements(zope.security.interfaces.IPrincipal)
     ...     def __init__(self, id, title, description):
-    ...         self.id = id
+    ...         self.id = unicode(id)
     ...         self.title = title
     ...         self.description = description
     ...
@@ -124,7 +124,7 @@ were set properly.
     >>> entry.timestamp.tzinfo is pytz.utc
     True
     >>> entry.principal_ids
-    ('alice',)
+    (u'alice',)
     >>> list(emily.log) == [entry]
     True
     >>> entry.record_schema is ICat
@@ -199,7 +199,7 @@ look a bit more at the record and the change set.
     >>> after <= emily.log[1].timestamp <= datetime.datetime.now(pytz.utc)
     True
     >>> emily.log[1].principal_ids # cathy was not a request, so not included
-    ('alice', 'betty')
+    (u'alice', u'betty')
     >>> emily.log[1].details
     u'Dry food,\nin fact.'
     >>> emily.log[1].record_changes
@@ -253,7 +253,7 @@ the rest of our examples within the same interaction.
     ...     emily.log[3]]
     True
     >>> emily.log[3].principal_ids
-    ('cathy',)
+    (u'cathy',)
     >>> emily.log[3].record_changes=={'weight': 17, 'location': None}
     True
     >>> record = emily.log[3].record
