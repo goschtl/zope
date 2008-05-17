@@ -176,7 +176,7 @@ class LogEntry(persistent.Persistent, zope.location.Location):
             self.principal_ids = ()
         else:
             self.principal_ids = tuple(
-                [p.principal.id for p in interaction.participations
+                [unicode(p.principal.id) for p in interaction.participations
                  if zope.publisher.interfaces.IRequest.providedBy(p)])
     
     record = property(lambda self: Record(self))
