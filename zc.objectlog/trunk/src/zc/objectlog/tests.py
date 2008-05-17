@@ -55,16 +55,6 @@ def copierSetUp(test):
         interaction = principal = None
         def __init__(self, principal):
             self.principal = principal
-    
-    class DummyAuthService(object):
-        interface.implements(zope.app.security.interfaces.IAuthentication)
-        def __init__(self, data):
-            self.data = data
-        def getPrincipal(self, id):
-            return self.data[id]
-    
-    auth = DummyAuthService({'alice': alice})
-    zope.component.provideUtility(auth)
     zope.security.management.newInteraction(DummyParticipation(alice))
     module.setUp(test, 'zc.objectlog.copier_txt')
 

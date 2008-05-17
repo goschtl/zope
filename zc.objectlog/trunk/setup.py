@@ -76,12 +76,15 @@ long_description = (open("README.txt").read() +
 
 setup(
     name="zc.objectlog",
-    version="0.1.3b1",
+    version="0.2",
     license="ZPL 2.1",
     author="Gary Poster",
     author_email="gary@zope.com",
     description=open("README.txt").read(),
-    long_description=text('src/zc/objectlog/log.txt'),
+    long_description=text('src/zc/objectlog/log.txt',
+                          'Changes\n=======\n\n',
+                          'CHANGES.txt',
+                          out=True),
     keywords="zope zope3 logging",
     packages=find_packages('src'),
     package_dir={'':'src'},

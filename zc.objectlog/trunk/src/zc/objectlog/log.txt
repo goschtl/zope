@@ -48,17 +48,6 @@ create an object with a log, then actually make a log.
     ...     def __init__(self, principal):
     ...         self.principal = principal
     ...
-    >>> class DummyAuthService(object):
-    ...     interface.implements(zope.app.security.interfaces.IAuthentication)
-    ...     def __init__(self, data):
-    ...         self.data = data
-    ...     def getPrincipal(self, id):
-    ...         return self.data[id]
-    ...
-    >>> auth = DummyAuthService(
-    ...     {'alice': alice, 'betty': betty, 'cathy': cathy})
-    >>> ztapi.provideUtility(
-    ...     zope.app.security.interfaces.IAuthentication, auth)
     >>> import zope.publisher.interfaces
 
     >>> import zc.objectlog
