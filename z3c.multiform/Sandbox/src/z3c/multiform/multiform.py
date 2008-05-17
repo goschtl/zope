@@ -423,7 +423,7 @@ class MultiFormBase(formlib.form.FormBase):
         data = {}
         errors, action = formlib.form.handleSubmit(self.actions, data, self.validate)
         # the following part will make sure that previous error not
-        # get overriden by new errors. This is usefull for subforms. (ri)
+        # get overriden by new errors. This is useful for subforms. (ri)
         if self.errors is None:
             self.errors = errors
         else:
