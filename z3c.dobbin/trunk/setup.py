@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.dobbin',
-      version='0.2',
+      version='0.2.1',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
@@ -30,7 +30,7 @@ setup(name='z3c.dobbin',
       package_dir = {'': 'src'},
       namespace_packages=['z3c'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       extras_require = dict(
         test = [
             'zope.app.testing',
