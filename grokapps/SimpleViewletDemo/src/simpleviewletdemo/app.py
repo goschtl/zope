@@ -93,11 +93,9 @@ class AddFruit(grok.Viewlet):
     grok.view(Admin)
 
     def update(self):
-        self.form = getMultiAdapter((self.context, self.request), name='addfruitform')
+        self.form = getMultiAdapter((self.context, self.request),
+                                    name='addfruitform')
         self.form.update_form()
-        if self.request.method == 'POST':
-            app = get_application(self.context)
-            self.__parent__.redirect(self.__parent__.url(obj=app))
 
     def render(self):
         return self.form.render()
@@ -110,6 +108,8 @@ class AddFruitForm(grok.AddForm):
         obj = Fruit(**data)
         name = data['name'].lower().replace(' ', '_')
         self.context[name] = obj
+        app = get_application(self.context)
+        self.redirect(self.url(obj=app))
 
 class FruitContent(grok.Viewlet):
     grok.viewletmanager(MainArea)
