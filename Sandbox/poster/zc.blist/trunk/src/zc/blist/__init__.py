@@ -62,8 +62,6 @@ def shift_sequence(l, count):
     del l[:count]
     return res
 
-# Bucket and Index extend this
-
 class Collections(persistent.Persistent):
     # separate persistent object so a change does not necessitate rewriting
     # bucket or index
@@ -79,14 +77,17 @@ class Collections(persistent.Persistent):
 
     def remove(self, collection):
         res = []
-        found = False
+        found = 0
         for coll in self._collections:
             if coll is not collection:
                 res.append(coll)
             else:
                 assert not found
-                found = True
+                found += 1
+        if not found:
+            raise ValueError('blist programmer error: collection not found')
         self._collections = tuple(res)
+
 
     def __len__(self):
         return len(self._collections)
@@ -102,6 +103,8 @@ class Collections(persistent.Persistent):
 
     def __nonzero__(self):
         return bool(self._collections)
+
+# Bucket and Index extend this
 
 class AbstractData(persistent.Persistent):
     def __init__(self, collection, identifier=None, previous=None, next=None,
@@ -236,7 +239,10 @@ class Index(BTrees.family32.II.Bucket, AbstractData):
         raise ValueError('value not found; likely programmer error')
 
     def contained_len(self, collection):
-        val = self.maxKey()
+        try:
+            val = self.maxKey()
+        except ValueError:
+            return 0
         return val + collection._mapping[self[val]].contained_len(collection)
 
     @method
@@ -316,11 +322,13 @@ class Index(BTrees.family32.II.Bucket, AbstractData):
 
 class BList(persistent.Persistent):
 
+    family = BTrees.family32 # don't support 64 yet because need another Index
+    # class
+
     def __init__(self, vals=None,
-                 bucket_size=30, index_size=10, family=BTrees.family32):
+                 bucket_size=30, index_size=10):
         self.bucket_size = bucket_size
         self.index_size = index_size
-        self.family = family
         self._mapping = self.family.IO.BTree()
         self._top_index = 0
         self._mapping[self._top_index] = Bucket(self, self._top_index)
@@ -491,7 +499,9 @@ class BList(persistent.Persistent):
         length = len(self)
         self[length:length] = iterable
 
-    __iadd__ = extend
+    def __iadd__(self, iterable):
+        self.extend(iterable)
+        return self
 
     def pop(self, index=-1):
         res = self[index]
@@ -505,49 +515,48 @@ class BList(persistent.Persistent):
     def reverse(self):
         self[:] = reversed(self)
 
-    def sort(self, cmpfunc=None):
+    def sort(self, cmp=None, key=None, reverse=False):
         vals = list(self)
-        vals.sort(cmpfunc)
-        self[:] = l
+        vals.sort(cmp=cmp, key=key, reverse=reverse)
+        self[:] = vals
 
     # __setitem__ helpers
 
     def _reindex(self, start_bucket, stop_bucket_id, recurse=False):
-        if start_bucket is None:
+        if start_bucket is None or start_bucket.identifier == self._top_index:
             return
-        bucket = self._mapping[start_bucket.identifier]
-        k = None
-        stopped = False
-        while bucket is not None and bucket.identifier != self._top_index:
-            stopped = stopped or bucket.identifier == stop_bucket_id
-            parent = self._mapping[bucket.parent]
-            if k is None:
-                k = parent.index(bucket.identifier)
-                if k == parent.minKey() and k > 0:
-                    parent = self._mutable(parent)
-                    del parent[k]
-                    k = 0
-                    parent[k] = bucket.identifier
-            v = bucket.contained_len(self)
-            try:
-                next = parent.minKey(k+1)
-            except ValueError:
-                k = None
-                if recurse:
-                    self._reindex(
-                        parent, self._mapping[stop_bucket_id].parent, recurse)
-                if stopped:
-                    break
-            else:
-                k += v
-                if next != k:
-                    b = parent[next]
-                    parent = self._mutable(parent)
-                    del parent[next]
-                    parent[k] = b
-            bucket = bucket.next
-            if bucket is not None:
-                bucket = self._mapping[bucket]
+        orig_parent = parent = self._mapping[
+            self._mapping[start_bucket.identifier].parent]
+        stopped = found = False
+        new = {}
+        while not stopped:
+            found = found or parent.minKey() != 0
+            next = 0
+            changed = False
+            for k, v in parent.items():
+                if not found:
+                    new[k] = v
+                    if v == start_bucket.identifier:
+                        found = True
+                        next = k + self._mapping[v].contained_len(self)
+                else:
+                    new[next] = v
+                    changed = changed or k != next
+                    next = next + self._mapping[v].contained_len(self)
+                stopped = stopped or v == stop_bucket_id
+            if changed:
+                parent = self._mutable(parent)
+                parent.clear()
+                parent.update(new)
+            if not stopped:
+                if parent.next is None:
+                    stopped = True
+                else:
+                    parent = self._mapping[parent.next]
+                    new.clear()
+        if recurse:
+            self._reindex(
+                orig_parent, self._mapping[stop_bucket_id].parent, recurse)
 
     def _mutable(self, bucket):
         if bucket.shared:
@@ -599,6 +608,8 @@ class BList(persistent.Persistent):
                 # specifying the step.
 
         start, stop, stride = index.indices(length)
+        if start > stop and stride > 0 or start < stop and stride < 0:
+            stop = start # that's the way the Python list works.
         if index.step is None:
             # delete and/or insert range; bucket arrangement may change
             value = list(value) # we actually do mutate this, so a list is
@@ -607,6 +618,9 @@ class BList(persistent.Persistent):
             len_value = len(value)
             if start == 0 and stop == length and stride == 1:
                 # shortcut: clear out everything
+                for data in self._mapping.values():
+                    if data.shared:
+                        data.collections.remove(self)
                 self._mapping.clear()
                 self._top_index = 0
                 start_bucket = self._mapping[
@@ -626,6 +640,10 @@ class BList(persistent.Persistent):
                         if removed:
                             bucket = self._mutable(bucket)
                             del bucket[ix:stop_ix]
+                        elif (stop_bucket_id != start_bucket_id and
+                              bucket.previous is not None):
+                            # TODO this logic could maybe be moved earlier?
+                            stop_bucket_id = bucket.previous
                         break
                     removed = bucket[ix:]
                     if removed:
@@ -646,7 +664,7 @@ class BList(persistent.Persistent):
                     bucket = self._mutable(bucket)
                     bucket[ix:ix] = items
                     if bucket.identifier == stop_bucket_id or not value:
-                        stop_ix = len(items)
+                        stop_ix = len(items) + ix
                         break
                     bucket = self._mapping[bucket.next]
                     ix = 0
@@ -716,11 +734,14 @@ class BList(persistent.Persistent):
 
                     if ((bucket is stop_bucket or not len_stop) and
                         bucket.previous is None and stop_bucket.next is None):
+                        bucket = self._mutable(bucket)
                         if bucket.identifier != self._top_index:
                             # get rid of unnecessary parents
                             p = bucket
                             while p.identifier != self._top_index:
                                 p = self._mapping[p.parent]
+                                if p.shared:
+                                    p.collections.remove(self)
                                 del self._mapping[p.identifier]
                             # this is now the top of the tree
                             self._top_index = bucket.identifier 
@@ -885,7 +906,8 @@ class BList(persistent.Persistent):
                         previous=old_bucket.identifier, next=old_bucket.next)
                     old_bucket.next = bucket.identifier
                     if bucket.next is not None:
-                        self._mapping[bucket.next].previous = bucket.identifier
+                        self._mutable(self._mapping[bucket.next]).previous = (
+                            bucket.identifier)
                     created.append(bucket)
                     length = self.bucket_size
 
@@ -908,7 +930,8 @@ class BList(persistent.Persistent):
 
             if not created:
                 self._reindex(
-                    self._mapping[start_bucket_id], bucket.identifier)
+                    self._mapping[start_bucket_id], bucket.identifier,
+                    recurse=True)
                 return
 
             value = created
@@ -951,20 +974,21 @@ class BList(persistent.Persistent):
                 length = fill_maximum - len(bucket)
                 while value:
                     for o in shift_sequence(value, length):
-                        assert not o.shared # these are newly created
+                        o = self._mutable(o)
                         bucket[ix] = o.identifier
                         o.parent = bucket.identifier
                         ix += o.contained_len(self)
-                    # we don't necessarily need to fix parents--
-                    # we'll get to them above
+                    # we don't need to fix parents--we'll get to them above
                     if value:
                         identifier = self._generateId()
+                        previous = self._mutable(bucket)
                         bucket = self._mapping[identifier] = Index(
                             self, identifier,
-                            previous=bucket.identifier, next=bucket.next)
-                        self._mapping[bucket.previous].next = identifier
+                            previous=previous.identifier, next=previous.next)
+                        previous.next = identifier
                         if bucket.next is not None:
-                            self._mapping[bucket.next].previous = identifier
+                            next = self._mutable(self._mapping[bucket.next])
+                            next.previous = identifier
                         created.append(bucket)
                         length = fill_maximum
                         ix = 0
@@ -995,7 +1019,8 @@ class BList(persistent.Persistent):
             value_ct = 0
             for v in value:
                 value_ct += 1
-                if index >= stop:
+                if (stride > 0 and index >= stop or
+                    stride < 0 and index <= stop):
                     error = ValueError(
                         'attempt to assign sequence of at least size %d '
                         'to extended slice of size %d' % (
@@ -1003,6 +1028,7 @@ class BList(persistent.Persistent):
                     break
                 bucket, ix = self._get_bucket(index)
                 old = bucket[ix]
+                bucket = self._mutable(bucket)
                 bucket[ix] = v
                 changed.append((bucket, ix, old))
                 index += stride

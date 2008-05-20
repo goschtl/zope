@@ -13,8 +13,14 @@
 ##############################################################################
 import os
 import unittest
+import random
+import sys
+import traceback
 
 from zope.testing import doctest
+
+import zc.blist
+import zc.blist.testing
 
 def by_hand_regression_test():
     """
@@ -164,6 +170,13 @@ def by_hand_regression_test():
         ...     assert matches(b, old_comparison)
         ...     return checkCopies(b, new)
         ...
+
+    So, ``checkCopies`` and ``check`` return three lists: the bucket
+    identifiers that are only in b, the bucket identifiers that are only in
+    new, and the bucket identifiers that are in both, but different. Initially,
+    all three lists are empty, because the two blists share all buckets and
+    indexes.
+
         >>> check()
         ([], [], [])
         >>> del new[4]
@@ -189,25 +202,225 @@ def by_hand_regression_test():
         >>> del new[::3]
         >>> del comparison[::3]
         >>> [len(v) for v in check()]
-        [34, 26, 32]
+        [35, 26, 28]
         >>> del new[::2]
         >>> del comparison[::2]
         >>> [len(v) for v in check()]
-        [55, 19, 11]
+        [56, 19, 10]
         >>> del new[-1:5:-2]
         >>> del comparison[-1:5:-2]
         >>> [len(v) for v in check()]
-        [55, 6, 11]
-    
-    XXX lots more to test, especially exceptions.
+        [56, 7, 10]
     """
+
+class Canary(object):
+    def __init__(self, comp, blist = None):
+        if blist is None:
+            blist = zc.blist.BList(comp)
+        self.blist = blist
+        self.comp = comp
+        self.ops = [getattr(self, n) for n in dir(self) if n.startswith('t_')]
+        self.empty_ops = [getattr(self, n) for n in dir(self) if n.startswith('e_')]
+        self.ops.extend(self.empty_ops)
+
+    def __call__(self, count=100):
+        for i in range(count):
+            if len(self.comp):
+                c = random.choice(self.ops)
+            else:
+                c = random.choice(self.empty_ops)
+            self.run(c)
+
+    def run(self, call):
+        orig = self.blist.copy()
+        orig_comp = self.comp[:]
+        try:
+            zc.blist.testing.checkCopies(self.blist, orig) # initial
+            args = call()
+            zc.blist.testing.matches(self.blist, self.comp)
+            zc.blist.testing.matches(orig, orig_comp)
+            return zc.blist.testing.checkCopies(self.blist, orig) # post
+        except Exception, e:
+            traceback.print_exc()
+            import pdb; pdb.post_mortem(sys.exc_info()[2])
+            raise
+
+    def _getval(self):
+        return random.randint(-sys.maxint, sys.maxint)
+
+    def _getloc(self, adjustment=-1):
+        max = len(self.comp)+adjustment
+        if max <= 1:
+            return 0
+        return random.randint(0, max)
+
+    def _get_start_stop(self):
+        if not self.comp:
+            return 0, 0
+        max = len(self.comp)-1
+        start = random.randint(0, max)
+        if start == max:
+            stop = start
+        else:
+            stop = random.randint(start, max)
+        if random.choice((True, False)):
+            start -= len(self.comp)
+        if random.choice((True, False)):
+            stop -= len(self.comp)
+        return start, stop
+
+    def _get_start_stop_step(self):
+        if not self.comp:
+            return 0, 0, 1
+        max = len(self.comp)-1
+        start = random.randint(0, max)
+        step = 1
+        if start == max:
+            stop = start
+        else:
+            stop = random.randint(start, max)
+            if stop-start > 1:
+                step = random.randint(1, stop-start)
+        if random.choice((True, False)):
+            start -= len(self.comp)
+        if random.choice((True, False)):
+            stop -= len(self.comp)
+        if random.choice((True, False)):
+            stop, start = start, stop
+            step = -step
+        return start, stop, step
+
+    def _getvals(self):
+        return [self._getval() for i in range(random.randint(1, 100))]
+
+    def e_append(self):
+        val = self._getval()
+        self.comp.append(val)
+        self.blist.append(val)
+        return (val,)
+
+    def e_extend(self):
+        new = self._getvals()
+        self.comp.extend(new)
+        self.blist.extend(new)
+        return (new,)
+
+    def e_iadd(self):
+        new = self._getvals()
+        self.comp += new
+        self.blist += new
+        return (new,)
+
+    def e_insert(self):
+        val = self._getval()
+        location = self._getloc(0) # can insert after last item
+        self.comp.insert(location, val)
+        self.blist.insert(location, val)
+        return location, val
+
+    def t_delitem(self):
+        location = self._getloc()
+        del self.comp[location]
+        del self.blist[location]
+        return (location,)
+
+    def t_delslice(self):
+        start, stop = self._get_start_stop()
+        del self.comp[start:stop]
+        del self.blist[start:stop]
+        return start, stop
+
+    def t_delslice_step(self):
+        start, stop, step = self._get_start_stop_step()
+        del self.comp[start:stop:step]
+        del self.blist[start:stop:step]
+        return start, stop, step
+
+    def e_delslice_noop(self):
+        stop, start = self._get_start_stop()
+        del self.comp[start:stop]
+        del self.blist[start:stop]
+        return start, stop
+
+    def e_delslice_step_noop(self):
+        stop, start, step = self._get_start_stop_step()
+        del self.comp[start:stop:step]
+        del self.blist[start:stop:step]
+        return start, stop, step
+
+    def t_pop(self):
+        location = self._getloc()
+        assert self.comp.pop(location) == self.blist.pop(location)
+        return (location,)
+
+    def t_remove(self):
+        val = self.comp[self._getloc()]
+        self.comp.remove(val)
+        self.blist.remove(val)
+        return (val,)
+
+    def t_reverse(self):
+        self.comp.reverse()
+        self.blist.reverse()
+        return ()
+
+    def t_sort(self):
+        self.comp.sort()
+        self.blist.sort()
+        return ()
+
+    def t_sort_cmp(self):
+        self.comp.sort(lambda s, o: cmp(str(o), str(s))) # reverse, by
+        self.blist.sort(lambda s, o: cmp(str(o), str(s))) # string
+        return ()
+
+    def t_sort_key(self):
+        self.comp.sort(key=lambda v: str(v))
+        self.blist.sort(key=lambda v: str(v))
+        return ()
+
+    def t_sort_reverse(self):
+        self.comp.sort(reverse = True)
+        self.blist.sort(reverse = True)
+        return ()
+
+    def t_setitem(self):
+        location = self._getloc()
+        val = self._getval()
+        self.comp[location] = val
+        self.blist[location] = val
+        return location, val
+
+    def e_setitem_slice(self):
+        start, stop = self._get_start_stop()
+        vals = self._getvals()
+        self.comp[start:stop] = vals
+        self.blist[start:stop] = vals
+        return start, stop, vals
+
+    def e_setitem_slice_step(self):
+        start, stop, step = self._get_start_stop_step()
+        vals = [self._getval() for i in range(len(self.comp[start:stop:step]))]
+        self.comp[start:stop:step] = vals
+        self.blist[start:stop:step] = vals
+        return start, stop, step, vals
+
+class CanaryTestCase(unittest.TestCase):
+    def test_empty_canary(self):
+        c = Canary([])
+        c()
+
+    def test_small_bucket_empty_canary(self):
+        c = Canary([], zc.blist.BList(bucket_size=5, index_size=4))
+        c()
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.txt',
             optionflags=doctest.INTERPRET_FOOTNOTES),
-        doctest.DocTestSuite()
+        doctest.DocTestSuite(),
+        unittest.TestLoader().loadTestsFromTestCase(CanaryTestCase),
         ))
 
 

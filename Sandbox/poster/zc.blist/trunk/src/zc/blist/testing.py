@@ -32,10 +32,12 @@ def checkIndex(ix, b, previous, previous_ix=0):
     
 def matches(b, result):
     assert list(b) == result, repr(list(b)) + ' != ' + repr(result)
+    assert len(b) == len(result)
     res = []
-    for i in range(len(b)):
-        res.append(b[i])
-    assert res == result, repr(res) + ' != ' + repr(result)
+    bad = [(i, (b_i, r_i)) for (i, b_i, r_i) in
+           ((i, b[i], result[i]) for i in range(len(b)))
+           if b_i != r_i]
+    assert not bad, 'getitems do not match on these indices: ' + repr(bad)
     # we'll check the buckets internally while we are here
     assert b.data.parent is None
     assert b.data.previous is None and b.data.next is None
