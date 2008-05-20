@@ -152,16 +152,6 @@ class AgentThreadPool(object):
                     local.job = job
                     try:
                         job() # this does the committing and retrying, largely
-                    except ZODB.POSException.TransactionError:
-                        transaction.abort()
-                        while 1:
-                            job.fail()
-                            try:
-                                transaction.commit()
-                            except ZODB.POSException.TransactionError:
-                                transaction.abort() # retry forever (!)
-                            else:
-                                break
                     except zc.async.interfaces.BadStatusError:
                         transaction.abort()
                         zc.async.utils.log.error( # notice, not tracelog
@@ -169,6 +159,7 @@ class AgentThreadPool(object):
                         if job.status == zc.async.interfaces.CALLBACKS:
                             job.resumeCallbacks() # moves the job off the agent
                         else:
+                            count = 0
                             while 1:
                                 status = job.status
                                 if status == zc.async.interfaces.COMPLETED:
@@ -180,17 +171,38 @@ class AgentThreadPool(object):
                                     job.fail() # moves the job off the agent
                                 try:
                                     transaction.commit()
-                                except ZODB.POSException.TransactionError:
+                                except (ZODB.POSException.TransactionError,
+                                        ZODB.POSException.POSError):
+                                    if count and not count % 10:
+                                        zc.async.utils.log.critical(
+                                            'frequent database errors!  '
+                                            'I retry forever...',
+                                            exc_info=True)
+                                    time.sleep(1)
                                     transaction.abort() # retry forever (!)
                                 else:
                                     break
+                    except zc.async.utils.EXPLOSIVE_ERRORS:
+                        transaction.abort()
+                        raise
+                    except:
+                        # all errors should have been handled by the job at
+                        # this point, so anything other than BadStatusError,
+                        # SystemExit and KeyboardInterrupt are bad surprises.
+                        transaction.abort()
+                        zc.async.utils.log.critical(
+                            'unexpected error', exc_info=True)
+                        raise
                     # should come before 'completed' for threading dance
                     if isinstance(job.result, twisted.python.failure.Failure):
                         info['failed'] = True
                         info['result'] = job.result.getTraceback(
-                            elideFrameworkCode=True, detail='verbose')
+                            elideFrameworkCode=True)
                     else:
                         info['result'] = repr(job.result)
+                    if len(info['result']) > 10000:
+                        info['result'] = (
+                            info['result'][:10000] + '\n[...TRUNCATED...]')
                     info['completed'] = datetime.datetime.utcnow()
                 finally:
                     local.job = None
@@ -233,7 +245,7 @@ class AgentThreadPool(object):
                 self.queue.put(None)
         return size - old # size difference
 
-# this is mostly for testing
+# this is mostly for testing, though ``get`` comes in handy generally
 
 _dispatchers = {}
 
@@ -248,6 +260,8 @@ def pop(uuid=None):
     return _dispatchers.pop(uuid)
 
 clear = _dispatchers.clear
+
+# end of testing bits
 
 class Dispatcher(object):
 
@@ -292,56 +306,21 @@ class Dispatcher(object):
         self.dead_pools = []
 
     def _getJob(self, agent):
-        try:
-            job = agent.claimJob()
-        except zc.twist.EXPLOSIVE_ERRORS:
-            transaction.abort()
-            raise
-        except:
-            transaction.abort()
-            zc.async.utils.log.error(
-                'Error trying to get job for UUID %s from '
-                'agent %s (oid %s) in queue %s (oid %s)', 
-                self.UUID, agent.name, agent._p_oid,
-                agent.queue.name,
-                agent.queue._p_oid, exc_info=True)
-            return zc.twist.Failure()
-        res = self._commit(
-            'Error trying to commit getting a job for UUID %s from '
-            'agent %s (oid %s) in queue %s (oid %s)' % (
-            self.UUID, agent.name, agent._p_oid,
-            agent.queue.name,
-            agent.queue._p_oid))
-        if res is None:
-            # Successful commit
-            res = job
+        identifier = (
+            'getting job for UUID %s from agent %s (oid %d) '
+            'in queue %s (oid %d)' % (
+                self.UUID, agent.name, ZODB.utils.u64(agent._p_oid),
+                agent.queue.name, ZODB.utils.u64(agent.queue._p_oid)))
+        res = zc.async.utils.try_transaction_five_times(
+            agent.claimJob, identifier, transaction)
+        if isinstance(res, twisted.python.failure.Failure):
+            identifier = 'stashing failure on agent %s (oid %s)' % (
+                agent.name, ZODB.utils.u64(agent._p_oid))
+            def setFailure():
+                agent.failure = res
+            zc.async.utils.try_transaction_five_times(
+                setFailure, identifier, transaction)
         return res
-
-    def _commit(self, debug_string=''):
-        retry = 0
-        while 1:
-            try:
-                transaction.commit()
-            except ZODB.POSException.TransactionError:
-                transaction.abort()
-                if retry >= 5:
-                    zc.async.utils.log.error(
-                        'Repeated transaction error trying to commit in '
-                        'zc.async: %s', 
-                        debug_string, exc_info=True)
-                    return zc.twist.Failure()
-                retry += 1
-            except zc.twist.EXPLOSIVE_ERRORS:
-                transaction.abort()
-                raise
-            except:
-                transaction.abort()
-                zc.async.utils.log.error(
-                    'Error trying to commit: %s', 
-                    debug_string, exc_info=True)
-                return zc.twist.Failure()
-            else:
-                break
 
     def poll(self):
         poll_info = PollInfo()
@@ -358,29 +337,30 @@ class Dispatcher(object):
                     queue.dispatchers.register(self.UUID)
                 da = queue.dispatchers[self.UUID]
                 if queue._p_oid not in self._activated:
-                    if da.activated:
-                        if da.dead:
-                            da.deactivate()
-                        else:
-                            zc.async.utils.log.error(
-                                'UUID %s already activated in queue %s '
-                                '(oid %d): another process?  (To stop '
-                                'poll attempts in this process, set '
-                                '``zc.async.dispatcher.get().activated = '
-                                "False``.  To stop polls permanently, don't "
-                                'start a zc.async.dispatcher!)',
-                                self.UUID, queue.name,
-                                ZODB.utils.u64(queue._p_oid))
-                            continue
-                    da.activate()
-                    self._activated.add(queue._p_oid)
-                    # removed below if transaction fails
-                    res = self._commit(
-                        'Error trying to commit activation of UUID %s in '
-                        'queue %s (oid %s)' % (
-                            self.UUID, queue.name, queue._p_oid))
-                    if res is not None:
-                        self._activated.remove(queue._p_oid)
+                    identifier = (
+                        'activating dispatcher UUID %s in queue %s (oid %d)' %
+                        (self.UUID, queue.name, ZODB.utils.u64(queue._p_oid)))
+                    def activate():
+                        if da.activated:
+                            if da.dead:
+                                da.deactivate()
+                            else:
+                                zc.async.utils.log.error(
+                                    'UUID %s already activated in queue %s '
+                                    '(oid %d): another process?  (To stop '
+                                    'poll attempts in this process, set '
+                                    '``zc.async.dispatcher.get().activated = '
+                                    "False``.  To stop polls permanently, don't "
+                                    'start a zc.async.dispatcher!)',
+                                    self.UUID, queue.name,
+                                    ZODB.utils.u64(queue._p_oid))
+                                return False
+                        da.activate()
+                        return True
+                    if zc.async.utils.try_transaction_five_times(
+                        activate, identifier, transaction) is True:
+                        self._activated.add(queue._p_oid)
+                    else:
                         continue
                 queue_info = poll_info[queue.name] = {}
                 pools = self.queues.get(queue.name)
@@ -398,7 +378,7 @@ class Dispatcher(object):
                     try:
                         agent_info['size'] = agent.size
                         agent_info['len'] = len(agent)
-                    except zc.twist.EXPLOSIVE_ERRORS:
+                    except zc.async.utils.EXPLOSIVE_ERRORS:
                         raise
                     except:
                         agent_info['error'] = zc.twist.Failure()
@@ -419,17 +399,6 @@ class Dispatcher(object):
                         if isinstance(job, twisted.python.failure.Failure):
                             agent_info['error'] = job
                             job = None
-                            try:
-                                agent.failure = res
-                            except zc.twist.EXPLOSIVE_ERRORS:
-                                raise
-                            except:
-                                transaction.abort()
-                                zc.async.utils.log.error(
-                                    'error trying to stash failure on agent')
-                            else:
-                                # TODO improve msg
-                                self._commit('trying to stash failure on agent')
                         else:
                             info = {'result': None,
                                     'failed': False,
@@ -448,8 +417,10 @@ class Dispatcher(object):
                             pool.queue.put(
                                 (job._p_oid, dbname, info))
                             job = self._getJob(agent)
-                queue.dispatchers.ping(self.UUID)
-                self._commit('trying to commit ping')
+                identifier = 'committing ping for UUID %s' % (self.UUID,)
+                zc.async.utils.try_transaction_five_times(
+                    lambda: queue.dispatchers.ping(self.UUID), identifier,
+                    transaction)
                 if len(pools) > len(queue_info):
                     conn_delta = 0
                     for name, pool in pools.items():
@@ -539,13 +510,16 @@ class Dispatcher(object):
         try:
             transaction.begin()
             try:
-                queues = self.conn.root().get(zc.async.interfaces.KEY)
-                if queues is not None:
-                    for queue in queues.values():
-                        da = queue.dispatchers.get(self.UUID)
-                        if da is not None and da.activated:
-                            da.deactivate()
-                    self._commit('trying to tear down')
+                identifier = 'cleanly deactivating UUID %s' % (self.UUID,)
+                def deactivate_das():
+                    queues = self.conn.root().get(zc.async.interfaces.KEY)
+                    if queues is not None:
+                        for queue in queues.values():
+                            da = queue.dispatchers.get(self.UUID)
+                            if da is not None and da.activated:
+                                da.deactivate()
+                zc.async.utils.try_transaction_five_times(
+                    deactivate_das, identifier, transaction)
             finally:
                 transaction.abort()
                 self.conn.close()

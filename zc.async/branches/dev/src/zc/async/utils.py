@@ -15,12 +15,23 @@ import datetime
 import logging
 import sys
 
+import ZEO.Exceptions
+import ZODB.POSException
 import rwproperty
 import persistent
 import zc.dict
 import pytz
 import zope.bforest.periodic
 
+
+EXPLOSIVE_ERRORS = (SystemExit, KeyboardInterrupt)
+
+SYSTEM_ERRORS = (ZEO.Exceptions.ClientDisconnected,
+                 ZODB.POSException.POSKeyError)
+
+INITIAL_BACKOFF = 5
+MAX_BACKOFF = 60
+BACKOFF_INCREMENT = 5
 
 def simpleWrapper(name):
     # notice use of "simple" in function name!  A sure sign of trouble!
@@ -236,3 +247,114 @@ class Periodic(persistent.Persistent):
 
     def __len__(self):
         return len(self._data)
+
+def never_fail(call, identifier, tm):
+    # forever for TransactionErrors; forever, with backoff, for anything else
+    trans_ct = 0
+    backoff_ct = 0
+    backoff = INITIAL_BACKOFF
+    res = None
+    while 1:
+        try:
+            res = call()
+            tm.commit()
+        except ZODB.POSException.TransactionError:
+            tm.abort()
+            trans_ct += 1
+            if not trans_ct % 5:
+                log.warning(
+                    '%d consecutive transaction errors while %s',
+                    ct, identifier, exc_info=True)
+                res = None
+        except EXPLOSIVE_ERRORS:
+            tm.abort()
+            raise
+        except Exception, e:
+            if isinstance(e, SYSTEM_ERRORS):
+                level = logging.ERROR
+            else:
+                level = logging.CRITICAL
+            tm.abort()
+            backoff_ct += 1
+            if backoff_ct == 1:
+                log.log(level,
+                        'first error while %s; will continue in %d seconds',
+                        identifier, backoff, exc_info=True)
+            elif not backoff_ct % 5:
+                
+                log.log(level,
+                        '%d consecutive errors while %s; '
+                        'will continue in %d seconds',
+                        backoff_ct, identifier, backoff, exc_info=True)
+            res = None
+            time.sleep(backoff)
+            backoff = min(MAX_BACKOFF, backoff + BACKOFF_INCREMENT)
+        else:
+            return res
+
+def wait_for_system_recovery(call, identifier, tm):
+    # forever for TransactionErrors; forever, with backoff, for SYSTEM_ERRORS
+    trans_ct = 0
+    backoff_ct = 0
+    backoff = INITIAL_BACKOFF
+    res = None
+    while 1:
+        try:
+            res = call()
+            tm.commit()
+        except ZODB.POSException.TransactionError:
+            tm.abort()
+            trans_ct += 1
+            if not trans_ct % 5:
+                log.warning(
+                    '%d consecutive transaction errors while %s',
+                    ct, identifier, exc_info=True)
+                res = None
+        except EXPLOSIVE_ERRORS:
+            tm.abort()
+            raise
+        except SYSTEM_ERRORS:
+            tm.abort()
+            backoff_ct += 1
+            if backoff_ct == 1:
+                log.error('first error while %s; will continue in %d seconds',
+                          identifier, backoff, exc_info=True)
+            elif not backoff_ct % 5:
+                
+                log.error('%d consecutive errors while %s; '
+                          'will continue in %d seconds',
+                          backoff_ct, identifier, backoff, exc_info=True)
+            res = None
+            time.sleep(backoff)
+            backoff = min(MAX_BACKOFF, backoff + BACKOFF_INCREMENT)
+        except:
+            log.error('Error while %s', identifier, exc_info=True)
+            tm.abort()
+            return zc.twist.Failure()
+        else:
+            return res
+
+def try_transaction_five_times(call, identifier, tm):
+    ct = 0
+    res = None
+    while 1:
+        try:
+            res = call()
+            tm.commit()
+        except ZODB.POSException.TransactionError:
+            tm.abort()
+            ct += 1
+            if ct >= 5:
+                log.error('Five consecutive transaction errors while %s',
+                          identifier, exc_info=True)
+                res = zc.twist.Failure()
+            else:
+                continue
+        except EXPLOSIVE_ERRORS:
+            tm.abort()
+            raise
+        except:
+            tm.abort()
+            log.error('Error while %s', identifier, exc_info=True)
+            res = zc.twist.Failure()
+        return res

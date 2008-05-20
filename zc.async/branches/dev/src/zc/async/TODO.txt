@@ -1,10 +1,59 @@
 Bugs and improvements:
 
-- need retry tasks, particularly for callbacks
+- need retry tasks, particularly for callbacks. ``retry_count`` affects aborts
+  and transaction failures?  None == infinity, which is what callbacks use?
+  Should retry have a cleanup function?
 
 - need CRITICAL logs for callbacks
 
-- when database went away, and then came back, async didn't come back.
+- when database went away, and then came back, async didn't come back.  Fix
+  (and also reconsider retry behavior in Dispatcher._commit and
+  AgentThreadPool.perform_thread).
+
+Traceback (most recent call last):
+  File "/opt/z4m/eggs/zc.async-1.1-py2.4.egg/zc/async/dispatcher.py", line 321, in _commit
+    transaction.commit()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_manager.py", line 93, in commit
+    return self.get().commit()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_transaction.py", line 325, in commit
+    self._commitResources()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_transaction.py", line 422, in _commitResources
+    rm.tpc_begin(self)
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZODB/Connection.py", line 525, in tpc_begin
+    self._normal_storage.tpc_begin(transaction)
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZEO/ClientStorage.py", line 1079, in tpc_begin
+    self._server.tpc_begin(id(txn), txn.user, txn.description,
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZEO/ClientStorage.py", line 86, in __getattr__
+    raise ClientDisconnected()
+ClientDisconnected
+
+Exception in thread Thread-5:
+Traceback (most recent call last):
+  File "/opt/cleanpython24/lib/python2.4/threading.py", line 442, in __bootstrap
+    self.run()
+  File "/opt/cleanpython24/lib/python2.4/threading.py", line 422, in run
+    self.__target(*self.__args, **self.__kwargs)
+  File "/opt/z4m/eggs/zc.async-1.1-py2.4.egg/zc/async/dispatcher.py", line 153, in perform_thread
+    job() # this does the committing and retrying, largely
+  File "/opt/z4m/eggs/zc.async-1.1-py2.4.egg/zc/async/job.py", line 290, in __call__
+    return self._call_with_retry(
+  File "/opt/z4m/eggs/zc.async-1.1-py2.4.egg/zc/async/job.py", line 321, in _call_with_retry
+    res = self._complete(zc.twist.Failure(), tm)
+  File "/opt/z4m/eggs/zc.async-1.1-py2.4.egg/zc/async/job.py", line 340, in _complete
+    tm.commit()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_manager.py", line 93, in commit
+    return self.get().commit()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_transaction.py", line 325, in commit
+    self._commitResources()
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/transaction/_transaction.py", line 422, in _commitResources
+    rm.tpc_begin(self)
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZODB/Connection.py", line 525, in tpc_begin
+    self._normal_storage.tpc_begin(transaction)
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZEO/ClientStorage.py", line 1079, in tpc_begin
+    self._server.tpc_begin(id(txn), txn.user, txn.description,
+  File "/opt/z4m/eggs/ZODB3-3.8.0-py2.4-linux-i686.egg/ZEO/ClientStorage.py", line 86, in __getattr__
+    raise ClientDisconnected()
+ClientDisconnected
 
 - be even more pessimistic about memory for saved polls and job info in
   dispatcher.

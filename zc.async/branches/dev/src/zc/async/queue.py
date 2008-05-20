@@ -110,7 +110,7 @@ class DispatcherAgents(zc.async.utils.Dict):
                         queue.put(job)
                         job.assignerUUID = tmp
                     elif job.status == zc.async.interfaces.ACTIVE:
-                        queue.put(job.fail)
+                        queue.put(job.handleInterrupt)
                     elif job.status == zc.async.interfaces.CALLBACKS:
                         queue.put(job.resumeCallbacks)
                     elif job.status == zc.async.interfaces.COMPLETED:
@@ -238,8 +238,13 @@ class Queue(zc.async.utils.Base):
         self.dispatchers = Dispatchers()
         self.dispatchers.__parent__ = self
 
-    def put(self, item, begin_after=None, begin_by=None):
+    def put(self, item, begin_after=None, begin_by=None,
+            error_log_level=None, retry_policy=None):
         item = zc.async.interfaces.IJob(item)
+        if error_log_level is not None:
+            item.error_log_level = error_log_level
+        if retry_policy is not None:
+            item.retry_policy = retry_policy
         if item.assignerUUID is not None:
             raise ValueError(
                 'cannot add already-assigned job')
