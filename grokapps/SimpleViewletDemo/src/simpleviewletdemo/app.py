@@ -1,4 +1,5 @@
 import grok
+import os
 from zope.component import getMultiAdapter
 from zope.interface import Interface
 from zope.schema import TextLine
@@ -102,6 +103,7 @@ class AddFruit(grok.Viewlet):
 
 class AddFruitForm(grok.AddForm):
     form_fields = grok.AutoFields(Fruit)
+    template = grok.PageTemplate(filename=os.path.join('app_templates', 'edit_form.pt'))
 
     @grok.action('Add fruit')
     def add(self, **data):
