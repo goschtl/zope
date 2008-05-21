@@ -1,5 +1,5 @@
-0.2.0 (unreleased)
-==================
+0.2.0 (22 May 2008)
+===================
 
  - Created script around create_source_tarball function with the
    z3c.recipe.eggbasket:creator recipe.  Removed the releasemaker
@@ -11,7 +11,7 @@
    script calls this.  [maurits]
 
 
-0.1.0 (2008-05-06)
+0.1.0 (6 May 2008)
 ==================
 
  - Added tests.  [maurits]
