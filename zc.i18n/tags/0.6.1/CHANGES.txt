@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+0.6.1 (2008-05-20)
+
+- No code changes, and only a very minor documentation tweak.
+  Re-released to avoid confusion over package versions found in the wild.
+
+0.5.2 (2007-11-03)
+------------------
+
+- Improve package data.
+
+0.5.1 (2006-05-24)
+------------------
+
+- Package data update.
+
+0.5.0 (2006-05-24)
+------------------
+
+- Initial release.

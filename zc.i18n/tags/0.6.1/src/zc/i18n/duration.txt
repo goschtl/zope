@@ -1,0 +1,53 @@
+=========================
+Time Duration Computation
+=========================
+
+The duration format code is not ideal, but as the code notes, the icu library
+does not appear to support internationalizing dates.  Therefore, this approach
+tries to get close enough to be flexible enough for most localization.  Only
+time, and localizers, will tell if it is a reasonable approach.
+
+The formatter always gives the first two pertinent measures of a duration,
+leaving off the rest.  The rest of the file just shows some examples.
+
+    >>> from zc.i18n.duration import format
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> from datetime import timedelta
+    >>> format(request, timedelta(days=5))
+    u'5 days '
+    >>> format(request, timedelta(days=1))
+    u'1 day '
+    >>> format(request, timedelta(days=1, hours=13, minutes=12))
+    u'1 day 13 hours '
+    >>> format(request, timedelta(hours=13, minutes=12))
+    u'13 hours 12 minutes '
+    >>> format(request, timedelta(hours=13))
+    u'13 hours '
+    >>> format(request, timedelta(hours=1, minutes=1, seconds=1))
+    u'1 hour 1 minute '
+    >>> format(request, timedelta(minutes=45, seconds=1))
+    u'45 minutes 1 second'
+    >>> format(request, timedelta(seconds=5))
+    u'5 seconds'
+    >>> format(request, timedelta(days=-1, hours=-2))
+    u'-1 day -2 hours '
+    >>> format(request, timedelta(days=-2, hours=22))
+    u'-1 day -2 hours '
+    >>> format(request, timedelta(days=-1))
+    u'-1 day '
+    >>> format(request, timedelta(days=-1, hours=-13, minutes=-12))
+    u'-1 day -13 hours '
+    >>> format(request, timedelta(hours=-13, minutes=-12))
+    u'-13 hours -12 minutes '
+    >>> format(request, timedelta(hours=-13))
+    u'-13 hours '
+    >>> format(request, timedelta(hours=-1, minutes=-1, seconds=-1))
+    u'-1 hour -1 minute '
+    >>> format(request, timedelta(minutes=-45, seconds=-1))
+    u'-45 minutes -1 second'
+    >>> format(request, timedelta(seconds=-5))
+    u'-5 seconds'
+    >>> format(request, timedelta())
+    u'No time'
+
