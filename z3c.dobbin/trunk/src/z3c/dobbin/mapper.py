@@ -3,8 +3,8 @@ from zope import schema
 from zope import component
 
 from zope.dottedname.resolve import resolve
-from zope.security.checker import defineChecker, getCheckerForInstancesOf
-from zope.security.checker import NamesChecker
+from zope.security.interfaces import IChecker
+from zope.security.checker import defineChecker
 
 from interfaces import IMapper
 from interfaces import IMapped
@@ -285,11 +285,13 @@ def createMapper(spec):
 
         __spec__ = '%s.%s' % (spec.__module__, spec.__name__)
 
-    # inherit checker from spec
-    checker = getCheckerForInstancesOf(spec)
-    if checker is not None:
-        defineChecker(Mapper, checker)
-
+    # if the specification is an interface class, try to look up a
+    # security checker and define it on the mapper
+    if interface.interfaces.IInterface.providedBy(spec):
+        checker = component.queryAdapter(spec, IChecker)
+        if checker is not None:
+            defineChecker(Mapper, checker)
+        
     # set class representation method if not defined
     if not isinstance(Mapper.__repr__, types.MethodType):
         def __repr__(self):
