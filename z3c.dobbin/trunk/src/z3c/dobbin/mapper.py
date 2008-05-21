@@ -51,20 +51,43 @@ class RelationList(object):
     @property
     def adapter(self):
         return self._sa_adapter
+
+    # orm collection support
     
-    @orm.collections.collection.internally_instrumented
     @orm.collections.collection.appender
+    def _appender(self, item):
+        self.data.append(item)
+    
+    @orm.collections.collection.iterator
+    def _iterator(self):
+        return iter(self.data)
+
+    @orm.collections.collection.remover
+    def _remover(self, item):
+        self.data.remove(item)
+        
+    # python list api
+    
     def append(self, item, _sa_initiator=None):
+        # make sure item is mapped
         if not IMapped.providedBy(item):
             item = relations.persist(item)
 
+        # fire append event
         self.adapter.fire_append_event(item, _sa_initiator)
 
-        relation = self._create_relation(item)
+        # set up relation
+        relation = bootstrap.Relation()
+        relation.target = item
+        relation.order = len(self.data)
+
+        # save to session
+        session = Session()
+        session.save(relation)
+
+        # add relation to internal list
         self.data.append(relation)
 
-    @orm.collections.collection.internally_instrumented
-    @orm.collections.collection.remover
     def remove(self, item, _sa_initiator=None):
         if IMapped.providedBy(item):
             uuid = item.uuid
@@ -91,9 +114,8 @@ class RelationList(object):
     def extend(self, items):
         map(self.append, items)
 
-    @orm.collections.collection.iterator
     def __iter__(self):
-        return iter(self.data)
+        return (relation.target for relation in iter(self.data))
 
     def __len__(self):
         return len(self.data)
@@ -104,17 +126,6 @@ class RelationList(object):
     def __setitem__(self, index, value):
         return NotImplementedError("Setting items at an index is not implemented.")
 
-    def _create_relation(self, item):
-        relation = bootstrap.Relation()
-
-        relation.target = item
-        relation.order = len(self.data)
-
-        session = Session()
-        session.save(relation)
-
-        return relation
-        
 class ObjectTranslator(object):
     def __init__(self, column_type=None):
         self.column_type = column_type
