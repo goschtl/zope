@@ -19,16 +19,12 @@ recipe can also create such a tar ball.  Include it in a buildout like
 this::
 
   [buildout]
-  parts = releasemaker
+  parts = bundlemaker
 
-  [releasemaker]
-  recipe = zc.recipe.egg
-  eggs = z3c.recipe.eggbasket
-  arguments =
-      egg = 'grok',
-      versionfile = 'http://grok.zope.org/releaseinfo/grok-0.12.cfg'
-
-Note the comma that separates the arguments.
+  [bundlemaker]
+  recipe = z3c.recipe.eggbasket:creator
+  egg = grok
+  versionfile = http://grok.zope.org/releaseinfo/grok-0.12.cfg
 
 After you have made that tar ball, you need to upload it somewhere.
 In your buildout you point this recipe to your egg and the url of the

@@ -35,7 +35,7 @@ long_description = (
 
 setup(name='z3c.recipe.eggbasket',
       version=version,
-      description="Install eggs from a tarball.",
+      description="Install eggs from a tarball and create that egg.",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
@@ -62,7 +62,7 @@ setup(name='z3c.recipe.eggbasket',
       test_suite='z3c.recipe.eggbasket.tests.test_docs.test_suite',
       entry_points={
         "zc.buildout":
-            ["default = z3c.recipe.eggbasket:Recipe"],
-        'console_scripts':
-            ['releasemaker = z3c.recipe.eggbasket:utils.create_source_tarball']},
+            ["default = z3c.recipe.eggbasket:Downloader",
+             "creator = z3c.recipe.eggbasket:Creator",],
+        },
       )
