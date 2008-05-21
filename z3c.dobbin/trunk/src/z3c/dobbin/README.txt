@@ -302,6 +302,11 @@ And remove them, too.
     >>> len(collection.records) == 3
     True
 
+For good measure, let's create a new instance without adding any
+elements to its list.
+
+    >>> _ = create(ICollection)
+    
 Known limitations
 -----------------
 
