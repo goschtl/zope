@@ -8,6 +8,9 @@ Change History
 - Changed the recipe's name pattern for management client scripts to
   <partname>-<storagename>-manage.
 
+- Fixed accidentally commented out assertion that only allows storages with
+  undo support to be used in ZEORaid.
+
 1.0b1 (2008-04-30)
 ------------------
 

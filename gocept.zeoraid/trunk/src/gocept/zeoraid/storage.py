@@ -565,7 +565,7 @@ class RAIDStorage(object):
     def _open_storage(self, name):
         assert name not in self.storages, "Storage %s already opened" % name
         storage = self.openers[name].open()
-        #assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
+        assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
         self.storages[name] = storage
 
     def _degrade_storage(self, name, fail=True):
