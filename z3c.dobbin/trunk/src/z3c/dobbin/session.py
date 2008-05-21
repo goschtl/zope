@@ -65,7 +65,10 @@ class TransactionManager(object):
         self.registered = False
 
     def tpc_abort(self, transaction):
-        raise NotImplemented("Abort not implemented.")
+        # unset pending state
+        session = Session()
+        del session._d_pending[uuid]
+        
         self.registered = False
 
     abort = tpc_abort
