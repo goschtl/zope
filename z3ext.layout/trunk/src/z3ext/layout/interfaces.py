@@ -19,6 +19,10 @@ from zope import interface
 from zope.publisher.interfaces.browser import IBrowserPage
 
 
+class LayoutNotFound(LookupError):
+    """ Layout not found exception """
+
+
 class IPagelet(IBrowserPage):
     """ pagelet """
 

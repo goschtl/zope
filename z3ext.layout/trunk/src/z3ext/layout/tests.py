@@ -58,14 +58,19 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-            doctest.DocFileSuite(
-                'README.txt',
-                setUp=setUp, tearDown=tearDown,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                ),
-            doctest.DocFileSuite(
-                'pagelet.txt',
+        doctest.DocFileSuite(
+            'README.txt',
             setUp=setUp, tearDown=tearDown,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
-                ),
-            ))
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite(
+            'pagelet.txt',
+            setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        doctest.DocFileSuite(
+            'zcml.txt',
+            setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        ))

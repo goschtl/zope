@@ -21,11 +21,12 @@ It's like main_template in CMF or 'page' macro in basicskin/rotterdam
 
   >>> temp_dir = tempfile.mkdtemp()
   >>> layoutportal = os.path.join(temp_dir, 'layoutportal.pt')
-  >>> open(layoutportal, 'w').write('''<html>
-  ... <head><title>My portal</title></head>
-  ...   <body><div id="portal" tal:content="structure view/render">
-  ...   </div>
-  ... </body>
+  >>> open(layoutportal, 'w').write(
+  ... '''<html>
+  ...   <body>
+  ...      <div id="portal" tal:content="structure view/render">
+  ...      </div>
+  ...   </body>
   ... </html>''')
 
 Let's define 'portal' layout
@@ -72,7 +73,7 @@ Now we need very simple view that uses BrowserPagelet
   >>> request = TestRequest()
   >>> view = MyView(root, request)
 
-It return context __name__
+It returns context __name__
 
   >>> view.__call__()
   'root'
@@ -94,15 +95,14 @@ use 'workspace' layout as parent.
 
   >>> print view()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <div id="workspace">
-  <div id="content">root</div>
-  </div>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <div id="workspace">
+          <div id="content">root</div>
+        </div>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
 
 All 3 our layout rendered. view rendered inside nameless layout then in
 -> 'workspace' layout -> 'portal' layout
@@ -114,15 +114,14 @@ Now let's create several more content objects
 
   >>> print MyView(folder1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <div id="workspace">
-  <div id="content">folder1</div>
-  </div>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <div id="workspace">
+          <div id="content">folder1</div>
+        </div>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
 
 And another one.
 
@@ -134,15 +133,14 @@ And another one.
 
   >>> print MyView(folder1_1_1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <div id="workspace">
-  <div id="content">folder1_1_1</div>
-  </div>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <div id="workspace">
+          <div id="content">folder1_1_1</div>
+        </div>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
 
 This is all quite easy. Let's use more complex example. For example 
 later other developers decide change how portal looks for folder1 object
@@ -176,59 +174,58 @@ We register new layout for different interafce
 
   >>> print MyView(folder1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <table id="columns">
-    <tr>
-      <td id="column1">Column1</td>
-      <td id="column2">
-  <div id="content">folder1</div>
-  </td>
-      <td id="column3">Column3</td>
-    </tr>
-  </table>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <table id="columns">
+          <tr>
+            <td id="column1">Column1</td>
+            <td id="column2">
+              <div id="content">folder1</div>
+            </td>
+            <td id="column3">Column3</td>
+          </tr>
+        </table>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
 
 folder1 uses new 'workspace' layout, but what about other folders
 
   >>> print MyView(folder1_1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <table id="columns">
-    <tr>
-      <td id="column1">Column1</td>
-      <td id="column2">
-  <div id="content">folder1_1</div>
-  </td>
-      <td id="column3">Column3</td>
-    </tr>
-  </table>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <table id="columns">
+          <tr>
+            <td id="column1">Column1</td>
+            <td id="column2">
+              <div id="content">folder1_1</div>
+            </td>
+            <td id="column3">Column3</td>
+          </tr>
+        </table>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
+
 
   >>> print MyView(folder1_1_1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <table id="columns">
-    <tr>
-      <td id="column1">Column1</td>
-      <td id="column2">
-  <div id="content">folder1_1_1</div>
-  </td>
-      <td id="column3">Column3</td>
-    </tr>
-  </table>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <table id="columns">
+          <tr>
+            <td id="column1">Column1</td>
+            <td id="column2">
+              <div id="content">folder1_1_1</div>
+            </td>
+            <td id="column3">Column3</td>
+          </tr>
+        </table>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
+
 
 Now we also change how folder1_1 looks, we can replace nameless layout.
 Also we can use nameless layout as parent with layout="."
@@ -252,26 +249,25 @@ Also we can use nameless layout as parent with layout="."
   
   >>> print MyView(folder1_1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <table id="columns">
-    <tr>
-      <td id="column1">Column1</td>
-      <td id="column2">
-  <div id="content">
-  <div id="content1_1">
-    <h1>Folder1_1</h1>
-    <div>folder1_1</div>
-  </div>
-  </div>
-  </td>
-      <td id="column3">Column3</td>
-    </tr>
-  </table>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <table id="columns">
+          <tr>
+            <td id="column1">Column1</td>
+            <td id="column2">
+              <div id="content">
+                <div id="content1_1">
+                  <h1>Folder1_1</h1>
+                  <div>folder1_1</div>
+                </div>
+              </div>
+            </td>
+            <td id="column3">Column3</td>
+          </tr>
+        </table>
+      </div>
+     </body>
   </html>
-  <BLANKLINE>
 
 It still uses nameless layout that we defined for 'root'. 
 
@@ -296,99 +292,27 @@ And same for folder1_1_1
 
   >>> print MyView(folder1_1_1, request)()
   <html>
-  <head><title>My portal</title></head>
-    <body><div id="portal">
-  <table id="columns">
-    <tr>
-      <td id="column1">Column1</td>
-      <td id="column2">
-  <div id="content">
-  <div id="content1_1">
-    <h1>Folder1_1</h1>
-    <div>
-  <div id="content1_1_1">
-    <h1>Folder1_1_1</h1>
-    <div>folder1_1_1</div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </td>
-      <td id="column3">Column3</td>
-    </tr>
-  </table>
-  </div>
-  </body>
+    <body>
+      <div id="portal">
+        <table id="columns">
+          <tr>
+            <td id="column1">Column1</td>
+            <td id="column2">
+              <div id="content">
+                <div id="content1_1">
+                  <h1>Folder1_1</h1>
+                  <div>
+                    <div id="content1_1_1">
+                      <h1>Folder1_1_1</h1>
+                      <div>folder1_1_1</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td id="column3">Column3</td>
+          </tr>
+        </table>
+      </div>
+    </body>
   </html>
-  <BLANKLINE>
-
-Just tests
-
-We should provide template 
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     layout="."
-  ...     template="unknown.pt" />
-  ... </configure>""", context)
-  Traceback (most recent call last):
-  ...
-  ZopeXMLConfigurationError: ...
-  ... ConfigurationError: ('No such file', ...unknown.pt')
-
-We can register layout for context or for view
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     layout="."
-  ...     template="%s" />
-  ... </configure>"""%layoutcontent1_1_1, context)
-  Traceback (most recent call last):
-  ...
-  ZopeXMLConfigurationError: ...
-  ... ConfigurationError: FOR or VIEW are required.
-
-We can register layout for view
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     layout="."
-  ...     view="z3ext.layout.tests.IFolder1_1_1"
-  ...     template="%s" />
-  ... </configure>"""%layoutcontent1_1_1, context)
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     name="layout1"
-  ...     layout="."
-  ...     view="z3ext.layout.tests.IFolder1_1_1"
-  ...     template="%s" />
-  ... </configure>"""%layoutcontent1_1_1, context)
-
-We can add custom marker interface for layout
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     name="layout2"
-  ...     layout="."
-  ...     view="z3ext.layout.tests.IFolder1_1_1"
-  ...     provides="z3ext.layout.tests.IFolder1"
-  ...     template="%s" />
-  ... </configure>"""%layoutcontent1_1_1, context)
-
-We can use custom layout class
-
-  >>> context = xmlconfig.string("""
-  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:layout
-  ...     name="layout3"
-  ...     layout="."
-  ...     view="z3ext.layout.tests.IFolder1_1_1"
-  ...     class="z3ext.layout.tests.MyLayout"
-  ...     template="%s" />
-  ... </configure>"""%layoutcontent1_1_1, context)

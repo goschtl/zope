@@ -23,7 +23,7 @@ from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
 from z3ext.layout.pagelet import queryLayout
-from z3ext.layout.interfaces import ILayout, ILayoutTemplateFile
+from z3ext.layout.interfaces import LayoutNotFound, ILayout, ILayoutTemplateFile
 
 
 class ViewMapper(object):
@@ -115,5 +115,8 @@ class Layout(browser.BrowserPage):
             if layout is not None:
                 return layout(view=view, *args, **kw)
 
-        layout = queryLayout(self.context, self.request, name=self.layout)
-        return layout(maincontext=maincontext, *args, **kw)
+        layout = queryLayout(self.view, self.context, self.request, name=self.layout)
+        if layout is not None:
+            return layout(*args, **kw)
+
+        raise LayoutNotFound(self.layout)
