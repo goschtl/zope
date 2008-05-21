@@ -40,7 +40,7 @@ class AvailableLanguagesVocabulary(SimpleVocabulary):
         # but just after creation of the object
         try:
             languages = context.getAvailableLanguages()
-        except AttrbiteError:
+        except AttributeError:
             languages = []
 
         for lang in languages:
