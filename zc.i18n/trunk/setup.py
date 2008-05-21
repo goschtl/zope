@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zc.i18n',
-      version = '0.6.1',
+      version = '0.6.2dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Additional I18n Support APIs',
