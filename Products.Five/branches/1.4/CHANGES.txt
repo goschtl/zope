@@ -2,6 +2,16 @@
 Five Changes
 ============
 
+Five 1.4.x (svn/unreleased)
+===========================
+
+Bugfixes
+--------
+
+* Backported r72986 from 1.5 branch to get rid of conflict errors
+  that happened during startup of zope.
+
+
 Five 1.4.4 (2006-07-31)
 =======================
 

@@ -265,7 +265,7 @@ def _registerPackage(module_, initFunc=None):
     if not hasattr(module_, '__path__'):
         raise ValueError("Must be a package and the " \
                          "package must be filesystem based")
-    
+
     app = Zope2.app()
     try:
         product = initializeProduct(module_, 
@@ -278,6 +278,11 @@ def _registerPackage(module_, initFunc=None):
         if initFunc is not None:
             newContext = ProductContext(product, app, module_)
             initFunc(newContext)
+
+        registered_packages = getattr(Products, '_registered_packages', None)
+        if registered_packages is None:
+            registered_packages = Products._registered_packages = []
+        registered_packages.append(module_)
     finally:
         try:
             import transaction
