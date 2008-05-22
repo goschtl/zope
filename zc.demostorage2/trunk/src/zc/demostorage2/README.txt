@@ -12,7 +12,7 @@ the changes storage.  Both storages are expected to:
 
 - in the case of the changes storage, accept object ids assigned externally.
 
-In addition, it is assumed that less than 2**63 object ids have been
+In addition, it is assumed that less than 2**62 object ids have been
 allocated in the first storage. 
 
 Note that DemoStorage also assumes that it's base storage uses 64-bit
