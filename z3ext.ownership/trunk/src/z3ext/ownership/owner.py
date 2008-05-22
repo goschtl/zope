@@ -92,4 +92,6 @@ def initObjectOwnership(object, event):
             interfaces.IInheritOwnership.providedBy(object):
         return
 
-    interfaces.IOwnership(removeSecurityProxy(object)).owner = getPrincipal()
+    principal = getPrincipal()
+    if principal is not None:
+        interfaces.IOwnership(removeSecurityProxy(object)).owner = principal
