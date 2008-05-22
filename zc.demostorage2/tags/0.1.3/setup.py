@@ -30,7 +30,7 @@ open('doc.txt', 'w').write(long_description)
 
 setup(
     name = 'zc.demostorage2',
-    version = '0.2.0dev',
+    version = '0.1.3',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZODB storage that stores changes relative to a base storage',
