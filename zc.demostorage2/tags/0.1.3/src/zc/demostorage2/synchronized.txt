@@ -1,0 +1,85 @@
+Synchronized methods
+====================
+
+A thread-safe class uses locks to mediate access to 
+the classes methods in a thread-safe way.  For simple applications,
+this involves acquiring and releasing a reentrant lock on entry and
+access to methods that access mutable instance data:
+
+    >>> import threading
+    >>> import time
+    >>> class Counter:
+    ...     def __init__(self):
+    ...         self._lock = threading.RLock()
+    ...         self.value = 0
+    ...
+    ...     def inc(self):
+    ...         self._lock.acquire()
+    ...         try:
+    ...             self.value = self.value + 1
+    ...         finally:
+    ...             self._lock.release()
+    ...
+    ...     def dec(self):
+    ...         self._lock.acquire()
+    ...         try:
+    ...             self.value = self.value - 1
+    ...         finally:
+    ...             self._lock.release()
+
+If there are a lot of methods to protect, the try/finally code can get
+fairly burdonsome.  The synchonized module provides a simple
+decorator/descriptor that automates this:
+
+    >>> from zc.demostorage2.synchronized import synchronized
+    >>> class Counter:
+    ...     def __init__(self):
+    ...         self._lock = threading.RLock()
+    ...         self.value = 0
+    ...
+    ...     @synchronized
+    ...     def inc(self):
+    ...         # looking for trouble
+    ...         old = self.value
+    ...         time.sleep(0.0001)
+    ...         self.value = old + 1
+    ...
+    ...     @synchronized
+    ...     def dec(self):
+    ...         # looking for trouble
+    ...         old = self.value
+    ...         time.sleep(0.0001)
+    ...         self.value = old - 1
+    ...
+    ...     @synchronized
+    ...     def getvalue(self):
+    ...         return self.value
+
+The class using te decorator must have a _lock attribute, which is
+typically a threading.RLock.
+
+With something like this in place, we can safely update instances of
+our class from multiple threads:
+
+    >>> def updatealot(ob, n):
+    ...     for i in range(n):
+    ...         ob.inc()
+
+    >>> counter = Counter()
+    >>> threads = [threading.Thread(target=updatealot, args=(counter, 10))
+    ...            for i in range(3)]
+    >>> _ = [t.start() for t in threads]
+    >>> _ = [t.join() for t in threads]
+    >>> counter.getvalue()
+    30
+
+    >>> def updatealot(ob, n):
+    ...     for i in range(n):
+    ...         ob.dec()
+
+    >>> threads = [threading.Thread(target=updatealot, args=(counter, 10))
+    ...            for i in range(3)]
+    >>> _ = [t.start() for t in threads]
+    >>> _ = [t.join() for t in threads]
+    >>> counter.getvalue()
+    0
