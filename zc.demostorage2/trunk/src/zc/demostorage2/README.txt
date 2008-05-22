@@ -168,7 +168,7 @@ the new oderlying storages:
 The object id of the new object is quite large:
 
     >>> u64(conn.root()['2']._p_oid)
-    9223372036854775809L
+    4611686018427387905L
 
 Let's look at some other methods:
 

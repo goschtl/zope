@@ -40,7 +40,7 @@ class DemoStorage2:
         if lastInvalidations is not None:
             self.lastInvalidations = lastInvalidations
     
-        self._oid = max(u64(changes.new_oid()), 1l << 63)
+        self._oid = max(u64(changes.new_oid()), 1l << 62)
         self._lock = threading.RLock()
         self._commit_lock = threading.Lock()
 
