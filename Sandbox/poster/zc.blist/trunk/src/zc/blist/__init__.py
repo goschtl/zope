@@ -642,7 +642,6 @@ class BList(persistent.Persistent):
                             del bucket[ix:stop_ix]
                         elif (stop_bucket_id != start_bucket_id and
                               bucket.previous is not None):
-                            # TODO this logic could maybe be moved earlier?
                             stop_bucket_id = bucket.previous
                         break
                     removed = bucket[ix:]
@@ -682,7 +681,7 @@ class BList(persistent.Persistent):
                 # B+ tree algorithm descriptions go
                 # one-item-at-a-time, while we may have swaths of
                 # changes to which we need to adjust.
-                #
+
                 # Key adjustments are different than the standard B+
                 # tree story because this is a sequence, and our keys
                 # are indices that we need to adjust to accomodate the
@@ -694,6 +693,7 @@ class BList(persistent.Persistent):
                 fill_minimum = fill_maximum // 2
 
                 original_stop_bucket_id = stop_bucket_id
+                check_next = False
 
                 while start_bucket_id is not None:
 
@@ -705,102 +705,176 @@ class BList(persistent.Persistent):
                     # anything in to; we'll want to look at it and the
                     # `stop_bucket` (if different) to see if we need to
                     # adjust.
-                    #
-                    # if bucket and stop_bucket are different and
-                    # stop_bucket is not empty and either are below the
-                    # fill_minimum...
-                        # if the combination is less than the fill_maximum,
-                        # put in bucket and empty stop_bucket
-                        # else redistribute across so both are above
-                        # fill_minimum
 
                     len_bucket = len(bucket)
+
+                    # Usually we only care about two buckets here: ``bucket``
+                    # and ``stop_bucket``. However, the first thing we do here
+                    # is handle an exceptional case. We might be working with
+                    # an index row in which a lower row had to include three
+                    # buckets in the calculation. See where ``check_next =
+                    # True`` occurs (pretty far down) to understand the
+                    # condition.
+                    next = None
+                    if check_next:
+                        if bucket.next is None:
+                            check_next = False
+                        else:
+                            assert len_bucket >= fill_minimum
+                            next = self._mapping[bucket.next]
+                            if 0 < len(next) < fill_minimum:
+                                bucket = self._mutable(bucket)
+                                next = self._mutable(next)
+                                bucket.rotate(next)
+                                len_bucket = len(bucket) # reset; it has
+                                # changed if next needs to be removed from
+                                # parent, it will be done later (below)
+                                if not next: # (if empty)
+                                    # next's parent, if different than
+                                    # bucket's, should not have to be
+                                    # explicitly balanced in this way, because
+                                    # it is either empty (and will be removed)
+                                    # or the stop_bucket's parent (and will be
+                                    # balanced anyway).
+                                    check_next = False
+                            else:
+                                # We are not mutating next bucket, so next's
+                                # parent should not have to be balanced
+                                check_next = False
+
                     stop_bucket = self._mapping[stop_bucket_id]
                     len_stop = len(stop_bucket)
-                    if (bucket is not stop_bucket and
-                        len_stop and (
-                            len_bucket < fill_minimum or
-                            len_stop < fill_minimum)):
-                        bucket = self._mutable(bucket)
-                        stop_bucket = self._mutable(stop_bucket)
-                        bucket.rotate(stop_bucket)
-                        len_bucket = len(bucket)
-                        len_stop = len(stop_bucket)
-
-                    # if (bucket is stop_bucket or stop_bucket is empty)
-                    # and bucket.previous is None and stop_bucket.next is
-                    # None, shortcut: just make sure this is the top
-                    # bucket and break.
-
-                    if ((bucket is stop_bucket or not len_stop) and
-                        bucket.previous is None and stop_bucket.next is None):
-                        bucket = self._mutable(bucket)
-                        if bucket.identifier != self._top_index:
-                            # get rid of unnecessary parents
-                            p = bucket
-                            while p.identifier != self._top_index:
-                                p = self._mapping[p.parent]
-                                if p.shared:
-                                    p.collections.remove(self)
-                                del self._mapping[p.identifier]
-                            # this is now the top of the tree
-                            self._top_index = bucket.identifier 
-                            bucket.parent = None
-                        else:
-                            assert bucket.parent is None
-                        bucket.next = None
-                        stop_bucket = stop_bucket_id = None
-                        break
-
-                    # now these are the possible states:
-                    # - bucket is stop_bucket and is empty
-                    # - bucket is stop_bucket and is too small
-                    # - bucket is stop_bucket and is ok
-                    # - bucket and stop_bucket are both empty
-                    # - bucket is ok and stop_bucket is empty
-                    # - bucket is too small and stop_bucket is empty
-                    # - bucket is ok and stop_bucket is ok
-                    #
-                    # Therefore, 
-                    # - if the stop_bucket is ok or the bucket is empty,
-                    #   we're ok with this step, and can move on to
-                    #   adjusting the indexes and pointers.
-                    # - otherwise the bucket is too small, and there is
-                    #   another bucket to rotate with.  Find the bucket
-                    #   and adjust so that no non-empty buckets are
-                    #   beneath the fill_minimum.  Make sure to adjust the
-                    #   start_bucket or stop_bucket to include the altered
-                    #   bucket.
-
-                    if len_bucket < fill_minimum:
-                        previous = bucket.previous
-                        next = stop_bucket.next
-                        assert previous is not None or next is not None
-                        assert bucket is stop_bucket or not len_stop
-                        if next is not None:
-                            next = self._mapping[next]
-                        if (next is None or
-                            previous is not None and
-                            len(next) + len_bucket > fill_maximum):
-                            # work with previous
-                            previous = self._mutable(self._mapping[previous])
-                            bucket = self._mutable(bucket)
-                            previous.rotate(bucket)
-                            if bucket.identifier == start_bucket_id:
-                                bucket = previous
-                                start_bucket_id = previous.identifier
-                            if not bucket:
-                                bucket = previous
-                                assert bucket
-                        else:
-                            # work with next
-                            bucket = self._mutable(bucket)
+                    if next:
+                        # We're still handing the exceptional case. ``next`` is
+                        # not None and not empty. This means that we are
+                        # working with indexes on this level. It also means
+                        # that bucket and next are above the minimum fill
+                        # level. The only thing we don't know is if the stop
+                        # bucket is not next and the stop bucket is not empty
+                        # and below the fill level. If that's the case, we need
+                        # to balance next and stop.
+                        if len_stop and len_stop < fill_minimum:
+                            assert stop_bucket_id != next.identifier
                             next = self._mutable(next)
-                            bucket.rotateRight(next)
-                            stop_bucket_id = next.identifier
+                            next.rotate(stop_bucket)
+                            len_stop = len(stop_bucket)
+                        # now, bucket is not empty and above the minimum,
+                        # next is not empty and above the minimum, and
+                        # stop_bucket is either empty, or not empty and
+                        # above the minimum.
+                        assert len_bucket >= fill_minimum
+                        assert len(next) >= fill_minimum
+                        assert not len_stop or len_stop >= fill_minimum
+                        # this means we are balanced, and that we have two
+                        # buckets, so neither of them is the top bucket.
+                    else:
+                        # this is the regular code path.  We only need to look
+                        # at the start bucket and the stop bucket.
 
-                    # OK, now we need to adjust pointers and get rid of
-                    # empty buckets.  We'll go level-by-level.
+                        # if bucket and stop_bucket are different and
+                        # stop_bucket is not empty and either are below the
+                        # fill_minimum...
+                            # if the combination is less than the fill_maximum,
+                            # put in bucket and empty stop_bucket
+                            # else redistribute across so both are above
+                            # fill_minimum
+                        if (bucket is not stop_bucket and
+                            len_stop and (
+                                len_bucket < fill_minimum or
+                                len_stop < fill_minimum)):
+                            bucket = self._mutable(bucket)
+                            stop_bucket = self._mutable(stop_bucket)
+                            bucket.rotate(stop_bucket)
+                            len_bucket = len(bucket)
+                            len_stop = len(stop_bucket)
+    
+                        # if (bucket is stop_bucket or stop_bucket is empty)
+                        # and bucket.previous is None and stop_bucket.next is
+                        # None, shortcut: just make sure this is the top
+                        # bucket and break.
+    
+                        if ((bucket is stop_bucket or not len_stop) and
+                            bucket.previous is None and
+                            stop_bucket.next is None):
+                            bucket = self._mutable(bucket)
+                            if bucket.identifier != self._top_index:
+                                # get rid of unnecessary parents
+                                p = bucket
+                                while p.identifier != self._top_index:
+                                    p = self._mapping[p.parent]
+                                    if p.shared:
+                                        p.collections.remove(self)
+                                    del self._mapping[p.identifier]
+                                # this is now the top of the tree
+                                self._top_index = bucket.identifier 
+                                bucket.parent = None
+                            else:
+                                assert bucket.parent is None
+                            bucket.next = None
+                            stop_bucket = stop_bucket_id = None
+                            break
+
+                        # now these are the possible states:
+                        # - bucket is stop_bucket and is empty
+                        # - bucket is stop_bucket and is too small
+                        # - bucket is stop_bucket and is ok
+                        # - bucket and stop_bucket are both empty
+                        # - bucket is ok and stop_bucket is empty
+                        # - bucket is too small and stop_bucket is empty
+                        # - bucket is ok and stop_bucket is ok
+                        #
+                        # Therefore, 
+                        # - if the stop_bucket is ok or the bucket is empty,
+                        #   we're ok with this step, and can move on to
+                        #   adjusting the indexes and pointers.
+                        # - otherwise the bucket is too small, and there is
+                        #   another bucket to rotate with.  Find the bucket
+                        #   and adjust so that no non-empty buckets are
+                        #   beneath the fill_minimum.  Make sure to adjust the
+                        #   start_bucket or stop_bucket to include the altered
+                        #   bucket.
+    
+                        if len_bucket < fill_minimum:
+                            previous = bucket.previous
+                            next = stop_bucket.next
+                            assert previous is not None or next is not None
+                            assert bucket is stop_bucket or not len_stop
+                            if next is not None:
+                                next = self._mapping[next]
+                            if (next is None or
+                                previous is not None and
+                                len(next) + len_bucket > fill_maximum):
+                                # work with previous
+                                previous = self._mutable(
+                                    self._mapping[previous])
+                                bucket = self._mutable(bucket)
+                                previous.rotate(bucket)
+                                if bucket.identifier == start_bucket_id:
+                                    if bucket:
+                                        # now bucket may have a parent that
+                                        # needs to be balanced that is *not*
+                                        # the parent of start bucket or of stop
+                                        # bucket. We'll check this the next
+                                        # time we go through this loop, with
+                                        # the parents of this level.
+                                        check_next = True
+                                    bucket = previous
+                                    start_bucket_id = previous.identifier
+                                if not bucket:
+                                    bucket = previous
+                                    assert bucket
+                            else:
+                                # work with next
+                                bucket = self._mutable(bucket)
+                                next = self._mutable(next)
+                                bucket.rotateRight(next)
+                                stop_bucket_id = next.identifier
+
+                    # We do this part of the code both in the exceptional
+                    # ``check_next`` case and in the usual case.
+
+                    # Now we need to adjust pointers and get rid of empty
+                    # buckets. We'll go level-by-level.
 
                     # we keep track of the bucket to reindex on separately from
                     # the start_index because we may have to move it to a

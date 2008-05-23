@@ -12,6 +12,7 @@
 #
 ##############################################################################
 import os
+import pickle
 import unittest
 import random
 import sys
@@ -213,12 +214,16 @@ def by_hand_regression_test():
         [56, 7, 10]
     """
 
-class Canary(object):
-    def __init__(self, comp, blist = None):
+class AbstractCanary(object):
+    def __init__(self, comp, blist=None, generator=None):
+        if generator is None:
+            generator = zc.blist.testing.StringGenerator()
+        self.generator = generator
         if blist is None:
             blist = zc.blist.BList(comp)
         self.blist = blist
         self.comp = comp
+        zc.blist.testing.matches(self.blist, self.comp)
         self.ops = [getattr(self, n) for n in dir(self) if n.startswith('t_')]
         self.empty_ops = [getattr(self, n) for n in dir(self) if n.startswith('e_')]
         self.ops.extend(self.empty_ops)
@@ -235,18 +240,28 @@ class Canary(object):
         orig = self.blist.copy()
         orig_comp = self.comp[:]
         try:
-            zc.blist.testing.checkCopies(self.blist, orig) # initial
-            args = call()
+            zc.blist.testing.checkCopies(self.blist, orig) # pre
+            c, args = call()
+            c()
             zc.blist.testing.matches(self.blist, self.comp)
             zc.blist.testing.matches(orig, orig_comp)
             return zc.blist.testing.checkCopies(self.blist, orig) # post
         except Exception, e:
             traceback.print_exc()
             import pdb; pdb.post_mortem(sys.exc_info()[2])
+            orig.bad = self.blist
+            orig.args = args
+            for i in range(1000):
+                nm = 'bad_op_%d_%r.pickle' % (random.randint(1, 1000), call)
+                if not os.path.exists(nm):
+                    f = open(nm, 'w')
+                    pickle.dump(orig, f)
+                    f.close()
+                    break
             raise
 
     def _getval(self):
-        return random.randint(-sys.maxint, sys.maxint)
+        return self.generator.next()
 
     def _getloc(self, adjustment=-1):
         max = len(self.comp)+adjustment
@@ -293,126 +308,174 @@ class Canary(object):
     def _getvals(self):
         return [self._getval() for i in range(random.randint(1, 100))]
 
-    def e_append(self):
-        val = self._getval()
-        self.comp.append(val)
-        self.blist.append(val)
-        return (val,)
+class BigOperationCanary(AbstractCanary):
 
     def e_extend(self):
         new = self._getvals()
-        self.comp.extend(new)
-        self.blist.extend(new)
-        return (new,)
-
-    def e_iadd(self):
-        new = self._getvals()
-        self.comp += new
-        self.blist += new
-        return (new,)
-
-    def e_insert(self):
-        val = self._getval()
-        location = self._getloc(0) # can insert after last item
-        self.comp.insert(location, val)
-        self.blist.insert(location, val)
-        return location, val
-
-    def t_delitem(self):
-        location = self._getloc()
-        del self.comp[location]
-        del self.blist[location]
-        return (location,)
+        def test():
+            self.comp.extend(new)
+            self.blist.extend(new)
+        return test, (new,)
 
     def t_delslice(self):
         start, stop = self._get_start_stop()
-        del self.comp[start:stop]
-        del self.blist[start:stop]
-        return start, stop
-
-    def t_delslice_step(self):
-        start, stop, step = self._get_start_stop_step()
-        del self.comp[start:stop:step]
-        del self.blist[start:stop:step]
-        return start, stop, step
-
-    def e_delslice_noop(self):
-        stop, start = self._get_start_stop()
-        del self.comp[start:stop]
-        del self.blist[start:stop]
-        return start, stop
-
-    def e_delslice_step_noop(self):
-        stop, start, step = self._get_start_stop_step()
-        del self.comp[start:stop:step]
-        del self.blist[start:stop:step]
-        return start, stop, step
-
-    def t_pop(self):
-        location = self._getloc()
-        assert self.comp.pop(location) == self.blist.pop(location)
-        return (location,)
-
-    def t_remove(self):
-        val = self.comp[self._getloc()]
-        self.comp.remove(val)
-        self.blist.remove(val)
-        return (val,)
-
-    def t_reverse(self):
-        self.comp.reverse()
-        self.blist.reverse()
-        return ()
-
-    def t_sort(self):
-        self.comp.sort()
-        self.blist.sort()
-        return ()
-
-    def t_sort_cmp(self):
-        self.comp.sort(lambda s, o: cmp(str(o), str(s))) # reverse, by
-        self.blist.sort(lambda s, o: cmp(str(o), str(s))) # string
-        return ()
-
-    def t_sort_key(self):
-        self.comp.sort(key=lambda v: str(v))
-        self.blist.sort(key=lambda v: str(v))
-        return ()
-
-    def t_sort_reverse(self):
-        self.comp.sort(reverse = True)
-        self.blist.sort(reverse = True)
-        return ()
-
-    def t_setitem(self):
-        location = self._getloc()
-        val = self._getval()
-        self.comp[location] = val
-        self.blist[location] = val
-        return location, val
+        def test():
+            del self.comp[start:stop]
+            del self.blist[start:stop]
+        return test, (start, stop)
 
     def e_setitem_slice(self):
         start, stop = self._get_start_stop()
         vals = self._getvals()
-        self.comp[start:stop] = vals
-        self.blist[start:stop] = vals
-        return start, stop, vals
+        def test():
+            self.comp[start:stop] = vals
+            self.blist[start:stop] = vals
+        return test, (start, stop, vals)
 
     def e_setitem_slice_step(self):
         start, stop, step = self._get_start_stop_step()
         vals = [self._getval() for i in range(len(self.comp[start:stop:step]))]
-        self.comp[start:stop:step] = vals
-        self.blist[start:stop:step] = vals
-        return start, stop, step, vals
+        def test():
+            self.comp[start:stop:step] = vals
+            self.blist[start:stop:step] = vals
+        return test, (start, stop, step, vals)
+
+    def t_delslice_step(self):
+        start, stop, step = self._get_start_stop_step()
+        def test():
+            del self.comp[start:stop:step]
+            del self.blist[start:stop:step]
+        return test, (start, stop, step)
+
+class Canary(BigOperationCanary):
+
+    def e_append(self):
+        val = self._getval()
+        def test():
+            self.comp.append(val)
+            self.blist.append(val)
+        return test, (val,)
+
+    def e_iadd(self):
+        new = self._getvals()
+        def test():
+            self.comp += new
+            self.blist += new
+        return test, (new,)
+
+    def e_insert(self):
+        val = self._getval()
+        location = self._getloc(0) # can insert after last item
+        def test():
+            self.comp.insert(location, val)
+            self.blist.insert(location, val)
+        return test, (location, val)
+
+    def t_delitem(self):
+        location = self._getloc()
+        def test():
+            del self.comp[location]
+            del self.blist[location]
+        return test, (location,)
+
+    def e_delslice_noop(self):
+        stop, start = self._get_start_stop()
+        def test():
+            del self.comp[start:stop]
+            del self.blist[start:stop]
+        return test, (start, stop)
+
+    def e_delslice_step_noop(self):
+        stop, start, step = self._get_start_stop_step()
+        def test():
+            del self.comp[start:stop:step]
+            del self.blist[start:stop:step]
+        return test, (start, stop, step)
+
+    def t_pop(self):
+        location = self._getloc()
+        def test():
+            assert self.comp.pop(location) == self.blist.pop(location)
+        return test, (location,)
+
+    def t_remove(self):
+        val = self.comp[self._getloc()]
+        def test():
+            self.comp.remove(val)
+            self.blist.remove(val)
+        return test, (val,)
+
+    def t_reverse(self):
+        def test():
+            self.comp.reverse()
+            self.blist.reverse()
+        return test, ()
+
+    def t_sort(self):
+        def test():
+            self.comp.sort()
+            self.blist.sort()
+        return test, ()
+
+    def t_sort_cmp(self):
+        def test():
+            self.comp.sort(lambda s, o: cmp(str(o), str(s))) # reverse, by
+            self.blist.sort(lambda s, o: cmp(str(o), str(s))) # string
+        return test, ()
+
+    def t_sort_key(self):
+        def test():
+            self.comp.sort(key=lambda v: str(v))
+            self.blist.sort(key=lambda v: str(v))
+        return test, ()
+
+    def t_sort_reverse(self):
+        def test():
+            self.comp.sort(reverse = True)
+            self.blist.sort(reverse = True)
+        return test, ()
+
+    def t_setitem(self):
+        location = self._getloc()
+        val = self._getval()
+        def test():
+            self.comp[location] = val
+            self.blist[location] = val
+        return test, (location, val)
+
+
 
 class CanaryTestCase(unittest.TestCase):
-    def test_empty_canary(self):
+    def test_canary(self):
         c = Canary([])
         c()
 
     def test_small_bucket_empty_canary(self):
         c = Canary([], zc.blist.BList(bucket_size=5, index_size=4))
         c()
+
+    def test_big_canary(self):
+        for i in range(32):
+            c = Canary([], zc.blist.BList(bucket_size=5, index_size=4))
+            c(1000)
+
+    def test_several_small_canaries(self):
+        for i in range(128):
+            c = Canary([], zc.blist.BList(bucket_size=5, index_size=4))
+            c(10)
+
+    def test_big_bigop_canary(self):
+        for i in range(32):
+            c = BigOperationCanary(
+                [], zc.blist.BList(bucket_size=5, index_size=4))
+            c(1000)
+
+    def test_big_big_bigop_canary(self):
+        for i in range(32):
+            c = BigOperationCanary(
+                range(10000),
+                zc.blist.BList(range(10000), bucket_size=5, index_size=4))
+            c(2000)
 
 def test_suite():
     return unittest.TestSuite((

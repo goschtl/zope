@@ -1,3 +1,5 @@
+import random
+
 import zc.blist
 
 def checkIndex(ix, b, previous, previous_ix=0):
@@ -33,6 +35,7 @@ def checkIndex(ix, b, previous, previous_ix=0):
 def matches(b, result):
     assert list(b) == result, repr(list(b)) + ' != ' + repr(result)
     assert len(b) == len(result)
+    assert list(b[::-1]) == list(reversed(result))
     res = []
     bad = [(i, (b_i, r_i)) for (i, b_i, r_i) in
            ((i, b[i], result[i]) for i in range(len(b)))
@@ -73,3 +76,21 @@ def checkCopies(one, two):
                     two not in v.collections)
             diff.append((k, v, alt))
     return one_diff, two_diff, diff
+
+def RandomGenerator():
+    while 1:
+        yield random.randint(-sys.maxint, sys.maxint)
+
+def StringGenerator(src='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+    "infinite-ish unique string generator"
+    for el in src:
+        yield el
+    for pre in StringGenerator(src):
+        for el in src:
+            yield pre + el
+
+def NumberGenerator(number=0, interval=1):
+    "infinite-ish unique number generator"
+    while 1:
+        yield number
+        number += interval
