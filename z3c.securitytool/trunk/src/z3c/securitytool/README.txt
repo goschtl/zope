@@ -27,19 +27,24 @@ roles, groups or specifically assigned permissions will be displayed.
     >>> from z3c.securitytool.interfaces import IPermissionDetails
     >>> root = getRootFolder()
 
-Several things are added to the database on the IDatabaseOpenedEvent when
-starting the demo or running the tests. These settings are used to test
-the functionality in the tests as well as populate a matrix for the demo.
-Lets make sure the items were added with demoSetup.py
+    Several things are added to the database on the IDatabaseOpenedEvent when
+    starting the demo or running the tests. These settings are used to test
+    the functionality in the tests as well as populate a matrix for the demo.
+    Lets make sure the items were added with demoSetup.py, We will assume
+    that if Folder1 exists in the root folder then demoSetup.py was executed.
 
     >>> sorted(root.keys())
     [u'Folder1']
 
-To retrieve the permission settings for the folder we must first adapt the
-context to a SecurityChecker Object.
+    To retrieve the permission settings for the folder we must first adapt the
+    context to a SecurityChecker Object.
 
     >>> folder1 = ISecurityChecker(root['Folder1'])
 
+    >>> print folder1.__class__.__name__
+    SecurityChecker
+    
+    Lets introspect the object.
     >>> pprint(dir(folder1))
     ['__class__',
      '__component_adapts__',
@@ -53,48 +58,55 @@ context to a SecurityChecker Object.
      'updateRolePermissionSetting']
         
 
-Ok. Lets now see how the security tool represents the permissions for
-a certain context level and Interface.
+    To get all the security settings for particular context level the
+    getPermissionSettingsForAllViews is called with a tuple of interfaces.
+    All the views registered for the interfaces passed will be inspected.
 
-The 'getPermissionSettingsForAllViews' method takes a tuple of interfaces
-as an argument to determine what views registered at this context level.
-
-Since nothing should be registerd for only zope.interface.Interface we
-should recieve an empty set, of permissions, roles and groups.
+    
+    Since nothing should be registerd for only zope.interface.Interface we
+    should recieve an empty set, of permissions, roles and groups.
 
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
 
-
-We first get the interfaces registered for this context
-level and then list all the view names that are registered for this context
-and Interface.
-
-Now lets see what the actual securityMatrix looks like in the context level
-of folder1.
-
+    A realistic test would be to get all the interfaces provieded by a specific
+    context level like `folder1`.
     >>> ifaces = tuple(providedBy(folder1))
     >>> pprint(ifaces)
     (<InterfaceClass z3c.securitytool.interfaces.ISecurityChecker>,)
 
-    >>> pprint(sorted([x.name for x in getViews(ifaces[0])]))
-    [u'acquire',
-     u'adapter',
-     u'attribute',
-     u'etc',
-     u'item',
-     u'lang',
-     u'resource',
-     u'skin',
-     u'vh',
-     u'view']
+    `getViews` gets all the registered views for this interface. This
+    is refined later to the views that are only accessable in this context.
+    >>> pprint(sorted([x for x in getViews(ifaces[0])]))
+    [AdapterRegistration... ITraversable, u'acquire', ...
+     AdapterRegistration... ITraversable, u'adapter', ...
+     AdapterRegistration... ITraversable, u'attribute', ...
+     AdapterRegistration... ITraversable, u'etc', ...
+     AdapterRegistration... ITraversable, u'item', ...
+     AdapterRegistration... ITraversable, u'lang', ...
+     AdapterRegistration... ITraversable, u'resource', ...
+     AdapterRegistration... ITraversable, u'skin', ...
+     AdapterRegistration... ITraversable, u'vh', ...
+     AdapterRegistration... ITraversable, u'view', ...
 
-The following data structure returned from getPermissionSettingsForAllViews
-is used to populate the main securitytool page.
-
+    The following data structure returned from getPermissionSettingsForAllViews
+    is used to populate the main securitytool page.
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
 
-Here we just print a subset of the structure, to make sure the data is sane
+    As you can see below the `zope.anybody` has the 'Allow' permission
+    for all four views registered for this context level.
+    >>> pprint(permDetails)
+    ...
+    [{'zope.anybody': {u'<i>no name</i>': 'Allow',
+                      u'DELETE': 'Allow',
+                      u'OPTIONS': 'Allow',
+                      u'PUT': 'Allow',
+                      u'absolute_url': 'Allow'},
+    ...
+
+    For every user in the system the all permissions are listed for
+    this context level ('folder1').
+    Here we just print a subset of the structure, to make sure the data is sane
     >>> pprint(sorted(permDetails[0].keys()))
     ['zope.anybody',
      'zope.daniel',
@@ -107,8 +119,8 @@ Here we just print a subset of the structure, to make sure the data is sane
      'zope.sample_manager',
      'zope.stephan']
 
-This of course should be identical to the users on the system from zapi
-without (zope.anybody)
+    This of course should be identical to the users on the system from zapi
+    without (zope.anybody)
     >>> from zope.app import zapi
     >>> sysPrincipals = zapi.principals()
     >>> principals = [x.id for x in sysPrincipals.getPrincipals('')]
@@ -131,23 +143,23 @@ Using securitytool to inspect principals
 Lets see what the principalDetails look like for the principal Daniel
 and the context of 'Folder1'.
 
-First we retrieve the principalDetails for Folder1:
+    First we retrieve the principalDetails for Folder1:
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
 
-Then we filter out the uninteresting information for the user being inspected.
+    Then we filter out the uninteresting information for the user being inspected.
     >>> matrix = prinDetails('zope.daniel')
 
-Below we check to make sure the groups data structure from the user daniel
-is returned as expected. This is the data used to populate the groups
-section on the User Details page.
+    Below we check to make sure the groups data structure from the user daniel
+    is returned as expected. This is the data used to populate the groups
+    section on the User Details page.
 
     >>> pprint(matrix['groups'].keys())
     ['zope.group1']
 
-Here we check to make sure the permission tree is created
-properly. The permission tree is used to display the levels of
-inheritance that were traversed to attain the permission displayed.
-
+    Here we check to make sure the permission tree is created
+    properly. The permission tree is used to display the levels of
+    inheritance that were traversed to attain the permission displayed.
+    
     >>> pprint(matrix['permissionTree'][0])
     {u'Folder1_2': {'name': None,
                      'parentList': [u'Folder1', 'Root Folder'],
@@ -176,8 +188,8 @@ inheritance that were traversed to attain the permission displayed.
                                         'setting': PermissionSetting: Deny}]}}
 
 
-The permissions section of the matrix displays the final say on
-whether or not the user has permissions at this context level.
+    The permissions section of the matrix displays the final say on
+    whether or not the user has permissions at this context level.
 
     >>> pprint(matrix['permissions'])
     [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
@@ -185,18 +197,18 @@ whether or not the user has permissions at this context level.
      {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
      {'setting': PermissionSetting: Deny,  'permission': 'concord.DeleteArticle'}]
 
-The roles section of the matrix displays the final say on whether or
-not the user has the role assigned at this context level.
-
+    The roles section of the matrix displays the final say on whether or
+    not the user has the role assigned at this context level.
+    
     >>> pprint(matrix['roles'])
     {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
      'zope.Writer':  [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
                       {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
                       {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
 
-The roleTree structure is used to display the roles attained at each
-level of traversal. The roleTree is stored as a list so to consistently test the data
-properly we will create a dictionary out of it.    
+    The roleTree structure is used to display the roles attained at each
+    level of traversal. The roleTree is stored as a list so to consistently test the data
+    properly we will create a dictionary out of it.    
 
     >>> tmpDict = {}
     >>> keys = matrix['roleTree']
