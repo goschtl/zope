@@ -93,126 +93,63 @@ The following data structure returned from getPermissionSettingsForAllViews
 is used to populate the main securitytool page.
 
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces)
-    >>> pprint(permDetails)
-     [{'zope.anybody': {u'<i>no name</i>': 'Allow',
-                            u'DELETE': 'Allow',
-                          u'OPTIONS': 'Allow',
-                          u'PUT': 'Allow',
-                          u'absolute_url': 'Allow'},
-         'zope.daniel': {u'<i>no name</i>': 'Allow',
-                         u'DELETE': 'Allow',
-                         u'OPTIONS': 'Allow',
-                         u'PUT': 'Allow',
-                         u'absolute_url': 'Allow'},
-         'zope.globalmgr': {u'<i>no name</i>': 'Allow',
-                            u'DELETE': 'Allow',
-                            u'OPTIONS': 'Allow',
-                            u'PUT': 'Allow',
-                            u'absolute_url': 'Allow'},
-         'zope.group1': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
-       'zope.markus': {u'<i>no name</i>': 'Allow',
-                         u'DELETE': 'Allow',
-                         u'OPTIONS': 'Allow',
-                         u'PUT': 'Allow',
-                         u'absolute_url': 'Allow'},
-         'zope.martin': {u'<i>no name</i>': 'Allow',
-                         u'DELETE': 'Allow',
-                         u'OPTIONS': 'Allow',
-                         u'PUT': 'Allow',
-                         u'absolute_url': 'Allow'},
-         'zope.mgr': {u'absolute_url': 'Allow', u'<i>no name</i>': 'Allow'},
-         'zope.randy': {u'<i>no name</i>': 'Allow',
-                        u'DELETE': 'Allow',
-                        u'OPTIONS': 'Allow',
-                        u'PUT': 'Allow',
-                        u'absolute_url': 'Allow'},
-         'zope.sample_manager': {u'<i>no name</i>': 'Allow',
-                                 u'DELETE': 'Allow',
-                                 u'OPTIONS': 'Allow',
-                                 u'PUT': 'Allow',
-                                 u'absolute_url': 'Allow'},
-         'zope.stephan': {u'<i>no name</i>': 'Allow',
-                          u'DELETE': 'Allow',
-                          u'OPTIONS': 'Allow',
-                          u'PUT': 'Allow',
-                          u'absolute_url': 'Allow'}},
-        {u'<i>no name</i>': 'zope.Public',
-         u'DELETE': 'zope.Public',
-         u'OPTIONS': 'zope.Public',
-         u'PUT': 'zope.Public',
-         u'absolute_url': 'zope.Public'},
-        set(['zope.Public'])]
 
+Here we just print a subset of the structure, to make sure the data is sane
+    >>> pprint(sorted(permDetails[0].keys()))
+    ['zope.anybody',
+     'zope.daniel',
+     'zope.globalmgr',
+     'zope.group1',
+     'zope.markus',
+     'zope.martin',
+     'zope.mgr',
+     'zope.randy',
+     'zope.sample_manager',
+     'zope.stephan']
+
+This of course should be identical to the users on the system from zapi
+without (zope.anybody)
+    >>> from zope.app import zapi
+    >>> sysPrincipals = zapi.principals()
+    >>> principals = [x.id for x in sysPrincipals.getPrincipals('')]
+    >>> pprint(sorted(principals))
+    ['zope.daniel',
+     'zope.globalmgr',
+     'zope.group1',
+     'zope.markus',
+     'zope.martin',
+     'zope.mgr',
+     'zope.randy',
+     'zope.sample_manager',
+     'zope.stephan']
+
+
+========================================
+Using securitytool to inspect principals
+========================================
 
 Lets see what the principalDetails look like for the principal Daniel
 and the context of 'Folder1'.
 
+First we retrieve the principalDetails for Folder1:
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
+
+Then we filter out the uninteresting information for the user being inspected.
     >>> matrix = prinDetails('zope.daniel')
 
 Below we check to make sure the groups data structure from the user daniel
 is returned as expected. This is the data used to populate the groups
 section on the User Details page.
 
-    >>> pprint(matrix['groups'])
-    {'zope.group1':
-          {'groups': {},
-            'permissionTree': [{u'Folder1_2': {'name': None,
-                        'parentList': [u'Folder1',
-                               'Root Folder'],
-                        'permissions': [{'permission': 'concord.CreateArticle',
-                                'principal': 'zope.group1',
-                                'setting': PermissionSetting: Allow},
-                                {'permission': 'concord.ReadIssue',
-                                'principal': 'zope.group1',
-                                'setting': PermissionSetting: Deny},
-                                {'permission': 'concord.DeleteIssue',
-                                'principal': 'zope.group1',
-                                'setting': PermissionSetting: Allow}]}},
-                {'Root Folder': {'name': 'Root Folder',
-                         'parentList': ['Root Folder'],
-                         'permissions': [{'permission': 'concord.CreateArticle',
-                                 'principal': 'zope.group1',
-                                 'setting': PermissionSetting: Deny},
-                                 {'permission': 'concord.ReadIssue',
-                                 'principal': 'zope.group1',
-                                 'setting': PermissionSetting: Allow},
-                                 {'permission': 'concord.DeleteArticle',
-                                 'principal': 'zope.group1',
-                                 'setting': PermissionSetting: Deny}]}}],
-      'permissions': [{'permission': 'concord.CreateArticle',
-               'setting': PermissionSetting: Allow},
-              {'permission': 'concord.ReadIssue',
-               'setting': PermissionSetting: Deny},
-              {'permission': 'concord.DeleteIssue',
-               'setting': PermissionSetting: Allow},
-              {'permission': 'concord.DeleteArticle',
-               'setting': PermissionSetting: Deny}],
-      'roleTree': [{'Root Folder': {'name': 'Root Folder',
-                      'parentList': ['Root Folder'],
-                      'roles': [{'principal': 'zope.group1',
-                           'role': 'zope.Editor',
-                           'setting': PermissionSetting: Allow}]}}],
-      'roles': {'zope.Editor': [{'permission': 'concord.CreateIssue',
-                    'setting': 'Allow'},
-                   {'permission': 'concord.DeleteArticle',
-                    'setting': 'Allow'},
-                   {'permission': 'concord.PublishIssue',
-                    'setting': 'Allow'},
-                   {'permission': 'concord.DeleteIssue',
-                    'setting': 'Allow'},
-                   {'permission': 'concord.CreateArticle',
-                    'setting': 'Allow'},
-                   {'permission': 'concord.ReadIssue',
-                    'setting': 'Allow'}]}}}
-
+    >>> pprint(matrix['groups'].keys())
+    ['zope.group1']
 
 Here we check to make sure the permission tree is created
 properly. The permission tree is used to display the levels of
 inheritance that were traversed to attain the permission displayed.
 
-    >>> pprint(matrix['permissionTree'])
-    [{u'Folder1_2': {'name': None,
+    >>> pprint(matrix['permissionTree'][0])
+    {u'Folder1_2': {'name': None,
                      'parentList': [u'Folder1', 'Root Folder'],
                      'permissions': [{'permission': 'concord.CreateArticle',
                                       'principal': 'zope.daniel',
@@ -222,7 +159,10 @@ inheritance that were traversed to attain the permission displayed.
                                       'setting': PermissionSetting: Deny},
                                      {'permission': 'concord.DeleteIssue',
                                       'principal': 'zope.daniel',
-                                      'setting': PermissionSetting: Allow}]}},
+                                      'setting': PermissionSetting: Allow}]}}
+
+
+    >>> pprint(matrix['permissionTree'][1])
      {'Root  Folder': {'name': 'Root  Folder',
                        'parentList': ['Root Folder'],
                        'permissions': [{'permission': 'concord.CreateArticle',
@@ -233,30 +173,26 @@ inheritance that were traversed to attain the permission displayed.
                                         'setting': PermissionSetting: Allow},
                                        {'permission': 'concord.DeleteArticle',
                                         'principal': 'zope.daniel',
-                                        'setting': PermissionSetting: Deny}]}}]
+                                        'setting': PermissionSetting: Deny}]}}
 
 
 The permissions section of the matrix displays the final say on
 whether or not the user has permissions at this context level.
 
     >>> pprint(matrix['permissions'])
-    [{'setting': PermissionSetting: Allow,
-      'permission': 'concord.CreateArticle'},
-     {'setting': PermissionSetting: Deny,
-      'permission': 'concord.ReadIssue'},
-     {'setting': PermissionSetting: Allow,
-      'permission': 'concord.DeleteIssue'},
-     {'setting': PermissionSetting: Deny,
-      'permission': 'concord.DeleteArticle'}]
+    [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
+     {'setting': PermissionSetting: Deny,  'permission': 'concord.ReadIssue'},
+     {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
+     {'setting': PermissionSetting: Deny,  'permission': 'concord.DeleteArticle'}]
 
 The roles section of the matrix displays the final say on whether or
 not the user has the role assigned at this context level.
 
     >>> pprint(matrix['roles'])
     {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
-     'zope.Writer': [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
-                     {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
-                     {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
+     'zope.Writer':  [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
+                      {'setting': 'Allow', 'permission': 'concord.CreateArticle'},
+                      {'setting': 'Allow', 'permission': 'concord.ReadIssue'}]}
 
 The roleTree structure is used to display the roles attained at each
 level of traversal. The roleTree is stored as a list so to consistently test the data
@@ -393,7 +329,6 @@ Now we test the meat of the SecurityChecker Class
     ...             'rolePermissions'     : [rolePermMap],
     ...             'principalRoles'      : [prinRoleMap]}
 
-    >>> permDetails = PermissionDetails(folder1)
 
 TestBrowser Smoke Tests
 -----------------------
