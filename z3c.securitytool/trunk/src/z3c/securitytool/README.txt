@@ -46,6 +46,7 @@ roles, groups or specifically assigned permissions will be displayed.
     SecurityChecker
     
     Lets introspect the object.
+
     >>> pprint(dir(folder1))
     ['__class__',
      '__component_adapts__',
@@ -65,12 +66,14 @@ roles, groups or specifically assigned permissions will be displayed.
 
     Since nothing should be registered for only zope.interface.Interface we
     should recieve an empty set, of permissions, roles and groups.
+
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
 
     A realistic test would be to get all the interfaces provieded by a specific
     context level like `Folder1`. Being a folder these are the interfaces as you
     might expect.
+
     >>> ifaces = tuple(providedBy(root['Folder1']))
     >>> pprint(ifaces)
     (<InterfaceClass zope.app.folder.interfaces.IFolder>,
@@ -81,6 +84,7 @@ roles, groups or specifically assigned permissions will be displayed.
     The next step to determine security levels is the getViews function.
     `getViews` gets all the registered views for this interface. This
     is refined later to the views that are only accessable in this context.
+
     >>> pprint(sorted([x for x in getViews(ifaces[0])]))
     [AdapterRegistration... ITraversable, u'acquire', ...
      AdapterRegistration... ITraversable, u'adapter', ...
@@ -97,11 +101,14 @@ roles, groups or specifically assigned permissions will be displayed.
     Since this is a large result set returned will will only test enough
     pieces of the results inform of the desired behavior and to make sure
     the results are sane.
-    >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces,ISecurityToolSkin)
-    
-    
+
+    >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces,
+                                                               ISecurityToolSkin)
+
     By using the ISecurityToolSkin we can see the actual securityTool
-    views. The securityTool views are only registerd for the ISecurityToolSkin layer.
+    views. The securityTool views are only registerd for the
+    ISecurityToolSkin layer.
+
     >>> pprint(permDetails)
     [...
       'zope.globalmgr': {u'<i>no name</i>': 'Allow',
@@ -118,6 +125,7 @@ roles, groups or specifically assigned permissions will be displayed.
     for the four views listed below. The securitytool views are not listed
     here because they are neither specifically denied or allowed for
     this principal.
+
     >>> pprint(permDetails)
     ...
     [{'zope.anybody': {u'<i>no name</i>': 'Allow',
@@ -130,6 +138,7 @@ roles, groups or specifically assigned permissions will be displayed.
     Another section of the result set shows all valid views for this
     context and skin, along with the permission required for access to
     the view.
+
     >>> pprint(permDetails)
     [...
     {u'<i>no name</i>': 'zope.Public',
@@ -141,10 +150,11 @@ roles, groups or specifically assigned permissions will be displayed.
       u'principalDetails.html': 'zope.ManageContent',
       u'securityMatrix.html': 'zope.ManageContent'},
     ...]
-    
 
     All the principals in the system  are in this data structure.
-    Here we just print a subset of the structure, to make sure the data is sane
+    Here we just print a subset of the structure, to make sure the
+    data is sane.
+
     >>> pprint(sorted(permDetails[0].keys()))
     ['zope.anybody',
      'zope.daniel',
@@ -157,8 +167,9 @@ roles, groups or specifically assigned permissions will be displayed.
      'zope.sample_manager',
      'zope.stephan']
 
-    This of course should be identical to the users on the system from zapi.getPrincipals()
-    without (zope.anybody)
+    This of course should be identical to the users on the system from
+    zapi.getPrincipals() without (zope.anybody)
+
     >>> from zope.app import zapi
     >>> sysPrincipals = zapi.principals()
     >>> principals = [x.id for x in sysPrincipals.getPrincipals('')]
@@ -173,7 +184,6 @@ roles, groups or specifically assigned permissions will be displayed.
      'zope.sample_manager',
      'zope.stephan']
 
-
 ========================================
 Using securitytool to inspect principals
 ========================================
@@ -182,12 +192,16 @@ Lets see what the principalDetails look like for the principal Daniel
 and the context of 'Folder1'.
 
     First we retrieve the principalDetails for Folder1:
+
     >>> prinDetails = PrincipalDetails(root[u'Folder1'])
 
-    Then we filter out the uninteresting information for the user being inspected.
+    Then we filter out the uninteresting information for the user
+    being inspected.
+
     >>> matrix = prinDetails('zope.daniel')
 
     The principal details structure contains five interesting pieces of data.
+
     >>> pprint(sorted(matrix.keys()))
     ['groups', 'permissionTree', 'permissions', 'roleTree', 'roles']
 
@@ -202,6 +216,7 @@ and the context of 'Folder1'.
     traversed to attain the permission displayed. The permission is
     stored as a list so the order is maintained. (yes I know there are
     better ways to accomplish this)
+
     >>> pprint(matrix['permissionTree'][0])
     {u'Folder1_2': {'name': None,
                      'parentList': [u'Folder1', 'Root Folder'],
@@ -238,9 +253,11 @@ and the context of 'Folder1'.
      {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
      {'setting': PermissionSetting: Deny,  'permission': 'concord.DeleteArticle'}]
 
-    The roleTree structure is used to display the roles attained at each level of traversal.
-    The roleTree is stored as a list so to consistently test the data properly we will create
-    a dictionary out of it and is similar in function to the permissionTree.    
+    The roleTree structure is used to display the roles attained at
+    each level of traversal. The roleTree is stored as a list so to
+    consistently test the data properly we will create a dictionary 
+    out of it and is similar in function to the permissionTree.    
+
     >>> tmpDict = {}
     >>> keys = matrix['roleTree']
     >>> for item in matrix['roleTree']:
@@ -269,6 +286,7 @@ and the context of 'Folder1'.
 
     The roles section of the matrix displays the final say on whether or
     not the user has the role assigned at this context level.
+
     >>> pprint(matrix['roles'])
     {'zope.Janitor': [{'setting': 'Allow', 'permission': 'concord.ReadIssue'}],
      'zope.Writer':  [{'setting': 'Allow', 'permission': 'concord.DeleteArticle'},
@@ -315,7 +333,7 @@ a permission or role and False if there is not.
    >>> hasPermissionSetting({'permissions':'Allow'})
    True
 
-We need to make some dummy objects to test the 'hasPermissionSetting' method
+   We need to make some dummy objects to test the 'hasPermissionSetting' method
 
     >>> emptySettings = {'permissions': [],
     ...                  'roles': {},
@@ -325,7 +343,7 @@ We need to make some dummy objects to test the 'hasPermissionSetting' method
     ...                  'roles': {},
     ...                  'groups': {}}
 
-We also need to make sure the recursive functionality works for this method
+    We also need to make sure the recursive functionality works for this method
 
      >>> hasPermissionSetting({'permissions':{},'roles':{},
      ...                                 'groups':{'group1':emptySettings,
@@ -346,26 +364,26 @@ We also need to make sure the recursive functionality works for this method
     ...                 'setting':  Allow})
 
 
-Lets test the method with our new dummy data
+    Lets test the method with our new dummy data
     >>> principalDirectlyProvidesPermission([prinPermMap],'daniel',
     ...                                          'takeOverTheWORLD')
     'Allow'
 
-And we also need to test the roleProvidesPermission
+    And we also need to test the roleProvidesPermission
     >>> roleProvidesPermission([rolePermMap], 'Janitor', 'takeOverTheWORLD')
     'Allow'
 
-And we also need to test the roleProvidesPermission
+    And we also need to test the roleProvidesPermission
     >>> principalRoleProvidesPermission([prinRoleMap],
     ...                                 [rolePermMap],
     ...                                 'daniel',
     ...                                 'takeOverTheWORLD')
     ('Janitor', 'Allow')
 
-See janitors CAN take over the world!!!!!
+    See janitors CAN take over the world!!!!!
 
-And of course the rendered name to display on the page template
-If we do not receive a name that means we are on the root level.
+    And of course the rendered name to display on the page template
+    If we do not receive a name that means we are on the root level.
 
     >>> renderedName(None)
     u'Root Folder'
@@ -375,17 +393,11 @@ If we do not receive a name that means we are on the root level.
 
     >>> folder1.populatePermissionMatrix('takeOverTheWORLD',[prinPermMap])
 
-Now we test the meat of the SecurityChecker Class
-
-    >>> settings = {'principalPermissions': [prinPermMap],
-    ...             'rolePermissions'     : [rolePermMap],
-    ...             'principalRoles'      : [prinRoleMap]}
-
 
 TestBrowser Smoke Tests
 -----------------------
 
-Lets make sure all the views work properly. Just a simple smoke test
+    Lets make sure all the views work properly. Just a simple smoke test
 
     >>> from zope.testbrowser.testing import Browser
     >>> manager = Browser()
@@ -397,7 +409,7 @@ Lets make sure all the views work properly. Just a simple smoke test
 
     >>> manager.open(server + '/@@securityMatrix.html')
 
-First we will check if the main page is available
+    First we will check if the main page is available
 
     >>> manager.open(server + '/@@securityMatrix.html')
 
@@ -405,33 +417,33 @@ First we will check if the main page is available
 
     >>> manager.open(server + '/Folder1/Folder2/Folder3/@@securityMatrix.html')
 
-Now lets send the filter variable so our test is complete
+    Now lets send the filter variable so our test is complete
 
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes')
 
 
-And with the selected permission
+    And with the selected permission
 
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.Public')
 
 
-Here we send an invalid selectedPermisson ( just for coverage ) ;)
+    Here we send an invalid selectedPermisson ( just for coverage ) ;)
 
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=zope.dummy')
 
-And with the None permission
+    And with the None permission
 
     >>> manager.open(server + '/@@securityMatrix.html?'
     ...              'FILTER=None&selectedSkin=ConcordTimes&'
     ...              'selectedPermission=None')
 
-This is the principal detail page, you can get to by clicking on the
-principals name at the top of the form
+    This is the principal detail page, you can get to by clicking on the
+    principals name at the top of the form
 
     >>> manager.open(server + 
     ...              '/@@principalDetails.html?principal=zope.daniel')
@@ -445,20 +457,20 @@ principals name at the top of the form
     True
 
 
-And lets call the view without a principal
+    And lets call the view without a principal
 
     >>> manager.open(server + '/@@principalDetails.html')
     Traceback (most recent call last):
     ...
     PrincipalLookupError: no principal specified
 
-Here is the view you will see if you click on the actual permission
-value in the matrix intersecting the view to the user on a public view.
+    Here is the view you will see if you click on the actual permission
+    value in the matrix intersecting the view to the user on a public view.
 
     >>> manager.open(server + '/@@permissionDetails.html?'
     ...              'principal=zope.daniel&view=PUT')
 
-Ok lets send the command without the principal
+    Ok lets send the command without the principal
 
     >>> manager.open(server + '/@@permissionDetails.html?view=PUT')
     Traceback (most recent call last):
@@ -466,21 +478,19 @@ Ok lets send the command without the principal
     PrincipalLookupError: no user specified
  
 
-And now we will test it without the view name
+    And now we will test it without the view name
 
-  >>> manager.open(server + '/@@permissionDetails.html?'
-  ...                        'principal=zope.daniel')
+    >>> manager.open(server + '/@@permissionDetails.html?'
+    ...                        'principal=zope.daniel')
 
-And now with a view name that does not exist
-
-  >>> manager.open(server + '/@@permissionDetails.html?'
-  ...              'principal=zope.daniel&view=garbage')
-
-Lets also test with a different context level
-
-  >>> manager.open(server + 
-  ...              '/Folder1/Folder2/Folder3/'
-  ...              '@@permissionDetails.html'
-  ...              '?principal=zope.daniel&view=ReadIssue.html')
-
-
+    And now with a view name that does not exist
+  
+    >>> manager.open(server + '/@@permissionDetails.html?'
+    ...              'principal=zope.daniel&view=garbage')
+  
+    Lets also test with a different context level
+  
+    >>> manager.open(server + 
+    ...              '/Folder1/Folder2/Folder3/'
+    ...              '@@permissionDetails.html'
+    ...              '?principal=zope.daniel&view=ReadIssue.html')
