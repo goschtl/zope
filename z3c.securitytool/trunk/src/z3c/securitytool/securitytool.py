@@ -109,6 +109,7 @@ class SecurityChecker(object):
                     permSetting = (role,'Allow')
 
                 elif role['setting'] == Deny:
+                    #If the role has a setting and it is Deny.
                     try:
                         # Here we see if we have added a security setting with
                         # this role before, if it is now denied we remove it.
@@ -118,6 +119,8 @@ class SecurityChecker(object):
                         pass
 
                 else:
+                    # The role has a setting and is Allow so we add it to the
+                    # matrix.
                     permSetting =  principalRoleProvidesPermission(
                                    principalRoles, rolePermMap,
                                    principal, read_perm,
@@ -162,7 +165,7 @@ class SecurityChecker(object):
 
             if matrix.setdefault(principal,{self.name:setting}) == \
                                                  {self.name:setting}:
-                #If the prin is not in the matrix add it
+                #If the principal is not in the matrix add it
                 continue
 
             elif  matrix[principal].setdefault(
