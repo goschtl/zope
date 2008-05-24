@@ -65,12 +65,12 @@ roles, groups or specifically assigned permissions will be displayed.
     All the views registered for the interfaces passed will be inspected.
 
     Since nothing should be registered for only zope.interface.Interface we
-    should recieve an empty set, of permissions, roles and groups.
+    should receive an empty set, of permissions, roles and groups.
 
     >>> folder1.getPermissionSettingsForAllViews(zope.interface.Interface)
     [{}, {}, set([])]
 
-    A realistic test would be to get all the interfaces provieded by a specific
+    A realistic test would be to get all the interfaces provided by a specific
     context level like `Folder1`. Being a folder these are the interfaces as you
     might expect.
 
@@ -83,7 +83,7 @@ roles, groups or specifically assigned permissions will be displayed.
 
     The next step to determine security levels is the getViews function.
     `getViews` gets all the registered views for this interface. This
-    is refined later to the views that are only accessable in this context.
+    is refined later to the views that are only accessible in this context.
 
     >>> pprint(sorted([x for x in getViews(ifaces[0])]))
     [AdapterRegistration... ITraversable, u'acquire', ...
@@ -98,15 +98,15 @@ roles, groups or specifically assigned permissions will be displayed.
      AdapterRegistration... ITraversable, u'view', ...
 
 
-    Since this is a large result set returned will will only test enough
-    pieces of the results inform of the desired behavior and to make sure
+    Since this is a large result set returned we will only test enough
+    pieces of the results to inform of the desired behavior and to make sure
     the results are sane.
 
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces,
                                                                ISecurityToolSkin)
 
     By using the ISecurityToolSkin we can see the actual securityTool
-    views. The securityTool views are only registerd for the
+    views. The securityTool views are only registered for the
     ISecurityToolSkin layer.
 
     >>> pprint(permDetails)
