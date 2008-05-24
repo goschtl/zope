@@ -2,6 +2,10 @@
 CHANGES
 =======
 
+Version 0.3.5c (2008-05-24)
+---------------------------
+- Mainly fixed documentation and DocTests
+
 Version 0.3.5b (2008-03-03)
 ---------------------------
 - Fixed issue where stylesheets would not display in skin
