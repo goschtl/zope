@@ -103,7 +103,7 @@ roles, groups or specifically assigned permissions will be displayed.
     the results are sane.
 
     >>> permDetails = folder1.getPermissionSettingsForAllViews(ifaces,
-                                                               ISecurityToolSkin)
+    ...                                                     ISecurityToolSkin)
 
     By using the ISecurityToolSkin we can see the actual securityTool
     views. The securityTool views are only registered for the
