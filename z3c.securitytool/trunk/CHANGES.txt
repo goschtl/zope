@@ -2,6 +2,10 @@
 CHANGES
 =======
 
+Version 0.3.6 (2008-05-25)
+---------------------------
+- Security tool now inherits properly from groups.
+
 Version 0.3.5c (2008-05-24)
 ---------------------------
 - Mainly fixed documentation and DocTests
