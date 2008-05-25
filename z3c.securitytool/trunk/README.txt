@@ -11,7 +11,7 @@ levels of detail. You can view the details of how a user came to have
 the permission on a given view, by clicking on the permission in the matrix.
 
 .. image::
-  http://farm3.static.flickr.com/2085/2294946406_607a043fa1.jpg?v=0  
+  http://farm3.static.flickr.com/2318/2521732872_81a709e3db_m.jpg
   :height: 200
   :width: 400
   :target: http://flickr.com/photos/blackburnd/
