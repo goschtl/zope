@@ -59,8 +59,8 @@ class SecurityChecker(object):
         permissions and role-permissions  permissions will always win.
         """
 
-        # TODO Need a viewGroupMatrix:
-
+        # Populate the viewMatrix with the permissions gained from the
+        # assigned roles
         for item in self.viewRoleMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
@@ -69,12 +69,21 @@ class SecurityChecker(object):
                                                and 'Allow' or '--'
                 self.viewMatrix[item].update({viewSetting:val})
 
+        # Populate the viewMatrix with the permissions directly assinged.
         for item in self.viewPermMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
             for viewSetting in self.viewPermMatrix[item]:
                 self.viewMatrix[item].update(
                       {viewSetting:self.viewPermMatrix[item][viewSetting]})
+
+        # Now we will inherit the permissions from groups assigned to each
+        # principal
+        principals = zapi.principals()
+        getPrin = principals.getPrincipal
+        viewPrins = [getPrin(prin) for prin in self.viewMatrix]
+        self.mergePermissionsFromGroups(viewPrins)
+
 
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
@@ -148,34 +157,54 @@ class SecurityChecker(object):
             self.viewRoleMatrix[principal].setdefault(name,{})
             self.viewRoleMatrix[principal][name].update({role:permSetting})
 
-
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ This method populates the principal permission section of
             the view matrix, it is half responsible for the 'Allow' and
             'Deny' on the securityMatrix.html page. The other half belongs
             to the role permissions (viewRoleMatrix).
         """
+
         matrix = self.viewPermMatrix
         principalPermissions.reverse()
+
 
         for prinPerm in principalPermissions:
             if prinPerm['permission'] != read_perm:
                 #If it is not the read_perm it is uninteresting
                 continue
 
-            principal = prinPerm['principal']
+            principal_id = prinPerm['principal']
             setting = prinPerm['setting'].getName()
 
-            if matrix.setdefault(principal,{self.name:setting}) == \
+            if matrix.setdefault(principal_id,{self.name:setting}) == \
                                                  {self.name:setting}:
-                #If the principal is not in the matrix add it
+                #If the principal_id is not in the matrix add it
                 continue
 
-            elif  matrix[principal].setdefault(
+            elif  matrix[principal_id].setdefault(
                          self.name,setting) == setting:
                 #If the permisison does not exist for the prin add it
                 continue
 
+    def mergePermissionsFromGroups(self,principals):
+        """
+        This method looks through all the principals in the viewPermMatrix
+        and inspects the inherited permissions from groups assigned to the
+        principal.
+        """
+        matrix = self.viewMatrix
+        for principal in principals:
+            for group in principal.groups:
+                # If we have further groups... recurse
+                if group.groups:
+                    mergePermissionsFromGroups(group.groups)
+
+                res = matrix[group.id]
+                for item in res:
+                    # We only want the setting if we do not alread have it.
+                    if item not in matrix[principal.id]:
+                        matrix[principal.id].setdefault(item,res[item])
+                
 class MatrixDetails(object):
     """
     This class creates the complex permissionDetails object
@@ -363,6 +392,16 @@ class PermissionDetails(MatrixDetails):
                 gMatrix = {group_id: self(group_id,view_name,skin)}
                 pMatrix['groups'].update(gMatrix)
 
+            # The following section updates the principalPermissions with
+            # the permissions found in the groups assigned. if the permisssion
+            # already exists for the principal then we ignore it.
+            permList = [x.items()[1][1] for x in pMatrix['permissions']]
+
+            for matrix in gMatrix.values():
+                for tmp in matrix['permissions']:
+                    gPerm = tmp['permission']
+                    if gPerm not in permList:
+                        pMatrix['permissions'].append(tmp)
 
         self.orderRoleTree(pMatrix)
         return pMatrix
@@ -440,8 +479,6 @@ class PrincipalDetails(MatrixDetails):
                 gMatrix = {group_id: self(group_id)}
                 pMatrix['groups'].update(gMatrix)
                 
-            #import pdb; pdb.set_trace()
-
             # The following section updates the principalPermissions with
             # the permissions found in the groups assigned. if the permisssion
             # already exists for the principal then we ignore it.
