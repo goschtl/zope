@@ -17,15 +17,6 @@
           displayed properly 
 
 
-
-          -- Permission Details
-          -- Security Matrix Main
-
-          -- Principal Details Done
-
-          --- Success would be when createIssue perm is specifically
-              denied to principal daniel at Folder1 level
-
                                             DONE
 ==============================================================================
     * Permissions for securitytool views cannot be zope.Public
