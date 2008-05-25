@@ -59,6 +59,8 @@ class SecurityChecker(object):
         permissions and role-permissions  permissions will always win.
         """
 
+        # TODO Need a viewGroupMatrix:
+
         for item in self.viewRoleMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
@@ -155,6 +157,7 @@ class SecurityChecker(object):
         """
         matrix = self.viewPermMatrix
         principalPermissions.reverse()
+
         for prinPerm in principalPermissions:
             if prinPerm['permission'] != read_perm:
                 #If it is not the read_perm it is uninteresting
@@ -436,7 +439,19 @@ class PrincipalDetails(MatrixDetails):
                 group_id = group.id
                 gMatrix = {group_id: self(group_id)}
                 pMatrix['groups'].update(gMatrix)
-                       
+                
+            #import pdb; pdb.set_trace()
+
+            # The following section updates the principalPermissions with
+            # the permissions found in the groups assigned. if the permisssion
+            # already exists for the principal then we ignore it.
+            permList = [x.items()[1][1] for x in pMatrix['permissions']]
+            for matrix in gMatrix.values():
+                for tmp in matrix['permissions']:
+                    gPerm = tmp['permission']
+                    if gPerm not in permList:
+                        pMatrix['permissions'].append(tmp)
+
         self.orderRoleTree(pMatrix)
         return pMatrix
 
