@@ -14,7 +14,9 @@
          NEED FOR BETA RELEASE
         ==============================
         * Make sure the group settings are taken into account and
-          displayed properly
+          displayed properly 
+          --- Success would be when createIssue perm is specifically
+              denied to principal daniel at Folder1 level
 
                                             DONE
 ==============================================================================

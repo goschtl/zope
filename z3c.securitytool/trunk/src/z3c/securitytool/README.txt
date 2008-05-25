@@ -248,10 +248,11 @@ and the context of 'Folder1'.
     whether or not the user has permissions at this context level.
 
     >>> pprint(matrix['permissions'])
-    [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
-     {'setting': PermissionSetting: Deny,  'permission': 'concord.ReadIssue'},
-     {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
-     {'setting': PermissionSetting: Deny,  'permission': 'concord.DeleteArticle'}]
+      [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
+       {'setting': PermissionSetting: Deny, 'permission': 'concord.ReadIssue'},
+       {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
+       {'setting': PermissionSetting: Deny, 'permission': 'concord.DeleteArticle'},
+       {'setting': PermissionSetting: Deny, 'permission': 'concord.CreateIssue'}]
 
     The roleTree structure is used to display the roles attained at
     each level of traversal. The roleTree is stored as a list so to
