@@ -5,6 +5,11 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+2008/02/01 1.0.4
+----------------
+
+ - make it possible to add collector items before the collector is defined
+
 2008/02/01 1.0.3
 ----------------
 

@@ -79,9 +79,16 @@ class ICollectorItemDirective(zope.interface.Interface):
         )
 
 def handleCollectorItem(_context, collector, item, weight):
+    _context.action(
+        discriminator = (collector, item),
+        callable = addCollectorItem,
+        args = (collector, item, weight)
+        )
 
+def addCollectorItem(collector, item, weight):
     rs = zope.component.getUtility(ICollectorUtility, collector)
     resource = {}
     resource['weight']=weight
     resource['resource']=item
     rs.resources[item]=resource
+

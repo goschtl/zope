@@ -119,6 +119,37 @@ Now we can use our collector resource to get the result.
   I am resource "res_test1.js"
   I am resource "res_test2.js"
 
+It is possible to add items to a collector which is declared later.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="later.js"
+  ...    item="res_test2.js"
+  ...    weight="1"
+  ...   />
+  ...   <collector
+  ...    name="later.js"
+  ...    type="zope.publisher.interfaces.browser.IBrowserRequest"
+  ... />
+  ... </configure>''')
+
+We get an error if we try to add an item to an unknown collector.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="unknown.js"
+  ...    item="res_test2.js"
+  ...    weight="1"
+  ...   />
+  ... </configure>''')
+  Traceback (most recent call last):
+  ConfigurationExecutionError: zope.component.interfaces.ComponentLookupError: (<InterfaceClass z3c.resourcecollector.interfaces.ICollectorUtility>, u'unknown.js')
+  ...
+
 
 Cascading Collectors
 --------------------
