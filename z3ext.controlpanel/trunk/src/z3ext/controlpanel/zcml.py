@@ -19,7 +19,8 @@ from zope import interface
 from zope.schema import getFields
 from zope.interface.common.mapping import IEnumerableMapping
 
-from zope.component import getUtility
+from zope.component import queryUtility, getGlobalSiteManager
+
 from zope.component.zcml import utility
 from zope.component.interface import provideInterface
 
@@ -209,7 +210,10 @@ def addSubgroup(configlet):
     else:
         parentId = ''
 
-    parent = getUtility(IConfiglet, parentId)
+    parent = queryUtility(IConfiglet, parentId)
+    if parent is None:
+        parent = getGlobalSiteManager().getUtility(IConfiglet, parentId)
+
     parent.add(configlet.__name__)
     configlet.__parent__ = parent
 

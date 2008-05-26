@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.4 (2008-05-26)
+------------------
+
+- Fixed configlet subcategory + z3c.baseregistry bug
+
+
 1.2.3 (2008-05-14)
 ------------------
 
