@@ -213,7 +213,7 @@ fieldmap = {
     schema.ASCIILine: StringTranslator(),
     schema.Bool: FieldTranslator(rdb.BOOLEAN),
     schema.Bytes: FieldTranslator(rdb.BLOB),
-    schema.Bytes: FieldTranslator(rdb.BLOB),
+    schema.BytesLine: FieldTranslator(rdb.BLOB),
     schema.Choice: StringTranslator(),
     schema.Date: FieldTranslator(rdb.DATE),
     schema.Dict: (ObjectTranslator(), DictProperty()),
