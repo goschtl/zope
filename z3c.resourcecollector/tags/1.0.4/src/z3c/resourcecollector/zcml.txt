@@ -1,0 +1,194 @@
+=================================
+``z3c.resourcollector`` Directive
+=================================
+
+This package provides a new directive to use the special resource
+directive. You can merge with it more .js or .css files into one.
+Beware, you have to check before if your files are compatible.
+There are 2 zcml directives: collector and collectorItem.
+Also 2 viewlets are defined what returns the html code for inserting
+the js resource or the css resource: JSCollectorViewlet, CSSCollectorViewlet.
+For versioning the urls for the resources also contains a hash code
+calculated from the files. This helps at caching the resources.
+
+First we need to define a fake absolute URL for testing:
+
+  >>> from zope.traversing.browser.interfaces import IAbsoluteURL
+  >>> from zope import interface, component
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> class FakeAbsoluteURL(object):
+  ...    interface.implements(IAbsoluteURL)
+  ...    component.adapts(interface.Interface, IBrowserRequest)
+  ...    def __init__ (self, context, request):
+  ...        pass
+  ...    def __str__ (self):
+  ...        return 'homeofsite'
+  >>> component.provideAdapter(FakeAbsoluteURL)
+
+The meta.zcml registers the new directives in the browser namespace.
+
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.string('''
+  ... <configure i18n_domain="zope">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ... </configure>
+  ... ''')
+
+
+Resource Collector registration
+-------------------------------
+
+The "collector" directive creates a new collector utility.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collector
+  ...    name="test.js"
+  ...    type="zope.publisher.interfaces.browser.IBrowserRequest"
+  ... />
+  ... </configure>''')
+
+Now we have a named utility.
+
+  >>> from z3c.resourcecollector.interfaces import ICollectorUtility
+  >>> rs = component.getUtility(ICollectorUtility, "test.js")
+  >>> rs
+  <z3c.resourcecollector.utility.CollectorUtility ...>
+
+There is also a new resource available which collectes the resources. Resource
+are simple named adapters on the request.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+  >>> jsResource = component.getAdapter(request, name="test.js")
+  >>> jsResource.__name__ = 'test.js'
+  >>> jsResource
+  <z3c.resourcecollector.browser.CollectorResource object at ...>
+
+
+Adding resources to a collector
+-------------------------------
+
+The collector is now ready to receive resources which it should the collect
+together into one resource.
+
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> class FakeResource(object):
+  ...     interface.implements(interface.Interface)
+  ...     def __init__(self, request):
+  ...         pass
+  ...     def browserDefault(self, request):
+  ...         return getattr(self, 'GET'), ()
+  ...     def GET(self):
+  ...         return 'I am resource "%s"'% self.__name__
+  ...     def __call__(self):
+  ...         return '<url to="%s"/>'% self.__name__
+
+  >>> component.provideAdapter(FakeResource, (IBrowserRequest,), name="res_test1.js")
+  >>> component.provideAdapter(FakeResource, (IBrowserRequest,), name="res_test2.js")
+  >>> component.provideAdapter(FakeResource, (IBrowserRequest,), name="res_test3.js")
+
+  >>> firstresource = component.getAdapter(request, name="res_test1.js")
+  >>> firstresource.__name__ = "res_test1.js"
+  >>> secondresource = component.getAdapter(request, name="res_test2.js")
+  >>> secondresource.__name__ = "res_test2.js"
+  >>> thirdresource = component.getAdapter(request, name="res_test1.js")
+  >>> thirdresource.__name__ = "res_test3.js"
+
+Using the collectorItem directive we add 2 resources to a collector
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="test.js"
+  ...    item="res_test1.js"
+  ...    weight="1"
+  ...   />
+  ...   <collectorItem
+  ...    collector="test.js"
+  ...    item="res_test2.js"
+  ...    weight="2"
+  ...   />
+  ... </configure>''')
+
+Now we can use our collector resource to get the result.
+
+  >>> print jsResource.GET()
+  I am resource "res_test1.js"
+  I am resource "res_test2.js"
+
+It is possible to add items to a collector which is declared later.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="later.js"
+  ...    item="res_test2.js"
+  ...    weight="1"
+  ...   />
+  ...   <collector
+  ...    name="later.js"
+  ...    type="zope.publisher.interfaces.browser.IBrowserRequest"
+  ... />
+  ... </configure>''')
+
+We get an error if we try to add an item to an unknown collector.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="unknown.js"
+  ...    item="res_test2.js"
+  ...    weight="1"
+  ...   />
+  ... </configure>''')
+  Traceback (most recent call last):
+  ConfigurationExecutionError: zope.component.interfaces.ComponentLookupError: (<InterfaceClass z3c.resourcecollector.interfaces.ICollectorUtility>, u'unknown.js')
+  ...
+
+
+Cascading Collectors
+--------------------
+
+Because a resource collector is itself also a resource we can use this fact to
+include a collector as a collectorItem into another collector.
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collector
+  ...    name="bigtest.js"
+  ...    type="zope.publisher.interfaces.browser.IBrowserRequest"
+  ... />
+  ... </configure>''')
+
+Add to this collector our previous collector, and another resource:
+
+  >>> context = xmlconfig.string('''
+  ... <configure xmlns="http://namespaces.zope.org/browser">
+  ...   <include package="z3c.resourcecollector" file="meta.zcml" />
+  ...   <collectorItem
+  ...    collector="bigtest.js"
+  ...    item="test.js"
+  ...    weight="2"
+  ...   />
+  ...   <collectorItem
+  ...    collector="bigtest.js"
+  ...    item="res_test3.js"
+  ...    weight="1"
+  ...   />
+  ... </configure>''')
+
+We use the new resource.
+
+  >>> jsResource2 = component.getAdapter(request, name="bigtest.js")
+  >>> jsResource2.__name__ = "bigtest.js"
+  >>> print jsResource2.GET()
+  I am resource "res_test3.js"
+  I am resource "res_test1.js"
+  I am resource "res_test2.js"
+

@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="collector"
+        schema=".zcml.ICollectorDirective"
+        handler=".zcml.handleCollector"
+        />
+
+    <meta:directive
+        name="collectorItem"
+        schema=".zcml.ICollectorItemDirective"
+        handler=".zcml.handleCollectorItem"
+        />
+
+  </meta:directives>
+
+</configure>
