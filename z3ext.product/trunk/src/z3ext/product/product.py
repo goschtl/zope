@@ -43,7 +43,6 @@ class Product(object):
                 _('Product already installed.'))
 
         self.__installed__ = True
-        self.update()
 
         sm = getSiteManager()
 
@@ -52,6 +51,8 @@ class Product(object):
             sm.__bases__ = (registry,) + sm.__bases__
 
         event.notify(interfaces.ProductInstalledEvent(self.__product_name__, self))
+
+        self.update()
 
     def update(self):
         if not self.__installed__:
