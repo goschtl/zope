@@ -1,0 +1,58 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<body>
+<div metal:fill-slot="body">
+  <div metal:define-macro="contents">
+    <table id="sortable" class="listing" summary="Content listing"
+           i18n:attributes="summary">
+      <thead>
+        <tr>
+          <th i18n:translate="">Name</th>
+          <th i18n:translate="">Title</th>
+          <th i18n:translate="">Size</th>
+          <th i18n:translate="">Created</th>
+          <th i18n:translate="">Modified</th>
+        </tr>
+      </thead>
+      <tbody>
+        <metal:block tal:repeat="item view/listContentInfo">
+          <tr tal:define="oddrow repeat/item/odd; url item/url;
+                          id_quoted item/id/url:quote"
+              tal:attributes="class python:oddrow and 'even' or 'odd'" >
+            <td><a href="#"
+                 tal:attributes="href
+                                 string:${url}/@@SelectedManagementView.html"
+                 tal:content="structure item/icon|default">
+                </a
+                ><span>
+                  <a href="#"
+                     tal:attributes="href
+                                 string:${url}/@@SelectedManagementView.html"
+                     tal:content="item/id"
+                     >foo</a
+                  ></span
+               ></td>
+            <td>
+              <span
+                 tal:content="item/title|default"
+                 i18n:translate=""
+                 >&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            </td>
+            <td><span tal:content="item/size/sizeForDisplay|nothing"
+                    i18n:translate="">
+                      &nbsp;</span></td>
+            <td><span tal:define="created item/created|default"
+                      tal:content="created"
+                      i18n:translate="">&nbsp;</span></td>
+            <td><span tal:define="modified item/modified|default"
+                      tal:content="modified"
+                      i18n:translate="">&nbsp;</span></td>
+          </tr>
+        </metal:block>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,11 @@
+=======================
+Changes in lovely.zetup
+=======================
+
+before first release
+====================
+
+- implemented testbrowser
+- implemented paste app testing layer
+- moved over from lovely.zetup
+- removed ini based config
