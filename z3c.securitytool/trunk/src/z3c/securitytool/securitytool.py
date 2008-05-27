@@ -192,6 +192,7 @@ class SecurityChecker(object):
         and inspects the inherited permissions from groups assigned to the
         principal.
         """
+        #TODO make this a breadth first search and not depth first!!
         matrix = self.viewMatrix
         for principal in principals:
             for group in principal.groups:
