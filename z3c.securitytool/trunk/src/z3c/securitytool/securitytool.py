@@ -188,23 +188,29 @@ class SecurityChecker(object):
 
     def mergePermissionsFromGroups(self,principals):
         """
-        This method looks through all the principals in the viewPermMatrix
-        and inspects the inherited permissions from groups assigned to the
-        principal.
+        This method recursively looks through all the principals in the
+        viewPermMatrix and inspects the inherited permissions from groups
+        assigned to the  principal.
         """
-        #TODO make this a breadth first search and not depth first!!
         matrix = self.viewMatrix
         for principal in principals:
+            subGroupLst = []
             for group in principal.groups:
-                # If we have further groups... recurse
+                # We populate the subgroup list here and use it later
+                # to make this a breadth-first search instead of depth-first.
                 if group.groups:
-                    mergePermissionsFromGroups(group.groups)
-
+                    subGroupLst.extend(groups)
                 res = matrix[group.id]
                 for item in res:
                     # We only want the setting if we do not alread have it.
                     if item not in matrix[principal.id]:
                         matrix[principal.id].setdefault(item,res[item])
+                            # If we have further groups... recurse
+
+            # Now we recurse through the child groups.
+            for group in subGroupLst:
+                mergePermissionsFromGroups(group)
+
                 
 class MatrixDetails(object):
     """
