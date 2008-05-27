@@ -152,6 +152,23 @@ Verify that the methods on our ``Vinyl``-class are available on the mapper.
     >>> repr(vinyl)
     '<Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>'
 
+If we're mapping a concrete class, and run into class properties, we
+won't instrument them even if they're declared by the schema.
+
+    >>> class Experimental(Vinyl):
+    ...     @property
+    ...     def rpm(self):
+    ...         return len(self.title+self.artist)
+
+    >>> experimental = create(Experimental)
+    >>> experimental.artist = vinyl.artist
+    >>> experimental.title = vinyl.title
+
+Let's see how fast this record should be played back.
+
+    >>> experimental.rpm
+    50
+    
 Relations
 ---------
 

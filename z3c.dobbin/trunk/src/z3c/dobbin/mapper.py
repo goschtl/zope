@@ -262,6 +262,8 @@ def createMapper(spec):
     engine = component.getUtility(IDatabaseEngine)
     metadata = engine.metadata
 
+    ignore = ('__name__',)
+
     # expand specification
     if interface.interfaces.IInterface.providedBy(spec):
         ifaces = set([spec.get(name).interface for name in schema.getFields(spec)])
@@ -275,8 +277,8 @@ def createMapper(spec):
     # create joined table
     soup_table = table = metadata.tables['soup']
     properties = {}
-
-    for (t, p) in (getTable(iface, metadata) for iface in ifaces):
+    
+    for (t, p) in (getTable(iface, metadata, ignore) for iface in ifaces):
         table = rdb.join(table, t, onclause=(t.c.id==soup_table.c.id))
         properties.update(p)
 
@@ -306,7 +308,14 @@ def createMapper(spec):
             del properties[name]
             setattr(Mapper, name, prop)
 
-    orm.mapper(Mapper, table, properties=properties)
+    exclude = ()
+    
+    if not interface.interfaces.IInterface.providedBy(spec):
+        for name, value in spec.__dict__.items():
+            if isinstance(value, property):
+                exclude += (name,)
+
+    orm.mapper(Mapper, table, properties=properties, exclude_properties=exclude)
 
     spec.__mapper__ = Mapper
     interface.alsoProvides(spec, IMapped)
@@ -317,7 +326,7 @@ def removeMapper(spec):
     del spec.mapper
     interface.noLongerProvides(spec, IMapped)
         
-def getTable(iface, metadata):
+def getTable(iface, metadata, ignore=()):
     columns = []
     properties = {}
     
@@ -325,7 +334,7 @@ def getTable(iface, metadata):
         property_factory = None
 
         # ignores
-        if field.__name__ in ('__name__',):
+        if field.__name__ in ignore:
             continue
         
         try:
