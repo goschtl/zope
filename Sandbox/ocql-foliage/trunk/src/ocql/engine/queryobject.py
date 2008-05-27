@@ -7,13 +7,13 @@ class NotImplemented(Exception):
 
 class QueryObject:
     metadata = None
-    
+
     def __init__(self, metadata):
         self.metadata = metadata
-        
+
     def addSymbol(self):
         pass
-        
+
     def get_class(self):
         s = self.metadata.symbols.current()
         try:
@@ -23,11 +23,11 @@ class QueryObject:
         except AttributeError:
             from pub.dbgpclient import brk; brk()
 
-    
+
     def get_collection_type(self, klass=None):
         if klass is None:
             klass = self.get_class()
-            
+
             if klass is None:
                 from pub.dbgpclient import brk; brk()
 
@@ -36,23 +36,23 @@ class QueryObject:
         return rv
 
     def rewrite(self, algebra):
-        raise NotImplemented(self) 
+        raise NotImplemented(self)
 
 class Term:
     pass
-        
+
 class Expression(Term, QueryObject):
     pass
 
 #
 # General
-# 
+#
 class hasClassWith(Expression):
     #NotImplemented
     expression = None
     klass = None
     conditional = None
-    
+
     def __init__(self, metadata, expr, klass, conditional):
         self.metadata = metadata
         self.expression = expr
@@ -61,7 +61,7 @@ class hasClassWith(Expression):
 
 class Identifier(Expression):
     name = None
-    
+
     def __init__(self, metadata, name):
         self.metadata = metadata
         self.name = name
@@ -72,11 +72,11 @@ class Identifier(Expression):
 class Constant(Expression):
     #this shall be abstract?
     value = None
-    
+
     def __init__(self, metadata, value):
         self.metadata = metadata
         self.value=value
-    
+
     def rewrite(self, algebra):
         return algebra.Constant(self.value)
 
@@ -93,34 +93,34 @@ class BooleanConstant(Constant):
 
 class CollectionConstant(Constant):
     pass
-   
+
 class Query(Expression):
     collection_type = None
     terms = None
     target = None
-        
+
     def __init__(self, metadata, collection_type, terms, target):
         self.metadata = metadata
         self.collection_type = collection_type
         self.terms = terms
         self.target = target
-    
+
     def get_collection_type(self, klass=None):
         return self.collection_type
-    
+
     def rewrite(self, algebra):
         self.metadata.symbols.addlevel()
         rv=None
-        
+
         if len(self.terms):
             for t in self.terms:
                 t.addSymbol()
-            
+
             firstTerm = self.terms[0]
             if isinstance(firstTerm, In):
-                
+
                 ctype = firstTerm.get_collection_type()
-                
+
                 rv = algebra.Iter(
                     self.collection_type,
                     algebra.Lambda(
@@ -161,25 +161,25 @@ class Query(Expression):
             rv = algebra.Single(
                 self.collection_type,
                 self.target.rewrite(algebra))
-        
+
         self.metadata.symbols.dellevel()
         return rv
 
 class In(Term):
     identifier = None
     expression = None
-        
+
     def __init__(self, metadata, identifier, expression):
         self.metadata = metadata
         self.identifier = identifier
         self.expression = expression
-    
+
     def addSymbol(self):
         s = self.metadata.symbols.current()
         #s[self.identifier.name] = self.metadata.get_class(
         #    self.expression.name)
         s[self.identifier.name] = self.expression.get_class()
-    
+
     def get_collection_type(self):
         rv = self.expression.get_collection_type()
         return rv
@@ -187,19 +187,19 @@ class In(Term):
 class Alias(Term):
     identifier = None
     expression = None
-    
+
     def __init__(self, metadata, identifier, expression):
         self.metadata = metadata
         self.identifier = identifier
         self.expression = expression
-    
+
     def addSymbol(self):
         s = self.metadata.symbols.current()
         #TODO: that's not really good
         r = self.expression.get_collection_type()
-        
+
         s[self.identifier.name] = r
-    
+
     def get_collection_type(self):
         rv = self.expression.get_collection_type()
         #print self.expression.name,rv
@@ -211,7 +211,7 @@ class Alias(Term):
 class Binary(Expression):
     left = None
     right = None
-        
+
     def __init__(self, metadata, left, right):
         self.metadata = metadata
         self.left = left
@@ -250,12 +250,12 @@ class Property(Binary):
     def rewrite(self, algebra): # FIXME: Ezt gondold at...
         return algebra.Identifier(
             '.'.join([self.left.name, self.right.name]))
-    
+
     def get_class(self):
         t = self.left.get_class()
-        
+
         return t
-    
+
     def get_collection_type(self):
         t = self.left.get_class()
         try:
@@ -264,7 +264,7 @@ class Property(Binary):
             from pub.dbgpclient import brk; brk()
 
         #print self.left.name+'.'+self.right.name,r
-        
+
         return r
 
 class Index(Binary):
@@ -297,7 +297,7 @@ class Div(Arithmetic):
 #
 class Unary(Expression):
     expression = None
-    
+
     def __init__(self, metadata, expression):
         self.metadata = metadata
         self.expression = expression
@@ -334,12 +334,12 @@ class Quantor(QueryObject):
 class Quanted:
     quantor = None
     expression = None
-    
+
     def __init__(self, metadata, quantor, expression):
         self.metadata = metadata
         self.quantor = quantor
         self.expression = expression
-    
+
     def rewrite(self, algebra, expression, operator):
         return self.quantor.rewrite(algebra, expression, self.expression, operator)
 
@@ -347,7 +347,7 @@ class Quanted:
 class Every(Quantor):
     def rewrite(self, algebra, expression, quanted, operator):
         ctype = quanted.get_collection_type()
-        
+
         return algebra.Reduce(
             ctype, # FIXME ?set? but which type() to take? quanted.expression?
             algebra.Identifier('True'),
@@ -383,7 +383,7 @@ class Some(Quantor):
 
 class Atmost(Quantor):
     expr = None
-    
+
     def __init__(self, metadata, expr):
         raise NotImplemented(self)
         self.metadata = metadata
@@ -391,7 +391,7 @@ class Atmost(Quantor):
 
 class Atleast(Quantor):
     expr = None
-    
+
     def __init__(self, metadata, expr):
         raise NotImplemented(self)
         self.metadata = metadata
@@ -399,7 +399,7 @@ class Atleast(Quantor):
 
 class Just(Quantor):
     expr = None
-    
+
     def __init__(self, metadata, expr):
         raise NotImplemented(self)
         self.metadata = metadata
@@ -409,7 +409,7 @@ class Just(Quantor):
 class Condition(Expression):
     left = None
     right = None
-        
+
     def __init__(self, metadata, left, right):
         self.metadata = metadata
         self.left = left
