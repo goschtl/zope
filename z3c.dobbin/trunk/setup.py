@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.dobbin',
-      version='0.2.5',
+      version='0.2.6',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
