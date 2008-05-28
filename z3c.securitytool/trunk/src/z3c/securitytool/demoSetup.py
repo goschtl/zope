@@ -47,8 +47,8 @@ class CreateStructure(object):
         daniel  = sysPrincipals.getPrincipal('zope.daniel')
         randy  = sysPrincipals.getPrincipal('zope.randy')
 
-        daniel.groups.append(group1)
-        randy.groups.append(group1)
+        daniel.groups.append('zope.group1')
+        randy.groups.append('zope.group1')
 
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.stephan')
