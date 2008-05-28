@@ -192,25 +192,22 @@ class SecurityChecker(object):
         viewPermMatrix and inspects the inherited permissions from groups
         assigned to the  principal.
         """
+        #TODO make this a breadth first search and not depth first!!
+        sysPrincipals = zapi.principals()
         matrix = self.viewMatrix
         for principal in principals:
-            subGroupLst = []
-            for group in principal.groups:
-                # We populate the subgroup list here and use it later
-                # to make this a breadth-first search instead of depth-first.
+            for group_id in principal.groups:
+                # If we have further groups... recurse
+                group = sysPrincipals.getPrincipal(group_id)
                 if group.groups:
-                    subGroupLst.extend(groups)
-                res = matrix[group.id]
-                for item in res:
-                    # We only want the setting if we do not alread have it.
-                    if item not in matrix[principal.id]:
-                        matrix[principal.id].setdefault(item,res[item])
-                            # If we have further groups... recurse
+                    mergePermissionsFromGroups(group.groups)
 
-            # Now we recurse through the child groups.
-            for group in subGroupLst:
-                mergePermissionsFromGroups(group)
-
+                if matrix.has_key(group_id):
+                    res = matrix[group_id]
+                    for item in res:
+                        # We only want the setting if we do not alread have it.
+                        if item not in matrix[principal.id]:
+                            matrix[principal.id].setdefault(item,res[item])
                 
 class MatrixDetails(object):
     """
@@ -394,8 +391,7 @@ class PermissionDetails(MatrixDetails):
         principal = principals.getPrincipal(principal_id)
 
         if principal.groups:
-            for group in principal.groups:
-                group_id = group.id
+            for group_id in principal.groups:
                 gMatrix = {group_id: self(group_id,view_name,skin)}
                 pMatrix['groups'].update(gMatrix)
 
@@ -481,8 +477,7 @@ class PrincipalDetails(MatrixDetails):
         principal = principals.getPrincipal(principal_id)
 
         if principal.groups:
-            for group in principal.groups:
-                group_id = group.id
+            for group_id in principal.groups:
                 gMatrix = {group_id: self(group_id)}
                 pMatrix['groups'].update(gMatrix)
                 
