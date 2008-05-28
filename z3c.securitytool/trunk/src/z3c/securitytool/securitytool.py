@@ -200,7 +200,7 @@ class SecurityChecker(object):
                 # If we have further groups... recurse
                 group = sysPrincipals.getPrincipal(group_id)
                 if group.groups:
-                    mergePermissionsFromGroups(group.groups)
+                    self.mergePermissionsFromGroups([sysPrincipals.getPrincipal(x) for x in group.groups])
 
                 if matrix.has_key(group_id):
                     res = matrix[group_id]

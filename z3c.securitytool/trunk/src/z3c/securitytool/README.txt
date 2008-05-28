@@ -178,6 +178,7 @@ roles, groups or specifically assigned permissions will be displayed.
     ['zope.daniel',
      'zope.globalmgr',
      'zope.group1',
+     'zope.group2',
      'zope.markus',
      'zope.martin',
      'zope.mgr',
@@ -316,16 +317,19 @@ Now lets see what the permission details returns
     ReadIssue.html
 
     >>> pprint(prinPerms)
-    {'groups': {'zope.group1': {'groups': {},
-                                'permissionTree': [],
-                                'permissions': [],
-                                'roleTree': [],
-                                'roles': {}}},
-     'permissionTree': [],
-     'permissions': [],
-     'roleTree': [],
-     'roles': {}}
-
+     {'groups': {'zope.group1': {'groups': {'zope.group2': {'groups': {},
+                                                            'permissionTree': [],
+                                                            'permissions': [],
+                                                            'roleTree': [],
+                                                            'roles': {}}},
+                                 'permissionTree': [],
+                                 'permissions': [],
+                                 'roleTree': [],
+                                 'roles': {}}},
+      'permissionTree': [],
+      'permissions': [],
+      'roleTree': [],
+      'roles': {}}
 
 Following are the helper functions used within the securitytool, These
 contain a set of common functionality that is used in many places.
