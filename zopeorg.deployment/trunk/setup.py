@@ -9,7 +9,6 @@ setup(name='zopeorg.deployment',
 """,
       classifiers=[
         "Framework :: Plone",
-        "Framework :: Zope2",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
@@ -25,6 +24,7 @@ setup(name='zopeorg.deployment',
       install_requires=[
           'setuptools',
           "zopeorg.theme",
+          "Products.PloneFormGen",
       ],
       entry_points="""
       # -*- Entry points: -*-
