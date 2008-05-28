@@ -3,18 +3,26 @@
  TODO
 ===============
 
+     NEED FOR BETA RELEASE
+    ==============================
+
+    * Make sure the group settings are taken into account and
+      displayed properly 
+
+        o Need a group with groups in demoSetup.py to test the
+          recursive functionality of the mergePermissionsFromGroups.
+
+        o Update the mergePermissionsFromGroups to use a
+          level-order traversal to inherit the permissions from
+          the groups.
+ 
+
     * Show the permission details as a graph ??
 
     PrincipalDetails and Permission Details
     ===================================================
         * Strike through role - permissions which are denied 
           by specific permission deny settings
-
-
-         NEED FOR BETA RELEASE
-        ==============================
-        * Make sure the group settings are taken into account and
-          displayed properly 
 
 
                                             DONE
