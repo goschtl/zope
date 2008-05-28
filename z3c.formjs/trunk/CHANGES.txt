@@ -5,6 +5,10 @@ CHANGES
 Version 0.3.1 (unreleased)
 --------------------------
 
+- Feature: There is now a special unique prefix generator that uses
+  z3c.form's new createCSSId function to generate css selectable
+  prefixes for ajax forms.
+
 - Feature: There is now a viewlet manager already registered with all
   the viewlets necessary to use z3c.formjs.  You can now just do:
 

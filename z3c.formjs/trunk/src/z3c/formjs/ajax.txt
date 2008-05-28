@@ -43,7 +43,6 @@ python object.
   ...     def info(self):
   ...         return {'class':self.__class__.__name__,
   ...                 'requestKeys':self.request.keys(),
-  ...                 'requestVals':self.request.values(),
   ...                 'size':len(self.request.keys())}
 
 The ``AJAXRequestHandler`` class provides the ``IAJAXRequestHandler``
@@ -77,8 +76,6 @@ JSON string.
   >>> print ping.info(ping)
   {"requestKeys": ["CONTENT_LENGTH", "HTTP_HOST",
                    "SERVER_URL", "GATEWAY_INTERFACE"],
-   "requestVals": ["0", "127.0.0.1",
-                   "http:\/\/127.0.0.1", "TestFooInterface\/1.0"],
    "class": "PingForm",
    "size": 4}
 
@@ -156,3 +153,56 @@ traverser gets registered as a named adatper like so::
 This makes the plggable traverser available via the @@ajax "view".
 In a url, an ajax request handler would be called via the url:
 http://host/path/to/context/@@form.html/@@ajax/pingBack
+
+AJAX Helper functions
+---------------------
+
+The ``getUniquePrefixer`` function returns a function that will
+produce css selectable and unique prefixes for any form.  This is
+extremely useful when you have an arbitrary number of ajax forms on
+the same page the must be uniquely references by javascript.  The
+prefixer uses the form's name and its parents' names to produce the
+prefix.
+
+To show this we'll create some dummy objects.
+
+  >>> from zope.app.container.contained import Contained
+  >>> class DummyObject(Contained):
+  ...     def __init__(self, parent, name):
+  ...         self.__parent__ = parent
+  ...         self.__name__ = name
+
+  >>> parent1 = DummyObject(None, 'parent1')
+  >>> from zope.traversing.interfaces import IContainmentRoot
+  >>> from zope.interface import directlyProvides
+  >>> directlyProvides(parent1, IContainmentRoot)
+  >>> parent2 = DummyObject(parent1, 'parent2')
+  >>> context = DummyObject(parent2, 'context')
+  >>> form = DummyObject(context, 'form')
+
+When we get the prefixer, we can provide two keyword options: ``n``,
+which specifies how far up the object tree to go with the prefix, and
+``prefix``, an actual prefix that defaults to 'form'.
+
+  >>> prefixer = ajax.getUniquePrefixer()
+  >>> prefixer(form)
+  'formcontextparent2'
+  >>> prefixer = ajax.getUniquePrefixer(n=1)
+  >>> prefixer(form)
+  'formcontext'
+  >>> prefixer = ajax.getUniquePrefixer(n=2)
+  >>> prefixer(form)
+  'formcontextparent2'
+  >>> prefixer = ajax.getUniquePrefixer(n=50, prefix='myprefix')
+  >>> prefixer(form)
+  'myprefixcontextparent2parent1'
+
+In a form class we would use this prefixer like so:
+
+  >>> class MyForm(object):
+  ...     prefix = property(ajax.getUniquePrefixer())
+
+  >>> form = MyForm()
+  >>> form.__parent__ = context
+  >>> form.prefix
+  'formcontextparent2'
