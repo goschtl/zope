@@ -15,6 +15,9 @@
         o Update the mergePermissionsFromGroups to use a
           level-order traversal to inherit the permissions from
           the groups.
+
+        o handle conflicts with permission inheritance properly.
+          
  
 
     * Show the permission details as a graph ??
