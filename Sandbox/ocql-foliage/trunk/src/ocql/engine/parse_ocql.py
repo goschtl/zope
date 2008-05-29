@@ -6,42 +6,42 @@ tokens = ('TYPE', 'UNION', 'DIFFER', 'AND', 'OR', 'NOT', 'ELLIPSIS', 'IN',
 
 precedence = (
     ('left', 'UNION'),
-	('left', 'DIFFER'),
-#	('token', 'SQL'),
-#	('token', 'PIPE'),
-#	('token', 'SQR'),
-	('left', 'AND'),
-	('left', 'OR'),
-	('right', 'NOT'),
-	('left', 'COND_OP'),
-	('left', 'PLUS', 'MINUS'),
-	('left', 'MUL' 'DIV'),
-#	('token', 'IDENTIFIER'),
-#	('token', 'BRAL'),
-#	('token', 'BRAR'),
-#	('token', 'CONSTANT'),
-#	('token', 'TYPE'),
-#	('token', 'CURL'),
-#	('token', 'CURR'),
-#	('token', 'ELLIPSIS'),
-	('left', 'DOT'),
-#	('token', 'COMMA'),
-	('left', 'SEMICOL'),
+    ('left', 'DIFFER'),
+#   ('token', 'SQL'),
+#   ('token', 'PIPE'),
+#   ('token', 'SQR'),
+    ('left', 'AND'),
+    ('left', 'OR'),
+    ('right', 'NOT'),
+    ('left', 'COND_OP'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MUL', 'DIV'),
+#   ('token', 'IDENTIFIER'),
+#   ('token', 'BRAL'),
+#   ('token', 'BRAR'),
+#   ('token', 'CONSTANT'),
+#   ('token', 'TYPE'),
+#   ('token', 'CURL'),
+#   ('token', 'CURR'),
+#   ('token', 'ELLIPSIS'),
+    ('left', 'DOT'),
+#   ('token', 'COMMA'),
+    ('left', 'SEMICOL'),
 
-	('left', 'IN'),
-	('left', 'AS'),
+    ('left', 'IN'),
+    ('left', 'AS'),
 
-#	('token', 'MODIFIER'),
-#	('token', 'QUANTOR'),
+#   ('token', 'MODIFIER'),
+#   ('token', 'QUANTOR'),
 
-	('left', 'SIZE'),
+    ('left', 'SIZE'),
 )
 
 class Lexer(object):
     tokens = tokens
     t_ignore = ' \t\n\r'
 
-    def t_error(self, t): 
+    def t_error(self, t):
         print "Illegal character '%s'" % t.value[0]
         t.lexer.skip(1)
 
@@ -174,13 +174,13 @@ class Parser(object):
 
     def __init__(self, metadata):
         self.metadata = metadata
-    
+
     def p_error(self, t):
         print "Syntax error at '%s'" % t.value
 
     def p_expr_cond(self, t):
         r'''expr : modifier nexpr COND_OP omodifier nexpr
-	             | expr COND_OP omodifier nexpr'''
+                 | expr COND_OP omodifier nexpr'''
         raise "Help"
 
     def p_expr_union(self, t):
@@ -266,7 +266,7 @@ class Parser(object):
         '''
         t[0] = Identifier(self.metadata, t[1])
         print "p_expr_id", t[0]
-    
+
 
     def p_expr_call(self, t):
         r'''expr : IDENTIFIER BRAL exprs BRAR
@@ -316,19 +316,19 @@ class Parser(object):
         print t[0]
 
     def p_omodifier(self, t):
-        r'''omodifier : QUANTOR 
+        r'''omodifier : QUANTOR
                       | MODIFIER
         '''
         print t[0]
 
     def p_modifier(self, t):
-        r'''modifier : QUANTOR 
+        r'''modifier : QUANTOR
                      | MODIFIER
         '''
         print t[0]
 
     def p_exprs(self, t):
-        r'''exprs : expr 
+        r'''exprs : expr
                   | expr COMMA exprs
         '''
         print t[0]
@@ -338,13 +338,13 @@ class Parser(object):
         t[0] = In(self.metadata, Identifier(self.metadata, t[1]), t[3])
         print "p_in_expr", t[0]
         print t[1], t[3]
-    
+
     def p_as_expr(self, t):
         r'''as_expr : IDENTIFIER AS expr'''
         print "p_as_expr", t[0]
 
     def p_xprs(self, t):
-        r'''xprs : 
+        r'''xprs :
                  | xpr SEMICOL xprs
                  | xpr
         '''
@@ -359,7 +359,7 @@ class Parser(object):
 
     def p_xpr(self, t):
         r'''xpr : as_expr
-              	| in_expr
+                | in_expr
                 | expr
         '''
         t[0] = t[1]
@@ -369,7 +369,7 @@ def parse(str, metadata):
     from ply import lex, yacc
     lexer = lex.lex(object=Lexer(), debug=0)
     parser = yacc.yacc(module = Parser(metadata))
- 
+
     print str
     try:
         x= parser.parse(str, lexer = lexer)
