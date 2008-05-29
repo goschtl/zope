@@ -80,8 +80,8 @@
                       </div>
                   </div>
 
-                  <div class="tree">
-                      <h3 tal:condition="permissionTree">Permissions Defined in
+                  <div class="tree" tal:condition="permissionTree">
+                      <h3>Permissions Defined in
                       Context(s) for User:
 	              <a tal:content="view/principal"
 	                 tal:attributes="href string:principalDetails.html?principal=${view/principal}">
