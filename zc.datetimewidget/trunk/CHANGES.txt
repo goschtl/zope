@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.6.1 (2008-05-29)
+------------------
+
+Unchanged from 0.5.2, but released with a new version number thanks to a
+package with an 0.6.1dev-rBFN revision found in the wild.
+
 0.5.2 (2007-11-03)
 ------------------
 

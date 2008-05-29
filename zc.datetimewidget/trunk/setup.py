@@ -22,9 +22,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zc.datetimewidget',
-      version = '0.6.0dev',
+      version='0.6.2dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Javascript-based widgets for date and datetime fields.',
       long_description=(
           read('README.txt')
@@ -38,8 +38,8 @@ setup(name='zc.datetimewidget',
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords = "zope3 date datetime widget javascript",
-      classifiers = [
+      keywords="zope3 date datetime widget javascript",
+      classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
@@ -52,7 +52,7 @@ setup(name='zc.datetimewidget',
       url='http://cheeseshop.python.org/pypi/zc.datetimewidget',
       license='ZPL 2.1',
       packages=find_packages('src'),
-      package_dir = {'': 'src'},
+      package_dir={'': 'src'},
       namespace_packages=['zc'],
       extras_require=dict(
           test=['zope.app.zcmlfiles',
@@ -74,6 +74,6 @@ setup(name='zc.datetimewidget',
                         'zope.publisher',
                         'zope.schema',
                         ],
-      include_package_data = True,
-      zip_safe = False,
+      include_package_data=True,
+      zip_safe=False,
       )
