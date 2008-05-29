@@ -33,8 +33,10 @@ from z3c.formjs import interfaces
 def getUniquePrefixer(n=2, prefix='form'):
     def createPrefix(form):
         parents = getParents(form)
-        return prefix + ''.join([createCSSId(getattr(obj, '__name__', obj.__class__.__name__))
-                                 for obj in parents[:n]])
+        return prefix + ''.join(
+            [createCSSId(getattr(obj, '__name__', None)
+                         or obj.__class__.__name__)
+             for obj in parents[:n]])
     return createPrefix
 
 
