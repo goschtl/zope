@@ -34,7 +34,7 @@ class CreateStructure(object):
         # Lets get the list of all principals on the system.
         sysPrincipals = zapi.principals()
         principals = [x.id for x in sysPrincipals.getPrincipals('')
-                      if x.id not in ['group1','group2','randy']]
+                      if x.id not in ['zope.group1','zope.group2','zope.randy']]
 
 # Here is where we begin to set the permissions for the root context level
         roleManager = IPrincipalRoleManager(root)
@@ -45,15 +45,20 @@ class CreateStructure(object):
 
         group1  = sysPrincipals.getPrincipal('zope.group1')
         group2  = sysPrincipals.getPrincipal('zope.group2')
+        
         daniel  = sysPrincipals.getPrincipal('zope.daniel')
         randy  = sysPrincipals.getPrincipal('zope.randy')
 
-
-        daniel.groups.append('zope.group1')
-        group1.groups.append('zope.group2')
-
+        # We add group1 and group2 to Randy to make sure that the
+        # allow permission overrides the Deny permission at the
+        # same level.
         randy.groups.append('zope.group1')
         randy.groups.append('zope.group2')
+
+
+        # We add randy as a group to daniel with a subgroup
+        # of group1 and and group2
+        daniel.groups.append('zope.randy')
 
         
         roleManager.assignRoleToPrincipal('zope.Writer', 'zope.daniel')
@@ -66,6 +71,17 @@ class CreateStructure(object):
                                               principal)
             permManager.denyPermissionToPrincipal('concord.CreateArticle',
                                               principal)
+
+
+# Now at the root level we will deny all the permissions to group2 and
+# Allow all the permissions to group 1
+        for perm in ['concord.DeleteIssue', 'concord.CreateIssue',
+                     'concord.ReadIssue', 'concord.CreateArticle',
+                     'concord.DeleteArticle', 'concord.PublishIssue']:
+                     
+            permManager.denyPermissionToPrincipal(perm, group1.id)
+            permManager.grantPermissionToPrincipal(perm,group2.id)
+
 
 
 # Here is where we begin to set the permissions for the context level of
@@ -84,15 +100,6 @@ class CreateStructure(object):
             permManager.grantPermissionToPrincipal('concord.CreateArticle',
                                               principal)
 
-        permManager.denyPermissionToPrincipal('concord.DeleteIssue',
-                                              group1.id)
-        permManager.denyPermissionToPrincipal('concord.CreateIssue',
-                                              group1.id)
-
-        permManager.grantPermissionToPrincipal('concord.DeleteIssue',
-                                              group2.id)
-        permManager.grantPermissionToPrincipal('concord.CreateIssue',
-                                              group2.id)
 
 # Here is where we begin to set the permissions for the context level of
 # /root/Folder1/Folder2.
