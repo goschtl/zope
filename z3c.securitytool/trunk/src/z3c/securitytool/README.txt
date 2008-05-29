@@ -212,7 +212,7 @@ and the context of 'Folder1'.
     section on the User Details page.
     
     >>> pprint(matrix['groups'].keys())
-    ['zope.group1']
+    ['zope.randy']
 
     The permission tree is used to display the levels of inheritance that were
     traversed to attain the permission displayed. The permission is
@@ -234,6 +234,20 @@ and the context of 'Folder1'.
 
 
     >>> pprint(matrix['permissionTree'][1])
+    {'Root Folder': {'name': 'Root Folder',
+                     'parentList': ['Root Folder'],
+                     'permissions': [{'permission': 'concord.DeleteArticle',
+                                      'principal': 'zope.daniel',
+                                      'setting': PermissionSetting: Deny},
+                                     {'permission': 'concord.CreateArticle',
+                                      'principal': 'zope.daniel',
+                                      'setting': PermissionSetting: Deny},
+                                     {'permission': 'concord.ReadIssue',
+                                      'principal': 'zope.daniel',
+                                      'setting': PermissionSetting: Allow}]}}
+
+
+
      {'Root  Folder': {'name': 'Root  Folder',
                        'parentList': ['Root Folder'],
                        'permissions': [{'permission': 'concord.CreateArticle',
@@ -250,11 +264,12 @@ and the context of 'Folder1'.
     whether or not the user has permissions at this context level.
 
     >>> pprint(matrix['permissions'])
-      [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
-       {'setting': PermissionSetting: Deny, 'permission': 'concord.ReadIssue'},
-       {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
-       {'setting': PermissionSetting: Deny, 'permission': 'concord.DeleteArticle'},
-       {'setting': PermissionSetting: Deny, 'permission': 'concord.CreateIssue'}]
+    [{'setting': PermissionSetting: Allow, 'permission': 'concord.CreateArticle'},
+     {'setting': PermissionSetting: Deny, 'permission': 'concord.ReadIssue'},
+     {'setting': PermissionSetting: Allow, 'permission': 'concord.DeleteIssue'},
+     {'setting': PermissionSetting: Deny, 'permission': 'concord.DeleteArticle'},
+     {'setting': PermissionSetting: Allow, 'permission': 'concord.CreateIssue'},
+     {'setting': PermissionSetting: Allow, 'permission': 'concord.PublishIssue'}]
 
     The roleTree structure is used to display the roles attained at
     each level of traversal. The roleTree is stored as a list so to
@@ -317,19 +332,24 @@ Now lets see what the permission details returns
     ReadIssue.html
 
     >>> pprint(prinPerms)
-     {'groups': {'zope.group1': {'groups': {'zope.group2': {'groups': {},
-                                                            'permissionTree': [],
-                                                            'permissions': [],
-                                                            'roleTree': [],
-                                                            'roles': {}}},
-                                 'permissionTree': [],
-                                 'permissions': [],
-                                 'roleTree': [],
-                                 'roles': {}}},
-      'permissionTree': [],
-      'permissions': [],
-      'roleTree': [],
-      'roles': {}}
+    {'groups': {'zope.randy': {'groups': {'zope.group1': {'groups': {},
+                                                          'permissionTree': [],
+                                                          'permissions': [],
+                                                          'roleTree': [],
+                                                          'roles': {}},
+                                          'zope.group2': {'groups': {},
+                                                          'permissionTree': [],
+                                                          'permissions': [],
+                                                          'roleTree': [],
+                                                          'roles': {}}},
+                               'permissionTree': [],
+                               'permissions': [],
+                               'roleTree': [],
+                               'roles': {}}},
+     'permissionTree': [],
+     'permissions': [],
+     'roleTree': [],
+     'roles': {}}
 
 Following are the helper functions used within the securitytool, These
 contain a set of common functionality that is used in many places.
