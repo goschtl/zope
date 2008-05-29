@@ -1,0 +1,36 @@
+<configure xmlns='http://namespaces.zope.org/zope'>
+
+  <!-- Wire up our widgets to replace the default ones. -->
+  <adapter
+      for="zope.schema.interfaces.IDatetime
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
+      factory=".datetimewidget.DatetimeWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
+      for="zope.schema.interfaces.IDate
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISimpleInputWidget"
+      factory=".datetimewidget.DateWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
+      for="zope.schema.interfaces.IDatetime
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".datetimewidget.DatetimeDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <adapter
+      for="zope.schema.interfaces.IDate
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".datetimewidget.DateDisplayWidget"
+      permission="zope.Public"
+      />
+
+</configure>
