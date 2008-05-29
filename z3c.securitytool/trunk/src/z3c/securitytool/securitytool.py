@@ -192,23 +192,25 @@ class SecurityChecker(object):
         viewPermMatrix and inspects the inherited permissions from groups
         assigned to the  principal.
         """
-        #TODO make this a breadth first search and not depth first!!
+        # Actually this does need a post-order depth first...
+        # Thanks Jacob
         sysPrincipals = zapi.principals()
         matrix = self.viewMatrix
+
         for principal in principals:
             for group_id in principal.groups:
-                # If we have further groups... recurse
                 group = sysPrincipals.getPrincipal(group_id)
-                if group.groups:
-                    self.mergePermissionsFromGroups([sysPrincipals.getPrincipal(x) for x in group.groups])
+                self.mergePermissionsFromGroups([sysPrincipals.getPrincipal(x) for x in principal.groups])
 
                 if matrix.has_key(group_id):
                     res = matrix[group_id]
                     for item in res:
                         # We only want the setting if we do not alread have it.
-                        if item not in matrix[principal.id]:
-                            matrix[principal.id].setdefault(item,res[item])
-                
+                        # or if it is an Allow permission as the allow seems to
+                        # override the deny with conflicting group permissions.
+                        if item not in matrix[principal.id] or res[item] == 'Allow':
+                            matrix[principal.id][item] = res[item]
+
 class MatrixDetails(object):
     """
     This class creates the complex permissionDetails object
