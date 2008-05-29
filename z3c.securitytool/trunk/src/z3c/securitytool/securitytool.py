@@ -84,7 +84,6 @@ class SecurityChecker(object):
         viewPrins = [getPrin(prin) for prin in self.viewMatrix]
         self.mergePermissionsFromGroups(viewPrins)
 
-
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
         info = getViewInfoDictionary(view_reg)

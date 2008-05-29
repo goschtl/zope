@@ -10,8 +10,16 @@
       displayed properly 
 
         o SecurityMatrix.html -- Done
+        o PrincipalDetails.html -- Done
+        o PermissionDetails.html -- Done       
+
+    * Test inheritance of roles through group memberships.
+
+        o SecurityMatrix.html
         o PrincipalDetails.html
         o PermissionDetails.html        
+
+           
 
     * Show the permission details as a graph ??
 
