@@ -12,7 +12,7 @@ Bugfixes
   that happened during startup of zope.
 
 
-Five 1.4.4 (2006-07-31)
+Five 1.4.4 (2007-07-31)
 =======================
 
 Bugfixes
@@ -23,7 +23,7 @@ Bugfixes
 
   This change requires Zope 2.9.8 or higher.
 
-Five 1.4.3 (2006-06-25)
+Five 1.4.3 (2007-06-25)
 =======================
 
 Bugfixes
