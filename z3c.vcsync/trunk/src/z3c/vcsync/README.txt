@@ -49,7 +49,12 @@ State
 -----
  
 Content to synchronize is represented by an object that provides
-``IState``. The following methods need to be implemented:
+``IState``. A state represents a container object, which should
+contain a ``data`` object (a container that contains the actual data
+to be synchronized) and a ``found`` object (a container that contains
+objects that would otherwise be lost during conflict resolution).
+
+The following methods need to be implemented:
 
 * ``get_revision_nr()``: return the last revision number that the
    application was synchronized with. The state typically stores this
@@ -113,10 +118,17 @@ Besides the ``Item`` class, we also have a ``Container`` class::
 
 It is a class that implements enough of the dictionary API and
 implements the ``IContainer`` interface. A normal Zope 3 folder or
-Grok container will also work. Let's now set up the tree::
+Grok container will also work. 
 
-  >>> data = Container()
-  >>> data.__name__ = 'root'
+Let's create a container now::
+
+  >>> root = Container()
+  >>> root.__name__ = 'root'
+
+The container has two subcontainers (``data`` and ``found``).
+
+  >>> root['data'] = data = Container()
+  >>> root['found'] = Container()
   >>> data['foo'] = Item(payload=1)
   >>> data['bar'] = Item(payload=2)
   >>> data['sub'] = Container()
@@ -129,7 +141,7 @@ the form of files and directories.
 Now that we have an implementation of ``IState`` that works for our
 state, let's create our ``state`` object::
 
-  >>> state = TestState(data)
+  >>> state = TestState(root)
 
 Reading from and writing to the filesystem
 ------------------------------------------
@@ -198,6 +210,10 @@ the checkout we just created::
   >>> from z3c.vcsync.svn import SvnCheckout
   >>> checkout = SvnCheckout(wc)
 
+The root directory of the working copy will be synchronized with the
+root container of the state. The checkout will therefore contain
+``data`` and a ``found`` sub-directories.
+
 Constructing the synchronizer
 -----------------------------
 
@@ -245,19 +261,19 @@ been translated to the same structure of directories and ``.test``
 files on the filesystem::
 
   >>> pretty_paths(wc.listdir())
-  ['root']
-  >>> pretty_paths(wc.join('root').listdir())
-  ['root/bar.test', 'root/foo.test', 'root/sub']
-  >>> pretty_paths(wc.join('root').join('sub').listdir())
-  ['root/sub/qux.test']
+  ['data']
+  >>> pretty_paths(wc.join('data').listdir())
+  ['data/bar.test', 'data/foo.test', 'data/sub']
+  >>> pretty_paths(wc.join('data').join('sub').listdir())
+  ['data/sub/qux.test']
 
 The ``.test`` files have the payload data we expect::
   
-  >>> print wc.join('root').join('foo.test').read()
+  >>> print wc.join('data').join('foo.test').read()
   1
-  >>> print wc.join('root').join('bar.test').read()
+  >>> print wc.join('data').join('bar.test').read()
   2
-  >>> print wc.join('root').join('sub').join('qux.test').read()
+  >>> print wc.join('data').join('sub').join('qux.test').read()
   3
 
 Synchronization back into objects
@@ -268,9 +284,9 @@ checkout, and synchronize the changes back into the object tree.
 
 We have a second, empty tree that we will load objects into::
 
-  >>> data2 = Container()
-  >>> data2.__name__ = 'root'
-  >>> state2 = TestState(data2)
+  >>> root2 = Container()
+  >>> root2.__name__ = 'root'
+  >>> state2 = TestState(root2)
 
 We make another checkout of the repository::
 
@@ -295,13 +311,16 @@ Now we'll synchronize::
 
 The state of objects in the tree must now mirror that of the original state::
 
-  >>> sorted(data2.keys())    
-  ['bar', 'foo', 'root', 'sub']
+  >>> sorted(root2.keys())    
+  ['data']
+
+  >>> sorted(root2['data'].keys())
+  ['bar', 'foo', 'sub']
 
 Now we will change some of these objects, and synchronize again::
 
-  >>> data2['bar'].payload = 20
-  >>> data2['sub']['qux'].payload = 30
+  >>> root2['data']['bar'].payload = 20
+  >>> root2['data']['sub']['qux'].payload = 30
   >>> info2 = s2.sync("synchronize")
 
 We can now synchronize the original tree again::
@@ -311,9 +330,9 @@ We can now synchronize the original tree again::
 
 We should see the changes reflected into the original tree::
 
-  >>> data['bar'].payload
+  >>> root2['data']['bar'].payload
   20
-  >>> data['sub']['qux'].payload
+  >>> root2['data']['sub']['qux'].payload
   30
 
 More information

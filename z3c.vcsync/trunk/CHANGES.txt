@@ -4,7 +4,16 @@ z3c.vcsync changes
 0.13 (unreleased)
 -----------------
 
-* ...
+* The root directory of the checkout is now truly equivalent to the
+  root object of the state. This means that if the SVN checkout
+  content is to remain the same, the state root to synchronize should
+  be one level higher (the parent of the current state root).
+
+* Conflict resolution has been cleaned up. When a conflict occurs, the
+  other half of the conflict (the one not resolved) is moved into the
+  ``found`` directory, which is created in the checkout root. This is
+  also represented in the state container object and is synchronized
+  like any other content.
 
 0.12 (2008-05-16)
 -----------------

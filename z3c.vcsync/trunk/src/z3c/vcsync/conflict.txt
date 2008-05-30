@@ -27,8 +27,9 @@ of the last change. For now, this is just ``0``::
 
 Let's set up a simple tree::
 
-  >>> data1 = Container()
-  >>> data1.__name__ = 'root'
+  >>> root1 = Container()
+  >>> root1.__name__ = 'root'
+  >>> root1['data'] = data1 = Container()
   >>> data1['bar'] = Item(payload=1)
   >>> data1['sub'] = Container()
   >>> data1['sub']['qux'] = Item(payload=3)
@@ -37,7 +38,7 @@ To create conflicts, we need to represent the state twice (once for
 each user). Let's represent this tree in ``state1`` first::
 
   >>> from z3c.vcsync.tests import TestState
-  >>> state1 = TestState(data1)
+  >>> state1 = TestState(root1)
 
 Let's make sure we can save and load the objects by grokking the
 right serializers, parser and factories::
@@ -82,9 +83,9 @@ Let's synchronize the state to the server::
 
 And synchronize it back into another tree::
 
-  >>> data2 = Container()
-  >>> data2.__name__ = 'root'
-  >>> state2 = TestState(data2)
+  >>> root2 = Container()
+  >>> root2.__name__ = 'root'
+  >>> state2 = TestState(root2)
 
   >>> import py
   >>> wc2 = py.test.ensuretemp('wc2')
@@ -94,6 +95,10 @@ And synchronize it back into another tree::
   >>> s2 = Synchronizer(checkout2, state2)
   >>> current_synchronizer = s2
   >>> info = s2.sync("Synchronize")
+
+We now should have a ``data`` folder in ``root2`` as well::
+
+  >>> data2 = root2['data']
 
 File conflicts
 --------------
@@ -123,6 +128,14 @@ this synchronized last::
   >>> data1['bar'].payload
   200
 
+The other version of the conflicting object is not gone. It is stored
+under a special ``found`` directory. We see the conflicting value that
+was stored by the second tree in here::
+
+  >>> found1 = root1['found']
+  >>> found1['data']['bar'].payload
+  250
+  
 When we synchronize from the second tree again, we will see the
 resolved value appear as well::
 
@@ -131,20 +144,11 @@ resolved value appear as well::
   >>> data2['bar'].payload
   200
 
-The other version of the conflicting object is not gone. It is stored
-under a special ``found`` directory. We'll synchronize this as well::
+The other version of the conflicting object is also available to the
+second hierarchy::
 
-  >>> found_data = Container()
-  >>> found_data.__name__ = 'found'
-  >>> found_state = TestState(found_data)
-  >>> found_s = Synchronizer(checkout1, found_state)
-  >>> current_synchronizer = found_s
-  >>> info = found_s.sync("synchronize")
-
-We see the conflicting value that was stored by the second tree in
-here::
-
-  >>> found_data['root']['bar'].payload
+  >>> found2 = root2['found']
+  >>> found2['data']['bar'].payload
   250
 
 Conflicts in subdirectories should also be resolved properly::
@@ -166,9 +170,7 @@ Conflicts in subdirectories should also be resolved properly::
 The found version in this case will reside in the same subdirectory,
 ``sub``::
 
-  >>> current_synchronizer = found_s
-  >>> info = found_s.sync("Synchronize")
-  >>> found_data['root']['sub']['qux'].payload
+  >>> found2['data']['sub']['qux'].payload
   36
 
 Re-occurrence of a conflict
@@ -194,9 +196,8 @@ The conflict will be resolved in favor of the last synchronization::
 The ``found`` directory will contain the other part of the conflict
 (having overwritten the previous value)::
 
-  >>> current_synchronizer = found_s
-  >>> info = found_s.sync("synchronize")
-  >>> found_data['root']['bar'].payload
+  >>> found1 = root1['found']
+  >>> found1['data']['bar'].payload
   251
 
 Conflicting file conflicts
@@ -207,26 +208,22 @@ if a user removes a file from the ``found`` directory, and at the same
 time, another user creates a conflict that causes this file to be
 re-created?
 
-Let's synchronize the found directory for the second user::
+Let's make sure the second user also has the same content::
 
-  >>> found_data2 = Container()
-  >>> found_data2.__name__ = 'found'
-  >>> found_state2 = TestState(found_data2)
-  >>> found_s2 = Synchronizer(checkout2, found_state2)
-  >>> current_synchronizer2 = found_s2
-  >>> info = found_s2.sync("synchronize")
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
 
-We currently already have a conflicting object in ``found``::
+We currently already have a conflicting object in ``found2``::
 
-  >>> found_data2['root']['bar'].payload
+  >>> found2['data']['bar'].payload
   251
 
 Now the user throws away the ``bar`` object from ``found``::
 
   >>> from z3c.vcsync.vc import get_object_path
-  >>> found_state2._removed.append(
-  ...    get_object_path(found_data2, found_data2['root']['bar']))
-  >>> del found_data2['root']['bar']
+  >>> state2._removed.append(
+  ...    get_object_path(root2, found2['data']['bar']))
+  >>> del found2['data']['bar']
 
 Now let's generate a conflict on ``bar`` again::
 
@@ -238,18 +235,10 @@ Now let's generate a conflict on ``bar`` again::
   >>> current_synchronizer = s1
   >>> info = s1.sync("Synchronize")
 
-We synchronize the throwing away of ``bar`` in ``found``, generating
-a potential conflict in the ``found`` directory::
-
-  >>> current_synchronizer = found_s2
-  >>> 'bar' in found_data2['root']
-  False
-  >>> info = found_s2.sync("synchronize")
-
 The result should be that the found object is there, updated to the
 new conflict::
 
-  >>> found_data2['root']['bar'].payload
+  >>> found1['data']['bar'].payload
   252
 
 Folder conflicts
@@ -257,8 +246,8 @@ Folder conflicts
 
 Let's now examine a case of a conflict in case of containers.
 
-A user (we'll call him ``user1``) creates a new container in ``data``
-with some content in it, and synchronize it::
+A user (``user1``) creates a new container in ``data`` with some
+content in it, and synchronizes it::
 
   >>> current_synchronizer = s1
   >>> data1['folder'] = Container()
@@ -275,9 +264,19 @@ access to it::
 causing ``folder`` to be gone in SVN::
 
   >>> current_synchronizer = s1
-  >>> state1._removed.append(get_object_path(data1, data1['folder']))
-  >>> del data1['folder']
+  >>> state1._removed.append(get_object_path(root1, root1['data']['folder']))
+  >>> del root1['data']['folder']
   >>> info = s1.sync("Synchronize")
+
+It's really gone now::
+
+  >>> 'folder' in root1['data']
+  False
+
+It's also gone in SVN::
+
+  >>> s1.checkout.path.join('data').join('folder').check()
+  False
 
 Meanwhile, ``user2`` happily alters data in ``folder`` by changing
 ``content`` in instance 2::
@@ -289,7 +288,8 @@ Now ``user2`` does a synchronization too::
 
   >>> info = s2.sync("Synchronize")
 
-All changes ``user2`` made are now gone, as ``folder`` is gone::
+Since the folder was previously removed, all changes ``user2`` made
+are now gone, as ``folder`` is gone::
 
   >>> 'folder' in data2
   False
@@ -297,10 +297,7 @@ All changes ``user2`` made are now gone, as ``folder`` is gone::
 The folder with its content can however be retrieved in the found data
 section::
 
-  >>> found_s = Synchronizer(checkout1, found_state)
-  >>> current_synchronizer = found_s
-  >>> info = found_s.sync("synchronize")
-  >>> found_data['root']['folder']['content'].payload
+  >>> found2['data']['folder']['content'].payload
   15
 
 Conflicting directory conflicts

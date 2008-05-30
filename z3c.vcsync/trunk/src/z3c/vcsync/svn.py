@@ -39,6 +39,7 @@ class SvnCheckout(object):
         self._updated_revision_nr = None
         
     def resolve(self):
+        self._found_files = set()
         self._resolve_helper(self.path)
 
     def commit(self, message):
@@ -70,7 +71,9 @@ class SvnCheckout(object):
         save_path = found.join(*rel_path.split(path.sep))
         save_path.ensure()
         save_path.write(content)
-
+        for part in save_path.parts():
+            self._found_files.add(part)
+        
     def _found_container(self, path):
         """Store conflicting/lost container in found directory.
 
@@ -82,9 +85,12 @@ class SvnCheckout(object):
         save_path = found.join(*rel_path.split(path.sep))
         py.path.local(path.strpath).copy(save_path)
         save_path.add()
+        for part in save_path.parts():
+            self._found_files.add(part)
         for new_path in save_path.visit():
             new_path.add()
-            
+            self._found_files.add(new_path)
+
     def _update_files(self, revision_nr):
         """Go through svn log and update self._files and self._removed.
         """
@@ -103,8 +109,7 @@ class SvnCheckout(object):
             logs = []
         checkout_path = self._checkout_path()
         files, removed = self._info_from_logs(logs, checkout_path)
-
-        self._files = files
+        self._files = files.union(self._found_files)
         self._removed = removed
         self._updated_revision_nr = new_revision_nr
 
@@ -129,30 +134,27 @@ class SvnCheckout(object):
                     files.add(path)                
         return files, removed
 
+    def _resolve_path(self, path):
+        # resolve any direct conflicts
+        for conflict in path.status().conflict:
+            mine, other = conflict_info(conflict)
+            conflict.write(mine.read())
+            self._found(conflict, other.read())
+            conflict._svn('resolved')
+        # move any status unknown directories away
+        for unknown in path.status().unknown:
+            if unknown.check(dir=True):
+                self._found_container(unknown)
+                unknown.remove()
+
     def _resolve_helper(self, path):
+        if not path.check(dir=True):
+            return
+        # resolve paths in this dir
+        self._resolve_path(path)
         for p in path.listdir():
-            if not p.check(dir=True):
-                continue
-            try:
-                # resolve any direct conflicts
-                for conflict in p.status().conflict:
-                    mine, other = conflict_info(conflict)
-                    conflict.write(mine.read())
-                    self._found(conflict, other.read())
-                    conflict._svn('resolved')
-                # move any status unknown directories away
-                for unknown in p.status().unknown:
-                    if unknown.check(dir=True):
-                        self._found_container(unknown)
-                        unknown.remove()
-            # XXX This is a horrible hack to skip status of R. This
-            # is not supported by Py 0.9.0, and raises a NotImplementedError.
-            # This has been fixed on the trunk of Py.
-            # When we upgrade to a new release of Py this can go away
-            except NotImplementedError:
-                pass
             self._resolve_helper(p)
-    
+
 def conflict_info(conflict):
     path = conflict.dirpath()
     name = conflict.basename

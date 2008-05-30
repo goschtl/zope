@@ -50,7 +50,6 @@ def resolve(root, root_path, path):
     rel_path = path.relto(root_path)
     steps = rel_path.split(os.path.sep)
     steps = [step for step in steps if step != '']
-    steps = steps[1:]
     obj = root
     for step in steps:
         name, ex = os.path.splitext(step)
@@ -74,7 +73,7 @@ def resolve_container(root, root_path, path):
     steps = [step for step in steps if step != '']
     if not steps:
         return None
-    steps = steps[1:-1]
+    steps = steps[:-1]
     obj = root
     for step in steps:
         try:
@@ -89,10 +88,8 @@ def get_object_path(root, obj):
     Given state root container and obj, return internal path to this obj.
     """
     steps = []
-    while True:
+    while obj is not root:
         steps.append(obj.__name__)
-        if obj is root:
-            break
         obj = obj.__parent__
     steps.reverse()
     return '/' + '/'.join(steps)
@@ -182,7 +179,8 @@ class Synchronizer(object):
         # now save all files that have been modified/added
         root = self.state.root
         for obj in self.state.objects(revision_nr):
-            IDump(obj).save(self._get_container_path(root, obj))
+            if obj is not root:
+                IDump(obj).save(self._get_container_path(root, obj))
 
     def load(self, revision_nr):
         # remove all objects that have been removed in the checkout
@@ -226,9 +224,11 @@ class Synchronizer(object):
     
     def _get_container_path(self, root, obj):
         steps = []
+        assert root is not obj, "No container exists for the root"
+        obj = obj.__parent__
         while obj is not root:
-            obj = obj.__parent__
             steps.append(obj.__name__)
+            obj = obj.__parent__
         steps.reverse()
         return self.checkout.path.join(*steps)
 

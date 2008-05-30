@@ -68,8 +68,9 @@ We have a object structure consisting of a container with some
 items and sub-containers in it::
 
   >>> from z3c.vcsync.tests import Container
-  >>> data = Container()
-  >>> data.__name__ = 'root'
+  >>> root = Container()
+  >>> root.__name__ = 'root'
+  >>> root['data'] = data = Container()
   >>> data['foo'] = Item(payload=1)
   >>> data['bar'] = Item(payload=2)
   >>> data['sub'] = Container()
@@ -91,14 +92,14 @@ We have a checkout in testpath on the filesystem::
 We also have a test state representing the object data::
 
   >>> from z3c.vcsync.tests import TestAllState
-  >>> state = TestAllState(data)
+  >>> state = TestAllState(root)
 
 The test state will always return a list of all objects. We pass in
 ``None`` for the revision_nr here, as the ``TestAllState`` ignores this
 information anyway::
 
   >>> sorted([obj.__name__ for obj in state.objects(None)])
-  ['bar', 'foo', 'qux', 'root', 'sub']
+  ['bar', 'data', 'foo', 'qux', 'root', 'sub']
 
 Now let's synchronize. For this, we need a synchronizer initialized
 with the checkout and the state::
@@ -112,34 +113,40 @@ the revision_nr for the time being::
   >>> s.save(None)
 
 The filesystem should now contain the right objects. Everything is
-always saved in a directory called ``root``:
+saved in a directory called ``data``:
  
-  >>> root = testpath.join('root')
-  >>> root.check(dir=True)
+  >>> root_dir = testpath
+  >>> data_dir = root_dir.join('data')
+  >>> root_dir.check(dir=True)
   True
 
 This root directory should contain the right objects::
 
-  >>> sorted([entry.basename for entry in root.listdir()])
+  >>> sorted([entry.basename for entry in root_dir.listdir()])
+  ['data']
+
+The ``data`` subdirectory should contain the right sub-objects::
+
+  >>> sorted([entry.basename for entry in data_dir.listdir()])
   ['bar.test', 'foo.test', 'sub']
 
 We expect the right contents in ``bar.test`` and ``foo.test``::
 
-  >>> root.join('bar.test').read()
+  >>> data_dir.join('bar.test').read()
   '2\n'
-  >>> root.join('foo.test').read()
+  >>> data_dir.join('foo.test').read()
   '1\n'
 
 ``sub`` is a container so should be represented as a directory::
 
-  >>> sub_path = root.join('sub')
-  >>> sub_path.check(dir=True)
+  >>> sub_dir = data_dir.join('sub')
+  >>> sub_dir.check(dir=True)
   True
 
-  >>> sorted([entry.basename for entry in sub_path.listdir()])
+  >>> sorted([entry.basename for entry in sub_dir.listdir()])
   ['qux.test']
 
-  >>> sub_path.join('qux.test').read()
+  >>> sub_dir.join('qux.test').read()
   '3\n'
 
 Modifying an existing checkout
@@ -159,7 +166,7 @@ Since we are removing something, we need inform the state about it. We
 do this manually here, though in a real application typically you
 would subscribe to the ``IObjectRemovedEvent``.
 
-  >>> removed_paths = ['/root/bar']
+  >>> removed_paths = ['/data/bar']
   >>> state.removed_paths = removed_paths
 
 The added object always will return with ``objects``, but in your
@@ -171,12 +178,12 @@ Let's save the object structure again to the same checkout::
 
 We expect the ``hoi.test`` file to be added::
 
-  >>> root.join('hoi.test').read()
+  >>> data_dir.join('hoi.test').read()
   '4\n'
 
 We also expect the ``bar.test`` file to be removed::
 
-  >>> root.join('bar.test').check()
+  >>> data_dir.join('bar.test').check()
   False
 
 Modifying an existing checkout, some edge cases
@@ -192,7 +199,7 @@ Let's create a new removed list. The item 'hoi' was removed before it
 was removed with a new container with the same name, so we have to
 remember this::
 
-  >>> removed_paths = ['/root/hoi']
+  >>> removed_paths = ['/data/hoi']
   >>> state.removed_paths = removed_paths
 
 We put some things into the new container::
@@ -206,12 +213,12 @@ file)::
 
 Let's check the filesystem state::
 
-  >>> sorted([entry.basename for entry in root.listdir()])
+  >>> sorted([entry.basename for entry in data_dir.listdir()])
   ['foo.test', 'hoi', 'sub']
 
 We expect ``hoi`` to contain ``something.test``::
 
-  >>> hoi_path = root.join('hoi')
+  >>> hoi_path = data_dir.join('hoi')
   >>> something_path = hoi_path.join('something.test')
   >>> something_path.read()
   '15\n'
@@ -225,12 +232,12 @@ into a file::
 
 This means we need to mark the path to the container to be removed::
 
-  >>> removed_paths = ['/root/hoi']
+  >>> removed_paths = ['/data/hoi']
   >>> state.removed_paths = removed_paths
 
 We expect to see a ``hoi.test`` but no ``hoi`` directory anymore::
 
-  >>> sorted([entry.basename for entry in root.listdir()])
+  >>> sorted([entry.basename for entry in data_dir.listdir()])
   ['foo.test', 'hoi.test', 'sub']
 
 Note: creating a container with the name ``hoi.test`` (using the
@@ -242,7 +249,7 @@ this problem is quite involved. Instead, we require the application to
 avoid creating any directories with a postfix in use by items. The
 following should be forbidden::
 
-  data['hoi.test'] = Container()
+  data['hoi.test'] = Container() # XXX forbidden
 
 multiple object types
 ---------------------
@@ -275,7 +282,7 @@ the original ``hoi``::
 
 We need to mark this removal in our ``removed_paths`` list::
 
-  >>> state.removed_paths = ['/root/hoi']
+  >>> state.removed_paths = ['/data/hoi']
 
 We then introduce the new ``hoi``::
 
@@ -287,19 +294,19 @@ Let's serialize::
 
 We expect to see a ``hoi.other`` item now::
 
-  >>> sorted([entry.basename for entry in root.listdir()])
+  >>> sorted([entry.basename for entry in data_dir.listdir()])
   ['foo.test', 'hoi.other', 'sub']
 
 Let's change the object back again::
 
   >>> del data['hoi']
-  >>> state.removed_paths = ['/root/hoi']
+  >>> state.removed_paths = ['/data/hoi']
   >>> data['hoi'] = Item(payload=16)
   >>> s.save(None)
 
 We expect to see a ``hoi.test`` item again::
 
-  >>> sorted([entry.basename for entry in root.listdir()])
+  >>> sorted([entry.basename for entry in data_dir.listdir()])
   ['foo.test', 'hoi.test', 'sub']
 
 loading a checkout state into python objects
@@ -366,8 +373,9 @@ information is extracted from the version control system, but for the
 purposes of this test we maintain it manually. In this case,
 everything is added so appears in the files list::
 
-  >>> checkout._files = [root.join('foo.test'), root.join('hoi.test'),
-  ...   root.join('sub'), root.join('sub', 'qux.test')]
+  >>> checkout._files = [data_dir, data_dir.join('foo.test'), 
+  ...   data_dir.join('hoi.test'), data_dir.join('sub'), 
+  ...   data_dir.join('sub', 'qux.test')]
 
 Nothing was removed::
 
@@ -390,23 +398,26 @@ We can now do the loading::
 We expect the proper objects to be in the new container::
 
   >>> sorted(container2.keys())
+  ['data']
+  >>> data2 = container2['data']
+  >>> sorted(data2.keys())
   ['foo', 'hoi', 'sub']
 
 We check whether the items contains the right information::
 
-  >>> isinstance(container2['foo'], Item)
+  >>> isinstance(data2['foo'], Item)
   True
-  >>> container2['foo'].payload
+  >>> data2['foo'].payload
   1
-  >>> isinstance(container2['hoi'], Item)
+  >>> isinstance(data2['hoi'], Item)
   True
-  >>> container2['hoi'].payload
+  >>> data2['hoi'].payload
   16
-  >>> isinstance(container2['sub'], Container)
+  >>> isinstance(data2['sub'], Container)
   True
-  >>> sorted(container2['sub'].keys())
+  >>> sorted(data2['sub'].keys())
   ['qux']
-  >>> container2['sub']['qux'].payload
+  >>> data2['sub']['qux'].payload
   3
 
 version control changes a file
@@ -422,7 +433,7 @@ The special checkout class we use for example purposes will call
 simulate what might happen during a version control system ``update``
 operation. Let's define one here that modifies text in a file::
 
-  >>> hoi_path = root.join('hoi.test')
+  >>> hoi_path = data_dir.join('hoi.test')
   >>> def update_function():
   ...    hoi_path.write('200\n')
   >>> checkout.update_function = update_function
@@ -442,7 +453,7 @@ We will reload the checkout into Python objects::
  
 We expect the ``hoi`` object to be modified::
 
-  >>> container2['hoi'].payload
+  >>> data2['hoi'].payload
   200
 
 version control adds a file
@@ -450,7 +461,7 @@ version control adds a file
 
 We update our checkout again and cause a file to be added::
 
-  >>> hallo = root.join('hallo.test').ensure()
+  >>> hallo = data_dir.join('hallo.test').ensure()
   >>> def update_function():
   ...   hallo.write('300\n')
   >>> checkout.update_function = update_function
@@ -468,7 +479,7 @@ We will reload the checkout into Python objects again::
  
 We expect there to be a new object ``hallo``::
 
-  >>> 'hallo' in container2.keys()
+  >>> 'hallo' in data2.keys()
   True
 
 version control removes a file
@@ -477,7 +488,7 @@ version control removes a file
 We update our checkout and cause a file to be removed::
 
   >>> def update_function():
-  ...   root.join('hallo.test').remove()
+  ...   data_dir.join('hallo.test').remove()
   >>> checkout.update_function = update_function
 
   >>> checkout.up()
@@ -493,7 +504,7 @@ We will reload the checkout into Python objects::
 
 We expect the object ``hallo`` to be gone again::
 
-  >>> 'hallo' in container2.keys()
+  >>> 'hallo' in data2.keys()
   False
 
 version control adds a directory
@@ -502,7 +513,7 @@ version control adds a directory
 We update our checkout and cause a directory (with a file inside) to be
 added::
 
-  >>> newdir_path = root.join('newdir')
+  >>> newdir_path = data_dir.join('newdir')
   >>> def update_function():
   ...   newdir_path.ensure(dir=True)
   ...   newfile_path = newdir_path.join('newfile.test').ensure()
@@ -519,11 +530,11 @@ We maintain the lists of things changed::
 Reloading this will cause a new container to exist::
 
   >>> dummy = s.load(None)
-  >>> 'newdir' in container2.keys()
+  >>> 'newdir' in data2.keys()
   True
-  >>> isinstance(container2['newdir'], Container)
+  >>> isinstance(data2['newdir'], Container)
   True
-  >>> container2['newdir']['newfile'].payload
+  >>> data2['newdir']['newfile'].payload
   400
 
 version control removes a directory
@@ -548,7 +559,7 @@ And reload the data::
 
 Reloading this will cause the new container to be gone again::
 
-  >>> 'newdir' in container2.keys()
+  >>> 'newdir' in data2.keys()
   False
 
 version control changes a file into a directory
@@ -557,7 +568,7 @@ version control changes a file into a directory
 Some sequence of actions by other users has caused a name that previously
 referred to a file to now refer to a directory::
 
-  >>> hoi_path2 = root.join('hoi')
+  >>> hoi_path2 = data_dir.join('hoi')
   >>> def update_function():
   ...   hoi_path.remove()
   ...   hoi_path2.ensure(dir=True)
@@ -575,9 +586,9 @@ We maintain the lists of things changed::
 Reloading this will cause a new container to be there instead of the file::
 
   >>> dummy = s.load(None)
-  >>> isinstance(container2['hoi'], Container)
+  >>> isinstance(data2['hoi'], Container)
   True
-  >>> container2['hoi']['some'].payload
+  >>> data2['hoi']['some'].payload
   1000
 
 version control changes a directory into a file
@@ -588,7 +599,7 @@ previously referred to a directory to now refer to a file::
 
   >>> def update_function():
   ...   hoi_path2.remove()
-  ...   hoi_path = root.join('hoi.test').ensure()
+  ...   hoi_path = data_dir.join('hoi.test').ensure()
   ...   hoi_path.write('2000\n')
   >>> checkout.update_function = update_function
 
@@ -603,9 +614,9 @@ Reloading this will cause a new item to be there instead of the
 container::
 
   >>> dummy = s.load(None)
-  >>> isinstance(container2['hoi'], Item)
+  >>> isinstance(data2['hoi'], Item)
   True
-  >>> container2['hoi'].payload
+  >>> data2['hoi'].payload
   2000
 
 version control changes a file into one with a different file type
@@ -642,7 +653,7 @@ And a parser and factory for it::
 Now we define an update function that replaces ``hoi.test`` with
 ``hoi.test2``::
 
-  >>> hoi_path3 = root.join('hoi.test2')
+  >>> hoi_path3 = data_dir.join('hoi.test2')
   >>> def update_function():
   ...    hoi_path.remove()
   ...    hoi_path3.ensure()
@@ -659,17 +670,17 @@ Reloading this will cause a new type of item to be there instead of the old
 type::
 
   >>> dummy = s.load(None)
-  >>> isinstance(container2['hoi'], Item2)
+  >>> isinstance(data2['hoi'], Item2)
   True
-  >>> container2['hoi'].payload
+  >>> data2['hoi'].payload
   1936
 
 Let's restore the original ``hoi.test`` object::
  
   >>> hoi_path3.remove()
   >>> hoi_path.write('2000\n')
-  >>> del container2['hoi']
-  >>> container2['hoi'] = Item(2000)
+  >>> del data2['hoi']
+  >>> data2['hoi'] = Item(2000)
 
 Complete synchronization
 ------------------------
@@ -677,12 +688,12 @@ Complete synchronization
 Let's now exercise the ``sync`` method directly. First we'll modify
 the payload of the ``hoi`` item::
 
-  >>> container2['hoi'].payload = 3000
+  >>> data2['hoi'].payload = 3000
  
 Next, we will add a new ``alpha`` file to the checkout when we do an
 ``up()``, so again we simulate the actions of our version control system::
 
-  >>> alpha_path = root.join('alpha.test').ensure()
+  >>> alpha_path = data_dir.join('alpha.test').ensure()
   >>> def update_function():
   ...   alpha_path.write('4000\n')
   >>> checkout.update_function = update_function
@@ -717,7 +728,7 @@ One file, alpha, was added to the checkout during our update (by
 someone else)::
 
   >>> info.files_changed()
-  [local('.../root/alpha.test')]
+  [local('.../data/alpha.test')]
 
 We removed no objects from our database since the last update::
 
@@ -728,16 +739,16 @@ We did change one object, 'hoi', but the test infrastructure always returns
 all objects here (returning more objects is allowed)::
 
   >>> info.objects_changed()
-  ['/root/foo', '/root/hoi', '/root', '/root/sub/qux', '/root/sub']
+  ['/', '/data/foo', '/data/hoi', '/data', '/data/sub/qux', '/data/sub']
 
 We expect the checkout to reflect the changed state of the ``hoi`` object::
 
-  >>> root.join('hoi.test').read()
+  >>> data_dir.join('hoi.test').read()
   '3000\n'
 
 We also expect the database to reflect the creation of the new
 ``alpha`` object::
 
-  >>> container2['alpha'].payload
+  >>> data2['alpha'].payload
   4000
 
