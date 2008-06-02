@@ -19,8 +19,8 @@ $Id$
 import zope.deferredimport
 
 zope.deferredimport.deprecated(
-    "It has moved to zope.securitypolicy.zopepolicy  This reference will be "
-    "removed somedays",
+    "It has moved to zope.securitypolicy.zopepolicy.  This reference will be "
+    "removed someday.",
     globalPrincipalPermissionSetting = 'zope.securitypolicy.zopepolicy:globalPrincipalPermissionSetting',
     globalRolesForPermission = 'zope.securitypolicy.zopepolicy:globalRolesForPermission',
     globalRolesForPrincipal = 'zope.securitypolicy.zopepolicy:globalRolesForPrincipal',
