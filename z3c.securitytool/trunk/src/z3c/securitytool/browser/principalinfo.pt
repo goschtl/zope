@@ -32,13 +32,11 @@
 
                   <div class="context">
                       <h3 tal:condition="permissions"
-                      tal:define="junk python:permissions.sort()"> Directly provided
-                      permissions in effect at this context</h3>
-                      <p class="sectionInfo"  tal:condition="permissions"> This section lists all
-                      permissions directly assigned to the user at
-                      <br> all contexts in the current traversal
-                      path. These are the actual <br>permissions for this
-                      user at this context level.
+                      tal:define="junk python:permissions.sort()">
+                      Permissions in effect at this context</h3>
+                      <p class="sectionInfo"  tal:condition="permissions"> 
+                      These are the actual permissions for this<br>
+                      user in effect in  this context level.
                       </p>
                       <br>
 
@@ -50,12 +48,11 @@
                          </div>
                       </div>
                       <br tal:condition="permissions">
-                      <h3 tal:condition="roles">Permissions provided by roles</h3>
-                      <p class="sectionInfo"  tal:condition="roles"> This section lists all
-                      the roles assigned to this user and the <br> 
-                      permissions they provide at all contexts in the current <br>
-                      traversal path. These are the actual roles with their <br>
-                      permissions this user has assigned.
+                      <h3 tal:condition="roles">Roles in effect at
+                                     this context </h3>
+                      <p class="sectionInfo"  tal:condition="roles"> 
+                      These are the actual roles with their permissions <br>
+                      for this user in effect at this context level.
                       </p>
                       <br>
                       <div tal:condition="roles">
