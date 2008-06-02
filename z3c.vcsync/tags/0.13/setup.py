@@ -12,7 +12,7 @@ long_description = (
     )
 
 setup(name='z3c.vcsync',
-      version='0.13dev',
+      version='0.13',
       description="Synchronize object data with a version control system",
       long_description=long_description,
       package_dir={'': 'src'},
