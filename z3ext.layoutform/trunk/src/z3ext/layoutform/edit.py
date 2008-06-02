@@ -51,6 +51,10 @@ class PageletEditForm(form.EditForm, BrowserPagelet):
             else:
                 IStatusMessage(self.request).add(self.noChangesMessage)
 
+            nextUrl = self.nextURL()
+            if nextURL:
+                self.redirect(nextURL)
+
     @button.buttonAndHandler(_(u'Cancel'), name='cancel',
                              provides=interfaces.ICancelButton)
     def handleCancel(self, action):
@@ -58,8 +62,7 @@ class PageletEditForm(form.EditForm, BrowserPagelet):
         IStatusMessage(self.request).add(self.formCancelMessage)
 
     def nextURL(self):
-        return '%s/@@SelectedManagementView.html'%\
-            absoluteURL(self.context, self.request)
+        return ''
 
     def cancelURL(self):
         return '%s/@@SelectedManagementView.html'%\
