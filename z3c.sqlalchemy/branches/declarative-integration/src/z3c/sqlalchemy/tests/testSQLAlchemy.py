@@ -93,13 +93,13 @@ class WrapperTests(ZopeTestCase):
         self.assertEqual(User, myUser)
 
 
-    def testCustomMapperClassWithWrongType(self):
-
-        class myUser(object): 
-            pass
-
-        M = Model()
-        self.assertRaises(TypeError, M.add, 'users', mapper_class=myUser)
+#    def testCustomMapperClassWithWrongType(self):
+#
+#        class myUser(object): 
+#            pass
+#
+#        M = Model()
+#        self.assertRaises(TypeError, M.add, 'users', mapper_class=myUser)
 
 
     def testGetMappers(self):
