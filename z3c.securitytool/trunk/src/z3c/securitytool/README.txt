@@ -55,7 +55,6 @@ roles, groups or specifically assigned permissions will be displayed.
      'context',
      'getPermissionSettingsForAllViews',
      'getReadPerm',
-     'mergePermissionsFromGroups',
      'populateMatrix',
      'populatePermissionMatrix',
      'updateRolePermissionSetting']

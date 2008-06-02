@@ -82,7 +82,7 @@ class SecurityChecker(object):
         principals = zapi.principals()
         getPrin = principals.getPrincipal
         viewPrins = [getPrin(prin) for prin in self.viewMatrix]
-        self.mergePermissionsFromGroups(viewPrins)
+        mergePermissionsFromGroups(viewPrins,self.viewMatrix)
 
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
@@ -184,31 +184,6 @@ class SecurityChecker(object):
                          self.name,setting) == setting:
                 #If the permisison does not exist for the prin add it
                 continue
-
-    def mergePermissionsFromGroups(self,principals):
-        """
-        This method recursively looks through all the principals in the
-        viewPermMatrix and inspects the inherited permissions from groups
-        assigned to the  principal.
-        """
-        # Actually this does need a post-order depth first...
-        # Thanks Jacob
-        sysPrincipals = zapi.principals()
-        matrix = self.viewMatrix
-
-        for principal in principals:
-            for group_id in principal.groups:
-                group = sysPrincipals.getPrincipal(group_id)
-                self.mergePermissionsFromGroups([sysPrincipals.getPrincipal(x) for x in principal.groups])
-
-                if matrix.has_key(group_id):
-                    res = matrix[group_id]
-                    for item in res:
-                        # We only want the setting if we do not alread have it.
-                        # or if it is an Allow permission as the allow seems to
-                        # override the deny with conflicting group permissions.
-                        if item not in matrix[principal.id] or res[item] == 'Allow':
-                            matrix[principal.id][item] = res[item]
 
 class MatrixDetails(object):
     """
@@ -644,6 +619,7 @@ def settingsForObject(ob):
         ob = getattr(ob, '__parent__', None)
         # This is just to create an internal unique name for the object
         # using the name and depth of the object.
+
         if data.has_key('parentList'):
             data['uid'] = data['parentList'][0]+"_" + \
                                 str(len(data['parentList']))
@@ -653,7 +629,6 @@ def settingsForObject(ob):
     result[-1][1]['parentList'] = ['Root Folder']
     result[-1][1]['uid']        = 'Root Folder'
     result[-1][1]['name']       = 'Root Folder'
-
     data = {}
     result.append(('global settings', data))
 
@@ -714,3 +689,26 @@ def getView(context, view_reg, skin=IBrowserRequest):
         pass
 
 
+def mergePermissionsFromGroups(principals,matrix):
+    """
+    This method recursively looks through all the principals in the
+    viewPermMatrix and inspects the inherited permissions from groups
+    assigned to the  principal.
+    """
+    # Actually this does need a post-order depth first...
+    # Thanks Jacob
+    sysPrincipals = zapi.principals()
+
+    for principal in principals:
+        for group_id in principal.groups:
+            group = sysPrincipals.getPrincipal(group_id)
+            mergePermissionsFromGroups([sysPrincipals.getPrincipal(x) for x in principal.groups],matrix)
+
+            if matrix.has_key(group_id):
+                res = matrix[group_id]
+                for item in res:
+                    # We only want the setting if we do not alread have it.
+                    # or if it is an Allow permission as the allow seems to
+                    # override the deny with conflicting group permissions.
+                    if item not in matrix[principal.id] or res[item] == 'Allow':
+                        matrix[principal.id][item] = res[item]
