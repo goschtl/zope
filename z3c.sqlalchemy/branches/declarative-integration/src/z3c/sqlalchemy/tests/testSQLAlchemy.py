@@ -207,32 +207,20 @@ class WrapperTests(ZopeTestCase):
         metadata = db.metadata
         Base = declarative_base(metadata = db.metadata)
 
-        class User(Base):
-            __tablename__ = 'users'
+        class Foo(Base):
+            __tablename__ = 'foo'
 
             id = Column('id', Integer, primary_key=True)
             name = Column('name', String(50))
-            addresses = relation("Address", backref="user")
-
-        class Address(Base):
-            __tablename__ = 'addresses'
-
-            id = Column('id', Integer, primary_key=True)
-            email = Column('email', String(50))
-            user_id = Column('user_id', Integer, ForeignKey('users.id'))
 
         Base.metadata.create_all(db._engine)
 
-
-        session.save(User(id=1, name='Andreas Jung'))
-        session.save(User(id=2, name='Peter Becker'))
+        session.save(Foo(id=1, name='Andreas Jung'))
+        session.save(Foo(id=2, name='Peter Becker'))
         session.flush()
 
-        rows = session.query(User).all()
+        rows = session.query(Foo).all()
         self.assertEqual(len(rows), 2)
-
-
-
 
 
 def test_suite():
