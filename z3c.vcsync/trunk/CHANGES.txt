@@ -1,7 +1,7 @@
 z3c.vcsync changes
 ==================
 
-0.13 (unreleased)
+0.13 (2008-06-02)
 -----------------
 
 * The root directory of the checkout is now truly equivalent to the
