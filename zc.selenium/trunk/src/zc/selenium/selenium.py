@@ -25,7 +25,9 @@ import threading
 import time
 import urllib2
 import webbrowser
+import wsgiref.simple_server
 
+from zope.testing import testrunner
 
 # Compute a default port; this is simple and doesn't ensure that the
 # port is available, but does better than just hardcoding a port
@@ -38,8 +40,18 @@ def run_zope(config, port):
     # This removes the script directory from sys.path, which we do
     # since there are no modules here.
     #
+
     from zope.app.server.main import main
     main(["-C", config, "-X", "http0/address=" + port] + sys.argv[1:])
+
+def make_wsgi_run_zope(app_path):
+    module, name = app_path.rsplit('.', 1)
+    app_factory = getattr(__import__(module, globals(), locals(), [1]), name)
+    def run_zope(config, port):
+        server = wsgiref.simple_server.make_server(
+            '0.0.0.0', int(port), app_factory(config))
+        server.serve_forever()
+    return run_zope
 
 def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     start_time = time.time()
@@ -49,7 +61,8 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     socket.setdefaulttimeout(5)
     url = base_url %{'port': port}
     url += ('/@@/selenium/TestRunner.html'
-           '?test=tests%2FTestSuite.html&resultsUrl=/@@/selenium_results')
+            '?test=tests%%2FTestSuite.html&'
+            'resultsUrl=%s/@@/selenium_results' %url)
     time.sleep(1)
     while zope_thread.isAlive():
         try:
@@ -152,6 +165,19 @@ def parseOptions():
     parser.add_option('-u', '--base-url', dest='base_url',
                       default='http://localhost:%(port)s/',
                       help='The base URL of the Zope site (may contain skin).')
+    parser.add_option(
+        '--coverage', action="store", type='string', dest='coverage',
+        help="""\
+        Perform code-coverage analysis, saving trace data to the directory
+        with the given name.  A code coverage summary is printed to standard
+        out.
+        """)
+    parser.add_option(
+        '--package', '--dir', '-s', action="append", dest='package',
+        help="A package to be included in the coverage report.")
+    parser.add_option(
+        '--wsgi_app', '-w', action="store", dest='wsgi_app',
+        help="The path to the WSGI application to use.")
 
     options, positional = parser.parse_args()
     options.config = config
@@ -171,9 +197,19 @@ def main():
     if options.random_port:
         options.port = random_port()
 
+    if options.wsgi_app:
+        run_zope = make_wsgi_run_zope(options.wsgi_app)
+
     if options.server_only:
         run_zope(options.config, port=options.port)
         sys.exit(0)
+
+    if options.coverage:
+        options.package = ('keas',)
+        options.prefix = (('/', 'keas'),)
+        options.test_path = []
+        tracer = testrunner.TestTrace(options, trace=False, count=True)
+        tracer.start()
 
     zope_thread = threading.Thread(
         target=run_zope, args=(options.config, options.port))
@@ -182,6 +218,12 @@ def main():
     test_result = run_tests(
         zope_thread, options.auto_start, options.browser, options.port,
         options.base_url)
+
+    if options.coverage:
+        tracer.stop()
+        coverdir = os.path.join(os.getcwd(), options.coverage)
+        res = tracer.results()
+        res.write_results(summary=True, coverdir=coverdir)
 
     if options.keep_running or not options.auto_start:
         while True:
