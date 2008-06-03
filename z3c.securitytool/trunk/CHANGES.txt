@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+Version 0.3.6b (2008-06-02)
+---------------------------
+- Misc fixes to group permission inheritance.
+- Misc verbiage and layout updates to page templates.
+
 Version 0.3.6 (2008-05-25)
 ---------------------------
 - Security tool now inherits properly from groups.
