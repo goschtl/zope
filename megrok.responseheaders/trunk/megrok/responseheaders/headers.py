@@ -39,11 +39,9 @@ class http_cache_control(martian.Directive):
     def factory(self, seconds=0, minutes=0, hours=0,
                 days=0, years=0, private=False):
         """ return a dictionary containing all the valid parameters """
-        parameters = locals()
-        parameters.pop('self')
-        
-        return parameters
-        
+        return dict(seconds=seconds, minutes=minutes, hours=hours, days=days,
+                    years=years, private=private)        
+
 
 @grok.subscribe(grok.View, IBeforeTraverseEvent)
 def handle(view, event):
