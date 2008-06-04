@@ -46,15 +46,15 @@ class http_cache_control(martian.Directive):
         
 
 @grok.subscribe(grok.View, IBeforeTraverseEvent)
-def handle(app, event):
-    cache_control = http_cache_control.bind().get(app) # None or {'days'...}
+def handle(view, event):
+    cache_control = http_cache_control.bind().get(view) # None or {'days'...}
     if cache_control:
         assert isinstance(cache_control, dict)
         for key, value in get_cache_headers(cache_control).items():
             event.request.response.setHeader(key, value)
             
-    content_type = http_content_type.bind().get(app)
-    charset = getattr(app, 'http_content_type_charset', 'utf-8')
+    content_type = http_content_type.bind().get(view)
+    charset = getattr(view, 'http_content_type_charset', 'utf-8')
     if content_type:
         if charset:
             event.request.response.setHeader('Content-Type', 
