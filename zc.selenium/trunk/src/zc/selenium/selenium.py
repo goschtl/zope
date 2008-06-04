@@ -39,8 +39,6 @@ DEFAULT_PORT = "8034"
 def run_zope(config, port):
     # This removes the script directory from sys.path, which we do
     # since there are no modules here.
-    #
-
     from zope.app.server.main import main
     main(["-C", config, "-X", "http0/address=" + port] + sys.argv[1:])
 
@@ -197,11 +195,12 @@ def main():
     if options.random_port:
         options.port = random_port()
 
+    runner = run_zope
     if options.wsgi_app:
-        run_zope = make_wsgi_run_zope(options.wsgi_app)
+        runner = make_wsgi_run_zope(options.wsgi_app)
 
     if options.server_only:
-        run_zope(options.config, port=options.port)
+        runner(options.config, port=options.port)
         sys.exit(0)
 
     if options.coverage:
@@ -212,7 +211,7 @@ def main():
         tracer.start()
 
     zope_thread = threading.Thread(
-        target=run_zope, args=(options.config, options.port))
+        target=runner, args=(options.config, options.port))
     zope_thread.setDaemon(True)
     zope_thread.start()
     test_result = run_tests(
