@@ -6,7 +6,7 @@ CHANGES
 ==================
 
 - Translate the title on SequenceWidget's "Add <title>" button.
-
+- No longer uses zapi.
 
 3.4.2 (2008-02-07)
 ==================
