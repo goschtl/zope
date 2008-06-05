@@ -10,7 +10,7 @@ setup(
     keywords = "zope3 external file",
     url = 'http://svn.zope.org/z3c.extfile',
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         "License :: OSI Approved :: Zope Public License",
         "Framework :: Zope :: UI"],
     packages = find_packages('src'),
