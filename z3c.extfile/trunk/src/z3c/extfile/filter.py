@@ -3,22 +3,28 @@ from z3c.extfile import processor, hashdir
 from cStringIO import StringIO
 import mimetypes
 import interfaces
-
+from  zope.cachedescriptors.property import Lazy
 BLOCK_SIZE = 1024*128
 
 class FSFilter(object):
 
     def __init__(self, app, directory=None):
+
         self.app = app
         if directory is not None:
             # use provided directory
             self.dir = os.path.abspath(directory)
         else:
+            self.dir = None
+
+    @Lazy
+    def hd(self):
+        if self.dir is None:
             #use environment variable
             if not os.environ.has_key('EXTFILE_STORAGEDIR'):
                 raise RuntimeError, "EXTFILE_STORAGEDIR not defined"
             self.dir = os.environ.get('EXTFILE_STORAGEDIR')
-        self.hd = hashdir.HashDir(self.dir)
+        return hashdir.HashDir(self.dir)
 
     def __call__(self, env, start_response):
         method = env.get('REQUEST_METHOD')

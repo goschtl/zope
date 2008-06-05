@@ -184,3 +184,20 @@ from the files size.
     >>> res = app.get('/%s' % info, extra_environ=env)
     >>> res.headers
     [('content-length', '1026603'), ('content-type', 'text/plain')]
+
+Edge Cases
+==========
+
+The extfile storage directory needs to be created before the first
+request but not an initialization time.
+
+    >>> from z3c.extfile.filter import FSFilter
+    >>> f = FSFilter(None, 'nonexistent/path')
+
+The first request will try to get the lazy property .hd. This will
+fail because the directory needs to exist.
+
+    >>> f.hd
+    Traceback (most recent call last):
+    ...
+    OSError: ... No such file or directory: '.../nonexistent/path'
