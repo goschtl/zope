@@ -51,7 +51,7 @@ class PageletEditForm(form.EditForm, BrowserPagelet):
             else:
                 IStatusMessage(self.request).add(self.noChangesMessage)
 
-            nextUrl = self.nextURL()
+            nextURL = self.nextURL()
             if nextURL:
                 self.redirect(nextURL)
 
