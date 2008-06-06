@@ -163,6 +163,7 @@ Absent classix.parser directive
 
 If the ``classix.parser` directive is absent, ``classix.Element``
 subclasses will be automatically associated with the one
-``classix.Parser`` available in the module.
+``classix.Parser`` available in the module... 
 
+XXX TODO
 
