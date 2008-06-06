@@ -31,25 +31,7 @@ class Filter(zope.testing.testrunner.feature.Feature):
     def global_setup(self):
         layers = self.runner.tests_by_layer_name
         options = self.runner.options
-
-        if UNITTEST_LAYER in layers:
-            # We start out assuming unit tests should run and look for reasons
-            # why they shouldn't be run.
-            should_run = True
-            if (not options.non_unit) and not options.resume_layer:
-                if options.layer:
-                    should_run = False
-                    for pat in options.layer:
-                        if pat(UNITTEST_LAYER):
-                            should_run = True
-                            break
-                else:
-                    should_run = True
-            else:
-                should_run = False
-
-            if not should_run:
-                layers.pop(UNITTEST_LAYER)
+        print 'Filtering ... ',
 
         if self.runner.options.resume_layer is not None:
             for name in list(layers):
@@ -65,12 +47,8 @@ class Filter(zope.testing.testrunner.feature.Feature):
                     # No pattern matched this name so we remove it
                     layers.pop(name)
 
-        if self.runner.options.verbose:
-            if self.runner.options.all:
-                msg = "Running tests at all levels"
-            else:
-                msg = "Running tests at level %d" % self.runner.options.at_level
-            self.runner.options.output.info(msg)
+        amount = sum(t.countTestCases() for t in layers.values())
+        print 'kept %s tests in %s layers' % (amount, len(layers))
 
     def report(self):
         if not self.runner.do_run_tests:
@@ -78,5 +56,5 @@ class Filter(zope.testing.testrunner.feature.Feature):
         if self.runner.options.resume_layer:
             return
         if self.runner.options.verbose:
-            self.runner.options.output.tests_with_errors(self.runner.errors)
-            self.runner.options.output.tests_with_failures(self.runner.failures)
+            print self.runner.errors
+            print self.runner.failures

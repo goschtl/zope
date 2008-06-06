@@ -2488,7 +2488,8 @@ class DocFileCase(DocTestCase):
         return '_'.join(self._dt_test.name.split('.'))
 
     def __repr__(self):
-        return self._dt_test.filename
+        return '%s (%s)' % (os.path.basename(self._dt_test.filename),
+                            os.path.dirname(self._dt_test.filename))
     __str__ = __repr__
 
     def format_failure(self, err):

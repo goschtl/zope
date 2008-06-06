@@ -335,6 +335,7 @@ class Find(zope.testing.testrunner.feature.Feature):
 
     def global_setup(self):
         # Add directories to the path
+        print 'Discovering tests ... ',
         for path in self.runner.options.path:
             if path not in sys.path:
                 sys.path.append(path)
@@ -343,10 +344,11 @@ class Find(zope.testing.testrunner.feature.Feature):
         self.import_errors = tests.pop(None, None)
         self.runner.register_tests(tests)
 
-        # XXX move to reporting ???
-        self.runner.options.output.import_errors(self.import_errors)
+        amount = sum(t.countTestCases() for t in tests.values())
+        print 'found %s tests in %s layers' % (amount, len(tests))
+
+        # self.runner.options.output.import_errors(self.import_errors)
         self.runner.import_errors = bool(self.import_errors)
 
     def report(self):
-        self.runner.options.output.modules_with_import_problems(
-            self.import_errors)
+        print "Import errors:", self.import_errors

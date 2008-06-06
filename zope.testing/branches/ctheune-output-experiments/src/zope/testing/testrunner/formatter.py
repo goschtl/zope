@@ -79,6 +79,10 @@ class OutputFormatter(object):
 
         return ' ' + s[:room]
 
+    def write(self, message):
+        sys.stdout.write(message)
+        sys.stdout.flush()
+
     def info(self, message):
         """Print an informative message."""
         print message
@@ -154,9 +158,7 @@ class OutputFormatter(object):
 
     def summary(self, n_tests, n_failures, n_errors, n_seconds):
         """Summarize the results of a single test layer."""
-        print ("  Ran %s tests with %s failures and %s errors in %s."
-               % (n_tests, n_failures, n_errors,
-                  self.format_seconds(n_seconds)))
+        pass
 
     def totals(self, n_tests, n_failures, n_errors, n_seconds):
         """Summarize the results of all layers."""
@@ -207,15 +209,14 @@ class OutputFormatter(object):
 
         The next output operation should be stop_set_up().
         """
-        print "  Set up %s" % layer_name,
-        sys.stdout.flush()
+        pass
 
     def stop_set_up(self, seconds):
         """Report that we've set up a layer.
 
         Should be called right after start_set_up().
         """
-        print "in %s." % self.format_seconds(seconds)
+        pass
 
     def start_tear_down(self, layer_name):
         """Report that we're tearing down a layer.
@@ -223,15 +224,14 @@ class OutputFormatter(object):
         The next output operation should be stop_tear_down() or
         tear_down_not_supported().
         """
-        print "  Tear down %s" % layer_name,
-        sys.stdout.flush()
+        pass
 
     def stop_tear_down(self, seconds):
         """Report that we've tore down a layer.
 
         Should be called right after start_tear_down().
         """
-        print "in %s." % self.format_seconds(seconds)
+        pass
 
     def tear_down_not_supported(self):
         """Report that we could not tear down a layer.
@@ -246,31 +246,7 @@ class OutputFormatter(object):
         The next output operation should be test_success(), test_error(), or
         test_failure().
         """
-        self.test_width = 0
-        if self.progress:
-            if self.last_width:
-                sys.stdout.write('\r' + (' ' * self.last_width) + '\r')
-
-            s = "    %d/%d (%.1f%%)" % (tests_run, total_tests,
-                                        tests_run * 100.0 / total_tests)
-            sys.stdout.write(s)
-            self.test_width += len(s)
-            if self.verbose == 1:
-                room = self.max_width - self.test_width - 1
-                s = self.getShortDescription(test, room)
-                sys.stdout.write(s)
-                self.test_width += len(s)
-
-        elif self.verbose == 1:
-            sys.stdout.write('.' * test.countTestCases())
-
-        if self.verbose > 1:
-            s = str(test)
-            sys.stdout.write(' ')
-            sys.stdout.write(s)
-            self.test_width += len(s) + 1
-
-        sys.stdout.flush()
+        pass
 
     def test_success(self, test, seconds):
         """Report that a test was successful.
@@ -279,10 +255,7 @@ class OutputFormatter(object):
 
         The next output operation should be stop_test().
         """
-        if self.verbose > 2:
-            s = " (%s)" % self.format_seconds_short(seconds)
-            sys.stdout.write(s)
-            self.test_width += len(s) + 1
+        pass
 
     def test_error(self, test, seconds, exc_info):
         """Report that an error occurred while running a test.
@@ -291,11 +264,7 @@ class OutputFormatter(object):
 
         The next output operation should be stop_test().
         """
-        if self.verbose > 2:
-            print " (%s)" % self.format_seconds_short(seconds)
-        print
-        self.print_traceback("Error in test %s" % test, exc_info)
-        self.test_width = self.last_width = 0
+        pass
 
     def test_failure(self, test, seconds, exc_info):
         """Report that a test failed.
@@ -304,15 +273,10 @@ class OutputFormatter(object):
 
         The next output operation should be stop_test().
         """
-        if self.verbose > 2:
-            print " (%s)" % self.format_seconds_short(seconds)
-        print
-        self.print_traceback("Failure in test %s" % test, exc_info)
-        self.test_width = self.last_width = 0
+        pass
 
     def print_traceback(self, msg, exc_info):
         """Report an error with a traceback."""
-        print
         print msg
         print self.format_traceback(exc_info)
 
@@ -320,7 +284,9 @@ class OutputFormatter(object):
         """Format the traceback."""
         v = exc_info[1]
         if isinstance(v, doctest.DocTestFailureException):
+            import pdb; pdb.set_trace() 
             tb = v.args[0]
+            tb = '\n'.join(tb.split("\n")[3:])
         elif isinstance(v, doctest.DocTestFailure):
             tb = doctest_template % (
                 v.test.filename,
@@ -336,19 +302,11 @@ class OutputFormatter(object):
 
     def stop_test(self, test):
         """Clean up the output state after a test."""
-        if self.progress:
-            self.last_width = self.test_width
-        elif self.verbose > 1:
-            print
-        sys.stdout.flush()
+        pass
 
     def stop_tests(self):
         """Clean up the output state after a collection of tests."""
-        if self.progress and self.last_width:
-            sys.stdout.write('\r' + (' ' * self.last_width) + '\r')
-        if self.verbose == 1 or self.progress:
-            print
-
+        pass
 
 def tigetnum(attr, default=None):
     """Return a value from the terminfo database.

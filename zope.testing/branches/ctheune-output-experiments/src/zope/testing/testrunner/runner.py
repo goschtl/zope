@@ -45,6 +45,7 @@ import zope.testing.testrunner.garbagecollection
 import zope.testing.testrunner.listing
 import zope.testing.testrunner.statistics
 import zope.testing.testrunner.subprocess
+import zope.testing.testrunner.outputcapture
 
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
@@ -102,6 +103,8 @@ class Runner(object):
 
         self.tests_by_layer_name = {}
 
+        self.log = cStringIO.StringIO()
+
     def ordered_layers(self):
         layer_names = dict([(layer_from_name(layer_name), layer_name)
                             for layer_name in self.tests_by_layer_name])
@@ -147,9 +150,11 @@ class Runner(object):
             for feature in reversed(self.features):
                 feature.global_teardown()
 
-        if self.show_report:
-            for feature in self.features:
-                feature.report()
+        for feature in self.features:
+            feature.report()
+
+        print self.log.getvalue()
+
 
     def configure(self):
         if self.args is None:
@@ -181,6 +186,8 @@ class Runner(object):
         # XXX I moved this here mechanically. Move to find feature?
         self.test_directories = test_dirs(self.options, {})
 
+        self.features.append(zope.testing.testrunner.outputcapture.OutputCapture(self))
+        self.features.append(zope.testing.testrunner.statistics.Statistics(self))
         self.features.append(zope.testing.testrunner.selftest.SelfTest(self))
         self.features.append(zope.testing.testrunner.logsupport.Logging(self))
         self.features.append(zope.testing.testrunner.coverage.Coverage(self))
@@ -192,10 +199,11 @@ class Runner(object):
         self.features.append(zope.testing.testrunner.subprocess.SubProcess(self))
         self.features.append(zope.testing.testrunner.filter.Filter(self))
         self.features.append(zope.testing.testrunner.listing.Listing(self))
-        self.features.append(zope.testing.testrunner.statistics.Statistics(self))
 
         # Remove all features that aren't activated
         self.features = [f for f in self.features if f.active]
+        #print "Enabled features:", ', '.join(x.__class__.__name__ for x in
+        #                                     self.features)
 
     def run_tests(self):
         """Run all tests that were registered.
@@ -210,29 +218,31 @@ class Runner(object):
             for feature in self.features:
                 feature.layer_setup(layer)
             try:
-                self.ran += run_layer(self.options, layer_name, layer, tests,
-                                      setup_layers, self.failures, self.errors)
-            except EndRun:
-                self.failed = True
-                return
-            except CanNotTearDown:
-                setup_layers = None
-                if not self.options.resume_layer:
-                    self.ran += resume_tests(self.options, layer_name, layers_to_run,
-                                             self.failures, self.errors)
-                    break
+                try:
+                    self.ran += run_layer(self.options, layer_name, layer, tests,
+                                          setup_layers, self.failures,
+                                          self.errors, self)
+                except EndRun:
+                    self.failed = True
+                    return
+                except CanNotTearDown:
+                    setup_layers = None
+                    if not self.options.resume_layer:
+                        self.ran += resume_tests(self.options, layer_name, layers_to_run,
+                                                 self.failures, self.errors)
+                        break
+            finally:
+                for feature in self.features:
+                    feature.layer_teardown(layer)
 
         if setup_layers:
-            if self.options.resume_layer == None:
-                self.options.output.info("Tearing down left over layers:")
             tear_down_unneeded(self.options, (), setup_layers, True)
 
         self.failed = bool(self.import_errors or self.failures or self.errors)
 
 
-def run_tests(options, tests, name, failures, errors):
+def run_tests(options, tests, name, failures, errors, runner):
     repeat = options.repeat or 1
-    repeat_range = iter(range(repeat))
     ran = 0
 
     output = options.output
@@ -247,13 +257,11 @@ def run_tests(options, tests, name, failures, errors):
             track = TrackRefs()
         rc = sys.gettotalrefcount()
 
-    for iteration in repeat_range:
+    for iteration in xrange(repeat):
         if repeat > 1:
             output.info("Iteration %d" % (iteration + 1))
 
-        if options.verbose > 0 or options.progress:
-            output.info('  Running:')
-        result = TestResult(options, tests, layer_name=name)
+        result = TestResult(options, tests, layer_name=name, runner=runner)
 
         t = time.time()
 
@@ -327,14 +335,12 @@ def run_tests(options, tests, name, failures, errors):
 
 
 def run_layer(options, layer_name, layer, tests, setup_layers,
-              failures, errors):
+              failures, errors, runner):
 
     output = options.output
     gathered = []
     gather_layers(layer, gathered)
     needed = dict([(l, 1) for l in gathered])
-    if options.resume_number != 0:
-        output.info("Running %s tests:" % layer_name)
     tear_down_unneeded(options, needed, setup_layers)
 
     if options.resume_layer != None:
@@ -351,7 +357,7 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
         errors.append((SetUpLayerFailure(), sys.exc_info()))
         return 0
     else:
-        return run_tests(options, tests, layer_name, failures, errors)
+        return run_tests(options, tests, layer_name, failures, errors, runner)
 
 class SetUpLayerFailure(unittest.TestCase):
 
@@ -480,8 +486,9 @@ def setup_layer(options, layer, setup_layers):
 
 class TestResult(unittest.TestResult):
 
-    def __init__(self, options, tests, layer_name=None):
+    def __init__(self, options, tests, layer_name=None, runner=None):
         unittest.TestResult.__init__(self)
+        self.runner = runner
         self.options = options
         # Calculate our list of relevant layers we need to call testSetUp
         # and testTearDown on.

@@ -34,4 +34,5 @@ class Listing(zope.testing.testrunner.feature.Feature):
     def report(self):
         layers = self.runner.tests_by_layer_name
         for layer_name, layer, tests in self.runner.ordered_layers():
+            # XXX
             self.runner.options.output.list_of_tests(tests, layer_name)

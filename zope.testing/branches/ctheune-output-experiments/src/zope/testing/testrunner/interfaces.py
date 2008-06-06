@@ -93,4 +93,35 @@ class ITestRunner(zope.interface.Interface):
     """
 
     options = zope.interface.Attribute(
-      "Provides access to configuration options.")
+        "Provides access to configuration options.")
+
+    user_interface = zope.interface.Attribute(
+        "An object providing the ITestRunnerUI interface.")
+
+    report = zope.interface.Attribute(
+        "An object providing the IReport interface.")
+
+    tests_by_layer_name = zope.interface.Attribute(
+        "A mapping of layer names to test suites containing all tests of a"
+        "single layer.")
+
+
+class ITestRunnerUI(zope.interface.Interface):
+    """The UI part of the test runner.
+
+    This allows structured configuration of a pluggable UI and communication
+    of features with the UI.
+
+        """
+
+    log = zope.interface.Attribute("File-like object to log to.")
+
+    def start():
+        """Start the UI."""
+
+    def stop():
+        """Stop the UI."""
+
+
+class IReport(zope.interface.Interface):
+    """Gathers report information and formats it into a document."""

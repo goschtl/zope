@@ -29,6 +29,7 @@ class Feature(object):
 
     def __init__(self, runner):
         self.runner = runner
+        self.log = self.runner.log
 
     def global_setup(self):
         """Executed once when the test runner is being set up."""

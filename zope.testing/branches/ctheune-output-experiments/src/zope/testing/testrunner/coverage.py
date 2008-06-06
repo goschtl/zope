@@ -149,5 +149,6 @@ class Coverage(zope.testing.testrunner.feature.Feature):
     def report(self):
         """Executed once after all tests have been run and all setup was
         torn down."""
-        r = self.tracer.results()
-        r.write_results(summary=True, coverdir=self.directory)
+        # XXX
+        #r = self.tracer.results()
+        #r.write_results(summary=True, coverdir=self.directory)

@@ -28,17 +28,11 @@ class SubProcess(zope.testing.testrunner.feature.Feature):
         super(SubProcess, self).__init__(runner)
         self.active = bool(runner.options.resume_layer)
 
-    def global_setup(self):
-        self.original_stderr = sys.stderr
-        sys.stderr = sys.stdout
-        self.runner.options.verbose = False
-
     def report(self):
         sys.stdout.close()
         # Communicate with the parent.  The protocol is obvious:
-        print >> self.original_stderr, self.runner.ran, \
-                len(self.runner.failures), len(self.runner.errors)
+        print self.runner.ran, len(self.runner.failures), len(self.runner.errors)
         for test, exc_info in self.runner.failures:
-            print >> self.original_stderr, ' '.join(str(test).strip().split('\n'))
+            print ' '.join(str(test).strip().split('\n'))
         for test, exc_info in self.runner.errors:
-            print >> self.original_stderr, ' '.join(str(test).strip().split('\n'))
+            print ' '.join(str(test).strip().split('\n'))

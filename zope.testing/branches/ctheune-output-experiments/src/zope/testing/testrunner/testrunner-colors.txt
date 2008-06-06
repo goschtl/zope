@@ -13,6 +13,8 @@ information (such as the names of failing tests) in different colors.
     ...     ]
 
     >>> from zope.testing import testrunner
+    >>> 2
+    3
 
 Since it wouldn't be a good idea to have terminal control characters in a
 test file, let's wrap sys.stdout in a simple terminal interpreter

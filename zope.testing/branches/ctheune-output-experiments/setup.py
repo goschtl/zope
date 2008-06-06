@@ -22,7 +22,7 @@ try:
     from setuptools import setup
     extra = dict(
         namespace_packages=['zope',],
-        install_requires = ['setuptools'],
+        install_requires = ['setuptools', 'zope.interface'],
         extras_require={'zope_tracebacks': 'zope.exceptions'},
         include_package_data = True,
         zip_safe = False,
@@ -32,7 +32,7 @@ except ImportError, e:
     extra = {}
 
 chapters = '\n'.join([
-    open(os.path.join('src', 'zope', 'testing', name)).read()
+    open(os.path.join('src', 'zope', 'testing', 'testrunner', name)).read()
     for name in (
     'testrunner.txt',
      'testrunner-simple.txt',
@@ -55,8 +55,6 @@ chapters = '\n'.join([
     'testrunner-gc.txt',
     'testrunner-leaks.txt',
     'testrunner-knit.txt',
-    'formparser.txt',
-    'setupstack.txt',
     )])
 
 long_description=(
