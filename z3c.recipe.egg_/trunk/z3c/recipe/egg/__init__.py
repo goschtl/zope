@@ -58,35 +58,6 @@ class Editable(zc.recipe.egg.Eggs):
             options['versions'] = self.get_online_versions()
         else:
             options['versions'] = self.get_offline_versions()
-
-    def get_online_versions(self):
-        options = self.options
-        self.installer = zc.buildout.easy_install.Installer(
-            links=self.links,
-            index = self.index, 
-            executable = options['executable'],
-            always_unzip=options.get('unzip') == 'true',
-            path=[options['develop-eggs-directory']],
-            newest=self.newest)
-        return '\n'.join([
-                '%s==%s' % (dist.project_name, dist.version)
-                for dist in (self.installer._obtain(req, source=True)
-                             for req in self.reqs)
-                if dist is not None])
-
-    def get_offline_versions(self):
-        options = self.options
-        return '\n'.join([
-                '%s==%s' % (dist.get_name(), dist.get_version())
-                for dist in (
-                    distutils.core.run_setup(
-                        os.path.join(options['build-directory'],
-                                     req.key, 'setup.py'),
-                        stop_after='commandline')
-                    for req in self.reqs
-                    if os.path.isdir(
-                        os.path.join(options['build-directory'],
-                                     req.key)))])
             
     def install(self):
         if not self.online:
@@ -135,14 +106,42 @@ class Editable(zc.recipe.egg.Eggs):
 
         return self.get_location()
 
+    update = install
+
     def get_location(self):
         if os.path.isdir(self.options['location']):
             return self.options['location']
         else:
             return ()
 
-    def update(self):
-        pass
+    def get_online_versions(self):
+        options = self.options
+        self.installer = zc.buildout.easy_install.Installer(
+            links=self.links,
+            index = self.index, 
+            executable = options['executable'],
+            always_unzip=options.get('unzip') == 'true',
+            path=[options['develop-eggs-directory']],
+            newest=self.newest)
+        return '\n'.join([
+                '%s==%s' % (dist.project_name, dist.version)
+                for dist in (self.installer._obtain(req, source=True)
+                             for req in self.reqs)
+                if dist is not None])
+
+    def get_offline_versions(self):
+        options = self.options
+        return '\n'.join([
+                '%s==%s' % (dist.get_name(), dist.get_version())
+                for dist in (
+                    distutils.core.run_setup(
+                        os.path.join(options['build-directory'],
+                                     req.key, 'setup.py'),
+                        stop_after='commandline')
+                    for req in self.reqs
+                    if os.path.isdir(
+                        os.path.join(options['build-directory'],
+                                     req.key)))])
 
 def develop(self, setups):
     for setup in setups:
