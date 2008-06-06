@@ -1,11 +1,10 @@
 import sys, os, pkg_resources, subprocess
 
 import distutils.core
-import setuptools.command.easy_install
-import zc.buildout.easy_install
+from zc.buildout import easy_install
 import zc.recipe.egg
 
-ei_logger = zc.buildout.easy_install.logger
+ei_logger = easy_install.logger
 
 class Setup(object):
 
@@ -13,8 +12,20 @@ class Setup(object):
         self.buildout = buildout
         self.name = name
         self.options = options
+        self.onInit = (
+            options.setdefault('init', 'True').lower()
+            in ['true', 'yes', '1'])
+        if self.onInit:
+            self.setup()
 
     def install(self):
+        if not self.onInit:
+            self.setup()
+        return ()
+
+    update = install
+        
+    def setup(self):
         setups = [os.path.join(self.buildout['buildout']['directory'],
                                setup.strip())
                   for setup in self.options['setup'].split('\n')
@@ -26,10 +37,6 @@ class Setup(object):
 
         if self.options.get('develop') == 'true':
             develop(self, setups)
-        
-        return ()
-
-    update = install
 
 class Editable(zc.recipe.egg.Eggs):
 
@@ -69,7 +76,7 @@ class Editable(zc.recipe.egg.Eggs):
                  os.path.isdir(os.path.join(
                     self.options['build-directory'], req.key))]
         if len(dists) > 0:
-            args = ['-c', zc.buildout.easy_install._easy_install_cmd]
+            args = ['-c', easy_install._easy_install_cmd]
             
             if options.get('unzip') == 'true':
                 args += ['-Z']
@@ -116,7 +123,7 @@ class Editable(zc.recipe.egg.Eggs):
 
     def get_online_versions(self):
         options = self.options
-        self.installer = zc.buildout.easy_install.Installer(
+        self.installer = easy_install.Installer(
             links=self.links,
             index = self.index, 
             executable = options['executable'],
@@ -146,6 +153,6 @@ class Editable(zc.recipe.egg.Eggs):
 def develop(self, setups):
     for setup in setups:
         self.buildout._logger.info("Develop: %r", setup)
-        zc.buildout.easy_install.develop(
+        easy_install.develop(
             setup=setup, dest=self.buildout['buildout'][
                 'develop-eggs-directory'])
