@@ -65,10 +65,23 @@ class Editable(zc.recipe.egg.Eggs):
             options['versions'] = self.get_online_versions()
         else:
             options['versions'] = self.get_offline_versions()
-            
+
+        self.onInit = (
+            options.setdefault('init', 'True').lower()
+            in ['true', 'yes', '1'])
+        if self.onInit:
+            self.setup()
+
     def install(self):
+        if not self.onInit:
+            self.setup()
+        return self.get_location()
+
+    update = install
+            
+    def setup(self):
         if not self.online:
-            return self.get_location()
+            return
         
         options = self.options
 
@@ -110,10 +123,6 @@ class Editable(zc.recipe.egg.Eggs):
                     os.path.join(self.options['build-directory'],
                                  req.key)
                     for req in self.reqs))
-
-        return self.get_location()
-
-    update = install
 
     def get_location(self):
         if os.path.isdir(self.options['location']):
