@@ -123,7 +123,7 @@ And run it.
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
   HTTP/1.1 200 OK
-  Content-Length: 119
+  Content-Length: 118
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
   <html>
@@ -139,4 +139,3 @@ And run it.
   </div>
   </body>
   </html>
-  <BLANKLINE>

@@ -116,7 +116,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             )
         page = contained(page, None, name='zpt')
         request = TestRequest()
-        self.assertEquals(page.render(request), 'zpt\n')
+        self.assertEquals(page.render(request), u'zpt')
 
     def test_source_file(self):
         page = ZPTPage()
@@ -137,10 +137,10 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         page.setSource(u'<tal:x>Foo</tal:x>')
 
         request = TestRequest()
-        self.assertEquals(page.render(request), 'Foo\n')
+        self.assertEquals(page.render(request), u'Foo')
 
         request.debug.showTAL = True
-        self.assertEquals(page.render(request), '<tal:x>Foo</tal:x>\n')
+        self.assertEquals(page.render(request), u'<tal:x>Foo</tal:x>')
 
         request.debug.showTAL = False
         request.debug.sourceAnnotations = True
@@ -150,7 +150,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             '=' * 78 + '\n' +
             '/folder/zpt (line 1)\n' +
             '=' * 78 + '\n' +
-            '-->Foo\n')
+            '-->Foo')
 
 
 class DummyZPT(object):

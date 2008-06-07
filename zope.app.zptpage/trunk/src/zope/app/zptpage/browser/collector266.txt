@@ -101,7 +101,7 @@ And run it.
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
   HTTP/1.1 200 OK
-  Content-Length: 52
+  Content-Length: 51
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
   <html>
@@ -111,7 +111,6 @@ And run it.
   </div>
   </body>
   </html>
-  <BLANKLINE>
 
 Let's create another page that uses the slotted macro, but doesn't
 fill it:
@@ -161,7 +160,7 @@ And run it.
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
   HTTP/1.1 200 OK
-  Content-Length: 68
+  Content-Length: 67
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
   <html>
@@ -171,7 +170,6 @@ And run it.
   </div>
   </body>
   </html>
-  <BLANKLINE>
 
 Finally, lets create a page that fills the macro:
 
@@ -222,7 +220,7 @@ And run it.
   ... Authorization: Basic bWdyOm1ncnB3
   ... """, handle_errors=False)
   HTTP/1.1 200 OK
-  Content-Length: 66
+  Content-Length: 65
   Content-Type: text/html;charset=utf-8
   <BLANKLINE>
   <html>
@@ -232,4 +230,3 @@ And run it.
   </div>
   </body>
   </html>
-  <BLANKLINE>

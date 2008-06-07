@@ -74,7 +74,7 @@ class ZPTPageTest(BrowserTestCase):
         response = self.publish(
             '/+/zope.app.zptpage.ZPTPage=',
             form={'type_name': u'zope.app.zptpage.ZPTPage',
-                  'field.source': u'<h1>A ZPT Page</h1>\n',
+                  'field.source': u'<h1>A ZPT Page</h1>',
                   'field.expand.used': u'',
                   'field.expand': u'on',
                   'field.evaluateInlineCode.used': u'',
@@ -84,7 +84,7 @@ class ZPTPageTest(BrowserTestCase):
             basic='mgr:mgrpw')
         root = self.getRootFolder()
         zptpage = root['zptpage1']
-        self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>\n')
+        self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>')
         self.assertEqual(zptpage.expand, True)
         self.assertEqual(zptpage.evaluateInlineCode, True)
 
@@ -105,7 +105,7 @@ class ZPTPageTest(BrowserTestCase):
         self.addZPTPage()
         response = self.publish(
             '/zptpage/@@edit.html',
-            form={'form.source': u'<h1>A ZPT Page</h1>\n',
+            form={'form.source': u'<h1>A ZPT Page</h1>',
                   'form.expand.used': u'',
                   'form.expand': u'on',
                   'form.content_type': u'text/html',
@@ -117,7 +117,7 @@ class ZPTPageTest(BrowserTestCase):
         self.assert_(escape(u'<h1>A ZPT Page</h1>') in body)
         root = self.getRootFolder()
         zptpage = root['zptpage']
-        self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>\n')
+        self.assertEqual(zptpage.source, '<h1>A ZPT Page</h1>')
         self.assertEqual(zptpage.expand, True)
         self.assertEqual(zptpage.content_type, 'text/html')
 
@@ -155,7 +155,7 @@ class ZPTPageTest(BrowserTestCase):
         body = response.getBody()
         self.assertEqual(
             body,
-            '<html><body><h1>http://localhost/zptpage</h1></body></html>\n')
+            '<html><body><h1>http://localhost/zptpage</h1></body></html>')
         self.checkForBrokenLinks(body, '/zptpage/@@index.html', 'mgr:mgrpw')
 
     def testPreview(self):

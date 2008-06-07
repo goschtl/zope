@@ -69,6 +69,10 @@ setup(
                       ],
     extras_require=dict(test=['zope.app.testing',
                               'zope.app.securitypolicy',
-                              'zope.app.zcmlfiles']),
+                              'zope.app.zcmlfiles',
+                              # The tests expect a spec-compliant TAL
+                              # interpreter as found in zope.tal 3.5.0:
+                              'zope.tal >= 3.5.0',
+                              ]),
     zip_safe=False,
     )
