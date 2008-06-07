@@ -23,6 +23,7 @@ script or the directory containing a setup.py script.
 The seupt script is run with the specified arguments.
 
     >>> print system(buildout),
+    Installing foo.
     Running setup script '/sample-buildout/foo/setup.py'.
     running sdist
     running egg_info
@@ -48,7 +49,6 @@ The seupt script is run with the specified arguments.
     tar -cf dist/foo-0.0.0.tar foo-0.0.0
     gzip -f9 dist/foo-0.0.0.tar
     removing 'foo-0.0.0' (and everything under it)
-    Installing foo.
 
     >>> ls(sample_buildout, 'foo', 'dist')
     -  foo-0.0.0.tar.gz
@@ -58,6 +58,7 @@ The seupt script is run with the specified arguments.
 The setup script is also run on update.
 
     >>> print system(buildout),
+    Updating foo.
     Running setup script '/sample-buildout/foo/setup.py'.
     running sdist
     running egg_info
@@ -80,7 +81,6 @@ The setup script is also run on update.
     tar -cf dist/foo-0.0.0.tar foo-0.0.0
     gzip -f9 dist/foo-0.0.0.tar
     removing 'foo-0.0.0' (and everything under it)
-    Updating foo.
 
     >>> ls(sample_buildout, 'foo', 'dist')
     -  foo-0.0.0.tar.gz
@@ -106,6 +106,8 @@ second distribution.
 Now the buildout will run the setup script on both.
 
     >>> print system(buildout),
+    Uninstalling foo.
+    Installing foo.
     Running setup script '/sample-buildout/foo/setup.py'.
     running sdist
     running egg_info
@@ -153,8 +155,6 @@ Now the buildout will run the setup script on both.
     tar -cf dist/bar-0.0.0.tar bar-0.0.0
     gzip -f9 dist/bar-0.0.0.tar
     removing 'bar-0.0.0' (and everything under it)
-    Uninstalling foo.
-    Installing foo.
 
     >>> ls(sample_buildout, 'foo', 'dist')
     -  foo-0.0.0.tar.gz
@@ -181,34 +181,13 @@ installed in develop mode.
     ... """)
 
     >>> print system(buildout),
-    Develop: '/sample-buildout/foo'
-    Develop: '/sample-buildout/bar'
     Uninstalling foo.
     Installing foo.
+    Develop: '/sample-buildout/foo'
+    Develop: '/sample-buildout/bar'
 
     >>> ls(sample_buildout, 'develop-eggs')
     -  bar.egg-link
     -  foo.egg-link
     -  z3c.recipe.egg.egg-link
     -  zc.recipe.egg.egg-link
-
-If the init option is not True, the default, then the setup script
-will be run when the part is installed or updated rather than when it
-is initialized.
-
-    >>> write(sample_buildout, 'buildout.cfg',
-    ... """
-    ... [buildout]
-    ... parts = foo
-    ...
-    ... [foo]
-    ... recipe = z3c.recipe.egg:setup
-    ... setup = foo
-    ... develop = true
-    ... init = False
-    ... """)
-
-    >>> print system(buildout),
-    Uninstalling foo.
-    Installing foo.
-    Develop: '/sample-buildout/foo'
