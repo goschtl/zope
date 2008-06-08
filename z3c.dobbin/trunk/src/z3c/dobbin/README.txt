@@ -323,6 +323,29 @@ For good measure, let's create a new instance without adding any
 elements to its list.
 
     >>> _ = create(ICollection)
+
+Security
+--------
+
+The security model from Zope is applied to mappers.
+
+    >>> from zope.security.checker import getCheckerForInstancesOf
+
+Our ``Vinyl`` class does not have a security checker defined.
+    
+    >>> mapper = getMapper(Vinyl)
+    >>> getCheckerForInstancesOf(mapper) is None
+    True
+
+Let's set a checker and regenerate the mapper.
+
+    >>> from zope.security.checker import defineChecker, CheckerPublic
+    >>> defineChecker(Vinyl, CheckerPublic)
+    
+    >>> from z3c.dobbin.mapper import createMapper
+    >>> mapper = createMapper(Vinyl)
+    >>> getCheckerForInstancesOf(mapper) is CheckerPublic
+    True    
     
 Known limitations
 -----------------

@@ -4,7 +4,7 @@ from zope import component
 
 from zope.dottedname.resolve import resolve
 from zope.security.interfaces import IChecker
-from zope.security.checker import defineChecker
+from zope.security.checker import defineChecker, getCheckerForInstancesOf
 
 from interfaces import IMapper
 from interfaces import IMapped
@@ -293,6 +293,10 @@ def createMapper(spec):
         checker = component.queryAdapter(spec, IChecker)
         if checker is not None:
             defineChecker(Mapper, checker)
+    # if not, assign the checker from the specification to the mapper.
+    else:
+        checker = getCheckerForInstancesOf(spec)
+        defineChecker(Mapper, checker)
         
     # set class representation method if not defined
     if not isinstance(Mapper.__repr__, types.MethodType):
