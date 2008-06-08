@@ -291,13 +291,13 @@ def createMapper(spec):
     # security checker and define it on the mapper
     if interface.interfaces.IInterface.providedBy(spec):
         checker = component.queryAdapter(spec, IChecker)
-        if checker is not None:
-            defineChecker(Mapper, checker)
     # if not, assign the checker from the specification to the mapper.
     else:
         checker = getCheckerForInstancesOf(spec)
+
+    if checker is not None:
         defineChecker(Mapper, checker)
-        
+
     # set class representation method if not defined
     if not isinstance(Mapper.__repr__, types.MethodType):
         def __repr__(self):
