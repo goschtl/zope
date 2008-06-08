@@ -29,6 +29,7 @@ setup(name='z3c.resourceinclude',
           'setuptools',
           'zope.app.publisher',
           'zope.app.cache',
+          'zope.contentprovider',
           'plone.memoize',
           'z3c.pt',
           # -*- Extra requirements: -*-
