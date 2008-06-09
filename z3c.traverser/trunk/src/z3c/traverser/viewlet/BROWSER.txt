@@ -9,7 +9,7 @@ Traversing to viewlets is done via namespaces.
   >>> browser.handleErrors = False
   >>> browser.open('http://localhost/@@test.html')
 
-We have a test page registered that containes our viewlet. The viewlet
+We have a test page registered that contains our viewlet. The viewlet
 itself just renders a link to its location (this is just for testing).
 
   >>> print browser.contents
@@ -31,7 +31,7 @@ Let's follow the link to traverse the viewlet directly.
 
 
 What happens if a viewlet managers is nested into another viewlet? To test
-this we will create anothe manager and another viewlet::
+this we will create another manager and another viewlet::
 
   >>> browser.open('http://localhost/@@nested.html')
   >>> print browser.contents
@@ -51,7 +51,7 @@ Let's follow the link to traverse the viewlet directly.
   '<div><a href="http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet">Most inner viewlet</a></div>'
 
 
-Ceveats
+Caveats
 -------
 
 Update of the manager is not called, because this may be too expensive
