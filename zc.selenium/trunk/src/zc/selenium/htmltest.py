@@ -19,8 +19,10 @@ $Id$
 __docformat__ = "reStructuredText"
 import os
 import zope.interface
+from zope.app.component import hooks
 from zc.selenium.pytest import ISeleniumTest
 from zc.selenium.resource import ResourceBase
+from z3c.zrtresource import processor, replace
 
 
 class HTMLTableSeleniumTest(ResourceBase):
@@ -29,7 +31,9 @@ class HTMLTableSeleniumTest(ResourceBase):
     filename = None
 
     def __call__(self):
-        return open(self.filename, 'r').read()
+        data = open(self.filename, 'r').read()
+        p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
+        return p.process(hooks.getSite(), self.request)
 
     GET = __call__
 

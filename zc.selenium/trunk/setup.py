@@ -17,5 +17,6 @@ setup(
         'zope.interface',
         'zope.component',
         'zope.publisher',
+        'z3c.zrtresource',
     ]
 )
