@@ -1,8 +1,10 @@
 import grok
-from base import ViewBase
+from zope.interface import Interface
 
-class GrokstarAddForm(grok.AddForm, ViewBase):
+class GrokstarAddForm(grok.AddForm):
     pass
 
-class GrokstarEditForm(grok.EditForm, ViewBase):
+class GrokstarEditForm(grok.EditForm):
     pass
+
+grok.context(Interface)

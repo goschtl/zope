@@ -4,7 +4,7 @@ from hurry import query
 from zope.interface import Interface
 from grokstar.interfaces import IBlog
 
-class ViewBase(grok.View):
+class Utils(grok.View):
     """contain common view methods"""
     grok.context(Interface)
 
@@ -16,3 +16,6 @@ class ViewBase(grok.View):
                 return len(obj['entries'])
             obj = obj.__parent__
         return 0
+
+    def render(self):
+        return ''

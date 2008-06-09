@@ -14,7 +14,6 @@ import grok
 from grok import index
 from grokstar.interfaces import IRestructuredTextEntry, IBlog
 from grokstar.interfaces import PUBLISHED, CREATED
-from grokstar.base import ViewBase
 from form import GrokstarEditForm
 from zope.app.catalog.interfaces import ICatalog
 from zope.component import getUtility
@@ -50,7 +49,7 @@ class WorkflowIndexes(grok.Indexes):
 class Drafts(grok.Model):
       pass
 
-class DraftsIndex(ViewBase):
+class DraftsIndex(grok.View):
     grok.context(Drafts)
     grok.name('index')
     
@@ -60,14 +59,14 @@ class DraftsIndex(ViewBase):
 class Entries(grok.Container):
     pass
 
-class BlogIndex(ViewBase):
+class BlogIndex(grok.View):
     grok.context(Blog)
     grok.name('index')
 
     def entries(self):
         return lastEntries(10)
 
-class BlogMacros(ViewBase):
+class BlogMacros(grok.View):
     grok.context(Interface)
 
 class BlogEdit(GrokstarEditForm):
@@ -80,11 +79,11 @@ class BlogEdit(GrokstarEditForm):
         self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
 
-class BlogAbout(ViewBase):
+class BlogAbout(grok.View):
     grok.context(Blog)
     grok.name('about')
 
-class Search(ViewBase):
+class Search(grok.View):
     grok.context(Blog)
 
     def update(self, q=None):
@@ -103,7 +102,7 @@ class Search(ViewBase):
               query.Text(('entry_catalog', 'content'), q))))
         self.results = list(islice(entries, 10))
 
-class EntriesIndex(ViewBase):
+class EntriesIndex(grok.View):
     grok.context(Entries)
     grok.name('index')
 
@@ -127,7 +126,7 @@ def allEntries(amount):
         entries, key=lambda entry: entry.updated, reverse=True
         )[:amount]
 
-class Categories(ViewBase):
+class Categories(grok.View):
     grok.context(Blog)
     grok.name('categories')
 

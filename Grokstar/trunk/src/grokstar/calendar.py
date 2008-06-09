@@ -6,7 +6,6 @@ from hurry.query.query import Query
 from hurry import query
 
 from grokstar.interfaces import PUBLISHED
-from grokstar.base import ViewBase
 
 class Year(grok.Model):
     def __init__(self, year):
@@ -21,7 +20,7 @@ class Year(grok.Model):
             return None
         return Month(self.year, month)
 
-class YearIndex(ViewBase):
+class YearIndex(grok.View):
     grok.name('index')
     grok.context(Year)
     grok.template('dateindex')
@@ -44,7 +43,7 @@ class Month(grok.Model):
         # XXX should check whether day is acceptable
         return Day(self.year, self.month, day)
 
-class MonthIndex(ViewBase):
+class MonthIndex(grok.View):
     grok.name('index')
     grok.context(Month)
     grok.template('dateindex')
@@ -67,7 +66,7 @@ class Day(grok.Model):
         self.month = month
         self.day = day
 
-class DayIndex(ViewBase):
+class DayIndex(grok.View):
     grok.name('index')
     grok.context(Day)
     grok.template('dateindex')

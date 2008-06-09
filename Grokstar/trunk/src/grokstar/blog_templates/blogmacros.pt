@@ -34,8 +34,9 @@
       <div metal:define-slot="main-content" />
     </div>
     <div id="ft">
-      <span id="num-posts">
-        Me grok <tal:posts replace="view/numPosts" /> posts!
+      <span id="num-posts"
+            tal:define="utils nocall:context/@@utils">
+        Me grok <tal:posts replace="utils/numPosts" /> posts!
       </span>
       <div id="external-links">
         <ul>

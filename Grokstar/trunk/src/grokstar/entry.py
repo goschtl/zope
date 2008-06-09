@@ -10,7 +10,6 @@ import grok
 
 from grokstar.blog import Blog
 from grokstar import interfaces
-from grokstar.base import ViewBase
 from form import GrokstarAddForm, GrokstarEditForm
 
 class Entry(grok.Model):
@@ -37,11 +36,11 @@ class RestructuredTextEntry(Entry):
 grok.context(RestructuredTextEntry)
 
 
-class Index(ViewBase):
+class Index(grok.View):
     pass
 
 
-class Item(ViewBase):
+class Item(grok.View):
     def format_published(self, published_date):
         return published_date.strftime('%Y-%m-%d')
 
@@ -90,7 +89,7 @@ class Edit(GrokstarEditForm):
         self.redirect(self.url(self.context))
 
 
-class RenderedContent(ViewBase):
+class RenderedContent(grok.View):
     def render(self):
         return renderRest(self.context.content)
 
