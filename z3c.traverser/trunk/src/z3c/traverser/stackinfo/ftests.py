@@ -1,7 +1,7 @@
 import unittest
 
 from zope.app.testing import functional
-functional.defineLayer('TestLayer', 'ftesting.zcml')
+functional.defineLayer('TestLayer', 'ftesting.zcml', allow_teardown=True)
 
 def test_suite():
     suite = unittest.TestSuite()
