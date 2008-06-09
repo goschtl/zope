@@ -2,8 +2,8 @@
 Changes in lovely.zetup
 =======================
 
-before first release
-====================
+0.0.1a1
+=======
 
 - implemented testbrowser
 - implemented paste app testing layer

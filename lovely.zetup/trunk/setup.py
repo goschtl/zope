@@ -3,15 +3,15 @@ from setuptools import setup, find_packages
 
 setup(
     name="lovely.zetup",
-    version="0.0.0",
+    version="0.0.1a1",
     zip_safe = False,
     include_package_data = True,
     packages = find_packages('src'),
     namespace_packages=['lovely'],
+    url = 'http://svn.zope.org/lovely.zetup',
     extras_require = dict(
         test = ['zope.testing',
                 'zope.app.authentication',
-                #'zc.testbrowser'
                 ]
         ),
     install_requires = ['setuptools',
@@ -22,9 +22,7 @@ setup(
                         'zope.error',
                         'zope.app.component',
                         'wsgi_intercept',
-                        #'zope.app.zcmlfiles',
                         'transaction',
-                        #'zope.app.securitypolicy',
                         'Paste',
                         'PasteDeploy',
                         'z3c.configurator',

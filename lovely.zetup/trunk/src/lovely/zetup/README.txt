@@ -46,8 +46,10 @@ The config file has to define local variables - 'app' and an optional
 The app dictionary
 ------------------
 
-    >>> pprint(cfg['app'])
-    {'features': ['devmode'], 'logging': 'logging.cfg', 'zcml': 'ftesting.zcml'}
+    >>> pprint(sorted(cfg['app'].items()))
+    [('features', ['devmode']),
+     ('logging', 'logging.cfg'),
+     ('zcml', 'ftesting.zcml')]
 
 The logging key defines which config file should be used to
 configure logging. This is actually a standard logging config file as
