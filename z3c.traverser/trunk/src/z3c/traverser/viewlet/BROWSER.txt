@@ -37,8 +37,7 @@ this we will create anothe manager and another viewlet::
   >>> print browser.contents
   <html>
     <body>
-      <div><div><a href="http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet">Most inner viewlet</a></div>
-      </div>
+      <div><div><a href="http://localhost/nested.html/++manager++IOuterManager/++viewlet++OuterViewlet/++manager++IInnerManager/++viewlet++InnerViewlet/++manager++IMostInnerManager/++viewlet++MostInnerViewlet">Most inner viewlet</a></div></div>
     </body>
   </html>
 
