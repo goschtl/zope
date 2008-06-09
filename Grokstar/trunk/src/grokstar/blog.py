@@ -2,19 +2,22 @@ import random
 from datetime import datetime, timedelta
 from itertools import islice
 
+from zc.catalog.catalogindex import SetIndex
 from zope import schema, interface
 from zope.interface import Interface
 from zope.traversing.api import getParents
 from hurry.query.query import Query
 from hurry import query
+from hurry.query.set import AllOf
 from hurry.workflow.interfaces import IWorkflowState
-
 import grok
 from grok import index
 from grokstar.interfaces import IRestructuredTextEntry, IBlog
 from grokstar.interfaces import PUBLISHED, CREATED
 from grokstar.base import ViewBase
 from form import GrokstarEditForm
+from zope.app.catalog.interfaces import ICatalog
+from zope.component import getUtility
 
 class Blog(grok.Container, grok.Application):
     interface.implements(IBlog)
@@ -33,6 +36,7 @@ class EntryIndexes(grok.Indexes):
     title = index.Text()
     content = index.Text()
     published = index.Field()
+    categories = index.Set()
 
 class WorkflowIndexes(grok.Indexes):
     grok.site(Blog)
@@ -95,6 +99,7 @@ class Search(ViewBase):
         entries = Query().searchResults(
             (query.Eq(('entry_catalog', 'workflow_state'), PUBLISHED) &
              (query.Text(('entry_catalog', 'title'), q) |
+              AllOf(('entry_catalog', 'categories'), [q]) |
               query.Text(('entry_catalog', 'content'), q))))
         self.results = list(islice(entries, 10))
 
@@ -121,3 +126,12 @@ def allEntries(amount):
     return sorted(
         entries, key=lambda entry: entry.updated, reverse=True
         )[:amount]
+
+class Categories(ViewBase):
+    grok.context(Blog)
+    grok.name('categories')
+
+    def categories(self):
+        cat = getUtility(ICatalog, 'entry_catalog')
+        categories = cat['categories']
+        return categories.values()

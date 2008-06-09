@@ -28,8 +28,9 @@ class IEntry(Interface):
 ##     contributors = schema.List(title=u"Contributors", value_type=schema.Object,
 ##                                default=[])
 
-##     categories = schema.List(title=u"Categories", value_type=schema.Object,
-##                              default=[])
+    categories = schema.List(title=u"Categories",
+                             value_type=schema.TextLine(title=u"Categories"),
+                             default=[])
  
     #links = schema.List(title=u"Links", value_type=schema.TextLine,
     #                    default=[])

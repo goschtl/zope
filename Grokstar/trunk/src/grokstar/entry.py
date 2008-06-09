@@ -16,18 +16,22 @@ from form import GrokstarAddForm, GrokstarEditForm
 class Entry(grok.Model):
     interface.implements(interfaces.IEntry, IAttributeAnnotatable)
 
-    def __init__(self, title, summary, rightsinfo):
+    def __init__(self, title, summary, rightsinfo, categories=None):
         self.title = title
         self.updated = datetime.now()
         self.published = None
         self.summary = summary
         self.rightsinfo = rightsinfo
+        if categories is None:
+            self.categories = []
+        else:
+            self.categories = categories
 
 class RestructuredTextEntry(Entry):
     interface.implements(interfaces.IRestructuredTextEntry)
 
-    def __init__(self, title, summary, rightsinfo, content):
-        super(RestructuredTextEntry, self).__init__(title, summary, rightsinfo)
+    def __init__(self, title, summary, rightsinfo, content, categories=None):
+        super(RestructuredTextEntry, self).__init__(title, summary, rightsinfo, categories)
         self.content = content
 
 grok.context(RestructuredTextEntry)
