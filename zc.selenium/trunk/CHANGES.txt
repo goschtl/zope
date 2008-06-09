@@ -6,6 +6,8 @@ CHANGES
 1.1.0 (2008-??-??)
 ------------------
 
+- Feature: Updated to the latest Selenium Core release 0.8.3.
+
 - Feature: Added a `--base-url` option to the selenium script, so that one is
   not depndent to include the default layer in the default skin. (Who does
   this? What a security hole!)
