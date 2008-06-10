@@ -1,39 +1,39 @@
-=======
 Changes
 =======
 
 0.3.3 (unreleased)
-==================
+------------------
+
 
 0.3.2 (2008-04-09)
-==================
+------------------
 
     - Fixed scalability bug caused by missing __nonzero__ on ValueMappingSource
 
 
 0.3.1 (2008-02-12)
-==================
+------------------
 
     - Fixed scalability bug caused by missing __nonzero__ on BasicSourceFactory
 
 
 0.3.0 (??????????)
-==================
+------------------
 
     - Added class-level defaults for attributes that are declared in the
       interfaces to not have the Zope 2 security machinery complain about
       them.
 
 
-0.2.1 - 2007-07-10
-==================
+0.2.1 (2007-07-10)
+------------------
 
     - Fixed a bug in the contextual token policy that was handling the
       resolution of values for a given token incorrectly.
 
 
-0.2.0 - 2007-07-10
-==================
+0.2.0 (2007-07-10)
+------------------
 
     - Added a contextual token policy interface that allows getToken and
       getValue to access the cotext for contextual sources.
