@@ -47,7 +47,7 @@ def TextLinesFieldWidget(field, request):
 
 
 class TextLinesConverter(converter.BaseDataConverter):
-    """Data converter for IOfficeIdsWidget."""
+    """Data converter for ITextLinesWidget."""
 
     zope.component.adapts(
         zope.schema.interfaces.ITuple, interfaces.ITextLinesWidget)

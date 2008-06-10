@@ -22,46 +22,25 @@ import zope.schema
 import zope.i18nmessageid
 _ = zope.i18nmessageid.MessageFactory('zam')
 
-from z3c.form import form
+from z3c.formui import form
 from z3c.form import field
 from z3c.form import button
-from z3c.formui import layout
 from z3c.pagelet import browser
 
 from zamplugin.error import interfaces
 from zamplugin.error import widget
 
 
-class EditErrorLog(layout.FormLayoutSupport, form.Form):
+class EditErrorLog(form.EditForm):
 
     zope.interface.implements(interfaces.IErrorReportingUtilityPage)
 
     formErrorsMessage = _('There were some errors.')
     successMessage = _('Data successfully updated.')
-    ignoreContext = True
 
     fields = field.Fields(interfaces.IErrorReportingUtilityManager)
 
     fields['ignored_exceptions'].widgetFactory = widget.TextLinesFieldWidget
-
-    def updateProperties(self, keep_entries, copy_to_zlog=None,
-                         ignored_exceptions=None):
-        if copy_to_zlog is None:
-            copy_to_zlog = 0
-        self.context.setProperties(keep_entries, copy_to_zlog,
-            ignored_exceptions)
-
-    @button.buttonAndHandler(_('Apply'), name='apply')
-    def handleApply(self, action):
-        data, errors = self.extractData()
-        if errors:
-            self.status = self.formErrorsMessage
-            return
-        keep_entries = data['keep_entries']
-        copy_to_zlog = data['copy_to_zlog']
-        ignored_exceptions = data['ignored_exceptions']
-        self.updateProperties(keep_entries, copy_to_zlog, ignored_exceptions)
-        self.status = self.successMessage
 
 
 class Errors(browser.BrowserPagelet):

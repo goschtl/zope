@@ -44,7 +44,8 @@ class ErrorReportingUtilityManager(object):
             keep_entries = value
             copy_to_zlog = data['copy_to_zlog']
             ignored_exceptions = data['ignored_exceptions']
-            setProperties(keep_entries, copy_to_zlog, ignored_exceptions)
+            self.context.setProperties(keep_entries, copy_to_zlog,
+                ignored_exceptions)
         return property(get, set)
 
     @apply
