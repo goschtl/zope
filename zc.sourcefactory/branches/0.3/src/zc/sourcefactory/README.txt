@@ -16,7 +16,7 @@ values, getting a token and a title to display.
 
 
 Simple case
------------
+===========
 
 In the most simple case, you only have to provide a method that returns a list
 of values and derive from `BasicSourceFactory`::
@@ -44,7 +44,7 @@ The values match our `getValues`-method of the factory::
 
 
 Contextual sources
-------------------
+==================
 
 Sometimes we need context to determine the values. In this case, the
 `getValues`-method gets a parameter `context`.
@@ -88,7 +88,7 @@ Modifying the context also modifies the data in the source::
 
 
 Filtering
----------
+=========
 
 Additional to providing the `getValues`-method you can also provide a
 `filterValue`-method that will allow you to reduce the items from the list,
@@ -130,7 +130,7 @@ The "len" also gets applied to filtered values::
 
 
 Scaling
--------
+=======
 
 Sometimes the number of items available through a source is very large.  So
 large that you only want to access them if absolutely neccesary.  One such
@@ -151,7 +151,7 @@ want to make sure it isn't called.
 
 
 Simple case
------------
+===========
 
 In the most simple case, you only have to provide a method that returns a list
 of values and derive from `BasicSourceFactory`::
@@ -178,7 +178,7 @@ The values match our `getValues`-method of the factory::
   3
 
 WARNING about the standard adapters for ITerms
-----------------------------------------------
+==============================================
 
 The standard adapters for ITerms are only suitable if the value types returned
 by your `getValues` function are homogenous. Mixing integers, persistent
