@@ -76,6 +76,10 @@ Let's pick a more recent Diana Ross, to fit the format.
 To verify that we've actually inserted objects to the database, we
 commit the transacation, thus flushing the current session.
 
+    >>> session.save(album)
+    >>> session.save(vinyl)
+    >>> session.save(cd)
+    
     >>> import transaction
     >>> transaction.commit()
 
@@ -168,6 +172,13 @@ Let's see how fast this record should be played back.
 
     >>> experimental.rpm
     50
+
+Instances of mappers automatically join the object soup.
+
+    >>> mapper = getMapper(Vinyl)
+    >>> instance = mapper()
+    >>> instance.uuid is not None
+    True
     
 Relations
 ---------
@@ -184,6 +195,8 @@ Let's make our Diana Ross record a favorite.
     >>> favorite.item
     <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>
 
+    >>> session.save(favorite)
+    
 Get back the object.
     
     >>> favorite = session.query(IFavorite.__mapper__).select_by(
@@ -265,7 +278,8 @@ Let's set up a record collection as a list.
 Add the Diana Ross record, and save the collection to the session.
 
     >>> collection.records.append(diana)
-
+    >>> session.save(collection)
+    
 We can get our collection back.
 
     >>> collection = session.query(ICollection.__mapper__).select_by(

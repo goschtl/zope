@@ -5,6 +5,8 @@ from zope import component
 from zope.dottedname.resolve import resolve
 from zope.security.interfaces import IChecker
 from zope.security.checker import defineChecker, getCheckerForInstancesOf
+from zope.security.checker import NamesChecker
+from zope.security.proxy import removeSecurityProxy
 
 from interfaces import IMapper
 from interfaces import IMapped
@@ -19,6 +21,9 @@ from ore.alchemist import Session
 from ore.alchemist.zs2sa import FieldTranslator
 from ore.alchemist.zs2sa import StringTranslator
 
+from uuid import uuid1
+from random import randint
+
 import bootstrap
 import relations
 
@@ -27,6 +32,14 @@ import factory
 from itertools import chain
 
 import types
+
+def uuid():
+    """Return new unique id as string.
+
+    Force first character between 'a' and 'z'.
+    """
+    
+    return chr(randint(ord('a'), ord('z'))) + uuid1().hex[:-1]
 
 class RelationProperty(property):
     def __init__(self, field):
@@ -38,14 +51,20 @@ class RelationProperty(property):
         item = getattr(instance, kls.name)
         return relations.lookup(item.uuid)
 
-    def set(kls, instance, value):
-        if not IMapped.providedBy(value):
-            value = relations.persist(value)
+    def set(kls, instance, item):
+        if not IMapped.providedBy(item):
+            item = relations.persist(item)
 
-        setattr(instance, kls.name, value)
-        
+        if item.id is None:
+            session = Session()
+            session.save(item)
+
+        setattr(instance, kls.name, item)
+
 class RelationList(object):
     __emulates__ = None
+    __Security_checker__ = NamesChecker(
+        ('append', 'remove'))
     
     def __init__(self):
         self.data = []
@@ -89,7 +108,7 @@ class RelationList(object):
 
         # add relation to internal list
         self.data.append(relation)
-
+        
     def remove(self, item, _sa_initiator=None):
         if IMapped.providedBy(item):
             uuid = item.uuid
@@ -169,10 +188,7 @@ class ListProperty(object):
         return {
             field.__name__: orm.relation(
                 bootstrap.Relation,
-                #secondary=relation_table,
                 primaryjoin=soup_table.c.uuid==relation_table.c.left,
-                #secondaryjoin=relation_table.c.target==soup_table.c.uuid,
-                #foreign_keys=[relation_table.c.source],
                 collection_class=RelationList,
                 enable_typechecks=False)
             }
@@ -214,20 +230,20 @@ fieldmap = {
     schema.Bool: FieldTranslator(rdb.BOOLEAN),
     schema.Bytes: FieldTranslator(rdb.BLOB),
     schema.BytesLine: FieldTranslator(rdb.CLOB),
-    schema.Choice: StringTranslator(),
+    schema.Choice: StringTranslator(rdb.Unicode),
     schema.Date: FieldTranslator(rdb.DATE),
     schema.Dict: (ObjectTranslator(), DictProperty()),
     schema.DottedName: StringTranslator(),
     schema.Float: FieldTranslator(rdb.Float), 
-    schema.Id: StringTranslator(),
+    schema.Id: StringTranslator(rdb.Unicode),
     schema.Int: FieldTranslator(rdb.Integer),
     schema.List: (None, ListProperty()),
     schema.Object: (ObjectTranslator(), ObjectProperty()),
-    schema.Password: StringTranslator(),
-    schema.SourceText: StringTranslator(),
-    schema.Text: StringTranslator(),
-    schema.TextLine: StringTranslator(),
-    schema.URI: StringTranslator(),
+    schema.Password: StringTranslator(rdb.Unicode),
+    schema.SourceText: StringTranslator(rdb.UnicodeText),
+    schema.Text: StringTranslator(rdb.UnicodeText),
+    schema.TextLine: StringTranslator(rdb.Unicode),
+    schema.URI: StringTranslator(rdb.Unicode),
     interface.interface.Method: None,
 }
 
@@ -287,6 +303,13 @@ def createMapper(spec):
 
         __spec__ = '%s.%s' % (spec.__module__, spec.__name__)
 
+        def __init__(self, *args, **kwargs):
+            super(Mapper, self).__init__(*args, **kwargs)
+            
+            # set soup metadata
+            self.uuid = uuid()
+            self.spec = self.__spec__
+            
     # if the specification is an interface class, try to look up a
     # security checker and define it on the mapper
     if interface.interfaces.IInterface.providedBy(spec):

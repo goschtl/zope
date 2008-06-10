@@ -4,6 +4,7 @@ import sqlalchemy as rdb
 from sqlalchemy import orm
         
 from ore.alchemist.interfaces import IDatabaseEngine
+from ore.alchemist import Session
 
 from interfaces import IMapped
 
@@ -58,7 +59,11 @@ class Relation(object):
     def _set_target(self, item):
         if not IMapped.providedBy(item):
             item = relations.persist(item)
-        
+
+        if item.id is None:
+            session = Session()
+            session.save(item)
+                
         self.right = item.uuid
 
     source = property(_get_source, _set_source)
