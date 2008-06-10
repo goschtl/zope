@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.3 (unreleased)
+0.3.3 (2008-06-10)
 ------------------
 
     - Fixed bug in __new__ of factories that would disallow subclasses to use
