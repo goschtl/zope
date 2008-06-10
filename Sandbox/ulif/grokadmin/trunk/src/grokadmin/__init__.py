@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,3 +12,4 @@
 #
 ##############################################################################
 # a package
+__import__('pkg_resources').declare_namespace(__name__)
