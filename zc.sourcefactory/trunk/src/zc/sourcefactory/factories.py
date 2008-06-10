@@ -32,10 +32,10 @@ class BasicSourceFactory(object):
 
     zope.interface.implements(zc.sourcefactory.interfaces.ISourceFactory)
 
-    def __new__(cls):
+    def __new__(cls, *args, **kw):
         """Create the factory object and return source."""
         factory = object.__new__(cls)
-        factory.__init__()
+        factory.__init__(*args, **kw)
         return zc.sourcefactory.source.FactoredSource(factory)
 
 

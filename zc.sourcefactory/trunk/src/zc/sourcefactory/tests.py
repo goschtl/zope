@@ -34,6 +34,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocFileSuite('README.txt'))
     suite.addTest(doctest.DocFileSuite('mapping.txt'))
+    suite.addTest(doctest.DocFileSuite('constructors.txt'))
     adapters = FunctionalDocFileSuite('adapters.txt')
     adapters.layer = SourceFactoryLayer
     suite.addTest(adapters)
