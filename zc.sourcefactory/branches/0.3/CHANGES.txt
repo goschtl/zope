@@ -4,6 +4,9 @@ Changes
 0.3.3 (unreleased)
 ------------------
 
+    - Fixed bug in __new__ of factories that would disallow subclasses to use
+      constructors that expect a different signature. (Thanks to Sebastian
+      Wehrmann for the patch.)
 
 0.3.2 (2008-04-09)
 ------------------
