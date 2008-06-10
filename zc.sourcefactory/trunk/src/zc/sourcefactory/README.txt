@@ -177,6 +177,7 @@ The values match our `getValues`-method of the factory:
   >>> len(source)
   3
 
+
 WARNING about the standard adapters for ITerms
 ----------------------------------------------
 
