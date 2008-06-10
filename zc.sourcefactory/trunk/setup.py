@@ -10,10 +10,12 @@ setup(
 
     description="An easy way to create custom Zope 3 sources.",
 
-    long_description=open(
+    long_description=(open(
         os.path.join(os.path.dirname(__file__),
                      "src", "zc", "sourcefactory", "README.txt"),
-        "r").read(),
+        "r").read() + "\n\n" + 
+        open(os.path.join(os.path.dirname(__file__), "CHANGES.txt"),
+             "r").read()),
 
     packages=find_packages('src'),
     package_dir={'':'src'},
