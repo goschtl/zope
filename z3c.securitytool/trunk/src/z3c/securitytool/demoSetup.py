@@ -1,3 +1,17 @@
+##############################################################################
+#
+# Copyright (c) 2008 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import transaction
 from zope.app.folder import Folder
 from zope.app import zapi
@@ -34,7 +48,7 @@ class CreateStructure(object):
         # Lets get the list of all principals on the system.
         sysPrincipals = zapi.principals()
         principals = [x.id for x in sysPrincipals.getPrincipals('')
-                      if x.id not in ['zope.group1','zope.group2','zope.randy']]
+                    if x.id not in ['zope.group1','zope.group2','zope.randy']]
 
 # Here is where we begin to set the permissions for the root context level
         roleManager = IPrincipalRoleManager(root)
