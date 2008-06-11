@@ -507,7 +507,6 @@ def getViews(iface, reqType=IRequest):
                 iface.isOrExtends(reg.required[0])):
                 yield reg
 
-# TODO: Not yet tested
 def hasPermissionSetting(settings):
     """Check recursively if a security mapping contains any permission
     setting.

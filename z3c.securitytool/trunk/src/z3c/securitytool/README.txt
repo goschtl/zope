@@ -246,19 +246,6 @@ and the context of 'Folder1'.
                                       'setting': PermissionSetting: Allow}]}}
 
 
-
-     {'Root  Folder': {'name': 'Root  Folder',
-                       'parentList': ['Root Folder'],
-                       'permissions': [{'permission': 'concord.CreateArticle',
-                                        'principal': 'zope.daniel',
-                                        'setting': PermissionSetting: Deny},
-                                       {'permission': 'concord.ReadIssue',
-                                        'principal': 'zope.daniel',
-                                        'setting': PermissionSetting: Allow},
-                                       {'permission': 'concord.DeleteArticle',
-                                        'principal': 'zope.daniel',
-                                        'setting': PermissionSetting: Deny}]}}
-
     The permissions section of the matrix displays the final say on
     whether or not the user has permissions at this context level.
 
