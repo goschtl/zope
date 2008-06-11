@@ -617,9 +617,10 @@ def settingsForObject(ob):
 
         result.append((getattr(ob, '__name__', '(no name)'), data))
         ob = getattr(ob, '__parent__', None)
-        # This is just to create an internal unique name for the object
-        # using the name and depth of the object.
 
+        # This is just to create an internal unique name for the object
+        # using the name and depth of the object. Im not sure but a
+        # linkedlist may be a better approach.
         if data.has_key('parentList'):
             data['uid'] = data['parentList'][0]+"_" + \
                                 str(len(data['parentList']))
