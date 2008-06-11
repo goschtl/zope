@@ -53,7 +53,7 @@ page when you change skins.
    <table class="matrix_table" tal:define="urlViewName view/urlEncodedViewName" >
        <th class="headings">&nbsp</th>
        <th class="headings"
-           tal:repeat="principal python: view.viewMatrix">
+           tal:repeat="principal python: sorted(view.viewMatrix)">
            <a tal:content="principal"
                tal:attributes="href
                         string:principalDetails.html?principal=${principal}">
@@ -75,7 +75,7 @@ page when you change skins.
           <tr tal:repeat="viewItem python: view.viewList[viewObj]"
               tal:attributes="class view/cssclass" >
                <td tal:content="viewItem" class="view_perm"/>
-                <metal:block tal:repeat="principal view/viewMatrix">
+                <metal:block tal:repeat="principal python: sorted(view.viewMatrix)">
                 <td tal:define="enc python:urlViewName[viewItem];
                    perm python: view.getPermissionSetting(viewItem,principal)">
 
