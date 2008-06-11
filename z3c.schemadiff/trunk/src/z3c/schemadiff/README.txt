@@ -50,7 +50,8 @@ Let's try it out.
 Now we can make a diff of the two instances.
 
   >>> from z3c.schemadiff import schema
-  >>> schema.diff(margherita, capricciosa)
+  >>> from pprint import pprint
+  >>> pprint(schema.diff(margherita, capricciosa))
   {<zope.schema._field.Set object at ...>:
         ((u'Tomato', u'Mozzarella', u'Basil'),
          (u'Tomato', u'Mozarella', u'Mushrooms', u'Artichokes', u'Prosciutto')),
