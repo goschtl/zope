@@ -5,22 +5,7 @@
 
      NEED FOR BETA RELEASE
     ==============================
-
-    * Make sure the group settings are taken into account and
-      displayed properly 
-
-        o SecurityMatrix.html -- Done
-        o PrincipalDetails.html -- Done
-        o PermissionDetails.html -- Done       
-
-    * Test inheritance of roles through group memberships.
-
-        o SecurityMatrix.html
-        o PrincipalDetails.html
-        o PermissionDetails.html        
-
            
-
     * Show the permission details as a graph ??
 
     PrincipalDetails and Permission Details
@@ -31,6 +16,22 @@
 
                                             DONE
 ==============================================================================
+    * Make sure the group settings are taken into account and
+      displayed properly 
+
+        o SecurityMatrix.html -- Done
+        o PrincipalDetails.html -- Done
+        o PermissionDetails.html -- Done       
+
+    * Test inheritance of roles through group memberships.
+        ( DONE we just inherit the permissions digested from the
+        groups ) 
+        o SecurityMatrix.html
+        o PrincipalDetails.html
+        o PermissionDetails.html        
+
+
+
     * Permissions for securitytool views cannot be zope.Public
 
     * Show permisisons that have a direct impact view and user
