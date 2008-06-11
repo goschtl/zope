@@ -57,7 +57,7 @@ roles, groups or specifically assigned permissions will be displayed.
      'getReadPerm',
      'populateMatrix',
      'populatePermissionMatrix',
-     'updateRolePermissionSetting']
+     'populateViewRoleMatrix']
         
 
     To get all the security settings for particular context level the

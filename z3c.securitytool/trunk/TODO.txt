@@ -1,17 +1,12 @@
 
 
- TODO
-===============
+TODO
+====
 
-     NEED FOR BETA RELEASE
-    ==============================
-           
-    * Show the permission details as a graph ??
-
-    PrincipalDetails and Permission Details
-    ===================================================
-        * Strike through role - permissions which are denied 
-          by specific permission deny settings
+PrincipalDetails and Permission Details
+=======================================
+    * Strike through role - permissions which are denied 
+      by specific permission deny settings
 
 
                                             DONE

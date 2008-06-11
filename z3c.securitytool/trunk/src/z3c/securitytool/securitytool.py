@@ -78,7 +78,7 @@ class SecurityChecker(object):
                       {viewSetting:self.viewPermMatrix[item][viewSetting]})
 
         # Now we will inherit the permissions from groups assigned to each
-        # principal
+        # principal and digest them accordingly
         principals = zapi.principals()
         getPrin = principals.getPrincipal
         viewPrins = [getPrin(prin) for prin in self.viewMatrix]
@@ -101,14 +101,28 @@ class SecurityChecker(object):
 
         self.name, read_perm = self.getReadPerm(view_reg)
 
+        # If we are not viewing the permission the user has selected 
         if self.selectedPermission and self.selectedPermission != read_perm:
             return
+
         self.views[self.name] = read_perm
 
         allSettings, settings = getSettingsForMatrix(viewInstance)
-        rolePermMap = allSettings.get('rolePermissions', ())
 
-        for name,setting in settings:
+        rolePermMap = allSettings.get('rolePermissions', ())
+        self.populateViewRoleMatrix(rolePermMap,settings,read_perm)     
+
+        prinPermissions = allSettings.get('principalPermissions',[])
+        self.populatePermissionMatrix(read_perm,prinPermissions)
+
+    def populateViewRoleMatrix(self,rolePermMap,settings,read_perm):
+        """
+        This method is responsible for populating the viewRoleMatrix
+        of the security matrix this will be merged with the permissionMatrix
+        after both are fully populated.
+        """
+        
+        for name, setting in settings:
             principalRoles = setting.get('principalRoles', [])
             for role in principalRoles:
                 principal = role['principal']
@@ -125,6 +139,8 @@ class SecurityChecker(object):
                         # this role before, if it is now denied we remove it.
                         del self.viewRoleMatrix[principal]\
                                        [self.name][role['role']]
+                        continue
+
                     except KeyError:
                         pass
 
@@ -134,27 +150,14 @@ class SecurityChecker(object):
                     permSetting =  principalRoleProvidesPermission(
                                    principalRoles, rolePermMap,
                                    principal, read_perm,
-                                   role['role']
-                                )
+                                   role['role'])
+                    
+                # The role is either Allow or zope.public so we add
+                # it to the viewRoleMatrix.
                 if permSetting[1]:
-                    self.updateRolePermissionSetting(permSetting[1],
-                                                     principal,
-                                                     role['role'],
-                                                     self.name)
-
-            prinPermissions = allSettings.get('principalPermissions',[])
-            self.populatePermissionMatrix(read_perm,prinPermissions)
-
-    def updateRolePermissionSetting(self,permSetting,principal,role,name):
-        """
-        Updates permission setting for current role if necessary this
-        populates the viewRoleMatrix which is used with viewPermMatrix to
-        determine the objects permission for the securityMatrix.html page
-
-        """
-        if permSetting != 'Deny':
-            self.viewRoleMatrix[principal].setdefault(name,{})
-            self.viewRoleMatrix[principal][name].update({role:permSetting})
+                    self.viewRoleMatrix[principal].setdefault(self.name,{})
+                    self.viewRoleMatrix[principal]\
+                          [self.name].update({role['role']:permSetting[1]})
 
     def populatePermissionMatrix(self,read_perm,principalPermissions):
         """ This method populates the principal permission section of
