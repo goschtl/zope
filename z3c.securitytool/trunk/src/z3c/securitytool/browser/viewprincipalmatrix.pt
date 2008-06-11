@@ -53,7 +53,7 @@ page when you change skins.
    <table class="matrix_table" tal:define="urlViewName view/urlEncodedViewName" >
        <th class="headings">&nbsp</th>
        <th class="headings"
-           tal:repeat="principal python: sorted(view.viewMatrix)">
+           tal:repeat="principal python: view.viewMatrix">
            <a tal:content="principal"
                tal:attributes="href
                         string:principalDetails.html?principal=${principal}">
