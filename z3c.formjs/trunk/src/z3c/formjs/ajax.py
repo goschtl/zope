@@ -42,6 +42,29 @@ def getUniquePrefixer(n=2, prefix='form'):
 
 class AJAXHandlers(SelectionManager):
     """A selection manager for handling AJAX request handlers."""
+    zope.interface.implements(interfaces.IAJAXHandlers)
+    managerInterface = interfaces.IAJAXHandlers
+
+    def __init__(self, *args):
+        handlers = []
+        for arg in args:
+            if self.managerInterface.providedBy(arg):
+                handlers += arg.items()
+            elif interfaces.IAJAXHandler.providedBy(arg):
+                handlers.append((arg.func.__name__, arg))
+            else:
+                raise TypeError("Unrecognized argument type", arg)
+        keys = []
+        seq = []
+        byname = {}
+        for name, handler in handlers:
+            keys.append(name)
+            seq.append(handler)
+            byname[name] = handler
+
+        self._data_keys = keys
+        self._data_values = seq
+        self._data = byname
 
     def addHandler(self, name, handler):
         self._data_keys.append(name)

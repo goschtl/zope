@@ -343,12 +343,8 @@ class IWidgetSaver(zope.interface.Interface):
 # -----[ AJAX ]--------------------------------------------------------
 
 
-class IAJAXRequestHandler(zope.interface.Interface):
-    """An object that has methods for handling ajax requests."""
-
-    ajaxRequestHandlers = zope.schema.Object(
-        title=u"AJAX Request Handlers Manager",
-        schema=ISelectionManager)
+class IAJAXHandlers(ISelectionManager):
+    """Container of AJAX handlers."""
 
 
 class IAJAXHandler(zope.interface.Interface):
@@ -359,6 +355,13 @@ class IAJAXHandler(zope.interface.Interface):
         Return a callable which has access to context and request
         without context and request being passed as arguments.
         """
+
+class IAJAXRequestHandler(zope.interface.Interface):
+    """An object that has methods for handling ajax requests."""
+
+    ajaxRequestHandlers = zope.schema.Object(
+        title=u"AJAX Request Handlers Manager",
+        schema=IAJAXHandlers)
 
 
 # -----[ Form Traverser ]-------------------------------------------------
