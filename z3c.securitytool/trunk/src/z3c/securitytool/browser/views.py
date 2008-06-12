@@ -55,7 +55,8 @@ class PrincipalMatrixView(BrowserView):
         self.viewMatrix, self.views, self.permissions = \
             security_checker.getPermissionSettingsForAllViews(ifaces, skin,
             perm)
-
+        self.path = '/'.join(
+                        self.request.get('REQUEST_URI','').split('/')[2:-1])
         self.sortViews()
 
     def render(self):

@@ -71,10 +71,18 @@ page when you change skins.
             </th>
 
           </tr>
-
           <tr tal:repeat="viewItem python: view.viewList[viewObj]"
-              tal:attributes="class view/cssclass" >
-               <td tal:content="viewItem" class="view_perm"/>
+              tal:attributes="class view/cssclass" 
+              tal:define="skin
+              request/session:securitytool/selectedSkin|nothing;
+              view_url python: request['HTTP_HOST'];
+              view_skin request/session:securitytool/selectedSkin|nothing;
+              view_path python: view.path">
+              
+               <td class="view_perm">
+                 <a tal:attributes="href string: http://${view_url}/++skin++${view_skin}/${view_path}/${viewItem}" 
+                    tal:content="viewItem" class="view_perm"/>
+               </td>
                 <metal:block tal:repeat="principal python: sorted(view.viewMatrix)">
                 <td tal:define="enc python:urlViewName[viewItem];
                    perm python: view.getPermissionSetting(viewItem,principal)">
