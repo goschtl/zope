@@ -73,8 +73,6 @@ class RelationList(object):
     def adapter(self):
         return self._sa_adapter
 
-    # orm collection support
-    
     @orm.collections.collection.appender
     def _appender(self, item):
         self.data.append(item)
@@ -87,28 +85,21 @@ class RelationList(object):
     def _remover(self, item):
         self.data.remove(item)
         
-    # python list api
-    
     def append(self, item, _sa_initiator=None):
         # make sure item is mapped
         if not IMapped.providedBy(item):
             item = relations.persist(item)
-
-        # fire append event
-        self.adapter.fire_append_event(item, _sa_initiator)
 
         # set up relation
         relation = bootstrap.Relation()
         relation.target = item
         relation.order = len(self.data)
 
-        # save to session
-        session = Session()
-        session.save(relation)
-
+        self.adapter.fire_append_event(relation, _sa_initiator)
+        
         # add relation to internal list
         self.data.append(relation)
-        
+
     def remove(self, item, _sa_initiator=None):
         if IMapped.providedBy(item):
             uuid = item.uuid
@@ -117,20 +108,12 @@ class RelationList(object):
 
         for relation in self.data:
             if relation.right == uuid:
-                # fire remove event on target
-                target = relations.lookup(uuid, ignore_cache=True)
-                self.adapter.fire_remove_event(target, _sa_initiator)
-
-                # remove reference to relation
+                self.adapter.fire_remove_event(relation, _sa_initiator)
                 self.data.remove(relation)
 
-                # delete from database
-                session = Session()
-                session.delete(relation)
-
                 return
-
-        return ValueError("Not in list: %s" % item)
+        else:
+            return ValueError("Not in list: %s" % item)
         
     def extend(self, items):
         map(self.append, items)
@@ -138,6 +121,9 @@ class RelationList(object):
     def __iter__(self):
         return (relation.target for relation in iter(self.data))
 
+    def __repr__(self):
+        return repr(list(self))
+    
     def __len__(self):
         return len(self.data)
     
@@ -293,23 +279,29 @@ def createMapper(spec):
     # create joined table
     soup_table = table = metadata.tables['soup']
     properties = {}
+    table = None
     
     for (t, p) in (getTable(iface, metadata, ignore) for iface in ifaces):
-        table = rdb.join(table, t, onclause=(t.c.id==soup_table.c.id))
+        if table is None:
+            first_table = table = t
+        else:
+            table = rdb.join(table, t, onclause=(t.c.id==first_table.c.id))
         properties.update(p)
 
-    class Mapper(kls):
+    specification_path = '%s.%s' % (spec.__module__, spec.__name__)
+        
+    class Mapper(bootstrap.Soup, kls):
         interface.implements(IMapped, *ifaces)
 
-        __spec__ = '%s.%s' % (spec.__module__, spec.__name__)
-
+        __spec__ = specification_path
+        
         def __init__(self, *args, **kwargs):
             super(Mapper, self).__init__(*args, **kwargs)
-            
+
             # set soup metadata
             self.uuid = uuid()
             self.spec = self.__spec__
-            
+
     # if the specification is an interface class, try to look up a
     # security checker and define it on the mapper
     if interface.interfaces.IInterface.providedBy(spec):
@@ -342,7 +334,13 @@ def createMapper(spec):
             if isinstance(value, property):
                 exclude += (name,)
 
-    orm.mapper(Mapper, table, properties=properties, exclude_properties=exclude)
+    orm.mapper(
+        Mapper,
+        table,
+        properties=properties,
+        exclude_properties=exclude,
+        inherits=bootstrap.Soup,
+        inherit_condition=(first_table.c.id==soup_table.c.id))
 
     spec.__mapper__ = Mapper
     interface.alsoProvides(spec, IMapped)

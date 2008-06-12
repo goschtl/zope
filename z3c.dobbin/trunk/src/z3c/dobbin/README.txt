@@ -103,12 +103,12 @@ Verify tables for ``IVinyl``, ``IAlbum`` and ``ICompactDisc``.
     [(2, 45)]
 
     >>> session.execute(metadata.tables[encode(IAlbum)].select()).fetchall()
-    [(1, u'The Great American Songbook', u'Diana Ross'),
+    [(1, u'Pet Sounds', u'The Beach Boys'),
      (2, u'Taking Care of Business', u'Diana Ross and The Supremes'),
-     (3, u'Pet Sounds', u'The Beach Boys')]
+     (3, u'The Great American Songbook', u'Diana Ross')]
 
     >>> session.execute(metadata.tables[encode(ICompactDisc)].select()).fetchall()
-    [(1, 2005)]
+    [(3, 2005)]
 
 Now we'll create a mapper based on a concrete class. We'll let the
 class implement the interface that describes the attributes we want to
@@ -225,7 +225,7 @@ we'll implicitly create a mapper from the class specification and
 insert it into the database.
 
     >>> cleaner = Accessory()
-    >>> cleaner.name = "Record cleaner"
+    >>> cleaner.name = u"Record cleaner"
 
 Set up relation.
     
@@ -273,7 +273,11 @@ Let's set up a record collection as a list.
     ...         value_type=schema.Object(schema=IAlbum)
     ...         )
 
+    >>> __builtin__.ICollection = ICollection
+    
     >>> collection = create(ICollection)
+    >>> collection.records
+    []
 
 Add the Diana Ross record, and save the collection to the session.
 
@@ -282,8 +286,8 @@ Add the Diana Ross record, and save the collection to the session.
     
 We can get our collection back.
 
-    >>> collection = session.query(ICollection.__mapper__).select_by(
-    ...     ICollection.__mapper__.c.spec==ICollection.__mapper__.__spec__)[0]
+    >>> from z3c.dobbin.relations import lookup
+    >>> collection = lookup(collection.uuid)
 
 Let's verify that we've stored the Diana Ross record.
     
@@ -292,16 +296,25 @@ Let's verify that we've stored the Diana Ross record.
     >>> record.artist, record.title
     (u'Diana Ross and The Supremes', u'Taking Care of Business')
 
-Now let's try and add another record.
+    >>> transaction.commit()
     
+When we create a new, transient object and append it to a list, it's
+automatically saved on the session.
+
+    >>> collection = lookup(collection.uuid)
+
+    >>> vinyl = create(IVinyl)
+    >>> vinyl.artist = u"Kool & the Gang"
+    >>> vinyl.album = u"Music Is the Message"
+    >>> vinyl.rpm = 33
+
     >>> collection.records.append(vinyl)
-    >>> another_record = collection.records[1]
+    >>> [record.artist for record in collection.records]
+    [u'Diana Ross and The Supremes', u'Kool & the Gang']
 
-They're different.
+    >>> transaction.commit()
+    >>> session.update(collection)
     
-    >>> record.uuid != another_record.uuid
-    True
-
 We can remove items.
 
     >>> collection.records.remove(vinyl)
@@ -382,5 +395,3 @@ Cleanup
 Commit session.
     
     >>> transaction.commit()
-
-    
