@@ -35,7 +35,7 @@ class ICourse(Interface):
             vocabulary="vocab_of_ICourse",
             )
         )
-    salary = Int(
+    credits = Int(
         title=u"Credits",
         )
     assessment = List(

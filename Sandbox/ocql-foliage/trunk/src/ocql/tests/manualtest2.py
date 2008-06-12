@@ -1,8 +1,7 @@
-import testdb
 from ocql.engine.queryobject import *
 from ocql.engine.queryparser import SymbolContainer
 import operator
-import testalgebra
+from ocql.tests import algebra
 from ocql.ocqlengine import OCQLEngine
 from ocql.engine.runnablequery import RunnableQuery
 
@@ -11,15 +10,15 @@ engine = OCQLEngine()
 def doone(query, qo, expected):
     print "==============="
     print "query:",query
-    
-    algebra=qo.rewrite(testalgebra)
-    
-    print "algebra:",algebra
 
-    code=algebra.compile();
+    algebra_=qo.rewrite(algebra)
+
+    print "algebra:",algebra_
+
+    code=algebra_.compile();
     compile(code,'<string>','eval')
-    q = RunnableQuery(engine,algebra,code)
-    
+    q = RunnableQuery(engine,algebra_,code)
+
     print "code:",code
     print "---------------"
     print "got:     ", q.execute()
@@ -29,7 +28,7 @@ def doone(query, qo, expected):
 def test2():
     metadata = engine.metadata
     metadata.symbols = SymbolContainer()
-    
+
     #
     # Simple empty query
     #
@@ -41,10 +40,10 @@ def test2():
              [] ,
              Identifier(metadata,
                         '') )
-    
+
     doone(query, qo, set([]))
-        
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Simple SELECT ALL
@@ -61,10 +60,10 @@ def test2():
                 Identifier(metadata,'c'),
                 Identifier(metadata,'ICurses')),
         ] ,Identifier(metadata,'c') )
-    
+
     doone(query, qo, set([ "C1" , "C2", "C3" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Selecting a property
@@ -81,10 +80,10 @@ def test2():
                 Identifier(metadata,'c'),
                 Identifier(metadata,'ICurses')),
         ] ,Identifier(metadata,'c.code') )
-    
+
     doone(query, qo, set([ "C1" , "C2", "C3"  ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Filtering -- empty result
@@ -105,10 +104,10 @@ def test2():
                 Identifier(metadata,'c.credits'),
                 Constant(metadata,'3')),
         ] ,Identifier(metadata, 'c.code') )
-    
+
     doone(query, qo, set([]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Filtering -- full result
@@ -127,10 +126,10 @@ def test2():
                 Identifier(metadata,'c.credits'),
                 Constant(metadata,'3')),
         ] ,Identifier(metadata,'c.code'))
-    
+
     doone(query, qo, set([ "C1" , "C2", "C3" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Filtering -- one result
@@ -151,10 +150,10 @@ def test2():
                 Identifier(metadata,'c.credits'),
                 Constant(metadata,'3')),
         ] ,Identifier(metadata,'c.code'))
-    
+
     doone(query, qo, set([ "C2", "C3" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Two filters -- full results
@@ -179,10 +178,10 @@ def test2():
                 Identifier(metadata,'c.credits'),
                 Constant(metadata,'1')),
         ] ,Identifier(metadata, 'c.code'))
-    
+
     doone(query, qo, set([ "C1", "C2", "C3" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Two filters -- one result
@@ -206,10 +205,10 @@ def test2():
                 Constant(metadata,'2'),
                 Identifier(metadata,'c.credits')),
         ] ,Identifier(metadata,'c.code'))
-    
+
     doone(query, qo, set([ "C1" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Two filters -- one result
@@ -233,10 +232,10 @@ def test2():
                 Constant(metadata,'2'),
                 Identifier(metadata,'c.credits')),
         ] ,Identifier(metadata,'c.code'))
-    
+
     doone(query, qo, set([ "C1" ]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # Two filters -- no result
@@ -260,10 +259,10 @@ def test2():
                 Identifier(metadata,'c.credits'),
                 Constant(metadata,'3')),
         ] ,Identifier(metadata,'c.code'))
-    
+
     doone(query, qo, set([]))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # join -- Departments running curses
@@ -288,15 +287,15 @@ def test2():
                 Identifier(metadata,'d'),
                 Quanted(metadata,
                         Some(metadata),
-                        Property(metadata, 
+                        Property(metadata,
                                 Identifier(metadata, 'c'),
                                 Identifier(metadata, 'runBy'))
                             )),
         ] ,Identifier(metadata,'d.name'))
-    
+
     doone(query, qo, set(['Computing Science', 'Other Department']))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     # join -- Departments running some 3 credits curses
@@ -326,15 +325,15 @@ def test2():
                 Quanted(
                     metadata,
                     Some(metadata),
-                    Property(metadata, 
+                    Property(metadata,
                                 Identifier(metadata, 'c'),
                                 Identifier(metadata, 'runBy'))
                             )),
         ] ,Identifier(metadata, 'd.name'))
-    
+
     doone(query, qo, set(['Computing Science']))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     # join -- Departments running some not 3 credits curses
     #
@@ -361,7 +360,7 @@ def test2():
                 Quanted(
                     metadata,
                     Some(metadata),
-                    Property(metadata, 
+                    Property(metadata,
                                 Identifier(metadata, 'c'),
                                 Identifier(metadata, 'runBy'))
                             )),
@@ -370,10 +369,10 @@ def test2():
                 Constant(metadata,'3'),
                 Identifier(metadata,'c.credits')),
         ] ,Identifier(metadata,'d.name'))
-    
+
     doone(query, qo, set(['Other department','Computing Science']))
-    
-    
+
+
     metadata.symbols = SymbolContainer()
     #
     #
@@ -387,7 +386,7 @@ def test2():
         | d.name ]"""
     qo=Query(
         metadata,
-        set, 
+        set,
         [
             In(
                 metadata,
@@ -412,7 +411,7 @@ def test2():
                                 Quanted(
                                     metadata,
                                     Some(metadata),
-                                    Property(metadata, 
+                                    Property(metadata,
                                         Identifier(metadata, 'c'),
                                         Identifier(metadata, 'runBy'))
                                     )),
@@ -420,10 +419,10 @@ def test2():
                         )
                 ),Constant(metadata,'2')),
         ] ,Identifier(metadata,'d.name'))
-    
+
     doone(query, qo, set(['Other department']))
-    
-    
+
+
     #metadata.symbols = SymbolContainer()
     ##
     ##
@@ -444,7 +443,7 @@ def test2():
     #        Alias(
     #            metadata,
     #            Identifier(metadata,'a'),
-    #            Property(metadata, 
+    #            Property(metadata,
     #                 Identifier(metadata, 'c'),
     #                 Identifier(metadata, 'code')))
     #    ] ,Identifier(metadata,'c') )
