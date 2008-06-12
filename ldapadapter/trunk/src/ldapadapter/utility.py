@@ -57,6 +57,10 @@ class LDAPAdapter(object):
             # are then not utf-8 encoded (charset is implicit (?))
             raise Exception("Server should be LDAP v3")
         # TODO: conn.set_option(OPT_REFERRALS, 1)
+        
+        # if dn is unicode, automatically convert dn to UTF-8 byte string
+        if isinstance(dn, unicode):
+            dn = dn.encode('utf-8')
 
         # Bind the connection to the dn
         if dn is None:
