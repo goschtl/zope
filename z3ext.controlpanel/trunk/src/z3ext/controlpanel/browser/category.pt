@@ -15,7 +15,7 @@
       <div class="details">
 	<a tal:attributes="href string:${configlet/configlet/@@absolute_url}/"
 	   tal:content="configlet/title"></a>
-	<div><tal tal:content="configlet/description" /> &nbsp;</div>
+	<div><tal:block tal:content="configlet/description" /> &nbsp;</div>
 	<tal:block define="configlets configlet/items" condition="configlets">
 	  <metal:block use-macro="view/template/macros/configlets" />
 	</tal:block>
