@@ -13,8 +13,12 @@ import bootstrap
 
 def lookup(uuid, ignore_cache=False):
     session = Session()
-    item = session.query(bootstrap.Soup).select_by(uuid=uuid)[0]
 
+    try:
+        item = session.query(bootstrap.Soup).select_by(uuid=uuid)[0]
+    except IndexError:
+        raise LookupError("Unable to locate object with UUID = '%s'." % uuid)
+        
     # try to acquire relation target from session
     if not ignore_cache:
         try:
