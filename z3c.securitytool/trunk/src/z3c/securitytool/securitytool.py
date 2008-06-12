@@ -70,6 +70,7 @@ class SecurityChecker(object):
 
         # Populate the viewMatrix with the permissions gained from the
         # assigned roles
+
         for item in self.viewRoleMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
@@ -78,6 +79,7 @@ class SecurityChecker(object):
                                                and 'Allow' or '--'
                 self.viewMatrix[item].update({viewSetting:val})
 
+
         # Populate the viewMatrix with the permissions directly assinged.
         for item in self.viewPermMatrix:
             if not  self.viewMatrix.has_key(item):
@@ -85,6 +87,7 @@ class SecurityChecker(object):
             for viewSetting in self.viewPermMatrix[item]:
                 self.viewMatrix[item].update(
                       {viewSetting:self.viewPermMatrix[item][viewSetting]})
+
 
         # Now we will inherit the permissions from groups assigned to each
         # principal and digest them accordingly
@@ -178,7 +181,6 @@ class SecurityChecker(object):
         matrix = self.viewPermMatrix
         principalPermissions.reverse()
 
-
         for prinPerm in principalPermissions:
             if prinPerm['permission'] != read_perm:
                 #If it is not the read_perm it is uninteresting
@@ -192,7 +194,9 @@ class SecurityChecker(object):
                 #If the principal_id is not in the matrix add it
                 continue
 
-            elif  matrix[principal_id].setdefault(
-                         self.name,setting) == setting:
-                #If the permisison does not exist for the prin add it
-                continue
+            else:
+                # This is now the permission for this view
+                # since we reversed the list we are travering
+                # from the root level to our current level
+                # so anything we find here we keep.
+                matrix[principal_id][self.name] = setting
