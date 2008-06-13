@@ -247,7 +247,6 @@ def createMapper(spec):
         table,
         properties=properties,
         exclude_properties=exclude,
-        # order_by=soup_table.c.id,
         inherits=bootstrap.Soup,
         inherit_condition=(first_table.c.id==soup_table.c.id))
 
