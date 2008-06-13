@@ -92,19 +92,19 @@ class SecurityChecker(object):
                 self.viewMatrix[item].update(
                       {viewSetting:self.viewPermMatrix[item][viewSetting]})
 
-
-        # Now we will inherit the permissions from groups assigned to each
-        # principal and digest them accordingly, This section populates the
-        # groupPermMatrix. The groupPermMatrix is a collection the permissinos
-        # inherited only from groups.
         principals = zapi.principals()
         getPrin = principals.getPrincipal
         viewPrins = [getPrin(prin) for prin in self.viewMatrix]
 
-        # TODO update to a better method
+        # Now we will inherit the permissions from groups assigned to each
+        # principal and digest them accordingly, This section populates the
+        # groupPermMatrix. The tmpMatrix is a collection the permissions
+        # inherited only from groups.
         # Here we will just populate the temp matrix with the
         # with a copy of the contents of the viewMatrix. There
         # is probably a better way to do this but for now ;)
+
+        # TODO update to a better method
         tmpMatrix = deepcopy(self.viewMatrix)
         mergePermissionsFromGroups(viewPrins,tmpMatrix)
 
@@ -116,8 +116,6 @@ class SecurityChecker(object):
                     # We only want to add the permission if it does not exist
                     # we do not want to overwrite the permission.
                     self.viewMatrix[prinItem][item] = tmpMatrix[prinItem][item]
-                    
-
 
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
