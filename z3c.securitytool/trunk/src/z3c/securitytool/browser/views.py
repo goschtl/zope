@@ -110,11 +110,9 @@ class PrincipalMatrixView(BrowserView):
             rather than view
         """
         self.viewList = {}
+        sortedPerms = sorted([(v,k) for k,v in self.views.items()])
 
-
-        sortedViews = sorted([(v,k) for k,v in self.views.items()])
-
-        for item in sortedViews:
+        for item in sortedPerms:
             if self.viewList.has_key(item[0]):
                 self.viewList[item[0]].append(item[1])
             else:

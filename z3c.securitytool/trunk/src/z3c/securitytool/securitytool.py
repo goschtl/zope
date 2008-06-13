@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from copy import deepcopy
+from pprint import pprint
+
 from zope.app import zapi
 from zope.app.apidoc.presentation import getViewInfoDictionary
 from zope.i18nmessageid import ZopeMessageFactory as _
@@ -68,7 +71,7 @@ class SecurityChecker(object):
         permissions and role-permissions  permissions will always win.
         """
 
-        # Populate the viewMatrix with the permissions gained from the
+        # Populate the viewMatrix with the permissions gained only from the
         # assigned roles
 
         for item in self.viewRoleMatrix:
@@ -80,7 +83,8 @@ class SecurityChecker(object):
                 self.viewMatrix[item].update({viewSetting:val})
 
 
-        # Populate the viewMatrix with the permissions directly assinged.
+        # Populate the viewMatrix with the permissions which are
+        # only directly assigned.
         for item in self.viewPermMatrix:
             if not  self.viewMatrix.has_key(item):
                 self.viewMatrix[item] = {}
@@ -90,11 +94,30 @@ class SecurityChecker(object):
 
 
         # Now we will inherit the permissions from groups assigned to each
-        # principal and digest them accordingly
+        # principal and digest them accordingly, This section populates the
+        # groupPermMatrix. The groupPermMatrix is a collection the permissinos
+        # inherited only from groups.
         principals = zapi.principals()
         getPrin = principals.getPrincipal
         viewPrins = [getPrin(prin) for prin in self.viewMatrix]
-        mergePermissionsFromGroups(viewPrins,self.viewMatrix)
+
+        # TODO update to a better method
+        # Here we will just populate the temp matrix with the
+        # with a copy of the contents of the viewMatrix. There
+        # is probably a better way to do this but for now ;)
+        tmpMatrix = deepcopy(self.viewMatrix)
+        mergePermissionsFromGroups(viewPrins,tmpMatrix)
+
+        # Now we merge our last set of permissions into the main viewMatrix
+        # for our display.
+        for prinItem in tmpMatrix:
+            for item in tmpMatrix[prinItem]:
+                if not  self.viewMatrix[prinItem].has_key(item):
+                    # We only want to add the permission if it does not exist
+                    # we do not want to overwrite the permission.
+                    self.viewMatrix[prinItem][item] = tmpMatrix[prinItem][item]
+                    
+
 
     def getReadPerm(self,view_reg):
         """ Helper method which returns read_perm and view name"""
