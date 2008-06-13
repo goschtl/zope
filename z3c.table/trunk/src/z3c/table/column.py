@@ -64,7 +64,6 @@ def safeGetAttr(obj, attr, default):
         return default
 
 
-
 class Column(zope.location.Location):
     """Column provider."""
 
@@ -243,6 +242,17 @@ class FormatterColumn(Column):
         return self.request.locale.dates.getFormatter(
             self.formatterCategory, self.formatterLength, self.formatterName,
             self.formatterCalendar)
+
+
+class GetAttrFormatterColumn(FormatterColumn, GetAttrColumn):
+    """Get attribute and formatter column."""
+
+    def renderCell(self, item):
+        formatter = self.getFormatter()
+        value = self.getValue(item)
+        if value:
+            value = formatter.format(value)
+        return value
 
 
 class CreatedColumn(FormatterColumn, GetAttrColumn):

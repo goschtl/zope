@@ -5,6 +5,9 @@ CHANGES
 Version 0.5.1dev (unreleased)
 -----------------------------
 
+- Implemented GetAttrFormatterColumn. This column can be used for simple 
+  value formatting columns.
+
 - Bad typo in columns.py: Renamed ``getLinkConent`` to ``getLinkContent``
 
 - Bug: Changed return string in getLinkCSS. It was using css="" instead of

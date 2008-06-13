@@ -465,7 +465,7 @@ adapter which only returns ``02/02/02 02:02`` as modified date:
 GetAttrColumn
 -------------
 
-The ``GetAttrColumn`` column is a mixin whihc is used in ``CreatedColumn`` and 
+The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and 
 in ``ModifiedColumn``. Not all code get used if everything is fine. So let's 
 test the column itself and force some usecase:
 
@@ -610,6 +610,111 @@ And test the attribute access:
   >>> badColumn = column.addColumn(simpleTable, ForbiddenAttributeColumn, u'x')
   >>> badColumn.renderCell(protectedItem)
   u'missing'
+
+
+GetAttrFormatterColumn
+----------------------
+
+The ``GetAttrFormatterColumn`` column is a get attr column which is able to 
+format the value. Let's use the dubline core adapter for our sample:
+
+  >>> from zope.dublincore.interfaces import IZopeDublinCore
+  >>> class GetCreatedColumn(column.GetAttrFormatterColumn):
+  ... 
+  ...     def getValue(self, item):
+  ...         dc = IZopeDublinCore(item, None)
+  ...         return dc.created
+
+  >>> class GetAttrFormatterColumnTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, GetCreatedColumn, u'created'),
+  ...             ]
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> getAttrFormatterColumnTable = GetAttrFormatterColumnTable(container,
+  ...     request)
+  >>> getAttrFormatterColumnTable.update()
+  >>> print getAttrFormatterColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2001 1 1  01:01:01 </td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 </td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 </td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 </td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+We can also change the formatter settings in such a column:
+
+  >>> class LongCreatedColumn(column.GetAttrFormatterColumn):
+  ... 
+  ...     formatterCategory = u'dateTime'
+  ...     formatterLength = u'long'
+  ...     formatterCalendar = u'gregorian'
+  ... 
+  ...     def getValue(self, item):
+  ...         dc = IZopeDublinCore(item, None)
+  ...         return dc.created
+
+  >>> class LongFormatterColumnTable(table.Table):
+  ... 
+  ...     def setUpColumns(self):
+  ...         return [
+  ...             column.addColumn(self, LongCreatedColumn, u'created'),
+  ...             ]
+
+Render and update the table:
+
+  >>> request = TestRequest()
+  >>> longFormatterColumnTable = LongFormatterColumnTable(container,
+  ...     request)
+  >>> longFormatterColumnTable.update()
+  >>> print longFormatterColumnTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+      <tr>
+        <td>2001 1 1  01:01:01 +000</td>
+      </tr>
+    </tbody>
+  </table>
 
 
 LinkColumn
