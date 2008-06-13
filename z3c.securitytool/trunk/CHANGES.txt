@@ -2,11 +2,25 @@
 CHANGES
 =======
 
+Version 0.4.1 (2008-06-12)
+---------------------------
+- Fixed issue with inheritance display on the securityMatrix.html page
+- Added links to the views listed on the securityMatrix.html page
+- Refactored out the PrincipalDetails and the PermissionDetails to
+  their own files
+- Added the ZPL text to the tops of all the py files
+- Refactored out the shared global functions to globalFunctions.py
+- Refactored out the MatrixDetails superclass to its own file.
+
+pant, pant, pant
+
 Version 0.4.0b (2008-06-09)
+---------------------------
 - Updated page template for principal details
 - Sorting issue fixed on viewMatrix page
 
 Version 0.4.0 (2008-06-09)
+---------------------------
 - Updated page template for principal details
 - Releasing as Beta
 
