@@ -3,6 +3,8 @@
 TODO
 ====
 
+Test the functionality of a custom security policy
+
 PrincipalDetails and Permission Details
 =======================================
     * Strike through role - permissions which are denied 
