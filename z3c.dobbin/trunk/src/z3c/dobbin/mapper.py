@@ -63,7 +63,7 @@ class ObjectProperty(object):
             field.__name__: relation,
             relation.name: orm.relation(
             bootstrap.Soup,
-            primaryjoin=(field.schema.__mapper__.c.uuid==column),
+            primaryjoin=(field.schema.__mapper__.uuid==column),
             foreign_keys=[column],
             enable_typechecks=False,
             lazy=True)
@@ -187,13 +187,13 @@ def createMapper(spec):
     # create joined table
     soup_table = table = metadata.tables['soup']
     properties = {}
-    table = None
+    first_table = None
     
     for (t, p) in (getTable(iface, metadata, ignore) for iface in ifaces):
-        if table is None:
-            first_table = table = t
+        if first_table is None:
+            table = first_table = t
         else:
-            table = rdb.join(table, t, onclause=(t.c.id==first_table.c.id))
+            table = table.join(t, onclause=(t.c.id==first_table.c.id))
         properties.update(p)
 
     specification_path = '%s.%s' % (spec.__module__, spec.__name__)
