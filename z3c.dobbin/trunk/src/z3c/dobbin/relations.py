@@ -1,65 +1,50 @@
 from zope import interface
 
-from interfaces import IMapper
-from interfaces import IMapped
-
-from session import getTransactionManager
-
-from zope.dottedname.resolve import resolve
 from ore.alchemist import Session
 
+import soup
 import factory
-import bootstrap
+import interfaces
 
-def lookup(uuid, ignore_cache=False):
-    session = Session()
+class Relation(object):
+    def _get_source(self):
+        return soup.lookup(self.left)
 
-    try:
-        item = session.query(bootstrap.Soup).select_by(uuid=uuid)[0]
-    except IndexError:
-        raise LookupError("Unable to locate object with UUID = '%s'." % uuid)
-        
-    # try to acquire relation target from session
-    if not ignore_cache:
-        try:
-            return session._d_pending[item.uuid]
-        except (AttributeError, KeyError):
-            pass
+    def _set_source(self, item):
+        self.left = item.uuid
 
-    # build item
-    return build(item.spec, item.uuid)
+    def _get_target(self):
+        return soup.lookup(self.right)
 
-def build(spec, uuid):
-    kls = resolve(spec)
-    mapper = IMapper(kls)
+    def _set_target(self, item):
+        if not interfaces.IMapped.providedBy(item):
+            item = persist(item)
+
+        if item.id is None:
+            session = Session()
+            session.save(item)
+                
+        self.right = item.uuid
+
+    source = property(_get_source, _set_source)
+    target = property(_get_target, _set_target)
     
-    session = Session()
-    return session.query(mapper).select_by(uuid=uuid)[0]
+class RelationProperty(property):
+    def __init__(self, field):
+        self.field = field
+        self.name = field.__name__+'_relation'
+        property.__init__(self, self.get, self.set)
 
-def persist(item):
-    # create instance
-    instance = factory.create(item.__class__)
+    def get(kls, instance):
+        item = getattr(instance, kls.name)
+        return soup.lookup(item.uuid)
 
-    # assign uuid to item
-    item._d_uuid = instance.uuid
+    def set(kls, instance, item):
+        if not interfaces.IMapped.providedBy(item):
+            item = persist(item)
 
-    # hook into transaction
-    try:
-        manager = item._d_manager
-    except AttributeError:
-        manager = item._d_manager = getTransactionManager(item)
-        
-    manager.register()
+        if item.id is None:
+            session = Session()
+            session.save(item)
 
-    # update attributes
-    update(instance, item)
-
-    return instance
-
-def update(instance, item):
-    # set attributes
-    for iface in interface.providedBy(item):
-        for name in iface.names():
-            value = getattr(item, name)
-            setattr(instance, name, value)
-
+        setattr(instance, kls.name, item)

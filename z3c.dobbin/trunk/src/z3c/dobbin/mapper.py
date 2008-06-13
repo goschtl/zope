@@ -5,7 +5,6 @@ from zope import component
 from zope.dottedname.resolve import resolve
 from zope.security.interfaces import IChecker
 from zope.security.checker import defineChecker, getCheckerForInstancesOf
-from zope.security.checker import NamesChecker
 from zope.security.proxy import removeSecurityProxy
 
 from interfaces import IMapper
@@ -26,8 +25,9 @@ from random import randint
 
 import bootstrap
 import relations
-
+import collections
 import factory
+import soup
 
 from itertools import chain
 
@@ -40,98 +40,6 @@ def uuid():
     """
     
     return chr(randint(ord('a'), ord('z'))) + uuid1().hex[:-1]
-
-class RelationProperty(property):
-    def __init__(self, field):
-        self.field = field
-        self.name = field.__name__+'_relation'
-        property.__init__(self, self.get, self.set)
-
-    def get(kls, instance):
-        item = getattr(instance, kls.name)
-        return relations.lookup(item.uuid)
-
-    def set(kls, instance, item):
-        if not IMapped.providedBy(item):
-            item = relations.persist(item)
-
-        if item.id is None:
-            session = Session()
-            session.save(item)
-
-        setattr(instance, kls.name, item)
-
-class RelationList(object):
-    __emulates__ = None
-    __Security_checker__ = NamesChecker(
-        ('append', 'remove'))
-    
-    def __init__(self):
-        self.data = []
-
-    @property
-    def adapter(self):
-        return self._sa_adapter
-
-    @orm.collections.collection.appender
-    def _appender(self, item):
-        self.data.append(item)
-    
-    @orm.collections.collection.iterator
-    def _iterator(self):
-        return iter(self.data)
-
-    @orm.collections.collection.remover
-    def _remover(self, item):
-        self.data.remove(item)
-        
-    def append(self, item, _sa_initiator=None):
-        # make sure item is mapped
-        if not IMapped.providedBy(item):
-            item = relations.persist(item)
-
-        # set up relation
-        relation = bootstrap.Relation()
-        relation.target = item
-        relation.order = len(self.data)
-
-        self.adapter.fire_append_event(relation, _sa_initiator)
-        
-        # add relation to internal list
-        self.data.append(relation)
-
-    def remove(self, item, _sa_initiator=None):
-        if IMapped.providedBy(item):
-            uuid = item.uuid
-        else:
-            uuid = item._d_uuid
-
-        for relation in self.data:
-            if relation.right == uuid:
-                self.adapter.fire_remove_event(relation, _sa_initiator)
-                self.data.remove(relation)
-
-                return
-        else:
-            return ValueError("Not in list: %s" % item)
-        
-    def extend(self, items):
-        map(self.append, items)
-
-    def __iter__(self):
-        return (relation.target for relation in iter(self.data))
-
-    def __repr__(self):
-        return repr(list(self))
-    
-    def __len__(self):
-        return len(self.data)
-    
-    def __getitem__(self, index):
-        return self.data[index].target
-        
-    def __setitem__(self, index, value):
-        return NotImplementedError("Setting items at an index is not implemented.")
 
 class ObjectTranslator(object):
     def __init__(self, column_type=None):
@@ -149,7 +57,7 @@ class ObjectProperty(object):
     """
     
     def __call__(self, field, column, metadata):
-        relation = RelationProperty(field)
+        relation = relations.RelationProperty(field)
 
         return {
             field.__name__: relation,
@@ -173,9 +81,9 @@ class ListProperty(object):
         
         return {
             field.__name__: orm.relation(
-                bootstrap.Relation,
+                relations.Relation,
                 primaryjoin=soup_table.c.uuid==relation_table.c.left,
-                collection_class=RelationList,
+                collection_class=collections.OrderedList,
                 enable_typechecks=False)
             }
                     
@@ -339,6 +247,7 @@ def createMapper(spec):
         table,
         properties=properties,
         exclude_properties=exclude,
+        # order_by=soup_table.c.id,
         inherits=bootstrap.Soup,
         inherit_condition=(first_table.c.id==soup_table.c.id))
 

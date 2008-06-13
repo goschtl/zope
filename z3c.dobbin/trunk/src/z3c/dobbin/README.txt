@@ -144,9 +144,8 @@ Verify that we've instantiated and instance of our class.
 
 Copy the attributes from the Diana Ross vinyl record.
 
-    >>> diana = session.query(IVinyl.__mapper__).select_by(
-    ...     IAlbum.__mapper__.c.id==2)[0]
-
+    >>> diana = session.query(IVinyl.__mapper__).filter_by(id=2)[0]
+    
     >>> vinyl.artist = diana.artist
     >>> vinyl.title = diana.title
     >>> vinyl.rpm = diana.rpm
@@ -199,8 +198,8 @@ Let's make our Diana Ross record a favorite.
     
 Get back the object.
     
-    >>> favorite = session.query(IFavorite.__mapper__).select_by(
-    ...     IFavorite.__mapper__.c.spec==IFavorite.__mapper__.__spec__)[0]
+    >>> favorite = session.query(IFavorite.__mapper__).filter_by(
+    ...     spec=IFavorite.__mapper__.__spec__)[0]
 
 When we retrieve the related items, it's automatically reconstructed
 to match the specification to which it was associated.
