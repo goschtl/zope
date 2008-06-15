@@ -1,0 +1,149 @@
+=======================
+ Processed Image Views
+=======================
+
+
+   >>> from zope.testbrowser.testing import Browser
+   >>> from z3c.image.testing import dataDir
+   >>> import os
+   >>> from zope.app.file.image import getImageInfo
+   >>> imagePath = os.path.join(dataDir, 'flower.jpg')
+   >>> browser = Browser()
+   >>> browser.handleErrors = False
+   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+   >>> browser.open('http://localhost/@@contents.html')
+   >>> link = browser.getLink('Image')
+   >>> link.click()
+   >>> dataCtrl = browser.getControl('Data')
+   >>> dataCtrl.add_file(file(imagePath, 'rb'), 'image/jpeg', 'flower.jpg')
+   >>> browser.getControl('Add').click()
+
+Let us open the standard view of the image
+
+   >>> browser.open('http://localhost/flower.jpg')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 103, 118)
+
+It must contain the last-modified time of the image.
+
+   >>> browser.headers.getheaders('Last-Modified')
+   ['... GMT']
+
+
+If we do not specify parameters then the image is not processed.
+
+   >>> browser.open('http://localhost/flower.jpg/@@resized')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 103, 118)
+
+The resized view always keeps the aspect ratio.
+
+   >>> browser.open('http://localhost/flower.jpg/@@resized?w=50')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 50, 57)
+
+Also if width and height are given. In this case the values are taken
+as maximums.
+
+   >>> browser.open('http://localhost/flower.jpg/@@resized?w=50&h=50')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 44, 50)
+
+
+   >>> browser.open('http://localhost/flower.jpg/@@resized?w=20&h=50')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 20, 23)
+
+There is also a processorview, which does processing in the folloing order:
+
+ 1. rotate
+ 2. resize
+ 3. crop
+ 4. after crop resize
+
+If we supply not values the original image is returned.
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed')
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 103, 118)
+
+Let us crop the top left 10x10px out of the image.
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=10&' +
+   ...     'local.crop.w=10&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' 
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 10, 10)
+
+Crop top left 10x10px out of the image and resize it to 5x5px.
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=10&' +
+   ...     'local.crop.w=10&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.w=5&' +
+   ...     'after.size.h=5&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 5, 5)
+
+Crop top left 40x20px out of the image and resize it to 10x20xpx. This means
+the ratio of the crop does not match the ratio of the desired size so the best
+ratio will be taken::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=20&' +
+   ...     'local.crop.w=40&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.h=20&' +
+   ...     'after.size.w=10&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 10, 5)
+
+And now without a crop::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'after.size.h=20&' +
+   ...     'after.size.w=10&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 10, 11)
+
+It is also possible to omit one dimension of afterSize to keep the resulting
+ratio of the image. If the image get cropped the resulting ratio will be
+apointed by the crop.::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'local.crop.h=10&' +
+   ...     'local.crop.w=20&' +
+   ...     'local.crop.x=0&' +
+   ...     'local.crop.y=0&' +
+   ...     'after.size.w=40&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 40, 20)
+
+If no crop will be done the ratio will be apointed by the original
+dimensions of the image::
+
+   >>> browser.open('http://localhost/flower.jpg/@@processed?' +
+   ...     'after.size.h=50&'
+   ...     )
+   >>> getImageInfo(browser.contents)
+   ('image/jpeg', 44, 50)
+
+We can use 'If-Modified-Since' in the request and get a 304 status.
+
+   >>> browser.addHeader('If-Modified-Since',browser.headers.getheader('Last-Modified'))
+   >>> browser.open('http://localhost/flower.jpg/@@resized')
+   Traceback (most recent call last):
+   ...
+   HTTPError: HTTP Error 304: Not Modified
+
+TODO: more tests here

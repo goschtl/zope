@@ -1,0 +1,28 @@
+<configure
+ xmlns="http://namespaces.zope.org/zope"
+ xmlns:browser="http://namespaces.zope.org/browser"
+ i18n_domain="zope"
+ >
+
+ <adapter factory=".adapter.ProcessableImage"/>
+ 
+ <browser:page
+  for="zope.app.file.interfaces.IImage"
+  name="resized"
+  permission="zope.Public"
+  class=".browser.ResizedImageView"/>
+
+ <browser:page
+  for="zope.app.file.interfaces.IImage"
+  name="processed"
+  permission="zope.Public"
+  class=".browser.ImageProcessorView"
+  />
+
+ <subscriber
+     for="zope.app.file.interfaces.IImage
+          zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+     handler=".adapter.invalidateCache"
+     />
+
+</configure>
