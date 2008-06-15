@@ -2,9 +2,10 @@
 Changes for z3c.image
 =====================
 
-trunk
-=====
+2008/06/15 1.0.0a1:
+===================
 
+- increase the major version number because of backward incompatibilities
 - changed the way how parameters are processed to make it easier to subclass
   It is now no longer necessary to implement __init__ in subclasses.
   To migrate existing code just set or modify the property "params". "params"
