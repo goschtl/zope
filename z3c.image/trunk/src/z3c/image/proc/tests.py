@@ -13,8 +13,7 @@ functional.defineLayer('Z3cImageLayer', 'ftesting.zcml')
 
 def setUp(test):
     component.provideHandler(adapter.invalidateCache,
-                             adapts=(
-        IImage, IObjectModifiedEvent))
+                             adapts=(IImage, IObjectModifiedEvent))
 
 def tearDown(test):
     pass

@@ -144,6 +144,6 @@ We can use 'If-Modified-Since' in the request and get a 304 status.
    >>> browser.open('http://localhost/flower.jpg/@@resized')
    Traceback (most recent call last):
    ...
-   httperror_seek_wrapper: HTTP Error 304: Not Modified
+   HTTPError: HTTP Error 304: Not Modified
 
 TODO: more tests here

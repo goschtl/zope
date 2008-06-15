@@ -48,20 +48,24 @@ class ImageProcessorView(BrowserView):
 
     """image processor"""
 
-    def __init__(self,context,request):
+    def __init__(self, context, request):
+        self.params = request.form
         super(ImageProcessorView,self).__init__(context,request)
-        self.degrees =int(self.request.form.get('remote.adjust.rotate',0))
-        self.width = int(self.request.form.get('remote.size.w',0))
-        self.height = int(self.request.form.get('remote.size.h',0))
 
-        self.cropX = self.request.form.get('local.crop.x',None)
-        self.cropW = self.request.form.get('local.crop.w',None)
-        self.cropY = self.request.form.get('local.crop.y',None)
-        self.cropH = self.request.form.get('local.crop.h',None)
-
-        self.afterSizeW = int(self.request.form.get('after.size.w',0))
-        self.afterSizeH = int(self.request.form.get('after.size.h',0))
-
+    def _collectParams(self):
+        # rotate
+        self.degrees =int(self.params.get('remote.adjust.rotate',0))
+        # resize
+        self.width = int(self.params.get('remote.size.w',0))
+        self.height = int(self.params.get('remote.size.h',0))
+        # crop
+        self.cropX = self.params.get('local.crop.x',None)
+        self.cropW = self.params.get('local.crop.w',None)
+        self.cropY = self.params.get('local.crop.y',None)
+        self.cropH = self.params.get('local.crop.h',None)
+        # rezize after crop
+        self.afterSizeW = int(self.params.get('after.size.w',0))
+        self.afterSizeH = int(self.params.get('after.size.h',0))
         self.size = (self.width,self.height)
         self._calcAfterSize()
 
@@ -92,8 +96,9 @@ class ImageProcessorView(BrowserView):
         return ratio
 
     def _calcAfterSize(self):
-        if (self.afterSizeW == 0 or self.afterSizeH == 0) and \
-           self.afterSizeW != self.afterSizeH:
+        if (    (self.afterSizeW == 0 or self.afterSizeH == 0)
+            and self.afterSizeW != self.afterSizeH
+           ):
             ratio = self._resultingRatio()
             if self.afterSizeH == 0:
                 self.afterSizeH = int(round(self.afterSizeW / ratio))
@@ -102,6 +107,7 @@ class ImageProcessorView(BrowserView):
         self.afterSize = (self.afterSizeW,self.afterSizeH)
 
     def _process(self):
+        self._collectParams()
         pimg = IProcessableImage(self.context)
         self._pushCommands(pimg)
         return pimg.process()
@@ -163,21 +169,13 @@ class ImageProcessorView(BrowserView):
 
 class ResizedImageView(ImageProcessorView):
 
-    def __init__(self,context,request):
-        super(ResizedImageView,self).__init__(context,request)
-        data = context.data
-        if not isinstance(data, str):
-            pos = data.tell()
-            data.seek(0)
-            res = data.read(1024*1024)
-            data.seek(pos)
-            data = res
-        else:
-            data = self.context.data
+    def _collectParams(self):
+        super(ResizedImageView,self)._collectParams()
+        data = self.data
         t,w,h = getImageInfo(data)
         self.size = (w,h)
-        self.width = self.request.form.get('w',self.size[0])
-        self.height = self.request.form.get('h',self.size[1])
+        self.width = self.params.get('w',self.size[0])
+        self.height = self.params.get('h',self.size[1])
 
     def _pushCommands(self, pimg):
         new_size = getMaxSize(self.size, (self.width, self.height))
@@ -193,11 +191,11 @@ class PasteImageView(ResizedImageView):
 
     img = None
 
-    def __init__(self,context,request):
-        super(PasteImageView, self).__init__(context, request)
-        self.x = self.request.form.get('x', 0)
-        self.y = self.request.form.get('y', 0)
-        self.imgId = self.request.form.get('img', 0)
+    def _collectParams(self):
+        super(PasteImageView, self)._collectParams()
+        self.x = self.params.get('x', 0)
+        self.y = self.params.get('y', 0)
+        self.imgId = self.params.get('img', 0)
 
     def _pushCommands(self, pimg):
         super(PasteImageView, self)._pushCommands(pimg)

@@ -2,6 +2,14 @@
 Changes for z3c.image
 =====================
 
+trunk
+=====
+
+- changed the way how parameters are processed to make it easier to subclass
+  It is now no longer necessary to implement __init__ in subclasses.
+  To migrate existing code just set or modify the property "params". "params"
+  is a dict like request.form.
+
 2008/02/15 0.1.8:
 =================
 
