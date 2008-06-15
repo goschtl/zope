@@ -45,7 +45,7 @@ class QueryParser(object):
         self.context = context
         #self.db = db
 
-    def __call__(self):
+    def __call__(self, metadata):
         strg = self.context
         return ObjectQueryTree()
 
@@ -88,7 +88,7 @@ class AlgebraCompiler(object):
         self.context = context
         #self.db = db
 
-    def __call__(self):
+    def __call__(self, metadata, algebra):
         return RunnableQuery()
 
 class DB(object):

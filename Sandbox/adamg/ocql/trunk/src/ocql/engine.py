@@ -31,12 +31,12 @@ class OCQLEngine:
 
     def compile(self, query):
         #TODO: later use maybe named adapters
-        db = IDB(None)
+        metadata = IDB(None)
 
-        objectquery = IQueryParser(query)()
+        objectquery = IQueryParser(query)(metadata)
         optimizedoq = IQueryOptimizer(objectquery)()
         algebra = IRewriter(optimizedoq)()
         optimizedalgebra = IAlgebraOptimizer(algebra)()
-        runnable = IAlgebraCompiler(optimizedalgebra)()
+        runnable = IAlgebraCompiler(optimizedalgebra)(metadata, algebra)
 
         return runnable

@@ -6,6 +6,8 @@ $Id$
 """
 
 import unittest
+import doctest
+from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 
 from ocql.engine import OCQLEngine
 from ocql.testing.stubs import *
@@ -15,14 +17,16 @@ class testSkeleton(unittest.TestCase):
         registerStubs()
 
         e = OCQLEngine()
-        rq = e.compile("[ c in ICurses | c ]")
+        rq = e.compile("[ c in ICourse | c ]")
 
         self.assert_(isinstance(rq, RunnableQuery))
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(testSkeleton))
-    return suite
+    flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
+    return unittest.TestSuite((
+        unittest.makeSuite(testSkeleton),
+        DocFileSuite('run.txt', optionflags=flags),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

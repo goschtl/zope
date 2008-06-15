@@ -1,0 +1,50 @@
+
+I'm sorry, but I'm lazy here, in reality we would have to create
+stubs for all ocql.queryobject classes and use those...
+But it's a lot faster to reuse the parser and the existing classes.
+
+Add queries first to parser.txt doctest, after they pass there they can be
+added here.
+
+    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.rewriter.rewriter import Rewriter
+
+    >>> from ocql.testing.database import TestMetadata
+
+
+    >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Single(<type 'set'>,`1`)
+
+
+    >>> qo = QueryParser("set [ | 1 ] union set [|2]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
+
+
+    #Differ not implemented
+    #>>> qo = QueryParser("set [ | 1 ] differ set [|2]")(TestMetadata())
+    #>>> opt = QueryOptimizer(qo)()
+    #>>> alg = Rewriter(opt)()
+    #>>> print str(alg)
+    #Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
+
+
+    >>> qo = QueryParser("set [ i in ICourse | i ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Iter(<type 'set'>,Lambda i: Single(<type 'set'>,i),Make(<type 'set'>,<type 'set'>,ICourse))
+
+
+    #bag not implemented
+    #>>> qo = QueryParser("size set [ i in ICourse | i ]")(TestMetadata())
+    #>>> opt = QueryOptimizer(qo)()
+    #>>> alg = Rewriter(opt)()
+    #>>> print str(alg)
+    #Iter(<type 'set'>,Lambda i: Single(<type 'set'>,i),Make(<type 'set'>,<type 'set'>,ICourse))

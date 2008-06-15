@@ -1,0 +1,79 @@
+
+Now we'll see how a query runs
+
+    >>> from zope.component import provideAdapter
+
+    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.rewriter.rewriter import Rewriter
+    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
+    >>> from ocql.compiler.compiler import AlgebraCompiler
+    >>> from ocql.testing.database import TestMetadata
+
+    >>> provideAdapter(QueryParser)
+    >>> provideAdapter(QueryOptimizer)
+    >>> provideAdapter(Rewriter)
+    >>> provideAdapter(AlgebraOptimizer)
+    >>> provideAdapter(AlgebraCompiler)
+    >>> provideAdapter(TestMetadata)
+
+    >>> from ocql.engine import OCQLEngine
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ | 1 ]")
+    >>> run
+    RunnableQuery: set([1])
+
+    >>> result = run.execute()
+    >>> result
+    set([1])
+
+    >>> type(result)
+    <type 'set'>
+
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ | 1 ] union set [|2]")
+    >>> run
+    RunnableQuery: set.union(set([1]),set([2]))
+
+    >>> result = run.execute()
+    >>> result
+    set([1, 2])
+
+    >>> type(result)
+    <type 'set'>
+
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ i in ICourse | i ]")
+    >>> run
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))) , set())
+
+    >>> result = run.execute()
+    >>> result
+    set([Course <C1>, Course <C2>, Course <C3>])
+
+    >>> type(result)
+    <type 'set'>
+
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ c in ICourse | c.code ]")
+    >>> run
+    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))) , set())
+
+    >>> result = run.execute()
+    >>> result
+    set(['C3', 'C2', 'C1'])
+
+    >>> type(result)
+    <type 'set'>
+
+    >>> run = run.reanalyze()
+    >>> run.execute()
+    set(['C3', 'C2', 'C1'])

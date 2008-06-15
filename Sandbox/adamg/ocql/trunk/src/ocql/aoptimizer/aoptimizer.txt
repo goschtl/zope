@@ -1,0 +1,25 @@
+
+
+    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
+    >>> from ocql.interfaces import IOptimizedAlgebraObject
+
+Currently the optimizer is doing NOTHING, it just returns what it gets.
+(And adds the interface IOptimizedAlgebraObject)
+
+    >>> class Dummy(object):
+    ...     def __init__(self, value):
+    ...          self.value = value
+
+    >>> in_=Dummy('foo-bar')
+    >>> in_.value
+    'foo-bar'
+
+    >>> out = AlgebraOptimizer(in_)()
+
+    >>> print out
+    <Dummy object at ...>
+    >>> out.value
+    'foo-bar'
+
+    >>> IOptimizedAlgebraObject.providedBy(out)
+    True

@@ -1,0 +1,36 @@
+
+
+    >>> from ocql.parser.queryparser import QueryParser
+
+
+
+    #FAILS, why?
+    #>>> QueryParser("set [ ]")(None)
+    #Query(<type 'set'>, , Constant(1))
+
+    >>> QueryParser("set [ | 1 ]")(None)
+    Query(<type 'set'>, , Constant(1))
+
+    #FAILS, why?
+    #>>> QueryParser("list [ | 1 ]")(None)
+    #Query(<type 'set'>, , Constant(1))
+
+    >>> QueryParser("set [ | 1 ] union set [|2]")(None)
+    Union(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
+
+    >>> QueryParser("set [ | 1 ] differ set [|2]")(None)
+    Differ(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
+
+    >>> QueryParser("set [ i in ICourse | i ]")(None)
+    Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))
+
+    >>> QueryParser("size set [ i in ICourse | i ]")(None)
+    Count(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
+
+    #FAILS, see raise "Help"
+    #>>> QueryParser("set [ d in IDepartments; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
+
+    #>>> QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(None)
+
+    >>> QueryParser("set [ c in ICourse | c.code ]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))

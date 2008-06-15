@@ -27,9 +27,10 @@ setup (
     url = '',
     packages = find_packages('src'),
     package_dir = {'':'src'},
-    namespace_packages = ['ocql'],
+    namespace_packages = [],
     extras_require = dict(
         test = [
+            'zope.testing',
             ],
         ),
     install_requires = [
