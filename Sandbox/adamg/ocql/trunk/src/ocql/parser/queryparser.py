@@ -18,7 +18,6 @@ from threading import local
 from zope.component import adapts
 from zope.component import provideAdapter
 from zope.interface import implements
-import zope.thread
 
 from ocql.queryobject.queryobject import *
 from ocql.interfaces import IQueryParser

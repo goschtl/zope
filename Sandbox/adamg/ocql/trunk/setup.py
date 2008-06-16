@@ -31,6 +31,7 @@ setup (
     extras_require = dict(
         test = [
             'zope.testing',
+            'zope.schema',
             ],
         ),
     install_requires = [

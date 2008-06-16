@@ -8,7 +8,7 @@ $Id$
 
 from zope.component import adapts
 from zope.interface import implements
-from zope.security.proxy import removeSecurityProxy
+#from zope.security.proxy import removeSecurityProxy
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
 
@@ -18,7 +18,7 @@ from ocql.interfaces import IAlgebraObject
 from ocql.interfaces import IOptimizedAlgebraObject
 
 def addMarkerIF(obj, marker):
-    obj = removeSecurityProxy(obj)
+    #obj = removeSecurityProxy(obj)
     if not marker.providedBy(obj):
         directlyProvides(obj, directlyProvidedBy(obj), marker)
 
