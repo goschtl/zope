@@ -2,6 +2,20 @@
 Changes for lovely.responsecache
 ================================
 
+2008/06/16 1.0.0a1
+==================
+
+This is a major version update to signal that the new version is no longer
+automatically using pyCurl but using a fallback to httplib if pycurl is not
+present. Using httplib is a huge performance problem, so whenever possible
+pycurl should be used.
+
+- removed pycurl as install requirement.
+  The application which want's to use pycurl must add it to it's setup.
+- Added a WARNING to the log at startup alerting about performance because of
+  using httplib instead of pycurl.
+- added support for httplib if pyCurl is not available
+
 2008/02/16 0.4.3a2
 ==================
 

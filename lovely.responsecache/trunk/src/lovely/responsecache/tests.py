@@ -61,6 +61,14 @@ def setUp(test):
     test.globs['log_info'] = log_info
 
 
+def setUpHTTPLib(test):
+    # setup the PurgeUtil to use httplib instead of pyCurl
+    setUp(test)
+    from purge import PurgeUtil, _purgeHTTPLIB
+    import httplib
+    PurgeUtil._purgeURLs = _purgeHTTPLIB
+
+
 def tearDown(test):
     setup.placefulTearDown()
 
@@ -80,6 +88,10 @@ def test_suite():
             ),
         DocFileSuite(
             'PURGE.txt', setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        DocFileSuite(
+            'PURGE.txt', setUp=setUpHTTPLib, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         fsuite,

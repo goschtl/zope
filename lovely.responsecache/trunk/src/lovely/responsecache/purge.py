@@ -20,6 +20,7 @@ __docformat__ = "reStructuredText"
 import logging
 import threading
 import urlparse
+import httplib
 import transaction
 
 from time import time
@@ -94,26 +95,56 @@ class PurgeUtil(object):
         return parts
 
     def _purgeURLs(self, urls):
-        import pycurl
-        result = True
-        url = 'no URL'
-        c = pycurl.Curl()
-        try:
-            c.setopt(c.WRITEFUNCTION, self.ignoreWrite)
-            c.setopt(c.CUSTOMREQUEST,'PURGE')
-            c.setopt(c.TIMEOUT, self.timeout)
-            for url in urls:
-                c.setopt(c.URL, url)
-                c.perform()
-                log.info('purged %r' % url)
-        except Exception, e:
-            log.error('unable to purge %r, reason: %s' % (url, e))
-            result = False
-        c.close()
-        return result
+        # this method is set below depending on the availability of pyCurl
+        pass
 
     def ignoreWrite(self, data):
         pass
+
+
+def _purgePyCurl(self, urls):
+    result = True
+    url = 'no URL'
+    c = pycurl.Curl()
+    try:
+        c.setopt(c.WRITEFUNCTION, self.ignoreWrite)
+        c.setopt(c.CUSTOMREQUEST,'PURGE')
+        c.setopt(c.TIMEOUT, self.timeout)
+        for url in urls:
+            c.setopt(c.URL, url)
+            c.perform()
+            log.info('purged %r' % url)
+    except Exception, e:
+        log.error('unable to purge %r, reason: %s' % (url, e))
+        result = False
+    c.close()
+    return result
+
+def _purgeHTTPLIB(self, urls):
+    result = True
+    try:
+        for url in urls:
+            parsed = urlparse.urlparse(url)
+            host = parsed[1]
+            path = parsed[2]
+            h = httplib.HTTP(host)
+            h.putrequest('PURGE', path)
+            h.endheaders()
+            errcode, errmsg, headers = h.getreply()
+            h.getfile().read()
+            h.close()
+            log.info('purged %r' % url)
+    except Exception, e:
+        log.error('unable to purge %r, reason: %s' % (url, e))
+        result = False
+    return result
+
+try:
+    import pycurl
+    PurgeUtil._purgeURLs = _purgePyCurl
+except ImportError:
+    log.warning('Performance alert: pyCurl not found, using httplib!')
+    PurgeUtil._purgeURLs = _purgeHTTPLIB
 
 
 class PurgeDataManager(object):

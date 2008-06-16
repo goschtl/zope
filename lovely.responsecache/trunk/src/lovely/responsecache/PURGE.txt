@@ -39,7 +39,7 @@ And have our purge in the log.
 
     >>> print log_info
     lovely.responsecache.purge ERROR
-      unable to purge 'http://localhost:33334/purge_expression1', reason: (7, "couldn't connect to host")
+      unable to purge 'http://localhost:33334/purge_expression1', reason: (...)
 
 As we can see we could not reach any server. So let's set up a http server::
 
@@ -159,7 +159,7 @@ the logging info::
 
     >>> print log_info
     lovely.responsecache.purge ERROR
-      unable to purge 'http://localhost:33334/purge_expression1', reason: (7, "couldn't connect to host")
+      unable to purge 'http://localhost:33334/purge_expression1', reason: (...)
     lovely.responsecache.purge INFO
       purged 'http://localhost:33335/purge_expression1'
 
