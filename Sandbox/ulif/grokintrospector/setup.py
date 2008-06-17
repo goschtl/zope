@@ -69,6 +69,7 @@ setup(
                       'zope.hookable',
                       'zope.i18nmessageid',
                       'zope.interface',
+                      'zope.introspector',
                       'zope.lifecycleevent',
                       'zope.location',
                       'zope.pagetemplate',
