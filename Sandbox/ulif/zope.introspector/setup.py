@@ -64,7 +64,8 @@ setup(name='zope.introspector',
                         ],
       extras_require = dict(
         test=['zope.app.testing',
-              'zope.testing',]
+              'zope.testing',
+              'z3c.testsetup',]
       ),
       entry_points="""
       # Add entry points here
