@@ -134,7 +134,6 @@ class ImageProcessorView(BrowserView):
                 currentSize = (w,h)
             size=getMaxSize(currentSize, self.afterSize)
             pimg.resize(size)
-        return pimg.process()
 
     def processed(self):
         processed = self._process()

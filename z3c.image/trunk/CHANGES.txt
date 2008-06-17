@@ -2,6 +2,12 @@
 Changes for z3c.image
 =====================
 
+2008/06/17 1.0.0a2:
+===================
+
+- increased performance: image processing was always called twice :(
+  Should now be twice as fast as before :)
+
 2008/06/15 1.0.0a1:
 ===================
 
