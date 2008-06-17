@@ -41,7 +41,6 @@ from zope import component
 from zope.interface import Interface
 import thread
 from sqlalchemy.orm import mapper
-from sqlalchemy.orm.session import Session as _Session
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy import create_engine
 import sqlalchemy as sa
@@ -49,29 +48,35 @@ import sqlalchemy as sa
 class IDatabase(Interface):
     """A utility that specifies the database.
     """
-    
-    def engine():
-        """Get the engine in use for this database session.
 
-        The engine is not created on the fly. Each time the engine is
-        looked up for a site (application), the same engine should be found.
+    def session_factory():
+        """Create the session.
+
+        The session needs to be configured with the right engine and
+        parameters.
+
+        The session is only created one per thread/application combination.
         """
 
-    def configuration():
-        """Get all configuration parameters for Session.
-
-        This should give the configuration parameters to be used for
-        a session in this site.
-        """
-
-    def id():
-        """Get unique id for this database configuration.
-
-        This should be unique per site (application).
+    def scopefunc():
+        """Determine the scope of the session.
+        
+        This should at the very least be unique per thread.
         """
 
 class Database(grok.LocalUtility):
     grok.implements(IDatabase)
+
+    def session_factory(self):
+        print "creating new session"
+        return sa.orm.create_session(**self.configuration())
+
+    def scopefunc(self):
+        # we use the application name as the unique per application id.
+        # Can we use something more clever and universally working?
+        result = (thread.get_ident(), self.__parent__.__name__)
+        print "scopefunc:", result
+        return result
     
     def engine(self):
         # we look up the engine with the name defined in the application
@@ -86,15 +91,27 @@ class Database(grok.LocalUtility):
             autoflush=True,
             extension=ZopeTransactionExtension())
 
-    def id(self):
-        # we use the application name as the unique id. Can we use
-        # something more clever and universally working?
-        return self.__parent__.__name__
+def session_factory():
+    """This is used by scoped session to create a new Session object.
+    """
+    utility = component.getUtility(IDatabase)
+    return utility.session_factory()
+
+def scopefunc():
+    """This is used by scoped session to distinguish between sessions.
+    """
+    utility = component.getUtility(IDatabase)
+    return utility.scopefunc()
+
+# this is a frame-work central configuration, we only need to do this
+# once in our integration framework, after which we can just import
+# Session
+Session = scoped_session(session_factory, scopefunc)
 
 class IEngine(Interface):
     """The database engine.
     """
-
+    
 # we register the available engines as global utilities.
 # we want to be able to configure the engines, preferably also through
 # the UI. This might mean we need to register the engine as a local,
@@ -104,30 +121,6 @@ grok.global_utility(engine1, provides=IEngine, direct=True, name='engine1')
 
 engine2 = create_engine('postgres:///experiment2', convert_unicode=True)
 grok.global_utility(engine2, provides=IEngine, direct=True, name='engine2')
-        
-def session_factory():
-    """This is used by scoped session to create a new Session object.
-    """
-    utility = component.getUtility(IDatabase)
-    print "Creating new session"
-    return _Session(**utility.configuration())
-
-def scopefunc():
-    """This is used by scoped session to distinguish between sessions.
-
-    We distinguish between sessions by thread id and IDatabase unique
-    application id.
-    """
-    utility = component.getUtility(IDatabase)
-    result = (thread.get_ident(), utility.id())
-    print "Scope: ", result
-    return result
-
-# this is a frame-work central configuration, we only need to do this
-# once in our integration framework, after which we can just import
-# Session
-Session = scoped_session(session_factory,
-                         scopefunc)
 
 # an application that allows the configuration of the engine name
 class IForm(Interface):
