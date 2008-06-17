@@ -265,7 +265,7 @@ class DocGrokGrokker(ClassGrokker):
     docgrok module, because it contains a more specific grokker: the
     InstanceGrokker 'docgrok_grokker' ::
 
-      >>> from grok.admin import docgrok
+      >>> from grokadmin import docgrok
 
     Then we create an (empty) 'ModuleGrokker'. 'ModuleGrokkers' can
     grok whole modules. ::
@@ -280,7 +280,7 @@ class DocGrokGrokker(ClassGrokker):
 
     The 'docgrok_handler_grokker' is an instance of 'DocGrokGrokker'::
 
-      >>> from grok.admin.docgrok import DocGrokGrokker
+      >>> from grokadmin.docgrok import DocGrokGrokker
       >>> isinstance(docgrok.docgrok_handler_grokker, DocGrokGrokker)
       True
 
