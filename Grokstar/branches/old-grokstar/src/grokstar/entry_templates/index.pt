@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html metal:use-macro="context/@@blogmacros/macros/blogpage" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title metal:fill-slot="title" tal:content="context/title"/>
+  </head>
+  <body>
+    <div metal:fill-slot="main-content">
+      <tal:entry replace="structure context/@@item" />
+      <a tal:attributes="href python:view.url('edit')">edit</a>
+    </div>
+  </body>
+</html>

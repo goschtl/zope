@@ -1,0 +1,9 @@
+How to install Grokstar
+
+$ python2.4 bootstrap/bootstrap.py
+$ bin/buildout
+
+To run:
+
+$ bin/zopectl fg
+

@@ -1,0 +1,12 @@
+<html metal:use-macro="context/@@blogmacros/macros/blogpage">
+<head>
+<title metal:fill-slot="title">Blog Entries</title>
+</head>
+<body>
+<div metal:fill-slot="main-content">
+  <tal:block repeat="entry view/entries">
+    <tal:block content="structure entry/@@item"/>
+  </tal:block>
+</div>
+</body>
+</html>
