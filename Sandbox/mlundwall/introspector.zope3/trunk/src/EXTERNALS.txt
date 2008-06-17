@@ -1,1 +1,0 @@
-zope.introspector https://betahaus.org/svn/martin/zope.introspector/trunk
