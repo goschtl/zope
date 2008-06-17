@@ -182,9 +182,11 @@ class Query(Expression):
             elif isinstance(firstTerm, Alias):
                 rv = Query(
                     self.metadata,
+                    self.symbols,
                     self.collection_type,
                     [In(
                         self.metadata,
+                        self.symbols,
                         firstTerm.identifier,
                         firstTerm.expression
                         )]+self.terms[1:],
@@ -194,6 +196,7 @@ class Query(Expression):
                     firstTerm.rewrite(algebra),
                     Query(
                         self.metadata,
+                        self.symbols,
                         self.collection_type,
                         self.terms[1:],
                         self.target).rewrite(algebra),
@@ -427,8 +430,10 @@ class Every(Quantor):
             algebra.Lambda('i',
                 operator.__class__(
                     self.metadata,
+                    self.symbols,
                     Identifier(
                         self.metadata,
+                        self.symbols,
                         'i'),
                     expression
                 ).rewrite(algebra)
@@ -446,7 +451,8 @@ class Some(Quantor):
             algebra.Lambda('i',
                 operator.__class__(
                     self.metadata,
-                    Identifier(self.metadata, 'i'),
+                    self.symbols,
+                    Identifier(self.metadata, self.symbols,'i'),
                     expression
                 ).rewrite(algebra)
             ),
