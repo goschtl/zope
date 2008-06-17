@@ -21,6 +21,7 @@ import threading
 import twisted.python.failure
 import twisted.internet.defer
 import ZODB.POSException
+import ZEO.Exceptions
 import ZODB.utils
 import BTrees
 import transaction
@@ -55,7 +56,7 @@ class Result(object):
 
     def __init__(self):
         self._event = threading.Event()
-    
+
     def setResult(self, value):
         self.result = value
         self._event.set()
@@ -119,6 +120,9 @@ class PollInfo(dict):
 class AgentThreadPool(object):
 
     _size = 0
+    initial_backoff = 5
+    incremental_backoff = 5
+    maximum_backoff = 60
 
     def __init__(self, dispatcher, name, size):
         self.dispatcher = dispatcher
@@ -134,22 +138,52 @@ class AgentThreadPool(object):
         local.dispatcher = self.dispatcher
         conn = self.dispatcher.db.open()
         try:
-            job = self.queue.get()
-            while job is not None:
-                identifier, dbname, info = job
+            job_info = self.queue.get()
+            while job_info is not None:
+                identifier, dbname, info = job_info
                 info['thread'] = thread.get_ident()
                 info['started'] = datetime.datetime.utcnow()
                 zc.async.utils.tracelog.info(
                     'starting in thread %d: %s',
                     info['thread'], info['call'])
+                backoff = self.initial_backoff
+                conflict_retry_count = 0
                 try:
-                    transaction.begin()
-                    if dbname is None:
-                        local_conn = conn
-                    else:
-                        local_conn = conn.get_connection(dbname)
-                    job = local_conn.get(identifier)
-                    local.job = job
+                    while 1:
+                        try:
+                            transaction.begin()
+                            if dbname is None:
+                                local_conn = conn
+                            else:
+                                local_conn = conn.get_connection(dbname)
+                            job = local_conn.get(identifier)
+                            # this setstate should trigger any initial problems
+                            # within the try/except retry structure here.
+                            local_conn.setstate(job)
+                            local.job = job
+                        except ZEO.Exceptions.ClientDisconnected:
+                            zc.async.utils.log.info(
+                                'ZEO client disconnected while trying to '
+                                'get job %d in db %s; retrying in %d seconds',
+                                ZODB.utils.u64(identifier), dbname or '',
+                                backoff)
+                            time.sleep(backoff)
+                            backoff = min(self.maximum_backoff,
+                                          backoff + self.incremental_backoff)
+                        except ZODB.POSException.TransactionError:
+                            # continue, i.e., try again
+                            conflict_retry_count += 1
+                            if (conflict_retry_count == 1 or
+                                not conflict_retry_count % 5):
+                                zc.async.utils.log.warning(
+                                    '%d transaction error(s) while trying to '
+                                    'get job %d in db %s',
+                                    conflict_retry_count,
+                                    ZODB.utils.u64(identifier), dbname or '',
+                                    exc_info=True)
+                            # now ``while 1`` loop will continue, to retry
+                        else:
+                            break
                     try:
                         job() # this does the committing and retrying, largely
                     except zc.async.interfaces.BadStatusError:
@@ -210,14 +244,14 @@ class AgentThreadPool(object):
                 zc.async.utils.tracelog.info(
                     'completed in thread %d: %s',
                     info['thread'], info['call'])
-                job = self.queue.get()
+                job_info = self.queue.get()
         finally:
             conn.close()
             if self.dispatcher.activated:
                 # this may cause some bouncing, but we don't ever want to end
                 # up with fewer than needed.
                 self.dispatcher.reactor.callFromThread(self.setSize)
-    
+
     def setSize(self, size=None):
         # this should only be called from the thread in which the reactor runs
         # (otherwise it needs locks)

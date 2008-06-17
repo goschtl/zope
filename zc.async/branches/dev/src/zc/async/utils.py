@@ -14,11 +14,13 @@
 import datetime
 import logging
 import sys
+import time
 
 import ZEO.Exceptions
 import ZODB.POSException
 import rwproperty
 import persistent
+import zope.minmax
 import zc.dict
 import pytz
 import zope.bforest.periodic
@@ -58,39 +60,12 @@ class Base(persistent.Persistent):
     def __parent__(self, value):
         self._z_parent__ = None
 
-
-class Atom(persistent.Persistent):
-    def __init__(self, value):
-        self.value = value
-
-    def __getstate__(self):
-        return self.value
-
-    def __setstate__(self, state):
-        self.value = state
-
-class AtomDescriptor(object):
-    def __init__(self, name, initial=None):
-        self.name = name
-        self.initial = initial
-
-    def __get__(self, obj, klass=None):
-        if obj is None:
-            return self
-        return obj.__dict__[self.name].value
-
-    def __set__(self, obj, value):
-        obj.__dict__[self.name].value = value
-
-    def initialize(self, obj):
-        obj.__dict__[self.name] = Atom(self.initial)
-
-def createAtom(name, initial):
-    sys._getframe(1).f_locals[name] = AtomDescriptor(name, initial)
+# for legacy databases
+Atom = zope.minmax.Maximum
 
 
 class Dict(zc.dict.Dict, Base):
-    
+
     copy = None # mask
 
     def __setitem__(self, key, value):
@@ -264,7 +239,7 @@ def never_fail(call, identifier, tm):
             if not trans_ct % 5:
                 log.warning(
                     '%d consecutive transaction errors while %s',
-                    ct, identifier, exc_info=True)
+                    trans_ct, identifier, exc_info=True)
                 res = None
         except EXPLOSIVE_ERRORS:
             tm.abort()
@@ -277,11 +252,11 @@ def never_fail(call, identifier, tm):
             tm.abort()
             backoff_ct += 1
             if backoff_ct == 1:
+                # import pdb; pdb.set_trace()
                 log.log(level,
                         'first error while %s; will continue in %d seconds',
                         identifier, backoff, exc_info=True)
-            elif not backoff_ct % 5:
-                
+            elif not backoff_ct % 10:
                 log.log(level,
                         '%d consecutive errors while %s; '
                         'will continue in %d seconds',
@@ -320,7 +295,7 @@ def wait_for_system_recovery(call, identifier, tm):
                 log.error('first error while %s; will continue in %d seconds',
                           identifier, backoff, exc_info=True)
             elif not backoff_ct % 5:
-                
+
                 log.error('%d consecutive errors while %s; '
                           'will continue in %d seconds',
                           backoff_ct, identifier, backoff, exc_info=True)
