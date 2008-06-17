@@ -38,7 +38,7 @@ def suiteFromPackage(name):
         if filename == '__init__.py':
             continue
 
-        dottedname = 'grok.admin.tests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grokadmin.tests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(dottedname,
                                     setUp=setUpZope,
                                     tearDown=cleanUpZope,
@@ -62,7 +62,7 @@ def test_suite():
         suite.addTest(suiteFromPackage(name))
     for name in ['docgrok.txt', 'docgrok.py', 'objectinfo.txt', 'utilities.py']:
         suite.addTest(doctest.DocFileSuite(name,
-                                           package='grok.admin',
+                                           package='grokadmin',
                                            globs=globs,
                                            setUp=setUpZope,
                                            tearDown=cleanUpZope,
