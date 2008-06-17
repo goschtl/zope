@@ -47,7 +47,7 @@ import grok.interfaces
 from grok.interfaces import IApplication
 from martian.scan import is_package, ModuleInfo
 from martian import ClassGrokker, ModuleGrokker
-from grok.admin.objectinfo import ZopeObjectInfo
+from grokadmin.objectinfo import ZopeObjectInfo
 
 # This is the name under which the docgrok object-browser can be
 # reached.
