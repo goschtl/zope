@@ -1,0 +1,12 @@
+<h1 tal:content="context/title">Entry</h1>
+<span class="published" tal:content="python:context.published.strftime('%e %B %Y %H:%M')">29 February 1999</span>
+<tal:block content="structure context/@@renderedcontent" />
+
+<a name="comments"></a>
+<p tal:condition="context/values" class="commenthead">Comments</p>
+<div class="comment" tal:repeat="comment view/comments">
+  <p class="commenttitle"><span tal:replace="comment/author">Fred</span> wrote on <span tal:replace="python:comment.date.strftime('%e %B %Y')">29 February 1999</span>:</p>
+  <tal:block content="structure comment/@@renderedcomment" />
+</div>
+<a name="newcomment"></a>
+<p class="commenthead">Leave a comment</p>

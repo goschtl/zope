@@ -1,6 +1,6 @@
 How to install Grokstar
 
-$ python2.4 bootstrap/bootstrap.py
+$ python2.4 bootstrap.py
 $ bin/buildout
 
 To run:

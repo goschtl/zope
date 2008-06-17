@@ -1,0 +1,4 @@
+<h4>Recent entries</h4>
+<ul>
+<li tal:repeat="entry view/entries"><a tal:content="entry/title" tal:attributes="href entry/@@absolute_url"></a></li>
+</ul>

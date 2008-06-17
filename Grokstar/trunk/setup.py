@@ -23,6 +23,10 @@ setup(name='Grokstar',
                         'zc.catalog',
                         'hurry.query',
                         'hurry.workflow',
+                        'Pygments',
+                        'zope.sendmail',
+                        'zope.app.session',
+                        'zope.app.securitypolicy',
                         ],
       entry_points="""
       # -*- Entry points: -*-

@@ -1,20 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
-  <head>
-    <title metal:fill-slot="title">Search</title>
-  </head>
-  <body>
-    <div metal:fill-slot="main-content"
-         tal:define="results view/results">
-      <tal:no_results condition="not:results">
-        Sorry, no results for '<span tal:replace="request/q" />'
-      </tal:no_results>
-      <div class="search-results" tal:condition="results">
-        <ol>
-          <li tal:repeat="entry results"
-              tal:content="structure entry/@@item" />
-        </ol>
-      </div>
-    </div>
-  </body>
-</html>
+<form action="." method="get">
+  <p><input type="text" name="q" value="" size="15"
+         tal:attributes="value request/q | default" />
+    <input type="submit" value="Search" />
+  </p>
+</form>
+<tal:was_search condition="request/q | nothing">
+  <tal:no_results condition="not:view/results">
+    Sorry, no results for '<span tal:replace="request/q" />'
+  </tal:no_results>
+  <div class="search-results" tal:condition="view/results">
+    <ol>
+      <li tal:repeat="entry view/results"><a tal:attributes="href string:${entry/@@absolute_url}?q=${request/q}"
+          tal:content="structure entry/title">An entry</a></li>
+    </ol>
+  </div>
+</tal:was_search>

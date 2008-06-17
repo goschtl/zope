@@ -4,6 +4,7 @@ from zope import component
 import grok
 from hurry.query.query import Query
 from hurry import query
+from grokstar.blog import Main, Right
 
 from grokstar.interfaces import PUBLISHED
 
@@ -20,10 +21,10 @@ class Year(grok.Model):
             return None
         return Month(self.year, month)
 
-class YearIndex(grok.View):
-    grok.name('index')
+class YearIndex(grok.Viewlet):
     grok.context(Year)
     grok.template('dateindex')
+    grok.viewletmanager(Main)
 
     def entries(self):
         from_ = datetime(self.context.year, 1, 1)
@@ -43,10 +44,10 @@ class Month(grok.Model):
         # XXX should check whether day is acceptable
         return Day(self.year, self.month, day)
 
-class MonthIndex(grok.View):
-    grok.name('index')
+class MonthIndex(grok.Viewlet):
     grok.context(Month)
     grok.template('dateindex')
+    grok.viewletmanager(Main)
 
     def entries(self):
         from_ = datetime(self.context.year,
@@ -66,10 +67,10 @@ class Day(grok.Model):
         self.month = month
         self.day = day
 
-class DayIndex(grok.View):
-    grok.name('index')
+class DayIndex(grok.Viewlet):
     grok.context(Day)
     grok.template('dateindex')
+    grok.viewletmanager(Main)
 
     def entries(self):
         from_ = datetime(self.context.year,

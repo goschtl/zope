@@ -2,34 +2,77 @@ import random
 from datetime import datetime, timedelta
 from itertools import islice
 
-from zc.catalog.catalogindex import SetIndex
 from zope import schema, interface
 from zope.interface import Interface
 from zope.traversing.api import getParents
+from zope.component import getUtility, getMultiAdapter
 from hurry.query.query import Query
 from hurry import query
 from hurry.query.set import AllOf
 from hurry.workflow.interfaces import IWorkflowState
+
 import grok
 from grok import index
-from grokstar.interfaces import IRestructuredTextEntry, IBlog
-from grokstar.interfaces import PUBLISHED, CREATED
-from form import GrokstarEditForm
+from grokstar.interfaces import IEntry, IBlog, PUBLISHED, CREATED
 from zope.app.catalog.interfaces import ICatalog
-from zope.component import getUtility
+grok.context(Interface)
+
+
+class EditArticles(grok.Permission):
+    grok.name('grokstar.Edit') # Single editing permission
 
 class Blog(grok.Container, grok.Application):
     interface.implements(IBlog)
+    title = 'Grokstar'
+    tagline = 'A blogging app written with Grok'
+    footer = ''
+    email = ''
 
     def __init__(self):
         super(Blog, self).__init__()
-        self.title = ''
-        self.tagline = ''
         self['entries'] = Entries()
+
+
+
+
+@grok.subscribe(Blog, grok.IObjectAddedEvent)
+def registerAsUtility(app, event):
+    app.getSiteManager().registerUtility(app, grok.interfaces.IApplication)
+
+class Index(grok.View):    
+    grok.template('layout')
+
+class Edit(grok.View):
+    grok.require('grokstar.Edit')
+    grok.template('layout')
+
+class AddEntry(grok.View):
+    grok.require('grokstar.Edit')
+    grok.template('layout')
+
+
+class Head(grok.ViewletManager):
+    grok.name('head')
+    
+class Main(grok.ViewletManager):
+    grok.name('main')
+
+class Right(grok.ViewletManager):
+    grok.name('right')
+
+class Top(grok.ViewletManager):
+    grok.name('top')
+
+class CssHead(grok.Viewlet):
+    grok.viewletmanager(Head)
+
+class TitleHeader(grok.Viewlet):
+    grok.viewletmanager(Top)
+
 
 class EntryIndexes(grok.Indexes):
     grok.site(Blog)
-    grok.context(IRestructuredTextEntry)
+    grok.context(IEntry)
     grok.name('entry_catalog')
 
     title = index.Text()
@@ -49,48 +92,16 @@ class WorkflowIndexes(grok.Indexes):
 class Drafts(grok.Model):
       pass
 
-class DraftsIndex(grok.View):
-    grok.context(Drafts)
-    grok.name('index')
-    
-    def entries(self): 
-        return allEntries(10)
 
-class Entries(grok.Container):
-    pass
+class Search(grok.Viewlet):
+    grok.viewletmanager(Right)
+    grok.order(-1)
 
-class BlogIndex(grok.View):
-    grok.context(Blog)
-    grok.name('index')
+    def update(self):
+        if 'q' not in self.request.form:
+            return
 
-    def entries(self):
-        return lastEntries(10)
-
-class BlogMacros(grok.View):
-    grok.context(Interface)
-
-class BlogEdit(GrokstarEditForm):
-    grok.context(Blog)
-    grok.name('edit')
-    title = u'Edit Blog'
-
-    @grok.action('Save changes')
-    def edit(self, **data):
-        self.applyData(self.context, **data)
-        self.redirect(self.url(self.context))
-
-class BlogAbout(grok.View):
-    grok.context(Blog)
-    grok.name('about')
-
-class Search(grok.View):
-    grok.context(Blog)
-
-    def update(self, q=None):
-        if q is None:
-            return self.redirect(self.application_url())
-
-        q = q.strip()
+        q = self.request.form['q'].strip()
         if not q:
             self.results = lastEntries(10)
             return
@@ -102,12 +113,65 @@ class Search(grok.View):
               query.Text(('entry_catalog', 'content'), q))))
         self.results = list(islice(entries, 10))
 
-class EntriesIndex(grok.View):
-    grok.context(Entries)
-    grok.name('index')
+
+class DraftsIndex(grok.Viewlet):
+    grok.context(Drafts)
+    grok.require('grokstar.Edit')
+    grok.viewletmanager(Main)
+    
+    def entries(self): 
+        return allEntries(10)
+
+class Breadcrumbs(object):
+    grok.viewletmanager(Top)
+    def parents(self):
+        pl = getParents(self.context)
+        return pl
+        
+class Entries(grok.Container):
+    pass
+
+class BlogIndex(grok.Viewlet):
+    grok.context(Blog)
+    grok.viewletmanager(Main)
+    grok.view(Index)
 
     def entries(self):
         return lastEntries(10)
+
+class BlogEdit(grok.Viewlet):
+    grok.context(Blog)
+    grok.viewletmanager(Main)
+    grok.view(Edit)
+    
+    def update(self):
+        self.form = getMultiAdapter((self.context, self.request),
+                                    name='blogeditform')
+        self.form.update_form()
+
+    def render(self):
+        return self.form.render()
+
+class BlogEditForm(grok.EditForm):
+    grok.context(Blog)
+    
+    @grok.action('Save changes')
+    def edit(self, **data):
+        self.applyData(self.context, **data)
+        self.redirect(self.url(self.context))
+
+class EntriesIndex(grok.Viewlet):
+    grok.context(Entries)
+    grok.viewletmanager(Main)
+
+    def render(self):
+        return "Entries: %s" % ' '.join(self.context.keys())
+
+class RecentEntries(grok.Viewlet):
+    grok.viewletmanager(Right)
+    
+    def entries(self):
+        return lastEntries(40)
 
 def lastEntries(amount):
     entries = Query().searchResults(
@@ -126,11 +190,21 @@ def allEntries(amount):
         entries, key=lambda entry: entry.updated, reverse=True
         )[:amount]
 
-class Categories(grok.View):
-    grok.context(Blog)
-    grok.name('categories')
+class Categories(grok.Viewlet):
+    grok.viewletmanager(Right)
+    c = None
 
     def categories(self):
         cat = getUtility(ICatalog, 'entry_catalog')
         categories = cat['categories']
         return categories.values()
+
+    def update(self):
+        if 'c' not in self.request.form:
+            return
+
+        self.c = self.request.form['c']
+
+        self.entries = Query().searchResults(
+                (query.Eq(('entry_catalog', 'workflow_state'), PUBLISHED) &
+                  AllOf(('entry_catalog', 'categories'), [self.c])))

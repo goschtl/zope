@@ -1,0 +1,105 @@
+body {
+    width:980px;
+    font-family:sans-serif;
+    color:#222;
+    font-size:80%;
+    line-height:140%;
+}
+
+a {
+    color:#e90;
+}
+
+#head {
+    background:#fdb;
+    padding:1em;
+    margin-bottom:0.5em;
+    text-align:center;
+}
+
+#head a {
+    text-decoration:none;
+    color:#000;
+}
+
+#search {
+    margin-left:0.5em;
+    padding:1em;
+}
+
+h1, h2, h3, h4 {
+    margin-bottom:0.2em;
+}
+
+ul {
+    margin-top:0.2em;
+    list-style-type:none;
+    padding-left:1em;
+}
+
+hr {
+    border-color:#080;
+    background-color:#080;
+    border-width:0px;
+    height:1px;
+}
+
+.document h1 {
+    font-size:130%;
+    font-weight:normal;
+}
+
+.published {
+    font-weight:bold;
+    font-size:60%;
+    color:#ccc;
+    padding-left:1em;
+    margin-top:0;
+}
+
+.commenthead {
+    background-color:#7d7;
+    border:1px solid #080;
+    font-weight:bold;
+    padding:0.5em;
+}
+
+.comment {
+    background-color:#beb;
+    padding:0.5em;
+    margin-top:0.5em;
+}
+
+.commenttitle {
+    margin:0.5em;
+    font-weight:bold;
+}
+
+.doctest-block, .highlight, .literal-block  {
+    margin:1em;
+    border: 1px dashed #0b0;
+    background-color:#efe;
+    overflow:auto;
+    padding:0.5em 1em 0.5em 1em;
+    line-height:140%;
+    font-size:110%;
+}
+
+.literal-block {
+    border-color:#333;
+    background-color:#eee;
+}
+
+.footer {
+    font-size:65%;
+    font-weight:bold;
+    text-align:center;
+    color:#060;
+}
+
+cite {
+    font-family:monospace;
+    font-style:normal;
+}
+
+pre { margin:0;} /* Not 0 by default in Firefox */

@@ -1,16 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" metal:use-macro="context/@@blogmacros/macros/blogpage">
-  <head>
-    <title metal:fill-slot="title">Categories</title>
-  </head>
-  <body>
-    <div metal:fill-slot="main-content">
-      <ul>
-        <li tal:repeat="cat view/categories">
-          <a tal:attributes="href string:${view/application_url}/search?q=${cat}"
-             tal:content="cat" />
-        </li>
-      </ul>
-    </div>
-  </body>
-</html>
+<h4 tal:condition="view/categories">Categories</h4>
+<ul>
+  <li tal:repeat="cat view/categories">
+    <a tal:attributes="href string:${context/@@absolute_url}/?c=${cat}"
+       tal:content="cat" />
+    <ul tal:condition="python:cat==view.c">
+      <li tal:repeat="entry view/entries"><a tal:attributes="href string:${entry/@@absolute_url}?c=${view/c}"
+              tal:content="structure entry/title">An entry</a></li>
+    </ul>
+  </li>
+</ul>

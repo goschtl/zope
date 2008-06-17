@@ -1,0 +1,23 @@
+This should be really simple.
+
+We want to create comments: 
+
+>>> from grokstar.entry import Comment
+>>> comment = Comment("Good stuff", "fred")
+
+When we notify zope of the creation, a mail should be sent:
+
+>>> from zope.app.container.interfaces import IObjectAddedEvent
+>>> from zope.lifecycleevent import ObjectCreatedEvent
+>>> from zope.event import notify
+>>> notify(ObjectCreatedEvent(comment))
+ 
+I'm not whether we should be subscribing to ObjectCreatedEvent or ObjectAddedEvent.
+
+We need to register a dummy mailer for the test:
+
+>>> from zope.sendmail.interfaces import IMailDelivery
+>>> from zope.component import getUtility
+>>> mailer = getUtility(IMailDelivery, 'grokstar')
+
+>> mailer.send(recipient, [recipient], message.as_string())

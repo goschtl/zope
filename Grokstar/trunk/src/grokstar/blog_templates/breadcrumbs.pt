@@ -1,0 +1,3 @@
+<span tal:repeat="obj view/parents" tal:omit-tag="">
+  <a href="" tal:attributes="href python: view.url(obj)" tal:content="obj/__name__" />
+</span>

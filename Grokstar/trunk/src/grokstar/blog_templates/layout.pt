@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <tal:head content="structure provider:head" />
+</head>
+<body>
+
+<div id="head">
+    <tal:header content="structure provider:top" />
+</div>
+<div id="right" style="float:right; width:24%;">
+    <tal:main content="structure provider:right" />
+</div>
+<div id="main" style="float:right; width:74%; padding-right:2%;">
+    <tal:left content="structure provider:main" />
+</div>
+<div style="clear:both" />
+
+<p class="footer" tal:content="view/application/footer" />
+
+</body>
+</html>

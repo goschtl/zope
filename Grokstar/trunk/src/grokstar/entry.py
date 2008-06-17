@@ -8,60 +8,119 @@ from hurry.workflow.interfaces import IWorkflowInfo
 
 import grok
 
-from grokstar.blog import Blog
+from grokstar.blog import Blog, Index, Edit, Main, Right, AddEntry
 from grokstar import interfaces
-from form import GrokstarAddForm, GrokstarEditForm
+import grokstar.form
 
-class Entry(grok.Model):
+from zope.component import getUtility, getMultiAdapter
+
+class Entry(grok.Container):
     interface.implements(interfaces.IEntry, IAttributeAnnotatable)
 
-    def __init__(self, title, summary, rightsinfo, categories=None):
+    def __init__(self, title, summary, categories=[]):
+        grok.Container.__init__(self)
         self.title = title
-        self.updated = datetime.now()
-        self.published = None
+        self.updated = self.published = datetime.now()
         self.summary = summary
-        self.rightsinfo = rightsinfo
-        if categories is None:
-            self.categories = []
-        else:
-            self.categories = categories
+        self.categories = categories
 
 class RestructuredTextEntry(Entry):
     interface.implements(interfaces.IRestructuredTextEntry)
 
-    def __init__(self, title, summary, rightsinfo, content, categories=None):
-        super(RestructuredTextEntry, self).__init__(title, summary, rightsinfo, categories)
+    def __init__(self, title='', summary='', content='', categories=[]):
+        Entry.__init__(self, title, summary, categories)
         self.content = content
+
+class Comment(grok.Model):
+    interface.implements(interfaces.IComment, IAttributeAnnotatable)
+    comment = u""
+    date = datetime.now() 
+    author = u""
+    
+    def __init__(self, comment, author):
+        self.comment = comment
+        self.author = author
+        self.date = datetime.now()
 
 grok.context(RestructuredTextEntry)
 
-
-class Index(grok.View):
+class EntryIndex(grok.Viewlet):
+    grok.viewletmanager(Main)
+    grok.view(Index)
+    
+    def update(self):
+        self.comments=sorted(self.context.values(), key=lambda c:c.date)
+    
+class Item(grok.View):
     pass
 
+class AddComment(grok.Viewlet):
+    grok.context(Entry)
+    grok.viewletmanager(Main)
+    grok.view(Index)
+    grok.order(8)
 
-class Item(grok.View):
-    def format_published(self, published_date):
-        return published_date.strftime('%Y-%m-%d')
+    def update(self):
+        self.form = getMultiAdapter((self.context, self.request),
+                                    name='addcommentform')
+        self.form.update_form()
+
+    def render(self):
+        return self.form.renderedPreview + self.form.render()
+
+class AddCommentForm(grokstar.form.GrokstarAddForm):
+    form_fields = grok.AutoFields(Comment).omit('date')
+    renderedPreview = ''    
+
+    @grok.action('Preview')
+    def preview(self, comment='', **data):
+        self.renderedPreview = '<h2>Preview</h2><div class="comment">' + renderRest(comment) + '</div>'
+        self.form_reset = False
+    
+    @grok.action('Add comment')
+    def add(self, **data):
+        new_comment = Comment(**data)
+        cid = 1
+        while str(cid) in self.context:
+            cid += 1 #Not very clever, but fine for < 10000 comments!
+        self.context[str(cid)] = new_comment
+        self.redirect(self.url(self.context))
 
 
-class Add(GrokstarAddForm):
+class AddEntryViewlet(grok.Viewlet):
+    grok.viewletmanager(Main)
+    grok.view(AddEntry)
     grok.context(Blog)
-    title = u'Add Entry'
-    # add the url that the user wants
+
+    def update(self):
+        self.form = getMultiAdapter((self.context, self.request),
+                                    name='addentryform')
+        self.form.update_form()
+
+    def render(self):
+        return self.form.renderedPreview + self.form.render()
+
+class AddEntryForm(grokstar.form.GrokstarAddForm):
+    grok.context(Blog)
+    
     form_fields = grok.Fields(
-        id=schema.TextLine(title=u"Post slug"))
-    # don't show them these timestamps
+        id=schema.TextLine(title=u"id"))
     form_fields += grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
+    renderedPreview = ''
 
-    @grok.action('Add entry')
+    @grok.action('Preview')
+    def preview(self, content='', **data):
+        self.renderedPreview = '<h2>Preview</h2><div class="comment">' + renderRest(content) + '</div>'
+        self.form_reset = False
+
+    @grok.action('Add draft entry')
     def add(self, id, **data):
         new_entry = RestructuredTextEntry(**data)
         self.context['entries'][id] = new_entry
         IWorkflowInfo(new_entry).fireTransition('create')
         self.redirect(self.url(self.context))
-
+    
     @grok.action('Add published entry')
     def add_published(self, id, **data):
         new_entry = RestructuredTextEntry(**data)
@@ -70,17 +129,33 @@ class Add(GrokstarAddForm):
         IWorkflowInfo(new_entry).fireTransitionToward(interfaces.PUBLISHED)        
         self.redirect(self.url(self.context))
 
+class EntryEdit(grok.Viewlet):
+    grok.context(Entry)
+    grok.viewletmanager(Main)
+    grok.view(Edit)
 
-class Edit(GrokstarEditForm):
-    grok.context(RestructuredTextEntry)
-    title = u'Edit Entry'
+    def update(self):
+        self.form = getMultiAdapter((self.context, self.request),
+                                    name='entryeditform')
+        self.form.update_form()
+
+    def render(self):
+        return self.form.renderedPreview + self.form.render()
+
+class EntryEditForm(grok.EditForm):
     form_fields = grok.AutoFields(RestructuredTextEntry).omit(
         'published', 'updated')
+    renderedPreview = ''
 
     @grok.action('Save changes')
     def edit(self, **data):
         self.applyData(self.context, **data)
         self.redirect(self.url(self.context))
+
+    @grok.action('Preview')
+    def preview(self, content, **data):
+        self.renderedPreview = renderRest(content)
+        self.form_reset = False
 
     @grok.action('Publish')
     def publish(self, **data):
@@ -88,6 +163,16 @@ class Edit(GrokstarEditForm):
         IWorkflowInfo(self.context).fireTransitionToward(interfaces.PUBLISHED)
         self.redirect(self.url(self.context))
 
+    @grok.action('Retract')
+    def retract(self, **data):
+        self.applyData(self.context, **data)
+        IWorkflowInfo(self.context).fireTransitionToward(interfaces.CREATED)
+        self.redirect(self.url(self.context))
+
+class RenderedComment(grok.View):
+    grok.context(Comment)
+    def render(self):
+        return renderRest(self.context.comment)
 
 class RenderedContent(grok.View):
     def render(self):

@@ -2,10 +2,8 @@ from datetime import datetime
 
 import grok
 from grokstar.entry import Entry
-from hurry.workflow import workflow
+from hurry.workflow import workflow, interfaces
 from hurry.workflow.interfaces import IWorkflow
-from hurry.workflow.interfaces import IWorkflowState
-from hurry.workflow.interfaces import IWorkflowInfo
 from hurry.query.query import Query
 from hurry.query import Eq
 
@@ -35,10 +33,16 @@ def create_workflow():
         destination=PUBLISHED,
         action=publish_action)
     
-    return [create_transition, publish_transition, update_transition]
+    retract_transition = workflow.Transition(
+        transition_id='retract',
+        title='retract',
+        source=PUBLISHED,
+        destination=CREATED)
+    
+    return [create_transition, publish_transition, update_transition,
+            retract_transition]
 
 class Workflow(grok.GlobalUtility, workflow.Workflow):
-    # grok.name('grokstar_workflow')
     grok.provides(IWorkflow)
     
     def __init__(self):
@@ -68,9 +72,9 @@ class Versions(grok.GlobalUtility, workflow.WorkflowVersions):
     
 class WorkflowState(grok.Adapter, workflow.WorkflowState):
     grok.context(Entry)
-    grok.provides(IWorkflowState)
+    grok.provides(interfaces.IWorkflowState)
     
 class WorkflowInfo(grok.Adapter, workflow.WorkflowInfo):
     grok.context(Entry)
-    grok.provides(IWorkflowInfo)
+    grok.provides(interfaces.IWorkflowInfo)
 

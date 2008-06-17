@@ -1,0 +1,3 @@
+<link rel="stylesheet" tal:attributes="href static/syntax.css">
+<link rel="stylesheet" tal:attributes="href static/style.css">
+<link rel="alternate" type="application/rss+xml"  tal:attributes="title view/application/title; href string:${view/application/@@absolute_url}/feed.rss">

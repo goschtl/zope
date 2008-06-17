@@ -1,12 +1,10 @@
 <div class="entry">
-  <div class="title">
-    <a tal:attributes="href python:view.url(context)"
-       tal:content="context/title" />
-    <tal:published define="published context/published"
-                   condition="published">
-      (<span class="published"
-             tal:content="python:view.format_published(published)"/>)
-    </tal:published>
-  </div>
+  <h2 class="title">
+    <a tal:attributes="href python:view.url(context)">
+      <tal:block content="context/title"/>
+    </a>
+  </h2>
+  <span class="published" tal:content="python:context.published.strftime('%e %B %Y %H:%M')">29 February 1999</span>
   <tal:block content="structure context/@@renderedcontent"/>
+  <a tal:attributes="href string:${context/@@absolute_url}#comments">Comments: <span tal:replace="python:len(context.values())">0</span></a>
 </div>

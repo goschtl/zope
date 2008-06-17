@@ -1,0 +1,4 @@
+<a tal:attributes="href view/application/@@absolute_url">
+  <h1 tal:content="view/application/title"/>
+  <h3 tal:content="view/application/tagline"/>
+</a>

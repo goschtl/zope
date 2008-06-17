@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <channel>
+    <title tal:content="context/title"/>
+    <link tal:content="view/application_url"/>
+    <description tal:content="context/tagline"/>
+    <item tal:repeat="item view/items">
+      <title tal:content="item/title"/>
+      <link tal:content="item/@@absolute_url"/>
+      <description tal:content="item/summary"/>
+      <pubDate tal:content="item/updated"/>
+    </item>
+  </channel>
+</rss>
