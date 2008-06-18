@@ -18,7 +18,7 @@ class Relation(object):
 
     def _set_target(self, item):
         if not interfaces.IMapped.providedBy(item):
-            item = persist(item)
+            item = soup.persist(item)
 
         if item.id is None:
             session = Session()
@@ -41,7 +41,7 @@ class RelationProperty(property):
 
     def set(kls, instance, item):
         if not interfaces.IMapped.providedBy(item):
-            item = persist(item)
+            item = soup.persist(item)
 
         if item.id is None:
             session = Session()

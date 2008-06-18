@@ -131,6 +131,7 @@ We'll manually add these symbols.
 
     >>> import __builtin__
     >>> __builtin__.IVinyl = IVinyl
+    >>> __builtin__.IAlbum = IAlbum
     >>> __builtin__.Vinyl = Vinyl
 
 Create an instance using the ``create`` factory.
@@ -144,8 +145,8 @@ Verify that we've instantiated and instance of our class.
 
 Copy the attributes from the Diana Ross vinyl record.
 
-    >>> diana = session.query(IVinyl.__mapper__).filter_by(id=2)[0]
-    
+    >>> diana = session.query(IVinyl.__mapper__).filter_by(
+    ...     artist=u"Diana Ross and The Supremes")[0]
     >>> vinyl.artist = diana.artist
     >>> vinyl.title = diana.title
     >>> vinyl.rpm = diana.rpm
@@ -254,7 +255,10 @@ attached to the relation source, and the correct data will be
 persisted in the database.
 
     >>> cleaner.name = u"CD cleaner"
-    >>> transaction.commit()
+    
+    >>> session.flush()
+    >>> session.update(favorite)
+    
     >>> favorite.item.name
     u'CD cleaner'
     
@@ -285,7 +289,7 @@ Add the Diana Ross record, and save the collection to the session.
     
 We can get our collection back.
 
-    >>> from z3c.dobbin.relations import lookup
+    >>> from z3c.dobbin.soup import lookup
     >>> collection = lookup(collection.uuid)
 
 Let's verify that we've stored the Diana Ross record.
@@ -295,7 +299,7 @@ Let's verify that we've stored the Diana Ross record.
     >>> record.artist, record.title
     (u'Diana Ross and The Supremes', u'Taking Care of Business')
 
-    >>> transaction.commit()
+    >>> session.flush()
     
 When we create a new, transient object and append it to a list, it's
 automatically saved on the session.
@@ -304,14 +308,14 @@ automatically saved on the session.
 
     >>> vinyl = create(IVinyl)
     >>> vinyl.artist = u"Kool & the Gang"
-    >>> vinyl.album = u"Music Is the Message"
+    >>> vinyl.title = u"Music Is the Message"
     >>> vinyl.rpm = 33
 
     >>> collection.records.append(vinyl)
     >>> [record.artist for record in collection.records]
     [u'Diana Ross and The Supremes', u'Kool & the Gang']
 
-    >>> transaction.commit()
+    >>> session.flush()
     >>> session.update(collection)
     
 We can remove items.
@@ -383,10 +387,9 @@ the mapper.
     ...     __name__ = schema.TextLine()
 
     >>> from z3c.dobbin.interfaces import IMapper
-    
     >>> mapper = IMapper(IKnownLimitations)
-    >>> '__name__' in mapper.c
-    False
+    >>> mapper.__name__
+    'Mapper'
 
 Cleanup
 -------

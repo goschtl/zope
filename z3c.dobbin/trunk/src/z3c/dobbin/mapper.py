@@ -172,8 +172,8 @@ def createMapper(spec):
     engine = component.getUtility(IDatabaseEngine)
     metadata = engine.metadata
 
-    ignore = ('__name__',)
-
+    exclude = ['__name__']
+    
     # expand specification
     if interface.interfaces.IInterface.providedBy(spec):
         ifaces = set([spec.get(name).interface for name in schema.getFields(spec)])
@@ -184,12 +184,16 @@ def createMapper(spec):
         ifaces = set([implemented.get(name).interface for name in fields])
         kls = spec
 
+        for name, value in spec.__dict__.items():
+            if isinstance(value, property):
+                exclude.append(name)
+
     # create joined table
     soup_table = table = metadata.tables['soup']
     properties = {}
     first_table = None
     
-    for (t, p) in (getTable(iface, metadata, ignore) for iface in ifaces):
+    for (t, p) in (getTable(iface, metadata, exclude) for iface in ifaces):
         if first_table is None:
             table = first_table = t
         else:
@@ -197,7 +201,7 @@ def createMapper(spec):
         properties.update(p)
 
     specification_path = '%s.%s' % (spec.__module__, spec.__name__)
-        
+
     class Mapper(bootstrap.Soup, kls):
         interface.implements(IMapped, *ifaces)
 
@@ -235,18 +239,17 @@ def createMapper(spec):
             del properties[name]
             setattr(Mapper, name, prop)
 
-    exclude = ()
-    
-    if not interface.interfaces.IInterface.providedBy(spec):
-        for name, value in spec.__dict__.items():
-            if isinstance(value, property):
-                exclude += (name,)
+
+    polymorphic = (
+        [Mapper], table.join(
+        soup_table, first_table.c.id==soup_table.c.id))
 
     orm.mapper(
         Mapper,
         table,
         properties=properties,
         exclude_properties=exclude,
+        with_polymorphic=polymorphic,
         inherits=bootstrap.Soup,
         inherit_condition=(first_table.c.id==soup_table.c.id))
 
@@ -260,24 +263,28 @@ def removeMapper(spec):
     interface.noLongerProvides(spec, IMapped)
         
 def getTable(iface, metadata, ignore=()):
+    name = encode(iface)
+
     columns = []
     properties = {}
     
     for field in map(lambda key: iface[key], iface.names()):
         property_factory = None
 
-        # ignores
         if field.__name__ in ignore:
             continue
-        
+
         try:
-            column_factory, property_factory = fieldmap[type(field)]
-        except TypeError:
-            column_factory = fieldmap[type(field)]
+            factories = fieldmap[type(field)]
         except KeyError:
             # raise NotImplementedError("Field type unsupported (%s)." % field)
             continue
 
+        try:
+            column_factory, property_factory = factories
+        except TypeError:
+            column_factory = factories
+            
         if column_factory is not None:
             column = column_factory(field, metadata)
             columns.append(column)
@@ -287,11 +294,14 @@ def getTable(iface, metadata, ignore=()):
         if property_factory is not None:
             props = property_factory(field, column, metadata)
             properties.update(props)
+
+    if name in metadata.tables:
+        return metadata.tables[name], properties
         
     kw = dict(useexisting=True)
 
     table = rdb.Table(
-        encode(iface),
+        name,
         metadata,
         rdb.Column('id', rdb.Integer, rdb.ForeignKey("soup.id"), primary_key=True),
         *columns,

@@ -5,7 +5,7 @@ from transaction import get as getTransaction
 
 from ore.alchemist import Session
 
-import relations
+import soup
 
 class Savepoint:
     """Transaction savepoint."""
@@ -53,10 +53,10 @@ class TransactionManager(object):
         del session._d_pending[uuid]
 
         # build instance
-        instance = relations.lookup(uuid)
+        instance = soup.lookup(uuid)
 
         # update attributes
-        relations.update(instance, obj)
+        soup.update(instance, obj)
         
     def tpc_vote(self, transaction):
         pass

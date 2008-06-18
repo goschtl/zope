@@ -4,6 +4,7 @@ from sqlalchemy import orm
 
 import interfaces
 import relations
+import soup
 
 class OrderedList(object):
     __Security_checker__ = NamesChecker(
@@ -27,11 +28,12 @@ class OrderedList(object):
     @orm.collections.collection.remover
     def _remover(self, item):
         self.data.remove(item)
-        
+
+    @orm.collections.collection.internally_instrumented
     def append(self, item, _sa_initiator=None):
         # make sure item is mapped
         if not interfaces.IMapped.providedBy(item):
-            item = relations.persist(item)
+            item = soup.persist(item)
 
         # set up relation
         relation = relations.Relation()
@@ -43,6 +45,7 @@ class OrderedList(object):
         # add relation to internal list
         self.data.append(relation)
 
+    @orm.collections.collection.internally_instrumented
     def remove(self, item, _sa_initiator=None):
         if interfaces.IMapped.providedBy(item):
             uuid = item.uuid
