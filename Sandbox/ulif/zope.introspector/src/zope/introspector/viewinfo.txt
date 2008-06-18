@@ -1,6 +1,7 @@
-=====================================
 Determining views for context objects
-=====================================
+*************************************
+
+:Test-Layer: functional
 
 Let's start with a simple object:
    
