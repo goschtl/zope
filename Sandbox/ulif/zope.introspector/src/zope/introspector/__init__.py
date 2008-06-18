@@ -15,3 +15,10 @@
 
 $Id$
 """
+from objectinfo import ObjectInfo
+from utilityinfo import UtilityInfo
+
+from zope.introspector.interfaces import IIntrospectorAPI
+from zope.interface import moduleProvides
+moduleProvides(IIntrospectorAPI)
+__all__ = list(IIntrospectorAPI)
