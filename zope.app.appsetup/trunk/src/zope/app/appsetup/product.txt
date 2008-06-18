@@ -1,0 +1,88 @@
+==============================
+Product-specific configuration
+==============================
+
+The ``product`` module of this package provides a very simple way to deal with
+what has traditionally been called "product configuration", where "product"
+refers to the classic Zope 2 notion of a product.
+
+The configuration schema for the application server allows named
+<product-config> sections to be added to the configuration file, and product
+code can use the API provided by the module to retrieve configuration sections
+for given names.
+
+There are two public functions in the module, and a class that can be used to
+help with testing:
+
+    >>> from zope.app.appsetup import product
+
+Let's look at the helper class first, since we'll use it in describing the
+public (application) interface.
+
+
+Testing helper
+--------------
+
+The ``FauxConfiguration`` class constructs objects that behave like the
+ZConfig section objects to the extent needed for the product configuration
+API.  These will be used here, and may also be used to create configurations
+for testing components that consume such configuration.
+
+The constructor requires two arguments: the name of the section, and a mapping
+of keys to values that the section should provide.  Let's create a simple
+example:
+
+    >>> one = product.FauxConfiguration("one", {})
+    >>> one.getSectionName()
+    'one'
+    >>> one.mapping
+    {}
+
+Providing a non-empty set of key/value pairs trivially behaves as expected:
+
+    >>> two = product.FauxConfiguration("two", {"abc": "def"})
+    >>> two.getSectionName()
+    'two'
+    >>> two.mapping
+    {'abc': 'def'}
+
+
+Application API
+---------------
+
+There are two functions in the application interface for this module.  One is
+used by the configuration provider, and the other is used by the consumer.
+
+The provider's API takes a sequence of configuration objects that conform to
+the behaviors exhibited by the default ZConfig section objects.  Since the
+``FauxConfiguration`` class provides these behaviors, we can easily see how
+this can be used:
+
+    >>> product.setProductConfigurations([one, two])
+
+Now that we've established some configuration, we want to be able to use it.
+We do this using the ``getProductConfiguration()`` function.  This function
+takes a name and returns a matching configuration section if there is one, of
+None if not:
+
+    >>> product.getProductConfiguration("one")
+    {}
+
+    >>> product.getProductConfiguration("not-there") is None
+    True
+
+Note that for a section that exists, only the internal mapping is provided,
+not the containing section object.  This is a historical wart; we'll just need
+to live with it until new APIs are introduced.
+
+Setting the configuration a second time will overwrite the prior
+configuration; sections previously available will no longer be:
+
+    >>> product.setProductConfigurations([two])
+    >>> product.getProductConfiguration("one") is None
+    True
+
+The new sections are available, as expected:
+
+    >>> product.getProductConfiguration("two")
+    {'abc': 'def'}
