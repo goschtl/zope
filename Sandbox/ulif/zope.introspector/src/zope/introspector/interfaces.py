@@ -17,6 +17,9 @@ from zope import interface, schema
 
 class IIntrospectorBaseClasses(interface.Interface):
     ObjectInfo = interface.Attribute("Basic Object Information")
+    ModuleInfo = interface.Attribute("Information about a module")
+    PackageInfo = interface.Attribute("Information about a package")
+    TypeInfo = interface.Attribute("Information about a basic type")
     UtilityInfo = interface.Attribute("Utilities an object can access")
 
 class IIntrospectorAPI(IIntrospectorBaseClasses):
@@ -31,9 +34,27 @@ class IObjectInfo(interface.Interface):
         """Get the type of the object handled here.
         """
 
+class IModuleInfo(interface.Interface):
+    """Information about modules.
+    """
+    pass
+
+class IPackageInfo(interface.Interface):
+    """Information about packages.
+    """
+    def getPackageFiles():
+        """Get the package files contained in a package.
+        """
+
 class IUtilityInfo(interface.Interface):
     """Information about utilities available to an object.
     """
     def getAllUtilities():
         """Get all utilities available to an object.
         """
+
+class ITypeInfo(interface.Interface):
+    """Information about types.
+    """
+    pass
+
