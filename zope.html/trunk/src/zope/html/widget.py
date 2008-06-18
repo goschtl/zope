@@ -25,6 +25,7 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
 
     editorWidth = 600
     editorHeight = 400
+    fckVersion = 2.6
 
     configurationPath = "/@@/zope_fckconfig.js"
     toolbarConfiguration = "zope"
@@ -44,6 +45,7 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
             "toolbars": self.toolbarConfiguration,
             "width": self.editorWidth,
             "height": self.editorHeight,
+            "fckversion": self.fckVersion,
             }
         textarea = super(FckeditorWidget, self).__call__()
         return textarea + (self.javascriptTemplate % d)
@@ -52,7 +54,7 @@ class FckeditorWidget(zope.app.form.browser.TextAreaWidget):
 <script type="text/javascript" language="JavaScript">
 var oFCKeditor_%(shortname)s = new FCKeditor(
         "%(name)s", %(width)s, %(height)s, "%(toolbars)s");
-    oFCKeditor_%(shortname)s.BasePath = "/@@/fckeditor/";
+    oFCKeditor_%(shortname)s.BasePath = "/@@/fckeditor/%(fckversion)s/fckeditor/";
     oFCKeditor_%(shortname)s.Config["CustomConfigurationsPath"] = "%(config)s";
     oFCKeditor_%(shortname)s.ReplaceTextarea();
 </script>

@@ -62,7 +62,7 @@
   <resourceLibrary name="fckeditor">
     <directory
         source="fckeditor"
-        include="fckeditor.js"
+        include="2.6/fckeditor/fckeditor.js"
         />
   </resourceLibrary>
 
