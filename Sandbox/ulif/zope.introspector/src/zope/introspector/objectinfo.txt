@@ -82,7 +82,7 @@ this information::
    >>> from zope.introspector import PackageInfo
    >>> info = PackageInfo(introspector)
    >>> info.getPackageFiles(filter='.txt')
-   ['README.txt']
+   ['README.txt', ...]
 
 
 Getting specialized descriptors
@@ -110,11 +110,11 @@ adapters and utilities of ``zope.introspector``::
 
 Now we want to get an descriptor (aka Info object) for a module::
 
-   >>> from zope.introspector.testing import samplemod
+   >>> from zope.introspector import objectinfo
    >>> from zope.introspector.interfaces import IObjectInfo
-   >>> info = IObjectInfo(samplemod)
+   >>> info = IObjectInfo(objectinfo)
    >>> info
-   <zope.introspector.ModuleInfo object at 0x...>
+   <zope.introspector.objectinfo.ModuleInfo object at 0x...>
 
 Apparently we got a specialized descriptor here, ``ModuleInfo``
 instead of a plain ``ObjectInfo``.
@@ -137,9 +137,9 @@ A use case would be to require different descriptors for packages and
 modules. As packages are modules and both are of the same type for
 Python, we cannot define a specialized adapter based on the type::
 
-   >>> from zope.introspector.tests import subpkg
-   >>> IObectInfo(subpkg)
-   <zope.introspector.ModuleInfo object at 0x...>
+   >>> from zope.introspector import tests as subpkg
+   >>> IObjectInfo(subpkg)
+   <zope.introspector.objectinfo.ModuleInfo object at 0x...>
 
 That's okay in the sense, that packages are in fact modules, but there
 is an even better descriptor called `PackageInfo`, that provides us
@@ -157,7 +157,7 @@ registered::
    >>> from zope.introspector.interfaces import IPackageInfo
    >>> info = IPackageInfo(subpkg)
    >>> info.getPackageFiles(filter='.txt')
-   ['README.txt']
+   []
 
 
 Extending the introspector.core
@@ -181,20 +181,20 @@ If we look up this class via adapters, we get a type descriptor::
 
    >>> from zope.introspector.interfaces import IObjectInfo
    >>> IObjectInfo(Cave)
-   <zope.introspector.TypeInfo object at 0x...>
+   <zope.introspector.objectinfo.TypeInfo object at 0x...>
 
-For objects of this class a class descriptor will be found with stock
-zope.introspector::
+For objects of this class an ordinary object descriptor will be found
+with stock zope.introspector::
 
    >>> IObjectInfo(Cave())
-   <zope.introspector.ClassInfo object at 0x...>
+   <zope.introspector.objectinfo.ObjectInfo object at 0x...>
 
 Let's now build a descriptor, that describes ``Cave`` objects,
 i.e. instances of ``Cave``::
 
    >>> class CaveInfo(ObjectInfo):
-   ...     grok.component.context(Cave)
-   ...     grok.component.provides(IObjectInfo)
+   ...     grokcore.component.context(Cave)
+   ...     grokcore.component.provides(IObjectInfo)
    ...     def getSpace(self):
    ...          return context.space
 
@@ -214,7 +214,7 @@ Note, that for the ``Cave`` *class* we will still get the same adapter
 as before::
 
    >>> IObjectInfo(Cave)
-   <zope.introspector.ClassInfo object at 0x...>
+   <zope.introspector.objectinfo.TypeInfo object at 0x...>
 
 
 Writing an interface to cover aspects of an adapted type
@@ -259,9 +259,9 @@ and lookup adapters.
 We define and register an adapter, that provides special infos about large
 caves:: 
 
-   >>> class LargeCaveInfo(grok.component.Adapter):
-   ...     grok.component.provides(ILargeCaveInfo)
-   ...     grok.component.context(Cave)
+   >>> class LargeCaveInfo(grokcore.component.Adapter):
+   ...     grokcore.component.provides(ILargeCaveInfo)
+   ...     grokcore.component.context(Cave)
 
    >>> grokcore.component.grok_component(
    ...    'LargeCaveInfo', LargeCaveInfo)
@@ -270,9 +270,11 @@ caves::
 Now we can lookup this adapter asking for the new interface
 ``ILargeCaveInfo`` instead of ``IObjectInfo``::
 
+   >>> cave = Cave()
    >>> ILargeCaveInfo(cave)
    <LargeCaveInfo object at 0x...>
 
 We indicate by this call, that we do not want the normal set of
 information regarding caves, but the special information that is
 provided by large caves only.
+
