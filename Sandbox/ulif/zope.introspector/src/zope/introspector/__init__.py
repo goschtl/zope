@@ -15,7 +15,7 @@
 
 $Id$
 """
-from objectinfo import ObjectInfo
+from objectinfo import ObjectInfo, ModuleInfo, PackageInfo, TypeInfo
 from utilityinfo import UtilityInfo
 
 from zope.introspector.interfaces import IIntrospectorAPI
