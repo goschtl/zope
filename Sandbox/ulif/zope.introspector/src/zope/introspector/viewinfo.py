@@ -20,7 +20,7 @@ from zope.publisher.browser import BrowserRequest
 from zope.publisher.interfaces.browser import (IBrowserSkinType,
                                                IDefaultBrowserLayer)
                                                
-import grok
+import grokcore.component as grok
 
 class IViewInfo(Interface):
 
