@@ -10,8 +10,8 @@ Let's start with a simple object:
 
 We define a view:
 
-   >>> import grok
-   >>> class MammothIndex(grok.View):
+   >>> import grokcore.component as grok
+   >>> class MammothIndex(object):
    ...     pass
 
 We provide this view directly for our mammoth.
@@ -19,7 +19,8 @@ We provide this view directly for our mammoth.
    >>> from zope import component
    >>> from zope.interface import Interface
    >>> from zope.publisher.interfaces.browser import IBrowserRequest
-   >>> component.provideAdapter(MammothIndex, adapts=(Mammoth, IBrowserRequest),
+   >>> component.provideAdapter(MammothIndex, 
+   ...                          adapts=(Mammoth, IBrowserRequest),
    ...                          provides=Interface, name=u'index')
 
 
@@ -30,7 +31,7 @@ We create an instance of the mammoth:
 Using ``ViewInfo`` we can ask for all the views for our particular
 mammoth.
 
-   >>> from grok.admin.viewinfo import ViewInfo
+   >>> from zope.introspector.viewinfo import ViewInfo
    >>> info = ViewInfo(manfred)
    >>> list(info.getViews())
    [(u'index', <class 'MammothIndex'>)]
@@ -38,7 +39,7 @@ mammoth.
 Let's create another view `simple` and register it for the base
 interface (``Interface``):
 
-   >>> class SimpleView(grok.View):
+   >>> class SimpleView(object):
    ...     pass
 
    >>> component.provideAdapter(SimpleView, adapts=(Interface, 
@@ -88,7 +89,7 @@ that are in use, we retrieve all registered skins.
 
 When we don't have any skins registered yet, we don't find any::
 
-   >>> from grok.admin.viewinfo import getSkins
+   >>> from zope.introspector.viewinfo import getSkins
    >>> sorted(list(getSkins()))
    []
 
