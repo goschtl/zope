@@ -93,22 +93,13 @@ When we don't have any skins registered yet, we don't find any::
    >>> sorted(list(getSkins()))
    []
 
-Let's create and grok a skin now::
+Let's create and grok a skin now. We do this by registering the
+``ITestLayer`` as a skin. This is possible, because skins are actually
+sets of layers.
 
-   >>> class OurSkin(grok.Skin):
-   ...    grok.name('ourskin')
-   ...    grok.layer(ITestLayer)
-
-To grok the skin, we first need to grok the skin grokker itself::
-
-   >>> from grok.meta import SkinGrokker
-   >>> grok.grok_component('SkinGrokker', SkinGrokker)
-   True
-
-Now we can actually grok the skin::
-
-   >>> grok.grok_component('OurSkin', OurSkin) 
-   True
+   >>> from zope.publisher.interfaces.browser import IBrowserSkinType
+   >>> from zope.component.interface import provideInterface
+   >>> provideInterface('ourskin', ITestLayer, IBrowserSkinType)
 
 We should now see this skin::
 
