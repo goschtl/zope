@@ -15,7 +15,7 @@
 from setuptools import setup, find_packages
 
 setup(name='z3c.dobbin',
-      version='0.2.8',
+      version='0.2.9',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
@@ -43,5 +43,5 @@ setup(name='z3c.dobbin',
                            'zope.dottedname',
                            'ore.alchemist',
                            'ZODB3',
-                           'SQLAlchemy'],
+                           'SQLAlchemy==0.4.6'],
       )
