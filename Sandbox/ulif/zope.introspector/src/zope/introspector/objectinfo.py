@@ -17,7 +17,8 @@ import os
 import inspect
 import types
 from zope.interface import Interface
-from zope.introspector.interfaces import IObjectInfo, IPackageInfo, ITypeInfo
+from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
+                                          IPackageInfo, ITypeInfo)
 import grokcore.component as grok
 
 class ObjectInfo(grok.Adapter):
@@ -37,7 +38,7 @@ class ObjectInfo(grok.Adapter):
         return inspect.isclass(self.obj)
 
 class ModuleInfo(ObjectInfo):
-    grok.implements(IPackageInfo)
+    grok.implements(IModuleInfo)
     grok.provides(IObjectInfo)
     grok.context(types.ModuleType)
 
