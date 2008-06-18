@@ -47,7 +47,7 @@ created by passing an object to examine::
    >>> from zope.introspector import ObjectInfo
    >>> info = ObjectInfo(object())
    >>> info
-   <zope.introspector.ObjectInfo object at 0x...>
+   <zope.introspector...ObjectInfo object at 0x...>
 
 ObjectInfos provide the IObjectInfo interface::
 
@@ -58,7 +58,7 @@ ObjectInfos provide the IObjectInfo interface::
 We can retrieve basal information about any object with ObjectInfos::
 
    >>> info.getType()
-   <object object at 0x...>
+   <type 'object'>
 
 Other methods include such which are provided by the Python
 ``inspect`` package like ``isModule()``, ``isClass()``,
@@ -90,8 +90,8 @@ As an example we require from the introspector to deliver on request a
 list of local .txt files if an object turns out to be a Python
 package. This will fail with the standard ``ObjectInfo``::
 
-   >>> from zope.introspector.tests import subpkg
-   >>> info = ObjectInfo(subpkg)
+   >>> from zope import introspector
+   >>> info = ObjectInfo(introspector)
    >>> info.getPackageFiles(filter='.txt')
    Traceback (most recent call last):
    ...
@@ -101,7 +101,7 @@ Fortunately, there is an ``PackageInfo`` available, which gives us
 this information::
 
    >>> from zope.introspector import PackageInfo
-   >>> info = PackageInfo(subpkg)
+   >>> info = PackageInfo(introspector)
    >>> info.getPackageFiles(filter='.txt')
    ['README.txt']
 
