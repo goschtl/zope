@@ -2,13 +2,23 @@
 CHANGES
 =======
 
-Version 3.4.1 (2007-9-27)
--------------------------
 
-- egg was faulty, re-released
+Version 3.5.0 (2008-06-17)
+--------------------------
 
-Version 3.4.0 (2007-9-25)
--------------------------
+- Added helper class for supporting product configuration tests.
+
+- Added documentation for the product configuration API, with tests.
+
+
+Version 3.4.1 (2007-09-27)
+--------------------------
+
+- Egg was faulty, re-released
+
+
+Version 3.4.0 (2007-09-25)
+--------------------------
 
 - Initial documented release
 
