@@ -1,0 +1,60 @@
+Determining utilites for objects
+********************************
+
+Get informed about all local and global utilities for an object.
+
+:Test-Layer: functional
+
+zope.introspector provides the ``UtilityInfo`` for determining
+utilities, that are available for specific contexts. Contrary to
+adapters, utilities tend to be context-less. We must, however, take
+care, that local utilities are only registered for objects in the same
+site. 
+
+Let's start with a simple object::
+
+  >>> class Mammoth(object):
+  ...   pass
+
+We define an utility::
+
+  >>> from zope.interface import Interface, implements
+  >>> from zope.component import provideUtility
+
+  >>> class ITestUtility(Interface):
+  ...   pass
+
+  >>> class TestUtility(object):
+  ...   implements(ITestUtility)
+
+
+Now we register it globally and unnamed::
+
+  >>> provideUtility(TestUtility(), provides=ITestUtility, name='')
+
+Make sure, the utility was really registered::
+
+  >>> from zope.component import getUtility
+  >>> getUtility(ITestUtility, name='', context=None)
+  <TestUtility object at 0x...>
+
+We create an instance of the mammoth::
+
+  >>> manfred = Mammoth()
+
+Using ``UtilityInfo`` we can ask for all the utilities for our
+particular mammoth::
+
+  >>> from zope.introspector import UtilityInfo
+  >>> info = UtilityInfo(manfred)
+  >>> from pprint import pprint
+  >>> pprint(info.getAllUtilities())
+  [{'component': <ZODB.DB.DB object at 0x...>,
+    'name': 'unnamed',
+    'provided': <InterfaceClass ZODB.interfaces.IDatabase>,
+    'registry': <BaseGlobalComponents base>},
+   {'component': <TestUtility object at 0x...>,
+    'name': '',
+    'provided': <InterfaceClass __builtin__.ITestUtility>,
+    'registry': <BaseGlobalComponents base>}]
+
