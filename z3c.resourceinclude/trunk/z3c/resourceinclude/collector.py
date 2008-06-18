@@ -100,6 +100,9 @@ class TemporaryRequest(TestRequest):
     def getApplicationURL(self, *args, **kwargs):
         return self.__request.getApplicationURL(*args, **kwargs)
 
+    def getVirtualHostRoot(self):
+        return self.__request.getVirtualHostRoot()
+    
 class ResourceCollector(object):
     interface.implements(IResourceCollector)
     component.adapts(IBrowserRequest)
