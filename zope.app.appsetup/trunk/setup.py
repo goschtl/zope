@@ -23,19 +23,20 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.appsetup',
-    version = '3.4.1',
+setup(
+    name='zope.app.appsetup',
+    version='3.4.1',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
-    description = "Zope app setup helper",
+    description="Zope app setup helper",
     long_description=(
         read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
     license='ZPL 2.1',
-    keywords = "zope3 app setup",
-    classifiers = [
+    keywords="zope3 app setup",
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -47,7 +48,7 @@ setup(name='zope.app.appsetup',
         'Framework :: Zope3'],
     url='http://cheeseshop.python.org/pypi/zope.app.appsetup',
     packages=find_packages('src'),
-    package_dir = {'': 'src'},
+    package_dir={'': 'src'},
     extras_require=dict(test=['zope.app.testing']),
     namespace_packages=['zope', 'zope.app'],
     install_requires=['setuptools',
@@ -64,6 +65,6 @@ setup(name='zope.app.appsetup',
                       'zope.traversing',
                       'ZODB3',
                       ],
-    include_package_data = True,
-    zip_safe = False,
+    include_package_data=True,
+    zip_safe=False,
     )
