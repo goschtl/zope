@@ -43,7 +43,7 @@ class SessionDataManager(object):
     implements(ISavepointDataManager)
 
     def __init__(self, session, status):
-        if session.transactional:
+        if not session.autocommit:
             self.tx = session.transaction._iterate_parents()[-1]
         else:
             assert session.transaction is None

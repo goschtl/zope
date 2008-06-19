@@ -54,14 +54,14 @@ engine2 = sa.create_engine(TEST_DSN)
 Session = orm.scoped_session(orm.sessionmaker(
     bind=engine,
     extension=tx.ZopeTransactionExtension(),
-    transactional=True,
+    autocommit=False,
     autoflush=True,
     twophase=TEST_TWOPHASE,
     ))
 
 UnboundSession = orm.scoped_session(orm.sessionmaker(
     extension=tx.ZopeTransactionExtension(),
-    transactional=True,
+    autocommit=False,
     autoflush=True,
     twophase=TEST_TWOPHASE,
     ))
@@ -165,14 +165,14 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         session.save(User(id=2, firstname='heino', lastname='n/a'))
         session.flush()
         
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
         self.assertEqual(len(rows), 2)
         row1 = rows[0]
         d = row1.asDict()
         self.assertEqual(d, {'firstname' : 'udo', 'lastname' : 'juergens', 'id' : 1})
         
         # bypass the session machinary
-        stmt = sql.select(query.table.columns).order_by('id')
+        stmt = sql.select(test_users.columns).order_by('id')
         conn = session.connection()
         results = conn.execute(stmt)
         self.assertEqual(results.fetchall(), [(1, u'udo', u'juergens'), (2, u'heino', u'n/a')])
@@ -240,26 +240,26 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         session.save(User(id=2, firstname='heino', lastname='n/a'))
         session.flush()
 
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
         self.assertEqual(len(rows), 2)
         
         transaction.abort() # test that the abort really aborts
         session = Session()
         query = session.query(User)
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
         self.assertEqual(len(rows), 0)
         
         session.save(User(id=1, firstname='udo', lastname='juergens'))
         session.save(User(id=2, firstname='heino', lastname='n/a'))
         session.flush()
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
         row1 = rows[0]
         d = row1.asDict()
         self.assertEqual(d, {'firstname' : 'udo', 'lastname' : 'juergens', 'id' : 1})
         
         transaction.commit()
 
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
         self.assertEqual(len(rows), 2)
         row1 = rows[0]
         d = row1.asDict()
@@ -282,7 +282,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
         query = session.query(User)
         # lets just test that savepoints don't affect commits
         t = transaction.get()
-        rows = query.order_by(query.table.c.id).all()
+        rows = query.order_by(User.id).all()
 
         s1 = t.savepoint()
         session.delete(rows[1])
@@ -348,7 +348,7 @@ class ZopeSQLAlchemyTests(unittest.TestCase):
                 session.save(User(id=2, firstname='heino', lastname='n/a'))
                 session.flush()
 
-                rows = query.order_by(query.table.c.id).all()
+                rows = query.order_by(User.id).all()
                 self.assertEqual(len(rows), 2)
                 row1 = rows[0]
                 d = row1.asDict()
