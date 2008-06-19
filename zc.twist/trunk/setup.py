@@ -75,7 +75,7 @@ setup(
     long_description=text(
         "src/zc/twist/README.txt",
         '=======\nChanges\n=======\n\n',
-        "CHANGES.txt"),
+        "CHANGES.txt", out=True),
     license='ZPL',
     install_requires=[
         'ZODB3',
