@@ -1,0 +1,16 @@
+=======
+CHANGES
+=======
+
+0.3 dev
+-------
+
+0.2.9
+-----
+
+- Tables are now only created once per minimal interface; this fixes
+  issue on both SQLite and Postgres when we create mappers with an
+  explicit polymorphic class.
+  [malthe]
+
+- First entry in change-log.
