@@ -150,11 +150,6 @@ class RAIDStorage(object):
         # No storage is recovering initially
         self.storage_recovering = None
 
-        # Seed a custom random number generator used for distributing requests among storages
-        self._rng = random.Random()
-	    t = TimeStamp(*time.gmtime(time.time())[:5])
-        self._rng.seed(t)
-
     # IStorage
 
     def close(self):
@@ -626,7 +621,7 @@ class RAIDStorage(object):
         while not reliable:
             if not storages:
                 break
-            name = self._rng.choice(storages)
+            name = random.choice(storages)
             storages.remove(name)
             reliable, result = self.__apply_storage(
                 name, method_name, args, kw)
