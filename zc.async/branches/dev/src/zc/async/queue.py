@@ -120,12 +120,12 @@ class DispatcherAgents(zc.async.utils.Dict):
                         j = queue.put(
                             job.handleInterrupt,
                             retry_policy_factory=zc.async.job.RetryCommonForever,
-                            error_log_level=logging.CRITICAL)
+                            failure_log_level=logging.CRITICAL)
                     elif job.status == zc.async.interfaces.CALLBACKS:
                         j = queue.put(
                             job.resumeCallbacks,
                             retry_policy_factory=zc.async.job.RetryCommonForever,
-                            error_log_level=logging.CRITICAL)
+                            failure_log_level=logging.CRITICAL)
                     elif job.status == zc.async.interfaces.COMPLETED:
                         # huh, that's odd.
                         agent.completed.add(job)
@@ -267,10 +267,10 @@ class Queue(zc.async.utils.Base):
         self.dispatchers.__parent__ = self
 
     def put(self, item, begin_after=None, begin_by=None,
-            error_log_level=None, retry_policy_factory=None):
+            failure_log_level=None, retry_policy_factory=None):
         item = zc.async.interfaces.IJob(item)
-        if error_log_level is not None:
-            item.error_log_level = error_log_level
+        if failure_log_level is not None:
+            item.failure_log_level = failure_log_level
         if retry_policy_factory is not None:
             item.retry_policy_factory = retry_policy_factory
         if item.status != zc.async.interfaces.NEW:

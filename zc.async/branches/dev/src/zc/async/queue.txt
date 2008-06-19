@@ -794,9 +794,9 @@ As an aside, notice that the ``handleInterrupt`` and ``resumeCallbacks`` jobs
 have custom error log levels, and custom retry policies.
 
     >>> import logging
-    >>> queue[2].effective_error_log_level == logging.CRITICAL
+    >>> queue[2].failure_log_level == logging.CRITICAL
     True
-    >>> queue[3].effective_error_log_level == logging.CRITICAL
+    >>> queue[3].failure_log_level == logging.CRITICAL
     True
     >>> queue[2].retry_policy_factory is zc.async.job.RetryCommonForever
     True

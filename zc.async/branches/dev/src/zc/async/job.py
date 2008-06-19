@@ -210,40 +210,11 @@ class Job(zc.async.utils.Base):
     _status = zc.async.interfaces.NEW
     _begin_after = _begin_by = _active_start = _active_end = None
     key = None
-    retry_policy_factory = None
     _retry_policy = None
-    def getRetryPolicy(self):
-        if self._retry_policy is not None:
-            return self._retry_policy
-        if self.retry_policy_factory is None:
-            # first try to look up adapter with name of ''; then if that fails
-            # use RetryCommonFourTimes
-            res = zope.component.queryAdapter(
-                self, zc.async.interfaces.IRetryPolicy, '')
-            if res is None:
-                res = RetryCommonFourTimes(self)
-        elif isinstance(self.retry_policy_factory, basestring):
-            res = zope.component.getAdapter(
-                self, zc.async.interfaces.IRetryPolicy,
-                self.retry_policy_factory)
-            # this may cause an error. We can't proceed because we don't know
-            # what to do, and it may be *critical* to know. Therefore, in
-            # _getRetry, we rely on never_fail to keep on sending critical
-            # errors in the log, and never stopping.
-        else:
-            res = self.retry_policy_factory(self)
-        self._retry_policy = res
-        return res
-
-    default_error_log_level = logging.ERROR
-    error_log_level = None
-
-    @property
-    def effective_error_log_level(self):
-        if self.error_log_level is None:
-            return self.default_error_log_level
-        return self.error_log_level
-
+    retry_policy_factory = None # effectively "look up IRetryPolicy adapter
+    # for '' (empty string) name, and use RetryCommonFourTimes if the adapter
+    # doesn't exist"
+    failure_log_level = None # effectively logging.ERROR
     assignerUUID = None
     _quota_names = ()
 
@@ -406,13 +377,14 @@ class Job(zc.async.utils.Base):
             self._callable_root.parent = self
 
     def addCallbacks(self, success=None, failure=None,
-                     error_log_level=None, retry_policy_factory=None):
+                     failure_log_level=None, retry_policy_factory=None):
         if success is not None or failure is not None:
             if success is not None:
                 success = zc.async.interfaces.IJob(success)
-                success.default_error_log_level = logging.CRITICAL
-                if error_log_level is not None:
-                    success.error_log_level = error_log_level
+                if failure_log_level is not None:
+                    success.failure_log_level = failure_log_level
+                elif success.failure_log_level is None:
+                    success.failure_log_level = logging.CRITICAL
                 if retry_policy_factory is not None:
                     success.retry_policy_factory = retry_policy_factory
                 elif success.retry_policy_factory is None:
@@ -420,9 +392,10 @@ class Job(zc.async.utils.Base):
                         callback_retry_policy_factory)
             if failure is not None:
                 failure = zc.async.interfaces.IJob(failure)
-                failure.default_error_log_level = logging.CRITICAL
-                if error_log_level is not None:
-                    failure.error_log_level = error_log_level
+                if failure_log_level is not None:
+                    failure.failure_log_level = failure_log_level
+                elif failure.failure_log_level is None:
+                    failure.failure_log_level = logging.CRITICAL
                 if retry_policy_factory is not None:
                     failure.retry_policy_factory = retry_policy_factory
                 elif failure.retry_policy_factory is None:
@@ -440,15 +413,12 @@ class Job(zc.async.utils.Base):
                 completeStartedJobArguments)
             abort_handler.args.append(res)
             res.addCallback(
-                abort_handler, error_log_level, retry_policy_factory)
-            abort_handler.default_error_log_level = logging.CRITICAL
-            if error_log_level is not None:
-                abort_handler.error_log_level = error_log_level
+                abort_handler, failure_log_level, retry_policy_factory)
         else:
             res = self
         return res
 
-    def addCallback(self, callback, error_log_level=None,
+    def addCallback(self, callback, failure_log_level=None,
                     retry_policy_factory=None):
         callback = zc.async.interfaces.IJob(callback)
         self.callbacks.put(callback)
@@ -458,14 +428,38 @@ class Job(zc.async.utils.Base):
         else:
             self._p_changed = True # to try and fire conflict errors if
             # our reading of self.status has changed beneath us
-        callback.default_error_log_level = logging.CRITICAL
-        if error_log_level is not None:
-            callback.error_log_level = error_log_level
+        if failure_log_level is not None:
+            callback.failure_log_level = failure_log_level
+        elif callback.failure_log_level is None:
+            callback.failure_log_level = logging.CRITICAL
         if retry_policy_factory is not None:
             callback.retry_policy_factory = retry_policy_factory
         elif callback.retry_policy_factory is None:
             callback.retry_policy_factory = callback_retry_policy_factory
         return callback
+
+    def getRetryPolicy(self):
+        if self._retry_policy is not None:
+            return self._retry_policy
+        if self.retry_policy_factory is None:
+            # first try to look up adapter with name of ''; then if that fails
+            # use RetryCommonFourTimes
+            res = zope.component.queryAdapter(
+                self, zc.async.interfaces.IRetryPolicy, '')
+            if res is None:
+                res = RetryCommonFourTimes(self)
+        elif isinstance(self.retry_policy_factory, basestring):
+            res = zope.component.getAdapter(
+                self, zc.async.interfaces.IRetryPolicy,
+                self.retry_policy_factory)
+            # this may cause an error. We can't proceed because we don't know
+            # what to do, and it may be *critical* to know. Therefore, in
+            # _getRetry, we rely on never_fail to keep on sending critical
+            # errors in the log, and never stopping.
+        else:
+            res = self.retry_policy_factory(self)
+        self._retry_policy = res
+        return res
 
     def _getRetry(self, call_name, tm, *args):
         # if we are after the time that we are supposed to begin_by, no retry
@@ -551,8 +545,11 @@ class Job(zc.async.utils.Base):
                     continue
                 # policy didn't exist or returned False or couldn't reschedule
                 if isinstance(res, twisted.python.failure.Failure):
+                    log_level = self.failure_log_level
+                    if log_level is None:
+                        log_level = logging.ERROR
                     zc.async.utils.log.log(
-                        self.effective_error_log_level,
+                        log_level,
                         'Commit failed for %r (see subsequent traceback).  '
                         'Prior to this, job failed with traceback:\n%s',
                         self,
@@ -687,8 +684,11 @@ class Job(zc.async.utils.Base):
 
     def _log_completion(self, res):
         if isinstance(res, twisted.python.failure.Failure):
+            log_level = self.failure_log_level
+            if log_level is None:
+                log_level = logging.ERROR
             zc.async.utils.log.log(
-                self.effective_error_log_level,
+                log_level,
                 '%r failed with traceback:\n%s',
                 self,
                 res.getTraceback(

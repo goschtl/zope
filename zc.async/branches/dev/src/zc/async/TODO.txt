@@ -1,10 +1,14 @@
-Bugs and improvements:
+For release
 
 - need to tell zc.twist.Partial for callbacks to retry forever: currently no
   spelling for this in zc.twist.  This makes using deferreds less reliable:
   _callback *must* be called.
+
 - be even more pessimistic about memory for saved polls and job info in
   dispatcher.
+
+Bugs and improvements:
+
 - queues should be pluggable like agent with filter
 - show how to broadcast, maybe add conveniences
 - show how to use with collapsing jobs (hint to future self: use external queue
