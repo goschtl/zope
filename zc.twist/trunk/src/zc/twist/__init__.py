@@ -2,6 +2,7 @@ import copy, random, types, warnings
 
 import ZODB.interfaces
 import ZODB.POSException
+import ZEO.Exceptions
 import transaction
 import transaction.interfaces
 import persistent
@@ -151,7 +152,7 @@ class Failure(twisted.python.failure.Failure):
         self, file=None, elideFrameworkCode=0, detail='default'):
         return twisted.python.failure.Failure.printTraceback(
             self, file, elideFrameworkCode or self.sanitized, detail)
-            
+
 class _Dummy: # twisted.python.failure.Failure is an old-style class
     pass # so we use old-style hacks instead of __new__
 
@@ -168,6 +169,17 @@ def sanitize(failure):
 
 class Partial(object):
 
+    # for TransactionErrors, such as ConflictErrors
+    transaction_error_count = 0
+    max_transaction_errors = 5
+
+    # for ClientDisconnected errors
+    backoff = None
+    initial_backoff = 5 # seconds
+    backoff_increment = 5 # seconds
+    max_backoff = 60 # seconds
+
+    # more general values
     attempt_count = 0
     _reactor = None
 
@@ -191,7 +203,6 @@ class Partial(object):
         else: # no persistent bits
             call, args, kwargs = self._resolve(None)
             return call(*args, **kwargs)
-        self.attempt_count = 0
         d = twisted.internet.defer.Deferred()
         get_connection(db, reactor=self.getReactor()).addCallback(
             self._call, d)
@@ -226,21 +237,37 @@ class Partial(object):
     def _call(self, conn, d):
         self.attempt_count += 1
         tm = transaction.interfaces.ITransactionManager(conn)
-        tm.begin() # syncs
         try:
+            tm.begin() # syncs; inside try:except because of ClientDisconnected
             call, args, kwargs = self._resolve(conn)
             res = call(*args, **kwargs)
             tm.commit()
         except ZODB.POSException.TransactionError:
+            self.transaction_error_count += 1
             tm.abort()
             db = conn.db()
             conn.close()
-            if self.attempt_count >= 5: # TODO configurable
+            if (self.max_transaction_errors is not None and
+                self.transaction_error_count >= self.max_transaction_errors):
                 res = Failure()
                 d.errback(res)
             else:
                 get_connection(db, reactor=self.getReactor()).addCallback(
                     self._call, d)
+        except ZEO.Exceptions.ClientDisconnected:
+            tm.abort()
+            db = conn.db()
+            conn.close()
+            if self.backoff is None:
+                backoff = self.backoff = self.initial_backoff
+            else:
+                backoff = self.backoff = min(
+                    self.backoff + self.backoff_increment, self.max_backoff)
+            reactor = self.getReactor()
+            reactor.callLater(
+                backoff,
+                lambda: get_connection(db, reactor=reactor).addCallback(
+                    self._call, d))
         except EXPLOSIVE_ERRORS:
             tm.abort()
             conn.close()
