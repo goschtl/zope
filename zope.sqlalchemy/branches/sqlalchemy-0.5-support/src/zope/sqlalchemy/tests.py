@@ -36,6 +36,9 @@ from zope.sqlalchemy import datamanager as tx
 TEST_TWOPHASE = bool(os.environ.get('TEST_TWOPHASE'))
 TEST_DSN = os.environ.get('TEST_DSN', 'sqlite:///:memory:')
 
+SA_0_4 = sa.__version__.split('.')[:2] == ['0', '4']
+SA_0_5 = not SA_0_4
+
 
 class SimpleModel(object):
     def __init__(self, **kw):
@@ -51,20 +54,31 @@ class Skill(SimpleModel): pass
 engine = sa.create_engine(TEST_DSN)
 engine2 = sa.create_engine(TEST_DSN)
 
-Session = orm.scoped_session(orm.sessionmaker(
-    bind=engine,
-    extension=tx.ZopeTransactionExtension(),
-    autocommit=False,
-    autoflush=True,
-    twophase=TEST_TWOPHASE,
-    ))
+if SA_0_4:
+    Session = orm.scoped_session(orm.sessionmaker(
+        bind=engine,
+        extension=tx.ZopeTransactionExtension(),
+        transactional=True,
+        autoflush=True,
+        twophase=TEST_TWOPHASE,
+        ))
+    UnboundSession = orm.scoped_session(orm.sessionmaker(
+        extension=tx.ZopeTransactionExtension(),
+        transactional=True,
+        autoflush=True,
+        twophase=TEST_TWOPHASE,
+        ))
 
-UnboundSession = orm.scoped_session(orm.sessionmaker(
-    extension=tx.ZopeTransactionExtension(),
-    autocommit=False,
-    autoflush=True,
-    twophase=TEST_TWOPHASE,
-    ))
+if SA_0_5:
+    Session = orm.scoped_session(orm.sessionmaker(
+        bind=engine,
+        extension=tx.ZopeTransactionExtension(),
+        twophase=TEST_TWOPHASE,
+        ))
+    UnboundSession = orm.scoped_session(orm.sessionmaker(
+        extension=tx.ZopeTransactionExtension(),
+        twophase=TEST_TWOPHASE,
+        ))
 
 metadata = sa.MetaData() # best to use unbound metadata
 
@@ -403,5 +417,5 @@ def test_suite():
     for cls in (ZopeSQLAlchemyTests, MultipleEngineTests):
         suite.addTest(makeSuite(cls))
     suite.addTest(doctest.DocFileSuite('README.txt', optionflags=optionflags, tearDown=tearDownReadMe,
-        globs={'TEST_DSN': TEST_DSN, 'TEST_TWOPHASE': TEST_TWOPHASE}))
+        globs={'TEST_DSN': TEST_DSN, 'TEST_TWOPHASE': TEST_TWOPHASE, 'SA_0_4': SA_0_4, 'SA_0_5': SA_0_5}))
     return suite

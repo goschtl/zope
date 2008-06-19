@@ -41,7 +41,7 @@ setup(name='zope.sqlalchemy',
       install_requires=[
           # -*- Extra requirements: -*-
           'setuptools',
-          'SQLAlchemy>=0.5.0beta1',
+          'SQLAlchemy>=0.4.6',
           'transaction',
           'zope.interface',
       ],
