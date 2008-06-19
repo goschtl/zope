@@ -94,7 +94,7 @@ setup(
         'uuid',
         'zc.queue',
         'zc.dict>=1.2.1',
-        'zc.twist>=1.2',
+        'zc.twist>=1.3',
         'Twisted>=8.0.1', # 8.0 was setuptools compatible, 8.0.1 had bugfixes.
         # note that Twisted builds with warnings with py2.4.  It
         # seems to still build ok.

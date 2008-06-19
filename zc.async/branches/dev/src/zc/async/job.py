@@ -666,10 +666,9 @@ class Job(zc.async.utils.Base):
             res.addCallback(self._callback)
             callback = False
         elif isinstance(res, twisted.internet.defer.Deferred):
-            res.addBoth(zc.twist.Partial(self._callback))
-            # TODO need to tell Partial to retry forever: currently no
-            # spelling for this in zc.twist.  This makes using deferreds
-            # less reliable: _callback *must* be called.
+            partial = zc.twist.Partial(self._callback)
+            partial.max_transaction_errors = None # retry conflicts forever
+            res.addBoth(partial)
             callback = False
         else:
             if isinstance(res, twisted.python.failure.Failure):
