@@ -29,8 +29,7 @@
 
   </class>
 
-  <subscriber handler=".removeIntIdSubscriber" />
-  <subscriber handler=".addIntIdSubscriber" />
+  <include file="subscribers.zcml" />
 
   <!-- Views -->
   <include package=".browser" />
