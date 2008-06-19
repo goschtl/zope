@@ -23,6 +23,7 @@ See file `docgrok.txt` in this package to learn more about docgrok.
 import os
 import sys # for sys.path
 import types
+import martian
 import grok
 import inspect
 from urlparse import urlparse, urlunparse
@@ -287,7 +288,10 @@ class DocGrokGrokker(ClassGrokker):
     That's it.
 
     """
-    component_class = DocGrokHandler
+    martian.component(DocGrokHandler)
+
+    def execute(self, name, obj, **kw):
+        return self.grok(name, obj, **kw)
 
     def grok(self, name, obj, **kw):
         if not issubclass(obj, DocGrokHandler):
