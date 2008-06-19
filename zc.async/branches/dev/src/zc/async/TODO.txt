@@ -1,9 +1,5 @@
 For release
 
-- need to tell zc.twist.Partial for callbacks to retry forever: currently no
-  spelling for this in zc.twist.  This makes using deferreds less reliable:
-  _callback *must* be called.
-
 - be even more pessimistic about memory for saved polls and job info in
   dispatcher.
 
