@@ -506,7 +506,7 @@ class testOLD(unittest.TestCase):
         #                 Identifier(metadata, symbols, 'code')))
         #    ] ,Identifier(metadata, symbols,'c') )
         #
-        #self.doit(qo, set(['C1','C2','C3']))
+        #self.doit(query, qo, set(['C1','C2','C3']))
 
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS

@@ -29,3 +29,6 @@ class Project(persistent.Persistent):
 
     # See google.interfaces.IProject
     name = u''
+
+    def __repr__(self):
+        return "%s <%s>" % (self.__class__.__name__, self.name)

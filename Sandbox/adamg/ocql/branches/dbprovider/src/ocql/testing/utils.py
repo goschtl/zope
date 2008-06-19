@@ -11,6 +11,7 @@ from zope.component.interface import provideInterface
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
+from ocql.database.index import AllIndex
 
 from zope.app.intid import IntIds
 from zope.app.intid.interfaces import IIntIds
@@ -48,6 +49,11 @@ def setupCatalog(test):
     cat['student_name'] = FieldIndex('name', IStudent)
 
     cat['mentor_name'] = FieldIndex('name', IMentor)
+
+    cat['all_students'] = AllIndex(IStudent)
+    cat['all_mentors'] = AllIndex(IMentor)
+    cat['all_projects'] = AllIndex(IProject)
+    cat['all_orgs'] = AllIndex(IOrganization)
 
     m1 = Mentor()
     m1.name = u"John Doe"
@@ -87,6 +93,12 @@ def queryCatalog():
     intids = component.getUtility(IIntIds)
 
     results = cat.apply({'student_name':('Charith','Charith')})
+
+    for r in results:
+        obj = intids.getObject(r)
+        print obj
+
+    results = cat.apply({'all_students':(1,1)})
 
     for r in results:
         obj = intids.getObject(r)
