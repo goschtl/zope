@@ -1,6 +1,6 @@
 import re
 import unittest
-import grok
+import grokadmin
 import os.path
 
 from pkg_resources import resource_listdir
@@ -8,8 +8,10 @@ from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
-ftesting_zcml = os.path.join(os.path.dirname(grok.__file__), 'ftesting.zcml')
-GrokFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'GrokFunctionalLayer')
+ftesting_zcml = os.path.join(os.path.dirname(grokadmin.__file__),
+                             'ftesting.zcml')
+GrokAdminFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__,
+                                     'GrokAdminFunctionalLayer')
 
 def setUp(test):
     FunctionalTestSetup().setUp()
@@ -41,16 +43,18 @@ def http_call(method, path, data=None, **kw):
         request_string += data
     return HTTPCaller()(request_string, handle_errors=False)
 
-def suiteFromPackage(name):
-    files = resource_listdir(__name__, name)
+def test_suite():
     suite = unittest.TestSuite()
+    files = resource_listdir(__name__, '')
     for filename in files:
         if not filename.endswith('.py'):
             continue
         if filename == '__init__.py':
             continue
+        if filename.startswith('test_'):
+            continue
 
-        dottedname = 'grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grokadmin.tests.%s' % (filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
@@ -62,17 +66,9 @@ def suiteFromPackage(name):
                          doctest.NORMALIZE_WHITESPACE+
                          doctest.REPORT_NDIFF)
             )
-        test.layer = GrokFunctionalLayer
+        test.layer = GrokAdminFunctionalLayer
 
         suite.addTest(test)
-    return suite
-
-def test_suite():
-    suite = unittest.TestSuite()
-    for name in ['view', 'staticdir', 'xmlrpc', 'traversal', 'form', 'url',
-                 'security', 'utility', 'catalog', 'admin', 'site', 'rest',
-                 'viewlet']:
-        suite.addTest(suiteFromPackage(name))
     return suite
 
 if __name__ == '__main__':
