@@ -69,12 +69,11 @@ class ObjectProperty(object):
             lazy=True)
             }
 
-class ListProperty(object):
-    """A list property.
+class CollectionProperty(object):
+    """A collection property."""
 
-    Model the schema.List
-    """
-
+    collection_class = None
+    
     def __call__(self, field, column, metadata):
         relation_table = metadata.tables['relation']
         soup_table = metadata.tables['soup']
@@ -83,9 +82,15 @@ class ListProperty(object):
             field.__name__: orm.relation(
                 relations.Relation,
                 primaryjoin=soup_table.c.uuid==relation_table.c.left,
-                collection_class=collections.OrderedList,
+                collection_class=self.collection_class,
                 enable_typechecks=False)
             }
+
+class ListProperty(CollectionProperty):
+    collection_class = collections.OrderedList
+
+class TupleProperty(CollectionProperty):
+    collection_class = collections.Tuple
                     
 class DictProperty(object):
     """A dict property.
@@ -132,6 +137,7 @@ fieldmap = {
     schema.Id: StringTranslator(rdb.Unicode),
     schema.Int: FieldTranslator(rdb.Integer),
     schema.List: (None, ListProperty()),
+    schema.Tuple: (None, TupleProperty()),
     schema.Object: (ObjectTranslator(), ObjectProperty()),
     schema.Password: StringTranslator(rdb.Unicode),
     schema.SourceText: StringTranslator(rdb.UnicodeText),
