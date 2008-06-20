@@ -27,7 +27,7 @@ will be available::
   >>> component.provideUtility(util)
 
   >>> browser.open('http://localhost/@@contents.html')
-  >>> browser.getLink('purge').click()
+  >>> browser.getLink('Purge').click()
 
 The expression is a required field::
 

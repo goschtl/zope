@@ -16,6 +16,12 @@
         handler=".zcml.purgeDirective"
         />
 
+    <meta:directive
+        name="purgeDisk"
+        schema=".zcml.IPurgeDiskDirective"
+        handler=".zcml.purgeDiskDirective"
+        />
+
   </meta:directives>
 
 </configure>

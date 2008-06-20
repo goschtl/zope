@@ -17,11 +17,13 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
+import os
 import logging
 import threading
 import urlparse
 import httplib
 import transaction
+import subprocess
 
 from time import time
 from transaction.interfaces import IDataManager
@@ -33,13 +35,35 @@ import interfaces
 
 
 storage = threading.local()
-EXPRS_ATTR='varnish_purgeurls'
 
 log = logging.getLogger(__name__)
 
-class PurgeUtil(object):
+class BasePurgeUtil(object):
+
+    @property
+    def EXPRS_ATTR(self):
+        # override this in descendant
+        raise NotImplemented
+
+    def purge(self, expr, escapes='+-'):
+        for esc in escapes:
+            expr = expr.replace(esc, '\\' + esc)
+        if not hasattr(storage, self.EXPRS_ATTR):
+            transaction.get().join(PurgeDataManager(self))
+            setattr(storage, self.EXPRS_ATTR, set([expr]))
+        else:
+            getattr(storage, self.EXPRS_ATTR).add(expr)
+
+    def _clearPurge(self):
+        if hasattr(storage, self.EXPRS_ATTR):
+            delattr(storage, self.EXPRS_ATTR)
+
+
+class PurgeUtil(BasePurgeUtil):
     """Utilty to purge mutliple caches"""
     interface.implements(interfaces.IPurge)
+
+    EXPRS_ATTR='varnish_purgeurls'
 
     def __init__(self, hosts, timeout, retryDelay):
         self.hosts = hosts
@@ -48,17 +72,8 @@ class PurgeUtil(object):
         self.failedHosts = {}
         self.failLock = threading.Lock()
 
-    def purge(self, expr, escapes='+-'):
-        for esc in escapes:
-            expr = expr.replace(esc, '\\' + esc)
-        if not hasattr(storage, EXPRS_ATTR):
-            transaction.get().join(PurgeDataManager(self))
-            setattr(storage, EXPRS_ATTR, set([expr]))
-        else:
-            getattr(storage, EXPRS_ATTR).add(expr)
-
     def doPurge(self):
-        exprs = getattr(storage, EXPRS_ATTR, None)
+        exprs = getattr(storage, self.EXPRS_ATTR, None)
         if exprs is None:
             return
         for host in self.hosts:
@@ -79,10 +94,6 @@ class PurgeUtil(object):
                 self.failedHosts[host] = time()
                 self.failLock.release()
         self._clearPurge()
-
-    def _clearPurge(self):
-        if hasattr(storage, EXPRS_ATTR):
-            delattr(storage, EXPRS_ATTR)
 
     def _expr2URL(self, expr):
         #URL: scheme://netloc/path;parameters?query#fragment
@@ -180,3 +191,25 @@ class PurgeDataManager(object):
     def sortKey(self):
         return "purge_%d" % id(self)
 
+
+class PurgeDiskUtil(BasePurgeUtil):
+    """Utilty to execute purge expressions on multiple disk locations."""
+    interface.implements(interfaces.IPurge)
+
+    EXPRS_ATTR='disk_purgeurls'
+
+    def __init__(self, paths):
+        self.paths = [p.rstrip(os.path.sep) + os.path.sep for p in paths]
+
+    def doPurge(self):
+        exprs = getattr(storage, self.EXPRS_ATTR, None)
+        if exprs is None:
+            return
+        for path in self.paths:
+            if not os.path.exists(path):
+                log.error('path %s not found' % path)
+                return
+            for expr in exprs:
+                subprocess.Popen(["find", path, "-regex", expr, "-delete"])
+                log.info('directory %r purged %r' % (path, expr))
+        self._clearPurge()

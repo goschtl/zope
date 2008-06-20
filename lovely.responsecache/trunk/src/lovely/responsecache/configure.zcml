@@ -26,7 +26,7 @@
       />
 
   <browser:menuItem
-      title="purge"
+      title="Purge"
       for="zope.app.folder.interfaces.IRootFolder"
       menu="zmi_views"
       action="purge.html"

@@ -60,7 +60,6 @@ def setUp(test):
     log_info = InstalledHandler('lovely.responsecache.purge')
     test.globs['log_info'] = log_info
 
-
 def setUpHTTPLib(test):
     # setup the PurgeUtil to use httplib instead of pyCurl
     setUp(test)
@@ -87,11 +86,11 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         DocFileSuite(
-            'PURGE.txt', setUp=setUp, tearDown=tearDown,
+            'PURGE.txt', setUp=setUpHTTPLib, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         DocFileSuite(
-            'PURGE.txt', setUp=setUpHTTPLib, tearDown=tearDown,
+            'PURGEDISK.txt', setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         fsuite,

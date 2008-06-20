@@ -2,6 +2,14 @@
 Changes for lovely.responsecache
 ================================
 
+
+2008/06/20 1.1.0
+================
+
+ - added a disk purge utility to remove files from disk storage by using
+   regular expressions. just get the util by getUtility(IPurge, 'disk')
+   and call purge(expr) on it.
+
 2008/06/16 1.0.0a1
 ==================
 

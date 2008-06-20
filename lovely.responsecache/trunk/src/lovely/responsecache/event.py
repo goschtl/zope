@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 from zope.app.publication.interfaces import IEndRequestEvent
 from zope import component
 from zope.app.publication.interfaces import IBeforeTraverseEvent
-from interfaces import IResponseCacheSettings
+from interfaces import IResponseCacheSettings, IPurge
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.contentprovider.interfaces import IBeforeUpdateEvent
 from zope.contentprovider.interfaces import IContentProvider
@@ -106,4 +106,3 @@ def setAuthInfoCookie(ev):
                                       str(auth),
                                       path = '/',
                                       expires = 'Tue, 19 Jan 2038 00:00:00 GMT')
-

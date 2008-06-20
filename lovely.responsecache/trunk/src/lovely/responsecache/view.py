@@ -71,11 +71,19 @@ class PurgeView(form.AddForm):
 
     form_fields = form.FormFields(IPurgeView)
 
-    @form.action(u'Purge')
+    form_reset = False
+
+    @form.action(u'purge')
     def handle_purge_action(self, action, data):
-        util = component.getUtility(IPurge)
-        util.purge(data['expression'])
+        util = component.queryUtility(IPurge)
+        if util is not None:
+            util.purge(data['expression'])
+
+        diskutil = component.queryUtility(IPurge, 'disk')
+        if diskutil is not None:
+            diskutil.purge(data['expression'])
 
 
 def canPurge(context):
-    return component.queryUtility(IPurge) is not None
+    return (   component.queryUtility(IPurge) is not None
+            or component.queryUtility(IPurge, 'disk') is not None)

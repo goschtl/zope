@@ -31,7 +31,7 @@ from zope.security.zcml import Permission
 
 from interfaces import IResponseCacheSettings, IPurge
 from view import ResponseCacheSettings
-from purge import PurgeUtil
+from purge import PurgeUtil, PurgeDiskUtil
 
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory('lovely.responseheader')
@@ -234,5 +234,32 @@ def purgeDirective(_context, hosts, timeout, retryDelay, permission=None):
                  component=util,
                  permission=permission,
                  name='')
+
+
+class IPurgeDiskDirective(interface.Interface):
+    """Parameters for the purge disk directive."""
+
+    paths = Tokens(
+        title=u'Paths',
+        description=u'Lists of paths where to execute purge expressions',
+        required=True,
+        value_type=schema.TextLine(title=u"path"))
+
+    permission = Permission(
+        title=_("Permission"),
+        description=_("Permission required to use this component."),
+        required=False,
+        )
+
+
+def purgeDiskDirective(_context, paths, permission=None):
+    """Function to create a purge disk utility"""
+
+    util = PurgeDiskUtil(paths)
+    zcml.utility(_context,
+                 provides=IPurge,
+                 component=util,
+                 permission=permission,
+                 name='disk')
 
 
