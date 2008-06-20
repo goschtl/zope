@@ -37,6 +37,7 @@ setup(name='z3c.dobbin',
       extras_require = dict(
         test = [
             'zope.app.testing',
+            'pysqlite',
             ],
         ),
       install_requires = [ 'setuptools',
