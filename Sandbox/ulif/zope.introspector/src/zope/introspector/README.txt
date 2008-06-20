@@ -7,7 +7,7 @@ The `zope.introspector` package provides an extensible framework
 for retrieving 'data' on 'entities'. It makes use of
 grokcore.component for registration of adapters and utilities.
 
-'Entitity' in that respect means everything, that is descriptable by a
+'Entity' in that respect means everything, that is descriptable by a
 name in Python or everything, that can be passed to a method. In other
 words: if you can pass something to a callable, then the introspector
 should be able to give you some information about it.
