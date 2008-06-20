@@ -65,11 +65,15 @@ class testZope(unittest.TestCase):
 
        
     def test_gsoc(self):
-        
-        print "only a single query for testing"
         metadata = Metadata()
         symbols = SymbolContainer()
-           
+
+        print "retrieve gsoc objects"
+        import pydevd;pydevd.settrace()
+        student_list = metadata.db['all_students'] 
+        a = set(student_list)
+        
+        print "only a single query for testing"           
         query = "[c in IStudent | c]"
         qo = Query(
                 metadata, symbols,
@@ -82,7 +86,7 @@ class testZope(unittest.TestCase):
                 ], Identifier(metadata,symbols,'c'))
         
         #is not sure how to get s1, s2 and s3 here
-        self.doit(query, qo, set([s1,s2,s3]))
+        self.doit(query, qo, set(student_list))
         
         
         
