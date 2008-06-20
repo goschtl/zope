@@ -303,7 +303,13 @@ transaction machinery to keep track of the pending state.
     >>> favorite.item = some_list
     >>> favorite.item
     [u'green', u'blue', u'red']
-    
+
+Amorphic relations.
+
+    >>> favorite.item = ((1, u"green"), (2, u"blue"), (3, u"red")); transaction.commit()
+    >>> favorite.item
+    ((1, u'green'), (2, u'blue'), (3, u'red'))
+     
 Collections
 -----------
 
