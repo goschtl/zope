@@ -13,6 +13,7 @@
 ##############################################################################
 """Infos about utilities.
 """
+import zope.component
 from zope.component import globalregistry
 
 class UtilityInfo(object):
@@ -21,7 +22,17 @@ class UtilityInfo(object):
         self.context = obj
 
     def getAllUtilities(self):
-        return [
-            dict(name=x.name, provided=x.provided,
-                 registry=x.registry, component=x.component)
-            for x in list(globalregistry.base.registeredUtilities())]
+        smlist = [zope.component.getSiteManager(self.context)]
+        seen = []
+        result = []
+        while smlist:
+            sm = smlist.pop()
+            if sm in seen:
+                continue
+            seen.append(sm)
+            smlist += list(sm.__bases__)
+            for u in sm.registeredUtilities():
+                result.append(
+                    dict(name = u.name, provided=u.provided,
+                         registry=u.registry, component=u.component))
+        return result
