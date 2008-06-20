@@ -14,14 +14,17 @@
 
 from setuptools import setup, find_packages
 
+def read(*files):
+    return "\n".join((open(f).read() for f in files))
+
 setup(name='z3c.dobbin',
-      version='0.2.9',
+      version='0.3dev',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
       description="Relational object persistance framework",
-      long_description=open('README.txt').read()+open('src/z3c/dobbin/README.txt').read(),
-      keywords='',
+      long_description=read('README.txt', 'docs/DEVELOPER.txt', 'src/z3c/dobbin/README.txt'),
+      keywords='zope orm persistence',
       classifiers=['Programming Language :: Python',
                    'Environment :: Web Environment',
                    'Framework :: Zope3',

@@ -1,0 +1,42 @@
+Developer information
+=====================
+
+This section details the object persistence model.
+
+Introduction
+------------
+
+Objects that need persisting are required to declare their attributes
+in an interface. Attributes that are not declared are considered
+volatile.
+
+Concrete attributes may be strongly typed using the schema fields that
+correspond to their type; polymorphic attributes are available using
+relational properties.
+
+Relations
+---------
+
+There are two kinds of objects that can be related: instances and
+rocks. Relations are polymorphic such that they support both kinds.
+
+An attribute can hold a single relation or many, using one of the
+built-in sequence types: list, tuple, set, dict.
+
+The following fields allow polymorphic relations of any kind:
+
+  * zope.schema.Object
+  * zope.interface.Attribute
+
+Additional structure can be declared using the sequence fields:
+
+  * zope.schema.List
+  * zope.schema.Dict
+  * zope.schema.Set
+
+When translated to column in a table, all relations are soup object
+references; the soup specification will reflect the type.
+
+Essentially, all polymorphic relations are many-to-many from a
+database perspective. 
+

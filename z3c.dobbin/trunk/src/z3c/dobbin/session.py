@@ -21,17 +21,18 @@ class TransactionManager(object):
     
     interface.implements(ISavepointDataManager)
 
-    def __init__(self, obj):
+    def __init__(self, obj, uuid):
         self.registered = False
         self.vote = False
         self.obj = obj
-
+        self.uuid = uuid
+        
         session = Session()
 
         try:
-            session._d_pending[obj._d_uuid] = obj
+            session._d_pending[uuid] = obj
         except AttributeError:
-            session._d_pending = {obj._d_uuid: obj}
+            session._d_pending = {uuid: obj}
         
     def register(self):
         if not self.registered:
@@ -46,7 +47,7 @@ class TransactionManager(object):
 
     def commit(self, transaction):
         obj = self.obj
-        uuid = obj._d_uuid
+        uuid = self.uuid
 
         # unset pending state
         session = Session()
@@ -67,7 +68,7 @@ class TransactionManager(object):
     def tpc_abort(self, transaction):
         # unset pending state
         session = Session()
-        del session._d_pending[uuid]
+        del session._d_pending[self.uuid]
         
         self.registered = False
 
@@ -76,5 +77,14 @@ class TransactionManager(object):
     def sortKey(self):
         return id(self)
 
-def getTransactionManager(obj):
-    return TransactionManager(obj)
+def registerObject(obj, uuid):
+    session = Session()
+
+    try:
+        pending = session._d_pending.keys()
+    except AttributeError:
+        pending = ()
+    
+    if obj not in pending:
+        TransactionManager(obj, uuid).register()
+

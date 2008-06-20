@@ -1,9 +1,11 @@
-=======
-CHANGES
-=======
+Change log
+==========
 
 0.3 dev
 -------
+
+- Implemented polymorphic relations for a subset of the basic types
+  (int, str, unicode, tuple and list).
 
 0.2.9
 -----

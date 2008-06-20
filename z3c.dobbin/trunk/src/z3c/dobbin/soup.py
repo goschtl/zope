@@ -3,29 +3,45 @@ from zope import interface
 from interfaces import IMapper
 from interfaces import IMapped
 
-from session import getTransactionManager
+from session import registerObject
 
 from zope.dottedname.resolve import resolve
 from ore.alchemist import Session
 
 import factory
 import bootstrap
+import interfaces
+import types
 
-def lookup(uuid, ignore_cache=False):
+BASIC_TYPES = (int, float, str, unicode, tuple, list, set, dict)
+
+IMMUTABLE_TYPES = (int, float, str, unicode, tuple)
+
+FACTORY_TYPE_MAP = {
+    types.IntType: interfaces.IIntegerBasicType,
+    types.FloatType: interfaces.IFloatBasicType,
+    types.UnicodeType: interfaces.IUnicodeBasicType,
+    types.StringType: interfaces.IStringBasicType,
+    types.TupleType: interfaces.ITupleBasicType,
+    types.ListType: interfaces.IListBasicType,
+    type(set()): interfaces.ISetBasicType,
+    types.DictType: interfaces.IDictBasicType}
+    
+def lookup(uuid, ignore_pending=False):
     session = Session()
+
+    # check if object is in pending session objects
+    if not ignore_pending:
+        try:
+            return session._d_pending[uuid]
+        except (AttributeError, KeyError):
+            pass
 
     try:
         item = session.query(bootstrap.Soup).filter_by(uuid=uuid)[0]
     except IndexError:
         raise LookupError("Unable to locate object with UUID = '%s'." % uuid)
         
-    # try to acquire relation target from session
-    if not ignore_cache:
-        try:
-            return session._d_pending[item.uuid]
-        except (AttributeError, KeyError):
-            pass
-
     # build item
     return build(item.spec, item.uuid)
 
@@ -37,23 +53,23 @@ def build(spec, uuid):
     return session.query(mapper).filter_by(uuid=uuid)[0]
 
 def persist(item):
-    # create instance
-    instance = factory.create(item.__class__)
+    kls = FACTORY_TYPE_MAP.get(type(item))
+    
+    if kls is not None:
+        instance = factory.create(kls)
+        instance.value = item
+    else:
+        instance = factory.create(item.__class__)
+        update(instance, item)
 
-    # assign uuid to item
-    item._d_uuid = instance.uuid
+    # set soup identifier on instances
+    if type(item) not in BASIC_TYPES:
+        item._d_uuid = instance.uuid
 
-    # hook into transaction
-    try:
-        manager = item._d_manager
-    except AttributeError:
-        manager = item._d_manager = getTransactionManager(item)
-        
-    manager.register()
-
-    # update attributes
-    update(instance, item)
-
+    # register mutable objects with transaction manager
+    if type(item) not in IMMUTABLE_TYPES:
+        registerObject(item, instance.uuid)
+                        
     return instance
 
 def update(instance, item):

@@ -243,11 +243,10 @@ object, maintaining integrity.
     >>> favorite.item is cleaner
     True
 
-Internally, this is done by setting an attribute on the original
-object that points to the database item, and maintaining a list of
-pending objects on the current database session:
+The session keeps a copy of the pending object until the transaction
+is ended.
 
-    >>> cleaner._d_uuid in session._d_pending
+    >>> cleaner in session._d_pending.values()
     True
 
 However, once we commit the transaction, the relation is no longer
@@ -265,6 +264,46 @@ persisted in the database.
 This behavior should work well in a request-response type environment,
 where the request will typically end with a commit.
 
+Polymorphic relations
+---------------------
+
+We can create relations to instances as well as immutable objects
+(rocks).
+
+Integers, floats and unicode strings are straight-forward.
+
+    >>> favorite.item = 42; transaction.commit()
+    >>> favorite.item
+    42
+
+    >>> favorite.item = 42.01; transaction.commit()
+    >>> 42 < favorite.item <= 42.01
+    True
+
+    >>> favorite.item = u"My favorite number is 42."; transaction.commit()
+    >>> favorite.item
+    u'My favorite number is 42.'
+
+Normal strings need explicit coercing to ``str``.
+    
+    >>> favorite.item = "My favorite number is 42."; transaction.commit()
+    >>> str(favorite.item)
+    'My favorite number is 42.'
+
+Or sequences of relations.
+
+    >>> favorite.item = (u"green", u"blue", u"red"); transaction.commit()
+    >>> favorite.item
+    (u'green', u'blue', u'red')
+
+When we create relations to mutable objects, a hook is made into the
+transaction machinery to keep track of the pending state.
+
+    >>> some_list = [u"green", u"blue", u"red"]; transaction.commit()
+    >>> favorite.item = some_list
+    >>> favorite.item
+    [u'green', u'blue', u'red']
+    
 Collections
 -----------
 
@@ -352,8 +391,25 @@ And remove them, too.
 For good measure, let's create a new instance without adding any
 elements to its list.
 
-    >>> _ = create(ICollection)
+    >>> empty_collection = create(ICollection)
+    >>> session.save(empty_collection)
+    
+Let's index the collection by artist in a catalog.
+    
+    >>> class ICatalog(interface.Interface):
+    ...     records_by_artist = schema.Dict(
+    ...         title=u"Records by artist",
+    ...         value_type=schema.List())
+    ...
+    ...     artist_biographies = schema.Dict(
+    ...         title=u"Artist biographies",
+    ...         value_type=schema.Text())
 
+    >> catalog = create(ICatalog)
+    >> session.add(catalog)
+
+    >> session.records_by_artist[diana.artist] = 
+    
 Security
 --------
 
