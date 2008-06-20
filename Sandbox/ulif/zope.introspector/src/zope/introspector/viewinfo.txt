@@ -1,7 +1,7 @@
 Determining views for context objects
 *************************************
 
-:Test-Layer: functional
+:Test-Layer: unit
 
 Let's start with a simple object:
    
