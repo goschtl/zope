@@ -1,23 +1,24 @@
 import unittest
 import doctest
-from zope.component.interface import searchInterfaceUtilities 
+
 from zope.interface import implements
 from zope.component import adapts, getUtility, provideAdapter
-from ocql.interfaces import IDB 
-from ocql.database import metadata
 from zope.interface import Interface
-from zope.app.catalog.interfaces import ICatalog
-from ocql.testing.utils import setupInterfaces, setupCatalog
-from zope.location import LocationProxy
-from zope.app.intid import IIntIds
-from ocql.parser.queryparser import QueryParser, SymbolContainer
-from ocql.tests.test_old import QueryNullParser
-from ocql.qoptimizer.qoptimizer import QueryOptimizer
-from ocql.rewriter.rewriter import Rewriter
+
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
 from ocql.compiler.compiler import AlgebraCompiler
-from ocql.testing.gsocdatabase import GsocMetadata
+from ocql.database import metadata
+from ocql.database.metadata import Metadata
+from ocql.engine import OCQLEngine
+from ocql.interfaces import IDB
+from ocql.parser.queryparser import QueryParser, SymbolContainer 
+from ocql.qoptimizer.qoptimizer import QueryOptimizer
+from ocql.queryobject.queryobject import *
+from ocql.rewriter.rewriter import Rewriter
+from ocql.testing.utils import setupInterfaces, setupCatalog
+from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
+
 
 db = {}
 
@@ -31,43 +32,59 @@ class testZope(unittest.TestCase):
         provideAdapter(Rewriter)
         provideAdapter(AlgebraOptimizer)
         provideAdapter(AlgebraCompiler)
+        provideAdapter(Metadata)
         
         setupInterfaces(self)
         setupCatalog(self)
-        #import pydevd;pydevd.settrace()
-        items = list(searchInterfaceUtilities(self))
-        catalog = getUtility(ICatalog,name='foo-catalog')
         
-        intids = getUtility(IIntIds)
-        #is there is a way to find all the indexes
-        results = catalog.apply({'student_name':('A','Z')})
+        self.engine = OCQLEngine()
         
-        student_list = []
-        for r in results:
-            obj = intids.getObject(r)
-            print obj.__class__.__name__          
-            student_list.append(obj)
+    #just copy following methods from test_old
+    def doone(self, query, qo, expected):
+        print "==============="
+        print "query:",query
 
-        db.__setitem__('student_name', student_list)
+        algebra_=qo.rewrite(algebra)
 
-        for item in items:
-            print item
-            class_name = item[0].rsplit('.',1)[1].__str__()
-            classes.__setitem__(class_name,class_name)
-           # print item[1].__class__
+        print "algebra:",algebra_
 
-        GsocMetadata()
-        provideAdapter(GsocMetadata)
-        
-           
+        code=algebra_.compile();
+        compile(code,'<string>','eval')
+        q = RunnableQuery(engine,algebra_,code)
+
+        print "code:",code
+        print "---------------"
+        print "got:     ", q.execute()
+        print "expected:", expected
+
+    def doit(self, query, qo, expected):
+        run = self.engine.compile(qo)
+        result = run.execute()
+
+        self.assertEqual(expected, result)
+
+       
     def test_gsoc(self):
-        print "loading..."
-        metadata = IDB(None)
+        
+        print "only a single query for testing"
+        metadata = Metadata()
         symbols = SymbolContainer()
+           
+        query = "[c in IStudent | c]"
+        qo = Query(
+                metadata, symbols,
+                set,
+                [
+                    In(
+                       metadata, symbols,
+                       Identifier(metadata,symbols,'c'),
+                       Identifier(metadata,symbols,'IStudent'))
+                ], Identifier(metadata,symbols,'c'))
+        
+        #is not sure how to get s1, s2 and s3 here
+        self.doit(query, qo, set([s1,s2,s3]))
         
         
-    
-    
         
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
