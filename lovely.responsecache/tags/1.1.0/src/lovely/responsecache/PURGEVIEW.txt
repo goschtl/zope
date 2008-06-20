@@ -1,0 +1,43 @@
+The purge view
+==============
+
+This page is to manually purge cache entries.
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization','Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+
+The page is available on the root of the zmi if a purge utility was configured::
+
+  >>> browser.open('http://localhost/@@contents.html')
+  >>> browser.getLink('purge').click()
+  Traceback (most recent call last):
+  ...
+  LinkNotFoundError
+
+So let's configure a utility and call the page again. Now the menu item
+will be available::
+
+  >>> from zope import component
+  >>> from lovely.responsecache.purge import PurgeUtil
+  >>> HTTP_PORT = 33333
+  >>> hosts = ['http://localhost:%d' % HTTP_PORT]
+  >>> util = PurgeUtil(hosts, timeout=1, retryDelay=0)
+  >>> component.provideUtility(util)
+
+  >>> browser.open('http://localhost/@@contents.html')
+  >>> browser.getLink('Purge').click()
+
+The expression is a required field::
+
+  >>> browser.getControl(name="form.actions.purge").click()
+  >>> 'There were errors' in browser.contents
+  True
+
+If the expression was entered the caches get purged::
+
+  >>> browser.getControl(name="form.expression").value = ".*js"
+  >>> browser.getControl(name="form.actions.purge").click()
+  >>> 'There were errors' in browser.contents
+  False

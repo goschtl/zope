@@ -1,0 +1,8 @@
+<html>
+  <body>
+    <div>
+      x = <div tal:replace="view/x"/>
+    </div>
+    <div tal:replace="structure provider:IContent"/>
+  </body>
+</html>
