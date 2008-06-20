@@ -6,8 +6,8 @@ Determining information about simple objects
 Describing objects
 ==================
 
-Simpe objects
--------------
+Simple objects
+--------------
 
 Simple objects are considered the primitive types provided by Python
 as simple numbers, strings, classes etc. As in a way every thing in
