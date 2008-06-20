@@ -17,7 +17,7 @@ describing the given entity. The container might contain primitive
 values (like numbers or strings) as well as more complex objects,
 callables etc.
 
-In plain words: Giving a certain object you get a dataset describing
+In plain words: Given a certain object you get a dataset describing
 it.
 
 Support for modification of objects (for instance for debugging
