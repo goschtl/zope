@@ -1,20 +1,18 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="zope"
-   package="zope.app.testing"
+   i18n_domain="zope.introspector"
+   package="zope.introspector"
    >
 
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.app.zcmlfiles" />
 
   <include package="zope.app.authentication" />
-  <include package="zope.app.zptpage"/>
 
-  <include package="zope.app.securitypolicy.tests" file="functional.zcml" />
-  <include package="zope.app.securitypolicy" />
+  <include package="zope.securitypolicy" />
 
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
@@ -51,10 +49,5 @@
       password="globalmgrpw" />
 
   <grant role="zope.Manager" principal="zope.globalmgr" />
-
-  <adapter
-           factory="zope.app.testing.testing.ConflictRaisingView"
-           name="test-conflict-raise-view.html" />
-
 
 </configure>
