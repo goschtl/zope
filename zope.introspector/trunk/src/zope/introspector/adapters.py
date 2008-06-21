@@ -4,10 +4,11 @@ from zope.introspector.interfaces import IRegistrySearch
 from zope.component.interfaces import (IAdapterRegistration,
                                        IHandlerRegistration,
                                        IUtilityRegistration)
+import grokcore.component as grok
 
-class AdapterSearch(object):
-    implements(IRegistrySearch)
-    adapts(IAdapterRegistration)
+class AdapterSearch(grok.Adapter):
+    grok.implements(IRegistrySearch)
+    grok.context(IAdapterRegistration)
 
     def __init__(self, registration):
         self.registration = registration
@@ -43,9 +44,9 @@ class AdapterSearch(object):
         return self.registration
     
         
-class HandlerSearch(object):
-    implements(IRegistrySearch)
-    adapts(IHandlerRegistration)
+class HandlerSearch(grok.Adapter):
+    grok.implements(IRegistrySearch)
+    grok.context(IHandlerRegistration)
 
     def __init__(self, registration):
         self.registration = registration
@@ -80,9 +81,9 @@ class HandlerSearch(object):
     
 
         
-class UtilitySearch(object):
-    implements(IRegistrySearch)
-    adapts(IUtilityRegistration)
+class UtilitySearch(grok.Adapter):
+    grok.implements(IRegistrySearch)
+    grok.context(IUtilityRegistration)
 
     def __init__(self, registration):
         self.registration = registration

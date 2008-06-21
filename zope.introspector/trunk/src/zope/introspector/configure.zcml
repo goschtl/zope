@@ -5,22 +5,5 @@
   <include package="grokcore.component" file="meta.zcml" />
   <grok:grok package="." />
  	
- <adapter
- 	for="zope.component.interfaces.IAdapterRegistration"
- 	provides=".interfaces.IRegistrySearch"
- 	factory=".adapters.AdapterSearch"
- 	/>
-
- <adapter
- 	for="zope.component.interfaces.IHandlerRegistration"
- 	provides=".interfaces.IRegistrySearch"
- 	factory=".adapters.HandlerSearch"
- 	/>
-
- <adapter
- 	for="zope.component.interfaces.IUtilityRegistration"
- 	provides=".interfaces.IRegistrySearch"
- 	factory=".adapters.UtilitySearch"
- 	/>
  
 </configure>
