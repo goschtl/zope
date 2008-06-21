@@ -2,7 +2,8 @@ from zope.interface import implements
 from zope.introspector.interfaces import IRegistryInfo, IRegistrySearch
 from zope.component import globalregistry
 from zope.interface.adapter import AdapterRegistry
-from zope.component.registry import AdapterRegistration, HandlerRegistration, UtilityRegistration
+from zope.component.registry import (AdapterRegistration, HandlerRegistration,
+                                     UtilityRegistration)
 
 
 class RegistryInfoUtility(object):
@@ -38,7 +39,8 @@ class RegistryInfoUtility(object):
     def getAllSubscriptionAdapters(self):
         """ See zope.introspector.interfaces for documentation.
         """
-        return [x for x in globalregistry.base.registeredSubscriptionAdapters()]
+        return [x for x in
+                globalregistry.base.registeredSubscriptionAdapters()]
     
     def getRegistrationsForInterface(self, searchString='', types=['all']):
         """ See zope.introspector.interfaces for documentation.
@@ -59,7 +61,8 @@ class RegistryInfoUtility(object):
         
         #Search using adapters
         for eachRegistration in searchInterfaces:
-            if IRegistrySearch(eachRegistration).searchRegistration(searchString):
+            if IRegistrySearch(eachRegistration).searchRegistration(
+                searchString):
                 interfaces.append(eachRegistration)                    
         return interfaces
     
@@ -75,7 +78,9 @@ class RegistryInfoUtility(object):
             #pprint.pprint(interfacePaths)
 
             for eachInterface in interfacePaths:
-                registrations = self._dicter(registrations, eachInterface.split('.'), reg.getObject())
+                registrations = self._dicter(registrations,
+                                             eachInterface.split('.'),
+                                             reg.getObject())
 
         return registrations
     
@@ -100,5 +105,3 @@ class RegistryInfoUtility(object):
         if not path:
             return [item]
         return {path[0]:self._createDict(path[1:], item)}
-    
-    
