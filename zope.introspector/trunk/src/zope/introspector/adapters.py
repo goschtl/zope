@@ -1,7 +1,9 @@
 from zope.interface import implements
 from zope.component import adapts
 from zope.introspector.interfaces import IRegistrySearch
-from zope.component.interfaces import IAdapterRegistration,IHandlerRegistration, IUtilityRegistration
+from zope.component.interfaces import (IAdapterRegistration,
+                                       IHandlerRegistration,
+                                       IUtilityRegistration)
 
 class AdapterSearch(object):
     implements(IRegistrySearch)
@@ -28,7 +30,8 @@ class AdapterSearch(object):
     
     def getInterfaces(self):
         interfaces = []
-        for each in list(self.registration.required) + [self.registration.provided]:
+        for each in list(
+            self.registration.required) + [self.registration.provided]:
             module = getattr(each, '__module__')
             name = getattr(each, '__name__')
             if module:
@@ -63,7 +66,8 @@ class HandlerSearch(object):
 
     def getInterfaces(self):
         interfaces = []
-        for each in list(self.registration.required) + [self.registration.factory]:
+        for each in list(
+            self.registration.required) + [self.registration.factory]:
             module = getattr(each, '__module__')
             name = getattr(each, '__name__')
             if module:
