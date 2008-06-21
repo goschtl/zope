@@ -51,17 +51,14 @@ particular mammoth::
   >>> from zope.introspector import UtilityInfo
   >>> info = UtilityInfo(manfred)
   >>> from pprint import pprint
-  >>> pprint(info.getAllUtilities())
-  [{'component': <InterfaceClass zope.component...IUtilityRegistration>,
-    'name': 'zope.component.interfaces.IUtilityRegistration',
-    'provided': <InterfaceClass zope.interface.interfaces.IInterface>,
-    'registry': <BaseGlobalComponents base>},
+  >>> pprint(sorted(info.getAllUtilities()))
+  [{'component': <zope.app.publisher.browser.menu.BrowserMenu object at 0x...>,
   ...
    {'component': <TestUtility object at 0x...>,
     'name': '',
     'provided': <InterfaceClass __builtin__.ITestUtility>,
     'registry': <BaseGlobalComponents base>},
-   ...
+  ...
 
 
 Local Utilitites
