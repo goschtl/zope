@@ -1,3 +1,9 @@
+"""
+Tests for the package internal adapters and utilities.
+
+:Test-Layer: python
+
+"""
 import unittest
 
 from zope.app.testing import placelesssetup, ztapi
@@ -19,13 +25,17 @@ class Dummy(object):
     """
     implements(IDummy)
     
-class ComponentInterfaceRegisterTestCase(placelesssetup.PlacelessSetup, unittest.TestCase):
+class ComponentInterfaceRegisterTestCase(placelesssetup.PlacelessSetup,
+                                         unittest.TestCase):
     
     def setUp(self):
         placelesssetup.setUp()
-        ztapi.provideAdapter(IUtilityRegistration, IRegistrySearch, UtilitySearch)
-        ztapi.provideAdapter(IHandlerRegistration, IRegistrySearch, HandlerSearch)
-        ztapi.provideAdapter(IAdapterRegistration, IRegistrySearch, AdapterSearch)
+        ztapi.provideAdapter(IUtilityRegistration, IRegistrySearch,
+                             UtilitySearch)
+        ztapi.provideAdapter(IHandlerRegistration, IRegistrySearch,
+                             HandlerSearch)
+        ztapi.provideAdapter(IAdapterRegistration, IRegistrySearch,
+                             AdapterSearch)
 
     
     def test_list_handlers(self):
@@ -46,19 +56,12 @@ class ComponentInterfaceRegisterTestCase(placelesssetup.PlacelessSetup, unittest
         self.failUnless(isinstance(result, list))
         
     def test_interface_search(self):
-        
         ztapi.provideUtility(IDummy, Dummy)
-        result = RegistryInfoUtility().getRegistrationsForInterface('Dummy', types=['utilities'])
+        result = RegistryInfoUtility().getRegistrationsForInterface(
+            'Dummy', types=['utilities'])
         self.failUnless(len(result) == 1)
         
     def test_get_component_registry(self):
         interfaces = RegistryInfoUtility().getAllInterfaces()
         self.failUnless(isinstance(interfaces, dict))
         
-    
-
-def test_suite():
-    return unittest.TestSuite((
-                               unittest.makeSuite(ComponentInterfaceRegisterTestCase),
-                               ))
-    
