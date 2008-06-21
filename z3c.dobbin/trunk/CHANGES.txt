@@ -4,8 +4,17 @@ Change log
 0.3 dev
 -------
 
+- Refactoring of table bootstrapping; internal tables now using a
+  naming convention less likely to clash with existing tables.
+  [malthe]
+
+- Added support for ``schema.Dict`` (including polymorphic dictionary
+  relation).
+  [malthe]
+
 - Implemented polymorphic relations for a subset of the basic types
   (int, str, unicode, tuple and list).
+  [malthe]
 
 0.2.9
 -----

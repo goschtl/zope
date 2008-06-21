@@ -55,7 +55,7 @@ class ObjectProperty(object):
     We're not checking type here, because we'll only be creating
     relations to items that are joined with the soup.
     """
-    
+
     def __call__(self, field, column, metadata):
         relation = relations.RelationProperty(field)
 
@@ -63,7 +63,7 @@ class ObjectProperty(object):
             field.__name__: relation,
             relation.name: orm.relation(
             bootstrap.Soup,
-            primaryjoin=(field.schema.__mapper__.uuid==column),
+            primaryjoin=bootstrap.Soup.c.uuid==column,
             foreign_keys=[column],
             enable_typechecks=False,
             lazy=True)
@@ -73,65 +73,37 @@ class CollectionProperty(object):
     """A collection property."""
 
     collection_class = None
+    relation_class = None
     
     def __call__(self, field, column, metadata):
-        relation_table = self.getRelationTable(metadata)
-        soup_table = self.getSoupTable(metadata)
-        
         return {
             field.__name__: orm.relation(
-                relations.OrderedRelation,
-                primaryjoin=soup_table.c.uuid==relation_table.c.left,
+                self.relation_class,
+                primaryjoin=self.getPrimaryJoinCondition(),
                 collection_class=self.collection_class,
                 enable_typechecks=False)
             }
 
-    def getRelationTable(self, metadata):
+    def getPrimaryJoinCondition(self):
         return NotImplementedError("Must be implemented by subclass.")
-
-    def getSoupTable(self, metadata):
-        return metadata.tables['dobbin:soup']
-
+    
 class ListProperty(CollectionProperty):
     collection_class = collections.OrderedList
+    relation_class = relations.OrderedRelation
 
-    def getRelationTable(self, metadata):
-        return metadata.tables['dobbin:relation:int']
-
+    def getPrimaryJoinCondition(self):
+        return bootstrap.Soup.c.uuid==relations.OrderedRelation.c.left
+    
 class TupleProperty(ListProperty):
     collection_class = collections.Tuple
                     
-class DictProperty(object):
-    """A dict property.
+class DictProperty(CollectionProperty):
+    collection_class = collections.Dict
+    relation_class = relations.KeyRelation
 
-    In SQLAlchemy, we need to model the following two defintion types:
-
-       schema.Dict(
-           value_type=schema.Object(
-                schema=ISomeInterface)
-           )
-
-       schema.Dict(
-           value_type=schema.Set(
-                value_schema.Object(
-                     schema=ISomeInterface)
-                )
-           )
-
-    Reference:
-
-    http://blog.discorporate.us/2008/02/sqlalchemy-partitioned-collections-1
-    http://www.sqlalchemy.org/docs/04/mappers.html#advdatamapping_relation_collections
-    
-    """
-    
-    def __call__(self, field, column, metadata):
-        #
-        #
-        # TODO: Return column definition
-
-        pass
-    
+    def getPrimaryJoinCondition(self):
+        return bootstrap.Soup.c.uuid==relations.KeyRelation.c.left
+                        
 fieldmap = {
     schema.ASCII: StringTranslator(), 
     schema.ASCIILine: StringTranslator(),
@@ -140,7 +112,7 @@ fieldmap = {
     schema.BytesLine: FieldTranslator(rdb.CLOB),
     schema.Choice: StringTranslator(rdb.Unicode),
     schema.Date: FieldTranslator(rdb.DATE),
-    schema.Dict: (ObjectTranslator(), DictProperty()),
+    schema.Dict: (None, DictProperty()),
     schema.DottedName: StringTranslator(),
     schema.Float: FieldTranslator(rdb.Float), 
     schema.Id: StringTranslator(rdb.Unicode),
@@ -204,7 +176,6 @@ def createMapper(spec):
                 exclude.append(name)
 
     # create joined table
-    soup_table = table = metadata.tables['dobbin:soup']
     properties = {}
     first_table = None
     
@@ -254,7 +225,7 @@ def createMapper(spec):
             del properties[name]
             setattr(Mapper, name, prop)
 
-
+    soup_table = bootstrap.Soup.c.id.table
     polymorphic = (
         [Mapper], table.join(
         soup_table, first_table.c.id==soup_table.c.id))
@@ -318,7 +289,7 @@ def getTable(iface, metadata, ignore=()):
     table = rdb.Table(
         name,
         metadata,
-        rdb.Column('id', rdb.Integer, rdb.ForeignKey("dobbin:soup.id"), primary_key=True),
+        rdb.Column('id', rdb.Integer, rdb.ForeignKey(bootstrap.Soup.c.id), primary_key=True),
         *columns,
         **kw)
 

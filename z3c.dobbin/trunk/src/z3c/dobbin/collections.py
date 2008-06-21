@@ -5,6 +5,7 @@ from sqlalchemy import orm
 import interfaces
 import relations
 import soup
+import types
 
 class Tuple(object):
     def __init__(self):
@@ -12,7 +13,7 @@ class Tuple(object):
 
     @property
     def adapter(self):
-        return self._sa_adapter
+        return orm.collections.collection_adapter(self)
 
     @orm.collections.collection.appender
     def _appender(self, item):
@@ -44,13 +45,18 @@ class Tuple(object):
         return converted
 
     def __iter__(self):
-        for relation in iter(self.data):
-            obj = relation.target
-            if interfaces.IBasicType.providedBy(obj):
-                yield obj.value
-            else:
-                yield obj
+        return (self[i] for i in range(len(self.data)))
                 
+    def __getitem__(self, index):
+        obj = self.data[index].target
+        if interfaces.IBasicType.providedBy(obj):
+            return obj.value
+        else:
+            return obj
+                        
+    def __setitem__(self, index, value):
+        return NotImplementedError("Object does not support item assignment.")
+
     def __len__(self):
         return len(self.data)
     
@@ -106,12 +112,126 @@ class OrderedList(Tuple):
     def extend(self, items):
         map(self.append, items)
 
+    def count(self, value):
+        return NotImplementedError("Count-method not implemented.")
+
     def __repr__(self):
         return repr(list(self))
-    
-    def __getitem__(self, index):
-        return self.data[index].target
-        
+
     def __setitem__(self, index, value):
         return NotImplementedError("Setting items at an index is not implemented.")
 
+class Dict(dict):
+    __Security_checker__ = NamesChecker(
+        ('clear', 'copy', 'fromkeys', 'get', 'has_key', 'items', 'iteritems', 'iterkeys', 'itervalues', 'keys', 'pop', 'popitem', 'setdefault', 'update', 'values'))
+
+    @property
+    def adapter(self):
+        return orm.collections.collection_adapter(self)
+
+    @orm.collections.collection.appender
+    @orm.collections.collection.replaces(1)    
+    def _appender(self, item):
+        dict.__setitem__(self, item.key, item)
+    
+    @orm.collections.collection.iterator
+    def _iterator(self):
+        return dict.itervalues(self)
+
+    @orm.collections.collection.remover
+    def _remover(self, item):
+        dict.remove(item)
+
+    @orm.collections.collection.internally_instrumented
+    def __setitem__(self, key, item, _sa_initiator=None):
+        if not interfaces.IMapped.providedBy(item):
+            item = soup.persist(item)
+
+        # mapped objects may be used as key; internally, we'll use
+        # the UUID in this case, however.
+        if interfaces.IMapped.providedBy(key):
+            key = key.uuid
+
+        assert isinstance(key, types.StringTypes), \
+               "Only strings or mapped objects may be used as keys."
+            
+        # set up relation
+        relation = relations.KeyRelation()
+        relation.target = item
+        relation.key = key
+
+        self.adapter.fire_append_event(relation, _sa_initiator)
+        dict.__setitem__(self, key, relation)
+
+    @orm.collections.collection.converter
+    def convert(self, d):
+        converted = []
+        
+        for key, item in d.items():
+            if not interfaces.IMapped.providedBy(item):
+                item = soup.persist(item)
+
+            # set up relation
+            relation = relations.KeyRelation()
+            relation.target = item
+            relation.key = key
+
+            converted.append(relation)
+            
+        return converted
+
+    def values(self):
+        return [self[key] for key in self]
+
+    def itervalues(self):
+        return (self[key] for key in self)
+
+    @orm.collections.collection.internally_instrumented
+    def pop(self, key, _sa_initiator=None):
+        relation = dict.pop(self, key)
+        obj = relation.target
+        
+        self.adapter.fire_remove_event(relation, _sa_initiator)
+
+        if interfaces.IBasicType.providedBy(obj):
+            return obj.value
+        else:
+            return obj
+
+    @orm.collections.collection.internally_instrumented
+    def popitem(self, _sa_initiator=None):
+        key, relation = dict.popitem(self)
+        obj = relation.target
+
+        self.adapter.fire_remove_event(relation, _sa_initiator)
+
+        if interfaces.IBasicType.providedBy(obj):
+            return key, obj.value
+        else:
+            return key, obj
+
+    @orm.collections.collection.internally_instrumented
+    def clear(self, _sa_initiator=None):
+        for relation in dict.itervalues(self):
+            self.adapter.fire_remove_event(relation, _sa_initiator)            
+
+        dict.clear(self)
+        
+    def __getitem__(self, key):
+        # mapped objects may be used as key; internally, we'll use
+        # the UUID in this case, however.
+        if interfaces.IMapped.providedBy(key):
+            key = key.uuid
+
+        assert isinstance(key, types.StringTypes), \
+               "Only strings or mapped objects may be used as keys."
+
+        obj = dict.__getitem__(self, key).target
+        if interfaces.IBasicType.providedBy(obj):
+            return obj.value
+        else:
+            return obj
+
+    def __repr__(self):
+        return repr(dict(
+            (key, self[key]) for key in self))

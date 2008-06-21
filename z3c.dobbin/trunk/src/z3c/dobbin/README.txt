@@ -1,12 +1,20 @@
-Developer documentation
-=======================
+Developer walk-through
+======================
 
-Dobbin creates ORM mappers based on class specification. Columns are
-infered from interface schema fields and attributes, and a class may
-be provided as the mapper metatype.
+This section demonstrates the main functionality of the package using
+the doctest format.
 
-Interface mapping
------------------
+Mapping
+-------
+
+Dobbin creates SQLAlchemy ORM mappers from Python classes based on
+class specification (class or interface):
+
+  * Columns are infered from interface schema fields and attributes
+  * Specification is kept as dotted name in a special column
+
+Interface specification
+-----------------------
 
 An mapper adapter is provided.
 
@@ -110,6 +118,9 @@ Verify tables for ``IVinyl``, ``IAlbum`` and ``ICompactDisc``.
     >>> session.execute(metadata.tables[encode(ICompactDisc)].select()).fetchall()
     [(3, 2005)]
 
+Concrete class specification
+----------------------------
+    
 Now we'll create a mapper based on a concrete class. We'll let the
 class implement the interface that describes the attributes we want to
 store, but also provides a custom method.
@@ -183,11 +194,18 @@ Instances of mappers automatically join the object soup.
 Relations
 ---------
 
-Most people have a favourite record.
+Relations are columns that act as references to other objects.
+
+As an example, let's create an object holds a reference to some
+favorite item. We use ``zope.schema.Object`` to declare this
+reference; relations are polymorphic and we needn't declare the schema
+of the referenced object in advance.
 
     >>> class IFavorite(interface.Interface):
-    ...     item = schema.Object(title=u"Item", schema=IVinyl)
+    ...     item = schema.Object(title=u"Item", schema=interface.Interface)
 
+    >>> __builtin__.IFavorite = IFavorite
+    
 Let's make our Diana Ross record a favorite.
 
     >>> favorite = create(IFavorite)
@@ -196,12 +214,14 @@ Let's make our Diana Ross record a favorite.
     <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>
 
     >>> session.save(favorite)
-    
-Get back the object.
-    
-    >>> favorite = session.query(IFavorite.__mapper__).filter_by(
-    ...     spec=IFavorite.__mapper__.__spec__)[0]
 
+We'll commit the transaction and lookup the object by its UUID.
+
+    >>> transaction.commit()
+
+    >>> from z3c.dobbin.soup import lookup
+    >>> favorite = lookup(favorite.uuid)
+    
 When we retrieve the related items, it's automatically reconstructed
 to match the specification to which it was associated.
 
@@ -264,56 +284,13 @@ persisted in the database.
 This behavior should work well in a request-response type environment,
 where the request will typically end with a commit.
 
-Polymorphic relations
----------------------
-
-We can create relations to instances as well as immutable objects
-(rocks).
-
-Integers, floats and unicode strings are straight-forward.
-
-    >>> favorite.item = 42; transaction.commit()
-    >>> favorite.item
-    42
-
-    >>> favorite.item = 42.01; transaction.commit()
-    >>> 42 < favorite.item <= 42.01
-    True
-
-    >>> favorite.item = u"My favorite number is 42."; transaction.commit()
-    >>> favorite.item
-    u'My favorite number is 42.'
-
-Normal strings need explicit coercing to ``str``.
-    
-    >>> favorite.item = "My favorite number is 42."; transaction.commit()
-    >>> str(favorite.item)
-    'My favorite number is 42.'
-
-Or sequences of relations.
-
-    >>> favorite.item = (u"green", u"blue", u"red"); transaction.commit()
-    >>> favorite.item
-    (u'green', u'blue', u'red')
-
-When we create relations to mutable objects, a hook is made into the
-transaction machinery to keep track of the pending state.
-
-    >>> some_list = [u"green", u"blue", u"red"]; transaction.commit()
-    >>> favorite.item = some_list
-    >>> favorite.item
-    [u'green', u'blue', u'red']
-
-Amorphic relations.
-
-    >>> favorite.item = ((1, u"green"), (2, u"blue"), (3, u"red")); transaction.commit()
-    >>> favorite.item
-    ((1, u'green'), (2, u'blue'), (3, u'red'))
-     
 Collections
 -----------
 
-Let's set up a record collection as a list.
+We can instrument properties that behave like collections by using the
+sequence and mapping schema fields.
+
+Let's set up a record collection as an ordered list.
 
     >>> class ICollection(interface.Interface):
     ...     records = schema.List(
@@ -334,7 +311,6 @@ Add the Diana Ross record, and save the collection to the session.
     
 We can get our collection back.
 
-    >>> from z3c.dobbin.soup import lookup
     >>> collection = lookup(collection.uuid)
 
 Let's verify that we've stored the Diana Ross record.
@@ -399,23 +375,142 @@ elements to its list.
 
     >>> empty_collection = create(ICollection)
     >>> session.save(empty_collection)
-    
-Let's index the collection by artist in a catalog.
+
+To demonstrate the mapping implementation, let's set up a catalog for
+our record collection. We'll index the records by their ASIN string.
     
     >>> class ICatalog(interface.Interface):
-    ...     records_by_artist = schema.Dict(
-    ...         title=u"Records by artist",
-    ...         value_type=schema.List())
-    ...
-    ...     artist_biographies = schema.Dict(
-    ...         title=u"Artist biographies",
-    ...         value_type=schema.Text())
-
-    >> catalog = create(ICatalog)
-    >> session.add(catalog)
-
-    >> session.records_by_artist[diana.artist] = 
+    ...     index = schema.Dict(
+    ...         title=u"Record index")
     
+    >>> catalog = create(ICatalog)
+    >>> session.save(catalog)
+
+Add a record to the index.
+    
+    >>> catalog.index[u"B00004WZ5Z"] = diana
+    >>> catalog.index[u"B00004WZ5Z"]
+    <Mapper (__builtin__.IVinyl) at ...>
+
+Verify state after commit.
+    
+    >>> transaction.commit()
+    >>> catalog.index[u"B00004WZ5Z"]
+    <Mapper (__builtin__.IVinyl) at ...>
+
+Let's check that the standard dict methods are supported.
+
+    >>> catalog.index.values()
+    [<Mapper (__builtin__.IVinyl) at ...>]
+
+    >>> tuple(catalog.index.itervalues())
+    (<Mapper (__builtin__.IVinyl) at ...>,)
+
+    >>> catalog.index.setdefault(u"B00004WZ5Z", None)
+    <Mapper (__builtin__.IVinyl) at ...>
+
+    >>> catalog.index.pop(u"B00004WZ5Z")
+    <Mapper (__builtin__.IVinyl) at ...>
+
+    >>> len(catalog.index)
+    0
+
+Concrete instances are supported.
+
+    >>> vinyl = Vinyl()
+    >>> vinyl.artist = diana.artist
+    >>> vinyl.title = diana.title
+    >>> vinyl.rpm = diana.rpm
+
+    >>> catalog.index[u"B00004WZ5Z"] = vinyl
+    >>> len(catalog.index)
+    1
+
+    >>> catalog.index.popitem()
+    (u'B00004WZ5Z',
+     <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>)
+
+    >>> catalog.index = {u"B00004WZ5Z": vinyl}
+    >>> len(catalog.index)
+    1
+
+    >>> catalog.index.clear()
+    >>> len(catalog.index)
+    0
+
+We may use a mapped object as index.
+
+    >>> catalog.index[diana] = diana
+    >>> catalog.index.keys()[0] == diana.uuid
+    True
+
+    >>> transaction.commit()
+    
+    >>> catalog.index[diana]    
+    <Mapper (__builtin__.IVinyl) at ...>
+    
+    >>> class IDiscography(ICatalog):
+    ...     records = schema.Dict(
+    ...         title=u"Discographies by artist",
+    ...         value_type=schema.List())
+
+Polymorphic relations
+---------------------
+
+We can create relations to instances as well as immutable objects
+(rocks).
+
+Integers, floats and unicode strings are straight-forward.
+
+    >>> favorite.item = 42; transaction.commit()
+    >>> favorite.item
+    42
+
+    >>> favorite.item = 42.01; transaction.commit()
+    >>> 42 < favorite.item <= 42.01
+    True
+
+    >>> favorite.item = u"My favorite number is 42."; transaction.commit()
+    >>> favorite.item
+    u'My favorite number is 42.'
+
+Normal strings need explicit coercing to ``str``.
+    
+    >>> favorite.item = "My favorite number is 42."; transaction.commit()
+    >>> str(favorite.item)
+    'My favorite number is 42.'
+
+Or sequences of relations.
+
+    >>> favorite.item = (u"green", u"blue", u"red"); transaction.commit()
+    >>> favorite.item
+    (u'green', u'blue', u'red')
+
+Dictionaries.
+
+    >>> favorite.item = {u"green": 0x00FF00, u"blue": 0x0000FF, u"red": 0xFF0000}
+    >>> transaction.commit()
+    >>> favorite.item
+    {u'blue': 255, u'green': 65280, u'red': 16711680}
+
+    >>> favorite.item[u"black"] = 0x000000
+    >>> favorite.item
+    {u'blue': 255, u'green': 65280, u'black': 0, u'red': 16711680}
+    
+When we create relations to mutable objects, a hook is made into the
+transaction machinery to keep track of the pending state.
+
+    >>> some_list = [u"green", u"blue", u"red"]; transaction.commit()
+    >>> favorite.item = some_list
+    >>> favorite.item
+    [u'green', u'blue', u'red']
+
+Amorphic relations.
+
+    >>> favorite.item = ((1, u"green"), (2, u"blue"), (3, u"red")); transaction.commit()
+    >>> favorite.item
+    ((1, u'green'), (2, u'blue'), (3, u'red'))
+
 Security
 --------
 

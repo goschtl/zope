@@ -31,6 +31,9 @@ class Relation(object):
 
 class OrderedRelation(Relation):
     pass
+
+class KeyRelation(Relation):
+    pass
     
 class RelationProperty(property):
     

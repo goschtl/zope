@@ -1,7 +1,8 @@
-Developer information
-=====================
+Developer documentation
+=======================
 
-This section details the object persistence model.
+This section details the object persistence model and the relations
+machinery.
 
 Introduction
 ------------
@@ -40,3 +41,10 @@ references; the soup specification will reflect the type.
 Essentially, all polymorphic relations are many-to-many from a
 database perspective. 
 
+Collections
+-----------
+
+Dictionaries are keyed by (unicode) string. Soup objects may be used
+as keys in which case a string representation of the UUID is
+used. Dictionaries are polymorphic such that any kind of value may be
+assigned for an entry.
