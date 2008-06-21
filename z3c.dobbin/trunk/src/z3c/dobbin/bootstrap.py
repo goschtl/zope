@@ -13,41 +13,37 @@ def bootstrapDatabaseEngine(event):
     setUp(metadata)
     
 def setUp(metadata):
-    soup(metadata)
-    catalog(metadata)
-    relation(metadata)
-    metadata.create_all()
-
-def soup(metadata):
-    table = rdb.Table(
+    uuid = rdb.String(length=32)
+    fk = rdb.ForeignKey("soup.uuid")
+    
+    soup = rdb.Table(
         'soup',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('uuid', rdb.String(length=32), unique=True, index=True),
+        rdb.Column('uuid', uuid, unique=True, index=True),
         rdb.Column('spec', rdb.String, index=True),
         )
 
-    orm.mapper(Soup, table)
-
-def catalog(metadata):
-    return rdb.Table(
-        'catalog',
-        metadata,
-        rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', rdb.String(length=32), rdb.ForeignKey("soup.uuid"), index=True),
-        rdb.Column('right', rdb.String(length=32), rdb.ForeignKey("soup.uuid")),
-        rdb.Column('name', rdb.String))
-
-def relation(metadata):
-    table = rdb.Table(
+    relation = rdb.Table(
         'relation',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', rdb.String(length=32), rdb.ForeignKey("soup.uuid"), index=True),
-        rdb.Column('right', rdb.String(length=32), rdb.ForeignKey("soup.uuid")),
+        rdb.Column('left', uuid, fk, index=True),
+        rdb.Column('right', uuid, fk),
         rdb.Column('order', rdb.Integer, nullable=False))
+
+    catalog = rdb.Table(
+        'catalog',
+        metadata,
+        rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
+        rdb.Column('left', uuid, fk, index=True),
+        rdb.Column('right', uuid, fk),
+        rdb.Column('name', rdb.String))
     
-    orm.mapper(relations.Relation, table)
+    orm.mapper(relations.Relation, relation)
+    orm.mapper(Soup, soup)
+    
+    metadata.create_all()
 
 class Soup(object):
     pass
