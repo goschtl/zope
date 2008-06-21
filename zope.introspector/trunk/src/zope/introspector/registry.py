@@ -4,9 +4,10 @@ from zope.component import globalregistry
 from zope.interface.adapter import AdapterRegistry
 from zope.component.registry import (AdapterRegistration, HandlerRegistration,
                                      UtilityRegistration)
+import grokcore.component as grok
 
 
-class RegistryInfoUtility(object):
+class RegistryInfoUtility(grok.GlobalUtility):
     """ Give information about the component registry.
         Implements the IRegistryInfo interface. 
     """

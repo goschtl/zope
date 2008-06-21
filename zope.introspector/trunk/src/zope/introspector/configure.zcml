@@ -1,10 +1,9 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok"
            i18n_domain="zope.introspector">
-  
- <utility
- 	provides=".interfaces.IRegistryInfo"
- 	factory=".registry.RegistryInfoUtility"
- 	/>
+
+  <include package="grokcore.component" file="meta.zcml" />
+  <grok:grok package="." />
  	
  <adapter
  	for="zope.component.interfaces.IAdapterRegistration"

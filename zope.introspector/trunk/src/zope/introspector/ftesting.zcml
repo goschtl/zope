@@ -13,6 +13,7 @@
   <include package="zope.app.authentication" />
 
   <include package="zope.securitypolicy" />
+  <include package="zope.introspector" />
 
   <securityPolicy
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
