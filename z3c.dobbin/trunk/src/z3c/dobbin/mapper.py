@@ -75,21 +75,30 @@ class CollectionProperty(object):
     collection_class = None
     
     def __call__(self, field, column, metadata):
-        relation_table = metadata.tables['relation']
-        soup_table = metadata.tables['soup']
+        relation_table = self.getRelationTable(metadata)
+        soup_table = self.getSoupTable(metadata)
         
         return {
             field.__name__: orm.relation(
-                relations.Relation,
+                relations.OrderedRelation,
                 primaryjoin=soup_table.c.uuid==relation_table.c.left,
                 collection_class=self.collection_class,
                 enable_typechecks=False)
             }
 
+    def getRelationTable(self, metadata):
+        return NotImplementedError("Must be implemented by subclass.")
+
+    def getSoupTable(self, metadata):
+        return metadata.tables['dobbin:soup']
+
 class ListProperty(CollectionProperty):
     collection_class = collections.OrderedList
 
-class TupleProperty(CollectionProperty):
+    def getRelationTable(self, metadata):
+        return metadata.tables['dobbin:relation:int']
+
+class TupleProperty(ListProperty):
     collection_class = collections.Tuple
                     
 class DictProperty(object):
@@ -195,7 +204,7 @@ def createMapper(spec):
                 exclude.append(name)
 
     # create joined table
-    soup_table = table = metadata.tables['soup']
+    soup_table = table = metadata.tables['dobbin:soup']
     properties = {}
     first_table = None
     
@@ -309,7 +318,7 @@ def getTable(iface, metadata, ignore=()):
     table = rdb.Table(
         name,
         metadata,
-        rdb.Column('id', rdb.Integer, rdb.ForeignKey("soup.id"), primary_key=True),
+        rdb.Column('id', rdb.Integer, rdb.ForeignKey("dobbin:soup.id"), primary_key=True),
         *columns,
         **kw)
 

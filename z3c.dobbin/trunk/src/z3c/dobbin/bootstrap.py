@@ -13,34 +13,34 @@ def bootstrapDatabaseEngine(event):
     setUp(metadata)
     
 def setUp(metadata):
-    uuid = rdb.String(length=32)
-    fk = rdb.ForeignKey("soup.uuid")
+    soup_uuid = rdb.String(length=32)
+    soup_fk = rdb.ForeignKey("dobbin:soup.uuid")
     
     soup = rdb.Table(
-        'soup',
+        'dobbin:soup',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('uuid', uuid, unique=True, index=True),
+        rdb.Column('uuid', soup_uuid, unique=True, index=True),
         rdb.Column('spec', rdb.String, index=True),
         )
 
-    relation = rdb.Table(
-        'relation',
+    int_relation = rdb.Table(
+        'dobbin:relation:int',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', uuid, fk, index=True),
-        rdb.Column('right', uuid, fk),
+        rdb.Column('left', soup_uuid, soup_fk, index=True),
+        rdb.Column('right', soup_uuid, soup_fk),
         rdb.Column('order', rdb.Integer, nullable=False))
 
     catalog = rdb.Table(
         'catalog',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', uuid, fk, index=True),
-        rdb.Column('right', uuid, fk),
+        rdb.Column('left', soup_uuid, soup_fk, index=True),
+        rdb.Column('right', soup_uuid, soup_fk),
         rdb.Column('name', rdb.String))
     
-    orm.mapper(relations.Relation, relation)
+    orm.mapper(relations.OrderedRelation, int_relation)
     orm.mapper(Soup, soup)
     
     metadata.create_all()

@@ -35,7 +35,7 @@ class Tuple(object):
                 item = soup.persist(item)
 
             # set up relation
-            relation = relations.Relation()
+            relation = relations.OrderedRelation()
             relation.target = item
             relation.order = len(converted)
 
@@ -79,7 +79,7 @@ class OrderedList(Tuple):
             item = soup.persist(item)
 
         # set up relation
-        relation = relations.Relation()
+        relation = relations.OrderedRelation()
         relation.target = item
         relation.order = len(self.data)
 

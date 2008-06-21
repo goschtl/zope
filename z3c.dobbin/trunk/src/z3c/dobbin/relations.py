@@ -28,6 +28,9 @@ class Relation(object):
 
     source = property(_get_source, _set_source)
     target = property(_get_target, _set_target)
+
+class OrderedRelation(Relation):
+    pass
     
 class RelationProperty(property):
     
