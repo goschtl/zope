@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -22,26 +22,6 @@ from zope.publisher.interfaces.browser import (IBrowserSkinType,
                                                
 import grokcore.component as grok
 
-class IViewInfo(Interface):
-
-    def getViews(layer=None):
-        """Get the views for context object.
-
-        Optional layer argument retrieves views registered for this layer.
-
-        Returns iterator (view name, view factory) tuples.
-        """
-
-
-    def getAllViews():
-        """Get all views for context objects, for any layer that is in a skin.
-
-        Returns iterator of (skin name, (skin) layer, view name,
-        view factory) tuples.
-
-        The default layer will be returned with u'' as the skin name.
-        """
-        
 class ViewInfo(grok.Adapter):
     """Determine views for contexts.
     """

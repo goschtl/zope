@@ -128,3 +128,24 @@ class IRegistrySearch(interface.Interface):
         """ Returns the registration
         """
 
+class IViewInfo(Interface):
+    """The representation of an object that has views associated.
+    """
+
+    def getViews(layer=None):
+        """Get the views for context object.
+
+        Optional layer argument retrieves views registered for this layer.
+
+        Returns iterator (view name, view factory) tuples.
+        """
+
+    def getAllViews():
+        """Get all views for context objects, for any layer that is in a skin.
+
+        Returns iterator of (skin name, (skin) layer, view name,
+        view factory) tuples.
+
+        The default layer will be returned with u'' as the skin name.
+        """
+        
