@@ -128,7 +128,7 @@ class IRegistrySearch(interface.Interface):
         """ Returns the registration
         """
 
-class IViewInfo(Interface):
+class IViewInfo(interface.Interface):
     """The representation of an object that has views associated.
     """
 
