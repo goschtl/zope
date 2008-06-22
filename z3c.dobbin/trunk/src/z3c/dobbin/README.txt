@@ -327,49 +327,84 @@ automatically saved on the session.
 
     >>> collection = lookup(collection.uuid)
 
-    >>> vinyl = create(IVinyl)
-    >>> vinyl.artist = u"Kool & the Gang"
-    >>> vinyl.title = u"Music Is the Message"
-    >>> vinyl.rpm = 33
-
-    >>> collection.records.append(vinyl)
+    >>> kool = create(IVinyl)
+    >>> kool.artist = u"Kool & the Gang"
+    >>> kool.title = u"Music Is the Message"
+    >>> kool.rpm = 33
+    
+    >>> collection.records.append(kool)
     >>> [record.artist for record in collection.records]
     [u'Diana Ross and The Supremes', u'Kool & the Gang']
 
     >>> session.flush()
     >>> session.update(collection)
-    
+
 We can remove items.
 
-    >>> collection.records.remove(vinyl)
+    >>> collection.records.remove(kool)
     >>> len(collection.records) == 1
     True
 
 And extend.
 
-    >>> collection.records.extend((vinyl,))
+    >>> collection.records.extend((kool,))
     >>> len(collection.records) == 2
     True
 
 Items can appear twice in the list.
 
-    >>> collection.records.append(vinyl)
+    >>> collection.records.append(kool)
     >>> len(collection.records) == 3
     True
 
 We can add concrete instances to collections.
 
-    >>> vinyl = Vinyl()
-    >>> collection.records.append(vinyl)
+    >>> marvin = Vinyl()
+    >>> marvin.artist = u"Marvin Gaye"
+    >>> marvin.title = u"Let's get it on"
+    >>> marvin.rpm = 33
+    
+    >>> collection.records.append(marvin)
     >>> len(collection.records) == 4
     True
 
 And remove them, too.
 
-    >>> collection.records.remove(vinyl)
+    >>> collection.records.remove(marvin)
     >>> len(collection.records) == 3
     True
 
+The standard list methods are available.
+
+    >>> collection.records = [marvin, vinyl]
+    >>> collection.records.sort(key=lambda record: record.artist)
+    >>> collection.records
+    [<Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>,
+     <Vinyl Marvin Gaye: Let's get it on (@ 33 RPM)>]
+
+    >>> collection.records.reverse()
+    >>> collection.records
+    [<Vinyl Marvin Gaye: Let's get it on (@ 33 RPM)>,
+     <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>]
+
+    >>> collection.records.index(vinyl)
+    1
+    
+    >>> collection.records.pop()
+    <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>
+
+    >>> collection.records.insert(0, vinyl)
+    >>> collection.records
+    [<Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>,
+     <Vinyl Marvin Gaye: Let's get it on (@ 33 RPM)>]
+
+    >>> collection.records.count(vinyl)
+    1
+
+    >>> collection.records[1] = vinyl
+    >>> collection.records.count(vinyl)
+    2
+    
 For good measure, let's create a new instance without adding any
 elements to its list.
 

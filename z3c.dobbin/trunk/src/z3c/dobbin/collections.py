@@ -55,7 +55,7 @@ class Tuple(object):
             return obj
                         
     def __setitem__(self, index, value):
-        return NotImplementedError("Object does not support item assignment.")
+        return TypeError("Object does not support item assignment.")
 
     def __len__(self):
         return len(self.data)
@@ -65,7 +65,7 @@ class Tuple(object):
     
 class OrderedList(Tuple):
     __Security_checker__ = NamesChecker(
-        ('append', 'remove'))
+        ('append', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort'))
 
     @orm.collections.collection.appender
     def _appender(self, item):
@@ -113,13 +113,77 @@ class OrderedList(Tuple):
         map(self.append, items)
 
     def count(self, value):
-        return NotImplementedError("Count-method not implemented.")
+        return list(self).count(value)
 
+    def index(self, value, **kwargs):
+        for index in range(len(self)):
+            if self[index] == value:
+                return index
+
+        raise ValueError("%s not found in list." % value)
+
+    @orm.collections.collection.internally_instrumented
+    def insert(self, index, item):
+        stack = self.data[index:]
+        del self.data[index:]
+        self.append(item)
+        for relation in stack:
+            relation.order += 1
+            self.data.append(relation)
+
+    @orm.collections.collection.internally_instrumented
+    def pop(self, index=-1, _sa_initiator=None):
+        relation = self.data[index]
+        obj = relation.target
+        
+        self.adapter.fire_remove_event(relation, _sa_initiator)
+        del self.data[index]
+        
+        stack = self.data[index:]
+        for relation in stack:
+            relation.order -= 1
+
+        return obj
+    
+    def reverse(self):
+        self.data.reverse()
+        for index in range(len(self.data)):
+            self.data[index].order = index
+        
+    def sort(self, **kwargs):
+        data = list(self)
+        data_relation_mapping = zip(data, self.data)
+
+        mapping = {}
+        for item, relation in data_relation_mapping:
+            relations = mapping.setdefault(item, [])
+            relations.append(relation)
+
+        data.sort(**kwargs)
+        del self.data[:]
+        
+        for item in data:
+            relation = mapping[item].pop()
+            relation.order = len(self.data)
+            self.data.append(relation)            
+                
     def __repr__(self):
         return repr(list(self))
 
-    def __setitem__(self, index, value):
-        return NotImplementedError("Setting items at an index is not implemented.")
+    @orm.collections.collection.internally_instrumented
+    def __setitem__(self, index, value, _sa_initiator=None):
+        # remove previous
+        relation = self.data[index]
+        self.adapter.fire_remove_event(relation, _sa_initiator)
+
+        # add new
+        self.append(value)
+        relation = self.data[-1]
+        del self.data[-1]
+
+        # replace previous
+        relation.order = index
+        self.data[index] = relation
 
 class Dict(dict):
     __Security_checker__ = NamesChecker(

@@ -4,6 +4,9 @@ Change log
 0.3 dev
 -------
 
+- Implemented rest of list methods.
+  [malthe]
+  
 - Refactoring of table bootstrapping; internal tables now using a
   naming convention less likely to clash with existing tables.
   [malthe]
