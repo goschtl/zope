@@ -127,3 +127,10 @@ class IRegistrySearch(interface.Interface):
         """ Returns the registration
         """
 
+class IObjectDescriptionProvider(interface.Interface):
+    """Provide description objects for arbitrary objects.
+    """
+    def getDescription(obj_or_dotted_path, *args, **kw):
+        """Get one description object for the object denoted by
+        ``obj_or_dotted_path``.
+        """
