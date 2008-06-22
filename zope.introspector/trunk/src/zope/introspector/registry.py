@@ -75,8 +75,7 @@ class RegistryInfoUtility(grok.GlobalUtility):
         for eachRegistration in self.getAllRegistrations():
             reg = IRegistrySearch(eachRegistration)
             interfacePaths = reg.getInterfaces()
-            import pprint; 
-            #pprint.pprint(interfacePaths)
+
 
             for eachInterface in interfacePaths:
                 registrations = self._dicter(registrations,
