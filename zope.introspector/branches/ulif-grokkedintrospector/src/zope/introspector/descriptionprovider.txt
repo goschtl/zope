@@ -201,6 +201,7 @@ If we pass another kind of object, we might get a different kind of
 description. We load the zope.introspector package and want a
 description for it::
 
-  >>> import zope.introspector
-  >>> provider.getDescription(zope.introspector)
+  >>> import zope.introspector.tests
+  >>> provider.getDescription(zope.introspector.tests)
+  <zope.introspector.objectinfo.ModuleInfo object at 0x...>
 
