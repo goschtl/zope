@@ -17,10 +17,3 @@ Authors
 This package was designed and implemented by Malthe Borch, Stefan
 Eletzhofer. It's licensed as ZPL.
 
-Todo
-----
-
-* Containers
-* Dictionaries (zope.schema.Dict)
-* Polymorphic relations (zope.interface.Attribute)
-
