@@ -1,0 +1,13 @@
+Do a functional doctest test on the app.
+****************************************
+
+:Test-Layer: functional
+
+Test creating a Flint instance into Grok::
+
+   >>> from flint.app import Flint
+   >>> root = getRootFolder()
+   >>> root['instance'] = Flint()
+   >>> root.get('instance').__class__.__name__
+   'Flint'
+

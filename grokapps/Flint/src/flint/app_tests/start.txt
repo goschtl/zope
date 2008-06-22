@@ -1,0 +1,11 @@
+Do a simple doctest test on the app.
+************************************
+:Test-Layer: unit
+
+When you create an instance there are no objects in it::
+
+   >>> from flint.app import Flint
+   >>> grokapp = Flint()
+   >>> list(grokapp.keys())
+   []
+

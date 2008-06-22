@@ -1,0 +1,20 @@
+*** XXX: TRANSLATE THIS TO ENGLISH ***
+
+Fazer do doctest principal que vai descrever um caso de uso do começo
+ao fim, o mesmo script que vai criar a app "default" do Flint.
+
+Esta app default teria dois tipos de conteúdo: Story e Event.
+
+A interface pública teria duas Sections, uma para cada um desses tipos
+de conteúdo. A estrutura automática da pasta "calendar", que conteria
+Generated Pages para Events, seria baseada na data de acontecimento do
+evento, e a estrutura automática de Story, seria baseada em alguma
+outra coisa, tipo "assunto", já para exercitar tags.
+
+A página principal teria a Story mais recente, e um calendário no
+portlet direito, com um link para uma listagem por data dos próximos
+eventos.
+
+Pensei também em uma graça para a Story, ela teria paginação
+automática baseada no número de parágrafos, mas com controle de órfãos
+para não ficar uma página com um parágrafo só.

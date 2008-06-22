@@ -1,0 +1,47 @@
+====================
+Essential use cases
+====================
+
+:Test-Layer: functional
+
+-------------------------------
+Administrator sets up blog site
+-------------------------------
+
+The site administrator creates an instance of Flint to be used for simple blogging.
+
+	>>>	
+	
+After creating the instance, Administrator navigates to ++skin++manage to set up a user.
+The blog will have one writer, called "wilma".
+
+	>>>
+	
+Then the Administrator goes to ++skin++publish to set up a single section, configured with a selection rule which picks up any story that is tagged as published.
+
+	>>>
+
+--------------------
+Writer creates story
+--------------------
+
+Writer navigates to ++skin++manage and is redirected to login screen.
+
+	>>> 1 + 1
+	2
+	
+After login, writer sees content management interface and clicks the "Add story" button.
+
+	>>> 1 + 2
+	3
+	
+Writer writes story, saves it and sees it in the listing of recent stories.
+
+	>>>
+	
+Writer tags the story as "published" and clicks the "View" button, which performs a search for stories matching the one just written. In this simple site, the story appears in only one page so the search results view redirects to it.
+
+	>>>
+
+
+
