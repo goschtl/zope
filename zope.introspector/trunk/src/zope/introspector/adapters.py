@@ -25,7 +25,7 @@ class AdapterSearch(grok.Adapter):
 #            return True
         else:
             for each in self.registration.required:
-                if string in getattr(each, '__name__'):
+                if string in getattr(each, '__name__', ''):
                     return True
         return False
     
@@ -61,7 +61,7 @@ class HandlerSearch(grok.Adapter):
 #            return True
         else:
             for each in self.registration.required:
-                if string in getattr(each, '__name__'):
+                if string in getattr(each, '__name__',''):
                     return True
         return False
 
