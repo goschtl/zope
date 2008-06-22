@@ -21,6 +21,7 @@ class IIntrospectorBaseClasses(interface.Interface):
     PackageInfo = interface.Attribute("Information about a package")
     TypeInfo = interface.Attribute("Information about a basic type")
     UtilityInfo = interface.Attribute("Utilities an object can access")
+    RegistryInfo = interface.Attribute("Information about the component registry")
 
 class IIntrospectorAPI(IIntrospectorBaseClasses):
     """The API of zope.introspector.
