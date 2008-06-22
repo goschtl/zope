@@ -20,6 +20,7 @@ setup(name='Flint',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
+						'z3c.testsetup'
                         # Add extra requirements here
                         ],
       entry_points="""
