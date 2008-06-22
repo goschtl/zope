@@ -200,6 +200,12 @@ def createMapper(spec):
             self.uuid = uuid()
             self.spec = self.__spec__
 
+        def __cmp__(self, other):
+            if IMapped.providedBy(other):
+                return cmp(self.id, other.id)
+            else:
+                return -1
+
     # if the specification is an interface class, try to look up a
     # security checker and define it on the mapper
     if interface.interfaces.IInterface.providedBy(spec):
