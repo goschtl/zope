@@ -70,16 +70,7 @@ class ZEOOpener(object):
 
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
 
-    def logApplyStorageCalls(self, fn, *args, **kwargs):
-        l = self._log
-        def loggedMethod(*args, **kwargs):
-            storage_name = str([i.name for i in args[1]])
-            l.append("Calling %s on Storage %s" % (fn.__name__, storage_name))
-            return fn(*args, **kwargs)
-        return loggedMethod
-
     def open(self, **kwargs):
-        gocept.zeoraid.storage.RAIDStorage = self.logApplyStorageCalls(gocept.zeoraid.storage.RAIDStorage)
         self._storage = gocept.zeoraid.storage.RAIDStorage('teststorage',
                                                            self._storages, **kwargs)
 
@@ -88,7 +79,6 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
         self._servers = []
         self._pids = []
         self._storages = []
-        self._log = []
         for i in xrange(5):
             port = get_port()
             zconf = forker.ZEOConfig(('', port))
@@ -1381,19 +1371,9 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
     pass
 
 
-class DistributedCallsTests(ZEOStorageBackendTests):
-    def test_getSize_calls(self):
-        for i in range(20):
-            self._storage.getSize()
-        print
-        print "XXXXXXXXXXXXXX"
-        print self._log
-        print "XXXXXXXXXXXXXX"
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
-    suite.addTest(unittest.makeSuite(DistributedCallsTests))
     return suite
