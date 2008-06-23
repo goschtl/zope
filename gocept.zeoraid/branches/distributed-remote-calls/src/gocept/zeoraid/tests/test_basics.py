@@ -35,6 +35,7 @@ from ZODB.tests import StorageTestBase, BasicStorage, \
 
 import gocept.zeoraid.storage
 import gocept.zeoraid.tests.test_recovery
+from gocept.zeoraid.tests.dumbstorage import DumbStorage
 
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
@@ -1371,9 +1372,47 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
     pass
 
 
+class DumbStorageOpener(object):
+
+    def __init__(self, name, **kwargs):
+        self.name = name
+
+    def open(self, **kwargs):
+        return DumbStorage(self.name)
+
+
+class DumbStorageTestSetup(StorageTestBase.StorageTestBase):
+
+    backend_count = 5
+
+    def _backend(self, index):
+        return self._storage.storages[
+            self._storage.storages_optimal[index]]
+
+    def setUp(self):
+        self._storages = []
+        for i in xrange(self.backend_count):
+            self._storages.append(DumbStorageOpener(str(i)))
+        self._storage = gocept.zeoraid.storage.RAIDStorage(
+            'teststorage', self._storages)
+
+    def tearDown(self):
+        self._storage.close()
+
+
+class DumbStorageDistributedTests(DumbStorageTestSetup):
+    def test_distributed_single_calls(self):
+        for i in xrange(50):
+            self._storage.getSize()
+        # assert that every storage gets called at least one time
+        for x in xrange(5):
+            self.assertEquals(len(self._backend(x)._log) >= 1, True)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
+    suite.addTest(unittest.makeSuite(DumbStorageDistributedTests))
     return suite
