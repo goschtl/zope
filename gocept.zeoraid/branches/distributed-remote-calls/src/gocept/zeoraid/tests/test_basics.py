@@ -1376,9 +1376,10 @@ class LoggingStorageOpener(object):
 
     def __init__(self, name, **kwargs):
         self.name = name
+        self.file_handle, self.file_name = tempfile.mkstemp()
 
     def open(self, **kwargs):
-        return LoggingStorage(self.name)
+        return LoggingStorage(self.name, self.file_name)
 
 
 class LoggingStorageTestSetup(StorageTestBase.StorageTestBase):

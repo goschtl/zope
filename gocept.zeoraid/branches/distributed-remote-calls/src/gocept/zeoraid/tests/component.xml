@@ -22,7 +22,7 @@
         implements="ZODB.storage"
         datatype=".loggingstorage.Opener">
       
-      <key name="name" default="Demo Storage"/>
+      <key name="name" default="Logging Storage"/>
       <section type="ZODB.storage" name="*" attribute="base"/>
 
     </sectiontype>

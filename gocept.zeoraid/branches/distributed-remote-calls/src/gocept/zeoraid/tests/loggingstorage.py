@@ -15,27 +15,27 @@
    to an arbitrary method (getSize()).
 """
 
-import ZODB.DemoStorage
+import tempfile
+
 import ZODB.config
+import ZODB.FileStorage
 
 
 class Opener(ZODB.config.BaseConfig):
 
     def open(self):
         name = self.config.name
-        return LoggingStorage(name)
+        file_handle, file_name = tempfile.mkstemp()
+        return LoggingStorage(name, file_name)
 
 
-class LoggingStorage(ZODB.DemoStorage.DemoStorage):
+class LoggingStorage(ZODB.FileStorage.FileStorage):
 
-    def __init__(self, name=''):
-        ZODB.DemoStorage.DemoStorage.__init__(self)
+    def __init__(self, name='', file_name=''):
+        ZODB.FileStorage.FileStorage.__init__(self, file_name)
         self._name = name
         self._log = []
 
     def getSize(self):
         self._log.append("Storage '%s' called." % self._name)
-        return ZODB.DemoStorage.DemoStorage.getSize(self)
-
-    def supportsUndo(self):
-        return True
+        return ZODB.FileStorage.FileStorage.getSize(self)
