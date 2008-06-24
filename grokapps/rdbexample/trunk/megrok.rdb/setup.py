@@ -24,9 +24,11 @@ setup(name='megrok.rdb',
       zip_safe=True,
       install_requires=[
           'setuptools',
-          'SQLAlchemy',
-          'collective.lead', # needs elro-tcp branch for now
-      ],
+          'grok >= 0.13',
+          'SQLAlchemy == 0.5beta1',
+          'zope.sqlalchemy',
+          'z3c.saconfig',
+         ],
       entry_points="""
       # -*- Entry points: -*-
       """,

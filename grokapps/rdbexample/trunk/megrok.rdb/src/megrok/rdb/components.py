@@ -1,6 +1,4 @@
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import MappedCollection
-from sqlalchemy.schema import MetaData
 
 from zope.interface import implements
 
@@ -8,15 +6,11 @@ from grokcore.component import Context
 from grok.interfaces import IContainer
 
 from megrok.rdb import directive
-
-_lcl_metadata = MetaData()
+from z3c.saconfig import Session
 
 class Model(Context):
-    __metaclass__ = DeclarativeMeta
-    metadata = _lcl_metadata
-    _decl_class_registry = {}
-
     def __init__(self, **kwargs):
+        # XXX can we use the __init__ that sqlalchemy.ext.declarative sets up?
         for k in kwargs:
             if not hasattr(type(self), k):
                 raise TypeError('%r is an invalid keyword argument for %s' %
@@ -28,13 +22,14 @@ def default_keyfunc(node):
     if len(primary_keys) == 1:
         return getattr(node, primary_keys[0])
     else:
-        raise RuntimeError("don't know how to do keying with composite primary keys")
+        raise RuntimeError(
+            "don't know how to do keying with composite primary keys")
 
 class Container(MappedCollection):
     implements(IContainer)
 
     def __init__(self, *args, **kw):
-        rdb_key = directive.key.get(self)
+        rdb_key = directive.key.bind().get(self)
         if rdb_key:
             keyfunc = lambda node:getattr(node, rdb_key)
         elif hasattr(self, 'keyfunc'):

@@ -1,14 +1,31 @@
 import martian
 from martian.error import GrokError
+from sqlalchemy.ext.declarative import instrument_declarative
 
-import megrok.rdb
-from megrok.rdb import directive
+from megrok import rdb
 
+def default_tablename(factory, module, **data):
+    return factory.__name__.lower()
+
+class ModelGrokker(martian.ClassGrokker):
+    martian.component(rdb.Model)
+    martian.directive(rdb.tablename, get_default=default_tablename)
+    martian.directive(rdb.metadata)
+    
+    def execute(self, class_, tablename, metadata, **kw):
+        class_.__tablename__ = tablename
+        # we associate the _decl_registry with the metadata object
+        # to make sure it's unique per metadata. A bit of a hack..
+        if not hasattr(metadata, '_decl_registry'):
+            metadata._decl_registry = {}
+        instrument_declarative(class_, metadata._decl_registry, metadata)
+        return True
+    
 class ContainerGrokker(martian.ClassGrokker):
-    component_class = megrok.rdb.Container
-
+    martian.component(rdb.Container)
+    
     def grok(self, name, factory, module_info, config, **kw):
-        rdb_key = directive.key.get(factory)
+        rdb_key = rdb.key.bind().get(factory)
         if rdb_key and hasattr(factory, 'keyfunc'):
             raise GrokError(
                 "It is not allowed to specify a custom 'keyfunc' method "

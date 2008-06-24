@@ -5,7 +5,6 @@ from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
 from zope.component import getUtility
 from sqlalchemy.types import String, Integer
-from collective.lead.interfaces import IDatabase
 from megrok.rdb import Model
 from zope.schema import Int
 from zope.schema import Text
