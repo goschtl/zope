@@ -6,7 +6,7 @@ from zope.interface import Interface, implements
 from zope.schema import TextLine, Set, Choice, Int, List
 
 from ocql.interfaces import IDB
-from ocql.database import metadata
+from ocql.database.metadata import MClass,Metadata,MetaType
 
 # schema
 class ICourse(Interface):
@@ -36,28 +36,30 @@ class IDepartments(Interface):
         required=True
         )
 
-class MClass(metadata.MetaType):
+#I moved these classes to metadata, is it ok?
+
+#class MClass(metadata.MetaType):
     #interface suspect thing
-    def __init__(self, klass):
-        self.klass = klass
+#    def __init__(self, klass):
+#        self.klass = klass
 
-    def is_collection(self):
-        return True
+    #def is_collection(self):
+     #   return True
 
-    def get_collection_type(self):
-        return set
+#    def get_collection_type(self):
+#        return set
 
-    def get_contained(self):
-        return self.klass
+#    def get_contained(self):
+#        return self.klass
 
-    def __getitem__(self, name):
-        x = self.klass[name]._type
-        try:
-            return x[-1]
-        except TypeError:
-            return x
+#    def __getitem__(self, name):
+#        x = self.klass[name]._type
+#        try:
+#            return x[-1]
+#        except TypeError:
+#            return x
 
-class MType(metadata.MetaType):
+class MType(MetaType):
     def __init__(self, klass, collection_type=None):
         self.klass = klass
         self.collection_type = collection_type
@@ -107,7 +109,7 @@ C3 = Course("C3", runBy = set([D1]), credits=3)
 
 
 # metadata
-class TestMetadata(metadata.Metadata):
+class TestMetadata(Metadata):
     implements(IDB)
     adapts(None)
 

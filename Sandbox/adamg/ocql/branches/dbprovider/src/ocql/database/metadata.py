@@ -8,8 +8,9 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid import IIntIds
 
 from ocql.interfaces import IDB
-from ocql.database.index import IAllIndex
- 
+from ocql.database.index import AllIndex
+#from ocql.testing.database import MClass
+
 class MetaType:
     def get_property(self, name):
         """
@@ -32,39 +33,64 @@ class MetaType:
     def get_size(self):
         """Returns the size of the collection or class if known"""
 
+
+class MClass(MetaType):
+    #interface suspect thing
+    def __init__(self, klass):
+        self.klass = klass
+
+    def is_collection(self):
+        return True
+
+    def get_collection_type(self):
+        return set
+
+    def get_contained(self):
+        return self.klass
+
+    def __getitem__(self, name):
+        x = self.klass[name]._type
+        try:
+            return x[-1]
+        except TypeError:
+            return x
+
+
 class Metadata:
     implements(IDB)
     adapts(None)
     
-    db={}
+    db= {}
+
     classes = {}
     
-    def __init__(self):
-        items = list(searchInterfaceUtilities(self))
+    def __init__(self,context=None):
+        #all the interfaces are retrieved from the catalog
+        #items = list(searchInterfaceUtilities(self))
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
-        #import pydevd;pydevd.settrace()
         for i in catalogs:
-            catalog = getUtility(ICatalog,name=i[0].__str__())
+            catalog = i[1]
             for index in catalog:
-                #is this the correct way to filter?
-                if index.split("_")[0] == 'all':
+                if isinstance(catalog[index], AllIndex):
+                    interface =  catalog[index].interface
                     results = catalog.apply({index:(1,1)})
                     obj_list = []
                     for result in results:
                         obj = intids.getObject(result)
                         obj_list.append(obj)
-                    self.db.__setitem__(index,obj_list)
+                    self.db.__setitem__(interface.__name__,obj_list)
+                    self.classes.__setitem__(interface.__name__,MClass(interface))
         
-        #seems the db is correct
-        print self.db
+        #seems db and classes are correctly filled
+        #print self.db
+        #print self.classes
         
-        #still this need to be corrected. I was unable to get index.interface property
-        for item in items:
-            class_name = item[0].rsplit('.',1)[1].__str__()
-            self.classes.__setitem__(class_name,class_name)
-        print self.classes
-           
 
+    def getAll(self, klass):
+        return self.db[klass]
+    
     def get_class(self, classname):
         """Returns a MetaType instance for the class."""
+        return self.classes[classname]
+    

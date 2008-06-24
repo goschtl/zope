@@ -18,6 +18,9 @@ from ocql.rewriter.rewriter import Rewriter
 from ocql.testing.utils import setupInterfaces, setupCatalog
 from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
+#REMOVE THIS LATER
+from ocql.testing.sample.interfaces import IOrganization, IStudent, IMentor, IProject
+
 
 
 db = {}
@@ -65,15 +68,30 @@ class testZope(unittest.TestCase):
 
        
     def test_gsoc(self):
-        metadata = Metadata()
+        metadata = IDB(None)
         symbols = SymbolContainer()
 
-        print "retrieve gsoc objects"
-        import pydevd;pydevd.settrace()
-        student_list = metadata.db['all_students'] 
-        a = set(student_list)
+        #
+        # Simple empty query
+        #
+        # set [ ]
+        #
+        query = "set [ ]"
+        qo=Query(metadata, symbols,
+                 set,
+                 [] ,
+                 Identifier(metadata, symbols,
+                            '') )
+
+        self.doit(query, qo, set([]))
         
-        print "only a single query for testing"           
+        
+        symbols = SymbolContainer()
+        #
+        # Simple SELECT ALL
+        #
+        # set [ c in ICourse | c ]
+        #           
         query = "[c in IStudent | c]"
         qo = Query(
                 metadata, symbols,
@@ -85,8 +103,7 @@ class testZope(unittest.TestCase):
                        Identifier(metadata,symbols,'IStudent'))
                 ], Identifier(metadata,symbols,'c'))
         
-        #is not sure how to get s1, s2 and s3 here
-        self.doit(query, qo, set(student_list))
+        self.doit(query, qo, set(metadata.db['IStudent']))
         
         
         
