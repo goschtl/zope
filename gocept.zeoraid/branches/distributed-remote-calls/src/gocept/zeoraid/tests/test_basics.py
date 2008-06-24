@@ -1384,7 +1384,7 @@ class LoggingStorageOpener(object):
 
 class LoggingStorageTestSetup(StorageTestBase.StorageTestBase):
 
-    backend_count = 5
+    backend_count = 10
 
     def _backend(self, index):
         return self._storage.storages[
@@ -1404,11 +1404,15 @@ class LoggingStorageTestSetup(StorageTestBase.StorageTestBase):
 class LoggingStorageDistributedTests(LoggingStorageTestSetup):
 
     def test_distributed_single_calls(self):
-        for i in xrange(50):
+        for i in xrange(6):
             self._storage.getSize()
-        # assert that every storage gets called at least one time
-        for x in xrange(self.backend_count):
-            self.assertEquals(len(self._backend(x)._log) >= 1, True)
+
+        # assert that at least two storages gets called at least one time
+        storages_called = [x for x in xrange(self.backend_count) if len(self._backend(x)._log) >= 1]
+        self.assertEquals(storages_called >= 2, True)
+
+        # assert that six calls were made
+        self.assertEquals(6, sum([len(self._backend(x)._log) for x in xrange(self.backend_count)]))
 
 
 def test_suite():
