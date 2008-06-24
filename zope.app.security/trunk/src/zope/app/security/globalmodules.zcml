@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <!-- 4. String Services -->
 
@@ -223,7 +225,11 @@
                        error_proto" />
   </module>
 
-  <module module="gopherlib">
+  <!-- This package has been deprecated in Python 2.5; let's use a cheap way
+       of detecting Python 2.5 by checking whether the package "regex" exists,
+       which has been deleted in that version. -->
+  <module module="gopherlib"
+          zcml:condition="installed regex">
     <allow attributes="send_selection send_query" />
   </module>
 
