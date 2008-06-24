@@ -18,9 +18,9 @@
     </sectiontype>
 
     <sectiontype 
-        name="dumbstorage" 
+        name="loggingstorage" 
         implements="ZODB.storage"
-        datatype=".dumbstorage.Opener">
+        datatype=".loggingstorage.Opener">
       
       <key name="name" default="Demo Storage"/>
       <section type="ZODB.storage" name="*" attribute="base"/>

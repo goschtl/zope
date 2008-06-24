@@ -35,7 +35,7 @@ from ZODB.tests import StorageTestBase, BasicStorage, \
 
 import gocept.zeoraid.storage
 import gocept.zeoraid.tests.test_recovery
-from gocept.zeoraid.tests.dumbstorage import DumbStorage
+from gocept.zeoraid.tests.loggingstorage import LoggingStorage
 
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
@@ -1372,16 +1372,16 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
     pass
 
 
-class DumbStorageOpener(object):
+class LoggingStorageOpener(object):
 
     def __init__(self, name, **kwargs):
         self.name = name
 
     def open(self, **kwargs):
-        return DumbStorage(self.name)
+        return LoggingStorage(self.name)
 
 
-class DumbStorageTestSetup(StorageTestBase.StorageTestBase):
+class LoggingStorageTestSetup(StorageTestBase.StorageTestBase):
 
     backend_count = 5
 
@@ -1392,7 +1392,7 @@ class DumbStorageTestSetup(StorageTestBase.StorageTestBase):
     def setUp(self):
         self._storages = []
         for i in xrange(self.backend_count):
-            self._storages.append(DumbStorageOpener(str(i)))
+            self._storages.append(LoggingStorageOpener(str(i)))
         self._storage = gocept.zeoraid.storage.RAIDStorage(
             'teststorage', self._storages)
 
@@ -1400,12 +1400,13 @@ class DumbStorageTestSetup(StorageTestBase.StorageTestBase):
         self._storage.close()
 
 
-class DumbStorageDistributedTests(DumbStorageTestSetup):
+class LoggingStorageDistributedTests(LoggingStorageTestSetup):
+
     def test_distributed_single_calls(self):
         for i in xrange(50):
             self._storage.getSize()
         # assert that every storage gets called at least one time
-        for x in xrange(5):
+        for x in xrange(self.backend_count):
             self.assertEquals(len(self._backend(x)._log) >= 1, True)
 
 
@@ -1414,5 +1415,5 @@ def test_suite():
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
-    suite.addTest(unittest.makeSuite(DumbStorageDistributedTests))
+    suite.addTest(unittest.makeSuite(LoggingStorageDistributedTests))
     return suite

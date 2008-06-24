@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit test support."""
+"""LoggingStorage is a storage used for testing purposes that logs calls made
+   to an arbitrary method (getSize()).
+"""
 
 import ZODB.DemoStorage
 import ZODB.config
@@ -21,10 +23,10 @@ class Opener(ZODB.config.BaseConfig):
 
     def open(self):
         name = self.config.name
-        return DumbStorage(name)
+        return LoggingStorage(name)
 
 
-class DumbStorage(ZODB.DemoStorage.DemoStorage):
+class LoggingStorage(ZODB.DemoStorage.DemoStorage):
 
     def __init__(self, name=''):
         ZODB.DemoStorage.DemoStorage.__init__(self)
@@ -33,7 +35,7 @@ class DumbStorage(ZODB.DemoStorage.DemoStorage):
 
     def getSize(self):
         self._log.append("Storage '%s' called." % self._name)
-        ZODB.DemoStorage.DemoStorage.getSize(self)
+        return ZODB.DemoStorage.DemoStorage.getSize(self)
 
     def supportsUndo(self):
         return True
