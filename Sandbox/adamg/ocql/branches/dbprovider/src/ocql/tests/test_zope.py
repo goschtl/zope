@@ -18,9 +18,6 @@ from ocql.rewriter.rewriter import Rewriter
 from ocql.testing.utils import setupInterfaces, setupCatalog
 from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
-#REMOVE THIS LATER
-from ocql.testing.sample.interfaces import IOrganization, IStudent, IMentor, IProject
-
 
 
 db = {}
@@ -90,7 +87,7 @@ class testZope(unittest.TestCase):
         #
         # Simple SELECT ALL
         #
-        # set [ c in ICourse | c ]
+        # set [ c in IStudent | c ]
         #           
         query = "[c in IStudent | c]"
         qo = Query(
@@ -105,6 +102,48 @@ class testZope(unittest.TestCase):
         
         self.doit(query, qo, set(metadata.db['IStudent']))
         
+        
+        symbols = SymbolContainer()
+        #
+        # Selecting a property
+        #
+        # set [ c in IStudent | c.name ]
+        #
+        query = "[c in IStudent | c.name]"
+        qo = Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata, symbols,'c'),
+                           Identifier(metadata, symbols, 'IStudent'))
+                    ],Identifier(metadata, symbols, 'c.name'))
+        self.doit(query, qo, set(["Charith", "Jane", "Ann"]))                   
+        
+        
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result
+        #
+        # set [ c in IProject , c.description="test" | c.name]
+        #
+        query = "[c in IProject , c.description=test | c.name]"
+        qo = Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IProject')),
+                        Eq(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.description'),
+                           Identifier(metadata, symbols, '"test"'))
+                   ], Identifier(metadata, symbols, 'c.name'))
+                   
+        self.doit(query, qo, set(["Save the world"]))
         
         
 def test_suite():

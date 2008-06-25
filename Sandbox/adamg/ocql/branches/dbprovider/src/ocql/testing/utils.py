@@ -62,7 +62,7 @@ def setupCatalog(test):
 
     p1 = Project()
     p1.name = u"Save the world"
-    p1.description = u""
+    p1.description = u"test"
     id = intids.register(p1)
     cat.index_doc(id, p1)
 

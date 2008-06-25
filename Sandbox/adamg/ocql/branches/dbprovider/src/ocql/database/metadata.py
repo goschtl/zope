@@ -69,11 +69,10 @@ class Metadata:
         #items = list(searchInterfaceUtilities(self))
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
-        for i in catalogs:
-            catalog = i[1]
+        for name, catalog in catalogs:
             for index in catalog:
-                if isinstance(catalog[index], AllIndex):
-                    interface =  catalog[index].interface
+                if isinstance(catalog[index], AllIndex):                    
+                    interface = catalog[index].interface
                     results = catalog.apply({index:(1,1)})
                     obj_list = []
                     for result in results:
@@ -81,10 +80,6 @@ class Metadata:
                         obj_list.append(obj)
                     self.db.__setitem__(interface.__name__,obj_list)
                     self.classes.__setitem__(interface.__name__,MClass(interface))
-        
-        #seems db and classes are correctly filled
-        #print self.db
-        #print self.classes
         
 
     def getAll(self, klass):
