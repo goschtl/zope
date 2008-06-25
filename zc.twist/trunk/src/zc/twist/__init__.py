@@ -10,6 +10,7 @@ import persistent.interfaces
 
 import twisted.internet.defer
 import twisted.internet.reactor
+import twisted.python.failure
 
 import zope.component
 import zope.interface
