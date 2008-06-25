@@ -7,10 +7,11 @@
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
 
+  <include files="zopeskel/etc/package-includes/*-meta.zcml" />
+
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.zcmlfiles" file="ftesting.zcml" />
 
-  <include files="zopeskel/etc/package-includes/*-meta.zcml" />
   <include files="zopeskel/etc/package-includes/*-configure.zcml" />
   <include files="zopeskel/etc/package-includes/*-ftesting.zcml" />
 
