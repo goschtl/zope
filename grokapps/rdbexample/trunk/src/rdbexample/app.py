@@ -1,19 +1,25 @@
 import grok
 from megrok import rdb
 
-from zope.interface.interfaces import IInterface
-
-
-
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
 
+from zope.app.publication.interfaces import IBeforeTraverseEvent
+from zope import component
 
-class Database(rdb.Database):
+from z3c.saconfig import EngineFactory, GloballyScopedSession
+from z3c.saconfig.interfaces import IEngineFactory
 
-    url = 'postgres:///rdbexample'
+TEST_DSN = 'sqlite:///:memory:'
+  
+engine_factory = EngineFactory(TEST_DSN)
+scoped_session = GloballyScopedSession()
 
+grok.global_utility(engine_factory, direct=True)
+grok.global_utility(scoped_session, direct=True)
+
+metadata = rdb.MetaData()
 
 class RDBExample(grok.Application, grok.Model):
     def traverse(self, name):
@@ -21,7 +27,16 @@ class RDBExample(grok.Application, grok.Model):
             key = int(name)
         except ValueError:
             return None
-        return rdb.query(Faculty).get(key)
+        session = rdb.Session()
+        return session.query(Faculty).get(key)
+
+@grok.subscribe(RDBExample, IBeforeTraverseEvent)
+def setUpDatabase(obj, event):
+    # XXX
+    # hack: set up database if it hasn't been set up before 
+    engine_factory = component.getUtility(IEngineFactory)
+    engine = engine_factory()
+    metadata.create_all(engine)
 
 class FacultyList(grok.View):
     grok.name('index')
@@ -29,21 +44,20 @@ class FacultyList(grok.View):
 
     def render(self):
         result = ""
-        for faculty in rdb.query(Faculty).all():
+        session = rdb.Session()
+        for faculty in session.query(Faculty).all():
             result += "%s - %s (%s)" % (faculty.id, faculty.title,
                                         self.url(str(faculty.id)))
         return result
-
 
 class Departments(rdb.Container):
     rdb.key('title')
 
 class Faculty(rdb.Model):
-    # rdb.table_name('faculty') is the default
-    __tablename__ = 'faculty'
-
     grok.traversable('departments')
 
+    rdb.metadata(metadata)
+    
     id = Column('id', Integer, primary_key=True)
     title = Column('title', String(50))
 
@@ -52,8 +66,8 @@ class Faculty(rdb.Model):
                            collection_class=Departments)
 
 class Department(rdb.Model):
-    __tablename__ = 'department'
-
+    rdb.metadata(metadata)
+    
     id = Column('id', Integer, primary_key=True)
     faculty_id = Column('faculty_id', Integer, ForeignKey('faculty.id'))
     title = Column('title', String(50))
@@ -67,9 +81,10 @@ class AddDepartment(grok.AddForm):
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
-        d = Department(**kw)
-        self.context.set(d)
-
+        department = Department(**kw)
+        session = rdb.Session()
+        session.add(department)
+        self.context.set(department)
 
 class DepartmentView(grok.View):
     grok.name('index')
@@ -107,6 +122,6 @@ class AddFaculty(grok.AddForm):
 
     @grok.action('add')
     def handle_add(self, *args, **kw):
-        f = Faculty(**kw)
-        rdb.session().save(f)
-        #import pdb; pdb.set_trace()
+        faculty = Faculty(**kw)
+        session = rdb.Session()
+        session.add(faculty)

@@ -19,9 +19,8 @@ setup(name='rdbexample',
       include_package_data=True,
       zip_safe=False,
       install_requires=['setuptools',
-                        'grok',
+                        'grok == 0.13',
                         'megrok.rdb',
-                        'psycopg2',
                         ],
       entry_points="""
       # Add entry points here
