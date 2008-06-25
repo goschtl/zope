@@ -16,16 +16,6 @@ import types
 BASIC_TYPES = (int, float, str, unicode, tuple, list, set, dict)
 
 IMMUTABLE_TYPES = (int, float, str, unicode, tuple)
-
-FACTORY_TYPE_MAP = {
-    types.IntType: interfaces.IIntegerBasicType,
-    types.FloatType: interfaces.IFloatBasicType,
-    types.UnicodeType: interfaces.IUnicodeBasicType,
-    types.StringType: interfaces.IStringBasicType,
-    types.TupleType: interfaces.ITupleBasicType,
-    types.ListType: interfaces.IListBasicType,
-    type(set()): interfaces.ISetBasicType,
-    types.DictType: interfaces.IDictBasicType}
     
 def lookup(uuid, ignore_pending=False):
     session = Session()
@@ -53,13 +43,11 @@ def build(spec, uuid):
     return session.query(mapper).filter_by(uuid=uuid)[0]
 
 def persist(item):
-    kls = FACTORY_TYPE_MAP.get(type(item))
-    
-    if kls is not None:
-        instance = factory.create(kls)
+    instance = interfaces.IMapped(item)
+
+    if interfaces.IBasicType.providedBy(instance):
         instance.value = item
     else:
-        instance = factory.create(item.__class__)
         update(instance, item)
 
     # set soup identifier on instances

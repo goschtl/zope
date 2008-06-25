@@ -16,11 +16,6 @@ class specification (class or interface):
 Interface specification
 -----------------------
 
-An mapper adapter is provided.
-
-   >>> from z3c.dobbin.mapper import getMapper
-   >>> component.provideAdapter(getMapper)
-
 We begin with a database session.
 
     >>> import ore.alchemist
@@ -186,6 +181,7 @@ Let's see how fast this record should be played back.
 
 Instances of mappers automatically join the object soup.
 
+    >>> from z3c.dobbin.mapper import getMapper
     >>> mapper = getMapper(Vinyl)
     >>> instance = mapper()
     >>> instance.uuid is not None

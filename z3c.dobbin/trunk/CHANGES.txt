@@ -1,8 +1,14 @@
 Change log
 ==========
 
-0.3 dev
--------
+0.3.1 dev
+---------
+
+- Basic type factories are now registered as components.
+  [malthe]
+
+0.3.0
+-----
 
 - Implemented rest of list methods.
   [malthe]

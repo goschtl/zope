@@ -10,7 +10,7 @@ class IMapper(interface.Interface):
 
 class IBasicType(interface.Interface):
     """A basic Python value type."""
-    
+
 class IIntegerBasicType(IBasicType):
     value = schema.Int()
 

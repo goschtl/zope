@@ -2,4 +2,16 @@
 
   <adapter factory=".mapper.getMapper" />
 
+  <!-- Basic type factories providing ``IMapped`` -->
+
+  <adapter factory=".factory.createInstanceFromItem" />
+  <adapter factory=".factory.createIntegerBasicType" />
+  <adapter factory=".factory.createFloatBasicType" />
+  <adapter factory=".factory.createUnicodeBasicType" />
+  <adapter factory=".factory.createStringBasicType" />
+  <adapter factory=".factory.createTupleBasicType" />
+  <adapter factory=".factory.createListBasicType" />
+  <adapter factory=".factory.createDictBasicType" />
+  <adapter factory=".factory.createSetBasicType" />
+  
 </configure>
