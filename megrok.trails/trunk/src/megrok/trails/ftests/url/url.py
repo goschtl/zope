@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,8 +20,9 @@ that the objects you are wrapping can be assigned useful URLs.
   >>> from zope.app.component.hooks import setSite
   >>> setSite(app)
 
-This should not be necessary, but at the moment is, possibly because
-the test suite groks things different than a production instance:
+The line that follows should not be necessary, but at the moment is,
+possibly because the test suite groks things different than a production
+instance:
 
   >>> Trail('/mammoth/:name', IMammoth) and None
 
@@ -68,5 +69,4 @@ class AppIndex(grok.View):
     grok.context(App)
     grok.name('index')
     def render(self):
-        print>>open('/tmp/foof','w'), 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', type(self.request)
         return 'The URL of the mammoth is %s.' % self.url(Mammoth('Knuth'))

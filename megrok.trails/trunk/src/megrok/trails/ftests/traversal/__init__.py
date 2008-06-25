@@ -1,1 +1,1 @@
-# this is a package
+"""Traversal functional tests for megrok.trails."""

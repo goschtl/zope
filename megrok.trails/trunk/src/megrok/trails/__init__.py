@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,4 +12,11 @@
 #
 ##############################################################################
 
+"""megrok.trails - automatic URL traversal for Grok
+
+The TrailHead and Trail components provided in this module allow a
+developer to write recipes, called 'trails', for the kinds of URLs which
+he wants his web application to accept.  See README.txt for more details.
+
+"""
 from megrok.trails.components import TrailHead, Trail

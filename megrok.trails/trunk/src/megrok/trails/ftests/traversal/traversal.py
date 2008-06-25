@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -60,8 +60,3 @@ class AppTrailHead(TrailHead):
     trails = [
         Trail('/mammoth/:name', Mammoth),
         ]
-    #def __init__(self, *args):
-    #    self.trails = [
-    #        Trail('/mammoth/:name', Mammoth),
-    #        ]
-    #    TrailHead.__init__(self, *args)
