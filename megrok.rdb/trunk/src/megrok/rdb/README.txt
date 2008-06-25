@@ -160,17 +160,6 @@ a connection to the database.
   
   >>> session = rdb.Session()
 
-To make the next bit work with doctests, we need an utter hack::
-
-  >>> Courses.__module__ = 'foo' 
-
-This is only because ``Courses`` is defined in a doctest. Because of
-this, the ``__module__`` attribute of of ``Courses`` will be set to
-``__builtin__``, and SQLAlchemy then concludes that ``Courses`` is
-really a builtin Python object and refuses to instrument it
-propertly. By changing ``__module__`` to something else, we avoid this
-problem.
-
 Let's now create a database structure. We have a department of philosophy::
 
   >>> philosophy = Department(name="Philosophy")
