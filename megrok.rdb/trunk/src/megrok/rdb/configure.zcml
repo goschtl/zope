@@ -2,5 +2,5 @@
            xmlns:grok="http://namespaces.zope.org/grok">
   <include package="grok" />
   <includeDependencies package="." />
-  <grok:grok package="." />
+  <grok:grok package="megrok.rdb.schema" />
 </configure>
