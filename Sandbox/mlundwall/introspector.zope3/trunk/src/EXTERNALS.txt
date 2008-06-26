@@ -1,1 +1,1 @@
-zope.introspector svn+ssh://mlundwall@svn.zope.org/repos/main/Sandbox/mlundwall/zope.introspector/trunk
+zope.introspector svn+ssh://mlundwall@svn.zope.org/repos/main/zope.introspector/trunk
