@@ -96,7 +96,7 @@ class Lexer(object):
 
     # Tokens
     def t_TYPE(self, t):
-        r'(set|bag|map)'
+        r'(set|bag|map|list)'
         return t
 
     def t_UNION(self, t):
@@ -246,6 +246,13 @@ class Parser(object):
         t[0] = Differ(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
+    def p_expr_equery(self, t):
+        r'''expr : TYPE SQUAREL xprs SQUARER
+            nexpr : TYPE SQUAREL xprs SQUARER
+        '''
+        #I also change the expected query in parser.txt
+        t[0] = Query(self.metadata, self.symbols, self.types[t[1]],t[3],None)
+        
     def p_expr_query(self, t):
         r'''expr : TYPE SQUAREL xprs PIPE expr SQUARER
             nexpr : TYPE SQUAREL xprs PIPE expr SQUARER
@@ -322,7 +329,7 @@ class Parser(object):
             nexpr : IDENTIFIER BRACEL exprs BRACER
         '''
         raise NotImplementedError("Function call")
-
+    
     def p_expr_const(self, t):
         r'''expr : CONSTANT
             nexpr : CONSTANT
