@@ -1,0 +1,15 @@
+Buildout needs Python 2.4.4 and Zope needs a C-compiler
+
+On Debian/Ubuntu, install: python2.4 python2.4-dev build-essential
+
+Locate the system python and run "easy_install virtualenv"
+
+Run "virtualenv python" in your buildout directory. You can change the name python to anything suitable. This will create a python executable + all libs.
+
+Run bootstrap and buildout with the new python:
+./python/bin/python2.4 bootstrap.py (Python might be called something else)
+./bin/buildout (Fetches all the packages)
+./bin/instance fg (Starts the server in debug-mode/foreground)
+
+Play ball!
+/Robin
