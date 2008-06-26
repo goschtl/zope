@@ -193,6 +193,11 @@ def createSubscriptionsForWidget(event):
     # We only have work to do, if there are JS Handlers in the form.
     if not hasattr(widget.form, 'jshandlers'):
         return
+    # Only handle this event if we haven't already done so.
+    if getattr(widget, '__z3c_formjs_subscriptions_created__', None) is True:
+        return
+    widget.__z3c_formjs_subscriptions_created__ = True
+
     # Step 1: Get the handler.
     handlers = widget.form.jshandlers.getHandlers(widget.field)
     # Step 2: Create a selector.

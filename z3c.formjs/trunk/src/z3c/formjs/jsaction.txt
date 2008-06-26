@@ -743,10 +743,21 @@ subscription attached to the form:
 
   >>> interfaces.IHaveJSSubscriptions.providedBy(form)
   True
+  >>> len(list(form.jsSubscriptions))
+  1
   >>> list(form.jsSubscriptions)
   [<JSSubscription
        event=<JSEvent "click">, selector=<WidgetSelector "hello">,
        handler=<JSHandler <function showHelloWorldMessage at ...>>>]
+
+In the event that the widget is updated multiple times, and the
+subscriber gets called multiple times, duplicate subscriptions will
+not be created.
+
+  >>> jsaction.createSubscriptionsForWidget(
+  ...     widget.AfterWidgetUpdateEvent(helloWidget))
+  >>> len(list(form.jsSubscriptions))
+  1
 
 Finally, if the form does not have any Javascript handlers, in other words, it
 does not have a ``jsHandlers`` attribute, then the subscriber also aborts:
