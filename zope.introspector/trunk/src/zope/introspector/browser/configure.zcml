@@ -6,7 +6,7 @@
  	for="*"
  	name="registry.html"
  	template="introspectorview.pt"
- 	permission="zope.app.apidoc.UseAPIDoc"
+ 	permission="zope.introspector.Introspect"
  	class=".introspector.Introspector"
  	menu="zmi_views" title="Registry Introspector"
  	/>
@@ -15,7 +15,7 @@
  	for="*"
  	name="registry_browser.html"
  	template="introspectorbrowse_view.pt"
- 	permission="zope.app.apidoc.UseAPIDoc"
+ 	permission="zope.introspector.Introspect"
  	class=".introspector.Introspector"
  	/>
  	
@@ -23,7 +23,7 @@
  	for="zope.component.interfaces.IAdapterRegistration"
  	name="registration.html"
  	template="adapter.pt"
- 	permission="zope.app.apidoc.UseAPIDoc"
+ 	permission="zope.introspector.Introspect"
  	class=".introspector.RegistrationView"
  	/>
 
@@ -31,7 +31,7 @@
  	for="zope.component.interfaces.IHandlerRegistration"
  	name="registration.html"
  	template="handler.pt"
- 	permission="zope.app.apidoc.UseAPIDoc"
+ 	permission="zope.introspector.Introspect"
  	class=".introspector.RegistrationView"
  	/>
 
@@ -39,7 +39,7 @@
  	for="zope.component.interfaces.IUtilityRegistration"
  	name="registration.html"
  	template="utils.pt"
- 	permission="zope.app.apidoc.UseAPIDoc"
+ 	permission="zope.introspector.Introspect"
  	class=".introspector.RegistrationView"
  	/>
  	
