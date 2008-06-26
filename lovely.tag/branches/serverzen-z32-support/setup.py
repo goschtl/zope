@@ -45,7 +45,7 @@ setup (
                 'z3c.sampledata']
         ),
     #install_requires = DEPS,
-    install_requires = [],
+    install_requires = ['setuptools'],
     dependency_links = ['http://download.zope.org/distribution']
     )
 
