@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 
@@ -29,3 +29,5 @@ class IEncryption(zope.interface.Interface):
     def decrypt(data):
         """Returns the decrypted data"""
 
+class IEncryptedPersistent(zope.interface.Interface):
+    """ """
