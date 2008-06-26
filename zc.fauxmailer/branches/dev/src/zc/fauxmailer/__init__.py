@@ -26,12 +26,14 @@ class Mailer:
 
     def send(self, fromaddr, toaddrs, message_string):
         message = email.message_from_string(message_string)
-        print >> sys.stderr, 'From', fromaddr
-        print >> sys.stderr,  'To', toaddrs
-        print >> sys.stderr,  '-'*70
+        print  '='*70
+        print 'From', fromaddr
+        print  'To', toaddrs
+        print  '-'*70
         for h in message.keys():
             for v in message.get_all(h):
-                print >> sys.stderr,  "%s: %s" % (h, v)
+                print  "%s: %s" % (h, v)
             
-        print >> sys.stderr,  message.get_payload(decode=True)
-        print >> sys.stderr,  '-'*70
+        print  message.get_payload(decode=True)
+        print  '='*70
+        sys.stdout.flush()
