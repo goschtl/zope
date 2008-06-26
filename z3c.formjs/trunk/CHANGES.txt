@@ -5,6 +5,9 @@ CHANGES
 Version 0.3.1 (unreleased)
 --------------------------
 
+- Bug: Widgets that were being updated multiple times were generating
+  duplicate javascript event subscriptions. This is now fixed.
+
 - Feature: There is now a special unique prefix generator that uses
   z3c.form's new createCSSId function to generate css selectable
   prefixes for ajax forms.
