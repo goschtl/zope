@@ -1,27 +1,22 @@
-Developer walk-through
-======================
+Walk-through of the framework
+=============================
 
 This section demonstrates the main functionality of the package using
-the doctest format.
+the doctest format. 
 
-Mapping
--------
-
-Dobbin creates SQLAlchemy ORM mappers from Python classes based on
-class specification (class or interface):
-
-  * Columns are infered from interface schema fields and attributes
-  * Specification is kept as dotted name in a special column
-
-Interface specification
------------------------
-
-We begin with a database session.
+We begin with a new database session.
 
     >>> import ore.alchemist
     >>> session = ore.alchemist.Session()
 
-Define a schema interface:
+Mappers from interface specification
+------------------------------------
+
+We'll start out creating mappers directly from an interface
+specification. The instances will only afford access to the declared
+attributes and have no methods.
+
+We start out with an interface decribing a recorded album.
 
     >>> class IAlbum(interface.Interface):
     ...     artist = schema.TextLine(
@@ -32,8 +27,9 @@ Define a schema interface:
     ...         title=u"Title",
     ...         default=u"")
 
-We can then fabricate an instance that implements this interface by
-using the ``create`` method.
+We can now fabricate instances that implement this interface by using
+the ``create`` method. This is a shorthand for setting up the mapper
+and creating an instance using its factory.
 
     >>> from z3c.dobbin.factory import create
     >>> album = create(IAlbum)
