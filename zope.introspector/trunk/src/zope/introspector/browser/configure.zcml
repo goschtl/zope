@@ -54,11 +54,11 @@
  	/> 
 
  <browser:resource
- 	name="minus.gif"
+ 	name="mi.gif"
  	file="minus.gif"
  	/> 
  <browser:resource
- 	name="plus.gif"
+ 	name="pl.gif"
  	file="plus.gif"
  	/>  	
 </configure>
