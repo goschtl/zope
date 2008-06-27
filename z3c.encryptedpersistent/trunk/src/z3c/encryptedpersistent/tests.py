@@ -17,7 +17,7 @@ def setUp(test):
     setup.setUpTestAsModule(test, 'README')
 
 def tearDown(test):
-    tearDownTestAsModule(test)
+    setup.tearDownTestAsModule(test)
     placelesssetup.tearDown(test)
 
 def test_suite():

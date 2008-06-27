@@ -7,17 +7,17 @@
 $Id$
 """
 import zope.interface
-
-import interfaces
-
+from z3c.encryptedpersistent import interfaces
 
 class DemoEncrypter(object):
     zope.interface.implements(interfaces.IEncryption)
 
     _EncryptionString = "ENCRYPTED_"
 
-    def encrypt(self, data):
-        return self._EncryptionString + data
+    def encrypt(self, key, data):
+        """See interfaces.IEncryption"""
+        return self._EncryptionString + str(key) + data
 
-    def decrypt(self, data):
-        return data.lstrip(self._EncryptionString)
+    def decrypt(self, key, data):
+        """See interfaces.IEncryption"""
+        return data.lstrip(self._EncryptionString + str(key))

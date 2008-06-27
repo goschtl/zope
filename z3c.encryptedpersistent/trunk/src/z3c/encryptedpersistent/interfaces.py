@@ -15,19 +15,26 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-
 import zope.interface
 import zope.schema
-
 
 class IEncryption(zope.interface.Interface):
     """Utility providing encryption mechanism"""
 
-    def encrypt(data):
+    def encrypt(key, data):
         """Returns the encrypted data"""
 
-    def decrypt(data):
+    def decrypt(key, data):
         """Returns the decrypted data"""
 
 class IEncryptedPersistent(zope.interface.Interface):
-    """ """
+    """A persistent object that encrypts its state for storage."""
+
+    __key__ = zope.schema.Field(
+        title=u'Encryption Key',
+        description=(u'Encryption key/state/hint that can be used to aid '
+                     u'the encruption and decryption process. This attribute '
+                     u'can be any data structure that is necessary to '
+                     u'complete the task.'),
+        default=None,
+        required=False)

@@ -36,12 +36,14 @@ class EncryptedPersistent(persistent.Persistent):
         # 3. Convert the state to a string.
         stateStr = cPickle.dumps(state)
         # 4. Encrypt the state string and return it as the state.
-        return encryption.encrypt(stateStr)
+        return self.__key__, encryption.encrypt(self.__key__, stateStr)
 
     def __setstate__(self, encryptedState):
+        # 1. Extract the key from the state first
+        key, encryptedState = encryptedState
         # 2. Decrypt the state string.
         encryption = zope.component.getUtility(interfaces.IEncryption)
-        stateStr = encryption.decrypt(encryptedState)
+        stateStr = encryption.decrypt(key, encryptedState)
         # 3. Convert the state string to the state
         state = cPickle.loads(stateStr)
         # 4. Set the state of the object using the Persistent implementation.
