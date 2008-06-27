@@ -8,8 +8,8 @@
  	template="introspectorview.pt"
  	permission="zope.introspector.Introspect"
  	class=".introspector.Introspector"
- 	menu="zmi_views" title="Registry Introspector"
  	/>
+<!-- 	menu="zmi_views" title="Registry Introspector"-->
 
  <browser:page
  	for="*"
@@ -23,7 +23,7 @@
  	for="zope.component.interfaces.IAdapterRegistration"
  	name="registration.html"
  	template="adapter.pt"
- 	permission="zope.introspector.Introspect"
+ 	permission="zope.Public"
  	class=".introspector.RegistrationView"
  	/>
 
@@ -31,7 +31,7 @@
  	for="zope.component.interfaces.IHandlerRegistration"
  	name="registration.html"
  	template="handler.pt"
- 	permission="zope.introspector.Introspect"
+ 	permission="zope.Public"
  	class=".introspector.RegistrationView"
  	/>
 
@@ -39,7 +39,7 @@
  	for="zope.component.interfaces.IUtilityRegistration"
  	name="registration.html"
  	template="utils.pt"
- 	permission="zope.introspector.Introspect"
+ 	permission="zope.Public"
  	class=".introspector.RegistrationView"
  	/>
  	
@@ -53,5 +53,12 @@
  	file="mktree.css"
  	/> 
 
- 	
+ <browser:resource
+ 	name="minus.gif"
+ 	file="minus.gif"
+ 	/> 
+ <browser:resource
+ 	name="plus.gif"
+ 	file="plus.gif"
+ 	/>  	
 </configure>
