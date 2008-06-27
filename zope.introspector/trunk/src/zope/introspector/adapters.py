@@ -3,7 +3,8 @@ from zope.component import adapts
 from zope.introspector.interfaces import IRegistrySearch
 from zope.component.interfaces import (IAdapterRegistration,
                                        IHandlerRegistration,
-                                       IUtilityRegistration)
+                                       IUtilityRegistration,
+                                       ISubscriptionAdapterRegistration)
 import grokcore.component as grok
 
 class AdapterSearch(grok.Adapter):
@@ -42,7 +43,10 @@ class AdapterSearch(grok.Adapter):
     
     def getObject(self):
         return self.registration
-    
+
+class SubscriptionSearch(AdapterSearch):
+    grok.implements(IRegistrySearch)
+    grok.context(ISubscriptionAdapterRegistration)
         
 class HandlerSearch(grok.Adapter):
     grok.implements(IRegistrySearch)
