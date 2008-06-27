@@ -1,7 +1,8 @@
+---------------------
 Encrypted Persistence
 ---------------------
 
-This package also provides integration with persistent objects. Ususally,
+This package provides integration with persistent objects. Ususally,
 objects are stored in the ZODB in plain text. The ``EncryptedPersistent`` base
 class ensures that all data of the class is encrypted before being stored.
 
@@ -12,18 +13,29 @@ class ensures that all data of the class is encrypted before being stored.
   >>> myObj = MyObject()
   >>> myObj.name = u'Stephan Richter'
 
+Setup
+-----
+
+We need a utility that provides IEncryption for use with the 
+EncryptedPersistent object. We have defined a very simple demonstration
+class that simply adds an "encryption string" to the data in order to indicate
+that it has encrypted it, and removes that string to decrypt the data:
+
+    >>> from zope.app.testing import ztapi
+    >>> from z3c.encryptedpersistent import testing, interfaces
+    >>> ztapi.provideUtility(interfaces.IEncryption, testing.DemoEncrypter())
+    
 
 When an object is stored to a database, its ``__getstate__`` method is called:
 
 
-  >> myObj.__getstate__()
-  ('key1',
-   "psHem+cmqG{(dp1\nS'name'\np2\nVStephan Richter\np3\nsS'__key__'\np4\nS'key1'\np5\ns.}")
+  >>> myObj.__getstate__()
+  "ENCRYPTED_(dp1\nS'name'\np2\nVStephan Richter\np3\ns."
 
 When an object is loaded from the database, the state is passed into the
 ``__setstate__`` method:
 
-  >> state = myObj.__getstate__()
+  >>> state = myObj.__getstate__()
 
   >>> myObj2 = MyObject()
   >>> myObj2.__setstate__(state)
@@ -56,5 +68,5 @@ When the database is loaded again, the object's data is still there, ...
 
 and the data is truly encrypted in the file:
 
-  >>> state[1] in open(dbFile).read()
+  >>> state in open(dbFile).read()
   True
