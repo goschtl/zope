@@ -6,10 +6,10 @@ from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid import IIntIds
+import zc.relation.interfaces
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
-#from ocql.testing.database import MClass
 
 class MetaType:
     def get_property(self, name):
@@ -67,6 +67,7 @@ class Metadata:
     def __init__(self,context=None):
         #all the interfaces are retrieved from the catalog
         #items = list(searchInterfaceUtilities(self))
+        
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
@@ -80,6 +81,15 @@ class Metadata:
                         obj_list.append(obj)
                     self.db.__setitem__(interface.__name__,obj_list)
                     self.classes.__setitem__(interface.__name__,MClass(interface))
+        
+        catalogs = getUtilitiesFor(zc.relation.interfaces.ICatalog)
+        for name, catalog in catalogs:
+            for index in catalog:
+                results = catalog.iterValueIndexInfo()
+                for result in results:
+                    continue
+                    #need to continue if this is required
+                    
         
 
     def getAll(self, klass):

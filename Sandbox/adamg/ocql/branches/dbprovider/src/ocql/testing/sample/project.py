@@ -3,7 +3,7 @@ from zope.interface import implements
 from zope.interface import Interface
 import persistent
 
-from ocql.testing.sample.interfaces import IProject
+from ocql.testing.sample.interfaces import IProject, IProjectRelation
 
 class Project(persistent.Persistent):
     """A simple implementation of a Project .
@@ -32,3 +32,11 @@ class Project(persistent.Persistent):
 
     def __repr__(self):
         return "%s <%s>" % (self.__class__.__name__, self.name)
+
+
+class ProjectRelation(object):
+    implements(IProjectRelation)
+    
+    def __init__(self, mentor, project):
+        self.mentor = mentor
+        self.project = project

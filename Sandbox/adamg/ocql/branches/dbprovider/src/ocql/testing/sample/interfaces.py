@@ -1,4 +1,4 @@
-from zope.interface import Interface
+from zope.interface import Interface,Attribute
 from zope.schema import Text, TextLine, Field, Choice
 from zope.app.container.constraints import ContainerTypesConstraint, ItemTypePrecondition
 from zope.app.container.constraints import contains, containers
@@ -58,3 +58,9 @@ class IOrganizationContainer(IContainer):
     """Organization is also a container for projects, students and mentors"""
 
     contains(".IProject", ".IStudent", ".IMentor")
+    
+class IProjectRelation(Interface):
+    mentor = Attribute('assigned mentor for the project')
+    project = Attribute('mentoring project')
+    
+    
