@@ -34,20 +34,15 @@ class SymbolContainer:
         new = dict(top)
         self.stack.append(new)
 
-        #print 'add'
-        #print self.stack
-
     def dellevel(self):
         self.stack.pop()
-
-        #print 'del'
-        #print self.stack
 
     def current(self):
         return self.stack[-1]
 
+#further expand COND_OP, MODIFIER, QUANTOR
 tokens = ('TYPE', 'UNION', 'DIFFER', 'AND', 'OR', 'NOT', 'ELLIPSIS', 'IN',
-        'AS', 'SIZE', 'COND_OP', 'MODIFIER', 'QUANTOR', 'CONSTANT',
+        'AS', 'SIZE', 'EQ','NE','LT','GT','LE','GE', 'ATLEAST','ATMOST','JUST','EVERY','SOME', 'CONSTANT',
         'IDENTIFIER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'BRACEL', 'BRACER',
         'SQUAREL', 'SQUARER', 'CURLYL', 'CURLYR',
         'PIPE', 'DOT', 'SEMICOL', 'COMMA'
@@ -62,7 +57,12 @@ precedence = (
     ('left', 'AND'),
     ('left', 'OR'),
     ('right', 'NOT'),
-    ('left', 'COND_OP'),
+    ('left', 'EQ'),
+    ('left', 'NE'),
+    ('left', 'LT'),
+    ('left', 'GT'),
+    ('left', 'LE'),
+    ('left', 'GE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MUL', 'DIV'),
 #   ('token', 'IDENTIFIER'),
@@ -135,18 +135,62 @@ class Lexer(object):
         r'size'
         return t
 
-    def t_COND_OP(self, t):
-        r'(<|>|<=|>=|==|!=)'
-        return t
+    #def t_COND_OP(self, t):
+    #    r'(<|>|<=|>=|==|!=)'
+    #    return t
 
-    def t_MODIFIER(self, t):
-        r'(atleast|atmost|just)'
+    def t_LT(self, t):
+        r'<'
         return t
-
-    def t_QUANTOR(self, t):
-        r'(every|some)'
+    
+    def t_GT(self, t):
+        r'>'
         return t
+    
+    def t_LE(self, t):
+        r'<='
+        return t
+    
+    def t_GE(self, t):
+        r'>='
+        return t
+    
+    def t_EQ(self, t):
+        r'=='
+        return t
+    
+    def t_NE(self, t):
+        r'!='
+        return t 
+    
+    #def t_MODIFIER(self, t):
+    #    r'(atleast|atmost|just)'
+    #    return t
 
+    def t_ATLEAST(self, t):
+        r'atleast'
+        return t
+    
+    def t_ATMOST(self, t):
+        r'atmost'
+        return t
+    
+    def t_JUST(self, t):
+        r'just'
+        return t
+    
+    #def t_QUANTOR(self, t):
+    #    r'(every|some)'
+    #    return t
+
+    def t_EVERY(self, t):
+        r'every'
+        return t
+    
+    def t_SOME(self, t):
+        r'some'
+        return t
+    
     def t_CONSTANT(self, t):
         r'(\'(\\.|[^\'])*\'|"(\\.|[^"])*"|[0-9]+)'
         return t
@@ -227,98 +271,145 @@ class Parser(object):
     def p_error(self, t):
         print "Syntax error at '%s' (%s)" % (t.value, t.lexpos)
 
-    def p_expr_cond(self, t):
-        r'''expr : modifier nexpr COND_OP omodifier nexpr
-                 | expr COND_OP omodifier nexpr'''
-        raise "Help"
+    #expr COND_OP modifier nexpr seems to be wrong logically
+    #def p_expr_cond(self, t):
+    #    r'''expr : modifier nexpr COND_OP modifier nexpr
+    #             | modifier expr COND_OP modifier nexpr'''
+    #    raise "Help"
 
+    def p_expr_atleast(self, t):
+        r'''expr : ATLEAST expr 
+        '''
+        t[0] = Atleast(self.metadata, self.symbols, t[2])
+        
+    def p_expr_atmost(self, t):
+        r'''expr : ATMOST expr 
+        '''
+        t[0] = Atmost(self.metadata, self.symbols, t[2])
+        
+    def p_expr_just(self, t):
+        r'''expr : JUST expr 
+        '''
+        t[0] = Just(self.metadata, self.symbols, t[2])
+
+    def p_expr_every(self, t):
+        r'''expr : EVERY expr 
+        '''
+        t[0] = Every(self.metadata, self.symbols, t[2])
+                
+    def p_expr_some(self, t):
+        r'''quented : expr
+                    | SOME expr 
+        '''
+        if len(t)==2:
+            t[0] = t[1]
+        else:
+            t[0] = Some(self.metadata, self.symbols, t[2])
+        
+    def p_expr_eq(self, t):
+        r'''expr : quented EQ expr
+        '''
+        t[0] = Eq(self.metadata, self.symbols, t[1], t[3])
+        
+    def p_expr_ne(self, t):
+        r'''expr : expr NE expr
+        '''
+        t[0] = Ne(self.metadata, self.symbols, t[1], t[3])
+
+    def p_expr_lt(self, t):
+        r'''expr : expr LT expr
+        '''
+        t[0] = Lt(self.metadata, self.symbols, t[1], t[3])
+
+    def p_expr_gt(self, t):
+        r'''expr : expr GT expr
+        '''
+        t[0] = Gt(self.metadata, self.symbols, t[1], t[3])
+        
+    def p_expr_le(self, t):
+        r'''expr : expr LE expr
+        '''
+        t[0] = Le(self.metadata, self.symbols, t[1], t[3])
+        
+    def p_expr_ge(self, t):
+        r'''expr : expr GE expr
+        '''
+        t[0] = Ge(self.metadata, self.symbols, t[1], t[3])
+        
     def p_expr_union(self, t):
         r'''expr : expr UNION expr
-            nexpr : nexpr UNION nexpr
         '''
         t[0] = Union(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_differ(self, t):
         r'''expr : expr DIFFER expr
-            nexpr : nexpr DIFFER nexpr
         '''
         t[0] = Differ(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_equery(self, t):
         r'''expr : TYPE SQUAREL xprs SQUARER
-            nexpr : TYPE SQUAREL xprs SQUARER
         '''
         #I also change the expected query in parser.txt
         t[0] = Query(self.metadata, self.symbols, self.types[t[1]],t[3],None)
         
     def p_expr_query(self, t):
         r'''expr : TYPE SQUAREL xprs PIPE expr SQUARER
-            nexpr : TYPE SQUAREL xprs PIPE expr SQUARER
         '''
         t[0] = Query(self.metadata, self.symbols, self.types[t[1]], t[3], t[5])
         if DEBUG: print "p_expr_query", t[0]
 
     def p_expr_and(self, t):
         r'''expr : expr AND expr
-            nexpr : nexpr AND nexpr
         '''
         t[0] = And(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_or(self, t):
         r'''expr : expr OR expr
-            nexpr : nexpr OR nexpr
         '''
         t[0] = Or(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_plus(self, t):
         r'''expr : expr PLUS expr
-            nexpr : nexpr PLUS nexpr
         '''
         t[0] = Add(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_minus(self, t):
         r'''expr : expr MINUS expr
-            nexpr : nexpr MINUS nexpr
         '''
         t[0] = Sub(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_mul(self, t):
         r'''expr : expr MUL expr
-            nexpr : nexpr MUL nexpr
         '''
         t[0] = Mul(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_div(self, t):
         r'''expr : expr DIV expr
-            nexpr : nexpr DIV nexpr
         '''
         t[0] = Div(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_not(self, t):
         r'''expr : NOT expr
-            nexpr : NOT nexpr
         '''
         t[0] = Not(self.metadata, self.symbols, t[2])
         if DEBUG: print t[0]
 
     def p_expr_dot(self, t):
         r'''expr : expr DOT expr
-            nexpr : nexpr DOT expr
         '''
         t[0] = Property(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print t[0]
 
     def p_expr_id(self, t):
         r'''expr : IDENTIFIER
-           nexpr : IDENTIFIER
         '''
         t[0] = Identifier(self.metadata, self.symbols, t[1])
         if DEBUG: print "p_expr_id", t[0]
@@ -326,62 +417,55 @@ class Parser(object):
 
     def p_expr_call(self, t):
         r'''expr : IDENTIFIER BRACEL exprs BRACER
-            nexpr : IDENTIFIER BRACEL exprs BRACER
         '''
         raise NotImplementedError("Function call")
     
     def p_expr_const(self, t):
         r'''expr : CONSTANT
-            nexpr : CONSTANT
         '''
         t[0] = Constant(self.metadata, self.symbols, t[1])
         if DEBUG: print t[0]
 
     def p_expr_array(self, t):
         r'''expr : TYPE '{' exprs '}'
-            nexpr : TYPE '{' exprs '}'
         '''
         raise NotImplementedError("array")
 
     def p_expr_range(self, t):
         r'''expr : TYPE CURLYL expr ELLIPSIS expr CURLYR
-            nexpr : TYPE CURLYL expr ELLIPSIS expr CURLYR
         '''
         raise NotImplementedError("range")
 
 
     def p_expr_index(self, t):
         r'''expr : expr DOT SQUAREL expr SQUARER
-            nexpr : nexpr DOT SQUAREL expr SQUARER
         '''
         t[0] = Index(self.metadata, self.symbols, t[1], t[4])
         if DEBUG: print t[0]
 
     def p_expr_size(self, t):
         r'''expr : SIZE expr
-            nexpr : SIZE expr
         '''
         t[0] = Count(self.metadata, self.symbols, t[2])
         if DEBUG: print t[0]
 
     def p_expr_bracket(self, t):
         r'''expr : BRACEL expr BRACER
-            nexpr : BRACEL expr BRACEL
         '''
         t[0] = t[2]
         if DEBUG: print t[0]
 
-    def p_omodifier(self, t):
-        r'''omodifier : QUANTOR
-                      | MODIFIER
-        '''
-        if DEBUG: print t[0]
+    #def p_omodifier(self, t):
+    #    r'''omodifier : QUANTOR
+    #                  | MODIFIER
+    #    '''
+    #    if DEBUG: print t[0]
 
-    def p_modifier(self, t):
-        r'''modifier : QUANTOR
-                     | MODIFIER
-        '''
-        if DEBUG: print t[0]
+    #def p_modifier(self, t):
+    #    r'''modifier : QUANTOR
+    #                 | MODIFIER
+    #    '''
+    #    if DEBUG: print t[0]
 
     def p_exprs(self, t):
         r'''exprs : expr
@@ -414,7 +498,7 @@ class Parser(object):
         elif len(t)==2:
             t[0] = [ t[1] ]
         else:
-            t[3].insert(t[0], 0)
+            t[3].insert(0,t[1])
             t[0] = t[3]
         if DEBUG: print "p_xprs", t[0]
 

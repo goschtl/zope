@@ -32,5 +32,5 @@
 
     #>>> QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(None)
 
-    >>> QueryParser("set [ c in ICourse | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))
+    #>>> QueryParser("set [ c in ICourse | c.code ]")(None)
+    #Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))

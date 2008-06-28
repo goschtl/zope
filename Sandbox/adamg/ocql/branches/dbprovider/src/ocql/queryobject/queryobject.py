@@ -403,6 +403,16 @@ class Sum(Aggregate):
 # Conditional
 #
 class Quantor(QueryObject):
+    def __init__(self, metadata, symbols, expr):
+        self.metadata = metadata
+        self.symbols = symbols
+        self.expr = expr
+        
+    def __repr__(self):
+        return "(%s)" % (
+            self.__class__.__name__
+            )
+        
     def rewrite(self, algebra, expression, quanter, operator):
         raise NotImplementedError()
 
@@ -461,31 +471,34 @@ class Some(Quantor):
         )
 
 class Atmost(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #    self.expr = expr
 
 class Atleast(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #    self.expr = expr
 
 class Just(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #   self.expr = expr
 
 # Logical operators
 class Condition(Expression):
