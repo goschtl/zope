@@ -51,6 +51,15 @@ class QueryTests(TestCase):
                            record=record, string=str_)
         assert query == 'date:date=%s&integer:int=1&listing:int:list=1&listing:date:list=%s&listing:list=str&string=str&record.arg1:int:list:record=1&record.arg1:date:list:record=%s&record.arg1:list:record=str&record.arg2:int:record=1'%(quote_date,quote_date,quote_date)
 
+    def testLP241576UsingURLQuotePlus(self):
+
+        str_ =' +'
+        query = make_query(foo=str_)
+#        self.assertEqual('foo=%20
+        
+
+
+
     def testMakeHiddenInput(self):
         tag = make_hidden_input(foo='bar')
         self.assertEqual(tag, '<input type="hidden" name="foo" value="bar">')
