@@ -353,12 +353,6 @@ ext_modules = [
               sources=['initgroups/_initgroups.c']),
 
     # indexes
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.ZopeSplitter.ZopeSplitter',
-              sources=['Products/PluginIndexes/TextIndex/Splitter/ZopeSplitter/src/ZopeSplitter.c']),
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.ISO_8859_1_Splitter.ISO_8859_1_Splitter',
-              sources=['Products/PluginIndexes/TextIndex/Splitter/ISO_8859_1_Splitter/src/ISO_8859_1_Splitter.c']),
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.UnicodeSplitter.UnicodeSplitter',
-              sources=['Products/PluginIndexes/TextIndex/Splitter/UnicodeSplitter/src/UnicodeSplitter.c']),
     Extension(name='Products.ZCTextIndex.stopper',
               sources=['Products/ZCTextIndex/stopper.c']),
     Extension(name='Products.ZCTextIndex.okascore',
