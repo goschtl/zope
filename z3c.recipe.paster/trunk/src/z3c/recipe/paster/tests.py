@@ -27,6 +27,9 @@ import zc.buildout.testing
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('z3c.recipe.paster', test)
+    zc.buildout.testing.install('Paste', test)
+    zc.buildout.testing.install('PasteDeploy', test)
+    zc.buildout.testing.install('PasteScript', test)
     zc.buildout.testing.install('RestrictedPython', test)
     zc.buildout.testing.install('ZConfig', test)
     zc.buildout.testing.install('ZODB3', test)

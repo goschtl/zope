@@ -40,8 +40,10 @@ class ServeSetup:
             options['location'] = os.path.join(
                 buildout['buildout']['parts-directory'], name)
 
-        if options.get('eggs'):
-            self.egg = zc.recipe.egg.Egg(buildout, name, options)
+        if options.get('eggs') is None:
+            raise zc.buildout.UserError(
+                'You have to define at least one egg for setup an application.')
+        self.egg = zc.recipe.egg.Egg(buildout, name, options)
 
     def install(self):
         options = self.options
