@@ -128,12 +128,16 @@ checker = renormalizing.RENormalizing([
 
 
 def test_suite():
-    return unittest.TestSuite(
+    return unittest.TestSuite((
         doctest.DocFileSuite('README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             checker=checker),
-        )
+        doctest.DocFileSuite('paster.txt',
+            setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            checker=checker),
+        ))
 
 
 if __name__ == '__main__':

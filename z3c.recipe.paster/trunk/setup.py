@@ -77,6 +77,7 @@ setup(
     entry_points = {
         'zc.buildout': [
              'serve = z3c.recipe.paster.serve:ServeSetup',
+             'paster = z3c.recipe.paster.paster:PasterSetup',
          ]
     },
 )
