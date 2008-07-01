@@ -11,7 +11,7 @@ from ocql.database import metadata
 from ocql.database.metadata import Metadata
 from ocql.engine import OCQLEngine
 from ocql.interfaces import IDB
-from ocql.parser.queryparser import QueryParser, SymbolContainer 
+from ocql.parser.queryparser import QueryParser, SymbolContainer
 from ocql.qoptimizer.qoptimizer import QueryOptimizer
 from ocql.queryobject.queryobject import *
 from ocql.rewriter.rewriter import Rewriter
@@ -33,12 +33,12 @@ class testZope(unittest.TestCase):
         provideAdapter(AlgebraOptimizer)
         provideAdapter(AlgebraCompiler)
         provideAdapter(Metadata)
-        
+
         setupInterfaces(self)
         setupCatalog(self)
-        
+
         self.engine = OCQLEngine()
-        
+
     #just copy following methods from test_old
     def doone(self, query, qo, expected):
         print "==============="
@@ -63,7 +63,7 @@ class testZope(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
-       
+
     def test_gsoc(self):
         metadata = IDB(None)
         symbols = SymbolContainer()
@@ -81,14 +81,14 @@ class testZope(unittest.TestCase):
                             '') )
 
         self.doit(query, qo, set([]))
-        
-        
+
+
         symbols = SymbolContainer()
         #
         # Simple SELECT ALL
         #
         # set [ c in IStudent | c ]
-        #           
+        #
         query = "[c in IStudent | c]"
         qo = Query(
                 metadata, symbols,
@@ -99,10 +99,10 @@ class testZope(unittest.TestCase):
                        Identifier(metadata,symbols,'c'),
                        Identifier(metadata,symbols,'IStudent'))
                 ], Identifier(metadata,symbols,'c'))
-        
-        self.doit(query, qo, set(metadata.db['IStudent']))
-        
-        
+
+        self.doit(query, qo, set(metadata.getAll('IStudent')))
+
+
         symbols = SymbolContainer()
         #
         # Selecting a property
@@ -119,9 +119,9 @@ class testZope(unittest.TestCase):
                            Identifier(metadata, symbols,'c'),
                            Identifier(metadata, symbols, 'IStudent'))
                     ],Identifier(metadata, symbols, 'c.name'))
-        self.doit(query, qo, set(["Charith", "Jane", "Ann"]))                   
-        
-        
+        self.doit(query, qo, set(["Charith", "Jane", "Ann"]))
+
+
         symbols = SymbolContainer()
         #
         # Filtering --one result
@@ -142,10 +142,10 @@ class testZope(unittest.TestCase):
                            Identifier(metadata, symbols, 'c.description'),
                            Identifier(metadata, symbols, '"test"'))
                    ], Identifier(metadata, symbols, 'c.name'))
-                   
+
         self.doit(query, qo, set(["Save the world"]))
-        
-        
+
+
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
@@ -154,5 +154,3 @@ def test_suite():
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-    
-    

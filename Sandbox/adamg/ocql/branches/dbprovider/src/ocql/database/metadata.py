@@ -1,7 +1,7 @@
 
 from zope.interface import implements
 from zope.component import adapts
-from zope.component.interface import searchInterfaceUtilities 
+from zope.component.interface import searchInterfaceUtilities
 from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
@@ -59,43 +59,42 @@ class MClass(MetaType):
 class Metadata:
     implements(IDB)
     adapts(None)
-    
-    db= {}
 
-    classes = {}
-    
+    classes = None
+
     def __init__(self,context=None):
-        #all the interfaces are retrieved from the catalog
-        #items = list(searchInterfaceUtilities(self))
-        
+        #interfaces can be retrieved from the registry
+        #as they are unusual to change
+        self.classes = {}
+        items = list(searchInterfaceUtilities(None))
+        for name, iface in items:
+            self.classes[iface.__name__] = MClass(iface)
+
+        #catalogs = getUtilitiesFor(zc.relation.interfaces.ICatalog)
+        #for name, catalog in catalogs:
+        #    for index in catalog:
+        #        results = catalog.iterValueIndexInfo()
+        #        for result in results:
+        #            continue
+        #            #need to continue if this is required
+
+    def getAll(self, klassname):
+        #objects have to be retrieved always on call
+        #as they are subject to change
+
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
-            for index in catalog:
-                if isinstance(catalog[index], AllIndex):                    
-                    interface = catalog[index].interface
-                    results = catalog.apply({index:(1,1)})
-                    obj_list = []
-                    for result in results:
-                        obj = intids.getObject(result)
-                        obj_list.append(obj)
-                    self.db.__setitem__(interface.__name__,obj_list)
-                    self.classes.__setitem__(interface.__name__,MClass(interface))
-        
-        catalogs = getUtilitiesFor(zc.relation.interfaces.ICatalog)
-        for name, catalog in catalogs:
-            for index in catalog:
-                results = catalog.iterValueIndexInfo()
-                for result in results:
-                    continue
-                    #need to continue if this is required
-                    
-        
+            for iname, index in catalog.items():
+                if isinstance(index, AllIndex):
+                    if index.interface.__name__ == klassname:
+                        interface = index.interface
+                        results = catalog.apply({iname:(1,1)})
+                        obj_list = [intids.getObject(result) for result in results]
+                        return obj_list
 
-    def getAll(self, klass):
-        return self.db[klass]
-    
-    def get_class(self, classname):
+        return None
+
+    def get_class(self, klassname):
         """Returns a MetaType instance for the class."""
-        return self.classes[classname]
-    
+        return self.classes[klassname]
