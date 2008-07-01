@@ -19,12 +19,12 @@ from zope.app.intid.interfaces import IIntIds
 from zope.app.keyreference.testing import SimpleKeyReference
 
 from ocql.testing.sample.interfaces import IOrganization
-from ocql.testing.sample.interfaces import IProject, IProjectRelation
+from ocql.testing.sample.interfaces import IProject
 from ocql.testing.sample.interfaces import IStudent
 from ocql.testing.sample.interfaces import IMentor
 
 from ocql.testing.sample.mentor import Mentor
-from ocql.testing.sample.project import Project, ProjectRelation
+from ocql.testing.sample.project import Project
 from ocql.testing.sample.student import Student
 from ocql.testing.sample.organization import Organization
         
@@ -33,8 +33,8 @@ import zc.relation.interfaces
 import zc.relation.queryfactory
 import BTrees
 
-_obj = {}
-_relation = {}
+#_obj = {}
+#_relation = {}
 
 def setupInterfaces(test):
     provideInterface('', IOrganization)
@@ -42,21 +42,21 @@ def setupInterfaces(test):
     provideInterface('', IStudent)
     provideInterface('', IMentor)
 
-def dumpObj(obj, catalog, cache):
-    if _obj.setdefault(obj.name,obj) is not obj:
-        raise ValueError('mentor can only take one project')
-    return obj
-
-def loadObj(token, catalog, cache):
-    return _obj[token]
-
-def dumpRelation(obj, catalog, cache):
-    if _relation.setdefault(id(obj),obj) is not obj:
-        raise ValueError('same relation')
-    return id(obj)
-
-def loadRelation(token, catalog, cache):
-    return _relation[token]
+#def dumpObj(obj, catalog, cache):
+#    if _obj.setdefault(obj.name,obj) is not obj:
+#        raise ValueError('mentor can only take one project')
+#    return obj
+#
+#def loadObj(token, catalog, cache):
+#    return _obj[token]
+#
+#def dumpRelation(obj, catalog, cache):
+#    if _relation.setdefault(id(obj),obj) is not obj:
+#        raise ValueError('same relation')
+#    return id(obj)
+#
+#def loadRelation(token, catalog, cache):
+#    return _relation[token]
 
 def setupCatalog(test):
     intids = IntIds()
@@ -109,20 +109,20 @@ def setupCatalog(test):
     id = intids.register(o1)
     cat.index_doc(id, o1)
     
-    cat2 = zc.relation.catalog.Catalog(dumpRelation, loadRelation)
-    cat2.addValueIndex(IProjectRelation['project'], dumpObj, loadObj, btree=BTrees.family32.OO)
-    cat2.addValueIndex(IProjectRelation['mentor'], dumpObj, loadObj, btree=BTrees.family32.OO)
-    cat2.addDefaultQueryFactory(zc.relation.queryfactory.TransposingTransitive('project','mentor'))
-
-    rel = ProjectRelation(m1, p1)
-    cat2.index(rel)
-    component.provideUtility(cat2, zc.relation.interfaces.ICatalog, name='rel-catalog')
+#    cat2 = zc.relation.catalog.Catalog(dumpRelation, loadRelation)
+#    cat2.addValueIndex(IProjectRelation['project'], dumpObj, loadObj, btree=BTrees.family32.OO)
+#    cat2.addValueIndex(IProjectRelation['mentor'], dumpObj, loadObj, btree=BTrees.family32.OO)
+#    cat2.addDefaultQueryFactory(zc.relation.queryfactory.TransposingTransitive('project','mentor'))
+#
+#    rel = ProjectRelation(m1, p1)
+#    cat2.index(rel)
+#    component.provideUtility(cat2, zc.relation.interfaces.ICatalog, name='rel-catalog')
     component.provideUtility(cat, ICatalog, name='foo-catalog')
 
 def queryCatalog():
     cat = component.getUtility(ICatalog, name='foo-catalog')
-    cat2 = component.getUtility(zc.relation.interfaces.ICatalog, name='rel-catalog')
-    query = cat2.tokenizeQuery
+#    cat2 = component.getUtility(zc.relation.interfaces.ICatalog, name='rel-catalog')
+#    query = cat2.tokenizeQuery
     intids = component.getUtility(IIntIds)
 
     results = cat.apply({'student_name':('Charith','Charith')})
@@ -137,10 +137,10 @@ def queryCatalog():
         obj = intids.getObject(r)
         print obj
         
-    rel_mentor = cat.apply({'all_mentors':(1,1)})
-    
-    for r in rel_mentor:
-        obj = intids.getObject(r)     
-        for p in cat2.findValueTokens('project',query(mentor=obj)):
-            print p.name
-    
+#    rel_mentor = cat.apply({'all_mentors':(1,1)})
+#    
+#    for r in rel_mentor:
+#        obj = intids.getObject(r)     
+#        for p in cat2.findValueTokens('project',query(mentor=obj)):
+#            print p.name
+#    

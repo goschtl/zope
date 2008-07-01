@@ -59,8 +59,8 @@ class IOrganizationContainer(IContainer):
 
     contains(".IProject", ".IStudent", ".IMentor")
     
-class IProjectRelation(Interface):
-    mentor = Attribute('assigned mentor for the project')
-    project = Attribute('mentoring project')
-    
-    
+#class IProjectRelation(Interface):
+#    mentor = Attribute('assigned mentor for the project')
+#    project = Attribute('mentoring project')
+#    
+#    
