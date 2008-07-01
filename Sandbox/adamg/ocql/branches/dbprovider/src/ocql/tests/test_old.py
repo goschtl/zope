@@ -344,7 +344,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
                     Quanted(metadata, symbols,
-                            Some(metadata, symbols),
+                            Some(metadata, symbols, ''),
                             Property(metadata, symbols,
                                     Identifier(metadata, symbols, 'c'),
                                     Identifier(metadata, symbols, 'runBy'))
@@ -382,7 +382,7 @@ class testOLD(unittest.TestCase):
                     Identifier(metadata, symbols,'d'),
                     Quanted(
                         metadata, symbols,
-                        Some(metadata, symbols),
+                        Some(metadata, symbols, ''),
                         Property(metadata, symbols,
                                     Identifier(metadata, symbols, 'c'),
                                     Identifier(metadata, symbols, 'runBy'))
@@ -417,7 +417,7 @@ class testOLD(unittest.TestCase):
                     Identifier(metadata, symbols,'d'),
                     Quanted(
                         metadata, symbols,
-                        Some(metadata, symbols),
+                        Some(metadata, symbols, ''),
                         Property(metadata, symbols,
                                     Identifier(metadata, symbols, 'c'),
                                     Identifier(metadata, symbols, 'runBy'))
@@ -454,7 +454,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Quanted(
                         metadata, symbols,
-                        Every(metadata, symbols),
+                        Every(metadata, symbols, ''),
                         Query(
                             metadata, symbols,
                             set,
@@ -468,7 +468,7 @@ class testOLD(unittest.TestCase):
                                     Identifier(metadata, symbols,'d'),
                                     Quanted(
                                         metadata, symbols,
-                                        Some(metadata, symbols),
+                                        Some(metadata, symbols, ''),
                                         Property(metadata, symbols,
                                             Identifier(metadata, symbols, 'c'),
                                             Identifier(metadata, symbols, 'runBy'))
