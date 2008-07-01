@@ -51,6 +51,9 @@ class EmptyCompiler(BaseCompiler):
             return '[]'
 
 class SingleCompiler(BaseCompiler):
+    implements(IAlgebraCompiler)
+    adapts(ISingle)
+
     def __call__(self):
         if self.context.klass == set:
             return 'set(['+IAlgebraCompiler(self.context.expr)()+'])'
