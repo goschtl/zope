@@ -73,6 +73,11 @@ class IAlgebraObject(Interface):
     """Objects providing this interface represent the
     rewritten ObjectQuery to Algebra objects
     """
+    def compile(self):
+        """Return the compiled python code"""
+        
+    def walk(self):
+        """Iterate the Algebra object tree"""
 
 class IOptimizedAlgebraObject(Interface):
     """Objects providing this interface represent the
@@ -109,4 +114,78 @@ class ILogger(Interface):
 class IStatistics(Interface):
     """Stores statistical data based on queries run before.
     Provides statistical data for optimization.
+    """
+
+################
+#Algebra operation interfaces
+################
+
+class IEmpty(IAlgebraObject):
+    """Objects providing this interface represent the
+    Empty Algebra object
+    """ 
+    
+class ISingle(IAlgebraObject):
+    """Objects providing this interface represent the
+    Single Algebra object
+    """
+    
+class IUnion(IAlgebraObject):
+    """Objects providing this interface represent the
+    Union Algebra object
+    """
+    
+class IIter(IAlgebraObject):
+    """Objects providing this interface represent the
+    Iter Algebra object
+    """
+    
+class ISelect(IAlgebraObject):
+    """Objects providing this interface represent the
+    Select Algebra object
+    """
+
+class IReduce(IAlgebraObject):
+    """Objects providing this interface represent the
+    Reduce Algebra object
+    """
+
+class IRange(IAlgebraObject):
+    """Objects providing this interface represent the
+    Range Algebra object
+    """
+    
+class IMake(IAlgebraObject):
+    """Objects providing this interface represent the
+    Make Algebra object
+    """
+    
+class IIf(IAlgebraObject):
+    """Objects providing this interface represent the
+    If Algebra object
+    """
+    
+class ILambda(IAlgebraObject):
+    """Objects providing this interface represent the
+    Lambda Algebra object
+    """
+    
+class IConstant(IAlgebraObject):
+    """Objects providing this interface represent the
+    Constant Algebra object
+    """
+    
+class IIdentifier(IAlgebraObject):
+    """Objects providing this interface represent the
+    Identifier Algebra object
+    """
+    
+class IBinery(IAlgebraObject):
+    """Objects providing this interface represent the
+    Binery Algebra object
+    """
+
+class IOperator(IAlgebraObject):
+    """Objects providing this interface represent the
+    Operator Algebra object
     """
