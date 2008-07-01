@@ -12,7 +12,8 @@ $Id$
 
 from zope.interface import implements
 
-from ocql.interfaces import *
+from ocql.interfaces import IAlgebraObject
+from ocql.rewriter.interfaces import *
 
 class Algebra:
     """Signature definition of Algebra operation classes.
