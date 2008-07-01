@@ -182,9 +182,11 @@ class Query(Expression):
             elif isinstance(firstTerm, Alias):
                 rv = Query(
                     self.metadata,
+                    self.symbols,
                     self.collection_type,
                     [In(
                         self.metadata,
+                        self.symbols,
                         firstTerm.identifier,
                         firstTerm.expression
                         )]+self.terms[1:],
@@ -194,6 +196,7 @@ class Query(Expression):
                     firstTerm.rewrite(algebra),
                     Query(
                         self.metadata,
+                        self.symbols,
                         self.collection_type,
                         self.terms[1:],
                         self.target).rewrite(algebra),
@@ -400,6 +403,16 @@ class Sum(Aggregate):
 # Conditional
 #
 class Quantor(QueryObject):
+    def __init__(self, metadata, symbols, expr):
+        self.metadata = metadata
+        self.symbols = symbols
+        self.expr = expr
+        
+    def __repr__(self):
+        return "(%s)" % (
+            self.__class__.__name__
+            )
+        
     def rewrite(self, algebra, expression, quanter, operator):
         raise NotImplementedError()
 
@@ -427,8 +440,10 @@ class Every(Quantor):
             algebra.Lambda('i',
                 operator.__class__(
                     self.metadata,
+                    self.symbols,
                     Identifier(
                         self.metadata,
+                        self.symbols,
                         'i'),
                     expression
                 ).rewrite(algebra)
@@ -446,7 +461,8 @@ class Some(Quantor):
             algebra.Lambda('i',
                 operator.__class__(
                     self.metadata,
-                    Identifier(self.metadata, 'i'),
+                    self.symbols,
+                    Identifier(self.metadata, self.symbols,'i'),
                     expression
                 ).rewrite(algebra)
             ),
@@ -455,31 +471,34 @@ class Some(Quantor):
         )
 
 class Atmost(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #    self.expr = expr
 
 class Atleast(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #    self.expr = expr
 
 class Just(Quantor):
-    expr = None
+    pass
+    #expr = None
 
-    def __init__(self, metadata, symbols, expr):
-        raise NotImplementedError(self)
-        self.metadata = metadata
-        self.symbols = symbols
-        self.expr = expr
+    #def __init__(self, metadata, symbols, expr):
+    #    raise NotImplementedError(self)
+    #    self.metadata = metadata
+    #    self.symbols = symbols
+    #   self.expr = expr
 
 # Logical operators
 class Condition(Expression):

@@ -32,6 +32,9 @@ setup (
         test = [
             'zope.testing',
             'zope.schema',
+
+            'zope.app.catalog',
+            'zope.index',
             ],
         ),
     install_requires = [

@@ -5,15 +5,15 @@
 
 
     #FAILS, why?
-    #>>> QueryParser("set [ ]")(None)
-    #Query(<type 'set'>, , Constant(1))
+    >>> QueryParser("set [ ]")(None)
+    Query(<type 'set'>, , None)
 
     >>> QueryParser("set [ | 1 ]")(None)
     Query(<type 'set'>, , Constant(1))
 
     #FAILS, why?
-    #>>> QueryParser("list [ | 1 ]")(None)
-    #Query(<type 'set'>, , Constant(1))
+    >>> QueryParser("list [ | 1 ]")(None)
+    Query(<type 'list'>, , Constant(1))
 
     >>> QueryParser("set [ | 1 ] union set [|2]")(None)
     Union(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
@@ -32,5 +32,5 @@
 
     #>>> QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(None)
 
-    >>> QueryParser("set [ c in ICourse | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))
+    #>>> QueryParser("set [ c in ICourse | c.code ]")(None)
+    #Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))
