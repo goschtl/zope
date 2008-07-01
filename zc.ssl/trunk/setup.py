@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "zc.ssl",
-    version = "1.1",
+    version = "1.2dev",
     author = "Zope Corporation",
     author_email = "zope-dev@zope.org",
     description = "An HTTPSConnection implementation with the new ssl module",
