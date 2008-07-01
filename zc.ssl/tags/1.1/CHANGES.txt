@@ -1,0 +1,10 @@
+1.1 (2008-07-01)
+================
+
+- Update the certificate file with the new server certificate used by
+  authorize.net.
+
+1.0
+===
+
+Initial release.
