@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from ocql.interfaces import IAlgebraObject
-from zope.schema import Dict, Text
+from zope.schema import Dict, Text, Int
 from zope.interface import Attribute
 
 ################
@@ -61,6 +61,64 @@ class IReduce(IAlgebraObject):
     aggreg = Attribute('aggregation')
     coll = Attribute('collection')
     
+    
+class IRange(IAlgebraObject):
+    """Objects providing this interface represent the
+    Range Algebra object
+    """
+    klass = Attribute('collection type name')
+    start = Attribute('range start point')
+    end = Attribute('range end point')
+
+    
+class IMake(IAlgebraObject):
+    """Objects providing this interface represent the
+    Make Algebra object
+    """
+    expr = Attribute('expression')
+    coll1 = Attribute('first collection')
+    coll2 = Attribute('second collection')
+
+    
+class IIf(IAlgebraObject):
+    """Objects providing this interface represent the
+    If Algebra object
+    """
+    cond = Attribute('condition')
+    expr1 = Attribute('first expression')
+    expr2 =Attribute('second expression')
+
+    
+class ILambda(IAlgebraObject):
+    """Objects providing this interface represent the
+    Lambda Algebra object
+    """
+    var = Attribute('variable')
+    expr = Attribute('expression')
+
+
+class IConstant(IAlgebraObject):
+    """Objects providing this interface represent the
+    Constant Algebra object
+    """
+    value = Attribute('constant value')
+
+
+class IIdentifier(IAlgebraObject):
+    """Objects providing this interface represent the
+    Identifier Algebra object
+    """
+    name = Text()
+    
+    
+class IBinery(IAlgebraObject):
+    """Objects providing this interface represent the
+    Binery Algebra object
+    """
+    left = Attribute('left expression')
+    op = Attribute('operator')
+    right = Attribute('right expression')
+
 
 class IOperator(IAlgebraObject):
     """Objects providing this interface represent the
@@ -68,40 +126,3 @@ class IOperator(IAlgebraObject):
     """
     ops = Dict(Text(), Text())
     op = Text()
-    
-    
-class IRange(IAlgebraObject):
-    """Objects providing this interface represent the
-    Range Algebra object
-    """
-    
-class IMake(IAlgebraObject):
-    """Objects providing this interface represent the
-    Make Algebra object
-    """
-    
-class IIf(IAlgebraObject):
-    """Objects providing this interface represent the
-    If Algebra object
-    """
-    
-class ILambda(IAlgebraObject):
-    """Objects providing this interface represent the
-    Lambda Algebra object
-    """
-    
-class IConstant(IAlgebraObject):
-    """Objects providing this interface represent the
-    Constant Algebra object
-    """
-    
-class IIdentifier(IAlgebraObject):
-    """Objects providing this interface represent the
-    Identifier Algebra object
-    """
-    
-class IBinery(IAlgebraObject):
-    """Objects providing this interface represent the
-    Binery Algebra object
-    """
-    

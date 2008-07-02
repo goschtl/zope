@@ -23,9 +23,6 @@ class Algebra:
     #Algebra's whose topmost element will only get this IF
     implements(IAlgebraObject)
 
-    def compile(self):
-        """Return the compiled python code"""
-
     def walk(self):
         """Iterate the Algebra object tree"""
 
@@ -33,23 +30,11 @@ class BaseAlgebra(Algebra):
     pass
 
 class Empty(BaseAlgebra):
-    """
-    >>> Empty(set,None).compile()
-    'set()'
-    >>> Empty(list,None).compile()
-    '[]'
-    """
     
     implements(IEmpty)
     
     def __init__(self, klass, expr):
         self.klass = klass
-
-    def compile(self):
-        if self.klass==set:
-            return 'set()'
-        elif self.klass==list:
-            return '[]'
 
     def __repr__(self):
         return 'Empty(%s)'%(self.klass)
@@ -58,24 +43,12 @@ class Empty(BaseAlgebra):
         yield self
 
 class Single(BaseAlgebra):
-    """
-    >>> Single(set,Constant('c')).compile()
-    'set([c])'
-    >>> Single(list,Constant('c')).compile()
-    '[c]'
-    """
 
     implements(ISingle)
     
     def __init__(self, klass, expr):
         self.klass = klass
         self.expr = expr
-
-    def compile(self):
-        if self.klass==set:
-            return 'set(['+self.expr.compile()+'])'
-        elif self.klass==list:
-            return '['+self.expr.compile()+']'
 
     def __repr__(self):
         return 'Single(%s,%s)'%(self.klass, self.expr)
@@ -86,12 +59,6 @@ class Single(BaseAlgebra):
             yield t
 
 class Union(BaseAlgebra):
-    """
-    >>> Union(set,Empty(set,None),Single(set,Identifier('c'))).compile()
-    'set.union(set(),set([c]))'
-    >>> Union(list,Empty(list,None),Single(list,Identifier('c'))).compile()
-    '([])+([c])'
-    """
     
     implements(IUnion)
     
@@ -99,16 +66,6 @@ class Union(BaseAlgebra):
         self.klass=klass
         self.coll1=coll1
         self.coll2=coll2
-
-    def compile(self):
-        if self.klass==set:
-            return 'set.union(%s,%s)' % (
-                self.coll1.compile(),
-                self.coll2.compile())
-        elif self.klass==list:
-            return '(%s)+(%s)'%(
-                self.coll1.compile(),
-                self.coll2.compile())
 
     def __repr__(self):
         return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
@@ -142,26 +99,6 @@ class Iter(BaseAlgebra):
         self.func = func
         self.coll = coll
 
-    def compile(self):
-        if self.func is Lambda and \
-            self.coll is Collection and \
-            self.func.expr is If:
-
-            # You can place here some specialized code...
-            if self.klass == set:
-                return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(), self.coll.compile())
-            if self.klass == list:
-                return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(), self.coll.compile())
-        else:
-            if self.klass == set:
-                return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(), self.coll.compile())
-            if self.klass == list:
-                return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(), self.coll.compile())
-
     def __repr__(self):
         return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
@@ -180,16 +117,6 @@ class Select(BaseAlgebra):
         self.klass = klass
         self.func = func
         self.coll = coll
-
-    def compile(self):
-        if self.klass == set:
-            return 'set(filter(%s,%s))' % (
-                self.func.compile(),
-                self.coll.compile())
-        if self.klass == list:
-            return 'filter(%s,%s)' % (
-                self.func.compile(),
-                self.coll.compile())
 
     def __repr__(self):
         return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
@@ -211,20 +138,6 @@ class Reduce(BaseAlgebra):
         self.func = func
         self.aggreg = aggreg
         self.coll = coll
-
-    def compile(self):
-        if self.klass == set:
-            return 'reduce(%s,map(%s,%s),%s)' % (
-                self.aggreg.compile(),
-                self.func.compile(),
-                self.coll.compile(),
-                self.expr.compile())
-        if self.klass == list:
-            return 'reduce(%s,map(%s,%s),%s)' % (
-                self.aggreg.compile(),
-                self.func.compile(),
-                self.coll.compile(),
-                self.expr.compile())
 
     def __repr__(self):
         return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
@@ -261,16 +174,6 @@ class Range(BaseAlgebra):
         self.start = start
         self.end = end
 
-    def compile(self):
-        if self.klass == set:
-            return 'set(range(%s,%s))' % (
-                self.start.compile(),
-                self.end.compile())
-        if self.klass == list:
-            return 'range(%s,%s)' % (
-                self.start.compile(),
-                self.end.compile())
-
     def walk(self):
         yield self
         for t in self.start.walk():
@@ -289,12 +192,6 @@ class Make(BaseAlgebra):
         self.expr = expr
         self.coll1 = coll1
         self.coll2 = coll2
-
-    def compile(self):
-        #TODO: no conversion??? or you just didn't know the from-to?
-        return '%s(metadata.getAll("%s"))' % (
-            self.coll1.__name__,
-            self.expr.compile())
 
     def __repr__(self):
         return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
@@ -315,13 +212,6 @@ class If(BaseAlgebra):
         self.cond = cond
         self.expr1 = expr1
         self.expr2 = expr2
-
-    def compile(self):
-        #TODO: is this 100%?
-        return '((%s) and (%s) or (%s))' % (
-            self.cond.compile(),
-            self.expr1.compile(),
-            self.expr2.compile())
 
     def __repr__(self):
         return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
@@ -346,11 +236,6 @@ class Lambda(BaseAlgebra):
         self.var = var
         self.expr = expr
 
-    def compile(self):
-        return 'lambda %s: %s'%(
-            self.var,
-            self.expr.compile())
-
     def __repr__(self):
         return "Lambda %s: %s" %(self.var, self.expr)
 
@@ -366,9 +251,6 @@ class Constant(BaseAlgebra):
     def __init__(self, value):
         self.value = value
 
-    def compile(self):
-        return '%s'%(self.value)
-
     def __repr__(self):
         return "`%s`" %(self.value)
 
@@ -381,9 +263,6 @@ class Identifier(BaseAlgebra):
     
     def __init__(self, name):
         self.name=name
-
-    def compile(self):
-        return self.name
 
     def __repr__(self):
         return "%s" % self.name
@@ -399,11 +278,6 @@ class Binary(BaseAlgebra):
         self.left = left
         self.op = op
         self.right = right
-
-    def compile(self):
-        return '%s%s%s' % (self.left.compile(),
-                           self.op.op,
-                           self.right.compile())
 
     def __repr__(self):
         return "%s%s%s" % (self.left, self.op.op, self.right)
@@ -432,14 +306,12 @@ class Operator(BaseAlgebra):
     def __init__(self, op):
         self.op = op
 
-    def compile(self):
-        return self.ops[self.op]
-
     def __repr__(self):
         return self.op
 
     def walk(self):
         yield self
+
 #class Property:
 #   def __init__(self, left, right):
 #        self.left = left
