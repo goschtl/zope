@@ -21,7 +21,8 @@ class IIntrospectorBaseClasses(interface.Interface):
     PackageInfo = interface.Attribute("Information about a package")
     TypeInfo = interface.Attribute("Information about a basic type")
     UtilityInfo = interface.Attribute("Utilities an object can access")
-    RegistryInfo = interface.Attribute("Information about the component registry")
+    RegistryInfo = interface.Attribute(
+        "Information about the component registry")
 
 class IIntrospectorAPI(IIntrospectorBaseClasses):
     """The API of zope.introspector.
@@ -149,3 +150,10 @@ class IViewInfo(interface.Interface):
         The default layer will be returned with u'' as the skin name.
         """
         
+class IObjectDescriptionProvider(interface.Interface):
+    """Provide description objects for arbitrary objects.
+    """
+    def getDescription(obj_or_dotted_path, *args, **kw):
+        """Get one description object for the object denoted by
+        ``obj_or_dotted_path``.
+        """

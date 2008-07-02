@@ -1,0 +1,207 @@
+Description Providers
+*********************
+
+:Test-Layer: functional
+
+or: how to get a description providers for arbitrary objects in an
+extensible and flexible manner.
+
+``zope.introspector.descriptionprovider`` offers objects, grokkers and
+utilities to get a suitable description for arbitrary objects in a
+running Zope framework.
+
+
+Introspecting objects
+=====================
+
+Before we go into the details of the local implementation some words
+might be allowed about the problem that has to be solved here and how
+other packages cope with it.
+
+``zope.introspector`` is a package for getting information about a
+runtime system running a Zope framework. As such it has to provide
+descriptions for many kinds of objects. The descriptions in turn are
+generally thought to be used by viewing components, that might be
+specialists for the different kinds of objects that the introspector
+is able to handle.
+
+Stage 1: Transforming an request/URL into an object/dotted path
+---------------------------------------------------------------
+
+The decision about the right kind of descriptor could for instance be
+made by a traverser, that looks up a certain object in the runtime
+system based on a request sent. The traverser could transform a URL
+into a dotted path or a certain object (and possibly additional
+context parameters), ask the introspector for an appropriate
+description object and render that using an approriate view.
+
+A traversable URL for retrieving a description of the
+``zope.introspector`` package therefore could look like this:
+
+  http://localhost/code/zope/introspector
+
+where the `code` part of the URL describes the type of information we
+want and `zope/introspector` would denote the dotted path we want to
+examine. 
+
+All this could of course also be done by HTTP parameters in an URL
+like this::
+
+  http://localhost/?type=code&object=zope.introspector
+
+It doesn't matter which type of URL transformation we finally
+implement (most likely we will use skins), but we need such a
+transformer in our information flow.
+
+
+Stage 2: Transforming an object/dotted path into a description
+--------------------------------------------------------------
+
+This leads to the question: how can we know what type of object we
+currently handle and what handler(s) is/are available to describe it?
+
+For this purpose we need a component that is able to do the
+transformation as described in the headline. The information flow
+looks like this::
+
+  URL --> object/dotted path --> description object
+
+One general problem we have to deal with therefore is: how can we
+automatically provide a description as concise as possible while
+giving third-party developers the opportunity to extend the
+introspection machine as easy and flexible as possible.
+
+
+Using fixed sets for object-description transformation
+------------------------------------------------------
+
+One solution of the problem is to define a fixed set of things that
+can be introspected, say, Python modules, classes and
+functions. Having such a fixrd set of descriptors (let's call it
+``ModuleInfo``, ``ClassInfo``, etc.) we can do a simple if-elif-else
+cascade like this::
+
+  if isinstance(obj, Interface):
+    return InterfaceInfo(obj)
+  elif self.isPackage(obj):
+    return PackageInfo(obj)
+  ...
+  else:
+    return ObjectInfo(obj)
+
+This is the way ``zope.app.apidoc`` handles things. It is clean, plain
+and works.
+
+Unforuntately, it also suffers from an important shortcoming: the set
+of objects to describe is fixed and cannot be extended easily by
+third-party modules. This can be a problem.
+
+Let's imagine, we'd like to describe a Grok application. Grok
+applications are classes derived from ``grok.application`` and they
+can be configured using Grok directives and other nice things.
+
+When we ask ``zope.app.apidoc`` to describe a ``grok.Application``
+class, we get a plain class description, which does not mention the
+direcives used or (possibly more important) not used.
+
+We can, of course, write a representation of Grok applications
+ourselves, that is able to deliver us all directives (used and
+unused), but: we cannot hook that representation into
+``zope.app.apidoc`` documentation. That's because the package uses the
+above described fixed set of representations.
+
+
+Using grokkers for object-description transformation
+----------------------------------------------------
+
+So the new question is: how can we define object descriptions in a
+way, that thid-party developers are able to extend it with their own
+descriptions?
+
+
+The grok.admin.docgrok approach
+-------------------------------
+
+The ``grok.admin.docgrok`` module solves this problem by using martian
+grokkers and providing a module function that looks up a registry to
+hook up any special representations found in the runtime system.
+
+Adding a representation then means to write a class that derives from
+a certain base and is able to decide itself whether it is able to
+handle certain objects. At framework startup this class then will be
+grokked and added as a possible description deliverer to a registry of
+all description providers.
+
+A module level function then looks up this registry on request, asks
+the different description providers whether they are able to handle a
+certain object and returns the first that approves it.
+
+The whole thing looks like this:
+
+1) At startup:
+
+  - Create registry with object description providers
+
+  - Fill registry with all object description providers (done by
+    class grokker)
+
+2) On request:
+
+  a) transform URL into object/dotted path to look up
+
+  b) call get_descriptor_for(dotted_path)
+
+     i) ask all description providers in registry for description
+        of dotted_path
+
+     ii) return first description
+
+  c) publisher looks up a view for the specific description returned
+
+Afterwards we can for instance get any object, pass it to
+the representation function and aks: are you able to handle this
+object? The class answers by delivering a description object or
+``None``.
+
+The following is a modified variant of this grok.admin.docgrok
+approach.
+
+
+We do similar but even more flexible processing in
+``zope.introspection``. Instead of a module function we provide a
+utility implementing ``IObjectDescriptorProvider``. This way a
+third-party package has not to care for the exact location or type of
+the callable.
+
+
+Providing descriptions for arbitrary objects
+============================================
+
+We define a simple object that we want to have described later on::
+
+  >>> obj = object()
+
+``zope.introspector`` provides many different kinds of descriptions
+for different object types. To get the description that suits an
+object best, there is a utility available. It implements the
+``IObjectDescriptionProvider`` interface. We get this utility::
+
+  >>> from zope.component import getUtility
+  >>> from zope.introspector.interfaces import IObjectDescriptionProvider
+  >>> provider = getUtility(IObjectDescriptionProvider)
+  >>> provider
+  <zope.introspector.descriptionprovider.DescriptionFinder object at 0x...>
+
+This utility takes objects and returns descriptions for it::
+
+  >>> provider.getDescription(obj)
+  <zope.introspector.objectinfo.ObjectInfo object at 0x...>
+
+If we pass another kind of object, we might get a different kind of
+description. We load the zope.introspector package and want a
+description for it::
+
+  >>> import zope.introspector.tests
+  >>> provider.getDescription(zope.introspector.tests)
+  <zope.introspector.objectinfo.ModuleInfo object at 0x...>
+
