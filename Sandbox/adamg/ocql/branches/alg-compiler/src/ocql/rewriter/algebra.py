@@ -30,9 +30,9 @@ class BaseAlgebra(Algebra):
     pass
 
 class Empty(BaseAlgebra):
-    
+
     implements(IEmpty)
-    
+
     def __init__(self, klass, expr):
         self.klass = klass
 
@@ -45,7 +45,7 @@ class Empty(BaseAlgebra):
 class Single(BaseAlgebra):
 
     implements(ISingle)
-    
+
     def __init__(self, klass, expr):
         self.klass = klass
         self.expr = expr
@@ -59,9 +59,9 @@ class Single(BaseAlgebra):
             yield t
 
 class Union(BaseAlgebra):
-    
+
     implements(IUnion)
-    
+
     def __init__(self, klass, coll1, coll2):
         self.klass=klass
         self.coll1=coll1
@@ -91,9 +91,9 @@ class Union(BaseAlgebra):
 
 
 class Iter(BaseAlgebra):
-    
+
     implements(IIter)
-    
+
     def __init__(self, klass, func, coll):
         self.klass = klass
         self.func = func
@@ -110,9 +110,9 @@ class Iter(BaseAlgebra):
             yield t
 
 class Select(BaseAlgebra):
-    
+
     implements(ISelect)
-    
+
     def __init__(self, klass, func, coll):
         self.klass = klass
         self.func = func
@@ -129,9 +129,9 @@ class Select(BaseAlgebra):
             yield t
 
 class Reduce(BaseAlgebra):
-    
+
     implements(IReduce)
-    
+
     def __init__(self, klass, expr, func, aggreg, coll):
         self.klass = klass
         self.expr = expr
@@ -166,9 +166,9 @@ class Reduce(BaseAlgebra):
 #            return 'filter(%s,%s)' % (self.coll1.compile(),self.coll2.compile())
 #
 class Range(BaseAlgebra):
-    
+
     implements(IRange)
-    
+
     def __init__(self, klass, start, enf):
         self.klass = klass
         self.start = start
@@ -185,9 +185,9 @@ class Range(BaseAlgebra):
 #class Index
 
 class Make(BaseAlgebra):
-    
+
     implements(IMake)
-    
+
     def __init__(self, coll1, coll2, expr):
         self.expr = expr
         self.coll1 = coll1
@@ -205,9 +205,9 @@ class Make(BaseAlgebra):
 #class Being:
 
 class If(BaseAlgebra):
-    
+
     implements(IIf)
-    
+
     def __init__(self, cond, expr1, expr2):
         self.cond = cond
         self.expr1 = expr1
@@ -229,9 +229,9 @@ class If(BaseAlgebra):
 #
 #
 class Lambda(BaseAlgebra):
-    
+
     implements(ILambda)
-    
+
     def __init__(self, var, expr):
         self.var = var
         self.expr = expr
@@ -245,9 +245,9 @@ class Lambda(BaseAlgebra):
             yield t
 
 class Constant(BaseAlgebra):
-    
+
     implements(IConstant)
-    
+
     def __init__(self, value):
         self.value = value
 
@@ -258,9 +258,9 @@ class Constant(BaseAlgebra):
         yield self
 
 class Identifier(BaseAlgebra):
-    
+
     implements(IIdentifier)
-    
+
     def __init__(self, name):
         self.name=name
 
@@ -271,9 +271,9 @@ class Identifier(BaseAlgebra):
         yield self
 
 class Binary(BaseAlgebra):
-    
-    implements(IBinery)
-    
+
+    implements(IBinary)
+
     def __init__(self, left, op, right):
         self.left = left
         self.op = op
@@ -290,19 +290,9 @@ class Binary(BaseAlgebra):
             yield t
 
 class Operator(BaseAlgebra):
-    
+
     implements(IOperator)
-    
-    ops = {
-            'or': 'operator.or_',
-            'and': 'operator.and_',
-            'not': 'operator.not_',
-            '+': 'operator.add', '-': 'operator.sub',
-            '*': 'operator.mul', '/': 'operator.div',
-            '<': 'operator.lt', '>': 'operator.gt',
-            '<=': 'operator.le', '>=': 'operator.ge',
-            '==': 'operator.eq', '~=': 'operator.ne',
-            }
+
     def __init__(self, op):
         self.op = op
 

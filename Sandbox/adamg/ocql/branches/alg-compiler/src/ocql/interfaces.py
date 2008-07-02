@@ -44,6 +44,10 @@ class IAlgebraCompiler(Interface):
     Embeds the relation and index retrieval component information in the compiled object.
     """
 
+class IAlgebraPartCompiler(Interface):
+    #TODO: get rid of this with the real algebra tree
+    pass
+
 class IDB(Interface):
     """DB metadata and data provider
     Provides database metadata to the engine.
@@ -75,7 +79,7 @@ class IAlgebraObject(Interface):
     """
     def compile(self):
         """Return the compiled python code"""
-        
+
     def walk(self):
         """Iterate the Algebra object tree"""
 
@@ -115,4 +119,3 @@ class IStatistics(Interface):
     """Stores statistical data based on queries run before.
     Provides statistical data for optimization.
     """
-    

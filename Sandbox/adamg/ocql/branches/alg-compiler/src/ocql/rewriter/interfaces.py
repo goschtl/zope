@@ -11,7 +11,7 @@ from zope.interface import Attribute
 class IEmpty(IAlgebraObject):
     """Objects providing this interface represent the
     Empty Algebra object
-    """ 
+    """
     klass = Attribute('collection type name')
     expr = Attribute('expression')
 
@@ -23,7 +23,7 @@ class ISingle(IAlgebraObject):
     klass = Attribute('collection type name')
     expr = Attribute('expression')
 
-    
+
 class IUnion(IAlgebraObject):
     """Objects providing this interface represent the
     Union Algebra object
@@ -32,7 +32,7 @@ class IUnion(IAlgebraObject):
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
 
-    
+
 class IIter(IAlgebraObject):
     """Objects providing this interface represent the
     Iter Algebra object
@@ -40,7 +40,7 @@ class IIter(IAlgebraObject):
     klass = Attribute('collection type name')
     fun = Attribute('function')
     coll = Attribute('collection')
-    
+
 
 class ISelect(IAlgebraObject):
     """Objects providing this interface represent the
@@ -49,7 +49,7 @@ class ISelect(IAlgebraObject):
     klass = Attribute('collection type name')
     fun = Attribute('function')
     coll = Attribute('collection')
-    
+
 
 class IReduce(IAlgebraObject):
     """Objects providing this interface represent the
@@ -60,8 +60,8 @@ class IReduce(IAlgebraObject):
     fun = Attribute('function')
     aggreg = Attribute('aggregation')
     coll = Attribute('collection')
-    
-    
+
+
 class IRange(IAlgebraObject):
     """Objects providing this interface represent the
     Range Algebra object
@@ -70,7 +70,7 @@ class IRange(IAlgebraObject):
     start = Attribute('range start point')
     end = Attribute('range end point')
 
-    
+
 class IMake(IAlgebraObject):
     """Objects providing this interface represent the
     Make Algebra object
@@ -79,7 +79,7 @@ class IMake(IAlgebraObject):
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
 
-    
+
 class IIf(IAlgebraObject):
     """Objects providing this interface represent the
     If Algebra object
@@ -88,7 +88,7 @@ class IIf(IAlgebraObject):
     expr1 = Attribute('first expression')
     expr2 =Attribute('second expression')
 
-    
+
 class ILambda(IAlgebraObject):
     """Objects providing this interface represent the
     Lambda Algebra object
@@ -109,9 +109,9 @@ class IIdentifier(IAlgebraObject):
     Identifier Algebra object
     """
     name = Text()
-    
-    
-class IBinery(IAlgebraObject):
+
+
+class IBinary(IAlgebraObject):
     """Objects providing this interface represent the
     Binery Algebra object
     """
