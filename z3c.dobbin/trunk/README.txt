@@ -5,11 +5,12 @@ Dobbin is a relational database abstraction layer supporting a
 semi-transparent object persistance model.
 
 It relies on descriptive attribute and field declarations based on
-zope.interface and zope.schema.
+zope.interface and zope.schema. Strong typing is supported (and
+encouraged when possible), but not required.
 
-Tables are created automatically with a 1:1 correspondence to an
-interface with no inheritance (minimal interface). As such, objects
-are modelled as a join between the interfaces it implements.
+Tables are created on-the-fly with 1:1 correspondence to interfaces
+with no inheritance (base interface). As such, objects are modelled as
+a join between the interfaces they implement.
 
 Authors
 -------

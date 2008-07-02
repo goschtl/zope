@@ -1,50 +1,41 @@
 Developer documentation
 =======================
 
-This section details the object persistence model and the relations
-machinery.
+Objects are mapped by their specification. Polymorphic attributes are
+declared as interface attributes; strong typing may be declared using
+schema fields; Attributes that are not declared in a schema or
+interface are considered volatile.
 
-Introduction
-------------
+Unique identifiers (UUID)
+-------------------------
 
-Objects that need persisting are required to declare their attributes
-in an interface. Attributes that are not declared are considered
-volatile.
-
-Concrete attributes may be strongly typed using the schema fields that
-correspond to their type; polymorphic attributes are available using
-relational properties.
+A 16-byte unique identification number is used.
 
 Relations
 ---------
 
-There are two kinds of objects that can be related: instances and
-rocks. Relations are polymorphic such that they support both kinds.
+Polymorphic attributes are always stored using foreign key
+relations. This is handled transparently by the framework.
 
-An attribute can hold a single relation or many, using one of the
-built-in sequence types: list, tuple, set, dict.
+The target of a relation may be a basic type such as a string,
+integer, tuple or list, or it may be a mapped object.
 
-The following fields allow polymorphic relations of any kind:
+The following fields allow polymorphic relations of any kind with the
+type declared on assignment.
 
   * zope.schema.Object
   * zope.interface.Attribute
 
-Additional structure can be declared using the sequence fields:
+Collections are instrumented objects and may be declared using the
+sequence fields:
 
   * zope.schema.List
   * zope.schema.Dict
   * zope.schema.Set
 
-When translated to column in a table, all relations are soup object
-references; the soup specification will reflect the type.
+A note on dictionaries: Dictionaries are keyed by (unicode)
+string. Mapped instances may be used as keys in which case a string
+representation of the unique instance identifier is used. Dictionaries
+support polymorphic values with type set on assignment.
 
-Essentially, all polymorphic relations are many-to-many from a
-database perspective. 
 
-Collections
------------
-
-Dictionaries are keyed by (unicode) string. Soup objects may be used
-as keys in which case a string representation of the UUID is
-used. Dictionaries are polymorphic such that any kind of value may be
-assigned for an entry.

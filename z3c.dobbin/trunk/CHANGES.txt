@@ -1,8 +1,12 @@
 Change log
 ==========
 
-0.3.1 dev
----------
+0.3.1
+-----
+
+- Use native UUID column type (available on PostgreSQL); compatibility
+  with SQLite is preserved due to its weak typing.
+  [malthe]
 
 - Basic type factories are now registered as components.
   [malthe]
