@@ -33,21 +33,13 @@ from itertools import chain
 
 import types
 
-def uuid():
-    """Return new unique id as string.
-
-    Force first character between 'a' and 'z'.
-    """
-    
-    return chr(randint(ord('a'), ord('z'))) + uuid1().hex[:-1]
-
 class ObjectTranslator(object):
     def __init__(self, column_type=None):
         self.column_type = column_type
 
     def __call__(self, field, metadata):
         return rdb.Column(
-            field.__name__+'_uuid', rdb.String(length=32), nullable=False)
+            field.__name__+'_uuid', bootstrap.UUID, nullable=False)
 
 class ObjectProperty(object):
     """Object property.
@@ -197,7 +189,7 @@ def createMapper(spec):
             super(Mapper, self).__init__(*args, **kwargs)
 
             # set soup metadata
-            self.uuid = uuid()
+            self.uuid = "{%s}" % uuid1()
             self.spec = self.__spec__
 
         def __cmp__(self, other):

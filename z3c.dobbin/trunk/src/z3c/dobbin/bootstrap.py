@@ -3,12 +3,15 @@ from zope import component
 import sqlalchemy as rdb
 from sqlalchemy import orm
         
-from ore.alchemist.interfaces import IDatabaseEngine
-
+import ore.alchemist.interfaces
 import relations
 
+class UUID(rdb.types.TypeEngine):
+    def get_col_spec(self):
+        return "UUID"
+
 def bootstrapDatabaseEngine(event):
-    engine = component.getUtility(IDatabaseEngine)
+    engine = component.getUtility(ore.alchemist.interfaces.IDatabaseEngine)
     engine.metadata = metadata = rdb.MetaData(engine)
     setUp(metadata)
     
@@ -19,13 +22,11 @@ def setUp(metadata):
     operation of the persistence and relational framework.
     """
     
-    soup_uuid = rdb.String(length=32)
-    
     soup = rdb.Table(
         'dobbin:soup',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('uuid', soup_uuid, unique=True, index=True),
+        rdb.Column('uuid', UUID, unique=True, index=True),
         rdb.Column('spec', rdb.String, index=True),
         )
 
@@ -35,16 +36,16 @@ def setUp(metadata):
         'dobbin:relation:int',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', soup_uuid, soup_fk, index=True),
-        rdb.Column('right', soup_uuid, soup_fk),
+        rdb.Column('left', UUID, soup_fk, index=True),
+        rdb.Column('right', UUID, soup_fk),
         rdb.Column('order', rdb.Integer, nullable=False))
 
     str_relation = rdb.Table(
         'dobbin:relation:str',
         metadata,
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
-        rdb.Column('left', soup_uuid, soup_fk, index=True),
-        rdb.Column('right', soup_uuid, soup_fk),
+        rdb.Column('left', UUID, soup_fk, index=True),
+        rdb.Column('right', UUID, soup_fk),
         rdb.Column('key', rdb.Unicode, nullable=False))
 
     # set up mappers
