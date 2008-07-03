@@ -25,6 +25,8 @@ class QueryObject:
 
     metadata = None
     symbols = None
+    
+    __parent__ = __name__ = None
 
     def __init__(self, metadata, symbols):
         self.metadata = metadata
@@ -94,7 +96,10 @@ class Identifier(Expression):
             )
 
     def rewrite(self, algebra):
-        return algebra.Identifier(self.name)
+        rv = algebra.Identifier(self.name)
+        rv.__name__ = algebra.Identifier.__name__
+        return rv
+    
 
 class Constant(Expression):
     #this shall be abstract?
@@ -110,7 +115,9 @@ class Constant(Expression):
             self.__class__.__name__, self.value)
 
     def rewrite(self, algebra):
-        return algebra.Constant(self.value)
+        rv = algebra.Constant(self.value)
+        rv.__name__ = algebra.Constant.__name__
+        return rv
 
 class StringConstant(Constant):
     pass
@@ -203,9 +210,12 @@ class Query(Expression):
                     algebra.Empty(self.collection_type, None)
                 )
         else:
+            child = self.target.rewrite(algebra)
             rv = algebra.Single(
                 self.collection_type,
-                self.target.rewrite(algebra))
+                child)
+            rv.__name__ = algebra.Single.__name__
+            child.__parent__ = rv
 
         self.symbols.dellevel()
         return rv
@@ -286,25 +296,45 @@ class Binary(Expression):
             )
 
     def rewrite(self, algebra):
-        return algebra.Binary(
-            self.left.rewrite(algebra),
+        left_child = self.left.rewrite(algebra)
+        right_child = self.right.rewrite(algebra) 
+        rv = algebra.Binary(
+            left_child,
             self.get_operator(algebra),
-            self.right.rewrite(algebra))
-
+            right_child)
+        rv.__name__ = algebra.Binary.__name__
+        left_child.__parent__ = rv
+        right_child.__parent__ = rv
+        return rv
+    
 # Sets and properties
 class Union(Binary):
     def rewrite(self, algebra):
-        return algebra.Union(
+        left_child = self.left.rewrite(algebra)
+        right_child = self.right.rewrite(algebra) 
+        rv = algebra.Union(
             self.left.get_collection_type(),
-            self.left.rewrite(algebra),
-            self.right.rewrite(algebra))
+            left_child,
+            right_child)
+        rv.__name__ = algebra.Union.__name__
+        left_child.__parent__ = rv
+        right_child.__parent__ = rv
+        return rv
+        
 
 class Differ(Binary):
     def rewrite(self, algebra):
-        return algebra.Differ(
+        left_child = self.left.rewrite(algebra)
+        right_child = self.right.rewrite(algebra) 
+        rv = algebra.Differ(
             self.left.get_collection_type(),
-            self.left.rewrite(algebra),
-            self.right.rewrite(algebra))
+            left_child,
+            right_child)
+        rv.__name__ = algebra.Differ.__name__
+        left_child.__parent__ = rv
+        right_child.__parent__ = rv
+        return rv
+        
 
 class And(Binary):
     def get_operator(self, algebra):
@@ -316,9 +346,11 @@ class Or(Binary):
 
 class Property(Binary):
     def rewrite(self, algebra): # FIXME: Ezt gondold at...
-        return algebra.Identifier(
+        rv = algebra.Identifier(
             '.'.join([self.left.name, self.right.name]))
-
+        rv.__name__ = 'Property'
+        return rv
+    
     def get_class(self):
         t = self.left.get_class()
 
@@ -379,7 +411,8 @@ class Unary(Expression):
 
 class Not(Unary):
     def rewrite(self, algebra):
-        return algebra.Not(self.expression.rewrite(algebra))
+        rv = algebra.Not(self.expression.rewrite(algebra))
+        rv.__name__ = algebra.Not.__name__
 
 class Aggregate(Unary):
     pass
