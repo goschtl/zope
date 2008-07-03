@@ -38,7 +38,7 @@ class IResourceIncludeDirective(interface.Interface):
 def includeDirective(_context, include, base=u"", layer=IDefaultBrowserLayer, manager=None):
     if base:
         include = [base+'/'+name for name in include]
-        
+
     _context.action(
         discriminator = ('resourceInclude', IBrowserRequest, layer, "".join(include)),
         callable = handler,
@@ -50,17 +50,31 @@ def handler(include, layer, manager, info):
 
     global managers
 
-    if manager is None:
-        manager = managers.get(layer)
+    manager_override = manager is not None
+
+    for path in include:
+        try:
+            extension =  path.rsplit('.', 1)[1]
+        except IndexError:
+            extension = None
+
+        key = (layer, extension)
+        
+        if not manager_override:
+            manager = managers.get(key)
 
         if manager is None:
-            managers[layer] = manager = ResourceManager()
+            # create new resource manager
+            managers[key] = manager = ResourceManager()
 
-            count = len(managers)
-            name = str(count).rjust(3, '0') + ':' + layer.__module__ + '.' + layer.__name__
+            # maintain order by creating a name that corresponds to
+            # the current number of resource managers
+            name = "%s-resource-manager-%03d" % (extension, len(managers))
 
+            # register as an adapter
             component.provideAdapter(
                 manager, (layer,), IResourceManager, name=name)
 
-    for path in include:
         manager.add(path)
+
+        
