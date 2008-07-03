@@ -11,6 +11,7 @@ import zc.testbrowser.interfaces
 import zope.interface
 
 PROMPT = re.compile('repl\d?> ')
+CONTINUATION_PROMPT = re.compile('\\.\\.\\.\\.\d?> ')
 
 class BrowserStateError(RuntimeError):
     pass
@@ -74,7 +75,7 @@ class JSFunctionProxy(object):
         res = self.executor(js)
         # JS has 'null' and 'undefined', python only has 'None'.
         # This hack is sufficient for now.
-        if res == '[undefined]':
+        if res == '[(void 0)]':
             return None
         return simplejson.loads(res)[0]
 
@@ -119,13 +120,16 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
             raise RuntimeError('Error connecting to Firefox at %s:%s.'
                 ' Is MozRepl running?' % (host, port))
 
-        self.telnet.write(open(js_path, 'rt').read())
-        self.expect()
+        for line in open(js_path, 'r'):
+            self.telnet.write(line)
+            self.expect([PROMPT, CONTINUATION_PROMPT])
 
     def execute(self, js):
         if not js.strip():
             return
-        self.telnet.write("'MARKER'")
+        if not js.endswith('\n'):
+            js = js + '\n'
+        self.telnet.write("'MARKER'\n")
         self.telnet.read_until('MARKER', self.timeout)
         self.expect()
         self.telnet.write(js)
@@ -135,8 +139,9 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         result = text.rsplit('\n', 1)
         if len(result) == 1:
             return None
-        else:
-            return result[0]
+        if result[0].startswith('"') and result[0].endswith('"'):
+            return result[0][1:-1]
+        return result[0]
 
     def executeLines(self, js):
         lines = js.split('\n')
@@ -149,8 +154,10 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
     def getAttributes(self, tokens, attr_name):
         return self.js.tb_extract_token_attrs(tokens, attr_name)
 
-    def expect(self):
-        i, match, text = self.telnet.expect([PROMPT], self.timeout)
+    def expect(self, expected=None):
+        if expected is None:
+            expected = [PROMPT]
+        i, match, text = self.telnet.expect(expected, self.timeout)
         if match is None:
             raise RuntimeError('unexpected result from MozRepl')
         return i, match, text
@@ -160,7 +167,18 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def url(self):
-        return self.execute('content.location')
+        # url is return like (without the line breaks):
+        # 'http://localhost:26118/index.html \xe2\x80\x94 {
+        #       href: "http://localhost:26118/index.html",
+        #       host: "localhost:26118",
+        #       hostname: "localhost",
+        #       port: "26118"}'
+        # but we only need the URL part
+        url = self.execute('content.location')
+        token = ' \xe2\x80\x94 {'
+        if token in url:
+            url = url.split(token)[0]
+        return url
 
     def wait(self):
         start = time.time()
