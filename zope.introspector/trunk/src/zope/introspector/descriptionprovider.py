@@ -14,39 +14,39 @@
 """Provide description objects for arbitrary objects.
 """
 import grokcore.component as grok
-import martian
 from zope.introspector.interfaces import (IObjectDescriptionProvider,
                                           IObjectInfo)
+from zope.introspector.objectinfo import ObjectInfo
+from zope.introspector.util import resolve
 
+# The descriptor provider registry
 descriptor_registry = []
 
 class DescriptionFinder(grok.GlobalUtility):
+    """Find a description provider.
+
+    Find a component that takes an object and returns some kind of
+    info object to describe it.
+    """
     grok.implements(IObjectDescriptionProvider)
 
     def getDescription(self, obj_or_dotted_path, *args, **kw):
-        for descriptor in descriptor_registry:
-            handler = descriptor['handler']
-            if handler.canHandle(obj_or_dotted_path):
-                return handler.getDescription(obj_or_dotted_path)
+        obj = resolve(obj_or_dotted_path)
+        sorted_reg = sorted(descriptor_registry,
+                            cmp = lambda x,y: x['priority'] - y['priority'])
+        for descriptor in sorted_reg:
+            handler = descriptor['handler']()
+            if handler.canHandle(obj):
+                return handler.getDescription(obj)
         # If no descriptor could be found, we return the plainest one.
-        return ObjectInfo(obj_or_dotted_path)
+        return ObjectInfo(obj)
 
 class DescriptionProvider(object):
-    pass
-
-class DescriptionProviderGrokker(martian.ClassGrokker):
-    """Grok descriptor providers.
-
-    Groks classes derived from ``DescriptorProvider`` on startup and
-    adds them to the local descriptor registry.
+    """Description Providers must inherit from this to be registered.
     """
-    martian.component(DescriptionProvider)
+    def canHandle(self, obj, *args, **kw):
+        return False
 
-    def execute(self, obj=None, *args, **kw):
-        name = getattr(obj, 'name', '')
-        descriptor_registry.insert(0, dict(name=name, handler=obj()))
-        return True
-
-module_grokker = martian.ModuleGrokker()
-module_grokker.register(DescriptionProviderGrokker())
+    def getDescription(self, obj, *args, **kw):
+        return ObjectInfo(obj)
 
