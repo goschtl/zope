@@ -20,7 +20,6 @@ import grokcore.component as grok
 from zope.interface import Interface
 from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
                                           IPackageInfo, ITypeInfo)
-from zope.introspector.descriptionprovider import DescriptionProvider
 
 class ObjectInfo(grok.Adapter):
     grok.implements(IObjectInfo)
@@ -58,10 +57,3 @@ class TypeInfo(ObjectInfo):
     grok.provides(IObjectInfo)
     grok.context(types.TypeType)
 
-class SimpleDescriptionProvider(DescriptionProvider):
-    name = 'simple'
-    def getDescription(self, obj, *args, **kw):
-        return IObjectInfo(obj)
-
-    def canHandle(self, obj, *args, **kw):
-        return True
