@@ -157,7 +157,7 @@ registered::
    >>> from zope.introspector.interfaces import IPackageInfo
    >>> info = IPackageInfo(subpkg)
    >>> info.getPackageFiles(filter='.txt')
-   []
+   ['descriptorgrokker.txt']
 
 
 Extending the introspector.core

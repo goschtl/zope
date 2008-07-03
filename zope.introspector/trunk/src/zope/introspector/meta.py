@@ -42,6 +42,14 @@ class DescriptionProviderGrokker(martian.ClassGrokker):
     martian.component(DescriptionProvider)
     martian.directive(priority)
     def execute(self, klass, priority, *args, **kw):
-        descriptor_registry.append(dict(handler=klass,
-                                        priority=priority))
+        num = 0
+        found = False
+        for num in range(0, len(descriptor_registry)):
+            if descriptor_registry[num]['priority'] >= priority:
+                found = True
+                break
+        if not found and num:
+            num += 1
+        descriptor_registry.insert(num, dict(handler=klass,
+                                             priority=priority))
         return True
