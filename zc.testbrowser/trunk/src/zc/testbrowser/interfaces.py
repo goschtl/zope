@@ -39,7 +39,7 @@ class IBrowser(zope.interface.Interface):
         description=u"Tells whether the output is HTML or not.",
         required=True)
 
-    title = zope.schema.TextLine(
+    base = zope.schema.TextLine(
         title=u"Base",
         description=u"Base URL for opening relative paths",
         required=False)
