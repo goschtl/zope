@@ -6,7 +6,7 @@
 We create a view on the model and call the KSS action on the view. The
 KSS action calls `self.view.render()`.
 
-  >>> mymodel = TestModel('model1') 
+  >>> mymodel = TestModel('model1')
   >>> view = getMultiAdapter((mymodel, request), name="testview")
   >>> kss = getMultiAdapter((view, request), name="getId")
   >>> print kss()
@@ -43,6 +43,7 @@ class TestView(grok.View):
 class TestKSS(KSS):
 
     grok.view(TestView)
+    grok.require(grok.Public)
 
     def getId(self):
         """Docstring for getId"""

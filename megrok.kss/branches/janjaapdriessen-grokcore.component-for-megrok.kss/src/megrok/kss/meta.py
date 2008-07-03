@@ -10,14 +10,11 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from megrok.kss.components import KSS
 
+
 class KSSGrokker(martian.MethodGrokker):
-    component_class = KSS
-    directives = [
-        grok.view.bind(),
-        grok.require.bind(name='permission'),
-        # TODO: We should allow name directives on methods
-        #name = grok.name.bind(...)
-        ]
+    martian.component(KSS)
+    martian.directive(grok.directive.view)
+    martian.directive(grok.require, name='permission')
 
     def execute(self, factory, method, config, view, permission, **kw):
 
@@ -26,19 +23,16 @@ class KSSGrokker(martian.MethodGrokker):
         name = method.__name__
         method_view = type(
             factory.__name__, (factory, BrowserPage),
-            {'__view_name__': name}
-            )
+            {'__view_name__': name})
 
         adapts = (view, IDefaultBrowserLayer)
         config.action(
             discriminator=('adapter', adapts, interface.Interface, name),
             callable=component.provideAdapter,
-            args=(method_view, adapts, interface.Interface, name)
-            )
+            args=(method_view, adapts, interface.Interface, name))
         config.action(
             discriminator=('protectName', method_view, '__call__'),
             callable=make_checker,
-            args=(factory, method_view, permission)
-            )
+            args=(factory, method_view, permission))
 
         return True
