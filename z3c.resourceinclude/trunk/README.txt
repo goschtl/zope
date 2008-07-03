@@ -54,12 +54,16 @@ A convenience method is provided to require a given resource layer:
 Ordering
 --------
 
-Resources will be included in the order they're registered for
-inclusion; within an include-definition, order is respected only for
-resources of similar kind.
+Resources are included in the order they're registered; that is, the
+order in which the ZCML-directives are processed.
+
+Stylesheets are included before javascripts as per general
+recommendation. Kinetic stylesheets are included last.
 
 Merging
 -------
 
 When not in 'devmode', the resource collector will automatically merge
-resources, giving them a filename based on the contents (sha digest).
+resources, giving them a filename based on the contents (sha
+digest). This has the side effect that merged resources are set to
+never expire.
