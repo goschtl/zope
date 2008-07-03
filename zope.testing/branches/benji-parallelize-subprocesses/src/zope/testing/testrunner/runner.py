@@ -438,8 +438,10 @@ def resume_tests(options, layer_name, layers, failures, errors):
             thread.start()
             running_threads.append(thread)
 
-        running_threads[0].join()
-        del running_threads[0]
+        for index, thread in list(enumerate(running_threads)):
+            if not thread.isAlive():
+                del running_threads[index]
+        time.sleep(0.1)
 
     # Gather up all the results.
     rantotal = 0
@@ -626,11 +628,17 @@ def order_by_bases(layers):
     gathered.reverse()
     seen = {}
     result = []
+
     for layer in gathered:
         if layer not in seen:
             seen[layer] = 1
             if layer in layers:
-                result.append(layer)
+                if (name_from_layer(layer) ==
+                    'zope.testing.testrunner.layer.UnitTests'):
+                    result.insert(0, layer)
+                else:
+                    result.append(layer)
+
     return result
 
 

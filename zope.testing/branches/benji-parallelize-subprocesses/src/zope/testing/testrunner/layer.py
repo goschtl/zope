@@ -19,3 +19,7 @@ $Id: __init__.py 86223 2008-05-03 14:36:04Z ctheune $
 
 class UnitTests(object):
     """A layer for gathering all unit tests."""
+
+    @staticmethod
+    def tearDown():
+        raise NotImplementedError
