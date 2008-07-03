@@ -33,7 +33,7 @@ class ResourceManager(object):
 
             if path is not None:
                 resource = resource[path]
-                name = "/".join((path, name))
+                name = "/".join((name, path))
 
             resources.append((name, resource))
 
