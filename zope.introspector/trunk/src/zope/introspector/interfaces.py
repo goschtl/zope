@@ -16,6 +16,12 @@
 from zope import interface, schema
 
 class IIntrospectorBaseClasses(interface.Interface):
+    priority = interface.Attribute(
+        "Directive for use in description providers")
+    DescriptionProvider = interface.Attribute(
+        "A component that delivers a suitable description object "
+        "for certain kinds of objects."
+        )
     ObjectInfo = interface.Attribute("Basic Object Information")
     ModuleInfo = interface.Attribute("Information about a module")
     PackageInfo = interface.Attribute("Information about a package")

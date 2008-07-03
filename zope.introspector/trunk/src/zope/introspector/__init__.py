@@ -17,6 +17,8 @@ $Id$
 """
 from objectinfo import ObjectInfo, ModuleInfo, PackageInfo, TypeInfo
 from utilityinfo import UtilityInfo
+from meta import priority
+from descriptionprovider import DescriptionProvider
 
 from zope.introspector.interfaces import IIntrospectorAPI
 from zope.interface import moduleProvides
