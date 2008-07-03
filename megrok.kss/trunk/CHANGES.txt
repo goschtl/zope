@@ -1,0 +1,15 @@
+megrok.kss changes
+******************
+
+0.2 (unreleased)
+=================
+
+Restructuring
+-------------
+
+* Change the KSSGrokker to use the new grokcore.component directives.
+
+0.1 (2008-04-30)
+================
+
+Initial release
