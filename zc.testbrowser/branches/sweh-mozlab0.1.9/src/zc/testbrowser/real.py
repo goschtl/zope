@@ -167,14 +167,14 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
 
     @property
     def url(self):
-        # url is return like (without the line breaks):
+        url = self.execute('content.location')
+        # url is something like this (without the line breaks):
         # 'http://localhost:26118/index.html \xe2\x80\x94 {
         #       href: "http://localhost:26118/index.html",
         #       host: "localhost:26118",
         #       hostname: "localhost",
         #       port: "26118"}'
-        # but we only need the URL part
-        url = self.execute('content.location')
+        # But we only need the URL part
         token = ' \xe2\x80\x94 {'
         if token in url:
             url = url.split(token)[0]
@@ -188,6 +188,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
                 raise RuntimeError('timed out waiting for page load')
 
         assert self.execute('tb_page_loaded;') == 'true'
+        time.sleep(0.005)
         self.execute('tb_page_loaded = false;')
         assert self.execute('tb_page_loaded;') == 'false'
 
