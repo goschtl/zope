@@ -134,7 +134,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         self.expect()
         self.telnet.write(js)
         i, match, text = self.expect()
-        #if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
+        if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
         if '!!!' in text: raise Exception('FAILED: ' + js)
         result = text.rsplit('\n', 1)
         if len(result) == 1:
@@ -224,7 +224,7 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         if base == 'text' and 'html' not in sub:
             return self.execute(
                 "content.document.getElementsByTagName('pre')[0].innerHTML")
-        return self.execute('content.document.documentElement.innerHTML')
+        return self.execute('tb_get_contents()')
 
     def reload(self):
         self.execute('content.document.location = content.document.location')

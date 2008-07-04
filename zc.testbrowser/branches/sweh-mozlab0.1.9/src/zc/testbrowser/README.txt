@@ -44,6 +44,14 @@ Making assertions about page contents is easy.
     >>> '<h1>Simple Page</h1>' in browser.contents
     True
 
+For pages with doctype definitions :
+
+    >>> browser.open('doctype.html')
+    >>> print browser.contents
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html>
+    <head>...
+
 
 Checking for HTML
 -----------------

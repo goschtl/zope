@@ -571,3 +571,20 @@ function tb_get_listcontrol_item_tokens(token) {
     }
     return tokens;
 }
+
+function tb_get_contents() {
+    // get doctype
+    var node = content.document.firstChild;
+    var contents = '';
+    while (node) {
+      if (node.nodeType == node.DOCUMENT_TYPE_NODE) {
+        contents += '<!DOCTYPE ' + node.name.toLowerCase() + ' PUBLIC "' +
+          node.publicId + '" "' + node.systemId + '">\n';
+      } else if (node.nodeType == node.ELEMENT_NODE) {
+        var name = node.nodeName.toLowerCase();
+        contents += '<' + name + '>\n' + node.innerHTML + '</' + name + '>';
+      }
+      node = node.nextSibling;
+    }
+    return contents;
+}
