@@ -206,8 +206,10 @@ class Runner(object):
         """
         setup_layers = {}
         layers_to_run = list(self.ordered_layers())
+        should_resume = False
 
-        for layer_name, layer, tests in layers_to_run:
+        while layers_to_run:
+            layer_name, layer, tests = layers_to_run.pop(0)
             for feature in self.features:
                 feature.layer_setup(layer)
             try:
@@ -217,11 +219,18 @@ class Runner(object):
                 self.failed = True
                 return
             except CanNotTearDown:
-                setup_layers = None
                 if not self.options.resume_layer:
-                    self.ran += resume_tests(self.options, layer_name, layers_to_run,
-                                             self.failures, self.errors)
+                    should_resume = True
                     break
+
+            if self.options.processes > 1:
+                should_resume = True
+                break
+
+        if should_resume:
+            setup_layers = None
+            self.ran += resume_tests(self.options, self.features,
+                layers_to_run, self.failures, self.errors)
 
         if setup_layers:
             if self.options.resume_layer == None:
@@ -359,8 +368,8 @@ class SetUpLayerFailure(unittest.TestCase):
     def runTest(self):
         "Layer set up failure."
 
-def resume_a_layer(queue, options, layer_name, failures, errors,
-        resume_number):
+def spawn_layer_in_subprocess(queue, options, features, layer_name, layer,
+        failures, errors, resume_number):
     args = [sys.executable,
             sys.argv[0],
             '--resume-layer', layer_name, str(resume_number),
@@ -380,6 +389,9 @@ def resume_a_layer(queue, options, layer_name, failures, errors,
             ('"' + a.replace('\\', '\\\\').replace('"', '\\"') + '"')
             for a in args[1:]
             ])
+
+    for feature in features:
+        feature.layer_setup(layer)
 
     subin, subout, suberr = os.popen3(args)
     while True:
@@ -416,24 +428,21 @@ def resume_a_layer(queue, options, layer_name, failures, errors,
     queue.put(ran)
 
 
-def resume_tests(options, layer_name, layers, failures, errors):
-    output = options.output
+def resume_tests(options, features, layers, failures, errors):
     queue = Queue.Queue()
-    layers = [l for (l, _, _) in layers]
-    layers = layers[layers.index(layer_name):]
     resume_number = 0
     ready_threads = []
-    for layer_name in layers:
+    for layer_name, layer, tests in layers:
         ready_threads.append(threading.Thread(
-            target=resume_a_layer,
-            args=(queue, options, layer_name, failures, errors, resume_number)))
+            target=spawn_layer_in_subprocess,
+            args=(queue, options, features, layer_name, layer, failures,
+                errors, resume_number)))
         resume_number += 1
 
     # Now start a few threads at a time.
-    num_threads = 3
     running_threads = []
     while ready_threads or running_threads:
-        while len(running_threads) < num_threads and ready_threads:
+        while len(running_threads) < options.processes and ready_threads:
             thread = ready_threads.pop(0)
             thread.start()
             running_threads.append(thread)
@@ -441,7 +450,7 @@ def resume_tests(options, layer_name, layers, failures, errors):
         for index, thread in list(enumerate(running_threads)):
             if not thread.isAlive():
                 del running_threads[index]
-        time.sleep(0.1)
+        time.sleep(0.01) # keep the loop from being too tight
 
     # Gather up all the results.
     rantotal = 0

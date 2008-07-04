@@ -407,6 +407,20 @@ parser.add_option_group(setup)
 other = optparse.OptionGroup(parser, "Other", "Other options")
 
 other.add_option(
+    '--exit-with-status', action="store_true", dest='exitwithstatus',
+    help="""\
+Return an error exit status if the tests failed.  This can be useful for
+an invoking process that wants to monitor the result of a test run.
+""")
+
+other.add_option(
+    '-j', action="store", type="int", dest='processes', default=1,
+    help="""\
+Use up to given number of parallel processes to execute tests.  May decrease
+test run time substantially.  Defaults to %default.
+""")
+
+other.add_option(
     '--keepbytecode', '-k', action="store_true", dest='keepbytecode',
     help="""\
 Normally, the test runner scans the test paths and the test
@@ -429,13 +443,6 @@ file XYZ.py contains tests but is absent while XYZ.pyc or XYZ.pyo exists
 then the compiled files will be used.  This is necessary when running
 tests against a tree where the .py files have been removed after
 compilation to .pyc/.pyo.  Use of this option implies --keepbytecode.
-""")
-
-other.add_option(
-    '--exit-with-status', action="store_true", dest='exitwithstatus',
-    help="""\
-Return an error exit status if the tests failed.  This can be useful for
-an invoking process that wants to monitor the result of a test run.
 """)
 
 parser.add_option_group(other)
