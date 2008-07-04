@@ -188,8 +188,11 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
                 raise RuntimeError('timed out waiting for page load')
 
         assert self.execute('tb_page_loaded;') == 'true'
-        time.sleep(0.005)
-        self.execute('tb_page_loaded = false;')
+
+        while self.execute('tb_page_loaded;') == 'true':
+            self.execute('tb_page_loaded = false;')
+            time.sleep(0.001)
+
         assert self.execute('tb_page_loaded;') == 'false'
 
     def open(self, url, data=None):
