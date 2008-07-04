@@ -40,6 +40,7 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'grok',
+                      'zope.introspector',
                       ],
     tests_require = tests_require,
     extras_require = dict(test=tests_require), 
