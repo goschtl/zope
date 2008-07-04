@@ -19,10 +19,10 @@ import grok
 from zope.app.basicskin import IBasicSkin
 from zope.app.folder.interfaces import IRootFolder
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from grok.admin.introspector.interfaces import (IGrokIntrospector,
-                                                IGrokRegistryIntrospector,
-                                                IGrokCodeIntrospector,
-                                                IGrokZODBBrowser)
+from grokui.introspector.interfaces import (IGrokIntrospector,
+                                            IGrokRegistryIntrospector,
+                                            IGrokCodeIntrospector,
+                                            IGrokZODBBrowser)
 
 # BBB: This will change after decoupling grok.admin from grok...
 grok.context(IGrokIntrospector)

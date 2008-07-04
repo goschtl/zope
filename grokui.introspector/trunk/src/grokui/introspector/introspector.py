@@ -15,10 +15,10 @@
 """
 import grok
 from zope.introspector import UtilityInfo
-from grok.admin.introspector.interfaces import (IGrokIntrospector,
-                                                IGrokRegistryIntrospector,
-                                                IGrokCodeIntrospector,
-                                                IGrokZODBBrowser)
+from grokui.introspector.interfaces import (IGrokIntrospector,
+                                            IGrokRegistryIntrospector,
+                                            IGrokCodeIntrospector,
+                                            IGrokZODBBrowser)
 
 class Introspector(grok.Model):
     grok.implements(IGrokIntrospector)
