@@ -643,11 +643,7 @@ def order_by_bases(layers):
         if layer not in seen:
             seen[layer] = 1
             if layer in layers:
-#                if (name_from_layer(layer) ==
-#                    'zope.testing.testrunner.layer.UnitTests'):
-#                    result.insert(0, layer)
-#                else:
-                    result.append(layer)
+                result.append(layer)
 
     return result
 
