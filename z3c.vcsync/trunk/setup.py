@@ -12,11 +12,13 @@ long_description = (
     )
 
 setup(name='z3c.vcsync',
-      version='0.14dev',
+      version='0.15dev',
       description="Synchronize object data with a version control system",
       long_description=long_description,
       package_dir={'': 'src'},
       packages=find_packages('src'),
+      author="Martijn Faassen",
+      author_email="faassen@startifact.com",
       namespace_packages=['z3c'],
       include_package_data=True,
       zip_safe=False,
