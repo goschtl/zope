@@ -209,7 +209,7 @@ class Runner(object):
         should_resume = False
 
         while layers_to_run:
-            layer_name, layer, tests = layers_to_run.pop(0)
+            layer_name, layer, tests = layers_to_run[0]
             for feature in self.features:
                 feature.layer_setup(layer)
             try:
@@ -223,6 +223,7 @@ class Runner(object):
                     should_resume = True
                     break
 
+            layers_to_run.pop(0)
             if self.options.processes > 1:
                 should_resume = True
                 break
@@ -642,10 +643,10 @@ def order_by_bases(layers):
         if layer not in seen:
             seen[layer] = 1
             if layer in layers:
-                if (name_from_layer(layer) ==
-                    'zope.testing.testrunner.layer.UnitTests'):
-                    result.insert(0, layer)
-                else:
+#                if (name_from_layer(layer) ==
+#                    'zope.testing.testrunner.layer.UnitTests'):
+#                    result.insert(0, layer)
+#                else:
                     result.append(layer)
 
     return result
