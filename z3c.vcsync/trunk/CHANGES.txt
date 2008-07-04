@@ -4,7 +4,15 @@ z3c.vcsync changes
 0.14 (unreleased)
 -----------------
 
-* ...
+* Fixed a bug where too many path fragments were returned in case of
+  conflicts. Now only paths that have in fact changed should be
+  returned. Added some tests for this.
+
+* There was a case where two users would add a file with the same name
+  to their own states independently. This used to result in an SVN
+  error, but now also generates a conflict.  This conflict is a bit
+  different in its behavior unfortunately, as it prefers the version
+  already in SVN as opposed to the one last added.
 
 0.13 (2008-06-02)
 -----------------

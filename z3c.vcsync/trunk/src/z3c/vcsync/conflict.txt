@@ -103,6 +103,17 @@ We now should have a ``data`` folder in ``root2`` as well::
 File conflicts
 --------------
 
+We define a function first that can get the output of the
+``files_changed`` method on ``info`` and normalize it into testable
+paths::
+
+  >>> def files_changed(synchronizer, info):
+  ...   result = []
+  ...   checkout_path = synchronizer.checkout.path
+  ...   for path in info.files_changed():
+  ...       result.append(path.relto(checkout_path))
+  ...   return sorted(result, key=lambda path: len(path))
+
 Let's now generate a conflict: we change the same object in both trees
 at the same time::
 
@@ -115,12 +126,23 @@ Let's synchronize the second tree first. This won't generate a
 conflict yet by itself, but sets up for it::
 
   >>> info = s2.sync("synchronize")
+  >>> files_changed(s2, info)
+  []
+  >>> info.objects_changed()
+  ['/data/bar']
 
 Now we'll synchronize the first tree. This will generate a conflict, as
 we saved a different value from the second tree::
 
   >>> current_synchronizer = s1
   >>> info = s1.sync("synchronize")
+  >>> files_changed(s1, info)
+  ['found', 'found/data', 'data/bar.test', 'found/data/bar.test']
+  >>> sorted(info.objects_changed())
+  ['/data/bar']
+
+Note that since ``found`` and ``found/data`` were also newly added to
+the tree, they show up in ``files_changed``.
 
 The conflict will have been resolved in favor of the first tree, as
 this synchronized last::
@@ -141,8 +163,13 @@ resolved value appear as well::
 
   >>> current_synchronizer = s2
   >>> info = s2.sync("synchronize")
+  >>> files_changed(s2, info)
+  ['found', 'found/data', 'data/bar.test', 'found/data/bar.test']
   >>> data2['bar'].payload
   200
+
+Since ``found`` and ``found/data`` are new to ``s2``, they show up as
+changed files again.
 
 The other version of the conflicting object is also available to the
 second hierarchy::
@@ -158,12 +185,29 @@ Conflicts in subdirectories should also be resolved properly::
   >>> current_synchronizer = s2
   >>> data2['sub']['qux'].payload = 36
   >>> info = s2.sync("Synchronize")
+
+No conflict occured yet, so no files changed::
+
+  >>> files_changed(s2, info)
+  []
+
+Now we generate the conflict::
+
   >>> current_synchronizer = s1
   >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  ['found/data/sub', 'data/sub/qux.test', 'found/data/sub/qux.test']
+
+Note that only those files actually changed as a result of this will
+show up, not ``found`` or ``found/data``.
+
   >>> data1['sub']['qux'].payload
   35
   >>> current_synchronizer = s2
   >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['found/data/sub', 'data/sub/qux.test', 'found/data/sub/qux.test']
+
   >>> data2['sub']['qux'].payload
   35
 
@@ -172,6 +216,45 @@ The found version in this case will reside in the same subdirectory,
 
   >>> found2['data']['sub']['qux'].payload
   36
+
+Conflict of new files
+---------------------
+
+If both trees have a file with the same name added, these files are in
+conflict before either of them enters svn. This can lead to an SVN
+error when an ``svn up`` is issued - the file is newly updated but has
+also been locally added.
+
+  >>> current_synchronizer = s1
+  >>> data1['simulnew'] = Item(200)
+  >>> current_synchronizer = s2
+  >>> data2['simulnew'] = Item(250)
+
+Let's synchronize the second tree first. This won't be a problem by
+itself::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("synchronize")
+
+The file ``simulnew`` is now in SVN, but at the same time, it will get
+added by ``s1`` as we synchronize it::
+
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("synchronize")
+
+Normally the conflict will have resolved in favor of the one that resolves
+last, but this is currently technically rather hard to do, so we'll favor
+the one that first got the file into SVN::
+
+  >>> data1['simulnew'].payload
+  250
+
+The other version of the conflicting object is stored under the
+``found`` directory::
+
+  >>> found1 = root1['found']
+  >>> found1['data']['simulnew'].payload
+  200
 
 Re-occurrence of a conflict
 ---------------------------
@@ -253,12 +336,16 @@ content in it, and synchronizes it::
   >>> data1['folder'] = Container()
   >>> data1['folder']['content'] = Item(14)
   >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  []
 
-We'll synchronize this into ``data2`` so that the second user (``user2``) has
-access to it::
+We'll synchronize this into ``data2`` so that the second user
+(``user2``) has access to it::
 
   >>> current_synchronizer = s2
   >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['data/folder', 'data/bar.test', 'found/data/bar.test', 'data/folder/content.test']
 
 ``user1`` now throws away ``folder`` in ``data`` and synchronizes this,
 causing ``folder`` to be gone in SVN::
@@ -267,6 +354,8 @@ causing ``folder`` to be gone in SVN::
   >>> state1._removed.append(get_object_path(root1, root1['data']['folder']))
   >>> del root1['data']['folder']
   >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  []
 
 It's really gone now::
 
@@ -287,6 +376,8 @@ Meanwhile, ``user2`` happily alters data in ``folder`` by changing
 Now ``user2`` does a synchronization too::
 
   >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['found/data/folder', 'found/data/folder/content.test']
 
 Since the folder was previously removed, all changes ``user2`` made
 are now gone, as ``folder`` is gone::
