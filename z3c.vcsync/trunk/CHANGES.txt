@@ -1,7 +1,7 @@
 z3c.vcsync changes
 ==================
 
-0.14 (unreleased)
+0.14 (2008-07-04)
 -----------------
 
 * Fixed a bug where too many path fragments were returned in case of
