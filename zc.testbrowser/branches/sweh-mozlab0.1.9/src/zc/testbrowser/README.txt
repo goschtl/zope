@@ -44,7 +44,8 @@ Making assertions about page contents is easy.
     >>> '<h1>Simple Page</h1>' in browser.contents
     True
 
-For pages with doctype definitions :
+
+The doctype and <html> node are also part of the contents:
 
     >>> browser.open('doctype.html')
     >>> print browser.contents
