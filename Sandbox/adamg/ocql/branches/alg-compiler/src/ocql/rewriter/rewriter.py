@@ -11,9 +11,11 @@ $Id$
 
 from zope.component import adapts
 from zope.interface import implements
+from zope.location import locate
 
 from ocql.interfaces import IRewriter
 from ocql.interfaces import IOptimizedObjectQuery
+from ocql.rewriter.algebra import Algebra
 
 from ocql.rewriter import algebra as target_algebra
 
@@ -26,4 +28,14 @@ class Rewriter(object):
 
     def __call__(self):
         query = self.context
-        return query.rewrite(target_algebra)
+        alg = query.rewrite(target_algebra)        
+        self._preorder(alg)
+        alg.__name__ = 'head'
+        return alg
+    
+    def _preorder(self, alg):
+        if isinstance(alg, Algebra):
+            for child in alg.children:
+                if isinstance(child, Algebra):
+                    self._preorder(child.children)
+                    name = child.__name__

@@ -14,6 +14,8 @@ from zope.interface import implements
 
 from ocql.interfaces import IAlgebraObject
 from ocql.rewriter.interfaces import *
+from zope.location import Location, locate
+
 
 class Algebra:
     """Signature definition of Algebra operation classes.
@@ -22,12 +24,18 @@ class Algebra:
     #TODO: this is dirty here, at the end we'll need to have a tree of
     #Algebra's whose topmost element will only get this IF
     implements(IAlgebraObject)
-
+    children = []
+    
     def walk(self):
         """Iterate the Algebra object tree"""
 
-class BaseAlgebra(Algebra):
-    pass
+class BaseAlgebra(Algebra, Location):
+    
+    def walk(self):
+        yield self
+        for child in self.children:
+            for t in child.walk():
+                yield t
 
 class Empty(BaseAlgebra):
 
@@ -49,14 +57,11 @@ class Single(BaseAlgebra):
     def __init__(self, klass, expr):
         self.klass = klass
         self.expr = expr
+        locate(expr, self, 'expr')
+        self.children.extend([klass, expr])
 
     def __repr__(self):
         return 'Single(%s,%s)'%(self.klass, self.expr)
-
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
 
 class Union(BaseAlgebra):
 
@@ -66,16 +71,13 @@ class Union(BaseAlgebra):
         self.klass=klass
         self.coll1=coll1
         self.coll2=coll2
+        locate(coll1, self, 'coll1')
+        locate(coll2, self, 'coll2')
+        self.children.extend([coll1, coll2])
 
     def __repr__(self):
         return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
-    def walk(self):
-        yield self
-        for t in self.coll1.walk():
-            yield t
-        for t in self.coll2.walk():
-            yield t
 
 #class Differ:
 #    def __init__(self, klass, start, end):
@@ -98,16 +100,13 @@ class Iter(BaseAlgebra):
         self.klass = klass
         self.func = func
         self.coll = coll
+        locate(func, self, 'func')
+        locate(coll, self, 'coll')
+        self.children.append([func,coll])
 
     def __repr__(self):
         return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.func.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 class Select(BaseAlgebra):
 
@@ -117,16 +116,13 @@ class Select(BaseAlgebra):
         self.klass = klass
         self.func = func
         self.coll = coll
-
+        locate(func, self, 'func')
+        locate(coll, self, 'coll')
+        self.children.append([func,coll])
+       
     def __repr__(self):
         return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.func.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 class Reduce(BaseAlgebra):
 
@@ -138,20 +134,15 @@ class Reduce(BaseAlgebra):
         self.func = func
         self.aggreg = aggreg
         self.coll = coll
+        locate(expr, self, 'expr')
+        locate(func, self, 'func')
+        locate(aggreg, self, 'aggreg')
+        locate(coll, self, 'coll')
+        self.children.append([expr, func, aggreg, coll])
 
     def __repr__(self):
         return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
-        for t in self.func.walk():
-            yield t
-        for t in self.aggreg.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 #class Equal:
 #    def __init__(self, klass, coll1, coll2):
@@ -169,17 +160,13 @@ class Range(BaseAlgebra):
 
     implements(IRange)
 
-    def __init__(self, klass, start, enf):
+    def __init__(self, klass, start, end):
         self.klass = klass
         self.start = start
         self.end = end
-
-    def walk(self):
-        yield self
-        for t in self.start.walk():
-            yield t
-        for t in self.end.walk():
-            yield t
+        locate(start, self, 'start')
+        locate(end, self, 'end')
+        self.children.extend([start, end])
 
 
 #class Index
@@ -192,14 +179,14 @@ class Make(BaseAlgebra):
         self.expr = expr
         self.coll1 = coll1
         self.coll2 = coll2
-
+        locate(expr, self, 'expr')
+#        locate(coll1, self, 'coll1')
+#        locate(coll2, self, 'coll2')
+        self.children.append(expr)
+       
     def __repr__(self):
         return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
 
 #class And:
 #class Being:
@@ -212,18 +199,14 @@ class If(BaseAlgebra):
         self.cond = cond
         self.expr1 = expr1
         self.expr2 = expr2
+        locate(cond, self, 'cond')
+        locate(expr1, self, 'expr1')
+        locate(expr2, self, 'expr2')
+        self.children.extend([cond, expr1, expr2])
 
     def __repr__(self):
         return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
 
-    def walk(self):
-        yield self
-        for t in self.cond.walk():
-            yield t
-        for t in self.expr1.walk():
-            yield t
-        for t in self.expr2.walk():
-            yield t
 
 #
 #
@@ -235,14 +218,12 @@ class Lambda(BaseAlgebra):
     def __init__(self, var, expr):
         self.var = var
         self.expr = expr
+        locate(expr, self, 'expr')
+        self.children.append(expr)
 
     def __repr__(self):
         return "Lambda %s: %s" %(self.var, self.expr)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
 
 class Constant(BaseAlgebra):
 
@@ -278,16 +259,13 @@ class Binary(BaseAlgebra):
         self.left = left
         self.op = op
         self.right = right
+        locate(left, self, 'left')
+        locate(right, self, 'right')
+        self.children.extend([left, right])
 
     def __repr__(self):
         return "%s%s%s" % (self.left, self.op.op, self.right)
 
-    def walk(self):
-        yield self
-        for t in self.left.walk():
-            yield t
-        for t in self.right.walk():
-            yield t
 
 class Operator(BaseAlgebra):
 
