@@ -34,9 +34,6 @@ setup(
         read('README.txt')
         + '\n' +
         read('CHANGES.txt')
-        + '\n' +
-        'Download\n'
-        '**********************\n'
         ),
 
     packages = find_packages(),
