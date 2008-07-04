@@ -638,13 +638,11 @@ def order_by_bases(layers):
     gathered.reverse()
     seen = {}
     result = []
-
     for layer in gathered:
         if layer not in seen:
             seen[layer] = 1
             if layer in layers:
                 result.append(layer)
-
     return result
 
 
