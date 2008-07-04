@@ -16,7 +16,7 @@ handlers and other stuff. This specialized introspector is called
 
 We can create a registry introspector::
 
-  >>> from grok.admin.introspector.introspector import RegistryIntrospector
+  >>> from grokui.introspector.introspector import RegistryIntrospector
   >>> introspector = RegistryIntrospector()
 
 
