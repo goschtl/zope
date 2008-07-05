@@ -425,6 +425,7 @@ def spawn_layer_in_subprocess(rans, options, features, layer_name, layer,
         except KeyboardInterrupt:
             raise
         except:
+            sys.stderr.write(line)
             continue
 
     while nfail > 0:
