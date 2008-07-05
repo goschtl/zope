@@ -1,0 +1,27 @@
+===================
+ldapadapter changes
+===================
+
+0.7 - 04.07.2008
+================
+
+* Encoding DNs to UTF-8 when connecting.
+
+* Removed help:register directive for Grok 0.13 compatability.
+
+0.6 - 20.11.2006
+================
+
+Features added
+--------------
+
+* Fixed Zope 3.3 induced deprecation warnings.
+
+Bugs fixed
+----------
+
+* The LDAP Adapter Vocabulary list (used by ldappas) was showing an
+  enormous list of irrelevant things. Instead only show those
+  LDAPAdapters that were registered. Note: each ldapadapter must be
+  registered with a particular *name* for it to show up properly in
+  the user interface of ldappas now...

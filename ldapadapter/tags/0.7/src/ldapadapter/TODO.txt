@@ -1,0 +1,108 @@
+TODO for LDAP Adapter
+=====================
+
+Most important first:
+
+- Connection caching, to reuse bound connections to the same server with
+  the same binding dn/password.
+
+- SSL connections (check python-ldap to see what's needed).
+
+- SASL configuration and connections (in addition of the simple bind it
+  currently uses). This will require SASL libraries on the zope side
+  (check http://oss.netfarm.it/python-cyrus.php).
+
+- Use LDAP schema introspection to find which fields should not be
+  converted from UTF-8 but are actualy binary (see below).
+
+Misc:
+
+- Add i18n translation files.
+
+- Move LDAPURI field to zope.schema._fields.py.
+
+
+Schema introspection
+--------------------
+
+Here's some python I wrote to get to the LDAP schema and parse it.
+
+import ldap
+from ldap import initialize
+from ldap import OPT_PROTOCOL_VERSION
+from ldap import VERSION3
+from ldap import SCOPE_BASE
+from ldap.schema import AttributeType
+from ldap.schema import NOT_HUMAN_READABLE_LDAP_SYNTAXES
+
+conn = ldap.initialize('ldap://localhost:389/')
+conn.set_option(OPT_PROTOCOL_VERSION, VERSION3)
+conn.simple_bind_s('', '')
+
+e = conn.search_s('cn=Subschema', SCOPE_BASE, '(objectClass=subschema)',
+                  ['attributeTypes'])
+# TODO ldapSyntaxes matchingRules matchingRuleUse
+attributetypes = e[0][1]['attributeTypes']
+
+at_by_oid = {}
+at_by_name = {}
+for at_string in attributetypes:
+    at = AttributeType(at_string)
+    at_by_oid[at.oid] = at
+    for name in at.names:
+        at_by_name[name] = at
+# fill remaining syntaxes
+for oid, at in at_by_oid.iteritems():
+    syn = at
+    while syn.syntax is None:
+        sup_name = syn.sup[0]
+        syn = at_by_name[sup_name] # or oid ?
+    at.syntax = syn.syntax
+
+# Explore the schema
+for oid, at in at_by_oid.iteritems():
+    if len(at.names) > 1:
+        print 'ALIASES', at.names
+for oid, at in at_by_oid.iteritems():
+    if NOT_HUMAN_READABLE_LDAP_SYNTAXES.has_key(at.syntax):
+        print 'BINARY', at.names
+
+"""
+ALIASES ('drink', 'favouriteDrink')
+ALIASES ('mail', 'rfc822Mailbox')
+ALIASES ('uid', 'userid')
+ALIASES ('email', 'emailAddress', 'pkcs9email')
+ALIASES ('facsimileTelephoneNumber', 'fax')
+ALIASES ('co', 'friendlyCountryName')
+ALIASES ('pager', 'pagerTelephoneNumber')
+ALIASES ('mobile', 'mobileTelephoneNumber')
+ALIASES ('givenName', 'gn')
+ALIASES ('st', 'stateOrProvinceName')
+ALIASES ('street', 'streetAddress')
+ALIASES ('c', 'countryName')
+ALIASES ('l', 'localityName')
+ALIASES ('cn', 'commonName')
+ALIASES ('aliasedObjectName', 'aliasedEntryName')
+ALIASES ('dc', 'domainComponent')
+ALIASES ('homePhone', 'homeTelephoneNumber')
+ALIASES ('ou', 'organizationalUnitName')
+ALIASES ('o', 'organizationName')
+ALIASES ('sn', 'surname')
+BINARY ('krb5Key',)
+BINARY ('userSMIMECertificate',)
+BINARY ('photo',)
+BINARY ('jpegPhoto',)
+BINARY ('krb5RealmName',)
+BINARY ('audio',)
+BINARY ('personalSignature',)
+BINARY ('supportedAlgorithms',)
+BINARY ('deltaRevocationList',)
+BINARY ('x500UniqueIdentifier',)
+BINARY ('crossCertificatePair',)
+BINARY ('userPKCS12',)
+BINARY ('userCertificate',)
+BINARY ('cACertificate',)
+BINARY ('userPassword',)
+BINARY ('authorityRevocationList',)
+BINARY ('certificateRevocationList',)
+"""
