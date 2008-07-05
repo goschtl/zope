@@ -2,10 +2,12 @@
 ldapadapter changes
 ===================
 
-0.7 - unreleased
+0.7 - 04.07.2008
 ================
 
 * Encoding DNs to UTF-8 when connecting.
+
+* Removed help:register directive for Grok 0.13 compatability.
 
 0.6 - 20.11.2006
 ================

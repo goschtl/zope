@@ -40,10 +40,4 @@
 
   <include package=".browser" />
 
-  <!-- add onlinehelp text -->
-  <help:register
-      id="ldapadapter"
-      title="LDAP Adapter"
-      doc_path="./help/ldapadapter.stx" />
-
 </configure>
