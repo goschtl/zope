@@ -16,7 +16,6 @@
 $Id: __init__.py 86232 2008-05-03 15:09:33Z ctheune $
 """
 
-import Queue
 import cStringIO
 import gc
 import glob
@@ -369,7 +368,7 @@ class SetUpLayerFailure(unittest.TestCase):
     def runTest(self):
         "Layer set up failure."
 
-def spawn_layer_in_subprocess(queue, options, features, layer_name, layer,
+def spawn_layer_in_subprocess(rans, options, features, layer_name, layer,
         failures, errors, resume_number):
     args = [sys.executable,
             sys.argv[0],
@@ -435,17 +434,17 @@ def spawn_layer_in_subprocess(queue, options, features, layer_name, layer,
         nerr -= 1
         errors.append((suberr.readline().strip(), None))
 
-    queue.put(ran)
+    rans.append(ran)
 
 
 def resume_tests(options, features, layers, failures, errors):
-    queue = Queue.Queue()
+    rans = []
     resume_number = 0
     ready_threads = []
     for layer_name, layer, tests in layers:
         ready_threads.append(threading.Thread(
             target=spawn_layer_in_subprocess,
-            args=(queue, options, features, layer_name, layer, failures,
+            args=(rans, options, features, layer_name, layer, failures,
                 errors, resume_number)))
         resume_number += 1
 
@@ -463,11 +462,7 @@ def resume_tests(options, features, layers, failures, errors):
         time.sleep(0.01) # keep the loop from being too tight
 
     # Gather up all the results.
-    rantotal = 0
-    while not queue.empty():
-        rantotal += queue.get()
-
-    return rantotal
+    return sum(rans)
 
 
 def tear_down_unneeded(options, needed, setup_layers, optional=False):
