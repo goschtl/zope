@@ -410,14 +410,23 @@ def spawn_layer_in_subprocess(queue, options, features, layer_name, layer,
         else:
             break
 
-    line = suberr.readline()
-    try:
-        ran, nfail, nerr = map(int, line.strip().split())
-    except KeyboardInterrupt:
-        raise
-    except:
-        raise SubprocessError(
-            'No subprocess summary found', line+suberr.read())
+    # Subprocesses may have spewed any number of things to stderr, so we'll
+    # keep looking until we find the information we're looking for.
+    whole_suberr = ''
+    while True:
+        line = suberr.readline()
+        whole_suberr += line
+        if not line:
+            raise SubprocessError(
+                'No subprocess summary found', whole_suberr)
+
+        try:
+            ran, nfail, nerr = map(int, line.strip().split())
+            break
+        except KeyboardInterrupt:
+            raise
+        except:
+            continue
 
     while nfail > 0:
         nfail -= 1
