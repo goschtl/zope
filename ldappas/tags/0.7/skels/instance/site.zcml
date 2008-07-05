@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include file="base.zcml" />
+
+  <include package="zope.app.onlinehelp" file="meta.zcml"/>
+  <include package="zope.app.onlinehelp"/>
+  
+  <include package="ldapadapter" />
+  <include package="ldappas" />
+
+  <include file="securitypolicy.zcml" />
+  <include file="principals.zcml" />
+
+</configure>

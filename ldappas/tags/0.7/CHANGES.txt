@@ -1,0 +1,37 @@
+===============
+ldappas changes
+===============
+
+0.7 - 04.07.2008
+================
+
+ * Updated install_requires to include all dependencies.
+ 
+ * Removed deprecated localUtility ZCML.
+ 
+ * buildout.cfg creates a python-ldap egg
+ 
+   (this currently requires openldap install in /sw via Fink - building a
+    python-ldap egg still requires manual assistance in most cases)
+
+ * Compatible with Grok 0.12 and 0.13 releases.
+
+0.6 - 20.11.2006
+================
+
+Features added
+--------------
+
+* Fixed Zope 3.3 induced deprecation warnings.
+
+* principalInfo will try to look up a group if it cannot find a
+  user. This is to make ldappas support groups in a minimal way. It is
+  still the responsibility of the application to add LDAP-based groups
+  to the principal (for instance by subscribing to the
+  IAuthenticatedPrincipalCreated).
+
+
+Bugs fixed
+----------
+
+Nothing yet.
