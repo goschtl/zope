@@ -419,7 +419,7 @@ def spawn_layer_in_subprocess(result, options, features, layer_name, layer,
             whole_suberr += line
             if not line:
                 raise SubprocessError(
-                    'No subprocess summary found', whole_suberr)
+                    'No subprocess summary found', whole_suberr+suberr.read())
 
             try:
                 result.num_ran, nfail, nerr = map(int, line.strip().split())
