@@ -28,14 +28,8 @@ class Rewriter(object):
 
     def __call__(self):
         query = self.context
-        alg = query.rewrite(target_algebra)        
-        self._preorder(alg)
+        alg = query.rewrite(target_algebra)
         alg.__name__ = 'head'
+        alg.walk()
         return alg
     
-    def _preorder(self, alg):
-        if isinstance(alg, Algebra):
-            for child in alg.children:
-                if isinstance(child, Algebra):
-                    self._preorder(child.children)
-                    name = child.__name__

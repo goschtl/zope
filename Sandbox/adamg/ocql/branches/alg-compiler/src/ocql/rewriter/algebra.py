@@ -34,8 +34,9 @@ class BaseAlgebra(Algebra, Location):
     def walk(self):
         yield self
         for child in self.children:
-            for t in child.walk():
-                yield t
+            if isinstance(self, Algebra):#can be removed if collection type wrapped by a algebra class
+                for t in child.walk():
+                    yield t
 
 class Empty(BaseAlgebra):
 
