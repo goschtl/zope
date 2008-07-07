@@ -4,12 +4,6 @@ from ocql.interfaces import IAlgebraObject
 from zope.schema import Dict, Text, Int, TextLine
 from zope.interface import Attribute, Interface
 
-class IHead(IAlgebraObject):
-    """Represents head of the algebra object tree
-    """
-    __name__ = TextLine()
-    tree = Attribute('hold algebra object tree')
-    
 ################
 #Algebra operation interfaces
 ################

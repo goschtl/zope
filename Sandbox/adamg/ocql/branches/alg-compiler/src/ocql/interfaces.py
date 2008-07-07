@@ -44,10 +44,6 @@ class IAlgebraCompiler(Interface):
     Embeds the relation and index retrieval component information in the compiled object.
     """
 
-class IAlgebraPartCompiler(Interface):
-    #TODO: get rid of this with the real algebra tree
-    pass
-
 class IDB(Interface):
     """DB metadata and data provider
     Provides database metadata to the engine.
@@ -73,13 +69,18 @@ class IOptimizedObjectQuery(Interface):
     as python objects
     """
 
+class IAlgebraObjectHead(Interface):
+    """Represents head of the algebra object tree
+    """
+    tree = Attribute('holds the root of the algebra object tree')
+
+    def walk(self):
+        """Iterate the Algebra object tree"""
+
 class IAlgebraObject(Interface):
     """Objects providing this interface represent the
     rewritten ObjectQuery to Algebra objects
     """
-    def compile(self):
-        """Return the compiled python code"""
-
     def walk(self):
         """Iterate the Algebra object tree"""
 

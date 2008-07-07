@@ -13,12 +13,13 @@ $Id$
 from zope.interface import implements
 
 from ocql.interfaces import IAlgebraObject
+from ocql.interfaces import IAlgebraObjectHead
 from ocql.rewriter.interfaces import *
 from zope.location import Location, locate
 
-class Head:
-    implements(IHead)
-    
+class Head(Location):
+    implements(IAlgebraObjectHead)
+
     def __init__(self, tree):
         name = 'head'
         self.tree = tree
@@ -26,26 +27,16 @@ class Head:
     def __repr__(self):
         return ('%s') % (self.tree)
 
-class Algebra:
-    """Signature definition of Algebra operation classes.
-    shall be moved to an IF later
-    """
-    #TODO: this is dirty here, at the end we'll need to have a tree of
-    #Algebra's whose topmost element will only get this IF
+
+class BaseAlgebra(Location):
     implements(IAlgebraObject)
     children = []
-    
-    def walk(self):
-        """Iterate the Algebra object tree"""
 
-class BaseAlgebra(Algebra, Location):
-    
     def walk(self):
         yield self
         for child in self.children:
-            if isinstance(self, Algebra):#can be removed if collection type wrapped by a algebra class
-                for t in child.walk():
-                    yield t
+            for t in child.walk():
+                yield t
 
 class Empty(BaseAlgebra):
 
@@ -57,8 +48,6 @@ class Empty(BaseAlgebra):
     def __repr__(self):
         return 'Empty(%s)'%(self.klass)
 
-    def walk(self):
-        yield self
 
 class Single(BaseAlgebra):
 
@@ -112,7 +101,7 @@ class Iter(BaseAlgebra):
         self.coll = coll
         locate(func, self, 'func')
         locate(coll, self, 'coll')
-        self.children.append([func,coll])
+        self.children.extend([func,coll])
 
     def __repr__(self):
         return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
@@ -128,8 +117,8 @@ class Select(BaseAlgebra):
         self.coll = coll
         locate(func, self, 'func')
         locate(coll, self, 'coll')
-        self.children.append([func,coll])
-       
+        self.children.extend([func,coll])
+
     def __repr__(self):
         return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
@@ -148,7 +137,7 @@ class Reduce(BaseAlgebra):
         locate(func, self, 'func')
         locate(aggreg, self, 'aggreg')
         locate(coll, self, 'coll')
-        self.children.append([expr, func, aggreg, coll])
+        self.children.extend([expr, func, aggreg, coll])
 
     def __repr__(self):
         return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
@@ -193,7 +182,7 @@ class Make(BaseAlgebra):
 #        locate(coll1, self, 'coll1')
 #        locate(coll2, self, 'coll2')
         self.children.append(expr)
-       
+
     def __repr__(self):
         return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
 
@@ -245,8 +234,6 @@ class Constant(BaseAlgebra):
     def __repr__(self):
         return "`%s`" %(self.value)
 
-    def walk(self):
-        yield self
 
 class Identifier(BaseAlgebra):
 
@@ -257,9 +244,6 @@ class Identifier(BaseAlgebra):
 
     def __repr__(self):
         return "%s" % self.name
-
-    def walk(self):
-        yield self
 
 class Binary(BaseAlgebra):
 
@@ -286,9 +270,6 @@ class Operator(BaseAlgebra):
 
     def __repr__(self):
         return self.op
-
-    def walk(self):
-        yield self
 
 #class Property:
 #   def __init__(self, left, right):
