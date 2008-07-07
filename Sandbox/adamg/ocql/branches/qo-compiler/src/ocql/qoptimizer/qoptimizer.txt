@@ -1,0 +1,25 @@
+
+
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.interfaces import IOptimizedObjectQuery
+
+Currently the optimizer is doing NOTHING, it just returns what it gets.
+(And adds the interface IOptimizedObjectQuery)
+
+    >>> class Dummy(object):
+    ...     def __init__(self, value):
+    ...          self.value = value
+
+    >>> in_=Dummy('foo-bar')
+    >>> in_.value
+    'foo-bar'
+
+    >>> out = QueryOptimizer(in_)()
+
+    >>> print out
+    <Dummy object at ...>
+    >>> out.value
+    'foo-bar'
+
+    >>> IOptimizedObjectQuery.providedBy(out)
+    True
