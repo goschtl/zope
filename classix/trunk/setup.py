@@ -16,7 +16,7 @@ long_description = (
 
 setup(
     name='classix',
-    version='0.5dev',
+    version='0.6dev',
     author='Martijn Faassen',
     author_email='faassen@startifact.com',
     description="""\
