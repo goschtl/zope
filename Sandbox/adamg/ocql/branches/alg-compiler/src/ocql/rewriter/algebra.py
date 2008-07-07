@@ -16,6 +16,15 @@ from ocql.interfaces import IAlgebraObject
 from ocql.rewriter.interfaces import *
 from zope.location import Location, locate
 
+class Head:
+    implements(IHead)
+    
+    def __init__(self, tree):
+        name = 'head'
+        self.tree = tree
+
+    def __repr__(self):
+        return ('%s') % (self.tree)
 
 class Algebra:
     """Signature definition of Algebra operation classes.

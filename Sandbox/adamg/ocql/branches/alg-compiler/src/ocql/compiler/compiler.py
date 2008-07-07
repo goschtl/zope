@@ -16,6 +16,7 @@ from ocql.interfaces import IAlgebraCompiler
 from ocql.interfaces import IAlgebraPartCompiler
 from ocql.interfaces import IOptimizedAlgebraObject
 #from ocql.interfaces import ICompiledAlgebraObject
+from ocql.rewriter.algebra import Head
 
 from ocql.rewriter.interfaces import *
 
@@ -30,9 +31,12 @@ class AlgebraCompiler(object):
         #self.db = db
 
     def __call__(self, metadata, algebra):
-        algebra = self.context
+        if isinstance(algebra, Head):
+            algebra = self.context.tree
+        else:
+            algebra = self.context
         #code = algebra.compile()
-        adapter = IAlgebraPartCompiler(self.context)
+        adapter = IAlgebraPartCompiler(algebra)
         code = adapter()
         run = RunnableQuery(metadata, algebra, code)
         return run

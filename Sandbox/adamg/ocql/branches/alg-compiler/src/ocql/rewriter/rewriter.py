@@ -15,7 +15,7 @@ from zope.location import locate
 
 from ocql.interfaces import IRewriter
 from ocql.interfaces import IOptimizedObjectQuery
-from ocql.rewriter.algebra import Algebra
+from ocql.rewriter.algebra import Head
 
 from ocql.rewriter import algebra as target_algebra
 
@@ -29,7 +29,6 @@ class Rewriter(object):
     def __call__(self):
         query = self.context
         alg = query.rewrite(target_algebra)
-        alg.__name__ = 'head'
-        alg.walk()
-        return alg
+        head = Head(alg)
+        return head
     
