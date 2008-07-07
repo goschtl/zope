@@ -1,0 +1,66 @@
+zope.introspector.registry
+**************************
+
+:Test-Layer: functional
+
+zope.interface provides the ``RegistryInfoUtility`` to search for and list all registered Utilities, 
+Adapters, Handlers and SubscriptionAdapters. To list all registered Utilities::
+
+  >>> from zope.introspector.interfaces import IRegistryInfo
+  >>> from zope.component import getUtility
+  >>> registryUtil = getUtility(IRegistryInfo)
+  >>> registryUtil.getAllUtilities()
+  [UtilityRegistration...]
+  
+The same thing can be done for Adapters::
+
+  >>> registryUtil.getAllAdapters()
+  [AdapterRegistration...]
+
+For Handlers::
+
+  >>> registryUtil.getAllHandlers()
+  [HandlerRegistration...]
+  
+And for SubscriptionAdapters::
+
+  >>> registryUtil.getAllSubscriptionAdapters()
+  [...]
+
+So far this has been empty.
+Or you can get all registrations::
+
+  >>> registryUtil.getAllRegistrations()
+  [AdapterRegistration...]
+
+However if you are looking for something special you can do a search in the registry to see if it registered.
+So first we will create a Dummy utility so we have something to find when we search::
+
+  >>> from zope.interface import Interface, implements
+  >>> from zope.component import provideUtility
+  >>> class IDummy(Interface):
+  ...    pass
+  >>> class Dummy(object):
+  ...    implements(IDummy)
+
+Now provide the Utility globaly::
+
+  >>> provideUtility(Dummy, IDummy)
+
+And use the RegistryInfoUtility to search for it::
+
+  >>> registryUtil.getRegistrationsForInterface("Dummy")
+  [UtilityRegistration(<BaseGlobalComponents base>, IDummy, u'', Dummy, u'')...]
+  
+Depending on what type of Registration that is searched different things are examined.    
+Utilites you can search for either name of utility or provided interface.
+Adapters you can search for name, provided interfaces, factory or required interfaces.
+Handlers you can search for name, factory, or required interfaces.
+
+There is also a way to get all registrations in a dictionary ordered by package name. 
+
+  >>> registryUtil.getAllInterfaces()
+  {...: {...: {...: {...: [...Registration...]}...}...}...}
+
+This is mainly useful for browsing the complete component registry if you are not 
+really sure what you are looking for.  

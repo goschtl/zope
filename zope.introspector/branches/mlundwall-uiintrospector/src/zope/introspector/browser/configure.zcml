@@ -1,0 +1,64 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+		   xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope.introspector">
+
+ <browser:page
+ 	for="*"
+ 	name="registry.html"
+ 	template="introspectorview.pt"
+ 	permission="zope.introspector.Introspect"
+ 	class=".introspector.Introspector"
+ 	/>
+<!-- 	menu="zmi_views" title="Registry Introspector"-->
+
+ <browser:page
+ 	for="*"
+ 	name="registry_browser.html"
+ 	template="introspectorbrowse_view.pt"
+ 	permission="zope.introspector.Introspect"
+ 	class=".introspector.Introspector"
+ 	/>
+ 	
+ <browser:page
+ 	for="zope.component.interfaces.IAdapterRegistration"
+ 	name="registration.html"
+ 	template="adapter.pt"
+ 	permission="zope.Public"
+ 	class=".introspector.RegistrationView"
+ 	/>
+
+ <browser:page
+ 	for="zope.component.interfaces.IHandlerRegistration"
+ 	name="registration.html"
+ 	template="handler.pt"
+ 	permission="zope.Public"
+ 	class=".introspector.RegistrationView"
+ 	/>
+
+ <browser:page
+ 	for="zope.component.interfaces.IUtilityRegistration"
+ 	name="registration.html"
+ 	template="utils.pt"
+ 	permission="zope.Public"
+ 	class=".introspector.RegistrationView"
+ 	/>
+ 	
+ <browser:resource
+ 	name="mktree.js"
+ 	file="mktree.js"
+ 	/>
+ 	
+ <browser:resource
+ 	name="mktree.css"
+ 	file="mktree.css"
+ 	/> 
+
+ <browser:resource
+ 	name="mi.gif"
+ 	file="minus.gif"
+ 	/> 
+ <browser:resource
+ 	name="pl.gif"
+ 	file="plus.gif"
+ 	/>  	
+</configure>
