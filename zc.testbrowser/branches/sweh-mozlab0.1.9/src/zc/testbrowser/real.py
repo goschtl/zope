@@ -120,7 +120,10 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
             raise RuntimeError('Error connecting to Firefox at %s:%s.'
                 ' Is MozRepl running?' % (host, port))
 
-        for line in open(js_path, 'r'):
+        self.load_file(js_path)
+
+    def load_file(self, file_path):
+        for line in open(file_path, 'r'):
             self.telnet.write(line)
             self.expect([PROMPT, CONTINUATION_PROMPT])
 
@@ -134,8 +137,8 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
         self.expect()
         self.telnet.write(js)
         i, match, text = self.expect()
-        if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
-        if '!!!' in text: raise Exception('FAILED: ' + js)
+        #if '!!!' in text: import pdb;pdb.set_trace() # XXX debug only, remove
+        if '!!!' in text: raise Exception('FAILED: ' + text + ' in ' + js)
         result = text.rsplit('\n', 1)
         if len(result) == 1:
             return None
