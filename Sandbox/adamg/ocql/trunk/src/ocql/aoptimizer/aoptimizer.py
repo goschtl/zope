@@ -14,7 +14,7 @@ from zope.interface import directlyProvides
 
 from ocql.interfaces import IAlgebraOptimizer
 
-from ocql.interfaces import IAlgebraObject
+from ocql.interfaces import IAlgebraObjectHead
 from ocql.interfaces import IOptimizedAlgebraObject
 
 def addMarkerIF(obj, marker):
@@ -24,7 +24,7 @@ def addMarkerIF(obj, marker):
 
 class AlgebraOptimizer(object):
     implements(IAlgebraOptimizer)
-    adapts(IAlgebraObject)
+    adapts(IAlgebraObjectHead)
 
     def __init__(self, context):
         self.context = context

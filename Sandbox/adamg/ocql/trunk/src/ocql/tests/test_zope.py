@@ -7,6 +7,7 @@ from zope.interface import Interface
 
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
 from ocql.compiler.compiler import AlgebraCompiler
+from ocql.compiler.compiler import registerAdapters
 from ocql.database import metadata
 from ocql.database.metadata import Metadata
 from ocql.engine import OCQLEngine
@@ -33,7 +34,7 @@ class testZope(unittest.TestCase):
         provideAdapter(AlgebraOptimizer)
         provideAdapter(AlgebraCompiler)
         provideAdapter(Metadata)
-
+        registerAdapters()
         setupInterfaces(self)
         setupCatalog(self)
 

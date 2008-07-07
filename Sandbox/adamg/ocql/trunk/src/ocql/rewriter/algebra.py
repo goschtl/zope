@@ -13,103 +13,70 @@ $Id$
 from zope.interface import implements
 
 from ocql.interfaces import IAlgebraObject
+from ocql.interfaces import IAlgebraObjectHead
+from ocql.rewriter.interfaces import *
+from zope.location import Location, locate
 
-class Algebra:
-    """Signature definition of Algebra operation classes.
-    shall be moved to an IF later
-    """
-    #TODO: this is dirty here, at the end we'll need to have a tree of
-    #Algebra's whose topmost element will only get this IF
+class Head(Location):
+    implements(IAlgebraObjectHead)
+
+    def __init__(self, tree):
+        name = 'head'
+        self.tree = tree
+
+    def __repr__(self):
+        return ('%s') % (self.tree)
+
+
+class BaseAlgebra(Location):
     implements(IAlgebraObject)
-
-    def compile(self):
-        """Return the compiled python code"""
+    children = []
 
     def walk(self):
-        """Iterate the Algebra object tree"""
-
-class BaseAlgebra(Algebra):
-    pass
+        yield self
+        for child in self.children:
+            for t in child.walk():
+                yield t
 
 class Empty(BaseAlgebra):
-    """
-    >>> Empty(set,None).compile()
-    'set()'
-    >>> Empty(list,None).compile()
-    '[]'
-    """
+
+    implements(IEmpty)
+
     def __init__(self, klass, expr):
         self.klass = klass
-
-    def compile(self):
-        if self.klass==set:
-            return 'set()'
-        elif self.klass==list:
-            return '[]'
 
     def __repr__(self):
         return 'Empty(%s)'%(self.klass)
 
-    def walk(self):
-        yield self
 
 class Single(BaseAlgebra):
-    """
-    >>> Single(set,Constant('c')).compile()
-    'set([c])'
-    >>> Single(list,Constant('c')).compile()
-    '[c]'
-    """
+
+    implements(ISingle)
 
     def __init__(self, klass, expr):
         self.klass = klass
         self.expr = expr
-
-    def compile(self):
-        if self.klass==set:
-            return 'set(['+self.expr.compile()+'])'
-        elif self.klass==list:
-            return '['+self.expr.compile()+']'
+        locate(expr, self, 'expr')
+        self.children.extend([klass, expr])
 
     def __repr__(self):
         return 'Single(%s,%s)'%(self.klass, self.expr)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
-
 class Union(BaseAlgebra):
-    """
-    >>> Union(set,Empty(set,None),Single(set,Identifier('c'))).compile()
-    'set.union(set(),set([c]))'
-    >>> Union(list,Empty(list,None),Single(list,Identifier('c'))).compile()
-    '([])+([c])'
-    """
+
+    implements(IUnion)
+
     def __init__(self, klass, coll1, coll2):
         self.klass=klass
         self.coll1=coll1
         self.coll2=coll2
-
-    def compile(self):
-        if self.klass==set:
-            return 'set.union(%s,%s)' % (
-                self.coll1.compile(),
-                self.coll2.compile())
-        elif self.klass==list:
-            return '(%s)+(%s)'%(
-                self.coll1.compile(),
-                self.coll2.compile())
+        locate(coll1, self, 'coll1')
+        locate(coll2, self, 'coll2')
+        self.children.extend([coll1, coll2])
 
     def __repr__(self):
         return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
-    def walk(self):
-        yield self
-        for t in self.coll1.walk():
-            yield t
-        for t in self.coll2.walk():
-            yield t
 
 #class Differ:
 #    def __init__(self, klass, start, end):
@@ -125,102 +92,56 @@ class Union(BaseAlgebra):
 
 
 class Iter(BaseAlgebra):
+
+    implements(IIter)
+
     def __init__(self, klass, func, coll):
         self.klass = klass
         self.func = func
         self.coll = coll
-
-    def compile(self):
-        if self.func is Lambda and \
-            self.coll is Collection and \
-            self.func.expr is If:
-
-            # You can place here some specialized code...
-            if self.klass == set:
-                return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(), self.coll.compile())
-            if self.klass == list:
-                return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(), self.coll.compile())
-        else:
-            if self.klass == set:
-                return 'reduce(set.union, map(%s,%s) , set())' % \
-                    (self.func.compile(), self.coll.compile())
-            if self.klass == list:
-                return 'reduce(operator.add, map(%s,%s) , [])' % \
-                    (self.func.compile(), self.coll.compile())
+        locate(func, self, 'func')
+        locate(coll, self, 'coll')
+        self.children.extend([func,coll])
 
     def __repr__(self):
         return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.func.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 class Select(BaseAlgebra):
+
+    implements(ISelect)
+
     def __init__(self, klass, func, coll):
         self.klass = klass
         self.func = func
         self.coll = coll
-
-    def compile(self):
-        if self.klass == set:
-            return 'set(filter(%s,%s))' % (
-                self.func.compile(),
-                self.coll.compile())
-        if self.klass == list:
-            return 'filter(%s,%s)' % (
-                self.func.compile(),
-                self.coll.compile())
+        locate(func, self, 'func')
+        locate(coll, self, 'coll')
+        self.children.extend([func,coll])
 
     def __repr__(self):
         return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.func.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 class Reduce(BaseAlgebra):
+
+    implements(IReduce)
+
     def __init__(self, klass, expr, func, aggreg, coll):
         self.klass = klass
         self.expr = expr
         self.func = func
         self.aggreg = aggreg
         self.coll = coll
-
-    def compile(self):
-        if self.klass == set:
-            return 'reduce(%s,map(%s,%s),%s)' % (
-                self.aggreg.compile(),
-                self.func.compile(),
-                self.coll.compile(),
-                self.expr.compile())
-        if self.klass == list:
-            return 'reduce(%s,map(%s,%s),%s)' % (
-                self.aggreg.compile(),
-                self.func.compile(),
-                self.coll.compile(),
-                self.expr.compile())
+        locate(expr, self, 'expr')
+        locate(func, self, 'func')
+        locate(aggreg, self, 'aggreg')
+        locate(coll, self, 'coll')
+        self.children.extend([expr, func, aggreg, coll])
 
     def __repr__(self):
         return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
-        for t in self.func.walk():
-            yield t
-        for t in self.aggreg.walk():
-            yield t
-        for t in self.coll.walk():
-            yield t
 
 #class Equal:
 #    def __init__(self, klass, coll1, coll2):
@@ -235,169 +156,121 @@ class Reduce(BaseAlgebra):
 #            return 'filter(%s,%s)' % (self.coll1.compile(),self.coll2.compile())
 #
 class Range(BaseAlgebra):
-    def __init__(self, klass, start, enf):
+
+    implements(IRange)
+
+    def __init__(self, klass, start, end):
         self.klass = klass
         self.start = start
         self.end = end
-
-    def compile(self):
-        if self.klass == set:
-            return 'set(range(%s,%s))' % (
-                self.start.compile(),
-                self.end.compile())
-        if self.klass == list:
-            return 'range(%s,%s)' % (
-                self.start.compile(),
-                self.end.compile())
-
-    def walk(self):
-        yield self
-        for t in self.start.walk():
-            yield t
-        for t in self.end.walk():
-            yield t
+        locate(start, self, 'start')
+        locate(end, self, 'end')
+        self.children.extend([start, end])
 
 
 #class Index
 
 class Make(BaseAlgebra):
+
+    implements(IMake)
+
     def __init__(self, coll1, coll2, expr):
         self.expr = expr
         self.coll1 = coll1
         self.coll2 = coll2
-
-    def compile(self):
-        #TODO: no conversion??? or you just didn't know the from-to?
-        return '%s(metadata.getAll("%s"))' % (
-            self.coll1.__name__,
-            self.expr.compile())
+        locate(expr, self, 'expr')
+#        locate(coll1, self, 'coll1')
+#        locate(coll2, self, 'coll2')
+        self.children.append(expr)
 
     def __repr__(self):
         return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
 
 #class And:
 #class Being:
 
 class If(BaseAlgebra):
+
+    implements(IIf)
+
     def __init__(self, cond, expr1, expr2):
         self.cond = cond
         self.expr1 = expr1
         self.expr2 = expr2
-
-    def compile(self):
-        #TODO: is this 100%?
-        return '((%s) and (%s) or (%s))' % (
-            self.cond.compile(),
-            self.expr1.compile(),
-            self.expr2.compile())
+        locate(cond, self, 'cond')
+        locate(expr1, self, 'expr1')
+        locate(expr2, self, 'expr2')
+        self.children.extend([cond, expr1, expr2])
 
     def __repr__(self):
         return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
 
-    def walk(self):
-        yield self
-        for t in self.cond.walk():
-            yield t
-        for t in self.expr1.walk():
-            yield t
-        for t in self.expr2.walk():
-            yield t
 
 #
 #
 #
 class Lambda(BaseAlgebra):
+
+    implements(ILambda)
+
     def __init__(self, var, expr):
         self.var = var
         self.expr = expr
-
-    def compile(self):
-        return 'lambda %s: %s'%(
-            self.var,
-            self.expr.compile())
+        locate(expr, self, 'expr')
+        self.children.append(expr)
 
     def __repr__(self):
         return "Lambda %s: %s" %(self.var, self.expr)
 
-    def walk(self):
-        yield self
-        for t in self.expr.walk():
-            yield t
 
 class Constant(BaseAlgebra):
+
+    implements(IConstant)
+
     def __init__(self, value):
         self.value = value
-
-    def compile(self):
-        return '%s'%(self.value)
 
     def __repr__(self):
         return "`%s`" %(self.value)
 
-    def walk(self):
-        yield self
 
 class Identifier(BaseAlgebra):
+
+    implements(IIdentifier)
+
     def __init__(self, name):
         self.name=name
-
-    def compile(self):
-        return self.name
 
     def __repr__(self):
         return "%s" % self.name
 
-    def walk(self):
-        yield self
-
 class Binary(BaseAlgebra):
+
+    implements(IBinary)
+
     def __init__(self, left, op, right):
         self.left = left
         self.op = op
         self.right = right
-
-    def compile(self):
-        return '%s%s%s' % (self.left.compile(),
-                           self.op.op,
-                           self.right.compile())
+        locate(left, self, 'left')
+        locate(right, self, 'right')
+        self.children.extend([left, right])
 
     def __repr__(self):
         return "%s%s%s" % (self.left, self.op.op, self.right)
 
-    def walk(self):
-        yield self
-        for t in self.left.walk():
-            yield t
-        for t in self.right.walk():
-            yield t
 
 class Operator(BaseAlgebra):
-    ops = {
-            'or': 'operator.or_',
-            'and': 'operator.and_',
-            'not': 'operator.not_',
-            '+': 'operator.add', '-': 'operator.sub',
-            '*': 'operator.mul', '/': 'operator.div',
-            '<': 'operator.lt', '>': 'operator.gt',
-            '<=': 'operator.le', '>=': 'operator.ge',
-            '==': 'operator.eq', '~=': 'operator.ne',
-            }
+
+    implements(IOperator)
+
     def __init__(self, op):
         self.op = op
-
-    def compile(self):
-        return self.ops[self.op]
 
     def __repr__(self):
         return self.op
 
-    def walk(self):
-        yield self
 #class Property:
 #   def __init__(self, left, right):
 #        self.left = left

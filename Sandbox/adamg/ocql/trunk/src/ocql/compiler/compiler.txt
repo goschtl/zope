@@ -11,6 +11,9 @@ But it's a lot faster to reuse the parser and the existing classes.
 
     >>> from ocql.testing.database import TestMetadata
 
+    >>> from ocql.compiler.compiler import registerAdapters
+    >>> registerAdapters()
+
     >>> metadata = TestMetadata()
     >>> qo = QueryParser("set [ | 1 ]")(metadata)
     >>> opt = QueryOptimizer(qo)()
@@ -28,7 +31,7 @@ But it's a lot faster to reuse the parser and the existing classes.
     >>> aopt = AlgebraOptimizer(alg)()
     >>> run = AlgebraCompiler(aopt)(metadata, alg)
     >>> print str(run)
-    RunnableQuery: set.union(set([1]),set([2]))
+    RunnableQuery: set.union(set([1]), set([2]))
 
 
     ##Differ not implemented
@@ -47,7 +50,7 @@ But it's a lot faster to reuse the parser and the existing classes.
     >>> aopt = AlgebraOptimizer(alg)()
     >>> run = AlgebraCompiler(aopt)(metadata, alg)
     >>> print str(run)
-    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))) , set())
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))), set())
 
 
     ##bag not implemented
@@ -64,4 +67,4 @@ But it's a lot faster to reuse the parser and the existing classes.
     >>> aopt = AlgebraOptimizer(alg)()
     >>> run = AlgebraCompiler(aopt)(metadata, alg)
     >>> print str(run)
-    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))) , set())
+    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))), set())

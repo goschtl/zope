@@ -69,10 +69,20 @@ class IOptimizedObjectQuery(Interface):
     as python objects
     """
 
+class IAlgebraObjectHead(Interface):
+    """Represents head of the algebra object tree
+    """
+    tree = Attribute('holds the root of the algebra object tree')
+
+    def walk(self):
+        """Iterate the Algebra object tree"""
+
 class IAlgebraObject(Interface):
     """Objects providing this interface represent the
     rewritten ObjectQuery to Algebra objects
     """
+    def walk(self):
+        """Iterate the Algebra object tree"""
 
 class IOptimizedAlgebraObject(Interface):
     """Objects providing this interface represent the

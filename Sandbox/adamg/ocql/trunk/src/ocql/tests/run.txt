@@ -19,6 +19,9 @@ Now we'll see how a query runs
 
     >>> from ocql.engine import OCQLEngine
 
+    >>> from ocql.compiler.compiler import registerAdapters
+    >>> registerAdapters()
+
 
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ | 1 ]")
@@ -37,7 +40,7 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ | 1 ] union set [|2]")
     >>> run
-    RunnableQuery: set.union(set([1]),set([2]))
+    RunnableQuery: set.union(set([1]), set([2]))
 
     >>> result = run.execute()
     >>> result
@@ -51,7 +54,7 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ i in ICourse | i ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))) , set())
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
     >>> result
@@ -65,7 +68,7 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ c in ICourse | c.code ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))) , set())
+    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
     >>> result
