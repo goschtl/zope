@@ -1,5 +1,8 @@
 Classix
-=======
+*******
+
+Introduction
+============
 
 Classix is a thin layer over lxml's `custom element classes`_
 functionality that lets you configure them declaratively. It uses
@@ -14,6 +17,9 @@ To parse an XML document you need a parser. An `XMLParser`` can be
 configured with custom element classes that will be associated to the
 right elements in the XML document after parsing. This way you can
 enrich the content model of your XML document.
+
+The approach
+============
 
 First we need to do the configuration for this package. This only needs to
 happen once for this package. First, we need to set up a ``GrokkerRegistry``.
@@ -70,7 +76,7 @@ Let's parse a bit of XML::
   'The custom method'
 
 No namespace
-------------
+============
 
 Sometimes you want to associate a class with an element in no
 namespace at all. Do do this, you can set the namepace to None
@@ -130,7 +136,7 @@ directive isn't used at all::
   'The custom method for no namespace 2'
 
 Namespaces in parser
---------------------
+====================
 
 As a convenience, you can also configure the default namespace in the
 parser, as a fall-back so you don't have to specify it in all the
@@ -157,13 +163,3 @@ element classes::
   >>> root = etree.XML(xml, parser_ns)
   >>> root.custom_method()
   'Another custom method'
-
-Absent classix.parser directive
--------------------------------
-
-If the ``classix.parser` directive is absent, ``classix.Element``
-subclasses will be automatically associated with the one
-``classix.Parser`` available in the module... 
-
-XXX TODO
-
