@@ -6,7 +6,9 @@ CHANGES
 Version 3.4.2dev (unreleased)
 -----------------------------
 
-* ...
+- Make it compatible with upcomming zope.app.container 3.6.1 changes.
+  Changed super(BTreeContainer, self).__init__() to 
+  super(GroupFolder, self).__init__() in GroupFolder class.
 
 
 Version 3.4.1 (2007-10-24)
@@ -18,10 +20,10 @@ Version 3.4.1 (2007-10-24)
 Version 3.4.0 (2007-10-11)
 --------------------------
 
-* Updated package meta-data.
+- Updated package meta-data.
 
 
 Version 3.4.0b1 (2007-09-27)
 ----------------------------
 
-* First Zope-independent release.
+- First Zope-independent release.

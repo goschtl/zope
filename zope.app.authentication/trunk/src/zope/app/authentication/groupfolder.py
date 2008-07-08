@@ -154,8 +154,8 @@ class GroupFolder(BTreeContainer):
     schema = IGroupSearchCriteria
 
     def __init__(self, prefix=u''):
-        self.prefix=prefix
-        super(BTreeContainer,self).__init__()
+        super(GroupFolder, self).__init__()
+        self.prefix = prefix
         # __inversemapping is used to map principals to groups
         self.__inverseMapping = BTrees.OOBTree.OOBTree()
 
