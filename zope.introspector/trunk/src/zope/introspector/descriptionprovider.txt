@@ -203,5 +203,5 @@ description for it::
 
   >>> import zope.introspector.tests
   >>> provider.getDescription(zope.introspector.tests)
-  <zope.introspector.objectinfo.PackageInfo object at 0x...>
+  <zope.introspector.objectinfo.ObjectInfo object at 0x...>
 

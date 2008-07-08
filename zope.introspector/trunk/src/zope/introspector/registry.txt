@@ -16,6 +16,9 @@ The same thing can be done for Adapters::
 
   >>> registryUtil.getAllAdapters()
   [AdapterRegistration...]
+  
+  >>> registryUtil.getAllAdapters(registry='test')
+  []
 
 For Handlers::
 

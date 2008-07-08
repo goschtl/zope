@@ -17,11 +17,14 @@ fake interfaces a FakeProvided, FakeRequired and a FakeFactory::
   ...   pass
   >>> class FakeFactory:
   ...   pass
+  >>> class base:
+  ...   pass
   >>> class FakeRegistration(object):
   ...   provided = FakeProvided
   ...   name = "FakeName"
   ...   factory = FakeFactory
   ...   required = [FakeRequired]
+  ...   registry = base
   >>> fake_reg = FakeRegistration()
 
 In the Component Registry there are four different types of registrations, ``IAdapterRegistration``,
@@ -35,14 +38,20 @@ framework think, it is a real adapter registration::
   >>> directlyProvides(fake_reg, IAdapterRegistration)
 
 We can now get an ``AdapterSearch`` from the IRegistrySearch, that we can use to search the registration
-and see if this registration has anything with that name.
+and see if this registration has anything with that name. You can also specify if the search should be 
+within a special registry or default to 'base'
 ::
 
   >>> from zope.introspector.interfaces import IRegistrySearch
   >>> adapterSearch = IRegistrySearch(fake_reg)
   >>> adapterSearch.searchRegistration("FakeName")
   True
-  
+
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> adapterSearch.searchRegistration("FakeName", registry='test')
+  False
+
   >>> adapterSearch.searchRegistration("FakeProvided")
   True
   
@@ -69,6 +78,11 @@ fake registry::
   >>> handlerSearch.searchRegistration("FakeName")
   True
   
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> handlerSearch.searchRegistration("FakeName", registry='test')
+  False
+  
   >>> handlerSearch.searchRegistration("FakeFactory")
   True
   
@@ -89,7 +103,12 @@ Finally we have also an adapter for utility registrations::
   >>> utilitySearch = IRegistrySearch(fake_reg)
   >>> utilitySearch.searchRegistration("FakeName")
   True
-  
+
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> utilitySearch.searchRegistration("FakeName", registry='test')
+  False
+
   >>> utilitySearch.searchRegistration("FakeProvided")
   True
   

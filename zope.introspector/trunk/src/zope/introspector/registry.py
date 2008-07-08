@@ -13,35 +13,47 @@ class RegistryInfoUtility(grok.GlobalUtility):
     """
     implements(IRegistryInfo)
     
-    def getAllRegistrations(self):
+    def getAllRegistrations(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
-        adapters = self.getAllAdapters()
-        handlers = self.getAllHandlers()
-        utils = self.getAllUtilities()
-        subsriptionAdapters = self.getAllSubscriptionAdapters()
+        adapters = self.getAllAdapters(registry)
+        handlers = self.getAllHandlers(registry)
+        utils = self.getAllUtilities(registry)
+        subsriptionAdapters = self.getAllSubscriptionAdapters(registry)
         return adapters + handlers + utils + subsriptionAdapters
         
-    def getAllUtilities(self):
+    def getAllUtilities(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
-        """
-        return [x for x in globalregistry.base.registeredUtilities()]
+        """ 
+        def f(item):
+            return registry is getattr(item.registry, '__name__')
         
-    def getAllAdapters(self):
+        return filter(f, globalregistry.base.registeredUtilities())
+        
+    def getAllAdapters(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
-        return [x for x in globalregistry.base.registeredAdapters()]
+        def f(item):
+            return registry is getattr(item.registry, '__name__')
+        
+        return filter(f, globalregistry.base.registeredAdapters())
     
-    def getAllHandlers(self):
+    def getAllHandlers(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
-        return [x for x in globalregistry.base.registeredHandlers()]
+        def f(item):
+            return registry is getattr(item.registry, '__name__')
+        
+        return filter(f, globalregistry.base.registeredHandlers())
+
     
-    def getAllSubscriptionAdapters(self):
+    def getAllSubscriptionAdapters(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
-        return [x for x in
-                globalregistry.base.registeredSubscriptionAdapters()]
+        def f(item):
+            return registry is getattr(item.registry, '__name__')
+        
+        return filter(f, globalregistry.base.registeredSubscriptionAdapters())
     
     def getRegistrationsForInterface(self, searchString='', types=['all']):
         """ See zope.introspector.interfaces for documentation.
@@ -84,6 +96,8 @@ class RegistryInfoUtility(grok.GlobalUtility):
 
         return registrations
     
+#    def _filter(self, registrations, filter):
+#        fil
     def _dicter(self, dictionary, modPath, item):
         
         key = modPath[0]

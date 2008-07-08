@@ -14,7 +14,10 @@ class AdapterSearch(grok.Adapter):
     def __init__(self, registration):
         self.registration = registration
         
-    def searchRegistration(self, string, caseSensitive = False):
+    def searchRegistration(self, string, caseSensitive = False, registry='base'):
+        
+        if registry is not getattr(self.registration.registry, '__name__'):
+            return False
         
         if string in getattr(self.registration.provided, '__name__', ''):
             return True
@@ -55,7 +58,10 @@ class HandlerSearch(grok.Adapter):
     def __init__(self, registration):
         self.registration = registration
         
-    def searchRegistration(self, string, caseSensitive = False):
+    def searchRegistration(self, string, caseSensitive = False, registry='base'):
+        
+        if registry is not getattr(self.registration.registry, '__name__'):
+            return False
         
         if string in self.registration.name:
             return True
@@ -92,7 +98,10 @@ class UtilitySearch(grok.Adapter):
     def __init__(self, registration):
         self.registration = registration
         
-    def searchRegistration(self, string, caseSensitive = False):
+    def searchRegistration(self, string, caseSensitive = False, registry='base'):
+        
+        if registry is not getattr(self.registration.registry, '__name__'):
+            return False
         
         if string in getattr(self.registration.provided, '__name__',''):
             return True

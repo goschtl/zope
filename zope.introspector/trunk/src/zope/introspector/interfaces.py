@@ -69,26 +69,26 @@ class ITypeInfo(interface.Interface):
 class IRegistryInfo(interface.Interface):
     """Keeps information about the Component registry.
     """
-    def getAllRegistrations():
+    def getAllRegistrations(registry):
         """ Returns a list of everything registered in the component registry. 
         """
     
-    def getAllUtilities():
+    def getAllUtilities(registry):
         """ Returns a list of all utilities registered in the
         component registery.
         """
         
-    def getAllAdapters():
+    def getAllAdapters(registry):
         """ Returns a list of all adapters registered in the component
         registery.
         """
     
-    def getAllHandlers():
+    def getAllHandlers(registry):
         """ Returns a list of all handlers registered in the component
         registery.
         """
         
-    def getAllSubscriptionAdapters():
+    def getAllSubscriptionAdapters(registry):
         """ Returns a list of all handlers registered in the component
         registery.
         """
@@ -122,7 +122,7 @@ class IRegistrySearch(interface.Interface):
         """ Registers the registration in the adapter...
         """
         
-    def searchRegistration(string, caseSensitive):
+    def searchRegistration(string, registry, caseSensitive):
         """ Implements the search...
             returns True or False
         """

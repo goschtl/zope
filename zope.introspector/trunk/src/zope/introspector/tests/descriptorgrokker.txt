@@ -13,7 +13,9 @@ empty::
   >>> import zope.introspector.descriptionprovider as zid 
   >>> reg = zid.descriptor_registry
   >>> reg
-  []
+  [...]
+  
+[]
 
 We create an Grokker instance::
 
@@ -35,14 +37,18 @@ The registry now contains an entry::
 
   >>> from pprint import pprint
   >>> pprint(sorted(reg))
-  [{'priority': 666, 'handler': <type 'object'>}]
+  [...]
+
+[{'priority': 666, 'handler': <type 'object'>}]
 
 If we call the grokker with a lower number, it should be inserted
 before the existing one::
 
   >>> trash = grokker.execute(object, 665)
   >>> pprint(reg)
-  [{'priority': 665, 'handler': <type 'object'>},
+  [...]
+  
+[{'priority': 665, 'handler': <type 'object'>},
    {'priority': 666, 'handler': <type 'object'>}]
 
 
@@ -50,7 +56,9 @@ The same applies to entries with an existing priority::
 
   >>> trash = grokker.execute(int, 666)
   >>> pprint(reg)
-  [{'priority': 665, 'handler': <type 'object'>},
+  [...]
+
+[{'priority': 665, 'handler': <type 'object'>},
    {'priority': 666, 'handler': <type 'int'>},
    {'priority': 666, 'handler': <type 'object'>}]
 
@@ -59,7 +67,9 @@ An upper priority will insert the new object at the end of the list::
 
   >>> trash = grokker.execute(object, 667)
   >>> pprint(reg)
-  [{'priority': 665, 'handler': <type 'object'>},
+  [...]
+
+[{'priority': 665, 'handler': <type 'object'>},
    {'priority': 666, 'handler': <type 'int'>},
    {'priority': 666, 'handler': <type 'object'>},
    {'priority': 667, 'handler': <type 'object'>}]
