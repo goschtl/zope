@@ -2,7 +2,8 @@ from zope.interface import implements
 from zope.introspector.interfaces import IRegistryInfo, IRegistrySearch
 from zope.component import globalregistry
 from zope.interface.adapter import AdapterRegistry
-from zope.component.registry import (AdapterRegistration, HandlerRegistration,
+from zope.component.registry import (AdapterRegistration, 
+                                     HandlerRegistration,
                                      UtilityRegistration)
 import grokcore.component as grok
 
@@ -96,8 +97,7 @@ class RegistryInfoUtility(grok.GlobalUtility):
 
         return registrations
     
-#    def _filter(self, registrations, filter):
-#        fil
+
     def _dicter(self, dictionary, modPath, item):
         
         key = modPath[0]
