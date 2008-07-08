@@ -20,9 +20,7 @@ from zope.tales.expressions import PathExpr
 
 class TextFormatter(PathExpr):
 
-
     def __call__(self, context):
-
         rendered = super(TextFormatter, self).__call__(context)
         return self._doFormat(rendered, context)
 
@@ -32,6 +30,12 @@ class TextFormatter(PathExpr):
             return rendered
 
         allowAll = ('allow-all' in context.vars)
+
+        if 'clear-html' in context.vars:
+            rendered = self._clearHTML(rendered, context)
+
+        if 'cut' in context.vars:
+            rendered = self._cut(rendered, context)
 
         if 'replace' in context.vars:
             rendered = self._replace(rendered, context)
@@ -47,9 +51,6 @@ class TextFormatter(PathExpr):
 
         if 'break-string' in context.vars:
             rendered = self._breakString(rendered, context)
-
-        if 'cut' in context.vars:
-            rendered = self._cut(rendered, context)
 
         if 'urlparse' in context.vars:
             rendered = self._urlparse(rendered, context)
@@ -138,6 +139,10 @@ class TextFormatter(PathExpr):
         realText = realText[:position] + expr + realText[position:]
         return realText
 
+    def _clearHTML(self, rendered, context):
+        # remove tags
+        return re.sub('<.*?>', '', rendered)
+
     def _cut(self, rendered, context):
         cut = context.vars['cut']
         if len(rendered) <= cut:
@@ -158,7 +163,7 @@ class TextFormatter(PathExpr):
 
         vars = context.vars['urlparse']
         parameters=""
-        
+
         if vars:
             for k, v in vars.items():
                 parameters +='%s="%s" ' % (k, v)

@@ -193,10 +193,35 @@ Option 'cut'
 
 We can also cut strings to a given length::
 
+Warning: cut will not check for HTML tags and will therefore cut in the middle
+         of a tag which will make HTML unusable. Only use for plain text.
+
   >>> context = Context({'cut':20})
   >>> rendered = tf._doFormat('ein superlangerstring mit ein paar kurzen strings', context)
-  >>> len(rendered) == 20
-  True
+  >>> len(rendered)
+  20
+
+cut is done as the first operation. If it is combined with replace the
+resulting string can be longer.
+
+  >>> context = Context({'cut':20, 'replace':(('ein', 'Wrong case : ein'),)})
+  >>> rendered = tf._doFormat('ein superlangerstring mit ein paar kurzen strings', context)
+  >>> len(rendered)
+  33
+
+
+Option 'clear-html'
+===================
+
+  >>> context = Context({'clear-html':True})
+  >>> tf._doFormat('Text <strong>containing</strong> HTML', context)
+  'Text containing HTML'
+
+This is done before "cut".
+
+  >>> context = Context({'clear-html':True, 'cut':10})
+  >>> tf._doFormat('Text <strong>containing</strong> HTML', context)
+  'Text conta'
 
 Option 'attach'
 ===============

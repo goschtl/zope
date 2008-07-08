@@ -2,10 +2,18 @@
 lovely.tal
 ==========
 
+
+2008/07/08 0.4.0a1:
+===================
+
+ - fixed version number
+ - added "clear-html" as the first executed command
+ - moved the "cut" command to the front
+
 2008/03/03 0.3a:
 ================
- - urlparse condition added
 
+ - urlparse condition added
 
 2007/08/29 0.2.1:
 =================
