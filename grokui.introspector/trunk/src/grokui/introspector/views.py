@@ -16,15 +16,17 @@ Views for the grok introspector.
 """
 
 import grok
-from zope.app.basicskin import IBasicSkin
-from zope.app.folder.interfaces import IRootFolder
+from zope.component import getUtility
+from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.traversing.interfaces import ITraversable
 from grokui.introspector.interfaces import (IGrokIntrospector,
                                             IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector,
                                             IGrokZODBBrowser)
 
-# BBB: This will change after decoupling grok.admin from grok...
+NAMESPACE = u'introspector'
+
 grok.context(IGrokIntrospector)
 
 class IntrospectorLayer(IDefaultBrowserLayer):
@@ -33,12 +35,11 @@ class IntrospectorLayer(IDefaultBrowserLayer):
     pass
 
 # This is the default layer for all views herein...
-grok.layer(IntrospectorLayer)
+#grok.layer(IntrospectorLayer)
 
 class IntrospectorSkin(grok.Skin):
     """A skin for all introspection stuff.
     """
-    grok.name('introspector')
     grok.layer(IntrospectorLayer)
 
 class Master(grok.View):
@@ -48,7 +49,7 @@ class Master(grok.View):
 class Index(grok.View):
     """The overview page.
     """
-    #grok.name('index.html')
+    pass
 
 class RegistryOverview(grok.View):
     grok.name('index')
@@ -90,4 +91,18 @@ class PageFooterManager(grok.ViewletManager):
     """This viewlet manager cares for the page footer.
     """
     grok.name('footer')
-    
+
+# Define a namespace for all introspector related stuff
+
+class GrokIntrospectorNamespace(grok.MultiAdapter):
+    grok.name(NAMESPACE)
+    grok.provides(ITraversable)
+    grok.adapts(Interface, Interface)
+    grok.layer(IntrospectorSkin)
+
+    def __init__(self, ob, req=None):
+        self.context = ob
+
+    def traverse(self, name, ignore):
+        introspector = getUtility(IGrokIntrospector)
+        return introspector(self.context, NAMESPACE + name)
