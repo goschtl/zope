@@ -42,13 +42,13 @@ All introspector related content is shown in a special skin called
 ``introspector``, so that you can enter the follwing URL to access the
 overview page::
 
-  >>> browser.open('http://localhost/++skin++introspector/')
+  >>> browser.open('http://localhost/++introspector++/')
   >>> print browser.contents
   <!DOCTYPE html...
   <h1>The Grok Introspector</h1>
   ...
 
-Note the `++skin++introspector` marker in the URL.
+Note the `++introspector` marker in the URL.
 
 The overview page provides three main sections to start browsing: 
 
@@ -72,7 +72,7 @@ We can browse the registries by clicking on the provided link::
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++skin++introspector/')
+  >>> browser.open('http://localhost/++introspector++/')
 
 
 Browsing code (classes, packages, etc.)
@@ -88,7 +88,7 @@ Browsing code (classes, packages, etc.)
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++skin++introspector/')
+  >>> browser.open('http://localhost/++introspector++/')
 
 
 Browsing the ZODB
@@ -102,4 +102,4 @@ Browsing the ZODB
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++skin++introspector/')
+  >>> browser.open('http://localhost/++introspector++/')
