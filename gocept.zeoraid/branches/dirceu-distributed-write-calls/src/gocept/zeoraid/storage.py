@@ -638,17 +638,9 @@ class RAIDStorage(object):
         N-th storage.
 
         """
-        def _remote_apply_all_storages():
-            try:
-                args = argument_iterable.next()
-                reliable, result = self.__apply_storage(
+        def _remote_apply_storage():
+            self.reliable, self.result = self.__apply_storage(
                     name, method_name, args, kw, expect_connected)
-            except Exception, e:
-                exceptions.append(e)
-                raise
-            else:
-                if reliable:
-                    results.append(result)            
 
         results = []
         exceptions = []
@@ -668,9 +660,18 @@ class RAIDStorage(object):
                                if storage not in exclude]
 
         for name in applicable_storages:
-            t = threading.Thread(target=_remote_apply_all_storages)
-            t.start()
-            t.join(60)
+            try:
+                args = argument_iterable.next()
+                t = threading.Thread(target=_remote_apply_storage)
+                t.start()
+                t.join(60)
+                reliable, result = t.reliable, t.result
+            except Exception, e:
+                exceptions.append(e)
+                raise
+            else:
+                if reliable:
+                    results.append(result)
 
         # Analyse result consistency.
         consistent = True
