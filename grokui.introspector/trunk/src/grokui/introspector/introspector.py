@@ -15,14 +15,27 @@
 """
 import grok
 from zope.introspector import UtilityInfo
+from zope.location.interfaces import ILocation
+from zope.traversing.interfaces import ITraversable
+from grok.interfaces import IContext
 from grokui.introspector.interfaces import (IGrokIntrospector,
                                             IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector,
                                             IGrokZODBBrowser)
 
-class Introspector(grok.Model):
-    grok.implements(IGrokIntrospector)
+class Introspector(object):
+    grok.implements(IGrokIntrospector, ILocation, IContext)
 
+    def __init__(self, parent, name):
+        self.__parent__ = parent
+        self.__name__ = name
+
+def get_introspector():
+    return Introspector
+grok.global_utility(get_introspector, provides=IGrokIntrospector)
+
+class IntrospectorTraverser(grok.Traverser):
+    grok.context(IGrokIntrospector)
     def traverse(self, path, *args, **kw):
         if path == 'registries':
             return RegistryIntrospector()
@@ -30,7 +43,7 @@ class Introspector(grok.Model):
             return CodeIntrospector()
         if path == 'zodb':
             return ZODBBrowser()
-        return self
+        return self.context
 
 class RegistryIntrospector(grok.Model):
     grok.implements(IGrokRegistryIntrospector)
@@ -38,7 +51,6 @@ class RegistryIntrospector(grok.Model):
     def getUtilities(self):
         uinfo = UtilityInfo()
         return uinfo.getAllUtilities()
-        
 
 class CodeIntrospector(grok.Model):
     grok.implements(IGrokCodeIntrospector)
