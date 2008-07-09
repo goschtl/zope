@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for zope.introspector.
 """
-from zope import interface, schema
+from zope import interface
 
 class IIntrospectorBaseClasses(interface.Interface):
     priority = interface.Attribute(

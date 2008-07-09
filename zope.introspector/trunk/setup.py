@@ -23,19 +23,16 @@ def read(*rnames):
 
 version = '0.1'
 
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    )
+
 setup(name='zope.introspector',
       version=version,
       description="Introspection helpers for Zope and Python objects.",
-      long_description=(
-        read('README.txt')
-          + '\n\n' +
-          'Detailed Documentation\n' +
-          '**********************\n\n'
-          + '\n\n' +
-          read('src', 'zope', 'introspector', 'README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
-          ),
+      long_description=long_description,
       # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         'Development Status :: 1 - Planning',
@@ -51,7 +48,7 @@ setup(name='zope.introspector',
       keywords="zope zope2 zope3 web introspection introspector",
       author="Zope Corporation and Contributors",
       author_email="zope3-dev@zope.org",
-      url="http://cheeseshop.python.org/pypi/zope.introspector",
+      url='http://pypi.python.org/pypi/'+name,
       license="ZPL 2.1",
       package_dir={'': 'src'},
       packages=find_packages('src'),
@@ -60,7 +57,10 @@ setup(name='zope.introspector',
       zip_safe=False,
       install_requires=['setuptools',
                         'grokcore.component',
-                        # Add extra requirements here
+                        'zope.interface',
+                        'zope.component',
+                        'zope.publisher',
+                        'martian',
                         ],
       extras_require = dict(
         test=['zope.app.testing',
