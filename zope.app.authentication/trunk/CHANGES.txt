@@ -2,9 +2,14 @@
 CHANGES
 =======
 
+Version 3.4.3dev (unreleased)
+-----------------------------
+
+- ...
+
 
 Version 3.4.2 (2008-07-09)
------------------------------
+--------------------------
 
 - Make it compatible with upcomming zope.app.container 3.6.1 changes.
   Changed super(BTreeContainer, self).__init__() to 
