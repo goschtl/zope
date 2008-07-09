@@ -15,10 +15,25 @@ $Id$
 #implement a traversable tree of queryobjects (parent, child, sibling, ....)
 
 from zope.interface import implements
+from zope.location import locate, Location
 
-from ocql.interfaces import IObjectQuery
+from ocql.interfaces import IObjectQuery, IObjectQueryHead, IObjectQueyChild
+from ocql.queryobject.interfaces import *
 
-class QueryObject:
+class Head:
+    implements(IObjectQueryHead)
+    def __init__(self, tree):
+        self.name = 'head'
+        self.tree = tree
+        
+    def rewrite(self):
+        return self.tree
+
+class Child:
+    implements(IObjectQueyChild)
+    children = []
+
+class QueryObject(Child, Location):
     #TODO: this is dirty here, at the end we'll need to have a tree of
     #QueryObject's whose topmost element will only get this IF
     implements(IObjectQuery)
@@ -57,17 +72,31 @@ class QueryObject:
     def rewrite(self, algebra):
         raise NotImplementedError(self)
 
-class Term:
-    pass
+class Term(Child):
+    implements(ITerm)
+    identifier = None
+    expression = None
+
+    def __init__(self, metadata, symbols, identifier, expression):
+        self.metadata = metadata
+        self.symbols = symbols
+        self.identifier = identifier
+        self.expression = expression
+        locate(identifier, self, 'identifier')
+        locate(expression, self, 'expression')
+        self.children.extend([identifier, expression])
+
 
 class Expression(Term, QueryObject):
-    pass
+    implements(IExpression)
 
 #
 # General
 #
 class hasClassWith(Expression):
     #NotImplementedError
+    implements(IhasClassWith)
+    
     expression = None
     klass = None
     conditional = None
@@ -78,14 +107,19 @@ class hasClassWith(Expression):
         self.expression = expr
         self.klass = klass
         self.conditional = conditional
+        locate(expr, self, 'expr')
+        locate(conditional, self, 'conditional')
+        self.children.extend([expr, klass, conditional])
 
 class Identifier(Expression):
+    implements(IIdentifier)
     name = None
 
     def __init__(self, metadata, symbols, name):
         self.metadata = metadata
         self.symbols = symbols
         self.name = name
+        self.children.append(name)
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -97,6 +131,7 @@ class Identifier(Expression):
         return algebra.Identifier(self.name)
 
 class Constant(Expression):
+    implements(IConstant)
     #this shall be abstract?
     value = None
 
@@ -104,6 +139,7 @@ class Constant(Expression):
         self.metadata = metadata
         self.symbols = symbols
         self.value=value
+        self.children.append(value)
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -127,6 +163,7 @@ class CollectionConstant(Constant):
     pass
 
 class Query(Expression):
+    implements(IQuery)
     collection_type = None
     terms = None
     target = None
@@ -137,6 +174,11 @@ class Query(Expression):
         self.collection_type = collection_type
         self.terms = terms
         self.target = target
+        for term in terms:
+            locate(term, self, 'term')
+        if target is not None: locate(target, self, 'target')
+        self.children.extend(terms)
+        self.children.extend([collection_type,target])
 
     def __repr__(self):
         return "%s(%s, %s, %s)" % (
@@ -210,16 +252,8 @@ class Query(Expression):
         self.symbols.dellevel()
         return rv
 
-class In(Term):
-    identifier = None
-    expression = None
-
-    def __init__(self, metadata, symbols, identifier, expression):
-        self.metadata = metadata
-        self.symbols = symbols
-        self.identifier = identifier
-        self.expression = expression
-
+class In(Term):    
+    implements(IIn)
     def __repr__(self):
         return "%s(%s, %s)" % (
             self.__class__.__name__,
@@ -238,15 +272,7 @@ class In(Term):
         return rv
 
 class Alias(Term):
-    identifier = None
-    expression = None
-
-    def __init__(self, metadata, symbols, identifier, expression):
-        self.metadata = metadata
-        self.symbols = symbols
-        self.identifier = identifier
-        self.expression = expression
-
+    implements(IAlias)
     def __repr__(self):
         return "%s(%s, %s)" % (
             self.__class__.__name__,
@@ -270,6 +296,7 @@ class Alias(Term):
 # Binary operators
 #
 class Binary(Expression):
+    implements(IBinary)
     left = None
     right = None
 
@@ -278,6 +305,9 @@ class Binary(Expression):
         self.symbols = symbols
         self.left = left
         self.right = right
+        locate(left, self, 'left')
+        locate(right, self, 'right')
+        self.children.extend([left, right])
 
     def __repr__(self):
         return "%s(%s, %s)" % (
@@ -293,6 +323,7 @@ class Binary(Expression):
 
 # Sets and properties
 class Union(Binary):
+    implements(IUnion)
     def rewrite(self, algebra):
         return algebra.Union(
             self.left.get_collection_type(),
@@ -300,6 +331,7 @@ class Union(Binary):
             self.right.rewrite(algebra))
 
 class Differ(Binary):
+    implements(IDiffer)
     def rewrite(self, algebra):
         return algebra.Differ(
             self.left.get_collection_type(),
@@ -307,14 +339,17 @@ class Differ(Binary):
             self.right.rewrite(algebra))
 
 class And(Binary):
+    implements(IAnd)
     def get_operator(self, algebra):
         return algebra.Operator('and')
 
 class Or(Binary):
+    implements(IOr)
     def get_operator(self, algebra):
         return algebra.Operator('or')
 
 class Property(Binary):
+    implements(IProperty)
     def rewrite(self, algebra): # FIXME: Ezt gondold at...
         return algebra.Identifier(
             '.'.join([self.left.name, self.right.name]))
@@ -337,26 +372,30 @@ class Property(Binary):
 
 class Index(Binary):
     #NotImplementedError
-    pass
+    implements(IIndex)
 
 
 # Arithmetic operators
 class Arithmetic(Binary):
-    pass
+    implements(IArithmetic)
 
 class Add(Arithmetic):
+    implements(IAdd)
     def get_operator(self, algebra):
         return algebra.Operator('+')
 
 class Mul(Arithmetic):
+    implements(IMul)
     def get_operator(self, algebra):
         return algebra.Operator('*')
 
 class Sub(Arithmetic):
+    implements(ISub)
     def get_operator(self, algebra):
         return algebra.Operator('-')
 
 class Div(Arithmetic):
+    implements(IDiv)
     def get_operator(self, algebra):
         return algebra.Operator('/')
 
@@ -364,12 +403,15 @@ class Div(Arithmetic):
 # Unary operators
 #
 class Unary(Expression):
+    implements(IUnary)
     expression = None
 
     def __init__(self, metadata, symbols, expression):
         self.metadata = metadata
         self.symbols = symbols
         self.expression = expression
+        locate(expression, self, 'expression')
+        self.children.append(expression)
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -378,13 +420,16 @@ class Unary(Expression):
             )
 
 class Not(Unary):
+    implements(INot)
     def rewrite(self, algebra):
         return algebra.Not(self.expression.rewrite(algebra))
 
 class Aggregate(Unary):
-    pass
+    implements(IAggregate)
+
 
 class Count(Aggregate):
+    implements(ICount)
     def rewrite(self, algebra):
         return algebra.Reduce(
             bag, # FIXME milyen bag
@@ -397,16 +442,18 @@ class Count(Aggregate):
 
 class Sum(Aggregate):
     #NotImplementedError
-    pass
+    implements(ISum)
 
 #
 # Conditional
 #
 class Quantor(QueryObject):
+    implements(IQuantor)
     def __init__(self, metadata, symbols, expr):
         self.metadata = metadata
         self.symbols = symbols
         self.expr = expr
+        self.children.append(expr)
         
     def __repr__(self):
         return "(%s)" % (
@@ -416,7 +463,8 @@ class Quantor(QueryObject):
     def rewrite(self, algebra, expression, quanter, operator):
         raise NotImplementedError()
 
-class Quanted:
+class Quanted(Child):
+    implements(IQuanted)
     quantor = None
     expression = None
 
@@ -425,12 +473,16 @@ class Quanted:
         self.symbols = symbols
         self.quantor = quantor
         self.expression = expression
+        locate(quantor, self, 'quantor')
+        locate(expression, self, 'expression')
+        self.children.extend([quantor, expression])
 
     def rewrite(self, algebra, expression, operator):
         return self.quantor.rewrite(algebra, expression, self.expression, operator)
 
 # Quantors
 class Every(Quantor):
+    implements(IEvery)
     def rewrite(self, algebra, expression, quanted, operator):
         ctype = quanted.get_collection_type()
 
@@ -453,6 +505,7 @@ class Every(Quantor):
         )
 
 class Some(Quantor):
+    implements(ISome)
     def rewrite(self, algebra, expression, quanted, operator):
         ctype = quanted.get_collection_type()
         return algebra.Reduce(
@@ -471,7 +524,7 @@ class Some(Quantor):
         )
 
 class Atmost(Quantor):
-    pass
+    implements(IAtmost)
     #expr = None
 
     #def __init__(self, metadata, symbols, expr):
@@ -481,7 +534,7 @@ class Atmost(Quantor):
     #    self.expr = expr
 
 class Atleast(Quantor):
-    pass
+    implements(IAtleast)
     #expr = None
 
     #def __init__(self, metadata, symbols, expr):
@@ -491,7 +544,7 @@ class Atleast(Quantor):
     #    self.expr = expr
 
 class Just(Quantor):
-    pass
+    implements(IJust)
     #expr = None
 
     #def __init__(self, metadata, symbols, expr):
@@ -502,6 +555,7 @@ class Just(Quantor):
 
 # Logical operators
 class Condition(Expression):
+    implements(ICondition)
     left = None
     right = None
 
@@ -510,6 +564,9 @@ class Condition(Expression):
         self.symbols = symbols
         self.left = left
         self.right = right
+        locate(left, self, 'left')
+        locate(right, self, 'right')
+        self.children.extend([left, right])
 
     def rewrite(self, algebra):
         if isinstance(self.left, Quanted):
@@ -526,26 +583,32 @@ class Condition(Expression):
             return algebra.Binary(self.left.rewrite(algebra), self.get_operator(algebra), self.right.rewrite(algebra))
 
 class Eq(Condition):
+    implements(IEq)
     def get_operator(self, algebra):
         return algebra.Operator('==')
 
 class Ne(Condition):
+    implements(INe)
     def get_operator(self, algebra):
         return algebra.Operator('!=')
 
 class Lt(Condition):
+    implements(ILt)
     def get_operator(self, algebra):
         return algebra.Operator('<')
 
 class Gt(Condition):
+    implements(IGt)
     def get_operator(self, algebra):
         return algebra.Operator('>')
 
 class Le(Condition):
+    implements(ILe)
     def get_operator(self, algebra):
         return algebra.Operator('<=')
 
 class Ge(Condition):
+    implements(IGe)
     def get_operator(self, algebra):
         return algebra.Operator('>=')
 
