@@ -3,4 +3,5 @@
     xmlns:grok="http://namespaces.zope.org/grok">
   <include package="grok" />
   <grok:grok package="." />
+  <includeDependencies package="." />
 </configure>
