@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-Version 3.4.2dev (unreleased)
+Version 3.4.2 (2008-07-09)
 -----------------------------
 
 - Make it compatible with upcomming zope.app.container 3.6.1 changes.
