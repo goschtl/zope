@@ -20,20 +20,22 @@ from zope.location import locate, Location
 from ocql.interfaces import IObjectQuery, IObjectQueryHead, IObjectQueyChild
 from ocql.queryobject.interfaces import *
 
-class Head:
+class Head(Location):
     implements(IObjectQueryHead)
     def __init__(self, tree):
         self.name = 'head'
         self.tree = tree
+        locate(tree, self, 'tree')
+        
         
     def rewrite(self):
         return self.tree
 
-class Child:
+class Child(Location):
     implements(IObjectQueyChild)
     children = []
 
-class QueryObject(Child, Location):
+class QueryObject(Child):
     #TODO: this is dirty here, at the end we'll need to have a tree of
     #QueryObject's whose topmost element will only get this IF
     implements(IObjectQuery)
@@ -108,6 +110,7 @@ class hasClassWith(Expression):
         self.klass = klass
         self.conditional = conditional
         locate(expr, self, 'expr')
+        locate(klass, self, 'klass')
         locate(conditional, self, 'conditional')
         self.children.extend([expr, klass, conditional])
 

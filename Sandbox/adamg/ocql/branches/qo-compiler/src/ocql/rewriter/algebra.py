@@ -23,6 +23,7 @@ class Head(Location):
     def __init__(self, tree):
         name = 'head'
         self.tree = tree
+        locate(tree, self, 'tree')
 
     def __repr__(self):
         return ('%s') % (self.tree)
