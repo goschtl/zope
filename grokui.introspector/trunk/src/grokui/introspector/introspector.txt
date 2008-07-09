@@ -19,15 +19,14 @@ We can create a registry introspector::
   >>> from grokui.introspector.introspector import RegistryIntrospector
   >>> introspector = RegistryIntrospector()
 
+To make this component work, we must have some utilities from the
+``zope.introspector`` package available. We grok it to register them::
+
+  >>> import grokcore.component as grok
+  >>> grok.testing.grok('zope.introspector')
 
 Introspecting Utilities
 -----------------------
-
-The introspector can give us all utilities registered. In the
-beginning, there are no utilities registered::
-
-  >>> introspector.getUtilities()
-  []
 
 We now register a utility, that can be found afterwards::
 
@@ -52,7 +51,8 @@ newly registered one::
   >>> info = introspector.getUtilities()
   >>> from pprint import pprint
   >>> pprint(sorted(info))
-  [{'component': <TestUtility object at 0x...>,
+  [...
+   {'component': <TestUtility object at 0x...>,
     'name': '',
     'provided': <InterfaceClass __builtin__.ITestUtility>,
     'registry': <BaseGlobalComponents base>}]
