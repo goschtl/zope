@@ -14,7 +14,8 @@
 """A traverser and other other central stuff for introspecting.
 """
 import grok
-from zope.introspector import UtilityInfo
+from zope.component import getUtility
+from zope.introspector.interfaces import IRegistryInfo
 from zope.location.interfaces import ILocation
 from zope.traversing.interfaces import ITraversable
 from grok.interfaces import IContext
@@ -49,8 +50,14 @@ class RegistryIntrospector(grok.Model):
     grok.implements(IGrokRegistryIntrospector)
 
     def getUtilities(self):
-        uinfo = UtilityInfo()
-        return uinfo.getAllUtilities()
+        uinfo = getUtility(IRegistryInfo)
+        utilities = [dict(
+            component = x.component,
+            name = x.name,
+            provided = x.provided,
+            registry = x.registry
+            ) for x in uinfo.getAllUtilities()]
+        return utilities
 
 class CodeIntrospector(grok.Model):
     grok.implements(IGrokCodeIntrospector)
