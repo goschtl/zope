@@ -26,7 +26,6 @@ class IIntrospectorBaseClasses(interface.Interface):
     ModuleInfo = interface.Attribute("Information about a module")
     PackageInfo = interface.Attribute("Information about a package")
     TypeInfo = interface.Attribute("Information about a basic type")
-    UtilityInfo = interface.Attribute("Utilities an object can access")
     RegistryInfo = interface.Attribute(
         "Information about the component registry")
 
