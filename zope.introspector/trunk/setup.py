@@ -22,6 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 version = '0.1'
+name='zope.introspector'
 
 long_description = (
     read('README.txt')
@@ -29,7 +30,7 @@ long_description = (
     read('CHANGES.txt')
     )
 
-setup(name='zope.introspector',
+setup(name=name,
       version=version,
       description="Introspection helpers for Zope and Python objects.",
       long_description=long_description,
