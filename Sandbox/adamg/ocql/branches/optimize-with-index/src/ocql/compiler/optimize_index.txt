@@ -28,6 +28,7 @@ Checking here how a compiled query can be optimized for zope indexes
     >>> setupCatalog(None)
 
 
+Simple thing:
 
     #>>> engine = OCQLEngine()
     #>>> run = engine.compile("set [ | 1 ]")
@@ -39,15 +40,20 @@ Checking here how a compiled query can be optimized for zope indexes
     #set([1])
 
 
+Let's use the IUnOptimizedClass:
 
-    #>>> engine = OCQLEngine()
-    #>>> run = engine.compile("set [ i in IUnOptimizedClass | i ]")
-    #>>> run
-    #RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("IUnOptimizedClass"))), set())
+#    >>> engine = OCQLEngine()
+#    >>> run = engine.compile("set [ i in IUnOptimizedClass | i ]")
+#    >>> run
+#    RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("IUnOptimizedClass"))), set())
+#
+##    >>> result = run.execute()
+##    >>> result
+##    set([UnOpt: 0, UnOpt: 1, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 2, UnOpt: 8, UnOpt: 9])
 
-#    >>> result = run.execute()
-#    >>> result
-#    set([UnOpt: 0, UnOpt: 1, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 2, UnOpt: 8, UnOpt: 9])
+
+IUnOptimizedClass with a filter condition:
+(parser is not working, therefore the complicated query definition)
 
     >>> from ocql.queryobject.queryobject import *
     >>> from ocql.interfaces import IDB
@@ -81,6 +87,47 @@ Checking here how a compiled query can be optimized for zope indexes
     >>> result = run.execute()
     >>> result
     set([u'5'])
+
+
+
+IOptimizedClass with a filter condition:
+(parser is not working, therefore the complicated query definition)
+(compiles to an imaginery code at the moment!!!)
+
+    >>> from ocql.queryobject.queryobject import *
+    >>> from ocql.interfaces import IDB
+    >>> from ocql.parser.queryparser import SymbolContainer
+
+    >>> metadata = IDB(None)
+    >>> symbols = SymbolContainer()
+    >>> qo = Query(
+    ...         metadata, symbols,
+    ...         set,
+    ...         [
+    ...              In(
+    ...                 metadata, symbols,
+    ...                 Identifier(metadata,symbols,'i'),
+    ...                 Identifier(metadata,symbols, 'IOptimizedClass')),
+    ...              Eq(
+    ...                 metadata,symbols,
+    ...                 Identifier(metadata, symbols, 'i.value'),
+    ...                 Identifier(metadata, symbols, '5'))
+    ...         ], Identifier(metadata, symbols, 'i.name'))
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile(qo)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda i: set([i.name]),
+    set(metadata.getFromIndex("IUnOptimizedClass", "value", 5, 5))), set())
+
+    >>> result = run.execute()
+    >>> result
+    set([u'5'])
+
+
 
 
     #>>> engine = OCQLEngine()
