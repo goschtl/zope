@@ -104,6 +104,13 @@ First we grok this package's grokkers::
   >>> from grok.testing import grok
   >>> grok('megrok.rdb.meta')
 
+
+Before we grok stuff in the doctest, we need to make sure that
+``__file__`` exists on our "module"::
+
+  >>> __file__ = 'foo'
+
+
 Now we can grok the components::
 
   >>> from grok.testing import grok_component
