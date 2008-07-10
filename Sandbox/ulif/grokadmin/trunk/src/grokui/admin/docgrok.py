@@ -48,7 +48,7 @@ import grok.interfaces
 from grok.interfaces import IApplication
 from martian.scan import is_package, ModuleInfo
 from martian import ClassGrokker, ModuleGrokker
-from grokadmin.objectinfo import ZopeObjectInfo
+from grokui.admin.objectinfo import ZopeObjectInfo
 
 # This is the name under which the docgrok object-browser can be
 # reached.
@@ -266,7 +266,7 @@ class DocGrokGrokker(ClassGrokker):
     docgrok module, because it contains a more specific grokker: the
     InstanceGrokker 'docgrok_grokker' ::
 
-      >>> from grokadmin import docgrok
+      >>> from grokui.admin import docgrok
 
     Then we create an (empty) 'ModuleGrokker'. 'ModuleGrokkers' can
     grok whole modules. ::
@@ -281,7 +281,7 @@ class DocGrokGrokker(ClassGrokker):
 
     The 'docgrok_handler_grokker' is an instance of 'DocGrokGrokker'::
 
-      >>> from grokadmin.docgrok import DocGrokGrokker
+      >>> from grokui.admin.docgrok import DocGrokGrokker
       >>> isinstance(docgrok.docgrok_handler_grokker, DocGrokGrokker)
       True
 
