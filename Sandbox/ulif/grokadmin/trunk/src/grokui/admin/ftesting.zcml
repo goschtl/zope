@@ -6,8 +6,8 @@
    >
 
   <include package="grok" />
-  <include package="grokadmin" />
-  <grok:grok package="grokadmin.tests" />
+  <include package="grokui.admin" />
+  <grok:grok package="grokui.admin.tests" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
