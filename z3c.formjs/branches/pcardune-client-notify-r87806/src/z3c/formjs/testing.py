@@ -21,6 +21,7 @@ import zope.component
 import zope.interface
 from zope.app.pagetemplate import viewpagetemplatefile
 from zope.app.testing import setup
+from zope.component.interfaces import IObjectEvent
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import z3c.formjs.tests
@@ -162,6 +163,27 @@ class WidgetSaverRenderer(object):
         return "$.get('saveValue', function(msg){%s}\n)" % saveCall
 
 
+class ObjectEventRenderer(object):
+    zope.component.adapts(IObjectEvent,
+                          IBrowserRequest)
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, event, request):
+        self.event = event
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        attrs = set([])
+        for interface in zope.interface.providedBy(self.event):
+            attrs.update(interface.names())
+        content = '{%s}' % ','.join(['"%s":"%s"' % (attr,getattr(self.event, attr))
+                                     for attr in attrs])
+        return content
+
+
 class NotifyClientHandlerRenderer(object):
     zope.component.adapts(interfaces.INotifyClientHandler,
                           IBrowserRequest)
@@ -176,7 +198,7 @@ class NotifyClientHandlerRenderer(object):
 
     def render(self):
         renderer = zope.component.queryMultiAdapter(
-            (self.handler.event, self.request), interfaces.IEventRenderer)
+            (self.handler.event, self.request), interfaces.IRenderer)
         if renderer is not None:
             renderer.update()
             event = renderer.render()
@@ -200,6 +222,7 @@ def setupRenderers():
     zope.component.provideAdapter(WidgetSwitcherRenderer)
     zope.component.provideAdapter(LabelWidgetSwitcherRenderer)
     zope.component.provideAdapter(WidgetSaverRenderer)
+    zope.component.provideAdapter(ObjectEventRenderer)
     zope.component.provideAdapter(NotifyClientHandlerRenderer)
 
 

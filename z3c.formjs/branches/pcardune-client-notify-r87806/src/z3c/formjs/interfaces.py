@@ -430,14 +430,3 @@ class IHaveClientEvents(zope.interface.Interface):
 class IClientEvent(IObjectEvent):
     """Marker interface for an event that has an effect on the client."""
 
-class IEventRenderer(zope.interface.Interface):
-    """A representation of an event for a client side framework.
-
-    Could possibly be a JSON representation of the arguments passed to
-    the event."""
-
-    def update():
-        """Perform any necessary updates"""
-
-    def render():
-        """Return the javascript representation of the event."""

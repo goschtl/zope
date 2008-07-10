@@ -304,3 +304,26 @@ Now we can render the script:
   $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
       .trigger("zope.component.interfaces.IObjectEvent", {});
 
+``IObjectEvent`` Renderer
+-------------------------
+
+This renderer defines how to represent an object event in javascript.
+
+Let's create an ``ObjectEvent`` instance.
+
+  >>> from zope.component.interfaces import ObjectEvent
+  >>> event = ObjectEvent("foo")
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryObjectEventRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (event, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  {"object":"foo"}
+

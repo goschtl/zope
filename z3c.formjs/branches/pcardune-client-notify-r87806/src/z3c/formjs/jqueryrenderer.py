@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.component
 import zope.interface
 from zope.traversing.browser import absoluteURL
+from zope.component.interfaces import IObjectEvent
 
 from jquery.layer import IJQueryJavaScriptBrowserLayer
 
@@ -100,6 +101,26 @@ class JQuerySubscriptionsRenderer(object):
         return '$(document).ready(function(){\n  %s\n})' %(
             '\n  '.join([r.render() for r in self.renderers]) )
 
+class JQueryObjectEventRenderer(object):
+    zope.component.adapts(IObjectEvent,
+                          IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, event, request):
+        self.event = event
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        attrs = set([])
+        for interface in zope.interface.providedBy(self.event):
+            attrs.update(interface.names())
+        content = '{%s}' % ','.join(['"%s":"%s"' % (attr,getattr(self.event, attr))
+                                     for attr in attrs])
+        return content
+
 
 class JQueryNotifyClientHandlerRenderer(object):
     zope.component.adapts(interfaces.INotifyClientHandler,
@@ -115,7 +136,7 @@ class JQueryNotifyClientHandlerRenderer(object):
 
     def render(self):
         renderer = zope.component.queryMultiAdapter(
-            (self.handler.event, self.request), interfaces.IEventRenderer)
+            (self.handler.event, self.request), interfaces.IRenderer)
         if renderer is not None:
             renderer.update()
             event = renderer.render()
