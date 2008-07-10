@@ -18,14 +18,14 @@ import os
 import inspect
 from urllib import urlencode
 
-from grokadmin import docgrok
-from grokadmin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
-from grokadmin.docgrok import DocGrokTextFile, DocGrokGrokApplication
-from grokadmin.docgrok import DocGrokClass, DocGrokInterface, getItemLink
+from grokui.admin import docgrok
+from grokui.admin.docgrok import DocGrok, DocGrokPackage, DocGrokModule
+from grokui.admin.docgrok import DocGrokTextFile, DocGrokGrokApplication
+from grokui.admin.docgrok import DocGrokClass, DocGrokInterface, getItemLink
 
-from grokadmin.objectinfo import ZopeObjectInfo
-from grokadmin.utilities import getPathLinksForObject, getPathLinksForClass
-from grokadmin.utilities import getPathLinksForDottedName, getParentURL
+from grokui.admin.objectinfo import ZopeObjectInfo
+from grokui.admin.utilities import getPathLinksForObject, getPathLinksForClass
+from grokui.admin.utilities import getPathLinksForDottedName, getParentURL
 
 from ZODB.broken import Broken
 from BTrees.OOBTree import OOBTree

@@ -23,7 +23,7 @@ import types
 from types import MethodType
 
 import grok
-from grokadmin.utilities import isContainingEvilRegExpChars
+from grokui.admin.utilities import isContainingEvilRegExpChars
 
 import zope
 from zope.interface import Interface, implementedBy
