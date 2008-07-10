@@ -32,32 +32,31 @@ def getPathLinksForObject(obj, root_url=''):
 
     We can use ObjectInfo objects to check this:
 
-      >>> from grokadmin.objectinfo import ObjectInfo
+      >>> from grokui.admin.objectinfo import ObjectInfo
       >>> obj = ObjectInfo(None)
       >>> obj
-      <grokadmin.objectinfo.ObjectInfo object at ...>
+      <grokui.admin.objectinfo.ObjectInfo object at ...>
 
     Obviously we have a string representation of the required form
     here. So we can get HTML with links to the documentation for
-    ``grok``, ``grokadmin`` and so on.
+    ``grok``, ``grokui.admin`` and so on.
     
-      >>> from grokadmin.utilities import getPathLinksForObject
+      >>> from grokui.admin.utilities import getPathLinksForObject
       >>> link = getPathLinksForObject(obj)
       >>> link
-      "&lt;<a href='/docgrok/grokadmin/'>grokadmin</a>... object at ..."
+      "&lt;<a href='/docgrok/grokui/'>grokui</a>... object at ..."
 
-    We got a link to the ``grok`` documentation. Also links to
-    ``grokadmin``, ``grokadmin.objectinfo`` and
-    ``grokadmin.objectinfo.ObjectInfo`` are provided:
+    We got a link to the ``grok`` documentation. Also a link to
+    ``grokui.admin`` is provided::
 
       >>> link
-      "&lt;...<a href='/docgrok/grokadmin/'>grokadmin</a>... object at ..."
+      "&lt;...<a href='/docgrok/grokui/admin/'>admin</a>... object at ..."
 
     If we provide a root_url, we will find it in the links:
 
       >>> link = getPathLinksForObject(obj, 'http://localhost:8080')
       >>> link
-      "&lt;<a href='http://localhost:8080/docgrok/grokadmin/'>grokadmin</a>..."
+      "&lt;<a href='http://localhost:8080/docgrok/grokui...'>admin</a>..."
 
     If no dotted path is included in objects strings representation, a
     simple string without links is returned:
@@ -115,20 +114,20 @@ def getPathLinksForClass(klass, root_url=''):
 
     We can use class ObjectInfo to check this:
 
-      >>> from grokadmin.objectinfo import ObjectInfo
+      >>> from grokui.admin.objectinfo import ObjectInfo
       >>> ObjectInfo
-      <class 'grokadmin.objectinfo.ObjectInfo'>
+      <class 'grokui.admin.objectinfo.ObjectInfo'>
 
-      >>> from grokadmin.utilities import getPathLinksForClass
+      >>> from grokui.admin.utilities import getPathLinksForClass
       >>> htmlcode = getPathLinksForClass(ObjectInfo)
       >>> htmlcode
-      "&lt;class '<a href='/docgrok/grokadmin/'>grokadmin</a>...'&gt;"
+      "&lt;class '<a href='/docgrok/grokui/'>grokui</a>...'&gt;"
 
     When we provide a root_url the link will include it in the
     href-attribute:
 
       >>> getPathLinksForClass(ObjectInfo, 'http://localhost')
-      "&lt;class '<a href='http://localhost/docgrok/grokadmin/'>grokadmin</a>...'&gt;"
+      "&lt;class '<a href='http://localhost/docgrok/grokui/'>grokui</a>...'&gt;"
 
     If the class does not provide an appropriate string
     representation, we will get the representation without any links:
@@ -206,7 +205,7 @@ def isContainingEvilRegExpChars(strval):
 
     We indeed must provide a string:
 
-       >>> from grokadmin.utilities import isContainingEvilRegExpChars
+       >>> from grokui.admin.utilities import isContainingEvilRegExpChars
        >>> isContainingEvilRegExpChars(None)
        Traceback (most recent call last):
        ...
@@ -231,7 +230,7 @@ def isContainingEvilRegExpChars(strval):
 def getParentURL(url):
     """Compute the parent URL for an object described by URL.
 
-       >>> from grokadmin.utilities import getParentURL
+       >>> from grokui.admin.utilities import getParentURL
        >>> getParentURL('http://foo:8080/myobj')
        'http://foo:8080/'
 
