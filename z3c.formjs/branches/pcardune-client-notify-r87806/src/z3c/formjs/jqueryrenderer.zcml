@@ -26,6 +26,9 @@
   <adapter
       factory=".jqueryrenderer.JQueryWidgetSaverRenderer"
       />
+  <adapter
+      factory=".jqueryrenderer.JQueryNotifyClientHandlerRenderer"
+      />
 
   <!-- Resources -->
 
