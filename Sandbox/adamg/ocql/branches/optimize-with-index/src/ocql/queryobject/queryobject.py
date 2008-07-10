@@ -316,8 +316,6 @@ class Or(Binary):
 
 class Property(Binary):
     def rewrite(self, algebra): # FIXME: Ezt gondold at...
-        from pub.dbgpclient import brk; brk('172.16.144.39')
-
         return algebra.Identifier(
             '.'.join([self.left.name, self.right.name]))
 

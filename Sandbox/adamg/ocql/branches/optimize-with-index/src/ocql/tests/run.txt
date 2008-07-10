@@ -54,7 +54,7 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ i in ICourse | i ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))), set())
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
     >>> result
@@ -68,7 +68,7 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ c in ICourse | c.code ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))), set())
+    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]), set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
     >>> result
