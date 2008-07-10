@@ -6,8 +6,8 @@ the doctest format.
 
 We begin with a new database session.
 
-    >>> import ore.alchemist
-    >>> session = ore.alchemist.Session()
+    >>> import z3c.saconfig
+    >>> session = z3c.saconfig.Session()
 
 Mappers from interface specification
 ------------------------------------
@@ -78,6 +78,11 @@ commit the transacation, thus flushing the current session.
     >>> session.save(album)
     >>> session.save(vinyl)
     >>> session.save(cd)
+
+We must actually query the database once before proceeding; this seems
+to be a bug in ``zope.sqlalchemy``.
+    
+    >>> results = session.query(album.__class__).all()
     
     >>> import transaction
     >>> transaction.commit()
@@ -85,8 +90,7 @@ commit the transacation, thus flushing the current session.
 We get a reference to the database metadata object, to locate each
 underlying table.
     
-    >>> from ore.alchemist.interfaces import IDatabaseEngine
-    >>> engine = component.getUtility(IDatabaseEngine)
+    >>> engine = session.bind
     >>> metadata = engine.metadata
 
 Tables are given a name based on the dotted path of the interface they

@@ -2,17 +2,21 @@ from zope import component
 
 import sqlalchemy as rdb
 from sqlalchemy import orm
-        
-import ore.alchemist.interfaces
+
+from z3c.saconfig.interfaces import IEngineFactory
+
 import relations
 
 class UUID(rdb.types.TypeEngine):
     def get_col_spec(self):
         return "UUID"
 
-def bootstrapDatabaseEngine(event):
-    engine = component.getUtility(ore.alchemist.interfaces.IDatabaseEngine)
+def bootstrapDatabaseEngine(event=None):
+    factory = component.getUtility(IEngineFactory)
+    engine = factory()
     engine.metadata = metadata = rdb.MetaData(engine)
+
+    # setup metadata
     setUp(metadata)
     
 def setUp(metadata):

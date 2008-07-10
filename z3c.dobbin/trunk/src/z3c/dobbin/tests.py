@@ -5,7 +5,7 @@ from zope import interface
 from zope import schema
 from zope import component
 
-from zope.app.testing import setup
+import zope.component.testing
 from zope.testing.doctestunit import DocFileSuite
 
 import transaction
@@ -13,12 +13,12 @@ import transaction
 import testing
 
 def setUp(test):
-    setup.placefulSetUp()
+    zope.component.testing.setUp(test)
     testing.setUp(test)
     
 def tearDown(test):
-    setup.placefulTearDown()
     testing.tearDown(test)
+    zope.component.testing.tearDown(test)
     
 def test_suite():
     globs = dict(

@@ -40,7 +40,6 @@ setup(name='z3c.dobbin',
       zip_safe=False,
       extras_require = dict(
         test = [
-            'zope.app.testing',
             'pysqlite',
             ],
         ),
@@ -49,7 +48,8 @@ setup(name='z3c.dobbin',
                            'zope.schema',
                            'zope.component',
                            'zope.dottedname',
-                           'ore.alchemist',
-                           'ZODB3',
+                           'zope.configuration',
+                           'z3c.saconfig',
+                           'transaction',
                            'SQLAlchemy==0.4.6'],
       )

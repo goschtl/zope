@@ -1,6 +1,6 @@
 from zope import interface
 
-from ore.alchemist import Session
+from z3c.saconfig import Session
 
 import soup
 import factory

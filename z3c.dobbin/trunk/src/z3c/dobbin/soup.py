@@ -6,7 +6,7 @@ from interfaces import IMapped
 from session import registerObject
 
 from zope.dottedname.resolve import resolve
-from ore.alchemist import Session
+from z3c.saconfig import Session
 
 import factory
 import bootstrap

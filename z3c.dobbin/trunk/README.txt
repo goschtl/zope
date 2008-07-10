@@ -16,5 +16,6 @@ Authors
 -------
 
 This package was designed and implemented by Malthe Borch, Stefan
-Eletzhofer. It's licensed as ZPL.
+Eletzhofer with parts contributed by Kapil Thangavelu and Laurence
+Rowe. It's licensed as ZPL.
 

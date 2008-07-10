@@ -15,10 +15,8 @@ from sqlalchemy import orm
 
 from sqlalchemy.orm.attributes import proxied_attribute_factory
 
-from ore.alchemist.interfaces import IDatabaseEngine
-from ore.alchemist import Session
-from ore.alchemist.zs2sa import FieldTranslator
-from ore.alchemist.zs2sa import StringTranslator
+from z3c.saconfig import Session
+from zs2sa import FieldTranslator, StringTranslator
 
 from uuid import uuid1
 from random import randint
@@ -148,7 +146,7 @@ def getMapper(spec):
 def createMapper(spec):
     """Create a mapper for the specification."""
 
-    engine = component.getUtility(IDatabaseEngine)
+    engine = Session().bind
     metadata = engine.metadata
 
     exclude = ['__name__']

@@ -7,26 +7,28 @@ import sqlalchemy as rdb
 
 from sqlalchemy import orm
 
-from ore.alchemist import Session
-from ore.alchemist.interfaces import IDatabaseEngine
-
 import z3c.dobbin
+
+from z3c.saconfig import EngineFactory
+from z3c.saconfig import GloballyScopedSession
 
 metadata = rdb.MetaData()
 
 def setUp(test):
-    test._engine = rdb.create_engine('sqlite:///:memory:')
-    
-    # register database engine
-    component.provideUtility(test._engine, IDatabaseEngine)
+    # provide engine factory
+    factory = EngineFactory('sqlite:///:memory:')
+    component.provideUtility(factory)
 
+    # setup scoped session
+    utility = GloballyScopedSession(autoflush=True)
+    component.provideUtility(utility)
+    
     # bootstrap database engine
-    z3c.dobbin.bootstrap.bootstrapDatabaseEngine(None)
+    z3c.dobbin.bootstrap.bootstrapDatabaseEngine()
 
     # register components
     zope.configuration.xmlconfig.XMLConfig('meta.zcml', component)()
     zope.configuration.xmlconfig.XMLConfig('configure.zcml', z3c.dobbin)()
 
 def tearDown(test):
-    del test._engine
-    del metadata._bind
+    pass
