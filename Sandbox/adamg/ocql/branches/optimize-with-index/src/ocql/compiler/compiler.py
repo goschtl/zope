@@ -87,7 +87,7 @@ class IterCompiler(BaseCompiler):
         self.context.expr is IfCompiler:
 
             if self.context.klass == set:
-                return 'reduce(set.union, map(%s,%s), set())' % (
+                return 'reduce(set.union, map(%s, %s), set())' % (
                     IAlgebraCompiler(self.context.func)(),
                     IAlgebraCompiler(self.context.coll)())
             if self.context.klass == list:
@@ -96,7 +96,7 @@ class IterCompiler(BaseCompiler):
                     IAlgebraCompiler(self.context.coll)())
         else:
             if self.context.klass == set:
-                return 'reduce(set.union, map(%s,%s), set())' % (
+                return 'reduce(set.union, map(%s, %s), set())' % (
                     IAlgebraCompiler(self.context.func)(),
                     IAlgebraCompiler(self.context.coll)())
             if self.context.klass == list:

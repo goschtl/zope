@@ -1,0 +1,93 @@
+
+Checking here how a compiled query can be optimized for zope indexes
+
+    >>> from zope.component import provideAdapter
+
+    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.rewriter.rewriter import Rewriter
+    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
+    >>> from ocql.compiler.compiler import AlgebraCompiler
+    >>> from ocql.database.metadata import Metadata
+
+    >>> provideAdapter(QueryParser)
+    >>> provideAdapter(QueryOptimizer)
+    >>> provideAdapter(Rewriter)
+    >>> provideAdapter(AlgebraOptimizer)
+    >>> provideAdapter(AlgebraCompiler)
+    >>> provideAdapter(Metadata)
+
+    >>> from ocql.engine import OCQLEngine
+
+    >>> from ocql.compiler.compiler import registerAdapters
+    >>> registerAdapters()
+
+    >>> from ocql.testing.utils_opt import setupInterfaces
+    >>> setupInterfaces(None)
+    >>> from ocql.testing.utils_opt import setupCatalog
+    >>> setupCatalog(None)
+
+
+
+    #>>> engine = OCQLEngine()
+    #>>> run = engine.compile("set [ | 1 ]")
+    #>>> run
+    #RunnableQuery: set([1])
+    #
+    #>>> result = run.execute()
+    #>>> result
+    #set([1])
+
+
+
+    #>>> engine = OCQLEngine()
+    #>>> run = engine.compile("set [ i in IUnOptimizedClass | i ]")
+    #>>> run
+    #RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("IUnOptimizedClass"))), set())
+
+#    >>> result = run.execute()
+#    >>> result
+#    set([UnOpt: 0, UnOpt: 1, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 2, UnOpt: 8, UnOpt: 9])
+
+    >>> from ocql.queryobject.queryobject import *
+    >>> from ocql.interfaces import IDB
+    >>> from ocql.parser.queryparser import SymbolContainer
+
+    >>> metadata = IDB(None)
+    >>> symbols = SymbolContainer()
+    >>> qo = Query(
+    ...         metadata, symbols,
+    ...         set,
+    ...         [
+    ...              In(
+    ...                 metadata, symbols,
+    ...                 Identifier(metadata,symbols,'i'),
+    ...                 Identifier(metadata,symbols, 'IUnOptimizedClass')),
+    ...              Eq(
+    ...                 metadata,symbols,
+    ...                 Identifier(metadata, symbols, 'i.value'),
+    ...                 Identifier(metadata, symbols, '5'))
+    ...         ], Identifier(metadata, symbols, 'i.name'))
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile(qo)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda i: ((i.value==5) and (set([i.name])) or (set())),
+    set(metadata.getAll("IUnOptimizedClass"))), set())
+
+    >>> result = run.execute()
+    >>> result
+    set([u'5'])
+
+
+    #>>> engine = OCQLEngine()
+    #>>> run = engine.compile("set [ i in IUnOptimizedClass; i.value==5 | i.name ]")
+    #>>> run
+    #RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("IUnOptimizedClass"))), set())
+
+#    >>> result = run.execute()
+#    >>> result
+#    set([UnOpt: 0, UnOpt: 1, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 2, UnOpt: 8, UnOpt: 9])

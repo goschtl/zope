@@ -33,8 +33,12 @@ class OCQLEngine:
         #TODO: later use maybe named adapters
         metadata = IDB(None)
 
-        objectquery = IQueryParser(query)(metadata)
+        if IObjectQuery.providedBy(query):
+            objectquery = query
+        else:
+            objectquery = IQueryParser(query)(metadata)
         optimizedoq = IQueryOptimizer(objectquery)()
+
         algebra = IRewriter(optimizedoq)()
         optimizedalgebra = IAlgebraOptimizer(algebra)()
         runnable = IAlgebraCompiler(optimizedalgebra)(metadata, algebra)
