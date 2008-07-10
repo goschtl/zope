@@ -364,13 +364,13 @@ Now we will instantiate the form and modify the object.
 
   >>> print editform.eventInjections
     $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent",
-             {"object":"<Article object at ...>"})
+             [{"object":"<Article object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
-             {"object":"<Article object at ...>"});
+             [{"object":"<Article object at ...>"}]);
     $() .trigger("z3c.formjs.interfaces.IClientEvent",
-             {"object":"<ArticleEditForm object at ...>"})
+             [{"object":"<ArticleEditForm object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
-             {"object":"<ArticleEditForm object at ...>"});
+             [{"object":"<ArticleEditForm object at ...>"}]);
 
 Lets not forget to end the interaction we created.
 
@@ -388,11 +388,11 @@ We also have a viewlet that renders the javascript event injections.
   >>> print viewlet.render()
   <script type="text/javascript">
     $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent",
-             {"object":"<Article object at ...>"})
+             [{"object":"<Article object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
-             {"object":"<Article object at ...>"});
+             [{"object":"<Article object at ...>"}]);
     $() .trigger("z3c.formjs.interfaces.IClientEvent",
-             {"object":"<ArticleEditForm object at ...>"})
+             [{"object":"<ArticleEditForm object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
-             {"object":"<ArticleEditForm object at ...>"});
+             [{"object":"<ArticleEditForm object at ...>"}]);
   </script>

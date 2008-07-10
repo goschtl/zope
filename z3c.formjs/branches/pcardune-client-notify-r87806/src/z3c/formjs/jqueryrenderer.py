@@ -117,8 +117,8 @@ class JQueryObjectEventRenderer(object):
         attrs = set([])
         for interface in zope.interface.providedBy(self.event):
             attrs.update(interface.names())
-        content = '{%s}' % ','.join(['"%s":"%s"' % (attr,getattr(self.event, attr))
-                                     for attr in attrs])
+        content = '[{%s}]' % ','.join(['"%s":"%s"' % (attr,getattr(self.event, attr))
+                                       for attr in attrs])
         return content
 
 

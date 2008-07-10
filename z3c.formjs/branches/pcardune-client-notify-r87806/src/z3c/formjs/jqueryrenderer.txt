@@ -325,5 +325,5 @@ Now we can render the script:
   ...     (event, request), interfaces.IRenderer)
   >>> renderer.update()
   >>> print renderer.render()
-  {"object":"foo"}
+  [{"object":"foo"}]
 
