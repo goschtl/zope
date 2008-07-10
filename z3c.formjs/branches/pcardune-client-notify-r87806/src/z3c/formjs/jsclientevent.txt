@@ -356,7 +356,9 @@ Now we will instantiate the form and modify the object.
   >>> editform.update()
 
   >>> print editform.eventInjections
-  $().trigger("ObjectModifiedEvent")
+  $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
+      .trigger("zope.component.interfaces.IObjectEvent", {});
+
 
 Lets not forget to end the interaction we created.
 

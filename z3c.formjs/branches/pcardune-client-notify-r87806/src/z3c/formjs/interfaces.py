@@ -410,7 +410,7 @@ class INotifyClientHandler(IClientEventHandler):
         description=u"The event that took place.")
 
 
-class IClientEvent(zope.interface.Interface):
+class IEventRenderer(zope.interface.Interface):
     """A representation of an event for a client side framework.
 
     Could possibly be a JSON representation of the arguments passed to

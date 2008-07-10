@@ -274,3 +274,33 @@ Now we can render the script:
     function(html){switchWidget("form-zip", "display", html)}
     )}}
   )
+
+
+``INotifyClientHandler`` Renderer
+---------------------------------
+
+This renderer defines how javascript notifies an event framework of an
+event that occurs on the server.
+
+Let's create a ``NotifyClientHandler`` instance.
+
+  >>> from z3c.formjs import jsclientevent
+  >>> notify = jsclientevent.NotifyClientHandler()
+
+  >>> from zope.lifecycleevent import ObjectModifiedEvent
+  >>> notify.event = ObjectModifiedEvent(object())
+
+Let's now register the renderer:
+
+  >>> zope.component.provideAdapter(
+  ...     jqueryrenderer.JQueryNotifyClientHandlerRenderer)
+
+Now we can render the script:
+
+  >>> renderer = zope.component.getMultiAdapter(
+  ...     (notify, request), interfaces.IRenderer)
+  >>> renderer.update()
+  >>> print renderer.render()
+  $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
+      .trigger("zope.component.interfaces.IObjectEvent", {});
+

@@ -175,13 +175,20 @@ class NotifyClientHandlerRenderer(object):
         pass
 
     def render(self):
-        try:
-            event = interfaces.IClientEvent(self.handler.event,
-                                            self.request)
-            event = event.render()
-        except:
-            event = '"%s"' % self.handler.event.__class__.__name__
-        return '$().trigger(%s)' % event
+        renderer = zope.component.queryMultiAdapter(
+            (self.handler.event, self.request), interfaces.IEventRenderer)
+        if renderer is not None:
+            renderer.update()
+            event = renderer.render()
+        else:
+            event = '{}'
+        result = '$()'
+        for interface in zope.interface.providedBy(self.handler.event):
+            eventName = '"%s.%s"' % (interface.__module__,
+                                     interface.__name__)
+            result+='\n.trigger(%s, %s)' % (eventName, event)
+        result += ';'
+        return result
 
 
 def setupRenderers():
