@@ -1,21 +1,37 @@
-============================================
 Installing the grok admin and development UI
-============================================
+********************************************
 
-Pre-requisites
---------------
+Prerequisites
+=============
 
 These istructions assume a Linux installation with python2.4, easy_install, 
 and setuptools.
 
+grokui.admin user installation
+==============================
 
-grokadmin installation
-----------------------
+These steps are for 'users' of the package. Follow it, if you simply
+want to use the package in your own project.
 
-1. Checkout the grokadmin code and move to the directory created::
+1. Update your project's `setup.py`.
 
-    $ svn co svn://svn.zope.org/repos/main/Sandbox/ulif/grokadmin grokadmin
-    $ cd grokadmin
+   Add `grokui.admin` to the required packages in your `setup.py`.
+
+When rerunning `buildout` afterwards, the package should be fetched
+and installed in your local eggs repository.
+
+
+grokui.admin development installation
+=====================================
+
+These steps are for users that want to develop the package
+further. To use this package in another package have a look at the
+section above.
+
+1. Checkout the grokui.admin code and move to the directory created::
+
+    $ svn co svn://svn.zope.org/repos/main/grokui.admin/trunk grokui.admin
+    $ cd grokui.admin
 
 
 2. Invoke the bootstrap script with python2.4::

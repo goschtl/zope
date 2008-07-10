@@ -1,6 +1,5 @@
-=====================
 A basic grok admin UI
-=====================
+*********************
 
 The internal name of the admin UI is:
 Grok Application Interface Application or, for short GAIA.
@@ -11,7 +10,7 @@ applications a faster and smarter job with more fun for everybody.
 
 
 Login - what is my username/password?
--------------------------------------
+=====================================
 
 Before you can use the admin UI, you first must log in.
 
@@ -27,7 +26,7 @@ Users of ``grokproject``, might find this file in
 
 
 Using the admin-UI
-------------------
+==================
 
 After login you can visit some of the main management topics, as
 described below:
@@ -37,7 +36,7 @@ management activities currently possible with GAIA:
 
 
 Applications
-------------
+============
 
 * List of all instanciated applications
 
@@ -57,7 +56,7 @@ Applications
 
 
 Server
-------
+======
 
 * Start/Restart the server. Caution! This does not work, if the server
   was started in 'foreground mode' (with 'zopectl fg').
@@ -70,7 +69,7 @@ Server
 
 
 Documentation
--------------
+=============
 
 * From here you get starting points to the more elaborated
   documentation features of Grok, namely:
@@ -86,7 +85,7 @@ Documentation
 
 
 Bugs, Caveats and Ways to Get Help
-----------------------------------
+==================================
 
 The Grok admin UI was developed basically during a Google Summer of
 Code project.
@@ -101,9 +100,9 @@ For discussions subscribe to the ``grok-dev`` mailing list, hosted on:
 
     http://lists.zope.org.
 
-The projects' home is the grok subversion repository at:
+The projects' home is the subversion repository at:
 
-    http://svn.zope.org/grok/
+    http://svn.zope.org/grokui.admin/
 
 Grok's cave can be found at
 

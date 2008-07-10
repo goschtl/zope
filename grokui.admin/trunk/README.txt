@@ -1,2 +1,2 @@
-see src/grokadmin/README.txt
+see src/grokui.admin/README.txt
 
