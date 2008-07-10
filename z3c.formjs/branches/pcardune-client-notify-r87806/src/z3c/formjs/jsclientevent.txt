@@ -8,7 +8,7 @@ event framework whereby events that occur on the server, such as
 injected JavaScript code.  This is not to be confused with "action
 events" that occur on the client such as "onClick".
 
-  >>> from z3c.formjs import jsclientevent
+  >>> from z3c.formjs import interfaces, jsclientevent
 
 There are several components that must work together to propagate the
 events to the client:
@@ -337,14 +337,21 @@ viewlets containing information about the object must be updated as
 well.  In order to avoid a full page reload, the rendered
 viewlets can update themselves by listening for these events.
 
-Let's create another view that sends event notifications to the client.
+Let's create another view that sends event notifications to the
+client.  One notification will be for object modified events, and
+another notification will be for a generic ClientEvent, which will get
+notified when changes are applied.
 
   >>> class ArticleEditForm(jsclientevent.ClientEventsForm,
   ...                       form.EditForm):
   ...     fields = field.Fields(IArticle)
   ...     jsClientListeners = jsclientevent.ClientEventHandlers(
-  ...         ((Interface, IObjectModifiedEvent,), jsclientevent.NotifyClientHandler())
+  ...         ((Interface, IObjectModifiedEvent,), jsclientevent.NotifyClientHandler()),
+  ...         ((Interface, interfaces.IClientEvent,), jsclientevent.NotifyClientHandler()),
   ...         )
+  ...     def applyChanges(self, data):
+  ...         super(ArticleEditForm, self).applyChanges(data)
+  ...         notify(jsclientevent.ClientEvent(self))
 
 Now we will instantiate the form and modify the object.
 
@@ -357,6 +364,8 @@ Now we will instantiate the form and modify the object.
 
   >>> print editform.eventInjections
   $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
+      .trigger("zope.component.interfaces.IObjectEvent", {});
+  $() .trigger("z3c.formjs.interfaces.IClientEvent", {})
       .trigger("zope.component.interfaces.IObjectEvent", {});
 
 
@@ -376,5 +385,7 @@ We also have a viewlet that renders the javascript event injections.
   >>> print viewlet.render()
   <script type="text/javascript">
     $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
+        .trigger("zope.component.interfaces.IObjectEvent", {});
+    $() .trigger("z3c.formjs.interfaces.IClientEvent", {})
         .trigger("zope.component.interfaces.IObjectEvent", {});
   </script>

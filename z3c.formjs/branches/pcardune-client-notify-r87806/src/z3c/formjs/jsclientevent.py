@@ -21,6 +21,7 @@ import zope.component
 import zope.interface
 from zope.interface import adapter
 from zope.viewlet import viewlet
+from zope.component.interfaces import ObjectEvent
 
 from zope.security.management import getInteraction
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -119,12 +120,15 @@ class NotifyClientHandler(object):
         return '<%s>' % (self.__class__.__name__)
 
 
+class ClientEvent(ObjectEvent):
+    zope.interface.implements(interfaces.IClientEvent)
+
+
 @zope.component.adapter(zope.component.interfaces.IObjectEvent)
 def serverToClientEventLoader(event):
     """Event handler that listens for server side events
     and stores the event in the request to be picked up by
     the form and rendered as a client side function call."""
-
     # Step 1: Get the interaction.
     try:
         interaction = getInteraction()
