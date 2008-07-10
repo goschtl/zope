@@ -1,6 +1,6 @@
 import re
 import unittest
-import grokadmin
+import grokui.admin
 import os.path
 
 from pkg_resources import resource_listdir
@@ -8,7 +8,7 @@ from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
-ftesting_zcml = os.path.join(os.path.dirname(grokadmin.__file__),
+ftesting_zcml = os.path.join(os.path.dirname(grokui.admin.__file__),
                              'ftesting.zcml')
 GrokAdminFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__,
                                      'GrokAdminFunctionalLayer')
@@ -54,7 +54,7 @@ def test_suite():
         if filename.startswith('test_'):
             continue
 
-        dottedname = 'grokadmin.tests.%s' % (filename[:-3])
+        dottedname = 'grokui.admin.tests.%s' % (filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
