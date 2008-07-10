@@ -1,12 +1,16 @@
 import os
 from setuptools import setup, find_packages
 
+tests_require = [
+    'z3c.testsetup',
+    ]
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='grokadmin',
+setup(name='grokui.admin',
       version='0.1',
-      description="GrokAdmin: The Grok administration and development UI",
+      description="The Grok administration and development UI (base)",
       long_description=(
         read('README.txt')
         ),
@@ -24,16 +28,18 @@ setup(name='grokadmin',
       keywords="zope3 grok grokadmin",
       author="Uli Fouquet and lots of contributors from grok community",
       author_email="grok-dev@zope.org",
-      url="http://svn.zope.org/Sandbox/ulif/grokadmin",
+      url="http://svn.zope.org/grokui.admin",
       license="ZPL 2.1",
       package_dir={'': 'src'},
       packages=find_packages('src'),
       include_package_data=True,
       zip_safe=False,
-      namespace_packages = ['grokadmin'],
+      namespace_packages = ['grokui'],
       install_requires=['setuptools',
                         'grok',
                         ],
+      tests_require = tests_require,
+      extras_require = dict(test=tests_require),
       entry_points="""
       # Add entry points here
       """,
