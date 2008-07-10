@@ -40,7 +40,7 @@ For example documentation about the grok package can be reached using
 
 The admin package can be accessed directly such:
 
-    http://localhost:8080/docgrok/grokadmin
+    http://localhost:8080/docgrok/grokui/admin
 
 In this way nearly all things can be described, which can be described
 by a dotted name notation and which are accessible at runtime.
@@ -52,16 +52,16 @@ Calling the doctor directly
 The doctor can also be reached via Python, naturally:
 
    >>> import grok
-   >>> from grokadmin import docgrok
-   >>> doctor = docgrok.DocGrok('grokadmin.docgrok')
+   >>> from grokui.admin import docgrok
+   >>> doctor = docgrok.DocGrok('grokui.admin.docgrok')
 
 This doctor has immediatly a patient, which is denoted by the dotted
-path `grokadmin.docgrok`. The dotted path might reference any thing
+path `grokui.admin.docgrok`. The dotted path might reference any thing
 which lives in the Python environment: a package, a module, a class, a
 function or even a file or some interface attribute:
 
    >>> doctor.getPath()
-   'grokadmin.docgrok'
+   'grokui.admin.docgrok'
 
 We can also get a filepath, using the `getFilePath()` method. Objects,
 which have no filepath always return `None`.
@@ -75,10 +75,10 @@ If we like to get more detailed information, we have to call a
 specialist. For example a package doctor, who happens to be called
 `DocGrokPackage` :
 
-    >>> from grokadmin.docgrok import DocGrokPackage
+    >>> from grokui.admin.docgrok import DocGrokPackage
     >>> doctor = DocGrokPackage('grok')
     >>> doctor
-    <grokadmin.docgrok.DocGrokPackage ...>
+    <grokui.admin.docgrok.DocGrokPackage ...>
 
 Using ``getPath()`` we get the dotted path of the thing, the doctor
 cares for:
@@ -126,10 +126,10 @@ directly. But how can we tell, what specialist we need? Easy. We use
 the function ``docgrok_handle()`` which delivers us a doctor, who
 can tell us more:
 
-    >>> from grokadmin.docgrok import docgrok_handle
-    >>> thedoc = docgrok_handle('grokadmin.docgrok')
+    >>> from grokui.admin.docgrok import docgrok_handle
+    >>> thedoc = docgrok_handle('grokui.admin.docgrok')
     >>> thedoc
-    <grokadmin.docgrok.DocGrokModule ...>
+    <grokui.admin.docgrok.DocGrokModule ...>
 
 This is correct. `docgrok` of course *is* a python module, so the best
 specialist we can get is a `DocGrokModule`. The mentioned function
@@ -138,12 +138,12 @@ appropriate for the kind of thing specified by a dotted path.
 
 We can, for example ask for a different doc like this:
 
-    >>> thedoc = docgrok_handle('grokadmin.docgrok.DocGrok')
+    >>> thedoc = docgrok_handle('grokui.admin.docgrok.DocGrok')
     >>> thedoc
-    <grokadmin.docgrok.DocGrokClass ...>
+    <grokui.admin.docgrok.DocGrokClass ...>
 
 and get a class-specific doctor. Because
-``grokadmin.docgrok.DocGrok`` *is* a class, this is again the most
+``grokui.admin.docgrok.DocGrok`` *is* a class, this is again the most
 appropriate doc we could get.
 
 
@@ -170,7 +170,7 @@ Consider we want to document ``grok.View`` classes. Since
 ``grok.View`` is a class, we choose the DocGrokClass as base for our
 new DocGrok:
 
-    >>> from grokadmin.docgrok import DocGrokClass
+    >>> from grokui.admin.docgrok import DocGrokClass
 
     >>> class DocGrokGrokView(DocGrokClass):
     ...     """"This doctor cares for grok.Views."""
