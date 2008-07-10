@@ -84,6 +84,13 @@ IUnOptimizedClass with a filter condition:
     map(lambda i: ((i.value==5) and (set([i.name])) or (set())),
     set(metadata.getAll("IUnOptimizedClass"))), set())
 
+Here is the algebra tree:
+
+    >>> run.alg
+    Iter(<type 'set'>,
+    Lambda i: If(i.value==5, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass))
+
     >>> result = run.execute()
     >>> result
     set([u'5'])
@@ -122,6 +129,8 @@ IOptimizedClass with a filter condition:
     reduce(set.union,
     map(lambda i: set([i.name]),
     set(metadata.getFromIndex("IUnOptimizedClass", "value", 5, 5))), set())
+
+
 
     >>> result = run.execute()
     >>> result

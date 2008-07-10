@@ -17,14 +17,14 @@ added here.
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Single(<type 'set'>,`1`)
+    Single(<type 'set'>, `1`)
 
 
     >>> qo = QueryParser("set [ | 1 ] union set [|2]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
+    Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
 
 
     #Differ not implemented
@@ -32,14 +32,14 @@ added here.
     #>>> opt = QueryOptimizer(qo)()
     #>>> alg = Rewriter(opt)()
     #>>> print str(alg)
-    #Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
+    #Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
 
 
     >>> qo = QueryParser("set [ i in ICourse | i ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Iter(<type 'set'>,Lambda i: Single(<type 'set'>,i),Make(<type 'set'>,<type 'set'>,ICourse))
+    Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse))
 
 
     #bag not implemented
@@ -47,4 +47,4 @@ added here.
     #>>> opt = QueryOptimizer(qo)()
     #>>> alg = Rewriter(opt)()
     #>>> print str(alg)
-    #Iter(<type 'set'>,Lambda i: Single(<type 'set'>,i),Make(<type 'set'>,<type 'set'>,ICourse))
+    #Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse))

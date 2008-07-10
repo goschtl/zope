@@ -60,7 +60,7 @@ class Single(BaseAlgebra):
         self.children.extend([klass, expr])
 
     def __repr__(self):
-        return 'Single(%s,%s)'%(self.klass, self.expr)
+        return 'Single(%s, %s)'%(self.klass, self.expr)
 
 class Union(BaseAlgebra):
 
@@ -75,7 +75,7 @@ class Union(BaseAlgebra):
         self.children.extend([coll1, coll2])
 
     def __repr__(self):
-        return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
+        return 'Union(%s, %s, %s)'%(self.klass, self.coll1, self.coll2)
 
 
 #class Differ:
@@ -86,9 +86,9 @@ class Union(BaseAlgebra):
 #
 #    def compile(self):
 #        if self.klass == set:
-#            return 'set(range(%s,%s))' % (self.start.compile(),self.end.compile())
+#            return 'set(range(%s, %s))' % (self.start.compile(),self.end.compile())
 #        if self.klass == list:
-#            return 'range(%s,%s)' % (self.start.compile(),self.end.compile())
+#            return 'range(%s, %s)' % (self.start.compile(),self.end.compile())
 
 
 class Iter(BaseAlgebra):
@@ -104,7 +104,7 @@ class Iter(BaseAlgebra):
         self.children.extend([func,coll])
 
     def __repr__(self):
-        return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
+        return "Iter(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
 
 class Select(BaseAlgebra):
@@ -120,7 +120,7 @@ class Select(BaseAlgebra):
         self.children.extend([func,coll])
 
     def __repr__(self):
-        return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
+        return "Select(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
 
 class Reduce(BaseAlgebra):
@@ -140,7 +140,7 @@ class Reduce(BaseAlgebra):
         self.children.extend([expr, func, aggreg, coll])
 
     def __repr__(self):
-        return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
+        return "Reduce(%s, %s, %s, %s, %s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
 
 
 #class Equal:
@@ -151,9 +151,9 @@ class Reduce(BaseAlgebra):
 #
 #    def compile(self):
 #        if self.klass == set:
-#            return 'set(filter(%s,%s))' % (self.coll1.compile(),self.coll1.compile())
+#            return 'set(filter(%s, %s))' % (self.coll1.compile(),self.coll1.compile())
 #        if self.klass == list:
-#            return 'filter(%s,%s)' % (self.coll1.compile(),self.coll2.compile())
+#            return 'filter(%s, %s)' % (self.coll1.compile(),self.coll2.compile())
 #
 class Range(BaseAlgebra):
 
@@ -184,7 +184,7 @@ class Make(BaseAlgebra):
         self.children.append(expr)
 
     def __repr__(self):
-        return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
+        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr)
 
 
 #class And:
@@ -204,7 +204,7 @@ class If(BaseAlgebra):
         self.children.extend([cond, expr1, expr2])
 
     def __repr__(self):
-        return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
+        return "If(%s, %s, %s)" % (self.cond, self.expr1, self.expr2)
 
 
 #
