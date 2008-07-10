@@ -20,6 +20,7 @@ import sys
 import zope.component
 import zope.interface
 from zope.interface import adapter
+from zope.viewlet import viewlet
 
 from zope.security.management import getInteraction
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -149,7 +150,7 @@ def serverToClientEventLoader(event):
 
 class ClientEventsForm(object):
     """Mixin class to support calling of client side events."""
-
+    zope.interface.implements(interfaces.IHaveClientEvents)
     jsClientListeners = ClientEventHandlers()
 
     @property
@@ -169,3 +170,16 @@ class ClientEventsForm(object):
                         for h in self.jsClientListeners.getHandlers(event)]
         results = '\n'.join(results)
         return results
+
+
+class ClientEventsViewlet(viewlet.ViewletBase):
+    """A viewlet that renders client events."""
+    zope.component.adapts(
+        zope.interface.Interface,
+        IBrowserRequest,
+        interfaces.IHaveClientEvents,
+        zope.interface.Interface)
+
+    def render(self):
+        content = self.__parent__.eventInjections
+        return u'<script type="text/javascript">\n%s\n</script>' % content

@@ -146,6 +146,15 @@
       layer="z3c.form.interfaces.IFormLayer"
       />
 
+  <browser:viewlet
+      name="z3c.formjs.clientevents"
+      manager=".interfaces.IDynamicJavaScript"
+      view="z3c.formjs.interfaces.IHaveClientEvents"
+      class="z3c.formjs.jsclientevent.ClientEventsViewlet"
+      permission="zope.Public"
+      layer="z3c.form.interfaces.IFormLayer"
+      />
+
   <!-- Specific Javascript-backend implementations -->
 
   <include file="jqueryrenderer.zcml" />

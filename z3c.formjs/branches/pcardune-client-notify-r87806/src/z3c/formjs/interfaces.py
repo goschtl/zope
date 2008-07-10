@@ -410,6 +410,23 @@ class INotifyClientHandler(IClientEventHandler):
         description=u"The event that took place.")
 
 
+class IHaveClientEvents(zope.interface.Interface):
+    """A view that has client events."""
+
+    jsClientListeners = zope.schema.Object(
+        schema=IClientEventHandlers,
+        title=u"JS Client Listeners",
+        description=u"Listeners associated with this view")
+
+    eventCalls = zope.schema.List(
+        title=u"Event Calls",
+        description=u"list of events notified during the interaction")
+
+    eventInjections = zope.schema.Text(
+        title=u"Event Injections",
+        description=u"The javascript code to be injected that handles events.")
+
+
 class IEventRenderer(zope.interface.Interface):
     """A representation of an event for a client side framework.
 

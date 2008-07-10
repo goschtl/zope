@@ -363,3 +363,18 @@ Now we will instantiate the form and modify the object.
 Lets not forget to end the interaction we created.
 
   >>> management.endInteraction()
+
+
+ClientEventHandler Viewlet
+--------------------------
+
+We also have a viewlet that renders the javascript event injections.
+
+  >>> viewlet = jsclientevent.ClientEventsViewlet(
+  ...     article, request, editform, object())
+  >>> viewlet.update()
+  >>> print viewlet.render()
+  <script type="text/javascript">
+    $() .trigger("zope.lifecycleevent.interfaces.IObjectModifiedEvent", {})
+        .trigger("zope.component.interfaces.IObjectEvent", {});
+  </script>
