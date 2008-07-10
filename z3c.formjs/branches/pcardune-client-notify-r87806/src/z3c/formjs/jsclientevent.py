@@ -35,9 +35,11 @@ class ClientEventHandlers(object):
 
     zope.interface.implements(interfaces.IClientEventHandlers)
 
-    def __init__(self):
+    def __init__(self, *handlers):
         self._registry = adapter.AdapterRegistry()
         self._handlers = ()
+        for required, handler in handlers:
+            self.addHandler(required, handler)
 
     def addHandler(self, required, handler):
         """See interfaces.IClientEventHandlers"""

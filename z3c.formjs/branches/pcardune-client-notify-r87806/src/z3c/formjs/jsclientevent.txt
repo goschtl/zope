@@ -342,9 +342,9 @@ Let's create another view that sends event notifications to the client.
   >>> class ArticleEditForm(jsclientevent.ClientEventsForm,
   ...                       form.EditForm):
   ...     fields = field.Fields(IArticle)
-  ...     jsClientListeners = jsclientevent.ClientEventHandlers()
-  ...     jsClientListeners.addHandler((Interface, IObjectModifiedEvent,),
-  ...                                  jsclientevent.NotifyClientHandler())
+  ...     jsClientListeners = jsclientevent.ClientEventHandlers(
+  ...         ((Interface, IObjectModifiedEvent,), jsclientevent.NotifyClientHandler())
+  ...         )
 
 Now we will instantiate the form and modify the object.
 
