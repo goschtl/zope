@@ -1,0 +1,18 @@
+
+Checks here make sure that Interfaces are properly implemented
+
+#TODO: extend for all Interfaces and classes
+
+    >>> from ocql.interfaces import IAlgebraObject
+    >>> from ocql.interfaces import IAlgebraObjectHead
+    >>> from ocql.rewriter.interfaces import *
+
+    >>> from ocql.rewriter.algebra import *
+
+    >>> from zope.interface.verify import verifyClass, verifyObject
+
+    >>> verifyClass(IAlgebraObjectHead, Head)
+    True
+
+    >>> verifyClass(IAlgebraObject, BaseAlgebra)
+    True

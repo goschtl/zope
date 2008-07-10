@@ -67,11 +67,6 @@ class IObjectQueryHead(Interface):
 #    def rewrite(self):
 #        """Rewrites query object in to algebra object"""
 
-class IObjectQueyChild(Interface):
-    """Objects providing this interface represents a child in the query object tree
-    """
-    children = Attribute('Children collection')
-
 class IObjectQuery(Interface):
     """Objects providing this interface represent the OCQL query
     as python objects
@@ -89,14 +84,16 @@ class IAlgebraObjectHead(Interface):
     """
     tree = Attribute('holds the root of the algebra object tree')
 
-    def walk(self):
+    def walk():
         """Iterate the Algebra object tree"""
 
 class IAlgebraObject(Interface):
     """Objects providing this interface represent the
     rewritten ObjectQuery to Algebra objects
     """
-    def walk(self):
+    children = Attribute('Children collection')
+
+    def walk():
         """Iterate the Algebra object tree"""
 
 class IOptimizedAlgebraObject(Interface):

@@ -3,9 +3,14 @@
 from zope.interface import Attribute, Interface
 from zope.schema import TextLine
 
-from ocql.interfaces import IObjectQuery, IObjectQueyChild
+from ocql.interfaces import IObjectQuery
 
-class ITerm(IObjectQueyChild):
+class IObjectQueryChild(Interface):
+    """Objects providing this interface represents a child in the query object tree
+    """
+    children = Attribute('Children collection')
+
+class ITerm(IObjectQueryChild):
     """Objects providing this interface represent the
     Term Query object
     """
@@ -21,7 +26,7 @@ class IhasClassWith(IExpression):
     """Objects providing this interface represent the
     hasClassWith Query object
     """
-    expression = Attribute('expression') 
+    expression = Attribute('expression')
     klass = Attribute('collection type')
     conditional = Attribute('conditional')
 
@@ -168,7 +173,7 @@ class IQuantor(IObjectQuery):
     """
     expr = Attribute('expression')
 
-class IQuanted(IObjectQueyChild):
+class IQuanted(IObjectQueryChild):
     """Objects providing this interface represent the
     Quanted Query object
     """

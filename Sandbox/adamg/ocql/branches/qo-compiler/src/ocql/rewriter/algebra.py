@@ -25,6 +25,9 @@ class Head(Location):
         self.tree = tree
         locate(tree, self, 'tree')
 
+    def walk(self):
+        yield self.tree
+
     def __repr__(self):
         return ('%s') % (self.tree)
 

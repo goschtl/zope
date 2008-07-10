@@ -6,8 +6,6 @@ $Id$
 """
 
 #TODOS:
-#write Interfaces for all classes
-
 #move self.rewrite to ocql.rewriter into adapters
 
 #add self.__repr__ to ALL, see Query class
@@ -17,7 +15,8 @@ $Id$
 from zope.interface import implements
 from zope.location import locate, Location
 
-from ocql.interfaces import IObjectQuery, IObjectQueryHead, IObjectQueyChild
+from ocql.interfaces import IObjectQuery
+from ocql.interfaces import IObjectQueryHead
 from ocql.queryobject.interfaces import *
 
 class Head(Location):
@@ -26,13 +25,13 @@ class Head(Location):
         self.name = 'head'
         self.tree = tree
         locate(tree, self, 'tree')
-        
-        
+
+
     def rewrite(self):
         return self.tree
 
 class Child(Location):
-    implements(IObjectQueyChild)
+    implements(IObjectQueryChild)
     children = []
 
 class QueryObject(Child):
@@ -98,7 +97,7 @@ class Expression(Term, QueryObject):
 class hasClassWith(Expression):
     #NotImplementedError
     implements(IhasClassWith)
-    
+
     expression = None
     klass = None
     conditional = None
@@ -255,7 +254,7 @@ class Query(Expression):
         self.symbols.dellevel()
         return rv
 
-class In(Term):    
+class In(Term):
     implements(IIn)
     def __repr__(self):
         return "%s(%s, %s)" % (
@@ -457,12 +456,12 @@ class Quantor(QueryObject):
         self.symbols = symbols
         self.expr = expr
         self.children.append(expr)
-        
+
     def __repr__(self):
         return "(%s)" % (
             self.__class__.__name__
             )
-        
+
     def rewrite(self, algebra, expression, quanter, operator):
         raise NotImplementedError()
 
