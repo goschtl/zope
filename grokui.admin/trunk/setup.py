@@ -12,7 +12,9 @@ setup(name='grokui.admin',
       version='0.1',
       description="The Grok administration and development UI (base)",
       long_description=(
-        read('README.txt')
+          read(os.path.join('src', 'grokui', 'admin', 'README.txt')) +
+          '\n\n' +
+          read('CHANGES.txt')
         ),
       # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
