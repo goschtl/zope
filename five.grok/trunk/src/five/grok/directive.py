@@ -1,7 +1,7 @@
 import martian
-import martian.directive
+from martian.directive import StoreMultipleTimes
 
-class RequireDirectiveStore(martian.directive.StoreMultipleTimes):
+class RequireDirectiveStore(StoreMultipleTimes):
 
     def get(self, directive, component, default):
         permissions = getattr(component, directive.dotted_name(), default)
