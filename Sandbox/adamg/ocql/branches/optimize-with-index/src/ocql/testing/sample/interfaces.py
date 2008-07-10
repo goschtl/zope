@@ -36,7 +36,7 @@ class IStudent(Interface):
     """A Student object"""
 
     name = TextLine(title=u"Student Name")
-
+    country = Attribute('student country')
 
 class IMentor(Interface):
     """A Mentor object"""

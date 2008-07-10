@@ -11,6 +11,7 @@ from zope.component.interface import provideInterface
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
+from zope.app.catalog.attribute import AttributeIndex
 from ocql.database.index import AllIndex
 
 from zope.app.intid import IntIds
@@ -70,6 +71,7 @@ def setupCatalog(test):
     cat['proj_descr'] = FieldIndex('description', IProject)
 
     cat['student_name'] = FieldIndex('name', IStudent)
+    cat['student_country'] = FieldIndex('country', IStudent)
 
     cat['mentor_name'] = FieldIndex('name', IMentor)
 
@@ -91,16 +93,19 @@ def setupCatalog(test):
 
     s1 = Student()
     s1.name = u"Charith"
+    s1.country = "Sri Lanka"
     id = intids.register(s1)
     cat.index_doc(id, s1)
 
     s2 = Student()
     s2.name = u"Jane"
+    s2.country = "USA"
     id = intids.register(s2)
     cat.index_doc(id, s2)
 
     s3 = Student()
     s3.name = u"Ann"
+    s3.country = "Hungary"
     id = intids.register(s3)
     cat.index_doc(id, s3)
 

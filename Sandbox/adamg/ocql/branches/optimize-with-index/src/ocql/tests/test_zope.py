@@ -147,6 +147,30 @@ class testZope(unittest.TestCase):
         self.doit(query, qo, set(["Save the world"]))
 
 
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country="USA" | c.name]
+        #
+        query = "[c in IStudent , c.country=USA | c.name]"
+        qo = Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Eq(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"USA"'))
+                   ], Identifier(metadata, symbols, 'c.name'))
+
+        self.doit(query, qo, set(metadata.getFromIndex('IStudent', 'country', 'USA', 'USA')))
+
+
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
