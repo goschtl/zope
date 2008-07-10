@@ -401,11 +401,14 @@ class IClientEventHandler(zope.interface.Interface):
         """Execute the handler."""
 
 
-class IAutoEventHandler(IClientEventHandler):
-    """Marker interface to auto event handler can be rendered."""
+class INotifyClientHandler(IClientEventHandler):
+    """An event handler which catches server side events and
+    translates them into client side event notifications."""
 
     event = zope.schema.Field(
-        title=u"The event that took place.")
+        title=u"Event",
+        description=u"The event that took place.")
+
 
 class IClientEvent(zope.interface.Interface):
     """A representation of an event for a client side framework.

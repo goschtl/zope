@@ -98,19 +98,22 @@ def listener(required):
     return createListener
 
 
-class AutoEventHandler(object):
+class NotifyClientHandler(object):
     """An implementation of a client event handler that automatically
     produces javascript that is meant to call client side event notifiers."""
-    zope.interface.implements(interfaces.IAutoEventHandler)
+    zope.interface.implements(interfaces.INotifyClientHandler)
 
-    event = None
+    event = None # we only know the event once the handler is called.
 
     def __call__(self, form, event):
+        self.event = event
         renderer = zope.component.getMultiAdapter(
             (self, form.request), interfaces.IRenderer)
         renderer.update()
-        self.event = event
         return renderer.render()
+
+    def __repr__(self):
+        return '<%s>' % (self.__class__.__name__)
 
 
 @zope.component.adapter(zope.component.interfaces.IObjectEvent)

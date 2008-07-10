@@ -106,7 +106,8 @@ The ``addHandler`` method takes an event specification (a tuple of two
 interfaces representing the object type and the event type) and the
 handler function itself.
 
-  >>> def someHandler(event): return str(event)
+  >>> def someHandler(event):
+  ...     return str(event)
   >>> from zope.component.interfaces import IObjectEvent
   >>> View.jsClientListeners.addHandler((Interface, IObjectEvent), someHandler)
   >>> View.jsClientListeners.getHandlers(objectEvent2)
@@ -155,7 +156,7 @@ Gluing Server Handlers to Client Handlers
 The thing that separates server handlers from client handlers is that
 the former is called immediately on notification, while the latter is
 "rendered" towards the end of an interaction (request/response
-cycle) - posisbly long after the original event notification occurs.
+cycle) - possibly long after the original event notification occurs.
 So we need a special server side handler whose job it is to catch all
 the events that occur during an interaction and store them in memory
 so that they are available at render time.
@@ -172,7 +173,7 @@ can be accessed later by the form that is rendering the client
 handlers.  We cannot store the event in the form itself since the
 event handler has no knowledge of what context the original
 notification occurred, or which form the event is meant for.  Instead
-we must store the event in the request object, which we can be
+we must store the event in the request object, which can be
 magically obtained from the current interaction.  The current
 interaction has multiple "participations," which represent different
 types of requests.  The handler provided above finds the request that
@@ -258,8 +259,8 @@ Now we will instantiate the form and modify the object.
   >>> request = TestRequest(form={'form.widgets.title':u'New Title',
   ...                             'form.buttons.apply':u'Apply'})
 
-  >>> form = ArticleEditForm(article, request)
-  >>> form.update()
+  >>> editform = ArticleEditForm(article, request)
+  >>> editform.update()
 
 Note that the form framework throws an IObjectModifedEvent when it
 applies changes.  Since we have performed this action without having
@@ -276,8 +277,8 @@ as is normally done, then the event will be caught:
   ...                             'form.buttons.apply':u'Apply'})
   >>> management.newInteraction(request)
 
-  >>> form = ArticleEditForm(article, request)
-  >>> form.update()
+  >>> editform = ArticleEditForm(article, request)
+  >>> editform.update()
 
   >>> request.annotations[jsclientevent.CLIENT_EVENT_REQUEST_KEY]
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
@@ -286,7 +287,7 @@ More importantly, now our form knows about this event via the
 ``eventCalls`` property.  This property returns a list of all events
 for which there are registered listeners/renderers.
 
-  >>> form.eventCalls
+  >>> editform.eventCalls
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
 
 If there are no handlers for the thrown event, they do not appear in
@@ -299,17 +300,64 @@ request annotation:
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
    <zope.app.event.objectevent.ObjectEvent object at ...>]
 
-  >>> form.eventCalls
+  >>> editform.eventCalls
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>]
 
 We can then call all the listeners/renderers for the events with
 handlers and get back the renderer javascript injection using the
 ``eventInjections`` property:
 
-  >>> print form.eventInjections
+  >>> print editform.eventInjections
   alert("This event occured:
          <zope.app.event.objectevent.ObjectModifiedEvent object at ...>");
 
 Note that it is up to the page that sent the (possibly) asynchronous
 http request to the form to properly handle the javascript injection
 in the response, i.e. by inserting it into the dom using <script> tags.
+
+Lets not forget to end the interaction we created.
+
+  >>> management.endInteraction()
+
+
+NotifyClient Handler
+--------------------
+
+There is an additional ``IClientEventHandler`` implementation which
+can be used with client side event frameworks.  This type of handler
+effectively reproduces server side event notifications on the
+client.  By creating notifications on the client for server side
+events, view components can interact with each other directly on the
+client.
+
+For example, we may have several viewlets being rendered on a
+page along with a form that can modify objects in the database using
+an asychronus HTTP request.  When the form modifies the object, any
+viewlets containing information about the object must be updated as
+well.  In order to avoid a full page reload, the rendered
+viewlets can update themselves by listening for these events.
+
+Let's create another view that sends event notifications to the client.
+
+  >>> class ArticleEditForm(jsclientevent.ClientEventsForm,
+  ...                       form.EditForm):
+  ...     fields = field.Fields(IArticle)
+  ...     jsClientListeners = jsclientevent.ClientEventHandlers()
+  ...     jsClientListeners.addHandler((Interface, IObjectModifiedEvent,),
+  ...                                  jsclientevent.NotifyClientHandler())
+
+Now we will instantiate the form and modify the object.
+
+  >>> request = TestRequest(form={'form.widgets.title':u'New Title Two',
+  ...                             'form.buttons.apply':u'Apply'})
+
+  >>> management.newInteraction(request)
+  >>> editform = ArticleEditForm(article, request)
+  >>> editform.update()
+
+  >>> print editform.eventInjections
+  $().trigger("ObjectModifiedEvent")
+
+Lets not forget to end the interaction we created.
+
+  >>> management.endInteraction()

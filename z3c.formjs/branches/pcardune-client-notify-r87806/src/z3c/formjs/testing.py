@@ -162,6 +162,28 @@ class WidgetSaverRenderer(object):
         return "$.get('saveValue', function(msg){%s}\n)" % saveCall
 
 
+class NotifyClientHandlerRenderer(object):
+    zope.component.adapts(interfaces.INotifyClientHandler,
+                          IBrowserRequest)
+    zope.interface.implements(interfaces.IRenderer)
+
+    def __init__(self, handler, request):
+        self.handler = handler
+        self.request = request
+
+    def update(self):
+        pass
+
+    def render(self):
+        try:
+            event = interfaces.IClientEvent(self.handler.event,
+                                            self.request)
+            event = event.render()
+        except:
+            event = '"%s"' % self.handler.event.__class__.__name__
+        return '$().trigger(%s)' % event
+
+
 def setupRenderers():
     zope.component.provideAdapter(IdSelectorRenderer)
     zope.component.provideAdapter(CSSSelectorRenderer)
@@ -171,6 +193,7 @@ def setupRenderers():
     zope.component.provideAdapter(WidgetSwitcherRenderer)
     zope.component.provideAdapter(LabelWidgetSwitcherRenderer)
     zope.component.provideAdapter(WidgetSaverRenderer)
+    zope.component.provideAdapter(NotifyClientHandlerRenderer)
 
 
 def addTemplate(form, filename):

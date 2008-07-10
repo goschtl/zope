@@ -101,10 +101,10 @@ class JQuerySubscriptionsRenderer(object):
             '\n  '.join([r.render() for r in self.renderers]) )
 
 
-class JQueryAutoEventHandlerRenderer(object):
-    zope.interface.implements(interfaces.IRenderer)
-    zope.component.adapts(interfaces.IAutoEventHandler,
+class JQueryNotifyClientHandlerRenderer(object):
+    zope.component.adapts(interfaces.INotifyClientHandler,
                           IJQueryJavaScriptBrowserLayer)
+    zope.interface.implements(interfaces.IRenderer)
 
     def __init__(self, handler, request):
         self.handler = handler
