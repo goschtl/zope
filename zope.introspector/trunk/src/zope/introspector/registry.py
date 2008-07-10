@@ -1,6 +1,6 @@
 from zope.interface import implements
 from zope.introspector.interfaces import IRegistryInfo, IRegistrySearch
-from zope.component import globalregistry
+from zope.component import globalregistry, getSiteManager
 from zope.interface.adapter import AdapterRegistry
 from zope.component.registry import (AdapterRegistration, 
                                      HandlerRegistration,
@@ -13,7 +13,8 @@ class RegistryInfoUtility(grok.GlobalUtility):
         Implements the IRegistryInfo interface. 
     """
     implements(IRegistryInfo)
-    
+    context = None
+
     def getAllRegistrations(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
@@ -22,15 +23,24 @@ class RegistryInfoUtility(grok.GlobalUtility):
         utils = self.getAllUtilities(registry)
         subsriptionAdapters = self.getAllSubscriptionAdapters(registry)
         return adapters + handlers + utils + subsriptionAdapters
-        
-    def getAllUtilities(self, registry='base'):
-        """ See zope.introspector.interfaces for documentation.
-        """ 
-        def f(item):
-            return registry is getattr(item.registry, '__name__')
-        
-        return filter(f, globalregistry.base.registeredUtilities())
-        
+
+    def getAllUtilities(self, registry=None, context=None):
+        contxt = context or self.context
+        smlist = [getSiteManager(context)]
+        seen = []
+        result = []
+        while smlist:
+            sm = smlist.pop()
+            if sm in seen:
+                continue
+            seen.append(sm)
+            smlist += list(sm.__bases__)
+            for u in sm.registeredUtilities():
+                if registry and not (registry == u.registry.__name__):
+                    continue
+                result.append(u)
+        return result
+
     def getAllAdapters(self, registry='base'):
         """ See zope.introspector.interfaces for documentation.
         """
