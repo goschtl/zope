@@ -1,0 +1,10 @@
+<html>
+  <head>
+    <script tal:replace="structure provider:javascript" />
+  </head>
+  <body>
+    <div class="action" tal:repeat="action view/actions/values">
+      <input type="submit" tal:replace="structure action/render" />
+    </div>
+  </body>
+</html>

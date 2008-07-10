@@ -1,0 +1,242 @@
+================================
+JavaScript Widget-Mode Switching
+================================
+
+This module implements widget-mode switching using the JavaScript features
+provided by this package.
+
+  >>> from z3c.formjs import jsswitch
+
+In other words, by default the form is shown in display mode. When the user
+clicks on the widget it switches the widget into input mode, allowing the user
+to change the widget's value. When the user moves the mouse cursor out of the
+widget and clicks somewhere else, the widget mode is switched back to display
+mode.
+
+Let's see how this works using a simple schema:
+
+  >>> import zope.interface
+  >>> import zope.schema
+
+  >>> class IPerson(zope.interface.Interface):
+  ...     name = zope.schema.TextLine(
+  ...         title=u'Name')
+  ...     age = zope.schema.Int(
+  ...         title=u'Age',
+  ...         min=0)
+
+Of course we need an implementation and an instance as well:
+
+  >>> class Person(object):
+  ...     zope.interface.implements(IPerson)
+  ...     def __init__(self, name, age):
+  ...         self.name = name
+  ...         self.age = age
+  ...     def __repr__(self):
+  ...         return '<%s %r (%r)>' % (
+  ...             self.__class__.__name__, self.name, self.age)
+
+  >>> stephan = Person(u'Stephan', 27)
+  >>> stephan
+  <Person u'Stephan' (27)>
+
+Let's now create an edit form for the person, that is also a widget mode
+switcher:
+
+  >>> from z3c.form import form, field, interfaces
+  >>> class ShowPerson(jsswitch.WidgetModeSwitcher, form.EditForm):
+  ...     fields = field.Fields(IPerson)
+
+You want the widget-mode switcher mix-in class to be left of the edit form
+base-class, because the widget mode switcher overrides some attributes, such
+as the form ``mode`` attribute.
+
+Let's now create an instance:
+
+  >>> from z3c.form.testing import TestRequest
+  >>> showPerson = ShowPerson(stephan, TestRequest())
+
+  >>> from z3c.formjs import testing
+  >>> testing.addTemplate(showPerson, 'simple_edit.pt')
+
+Before we can render the form, we need to register some necessary components:
+
+* Register all form default components:
+
+  >>> from z3c.form.testing import setupFormDefaults
+  >>> setupFormDefaults()
+
+* Register all necessary renderers, including the specific ones for this
+  module:
+
+  >>> from z3c.formjs import testing
+  >>> testing.setupRenderers()
+
+  >>> from z3c.formjs.jqueryrenderer import JQueryWidgetSwitcherRenderer
+  >>> zope.component.provideAdapter(JQueryWidgetSwitcherRenderer)
+
+  >>> from z3c.formjs.jqueryrenderer import JQueryWidgetSaverRenderer
+  >>> zope.component.provideAdapter(JQueryWidgetSaverRenderer)
+
+* Hook up the "provider" TALES expression type:
+
+  >>> from zope.app.pagetemplate.engine import TrustedEngine
+  >>> from zope.contentprovider import tales
+  >>> TrustedEngine.registerType('provider', tales.TALESProviderExpression)
+
+* Create a viewlet manager that does not require security to be setup:
+
+  >>> from zope.viewlet import manager
+  >>> class JSViewletManager(manager.ViewletManagerBase):
+  ...     def filter(self, viewlets):
+  ...         return viewlets
+
+* Register the viewlet manager as a content provider known as "javascript":
+
+  >>> from z3c.form.interfaces import IFormLayer
+  >>> from zope.contentprovider.interfaces import IContentProvider
+  >>> zope.component.provideAdapter(
+  ...     JSViewletManager,
+  ...     (None, IFormLayer, None),
+  ...     IContentProvider,
+  ...     name='javascript')
+
+* Register the JS Subscriber viewlet for this new viewlet manager:
+
+  >>> from zope.viewlet.interfaces import IViewlet
+  >>> from z3c.formjs import jsevent, interfaces
+  >>> zope.component.provideAdapter(
+  ...     jsevent.JSSubscriptionsViewlet,
+  ...     (None, IFormLayer, interfaces.IHaveJSSubscriptions,
+  ...      JSViewletManager), IViewlet, name='subscriptions')
+
+* Register the handler to subscriptions converter subscriber:
+
+  >>> from z3c.formjs import jsaction
+  >>> zope.component.provideHandler(jsaction.createSubscriptionsForWidget)
+
+Now we are ready to update and render the form:
+
+  >>> showPerson.update()
+  >>> print showPerson.render()
+  <html>
+    <head>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          $("#form-widgets-name").bind("blur", function(){$.get('saveValue',
+            function(msg){saveWidget("form-widgets-name", msg)}
+          )});
+          $("#form-widgets-age").bind("blur", function(){$.get('saveValue',
+            function(msg){saveWidget("form-widgets-age", msg)}
+          )});
+          $("#form-widgets-name").bind("click",
+            function(){$.get('/switchWidget',
+              function(html){switchWidget("form-widgets-name", html)}
+          )});
+          $("#form-widgets-age").bind("click", function(){$.get('/switchWidget',
+            function(html){switchWidget("form-widgets-age", html)}
+          )});
+          $("label").bind("click",
+            function(){$.get('/switchWidget',
+              function(html){switchWidget(event.target...value, html)}
+    )});
+        })
+      </script>
+    </head>
+    <body>
+      <form action=".">
+        <div class="row">
+          <label for="form-widgets-name">Name</label>
+          <span id="form-widgets-name"
+                class="text-widget required textline-field">Stephan</span>
+        </div>
+        <div class="row">
+          <label for="form-widgets-age">Age</label>
+          <span id="form-widgets-age"
+                class="text-widget required int-field">27</span>
+        </div>
+      </form>
+    </body>
+  </html>
+
+As you can see there are several subscribers on the widgets to allow for the
+switching. It is up to the user to implement the ``switchWidget()`` and
+``saveWidget()`` JavaScript functions that do all the work on the JavaScript
+end.
+
+When the user clicks on the age, for example, the ``getInputWidget()`` AJAX
+handler is called:
+
+  >>> showPerson.getInputWidget
+  <AJAXHandler 'getInputWidget'>
+
+  >>> showPerson.getInputWidget(showPerson)
+  Traceback (most recent call last):
+  ...
+  KeyError: 'widget-name'
+
+As you can see the call failed, because we forgot to specify the name of the
+widget for which we would like to get the input version for. Let's fix that
+problem:
+
+  >>> from z3c.form.testing import TestRequest
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={'widget-name': 'age'}))
+  >>> showPerson.update()
+
+  >>> print showPerson.getInputWidget(showPerson)
+  <input type="text" id="form-widgets-age"
+         name="form.widgets.age"
+         class="text-widget required int-field"
+         onblur="$.get('saveValue',
+             function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
+         value="27" />
+
+Once the editing is complete, the value gets saved:
+
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={
+  ...     'widget-name': 'age',
+  ...     'form.widgets.age': '25'
+  ...     }))
+  >>> showPerson.update()
+
+  >>> showPerson.saveWidgetValue(showPerson)
+  ''
+  >>> stephan.age
+  25
+
+When the value has errors, an error message is returned:
+
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={
+  ...     'widget-name': 'age',
+  ...     'form.widgets.age': '-1'
+  ...     }))
+  >>> showPerson.update()
+
+  >>> showPerson.saveWidgetValue(showPerson)
+  u'Value is too small'
+
+Once the value is saved, the widget becomes a display widget again:
+
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={'widget-name': 'age'}))
+  >>> showPerson.update()
+
+  >>> print showPerson.getDisplayWidget(showPerson)
+  <span id="form-widgets-age"
+        class="text-widget required int-field"
+        onclick="$.get('/switchWidget',
+          function(html){switchWidget(&quot;form-widgets-age&quot;, html)} )">25</span>
+
+Alternatively to selecting the widget by name, you can also specify the widget
+id:
+
+  >>> showPerson = ShowPerson(stephan, TestRequest(form={
+  ...     'widget-id': 'form-widgets-age',
+  ...     }))
+  >>> showPerson.update()
+  >>> print showPerson.getInputWidget(showPerson)
+  <input type="text" id="form-widgets-age"
+         name="form.widgets.age"
+         class="text-widget required int-field"
+         onblur="$.get('saveValue',
+                 function(msg){saveWidget(&quot;form-widgets-age&quot;, msg)} )"
+         value="25" />

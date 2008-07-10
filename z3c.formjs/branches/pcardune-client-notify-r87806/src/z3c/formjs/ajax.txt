@@ -1,0 +1,208 @@
+============
+AJAX Helpers
+============
+
+The formjs package also sports utilities for working with AJAX queries.  These
+utilities are provided by the ``ajax`` module.
+
+  >>> from z3c.formjs import ajax
+
+
+AJAX Request Handlers
+---------------------
+
+AJAX requests are sent from a client-side JavaScript script to the web
+server.  The request may contain form data or any other request data.
+The server then sends back a response based on the request.  The
+functionality for handling requests and returning responses is already
+handled by browser views.  But browser views can be a bit overkill for
+handling very simple requests and responses that don't necessarily
+involve rendering full page templates.  The ``ajax`` module allows you
+to quickly build short ajax request handlers into your form.
+
+We will first do the necessary setup steps:
+
+  >>> from z3c.form.testing import setupFormDefaults
+  >>> setupFormDefaults()
+
+Now we will create a simple form with two AJAX request handlers, one
+that returns a simple string, and another that returns a complex
+python object.
+
+  >>> from z3c.form import form
+  >>> from z3c.formjs import interfaces
+  >>> import zope.interface
+  >>> class PingForm(ajax.AJAXRequestHandler, form.Form):
+  ...
+  ...     @ajax.handler
+  ...     def pingBack(self):
+  ...         message = self.request.get('message', 'Nothing to ping back.')
+  ...         return "from %r: %s" % (self, message)
+  ...
+  ...     @ajax.handler
+  ...     def info(self):
+  ...         return {'class':self.__class__.__name__,
+  ...                 'requestKeys':self.request.keys(),
+  ...                 'size':len(self.request.keys())}
+
+The ``AJAXRequestHandler`` class provides the ``IAJAXRequestHandler``
+interface.  This means that the ``PingForm`` class will have an
+``ajaxRequestHandlers`` selection manager.  When you use the ``@ajax.handler``
+decorator, the decorated function gets registered in the AJAX handlers manager
+and is converted to an ``AJAXHandler`` instance.
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+  >>> ping = PingForm(None, request)
+  >>> ping.ajaxRequestHandlers
+  <AJAXHandlers ['pingBack', 'info']>
+  >>> ping.pingBack
+  <AJAXHandler 'pingBack'>
+  >>> ping.ajaxRequestHandlers['pingBack']
+  <AJAXHandler 'pingBack'>
+
+Since the form or anything else of interest is not around during the creation
+of the ``AJAXHandler`` instance, we have to wrap the handler once the other
+components are available. When executing the AJAX handler itself, you must
+pass in the form explicitely:
+
+  >>> print ping.pingBack(ping)
+  from <PingForm ...>: Nothing to ping back.
+
+As you can see, we get the simple string returned.  When an AJAX
+handler returns a complex data structure, it is converted into a
+JSON string.
+
+  >>> print ping.info(ping)
+  {"requestKeys": ["CONTENT_LENGTH", "HTTP_HOST",
+                   "SERVER_URL", "GATEWAY_INTERFACE"],
+   "class": "PingForm",
+   "size": 4}
+
+Before the handler is called we put an ``AJAXView`` class around it,
+which takes the handler, request, and form as parameters:
+
+  >>> pingView = ajax.AJAXView(ping.pingBack, ping.request, ping)
+
+The ping AJAX view can simply be called like a normal view:
+
+  >>> print pingView()
+  from <PingForm ...>: Nothing to ping back.
+
+
+Exposing an AJAX handler via a URL
+----------------------------------
+
+To hook up the AJAX handler as a public URL, we use a pluggable traverser
+traversal plugin. Let's first instantiate a pluggable traverser providing our
+form as the context.
+
+  >>> from z3c.traverser.browser import PluggableBrowserTraverser
+  >>> traverser = PluggableBrowserTraverser(ping, request)
+  >>> traverser.publishTraverse(request, 'pingBack')()
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <PingForm object at ...>, name: 'pingBack'
+
+We have not yet registered a plugin for the pluggable traverser.  We will
+register the ``AJAXRequestTraverserPlugin`` which will only traverse to
+objects stored in the ``ajaxRequestHandlers`` selection manager.
+
+  >>> import zope.component
+  >>> from z3c.traverser.interfaces import ITraverserPlugin
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> zope.component.provideSubscriptionAdapter(
+  ...     ajax.AJAXRequestTraverserPlugin,
+  ...     (interfaces.IFormTraverser, IBrowserRequest),
+  ...     provides=ITraverserPlugin)
+
+Now we will try traversing to our handler again.
+
+  >>> print traverser.publishTraverse(request, 'pingBack')()
+  from <PingForm ...>: Nothing to ping back.
+
+When providing a message, then the pin back is less silly:
+
+  >>> request = TestRequest(form={'message': 'hello'})
+  >>> ping = PingForm(None, request)
+  >>> traverser = PluggableBrowserTraverser(ping, request)
+  >>> print traverser.publishTraverse(request, 'pingBack')()
+  from <PingForm ...>: hello
+
+
+NOTE: The pluggable traverser itself can be registered in a number of ways.
+But the best way is to register it as a view for the from in question.  Since
+forms generally inherit from the ``z3c.form.form.BaseForm`` object, which
+itself inherits from BrowserPage, most forms will already have a
+publishTraverse method which will override any attempt to adapt to a diferent
+traverser.  But if you provide the pluggable traverser as a view on the form,
+then using the @@ symbols to force a view lookup rather than a publishTraverse
+call will bypass BrowserPage's publishTraverse method.  In ZCML, the pluggable
+traverser gets registered as a named adatper like so::
+
+  <adapter
+      trusted="True"
+      for=".interfaces.IFormTraverser
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory="z3c.traverser.browser.PluggableBrowserTraverser"
+      permission="zope.Public"
+      name="ajax"
+      />
+
+This makes the plggable traverser available via the @@ajax "view".
+In a url, an ajax request handler would be called via the url:
+http://host/path/to/context/@@form.html/@@ajax/pingBack
+
+AJAX Helper functions
+---------------------
+
+The ``getUniquePrefixer`` function returns a function that will
+produce css selectable and unique prefixes for any form.  This is
+extremely useful when you have an arbitrary number of ajax forms on
+the same page the must be uniquely references by javascript.  The
+prefixer uses the form's name and its parents' names to produce the
+prefix.
+
+To show this we'll create some dummy objects.
+
+  >>> from zope.app.container.contained import Contained
+  >>> class DummyObject(Contained):
+  ...     def __init__(self, parent, name):
+  ...         self.__parent__ = parent
+  ...         self.__name__ = name
+
+  >>> parent1 = DummyObject(None, 'parent1')
+  >>> from zope.traversing.interfaces import IContainmentRoot
+  >>> from zope.interface import directlyProvides
+  >>> directlyProvides(parent1, IContainmentRoot)
+  >>> parent2 = DummyObject(parent1, 'parent2')
+  >>> context = DummyObject(parent2, 'context')
+  >>> form = DummyObject(context, 'form')
+
+When we get the prefixer, we can provide two keyword options: ``n``,
+which specifies how far up the object tree to go with the prefix, and
+``prefix``, an actual prefix that defaults to 'form'.
+
+  >>> prefixer = ajax.getUniquePrefixer()
+  >>> prefixer(form)
+  'formcontextparent2'
+  >>> prefixer = ajax.getUniquePrefixer(n=1)
+  >>> prefixer(form)
+  'formcontext'
+  >>> prefixer = ajax.getUniquePrefixer(n=2)
+  >>> prefixer(form)
+  'formcontextparent2'
+  >>> prefixer = ajax.getUniquePrefixer(n=50, prefix='myprefix')
+  >>> prefixer(form)
+  'myprefixcontextparent2parent1'
+
+In a form class we would use this prefixer like so:
+
+  >>> class MyForm(object):
+  ...     prefix = property(ajax.getUniquePrefixer())
+
+  >>> form = MyForm()
+  >>> form.__parent__ = context
+  >>> form.prefix
+  'formcontextparent2'

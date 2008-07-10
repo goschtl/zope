@@ -1,0 +1,116 @@
+==========================
+JavaScript Form Validation
+==========================
+
+This package also supports widget value validation via Javascript. In
+particular, the ``jsvalidator`` module implements server-side validation via
+AJAX.
+
+  >>> from z3c.formjs import jsvalidator
+
+There are two components to the validation API. The first is the validator, a
+form mix-in class that makes the validation functionality via a URL and
+defines the communication protocol of the validation; for example, it defines
+what path must be accessed for the validation and what data to send and
+return. The second component is the validation script, which is responsible
+for defining the Javascript code that is executed when validation is
+requested.
+
+
+Message Validator
+-----------------
+
+The goal of the specific message validator is to validate a value, then
+convert any error into a message and insert the message into the page's
+content.
+
+So let's do some necessary setups:
+
+  >>> from z3c.form.testing import setupFormDefaults
+  >>> setupFormDefaults()
+
+  >>> import zope.component
+  >>> from z3c.form import error
+  >>> zope.component.provideAdapter(error.ValueErrorViewSnippet)
+
+We now create a simple form in which all widgets will be validated:
+
+  >>> import zope.interface
+  >>> import zope.schema
+
+  >>> class IAddress(zope.interface.Interface):
+  ...     zip = zope.schema.Int(title=u"Zip Code")
+
+  >>> from z3c.form import form, field
+  >>> from z3c.form.interfaces import IField
+  >>> from z3c.formjs import jsevent, jsaction
+
+  >>> class AddressEditForm(jsvalidator.MessageValidator, form.AddForm):
+  ...     fields = field.Fields(IAddress)
+  ...
+  ...     @jsaction.handler(IField, event=jsevent.CHANGE)
+  ...     def fieldValidator(self, event, selector):
+  ...         return self.ValidationScript(self, selector.widget).render()
+
+After instantiating the form, ...
+
+  >>> from z3c.form.testing import TestRequest
+  >>> request = TestRequest()
+  >>> edit = AddressEditForm(None, request)
+  >>> edit.update()
+
+we can execute the handler to ensure we get some output:
+
+  >>> from z3c.formjs import testing
+  >>> testing.setupRenderers()
+
+  >>> from z3c.formjs import jsaction
+  >>> print edit.fieldValidator(
+  ...     None, jsaction.WidgetSelector(edit.widgets['zip']))
+  $.get('/validate', function(data){ alert(data) })
+
+Validators use AJAX handlers to communicate with the server. Commonly the AJAX
+handler is looked up via the "ajax" view -- see ``ajax.txt`` for more
+details. In this case we just create a small helper function:
+
+  >>> from z3c.formjs import ajax
+
+  >>> def AJAXPlugin(view):
+  ...     return ajax.AJAXRequestTraverserPlugin(view, view.request)
+
+
+  >>> from z3c.formjs import ajax, interfaces
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+
+  >>> zope.component.provideSubscriptionAdapter(
+  ...     ajax.AJAXRequestTraverserPlugin,
+  ...     (interfaces.IFormTraverser, IBrowserRequest))
+
+we can traverse to the ``validate`` method from the "ajax" view and render
+it. Let's first render some valid input:
+
+  >>> request = TestRequest(form={'widget-name' : 'zip',
+  ...                             'form.widgets.zip' : u'29132'})
+  >>> edit = AddressEditForm(None, request)
+  >>> edit.update()
+  >>> AJAXPlugin(edit).publishTraverse(None, 'validate')()
+  u''
+
+As you can see there is no error message. Let's now provide an invalid ZIP
+code. As you can see, we get the expected error message:
+
+  >>> request = TestRequest(form={'widget-name': 'zip',
+  ...                             'form.widgets.zip':'notazipcode'})
+  >>> edit = AddressEditForm(None, request)
+  >>> edit.update()
+  >>> AJAXPlugin(edit).publishTraverse(None, 'validate')()
+  u'The system could not process the given value.'
+
+Of course, one cannot just traverse to any attribute in the form:
+
+  >>> AJAXPlugin(edit).publishTraverse(None, 'ValidationScript')()
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <AddressEditForm ...>, name: 'ValidationScript'
+
+And that's it.
