@@ -9,7 +9,7 @@ Basic Use
 ---------
 
 In the most basic use of a macro, a section invokes the macro on itself, and
-uses itself as the parameter provider:
+uses itself as the parameter provider::
 
     [buildout]
     parts = hard-rocker

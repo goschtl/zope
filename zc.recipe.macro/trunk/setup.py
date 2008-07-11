@@ -81,7 +81,7 @@ empty = zc.recipe.macro:Empty
 
 setuptools.setup(
     name="zc.recipe.macro",
-    version="1.2.0",
+    version="1.3.0dev",
     description="Macro-recipe for buildout.",
     long_description=text(
         'src/zc/recipe/macro/QUICKSTART.txt',
