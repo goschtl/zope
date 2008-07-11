@@ -1,9 +1,10 @@
 CHANGES
 =======
 
-1.3.0 (unreleased)
+1.2.2 (2008-07-11)
 ------------------
 
+Fixed a bug in setup.py where setuptools was not being imported
 Changed date format in CHANGES.txt to YYYY-MM-DD
 
 

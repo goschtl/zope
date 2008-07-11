@@ -12,6 +12,7 @@
 #
 ##############################################################################
 import os
+import setuptools
 from setuptools import setup, find_packages
 
 # generic helpers primarily for the long_description
