@@ -223,7 +223,7 @@ class Runner(object):
                     break
 
             layers_to_run.pop(0)
-            if self.options.processes > 1:
+            if self.options.processes and self.options.processes > 1:
                 should_resume = True
                 break
 
@@ -464,8 +464,11 @@ def resume_tests(options, features, layers, failures, errors):
     running_threads = []
     results_iter = iter(results)
     current_result = results_iter.next()
+    processes = 1
+    if options.processes is not None:
+        processes = options.processes
     while ready_threads or running_threads:
-        while len(running_threads) < options.processes and ready_threads:
+        while len(running_threads) < processes and ready_threads:
             thread = ready_threads.pop(0)
             thread.start()
             running_threads.append(thread)

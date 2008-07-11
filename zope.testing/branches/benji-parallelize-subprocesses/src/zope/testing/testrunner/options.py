@@ -414,7 +414,7 @@ an invoking process that wants to monitor the result of a test run.
 """)
 
 other.add_option(
-    '-j', action="store", type="int", dest='processes', default=1,
+    '-j', action="store", type="int", dest='processes',
     help="""\
 Use up to given number of parallel processes to execute tests.  May decrease
 test run time substantially.  Defaults to %default.
