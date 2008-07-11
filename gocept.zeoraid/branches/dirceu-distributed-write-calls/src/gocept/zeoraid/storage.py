@@ -638,9 +638,21 @@ class RAIDStorage(object):
         N-th storage.
 
         """
-        def _remote_apply_storage():
-            self.reliable, self.result = self.__apply_storage(
-                    name, method_name, args, kw, expect_connected)
+        class ThreadedApplyStorage(threading.Thread):
+            def __init__(self, name, method_name, args, kw, expect_connected, __apply_storage):
+                threading.Thread.__init__(self)
+                self.name = name
+                self.method_name = method_name
+                self.args = args
+                self.kw = kw
+                self.expect_connected = expect_connected
+                self.reliable = None
+                self.result = None
+                self.__apply_storage = __apply_storage
+            def run(self):
+                self.reliable, self.result = self.__apply_storage(
+                        self.name, self.method_name, self.args, 
+                        self.kw, self.expect_connected)
 
         results = []
         exceptions = []
@@ -662,7 +674,7 @@ class RAIDStorage(object):
         for name in applicable_storages:
             try:
                 args = argument_iterable.next()
-                t = threading.Thread(target=_remote_apply_storage)
+                t = ThreadedApplyStorage(name, method_name, args, kw, expect_connected, self.__apply_storage)
                 t.start()
                 t.join(60)
                 reliable, result = t.reliable, t.result
