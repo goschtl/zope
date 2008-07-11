@@ -1,4 +1,6 @@
 import martian.util
+import grokcore.component
+from martian.error import GrokImportError
 from zope.app.publisher.browser.menu import BrowserMenu
 
 class Menu(BrowserMenu):

@@ -3,10 +3,8 @@ import grokcore.component
 import megrok.menu
 from martian.error import GrokError
 from grok.meta import ViewGrokker, default_view_name
-from zope.component import queryUtility
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserPage
-from zope.app.publisher.interfaces.browser import IMenuItemType
 from zope.app.publisher.browser.menumeta import menuDirective, menuItemDirective
 from zope.app.security.protectclass import protectName
 
