@@ -296,18 +296,18 @@ Sometimes it is good to have a macro that does not result in a part.
         port 9089
         </product-config>
     [buildout]
-    bin-directory = .../sample-buildout/bin
-    develop-eggs-directory = .../sample-buildout/develop-eggs
-    directory = .../sample-buildout
-    eggs-directory = .../sample-buildout/eggs
-    executable = /Users/aaron/local/bin/python2.4
-    installed = .../sample-buildout/.installed.cfg
+    bin-directory = /sample-buildout/bin
+    develop-eggs-directory = /sample-buildout/develop-eggs
+    directory = /sample-buildout
+    eggs-directory = /sample-buildout/eggs
+    executable = .../local/bin/python...
+    installed = /sample-buildout/.installed.cfg
     log-format =
     log-level = INFO
     newest = true
     offline = false
     parts = instance0 instance1
-    parts-directory = .../sample-buildout/parts
+    parts-directory = /sample-buildout/parts
     python = buildout
     verbosity = 20
     versions = versions
@@ -410,18 +410,18 @@ will come from an empty result-recipe option.
         port 9089
         </product-config>
     [buildout]
-    bin-directory = .../sample-buildout/bin
-    develop-eggs-directory = .../sample-buildout/develop-eggs
-    directory = .../sample-buildout
-    eggs-directory = .../sample-buildout/eggs
-    executable = /Users/aaron/local/bin/python2.4
-    installed = .../sample-buildout/.installed.cfg
+    bin-directory = /sample-buildout/bin
+    develop-eggs-directory = /sample-buildout/develop-eggs
+    directory = /sample-buildout
+    eggs-directory = /sample-buildout/eggs
+    executable = .../local/bin/python...
+    installed = /sample-buildout/.installed.cfg
     log-format =
     log-level = INFO
     newest = true
     offline = false
     parts = instance0 instance1
-    parts-directory = .../sample-buildout/parts
+    parts-directory = /sample-buildout/parts
     python = buildout
     verbosity = 20
     versions = versions
@@ -483,18 +483,18 @@ options, and they can be used as parts.
     <BLANKLINE>
     Configuration data:
     [buildout]
-    bin-directory = .../sample-buildout/bin
-    develop-eggs-directory = .../sample-buildout/develop-eggs
-    directory = .../sample-buildout
-    eggs-directory = .../sample-buildout/eggs
-    executable = /Users/aaron/local/bin/python2.4
-    installed = .../sample-buildout/.installed.cfg
+    bin-directory = /sample-buildout/bin
+    develop-eggs-directory = /sample-buildout/develop-eggs
+    directory = /sample-buildout
+    eggs-directory = /sample-buildout/eggs
+    executable = .../local/bin/python...
+    installed = /sample-buildout/.installed.cfg
     log-format =
     log-level = INFO
     newest = true
     offline = false
     parts = invoker0 invoker1
-    parts-directory = .../sample-buildout/parts
+    parts-directory = /sample-buildout/parts
     python = buildout
     verbosity = 20
     versions = versions
@@ -579,18 +579,18 @@ existing section, which will be used as source of values.
     name = Otto von Bismark
     output = I was invoked by Otto von Bismark
     [buildout]
-    bin-directory = .../sample-buildout/bin
-    develop-eggs-directory = .../sample-buildout/develop-eggs
-    directory = .../sample-buildout
-    eggs-directory = .../sample-buildout/eggs
-    executable = /Users/aaron/local/bin/python2.4
-    installed = .../sample-buildout/.installed.cfg
+    bin-directory = /sample-buildout/bin
+    develop-eggs-directory = /sample-buildout/develop-eggs
+    directory = /sample-buildout
+    eggs-directory = /sample-buildout/eggs
+    executable = .../local/bin/python...
+    installed = /sample-buildout/.installed.cfg
     log-format =
     log-level = INFO
     newest = true
     offline = false
     parts = invoker0
-    parts-directory = .../sample-buildout/parts
+    parts-directory = /sample-buildout/parts
     python = buildout
     verbosity = 20
     versions = versions
