@@ -1,12 +1,18 @@
 """
-
   >>> from zope.component import getUtility
   >>> from zope.app.publisher.interfaces.browser import IBrowserMenu
   >>> from zope.publisher.browser import TestRequest
 
+A menu is available as a named utility providing ``IBrowserMenu``.
+
   >>> menu = getUtility(IBrowserMenu, 'tabs')
   >>> manfred = Mammoth()
   >>> request = TestRequest()
+
+In order to retrieve the menu items, we need to pass in a context
+object and a request.  The menu then determines which menu items are
+available for this particular object and the principal that's attached
+to the request:
 
   >>> from pprint import pprint
   >>> pprint(menu.getMenuItems(manfred, request))
