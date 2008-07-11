@@ -351,7 +351,6 @@ class Parser(object):
     def p_expr_equery(self, t):
         r'''expr : TYPE SQUAREL xprs SQUARER
         '''
-        #I also change the expected query in parser.txt
         t[0] = Query(self.metadata, self.symbols, self.types[t[1]],t[3],None)
         
     def p_expr_query(self, t):
