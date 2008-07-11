@@ -39,8 +39,8 @@ Traceback (most recent call last):
 WrongContainedType: [foo <type 'unicode'>]
 
 
-The `insie` Function
---------------------
+The `inside` Function
+---------------------
 
 The `inside` function tells if l1 is inside l2.  L1 is inside l2 if l2 is an
 ancestor of l1.
@@ -141,7 +141,7 @@ False
 >>> l_located_2 is l_located
 True
 
-When chaning the name, we still do not get a different proxied object:
+When changing the name, we still do not get a different proxied object:
 
 >>> l_located_3 = located(l_located, parent, 'new-name')
 >>> l_located_3 is l_located_2
