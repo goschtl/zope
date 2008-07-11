@@ -1,0 +1,30 @@
+from setuptools import setup, find_packages
+
+setup(name='megrok.menu',
+      version='0.1',
+      description="Grok extension to configure browser menus",
+      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[
+        "Programming Language :: Python",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        ],
+      keywords='',
+      author='Philipp von Weitershausen',
+      author_email='philipp@weitershausen.de',
+      url='http://pypi.python.org/pypi/megrok.menu',
+      license='ZPL',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      namespace_packages=['megrok'],
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=[
+          'setuptools',
+          'martian',
+          'grokcore.component',
+          'grok',  # just for the ViewGrokker
+      ],
+      entry_points="""
+      # -*- Entry points: -*-
+      """,
+      )
