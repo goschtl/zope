@@ -5,7 +5,6 @@ Location
 Location Base Class
 -------------------
 
-
 The `Location` base class is a stupid mix-in that defines `__parent__` and
 `__name__` attributes.
 
