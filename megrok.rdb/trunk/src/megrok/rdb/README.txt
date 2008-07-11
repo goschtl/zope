@@ -41,14 +41,11 @@ associated with it. First we'll define a container that can contain
 courses::
 
   >>> class Courses(rdb.Container):
-  ...    rdb.key('name')
+  ...    pass
 
-As you can see, we need to set up the attribute on which the key is
-based. We will use the ``name`` attribute, which we will define for
-the course later. Note that using the primary key attribute (such as
-``id`` in this example) is not a good idea if you expect the database
-to generate unique ids itself - the correct id will not be known yet
-before the object is commit to the database.
+That's all. If the ``rdb.key`` directive is not used the key in the
+container will be defined as the (possibly automatically assigned)
+primary key in the database.
 
 Now we can set up the ``Department`` class. This has the ``courses``
 relation that links to its courses::
@@ -196,7 +193,76 @@ We can now verify that the courses are there::
 
   >>> for key, value in sorted(philosophy.courses.items()):
   ...     print key, value.name, value.department.name
-  Ethics Ethics Philosophy
-  Logic Logic Philosophy
-  Metaphysics Metaphysics Philosophy
+  1 Logic Philosophy
+  2 Ethics Philosophy
+  3 Metaphysics Philosophy
+
+As you can see, the automatically generated primary key is also used
+as the container key now.
+
+Custom key with ``rdb.key``
+---------------------------
+
+Let's now set up a different attribute to use as the container key.
+We will use the ``name`` attribute of the course.
+
+We'll set up the data model again, this time with a ``rdb.key`` on the
+``Courses`` class::
+
+  >>> metadata = rdb.MetaData()
+
+  >>> class Courses(rdb.Container):
+  ...    rdb.key('name')
+
+  >>> class Department(rdb.Model):
+  ...   rdb.metadata(metadata)
+  ...
+  ...   id = Column('id', Integer, primary_key=True)
+  ...   name = Column('name', String(50))
+  ... 
+  ...   courses = relation('Course', 
+  ...                       backref='department',
+  ...                       collection_class=Courses)
+
+  >>> class Course(rdb.Model):
+  ...   rdb.metadata(metadata)
+  ...
+  ...   id = Column('id', Integer, primary_key=True)
+  ...   department_id = Column('department_id', Integer, 
+  ...                           ForeignKey('department.id'))
+  ...   name = Column('name', String(50))
+
+We grok these new classes::
+
+  >>> grok_component('Courses', Courses)
+  True
+  >>> grok_component('Department', Department)
+  True
+  >>> grok_component('Course', Course)
+  True
+
+We don't need to change the engine, as the underlying relational
+database has remained the same. Let's set up another faculty with some
+departments::
+
+  >>> physics = Department(name="Physics")
+  >>> session.add(physics)
+  >>> quantum = Course(name="Quantum Mechanics")
+  >>> relativity = Course(name="Relativity")
+  >>> high_energy = Course(name="High Energy")
+  >>> session.add_all([quantum, relativity, high_energy])
+
+We'll now add these departments to the physics faculty::
+
+  >>> physics.courses.set(quantum)
+  >>> physics.courses.set(relativity)
+  >>> physics.courses.set(high_energy)
+
+We can now verify that the courses are there, with the names as the keys::
+
+  >>> for key, value in sorted(physics.courses.items()):
+  ...     print key, value.name, value.department.name
+  High Energy High Energy Physics
+  Quantum Mechanics Quantum Mechanics Physics
+  Relativity Relativity Physics
 

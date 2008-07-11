@@ -1,4 +1,4 @@
-from sqlalchemy.orm.collections import MappedCollection
+from sqlalchemy.orm.collections import MappedCollection, collection
 
 from zope.interface import implements
 
@@ -37,3 +37,14 @@ class Container(MappedCollection):
         else:
             keyfunc = default_keyfunc
         MappedCollection.__init__(self, keyfunc=keyfunc)
+
+    @collection.internally_instrumented
+    @collection.appender
+    def set(self, value, _sa_initiator=None):
+        key = self.keyfunc(value)
+        if key is None:
+            session = Session()
+            session.flush()
+            key = self.keyfunc(value)
+        self.__setitem__(key, value, _sa_initiator)
+
