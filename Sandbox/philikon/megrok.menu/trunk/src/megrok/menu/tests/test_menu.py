@@ -43,12 +43,16 @@ class Tabs(megrok.menu.Menu):
     grok.title('Tabs')
     grok.description('')
 
+# You can either refer to the menu class itself:
+
 class Index(grok.View):
     grok.title('View')
     megrok.menu.menuitem(Tabs)
 
     def render(self):
         return 'index'
+
+# or you can refer to its identifier:
 
 class Edit(grok.View):
     grok.title('Edit')
