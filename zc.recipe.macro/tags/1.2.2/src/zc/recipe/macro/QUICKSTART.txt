@@ -1,0 +1,158 @@
+Macro Quickstart
+================
+
+zc.recipe.macro is a set of recipes allowing sections, or even parts, to be
+created dynamically from a macro section and a parameter section.  This enables
+the buildout to keep its data seperate from its output format.
+
+Basic Use
+---------
+
+In the most basic use of a macro, a section invokes the macro on itself, and
+uses itself as the parameter provider::
+
+    [buildout]
+    parts = hard-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+
+    [hard-rocker]
+    recipe = zc.recipe.macro
+    macro = rock
+    rocking-style = so hard
+
+This will result in::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why do I rock so hard?
+    rocking-style = so hard
+
+The recipe gets changed to zc.recipe.macro:empty, which is a do nothing recipe,
+because the invoking secion must be a part in order to execute recipes, and
+buildout demands that parts have a recipe, so it couldn't be emptied.
+
+Default Values
+--------------
+
+It is possible to include default values for parameters in a macro, like so::
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = so hard
+
+Creating Parts
+--------------
+
+Of course, there wouldn't much point to this if one could only create sections
+with a dummy recipe.  This is where the result-recipe option comes in::
+
+    [buildout]
+    parts = hard-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+
+    [hard-rocker]
+    recipe = zc.recipe.macro
+    macro = rock
+    result-recipe = zc.recipe.its_still_rock_n_roll_to_me
+    rocking-style = so hard
+
+That will result in::
+
+    [hard-rocker]
+    recipe = zc.recipe.its_still_rock_n_roll_to_me
+    question = Why do I rock so hard?
+    rocking-style = so hard
+
+Targets
+-------
+
+Often, one wants to create multiple new sections.  This is possible with the
+targets option.  This is only useful, however, if one can provide multiple
+sources for parameters.  Fortunately, you can.  Each new section can optionally
+be followed by a colon and the name of a section to use for parameters::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        rocking-style:tired-rocker-parameters
+
+That will generate these rockers::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why do I rock so hard?
+
+    [socks-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why do I rock my socks?
+
+    [tired-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why do I rock all night?
+
+Special Variables
+-----------------
+
+zc.recipe.macro uses __name__ to mean the name of the section the macro is
+being invoked upon.  This allows one to not know the name of particular
+section, but still use it in output::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why does $${:__name__} rock $${:rocking-style}?
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        rocking-style:tired-rocker-parameters
+
+This will result in rockers like these::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why does hard-rocker rock so hard?
+
+    [socks-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why does socks-rocker rock my socks?
+
+    [tired-rocker]
+    recipe = zc.recipe.macro:empty
+    question = Why does tired-rocker rock all night?
+
