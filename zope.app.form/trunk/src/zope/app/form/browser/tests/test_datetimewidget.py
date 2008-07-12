@@ -136,7 +136,7 @@ class DatetimeI18nWidgetTest(SimpleInputWidgetTest):
     def test_getShortInputValue(self):
         self._widget.displayStyle = "short"
         self.test_getDefaultInputValue(
-            value=u'26.03.04 12:58:59',
+            value=u'26.03.04 12:58',
             check_value=datetime.datetime(2004, 3, 26, 12, 58)
             )
 
