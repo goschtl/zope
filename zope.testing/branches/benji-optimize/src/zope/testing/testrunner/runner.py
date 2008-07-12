@@ -21,6 +21,7 @@ import gc
 import glob
 import os
 import pdb
+import pickle
 import re
 import sys
 import tempfile
@@ -72,6 +73,26 @@ class EndRun(Exception):
     Used to prevent additional test output after post-mortem debugging.
 
     """
+
+
+def fork_and_call(func, *args, **kws):
+    if not hasattr(os, 'fork'):
+        return func(*args, **kws)
+
+    read_pipe, write_pipe = os.pipe()
+    pid = os.fork()
+    if pid: # am parent
+        os.close(write_pipe)
+        child_exit = os.waitpid(pid)
+        assert child_exit == 0
+        result = pickle.loads(os.read(read_pipe, 999999))
+    else: # am child
+        os.close(read_pipe)
+        result = func(*args, **kws)
+        os.write(write_pipe, pickle.dumps(result))
+        os.exit(0)
+
+    return result # will only get here in the parent
 
 
 class Runner(object):
@@ -212,8 +233,10 @@ class Runner(object):
             for feature in self.features:
                 feature.layer_setup(layer)
             try:
-                self.ran += run_layer(self.options, layer_name, layer, tests,
-                                      setup_layers, self.failures, self.errors)
+                (ran, self.options, layer, tests, setup_layers, self.failures,
+                    self.errors) = run_layer(self.options, layer_name, layer,
+                        tests, setup_layers, self.failures, self.errors)
+                self.ran += ran
             except EndRun:
                 self.failed = True
                 return
@@ -360,9 +383,11 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
         traceback.print_exc(file=f)
         output.error(f.getvalue())
         errors.append((SetUpLayerFailure(), sys.exc_info()))
-        return 0
+        ran = 0
     else:
-        return run_tests(options, tests, layer_name, failures, errors)
+        ran = run_tests(options, tests, layer_name, failures, errors)
+
+    return ran, options, layer, tests, setup_layers, failures, errors
 
 class SetUpLayerFailure(unittest.TestCase):
 
