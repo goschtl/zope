@@ -24,9 +24,9 @@ def schema_from_model(model):
         field.__name__ = str(column.name)
         field.title = unicode(column.name)
         field.required = not column.nullable
-        field.order = i
         attrs[column.name] = field
-
+        field.order = i
+       
     return InterfaceClass(name=model.__table__.name,
                           bases=bases,
                           attrs=attrs,
@@ -43,3 +43,4 @@ def field_from_sa_string(s):
 def field_from_sa_integer(i):
     return Int(__name__ = u'__dummy__',
                 title = u'__dummy__')
+
