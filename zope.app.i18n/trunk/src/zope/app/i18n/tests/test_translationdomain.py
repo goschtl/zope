@@ -262,16 +262,16 @@ class TestTranslationDomainInAction(unittest.TestCase):
 
     def test_translate(self):
         self.assertEqual(
-            self.trans.translate('short_greeting', 'default',
+            self.trans.translate('short_greeting', context='default',
                                  target_language='de'),
             'Hallo!')
         self.assertEqual(
-            self.trans1.translate('short_greeting', 'default',
+            self.trans1.translate('short_greeting', context='default',
                                   target_language='de'),
             'Hallo Welt!')
 
         self.assertEqual(
-            self.trans1.translate('long_greeting', 'default',
+            self.trans1.translate('long_greeting', context='default',
                                   target_language='de'),
             'Guten Tag!')
         
