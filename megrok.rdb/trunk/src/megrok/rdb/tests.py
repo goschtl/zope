@@ -21,9 +21,13 @@ def test_suite():
     suite = unittest.TestSuite()
     
     suite.addTest(doctest.DocFileSuite(
-        'README.txt',
-        optionflags=optionflags,
-        setUp=setUp,
-        tearDown=tearDown,
-        globs=globs))
+            'README.txt',
+            optionflags=optionflags,
+            setUp=setUp,
+            tearDown=tearDown,
+            globs=globs))
+    suite.addTest(doctest.DocFileSuite(
+            'schema.txt',
+            optionflags=optionflags,
+            ))
     return suite
