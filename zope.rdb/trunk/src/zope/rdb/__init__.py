@@ -20,7 +20,7 @@ sub transactions need to implement their own proxy.
 $Id$
 """
 import re
-import time, random, thread
+import time, random, thread, threading
 from urllib import unquote_plus
 
 from persistent import Persistent
@@ -36,7 +36,6 @@ from zope.rdb.interfaces import DatabaseException, DatabaseAdapterError
 from zope.rdb.interfaces import IResultSet
 from zope.rdb.interfaces import IZopeConnection, IZopeCursor
 from zope.rdb.interfaces import IManageableZopeDatabaseAdapter
-from zope.thread import local
 
 
 DEFAULT_ENCODING = "utf-8"
@@ -114,7 +113,7 @@ class ZopeDatabaseAdapter(Persistent, Contained):
     # is important when instantiating database adapters using
     # rdb:provideConnection as the same ZopeDatabaseAdapter instance will
     # be used by all threads.
-    _connections = local()
+    _connections = threading.local()
 
     def __init__(self, dsn):
         self.setDSN(dsn)
