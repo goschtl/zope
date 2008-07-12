@@ -208,7 +208,7 @@ determined by sorting their names.
     >>> ztapi.provideUtility(
     ...     ISchemaManager, manager1, name='another.app')
     >>> ztapi.provideUtility(
-    ...     ISchemaManager, manager1, name='another.app-extension')
+    ...     ISchemaManager, manager2, name='another.app-extension')
 
 Notice how the name of the first package is used to create a namespace
 for dependent packages.  This is not a requirement of the framework,
