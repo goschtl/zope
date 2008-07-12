@@ -80,17 +80,40 @@ def fork_and_call(func, *args, **kws):
         return func(*args, **kws)
 
     read_pipe, write_pipe = os.pipe()
+
+    # it's generally a good idea to flush stdout and stderr before forking
+    sys.stdout.flush()
+    sys.stderr.flush()
+
     pid = os.fork()
     if pid: # am parent
         os.close(write_pipe)
-        child_exit = os.waitpid(pid)
+        _, child_exit = os.waitpid(pid, 0)
         assert child_exit == 0
-        result = pickle.loads(os.read(read_pipe, 999999))
+        stdout, was_exception, result = pickle.loads(os.read(read_pipe, 10000000))
+        if stdout is not None:
+            sys.stdout.write(stdout.getvalue())
+        if was_exception:
+            raise result
     else: # am child
         os.close(read_pipe)
+        was_exception = False
         result = func(*args, **kws)
-        os.write(write_pipe, pickle.dumps(result))
-        os.exit(0)
+#        try:
+#            result = func(*args, **kws)
+#        except:
+#            e = sys.exc_info()[1]
+#            was_exception = True
+#            result = e
+        to_pickle = [sys.stdout, was_exception, result]
+        do_pickle = lambda: os.write(write_pipe, pickle.dumps(to_pickle))
+        try:
+            do_pickle()
+        except:
+            to_pickle[0] = None
+            do_pickle()
+
+        os._exit(0)
 
     return result # will only get here in the parent
 
@@ -232,15 +255,15 @@ class Runner(object):
             layer_name, layer, tests = layers_to_run[0]
             for feature in self.features:
                 feature.layer_setup(layer)
-            try:
-                (ran, self.options, layer, tests, setup_layers, self.failures,
-                    self.errors) = run_layer(self.options, layer_name, layer,
-                        tests, setup_layers, self.failures, self.errors)
-                self.ran += ran
-            except EndRun:
+            (ran, end, can_not_tear_down, self.options.output, layer, setup_layers, self.failures,
+                self.errors) = fork_and_call(run_layer, self.options,
+                    layer_name, layer, tests, setup_layers, self.failures,
+                    self.errors)
+            self.ran += ran
+            if end:
                 self.failed = True
                 return
-            except CanNotTearDown:
+            if can_not_tear_down:
                 if not self.options.resume_layer:
                     should_resume = True
                     break
@@ -256,7 +279,7 @@ class Runner(object):
                 self.ran += resume_tests(self.options, self.features,
                     layers_to_run, self.failures, self.errors)
 
-        if setup_layers:
+        if setup_layers and not hasattr(os, 'fork'):
             if self.options.resume_layer == None:
                 self.options.output.info("Tearing down left over layers:")
             tear_down_unneeded(self.options, (), setup_layers, True)
@@ -364,12 +387,17 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
               failures, errors):
 
     output = options.output
+    end = False
+    can_not_tear_down = False
     gathered = []
     gather_layers(layer, gathered)
     needed = dict([(l, 1) for l in gathered])
     if options.resume_number != 0:
         output.info("Running %s tests:" % layer_name)
-    tear_down_unneeded(options, needed, setup_layers)
+    try:
+        tear_down_unneeded(options, needed, setup_layers)
+    except CanNotTearDown:
+        can_not_tear_down = True
 
     if options.resume_layer != None:
         output.info_suboptimal( "  Running in a subprocess.")
@@ -377,7 +405,7 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
     try:
         setup_layer(options, layer, setup_layers)
     except EndRun:
-        raise
+        end = True
     except Exception:
         f = cStringIO.StringIO()
         traceback.print_exc(file=f)
@@ -387,7 +415,12 @@ def run_layer(options, layer_name, layer, tests, setup_layers,
     else:
         ran = run_tests(options, tests, layer_name, failures, errors)
 
-    return ran, options, layer, tests, setup_layers, failures, errors
+    # make "failures" pickleable
+    for x, y in failures:
+        del x._dt_checker
+
+    return (ran, end, can_not_tear_down, options.output, layer, setup_layers,
+        failures, errors)
 
 class SetUpLayerFailure(unittest.TestCase):
 

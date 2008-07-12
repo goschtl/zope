@@ -46,12 +46,14 @@ class OutputFormatter(object):
     max_width = 80
 
     def __init__(self, options):
-        self.options = options
+#        self.options = options
+        self.progress = options.progress
+        self.verbose = options.verbose
         self.last_width = 0
         self.compute_max_width()
 
-    progress = property(lambda self: self.options.progress)
-    verbose = property(lambda self: self.options.verbose)
+#    progress = property(lambda self: self.options.progress)
+#    verbose = property(lambda self: self.options.verbose)
 
     def compute_max_width(self):
         """Try to determine the terminal width."""
