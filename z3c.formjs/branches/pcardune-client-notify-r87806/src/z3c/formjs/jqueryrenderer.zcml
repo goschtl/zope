@@ -38,7 +38,7 @@
   <browser:zrt-resource
       name="jquery-switch.js"
       file="jquery-switch.js"
-      layer="jquery.layer.IJQueryJavaScriptBrowserLayer"
+      layer=".jqueryrenderer.IJQueryLayer"
       />
 
 </configure>

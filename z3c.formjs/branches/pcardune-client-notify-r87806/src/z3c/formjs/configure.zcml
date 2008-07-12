@@ -165,10 +165,4 @@
       handler=".jsclientevent.serverToClientEventLoader"
       />
 
-  <subscriber
-      for=".interfaces.IClientEvent"
-      handler=".jsclientevent.serverToClientEventLoader"
-      />
-
-
 </configure>
