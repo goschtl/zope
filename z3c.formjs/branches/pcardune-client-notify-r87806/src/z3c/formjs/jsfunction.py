@@ -77,34 +77,43 @@ class JSFunctions(object):
         self._functions = {}
 
     def add(self, jsFunction, namespace=''):
-        ns = self._functions.setdefault(namespace, [])
-        ns.append(jsFunction)
+        ns = self._functions.setdefault(namespace, {})
+        ns[jsFunction.name] = jsFunction
         return jsFunction
 
     def render(self):
         result = ''
         # Render non-namespaced functions
-        for func in self._functions.get('', []):
+        for func in self._functions.get('', {}).values():
             args = func.arguments
-            result += 'function %s(%s) {\n' %(
+            result += 'var %s = function (%s) {\n' %(
                 func.name, ', '.join(args) )
             code = func.render()
             result += '  ' + code.replace('\n', '\n  ') + '\n'
             result += '}\n'
-        # Render namespaced functions
+
+        # initialize namespaces
+        rendered = []
+        for nsIndex, ns in enumerate(sorted(self._functions.keys())):
+            if ns and nsIndex == 0:
+                result += 'var '
+            parts = ns.split('.')
+            for index in xrange(len(ns)):
+                path = '.'.join(parts[:index+1])
+                if path not in rendered:
+                    result += '%s = {};\n' % path
+                    rendered.append(path)
+
         for ns, funcs in self._functions.items():
             if ns == '':
                 continue
-            result += 'var %s = {\n' %ns
-            for func in funcs:
+            for func in funcs.values():
                 args = func.arguments
-                result += '  %s: function(%s) {\n' %(
-                    func.name, ', '.join(args) )
+                result += '%s.%s = function(%s) {\n' %(
+                    ns, func.name, ', '.join(args) )
                 code = func.render()
-                result += '    ' + code.replace('\n', '\n    ') + '\n'
-                result += '  },\n'
-            result = result[:-2] + '\n'
-            result += '}\n'
+                result += '  ' + code.replace('\n', '\n  ') + '\n'
+                result += '};\n'
         return result
 
     def __repr__(self):

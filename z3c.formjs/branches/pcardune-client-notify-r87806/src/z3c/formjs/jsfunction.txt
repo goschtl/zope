@@ -25,16 +25,73 @@ collected in a special attribute called "jsFunctions"
 
   >>> View.jsFunctions
   <JSFunctions
-      {'hw': [<JSFunction showHelloWorldMessage>]}>
+      {'hw': {'showHelloWorldMessage': <JSFunction showHelloWorldMessage>}}>
 
 The functions can be rendered directly:
 
   >>> print View.jsFunctions.render()
-  var hw = {
-    showHelloWorldMessage: function() {
-      alert('Hello World!');
-    }
-  }
+  var hw = {};
+  hw.showHelloWorldMessage = function() {
+    alert('Hello World!');
+  };
+
+We can also give a dotted path for the namespace, which will in turn
+be reflect in javascript:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function('z3c.formjs.hw')
+  ...     def showHelloWorldMessage(self):
+  ...         return u"alert('Hello World!');"
+
+  >>> View.jsFunctions
+  <JSFunctions {'z3c.formjs.hw':
+        {'showHelloWorldMessage': <JSFunction showHelloWorldMessage>}}>
+
+  >>> print View.jsFunctions.render()
+  var z3c = {};
+  z3c.formjs = {};
+  z3c.formjs.hw = {};
+  z3c.formjs.hw.showHelloWorldMessage = function() {
+    alert('Hello World!');
+  };
+
+We can also do mixed level namespacing:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function('z3c.formjs.hw')
+  ...     def foo(self):
+  ...         return u"alert('Foo');"
+  ...
+  ...     @jsfunction.function('z3c.formjs')
+  ...     def bar(self):
+  ...         return u"alert('Bar');"
+  ...
+  ...     @jsfunction.function('z3c.formjs.hw')
+  ...     def baz(self):
+  ...         return u"alert('Baz');"
+
+  >>> View.jsFunctions
+  <JSFunctions {'z3c.formjs.hw': {'foo': <JSFunction foo>,
+                                  'baz': <JSFunction baz>},
+                'z3c.formjs': {'bar': <JSFunction bar>}}>
+
+  >>> print View.jsFunctions.render()
+  var z3c = {};
+  z3c.formjs = {};
+  z3c.formjs.hw = {};
+  z3c.formjs.hw.foo = function() {
+    alert('Foo');
+  };
+  z3c.formjs.hw.baz = function() {
+    alert('Baz');
+  };
+  z3c.formjs.bar = function() {
+    alert('Bar');
+  };
+
+
 
 Similarly to Javascript subscriptions, a JavaScript viewlet exists for
 any view containing JavaScript functions that provides the following
@@ -45,12 +102,22 @@ output:
   >>> viewlet.update()
   >>> print viewlet.render()
   <script type="text/javascript">
-    var hw = {
-      showHelloWorldMessage: function() {
-        alert('Hello World!');
-      }
-    }
+    var z3c = {};
+    z3c.formjs = {};
+    z3c.formjs.hw = {};
+    z3c.formjs.hw.foo = function() {
+      alert('Foo');
+    };
+    z3c.formjs.hw.baz = function() {
+      alert('Baz');
+    };
+    z3c.formjs.bar = function() {
+      alert('Bar');
+    };
   </script>
+
+!Note! a form must implement IHaveJSFunctions for the viewlet to be
+rendered.
 
 Let's now have a closer look at the decorator. As mentioned before,
 the namespace is optional. So what happens if the namespace is not
@@ -63,7 +130,7 @@ specified? Then the function should be declared normally:
   ...         return u"alert('Hello World!');"
 
   >>> print View.jsFunctions.render()
-  function showHelloWorldMessage() {
+  var showHelloWorldMessage = function () {
     alert('Hello World!');
   }
 
@@ -84,17 +151,16 @@ Of course you can mix namespace and non-namespace functions:
   ...         return u"alert('Hello World!');"
 
   >>> print View.jsFunctions.render()
-  function show1() {
+  var show1 = function () {
     alert('Hello World!');
   }
-  var ns1 = {
-    show1: function() {
-      alert('Hello World!');
-    },
-    show2: function() {
-      alert('Hello World!');
-    }
-  }
+  ns1 = {};
+  ns1.show1 = function() {
+    alert('Hello World!');
+  };
+  ns1.show2 = function() {
+    alert('Hello World!');
+  };
 
 What about arguments? The arguments are directly extracted into the
 code. Currently, keyword arguments, and variable positional and keyword
@@ -107,13 +173,12 @@ arguments are not supported, as they are not supported by JavaScript either:
   ...         return u"alert('Title' + title);"
 
   >>> print View.jsFunctions.render()
-  var ns = {
-    show: function(title) {
-      alert('Title' + title);
-    }
-  }
+  var ns = {};
+  ns.show = function(title) {
+    alert('Title' + title);
+  };
 
-And that is realy everything that there is to it.
+And that is really everything that there is to it.
 
 
 Calling JSFunctions from Python
@@ -134,7 +199,7 @@ the call method the arguments to be rendered.
   >>> View.show.call(True)
   'ns.show(true);'
 
-Unsupported data types are just rendered as stritree/ngs.
+Unsupported data types are just rendered as strings.
 
   >>> View.show.call(object())
   "ns.show('<object object at ...>');"
