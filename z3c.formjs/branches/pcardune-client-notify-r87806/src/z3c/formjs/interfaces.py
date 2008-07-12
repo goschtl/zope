@@ -19,7 +19,6 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 from zope.viewlet.interfaces import IViewletManager
-from zope.component.interfaces import IObjectEvent
 
 from z3c.form.interfaces import IButton, IButtonHandler, IManager, IWidget
 from z3c.form.interfaces import ISelectionManager, IForm
@@ -426,7 +425,3 @@ class IHaveClientEvents(zope.interface.Interface):
     eventInjections = zope.schema.Text(
         title=u"Event Injections",
         description=u"The javascript code to be injected that handles events.")
-
-class IClientEvent(IObjectEvent):
-    """Marker interface for an event that has an effect on the client."""
-

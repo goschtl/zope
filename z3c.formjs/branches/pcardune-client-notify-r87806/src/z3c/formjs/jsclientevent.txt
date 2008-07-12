@@ -347,11 +347,7 @@ notified when changes are applied.
   ...     fields = field.Fields(IArticle)
   ...     jsClientListeners = jsclientevent.ClientEventHandlers(
   ...         ((Interface, IObjectModifiedEvent,), jsclientevent.NotifyClientHandler()),
-  ...         ((Interface, interfaces.IClientEvent,), jsclientevent.NotifyClientHandler()),
   ...         )
-  ...     def applyChanges(self, data):
-  ...         super(ArticleEditForm, self).applyChanges(data)
-  ...         notify(jsclientevent.ClientEvent(self))
 
 Now we will instantiate the form and modify the object.
 
@@ -367,10 +363,6 @@ Now we will instantiate the form and modify the object.
              [{"object":"<Article object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
              [{"object":"<Article object at ...>"}]);
-    $() .trigger("z3c.formjs.interfaces.IClientEvent",
-             [{"object":"<ArticleEditForm object at ...>"}])
-        .trigger("zope.component.interfaces.IObjectEvent",
-             [{"object":"<ArticleEditForm object at ...>"}]);
 
 Lets not forget to end the interaction we created.
 
@@ -391,8 +383,4 @@ We also have a viewlet that renders the javascript event injections.
              [{"object":"<Article object at ...>"}])
         .trigger("zope.component.interfaces.IObjectEvent",
              [{"object":"<Article object at ...>"}]);
-    $() .trigger("z3c.formjs.interfaces.IClientEvent",
-             [{"object":"<ArticleEditForm object at ...>"}])
-        .trigger("zope.component.interfaces.IObjectEvent",
-             [{"object":"<ArticleEditForm object at ...>"}]);
   </script>

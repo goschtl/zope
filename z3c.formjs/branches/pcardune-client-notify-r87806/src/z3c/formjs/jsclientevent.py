@@ -120,10 +120,6 @@ class NotifyClientHandler(object):
         return '<%s>' % (self.__class__.__name__)
 
 
-class ClientEvent(ObjectEvent):
-    zope.interface.implements(interfaces.IClientEvent)
-
-
 @zope.component.adapter(zope.component.interfaces.IObjectEvent)
 def serverToClientEventLoader(event):
     """Event handler that listens for server side events
