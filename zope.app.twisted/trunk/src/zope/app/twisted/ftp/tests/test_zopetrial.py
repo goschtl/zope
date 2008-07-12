@@ -33,16 +33,19 @@ import gc
 import re
 
 import zope.testing.testrunner
-
-orig_configure_logging = zope.testing.testrunner.configure_logging
+try:
+    orig_configure_logging = zope.testing.testrunner.configure_logging
+except AttributeError:
+    orig_configure_logging = None
 
 def setUp(test):
-    # This setup is for testing the trial integration. This test indirectly
-    # call the zope.testing.testrunner.configure_logging method which tries
-    # to reconfigure the logging. This causes problems with some of the other
-    # tests. Nullify this method now, this should OK since the logging should
-    # all be set up at this stage.
-    zope.testing.testrunner.configure_logging = lambda : None
+    if orig_configure_logging is not None:
+        # This setup is for testing the trial integration. This test
+        # indirectly calls the zope.testing.testrunner.configure_logging
+        # method, which tries to reconfigure the logging. This causes
+        # problems with some of the other tests. Nullify this method now;
+        # this should OK since the logging should all be set up at this stage.
+        zope.testing.testrunner.configure_logging = lambda : None
 
     test.globs['this_directory'] = os.path.split(__file__)[0]
     test.globs['saved-sys-info'] = (
@@ -55,9 +58,10 @@ def setUp(test):
 
 
 def tearDown(test):
-    # redefine the configure_logging method that we nullified in the setUp
-    # for these tests.
-    zope.testing.testrunner.configure_logging = orig_configure_logging
+    if orig_configure_logging is not None:
+        # redefine the configure_logging method that we nullified in the setUp
+        # for these tests.
+        zope.testing.testrunner.configure_logging = orig_configure_logging
 
     sys.path[:], sys.argv[:] = test.globs['saved-sys-info'][:2]
     gc.set_threshold(*test.globs['saved-sys-info'][3])
