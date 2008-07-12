@@ -30,7 +30,7 @@ collected in a special attribute called "jsFunctions"
 The functions can be rendered directly:
 
   >>> print View.jsFunctions.render()
-  var hw = {};
+  var hw = hw || {};
   hw.showHelloWorldMessage = function() {
     alert('Hello World!');
   };
@@ -49,9 +49,9 @@ be reflect in javascript:
         {'showHelloWorldMessage': <JSFunction showHelloWorldMessage>}}>
 
   >>> print View.jsFunctions.render()
-  var z3c = {};
-  z3c.formjs = {};
-  z3c.formjs.hw = {};
+  var z3c = z3c || {};
+  z3c.formjs = z3c.formjs || {};
+  z3c.formjs.hw = z3c.formjs.hw || {};
   z3c.formjs.hw.showHelloWorldMessage = function() {
     alert('Hello World!');
   };
@@ -78,9 +78,9 @@ We can also do mixed level namespacing:
                 'z3c.formjs': {'bar': <JSFunction bar>}}>
 
   >>> print View.jsFunctions.render()
-  var z3c = {};
-  z3c.formjs = {};
-  z3c.formjs.hw = {};
+  var z3c = z3c || {};
+  z3c.formjs = z3c.formjs || {};
+  z3c.formjs.hw = z3c.formjs.hw || {};
   z3c.formjs.hw.foo = function() {
     alert('Foo');
   };
@@ -102,9 +102,9 @@ output:
   >>> viewlet.update()
   >>> print viewlet.render()
   <script type="text/javascript">
-    var z3c = {};
-    z3c.formjs = {};
-    z3c.formjs.hw = {};
+    var z3c = z3c || {};
+    z3c.formjs = z3c.formjs || {};
+    z3c.formjs.hw = z3c.formjs.hw || {};
     z3c.formjs.hw.foo = function() {
       alert('Foo');
     };
@@ -154,7 +154,7 @@ Of course you can mix namespace and non-namespace functions:
   var show1 = function () {
     alert('Hello World!');
   }
-  ns1 = {};
+  var ns1 = ns1 || {};
   ns1.show1 = function() {
     alert('Hello World!');
   };
@@ -173,7 +173,7 @@ arguments are not supported, as they are not supported by JavaScript either:
   ...         return u"alert('Title' + title);"
 
   >>> print View.jsFunctions.render()
-  var ns = {};
+  var ns = ns || {};
   ns.show = function(title) {
     alert('Title' + title);
   };

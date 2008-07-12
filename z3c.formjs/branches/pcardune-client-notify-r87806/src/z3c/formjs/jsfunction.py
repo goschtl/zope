@@ -93,15 +93,17 @@ class JSFunctions(object):
             result += '}\n'
 
         # initialize namespaces
+        namespaces = filter(lambda k: bool(k),self._functions.keys())
+        namespaces.sort() # sort namespaces and ignore top level empty namespace.
         rendered = []
-        for nsIndex, ns in enumerate(sorted(self._functions.keys())):
+        for nsIndex, ns in enumerate(namespaces):
             if ns and nsIndex == 0:
                 result += 'var '
             parts = ns.split('.')
             for index in xrange(len(ns)):
                 path = '.'.join(parts[:index+1])
                 if path not in rendered:
-                    result += '%s = {};\n' % path
+                    result += '%s = %s || {};\n' % (path, path)
                     rendered.append(path)
 
         for ns, funcs in self._functions.items():
