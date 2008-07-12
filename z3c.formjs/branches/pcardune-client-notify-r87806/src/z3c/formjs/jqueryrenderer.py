@@ -20,16 +20,31 @@ import zope.component
 import zope.interface
 from zope.traversing.browser import absoluteURL
 from zope.component.interfaces import IObjectEvent
-
-from jquery.layer import IJQueryJavaScriptBrowserLayer
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.viewlet.viewlet import ViewletBase
 
 from z3c.formjs import interfaces
 
+try:
+    # try to be backwards compatible.
+    from jquery.layer import IJQueryJavaScriptBrowserLayer
+    IBaseLayer = IJQueryJavaScriptBrowserLayer
+except ImportError:
+    IBaseLayer = IBrowserRequest
+
+class IJQueryLayer(IBaseLayer):
+    """Layer for the jquery renderers."""
+
+class JQueryViewlet(ViewletBase):
+    """A viewlet that grabs the jquery libraries from google."""
+
+    def render(self):
+        return '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>'
 
 class JQueryIdSelectorRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
-        interfaces.IIdSelector, IJQueryJavaScriptBrowserLayer)
+        interfaces.IIdSelector, IJQueryLayer)
 
     def __init__(self, selector, request):
         self.selector = selector
@@ -44,7 +59,7 @@ class JQueryIdSelectorRenderer(object):
 class JQueryCSSSelectorRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
-        interfaces.ICSSSelector, IJQueryJavaScriptBrowserLayer)
+        interfaces.ICSSSelector, IJQueryLayer)
 
     def __init__(self, selector, request):
         self.selector = selector
@@ -59,7 +74,7 @@ class JQueryCSSSelectorRenderer(object):
 class JQuerySubscriptionRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
-        interfaces.IJSSubscription, IJQueryJavaScriptBrowserLayer)
+        interfaces.IJSSubscription, IJQueryLayer)
 
     def __init__(self, subscription, request):
         self.subscription = subscription
@@ -83,7 +98,7 @@ class JQuerySubscriptionRenderer(object):
 class JQuerySubscriptionsRenderer(object):
     zope.interface.implements(interfaces.IRenderer)
     zope.component.adapts(
-        interfaces.IJSSubscriptions, IJQueryJavaScriptBrowserLayer)
+        interfaces.IJSSubscriptions, IJQueryLayer)
 
     def __init__(self, manager, request):
         self.manager = manager
@@ -103,7 +118,7 @@ class JQuerySubscriptionsRenderer(object):
 
 class JQueryObjectEventRenderer(object):
     zope.component.adapts(IObjectEvent,
-                          IJQueryJavaScriptBrowserLayer)
+                          IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     def __init__(self, event, request):
@@ -124,7 +139,7 @@ class JQueryObjectEventRenderer(object):
 
 class JQueryNotifyClientHandlerRenderer(object):
     zope.component.adapts(interfaces.INotifyClientHandler,
-                          IJQueryJavaScriptBrowserLayer)
+                          IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     def __init__(self, handler, request):
@@ -153,7 +168,7 @@ class JQueryNotifyClientHandlerRenderer(object):
 
 class JQueryMessageValidationScriptRenderer(object):
     zope.component.adapts(
-        interfaces.IMessageValidationScript, IJQueryJavaScriptBrowserLayer)
+        interfaces.IMessageValidationScript, IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     function = 'applyErrorMessage'
@@ -191,7 +206,7 @@ class JQueryMessageValidationScriptRenderer(object):
 
 class JQueryWidgetSwitcherRenderer(object):
     zope.component.adapts(
-        interfaces.IWidgetSwitcher, IJQueryJavaScriptBrowserLayer)
+        interfaces.IWidgetSwitcher, IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     function = 'switchWidget'
@@ -226,7 +241,7 @@ class JQueryWidgetSwitcherRenderer(object):
 
 class JQueryLabelWidgetSwitcherRenderer(object):
     zope.component.adapts(
-        interfaces.ILabelWidgetSwitcher, IJQueryJavaScriptBrowserLayer)
+        interfaces.ILabelWidgetSwitcher, IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     function = 'switchWidget'
@@ -256,7 +271,7 @@ class JQueryLabelWidgetSwitcherRenderer(object):
 
 class JQueryWidgetSaverRenderer(object):
     zope.component.adapts(
-        interfaces.IWidgetSaver, IJQueryJavaScriptBrowserLayer)
+        interfaces.IWidgetSaver, IJQueryLayer)
     zope.interface.implements(interfaces.IRenderer)
 
     function = 'saveWidget'

@@ -69,7 +69,6 @@ setup (
         docs = ['Sphinx', 'z3c.recipe.sphinxdoc'],
         ),
     install_requires = [
-        'jquery.layer',
         'setuptools',
         'z3c.form',
         'z3c.traverser',

@@ -7,6 +7,25 @@ JQuery Javascript library. All renderers assume that JQuery has been loaded.
 
   >>> from z3c.formjs import interfaces, jqueryrenderer
 
+Making JQuery Available in Your Application
+-------------------------------------------
+
+To setup your application to use the JQuery backend, you must inherit
+from the ``IJQueryLayer``.  Since all the rendered javascript expects
+that the jquery library is already loaded on the page, you must make
+it available on every page with javascript.  There is a viewlet that
+loads the latest jquery library from google's infrastructure.
+
+  >>> viewlet = jqueryrenderer.JQueryViewlet(None, None, None, None)
+  >>> print viewlet.render()
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+
+We will setup our tests so that the TestRequest provides this layer.
+
+  >>> import z3c.form.testing
+  >>> import zope.interface
+  >>> class TestRequest(z3c.form.testing.TestRequest):
+  ...     zope.interface.implements(jqueryrenderer.IJQueryLayer)
 
 ``IdSelector`` Renderer
 -----------------------
@@ -17,12 +36,7 @@ selector renderer a very simple component:
   >>> from z3c.formjs import jsevent
   >>> selector = jsevent.IdSelector('form-id')
 
-  >>> from z3c.form.testing import TestRequest
   >>> request = TestRequest()
-
-  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
-  >>> import zope.interface
-  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
 
 Let's now register the renderer:
 
@@ -46,12 +60,7 @@ Since JQuery uses CSS selectors, we can simply pass through the CSS expression:
   >>> from z3c.formjs import jsevent
   >>> cssSelector = jsevent.CSSSelector('label')
 
-  >>> from z3c.form.testing import TestRequest
   >>> request = TestRequest()
-
-  >>> from jquery.layer import IJQueryJavaScriptBrowserLayer
-  >>> import zope.interface
-  >>> zope.interface.alsoProvides(request, IJQueryJavaScriptBrowserLayer)
 
 Let's now register the renderer:
 
