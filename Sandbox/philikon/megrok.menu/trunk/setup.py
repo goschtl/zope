@@ -1,13 +1,19 @@
 from setuptools import setup, find_packages
 
+long_description = (open("README.txt").read()
+                    + '\n\n' +
+                    open("CHANGES.txt").read())
+
 setup(name='megrok.menu',
       version='0.1',
       description="Grok extension to configure browser menus",
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=[
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        ],
+      classifiers=['Programming Language :: Python',
+                   'Environment :: Web Environment',
+                   'Framework :: Zope3',
+                   'License :: OSI Approved :: Zope Public License',
+                   ],
       keywords='',
       author='Philipp von Weitershausen',
       author_email='philipp@weitershausen.de',
