@@ -14,7 +14,7 @@
 * Now also downloading extra Windows specific eggs when creating the
   tarball, as long as they are on the cheese shop.  [maurits]
 
-0.3.0 (2008-05-22)
+0.2.0 (2008-05-22)
 ==================
 
 * Created script around create_source_tarball function with the
@@ -26,7 +26,7 @@
   tarball that we are expecting.  The releasemaker console script
   calls this.  [maurits]
 
-0.3.0 (2008-05-06)
+0.1.0 (2008-05-06)
 ==================
 
 * Added tests.  [maurits]
