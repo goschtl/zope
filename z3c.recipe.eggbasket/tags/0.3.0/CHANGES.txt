@@ -1,0 +1,28 @@
+0.3.0 (30 May 2008)
+===================
+
+ - Now also downloading extra Windows specific eggs when creating the
+   tarball, as long as they are on the cheese shop.  [maurits]
+
+
+0.2.0 (22 May 2008)
+===================
+
+ - Created script around create_source_tarball function with the
+   z3c.recipe.eggbasket:creator recipe.  Removed the releasemaker
+   console script from setup.py for now as it was not handling command
+   line arguments (yet).  [maurits]
+
+ - Added function create_source_tarball for creating the kind of
+   source tarball that we are expecting.  The releasemaker console
+   script calls this.  [maurits]
+
+
+0.1.0 (6 May 2008)
+==================
+
+ - Added tests.  [maurits]
+
+ - Initial implementation.  [maurits, timte]
+
+ - Created recipe with ZopeSkel.  [Grok Team].
