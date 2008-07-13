@@ -5,7 +5,7 @@ from zope.component.interface import searchInterfaceUtilities
 from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex
+from zope.app.catalog.attribute import AttributeIndex
 from zope.app.intid import IIntIds
 import zc.relation.interfaces
 
@@ -100,24 +100,23 @@ class Metadata:
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if isinstance(index, FieldIndex) and \
+                if isinstance(index, AttributeIndex) and \
                 index.field_name == property and \
                 index.interface.__name__ == klass:
                     results = catalog.apply({iname:(lowerbound, upperbound)})
-                    obj_list = [intids.getObject(result).name for result in results]
+                    obj_list = [intids.getObject(result) for result in results]
                     return obj_list
 
     def hasPropertyIndex(self, klass, property):
         catalogs = getUtilitiesFor(ICatalog)
-        intids = getUtility(IIntIds)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if isinstance(index, FieldIndex) and \
+                if isinstance(index, AttributeIndex) and \
                 index.field_name == property and \
                 index.interface.__name__ == klass:
                     return True
         return False
-          
+
 
     def get_class(self, klassname):
         """Returns a MetaType instance for the class."""
