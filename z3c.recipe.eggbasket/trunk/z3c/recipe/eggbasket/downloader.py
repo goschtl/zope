@@ -29,11 +29,12 @@ class Downloader(Eggs):
             for r in options.get('eggs', self.name).split('\n')
             if r.strip()]
 
+        url = self.options.get('url')
+
         if not distributions_are_installed_in_dir(distributions,
                                                   options['eggs-directory']):
             log.info("Distributions are not installed. "
                      "A tarball will be downloaded.")
-            url = self.options.get('url')
             tarball_name = url.split('/')[-1]
             log.info("Downloading %s ..." % url)
 

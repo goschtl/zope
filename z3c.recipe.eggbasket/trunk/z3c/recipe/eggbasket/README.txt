@@ -138,7 +138,6 @@ used.  Running the buildout gives us::
     restarting.
     Generated script '/sample-buildout/bin/buildout'.
     Installing basket.
-    Unused options for basket: 'url'.
     <BLANKLINE>
 
 Next we will specify an egg but refer to a bad url::
