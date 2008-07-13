@@ -3,6 +3,11 @@
 
 * ...
 
+0.3.1 (2008-07-13)
+==================
+
+* Got rid of annyoing "Unused options for basket: url" warning.
+
 0.3.0 (2008-05-30)
 ==================
 
