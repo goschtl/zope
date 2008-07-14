@@ -42,6 +42,13 @@ added here.
     Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse))
 
 
+    >>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
+
+
     #bag not implemented
     #>>> qo = QueryParser("size set [ i in ICourse | i ]")(TestMetadata())
     #>>> opt = QueryOptimizer(qo)()

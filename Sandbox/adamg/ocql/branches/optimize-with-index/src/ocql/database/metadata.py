@@ -5,7 +5,7 @@ from zope.component.interface import searchInterfaceUtilities
 from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.attribute import AttributeIndex
+from zope.app.catalog.field import FieldIndex
 from zope.app.intid import IIntIds
 import zc.relation.interfaces
 
@@ -100,7 +100,7 @@ class Metadata:
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if isinstance(index, AttributeIndex) and \
+                if isinstance(index, FieldIndex) and \
                 index.field_name == property and \
                 index.interface.__name__ == klass:
                     results = catalog.apply({iname:(lowerbound, upperbound)})
@@ -111,7 +111,7 @@ class Metadata:
         catalogs = getUtilitiesFor(ICatalog)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if isinstance(index, AttributeIndex) and \
+                if isinstance(index, FieldIndex) and \
                 index.field_name == property and \
                 index.interface.__name__ == klass:
                     return True
