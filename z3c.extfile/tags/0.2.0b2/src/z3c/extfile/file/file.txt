@@ -1,0 +1,56 @@
+=======================
+Persistent File Objects
+=======================
+
+This file implementation holds its data in a hashdir.
+
+At first we need a hashdir as a utility.
+
+  >>> from z3c.extfile import hashdir
+  >>> from z3c.extfile.file  import file
+  >>> import tempfile, os
+  >>> tmp = tempfile.mkdtemp()
+  >>> hdPath = os.path.join(tmp, 'testhashdir')
+  >>> hd = hashdir.HashDir(hdPath)
+  >>> from zope import component
+  >>> from z3c.extfile.interfaces import IHashDir
+  >>> component.provideUtility(hd, provides=IHashDir)
+
+So we can create a file with a file like object
+
+  >>> from cStringIO import StringIO
+  >>> si = StringIO('file contents')
+  >>> f = file.ExtFile(si)
+  >>> f.data
+  <ReadFile named '034fa2ed8e211e4d20f20e792d777f4a30af1a93'>
+  >>> len(f.data)
+  13
+  >>> ''.join(iter(f.data))
+  'file contents'
+
+The data always returns a ReadFile instance.
+
+  >>> f.data
+  <ReadFile named '034fa2ed8e211e4d20f20e792d777f4a30af1a93'>
+
+So we cannot write directly to it
+
+  >>> f.data.write("hello")
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'ReadFile' object has no attribute 'write'
+
+But we can of course set a new value on data
+
+  >>> f.data = "Hello new World"
+  >>> ''.join(iter(f.data))
+  'Hello new World'
+
+Cleanup
+
+  >>> import z3c.extfile.property
+  >>> z3c.extfile.property._storage.dataManager._close()
+  >>> import shutil
+  >>> shutil.rmtree(tmp)
+
+
