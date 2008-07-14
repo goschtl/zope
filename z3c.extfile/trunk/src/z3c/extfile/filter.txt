@@ -185,6 +185,14 @@ from the files size.
     >>> res.headers
     [('content-length', '1026603'), ('content-type', 'text/plain')]
 
+It needs to be an extfile info content, otherwise the original content
+is returned.
+
+    >>> info='noextfile:4934828cf300711df0af9879b0b479c1c18e5707'
+    >>> res = app.get('/%s' % info, extra_environ=env)
+    >>> res.body
+    'noextfile:4934828cf300711df0af9879b0b479c1c18e5707'
+
 Edge Cases
 ==========
 

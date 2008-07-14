@@ -108,6 +108,7 @@ class FileResponse(object):
         if self.doHandle is False:
             return self._orgStart()
         body = "".join(self.response)
+        self.response = [body]
         if not body.startswith('z3c.extfile.digest:'):
             return self._orgStart()
         digest, contentType, contentLength = getInfo(body)
@@ -128,10 +129,8 @@ class FileResponse(object):
         else:
             headers_out['content-length'] = str(len(f))
         headers_out = headers_out.items()
-        fw = self.env.get('wsgi.file_wrapper')
         self.real_start(self.status, headers_out, self.exc_info)
         return f.__iter__()
-#    return fw(f, BLOCK_SIZE)
 
     def _orgStart(self):
         self.real_start(self.status, self.headers_out, self.exc_info)

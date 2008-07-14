@@ -30,14 +30,21 @@ class In2OutApplication(object):
     def __call__(self, environ, start_response):
         method = environ.get('REQUEST_METHOD')
         if method=='POST':
-            start_response("200 OK", [('Content-Type', 'text/plain')])
+            writer = start_response("200 OK", [('Content-Type',
+                                                'text/plain')])
             return [l for l in environ.get('wsgi.input')]
         else:
             path = environ.get('PATH_INFO')[1:]
-            start_response("200 OK", [('Content-Type', 'text/plain'),
-                                      ('Content-Length', str(len(path))),
-                                      ])
-            return [path]
+            writer = start_response("200 OK", [('Content-Type', 'text/plain'),
+                                               ('Content-Length', str(len(path))),
+                                               ])
+            return iter([path])
+
+        return []
+#            return writer([path])
+#             import pdb;pdb.set_trace()
+#             for p in path:
+#                 yield p
 
 
 def app_factory(global_conf, **local_conf):
