@@ -5,9 +5,8 @@ CHANGES
 0.2.3 (2008-07-14)
 ------------------
 
-- Fixed a bug in stackinfo that broke the traversal stack in
-  multithreaded environments
-
+- Bugfix: In z3c.traverser.stackinfo the traversal stack got messed up
+  when using the VirtualHost namespace with more than one thread.
 
 0.2.2 (2008-03-06)
 ------------------
