@@ -2,9 +2,9 @@
 Extracting Information from the Traversal Stack
 ===============================================
 
-This package allows to define virtal traversal paths for collecting
-arbitrary information from the traversal stack instead of, for example,
-query strings.
+This package allows to define virtual traversal paths for collecting
+arbitrary information from the traversal stack instead of, for
+example, query strings.
 
 In contrast to the common way of defining custom Traversers, this
 implementation does not require to go through the whole traversal
