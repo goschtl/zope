@@ -91,6 +91,8 @@ Here is the algebra tree:
     Lambda i: If(i.value==5, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
     Make(<type 'set'>, <type 'set'>, IUnOptimizedClass))
 
+Results of the query:
+
     >>> result = run.execute()
     >>> result
     set([u'5'])

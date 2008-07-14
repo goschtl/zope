@@ -23,10 +23,10 @@ def addMarkerIF(obj, marker):
         directlyProvides(obj, directlyProvidedBy(obj), marker)
 
 def visit(algebra):
+    #print str(algebra)
     if isinstance(algebra , BaseAlgebra):
         for child in algebra.children:
             visit(child)
-    print str(algebra)
 
 class AlgebraOptimizer(object):
     implements(IAlgebraOptimizer)
@@ -40,6 +40,3 @@ class AlgebraOptimizer(object):
         addMarkerIF(self.context, IOptimizedAlgebraObject)
         visit(self.context.tree)
         return self.context
-    
-
-
