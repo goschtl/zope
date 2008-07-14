@@ -101,9 +101,10 @@ class UnconsumedURL(BrowserView):
 
 class VHStack:
     """Helper class to work around the special case with virtual hosts"""
-    vh = []
+
     def __init__(self, request):
         self.request = request
+        self.vh = []
 
     def prepare(self):
         if not self.vh:

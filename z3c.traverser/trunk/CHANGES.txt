@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+0.2.3 (2008-07-14)
+------------------
+
+- Fixed a bug in stackinfo that broke the traversal stack in
+  multithreaded environments
+
+
 0.2.2 (2008-03-06)
 ------------------
 
