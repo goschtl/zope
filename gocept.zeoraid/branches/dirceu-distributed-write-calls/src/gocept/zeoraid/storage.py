@@ -640,7 +640,7 @@ class RAIDStorage(object):
         """
         class ThreadedApplyStorage(threading.Thread):
             def __init__(self, name, method_name, args, kw, expect_connected, __apply_storage):
-                threading.Thread.__init__(self)
+                super(ThreadedApplyStorage, self).__init__()
                 self.name = name
                 self.method_name = method_name
                 self.args = args
@@ -671,13 +671,21 @@ class RAIDStorage(object):
         applicable_storages = [storage for storage in applicable_storages
                                if storage not in exclude]
 
+        _threads = []
         for name in applicable_storages:
             try:
                 args = argument_iterable.next()
                 t = ThreadedApplyStorage(name, method_name, args, kw, expect_connected, self.__apply_storage)
+                _threads.append(t)
                 t.start()
-                t.join(60)
-                reliable, result = t.reliable, t.result
+            except Exception, e:
+                exceptions.append(e)
+                raise
+
+        for thread in _threads:
+            try:
+                thread.join(60)
+                reliable, result = thread.reliable, thread.result
             except Exception, e:
                 exceptions.append(e)
                 raise
