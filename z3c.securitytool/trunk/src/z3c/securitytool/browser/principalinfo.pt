@@ -73,13 +73,15 @@
                   </div>
 
                   <div class="tree">
-                      <h3 tal:condition="permissionTree">Permissions Defined in
-                      Context(s) for this user</h3>
-                      <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
-                      the permissions assigned to this <br>user and the
-                      context level assigned. The same settings <br>
-                      can be found in the @@grant.html view on each context.
+                      <!-- Display the permission Tree if exists -->
+                      <span tal:condition="permissionTree">
+                      <h3>Permissions Defined in Context(s) for this user</h3>
+                      <p class="sectionInfo"> This section lists all
+                        the permissions assigned to this <br>user and the
+                        context level assigned. The same settings <br>
+                        can be found in the @@grant.html view on each context.
                       </p>
+
                       <br>
 
                       <tal:block tal:repeat="context permissionTree">
@@ -93,30 +95,31 @@
                             </span>
                           <br>
                       </tal:block>
-
-                      <br tal:condition="permissionTree">
-
-                      <h3 tal:condition="roleTree">Roles Defined in
-                      Context(s) for this user</h3>
-                      <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
-                      the roles assigned to this user and <br>the
-                      context level assigned. The same settings 
-                      can be <br>found in the @@grant.html view on each context.
-                      </p>
                       <br>
+                      </span>
 
-                      <tal:block tal:repeat="context roleTree">
-                            <span tal:define="curr python:context.values()[0]">
-                                <div class="contextList"
-                      tal:content="python: ' / '.join(curr['parentList'])"/>
-                                <div class="contextListIndent" tal:repeat="role python: curr['roles']">
-                                    <div tal:attributes="class  python:role['setting']"
-                                         tal:content="python: role['role']"/>
-                                </div>
-                            </span>
-                            <br>
-                      </tal:block>
-                      <br tal:condition="roleTree">
+                      <!-- Display the role Tree if exists -->
+                      <span tal:condition="roleTree">
+                        <h3> Roles Defined in Context(s) for this user</h3>
+                        <p class="sectionInfo"> This section lists all
+                          the roles assigned to this user and <br>the
+                          context level assigned. The same settings 
+                          can be <br>found in the @@grant.html view on each context.
+                        </p>
+                        <br>
+                        <tal:block tal:repeat="context roleTree">
+                              <span tal:define="curr python:context.values()[0]">
+                                  <div class="contextList"
+                        tal:content="python: ' / '.join(curr['parentList'])"/>
+                                  <div class="contextListIndent" tal:repeat="role python: curr['roles']">
+                                      <div tal:attributes="class  python:role['setting']"
+                                           tal:content="python: role['role']"/>
+                                  </div>
+                              </span>
+                              <br>
+                        </tal:block>
+                        <br>
+                    </span>
                 </div>
 
                 <div tal:condition="groups" class="context">
