@@ -11,8 +11,8 @@ PrincipalDetails and Permission Details
       by specific permission deny settings
 
 
-                                            DONE
-==============================================================================
+DONE
+=======================================
     * Make sure the group settings are taken into account and
       displayed properly 
 

@@ -36,10 +36,7 @@
                   <div class="context">
                       <!-- Section lists the digested list of permissions from all context levels -->
                       <h3 tal:define="junk python:permissions.sort()">
-                        Permissions for this view and User:
-                        <a tal:content="view/principal"
-                          tal:attributes="href string:principalDetails.html?principal=${view/principal}">
-                          Principal</a>
+                        Permissions for this view and user:
                       </h3>
                       <p class="sectionInfo">
                            This section lists
@@ -94,11 +91,9 @@
                   <!-- attained for access to the  view -->
                   <div class="tree" tal:condition="python:permissionTree or roleTree">
                       <span tal:condition="permissionTree">
-                        <h3>Permissions Defined in
-                        Context(s) for User:
-                        <a tal:content="view/principal"
-                           tal:attributes="href string:principalDetails.html?principal=${view/principal}">
-                           Principal</a></h3>
+                        <h3>Permissions defined in
+                        context(s) for user:
+                        </h3>
                         <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
                         the related permissions for this <br>user and view
                         and the context level assigned. The same settings <br>
@@ -120,11 +115,8 @@
                         </tal:block>
                       </span>
                       <span tal:condition="roleTree">
-                        <h3>Roles Defined in
-                        Context(s) for User:
-                        <a tal:content="view/principal"
-                           tal:attributes="href string:principalDetails.html?principal=${view/principal}">
-                           Principal</a></h3>
+                        <h3>Roles defined in
+                        context(s) for user:</h3>
 
                         <p class="sectionInfo"  tal:condition="permissionTree"> This section lists all
                         the roles and permissions assigned to this user and <br>the
