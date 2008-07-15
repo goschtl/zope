@@ -126,6 +126,14 @@
                      <h3 >
                         Groups defined for this user
                      </h3>
+                        <p class="sectionInfo"> This section lists the
+                          the groups assigned to this user and <br>their
+                          permissions. The permission inheritance from groups<br>
+                          is more of a permission escalation rather
+                          than a restriction. <br>If there is a conflict
+                          between mulitiple groups 'ALLOW'<br> always overrides.
+                        </p>
+
                      <div tal:repeat="group python: groups.keys()">
                          <br>
                          <div class="contextList" >
