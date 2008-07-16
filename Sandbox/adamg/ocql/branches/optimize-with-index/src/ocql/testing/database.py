@@ -131,8 +131,3 @@ class TestMetadata(Metadata):
 
     def get_class(self, name):
         return self.classes[name]
-
-    #def get_collection_type(self, name):
-    #    klass = self.get_class(name)
-    #    rv = klass.get_collection_type()
-    #    return rv

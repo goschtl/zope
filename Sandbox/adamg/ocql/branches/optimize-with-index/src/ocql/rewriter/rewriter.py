@@ -31,4 +31,3 @@ class Rewriter(object):
         alg = query.rewrite(target_algebra)
         head = Head(alg)
         return head
-    

@@ -28,7 +28,7 @@ from ocql.testing.sample.mentor import Mentor
 from ocql.testing.sample.project import Project
 from ocql.testing.sample.student import Student
 from ocql.testing.sample.organization import Organization
-        
+
 import zc.relation.catalog
 import zc.relation.interfaces
 import zc.relation.queryfactory
@@ -113,7 +113,7 @@ def setupCatalog(test):
     o1.name = u"Zope.org"
     id = intids.register(o1)
     cat.index_doc(id, o1)
-    
+
 #    cat2 = zc.relation.catalog.Catalog(dumpRelation, loadRelation)
 #    cat2.addValueIndex(IProjectRelation['project'], dumpObj, loadObj, btree=BTrees.family32.OO)
 #    cat2.addValueIndex(IProjectRelation['mentor'], dumpObj, loadObj, btree=BTrees.family32.OO)
@@ -141,11 +141,3 @@ def queryCatalog():
     for r in results:
         obj = intids.getObject(r)
         print obj
-        
-#    rel_mentor = cat.apply({'all_mentors':(1,1)})
-#    
-#    for r in rel_mentor:
-#        obj = intids.getObject(r)     
-#        for p in cat2.findValueTokens('project',query(mentor=obj)):
-#            print p.name
-#    
