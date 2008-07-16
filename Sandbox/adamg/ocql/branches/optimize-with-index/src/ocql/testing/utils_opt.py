@@ -30,9 +30,9 @@ from ocql.testing.sample.project import Project
 from ocql.testing.sample.student import Student
 from ocql.testing.sample.organization import Organization
 
-import zc.relation.catalog
-import zc.relation.interfaces
-import zc.relation.queryfactory
+#import zc.relation.catalog
+#import zc.relation.interfaces
+#import zc.relation.queryfactory
 import BTrees
 
 

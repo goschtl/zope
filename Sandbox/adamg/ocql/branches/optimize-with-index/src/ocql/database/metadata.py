@@ -7,7 +7,7 @@ from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.intid import IIntIds
-import zc.relation.interfaces
+#import zc.relation.interfaces
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
