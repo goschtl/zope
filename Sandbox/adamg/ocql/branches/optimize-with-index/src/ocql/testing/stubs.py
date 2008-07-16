@@ -77,7 +77,7 @@ class AlgebraOptimizer(object):
         self.context = context
         #self.db = db
 
-    def __call__(self):
+    def __call__(self, metadata):
         return AlgebraOptimized()
 
 class AlgebraCompiler(object):

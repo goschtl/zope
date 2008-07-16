@@ -75,7 +75,8 @@ class IMake(IAlgebraObject):
     """Objects providing this interface represent the
     Make Algebra object
     """
-    expr = Attribute('expression')
+    expr1 = Attribute('expression1')
+    expr2 = Attribute('expression2')
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
 

@@ -171,14 +171,15 @@ class Make(BaseAlgebra):
 
     implements(IMake)
 
-    def __init__(self, coll1, coll2, expr):
+    def __init__(self, coll1, coll2, expr1, expr2):
         BaseAlgebra.__init__(self)
-        self.setProp('expr', expr)
+        self.setProp('expr1', expr1)
+        self.setProp('expr2', expr2)
         self.setProp('coll1', coll1)
         self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr)
+        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr1)
 
 
 #class And:

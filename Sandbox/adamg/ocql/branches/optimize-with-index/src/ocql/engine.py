@@ -40,7 +40,7 @@ class OCQLEngine:
         optimizedoq = IQueryOptimizer(objectquery)()
 
         algebra = IRewriter(optimizedoq)()
-        optimizedalgebra = IAlgebraOptimizer(algebra)()
+        optimizedalgebra = IAlgebraOptimizer(algebra)(metadata)
         runnable = IAlgebraCompiler(optimizedalgebra)(metadata, algebra)
 
         return runnable

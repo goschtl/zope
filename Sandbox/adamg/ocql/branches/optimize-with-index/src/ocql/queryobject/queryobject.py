@@ -176,7 +176,8 @@ class Query(Expression):
                     ), algebra.Make(
                         self.collection_type,
                         ctype,
-                        firstTerm.expression.rewrite(algebra)
+                        firstTerm.expression.rewrite(algebra),
+                        self.target
                         ) # FIXME: ?set? must be determined by type(firstTerm.expression)
                 )
             elif isinstance(firstTerm, Alias):

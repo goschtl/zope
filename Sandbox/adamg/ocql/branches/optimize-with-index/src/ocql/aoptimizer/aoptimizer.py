@@ -15,18 +15,34 @@ from ocql.interfaces import IAlgebraOptimizer
 
 from ocql.interfaces import IAlgebraObjectHead
 from ocql.interfaces import IOptimizedAlgebraObject
-from ocql.rewriter.algebra import BaseAlgebra
+from ocql.rewriter.algebra import BaseAlgebra, If, Single, Make, Binary
 
 def addMarkerIF(obj, marker):
     #obj = removeSecurityProxy(obj)
     if not marker.providedBy(obj):
         directlyProvides(obj, directlyProvidedBy(obj), marker)
 
-def visit(algebra):
-    #print str(algebra)
-    if isinstance(algebra , BaseAlgebra):
-        for child in algebra.children:
-            visit(child)
+#only for single filter, improve later
+class Finder(object):
+    def __init__(self, metadata):
+        #self.algebra = algebra
+        self.metadata = metadata
+        self.condition = None
+        self.expression = None
+
+    def visit(self, algebra):
+        if isinstance(algebra , BaseAlgebra):
+            for child in algebra.children:
+                if isinstance(child, If):
+                    if isinstance(child.cond, Binary):
+                        self.condition = child.cond.left
+                if isinstance(child, Make):
+                    self.expression = child.expr1
+                self.visit(child)
+
+    def hasIndex(self):
+        if (self.condition and self.expression) is not None:
+            return self.metadata.hasPropertyIndex(self.expression, self.condition)
 
 class AlgebraOptimizer(object):
     implements(IAlgebraOptimizer)
@@ -36,7 +52,9 @@ class AlgebraOptimizer(object):
         self.context = context
         #self.db = db
 
-    def __call__(self):
+    def __call__(self, metadata):
         addMarkerIF(self.context, IOptimizedAlgebraObject)
-        visit(self.context.tree)
+        finder = Finder(metadata)
+        finder.visit(self.context.tree)
+        finder.hasIndex()
         return self.context

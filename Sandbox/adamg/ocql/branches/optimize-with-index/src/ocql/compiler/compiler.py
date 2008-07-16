@@ -161,7 +161,7 @@ class MakeCompiler(BaseCompiler):
     def __call__(self):
         return '%s(metadata.getAll("%s"))' % (
             self.context.coll1.__name__,
-            IAlgebraCompiler(self.context.expr)())
+            IAlgebraCompiler(self.context.expr1)())
 
 
 class IfCompiler(BaseCompiler):
