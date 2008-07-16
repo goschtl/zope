@@ -8,14 +8,21 @@ They could also follow trails to important natural resources; the very
 first human migrations may have been along the trails that migratory
 animal herds created when visiting natural salt deposits.
 
-In the same tradition, the Trails product, which lives in the
-``megrok.trails`` package, allows Grok web site developers to define the
+In the same tradition, the Trails product, which provides the Python
+package ``megrok.trails``, allows Grok web site developers to define the
 URLs that web users can travel in order to visit the objects that roam
-your site.  It creates both the traversers which make the URLs work in
-the forward direction (so that users can visit them and see the right
-objects), and also registers the adapters necessary for URLs to work in
-reverse (meaning that Grok can ask "where does this object live?" and
-receive back an answer).
+their site.
+
+If you need to report bugs or want to request features, please visit the
+project's Launchpad site at:
+
+   https://launchpad.net/megrok.trails
+
+Trails creates both the traversers which make URLs work in the forward
+direction (so that users can visit them and see the right objects), and
+also registers the adapters necessary for URLs to be generated (meaning
+that Grok can ask "at which URL does this object live?"  and receive
+back an answer).
 
 Trails look something like this when in use::
 
@@ -37,19 +44,20 @@ user visiting the URL::
 
 will find the object created by calling ``Account(username=dcr)``.  In
 each case, the colon-prefixed URL elements in the Trail become keyword
-arguments passed to the class (or other object constructor) given as the
-second argument to ``Trail()``.  Each URL element that is not prefixed
-with a colon must be matched literally by the corresponding element in
-the submitted URL.
+arguments passed to the class (or other callable) given as the second
+argument to the ``Trail()``.  Each URL element that is not prefixed with
+a colon must be matched literally by the corresponding element in the
+submitted URL.
 
-A ``TrailHead`` takes over traversal for the object which you name as
-its ``grok.context()``, so you do not have to define a ``traverse()``
-method or create a ``grok.Traverser`` for that context yourself.  When
-the URL components that follow fail to match any of the ``Trail``
-patterns that start from that ``TrailHead``, an error is raised that
-should return a ``404 Not Found`` to the user.  If, instead, one of the
-URL patterns is matched, then the object named in the second argument of
-the ``Trail`` is instantiated with the colon-prefixed wildcard URL
+A ``TrailHead`` performs traversal for the object which you name as its
+``grok.context()``, so you do not have to define a ``traverse()`` method
+or create a ``grok.Traverser`` for that context yourself.  When the
+remaining URL components fail to match any of the ``Trail`` patterns
+that start from a ``TrailHead``, an error is raised that should return a
+``404 Not Found`` to the user (unless, of course, there is only a single
+URL component left and it names a view).  If, instead, one of the URL
+patterns is matched, then the object named in the second argument of the
+``Trail`` is instantiated with the colon-prefixed wildcard URL
 components provided as keyword parameters, as outlined above.
 
 Once the trail has been matched and resolved to an object, Trails is
@@ -104,7 +112,6 @@ the URL pattern; and, second, that any live object of that type will
 have attributes with those same two names which it can look up to form a
 URL for the object.
 
-If you have suggestions, bug reports, or questions about Trails, please
-visit our project page at Launchpad::
-
-    https://launchpad.net/megrok.trails
+Please visit our project page (the link is near the top of this README)
+if you have any suggestions, bug reports, or questions about Trails.
+Enjoy!
