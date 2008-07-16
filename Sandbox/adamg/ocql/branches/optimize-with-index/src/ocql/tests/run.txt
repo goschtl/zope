@@ -43,8 +43,8 @@ Now we'll see how a query runs
     RunnableQuery: set.union(set([1]), set([2]))
 
     >>> result = run.execute()
-    >>> result
-    set([1, 2])
+    >>> sorted(list(result))
+    [1, 2]
 
     >>> type(result)
     <type 'set'>
@@ -57,8 +57,8 @@ Now we'll see how a query runs
     RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
-    >>> result
-    set([Course <C1>, Course <C2>, Course <C3>])
+    >>> sorted(list(result), key=lambda i: i.code)
+    [Course <C1>, Course <C2>, Course <C3>]
 
     >>> type(result)
     <type 'set'>
