@@ -8,7 +8,7 @@
   ...     xmlns="http://namespaces.zope.org/zope"
   ...     xmlns:grok="http://namespaces.zope.org/grok"
   ...     >
-  ...     <grok:grok package="grok.templatereg"/>
+  ...     <grok:grok package="grokcore.view.templatereg"/>
   ...     <grok:grok package="grok.tests.zcml.stoneage"/>
   ... </configure>''', context=context)
 
@@ -16,7 +16,7 @@
   >>> from grok.tests.zcml.stoneage.hunt.mammoth import Mammoth
   >>> manfred = Mammoth()
   >>> cave = Cave()
-  
+
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> from zope import component
@@ -28,7 +28,7 @@
   <h1>A comfy cave</h1>
   </body>
   </html>
-  
+
   >>> view = component.getMultiAdapter((manfred, request), name='index')
   >>> print view()
   <html>

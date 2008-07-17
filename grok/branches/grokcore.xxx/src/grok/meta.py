@@ -48,9 +48,10 @@ from martian.error import GrokError
 from martian import util
 
 import grokcore.view
+import grokcore.view.templatereg
 
 import grok
-from grok import components, formlib, templatereg
+from grok import components, formlib
 from grok.util import make_checker
 from grok.interfaces import IRESTSkinType
 from grok.interfaces import IViewletManager as IGrokViewletManager
@@ -267,7 +268,7 @@ class TemplateGrokker(martian.GlobalGrokker):
     martian.priority(1001)
 
     def grok(self, name, module, module_info, config, **kw):
-        module.__grok_templates__ = templatereg.TemplateRegistry()
+        module.__grok_templates__ = grokcore.view.templatereg.TemplateRegistry()
         return True
 
 
