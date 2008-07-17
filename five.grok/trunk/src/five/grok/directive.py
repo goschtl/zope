@@ -32,9 +32,19 @@ class require(martian.Directive):
         self.set(func, [permission])
         return func
 
-
+    
 class layer(martian.Directive):
     scope = martian.CLASS_OR_MODULE
     store = martian.ONCE
     validate = martian.validateInterfaceOrClass
 
+class template(martian.Directive):
+    scope = martian.CLASS
+    store = martian.ONCE
+    validate = martian.validateText
+
+class templatedir(martian.Directive):
+    scope = martian.MODULE
+    store = martian.ONCE
+    validate = martian.validateText
+    

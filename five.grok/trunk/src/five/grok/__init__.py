@@ -8,7 +8,7 @@ from grokcore.component.directive import context, name, provides
 from grokcore.component.decorators import subscribe
 
 from five.grok.components import View, Model
-from five.grok.directive import require, layer
+from five.grok.directive import require, layer, template, templatedir
 
 # I don't know why this is necessary:
 from five.grok import testing
