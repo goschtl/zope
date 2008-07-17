@@ -2,6 +2,10 @@
 Changes for lovely.responsecache
 ================================
 
+trunk
+=====
+
+ - added savepoint support to the transaction datamanager
 
 2008/06/20 1.1.0
 ================

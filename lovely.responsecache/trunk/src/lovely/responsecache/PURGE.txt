@@ -115,6 +115,60 @@ Now call purge with duplicated expressions::
     >>> purgedUrls
     ['/purge_expression1', '/purge_expression2']
 
+If we abort the transaction, no purge will happen::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.abort()
+    >>> transaction.commit()
+    >>> purgedUrls
+    []
+
+Savepoints are supported::
+
+    >>> sp = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    []
+
+The same savepoint can be rolled back multiple times::
+
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp.rollback()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+And we can have multiple savepoints::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp1 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp2 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp2.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression2']
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp1 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp2 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp1.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
 If there are multiple hosts to purge it has to work this way::
 
     >>> HTTP_PORT2 = 33335

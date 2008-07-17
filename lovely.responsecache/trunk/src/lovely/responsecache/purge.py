@@ -26,7 +26,7 @@ import transaction
 import subprocess
 
 from time import time
-from transaction.interfaces import IDataManager
+from transaction.interfaces import ISavepointDataManager, IDataManagerSavepoint
 
 from zope import component, interface
 from zope.schema.fieldproperty import FieldProperty
@@ -60,7 +60,7 @@ class BasePurgeUtil(object):
 
 
 class PurgeUtil(BasePurgeUtil):
-    """Utilty to purge mutliple caches"""
+    """Utilty to purge multiple caches"""
     interface.implements(interfaces.IPurge)
 
     EXPRS_ATTR='varnish_purgeurls'
@@ -159,9 +159,9 @@ except ImportError:
 
 
 class PurgeDataManager(object):
-    """An IDataManager implementation to do purges."""
+    """An ISavepointDataManager implementation to do purges."""
 
-    interface.implements(IDataManager)
+    interface.implements(ISavepointDataManager)
 
     def __init__(self, util):
         self.util = util
@@ -190,6 +190,30 @@ class PurgeDataManager(object):
 
     def sortKey(self):
         return "purge_%d" % id(self)
+
+    def savepoint(self):
+        return PurgeDataManagerSavepoint(self.util)
+
+
+class PurgeDataManagerSavepoint(object):
+    """An IDataManagerSavepoint implementation for the PurgeDataManager."""
+
+    interface.implements(IDataManagerSavepoint)
+
+    def __init__(self, util):
+        self.util = util
+        if not hasattr(storage, util.EXPRS_ATTR):
+            self.data = None
+        else:
+            self.data = frozenset(getattr(storage, util.EXPRS_ATTR))
+
+    def rollback(self):
+        util = self.util
+        if self.data is None:
+            if hasattr(storage, util.EXPRS_ATTR):
+                delattr(storage, util.EXPRS_ATTR)
+        else:
+            setattr(storage, util.EXPRS_ATTR, set(self.data))
 
 
 class PurgeDiskUtil(BasePurgeUtil):
