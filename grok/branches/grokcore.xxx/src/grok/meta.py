@@ -47,6 +47,8 @@ import martian
 from martian.error import GrokError
 from martian import util
 
+import grokcore.view
+
 import grok
 from grok import components, formlib, templatereg
 from grok.util import make_checker
@@ -143,7 +145,7 @@ class RESTGrokker(martian.MethodGrokker):
 
 
 class ViewGrokker(martian.ClassGrokker):
-    martian.component(grok.View)
+    martian.component(grokcore.view.ViewMixin)
     martian.directive(grok.context)
     martian.directive(grok.layer, default=IDefaultBrowserLayer)
     martian.directive(grok.name, get_default=default_view_name)
@@ -274,7 +276,7 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
     # this needs to happen before any other grokkers execute that actually
     # use the templates
     martian.priority(1000)
-    
+
     def grok(self, name, instance, module_info, config, **kw):
         templates = module_info.getAnnotation('grok.templates', None)
         if templates is None:

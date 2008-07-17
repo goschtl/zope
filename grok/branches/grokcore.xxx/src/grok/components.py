@@ -31,8 +31,8 @@ from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.publisher.publish import mapply
 from zope.pagetemplate import pagetemplate, pagetemplatefile
+from zope.publisher.publish import mapply
 from zope.formlib import form
 from zope.annotation.interfaces import IAttributeAnnotatable
 
@@ -54,7 +54,7 @@ from zope.viewlet.manager import ViewletManagerBase
 from zope.viewlet.viewlet import ViewletBase
 
 import grok
-import grokcore.component
+import grokcore.view
 import z3c.flashmessage.interfaces
 import martian.util
 
@@ -145,36 +145,15 @@ class Annotation(persistent.Persistent):
 #        self.context = context
 #        self.request = request
 
-class View(BrowserPage):
+class View(BrowserPage, grokcore.view.ViewMixin):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
-        self.__name__ = self.__view_name__
-        self.static = component.queryAdapter(
-            self.request,
-            interface.Interface,
-            name=self.module_info.package_dotted_name
-            )
-
-    @property
-    def response(self):
-        return self.request.response
+        self._initialize()
 
     def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
-
-    def _render_template(self):
-        return self.template.render(self)
+        return self._update_and_render()
 
     def default_namespace(self):
         namespace = {}
@@ -183,9 +162,6 @@ class View(BrowserPage):
         namespace['static'] = self.static
         namespace['view'] = self
         return namespace
-
-    def namespace(self):
-        return {}
 
     def __getitem__(self, key):
         # This is BBB code for Zope page templates only:
@@ -201,33 +177,10 @@ class View(BrowserPage):
                       DeprecationWarning, 1)
         return value
 
-
-    def url(self, obj=None, name=None, data=None):
-        """Return string for the URL based on the obj and name. The data
-        argument is used to form a CGI query string.
-        """
-        if isinstance(obj, basestring):
-            if name is not None:
-                raise TypeError(
-                    'url() takes either obj argument, obj, string arguments, '
-                    'or string argument')
-            name = obj
-            obj = None
-
-        if name is None and obj is None:
-            # create URL to view itself
-            obj = self
-        elif name is not None and obj is None:
-            # create URL to view on context
-            obj = self.context
-
-        if data is None:
-            data = {}
-        else:
-            if not isinstance(data, dict):
-                raise TypeError('url() data argument must be a dict.')
-
-        return util.url(self.request, obj, name, data=data)
+    def flash(self, message, type='message'):
+        source = component.getUtility(
+            z3c.flashmessage.interfaces.IMessageSource, name='session')
+        source.send(message, type)
 
     def application_url(self, name=None):
         obj = self.context
@@ -236,17 +189,6 @@ class View(BrowserPage):
                 return self.url(obj, name)
             obj = obj.__parent__
         raise ValueError("No application found.")
-
-    def redirect(self, url):
-        return self.request.response.redirect(url)
-
-    def update(self):
-        pass
-
-    def flash(self, message, type='message'):
-        source = component.getUtility(
-            z3c.flashmessage.interfaces.IMessageSource, name='session')
-        source.send(message, type)
 
 
 class XMLRPC(object):

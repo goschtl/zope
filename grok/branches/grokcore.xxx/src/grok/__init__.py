@@ -59,7 +59,7 @@ from martian.error import GrokError, GrokImportError
 from grok.testing import grok, grok_component
 
 from grok.formlib import action, AutoFields, Fields
-from grok.util import url
+from grokcore.view import url
 
 # Our __init__ provides the grok API directly so using 'import grok' is enough.
 from grok.interfaces import IGrokAPI
