@@ -132,4 +132,19 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
             callable=instance._annotateGrokInfo,
             args=(name, module_info.dotted_name)
             )
-        return True    
+        return True
+    
+class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
+    martian.priority(-1001)
+
+    def grok(self, name, module, module_info, config, **kw):
+        templates = module_info.getAnnotation('grok.templates', None)
+        if templates is None:
+            return False
+
+        config.action(
+            discriminator=None,
+            callable=templates.checkUnassociated,
+            args=(module_info,)
+            )
+        return True
