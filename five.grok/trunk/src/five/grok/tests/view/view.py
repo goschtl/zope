@@ -11,8 +11,8 @@ We should find the ``cavepainting`` view for a mammoth:
   >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
   >>> view()
   'A cave painting of a mammoth'
-
-  >>> view.context is manfred
+  
+  >>> view.context.aq_base is manfred
   True
   >>> view.request is request
   True
@@ -28,7 +28,7 @@ There's no view 'food':
   >>> view = component.getMultiAdapter((manfred, request), name='food')
   Traceback (most recent call last):
     ...
-  ComponentLookupError: ((<five.grok.tests.view.view.Mammoth object at 0x...>, <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>), <InterfaceClass zope.interface.Interface>, 'food')
+  ComponentLookupError: ((<...Mammoth...>, <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>), <InterfaceClass zope.interface.Interface>, 'food')
 
 """
 

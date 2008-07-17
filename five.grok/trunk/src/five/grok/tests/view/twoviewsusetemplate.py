@@ -33,7 +33,7 @@ registered as its own view:
   Traceback (most recent call last):
     ...
   ComponentLookupError:
-  ((<five.grok.tests.view.twoviewsusetemplate.Mammoth object at 0x...>,
+  ((<...Mammoth...>,
   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>),
   <InterfaceClass zope.interface.Interface>, 'templ')
 

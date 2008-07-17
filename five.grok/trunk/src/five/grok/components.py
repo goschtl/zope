@@ -6,6 +6,7 @@ from zope import component
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate import pagetemplate, pagetemplatefile
+
 from zope.publisher.publish import mapply
 
 import Acquisition
@@ -20,7 +21,7 @@ class BrowserPage(zope.publisher.browser.BrowserPage, Acquisition.Implicit):
     """Browser page with implicit Acquisition."""
 
 # XXX Should probably be a SimpleItem.
-class Model(Contained, persistent.Persistent):
+class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
     # then containers can't be models anymore because no unambigous MRO
     # can be established.
@@ -224,3 +225,9 @@ class PageTemplate(GrokTemplate):
         template = self._template
         namespace.update(template.pt_getContext())
         return template.pt_render(namespace)
+    
+class IGrokLayer(interface.Interface):
+    pass
+
+class Skin(object):
+    pass
