@@ -25,7 +25,6 @@ import zope.location
 from zope import component
 from zope import interface
 from zope.interface.common import idatetime
-from zope.security.permission import Permission
 from zope.securitypolicy.role import Role
 from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
@@ -58,7 +57,9 @@ import grokcore.view
 import z3c.flashmessage.interfaces
 import martian.util
 
-from grok import interfaces, formlib, util
+from grok import interfaces, util
+from grokcore.view import formlib
+from grokcore.view import GrokForm
 
 
 class Model(Contained, persistent.Persistent):
@@ -442,60 +443,6 @@ default_display_template = PageTemplateFile(os.path.join(
     'templates', 'default_display_form.pt'))
 default_display_template.__grok_name__ = 'default_display_form'
 
-
-class GrokForm(object):
-    """Mix-in to consolidate zope.formlib's forms with grok.View and to
-    add some more useful methods.
-
-    The consolidation needs to happen because zope.formlib's Forms have
-    update/render methods which have different meanings than
-    grok.View's update/render methods.  We deal with this issue by
-    'renaming' zope.formlib's update() to update_form() and by
-    disallowing subclasses to have custom render() methods."""
-
-    def update(self):
-        """Subclasses can override this method just like on regular
-        grok.Views. It will be called before any form processing
-        happens."""
-
-    def update_form(self):
-        """Update the form, i.e. process form input using widgets.
-
-        On zope.formlib forms, this is what the update() method is.
-        In grok views, the update() method has a different meaning.
-        That's why this method is called update_form() in grok forms."""
-        super(GrokForm, self).update()
-
-    def render(self):
-        """Render the form, either using the form template or whatever
-        the actions returned in form_result."""
-        # if the form has been updated, it will already have a result
-        if self.form_result is None:
-            if self.form_reset:
-                # we reset, in case data has changed in a way that
-                # causes the widgets to have different data
-                self.resetForm()
-                self.form_reset = False
-            self.form_result = self._render_template()
-
-        return self.form_result
-
-    # Mark the render() method as a method from the base class. That
-    # way we can detect whether somebody overrides render() in a
-    # subclass (which we don't allow).
-    render.base_method = True
-
-    def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        self.update_form()
-        return self.render()
-
-
 class Form(GrokForm, form.FormBase, View):
     # We're only reusing the form implementation from zope.formlib, we
     # explicitly don't want to inherit the interface semantics (mostly
@@ -586,9 +533,6 @@ class IndexesClass(object):
         self.__grok_module__ = martian.util.caller_module()
 
 Indexes = IndexesClass('Indexes')
-
-class Permission(Permission):
-    pass
 
 Public = 'zope.Public'
 

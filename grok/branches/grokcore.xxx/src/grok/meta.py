@@ -49,18 +49,17 @@ from martian import util
 
 import grokcore.view
 import grokcore.view.templatereg
+from grokcore.view.meta import ViewGrokkerBase
+from grokcore.view.util import default_view_name
 
 import grok
-from grok import components, formlib
+from grok import components
 from grok.util import make_checker
 from grok.interfaces import IRESTSkinType
 from grok.interfaces import IViewletManager as IGrokViewletManager
 
 from grokcore.component.scan import determine_module_component
 
-
-def default_view_name(factory, module=None, **data):
-    return factory.__name__.lower()
 
 def default_fallback_to_name(factory, module, name, **data):
     return name
@@ -145,77 +144,15 @@ class RESTGrokker(martian.MethodGrokker):
         return True
 
 
-class ViewGrokker(martian.ClassGrokker):
+class ViewGrokker(ViewGrokkerBase):
     martian.component(grokcore.view.ViewMixin)
-    martian.directive(grok.context)
-    martian.directive(grok.layer, default=IDefaultBrowserLayer)
-    martian.directive(grok.name, get_default=default_view_name)
-    martian.directive(grok.require, name='permission')
 
-    def grok(self, name, factory, module_info, **kw):
-        # Need to store the module info object on the view class so that it
-        # can look up the 'static' resource directory.
-        factory.module_info = module_info
-        return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
-
-    def execute(self, factory, config, context, layer, name, permission, **kw):
-        if util.check_subclass(factory, components.GrokForm):
-            # setup form_fields from context class if we've encountered a form
-            if getattr(factory, 'form_fields', None) is None:
-                factory.form_fields = formlib.get_auto_fields(context)
-
-            if not getattr(factory.render, 'base_method', False):
-                raise GrokError(
-                    "It is not allowed to specify a custom 'render' "
-                    "method for form %r. Forms either use the default "
-                    "template or a custom-supplied one." % factory,
-                    factory)
-
-        # find templates
-        templates = factory.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory)
-                )
-
-        # safety belt: make sure that the programmer didn't use
-        # @grok.require on any of the view's methods.
-        methods = util.methods_from_class(factory)
-        for method in methods:
-            if grok.require.bind().get(method) is not None:
-                raise GrokError('The @grok.require decorator is used for '
-                                'method %r in view %r. It may only be used '
-                                'for XML-RPC methods.'
-                                % (method.__name__, factory), factory)
-
-        # __view_name__ is needed to support IAbsoluteURL on views
-        factory.__view_name__ = name
-        adapts = (context, layer)
-
-        config.action(
-            discriminator=('adapter', adapts, interface.Interface, name),
-            callable=component.provideAdapter,
-            args=(factory, adapts, interface.Interface, name),
-            )
-
+    def protectName(self, config, factory, permission):
         config.action(
             discriminator=('protectName', factory, '__call__'),
             callable=make_checker,
             args=(factory, factory, permission),
             )
-
-        return True
-
-    def checkTemplates(self, templates, module_info, factory):
-        def has_render(factory):
-            return (getattr(factory, 'render', None) and
-                    not util.check_subclass(factory, grok.components.GrokForm))
-        def has_no_render(factory):
-            return not getattr(factory, 'render', None)
-        templates.checkTemplates(module_info, factory, 'view',
-                                 has_render, has_no_render)
 
 
 class JSONGrokker(martian.MethodGrokker):

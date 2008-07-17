@@ -18,3 +18,7 @@ def url(request, obj, name=None, data={}):
                 or item for item in v]
         url += '?' + urllib.urlencode(data, doseq=True)
     return url
+
+
+def default_view_name(factory, module=None, **data):
+    return factory.__name__.lower()

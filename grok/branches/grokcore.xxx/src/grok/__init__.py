@@ -38,7 +38,7 @@ from grok.components import Container, OrderedContainer
 from grok.components import Site, LocalUtility, Annotation
 from grok.components import Application, Form, AddForm, EditForm, DisplayForm
 from grok.components import Indexes
-from grok.components import Permission, Role, Public
+from grok.components import Role, Public
 from grok.components import Skin, IGrokLayer
 from grok.components import RESTProtocol, IRESTLayer
 from grok.interfaces import IRESTSkinType
@@ -48,17 +48,19 @@ from martian import baseclass
 from grokcore.component.directive import (
     context, name, title, description, provides, global_utility, direct)
 from grok.directive import (
-    template, templatedir, local_utility, permissions, require, site,
-    traversable, order)
-from grokcore.view import layer, viewletmanager, view
+    local_utility, permissions, site,
+    traversable, order, viewletmanager)
 from grokcore.component.decorators import subscribe, adapter, implementer
 from martian.error import GrokError, GrokImportError
+
+from grokcore.view import layer, view, require, template, templatedir
+from grokcore.view import Permission
 
 # BBB These two functions are meant for test fixtures and should be
 # imported from grok.testing, not from grok.
 from grok.testing import grok, grok_component
 
-from grok.formlib import action, AutoFields, Fields
+from grokcore.view.formlib import action, AutoFields, Fields
 from grokcore.view import url
 
 # Our __init__ provides the grok API directly so using 'import grok' is enough.
