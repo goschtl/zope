@@ -138,11 +138,12 @@ class LocalUtility(Model):
 class Annotation(persistent.Persistent):
     pass
 
-
-class ViewBase(object):
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
+# all grok tests pass when this is commented out
+#
+#class ViewBase(object):
+#    def __init__(self, context, request):
+#        self.context = context
+#        self.request = request
 
 class View(BrowserPage):
     interface.implements(interfaces.IGrokView)
@@ -696,12 +697,12 @@ class ViewletManager(ViewletManagerBase):
         # viewlet) tuples, now in the correct order.
         s_viewlets = []
         for name, viewlet in viewlets:
-             # Stuff away viewlet name so we can later retrieve it.
-             # XXX We loose name information in case the same viewlet
-             # is in the viewlets list twice, but with a different
-             # name. Most probably this situation doesn't occur.
-             viewlet.__viewlet_name__ = name
-             s_viewlets.append(viewlet)
+            # Stuff away viewlet name so we can later retrieve it.
+            # XXX We loose name information in case the same viewlet
+            # is in the viewlets list twice, but with a different
+            # name. Most probably this situation doesn't occur.
+            viewlet.__viewlet_name__ = name
+            s_viewlets.append(viewlet)
         s_viewlets = util.sort_components(s_viewlets)
         return [(viewlet.__viewlet_name__, viewlet) for viewlet in s_viewlets]
 
