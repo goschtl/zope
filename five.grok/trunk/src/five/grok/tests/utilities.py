@@ -1,5 +1,7 @@
 """Testing that grokcore utilities work under Zope2
 
+  >>> grok.testing.grok(__name__)
+
   >>> from zope import component
   >>> club = component.getUtility(IFiveClub, 'five_inch')
   >>> IFiveClub.providedBy(club)

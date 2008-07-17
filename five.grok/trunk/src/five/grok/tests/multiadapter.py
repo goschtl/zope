@@ -3,6 +3,8 @@ Testing that grokcore multiadapters work under Zope2
 
 __init__():
 
+  >>> grok.testing.grok(__name__)
+
   >>> cave = Cave()
   >>> fireplace = Fireplace()
 

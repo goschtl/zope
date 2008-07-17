@@ -1,6 +1,14 @@
 # Import adapter and utility support from grokcore.component.
 
-from grokcore.component import *
+from zope.interface import implements
+from zope.component import adapts
 
-from five.grok.components import View
+from grokcore.component import Adapter, MultiAdapter, GlobalUtility
+from grokcore.component.directive import context, name, provides
+from grokcore.component.decorators import subscribe
+
+from five.grok.components import View, Model
 from five.grok.directive import require, layer
+
+# I don't know why this is necessary:
+from five.grok import testing

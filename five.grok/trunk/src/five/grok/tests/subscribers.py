@@ -1,5 +1,7 @@
 """Testing that grokcore subscribers work under Zope2
 
+  >>> grok.testing.grok(__name__)
+
 You can subscribe to events using the @grok.subscribe decorator:
 
   >>> from OFS.SimpleItem import SimpleItem

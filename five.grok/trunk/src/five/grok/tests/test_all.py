@@ -1,6 +1,6 @@
 import unittest
 
-from zope.testing import doctestunit
+from zope.testing import doctestunit, doctest
 from zope.component import testing
 
 from Testing import ZopeTestCase
@@ -43,8 +43,9 @@ def test_suite():
             setUp=setUp, tearDown=testing.tearDown),
 
         doctestunit.DocTestSuite(
-            module='five.grok.tests.views',
-            setUp=setUp, tearDown=testing.tearDown),
+            module='five.grok.tests.view.view',
+            setUp=setUp, tearDown=testing.tearDown, 
+            optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE)
 
         # Integration tests that use ZopeTestCase
         #ztc.ZopeDocFileSuite(

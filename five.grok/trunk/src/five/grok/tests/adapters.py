@@ -1,5 +1,7 @@
 """Testing that grokcore adapters work under Zope2
 
+  >>> grok.testing.grok(__name__)
+
   >>> from OFS.SimpleItem import SimpleItem
   >>> item = SimpleItem()
   >>> item.id = 'item'

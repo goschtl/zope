@@ -13,13 +13,11 @@ def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()
 
 class ViewGrokker(martian.ClassGrokker):
-    component_class = grok.View
-    directives = [
-        grok.context.bind(),
-        grok.layer.bind(default=IDefaultBrowserLayer),
-        grok.name.bind(get_default=default_view_name),
-        grok.require.bind(name='permission'),
-        ]
+    martian.component(grok.View)
+    martian.directive(grok.context)
+    martian.directive(grok.layer, default=IDefaultBrowserLayer)
+    martian.directive(grok.name, get_default=default_view_name)
+    martian.directive(grok.require, name='permission')
 
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info object on the view class so that it
@@ -28,6 +26,8 @@ class ViewGrokker(martian.ClassGrokker):
         return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, context, layer, name, permission, **kw):
+        if permission is None:
+            permission = 'zope.Public'
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
         if templates is not None:
