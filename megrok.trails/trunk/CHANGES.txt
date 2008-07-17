@@ -1,7 +1,10 @@
 CHANGES.txt
 ===========
 
-1.0 (unreleased)
+/Next version (unreleased)
+--------------------------
+
+1.0 (2008-07-16)
 ----------------
 
 * First release!
