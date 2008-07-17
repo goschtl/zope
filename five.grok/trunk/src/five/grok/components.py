@@ -8,12 +8,16 @@ from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.publisher.publish import mapply
 
+import Acquisition
 from OFS.SimpleItem import SimpleItem
-from zope.publisher.browser import BrowserPage
 from five.grok import interfaces
 
 from zope.app.container.contained import Contained
 import persistent
+
+import zope.publisher.browser
+class BrowserPage(zope.publisher.browser.BrowserPage, Acquisition.Implicit):
+    """Browser page with implicit Acquisition."""
 
 # XXX Should probably be a SimpleItem.
 class Model(Contained, persistent.Persistent):
@@ -21,7 +25,6 @@ class Model(Contained, persistent.Persistent):
     # then containers can't be models anymore because no unambigous MRO
     # can be established.
     interface.implements(IAttributeAnnotatable, interfaces.IContext)
-    
     
 class View(BrowserPage):
     interface.implements(interfaces.IGrokView)
