@@ -202,14 +202,11 @@ class ViewGrokker(martian.ClassGrokker):
 
         config.action(
             discriminator=('protectName', factory, '__call__'),
-            callable=self.protectName,
-            args=(factory, permission),
+            callable=make_checker,
+            args=(factory, factory, permission),
             )
 
         return True
-
-    def protectName(self, factory, permission):
-        make_checker(factory, factory, permission)
 
     def checkTemplates(self, templates, module_info, factory):
         def has_render(factory):
