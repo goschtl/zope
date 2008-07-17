@@ -1,0 +1,247 @@
+==================
+ZCML Configuration
+==================
+
+For a simpler configuration we provide a zcml directive to register cache
+settings.
+
+  >>> baseTemplate = """<configure
+  ...    xmlns='http://namespaces.zope.org/browser'
+  ...    xmlns:test='http://www.zope.org/NS/Zope3/test'
+  ...    i18n_domain='zope'>
+  ...    %s
+  ...   </configure>"""
+
+  >>> from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+
+Do the meta stuff.
+
+  >>> import lovely.responsecache
+  >>> XMLConfig('meta.zcml', lovely.responsecache)()
+
+  >>> from zope import interface
+  >>> class IMyContent(interface.Interface):
+  ...     pass
+  >>> class MyContent(object):
+  ...      interface.implements(IMyContent)
+  >>> content = MyContent()
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+  >>> class MyView(object):
+  ...     interface.implements(IMyView)
+  ...     def __init__(self, context, request):
+  ...         self.context = context
+  ...         self.request = request
+  >>> myView = MyView(content, request)
+
+Now we register new settings.
+
+  >>> from StringIO import StringIO
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        />
+  ...      """
+  ...     )))
+
+  >>> from zope import component
+  >>> from lovely.responsecache.interfaces import IResponseCacheSettings
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings
+  <lovely.responsecache.zcml.FactoryCacheSettings object at ...>
+  >>> settings.lifetime is None
+  True
+  >>> settings.cacheName
+  u''
+  >>> settings.dependencies
+  []
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        lifetime="10"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings
+  <lovely.responsecache.zcml.FactoryCacheSettings object at ...>
+  >>> settings.lifetime
+  10
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings
+  <lovely.responsecache.zcml.FactoryCacheSettings object at ...>
+  >>> settings.lifetime
+  10
+  >>> settings.cacheName
+  u'nginx'
+  >>> settings.key
+  'my key'
+
+Now we provide our own cache settings implementation.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        class="lovely.responsecache.tests.MyCacheSettings"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings
+  <lovely.responsecache.zcml.MyCacheSettings object at ...>
+  >>> settings.lifetime
+  10
+  >>> settings.cacheName
+  u'nginx'
+  >>> settings.key
+  'my key'
+
+String dependencies.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependencies="First Second"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings.dependencies
+  ['First', 'Second']
+
+Depending on context.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependOnContext="True"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings.lifetime
+  100
+  >>> settings.cacheName
+  u'nginx'
+  >>> settings.key
+  'my key'
+  >>> settings.dependencies
+  [<MyContent object at ...>]
+
+Depend on context and strings.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependOnContext="True"
+  ...        dependencies="a b"
+  ...        />
+  ...      """
+  ...     )))
+  >>> settings = component.getMultiAdapter((myView, request), IResponseCacheSettings)
+  >>> settings.dependencies
+  ['a', 'b', <MyContent object at ...>]
+
+
+
+
+We can set arbitrary properties in zcml.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10*10"
+  ...        dependOnContext="True"
+  ...        someOtherVariable="A"
+  ...        />
+  ...      """
+  ...     )))
+
+   >>> settings = component.getMultiAdapter((myView, request),
+   ...                                   IResponseCacheSettings)
+   >>> settings.someOtherVariable
+   u'A'
+
+This also works with self implemented classes.
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <cacheSettings
+  ...        for="lovely.responsecache.tests.IMyView"
+  ...        class="lovely.responsecache.tests.MyCacheSettings"
+  ...        cacheName="nginx"
+  ...        key="my key"
+  ...        lifetime="10"
+  ...        someOtherVariable="B"
+  ...        />
+  ...      """
+  ...     )))
+   >>> settings = component.getMultiAdapter((myView, request),
+   ...                                   IResponseCacheSettings)
+   >>> settings.someOtherVariable
+   u'B'
+
+Purge
+=====
+
+Configure a purge utility and check if it was created::
+
+  >>> xmlconfig(StringIO(baseTemplate% (
+  ...      """
+  ...      <purge
+  ...        hosts="http://localhost http://otherhost"
+  ...        timeout="1"
+  ...        retryDelay="60"
+  ...        />
+  ...      """
+  ...     )))
+
+  >>> from lovely.responsecache.interfaces import IPurge
+  >>> purger = component.getUtility(IPurge)
+  >>> purger
+  <lovely.responsecache.purge.PurgeUtil object at ...>
+
+  >>> purger.hosts
+  ['http://localhost', 'http://otherhost']
+
+  >>> purger.timeout
+  1
+
+  >>> purger.retryDelay
+  60
+
