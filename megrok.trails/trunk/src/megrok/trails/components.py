@@ -141,16 +141,6 @@ class Trail(object):
         return grok.url(request, grok.getSite()) + '/' + '/'.join(parts)
 
 
-class _Dummy(object):
-    """Dummy class.
-
-    We cannot define a subclass of grok.Traverser without the
-    Traverser grokker getting all upset about its needing to declare a
-    context, so this Dummy class servers as the context for the
-    TrailHead class.  Each time users actually subclass TrailHead
-    themselves, they will define their own context.
-    """
-
 class TrailHead(grok.Traverser):
     """Dispatch URLs to a collection of trails.
 
@@ -164,7 +154,7 @@ class TrailHead(grok.Traverser):
     variable named ``trails`` that lists one or more Trail objects.
 
     """
-    grok.context(_Dummy)
+    grok.baseclass()
 
     def traverse(self, name):
         namelist = [ name ]
