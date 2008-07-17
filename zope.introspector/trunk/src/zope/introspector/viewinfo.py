@@ -34,7 +34,7 @@ class ViewInfo(grok.Adapter):
             alsoProvides(request, layer)
         sm = component.getSiteManager()
         return sm.adapters.lookupAll(
-            map(providedBy, (self.context, request)),
+            (providedBy(self.context), providedBy(request)),
             Interface)
         
     def getAllViews(self):
