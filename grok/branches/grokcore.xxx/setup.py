@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
@@ -10,8 +11,7 @@ long_description = (
     read('CHANGES.txt')
     + '\n' +
     'Download\n'
-    '********\n'
-    )
+    '********\n')
 
 setup(
     name='grok',
@@ -37,6 +37,7 @@ setup(
     install_requires=['setuptools',
                       'martian >= 0.10',
                       'grokcore.component >= 1.4',
+                      'grokcore.view',
                       'simplejson',
                       'pytz',
                       'ZODB3',

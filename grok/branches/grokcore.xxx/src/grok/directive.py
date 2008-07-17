@@ -18,13 +18,11 @@ import sys
 import grok
 from zope import interface
 from zope.interface.interfaces import IInterface
-from zope.publisher.interfaces.browser import IBrowserView
 
 import martian
 from martian import util
 from martian.error import GrokImportError, GrokError
 from martian.directive import StoreMultipleTimes
-from grokcore.component.scan import UnambiguousComponentScope
 from grok import components
 
 # Define grok directives
@@ -160,21 +158,6 @@ class permissions(martian.Directive):
 
     def factory(*args):
         return args
-
-class OneInterfaceOrClassOnClassOrModule(martian.Directive):
-    """Convenience base class.  Not for public use."""
-    scope = martian.CLASS_OR_MODULE
-    store = martian.ONCE
-    validate = martian.validateInterfaceOrClass
-
-class layer(OneInterfaceOrClassOnClassOrModule):
-    pass
-
-class viewletmanager(OneInterfaceOrClassOnClassOrModule):
-    scope = UnambiguousComponentScope('viewletmanager')
-
-class view(OneInterfaceOrClassOnClassOrModule):
-    default = IBrowserView
 
 class traversable(martian.Directive):
     scope = martian.CLASS
