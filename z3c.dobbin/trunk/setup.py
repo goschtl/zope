@@ -18,7 +18,7 @@ def read(*files):
     return "\n".join((open(f).read() for f in files))
 
 setup(name='z3c.dobbin',
-      version='0.3.2',
+      version='0.3dev',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
