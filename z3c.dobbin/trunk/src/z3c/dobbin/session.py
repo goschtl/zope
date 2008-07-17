@@ -2,32 +2,32 @@ from zope import interface
 
 from z3c.saconfig import Session
 
-import soup
 import transaction
 
-def beforeCommitHook(obj, uuid):
-    # unset pending state
-    session = Session()
-    del session._d_pending[uuid]
+def COPY_CONCRETE_TO_INSTANCE(uuid):
+    return COPY_CONCRETE_TO_INSTANCE, uuid
 
-    # build instance
-    instance = soup.lookup(uuid)
+def COPY_VALUE_TO_INSTANCE(uuid, name):
+    return COPY_VALUE_TO_INSTANCE, uuid, name
 
-    # update attributes
-    soup.update(instance, obj)    
-
-def registerObject(obj, uuid):
+def addBeforeCommitHook(token, value, hook):
     session = Session()
 
     try:
         pending = session._d_pending.keys()
     except AttributeError:
         pending = ()
-    
-    if obj not in pending:
-        try:
-            session._d_pending[uuid] = obj
-        except AttributeError:
-            session._d_pending = {uuid: obj}
 
-        transaction.get().addBeforeCommitHook(beforeCommitHook, (obj, uuid))
+    if token in pending:
+        session._d_pending[token] = value
+    else:
+        try:
+            session._d_pending[token] = value
+        except AttributeError:
+            session._d_pending = {token: value}
+
+        def remove_and_call(*args):
+            hook(*args)
+            del session._d_pending[token]
+            
+        transaction.get().addBeforeCommitHook(remove_and_call, ())

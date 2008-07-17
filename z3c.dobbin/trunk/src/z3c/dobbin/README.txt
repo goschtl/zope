@@ -485,14 +485,28 @@ We may use a mapped object as index.
     ...         title=u"Discographies by artist",
     ...         value_type=schema.List())
 
-Polymorphic relations
----------------------
+Polymorphic structures
+----------------------
 
-We can create relations to instances as well as immutable objects
-(rocks).
+We can use weak typing to store (almost) any kind of structure. Values
+are kept as Python pickles.
 
+    >>> class IPolyFavorite(interface.Interface):
+    ...     item = interface.Attribute(u"Any kind of favorite")
+
+    >>> __builtin__.IPolyFavorite = IPolyFavorite
+    >>> favorite = create(IPolyFavorite)
+
+A transaction hook makes sure that assigned values are transient
+during a session.
+    
+    >>> obj = object()
+    >>> favorite.item = obj
+    >>> favorite.item is obj
+    True
+    
 Integers, floats and unicode strings are straight-forward.
-
+    
     >>> favorite.item = 42; transaction.commit()
     >>> favorite.item
     42
@@ -511,7 +525,7 @@ Normal strings need explicit coercing to ``str``.
     >>> str(favorite.item)
     'My favorite number is 42.'
 
-Or sequences of relations.
+Or sequences of items.
 
     >>> favorite.item = (u"green", u"blue", u"red"); transaction.commit()
     >>> favorite.item
@@ -525,23 +539,51 @@ Dictionaries.
     {u'blue': 255, u'green': 65280, u'red': 16711680}
 
     >>> favorite.item[u"black"] = 0x000000
-    >>> favorite.item
-    {u'blue': 255, u'green': 65280, u'black': 0, u'red': 16711680}
+    >>> sorted(favorite.item.items())
+    [(u'black', 0), (u'blue', 255), (u'green', 65280), (u'red', 16711680)]
+
+We do need explicitly set the dirty bit of this instance.
+
+    >>> favorite.item = favorite.item
+    >>> transaction.commit()
+
+Clear the object cache and verify value.
+    
+    >>> del favorite._v_cached_item_pickle
+    >>> sorted(favorite.item.items())
+    [(u'black', 0), (u'blue', 255), (u'green', 65280), (u'red', 16711680)]
     
 When we create relations to mutable objects, a hook is made into the
 transaction machinery to keep track of the pending state.
 
-    >>> some_list = [u"green", u"blue", u"red"]; transaction.commit()
+    >>> some_list = [u"green", u"blue"]
     >>> favorite.item = some_list
+    >>> some_list.append(u"red"); transaction.commit()
     >>> favorite.item
     [u'green', u'blue', u'red']
 
-Amorphic relations.
+Amorphic structures.
 
     >>> favorite.item = ((1, u"green"), (2, u"blue"), (3, u"red")); transaction.commit()
     >>> favorite.item
     ((1, u'green'), (2, u'blue'), (3, u'red'))
 
+Structures involving relations to other instances.
+
+    >>> favorite.item = vinyl; transaction.commit()
+    >>> del favorite._v_cached_item_pickle
+    >>> favorite.item
+    <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>
+
+Self-referencing works because polymorphic attributes are lazy.
+
+    >>> session.save(favorite)
+    
+    >>> favorite.item = favorite; transaction.commit()
+    >>> del favorite._v_cached_item_pickle
+    >>> favorite.item
+    <Mapper (__builtin__.IPolyFavorite) at ...>
+    
 Security
 --------
 

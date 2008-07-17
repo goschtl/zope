@@ -1,7 +1,7 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Kapil Thangavelu <kapil.foss@gmail.com>
-# All Rights Reserved.
+# Parts of this module is copyright (c) 2008 Kapil Thangavelu
+# <kapil.foss@gmail.com>. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -11,14 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Zope3 Schemas to SQLAlchemy
 
-$Id: sa2zs.py 1710 2006-10-26 17:39:37Z hazmat $
-"""
-
+from zope import interface
 from zope import schema
+
 import sqlalchemy as rdb
+from sqlalchemy import orm
+from z3c.saconfig import Session
+
+import session as tx
+import bootstrap
+import relations
+import collections
+
+import cPickle as Pickle
 
 class FieldTranslator( object ):
     """ Translate a zope schema field to an sa  column
@@ -57,31 +63,146 @@ class StringTranslator(FieldTranslator):
         return d
 
 class ObjectTranslator(object):
-    
     def __call__(self, field, metadata):
-        table = transmute(field.schema, metadata)
-        pk = get_pk_name(table.name)
-        field_name = "%s.%s" % table.name, pk
-        return rdb.Column(pk, rdb.Integer, rdb.ForeignKey(field_name),
-            nullable=False)
+        return rdb.Column(
+            field.__name__+'_uuid', bootstrap.UUID, nullable=False)
 
+class PickleTranslator(object):
+    def __call__(self, field, metadata):
+        return rdb.Column(
+            field.__name__+'_pickle', rdb.BLOB, nullable=True)
+
+class PickleProperty(property):
+    def __init__(self, name):
+        self.name = name
+        self.cache = '_v_cached_'+name
+        property.__init__(self, self._get, self._set)
+        
+    def _get(self, obj, type=None):
+        session = Session()
+        name = self.name
+        cache = self.cache
+        
+        token = tx.COPY_VALUE_TO_INSTANCE(obj.uuid, name)
+
+        # check pending objects
+        try:
+            return session._d_pending[token]
+        except (AttributeError, KeyError):
+            pass
+
+        # check object cache
+        value = getattr(obj, cache, None)
+        if value is not None:
+            return value
+
+        # load pickle
+        pickle = getattr(obj, name)
+        value = pickle and Pickle.loads(pickle)
+
+        # update cache
+        if value is not None:
+            setattr(obj, cache, value)
+        
+        return value
+
+    def _set(self, obj, value):
+        name = self.name
+        token = tx.COPY_VALUE_TO_INSTANCE(obj.uuid, name)
+        
+        def copy_value_to_instance():
+            value = Session()._d_pending[token]
+            pickle = Pickle.dumps(value)
+            setattr(obj, name, pickle)
+
+        # add transaction hook
+        tx.addBeforeCommitHook(
+            token, value, copy_value_to_instance)
+
+        # update cache
+        if value is not None:
+            setattr(obj, self.cache, value)
+
+class PicklePropertyFactory(object):
+    def __call__(self, field, column, metadata):
+        return {field.__name__: PickleProperty(column.name)}
+    
+class ObjectProperty(object):
+    """Object property.
+
+    We're not checking type here, because we'll only be creating
+    relations to items that are joined with the soup.
+    """
+
+    def __call__(self, field, column, metadata):
+        relation = relations.RelationProperty(field)
+
+        return {
+            field.__name__: relation,
+            relation.name: orm.relation(
+            bootstrap.Soup,
+            primaryjoin=bootstrap.Soup.c.uuid==column,
+            foreign_keys=[column],
+            enable_typechecks=False,
+            lazy=True)
+            }
+
+class CollectionProperty(object):
+    """A collection property."""
+
+    collection_class = None
+    relation_class = None
+    
+    def __call__(self, field, column, metadata):
+        return {
+            field.__name__: orm.relation(
+                self.relation_class,
+                primaryjoin=self.getPrimaryJoinCondition(),
+                collection_class=self.collection_class,
+                enable_typechecks=False)
+            }
+
+    def getPrimaryJoinCondition(self):
+        return NotImplementedError("Must be implemented by subclass.")
+    
+class ListProperty(CollectionProperty):
+    collection_class = collections.OrderedList
+    relation_class = relations.OrderedRelation
+
+    def getPrimaryJoinCondition(self):
+        return bootstrap.Soup.c.uuid==relations.OrderedRelation.c.left
+    
+class TupleProperty(ListProperty):
+    collection_class = collections.Tuple
+                    
+class DictProperty(CollectionProperty):
+    collection_class = collections.Dict
+    relation_class = relations.KeyRelation
+
+    def getPrimaryJoinCondition(self):
+        return bootstrap.Soup.c.uuid==relations.KeyRelation.c.left
+                        
 fieldmap = {
-    'ASCII': StringTranslator(),
-    'ASCIILine': StringTranslator(),
-    'Bool': FieldTranslator(rdb.BOOLEAN),
-    'Bytes': FieldTranslator(rdb.BLOB),
-    'BytesLine': FieldTranslator(rdb.BLOB),
-    'Choice': StringTranslator(),
-    'Date': FieldTranslator(rdb.DATE), 
-    'Datetime': FieldTranslator(rdb.DATE), 
-    'DottedName': StringTranslator(),
-    'Float': FieldTranslator(rdb.Float), 
-    'Id': StringTranslator(),
-    'Int': FieldTranslator(rdb.Integer),
-    'Object': ObjectTranslator(),
-    'Password': StringTranslator(),
-    'SourceText': StringTranslator(),
-    'Text': StringTranslator(),
-    'TextLine': StringTranslator(),
-    'URI': StringTranslator(),
+    schema.ASCII: StringTranslator(), 
+    schema.ASCIILine: StringTranslator(),
+    schema.Bool: FieldTranslator(rdb.BOOLEAN),
+    schema.Bytes: FieldTranslator(rdb.BLOB),
+    schema.BytesLine: FieldTranslator(rdb.CLOB),
+    schema.Choice: StringTranslator(rdb.Unicode),
+    schema.Date: FieldTranslator(rdb.DATE),
+    schema.Dict: (None, DictProperty()),
+    schema.DottedName: StringTranslator(),
+    schema.Float: FieldTranslator(rdb.Float), 
+    schema.Id: StringTranslator(rdb.Unicode),
+    schema.Int: FieldTranslator(rdb.Integer),
+    schema.List: (None, ListProperty()),
+    schema.Tuple: (None, TupleProperty()),
+    schema.Object: (ObjectTranslator(), ObjectProperty()),
+    schema.Password: StringTranslator(rdb.Unicode),
+    schema.SourceText: StringTranslator(rdb.UnicodeText),
+    schema.Text: StringTranslator(rdb.UnicodeText),
+    schema.TextLine: StringTranslator(rdb.Unicode),
+    schema.URI: StringTranslator(rdb.Unicode),
+    interface.Attribute: (PickleTranslator(), PicklePropertyFactory()),
+    interface.interface.Method: None,
 }

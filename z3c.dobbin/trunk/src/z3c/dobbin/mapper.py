@@ -16,107 +16,15 @@ from sqlalchemy import orm
 from sqlalchemy.orm.attributes import proxied_attribute_factory
 
 from z3c.saconfig import Session
-from zs2sa import FieldTranslator, StringTranslator
 
 from uuid import uuid1
 from random import randint
-
-import bootstrap
-import relations
-import collections
-import factory
-import soup
-
 from itertools import chain
 
+import bootstrap
+import soup
+import zs2sa
 import types
-
-class ObjectTranslator(object):
-    def __init__(self, column_type=None):
-        self.column_type = column_type
-
-    def __call__(self, field, metadata):
-        return rdb.Column(
-            field.__name__+'_uuid', bootstrap.UUID, nullable=False)
-
-class ObjectProperty(object):
-    """Object property.
-
-    We're not checking type here, because we'll only be creating
-    relations to items that are joined with the soup.
-    """
-
-    def __call__(self, field, column, metadata):
-        relation = relations.RelationProperty(field)
-
-        return {
-            field.__name__: relation,
-            relation.name: orm.relation(
-            bootstrap.Soup,
-            primaryjoin=bootstrap.Soup.c.uuid==column,
-            foreign_keys=[column],
-            enable_typechecks=False,
-            lazy=True)
-            }
-
-class CollectionProperty(object):
-    """A collection property."""
-
-    collection_class = None
-    relation_class = None
-    
-    def __call__(self, field, column, metadata):
-        return {
-            field.__name__: orm.relation(
-                self.relation_class,
-                primaryjoin=self.getPrimaryJoinCondition(),
-                collection_class=self.collection_class,
-                enable_typechecks=False)
-            }
-
-    def getPrimaryJoinCondition(self):
-        return NotImplementedError("Must be implemented by subclass.")
-    
-class ListProperty(CollectionProperty):
-    collection_class = collections.OrderedList
-    relation_class = relations.OrderedRelation
-
-    def getPrimaryJoinCondition(self):
-        return bootstrap.Soup.c.uuid==relations.OrderedRelation.c.left
-    
-class TupleProperty(ListProperty):
-    collection_class = collections.Tuple
-                    
-class DictProperty(CollectionProperty):
-    collection_class = collections.Dict
-    relation_class = relations.KeyRelation
-
-    def getPrimaryJoinCondition(self):
-        return bootstrap.Soup.c.uuid==relations.KeyRelation.c.left
-                        
-fieldmap = {
-    schema.ASCII: StringTranslator(), 
-    schema.ASCIILine: StringTranslator(),
-    schema.Bool: FieldTranslator(rdb.BOOLEAN),
-    schema.Bytes: FieldTranslator(rdb.BLOB),
-    schema.BytesLine: FieldTranslator(rdb.CLOB),
-    schema.Choice: StringTranslator(rdb.Unicode),
-    schema.Date: FieldTranslator(rdb.DATE),
-    schema.Dict: (None, DictProperty()),
-    schema.DottedName: StringTranslator(),
-    schema.Float: FieldTranslator(rdb.Float), 
-    schema.Id: StringTranslator(rdb.Unicode),
-    schema.Int: FieldTranslator(rdb.Integer),
-    schema.List: (None, ListProperty()),
-    schema.Tuple: (None, TupleProperty()),
-    schema.Object: (ObjectTranslator(), ObjectProperty()),
-    schema.Password: StringTranslator(rdb.Unicode),
-    schema.SourceText: StringTranslator(rdb.UnicodeText),
-    schema.Text: StringTranslator(rdb.UnicodeText),
-    schema.TextLine: StringTranslator(rdb.Unicode),
-    schema.URI: StringTranslator(rdb.Unicode),
-    interface.interface.Method: None,
-}
 
 def decode(name):
     return resolve(name.replace(':', '.'))
@@ -150,10 +58,10 @@ def createMapper(spec):
     metadata = engine.metadata
 
     exclude = ['__name__']
-    
+
     # expand specification
     if interface.interfaces.IInterface.providedBy(spec):
-        ifaces = set([spec.get(name).interface for name in schema.getFields(spec)])
+        ifaces = set([spec.get(name).interface for name in spec.names(True)])
         kls = object
     else:
         implemented = interface.implementedBy(spec)
@@ -165,6 +73,8 @@ def createMapper(spec):
             if isinstance(value, property):
                 exclude.append(name)
 
+    assert ifaces, "Specification must declare at least one field."
+    
     # create joined table
     properties = {}
     first_table = None
@@ -189,12 +99,6 @@ def createMapper(spec):
             # set soup metadata
             self.uuid = "{%s}" % uuid1()
             self.spec = self.__spec__
-
-        def __cmp__(self, other):
-            if IMapped.providedBy(other):
-                return cmp(self.id, other.id)
-            else:
-                return -1
 
     # if the specification is an interface class, try to look up a
     # security checker and define it on the mapper
@@ -243,6 +147,7 @@ def createMapper(spec):
 def removeMapper(spec):
     del spec.mapper
     interface.noLongerProvides(spec, IMapped)
+
         
 def getTable(iface, metadata, ignore=()):
     name = encode(iface)
@@ -257,7 +162,7 @@ def getTable(iface, metadata, ignore=()):
             continue
 
         try:
-            factories = fieldmap[type(field)]
+            factories = zs2sa.fieldmap[type(field)]
         except KeyError:
             # raise NotImplementedError("Field type unsupported (%s)." % field)
             continue

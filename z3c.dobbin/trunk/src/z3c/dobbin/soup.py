@@ -3,27 +3,26 @@ from zope import interface
 from interfaces import IMapper
 from interfaces import IMapped
 
-from session import registerObject
-
 from zope.dottedname.resolve import resolve
 from z3c.saconfig import Session
 
 import factory
 import bootstrap
 import interfaces
+import session as tx
 import types
 
 BASIC_TYPES = (int, float, str, unicode, tuple, list, set, dict)
-
 IMMUTABLE_TYPES = (int, float, str, unicode, tuple)
-    
+
 def lookup(uuid, ignore_pending=False):
     session = Session()
 
     # check if object is in pending session objects
     if not ignore_pending:
         try:
-            return session._d_pending[uuid]
+            token = tx.COPY_CONCRETE_TO_INSTANCE(uuid)
+            return session._d_pending[token]
         except (AttributeError, KeyError):
             pass
 
@@ -56,7 +55,18 @@ def persist(item):
 
     # register mutable objects with transaction manager
     if type(item) not in IMMUTABLE_TYPES:
-        registerObject(item, instance.uuid)
+        uuid = instance.uuid
+        
+        def copy_concrete_to_mapped():
+            # build instance
+            instance = lookup(uuid)
+    
+            # update attributes
+            update(instance, item)
+
+        # add transaction hook
+        tx.addBeforeCommitHook(
+            tx.COPY_CONCRETE_TO_INSTANCE(uuid), item, copy_concrete_to_mapped)
                         
     return instance
 

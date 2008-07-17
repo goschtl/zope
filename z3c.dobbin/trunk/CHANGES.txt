@@ -1,8 +1,14 @@
 Change log
 ==========
 
-0.3.2 dev
----------
+0.3.2
+-----
+
+- Use pickles to store polymorphic attributes; there's no benefit in
+  using native columns for amorphic data.
+
+- Dobbin now uses ``zope.sqlalchemy`` for transaction and session
+  glue.
 
 0.3.1
 -----

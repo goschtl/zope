@@ -3,17 +3,19 @@ from zope import component
 import sqlalchemy as rdb
 from sqlalchemy import orm
 
-from z3c.saconfig.interfaces import IEngineFactory
+from z3c.saconfig import Session
 
+import soup
 import relations
+import interfaces
 
 class UUID(rdb.types.TypeEngine):
     def get_col_spec(self):
         return "UUID"
 
 def bootstrapDatabaseEngine(event=None):
-    factory = component.getUtility(IEngineFactory)
-    engine = factory()
+    session = Session()
+    engine = session.bind
     engine.metadata = metadata = rdb.MetaData(engine)
 
     # setup metadata
@@ -63,5 +65,14 @@ def setUp(metadata):
 class Soup(object):
     """Soup class.
 
-    This stub is used as the mapper for the soup table.
+    This is the base object of all mappers.
     """
+
+    def __cmp__(self, other):
+        if interfaces.IMapped.providedBy(other):
+            return cmp(self.id, other.id)
+
+        return -1
+
+    def __reduce__(self):
+        return (soup.lookup, (self.uuid,))
