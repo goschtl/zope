@@ -13,6 +13,7 @@
 ##############################################################################
 """Grok test helpers
 """
+import sys
 import grokcore.component
 from zope.configuration.config import ConfigurationMachine
 from martian import scan
@@ -45,3 +46,33 @@ def grok_component(name, component,
                                          config=config)
     config.execute_actions()    
     return result
+
+def warn(message, category=None, stacklevel=1):
+    """Intended to replace warnings.warn in tests.
+
+    Modified copy from zope.deprecation.tests to:
+
+      * make the signature identical to warnings.warn
+      * to check for *.pyc and *.pyo files.
+
+    When zope.deprecation is fixed, this warn function can be removed again.
+    """
+    print "From five.grok.testing's warn():"
+
+    frame = sys._getframe(stacklevel)
+    path = frame.f_globals['__file__']
+    if path.endswith('.pyc') or path.endswith('.pyo'):
+        path = path[:-1]
+
+    file = open(path)
+    lineno = frame.f_lineno
+    for i in range(lineno):
+        line = file.readline()
+
+    print "%s:%s: %s: %s\n  %s" % (
+        path,
+        frame.f_lineno,
+        category.__name__,
+        message,
+        line.strip(),
+        )
