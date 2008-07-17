@@ -78,3 +78,25 @@ class IGrokView(IBrowserPage, IBrowserView):
         hierarchy or the URL of a named object (``name`` parameter)
         relative to the closest application object.
         """
+
+
+class ITemplateFileFactory(interface.Interface):
+    """Utility that generates templates from files in template directories.
+    """
+
+    def __call__(filename, _prefix=None):
+        """Creates an ITemplate from a file
+
+        _prefix is the directory the file is located in
+        """
+
+
+class ITemplate(interface.Interface):
+    """Template objects
+    """
+
+    def _initFactory(factory):
+        """Template language specific initializations on the view factory."""
+
+    def render(view):
+        """Renders the template"""

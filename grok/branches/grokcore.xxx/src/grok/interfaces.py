@@ -21,6 +21,8 @@ from zope.app.container.interfaces import IContainer as IContainerBase
 
 from grokcore.component.interfaces import IContext
 import grokcore.view.interfaces
+from grokcore.view.interfaces import ITemplateFileFactory
+from grokcore.view.interfaces import ITemplate
 
 class IGrokBaseClasses(interface.Interface):
     ClassGrokker = interface.Attribute("Base class to define a class "
@@ -422,26 +424,6 @@ class IIndexDefinition(interface.Interface):
 class IRESTSkinType(IInterface):
     """Skin type for REST requests.
     """
-
-class ITemplateFileFactory(interface.Interface):
-    """Utility that generates templates from files in template directories.
-    """
-
-    def __call__(filename, _prefix=None):
-        """Creates an ITemplate from a file
-
-        _prefix is the directory the file is located in
-        """
-
-class ITemplate(interface.Interface):
-    """Template objects
-    """
-
-    def _initFactory(factory):
-        """Template language specific initializations on the view factory."""
-
-    def render(view):
-        """Renders the template"""
 
 class IContainer(IContext, IContainerBase):
     """A Grok container.

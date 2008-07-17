@@ -3,6 +3,7 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:grok="http://namespaces.zope.org/grok">
 
+  <grok:grok package=".meta" />
   <!-- ZPT support -->
   <grok:grok package=".templatereg" />
 

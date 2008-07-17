@@ -1,10 +1,15 @@
-from martian.error import GrokError
-from martian import util
-
 import os
+
 import zope.component
+from zope.interface import implements
+
+from martian.error import GrokError
+
 import grok
+import grokcore.view
+import grokcore.component
 import warnings
+
 
 class TemplateRegistry(object):
 
@@ -24,7 +29,7 @@ class TemplateRegistry(object):
         return entry['template']
 
     def findFilesystem(self, module_info):
-        template_dir_name = grok.templatedir.bind().get(
+        template_dir_name = grokcore.view.templatedir.bind().get(
             module=module_info.getModule())
         if template_dir_name is None:
             template_dir_name = module_info.name + '_templates'
@@ -89,17 +94,16 @@ class TemplateRegistry(object):
     def checkTemplates(self, module_info, factory, component_name,
                        has_render, has_no_render):
         factory_name = factory.__name__.lower()
-        template_name = grok.template.bind().get(factory)
+        template_name = grokcore.view.template.bind().get(factory)
         if template_name is None:
             template_name = factory_name
 
         if factory_name != template_name:
-            # grok.template is being used
-
+            # grokcore.view.template is being used
             if self.get(factory_name):
                 raise GrokError("Multiple possible templates for %s %r. It "
-                                "uses grok.template('%s'), but there is also "
-                                "a template called '%s'."
+                                "uses grok.template('%s'), but there "
+                                "is also a template called '%s'."
                                 % (component_name, factory, template_name,
                                    factory_name), factory)
         template = self.get(template_name)
@@ -122,10 +126,10 @@ class TemplateRegistry(object):
                                 "'render' method." %
                                 (component_name.title(), factory), factory)
 
-class PageTemplateFileFactory(grok.GlobalUtility):
 
-    grok.implements(grok.interfaces.ITemplateFileFactory)
-    grok.name('pt')
+class PageTemplateFileFactory(grokcore.component.GlobalUtility):
+    implements(grok.interfaces.ITemplateFileFactory)
+    grokcore.component.name('pt')
 
     def __call__(self, filename, _prefix=None):
         return grok.components.PageTemplate(filename=filename, _prefix=_prefix)

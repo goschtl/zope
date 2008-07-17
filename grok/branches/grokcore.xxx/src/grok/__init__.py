@@ -33,7 +33,7 @@ from martian import ClassGrokker, InstanceGrokker, GlobalGrokker
 from grokcore.component import Adapter, MultiAdapter, GlobalUtility
 from grok.components import Model, View
 from grok.components import XMLRPC, REST, JSON
-from grok.components import PageTemplate, PageTemplateFile, Traverser
+from grok.components import Traverser
 from grok.components import Container, OrderedContainer
 from grok.components import Site, LocalUtility, Annotation
 from grok.components import Application, Form, AddForm, EditForm, DisplayForm
@@ -43,6 +43,8 @@ from grok.components import Skin, IGrokLayer
 from grok.components import RESTProtocol, IRESTLayer
 from grok.interfaces import IRESTSkinType
 from grok.components import ViewletManager, Viewlet
+from grokcore.view import Permission
+from grokcore.view import PageTemplate, PageTemplateFile
 
 from martian import baseclass
 from grokcore.component.directive import (
@@ -54,7 +56,6 @@ from grokcore.component.decorators import subscribe, adapter, implementer
 from martian.error import GrokError, GrokImportError
 
 from grokcore.view import layer, view, require, template, templatedir
-from grokcore.view import Permission
 
 # BBB These two functions are meant for test fixtures and should be
 # imported from grok.testing, not from grok.
