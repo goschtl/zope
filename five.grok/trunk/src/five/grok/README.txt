@@ -31,7 +31,21 @@ and use it to define our own business object.
     ...         self._setObject(id, cave)
     ...         return cave
 
-Let's define a directory that will hold the templates
+This class can be used by application code :
+Let's instantiate a village and store it in ZODB root.
+
+    >>> from zope.component import getUtility
+    >>> from five.grok.README import *
+    >>> from Testing.ZopeTestCase import ZopeLite as Zope2
+    >>> app= Zope2.app()
+    >>> from zope.publisher.browser import TestRequest
+    >>> from OFS.Folder import Folder
+    >>> request = TestRequest()
+    >>> village = GrokVillage(id='amsterdam')
+    >>> app._setObject('amsterdam', village)
+    'amsterdam'
+
+Let's define a filesystem directory that will hold the templates
 that grok will use with our views.
 
     <<< grok.templatedir('tests/all/all_test_templates')
@@ -143,17 +157,6 @@ Let's create a view on the GrokVillage.
     ...  * Weight: %(weight)s
     ...  * Size: %(size)s""" % profile.info()
 
-    >>> from zope.component import getUtility
-    >>> from five.grok.README import *
-    >>> from Testing.ZopeTestCase import ZopeLite as Zope2
-    >>> app= Zope2.app()
-    >>> #grok.testing.grok(__name__)
-    >>> from zope.publisher.browser import TestRequest
-    >>> from OFS.Folder import Folder
-    >>> request = TestRequest()
-    >>> village = GrokVillage(id='amsterdam')
-    >>> app._setObject('amsterdam', village)
-    'amsterdam'
     >>> from zope.component import queryMultiAdapter
 
     >>> martijnCave = village.addCave('martijn-cave')
