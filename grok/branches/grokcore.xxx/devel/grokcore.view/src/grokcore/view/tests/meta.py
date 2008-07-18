@@ -40,7 +40,7 @@ def check_permission(factory, permission):
 
 
 class ViewGrokker(ViewGrokkerBase):
-    martian.component(grokcore.view.ViewMixin)
+    martian.component(grokcore.view.GrokView)
 
     def protectName(self, config, factory, permission):
         config.action(

@@ -4,6 +4,7 @@ import sys
 from zope import component
 from zope import interface
 from zope.publisher.publish import mapply
+from zope.publisher.browser import BrowserPage
 from zope.security.permission import Permission
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.app.pagetemplate.engine import TrustedAppPT
@@ -28,18 +29,16 @@ class IGrokLayer(interface.Interface):
     pass
 
 
-#XXX rename to GrokView
-class ViewMixin(object):
+class GrokView(BrowserPage):
 
     def __init__(self, context, request):
-        super(ViewMixin, self).__init__(context, request)
+        super(GrokView, self).__init__(context, request)
         self.__name__ = self.__view_name__
         self.static = component.queryAdapter(
             self.request,
             interface.Interface,
-            name=self.module_info.package_dotted_name
-            )
-        
+            name=self.module_info.package_dotted_name)
+
     def _update_and_render(self):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
@@ -70,7 +69,7 @@ class ViewMixin(object):
         if template is not None:
             return self._render_template()
         return mapply(self.render, (), self.request)
-    
+
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name. The data
         argument is used to form a CGI query string.
@@ -114,7 +113,7 @@ class ViewMixin(object):
         namespace['static'] = self.static
         namespace['view'] = self
         return namespace
-    
+
     def application_url(self, name=None):
         raise NotImplementedError
 

@@ -2,10 +2,9 @@
 Inline templates that are not associated with a view class will
 provoke an error:
 
-  >>> from grok.testing import warn
   >>> import warnings
   >>> saved_warn = warnings.warn
-  >>> warnings.warn = warn
+  >>> warnings.warn = grok.testing.warn
 
   >>> grok.testing.grok(__name__)
   From grok.testing's warn():

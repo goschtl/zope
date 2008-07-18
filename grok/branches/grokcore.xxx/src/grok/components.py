@@ -142,12 +142,8 @@ class Annotation(persistent.Persistent):
 #        self.context = context
 #        self.request = request
 
-class View(BrowserPage, grokcore.view.ViewMixin):
+class View(grokcore.view.GrokView):
     interface.implements(interfaces.IGrokView)
-
-    def __init__(self, context, request):
-        BrowserPage.__init__(self, context, request)
-        grokcore.view.ViewMixin.__init__(self, context, request)
 
     def __call__(self):
         return self._update_and_render()

@@ -1,7 +1,6 @@
 import warnings
 
 from zope import interface
-from zope.publisher.browser import BrowserPage
 
 from grokcore.component.interfaces import IContext
 
@@ -13,11 +12,7 @@ class Model(object):
     interface.implements(IContext)
 
 
-class View(BrowserPage, grokcore.view.ViewMixin):
-
-    def __init__(self, context, request):
-        BrowserPage.__init__(self, context, request)
-        grokcore.view.ViewMixin.__init__(self, context, request)
+class View(grokcore.view.GrokView):
 
     def __call__(self):
         return self._update_and_render()
