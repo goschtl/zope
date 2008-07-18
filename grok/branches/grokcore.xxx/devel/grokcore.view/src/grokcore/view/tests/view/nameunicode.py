@@ -16,16 +16,22 @@ You can only pass unicode to `grok.name`:
   unicode or ASCII.
 
 """
-import grok
+from grokcore.view.tests import grok
+
 
 def pass_unicode():
+
     class View(object):
         grok.name(u'name')
 
+
 def pass_encodedstring():
+
     class View(object):
         grok.name("ölkj")
 
+
 def pass_object():
+
     class View(object):
         grok.name(object())

@@ -1,14 +1,20 @@
 """
+Templates can also be found in a directory with the same name as the module:
 
   >>> grok.testing.grok(__name__)
-
-View with an associated PageTemplate that is referred to using
-``grok.template``:
 
   >>> manfred = Mammoth()
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> from zope import component
+  >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
+  >>> print view()
+  <html>
+  <body>
+  A cave painting.
+  </body>
+  </html>
+
   >>> view = component.getMultiAdapter((manfred, request), name='food')
   >>> print view()
   <html>
@@ -18,14 +24,16 @@ View with an associated PageTemplate that is referred to using
   </html>
 
 """
-import grok
-import os.path
+from grokcore.view.tests import grok
+
 
 class Mammoth(grok.Model):
     pass
 
-class Food(grok.View):
+
+class CavePainting(grok.View):
     pass
 
-food = grok.PageTemplate(filename=os.path.join('templatedirectoryname',
-                                               'food.pt'))
+
+class Food(grok.View):
+    pass

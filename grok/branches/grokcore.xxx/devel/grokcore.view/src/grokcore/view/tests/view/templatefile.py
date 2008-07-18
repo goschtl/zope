@@ -1,7 +1,9 @@
 """
-You can explicitly specify the template directory using grok.templatedir on module level:
 
   >>> grok.testing.grok(__name__)
+
+View with an associated PageTemplate that is referred to using
+``grok.template``:
 
   >>> manfred = Mammoth()
   >>> from zope.publisher.browser import TestRequest
@@ -16,12 +18,19 @@ You can explicitly specify the template directory using grok.templatedir on modu
   </html>
 
 """
-import grok
+import os.path
 
-grok.templatedir('templatedirectoryname')
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class Food(grok.View):
     pass
+
+
+food = grokcore.view.PageTemplate(filename=os.path.join(
+    'templatedirectoryname', 'food.pt'))

@@ -3,7 +3,7 @@ Templates can be specified in the same module as the view,
 using a variable named `viewname_pt`:
 
   >>> grok.testing.grok(__name__)
-  
+
   >>> manfred = Mammoth()
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -15,8 +15,8 @@ using a variable named `viewname_pt`:
   <h1>Mammoth Cave Painting</h1>
   <ul>
     <li><zope.publisher.browser.TestRequest instance URL=http://127.0.0.1></li>
-    <li><grok.tests.view.inline.CavePainting object at 0x...></li>
-    <li><grok.tests.view.inline.Mammoth object at 0x...></li>
+    <li><grokcore.view.tests.view.inline.CavePainting object at 0x...></li>
+    <li><grokcore.view.tests.view.inline.Mammoth object at 0x...></li>
     <li><zope.app.pagetemplate.engine.TraversableModuleImporter object at 0x...></li>
   </ul>
   </body>
@@ -34,15 +34,19 @@ name:
   <html><body><h1>GROK HUNT MAMMOTH!</h1></body></html>
 
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class CavePainting(grok.View):
     pass
 
-cavepainting = grok.PageTemplate("""\
+
+cavepainting = grokcore.view.PageTemplate("""\
 <html>
 <body>
 <h1 tal:content="string:Mammoth Cave Painting"/>
@@ -56,10 +60,11 @@ cavepainting = grok.PageTemplate("""\
 </html>
 """)
 
+
 class Hunt(grok.View):
     grok.name('hunting')
 
-hunt = grok.PageTemplate("""\
+
+hunt = grokcore.view.PageTemplate("""\
 <html><body><h1>GROK HUNT MAMMOTH!</h1></body></html>
 """)
-

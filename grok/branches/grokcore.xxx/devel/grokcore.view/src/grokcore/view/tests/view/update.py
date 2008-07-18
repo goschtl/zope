@@ -23,20 +23,24 @@ expressions can resolve paths:
   <h1>red</h1>
   </body>
   </html>
-  
+
 
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class CavePainting(grok.View):
+
     def update(self):
         self.color = "red"
 
 
-cavepainting = grok.PageTemplate("""\
+cavepainting = grokcore.view.PageTemplate("""\
 <html>
 <body>
 <h1 tal:content="view/color"/>

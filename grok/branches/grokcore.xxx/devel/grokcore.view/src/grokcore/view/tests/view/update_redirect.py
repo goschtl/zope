@@ -17,17 +17,21 @@ is not executed subsequently.
   somewhere-else
 
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class CavePainting(grok.View):
+
     def update(self):
         self.request.response.redirect('somewhere-else')
 
 
-cavepainting = grok.PageTemplate("""\
+cavepainting = grokcore.view.PageTemplate("""\
 <html>
 <body>
 <h1 tal:content="this-is-an-error" />

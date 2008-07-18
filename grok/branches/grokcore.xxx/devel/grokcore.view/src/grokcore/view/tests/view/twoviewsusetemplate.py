@@ -33,29 +33,37 @@ registered as its own view:
   Traceback (most recent call last):
     ...
   ComponentLookupError:
-  ((<grok.tests.view.twoviewsusetemplate.Mammoth object at 0x...>,
+  ((<grokcore.view.tests.view.twoviewsusetemplate.Mammoth object at 0x...>,
   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>),
   <InterfaceClass zope.interface.Interface>, 'templ')
 
 
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class A(grok.View):
     pass
 
-a = grok.PageTemplate("View A")
+
+a = grokcore.view.PageTemplate("View A")
+
 
 class B(grok.View):
-    grok.template('a')
+    grokcore.view.template('a')
+
 
 class C(grok.View):
-    grok.template('templ')
+    grokcore.view.template('templ')
+
 
 class D(grok.View):
-    grok.template('templ')
+    grokcore.view.template('templ')
 
-templ = grok.PageTemplate('Template')
+
+templ = grokcore.view.PageTemplate('Template')

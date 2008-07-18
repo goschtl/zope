@@ -3,8 +3,8 @@
 We do not accept bogus inline template such as ones that contain
 encoded strings:
 
-  >>> import grok
-  >>> grok.PageTemplate('''
+  >>> import grokcore.view
+  >>> grokcore.view.PageTemplate('''
   ... <html>
   ... <body><h1 tal:content="string:Mammoth Cave Painting"/>
   ... <p>ööö</p>

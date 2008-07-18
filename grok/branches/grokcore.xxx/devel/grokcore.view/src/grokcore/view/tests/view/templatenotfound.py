@@ -5,16 +5,19 @@ template:
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
     ...
-  ConfigurationExecutionError: martian.error.GrokError: View <class 'grok.tests.view.templatenotfound.Painting'>
+  ConfigurationExecutionError: martian.error.GrokError: View <class 'grokcore.view.tests.view.templatenotfound.Painting'>
   has no associated template or 'render' method.
   in:
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class Painting(grok.View):
-    grok.template('cavepainting')
+    grokcore.view.template('cavepainting')
 
 # no cavepainting template here

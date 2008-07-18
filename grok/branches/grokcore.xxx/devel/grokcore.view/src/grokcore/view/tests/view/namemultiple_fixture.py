@@ -1,7 +1,7 @@
 """
 This should fail:
 """
-import grok
+from grokcore.view.tests import grok
 
 class MultipleNames(grok.View):
     grok.name('mammoth')

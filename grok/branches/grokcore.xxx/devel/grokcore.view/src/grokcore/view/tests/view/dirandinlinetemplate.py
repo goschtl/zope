@@ -6,10 +6,11 @@ template directory, there is an error:
   Traceback (most recent call last):
     ...
   ConfigurationExecutionError: martian.error.GrokError: Conflicting templates found for name 'cavepainting' in module
-  <module 'grok.tests.view.dirandinlinetemplate' from ...
+  <module 'grokcore.view.tests.view.dirandinlinetemplate' from ...
 
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
 
 class Mammoth(grok.Model):
     pass
@@ -17,4 +18,4 @@ class Mammoth(grok.Model):
 class CavePainting(grok.View):
     pass
 
-cavepainting = grok.PageTemplate("nothing")
+cavepainting = grokcore.view.PageTemplate("nothing")

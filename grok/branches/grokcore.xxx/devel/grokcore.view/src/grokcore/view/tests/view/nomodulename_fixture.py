@@ -1,5 +1,6 @@
 """
 This should fail:
 """
-import grok
+from grokcore.view.tests import grok
+
 grok.name('viewname')

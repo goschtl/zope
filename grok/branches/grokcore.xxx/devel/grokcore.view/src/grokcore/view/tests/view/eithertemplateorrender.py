@@ -1,21 +1,25 @@
 """
-A View may either have an associated template or a render-method. Here
-we check that this also works for templates in a template-directory:
+Only one, either a template, or render() can be specified:
 
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
     ...
   ConfigurationExecutionError: martian.error.GrokError: Multiple possible ways to render view
-  <class 'grok.tests.view.dirtemplateandrender.CavePainting'>.
+  <class 'grokcore.view.tests.view.eithertemplateorrender.CavePainting'>.
   It has both a 'render' method as well as an associated template.
   in:
-  
 """
-import grok
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class Mammoth(grok.Model):
     pass
 
+
 class CavePainting(grok.View):
+
     def render(self):
         pass
+
+cavepainting = grokcore.view.PageTemplate("nothing")

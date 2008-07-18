@@ -42,7 +42,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['adapter', 'error', 'view', 'event', 'security', 'catalog',
+    for name in ['adapter', 'error', 'event', 'security', 'catalog',
                  'zcml', 'utility', 'xmlrpc', 'json', 'container',
                  'traversal', 'form', 'grokker', 'directive',
                  'baseclass', 'annotation', 'application',
