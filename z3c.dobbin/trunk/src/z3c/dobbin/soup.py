@@ -56,11 +56,8 @@ def persist(item):
     # register mutable objects with transaction manager
     if type(item) not in IMMUTABLE_TYPES:
         uuid = instance.uuid
-        
+
         def copy_concrete_to_mapped():
-            # build instance
-            instance = lookup(uuid)
-    
             # update attributes
             update(instance, item)
 
