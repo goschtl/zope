@@ -17,7 +17,7 @@ from five.grok import interfaces
 from zope.app.container.contained import Contained
 import persistent
 
-from zope.publisher.browser import BrowserPage
+from grokcore.view import GrokView
 
 class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
@@ -25,8 +25,7 @@ class Model(SimpleItem):
     # can be established.
     interface.implements(IAttributeAnnotatable, interfaces.IContext)
 
-from grokcore.view.components import ViewMixin
-class View(ViewMixin, BrowserPage, Acquisition.Implicit):
+class View(GrokView, Acquisition.Implicit):
     pass
 
 class IGrokLayer(interface.Interface):
