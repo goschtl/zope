@@ -6,6 +6,19 @@
 
     <h2>Code</h2>
 
+    <div>
+      Welcome to the GrokUI code browser. Here you can explore the
+      code basis of your runtime system, including packages, modules
+      and classes.
+    </div>
+
+    <div>
+      <a href="zope">Browse the zope package</a>
+    </div>
+
+    <div>
+      <a href="grok">Browse the grok package</a>
+    </div>
 
   </div>
 </html>
