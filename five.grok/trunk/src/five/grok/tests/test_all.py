@@ -44,11 +44,6 @@ def suiteFromPackage(name):
 def test_suite():
     return unittest.TestSuite([
 
-        # Unit tests for your API
-        #doctestunit.DocFileSuite(
-            #'README.txt', package='something.foo',
-            #setUp=testing.setUp, tearDown=testing.tearDown),
-
         doctestunit.DocTestSuite(
             module='five.grok.tests.adapters',
             setUp=setUp, tearDown=testing.tearDown),
@@ -65,25 +60,6 @@ def test_suite():
             module='five.grok.tests.subscribers',
             setUp=setUp, tearDown=testing.tearDown),
         
-        suiteFromPackage('view'),
-
-        #doctestunit.DocTestSuite(
-            #module='five.grok.tests.view.view',
-            #setUp=setUp, tearDown=testing.tearDown, 
-            #optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE),
-
-        #doctestunit.DocTestSuite(
-            #module='five.grok.tests.view.ambiguouscontext',
-            #setUp=setUp, tearDown=testing.tearDown, 
-            #optionflags=doctest.ELLIPSIS+doctest.NORMALIZE_WHITESPACE),
-        
-        # Integration tests that use ZopeTestCase
-        #ztc.ZopeDocFileSuite(
-        #    'README.txt', package='something.foo',
-        #    setUp=testing.setUp, tearDown=testing.tearDown),
-
-        #ztc.FunctionalDocFileSuite(
-        #    'browser.txt', package='something.foo'),
         ])
         
         
