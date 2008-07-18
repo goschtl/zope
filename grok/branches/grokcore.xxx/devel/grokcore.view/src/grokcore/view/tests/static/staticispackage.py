@@ -1,8 +1,8 @@
 """
 It is an error for the 'static' directory to be a python package:
 
-  >>> from grokcore.view.tests.test_all import grok
-  >>> grok('grokcore.view.tests.static.staticispackage_fixture')
+  >>> from grokcore.view.tests import grok
+  >>> grok.testing.grok('grokcore.view.tests.static.staticispackage_fixture')
   Traceback (most recent call last):
     ...
   GrokError: The 'static' resource directory must not be a python package.

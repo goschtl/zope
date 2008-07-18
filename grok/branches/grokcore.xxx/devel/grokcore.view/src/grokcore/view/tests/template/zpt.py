@@ -1,7 +1,6 @@
 """
 
-  >>> from grokcore.view.tests.test_all import grok
-  >>> grok(__name__)
+  >>> grok.testing.grok(__name__)
 
   >>> cave = Cave()
   >>> from zope.publisher.browser import TestRequest

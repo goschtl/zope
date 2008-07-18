@@ -1,8 +1,7 @@
 """
 Testing the plugging in of a template language
 
-  >>> from grokcore.view.tests.test_all import grok
-  >>> grok(__name__)
+  >>> grok.testing.grok(__name__)
 
   >>> cave = Cave()
   >>> from zope.publisher.browser import TestRequest
@@ -37,8 +36,9 @@ from grokcore.view import components
 
 from grokcore.view.tests import grok
 
-# Dummy template language:
+
 class MyTemplate(object):
+    '''Dummy template language'''
 
     def __init__(self, text):
         self._text = text
@@ -46,6 +46,7 @@ class MyTemplate(object):
     def render(self, **kw):
         # Silliest template language ever:
         return self._text % kw
+
 
 class MyPageTemplate(components.GrokTemplate):
 
@@ -63,29 +64,39 @@ class MyPageTemplate(components.GrokTemplate):
     def render(self, view):
         return self._template.render(**self.getNamespace(view))
 
+
 class MyPageTemplateFactory(grokcore.component.GlobalUtility):
 
-    grokcore.component.implements(grokcore.view.interfaces.ITemplateFileFactory)
+    grokcore.component.implements(
+        grokcore.view.interfaces.ITemplateFileFactory)
     grokcore.component.name('mtl')
 
     def __call__(self, filename, _prefix=None):
         return MyPageTemplate(filename=filename, _prefix=_prefix)
 
+
 class Cave(grok.Model):
     pass
+
 
 class Sebaayeni(grok.View):
     pass
 
-sebaayeni = MyPageTemplate('<html><body>Sebaayeni is in South Africa</body></html>')
+
+sebaayeni = MyPageTemplate(
+    '<html><body>Sebaayeni is in South Africa</body></html>')
+
 
 class Lascaux(grok.View):
     pass
 
+
 lascaux = MyPageTemplate(filename='lascaux.html')
+
 
 class Kakadu(grok.View):
     pass
+
 
 class Sierra(grok.View):
 
