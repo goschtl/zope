@@ -1,0 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html metal:use-macro="context/@@master/macros/page">
+  <div metal:fill-slot="main">
+    <h1>
+      Package: <span tal:content="context/dotted_name">dot.ted.name</span>
+    </h1>
+  </div>
+</html>
