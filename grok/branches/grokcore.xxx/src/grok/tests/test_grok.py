@@ -43,7 +43,7 @@ def suiteFromPackage(name):
 def test_suite():
     suite = unittest.TestSuite()
     for name in ['adapter', 'error', 'view', 'event', 'security', 'catalog',
-                 'zcml', 'static', 'utility', 'xmlrpc', 'json', 'container',
+                 'zcml', 'utility', 'xmlrpc', 'json', 'container',
                  'traversal', 'form', 'grokker', 'directive',
                  'baseclass', 'annotation', 'application',
                  'viewlet', 'testsetup', 'conflict', 'order']:
