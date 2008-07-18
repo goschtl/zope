@@ -1,6 +1,7 @@
 """
 
-  >>> grok.testing.grok(__name__)
+  >>> from grokcore.view.tests.test_all import grok
+  >>> grok(__name__)
 
   >>> cave = Cave()
   >>> from zope.publisher.browser import TestRequest
@@ -13,10 +14,13 @@
 
 """
 
-import grok
+from grokcore.view.tests.components import TestView
+from grokcore.view.tests.components import TestModel
 
-class Cave(grok.Model):
+
+class Cave(TestModel):
     pass
 
-class Piepmatz(grok.View):
+
+class Piepmatz(TestView):
     pass # template in zpt_templates/piepmatz.pt

@@ -1,7 +1,8 @@
 """
 Testing the plugging in of a template language
 
-  >>> grok.testing.grok(__name__)
+  >>> from grokcore.view.tests.test_all import grok
+  >>> grok(__name__)
 
   >>> cave = Cave()
   >>> from zope.publisher.browser import TestRequest
@@ -29,8 +30,13 @@ Testing the plugging in of a template language
   <html><body>Sierra de San Fransisco is in Mexico</body></html>
 
 """
-import grok, os
-import grokcore.view.components
+import os
+import grokcore.component
+import grokcore.view
+from grokcore.view import components
+
+from grokcore.view.tests.components import TestView
+from grokcore.view.tests.components import TestModel
 
 # Dummy template language:
 class MyTemplate(object):
@@ -42,7 +48,7 @@ class MyTemplate(object):
         # Silliest template language ever:
         return self._text % kw
 
-class MyPageTemplate(grokcore.view.components.GrokTemplate):
+class MyPageTemplate(components.GrokTemplate):
 
     def setFromString(self, string):
         self._template = MyTemplate(string)
@@ -58,31 +64,31 @@ class MyPageTemplate(grokcore.view.components.GrokTemplate):
     def render(self, view):
         return self._template.render(**self.getNamespace(view))
 
-class MyPageTemplateFactory(grok.GlobalUtility):
+class MyPageTemplateFactory(grokcore.component.GlobalUtility):
 
-    grok.implements(grok.interfaces.ITemplateFileFactory)
-    grok.name('mtl')
+    grokcore.component.implements(grokcore.view.interfaces.ITemplateFileFactory)
+    grokcore.component.name('mtl')
 
     def __call__(self, filename, _prefix=None):
         return MyPageTemplate(filename=filename, _prefix=_prefix)
 
-class Cave(grok.Model):
+class Cave(TestModel):
     pass
 
-class Sebaayeni(grok.View):
+class Sebaayeni(TestView):
     pass
 
 sebaayeni = MyPageTemplate('<html><body>Sebaayeni is in South Africa</body></html>')
 
-class Lascaux(grok.View):
+class Lascaux(TestView):
     pass
 
 lascaux = MyPageTemplate(filename='lascaux.html')
 
-class Kakadu(grok.View):
+class Kakadu(TestView):
     pass
 
-class Sierra(grok.View):
+class Sierra(TestView):
 
     def namespace(self):
         return {'cave': 'Sierra de San Fransisco',
