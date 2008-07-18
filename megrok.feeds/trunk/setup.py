@@ -1,8 +1,8 @@
 from setuptools import setup, find_packages
 
-version = '0.0'
+version = '1.0dev'
 
-setup(name='megrok.PROJECT_NAME',
+setup(name='megrok.feeds',
       version=version,
       description="",
       long_description="""\
@@ -22,6 +22,7 @@ setup(name='megrok.PROJECT_NAME',
       install_requires=['setuptools',
                         'grok',
                         # Add extra requirements here
+                        'vice.outbound.core',
                         ],
       entry_points="""
       # Add entry points here
