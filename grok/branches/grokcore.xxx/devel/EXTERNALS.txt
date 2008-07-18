@@ -1,0 +1,9 @@
+# You can check externals by issuing:
+#
+#     svn propget svn:externals .
+#
+# You can update your working dir by issuing: 
+#
+#     svn propset svn:externals -F EXTERNALS.txt .
+#
+grokcore.view svn+ssh://gotcha@svn.zope.org/repos/main/grokcore.view/trunk
