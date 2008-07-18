@@ -7,7 +7,7 @@
   <grok:grok package=".meta" />
 
   <browser:defaultView
-      for=".interfaces.IContext"
+      for="grokcore.component.interfaces.IContext"
       name="index"
       />
 

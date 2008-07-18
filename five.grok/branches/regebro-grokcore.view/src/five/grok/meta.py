@@ -63,12 +63,3 @@ class SkinGrokker(martian.ClassGrokker):
             )
         return True
 
-
-import grokcore.component
-class PageTemplateFileFactory(grokcore.component.GlobalUtility):
-
-    grokcore.component.implements(grokcore.view.interfaces.ITemplateFileFactory)
-    grokcore.component.name('pt')
-
-    def __call__(self, filename, _prefix=None):
-        return grokcore.view.components.PageTemplate(filename=filename, _prefix=_prefix)
