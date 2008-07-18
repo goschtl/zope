@@ -122,10 +122,11 @@ class TemplateRegistry(object):
                                 "'render' method." %
                                 (component_name.title(), factory), factory)
 
+import grokcore.view
 class PageTemplateFileFactory(grok.GlobalUtility):
 
     grok.implements(grok.interfaces.ITemplateFileFactory)
     grok.name('pt')
 
     def __call__(self, filename, _prefix=None):
-        return grok.components.PageTemplate(filename=filename, _prefix=_prefix)
+        return grokcore.view.components.PageTemplate(filename=filename, _prefix=_prefix)

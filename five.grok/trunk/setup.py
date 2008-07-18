@@ -30,6 +30,7 @@ setup(name='five.grok',
       install_requires=[
           'setuptools',
           'grokcore.component',
+          'grokcore.view',
       ],
       entry_points="""
       """,

@@ -16,12 +16,6 @@
   </body>
   </html>
 
-Views without a template do not support macros:
-
-  >>> browser.open("http://localhost/manfred/@@dancing")
-  Traceback (most recent call last):
-  AttributeError: template
-
 If the view has an attribute with the same name as a macro, the macro
 shadows the view. XXX This should probably generate a warning at runtime.
 
@@ -31,30 +25,11 @@ shadows the view. XXX This should probably generate a warning at runtime.
   Curry
   </html>
 
-You can skip the "macro" part of the macro call, but this is deprecated:
-
-  >>> from five.grok.testing import warn
-  >>> import warnings
-  >>> saved_warn = warnings.warn
-  >>> warnings.warn = warn
-
-  >>> browser.open("http://localhost/manfred/@@burnt")
-  From five.grok.testing's warn():
-  ... DeprecationWarning: Calling macros directly on the view is deprecated. Please use context/@@viewname/macros/macroname
-  ...
-
-  >>> warnings.warn = saved_warn
-
 """
 from five import grok
 
 class Mammoth(grok.Model):
     pass
-
-class DancingHall(grok.View):
-
-    def render(self):
-        return "A nice large dancing hall for mammoths."
 
 class Grilled(grok.View):
 
@@ -97,13 +72,6 @@ class GrillDish(grok.View):
 
 grilldish = grok.PageTemplate("""
 <html metal:use-macro="context/@@grilled/macros/spices">
-</html>""")
-
-class Burnt(grok.View):
-    pass
-
-burnt = grok.PageTemplate("""\
-<html metal:use-macro="context/@@grilled/spices">
 </html>""")
 
 class Grilled(grok.View):
