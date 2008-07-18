@@ -23,13 +23,15 @@ class Permission(Permission):
 #XXX rename to GrokView
 class ViewMixin(object):
 
-    def _initialize(self):
+    def __init__(self, context, request):
+        super(ViewMixin, self).__init__(context, request)
         self.__name__ = self.__view_name__
         self.static = component.queryAdapter(
             self.request,
             interface.Interface,
-            name=self.module_info.package_dotted_name)
-
+            name=self.module_info.package_dotted_name
+            )
+        
     def _update_and_render(self):
         mapply(self.update, (), self.request)
         if self.request.response.getStatus() in (302, 303):
@@ -49,6 +51,18 @@ class ViewMixin(object):
     def response(self):
         return self.request.response
 
+    def __call__(self):
+        mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+
+        template = getattr(self, 'template', None)
+        if template is not None:
+            return self._render_template()
+        return mapply(self.render, (), self.request)
+    
     def url(self, obj=None, name=None, data=None):
         """Return string for the URL based on the obj and name. The data
         argument is used to form a CGI query string.
@@ -86,8 +100,13 @@ class ViewMixin(object):
         return {}
 
     def default_namespace(self):
-        raise NotImplementedError
-
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['request'] = self.request
+        namespace['static'] = self.static
+        namespace['view'] = self
+        return namespace
+    
     def application_url(self, name=None):
         raise NotImplementedError
 

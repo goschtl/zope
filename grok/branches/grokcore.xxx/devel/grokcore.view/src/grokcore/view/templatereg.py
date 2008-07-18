@@ -6,8 +6,6 @@ from zope.interface import implements
 
 from martian.error import GrokError
 
-import grok
-
 import grokcore.component
 import grokcore.view
 
@@ -50,7 +48,7 @@ class TemplateRegistry(object):
             template_name, extension = os.path.splitext(template_file)
             extension = extension[1:] # Get rid of the leading dot.
             template_factory = zope.component.queryUtility(
-                grok.interfaces.ITemplateFileFactory,
+                grokcore.view.interfaces.ITemplateFileFactory,
                 name=extension)
 
             if template_factory is None:
@@ -129,8 +127,8 @@ class TemplateRegistry(object):
 
 
 class PageTemplateFileFactory(grokcore.component.GlobalUtility):
-    implements(grok.interfaces.ITemplateFileFactory)
+    implements(grokcore.view.interfaces.ITemplateFileFactory)
     grokcore.component.name('pt')
 
     def __call__(self, filename, _prefix=None):
-        return grok.components.PageTemplate(filename=filename, _prefix=_prefix)
+        return grokcore.view.components.PageTemplate(filename=filename, _prefix=_prefix)
