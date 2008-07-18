@@ -158,7 +158,7 @@ class IViewInfo(interface.Interface):
 class IObjectDescriptionProvider(interface.Interface):
     """Provide description objects for arbitrary objects.
     """
-    def getDescription(obj_or_dotted_path, *args, **kw):
+    def getDescription(obj, dotted_name=None, *args, **kw):
         """Get one description object for the object denoted by
-        ``obj_or_dotted_path``.
+        ``obj`` or ``dotted_name``.
         """
