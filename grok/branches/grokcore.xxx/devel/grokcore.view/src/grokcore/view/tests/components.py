@@ -9,14 +9,14 @@ import grokcore.view
 from grokcore.view import PageTemplate
 
 
-class TestModel(object):
+class Model(object):
     interface.implements(IContext)
 
 
-class TestView(BrowserPage, grokcore.view.ViewMixin):
+class View(BrowserPage, grokcore.view.ViewMixin):
 
     def __init__(self, context, request):
-        super(TestView, self).__init__(context, request)
+        super(View, self).__init__(context, request)
         self._initialize()
 
     def __call__(self):
