@@ -5,10 +5,7 @@ from zope.component import adapts
 
 from grokcore.component import Adapter, MultiAdapter, GlobalUtility
 from grokcore.component import context, name, provides, subscribe
-from grokcore.view.components import PageTemplate
+from grokcore.view import PageTemplate, IGrokLayer, Skin
+from grokcore.view import template, require, layer, templatedir
 
-from five.grok.components import View, Model, IGrokLayer, Skin
-from five.grok.directive import require, layer, template, templatedir
-
-# I don't know why this is necessary:
-from five.grok import testing
+from five.grok.components import View, Model
