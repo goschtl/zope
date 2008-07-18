@@ -2,8 +2,9 @@ import martian
 from martian import util
 from martian.error import GrokError
 from zope import interface, component
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
+from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
+                                               IBrowserRequest,
+                                               IBrowserSkinType)
 from five import grok
 
 from Products.Five.security import protectClass
@@ -146,5 +147,18 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
             discriminator=None,
             callable=templates.checkUnassociated,
             args=(module_info,)
+            )
+        return True
+
+class SkinGrokker(martian.ClassGrokker):
+    martian.component(grok.Skin)
+    martian.directive(grok.layer, default=IBrowserRequest)
+    martian.directive(grok.name, get_default=default_view_name)
+
+    def execute(self, factory, config, name, layer, **kw):
+        config.action(
+            discriminator=('skin', name),
+            callable=component.interface.provideInterface,
+            args=(name, layer, IBrowserSkinType)
             )
         return True
