@@ -1,0 +1,26 @@
+CHANGES
+=======
+
+1.2.3 (2008-07-11)
+------------------
+
+- Fixed a bug in the CHANGES ReST
+
+
+1.2.2 (2008-07-11)
+------------------
+
+- Fixed a bug in setup.py where setuptools was not being imported
+- Changed date format in CHANGES.txt to YYYY-MM-DD
+
+
+1.2.1 (2008-07-10)
+------------------
+
+- Fixed a typo in the quickstart
+
+
+1.2.0 (2008-07-10)
+------------------
+
+- First release
