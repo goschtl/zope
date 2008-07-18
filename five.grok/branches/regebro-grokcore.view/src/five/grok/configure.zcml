@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:grok="http://namespaces.zope.org/grok">
+
+  <grok:grok package=".meta" />
+
+  <browser:defaultView
+      for=".interfaces.IContext"
+      name="index"
+      />
+
+  <permission
+    id="zope.View"
+    title="View"
+    />
+
+  <include package="zope.app.basicskin" />
+  <include package="zope.app.rotterdam" />
+  
+</configure>
