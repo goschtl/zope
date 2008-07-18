@@ -49,17 +49,3 @@ class ViewGrokker(ViewGrokkerBase):
             callable = initializeClass,
             args = (factory,)
             )
-
-class SkinGrokker(martian.ClassGrokker):
-    martian.component(grok.Skin)
-    martian.directive(grok.layer, default=IBrowserRequest)
-    martian.directive(grok.name, get_default=default_view_name)
-
-    def execute(self, factory, config, name, layer, **kw):
-        config.action(
-            discriminator=('skin', name),
-            callable=component.interface.provideInterface,
-            args=(name, layer, IBrowserSkinType)
-            )
-        return True
-

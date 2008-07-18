@@ -29,9 +29,3 @@ class Model(SimpleItem):
 
 class View(ViewMixin, BrowserPage, Acquisition.Implicit):
     pass
-
-class IGrokLayer(interface.Interface):
-    pass
-
-class Skin(object):
-    pass
