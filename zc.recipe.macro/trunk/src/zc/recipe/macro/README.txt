@@ -17,9 +17,9 @@ that's referred to as a "macro section"; it defines everything common to parts
 that use it, except the recipe option.
 
 Macros are used by parts called "macro invocations".  The invocation uses the
-macro recipe, and identifies the "macro section" using the "macro" option::
+macro recipe, and identifies the "macro section" using the "macro" option:
 
-    >>> write(sample_buildout, "buildout.cfg",
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
     ... parts = instance0 instance1
@@ -91,44 +91,55 @@ macro recipe, and identifies the "macro section" using the "macro" option::
 Now we'll run the buildout.
 
     >>> import os
-    >>> here = os.getcwd()
     >>> os.chdir(sample_buildout)
-    >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
-    >>> print system(buildout)
-    Installing instance0.
-        address: 8080
-        application: application
-        monitor-port: 8089
-        recipe: zc.recipe.macro:test
-        zope.conf: 
+    >>> buildout.install([])
+    >>> buildout_pprint(dict(buildout))
+    {'buildout': ...
+     'instance-macro': {'application': 'application',
+                        'zope.conf': '
             <eventlog>
-                <logfile>
-                    path /var/log/myapp/instance0-z3.log
-                </logfile>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
             </eventlog>
             <product-config zc.z3monitor>
-                port 8089
-            </product-config>
-    Installing instance1.
-        address: 9080
-        application: application
-        monitor-port: 9089
-        recipe: zc.recipe.macro:test
-        zope.conf: 
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
             <eventlog>
-                <logfile>
-                    path /var/log/myapp/instance1-z3.log
-                </logfile>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
             </eventlog>
             <product-config zc.z3monitor>
-                port 9089
-            </product-config>
-    <BLANKLINE>
+            port 8089
+            </product-config>'},
+     'instance1': {'address': '9080',
+                   'application': 'application',
+                   'monitor-port': '9089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance1-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 9089
+            </product-config>'},
+     'versions': {...}}
+    >>> os.chdir(macro)
 
 
-This results in parts equivalent to the buildout::
+This results in parts equivalent to the buildout:
 
     >>> os.chdir(here)
+    >>> rmdir(sample_buildout)
+    >>> sample_buildout = tmpdir(sample_buildout)
     >>> write(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
@@ -173,48 +184,128 @@ This results in parts equivalent to the buildout::
     ...     </product-config>
     ... """)
     >>> os.chdir(sample_buildout)
-    >>> print system(buildout)
-    Updating instance0.
-        address: 8080
-        application: application
-        monitor-port: 8089
-        recipe: zc.recipe.macro:test
-        zope.conf: 
+    >>> buildout.install([])
+    >>> buildout_pprint(dict(buildout))
+    {'buildout': {...},
+     'instance-macro': {'application': 'application',
+                        'zope.conf': '
             <eventlog>
-                <logfile>
-                    path /var/log/myapp/instance0-z3.log
-                </logfile>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
             </eventlog>
             <product-config zc.z3monitor>
-                port 8089
-            </product-config>
-    Updating instance1.
-        address: 9080
-        application: application
-        monitor-port: 9089
-        recipe: zc.recipe.macro:test
-        zope.conf: 
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
             <eventlog>
-                <logfile>
-                    path /var/log/myapp/instance1-z3.log
-                </logfile>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
             </eventlog>
             <product-config zc.z3monitor>
-                port 9089
-            </product-config>
-    <BLANKLINE>
+            port 8089
+            </product-config>'},
+     'instance1': {'address': '9080',
+                   'application': 'application',
+                   'monitor-port': '9089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance1-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 9089
+            </product-config>'},
+     'versions': {...}}
+    >>> os.chdir(macro)
 
 Note that the options from the invocation are used both to perform
 substitutions and as additional options in the expansion.  The result-recipe
 option is used to determine the recipe used on the resulting part.
+
+Default values in macros
+------------------------
+
+It is possible to make default values in macros.
+
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
+    ... """
+    ... [buildout]
+    ... parts = instance0
+    ... versions = versions
+    ...
+    ... [versions]
+    ... zc.recipe.egg = 1.0.0
+    ... setuptools = 0.6c8
+    ... zc.recipe.testrunner = 1.0.0
+    ... zc.buildout = 1.0.0
+    ... zope.testing = 3.5.0
+    ...
+    ... [instance-macro]
+    ... application = application
+    ... zope.conf =
+    ...     <eventlog>
+    ...         <logfile>
+    ...             path /var/log/myapp/$${:__name__}-z3.log
+    ...         </logfile>
+    ...     </eventlog>
+    ...     <product-config zc.z3monitor>
+    ...         port $${:monitor-port}
+    ...     </product-config>
+    ... address = 8080
+    ... monitor-port = 8089
+    ...
+    ... [instance0]
+    ... recipe = zc.recipe.macro
+    ... result-recipe = zc.recipe.macro:test
+    ... macro = instance-macro
+    ... """)
+    >>> os.chdir(sample_buildout)
+    >>> buildout.install([])
+    >>> buildout_pprint(dict(buildout))
+    {'buildout': {...},
+     'instance-macro': {'address': '8080',
+                        'application': 'application',
+                        'monitor-port': '8089',
+                        'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 8089
+            </product-config>'},
+     'versions': {...}}
+    >>> os.chdir(macro)
+
 
 Macro invocation without a result-recipe
 ----------------------------------------
 
 Sometimes it is good to have a macro that does not result in a part.
 
-    >>> os.chdir(here)
-    >>> write(sample_buildout, "buildout.cfg",
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
     ... parts = instance0 instance1
@@ -251,82 +342,55 @@ Sometimes it is good to have a macro that does not result in a part.
     ... address = 9080
     ... monitor-port = 9089
     ... """)
-
     >>> os.chdir(sample_buildout)
-    >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
-    >>> print system(buildout + ' -vv')
-    Installing 'zc.buildout', 'setuptools'.
-    ...
-    <BLANKLINE>
-    Configuration data:
-    [instance-macro]
-    application = application
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/$${:__name__}-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port $${:monitor-port}
-        </product-config>
-    [instance0]
-    address = 8080
-    application = application
-    monitor-port = 8089
-    recipe = zc.recipe.macro:empty
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/instance0-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port 8089
-        </product-config>
-    [instance1]
-    address = 9080
-    application = application
-    monitor-port = 9089
-    recipe = zc.recipe.macro:empty
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/instance1-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port 9089
-        </product-config>
-    [buildout]
-    bin-directory = /sample-buildout/bin
-    develop-eggs-directory = /sample-buildout/develop-eggs
-    directory = /sample-buildout
-    eggs-directory = /sample-buildout/eggs
-    executable = .../local/bin/python...
-    installed = /sample-buildout/.installed.cfg
-    log-format =
-    log-level = INFO
-    newest = true
-    offline = false
-    parts = instance0 instance1
-    parts-directory = /sample-buildout/parts
-    python = buildout
-    verbosity = 20
-    versions = versions
-    [versions]
-    setuptools = 0.6c8
-    zc.buildout = 1.0.0
-    zc.recipe.egg = 1.0.0
-    zc.recipe.testrunner = 1.0.0
-    zope.testing = 3.5.0
-    <BLANKLINE>
-    ...
+    >>> buildout.install([])
+    >>> buildout_pprint(buildout)
+    {'buildout': {...},
+     'instance-macro': {'application': 'application',
+                        'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:empty',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 8089
+            </product-config>'},
+     'instance1': {'address': '9080',
+                   'application': 'application',
+                   'monitor-port': '9089',
+                   'recipe': 'zc.recipe.macro:empty',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance1-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 9089
+            </product-config>'},
+     'versions': {...}}
+    >>> os.chdir(sample_buildout)
 
 In this case, the zc.recipe.macro recipe is used, with its Empty entry point.
 This entry point doesn't do anything, but we have to have a recipe to use,
 since the macro recipe has declared this to be a part.  The same sort of output
 will come from an empty result-recipe option.
 
-    >>> os.chdir(here)
-    >>> write(sample_buildout, "buildout.cfg",
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
     ... parts = instance0 instance1
@@ -365,74 +429,46 @@ will come from an empty result-recipe option.
     ... address = 9080
     ... monitor-port = 9089
     ... """)
-
-    >>> os.chdir(sample_buildout)
-    >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
-    >>> print system(buildout + ' -vv')
-    Installing 'zc.buildout', 'setuptools'.
-    ...
-    <BLANKLINE>
-    Configuration data:
-    [instance-macro]
-    application = application
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/$${:__name__}-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port $${:monitor-port}
-        </product-config>
-    [instance0]
-    address = 8080
-    application = application
-    monitor-port = 8089
-    recipe = zc.recipe.macro:empty
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/instance0-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port 8089
-        </product-config>
-    [instance1]
-    address = 9080
-    application = application
-    monitor-port = 9089
-    recipe = zc.recipe.macro:empty
-    zope.conf = %(__buildout_space_n__)s<eventlog>
-        <logfile>
-        path /var/log/myapp/instance1-z3.log
-        </logfile>
-        </eventlog>
-        <product-config zc.z3monitor>
-        port 9089
-        </product-config>
-    [buildout]
-    bin-directory = /sample-buildout/bin
-    develop-eggs-directory = /sample-buildout/develop-eggs
-    directory = /sample-buildout
-    eggs-directory = /sample-buildout/eggs
-    executable = .../local/bin/python...
-    installed = /sample-buildout/.installed.cfg
-    log-format =
-    log-level = INFO
-    newest = true
-    offline = false
-    parts = instance0 instance1
-    parts-directory = /sample-buildout/parts
-    python = buildout
-    verbosity = 20
-    versions = versions
-    [versions]
-    setuptools = 0.6c8
-    zc.buildout = 1.0.0
-    zc.recipe.egg = 1.0.0
-    zc.recipe.testrunner = 1.0.0
-    zope.testing = 3.5.0
-    <BLANKLINE>
-    ...
+    >>> buildout.install([])
+    >>> buildout_pprint(buildout)
+    {'buildout': {...},
+     'instance-macro': {'application': 'application',
+                        'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:empty',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 8089
+            </product-config>'},
+     'instance1': {'address': '9080',
+                   'application': 'application',
+                   'monitor-port': '9089',
+                   'recipe': 'zc.recipe.macro:empty',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance1-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 9089
+            </product-config>'},
+     'versions': {...}}
 
 And of course they are the same as explicitly declaring and empty result.
 
@@ -447,11 +483,10 @@ if necesary, and putting the results of the invocation in the new section.  New
 sections are just like any other section, so other sections can refer to their
 options, and they can be used as parts.
 
-    >>> os.chdir(here)
-    >>> write(sample_buildout, "buildout.cfg",
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
-    ... parts = invoker0 invoker1
+    ... parts = invoker
     ... versions = versions
     ...
     ... [versions]
@@ -462,76 +497,31 @@ options, and they can be used as parts.
     ... zope.testing = 3.5.0
     ...
     ... [macro]
-    ... output = I was invoked by $${:__name__}
+    ... output = I was invoked on $${:__name__}
     ...
-    ... [invoker0]
+    ... [invoker]
     ... recipe = zc.recipe.macro
     ... macro = macro
-    ... targets = zero
-    ...
-    ... [invoker1]
-    ... recipe = zc.recipe.macro
-    ... macro = macro
-    ... targets = one
+    ... targets =
+    ...     zero
+    ...     one
     ... """)
+    >>> buildout.install([])
+    >>> buildout_pprint(buildout)
+    {'buildout': {...},
+     'invoker': {'recipe': 'zc.recipe.macro:empty'},
+     'macro': {'output': 'I was invoked on $${:__name__}'},
+     'one': {'output': 'I was invoked on one'},
+     'versions': {...},
+     'zero': {'output': 'I was invoked on zero'}}
 
-    >>> os.chdir(sample_buildout)
-    >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
-    >>> print system(buildout + ' -vv')
-    Installing 'zc.buildout', 'setuptools'.
-    ...
-    <BLANKLINE>
-    Configuration data:
-    [buildout]
-    bin-directory = /sample-buildout/bin
-    develop-eggs-directory = /sample-buildout/develop-eggs
-    directory = /sample-buildout
-    eggs-directory = /sample-buildout/eggs
-    executable = .../local/bin/python...
-    installed = /sample-buildout/.installed.cfg
-    log-format =
-    log-level = INFO
-    newest = true
-    offline = false
-    parts = invoker0 invoker1
-    parts-directory = /sample-buildout/parts
-    python = buildout
-    verbosity = 20
-    versions = versions
-    [versions]
-    setuptools = 0.6c8
-    zc.buildout = 1.0.0
-    zc.recipe.egg = 1.0.0
-    zc.recipe.testrunner = 1.0.0
-    zope.testing = 3.5.0
-    [macro]
-    output = I was invoked by $${:__name__}
-    [invoker0]
-    recipe = zc.recipe.macro:empty
-    [invoker1]
-    recipe = zc.recipe.macro:empty
-    [zero]
-    output = I was invoked by zero
-    [one]
-    output = I was invoked by one
-    <BLANKLINE>
-    ...
+It is possible, and much more useful, to provide parameters by specifying other
+sections.
 
-
-Providing Parameters to Named Macros
-------------------------------------
-
-Another thing that is necesary to being able to use a macro twice in the same
-section is the ability to specify a mapping between the options of the invoker
-and the options in the scope.  Without this, no matter how many times one ran
-the macro, the results would all be the same.  This is done by naming an
-existing section, which will be used as source of values.
-
-    >>> os.chdir(here)
-    >>> write(sample_buildout, "buildout.cfg",
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
-    ... parts = invoker0
+    ... parts = invoker
     ... versions = versions
     ...
     ... [versions]
@@ -542,59 +532,113 @@ existing section, which will be used as source of values.
     ... zope.testing = 3.5.0
     ...
     ... [macro]
-    ... output = I was invoked by $${:name}
-    ... name = $${:__name__}
+    ... output = $${:subject} was invoked on $${:__name__}
     ...
-    ... [invoker0]
-    ... recipe = zc.recipe.macro
-    ... result-recipe =
-    ... macro = macro
-    ... targets = zero:zero-parameters
+    ... [one-parameters]
+    ... subject = Fred
     ...
     ... [zero-parameters]
-    ... name = Otto von Bismark
+    ... subject = Benji
+    ...
+    ... [invoker]
+    ... recipe = zc.recipe.macro
+    ... macro = macro
+    ... targets =
+    ...     zero:zero-parameters
+    ...     one:one-parameters
     ... """)
+    >>> buildout.install([])
+    >>> buildout_pprint(buildout)
+    {'buildout': {...},
+     'invoker': {'recipe': 'zc.recipe.macro:empty'},
+     'macro': {'output': '$${:subject} was invoked on $${:__name__}'},
+     'one': {'output': 'Fred was invoked on one'},
+     'one-parameters': {'subject': 'Fred'},
+     'versions': {...},
+     'zero': {'output': 'Benji was invoked on zero'},
+     'zero-parameters': {'subject': 'Benji'}}
 
-    >>> os.chdir(sample_buildout)
-    >>> buildout = os.path.join(sample_buildout, 'bin', 'buildout')
-    >>> print system(buildout + ' -vv')
-    Installing 'zc.buildout', 'setuptools'.
-    ...
-    <BLANKLINE>
-    Configuration data:
-    [zero-parameters]
-    name = Otto von Bismark
-    [versions]
-    setuptools = 0.6c8
-    zc.buildout = 1.0.0
-    zc.recipe.egg = 1.0.0
-    zc.recipe.testrunner = 1.0.0
-    zope.testing = 3.5.0
-    [macro]
-    name = $${:__name__}
-    output = I was invoked by $${:name}
-    [invoker0]
-    recipe = zc.recipe.macro:empty
-    [zero]
-    name = Otto von Bismark
-    output = I was invoked by Otto von Bismark
-    [buildout]
-    bin-directory = /sample-buildout/bin
-    develop-eggs-directory = /sample-buildout/develop-eggs
-    directory = /sample-buildout
-    eggs-directory = /sample-buildout/eggs
-    executable = .../local/bin/python...
-    installed = /sample-buildout/.installed.cfg
-    log-format =
-    log-level = INFO
-    newest = true
-    offline = false
-    parts = invoker0
-    parts-directory = /sample-buildout/parts
-    python = buildout
-    verbosity = 20
-    versions = versions
-    <BLANKLINE>
-    ...
 
+Edge Case Tests
+---------------
+
+It used to cause errors when default macro variables referred to one another
+and the invoker targetted itself.  This test will prevent regression.  The bug
+is dependant on the iteration order of a dictionaryish object, and so a
+subclass will be created that returns it's keys in a particular order.
+
+    >>> import zc.recipe.macro.recipe
+    >>> class OrderedOptions(zc.buildout.buildout.Options):
+    ...     def keys(self):
+    ...         return list(
+    ...             reversed(sorted(zc.buildout.buildout.Options.keys(self))))
+    >>> zc.recipe.macro.recipe.Options = OrderedOptions
+
+Now we'll make the buildout in memory, so that our monkeypatch will be effective:
+
+    >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
+    ... """
+    ... [buildout]
+    ... parts = instance0
+    ... versions = versions
+    ...
+    ... [versions]
+    ... zc.recipe.egg = 1.0.0
+    ... setuptools = 0.6c8
+    ... zc.recipe.testrunner = 1.0.0
+    ... zc.buildout = 1.0.0
+    ... zope.testing = 3.5.0
+    ...
+    ... [instance-macro]
+    ... address = 8080
+    ... application = application
+    ... monitor-port = 8089
+    ... zope.conf =
+    ...     <eventlog>
+    ...         <logfile>
+    ...             path /var/log/myapp/$${:__name__}-z3.log
+    ...         </logfile>
+    ...     </eventlog>
+    ...     <product-config zc.z3monitor>
+    ...         port $${:monitor-port}
+    ...     </product-config>
+    ...
+    ... [instance0]
+    ... recipe = zc.recipe.macro
+    ... result-recipe = zc.recipe.macro:test
+    ... macro = instance-macro
+    ... """)
+    >>> buildout.install([])
+    >>> buildout_pprint(buildout)
+    {'buildout': {...},
+     'instance-macro': {'address': '8080',
+                        'application': 'application',
+                        'monitor-port': '8089',
+                        'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/$${:__name__}-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port $${:monitor-port}
+            </product-config>'},
+     'instance0': {'address': '8080',
+                   'application': 'application',
+                   'monitor-port': '8089',
+                   'recipe': 'zc.recipe.macro:test',
+                   'zope.conf': '
+            <eventlog>
+            <logfile>
+            path /var/log/myapp/instance0-z3.log
+            </logfile>
+            </eventlog>
+            <product-config zc.z3monitor>
+            port 8089
+            </product-config>'},
+     'versions': {...}}
+
+And we'll return to the old Options:
+
+    >>> zc.recipe.macro.recipe.Options = zc.buildout.buildout.Options
 

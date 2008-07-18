@@ -15,6 +15,7 @@ import re
 import os.path
 import zc.buildout.buildout
 import pprint
+from zc.buildout.buildout import Options
 
 
 def evaluate_macro(buildout, name, macro, input, recipe):
@@ -58,19 +59,19 @@ def Macro(buildout, name, options):
     macro_summation.update(dict(buildout[macro]))
 
     for output, input in (parse_target(name, target) for target in targets):
-        opt = zc.buildout.buildout.Options(
+        opt = Options(
                 buildout,
                 output,
                 evaluate_macro(
                     buildout, output, macro_summation, input, recipe))
         if output == name:
             # If we're targetting the invoker
-            options.update(opt)
+            options._raw.update(opt._raw)
             options['recipe'] = options.get('recipe', 'zc.recipe.macro:empty')
         else:
             # If we're targetting some other section
-            buildout._data[output] = opt
-            opt._initialize()
+            buildout._raw[output] = opt._raw
+            #opt._initialize()
 
     #Make sure we have a recipe for this part, even if it is only the empty
     #one.
@@ -108,8 +109,6 @@ class Test(object):
         self.options = options
 
     def install(self):
-        print '\n'.join("%s: %s" % item for item in sorted(
-            self.options.iteritems()))
         return []
 
     update = install
