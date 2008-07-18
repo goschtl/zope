@@ -15,7 +15,8 @@
 """
 import grok
 from zope.component import getUtility
-from zope.introspector.interfaces import IRegistryInfo
+from zope.introspector.interfaces import (IRegistryInfo,
+                                          IObjectDescriptionProvider,)
 from zope.location.interfaces import ILocation
 from zope.traversing.interfaces import ITraversable
 from grok.interfaces import IContext
@@ -59,8 +60,31 @@ class RegistryIntrospector(grok.Model):
             ) for x in uinfo.getAllUtilities()]
         return utilities
 
+
 class CodeIntrospector(grok.Model):
     grok.implements(IGrokCodeIntrospector)
+    
+    def __init__(self, dotted_name=None, *args, **kw):
+        super(CodeIntrospector, self).__init__(*args, **kw)
+        self.dotted_name = dotted_name
+
+    def getIntrospector(self):
+        if self.dotted_name is None:
+            return self
+        provider = getUtility(IObjectDescriptionProvider)
+        description = provider.getDescription(dotted_name=self.dotted_name)
+        return description
+
+class CodeTraverser(grok.Traverser):
+    grok.context(IGrokCodeIntrospector)
+
+    def traverse(self, path, *args, **kw):
+        dotted_name = self.context.dotted_name or ''
+        if len(dotted_name):
+            dotted_name += '.'
+        dotted_name += path
+        introspector = CodeIntrospector(dotted_name=dotted_name)
+        return introspector.getIntrospector()
 
 class ZODBBrowser(grok.Model):
     grok.implements(IGrokZODBBrowser)
