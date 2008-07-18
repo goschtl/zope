@@ -16,6 +16,7 @@
     title="View"
     />
 
+  <include package="grokcore.view" file="meta.zcml" />
   <include package="zope.app.basicskin" />
   <include package="zope.app.rotterdam" />
   

@@ -10,7 +10,7 @@ from five import grok
 from Products.Five.security import protectClass
 from Globals import InitializeClass as initializeClass
 
-import templatereg
+from grokcore.view import templatereg
 
 def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()
@@ -85,71 +85,6 @@ class ViewGrokker(martian.ClassGrokker):
             return not getattr(factory, 'render', None)
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
-        
-        
-class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
-    # do this early on, but after ModulePageTemplateGrokker, as
-    # findFilesystem depends on module-level templates to be
-    # already grokked for error reporting
-    martian.priority(999)
-
-    def grok(self, name, module, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
-        config.action(
-            discriminator=None,
-            callable=templates.findFilesystem,
-            args=(module_info,)
-            )
-        return True
-
-class TemplateGrokker(martian.GlobalGrokker):
-    # this needs to happen before any other grokkers execute that use
-    # the template registry
-    martian.priority(1001)
-
-    def grok(self, name, module, module_info, config, **kw):
-        module.__grok_templates__ = templatereg.TemplateRegistry()
-        return True
-    
-import grokcore.view
-class ModulePageTemplateGrokker(martian.InstanceGrokker):
-    martian.component(grokcore.view.components.BaseTemplate)
-    # this needs to happen before any other grokkers execute that actually
-    # use the templates
-    martian.priority(1000)
-    
-    def grok(self, name, instance, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
-        config.action(
-            discriminator=None,
-            callable=templates.register,
-            args=(name, instance)
-            )
-        config.action(
-            discriminator=None,
-            callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name)
-            )
-        return True
-    
-class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
-    martian.priority(-1001)
-
-    def grok(self, name, module, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
-
-        config.action(
-            discriminator=None,
-            callable=templates.checkUnassociated,
-            args=(module_info,)
-            )
-        return True
 
 class SkinGrokker(martian.ClassGrokker):
     martian.component(grok.Skin)
@@ -163,3 +98,13 @@ class SkinGrokker(martian.ClassGrokker):
             args=(name, layer, IBrowserSkinType)
             )
         return True
+
+
+import grokcore.component
+class PageTemplateFileFactory(grokcore.component.GlobalUtility):
+
+    grokcore.component.implements(grokcore.view.interfaces.ITemplateFileFactory)
+    grokcore.component.name('pt')
+
+    def __call__(self, filename, _prefix=None):
+        return grokcore.view.components.PageTemplate(filename=filename, _prefix=_prefix)
