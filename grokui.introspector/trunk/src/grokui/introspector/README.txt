@@ -78,12 +78,52 @@ We get back to introspector home page::
 Browsing code (classes, packages, etc.)
 =======================================
 
+The code browser assists in giving us an overview over the available
+code basis. The overview page is where we can start::
+
   >>> browser.getLink(
   ... "Browse classes, packages and other filesystem based information"
   ... ).click()
   >>> print browser.contents
   <!DOCTYPE html...
   <h1>Code</h1>
+  ...
+
+The overview page provides already some starting points to explore the
+whole code basis. We can go to the ``zope`` package::
+
+  >>> zope_link = browser.getLink('Browse the zope package')
+  >>> zope_link.click()
+  >>> print browser.contents
+  <!DOCTYPE html...
+  Package: <span>zope</span>
+  ...
+
+The system detected from the URL, that we wanted to get information
+about the ``zope`` package. The link we clicked looks like this::
+
+  >>> zope_link
+  <Link ... url='http://localhost/++introspector++/code/zope'>
+
+We look for the ``grokui.introspector`` package by browsing::
+
+  >>> base_url = 'http://localhost/++introspector++/code/'
+
+This URL has two important parts:
+
+1) the `++introspector++` tells, that we want to get introspector
+   informations of some kind.
+
+2) the following `code/` part of the URL tells, that we want to
+   explore the code bases (and not the registries or ZODB).
+
+We now only add the interesting package ``grokui.introspector`` by
+adding its dotted name with dots replaced by slashes::
+
+  >>> browser.open(base_url + 'grokui/introspector')
+  >>> print browser.contents
+  <!DOCTYPE html...
+  Package: <span>grokui.introspector</span>
   ...
 
 We get back to introspector home page::
