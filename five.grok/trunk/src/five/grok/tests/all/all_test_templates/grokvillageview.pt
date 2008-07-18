@@ -1,0 +1,7 @@
+<html>
+<body>
+<div tal:repeat="cave context/getCaves">
+In cave <span tal:replace="cave/id"/> there is <span tal:replace="cave/caveWomen"/> cavewomen.
+</div>
+</body>
+</html>

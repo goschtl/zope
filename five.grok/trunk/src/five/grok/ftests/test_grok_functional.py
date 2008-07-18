@@ -1,10 +1,7 @@
-import re
 import unittest
-from five import grok
-import os.path
 
 from pkg_resources import resource_listdir
-from zope.testing import doctest, renormalizing
+from zope.testing import doctest
 from zope.app.testing.functional import HTTPCaller
 from five.grok.testing import GrokFunctionalLayer
 from Testing.ZopeTestCase.zopedoctest.functional import getRootFolder, sync
@@ -12,6 +9,7 @@ from Testing.ZopeTestCase import FunctionalDocTestSuite
 
 from Testing.ZopeTestCase import installProduct
 installProduct('PageTemplates')
+
 
 def http_call(method, path, data=None, **kw):
     """Function to help make RESTful calls.
@@ -21,7 +19,7 @@ def http_call(method, path, data=None, **kw):
     data - (body) data to submit
     kw - any request parameters
     """
-    
+
     if path.startswith('http://localhost'):
         path = path[len('http://localhost'):]
     request_string = '%s %s HTTP/1.1\n' % (method, path)
@@ -31,6 +29,7 @@ def http_call(method, path, data=None, **kw):
         request_string += '\r\n'
         request_string += data
     return HTTPCaller()(request_string, handle_errors=False)
+
 
 def suiteFromPackage(name):
     files = resource_listdir(__name__, name)
@@ -50,16 +49,16 @@ def suiteFromPackage(name):
                             sync=sync),
             optionflags=(doctest.ELLIPSIS+
                          doctest.NORMALIZE_WHITESPACE+
-                         doctest.REPORT_NDIFF)
-            )
+                         doctest.REPORT_NDIFF))
         test.layer = GrokFunctionalLayer
 
         suite.addTest(test)
     return suite
 
+
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view',]:
+    for name in ['view']:
         suite.addTest(suiteFromPackage(name))
     return suite
 
