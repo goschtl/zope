@@ -60,6 +60,10 @@ class StringTranslator(FieldTranslator):
         d = super( StringTranslator, self ).extractInfo( field, info )
         if schema.interfaces.IMinMaxLen.providedBy( field ):
             d['type'].length = field.max_length
+
+        if field.default is None:
+            d['default'] = u""
+        
         return d
 
 class ObjectTranslator(object):
