@@ -7,10 +7,7 @@
 #     svn propset svn:ignore -F IGNORE.txt .
 #
 develop-eggs
-var
 parts
-downloads
 .installed.cfg
-tags
 bin
 
