@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import zope.component
 from zope.interface import implements
@@ -6,9 +7,9 @@ from zope.interface import implements
 from martian.error import GrokError
 
 import grok
-import grokcore.view
+
 import grokcore.component
-import warnings
+import grokcore.view
 
 
 class TemplateRegistry(object):

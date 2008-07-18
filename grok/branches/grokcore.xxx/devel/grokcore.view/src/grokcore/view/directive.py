@@ -1,15 +1,16 @@
 import sys
+
+from zope.publisher.interfaces.browser import IBrowserView
+
 import martian
 from martian import util
 from martian.directive import StoreMultipleTimes
 from martian.error import GrokError
 from martian.error import GrokImportError
 
-from zope.publisher.interfaces.browser import IBrowserView
+import grokcore.component
 
 from grokcore.view.components import Permission
-
-import grokcore.component
 
 
 class template(martian.Directive):

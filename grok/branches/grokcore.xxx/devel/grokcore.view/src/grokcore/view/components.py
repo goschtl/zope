@@ -3,7 +3,6 @@ import sys
 
 from zope import component
 from zope import interface
-
 from zope.publisher.publish import mapply
 from zope.security.permission import Permission
 from zope.pagetemplate import pagetemplate, pagetemplatefile
@@ -21,6 +20,7 @@ class Permission(Permission):
     pass
 
 
+#XXX rename to GrokView
 class ViewMixin(object):
 
     def _initialize(self):

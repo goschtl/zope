@@ -28,7 +28,12 @@ setup(name='grokcore.view',
           'setuptools',
           'martian',
           'grokcore.component',
-          'zope.publisher',
+          'zope.security',
+          'zope.app.publisher',
+          'zope.app.pagetemplate',
+          'zope.traversing',
+          'zope.schema',
+          'zope.formlib',
       ],
       entry_points="""
       # -*- Entry points: -*-

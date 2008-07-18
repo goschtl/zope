@@ -1,5 +1,4 @@
 from zope import interface
-
 from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 

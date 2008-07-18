@@ -1,11 +1,11 @@
 import os
 
+from zope import component, interface
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+
 import martian
 from martian import util
 from martian.error import GrokError
-
-from zope import component, interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 import grokcore.component
 
