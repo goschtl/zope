@@ -17,120 +17,17 @@ from five.grok import interfaces
 from zope.app.container.contained import Contained
 import persistent
 
-import zope.publisher.browser
-class BrowserPage(zope.publisher.browser.BrowserPage, Acquisition.Implicit):
-    """Browser page with implicit Acquisition."""
+from zope.publisher.browser import BrowserPage
 
-# XXX Should probably be a SimpleItem.
 class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
     # then containers can't be models anymore because no unambigous MRO
     # can be established.
     interface.implements(IAttributeAnnotatable, interfaces.IContext)
-    
-class View(BrowserPage):
-    interface.implements(interfaces.IGrokView)
 
-    def __init__(self, context, request):
-        super(View, self).__init__(context, request)
-        self.__name__ = self.__view_name__
-        self.static = component.queryAdapter(
-            self.request,
-            interface.Interface,
-            name=self.module_info.package_dotted_name
-            )
-
-    @property
-    def response(self):
-        return self.request.response
-
-    def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
-
-    def _render_template(self):
-        return self.template.render(self)
-
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['static'] = self.static
-        namespace['view'] = self
-        return namespace
-
-    def namespace(self):
-        return {}
-
-    def __getitem__(self, key):
-        # This is BBB code for Zope page templates only:
-        if not isinstance(self.template, PageTemplate):
-            raise AttributeError("View has no item %s" % key)
-
-        value = self.template._template.macros[key]
-        # When this deprecation is done with, this whole __getitem__ can
-        # be removed.
-        warnings.warn("Calling macros directly on the view is deprecated. "
-                      "Please use context/@@viewname/macros/macroname\n"
-                      "View %r, macro %s" % (self, key),
-                      DeprecationWarning, 1)
-        return value
-
-
-    def url(self, obj=None, name=None, data=None):
-        """Return string for the URL based on the obj and name. The data
-        argument is used to form a CGI query string.
-        """
-        if isinstance(obj, basestring):
-            if name is not None:
-                raise TypeError(
-                    'url() takes either obj argument, obj, string arguments, '
-                    'or string argument')
-            name = obj
-            obj = None
-
-        if name is None and obj is None:
-            # create URL to view itself
-            obj = self
-        elif name is not None and obj is None:
-            # create URL to view on context
-            obj = self.context
-
-        if data is None:
-            data = {}
-        else:
-            if not isinstance(data, dict):
-                raise TypeError('url() data argument must be a dict.')
-
-        return util.url(self.request, obj, name, data=data)
-
-    def application_url(self, name=None):
-        obj = self.context
-        while obj is not None:
-            if isinstance(obj, Application):
-                return self.url(obj, name)
-            obj = obj.__parent__
-        raise ValueError("No application found.")
-
-    def redirect(self, url):
-        return self.request.response.redirect(url)
-
-    def update(self):
-        pass
-
-    def flash(self, message, type='message'):
-        source = component.getUtility(
-            z3c.flashmessage.interfaces.IMessageSource, name='session')
-        source.send(message, type)
-    
+from grokcore.view.components import ViewMixin
+class View(ViewMixin, BrowserPage, Acquisition.Implicit):
+    pass    
     
 class BaseTemplate(object):
     """Any sort of page template"""
@@ -198,7 +95,7 @@ class GrokTemplate(BaseTemplate):
         namespace = self.namespace(view)
         namespace.update(view.namespace())
         return namespace
-
+    
 class TrustedPageTemplate(TrustedAppPT, pagetemplate.PageTemplate):
     pass
 
