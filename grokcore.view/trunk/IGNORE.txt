@@ -1,0 +1,16 @@
+# You can check svn:ignore by issuing:
+#
+#     svn propget svn:ignore .
+#
+# You can update your working dir by issuing: 
+#
+#     svn propset svn:ignore -F IGNORE.txt .
+#
+develop-eggs
+var
+parts
+downloads
+.installed.cfg
+tags
+bin
+
