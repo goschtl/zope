@@ -26,19 +26,26 @@ import collections
 
 import cPickle as Pickle
 
-class FieldTranslator( object ):
-    """ Translate a zope schema field to an sa  column
-    """
+class FieldTranslator(object):
+    """Translate a zope schema field to a SQLAlchemy column."""
 
-    def __init__(self, column_type):
-        self.column_type = column_type
+    column_type = default = None
+
+    def __init__(self, column_type=None, default=None):
+        self.column_type = column_type or self.column_type
+        self.default = default
 
     def extractInfo( self, field, info ):
         d = {}
         d['name'] = field.getName()
         if field.required:
             d['nullable'] = False
-        d['default'] = field.default
+
+        if field.default is None:
+            d['default'] = self.default
+        else:
+            d['default'] = field.default
+            
         d['type'] = self.column_type        
         return d
     
@@ -61,7 +68,7 @@ class StringTranslator(FieldTranslator):
         if schema.interfaces.IMinMaxLen.providedBy( field ):
             d['type'].length = field.max_length
 
-        if field.default is None:
+        if field.default is None and not d.get('default'):
             d['default'] = u""
         
         return d
@@ -130,10 +137,10 @@ class PickleProperty(property):
 class PicklePropertyFactory(object):
     def __call__(self, field, column, metadata):
         return {field.__name__: PickleProperty(column.name)}
-    
+
 class ObjectProperty(object):
     """Object property.
-
+    
     We're not checking type here, because we'll only be creating
     relations to items that are joined with the soup.
     """
@@ -189,16 +196,16 @@ class DictProperty(CollectionProperty):
 fieldmap = {
     schema.ASCII: StringTranslator(), 
     schema.ASCIILine: StringTranslator(),
-    schema.Bool: FieldTranslator(rdb.BOOLEAN),
+    schema.Bool: FieldTranslator(rdb.BOOLEAN, default=False),
     schema.Bytes: FieldTranslator(rdb.BLOB),
     schema.BytesLine: FieldTranslator(rdb.CLOB),
     schema.Choice: StringTranslator(rdb.Unicode),
     schema.Date: FieldTranslator(rdb.DATE),
     schema.Dict: (None, DictProperty()),
     schema.DottedName: StringTranslator(),
-    schema.Float: FieldTranslator(rdb.Float), 
+    schema.Float: FieldTranslator(rdb.Float, default=0), 
     schema.Id: StringTranslator(rdb.Unicode),
-    schema.Int: FieldTranslator(rdb.Integer),
+    schema.Int: FieldTranslator(rdb.Integer, default=0),
     schema.List: (None, ListProperty()),
     schema.Tuple: (None, TupleProperty()),
     schema.Object: (ObjectTranslator(), ObjectProperty()),
