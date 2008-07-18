@@ -22,3 +22,7 @@ def url(request, obj, name=None, data={}):
 
 def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()
+
+
+def default_fallback_to_name(factory, module, name, **data):
+    return name

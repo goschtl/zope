@@ -7,8 +7,8 @@ to implement the zope.security.interfaces.IPermission interface::
   ...   pass
   >>>
   >>> class NoPermission(grok.View):
-  ...     grok.context(zope.interface.Interface)
-  ...     grok.require(NotAProperPermission)
+  ...     grok.context(Interface)
+  ...     grokcore.view.require(NotAProperPermission)
   ...
   ...     def render(self):
   ...         pass
@@ -18,6 +18,5 @@ to implement the zope.security.interfaces.IPermission interface::
   grok.Permission to the 'require' directive.
 
 """
-
-import grok
-import zope.interface
+from grokcore.view.tests import grok
+import grokcore.view

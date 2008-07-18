@@ -5,18 +5,19 @@ before it can be used in grok.require().
     >>> grok.testing.grok(__name__)
     Traceback (most recent call last):
     ...
-    ConfigurationExecutionError: martian.error.GrokError: Undefined permission 'doesnt.exist' in <class 'grok.tests.security.missing_permission.MissingPermission'>. Use grok.Permission first.
+    ConfigurationExecutionError: martian.error.GrokError: Undefined permission 'doesnt.exist' in <class 'grokcore.view.tests.security.missing_permission.MissingPermission'>. Use grok.Permission first.
     ...
 
 """
-
-import grok
 import zope.interface
+
+from grokcore.view.tests import grok
+import grokcore.view
+
 
 class MissingPermission(grok.View):
     grok.context(zope.interface.Interface)
-    grok.require('doesnt.exist')
+    grokcore.view.require('doesnt.exist')
 
     def render(self):
         pass
-

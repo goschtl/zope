@@ -2,6 +2,7 @@ import os
 
 from zope import component, interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.security.interfaces import IPermission
 
 import martian
 from martian import util
@@ -13,6 +14,7 @@ from grokcore.view import components
 from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.view.util import default_view_name
+from grokcore.view.util import default_fallback_to_name
 
 
 class ViewGrokkerBase(martian.ClassGrokker):
@@ -86,6 +88,32 @@ class ViewGrokkerBase(martian.ClassGrokker):
 
     def protectName(self, config, factory, permission):
         raise NotImplementedError
+
+
+class PermissionGrokker(martian.ClassGrokker):
+    martian.component(grokcore.view.Permission)
+    martian.priority(1500)
+    martian.directive(grokcore.component.name)
+    martian.directive(grokcore.component.title,
+        get_default=default_fallback_to_name)
+    martian.directive(grokcore.component.description)
+
+    def execute(self, factory, config, name, title, description, **kw):
+        if not name:
+            raise GrokError(
+                "A permission needs to have a dotted name for its id. Use "
+                "grok.name to specify one.", factory)
+        # We can safely convert to unicode, since the directives make sure
+        # it is either unicode already or ASCII.
+        permission = factory(unicode(name), unicode(title),
+                             unicode(description))
+
+        config.action(
+            discriminator=('utility', IPermission, name),
+            callable=component.provideUtility,
+            args=(permission, IPermission, name),
+            order=-1) # need to do this early in the process
+        return True
 
 
 class TemplateGrokker(martian.GlobalGrokker):

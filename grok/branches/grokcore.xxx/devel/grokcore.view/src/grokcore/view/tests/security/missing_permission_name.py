@@ -7,9 +7,8 @@ A role has to have a name to be defined.
   GrokError: A permission needs to have a dotted name for its id.
   Use grok.name to specify one.
 """
+from grokcore.view.tests import grok
+import grokcore.view
 
-import grok
-import zope.interface
-
-class MissingName(grok.Permission):
+class MissingName(grokcore.view.Permission):
     pass
