@@ -402,13 +402,7 @@ Public = 'zope.Public'
 class Role(Role):
     pass
 
-class IGrokLayer(interface.Interface):
-    pass
-
 class IRESTLayer(interface.Interface):
-    pass
-
-class Skin(object):
     pass
 
 class RESTProtocol(object):

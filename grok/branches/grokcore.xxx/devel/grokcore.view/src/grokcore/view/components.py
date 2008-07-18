@@ -20,6 +20,14 @@ class Permission(Permission):
     pass
 
 
+class Skin(object):
+    pass
+
+
+class IGrokLayer(interface.Interface):
+    pass
+
+
 #XXX rename to GrokView
 class ViewMixin(object):
 

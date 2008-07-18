@@ -17,8 +17,7 @@ import zope.component.interface
 from zope import interface, component
 from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
                                                IBrowserRequest,
-                                               IBrowserPublisher,
-                                               IBrowserSkinType)
+                                               IBrowserPublisher)
 from zope.publisher.interfaces.http import IHTTPRequest
 
 from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
@@ -65,6 +64,7 @@ def default_annotation_provides(factory, module, **data):
     real_interfaces = list(factory_interfaces - base_interfaces)
     util.check_implements_one_from_list(real_interfaces, factory)
     return real_interfaces[0]
+
 
 def default_annotation_name(factory, module, **data):
     return factory.__module__ + '.' + factory.__name__
@@ -441,19 +441,6 @@ class IndexesSetupSubscriber(object):
         setupUtility(site, intids, IIntIds)
         return intids
 
-
-class SkinGrokker(martian.ClassGrokker):
-    martian.component(grok.Skin)
-    martian.directive(grok.layer, default=IBrowserRequest)
-    martian.directive(grok.name, get_default=default_view_name)
-
-    def execute(self, factory, config, name, layer, **kw):
-        config.action(
-            discriminator=('skin', name),
-            callable=zope.component.interface.provideInterface,
-            args=(name, layer, IBrowserSkinType)
-            )
-        return True
 
 class RESTProtocolGrokker(martian.ClassGrokker):
     martian.component(grok.RESTProtocol)

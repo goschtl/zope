@@ -1,7 +1,8 @@
 import os
 
 from zope import component, interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
+    IBrowserRequest, IBrowserSkinType)
 from zope.security.interfaces import IPermission
 
 import martian
@@ -15,6 +16,19 @@ from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.view.util import default_view_name
 from grokcore.view.util import default_fallback_to_name
+
+
+class SkinGrokker(martian.ClassGrokker):
+    martian.component(grokcore.view.Skin)
+    martian.directive(grokcore.view.layer, default=IBrowserRequest)
+    martian.directive(grokcore.component.name, get_default=default_view_name)
+
+    def execute(self, factory, config, name, layer, **kw):
+        config.action(
+            discriminator=('skin', name),
+            callable=component.interface.provideInterface,
+            args=(name, layer, IBrowserSkinType))
+        return True
 
 
 class ViewGrokkerBase(martian.ClassGrokker):
