@@ -24,10 +24,13 @@ from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
 class ObjectInfo(grok.Adapter):
     grok.implements(IObjectInfo)
     grok.context(Interface)
-    
-    def __init__(self, obj):
-        self.obj = obj
 
+    dotted_name = None
+    
+    def __init__(self, obj, dotted_name=None):
+        self.obj = obj
+        self.dotted_name = dotted_name
+        
     def getType(self):
         return type(self.obj)
 
