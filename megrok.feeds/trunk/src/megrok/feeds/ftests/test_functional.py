@@ -8,6 +8,9 @@ from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
+# Use Zope versions to get neat options like "-1" and "--udiff"
+from zope.testing.doctest import DocTestSuite, DocFileSuite
+
 ftesting_zcml = os.path.join(os.path.dirname(megrok.feeds.__file__),
                              'ftesting.zcml')
 FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
@@ -33,7 +36,7 @@ def suiteFromPackage(name):
             continue
 
         dottedname = 'megrok.feeds.ftests.%s.%s' % (name, filename[:-3])
-        test = doctest.DocTestSuite(
+        test = DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
             extraglobs=dict(http=HTTPCaller(),
