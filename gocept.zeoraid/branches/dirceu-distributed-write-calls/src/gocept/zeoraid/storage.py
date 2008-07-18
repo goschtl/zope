@@ -55,6 +55,32 @@ def ensure_writable(method):
     return check_writable
 
 
+class ThreadedApplyStorage(threading.Thread):
+    def __init__(self, name, method_name, args, kw, 
+	         expect_connected, __apply_storage):
+        super(ThreadedApplyStorage, self).__init__()
+        self.name = name
+        self.method_name = method_name
+        self.args = args
+        self.kw = kw
+        self.expect_connected = expect_connected
+        self.reliable = None
+        self.result = None
+        self.__apply_storage = __apply_storage
+        self.exception = None
+    
+    def run(self):
+        try:
+            self.reliable, self.result = self.__apply_storage(
+                    self.name, self.method_name, self.args,
+                    self.kw, self.expect_connected)
+        except (ZODB.POSException.POSError,
+                transaction.interfaces.TransactionError), e:
+	    # These exceptions are valid answers from the storage. They don't
+            # indicate storage failure.
+            self.exception = e
+
+
 class RAIDStorage(object):
     """The RAID storage is a drop-in replacement for the client storages that
     are configured.
@@ -638,27 +664,6 @@ class RAIDStorage(object):
         N-th storage.
 
         """
-        class ThreadedApplyStorage(threading.Thread):
-            def __init__(self, name, method_name, args, kw, expect_connected, __apply_storage):
-                super(ThreadedApplyStorage, self).__init__()
-                self.name = name
-                self.method_name = method_name
-                self.args = args
-                self.kw = kw
-                self.expect_connected = expect_connected
-                self.reliable = None
-                self.result = None
-                self.__apply_storage = __apply_storage
-                self.exception = None
-            def run(self):
-                try:
-                    self.reliable, self.result = self.__apply_storage(
-                            self.name, self.method_name, self.args,
-                            self.kw, self.expect_connected)
-                except (ZODB.POSException.POSError,
-                        transaction.interfaces.TransactionError), e:
-                    self.exception = e
-
         results = []
         exceptions = []
 
