@@ -9,16 +9,20 @@ This package is meant to provide all the grok functionalities into Zope 2.
 How-to
 ------
 
-This readme try to explain you how to use grok in Zope 2.
+This text explains you how to use grok constructs in Zope 2.
 
     <<< from five import grok
     <<< from OFS.ObjectManager import ObjectManager
     <<< from OFS.SimpleItem import Item
 
+Let's make a Folder as a base class...
+
     <<< class SimpleFolder(ObjectManager, Item):
     ...     def __init__(self, id=None):
     ...         if id is not None:
     ...             self.id = str(id)
+
+and use it to define our own business object.
 
     <<< class GrokVillage(SimpleFolder):
     ...
@@ -27,7 +31,13 @@ This readme try to explain you how to use grok in Zope 2.
     ...         self._setObject(id, cave)
     ...         return cave
 
+Let's define a directory that will hold the templates
+that grok will use with our views.
+
     <<< grok.templatedir('tests/all/all_test_templates')
+
+Let's create a view on the GrokVillage.
+
     <<< class GrokVillageView(grok.View):
     ...     grok.context(GrokVillage)
     ...
