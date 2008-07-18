@@ -112,9 +112,10 @@ class TemplateGrokker(martian.GlobalGrokker):
     def grok(self, name, module, module_info, config, **kw):
         module.__grok_templates__ = templatereg.TemplateRegistry()
         return True
-
+    
+import grokcore.view
 class ModulePageTemplateGrokker(martian.InstanceGrokker):
-    martian.component(grok.components.BaseTemplate)
+    martian.component(grokcore.view.components.BaseTemplate)
     # this needs to happen before any other grokkers execute that actually
     # use the templates
     martian.priority(1000)
