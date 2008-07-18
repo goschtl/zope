@@ -35,8 +35,7 @@ import grokcore.component
 import grokcore.view
 from grokcore.view import components
 
-from grokcore.view.tests.components import TestView
-from grokcore.view.tests.components import TestModel
+from grokcore.view.tests import grok
 
 # Dummy template language:
 class MyTemplate(object):
@@ -72,23 +71,23 @@ class MyPageTemplateFactory(grokcore.component.GlobalUtility):
     def __call__(self, filename, _prefix=None):
         return MyPageTemplate(filename=filename, _prefix=_prefix)
 
-class Cave(TestModel):
+class Cave(grok.Model):
     pass
 
-class Sebaayeni(TestView):
+class Sebaayeni(grok.View):
     pass
 
 sebaayeni = MyPageTemplate('<html><body>Sebaayeni is in South Africa</body></html>')
 
-class Lascaux(TestView):
+class Lascaux(grok.View):
     pass
 
 lascaux = MyPageTemplate(filename='lascaux.html')
 
-class Kakadu(TestView):
+class Kakadu(grok.View):
     pass
 
-class Sierra(TestView):
+class Sierra(grok.View):
 
     def namespace(self):
         return {'cave': 'Sierra de San Fransisco',

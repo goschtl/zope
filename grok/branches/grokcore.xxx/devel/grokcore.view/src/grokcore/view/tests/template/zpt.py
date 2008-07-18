@@ -14,13 +14,12 @@
 
 """
 
-from grokcore.view.tests.components import TestView
-from grokcore.view.tests.components import TestModel
+from grokcore.view.tests import grok
 
 
-class Cave(TestModel):
+class Cave(grok.Model):
     pass
 
 
-class Piepmatz(TestView):
+class Piepmatz(grok.View):
     pass # template in zpt_templates/piepmatz.pt
