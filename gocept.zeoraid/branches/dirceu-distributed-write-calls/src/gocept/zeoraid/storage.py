@@ -649,10 +649,15 @@ class RAIDStorage(object):
                 self.reliable = None
                 self.result = None
                 self.__apply_storage = __apply_storage
+                self.exception = None
             def run(self):
-                self.reliable, self.result = self.__apply_storage(
-                        self.name, self.method_name, self.args, 
-                        self.kw, self.expect_connected)
+                try:
+                    self.reliable, self.result = self.__apply_storage(
+                            self.name, self.method_name, self.args,
+                            self.kw, self.expect_connected)
+                except (ZODB.POSException.POSError,
+                        transaction.interfaces.TransactionError), e:
+                    self.exception = e
 
         results = []
         exceptions = []
@@ -686,6 +691,8 @@ class RAIDStorage(object):
             try:
                 thread.join(60)
                 reliable, result = thread.reliable, thread.result
+                if thread.exception:
+                    raise thread.exception
             except Exception, e:
                 exceptions.append(e)
                 raise
