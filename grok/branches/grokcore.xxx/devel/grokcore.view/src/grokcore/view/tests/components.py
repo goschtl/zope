@@ -16,19 +16,11 @@ class Model(object):
 class View(BrowserPage, grokcore.view.ViewMixin):
 
     def __init__(self, context, request):
-        super(View, self).__init__(context, request)
-        self._initialize()
+        BrowserPage.__init__(self, context, request)
+        grokcore.view.ViewMixin.__init__(self, context, request)
 
     def __call__(self):
         return self._update_and_render()
-
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['static'] = self.static
-        namespace['view'] = self
-        return namespace
 
     def __getitem__(self, key):
         # This is BBB code for Zope page templates only:

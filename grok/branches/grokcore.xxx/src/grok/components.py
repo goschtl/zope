@@ -146,8 +146,8 @@ class View(BrowserPage, grokcore.view.ViewMixin):
     interface.implements(interfaces.IGrokView)
 
     def __init__(self, context, request):
-        super(View, self).__init__(context, request)
-        self._initialize()
+        BrowserPage.__init__(self, context, request)
+        grokcore.view.ViewMixin.__init__(self, context, request)
 
     def __call__(self):
         return self._update_and_render()
