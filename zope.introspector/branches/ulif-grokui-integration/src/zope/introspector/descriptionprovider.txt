@@ -177,6 +177,9 @@ the callable.
 Providing descriptions for arbitrary objects
 ============================================
 
+  >>> import grokcore.component as grok
+  >>> grok.testing.grok('zope.introspector')
+
 We define a simple object that we want to have described later on::
 
   >>> obj = object()
@@ -192,7 +195,8 @@ object best, there is a utility available. It implements the
   >>> provider
   <zope.introspector.descriptionprovider.DescriptionFinder object at 0x...>
 
-This utility takes objects and returns descriptions for it::
+This utility takes objects or dotted names and returns descriptions
+for it::
 
   >>> provider.getDescription(obj)
   <zope.introspector.objectinfo.ObjectInfo object at 0x...>
@@ -205,3 +209,8 @@ description for it::
   >>> provider.getDescription(zope.introspector.tests)
   <zope.introspector.objectinfo.PackageInfo object at 0x...>
 
+We can also pass dotted names to describe the object we want to be
+examined::
+
+  >>> provider.getDescription(dotted_name='zope.introspector.tests')
+  <zope.introspector.objectinfo.PackageInfo object at 0x...>
