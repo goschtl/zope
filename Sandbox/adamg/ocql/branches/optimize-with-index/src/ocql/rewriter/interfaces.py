@@ -81,6 +81,18 @@ class IMake(IAlgebraObject):
     coll2 = Attribute('second collection')
 
 
+class IMakeFromIndex(IAlgebraObject):
+    """Objects providing this interface represent the
+    MakeFromIndex Algebra object
+    """
+    expr1 = Attribute('expression1')
+    expr2 = Attribute('expression2')
+    coll1 = Attribute('first collection')
+    coll2 = Attribute('second collection')
+    lowerbound = Attribute('lower bound of the query')
+    upperbound = Attribute('upper bound of the query')
+
+
 class IIf(IAlgebraObject):
     """Objects providing this interface represent the
     If Algebra object

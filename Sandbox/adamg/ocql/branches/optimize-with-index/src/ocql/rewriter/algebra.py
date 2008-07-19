@@ -24,6 +24,7 @@ class Head(Location):
     def __init__(self, tree):
         name = 'head'
         self.tree = tree
+        locate(tree, self, 'tree')
 
     def __repr__(self):
         return ('%s') % (self.tree)
@@ -180,6 +181,24 @@ class Make(BaseAlgebra):
 
     def __repr__(self):
         return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr1)
+
+
+class MakeFromIndex(BaseAlgebra):
+    
+    implements(IMakeFromIndex)
+
+    def __init__(self, coll1, coll2, expr1, expr2, lowerbound='A', upperbound='Z'):
+        BaseAlgebra.__init__(self)
+        self.setProp('expr1', expr1)
+        self.setProp('expr2', expr2)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
+        self.setProp('lowerbound', lowerbound)
+        self.setProp('upperbound', upperbound)
+
+    def __repr__(self):
+        return "MakeFromIndex(%s, %s, %s, %s, %s, %s)" % (
+            self.coll1, self.coll2, self.expr1, self.expr2, self.lowerbound, self.upperbound)
 
 
 #class And:

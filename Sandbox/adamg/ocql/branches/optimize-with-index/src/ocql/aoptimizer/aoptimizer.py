@@ -8,6 +8,7 @@ $Id$
 from collections import deque
 from zope.component import adapts
 from zope.interface import implements
+from zope.location import locate
 #from zope.security.proxy import removeSecurityProxy
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
@@ -16,54 +17,62 @@ from ocql.interfaces import IAlgebraOptimizer
 
 from ocql.interfaces import IAlgebraObjectHead
 from ocql.interfaces import IOptimizedAlgebraObject
-from ocql.rewriter.algebra import BaseAlgebra, If, Single, Make, Binary, Iter, Lambda
+from ocql.rewriter.algebra import *
 
-class FindResults(object):
-    def __init__(self):
-        self.level = 0
-        self.parent = dict()
+def bfsFind(tree):
+    """Breadth-first search to find a Iter Algebra object."""
+    visited = set()
+    queue = [tree]
+    while len(queue):
+        curr_node = queue.pop(0)
+        if isinstance(curr_node, Iter):
+            return curr_node
+        if isinstance(curr_node, BaseAlgebra):
+            visited.add(curr_node)
+            queue.extend(c for c in curr_node.children
+                         if c not in visited and c not in queue)
 
-def find(tree, algebra, startlevel=0):
-    results = FindResults()
-    bfs_list = deque()
-    bfs_list.append(tree.tree)
-    results.parent[algebra] = None
-    results.level = 0
-    
-    while len(bfs_list):
-        v = bfs_list.popleft()
-        if isinstance(v, algebra) and startlevel < results.level:
-            return results
 
-        for child in v.children:
-            if child not in results.parent:
-                results.parent[str(child.__class__)] = v
-                results.level += 1
-                bfs_list.append(child)
+def findItrTreePattern(tree):
+    """Checks whole Iter tree pattern exists stating from the Iter algebra object"""
+    iter_obj = bfsFind(tree)
+    if iter_obj is not None:
+        #need to check If and Make objects present
+        if (isinstance(iter_obj.func, Lambda) and isinstance(iter_obj.coll, Make)):
+            if isinstance(iter_obj.func.expr, If):
+                if isinstance(iter_obj.func.expr.cond , Binary):
+                    return iter_obj
     return None
 
-def findItrPattern(tree, algebra):
-#this has If and Make algebra objects
-    itr_reslts = find(tree, algebra)
-    if itr_reslts is not None:
-        #find for If and Make
-        for child in itr_reslts.parent.values():
-            if isinstance(child, Iter): 
-                r_iter = child
-                break
 
-        boolean_if = boolean_make = False
-        print r_iter
-        for i in r_iter.children:
-            if isinstance(i, Lambda):
-                boolean_lambda = True
-            if isinstance(i, Make):
-                boolean_make = True
-                
-        if boolean_lambda and boolean_make:
-            return r_iter
+def iterPatternMatcher(tree):
+    """Replaces the identified Iter tree pattern """
+    coll = tree.klass
+    single = tree.func.expr.expr1
+    interface = tree.coll.expr1.name
+    cond = tree.func.expr.cond.left.name
+    operator = tree.func.expr.cond.op.op
+    if isinstance(tree.func.expr.cond.right, Constant):
+        value = tree.func.expr.cond.right.value
+    elif isinstance(tree.func.expr.cond.right, Identifier):
+        value = tree.func.expr.cond.right.name
+    else:
+        return tree
+    #new algebra objects
+    if operator == '==':
+        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], value, value)
+    elif operator == '>' or operator == '>=':
+        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound=value)
+    elif operator == '<' or operator == '<=':
+        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], upperbound=value)
+    else:
+        return tree
+    
+    newTree = Iter(coll, single, makeFromIndex)
+    parent = tree.__parent__
+    locate(newTree, parent, 'iter')
+    return newTree
 
-    return  None
 
 def addMarkerIF(obj, marker):
     #obj = removeSecurityProxy(obj)
@@ -80,7 +89,9 @@ class AlgebraOptimizer(object):
 
     def __call__(self, metadata):
         addMarkerIF(self.context, IOptimizedAlgebraObject)
-        results = findItrPattern(self.context, Iter)
+        results = findItrTreePattern(self.context.tree)
         if results is not None:
-            print results
+            newTree = iterPatternMatcher(results)
+            #return newTree
+
         return self.context

@@ -106,6 +106,9 @@ class Metadata:
                     results = catalog.apply({iname:(lowerbound, upperbound)})
                     obj_list = [intids.getObject(result) for result in results]
                     return obj_list
+        #I could check whether property has an index by hasPropertyIndex. 
+        #But by this approach this always returns IF objects
+        return self.getAll(klass)
 
     def hasPropertyIndex(self, klass, property):
         catalogs = getUtilitiesFor(ICatalog)

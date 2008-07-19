@@ -164,6 +164,19 @@ class MakeCompiler(BaseCompiler):
             IAlgebraCompiler(self.context.expr1)())
 
 
+class MakeFromIndexCompiler(BaseCompiler):
+    implements(IAlgebraCompiler)
+    adapts(IMakeFromIndex)
+
+    def __call__(self):
+        return '%s(metadata.getFromIndex("%s", "%s", "%s", "%s", "%s"))' % (
+            self.context.coll1.__name__,
+            self.context.expr1,
+            self.context.expr2,
+            self.context.lowerbound,
+            self.context.upperbound)
+
+
 class IfCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
     adapts(IIf)
@@ -240,6 +253,7 @@ def registerAdapters():
     provideAdapter(ReduceCompiler)
     provideAdapter(RangeCompiler)
     provideAdapter(MakeCompiler)
+    provideAdapter(MakeFromIndexCompiler)
     provideAdapter(IfCompiler)
     provideAdapter(LambdaCompiler)
     provideAdapter(ConstantCompiler)
