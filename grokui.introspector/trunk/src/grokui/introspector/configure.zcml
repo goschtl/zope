@@ -3,6 +3,5 @@
     xmlns:grok="http://namespaces.zope.org/grok">
   <include package="grok" />
   <grok:grok package="." />
-  <grok:grok package="zope.introspector" />
   <includeDependencies package="." />
 </configure>
