@@ -20,6 +20,7 @@ from zope.introspector.interfaces import (IObjectInfo, IPackageInfo,
 from zope.introspector.objectinfo import ObjectInfo
 from grokui.introspector.views import Master
 from grokui.introspector.interfaces import (IGrokIntrospector,)
+from grokui.introspector.util import dotted_name_url
 
 grok.context(IObjectInfo)
 
@@ -30,12 +31,18 @@ class Master(Master):
 class ObjectInfoView(grok.View):
     grok.name('index.html')
 
-class PackageInfoView(grok.View):
+    def update(self, *args, **kw):
+        self.dotted_name = dotted_name_url(self.context.dotted_name)
+        
+    def dottedNameUrl(self, *args, **kw):
+        return dotted_name_url(*args, **kw)
+
+class PackageInfoView(ObjectInfoView):
     grok.context(IPackageInfo)
     grok.name('index.html')
 
 class DottedPathTraverser(grok.Traverser):
-    """Travere object infos.
+    """Traverse object infos.
     """
     def traverse(self, path, *args, **kw):
         dotted_name = '.'.join([self.context.dotted_name, path])
