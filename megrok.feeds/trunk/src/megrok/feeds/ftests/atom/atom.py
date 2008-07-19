@@ -49,8 +49,8 @@ from vice.outbound.core.browser.feed import Atom_1_0_FeedView
 from vice.outbound.core.interfaces import IFeed, IFeedItem
 
 from zope.interface import Interface
-class IFeedable(Interface):
-    pass # marker interface
+
+from megrok.feeds.components import IFeedable
 
 # need three things:
 # (1) we need to create an adapter from MammothBox to IFeed
@@ -92,16 +92,10 @@ class MammothBoxFeed(grok.Adapter): #(1)
         while False:
             yield None
 
-#class AtomFormat(Atom_1_0_FeedView): #, grok.View):
-#    grok.context(IFeedable)
-    #@grok.require('zope.View')
-    #def __call__(self, *args, **kw):
-    #    super(self, AtomFormat).__call__(self, *args, **kw)
-
 from megrok.feeds.components import AtomFeed
 
 class Atom(AtomFeed):
-    grok.context(IFeedable)
+    pass #grok.context(IFeedable)
 
 #class AtomFormat(Atom_1_0_FeedView): #, grok.View):
 #    grok.context(IFeedable)

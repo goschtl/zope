@@ -12,7 +12,6 @@ def default_view_name(factory, module=None, **data):
 
 class AtomFeedGrokker(martian.ClassGrokker):
     martian.component(components.AtomFeed)
-    martian.directive(grok.context)
     martian.directive(grok.layer, default=IDefaultBrowserLayer)
     martian.directive(grok.name, get_default=default_view_name)
     martian.directive(grok.require, name='permission')
@@ -23,7 +22,7 @@ class AtomFeedGrokker(martian.ClassGrokker):
         factory.module_info = module_info
         return super(AtomFeedGrokker, self).grok(name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, name, permission, **kw):
+    def execute(self, factory, config, layer, name, permission, **kw):
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
@@ -36,7 +35,7 @@ class AtomFeedGrokker(martian.ClassGrokker):
 
         # __view_name__ is needed to support IAbsoluteURL on views
         factory.__view_name__ = name
-        adapts = (context, layer)
+        adapts = (components.IFeedable, layer)
 
         config.action(
             discriminator=('adapter', adapts, interface.Interface, name),
