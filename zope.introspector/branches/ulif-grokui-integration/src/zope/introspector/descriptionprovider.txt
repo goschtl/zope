@@ -177,9 +177,6 @@ the callable.
 Providing descriptions for arbitrary objects
 ============================================
 
-  >>> import grokcore.component as grok
-  >>> grok.testing.grok('zope.introspector')
-
 We define a simple object that we want to have described later on::
 
   >>> obj = object()
