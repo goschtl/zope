@@ -6,6 +6,7 @@
    >
 
   <include package="grok" />
+  <include package="megrok.feeds" />
   <grok:grok package="megrok.feeds.ftests" />
 
   <securityPolicy
