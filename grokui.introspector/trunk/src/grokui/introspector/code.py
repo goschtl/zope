@@ -34,9 +34,6 @@ class ObjectInfoView(grok.View):
     def update(self, *args, **kw):
         self.dotted_name = dotted_name_url(self.context.dotted_name)
         
-    def dottedNameUrl(self, *args, **kw):
-        return dotted_name_url(*args, **kw)
-
 class PackageInfoView(ObjectInfoView):
     grok.context(IPackageInfo)
     grok.name('index.html')
