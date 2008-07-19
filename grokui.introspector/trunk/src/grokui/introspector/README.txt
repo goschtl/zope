@@ -96,7 +96,7 @@ whole code basis. We can go to the ``zope`` package::
   >>> zope_link.click()
   >>> print browser.contents
   <!DOCTYPE html...
-  Package: <span>zope</span>
+  Package: <span>...zope...</span>
   ...
 
 The system detected from the URL, that we wanted to get information
@@ -123,7 +123,7 @@ adding its dotted name with dots replaced by slashes::
   >>> browser.open(base_url + 'grokui/introspector')
   >>> print browser.contents
   <!DOCTYPE html...
-  Package: <span>grokui.introspector</span>
+  Package: <span>...grokui...introspector...</span>
   ...
 
 We get back to introspector home page::
