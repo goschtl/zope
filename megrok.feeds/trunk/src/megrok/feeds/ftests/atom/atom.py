@@ -65,16 +65,6 @@ class IMammoth(Interface):
 
 class MammothBox(object): #grok.Container): #grok.Application, #grok.Container
     implements(IFeedable) #(2)
-    def __init__(self):
-        import zope.component
-        provideAdapter(AtomFormat,
-                       #adapts=(IFeedable, IHTTPRequest),
-                       (IFeedable, IHTTPRequest),#IDefaultBrowserLayer),
-                       #provides=Interface,
-                       provides=IBrowserView,
-                       name=u'atom')
-        #print "########################", \
-        #    zope.component.getAdapters()
 
 from datetime import datetime
 
@@ -102,11 +92,20 @@ class MammothBoxFeed(grok.Adapter): #(1)
         while False:
             yield None
 
-class AtomFormat(Atom_1_0_FeedView): #, grok.View):
-    grok.context(MammothBox)
+#class AtomFormat(Atom_1_0_FeedView): #, grok.View):
+#    grok.context(IFeedable)
     #@grok.require('zope.View')
     #def __call__(self, *args, **kw):
     #    super(self, AtomFormat).__call__(self, *args, **kw)
+
+from megrok.feeds.components import AtomFeed
+
+class Atom(AtomFeed):
+    grok.context(IFeedable)
+
+#class AtomFormat(Atom_1_0_FeedView): #, grok.View):
+#    grok.context(IFeedable)
+
 
 from zope.component import provideAdapter
 from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView

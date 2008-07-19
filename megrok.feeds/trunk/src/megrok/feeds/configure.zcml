@@ -3,4 +3,6 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:grok="http://namespaces.zope.org/grok">
 
+    <include package="megrok.feeds" file="meta.zcml" />
+
 </configure>
