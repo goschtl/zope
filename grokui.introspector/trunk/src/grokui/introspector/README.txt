@@ -105,31 +105,10 @@ about the ``zope`` package. The link we clicked looks like this::
   >>> zope_link
   <Link ... url='http://localhost/++introspector++/code/zope'>
 
-We look for the ``grokui.introspector`` package by browsing::
+This link is translated by the system to the dotted name `zope`, which
+means to display the object, whose dotted name is 'zope'.
 
-  >>> base_url = 'http://localhost/++introspector++/code/'
-
-This URL has two important parts:
-
-1) the `++introspector++` tells, that we want to get introspector
-   informations of some kind.
-
-2) the following `code/` part of the URL tells, that we want to
-   explore the code bases (and not the registries or ZODB).
-
-We now only add the interesting package ``grokui.introspector`` by
-adding its dotted name with dots replaced by slashes::
-
-  >>> browser.open(base_url + 'grokui/introspector')
-  >>> print browser.contents
-  <!DOCTYPE html...
-  Package: <span>...grokui...introspector...</span>
-  ...
-
-We get back to introspector home page::
-
-  >>> browser.open('http://localhost/++introspector++/')
-
+See `code.txt` to learn more about the code browser.
 
 Browsing the ZODB
 =================
