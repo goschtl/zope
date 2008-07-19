@@ -42,6 +42,21 @@ class PackageInfoView(ObjectInfoView):
     grok.context(IPackageInfo)
     grok.name('index.html')
 
+    def update(self, *args, **kw):
+        super(PackageInfoView, self).update(*args, **kw)
+        self.files = self.getPackageFiles()
+
+    def getPackageFiles(self, filter=None):
+        files = self.context.getPackageFiles(filter=filter)
+        result = []
+        for name in files:
+            dotnum = name.count('.')
+            url = dotted_name_url(self.context.dotted_name + '.' + name,
+                                  preserve_last = dotnum)
+            url = url.split('.', dotnum*2)[-1]
+            result.append(dict(name=name, url=url))
+        return result
+
 class DottedPathTraverser(grok.Traverser):
     """Traverse object infos.
     """
