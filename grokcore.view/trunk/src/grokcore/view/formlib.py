@@ -1,4 +1,3 @@
-import types
 from zope import interface, event, lifecycleevent
 from zope.interface.interfaces import IInterface
 from zope.formlib import form
