@@ -110,6 +110,11 @@ means to display the object, whose dotted name is 'zope'.
 
 See `code.txt` to learn more about the code browser.
 
+We get back to introspector home page::
+
+  >>> browser.open('http://localhost/++introspector++/')
+
+
 Browsing the ZODB
 =================
 
