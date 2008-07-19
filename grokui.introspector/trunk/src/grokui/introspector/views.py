@@ -34,9 +34,6 @@ class IntrospectorLayer(IDefaultBrowserLayer):
     """
     pass
 
-# This is the default layer for all views herein...
-#grok.layer(IntrospectorLayer)
-
 class IntrospectorSkin(grok.Skin):
     """A skin for all introspection stuff.
     """
@@ -91,8 +88,6 @@ class PageFooterManager(grok.ViewletManager):
     """This viewlet manager cares for the page footer.
     """
     grok.name('footer')
-
-# Define a namespace for all introspector related stuff
 
 class GrokIntrospectorNamespace(grok.MultiAdapter):
     grok.name(NAMESPACE)
