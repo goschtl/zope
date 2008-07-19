@@ -18,13 +18,12 @@ from zope.component import getUtility
 from zope.introspector.interfaces import (IObjectInfo, IPackageInfo,
                                           IObjectDescriptionProvider,)
 from zope.introspector.objectinfo import ObjectInfo
-from grokui.introspector.views import Master
 from grokui.introspector.interfaces import (IGrokIntrospector,)
 from grokui.introspector.util import dotted_name_url
 
 grok.context(IObjectInfo)
 
-class Master(Master):
+class Master(grok.View):
     """The Macro page that defines the default look and feel.
     """
 
