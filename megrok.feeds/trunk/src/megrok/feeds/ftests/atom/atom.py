@@ -43,29 +43,33 @@ from zope.schema.fieldproperty import FieldProperty
 
 #
 
-from vice.outbound.core.interfaces import IFeed, IFeedItem
-
 from zope.interface import Interface
-
-from megrok.feeds.components import IFeedable
-
-# need three things:
-# (1) we need to create an adapter from MammothBox to IFeed
-# (2) we need to mark MammothBox as IFeedable
-# (3) we need to create a View that makes an IFeedable render
 
 class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-class MammothBox(object): #grok.Container): #grok.Application, #grok.Container
-    grok.implements(IFeedable) #(2)
+class MammothBox(object):
+    pass
 
+class Mammoth(grok.Model):
+    grok.implements(IMammoth)
+    name = FieldProperty(IMammoth['name'])    
+    size = FieldProperty(IMammoth['size'])    
+
+# The actions necessary to put a Feed on top of these objects.
+
+from megrok.feeds.components import Feed, AtomFeed
+#from vice.outbound.core.interfaces import IFeedItem
 from datetime import datetime
 
-class MammothBoxFeed(grok.Adapter): #(1)
+class Atom(AtomFeed):
+    """This is what makes /atom return an Atom feed."""
+
+class MammothBoxFeed(Feed):
+    """This makes a MammothBox able to be rendered as a feed."""
     grok.context(MammothBox)
-    grok.provides(IFeed)
+
     def __init__(self, context):
         self.context = context
         self.description = 'A box full of mammoths.'
@@ -87,21 +91,11 @@ class MammothBoxFeed(grok.Adapter): #(1)
         while False:
             yield None
 
-from megrok.feeds.components import AtomFeed
+#class MammothItem(grok.Adapter):
+#    """This makes a Mammoth eligible to appear as a feed item."""
+#    grok.context(Mammoth)
+#    grok.implements(IFeedItem)
+#    def __init__(self, context):
+#        self.context = context
+#        self.title = 'Mammoth %s' % self.name
 
-class Atom(AtomFeed):
-    pass
-
-class Mammoth(grok.Model):
-    grok.implements(IMammoth)
-    
-    name = FieldProperty(IMammoth['name'])    
-    size = FieldProperty(IMammoth['size'])    
-
-class MammothItem(grok.Adapter): #(3)
-    grok.context(Mammoth)
-    grok.implements(IFeedItem)
-    def __init__(self, context):
-        self.context = context
-        self.title = 'Mammoth %s' % self.name
-        # DUH, don't need this yet, will finish later

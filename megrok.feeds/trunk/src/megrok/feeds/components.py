@@ -6,5 +6,8 @@ from zope.interface import Interface
 class IFeedable(Interface):
     pass # marker interface
 
+class Feed(object):
+    pass
+
 class AtomFeed(Atom_1_0_FeedView):
     pass

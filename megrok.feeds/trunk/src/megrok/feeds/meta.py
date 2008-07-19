@@ -5,9 +5,34 @@ from grok import util
 from megrok.feeds import components
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from vice.outbound.core.interfaces import IFeed
 
 def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()
+
+class FeedGrokker(martian.ClassGrokker):
+    martian.component(components.Feed)
+    martian.directive(grok.context)
+
+    def grok(self, name, factory, module_info, **kw):
+        return super(FeedGrokker, self).grok(name, factory, module_info, **kw)
+
+    def execute(self, factory, config, context, **kw):
+        adapts = (context,)
+
+        config.action(
+            discriminator=('adapter', adapts, interface.Interface, u''),
+            callable=component.provideAdapter,
+            args=(factory, adapts, IFeed, u''),
+            )
+
+        config.action(
+            discriminator=None,
+            callable=interface.classImplements,
+            args=(context, components.IFeedable),
+            )
+
+        return True
 
 class AtomFeedGrokker(martian.ClassGrokker):
     martian.component(components.AtomFeed)
