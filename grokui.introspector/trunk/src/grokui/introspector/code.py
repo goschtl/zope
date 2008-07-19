@@ -15,7 +15,8 @@
 """
 import grok
 from zope.component import getUtility
-from zope.introspector.interfaces import (IObjectInfo, IPackageInfo,
+from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
+                                          IPackageInfo,
                                           IObjectDescriptionProvider,)
 from zope.introspector.objectinfo import ObjectInfo
 from grokui.introspector.interfaces import (IGrokIntrospector,)
@@ -32,7 +33,11 @@ class ObjectInfoView(grok.View):
 
     def update(self, *args, **kw):
         self.dotted_name = dotted_name_url(self.context.dotted_name)
-        
+
+class ModuleInfoView(ObjectInfoView):
+    grok.context(IModuleInfo)
+    grok.name('index.html')
+
 class PackageInfoView(ObjectInfoView):
     grok.context(IPackageInfo)
     grok.name('index.html')
