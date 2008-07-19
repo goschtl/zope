@@ -1,11 +1,10 @@
 """Grokkers for megrok.feeds components."""
 import grok
 import martian
-from zope import interface, component
-from megrok.feeds import components
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
 from grok import util
+from megrok.feeds import components
+from zope import interface, component
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 def default_view_name(factory, module=None, **data):
     return factory.__name__.lower()

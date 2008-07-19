@@ -39,13 +39,10 @@ A grok.AtomFeed syndicates sub-objects into an Atom feed.
 """
 import grok
 from zope import schema
-from zope.interface import Interface, implements
 from zope.schema.fieldproperty import FieldProperty
 
 #
 
-#from megrok.feeds
-from vice.outbound.core.browser.feed import Atom_1_0_FeedView
 from vice.outbound.core.interfaces import IFeed, IFeedItem
 
 from zope.interface import Interface
@@ -57,14 +54,12 @@ from megrok.feeds.components import IFeedable
 # (2) we need to mark MammothBox as IFeedable
 # (3) we need to create a View that makes an IFeedable render
 
-#
-
 class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
 class MammothBox(object): #grok.Container): #grok.Application, #grok.Container
-    implements(IFeedable) #(2)
+    grok.implements(IFeedable) #(2)
 
 from datetime import datetime
 
@@ -95,19 +90,10 @@ class MammothBoxFeed(grok.Adapter): #(1)
 from megrok.feeds.components import AtomFeed
 
 class Atom(AtomFeed):
-    pass #grok.context(IFeedable)
-
-#class AtomFormat(Atom_1_0_FeedView): #, grok.View):
-#    grok.context(IFeedable)
-
-
-from zope.component import provideAdapter
-from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
-from zope.publisher.interfaces.http import IHTTPRequest
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+    pass
 
 class Mammoth(grok.Model):
-    implements(IMammoth)
+    grok.implements(IMammoth)
     
     name = FieldProperty(IMammoth['name'])    
     size = FieldProperty(IMammoth['size'])    
