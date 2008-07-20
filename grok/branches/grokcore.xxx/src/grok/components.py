@@ -139,14 +139,6 @@ class Annotation(persistent.Persistent):
 class View(grokcore.view.View):
     interface.implements(interfaces.IGrokView)
 
-    def default_namespace(self):
-        namespace = {}
-        namespace['context'] = self.context
-        namespace['request'] = self.request
-        namespace['static'] = self.static
-        namespace['view'] = self
-        return namespace
-
     def __getitem__(self, key):
         # This is BBB code for Zope page templates only:
         if not isinstance(self.template, PageTemplate):
