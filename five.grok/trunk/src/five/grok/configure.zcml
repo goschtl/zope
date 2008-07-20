@@ -3,6 +3,7 @@
     xmlns:meta="http://namespaces.zope.org/meta"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="five.grok">
 
   <grok:grok package=".meta" />
@@ -15,8 +16,9 @@
   <permission
     id="zope.View"
     title="View"
+    zcml:condition="not-installed kss.core"
     />
 
   <include package="grokcore.view" file="meta.zcml" />
-  
+
 </configure>
