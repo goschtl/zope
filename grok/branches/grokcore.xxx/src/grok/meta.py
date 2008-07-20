@@ -51,8 +51,6 @@ from grok.interfaces import IViewletManager as IGrokViewletManager
 
 from grokcore.component.scan import determine_module_component
 
-import grokcore.view
-from grokcore.view.meta import ViewGrokkerBase
 from grokcore.view.meta import PermissionGrokker
 from grokcore.view.util import default_view_name
 from grokcore.view.util import default_fallback_to_name
@@ -137,17 +135,6 @@ class RESTGrokker(martian.MethodGrokker):
             args=(factory, method_view, permission),
             )
         return True
-
-
-class ViewGrokker(ViewGrokkerBase):
-    martian.component(grokcore.view.View)
-
-    def protectName(self, config, factory, permission):
-        config.action(
-            discriminator=('protectName', factory, '__call__'),
-            callable=make_checker,
-            args=(factory, factory, permission),
-            )
 
 
 class JSONGrokker(martian.MethodGrokker):
