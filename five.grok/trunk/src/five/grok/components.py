@@ -1,12 +1,11 @@
 from zope import interface
 from zope.annotation.interfaces import IAttributeAnnotatable
 
+import grokcore.view
 from grokcore.component.interfaces import IContext
 
 import Acquisition
 from OFS.SimpleItem import SimpleItem
-
-from grokcore.view import GrokView
 
 class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
@@ -14,5 +13,5 @@ class Model(SimpleItem):
     # can be established.
     interface.implements(IAttributeAnnotatable, IContext)
 
-class View(GrokView, Acquisition.Implicit):
+class View(grokcore.view.View, Acquisition.Implicit):
     pass

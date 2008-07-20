@@ -1,24 +1,19 @@
 import martian
 from five import grok
+import grokcore.view
 
 from Products.Five.security import protectClass
 from Globals import InitializeClass as initializeClass
 
-from grokcore.view.meta import ViewGrokkerBase
 
-def default_view_name(factory, module=None, **data):
-    return factory.__name__.lower()
-
-class ViewGrokker(ViewGrokkerBase):
+class ViewSecurityGrokker(martian.ClassGrokker):
     martian.component(grok.View)
+    martian.directive(grokcore.view.require, name='permission')
     
-    def execute(self, factory, config, context, layer, name, permission, **kw):
+    def execute(self, factory, config, permission, **kw):
         if permission is None:
             permission = 'zope.Public'
-            
-        return super(ViewGrokker, self).execute(factory, config, context, layer, name, permission, **kw)
-            
-    def protectName(self, config, factory, permission):
+
         config.action(
             discriminator = ('five:protectClass', factory),
             callable = protectClass,
@@ -31,3 +26,5 @@ class ViewGrokker(ViewGrokkerBase):
             callable = initializeClass,
             args = (factory,)
             )
+
+        return True
