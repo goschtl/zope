@@ -295,7 +295,7 @@ function tb_get_control_by_name(name, index, contextToken, xpath) {
     return tb_get_control_by_predicate(
         function (control) {
             var controlName = control.getAttribute('name');
-            return controlName != null && controlName.indexOf(name) != -1;
+            return controlName != null && controlName == name;
         }, index, true, tb_tokens[contextToken], xpath)
 }
 
