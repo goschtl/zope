@@ -12,10 +12,7 @@ class Model(object):
     interface.implements(IContext)
 
 
-class View(grokcore.view.GrokView):
-
-    def __call__(self):
-        return self._update_and_render()
+class View(grokcore.view.View):
 
     def __getitem__(self, key):
         # This is BBB code for Zope page templates only:

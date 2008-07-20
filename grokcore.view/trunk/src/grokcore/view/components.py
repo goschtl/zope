@@ -29,27 +29,15 @@ class IGrokLayer(interface.Interface):
     pass
 
 
-class GrokView(BrowserPage):
+class View(BrowserPage):
 
     def __init__(self, context, request):
-        super(GrokView, self).__init__(context, request)
+        super(View, self).__init__(context, request)
         self.__name__ = self.__view_name__
         self.static = component.queryAdapter(
             self.request,
             interface.Interface,
             name=self.module_info.package_dotted_name)
-
-    def _update_and_render(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
-        template = getattr(self, 'template', None)
-        if template is not None:
-            return self._render_template()
-        return mapply(self.render, (), self.request)
 
     def _render_template(self):
         return self.template.render(self)
