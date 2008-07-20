@@ -1,5 +1,5 @@
-from directive import layer, view, require, template, templatedir
-from util import url
-from components import GrokView, Permission, GrokForm, Skin
-from components import PageTemplate, PageTemplateFile
-from components import IGrokLayer
+from grokcore.view.directive import layer, view, require, template, templatedir
+from grokcore.view.util import url
+from grokcore.view.components import GrokView, Permission, GrokForm, Skin
+from grokcore.view.components import PageTemplate, PageTemplateFile
+from grokcore.view.components import IGrokLayer
