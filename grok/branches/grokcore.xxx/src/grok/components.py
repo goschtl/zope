@@ -54,7 +54,6 @@ import martian.util
 from grok import interfaces, util
 from grokcore.view import formlib
 from grokcore.view import GrokForm
-from grokcore.view import PageTemplate
 from grokcore.view import PageTemplateFile
 
 
@@ -138,20 +137,6 @@ class Annotation(persistent.Persistent):
 
 class View(grokcore.view.View):
     interface.implements(interfaces.IGrokView)
-
-    def __getitem__(self, key):
-        # This is BBB code for Zope page templates only:
-        if not isinstance(self.template, PageTemplate):
-            raise AttributeError("View has no item %s" % key)
-
-        value = self.template._template.macros[key]
-        # When this deprecation is done with, this whole __getitem__ can
-        # be removed.
-        warnings.warn("Calling macros directly on the view is deprecated. "
-                      "Please use context/@@viewname/macros/macroname\n"
-                      "View %r, macro %s" % (self, key),
-                      DeprecationWarning, 1)
-        return value
 
     def flash(self, message, type='message'):
         source = component.getUtility(
