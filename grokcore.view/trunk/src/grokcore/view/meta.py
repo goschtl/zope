@@ -98,9 +98,6 @@ class ViewGrokker(martian.ClassGrokker):
         templates.checkTemplates(module_info, factory, 'view',
                                  has_render, has_no_render)
 
-    def protectName(self, config, factory, permission):
-        raise NotImplementedError
-
 
 class ViewSecurityGrokker(martian.ClassGrokker):
     martian.component(grokcore.view.View)
