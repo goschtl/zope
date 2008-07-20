@@ -16,6 +16,7 @@ from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.view.util import default_view_name
 from grokcore.view.util import default_fallback_to_name
+from grokcore.view.util import make_checker
 
 
 class SkinGrokker(martian.ClassGrokker):
@@ -31,20 +32,20 @@ class SkinGrokker(martian.ClassGrokker):
         return True
 
 
-class ViewGrokkerBase(martian.ClassGrokker):
+class ViewGrokker(martian.ClassGrokker):
+    martian.component(grokcore.view.View)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
-    martian.directive(grokcore.view.require, name='permission')
 
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info object on the view class so that it
         # can look up the 'static' resource directory.
         factory.module_info = module_info
-        return super(ViewGrokkerBase, self).grok(name, factory, module_info,
+        return super(ViewGrokker, self).grok(name, factory, module_info,
             **kw)
 
-    def execute(self, factory, config, context, layer, name, permission, **kw):
+    def execute(self, factory, config, context, layer, name, **kw):
         if util.check_subclass(factory, components.GrokForm):
             # setup form_fields from context class if we've encountered a form
             if getattr(factory, 'form_fields', None) is None:
@@ -84,9 +85,6 @@ class ViewGrokkerBase(martian.ClassGrokker):
             callable=component.provideAdapter,
             args=(factory, adapts, interface.Interface, name),
             )
-
-        self.protectName(config, factory, permission)
-
         return True
 
     def checkTemplates(self, templates, module_info, factory):
@@ -102,6 +100,21 @@ class ViewGrokkerBase(martian.ClassGrokker):
 
     def protectName(self, config, factory, permission):
         raise NotImplementedError
+
+
+class ViewSecurityGrokker(martian.ClassGrokker):
+    martian.component(grokcore.view.View)
+    martian.directive(grokcore.view.require, name='permission')
+
+    def execute(self, factory, config, permission, **kw):
+        config.action(
+            # TODO For pure Zope 3 we need to protect the whole
+            # IBrowserPage interface, not just __call__
+            discriminator=('protectName', factory, '__call__'),
+            callable=make_checker,
+            args=(factory, factory, permission),
+            )
+        return True
 
 
 class PermissionGrokker(martian.ClassGrokker):
