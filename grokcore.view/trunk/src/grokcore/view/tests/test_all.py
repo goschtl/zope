@@ -1,22 +1,14 @@
-# -*- coding: utf-8 -*-
 import re
 import unittest
 from pkg_resources import resource_listdir
-
 from zope.testing import doctest, cleanup, renormalizing
 import zope.component.eventtesting
 
+def setUpZope(test):
+    zope.component.eventtesting.setUp(test)
 
-class GrokcoreViewLayer:
-
-    @classmethod
-    def setUp(cls):
-        zope.component.eventtesting.setUp()
-
-    @classmethod
-    def tearDown(cls):
-        cleanup.cleanUp()
-
+def cleanUpZope(test):
+    cleanup.cleanUp()
 
 checker = renormalizing.RENormalizing([
     # str(Exception) has changed from Python 2.4 to 2.5 (due to
@@ -41,10 +33,11 @@ def suiteFromPackage(name):
         dottedname = ('grokcore.view.tests.%s.%s'
             % (name, filename[:-3]))
         test = doctest.DocTestSuite(dottedname,
+                                    setUp=setUpZope,
+                                    tearDown=cleanUpZope,
                                     checker=checker,
                                     optionflags=doctest.ELLIPSIS+
                                     doctest.NORMALIZE_WHITESPACE)
-        test.layer = GrokcoreViewLayer
         suite.addTest(test)
     return suite
 
@@ -54,6 +47,3 @@ def test_suite():
     for name in ['template', 'static', 'view', 'security']:
         suite.addTest(suiteFromPackage(name))
     return suite
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
