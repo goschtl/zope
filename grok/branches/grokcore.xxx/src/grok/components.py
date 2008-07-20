@@ -135,18 +135,9 @@ class LocalUtility(Model):
 class Annotation(persistent.Persistent):
     pass
 
-# all grok tests pass when this is commented out
-#
-#class ViewBase(object):
-#    def __init__(self, context, request):
-#        self.context = context
-#        self.request = request
 
-class View(grokcore.view.GrokView):
+class View(grokcore.view.View):
     interface.implements(interfaces.IGrokView)
-
-    def __call__(self):
-        return self._update_and_render()
 
     def default_namespace(self):
         namespace = {}

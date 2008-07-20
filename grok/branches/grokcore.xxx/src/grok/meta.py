@@ -140,7 +140,7 @@ class RESTGrokker(martian.MethodGrokker):
 
 
 class ViewGrokker(ViewGrokkerBase):
-    martian.component(grokcore.view.GrokView)
+    martian.component(grokcore.view.View)
 
     def protectName(self, config, factory, permission):
         config.action(
