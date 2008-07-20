@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 from zope import component
 from zope import interface
@@ -13,7 +14,6 @@ from zope.app.publisher.browser.pagetemplateresource import \
     PageTemplateResourceFactory
 
 import martian
-
 from grokcore.view import util, interfaces
 
 
@@ -101,6 +101,20 @@ class View(BrowserPage):
         namespace['static'] = self.static
         namespace['view'] = self
         return namespace
+
+    def __getitem__(self, key):
+        # This is BBB code for Zope page templates only:
+        if not isinstance(self.template, PageTemplate):
+            raise AttributeError("View has no item %s" % key)
+
+        value = self.template._template.macros[key]
+        # When this deprecation is done with, this whole __getitem__ can
+        # be removed.
+        warnings.warn("Calling macros directly on the view is deprecated. "
+                      "Please use context/@@viewname/macros/macroname\n"
+                      "View %r, macro %s" % (self, key),
+                      DeprecationWarning, 1)
+        return value
 
     def application_url(self, name=None):
         raise NotImplementedError
