@@ -1,0 +1,39 @@
+=======
+CHANGES
+=======
+
+Version 0.5 (2008-07-21)
+--------------------------
+
+ - rename affinitic.recipe.fakezope2eggs to z3c.recipe.fakezope2eggs and
+   moving it to zope.org repos
+
+ - Feature: Apply patch from Daniel Nouri which add an optional
+   parameter to skip fake eggs creation
+
+Version 0.4 (2008-03-25)
+--------------------------
+
+ - Feature: Apply patch from Bertrand Mathieu which add an optional
+   parameter to be able to define another zope2 part name (might
+   not be always "zope2" in every buildout)
+
+
+Version 0.3 (2008-02-19)
+--------------------------
+
+ - Feature: Add additional-fake-eggs option which allow you to define
+   other fake eggs which are not in zope.* or in zope.app.*
+
+
+Version 0.2 (2008-01-28)
+--------------------------
+
+ - Bug: Fix zope.app.* bug
+
+
+Version 0.1 (2007-12-10)
+--------------------------
+
+ - Initial Release
+
