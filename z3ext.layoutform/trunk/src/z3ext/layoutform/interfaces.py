@@ -53,13 +53,8 @@ class IPageletAddForm(IPageletForm):
 class IPageletEditForm(IPageletForm):
     """Edit form mixin for pagelet implementation."""
 
-    formCancelMessage = interface.Attribute('Form cancel message')
-
     def nextURL():
         """ as next url use newly created content url """
-
-    def cancelURL():
-        """ cancel url """
 
 
 class IAddButton(interface.Interface):

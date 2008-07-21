@@ -26,20 +26,17 @@ from z3c.form import form, button
 from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-import interfaces
-from interfaces import _
+from interfaces import _, IPageletEditForm, ISaveButton
 
 
 class PageletEditForm(form.EditForm, BrowserPagelet):
-    interface.implements(interfaces.IPageletEditForm)
+    interface.implements(IPageletEditForm)
 
     render = BrowserPagelet.render
     __call__ = BrowserPagelet.__call__
 
-    formCancelMessage = _(u'Edit action has been canceled.')
-
-    @button.buttonAndHandler(_(u'Save'), name='save',
-                             provides=interfaces.ISaveButton)
+    @button.buttonAndHandler(
+        _(u'Save'), name='save', provides=ISaveButton)
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:
@@ -55,15 +52,5 @@ class PageletEditForm(form.EditForm, BrowserPagelet):
             if nextURL:
                 self.redirect(nextURL)
 
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel',
-                             provides=interfaces.ICancelButton)
-    def handleCancel(self, action):
-        self.redirect(self.cancelURL())
-        IStatusMessage(self.request).add(self.formCancelMessage)
-
     def nextURL(self):
         return ''
-
-    def cancelURL(self):
-        return '%s/@@SelectedManagementView.html'%\
-            absoluteURL(self.context, self.request)
