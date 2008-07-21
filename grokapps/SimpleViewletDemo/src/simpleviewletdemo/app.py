@@ -68,7 +68,7 @@ class Navigation(grok.Viewlet):
         rootfolder = get_application(self.context)
         for navitem in rootfolder.values():
             item = {'title': navitem.name,
-                    'url': self.__parent__.url(obj=navitem) }
+                    'url': self.view.url(obj=navitem) }
             self.items.append(item)
 
 class Login(grok.Viewlet):

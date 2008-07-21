@@ -1,2 +1,2 @@
 <p>Fruit object content area</p>
-<p>Current fruit is <span tal:replace="view/name" /></p>
+<p>Current fruit is <span tal:replace="viewlet/name" /></p>
