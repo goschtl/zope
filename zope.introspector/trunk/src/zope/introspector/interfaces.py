@@ -40,6 +40,14 @@ class IObjectInfo(interface.Interface):
     def getType():
         """Get the type of the object handled here.
         """
+        
+    def isModule():
+        """Returnes wether or not this is a Module. 
+        """
+
+    def isClass():
+        """Returnes wether or not this is a Class.
+        """    
 
 class IModuleInfo(interface.Interface):
     """Information about modules.
