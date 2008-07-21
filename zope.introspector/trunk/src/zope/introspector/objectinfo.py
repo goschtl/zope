@@ -27,9 +27,8 @@ class ObjectInfo(grok.Adapter):
 
     dotted_name = None
     
-    def __init__(self, obj, dotted_name=None):
+    def __init__(self, obj):
         self.obj = obj
-        self.dotted_name = dotted_name
         
     def getType(self):
         return type(self.obj)
@@ -39,6 +38,38 @@ class ObjectInfo(grok.Adapter):
 
     def isClass(self):
         return inspect.isclass(self.obj)
+    
+    def getDottedName(self):
+        if self.isClass():
+            class_ = self.obj
+        else:
+            class_ = self.obj.__class__
+            
+        return class_.__module__ + '.' + class_.__name__
+    
+    def getFile(self):
+        try:
+            return inspect.getsourcefile(self.obj)
+        except TypeError:
+            return inspect.getsourcefile(self.getType())
+        
+    def getAttributes(self):
+        attributes = []
+        for id, value in inspect.getmembers(self.obj):
+            if inspect.ismethod(value):
+                continue
+            attributes.append({'id': id,
+                               'value': value,
+                               })
+        return attributes
+            
+    def getMethods(self):
+        methods = []
+        for id, value in inspect.getmembers(self.obj):
+            if inspect.ismethod(value):
+                methods.append({'id': id,
+                                })
+        return methods
 
 class ModuleInfo(ObjectInfo):
     grok.implements(IModuleInfo)

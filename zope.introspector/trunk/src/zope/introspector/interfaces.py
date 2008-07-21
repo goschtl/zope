@@ -49,6 +49,30 @@ class IObjectInfo(interface.Interface):
         """Returnes wether or not this is a Class.
         """    
 
+    def isModule(self):
+        """Returns true of the object is a module.
+        """
+
+    def isClass(self):
+        """Returns true of the object is a class.
+        """
+        
+    def getDottedName(self):
+        """Returns the dotted name of the object.
+        """
+    
+    def getFile(self):
+        """Returns the source file where the object is defined.
+        """
+        
+    def getAttributes(self):
+        """Return all attributes of the object.
+        """
+            
+    def getMethods(self):
+        """Returns all methods of the object.
+        """
+        
 class IModuleInfo(interface.Interface):
     """Information about modules.
     """
