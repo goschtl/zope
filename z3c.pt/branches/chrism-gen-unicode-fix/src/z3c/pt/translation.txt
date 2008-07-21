@@ -1,0 +1,333 @@
+Translation
+===========
+
+This document contains functional template tests.
+
+A generic render-method is used for convenience.
+
+  >>> def render(body, translator, **kwargs):
+  ...    generator = translator(body)
+  ...    source, _globals = generator()
+  ...    _locals = {}
+  ...    _globals.update(kwargs)
+  ...    exec source in _globals, _locals
+  ...    return _locals['render']()
+
+TAL
+---
+
+We use the XML translator.
+
+  >>> from z3c.pt.translation import translate_xml
+
+Basic HTML:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <img alt="'Hello World!'" />
+  ... </div>""", translate_xml)
+    <div>
+      <img alt="'Hello World!'" />
+    </div>
+    
+Attributes and contents:
+  
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span id="test"
+  ...         class="dummy"
+  ...         tal:define="a 'abc'"
+  ...         tal:attributes="class 'def' + a; style 'hij'"
+  ...         tal:content="a + 'ghi'" />
+  ...   <span tal:replace="'Hello World!'">Hello Universe!</span>
+  ...   <span tal:content="None" />
+  ... </div>""", translate_xml)
+    <div>
+      <span id="test" style="hij" class="defabc">abcghi</span>
+      Hello World!
+      <span></span>
+    </div>
+
+Repeats:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <ul>
+  ...     <li tal:repeat="i range(5)"><span tal:replace="str(i) + ' ' + str(repeat['i'].even())" /></li>
+  ...   </ul>
+  ... </div>""", translate_xml)
+    <div>
+      <ul>
+        <li>0 True</li>
+        <li>1 False</li>
+        <li>2 True</li>
+        <li>3 False</li>
+        <li>4 True</li>
+      </ul>
+    </div>
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <ul>
+  ...     <li tal:repeat="i range(5)"><span tal:replace="'Item ' + str(i) + ')'" /></li>
+  ...   </ul>
+  ... </div>""", translate_xml)
+    <div>
+      <ul>
+        <li>Item 0)</li>
+        <li>Item 1)</li>
+        <li>Item 2)</li>
+        <li>Item 3)</li>
+        <li>Item 4)</li>
+      </ul>
+    </div>
+
+Conditions:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <div tal:condition="True">
+  ...     Show me!
+  ...   </div>
+  ...   <div tal:condition="False">
+  ...     Do not show me!
+  ...   </div>
+  ... </div>""", translate_xml)
+    <div>
+      <div>
+        Show me!
+      </div>
+    </div>
+
+Comments:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <!-- a comment -->
+  ...   <!-- a multi-
+  ...        line comment -->
+  ...   <!-- a comment with an ${'expression'} -->
+  ... </div>""", translate_xml)
+    <div>
+      <!-- a comment -->
+      <!-- a multi-
+           line comment -->
+      <!-- a comment with an expression -->
+    </div>
+
+Namespacing:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <tal:example replace="'Hello World!'" />
+  ...   <tal:div content="'Hello World!'" />
+  ...   <tal:multiple repeat="i range(3)" replace="i" />
+  ...   <tal:div condition="True">True</tal:div>
+  ... </div>""", translate_xml)
+    <div>
+      Hello World!
+      Hello World!
+      0
+      1
+      2
+      True
+    </div>
+
+Omitting tags:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <p tal:omit-tag="">No paragraph here.</p>
+  ...   <p tal:omit-tag="True">No paragraph here either.</p>
+  ...   <p tal:omit-tag="False">A paragraph here.</p>
+  ... </div>""", translate_xml)
+    <div>
+      No paragraph here.
+      No paragraph here either.
+      <p>A paragraph here.</p>
+    </div>
+
+Unicode:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <img alt="La Peña" />
+  ... </div>""", translate_xml)
+    <div>
+      <img alt="La Peña" />
+    </div>
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <img tal:attributes="title '%sHello%s' % (chr(60), chr(62))" />
+  ...   <span tal:replace="structure '%sbr /%s' % (chr(60), chr(62))" />
+  ...   <span tal:replace="'%sbr /%s' % (chr(60), chr(62))" />
+  ...   <span tal:content="unicode('La Pe\xc3\xb1a', 'utf-8')" />
+  ... </div>""", translate_xml)
+    <div>
+      <img title="&lt;Hello&gt;" />
+      <br />
+      &lt;br /&gt;
+      <span>La Peña</span>
+    </div>
+
+Interpolation:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span>inter${'pol' + 'ati'}on</span>is ${int('test') | 'convenient'}!
+  ...   <span>${'a'}${'b'}${'c'} ${'d'}</span>
+  ...   <span tal:define="hello 'Hello'" class="${hello} World!" />
+  ...   <span class="my-${'class'} item${'Last'}" />
+  ...   <span style="position: ${'abs'}olute"
+  ...         class="my-${int('test') | 'class'} item${'Last'}" />
+  ... </div>""", translate_xml)
+    <div>
+      <span>interpolation</span>is convenient!
+      <span>abc d</span>
+      <span class="Hello World!" />
+      <span class="my-class itemLast" />
+      <span style="position: absolute" class="my-class itemLast" />
+    </div>
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <img alt="${'La Peña'}" />
+  ...   <img alt="Hello ${'La Peña'}" />
+  ...   <img alt="La Peña, oh ${'La Peña'}" />
+  ...   ${unicode('La Pe\xc3\xb1a', 'utf-8').encode('utf-8')}
+  ...   <img alt="${unicode('La Pe\xc3\xb1a', 'utf-8').encode('utf-8')}" />
+  ...   <img alt="Hello ${unicode('La Pe\xc3\xb1a', 'utf-8').encode('utf-8')}!" />
+  ... </div>""", translate_xml)
+    <div>
+      <img alt="La Peña" />
+      <img alt="Hello La Peña" />
+      <img alt="La Peña, oh La Peña" />
+      La Peña
+      <img alt="La Peña" />
+      <img alt="Hello La Peña!" />
+    </div>
+  
+Changing default expression:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <tal:path-expression-testing 
+  ...         define="request object();
+  ...                 mydict {'a': 1, 'c': {'a': 2}}">
+  ...       <div tal:default-expression="path">
+  ...          <span tal:replace="mydict/a" />
+  ...          <span tal:replace="mydict/b|mydict/a" />
+  ...          <span tal:replace="mydict/c/a" />
+  ...          <span tal:replace="python: 5+5" />
+  ...       </div>
+  ...       <span tal:replace="path: mydict/a" />
+  ...       <span tal:replace="python: 1+1" />
+  ...       <span tal:replace="path: mydict/b|True" />
+  ...       <span tal:replace="int('a')|path: mydict/a" />
+  ...   </tal:path-expression-testing>
+  ... </div>""", translate_xml)
+  <div>
+  <BLANKLINE>
+        <div>
+           1
+           1
+           2
+           10
+        </div>
+        1
+        2
+        True
+        1
+  <BLANKLINE>
+  </div>
+
+Pragmas:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span tal:default-expression="path"
+  ...         tal:replace="structure nocall: dir" />
+  ...   <span tal:replace="structure dir" />
+  ... </div>""", translate_xml, request=object())
+    <div>
+      <built-in function dir>
+      <built-in function dir>
+    </div>
+
+Text templates
+--------------
+
+  >>> from z3c.pt.translation import translate_text
+
+An example with a CSS stylesheet document:
+  
+  >>> css = """\
+  ... #some-region {
+  ...    background: url(${'http://nohost/plone'}/logo.gif) no-repeat;
+  ... }"""
+
+  >>> print render(css, translate_text)
+  #some-region {
+     background: url(http://nohost/plone/logo.gif) no-repeat;
+  }
+
+A javascript document that prints out HTML:
+
+  >>> js = """\
+  ... print '<div class="description">Hello ${'World!'}</div>';"""
+
+  >>> print render(js, translate_text)
+  print '<div class="description">Hello World!</div>';
+
+Error handling
+--------------
+
+This section demonstrates how the package handles templates that
+contain errors.
+
+No default namespace declaration:
+  A default namespace must be explicitly declared for the parser to work.
+  
+  >>> body = '<br />'
+  >>> render(body, translate_xml)
+  Traceback (most recent call last):
+    ...
+  ValueError: Must set default namespace.
+    
+Bad XML
+  We expect the xml-parser to raise an exception.
+  
+  >>> body = '<div xmlns="http://www.w3.org/1999/xhtml"'
+  >>> render(body, translate_xml)
+  Traceback (most recent call last):
+    ...
+  XMLSyntaxError: Couldn't find end of Start Tag div line 1, line 1, column 11
+
+Missing namespace definition:
+    We expect the engine to raise an exception*
+
+*) This test only passes on lxml 2.x.
+
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml" tal:content="'Hello World'" />
+  ... """
+
+  >>> print render(body, translate_xml)
+  Traceback (most recent call last):
+    ...
+  XMLSyntaxError: Namespace prefix tal for content on div is not defined, line 1, column 23

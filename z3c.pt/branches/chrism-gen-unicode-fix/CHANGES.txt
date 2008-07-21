@@ -1,0 +1,194 @@
+Changelog
+---------
+
+Version 0.8.x
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- When templates are instantiated outside of a class-definition, a
+  relative file path will be made absolute using the module path.
+  [malthe]
+
+- Simplified the _escape function handling by pulling in the str call into the
+  function. Corrected the bigtable hotshot test to only benchmark rendering.
+
+- Replaced the cgi.escape function by an optimized local version, we go up
+  to 11x for path and 16x for Python expressions :) In the bigtable benchmark
+  the enhancement is more noticable - we are the same speed as spitfire -O1
+  templates now and just half the speed of -O3 :))
+
+- Added a new benchmark test called bigtable that produces results which are
+  directly comparable to those produced by the bigtable.py benchmark in the
+  spitfire project.
+
+- Introduce a new config option called `Z3C_PT_DISABLE_I18N`. If this
+  environment variable is set to `true`, the template engine will not call
+  into the zope.i18n machinery anymore, but fall back to simple interpolation
+  in all cases. In a normal Zope environment that has the whole i18n
+  infrastructure set up, this will render the templates about 15x faster than
+  normal TAL, instead of only 10x faster at this point.
+
+- Removed the `second rendering` tests from the benchmark suite. Since we
+  enable the file cache for the benchmarks, there's no difference between the
+  first and second rendering anymore after the cache file has been written.
+
+- Require zope.i18n 3.5 and add support for using its new negotiate function.
+  If you use the `zope_i18n_allowed_languages` environment variable the target
+  language for a template is only negotiated once per template, instead of
+  once for each translate function call. This more than doubles the speed
+  and the benchmark is back at 9.2 times faster.
+
+- Extended the i18n handling to respect the passed in translation context to
+  the template. Usually this is the request, which is passed on under the
+  internal name of `_context` into the render functions. After extending the
+  i18n tests to include a negotiator and message catalog the improvement is
+  only at 4.5 anymore, as most of the time is spent inside the i18n machinery.
+
+- Added persistent file cache functionality. If the environment variable is
+  set, each file system based template will add a directory to the cache
+  (currently a SHA-1 of the file's absolute path is used as the folder name)
+  and in the folder one file per params for the template (cache filename is
+  the hash of the params). Once a template file is initialized, an instance
+  local registry is added, which then looks up all cached files and
+  pre-populates the registry with the render functions.
+
+- Fixed interpolation edge case bugs.
+  [malthe]
+
+- Added new `Z3C_PT_FILECACHE` environment variable pointing to a directory.
+  If set, this will be used to cache the compiled files.
+
+- Added a second variation of the repeat clause, using a simple for loop. It
+  doesn't support the repeatdict, though and is therefor not used yet. Also
+  began work to add introspection facilities to clauses about the variables
+  being used in them. The simpler loop causes the benchmarks to go up to a
+  10.5 (old 9.5) for path expressions and 14.5 (12.5) for python expressions.
+  So the next step is to introduce an optimization phase, that can decide
+  which variant of the loops to use.
+
+- Made the debug mode independent from the Python debug mode. You can now
+  specify an environment variable called `Z3C_PT_DEBUG` to enable it.
+
+- Added some code in a filecache module that can later be used to write out
+  and reload the compiled Python code to and from the file system. We should
+  be able to avoid reparsing on Python process restart.
+
+- Simplified the generated _escape code. cgi.escape's second argument is a
+  simple boolean and not a list of characters to quote.
+
+- Use a simple list based BufferIO class instead of a cStringIO for the out
+  stream. Avoiding the need to encode Unicode data is a bigger win. We do
+  not support arbitrarily mixing of Unicode and non-ascii inside the engine.
+
+- Merged two adjacent writes into one inside the Tag clause.
+
+- Applied a bunch of micro-optimizations. ''.join({}) is slightly faster
+  than ''.join({}.keys()) and does the same. Avoid a try/except for error
+  handling in non-debug mode. Test against 'is None' instead of a boolean
+  check for the result of the template registry lookup. Made PROD_MODE
+  available defined as 'not DEBUG_MODE' in config.py, so we avoid the 'not'
+  in every cook-check.
+
+- Added more benchmark tests for the file variants.
+
+- Optimized 'is None' handling in Tag clause similar to the Write clause.
+
+- Made the _out.write method directly available as _write in all scopes, so
+  we avoid the method lookup call each time.
+
+- Optimized 'is None' handling in Write clause.
+
+- Slightly refactored benchmark tests and added tests for the file variants.
+
+- In debug mode the actual source code for file templates is written out to
+  a <filename>.source file, to make it easier to inspect it.
+
+- Make debug mode setting explicit in a config.py. Currently it is bound to
+  Python's __debug__, which is False when run with -O and otherwise True.
+
+- Use a simplified UnicodeWrite clause for the result of _translate calls,
+  as the result value is guaranteed to be Unicode.
+
+- Added benchmark tests for i18n handling.
+
+- Added more tests for i18n attributes handling.
+
+- Don't generate empty mappings for expressions with a trailing semicolon.
+
+- Fixed undefined name 'static' error in i18n attributes handling and added
+  quoting to i18n attributes.
+
+- Added condition to the valid attributes on tags in the tal namespace.
+
+- Made sure the traceback from the *first* template exception
+  is carried over to __traceback_info__
+
+- Added template source annotations on exceptions raised while
+  rendering a template.
+
+Version 0.8 - March 19, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Added support for 'nocall' and 'not' (for path-expressions).
+
+- Added support for path- and string-expressions.
+
+- Abstracted expression translation engine. Expression implementations
+  are now pluggable. Expression name pragmas are supported throughout.
+
+- Formalized expression types
+
+- Added support for 'structure'-keyword for replace and content.
+
+- Result of 'replace' and 'content' is now escaped by default.
+
+- Benchmark is now built as a custom testrunner
+
+Version 0.7 - March 10, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Added support for comments; expressions are allowed
+  inside comments, i.e.
+
+     <!-- ${'Hello World!'} -->
+
+  Comments are always included.
+  
+Version 0.6 - February 24, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Added support for text templates; these allow expression
+  interpolation in non-XML documents like CSS stylesheets and
+  javascript files.
+
+Version 0.5 - February 23, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Expression interpolation implemented.
+
+Version 0.4 - February 22, 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Engine now uses cStringIO yielding a 2.5x performance
+  improvement. Unicode is now handled correctly.
+
+Version 0.3 - December 23, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Code optimization; bug fixing spree  
+
+- Added ``ViewPageTemplateFile`` class
+  
+- Added support for i18n
+  
+- Engine rewrite; improved code generation abstractions 
+  
+Version 0.2 - December 5, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Major optimizations to the generated code  
+
+Version 0.1 - December 3, 2007
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- First public release
+

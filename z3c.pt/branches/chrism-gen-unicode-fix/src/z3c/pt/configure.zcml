@@ -1,0 +1,18 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package="zope.component" file="meta.zcml" />
+  
+  <utility
+     name="python"
+     factory=".expressions.PythonTranslation" />
+
+  <utility
+     name="path"
+     factory=".expressions.PathTranslation" />
+
+  <adapter
+     name="string"
+     factory=".expressions.StringTranslation" />
+  
+</configure>
+ 
