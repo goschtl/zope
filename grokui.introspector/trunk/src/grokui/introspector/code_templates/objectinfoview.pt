@@ -1,8 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html metal:use-macro="context/@@master/macros/page">
-  <div metal:fill-slot="main">
-    <div tal:content="python: context, dir(context)">context</div>
-    <div tal:content="python: context.obj">context</div>
-  </div>
-</html>
+<table>
+  <tr>
+    <td>Type:</td>
+    <td tal:content="view/getType"/>
+  </tr>
+  <tr>
+    <td>Class:</td>
+    <td tal:content="context/getDottedName"/>
+  </tr>
+  <tr>
+    <td>File:</td>
+    <td tal:content="context/getFile"/>
+  </tr>
+</table>
+
+<h3>Attributes</h3>
+<table>
+  <tr tal:repeat="attribute context/getAttributes">
+    <td>Name:</td>
+    <td tal:content="attribute/id"/>
+    <td>Value:</td>
+    <td tal:content="nocall: attribute/value"/>
+  </tr>
+</table>
+
+<h3>Methods</h3>
+<table>
+  <tr tal:repeat="attribute context/getMethods">
+    <td>Name:</td>
+    <td tal:content="attribute/id"/>
+  </tr>
+</table>

@@ -32,7 +32,10 @@ class ObjectInfoView(grok.View):
     grok.name('index.html')
 
     def update(self, *args, **kw):
-        self.dotted_name = dotted_name_url(self.context.dotted_name)
+        self.dotted_name = dotted_name_url(self.context.getDottedName())
+        
+    def getType(self):
+        return self.context.getType().__name__
 
 class ModuleInfoView(ObjectInfoView):
     grok.context(IModuleInfo)
@@ -51,7 +54,7 @@ class PackageInfoView(ObjectInfoView):
         result = []
         for name in files:
             dotnum = name.count('.')
-            url = dotted_name_url(self.context.dotted_name + '.' + name,
+            url = dotted_name_url(self.context.getDottedName() + '.' + name,
                                   preserve_last = dotnum)
             url = url.split('.', dotnum*2)[-1]
             result.append(dict(name=name, url=url))
@@ -61,7 +64,7 @@ class DottedPathTraverser(grok.Traverser):
     """Traverse object infos.
     """
     def traverse(self, path, *args, **kw):
-        dotted_name = '.'.join([self.context.dotted_name, path])
+        dotted_name = '.'.join([self.context.getDottedName(), path])
         provider = getUtility(IObjectDescriptionProvider)
         try:
             description = provider.getDescription(dotted_name=dotted_name)
