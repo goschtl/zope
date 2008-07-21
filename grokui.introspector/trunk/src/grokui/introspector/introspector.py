@@ -23,7 +23,7 @@ from grok.interfaces import IContext
 from grokui.introspector.interfaces import (IGrokIntrospector,
                                             IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector,
-                                            IGrokZODBBrowser)
+                                            IGrokContentBrowser)
 
 class Introspector(object):
     grok.implements(IGrokIntrospector, ILocation, IContext)
@@ -43,8 +43,8 @@ class IntrospectorTraverser(grok.Traverser):
             return RegistryIntrospector()
         if path == 'code':
             return CodeIntrospector()
-        if path == 'zodb':
-            return ZODBBrowser()
+        if path == 'content':
+            return ContentBrowser()
         return self.context
 
 class RegistryIntrospector(grok.Model):
@@ -86,5 +86,5 @@ class CodeTraverser(grok.Traverser):
         introspector = CodeIntrospector(dotted_name=dotted_name)
         return introspector.getIntrospector()
 
-class ZODBBrowser(grok.Model):
-    grok.implements(IGrokZODBBrowser)
+class ContentBrowser(grok.Model):
+    grok.implements(IGrokContentBrowser)

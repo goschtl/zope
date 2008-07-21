@@ -2,9 +2,9 @@
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html metal:use-macro="context/@@master/macros/page">
   <div metal:fill-slot="main">
-    <h1>ZODB browser</h1>
+    <h1>Content browser</h1>
 
-    <h2>ZODB</h2>
+    <h2>Content</h2>
 
 
   </div>

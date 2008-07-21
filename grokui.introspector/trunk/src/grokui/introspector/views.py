@@ -23,7 +23,7 @@ from zope.traversing.interfaces import ITraversable
 from grokui.introspector.interfaces import (IGrokIntrospector,
                                             IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector,
-                                            IGrokZODBBrowser)
+                                            IGrokContentBrowser)
 
 NAMESPACE = u'introspector'
 
@@ -62,10 +62,10 @@ class CodeOverview(grok.View):
     grok.template('code')
     grok.context(IGrokCodeIntrospector)
 
-class ZODBOverview(grok.View):
+class ContentOverview(grok.View):
     grok.name('index')
-    grok.template('zodb')
-    grok.context(IGrokZODBBrowser)
+    grok.template('content')
+    grok.context(IGrokContentBrowser)
 
 # The viewlet managers...
 

@@ -35,6 +35,6 @@ class IGrokCodeIntrospector(IGrokIntrospector):
     """An introspector for packages, classes and other code.
     """
 
-class IGrokZODBBrowser(IGrokIntrospector):
-    """A ZODB browser
+class IGrokContentBrowser(IGrokIntrospector):
+    """A content browser
     """
