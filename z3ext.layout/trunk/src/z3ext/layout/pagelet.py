@@ -16,8 +16,8 @@
 $Id$
 """
 from zope import interface, component
+from zope.component import queryMultiAdapter
 from zope.publisher.browser import BrowserPage
-from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.publisher.browser import queryDefaultViewName
 
@@ -29,7 +29,7 @@ from z3ext.layout.interfaces import IPagelet, ILayout
 def queryPagelet(context, request):
     name = queryDefaultViewName(context, request, 'index.html')
     if name:
-        view = getMultiAdapter((context, request), name=name)
+        view = queryMultiAdapter((context, request), name=name)
         if IPagelet.providedBy(view):
             return view
 
