@@ -3,6 +3,5 @@
            i18n_domain="zope.introspector">
 
   <include package="grokcore.component" file="meta.zcml" />
-  <grok:grok package=".meta" />
 
 </configure>

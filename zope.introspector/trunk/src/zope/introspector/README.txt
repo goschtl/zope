@@ -1,7 +1,7 @@
-zope.introspector
+gzope.introspector
 **********************
 
-:Test-Layer: unit
+:Test-Layer: nonunit
 
 The `zope.introspector` package provides an extensible framework
 for retrieving 'data' on 'entities'. It makes use of

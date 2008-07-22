@@ -15,26 +15,18 @@
 """
 from zope import interface
 
-class IIntrospectorBaseClasses(interface.Interface):
-    priority = interface.Attribute(
-        "Directive for use in description providers")
-    DescriptionProvider = interface.Attribute(
-        "A component that delivers a suitable description object "
-        "for certain kinds of objects."
-        )
-    ObjectInfo = interface.Attribute("Basic Object Information")
-    ModuleInfo = interface.Attribute("Information about a module")
-    PackageInfo = interface.Attribute("Information about a package")
-    TypeInfo = interface.Attribute("Information about a basic type")
-    RegistryInfo = interface.Attribute(
-        "Information about the component registry")
-
-class IIntrospectorAPI(IIntrospectorBaseClasses):
-    """The API of zope.introspector.
+class IInfos(interface.Interface):
+    """Give all IInfo adapters relevant for this object.
     """
-    pass
+    def infos():
+        """Return the applicable infos.
+        """
 
-class IObjectInfo(interface.Interface):
+class IInfo(interface.Interface):
+    """Introspection information about an aspect of an object.
+    """
+    
+class IObjectInfo(IInfo):
     """Information about simple types.
     """
     def getType():
@@ -73,17 +65,23 @@ class IObjectInfo(interface.Interface):
         """Returns all methods of the object.
         """
         
-class IModuleInfo(interface.Interface):
+class IModuleInfo(IInfo):
     """Information about modules.
     """
     pass
 
-class IPackageInfo(interface.Interface):
+class IPackageInfo(IInfo):
     """Information about packages.
     """
     def getPackageFiles():
         """Get the package files contained in a package.
         """
+
+class ITypeInfo(IInfo):
+    """Information about types.
+    """
+    pass
+
 
 class IUtilityInfo(interface.Interface):
     """Information about utilities available to an object.
@@ -91,11 +89,6 @@ class IUtilityInfo(interface.Interface):
     def getAllUtilities():
         """Get all utilities available to an object.
         """
-
-class ITypeInfo(interface.Interface):
-    """Information about types.
-    """
-    pass
 
 class IRegistryInfo(interface.Interface):
     """Keeps information about the Component registry.
@@ -166,7 +159,7 @@ class IRegistrySearch(interface.Interface):
         """ Returns the registration
         """
 
-class IViewInfo(interface.Interface):
+class IViewInfo(IInfo):
     """The representation of an object that has views associated.
     """
 
@@ -186,11 +179,4 @@ class IViewInfo(interface.Interface):
 
         The default layer will be returned with u'' as the skin name.
         """
-        
-class IObjectDescriptionProvider(interface.Interface):
-    """Provide description objects for arbitrary objects.
-    """
-    def getDescription(obj, dotted_name=None, *args, **kw):
-        """Get one description object for the object denoted by
-        ``obj`` or ``dotted_name``.
-        """
+

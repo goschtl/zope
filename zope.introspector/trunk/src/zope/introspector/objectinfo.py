@@ -24,7 +24,8 @@ from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
 class ObjectInfo(grok.Adapter):
     grok.implements(IObjectInfo)
     grok.context(Interface)
-
+    grok.name('object')
+    
     dotted_name = None
     
     def __init__(self, obj):
@@ -79,11 +80,13 @@ class ModuleInfo(ObjectInfo):
     grok.implements(IModuleInfo)
     grok.provides(IObjectInfo)
     grok.context(types.ModuleType)
-
+    grok.name('module')
+    
 class PackageInfo(ModuleInfo):
     grok.implements(IPackageInfo)
     grok.provides(IPackageInfo)
-
+    grok.name('package')
+    
     def getPackageFiles(self, filter=None):
         pkg_file_path = os.path.dirname(self.obj.__file__)
         return sorted([x for x in os.listdir(pkg_file_path)
@@ -94,4 +97,4 @@ class TypeInfo(ObjectInfo):
     grok.implements(ITypeInfo)
     grok.provides(IObjectInfo)
     grok.context(types.TypeType)
-
+    grok.name('type')

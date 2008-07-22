@@ -27,7 +27,8 @@ class ViewInfo(grok.Adapter):
     """
     grok.provides(IViewInfo)
     grok.context(Interface)
-
+    grok.name('view')
+    
     def getViews(self, layer=None):
         request = BrowserRequest(None, {})
         if layer is not None:

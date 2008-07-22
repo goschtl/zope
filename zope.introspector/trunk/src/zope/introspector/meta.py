@@ -14,7 +14,6 @@
 """Grokkers that look for description providers in the framework.
 """
 import martian
-from descriptionprovider import (DescriptionProvider, descriptor_registry,)
 
 class priority(martian.Directive):
     """Determine in which order your descriptor provider should be applied.
@@ -37,19 +36,3 @@ class priority(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     default = 500
-
-class DescriptionProviderGrokker(martian.ClassGrokker):
-    martian.component(DescriptionProvider)
-    martian.directive(priority)
-    def execute(self, klass, priority, *args, **kw):
-        num = 0
-        found = False
-        for num in range(0, len(descriptor_registry)):
-            if descriptor_registry[num]['priority'] >= priority:
-                found = True
-                break
-        if not found and num:
-            num += 1
-        descriptor_registry.insert(num, dict(handler=klass,
-                                             priority=priority))
-        return True
