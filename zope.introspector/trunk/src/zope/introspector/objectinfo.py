@@ -51,7 +51,11 @@ class ObjectInfo(grok.Adapter):
         try:
             return inspect.getsourcefile(self.obj)
         except TypeError:
-            return inspect.getsourcefile(self.getType())
+            try:
+                return inspect.getsourcefile(self.getType())
+            except TypeError:
+                # This is probably a built-in or dynamically created type
+                return 'builtin'
         
     def getAttributes(self):
         attributes = []
