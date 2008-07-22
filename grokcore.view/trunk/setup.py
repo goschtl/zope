@@ -27,7 +27,7 @@ setup(name='grokcore.view',
       install_requires=[
           'setuptools',
           'martian',
-          'grokcore.component',
+          'grokcore.component >= 1.5',
           'zope.security',
           'zope.app.publisher',
           'zope.app.pagetemplate',
