@@ -3,8 +3,8 @@ import urllib
 from zope import component
 from zope.traversing.browser.interfaces import IAbsoluteURL
 from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
-from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
+from zope.app.security.protectclass import protectName
 
 from martian.error import GrokError
 
@@ -31,21 +31,16 @@ def default_view_name(factory, module=None, **data):
 def default_fallback_to_name(factory, module, name, **data):
     return name
 
-def make_checker(factory, view_factory, permission, method_names=None):
-    """Make a checker for a view_factory associated with factory.
-
-    These could be one and the same for normal views, or different
-    in case we make method-based views such as for JSON and XMLRPC.
-    """
-    if method_names is None:
-        method_names = ['__call__']
-    if permission is not None:
-        check_permission(factory, permission)
-    if permission is None or permission == 'zope.Public':
-        checker = NamesChecker(method_names)
+def protect_name(class_, name, permission=None):
+    # Define an attribute checker using zope.app.security's
+    # protectName that defaults to the 'zope.Public' permission when
+    # it's not been given and makes sure the permission has actually
+    # been defined when it has.
+    if permission is None:
+        permission = 'zope.Public'
     else:
-        checker = NamesChecker(method_names, permission)
-    defineChecker(view_factory, checker)
+        check_permission(class_, permission)
+    protectName(class_, name, permission)
 
 def check_permission(factory, permission):
     """Check whether a permission is defined.

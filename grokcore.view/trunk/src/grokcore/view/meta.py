@@ -2,6 +2,7 @@ import os
 
 from zope import component, interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope.security.interfaces import IPermission
@@ -17,7 +18,7 @@ from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.view.util import default_view_name
 from grokcore.view.util import default_fallback_to_name
-from grokcore.view.util import make_checker
+from grokcore.view.util import protect_name
 
 
 class SkinGrokker(martian.ClassGrokker):
@@ -105,13 +106,12 @@ class ViewSecurityGrokker(martian.ClassGrokker):
     martian.directive(grokcore.view.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):
-        config.action(
-            # TODO For pure Zope 3 we need to protect the whole
-            # IBrowserPage interface, not just __call__
-            discriminator=('protectName', factory, '__call__'),
-            callable=make_checker,
-            args=(factory, factory, permission),
-            )
+        for method_name in list(IBrowserPage):
+            config.action(
+                discriminator=('protectName', factory, method_name),
+                callable=protect_name,
+                args=(factory, method_name, permission),
+                )
         return True
 
 
