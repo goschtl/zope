@@ -38,11 +38,11 @@ from grok.components import Container, OrderedContainer
 from grok.components import Site, LocalUtility, Annotation
 from grok.components import Application, Form, AddForm, EditForm, DisplayForm
 from grok.components import Indexes
-from grok.components import Role, Public
+from grok.components import Role
 from grok.components import RESTProtocol, IRESTLayer
 from grok.interfaces import IRESTSkinType
 from grok.components import ViewletManager, Viewlet
-from grokcore.view import Permission, Skin, IGrokLayer
+from grokcore.view import Permission, Public, Skin, IGrokLayer
 from grokcore.view import PageTemplate, PageTemplateFile
 
 from martian import baseclass

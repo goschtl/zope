@@ -361,8 +361,6 @@ class IndexesClass(object):
 
 Indexes = IndexesClass('Indexes')
 
-Public = 'zope.Public'
-
 class Role(Role):
     pass
 
