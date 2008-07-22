@@ -401,7 +401,7 @@ or tag):
       and ``CHANGES.txt``.
 
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
-.. _Python Package Index (PyPI): http://pypi.python.org/pypi/
+.. _Python Package Index (PyPI): http://pypi.python.org/pypi
 .. _Trove classifiers: http://pypi.python.org/pypi?%3Aaction=list_classifiers
 
 
