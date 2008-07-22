@@ -11,8 +11,8 @@ The default view name for a model is 'index':
   <html>
   <body>
   <h1>Hello, world!</h1>
-  <span>Blue</span>
-  <span>Blue</span>
+  <span><class 'grokcore.view.ftests.view.index.Mammoth'></span>
+  <span><class 'grokcore.view.ftests.view.index.Mammoth'></span>
   </body>
   </html>
 
@@ -20,7 +20,7 @@ The default view name for a model is 'index':
 import grokcore.view as grok
 
 class Mammoth(grok.Context):
-    teeth = u"Blue"
+    pass
 
 class Index(grok.View):
     pass
@@ -29,8 +29,8 @@ index = grok.PageTemplate("""\
 <html>
 <body>
 <h1>Hello, world!</h1>
-<span tal:content="python:context.teeth">green</span>
-<span tal:content="context/teeth">green</span>
+<span tal:content="structure python:context.__class__">green</span>
+<span tal:content="structure context/__class__">green</span>
 </body>
 </html>
 """)
