@@ -28,8 +28,7 @@ class Package(Object):
         result = []
         for name in files:
             dotnum = name.count('.')
-            url = dotted_name_url(self.context.getDottedName() + '.' + name,
-                                  preserve_last = dotnum)
+            url = self.context.getDottedName() + '.' + name
             url = url.split('.', dotnum*2)[-1]
             result.append(dict(name=name, url=url))
         return result

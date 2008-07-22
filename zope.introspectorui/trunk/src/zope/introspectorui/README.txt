@@ -23,4 +23,12 @@
   ...Class:...__builtin__.Test...
   ...File:...builtin...
   
+  # Packages also have information objects, so adapt this package, and
+  # render that view:
+  >>> import zope.introspectorui
+  >>> from zope.introspector.interfaces import IPackageInfo
+  >>> package_info = IPackageInfo(zope.introspectorui)
+  >>> view = component.getMultiAdapter((package_info, request), name='index.html')
+  >>> print view()
+  <h1>...Package: <span>zope.introspectorui</span>...
   
