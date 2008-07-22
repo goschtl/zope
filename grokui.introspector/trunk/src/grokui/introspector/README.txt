@@ -94,7 +94,8 @@ whole code basis. We can go to the ``zope`` package::
 
   >>> zope_link = browser.getLink('Browse the zope package')
   >>> zope_link.click()
-  >>> print browser.contents
+  
+  >> print browser.contents
   <!DOCTYPE html...
   Package: <span>...zope...</span>
   ...
