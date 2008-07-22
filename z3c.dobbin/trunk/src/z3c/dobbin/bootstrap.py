@@ -1,3 +1,4 @@
+from zope import interface
 from zope import component
 
 import sqlalchemy as rdb
@@ -6,27 +7,25 @@ from sqlalchemy import orm
 from z3c.saconfig import Session
 
 import soup
+import utility
 import relations
 import interfaces
+import cPickle
 
 class UUID(rdb.types.TypeEngine):
     def get_col_spec(self):
         return "UUID"
 
-def bootstrapDatabaseEngine(event=None):
-    session = Session()
-    engine = session.bind
-    engine.metadata = metadata = rdb.MetaData(engine)
-
-    # setup metadata
-    setUp(metadata)
-    
-def setUp(metadata):
-    """Table setup.
+def initialize(event=None):
+    """Database initialization.
 
     This method sets up the tables that are necessary for the
     operation of the persistence and relational framework.
     """
+
+    session = Session()
+    engine = session.bind
+    engine.metadata = metadata = rdb.MetaData(engine)
     
     soup = rdb.Table(
         'dobbin:soup',
@@ -34,10 +33,11 @@ def setUp(metadata):
         rdb.Column('id', rdb.Integer, primary_key=True, autoincrement=True),
         rdb.Column('uuid', UUID, unique=True, index=True),
         rdb.Column('spec', rdb.String, index=True),
+        rdb.Column('dict', rdb.PickleType, default={}, index=False),
         )
 
     soup_fk = rdb.ForeignKey(soup.c.uuid)
-
+    
     int_relation = rdb.Table(
         'dobbin:relation:int',
         metadata,
@@ -63,11 +63,18 @@ def setUp(metadata):
     metadata.create_all()
 
 class Soup(object):
+    interface.implements(interfaces.IMapped)
+    
     """Soup class.
 
     This is the base object of all mappers.
     """
 
+    def __new__(cls, *args, **kwargs):
+        inst = object.__new__(cls, *args, **kwargs)
+        inst.__dict__ = utility.dictproxy(inst)
+        return inst
+    
     def __cmp__(self, other):
         if interfaces.IMapped.providedBy(other):
             return cmp(self.id, other.id)
@@ -75,4 +82,4 @@ class Soup(object):
         return -1
 
     def __reduce__(self):
-        return (soup.lookup, (self.uuid,))
+        return (soup.build, (self.__spec__, self.uuid,))

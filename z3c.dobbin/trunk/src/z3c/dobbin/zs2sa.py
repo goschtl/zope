@@ -24,8 +24,6 @@ import bootstrap
 import relations
 import collections
 
-import cPickle as Pickle
-
 class FieldTranslator(object):
     """Translate a zope schema field to a SQLAlchemy column."""
 
@@ -78,66 +76,6 @@ class ObjectTranslator(object):
         return rdb.Column(
             field.__name__+'_uuid', bootstrap.UUID, nullable=False)
 
-class PickleTranslator(object):
-    def __call__(self, field, metadata):
-        return rdb.Column(
-            field.__name__+'_pickle', rdb.BLOB, nullable=True)
-
-class PickleProperty(property):
-    def __init__(self, name):
-        self.name = name
-        self.cache = '_v_cached_'+name
-        property.__init__(self, self._get, self._set)
-        
-    def _get(self, obj, type=None):
-        session = Session()
-        name = self.name
-        cache = self.cache
-        
-        token = tx.COPY_VALUE_TO_INSTANCE(obj.uuid, name)
-
-        # check pending objects
-        try:
-            return session._d_pending[token]
-        except (AttributeError, KeyError):
-            pass
-
-        # check object cache
-        value = getattr(obj, cache, None)
-        if value is not None:
-            return value
-
-        # load pickle
-        pickle = getattr(obj, name)
-        value = pickle and Pickle.loads(pickle)
-
-        # update cache
-        if value is not None:
-            setattr(obj, cache, value)
-        
-        return value
-
-    def _set(self, obj, value):
-        name = self.name
-        token = tx.COPY_VALUE_TO_INSTANCE(obj.uuid, name)
-        
-        def copy_value_to_instance():
-            value = Session()._d_pending[token]
-            pickle = Pickle.dumps(value)
-            setattr(obj, name, pickle)
-
-        # add transaction hook
-        tx.addBeforeCommitHook(
-            token, value, copy_value_to_instance)
-
-        # update cache
-        if value is not None:
-            setattr(obj, self.cache, value)
-
-class PicklePropertyFactory(object):
-    def __call__(self, field, column, metadata):
-        return {field.__name__: PickleProperty(column.name)}
-
 class ObjectProperty(object):
     """Object property.
     
@@ -152,7 +90,7 @@ class ObjectProperty(object):
             field.__name__: relation,
             relation.name: orm.relation(
             bootstrap.Soup,
-            primaryjoin=bootstrap.Soup.c.uuid==column,
+            primaryjoin=bootstrap.Soup.uuid==column,
             foreign_keys=[column],
             enable_typechecks=False,
             lazy=True)
@@ -181,7 +119,7 @@ class ListProperty(CollectionProperty):
     relation_class = relations.OrderedRelation
 
     def getPrimaryJoinCondition(self):
-        return bootstrap.Soup.c.uuid==relations.OrderedRelation.c.left
+        return bootstrap.Soup.uuid==relations.OrderedRelation.left
     
 class TupleProperty(ListProperty):
     collection_class = collections.Tuple
@@ -191,7 +129,7 @@ class DictProperty(CollectionProperty):
     relation_class = relations.KeyRelation
 
     def getPrimaryJoinCondition(self):
-        return bootstrap.Soup.c.uuid==relations.KeyRelation.c.left
+        return bootstrap.Soup.uuid==relations.KeyRelation.left
                         
 fieldmap = {
     schema.ASCII: StringTranslator(), 
@@ -214,6 +152,6 @@ fieldmap = {
     schema.Text: StringTranslator(rdb.UnicodeText),
     schema.TextLine: StringTranslator(rdb.Unicode),
     schema.URI: StringTranslator(rdb.Unicode),
-    interface.Attribute: (PickleTranslator(), PicklePropertyFactory()),
+    interface.Attribute: None,
     interface.interface.Method: None,
 }

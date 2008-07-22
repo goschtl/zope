@@ -20,11 +20,11 @@ def setUp(test):
     component.provideUtility(factory)
 
     # setup scoped session
-    utility = GloballyScopedSession(autoflush=True)
+    utility = GloballyScopedSession()
     component.provideUtility(utility)
     
     # bootstrap database engine
-    z3c.dobbin.bootstrap.bootstrapDatabaseEngine()
+    z3c.dobbin.bootstrap.initialize()
 
     # register components
     zope.configuration.xmlconfig.XMLConfig('meta.zcml', component)()

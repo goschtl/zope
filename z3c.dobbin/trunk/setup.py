@@ -18,7 +18,7 @@ def read(*files):
     return "\n".join((open(f).read() for f in files))
 
 setup(name='z3c.dobbin',
-      version='0.3dev',
+      version='0.4dev',
       license='ZPL',
       author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
       author_email = "zope-dev@zope.org",
@@ -51,5 +51,5 @@ setup(name='z3c.dobbin',
                            'zope.configuration',
                            'z3c.saconfig',
                            'transaction',
-                           'SQLAlchemy==0.4.6'],
+                           'SQLAlchemy>0.4'],
       )

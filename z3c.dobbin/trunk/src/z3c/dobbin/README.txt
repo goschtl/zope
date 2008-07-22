@@ -1,20 +1,37 @@
 Walk-through of the framework
 =============================
 
-This section demonstrates the main functionality of the package using
-the doctest format. 
+This section demonstrates the functionality of the package.
+
+Introduction
+------------
+
+Dobbin uses SQLAlchemy's object relational mapper to transparently
+store objects in the database. Objects are persisted in two levels:
+
+Attributes may correspond directly to a table column in which case we
+say that the attribute is strongly typed. This is the most optimal
+way to store data.
+
+We may also store attributes that are not mapped directly to a column;
+in this case, the value of the attribute is stored as a Python
+pickle. This allows weak typing, but also persistence of amorphic
+data, e.g. data which does not fit naturally in a relational database.
+
+A universally unique id (UUID) is automatically assigned to all
+objects.
 
 We begin with a new database session.
 
     >>> import z3c.saconfig
     >>> session = z3c.saconfig.Session()
+    
+Declarative configuration
+-------------------------
 
-Mappers from interface specification
-------------------------------------
-
-We'll start out creating mappers directly from an interface
-specification. The instances will only afford access to the declared
-attributes and have no methods.
+We can map attributes to table columns using zope.schema. Instead of
+using SQL column definitions, we rely on the declarative properties of
+schema fields.
 
 We start out with an interface decribing a recorded album.
 
@@ -28,8 +45,8 @@ We start out with an interface decribing a recorded album.
     ...         default=u"")
 
 We can now fabricate instances that implement this interface by using
-the ``create`` method. This is a shorthand for setting up the mapper
-and creating an instance using its factory.
+the ``create`` method. This is a shorthand for setting up a mapper and
+creating an instance by calling it.
 
     >>> from z3c.dobbin.factory import create
     >>> album = create(IAlbum)
@@ -44,30 +61,27 @@ particular type of album.
 
     >>> class IVinyl(IAlbum):
     ...     rpm = schema.Int(
-    ...         title=u"RPM",
-    ...         default=33)
+    ...         title=u"RPM")
 
     >>> vinyl = create(IVinyl)
-
-What actually happens on the database side is that columns are mapped
-to the interface that they provide.
-
-Let's demonstrate that the mapper instance actually implements the
-defined fields.
-
     >>> vinyl.artist = "Diana Ross and The Supremes"
     >>> vinyl.title = "Taking Care of Business"
     >>> vinyl.rpm = 45
 
-Or a compact disc.
+The attributes are instrumented by SQLAlchemy and map directly to a
+column in a table.
+
+    >>> IVinyl.__mapper__.artist
+    <sqlalchemy.orm.attributes.InstrumentedAttribute object at ...>
+
+A compact disc is another kind of album.
 
     >>> class ICompactDisc(IAlbum):
     ...     year = schema.Int(title=u"Year")
 
-    >>> cd = create(ICompactDisc)
-
 Let's pick a more recent Diana Ross, to fit the format.
     
+    >>> cd = create(ICompactDisc)
     >>> cd.artist = "Diana Ross"
     >>> cd.title = "The Great American Songbook"
     >>> cd.year = 2005
@@ -83,6 +97,8 @@ We must actually query the database once before proceeding; this seems
 to be a bug in ``zope.sqlalchemy``.
     
     >>> results = session.query(album.__class__).all()
+
+Proceed with the transaction.
     
     >>> import transaction
     >>> transaction.commit()
@@ -113,8 +129,8 @@ Verify tables for ``IVinyl``, ``IAlbum`` and ``ICompactDisc``.
     >>> session.execute(metadata.tables[encode(ICompactDisc)].select()).fetchall()
     [(3, 2005)]
 
-Concrete class specification
-----------------------------
+Mapping concrete classes
+------------------------
     
 Now we'll create a mapper based on a concrete class. We'll let the
 class implement the interface that describes the attributes we want to
@@ -122,9 +138,6 @@ store, but also provides a custom method.
 
     >>> class Vinyl(object):
     ...     interface.implements(IVinyl)
-    ...
-    ...     artist = title = u""
-    ...     rpm = 33
     ...
     ...     def __repr__(self):
     ...         return "<Vinyl %s: %s (@ %d RPM)>" % \
@@ -162,8 +175,10 @@ Verify that the methods on our ``Vinyl``-class are available on the mapper.
     >>> repr(vinyl)
     '<Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>'
 
-If we're mapping a concrete class, and run into class properties, we
-won't instrument them even if they're declared by the schema.
+When mapping a class we may run into properties that should take the
+place of a column (a read-only value). As an example, consider this
+experimental record class where rotation speed is a function of the
+title and artist.
 
     >>> class Experimental(Vinyl):
     ...     @property
@@ -171,6 +186,13 @@ won't instrument them even if they're declared by the schema.
     ...         return len(self.title+self.artist)
 
     >>> experimental = create(Experimental)
+
+XXX: There's currently an issue with SQLAlchemy that hinders this
+behavior; it specifically won't work if a default value is set on the
+column that we're overriding.
+
+    >>> # session.save(experimental)
+    
     >>> experimental.artist = vinyl.artist
     >>> experimental.title = vinyl.title
 
@@ -179,26 +201,20 @@ Let's see how fast this record should be played back.
     >>> experimental.rpm
     50
 
-Instances of mappers automatically join the object soup.
-
-    >>> from z3c.dobbin.mapper import getMapper
-    >>> mapper = getMapper(Vinyl)
-    >>> instance = mapper()
-    >>> instance.uuid is not None
-    True
-    
 Relations
 ---------
 
-Relations are columns that act as references to other objects.
+Relations are columns that act as references to other objects. They're
+declared using the ``zope.schema.Object`` field.
 
-As an example, let's create an object holds a reference to some
-favorite item. We use ``zope.schema.Object`` to declare this
-reference; relations are polymorphic and we needn't declare the schema
-of the referenced object in advance.
+Note that we needn't declare the relation target type in advance,
+although it may be useful in general to specialize the ``schema``
+keyword parameter.
 
     >>> class IFavorite(interface.Interface):
-    ...     item = schema.Object(title=u"Item", schema=interface.Interface)
+    ...     item = schema.Object(
+    ...         title=u"Item",
+    ...         schema=interface.Interface)
 
     >>> __builtin__.IFavorite = IFavorite
     
@@ -211,7 +227,7 @@ Let's make our Diana Ross record a favorite.
 
     >>> session.save(favorite)
 
-We'll commit the transaction and lookup the object by its UUID.
+We'll commit the transaction and lookup the object by its unique id.
 
     >>> transaction.commit()
 
@@ -485,17 +501,28 @@ We may use a mapped object as index.
     ...         title=u"Discographies by artist",
     ...         value_type=schema.List())
 
-Polymorphic structures
-----------------------
+Amorphic objects
+----------------
 
-We can use weak typing to store (almost) any kind of structure. Values
-are kept as Python pickles.
+We can set and retrieve attributes that aren't declared in an
+interface.
 
-    >>> class IPolyFavorite(interface.Interface):
-    ...     item = interface.Attribute(u"Any kind of favorite")
+    >>> record = create(interface.Interface)
 
-    >>> __builtin__.IPolyFavorite = IPolyFavorite
-    >>> favorite = create(IPolyFavorite)
+    >>> record.publisher = u"Columbia records"
+    >>> record.publisher
+    u'Columbia records'
+
+    >>> session.save(record)
+    >>> session.query(record.__class__).filter_by(
+    ...     uuid=record.uuid)[0].publisher
+    u'Columbia records'
+    
+Using this kind of weak we can store (almost) any kind of
+structure. Values are kept as Python pickles.
+
+    >>> favorite = create(interface.Interface)
+    >>> session.save(favorite)
 
 A transaction hook makes sure that assigned values are transient
 during a session.
@@ -547,12 +574,9 @@ We do need explicitly set the dirty bit of this instance.
     >>> favorite.item = favorite.item
     >>> transaction.commit()
 
-Clear the object cache and verify value.
-    
-    >>> del favorite._v_cached_item_pickle
     >>> sorted(favorite.item.items())
     [(u'black', 0), (u'blue', 255), (u'green', 65280), (u'red', 16711680)]
-    
+
 When we create relations to mutable objects, a hook is made into the
 transaction machinery to keep track of the pending state.
 
@@ -571,18 +595,14 @@ Amorphic structures.
 Structures involving relations to other instances.
 
     >>> favorite.item = vinyl; transaction.commit()
-    >>> del favorite._v_cached_item_pickle
     >>> favorite.item
     <Vinyl Diana Ross and The Supremes: Taking Care of Business (@ 45 RPM)>
 
 Self-referencing works because polymorphic attributes are lazy.
 
-    >>> session.save(favorite)
-    
     >>> favorite.item = favorite; transaction.commit()
-    >>> del favorite._v_cached_item_pickle
     >>> favorite.item
-    <Mapper (__builtin__.IPolyFavorite) at ...>
+    <z3c.dobbin.bootstrap.Soup object at ...>
     
 Security
 --------
@@ -593,7 +613,9 @@ The security model from Zope is applied to mappers.
 
 Our ``Vinyl`` class does not have a security checker defined.
     
+    >>> from z3c.dobbin.mapper import getMapper
     >>> mapper = getMapper(Vinyl)
+    
     >>> getCheckerForInstancesOf(mapper) is None
     True
 

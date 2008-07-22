@@ -22,6 +22,7 @@ from random import randint
 from itertools import chain
 
 import bootstrap
+import session as tx
 import soup
 import zs2sa
 import types
@@ -54,6 +55,8 @@ def getMapper(spec):
 def createMapper(spec):
     """Create a mapper for the specification."""
 
+    interface.alsoProvides(spec, IMapped)
+
     engine = Session().bind
     metadata = engine.metadata
 
@@ -73,12 +76,14 @@ def createMapper(spec):
             if isinstance(value, property):
                 exclude.append(name)
 
-    assert ifaces, "Specification must declare at least one field."
-    
+    if not ifaces:
+        spec.__mapper__ = bootstrap.Soup
+        return spec.__mapper__
+
     # create joined table
     properties = {}
     first_table = None
-    
+
     for (t, p) in (getTable(iface, metadata, exclude) for iface in ifaces):
         if first_table is None:
             table = first_table = t
@@ -89,10 +94,10 @@ def createMapper(spec):
     specification_path = '%s.%s' % (spec.__module__, spec.__name__)
 
     class Mapper(bootstrap.Soup, kls):
-        interface.implements(IMapped, *ifaces)
+        interface.implements(*ifaces)
 
         __spec__ = specification_path
-        
+
         def __init__(self, *args, **kwargs):
             super(Mapper, self).__init__(*args, **kwargs)
 
@@ -125,7 +130,9 @@ def createMapper(spec):
             del properties[name]
             setattr(Mapper, name, prop)
 
-    soup_table = bootstrap.Soup.c.id.table
+    # XXX: there must be a more straight-forward way to do this
+    soup_table = bootstrap.Soup._sa_class_manager.mappers[None].local_table
+    
     polymorphic = (
         [Mapper], table.join(
         soup_table, first_table.c.id==soup_table.c.id))
@@ -140,8 +147,7 @@ def createMapper(spec):
         inherit_condition=(first_table.c.id==soup_table.c.id))
 
     spec.__mapper__ = Mapper
-    interface.alsoProvides(spec, IMapped)
-
+    
     return Mapper
 
 def removeMapper(spec):
@@ -187,13 +193,15 @@ def getTable(iface, metadata, ignore=()):
         
     kw = dict(useexisting=True)
 
+    soup_table = bootstrap.Soup._sa_class_manager.mappers[None].local_table
+
     table = rdb.Table(
         name,
         metadata,
-        rdb.Column('id', rdb.Integer, rdb.ForeignKey(bootstrap.Soup.c.id), primary_key=True),
+        rdb.Column('id', rdb.Integer, rdb.ForeignKey(soup_table.c.id), primary_key=True),
         *columns,
         **kw)
 
-    metadata.create_all(checkfirst=True)
+    table.create(checkfirst=True)
     
     return table, properties

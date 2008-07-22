@@ -7,9 +7,6 @@ import transaction
 def COPY_CONCRETE_TO_INSTANCE(uuid):
     return COPY_CONCRETE_TO_INSTANCE, uuid
 
-def COPY_VALUE_TO_INSTANCE(uuid, name):
-    return COPY_VALUE_TO_INSTANCE, uuid, name
-
 def addBeforeCommitHook(token, value, hook):
     session = Session()
 
