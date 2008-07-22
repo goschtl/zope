@@ -118,10 +118,10 @@ We get back to introspector home page::
 Browsing the ZODB
 =================
 
-  >>> browser.getLink("Browse the ZODB").click()
+  >>> browser.getLink("Browse the content").click()
   >>> print browser.contents
   <!DOCTYPE html...
-  <h1>ZODB browser</h1>
+  <h1>Content browser</h1>
   ...
 
 We get back to introspector home page::
