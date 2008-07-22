@@ -19,7 +19,7 @@ from zope.introspector.interfaces import IRegistryInfo
 from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector)
 from zope.app.folder.interfaces import IRootFolder
-from grokui.introspector.code import Package
+from zope.introspector.code import Package
 
 class RootTraverser(grok.Traverser):
     grok.context(IRootFolder)

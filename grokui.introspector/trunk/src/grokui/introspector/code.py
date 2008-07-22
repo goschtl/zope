@@ -14,56 +14,19 @@
 """Introspecting code.
 """
 import grok
-from grokcore.component.interfaces import IContext
-import types
-from martian.scan import module_info_from_dotted_name
-from martian.util import isclass
-
-class Code(object):
-    grok.implements(IContext)
-
-    def __init__(self, dotted_name):
-        self.dotted_name = dotted_name
+from zope.introspector.code import Code, PackageOrModule
 
 class Index(grok.View):
     grok.context(Code)
     def render(self):
         return "This is code"
 
-class PackageOrModule(Code):
-    def __init__(self, dotted_name):
-        super(PackageOrModule, self).__init__(dotted_name)
-        self._module_info = module_info_from_dotted_name(dotted_name)
-    
-class Package(PackageOrModule):    
+class CodeTraverser(grok.Traverser):
+    grok.context(PackageOrModule)
+
     def traverse(self, name):
-        sub_module = self._module_info.getSubModuleInfo(name)
-        if sub_module is None:
+        try:
+            return self.context[name]
+        except KeyError:
             return None
-        if sub_module.isPackage():
-            return Package(sub_module.dotted_name)
-        return Module(sub_module.dotted_name)
 
-class Module(PackageOrModule):
-    def traverse(self, name):
-        module = self._module_info.getModule()
-        obj = getattr(module, name, None)
-        if obj is None:
-            return None
-        sub_dotted_name = self.dotted_name + '.' + name
-        if isclass(obj):
-            return Class(sub_dotted_name)
-        elif type(obj) is types.FunctionType:
-            return Function(sub_dotted_name)
-        else:
-            return Instance(sub_dotted_name)
-
-
-class Class(Code):
-    pass
-
-class Function(Code):
-    pass
-
-class Instance(Code):
-    pass
