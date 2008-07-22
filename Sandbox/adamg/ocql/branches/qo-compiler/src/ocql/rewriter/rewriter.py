@@ -29,12 +29,10 @@ class Rewriter(object):
 
     def __call__(self):
         query = self.context.tree
-#        import pydevd;pydevd.settrace()
-        adapter = IRewriter(query)
-        alg = adapter()
-        #alg = query.rewrite(target_algebra)
-        head = Head(alg)
-        return head
+#        adapter = IRewriter(query)
+#        alg = adapter()
+        alg = query.rewrite(target_algebra)
+        return Head(alg)
 
 
 class ChildRewriter(object):
@@ -72,7 +70,7 @@ class BinaryRewriter(ChildRewriter):
     adapts(IBinary)
 
     def __call__(self):
-        return IRewriter(self.context.)
+        return IRewriter(self.context.left)
 
 class UnionRewriter(ChildRewriter):
     implements(IRewriter)

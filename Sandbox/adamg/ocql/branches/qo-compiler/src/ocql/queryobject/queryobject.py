@@ -145,8 +145,8 @@ class Identifier(Expression):
             str(self.name),
             )
 
-#    def rewrite(self, algebra):
-#        return algebra.Identifier(self.name)
+    def rewrite(self, algebra):
+        return algebra.Identifier(self.name)
 
 class Constant(Expression):
     implements(IConstant)
@@ -163,8 +163,8 @@ class Constant(Expression):
         return "%s(%s)" % (
             self.__class__.__name__, self.value)
 
-#    def rewrite(self, algebra):
-#        return algebra.Constant(self.value)
+    def rewrite(self, algebra):
+        return algebra.Constant(self.value)
 
 class StringConstant(Constant):
     pass

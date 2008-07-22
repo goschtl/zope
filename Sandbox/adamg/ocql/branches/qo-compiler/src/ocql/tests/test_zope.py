@@ -8,7 +8,6 @@ from zope.interface import Interface
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
 from ocql.compiler.compiler import AlgebraCompiler
 from ocql.compiler.compiler import registerAdapters
-import ocql.rewriter.rewriter
 from ocql.database import metadata
 from ocql.database.metadata import Metadata
 from ocql.engine import OCQLEngine
@@ -36,7 +35,6 @@ class testZope(unittest.TestCase):
         provideAdapter(AlgebraCompiler)
         provideAdapter(Metadata)
         registerAdapters()
-        ocql.rewriter.rewriter.registerAdapters()
         setupInterfaces(self)
         setupCatalog(self)
 
@@ -77,11 +75,11 @@ class testZope(unittest.TestCase):
         # set [ ]
         #
         query = "set [ ]"
-        qo=Query(metadata, symbols,
+        qo=Head(Query(metadata, symbols,
                  set,
                  [] ,
                  Identifier(metadata, symbols,
-                            '') )
+                            '') ))
 
         self.doit(query, qo, set([]))
 
@@ -93,7 +91,7 @@ class testZope(unittest.TestCase):
         # set [ c in IStudent | c ]
         #
         query = "[c in IStudent | c]"
-        qo = Query(
+        qo = Head(Query(
                 metadata, symbols,
                 set,
                 [
@@ -101,7 +99,7 @@ class testZope(unittest.TestCase):
                        metadata, symbols,
                        Identifier(metadata,symbols,'c'),
                        Identifier(metadata,symbols,'IStudent'))
-                ], Identifier(metadata,symbols,'c'))
+                ], Identifier(metadata,symbols,'c')))
 
         self.doit(query, qo, set(metadata.getAll('IStudent')))
 
@@ -113,7 +111,7 @@ class testZope(unittest.TestCase):
         # set [ c in IStudent | c.name ]
         #
         query = "[c in IStudent | c.name]"
-        qo = Query(
+        qo = Head(Query(
                    metadata, symbols,
                    set,
                    [
@@ -121,7 +119,7 @@ class testZope(unittest.TestCase):
                            metadata, symbols,
                            Identifier(metadata, symbols,'c'),
                            Identifier(metadata, symbols, 'IStudent'))
-                    ],Identifier(metadata, symbols, 'c.name'))
+                    ],Identifier(metadata, symbols, 'c.name')))
         self.doit(query, qo, set(["Charith", "Jane", "Ann"]))
 
 
@@ -132,7 +130,7 @@ class testZope(unittest.TestCase):
         # set [ c in IProject , c.description="test" | c.name]
         #
         query = "[c in IProject , c.description=test | c.name]"
-        qo = Query(
+        qo = Head(Query(
                    metadata, symbols,
                    set,
                    [
@@ -144,7 +142,7 @@ class testZope(unittest.TestCase):
                            metadata,symbols,
                            Identifier(metadata, symbols, 'c.description'),
                            Identifier(metadata, symbols, '"test"'))
-                   ], Identifier(metadata, symbols, 'c.name'))
+                   ], Identifier(metadata, symbols, 'c.name')))
 
         self.doit(query, qo, set(["Save the world"]))
 
