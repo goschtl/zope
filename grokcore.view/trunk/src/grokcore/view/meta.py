@@ -1,8 +1,9 @@
 import os
 
 from zope import component, interface
-from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
-    IBrowserRequest, IBrowserSkinType)
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope.security.interfaces import IPermission
 
 import martian
