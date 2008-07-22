@@ -34,6 +34,11 @@ setup(name='grokcore.view',
           'zope.traversing',
           'zope.schema',
           'zope.formlib',
+          # for ftests:
+          # TODO move these to extra_requires?
+          'zope.testbrowser',
+          'zope.securitypolicy',
+          'zope.app.zcmlfiles',
       ],
       entry_points="""
       # -*- Entry points: -*-
