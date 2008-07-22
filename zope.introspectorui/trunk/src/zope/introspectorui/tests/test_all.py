@@ -20,6 +20,6 @@ import doctest
 # This we say: include all testfiles in or below the
 # package in the tests.
 #
-#test_suite = z3c.testsetup.TestCollector('zope.introspectorui',
-                                         #optionflags=doctest.ELLIPSIS+
-                                                     #doctest.NORMALIZE_WHITESPACE)
+test_suite = z3c.testsetup.TestCollector('zope.introspectorui',
+                                         optionflags=doctest.ELLIPSIS+
+                                                     doctest.NORMALIZE_WHITESPACE)
