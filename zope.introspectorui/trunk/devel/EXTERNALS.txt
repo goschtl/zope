@@ -1,0 +1,4 @@
+# svn propset -F EXTERNALS.txt svn:externals .
+zope.introspector svn://svn.zope.org/repos/main/zope.introspector/trunk
+grokcore.component svn://svn.zope.org/repos/main/grokcore.component/trunk
+grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk 
