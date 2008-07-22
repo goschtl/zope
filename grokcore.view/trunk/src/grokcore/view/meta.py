@@ -31,7 +31,8 @@ class SkinGrokker(martian.ClassGrokker):
         config.action(
             discriminator=('skin', name),
             callable=component.interface.provideInterface,
-            args=(name, layer, IBrowserSkinType))
+            args=(name, layer, IBrowserSkinType)
+            )
         return True
 
 
@@ -67,7 +68,8 @@ class ViewGrokker(martian.ClassGrokker):
             config.action(
                 discriminator=None,
                 callable=self.checkTemplates,
-                args=(templates, factory.module_info, factory))
+                args=(templates, factory.module_info, factory)
+                )
 
         # safety belt: make sure that the programmer didn't use
         # @grok.require on any of the view's methods.
@@ -165,11 +167,13 @@ class ModulePageTemplateGrokker(martian.InstanceGrokker):
         config.action(
             discriminator=None,
             callable=templates.register,
-            args=(name, instance))
+            args=(name, instance)
+            )
         config.action(
             discriminator=None,
             callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name))
+            args=(name, module_info.dotted_name)
+            )
         return True
 
 
@@ -186,7 +190,8 @@ class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
         config.action(
             discriminator=None,
             callable=templates.findFilesystem,
-            args=(module_info, ))
+            args=(module_info, )
+            )
         return True
 
 
@@ -201,7 +206,8 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
         config.action(
             discriminator=None,
             callable=templates.checkUnassociated,
-            args=(module_info, ))
+            args=(module_info, )
+            )
         return True
 
 
@@ -225,12 +231,14 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
                     raise GrokError(
                         "The 'static' resource directory must not "
                         "be a python package.",
-                        module_info.getModule())
+                        module_info.getModule()
+                        )
                 else:
                     raise GrokError(
                         "A package can not contain both a 'static' "
                         "resource directory and a module named "
-                        "'static.py'", module_info.getModule())
+                        "'static.py'", module_info.getModule()
+                        )
 
         # public checker by default
         checker = NamesChecker(allowed_resourcedir_names)
