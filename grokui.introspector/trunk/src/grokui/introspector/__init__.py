@@ -11,7 +11,4 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-# a package
-from grokui.introspector.introspector import Introspector
-from grokui.introspector.views import NAMESPACE
 

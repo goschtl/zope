@@ -13,7 +13,6 @@
 ##############################################################################
 """Helpers for the grokui.introspector.
 """
-from grokui.introspector import NAMESPACE
 
 def dotted_name_url(dotted_path, preserve_last=0):
     """Create an HTML fragment with links to parts of a dotted name.
@@ -22,8 +21,8 @@ def dotted_name_url(dotted_path, preserve_last=0):
     parts = dotted_path.split('.', len(dotted_path.split('.'))
                               - 1 - preserve_last)
     for i in range(0, len(parts)):
-        part = '<a href="/++%s++/code/%s">%s</a>' % (
-            NAMESPACE, '/'.join(parts[0:i+1]), parts[i])
+        part = '<a href="/++inspect++/+code/%s">%s</a>' % (
+            '/'.join(parts[0:i+1]), parts[i])
         result.append(part)
     return '.'.join(result)
-        
+

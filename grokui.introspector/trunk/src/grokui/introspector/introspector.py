@@ -15,38 +15,22 @@
 """
 import grok
 from zope.component import getUtility
-from zope.introspector.interfaces import (IRegistryInfo,
-                                          IObjectDescriptionProvider,)
-from zope.location.interfaces import ILocation
-from zope.traversing.interfaces import ITraversable
-from grok.interfaces import IContext
-from grokui.introspector.interfaces import (IGrokIntrospector,
-                                            IGrokRegistryIntrospector,
-                                            IGrokCodeIntrospector,
-                                            IGrokContentBrowser)
+from zope.introspector.interfaces import IRegistryInfo
+from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
+                                            IGrokCodeIntrospector)
+from zope.app.folder.interfaces import IRootFolder
+from grokui.introspector.code import Package
 
-class Introspector(object):
-    grok.implements(IGrokIntrospector, ILocation, IContext)
+class RootTraverser(grok.Traverser):
+    grok.context(IRootFolder)
 
-    def __init__(self, parent, name):
-        self.__parent__ = parent
-        self.__name__ = name
-
-def get_introspector():
-    return Introspector
-grok.global_utility(get_introspector, provides=IGrokIntrospector)
-
-class IntrospectorTraverser(grok.Traverser):
-    grok.context(IGrokIntrospector)
-    def traverse(self, path, *args, **kw):
-        if path == 'registries':
-            return RegistryIntrospector()
-        if path == 'code':
+    def traverse(self, name): 
+        if name == '+code':
             return CodeIntrospector()
-        if path == 'content':
-            return ContentBrowser()
-        return self.context
-
+        elif name == '+registry':
+            return RegistryIntrospector()
+        return None
+    
 class RegistryIntrospector(grok.Model):
     grok.implements(IGrokRegistryIntrospector)
 
@@ -60,31 +44,13 @@ class RegistryIntrospector(grok.Model):
             ) for x in uinfo.getAllUtilities()]
         return utilities
 
-
 class CodeIntrospector(grok.Model):
     grok.implements(IGrokCodeIntrospector)
-    
-    def __init__(self, dotted_name=None, *args, **kw):
-        super(CodeIntrospector, self).__init__(*args, **kw)
-        self.dotted_name = dotted_name
 
-    def getIntrospector(self):
-        if self.dotted_name is None:
-            return self
-        provider = getUtility(IObjectDescriptionProvider)
-        description = provider.getDescription(dotted_name=self.dotted_name)
-        return description
-
-class CodeTraverser(grok.Traverser):
-    grok.context(IGrokCodeIntrospector)
-
-    def traverse(self, path, *args, **kw):
-        dotted_name = self.context.dotted_name or ''
-        if len(dotted_name):
-            dotted_name += '.'
-        dotted_name += path
-        introspector = CodeIntrospector(dotted_name=dotted_name)
-        return introspector.getIntrospector()
-
-class ContentBrowser(grok.Model):
-    grok.implements(IGrokContentBrowser)
+    def traverse(self, name):
+        if '.' in name:
+            return None
+        try:
+            return Package(name)
+        except ImportError:
+            return None

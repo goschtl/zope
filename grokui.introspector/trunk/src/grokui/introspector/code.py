@@ -14,75 +14,56 @@
 """Introspecting code.
 """
 import grok
-from zope.component import getUtility
-from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
-                                          IPackageInfo,
-                                          IObjectDescriptionProvider,)
-from zope.introspector.objectinfo import ObjectInfo
-from grokui.introspector.interfaces import (IGrokIntrospector,)
-from grokui.introspector.util import dotted_name_url
+from grokcore.component.interfaces import IContext
+import types
+from martian.scan import module_info_from_dotted_name
+from martian.util import isclass
 
-grok.context(IObjectInfo)
+class Code(object):
+    grok.implements(IContext)
 
-class Master(grok.View):
-    """The Macro page that defines the default look and feel.
-    """
-
-class ObjectInfoView(grok.View):
-    grok.name('index.html')
-
-    def update(self, *args, **kw):
-        self.dotted_name = dotted_name_url(self.context.getDottedName())
-        
-    def getType(self):
-        return self.context.getType().__name__
-
-class ModuleInfoView(ObjectInfoView):
-    grok.context(IModuleInfo)
-    grok.name('index.html')
-
-class PackageInfoView(ObjectInfoView):
-    grok.context(IPackageInfo)
-    grok.name('index.html')
-
-    def update(self, *args, **kw):
-        super(PackageInfoView, self).update(*args, **kw)
-        self.files = self.getPackageFiles()
-
-    def getPackageFiles(self, filter=None):
-        files = self.context.getPackageFiles(filter=filter)
-        result = []
-        for name in files:
-            dotnum = name.count('.')
-            url = dotted_name_url(self.context.getDottedName() + '.' + name,
-                                  preserve_last = dotnum)
-            url = url.split('.', dotnum*2)[-1]
-            result.append(dict(name=name, url=url))
-        return result
-
-class DottedPathTraverser(grok.Traverser):
-    """Traverse object infos.
-    """
-    def traverse(self, path, *args, **kw):
-        dotted_name = '.'.join([self.context.getDottedName(), path])
-        provider = getUtility(IObjectDescriptionProvider)
-        try:
-            description = provider.getDescription(dotted_name=dotted_name)
-        except ImportError:
-            # The required dotted name does not exist
-            return CodeNotFound(dotted_name)
-        return description
-
-class CodeNotFound(object):
-    """What we generate if a dotted name cannot be resolved.
-    """
-    grok.implements(IObjectInfo)
     def __init__(self, dotted_name):
         self.dotted_name = dotted_name
 
-class CodeNotFoundView(grok.View):
-    """The error view, when a dotted name cannot be resolved.
-    """
-    grok.context(CodeNotFound)
-    grok.name('index.html')
-    grok.template('codenotfound')
+class Index(grok.View):
+    grok.context(Code)
+    def render(self):
+        return "This is code"
+
+class PackageOrModule(Code):
+    def __init__(self, dotted_name):
+        super(PackageOrModule, self).__init__(dotted_name)
+        self._module_info = module_info_from_dotted_name(dotted_name)
+    
+class Package(PackageOrModule):    
+    def traverse(self, name):
+        sub_module = self._module_info.getSubModuleInfo(name)
+        if sub_module is None:
+            return None
+        if sub_module.isPackage():
+            return Package(sub_module.dotted_name)
+        return Module(sub_module.dotted_name)
+
+class Module(PackageOrModule):
+    def traverse(self, name):
+        module = self._module_info.getModule()
+        obj = getattr(module, name, None)
+        if obj is None:
+            return None
+        sub_dotted_name = self.dotted_name + '.' + name
+        if isclass(obj):
+            return Class(sub_dotted_name)
+        elif type(obj) is types.FunctionType:
+            return Function(sub_dotted_name)
+        else:
+            return Instance(sub_dotted_name)
+
+
+class Class(Code):
+    pass
+
+class Function(Code):
+    pass
+
+class Instance(Code):
+    pass

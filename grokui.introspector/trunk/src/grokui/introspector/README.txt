@@ -39,16 +39,16 @@ browser::
   >>> browser.handleErrors = False
 
 All introspector related content is shown in a special skin called
-``introspector``, so that you can enter the follwing URL to access the
+``inspect``, so that you can enter the following URL to access the
 overview page::
 
-  >>> browser.open('http://localhost/++introspector++/')
+  >>> browser.open('http://localhost/++inspect++/index')
   >>> print browser.contents
   <!DOCTYPE html...
   <h1>The Grok Introspector</h1>
   ...
 
-Note the `++introspector` marker in the URL.
+Note the `++inspect++` marker in the URL.
 
 The overview page provides three main sections to start browsing: 
 
@@ -56,7 +56,7 @@ The overview page provides three main sections to start browsing:
 
 - code
 
-- ZODB
+- content
 
 Browsing the registries
 =======================
@@ -72,7 +72,7 @@ We can browse the registries by clicking on the provided link::
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++introspector++/')
+  >>> browser.open('http://localhost/++inspect++/index')
 
 
 Browsing code (classes, packages, etc.)
@@ -104,7 +104,7 @@ The system detected from the URL, that we wanted to get information
 about the ``zope`` package. The link we clicked looks like this::
 
   >>> zope_link
-  <Link ... url='http://localhost/++introspector++/code/zope'>
+  <Link ... url='http://localhost/++inspect++/+code/zope'>
 
 This link is translated by the system to the dotted name `zope`, which
 means to display the object, whose dotted name is 'zope'.
@@ -113,18 +113,5 @@ See `code.txt` to learn more about the code browser.
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++introspector++/')
+  >>> browser.open('http://localhost/++inspect++/index')
 
-
-Browsing the ZODB
-=================
-
-  >>> browser.getLink("Browse the content").click()
-  >>> print browser.contents
-  <!DOCTYPE html...
-  <h1>Content browser</h1>
-  ...
-
-We get back to introspector home page::
-
-  >>> browser.open('http://localhost/++introspector++/')

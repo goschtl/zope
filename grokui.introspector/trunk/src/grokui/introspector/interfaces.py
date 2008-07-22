@@ -15,26 +15,11 @@
 """
 from zope.interface import Interface
 
-class IGrokIntrospector(Interface):
-    """An introspector for scanning the runtime system.
-    """
-    def __init__(obj, request):
-        """An introspector must handle requests on arbitrary objects.
 
-        It it the base for exploring the whole introspector facilities
-        provided and should deliver content based on the request.
-
-        How the request data is interpreted, is up to the introspector.
-        """
-
-class IGrokRegistryIntrospector(IGrokIntrospector):
+class IGrokRegistryIntrospector(Interface):
     """An introspector for registries.
     """
 
-class IGrokCodeIntrospector(IGrokIntrospector):
+class IGrokCodeIntrospector(Interface):
     """An introspector for packages, classes and other code.
-    """
-
-class IGrokContentBrowser(IGrokIntrospector):
-    """A content browser
     """

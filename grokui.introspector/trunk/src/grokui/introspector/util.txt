@@ -16,24 +16,24 @@ a link to the ``zope`` package::
 
   >>> from grokui.introspector.util import dotted_name_url
   >>> dotted_name_url('zope')
-  u'<a href="/++introspector++/code/zope">zope</a>'
+  '<a href="/++inspect++/+code/zope">zope</a>'
 
 The HTML for the ``zope.introspector`` package is the same but a link
 to the ``introspector subpackage appended::
 
   >>> dotted_name_url('zope.introspector')
-  u'...<a href="/++introspector++/code/zope/introspector">introspector</a>'
+  '...<a href="/++inspect++/+code/zope/introspector">introspector</a>'
 
 If we want a part of the dotted path to persist, for instance, because
 it is not an individual part of the dotted name but a file extension,
 we can do so by providing the `preserve_last` option::
 
   >>> dotted_name_url('zope.README.txt', preserve_last=1)
-  u'...<a href="/++introspector++/code/zope/README.txt">README.txt</a>'
+  '...<a href="/++inspect++/+code/zope/README.txt">README.txt</a>'
 
 The default value for `preserve_last` is zero, which means that every
 dot in the dotted name means a new component. Larger values handle
 also components with more than one dot in their name::
 
   >>> dotted_name_url('zope.README.txt.gz', preserve_last=2)
-  u'...<a href="/++introspector++/code/zope/README.txt.gz">README.txt.gz</a>'
+  '...<a href="/++inspect++/+code/zope/README.txt.gz">README.txt.gz</a>'

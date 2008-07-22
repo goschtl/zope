@@ -16,88 +16,28 @@ Views for the grok introspector.
 """
 
 import grok
-from zope.component import getUtility
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.traversing.interfaces import ITraversable
-from grokui.introspector.interfaces import (IGrokIntrospector,
-                                            IGrokRegistryIntrospector,
-                                            IGrokCodeIntrospector,
-                                            IGrokContentBrowser)
+from zope.app.folder.interfaces import IRootFolder
 
-NAMESPACE = u'introspector'
+from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
+                                            IGrokCodeIntrospector)
+from grokui.introspector.namespace import IntrospectorLayer
 
-grok.context(IGrokIntrospector)
-
-class IntrospectorLayer(IDefaultBrowserLayer):
-    """A basic layer for all introspection stuff.
-    """
-    pass
-
-class IntrospectorSkin(grok.Skin):
-    """A skin for all introspection stuff.
-    """
-    grok.layer(IntrospectorLayer)
-
-class Master(grok.View):
-    """The Macro page that defines the default look and feel.
-    """
+grok.layer(IntrospectorLayer)
 
 class Index(grok.View):
     """The overview page.
     """
-    pass
+    grok.context(IRootFolder)
 
-class RegistryOverview(grok.View):
+class Registry(grok.View):
     grok.name('index')
-    grok.template('registries')
     grok.context(IGrokRegistryIntrospector)
 
     def getUtilities(self):
         utils = self.context.getUtilities()
         return utils
 
-class CodeOverview(grok.View):
+class Code(grok.View):
     grok.name('index')
-    grok.template('code')
     grok.context(IGrokCodeIntrospector)
-
-class ContentOverview(grok.View):
-    grok.name('index')
-    grok.template('content')
-    grok.context(IGrokContentBrowser)
-
-# The viewlet managers...
-
-class HeaderManager(grok.ViewletManager):
-    """This viewlet manager cares for things inside the HTML header.
-    """
-    grok.name('header')
-
-class PageTopManager(grok.ViewletManager):
-    """This viewlet manager cares for the upper page.
-    """
-    grok.name('top')
-
-class PageContentManager(grok.ViewletManager):
-    """This viewlet manager cares for the main content section of a page.
-    """
-    grok.name('main')
-
-class PageFooterManager(grok.ViewletManager):
-    """This viewlet manager cares for the page footer.
-    """
-    grok.name('footer')
-
-class GrokIntrospectorNamespace(grok.MultiAdapter):
-    grok.name(NAMESPACE)
-    grok.provides(ITraversable)
-    grok.adapts(Interface, Interface)
-    grok.layer(IntrospectorSkin)
-
-    def __init__(self, ob, req=None):
-        self.context = ob
-
-    def traverse(self, name, ignore):
-        introspector = getUtility(IGrokIntrospector)
-        return introspector(self.context, NAMESPACE + name)

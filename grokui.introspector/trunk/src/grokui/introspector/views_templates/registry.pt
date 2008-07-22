@@ -1,7 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html metal:use-macro="context/@@master/macros/page">
-  <div metal:fill-slot="main">
+<html>
+  <body>
+  <div>
     <h1>Registries</h1>
 
     <h2>Utilities</h2>
@@ -29,4 +30,5 @@
 
 
   </div>
+  </body>
 </html>
