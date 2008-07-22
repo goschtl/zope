@@ -39,6 +39,7 @@ setup(name='grokcore.view',
           'zope.testbrowser',
           'zope.securitypolicy',
           'zope.app.zcmlfiles',
+          'zope.app.authentication',
       ],
       entry_points="""
       # -*- Entry points: -*-

@@ -21,6 +21,9 @@ class Permission(Permission):
     pass
 
 
+Public = 'zope.Public'
+
+
 class Skin(object):
     pass
 
