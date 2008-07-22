@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.introspector package
+"""Setup for zope.introspectorui package
 
 $Id$
 """
