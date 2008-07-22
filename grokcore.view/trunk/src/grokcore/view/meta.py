@@ -46,22 +46,9 @@ class ViewGrokker(martian.ClassGrokker):
         # Need to store the module info object on the view class so that it
         # can look up the 'static' resource directory.
         factory.module_info = module_info
-        return super(ViewGrokker, self).grok(name, factory, module_info,
-            **kw)
+        return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
     def execute(self, factory, config, context, layer, name, **kw):
-        if util.check_subclass(factory, components.GrokForm):
-            # setup form_fields from context class if we've encountered a form
-            if getattr(factory, 'form_fields', None) is None:
-                factory.form_fields = formlib.get_auto_fields(context)
-
-            if not getattr(factory.render, 'base_method', False):
-                raise GrokError(
-                    "It is not allowed to specify a custom 'render' "
-                    "method for form %r. Forms either use the default "
-                    "template or a custom-supplied one." % factory,
-                    factory)
-
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
         if templates is not None:
@@ -115,6 +102,25 @@ class ViewSecurityGrokker(martian.ClassGrokker):
                 callable=protect_name,
                 args=(factory, method_name, permission),
                 )
+        return True
+
+
+class FormGroker(martian.ClassGrokker):
+    martian.component(components.GrokForm)
+    martian.directive(grokcore.component.context)
+
+    def execute(self, factory, config, context, **kw):
+        # Set up form_fields from context class if they haven't been
+        # configured manually already.
+        if getattr(factory, 'form_fields', None) is None:
+            factory.form_fields = formlib.get_auto_fields(context)
+
+        if not getattr(factory.render, 'base_method', False):
+            raise GrokError(
+                "It is not allowed to specify a custom 'render' "
+                "method for form %r. Forms either use the default "
+                "template or a custom-supplied one." % factory,
+                factory)
         return True
 
 
