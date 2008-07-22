@@ -33,8 +33,8 @@ class SimpleDescriptionProvider(DescriptionProvider):
 class PackageDescriptionProvider(DescriptionProvider):
     name = 'package'
     priority(1000)
-    def getDescription(self, obj, dotted_name=None, **kw):
-        return PackageInfo(obj, dotted_name)
+    def getDescription(self, obj, **kw):
+        return PackageInfo(obj)
 
     def canHandle(self, obj=None, dotted_name=None, **kw):
         if not inspect.ismodule(obj):
