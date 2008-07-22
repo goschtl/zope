@@ -7,14 +7,16 @@
   >>> test_instance = Test()
   
   # Look up the object info for the test object:
+  >>> from zope import component
   >>> from zope.introspector.interfaces import IObjectInfo
-  >>> object_info = IObjectInfo(test_instance)
+  >>> object_info = component.getAdapter(test_instance, IObjectInfo, 
+  ...                                    name='object')
   
   # Find the view for the test object:
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> from zope import component
-  >>> view = component.getMultiAdapter((object_info, request), name='index.html')
+  >>> view = component.getMultiAdapter((object_info, request), 
+  ...                                  name='index.html')
   
   # Try to render the view:
   >>> print view()
@@ -27,8 +29,8 @@
   # render that view:
   >>> import zope.introspectorui
   >>> from zope.introspector.interfaces import IPackageInfo
-  >>> package_info = IPackageInfo(zope.introspectorui)
+  >>> package_info = component.getAdapter(zope.introspectorui, IPackageInfo,
+  ...                                     name='package')
   >>> view = component.getMultiAdapter((package_info, request), name='index.html')
   >>> print view()
   <h1>...Package: <span>zope.introspectorui</span>...
-  

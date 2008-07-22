@@ -1,8 +1,7 @@
 from grokcore.view import View
 from grokcore.component import context, name
 from zope.introspector.interfaces import (IObjectInfo, IModuleInfo,
-                                          IPackageInfo,
-                                          IObjectDescriptionProvider,)
+                                          IPackageInfo)
 
 class Object(View):
     name('index.html')
