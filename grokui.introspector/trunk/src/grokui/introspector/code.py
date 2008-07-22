@@ -16,11 +16,6 @@
 import grok
 from zope.introspector.code import Code, PackageOrModule
 
-class Index(grok.View):
-    grok.context(Code)
-    def render(self):
-        return "This is code"
-
 class CodeTraverser(grok.Traverser):
     grok.context(PackageOrModule)
 

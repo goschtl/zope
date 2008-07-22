@@ -16,8 +16,10 @@ Views for the grok introspector.
 """
 
 import grok
+from zope import component
 from zope.interface import Interface
 from zope.app.folder.interfaces import IRootFolder
+from zope.introspector.interfaces import IInfos
 
 from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
                                             IGrokCodeIntrospector)
@@ -41,3 +43,20 @@ class Registry(grok.View):
 class Code(grok.View):
     grok.name('index')
     grok.context(IGrokCodeIntrospector)
+
+class Introspect(grok.View):
+    grok.context(Interface)
+    grok.name('index')
+
+    def infoViews(self):
+        for name, info in IInfos(self.context).infos():
+            view = component.getMultiAdapter((info, self.request),
+                                             name='index')
+            # the introspect view is found for everything, and therefore
+            # also for the IInfo adapter. This is not what we want, just
+            # skip displaying a view for the IInfo if there's no more specific
+            # view to be found
+            if isinstance(view, Introspect):
+                continue
+            yield view
+
