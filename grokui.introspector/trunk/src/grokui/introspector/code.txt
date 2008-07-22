@@ -18,7 +18,7 @@ browser::
 
 The code browser is linked from the general grokui overview page::
 
-  >>> browser.open('http://localhost/++inspect++/index')
+  >>> browser.open('http://localhost/++inspect++/')
 
 The code browser assists in giving us an overview over the available
 code basis. The overview page is where we can start::

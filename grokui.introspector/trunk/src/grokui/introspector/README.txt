@@ -42,7 +42,7 @@ All introspector related content is shown in a special skin called
 ``inspect``, so that you can enter the following URL to access the
 overview page::
 
-  >>> browser.open('http://localhost/++inspect++/index')
+  >>> browser.open('http://localhost/++inspect++/index.html')
   >>> print browser.contents
   <!DOCTYPE html...
   <h1>The Grok Introspector</h1>
@@ -72,7 +72,7 @@ We can browse the registries by clicking on the provided link::
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++inspect++/index')
+  >>> browser.open('http://localhost/++inspect++/index.html')
 
 
 Browsing code (classes, packages, etc.)
@@ -113,5 +113,5 @@ See `code.txt` to learn more about the code browser.
 
 We get back to introspector home page::
 
-  >>> browser.open('http://localhost/++inspect++/index')
+  >>> browser.open('http://localhost/++inspect++/index.html')
 
