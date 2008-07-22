@@ -22,7 +22,6 @@ class GrokIntrospectorNamespace(grok.MultiAdapter):
     grok.name('inspect')
     grok.provides(ITraversable)
     grok.adapts(Interface, IBrowserRequest)
-    grok.layer(IntrospectorSkin)
 
     def __init__(self, context, request):
         self.context = context
