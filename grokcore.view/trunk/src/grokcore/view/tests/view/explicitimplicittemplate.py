@@ -13,18 +13,17 @@ template using grokcore.view.template.  Therefore there is an error:
   in:
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
 class Painting(grok.View):
-    grokcore.view.template('cavepainting')
+    grok.template('cavepainting')
 
 
-cavepainting = grokcore.view.PageTemplate("GROK CAVEPAINT MAMMOTH!")
+cavepainting = grok.PageTemplate("GROK CAVEPAINT MAMMOTH!")
 
-painting = grokcore.view.PageTemplate("GROK PAINT MAMMOTH!")
+painting = grok.PageTemplate("GROK PAINT MAMMOTH!")

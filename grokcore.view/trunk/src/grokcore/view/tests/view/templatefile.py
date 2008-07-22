@@ -20,11 +20,10 @@ View with an associated PageTemplate that is referred to using
 """
 import os.path
 
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
@@ -32,5 +31,5 @@ class Food(grok.View):
     pass
 
 
-food = grokcore.view.PageTemplate(filename=os.path.join(
+food = grok.PageTemplate(filename=os.path.join(
     'templatedirectoryname', 'food.pt'))

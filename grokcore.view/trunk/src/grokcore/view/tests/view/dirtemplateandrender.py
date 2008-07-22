@@ -11,10 +11,10 @@ we check that this also works for templates in a template-directory:
   in:
 
 """
-from grokcore.view.tests import grok
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 

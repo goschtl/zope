@@ -24,10 +24,10 @@ Templates can also be found in a directory with the same name as the module:
   </html>
 
 """
-from grokcore.view.tests import grok
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 

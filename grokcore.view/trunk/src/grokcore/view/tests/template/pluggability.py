@@ -32,9 +32,8 @@ Testing the plugging in of a template language
 import os
 import grokcore.component
 import grokcore.view
+import grokcore.view as grok
 from grokcore.view import components
-
-from grokcore.view.tests import grok
 
 
 class MyTemplate(object):
@@ -75,7 +74,7 @@ class MyPageTemplateFactory(grokcore.component.GlobalUtility):
         return MyPageTemplate(filename=filename, _prefix=_prefix)
 
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 

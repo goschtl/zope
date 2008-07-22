@@ -9,14 +9,14 @@ Templates with ambiguous context cannot be grokked:
   'context' directive.
 
 """
-from grokcore.view.tests import grok
+import grokcore.view as grok
 
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 

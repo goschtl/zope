@@ -15,14 +15,13 @@ provoke an error:
   >>> warnings.warn = saved_warn
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
-club = grokcore.view.PageTemplate("""\
+club = grok.PageTemplate("""\
 <html><body><h1>GROK CLUB MAMMOTH!</h1></body></html>
 """)

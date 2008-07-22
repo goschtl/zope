@@ -9,13 +9,12 @@ template directory, there is an error:
   <module 'grokcore.view.tests.view.dirandinlinetemplate' from ...
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class CavePainting(grok.View):
     pass
 
-cavepainting = grokcore.view.PageTemplate("nothing")
+cavepainting = grok.PageTemplate("nothing")

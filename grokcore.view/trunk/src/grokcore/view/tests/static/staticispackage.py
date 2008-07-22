@@ -1,7 +1,7 @@
 """
 It is an error for the 'static' directory to be a python package:
 
-  >>> from grokcore.view.tests import grok
+  >>> import grokcore.view as grok
   >>> grok.testing.grok('grokcore.view.tests.static.staticispackage_fixture')
   Traceback (most recent call last):
     ...

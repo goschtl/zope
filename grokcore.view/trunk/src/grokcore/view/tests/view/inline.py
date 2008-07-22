@@ -34,11 +34,10 @@ name:
   <html><body><h1>GROK HUNT MAMMOTH!</h1></body></html>
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
@@ -46,7 +45,7 @@ class CavePainting(grok.View):
     pass
 
 
-cavepainting = grokcore.view.PageTemplate("""\
+cavepainting = grok.PageTemplate("""\
 <html>
 <body>
 <h1 tal:content="string:Mammoth Cave Painting"/>
@@ -65,6 +64,6 @@ class Hunt(grok.View):
     grok.name('hunting')
 
 
-hunt = grokcore.view.PageTemplate("""\
+hunt = grok.PageTemplate("""\
 <html><body><h1>GROK HUNT MAMMOTH!</h1></body></html>
 """)

@@ -20,28 +20,27 @@ View with an associated PageTemplate that is referred to using
   <html><body><h1>GROK EAT MAMMOTH!</h1></body></html>
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
 class Painting(grok.View):
-    grokcore.view.template('cavepainting')
+    grok.template('cavepainting')
 
 
-cavepainting = grokcore.view.PageTemplate("""\
+cavepainting = grok.PageTemplate("""\
 <html><body><h1>GROK PAINT MAMMOTH!</h1></body></html>
 """)
 
 
 class Food(grok.View):
-    grokcore.view.template('food_template')
+    grok.template('food_template')
     grok.name('meal')
 
 
-food_template = grokcore.view.PageTemplate("""\
+food_template = grok.PageTemplate("""\
 <html><body><h1>GROK EAT MAMMOTH!</h1></body></html>
 """)

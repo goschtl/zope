@@ -26,11 +26,10 @@ expressions can resolve paths:
 
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
@@ -40,7 +39,7 @@ class CavePainting(grok.View):
         self.color = "red"
 
 
-cavepainting = grokcore.view.PageTemplate("""\
+cavepainting = grok.PageTemplate("""\
 <html>
 <body>
 <h1 tal:content="view/color"/>

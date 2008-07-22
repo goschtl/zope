@@ -9,15 +9,14 @@ template:
   has no associated template or 'render' method.
   in:
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
 class Painting(grok.View):
-    grokcore.view.template('cavepainting')
+    grok.template('cavepainting')
 
 # no cavepainting template here

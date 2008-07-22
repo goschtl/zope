@@ -12,11 +12,10 @@
   <p>Piep! Piep!</p>
 
 """
+import grokcore.view as grok
 
-from grokcore.view.tests import grok
 
-
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 

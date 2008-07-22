@@ -7,19 +7,17 @@ Using the @grok.require decorator in a view class is not allowed.
 
 
 """
+import grokcore.view as grok
 import zope.interface
 
-from grokcore.view.tests import grok
-import grokcore.view
 
-
-class Bogus(grokcore.view.Permission):
+class Bogus(grok.Permission):
     grok.name('bogus.perm')
 
 
 class BogusView(grok.View):
     grok.context(zope.interface.Interface)
 
-    @grokcore.view.require(Bogus)
+    @grok.require(Bogus)
     def render(self):
         pass

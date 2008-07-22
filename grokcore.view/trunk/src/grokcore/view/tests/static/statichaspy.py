@@ -2,7 +2,7 @@
 When a package contains a 'static' resource directory, it must not also contain
 a module called 'static.py':
 
-  >>> from grokcore.view.tests import grok
+  >>> import grokcore.view as grok
   >>> grok.testing.grok('grokcore.view.tests.static.statichaspy_fixture')
   Traceback (most recent call last):
     ...

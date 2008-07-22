@@ -9,7 +9,7 @@ Views without a context cannot be grokked:
   'context' directive.
 
 """
-from grokcore.view.tests import grok
+import grokcore.view as grok
 
 
 class Club(grok.View):

@@ -31,10 +31,10 @@ There's no view 'food':
   ComponentLookupError: ((<grokcore.view.tests.view.view.Mammoth object at 0x...>, <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>), <InterfaceClass zope.interface.Interface>, 'food')
 
 """
-from grokcore.view.tests import grok
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 

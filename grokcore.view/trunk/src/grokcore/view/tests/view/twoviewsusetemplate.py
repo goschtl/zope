@@ -39,11 +39,10 @@ registered as its own view:
 
 
 """
-from grokcore.view.tests import grok
-import grokcore.view
+import grokcore.view as grok
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 
@@ -51,19 +50,19 @@ class A(grok.View):
     pass
 
 
-a = grokcore.view.PageTemplate("View A")
+a = grok.PageTemplate("View A")
 
 
 class B(grok.View):
-    grokcore.view.template('a')
+    grok.template('a')
 
 
 class C(grok.View):
-    grokcore.view.template('templ')
+    grok.template('templ')
 
 
 class D(grok.View):
-    grokcore.view.template('templ')
+    grok.template('templ')
 
 
-templ = grokcore.view.PageTemplate('Template')
+templ = grok.PageTemplate('Template')
