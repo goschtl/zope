@@ -5,26 +5,26 @@
 
 
     #FAILS, why?
-    >>> QueryParser("set [ ]")(None)
+    >>> QueryParser("set [ ]")(None).tree
     Query(<type 'set'>, , None)
 
-    >>> QueryParser("set [ | 1 ]")(None)
+    >>> QueryParser("set [ | 1 ]")(None).tree
     Query(<type 'set'>, , Constant(1))
 
     #FAILS, why?
-    >>> QueryParser("list [ | 1 ]")(None)
+    >>> QueryParser("list [ | 1 ]")(None).tree
     Query(<type 'list'>, , Constant(1))
 
-    >>> QueryParser("set [ | 1 ] union set [|2]")(None)
+    >>> QueryParser("set [ | 1 ] union set [|2]")(None).tree
     Union(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
 
-    >>> QueryParser("set [ | 1 ] differ set [|2]")(None)
+    >>> QueryParser("set [ | 1 ] differ set [|2]")(None).tree
     Differ(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
 
-    >>> QueryParser("set [ i in ICourse | i ]")(None)
+    >>> QueryParser("set [ i in ICourse | i ]")(None).tree
     Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))
 
-    >>> QueryParser("size set [ i in ICourse | i ]")(None)
+    >>> QueryParser("size set [ i in ICourse | i ]")(None).tree
     Count(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
     #FAILS, see raise "Help"

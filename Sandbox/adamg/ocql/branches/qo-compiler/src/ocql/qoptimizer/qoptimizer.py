@@ -14,7 +14,7 @@ from zope.interface import directlyProvides
 
 from ocql.interfaces import IQueryOptimizer
 
-from ocql.interfaces import IObjectQuery
+from ocql.interfaces import IObjectQueryHead
 from ocql.interfaces import IOptimizedObjectQuery
 
 def addMarkerIF(obj, marker):
@@ -24,7 +24,7 @@ def addMarkerIF(obj, marker):
 
 class QueryOptimizer(object):
     implements(IQueryOptimizer)
-    adapts(IObjectQuery)
+    adapts(IObjectQueryHead)
 
     def __init__(self, context):
         self.context = context

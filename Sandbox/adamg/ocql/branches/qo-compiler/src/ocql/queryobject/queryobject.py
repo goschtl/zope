@@ -14,6 +14,7 @@ $Id$
 
 from zope.interface import implements
 from zope.location import locate, Location
+from zope.location.interfaces import ILocation
 
 from ocql.interfaces import IObjectQuery
 from ocql.interfaces import IObjectQueryHead
@@ -26,13 +27,32 @@ class Head(Location):
         self.tree = tree
         locate(tree, self, 'tree')
 
+    def __repr__(self):
+        return ('%s') % (self.tree) 
 
-    def rewrite(self):
+    def rewrite(self, algebra):
         return self.tree
+
 
 class Child(Location):
     implements(IObjectQueryChild)
-    children = []
+
+    def __init__(self):
+        self.children = []
+
+    def setProp(self, name, value):
+        setattr(self, name, value)
+        if ILocation.providedBy(value):
+            locate(value, self, name)
+            self.children.append(value)
+
+    def setProperties(self, name, value):
+        setattr(self, name, value)
+        for term in value:
+            if ILocation.providedBy(term):
+                locate(term, self, 'term')
+        self.children.extend(value)
+
 
 class QueryObject(Child):
     #TODO: this is dirty here, at the end we'll need to have a tree of
@@ -81,11 +101,9 @@ class Term(Child):
     def __init__(self, metadata, symbols, identifier, expression):
         self.metadata = metadata
         self.symbols = symbols
-        self.identifier = identifier
-        self.expression = expression
-        locate(identifier, self, 'identifier')
-        locate(expression, self, 'expression')
-        self.children.extend([identifier, expression])
+        Child.__init__(self)
+        self.setProp('identifier', identifier)
+        self.setProp('expression', expression)
 
 
 class Expression(Term, QueryObject):
@@ -105,13 +123,11 @@ class hasClassWith(Expression):
     def __init__(self, metadata, symbols, expr, klass, conditional):
         self.metadata = metadata
         self.symbols = symbols
-        self.expression = expr
-        self.klass = klass
-        self.conditional = conditional
-        locate(expr, self, 'expr')
-        locate(klass, self, 'klass')
-        locate(conditional, self, 'conditional')
-        self.children.extend([expr, klass, conditional])
+        Child.__init__(self)
+        self.setProp('expr', expr)
+        self.setProp('klass', klass)
+        self.setProp('conditional', conditional)
+
 
 class Identifier(Expression):
     implements(IIdentifier)
@@ -120,8 +136,8 @@ class Identifier(Expression):
     def __init__(self, metadata, symbols, name):
         self.metadata = metadata
         self.symbols = symbols
-        self.name = name
-        self.children.append(name)
+        Child.__init__(self)
+        self.setProp('name', name)
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -129,8 +145,8 @@ class Identifier(Expression):
             str(self.name),
             )
 
-    def rewrite(self, algebra):
-        return algebra.Identifier(self.name)
+#    def rewrite(self, algebra):
+#        return algebra.Identifier(self.name)
 
 class Constant(Expression):
     implements(IConstant)
@@ -140,15 +156,15 @@ class Constant(Expression):
     def __init__(self, metadata, symbols, value):
         self.metadata = metadata
         self.symbols = symbols
-        self.value=value
-        self.children.append(value)
+        Child.__init__(self)
+        self.setProp('value', value)
 
     def __repr__(self):
         return "%s(%s)" % (
             self.__class__.__name__, self.value)
 
-    def rewrite(self, algebra):
-        return algebra.Constant(self.value)
+#    def rewrite(self, algebra):
+#        return algebra.Constant(self.value)
 
 class StringConstant(Constant):
     pass
@@ -173,14 +189,10 @@ class Query(Expression):
     def __init__(self, metadata, symbols, collection_type, terms, target):
         self.metadata = metadata
         self.symbols = symbols
-        self.collection_type = collection_type
-        self.terms = terms
-        self.target = target
-        for term in terms:
-            locate(term, self, 'term')
-        if target is not None: locate(target, self, 'target')
-        self.children.extend(terms)
-        self.children.extend([collection_type,target])
+        Child.__init__(self)
+        self.setProp('collection_type', collection_type)
+        self.setProperties('terms', terms)
+        self.setProp('target', target)
 
     def __repr__(self):
         return "%s(%s, %s, %s)" % (
@@ -305,11 +317,9 @@ class Binary(Expression):
     def __init__(self, metadata, symbols, left, right):
         self.metadata = metadata
         self.symbols = symbols
-        self.left = left
-        self.right = right
-        locate(left, self, 'left')
-        locate(right, self, 'right')
-        self.children.extend([left, right])
+        Child.__init__(self)
+        self.setProp('left', left)
+        self.setProp('right', right)
 
     def __repr__(self):
         return "%s(%s, %s)" % (
@@ -411,9 +421,8 @@ class Unary(Expression):
     def __init__(self, metadata, symbols, expression):
         self.metadata = metadata
         self.symbols = symbols
-        self.expression = expression
-        locate(expression, self, 'expression')
-        self.children.append(expression)
+        Child.__init__(self)
+        self.setProp('expression', expression)
 
     def __repr__(self):
         return "%s(%s)" % (
@@ -454,8 +463,8 @@ class Quantor(QueryObject):
     def __init__(self, metadata, symbols, expr):
         self.metadata = metadata
         self.symbols = symbols
-        self.expr = expr
-        self.children.append(expr)
+        Child.__init__(self)
+        self.setProp('expr', expr)
 
     def __repr__(self):
         return "(%s)" % (
@@ -473,11 +482,9 @@ class Quanted(Child):
     def __init__(self, metadata, symbols, quantor, expression):
         self.metadata = metadata
         self.symbols = symbols
-        self.quantor = quantor
-        self.expression = expression
-        locate(quantor, self, 'quantor')
-        locate(expression, self, 'expression')
-        self.children.extend([quantor, expression])
+        Child.__init__(self)
+        self.setProp('quantor', quantor)
+        self.setProp('expression', expression)
 
     def rewrite(self, algebra, expression, operator):
         return self.quantor.rewrite(algebra, expression, self.expression, operator)
@@ -564,11 +571,9 @@ class Condition(Expression):
     def __init__(self, metadata, symbols, left, right):
         self.metadata = metadata
         self.symbols = symbols
-        self.left = left
-        self.right = right
-        locate(left, self, 'left')
-        locate(right, self, 'right')
-        self.children.extend([left, right])
+        Child.__init__(self)
+        self.setProp('left', left)
+        self.setProp('right', right)
 
     def rewrite(self, algebra):
         if isinstance(self.left, Quanted):

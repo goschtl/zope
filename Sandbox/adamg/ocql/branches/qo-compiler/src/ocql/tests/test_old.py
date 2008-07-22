@@ -27,6 +27,7 @@ from ocql.compiler.compiler import AlgebraCompiler
 from ocql.testing.database import TestMetadata
 
 from ocql.compiler.compiler import registerAdapters
+import ocql.rewriter.rewriter
 
 from ocql.testing.database import C1, C2, C3
 from ocql.testing.database import D1, D2, D3
@@ -58,6 +59,7 @@ class testOLD(unittest.TestCase):
         provideAdapter(AlgebraCompiler)
         provideAdapter(TestMetadata)
         registerAdapters()
+        ocql.rewriter.rewriter.registerAdapters()
 
         self.engine = OCQLEngine()
 

@@ -551,5 +551,7 @@ class QueryParser(object):
 
     def __call__(self, metadata):
         strg = self.context
-        return parse(strg, metadata)
+        tree = parse(strg, metadata)
+        head = Head(tree)
+        return head
         #return parse(strg, None)
