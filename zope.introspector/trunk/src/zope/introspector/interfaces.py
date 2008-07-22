@@ -32,14 +32,6 @@ class IObjectInfo(IInfo):
     def getType():
         """Get the type of the object handled here.
         """
-        
-    def isModule():
-        """Returnes wether or not this is a Module. 
-        """
-
-    def isClass():
-        """Returnes wether or not this is a Class.
-        """    
 
     def isModule(self):
         """Returns true of the object is a module.
