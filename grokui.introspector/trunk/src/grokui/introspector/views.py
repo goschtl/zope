@@ -30,6 +30,7 @@ grok.layer(IntrospectorLayer)
 class Index(grok.View):
     """The overview page.
     """
+    grok.name('index.html')
     grok.context(IRootFolder)
 
 class Registry(grok.View):
