@@ -23,7 +23,14 @@ class Package(PackageOrModule):
         return os.path.dirname(self._module_info.path)
     
     def __getitem__(self, name):
-        sub_module = self._module_info.getSubModuleInfo(name)
+        sub_module = None
+        try:
+            sub_module = module_info_from_dotted_name(
+                self._module_info.dotted_name + '.' + name)
+        except ImportError:
+            # No module of that name found. The name might denote
+            # something different like a file or be really trash.
+            pass
         if sub_module is None:
             file = File(self.dotted_name, name)
             # if the file exists, use it, otherwise it's a KeyError - no
