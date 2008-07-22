@@ -82,6 +82,9 @@ class ModuleInfo(ObjectInfo):
     grok.context(types.ModuleType)
     grok.name('module')
     
+    def getDottedName(self):
+        return self.obj.__name__
+
 class PackageInfo(ModuleInfo):
     grok.implements(IPackageInfo)
     grok.provides(IPackageInfo)
