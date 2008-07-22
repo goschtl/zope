@@ -52,4 +52,3 @@ def check_permission(factory, permission):
         raise GrokError('Undefined permission %r in %r. Use '
                         'grok.Permission first.'
                         % (permission, factory), factory)
-

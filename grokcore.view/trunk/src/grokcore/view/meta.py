@@ -6,6 +6,7 @@ from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserSkinType
 from zope.security.interfaces import IPermission
+from zope.security.checker import NamesChecker
 
 import martian
 from martian import util
@@ -204,6 +205,10 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
         return True
 
 
+allowed_resource_names = ('GET', 'HEAD', 'publishTraverse', 'browserDefault',
+                          'request', '__call__')
+allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
+
 class StaticResourcesGrokker(martian.GlobalGrokker):
 
     def grok(self, name, module, module_info, config, **kw):
@@ -227,8 +232,11 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
                         "resource directory and a module named "
                         "'static.py'", module_info.getModule())
 
+        # public checker by default
+        checker = NamesChecker(allowed_resourcedir_names)
+
         resource_factory = components.DirectoryResourceFactory(
-            resource_path, module_info.dotted_name)
+            resource_path, checker, module_info.dotted_name)
         adapts = (IDefaultBrowserLayer, )
         provides = interface.Interface
         name = module_info.dotted_name
