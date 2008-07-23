@@ -4,6 +4,9 @@ Change log
 0.4dev
 ------
 
+0.4.0
+-----
+
 - Added patch to support old-style mixin classes in the inheritance
   tree of a mapper class.
 
