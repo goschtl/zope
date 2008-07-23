@@ -140,7 +140,7 @@ class Components(object):
             self.utilities.unsubscribe((), provided, component)
 
         zope.event.notify(interfaces.Unregistered(
-            UtilityRegistration(self, provided, name, component, old[1])
+            UtilityRegistration(self, provided, name, component, *old[1:])
             ))
 
         return True
