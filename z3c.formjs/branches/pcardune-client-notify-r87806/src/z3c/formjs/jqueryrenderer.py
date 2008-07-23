@@ -132,9 +132,13 @@ class JQueryObjectEventRenderer(object):
         attrs = set([])
         for interface in zope.interface.providedBy(self.event):
             attrs.update(interface.names())
-        content = '[{%s}]' % ','.join(['"%s":"%s"' % (attr,getattr(self.event, attr))
+        content = '[{%s}]' % ','.join(['"%s":"%s"' % (attr,escape(getattr(self.event, attr)))
                                        for attr in attrs])
         return content
+
+def escape(s):
+    s = unicode(s)
+    return s.replace('"','\\"').replace("'","\\'")
 
 
 class JQueryNotifyClientHandlerRenderer(object):
