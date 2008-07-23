@@ -92,11 +92,11 @@ class Components(object):
                     break
 
         self._utility_registrations[(provided, name)] = component, info, factory
-        if hasattr(self, '_utility_subscribers'):
-            self._utility_subscribers[(provided, component)] = True
         self.utilities.register((), provided, name, component)
 
         if not subscribed:
+            if hasattr(self, '_utility_subscribers'):
+                self._utility_subscribers[(provided, component)] = True
             self.utilities.subscribe((), provided, component)
 
         if event:
