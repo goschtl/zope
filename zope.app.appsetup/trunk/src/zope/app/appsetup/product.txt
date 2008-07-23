@@ -11,17 +11,19 @@ The configuration schema for the application server allows named
 code can use the API provided by the module to retrieve configuration sections
 for given names.
 
-There are two public functions in the module, and a class that can be used to
-help with testing:
+There are two public functions in the module that should be used in normal
+operations, and additional functions and a class that can be used to help with
+testing:
 
     >>> from zope.app.appsetup import product
 
 Let's look at the helper class first, since we'll use it in describing the
-public (application) interface.
+public (application) interface.  We'll follow that with the functions for
+normal operation, then the remaining test-support functions.
 
 
-Testing helper
---------------
+Faux configuration object
+-------------------------
 
 The ``FauxConfiguration`` class constructs objects that behave like the
 ZConfig section objects to the extent needed for the product configuration
@@ -86,3 +88,89 @@ The new sections are available, as expected:
 
     >>> product.getProductConfiguration("two")
     {'abc': 'def'}
+
+
+Test support functions
+----------------------
+
+Additional functions are provided that make it easier to manage configuration
+state in testing.
+
+The first can be used to provide configuration for a single name.  The
+function takes a name and either a configuration mapping or ``None`` as
+arguments.  If ``None`` is provided as the second argument, any configuration
+settings for the name are removed, if present.  If the second argument is not
+``None``, it will be used as the return value for ``getProductConfiguration``
+for the given name.
+
+    >>> product.setProductConfiguration("first", None)
+    >>> print product.getProductConfiguration("first")
+    None
+
+    >>> product.setProductConfiguration("first", {"key": "value1"})
+    >>> product.getProductConfiguration("first")
+    {'key': 'value1'}
+
+    >>> product.setProductConfiguration("first", {"key": "value2"})
+    >>> product.getProductConfiguration("first")
+    {'key': 'value2'}
+
+    >>> product.setProductConfiguration("first", {"alt": "another"})
+    >>> product.getProductConfiguration("first")
+    {'alt': 'another'}
+
+    >>> product.setProductConfiguration("second", {"you": "there"})
+    >>> product.getProductConfiguration("first")
+    {'alt': 'another'}
+    >>> product.getProductConfiguration("second")
+    {'you': 'there'}
+
+    >>> product.setProductConfiguration("first", None)
+    >>> print product.getProductConfiguration("first")
+    None
+
+The other two functions work in concert, saving and restoring the entirety of
+the configuration state.
+
+Our current configuration includes data for the "second" key, and none for the
+"first" key:
+
+    >>> print product.getProductConfiguration("first")
+    None
+    >>> print product.getProductConfiguration("second")
+    {'you': 'there'}
+
+Let's save this state:
+
+    >>> state = product.saveConfiguration()
+
+Now let's replace the kitchen sink:
+
+    >>> product.setProductConfigurations([
+    ...     product.FauxConfiguration("x", {"a": "b"}),
+    ...     product.FauxConfiguration("y", {"c": "d"}),
+    ...     ])
+
+    >>> print product.getProductConfiguration("first")
+    None
+    >>> print product.getProductConfiguration("second")
+    None
+
+    >>> product.getProductConfiguration("x")
+    {'a': 'b'}
+    >>> product.getProductConfiguration("y")
+    {'c': 'd'}
+
+The saved configuration state can be restored:
+
+    >>> product.restoreConfiguration(state)
+
+    >>> print product.getProductConfiguration("x")
+    None
+    >>> print product.getProductConfiguration("y")
+    None
+
+    >>> print product.getProductConfiguration("first")
+    None
+    >>> print product.getProductConfiguration("second")
+    {'you': 'there'}

@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 3.6.0 (2008-07-23)
+--------------------------
+
+- Added additional test support functions to set the configuration for a
+  single section, and save/restore the entire configuration.
+
 
 Version 3.5.0 (2008-06-17)
 --------------------------

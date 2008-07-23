@@ -28,6 +28,26 @@ def setProductConfigurations(configs):
     _configs.update(pconfigs)
 
 
+def setProductConfiguration(name, mapping):
+    """Set the configuration for a single product."""
+    if mapping is None:
+        if name in _configs:
+            del _configs[name]
+    else:
+        _configs[name] = mapping
+
+
+def saveConfiguration():
+    """Retrieve a shallow copy of the configuration state."""
+    return _configs.copy()
+
+
+def restoreConfiguration(state):
+    """Restore the configuration state based on a state value."""
+    _configs.clear()
+    _configs.update(state)
+
+
 class FauxConfiguration(object):
     """Configuration object that can be use from tests.
 
