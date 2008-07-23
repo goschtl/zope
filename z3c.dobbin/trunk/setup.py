@@ -51,5 +51,6 @@ setup(name='z3c.dobbin',
                            'zope.configuration',
                            'z3c.saconfig',
                            'transaction',
-                           'SQLAlchemy>0.4'],
+                           'monkey',
+                           'SQLAlchemy==0.5beta2'],
       )

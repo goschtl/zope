@@ -4,6 +4,9 @@ Change log
 0.4dev
 ------
 
+- Added patch to support old-style mixin classes in the inheritance
+  tree of a mapper class.
+
 - All attributes that are not declared as interface names are now
   persisted automatically using the Pickle-protocol. The exception to
   this rule is attributes starting with the characters "_v_" (volatile

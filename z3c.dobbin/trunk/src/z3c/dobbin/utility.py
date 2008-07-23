@@ -1,6 +1,7 @@
 import soup
 import session as tx
 import interfaces
+import types
 
 class dictproxy(dict):
     """Dictionary proxy.
@@ -38,3 +39,24 @@ class dictproxy(dict):
 
     def __repr__(self):
         return "<dictproxy %s>" % dict.__repr__(self)
+
+def fixup_class_hierarchy(cls):
+    hier = set([cls])
+    process = list(cls.__mro__)
+    while process:
+        c = process.pop()
+        for b in [_ for _ in c.__bases__ if _ not in hier]:
+            process.append(b)
+            hier.add(b)
+        if c.__module__ == '__builtin__':
+            continue
+
+        try:
+            subclasses = c.__subclasses__()
+        except AttributeError:
+            assert isinstance(c, types.ClassType)
+            c.__subclasses__ = classmethod(lambda cls: ())
+            
+        for s in [_ for _ in subclasses if _ not in hier]:
+            process.append(s)
+            hier.add(s)

@@ -26,6 +26,7 @@ import session as tx
 import soup
 import zs2sa
 import types
+import utility
 
 def decode(name):
     return resolve(name.replace(':', '.'))
@@ -55,8 +56,6 @@ def getMapper(spec):
 def createMapper(spec):
     """Create a mapper for the specification."""
 
-    interface.alsoProvides(spec, IMapped)
-
     engine = Session().bind
     metadata = engine.metadata
 
@@ -78,6 +77,7 @@ def createMapper(spec):
 
     if not ifaces:
         spec.__mapper__ = bootstrap.Soup
+        interface.alsoProvides(spec, IMapped)
         return spec.__mapper__
 
     # create joined table
@@ -137,6 +137,11 @@ def createMapper(spec):
         [Mapper], table.join(
         soup_table, first_table.c.id==soup_table.c.id))
 
+    # XXX: currently SQLAlchemy expects all classes to be new-style;
+    # we 'fix' these classes by patching on a ``__subclasses__``
+    # class-method.
+    utility.fixup_class_hierarchy(Mapper)
+        
     orm.mapper(
         Mapper,
         table,
@@ -147,6 +152,7 @@ def createMapper(spec):
         inherit_condition=(first_table.c.id==soup_table.c.id))
 
     spec.__mapper__ = Mapper
+    interface.alsoProvides(spec, IMapped)
     
     return Mapper
 
