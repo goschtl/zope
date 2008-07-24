@@ -21,6 +21,7 @@ from zope.interface import implements
 
 from ocql.queryobject.queryobject import *
 from ocql.interfaces import IQueryParser
+from ocql.rewriter.rewriter import registerAdapters
 
 DEBUG = 0
 
@@ -544,6 +545,7 @@ def parse(str, metadata):
 class QueryParser(object):
     implements(IQueryParser)
     adapts(basestring)
+    registerAdapters()
 
     def __init__(self, context):
         self.context = context
