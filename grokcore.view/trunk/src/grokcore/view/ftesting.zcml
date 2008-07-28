@@ -14,7 +14,6 @@
 
   <include package="zope.app.zcmlfiles" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
-  <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.view" file="meta.zcml" />
 
   <!--include package="zope.app.security" />

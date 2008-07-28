@@ -6,7 +6,6 @@ from zope import component
 from zope import interface
 from zope.publisher.publish import mapply
 from zope.publisher.browser import BrowserPage
-from zope.security.permission import Permission
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.app.publisher.browser import directoryresource
@@ -15,13 +14,6 @@ from zope.app.publisher.browser.pagetemplateresource import \
 
 import martian
 from grokcore.view import util, interfaces
-
-
-class Permission(Permission):
-    pass
-
-
-Public = 'zope.Public'
 
 
 class Skin(object):

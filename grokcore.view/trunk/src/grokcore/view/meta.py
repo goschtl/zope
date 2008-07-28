@@ -5,7 +5,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserSkinType
-from zope.security.interfaces import IPermission
 from zope.security.checker import NamesChecker
 
 import martian
@@ -13,13 +12,13 @@ from martian import util
 from martian.error import GrokError
 
 import grokcore.component
+import grokcore.security
 
 from grokcore.view import components
 from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.view.util import default_view_name
-from grokcore.view.util import default_fallback_to_name
-from grokcore.view.util import protect_name
+from grokcore.security.util import protect_name
 
 
 class SkinGrokker(martian.ClassGrokker):
@@ -62,7 +61,7 @@ class ViewGrokker(martian.ClassGrokker):
         # @grok.require on any of the view's methods.
         methods = util.methods_from_class(factory)
         for method in methods:
-            if grokcore.view.require.bind().get(method) is not None:
+            if grokcore.security.require.bind().get(method) is not None:
                 raise GrokError('The @grok.require decorator is used for '
                                 'method %r in view %r. It may only be used '
                                 'for XML-RPC methods.'
@@ -94,7 +93,7 @@ class ViewGrokker(martian.ClassGrokker):
 
 class ViewSecurityGrokker(martian.ClassGrokker):
     martian.component(grokcore.view.View)
-    martian.directive(grokcore.view.require, name='permission')
+    martian.directive(grokcore.security.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):
         for method_name in list(IBrowserPage):
@@ -122,32 +121,6 @@ class FormGrokker(martian.ClassGrokker):
                 "method for form %r. Forms either use the default "
                 "template or a custom-supplied one." % factory,
                 factory)
-        return True
-
-
-class PermissionGrokker(martian.ClassGrokker):
-    martian.component(grokcore.view.Permission)
-    martian.priority(1500)
-    martian.directive(grokcore.component.name)
-    martian.directive(grokcore.component.title,
-        get_default=default_fallback_to_name)
-    martian.directive(grokcore.component.description)
-
-    def execute(self, factory, config, name, title, description, **kw):
-        if not name:
-            raise GrokError(
-                "A permission needs to have a dotted name for its id. Use "
-                "grok.name to specify one.", factory)
-        # We can safely convert to unicode, since the directives make sure
-        # it is either unicode already or ASCII.
-        permission = factory(unicode(name), unicode(title),
-                             unicode(description))
-
-        config.action(
-            discriminator=('utility', IPermission, name),
-            callable=component.provideUtility,
-            args=(permission, IPermission, name),
-            order=-1) # need to do this early in the process
         return True
 
 
