@@ -17,9 +17,10 @@
 from grokcore.security.components import Permission, Public
 from grokcore.security.directive import require
 
+# Import this module so that it's available as soon as you import the
+# 'grokcore.security' package.  Useful for tests and interpreter examples.
+import grokcore.security.testing
 
-# Our __init__ provides the grok API directly so using 'import grok' is enough.
-from grok.interfaces import IGrokAPI
-from zope.interface import moduleProvides
-moduleProvides(IGrokAPI)
-__all__ = list(IGrokAPI)
+# Only export public API
+from grokcore.security.interfaces import IGrokcoreSecurityAPI
+__all__ = list(IGrokcoreSecurityAPI)
