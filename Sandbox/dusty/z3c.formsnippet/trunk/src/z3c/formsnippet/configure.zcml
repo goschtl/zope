@@ -1,0 +1,94 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formsnippet">
+
+  <!-- Subscriber that adds snippets to widgets -->
+  <subscriber handler=".addWidgetsnippet" />
+
+  <!-- Default Frame and Snippets -->
+ <z3c:formframeTemplate
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/formframe.pt"
+      />
+
+ <z3c:errorstatusTemplate
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/errorstatus.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="div"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_div_input.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="div"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_input_cb.pt"
+      widget="z3c.form.interfaces.ICheckBoxWidget"
+      />
+
+  <z3c:snippetTemplate
+      name="span"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_span_input.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="span"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_input_cb.pt"
+      widget="z3c.form.interfaces.ICheckBoxWidget"
+      />
+
+  <z3c:snippetTemplate
+      name="div"
+      mode="display"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_div_display.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="span"
+      mode="display"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_span_display.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="div"
+      mode="hidden"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_div_hidden.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="span"
+      mode="hidden"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_span_hidden.pt"
+      />
+
+
+
+
+  <!-- APIDoc documentation -->
+  <configure
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="z3c-formsnippet"
+        title="z3c.formsnippet - Form Frames and Widget Snippets"
+        doc_path="README.txt"
+        />
+  </configure>
+
+</configure>

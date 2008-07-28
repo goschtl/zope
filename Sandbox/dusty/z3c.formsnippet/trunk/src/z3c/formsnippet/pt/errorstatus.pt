@@ -1,0 +1,14 @@
+<div tal:content="view/status" />
+<div class="status"
+     tal:condition="view/widgets/errors">
+<ul class="errors"
+    tal:condition="view/widgets/errors">
+   <li tal:repeat="error view/widgets/errors">
+       <tal:block condition="error/widget">
+           <span tal:replace="error/widget/label" />:
+       </tal:block>
+       <span tal:replace="structure error/render">Error Type</span>
+   </li>
+</ul>
+</div>
+

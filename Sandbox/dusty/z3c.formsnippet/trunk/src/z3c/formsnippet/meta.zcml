@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/z3c">
+
+    <meta:directive
+        name="snippetTemplate"
+        schema=".zcml.ISnippetTemplateDirective"
+        handler=".zcml.snippetTemplateDirective"
+        />
+
+    <meta:directive
+        name="formframeTemplate"
+        schema=".zcml.IFormframeTemplateDirective"
+        handler=".zcml.formframeTemplateDirective"
+        />
+
+    <meta:directive
+        name="errorstatusTemplate"
+        schema=".zcml.IErrorstatusTemplateDirective"
+        handler=".zcml.errorstatusTemplateDirective"
+        />
+
+
+  </meta:directives>
+
+</configure>
+
