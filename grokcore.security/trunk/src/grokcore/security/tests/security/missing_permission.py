@@ -10,11 +10,9 @@ before it can be used in grok.require().
 
 """
 
-import grok
-import zope.interface
+import grokcore.security as grok
 
-class MissingPermission(grok.View):
-    grok.context(zope.interface.Interface)
+class MissingPermission(object):
     grok.require('doesnt.exist')
 
     def render(self):
