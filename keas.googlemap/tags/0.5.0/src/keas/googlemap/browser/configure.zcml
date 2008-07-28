@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+	   i18n_domain="keas">
+
+  <resource
+      name="keas.googlemap.js"
+      file="keas.googlemap.js"
+      layer="keas.googlemap.browser.IGoogleMapBrowserLayer" />
+
+</configure>
+
