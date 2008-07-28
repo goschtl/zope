@@ -1,20 +1,19 @@
-from zope import interface
+from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 
 class IGrokView(IBrowserPage, IBrowserView):
     """Grok views all provide this interface."""
 
-    context = interface.Attribute('context', "Object that the view presents.")
+    context = Attribute('context', "Object that the view presents.")
 
-    request = interface.Attribute('request', "Request that the view was looked"
-                                  "up with.")
+    request = Attribute('request', "Request that the view was looked up with.")
 
-    response = interface.Attribute('response', "Response object that is "
-                                   "associated with the current request.")
+    response = Attribute('response', "Response object that is associated "
+                         "with the current request.")
 
-    static = interface.Attribute('static', "Directory resource containing "
-                                 "the static files of the view's package.")
+    static = Attribute('static', "Directory resource containing the static "
+                       "files of the view's package.")
 
     def redirect(url):
         """Redirect to given URL"""
@@ -79,7 +78,7 @@ class IGrokView(IBrowserPage, IBrowserView):
         """
 
 
-class ITemplateFileFactory(interface.Interface):
+class ITemplateFileFactory(Interface):
     """Utility that generates templates from files in template directories.
     """
 
@@ -90,7 +89,7 @@ class ITemplateFileFactory(interface.Interface):
         """
 
 
-class ITemplate(interface.Interface):
+class ITemplate(Interface):
     """Template objects
     """
 
@@ -99,3 +98,62 @@ class ITemplate(interface.Interface):
 
     def render(view):
         """Renders the template"""
+
+
+class IBaseClasses(Interface):
+    View = Attribute("Base class for browser views.")
+    Skin = Attribute("Base class for skin.")
+    IGrokLayer = Attribute("Base interface for layers (deprecated)")
+
+class IDirectives(Interface):
+
+    def layer(layer):
+        """Declare the layer for the view.
+
+        This directive acts as a contraint on the 'request' of
+        grok.View. This directive can only be used on class level."""
+
+    def skin(skin):
+        """Declare this layer as a named skin.
+
+        This directive can only be used on class level."""
+
+    def template(template):
+        """Declare the template name for a view.
+
+        This directive can only be used on class level."""
+
+    def templatedir(directory):
+        """Declare a directory to be searched for templates.
+
+        By default, grok will take the name of the module as the name
+        of the directory.  This can be overridden using
+        ``templatedir``."""
+
+    def view(class_or_interface):
+        """Declare which view or kind of view the component should be
+        registered for.
+
+        This directive is useful on viewlets, for instance, and can be
+        used on a class or module level."""
+
+class IAPI(Interface):
+
+    def url(request, obj, name=None, data=None):
+        """Generate the URL to an object with optional name attached.
+        An optional argument 'data' can be a dictionary that is converted
+        into a query string appended to the URL.
+        """
+
+    def PageTemplate(template):
+        """Create a Grok PageTemplate object from ``template`` source
+        text.  This can be used for inline PageTemplates."""
+
+    def PageTemplateFile(filename):
+        """Create a Grok PageTemplate object from a file specified by
+        ``filename``.  It will be treated like an inline template
+        created with ``PageTemplate``."""
+
+class IGrokcoreViewAPI(IBaseClasses, IDirectives, IAPI):
+    """grokcore.view's public API."""
+
