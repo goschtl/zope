@@ -82,8 +82,9 @@ class ViewGrokker(martian.ClassGrokker):
     def checkTemplates(self, templates, module_info, factory):
 
         def has_render(factory):
-            return (getattr(factory, 'render', None) and
-                    not util.check_subclass(factory, components.GrokForm))
+            render = getattr(factory, 'render', None)
+            base_method = getattr(render, 'base_method', False)
+            return render and not base_method
 
         def has_no_render(factory):
             return not getattr(factory, 'render', None)
