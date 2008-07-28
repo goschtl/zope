@@ -17,7 +17,7 @@ import grok
 import zope.location.location
 from zope import interface
 # XXX BBB
-from grokcore.view.util import check_permission
+from grokcore.security.util import check_permission
 from zope.security.checker import NamesChecker, defineChecker
 
 def make_checker(factory, view_factory, permission, method_names=None):

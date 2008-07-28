@@ -42,7 +42,6 @@ class IGrokBaseClasses(interface.Interface):
     Annotation = interface.Attribute("Base class for persistent annotations.")
     GlobalUtility = interface.Attribute("Base class for global utilities.")
     LocalUtility = interface.Attribute("Base class for local utilities.")
-    View = interface.Attribute("Base class for browser views.")
     XMLRPC = interface.Attribute("Base class for XML-RPC methods.")
     JSON = interface.Attribute("Base class for JSON methods.")
     REST = interface.Attribute("Base class for REST views.")
