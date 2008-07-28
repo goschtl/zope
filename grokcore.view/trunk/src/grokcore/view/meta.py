@@ -105,7 +105,7 @@ class ViewSecurityGrokker(martian.ClassGrokker):
         return True
 
 
-class FormGroker(martian.ClassGrokker):
+class FormGrokker(martian.ClassGrokker):
     martian.component(components.GrokForm)
     martian.directive(grokcore.component.context)
 
