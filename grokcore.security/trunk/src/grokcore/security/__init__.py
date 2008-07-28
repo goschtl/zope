@@ -13,6 +13,7 @@
 ##############################################################################
 """Grok
 """
+from grokcore.component import *
 
 from grokcore.security.components import Permission, Public
 from grokcore.security.directive import require
