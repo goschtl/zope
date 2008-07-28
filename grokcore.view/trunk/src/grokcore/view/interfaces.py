@@ -113,11 +113,6 @@ class IDirectives(Interface):
         This directive acts as a contraint on the 'request' of
         grok.View. This directive can only be used on class level."""
 
-    def skin(skin):
-        """Declare this layer as a named skin.
-
-        This directive can only be used on class level."""
-
     def template(template):
         """Declare the template name for a view.
 
