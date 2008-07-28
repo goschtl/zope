@@ -13,21 +13,22 @@
 ##############################################################################
 """Grok utility functions.
 """
-
-import urllib
-
-import grok
-import zope.location.location
-from zope import component
-from zope import interface
-from zope.traversing.browser.interfaces import IAbsoluteURL
-from zope.traversing.browser.absoluteurl import _safe as SAFE_URL_CHARACTERS
-
+from martian.error import GrokError
+from zope.component import queryUtility
 from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
+from zope.app.security.protectclass import protectName
 
-from martian.error import GrokError
-from martian.util import methods_from_class
+def protect_name(class_, name, permission=None):
+    # Define an attribute checker using zope.app.security's
+    # protectName that defaults to the 'zope.Public' permission when
+    # it's not been given and makes sure the permission has actually
+    # been defined when it has.
+    if permission is None:
+        permission = 'zope.Public'
+    else:
+        check_permission(class_, permission)
+    protectName(class_, name, permission)
 
 def make_checker(factory, view_factory, permission, method_names=None):
     """Make a checker for a view_factory associated with factory.
@@ -50,55 +51,7 @@ def check_permission(factory, permission):
 
     If not, raise error for factory.
     """
-    if component.queryUtility(IPermission,
-                              name=permission) is None:
+    if queryUtility(IPermission, name=permission) is None:
        raise GrokError('Undefined permission %r in %r. Use '
                        'grok.Permission first.'
                        % (permission, factory), factory)
-
-def url(request, obj, name=None, data={}):
-    url = component.getMultiAdapter((obj, request), IAbsoluteURL)()
-    if name is not None:
-        url += '/' + urllib.quote(name.encode('utf-8'), SAFE_URL_CHARACTERS)
-    if data:
-        for k,v in data.items():
-            if isinstance(v, unicode):
-                data[k] = v.encode('utf-8')
-            if isinstance(v, (list, set, tuple)):
-                data[k] = [isinstance(item, unicode) and item.encode('utf-8')
-                or item for item in v]
-        url += '?' + urllib.urlencode(data, doseq=True)
-    return url
-
-def safely_locate_maybe(obj, parent, name):
-    """Set an object's __parent__ (and __name__) if the object's
-    __parent__ attribute doesn't exist yet or is None.
-
-    If the object provides ILocation, __parent__ and __name__ will be
-    set directly.  A location proxy will be returned otherwise.
-    """
-    if getattr(obj, '__parent__', None) is not None:
-        return obj
-    # This either sets __parent__ or wraps 'obj' in a LocationProxy
-    return zope.location.location.located(obj, parent, name)
-
-def applySkin(request, skin, skin_type):
-    """Change the presentation skin for this request.
-    """
-    # Remove all existing skin declarations (commonly the default skin).
-    ifaces = [iface for iface in interface.directlyProvidedBy(request)
-              if not skin_type.providedBy(iface)]
-    # Add the new skin.
-    ifaces.append(skin)
-    interface.directlyProvides(request, *ifaces)
-
-def _sort_key(component):
-    # If components have a grok.order directive, sort by that.
-    explicit_order, implicit_order = grok.order.bind().get(component)
-    return (explicit_order,
-            component.__module__,
-            implicit_order,
-            component.__class__.__name__)
-
-def sort_components(components):
-    return sorted(components, key=_sort_key)
