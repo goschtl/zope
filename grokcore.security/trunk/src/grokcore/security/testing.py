@@ -13,12 +13,27 @@
 ##############################################################################
 """Grok test helpers
 """
+import martian
+import grokcore.component
 from zope.configuration.config import ConfigurationMachine
 from grokcore.component import zcml
+from grokcore.security import directive
+from grokcore.security import util
+
+class ClasslevelGrokker(martian.ClassGrokker):
+    """Simple grokker that looks for grokk.require() directives on a
+    class and checks whether the permissione exists."""
+    martian.component(grokcore.component.Context)
+    martian.directive(directive.require, name='permission')
+
+    def execute(self, factory, config, permission, **kw):
+        util.check_permission(factory, permission)
+        return True
 
 def grok(module_name):
     config = ConfigurationMachine()
     zcml.do_grok('grokcore.component.meta', config)
     zcml.do_grok('grokcore.security.meta', config)
+    zcml.do_grok('grokcore.security.testing', config)
     zcml.do_grok(module_name, config)
     config.execute_actions()
