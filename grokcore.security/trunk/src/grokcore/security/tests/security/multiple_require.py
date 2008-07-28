@@ -7,8 +7,7 @@ Multiple calls of grok.require in one class are not allowed.
   GrokError: grok.require was called multiple times in <class 'grok.tests.security.multiple_require.MultipleView'>. It may only be set once for a class.
 
 """
-import grok
-import zope.interface
+import grokcore.security as grok
 
 class One(grok.Permission):
     grok.name('permission.1')
@@ -16,10 +15,6 @@ class One(grok.Permission):
 class Two(grok.Permission):
     grok.name('permission.2')
 
-class MultipleView(grok.View):
-    grok.context(zope.interface.Interface)
+class MultipleView(object):
     grok.require(One)
     grok.require(Two)
-
-    def render(self):
-        pass

@@ -8,8 +8,7 @@ A role has to have a name to be defined.
   Use grok.name to specify one.
 """
 
-import grok
-import zope.interface
+import grokcore.security as grok
 
 class MissingName(grok.Permission):
     pass
