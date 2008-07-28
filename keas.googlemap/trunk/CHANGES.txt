@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+Version 0.5.0 (2008-??-??)
+--------------------------
+
+- Initial Release
+
+- Look up geocodes (latitude and longitude coordinates) for any
+  query string
+
+- Manage Google Map API keys for multiple domains
+
+- Sort geocodes by distance using the haversine function
+
+- Python representation of a google map that will render all the
+  necessary javascript to display the map, including geocode
+  markers.

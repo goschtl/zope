@@ -1,0 +1,14 @@
+<div tal:attributes="id options/view/id;
+		     style options/view/style">
+[Google Map - If you see this, your browser is not compatible with
+google maps, or there was an error.]
+</div>
+
+<script type="text/javascript" tal:content="structure options/view/javascript">
+  //This is example code.
+  $(document).ready( function() {
+      keas.googlemap.initialize({id:'some-id',
+                                 zoom:12,
+				 type:SOME_CONSTANT);} );
+  $(document).unload( function() {GUnload();} );
+</script>
