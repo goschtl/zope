@@ -2,10 +2,6 @@ import re
 import unittest
 from pkg_resources import resource_listdir
 from zope.testing import doctest, cleanup, renormalizing
-import zope.component.eventtesting
-
-def setUpZope(test):
-    zope.component.eventtesting.setUp(test)
 
 def cleanUpZope(test):
     cleanup.cleanUp()
@@ -31,7 +27,6 @@ def suiteFromPackage(name):
 
         dottedname = 'grokcore.security.tests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(dottedname,
-                                    setUp=setUpZope,
                                     tearDown=cleanUpZope,
                                     checker=checker,
                                     optionflags=doctest.ELLIPSIS+
