@@ -17,7 +17,8 @@ from martian.error import GrokError
 from zope.component import queryUtility
 from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
-from zope.app.security.protectclass import protectName
+from zope.security.checker import getCheckerForInstancesOf
+from zope.security.checker import Checker, CheckerPublic
 
 def protect_name(class_, name, permission=None):
     # Define an attribute checker using zope.app.security's
@@ -28,7 +29,23 @@ def protect_name(class_, name, permission=None):
         permission = 'zope.Public'
     else:
         check_permission(class_, permission)
-    protectName(class_, name, permission)
+
+    # The rest of this function is a verbatim copy of
+    # zope.app.security.protectclass.protectName.  Unfortunately,
+    # zope.app.security pretty much pulls in the whole universe which
+    # we'd like to avoid for this simple, barebones package.
+    checker = getCheckerForInstancesOf(class_)
+    if checker is None:
+        checker = Checker({}, {})
+        defineChecker(class_, checker)
+
+    if permission == 'zope.Public':
+        # Translate public permission to CheckerPublic
+        permission = CheckerPublic
+
+    # We know a dictionary was used because we set it
+    protections = checker.get_permissions
+    protections[name] = permission
 
 def make_checker(factory, view_factory, permission, method_names=None):
     """Make a checker for a view_factory associated with factory.
