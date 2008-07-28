@@ -23,7 +23,7 @@ from zope.security.interfaces import IPermission
 def default_fallback_to_name(factory, module, name, **data):
     return name
 
-class PermissionGrokker(martian.ClassGrokcore.Securityker):
+class PermissionGrokker(martian.ClassGrokker):
     martian.component(grokcore.security.Permission)
     martian.priority(1500)
     martian.directive(grokcore.component.name)
@@ -35,7 +35,7 @@ class PermissionGrokker(martian.ClassGrokcore.Securityker):
         if not name:
             raise GrokError(
                 "A permission needs to have a dotted name for its id. Use "
-                "grokcore.security.name to specify one.", factory)
+                "grok.name to specify one.", factory)
         # We can safely convert to unicode, since the directives make sure
         # it is either unicode already or ASCII.
         permission = factory(unicode(name), unicode(title),
