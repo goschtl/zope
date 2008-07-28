@@ -1,0 +1,4 @@
+<div>
+<span tal:replace="structure view/label" />:
+<span tal:replace="structure view/render" />
+</div>

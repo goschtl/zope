@@ -1,0 +1,34 @@
+<form action="." method="post" enctype="multipart/form-data" class="edit-form"
+      metal:define-macro="form"
+      tal:attributes="method view/method;
+                      enctype view/enctype;
+                      acceptCharset view/acceptCharset;
+                      accept view/accept;
+                      action view/action;
+                      name view/name;
+                      id view/id">
+
+<div class="status"
+     tal:condition="view/widgets/errors">
+<ul class="errors"
+    tal:condition="view/widgets/errors">
+   <li tal:repeat="error view/widgets/errors">
+       <tal:block condition="error/widget">
+           <span tal:replace="error/widget/label" />:
+       </tal:block>
+       <span tal:replace="structure error/render">Error Type</span>
+   </li>
+</ul>
+</div>
+
+
+<span tal:replace="structure view/template" />
+
+<p />
+<div class="buttons">
+ <input tal:repeat="action view/actions/values"
+        tal:replace="structure action/render"
+        />
+</div>
+</form>
+

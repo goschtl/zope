@@ -1,0 +1,12 @@
+<div class="label">
+ <label tal:attributes="for view/id">
+  <span i18n:translate="" tal:content="view/label">label</span>
+  <span class="required" tal:condition="view/required">*</span>
+ </label>
+</div>
+<div class="widget" tal:content="structure view/render">
+ <input type="text"/>
+</div>
+<div class="error" tal:condition="view/error">
+ <span tal:replace="structure view/error/render">error</span>
+</div>
