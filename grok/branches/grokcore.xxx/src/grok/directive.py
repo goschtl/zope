@@ -14,16 +14,13 @@
 """Grok directives.
 """
 
-import sys
 import grok
 from zope import interface
 from zope.interface.interfaces import IInterface
 
 import martian
 from martian import util
-from martian.error import GrokImportError, GrokError
-from martian.directive import StoreMultipleTimes
-from grok import components
+from martian.error import GrokImportError
 
 from grokcore.component.scan import UnambiguousComponentScope
 from grokcore.view.directive import OneInterfaceOrClassOnClassOrModule
