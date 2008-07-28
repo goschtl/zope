@@ -32,8 +32,11 @@ import grokcore.security
 from grokcore.view import components
 from grokcore.view import formlib
 from grokcore.view import templatereg
-from grokcore.view.util import default_view_name
 from grokcore.security.util import protect_name
+
+
+def default_view_name(factory, module=None, **data):
+    return factory.__name__.lower()
 
 
 class SkinGrokker(martian.ClassGrokker):
