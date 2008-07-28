@@ -6,7 +6,7 @@ But it's a lot faster to reuse the parser and the existing classes.
 Add queries first to parser.txt doctest, after they pass there they can be
 added here.
 
-    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.parser.newqueryparser import QueryParser
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.rewriter.rewriter import Rewriter
 

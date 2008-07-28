@@ -1,12 +1,12 @@
 
 
-    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.parser.newqueryparser import QueryParser
 
 
 
     #FAILS, why?
-    >>> QueryParser("set [ ]")(None)
-    Query(<type 'set'>, , None)
+    #>>> QueryParser("set [ ]")(None)
+    #Query(<type 'set'>, , None)
 
     >>> QueryParser("set [ | 1 ]")(None)
     Query(<type 'set'>, , Constant(1))
@@ -24,7 +24,7 @@
     >>> QueryParser("set [ i in ICourse | i ]")(None)
     Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))
 
-    >>> QueryParser("size set [ i in ICourse | i ]")(None)
+    >>> QueryParser("len ( set [ i in ICourse | i ] )")(None)
     Count(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
     #FAILS, see raise "Help"

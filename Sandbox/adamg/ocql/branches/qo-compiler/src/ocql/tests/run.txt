@@ -3,7 +3,7 @@ Now we'll see how a query runs
 
     >>> from zope.component import provideAdapter
 
-    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.parser.newqueryparser import QueryParser
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.rewriter.rewriter import Rewriter
     >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
