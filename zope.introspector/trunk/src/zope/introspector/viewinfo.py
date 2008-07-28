@@ -25,7 +25,7 @@ import grokcore.component as grok
 class ViewInfo(grok.Adapter):
     """Determine views for contexts.
     """
-    grok.provides(IViewInfo)
+    grok.implements(IViewInfo)
     grok.context(Interface)
     grok.name('view')
     
