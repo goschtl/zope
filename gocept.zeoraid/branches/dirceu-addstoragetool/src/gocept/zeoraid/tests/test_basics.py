@@ -1186,7 +1186,8 @@ class FailingStorageTestBase(object):
         self.assertEquals(dict(raid_details=None,
                                raid_disable=None,
                                raid_recover=None,
-                               raid_status=None),
+                               raid_status=None,
+                               raid_add_storage=None),
                           methods)
 
     def test_getExtensionMethods_degrading(self):
