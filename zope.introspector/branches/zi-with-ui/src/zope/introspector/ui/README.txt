@@ -27,10 +27,10 @@
   
   # Packages also have information objects, so adapt this package, and
   # render that view:
-  >>> import zope.introspectorui
+  >>> import zope.introspector.ui
   >>> from zope.introspector.interfaces import IPackageInfo
-  >>> package_info = component.getAdapter(zope.introspectorui, IPackageInfo,
+  >>> package_info = component.getAdapter(zope.introspector.ui, IPackageInfo,
   ...                                     name='package')
   >>> view = component.getMultiAdapter((package_info, request), name='index.html')
   >>> print view()
-  <h1>...Package: <span>zope.introspectorui</span>...
+  <h1>...Package: <span>zope.introspector.ui</span>...
