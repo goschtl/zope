@@ -27,17 +27,19 @@ the object has been modified:
   Hi, my name is Ellie the Mammoth, and I\'m "Really small"
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema, interface
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
+from zope.app.container.btree import BTreeContainer
 
-class Zoo(grok.Container):
+class Zoo(BTreeContainer):
     pass
 
 class IMammoth(interface.Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size")
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     grok.implements(IMammoth)
 
 class Index(grok.View):
@@ -58,7 +60,7 @@ class AddMammoth(grok.AddForm):
             return 'There were changes according to applyData.'
         return 'There were no changes according to applyData.'
 
-@grok.subscribe(Mammoth, grok.IObjectModifiedEvent)
+@grok.subscribe(Mammoth, IObjectModifiedEvent)
 def notify_change_event(mammoth, event):
     print ("An IObjectModifiedEvent was sent for a mammoth with the "
            "following changes:")

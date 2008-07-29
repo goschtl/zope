@@ -13,55 +13,17 @@
 ##############################################################################
 """Grok
 """
+from grokcore.component import *
+from grokcore.security import *
+from grokcore.view import *
 
-from zope.interface import implements
-from zope.component import adapts
-from zope.event import notify
-from zope.app.component.hooks import getSite
-from zope.lifecycleevent import (
-    IObjectCreatedEvent, ObjectCreatedEvent,
-    IObjectModifiedEvent, ObjectModifiedEvent,
-    IObjectCopiedEvent, ObjectCopiedEvent)
+from grokcore.formlib.components import Form, AddForm, EditForm, DisplayForm
+from grokcore.formlib.formlib import action, AutoFields, Fields
 
-from zope.app.container.contained import (
-    IObjectAddedEvent, ObjectAddedEvent,
-    IObjectMovedEvent, ObjectMovedEvent,
-    IObjectRemovedEvent, ObjectRemovedEvent,
-    IContainerModifiedEvent, ContainerModifiedEvent)
-
-from martian import ClassGrokker, InstanceGrokker, GlobalGrokker
-from grokcore.component import Adapter, MultiAdapter, GlobalUtility
-from grok.components import Model, View
-from grok.components import XMLRPC, REST, JSON
-from grok.components import PageTemplate, PageTemplateFile, Traverser
-from grok.components import Container, OrderedContainer
-from grok.components import Site, LocalUtility, Annotation
-from grok.components import Application, Form, AddForm, EditForm, DisplayForm
-from grok.components import Indexes
-from grok.components import Permission, Role, Public
-from grok.components import Skin, IGrokLayer
-from grok.components import RESTProtocol, IRESTLayer
-from grok.interfaces import IRESTSkinType
-from grok.components import ViewletManager, Viewlet
-
-from martian import baseclass
-from grokcore.component.directive import (
-    context, name, title, description, provides, global_utility, direct)
-from grok.directive import (
-    template, templatedir, local_utility, permissions, require, site,
-    layer, viewletmanager, view, traversable, order)
-from grokcore.component.decorators import subscribe, adapter, implementer
-from martian.error import GrokError, GrokImportError
-
-# BBB These two functions are meant for test fixtures and should be
-# imported from grok.testing, not from grok.
-from grok.testing import grok, grok_component
-
-from grok.formlib import action, AutoFields, Fields
-from grok.util import url
+# Import this module so that it's available as soon as you import the
+# 'grokcore.formlib' package.  Useful for tests and interpreter examples.
+import grokcore.formlib.testing
 
 # Our __init__ provides the grok API directly so using 'import grok' is enough.
-from grok.interfaces import IGrokAPI
-from zope.interface import moduleProvides
-moduleProvides(IGrokAPI)
-__all__ = list(IGrokAPI)
+from grokcore.formlib.interfaces import IGrokcoreFormlibAPI
+__all__ = list(IGrokcoreFormlibAPI)

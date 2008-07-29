@@ -25,18 +25,19 @@ also use the ``applyData`` method to store the data on the object.
   Hi, my name is Ellie the Mammoth, and I\'m "Really small"
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
 from zope.interface import Interface, implements
+from zope.app.container.btree import BTreeContainer
 
-class Zoo(grok.Container):
+class Zoo(BTreeContainer):
     pass
 
 class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     implements(IMammoth)
 
     def __init__(self, name='', size=''):

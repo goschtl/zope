@@ -6,14 +6,14 @@ EditForm has an explicit template associate with it.
   Traceback (most recent call last):
   ...
   GrokError: It is not allowed to specify a custom 'render' method for
-  form <class 'grok.tests.form.norender.Edit'>. Forms either use the default
-  template or a custom-supplied one.
+  form <class 'grokcore.formlib.tests.form.norender.Edit'>. Forms
+  either use the default template or a custom-supplied one.
   
 """
 
-import grok
+import grokcore.formlib as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Edit(grok.EditForm):

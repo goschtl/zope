@@ -42,7 +42,7 @@ be filled with values from the request (such as form values):
   Mallie, the Mammoth reports: Request argument dispatch to update() works.
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
 
 from zope.interface import Interface, implements
@@ -50,7 +50,7 @@ from zope.interface import Interface, implements
 class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     implements(IMammoth)
     
     name = u'Manfred'

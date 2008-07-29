@@ -43,10 +43,10 @@ Custom display template with an explicit template:
   <p>Test display</p>
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     class fields:
         name = schema.TextLine(title=u"Name")
         size = schema.TextLine(title=u"Size", default=u"Quite normal")

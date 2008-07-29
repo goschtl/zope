@@ -14,10 +14,10 @@ should be available in the definition order.
   ['a', 'b', 'g', 'd']
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Edit(grok.EditForm):

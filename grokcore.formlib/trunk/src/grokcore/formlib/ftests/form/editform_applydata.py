@@ -51,10 +51,11 @@ And finally let's change both fields:
   True
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
 
     def __init__(self, name='', size=''):
         self._name = name
@@ -81,7 +82,7 @@ class Edit(grok.EditForm):
         size = schema.TextLine(title=u"Size")
         )
 
-@grok.subscribe(Mammoth, grok.IObjectModifiedEvent)
+@grok.subscribe(Mammoth, IObjectModifiedEvent)
 def notify_change_event(mammoth, event):
     print ("An IObjectModifiedEvent was sent for a mammoth with the "
            "following changes:")

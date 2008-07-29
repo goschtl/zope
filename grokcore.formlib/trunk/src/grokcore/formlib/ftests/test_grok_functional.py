@@ -1,6 +1,6 @@
 import re
 import unittest
-import grok
+import grokcore.formlib
 import os.path
 
 from pkg_resources import resource_listdir
@@ -8,9 +8,10 @@ from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
-ftesting_zcml = os.path.join(os.path.dirname(grok.__file__), 'ftesting.zcml')
-GrokFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'GrokFunctionalLayer',
-                                allow_teardown=True)
+ftesting_zcml = os.path.join(os.path.dirname(grokcore.formlib.__file__),
+                             'ftesting.zcml')
+FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer',
+                            allow_teardown=True)
 
 def setUp(test):
     FunctionalTestSetup().setUp()
@@ -51,7 +52,7 @@ def suiteFromPackage(name):
         if filename == '__init__.py':
             continue
 
-        dottedname = 'grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grokcore.formlib.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
@@ -63,15 +64,14 @@ def suiteFromPackage(name):
                          doctest.NORMALIZE_WHITESPACE+
                          doctest.REPORT_NDIFF)
             )
-        test.layer = GrokFunctionalLayer
+        test.layer = FunctionalLayer
 
         suite.addTest(test)
     return suite
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'staticdir', 'xmlrpc', 'traversal', 'form', 'url',
-                 'security', 'utility', 'catalog', 'site', 'rest', 'viewlet']:
+    for name in ['form']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

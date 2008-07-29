@@ -32,7 +32,7 @@ It is important to keep the order of the fields:
   ['size', 'name']
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import schema
 from zope.interface import Interface, implements
 
@@ -40,7 +40,7 @@ class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     implements(IMammoth)
 
 class Edit(grok.EditForm):
@@ -51,7 +51,7 @@ class IDifferentMammoth(Interface):
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
     name = schema.TextLine(title=u"Name")
 
-class DifferentMammoth(grok.Model):
+class DifferentMammoth(grok.Context):
     implements(IDifferentMammoth)
 
 class EditDifferent(grok.EditForm):

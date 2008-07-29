@@ -38,7 +38,7 @@ will be retrieved from that interface, and that interface only:
   ['alpha', 'beta']
 
 """
-import grok
+import grokcore.formlib as grok
 from zope import interface, schema
 from zope.schema.fieldproperty import FieldProperty
 
@@ -47,7 +47,7 @@ class IMammoth(interface.Interface):
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     interface.implements(IMammoth)
 
     name = FieldProperty(IMammoth['name'])    
@@ -75,7 +75,7 @@ class IYetAnotherMammoth(interface.Interface):
     beta = schema.TextLine(title=u'beta')
 
 
-class YetAnotherMammoth(grok.Model):
+class YetAnotherMammoth(grok.Context):
     interface.implements(IYetAnotherMammoth)
 
 

@@ -23,14 +23,14 @@ We only expect a single field to be present in the form, as we omitted 'size':
   
 """
 
-import grok
+import grokcore.formlib as grok
 from zope import interface, schema
 
 class IMammoth(interface.Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     interface.implements(IMammoth)
 
 class Edit(grok.EditForm):
@@ -38,7 +38,7 @@ class Edit(grok.EditForm):
 
     form_fields = grok.AutoFields(Mammoth).omit('size')
 
-class Mammoth2(grok.Model):
+class Mammoth2(grok.Context):
     class fields:
         name = schema.TextLine(title=u"Name")
         size = schema.TextLine(title=u"Size", default=u"Quite normal")
