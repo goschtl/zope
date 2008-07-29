@@ -5,6 +5,10 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+2008/07/29 1.1.1
+----------------
+
+ - set up launchpad homepage for the project
 
 2008/07/29 1.1.0
 ----------------
