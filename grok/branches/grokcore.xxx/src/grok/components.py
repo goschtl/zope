@@ -52,8 +52,6 @@ import z3c.flashmessage.interfaces
 import martian.util
 
 from grok import interfaces, util
-from grokcore.view import formlib
-from grokcore.view import GrokForm
 from grokcore.view import PageTemplateFile
 
 
@@ -261,83 +259,6 @@ class ContainerTraverser(Traverser):
                 return result
         # try to get the item from the container
         return self.context.get(name)
-
-
-default_form_template = PageTemplateFile(os.path.join(
-    'templates', 'default_edit_form.pt'))
-default_form_template.__grok_name__ = 'default_edit_form'
-default_display_template = PageTemplateFile(os.path.join(
-    'templates', 'default_display_form.pt'))
-default_display_template.__grok_name__ = 'default_display_form'
-
-class Form(GrokForm, form.FormBase, View):
-    # We're only reusing the form implementation from zope.formlib, we
-    # explicitly don't want to inherit the interface semantics (mostly
-    # for the different meanings of update/render).
-    interface.implementsOnly(interfaces.IGrokForm)
-
-    template = default_form_template
-
-    def applyData(self, obj, **data):
-        return formlib.apply_data_event(obj, self.form_fields, data,
-                                        self.adapters)
-
-    # BBB -- to be removed in June 2007
-    def applyChanges(self, obj, **data):
-        warnings.warn("The 'applyChanges' method on forms is deprecated "
-                      "and will disappear by June 2007. Please use "
-                      "'applyData' instead.", DeprecationWarning, 2)
-        return bool(self.applyData(obj, **data))
-
-
-class AddForm(Form):
-    pass
-
-
-class EditForm(GrokForm, form.EditFormBase, View):
-    # We're only reusing the form implementation from zope.formlib, we
-    # explicitly don't want to inherit the interface semantics (mostly
-    # for the different meanings of update/render).
-    interface.implementsOnly(interfaces.IGrokForm)
-
-    template = default_form_template
-
-    def applyData(self, obj, **data):
-        return formlib.apply_data_event(obj, self.form_fields, data,
-                                        self.adapters, update=True)
-
-    # BBB -- to be removed in June 2007
-    def applyChanges(self, obj, **data):
-        warnings.warn("The 'applyChanges' method on forms is deprecated "
-                      "and will disappear by June 2007. Please use "
-                      "'applyData' instead.", DeprecationWarning, 2)
-        return bool(self.applyData(obj, **data))
-
-    @formlib.action("Apply")
-    def handle_edit_action(self, **data):
-        if self.applyData(self.context, **data):
-            formatter = self.request.locale.dates.getFormatter(
-                'dateTime', 'medium')
-
-            try:
-                time_zone = idatetime.ITZInfo(self.request)
-            except TypeError:
-                time_zone = pytz.UTC
-
-            self.status = "Updated on %s" % formatter.format(
-                datetime.datetime.now(time_zone)
-                )
-        else:
-            self.status = 'No changes'
-
-
-class DisplayForm(GrokForm, form.DisplayFormBase, View):
-    # We're only reusing the form implementation from zope.formlib, we
-    # explicitly don't want to inherit the interface semantics (mostly
-    # for the different meanings of update/render).
-    interface.implementsOnly(interfaces.IGrokForm)
-
-    template = default_display_template
 
 
 class IndexesClass(object):

@@ -17,7 +17,7 @@
 from grokcore.component import *
 from grokcore.security import *
 from grokcore.view import *
-from grokcore.view.formlib import action, AutoFields, Fields
+from grokcore.formlib import *
 
 from zope.event import notify
 from zope.app.component.hooks import getSite
@@ -39,7 +39,7 @@ from grok.components import XMLRPC, REST, JSON
 from grok.components import Traverser
 from grok.components import Container, OrderedContainer
 from grok.components import Site, LocalUtility, Annotation
-from grok.components import Application, Form, AddForm, EditForm, DisplayForm
+from grok.components import Application
 from grok.components import Indexes
 from grok.components import Role
 from grok.components import RESTProtocol, IRESTLayer
