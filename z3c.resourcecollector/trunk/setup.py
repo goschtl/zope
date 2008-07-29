@@ -3,10 +3,10 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='z3c.resourcecollector',
-      version='1.0.5',
+      version='1.1.0',
       url='https://svn.lovelysystems.com/repos/dev/package/z3c.resourcecollector',
       license='ZPL',
-      description='',
+      description='collects multiple resources and combines them to one',
       author='Zoltan Szabo',
       author_email='zoltan.szabo@informmedia.ro',
       packages=find_packages('src'),
