@@ -34,7 +34,6 @@ setup(name='grokcore.view',
           'zope.app.pagetemplate',
           'zope.traversing',
           'zope.schema',
-          'zope.formlib',
           # for ftests:
           # TODO move these to extra_requires?
           'zope.testbrowser',

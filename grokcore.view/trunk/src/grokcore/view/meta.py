@@ -30,7 +30,6 @@ import grokcore.component
 import grokcore.security
 
 from grokcore.view import components
-from grokcore.view import formlib
 from grokcore.view import templatereg
 from grokcore.security.util import protect_name
 
@@ -120,25 +119,6 @@ class ViewSecurityGrokker(martian.ClassGrokker):
                 callable=protect_name,
                 args=(factory, method_name, permission),
                 )
-        return True
-
-
-class FormGrokker(martian.ClassGrokker):
-    martian.component(components.GrokForm)
-    martian.directive(grokcore.component.context)
-
-    def execute(self, factory, config, context, **kw):
-        # Set up form_fields from context class if they haven't been
-        # configured manually already.
-        if getattr(factory, 'form_fields', None) is None:
-            factory.form_fields = formlib.get_auto_fields(context)
-
-        if not getattr(factory.render, 'base_method', False):
-            raise GrokError(
-                "It is not allowed to specify a custom 'render' "
-                "method for form %r. Forms either use the default "
-                "template or a custom-supplied one." % factory,
-                factory)
         return True
 
 
