@@ -1,0 +1,3 @@
+    <h1>
+      Module: <span tal:content="structure view/dotted_name">dot.ted.name</span>
+    </h1>

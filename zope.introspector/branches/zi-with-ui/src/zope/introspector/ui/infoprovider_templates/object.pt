@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <td>Type:</td>
+    <td tal:content="view/getType"/>
+  </tr>
+  <tr>
+    <td>Class:</td>
+    <td tal:content="context/getDottedName"/>
+  </tr>
+  <tr>
+    <td>File:</td>
+    <td tal:content="context/getFile"/>
+  </tr>
+</table>
