@@ -6,9 +6,6 @@ before it can be used in grok.require().
     Traceback (most recent call last):
     ...
     GrokError: Undefined permission 'doesnt.exist' in <class 'grokcore.security.tests.security.missing_permission.MissingPermission'>. Use grok.Permission first.
-
-    ...
-
 """
 import grokcore.security as grok
 
