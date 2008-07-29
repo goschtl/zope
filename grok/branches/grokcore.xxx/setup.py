@@ -39,6 +39,7 @@ setup(
                       'grokcore.component >= 1.5.1',
                       'grokcore.security',
                       'grokcore.view',
+                      'grokcore.formlib',
                       'simplejson',
                       'pytz',
                       'ZODB3',
