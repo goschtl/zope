@@ -1,5 +1,6 @@
 """
-A role has to have a name to be defined.
+A permission has to have a name (identifier) to be defined.  If it
+doesn't, you'll get an error message:
 
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
