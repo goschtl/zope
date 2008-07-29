@@ -76,6 +76,14 @@ the index. Here is the workflow for testing a new package against stable set:
    detect the changes in ``controlled-pages.cfg`` and will generate the new
    controlled package pages.
 
+7. Update the svn:externals in the Zope3 3.4 branch:
+
+     $ svn co svn+ssh://svn.zope.org/repos/main/Zope3/branches/3.4 Zope3-3.4
+     $ ./bin/update-tree
+     $ cd Zope3-3.4
+     $ svn diff
+     $ svn commit
+
 Note: I think the process is still a tiny bit too long. I probably write a
 script that makes testing a new version of a package easier, but let's see
 whether this process is workable first.
