@@ -5,6 +5,13 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+
+2008/07/29 1.0.5
+----------------
+
+ - create viewlets to render IE6 and IE7 specific directives
+   CSSIE6CollectorViewlet and CSSIE7CollectorViewlet
+
 2008/02/01 1.0.4
 ----------------
 

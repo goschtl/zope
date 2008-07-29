@@ -91,3 +91,17 @@ class CSSCollectorViewlet(CollectorViewlet):
                              extra='type="text/css"',
                              )
 
+
+class CSSIE6CollectorViewlet(CollectorViewlet):
+    """Renders a IE 7 Only include CSS resource"""
+
+    def renderElement(self, url):
+        return '<!--[if lt IE 6]><link rel="stylesheet"'\
+               ' type="text/css" href="%s" /><![endif]-->' % url
+
+class CSSIE7CollectorViewlet(CollectorViewlet):
+    """Renders a IE 7 Only include CSS resource"""
+
+    def renderElement(self, url):
+        return '<!--[if lt IE 7]><link rel="stylesheet"'\
+               ' type="text/css" href="%s" /><![endif]-->' % url
