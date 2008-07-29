@@ -8,7 +8,6 @@ long_description = (
     read('README.txt')
     + '\n' +
     read('CHANGES.txt')
-    + '\n' +
     )
 
 setup(
