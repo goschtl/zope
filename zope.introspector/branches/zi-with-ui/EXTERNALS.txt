@@ -1,0 +1,4 @@
+# svn propset -F EXTERNALS.txt svn:externals .
+bootstrap svn://svn.zope.org/repos/main/zc.buildout/trunk/bootstrap/
+grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk
+grokcore.security svn://svn.zope.org/repos/main/grokcore.security/trunk
