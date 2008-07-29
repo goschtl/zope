@@ -27,7 +27,11 @@ class ClasslevelGrokker(martian.ClassGrokker):
     martian.directive(directive.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):
-        util.check_permission(factory, permission)
+        config.action(
+            discriminator=('protectName', factory, 'protected'),
+            callable=util.protect_name,
+            args=(factory, 'protected', permission),
+            )
         return True
 
 def grok(module_name):
