@@ -33,6 +33,7 @@ class HTMLTableSeleniumTest(ResourceBase):
     def __call__(self):
         data = open(self.filename, 'r').read()
         p = processor.ZRTProcessor(data, commands={'replace': replace.Replace})
+        self.request.response.setHeader('Content-type', 'text/html')
         return p.process(hooks.getSite(), self.request)
 
     GET = __call__
