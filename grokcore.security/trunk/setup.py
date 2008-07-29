@@ -37,6 +37,7 @@ setup(
                       'zope.interface',
                       'zope.component',
                       'zope.security',
+                      'zope.app.security',
                       'zope.configuration',
                       'zope.testing',
                       ],
