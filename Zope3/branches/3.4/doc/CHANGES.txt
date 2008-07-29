@@ -9,6 +9,12 @@ Zope Changes
 
   After Zope 3.4.0b2
 
+    Bugs fixed
+
+      - Fix functional test memory leak.  The tests used to keep all temporary
+        databases in memory all the time (registered as IDatabase global
+        utilities) instead of discarding them after each test.
+
   Zope 3.4.0b2 (2007/11/05)
 
     Releases are now based on released packages that are confirmed to provide
