@@ -84,16 +84,6 @@ class Lexer(object):
         print "Illegal character '%s'" % t.value[0]
         t.lexer.skip(1)
 
-    # Tokens
-    def t_COMMA(self, t):
-        r','
-        return t
-
-#this may be != sign
-    def t_NOT_EQUAL(self, t):
-        r'~=='
-        return t
-
     def t_UNION(self, t):
         r'union'
         return t
@@ -102,28 +92,48 @@ class Lexer(object):
         r'differ'
         return t
 
-#    def t_MINUS(self, t):
-#        r'-'
-#        return t
-
-    def t_AS(self, t):
-        r'as'
+    def t_SET(self, t):
+        r'set'
         return t
 
     def t_LIST(self, t):
         r'list'
         return t
-    
-    def t_SET(self, t):
-        r'set'
+
+    def t_BAG(self, t):
+        r'bag'
+        return t
+
+    def t_FOR(self, t):
+        r'for'
         return t
 
     def t_LEN(self, t):
         r'len'
         return t
 
-    def t_BAG(self, t):
-        r'bag'
+    def t_AS(self, t):
+        r'as'
+        return t    
+
+    def t_IN(self, t):
+        r'in'
+        return t
+
+    def t_OR(self, t):
+        r'or'
+        return t
+
+    def t_AND(self, t):
+        r'and'
+        return t
+
+    def t_NOT(self, t):
+        r'not'
+        return t
+
+    def t_ISINSTANCE(self, t):
+        r'isinstance'
         return t
 
     def t_EVERY(self, t):
@@ -132,6 +142,35 @@ class Lexer(object):
 
     def t_ATMOST(self, t):
         r'atmost'
+        return t
+
+    def t_ATLEAST(self, t):
+        r'atleast'
+        return t
+
+    def t_SOME(self, t):
+        r'some'
+        return t
+
+    def t_JUST(self, t):
+        r'just'
+        return t
+
+    def t_CONSTANT(self, t):
+        r'(\'(\\.|[^\'])*\'|"(\\.|[^"])*"|[0-9]+)'
+        return t
+
+    def t_IDENTIFIER(self, t):
+        r'[a-zA-Z][0-9a-zA-Z_]*'
+        return t
+
+    def t_COMMA(self, t):
+        r','
+        return t
+
+#this may be != sign
+    def t_NOT_EQUAL(self, t):
+        r'~=='
         return t
 
     def t_LT(self, t):
@@ -146,22 +185,6 @@ class Lexer(object):
         r'\.\.\.'
         return t
 
-    def t_BRACKET_R(self, t):
-        r'\)'
-        return t
-
-    def t_OR(self, t):
-        r'or'
-        return t
-
-    def t_NOT(self, t):
-        r'not'
-        return t
-
-    def t_ATLEAST(self, t):
-        r'atleast'
-        return t
-
     def t_PIPE(self, t):
         r'\|'
         return t
@@ -170,32 +193,16 @@ class Lexer(object):
         r'\.'
         return t
 
-    def t_IN(self, t):
-        r'in'
-        return t
-
-    def t_LTE(self, t):
-        r'<='
-        return t
-
     def t_MUL(self, t):
         r'\*'
-        return t
-
-    def t_SOME(self, t):
-        r'some'
-        return t
-
-    def t_AND(self, t):
-        r'and'
         return t
 
     def t_CBRACKET_L(self, t):
         r'{'
         return t
 
-    def t_CONSTANT(self, t):
-        r'(\'(\\.|[^\'])*\'|"(\\.|[^"])*"|[0-9]+)'
+    def t_CBRACKET_R(self, t):
+        r'}'
         return t
 
     def t_EQUAL(self, t):
@@ -206,8 +213,8 @@ class Lexer(object):
         r'>='
         return t
 
-    def t_ISINSTANCE(self, t):
-        r'isinstance'
+    def t_LTE(self, t):
+        r'<='
         return t
 
     def t_SEMI_COLON(self, t):
@@ -218,6 +225,10 @@ class Lexer(object):
         r'\('
         return t
 
+    def t_BRACKET_R(self, t):
+        r'\)'
+        return t
+
     def t_ASSIGN(self, t):
         r'='
         return t
@@ -226,29 +237,17 @@ class Lexer(object):
         r'~='
         return t
 
-    def t_FOR(self, t):
-        r'for'
-        return t
-
 #    def t_DIV(self, t):
 #        r'/'
 #        return t
-
-    def t_CBRACKET_R(self, t):
-        r'}'
-        return t
 
 #    def t_PLUS(self, t):
 #        r'\+'
 #        return t
 
-    def t_JUST(self, t):
-        r'just'
-        return t
-
-    def t_IDENTIFIER(self, t):
-        r'[a-zA-Z][0-9a-zA-Z_]*'
-        return t
+#    def t_MINUS(self, t):
+#        r'-'
+#        return t
 
     def t_SBRACKET_L(self, t):
         r'\['
@@ -312,14 +311,14 @@ class Parser(object):
         t[0] = t[1]
         if DEBUG: print 'reducing "literal" to "expression"', t[0]
 
-    def p_expr_call(self, t):
-        r'''expression : call
+    def p_expr_path(self, t):
+        r'''expression : path
         '''
         t[0] = t[1]
         if DEBUG: print 'reducing "path" to "expression"', t[0]
 
-    def p_expr_path(self, t):
-        r'''expression : path
+    def p_expr_call(self, t):
+        r'''expression : call
         '''
         t[0] = t[1]
         if DEBUG: print 'reducing "path" to "expression"', t[0]
@@ -395,12 +394,6 @@ class Parser(object):
                              t[1]),
                   t[3])
         if DEBUG: print 'reducing "IDENTIFIER IN expression" to "generator"', t[0]
-
-    def p_definition_as(self, t):
-        r'''definition : IDENTIFIER AS expression
-        '''
-        #t[0]=''
-        if DEBUG: print 'reducing "IDENTIFIER AS expression" to "definition"', t[0]
 
     def p_filter_and(self, t):
         r'''filter : filter AND filter
@@ -479,7 +472,8 @@ class Parser(object):
         '''
         t[0] = Ne(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print 'reducing "quantified operator quantified" to "condition"', t[0]
-
+    
+    #need to extend this for collection of types 
     def p_condition_isinstance(self, t):
         r'''condition : ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R
         '''
@@ -522,6 +516,12 @@ class Parser(object):
         t[0] = Atmost(self.metadata, self.symbols, t[2])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
+    def p_definition_as(self, t):
+        r'''definition : IDENTIFIER AS expression
+        '''
+        #t[0]=''
+        if DEBUG: print 'reducing "IDENTIFIER AS expression" to "definition"', t[0]
+
     def p_literal_constant(self, t):
         r'''literal : CONSTANT
         '''
@@ -546,11 +546,12 @@ class Parser(object):
         t[0] = t[1]
         if DEBUG: print 'reducing "expression" to "element"', t[0]
 
-    def p_element_comma(self, t):
-        r'''element : element COMMA element
-        '''
-        #check
-        if DEBUG: print 'reducing "element COMMA element" to "element"', t[0]
+# Why this raise a shift/reduce conflict
+#    def p_element_comma(self, t):
+#        r'''element : element COMMA element
+#        '''
+#        raise NotImplementedError('element list')
+#        if DEBUG: print 'reducing "element COMMA element" to "element"', t[0]
 
     def p_element_ellipsis(self, t):
         r'''element : expression ELLIPSIS expression
@@ -641,7 +642,7 @@ class QueryParser(object):
     implements(IQueryParser)
     adapts(basestring)
     registerAdapters()
-
+#    import pydevd;pydevd.settrace()
     def __init__(self, context):
         self.context = context
         #self.db = db

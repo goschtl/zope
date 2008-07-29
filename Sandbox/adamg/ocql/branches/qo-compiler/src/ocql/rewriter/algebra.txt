@@ -16,3 +16,46 @@ Checks here make sure that Interfaces are properly implemented
 
     >>> verifyClass(IAlgebraObject, BaseAlgebra)
     True
+
+    >>> verifyClass(IEmpty, Empty)
+    True
+
+    >>> verifyClass(ISingle, Single)
+    True
+
+    >>> verifyClass(IUnion, Union)
+    True
+
+    >>> verifyClass(IIter, Iter)
+    True
+
+    >>> verifyClass(IReduce, Reduce)
+    True
+
+    >>> verifyClass(IRange, Range)
+    True
+
+    >>> verifyClass(IMake, Make)
+    True
+
+	#Uncomment this after merge other branch modifications
+    #>>> verifyClass(IMakeFromIndex, MakeFromIndex)
+    #True
+
+    >>> verifyClass(IIf, If)
+    True
+
+    >>> verifyClass(ILambda, Lambda)
+    True
+
+    >>> verifyClass(IConstant, Constant)
+    True
+
+    >>> verifyClass(IIdentifier, Identifier)
+    True
+
+    >>> verifyClass(IBinary, Binary)
+    True
+
+    >>> verifyClass(IOperator, Operator)
+    True

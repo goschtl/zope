@@ -14,5 +14,122 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyClass(IObjectQueryHead, Head)
     True
 
+    >>> verifyClass(IObjectQueryChild, Child)
+    True
+
     >>> verifyClass(IObjectQuery, QueryObject)
+    True
+
+    >>> verifyClass(ITerm, Term)
+    True
+
+    >>> verifyClass(IExpression, Expression)
+    True
+
+    >>> verifyClass(IhasClassWith, hasClassWith)
+    True
+
+    >>> verifyClass(IIdentifier, Identifier)
+    True
+
+    >>> verifyClass(IConstant, Constant)
+    True
+
+    >>> verifyClass(IQuery, Query)
+    True
+
+    >>> verifyClass(IAlias, Alias)
+    True
+
+    >>> verifyClass(IBinary, Binary)
+    True
+
+    >>> verifyClass(IUnion, Union)
+    True
+
+    >>> verifyClass(IDiffer, Differ)
+    True
+
+    >>> verifyClass(IAnd, And)
+    True
+
+    >>> verifyClass(IOr, Or)
+    True
+
+    >>> verifyClass(IProperty, Property)
+    True
+
+    >>> verifyClass(IIndex, Index)
+    True
+
+    >>> verifyClass(IArithmetic, Arithmetic)
+    True
+
+    >>> verifyClass(IAdd, Add)
+    True
+
+    >>> verifyClass(IMul, Mul)
+    True
+
+    >>> verifyClass(ISub, Sub)
+    True
+
+    >>> verifyClass(IDiv, Div)
+    True
+
+    >>> verifyClass(IUnary, Unary)
+    True
+
+    >>> verifyClass(INot, Not)
+    True
+
+    >>> verifyClass(IAggregate, Aggregate)
+    True
+
+    >>> verifyClass(ICount, Count)
+    True
+
+    >>> verifyClass(ISum, Sum)
+    True
+
+    >>> verifyClass(IQuantor, Quantor)
+    True
+
+    >>> verifyClass(IQuanted, Quanted)
+    True
+
+    >>> verifyClass(IEvery, Every)
+    True
+
+    >>> verifyClass(ISome, Some)
+    True
+
+    >>> verifyClass(IAtmost, Atmost)
+    True
+
+    >>> verifyClass(IAtleast, Atleast)
+    True
+
+    >>> verifyClass(IJust, Just)
+    True
+
+    >>> verifyClass(ICondition, Condition)
+    True
+
+    >>> verifyClass(IEq, Eq)
+    True
+
+    >>> verifyClass(INe, Ne)
+    True
+
+    >>> verifyClass(ILt, Lt)
+    True
+
+    >>> verifyClass(IGt, Gt)
+    True
+
+    >>> verifyClass(ILe, Le)
+    True
+
+    >>> verifyClass(IGe, Ge)
     True
