@@ -22,6 +22,8 @@ setup(name='z3c.layout',
       version = '0.1dev',
       description='HTML layout engine',
       long_description=read('README.txt')+read('src/z3c/layout/README.txt'),
+      author = "Malthe Borch, Stefan Eletzhofer and the Zope Community",
+      author_email = "zope-dev@zope.org",
       keywords = "zope3 layout HTML",
       classifiers = [
           'Development Status :: 4 - Beta',
