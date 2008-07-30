@@ -1,0 +1,28 @@
+=======
+CHANGES
+=======
+
+Version 3.4.2 (2008-07-30)
+--------------------------
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis.
+  See http://launchpad.net/bugs/219302
+
+- Bugfix: ZopeVersion used to report an unknown version when running on a
+  machine with a locale different than English.
+  See http://launchpad.net/bugs/177733
+
+- Fixed deprecation warning in ftesting.zcml: import ZopeSecurityPolicy from
+  the new location.
+
+Version 3.4.1 (2007-09-27)
+--------------------------
+
+- rebumped to replace faulty egg
+
+Version 3.4.0 (2007-09-25)
+--------------------------
+
+- Initial documented release
+
+- Reflect changes form zope.app.error refactoring
