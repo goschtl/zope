@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.1 (unreleased)
+3.4.1 (2008-07-30)
 ------------------
 
 - Remove find-links from buildout.cfg.
