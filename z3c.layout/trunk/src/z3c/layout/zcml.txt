@@ -1,0 +1,69 @@
+ZCML Directives
+===============
+
+Layout directive
+----------------
+
+We can declare layouts using a ZCML directive.
+
+    >>> test_layout = "%s/templates/default" % test_path
+    
+    >>> zcml="""
+    ... <configure xmlns="http://namespaces.zope.org/meta"
+    ...            xmlns:browser="http://namespaces.zope.org/browser">
+    ...
+    ...    <include package="zope.app.publisher.browser" file="meta.zcml" />
+    ...
+    ...    <browser:resourceDirectory
+    ...         name="test"
+    ...         directory="%(test_layout)s"
+    ...      />
+    ...
+    ...    <browser:layout name="testlayout"
+    ...         template="%(test_layout)s/foo.html"
+    ...         thumbnail="%(test_layout)s/foo.jpg"
+    ...         resource_directory="test">
+    ...
+    ...      <browser:region
+    ...           name="content"
+    ...           xpath=".//html/body/div"
+    ...           title="The Content area"
+    ...         />
+    ...
+    ...      <browser:region
+    ...           name="sidebar"
+    ...           xpath=".//html/body/span"
+    ...           title="A funky sidebar"
+    ...         />
+    ...
+    ...    </browser:layout>
+    ... </configure>
+    ... """ % locals()
+
+Load meta configuration.
+    
+    >>> from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+
+    >>> meta = "%s/../meta.zcml" % test_path
+    >>> import z3c.layout
+    >>> XMLConfig(meta, z3c.layout)()
+
+Load layout configuration.    
+
+    >>> from StringIO import StringIO
+    >>> xmlconfig(StringIO(zcml))
+
+Verify that the layout has been registered as a component and that
+it's been correctly populated with region definitions.
+
+    >>> from z3c.layout.interfaces import ILayout
+    >>> component.queryUtility(ILayout, name='testlayout') is not None
+    True
+
+    >>> layout = component.queryUtility(ILayout, name='testlayout')
+    
+    >>> region_one, region_two = layout.regions
+    >>> region_one.name, region_one.xpath, region_one.title
+    (u'content', u'.//html/body/div', u'The Content area')
+    >>> region_two.name, region_two.xpath, region_two.title
+    (u'sidebar', u'.//html/body/span', u'A funky sidebar')

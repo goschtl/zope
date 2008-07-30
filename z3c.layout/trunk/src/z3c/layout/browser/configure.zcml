@@ -1,0 +1,24 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="zope.viewlet" file="meta.zcml" />
+  
+  <browser:viewletManager
+     name="z3c.layout.htmlhead"
+     class=".providers.HtmlHead"
+     permission="zope.View"
+     />
+
+  <browser:viewletManager
+     name="z3c.layout.htmltop"
+     class=".providers.HtmlTop"
+     permission="zope.View"
+     />
+
+  <browser:viewletManager
+     name="z3c.layout.htmlbottom"
+     class=".providers.HtmlBottom"
+     permission="zope.View"
+     />
+
+</configure>    
