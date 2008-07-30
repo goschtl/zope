@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages, Extension
 
 setup(name='z3c.resourcecollector',
-      version='1.1.1',
+      version='1.1.3',
       url='http://launchpad.net/z3c.resourcecollector',
       license='ZPL',
       description='collects multiple resources and combines them to one',

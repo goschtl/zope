@@ -104,18 +104,16 @@ class CSSIECollectorViewlet(CollectorViewlet):
     # set versionOperator e.g. to "lt" or "gt"
     versionOperator = None
 
-   def renderElement(self, url):
-       if self.ieVersion is None:
-           return '<!--[if IE]><link rel="stylesheet"'\
-                  ' type="text/css" href="%s" /><![endif]-->' % url
-       else:
-           if self.versionOperator:
-               _vo = '%s ' % self.versionOperator
-           else:
-               _vo = ''
-           return '<!--[if %sIE %s]><link rel="stylesheet"'\
-                  ' type="text/css" href="%s" /><![endif]-->' % (_vo,
-                                                                 self.ieVersion,
-                                                                 url)
-
-
+    def renderElement(self, url):
+        if self.ieVersion is None:
+            return '<!--[if IE]><link rel="stylesheet"'\
+                   ' type="text/css" href="%s" /><![endif]-->' % url
+        else:
+            if self.versionOperator:
+                _vo = '%s ' % self.versionOperator
+            else:
+                _vo = ''
+                return '<!--[if %sIE %s]><link rel="stylesheet"'\
+                       ' type="text/css" href="%s" /><![endif]-->' % (_vo,
+                                                        self.ieVersion,
+                                                        url)
