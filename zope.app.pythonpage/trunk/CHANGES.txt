@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Fix deprecation warning in zope/app/pythonpage/browser.py: zope.app.i18n
+  was moved to zope.i18nmessageid.
+
 3.4.0 (2007-10-24)
 ------------------
 
