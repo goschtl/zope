@@ -4,6 +4,9 @@ Changes
 3.4.1 (unreleased)
 ------------------
 
+* Substitute zope.app.zapi by direct calls to its wrapped apis.
+  See http://launchpad.net/bugs/219302
+
 * Fix deprecation warning in ftesting.zcml: ZopeSecurityPolicy now lives in
   zope.securitypolicy.
 
