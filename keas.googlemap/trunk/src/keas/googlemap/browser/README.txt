@@ -94,3 +94,12 @@ Now we will add this marker to the map and render it again.
             $(document).unload( function() {GUnload();} );
             </script>
   <BLANKLINE>
+
+To properly display markers, you will need to include the
+markermanager.js utility script from google.  There is a viewlet that
+renders the appropriate script tag.
+
+  >>> print browser.GoogleMapMarkersViewlet('context','request','view','manager').render()
+  <script
+    type="text/javascript"
+    src="http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/src/markermanager.js"></script>

@@ -17,11 +17,13 @@ $Id$
 """
 
 import zope.interface
+import zope.component
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.fieldproperty import FieldProperty
 from zope.viewlet.viewlet import JavaScriptViewlet
-from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.viewlet.viewlet import ViewletBase
 
 from keas.googlemap.geocode import Geocode
 from keas.googlemap.browser import interfaces
@@ -32,6 +34,14 @@ class IGoogleMapBrowserLayer(IBrowserRequest):
 
 
 GoogleMapJavaScriptViewlet = JavaScriptViewlet('keas.googlemap.js')
+
+class GoogleMapMarkersViewlet(ViewletBase):
+
+    def render(self):
+        return ('<script type="text/javascript" '
+                'src="http://gmaps-utility-library.googlecode.com'
+                '/svn/trunk/markermanager/release/src/markermanager.js">'
+                '</script>')
 
 
 class Marker(object):
