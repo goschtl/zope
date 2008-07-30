@@ -19,7 +19,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.layout',
-      version = '0.1',
+      version = '0.1dev',
       description='HTML layout engine',
       long_description=read('README.txt')+read('src/z3c/layout/README.txt'),
       keywords = "zope3 layout HTML",
