@@ -1,8 +1,8 @@
-<div tal:condition="not: view/entries">
+<div tal:condition="not: viewlet/entries">
   No published entries. <a tal:attributes="href string:${view/application/@@absolute_url}/edit">Set up Grokstar</a>, then <a tal:attributes="href string:${view/application/@@absolute_url}/addentry">add an entry</a>
 </div>
 <div class="entries">
-  <tal:block repeat="entry view/entries">
+  <tal:block repeat="entry viewlet/entries">
     <tal:block content="structure entry/@@item"/>
 	  	<hr/>
   </tal:block>

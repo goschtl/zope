@@ -20,7 +20,7 @@ pygments_directive.arguments = (1, 0, 1)
 pygments_directive.content = 1
 directives.register_directive('sourcecode', pygments_directive)
 
-from grok import View, Viewlet, Application
+from grok import View, Application
 def application(self, name=None):
     obj = self.context
     while obj is not None:
@@ -31,5 +31,4 @@ def application(self, name=None):
 
 
 View.application = property(application)
-Viewlet.application = property(application)
 #XXX You didn't really see me do that, did you?

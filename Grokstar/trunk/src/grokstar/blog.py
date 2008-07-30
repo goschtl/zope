@@ -33,8 +33,6 @@ class Blog(grok.Container, grok.Application):
         self['entries'] = Entries()
 
 
-
-
 @grok.subscribe(Blog, grok.IObjectAddedEvent)
 def registerAsUtility(app, event):
     app.getSiteManager().registerUtility(app, grok.interfaces.IApplication)

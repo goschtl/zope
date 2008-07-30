@@ -1,6 +1,6 @@
 <a href="../add">Add Blog Entry</a><br />
 <div class="entries">
-  <tal:block repeat="entry view/entries">
+  <tal:block repeat="entry viewlet/entries">
     <tal:block content="structure entry/@@item"/>
   </tal:block>
 </div>

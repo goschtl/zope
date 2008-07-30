@@ -1,5 +1,5 @@
 <div class="entries">
-  <tal:block repeat="entry view/entries">
+  <tal:block repeat="entry viewlet/entries">
 	<tal:block content="structure entry/@@item"/>
 	<hr/>
   </tal:block>

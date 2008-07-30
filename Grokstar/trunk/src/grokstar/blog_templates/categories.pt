@@ -1,10 +1,10 @@
-<h4 tal:condition="view/categories">Categories</h4>
+<h4 tal:condition="viewlet/categories">Categories</h4>
 <ul>
-  <li tal:repeat="cat view/categories">
+  <li tal:repeat="cat viewlet/categories">
     <a tal:attributes="href string:${context/@@absolute_url}/?c=${cat}"
        tal:content="cat" />
-    <ul tal:condition="python:cat==view.c">
-      <li tal:repeat="entry view/entries"><a tal:attributes="href string:${entry/@@absolute_url}?c=${view/c}"
+    <ul tal:condition="python:cat==viewlet.c">
+      <li tal:repeat="entry viewlet/entries"><a tal:attributes="href string:${entry/@@absolute_url}?c=${viewlet/c}"
               tal:content="structure entry/title">An entry</a></li>
     </ul>
   </li>

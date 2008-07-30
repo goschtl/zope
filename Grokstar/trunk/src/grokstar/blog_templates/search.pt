@@ -5,12 +5,12 @@
   </p>
 </form>
 <tal:was_search condition="request/q | nothing">
-  <tal:no_results condition="not:view/results">
+  <tal:no_results condition="not:viewlet/results">
     Sorry, no results for '<span tal:replace="request/q" />'
   </tal:no_results>
-  <div class="search-results" tal:condition="view/results">
+  <div class="search-results" tal:condition="viewlet/results">
     <ol>
-      <li tal:repeat="entry view/results"><a tal:attributes="href string:${entry/@@absolute_url}?q=${request/q}"
+      <li tal:repeat="entry viewlet/results"><a tal:attributes="href string:${entry/@@absolute_url}?q=${request/q}"
           tal:content="structure entry/title">An entry</a></li>
     </ol>
   </div>
