@@ -5,6 +5,9 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
+3.4.1 (2007-07-30)
+------------------
+
 - Get rid of zope.app.zapi as a dependency.
   See https://bugs.launchpad.net/zope3/+bug/219302
 
