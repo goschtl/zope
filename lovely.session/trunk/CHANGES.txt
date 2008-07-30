@@ -1,15 +1,24 @@
-==============
-lovely.session
-==============
+=======
+CHANGES
+=======
 
-2007/08/13 0.1.2
-----------------
+0.1.3 (2008/??/??)
+------------------
 
-- move source to zope.org
+- Fixed `setup.py` to be on par with the latest layout.
+
+- Fixed deprecation warnings, since the session API was moved to
+  ``zope.session``.
 
 
-2007/08/13 0.1.1
-----------------
+0.1.2 (2007/08/13)
+------------------
 
-- fixed dependency on lovely.memcached
+- Move source to svn.zope.org.
+
+
+0.1.1 (2007/08/13)
+------------------
+
+- Fixed dependency on `lovely.memcached`.
 

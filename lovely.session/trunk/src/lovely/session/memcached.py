@@ -15,7 +15,6 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
 import md5
 import cPickle
 import memcache
@@ -32,16 +31,15 @@ from zope import component
 from zope.schema.fieldproperty import FieldProperty
 
 from zope.app.container.contained import Contained
-from zope.app.session.interfaces import (
-        ISessionDataContainer,
-        ISessionData,
-        ISessionPkgData,
-        )
-from zope.app.session.session import PersistentSessionDataContainer
+from zope.session.interfaces import (
+    ISessionDataContainer,
+    ISessionData,
+    ISessionPkgData,
+    )
+from zope.session.session import PersistentSessionDataContainer
 
 from lovely.memcached.interfaces import IMemcachedClient
-
-from interfaces import IMemCachedSessionDataContainer
+from lovely.session.interfaces import IMemCachedSessionDataContainer
 
 
 class MemCachedSessionDataContainer(persistent.Persistent, Contained):

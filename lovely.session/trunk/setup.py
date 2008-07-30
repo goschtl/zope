@@ -1,50 +1,74 @@
+##############################################################################
+#
+# Copyright (c) 2008 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for localy.session package
+
+$Id$
+"""
 import os
 from setuptools import setup, find_packages
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-long_description=(
-        read('src', 'lovely', 'session', 'README.txt')
-        + '\n' +
-        read('CHANGES.txt')
-        + '\n' +
-        'Download\n'
-        '========\n'
-        )
-
-name='lovely.session'
-setup(
-    name = name,
-    version = '0.1.2',
+setup(name='lovely.session',
+    version = '0.1.3dev',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
-    description = "memcache session",
-    long_description = long_description,
-    license = "ZPL 2.1",
-    keywords = "session zope zope3",
-    url = 'https://launchpad.net/lovely.tal',
-    zip_safe = False,
-    packages = find_packages('src'),
-    include_package_data = True,
-    package_dir = {'':'src'},
-    namespace_packages = ['lovely',],
-    install_requires = ['setuptools',
-                        'lovely.memcached',
-                        'zope.app.container',
-                        'zope.app.session',
-                        'zope.schema',
-                        ],
+    description = "memcache-based session storage",
+    long_description=(
+        read('src', 'lovely', 'session', 'README.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        + '\n\n' +
+        '========\n'
+        'Download\n'
+        '========\n'
+        ),
+    license='ZPL 2.1',
+    keywords = "zope3 session memcache",
+    classifiers = [
+        'Development Status :: 4 - Beta',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Framework :: Zope3'],
+    url='http://cheeseshop.python.org/pypi/lovely.session',
+    packages=find_packages('src'),
+    package_dir = {'': 'src'},
+    namespace_packages=['lovely',],
     extras_require = dict(
         test = ['zope.app.testing',
                 'zope.interface',
                 'zope.security',
                 'zope.testing',]),
-    classifiers = [
-       'Development Status :: 4 - Beta',
-       'Intended Audience :: Developers',
-       'License :: OSI Approved :: Zope Public License',
-       'Topic :: Software Development :: Libraries :: Python Modules',
-       ],        
+    install_requires = [
+        'setuptools',
+        'lovely.memcached',
+        'zope.app.container',
+        'zope.session',
+        'zope.schema',
+        ],
+    extras_require = dict(
+        test=['zope.app.testing',
+              'zope.app.zptpage',
+              'zope.app.securitypolicy',
+              'zope.app.zcmlfiles']),
+    include_package_data = True,
+    zip_safe = False,
     )
-
