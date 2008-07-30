@@ -5,6 +5,13 @@ Changes in z3c.resourcecollector
 TODO: add tests for the viewlets !!!!
       Fix the workaround in getUrl of the utility.
 
+
+2008/07/30 1.1.2
+----------------
+
+ - bugfix for version operator "lt", "gt"
+
+
 2008/07/29 1.1.1
 ----------------
 

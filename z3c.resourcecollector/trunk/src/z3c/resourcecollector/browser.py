@@ -92,16 +92,30 @@ class CSSCollectorViewlet(CollectorViewlet):
                              )
 
 
+
+
+
 class CSSIECollectorViewlet(CollectorViewlet):
     """Renders a IE Only include CSS resource
     to set lower then just overwride ieVersion in your zcml"""
 
+    # set ieVersion to e.g. "6"
     ieVersion = None
+    # set versionOperator e.g. to "lt" or "gt"
+    versionOperator = None
 
-    def renderElement(self, url):
-        if self.ieVersion is None:
-            return '<!--[if lt IE]><link rel="stylesheet"'\
-                   ' type="text/css" href="%s" /><![endif]-->' % url
-        return '<!--[if lt IE %s]><link rel="stylesheet"'\
-               ' type="text/css" href="%s" /><![endif]-->' % (self.ieVersion,
-                                                              url)
+   def renderElement(self, url):
+       if self.ieVersion is None:
+           return '<!--[if IE]><link rel="stylesheet"'\
+                  ' type="text/css" href="%s" /><![endif]-->' % url
+       else:
+           if self.versionOperator:
+               _vo = '%s ' % self.versionOperator
+           else:
+               _vo = ''
+           return '<!--[if %sIE %s]><link rel="stylesheet"'\
+                  ' type="text/css" href="%s" /><![endif]-->' % (_vo,
+                                                                 self.ieVersion,
+                                                                 url)
+
+
