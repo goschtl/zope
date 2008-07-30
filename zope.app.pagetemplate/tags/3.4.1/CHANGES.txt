@@ -1,0 +1,20 @@
+Changes
+=======
+
+3.4.1 (2008-07-30)
+------------------
+
+* Substitute zope.app.zapi by direct calls to its wrapped apis.
+  See http://launchpad.net/bugs/219302
+
+* Fix deprecation warning in ftesting.zcml: ZopeSecurityPolicy now lives in
+  zope.securitypolicy.
+
+3.4.0 (2007-09-28)
+------------------
+
+* Initial release as standalone package.
+
+* Dependency on zope.app.interpreter moved to an extra
+  [inline-evaluation].  It is only needed by zope.app.pythonpage,
+  which is an oddity.
