@@ -23,7 +23,7 @@ from zope.annotation.interfaces import IAnnotatable
 
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from zope.app.cache.interfaces import ICacheable
 from zope.app.form.interfaces import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

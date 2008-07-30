@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.4.1 (unreleased)
+------------------
+
+- Fixed deprecation warning in zope.app.cache.browser.cacheable: zope.app.i18n
+  became zope.i18nmessageid.
+
 3.4.0 (2007-10-11)
 ------------------
 
