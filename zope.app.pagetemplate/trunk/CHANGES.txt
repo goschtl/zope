@@ -1,7 +1,7 @@
 Changes
 =======
 
-3.4.1 (unreleased)
+3.4.1 (2008-07-30)
 ------------------
 
 * Substitute zope.app.zapi by direct calls to its wrapped apis.
