@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.4.1 (2008-07-30)
 ------------------
 
 - Get rid of zope.app.zapi as a dependency.
