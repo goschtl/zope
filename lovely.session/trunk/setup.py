@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='lovely.session',
-    version = '0.1.4dev',
+    version = '0.1.4',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
     description = "memcache-based session storage",
@@ -48,7 +48,7 @@ setup(name='lovely.session',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Framework :: Zope3'],
-    url='http://cheeseshop.python.org/pypi/lovely.session',
+    url='http://pypi.python.org/pypi/lovely.session',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['lovely',],

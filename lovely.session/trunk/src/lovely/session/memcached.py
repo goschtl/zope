@@ -123,13 +123,13 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
 
 
 class MemCacheData(dict):
-    """See zope.app.session.interfaces.ISessionData
+    """See zope.session.interfaces.ISessionData
     """
     interface.implements(ISessionPkgData)
 
 
 class MemCacheSessionData(dict):
-    """See zope.app.session.interfaces.ISessionData"""
+    """See zope.session.interfaces.ISessionData"""
     interface.implements(ISessionData)
     lastAccessTime = 0
 

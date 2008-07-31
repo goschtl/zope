@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+0.1.4 (2008-07-31)
+------------------
+
+- Fixed ZCML to avoid deprecation warnings, since the session API was moved to
+  ``zope.session``. *Sigh*
+
+
 0.1.3 (2008-07-31)
 ------------------
 
