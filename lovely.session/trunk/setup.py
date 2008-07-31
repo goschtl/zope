@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='lovely.session',
-    version = '0.1.4',
+    version = '0.1.5dev',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
     description = "memcache-based session storage",
