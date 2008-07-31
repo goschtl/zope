@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.1.3 (2008-??-??)
+0.1.3 (2008-07-31)
 ------------------
 
 - Fixed `setup.py` to be on par with the latest layout.
