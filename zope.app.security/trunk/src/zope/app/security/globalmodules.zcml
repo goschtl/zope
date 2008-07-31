@@ -226,10 +226,10 @@
   </module>
 
   <!-- This package has been deprecated in Python 2.5; let's use a cheap way
-       of detecting Python 2.5 by checking whether the package "regex" exists,
-       which has been deleted in that version. -->
+       of detecting Python 2.4 by checking whether the package "hashlib" is
+       not available, which has been added only in Python 2.5. -->
   <module module="gopherlib"
-          zcml:condition="installed regex">
+          zcml:condition="not-installed hashlib">
     <allow attributes="send_selection send_query" />
   </module>
 

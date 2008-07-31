@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.5.2 (2008-07-31)
 ------------------
 
-- ...
+- Bug: It turned out that checking for regex was not much better of an idea,
+  since it causes deprecation warnings in Python 2.4. Thus let's look for a
+  library that was added in Python 2.5.
 
 3.5.1 (2008-06-24)
 ------------------
