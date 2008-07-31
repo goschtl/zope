@@ -1,0 +1,33 @@
+zope.introspector.code
+**********************
+
+Representing code objects.
+
+:Test-Layer: unit
+
+Code objects
+============
+
+The introspector represents code entities like packages, modules or
+classes as ``Code`` objects. ``Code`` objects expect a dotted name to be
+created::
+
+  >>> from zope.introspector.code import Code
+  >>> Code('zope.app')
+  <zope.introspector.code.Code object at 0x...>
+
+``Code`` objects do two things: they store the dotted name and
+provide an ``IContext`` interface::
+
+  >>> code = Code('zope.app')
+  >>> code.dotted_name
+  'zope.app'
+
+  >>> from grokcore.component.interfaces import IContext
+  >>> IContext.providedBy(code)
+  True
+
+The ``IContext`` marker interface helps us to associate ``Code``
+objects with certain object types when adapters search for this.
+
+
