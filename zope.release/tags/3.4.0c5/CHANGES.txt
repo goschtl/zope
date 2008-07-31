@@ -1,0 +1,28 @@
+=======
+CHANGES
+=======
+
+NOTE: The release of this package are synced with the Zope 3 releases.
+
+
+3.4.0 (2008-01-??)
+------------------
+
+- Moved generic KGS code to a new package called ``zope.kgs``
+
+- Added tests for the existing code.
+
+- Update package data.
+
+- Added new bugfix versions of many packages
+
+3.4.0b2 (2007-11-05)
+--------------------
+
+- Initial version
+
+  * Generate `versions.cfg` and `buildout.cfg` script.
+
+  * Upload to KGS.
+
+  * Update Zope 3 source tree.
