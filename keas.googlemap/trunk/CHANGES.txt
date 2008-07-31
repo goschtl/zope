@@ -5,7 +5,14 @@ CHANGES
 Version 0.5.1 (unreleased)
 --------------------------
 
-- ...
+- Feature: You can now do::
+
+    <script
+    tal:replace="provider:keas.googlemap.browser.interfaces.IJavaScript"
+    />
+
+  and magically get all the necessary javascript viewlets to use the
+  google map.
 
 Version 0.5.0 (2008-07-28)
 --------------------------

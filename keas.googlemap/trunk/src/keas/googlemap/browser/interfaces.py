@@ -17,12 +17,17 @@ $Id$
 """
 import zope.interface
 import zope.schema
+from zope.viewlet.interfaces import IViewletManager
 
 from keas.googlemap.interfaces import IGeocode
 
 NORMAL_MAP = u'G_NORMAL_MAP'
 SATELLITE_MAP = u'G_SATELLITE_MAP'
 HYBRID_MAP = u'G_HYBRID_MAP'
+
+class IJavaScript(IViewletManager):
+    """Viewlet manager for google map javascript viewlets."""
+
 
 class IGoogleMap(zope.interface.Interface):
     """An Interface for static google maps."""
