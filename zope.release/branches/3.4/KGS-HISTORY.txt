@@ -1,0 +1,16 @@
+================
+Zope KGS History
+================
+
+
+3.4.0c5 (2008-07-31)
+--------------------
+
+- Upgraded setuptools to 0.6c8.
+
+- Upgraded zope.app.security to 3.5.2. This is a major version bump, but the
+  new feature in 3.5 should not interfere with existing code and 3.5.2 fixes a
+  deprecation warning between Python 2.4 and 2.5.
+
+
+No history was recorded before version 3.4.0c5.
