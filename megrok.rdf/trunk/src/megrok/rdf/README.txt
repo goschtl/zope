@@ -1,0 +1,202 @@
+==========
+megrok.rdf
+==========
+
+The ``megrok.rdb`` package adds powerful relational database support
+to Grok, based on the powerful SQLAlchemy_ library. It makes available
+a new ``megrok.rdb.Model`` and ``megrok.rdb.Container`` which behave
+much like ones in core Grok, but are instead backed by a relational
+database.
+
+.. _SQLAlchemy: http://www.sqlalchemy.org
+
+In this document we will show you how to use ``megrok.rdb``.
+
+``megrok.rdb`` uses SQLAlchemy's ORM system, in particular its
+declarative extension almost directly. ``megrok.rdb`` just supplies a
+few special base classes and directives to make things easier, and a few
+other conveniences that help with integration with Grok.
+
+We first import import the SQLAlchemy bits we'll need later::
+
+  >>> from sqlalchemy import Column, ForeignKey
+  >>> from sqlalchemy.types import Integer, String
+  >>> from sqlalchemy.orm import relation
+
+SQLAlchemy groups database schema information into a unit called
+``MetaData``. The schema can be reflected from the database schema, or
+can be created from a schema defined in Python. With ``megrok.rdb`` we
+typically do the latter, from within the content classes that they are
+mapped to using the ORM. We need to have some metadata to associate
+our content classes with.
+
+Let's set up the metadata object::
+
+  >>> from megrok import rdb
+  >>> metadata = rdb.MetaData()
+
+Now we'll set up a few content classes. We'll have a very simple
+structure where a (university) department has zero or more courses
+associated with it. First we'll define a container that can contain
+courses::
+
+  >>> class Courses(rdb.Container):
+  ...    rdb.key('name')
+
+As you can see, we need to set up the attribute on which the key is
+based. We will use the ``name`` attribute, which we will define for
+the course later. Note that using the primary key attribute (such as
+``id`` in this example) is not a good idea if you expect the database
+to generate unique ids itself - the correct id will not be known yet
+before the object is commit to the database.
+
+Now we can set up the ``Department`` class. This has the ``courses``
+relation that links to its courses::
+
+  >>> class Department(rdb.Model):
+  ...   rdb.metadata(metadata)
+  ...
+  ...   id = Column('id', Integer, primary_key=True)
+  ...   name = Column('name', String(50))
+  ... 
+  ...   courses = relation('Course', 
+  ...                       backref='department',
+  ...                       collection_class=Courses)
+
+This is very similar to the way you'd use
+``sqlalchemy.ext.declarative``, but there are a few differences::
+
+* we inherit from ``rdb.Model`` to make this behave like a Grok model.
+
+* We don't need to use ``__tablename__`` to set up the table name. By
+  default the table name will be the class name, lowercased, but you
+  can override this by using the ``rdb.tablename`` directive.
+
+* we need to make explicit the metadata object that is used. We do
+  this in the tests, though in Grok applications it's enough to use
+  the ``rdb.metadata`` directive on a module-level to have all rdb
+  classes automatically associated with that metadata object.
+
+* we mark that the ``courses`` relation uses the ``Courses`` container
+  class we have defined before. This is a normal SQLAlchemy feature,
+  it's just we have to use it if we want to use Grok-style containers.
+
+We finish up our database definition by defining the ``Course``
+class::
+
+  >>> class Course(rdb.Model):
+  ...   rdb.metadata(metadata)
+  ...
+  ...   id = Column('id', Integer, primary_key=True)
+  ...   department_id = Column('department_id', Integer, 
+  ...                           ForeignKey('department.id'))
+  ...   name = Column('name', String(50))
+
+We see here that ``Course`` links back to the department it is in,
+using a foreign key.
+
+We need to actually grok these objects to have them fully set
+up  Normally grok takes care of this automatically, but in this case
+we'll need to do it manually.
+
+First we grok this package's grokkers::
+
+  >>> from grok.testing import grok
+  >>> grok('megrok.rdb.meta')
+
+
+Before we grok stuff in the doctest, we need to make sure that
+``__file__`` exists on our "module"::
+
+  >>> __file__ = 'foo'
+
+
+Now we can grok the components::
+
+  >>> from grok.testing import grok_component
+  >>> grok_component('Courses', Courses)
+  True
+  >>> grok_component('Department', Department)
+  True
+  >>> grok_component('Course', Course)
+  True
+
+Once we have our metadata and object relational map defined, we need
+to have a database to actually put these in. While it is possible to
+set up a different database per Grok application, here we will use a
+single global database::
+
+  >>> TEST_DSN = 'sqlite:///:memory:'
+  >>> from z3c.saconfig import EngineFactory
+  >>> from z3c.saconfig.interfaces import IEngineFactory
+  >>> engine_factory = EngineFactory(TEST_DSN)
+
+We need to supply the engine factory as a utility. Grok can do this
+automatically for you using the module-level ``grok.global_utility``
+directive, like this::
+
+  grok.global_utility(engine_factory, provides=IEngineFactory, direct=True)
+
+In the tests we'll use the component architecture directly::
+
+  >>> from zope import component
+  >>> component.provideUtility(engine_factory, provides=IEngineFactory)
+
+Now that we've set up an engine, we can set up the SQLAlchemy session
+utility::
+
+  >>> from z3c.saconfig import GloballyScopedSession
+  >>> from z3c.saconfig.interfaces import IScopedSession
+  >>> scoped_session = GloballyScopedSession()
+
+With Grok, we'd register it like this::
+
+  grok.global_utility(scoped_session, provides=IScopedSession, direct=True)
+
+But again we'll just register it directly for the tests::
+
+  >>> component.provideUtility(scoped_session, provides=IScopedSession)
+
+We now need to create the tables we defined in our database::
+
+  >>> engine = engine_factory()  
+  >>> metadata.create_all(engine)
+
+Now all that is out the way, we can use the ``rdb.Session`` object to make
+a connection to the database.
+  
+  >>> session = rdb.Session()
+
+Let's now create a database structure. We have a department of philosophy::
+
+  >>> philosophy = Department(name="Philosophy")
+
+We need to manually add it to the database, as we haven't defined a
+particular ``departments`` container in our database::
+
+  >>> session.add(philosophy)
+
+The philosophy department has a number of courses::
+
+  >>> logic = Course(name="Logic")
+  >>> ethics = Course(name="Ethics")
+  >>> metaphysics = Course(name="Metaphysics")
+  >>> session.add_all([logic, ethics, metaphysics])
+
+We'll add them to the philosophy department's courses container. Since
+we want to leave it up to the database what the key will be, we will
+use the special ``set`` method that ``rdb.Container`` objects have to
+add the objects::
+
+  >>> philosophy.courses.set(logic)
+  >>> philosophy.courses.set(ethics)
+  >>> philosophy.courses.set(metaphysics)
+
+We can now verify that the courses are there::
+
+  >>> for key, value in sorted(philosophy.courses.items()):
+  ...     print key, value.name, value.department.name
+  Ethics Ethics Philosophy
+  Logic Logic Philosophy
+  Metaphysics Metaphysics Philosophy
+
