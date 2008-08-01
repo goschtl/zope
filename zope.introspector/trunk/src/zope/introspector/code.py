@@ -21,6 +21,7 @@ from martian.scan import module_info_from_dotted_name
 from martian.util import isclass
 from zope.interface import implements
 from zope.introspector.interfaces import IInfo
+from zope.introspector.util import resolve, get_package_items
 import os
 
 class Code(object):
@@ -80,17 +81,20 @@ class PackageInfo(grok.Adapter):
                and (x.endswith('.txt') or x.endswith('.rst'))])
 
     def _filterSubItems(self, filter=lambda x: True):
-        mod_info = self.context.getModuleInfo()
-        for submod in mod_info.getSubModuleInfos():
-            if not filter(submod):
-                continue
-            yield submod
+        for name in get_package_items(self.context.dotted_name):
+            try:
+                info = module_info_from_dotted_name(
+                    self.context.dotted_name + '.' + name)
+                if filter and filter(info):
+                    yield info
+            except ImportError:
+                pass
         
     def getSubPackages(self):
-        return self._filterSubItems(lambda x: x.isPackage())
+        return sorted(self._filterSubItems(lambda x: x.isPackage()))
 
     def getModules(self):
-        return self._filterSubItems(lambda x: not x.isPackage())
+        return sorted(self._filterSubItems(lambda x: not x.isPackage()))
         
 
 class Module(PackageOrModule):
