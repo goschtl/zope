@@ -1,0 +1,55 @@
+=======
+Changes
+=======
+
+3.5.0a4 (2008-08-01)
+--------------------
+
+- Updated (test) dependencies and tests to expect and work with a spec
+  compliant TAL interpreter as available in zope.tal >= 3.5.0.
+- Fixed deprecation warning caused by using an old module name for
+  ZopeSecurityPolicy in ftesting.zcml
+- Made sure traversing doesn't raise an TypeError but a TraversalError when the
+  traversal step before yielded a string.
+
+
+3.5.0a3 (2007-12-28)
+--------------------
+
+- backed out the controversial `++skin++` traverser for XML-RPC.
+
+
+3.5.0a2 (2007-11-28)
+--------------------
+
+- ported 3.4.1a1 to trunk
+
+  - Do not use unicode strings to set the application server in the virtual
+    host namespace. This caused absolute_url to create unicode URL's.
+
+- Added a traverer for ++skin++ for XMLRPC skins (IXMLRPCSkinType). This also
+  means that the normal ++skin++ namespace handler is only bound to
+  IBrowserRequest. 
+
+- Resolved the dependency on zope.app.applicationcontrol by importing the
+  application controller only if the package is available.
+
+
+3.4.1a1 (2007-11-13)
+--------------------
+
+Do not use unicode strings to set the application server in the virtual host
+namespace. This caused absolute_url to create unicode URL's.
+
+
+3.4.0 (2007-09-29)
+------------------
+
+No further changes since 3.4.0a1.
+
+3.4.0a1 (2007-04-22)
+--------------------
+
+Initial release as a separate project, corresponds to zope.traversing
+from Zope 3.4.0a1
+
