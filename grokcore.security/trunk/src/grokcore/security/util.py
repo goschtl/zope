@@ -18,6 +18,7 @@ from zope.component import queryUtility
 from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
 from zope.app.security.protectclass import protectName
+from zope.app.security.protectclass import protectSetAttribute
 
 def protect_getattr(class_, name, permission=None):
     # Define an attribute checker using zope.app.security's
@@ -30,6 +31,17 @@ def protect_getattr(class_, name, permission=None):
         check_permission(class_, permission)
 
     protectName(class_, name, permission)
+
+def protect_setattr(class_, name, permission=None):
+    # Define a set attribute checker.  If permission is not supplied,
+    # it defaults to 'zope.Pubic'.  If a permission has been supplied,
+    # we make sure the permission has actually been defined.
+    if permission is None:
+        permission = 'zope.Public'
+    else:
+        check_permission(class_, permission)
+
+    protectSetAttribute(class_, name, permission)
 
 def make_checker(factory, view_factory, permission, method_names=None):
     """Make a checker for a view_factory associated with factory.
