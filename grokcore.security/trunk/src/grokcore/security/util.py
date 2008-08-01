@@ -15,7 +15,6 @@
 """
 from martian.error import GrokError
 from zope.component import queryUtility
-from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
 from zope.app.security.protectclass import protectName
 from zope.app.security.protectclass import protectSetAttribute
@@ -34,22 +33,6 @@ def protect_setattr(class_, name, permission=None):
     """
     permission = check_or_default_permission(class_, permission)
     protectSetAttribute(class_, name, permission)
-
-def make_checker(factory, view_factory, permission, method_names=None):
-    """Make a checker for a view_factory associated with factory.
-
-    These could be one and the same for normal views, or different
-    in case we make method-based views such as for JSON and XMLRPC.
-    """
-    if method_names is None:
-        method_names = ['__call__']
-    if permission is not None:
-        check_permission(factory, permission)
-    if permission is None or permission == 'zope.Public':
-        checker = NamesChecker(method_names)
-    else:
-        checker = NamesChecker(method_names, permission)
-    defineChecker(view_factory, checker)
 
 def check_or_default_permission(class_, permission):
     """Return default permission (public) if permission is None,
