@@ -52,9 +52,11 @@ class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size", default=u"Quite normal")
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
     implements(IMammoth)
-    
+    grok.testing.protect_get(grok.Public, 'name', 'size')
+    grok.testing.protect_set(grok.Public, 'name', 'size')
+
     name = FieldProperty(IMammoth['name'])    
     size = FieldProperty(IMammoth['size'])    
 

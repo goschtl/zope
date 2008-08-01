@@ -46,7 +46,10 @@ Custom display template with an explicit template:
 import grokcore.formlib as grok
 from zope import schema
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
+    grok.testing.protect_get(grok.Public, 'name', 'size')
+    grok.testing.protect_set(grok.Public, 'name', 'size')
+
     class fields:
         name = schema.TextLine(title=u"Name")
         size = schema.TextLine(title=u"Size", default=u"Quite normal")

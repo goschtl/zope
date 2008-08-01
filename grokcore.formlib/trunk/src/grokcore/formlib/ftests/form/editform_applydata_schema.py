@@ -62,8 +62,10 @@ class IMammoth(interface.Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size")
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
     grok.implements(IMammoth)
+    grok.testing.protect_get(grok.Public, 'name', 'size')
+    grok.testing.protect_set(grok.Public, 'name', 'size')
 
     def __init__(self, name='', size=''):
         self._name = name

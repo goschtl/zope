@@ -55,7 +55,9 @@ import grokcore.formlib as grok
 from zope import schema
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
+    grok.testing.protect_get(grok.Public, 'name', 'size')
+    grok.testing.protect_set(grok.Public, 'name', 'size')
 
     def __init__(self, name='', size=''):
         self._name = name

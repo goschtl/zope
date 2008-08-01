@@ -31,16 +31,19 @@ import grokcore.formlib as grok
 from zope import schema, interface
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.app.container.btree import BTreeContainer
+from zope.app.container.interfaces import IContainer
 
-class Zoo(BTreeContainer):
-    pass
+class Zoo(grok.testing.Model, BTreeContainer):
+    grok.testing.protect_get(grok.Public, *IContainer)
 
 class IMammoth(interface.Interface):
     name = schema.TextLine(title=u"Name")
     size = schema.TextLine(title=u"Size")
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
     grok.implements(IMammoth)
+    grok.testing.protect_get(grok.Public, 'name', 'size')
+    grok.testing.protect_set(grok.Public, 'name', 'size')
 
 class Index(grok.View):
     grok.context(Mammoth)

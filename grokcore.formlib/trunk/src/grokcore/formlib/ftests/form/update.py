@@ -50,8 +50,10 @@ from zope.interface import Interface, implements
 class IMammoth(Interface):
     name = schema.TextLine(title=u"Name")
 
-class Mammoth(grok.Context):
+class Mammoth(grok.testing.Model):
     implements(IMammoth)
+    grok.testing.protect_get(grok.Public, 'name', 'report')
+    grok.testing.protect_set(grok.Public, 'name', 'report')
     
     name = u'Manfred'
 
