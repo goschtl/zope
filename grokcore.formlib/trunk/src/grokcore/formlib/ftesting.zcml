@@ -12,6 +12,7 @@
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.securitypolicy" />
+  <include package="grokcore.formlib" />
   <grok:grok package="grokcore.formlib.ftests" />
 
   <securityPolicy
