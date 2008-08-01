@@ -150,7 +150,7 @@ class Table(zope.location.Location):
             # we reached the end of the table and have still colspan
             if (countdown - colspan) < 0:
                 raise ValueError(
-                    "Colspan for column '%s' larger then table." % col)
+                    "Colspan for column '%s' is larger than the table." % col)
 
             append((item, col, colspan))
         return cols

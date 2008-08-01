@@ -2,14 +2,14 @@
 Column
 ======
 
-Let's show the different columns we offer by default. But first  take a look at
+Let's show the different columns we offer by default. But first take a look at
 the README.txt which explains the Table and Column concepts. 
 
 
 Sample data setup
 -----------------
 
-Let's create a sample container which we can use as our iterable context:
+Let's create a sample container that we can use as our iterable context:
 
   >>> from zope.app.container import btree
   >>> class Container(btree.BTreeContainer):
@@ -17,7 +17,7 @@ Let's create a sample container which we can use as our iterable context:
   >>> container = Container()
   >>> root['container'] = container
 
-and create a sample content object which we use as container item:
+and create a sample content object that we use as container item:
 
   >>> class Content(object):
   ...     """Sample content."""
@@ -33,7 +33,7 @@ Now setup some items:
   >>> container[u'third'] = Content('Third', 3)
   >>> container[u'fourth'] = Content('Fourth', 4)
 
-Let's also create a simple number sortable cloumn:
+Let's also create a simple number sortable column:
 
   >>> from z3c.table import column
   >>> class NumberColumn(column.Column):
@@ -383,7 +383,7 @@ Let's define a table using the CreatedColumn:
   ...                              weight=1),
   ...             ]
 
-Now create, update and render our table. Note, we use a dublin core stub 
+Now create, update and render our table. Note, we use a Dublin Core stub 
 adapter which only returns ``01/01/01 01:01`` as created date:
 
   >>> request = TestRequest()
@@ -429,7 +429,7 @@ Let's define a table using the CreatedColumn:
   ...                              u'modifiedColumn', weight=1),
   ...             ]
 
-Now create, update and render our table. Note, we use a dublin core stub 
+Now create, update and render our table. Note, we use a Dublin Core stub 
 adapter which only returns ``02/02/02 02:02`` as modified date:
 
   >>> request = TestRequest()
@@ -516,7 +516,7 @@ Render and update the table:
     </tbody>
   </table>
 
-If we use a none existing Attribute, we do not raise an AttributeError, we will
+If we use a non-existing Attribute, we do not raise an AttributeError, we will
 get the default value defined from the ``GetAttrColumnTable``
 
   >>> class UndefinedAttributeColumn(column.GetAttrColumn):
@@ -565,7 +565,7 @@ Render and update the table:
     </tbody>
   </table>
 
-A missing ``attrName`` in ``GetAttrColumn`` whuold also end in return the
+A missing ``attrName`` in ``GetAttrColumn`` would also end in return the
 ``defaultValue``:
 
   >>> class BadAttributeColumn(column.GetAttrColumn):
@@ -579,7 +579,7 @@ A missing ``attrName`` in ``GetAttrColumn`` whuold also end in return the
   u'missing'
 
 If we try to access a protected attribute the object raises an ``Unauthorized``.
-In thsi case we also return the defaultValue. Let's setup an object which
+In this case we also return the defaultValue. Let's setup an object which
 raises such an error if we access the title:
 
   >>> from zope.security.interfaces import Unauthorized
@@ -616,7 +616,7 @@ GetAttrFormatterColumn
 ----------------------
 
 The ``GetAttrFormatterColumn`` column is a get attr column which is able to 
-format the value. Let's use the dubline core adapter for our sample:
+format the value. Let's use the Dublin Core adapter for our sample:
 
   >>> from zope.dublincore.interfaces import IZopeDublinCore
   >>> class GetCreatedColumn(column.GetAttrFormatterColumn):
