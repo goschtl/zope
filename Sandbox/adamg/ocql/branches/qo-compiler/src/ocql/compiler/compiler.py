@@ -77,6 +77,21 @@ class UnionCompiler(BaseCompiler):
                 IAlgebraCompiler(self.context.coll1)(),
                 IAlgebraCompiler(self.context.coll2)())
 
+class DifferCompiler(BaseCompiler):
+    implements(IAlgebraCompiler)
+    adapts(IDiffer)
+
+    def __call__(self):
+        if self.context.klass == set:
+            return 'set.differ(%s, %s)' % (
+                IAlgebraCompiler(self.context.start)(),
+                IAlgebraCompiler(self.context.end)())
+
+        elif self.context.klass == list:
+            return '(%s)-(%s)' % (
+                IAlgebraCompiler(self.context.start)(),
+                IAlgebraCompiler(self.context.end)())
+
 class IterCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
     adapts(IIter)
@@ -180,7 +195,7 @@ class LambdaCompiler(BaseCompiler):
     adapts(ILambda)
 
     def __call__(self):
-        return 'lambda %s: %s'%(
+        return 'lambda %s: %s' % (
             self.context.var,
             IAlgebraCompiler(self.context.expr)())
 
@@ -235,6 +250,7 @@ def registerAdapters():
     provideAdapter(EmptyCompiler)
     provideAdapter(SingleCompiler)
     provideAdapter(UnionCompiler)
+    provideAdapter(DifferCompiler)
     provideAdapter(IterCompiler)
     provideAdapter(SelectCompiler)
     provideAdapter(ReduceCompiler)

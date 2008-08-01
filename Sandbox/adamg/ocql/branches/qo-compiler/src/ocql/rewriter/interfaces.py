@@ -32,6 +32,13 @@ class IUnion(IAlgebraObject):
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
 
+class IDiffer(IAlgebraObject):
+    """Objects providing this interface represent the
+    Union Algebra object
+    """
+    klass = Attribute('collection type name')
+    start = Attribute('first collection')
+    end = Attribute('second collection')
 
 class IIter(IAlgebraObject):
     """Objects providing this interface represent the
