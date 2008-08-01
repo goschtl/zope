@@ -21,26 +21,18 @@ from zope.app.security.protectclass import protectName
 from zope.app.security.protectclass import protectSetAttribute
 
 def protect_getattr(class_, name, permission=None):
-    # Define an attribute checker using zope.app.security's
-    # protectName that defaults to the 'zope.Public' permission when
-    # it's not been given and makes sure the permission has actually
-    # been defined when it has.
-    if permission is None:
-        permission = 'zope.Public'
-    else:
-        check_permission(class_, permission)
-
+    """Define a checker for reading an attribute (``name``) using a
+    permission.  If not supplied, the permission defaults to public
+    access."""
+    permission = check_or_default_permission(class_, permission)
     protectName(class_, name, permission)
 
 def protect_setattr(class_, name, permission=None):
-    # Define a set attribute checker.  If permission is not supplied,
-    # it defaults to 'zope.Pubic'.  If a permission has been supplied,
-    # we make sure the permission has actually been defined.
-    if permission is None:
-        permission = 'zope.Public'
-    else:
-        check_permission(class_, permission)
-
+    """Define a checker for setting an attribute (``name``) using a
+    permission.  If not supplied, the permission defaults to public
+    access.
+    """
+    permission = check_or_default_permission(class_, permission)
     protectSetAttribute(class_, name, permission)
 
 def make_checker(factory, view_factory, permission, method_names=None):
@@ -58,6 +50,16 @@ def make_checker(factory, view_factory, permission, method_names=None):
     else:
         checker = NamesChecker(method_names, permission)
     defineChecker(view_factory, checker)
+
+def check_or_default_permission(class_, permission):
+    """Return default permission (public) if permission is None,
+    otherwise make sure permission has been defined.
+    """
+    if permission is None:
+        permission = 'zope.Public'
+    else:
+        check_permission(class_, permission)
+    return permission
 
 def check_permission(factory, permission):
     """Check whether a permission is defined.
