@@ -29,7 +29,7 @@ class ClasslevelGrokker(martian.ClassGrokker):
     def execute(self, factory, config, permission, **kw):
         config.action(
             discriminator=('protectName', factory, 'protected'),
-            callable=util.protect_name,
+            callable=util.protect_getattr,
             args=(factory, 'protected', permission),
             )
         return True

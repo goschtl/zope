@@ -19,7 +19,7 @@ from zope.security.checker import NamesChecker, defineChecker
 from zope.security.interfaces import IPermission
 from zope.app.security.protectclass import protectName
 
-def protect_name(class_, name, permission=None):
+def protect_getattr(class_, name, permission=None):
     # Define an attribute checker using zope.app.security's
     # protectName that defaults to the 'zope.Public' permission when
     # it's not been given and makes sure the permission has actually
