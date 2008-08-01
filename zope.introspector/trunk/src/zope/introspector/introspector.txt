@@ -29,3 +29,15 @@ we'll find them::
   >>> sorted(infos.infos())
   [(u'object', <zope.introspector.objectinfo.ObjectInfo object at ...), 
    (u'view', <zope.introspector.viewinfo.ViewInfo object at ...>)]
+
+Packages
+========
+
+The introspector can give us infos about Python packages::
+
+  >>> import zope.introspector
+  >>> infos = IInfos(zope.introspector)
+  >>> sorted(infos.infos())
+  [(u'module', <zope.introspector...ModuleInfo object at 0x...>),
+   (u'object', <zope.introspector...ObjectInfo object at 0x...>),
+   (u'view', <zope.introspector...ViewInfo object at 0x...>)]
