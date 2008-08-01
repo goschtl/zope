@@ -1,0 +1,49 @@
+zope.introspector.util
+**********************
+
+Helper functions for the zope.introspector
+
+:Test-Layer: unit
+
+is_namespace_package
+====================
+
+Tell, whether a dotted name denotes a namespace package::
+
+  >>> from zope.introspector.util import is_namespace_package
+  >>> is_namespace_package('zope')
+  True
+
+  >>> is_namespace_package('zope.app')
+  True
+
+  >>> is_namespace_package('zope.app.file')
+  False
+
+  >>> is_namespace_package('zope.introspector')
+  False
+
+
+get_package_items
+=================
+
+A function to gather names of items that are contained in a
+package. It looks for modules, subpackages and text files of type
+.txt, .rst and .zcml::
+
+  >>> from zope.introspector.util import get_package_items
+  >>> sorted(get_package_items('zope.introspector'))
+  ['README.txt', 'adapters', ..., 'meta.zcml', ..., 'tests', 
+  ... ..., 'viewinfo.txt']
+
+It can also handle namespace packages::
+
+  >>> sorted(get_package_items('zope'))
+  ['annotation', 'app', ..., 'traversing']
+
+Often the `zope` package is installed as a zipped egg, but as we can
+see here, that makes no difference.
+
+The function ignores directories that are not Python packages and
+hidden files and directories, i.e. such starting with a dot in their
+name.
