@@ -31,7 +31,7 @@ import grokcore.security
 
 from grokcore.view import components
 from grokcore.view import templatereg
-from grokcore.security.util import protect_name
+from grokcore.security.util import protect_getattr
 
 
 def default_view_name(factory, module=None, **data):
@@ -116,7 +116,7 @@ class ViewSecurityGrokker(martian.ClassGrokker):
         for method_name in list(IBrowserPage):
             config.action(
                 discriminator=('protectName', factory, method_name),
-                callable=protect_name,
+                callable=protect_getattr,
                 args=(factory, method_name, permission),
                 )
         return True
