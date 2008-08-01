@@ -2,6 +2,11 @@
 Zope KGS History
 ================
 
+3.4.0c6 (unreleased)
+--------------------
+
+- Upgraded zope.publisher to 3.4.3
+
 
 3.4.0c5 (2008-07-31)
 --------------------
