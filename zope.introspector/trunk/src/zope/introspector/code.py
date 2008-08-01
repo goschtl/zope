@@ -75,10 +75,14 @@ class PackageInfo(grok.Adapter):
         return self.context.getPath()
 
     def getPackageFiles(self):
-        pkg_file_path = self.context.getPath()
-        return sorted([x for x in os.listdir(pkg_file_path)
-               if os.path.isfile(os.path.join(pkg_file_path, x))
-               and (x.endswith('.txt') or x.endswith('.rst'))])
+        result = [x for x in get_package_items(self.context.dotted_name)
+                  if '.' in x and x.rsplit('.', 1)[-1] in ['txt', 'rst']]
+        return result
+
+    def getZCMLFiles(self):
+        result = [x for x in get_package_items(self.context.dotted_name)
+                  if '.' in x and x.rsplit('.', 1)[-1] in ['zcml']]
+        return result
 
     def _filterSubItems(self, filter=lambda x: True):
         for name in get_package_items(self.context.dotted_name):

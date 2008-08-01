@@ -132,6 +132,11 @@ for the txt-files contained in the package::
   >>> sorted(info.getPackageFiles())
   ['README.txt', 'adapters.txt', ..., 'viewinfo.txt']
 
+We can get all ZCML files::
+
+  >>> sorted(info.getZCMLFiles())
+  ['configure.zcml', 'ftesting.zcml', 'meta.zcml']
+
 We can get all subpackages::
 
   >>> sorted(list(info.getSubPackages()))
