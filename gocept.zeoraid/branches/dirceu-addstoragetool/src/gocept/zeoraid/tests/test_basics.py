@@ -1187,7 +1187,8 @@ class FailingStorageTestBase(object):
                                raid_disable=None,
                                raid_recover=None,
                                raid_status=None,
-                               raid_add_storage=None),
+                               raid_add_storage=None,
+                               raid_reload=None),
                           methods)
 
     def test_getExtensionMethods_degrading(self):

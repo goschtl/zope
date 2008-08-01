@@ -540,7 +540,7 @@ class RAIDStorage(object):
         # This method isn't officially part of the interface but it is supported.
         methods = dict.fromkeys(
             ['raid_recover', 'raid_status', 'raid_disable', 'raid_details',
-            'raid_add_storage'])
+            'raid_add_storage', 'raid_reload'])
         return methods
 
     # IRAIDStorage
@@ -582,6 +582,25 @@ class RAIDStorage(object):
         self.storages_degraded.append(name)
         self.raid_recover(name)
         return 'added %s:%s:%s' % (ip, port, name)
+
+    def raid_reload(self, path):
+        s = ""
+        zeoconf = open(path, 'r').read()
+        temp_storage = ZODB.config.storageFromString(zeoconf)
+        storages_to_remove = [o for o in self.openers.items() if o[0] not in temp_storage.openers]
+        for storage in storages_to_remove:
+            self.raid_disable(storage[0])
+            s += "removed %s\n" % storage[0]
+        storages_to_add = [o for o in temp_storage.openers.items() if o[0] not in self.openers]
+        for storage in storages_to_add:
+            name = storage[0]
+            self.openers[name] = storage[1]
+            self._open_storage(name)
+            self.storages_degraded.append(name)
+            self.raid_recover(name)
+            s += "added %s\n" % name
+        del temp_storage
+        return s
 
     # internal
 

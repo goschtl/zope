@@ -35,6 +35,8 @@ Commands:
 
     add <ip:port:storage> -- Add a storage
 
+    reload </path/to/zeo.conf> -- Reload a specified zeo.conf file
+
 """
 
 import optparse
@@ -80,11 +82,15 @@ class RAIDManager(object):
         except ValueError:
             sys.exit("Usage: IP:PORT:STORAGE")
 
+    def cmd_reload(self, path):
+        print self.raid.raid_reload(path)
+
 def main(host="127.0.0.1", port=8100, storage="1"):
     usage = "usage: %prog [options] command [command-options]"
     description = ("Connect to a RAIDStorage on a ZEO server and perform "
                    "maintenance tasks. Available commands: status, details, "
-                   "recover <STORAGE>, disable <STORAGE>, add <IP:PORT:STORAGE>")
+                   "recover <STORAGE>, disable <STORAGE>, add <IP:PORT:STORAGE>"
+                   "reload </PATH/TO/ZEO.CONF>")
 
     parser = optparse.OptionParser(usage=usage, description=description)
     parser.add_option("-S", "--storage", default=storage,
