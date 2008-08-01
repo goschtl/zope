@@ -33,11 +33,14 @@ class PackageOrModule(Code):
     def __init__(self, dotted_name):
         super(PackageOrModule, self).__init__(dotted_name)
         self._module_info = module_info_from_dotted_name(dotted_name)
+
+    def getModuleInfo(self):
+        return self._module_info
     
 class Package(PackageOrModule):
     def getPath(self):
         return os.path.dirname(self._module_info.path)
-    
+
     def __getitem__(self, name):
         sub_module = None
         try:
@@ -64,11 +67,31 @@ class PackageInfo(grok.Adapter):
     grok.provides(IInfo)
     grok.name('package')
 
+    def getDottedName(self):
+        return self.context.dotted_name
+
+    def getPath(self):
+        return self.context.getPath()
+
     def getPackageFiles(self):
         pkg_file_path = self.context.getPath()
         return sorted([x for x in os.listdir(pkg_file_path)
                if os.path.isfile(os.path.join(pkg_file_path, x))
                and (x.endswith('.txt') or x.endswith('.rst'))])
+
+    def _filterSubItems(self, filter=lambda x: True):
+        mod_info = self.context.getModuleInfo()
+        for submod in mod_info.getSubModuleInfos():
+            if not filter(submod):
+                continue
+            yield submod
+        
+    def getSubPackages(self):
+        return self._filterSubItems(lambda x: x.isPackage())
+
+    def getModules(self):
+        return self._filterSubItems(lambda x: not x.isPackage())
+        
 
 class Module(PackageOrModule):
     def __getitem__(self, name):
