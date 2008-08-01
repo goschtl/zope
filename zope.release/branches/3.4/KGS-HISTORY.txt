@@ -9,6 +9,11 @@ Zope KGS History
 
 - Upgraded zope.testing 3.5.1 to 3.5.4.
 
+- Upgraded zc.buildout 1.0.0 to 1.1.1.
+
+  - New global buildout option, unzip
+  - Recompiles pyc files to have correct paths.
+
 
 3.4.0c5 (2008-07-31)
 --------------------
