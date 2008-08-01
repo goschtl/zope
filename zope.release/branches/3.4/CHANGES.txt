@@ -4,17 +4,41 @@ CHANGES
 
 NOTE: The release of this package are synced with the Zope 3 releases.
 
+3.4.0c6 (unreleased)
+--------------------
 
-3.4.0 (2008-01-??)
-------------------
+- Upgraded package versions (see KGS-HISTORY.txt)
+
+3.4.0c5 (2008-07-31)
+--------------------
+
+- Added a KGS-HISTORY.txt
+- Upgraded package versions (see KGS-HISTORY.txt)
+
+3.4.0c4 (2008-07-30)
+--------------------
+
+- no changes
+
+3.4.0c3 (2008-07-30)
+--------------------
+
+- improved the README.txt
+- Upgraded package versions (see KGS-HISTORY.txt)
+
+3.4.0c2 (2008-07-23)
+--------------------
+
+- Upgraded package versions (see KGS-HISTORY.txt)
+
+3.4.0c1 (2008-01-31)
+--------------------
 
 - Moved generic KGS code to a new package called ``zope.kgs``
-
 - Added tests for the existing code.
-
 - Update package data.
+- Upgraded package versions (see KGS-HISTORY.txt)
 
-- Added new bugfix versions of many packages
 
 3.4.0b2 (2007-11-05)
 --------------------
