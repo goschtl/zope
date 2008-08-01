@@ -156,3 +156,12 @@ We can also grab the basic information provided by the adapted
 
   >>> pnorm(info.getPath())
   '/.../src/zope/introspector'
+
+If a package is a namespace package, we can also get all submodules::
+
+  >>> from zope.introspector.code import PackageInfo
+  >>> pkg = Package('zope')
+  >>> info = PackageInfo(pkg)
+  >>> sorted(list(info.getSubPackages()), key=lambda x: x.dotted_name)
+  [<ModuleInfo object for 'zope.annotation'>,
+   ..., <ModuleInfo object for 'zope.traversing'>]
