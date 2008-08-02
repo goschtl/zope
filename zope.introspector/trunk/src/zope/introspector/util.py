@@ -46,7 +46,7 @@ def get_package_items(dotted_name):
             continue
         if pkg_resources.resource_isdir(dotted_name, res):
             if pkg_resources.resource_exists(
-                dotted_name + '.' + res, '__init__.py'):
+                dotted_name, res + '/__init__.py'):
                 result.append(res)
                 continue
         if not '.' in res:
