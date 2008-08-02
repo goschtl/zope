@@ -2,19 +2,24 @@
 /** 
  * @fileoverview JSON-RPC client implementation 
  * @author Roger Ineichen dev at projekt01 dot ch
- * @version Initial, not documented 
+ * @version 0.6, supports JSON-RPC 1.0, 1.1 and 2.0
  */
 //----------------------------------------------------------------------------
 
-function JSONRPC(url) {
+function JSONRPC(url, version) {
     this._url = url;
+    // uses specification version 2.0 by default
+    this._version = '2.0'
+    if (typeof(version) != 'undefined') {
+        this._version = version;
+    }
     this._methods = new Array();
     this._user = null;
     this._password = null;
 }
 
-function getJSONRPCProxy(url) {
-    return new JSONRPC(url);
+function getJSONRPCProxy(url, version) {
+    return new JSONRPC(url, version);
 }
 
 JSONRPC.prototype.addMethod = function(name, callback, requestId) {
@@ -23,7 +28,7 @@ JSONRPC.prototype.addMethod = function(name, callback, requestId) {
     }
     var self = this;
     if(!self[name]){
-        var method = new JSONRPCMethod(this._url, name, callback, requestId, this._user, this._password);
+        var method = new JSONRPCMethod(this._url, name, callback, requestId, this._user, this._password, this._version);
         self[name] = method;
         this._methods.push(method);
     }
@@ -37,25 +42,36 @@ JSONRPC.prototype.setAuthentication = function(user, pass) {
     }
 }
 
-function JSONRPCMethod(url, methodName, callback, requestId, user, pass) {
+function JSONRPCMethod(url, methodName, callback, requestId, user, pass, version) {
     this.methodName = methodName;
     this.callback = callback;
     this.requestId = requestId;
     this.url = url;
     this.user = user;
     this.password = pass;
+    this.version = version
     var self = this;
 
     var fn = function(){
-        var args = new Array();
-        for(var i=0;i<arguments.length;i++){
-            args.push(arguments[i]);
+        var oldVersion = false;
+        if (this.version == '1.0' || this.version == '1.1') {
+            oldVersion = true;
+        }
+        if (!oldVersion && arguments.length == 1 && typeof arguments[0] === "object"){
+            // we've got version 2.0 and an associative array as argument
+            var args = arguments[0]
+        } else {
+            // we've got positional arguments
+            var args = new Array();
+            for(var i=0;i<arguments.length;i++){
+                args.push(arguments[i]);
+            }
         }
         if(self.callback) {
             var data = self.jsonRequest(self.requestId, self.methodName, args);
             self.postData(self.url, self.user, self.password, data, function(resp){
                 var res = null;
-                var exc =null;
+                var exc = null;
                 try{
                     res = self.handleResponse(resp);
                 }catch(e){
@@ -64,7 +80,7 @@ function JSONRPCMethod(url, methodName, callback, requestId, user, pass) {
                 try{
                     callback(res, self.requestId, exc);
                 }catch(e){
-                    alert("except callback");
+                    alert("callback method error: " + e.message);
                 }
                 args = null;
                 resp = null;
@@ -77,7 +93,6 @@ function JSONRPCMethod(url, methodName, callback, requestId, user, pass) {
         }
     }
     return fn;
-
 }
 
 JSONRPCMethod.prototype.postData = function(url, user, pass, data, callback) {
@@ -99,7 +114,14 @@ JSONRPCMethod.prototype.jsonRequest = function(id, methodName, args){
     var ji = toJSON(id);
     var jm = toJSON(methodName);
     var ja = toJSON(args);
-    return '{"id":' + ji + ', "method":' + jm + ', "params":' + ja + "}";
+    var ver = this.version
+    if (ver == '1.0'){
+        return '{"id":' +ji+ ', "method":' +jm+ ', "params":' +ja+ "}";
+    }else if (ver == '1.1'){
+        return '{"version":"'+ver+'", "id":' +ji+ ', "method":' +jm+ ', "params":' +ja+ "}";
+    }else{
+        return '{"jsonrpc":"'+ver+'", "id":' +ji+ ', "method":' +jm+ ', "params":' +ja+ "}";
+    }
 }
 
 JSONRPCMethod.prototype.setAuthentication = function(user, pass){
@@ -117,6 +139,9 @@ JSONRPCMethod.prototype.notify = function(){
 }
 
 JSONRPCMethod.prototype.handleResponse = function(resp){
+    // TODO: Implement better error handling support since we have error codes 
+    // offer an argument onError which defines a function for custom 
+    // error handling.
     var status=null;
     try{
         status = resp.status;
@@ -132,8 +157,15 @@ JSONRPCMethod.prototype.handleResponse = function(resp){
             alert("The server responded with an empty document.");
         }else{
             var res = this.unmarshall(respTxt);
-            if(res.error != null){
-                alert("error " + res.error);
+            var oldVersion = false;
+            if (this.version == '1.0' || this.version == '1.1') {
+                oldVersion = true;
+            }
+            if(oldVersion  && res.error != null){
+                alert(res.error);
+            }
+            else if(!oldVersion  && res.error != null){
+                alert(res.error.message);
             }
             else if (res.requestId != self.requestId) {
                 alert("wrong json id returned");
