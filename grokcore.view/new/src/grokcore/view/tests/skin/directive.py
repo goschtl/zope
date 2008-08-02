@@ -7,9 +7,9 @@ on the interface.
 Import -- and thus "execute" -- the skindirective fixture to make the
 directive have effect::
 
-  >>> from grok.tests.skin import directive_fixture
+  >>> from grokcore.view.tests.skin import directive_fixture
 
-  >>> import grok
+  >>> import grokcore.view as grok
   >>> grok.skin.bind().get(directive_fixture.IIsAnInterface)
   'skin_name'
 
@@ -19,7 +19,7 @@ directive can be *declared* on a normal class, however, using it to
 retrieve data will fail due to the way the directive's store is
 implemented::
 
-  >>> from grok.tests.skin import directive_onaclass_fixture
+  >>> from grokcore.view.tests.skin import directive_onaclass_fixture
 
   >>> grok.skin.bind().get(directive_onaclass_fixture.NotAnInterfaceClass)
   Traceback (most recent call last):
@@ -29,7 +29,7 @@ implemented::
 
 Note that the directive only supports text (ASCII string or unicode):
 
-  >>> from grok.tests.skin import directive_textonly_fixture
+  >>> from grokcore.view.tests.skin import directive_textonly_fixture
   Traceback (most recent call last):
     ...
   GrokImportError: The 'skin' directive can only be called with unicode or ASCII.

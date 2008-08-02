@@ -1,5 +1,5 @@
 """
 This should fail:
 """
-import grok
+import grokcore.view as grok
 grok.name('viewname')

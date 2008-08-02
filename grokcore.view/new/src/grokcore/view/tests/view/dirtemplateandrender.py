@@ -6,14 +6,14 @@ we check that this also works for templates in a template-directory:
   Traceback (most recent call last):
     ...
   ConfigurationExecutionError: martian.error.GrokError: Multiple possible ways to render view
-  <class 'grok.tests.view.dirtemplateandrender.CavePainting'>.
+  <class 'grokcore.view.tests.view.dirtemplateandrender.CavePainting'>.
   It has both a 'render' method as well as an associated template.
   in:
   
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class CavePainting(grok.View):

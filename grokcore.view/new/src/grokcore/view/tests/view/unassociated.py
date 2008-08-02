@@ -2,7 +2,7 @@
 Templates that are not associated with a view class will provoke an
 error:
 
-  >>> from grok.testing import warn
+  >>> from grokcore.view.testing import warn
   >>> import warnings
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
@@ -10,7 +10,7 @@ error:
   >>> grok.testing.grok(__name__)
   From grok.testing's warn():
   ...UserWarning: Found the following unassociated template(s) when grokking
-  'grok.tests.view.unassociated': index.  Define view classes inheriting from
+  'grokcore.view.tests.view.unassociated': index.  Define view classes inheriting from
   grok.View to enable the template(s)...
 
 Also templates of modules named equally as the package name the module
@@ -26,7 +26,7 @@ with the local package `modequalspkgname`::
   >>> warnings.warn = saved_warn
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass

@@ -29,7 +29,7 @@ Testing the plugging in of a template language
   <html><body>Sierra de San Fransisco is in Mexico</body></html>
 
 """
-import grok, os
+import grokcore.view as grok, os
 
 # Dummy template language:
 class MyTemplate(object):
@@ -65,7 +65,7 @@ class MyPageTemplateFactory(grok.GlobalUtility):
     def __call__(self, filename, _prefix=None):
         return MyPageTemplate(filename=filename, _prefix=_prefix)
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 class Sebaayeni(grok.View):

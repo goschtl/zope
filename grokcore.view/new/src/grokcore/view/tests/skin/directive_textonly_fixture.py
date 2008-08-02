@@ -1,4 +1,4 @@
-import grok
+import grokcore.view as grok
 from zope.interface import Interface
 
 some_obj = object()

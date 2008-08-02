@@ -33,15 +33,15 @@ registered as its own view:
   Traceback (most recent call last):
     ...
   ComponentLookupError:
-  ((<grok.tests.view.twoviewsusetemplate.Mammoth object at 0x...>,
+  ((<grokcore.view.tests.view.twoviewsusetemplate.Mammoth object at 0x...>,
   <zope.publisher.browser.TestRequest instance URL=http://127.0.0.1>),
   <InterfaceClass zope.interface.Interface>, 'templ')
 
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class A(grok.View):

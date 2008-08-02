@@ -18,10 +18,10 @@ View with an associated PageTemplate that is referred to using
   </html>
 
 """
-import grok
+import grokcore.view as grok
 import os.path
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Food(grok.View):

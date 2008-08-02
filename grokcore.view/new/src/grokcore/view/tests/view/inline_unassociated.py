@@ -2,7 +2,7 @@
 Inline templates that are not associated with a view class will
 provoke an error:
 
-  >>> from grok.testing import warn
+  >>> from grokcore.view.testing import warn
   >>> import warnings
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
@@ -10,15 +10,15 @@ provoke an error:
   >>> grok.testing.grok(__name__)
   From grok.testing's warn():
   ...UserWarning: Found the following unassociated template(s) when grokking
-  'grok.tests.view.inline_unassociated': club. Define view classes inheriting
+  'grokcore.view.tests.view.inline_unassociated': club. Define view classes inheriting
   from grok.View to enable the template(s)...
 
   >>> warnings.warn = saved_warn
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 club = grok.PageTemplate("""\

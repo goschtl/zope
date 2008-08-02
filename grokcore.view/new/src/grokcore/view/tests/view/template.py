@@ -20,9 +20,9 @@ View with an associated PageTemplate that is referred to using
   <html><body><h1>GROK EAT MAMMOTH!</h1></body></html>
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Painting(grok.View):

@@ -16,11 +16,11 @@ You can explicitly specify the template directory using grok.templatedir on modu
   </html>
 
 """
-import grok
+import grokcore.view as grok
 
 grok.templatedir('templatedirectoryname')
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Food(grok.View):

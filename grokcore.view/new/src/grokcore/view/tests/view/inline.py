@@ -15,8 +15,8 @@ using a variable named `viewname_pt`:
   <h1>Mammoth Cave Painting</h1>
   <ul>
     <li><zope.publisher.browser.TestRequest instance URL=http://127.0.0.1></li>
-    <li><grok.tests.view.inline.CavePainting object at 0x...></li>
-    <li><grok.tests.view.inline.Mammoth object at 0x...></li>
+    <li><grokcore.view.tests.view.inline.CavePainting object at 0x...></li>
+    <li><grokcore.view.tests.view.inline.Mammoth object at 0x...></li>
     <li><zope.app.pagetemplate.engine.TraversableModuleImporter object at 0x...></li>
   </ul>
   </body>
@@ -34,9 +34,9 @@ name:
   <html><body><h1>GROK HUNT MAMMOTH!</h1></body></html>
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class CavePainting(grok.View):

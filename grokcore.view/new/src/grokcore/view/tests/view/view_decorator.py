@@ -3,12 +3,13 @@ Using the @grok.require decorator in a view class is not allowed.
 
   >>> grok.testing.grok(__name__)
   Traceback (most recent call last):
-  GrokError: The @grok.require decorator is used for method 'render' in view <class 'grok.tests.security.view_decorator.BogusView'>. It may only be used for XML-RPC methods.
+    ...
+  GrokError: The @grok.require decorator is used for method 'render' in view <class 'grokcore.view.tests.view.view_decorator.BogusView'>. It may only be used for XML-RPC methods.
 
 
 """
 
-import grok
+import grokcore.view as grok
 import zope.interface
 
 class Bogus(grok.Permission):

@@ -5,17 +5,17 @@ Templates with ambiguous context cannot be grokked:
   Traceback (most recent call last):
     ...
   GrokError: Multiple possible contexts for
-  <class 'grok.tests.view.ambiguouscontext.Club'>, please use the
+  <class 'grokcore.view.tests.view.ambiguouscontext.Club'>, please use the
   'context' directive.
 
 """
 
-import grok
+import grokcore.view as grok
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Club(grok.View):

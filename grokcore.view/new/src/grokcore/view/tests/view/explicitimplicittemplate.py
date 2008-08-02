@@ -7,15 +7,15 @@ template using grok.template.  Therefore there is an error:
   Traceback (most recent call last):
     ...
   ConfigurationExecutionError: martian.error.GrokError: Multiple possible templates for view
-  <class 'grok.tests.view.explicitimplicittemplate.Painting'>.
+  <class 'grokcore.view.tests.view.explicitimplicittemplate.Painting'>.
   It uses grok.template('cavepainting'), but there is also a template
   called 'painting'.
   in:
   
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Painting(grok.View):

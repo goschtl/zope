@@ -1,4 +1,4 @@
-import grok
+import grokcore.view as grok
 from zope import interface
 
 class IIsAnInterface(interface.Interface):

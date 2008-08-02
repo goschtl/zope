@@ -17,9 +17,9 @@ is not executed subsequently.
   somewhere-else
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class CavePainting(grok.View):

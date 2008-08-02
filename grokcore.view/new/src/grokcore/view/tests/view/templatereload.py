@@ -30,9 +30,9 @@ At last, we should change everything back to normal:
   >>> template.write('before')
   >>> template.close()
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Index(grok.View):

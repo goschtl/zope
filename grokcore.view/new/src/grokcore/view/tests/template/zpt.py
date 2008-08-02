@@ -13,9 +13,9 @@
 
 """
 
-import grok
+import grokcore.view as grok
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 class Piepmatz(grok.View):

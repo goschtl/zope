@@ -16,7 +16,7 @@ You can only pass unicode to `grok.name`:
   unicode or ASCII.
 
 """
-import grok
+import grokcore.view as grok
 
 def pass_unicode():
     class View(object):

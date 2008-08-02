@@ -8,7 +8,7 @@ We cannot register two skins under the same name::
     For: ('utility', <InterfaceClass zope.publisher.interfaces.browser.IBrowserSkinType>, 'foo')
 """
 
-import grok
+import grokcore.view as grok
 
 class Skin1(grok.IBrowserRequest):
     grok.skin('foo')

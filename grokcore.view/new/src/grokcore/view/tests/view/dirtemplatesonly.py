@@ -1,7 +1,7 @@
 """
 A template directory may only contain recognized template files::
 
-  >>> from grok.testing import warn
+  >>> from grokcore.view.testing import warn
   >>> import warnings
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
@@ -14,9 +14,9 @@ A template directory may only contain recognized template files::
   >>> warnings.warn = saved_warn
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Index(grok.View):
