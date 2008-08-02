@@ -33,6 +33,8 @@ class ISearchQuery(zope.interface.Interface):
     def __init__(query=None, family=None):
         """Initialize with none or existing query."""
 
+    results = zope.interface.Attribute("""List of initids.""")
+
     def apply():
         """Return iterable search result wrapper."""
 

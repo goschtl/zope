@@ -2,6 +2,28 @@
 CHANGES
 =======
 
+Version 0.5.1dev (unreleased)
+-----------------------------
+
+- bugfix: SearchQuery wasn't able to act correct if initialized with query=None
+  because of an empty result setup. The And() and Not() methods could not act
+  correctly with this an empty initilized result.
+
+- bugfix: SearchQuery.And() and Not() didn't return an empty result if previous
+  query result was empty. And() method didn't return a empty result if given
+  query was empty. The previous result was returned.
+
+- bugfix: performance tests, not query did not show the right timer in catalog
+  cell.
+
+- feature: Expose SearchQuery.results property. Ensure that we return always an
+  empty result if None is given and allow to override existing results as a
+  part of the SearchQuery API.
+
+- Optimized SearchQuery.And() and Not() methods. Skip given query processing 
+  if previous result is empty.
+
+
 Version 0.5.0 (2008-05-02)
 --------------------------
 

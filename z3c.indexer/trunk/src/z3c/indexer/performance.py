@@ -494,7 +494,7 @@ def runTest(repeatTimes, amountOfObjects, amountOfIndexes=0):
     print "| type    | indexing |   query | not query |  update |  modify |  remove |"
     print " ------------------------------------------------------------------------"
     print "| catalog | % 7.2fs |% 7.2fs |  % 7.2fs |% 7.2fs |% 7.2fs |% 7.2fs |" % (
-        runCatalogIndexingTime, runCatalogQueryTime, runCatalogQueryTime,
+        runCatalogIndexingTime, runCatalogQueryTime, runCatalogNotQueryTime,
         runCatalogUpdateTime, runCatalogModifiedTime,
         runCatalogObjectRemoveTime)
     print " ------------------------------------------------------------------------"

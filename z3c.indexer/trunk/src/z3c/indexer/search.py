@@ -21,6 +21,8 @@ import zope.interface
 import zope.component
 from zope.app.intid.interfaces import IIntIds
 
+from zc.catalog.index import FamilyProperty
+
 from z3c.indexer import interfaces
 
 
@@ -55,31 +57,53 @@ class ResultSet:
             yield obj
 
 
+# TODO: allow to initialize with query=None and set the first given query as 
+#       the initial one. If we don't do that, And & Or are never return 
+#       something because of the initial empty IF.Set() 
 class SearchQuery(object):
-    """Chainable query processor."""
+    """Chainable query processor.
+    
+    Note: this search query is and acts as a chain. This means if you apply two
+    query with the And method, the result will contain the intersection of both
+    results. If you later add a query ithin the Or method to the chain the 
+    new result will contain items in the result we skipped with the And method
+    before if the new query contains such (previous Not() filtered) items.
+    """
 
     zope.interface.implements(interfaces.ISearchQuery)
 
-    family = BTrees.family32
+    family = FamilyProperty()
+    _results = None
 
     def __init__(self, query=None, family=None):
         """Initialize with none or existing query."""
-        res= None
+        res = None
         if query is not None:
             res = query.apply()
         if family is not None:
             self.family = family
-        if res:
+        if res is not None:
             self.results = self.family.IF.Set(res)
-        else:
-            self.results = self.family.IF.Set()
+
+    @apply
+    def results():
+        """Ensure a empty result if None is given and allows to override 
+           existing results.
+        """
+        def get(self):
+            if self._results is None:
+                return self.family.IF.Set()
+            return self._results
+        def set(self, results):
+            self._results = results
+        return property(get, set)
 
     def apply(self):
         return self.results
 
     def searchResults(self):
         results = []
-        if self.results is not None:
+        if len(self.results) > 0:
             intids = zope.component.getUtility(IIntIds)
             results = ResultSet(self.results, intids)
         return results
@@ -92,18 +116,29 @@ class SearchQuery(object):
         """
         res = query.apply()
         if res:
-            self.results = self.family.IF.union(self.results, res)
+            if len(self.results) == 0:
+                # setup our first result if query=None was used in __init__
+                self.results = self.family.IF.Set(res)
+            else:
+                self.results = self.family.IF.union(self.results, res)
         return self
 
     def And(self, query):
         """Restrict search results. (intersection)
 
         The result will only contain intids which exist in the existing
-        result and in the result from te given query. (union)
+        result and in the result from the given query.
         """
+        if len(self.results) == 0:
+            # there is no need to do something if previous results is empty
+            return self
+
         res = query.apply()
         if res:
             self.results = self.family.IF.intersection(self.results, res)
+        # if given query is empty, means we have to return a empty result too!
+        else:
+            self.results = self.family.IF.Set()
         return self
 
     def Not(self, query):
@@ -116,6 +151,10 @@ class SearchQuery(object):
         processed in a chain, results added after this query get added again. 
         So probably you need to call this at the end of the chain.
         """
+        if len(self.results) == 0:
+            # there is no need to do something if previous results is empty
+            return self
+
         res = query.apply()
         if res:
             self.results = self.family.IF.difference(self.results, res)
