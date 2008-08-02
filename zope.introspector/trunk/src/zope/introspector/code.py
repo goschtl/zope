@@ -129,7 +129,7 @@ class File(Code):
         module_info = module_info_from_dotted_name(self.dotted_name)
         path = module_info.getResourcePath(self.name)
         return (os.path.isfile(path) and
-                (path.endswith('.rst') or path.endswith('.txt')))
+                os.path.splitext(path)[1].lower() in ['.rst', '.txt', '.zcml'])
 
 class Class(Code):
     pass
