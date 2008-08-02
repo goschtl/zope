@@ -24,7 +24,7 @@ A view protected with 'zope.Public' is always accessible:
   Everybody can see this.
 """
 
-import grok
+import grokcore.view as grok
 import zope.interface
 
 class ViewPainting(grok.Permission):

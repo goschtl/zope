@@ -1,5 +1,4 @@
 """
-
 The handleException() method has a special case that might introduce a proxy
 and cause the grok security to fail, we have a simple test here that assures
 that we don't hit this:
@@ -15,8 +14,7 @@ that we don't hit this:
 """
 
 import zope.interface
-
-import grok
+import grokcore.view as grok
 
 
 class CaveWasRobbedError(Exception):
