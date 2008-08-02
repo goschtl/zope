@@ -36,17 +36,18 @@ def get_package_items(dotted_name):
     Supports also namespace packages.
     Supports also zipped eggs.
     """
-    if not is_namespace_package(dotted_name):
-        resources = pkg_resources.resource_listdir(dotted_name, '')
-        result = []
-        for res in resources:
-            if res.startswith('.'):
-                # Ignore hidden files and directories.
-                continue
-            if pkg_resources.resource_isdir(dotted_name, res):
-                if pkg_resources.resource_exists(
-                    dotted_name + '.' + res, '__init__.py'):
-                    result.append(res)
+    if is_namespace_package(dotted_name):
+        return get_namespace_package_items(dotted_name)
+    resources = pkg_resources.resource_listdir(dotted_name, '')
+    result = []
+    for res in resources:
+        if res.startswith('.'):
+            # Ignore hidden files and directories.
+            continue
+        if pkg_resources.resource_isdir(dotted_name, res):
+            if pkg_resources.resource_exists(
+                dotted_name + '.' + res, '__init__.py'):
+                result.append(res)
                 continue
             if not '.' in res:
                 continue
@@ -58,7 +59,10 @@ def get_package_items(dotted_name):
             if ext.lower() in ['txt', 'rst', 'zcml']:
                 result.append(res)
         return result
-    # get subpackages from pkg_resources working set
+
+def get_namespace_package_items(dotted_name):
+    """Get subpackages of a namespace package.
+    """
     ws = pkg_resources.working_set
     pkg_names = []
     for entry in ws.entry_keys.values():
