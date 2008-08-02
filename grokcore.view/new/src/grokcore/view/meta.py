@@ -18,7 +18,7 @@ import os
 import zope.component.interface
 from zope import interface, component
 from zope.interface.interface import InterfaceClass
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer,
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IBrowserSkinType
