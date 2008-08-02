@@ -18,10 +18,43 @@ import zc.buildout.testing
 import unittest
 import zope.testing
 from zope.testing import doctest, renormalizing
+import getpass
+import os
+import os.path
+import stat
+import logging
+import pwd
+import grp
+
+user = pwd.getpwuid(os.geteuid()).pw_name
+group = grp.getgrgid(os.getegid()).gr_name
+
+def ls(path):
+    def perm(power, mode):
+        bit = (mode & 2 ** power) << (31 - power)
+        if bit:
+            if power in [2, 5, 8]:
+                return 'r'
+            elif power in [1, 4, 7]:
+                return 'w'
+            else:
+                return 'x'
+        else:
+            return '-'
+    st = os.stat(path)
+    if stat.S_ISDIR(st.st_mode):
+        permissions = ['d']
+    else:
+        permissions = ['-']
+    permissions = ''.join(permissions + [perm(power, st.st_mode) for power in reversed(xrange(9))])
+    return '%s %s %s %s' % (permissions, user, group, path)
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.deployment', test)
+    test.globs['user'] = getpass.getuser()
+    test.globs['ls'] = ls
+
 
 def test_suite():
     return unittest.TestSuite((
@@ -31,6 +64,8 @@ def test_suite():
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
                 (re.compile('\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
+                (re.compile(user), 'USER'),
+                (re.compile('/.*/sample-buildout'), 'PREFIX'),
 ##                zc.buildout.testing.normalize_path,
         
 ##                zc.buildout.testing.normalize_script,
@@ -39,7 +74,8 @@ def test_suite():
 ##                (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
 ##                (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
 ##                (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
-               ])
+               ]),
+            optionflags = zope.testing.doctest.REPORT_NDIFF,
             ),
         
         ))
