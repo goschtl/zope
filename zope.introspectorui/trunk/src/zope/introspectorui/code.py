@@ -18,11 +18,8 @@ class Package(grok.View):
         result = []
         package = self.context.context
         for name in filenames:
-            try:
-                file = located(package[name], package, name)
-                result.append(dict(name=name, url=self.url(file)))
-            except:
-                print "PROBLEM: ", name
+            file = located(package[name], package, name)
+            result.append(dict(name=name, url=self.url(file)))
         return sorted(result)
 
     def getTextFileUrls(self):
@@ -30,10 +27,7 @@ class Package(grok.View):
         return self._getFileUrls(filenames)
 
     def getZCMLFileUrls(self):
-        try:
-            filenames = self.context.getZCMLFiles()
-        except:
-            print "PROBLEM."
+        filenames = self.context.getZCMLFiles()
         return self._getFileUrls(filenames)
 
     def _getItemUrls(self, mod_infos):
