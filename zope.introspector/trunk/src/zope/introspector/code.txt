@@ -137,6 +137,11 @@ We can get all ZCML files::
   >>> sorted(info.getZCMLFiles())
   ['configure.zcml', 'ftesting.zcml', 'meta.zcml']
 
+We can determine, whether this package is a namespace package::
+
+  >>> info.isNamespacePackage()
+  False
+
 We can get all subpackages::
 
   >>> sorted(list(info.getSubPackages()))

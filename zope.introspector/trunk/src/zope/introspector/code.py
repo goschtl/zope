@@ -21,7 +21,8 @@ from martian.scan import module_info_from_dotted_name
 from martian.util import isclass
 from zope.interface import implements
 from zope.introspector.interfaces import IInfo
-from zope.introspector.util import resolve, get_package_items
+from zope.introspector.util import (resolve, get_package_items,
+                                    is_namespace_package)
 import os
 
 class Code(object):
@@ -67,6 +68,9 @@ class PackageInfo(grok.Adapter):
     grok.context(Package)
     grok.provides(IInfo)
     grok.name('package')
+
+    def isNamespacePackage(self):
+        return is_namespace_package(self.context.dotted_name)
 
     def getDottedName(self):
         return self.context.dotted_name
