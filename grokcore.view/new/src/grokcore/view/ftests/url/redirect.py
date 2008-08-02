@@ -14,9 +14,9 @@ point to mammoth:
   'http://localhost/manfred/another'
   
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Index(grok.View):
@@ -26,5 +26,4 @@ class Index(grok.View):
 class Another(grok.View):
     def render(self):
         return "Another view"
-    
 

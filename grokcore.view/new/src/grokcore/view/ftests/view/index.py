@@ -17,9 +17,9 @@ The default view name for a model is 'index':
   </html>
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     teeth = u"Blue"
 
 class Index(grok.View):

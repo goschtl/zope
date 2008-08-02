@@ -13,9 +13,9 @@
   </html>
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class Painting(grok.View):

@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 """
 Views have a method that can be used to construct URLs:
 
@@ -171,12 +170,13 @@ Zope magic!! Here we test casting parameters in the CGI query string:
   '11'
 
 """
-import grok
+import grokcore.view as grok
+from zope.app.container.btree import BTreeContainer
 
-class Herd(grok.Container, grok.Model):
+class Herd(BTreeContainer, grok.Context):
     pass
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 grok.context(Mammoth)

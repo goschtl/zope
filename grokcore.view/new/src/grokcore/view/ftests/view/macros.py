@@ -45,9 +45,9 @@ You can skip the "macro" part of the macro call, but this is deprecated:
   >>> warnings.warn = saved_warn
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class DancingHall(grok.View):

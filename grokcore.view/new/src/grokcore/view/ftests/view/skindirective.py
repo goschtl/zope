@@ -21,7 +21,7 @@
   Awesome
 
 """
-import grok
+import grokcore.view as grok
 from zope.app.basicskin import IBasicSkin
 from zope.app.rotterdam import rotterdam
 
@@ -33,7 +33,7 @@ class MySkinLayer(grok.IBrowserRequest):
 class MySkin(MySkinLayer):
     grok.skin('myskin')
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class CaveDrawings(grok.View):

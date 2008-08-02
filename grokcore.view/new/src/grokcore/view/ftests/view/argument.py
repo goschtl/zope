@@ -47,9 +47,9 @@ The same works with views that define update():
   TypeError: Missing argument to update(): message
 
 """
-import grok
+import grokcore.view as grok
 
-class Mammoth(grok.Model):
+class Mammoth(grok.Context):
     pass
 
 class RenderWithArguments(grok.View):
