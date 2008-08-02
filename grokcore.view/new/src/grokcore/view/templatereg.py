@@ -1,5 +1,4 @@
 from martian.error import GrokError
-from martian import util
 
 import os
 import zope.component
