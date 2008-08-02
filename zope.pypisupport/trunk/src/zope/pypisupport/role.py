@@ -19,6 +19,7 @@ import base64
 import lxml.etree
 import mechanize
 import zope.testbrowser.browser
+import urllib2
 
 BASE_URL = 'http://pypi.python.org/pypi/'
 
@@ -40,6 +41,9 @@ def changeRole(browser, user, action):
          browser.getLink('admin', index=0).click()
      except mechanize._mechanize.LinkNotFoundError:
          print '    +-> Error/Warning: admin link not found'
+         return
+     except urllib2.HTTPError, err:
+         print '    +-> Error/Warning: You are not an owner of this pacakge.'
          return
      # Fill in the user whose roles are modified.
      browser.getControl(name='user_name').value = user
