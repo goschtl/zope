@@ -32,7 +32,7 @@ shadows the view. XXX This should probably generate a warning at runtime.
 
 You can skip the "macro" part of the macro call, but this is deprecated:
 
-  >>> from grok.testing import warn
+  >>> from grokcore.view.testing import warn
   >>> import warnings
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
