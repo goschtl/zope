@@ -1,2 +1,0 @@
-* move namemultiple, nameunicode, nomodulename from tests/view to grokcore.component
-* factor out formlib support
