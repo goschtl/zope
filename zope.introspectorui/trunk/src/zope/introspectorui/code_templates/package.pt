@@ -1,12 +1,55 @@
   <div>
+
+    <h2>Package: <span tal:replace="context/context/dotted_name" /></h2>
+
+    <div>
+      <p tal:condition="context/isNamespacePackage">
+	This is a namespace package
+      </p>
+      <p tal:condition="not: context/isNamespacePackage">
+	Path: <span tal:replace="context/getPath" />
+      </p>
+    </div>     
+
     <div>
       Contained text files:
       <span tal:condition="not: view/files">
 	None
       </span>
+      <ul>
+	<li tal:repeat="item view/files" tal:content="structure item/url" />
+      </ul>
     </div>
-    <ul>
-      <li tal:repeat="item view/files" tal:content="structure item/url" />
-    </ul>
+
+    <div>
+      Contained ZCML files:
+      <span tal:condition="not: view/zcmlfiles">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/zcmlfiles" tal:content="structure item/url" />
+      </ul>
+    </div>
+
+    <div>
+      Contained subpackages:
+      <span tal:condition="not: view/subpks">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/subpks" tal:content="structure item/url" />
+      </ul>
+    </div>
+
+    <div>
+      Contained modules:
+      <span tal:condition="not: view/modules">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/modules" tal:content="structure item/url" />
+      </ul>
+    </div>
+
   </div>
 
