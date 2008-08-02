@@ -13,48 +13,15 @@
 ##############################################################################
 """Grok interfaces
 """
-from zope import interface, schema
+from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
-from zope.formlib.interfaces import reConstraint
-from zope.interface.interfaces import IInterface
-from zope.viewlet.interfaces import IViewletManager as IViewletManagerBase
-from zope.app.container.interfaces import IContainer as IContainerBase
-
-import grokcore.component.interfaces
-
-# Expose interfaces from grok.interfaces as well:
-from grokcore.component.interfaces import IContext
-from grokcore.component.interfaces import IGrokErrors
 
 
-class IGrokBaseClasses(grokcore.component.interfaces.IBaseClasses):
-    Model = interface.Attribute("Base class for persistent content objects "
-                                "(models).")
-    Container = interface.Attribute("Base class for containers.")
-    OrderedContainer = interface.Attribute("Base class for ordered containers.")
-    Site = interface.Attribute("Mixin class for sites.")
-    Application = interface.Attribute("Base class for applications.")
-    Annotation = interface.Attribute("Base class for persistent annotations.")
-    LocalUtility = interface.Attribute("Base class for local utilities.")
-    View = interface.Attribute("Base class for browser views.")
-    XMLRPC = interface.Attribute("Base class for XML-RPC methods.")
-    JSON = interface.Attribute("Base class for JSON methods.")
-    REST = interface.Attribute("Base class for REST views.")
-    Traverser = interface.Attribute("Base class for custom traversers.")
-    Form = interface.Attribute("Base class for forms.")
-    AddForm = interface.Attribute("Base class for add forms.")
-    EditForm = interface.Attribute("Base class for edit forms.")
-    DisplayForm = interface.Attribute("Base class for display forms.")
-    Indexes = interface.Attribute("Base class for catalog index definitions.")
-    Skin = interface.Attribute("Base class for skin.")
-    ViewletManager = interface.Attribute("Base class for viewletmanager.")
-    Viewlet = interface.Attribute("Base class for viewlet.")
-    Permission = interface.Attribute("Base class for permissions.")
-    Role = interface.Attribute("Base class for roles.")
-    Public = interface.Attribute("Marker for explicitly not requiring a permission.")
+class IBaseClasses(Interface):
+    View = Attribute("Base class for browser views.")
 
 
-class IGrokDirectives(grokcore.component.interfaces.IDirectives):
+class IDirectives(Interface):
 
     def layer(layer):
         """Declare the layer for the view.
@@ -79,143 +46,14 @@ class IGrokDirectives(grokcore.component.interfaces.IDirectives):
         of the directory.  This can be overridden using
         ``templatedir``."""
 
-    def local_utility(factory, provides=None, name=u'',
-                      setup=None, public=False, name_in_container=None):
-        """Register a local utility.
 
-        factory - the factory that creates the local utility
-        provides - the interface the utility should be looked up with
-        name - the name of the utility
-        setup - a callable that receives the utility as its single argument,
-                it is called after the utility has been created and stored
-        public - if False, the utility will be stored below ++etc++site
-                 if True, the utility will be stored directly in the site.
-                 The site should in this case be a container.
-        name_in_container - the name to use for storing the utility
-        """
-
-    def permissions(permissions):
-        """Specify the permissions that comprise a role.
-        """
-
-    def require(permission):
-        """Protect a view class or an XMLRPC method with ``permision``.
-
-        ``permission`` must already be defined, e.g. using
-        grok.Permission.
-
-        grok.require can be used as a class-level directive or as a
-        method decorator."""
-
-    def site(class_or_interface):
-        """Specifies the site that an indexes definition is for.
-
-        It can only be used inside grok.Indexes subclasses.
-        """
-
-    def order(value=None):
-        """Control the ordering of components.
-
-        If the value is specified, the order will be determined by sorting on
-        it.
-        If no value is specified, the order will be determined by definition
-        order within the module.
-        If the directive is absent, the order will be determined by class name.
-        (unfortunately our preferred default behavior on absence which would
-        be like grok.order() without argument is hard to implement in Python)
-
-        Inter-module order is by dotted name of the module the
-        components are in; unless an explicit argument is specified to
-        ``grok.order()``, components are grouped by module.
-
-        The function grok.util.sort_components can be used to sort
-        components according to these rules.
-        """
-
-
-class IGrokDecorators(grokcore.component.interfaces.IDecorators):
-
-    def action(label, **options):
-        """Decorator that defines an action factory based on a form
-        method. The method receives the form data as keyword
-        parameters."""
-
-
-class IGrokEvents(interface.Interface):
-
-    IObjectCreatedEvent = interface.Attribute("")
-
-    ObjectCreatedEvent = interface.Attribute("")
-
-    IObjectModifiedEvent = interface.Attribute("")
-
-    ObjectModifiedEvent = interface.Attribute("")
-
-    IObjectCopiedEvent = interface.Attribute("")
-
-    ObjectCopiedEvent = interface.Attribute("")
-
-    IObjectAddedEvent = interface.Attribute("")
-
-    ObjectAddedEvent = interface.Attribute("")
-
-    IObjectMovedEvent = interface.Attribute("")
-
-    ObjectMovedEvent = interface.Attribute("")
-
-    IObjectRemovedEvent = interface.Attribute("")
-
-    ObjectRemovedEvent = interface.Attribute("")
-
-    IContainerModifiedEvent = interface.Attribute("")
-
-    ContainerModifiedEvent = interface.Attribute("")
-
-
-class IGrokAPI(IGrokBaseClasses, IGrokDirectives, IGrokDecorators,
-               IGrokEvents, IGrokErrors):
-
-    # BBB this is deprecated
-    def grok(dotted_name):
-        """Grok a module or package specified by ``dotted_name``.
-
-        NOTE: This function will be removed from the public Grok
-        public API.  For tests and interpreter sessions, use
-        grok.testing.grok().
-        """
-
-    # BBB this is deprecated
-    def grok_component(name, component, context=None, module_info=None,
-                       templates=None):
-        """Grok an arbitrary object. Can be useful during testing.
-
-        name - the name of the component (class name, or global instance name
-               as it would appear in a module).
-        component - the object (class, etc) to grok.
-        context - the context object (optional).
-        module_info - the module being grokked (optional).
-        templates - the templates registry (optional).
-
-        Note that context, module_info and templates might be required
-        for some grokkers which rely on them.
-
-        NOTE: This function will be removed from the public Grok
-        public API.  For tests and interpreter sessions, use
-        grok.testing.grok_component().
-        """
+class IGrokcoreViewAPI(IBaseClasses, IDirectives):
 
     def url(request, obj, name=None, data=None):
         """Generate the URL to an object with optional name attached.
         An optional argument 'data' can be a dictionary that is converted
         into a query string appended to the URL.
         """
-
-    def notify(event):
-        """Send ``event`` to event subscribers."""
-
-    def getSite():
-        """Get the current site."""
-
     def PageTemplate(template):
         """Create a Grok PageTemplate object from ``template`` source
         text.  This can be used for inline PageTemplates."""
@@ -225,35 +63,22 @@ class IGrokAPI(IGrokBaseClasses, IGrokDirectives, IGrokDecorators,
         ``filename``.  It will be treated like an inline template
         created with ``PageTemplate``."""
 
-    def Fields(*args, **kw):
-        """Return a list of formlib fields based on interfaces and/or schema
-        fields."""
+    IBrowserRequest = Attribute('Browser request interface')
+    IDefaultBrowserLayer = Attribute('Default layer for browser views.')
 
-    def AutoFields(context):
-        """Return a list of fields for context autogenerated by grok.
-        """
-
-    def action(label, actions=None, **options):
-        """grok-specific action decorator.
-        """
-
-    IRESTSkinType = interface.Attribute('The REST skin type')
-    IBrowserRequest = interface.Attribute('Browser request interface')
-    IDefaultBrowserLayer = interface.Attribute('Default layer for browser views.')
 
 class IGrokView(IBrowserPage, IBrowserView):
     """Grok views all provide this interface."""
 
-    context = interface.Attribute('context', "Object that the view presents.")
+    context = Attribute('context', "Object that the view presents.")
 
-    request = interface.Attribute('request', "Request that the view was looked"
-                                  "up with.")
+    request = Attribute('request', "Request that the view was looked up with.")
 
-    response = interface.Attribute('response', "Response object that is "
-                                   "associated with the current request.")
+    response = Attribute('response', "Response object that is "
+                         "associated with the current request.")
 
-    static = interface.Attribute('static', "Directory resource containing "
-                                 "the static files of the view's package.")
+    static = Attribute('static', "Directory resource containing "
+                       "the static files of the view's package.")
 
     def redirect(url):
        """Redirect to given URL"""
@@ -321,137 +146,7 @@ class IGrokView(IBrowserPage, IBrowserView):
         """Send a short message to the user."""
 
 
-class IGrokForm(IGrokView):
-    """Grok form API, inspired by zope.formlib's IFormBaseCustomization.
-
-    We explicitly don't inherit from IFormBaseCustomization because
-    that would imply ISubPage with another definition of update() and
-    render() than IGrokView has.
-    """
-
-    prefix = schema.ASCII(
-        constraint=reConstraint(
-            '[a-zA-Z][a-zA-Z0-9_]*([.][a-zA-Z][a-zA-Z0-9_]*)*',
-            "Must be a sequence of not-separated identifiers"),
-        description=u"""Page-element prefix
-
-        All named or identified page elements in a subpage should have
-        names and identifiers that begin with a subpage prefix
-        followed by a dot.
-        """,
-        readonly=True,
-        )
-
-    def setPrefix(prefix):
-        """Update the subpage prefix
-        """
-
-    label = interface.Attribute("A label to display at the top of a form")
-
-    status = interface.Attribute(
-        """An update status message
-
-        This is normally generated by success or failure handlers.
-        """)
-
-    errors = interface.Attribute(
-        """Sequence of errors encountered during validation
-        """)
-
-    form_result = interface.Attribute(
-        """Return from action result method
-        """)
-
-    form_reset = interface.Attribute(
-        """Boolean indicating whether the form needs to be reset
-        """)
-
-    form_fields = interface.Attribute(
-        """The form's form field definitions
-
-        This attribute is used by many of the default methods.
-        """)
-
-    widgets = interface.Attribute(
-        """The form's widgets
-
-        - set by setUpWidgets
-
-        - used by validate
-        """)
-
-    def setUpWidgets(ignore_request=False):
-        """Set up the form's widgets.
-
-        The default implementation uses the form definitions in the
-        form_fields attribute and setUpInputWidgets.
-
-        The function should set the widgets attribute.
-        """
-
-    def validate(action, data):
-        """The default form validator
-
-        If an action is submitted and the action doesn't have it's own
-        validator then this function will be called.
-        """
-
-    template = interface.Attribute(
-        """Template used to display the form
-        """)
-
-    def resetForm():
-        """Reset any cached data because underlying content may have changed
-        """
-
-    def error_views():
-        """Return views of any errors.
-
-        The errors are returned as an iterable.
-        """
-
-    def applyData(obj, **data):
-        """Save form data to an object.
-
-        This returns a dictionary with interfaces as keys and lists of
-        field names as values to indicate which fields in which
-        schemas had to be changed in order to save the data.  In case
-        the method works in update mode (e.g. on EditForms) and
-        doesn't have to update an object, the dictionary is empty.
-        """
-
-class IREST(interface.Interface):
-    context = interface.Attribute("Object that the REST handler presents.")
-
-    request = interface.Attribute("Request that REST handler was looked"
-                                  "up with.")
-
-    body = interface.Attribute(
-        """The text of the request body.""")
-
-class IApplication(interface.Interface):
-    """Marker-interface for grok application factories.
-
-    Used to register applications as utilities to look them up and
-    provide a list of grokked applications.
-    """
-
-class IIndexDefinition(interface.Interface):
-    """Define an index for grok.Indexes.
-    """
-
-    def setup(catalog, name, context):
-        """Set up index called name in given catalog.
-
-        Use name for index name and attribute to index. Set up
-        index for interface or class context.
-        """
-
-class IRESTSkinType(IInterface):
-    """Skin type for REST requests.
-    """
-
-class ITemplateFileFactory(interface.Interface):
+class ITemplateFileFactory(Interface):
     """Utility that generates templates from files in template directories.
     """
 
@@ -461,7 +156,7 @@ class ITemplateFileFactory(interface.Interface):
         _prefix is the directory the file is located in
         """
 
-class ITemplate(interface.Interface):
+class ITemplate(Interface):
     """Template objects
     """
 
@@ -470,11 +165,3 @@ class ITemplate(interface.Interface):
 
     def render(view):
         """Renders the template"""
-
-class IContainer(IContext, IContainerBase):
-    """A Grok container.
-    """
-
-class IViewletManager(IViewletManagerBase):
-    """The Grok viewlet manager.
-    """
