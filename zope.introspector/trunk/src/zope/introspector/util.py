@@ -49,16 +49,16 @@ def get_package_items(dotted_name):
                 dotted_name + '.' + res, '__init__.py'):
                 result.append(res)
                 continue
-            if not '.' in res:
-                continue
-            name, ext = res.rsplit('.', 1)
-            if name == '__init__':
-                continue
-            if ext.lower() == 'py':
-                result.append(name)
-            if ext.lower() in ['txt', 'rst', 'zcml']:
-                result.append(res)
-        return result
+        if not '.' in res:
+            continue
+        name, ext = res.rsplit('.', 1)
+        if name == '__init__':
+            continue
+        if ext.lower() == 'py':
+            result.append(name)
+        if ext.lower() in ['txt', 'rst', 'zcml']:
+            result.append(res)
+    return result
 
 def get_namespace_package_items(dotted_name):
     """Get subpackages of a namespace package.
