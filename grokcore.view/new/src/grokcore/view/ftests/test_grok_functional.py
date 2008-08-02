@@ -1,9 +1,10 @@
+import re
 import unittest
 import os.path
 import grokcore.view
 
 from pkg_resources import resource_listdir
-from zope.testing import doctest
+from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
@@ -18,6 +19,11 @@ def setUp(test):
 def tearDown(test):
     FunctionalTestSetup().tearDown()
 
+checker = renormalizing.RENormalizing([
+    # Accommodate to exception wrapping in newer versions of mechanize
+    (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
+    ])
+
 def suiteFromPackage(name):
     files = resource_listdir(__name__, name)
     suite = unittest.TestSuite()
@@ -30,6 +36,7 @@ def suiteFromPackage(name):
         dottedname = 'grokcore.view.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
+            checker=checker,
             extraglobs=dict(http=HTTPCaller(),
                             getRootFolder=getRootFolder,
                             sync=sync),
