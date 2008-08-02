@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 """
 Views have a method that can be used to construct URLs:
 
-  >>> herd = Herd()
+  >>> from zope.app.folder import Folder
+  >>> herd = Folder()
   >>> getRootFolder()['herd'] = herd
   >>> manfred = Mammoth()
   >>> herd['manfred'] = manfred
@@ -171,12 +173,9 @@ Zope magic!! Here we test casting parameters in the CGI query string:
 
 """
 import grokcore.view as grok
-from zope.app.container.btree import BTreeContainer
+from zope.app.container.contained import Contained
 
-class Herd(BTreeContainer, grok.Context):
-    pass
-
-class Mammoth(grok.Context):
+class Mammoth(Contained):
     pass
 
 grok.context(Mammoth)

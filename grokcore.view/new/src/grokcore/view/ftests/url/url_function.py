@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 """
 There is a url function that can be imported from grok to determine the
 absolute URL of objects.
 
   >>> from grokcore.view import url
-  
-  >>> herd = Herd()
+
+  >>> from zope.app.folder import Folder
+  >>> herd = Folder()
   >>> getRootFolder()['herd'] = herd
   >>> manfred = Mammoth()
   >>> herd['manfred'] = manfred
@@ -62,12 +64,9 @@ It works properly in the face of non-ascii characters in URLs:
 """
 import grokcore.view as grok
 from grokcore.view import url
-from zope.app.container.btree import BTreeContainer
+from zope.app.container.contained import Contained
 
-class Herd(BTreeContainer, grok.Context):
-    pass
-
-class Mammoth(grok.Context):
+class Mammoth(Contained):
     pass
 
 grok.context(Mammoth)
