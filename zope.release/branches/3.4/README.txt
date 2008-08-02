@@ -47,10 +47,7 @@ the index. Here is the workflow for testing a new package against stable set:
 3. Modify the ``buildout.cfg`` to look for your the new distribution to be
    tested:
 
-   (a) Comment out the "index" option. This needs to be done, so that the new
-       package is going to be picked up.
-
-   (b) Change the version number of the package of interest in the "versions"
+   (a) Change the version number of the package of interest in the "versions"
        section.
 
    Alternative:
@@ -62,14 +59,17 @@ the index. Here is the workflow for testing a new package against stable set:
 
 4. Run the tests, making sure that they all pass.
 
-5. Modify ``controlled-packages.cfg`` by adding the new version of the package
-   to the package's version list.
+5. Modify ``controlled-packages.cfg`` to reference the new version.
 
-6. Generate all files again and upload them:
+   (a) Find the package that you are interested in and add the new of the
+       package in the `versions` attribute of the package's section.
+
+   (b) In the `[KGS]` section, increase the version number in the `version`
+       attribute.
+
+6. Upload the new KGS release::
 
      $ cd ..
-     $ ./bin/generate-buildout
-     $ ./bin/generate-versions
      $ ./bin/upload
 
    Once the files are uploaded, a crontab-job, running every minute, will
