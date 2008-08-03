@@ -1,77 +1,43 @@
-# -*- coding: utf-8 -*-
-#
-# File: metadirective.py
-#
+from zope.component import zcml
+from zope.app.publisher.browser import resourcemeta
 
-__author__    = """Stefan Eletzhofer <stefan.eletzhofer@inquant.de>"""
-__docformat__ = 'plaintext'
-__revision__  = "$Revision: $"
-__version__   = '$Revision: $'[11:-2]
-
-from zope import component
-from zope import interface
-from zope import schema
-
-from zope.app.publisher.browser.resourcemeta import resourceDirectory
-from zope.configuration import fields
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-from z3c.layout.regions import Region
-from z3c.layout.layout import Layout
-from z3c.layout.interfaces import ILayout
-
-class ILayoutDirective(interface.Interface):
-    """Layout."""
-
-    name = schema.TextLine(
-        title=u"Title")
-    
-    template = fields.Path(
-        title=u"Template")
-    
-    thumbnail = fields.Path(
-        title=u"Thumbnail")
-    
-    resource_directory = schema.TextLine(
-        title=u"Resource directory")
-
-class IRegionDirective(interface.Interface):
-    """Layout region."""
-
-    name = schema.TextLine(
-        title=u"title")
-    
-    xpath = schema.TextLine(
-        title=u"xpath")
-    
-    title = schema.TextLine(
-        title=u"title")
+import interfaces
+import model
+import utils
+import md5
+import os
 
 class LayoutDirective(object):
-    """
-    Call order will be __init__, region, __call__
-    """
-
-    def __init__(self, _context, name, template, thumbnail, resource_directory):
+    def __init__(self, _context, name, template, regions=()):
         self._context = _context
         self.name = name
-        self.resource_directory = resource_directory
         self.template = template
-        self.thumbnail = thumbnail
-        self.regions = []
+        self.regions = set()
 
-    def region(self, _context, name, xpath, title):
-        self.regions.append(Region(name=name, xpath=xpath, title=title))
+    def region(self, _context, *args, **kwargs):
+        self.regions.add(
+            model.Region(*args, **kwargs))
 
     def __call__(self):
-        layout = Layout(
-            name = self.name,
-            resource_directory = self.resource_directory,
-            template = self.template,
-            thumbnail = self.thumbnail)
+        path, filename = os.path.split(self.template)
 
-        layout.regions = self.regions
+        # compute resource directory name
+        dotted_name = utils.dotted_name(path)
+        resource_name = md5.new(dotted_name).hexdigest()
+        resource_path = '++resource++%s' % resource_name
+        
+        layout = model.Layout(
+            self.name, self.template, resource_path, self.regions)
 
-        component.provideUtility(layout, ILayout, name=self.name)
+        # register resource directory
+        resourcemeta.resourceDirectory(
+            self._context,
+            resource_name,
+            path)
 
-# vim: set ft=python ts=4 sw=4 expandtab :
+        # register layout
+        zcml.utility(
+            self._context,
+            provides=interfaces.ILayout,
+            component=layout,
+            name=self.name)

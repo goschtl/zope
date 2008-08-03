@@ -12,28 +12,20 @@ We can declare layouts using a ZCML directive.
     ... <configure xmlns="http://namespaces.zope.org/meta"
     ...            xmlns:browser="http://namespaces.zope.org/browser">
     ...
-    ...    <include package="zope.app.publisher.browser" file="meta.zcml" />
-    ...
-    ...    <browser:resourceDirectory
-    ...         name="test"
-    ...         directory="%(test_layout)s"
-    ...      />
-    ...
-    ...    <browser:layout name="testlayout"
-    ...         template="%(test_layout)s/foo.html"
-    ...         thumbnail="%(test_layout)s/foo.jpg"
-    ...         resource_directory="test">
+    ...    <browser:layout
+    ...         name="testlayout"
+    ...         template="%(test_layout)s/foo.html">
     ...
     ...      <browser:region
     ...           name="content"
+    ...           title="Content area"
     ...           xpath=".//html/body/div"
-    ...           title="The Content area"
     ...         />
     ...
     ...      <browser:region
     ...           name="sidebar"
+    ...           title="Sidebar"
     ...           xpath=".//html/body/span"
-    ...           title="A funky sidebar"
     ...         />
     ...
     ...    </browser:layout>
@@ -64,6 +56,6 @@ it's been correctly populated with region definitions.
     
     >>> region_one, region_two = layout.regions
     >>> region_one.name, region_one.xpath, region_one.title
-    (u'content', u'.//html/body/div', u'The Content area')
+    (u'content', u'.//html/body/div', u'Content area')
     >>> region_two.name, region_two.xpath, region_two.title
-    (u'sidebar', u'.//html/body/span', u'A funky sidebar')
+    (u'sidebar', u'.//html/body/span', u'Sidebar')

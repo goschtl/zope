@@ -11,7 +11,7 @@ OPTIONFLAGS = (zope.testing.doctest.REPORT_ONLY_FIRST_FAILURE |
 import zope.component.testing
 
 def test_suite():
-    doctests = ['README.txt', 'zcml.txt', 'browser/layout.py']
+    doctests = ('README.txt', 'zcml.txt', 'utils.py', 'browser/insertion.py')
 
     import z3c.layout.tests
     path = z3c.layout.tests.__path__[0]

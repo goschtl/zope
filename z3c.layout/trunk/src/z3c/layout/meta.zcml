@@ -1,13 +1,17 @@
 <configure xmlns="http://namespaces.zope.org/meta">
     <directives namespace="http://namespaces.zope.org/browser">
-    <complexDirective
-       name="layout"
-       schema=".zcml.ILayoutDirective"
-       handler=".zcml.LayoutDirective">
-       <subdirective
-               name="region"
-               schema=".zcml.IRegionDirective" />
+      
+      <complexDirective
+         name="layout"
+         schema=".interfaces.ILayout"
+         handler=".zcml.LayoutDirective">
+        
+        <subdirective
+           name="region"
+           schema=".interfaces.IRegion" />
+        
     </complexDirective>
+      
   </directives>
 </configure>
 
