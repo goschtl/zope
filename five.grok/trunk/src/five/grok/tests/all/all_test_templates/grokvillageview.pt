@@ -1,6 +1,6 @@
 <html>
 <body>
-<div tal:repeat="cave context/getCaves">
+<div tal:repeat="cave view/getCaves">
 In cave <span tal:replace="cave/id"/> there is <span tal:replace="cave/caveWomen"/> cavewomen.
 </div>
 </body>
