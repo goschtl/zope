@@ -37,13 +37,15 @@ Let's instantiate a village and store it in ZODB root.
     >>> from zope.component import getUtility
     >>> from five.grok.README import *
     >>> from Testing.ZopeTestCase import ZopeLite as Zope2
-    >>> app= Zope2.app()
-    >>> from zope.publisher.browser import TestRequest
-    >>> from OFS.Folder import Folder
-    >>> request = TestRequest()
+    >>> from Testing.makerequest import makerequest
+    >>> app = Zope2.app()
+    >>> app = makerequest(app)
+    >>> request = app.REQUEST
+
     >>> village = GrokVillage(id='amsterdam')
     >>> app._setObject('amsterdam', village)
     'amsterdam'
+    >>> village = getattr(app, 'amsterdam') # get it back wrapped
 
 Let's define a filesystem directory that will hold the templates
 that grok will use with our views.
