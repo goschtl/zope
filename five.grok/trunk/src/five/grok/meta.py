@@ -1,14 +1,14 @@
 import martian
-from five import grok
-import grokcore.view
+import five.grok
+import grokcore.security
 
 from Products.Five.security import protectClass
 from Globals import InitializeClass as initializeClass
 
 
 class ViewSecurityGrokker(martian.ClassGrokker):
-    martian.component(grok.View)
-    martian.directive(grokcore.view.require, name='permission')
+    martian.component(five.grok.View)
+    martian.directive(grokcore.security.require, name='permission')
     
     def execute(self, factory, config, permission, **kw):
         if permission is None:
