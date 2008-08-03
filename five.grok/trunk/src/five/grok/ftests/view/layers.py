@@ -24,17 +24,12 @@
 """
 from five import grok
 from zope.app.basicskin import IBasicSkin
-from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.rotterdam import rotterdam
-from zope import interface
 
 grok.layer(IBasicSkin)
 
-class MySkinLayer(grok.IGrokLayer):
-    pass
-
-class MySkin(grok.Skin):
-    grok.layer(MySkinLayer)
+class MySkinLayer(grok.IBrowserRequest):
+    grok.skin('myskin')
 
 class Mammoth(grok.Model):
     pass
