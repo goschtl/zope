@@ -4,6 +4,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="five.grok">
 
+  <include package="grokcore.view" />
+
   <browser:defaultView
       for="grokcore.component.interfaces.IContext"
       name="index"
@@ -14,5 +16,7 @@
       title="View"
       zcml:condition="not-installed kss.core"
       />
+      
+  <includeOverrides file="overrides.zcml" />
 
 </configure>

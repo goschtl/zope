@@ -221,6 +221,10 @@ Let's create a view on the GrokVillage.
     <div>
     In cave belgian-cave there is 3 cavewomen.
     </div>
+    <div>
+        And just to prove that we have a Zope 2 template, let's do something
+        ugly: <b>amsterdam</b>
+    </div>
     </body>
     </html>
     <BLANKLINE>

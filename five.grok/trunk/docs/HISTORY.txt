@@ -5,6 +5,10 @@ Changelog for five.grok
 
 five.grok - 0.1 Unreleased
 
+    - Added override to make templates use Five's ViewPageTemplateFile instead
+      of the one from zope.app.pagetemplate
+      [optilude]
+
     - Added tests for grok.subscriber directive
       [kamon]
 
