@@ -13,5 +13,5 @@ class Model(SimpleItem):
     # can be established.
     interface.implements(IAttributeAnnotatable, IContext)
 
-class View(grokcore.view.View, Acquisition.Implicit):
+class View(grokcore.view.View, Acquisition.Explicit):
     pass
