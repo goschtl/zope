@@ -97,5 +97,30 @@ Please note that ``grokcore.security`` does not yet provide directives
 that allow you to specify permissions for simple attribute access
 (read and write).
 
+
+API overview
+============
+
+``Permission``
+    Base class for defining permissions.  Use the ``name`` directive
+    to define the mandatory permission ID.  Optionally use the
+    ``title`` and ``description`` directives to give the permission
+    human-readable information.
+
+``Public``
+    Special permission that can be referred to whenever a component
+    should not be protected by a permission at all (public access).
+
+``require(permission_class_or_id)``
+    declares that the use of a particular component (when used as a
+    class-level directive) or a method (when used as a method
+    decorator) requires a certain permission.  The argument can either
+    be a permission class (subclass of ``Permission``) or a permission
+    ID.
+
+In addition, the ``grokcore.security`` package exposes the
+`grokcore.component`_ API.
+
+
 .. _grokcore.component: http://pypi.python.org/pypi/grokcore.component
 .. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
