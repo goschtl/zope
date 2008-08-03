@@ -10,7 +10,7 @@ adapters. Therefore we first grok the module to register all adapters
 included there::
 
   >>> import grokcore.component as grok
-  >>> grok.grok('zope.introspector.code')
+  >>> grok.testing.grok('zope.introspector.code')
 
 We also define a simple function to get normalized file paths::
 
