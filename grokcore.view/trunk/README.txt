@@ -22,8 +22,8 @@ dependency includes.
 Examples
 ========
 
-Browser page
-------------
+Simple browser page
+-------------------
 
 A browser page is implemented by subclassing the
 ``grokcore.view.View`` baseclass.  At a minimum, a browser page must
@@ -62,6 +62,9 @@ We could also have spelled this out explicitly::
       grokcore.view.name('hello')
 
       ...
+
+Browser page with template
+--------------------------
 
 Of course, more than often a view should render HTML which you would
 construct using some sort of templating engine.  ``grokcore.view``
@@ -111,6 +114,14 @@ to give the layer a name::
   class IGreenSkin(IGreenLayer, grokcore.view.IDefaultBrowserLayer):
       grokcore.view.skin('Green')
 
+To place a view on a layer, simply use the ``layer`` directive::
+
+  class Hello(grokcore.view.View):
+      grokcore.view.context(zope.interface.Interface)
+      grokcore.view.layer(IGreenLayer)
+
+      ...
+
 
 API overview
 ============
@@ -126,6 +137,62 @@ Base classes
     directive to specify the name of the template file that should be
     associated with the view as well as the ``layer`` directive to
     specify which layer it should be on if not the default layer.
+
+View API
+--------
+
+``grokcore.view.View`` is a regular Zope browser page, so it behaves
+exactly like a regular browser page from the outside.  It provides a
+bit more to the developer using it as a base class, though:
+
+``context``
+    The view's context object.  This can be discriminated by using the
+    ``context`` directive on the view class.
+
+``request``
+    The request object, typically provides ``IBrowserRequest``.
+
+``response``
+    The response object, typically provides ``IHTTPResponse``.
+
+``static``
+    Directory resource representing the package's ``static`` directory.
+
+``redirect(url)``
+    Redirect to the given URL.
+
+``url(obj=None, name=None, data=None)``
+    Constructs a URL:
+
+    * If no arguments are given, the URL to the view itself is
+      constructed.
+
+    * If only the ``obj`` argument is given, the URL to that object is
+      constructed.
+
+    * If both ``obj`` and ``name`` arguments are supplied, construct
+      the URL to the object and append ``name`` (presumably the name
+      of a view).
+
+    Optionally, ``data`` can be a dictionary whose contents is added to
+    the URL as a query string.
+
+Methods for developers to implement:
+
+``update(**kw)``
+    This method will be called before the view's associated template
+    is rendered.  If you therefore want to pre-compuate values for the
+    template, implement this method.  You can save the values on
+    ``self`` (the view object) and later access them through the
+    ``view`` variable from the template.  The method can take
+    arbitrary keyword parameters which are filled from request values.
+
+``render(**kw)``
+    Implement this method if (and only if) there isn't a template that
+    goes with the view class.  Return either an encoded 8-bit string
+    or a unicode string.  The method can take arbitrary keyword
+    parameters which are filled from request values.
+
 
 Directives
 ----------
