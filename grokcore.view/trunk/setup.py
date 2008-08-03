@@ -17,7 +17,7 @@ setup(
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
     download_url='http://pypi.python.org/pypi/grok/',
-    description='Grok: Now even cavemen can use Zope 3!',
+    description='Grok-like configuration for Zope browser pages',
     long_description=long_description,
     license='ZPL',
     classifiers=['Environment :: Web Environment',
