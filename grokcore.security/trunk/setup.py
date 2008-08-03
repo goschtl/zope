@@ -16,7 +16,7 @@ setup(
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
-    download_url='http://cheeseshop.python.org/pypi/grokcore.security',
+    download_url='http://pypi.python.org/pypi/grokcore.security',
     description='Grok-like configuration for Zope security components',
     long_description=long_description,
     license='ZPL',
