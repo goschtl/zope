@@ -29,6 +29,7 @@ setup(name='five.grok',
       zip_safe=False,	
       install_requires=[
           'setuptools',
+          'martian',
           'grokcore.component',
           'grokcore.view',
       ],
