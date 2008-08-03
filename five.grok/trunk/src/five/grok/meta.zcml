@@ -4,5 +4,8 @@
     xmlns:grok="http://namespaces.zope.org/grok">
 
   <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.security" file="meta.zcml" />
+  <include package="grokcore.view" file="meta.zcml" />
+  <grok:grok package=".meta" />
 
 </configure>
