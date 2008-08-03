@@ -1,9 +1,11 @@
-import martian
-
 from zope import interface
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 import grokcore.view
+
+from grokcore.view.components import PageTemplate
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+
 from grokcore.component.interfaces import IContext
 
 import Acquisition
@@ -17,3 +19,17 @@ class Model(SimpleItem):
 
 class View(grokcore.view.View, Acquisition.Explicit):
     pass
+
+class ZopeTwoPageTemplate(PageTemplate):
+
+    def setFromString(self, string):
+        raise NotImplemented
+
+    def setFromFilename(self, filename, _prefix=None):
+        self._template = ViewPageTemplateFile(filename, _prefix)
+    
+    def render(self, view):
+        namespace = self.getNamespace(view)
+        template = self._template.__of__(view)
+        namespace.update(template.pt_getContext())
+        return template(namespace)
