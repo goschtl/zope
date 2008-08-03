@@ -107,7 +107,7 @@ class QueryRewriter(ChildRewriter):
                         self.context.collection_type,
                         self.context.terms[1:],
                         self.context.target))(),
-                    Empty(self.context.collection_type, None)
+                    Empty(self.context.collection_type)
                 )
         else:
             rv = Single(

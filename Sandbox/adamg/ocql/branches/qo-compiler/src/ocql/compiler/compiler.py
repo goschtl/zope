@@ -84,13 +84,13 @@ class DifferCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'set.differ(%s, %s)' % (
-                IAlgebraCompiler(self.context.start)(),
-                IAlgebraCompiler(self.context.end)())
+                IAlgebraCompiler(self.context.coll1)(),
+                IAlgebraCompiler(self.context.coll2)())
 
         elif self.context.klass == list:
             return '(%s)-(%s)' % (
-                IAlgebraCompiler(self.context.start)(),
-                IAlgebraCompiler(self.context.end)())
+                IAlgebraCompiler(self.context.coll1)(),
+                IAlgebraCompiler(self.context.coll2)())
 
 class IterCompiler(BaseCompiler):
     implements(IAlgebraCompiler)

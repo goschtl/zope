@@ -642,7 +642,7 @@ class QueryParser(object):
     implements(IQueryParser)
     adapts(basestring)
     registerAdapters()
-#    import pydevd;pydevd.settrace()
+
     def __init__(self, context):
         self.context = context
         #self.db = db

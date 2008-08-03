@@ -44,7 +44,7 @@ class BaseAlgebra(Location):
 class Empty(BaseAlgebra):
     implements(IEmpty)
 
-    def __init__(self, klass, expr):
+    def __init__(self, klass):
         self.klass = klass
 
     def __repr__(self):
@@ -76,16 +76,19 @@ class Union(BaseAlgebra):
     def __repr__(self):
         return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
-class Differ:
+class Differ(BaseAlgebra):
     implements(IDiffer)
 
-    def __init__(self, klass, start, end):
+    def __init__(self, klass, coll1, coll2):
         self.klass = klass
-        self.start = start
-        self.end = end
+        self.coll1 = coll1
+        self.coll2 = coll2
+        locate(coll1, self, 'coll1')
+        locate(coll2, self, 'coll2')
+        self.children.extend([coll1, coll2])
 
     def __repr__(self):
-        return 'Differ(%s,%s,%s)'%(self.klass, self.start, self.end)
+        return 'Differ(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
 class Iter(BaseAlgebra):
     implements(IIter)
