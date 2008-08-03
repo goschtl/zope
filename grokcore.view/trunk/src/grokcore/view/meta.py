@@ -102,7 +102,7 @@ class ViewSecurityGrokker(martian.ClassGrokker):
     martian.directive(grokcore.security.require, name='permission')
 
     def execute(self, factory, config, permission, **kw):
-        for method_name in list(IBrowserPage):
+        for method_name in IBrowserPage:
             config.action(
                 discriminator=('protectName', factory, method_name),
                 callable=protect_getattr,
