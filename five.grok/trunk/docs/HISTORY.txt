@@ -5,6 +5,11 @@ Changelog for five.grok
 
 five.grok - 0.1 Unreleased
 
+    - Added support for inline templates and made Zope 2 template semantics
+      the default when doing 'from five import grok' and using
+      grok.PageTemplate.
+      [optilude]
+
     - Added override to make templates use Five's ViewPageTemplateFile instead
       of the one from zope.app.pagetemplate
       [optilude]
