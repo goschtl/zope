@@ -1018,6 +1018,18 @@ Or check if a item is a part of the result set:
   True
 
 
+There is an optional intids argument in searchResults. If given, it's used for
+query the objects instead of lookup the IIntIds utility.
+
+  >>> resultSet = allQuery.searchResults(intids)
+  >>> len(resultSet)
+  4
+
+This will returnd the same objects as before:
+
+  >>> resultSet[-1:]
+  [<DemoContent u'Apple House Tower'>]
+
 
 Batching
 --------

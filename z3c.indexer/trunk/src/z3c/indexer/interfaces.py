@@ -38,8 +38,10 @@ class ISearchQuery(zope.interface.Interface):
     def apply():
         """Return iterable search result wrapper."""
 
-    def searchResults():
-        """Retruns iterable search result objects."""
+    def searchResults(intids=None):
+        """Retruns an iterable search result objects. Optional the intids 
+        utility can be set for use within the ResulSet implementation.
+        """
 
     def Or(query):
         """Enhance search results. (union)

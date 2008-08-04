@@ -56,6 +56,9 @@ class ResultSet:
             obj = self.intids.getObject(uid)
             yield obj
 
+    def __repr__(self):
+        return '<%s len: %s>' %(self.__class__.__name__, len(self.uids))
+
 
 # TODO: allow to initialize with query=None and set the first given query as 
 #       the initial one. If we don't do that, And & Or are never return 
@@ -101,10 +104,11 @@ class SearchQuery(object):
     def apply(self):
         return self.results
 
-    def searchResults(self):
+    def searchResults(self, intids=None):
         results = []
         if len(self.results) > 0:
-            intids = zope.component.getUtility(IIntIds)
+            if intids is None:
+                intids = zope.component.getUtility(IIntIds)
             results = ResultSet(self.results, intids)
         return results
 

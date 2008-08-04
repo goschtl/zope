@@ -20,6 +20,12 @@ Version 0.5.1dev (unreleased)
   empty result if None is given and allow to override existing results as a
   part of the SearchQuery API.
 
+- feature: Implemented optional intids argument in SearchQuery.searchResults 
+  method. This intids is used instead of query the IntIds util. This is usefull
+  if you use builtin IIntIds objects for optimized access.
+
+- Added __repr__ for ResultSet with result lenght
+
 - Optimized SearchQuery.And() and Not() methods. Skip given query processing 
   if previous result is empty.
 
