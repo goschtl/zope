@@ -12,10 +12,10 @@ class IntrospectorLayer(IDefaultBrowserLayer):
     """
     pass
 
-class IntrospectorSkin(grok.Skin):
+class IntrospectorSkin(grok.IDefaultBrowserLayer):
     """A skin for all introspection stuff.
     """
-    grok.layer(IntrospectorLayer)
+    grok.skin('IntrospectorSkin')
 
 
 class GrokIntrospectorNamespace(grok.MultiAdapter):
