@@ -30,9 +30,6 @@ class LayoutView(BrowserView):
 
         return lxml.html.tostring(tree, pretty_print=True).rstrip('\n')
 
-    def get_context(self, region):
-        return region
-    
     def _insert_provider(self, tree, region, provider):
         # render and wrap provided content
         html = provider.render() 
@@ -45,16 +42,16 @@ class LayoutView(BrowserView):
         """Lookup content provider for region."""
 
         name = region.provider
-        context = self.get_context(region)
+
+        factory = interfaces.IContentProviderFactory(region, None)
+        if factory is not None:
+            return factory(self.context, self.request, self)
 
         if name is not None:
-            provider = component.queryMultiAdapter(
-                (context, self.request, self), IContentProvider, name=name)
-        else:
-            provider = component.queryMultiAdapter(
-                (context, self.request, self), IContentProvider)
+            return component.queryMultiAdapter(
+                (self.context, self.request, self), IContentProvider, name=name)
 
-        return provider
+        return None
     
     @memoize
     def _get_region_provider_mapping(self):

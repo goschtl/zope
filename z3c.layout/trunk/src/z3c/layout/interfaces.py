@@ -44,3 +44,7 @@ class ILayout(Interface):
     def parse():
         """Parse template using lxml's HTML parser class. Transforms
         are applied before the tree is returned."""
+
+class IContentProviderFactory(Interface):
+    def __call__(context, request, view):
+        """Return content provider."""

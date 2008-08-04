@@ -49,24 +49,33 @@ To register them with the layout we simply add them.
     >>> layout.regions.add(title)
     >>> layout.regions.add(content)
 
+Let's define a context class.
+    
+    >>> class MockContext(object):
+    ...     interface.implements(interface.Interface)
+
 We need to provide a general adapter that can provide content
-providers for regions that do not specify them directly.
+providers for regions that do not specify them directly. As an
+example, we'll define an adapter that simply tries to lookup a content
+provider with the same name as the region.
+
+    >>> from z3c.layout.interfaces import IContentProviderFactory
+
+    >>> class EponymousContentProviderFactory(object):
+    ...     interface.implements(IContentProviderFactory)
+    ...
+    ...     def __init__(self, region):
+    ...         self.region = region
+    ...
+    ...     def __call__(self, context, request, view):
+    ...         name = self.region.name
+    ...         return component.getMultiAdapter(
+    ...            (view.context, request, view), IContentProvider, name)
 
     >>> from z3c.layout.interfaces import IRegion
-    >>> from zope.contentprovider.interfaces import IContentProvider
-    >>> from zope.publisher.interfaces.browser import IBrowserRequest
-    >>> from zope.publisher.interfaces.browser import IBrowserView
-
-As an example, we'll define an adapter that simply tries to lookup a
-content provider with the same name as the region.
     
-    >>> @interface.implementer(IContentProvider)
-    ... @component.adapter(IRegion, IBrowserRequest, IBrowserView)
-    ... def getEponymousContentProvider(region, request, view):
-    ...     return component.getMultiAdapter(
-    ...        (region, request, view), IContentProvider, region.name)
-
-    >>> component.provideAdapter(getEponymousContentProvider)
+    >>> component.provideAdapter(
+    ...     EponymousContentProviderFactory, (IRegion,))
     
 Rendering
 ---------
@@ -92,20 +101,20 @@ for the two regions. We'll use a mock class for demonstration.
     ...
     ...     def __repr__(self):
     ...         return "<MockContentProvider '%s'>" % self.__name__
+    
+    >>> from zope.publisher.interfaces.browser import IBrowserRequest
+    >>> from zope.publisher.interfaces.browser import IBrowserView
 
     >>> component.provideAdapter(
-    ...     MockContentProvider, (IRegion, IBrowserRequest, IBrowserView),
+    ...     MockContentProvider, (MockContext, IBrowserRequest, IBrowserView),
     ...     name="title")
 
     >>> component.provideAdapter(
-    ...     MockContentProvider, (IRegion, IBrowserRequest, IBrowserView),
+    ...     MockContentProvider, (MockContext, IBrowserRequest, IBrowserView),
     ...     name="content")
 
 Let's instantiate the layout browser-view. We must define a context
 and set up a request.
-
-    >>> class MockContext(object):
-    ...     interface.implements(interface.Interface)
 
     >>> from zope.publisher.browser import TestRequest
     
