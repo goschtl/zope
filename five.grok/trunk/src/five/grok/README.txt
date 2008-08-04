@@ -71,7 +71,7 @@ templates, like this:
     ...     grok.context(GrokVillage)
     ...     grok.name('inline')
 
-    <<< inlinegrokvillage = grok.PageTemplate(u'Village: <b tal:content="context/id"></b>')
+    <<< inlinegrokvillage = grok.PageTemplate(u'Village: <b tal:content="here/id"></b>')
 
 Or, we could specify the render() method explicitly:
 
