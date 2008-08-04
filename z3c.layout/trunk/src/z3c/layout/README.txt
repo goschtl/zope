@@ -112,6 +112,12 @@ and set up a request.
     >>> context = MockContext()
     >>> request = TestRequest()
 
+We need to have the request be annotatable.
+
+    >>> from zope.annotation.attribute import AttributeAnnotations
+    >>> component.provideAdapter(
+    ...     AttributeAnnotations, (TestRequest,))
+    
 The view expects the context to adapt to ``ILayout``.
     
     >>> from z3c.layout.interfaces import ILayout
@@ -123,9 +129,11 @@ The view expects the context to adapt to ``ILayout``.
 
 Verify that the layout view is able to get to these providers.
     
-    >>> tuple(view._get_content_providers())
-    ((<Region 'title' .//title (replace) 'title'>, <MockContentProvider 'title'>),
-     (<Region 'content' .//div (replace) None>, <MockContentProvider 'content'>))
+    >>> view.mapping
+    {'content':
+     (<Region 'content' .//div (replace) None>, <MockContentProvider 'content'>),
+     'title':
+     (<Region 'title' .//title (replace) 'title'>, <MockContentProvider 'title'>)}
 
 Now for the actual output.
 

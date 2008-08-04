@@ -1,3 +1,15 @@
+def insert(tree, region, provided):
+    # look up insertion method
+    try:
+        insert = _map[region.mode]
+    except KeyError:
+        raise ValueError("Invalid mode: %s" % repr(region.mode))
+
+    # insert provided content into nodes
+    nodes = tree.xpath(region.xpath)
+    for node in nodes:
+        insert(node, provided)
+
 def replace(node, provided):
     """Replace node with contents.
 
@@ -90,3 +102,10 @@ def after(node, provided):
 
     if provided.text:
         node.tail = node.tail or "" + provided.text
+
+_map = dict(
+    replace=replace,
+    prepend=prepend,
+    append=append,
+    before=before,
+    after=after)
