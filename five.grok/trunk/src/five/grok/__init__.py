@@ -3,4 +3,4 @@ from grokcore.security import *
 from grokcore.view import *
 
 from five.grok.components import View, Model
-from five.grok.components import ZopeTwoPageTemplate
+from five.grok.components import ZopeTwoPageTemplate as PageTemplate

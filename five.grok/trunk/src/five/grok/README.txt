@@ -64,6 +64,17 @@ Let's create a view on the GrokVillage.
     ...             cavesInfos.append(caveInfo)
     ...         return cavesInfos
 
+The example above uses a filesystem template. We can also use inline
+templates, like this:
+
+    <<< class InlineGrokVillage(grok.View):
+    ...     grok.context(GrokVillage)
+    ...     grok.name('inline')
+
+    <<< inlinegrokvillage = grok.PageTemplate(u'Village: <b tal:content="context/id"></b>')
+
+Or, we could specify the render() method explicitly:
+
     <<< class Cave(SimpleFolder):
     ...
     ...     def numberOfCaveWomen(self):
@@ -228,3 +239,6 @@ Let's create a view on the GrokVillage.
     </body>
     </html>
     <BLANKLINE>
+    
+    >>> print queryMultiAdapter((village, request), name='inline')()
+    Village: <b>amsterdam</b>
