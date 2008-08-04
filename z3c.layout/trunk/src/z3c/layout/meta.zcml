@@ -3,13 +3,17 @@
       
       <complexDirective
          name="layout"
-         schema=".interfaces.ILayout"
+         schema=".zcml.ILayoutDirective"
          handler=".zcml.LayoutDirective">
         
         <subdirective
            name="region"
-           schema=".interfaces.IRegion" />
-        
+           schema=".zcml.IRegionDirective" />
+
+        <subdirective
+           name="transform"
+           schema=".zcml.ITransformDirective" />
+
     </complexDirective>
       
   </directives>

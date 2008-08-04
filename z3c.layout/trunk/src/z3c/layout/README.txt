@@ -149,3 +149,33 @@ Now for the actual output.
       </body>
     </html>
 
+Transforms
+----------
+
+To support special cases where you need to use Python to transform the
+static HTML document at compile time, one or more transforms may be
+defined.
+
+    >>> from z3c.layout.model import Transform
+
+Let's add a transform that adds a language setting to the <html>-tag.
+
+    >>> def set_language(node):
+    ...     node.attrib["lang"] = "en"
+    
+    >>> layout.transforms.add(
+    ...    Transform(set_language))
+
+    >>> layout.parse().getroot().attrib["lang"]
+    'en'
+
+And another transform that assigns a class to the <body>-tag.
+
+    >>> def set_class(node, value):
+    ...     node.attrib["class"] = value
+    
+    >>> layout.transforms.add(
+    ...    Transform(lambda body: set_class(body, "front-page"), ".//body"))
+
+    >>> layout.parse().xpath('.//body')[0].attrib["class"]
+    'front-page'

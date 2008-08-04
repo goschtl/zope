@@ -41,3 +41,6 @@ class ILayout(Interface):
         value_type=schema.Object(schema=IRegion),
         required=False)
 
+    def parse():
+        """Parse template using lxml's HTML parser class. Transforms
+        are applied before the tree is returned."""

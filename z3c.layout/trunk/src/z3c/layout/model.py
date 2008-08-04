@@ -11,15 +11,23 @@ import utils
 class Layout(object):
     interface.implements(interfaces.ILayout)
 
-    def __init__(self, name, template, resource_path, regions=None):
+    def __init__(self, name, template, resource_path, regions=None, transforms=None):
         self.name = name
         self.template = template
         self.regions = regions or set()
+        self.transforms = transforms or set()
         self.resource_path = resource_path
         
     def parse(self):
         tree = lxml.html.parse(self.template)
+
+        # rebase resources
         utils.rebase(tree, self.resource_path)
+
+        # apply transforms
+        for transform in self.transforms:
+            transform(tree)
+            
         return tree
     
 class Region(object):
@@ -39,3 +47,17 @@ class Region(object):
             self.xpath,
             self.mode,
             repr(self.provider))
+
+class Transform(object):
+    def __init__(self, handler, xpath=None):
+        self.handler = handler
+        self.xpath = xpath
+
+    def __call__(self, tree):
+        handler = self.handler
+        
+        if self.xpath:
+            for node in tree.xpath(self.xpath):
+                handler(node)
+        else:
+            handler(tree.getroot())
