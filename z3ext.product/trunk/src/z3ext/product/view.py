@@ -45,7 +45,7 @@ class InstallerView(BrowserPagelet):
                     'title': product.__title__,
                     'description': product.__description__}
 
-            if product.__installed__:
+            if product.isInstalled():
                 info['configlet'] = product.isAvailable()
                 installed.append((product.__title__, info))
             else:

@@ -61,13 +61,13 @@ class Product(object):
 
         configure(self, {})
 
-        site = getSiteManager()
+        sm = getSiteManager()
         registry = getattr(z3ext.product, self.__product_name__)
-        if registry not in site.__bases__:
-            site.__bases__ = (registry,) + site.__bases__
+        if registry not in sm.__bases__:
+            sm.__bases__ = (registry,) + sm.__bases__
 
-        event.notify(interfaces.ProductUpdatedEvent(
-            self.__product_name__, self))
+        event.notify(
+            interfaces.ProductUpdatedEvent(self.__product_name__, self))
 
     def uninstall(self):
         for name, ext in self.items():
@@ -80,19 +80,36 @@ class Product(object):
 
         self.__installed__ = False
 
-        site = getSiteManager()
+        sm = getSiteManager()
         registry = getattr(z3ext.product, self.__product_name__)
 
-        if registry in site.__bases__:
-            bases = list(site.__bases__)
+        if registry in sm.__bases__:
+            bases = list(sm.__bases__)
             bases.remove(registry)
-            site.__bases__ = tuple(bases)
+            sm.__bases__ = tuple(bases)
 
-        event.notify(interfaces.ProductUninstalledEvent(
-            self.__product_name__, self))
+            event.notify(
+                interfaces.ProductUninstalledEvent(self.__product_name__, self))
+
+    def _checkInstalled(self, sm, registry, seen):
+        if sm in seen:
+            return False
+        seen.insert(sm)
+
+        if registry in sm.__bases__:
+            return True
+
+        for reg in sm.__bases__:
+            if self._checkInstalled(reg, registry, seen):
+                return True
+
+        return False
 
     def isInstalled(self):
-        return self.__installed__
+        sm = getSiteManager()
+        registry = getattr(z3ext.product, self.__product_name__)
+        seen = set()
+        return self._checkInstalled(sm, registry, seen)
 
     def listExtensions(self):
         exts = []
@@ -101,6 +118,11 @@ class Product(object):
                 exts.append(name)
 
         return exts
+
+    def isUninstallable(self):
+        sm = getSiteManager()
+        registry = getattr(z3ext.product, self.__product_name__)
+        return registry in sm.__bases__
 
 
 class ProductExtension(Product):

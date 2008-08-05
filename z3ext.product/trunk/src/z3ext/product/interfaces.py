@@ -66,6 +66,9 @@ class IProduct(interface.Interface):
     def listExtensions():
         """ list IProductExtension for this product """
 
+    def isUninstallable():
+        """ is product uninstallable """
+        
 
 class IProductExtension(interface.Interface):
     """ product extension """
