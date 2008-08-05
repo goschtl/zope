@@ -14,6 +14,7 @@ setup(
     license='ZPL 2.1',
     namespace_packages = ['zc'],
     install_requires =[
+        'setuptools',
         'zope.interface',
         'zope.component',
         'zope.publisher',
