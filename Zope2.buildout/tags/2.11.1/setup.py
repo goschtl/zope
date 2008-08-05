@@ -32,58 +32,70 @@ setup(name='Zope2',
 
       ext_modules=[
 
-    # AccessControl
-    Extension(name='AccessControl.cAccessControl',
+        # AccessControl
+        Extension(
+              name='AccessControl.cAccessControl',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=['lib/python/AccessControl/cAccessControl.c'],
               depends=['include/ExtensionClass/ExtensionClass.h',
                        'include/ExtensionClass/pickle/pickle.c',
                        'include/Acquisition/Acquisition.h']),
 
-    # DocumentTemplate
-    Extension(name='DocumentTemplate.cDocumentTemplate',
+        # DocumentTemplate
+        Extension(
+              name='DocumentTemplate.cDocumentTemplate',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=['lib/python/DocumentTemplate/cDocumentTemplate.c']),
 
-    Extension(name='MultiMapping._MultiMapping',
+        Extension(
+              name='MultiMapping._MultiMapping',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=["lib/python/MultiMapping/_MultiMapping.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
-    Extension(name='ThreadLock._ThreadLock',
+        Extension(
+              name='ThreadLock._ThreadLock',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=["lib/python/ThreadLock/_ThreadLock.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
-    Extension(name='Missing._Missing',
+        Extension(
+              name='Missing._Missing',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=["lib/python/Missing/_Missing.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
-    Extension(name='Record._Record',
+        Extension(
+              name='Record._Record',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
               sources=["lib/python/Record/_Record.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
 
-    # initgroups
-    Extension(name='initgroups._initgroups',
+        # initgroups
+        Extension(
+              name='initgroups._initgroups',
               sources=['lib/python/initgroups/_initgroups.c']),
 
-    # indexes
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+        # indexes
+        Extension(
+              name='Products.PluginIndexes.TextIndex.Splitter.'
                    'ZopeSplitter.ZopeSplitter',
               sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
                        'ZopeSplitter/src/ZopeSplitter.c']),
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+        Extension(
+              name='Products.PluginIndexes.TextIndex.Splitter.'
                    'ISO_8859_1_Splitter.ISO_8859_1_Splitter',
               sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
                        'ISO_8859_1_Splitter/src/ISO_8859_1_Splitter.c']),
-    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+        Extension(
+              name='Products.PluginIndexes.TextIndex.Splitter.'
                    'UnicodeSplitter.UnicodeSplitter',
               sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
                        'UnicodeSplitter/src/UnicodeSplitter.c']),
-    Extension(name='Products.ZCTextIndex.stopper',
+        Extension(
+              name='Products.ZCTextIndex.stopper',
               sources=['lib/python/Products/ZCTextIndex/stopper.c']),
-    Extension(name='Products.ZCTextIndex.okascore',
+        Extension(
+              name='Products.ZCTextIndex.okascore',
               sources=['lib/python/Products/ZCTextIndex/okascore.c']),
-    ],
+      ],
 
       install_requires=['Acquisition==2.11.1',
                         'DateTime==2.11.1',
