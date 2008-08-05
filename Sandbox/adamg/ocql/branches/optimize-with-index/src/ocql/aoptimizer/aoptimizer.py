@@ -49,6 +49,7 @@ def iterPatternMatcher(tree):
     """Replaces the identified Iter tree pattern """
     coll = tree.klass
     single = tree.func.expr.expr1
+    var = tree.func.var
     interface = tree.coll.expr1.name
     cond = tree.func.expr.cond.left.name
     operator = tree.func.expr.cond.op.op
@@ -62,16 +63,24 @@ def iterPatternMatcher(tree):
     if operator == '==':
         makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], value, value)
     elif operator == '>' or operator == '>=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound=value)
+        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound=value, upperbound='Z')
     elif operator == '<' or operator == '<=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], upperbound=value)
+        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound='A', upperbound=value)
     else:
         return tree
     
-    newTree = Iter(coll, single, makeFromIndex)
+    newlambda = Lambda(var, single)
+    newTree = Iter(coll, newlambda, makeFromIndex)
     parent = tree.__parent__
-    locate(newTree, parent, 'iter')
-    return newTree
+    if isinstance(parent, Head):
+        return Head(newTree)
+    else:
+        for c in parent.children:
+            if isinstance(c, Iter):
+                del c
+        parent.children.append(newTree)
+        locate(newTree, parent, 'iter')
+        return newTree
 
 
 def addMarkerIF(obj, marker):
@@ -88,10 +97,12 @@ class AlgebraOptimizer(object):
         #self.db = db
 
     def __call__(self, metadata):
-        addMarkerIF(self.context, IOptimizedAlgebraObject)
         results = findItrTreePattern(self.context.tree)
+        
         if results is not None:
-            newTree = iterPatternMatcher(results)
-            #return newTree
+            alg = iterPatternMatcher(results)
+            addMarkerIF(alg, IOptimizedAlgebraObject)
+            return alg
 
+        addMarkerIF(self.context, IOptimizedAlgebraObject)
         return self.context

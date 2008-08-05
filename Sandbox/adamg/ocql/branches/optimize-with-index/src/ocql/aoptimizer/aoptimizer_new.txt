@@ -46,7 +46,7 @@ Queries in the rewriter.txt are extended to AlgebraOptimization
     >>> alg = Rewriter(opt)()
     >>> out = AlgebraOptimizer(alg)(None)
     >>> print str(out)
-    Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
+    Iter(<type 'set'>, Lambda c: Single(<type 'set'>, c.code), MakeFromIndex(<type 'set'>, <type 'set'>, ICourse, credits, 3, Z))
 
     #bag not implemented
     #>>> qo = QueryParser("size set [ i in ICourse | i ]")(TestMetadata())
