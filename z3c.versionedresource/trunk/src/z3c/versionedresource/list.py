@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 import optparse
 import os
+import sys
 import zope.component
 import zope.interface
 from zope.configuration import xmlconfig
@@ -117,3 +118,4 @@ def main(args=None):
     options.action = 'Add'
     resources = getAllResources(options)
     print '\n'.join(resources)
+    sys.exit(0)
