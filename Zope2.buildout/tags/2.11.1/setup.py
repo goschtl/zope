@@ -1,0 +1,197 @@
+##############################################################################
+#
+# Copyright (c) 2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Setup for the Acquisition egg package
+"""
+import os
+from setuptools import setup, find_packages, Extension
+
+EXTENSIONCLASS_INCLUDEDIRS = ['include', 'lib/python']
+
+setup(name='Zope2',
+      version = '2.11.1',
+      url='http://www.zope.org',
+      license='ZPL 2.1',
+      description='Zope2 application server / web framework',
+      author='Zope Corporation and Contributors',
+      author_email='zope-dev@zope.org',
+      long_description='',
+      
+      packages=find_packages('lib/python'),
+      package_dir={'': 'lib/python'},
+
+      ext_modules=[
+
+    # AccessControl
+    Extension(name='AccessControl.cAccessControl',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=['lib/python/AccessControl/cAccessControl.c'],
+              depends=['include/ExtensionClass/ExtensionClass.h',
+                       'include/ExtensionClass/pickle/pickle.c',
+                       'include/Acquisition/Acquisition.h']),
+
+    # DocumentTemplate
+    Extension(name='DocumentTemplate.cDocumentTemplate',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=['lib/python/DocumentTemplate/cDocumentTemplate.c']),
+
+    Extension(name='MultiMapping._MultiMapping',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=["lib/python/MultiMapping/_MultiMapping.c"],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
+    Extension(name='ThreadLock._ThreadLock',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=["lib/python/ThreadLock/_ThreadLock.c"],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
+    Extension(name='Missing._Missing',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=["lib/python/Missing/_Missing.c"],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
+    Extension(name='Record._Record',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=["lib/python/Record/_Record.c"],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
+
+    # initgroups
+    Extension(name='initgroups._initgroups',
+              sources=['lib/python/initgroups/_initgroups.c']),
+
+    # indexes
+    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+                   'ZopeSplitter.ZopeSplitter',
+              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+                       'ZopeSplitter/src/ZopeSplitter.c']),
+    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+                   'ISO_8859_1_Splitter.ISO_8859_1_Splitter',
+              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+                       'ISO_8859_1_Splitter/src/ISO_8859_1_Splitter.c']),
+    Extension(name='Products.PluginIndexes.TextIndex.Splitter.'
+                   'UnicodeSplitter.UnicodeSplitter',
+              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+                       'UnicodeSplitter/src/UnicodeSplitter.c']),
+    Extension(name='Products.ZCTextIndex.stopper',
+              sources=['lib/python/Products/ZCTextIndex/stopper.c']),
+    Extension(name='Products.ZCTextIndex.okascore',
+              sources=['lib/python/Products/ZCTextIndex/okascore.c']),
+    ],
+
+      install_requires=['Acquisition',
+                        'DateTime',
+                        'docutils==0.4',
+                        'ExtensionClass',
+                        'Interface',
+                        'Persistence',
+                        'RestrictedPython',
+                        'StructuredText',
+                        'tempstorage',
+                        'zLOG',
+                        'zdaemon',
+                        'ZODB3',
+                        'zope.annotation',
+                        'zope.app.apidoc',
+                        'zope.app.applicationcontrol',
+                        'zope.app.appsetup',
+                        'zope.app.authentication',
+                        'zope.app.basicskin',
+                        'zope.app.broken',
+                        'zope.app.cache',
+                        'zope.app.component',
+                        'zope.app.container',
+                        'zope.app.content',
+                        'zope.app.debug',
+                        'zope.app.dependable',
+                        'zope.app.dtmlpage',
+                        'zope.app.error',
+                        'zope.app.exception',
+                        'zope.app.file',
+                        'zope.app.folder',
+                        'zope.app.form',
+                        'zope.app.generations',
+                        'zope.app.http',
+                        'zope.app.i18n',
+                        'zope.app.interface',
+                        'zope.app.intid',
+                        'zope.app.keyreference',
+                        'zope.app.layers',
+                        'zope.app.locales',
+                        'zope.app.onlinehelp',
+                        'zope.app.pagetemplate',
+                        'zope.app.preference',
+                        'zope.app.preview',
+                        'zope.app.principalannotation',
+                        'zope.app.publication',
+                        'zope.app.publisher',
+                        'zope.app.renderer',
+                        'zope.app.rotterdam',
+                        'zope.app.schema',
+                        'zope.app.security',
+                        'zope.app.session',
+                        'zope.app.skins',
+                        'zope.app.sqlscript',
+                        'zope.app.testing',
+                        'zope.app.traversing',
+                        'zope.app.tree',
+                        'zope.app.undo',
+                        'zope.app.wfmc',
+                        'zope.app.wsgi',
+                        'zope.app.zapi',
+                        'zope.app.zopeappgenerations',
+                        'zope.app.zptpage',
+                        'zope.cachedescriptors',
+                        'zope.component',
+                        'zope.configuration',
+                        'zope.contentprovider',
+                        'zope.contenttype',
+                        'zope.copypastemove',
+                        'zope.testbrowser',
+                        'zope.datetime',
+                        'zope.deferredimport',
+                        'zope.deprecation',
+                        'zope.dottedname',
+                        'zope.dublincore',
+                        'zope.exceptions',
+                        'zope.event',
+                        'zope.formlib',
+                        'zope.lifecycleevent',
+                        'zope.security',
+                        'zope.testing',
+                        'zope.decorator',
+                        'zope.filerepresentation',
+                        'zope.hookable',
+                        'zope.location',
+                        'zope.sendmail',
+                        'zope.thread',
+                        'zope.modulealias',
+                        'zope.server',
+                        'zope.size',
+                        'zope.traversing',
+                        'zope.viewlet',
+                        'zope.documenttemplate',
+                        'zope.proxy',
+                        'zope.structuredtext',
+                        'zope.publisher',
+                        'zope.tal',
+                        'zope.tales',
+                        'zope.rdb',
+                        'zope.wfmc',
+                        'zope.i18n',
+                        'zope.i18nmessageid',
+                        'zope.index',
+                        'zope.interface',
+                        'zope.pagetemplate',
+                        'zope.schema',
+                        'zope.sequencesort',
+                        ],
+      include_package_data=True,
+      zip_safe=False,
+      )
