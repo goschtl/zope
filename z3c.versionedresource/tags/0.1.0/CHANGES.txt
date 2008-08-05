@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+Version 0.1.0 (2008-08-04)
+--------------------------
+
+- Initial Release
+
+  * Version Manager manages the current version of resources.
+
+  * Implemented custom resources and their directives.
+
+  * Provided script to extract all versioned resources and produces their URLs.
