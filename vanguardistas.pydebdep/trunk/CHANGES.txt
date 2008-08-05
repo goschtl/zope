@@ -1,3 +1,9 @@
+0.1.1 (unreleased)
+------------------
+
+* Add regression tests for Paste name translation (surprisingly they already pass):
+    src/vanguardistas/pydebdep/tests/translations.txt    
+
 0.1.0 (13-04-2008)
 ------------------
 

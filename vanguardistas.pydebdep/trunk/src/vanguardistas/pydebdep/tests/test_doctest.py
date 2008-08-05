@@ -18,4 +18,5 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite('vanguardistas.pydebdep.translator'))
     suite.addTest(doctest.DocTestSuite('vanguardistas.pydebdep.pydebdep'))
+    suite.addTest(doctest.DocFileSuite('translations.txt'))
     return suite
