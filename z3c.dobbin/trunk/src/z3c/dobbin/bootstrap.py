@@ -16,6 +16,9 @@ class UUID(rdb.types.TypeEngine):
     def get_col_spec(self):
         return "UUID"
 
+def get_soup_table():
+    return Soup._sa_class_manager.mapper.local_table
+
 def initialize(event=None):
     """Database initialization.
 

@@ -130,9 +130,8 @@ def createMapper(spec):
             del properties[name]
             setattr(Mapper, name, prop)
 
-    # XXX: there must be a more straight-forward way to do this
-    soup_table = bootstrap.Soup._sa_class_manager.mappers[None].local_table
-    
+    soup_table = bootstrap.get_soup_table()
+        
     polymorphic = (
         [Mapper], table.join(
         soup_table, first_table.c.id==soup_table.c.id))
@@ -199,7 +198,7 @@ def getTable(iface, metadata, ignore=()):
         
     kw = dict(useexisting=True)
 
-    soup_table = bootstrap.Soup._sa_class_manager.mappers[None].local_table
+    soup_table = bootstrap.get_soup_table()
 
     table = rdb.Table(
         name,
