@@ -30,8 +30,8 @@ usual:
   >>> 'Broken applications:' not in browser.contents
   True
 
-Now we grok this module, to have a new application type available,
-which is intentionally broken:
+We have an application type available, which is intentionally broken
+and defined below::
 
   >>> browser.open('http://localhost/applications')
   >>> 'PseudoBroken' in browser.contents
