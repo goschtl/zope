@@ -94,7 +94,7 @@ class Product(object):
     def _checkInstalled(self, sm, registry, seen):
         if sm in seen:
             return False
-        seen.insert(sm)
+        seen.add(sm)
 
         if registry in sm.__bases__:
             return True

@@ -6,8 +6,11 @@
       <ul class="listing">
 	<li tal:repeat="product data/installed">
 	  <div class="icon">
-	    <input class="noborder" type="checkbox"
-                   name="products:list" tal:attributes="value product/name" />
+	    <input class="noborder" type="checkbox" name="products:list" 
+		   tal:attributes="value product/name"
+		   tal:condition="product/uninstallable" />
+	    <tal:block tal:condition="not:product/uninstallable">
+	      &nbsp;&nbsp;&nbsp;&nbsp;</tal:block>
 	    <img tal:replace="structure product/product/@@zmi_icon" />
 	  </div>
 	  <div class="details">
@@ -51,7 +54,7 @@
 	</li>
       </ul>
 
-      <div class="formControls">
+      <div class="formControls" tal:condition="data/hasUninstallable">
 	<input type="submit" class="z-form-button" name="update" value="Update" />
 	<input type="submit" class="z-form-removebutton" name="uninstall" value="Uninstall" />
       </div>

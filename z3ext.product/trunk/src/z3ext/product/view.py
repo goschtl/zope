@@ -38,16 +38,20 @@ class InstallerView(BrowserPagelet):
 
         installed = []
         notinstalled = []
+        hasUninstallable = False
 
         for name, product in context.items():
             info = {'name': name,
                     'product': product,
                     'title': product.__title__,
-                    'description': product.__description__}
+                    'description': product.__description__,
+                    'uninstallable': product.isUninstallable()}
 
             if product.isInstalled():
                 info['configlet'] = product.isAvailable()
                 installed.append((product.__title__, info))
+                if info['uninstallable']:
+                    hasUninstallable = True
             else:
                 notinstalled.append((product.__title__, info))
 
@@ -57,7 +61,8 @@ class InstallerView(BrowserPagelet):
         notinstalled.sort()
         notinstalled = [info for t, info in notinstalled]
 
-        return {'installed': installed, 'notinstalled': notinstalled}
+        return {'installed': installed, 'notinstalled': notinstalled,
+                'hasUninstallable': hasUninstallable}
 
     def getExtensions(self, product):
         extensions = []
