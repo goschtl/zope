@@ -1,0 +1,14 @@
+Changes
+=======
+
+0.9.1 (2008-08-06)
+------------------
+
+* Turn off zip-safeness.
+
+* Actually add a meta.zcml that loads up the grokker!
+
+0.9 (2008-08-06)
+----------------
+
+* Initial public release.
