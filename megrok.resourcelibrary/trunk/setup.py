@@ -1,11 +1,19 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('src/megrok/resourcelibrary/README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    )
 
 setup(name='megrok.resourcelibrary',
-      version=version,
-      description="static resource library support for Grok.",
+      version='0.9dev',
+      description="Static resource library support for Grok.",
+      long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Programming Language :: Python",
