@@ -34,6 +34,7 @@ class IGoogleMapBrowserLayer(IBrowserRequest):
 
 
 GoogleMapJavaScriptViewlet = JavaScriptViewlet('keas.googlemap.js')
+GoogleMapMarkersViewletLocal = JavaScriptViewlet('markermanager.js')
 
 class GoogleMapMarkersViewlet(ViewletBase):
 
