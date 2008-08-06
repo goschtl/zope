@@ -14,12 +14,12 @@ from zope.component import provideAdapter
 from zope.interface import implements
 
 from ocql.queryobject.queryobject import *
-from ocql.parser.newqueryparser import SymbolContainer
+from ocql.parser.queryparser import SymbolContainer
 from ocql.rewriter import algebra
 from ocql.engine import OCQLEngine
 from ocql.compiler.runnablequery import RunnableQuery
 
-from ocql.parser.newqueryparser import QueryParser
+from ocql.parser.queryparser import QueryParser
 from ocql.qoptimizer.qoptimizer import QueryOptimizer
 from ocql.rewriter.rewriter import Rewriter
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer

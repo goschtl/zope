@@ -1,6 +1,6 @@
 
 
-    >>> from ocql.parser.newqueryparser import QueryParser
+    >>> from ocql.parser.queryparser import QueryParser
 
 
 

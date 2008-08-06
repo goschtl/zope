@@ -9,7 +9,7 @@ Checks here make sure that Interfaces are properly implemented
 
     >>> from ocql.queryobject.queryobject import *
     >>> from ocql.testing.database import TestMetadata
-    >>> from ocql.parser.newqueryparser import SymbolContainer
+    >>> from ocql.parser.queryparser import SymbolContainer
 
     >>> from zope.interface.verify import verifyClass, verifyObject
 

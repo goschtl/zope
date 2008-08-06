@@ -3,7 +3,7 @@ I'm sorry, but I'm lazy here, in reality we would have to create
 stubs for all ocql.rewriter.algebra classes and use those...
 But it's a lot faster to reuse the parser and the existing classes.
 
-    >>> from ocql.parser.newqueryparser import QueryParser
+    >>> from ocql.parser.queryparser import QueryParser
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.rewriter.rewriter import Rewriter
     >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer

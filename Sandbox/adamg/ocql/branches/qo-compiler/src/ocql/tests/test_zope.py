@@ -12,7 +12,7 @@ from ocql.database import metadata
 from ocql.database.metadata import Metadata
 from ocql.engine import OCQLEngine
 from ocql.interfaces import IDB
-from ocql.parser.newqueryparser import QueryParser, SymbolContainer
+from ocql.parser.queryparser import QueryParser, SymbolContainer
 from ocql.qoptimizer.qoptimizer import QueryOptimizer
 from ocql.queryobject.queryobject import *
 from ocql.rewriter.rewriter import Rewriter
