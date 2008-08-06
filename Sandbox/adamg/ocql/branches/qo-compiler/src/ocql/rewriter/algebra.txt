@@ -14,91 +14,91 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyClass(IAlgebraObjectHead, Head)
     True
     >>> baseAlgebra = BaseAlgebra()
-	>>> verifyObject(IAlgebraObjectHead, Head(baseAlgebra))
-	True
+    >>> verifyObject(IAlgebraObjectHead, Head(baseAlgebra))
+    True
 
     >>> verifyClass(IAlgebraObject, BaseAlgebra)
     True
-	>>> verifyObject(IAlgebraObject, baseAlgebra)
-	True
+    >>> verifyObject(IAlgebraObject, baseAlgebra)
+    True
 
     >>> verifyClass(IEmpty, Empty)
     True
-	>>> verifyObject(IEmpty, Empty(set))
-	True
+    >>> verifyObject(IEmpty, Empty(set))
+    True
 
     >>> verifyClass(ISingle, Single)
     True
-	>>> verifyObject(ISingle, Single(set, baseAlgebra))
-	True
+    >>> verifyObject(ISingle, Single(set, baseAlgebra))
+    True
 
     >>> verifyClass(IUnion, Union)
     True
-	>>> verifyObject(IUnion, Union(set, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IUnion, Union(set, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IDiffer, Differ)
     True
-	>>> verifyObject(IDiffer, Differ(set, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IDiffer, Differ(set, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IIter, Iter)
     True
-	>>> verifyObject(IIter, Iter(set, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IIter, Iter(set, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(ISelect, Select)
     True
-	>>> verifyObject(ISelect, Select(set, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(ISelect, Select(set, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IReduce, Reduce)
     True
-	>>> verifyObject(IReduce, Reduce(set, baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IReduce, Reduce(set, baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IRange, Range)
     True
-	>>> verifyObject(IRange, Range(set, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IRange, Range(set, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IMake, Make)
     True
-	>>> verifyObject(IMake, Make(baseAlgebra, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IMake, Make(baseAlgebra, baseAlgebra, baseAlgebra))
+    True
 
-	#Uncomment this after merge other branch modifications
+    #Uncomment this after merge other branch modifications
     #>>> verifyClass(IMakeFromIndex, MakeFromIndex)
     #True
-	#>>> verifyObject(IMakeFromIndex, MakeFromIndex(baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
-	#True
+    #>>> verifyObject(IMakeFromIndex, MakeFromIndex(baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
+    #True
 
     >>> verifyClass(IIf, If)
     True
-	>>> verifyObject(IIf, If(baseAlgebra, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IIf, If(baseAlgebra, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(ILambda, Lambda)
     True
-	>>> verifyObject(ILambda, Lambda(baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(ILambda, Lambda(baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IConstant, Constant)
     True
-	>>> verifyObject(IConstant, Constant(baseAlgebra))
-	True
+    >>> verifyObject(IConstant, Constant(baseAlgebra))
+    True
 
     >>> verifyClass(IIdentifier, Identifier)
     True
-	>>> verifyObject(IIdentifier, Identifier(baseAlgebra))
-	True
+    >>> verifyObject(IIdentifier, Identifier(baseAlgebra))
+    True
 
     >>> verifyClass(IBinary, Binary)
     True
-	>>> verifyObject(IBinary, Binary(baseAlgebra, baseAlgebra, baseAlgebra))
-	True
+    >>> verifyObject(IBinary, Binary(baseAlgebra, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IOperator, Operator)
     True
-	>>> verifyObject(IOperator, Operator(baseAlgebra))
-	True
+    >>> verifyObject(IOperator, Operator(baseAlgebra))
+    True
