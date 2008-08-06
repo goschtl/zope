@@ -2,16 +2,16 @@
 CHANGES
 =======
 
-Version 3.4.3dev (unreleased)
------------------------------
+Version 3.4.3 (2008-08-07)
+--------------------------
 
-- ...
+- no changes. Retag for correct release on PyPI
 
 
 Version 3.4.2 (2008-07-09)
 --------------------------
 
-- Make it compatible with upcomming zope.app.container 3.6.1 changes.
+- Make it compatible with zope.app.container 3.6.1 and 3.5.4 changes,
   Changed super(BTreeContainer, self).__init__() to 
   super(GroupFolder, self).__init__() in GroupFolder class.
 
