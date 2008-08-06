@@ -11,7 +11,7 @@ long_description = (
     )
 
 setup(name='megrok.resourcelibrary',
-      version='0.10dev',
+      version='0.9.1dev',
       description="Static resource library support for Grok.",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
@@ -28,7 +28,7 @@ setup(name='megrok.resourcelibrary',
       package_dir = {'': 'src'},
       namespace_packages=['megrok'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       install_requires=[
           'setuptools',
           'grok >= 0.13',
