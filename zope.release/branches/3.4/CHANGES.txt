@@ -8,9 +8,9 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 --------------------
 
 - Upgraded zope.publisher to 3.4.3.
-- Upgraded zope.app.authentication to 3.4.2. Removed previous versions,
+- Upgraded zope.app.authentication to 3.4.3. Removed previous versions,
   as they are not compatible with zope.app.container >= 3.5.4
-- Upgraded zope.app.container to 3.5.5
+- Upgraded zope.app.container to 3.5.6
 - Upgraded zope.testing 3.5.1 to 3.5.4.
 - Upgraded zc.buildout 1.0.0 to 1.1.1.
 
