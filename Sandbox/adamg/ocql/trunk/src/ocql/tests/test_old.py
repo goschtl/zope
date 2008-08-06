@@ -33,12 +33,12 @@ from ocql.testing.database import D1, D2, D3
 
 from ocql.interfaces import IDB
 from ocql.interfaces import IQueryParser
-from ocql.interfaces import IObjectQuery
+from ocql.interfaces import IObjectQueryHead
 
 
 class QueryNullParser(object):
     implements(IQueryParser)
-    adapts(IObjectQuery)
+    adapts(IObjectQueryHead)
 
     def __init__(self, context):
         self.context = context
@@ -95,11 +95,11 @@ class testOLD(unittest.TestCase):
         # set [ ]
         #
         query = "set [ ]"
-        qo=Query(metadata, symbols,
+        qo=Head(Query(metadata, symbols,
                  set,
                  [] ,
                  Identifier(metadata, symbols,
-                            '') )
+                            '') ))
 
         self.doit(query, qo, set([]))
 
@@ -111,7 +111,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse | c ]
         #
         query = "[ c in ICourse | c ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -119,7 +119,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c'),
                     Identifier(metadata, symbols,'ICourse')),
-            ] ,Identifier(metadata, symbols,'c') )
+            ] ,Identifier(metadata, symbols,'c') ))
 
         #caution, these here are object references
         self.doit(query, qo, set([ C1 , C2, C3 ]))
@@ -132,7 +132,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse | c.code ]
         #
         query = "[ c in ICourse | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -140,7 +140,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c'),
                     Identifier(metadata, symbols,'ICourse')),
-            ] ,Identifier(metadata, symbols,'c.code') )
+            ] ,Identifier(metadata, symbols,'c.code') ))
 
         self.doit(query, qo, set([ "C1" , "C2", "C3"  ]))
 
@@ -152,7 +152,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits>3 | c.code ]
         #
         query = "[ c in ICourse, c.credits>3 | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -164,7 +164,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
                     Constant(metadata, symbols,'3')),
-            ] ,Identifier(metadata, symbols, 'c.code') )
+            ] ,Identifier(metadata, symbols, 'c.code') ))
 
         self.doit(query, qo, set([]))
 
@@ -176,7 +176,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits<=3 | c.code ]
         #
         query = "[ c in ICourse, c.credits<=3 | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set, [
                 In(
@@ -186,7 +186,7 @@ class testOLD(unittest.TestCase):
                 Le(metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
                     Constant(metadata, symbols,'3')),
-            ] ,Identifier(metadata, symbols,'c.code'))
+            ] ,Identifier(metadata, symbols,'c.code')))
 
         self.doit(query, qo, set([ "C1" , "C2", "C3" ]))
 
@@ -198,7 +198,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits=3 | c.code ]
         #
         query = "[ c in ICourse, c.credits=3 | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -210,7 +210,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
                     Constant(metadata, symbols,'3')),
-            ] ,Identifier(metadata, symbols,'c.code'))
+            ] ,Identifier(metadata, symbols,'c.code')))
 
         self.doit(query, qo, set([ "C2", "C3" ]))
 
@@ -222,7 +222,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits<5, c.credits >=1  | c.code ]
         #
         query = "[ c in ICourse, c.credits<3, c.credits>=1 | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -238,7 +238,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
                     Constant(metadata, symbols,'1')),
-            ] ,Identifier(metadata, symbols, 'c.code'))
+            ] ,Identifier(metadata, symbols, 'c.code')))
 
         self.doit(query, qo, set([ "C1", "C2", "C3" ]))
 
@@ -250,7 +250,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits<=2, 2<=c.credits  | c.code ]
         #
         query = "[ c in ICourse, c.credits<=2, 2<=c.credits | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set, [
                 In(
@@ -265,7 +265,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Constant(metadata, symbols,'2'),
                     Identifier(metadata, symbols,'c.credits')),
-            ] ,Identifier(metadata, symbols,'c.code'))
+            ] ,Identifier(metadata, symbols,'c.code')))
 
         self.doit(query, qo, set([ "C1" ]))
 
@@ -277,7 +277,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits>=2, 2>=c.credits  | c.code ]
         #
         query = "[ c in ICourse, c.credits>=2, 2>=c.credits | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set, [
                 In(
@@ -292,7 +292,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Constant(metadata, symbols,'2'),
                     Identifier(metadata, symbols,'c.credits')),
-            ] ,Identifier(metadata, symbols,'c.code'))
+            ] ,Identifier(metadata, symbols,'c.code')))
 
         self.doit(query, qo, set([ "C1" ]))
 
@@ -304,7 +304,7 @@ class testOLD(unittest.TestCase):
         # set [ c in ICourse , c.credits=3, c.credits!=3  | c.code ]
         #
         query = "[ c in ICourse, c.credits=3, c.credits!=3 | c.code ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set, [
                 In(
@@ -319,7 +319,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
                     Constant(metadata, symbols,'3')),
-            ] ,Identifier(metadata, symbols,'c.code'))
+            ] ,Identifier(metadata, symbols,'c.code')))
 
         self.doit(query, qo, set([]))
 
@@ -332,7 +332,7 @@ class testOLD(unittest.TestCase):
         # some c.runBy = d  | d.name ]
         #
         query = "[ c in ICourse, d in IDepartments, d = some c.runBy | d.name  ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set, [
                 In(
@@ -352,7 +352,7 @@ class testOLD(unittest.TestCase):
                                     Identifier(metadata, symbols, 'c'),
                                     Identifier(metadata, symbols, 'runBy'))
                                 )),
-            ] ,Identifier(metadata, symbols,'d.name'))
+            ] ,Identifier(metadata, symbols,'d.name')))
 
         self.doit(query, qo, set(['Other department', 'Computing Science']))
 
@@ -364,7 +364,7 @@ class testOLD(unittest.TestCase):
         # set [ d in ICourse, c in ICourse, c.credits=3, some c.runBy = d | d.name ]
         #
         query = "[ c in ICourse, d in IDepartments, c.credits=3, d = some c.runBy | d.name  ]"
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -390,7 +390,7 @@ class testOLD(unittest.TestCase):
                                     Identifier(metadata, symbols, 'c'),
                                     Identifier(metadata, symbols, 'runBy'))
                                 )),
-            ] ,Identifier(metadata, symbols, 'd.name'))
+            ] ,Identifier(metadata, symbols, 'd.name')))
 
         self.doit(query, qo, set(['Computing Science']))
 
@@ -403,7 +403,7 @@ class testOLD(unittest.TestCase):
         query = """[ d in IDepartments,
         c in ICourse,
         some c.runBy = d, c.credits != 3| d.name ]"""
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -429,7 +429,7 @@ class testOLD(unittest.TestCase):
                     metadata, symbols,
                     Constant(metadata, symbols,'3'),
                     Identifier(metadata, symbols,'c.credits')),
-            ] ,Identifier(metadata, symbols,'d.name'))
+            ] ,Identifier(metadata, symbols,'d.name')))
 
         self.doit(query, qo, set(['Other department','Computing Science']))
 
@@ -445,7 +445,7 @@ class testOLD(unittest.TestCase):
             every
             set [ c in ICourse, some c.runBy = d | c.credits ] = 2
             | d.name ]"""
-        qo=Query(
+        qo=Head(Query(
             metadata, symbols,
             set,
             [
@@ -479,7 +479,7 @@ class testOLD(unittest.TestCase):
                             ], Identifier(metadata, symbols, 'c.credits')
                             )
                     ),Constant(metadata, symbols,'2')),
-            ] ,Identifier(metadata, symbols,'d.name'))
+            ] ,Identifier(metadata, symbols,'d.name')))
 
         self.doit(query, qo, set(['Other department']))
 

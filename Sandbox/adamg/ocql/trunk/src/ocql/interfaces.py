@@ -59,10 +59,20 @@ class IDB(Interface):
 # Objects passed around
 ################
 
+class IObjectQueryHead(Interface):
+    """Represents head of the query object tree
+    """
+    tree = Attribute('Holds the root of the query object tree')
+
+#    def rewrite(self):
+#        """Rewrites query object in to algebra object"""
+
 class IObjectQuery(Interface):
     """Objects providing this interface represent the OCQL query
     as python objects
     """
+    metadata = Attribute('metadata')
+    symbols = Attribute('symbols')
 
 class IOptimizedObjectQuery(Interface):
     """Objects providing this interface represent the OCQL query
@@ -74,14 +84,16 @@ class IAlgebraObjectHead(Interface):
     """
     tree = Attribute('holds the root of the algebra object tree')
 
-    def walk(self):
+    def walk():
         """Iterate the Algebra object tree"""
 
 class IAlgebraObject(Interface):
     """Objects providing this interface represent the
     rewritten ObjectQuery to Algebra objects
     """
-    def walk(self):
+    children = Attribute('Children collection')
+
+    def walk():
         """Iterate the Algebra object tree"""
 
 class IOptimizedAlgebraObject(Interface):

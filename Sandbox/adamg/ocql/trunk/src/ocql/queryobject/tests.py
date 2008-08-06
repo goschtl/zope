@@ -5,11 +5,8 @@ from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
-        DocFileSuite('rewriter.txt',
+        DocFileSuite('queryobject.txt',
             optionflags=flags),
-        DocFileSuite('algebra.txt',
-            optionflags=flags),
-        DocTestSuite('ocql.rewriter.algebra')
         ))
 
 

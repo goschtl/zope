@@ -12,6 +12,9 @@ added here.
 
     >>> from ocql.testing.database import TestMetadata
 
+    >>> import ocql.rewriter.rewriter
+    >>> ocql.rewriter.rewriter.registerAdapters()
+
 
     >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
@@ -19,6 +22,11 @@ added here.
     >>> print str(alg)
     Single(<type 'set'>,`1`)
 
+    >>> qo = QueryParser("list [ | 1 ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Single(<type 'list'>,`1`)
 
     >>> qo = QueryParser("set [ | 1 ] union set [|2]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
@@ -26,14 +34,23 @@ added here.
     >>> print str(alg)
     Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
 
+    >>> qo = QueryParser("list [ | 1 ] union list [|2]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Union(<type 'list'>,Single(<type 'list'>,`1`),Single(<type 'list'>,`2`))
 
-    #Differ not implemented
-    #>>> qo = QueryParser("set [ | 1 ] differ set [|2]")(TestMetadata())
-    #>>> opt = QueryOptimizer(qo)()
-    #>>> alg = Rewriter(opt)()
-    #>>> print str(alg)
-    #Union(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
+    >>> qo = QueryParser("set [ | 1 ] differ set [|2]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Differ(<type 'set'>,Single(<type 'set'>,`1`),Single(<type 'set'>,`2`))
 
+    >>> qo = QueryParser("list [ | 1 ] differ list [|2]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Differ(<type 'list'>,Single(<type 'list'>,`1`),Single(<type 'list'>,`2`))
 
     >>> qo = QueryParser("set [ i in ICourse | i ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
@@ -41,6 +58,11 @@ added here.
     >>> print str(alg)
     Iter(<type 'set'>,Lambda i: Single(<type 'set'>,i),Make(<type 'set'>,<type 'set'>,ICourse))
 
+#    >>> qo = QueryParser("list [ i in ICourse | i ]")(TestMetadata())
+#    >>> opt = QueryOptimizer(qo)()
+#    >>> alg = Rewriter(opt)()
+#    >>> print str(alg)
+#    Iter(<type 'list'>,Lambda i: Single(<type 'list'>,i),Make(<type 'list'>,<type 'list'>,ICourse))
 
     #bag not implemented
     #>>> qo = QueryParser("size set [ i in ICourse | i ]")(TestMetadata())
