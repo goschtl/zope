@@ -14,14 +14,13 @@ $Id: newqueryparser.py 87780 2008-06-26 01:55:08Z paranaliyanage $
 from ply import lex, yacc
 from collections import deque
 from threading import local
-    
+
 from zope.component import adapts
 from zope.component import provideAdapter
 from zope.interface import implements
 
 from ocql.queryobject.queryobject import *
 from ocql.interfaces import IQueryParser
-from ocql.rewriter.rewriter import registerAdapters
 
 DEBUG = 0
 
@@ -114,7 +113,7 @@ class Lexer(object):
 
     def t_AS(self, t):
         r'as'
-        return t    
+        return t
 
     def t_IN(self, t):
         r'in'
@@ -298,7 +297,7 @@ class Parser(object):
         t[0] = Query(self.metadata, self.symbols, t[1], t[3], t[5])
         if DEBUG: print 'reducing "collection SBRACKET_L qualifier PIPE expression SBRACKET_R" to "expression"', t[0]
 
-#TODO add a test 
+#TODO add a test
     def p_expr_for_query(self, t):
         r'''expression : collection SBRACKET_L qualifier FOR expression SBRACKET_R
         '''
@@ -348,7 +347,7 @@ class Parser(object):
         if DEBUG: print 'reducing "bag" to "collection"', t[0]
 
     def p_qualifier_null(self, t):
-        r'''qualifier : 
+        r'''qualifier :
         '''
         t[0] = []
         if DEBUG: print 'reducing "" to "qualifier"', t[0]
@@ -472,8 +471,8 @@ class Parser(object):
         '''
         t[0] = Ne(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print 'reducing "quantified operator quantified" to "condition"', t[0]
-    
-    #need to extend this for collection of types 
+
+    #need to extend this for collection of types
     def p_condition_isinstance(self, t):
         r'''condition : ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R
         '''
@@ -535,7 +534,7 @@ class Parser(object):
         if DEBUG: print 'reducing "collection CBRACKET_L element CBRACKET_R" to "literal"', t[0]
 
     def p_element_null(self, t):
-        r'''element : 
+        r'''element :
         '''
         t[0] = None
         if DEBUG: print 'reducing "" to "element"', t[0]
@@ -584,7 +583,7 @@ class Parser(object):
         if DEBUG: print 'reducing "IDENTIFIER BRACKET_L argument_list BRACKET_R" to "method"', t[0]
 
     def p_argument_list_null(self, t):
-        r'''argument_list : 
+        r'''argument_list :
         '''
         t[0] = None
         if DEBUG: print 'reducing "" to "argument_list"', t[0]
@@ -641,7 +640,6 @@ def parse(str, metadata):
 class QueryParser(object):
     implements(IQueryParser)
     adapts(basestring)
-    registerAdapters()
 
     def __init__(self, context):
         self.context = context
