@@ -61,14 +61,20 @@ def iterPatternMatcher(tree):
         return tree
     #new algebra objects
     if operator == '==':
-        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], value, value)
+        makeFromIndex = MakeFromIndex(coll , coll, interface,
+                                      cond.split(".")[1],
+                                      lowerbound=value, upperbound=value)
     elif operator == '>' or operator == '>=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound=value, upperbound='Z')
+        makeFromIndex = MakeFromIndex(coll , coll, interface,
+                                      cond.split(".")[1],
+                                      lowerbound=value, upperbound=None)
     elif operator == '<' or operator == '<=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface, cond.split(".")[1], lowerbound='A', upperbound=value)
+        makeFromIndex = MakeFromIndex(coll , coll, interface,
+                                      cond.split(".")[1],
+                                      lowerbound=None, upperbound=value)
     else:
         return tree
-    
+
     newlambda = Lambda(var, single)
     newTree = Iter(coll, newlambda, makeFromIndex)
     parent = tree.__parent__
@@ -98,7 +104,7 @@ class AlgebraOptimizer(object):
 
     def __call__(self, metadata):
         results = findItrTreePattern(self.context.tree)
-        
+
         if results is not None:
             alg = iterPatternMatcher(results)
             addMarkerIF(alg, IOptimizedAlgebraObject)
