@@ -196,6 +196,7 @@ class importStep:
 #### genericsetup:upgradeStep
 
 import zope.schema
+import zope.configuration
 from upgrade import UpgradeStep
 from upgrade import UpgradeDepends
 from upgrade import _registerUpgradeStep
@@ -262,7 +263,7 @@ class IUpgradeDependsSubDirective(Interface):
         required=False,
         )
 
-    import_steps = zope.schema.List(
+    import_steps = zope.configuration.fields.Tokens(
         title=u"Import steps to rerun",
         required=False,
         value_type=zope.schema.TextLine(title=u"Import step"),

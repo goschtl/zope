@@ -143,11 +143,11 @@ class UpgradeDepends(UpgradeEntity):
     """A specialized upgrade step that re-runs a particular import
     step from the profile.
     """
-    def __init__(self, title, profile, source, dest, desc, steps=[],
+    def __init__(self, title, profile, source, dest, desc, import_steps=[],
                  run_deps=False, purge=False, checker=None, sortkey=0):
         super(UpgradeDepends, self).__init__(title, profile, source, dest,
                                           desc, checker, sortkey)
-        self.steps = steps
+        self.import_steps = import_steps
         self.run_deps = run_deps
         self.purge = purge
 

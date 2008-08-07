@@ -221,8 +221,12 @@ def test_registerUpgradeDepends(self):
       ('1', '0')
       >>> step.dest
       ('1', '1')
-      >>> step.steps
+      >>> step.import_steps
       []
+      >>> step.run_deps
+      False
+      >>> step.purge
+      False
 
     Clean up and make sure the cleanup works::
 
@@ -273,6 +277,13 @@ def test_registerUpgradeSteps(self):
       ...           description="Does another Bar upgrade thing."
       ...           handler="Products.GenericSetup.tests.test_zcml.c_dummy_upgrade_handler"
       ...           />
+      ...       <genericsetup:upgradeDepends
+      ...           title="Bar Upgrade dependency profile import steps"
+      ...           description="Re-imports steps from the profile"
+      ...           import_steps="baz bat"
+      ...           run_deps="True"
+      ...           purge="True"
+      ...           />
       ...   </genericsetup:upgradeSteps>
       ... </configure>'''
       >>> zcml.load_config('meta.zcml', Products.GenericSetup)
@@ -291,11 +302,11 @@ def test_registerUpgradeSteps(self):
       >>> type(steps)
       <type 'list'>
       >>> len(steps)
-      2
-      >>> step1, step2 = steps
-      >>> step1['source'] == step2['source'] == ('1', '0')
+      3
+      >>> step1, step2, step3 = steps
+      >>> step1['source'] == step2['source'] == step3['source'] == ('1', '0')
       True
-      >>> step1['dest'] == step2['dest'] == ('1', '1')
+      >>> step1['dest'] == step2['dest'] == step3['dest'] == ('1', '1')
       True
       >>> step1['step'].handler
       <function b_dummy_upgrade_handler at ...>
@@ -305,6 +316,12 @@ def test_registerUpgradeSteps(self):
       <function c_dummy_upgrade_handler at ...>
       >>> step2['title']
       u'Bar Upgrade Step 2'
+      >>> step3['step'].import_steps
+      [u'baz', u'bat']
+      >>> step3['step'].run_deps
+      True
+      >>> step3['step'].purge
+      True
       
     First one listed should be second in the registry due to sortkey:
 
