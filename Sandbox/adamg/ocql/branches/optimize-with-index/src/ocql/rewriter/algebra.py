@@ -26,9 +26,11 @@ class Head(Location):
         self.tree = tree
         locate(tree, self, 'tree')
 
+    def walk(self):
+        yield self.tree
+
     def __repr__(self):
         return ('%s') % (self.tree)
-
 
 class BaseAlgebra(Location):
     implements(IAlgebraObject)
@@ -49,19 +51,16 @@ class BaseAlgebra(Location):
                 yield t
 
 class Empty(BaseAlgebra):
-
     implements(IEmpty)
 
-    def __init__(self, klass, expr):
+    def __init__(self, klass):
         BaseAlgebra.__init__(self)
         self.setProp('klass', klass)
 
     def __repr__(self):
         return 'Empty(%s)'%(self.klass)
 
-
 class Single(BaseAlgebra):
-
     implements(ISingle)
 
     def __init__(self, klass, expr):
@@ -73,7 +72,6 @@ class Single(BaseAlgebra):
         return 'Single(%s, %s)'%(self.klass, self.expr)
 
 class Union(BaseAlgebra):
-
     implements(IUnion)
 
     def __init__(self, klass, coll1, coll2):
@@ -85,22 +83,21 @@ class Union(BaseAlgebra):
     def __repr__(self):
         return 'Union(%s, %s, %s)'%(self.klass, self.coll1, self.coll2)
 
+class Differ(BaseAlgebra):
+    implements(IDiffer)
 
-#class Differ:
-#    def __init__(self, klass, start, end):
-#        self.setProp('klass', klass)
-#        self.start = start
-#        self.end = end
-#
-#    def compile(self):
-#        if self.klass == set:
-#            return 'set(range(%s, %s))' % (self.start.compile(),self.end.compile())
-#        if self.klass == list:
-#            return 'range(%s, %s)' % (self.start.compile(),self.end.compile())
+    def __init__(self, klass, coll1, coll2):
+        self.klass = klass
+        self.coll1 = coll1
+        self.coll2 = coll2
+        locate(coll1, self, 'coll1')
+        locate(coll2, self, 'coll2')
+        self.children.extend([coll1, coll2])
 
+    def __repr__(self):
+        return 'Differ(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
 
 class Iter(BaseAlgebra):
-
     implements(IIter)
 
     def __init__(self, klass, func, coll):
@@ -112,9 +109,7 @@ class Iter(BaseAlgebra):
     def __repr__(self):
         return "Iter(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
-
 class Select(BaseAlgebra):
-
     implements(ISelect)
 
     def __init__(self, klass, func, coll):
@@ -126,9 +121,7 @@ class Select(BaseAlgebra):
     def __repr__(self):
         return "Select(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
-
 class Reduce(BaseAlgebra):
-
     implements(IReduce)
 
     def __init__(self, klass, expr, func, aggreg, coll):
@@ -141,7 +134,6 @@ class Reduce(BaseAlgebra):
 
     def __repr__(self):
         return "Reduce(%s, %s, %s, %s, %s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
-
 
 #class Equal:
 #    def __init__(self, klass, coll1, coll2):
@@ -156,7 +148,6 @@ class Reduce(BaseAlgebra):
 #            return 'filter(%s, %s)' % (self.coll1.compile(),self.coll2.compile())
 #
 class Range(BaseAlgebra):
-
     implements(IRange)
 
     def __init__(self, klass, start, end):
@@ -165,11 +156,9 @@ class Range(BaseAlgebra):
         self.setProp('start', start)
         self.setProp('end', end)
 
-
 #class Index
 
 class Make(BaseAlgebra):
-
     implements(IMake)
 
     def __init__(self, coll1, coll2, expr1, expr2):
@@ -205,7 +194,6 @@ class MakeFromIndex(BaseAlgebra):
 #class Being:
 
 class If(BaseAlgebra):
-
     implements(IIf)
 
     def __init__(self, cond, expr1, expr2):
@@ -217,12 +205,10 @@ class If(BaseAlgebra):
     def __repr__(self):
         return "If(%s, %s, %s)" % (self.cond, self.expr1, self.expr2)
 
-
 #
 #
 #
 class Lambda(BaseAlgebra):
-
     implements(ILambda)
 
     def __init__(self, var, expr):
@@ -233,9 +219,7 @@ class Lambda(BaseAlgebra):
     def __repr__(self):
         return "Lambda %s: %s" %(self.var, self.expr)
 
-
 class Constant(BaseAlgebra):
-
     implements(IConstant)
 
     def __init__(self, value):
@@ -245,9 +229,7 @@ class Constant(BaseAlgebra):
     def __repr__(self):
         return "`%s`" %(self.value)
 
-
 class Identifier(BaseAlgebra):
-
     implements(IIdentifier)
 
     def __init__(self, name):
@@ -258,7 +240,6 @@ class Identifier(BaseAlgebra):
         return "%s" % self.name
 
 class Binary(BaseAlgebra):
-
     implements(IBinary)
 
     def __init__(self, left, op, right):
@@ -270,9 +251,7 @@ class Binary(BaseAlgebra):
     def __repr__(self):
         return "%s%s%s" % (self.left, self.op.op, self.right)
 
-
 class Operator(BaseAlgebra):
-
     implements(IOperator)
 
     def __init__(self, op):
