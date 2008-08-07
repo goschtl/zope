@@ -152,8 +152,8 @@ class UpgradeDepends(UpgradeEntity):
         self.purge = purge
 
     def doStep(self, tool):
-        if self.steps:
-            for step in self.steps:
+        if self.import_steps:
+            for step in self.import_steps:
                 tool.runImportStepFromProfile(self.profile, step,
                                               run_dependencies=self.run_deps,
                                               purge_old=self.purge)
@@ -163,7 +163,7 @@ class UpgradeDepends(UpgradeEntity):
             ign_deps = not self.run_deps
             tool.runAllImportStepsFromProfile(self.profile,
                                               purge_old=self.purge,
-                                              ignore_dependendencies=ign_deps)
+                                              ignore_dependencies=ign_deps)
 
 def _registerUpgradeStep(step):
     profile_id = step.profile
