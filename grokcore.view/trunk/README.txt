@@ -1,4 +1,4 @@
-THis package provides support for writing browser pages for Zope
+This package provides support for writing browser pages for Zope
 and registering them directly in Python (without ZCML).
 
 .. contents::
@@ -252,7 +252,7 @@ Other
     Default layer for browser components from ``zope.publisher``.
 
 
-In addition, the ``grokcore.security`` package exposes the
+In addition, the ``grokcore.view`` package exposes the
 `grokcore.component`_ and `grokcore.security`_ APIs.
 
 .. _grokcore.component: http://pypi.python.org/pypi/grokcore.component
