@@ -145,7 +145,7 @@ def test_registerProfile():
 
 def test_registerUpgradeStep(self):
     """
-    Use the genericsetup:upgradeStep directive::
+    Use the standalone genericsetup:upgradeStep directive::
 
       >>> import Products.GenericSetup
       >>> from Products.Five import zcml
@@ -187,6 +187,48 @@ def test_registerUpgradeStep(self):
       >>> cleanUp()
     """
 
+def test_registerUpgradeDepends(self):
+    """
+    Use the standalone genericsetup:upgradeDepends directive::
+
+      >>> import Products.GenericSetup
+      >>> from Products.Five import zcml
+      >>> configure_zcml = '''
+      ... <configure
+      ...     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+      ...     i18n_domain="foo">
+      ...   <genericsetup:upgradeDepends
+      ...       title="Upgrade Foo Product"
+      ...       description="Upgrades Foo from 1.0 to 1.1."
+      ...       source="1.0"
+      ...       destination="1.1"
+      ...       sortkey="1"
+      ...       profile="default"
+      ...       />
+      ... </configure>'''
+      >>> zcml.load_config('meta.zcml', Products.GenericSetup)
+      >>> zcml.load_string(configure_zcml)
+
+    Make sure the upgrade step is registered correctly::
+
+      >>> from Products.GenericSetup.upgrade import _upgrade_registry
+      >>> profile_steps = _upgrade_registry.getUpgradeStepsForProfile('default')
+      >>> keys = profile_steps.keys()
+      >>> len(keys)
+      1
+      >>> step = profile_steps[keys[0]]
+      >>> step.source
+      ('1', '0')
+      >>> step.dest
+      ('1', '1')
+      >>> step.steps
+      []
+
+    Clean up and make sure the cleanup works::
+
+      >>> from zope.testing.cleanup import cleanUp
+      >>> cleanUp()
+    """
 
 def test_registerUpgradeSteps(self):
     """

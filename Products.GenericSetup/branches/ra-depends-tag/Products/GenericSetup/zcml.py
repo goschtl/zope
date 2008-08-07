@@ -300,7 +300,7 @@ def upgradeDepends(_context, title, profile, description, import_steps=[],
     step = UpgradeDepends(title, profile, source, destination, description,
                           import_steps, run_deps, purge, checker, sortkey)
     _context.action(
-        discriminator = ('upgradeDepends', source, destination, import_steps,
+        discriminator = ('upgradeDepends', source, destination, str(import_steps),
                          checker, sortkey),
         callable = _registerUpgradeStep,
         args = (step,),
@@ -344,7 +344,7 @@ class upgradeSteps(object):
                                                  self.sortkey))))
         _context.action(
             discriminator = ('upgradeDepends', self.source, self.dest,
-                             import_steps, self.sortkey),
+                             str(import_steps), self.sortkey),
             callable = _registerNestedUpgradeStep,
             args = (step, self.id)
             )

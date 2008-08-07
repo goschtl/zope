@@ -145,7 +145,7 @@ class UpgradeDepends(UpgradeEntity):
     """
     def __init__(self, title, profile, source, dest, desc, steps=[],
                  run_deps=False, purge=False, checker=None, sortkey=0):
-        super(UpgradeStep, self).__init__(title, profile, source, dest,
+        super(UpgradeDepends, self).__init__(title, profile, source, dest,
                                           desc, checker, sortkey)
         self.steps = steps
         self.run_deps = run_deps
