@@ -36,7 +36,7 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
                 **kw):
         directory = class_.module_info.getResourcePath(directory)
         if not os.path.isdir(directory):
-            raise GrokImportError(
+            raise GrokError(
                 "You can only pass a directory to the '%s' directive." %
                 self.name)
 
