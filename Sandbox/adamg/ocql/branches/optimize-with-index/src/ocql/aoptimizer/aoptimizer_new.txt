@@ -9,20 +9,24 @@ Queries in the rewriter.txt are extended to AlgebraOptimization
 
     >>> from ocql.testing.database import TestMetadata
 
+    >>> import ocql.compiler.compiler
+    >>> ocql.compiler.compiler.registerAdapters()
+
+    >>> import ocql.rewriter.rewriter
+    >>> ocql.rewriter.rewriter.registerAdapters()
+
 
     >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
-    >>> out = AlgebraOptimizer(alg)(None)
+    >>> out = AlgebraOptimizer(alg)(TestMetadata())
     >>> print str(out)
     Single(<type 'set'>, `1`)
- 	
-
 
     >>> qo = QueryParser("set [ | 1 ] union set [|2]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
-    >>> out = AlgebraOptimizer(alg)(None)
+    >>> out = AlgebraOptimizer(alg)(TestMetadata())
     >>> print str(out)
     Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
 
@@ -33,20 +37,19 @@ Queries in the rewriter.txt are extended to AlgebraOptimization
     #>>> print str(alg)
     #Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
 
-
     >>> qo = QueryParser("set [ i in ICourse | i ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
-    >>> out = AlgebraOptimizer(alg)(None)
+    >>> out = AlgebraOptimizer(alg)(TestMetadata())
     >>> print str(out)
     Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
-    >>> out = AlgebraOptimizer(alg)(None)
-    >>> print str(out)
-    Iter(<type 'set'>, Lambda c: Single(<type 'set'>, c.code), MakeFromIndex(<type 'set'>, <type 'set'>, ICourse, credits, 3, Z))
+    #>>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
+    #>>> opt = QueryOptimizer(qo)()
+    #>>> alg = Rewriter(opt)()
+    #>>> out = AlgebraOptimizer(alg)(TestMetadata())
+    #>>> print str(out)
+    #Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
 
     #bag not implemented
     #>>> qo = QueryParser("size set [ i in ICourse | i ]")(TestMetadata())

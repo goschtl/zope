@@ -81,21 +81,19 @@ class Union(BaseAlgebra):
         self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return 'Union(%s, %s, %s)'%(self.klass, self.coll1, self.coll2)
+        return 'Union(%s, %s, %s)' % (self.klass, self.coll1, self.coll2)
 
 class Differ(BaseAlgebra):
     implements(IDiffer)
 
     def __init__(self, klass, coll1, coll2):
-        self.klass = klass
-        self.coll1 = coll1
-        self.coll2 = coll2
-        locate(coll1, self, 'coll1')
-        locate(coll2, self, 'coll2')
-        self.children.extend([coll1, coll2])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return 'Differ(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
+        return 'Differ(%s, %s, %s)' % (self.klass, self.coll1, self.coll2)
 
 class Iter(BaseAlgebra):
     implements(IIter)
@@ -161,15 +159,14 @@ class Range(BaseAlgebra):
 class Make(BaseAlgebra):
     implements(IMake)
 
-    def __init__(self, coll1, coll2, expr1, expr2):
+    def __init__(self, coll1, coll2, expr):
         BaseAlgebra.__init__(self)
-        self.setProp('expr1', expr1)
-        self.setProp('expr2', expr2)
+        self.setProp('expr', expr)
         self.setProp('coll1', coll1)
         self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr1)
+        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr)
 
 
 class MakeFromIndex(BaseAlgebra):

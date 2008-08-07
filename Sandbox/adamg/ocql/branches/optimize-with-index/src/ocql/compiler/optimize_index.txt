@@ -19,8 +19,11 @@ Checking here how a compiled query can be optimized for zope indexes
 
     >>> from ocql.engine import OCQLEngine
 
-    >>> from ocql.compiler.compiler import registerAdapters
-    >>> registerAdapters()
+    >>> import ocql.compiler.compiler
+    >>> ocql.compiler.compiler.registerAdapters()
+
+    >>> import ocql.rewriter.rewriter
+    >>> ocql.rewriter.rewriter.registerAdapters()
 
     >>> from ocql.testing.utils_opt import setupInterfaces
     >>> setupInterfaces(None)
@@ -61,7 +64,7 @@ IUnOptimizedClass with a filter condition:
 
     >>> metadata = IDB(None)
     >>> symbols = SymbolContainer()
-    >>> qo = Query(
+    >>> qo = Head(Query(
     ...         metadata, symbols,
     ...         set,
     ...         [
@@ -73,7 +76,7 @@ IUnOptimizedClass with a filter condition:
     ...                 metadata,symbols,
     ...                 Identifier(metadata, symbols, 'i.value'),
     ...                 Identifier(metadata, symbols, '5'))
-    ...         ], Identifier(metadata, symbols, 'i.name'))
+    ...         ], Identifier(metadata, symbols, 'i.name')))
 
 
     >>> engine = OCQLEngine()
@@ -109,7 +112,7 @@ IOptimizedClass with a filter condition:
 
     >>> metadata = IDB(None)
     >>> symbols = SymbolContainer()
-    >>> qo = Query(
+    >>> qo = Head(Query(
     ...         metadata, symbols,
     ...         set,
     ...         [
@@ -121,7 +124,7 @@ IOptimizedClass with a filter condition:
     ...                 metadata,symbols,
     ...                 Identifier(metadata, symbols, 'i.value'),
     ...                 Identifier(metadata, symbols, '5'))
-    ...         ], Identifier(metadata, symbols, 'i.name'))
+    ...         ], Identifier(metadata, symbols, 'i.name')))
 
 
     >>> engine = OCQLEngine()

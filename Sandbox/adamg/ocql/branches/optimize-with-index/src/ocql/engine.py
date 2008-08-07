@@ -17,11 +17,11 @@ from ocql.interfaces import IAlgebraOptimizer
 from ocql.interfaces import IAlgebraCompiler
 from ocql.interfaces import IDB
 
-from ocql.interfaces import IObjectQuery
 from ocql.interfaces import IOptimizedObjectQuery
 from ocql.interfaces import IAlgebraObject
 from ocql.interfaces import IOptimizedAlgebraObject
 from ocql.interfaces import IRunnableQuery
+from ocql.interfaces import IObjectQueryHead
 
 class OCQLEngine:
     implements(IEngine)
@@ -32,8 +32,7 @@ class OCQLEngine:
     def compile(self, query):
         #TODO: later use maybe named adapters
         metadata = IDB(None)
-
-        if IObjectQuery.providedBy(query):
+        if IObjectQueryHead.providedBy(query):
             objectquery = query
         else:
             objectquery = IQueryParser(query)(metadata)

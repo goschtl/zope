@@ -45,12 +45,12 @@ def findItrTreePattern(tree):
     return None
 
 
-def iterPatternMatcher(tree):
+def iterPatternMatcher(metadata, tree):
     """Replaces the identified Iter tree pattern """
     coll = tree.klass
     single = tree.func.expr.expr1
     var = tree.func.var
-    interface = tree.coll.expr1.name
+    interface = tree.coll.expr.name
     cond = tree.func.expr.cond.left.name
     operator = tree.func.expr.cond.op.op
     if isinstance(tree.func.expr.cond.right, Constant):
@@ -58,7 +58,11 @@ def iterPatternMatcher(tree):
     elif isinstance(tree.func.expr.cond.right, Identifier):
         value = tree.func.expr.cond.right.name
     else:
-        return tree
+        return tree.__parent__
+
+    if not metadata.hasPropertyIndex(interface, cond.split(".")[1]):
+        return tree.__parent__
+
     #new algebra objects
     if operator == '==':
         makeFromIndex = MakeFromIndex(coll , coll, interface,
@@ -73,7 +77,7 @@ def iterPatternMatcher(tree):
                                       cond.split(".")[1],
                                       lowerbound=None, upperbound=value)
     else:
-        return tree
+        return tree.__parent__
 
     newlambda = Lambda(var, single)
     newTree = Iter(coll, newlambda, makeFromIndex)
@@ -106,7 +110,7 @@ class AlgebraOptimizer(object):
         results = findItrTreePattern(self.context.tree)
 
         if results is not None:
-            alg = iterPatternMatcher(results)
+            alg = iterPatternMatcher(metadata, results)
             addMarkerIF(alg, IOptimizedAlgebraObject)
             return alg
 

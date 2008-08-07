@@ -176,7 +176,7 @@ class MakeCompiler(BaseCompiler):
     def __call__(self):
         return '%s(metadata.getAll("%s"))' % (
             self.context.coll1.__name__,
-            IAlgebraCompiler(self.context.expr1)())
+            IAlgebraCompiler(self.context.expr)())
 
 
 class MakeFromIndexCompiler(BaseCompiler):

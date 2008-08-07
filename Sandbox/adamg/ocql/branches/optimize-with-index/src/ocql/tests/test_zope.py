@@ -154,7 +154,7 @@ class testZope(unittest.TestCase):
         # set [ c in IStudent , c.country="USA" | c.name]
         #
         query = "[c in IStudent , c.country=USA | c.name]"
-        qo = Query(
+        qo = Head(Query(
                    metadata, symbols,
                    set,
                    [
@@ -166,7 +166,7 @@ class testZope(unittest.TestCase):
                            metadata,symbols,
                            Identifier(metadata, symbols, 'c.country'),
                            Identifier(metadata, symbols, '"USA"'))
-                   ], Identifier(metadata, symbols, 'c.name'))
+                   ], Identifier(metadata, symbols, 'c.name')))
 
         self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country', 'USA', 'USA')[0].name]))
 
