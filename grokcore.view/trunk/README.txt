@@ -98,6 +98,18 @@ spell out the name of the template file explicitly.
 To cut a long story short, if we named it ``app_templates/hello.pt``,
 it would be found automatically.
 
+Static resources
+----------------
+
+Browser pages often need additional static resources like CSS and
+JavaScript files.  These can be conveniently placed into a directory
+called ``static`` in the package that contains the view code.  This
+directory will automatically be registered as a resource directory.
+It is available as the ``static`` variable in all views of this
+package and you can refer to files inside this directory like so::
+
+  <img src="hello.png" tal:attributes="src static/hello.png" />
+
 Layers and skins
 ----------------
 
