@@ -25,6 +25,10 @@ class ISkinable(interface.Interface):
     """ marker interface for skinable objects """
 
 
+class INoSkinSwitching(interface.Interface):
+    """ if default skin provide this interface, do not switch skin """
+
+
 class IDefaultLayer(interface.interfaces.IInterface):
     """ default layer (automaticlly added to skin) """
 

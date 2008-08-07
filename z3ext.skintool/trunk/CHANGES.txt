@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.0.2 (2008-08-07)
+------------------
+
+- Added INoSkinSwitching for skin that does not allow skin switching
+
+
 1.0.1 (2008-05-16)
 ------------------
 
