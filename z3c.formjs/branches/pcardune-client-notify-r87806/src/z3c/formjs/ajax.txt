@@ -39,7 +39,7 @@ python object.
   ...         message = self.request.get('message', 'Nothing to ping back.')
   ...         return "from %r: %s" % (self, message)
   ...
-  ...     @ajax.handler
+  ...     @ajax.json
   ...     def info(self):
   ...         return {'class':self.__class__.__name__,
   ...                 'requestKeys':self.request.keys(),

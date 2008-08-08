@@ -18,15 +18,16 @@ $Id: $
 __docformat__ = "reStructuredText"
 import sys
 import cjson
+import inspect
 import zope.component
 import zope.interface
 from zope.publisher.interfaces import NotFound
 from zope.publisher.browser import BrowserPage
+from zope.publisher.publish import mapply
 from zope.traversing.api import getParents
 from z3c.traverser import traverser
 from z3c.form.util import SelectionManager, createCSSId
 from z3c.traverser.interfaces import ITraverserPlugin
-
 from z3c.formjs import interfaces
 
 
@@ -82,16 +83,19 @@ class AJAXHandler(object):
         self.func = func
 
     def __call__(self, view):
-        result = self.func(view)
-        if type(result) in (dict, list, set):
-            try:
-                result = cjson.encode(result)
-            except TypeError:
-                result = str(result)
+        result = mapply(self.func, (view,), view.request)
         return result
 
     def __repr__(self):
         return "<%s %r>" % (self.__class__.__name__, self.func.__name__)
+
+
+class JSONHandler(AJAXHandler):
+    def __call__(self, view):
+        args = [cjson.decode(view.request[name])
+                for name in inspect.getargspec(self.func)[0][1:]]
+        result = self.func(view, *args)
+        return cjson.encode(result)
 
 
 class AJAXRequestHandler(object):
@@ -105,6 +109,19 @@ class AJAXRequestHandler(object):
 def handler(func):
     """A decorator for defining an AJAX request handler."""
     handler = AJAXHandler(func)
+    frame = sys._getframe(1)
+    f_locals = frame.f_locals
+    handlers = f_locals.setdefault('ajaxRequestHandlers', AJAXHandlers())
+    handlers.addHandler(func.__name__, handler)
+    return handler
+
+
+def json(func):
+    """A decorator for defining JSONHandler objects.
+
+    This AJAX request handlers does JSON pre and post processing.
+    """
+    handler = JSONHandler(func)
     frame = sys._getframe(1)
     f_locals = frame.f_locals
     handlers = f_locals.setdefault('ajaxRequestHandlers', AJAXHandlers())
