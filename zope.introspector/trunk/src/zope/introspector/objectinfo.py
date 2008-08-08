@@ -33,7 +33,7 @@ class ObjectInfo(grok.Adapter):
         
     def getType(self):
         return type(self.obj)
-
+    
     def isModule(self):
         return inspect.ismodule(self.obj)
 
@@ -50,7 +50,7 @@ class ObjectInfo(grok.Adapter):
     
     def getFile(self):
         try:
-            return inspect.getsourcefile(self.obj)
+            return inspect.getsourcefile(self.obj.__class__)
         except TypeError:
             try:
                 return inspect.getsourcefile(self.getType())
@@ -60,7 +60,7 @@ class ObjectInfo(grok.Adapter):
         
     def getAttributes(self):
         attributes = []
-        for id, value in inspect.getmembers(self.obj):
+        for id, value in inspect.getmembers(self.obj.__class__):
             if inspect.ismethod(value):
                 continue
             attributes.append({'id': id,
@@ -70,10 +70,17 @@ class ObjectInfo(grok.Adapter):
             
     def getMethods(self):
         methods = []
-        for id, value in inspect.getmembers(self.obj):
+        for id, value in inspect.getmembers(self.obj.__class__):
             if inspect.ismethod(value):
-                methods.append({'id': id,
-                                })
+                try:
+                    methods.append({'id': id,
+                                    'args':inspect.getargspec(value),
+                                    'comment': inspect.getcomments(value),
+                                    'doc': inspect.getdoc(value),
+                                    })
+                except:
+                    pass
+                    
         return methods
 
 class ModuleInfo(ObjectInfo):
