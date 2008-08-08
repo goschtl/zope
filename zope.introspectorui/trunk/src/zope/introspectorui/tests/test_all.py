@@ -21,7 +21,8 @@ from zope.app.testing.functional import ZCMLLayer
 ftesting_zcml = os.path.join(
     os.path.dirname(os.path.dirname(__file__)), 'ftesting.zcml')
 FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__,
-                            'ZopeIntrospectorUIFunctionalLayer')
+                            'ZopeIntrospectorUIFunctionalLayer',
+                            allow_teardown=True)
 
 # This we say: include all testfiles in or below the
 # package in the tests.
