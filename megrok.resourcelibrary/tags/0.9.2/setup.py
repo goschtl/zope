@@ -11,7 +11,7 @@ long_description = (
     )
 
 setup(name='megrok.resourcelibrary',
-      version='0.10dev',
+      version='0.9.1',
       description="Static resource library support for Grok.",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
