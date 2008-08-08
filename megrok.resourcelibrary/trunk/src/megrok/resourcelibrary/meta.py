@@ -22,7 +22,6 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
     martian.directive(resourcelibrary.directory)
     martian.directive(resourcelibrary.depend, get_default=default_list)
     martian.directive(resourcelibrary.include, get_default=default_list)
-    martian.directive(resourcelibrary.include_other, get_default=default_list)
     martian.directive(grok.layer, default=IDefaultBrowserLayer)
     martian.directive(grok.require, name='permission')
     
@@ -33,8 +32,7 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
             name, factory, module_info, **kw)
     
     def execute(self, class_, config, name, directory, depend,
-                include, include_other, layer,
-                permission,
+                include, layer, permission,
                 **kw):
         orig_directory = directory
         directory = class_.module_info.getResourcePath(directory)
