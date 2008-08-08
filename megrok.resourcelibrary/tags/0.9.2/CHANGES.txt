@@ -1,0 +1,23 @@
+Changes
+=======
+
+0.9.2 (2008-08-08)
+------------------
+
+* Grokker mistakenly relied on (not imported) ``GrokImportError`` in failure
+  case. Corrected this to ``GrokError`` and added a test for it.
+
+* Rename ``use`` directive to ``depend`` and make it take a class
+  argument instead of a library name.
+
+0.9.1 (2008-08-06)
+------------------
+
+* Turn off zip-safeness.
+
+* Actually add a meta.zcml that loads up the grokker!
+
+0.9 (2008-08-06)
+----------------
+
+* Initial public release.
