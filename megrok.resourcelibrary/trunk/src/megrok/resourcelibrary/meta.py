@@ -34,11 +34,12 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
     def execute(self, class_, config, name, directory, use, include, layer,
                 permission,
                 **kw):
+        orig_directory = directory
         directory = class_.module_info.getResourcePath(directory)
         if not os.path.isdir(directory):
             raise GrokError(
-                "You can only pass a directory to the '%s' directive." %
-                self.name)
+                "Directory '%s' is not a valid directory passed to the '%s' directive." %
+                (orig_directory, name), class_)
 
         library_info[name] = LibraryInfo()
         library_info[name].required.extend(use)

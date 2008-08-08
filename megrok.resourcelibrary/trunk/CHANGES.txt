@@ -5,7 +5,7 @@ Changes
 -----------------
 
 * Grokker mistakenly relied on (not imported) ``GrokImportError`` in failure
-  case. Corrected this to ``GrokError``.
+  case. Corrected this to ``GrokError`` and added a test for it.
 
 0.9.1 (2008-08-06)
 ------------------

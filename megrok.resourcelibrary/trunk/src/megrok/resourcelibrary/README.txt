@@ -83,6 +83,16 @@ directive::
       alert('Hi there!');
   }
 
+It's an error to point to a directory that doesn't exist::
+
+  >>> class WrongDirectory(megrok.resourcelibrary.ResourceLibrary):
+  ...     grok.name('wrong-directory')
+  ...     megrok.resourcelibrary.directory('tests/doesnt_exist')
+  >>> grok_component('WrongDirectory', WrongDirectory)
+  Traceback (most recent call last):
+    ...
+  GrokError: Directory 'tests/doesnt_exist' is not a valid directory passed to the 'wrong-directory' directive.
+
 Automactic inclusion of resources
 ---------------------------------
 
