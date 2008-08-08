@@ -21,6 +21,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
   AMD64.
 - Upgraded zope.security 3.4.0 to 3.4.1: fixes problems using Python 2.5 on
   AMD64.
+- Upgraded z3c.form 1.8.0 to 1.8.2: fixes error on Python 2.5.
 
 
 3.4.0c5 (2008-07-31)
