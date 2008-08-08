@@ -16,6 +16,7 @@ from ocql.interfaces import IAlgebraObject
 from ocql.interfaces import IAlgebraObjectHead
 from ocql.rewriter.interfaces import *
 from zope.location import Location, locate
+from zope.location.interfaces import ILocation
 
 class Head(Location):
     implements(IAlgebraObjectHead)
@@ -33,7 +34,15 @@ class Head(Location):
 
 class BaseAlgebra(Location):
     implements(IAlgebraObject)
-    children = []
+
+    def __init__(self):
+        self.children = []
+
+    def setProp(self, name, value):
+        setattr(self, name, value)
+        if ILocation.providedBy(value):
+            locate(value, self, name)
+            self.children.append(value)
 
     def walk(self):
         yield self
@@ -45,7 +54,8 @@ class Empty(BaseAlgebra):
     implements(IEmpty)
 
     def __init__(self, klass):
-        self.klass = klass
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
 
     def __repr__(self):
         return 'Empty(%s)'%(self.klass)
@@ -54,110 +64,95 @@ class Single(BaseAlgebra):
     implements(ISingle)
 
     def __init__(self, klass, expr):
-        self.klass = klass
-        self.expr = expr
-        locate(expr, self, 'expr')
-        self.children.extend([klass, expr])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('expr', expr)
 
     def __repr__(self):
-        return 'Single(%s,%s)'%(self.klass, self.expr)
+        return 'Single(%s, %s)'%(self.klass, self.expr)
 
 class Union(BaseAlgebra):
     implements(IUnion)
 
     def __init__(self, klass, coll1, coll2):
-        self.klass=klass
-        self.coll1=coll1
-        self.coll2=coll2
-        locate(coll1, self, 'coll1')
-        locate(coll2, self, 'coll2')
-        self.children.extend([coll1, coll2])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return 'Union(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
+        return 'Union(%s, %s, %s)' % (self.klass, self.coll1, self.coll2)
 
 class Differ(BaseAlgebra):
     implements(IDiffer)
 
     def __init__(self, klass, coll1, coll2):
-        self.klass = klass
-        self.coll1 = coll1
-        self.coll2 = coll2
-        locate(coll1, self, 'coll1')
-        locate(coll2, self, 'coll2')
-        self.children.extend([coll1, coll2])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return 'Differ(%s,%s,%s)'%(self.klass, self.coll1, self.coll2)
+        return 'Differ(%s, %s, %s)' % (self.klass, self.coll1, self.coll2)
 
 class Iter(BaseAlgebra):
     implements(IIter)
 
     def __init__(self, klass, func, coll):
-        self.klass = klass
-        self.func = func
-        self.coll = coll
-        locate(func, self, 'func')
-        locate(coll, self, 'coll')
-        self.children.extend([func,coll])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('func', func)
+        self.setProp('coll', coll)
 
     def __repr__(self):
-        return "Iter(%s,%s,%s)"%(self.klass, self.func, self.coll)
+        return "Iter(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
 class Select(BaseAlgebra):
     implements(ISelect)
 
     def __init__(self, klass, func, coll):
-        self.klass = klass
-        self.func = func
-        self.coll = coll
-        locate(func, self, 'func')
-        locate(coll, self, 'coll')
-        self.children.extend([func,coll])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('func', func)
+        self.setProp('coll', coll)
 
     def __repr__(self):
-        return "Select(%s,%s,%s)"%(self.klass, self.func, self.coll)
+        return "Select(%s, %s, %s)"%(self.klass, self.func, self.coll)
 
 class Reduce(BaseAlgebra):
     implements(IReduce)
 
     def __init__(self, klass, expr, func, aggreg, coll):
-        self.klass = klass
-        self.expr = expr
-        self.func = func
-        self.aggreg = aggreg
-        self.coll = coll
-        locate(expr, self, 'expr')
-        locate(func, self, 'func')
-        locate(aggreg, self, 'aggreg')
-        locate(coll, self, 'coll')
-        self.children.extend([expr, func, aggreg, coll])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('expr', expr)
+        self.setProp('func', func)
+        self.setProp('aggreg', aggreg)
+        self.setProp('coll', coll)
 
     def __repr__(self):
-        return "Reduce(%s,%s,%s,%s,%s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
+        return "Reduce(%s, %s, %s, %s, %s)"%(self.klass, self.expr, self.func, self.aggreg, self.coll)
 
 #class Equal:
 #    def __init__(self, klass, coll1, coll2):
-#        self.klass = klass
-#        self.coll1 = coll1
-#        self.coll2 = coll2
+#        self.setProp('klass', klass)
+#        self.setProp('coll1', coll1)
+#        self.setProp('coll2', coll2)
 #
 #    def compile(self):
 #        if self.klass == set:
-#            return 'set(filter(%s,%s))' % (self.coll1.compile(),self.coll1.compile())
+#            return 'set(filter(%s, %s))' % (self.coll1.compile(),self.coll1.compile())
 #        if self.klass == list:
-#            return 'filter(%s,%s)' % (self.coll1.compile(),self.coll2.compile())
+#            return 'filter(%s, %s)' % (self.coll1.compile(),self.coll2.compile())
 #
 class Range(BaseAlgebra):
     implements(IRange)
 
     def __init__(self, klass, start, end):
-        self.klass = klass
-        self.start = start
-        self.end = end
-        locate(start, self, 'start')
-        locate(end, self, 'end')
-        self.children.extend([start, end])
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('start', start)
+        self.setProp('end', end)
 
 #class Index
 
@@ -165,16 +160,31 @@ class Make(BaseAlgebra):
     implements(IMake)
 
     def __init__(self, coll1, coll2, expr):
-        self.expr = expr
-        self.coll1 = coll1
-        self.coll2 = coll2
-        locate(expr, self, 'expr')
-#        locate(coll1, self, 'coll1')
-#        locate(coll2, self, 'coll2')
-        self.children.append(expr)
+        BaseAlgebra.__init__(self)
+        self.setProp('expr', expr)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
 
     def __repr__(self):
-        return "Make(%s,%s,%s)" %(self.coll1, self.coll2, self.expr)
+        return "Make(%s, %s, %s)" %(self.coll1, self.coll2, self.expr)
+
+
+class MakeFromIndex(BaseAlgebra):
+    
+    implements(IMakeFromIndex)
+
+    def __init__(self, coll1, coll2, expr1, expr2, operator, value):
+        BaseAlgebra.__init__(self)
+        self.setProp('expr1', expr1)
+        self.setProp('expr2', expr2)
+        self.setProp('coll1', coll1)
+        self.setProp('coll2', coll2)
+        self.setProp('operator', operator)
+        self.setProp('value', value)
+
+    def __repr__(self):
+        return "MakeFromIndex(%s, %s, %s, %s, %s)" % (
+            self.coll1, self.coll2, self.expr1, self.expr2, self.value)
 
 
 #class And:
@@ -184,16 +194,13 @@ class If(BaseAlgebra):
     implements(IIf)
 
     def __init__(self, cond, expr1, expr2):
-        self.cond = cond
-        self.expr1 = expr1
-        self.expr2 = expr2
-        locate(cond, self, 'cond')
-        locate(expr1, self, 'expr1')
-        locate(expr2, self, 'expr2')
-        self.children.extend([cond, expr1, expr2])
+        BaseAlgebra.__init__(self)
+        self.setProp('cond', cond)
+        self.setProp('expr1', expr1)
+        self.setProp('expr2', expr2)
 
     def __repr__(self):
-        return "If(%s,%s,%s)" % (self.cond, self.expr1, self.expr2)
+        return "If(%s, %s, %s)" % (self.cond, self.expr1, self.expr2)
 
 #
 #
@@ -202,10 +209,9 @@ class Lambda(BaseAlgebra):
     implements(ILambda)
 
     def __init__(self, var, expr):
-        self.var = var
-        self.expr = expr
-        locate(expr, self, 'expr')
-        self.children.append(expr)
+        BaseAlgebra.__init__(self)
+        self.setProp('var', var)
+        self.setProp('expr', expr)
 
     def __repr__(self):
         return "Lambda %s: %s" %(self.var, self.expr)
@@ -214,6 +220,7 @@ class Constant(BaseAlgebra):
     implements(IConstant)
 
     def __init__(self, value):
+        BaseAlgebra.__init__(self)
         self.value = value
 
     def __repr__(self):
@@ -223,6 +230,7 @@ class Identifier(BaseAlgebra):
     implements(IIdentifier)
 
     def __init__(self, name):
+        BaseAlgebra.__init__(self)
         self.name=name
 
     def __repr__(self):
@@ -232,12 +240,10 @@ class Binary(BaseAlgebra):
     implements(IBinary)
 
     def __init__(self, left, op, right):
-        self.left = left
-        self.op = op
-        self.right = right
-        locate(left, self, 'left')
-        locate(right, self, 'right')
-        self.children.extend([left, right])
+        BaseAlgebra.__init__(self)
+        self.setProp('left', left)
+        self.setProp('op', op)
+        self.setProp('right', right)
 
     def __repr__(self):
         return "%s%s%s" % (self.left, self.op.op, self.right)
@@ -246,6 +252,7 @@ class Operator(BaseAlgebra):
     implements(IOperator)
 
     def __init__(self, op):
+        BaseAlgebra.__init__(self)
         self.op = op
 
     def __repr__(self):

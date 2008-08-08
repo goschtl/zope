@@ -1,24 +1,31 @@
 
+    >>> from zope.interface.verify import verifyObject
 
+    >>> from ocql.interfaces import IAlgebraOptimizer
     >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
     >>> from ocql.interfaces import IOptimizedAlgebraObject
+    >>> from ocql.interfaces import IDB
 
-Currently the optimizer is doing NOTHING, it just returns what it gets.
-(And adds the interface IOptimizedAlgebraObject)
+#Currently the optimizer is doing NOTHING, it just returns what it gets.
+#(And adds the interface IOptimizedAlgebraObject)
 
     >>> class Dummy(object):
-    ...     def __init__(self, value):
-    ...          self.value = value
+    ...     def __init__(self, tree):
+    ...          self.tree = tree
 
     >>> in_=Dummy('foo-bar')
-    >>> in_.value
+    >>> in_.tree
     'foo-bar'
 
-    >>> out = AlgebraOptimizer(in_)()
+    >>> obj = AlgebraOptimizer(in_)
+    >>> verifyObject(IAlgebraOptimizer, obj)
+    True
+
+    >>> out = obj(None)
 
     >>> print out
     <Dummy object at ...>
-    >>> out.value
+    >>> out.tree
     'foo-bar'
 
     >>> IOptimizedAlgebraObject.providedBy(out)

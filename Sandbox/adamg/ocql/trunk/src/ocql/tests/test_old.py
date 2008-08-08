@@ -166,6 +166,9 @@ class testOLD(unittest.TestCase):
                     Constant(metadata, symbols,'3')),
             ] ,Identifier(metadata, symbols, 'c.code') ))
 
+        #from pub.dbgpclient import brk; brk('172.16.144.39')
+
+
         self.doit(query, qo, set([]))
 
 

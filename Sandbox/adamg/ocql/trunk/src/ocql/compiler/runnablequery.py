@@ -60,8 +60,8 @@ class RunnableQuery:
                            self.code)
 
     def reanalyze(self):
-        optimizedalgebra = IAlgebraOptimizer(self.alg)()
-        runnable = IAlgebraCompiler(optimizedalgebra)(self.metadata, self.alg)
+        optimizedalgebra = IAlgebraOptimizer(self.alg)(self.metadata)
+        runnable = IAlgebraCompiler(optimizedalgebra)(self.metadata, optimizedalgebra)
         return runnable
 
     def execute(self, debug=False):

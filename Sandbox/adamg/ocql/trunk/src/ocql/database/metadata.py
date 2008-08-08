@@ -5,8 +5,10 @@ from zope.component.interface import searchInterfaceUtilities
 from zope.component import getUtility
 from zope.component import getUtilitiesFor
 from zope.app.catalog.interfaces import ICatalog
+from zope.app.catalog.field import FieldIndex
 from zope.app.intid import IIntIds
-import zc.relation.interfaces
+#import zc.relation.interfaces
+from BTrees.IFBTree import difference
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
@@ -88,12 +90,55 @@ class Metadata:
             for iname, index in catalog.items():
                 if isinstance(index, AllIndex):
                     if index.interface.__name__ == klassname:
-                        interface = index.interface
                         results = catalog.apply({iname:(1,1)})
                         obj_list = [intids.getObject(result) for result in results]
                         return obj_list
 
         return None
+
+    def getFromIndex(self, klass, property, operator, value):
+        catalogs = getUtilitiesFor(ICatalog)
+        intids = getUtility(IIntIds)
+        for name, catalog in catalogs:
+            for iname, index in catalog.items():
+                if isinstance(index, FieldIndex) and \
+                index.field_name == property and \
+                index.interface.__name__ == klass:
+                    if operator == '==':
+                        results = catalog.apply({iname:(value, value)})
+                    elif operator == '!=':
+                        all = catalog.apply({iname:(None, None)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(all, temp)
+                    elif operator == '<=':
+                        results = catalog.apply({iname:(value, None)})
+                    elif operator == '<':
+                        lt_eq = catalog.apply({iname:(value, None)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(lt_eq, temp)
+                    elif operator == '>=':
+                        results = catalog.apply({iname:(None, value)})
+                    elif operator == '>':
+                        gt_eq = catalog.apply({iname:(None, value)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(gt_eq, temp)
+
+                    obj_list = [intids.getObject(result) for result in results]
+                    return obj_list
+        #I could check whether property has an index by hasPropertyIndex. 
+        #But by this approach this always returns IF objects
+        return self.getAll(klass)
+
+    def hasPropertyIndex(self, klass, property):
+        catalogs = getUtilitiesFor(ICatalog)
+        for name, catalog in catalogs:
+            for iname, index in catalog.items():
+                if isinstance(index, FieldIndex) and \
+                index.field_name == property and \
+                index.interface.__name__ == klass:
+                    return True
+        return False
+
 
     def get_class(self, klassname):
         """Returns a MetaType instance for the class."""

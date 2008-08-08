@@ -46,8 +46,8 @@ Now we'll see how a query runs
     RunnableQuery: set.union(set([1]), set([2]))
 
     >>> result = run.execute()
-    >>> result
-    set([1, 2])
+    >>> sorted(list(result))
+    [1, 2]
 
     >>> type(result)
     <type 'set'>
@@ -57,11 +57,11 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ i in ICourse | i ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda i: set([i]),set(metadata.getAll("ICourse"))), set())
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
-    >>> result
-    set([Course <C1>, Course <C2>, Course <C3>])
+    >>> sorted(list(result), key=lambda i: i.code)
+    [Course <C1>, Course <C2>, Course <C3>]
 
     >>> type(result)
     <type 'set'>
@@ -71,15 +71,19 @@ Now we'll see how a query runs
     >>> engine = OCQLEngine()
     >>> run = engine.compile("set [ c in ICourse | c.code ]")
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]),set(metadata.getAll("ICourse"))), set())
+    RunnableQuery: reduce(set.union, map(lambda c: set([c.code]), set(metadata.getAll("ICourse"))), set())
 
     >>> result = run.execute()
-    >>> result
-    set(['C3', 'C2', 'C1'])
+    >>> type(result)
+    <type 'set'>
+    >>> len(result)
+    3
+    >>> sorted(list(result))
+    ['C1', 'C2', 'C3']
 
     >>> type(result)
     <type 'set'>
 
     >>> run = run.reanalyze()
-    >>> run.execute()
-    set(['C3', 'C2', 'C1'])
+    >>> sorted(list(run.execute()))
+    ['C1', 'C2', 'C3']

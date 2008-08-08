@@ -11,6 +11,7 @@ from zope.component.interface import provideInterface
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
+from zope.app.catalog.attribute import AttributeIndex
 from ocql.database.index import AllIndex
 
 from zope.app.intid import IntIds
@@ -27,10 +28,10 @@ from ocql.testing.sample.mentor import Mentor
 from ocql.testing.sample.project import Project
 from ocql.testing.sample.student import Student
 from ocql.testing.sample.organization import Organization
-        
-import zc.relation.catalog
-import zc.relation.interfaces
-import zc.relation.queryfactory
+
+#import zc.relation.catalog
+#import zc.relation.interfaces
+#import zc.relation.queryfactory
 import BTrees
 
 #_obj = {}
@@ -70,6 +71,7 @@ def setupCatalog(test):
     cat['proj_descr'] = FieldIndex('description', IProject)
 
     cat['student_name'] = FieldIndex('name', IStudent)
+    cat['student_country'] = FieldIndex('country', IStudent)
 
     cat['mentor_name'] = FieldIndex('name', IMentor)
 
@@ -91,16 +93,19 @@ def setupCatalog(test):
 
     s1 = Student()
     s1.name = u"Charith"
+    s1.country = "Sri Lanka"
     id = intids.register(s1)
     cat.index_doc(id, s1)
 
     s2 = Student()
     s2.name = u"Jane"
+    s2.country = "USA"
     id = intids.register(s2)
     cat.index_doc(id, s2)
 
     s3 = Student()
     s3.name = u"Ann"
+    s3.country = "Hungary"
     id = intids.register(s3)
     cat.index_doc(id, s3)
 
@@ -108,7 +113,7 @@ def setupCatalog(test):
     o1.name = u"Zope.org"
     id = intids.register(o1)
     cat.index_doc(id, o1)
-    
+
 #    cat2 = zc.relation.catalog.Catalog(dumpRelation, loadRelation)
 #    cat2.addValueIndex(IProjectRelation['project'], dumpObj, loadObj, btree=BTrees.family32.OO)
 #    cat2.addValueIndex(IProjectRelation['mentor'], dumpObj, loadObj, btree=BTrees.family32.OO)
@@ -136,11 +141,3 @@ def queryCatalog():
     for r in results:
         obj = intids.getObject(r)
         print obj
-        
-#    rel_mentor = cat.apply({'all_mentors':(1,1)})
-#    
-#    for r in rel_mentor:
-#        obj = intids.getObject(r)     
-#        for p in cat2.findValueTokens('project',query(mentor=obj)):
-#            print p.name
-#    

@@ -36,7 +36,7 @@ class IStudent(Interface):
     """A Student object"""
 
     name = TextLine(title=u"Student Name")
-
+    country = Attribute('student country')
 
 class IMentor(Interface):
     """A Mentor object"""
@@ -54,13 +54,13 @@ class IOrganizationContained(IContained):
     containers(".IGsoc")
 
 
+#class IProjectRelation(Interface):
+#    mentor = Attribute('assigned mentor for the project')
+#    project = Attribute('mentoring project')
+#
+#
+
 class IOrganizationContainer(IContainer):
     """Organization is also a container for projects, students and mentors"""
 
     contains(".IProject", ".IStudent", ".IMentor")
-    
-#class IProjectRelation(Interface):
-#    mentor = Attribute('assigned mentor for the project')
-#    project = Attribute('mentoring project')
-#    
-#    

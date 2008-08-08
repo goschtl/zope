@@ -5,7 +5,11 @@ from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
+# avoid this tests for convenient while adding new implementation to the algebra optimizer
+#need to add aoptimizer.txt
         DocFileSuite('aoptimizer.txt',
+            optionflags=flags),
+        DocFileSuite('aoptimizer_new.txt',
             optionflags=flags),
         ))
 

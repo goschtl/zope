@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from zope.interface import implements
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 import persistent
 
 from ocql.testing.sample.interfaces import IStudent
@@ -26,6 +26,7 @@ class Student(persistent.Persistent):
     implements(IStudent)
 
     name = u''
+    country = None
 
     def __repr__(self):
         return "%s <%s>" % (self.__class__.__name__, self.name)
