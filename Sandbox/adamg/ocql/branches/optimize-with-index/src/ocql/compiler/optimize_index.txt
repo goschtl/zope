@@ -104,7 +104,6 @@ Results of the query:
 
 IOptimizedClass with a filter condition:
 (parser is not working, therefore the complicated query definition)
-(compiles to an imaginery code at the moment!!!)
 
     >>> from ocql.queryobject.queryobject import *
     >>> from ocql.interfaces import IDB

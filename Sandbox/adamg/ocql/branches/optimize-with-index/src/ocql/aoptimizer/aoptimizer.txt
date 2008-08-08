@@ -1,7 +1,7 @@
 
-	>>> from zope.interface.verify import verifyObject
+    >>> from zope.interface.verify import verifyObject
 
-	>>> from ocql.interfaces import IAlgebraOptimizer
+    >>> from ocql.interfaces import IAlgebraOptimizer
     >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
     >>> from ocql.interfaces import IOptimizedAlgebraObject
     >>> from ocql.interfaces import IDB
@@ -18,10 +18,10 @@
     'foo-bar'
 
     >>> obj = AlgebraOptimizer(in_)
-	>>> verifyObject(IAlgebraOptimizer, obj)
-	True
+    >>> verifyObject(IAlgebraOptimizer, obj)
+    True
 
-	>>> out = obj(None)
+    >>> out = obj(None)
 
     >>> print out
     <Dummy object at ...>
