@@ -33,6 +33,7 @@ import transaction
 import transaction.interfaces
 import ZODB.blob
 import ZODB.config
+from ZEO.runzeo import ZEOOptions
 
 import gocept.zeoraid.interfaces
 import gocept.zeoraid.recovery
@@ -585,13 +586,14 @@ class RAIDStorage(object):
 
     def raid_reload(self, path):
         s = ""
-        zeoconf = open(path, 'r').read()
-        temp_storage = ZODB.config.storageFromString(zeoconf)
-        storages_to_remove = [o for o in self.openers.items() if o[0] not in temp_storage.openers]
+        options = ZEOOptions()
+        options.realize(['-C',path])
+        new_storages = dict([(o.name,o) for o in options.storages[0].config.storages])
+        storages_to_remove = [o for o in self.openers.items() if o[0] not in new_storages]
         for storage in storages_to_remove:
             self.raid_disable(storage[0])
             s += "removed %s\n" % storage[0]
-        storages_to_add = [o for o in temp_storage.openers.items() if o[0] not in self.openers]
+        storages_to_add = [o for o in new_storages if o[0] not in self.openers]
         for storage in storages_to_add:
             name = storage[0]
             self.openers[name] = storage[1]
@@ -599,7 +601,6 @@ class RAIDStorage(object):
             self.storages_degraded.append(name)
             self.raid_recover(name)
             s += "added %s\n" % name
-        del temp_storage
         return s
 
     # internal
