@@ -158,6 +158,15 @@ We can get all modules contained in the package::
    <ModuleInfo object for 'zope.introspector.util'>,
    <ModuleInfo object for 'zope.introspector.viewinfo'>]
 
+We can get some information about the egg, this package is part of (if
+any). We get the egg name, version, Python version and egg location::
+
+  >>> pprint(info.getEggInfo())
+  {'location': '.../src',
+   'name': 'zope.introspector',
+   'py_version': None,
+   'version': '0...'}
+
 We can also grab the basic information provided by the adapted
 ``Package`` object::
 

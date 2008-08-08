@@ -14,6 +14,8 @@
 """The real information providers for code objects (packages, classes, etc.)
 """
 
+import pkg_resources
+from pkg_resources import DistributionNotFound
 import grokcore.component as grok
 from grokcore.component.interfaces import IContext
 import types
@@ -103,7 +105,21 @@ class PackageInfo(grok.Adapter):
 
     def getModules(self):
         return sorted(self._filterSubItems(lambda x: not x.isPackage()))
-        
+
+    def getEggInfo(self):
+        try:
+            info = pkg_resources.get_distribution(self.context.dotted_name)
+        except DistributionNotFound:
+            return None
+        version = info.has_version and info.version or None
+        name = info.project_name
+        py_version = info.py_version
+        location = info.location
+        return dict(
+            name=name,
+            version=version,
+            py_version=py_version,
+            location=location)
 
 class Module(PackageOrModule):
     def __getitem__(self, name):
