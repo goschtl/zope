@@ -7,6 +7,9 @@ Changes
 * Grokker mistakenly relied on (not imported) ``GrokImportError`` in failure
   case. Corrected this to ``GrokError`` and added a test for it.
 
+* Rename ``use`` directive to ``depend`` and make it take a class
+  argument instead of a library name.
+
 0.9.1 (2008-08-06)
 ------------------
 

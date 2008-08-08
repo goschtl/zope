@@ -18,10 +18,10 @@ class directory(martian.Directive):
 
     validate = martian.validateText
     
-class use(martian.Directive):
+class depend(martian.Directive):
     scope = martian.CLASS
     store = martian.MULTIPLE
-    validate = martian.validateText
+    validate = martian.validateClass
     
 class include(martian.Directive):
     scope = martian.CLASS

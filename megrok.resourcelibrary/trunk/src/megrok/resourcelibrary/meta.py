@@ -20,8 +20,9 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
     martian.component(resourcelibrary.ResourceLibrary)
     martian.directive(grok.name, get_default=default_library_name)
     martian.directive(resourcelibrary.directory)
-    martian.directive(resourcelibrary.use, get_default=default_list)
+    martian.directive(resourcelibrary.depend, get_default=default_list)
     martian.directive(resourcelibrary.include, get_default=default_list)
+    martian.directive(resourcelibrary.include_other, get_default=default_list)
     martian.directive(grok.layer, default=IDefaultBrowserLayer)
     martian.directive(grok.require, name='permission')
     
@@ -31,7 +32,8 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
         return super(ResourceLibraryGrokker, self).grok(
             name, factory, module_info, **kw)
     
-    def execute(self, class_, config, name, directory, use, include, layer,
+    def execute(self, class_, config, name, directory, depend,
+                include, include_other, layer,
                 permission,
                 **kw):
         orig_directory = directory
@@ -42,7 +44,11 @@ class ResourceLibraryGrokker(martian.ClassGrokker):
                 (orig_directory, name), class_)
 
         library_info[name] = LibraryInfo()
-        library_info[name].required.extend(use)
+
+        get_name = grok.name.bind(get_default=default_library_name).get
+        
+        depend_names = [get_name(cls) for cls in depend]
+        library_info[name].required.extend(depend_names)
         library_info[name].included.extend(include)
 
         if permission == 'zope.Public' or permission is None:

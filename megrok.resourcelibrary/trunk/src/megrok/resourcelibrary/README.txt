@@ -142,8 +142,8 @@ And the CSS is available from the URL referenced::
         border: 1px silid black;
     }
 
-Programmatically signally resource requirements
------------------------------------------------
+Programmatically signalling resource requirements
+-------------------------------------------------
 
 Above we've demonstrated the use of the ``resource_library`` namespace
 in ZPT. Library usage can also be signalled programmatically, for
@@ -197,6 +197,43 @@ You can also signal inclusion by library name instead (like is done in page temp
 
   >>> browser.open('http://localhost/view3')
   >>> '/@@/my-lib/included.js' in browser.contents
+  True
+
+Making resource libraries depend on other ones
+----------------------------------------------
+
+We can make a resource library depend on another one::
+
+  >>> class Dependency(megrok.resourcelibrary.ResourceLibrary):
+  ...    megrok.resourcelibrary.directory('tests/example')
+  ...    megrok.resourcelibrary.include('1.js')
+  >>> grok_component('Dependency', Dependency)
+  True
+   
+  >>> class Dependent(megrok.resourcelibrary.ResourceLibrary):
+  ...    megrok.resourcelibrary.directory('tests/example')
+  ...    megrok.resourcelibrary.include('2.css')
+  ...    megrok.resourcelibrary.depend(Dependency)
+  >>> grok_component('Dependent', Dependent)
+  True
+
+Let's make a view that needs ``Dependent``::
+
+  >>> class DependentView(grok.View):
+  ...   grok.context(Interface)
+  ...   def render(self):
+  ...      Dependent.need()
+  ...      return '<html><head></head><body>Example</body></html>'
+  >>> grok_component('DependentView', DependentView)
+  True
+
+The included code of both the original and the dependency will now
+show up::
+
+  >>> browser.open('http://localhost/dependentview')
+  >>> '/@@/dependency/1.js' in browser.contents
+  True
+  >>> '/@@/dependent/2.css' in browser.contents
   True
 
 Protecting resources
