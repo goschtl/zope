@@ -14,12 +14,17 @@
 """
 Test setup for grok.admin.introspector.
 """
+import os
 import z3c.testsetup
-import doctest
+from zope.app.testing.functional import ZCMLLayer
+
+ftesting_zcml = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)), 'ftesting.zcml')
+FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__,
+                            'ZopeIntrospectorUIFunctionalLayer')
 
 # This we say: include all testfiles in or below the
 # package in the tests.
 #
-test_suite = z3c.testsetup.TestCollector('zope.introspectorui',
-                                         optionflags=doctest.ELLIPSIS+
-                                                     doctest.NORMALIZE_WHITESPACE)
+test_suite = z3c.testsetup.register_all_tests('zope.introspectorui',
+                                              layer = FunctionalLayer)
