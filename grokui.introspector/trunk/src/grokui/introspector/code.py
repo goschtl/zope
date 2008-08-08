@@ -15,6 +15,10 @@
 """
 import grok
 from zope.introspector.code import Code, PackageOrModule
+from zope.introspector.code import PackageInfo
+from zope.introspectorui.code import Package
+from grokui.introspector.namespace import IntrospectorLayer
+from grokui.introspector.util import get_url_with_namespaces
 
 class CodeTraverser(grok.Traverser):
     grok.context(PackageOrModule)
@@ -25,3 +29,17 @@ class CodeTraverser(grok.Traverser):
         except KeyError:
             return None
 
+
+class GrokUIPackage(Package):
+    grok.context(PackageInfo)
+    grok.name('index')
+    grok.layer(IntrospectorLayer)
+
+    def url(self, *args, **kw):
+        result = super(GrokUIPackage, self).url(*args, **kw)
+        result = get_url_with_namespaces(self.request, result)
+        return result
+        
+    def render(self):
+        # We have to provide a dummy renderer, that will not be used.
+        return
