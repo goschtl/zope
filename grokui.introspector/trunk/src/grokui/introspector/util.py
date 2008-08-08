@@ -26,3 +26,15 @@ def dotted_name_url(dotted_path, preserve_last=0):
         result.append(part)
     return '.'.join(result)
 
+def get_url_with_namespaces(request, url):
+    """Insert any missing namespaces in an URL.
+    """
+    app_url = request.getApplicationURL()
+    url_parts = [app_url]
+    for name in request._traversed_names:
+        if not name.startswith('++') or not name.endswith('++'):
+            break
+        if name not in url:
+            url_parts.append(name)
+    url_parts.append(url.split(app_url, 1)[1][1:])
+    return '/'.join(url_parts)
