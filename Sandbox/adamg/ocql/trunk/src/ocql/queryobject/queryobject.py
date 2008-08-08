@@ -12,6 +12,14 @@ $Id$
 
 #implement a traversable tree of queryobjects (parent, child, sibling, ....)
 
+# TODO: missing:
+#xi{Es}
+#xi{E1..E2}
+#I(Es)
+#K
+#==,
+#~==
+
 from zope.interface import implements
 from zope.location import locate, Location
 from zope.location.interfaces import ILocation
@@ -28,7 +36,7 @@ class Head(Location):
         locate(tree, self, 'tree')
 
     def __repr__(self):
-        return ('%s') % (self.tree) 
+        return ('%s') % (self.tree)
 
 class Child(Location):
     implements(IObjectQueryChild)
@@ -409,11 +417,3 @@ class Le(Condition):
 
 class Ge(Condition):
     implements(IGe)
-
-# TODO: missing:
-    #xi{Es}
-    #xi{E1..E2}
-    #I(Es)
-    #K
-    #==,
-    #~==

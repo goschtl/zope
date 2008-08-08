@@ -13,6 +13,8 @@ from ocql.interfaces import IAlgebraCompiler
 
 _marker = object()
 
+#these are here helper functions to debug compiled code
+
 def d_reduce(function, sequence, initializer=_marker):
     if initializer is _marker:
         rv = reduce(function, sequence)

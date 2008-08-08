@@ -648,4 +648,3 @@ class QueryParser(object):
         strg = self.context
         tree = parse(strg, metadata)
         return Head(tree)
-        #return parse(strg, None)
