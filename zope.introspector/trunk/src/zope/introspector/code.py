@@ -112,14 +112,11 @@ class PackageInfo(grok.Adapter):
         except DistributionNotFound:
             return None
         version = info.has_version and info.version or None
-        name = info.project_name
-        py_version = info.py_version
-        location = info.location
         return dict(
-            name=name,
+            name=info.project_name,
             version=version,
-            py_version=py_version,
-            location=location)
+            py_version=info.py_version,
+            location=info.location)
 
 class Module(PackageOrModule):
     def __getitem__(self, name):
