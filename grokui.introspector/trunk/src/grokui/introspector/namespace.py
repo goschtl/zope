@@ -1,13 +1,11 @@
 import grok
 
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.traversing.interfaces import ITraversable
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import applySkin
-from zope.location.location import locate
 
-class IntrospectorLayer(IDefaultBrowserLayer):
+class IntrospectorLayer(grok.IDefaultBrowserLayer):
     """A basic layer for all introspection stuff.
     """
     pass
@@ -26,7 +24,7 @@ class GrokIntrospectorNamespace(grok.MultiAdapter):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        applySkin(self.request, IntrospectorLayer)
         
     def traverse(self, name, ignore):
-        applySkin(self.request, IntrospectorLayer)
         return self.context
