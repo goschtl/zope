@@ -1,8 +1,8 @@
 Changes
 =======
 
-0.9.2 (unreleased)
------------------
+0.9.2 (2008-08-08)
+------------------
 
 * Grokker mistakenly relied on (not imported) ``GrokImportError`` in failure
   case. Corrected this to ``GrokError`` and added a test for it.
