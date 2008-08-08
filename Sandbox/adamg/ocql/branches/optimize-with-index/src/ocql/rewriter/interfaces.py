@@ -87,9 +87,8 @@ class IMakeFromIndex(IAlgebraObject):
     expr2 = Attribute('expression2')
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
-    lowerbound = Attribute('lower bound of the query')
-    upperbound = Attribute('upper bound of the query')
-
+    operator = Attribute('operator')
+    value = Attribute('boundary value of the query')
 
 class IIf(IAlgebraObject):
     """Objects providing this interface represent the

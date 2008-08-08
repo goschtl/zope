@@ -184,12 +184,12 @@ class MakeFromIndexCompiler(BaseCompiler):
     adapts(IMakeFromIndex)
 
     def __call__(self):
-        return '%s(metadata.getFromIndex("%s", "%s", %s, %s))' % (
+        return '%s(metadata.getFromIndex("%s", "%s", "%s", %s))' % (
             self.context.coll1.__name__,
             self.context.expr1,
             self.context.expr2,
-            self.context.lowerbound,
-            self.context.upperbound)
+            self.context.operator,
+            self.context.value)
 
 
 class IfCompiler(BaseCompiler):

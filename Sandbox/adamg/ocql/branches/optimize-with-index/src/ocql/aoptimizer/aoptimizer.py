@@ -64,18 +64,10 @@ def iterPatternMatcher(metadata, tree):
         return tree.__parent__
 
     #new algebra objects
-    if operator == '==':
+    if operator:
         makeFromIndex = MakeFromIndex(coll , coll, interface,
                                       cond.split(".")[1],
-                                      lowerbound=value, upperbound=value)
-    elif operator == '>' or operator == '>=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface,
-                                      cond.split(".")[1],
-                                      lowerbound=value, upperbound=None)
-    elif operator == '<' or operator == '<=':
-        makeFromIndex = MakeFromIndex(coll , coll, interface,
-                                      cond.split(".")[1],
-                                      lowerbound=None, upperbound=value)
+                                      operator, value=value)
     else:
         return tree.__parent__
 

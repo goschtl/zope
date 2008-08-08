@@ -133,7 +133,7 @@ IOptimizedClass with a filter condition:
     RunnableQuery:
     reduce(set.union,
     map(lambda i: set([i.name]),
-    set(metadata.getFromIndex("IOptimizedClass", "value", 5, 5))), set())
+    set(metadata.getFromIndex("IOptimizedClass", "value", "==", 5))), set())
 
 
 

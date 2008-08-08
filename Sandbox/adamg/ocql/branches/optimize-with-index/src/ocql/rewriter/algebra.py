@@ -173,18 +173,18 @@ class MakeFromIndex(BaseAlgebra):
     
     implements(IMakeFromIndex)
 
-    def __init__(self, coll1, coll2, expr1, expr2, lowerbound='A', upperbound='Z'):
+    def __init__(self, coll1, coll2, expr1, expr2, operator, value):
         BaseAlgebra.__init__(self)
         self.setProp('expr1', expr1)
         self.setProp('expr2', expr2)
         self.setProp('coll1', coll1)
         self.setProp('coll2', coll2)
-        self.setProp('lowerbound', lowerbound)
-        self.setProp('upperbound', upperbound)
+        self.setProp('operator', operator)
+        self.setProp('value', value)
 
     def __repr__(self):
-        return "MakeFromIndex(%s, %s, %s, %s, %s, %s)" % (
-            self.coll1, self.coll2, self.expr1, self.expr2, self.lowerbound, self.upperbound)
+        return "MakeFromIndex(%s, %s, %s, %s, %s)" % (
+            self.coll1, self.coll2, self.expr1, self.expr2, self.value)
 
 
 #class And:

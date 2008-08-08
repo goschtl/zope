@@ -168,7 +168,7 @@ class testZope(unittest.TestCase):
                            Identifier(metadata, symbols, '"USA"'))
                    ], Identifier(metadata, symbols, 'c.name')))
 
-        self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country', 'USA', 'USA')[0].name]))
+        self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country','==', 'USA')[0].name]))
 
 
 def test_suite():

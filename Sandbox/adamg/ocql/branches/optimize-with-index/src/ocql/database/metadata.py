@@ -8,6 +8,7 @@ from zope.app.catalog.interfaces import ICatalog
 from zope.app.catalog.field import FieldIndex
 from zope.app.intid import IIntIds
 #import zc.relation.interfaces
+from BTrees.IFBTree import difference
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
@@ -95,7 +96,7 @@ class Metadata:
 
         return None
 
-    def getFromIndex(self, klass, property, lowerbound='A', upperbound='Z'):
+    def getFromIndex(self, klass, property, operator, value):
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
@@ -103,7 +104,25 @@ class Metadata:
                 if isinstance(index, FieldIndex) and \
                 index.field_name == property and \
                 index.interface.__name__ == klass:
-                    results = catalog.apply({iname:(lowerbound, upperbound)})
+                    if operator == '==':
+                        results = catalog.apply({iname:(value, value)})
+                    elif operator == '!=':
+                        all = catalog.apply({iname:(None, None)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(all, temp)
+                    elif operator == '<=':
+                        results = catalog.apply({iname:(value, None)})
+                    elif operator == '<':
+                        lt_eq = catalog.apply({iname:(value, None)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(lt_eq, temp)
+                    elif operator == '>=':
+                        results = catalog.apply({iname:(None, value)})
+                    elif operator == '>':
+                        gt_eq = catalog.apply({iname:(None, value)})
+                        temp = catalog.apply({iname:(value, value)})
+                        results = difference(gt_eq, temp)
+
                     obj_list = [intids.getObject(result) for result in results]
                     return obj_list
         #I could check whether property has an index by hasPropertyIndex. 
