@@ -1,0 +1,89 @@
+zope.introspectorui.code
+************************
+
+UI components for code oriented infos.
+
+:Test-Layer: functional
+
+The `code` module provides viewing components for rendering info
+objects related to code. Code in that resepct means packages, modules,
+classes and the like.
+
+The infos are grabbed by the ``zope.introspector`` package.
+
+Prerequisites
+=============
+
+Before we examine the contents further, we have to provide an
+adapter, that generates an absolute URL for some code types. This
+should normally be done by a traverser::
+
+  >>> import grokcore.component as grok
+  >>> from zope.publisher.interfaces.browser import IBrowserRequest
+  >>> from zope.traversing.browser.interfaces import IAbsoluteURL
+  >>> from zope.introspector.code import File
+  >>> from zope.interface import Interface
+  >>> class CodeURL(grok.MultiAdapter):
+  ...   grok.adapts(Interface, IBrowserRequest)
+  ...   grok.implements(IAbsoluteURL)
+  ...   def __init__(self, obj, request):
+  ...     self.obj = obj
+  ...     self.request = request
+  ...   def __call__(self):
+  ...     url = self.request.getApplicationURL()
+  ...     url += '/' + self.obj.dotted_name.replace('.', '/')
+  ...     if isinstance(self.obj, File):
+  ...       url += '/' + self.obj.name
+  ...     return url
+
+We register this adapter::
+
+  >>> grok.testing.grok_component('CodeURL', CodeURL)
+  True
+
+We prepare a browser request, that can be used lateron::
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+
+Packages
+========
+
+We can display package information. For this we have to get the infos
+related to a dotted name, which represents a package::
+
+  >>> from zope.component import getAdapter, getMultiAdapter
+  >>> from zope.introspector.interfaces import IInfo
+  >>> from zope.introspector.code import Package, PackageInfo
+  >>> pkg = Package('zope.introspector')
+  >>> info = getAdapter(pkg, IInfo, name='package')
+  >>> info
+  <zope.introspector.code.PackageInfo object at 0x...>
+
+While the ``zope.introspector`` package provides us infos about
+things, we need the ``zope.introspectorui`` to get an appropriate
+view. The views should already be registered and can be looked up::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+  >>> print view()
+    <div>
+      <h2>Package: zope.introspector</h2>
+    ...
+
+As we see, the view provides only an HTML fragment, like a widget, to
+render its infos. Such, we can concatenate several infos and their
+views on one page.
+
+The package view shows us contained ZCML files, subpackages and
+modules contained in the package. Furthermore it gives us infos about
+the path and (if it is the top package of an egg), egg infos::
+
+  >>> print view()
+    <div>
+      <h2>Package: zope.introspector</h2>
+    ...
+    <div>
+      Egg: zope.introspector
+      0...
+    ...
