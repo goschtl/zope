@@ -75,9 +75,10 @@ As we see, the view provides only an HTML fragment, like a widget, to
 render its infos. Such, we can concatenate several infos and their
 views on one page.
 
-The package view shows us contained ZCML files, subpackages and
-modules contained in the package. Furthermore it gives us infos about
-the path and (if it is the top package of an egg), egg infos::
+The package view shows us contained ZCML files, other text files,
+subpackages and modules contained in the package. Furthermore it gives
+us infos about the path and (if it is the top package of an egg), egg
+infos::
 
   >>> print view()
     <div>
