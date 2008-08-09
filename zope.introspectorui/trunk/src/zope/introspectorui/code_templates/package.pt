@@ -12,6 +12,16 @@
     </div>     
 
     <div>
+      <div tal:condition="context/getEggInfo"
+	 tal:define="info context/getEggInfo">
+	<div>
+	  Egg: <span tal:replace="info/name">egg.name</span>
+	  <span tal:replace="info/version">1.0</span>
+	</div>
+      </div>
+    </div>
+
+    <div>
       Contained text files:
       <span tal:condition="not: view/files">
 	None
@@ -27,7 +37,8 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/zcmlfiles" tal:content="structure item/url" />
+	<li tal:repeat="item view/zcmlfiles" 
+	    tal:content="structure item/url" />
       </ul>
     </div>
 
