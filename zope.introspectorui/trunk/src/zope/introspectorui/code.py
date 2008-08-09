@@ -26,7 +26,7 @@ class Package(grok.View):
     def update(self):
         self.files = self.getTextFileUrls()
         self.zcmlfiles = self.getZCMLFileUrls()
-        self.subpks = self.getSubPackageUrls()
+        self.subpkgs = self.getSubPackageUrls()
         self.modules = self.getModuleUrls()
 
     def _getFileUrls(self, filenames):
