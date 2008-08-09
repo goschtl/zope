@@ -1,0 +1,25 @@
+zope.introspectorui.util
+************************
+
+Helpers for the zope.introspectorui
+
+:Test-Layer: unit
+
+This module provides some helper functions, mainly for dealing with
+URLs.
+
+code_breadcrumbs
+================
+
+Returns a tuple of names and URLs based on a URL and a dotted name::
+
+  >>> from zope.introspectorui.util import code_breadcrumbs
+  >>> url = 'http://localhost:8080/+code/zope/app/apidoc'
+  >>> dotted_name = 'zope.app.apidoc'
+  >>> bc = code_breadcrumbs(url, dotted_name)
+
+  >>> from pprint import pprint
+  >>> pprint(bc)
+  ({'url': 'http://localhost:8080/+code/zope', 'name': 'zope'},
+   {'url': 'http://localhost:8080/+code/zope/app', 'name': 'app'},
+   {'url': 'http://localhost:8080/+code/zope/app/apidoc', 'name': 'apidoc'})
