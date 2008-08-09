@@ -6,8 +6,8 @@ UI components for code oriented infos.
 :Test-Layer: functional
 
 The `code` module provides viewing components for rendering info
-objects related to code. Code in that resepct means packages, modules,
-classes and the like.
+objects related to code. 'Code' in that respect means packages,
+modules, classes and the like.
 
 The infos are grabbed by the ``zope.introspector`` package.
 
