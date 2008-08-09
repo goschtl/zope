@@ -100,7 +100,7 @@ Slicing
   []
   
 
-If you ask for inex that is out of range, an index error is raised:
+If you ask for index that is out of range, an index error is raised:
 
   >>> batch[3]
   Traceback (most recent call last):
