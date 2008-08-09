@@ -27,7 +27,11 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/files" tal:content="structure item/url" />
+	<li tal:repeat="item view/files">
+	  <a href="" 
+	     tal:attributes="href item/name"
+	     tal:content="structure item/url">file.txt</a>
+	</li>
       </ul>
     </div>
 
@@ -37,18 +41,25 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/zcmlfiles" 
-	    tal:content="structure item/url" />
+	<li tal:repeat="item view/zcmlfiles">
+	  <a href="" 
+	     tal:attributes="href item/name"
+	     tal:content="structure item/url">file.zcml</a>
+	</li>
       </ul>
     </div>
 
     <div>
       Contained subpackages:
-      <span tal:condition="not: view/subpks">
+      <span tal:condition="not: view/subpkgs">
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/subpks" tal:content="structure item/url" />
+	<li tal:repeat="item view/subpkgs">
+	  <a href="" 
+	     tal:attributes="href item/name"
+	     tal:content="structure item/url">subpackage</a>
+	</li>
       </ul>
     </div>
 
@@ -58,7 +69,11 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/modules" tal:content="structure item/url" />
+	<li tal:repeat="item view/modules">
+	  <a href="" 
+	     tal:attributes="href item/name"
+	     tal:content="structure item/url">module</a>
+	</li>
       </ul>
     </div>
 
