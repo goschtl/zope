@@ -70,7 +70,8 @@ def storeResource(dir, name, resource, zip=False):
     # For directory resources, we create the directory and walk through the
     # children.
     if isinstance(resource, DirectoryResource):
-        os.mkdir(outputPath)
+        if not os.path.exists(outputPath):
+            os.mkdir(outputPath)
         for name in [name for name in os.listdir(resource.context.path)
                      if name not in EXCLUDED_NAMES]:
             subResource = resource.get(name, None)
@@ -101,7 +102,8 @@ def produceResources(options):
     # Now we can produce the version directory with all resources in it
     version = zope.component.getUtility(interfaces.IVersionManager).version
     outputdir = os.path.join(options.dir, version)
-    os.mkdir(outputdir)
+    if not os.path.exists(outputdir):
+        os.mkdir(outputdir)
     for name, resource in resources:
         storeResource(outputdir, name, resource, options.zip)
     print outputdir
@@ -164,6 +166,7 @@ def main(args=None):
     options = get_options(args)
     try:
         produceResources(options)
-    except Exception:
+    except Exception, err:
+        print err
         sys.exit(1)
     sys.exit(0)

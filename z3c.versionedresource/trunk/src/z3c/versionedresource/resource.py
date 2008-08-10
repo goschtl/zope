@@ -75,7 +75,6 @@ class DirectoryResource(VersionedResourceBase,
         '.jpg':  ImageResourceFactory,
         '.pt':   pagetemplateresource.PageTemplateResourceFactory,
         '.zpt':  pagetemplateresource.PageTemplateResourceFactory,
-        '.html': pagetemplateresource.PageTemplateResourceFactory,
         }
 
     default_factory = FileResourceFactory
