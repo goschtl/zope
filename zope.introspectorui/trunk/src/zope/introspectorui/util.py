@@ -13,21 +13,24 @@
 ##############################################################################
 """Helpers for the zope.introspectorui.
 """
-from zope.traversing.browser.interfaces import IAbsoluteURL
-from zope.component import getMultiAdapter
+import grokcore.component as grok
+from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
+from zope.introspector.code import Code, Package
 
-def code_breadcrumbs(url, dotted_name):
-    """Breadcrumbs for code objects.
-
-    The `url` parameter should be a link to the object denoted by the
-    dotted name `dotted_name``.
+class CodeBreadcrumbProvider(grok.Adapter):
+    """An adapter, that adapts 'ICodeView' objects, i.e. all views
+    defined in the ``code`` module.
     """
-    url_parts = url.split('/')
-    dotted_name_parts = dotted_name.split('.')
-    start_len = len(url_parts) - len(dotted_name_parts)
-    url_start = '/'.join(url_parts[:start_len])
-    result = []
-    for name in dotted_name_parts:
-        url_start = '/'.join([url_start, name])
-        result.append(dict(name=name, url=url_start))
-    return tuple(result)
+    grok.context(ICodeView)
+    grok.provides(IBreadcrumbProvider)
+
+    def getBreadcrumbs(self):
+        code_obj = self.context.context.context
+        items = code_obj.getParents()
+        result = []
+        for item in items:
+            name = getattr(item, 'name', item.dotted_name.split('.')[-1])
+            url = self.context.url(item)
+            result.append(
+                '<a href="%s">%s</a>' % (url, name))
+        return '.'.join(result)
