@@ -1,6 +1,6 @@
   <div>
 
-    <h2>Package: <span tal:replace="context/context/dotted_name" /></h2>
+    <h2>Package: <span tal:replace="structure view/getBreadcrumbs" /></h2>
 
     <div>
       <p tal:condition="context/isNamespacePackage">
