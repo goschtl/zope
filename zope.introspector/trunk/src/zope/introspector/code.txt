@@ -52,6 +52,24 @@ The ``Code`` class, as the most simple object representation does not
 provide subitems and is the fallback for any object type, that cannot
 be determined more exactly.
 
+All ``Code`` objects know about their parents, which comes in handy,
+when building breadcrumbs. The resulting tuple contains the parents
+from the top-most to the actual object. The parents are delivered of
+course as ``Code`` representations or derived::
+
+  >>> code.getParents()
+  (<zope.introspector.code.Package object at 0x...>, <...>)
+
+  >>> [x.dotted_name for x in code.getParents()]
+  ['zope', 'zope.app']
+
+This is also the case with other kinds of objects, that contain a dot
+in their name::
+
+  >>> from zope.introspector.code import File
+  >>> code = File('zope.introspector', 'README.txt')
+  >>> [getattr(x, 'name', x.dotted_name) for x in code.getParents()]
+  ['zope', 'zope.introspector', 'README.txt']
 
 Packages
 ========
