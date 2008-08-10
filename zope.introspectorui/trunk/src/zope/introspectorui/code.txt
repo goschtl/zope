@@ -14,33 +14,6 @@ The infos are grabbed by the ``zope.introspector`` package.
 Prerequisites
 =============
 
-Before we examine the contents further, we have to provide an
-adapter, that generates an absolute URL for some code types. This
-should normally be done by a traverser::
-
-  >>> import grokcore.component as grok
-  >>> from zope.publisher.interfaces.browser import IBrowserRequest
-  >>> from zope.traversing.browser.interfaces import IAbsoluteURL
-  >>> from zope.introspector.code import File
-  >>> from zope.interface import Interface
-  >>> class CodeURL(grok.MultiAdapter):
-  ...   grok.adapts(Interface, IBrowserRequest)
-  ...   grok.implements(IAbsoluteURL)
-  ...   def __init__(self, obj, request):
-  ...     self.obj = obj
-  ...     self.request = request
-  ...   def __call__(self):
-  ...     url = self.request.getApplicationURL()
-  ...     url += '/' + getattr(self.obj, 'dotted_name', '').replace('.', '/')
-  ...     if isinstance(self.obj, File):
-  ...       url += '/' + self.obj.name
-  ...     return url
-
-We register this adapter::
-
-  >>> grok.testing.grok_component('CodeURL', CodeURL)
-  True
-
 We prepare a browser request, that can be used lateron::
 
   >>> from zope.publisher.browser import TestRequest
