@@ -14,10 +14,9 @@
 """Views for code-related infos.
 """
 import grokcore.view as grok
-
 from zope.location.location import located
-
 from zope.introspector.code import PackageInfo
+from zope.introspectorui.util import code_breadcrumbs
 
 class Package(grok.View):
     grok.context(PackageInfo)
@@ -60,3 +59,11 @@ class Package(grok.View):
     def getModuleUrls(self):
         mod_infos = self.context.getModules()
         return sorted(self._getItemUrls(mod_infos))
+
+    def getBreadcrumbs(self):
+        obj = self.context.context
+        breadcrumbs = code_breadcrumbs(self.url(obj), obj.dotted_name)
+        links = ['<a href="%s">%s</a>' % (x['url'], x['name'])
+                 for x in breadcrumbs]
+        html_code = '.'.join(links)
+        return html_code
