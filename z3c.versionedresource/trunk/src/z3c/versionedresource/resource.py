@@ -42,19 +42,22 @@ class Resources(resources.Resources):
         return res
 
 
-class VersionResourceBase(object):
+class VersionedResourceBase(object):
 
     def _createUrl(self, baseUrl, name):
         vm = zope.component.queryUtility(interfaces.IVersionManager)
         return '%s/@@/%s/%s' %(baseUrl, vm.version, name)
 
-
-class Resource(VersionResourceBase, resource.Resource):
+class Resource(VersionedResourceBase, resource.Resource):
     pass
 
-class FileResource(VersionResourceBase, fileresource.FileResource):
+
+class FileResource(VersionedResourceBase, fileresource.FileResource):
     # 10 years expiration date
     cacheTimeout = 10 * 365 * 24 * 3600
+
+    def __repr__(self):
+        return '<%s %r>' %(self.__class__.__name__, self.context.path)
 
 class FileResourceFactory(fileresource.FileResourceFactory):
     resourceClass = FileResource
@@ -62,7 +65,8 @@ class FileResourceFactory(fileresource.FileResourceFactory):
 class ImageResourceFactory(fileresource.ImageResourceFactory):
     resourceClass = FileResource
 
-class DirectoryResource(VersionResourceBase,
+
+class DirectoryResource(VersionedResourceBase,
                         directoryresource.DirectoryResource):
 
     resource_factories = {
@@ -76,6 +80,9 @@ class DirectoryResource(VersionResourceBase,
 
     default_factory = FileResourceFactory
     directory_factory = None
+
+    def __repr__(self):
+        return '<%s %r>' %(self.__class__.__name__, self.context.path)
 
 class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
     factoryClass = DirectoryResource

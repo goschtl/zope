@@ -144,11 +144,19 @@ File Resource
 The versioned file resource is identical to the default file resource, except
 that it has a versioned URL and a 10 year cache timeout.
 
+  >>> import os.path
+  >>> import z3c.versionedresource.tests
+  >>> filesdir = os.path.join(
+  ...     os.path.dirname(z3c.versionedresource.tests.__file__),
+  ...     'testfiles')
+
+  >>> from zope.app.publisher.fileresource import File
+  >>> file = File(os.path.join(filesdir, 'test.txt'), 'test.txt')
   >>> request = TestRequest()
-  >>> res = resource.FileResource(None, request)
+  >>> res = resource.FileResource(file, request)
   >>> res.__name__ = 'ajax.js'
   >>> res
-  <z3c.versionedresource.resource.FileResource object at ...>
+  <FileResource '.../z3c/versionedresource/tests/testfiles/test.txt'>
   >>> res.cacheTimeout
   315360000
   >>> res()
@@ -156,25 +164,19 @@ that it has a versioned URL and a 10 year cache timeout.
 
 Two factories, one for files and one for images is used:
 
-  >>> import os.path
-  >>> import z3c.versionedresource.tests
-  >>> filesdir = os.path.join(
-  ...     os.path.dirname(z3c.versionedresource.tests.__file__),
-  ...     'testfiles')
-
   >>> factory = resource.FileResourceFactory(
   ...     os.path.join(filesdir, 'test.txt'), None, 'test.txt')
   >>> factory
   <z3c.versionedresource.resource.FileResourceFactory object at ...>
   >>> factory(request)
-  <z3c.versionedresource.resource.FileResource object at ...>
+  <FileResource '.../z3c/versionedresource/tests/testfiles/test.txt'>
 
   >>> factory = resource.ImageResourceFactory(
   ...     os.path.join(filesdir, 'test.gif'), None, 'test.gif')
   >>> factory
   <z3c.versionedresource.resource.ImageResourceFactory object at ...>
   >>> factory(request)
-  <z3c.versionedresource.resource.FileResource object at ...>
+  <FileResource '.../z3c/versionedresource/tests/testfiles/test.gif'>
 
 
 Directory Resource
@@ -190,14 +192,14 @@ factories correctly. So let's create the resource first:
   ...     Directory(os.path.join(filesdir, 'subdir'), None, 'subdir'), request)
   >>> res.__name__ = 'subdir'
   >>> res
-  <z3c.versionedresource.resource.DirectoryResource object at ...>
+  <DirectoryResource '.../z3c/versionedresource/tests/testfiles/subdir'>
   >>> res()
   'http://127.0.0.1/@@/1.0.0/subdir'
 
 Let's try to traverse to some files in the directory:
 
   >>> res.publishTraverse(request, 'test.gif')
-  <z3c.versionedresource.resource.FileResource object at ...>
+  <FileResource '.../z3c/versionedresource/tests/testfiles/subdir/test.gif'>
 
 We also have a factory for it:
 
@@ -206,7 +208,7 @@ We also have a factory for it:
   >>> factory
   <z3c.versionedresource.resource.DirectoryResourceFactory object at ...>
   >>> factory(request)
-  <z3c.versionedresource.resource.DirectoryResource object at ...>
+  <DirectoryResource '.../z3c/versionedresource/tests/testfiles/subdir'>
 
 
 Custom ZCML Directives
@@ -237,6 +239,70 @@ Now we can access the resource:
   ...          .publishTraverse(request, 'zcml-test.gif')()
   'http://127.0.0.1/@@/1.0.0/zcml-test.gif'
 
+You can also specify a simple file resource,
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <browser:versionedResource
+  ...       name="zcml-test.txt"
+  ...       file="%s"
+  ...       />
+  ... </configure>
+  ... """ %os.path.join(filesdir, 'test.txt') , context=context)
+
+  >>> resources.publishTraverse(request, '1.0.0')\
+  ...          .publishTraverse(request, 'zcml-test.txt').context
+  <zope.app.publisher.fileresource.File object at ...>
+
+  >>> unregister('zcml-test.txt')
+
+as well as a page template.
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <browser:versionedResource
+  ...       name="zcml-test.html"
+  ...       template="%s"
+  ...       />
+  ... </configure>
+  ... """ %os.path.join(filesdir, 'test.pt') , context=context)
+
+  >>> resources.publishTraverse(request, '1.0.0')\
+  ...          .publishTraverse(request, 'zcml-test.html').context
+  <zope.app.publisher.pagetemplateresource.PageTemplate object at ...>
+
+Note that the page template resource cannot be a versioned resource, since it
+has dynamic components:
+
+  >>> resources.publishTraverse(request, '1.0.0')\
+  ...          .publishTraverse(request, 'zcml-test.html')()
+  u'<h1>Test</h1>\n'
+
+Note: Eeek, `zope.app.publisher.browser` is broken here. We should have
+gotten a URL back.
+
+  >>> unregister('zcml-test.html')
+
+Finally, a factory can also be passed in:
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <browser:versionedResource
+  ...       name="zcml-dyn.html"
+  ...       factory="z3c.versionedresource.tests.test_doc.ResourceFactory"
+  ...       />
+  ... </configure>
+  ... """, context=context)
+
+  >>> resources.publishTraverse(request, '1.0.0')\
+  ...          .publishTraverse(request, 'zcml-dyn.html')
+  <ResourceFactory>
+
+  >>> unregister('zcml-dyn.html')
+
 Let's now create a directory resource:
 
   >>> context = xmlconfig.string("""
@@ -255,21 +321,184 @@ And access it:
   ...          .publishTraverse(request, 'zcml-subdir')()
   'http://127.0.0.1/@@/1.0.0/zcml-subdir'
 
+The directives also have some error handling built-in. So let's have a
+look. In the ``browser:versionedResource`` directive, you can only specify
+either a template, file, image or factory:
 
-Lsiting All Resources
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <browser:versionedResource
+  ...       name="zcml-test.gif"
+  ...       file="test.gif"
+  ...       image="test.gif"
+  ...       />
+  ... </configure>
+  ... """, context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-8.8
+      ConfigurationError: Must use exactly one of factory or file or
+                          image or template attributes for resource directives
+
+The resource directive on the other hand, ensures that the specified path is a
+directory:
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <browser:versionedResourceDirectory
+  ...       name="zcml-subdir"
+  ...       directory="/foo"
+  ...       />
+  ... </configure>
+  ... """, context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-7.8
+        ConfigurationError: Directory /foo does not exist
+
+
+Listing All Resources
 ---------------------
 
 Finally, there exists a script that will list all resources registered as
 versioned resources with the system.
 
   >>> from z3c.versionedresource import list
-  >>> list.main(
+
+  >>> list.produceResources(list.get_options(
   ...   ['-u', 'http://zope.org',
   ...    '-l', 'z3c.versionedresource.tests.test_doc.ITestLayer',
-  ...    os.path.join(os.path.dirname(list.__file__), 'tests', 'simple.zcml')])
-  http://zope.org/@@/1.0.0/real-subdir/test.gif
-  http://zope.org/@@/1.0.0/real-subdir/subsubdir/subtest.gif
+  ...    '--list-only',
+  ...    os.path.join(os.path.dirname(list.__file__), 'tests', 'simple.zcml')]
+  ...   ))
   http://zope.org/@@/1.0.0/zcml-subdir/test.gif
   http://zope.org/@@/1.0.0/zcml-subdir/subsubdir/subtest.gif
-  http://zope.org/@@/1.0.0/real-test.gif
   http://zope.org/@@/1.0.0/zcml-test.gif
+
+You can also produce the resources in a directory:
+
+  >>> import tempfile
+  >>> outdir = tempfile.mkdtemp()
+
+  >>> list.produceResources(list.get_options(
+  ...   ['-u', 'http://zope.org',
+  ...    '-l', 'z3c.versionedresource.tests.test_doc.ITestLayer',
+  ...    '-d', outdir,
+  ...    os.path.join(os.path.dirname(list.__file__), 'tests', 'simple.zcml')]
+  ...   ))
+  /.../1.0.0
+
+  >>> ls(outdir)
+  d 1.0.0             4096
+  >>> ls(os.path.join(outdir, '1.0.0'))
+  d zcml-subdir       4096
+  f zcml-test.gif     909
+  >>> ls(os.path.join(outdir, '1.0.0', 'zcml-subdir'))
+  d subsubdir         4096
+  f test.gif          909
+  >>> ls(os.path.join(outdir, '1.0.0', 'zcml-subdir', 'subsubdir'))
+  f subtest.gif       909
+
+The module consists of several small helper functions, so let's look at them
+to verify their correct behavior.
+
+
+`getResources(layerPath, url='http://localhost/')` Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This function retrieves all versioned resources from the system for a given
+layer. Optionally a URL can be passed in to alter the resource URLs.
+
+  >>> resources = list.getResources(
+  ...     'z3c.versionedresource.tests.test_doc.ITestLayer')
+  >>> sorted(resources)
+  [(u'zcml-subdir', <DirectoryResource u'.../testfiles/subdir'>),
+   (u'zcml-test.gif', <FileResource u'.../testfiles/test.gif'>)]
+
+As you can see, this list only provides the first layer. It is the
+responsibility of the consuming code to digg deeper into the directory
+resources.
+
+
+`getResourceUrls(resources)` Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once we have the list of resources, we can produce a full list of all
+available paths.
+
+  >>> sorted(list.getResourceUrls(resources))
+  [u'http://localhost/@@/1.0.0/zcml-subdir/subsubdir/subtest.gif',
+   u'http://localhost/@@/1.0.0/zcml-subdir/test.gif',
+   u'http://localhost/@@/1.0.0/zcml-test.gif']
+
+
+`storeResource(dir, name, resource, zip=False)` Function
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The more interesting use case, however, is this function, which stores the
+resources in a directory. First we need to create an output directory:
+
+  >>> outdir = tempfile.mkdtemp()
+
+We can now store a resource to it:
+
+  >>> list.storeResource(outdir, resources[1][0], resources[1][1])
+  >>> ls(outdir)
+  f zcml-test.gif     909
+
+Let's now zip it:
+
+  >>> list.storeResource(outdir, resources[1][0], resources[1][1], True)
+  >>> ls(outdir)
+  f zcml-test.gif     252
+
+When storing a directory resource, all sub-items are stored as well:
+
+  >>> list.storeResource(outdir, resources[0][0], resources[0][1], True)
+  >>> ls(outdir)
+  d zcml-subdir       4096
+  f zcml-test.gif     252
+
+  >>> ls(os.path.join(outdir, 'zcml-subdir'))
+  d subsubdir 4096
+  f test.gif  259
+
+  >>> ls(os.path.join(outdir, 'zcml-subdir', 'subsubdir'))
+  f subtest.gif       272
+
+
+Some odds and ends
+~~~~~~~~~~~~~~~~~~
+
+Let's use the `main()` function too. It is the one used by the script, but
+always raises a system exist:
+
+  >>> list.main()
+  Traceback (most recent call last):
+  ...
+  SystemExit: 2
+
+  >>> list.main(['foo'])
+  Traceback (most recent call last):
+  ...
+  SystemExit: 1
+
+  >>> list.main(
+  ...   ['-l', 'z3c.versionedresource.tests.test_doc.ITestLayer',
+  ...    '--list-only',
+  ...    os.path.join(os.path.dirname(list.__file__), 'tests', 'simple.zcml')]
+  ...   )
+  Traceback (most recent call last):
+  ...
+  SystemExit: 0
+
+If the positional argument is missing, then we get a parser error:
+
+  >>> list.main(
+  ...   ['-l', 'z3c.versionedresource.tests.test_doc.ITestLayer',
+  ...    '--list-only'])
+  Traceback (most recent call last):
+  ...
+  SystemExit: 2

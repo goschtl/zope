@@ -5,13 +5,13 @@
   <include file="meta.zcml" />
 
   <browser:versionedResource
-      name="real-test.gif"
+      name="zcml-test.gif"
       image="tests/testfiles/test.gif"
       layer=".tests.test_doc.ITestLayer"
       />
 
   <browser:versionedResourceDirectory
-      name="real-subdir"
+      name="zcml-subdir"
       directory="tests/testfiles/subdir"
       layer=".tests.test_doc.ITestLayer"
       />
