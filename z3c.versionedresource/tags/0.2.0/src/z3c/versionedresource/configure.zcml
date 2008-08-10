@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <page
+      name=""
+      for="zope.app.component.interfaces.ISite"
+      class="z3c.versionedresource.resource.Resources"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      />
+
+  <zope:class class="zope.app.publisher.browser.resources.Resources">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </zope:class>
+
+</configure>
