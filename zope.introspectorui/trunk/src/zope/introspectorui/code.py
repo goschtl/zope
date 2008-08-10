@@ -16,9 +16,10 @@
 import grokcore.view as grok
 from zope.location.location import located
 from zope.introspector.code import PackageInfo
-from zope.introspectorui.util import code_breadcrumbs
+from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 
 class Package(grok.View):
+    grok.implements(ICodeView)
     grok.context(PackageInfo)
     grok.name('index')
 
@@ -61,9 +62,4 @@ class Package(grok.View):
         return sorted(self._getItemUrls(mod_infos))
 
     def getBreadcrumbs(self):
-        obj = self.context.context
-        breadcrumbs = code_breadcrumbs(self.url(obj), obj.dotted_name)
-        links = ['<a href="%s">%s</a>' % (x['url'], x['name'])
-                 for x in breadcrumbs]
-        html_code = '.'.join(links)
-        return html_code
+        return IBreadcrumbProvider(self).getBreadcrumbs()
