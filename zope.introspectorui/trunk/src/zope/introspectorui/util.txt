@@ -3,23 +3,50 @@ zope.introspectorui.util
 
 Helpers for the zope.introspectorui
 
-:Test-Layer: unit
+:Test-Layer: functional
 
-This module provides some helper functions, mainly for dealing with
+This module provides some helpers, mainly for dealing with
 URLs.
 
-code_breadcrumbs
-================
+CodeBreadcrumbProvider
+======================
 
-Returns a tuple of names and URLs based on a URL and a dotted name::
+An adapter that provides HTML breadcrumbs for a certain code view.
 
-  >>> from zope.introspectorui.util import code_breadcrumbs
-  >>> url = 'http://localhost:8080/+code/zope/app/apidoc'
-  >>> dotted_name = 'zope.app.apidoc'
-  >>> bc = code_breadcrumbs(url, dotted_name)
+We construct a package representation for ``zope.introspector``::
 
-  >>> from pprint import pprint
-  >>> pprint(bc)
-  ({'url': 'http://localhost:8080/+code/zope', 'name': 'zope'},
-   {'url': 'http://localhost:8080/+code/zope/app', 'name': 'app'},
-   {'url': 'http://localhost:8080/+code/zope/app/apidoc', 'name': 'apidoc'})
+  >>> from zope.introspector.code import Package
+  >>> pkg = Package('zope.introspector')
+
+Now we get the appropriate info object for this representation. This
+is normally done using adapters, but we can shorten the way here and
+use the ``PackageInfo`` directly::
+
+  >>> from zope.introspector.code import PackageInfo
+  >>> info = PackageInfo(pkg)
+
+To create an appropriate view, however, we need a request::
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+Finally we can create the view::
+
+  >>> from zope.introspectorui.code import Package as PackageView
+  >>> view = PackageView(info, request)
+
+We can now get breadcrumbs for this view using the adapter. This
+adapter provides support for objects, that implement
+``zope.introspectorui.interfaes.ICodeView`` only::
+
+  >>> from zope.introspectorui.interfaces import IBreadcrumbProvider
+  >>> from zope.component import getAdapter
+  >>> provider = IBreadcrumbProvider(view)
+  >>> provider
+  <zope.introspectorui.util.CodeBreadcrumbProvider object at 0x...>
+
+This provider gives us the breadcrumbs for the view of the
+`zope.introspector` package as HTML code::
+
+  >>> provider.getBreadcrumbs()
+  '<a href="http://.../zope">zope</a>.<a href="http://.../zope/introspector">introspector</a>'
