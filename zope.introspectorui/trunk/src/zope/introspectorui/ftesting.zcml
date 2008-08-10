@@ -11,5 +11,6 @@
   <include package="grokcore.view" />
   <include package="zope.traversing" />
   <grok:grok package="." />
+  <grok:grok package=".tests" />
 
 </configure>
