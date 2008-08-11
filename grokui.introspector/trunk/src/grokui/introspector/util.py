@@ -13,6 +13,10 @@
 ##############################################################################
 """Helpers for the grokui.introspector.
 """
+from zope.component import createObject, getMultiAdapter
+from zope.publisher.browser import TestRequest
+from zope.introspectorui.util import (_format_dict, dedent_string,
+                                      get_doc_format,)
 
 def dotted_name_url(dotted_path, preserve_last=0):
     """Create an HTML fragment with links to parts of a dotted name.
@@ -38,3 +42,26 @@ def get_url_with_namespaces(request, url):
             url_parts.append(name)
     url_parts.append(url.split(app_url, 1)[1][1:])
     return '/'.join(url_parts)
+
+def render_text(text, module=None, format=None, dedent=True):
+    if not text:
+        return u''
+
+    if module is not None:
+        if isinstance(module, (str, unicode)):
+            module = sys.modules.get(module, None)
+        format = get_doc_format(module)
+
+    if format is None:
+        format = 'zope.source.rest'
+
+    assert format in _format_dict.values()
+
+    text = dedent_string(text)
+
+    if not isinstance(text, unicode):
+        text = text.decode('latin-1', 'replace')
+    source = createObject(format, text)
+
+    renderer = getMultiAdapter((source, TestRequest()))
+    return renderer.render()
