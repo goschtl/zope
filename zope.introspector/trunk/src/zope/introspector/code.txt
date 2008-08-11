@@ -218,6 +218,26 @@ currently are classes and functions::
   >>> mod['resolve']
   <zope.introspector.code.Function object at 0x...>
 
+ModuleInfos
+-----------
+
+The ``Module`` class is merely a wrapper around real modules, while
+``ModuleInfo`` objects provide us with the interesting informations
+about a certain module.
+
+As in the whole module, XXXInfo classes are adapters, that adapt a
+certain code representation type to the ``IInfo`` interface.
+
+Thus, we create a ``ModuleInfo`` object normally, by asking the
+component architechture for an appropriate adapter to ``IInfo``.
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> infos = list(component.getAdapters((mod,), IInfo))
+  >>> infos
+  [(u'module', <zope.introspector.code.ModuleInfo object at 0x...>)]
+
+
 
 Files
 =====
