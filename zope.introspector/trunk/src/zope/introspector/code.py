@@ -145,6 +145,21 @@ class File(Code):
                 os.path.splitext(self.path)[1].lower() in [
                     '.rst', '.txt', '.zcml'])
 
+class FileInfo(grok.Adapter):
+    grok.context(File)
+    grok.provides(IInfo)
+    grok.name('file')
+
+    def getDottedName(self):
+        return self.context.dotted_name
+
+    def getName(self):
+        return self.context.name
+
+    def getPath(self):
+        return self.context.path
+
+
 class Class(Code):
     pass
 
