@@ -208,10 +208,15 @@ It also provides the capabilities of a normal ``Code`` object::
   >>> pnorm(mod.getPath())
   '.../src/zope/introspector/code.py'
 
-Furthermore we can ask it for subitems::
+Furthermore we can ask it for subitems. Supported subitem types
+currently are classes and functions::
 
   >>> mod['Code']
   <zope.introspector.code.Class object at 0x...>
+
+  >>> mod = Module('zope.introspector.util')
+  >>> mod['resolve']
+  <zope.introspector.code.Function object at 0x...>
 
 
 Files
