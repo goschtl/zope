@@ -3,8 +3,8 @@
   <directives namespace="http://namespaces.zope.org/z3c">
     <directive
       name="reload"
-      schema=".metadirectives.IReloadDirective"
-      handler=".metaconfigure.reload"
+      schema=".zcml.IReloadDirective"
+      handler=".zcml.reload"
       />
   </directives>
 

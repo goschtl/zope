@@ -5,8 +5,7 @@ from zope.publisher.interfaces import IRequest
 from zope.component.registry import AdapterRegistration
 
 from z3c.reload.reload import install_reloader, simple_view_classes
-from z3c.reload.metaconfigure import enabled_classes, enabled_modules
-from z3c.reload.metaconfigure import enabled_packages
+from z3c.reload.zcml import enabled_classes, enabled_modules, enabled_packages
 
 request_type = IRequest
 
