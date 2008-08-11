@@ -1,0 +1,40 @@
+CHANGES
+=======
+
+1.2.4 (2008-07-18)
+------------------
+
+- Fixed a bug that made self-targetting invocations fail when the macro utilized
+  default values and the option that read the default came out the Options
+  iteration first, added a regression test.
+- Changed the test setup so that buildouts are tested by calling methods rather
+  than creating a subprocess.  This allows for the --coverage flage to work in
+  bin/test, and makes debugging and mimmicking the test output significantly
+  easier.
+- Fixed addition of targets so that they will show up properly when one calls
+  buildout.keys().
+
+
+1.2.3 (2008-07-11)
+------------------
+
+- Fixed a bug in the CHANGES ReST
+
+
+1.2.2 (2008-07-11)
+------------------
+
+- Fixed a bug in setup.py where setuptools was not being imported
+- Changed date format in CHANGES.txt to YYYY-MM-DD
+
+
+1.2.1 (2008-07-10)
+------------------
+
+- Fixed a typo in the quickstart
+
+
+1.2.0 (2008-07-10)
+------------------
+
+- First release
