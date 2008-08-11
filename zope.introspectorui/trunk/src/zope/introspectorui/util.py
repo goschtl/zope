@@ -27,6 +27,8 @@ class CodeBreadcrumbProvider(grok.Adapter):
     def getBreadcrumbs(self):
         code_obj = self.context.context.context
         dotted_name = code_obj.dotted_name
+        if hasattr(code_obj, 'name'):
+            dotted_name += '.' + code_obj.name
         parts = []
         while code_obj.__parent__:
             parts.append(code_obj)
