@@ -1,7 +1,7 @@
 grokui.introspector.util
 ************************
 
-:Test-Layer: unit
+:Test-Layer: functional
 
 Helpers for the ``grokui.introspector`` package.
 
@@ -37,3 +37,27 @@ also components with more than one dot in their name::
 
   >>> dotted_name_url('zope.README.txt.gz', preserve_last=2)
   '...<a href="/++inspect++/+code/zope/README.txt.gz">README.txt.gz</a>'
+
+render_text(text, module=None, format=None)
+===========================================
+
+A function stolen from ``zope.app.apidoc`` that quickly renders the
+given text using the specified format.
+
+If the `module` argument is specified, the function will try to determine the
+format using the module. If the `format` argument is given, it is simply
+used. Clearly, you cannot specify both, the `module` and `format` argument.
+
+You specify the format as follows:
+
+  >>> from grokui.introspector.util import render_text
+  >>> render_text('Hello!\n', format='zope.source.rest')
+  u'<p>Hello!</p>\n'
+
+Note that the format string must be a valid source factory id; if the factory
+id is not given, 'zope.source.rest' is used. Thus, specifying the module is
+often safer (if available):
+
+  >>> from grokui import introspector
+  >>> render_text('Hello!\n', module=introspector)
+  u'<p>Hello!</p>\n'
