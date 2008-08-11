@@ -15,7 +15,7 @@
 """
 import grokcore.view as grok
 from zope.location.location import located
-from zope.introspector.code import PackageInfo
+from zope.introspector.code import PackageInfo, FileInfo
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 
 class Package(grok.View):
@@ -63,3 +63,14 @@ class Package(grok.View):
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
+
+class File(grok.View):
+    grok.implements(ICodeView)
+    grok.context(FileInfo)
+    grok.name('index')
+
+    def getBreadcrumbs(self):
+        return IBreadcrumbProvider(self).getBreadcrumbs()
+
+    def getRaw(self):
+        return open(self.context.getPath(), 'r').read()
