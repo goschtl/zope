@@ -97,3 +97,88 @@ The third supported source factory id is 'restructuredtext'::
   >>> module.__docformat__ = 'restructuredtext'
   >>> get_doc_format(module)
   'zope.source.rest'
+
+`dedent_string(text)`
+=====================
+
+This function was taken from ``zope.app.apidoc``.
+
+Before doc strings can be processed using STX or ReST they must be dendented,
+since otherwise the output will be incorrect. Let's have a look at some
+docstrings and see how they are correctly dedented.
+
+Let's start with a simple one liner. Nothing should happen:
+
+  >>> def func():
+  ...     '''One line documentation string'''
+
+  >>> from zope.introspectorui.util import dedent_string
+  >>> dedent_string(func.__doc__)
+  'One line documentation string'
+
+Now what about one line docstrings that start on the second line? While this
+format is discouraged, it is frequently used:
+
+  >>> def func():
+  ...     '''
+  ...     One line documentation string
+  ...     '''
+
+  >>> dedent_string(func.__doc__)
+  '\nOne line documentation string\n'
+
+We can see that the leading whitespace on the string is removed, but not the
+newline character. Let's now try a simple multi-line docstring:
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...     Lengthy description, giving some more background information and
+  ...     discuss some edge cases.
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+  Lengthy description, giving some more background information and
+  discuss some edge cases.
+  <BLANKLINE>
+
+Again, the whitespace was removed only after the first line. Also note that
+the function determines the indentation level correctly. So what happens if
+there are multiple indentation levels? The smallest amount of indentation is
+chosen:
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...     Root Level
+  ...
+  ...       Second Level
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+  Root Level
+  <BLANKLINE>
+    Second Level
+  <BLANKLINE>
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...       $$$ print 'example'
+  ...       example
+  ...
+  ...     And now the description.
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+    $$$ print 'example'
+    example
+  <BLANKLINE>
+  And now the description.
+  <BLANKLINE>
