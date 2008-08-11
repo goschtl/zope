@@ -6,6 +6,6 @@
     Path: <span tal:replace="context/getPath" />
   </p>
 </div>
-<div tal:content="view/getRaw">
+<div tal:content="structure view/getRenderedDoc">
   The Document
 </div>
