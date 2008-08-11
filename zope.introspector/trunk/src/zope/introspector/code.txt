@@ -183,3 +183,29 @@ If a package is a namespace package, we can also get all submodules::
   >>> sorted(list(info.getSubPackages()), key=lambda x: x.dotted_name)
   [<ModuleInfo object for 'zope.annotation'>,
    ..., <ModuleInfo object for 'zope.traversing'>]
+
+Files
+=====
+
+Files are simple representations of text files contained in a
+package. Currently supported are .txt, .rst and .zcml files.
+
+A ``File`` representation can be created by passing the dotted name of
+the containing package and the filename::
+
+  >>> from zope.introspector.code import File
+  >>> file_obj = File('zope.introspector', 'README.txt')
+  >>> file_obj
+  <zope.introspector.code.File object at 0x...>
+
+File objects provide their dotted name, their filename and their
+filesystem path as attributes::
+
+  >>> file_obj.dotted_name
+  'zope.introspector'
+
+  >>> file_obj.name
+  'README.txt'
+
+  >>> pnorm(file_obj.path)
+  '/...zope/introspector/README.txt'
