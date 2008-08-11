@@ -1,0 +1,68 @@
+===============
+Reloading Views
+===============
+
+
+Quick look
+----------
+
+First, let's simply try looking at the views, to make sure that
+the configuration is correct.
+
+    >>> print http("GET /some.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <p>The number is 1001</p>
+    <BLANKLINE>
+
+    >>> print http("GET /another.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <p>The number is 2001</p>
+    <BLANKLINE>
+
+    >>> print http("GET /third.txt HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    Content-Type: text/plain
+    <BLANKLINE>
+    3001
+
+
+Modification
+------------
+
+Now we will modify the view code:
+
+    >>> from z3c.reload.tests.tests import openfile
+    >>> import time
+    >>> def replace(old, new):
+    ...     time.sleep(1.0) # longish, but shorter delays don't seem to work
+    ...     orig = openfile('dynamic_orig.py').read()
+    ...     f = openfile('dynamic.py', 'w')
+    ...     f.write(orig.replace(old, new))
+    ...     f.close()
+    ...     time.sleep(1.0) # longish, but shorter delays don't seem to work
+
+    >>> replace('1001', '1123')
+    >>> print http("GET /some.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <p>The number is 1123</p>
+    <BLANKLINE>
+
+    >>> replace('2001', '2123')
+    >>> print http("GET /another.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <p>The number is 2123</p>
+    <BLANKLINE>
+
+    >>> replace('3001', '3123')
+
+    >>> print http("GET /third.txt HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    Content-Type: text/plain
+    <BLANKLINE>
+    3123

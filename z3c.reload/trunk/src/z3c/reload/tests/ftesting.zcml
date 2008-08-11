@@ -1,0 +1,26 @@
+<configure xmlns="http://namespaces.zope.org/browser"
+           xmlns:z3c="http://namespaces.zope.org/z3c"
+           package="z3c.reload.tests">
+
+  <include file="application.zcml" />
+
+  <z3c:reload modules="z3c.reload.tests.dynamic" />
+
+  <page for="zope.traversing.interfaces.IContainmentRoot"
+        name="some.html"
+        class=".dynamic.SomeNumberView"
+        template="dynamic.pt"
+        permission="zope.Public" />
+
+  <page for="zope.traversing.interfaces.IContainmentRoot"
+        name="another.html"
+        class=".dynamic.AnotherNumberView"
+        template="dynamic.pt"
+        permission="zope.Public" />
+
+  <page for="zope.traversing.interfaces.IContainmentRoot"
+        name="third.txt"
+        class=".dynamic.ThirdNumberView"
+        permission="zope.Public" />
+
+</configure>

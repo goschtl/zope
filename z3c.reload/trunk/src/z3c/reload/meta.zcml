@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/meta">
+
+  <directives namespace="http://namespaces.zope.org/z3c">
+    <directive
+      name="reload"
+      schema=".metadirectives.IReloadDirective"
+      handler=".metaconfigure.reload"
+      />
+  </directives>
+
+</configure>
