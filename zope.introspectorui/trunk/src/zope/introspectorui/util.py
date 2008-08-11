@@ -24,6 +24,7 @@ _format_dict = {
     'restructuredtext': 'zope.source.rest'
     }
 
+space_re = re.compile('\n^( *)\S', re.M)
 
 class CodeBreadcrumbProvider(grok.Adapter):
     """An adapter, that adapts 'ICodeView' objects, i.e. all views
@@ -56,3 +57,8 @@ def get_doc_format(module):
     # The format can also contain the language, so just get the first part
     format = format.split(' ')[0]
     return _format_dict.get(format, 'zope.source.plaintext')
+
+def dedent_string(text):
+    """Dedent the docstring, so that docutils can correctly render it."""
+    dedent = min([len(match) for match in space_re.findall(text)] or [0])
+    return re.compile('\n {%i}' % dedent, re.M).sub('\n', text)
