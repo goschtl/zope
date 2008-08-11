@@ -73,3 +73,54 @@ infos::
       Egg: zope.introspector
       0...
     ...
+
+Files
+=====
+
+We can display text files of type .txt, .rst and .zcml, that are
+contained in a Python package::
+
+  >>> from zope.component import getAdapter, getMultiAdapter
+  >>> from zope.introspector.code import File
+  >>> from zope.introspector.interfaces import IInfo
+  >>> from zope.introspector.code import Package, PackageInfo
+  >>> file_obj = located(File('zope.introspector', 'README.txt'), 
+  ...                    pkg, u'README.txt')
+
+We get an appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(file_obj, IInfo, name='file')
+  >>> info
+  <zope.introspector.code.FileInfo object at 0x...>
+
+The view can then be looked up by querying multi adapters::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+  >>> view
+  <zope.introspectorui.code.File object at 0x...>
+
+File views provide a breadcrumb method and a method to grab the raw
+file contents::
+
+  >>> print view.getRaw()
+  zope.introspector
+  *****************
+  <BLANKLINE>
+  An introspector for Zope.
+  ...
+
+Finally the view can be rendered to provide an HTML fragment
+representing the file::
+
+  >>> print view()
+  <div>
+    <h2>File: <a href="...">zope</a>...<a href="...">README.txt</a></h2>
+  </div>
+  ...
+      Path: ...
+  ...
+  <div>zope.introspector
+  *****************
+  <BLANKLINE>
+  An introspector for Zope.
+  ...
