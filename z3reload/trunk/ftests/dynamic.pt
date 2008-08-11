@@ -1,0 +1,1 @@
+<p>The number is <span tal:replace="view/number" /></p>

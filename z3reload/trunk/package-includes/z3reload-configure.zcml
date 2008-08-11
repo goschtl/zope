@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:reload="http://namespaces.pov.lt/z3reload">
+
+<include package="z3reload" />
+
+<!-- site-specific configuration -->
+
+<!-- example:
+<reload:reload
+    modules="zope.app.demo.jobboard.browser"
+    packages="zope.app.demo.hellopackage" />
+-->
+
+</configure>
