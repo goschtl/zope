@@ -59,3 +59,41 @@ This provider gives us the breadcrumbs for the view of the
 
   >>> provider.getBreadcrumbs()
   '<a href="http://.../zope">zope</a>.<a href="http://.../zope/introspector">introspector</a>'
+
+
+`get_doc_format(module)`
+------------------------
+
+This function was taken from ``zope.app.apidoc``. It inspects a module
+to determine the supported documentation format. The function returns
+a valid renderer source factory id.
+
+If the `__docformat__` module attribute is specified, its value will
+be used to look up the factory id:
+
+  >>> from zope.introspectorui.util import get_doc_format
+  >>> from zope import introspector
+  >>> get_doc_format(introspector)
+  'zope.source.plaintext'
+
+By default and different to ``zope.app.apidoc``, plain text is returned:
+
+  >>> from zope.introspectorui import tests
+  >>> get_doc_format(tests)
+  'zope.source.plaintext'
+
+The `__docformat__` attribute can also optionally specify a language field. We
+simply ignore it:
+
+  >>> class Module(object):
+  ...     pass
+  >>> module = Module()
+  >>> module.__docformat__ = 'structuredtext en'
+  >>> get_doc_format(module)
+  'zope.source.stx'
+
+The third supported source factory id is 'restructuredtext'::
+
+  >>> module.__docformat__ = 'restructuredtext'
+  >>> get_doc_format(module)
+  'zope.source.rest'
