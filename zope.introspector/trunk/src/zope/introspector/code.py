@@ -136,6 +136,20 @@ class Module(PackageOrModule):
         else:
             return Instance(sub_dotted_name)
 
+class ModuleInfo(grok.Adapter):
+    grok.context(Module)
+    grok.provides(IInfo)
+    grok.name('module')
+
+    def getDottedName(self):
+        return self.context.dotted_name
+
+    def getPath(self):
+        return self.context.getPath()
+
+    def getClasses(self):
+        return []
+
 class File(Code):
     def __init__(self, dotted_name, name):
         super(File, self).__init__(dotted_name)
