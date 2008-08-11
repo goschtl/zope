@@ -74,7 +74,7 @@ It also provides the capabilities of a normal ``Code`` object::
   >>> pkg.dotted_name
   'zope.introspector'
 
-  >>> pkg.getPath()
+  >>> pnorm(pkg.getPath())
   '.../src/zope/introspector'
 
 Furthermore we can ask it for subitems::
@@ -205,8 +205,13 @@ It also provides the capabilities of a normal ``Code`` object::
   >>> mod.dotted_name
   'zope.introspector.code'
 
-  >>> mod.getPath()
-  '.../src/zope/introspector/code'
+  >>> pnorm(mod.getPath())
+  '.../src/zope/introspector/code.py'
+
+Furthermore we can ask it for subitems::
+
+  >>> mod['Code']
+  <zope.introspector.code.Class object at 0x...>
 
 
 Files
