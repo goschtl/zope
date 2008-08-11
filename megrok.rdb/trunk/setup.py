@@ -25,7 +25,7 @@ setup(name='megrok.rdb',
       install_requires=[
           'setuptools',
           'grok >= 0.13',
-          'SQLAlchemy == 0.5beta1',
+          'SQLAlchemy > 0.5beta2',
           'zope.sqlalchemy',
           'z3c.saconfig',
          ],
