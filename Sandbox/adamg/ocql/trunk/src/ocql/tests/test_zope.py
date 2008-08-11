@@ -86,6 +86,22 @@ class testZope(unittest.TestCase):
 
         symbols = SymbolContainer()
         #
+        # Simple empty query
+        #
+        # list [ ]
+        #
+        query = "list [ ]"
+        qo=Head(Query(metadata, symbols,
+                 list,
+                 [] ,
+                 Identifier(metadata, symbols,
+                            '') ))
+
+        self.doit(query, qo, [])
+
+
+        symbols = SymbolContainer()
+        #
         # Simple SELECT ALL
         #
         # set [ c in IStudent | c ]
@@ -169,6 +185,126 @@ class testZope(unittest.TestCase):
                    ], Identifier(metadata, symbols, 'c.name')))
 
         self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country','==', 'USA')[0].name]))
+
+
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country!="USA" | c.name]
+        #
+        query = "[c in IStudent , c.country != USA | c.name]"
+        qo = Head(Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Ne(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"USA"'))
+                   ], Identifier(metadata, symbols, 'c.name')))
+
+        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','!=', 'USA')]))
+
+
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country <= "Sri Lanka" | c.name]
+        #
+        query = "[c in IStudent , c.country <= 'Sri Lanka' | c.name]"
+        qo = Head(Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Le(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"Sri Lanka"'))
+                   ], Identifier(metadata, symbols, 'c.name')))
+
+        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<=', 'Sri Lanka')]))
+
+
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country >= "Sri Lanka" | c.name]
+        #
+        query = "[c in IStudent , c.country >= 'Sri Lanka' | c.name]"
+        qo = Head(Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Ge(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"Sri Lanka"'))
+                   ], Identifier(metadata, symbols, 'c.name')))
+
+        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','>=', 'Sri Lanka')]))
+
+
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country < "Sri Lanka" | c.name]
+        #
+        query = "[c in IStudent , c.country < 'Sri Lanka' | c.name]"
+        qo = Head(Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Lt(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"Sri Lanka"'))
+                   ], Identifier(metadata, symbols, 'c.name')))
+
+        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<', 'Sri Lanka')]))
+
+
+        symbols = SymbolContainer()
+        #
+        # Filtering --one result using optimization
+        #
+        # set [ c in IStudent , c.country > "Sri Lanka" | c.name]
+        #
+        query = "[c in IStudent , c.country > 'Sri Lanka' | c.name]"
+        qo = Head(Query(
+                   metadata, symbols,
+                   set,
+                   [
+                        In(
+                           metadata, symbols,
+                           Identifier(metadata,symbols,'c'),
+                           Identifier(metadata,symbols, 'IStudent')),
+                        Gt(
+                           metadata,symbols,
+                           Identifier(metadata, symbols, 'c.country'),
+                           Identifier(metadata, symbols, '"Sri Lanka"'))
+                   ], Identifier(metadata, symbols, 'c.name')))
+
+        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','>', 'Sri Lanka')]))
 
 
 def test_suite():

@@ -98,7 +98,7 @@ class IterCompiler(BaseCompiler):
 
     def __call__(self):
         if self.context.func is LambdaCompiler and \
-        self.context.call is set and \
+        self.context.coll is set and \
         self.context.expr is IfCompiler:
 
             if self.context.klass == set:

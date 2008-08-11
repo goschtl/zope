@@ -94,8 +94,6 @@ class Metadata:
                         obj_list = [intids.getObject(result) for result in results]
                         return obj_list
 
-        return None
-
     def getFromIndex(self, klass, property, operator, value):
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)

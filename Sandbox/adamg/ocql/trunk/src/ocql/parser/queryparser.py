@@ -168,7 +168,7 @@ class Lexer(object):
 
 #this may be != sign
     def t_NOT_EQUAL(self, t):
-        r'~=='
+        r'!='
         return t
 
     def t_LT(self, t):
@@ -372,8 +372,13 @@ class Parser(object):
     def p_qualifier_qualifier(self, t):
         r'''qualifier : qualifier SEMI_COLON qualifier
         '''
-        t[0] = t[0].extend(t[1])
-        t[0] = t[0].extend(t[3])
+        if t[0]:
+            t[0].extend(t[1])
+            t[0].extend(t[3])
+        else:
+            t[0] = t[1]
+            t[0].extend(t[3])
+            
         if DEBUG: print 'reducing "qualifier SEMI_COLON qualifier" to "qualifier"', t[0]
 
 #    def p_qualifier_6(self, t):

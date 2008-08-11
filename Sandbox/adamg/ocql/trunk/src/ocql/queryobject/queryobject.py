@@ -400,6 +400,12 @@ class Condition(Expression):
         self.setProp('left', left)
         self.setProp('right', right)
 
+    def __repr__(self):
+        return "%s(%s, %s)" % (
+            self.__class__.__name__,
+            str(self.left), str(self.right)
+            )
+
 class Eq(Condition):
     implements(IEq)
 
