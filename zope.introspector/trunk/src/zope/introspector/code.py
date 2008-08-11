@@ -136,13 +136,14 @@ class File(Code):
     def __init__(self, dotted_name, name):
         super(File, self).__init__(dotted_name)
         self.name = name
+        module_info = module_info_from_dotted_name(self.dotted_name)
+        self.path = module_info.getResourcePath(self.name)
 
     def exists(self):
         """Check whether the file is a file we want to consider."""
-        module_info = module_info_from_dotted_name(self.dotted_name)
-        path = module_info.getResourcePath(self.name)
-        return (os.path.isfile(path) and
-                os.path.splitext(path)[1].lower() in ['.rst', '.txt', '.zcml'])
+        return (os.path.isfile(self.path) and
+                os.path.splitext(self.path)[1].lower() in [
+                    '.rst', '.txt', '.zcml'])
 
 class Class(Code):
     pass
