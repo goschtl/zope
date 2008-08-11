@@ -1,5 +1,7 @@
-gzope.introspector
-**********************
+zope.introspector
+*****************
+
+An introspector for Zope.
 
 :Test-Layer: nonunit
 
