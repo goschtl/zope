@@ -62,7 +62,7 @@ This provider gives us the breadcrumbs for the view of the
 
 
 `get_doc_format(module)`
-------------------------
+========================
 
 This function was taken from ``zope.app.apidoc``. It inspects a module
 to determine the supported documentation format. The function returns
