@@ -237,6 +237,20 @@ component architechture for an appropriate adapter to ``IInfo``.
   >>> infos
   [(u'module', <zope.introspector.code.ModuleInfo object at 0x...>)]
 
+We examine the generated ``ModuleInfo`` object further. We can ask
+for the classes defined in the module::
+
+  >>> info = infos[0][1]
+  >>> info.getClasses()
+  []
+
+  >>> func_list = info.getFunctions()
+  >>> func_list
+  [<zope.introspector.code.Function object at 0x...>, ...]
+
+  >>> func_names = [x.dotted_name.split('.')[-1] for x in func_list]
+  >>> sorted(func_names)
+  ['ext_resolve', 'get_namespace_package_items', ..., 'resolve']
 
 
 Files
