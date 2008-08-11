@@ -3,7 +3,7 @@ zope.introspectorui.code
 
 UI components for code oriented infos.
 
-:Test-Layer: functional
+:Test-Layer:  functional
 
 The `code` module provides viewing components for rendering info
 objects related to code. 'Code' in that respect means packages,
@@ -19,6 +19,13 @@ We prepare a browser request, that can be used lateron::
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
 
+The code objects must be located to provide meaningful URLs. We create
+a faked root and add a 'zope' package representation::
+
+  >>> from zope.location.location import located
+  >>> from zope.introspector.code import Package
+  >>> root = located(object(), None, '')
+  >>> zope_pkg = located(Package('zope'), root, u'zope')
 
 Packages
 ========
@@ -29,7 +36,12 @@ related to a dotted name, which represents a package::
   >>> from zope.component import getAdapter, getMultiAdapter
   >>> from zope.introspector.interfaces import IInfo
   >>> from zope.introspector.code import Package, PackageInfo
-  >>> pkg = Package('zope.introspector')
+  >>> pkg = located(Package('zope.introspector'), 
+  ...                            zope_pkg, u'introspector')
+
+The package must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
   >>> info = getAdapter(pkg, IInfo, name='package')
   >>> info
   <zope.introspector.code.PackageInfo object at 0x...>
