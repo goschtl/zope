@@ -13,9 +13,17 @@
 ##############################################################################
 """Helpers for the zope.introspectorui.
 """
+import re
 import grokcore.component as grok
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 from zope.introspector.code import Code, Package
+
+_format_dict = {
+    'plaintext': 'zope.source.plaintext',
+    'structuredtext': 'zope.source.stx',
+    'restructuredtext': 'zope.source.rest'
+    }
+
 
 class CodeBreadcrumbProvider(grok.Adapter):
     """An adapter, that adapts 'ICodeView' objects, i.e. all views
@@ -40,3 +48,11 @@ class CodeBreadcrumbProvider(grok.Adapter):
         result = ['<a href="%s">%s</a>' % (self.context.url(x), x.__name__)
                   for x in parts]
         return '.'.join(result)
+
+def get_doc_format(module):
+    """Convert a module's __docformat__ specification to a renderer source
+    id"""
+    format = getattr(module, '__docformat__', 'plaintext').lower()
+    # The format can also contain the language, so just get the first part
+    format = format.split(' ')[0]
+    return _format_dict.get(format, 'zope.source.plaintext')
