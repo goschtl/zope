@@ -53,10 +53,10 @@ class CodeBreadcrumbProvider(grok.Adapter):
 def get_doc_format(module):
     """Convert a module's __docformat__ specification to a renderer source
     id"""
-    format = getattr(module, '__docformat__', 'plaintext').lower()
+    format = getattr(module, '__docformat__', 'restructuredtext').lower()
     # The format can also contain the language, so just get the first part
     format = format.split(' ')[0]
-    return _format_dict.get(format, 'zope.source.plaintext')
+    return _format_dict.get(format, 'zope.source.rest')
 
 def dedent_string(text):
     """Dedent the docstring, so that docutils can correctly render it."""
