@@ -26,11 +26,15 @@ class CodeBreadcrumbProvider(grok.Adapter):
 
     def getBreadcrumbs(self):
         code_obj = self.context.context.context
-        items = code_obj.getParents()
-        result = []
-        for item in items:
-            name = getattr(item, 'name', item.dotted_name.split('.')[-1])
-            url = self.context.url(item)
-            result.append(
-                '<a href="%s">%s</a>' % (url, name))
+        dotted_name = code_obj.dotted_name
+        parts = []
+        while code_obj.__parent__:
+            parts.append(code_obj)
+            curr_dotted_name = '.'.join([x.__name__ for x in parts])
+            code_obj = code_obj.__parent__
+            if len(curr_dotted_name) >= len(dotted_name):
+                break
+        parts.reverse()
+        result = ['<a href="%s">%s</a>' % (self.context.url(x), x.__name__)
+                  for x in parts]
         return '.'.join(result)
