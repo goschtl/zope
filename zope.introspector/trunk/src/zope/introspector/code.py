@@ -33,14 +33,6 @@ class Code(object):
     def __init__(self, dotted_name):
         self.dotted_name = dotted_name
 
-    def getParents(self):
-        dotted_name = self.dotted_name
-        parts = dotted_name.split('.')
-        result = [Package(parts[0]),]
-        for part in parts[1:]:
-            result.append(result[-1][part])
-        return tuple(result)
-
 class PackageOrModule(Code):
     def __init__(self, dotted_name):
         super(PackageOrModule, self).__init__(dotted_name)
@@ -144,14 +136,6 @@ class File(Code):
     def __init__(self, dotted_name, name):
         super(File, self).__init__(dotted_name)
         self.name = name
-
-    def getParents(self):
-        """Get the parents tuple with the filename appended.
-        """
-        # Files don't store their own name in the dotted_name.
-        result = list(super(File, self).getParents())
-        result.append(self)
-        return tuple(result)
 
     def exists(self):
         """Check whether the file is a file we want to consider."""
