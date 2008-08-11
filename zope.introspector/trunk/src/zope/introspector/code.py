@@ -119,6 +119,10 @@ class PackageInfo(grok.Adapter):
             location=info.location)
 
 class Module(PackageOrModule):
+
+    def getPath(self):
+        return self._module_info.path
+
     def __getitem__(self, name):
         module = self._module_info.getModule()
         obj = getattr(module, name, None)
