@@ -14,11 +14,12 @@
 """The real information providers for code objects (packages, classes, etc.)
 """
 
-import pkg_resources
-from pkg_resources import DistributionNotFound
-import grokcore.component as grok
-from grokcore.component.interfaces import IContext
+import inspect
 import types
+import pkg_resources
+import grokcore.component as grok
+from pkg_resources import DistributionNotFound
+from grokcore.component.interfaces import IContext
 from martian.scan import module_info_from_dotted_name
 from martian.util import isclass
 from zope.interface import implements
@@ -147,8 +148,19 @@ class ModuleInfo(grok.Adapter):
     def getPath(self):
         return self.context.getPath()
 
+    def getMembers(self, filter_func=lambda x:True):
+        info = self.context.getModuleInfo()
+        members = inspect.getmembers(info.getModule(), predicate=filter_func)
+        return [self.context[x[0]] for x in members]
+        
     def getClasses(self):
-        return []
+        filter_func = lambda x: inspect.isclass(x)
+        return self.getMembers(filter_func=filter_func)
+
+    def getFunctions(self):
+        filter_func = lambda x: inspect.isfunction(x) or inspect.ismethod(x)
+        return self.getMembers(filter_func=filter_func)
+        
 
 class File(Code):
     def __init__(self, dotted_name, name):
