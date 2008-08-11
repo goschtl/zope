@@ -184,6 +184,31 @@ If a package is a namespace package, we can also get all submodules::
   [<ModuleInfo object for 'zope.annotation'>,
    ..., <ModuleInfo object for 'zope.traversing'>]
 
+
+Modules
+=======
+
+`Module` objects are representations of Python modules.
+
+The ``Module`` class is one of those container-like representations,
+because packages can contain other packages, modules and text files.
+
+A ``Module`` representation can be created easily::
+
+  >>> from zope.introspector.code import Module
+  >>> mod = Module('zope.introspector.code')
+  >>> mod
+  <zope.introspector.code.Module object at 0x...>
+
+It also provides the capabilities of a normal ``Code`` object::
+
+  >>> mod.dotted_name
+  'zope.introspector.code'
+
+  >>> mod.getPath()
+  '.../src/zope/introspector/code'
+
+
 Files
 =====
 
