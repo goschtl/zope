@@ -42,11 +42,12 @@ def get_controlled_packages(dest):
 
 def get_page(dest, package, force=False):
     try:
-        pdest = os.path.join(dest, package)
-    except UnicodeEncodeError:
+        package.decode('ascii')
+    except UnicodeDecodeError:
         print 'skipping %r which has a non-ascii name' % `package`
         return
 
+    pdest = os.path.join(dest, package)
     if os.path.exists(pdest):
         if not force:
             assert os.path.isdir(pdest)
