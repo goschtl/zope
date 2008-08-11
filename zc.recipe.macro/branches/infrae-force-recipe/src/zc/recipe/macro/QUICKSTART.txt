@@ -67,6 +67,10 @@ That will result in::
     question = Why do I rock so hard?
     rocking-style = so hard
 
+result-recipe is going to provide a recipe *only* if the macro doesn't define
+one already. If you want to set the recipe in the result, you have to provide the
+option force-recipe = true as well.
+
 Targets
 -------
 

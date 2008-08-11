@@ -1,6 +1,15 @@
 CHANGES
 =======
 
+1.2.5 (unreleased)
+------------------
+
+- Add a force-recipe, which say that even if the macro define a recipe to
+  use, to use the one defined by result-recipe.
+
+- Correct a rest error, that prevent the package of being installed with
+  docutils 0.4.
+
 1.2.4 (2008-07-18)
 ------------------
 

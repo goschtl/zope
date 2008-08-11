@@ -18,7 +18,7 @@ import pprint
 from zc.buildout.buildout import Options
 
 
-def evaluate_macro(buildout, name, macro, input, recipe):
+def evaluate_macro(buildout, name, macro, input, recipe, force_recipe):
     def replace_match(match):
         key = match.groups()[0]
         if key in buildout[input]:
@@ -35,7 +35,10 @@ def evaluate_macro(buildout, name, macro, input, recipe):
             new_macro[key] = c_re.sub(
                 replace_match, value.replace('$${:__name__}', name))
     if recipe:
-        new_macro['recipe'] = new_macro.get('recipe', recipe)
+        if force_recipe:
+            new_macro['recipe'] = recipe
+        else:
+            new_macro['recipe'] = new_macro.get('recipe', recipe)
     return new_macro
 
 def parse_target(invoker, target):
@@ -52,6 +55,7 @@ def parse_macro_invocation(invocation):
 def Macro(buildout, name, options):
     del options['recipe']
     recipe = options.pop('result-recipe', '')
+    force_recipe = options.pop('force-recipe', '')
     macro = options.pop('macro').strip()
     targets = options.pop('targets', name).strip().split()
     macro_summation = {}
@@ -63,7 +67,7 @@ def Macro(buildout, name, options):
                 buildout,
                 output,
                 evaluate_macro(
-                    buildout, output, macro_summation, input, recipe))
+                    buildout, output, macro_summation, input, recipe, force_recipe))
         if output == name:
             # If we're targetting the invoker
             options._raw.update(opt._raw)
