@@ -43,7 +43,7 @@ def get_controlled_packages(dest):
 def get_page(dest, package, force=False):
     try:
         package.decode('ascii')
-    except UnicodeDecodeError:
+    except UnicodeEncodeError:
         print 'skipping %r which has a non-ascii name' % `package`
         return
 
