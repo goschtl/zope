@@ -39,7 +39,7 @@ def buildout_pprint(buildout):
     string = pprint.pformat(b_dict).replace('\\n', '\n')
     print string
 
-def setupBuildout(test, *args):
+def setupBuildout(test, install_eggs=tuple(), *args):
     tmpdir, rmdir, write, sample_buildout = (
         test.globs['tmpdir'],
         test.globs['rmdir'],
@@ -65,13 +65,11 @@ def setupBuildout(test, *args):
         user_defaults=False
         )
     logger = logging.getLogger('zc.buildout')
-    logger.removeHandler(logger.handlers[0])
     logging.getLogger('zc.buildout').setLevel(99999)
+    logger.removeHandler(logger.handlers[0])
     buildout.bootstrap([])
-    zc.buildout.testing.install('zope.testing', eggs)
-    zc.buildout.testing.install('zc.recipe.testrunner', eggs)
-    zc.buildout.testing.install('zc.recipe.egg', eggs)
-    zc.buildout.testing.install('zc.recipe.macro', eggs)
+    for egg in install_eggs:
+        zc.buildout.testing.install(egg, eggs)
     return buildout
 
 
@@ -80,7 +78,8 @@ def setUp(test):
 
     test.globs['here'] = here
     test.globs['macro'] = os.path.join('../../../..', here)
-    test.globs['setupBuildout'] = (lambda *args: setupBuildout(test, *args))
+    test.globs['setupBuildout'] = (
+        lambda *args: setupBuildout(test, (), *args))
     test.globs['buildout_pprint'] = buildout_pprint
     os.chdir(test.globs['macro'])
     return test

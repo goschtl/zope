@@ -44,11 +44,6 @@ def parse_target(invoker, target):
         target, input_section = target.split(':')
     return target, input_section
 
-def parse_macro_invocation(invocation):
-    inputs = {}
-    parse = re.match(r'([^:\n]*)(?::([^:{\n]*)(?:{([^}]*)})?)?', invocation, re.M)
-    return tuple(parse.group(x) for x in xrange(1,4))
-
 def Macro(buildout, name, options):
     del options['recipe']
     recipe = options.pop('result-recipe', '')

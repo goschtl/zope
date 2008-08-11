@@ -1,6 +1,12 @@
 CHANGES
 =======
 
+1.2.5 (unreleased)
+------------------
+
+- Removed version sections from the documentation.
+- Improved test coverage.
+
 1.2.4 (2008-07-18)
 ------------------
 
