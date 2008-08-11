@@ -69,21 +69,22 @@ to determine the supported documentation format. The function returns
 a valid renderer source factory id.
 
 If the `__docformat__` module attribute is specified, its value will
-be used to look up the factory id:
+be used to look up the factory id::
 
   >>> from zope.introspectorui.util import get_doc_format
-  >>> from zope import introspector
-  >>> get_doc_format(introspector)
-  'zope.source.plaintext'
+  >>> from zope import introspectorui
+  >>> get_doc_format(introspectorui)
+  'zope.source.rest'
 
-By default and different to ``zope.app.apidoc``, plain text is returned:
+By default and different to ``zope.app.apidoc``, restructured text is
+returned::
 
   >>> from zope.introspectorui import tests
   >>> get_doc_format(tests)
-  'zope.source.plaintext'
+  'zope.source.rest'
 
 The `__docformat__` attribute can also optionally specify a language field. We
-simply ignore it:
+simply ignore it::
 
   >>> class Module(object):
   ...     pass
@@ -92,11 +93,11 @@ simply ignore it:
   >>> get_doc_format(module)
   'zope.source.stx'
 
-The third supported source factory id is 'restructuredtext'::
+The third supported source factory id is 'plaintext'::
 
-  >>> module.__docformat__ = 'restructuredtext'
+  >>> module.__docformat__ = 'plaintext'
   >>> get_doc_format(module)
-  'zope.source.rest'
+  'zope.source.plaintext'
 
 `dedent_string(text)`
 =====================
