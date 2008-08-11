@@ -18,6 +18,15 @@ We construct a package representation for ``zope.introspector``::
   >>> from zope.introspector.code import Package
   >>> pkg = Package('zope.introspector')
 
+The package must be located to be referencable by an URL. We fake a
+location tree with a faked root::
+
+  >>> from zope.location.location import located
+  >>> root = object()
+  >>> pkg_zope = located(Package('zope'), root, 'zope')
+  >>> pkg_introspector = Package('zope.introspector')
+  >>> pkg = located(pkg_introspector, pkg_zope, 'introspector')
+
 Now we get the appropriate info object for this representation. This
 is normally done using adapters, but we can shorten the way here and
 use the ``PackageInfo`` directly::
