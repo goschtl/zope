@@ -209,3 +209,27 @@ filesystem path as attributes::
 
   >>> pnorm(file_obj.path)
   '/...zope/introspector/README.txt'
+
+FileInfos
+---------
+
+``FileInfo`` objects provide the (basic) data of ``File`` objects in
+an own API. As with all `Info` objects herein we get the appropriate
+``FileInfo`` by looking up a named adapter::
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> info = component.getAdapter(file_obj, IInfo, 'file')
+  >>> info
+  <zope.introspector.code.FileInfo object at 0x...>
+
+The `Info` object gives us some basic information about a file::
+
+  >>> info.getDottedName()
+  'zope.introspector'
+
+  >>> info.getName()
+  'README.txt'
+
+  >>> pnorm(info.getPath())
+  '/.../zope/introspector/README.txt'
