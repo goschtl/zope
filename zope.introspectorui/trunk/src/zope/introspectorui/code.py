@@ -44,8 +44,8 @@ class Module(grok.View):
         functions = self.context.getFunctions()
         return sorted(self.getItemURLs(functions))
 
-    def render(self):
-        return "Not yet implemented."
+    def getBreadcrumbs(self):
+        return IBreadcrumbProvider(self).getBreadcrumbs()
 
 
 class Package(grok.View):
