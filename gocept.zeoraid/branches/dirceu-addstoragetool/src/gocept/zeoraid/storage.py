@@ -32,7 +32,6 @@ import persistent.TimeStamp
 import transaction
 import transaction.interfaces
 import ZODB.blob
-import ZODB.config
 from ZEO.runzeo import ZEOOptions
 
 import gocept.zeoraid.interfaces
@@ -55,20 +54,6 @@ def ensure_writable(method):
             raise ZODB.POSException.ReadOnlyError()
         return method(self, *args, **kw)
     return check_writable
-
-
-class ZEOOpener(object):
-
-    def __init__(self, ip, port, name):
-        self.ip = ip
-        self.name = name
-        self.port = port
-
-    def open(self, **kwargs):
-        return ZODB.config.storageFromString("""<zeoclient>
-            server %s:%s
-            storage %s
-        </zeoclient>""" % (self.ip, self.port, self.name))
 
 
 class RAIDStorage(object):
@@ -541,7 +526,7 @@ class RAIDStorage(object):
         # This method isn't officially part of the interface but it is supported.
         methods = dict.fromkeys(
             ['raid_recover', 'raid_status', 'raid_disable', 'raid_details',
-            'raid_add_storage', 'raid_reload'])
+            'raid_reload'])
         return methods
 
     # IRAIDStorage
@@ -577,13 +562,7 @@ class RAIDStorage(object):
         t.start()
         return 'recovering %r' % (name,)
 
-    def raid_add_storage(self, ip, port, name):
-        self.openers[name] = ZEOOpener(ip, port, name)
-        self._open_storage(name)
-        self.storages_degraded.append(name)
-        self.raid_recover(name)
-        return 'added %s:%s:%s' % (ip, port, name)
-
+    @ensure_open_storage
     def raid_reload(self, path):
         s = ""
         options = ZEOOptions()
