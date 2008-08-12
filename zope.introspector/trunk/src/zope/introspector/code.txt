@@ -302,3 +302,31 @@ The `Info` object gives us some basic information about a file::
 
   >>> pnorm(info.getPath())
   '/.../zope/introspector/README.txt'
+
+
+Functions
+=========
+
+Functions are simple representations of functions contained in a
+module::
+
+  >>> from zope.introspector.code import Function
+  >>> func = Function('zope.introspector.util.resolve')
+  >>> func
+  <zope.introspector.code.Function object at 0x...>
+
+Function objects know about their signature::
+
+  >>> func.getSignature()
+  '(obj_or_dotted_name)'
+
+FunctionInfos
+-------------
+
+FunctionInfos provide the same info as the accompanied `Function`
+objects::
+
+  >>> from zope.introspector.code import FunctionInfo
+  >>> info = FunctionInfo(func)
+  >>> info.getSignature()
+  '(obj_or_dotted_name)'
