@@ -38,6 +38,7 @@ class PackageOrModule(Code):
     def __init__(self, dotted_name):
         super(PackageOrModule, self).__init__(dotted_name)
         self._module_info = module_info_from_dotted_name(dotted_name)
+        self._module = self._module_info.getModule()
 
     def getModuleInfo(self):
         return self._module_info
@@ -148,14 +149,21 @@ class ModuleInfo(grok.Adapter):
     def getPath(self):
         return self.context.getPath()
 
+    def _standardFilter(self, item):
+        """Filter out, what we don't consider a module item.
+        """
+        if getattr(item, '__module__', None) != self.context._module.__name__:
+            return False
+        return hasattr(item, '__name__')
+
     def getMembers(self, filter_func=lambda x:True):
-        info = self.context.getModuleInfo()
-        members = inspect.getmembers(info.getModule(), predicate=filter_func)
+        members = inspect.getmembers(
+            self.context._module,
+            predicate=lambda x: filter_func(x) and self._standardFilter(x))
         return [self.context[x[0]] for x in members]
         
     def getClasses(self):
-        filter_func = lambda x: inspect.isclass(x)
-        return self.getMembers(filter_func=filter_func)
+        return self.getMembers(filter_func=isclass)
 
     def getFunctions(self):
         filter_func = lambda x: inspect.isfunction(x) or inspect.ismethod(x)
