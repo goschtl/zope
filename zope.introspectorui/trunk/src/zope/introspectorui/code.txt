@@ -78,47 +78,78 @@ Modules
 =======
 
 We can display module information. For this we have to get the infos
-related to a dotted name, which represents a module::
+related to a dotted name, which represents a module. We create module
+representations for the local `code` module (which contains classes)
+and the local `util` module (which contains functions)::
 
   >>> from zope.introspector.code import Module, ModuleInfo
-  >>> mod = located(Module('zope.introspector.code'), 
-  ...               zope_pkg, u'code')
+  >>> mod_code = located(Module('zope.introspector.code'), 
+  ...                    zope_pkg, u'code')
+  >>> mod_util = located(Module('zope.introspector.util'), 
+  ...                    zope_pkg, u'util')
 
 The module must be located to provide meaningful URLs. We get an
 appropriate info simply by looking up adapters::
 
-  >>> info = getAdapter(mod, IInfo, name='module')
-  >>> info
+  >>> info_code = getAdapter(mod_code, IInfo, name='module')
+  >>> info_code
   <zope.introspector.code.ModuleInfo object at 0x...>
 
-Finally we can create the view on the module::
+The same can happen with the ``util`` module::
 
-  >>> view = getMultiAdapter((info, request), name='index')
-  >>> view
+  >>> info_util = getAdapter(mod_util, IInfo, name='module')
+
+Finally we can create the views on the modules::
+
+  >>> view_code = getMultiAdapter((info_code, request), name='index')
+  >>> view_code
   <zope.introspectorui.code.Module object at 0x...>
+
+  >>> view_util = getMultiAdapter((info_util, request), name='index')
 
 Module views provide lists of dicts for contained classes and
 functions. Each dict tells about the name and URL of a contained
 item::
 
-  >>> view.getClassURLs()
+  >>> view_code.getClassURLs()
   [{'url': 'http://127.0.0.1/zope/introspector/code/Class', 
     'name': 'Class'},
    {'url': 'http://127.0.0.1/zope/introspector/code/Code', 
     'name': 'Code'},  
   ...
 
-  >>> view.getFunctionURLs()
-  []
+The ``util`` module provides some functions::
 
-Of course we can render the view::
+  >>> view_util.getFunctionURLs()
+  [{'url': 'http://127.0.0.1/zope/introspector/util/get_function_signature',
+    'name': 'get_function_signature'},
+  ...]
 
-  >>> print view()
+
+We can also get a list of dicts that provide the function signatures::
+
+  >>> view_util.getFunctions()
+  [{'fullname': 'get_function_signature(func)',
+    'name': 'get_function_signature',
+    'signature': '(func)'},
+   ...]
+
+Of course we can render the views::
+
+  >>> print view_code()
   <div>
     <h2>Module: <a href="...">zope</a>.<a href="...">code</a></h2>    
     <div>
       Path: ...code.py
     </div>
+  ...
+
+By default functions are presented as strings and not as links::
+
+  >>> print view_util()
+  <div>
+  ...
+  <li>get_function_signature(func)</li>
   ...
 
 
