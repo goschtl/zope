@@ -13,6 +13,8 @@
 ##############################################################################
 """Helper functions for zope.introspector.
 """
+import types
+import inspect
 import pkg_resources
 from martian.scan import resolve as ext_resolve
 
@@ -77,3 +79,46 @@ def get_namespace_package_items(dotted_name):
         result.append(name)
     result = list(set(result)) # make entries unique
     return result
+
+def get_function_signature(func):
+    """Return the signature of a function or method."""
+    if not isinstance(func, (types.FunctionType, types.MethodType)):
+        raise TypeError("func must be a function or method")
+
+    args, varargs, varkw, defaults = inspect.getargspec(func)
+    placeholder = object()
+    sig = '('
+    # By filling up the default tuple, we now have equal indeces for
+    # args and default.
+    if defaults is not None:
+        defaults = (placeholder,)*(len(args)-len(defaults)) + defaults
+    else:
+        defaults = (placeholder,)*len(args)
+
+    str_args = []
+
+    for name, default in zip(args, defaults):
+        # Neglect self, since it is always there and not part of the
+        # signature.  This way the implementation and interface
+        # signatures should match.
+        if name == 'self' and type(func) == types.MethodType:
+            continue
+
+        # Make sure the name is a string
+        if isinstance(name, (tuple, list)):
+            name = '(' + ', '.join(name) + ')'
+        elif not isinstance(name, str):
+            name = repr(name)
+
+        if default is placeholder:
+            str_args.append(name)
+        else:
+            str_args.append(name + '=' + repr(default))
+
+    if varargs:
+        str_args.append('*'+varargs)
+    if varkw:
+        str_args.append('**'+varkw)
+
+    sig += ', '.join(str_args)
+    return sig + ')'
