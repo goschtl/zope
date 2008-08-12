@@ -70,4 +70,7 @@ class GrokUIFile(File):
         return result
         
     def getRenderedDoc(self):
-        return render_text(self.getRaw())
+        text = self.getRaw()
+        if self.context.context.name.split('.')[-1] == 'zcml':
+            return render_text(text, format='zope.source.plaintext')
+        return render_text(text)
