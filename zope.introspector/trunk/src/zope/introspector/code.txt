@@ -250,7 +250,7 @@ for the classes defined in the module::
 
   >>> func_names = [x.dotted_name.split('.')[-1] for x in func_list]
   >>> sorted(func_names)
-  ['ext_resolve', 'get_namespace_package_items', ..., 'resolve']
+  ['get_namespace_package_items', ..., 'resolve']
 
 
 Files
