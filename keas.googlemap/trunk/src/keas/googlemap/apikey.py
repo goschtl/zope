@@ -53,5 +53,5 @@ class APIKeyViewlet(ViewletBase):
         apikey = zope.component.queryUtility(interfaces.IGoogleMapAPIKey, domainName)
         if apikey is None:
             return '<!-- Google Maps API Key not found for %s -->' % domainName
-        srcURL = "http://maps.google.com/maps?file=api&v=2&key=%s" % apikey.key
+        srcURL = "http://maps.google.com/maps?file=api&v=2&key=%s&async=2&callback=keas_googlemap_maploader" % apikey.key
         return '<script type="text/javascript"\nsrc="%s">\n</script>' % srcURL

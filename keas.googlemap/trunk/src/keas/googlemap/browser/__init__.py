@@ -98,11 +98,12 @@ class GoogleMap(object):
                                                                          jsString(marker.html))
         markerString += ']'
         return """
-          $(document).ready( function() {
+          var keas_googlemap_maploader = function(){
                keas.googlemap.initialize({id:'%(id)s',
                                           zoom:%(zoom)s,
                                           type:%(type)s,
-                                          markers:%(markers)s});} );
+                                          markers:%(markers)s});
+          };
           $(document).unload( function() {GUnload();} );
           """ % dict(id=self.id,
                      zoom=self.zoom,

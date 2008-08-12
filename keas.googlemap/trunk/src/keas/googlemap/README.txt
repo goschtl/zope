@@ -141,7 +141,7 @@ that performs the API key lookup at render time.
   >>> viewlet.update()
   >>> print viewlet.render()
   <script type="text/javascript"
-          src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA8SpDMoY3XpgN5DzYnmNsmhTwM0brOpm-All5BF6PoaKBxRWWERT3cHSc49vCxDS6hLf1VMPD_e-ekg">
+          src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAA8SpDMoY3XpgN5DzYnmNsmhTwM0brOpm-All5BF6PoaKBxRWWERT3cHSc49vCxDS6hLf1VMPD_e-ekg&async=2&callback=keas_googlemap_maploader">
   </script>
 
 If our request is under a host for which no apikey can be found, then

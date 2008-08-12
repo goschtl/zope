@@ -54,14 +54,14 @@ Let's try rendering the javascript needed to create such a map.
   </div>
   <BLANKLINE>
   <script type="text/javascript">
-            $(document).ready( function() {
+            var keas_googlemap_maploader = function(){
                  keas.googlemap.initialize({id:'google-map',
                                             zoom:1,
                                             type:G_NORMAL_MAP,
-                                            markers:[]});} );
+                                            markers:[]});
+            };
             $(document).unload( function() {GUnload();} );
             </script>
-  <BLANKLINE>
 
 Adding Markers
 --------------
@@ -86,14 +86,14 @@ Now we will add this marker to the map and render it again.
   </div>
   <BLANKLINE>
   <script type="text/javascript">
-            $(document).ready( function() {
+            var keas_googlemap_maploader = function(){
                  keas.googlemap.initialize({id:'google-map',
                                             zoom:1,
                                             type:G_NORMAL_MAP,
-                                            markers:[{latitude:37.231, longitude:-23.123, html:'\n<h1>My Marker</h1>\n<p>This is my marker</p>\n'},]});} );
+                                            markers:[{latitude:37.231, longitude:-23.123, html:'\n<h1>My Marker</h1>\n<p>This is my marker</p>\n'},]});
+            };
             $(document).unload( function() {GUnload();} );
             </script>
-  <BLANKLINE>
 
 To properly display markers, you will need to include the
 markermanager.js utility script from google.  There is a viewlet that
