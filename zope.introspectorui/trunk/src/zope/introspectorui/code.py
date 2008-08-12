@@ -25,7 +25,7 @@ class Module(grok.View):
 
     def update(self):
         self.classes = self.getClassURLs()
-        self.functions = self.getFunctionURLs()
+        self.functions = self.getFunctions()
 
     def getItemURLs(self, items):
         module = self.context.context
@@ -43,6 +43,17 @@ class Module(grok.View):
     def getFunctionURLs(self):
         functions = self.context.getFunctions()
         return sorted(self.getItemURLs(functions))
+
+    def getFunctions(self):
+        functions = self.context.getFunctions()
+        result = []
+        for func in functions:
+            name = func.dotted_name.split('.')[-1]
+            signature = func.getSignature()
+            result.append(dict(name=name,
+                               signature=signature,
+                               fullname=name+signature))
+        return result
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
