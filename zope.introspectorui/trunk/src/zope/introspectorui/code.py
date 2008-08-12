@@ -23,6 +23,10 @@ class Module(grok.View):
     grok.context(ModuleInfo)
     grok.name('index')
 
+    def update(self):
+        self.classes = self.getClassURLs()
+        self.functions = self.getFunctionURLs()
+
     def getItemURLs(self, items):
         module = self.context.context
         result = []
