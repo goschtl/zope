@@ -74,6 +74,44 @@ infos::
       0...
     ...
 
+Modules
+=======
+
+We can display module information. For this we have to get the infos
+related to a dotted name, which represents a module::
+
+  >>> from zope.introspector.code import Module, ModuleInfo
+  >>> mod = located(Module('zope.introspector.code'), 
+  ...               zope_pkg, u'code')
+
+The module must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(mod, IInfo, name='module')
+  >>> info
+  <zope.introspector.code.ModuleInfo object at 0x...>
+
+Finally we can create the view on the module::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+  >>> view
+  <zope.introspectorui.code.Module object at 0x...>
+
+Module views provide lists of dicts for contained classes and
+functions. Each dict tells about the name and URL of a contained
+item::
+
+  >>> view.getClassURLs()
+  [{'url': 'http://127.0.0.1/zope/introspector/code/Class', 
+    'name': 'Class'},
+   {'url': 'http://127.0.0.1/zope/introspector/code/Code', 
+    'name': 'Code'},  
+  ...
+
+  >>> view.getFunctionURLs()
+  []
+
+
 Files
 =====
 
