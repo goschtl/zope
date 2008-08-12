@@ -111,6 +111,16 @@ item::
   >>> view.getFunctionURLs()
   []
 
+Of course we can render the view::
+
+  >>> print view()
+  <div>
+    <h2>Module: <a href="...">zope</a>.<a href="...">code</a></h2>    
+    <div>
+      Path: ...code.py
+    </div>
+  ...
+
 
 Files
 =====
