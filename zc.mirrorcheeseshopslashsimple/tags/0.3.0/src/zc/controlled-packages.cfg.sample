@@ -1,0 +1,14 @@
+[DEFAULT]
+tested=true
+
+[zope.component]
+versions = 3.4.0
+
+[zope.interface]
+versions = 3.4.0
+           3.4.1
+           3.4.2
+
+[zope.event]
+versions = 3.5.0
+tested=false
