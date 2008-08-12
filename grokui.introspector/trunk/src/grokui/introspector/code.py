@@ -15,8 +15,8 @@
 """
 import grok
 from zope.introspector.code import Code, PackageOrModule
-from zope.introspector.code import PackageInfo, FileInfo
-from zope.introspectorui.code import Package, File
+from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
+from zope.introspectorui.code import Package, File, Module
 from grokui.introspector.namespace import IntrospectorLayer
 from grokui.introspector.util import get_url_with_namespaces, render_text
 
@@ -40,6 +40,20 @@ class GrokUIPackage(Package):
         result = get_url_with_namespaces(self.request, result)
         return result
         
+    def render(self):
+        # We have to provide a dummy renderer, that will not be used.
+        return
+
+class GrokUIModule(Module):
+    grok.context(ModuleInfo)
+    grok.name('index')
+    grok.layer(IntrospectorLayer)
+
+    def url(self, *args, **kw):
+        result = super(GrokUIModule, self).url(*args, **kw)
+        result = get_url_with_namespaces(self.request, result)
+        return result
+
     def render(self):
         # We have to provide a dummy renderer, that will not be used.
         return
