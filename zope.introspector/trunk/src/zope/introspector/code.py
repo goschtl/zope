@@ -102,6 +102,11 @@ class PackageInfo(grok.Adapter):
                     yield info
             except ImportError:
                 pass
+            except AttributeError:
+                # This is thrown sometimes by martian.scan if an
+                # object lacks a __file__ attribute and needs further
+                # investigation.
+                pass
         
     def getSubPackages(self):
         return sorted(self._filterSubItems(lambda x: x.isPackage()))
