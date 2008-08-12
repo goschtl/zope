@@ -96,7 +96,7 @@ import encodings
 encodings.search_function.func_code = search_function.func_code
 
 
-from Products.PythonScript.PythonScript import PythonScript
+from Products.PythonScripts.PythonScript import PythonScript
 
 
 def _exec(self, bound_names, args, kw):
@@ -152,5 +152,4 @@ def _exec(self, bound_names, args, kw):
 
 
 PythonScript._exec = _exec
-
 
