@@ -25,7 +25,8 @@ from martian.util import isclass
 from zope.interface import implements
 from zope.introspector.interfaces import IInfo
 from zope.introspector.util import (resolve, get_package_items,
-                                    is_namespace_package)
+                                    is_namespace_package,
+                                    get_function_signature)
 import os
 
 class Code(object):
@@ -201,8 +202,21 @@ class FileInfo(grok.Adapter):
 class Class(Code):
     pass
 
+
 class Function(Code):
-    pass
+
+    def getSignature(self):
+        func = resolve(self.dotted_name)
+        return get_function_signature(func)
+
+class FunctionInfo(grok.Adapter):
+    grok.context(Function)
+    grok.provides(IInfo)
+    grok.name('function')
+
+    def getSignature(self):
+        return self.context.getSignature()
+
 
 class Instance(Code):
     pass
