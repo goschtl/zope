@@ -153,7 +153,7 @@ def _exec(self, bound_names, args, kw):
     try:
         result = f(*args, **kw)
     except SystemExit:
-        raise ValueError('SystemExit can not be raised within a PythonScript')
+        raise ValueError('SystemExit cannot be raised within a PythonScript')
 
     if keyset is not None:
         # Store the result in the cache.
