@@ -315,16 +315,17 @@ module::
   >>> func
   <zope.introspector.code.Function object at 0x...>
 
-Function objects know about their signature::
+`Function` objects provide their wrapped function as `func`
+attribute::
 
-  >>> func.getSignature()
-  '(obj_or_dotted_name)'
+  >>> func.func
+  <function resolve at 0x...>
 
 FunctionInfos
 -------------
 
-FunctionInfos provide the same info as the accompanied `Function`
-objects::
+`FunctionInfo`s know about the signature of the described function and
+provide it as string::
 
   >>> from zope.introspector.code import FunctionInfo
   >>> info = FunctionInfo(func)
