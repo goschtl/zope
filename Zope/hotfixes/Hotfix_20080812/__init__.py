@@ -96,7 +96,10 @@ import encodings
 encodings.search_function.func_code = search_function.func_code
 
 
-from Products.PythonScripts.PythonScript import PythonScript
+import new
+from Products.PythonScripts.PythonScript import PythonScript, \
+     PythonScriptTracebackSupplement
+
 
 
 def _exec(self, bound_names, args, kw):
