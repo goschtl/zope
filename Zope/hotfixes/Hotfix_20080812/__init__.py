@@ -1,12 +1,14 @@
 
 
+################################################################
 # Monkey patch for LP #257276
-
+#
 # This code is taken from the encodings module of Python 2.4.
 # Note that this code is originally (C) CNRI and it is possibly not compatible
 # with the ZPL and therefore should not live within svn.zope.org. However this
 # checkin is blessed by Jim Fulton for now. The fix is no longer required with
 # Python 2.5 and hopefully fixed in Python 2.4.6 release.
+################################################################
 
 
 def search_function(encoding):
@@ -90,7 +92,12 @@ def search_function(encoding):
     return entry
 
 
-# MONKEY
+
+
+################################################################
+# Monkey patch for LP #257269
+# raise SystemExit exploit in PythonScripts
+################################################################
 
 import encodings
 encodings.search_function.func_code = search_function.func_code
