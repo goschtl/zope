@@ -1,0 +1,36 @@
+  <div>
+    <h2>Module: <span tal:replace="structure view/getBreadcrumbs" /></h2>
+    <div>
+      Path: <span tal:replace="context/getPath" />
+    </div>     
+
+    <div>
+      Contained functions:
+      <span tal:condition="not: view/functions">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/functions">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">function</a>
+	</li>
+      </ul>
+    </div>
+
+    <div>
+      Contained classes:
+      <span tal:condition="not: view/classes">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/classes">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">Class</a>
+	</li>
+      </ul>
+    </div>
+
+  </div>
+
