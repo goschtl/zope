@@ -15,6 +15,7 @@
 import ConfigParser
 import os, sys, time, urllib, urllib2, xmlrpclib
 import zc.lockfile
+import util
 
 lock_file_path = 'pypi-poll-access.lock'
 poll_time_path = 'pypi-poll-timestamp'
@@ -41,9 +42,8 @@ def get_controlled_packages(dest):
     return tuple(config.sections())
 
 def get_page(dest, package, force=False):
-    try:
-        package.decode('ascii')
-    except UnicodeEncodeError:
+
+    if not util.isASCII(package):
         print 'skipping %r which has a non-ascii name' % `package`
         return
 
