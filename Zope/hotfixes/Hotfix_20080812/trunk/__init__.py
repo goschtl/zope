@@ -10,6 +10,8 @@
 # Python 2.5 and hopefully fixed in Python 2.4.6 release.
 ################################################################
 
+# Written by Marc-Andre Lemburg (mal@lemburg.com).
+# (c) Copyright CNRI, All Rights Reserved. NO WARRANTY.
 
 def search_function(encoding):
 
@@ -92,6 +94,8 @@ def search_function(encoding):
     return entry
 
 
+import encodings
+encodings.search_function.func_code = search_function.func_code
 
 
 ################################################################
@@ -99,15 +103,9 @@ def search_function(encoding):
 # raise SystemExit exploit in PythonScripts
 ################################################################
 
-import encodings
-encodings.search_function.func_code = search_function.func_code
-
-
 import new
 from Products.PythonScripts.PythonScript import PythonScript, \
      PythonScriptTracebackSupplement
-
-
 
 def _exec(self, bound_names, args, kw):
     """Call a Python Script
@@ -162,4 +160,3 @@ def _exec(self, bound_names, args, kw):
 
 
 PythonScript._exec = _exec
-
