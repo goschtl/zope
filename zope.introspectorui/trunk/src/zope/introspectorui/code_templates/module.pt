@@ -10,10 +10,9 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/functions">
-	  <a href="" 
-	     tal:attributes="href item/url"
-	     tal:content="structure item/name">function</a>
+	<li tal:repeat="item view/functions"
+	    tal:content="item/fullname">
+          myfunc(arg)
 	</li>
       </ul>
     </div>
