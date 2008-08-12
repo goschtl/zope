@@ -72,5 +72,7 @@ class GrokUIFile(File):
     def getRenderedDoc(self):
         text = self.getRaw()
         if self.context.context.name.split('.')[-1] == 'zcml':
-            return render_text(text, format='zope.source.plaintext')
+            lines = text.split('\n')
+            lines = ['  ' + line for line in lines]
+            text = '::\n\n' + '\n'.join(lines) + '\n\n..'
         return render_text(text)
