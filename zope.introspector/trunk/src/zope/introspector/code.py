@@ -43,6 +43,9 @@ class PackageOrModule(Code):
 
     def getModuleInfo(self):
         return self._module_info
+
+    def getDocString(self):
+        return getattr(self._module, '__doc__', u'')
     
 class Package(PackageOrModule):
     def getPath(self):
@@ -210,9 +213,9 @@ class Class(Code):
 
 class Function(Code):
 
-    def getSignature(self):
-        func = resolve(self.dotted_name)
-        return get_function_signature(func)
+    def __init__(self, dotted_name):
+        super(Function, self).__init__(dotted_name)
+        self.func = resolve(self.dotted_name)
 
 class FunctionInfo(grok.Adapter):
     grok.context(Function)
@@ -220,8 +223,10 @@ class FunctionInfo(grok.Adapter):
     grok.name('function')
 
     def getSignature(self):
-        return self.context.getSignature()
+        return get_function_signature(self.context.func)
 
+    def getDocString(self):
+        return getattr(self.context.func, '__doc__', u'')
 
 class Instance(Code):
     pass
