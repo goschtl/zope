@@ -15,8 +15,34 @@
 """
 import grokcore.view as grok
 from zope.location.location import located
-from zope.introspector.code import PackageInfo, FileInfo
+from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
+
+class Module(grok.View):
+    grok.implements(ICodeView)
+    grok.context(ModuleInfo)
+    grok.name('index')
+
+    def getItemURLs(self, items):
+        module = self.context.context
+        result = []
+        for item in items:
+            name = item.dotted_name.split('.')[-1]
+            obj = located(module[name], module, name)
+            result.append(dict(name=name, url=self.url(obj)))
+        return result
+
+    def getClassURLs(self):
+        classes = self.context.getClasses()
+        return sorted(self.getItemURLs(classes))
+
+    def getFunctionURLs(self):
+        functions = self.context.getFunctions()
+        return sorted(self.getItemURLs(functions))
+
+    def render(self):
+        return "Not yet implemented."
+
 
 class Package(grok.View):
     grok.implements(ICodeView)
