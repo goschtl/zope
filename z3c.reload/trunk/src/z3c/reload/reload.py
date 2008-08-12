@@ -1,10 +1,16 @@
 import sys
 from zope.app.pagetemplate.simpleviewclass import simple as SimplePTPage
 from zope.app.publisher.browser.viewmeta import simple as SimplePage
+from zope.publisher.browser import BrowserPage
+from zope.viewlet import viewlet, manager
+from z3c.pagelet.browser import BrowserPagelet
 
 from z3c.reload import BLATHER
 
-simple_view_classes = (SimplePTPage, SimplePage)
+simple_view_classes = (
+    SimplePTPage, SimplePage, BrowserPage,
+    viewlet.ViewletBase, manager.ViewletManagerBase,
+    BrowserPagelet)
 
 
 class Reloader(object):
@@ -40,7 +46,10 @@ class Reloader(object):
             new_view = real_view # just use the old view
 
         self.__sanitize_bases(new_view)
-        new_view.__init__(self, *args, **kw)
+        # This is generally not the right thing to do, but should work in this
+        # limited case.
+        for base in self.__class__.__bases__[1:]:
+            base.__init__(self, *args, **kw)
 
     def __sanitize_bases(self, cls):
         """Make sure that the bases of a class are in the scope.
@@ -72,7 +81,6 @@ class Reloader(object):
 
 def install_reloader(view_class):
     """Install the Reloader mixin on view_class."""
-    assert view_class.__bases__[-1] in simple_view_classes
     if BLATHER:
         print >> sys.stderr, 'Reloader installed for', view_class.__bases__[0]
     view_class.__bases__ = (Reloader, ) + view_class.__bases__

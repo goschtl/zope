@@ -63,12 +63,14 @@ setup (
         ),
     install_requires = [
         'setuptools',
+        'z3c.pagelet',
+        'zope.app.pagetemplate',
+        'zope.app.publisher',
         'zope.component',
         'zope.configuration',
         'zope.interface',
         'zope.publisher',
-        'zope.app.pagetemplate',
-        'zope.app.publisher'
+        'zope.viewlet',
         ],
     include_package_data = True,
     zip_safe = False,

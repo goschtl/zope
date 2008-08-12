@@ -28,6 +28,23 @@ the configuration is correct.
     <BLANKLINE>
     3001
 
+Here is a viewlet manager and a viewlet:
+
+    >>> print http("GET /vm.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    VM: 2001
+    2001
+
+Finally a pagelet:
+
+    >>> print http("GET /pagelet.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <owrap>
+      2001
+    </owrap>
+
 
 Modification
 ------------
@@ -66,3 +83,24 @@ Now we will modify the view code:
     Content-Type: text/plain
     <BLANKLINE>
     3123
+
+Here is a viewlet manager and a viewlet:
+
+    >>> replace('2001', '2123')
+
+    >>> print http("GET /vm.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    VM: 2123
+    2123
+
+Let's now make sure a pagelet gets also reloaded properly:
+
+    >>> replace('2001', '2123')
+
+    >>> print http("GET /pagelet.html HTTP/1.1\n", handle_errors=False)
+    HTTP/1.1 200 Ok
+    ...
+    <owrap>
+      2123
+    </owrap>

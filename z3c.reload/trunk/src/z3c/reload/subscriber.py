@@ -16,9 +16,9 @@ def is_simple_view(reg):
     A `simple` view is one that subclasses one of simple_view_classes.
     """
     if not (isinstance(reg, AdapterRegistration) and
-            len(reg.required) > 0 and
-            reg.required[-1] is not None and
-            reg.required[-1].isOrExtends(IRequest)):
+            len(reg.required) > 1 and
+            reg.required[1] is not None and
+            reg.required[1].isOrExtends(IRequest)):
         return False # this registration does not appear to be a view
 
     return (type(reg.factory) == type and
@@ -27,7 +27,6 @@ def is_simple_view(reg):
 
 def reload_enabled_for(view_class):
     """Return True if view_class should be made reloadable."""
-    assert view_class.__bases__[-1] in simple_view_classes
     real_view = view_class.__bases__[0]
     if real_view in enabled_classes:
         return True

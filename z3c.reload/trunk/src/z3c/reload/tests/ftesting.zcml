@@ -23,4 +23,38 @@
         class=".dynamic.ThirdNumberView"
         permission="zope.Public" />
 
+  <!-- Viewlet Testing -->
+
+  <viewletManager
+     name="numbers"
+     class=".dynamic.NumbersViewletManager"
+     permission="zope.Public"
+     />
+
+  <viewlet
+     name="2001"
+     class=".dynamic.NumberViewlet"
+     permission="zope.Public"
+     />
+
+  <page
+     for="zope.traversing.interfaces.IContainmentRoot"
+     name="vm.html"
+     template="vm.pt"
+     permission="zope.Public"
+     />
+
+  <!-- Pagelet Testing -->
+
+  <z3c:pagelet
+     for="zope.traversing.interfaces.IContainmentRoot"
+     name="pagelet.html"
+     class=".dynamic.NumberPagelet"
+     permission="zope.Public"
+     />
+
+  <z3c:layout
+     template="layout.pt"
+     />
+
 </configure>

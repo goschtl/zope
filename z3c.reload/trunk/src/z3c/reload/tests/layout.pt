@@ -1,0 +1,3 @@
+<owrap>
+  <tal:block replace="structure provider:pagelet" />
+</owrap>
