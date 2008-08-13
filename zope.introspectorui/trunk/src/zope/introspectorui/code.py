@@ -14,7 +14,24 @@
 """Views for code-related infos.
 """
 import grokcore.view as grok
-from zope.location.location import located
+try:
+    from zope.location.location import located
+except ImportError:
+    # Zope 2.10 compatibility:
+    from zope.location.interfaces import ILocation
+    from zope.location.location import LocationProxy, locate
+    def located(object, parent, name=None):
+        """Locate an object in another and return it.
+    
+        If the object does not provide ILocation a LocationProxy is returned.
+    
+        """
+        if ILocation.providedBy(object):
+            if parent is not object.__parent__ or name != object.__name__:
+                locate(object, parent, name)
+            return object
+        return LocationProxy(object, parent, name)
+    
 from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 
