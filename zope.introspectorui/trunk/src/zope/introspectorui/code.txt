@@ -27,6 +27,10 @@ a faked root and add a 'zope' package representation::
   >>> root = located(object(), None, '')
   >>> zope_pkg = located(Package('zope'), root, u'zope')
 
+We use pprint to make complex output ordered and readable::
+
+  >>> from pprint import pprint
+
 Packages
 ========
 
@@ -108,21 +112,26 @@ Finally we can create the views on the modules::
   >>> view_util = getMultiAdapter((info_util, request), name='index')
 
 Module views provide lists of dicts for contained classes and
-functions. Each dict tells about the name and URL of a contained
-item::
+functions. Each dict tells about the name, the URL and the docstring
+of a contained item::
 
   >>> view_code.getClassURLs()
   [{'url': 'http://127.0.0.1/zope/introspector/code/Class', 
+    'doc': u'', 
     'name': 'Class'},
    {'url': 'http://127.0.0.1/zope/introspector/code/Code', 
+    'doc': u'',
     'name': 'Code'},  
   ...
 
-The ``util`` module provides some functions::
+The ``util`` module provides some functions for which we also get the
+name, the URL and the docstring::
 
-  >>> view_util.getFunctionURLs()
-  [{'url': 'http://127.0.0.1/zope/introspector/util/get_function_signature',
-    'name': 'get_function_signature'},
+
+  >>> pprint(view_util.getFunctionURLs())
+  [{'doc': 'Get an object denoted by a dotted name.\n    ',
+    'name': 'resolve',
+    'url': 'http://127.0.0.1/zope/introspector/util/resolve'},
   ...]
 
 
