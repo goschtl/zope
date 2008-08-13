@@ -7,6 +7,7 @@ $Id$
 
 from zope.interface import Interface
 from zope.interface import Attribute
+from zope.schema import Text
 
 ################
 # Components
@@ -113,6 +114,16 @@ class IRunnableQuery(Interface):
     def reanalyze():
         """Reanalyze and reoptimize the query according to the current
         contents of the database
+        """
+
+class IOCQLException(Interface):
+    """General exception
+    """
+
+    message = Text()
+
+    def getMessage():
+        """Returns exception message
         """
 
 ################

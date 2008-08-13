@@ -19,7 +19,8 @@ from ocql.rewriter.rewriter import Rewriter
 from ocql.testing.utils import setupInterfaces, setupCatalog
 from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
-
+import ocql.compiler.compiler
+import ocql.rewriter.rewriter
 
 db = {}
 
@@ -34,7 +35,8 @@ class testZope(unittest.TestCase):
         provideAdapter(AlgebraOptimizer)
         provideAdapter(AlgebraCompiler)
         provideAdapter(Metadata)
-        registerAdapters()
+        ocql.compiler.compiler.registerAdapters()
+        ocql.rewriter.rewriter.registerAdapters()
         setupInterfaces(self)
         setupCatalog(self)
 

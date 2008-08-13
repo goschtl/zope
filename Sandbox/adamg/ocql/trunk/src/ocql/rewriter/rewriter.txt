@@ -64,11 +64,9 @@ added here.
     >>> print str(alg)
     Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))
 
-    #>>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
-    #>>> opt = QueryOptimizer(qo)()
-    #>>> alg = Rewriter(opt)()
-    #>>> print str(alg)
-    #Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
+    >>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
 
-
-    #bag not implemented

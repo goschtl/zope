@@ -97,27 +97,14 @@ class IterCompiler(BaseCompiler):
     adapts(IIter)
 
     def __call__(self):
-        if self.context.func is LambdaCompiler and \
-        self.context.coll is set and \
-        self.context.expr is IfCompiler:
-
-            if self.context.klass == set:
-                return 'reduce(set.union, map(%s, %s), set())' % (
-                    IAlgebraCompiler(self.context.func)(),
-                    IAlgebraCompiler(self.context.coll)())
-            if self.context.klass == list:
-                return 'reduce(operator.add, map(%s, %s), [])' % (
-                    IAlgebraCompiler(self.context.func)(),
-                    IAlgebraCompiler(self.context.coll)())
-        else:
-            if self.context.klass == set:
-                return 'reduce(set.union, map(%s, %s), set())' % (
-                    IAlgebraCompiler(self.context.func)(),
-                    IAlgebraCompiler(self.context.coll)())
-            if self.context.klass == list:
-                return 'reduce(operator.add, map(%s, %s), [])' % (
-                    IAlgebraCompiler(self.context.func)(),
-                    IAlgebraCompiler(self.context.coll)())
+        if self.context.klass == set:
+            return 'reduce(set.union, map(%s, %s), set())' % (
+                IAlgebraCompiler(self.context.func)(),
+                IAlgebraCompiler(self.context.coll)())
+        if self.context.klass == list:
+            return 'reduce(operator.add, map(%s, %s), [])' % (
+                IAlgebraCompiler(self.context.func)(),
+                IAlgebraCompiler(self.context.coll)())
 
 
 class SelectCompiler(BaseCompiler):

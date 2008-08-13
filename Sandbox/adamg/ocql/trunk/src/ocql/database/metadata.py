@@ -12,6 +12,7 @@ from BTrees.IFBTree import difference
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
+from ocql.ocqlexception import OCQLException
 
 class MetaType:
     def get_property(self, name):
@@ -123,9 +124,8 @@ class Metadata:
 
                     obj_list = [intids.getObject(result) for result in results]
                     return obj_list
-        #I could check whether property has an index by hasPropertyIndex. 
-        #But by this approach this always returns IF objects
-        return self.getAll(klass)
+
+        raise OCQLException("reanalyze required")
 
     def hasPropertyIndex(self, klass, property):
         catalogs = getUtilitiesFor(ICatalog)
@@ -136,7 +136,6 @@ class Metadata:
                 index.interface.__name__ == klass:
                     return True
         return False
-
 
     def get_class(self, klassname):
         """Returns a MetaType instance for the class."""
