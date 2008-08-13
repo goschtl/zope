@@ -2,6 +2,8 @@
 
     <h2>Package: <span tal:replace="structure view/getBreadcrumbs" /></h2>
 
+    <p tal:content="structure view/docstring">The package description</p>
+
     <div>
       <p tal:condition="context/isNamespacePackage">
 	This is a namespace package
@@ -59,6 +61,7 @@
 	  <a href="" 
 	     tal:attributes="href item/url"
 	     tal:content="structure item/name">subpackage</a>
+	  <div tal:content="structure item/doc">subpackage docstring</div>
 	</li>
       </ul>
     </div>
@@ -73,6 +76,7 @@
 	  <a href="" 
 	     tal:attributes="href item/url"
 	     tal:content="structure item/name">module</a>
+	  <div tal:content="structure item/doc">module docstring</div>
 	</li>
       </ul>
     </div>

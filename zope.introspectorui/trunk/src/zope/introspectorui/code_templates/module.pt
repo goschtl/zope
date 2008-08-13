@@ -1,5 +1,8 @@
   <div>
     <h2>Module: <span tal:replace="structure view/getBreadcrumbs" /></h2>
+
+    <p tal:content="structure view/docstring">The package description</p>
+
     <div>
       Path: <span tal:replace="context/getPath" />
     </div>     
@@ -10,9 +13,9 @@
 	None
       </span>
       <ul>
-	<li tal:repeat="item view/functions"
-	    tal:content="item/fullname">
-          myfunc(arg)
+	<li tal:repeat="item view/functions">
+          <div tal:content="item/fullname">myfunc(arg)</div>
+	  <div tal:content="structure item/doc">function docstring</div>
 	</li>
       </ul>
     </div>
