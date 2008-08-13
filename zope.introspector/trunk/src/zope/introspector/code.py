@@ -23,7 +23,7 @@ from grokcore.component.interfaces import IContext
 from martian.scan import module_info_from_dotted_name
 from martian.util import isclass
 from zope.interface import implements
-from zope.introspector.interfaces import IInfo
+from zope.introspector.interfaces import IInfo, IDocString
 from zope.introspector.util import (resolve, get_package_items,
                                     is_namespace_package,
                                     get_function_signature)
@@ -44,9 +44,6 @@ class PackageOrModule(Code):
     def getModuleInfo(self):
         return self._module_info
 
-    def getDocString(self):
-        return getattr(self._module, '__doc__', u'')
-    
 class Package(PackageOrModule):
     def getPath(self):
         return os.path.dirname(self._module_info.path)
@@ -220,9 +217,6 @@ class Function(Code):
     def getSignature(self):
         return get_function_signature(self.func)
 
-    def getDocString(self):
-        return getattr(self.func, '__doc__', u'')
-
 class FunctionInfo(grok.Adapter):
     grok.context(Function)
     grok.provides(IInfo)
@@ -231,8 +225,33 @@ class FunctionInfo(grok.Adapter):
     def getSignature(self):
         return self.context.getSignature()
 
-    def getDocString(self):
-        return self.context.getDocString()
-
 class Instance(Code):
     pass
+
+
+class DocString(grok.Adapter):
+    grok.context(Code)
+    grok.provides(IDocString)
+
+    def getDocString(self, heading_only=True):
+        try:
+            obj = resolve(self.context.dotted_name)
+        except ImportError:
+            return u''
+        except AttributeError:
+            return u''
+        docstring = getattr(obj, '__doc__', None)
+        if docstring is None:
+            return u''
+        lines = docstring.strip().split('\n')
+        if len(lines) and heading_only:
+            # Find first empty line to separate heading from trailing text.
+            headlines = []
+            for line in lines:
+                if line.strip() == "":
+                    break
+                headlines.append(line)
+            lines = headlines
+        # Get rid of possible CVS id.
+        lines = [line for line in lines if not line.startswith('$Id')]
+        return '\n'.join(lines)
