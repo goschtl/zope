@@ -568,14 +568,13 @@ class RAIDStorage(object):
         options = ZEOOptions()
         options.realize(['-C',path])
         new_storages = dict([(o.name,o) for o in options.storages[0].config.storages])
-        storages_to_remove = [o for o in self.openers.items() if o[0] not in new_storages]
-        for storage in storages_to_remove:
-            self.raid_disable(storage[0])
-            s += "removed %s\n" % storage[0]
-        storages_to_add = [o for o in new_storages if o[0] not in self.openers]
-        for storage in storages_to_add:
-            name = storage[0]
-            self.openers[name] = storage[1]
+        storages_to_add = [(name, opener) for name, opener in new_storages.items() if name not in self.openers]
+        storages_to_remove = [(name, opener) for name, opener in self.openers.items() if name not in new_storages]
+        for name, opener in storages_to_remove:
+            self.raid_disable(name)
+            s += "removed %s\n" % name
+        for name, opener in storages_to_add:
+            self.openers[name] = opener
             self._open_storage(name)
             self.storages_degraded.append(name)
             self.raid_recover(name)
