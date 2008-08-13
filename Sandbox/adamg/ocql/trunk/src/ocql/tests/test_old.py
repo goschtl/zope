@@ -25,6 +25,7 @@ from ocql.rewriter.rewriter import Rewriter
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
 from ocql.compiler.compiler import AlgebraCompiler
 from ocql.testing.database import TestMetadata
+from ocql.testing.utils import setupInterfaces, setupCatalog, setupAdapters
 
 import ocql.compiler.compiler
 import ocql.rewriter.rewriter
@@ -51,15 +52,8 @@ class QueryNullParser(object):
 
 class testOLD(unittest.TestCase):
     def setUp(self):
-        provideAdapter(QueryParser)
-        provideAdapter(QueryNullParser)
-        provideAdapter(QueryOptimizer)
-        provideAdapter(Rewriter)
-        provideAdapter(AlgebraOptimizer)
-        provideAdapter(AlgebraCompiler)
+        setupAdapters(self)
         provideAdapter(TestMetadata)
-        ocql.compiler.compiler.registerAdapters()
-        ocql.rewriter.rewriter.registerAdapters()
 
         self.engine = OCQLEngine()
 

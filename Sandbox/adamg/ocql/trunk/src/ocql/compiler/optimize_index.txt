@@ -1,29 +1,7 @@
 
 Checking here how a compiled query can be optimized for zope indexes
 
-    >>> from zope.component import provideAdapter
-
-    >>> from ocql.parser.queryparser import QueryParser
-    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
-    >>> from ocql.rewriter.rewriter import Rewriter
-    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
-    >>> from ocql.compiler.compiler import AlgebraCompiler
-    >>> from ocql.database.metadata import Metadata
-
-    >>> provideAdapter(QueryParser)
-    >>> provideAdapter(QueryOptimizer)
-    >>> provideAdapter(Rewriter)
-    >>> provideAdapter(AlgebraOptimizer)
-    >>> provideAdapter(AlgebraCompiler)
-    >>> provideAdapter(Metadata)
-
     >>> from ocql.engine import OCQLEngine
-
-    >>> import ocql.compiler.compiler
-    >>> ocql.compiler.compiler.registerAdapters()
-
-    >>> import ocql.rewriter.rewriter
-    >>> ocql.rewriter.rewriter.registerAdapters()
 
     >>> from ocql.testing.utils_opt import setupInterfaces
     >>> setupInterfaces(None)

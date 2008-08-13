@@ -7,7 +7,6 @@ from zope.interface import Interface
 
 from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
 from ocql.compiler.compiler import AlgebraCompiler
-from ocql.compiler.compiler import registerAdapters
 from ocql.database import metadata
 from ocql.database.metadata import Metadata
 from ocql.engine import OCQLEngine
@@ -16,7 +15,7 @@ from ocql.parser.queryparser import QueryParser, SymbolContainer
 from ocql.qoptimizer.qoptimizer import QueryOptimizer
 from ocql.queryobject.queryobject import *
 from ocql.rewriter.rewriter import Rewriter
-from ocql.testing.utils import setupInterfaces, setupCatalog
+from ocql.testing.utils import setupInterfaces, setupCatalog, setupAdapters
 from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
 import ocql.compiler.compiler
@@ -28,15 +27,7 @@ classes = {}
 
 class testZope(unittest.TestCase):
     def setUp(self):
-        provideAdapter(QueryParser)
-        provideAdapter(QueryNullParser)
-        provideAdapter(QueryOptimizer)
-        provideAdapter(Rewriter)
-        provideAdapter(AlgebraOptimizer)
-        provideAdapter(AlgebraCompiler)
-        provideAdapter(Metadata)
-        ocql.compiler.compiler.registerAdapters()
-        ocql.rewriter.rewriter.registerAdapters()
+        setupAdapters(self)
         setupInterfaces(self)
         setupCatalog(self)
 

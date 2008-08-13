@@ -1,0 +1,59 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope" >
+
+  <adapter
+    factory=".compiler.AlgebraCompiler"
+    />
+  
+  <adapter
+    factory=".compiler.EmptyCompiler"
+    />
+  <adapter
+    factory=".compiler.SingleCompiler"
+    />
+  <adapter
+    factory=".compiler.UnionCompiler"
+    />
+  <adapter
+    factory=".compiler.DifferCompiler"
+    />
+  <adapter
+    factory=".compiler.IterCompiler"
+    />
+  <adapter
+    factory=".compiler.SelectCompiler"
+    />
+  <adapter
+    factory=".compiler.ReduceCompiler"
+    />
+  <adapter
+    factory=".compiler.RangeCompiler"
+    />
+  <adapter
+    factory=".compiler.MakeCompiler"
+    />
+  <adapter
+    factory=".compiler.MakeFromIndexCompiler"
+    />
+  <adapter
+    factory=".compiler.IfCompiler"
+    />
+  <adapter
+    factory=".compiler.LambdaCompiler"
+    />
+  <adapter
+    factory=".compiler.ConstantCompiler"
+    />
+  <adapter
+    factory=".compiler.IdentifierCompiler"
+    />
+  <adapter
+    factory=".compiler.BinaryCompiler"
+    />
+  <adapter
+    factory=".compiler.OperatorCompiler"
+    />
+
+
+
+</configure>

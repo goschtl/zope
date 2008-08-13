@@ -12,6 +12,8 @@ from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 from ocql.engine import OCQLEngine
 from ocql.testing.stubs import *
 
+from ocql.testing import utils
+
 class testSkeleton(unittest.TestCase):
     def testSomething(self):
         registerStubs()
@@ -25,7 +27,9 @@ def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
         unittest.makeSuite(testSkeleton),
-        DocFileSuite('run.txt', optionflags=flags),
+        DocFileSuite('run.txt',
+                     optionflags=flags,
+                     setUp = utils.setupAdapters),
         ))
 
 if __name__ == '__main__':

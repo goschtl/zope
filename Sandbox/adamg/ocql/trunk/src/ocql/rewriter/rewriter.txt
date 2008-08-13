@@ -12,9 +12,6 @@ added here.
 
     >>> from ocql.testing.database import TestMetadata
 
-    >>> import ocql.rewriter.rewriter
-    >>> ocql.rewriter.rewriter.registerAdapters()
-
 
     >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
@@ -69,4 +66,3 @@ added here.
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
     Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse))
-

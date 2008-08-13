@@ -2,6 +2,8 @@ import unittest
 import doctest
 from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 
+from ocql.testing import utils
+
 from ocql.compiler import compiler
 
 def run(expr):
@@ -11,7 +13,7 @@ def setup(test):
     test.__save_relax = compiler.RELAX_COMPILE
     compiler.RELAX_COMPILE = True
 
-    compiler.registerAdapters()
+    utils.setupAdapters(test)
 
 def teardown(test):
     compiler.RELAX_COMPILE = test.__save_relax
@@ -20,7 +22,8 @@ def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
         DocFileSuite('rewriter.txt',
-            optionflags=flags),
+            optionflags=flags,
+            setUp = utils.setupAdapters),
         DocFileSuite('algebra.txt',
             optionflags=flags,
             globs={'run': run},

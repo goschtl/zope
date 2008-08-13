@@ -11,12 +11,6 @@ But it's a lot faster to reuse the parser and the existing classes.
 
     >>> from ocql.testing.database import TestMetadata
 
-    >>> import ocql.compiler.compiler
-    >>> ocql.compiler.compiler.registerAdapters()
-
-    >>> import ocql.rewriter.rewriter
-    >>> ocql.rewriter.rewriter.registerAdapters()
-
     >>> metadata = TestMetadata()
     >>> qo = QueryParser("set [ | 1 ]")(metadata)
     >>> opt = QueryOptimizer(qo)()

@@ -7,6 +7,7 @@ $Id$
 
 from zope import interface, component
 from zope.component.interface import provideInterface
+from zope.component import provideAdapter
 
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.interfaces import ICatalog
@@ -19,6 +20,8 @@ from zope.app.intid.interfaces import IIntIds
 
 from zope.app.keyreference.testing import SimpleKeyReference
 
+from zope.configuration import xmlconfig
+
 from ocql.testing.sample.interfaces import IOrganization
 from ocql.testing.sample.interfaces import IProject
 from ocql.testing.sample.interfaces import IStudent
@@ -29,6 +32,8 @@ from ocql.testing.sample.project import Project
 from ocql.testing.sample.student import Student
 from ocql.testing.sample.organization import Organization
 
+from ocql.testing.database import TestMetadata
+
 #import zc.relation.catalog
 #import zc.relation.interfaces
 #import zc.relation.queryfactory
@@ -36,6 +41,20 @@ import BTrees
 
 #_obj = {}
 #_relation = {}
+
+def setupAdapters(test):
+    context = xmlconfig.string("""
+     <configure
+       xmlns="http://namespaces.zope.org/zope">
+
+       <include package="zope.component" file="meta.zcml" />
+
+       <include package="ocql" />
+
+     </configure>
+     """)
+
+    #provideAdapter(TestMetadata)
 
 def setupInterfaces(test):
     provideInterface('', IOrganization)

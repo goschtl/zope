@@ -9,12 +9,6 @@ Queries in the rewriter.txt are extended to AlgebraOptimization
 
     >>> from ocql.testing.database import TestMetadata
 
-    >>> import ocql.compiler.compiler
-    >>> ocql.compiler.compiler.registerAdapters()
-
-    >>> import ocql.rewriter.rewriter
-    >>> ocql.rewriter.rewriter.registerAdapters()
-
 
     >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()

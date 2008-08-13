@@ -255,21 +255,21 @@ class OperatorCompiler(BaseCompiler):
     def __call__(self):
         return self.ops[self.context.op]
 
-
-def registerAdapters():
-    provideAdapter(EmptyCompiler)
-    provideAdapter(SingleCompiler)
-    provideAdapter(UnionCompiler)
-    provideAdapter(DifferCompiler)
-    provideAdapter(IterCompiler)
-    provideAdapter(SelectCompiler)
-    provideAdapter(ReduceCompiler)
-    provideAdapter(RangeCompiler)
-    provideAdapter(MakeCompiler)
-    provideAdapter(MakeFromIndexCompiler)
-    provideAdapter(IfCompiler)
-    provideAdapter(LambdaCompiler)
-    provideAdapter(ConstantCompiler)
-    provideAdapter(IdentifierCompiler)
-    provideAdapter(BinaryCompiler)
-    provideAdapter(OperatorCompiler)
+#
+#def registerAdapters():
+#    provideAdapter(EmptyCompiler)
+#    provideAdapter(SingleCompiler)
+#    provideAdapter(UnionCompiler)
+#    provideAdapter(DifferCompiler)
+#    provideAdapter(IterCompiler)
+#    provideAdapter(SelectCompiler)
+#    provideAdapter(ReduceCompiler)
+#    provideAdapter(RangeCompiler)
+#    provideAdapter(MakeCompiler)
+#    provideAdapter(MakeFromIndexCompiler)
+#    provideAdapter(IfCompiler)
+#    provideAdapter(LambdaCompiler)
+#    provideAdapter(ConstantCompiler)
+#    provideAdapter(IdentifierCompiler)
+#    provideAdapter(BinaryCompiler)
+#    provideAdapter(OperatorCompiler)

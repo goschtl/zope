@@ -2,6 +2,8 @@ import unittest
 import doctest
 from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 
+from ocql.testing import utils
+
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
@@ -10,7 +12,8 @@ def test_suite():
         DocFileSuite('aoptimizer.txt',
             optionflags=flags),
         DocFileSuite('aoptimizer_new.txt',
-            optionflags=flags),
+            optionflags=flags,
+            setUp = utils.setupAdapters),
         ))
 
 

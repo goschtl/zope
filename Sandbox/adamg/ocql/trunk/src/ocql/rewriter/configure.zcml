@@ -1,0 +1,85 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope" >
+
+  <adapter
+    factory=".rewriter.Rewriter"
+    />
+
+  <adapter
+    factory=".rewriter.IdentifierRewriter"
+    />
+  <adapter
+    factory=".rewriter.ConstantRewriter"
+    />
+  <adapter
+    factory=".rewriter.QueryRewriter"
+    />
+  <adapter
+    factory=".rewriter.BinaryRewriter"
+    />
+  <adapter
+    factory=".rewriter.UnionRewriter"
+    />
+  <adapter
+    factory=".rewriter.DifferRewriter"
+    />
+  <adapter
+    factory=".rewriter.AndRewriter"
+    />
+  <adapter
+    factory=".rewriter.OrRewriter"
+    />
+  <adapter
+    factory=".rewriter.PropertyRewriter"
+    />
+  <adapter
+    factory=".rewriter.AddRewriter"
+    />
+  <adapter
+    factory=".rewriter.MulRewriter"
+    />
+  <adapter
+    factory=".rewriter.SubRewriter"
+    />
+  <adapter
+    factory=".rewriter.DivRewriter"
+    />
+  <adapter
+    factory=".rewriter.NotRewriter"
+    />
+  <adapter
+    factory=".rewriter.CountRewriter"
+    />
+  <adapter
+    factory=".rewriter.QuentedRewriter"
+    />
+  <adapter
+    factory=".rewriter.EveryRewriter"
+    />
+  <adapter
+    factory=".rewriter.SomeRewriter"
+    />
+  <adapter
+    factory=".rewriter.ConditionRewriter"
+    />
+  <adapter
+    factory=".rewriter.EqRewriter"
+    />
+  <adapter
+    factory=".rewriter.NeRewriter"
+    />
+  <adapter
+    factory=".rewriter.LtRewriter"
+    />
+  <adapter
+    factory=".rewriter.GtRewriter"
+    />
+  <adapter
+    factory=".rewriter.LeRewriter"
+    />
+  <adapter
+    factory=".rewriter.GeRewriter"
+    />
+
+
+</configure>

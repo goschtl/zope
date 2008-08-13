@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <include package=".database" />
+
+  <include package=".parser" />
+  <include package=".qoptimizer" />
+  <include package=".rewriter" />
+  <include package=".aoptimizer" />
+  <include package=".compiler" />
+
+</configure>

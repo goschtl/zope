@@ -43,7 +43,7 @@ class IdentifierRewriter(ChildRewriter):
     adapts(IIdentifier)
 
     def __call__(self):
-        return Identifier(self.context.name)  
+        return Identifier(self.context.name)
 
 class ConstantRewriter(ChildRewriter):
     implements(IRewriter)
@@ -79,7 +79,7 @@ class QueryRewriter(ChildRewriter):
                                 self.context.collection_type,
                                 self.context.terms[1:],
                                 self.context.target
-                                ))() 
+                                ))()
                         ), Make(
                             self.context.collection_type,
                             ctype,
@@ -270,7 +270,7 @@ class SomeRewriter(ChildRewriter):
                     self.context.metadata,
                     self.context.symbols,
                     ocql.queryobject.queryobject.Identifier(
-                        self.context.metadata, 
+                        self.context.metadata,
                         self.context.symbols,'i'),
                     expression
                 ))()
@@ -336,30 +336,30 @@ class GeRewriter(ConditionRewriter):
     def get_operator(self):
         return Operator('>=')
 
-
-def registerAdapters():
-    provideAdapter(IdentifierRewriter)
-    provideAdapter(ConstantRewriter)
-    provideAdapter(QueryRewriter)
-    provideAdapter(BinaryRewriter)
-    provideAdapter(UnionRewriter)
-    provideAdapter(DifferRewriter)
-    provideAdapter(AndRewriter)
-    provideAdapter(OrRewriter)
-    provideAdapter(PropertyRewriter)
-    provideAdapter(AddRewriter)
-    provideAdapter(MulRewriter)
-    provideAdapter(SubRewriter)
-    provideAdapter(DivRewriter)
-    provideAdapter(NotRewriter)
-    provideAdapter(CountRewriter)
-    provideAdapter(QuentedRewriter)
-    provideAdapter(EveryRewriter)
-    provideAdapter(SomeRewriter)
-    provideAdapter(ConditionRewriter)
-    provideAdapter(EqRewriter)
-    provideAdapter(NeRewriter)
-    provideAdapter(LtRewriter)
-    provideAdapter(GtRewriter)
-    provideAdapter(LeRewriter)
-    provideAdapter(GeRewriter)
+#
+#def registerAdapters():
+#    provideAdapter(IdentifierRewriter)
+#    provideAdapter(ConstantRewriter)
+#    provideAdapter(QueryRewriter)
+#    provideAdapter(BinaryRewriter)
+#    provideAdapter(UnionRewriter)
+#    provideAdapter(DifferRewriter)
+#    provideAdapter(AndRewriter)
+#    provideAdapter(OrRewriter)
+#    provideAdapter(PropertyRewriter)
+#    provideAdapter(AddRewriter)
+#    provideAdapter(MulRewriter)
+#    provideAdapter(SubRewriter)
+#    provideAdapter(DivRewriter)
+#    provideAdapter(NotRewriter)
+#    provideAdapter(CountRewriter)
+#    provideAdapter(QuentedRewriter)
+#    provideAdapter(EveryRewriter)
+#    provideAdapter(SomeRewriter)
+#    provideAdapter(ConditionRewriter)
+#    provideAdapter(EqRewriter)
+#    provideAdapter(NeRewriter)
+#    provideAdapter(LtRewriter)
+#    provideAdapter(GtRewriter)
+#    provideAdapter(LeRewriter)
+#    provideAdapter(GeRewriter)

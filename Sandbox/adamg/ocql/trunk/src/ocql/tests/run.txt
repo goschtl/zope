@@ -2,28 +2,11 @@
 Now we'll see how a query runs
 
     >>> from zope.component import provideAdapter
-
-    >>> from ocql.parser.queryparser import QueryParser
-    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
-    >>> from ocql.rewriter.rewriter import Rewriter
-    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
-    >>> from ocql.compiler.compiler import AlgebraCompiler
     >>> from ocql.testing.database import TestMetadata
-
-    >>> provideAdapter(QueryParser)
-    >>> provideAdapter(QueryOptimizer)
-    >>> provideAdapter(Rewriter)
-    >>> provideAdapter(AlgebraOptimizer)
-    >>> provideAdapter(AlgebraCompiler)
     >>> provideAdapter(TestMetadata)
 
+
     >>> from ocql.engine import OCQLEngine
-
-    >>> import ocql.compiler.compiler
-    >>> ocql.compiler.compiler.registerAdapters()
-
-    >>> import ocql.rewriter.rewriter
-    >>> ocql.rewriter.rewriter.registerAdapters()
 
 
     >>> engine = OCQLEngine()
