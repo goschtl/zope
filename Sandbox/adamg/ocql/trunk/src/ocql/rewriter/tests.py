@@ -9,6 +9,8 @@ def test_suite():
             optionflags=flags),
         DocFileSuite('algebra.txt',
             optionflags=flags),
+        DocFileSuite('algebra_checks.txt',
+            optionflags=flags),            
         DocTestSuite('ocql.rewriter.algebra')
         ))
 

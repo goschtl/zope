@@ -1,104 +1,118 @@
 
-Checks here make sure that Interfaces are properly implemented
+Following algebra operation descriptions extracted from http://citeseer.ist.psu.edu/359340.html
+Corresponding Python implementations are used in this project
 
-#TODO: extend for all Interfaces and classes
+Binary Operations
+-----------------
 
-    >>> from ocql.interfaces import IAlgebraObject
-    >>> from ocql.interfaces import IAlgebraObjectHead
-    >>> from ocql.rewriter.interfaces import *
+The union and differ operations take two operands of the same collection kind and return
+a resultant collection of that kind. The most specific unique common superclass of the
+operand element classes will become the class of the elements in the resultant collection.
 
-    >>> from ocql.rewriter.algebra import *
+Union ( C1, C2 )
+-----------------
+The union operations combine two collections. The cardinality of each resultant element
+is the sum of its cardinalities in the operand collections except in the case of sets
+where all elements are unique. Ordering, if respected, will be preserved.
 
-    >>> from zope.interface.verify import verifyClass, verifyObject
+	>>> from ocql.rewriter.algebra import Union
+	>>> x = Union()
 
-    >>> verifyClass(IAlgebraObjectHead, Head)
-    True
-    >>> baseAlgebra = BaseAlgebra()
-    >>> verifyObject(IAlgebraObjectHead, Head(baseAlgebra))
-    True
+Differ ( C1, C2 )
+------------------
+The differ operations form a collection by removing elements of the second operand
+collection from the first operand collection. The cardinality of each resultant element is
+the difference between its cardinality in the first operand collection and that in the second
+operand collection. Ordering, if respected, will be preserved.
 
-    >>> verifyClass(IAlgebraObject, BaseAlgebra)
-    True
-    >>> verifyObject(IAlgebraObject, baseAlgebra)
-    True
+	>>> from ocql.rewriter.algebra import Differ
+	>>> x = Differ()
 
-    >>> verifyClass(IEmpty, Empty)
-    True
-    >>> verifyObject(IEmpty, Empty(set))
-    True
+Equal ( E1, E2 )
+----------------
+The equal operations compare two collections of the same kind and return true if their
+elements are the same. Duplication and ordering, if respected, will be taken into account.
 
-    >>> verifyClass(ISingle, Single)
-    True
-    >>> verifyObject(ISingle, Single(set, baseAlgebra))
-    True
 
-    >>> verifyClass(IUnion, Union)
-    True
-    >>> verifyObject(IUnion, Union(set, baseAlgebra, baseAlgebra))
-    True
+Unary Operations
+----------------
 
-    >>> verifyClass(IDiffer, Differ)
-    True
-    >>> verifyObject(IDiffer, Differ(set, baseAlgebra, baseAlgebra))
-    True
+The operations described below are unary in the sense that each takes a collection as
+one of the operands. Other operands include functions on the elements of the operand
+collection and functions over results returned by other operand functions.
 
-    >>> verifyClass(IIter, Iter)
-    True
-    >>> verifyObject(IIter, Iter(set, baseAlgebra, baseAlgebra))
-    True
+Reduce ( E0, F1, Faggregate, C)
+---------------------------------
+The reduce operations are used to combine elements in a collection. If the operand
+collection C is empty, E0 is returned. When the operand collection is not empty, F1 is
+applied to each element of C and the results are supplied pairwise to Faggregate which 
+accumulates the results to give a single value.
+	>>> from ocql.rewriter.algebra import Reduce
+	>>> x = Reduce()
 
-    >>> verifyClass(ISelect, Select)
-    True
-    >>> verifyObject(ISelect, Select(set, baseAlgebra, baseAlgebra))
-    True
+Map ( F, C)
+-----------
+The map operations apply the operand function F to each element in the operand
+collection C and form a collection containing the results. The resultant collection and
+operand collection are of the same collection kind.
+	>>> from ocql.rewriter.algebra import Map
+	>>> x = Map()
 
-    >>> verifyClass(IReduce, Reduce)
-    True
-    >>> verifyObject(IReduce, Reduce(set, baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
-    True
+Select ( F, C )
+---------------
+The select operation applies the operand boolean function F to each element of the
+operand collection C and forms a collection of the elements for which F returns true. The
+resultant collection is of the same kind as the operand collection.
+	>>> from ocql.rewriter.algebra import Select
+	>>> x = Select()
 
-    >>> verifyClass(IRange, Range)
-    True
-    >>> verifyObject(IRange, Range(set, baseAlgebra, baseAlgebra))
-    True
+Make ( C )
+----------
+The make operations convert the operand collection from its original collection kind to
+one of the three collection kinds. Conversion from bag or set to list is non-deterministic
+as an arbitrary order will be assigned to the elements.
+	>>> from ocql.rewriter.algebra import Make
+	>>> x = Make()
 
-    >>> verifyClass(IMake, Make)
-    True
-    >>> verifyObject(IMake, Make(baseAlgebra, baseAlgebra, baseAlgebra))
-    True
+Index( C, E )
+-------------
+The index operation takes a list C and returns an element of the list at position E.
 
-    #Uncomment this after merge other branch modifications
-    #>>> verifyClass(IMakeFromIndex, MakeFromIndex)
-    #True
-    #>>> verifyObject(IMakeFromIndex, MakeFromIndex(baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
-    #True
 
-    >>> verifyClass(IIf, If)
-    True
-    >>> verifyObject(IIf, If(baseAlgebra, baseAlgebra, baseAlgebra))
-    True
+Simple Operations
+------------------
 
-    >>> verifyClass(ILambda, Lambda)
-    True
-    >>> verifyObject(ILambda, Lambda(baseAlgebra, baseAlgebra))
-    True
+The following operations take on arguments which may or may not be a collection.
 
-    >>> verifyClass(IConstant, Constant)
-    True
-    >>> verifyObject(IConstant, Constant(baseAlgebra))
-    True
+Empty ( E )
+--------------
+The empty operations take a value and return an empty collection.
+	>>> from ocql.rewriter.algebra import Empty
+	>>> x = Empty()
 
-    >>> verifyClass(IIdentifier, Identifier)
-    True
-    >>> verifyObject(IIdentifier, Identifier(baseAlgebra))
-    True
+Single ( E )
+------------
+The single operations take a value and return a collection containing that value.
+	>>> from ocql.rewriter.algebra import Single
+	>>> x = Single()
 
-    >>> verifyClass(IBinary, Binary)
-    True
-    >>> verifyObject(IBinary, Binary(baseAlgebra, baseAlgebra, baseAlgebra))
-    True
+If( Econdition, Etrue, Efalse )
+-------------------------------
+The if operation is a control operation. If Econdition evaluates to true, the value of Etrue
+is returned, otherwise the value of Efalse is returned.
+	>>> from ocql.rewriter.algebra import If
+	>>> x = If()
 
-    >>> verifyClass(IOperator, Operator)
-    True
-    >>> verifyObject(IOperator, Operator(baseAlgebra))
-    True
+And( E1, E2 )
+-------------
+The and operation takes two boolean expressions and returns true if both of them evaluate
+to true. This is a non-commutative operation and the operands cannot be swapped.
+	>>> from ocql.rewriter.algebra import And
+	>>> x = And()
+
+Range ( E1, E2 )
+----------------
+The range operations generate a collection containing integers within a given range.
+An empty collection is returned if the first operand expression is less than the second one.
+	>>> from ocql.rewriter.algebra import Range
+	>>> x = Range()
