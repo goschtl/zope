@@ -172,3 +172,12 @@ class IViewInfo(IInfo):
         The default layer will be returned with u'' as the skin name.
         """
 
+class IDocString(interface.Interface):
+    """Objects that have a docstring.
+    """
+    def getDocString(header_only=True):
+        """Get the docstring.
+
+        If header_only is `True`, return the whole
+        docstring. Otherwise only the part up to the first blank line.
+        """
