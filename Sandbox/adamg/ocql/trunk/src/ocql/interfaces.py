@@ -116,6 +116,10 @@ class IRunnableQuery(Interface):
         contents of the database
         """
 
+################
+#
+################
+
 class IOCQLException(Interface):
     """General exception
     """
@@ -125,6 +129,10 @@ class IOCQLException(Interface):
     def getMessage():
         """Returns exception message
         """
+
+class IReanalyzeRequired(IOCQLException):
+    """Reanalyze Required, something changed in the metadata
+    """
 
 ################
 #

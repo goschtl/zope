@@ -10,6 +10,7 @@ import operator
 
 from ocql.interfaces import IAlgebraOptimizer
 from ocql.interfaces import IAlgebraCompiler
+from ocql.exceptions import ReanalyzeRequired
 
 _marker = object()
 
@@ -52,10 +53,10 @@ class RunnableQuery:
         metadata: ocql.metadata instance
         alg: algebra object
     """
-    def __init__(self, metadata, alg, code):
+    def __init__(self, metadata, originalAlgebra, code):
         self.metadata = metadata
-        self.alg = alg
-        self.code =code
+        self.alg = originalAlgebra
+        self.code = code
 
     def __repr__(self):
         return "%s: %s" % (self.__class__.__name__,
@@ -64,9 +65,14 @@ class RunnableQuery:
     def reanalyze(self):
         optimizedalgebra = IAlgebraOptimizer(self.alg)(self.metadata)
         runnable = IAlgebraCompiler(optimizedalgebra)(self.metadata, optimizedalgebra)
-        return runnable
 
-    def execute(self, debug=False):
+        self.metadata = runnable.metadata
+        self.alg = runnable.alg
+        self.code = runnable.code
+
+        return self
+
+    def execute(self, debug=False, noretry=False):
         #TODO: why is the metadata not working in locals?
 
         mapping = {'metadata': self.metadata,
@@ -77,4 +83,10 @@ class RunnableQuery:
             mapping['range'] = d_range
             mapping['set'] = d_set
 
-        return eval(self.code, mapping, mapping)
+        try:
+            return eval(self.code, mapping, mapping)
+        except ReanalyzeRequired:
+            if noretry:
+                raise
+            self.reanalyze()
+            return eval(self.code, mapping, mapping)

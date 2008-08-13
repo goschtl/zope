@@ -30,12 +30,10 @@ class AlgebraCompiler(object):
         self.context = context
         #self.db = db
 
-    def __call__(self, metadata, algebra):
-        algebra = self.context.tree
-        #code = algebra.compile()
-        adapter = IAlgebraCompiler(algebra)
+    def __call__(self, metadata, originalAlgebra):
+        adapter = IAlgebraCompiler(self.context.tree)
         code = adapter()
-        run = RunnableQuery(metadata, self.context, code)
+        run = RunnableQuery(metadata, originalAlgebra, code)
         return run
 
 class BaseCompiler(object):

@@ -12,7 +12,7 @@ from BTrees.IFBTree import difference
 
 from ocql.interfaces import IDB
 from ocql.database.index import AllIndex
-from ocql.ocqlexception import OCQLException
+from ocql.exceptions import ReanalyzeRequired
 
 class MetaType:
     def get_property(self, name):
@@ -125,7 +125,7 @@ class Metadata:
                     obj_list = [intids.getObject(result) for result in results]
                     return obj_list
 
-        raise OCQLException("reanalyze required")
+        raise ReanalyzeRequired()
 
     def hasPropertyIndex(self, klass, property):
         catalogs = getUtilitiesFor(ICatalog)

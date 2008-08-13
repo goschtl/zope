@@ -23,6 +23,7 @@ from ocql.rewriter.rewriter import Rewriter
 from ocql.testing.utils import setupInterfaces, setupCatalog
 from ocql.tests.test_old import QueryNullParser
 from ocql.testing.sample.student import Student
+from ocql.exceptions import ReanalyzeRequired
 import ocql.compiler.compiler
 import ocql.rewriter.rewriter
 
@@ -42,14 +43,8 @@ class testMetadata(unittest.TestCase):
 
         self.engine = OCQLEngine()
 
-    def compare(self, qo, expected):
-        run = self.engine.compile(qo)
-        self.delete_index()
-        result = run.execute()
-
-        #self.assertEqual(expected, result)
-
-    def test_metadata(self):
+    def test_metadata_reanalyze(self):
+        #check to see how ReanalyzeRequired works
         metadata = IDB(None)
 
         symbols = SymbolContainer()
@@ -73,21 +68,34 @@ class testMetadata(unittest.TestCase):
                            Identifier(metadata, symbols, '"USA"'))
                    ], Identifier(metadata, symbols, 'c.name')))
 
-        self.compare(qo, "Traceback (most recent call last): ....")
-#set([metadata.getFromIndex('IStudent', 'country','==', 'USA')[0].name])
+        try:
+            run = self.engine.compile(qo)
+            self.assert_('metadata.getFromIndex("IStudent", "country", "==", "USA"))' in run.code)
 
-    def delete_index(self):
-        """
-        >>> delete_index()
-        Traceback (most recent call last):
-        ...
-        """
+            self.delete_index('student_country')
+
+            #no reanalyze here, raises exception
+            result = run.execute(noretry=True)
+
+            self.fail("ReanalyzeRequired expected")
+        except ReanalyzeRequired:
+            pass
+
+        #reanalyze here, no exception, returns result
+        result = run.execute()
+
+        #code changes
+        self.assert_('metadata.getAll("IStudent"))' in run.code)
+
+
+
+    def delete_index(self, todel):
         metadata = IDB(None)
         catalogs = getUtilitiesFor(ICatalog)
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if iname == 'student_country':
+                if iname == todel:
                     del catalog[iname]
 
 def test_suite():
