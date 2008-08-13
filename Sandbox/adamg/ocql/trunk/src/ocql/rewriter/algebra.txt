@@ -1,22 +1,59 @@
 
-Following algebra operation descriptions extracted from http://citeseer.ist.psu.edu/359340.html
+Algebra
+=======
+
+The design of the canonical algebra aims for simplicity, regularity, and
+extensibility. The canonical algebra consists of a small number of collection
+and non-collection operations. Some of the operations are parameterised with
+functional arguments. This treatment makes the operations more regular as
+variations can be captured in the functional arguments. Unlike methods found
+in the object-oriented paradigm, these functions are system-defined and hence
+amenable to reasoning and therefore optimisation. The use of functional arguments
+together with a regular set of collection operations makes the algebra more
+extensible as a new collection can be integrated by providing a set of the
+regular operations. However, it should be noted that the canonical algebra is
+not a minimal set of operations, some operations can be defined by others,
+for example, select is introduced to capture well-known evaluation strategies.
+
+
+Following algebra operation descriptions extracted from
+http://citeseer.ist.psu.edu/359340.html
 Corresponding Python implementations are used in this project
+
+The samples use simplified expressions instead of a full complicated algebra
+tree to be able to focus on the meat.
+But still the results should pass.
 
 Binary Operations
 -----------------
 
-The union and differ operations take two operands of the same collection kind and return
-a resultant collection of that kind. The most specific unique common superclass of the
-operand element classes will become the class of the elements in the resultant collection.
+The union and differ operations take two operands of the same collection kind
+and return a resultant collection of that kind. The most specific unique common
+superclass of the operand element classes will become the class of the elements
+in the resultant collection.
 
 Union ( C1, C2 )
 -----------------
-The union operations combine two collections. The cardinality of each resultant element
-is the sum of its cardinalities in the operand collections except in the case of sets
-where all elements are unique. Ordering, if respected, will be preserved.
+The union operations combine two collections. The cardinality of each resultant
+element is the sum of its cardinalities in the operand collections except in the
+case of sets where all elements are unique. Ordering, if respected, will be
+preserved.
 
 	>>> from ocql.rewriter.algebra import Union
-	>>> x = Union()
+	>>> x = Union(set, set([1, 2]), set([2, 3]))
+	>>> x
+	Union(<type 'set'>, set([1, 2]), set([2, 3]))
+
+	>>> run(x)
+	set([1, 2, 3])
+
+
+	>>> x = Union(list, [1, 2], [2, 3])
+	>>> x
+	Union(<type 'list'>, [1, 2], [2, 3])
+
+	>>> run(x)
+	[1, 2, 2, 3]
 
 Differ ( C1, C2 )
 ------------------
@@ -45,7 +82,7 @@ Reduce ( E0, F1, Faggregate, C)
 ---------------------------------
 The reduce operations are used to combine elements in a collection. If the operand
 collection C is empty, E0 is returned. When the operand collection is not empty, F1 is
-applied to each element of C and the results are supplied pairwise to Faggregate which 
+applied to each element of C and the results are supplied pairwise to Faggregate which
 accumulates the results to give a single value.
 	>>> from ocql.rewriter.algebra import Reduce
 	>>> x = Reduce()

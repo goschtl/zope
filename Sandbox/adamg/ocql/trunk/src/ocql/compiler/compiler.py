@@ -13,14 +13,28 @@ from zope.interface import implements
 from zope.component import provideAdapter
 
 from ocql.interfaces import IAlgebraCompiler
-#from ocql.interfaces import IAlgebraCompiler
 from ocql.interfaces import IOptimizedAlgebraObject
-#from ocql.interfaces import ICompiledAlgebraObject
 from ocql.rewriter.algebra import Head
 
 from ocql.rewriter.interfaces import *
 
 from ocql.compiler.runnablequery import RunnableQuery
+
+RELAX_COMPILE = False
+
+def compile(expr):
+    #nasty?? thing to allow compilation of not fully compliant algebra tree
+    #mostly required for demonstration purposes
+    try:
+        code = IAlgebraCompiler(expr)()
+    except TypeError:
+        if RELAX_COMPILE:
+            if isinstance(expr, basestring):
+                return expr
+            return unicode(expr)
+        else:
+            raise
+    return code
 
 class AlgebraCompiler(object):
     implements(IAlgebraCompiler)
@@ -28,11 +42,9 @@ class AlgebraCompiler(object):
 
     def __init__(self, context):
         self.context = context
-        #self.db = db
 
     def __call__(self, metadata, originalAlgebra):
-        adapter = IAlgebraCompiler(self.context.tree)
-        code = adapter()
+        code = compile(self.context.tree)
         run = RunnableQuery(metadata, originalAlgebra, code)
         return run
 
@@ -57,9 +69,9 @@ class SingleCompiler(BaseCompiler):
 
     def __call__(self):
         if self.context.klass == set:
-            return 'set(['+IAlgebraCompiler(self.context.expr)()+'])'
+            return 'set(['+compile(self.context.expr)+'])'
         elif self.context.klass == list:
-            return '['+IAlgebraCompiler(self.context.expr)()+']'
+            return '['+compile(self.context.expr)+']'
 
 class UnionCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
@@ -68,12 +80,12 @@ class UnionCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'set.union(%s, %s)' % (
-                IAlgebraCompiler(self.context.coll1)(),
-                IAlgebraCompiler(self.context.coll2)())
+                compile(self.context.coll1),
+                compile(self.context.coll2))
         elif self.context.klass == list:
             return '(%s)+(%s)' % (
-                IAlgebraCompiler(self.context.coll1)(),
-                IAlgebraCompiler(self.context.coll2)())
+                compile(self.context.coll1),
+                compile(self.context.coll2))
 
 class DifferCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
@@ -82,13 +94,13 @@ class DifferCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'set.differ(%s, %s)' % (
-                IAlgebraCompiler(self.context.coll1)(),
-                IAlgebraCompiler(self.context.coll2)())
+                compile(self.context.coll1),
+                compile(self.context.coll2))
 
         elif self.context.klass == list:
             return '(%s)-(%s)' % (
-                IAlgebraCompiler(self.context.coll1)(),
-                IAlgebraCompiler(self.context.coll2)())
+                compile(self.context.coll1),
+                compile(self.context.coll2))
 
 class IterCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
@@ -97,12 +109,12 @@ class IterCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'reduce(set.union, map(%s, %s), set())' % (
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.coll)())
+                compile(self.context.func),
+                compile(self.context.coll))
         if self.context.klass == list:
             return 'reduce(operator.add, map(%s, %s), [])' % (
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.coll)())
+                compile(self.context.func),
+                compile(self.context.coll))
 
 
 class SelectCompiler(BaseCompiler):
@@ -112,12 +124,12 @@ class SelectCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'set(filter(%s, %s))' % (
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.call)())
+                compile(self.context.func),
+                compile(self.context.call))
         if self.context.klass == list:
             return 'filter()%s, %s' % (
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.call)())
+                compile(self.context.func),
+                compile(self.context.call))
 
 
 class ReduceCompiler(BaseCompiler):
@@ -127,16 +139,16 @@ class ReduceCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'reduce(%s, map(%s, %s), %s)' % (
-                IAlgebraCompiler(self.context.aggreg)(),
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.coll)(),
-                IAlgebraCompiler(self.context.expr)())
+                compile(self.context.aggreg),
+                compile(self.context.func),
+                compile(self.context.coll),
+                compile(self.context.expr))
         elif self.context.klass == list:
             return 'reduce(%s, map(%s, %s), %s)'% (
-                IAlgebraCompiler(self.context.aggreg)(),
-                IAlgebraCompiler(self.context.func)(),
-                IAlgebraCompiler(self.context.coll)(),
-                IAlgebraCompiler(self.context.expr)())
+                compile(self.context.aggreg),
+                compile(self.context.func),
+                compile(self.context.coll),
+                compile(self.context.expr))
 
 
 class RangeCompiler(BaseCompiler):
@@ -146,12 +158,12 @@ class RangeCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'set(range(%s,%s))' % (
-                IAlgebraCompiler(self.context.start)(),
-                IAlgebraCompiler(self.context.end)())
+                compile(self.context.start),
+                compile(self.context.end))
         elif self.context.klass == list:
             return 'range(%s,%s)' % (
-                IAlgebraCompiler(self.context.start)(),
-                IAlgebraCompiler(self.context.end)())
+                compile(self.context.start),
+                compile(self.context.end))
 
 
 class MakeCompiler(BaseCompiler):
@@ -161,7 +173,7 @@ class MakeCompiler(BaseCompiler):
     def __call__(self):
         return '%s(metadata.getAll("%s"))' % (
             self.context.coll1.__name__,
-            IAlgebraCompiler(self.context.expr)())
+            compile(self.context.expr))
 
 
 class MakeFromIndexCompiler(BaseCompiler):
@@ -183,9 +195,9 @@ class IfCompiler(BaseCompiler):
 
     def __call__(self):
         return '((%s) and (%s) or (%s))' % (
-            IAlgebraCompiler(self.context.cond)(),
-            IAlgebraCompiler(self.context.expr1)(),
-            IAlgebraCompiler(self.context.expr2)())
+            compile(self.context.cond),
+            compile(self.context.expr1),
+            compile(self.context.expr2))
 
 
 class LambdaCompiler(BaseCompiler):
@@ -195,7 +207,7 @@ class LambdaCompiler(BaseCompiler):
     def __call__(self):
         return 'lambda %s: %s' % (
             self.context.var,
-            IAlgebraCompiler(self.context.expr)())
+            compile(self.context.expr))
 
 
 class ConstantCompiler(BaseCompiler):
@@ -220,9 +232,9 @@ class BinaryCompiler(BaseCompiler):
 
     def __call__(self):
         return '%s%s%s' % (
-            IAlgebraCompiler(self.context.left)(),
+            compile(self.context.left),
             self.context.op.op,
-            IAlgebraCompiler(self.context.right)())
+            compile(self.context.right))
 
 
 class OperatorCompiler(BaseCompiler):
