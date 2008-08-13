@@ -33,6 +33,7 @@ except ImportError:
         return LocationProxy(object, parent, name)
     
 from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
+from zope.introspector.interfaces import IDocString
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 
 class Module(grok.View):
@@ -41,13 +42,14 @@ class Module(grok.View):
     grok.name('index')
 
     def update(self):
+        self.docstring = self.getDocString(heading_only=False)
         self.classes = self.getClassURLs()
         self.functions = self.getFunctions()
 
-    def getDocString(self, item):
-        if hasattr(item, 'getDocString'):
-            return item.getDocString()
-        return u''
+    def getDocString(self, item=None, heading_only=True):
+        if item is None:
+            item = self.context.context
+        return IDocString(item).getDocString(heading_only=heading_only)
 
     def getItemURLs(self, items):
         module = self.context.context
@@ -75,7 +77,9 @@ class Module(grok.View):
             signature = func.getSignature()
             result.append(dict(name=name,
                                signature=signature,
-                               fullname=name+signature))
+                               fullname=name+signature,
+                               doc=self.getDocString(func,
+                                                     heading_only=False)))
         return result
 
     def getBreadcrumbs(self):
@@ -88,15 +92,16 @@ class Package(grok.View):
     grok.name('index')
 
     def update(self):
+        self.docstring = self.getDocString(heading_only=False)
         self.files = self.getTextFileUrls()
         self.zcmlfiles = self.getZCMLFileUrls()
         self.subpkgs = self.getSubPackageUrls()
         self.modules = self.getModuleUrls()
 
-    def getDocString(self, item):
-        if hasattr(item, 'getDocString'):
-            return item.getDocString()
-        return u''
+    def getDocString(self, item=None, heading_only=True):
+        if item is None:
+            item = self.context.context
+        return IDocString(item).getDocString(heading_only=heading_only)
 
     def _getFileUrls(self, filenames):
         result = []
@@ -120,7 +125,7 @@ class Package(grok.View):
         for info in mod_infos:
             mod = located(package[info.name], package, info.name)
             result.append(dict(name=info.name, url=self.url(mod),
-                               doc=self.getDocString(mod)))
+                               doc=self.getDocString(item=mod)))
         return result
         
     def getSubPackageUrls(self):
