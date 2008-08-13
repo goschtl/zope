@@ -18,7 +18,8 @@ from zope.introspector.code import Code, PackageOrModule
 from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
 from zope.introspectorui.code import Package, File, Module
 from grokui.introspector.namespace import IntrospectorLayer
-from grokui.introspector.util import get_url_with_namespaces, render_text
+from grokui.introspector.util import (get_url_with_namespaces, render_text,
+                                      render_docstring)
 
 class CodeTraverser(grok.Traverser):
     grok.context(PackageOrModule)
@@ -35,6 +36,11 @@ class GrokUIPackage(Package):
     grok.name('index')
     grok.layer(IntrospectorLayer)
 
+    def getDocString(self, item):
+        if hasattr(item, 'getDocString'):
+            return render_docstring(item.getDocString())
+        return u''
+
     def url(self, *args, **kw):
         result = super(GrokUIPackage, self).url(*args, **kw)
         result = get_url_with_namespaces(self.request, result)
@@ -48,6 +54,11 @@ class GrokUIModule(Module):
     grok.context(ModuleInfo)
     grok.name('index')
     grok.layer(IntrospectorLayer)
+
+    def getDocString(self, item):
+        if hasattr(item, 'getDocString'):
+            return render_docstring(item.getDocString())
+        return u''
 
     def url(self, *args, **kw):
         result = super(GrokUIModule, self).url(*args, **kw)
