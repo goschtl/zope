@@ -217,16 +217,22 @@ class Function(Code):
         super(Function, self).__init__(dotted_name)
         self.func = resolve(self.dotted_name)
 
+    def getSignature(self):
+        return get_function_signature(self.func)
+
+    def getDocString(self):
+        return getattr(self.func, '__doc__', u'')
+
 class FunctionInfo(grok.Adapter):
     grok.context(Function)
     grok.provides(IInfo)
     grok.name('function')
 
     def getSignature(self):
-        return get_function_signature(self.context.func)
+        return self.context.getSignature()
 
     def getDocString(self):
-        return getattr(self.context.func, '__doc__', u'')
+        return self.context.getDocString()
 
 class Instance(Code):
     pass
