@@ -27,13 +27,19 @@ class Module(grok.View):
         self.classes = self.getClassURLs()
         self.functions = self.getFunctions()
 
+    def getDocString(self, item):
+        if hasattr(item, 'getDocString'):
+            return item.getDocString()
+        return u''
+
     def getItemURLs(self, items):
         module = self.context.context
         result = []
         for item in items:
             name = item.dotted_name.split('.')[-1]
             obj = located(module[name], module, name)
-            result.append(dict(name=name, url=self.url(obj)))
+            result.append(dict(name=name, url=self.url(obj),
+                               doc=self.getDocString(obj)))
         return result
 
     def getClassURLs(self):
@@ -70,6 +76,11 @@ class Package(grok.View):
         self.subpkgs = self.getSubPackageUrls()
         self.modules = self.getModuleUrls()
 
+    def getDocString(self, item):
+        if hasattr(item, 'getDocString'):
+            return item.getDocString()
+        return u''
+
     def _getFileUrls(self, filenames):
         result = []
         package = self.context.context
@@ -91,7 +102,8 @@ class Package(grok.View):
         package = self.context.context
         for info in mod_infos:
             mod = located(package[info.name], package, info.name)
-            result.append(dict(name=info.name, url=self.url(mod)))
+            result.append(dict(name=info.name, url=self.url(mod),
+                               doc=self.getDocString(mod)))
         return result
         
     def getSubPackageUrls(self):
