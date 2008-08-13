@@ -60,12 +60,13 @@ def fail(obj, name):
 
 class ZEOOpener(object):
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, addr, **kwargs):
         self.name = name
+        self.addr = addr
         self.kwargs = kwargs or {}
 
     def open(self, **kwargs):
-        return ClientStorage(self.name, **self.kwargs)
+        return ClientStorage(self.addr, **self.kwargs)
 
 
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
@@ -86,7 +87,7 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
                                                                   zconf, port)
             self._pids.append(pid)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(zport, storage='1',
+            self._storages.append(ZEOOpener(str(i), zport, storage='1',
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         self.open()
@@ -1382,14 +1383,14 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                                                               zconf, port)
         self._pids.append(pid)
         self._servers.append(adminaddr)
-        self._storages.append(ZEOOpener(zport, storage='1',
+        self._storages.append(ZEOOpener('6', zport, storage='1',
                                         min_disconnect_poll=0.5, wait=1,
                                         wait_timeout=60))
 
         # create a config file with this additional ZEO server and save it
         file_contents = """%%import gocept.zeoraid\n<zeo>\n\taddress 127.0.0.1:%s\n</zeo>\n\n<raidstorage main>\n""" % get_port()
         for count, storage in enumerate(self._storages):
-            file_contents += """\t<zeoclient %s>\n\t\tserver %s:%s\n\t\tstorage 1\n\t</zeoclient>\n\n""" % (count+1, storage.name[0], storage.name[1])
+            file_contents += """\t<zeoclient %s>\n\t\tserver %s:%s\n\t\tstorage 1\n\t</zeoclient>\n\n""" % (count, self._servers[count][0], self._servers[count][1])
         file_contents += """</raidstorage>\n<eventlog>\n\t<logfile>\n\t\tpath STDOUT\n\t</logfile>\n</eventlog>"""
         filename = tempfile.mktemp()
         self._server_storage_files = [ ]
