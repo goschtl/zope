@@ -58,7 +58,7 @@ And use the RegistryInfoUtility to search for it::
 
   >>> registry_util.getRegistrationsForInterface("Dummy")
   [UtilityRegistration(<BaseGlobalComponents base>, 
-  ...IDummy, u'', Dummy, u'')...]
+  ...IDummy, u'', Dummy, None, u'')...]
 
 Also local utilities can be found. We create a site, where we can
 register local components::
