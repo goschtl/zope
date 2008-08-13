@@ -61,3 +61,44 @@ often safer (if available):
   >>> from grokui import introspector
   >>> render_text('Hello!\n', module=introspector)
   u'<p>Hello!</p>\n'
+
+render_docstring(docstring, heading_only=False)
+==============================================
+
+A function that renders a docstring as restructured text::
+
+  >>> from grokui.introspector.util import render_docstring
+  >>> render_docstring('''A Docstring.
+  ... ''')
+  u'<p>A Docstring.</p>\n'
+
+Leading and trailing whitespaces are stripped::
+
+  >>> render_docstring('''
+  ...  Some text
+  ...
+  ... ''')
+  u'<p>Some text</p>\n'
+
+If a docstring contains a heading, then only this can be requested::
+
+  >>> docstring = '''Some Heading.
+  ... 
+  ... The following text.'''
+
+  >>> render_docstring(docstring)
+  u'<p>Some Heading.</p>\n<p>The following text.</p>\n'
+
+Now the same string, but with `heading_only` option::
+
+  >>> render_docstring(docstring, heading_only=True)
+  u'<p>Some Heading.</p>\n'
+
+CVS '$Id' tags are silently skipped from output::
+
+  >>> render_docstring('''
+  ... A function to boze bazzles.
+  ... $Id$ foo bar
+  ...
+  ... Use it to bazzle bozes.''')
+  u'<p>A function to boze bazzles.</p>\n<p>Use it to bazzle bozes.</p>\n'
