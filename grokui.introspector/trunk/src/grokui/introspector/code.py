@@ -16,6 +16,7 @@
 import grok
 from zope.introspector.code import Code, PackageOrModule
 from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
+from zope.introspector.interfaces import IDocString
 from zope.introspectorui.code import Package, File, Module
 from grokui.introspector.namespace import IntrospectorLayer
 from grokui.introspector.util import (get_url_with_namespaces, render_text,
@@ -36,10 +37,11 @@ class GrokUIPackage(Package):
     grok.name('index')
     grok.layer(IntrospectorLayer)
 
-    def getDocString(self, item):
-        if hasattr(item, 'getDocString'):
-            return render_docstring(item.getDocString())
-        return u''
+    def getDocString(self, item=None, heading_only=True):
+        if item is None:
+            item=self.context.context
+        docstring = IDocString(item).getDocString(heading_only=heading_only)
+        return render_docstring(docstring)
 
     def url(self, *args, **kw):
         result = super(GrokUIPackage, self).url(*args, **kw)
@@ -55,10 +57,11 @@ class GrokUIModule(Module):
     grok.name('index')
     grok.layer(IntrospectorLayer)
 
-    def getDocString(self, item):
-        if hasattr(item, 'getDocString'):
-            return render_docstring(item.getDocString())
-        return u''
+    def getDocString(self, item=None, heading_only=True):
+        if item is None:
+            item=self.context.context
+        docstring = IDocString(item).getDocString(heading_only=heading_only)
+        return render_docstring(docstring)
 
     def url(self, *args, **kw):
         result = super(GrokUIModule, self).url(*args, **kw)
