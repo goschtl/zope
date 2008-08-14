@@ -1,5 +1,6 @@
 import unittest
 import doctest
+import operator
 from zope.testing.doctestunit import DocTestSuite,DocFileSuite
 
 from ocql.testing import utils

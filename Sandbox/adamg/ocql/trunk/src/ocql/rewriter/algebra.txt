@@ -53,7 +53,7 @@ Ordering, if respected, will be preserved.
 	Union(<type 'list'>, [1, 2], [2, 3])
 
 	>>> run(x)
-	[1, 2, 2, 3]
+	[1, 2, 3]
 
 
 Differ ( C1, C2 )
@@ -76,8 +76,8 @@ Ordering, if respected, will be preserved.
 	>>> x
 	Differ(<type 'list'>, [1, 2], [2, 3])
 
-	#>>> run(x)
-	#[1]
+	>>> run(x)
+	[1]
 
 
 Equal ( E1, E2 )
@@ -100,15 +100,14 @@ The reduce operations are used to combine elements in a collection. If the
 operand collection C is empty, E0 is returned. When the operand collection
 is not empty, F1 is applied to each element of C and the results are supplied
 pairwise to Faggregate which accumulates the results to give a single value.
+	>>> import operator
 	>>> from ocql.rewriter.algebra import Reduce
-	>>> from ocql.rewriter.algebra import Lambda
-	>>> func = Lambda('y','y+1')
-	>>> x = Reduce(set, None, func, func, set([1, 2, 3, 4, 5]))
+	>>> x = Reduce(set, None, 'lambda y, z: y+z', 'operator.add', set([1, 2, 3, 4, 5]))
 	>>> x
-	Reduce(<type 'set'>, None, Lambda y: y+1, Lambda y: y+1, set([1, 2, 3, 4, 5]))
+	Reduce(<type 'set'>, None, lambda y, z: y+z, operator.add, set([1, 2, 3, 4, 5]))
 	
-#	>>> run(x)
-
+	>>> run(x)
+	
 
 Map ( F, C)
 -----------
@@ -124,17 +123,16 @@ F returns true. The resultant collection is of the same kind as the operand
 collection.
 
 	>>> from ocql.rewriter.algebra import Select
-	>>> func = Lambda('z','z%2')
-	>>> x = Select(set, func, set([1,2,3]))
+	>>> x = Select(set, 'lambda z: z%2', set([1,2,3]))
 	>>> x
-	Select(<type 'set'>, Lambda z: z%2, set([1, 2, 3]))
+	Select(<type 'set'>, lambda z: z%2, set([1, 2, 3]))
 
 	>>> run(x)
 	set([1, 3])	
 
-	>>> x = Select(list, func, [1,2,3])
+	>>> x = Select(list, 'lambda z: z%2', [1,2,3])
 	>>> x
-	Select(<type 'list'>, Lambda z: z%2, [1, 2, 3])
+	Select(<type 'list'>, lambda z: z%2, [1, 2, 3])
 
 	>>> run(x)
 	[1, 3]	

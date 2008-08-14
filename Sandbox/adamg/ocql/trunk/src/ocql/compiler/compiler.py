@@ -83,7 +83,8 @@ class UnionCompiler(BaseCompiler):
                 compile(self.context.coll1),
                 compile(self.context.coll2))
         elif self.context.klass == list:
-            return '(%s)+(%s)' % (
+            return '(%s+filter(lambda x:x not in %s,%s))' % (
+                compile(self.context.coll1),
                 compile(self.context.coll1),
                 compile(self.context.coll2))
 
@@ -98,9 +99,9 @@ class DifferCompiler(BaseCompiler):
                 compile(self.context.coll2))
 
         elif self.context.klass == list:
-            return '(%s)-(%s)' % (
-                compile(self.context.coll1),
-                compile(self.context.coll2))
+            return '(filter(lambda x:x not in %s,%s))' % (
+                compile(self.context.coll2),
+                compile(self.context.coll1))
 
 class IterCompiler(BaseCompiler):
     implements(IAlgebraCompiler)
@@ -139,14 +140,14 @@ class ReduceCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'reduce(%s, map(%s, %s), %s)' % (
-                compile(self.context.aggreg),
                 compile(self.context.func),
+                compile(self.context.aggreg),
                 compile(self.context.coll),
                 compile(self.context.expr))
         elif self.context.klass == list:
             return 'reduce(%s, map(%s, %s), %s)'% (
-                compile(self.context.aggreg),
                 compile(self.context.func),
+                compile(self.context.aggreg),
                 compile(self.context.coll),
                 compile(self.context.expr))
 
