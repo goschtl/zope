@@ -26,29 +26,30 @@ from z3c.configurator import configure
 import z3ext.product
 from z3ext.controlpanel.configlettype import ConfigletProperty
 
-from z3ext.product.i18n import _
 from z3ext.product import interfaces
-from z3ext.product.interfaces import IProduct, IProductExtension
+from z3ext.product.interfaces import _, IProduct, IProductExtension
 
 
 class Product(object):
     """ base product class """
     interface.implements(IProduct)
 
-    __installed__ = ConfigletProperty(IProduct['__installed__'])
+    @property
+    def __installed__(self):
+        sm = getSiteManager()
+
+        registry = getattr(z3ext.product, self.__product_name__)
+        return registry in sm.__bases__
 
     def install(self):
         if self.__installed__:
             raise interfaces.ProductAlreadyInstalledError(
                 _('Product already installed.'))
 
-        self.__installed__ = True
-
         sm = getSiteManager()
 
         registry = getattr(z3ext.product, self.__product_name__)
-        if registry not in sm.__bases__:
-            sm.__bases__ = (registry,) + sm.__bases__
+        sm.__bases__ = (registry,) + sm.__bases__
 
         event.notify(interfaces.ProductInstalledEvent(self.__product_name__, self))
 
@@ -57,15 +58,9 @@ class Product(object):
     def update(self):
         if not self.__installed__:
             raise interfaces.ProductNotInstalledError(
-                _('Product not installed.'))
+                _('Product is not installed.'))
 
         configure(self, {})
-
-        sm = getSiteManager()
-        registry = getattr(z3ext.product, self.__product_name__)
-        if registry not in sm.__bases__:
-            sm.__bases__ = (registry,) + sm.__bases__
-
         event.notify(
             interfaces.ProductUpdatedEvent(self.__product_name__, self))
 
@@ -78,18 +73,15 @@ class Product(object):
             raise interfaces.ProductNotInstalledError(
                 _('Product not installed.'))
 
-        self.__installed__ = False
-
         sm = getSiteManager()
         registry = getattr(z3ext.product, self.__product_name__)
 
-        if registry in sm.__bases__:
-            bases = list(sm.__bases__)
-            bases.remove(registry)
-            sm.__bases__ = tuple(bases)
+        bases = list(sm.__bases__)
+        bases.remove(registry)
+        sm.__bases__ = tuple(bases)
 
-            event.notify(
-                interfaces.ProductUninstalledEvent(self.__product_name__, self))
+        event.notify(
+            interfaces.ProductUninstalledEvent(self.__product_name__, self))
 
     def _checkInstalled(self, sm, registry, seen):
         if sm in seen:

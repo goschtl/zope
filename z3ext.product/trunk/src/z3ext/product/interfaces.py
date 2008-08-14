@@ -16,6 +16,9 @@
 $Id: interfaces.py 1843 2008-03-25 18:39:00Z fafhrd91 $
 """
 from zope import schema, interface
+from zope.i18nmessageid import MessageFactory
+
+_ = MessageFactory('z3ext')
 
 
 class ProductError(Exception):
@@ -45,11 +48,7 @@ class IProduct(interface.Interface):
         title = u'Product name',
         required = True)
 
-    __installed__ = schema.Bool(
-        title = u'Installed',
-        description = u'Is product installed.',
-        default = False,
-        required = False)
+    __installed__ = interface.Attribute(u'Is product installed.')
 
     def install():
         """ install and configure product """

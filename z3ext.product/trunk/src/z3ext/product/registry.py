@@ -20,7 +20,7 @@ from zope.component.interfaces import IComponents
 from zope.component import globalregistry, globalSiteManager
 
 import z3ext.product
-from z3ext.product.i18n import _
+from z3ext.product.interfaces import _
 
 
 def BC(components, name):

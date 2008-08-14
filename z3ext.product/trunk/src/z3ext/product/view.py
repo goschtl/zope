@@ -22,8 +22,7 @@ from zope.component import getUtility, queryUtility, getUtilitiesFor
 from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-from z3ext.product.i18n import _
-from z3ext.product.interfaces import IProductExtension
+from z3ext.product.interfaces import _, IProductExtension
 from z3ext.product.interfaces import ProductWarningError
 
 def log_exc(msg=''):

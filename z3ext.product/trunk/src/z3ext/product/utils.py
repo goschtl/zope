@@ -24,8 +24,7 @@ from zope.app.component.hooks import getSite
 from zope.app.component.site import SiteManagementFolder
 from zope.app.component.interfaces import ISite
 
-from z3ext.product.i18n import _
-from z3ext.product.interfaces import IProduct, IProductExtension
+from z3ext.product.interfaces import _, IProduct, IProductExtension
 
 
 def registerUtility(id, factory, ifaces, container='system'):

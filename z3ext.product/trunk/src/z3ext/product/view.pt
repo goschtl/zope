@@ -1,4 +1,4 @@
-<div i18n:domain="z3ext.product" tal:define="data view/getProducts">
+<div i18n:domain="z3ext" tal:define="data view/getProducts">
   <div class="topframe" tal:condition="data/installed">
     <h1>Installed Products</h1>
 
