@@ -173,7 +173,7 @@ class Make(BaseAlgebra):
 
 
 class MakeFromIndex(BaseAlgebra):
-    
+
     implements(IMakeFromIndex)
 
     def __init__(self, coll1, coll2, expr1, expr2, operator, value):

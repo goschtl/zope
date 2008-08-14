@@ -140,14 +140,14 @@ class ReduceCompiler(BaseCompiler):
     def __call__(self):
         if self.context.klass == set:
             return 'reduce(%s, map(%s, %s), %s)' % (
-                compile(self.context.func),
                 compile(self.context.aggreg),
+                compile(self.context.func),
                 compile(self.context.coll),
                 compile(self.context.expr))
         elif self.context.klass == list:
             return 'reduce(%s, map(%s, %s), %s)'% (
-                compile(self.context.func),
                 compile(self.context.aggreg),
+                compile(self.context.func),
                 compile(self.context.coll),
                 compile(self.context.expr))
 
