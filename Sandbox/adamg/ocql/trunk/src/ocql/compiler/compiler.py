@@ -93,7 +93,7 @@ class DifferCompiler(BaseCompiler):
 
     def __call__(self):
         if self.context.klass == set:
-            return 'set.differ(%s, %s)' % (
+            return 'set.difference(%s, %s)' % (
                 compile(self.context.coll1),
                 compile(self.context.coll2))
 
@@ -125,11 +125,11 @@ class SelectCompiler(BaseCompiler):
         if self.context.klass == set:
             return 'set(filter(%s, %s))' % (
                 compile(self.context.func),
-                compile(self.context.call))
+                compile(self.context.coll))
         if self.context.klass == list:
-            return 'filter()%s, %s' % (
+            return 'filter(%s, %s)' % (
                 compile(self.context.func),
-                compile(self.context.call))
+                compile(self.context.coll))
 
 
 class ReduceCompiler(BaseCompiler):

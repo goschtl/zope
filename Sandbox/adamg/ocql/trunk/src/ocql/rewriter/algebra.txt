@@ -8,12 +8,13 @@ and non-collection operations. Some of the operations are parameterised with
 functional arguments. This treatment makes the operations more regular as
 variations can be captured in the functional arguments. Unlike methods found
 in the object-oriented paradigm, these functions are system-defined and hence
-amenable to reasoning and therefore optimisation. The use of functional arguments
-together with a regular set of collection operations makes the algebra more
-extensible as a new collection can be integrated by providing a set of the
-regular operations. However, it should be noted that the canonical algebra is
-not a minimal set of operations, some operations can be defined by others,
-for example, select is introduced to capture well-known evaluation strategies.
+amenable to reasoning and therefore optimisation. The use of functional 
+arguments together with a regular set of collection operations makes the 
+algebra more extensible as a new collection can be integrated by providing a
+set of the regular operations. However, it should be noted that the canonical
+algebra is not a minimal set of operations, some operations can be defined by
+others, for example, select is introduced to capture well-known evaluation
+strategies.
 
 
 Following algebra operation descriptions extracted from
@@ -26,7 +27,6 @@ But still the results should pass.
 
 Binary Operations
 -----------------
-
 The union and differ operations take two operands of the same collection kind
 and return a resultant collection of that kind. The most specific unique common
 superclass of the operand element classes will become the class of the elements
@@ -35,9 +35,9 @@ in the resultant collection.
 Union ( C1, C2 )
 -----------------
 The union operations combine two collections. The cardinality of each resultant
-element is the sum of its cardinalities in the operand collections except in the
-case of sets where all elements are unique. Ordering, if respected, will be
-preserved.
+element is the sum of its cardinalities in the operand collections except in 
+the case of sets where all elements are unique. 
+Ordering, if respected, will be preserved.
 
 	>>> from ocql.rewriter.algebra import Union
 	>>> x = Union(set, set([1, 2]), set([2, 3]))
@@ -55,101 +55,197 @@ preserved.
 	>>> run(x)
 	[1, 2, 2, 3]
 
+
 Differ ( C1, C2 )
 ------------------
-The differ operations form a collection by removing elements of the second operand
-collection from the first operand collection. The cardinality of each resultant element is
-the difference between its cardinality in the first operand collection and that in the second
-operand collection. Ordering, if respected, will be preserved.
+The differ operations form a collection by removing elements of the second
+operand collection from the first operand collection. The cardinality of
+each resultant element is the difference between its cardinality in the
+first operand collection and that in the second operand collection.
+Ordering, if respected, will be preserved.
 
 	>>> from ocql.rewriter.algebra import Differ
-	>>> x = Differ()
+	>>> x = Differ(set, set([1, 2]), set([2, 3]))
+	>>> x
+	Differ(<type 'set'>, set([1, 2]), set([2, 3]))
+
+	>>> run(x)
+	set([1])
+
+	>>> x = Differ(list, [1, 2], [2, 3])
+	>>> x
+	Differ(<type 'list'>, [1, 2], [2, 3])
+
+	#>>> run(x)
+	#[1]
+
 
 Equal ( E1, E2 )
 ----------------
-The equal operations compare two collections of the same kind and return true if their
-elements are the same. Duplication and ordering, if respected, will be taken into account.
+The equal operations compare two collections of the same kind and return true 
+if their elements are the same.
+Duplication and ordering, if respected, will be taken into account.
 
 
 Unary Operations
 ----------------
-
-The operations described below are unary in the sense that each takes a collection as
-one of the operands. Other operands include functions on the elements of the operand
-collection and functions over results returned by other operand functions.
+The operations described below are unary in the sense that each takes a 
+collection as one of the operands. Other operands include functions on
+the elements of the operand collection and functions over results returned
+by other operand functions.
 
 Reduce ( E0, F1, Faggregate, C)
 ---------------------------------
-The reduce operations are used to combine elements in a collection. If the operand
-collection C is empty, E0 is returned. When the operand collection is not empty, F1 is
-applied to each element of C and the results are supplied pairwise to Faggregate which
-accumulates the results to give a single value.
+The reduce operations are used to combine elements in a collection. If the 
+operand collection C is empty, E0 is returned. When the operand collection
+is not empty, F1 is applied to each element of C and the results are supplied
+pairwise to Faggregate which accumulates the results to give a single value.
 	>>> from ocql.rewriter.algebra import Reduce
-	>>> x = Reduce()
+	>>> from ocql.rewriter.algebra import Lambda
+	>>> func = Lambda('y','y+1')
+	>>> x = Reduce(set, None, func, func, set([1, 2, 3, 4, 5]))
+	>>> x
+	Reduce(<type 'set'>, None, Lambda y: y+1, Lambda y: y+1, set([1, 2, 3, 4, 5]))
+	
+#	>>> run(x)
+
 
 Map ( F, C)
 -----------
 The map operations apply the operand function F to each element in the operand
-collection C and form a collection containing the results. The resultant collection and
-operand collection are of the same collection kind.
-	>>> from ocql.rewriter.algebra import Map
-	>>> x = Map()
+collection C and form a collection containing the results. The resultant
+collection and operand collection are of the same collection kind.
 
 Select ( F, C )
 ---------------
-The select operation applies the operand boolean function F to each element of the
-operand collection C and forms a collection of the elements for which F returns true. The
-resultant collection is of the same kind as the operand collection.
+The select operation applies the operand boolean function F to each element
+of the operand collection C and forms a collection of the elements for which
+F returns true. The resultant collection is of the same kind as the operand
+collection.
+
 	>>> from ocql.rewriter.algebra import Select
-	>>> x = Select()
+	>>> func = Lambda('z','z%2')
+	>>> x = Select(set, func, set([1,2,3]))
+	>>> x
+	Select(<type 'set'>, Lambda z: z%2, set([1, 2, 3]))
+
+	>>> run(x)
+	set([1, 3])	
+
+	>>> x = Select(list, func, [1,2,3])
+	>>> x
+	Select(<type 'list'>, Lambda z: z%2, [1, 2, 3])
+
+	>>> run(x)
+	[1, 3]	
+
 
 Make ( C )
 ----------
-The make operations convert the operand collection from its original collection kind to
-one of the three collection kinds. Conversion from bag or set to list is non-deterministic
-as an arbitrary order will be assigned to the elements.
+The make operations convert the operand collection from its original collection
+kind to one of the three collection kinds. Conversion from bag or set to list
+is non-deterministic as an arbitrary order will be assigned to the elements.
+
 	>>> from ocql.rewriter.algebra import Make
-	>>> x = Make()
+	>>> x = Make(set, set([1,2]), set([2,3]))
+	>>> x
+	Make(<type 'set'>, set([1, 2]), set([2, 3]))
+
+#	>>> run(x)
+
+	>>> x = Make(list, [1,2], [2,3])
+	>>> x
+	Make(<type 'list'>, [1, 2], [2, 3])
+
 
 Index( C, E )
 -------------
-The index operation takes a list C and returns an element of the list at position E.
+The index operation takes a list C and returns an element of the list at 
+position E.
 
 
 Simple Operations
 ------------------
-
 The following operations take on arguments which may or may not be a collection.
 
 Empty ( E )
 --------------
 The empty operations take a value and return an empty collection.
+
 	>>> from ocql.rewriter.algebra import Empty
-	>>> x = Empty()
+	>>> x = Empty(set)
+	>>> x
+	Empty(<type 'set'>)
+
+	>>> run(x)
+	set([])
+
+	>>> x = Empty(list)
+	>>> x
+	Empty(<type 'list'>)
+
+	>>> run(x)
+	[]
+
 
 Single ( E )
 ------------
 The single operations take a value and return a collection containing that value.
+
 	>>> from ocql.rewriter.algebra import Single
-	>>> x = Single()
+	>>> x = Single(set, 1)
+	>>> x
+	Single(<type 'set'>, 1)
+
+	>>> run(x)
+	set([1])
+
+	>>> x = Single(list, 1)
+	>>> x
+	Single(<type 'list'>, 1)
+
+	>>> run(x)
+	[1]
+
 
 If( Econdition, Etrue, Efalse )
 -------------------------------
-The if operation is a control operation. If Econdition evaluates to true, the value of Etrue
-is returned, otherwise the value of Efalse is returned.
+The if operation is a control operation. If Econdition evaluates to true, the 
+value of Etrue is returned, otherwise the value of Efalse is returned.
+
 	>>> from ocql.rewriter.algebra import If
-	>>> x = If()
+	>>> x = If(True, 2, 3)
+	>>> x
+	If(True, 2, 3)
+
+	>>> run(x)
+	2
+
 
 And( E1, E2 )
 -------------
-The and operation takes two boolean expressions and returns true if both of them evaluate
-to true. This is a non-commutative operation and the operands cannot be swapped.
-	>>> from ocql.rewriter.algebra import And
-	>>> x = And()
+The and operation takes two boolean expressions and returns true if both of
+them evaluate to true. This is a non-commutative operation and the operands
+cannot be swapped.
+
 
 Range ( E1, E2 )
 ----------------
 The range operations generate a collection containing integers within a given range.
-An empty collection is returned if the first operand expression is less than the second one.
+An empty collection is returned if the first operand expression is less than the
+second one.
+
 	>>> from ocql.rewriter.algebra import Range
-	>>> x = Range()
+	>>> x = Range(set, 1, 4)
+	>>> x
+	Range(<type 'set'>, 1, 4)
+
+	>>> run(x)
+	set([1, 2, 3])
+
+	>>> x = Range(list, 1, 4)
+	>>> x
+	Range(<type 'list'>, 1, 4)
+
+	>>> run(x)
+	[1, 2, 3]

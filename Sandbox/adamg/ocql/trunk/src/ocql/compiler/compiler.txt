@@ -53,7 +53,7 @@ But it's a lot faster to reuse the parser and the existing classes.
     >>> aopt = AlgebraOptimizer(alg)(metadata)
     >>> run = AlgebraCompiler(aopt)(metadata, alg)
     >>> print str(run)
-    RunnableQuery: set.differ(set([1]), set([2]))
+    RunnableQuery: set.difference(set([1]), set([2]))
 
     >>> qo = QueryParser("list [ | 1 ] differ list [|2]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()

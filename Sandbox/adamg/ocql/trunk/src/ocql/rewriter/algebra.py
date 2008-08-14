@@ -154,6 +154,9 @@ class Range(BaseAlgebra):
         self.setProp('start', start)
         self.setProp('end', end)
 
+    def __repr__(self):
+        return "Range(%s, %s, %s)" %(self.klass, self.start, self.end)
+
 #class Index
 
 class Make(BaseAlgebra):
