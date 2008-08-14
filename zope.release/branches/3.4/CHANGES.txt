@@ -7,6 +7,8 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 3.4.0c7 (unreleased)
 --------------------
 
+- Upgraded z3c.formdemo to 1.5.2
+
 3.4.0c6 (2008-08-14)
 --------------------
 
