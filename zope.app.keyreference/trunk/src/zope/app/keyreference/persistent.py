@@ -61,7 +61,7 @@ class KeyReferenceToPersistent(object):
 
     def __cmp__(self, other):
         if self.key_type_id == other.key_type_id:
-            if isinstance(self.object, PersistentReference):
+            if type(self.object) is PersistentReference:
                 # we are doing conflict resolution.
                 assert isinstance(other.object, PersistentReference), (
                     'other object claims to be '
