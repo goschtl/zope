@@ -1,0 +1,16 @@
+
+OCQL -  Overview
+================
+
+How parts of it fit together.
+
+
+
+The following documents help understanding the inner life of the engine:
+
+*  Object Comprehension Query Language proposal
+   http://docs.google.com/Doc?docid=ddvh6xf9_141g9sqbr
+
+*  D. Chan and P. Trinder. A Processing Framework for Object Comprehensions.
+    Information and Software Technology, 39(9):641--651, 1997.
+    http://citeseer.ist.psu.edu/384122.html

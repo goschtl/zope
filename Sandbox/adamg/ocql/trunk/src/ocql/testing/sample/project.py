@@ -36,6 +36,11 @@ class Project(persistent.Persistent):
 
     # See google.interfaces.IProject
     name = u''
+    description = u''
+
+    def __init__(self, name=u'', description=u''):
+        self.name = name
+        self.description = description
 
     def __repr__(self):
         return "%s <%s>" % (self.__class__.__name__, self.name)

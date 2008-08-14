@@ -1,0 +1,139 @@
+
+OCQL -  Usage
+=============
+
+Using OCQL in your own application is quite straightforward.
+There are some basic requirements you have to follow.
+
+This file uses ZCML samples as most likely you'll use that.
+We need for that to work an import:
+
+    >>> from zope.configuration import xmlconfig
+
+Include OCQL in your configuration:
+(this registers all required adapters and stuff)
+
+    >>> context = xmlconfig.string("""
+    ...      <configure
+    ...        xmlns="http://namespaces.zope.org/zope">
+    ...
+    ...        <include package="zope.component" file="meta.zcml" />
+    ...        <include package="zope.app.component" file="meta.zcml" />
+    ...        <include package="zope.security" file="meta.zcml" />
+    ...        <include package="zope.app.security" file="meta.zcml" />
+    ...        <include package="zope.app.security"/>
+    ...
+    ...        <include package="ocql" />
+    ...
+    ...      </configure>
+    ...      """)
+
+We will use the sample data of OCQL to demonstrate the usage.
+There are 4 classes and interfaces:
+
+    >>> from ocql.testing.sample.interfaces import IOrganization
+    >>> from ocql.testing.sample.interfaces import IProject
+    >>> from ocql.testing.sample.interfaces import IStudent
+    >>> from ocql.testing.sample.interfaces import IMentor
+
+    >>> from ocql.testing.sample.organization import Organization
+    >>> from ocql.testing.sample.project import Project
+    >>> from ocql.testing.sample.student import Student
+    >>> from ocql.testing.sample.mentor import Mentor
+
+
+Declare all your classes interfaces:
+
+    >>> context = xmlconfig.string("""
+    ...      <configure
+    ...        xmlns="http://namespaces.zope.org/zope">
+    ...
+    ...        <include package="zope.component" file="meta.zcml" />
+    ...
+    ...        <interface interface="ocql.testing.sample.interfaces.IOrganization" />
+    ...        <interface interface="ocql.testing.sample.interfaces.IProject" />
+    ...        <interface interface="ocql.testing.sample.interfaces.IStudent" />
+    ...        <interface interface="ocql.testing.sample.interfaces.IMentor" />
+    ...
+    ...      </configure>
+    ...      """)
+
+This would work too, but we want to keep it simple:
+<class class="something">
+  <implements interface="Isomething" />
+  ...
+  ...
+</class>
+
+As a bare minimum a catalog is needed with indexes for all your classes.
+We do that here with python code, you can achieve that with any means.
+Of course if you're using a live application and the catalog is stored in
+a database this catalog setup is required only once.
+
+    >>> from zope.app.intid import IntIds
+    >>> from zope.app.intid.interfaces import IIntIds
+    >>> from zope import interface, component
+    >>> from zope.app.keyreference.testing import SimpleKeyReference
+    >>> from zope.app.catalog.catalog import Catalog
+    >>> from zope.app.catalog.interfaces import ICatalog
+
+Some preconditions for the catalog and indexing to work:
+
+    >>> intids = IntIds()
+    >>> component.provideUtility(intids, IIntIds)
+    >>> component.provideAdapter(SimpleKeyReference)
+
+There is a special index in OCQL that holds the references to all instances
+of a defined class.
+
+    >>> from ocql.database.index import AllIndex
+
+Index name can be anything, OCQL will scan all available indexes.
+Make sure you do this for ALL your interfaces.
+
+    >>> cat = Catalog()
+    >>> cat['all_students'] = AllIndex(IStudent)
+    >>> cat['all_mentors'] = AllIndex(IMentor)
+    >>> cat['all_projects'] = AllIndex(IProject)
+    >>> cat['all_orgs'] = AllIndex(IOrganization)
+
+Provide the catalog as a utility.
+The catalog can have any name, OCQL will scan all available catalogs.
+
+    >>> component.provideUtility(cat, ICatalog, name='foo-catalog')
+
+We'll create some sample data now.
+All objects need to be registered with IntIds, and the catalog as usual:
+
+    >>> def make_sample(obj):
+    ...     id = intids.register(obj)
+    ...     cat.index_doc(id, obj)
+
+    >>> make_sample(Mentor(u"John Doe"))
+    >>> make_sample(Project(u"Save the world"))
+    >>> make_sample(Student(u"Charith", u"Sri Lanka"))
+    >>> make_sample(Student(u"Jane", u"USA"))
+    >>> make_sample(Student(u"Ann", u"Hungary"))
+    >>> make_sample(Organization(u"Zope.org"))
+
+That was it, off you go:
+
+    >>> from ocql.engine import OCQLEngine
+    >>> engine = OCQLEngine()
+
+Creating the runnable query takes time, so you better save it somewhere:
+
+    >>> run = engine.compile('set [ c in IStudent; c.country=="USA" | c.name]')
+
+Results can be retrieved by executing the runnable query:
+
+    >>> result = run.execute()
+    >>> result
+    set([u'Jane'])
+
+The OCQL language itself is quite rich, so providing all samples would fill a
+book itself.
+
+Here goes the dry syntax:
+
+#TODO!

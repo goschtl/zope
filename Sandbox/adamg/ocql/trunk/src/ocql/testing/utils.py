@@ -48,6 +48,13 @@ def setupAdapters(test):
        xmlns="http://namespaces.zope.org/zope">
 
        <include package="zope.component" file="meta.zcml" />
+       <include package="zope.app.component" file="meta.zcml" />
+
+       <include package="zope.security" file="meta.zcml" />
+       <include package="zope.app.security" file="meta.zcml" />
+       <include package="zope.app.security"/>
+
+       <include package="zope.app.security"/>
 
        <include package="ocql" />
 
@@ -99,37 +106,27 @@ def setupCatalog(test):
     cat['all_projects'] = AllIndex(IProject)
     cat['all_orgs'] = AllIndex(IOrganization)
 
-    m1 = Mentor()
-    m1.name = u"John Doe"
+    m1 = Mentor(u"John Doe")
     id = intids.register(m1)
     cat.index_doc(id, m1)
 
-    p1 = Project()
-    p1.name = u"Save the world"
-    p1.description = u"test"
+    p1 = Project(u"Save the world", u'test')
     id = intids.register(p1)
     cat.index_doc(id, p1)
 
-    s1 = Student()
-    s1.name = u"Charith"
-    s1.country = "Sri Lanka"
+    s1 = Student(u"Charith", u"Sri Lanka")
     id = intids.register(s1)
     cat.index_doc(id, s1)
 
-    s2 = Student()
-    s2.name = u"Jane"
-    s2.country = "USA"
+    s2 = Student(u"Jane", u"USA")
     id = intids.register(s2)
     cat.index_doc(id, s2)
 
-    s3 = Student()
-    s3.name = u"Ann"
-    s3.country = "Hungary"
+    s3 = Student(u"Ann", u"Hungary")
     id = intids.register(s3)
     cat.index_doc(id, s3)
 
-    o1 = Organization()
-    o1.name = u"Zope.org"
+    o1 = Organization(u"Zope.org")
     id = intids.register(o1)
     cat.index_doc(id, o1)
 

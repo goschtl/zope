@@ -28,5 +28,9 @@ class Mentor(persistent.Persistent):
 
     project=None
 
+    def __init__(self, name=u'', project=None):
+        self.name = name
+        self.project = project
+
     def __repr__(self):
         return "%s <%s>" % (self.__class__.__name__, self.name)

@@ -5,6 +5,17 @@
     factory=".metadata.Metadata"
     />
 
+  <!--This declaration needs a lot of zope packages:-->
+
+  <class class=".index.AllIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".index.IAllIndex
+                   zope.index.interfaces.IStatistics
+                  "
+        set_schema=".index.IAllIndex"
+        />
+  </class>
 
 
 </configure>
