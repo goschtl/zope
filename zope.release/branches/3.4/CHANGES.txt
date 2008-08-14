@@ -4,6 +4,9 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
+3.4.0c7 (unreleased)
+--------------------
+
 3.4.0c6 (2008-08-14)
 --------------------
 
