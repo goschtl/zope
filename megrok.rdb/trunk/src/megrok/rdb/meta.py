@@ -11,9 +11,17 @@ class ModelGrokker(martian.ClassGrokker):
     martian.component(rdb.Model)
     martian.directive(rdb.tablename, get_default=default_tablename)
     martian.directive(rdb.metadata)
+    martian.directive(rdb.reflected)
     
-    def execute(self, class_, tablename, metadata, **kw):
+    def execute(self, class_, tablename, metadata, reflected, **kw):
         class_.__tablename__ = tablename
+        if reflected:
+            if not hasattr(metadata, '_reflected_registry'):
+                metadata._reflected_registry = {}
+            metadata._reflected_registry[class_] = None
+            # if this table is reflected, don't instrument now but
+            # manually map later
+            return True
         # we associate the _decl_registry with the metadata object
         # to make sure it's unique per metadata. A bit of a hack..
         if not hasattr(metadata, '_decl_registry'):
