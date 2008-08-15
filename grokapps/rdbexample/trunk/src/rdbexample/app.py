@@ -5,11 +5,8 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Integer, String
 from sqlalchemy.orm import relation
 
-from zope.app.publication.interfaces import IBeforeTraverseEvent
-from zope import component
-
 from z3c.saconfig import EngineFactory, GloballyScopedSession
-from z3c.saconfig.interfaces import IEngineFactory
+from z3c.saconfig.interfaces import IEngineFactory, IEngineCreatedEvent
 
 TEST_DSN = 'sqlite:///:memory:'
   
@@ -30,13 +27,9 @@ class RDBExample(grok.Application, grok.Model):
         session = rdb.Session()
         return session.query(Faculty).get(key)
 
-@grok.subscribe(RDBExample, IBeforeTraverseEvent)
-def setUpDatabase(obj, event):
-    # XXX
-    # hack: set up database if it hasn't been set up before 
-    engine_factory = component.getUtility(IEngineFactory)
-    engine = engine_factory()
-    metadata.create_all(engine)
+@grok.subscribe(IEngineCreatedEvent)
+def setUpDatabase(event):
+    rdb.setupDatabase(metadata)
 
 class FacultyList(grok.View):
     grok.name('index')
