@@ -1374,8 +1374,22 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
 
 
 class ExtensionMethodsTests(ZEOStorageBackendTests):
-    
-    def test_reload(self):
+
+    def saveConfig(self, storages):
+        # create a config file and save it
+        file_contents = """%%import gocept.zeoraid\n<zeo>\n\taddress 127.0.0.1:%s\n</zeo>\n\n<raidstorage main>\n""" % get_port()
+        for count, storage in enumerate(storages):
+            file_contents += """\t<zeoclient %s>\n\t\tserver %s:%s\n\t\tstorage 1\n\t</zeoclient>\n\n""" % (count, self._servers[count][0], (self._servers[count][1]-1))
+        file_contents += """</raidstorage>\n<eventlog>\n\t<logfile>\n\t\tpath STDOUT\n\t</logfile>\n</eventlog>"""
+        filename = tempfile.mktemp()
+        self._server_storage_files = [ ]
+        self._server_storage_files.append(filename)
+        f = open(filename, 'w')
+        f.write(file_contents)
+        f.close()
+        return filename
+
+    def test_reload_add(self):
         # create and start a new ZEO server
         port = get_port()
         zconf = forker.ZEOConfig(('', port))
@@ -1387,22 +1401,26 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                                         min_disconnect_poll=0.5, wait=1,
                                         wait_timeout=60))
 
-        # create a config file with this additional ZEO server and save it
-        file_contents = """%%import gocept.zeoraid\n<zeo>\n\taddress 127.0.0.1:%s\n</zeo>\n\n<raidstorage main>\n""" % get_port()
-        for count, storage in enumerate(self._storages):
-            file_contents += """\t<zeoclient %s>\n\t\tserver %s:%s\n\t\tstorage 1\n\t</zeoclient>\n\n""" % (count, self._servers[count][0], self._servers[count][1])
-        file_contents += """</raidstorage>\n<eventlog>\n\t<logfile>\n\t\tpath STDOUT\n\t</logfile>\n</eventlog>"""
-        filename = tempfile.mktemp()
-        self._server_storage_files = [ ]
-        self._server_storage_files.append(filename)
-        f = open(filename, 'w')
-        f.write(file_contents)
-        f.close()
+        filename = self.saveConfig(self._storages)
 
         # test if the new ZEO server is added as a storage
         self.assertEquals(len(self._storage.storages.items()), 5)
         self._storage.raid_reload(filename)
         self.assertEquals(len(self._storage.storages.items()), 6)
+
+        # do a simple store to see if anything breaks
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid)
+
+    def test_reload_remove(self):
+        # Remove the 4th storage
+        storages = [s for c,s in enumerate(self._storages) if c != 3]
+        filename = self.saveConfig(storages)
+
+        # test if the storage was removed (disabled, actually)
+        self.assertEquals(len(self._storage.storages_degraded), 0)
+        self._storage.raid_reload(filename)
+        self.assertEquals(len(self._storage.storages_degraded), 1)
 
         # do a simple store to see if anything breaks
         oid = self._storage.new_oid()
