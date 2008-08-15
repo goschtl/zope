@@ -250,7 +250,75 @@ for the classes defined in the module::
 
   >>> func_names = [x.dotted_name.split('.')[-1] for x in func_list]
   >>> sorted(func_names)
-  ['get_function_signature', ..., 'resolve']
+  ['get_attributes', ..., 'resolve']
+
+
+Classes
+=======
+
+`Class` objects are representations of Python classes.
+
+A ``Class`` representation can be created easily::
+
+  >>> from zope.introspector.code import Class
+  >>> klass = Class('zope.introspector.code.Class')
+  >>> klass
+  <zope.introspector.code.Class object at 0x...>
+
+It also provides the capabilities of a normal ``Code`` object::
+
+  >>> klass.dotted_name
+  'zope.introspector.code.Class'
+
+ClassInfos
+-----------
+
+The ``Class`` class is merely a wrapper around real classes, while
+``ClassInfo`` objects provide us with the interesting informations
+about a certain class.
+
+As in the whole module, XXXInfo classes are adapters, that adapt a
+certain code representation type to the ``IInfo`` interface.
+
+Thus, we create a ``ClassInfo`` object normally, by asking the
+component architechture for an appropriate adapter to ``IInfo``.
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> infos = list(component.getAdapters((klass,), IInfo))
+  >>> infos
+  [(u'class', <zope.introspector.code.ClassInfo object at 0x...>)]
+
+We examine the generated ``ClassInfo`` object further. We can ask
+for the base classes of the class. Note, that we will get
+representations of the base classes, not the classes themselves::
+
+  >>> info = infos[0][1]
+  >>> tuple(info.getBases())
+  (<zope.introspector.code.Class object at 0x...>,)
+
+The bases, however are ordered.
+
+We can get the interfaces implemented by the class::
+
+  >>> info.getInterfaces()
+  (<InterfaceClass grokcore.component.interfaces.IContext>,)
+
+Let's create an info object of a more interesting class::
+
+  >>> from zope.introspector.code import Class, ClassInfo
+  >>> info = ClassInfo(Class('zope.introspector.code.ClassInfo'))
+
+We can get the attributes of a class::
+
+  >>> info.getAttributes()
+  [('grokcore.component.directive.context', <class '...Class'>, None),
+   ...]
+
+We can get the methods of a class::
+
+  >>> info.getMethods()
+  [('getAttributes', <unbound method ..., None), ...]
 
 
 Files
