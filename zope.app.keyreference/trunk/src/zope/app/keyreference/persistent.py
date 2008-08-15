@@ -63,7 +63,9 @@ class KeyReferenceToPersistent(object):
         if self.key_type_id == other.key_type_id:
             # While it makes subclassing this class inconvenient,
             # comparing the object's type is faster than doing an
-            # isinstance check.
+            # isinstance check.  The intent of using type instead
+            # of isinstance is to avoid loading state just to
+            # determine if we're in conflict resolution.
             if type(self.object) is PersistentReference:
                 # We are doing conflict resolution.
                 assert isinstance(other.object, PersistentReference), (
