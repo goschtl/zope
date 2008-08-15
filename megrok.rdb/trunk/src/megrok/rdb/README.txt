@@ -98,8 +98,8 @@ we'll need to do it manually.
 
 First we grok this package's grokkers::
 
-  >>> from grok.testing import grok
-  >>> grok('megrok.rdb.meta')
+  >>> import grok.testing
+  >>> grok.testing.grok('megrok.rdb.meta')
 
 Now we can grok the components::
 
@@ -147,10 +147,17 @@ But again we'll just register it directly for the tests::
 
   >>> component.provideUtility(scoped_session, provides=IScopedSession)
 
-We now need to create the tables we defined in our database::
+Let's make sure that as soon as the engine is created, we create the
+appropriate metadata::
 
-  >>> engine = engine_factory()  
-  >>> metadata.create_all(engine)
+We now need to create the tables we defined in our database. We can do this
+only when the engine is first created, so we set up a handler for it::
+
+  >>> from z3c.saconfig.interfaces import IEngineCreatedEvent
+  >>> @component.adapter(IEngineCreatedEvent)
+  ... def engine_created(event):
+  ...    rdb.setupDatabase(metadata)
+  >>> component.provideHandler(engine_created)
 
 Now all that is out the way, we can use the ``rdb.Session`` object to make
 a connection to the database.
