@@ -32,8 +32,10 @@ except ImportError:
             return object
         return LocationProxy(object, parent, name)
     
-from zope.introspector.code import PackageInfo, FileInfo, ModuleInfo
+from zope.introspector.code import (PackageInfo, FileInfo, ModuleInfo,
+                                    ClassInfo, Function)
 from zope.introspector.interfaces import IDocString
+from zope.introspector.util import get_function_signature
 from zope.introspectorui.interfaces import IBreadcrumbProvider, ICodeView
 
 class Module(grok.View):
@@ -138,6 +140,77 @@ class Package(grok.View):
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
+
+class Class(grok.View):
+    grok.implements(ICodeView)
+    grok.context(ClassInfo)
+    grok.name('index')
+
+    def update(self):
+        self.docstring = self.getDocString(heading_only=False)
+        self.bases = self.getBases()
+        self.attributes = self.getAttributes()
+        self.methods = self.getMethods()
+
+    def getDocString(self, item=None, heading_only=True):
+        if item is None:
+            item = self.context.context
+        return IDocString(item).getDocString(heading_only=heading_only)
+
+    def _locate(self, obj):
+        from zope.introspector.code import Package
+        root = self.context.context
+        while not isinstance(root, Package) or isinstance(
+            root.__parent__, Package):
+            root = root.__parent__
+        top_pkg_name = obj.dotted_name.split('.')[0]
+        result = located(Package(top_pkg_name),
+                           root.__parent__,
+                           top_pkg_name)
+        for part in obj.dotted_name.split('.')[1:]:
+            result = located(result[part], result, part)
+        return result
+        
+
+    def getBases(self):
+        bases = list(self.context.getBases())
+        result = []
+        for base in bases:
+            url = None
+            try:
+                url = self.url(self._locate(base))
+            except AttributeError:
+                # martian.scan cannot handle builtins
+                continue
+            result.append(dict(name=base.dotted_name,
+                               url=url,
+                               doc=self.getDocString(item=base)))
+        return result
+        return (dict(name=x.dotted_name,
+                     url=self.url(self._locate(x)),
+                     doc=self.getDocString(item=x))
+                for x in bases)
+
+    def getAttributes(self):
+        return sorted([x[0] for x in self.context.getAttributes()])
+
+    def getMethods(self):
+        result = []
+        for name, obj, iface in self.context.getMethods():
+            dotted_name = self.context.context.dotted_name + '.' + name
+            item = Function(dotted_name)
+            signature = get_function_signature(obj)
+            if signature == '()':
+                signature = '(self)'
+            else:
+                signature = '(self, ' + signature[1:]
+            result.append(dict(name=name + signature,
+                               doc=self.getDocString(item=item)))
+        return sorted(result)
+
+    def getBreadcrumbs(self):
+        return IBreadcrumbProvider(self).getBreadcrumbs()
+
 
 class File(grok.View):
     grok.implements(ICodeView)
