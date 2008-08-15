@@ -47,7 +47,6 @@ Ordering, if respected, will be preserved.
     >>> run(x)
     set([1, 2, 3])
 
-
     >>> x = Union(list, [1, 2], [2, 3])
     >>> x
     Union(<type 'list'>, [1, 2], [2, 3])
@@ -85,7 +84,7 @@ Equal ( E1, E2 )
 The equal operations compare two collections of the same kind and return true
 if their elements are the same.
 Duplication and ordering, if respected, will be taken into account.
-
+not yet implemented in the system
 
 Unary Operations
 ----------------
@@ -110,12 +109,21 @@ pairwise to Faggregate which accumulates the results to give a single value.
     >>> run(x)
     20
 
+    >>> x = Reduce(set, 0, 'lambda y: y+1', 'operator.add', [1, 2, 3, 4, 5])
+    >>> x
+    Reduce(<type 'set'>, 0, lambda y: y+1, operator.add, [1, 2, 3, 4, 5])
+
+    >>> run(x)
+    20
+
 
 Map ( F, C)
 -----------
 The map operations apply the operand function F to each element in the operand
 collection C and form a collection containing the results. The resultant
 collection and operand collection are of the same collection kind.
+not yet implemented in the system
+
 
 Select ( F, C )
 ---------------
@@ -162,6 +170,7 @@ Index( C, E )
 -------------
 The index operation takes a list C and returns an element of the list at
 position E.
+not yet implemented in the system
 
 
 Simple Operations
@@ -227,7 +236,7 @@ And( E1, E2 )
 The and operation takes two boolean expressions and returns true if both of
 them evaluate to true. This is a non-commutative operation and the operands
 cannot be swapped.
-
+not yet implemented in the system
 
 Range ( E1, E2 )
 ----------------
@@ -249,3 +258,73 @@ second one.
 
     >>> run(x)
     [1, 2, 3]
+
+
+Iter ( F, C )
+-------------
+Iter function is a simple functions that can be applied to the elements of
+a collection. The semantics of iter is given by rules following
+(F - function, E - expression, C - collection. More details in document )
+    1 - iter ( F, empty ( nil ) ) = empty ( nil )
+    2 - iter ( F, single ( E ) ) = F E
+    3 - iter ( F, union ( C1, C2 ) ) = union ( iter ( F, C1 ), iter ( F, C2 ) )
+
+rule 1
+------
+	>>> from ocql.rewriter.algebra import Iter
+	>>> x = Iter(set, 'lambda z: z', Empty(set))
+	>>> x
+	Iter(<type 'set'>, lambda z: z, Empty(<type 'set'>))
+
+	>>> run(x)
+	set([])
+
+	>>> x = Iter(list, 'lambda z: z', Empty(list))
+	>>> x
+	Iter(<type 'list'>, lambda z: z, Empty(<type 'list'>))
+
+	>>> run(x)
+	[]
+
+rule 2
+------
+	>>> x = Iter(set, 'lambda z: z', Single(set, '"a"'))
+	>>> x
+	Iter(<type 'set'>, lambda z: z, Single(<type 'set'>, "a"))
+
+	>>> run(x)
+	set(['a'])
+
+rule 3
+------
+	>>> x = Iter(set, 'lambda z: z', Union(set, set(['a']), set(['b'])))
+	>>> x
+	Iter(<type 'set'>, lambda z: z, Union(<type 'set'>, set(['a']), set(['b'])))
+
+	>>> run(x)
+	set(['a', 'b'])
+
+	>>> x = Union(set, Iter(set, 'lambda z: z', Single(set, '"a"')), Iter(set, 'lambda z: z', Single(set, '"b"')))
+	>>> x
+	Union(<type 'set'>, Iter(<type 'set'>, lambda z: z, Single(<type 'set'>, "a")), Iter(<type 'set'>, lambda z: z, Single(<type 'set'>, "b")))
+
+	>>> run(x)
+	set(['a', 'b'])
+
+
+Constant ( E )
+--------------
+The constant operations take a value and return a constant.
+	>>> from ocql.rewriter.algebra import Constant
+    >>> x = Constant(1)
+    >>> x
+    `1`
+
+Identifier ( E )
+----------------
+The identifier operations take a value and return an identifier.
+	>>> from ocql.rewriter.algebra import Identifier
+    >>> x = Identifier('ocql')
+    >>> x
+    ocql
+   
