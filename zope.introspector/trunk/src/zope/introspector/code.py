@@ -22,11 +22,12 @@ from pkg_resources import DistributionNotFound
 from grokcore.component.interfaces import IContext
 from martian.scan import module_info_from_dotted_name
 from martian.util import isclass
-from zope.interface import implements
+from zope.interface import implements, implementedBy
 from zope.introspector.interfaces import IInfo, IDocString
 from zope.introspector.util import (resolve, get_package_items,
-                                    is_namespace_package,
-                                    get_function_signature)
+                                    is_namespace_package, get_attributes,
+                                    get_function_signature,
+                                    get_interface_for_attribute)
 import os
 
 class Code(object):
@@ -52,7 +53,7 @@ class Package(PackageOrModule):
         sub_module = None
         try:
             sub_module = module_info_from_dotted_name(
-                self._module_info.dotted_name + '.' + name)
+                self.dotted_name + '.' + name)
         except ImportError:
             # No module of that name found. The name might denote
             # something different like a file or be really trash.
@@ -205,7 +206,48 @@ class FileInfo(grok.Adapter):
 
 
 class Class(Code):
-    pass
+
+    def __init__(self, dotted_name):
+        super(Class, self).__init__(dotted_name)
+        self._klass = resolve(dotted_name)
+        # Setup interfaces that are implemented by this class.
+        self._interfaces = tuple(implementedBy(self._klass))
+        all_ifaces = {}
+        self._all_ifaces = tuple(implementedBy(self._klass).flattened())
+
+class ClassInfo(grok.Adapter):
+    grok.context(Class)
+    grok.provides(IInfo)
+    grok.name('class')
+
+    def _iterAllAttributes(self):
+        for name in get_attributes(self.context._klass):
+            iface = get_interface_for_attribute(
+                    name, self.context._all_ifaces, as_path=False)
+            yield name, getattr(self.context._klass, name), iface
+
+    def getBases(self):
+        return (Class('%s.%s' % (x.__module__, x.__name__))
+                for x in self.context._klass.__bases__)
+
+    def getInterfaces(self):
+        return self.context._interfaces
+
+    def getAttributes(self):
+        return [(name, obj, iface)
+                for name, obj, iface in self._iterAllAttributes()
+                if not (inspect.ismethod(obj)
+                        or inspect.ismethoddescriptor(obj))]
+
+    def getMethods(self):
+        return [(name, obj, iface)
+                for name, obj, iface in self._iterAllAttributes()
+                if inspect.ismethod(obj)]
+
+    def getMethodDescriptors(self):
+        return [(name, obj, iface)
+                for name, obj, iface in self._iterAllAttributes()
+                if inspect.ismethoddescriptor(obj)]
 
 
 class Function(Code):
