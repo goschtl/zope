@@ -61,8 +61,11 @@ class KeyReferenceToPersistent(object):
 
     def __cmp__(self, other):
         if self.key_type_id == other.key_type_id:
+            # While it makes subclassing this class inconvenient,
+            # comparing the object's type is faster than doing an
+            # isinstance check.
             if type(self.object) is PersistentReference:
-                # we are doing conflict resolution.
+                # We are doing conflict resolution.
                 assert isinstance(other.object, PersistentReference), (
                     'other object claims to be '
                     'zope.app.keyreference.persistent but, during conflict '
