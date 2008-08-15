@@ -60,7 +60,8 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     url = base_url %{'port': port}
     url += ('/@@/selenium/TestRunner.html'
             '?test=tests%%2FTestSuite.html&'
-            'resultsUrl=%s/@@/selenium_results' %url)
+            'baseUrl=%s&'
+            'resultsUrl=%s/@@/selenium_results' % (url,url,))
     time.sleep(1)
     while zope_thread.isAlive():
         try:
