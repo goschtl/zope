@@ -577,7 +577,6 @@ class RAIDStorage(object):
             self.openers[name] = opener
             self._open_storage(name)
             self.storages_degraded.append(name)
-            self.raid_recover(name)
             s += "added %s\n" % name
         return s
 
