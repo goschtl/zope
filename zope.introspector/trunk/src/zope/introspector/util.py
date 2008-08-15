@@ -16,6 +16,8 @@
 import types
 import inspect
 import pkg_resources
+from zope.interface import implementedBy
+from zope.security.proxy import isinstance, removeSecurityProxy
 from martian.scan import resolve as ext_resolve
 
 def resolve(obj_or_dotted_name):
@@ -122,3 +124,74 @@ def get_function_signature(func):
 
     sig += ', '.join(str_args)
     return sig + ')'
+
+def get_attributes(obj, public_only=True):
+    """Return a list of attribute names.
+
+    If `public_only` is set to `False` also attributes, whose names
+    start with an underscore ('_') are returned.
+
+    Taken from ``zope.app.apidoc`` with some modifications.
+    """
+    attrs = []
+    for attr in dir(obj):
+        if attr.startswith('_') and public_only is True:
+            continue
+        try:
+            getattr(obj, attr)
+        except:
+            continue
+        attrs.append(attr)
+    return sorted(attrs)
+
+_marker = object()
+
+def get_python_path(obj):
+    """Return the path of the object in standard Python notation.
+
+    This method should try very hard to return a string, even if it is not a
+    valid Python path.
+
+    Taken from ``zope.app.apidoc``.
+    """
+    if obj is None:
+        return None
+
+    # Even for methods `im_class` and `__module__` is not allowed to be
+    # accessed (which is probably not a bad idea). So, we remove the security
+    # proxies for this check.
+    naked = removeSecurityProxy(obj)
+    if hasattr(naked, "im_class"):
+        naked = naked.im_class
+    module = getattr(naked, '__module__', _marker)
+    if module is _marker:
+        return naked.__name__
+    return '%s.%s' %(module, naked.__name__)
+
+def get_interface_for_attribute(name, interfaces=_marker, klass=_marker,
+                                as_path=True):
+    """Determine the interface in which an attribute is defined.
+
+    Taken from ``zope.app.apidoc``.
+    """
+    if (interfaces is _marker) and (klass is _marker):
+        raise ValueError("need to specify interfaces or klass")
+    if (interfaces is not _marker) and (klass is not _marker):
+        raise ValueError("must specify only one of interfaces and klass")
+
+    if interfaces is _marker:
+        direct_interfaces = list(implementedBy(klass))
+        interfaces = {}
+        for interface in direct_interfaces:
+            interfaces[interface] = 1
+            for base in interface.getBases():
+                interfaces[base] = 1
+        interfaces = interfaces.keys()
+
+    for interface in interfaces:
+        if name in interface.names():
+            if as_path:
+                return get_python_path(interface)
+            return interface
+
+    return None
