@@ -155,3 +155,143 @@ Internal assignment is also not legal:
   SyntaxError: invalid syntax
 
 
+get_attributes(obj, public_only=True)
+======================================
+
+Return a list of attribute names.
+
+If `public_only` is set to `False` also attribute names that start
+with an underscore ('_') are returned::
+
+  >>> from zope.introspector.util import get_attributes
+  >>> from zope.introspector.code import Package
+  >>> get_attributes(Package)
+  ['getModuleInfo', 'getPath']
+
+  >>> get_attributes(Package, public_only=False)
+  ['__class__', '__delattr__', ..., 'getPath']
+
+
+get_python_path(obj)
+====================
+
+Return the path of the object in standard Python dot-notation.
+
+This function makes only sense for objects that provide a name, since we
+cannot determine the path otherwise. Instances, for example, do not have a
+`__name__` attribute, so we would expect them to fail.
+
+For interfaces we simply get::
+
+  >>> from zope.introspector.util import get_python_path
+  >>> from zope.introspector.interfaces import IInfo
+  >>> get_python_path(IInfo)
+  'zope.introspector.interfaces.IInfo'
+
+and for classes::
+
+  >>> from zope.introspector.code import PackageInfo
+  >>> get_python_path(PackageInfo)
+  'zope.introspector.code.PackageInfo'
+
+One can also pass functions::
+
+  >>> get_python_path(get_python_path)
+  'zope.introspector.util.get_python_path'
+
+and even methods. If a method is passed in, its class path is returned::
+
+  >>> get_python_path(PackageInfo.getPath)
+  'zope.introspector.code.PackageInfo'
+
+Modules are another kind of objects that can return a python path::
+
+  >>> from zope.introspector import util
+  >>> get_python_path(util)
+  'zope.introspector.util'
+
+Passing in `None` returns `None`::
+
+  >>> util.get_python_path(None)
+
+Clearly, instance lookups should fail::
+
+  >>> get_python_path(PackageInfo(None))
+  Traceback (most recent call last):
+  ...
+  AttributeError: 'PackageInfo' object has no attribute '__name__'
+
+
+get_interface_for_attribute(name, interfaces=_marker, klass=_marker, as_path=True)
+----------------------------------------------------------------------------------
+
+Determine the interface in which an attribute is defined. This
+function is nice, if you have an attribute name which you retrieved
+from a class and want to know which interface requires it to be there.
+
+Either the `interfaces` or `klass` argument must be specified. If
+`interfaces` is not specified, the `klass` is used to retrieve a list
+of interfaces. `interfaces` must be iterable.
+
+`as_path` specifies whether the dotted name of the interface or the
+interface object is returned.
+
+First, we need to create some interfaces and a class that implements
+them::
+
+  >>> from zope.interface import Interface, Attribute, implements
+  >>> class I1(Interface):
+  ...     attr = Attribute('attr')
+
+  >>> class I2(I1):
+  ...     def getAttr():
+  ...         '''get attr'''
+
+  >>> class Sample(object):
+  ...     implements(I2)
+
+First we check whether an aatribute can be found in a list of
+interfaces::
+
+  >>> from zope.introspector.util import get_interface_for_attribute
+  >>> get_interface_for_attribute('attr', (I1, I2), as_path=False)
+  <InterfaceClass __builtin__.I1>
+  >>> get_interface_for_attribute('getAttr', (I1, I2), as_path=False)
+  <InterfaceClass __builtin__.I2>
+
+Now we are repeating the same lookup, but using the class, instead of
+a list of interfaces::
+
+  >>> get_interface_for_attribute('attr', klass=Sample, as_path=False)
+  <InterfaceClass __builtin__.I1>
+  >>> get_interface_for_attribute('getAttr', klass=Sample, as_path=False)
+  <InterfaceClass __builtin__.I2>
+
+By default, `as_path` is `True`, which means the path of the interface
+is returned::
+
+  >>> get_interface_for_attribute('attr', (I1, I2))
+  '__builtin__.I1'
+
+If no match is found, ``None`` is returned::
+
+  >>> get_interface_for_attribute('attr2', (I1, I2)) is None
+  True
+  >>> get_interface_for_attribute('attr2', klass=Sample) is None
+  True
+
+If both, the `interfaces` and `klass` argument are missing, raise an
+error::
+
+  >>> get_interface_for_attribute('getAttr')
+  Traceback (most recent call last):
+  ...
+  ValueError: need to specify interfaces or klass
+
+Similarly, it does not make sense if both are specified::
+
+  >>> get_interface_for_attribute('getAttr', interfaces=(I1,I2),
+  ...                                    klass=Sample)
+  Traceback (most recent call last):
+  ...
+  ValueError: must specify only one of interfaces and klass
