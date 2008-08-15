@@ -1,0 +1,176 @@
+Grok-by-Example: Guestbook
+==========================
+
+:Author: d2m (michael at d2m.at)
+
+A basic 'Grok Guestbook' application [source__] ported from the 
+Google Appengine [GAE] demo application [source__].
+
+__ http://svn.zope.org/grokapps/gbeguestbook/src/gbeguestbook/app.py?view=markup
+__ http://code.google.com/p/googleappengine/source/browse/trunk/demos/guestbook/guestbook.py
+
+Overview
+========
+
+The application presents you a list of 10 guestbook entries both by 
+authenticated and anonymous users, reverse sorted by date of creation
+and a form to submit new entries to the guestbook. Response text 
+formatting is done using python string templates only.
+
+Review
+======
+
+Let's now compare how the code is layed out for both frameworks:
+
+Application object
+------------------
+
+Both frameworks use the 'Application' concept.
+Grok subclasses from both grok.Application and grok.Container::
+  
+    class Application(grok.Application, grok.Container):
+        pass
+
+GAE uses the webapp.WSGIApplication and already configures the URL dispatching::
+
+    application = webapp.WSGIApplication([
+                        ('/', MainPage),
+                        ('/sign', Guestbook)
+                        ], debug=True)
+
+Request
+-------
+
+The application accepts 2 possible requests: 
+the default view and the action to post the form contents to
+
+Grok: 'index' and 'sign' are 2 grok.Views defined on the application object 
+using 'grok.name'. Both views are bound to the Application object using 
+'grok.context'::
+
+    class MainPage(grok.View):
+        grok.context(Application)
+        grok.name('index')
+        ...
+
+GAE: '/' and '/sign' are bound to webapp.RequestHandlers in
+'webapp.WSGIApplication'::
+
+    class MainPage(webapp.RequestHandler):
+        def get(self):
+            ...
+
+Request methods
+---------------
+
+Grok has a 'grok.REST' class that supports HTTP method dispatching, but 
+it is not used in the example::
+
+    class Guestbook(grok.View):
+        ...
+        def render(self):
+            if self.request.method.upper() != 'POST':
+                return self.redirect(self.application_url())
+            ...
+
+GAE webapp.RequestHandler classes understand HTTP methods and dispatch
+accordingly::
+
+    class Guestbook(webapp.RequestHandler):
+        def post(self):
+            ...
+
+Response 
+--------
+
+Grok output is collected and returned from the view 'render' method::
+
+    def render(self):
+        out=['<html><body>']    
+        ...
+        return ''.join(out)
+
+GAE output is written directly to the response.out stream::
+
+    self.response.out.write('<html><body>')
+
+Models
+------
+
+Grok content objects are subclassed from grok.Model. Properties are
+defined in an Interface class which the object implements.
+
+GAE uses the db.Model class to define content objects.
+Typed properties are defined inside the class definition.
+
+Persistency
+-----------
+
+Grok content objects are instantiated, modified and finally inserted into 
+a container (which here is the application object itself). A local-unique name
+must be provided on insertion. Existing objects must be deleted and reinserted.
+Properties are not validated by default.
+
+GAE content objects are instantiated, modified and finally inserted into 
+the datastore. A unique key is automatically created on insertion. Existing 
+objects (entities) are updated on insert. Properties are automatically 
+validated on insertion.
+
+Searching
+---------
+
+Grok uses python to locate objects and create a result listing::
+
+    greetings=[(x.date, x) for x in self.context.values()]
+    greetings=list(reversed(sorted(greetings)))
+    for date,greeting in greetings[:10]:
+        ...
+
+GAE uses the built-in GQL query language the search the datastore with a SQL
+like language::
+
+    greetings = db.GqlQuery("SELECT * "
+                            "FROM Greeting "
+                            "ORDER BY date DESC LIMIT 10")
+    for greeting in greetings:
+        ...
+
+User
+----
+
+Grok has no fixed 'user' API, user management depends on loaded authentication
+plugins::
+
+    greeting.author = self.request.principal
+    ...
+    if IUnauthenticatedPrincipal.providedBy(greeting.author):
+        ...	
+
+GAE has a 'users' API::
+
+    if users.get_current_user():
+        greeting.author = users.get_current_user()
+    ...
+    if greeting.author:
+        ...
+
+Execution
+---------
+
+Grok is a long-running process. Requests are processed, the object graph is 
+traversed to a final context object and the result of calling the view on 
+the context object is returned.
+
+GAE is built into a CGI-like execution model, thus calling the modules __main__
+function on each request::
+
+    def main():
+        wsgiref.handlers.CGIHandler().run(application)
+
+Overall
+-------
+
+The number of lines of code is about the same. For this small example GAE is 
+simpler with respect to the number of APIs and concepts used and richer
+with respect to debugging and datasecurity.
+
