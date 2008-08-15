@@ -30,9 +30,9 @@
 	  <a href="" 
 	     tal:attributes="href item/url"
 	     tal:content="structure item/name">Class</a>
+	  <div tal:content="structure item/doc">description</div>
 	</li>
       </ul>
     </div>
 
   </div>
-
