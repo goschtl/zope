@@ -135,5 +135,75 @@ The OCQL language itself is quite rich, so providing all samples would fill a
 book itself.
 
 Here goes the dry syntax:
+expression 	::= expression "union" expression
+			| expression “differ” expression
+			| collection “[“ qualifier "|" expression “]” 
+			| collection “[“ qualifier "for" expression “]”
+			| literal
+			| path
+			| call
+			| “len” “(” expression “)”
+
+collection 	::= set
+	        | list
+			| bag
+
+qualifier 	::= Λ
+			| generator
+			| definition
+			| filter
+			| qualifier “;” qualifier
+                             
+generator 	::= identifier “in” expression
+
+filter 		::= filter "and" filter
+			| filter "or" filter
+			| "not" condition
+			| condition    
+
+condition 	::= "(" filter ")"
+			| quantified operator quantified
+			| ”isinstance” “(“ expression “,” identifier ”)”
+
+quantified 	::= expression
+			| quantification expression
+
+operator 	::= “=”
+			| “~=”
+			| “<”
+			| “<=”
+			| “>”
+			| “>=”
+			| “==”
+			| “~==”
+
+quantification ::= “some”
+			| “every”
+			| “just” expression
+			| “atleast” expression
+			| “atmost” expression
+
+definition 	::= identifier “as” expression
+
+literal 	::= constant
+			| collection "{" element "}"
+
+element 	::= Λ
+			| expression
+			| element "," element
+			| expression "..." expression
+
+path 		::= identifier
+			|identifier “.” method
+
+method 		::= identifier
+			|identifier “(“ argument_list “)”
+
+argument_list ::= Λ
+			|expression
+			|expression “,” argument_list
+
+call 		::= identifier “(“ argument_list “)”
+
 
 #TODO!
