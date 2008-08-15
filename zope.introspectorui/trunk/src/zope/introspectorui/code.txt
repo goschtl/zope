@@ -119,26 +119,25 @@ of a contained item::
   [{'url': 'http://127.0.0.1/zope/introspector/code/Class', 
     'doc': u'', 
     'name': 'Class'},
-   {'url': 'http://127.0.0.1/zope/introspector/code/Code', 
+   {'url': 'http://127.0.0.1/zope/introspector/code/ClassInfo', 
     'doc': u'',
-    'name': 'Code'},  
+    'name': 'ClassInfo'},  
   ...
 
 The ``util`` module provides some functions for which we also get the
 name, the URL and the docstring::
 
-
   >>> pprint(view_util.getFunctionURLs())
-  [{'doc': 'Get an object denoted by a dotted name.',
-    'name': 'resolve',
-    'url': 'http://127.0.0.1/zope/introspector/util/resolve'},
+  [{'doc': 'Determine the interface in which an attribute is defined.',
+    'name': 'get_interface_for_attribute',
+    'url': 'http://127.0.0.1/zope/.../util/get_interface_for_attribute'},
   ...]
-
 
 We can also get a list of dicts that provide the function signatures::
 
   >>> view_util.getFunctions()
-  [{'doc': 'Return the signature of a function or method.',
+  [...
+   {'doc': 'Return the signature of a function or method.',
     'fullname': 'get_function_signature(func)',
     'name': 'get_function_signature',
     'signature': '(func)'},
@@ -167,6 +166,55 @@ docstring is presented, if it exists::
   ...<li>
   ...
 
+Classes
+=======
+
+We can display class information. For this we have to get the infos
+related to a dotted name, which represents a class::
+
+  >>> from zope.introspector.code import Class, ClassInfo
+  >>> klass = located(Class('zope.introspector.code.ClassInfo'), 
+  ...                 mod_code, u'ClassInfo')
+
+The class must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(klass, IInfo, name='class')
+  >>> info
+  <zope.introspector.code.ClassInfo object at 0x...>
+
+Finally we can create a view on the class::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+
+Views on `ClassInfo` objects provide information about the bases of
+the class. Because they are returned as generators we build the list::
+
+  >>> list(view.getBases())
+  [{'url': 'http://127.0.0.1/grokcore/component/components/Adapter', 
+    'doc': u'', 
+    'name': 'grokcore.component.components.Adapter'}]
+
+We can view the attributes of a class::
+
+  >>> view.getAttributes()
+  ['grokcore.component.directive.context', 
+   'grokcore.component.directive.name', 
+   'grokcore.component.directive.provides']
+
+We can view the methods of a class::
+
+  >>> view.getMethods()
+  [{'doc': u'', 'name': 'getAttributes(self)'},
+   ...]
+
+Of course we can render the view::
+
+  >>> print view()
+  <div>
+    <h2>Class: <a href="...">zope</a>.<a href="...">ClassInfo</a></h2>    
+  ...
+  
 
 Files
 =====
