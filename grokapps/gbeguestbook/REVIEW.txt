@@ -109,12 +109,17 @@ Persistency
 Grok content objects are instantiated, modified and finally inserted into 
 a container (which here is the application object itself). A local-unique name
 must be provided on insertion. Existing objects must be deleted and reinserted.
-Properties are not validated by default.
+Properties are not validated by default::
+
+    id=str(uuid.uuid4())
+    self.context[id]=greeting
 
 GAE content objects are instantiated, modified and finally inserted into 
 the datastore. A unique key is automatically created on insertion. Existing 
 objects (entities) are updated on insert. Properties are automatically 
-validated on insertion.
+validated on insertion::
+
+    greeting.put()
 
 Searching
 ---------
