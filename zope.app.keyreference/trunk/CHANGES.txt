@@ -5,8 +5,8 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
-- Performance related change to
-  `zope.app.keyreference.persistent.KeyReferenceToPersistent.__cmp__`.
+- Performance related change to the conflict resolution code in
+  ``zope.app.keyreference.persistent.KeyReferenceToPersistent.__cmp__``.
 
 - Added support for new `ZODB.ConflictResolution.PersistentReference` behavior
   to persistent key references so that they can now, in many cases, allow
