@@ -136,25 +136,25 @@ book itself.
 
 Here goes the dry syntax:
 expression 	::= expression "union" expression
-			| expression “differ” expression
-			| collection “[“ qualifier "|" expression “]” 
-			| collection “[“ qualifier "for" expression “]”
+			| expression "differ" expression
+			| collection "[" qualifier "|" expression "]" 
+			| collection "[" qualifier "for" expression "]"
 			| literal
 			| path
 			| call
-			| “len” “(” expression “)”
+			| "len" "(" expression ")"
 
 collection 	::= set
 	        | list
 			| bag
 
-qualifier 	::= Λ
+qualifier 	::= ""
 			| generator
 			| definition
 			| filter
-			| qualifier “;” qualifier
+			| qualifier ";" qualifier
                              
-generator 	::= identifier “in” expression
+generator 	::= identifier "in" expression
 
 filter 		::= filter "and" filter
 			| filter "or" filter
@@ -163,47 +163,47 @@ filter 		::= filter "and" filter
 
 condition 	::= "(" filter ")"
 			| quantified operator quantified
-			| ”isinstance” “(“ expression “,” identifier ”)”
+			| "isinstance" "(" expression "," identifier ")"
 
 quantified 	::= expression
 			| quantification expression
 
-operator 	::= “=”
-			| “~=”
-			| “<”
-			| “<=”
-			| “>”
-			| “>=”
-			| “==”
-			| “~==”
+operator 	::= "="
+			| "~="
+			| "<"
+			| "<="
+			| ">"
+			| ">="
+			| "=="
+			| "~=="
 
-quantification ::= “some”
-			| “every”
-			| “just” expression
-			| “atleast” expression
-			| “atmost” expression
+quantification ::= "some"
+			| "every"
+			| "just" expression
+			| "atleast" expression
+			| "atmost" expression
 
-definition 	::= identifier “as” expression
+definition 	::= identifier "as" expression
 
 literal 	::= constant
 			| collection "{" element "}"
 
-element 	::= Λ
+element 	::= ""
 			| expression
 			| element "," element
 			| expression "..." expression
 
 path 		::= identifier
-			|identifier “.” method
+			|identifier "." method
 
 method 		::= identifier
-			|identifier “(“ argument_list “)”
+			|identifier "(" argument_list ")"
 
-argument_list ::= Λ
+argument_list ::= ""
 			|expression
-			|expression “,” argument_list
+			|expression "," argument_list
 
-call 		::= identifier “(“ argument_list “)”
+call 		::= identifier "(" argument_list ")"
 
 
 #TODO!
