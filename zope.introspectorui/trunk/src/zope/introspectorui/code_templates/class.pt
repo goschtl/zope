@@ -1,0 +1,43 @@
+  <div>
+    <h2>Class: <span tal:replace="structure view/getBreadcrumbs" /></h2>
+
+    <p tal:content="structure view/docstring">The class description</p>
+
+    <div>
+      Base classes:
+      <span tal:condition="not: view/bases">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/bases">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">BaseClass</a>
+	</li>
+      </ul>
+    </div>
+
+    <div>
+      Attributes:
+      <span tal:condition="not: view/attributes">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/attributes"
+	    tal:content="item">item</li>
+      </ul>
+    </div>
+
+    <div>
+      Methods:
+      <span tal:condition="not: view/methods">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/methods">
+	  <div tal:content="item/name">meth(arg1, arg2)</div>
+	  <div tal:content="structure item/doc">description</div>
+	</li>
+      </ul>
+    </div>
+  </div>
