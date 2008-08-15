@@ -93,8 +93,10 @@ def search_function(encoding):
     # Return the registry entry
     return entry
 
-
+import sys
 import encodings
+if sys.version_info[:2] == (2,3):
+    encodings._aliases = encodings.aliases.aliases
 encodings.search_function.func_code = search_function.func_code
 
 
