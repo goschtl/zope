@@ -10,7 +10,7 @@ __ http://svn.zope.org/grokapps/gbeguestbook/src/gbeguestbook/app.py?view=markup
 __ http://code.google.com/p/googleappengine/source/browse/trunk/demos/guestbook/guestbook.py
 
 Overview
-========
+~~~~~~~~
 
 The application presents you a list of 10 guestbook entries both by 
 authenticated and anonymous users, reverse sorted by date of creation
@@ -18,9 +18,9 @@ and a form to submit new entries to the guestbook. Response text
 formatting is done using python string templates only.
 
 Review
-======
+~~~~~~
 
-Let's now compare how the code is layed out for both frameworks:
+Let's now compare how the code is laid out for both frameworks:
 
 Application object
 ------------------
@@ -98,10 +98,20 @@ Models
 ------
 
 Grok content objects are subclassed from grok.Model. Properties are
-defined in an Interface class which the object implements.
+defined in an Interface class which the object implements::
 
+    class IGreeting(Interface):
+        author = schema.Field(title=u'Author')
+        ...
+
+    class Greeting(grok.Model):
+        grok.implements(IGreeting)
+    
 GAE uses the db.Model class to define content objects.
-Typed properties are defined inside the class definition.
+Typed properties are defined inside the class definition::
+
+    class Greeting(db.Model):
+      author = db.UserProperty()
 
 Persistency
 -----------
