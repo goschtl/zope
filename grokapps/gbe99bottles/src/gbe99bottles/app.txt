@@ -5,20 +5,20 @@ Do a functional doctest test on the app.
 
 Let's first create an instance of the Wall at the top level:
 
-   >>> from gbe99bottles.app import Wall
+   >>> from gbe99bottles.app import Song
    >>> root = getRootFolder()
-   >>> root['wall'] = Wall()
+   >>> root['song'] = Song()
 
 Creating the wall implicitely puts 99 beers on it.
 
-   >>> root['wall'].contents()
+   >>> root['song']['wall'].contents()
    99
 
 Create a Browser and visit the instance you just created:
 
    >>> from zope.testbrowser.testing import Browser
    >>> browser = Browser()
-   >>> browser.open('http://localhost/wall')
+   >>> browser.open('http://localhost/song')
 
 Sing the '99 Bottles of Beer' Song (original lyrics at
 http://99-bottles-of-beer.net/lyrics.html):
@@ -38,6 +38,6 @@ http://99-bottles-of-beer.net/lyrics.html):
 
 Again check the number of beers on the wall.
 
-   >>> root['wall'].contents()
+   >>> root['song']['wall'].contents()
    99
    
