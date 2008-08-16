@@ -1,0 +1,126 @@
+Grok-by-Example: 99 Bottles Song
+================================
+
+:Author: d2m (michael at d2m.at)
+
+A basic Grok 'Hello world' application [source__], cf implementations in other
+languages at the '99 Bootles of Beer' website, eg. the Python version [source__].
+
+__ http://svn.zope.org/grokapps/gbe99bottles/src/gbe99bottles/app.py?view=markup
+__ http://99-bottles-of-beer.net/language-python-808.html
+
+
+Overview
+========
+
+The '99 Bottles of Beer' website holds a collection of the Song 99 Bottles of 
+Beer programmed in different programming languages. Actually the song is 
+represented in more than 1200 different programming languages and variations.
+
+The Grok implementation uses persistent 'Wall' and 'Bottle' objects. It follows
+the song lyrics by putting bottles on the wall, taking them off again and - at
+each step - reporting the state of the scenery.
+
+Review
+~~~~~~
+
+This example might look like a stupid exercise to you, but it shows a few fine 
+features of the Grok framework:
+
+Application initialization
+--------------------------
+
+When we create the 'Song' Application object, we want to set it to an initial 
+state, like creating a Wall, a number of Bootles and add them to the Wall.
+
+Grok also is an event driven framework. Events can be sent and subscribed to.
+When the Application object is created it is added to the object graph an 
+'ObjectAddedEvent' is sent by the framework. We can now simply *subscribe* to
+that event (or the Interface that describes the event type) and initialize our
+application objects by adding a container and filling it with objects::
+
+    @grok.subscribe(Song, grok.IObjectAddedEvent)
+    def handle(obj, event):
+        obj['wall']=wall=Wall()
+        wall.add_99_bottles()
+
+More on events can be found at the `Grok website`__.
+
+__ http://grok.zope.org/doc/current/grok_overview.html#events
+
+Request
+-------
+
+The application accepts only one request: the default view.
+
+Grok uses 'index' for its default view name (lowercase of the class name). 
+This view class is bound to the 'Song' application object::
+
+    class Index(grok.View):
+        grok.context(Song)
+
+Response
+--------
+
+The view classes are created and called for each Request. The 'update' and 
+'render' methods are essential parts of rendering a Response from a view class.
+
+'update' - if existing - is always called first. It allows us to collect request
+parameters and bind them to properties or - in the example - create a shortcut 
+to the Wall object::
+
+    def update(self):
+        self.wall=self.context['wall']
+
+'render' is called last, its output is returned to the user.
+
+Models
+------
+
+Grok content objects are subclassed from grok.Model or grok.Container. 
+
+    class Bottle(grok.Model):
+        pass
+    
+    class Wall(grok.Container):
+        ...
+
+The application object itself is subclassed from grok.Application and 
+grok.Container.
+
+    class Song(grok.Application,grok.Container):
+        pass
+
+Persistent Storage
+------------------
+
+When a Response is created by the view class Bottle objects are removed from and
+added to the Wall container by calling methods of the Wall instance object::
+
+    def remove_a_bottle(self):
+        bottles=list(self.keys())
+        del self[bottles[-1]]
+
+    def add_99_bottles(self):
+        for n in range(1,100):
+            self[str(n)]=Bottle()
+
+Searching
+---------
+
+The objects can simply be queried using python::
+
+    def contents(self):
+        return len(self.items())
+
+Testing
+-------
+
+A functional doctest ('app.txt') is added to ensure correct operations.
+
+Overall
+-------
+
+It was fun and easy to implement the '99 Bottles' Song using persistent objects.
+Functional testing made development even simpler.
+

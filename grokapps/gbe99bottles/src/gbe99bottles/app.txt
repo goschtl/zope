@@ -1,0 +1,43 @@
+Do a functional doctest test on the app.
+========================================
+
+:Test-Layer: functional
+
+Let's first create an instance of the Wall at the top level:
+
+   >>> from gbe99bottles.app import Wall
+   >>> root = getRootFolder()
+   >>> root['wall'] = Wall()
+
+Creating the wall implicitely puts 99 beers on it.
+
+   >>> root['wall'].contents()
+   99
+
+Create a Browser and visit the instance you just created:
+
+   >>> from zope.testbrowser.testing import Browser
+   >>> browser = Browser()
+   >>> browser.open('http://localhost/wall')
+
+Sing the '99 Bottles of Beer' Song (original lyrics at
+http://99-bottles-of-beer.net/lyrics.html):
+
+   >>> print browser.contents
+   99 bottles of beer on the wall, 99 bottles of beer.
+   Take one down and pass it around, 98 bottles of beer on the wall.
+   ...
+   2 bottles of beer on the wall, 2 bottles of beer.
+   Take one down and pass it around, 1 bottle of beer on the wall.
+   <BLANKLINE>
+   1 bottle of beer on the wall, 1 bottle of beer.
+   Take one down and pass it around, no more bottles of beer on the wall.
+   <BLANKLINE>
+   No more bottles of beer on the wall, no more bottles of beer.
+   Go to the store and buy some more, 99 bottles of beer on the wall.
+
+Again check the number of beers on the wall.
+
+   >>> root['wall'].contents()
+   99
+   
