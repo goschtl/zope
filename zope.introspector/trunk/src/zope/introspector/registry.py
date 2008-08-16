@@ -99,11 +99,14 @@ class RegistryInfoUtility(grok.GlobalUtility):
         if 'subscriptionAdapters' in types:
             searchInterfaces.extend(self.getAllSubscriptionAdapters())
         
-        #Search using adapters
-        for eachRegistration in searchInterfaces:
-            if IRegistrySearch(eachRegistration).searchRegistration(
-                searchString):
-                interfaces.append(eachRegistration)                    
+        if searchString == '*':
+            interfaces = searchInterfaces
+        else:
+            #Search using adapters
+            for eachRegistration in searchInterfaces:
+                if IRegistrySearch(eachRegistration).searchRegistration(
+                    searchString):
+                    interfaces.append(eachRegistration)                    
         return interfaces
     
     def getAllInterfaces(self):
