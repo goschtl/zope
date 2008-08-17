@@ -60,222 +60,222 @@ class testZope(unittest.TestCase):
 
     def test_gsoc(self):
         metadata = IDB(None)
-        symbols = SymbolContainer()
-
-        #
-        # Simple empty query
-        #
-        # set [ ]
-        #
-        query = "set [ ]"
-        qo=Head(Query(metadata, symbols,
-                 set,
-                 [] ,
-                 Identifier(metadata, symbols,
-                            '') ))
-
-        self.doit(query, qo, set([]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Simple empty query
-        #
-        # list [ ]
-        #
-        query = "list [ ]"
-        qo=Head(Query(metadata, symbols,
-                 list,
-                 [] ,
-                 Identifier(metadata, symbols,
-                            '') ))
-
-        self.doit(query, qo, [])
-
-
-        symbols = SymbolContainer()
-        #
-        # Simple SELECT ALL
-        #
-        # set [ c in IStudent | c ]
-        #
-        query = "[c in IStudent | c]"
-        qo = Head(Query(
-                metadata, symbols,
-                set,
-                [
-                    In(
-                       metadata, symbols,
-                       Identifier(metadata,symbols,'c'),
-                       Identifier(metadata,symbols,'IStudent'))
-                ], Identifier(metadata,symbols,'c')))
-
-        self.doit(query, qo, set(metadata.getAll('IStudent')))
-
-
-        symbols = SymbolContainer()
-        #
-        # Selecting a property
-        #
-        # set [ c in IStudent | c.name ]
-        #
-        query = "[c in IStudent | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata, symbols,'c'),
-                           Identifier(metadata, symbols, 'IStudent'))
-                    ],Identifier(metadata, symbols, 'c.name')))
-        self.doit(query, qo, set(["Charith", "Jane", "Ann"]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result
-        #
-        # set [ c in IProject , c.description="test" | c.name]
-        #
-        query = "[c in IProject , c.description=test | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IProject')),
-                        Eq(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.description'),
-                           Identifier(metadata, symbols, '"test"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set(["Save the world"]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result using optimization
-        #
-        # set [ c in IStudent , c.country="USA" | c.name]
-        #
-        query = "[c in IStudent , c.country=USA | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IStudent')),
-                        Eq(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.country'),
-                           Identifier(metadata, symbols, '"USA"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country','==', 'USA')[0].name]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result using optimization
-        #
-        # set [ c in IStudent , c.country!="USA" | c.name]
-        #
-        query = "[c in IStudent , c.country != USA | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IStudent')),
-                        Ne(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.country'),
-                           Identifier(metadata, symbols, '"USA"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','!=', 'USA')]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result using optimization
-        #
-        # set [ c in IStudent , c.country <= "Sri Lanka" | c.name]
-        #
-        query = "[c in IStudent , c.country <= 'Sri Lanka' | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IStudent')),
-                        Le(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.country'),
-                           Identifier(metadata, symbols, '"Sri Lanka"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<=', 'Sri Lanka')]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result using optimization
-        #
-        # set [ c in IStudent , c.country >= "Sri Lanka" | c.name]
-        #
-        query = "[c in IStudent , c.country >= 'Sri Lanka' | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IStudent')),
-                        Ge(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.country'),
-                           Identifier(metadata, symbols, '"Sri Lanka"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','>=', 'Sri Lanka')]))
-
-
-        symbols = SymbolContainer()
-        #
-        # Filtering --one result using optimization
-        #
-        # set [ c in IStudent , c.country < "Sri Lanka" | c.name]
-        #
-        query = "[c in IStudent , c.country < 'Sri Lanka' | c.name]"
-        qo = Head(Query(
-                   metadata, symbols,
-                   set,
-                   [
-                        In(
-                           metadata, symbols,
-                           Identifier(metadata,symbols,'c'),
-                           Identifier(metadata,symbols, 'IStudent')),
-                        Lt(
-                           metadata,symbols,
-                           Identifier(metadata, symbols, 'c.country'),
-                           Identifier(metadata, symbols, '"Sri Lanka"'))
-                   ], Identifier(metadata, symbols, 'c.name')))
-
-        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<', 'Sri Lanka')]))
-
-
+#        symbols = SymbolContainer()
+#
+#        #
+#        # Simple empty query
+#        #
+#        # set [ ]
+#        #
+#        query = "set [ ]"
+#        qo=Head(Query(metadata, symbols,
+#                 set,
+#                 [] ,
+#                 Identifier(metadata, symbols,
+#                            '') ))
+#
+#        self.doit(query, qo, set([]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Simple empty query
+#        #
+#        # list [ ]
+#        #
+#        query = "list [ ]"
+#        qo=Head(Query(metadata, symbols,
+#                 list,
+#                 [] ,
+#                 Identifier(metadata, symbols,
+#                            '') ))
+#
+#        self.doit(query, qo, [])
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Simple SELECT ALL
+#        #
+#        # set [ c in IStudent | c ]
+#        #
+#        query = "[c in IStudent | c]"
+#        qo = Head(Query(
+#                metadata, symbols,
+#                set,
+#                [
+#                    In(
+#                       metadata, symbols,
+#                       Identifier(metadata,symbols,'c'),
+#                       Identifier(metadata,symbols,'IStudent'))
+#                ], Identifier(metadata,symbols,'c')))
+#
+#        self.doit(query, qo, set(metadata.getAll('IStudent')))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Selecting a property
+#        #
+#        # set [ c in IStudent | c.name ]
+#        #
+#        query = "[c in IStudent | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata, symbols,'c'),
+#                           Identifier(metadata, symbols, 'IStudent'))
+#                    ],Identifier(metadata, symbols, 'c.name')))
+#        self.doit(query, qo, set(["Charith", "Jane", "Ann", "Stewart"]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result
+#        #
+#        # set [ c in IProject , c.description="test" | c.name]
+#        #
+#        query = "[c in IProject , c.description=test | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IProject')),
+#                        Eq(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.description'),
+#                           Identifier(metadata, symbols, '"test"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set(["Save the world"]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result using optimization
+#        #
+#        # set [ c in IStudent , c.country="USA" | c.name]
+#        #
+#        query = "[c in IStudent , c.country=USA | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IStudent')),
+#                        Eq(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.country'),
+#                           Identifier(metadata, symbols, '"USA"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set([metadata.getFromIndex('IStudent', 'country','==', 'USA')[0].name]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result using optimization
+#        #
+#        # set [ c in IStudent , c.country!="USA" | c.name]
+#        #
+#        query = "[c in IStudent , c.country != USA | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IStudent')),
+#                        Ne(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.country'),
+#                           Identifier(metadata, symbols, '"USA"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','!=', 'USA')]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result using optimization
+#        #
+#        # set [ c in IStudent , c.country <= "Sri Lanka" | c.name]
+#        #
+#        query = "[c in IStudent , c.country <= 'Sri Lanka' | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IStudent')),
+#                        Le(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.country'),
+#                           Identifier(metadata, symbols, '"Sri Lanka"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<=', 'Sri Lanka')]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result using optimization
+#        #
+#        # set [ c in IStudent , c.country >= "Sri Lanka" | c.name]
+#        #
+#        query = "[c in IStudent , c.country >= 'Sri Lanka' | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IStudent')),
+#                        Ge(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.country'),
+#                           Identifier(metadata, symbols, '"Sri Lanka"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','>=', 'Sri Lanka')]))
+#
+#
+#        symbols = SymbolContainer()
+#        #
+#        # Filtering --one result using optimization
+#        #
+#        # set [ c in IStudent , c.country < "Sri Lanka" | c.name]
+#        #
+#        query = "[c in IStudent , c.country < 'Sri Lanka' | c.name]"
+#        qo = Head(Query(
+#                   metadata, symbols,
+#                   set,
+#                   [
+#                        In(
+#                           metadata, symbols,
+#                           Identifier(metadata,symbols,'c'),
+#                           Identifier(metadata,symbols, 'IStudent')),
+#                        Lt(
+#                           metadata,symbols,
+#                           Identifier(metadata, symbols, 'c.country'),
+#                           Identifier(metadata, symbols, '"Sri Lanka"'))
+#                   ], Identifier(metadata, symbols, 'c.name')))
+#
+#        self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','<', 'Sri Lanka')]))
+#
+#
         symbols = SymbolContainer()
         #
         # Filtering --one result using optimization
@@ -298,6 +298,59 @@ class testZope(unittest.TestCase):
                    ], Identifier(metadata, symbols, 'c.name')))
 
         self.doit(query, qo, set([i.name for i in metadata.getFromIndex('IStudent', 'country','>', 'Sri Lanka')]))
+
+
+        symbols = SymbolContainer()
+        #
+        #
+        # join -- Mentor who is mentoring Hungary student
+        #
+        # set [ m in IMentor, every set [ s in IStudent, some s.mentor = m | s.country ] == Hungary  | m.name ]
+        #
+        query = """set [ m in IMentor,
+            every
+            set [ s in IStudent, some s.mentor = m; s.country=Hungary | s.name] == Stewart
+            | m.name ]"""
+        qo=Head(Query(
+            metadata, symbols,
+            set,
+            [
+                In(
+                    metadata, symbols,
+                    Identifier(metadata, symbols,'m'),
+                    Identifier(metadata, symbols,'IMentor')),
+                Eq(
+                    metadata, symbols,
+                    Quanted(
+                        metadata, symbols,
+                        Every(metadata, symbols, ''),
+                        Query(
+                            metadata, symbols,
+                            set,
+                            [
+                                In(
+                                    metadata, symbols,
+                                    Identifier(metadata, symbols,'s'),
+                                    Identifier(metadata, symbols,'IStudent')),
+                                Eq(
+                                    metadata,symbols,
+                                    Identifier(metadata, symbols, 's.country'),
+                                    Identifier(metadata, symbols, '"Hungary"')),
+                                Eq(
+                                    metadata, symbols,
+                                    Identifier(metadata, symbols,'m'),
+                                    Quanted(
+                                        metadata, symbols,
+                                        Some(metadata, symbols, ''),
+                                        Property(metadata, symbols,
+                                            Identifier(metadata, symbols, 's'),
+                                            Identifier(metadata, symbols, 'mentor'))
+                                        ))
+                            ], Identifier(metadata, symbols, 's.name'))
+                    ),Constant(metadata, symbols,'Stewart')),
+            ] ,Identifier(metadata, symbols,'m.name')))
+
+        self.doit(query, qo, set(['John Doe']))
 
 
 def test_suite():

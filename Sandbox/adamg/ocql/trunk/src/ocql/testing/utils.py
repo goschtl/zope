@@ -126,6 +126,10 @@ def setupCatalog(test):
     id = intids.register(s3)
     cat.index_doc(id, s3)
 
+    s4 = Student(u"Stewart", u"Hungary", m1)
+    id = intids.register(s4)
+    cat.index_doc(id, s4)
+
     o1 = Organization(u"Zope.org")
     id = intids.register(o1)
     cat.index_doc(id, o1)

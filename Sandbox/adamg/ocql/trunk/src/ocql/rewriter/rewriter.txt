@@ -31,6 +31,14 @@ added here.
     >>> print str(alg)
     Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
 
+    >>> for i in alg.walk():
+    ...     print i
+    Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`))
+    Single(<type 'set'>, `1`)
+    `1`
+    Single(<type 'set'>, `2`)
+    `2`
+
     >>> qo = QueryParser("list [ | 1 ] union list [|2]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()

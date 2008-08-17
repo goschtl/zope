@@ -36,12 +36,16 @@ def bfsFind(tree):
 def findItrTreePattern(tree):
     """Checks whole Iter tree pattern exists stating from the Iter algebra object"""
     iter_obj = bfsFind(tree)
-    if iter_obj is not None:
+    while iter_obj:
         #need to check If and Make objects present
         if (isinstance(iter_obj.func, Lambda) and isinstance(iter_obj.coll, Make)):
             if isinstance(iter_obj.func.expr, If):
                 if isinstance(iter_obj.func.expr.cond , Binary):
                     return iter_obj
+                else:
+                    iter_obj = bfsFind(iter_obj.func)
+            else:
+                return None
     return None
 
 
@@ -57,19 +61,14 @@ def iterPatternMatcher(metadata, tree):
         value = tree.func.expr.cond.right.value
     elif isinstance(tree.func.expr.cond.right, Identifier):
         value = tree.func.expr.cond.right.name
-    else:
-        return tree.__parent__
 
     if not metadata.hasPropertyIndex(interface, cond.split(".")[1]):
         return tree.__parent__
 
     #new algebra objects
-    if operator:
-        makeFromIndex = MakeFromIndex(coll , coll, interface,
-                                      cond.split(".")[1],
-                                      operator, value=value)
-    else:
-        return tree.__parent__
+    makeFromIndex = MakeFromIndex(coll , coll, interface,
+                                  cond.split(".")[1],
+                                  operator, value=value)
 
     newlambda = Lambda(var, single)
     newTree = Iter(coll, newlambda, makeFromIndex)
@@ -77,12 +76,8 @@ def iterPatternMatcher(metadata, tree):
     if isinstance(parent, Head):
         return Head(newTree)
     else:
-        for c in parent.children:
-            if isinstance(c, Iter):
-                del c
-        parent.children.append(newTree)
-        locate(newTree, parent, 'iter')
-        return newTree
+        #possibly another optimization point, down in the algebra tree
+        return None
 
 
 def addMarkerIF(obj, marker):
@@ -103,6 +98,8 @@ class AlgebraOptimizer(object):
 
         if results is not None:
             alg = iterPatternMatcher(metadata, results)
+            if alg is None:
+                alg = self.context
             addMarkerIF(alg, IOptimizedAlgebraObject)
             return alg
 

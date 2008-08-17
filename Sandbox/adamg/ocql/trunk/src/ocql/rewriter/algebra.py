@@ -27,7 +27,7 @@ class Head(Location):
         locate(tree, self, 'tree')
 
     def walk(self):
-        yield self.tree
+        return self.tree.walk()
 
     def __repr__(self):
         return ('%s') % (self.tree)
@@ -249,7 +249,7 @@ class Binary(BaseAlgebra):
         self.setProp('right', right)
 
     def __repr__(self):
-        return "%s%s%s" % (self.left, self.op.op, self.right)
+        return "%s%s%s" % (self.left, self.op, self.right)
 
 class Operator(BaseAlgebra):
     implements(IOperator)

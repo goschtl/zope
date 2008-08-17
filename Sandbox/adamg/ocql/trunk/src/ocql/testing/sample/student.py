@@ -28,9 +28,10 @@ class Student(persistent.Persistent):
     name = u''
     country = None
 
-    def __init__(self, name=u'', country=None):
+    def __init__(self, name=u'', country=None, mentor=None):
         self.name = name
         self.country = country
+        self.mentor = mentor
 
     def __repr__(self):
         return "%s <%s>" % (self.__class__.__name__, self.name)

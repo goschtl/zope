@@ -37,6 +37,7 @@ class IStudent(Interface):
 
     name = TextLine(title=u"Student Name")
     country = Attribute('student country')
+    mentor = Field(title=u'assigned mentor')
 
 class IMentor(Interface):
     """A Mentor object"""
