@@ -61,15 +61,15 @@ class Module(grok.View):
             obj = located(module[name], module, name)
             result.append(dict(name=name, url=self.url(obj),
                                doc=self.getDocString(obj)))
-        return result
+        return sorted(result, key=lambda x: x['name'])
 
     def getClassURLs(self):
         classes = self.context.getClasses()
-        return sorted(self.getItemURLs(classes))
+        return self.getItemURLs(classes)
 
     def getFunctionURLs(self):
         functions = self.context.getFunctions()
-        return sorted(self.getItemURLs(functions))
+        return self.getItemURLs(functions)
 
     def getFunctions(self):
         functions = self.context.getFunctions()
@@ -82,7 +82,7 @@ class Module(grok.View):
                                fullname=name+signature,
                                doc=self.getDocString(func,
                                                      heading_only=False)))
-        return result
+        return sorted(result, key=lambda x: x['fullname'])
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
@@ -128,7 +128,7 @@ class Package(grok.View):
             mod = located(package[info.name], package, info.name)
             result.append(dict(name=info.name, url=self.url(mod),
                                doc=self.getDocString(item=mod)))
-        return result
+        return sorted(result, key=lambda x: x['name'])
         
     def getSubPackageUrls(self):
         mod_infos = self.context.getSubPackages()
