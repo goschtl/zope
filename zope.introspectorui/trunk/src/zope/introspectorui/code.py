@@ -111,7 +111,7 @@ class Package(grok.View):
         for name in filenames:
             file = located(package[name], package, name)
             result.append(dict(name=name, url=self.url(file)))
-        return sorted(result)
+        return sorted(result, key=lambda x: x['name'])
 
     def getTextFileUrls(self):
         filenames = self.context.getPackageFiles()
@@ -132,11 +132,11 @@ class Package(grok.View):
         
     def getSubPackageUrls(self):
         mod_infos = self.context.getSubPackages()
-        return sorted(self._getItemUrls(mod_infos))
+        return self._getItemUrls(mod_infos)
 
     def getModuleUrls(self):
         mod_infos = self.context.getModules()
-        return sorted(self._getItemUrls(mod_infos))
+        return self._getItemUrls(mod_infos)
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
@@ -206,7 +206,7 @@ class Class(grok.View):
                 signature = '(self, ' + signature[1:]
             result.append(dict(name=name + signature,
                                doc=self.getDocString(item=item)))
-        return sorted(result)
+        return sorted(result, key=lambda x: x['name'])
 
     def getBreadcrumbs(self):
         return IBreadcrumbProvider(self).getBreadcrumbs()
