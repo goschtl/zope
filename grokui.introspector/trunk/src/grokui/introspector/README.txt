@@ -115,3 +115,35 @@ We get back to introspector home page::
 
   >>> browser.open('http://localhost/++inspect++/index.html')
 
+
+Browsing content (ZODB items, etc.)
+===================================
+
+The content browser assists in giving us an overview over the
+available content items. The overview page is where we can start::
+
+  >>> browser.getLink(
+  ... "Browse the content"
+  ... ).click()
+  >>> print browser.contents
+  <html>
+  ...
+  <h1>...Content Introspector</h1>
+  ...
+
+From here we can start browsing the ZODB::
+
+  >>> link = browser.getLink("ZODB root")
+  >>> link.click()
+
+All content introspection is done by simply watching an item via the
+`inspect` view. So, to examine the ZODB root, we enter::
+
+  >>> link.url
+  'http://localhost/@@inspect'
+
+To learn more about the content introspector, see `content.txt`.
+
+We get back to introspector home page::
+
+  >>> browser.open('http://localhost/++inspect++/index.html')
