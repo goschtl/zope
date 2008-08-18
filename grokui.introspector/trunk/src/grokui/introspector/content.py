@@ -2,6 +2,8 @@ import grok
 from zope import interface
 
 from zope.introspector.interfaces import IObjectInfo
+from zope.introspector.viewinfo import ViewInfo
+from grokui.introspector.util import dotted_name_url
 
 class Inspect(grok.View):
     grok.context(interface.Interface)
@@ -14,8 +16,15 @@ class Inspect(grok.View):
         return self._objectinfo
 
     def getTypeName(self):
-        type = self.getObjectInfo().getType()
-        return type.__module__ + '.' + type.__name__
-        
+        mod = getattr(self.context, '__module__', '')
+        name = getattr(self.context, '__name__', '')
+        if name:
+            mod += '.' + name
+        return mod
+
     def getTypeInspectURL(self):
-        return ""
+        return dotted_name_url(self.getTypeName())
+
+    def getViews(self):
+        info = ViewInfo(self.context)
+        return sorted(list(info.getAllViews()))
