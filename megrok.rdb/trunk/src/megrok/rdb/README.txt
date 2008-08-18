@@ -13,11 +13,11 @@ database.
 In this document we will show you how to use ``megrok.rdb``.
 
 ``megrok.rdb`` uses SQLAlchemy's ORM system, in particular its
-declarative extension almost directly. ``megrok.rdb`` just supplies a
+declarative extension, almost directly. ``megrok.rdb`` just supplies a
 few special base classes and directives to make things easier, and a few
 other conveniences that help with integration with Grok.
 
-We first import import the SQLAlchemy bits we'll need later::
+We first import the SQLAlchemy bits we'll need later::
 
   >>> from sqlalchemy import Column, ForeignKey
   >>> from sqlalchemy.types import Integer, String
@@ -93,7 +93,7 @@ We see here that ``Course`` links back to the department it is in,
 using a foreign key.
 
 We need to actually grok these objects to have them fully set
-up  Normally grok takes care of this automatically, but in this case
+up. Normally grok takes care of this automatically, but in this case
 we'll need to do it manually.
 
 First we grok this package's grokkers::
