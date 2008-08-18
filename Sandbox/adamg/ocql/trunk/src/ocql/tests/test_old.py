@@ -483,32 +483,31 @@ class testOLD(unittest.TestCase):
         self.doit(query, qo, set(['Other department']))
 
 
-        #symbols = SymbolContainer()
-        ##
-        ##
-        ## alias
-        ##
-        ## set [ c in ICourse, a as c.code  | a ]
-        ##
-        #query = """set [ c in ICourse, a as c.code  | a ]"""
+        symbols = SymbolContainer()
         #
-        #qo=Query(
-        #    metadata, symbols,
-        #    set,
-        #    [
-        #        In(
-        #            metadata, symbols,
-        #            Identifier(metadata, symbols,'c'),
-        #            Identifier(metadata, symbols,'ICourse')),
-        #        Alias(
-        #            metadata, symbols,
-        #            Identifier(metadata, symbols,'a'),
-        #            Property(metadata, symbols,
-        #                 Identifier(metadata, symbols, 'c'),
-        #                 Identifier(metadata, symbols, 'code')))
-        #    ] ,Identifier(metadata, symbols,'c') )
         #
-        #self.doit(query, qo, set(['C1','C2','C3']))
+        # alias
+        #
+        # set [ c in ICourse, a as c.code  | a ]
+        #
+        query = """set [ c in ICourse, a as c.code  | a ]"""
+        qo=Head(Query(
+            metadata, symbols,
+            set,
+            [
+                In(
+                    metadata, symbols,
+                    Identifier(metadata, symbols,'c'),
+                    Identifier(metadata, symbols,'ICourse')),
+                Alias(
+                    metadata, symbols,
+                    Identifier(metadata, symbols,'a'),
+                    Property(metadata, symbols,
+                         Identifier(metadata, symbols, 'c'),
+                         Identifier(metadata, symbols, 'code')))
+            ] ,Identifier(metadata, symbols,'a')))
+        
+        self.doit(query, qo, set(['C1','C2','C3']))
 
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
