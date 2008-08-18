@@ -221,3 +221,22 @@ We can get default pagelet view for content. First register default view
 
   >>> view.__name__
   u'index.html'
+
+
+Pagelet without name
+
+  >>> class IMyPagelet(interface.Interface):
+  ...     pass
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       template="%s"
+  ...       provides="z3ext.layout.TESTS.IMyPagelet"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """%template, context)
+
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet)
+  >>> IMyPagelet.providedBy(pagelet)
+  True

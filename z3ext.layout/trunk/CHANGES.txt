@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.4.5 (2008-08-18)
+------------------
+
+- `name` attribute is optional for <z3ext:pagelet/> directive
+
+
 1.4.4 (2008-07-22)
 ------------------
 

@@ -48,7 +48,7 @@ class IPageletDirective(IBasicViewInformation):
     name = schema.TextLine(
         title = u"The name of the pagelet.",
         description = u"The name shows up in URLs/paths. For example 'foo'.",
-        required = True)
+        required = False)
 
     provides = Tokens(
         title = u"The interface this pagelets provides.",
@@ -265,7 +265,7 @@ def sendNotification(name, view, context, layer, layoutclass, keywords):
 
 # pagelet directive
 def pageletDirective(
-    _context, name, permission, class_=None, for_=interface.Interface,
+    _context, permission, name=u'', class_=None, for_=interface.Interface,
     layer=IDefaultBrowserLayer, provides=[IPagelet,],
     allowed_interface=[], allowed_attributes=[],
     template=u'', layout=u'', **kwargs):
@@ -283,11 +283,6 @@ def pageletDirective(
         if not os.path.isfile(template):
             raise ConfigurationError("No such file", template)
         kwargs['template'] = ViewPageTemplateFile(template)
-
-    # check interfaces
-    ifaces = list(interface.Declaration(provides).flattened())
-    if IPagelet not in ifaces:
-        provides.append(IPagelet)
 
     # Build a new class that we can use different permission settings if we
     # use the class more then once.
@@ -308,6 +303,9 @@ def pageletDirective(
 
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)
+    if IPagelet not in provides:
+        allowed_interface.append(IPagelet)
+
     allowed_attributes.extend(kwargs.keys())
     allowed_attributes.extend(('__call__', 'browserDefault',
                                'update', 'render', 'publishTraverse'))
@@ -330,11 +328,12 @@ def pageletDirective(
     defineChecker(new_class, Checker(required))
 
     # register pagelet
-    _context.action(
-        discriminator = ('z3ext:pagelet', for_, layer, name),
-        callable = handler,
-        args = ('registerAdapter',
-                new_class, (for_, layer), IPagelet, name, _context.info))
+    for iface in provides:
+        _context.action(
+            discriminator = ('z3ext:pagelet', for_, layer, name),
+            callable = handler,
+            args = ('registerAdapter',
+                    new_class, (for_, layer), iface, name, _context.info))
 
 
 def _handle_allowed_interface(
