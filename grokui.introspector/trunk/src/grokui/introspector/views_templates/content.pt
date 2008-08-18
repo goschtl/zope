@@ -1,0 +1,15 @@
+<html>
+<body>
+  <h1>Welcome to the Content Introspector</h1>
+
+  Browse...
+
+  <div>
+    ... the 
+    <a href="" 
+       tal:attributes="href string:/@@inspect">
+      ZODB root
+    </a>
+  </div>
+</body>
+</html>
