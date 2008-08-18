@@ -2,7 +2,7 @@
         <h1>Content browser</h1>
 
     <h2>Content</h2>
-    <tal:content define="content context/keys | nohting" >
+    <tal:content define="content context/keys | nothing" >
         <span tal:condition="not: content">
             No content found...
         </span>
