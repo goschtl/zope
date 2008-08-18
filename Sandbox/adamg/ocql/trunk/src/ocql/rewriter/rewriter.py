@@ -209,11 +209,11 @@ class CountRewriter(ChildRewriter):
 
     def __call__(self):
         return Reduce(
-            bag, # FIXME milyen bag
-            0,
+            self.context.expression.collection_type, # FIXME milyen bag
+            Constant(0),
             Lambda('i', Constant(1)),
             Operator('+'),
-            make(bag, set, IRewriter(self.context.expression)())
+            IRewriter(self.context.expression)()
             # FIXME ?set? must be determined by type(self.expression)
         )
 

@@ -69,6 +69,18 @@ added here.
     >>> print str(alg)
     Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))
 
+    >>> qo = QueryParser("len(set [ i in ICourse | i ])")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("len(list [ i in ICourse | i ])")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Reduce(<type 'list'>, `0`, Lambda i: `1`, +, Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse)))
+
     >>> qo = QueryParser("set [ c in ICourse; c.credits>3 | c.code ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
