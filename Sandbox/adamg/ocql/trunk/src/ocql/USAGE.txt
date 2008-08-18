@@ -135,75 +135,74 @@ The OCQL language itself is quite rich, so providing all samples would fill a
 book itself.
 
 Here goes the dry syntax:
-expression 	::= expression "union" expression
-			| expression "differ" expression
-			| collection "[" qualifier "|" expression "]" 
-			| collection "[" qualifier "for" expression "]"
-			| literal
-			| path
-			| call
-			| "len" "(" expression ")"
+-------------------------
 
-collection 	::= set
-	        | list
-			| bag
+expression  ::= expression "union" expression
+            | expression "differ" expression
+            | collection "[" qualifier "|" expression "]"
+            | collection "[" qualifier "for" expression "]"
+            | literal
+            | path
+            | call
+            | "len" "(" expression ")"
 
-qualifier 	::= ""
-			| generator
-			| definition
-			| filter
-			| qualifier ";" qualifier
-                             
-generator 	::= identifier "in" expression
+collection  ::= set
+            | list
+            | bag
 
-filter 		::= filter "and" filter
-			| filter "or" filter
-			| "not" condition
-			| condition    
+qualifier   ::= ""
+            | generator
+            | definition
+            | filter
+            | qualifier ";" qualifier
 
-condition 	::= "(" filter ")"
-			| quantified operator quantified
-			| "isinstance" "(" expression "," identifier ")"
+generator   ::= identifier "in" expression
 
-quantified 	::= expression
-			| quantification expression
+filter      ::= filter "and" filter
+            | filter "or" filter
+            | "not" condition
+            | condition
 
-operator 	::= "="
-			| "~="
-			| "<"
-			| "<="
-			| ">"
-			| ">="
-			| "=="
-			| "~=="
+condition   ::= "(" filter ")"
+            | quantified operator quantified
+            | "isinstance" "(" expression "," identifier ")"
+
+quantified  ::= expression
+            | quantification expression
+
+operator    ::= "="
+            | "~="
+            | "<"
+            | "<="
+            | ">"
+            | ">="
+            | "=="
+            | "~=="
 
 quantification ::= "some"
-			| "every"
-			| "just" expression
-			| "atleast" expression
-			| "atmost" expression
+            | "every"
+            | "just" expression
+            | "atleast" expression
+            | "atmost" expression
 
-definition 	::= identifier "as" expression
+definition  ::= identifier "as" expression
 
-literal 	::= constant
-			| collection "{" element "}"
+literal     ::= constant
+            | collection "{" element "}"
 
-element 	::= ""
-			| expression
-			| element "," element
-			| expression "..." expression
+element     ::= ""
+            | expression
+            | element "," element
+            | expression "..." expression
 
-path 		::= identifier
-			|identifier "." method
+path        ::= identifier
+            |identifier "." method
 
-method 		::= identifier
-			|identifier "(" argument_list ")"
+method      ::= identifier
+            |identifier "(" argument_list ")"
 
 argument_list ::= ""
-			|expression
-			|expression "," argument_list
+            |expression
+            |expression "," argument_list
 
-call 		::= identifier "(" argument_list ")"
-
-
-#TODO!
+call        ::= identifier "(" argument_list ")"
