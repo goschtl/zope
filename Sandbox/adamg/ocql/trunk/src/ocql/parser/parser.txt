@@ -47,5 +47,17 @@
     >>> QueryParser("list [ c in ICourse; c.credits > 3 | c.code ]")(None)
     Query(<type 'list'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
 
+    >>> QueryParser("set [ c in ICourse; c.credits >= 3 | c.code ]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Ge(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+    
+    >>> QueryParser("set [ c in ICourse; c.credits < 3 | c.code ]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Lt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+
+    >>> QueryParser("set [ c in ICourse; c.credits <= 3 | c.code ]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Le(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+
     >>> QueryParser("set [ c in ICourse | c.code ]")(None)
     Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))
+
+    >>> QueryParser("set [ c in ICourse; a as c.code | a]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(code))), Identifier(a))

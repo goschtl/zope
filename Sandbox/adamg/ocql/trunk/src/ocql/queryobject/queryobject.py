@@ -229,7 +229,7 @@ class Alias(Term):
         #TODO: that's not really good
         r = self.expression.get_collection_type()
 
-        s[self.identifier.name] = r
+        s[self.identifier] = r
 
     def get_collection_type(self):
         rv = self.expression.get_collection_type()

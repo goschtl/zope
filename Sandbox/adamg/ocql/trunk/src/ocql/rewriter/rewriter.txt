@@ -86,3 +86,27 @@ added here.
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: If(c.credits>`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("set [ c in ICourse; c.credits>=3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: If(c.credits>=`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("set [ c in ICourse; c.credits<3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: If(c.credits<`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("set [ c in ICourse; c.credits<=3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: If(c.credits<=`3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("set [ c in ICourse; a as c.code | a ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.code)), Make(<type 'set'>, <type 'set'>, ICourse)))

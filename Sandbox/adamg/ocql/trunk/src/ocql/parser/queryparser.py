@@ -171,8 +171,16 @@ class Lexer(object):
         r'!='
         return t
 
+    def t_LTE(self, t):
+        r'<='
+        return t
+
     def t_LT(self, t):
         r'<'
+        return t
+
+    def t_GTE(self, t):
+        r'>='
         return t
 
     def t_GT(self, t):
@@ -205,14 +213,6 @@ class Lexer(object):
 
     def t_EQUAL(self, t):
         r'=='
-        return t
-
-    def t_GTE(self, t):
-        r'>='
-        return t
-
-    def t_LTE(self, t):
-        r'<='
         return t
 
     def t_SEMI_COLON(self, t):
@@ -522,7 +522,9 @@ class Parser(object):
     def p_definition_as(self, t):
         r'''definition : IDENTIFIER AS expression
         '''
-        #t[0]=''
+        t[0] = Alias(self.metadata, self.symbols, 
+                     Identifier(self.metadata, self.symbols, t[1]),
+                     t[3])
         if DEBUG: print 'reducing "IDENTIFIER AS expression" to "definition"', t[0]
 
     def p_literal_constant(self, t):
