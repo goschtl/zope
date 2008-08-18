@@ -17,7 +17,8 @@ import grok
 from zope.component import getUtility
 from zope.introspector.interfaces import IRegistryInfo
 from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
-                                            IGrokCodeIntrospector)
+                                            IGrokCodeIntrospector,
+                                            IGrokContentIntrospector)
 from zope.app.folder.interfaces import IRootFolder
 from zope.introspector.code import Package
 
@@ -29,6 +30,8 @@ class RootTraverser(grok.Traverser):
             return CodeIntrospector()
         elif name == '+registry':
             return RegistryIntrospector()
+        elif name == '+content':
+            return ContentIntrospector()
         return None
     
 class RegistryIntrospector(grok.Model):
@@ -54,3 +57,6 @@ class CodeIntrospector(grok.Model):
             return Package(name)
         except ImportError:
             return None
+
+class ContentIntrospector(grok.Model):
+    grok.implements(IGrokContentIntrospector)
