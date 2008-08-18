@@ -1,0 +1,9 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok">
+  <include package="grok" file="meta.zcml" />
+  <include package="grok" />
+  <include package="megrok.kss" />
+
+  <!-- Register the test fixtures -->
+  <grok:grok package="megrok.kss.tests.kss" />
+</configure>
