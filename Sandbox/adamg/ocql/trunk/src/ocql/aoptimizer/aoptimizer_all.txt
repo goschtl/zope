@@ -1,0 +1,48 @@
+
+Algebra optimizer
+=================
+
+This file is used to test all possible cases of the present optimization.
+
+Currently the optimizer is doing a minimal optimization by using zope indexes
+where possible to retrieve objects on comparison. (=, <, >, <=, >=, <>)
+
+We need some setup to demonstrate this:
+
+    >>> from ocql.interfaces import IDB
+    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
+    >>> from ocql.interfaces import IOptimizedAlgebraObject
+    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.rewriter.rewriter import Rewriter
+    >>> from ocql.compiler.compiler import AlgebraCompiler
+
+    >>> from ocql.testing.utils_opt import setupInterfaces
+    >>> setupInterfaces(None)
+    >>> from ocql.testing.utils_opt import setupCatalog
+    >>> setupCatalog(None)
+
+    >>> testmeta = IDB(None)
+
+Here is a very basic query to show how the algebra looks like unoptimized.
+
+    >>> query = "set [ i in IUnOptimizedClass | i ]"
+
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+(alg is always the unoptimized algebra tree)
+
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+
+(algopt is always the optimized algebra tree)
+
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+

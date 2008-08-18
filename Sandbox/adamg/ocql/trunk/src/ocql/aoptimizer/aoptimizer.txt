@@ -1,21 +1,23 @@
 
-    >>> from zope.interface.verify import verifyObject
+Algebra optimizer
+=================
+
+The Algebra optimizer's task is to optimize the inputted algebra tree the
+best it can. The output is also an algebra tree.
+
+    >>> from zope.interface.verify import verifyClass, verifyObject
 
     >>> from ocql.interfaces import IAlgebraOptimizer
     >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
     >>> from ocql.interfaces import IOptimizedAlgebraObject
     >>> from ocql.interfaces import IDB
 
-#Currently the optimizer is doing NOTHING, it just returns what it gets.
-#(And adds the interface IOptimizedAlgebraObject)
+    >>> from ocql.rewriter.algebra import Head
+    >>> from ocql.rewriter.algebra import Constant
 
-    >>> class Dummy(object):
-    ...     def __init__(self, tree):
-    ...          self.tree = tree
-
-    >>> in_=Dummy('foo-bar')
+    >>> in_ = Head(Constant('foo-bar'))
     >>> in_.tree
-    'foo-bar'
+    `foo-bar`
 
     >>> obj = AlgebraOptimizer(in_)
     >>> verifyObject(IAlgebraOptimizer, obj)
@@ -24,9 +26,122 @@
     >>> out = obj(None)
 
     >>> print out
-    <Dummy object at ...>
+    Head(`foo-bar`)
     >>> out.tree
-    'foo-bar'
+    `foo-bar`
 
     >>> IOptimizedAlgebraObject.providedBy(out)
     True
+
+Currently the optimizer is doing a minimal optimization by using zope indexes
+where possible to retrieve objects on comparison. (=, <, >, <=, >=, <>)
+This is nowhere near a final status.
+
+We need some setup to demonstrate this:
+
+    >>> from ocql.interfaces import IDB
+    >>> from ocql.aoptimizer.aoptimizer import AlgebraOptimizer
+    >>> from ocql.interfaces import IOptimizedAlgebraObject
+    >>> from ocql.parser.queryparser import QueryParser
+    >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
+    >>> from ocql.rewriter.rewriter import Rewriter
+    >>> from ocql.compiler.compiler import AlgebraCompiler
+
+    >>> from ocql.testing.utils_opt import setupInterfaces
+    >>> setupInterfaces(None)
+    >>> from ocql.testing.utils_opt import setupCatalog
+    >>> setupCatalog(None)
+
+    >>> testmeta = IDB(None)
+
+Basic query
+-----------
+
+Here is a very basic query to show how the algebra looks like unoptimized.
+
+    >>> query = "set [ i in IUnOptimizedClass | i ]"
+
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+(alg is always the unoptimized algebra tree)
+
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+
+(algopt is always the optimized algebra tree)
+
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+
+Still no index
+--------------
+
+This one uses a comparison but still on the class that does not have an index.
+
+    >>> query = "set [ i in IUnOptimizedClass ; i.value == 5 | i.name ]"
+
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
+
+With index
+----------
+
+Let's see what happens when we switch to the optimized class.
+
+    >>> query = "set [ i in IOptimizedClass ; i.value == 5 | i.name ]"
+
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IOptimizedClass)))
+
+Here is the difference. The algebra gets a special object that uses the available
+zope index of the interface to retrieve object instances.
+
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IOptimizedClass, value, 5)))
+
+
+
+
+
+Future
+~~~~~~
+
+There are plenty of optimization options as described in the papers.
+Also we can imagine a lot of optimization points when thinking about it.
+
+Most simplest idea is to use zope indexes and intIds fully.
+ZODB's slow point is the object load. That might be skipped by clever usage of
+indexes and intids returned by the indexes. Load any objects as late as possible,
+load the least amount of objects possible.
+
+We think that the most optimal optimizer will be a cost based optimizer.
+This cost based optimizer should take a lot of parameters into account.
+That means it should consult anticipated collection sizes, previous queries, etc.
+
+We also think that optimization will not be limited to the algebra optimizer,
+but will have sideeffect also in the compiler and the compiled code.

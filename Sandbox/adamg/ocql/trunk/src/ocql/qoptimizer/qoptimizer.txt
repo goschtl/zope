@@ -1,4 +1,6 @@
 
+Queryobject optimizer
+=====================
 
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.interfaces import IOptimizedObjectQuery
@@ -23,3 +25,5 @@ Currently the optimizer is doing NOTHING, it just returns what it gets.
 
     >>> IOptimizedObjectQuery.providedBy(out)
     True
+
+There are some options to optimize the queryobject tree.

@@ -10,8 +10,9 @@ def test_suite():
 # avoid this tests for convenient while adding new implementation to the algebra optimizer
 #need to add aoptimizer.txt
         DocFileSuite('aoptimizer.txt',
-            optionflags=flags),
-        DocFileSuite('aoptimizer_new.txt',
+            optionflags=flags,
+            setUp = utils.setupAdapters),
+        DocFileSuite('aoptimizer_all.txt',
             optionflags=flags,
             setUp = utils.setupAdapters),
         ))

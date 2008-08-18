@@ -4,6 +4,36 @@ OCQL -  Overview
 
 How parts of it fit together.
 
+Basic operation is like this:
+
+* OCQL query string is the starting point
+* query string is parsed by the parser
+* parsed query becomes a queryobject tree
+* queryobject tree is optimized by the query optimizer
+* becomes also a queryobject tree
+* queryobject tree is rewritten by the rewriter
+* rewritten queryobject becomes an algebra tree
+* algebra tree is optimized by the algebra optimizer
+* becomes also an algebra tree
+* algebra tree is compiled to python source by the compiler
+* compiled code is conained in the runnablequery
+* runnablequery can be executed, returns results
+
+Classes that hold the information are:
+
+* OCQL query string
+* queryobject tree
+* algebra tree
+* runnablequery
+
+Classes that do the work are:
+
+* query parser
+* queryobject optimizer
+* rewriter
+* algebra optimizer
+* compiler
+
 
 
 The following documents help understanding the inner life of the engine:

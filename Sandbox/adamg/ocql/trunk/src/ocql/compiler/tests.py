@@ -7,10 +7,10 @@ from ocql.testing import utils
 def test_suite():
     flags =  doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
     return unittest.TestSuite((
-        DocFileSuite('optimize_index.txt',
+        DocFileSuite('compiler.txt',
             optionflags=flags,
             setUp = utils.setupAdapters),
-        DocFileSuite('compiler.txt',
+        DocFileSuite('compiler_optimized.txt',
             optionflags=flags,
             setUp = utils.setupAdapters),
         ))

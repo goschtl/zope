@@ -1,0 +1,71 @@
+
+Checking here how an optimized algebra for zope indexes compiles into python code
+
+    >>> from ocql.engine import OCQLEngine
+
+    >>> from ocql.testing.utils_opt import setupInterfaces
+    >>> setupInterfaces(None)
+    >>> from ocql.testing.utils_opt import setupCatalog
+    >>> setupCatalog(None)
+
+We'll use the same queries as in aoptimizer.txt.
+Algebra trees get omitted as they are already tested over there.
+
+Let's use the IUnOptimizedClass:
+--------------------------------
+
+    >>> query = "set [ i in IUnOptimizedClass | i ]"
+
+    >>> run = OCQLEngine().compile(query)
+
+Here is the runnable code:
+
+    >>> run
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("IUnOptimizedClass"))), set())
+
+    >>> result = run.execute()
+    >>> sorted(list(result))
+    [UnOpt: 0, UnOpt: 2, UnOpt: 1, UnOpt: 4, UnOpt: 3, UnOpt: 6, UnOpt: 5, UnOpt: 7, UnOpt: 8, UnOpt: 9]
+    >>> type(result)
+    <type 'set'>
+
+IUnOptimizedClass with a filter condition:
+------------------------------------------
+
+    >>> query = "set [ i in IUnOptimizedClass ; i.value == 5 | i.name ]"
+
+    >>> run = OCQLEngine().compile(query)
+
+Here is the runnable code:
+
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda i: ((i.value==5) and (set([i.name])) or (set())),
+    set(metadata.getAll("IUnOptimizedClass"))), set())
+
+Results of the query:
+
+    >>> result = run.execute()
+    >>> result
+    set([u'5'])
+
+
+IOptimizedClass with a filter condition:
+----------------------------------------
+
+    >>> query = "set [ i in IOptimizedClass ; i.value == 5 | i.name ]"
+
+    >>> run = OCQLEngine().compile(query)
+
+Here is the runnable code:
+
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda i: set([i.name]),
+    set(metadata.getFromIndex("IOptimizedClass", "value", "==", 5))), set())
+
+    >>> result = run.execute()
+    >>> result
+    set([u'5'])

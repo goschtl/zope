@@ -30,7 +30,7 @@ class Head(Location):
         return self.tree.walk()
 
     def __repr__(self):
-        return ('%s') % (self.tree)
+        return ('Head(%s)') % (self.tree)
 
 class BaseAlgebra(Location):
     implements(IAlgebraObject)
