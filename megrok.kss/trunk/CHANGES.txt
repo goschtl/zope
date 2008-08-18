@@ -1,15 +1,21 @@
-megrok.kss changes
-******************
+Changelog for megrok.kss
+------------------------
 
-0.2 (unreleased)
-=================
+    (name of developer listed in brackets)
 
-Restructuring
--------------
+megrok.kss - 0.2  Released 2008-08-18
 
-* Change the KSSGrokker to use the new grokcore.component directives.
+    - Fixes for 0.13 compatibility
+      [gotcha]
 
-0.1 (2008-04-30)
-================
+    - To simplify the usage of KSS in Grok we renamed the `KSSActions` class
+      to `KSS`, which is more in line with the JSON and WSGI extensions. In
+      Grok, you apply KSS on a view rather than a content object.
+      Use: grok.view(MyViewClass) to register it.
+      [jladage] 
+    
+megrok.kss - 0.1 Released 2008-04-30
 
-Initial release
+    - basic kss.core support
+      [gotcha]
+
