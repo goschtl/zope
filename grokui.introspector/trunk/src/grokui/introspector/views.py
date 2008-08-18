@@ -22,7 +22,8 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.introspector.interfaces import IInfos
 
 from grokui.introspector.interfaces import (IGrokRegistryIntrospector,
-                                            IGrokCodeIntrospector)
+                                            IGrokCodeIntrospector,
+                                            IGrokContentIntrospector)
 from grokui.introspector.namespace import IntrospectorLayer
 
 grok.layer(IntrospectorLayer)
@@ -44,6 +45,10 @@ class Registry(grok.View):
 class Code(grok.View):
     grok.name('index')
     grok.context(IGrokCodeIntrospector)
+
+class Content(grok.View):
+    grok.name('index')
+    grok.context(IGrokContentIntrospector)
 
 class Introspect(grok.View):
     grok.context(Interface)
