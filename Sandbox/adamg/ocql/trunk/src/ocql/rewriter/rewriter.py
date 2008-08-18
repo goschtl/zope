@@ -87,17 +87,12 @@ class QueryRewriter(ChildRewriter):
                             ) # FIXME: ?set? must be determined by type(firstTerm.expression)
                 )
             elif isinstance(firstTerm, ocql.queryobject.queryobject.Alias):
-                rv = IRewriter(ocql.queryobject.queryobject.Query(
-                        self.context.metadata,
-                        self.context.symbols,
+                rv = Iter(
                         self.context.collection_type,
-                        [ocql.queryobject.queryobject.In(
-                            self.context.metadata,
-                            self.context.symbols,
-                            firstTerm.identifier,
-                            firstTerm.expression
-                            )]+self.context.terms[1:],
-                        self.context.target))()
+                        Lambda(IRewriter(firstTerm.identifier)(), 
+                               Single(self.context.collection_type, IRewriter(firstTerm.identifier)())),
+                        Single(self.context.collection_type, IRewriter(firstTerm.expression)()))
+
             else:
                 rv = If(
                     IRewriter(firstTerm)(),
