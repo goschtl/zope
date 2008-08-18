@@ -24,7 +24,7 @@
     <h2>Content</h2>
 
     <div class="docgrok-annotation1">
-      <a tal:attributes="href string:content">
+      <a tal:attributes="href string:+content/@@index">
 	Browse the content
       </a>
     </div>
