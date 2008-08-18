@@ -23,3 +23,7 @@ class IGrokRegistryIntrospector(Interface):
 class IGrokCodeIntrospector(Interface):
     """An introspector for packages, classes and other code.
     """
+
+class IGrokContentIntrospector(Interface):
+    """An introspector for content objects.
+    """
