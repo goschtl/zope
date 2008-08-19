@@ -15,7 +15,10 @@
 
 $Id$
 """
+import ZConfig
+import os.path
 import unittest
+import urllib
 import transaction
 
 import zope.component
@@ -156,12 +159,32 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
         cx.close()
 
+
+class TestConfigurationSchema(unittest.TestCase):
+
+    def setUp(self):
+        self.here = os.path.dirname(os.path.abspath(__file__))
+        self.schema_dir = os.path.join(self.here, "schema")
+
+    def path2url(self, path):
+        urlpath = urllib.pathname2url(path)
+        while urlpath.startswith("/"):
+            urlpath = urlpath[1:]
+        return "file:///" + urlpath
+
+    def test_schema_xml(self):
+        path = os.path.join(self.schema_dir, "schema.xml")
+        url = self.path2url(path)
+        schema = ZConfig.loadSchema(url)
+
+
 def bootstraptearDown(test):
     test.globs['db'].close()
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
+    suite.addTest(unittest.makeSuite(TestConfigurationSchema))
     suite.addTest(doctest.DocTestSuite(
         'zope.app.appsetup.appsetup',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown))
