@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+Version 3.7.0 (2008-08-19)
+--------------------------
+
+- Added ``.product.loadConfiguration`` test-support function; loads product
+  configuration (only) from a file object, allowing test code (including
+  setup) to make use of the same configuration schema support used by normal
+  startup.
+
+
 Version 3.6.0 (2008-07-23)
 --------------------------
 
