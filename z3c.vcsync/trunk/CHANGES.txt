@@ -1,7 +1,7 @@
 z3c.vcsync changes
 ==================
 
-0.15 (unreleased)
+0.15 (2008-08-19)
 -----------------
 
 * Fix a bug where the SVN "R" status was not recognized by the py lib.
