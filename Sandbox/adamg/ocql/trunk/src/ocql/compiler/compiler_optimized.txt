@@ -9,7 +9,7 @@ Checking here how an optimized algebra for zope indexes compiles into python cod
     >>> setupCatalog(None)
 
 We'll use the same queries as in aoptimizer.txt.
-Algebra trees get omitted as they are already tested over there.
+Algebra trees get omitted as they are already checked over there.
 
 Let's use the IUnOptimizedClass:
 --------------------------------
@@ -24,8 +24,8 @@ Here is the runnable code:
     RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("IUnOptimizedClass"))), set())
 
     >>> result = run.execute()
-    >>> sorted(list(result))
-    [UnOpt: 0, UnOpt: 2, UnOpt: 1, UnOpt: 4, UnOpt: 3, UnOpt: 6, UnOpt: 5, UnOpt: 7, UnOpt: 8, UnOpt: 9]
+    >>> sorted(list(result), key=lambda x:x.value)
+    [UnOpt: 0, UnOpt: 1, UnOpt: 2, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 8, UnOpt: 9]
     >>> type(result)
     <type 'set'>
 
