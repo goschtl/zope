@@ -71,6 +71,7 @@
     >>> QueryParser("set [ c in ICourse; a as c.name; a=='C1' | c]")(None)
     Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(name))); Eq(Identifier(a), Constant('C1')), Identifier(c))
 
-    >>> qo = QueryParser("set [ s in IStudents; a as s.major; a=='test' | s ]")(None)
-    Query(<type 'set'>, In(Identifier(s), Identifier(IStudents)); Alias(Identifier(a), Property(Identifier(s), Identifier(major))); Eq(Identifier(a), Constant('test')), Identifier(s))
-     
+    >>> QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(None)
+    Query(<type 'set'>, In(Identifier(s), Identifier(IStudents)); 
+    Alias(Identifier(a), Property(Identifier(s), Property(Identifier(major), Property(Identifier(address), Identifier(street))))); 
+    Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s))

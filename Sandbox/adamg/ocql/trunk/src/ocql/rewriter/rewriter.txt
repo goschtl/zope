@@ -111,7 +111,7 @@ added here.
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.code)), Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser('set [ s in IStudents; a as s.major.address.street; a=="Hillhead Street" or a=="Gibson Street" | s ]')(TestMetadata())
+    >>> qo = QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)

@@ -571,6 +571,12 @@ class Parser(object):
         if DEBUG: print 'reducing "IDENTIFIER" to "path"', t[0]
 
     def p_path_method(self, t):
+        r'''method : IDENTIFIER DOT method
+        '''
+        t[0] = Property(self.metadata, self.symbols, Identifier(self.metadata, self.symbols, t[1]), t[3])
+        if DEBUG: print 'reducing "IDENTIFIER DOT method" to "path"', t[0]
+
+    def p_path_method2(self, t):
         r'''path : IDENTIFIER DOT method
         '''
         t[0] = Property(self.metadata, self.symbols, Identifier(self.metadata, self.symbols, t[1]), t[3])
