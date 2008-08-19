@@ -38,9 +38,12 @@
     >>> QueryParser("len ( list [ i in ICourse | i ] )")(None)
     Count(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
-    #FAILS, see raise "Help"
-    #>>> QueryParser("set [ d in IDepartments; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
-
+    >>> QueryParser("set [ d in IDepartments; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
+    Query(<type 'set'>, In(Identifier(d), Identifier(IDepartments));
+    Eq((Every, Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); 
+    Eq((Some, Property(Identifier(c), Identifier(runBy))), Identifier(d)), Property(Identifier(c), Identifier(credits)))), 
+    Constant(2)), Property(Identifier(d), Identifier(name)))
+    
     >>> QueryParser("set [ c in ICourse; c.credits > 3 | c.code ]")(None)
     Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
 
@@ -61,3 +64,6 @@
 
     >>> QueryParser("set [ c in ICourse; a as c.code | a]")(None)
     Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(code))), Identifier(a))
+
+    >>> QueryParser("set [ c in ICourse; c.code==2  or c.code==3 | c ]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c))
