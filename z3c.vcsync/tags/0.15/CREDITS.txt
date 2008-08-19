@@ -1,0 +1,16 @@
+Credits
+=======
+
+Developers
+----------
+
+* Martijn Faassen
+
+Thank you
+---------
+
+* This software was developed for the Institute of Netherlands
+  History. Thanks for their support.
+
+* Discussions with Uwe Oestermeier were very helpful in the design of
+  this package.

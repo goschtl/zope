@@ -1,0 +1,297 @@
+Importing and exporting content
+===============================
+
+This package can do more than synchronize content with SVN: its
+infrastructure is also for exporting object structures to the
+filesystem or a zip file, and importing them back again.
+
+A simple item to export
+-----------------------
+
+We define a very simple content object we want to export::
+
+  >>> class Item(object):
+  ...   def __init__(self, payload):
+  ...     self.payload = payload
+  ...   def __repr__(self):
+  ...     return "<Item %s with payload %s>" % (self.__name__, self.payload)
+
+We have already defined a ``Container`` object before::
+
+  >>> from z3c.vcsync.tests import Container
+
+Let's set up some objects to export::
+
+  >>> data = Container()
+  >>> data.__name__ = 'root'
+  >>> data['alpha'] = Item(4000)
+  >>> data['foo'] = Item(1)
+  >>> data['hoi'] = Item(3000)
+  >>> data['sub'] = Container()
+  >>> data['sub']['qux'] = Item(3)
+  >>> data['empty'] = Container()
+
+Writing to the filesystem
+-------------------------
+
+First we need to grok this package itself (normally done when you use
+it)::
+
+  >>> import grok.testing
+  >>> grok.testing.grok('z3c.vcsync')
+
+In order to be able to export instances of ``Item``, we need to set up
+an ``ISerializer``::
+
+  >>> import grok
+  >>> from z3c.vcsync.interfaces import ISerializer
+  >>> class ItemSerializer(grok.Adapter):
+  ...     grok.provides(ISerializer)
+  ...     grok.context(Item)
+  ...     def serialize(self, f):
+  ...         f.write(str(self.context.payload))
+  ...         f.write('\n')
+  ...     def name(self):
+  ...         return self.context.__name__ + '.test'
+  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  True
+
+Exporting
+---------
+
+Now we can export our tree to the filesystem by passing the root
+object to the ``export`` function:
+
+  >>> from z3c.vcsync import export
+  >>> from z3c.vcsync.tests import create_test_dir
+  >>> target = create_test_dir()
+  >>> export(data, target)
+
+The data is now exported to the target directory::
+
+  >>> sorted([p.basename for p in target.listdir()])
+  ['alpha.test', 'empty', 'foo.test', 'hoi.test', 'sub']
+  >>> target.join('alpha.test').read()
+  '4000\n'
+  >>> target.join('foo.test').read()
+  '1\n'
+  >>> target.join('hoi.test').read()
+  '3000\n'
+  >>> sub = target.join('sub')
+  >>> sorted([p.basename for p in sub.listdir()])
+  ['qux.test']
+  >>> sub.join('qux.test').read()
+  '3\n'
+  >>> empty = target.join('empty')
+  >>> sorted([p.basename for p in empty.listdir()])
+  []
+
+Exporting to a zipfile
+----------------------
+
+We can also export our content to a zipfile::
+
+  >>> from z3c.vcsync import export_zip
+  >>> ziptarget = create_test_dir()
+  >>> zipfile_path = ziptarget.join('export.zip')
+  >>> export_zip(data, 'data', zipfile_path)
+
+Inspecting the zipfile shows us the right files::
+
+  >>> from zipfile import ZipFile
+  >>> zf = ZipFile(zipfile_path.strpath, 'r')
+  >>> sorted(zf.namelist())
+  ['data/', 'data/alpha.test', 'data/empty/', 'data/foo.test', 
+   'data/hoi.test', 'data/sub/', 'data/sub/qux.test']
+  >>> zf.read('data/alpha.test')
+  '4000\n'
+  >>> zf.read('data/foo.test')
+  '1\n'
+  >>> zf.read('data/hoi.test')
+  '3000\n'
+  >>> zf.read('data/sub/qux.test')
+  '3\n'
+
+Reading from the filesystem
+---------------------------
+
+Before we can import, we need to register two utilities, one to create
+new ``Item`` instances and the other to create new ``Container``
+instances.  Note that an ``IParser`` implemenentation is not
+necessary, though of course it can't hurt to reuse it the factory if
+you happen to have it anyway (as we it is needed for synchronization).
+
+The factory to create the item::
+
+  >>> from z3c.vcsync.interfaces import IFactory
+  >>> class ItemFactory(grok.GlobalUtility):
+  ...   grok.provides(IFactory)
+  ...   grok.name('.test')
+  ...   def __call__(self, path):
+  ...       payload = int(path.read())
+  ...       return Item(payload)
+  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  True
+
+The factory to create the container::
+
+  >>> class ContainerFactory(grok.GlobalUtility):
+  ...   grok.provides(IFactory)
+  ...   def __call__(self, path):
+  ...       return Container()
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  True
+
+Importing
+---------
+
+We prepare a new object to import into::
+
+  >>> new_root = Container()
+  >>> new_root.__name__ = 'root'
+
+We can optionally pass in a function that does something with all
+objects we just imported. Let's do that here, just printing out the
+object::
+
+  >>> def f(obj):
+  ...   print obj
+
+We will import from the filesystem structure that we previously
+exported to. When we do the import, we see each object we are
+importing being printed::
+
+  >>> from z3c.vcsync import import_
+  >>> import_(new_root, target, modified_function=f)
+  <Item alpha with payload 4000>
+  <Item foo with payload 1>
+  <Container sub>
+  <Item qux with payload 3>
+  <Container empty>
+  <Item hoi with payload 3000>
+
+The structure under new_root is now the same as what we exported
+before:::
+
+  >>> sorted(new_root.keys())
+  ['alpha', 'empty', 'foo', 'hoi', 'sub']
+  >>> sorted(new_root['sub'].keys())
+  ['qux']
+  >>> new_root['alpha'].payload
+  4000
+  >>> new_root['foo'].payload
+  1
+  >>> new_root['hoi'].payload
+  3000
+  >>> new_root['sub']['qux'].payload
+  3
+
+Importing from a zipfile
+------------------------
+
+We can also import from the zipfile we created before::
+
+  >>> zip_root = Container()
+  >>> zip_root.__name__ = 'root'
+  
+  >>> from z3c.vcsync import import_zip
+  >>> import_zip(zip_root, 'data', zipfile_path)
+
+We expect the structure to be the same as what we exported::
+
+  >>> sorted(zip_root.keys())
+  ['alpha', 'empty', 'foo', 'hoi', 'sub']
+  >>> sorted(zip_root['sub'].keys())
+  ['qux']
+  >>> zip_root['alpha'].payload
+  4000
+  >>> zip_root['foo'].payload
+  1
+  >>> zip_root['hoi'].payload
+  3000
+  >>> zip_root['sub']['qux'].payload
+  3
+  >>> zip_root['empty'].keys()
+  []
+
+Importing into existing content
+-------------------------------
+
+We can also import into a container that already has existing
+content. Existing objects are never overwritten, but new containers and objects
+are added to this tree.
+
+Let's add create a new export to demonstrate this. We will later try
+to load it into ``zip_root``::
+
+  >>> extra = Container()
+  >>> extra.__name__ = 'root'
+
+Our new export contains a new item, which should be added::
+
+  >>> extra['new_item'] = Item(7777)
+
+It will contains an item ``alpha``. Loading this should not overwrite
+the item ``alpha`` we already have in container::
+
+  >>> extra['alpha'] = Item(5000)
+
+We will also add a new sub container, which should appear::
+
+  >>> extra['subextra'] = Container()
+  >>> extra['subextra']['new_too'] = Item(8888)
+
+We will also add a new item to an existing sub container (``sub``)::
+ 
+  >>> extra['sub'] = Container()
+  >>> extra['sub']['new_as_well'] = Item(9999)
+
+Finally we we will try to add an object to something that's not a
+actually a container (namely ``foo``, an item) in the original
+structure. This attempt should also be ignored::
+
+  >>> extra['foo'] = Container()
+  >>> extra['foo']['heh'] = Item(4444)
+
+Let's turn extra into a zip export::
+
+  >>> ziptarget = create_test_dir()
+  >>> zipfile_path = ziptarget.join('export.zip')
+  >>> export_zip(extra, 'data', zipfile_path)
+
+We will now import this new zip file into ``zip_root``, using the
+modified_function to print objects::
+
+  >>> import_zip(zip_root, 'data', zipfile_path, modified_function=f)
+  <Container subextra>
+  <Item new_too with payload 8888>
+  <Item new_item with payload 7777>
+  <Item new_as_well with payload 9999>
+
+Note that only those objects *new* to the tree will be printed, not all the
+objects in the original zip file.
+
+The original content is still there, not overwritten, even in case of
+``alpha``::
+
+  >>> zip_root['alpha'].payload
+  4000
+  >>> zip_root['foo'].payload
+  1
+  >>> zip_root['hoi'].payload
+  3000
+  >>> zip_root['sub']['qux'].payload
+  3
+
+The completey new content has also appeared::
+
+  >>> sorted(zip_root.keys())
+  ['alpha', 'empty', 'foo', 'hoi', 'new_item', 'sub', 'subextra']
+  >>> zip_root['new_item'].payload
+  7777
+  >>> sorted(zip_root['sub'].keys())
+  ['new_as_well', 'qux']
+  >>> zip_root['sub']['new_as_well'].payload
+  9999
+  >>> sorted(zip_root['subextra'].keys())
+  ['new_too']

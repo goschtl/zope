@@ -1,0 +1,450 @@
+Conflicts
+=========
+
+When one user (user1) edits a piece of content, synchronizes, and
+another user (user2) edits this content too, synchronization can
+result in conflicts.
+
+Conflicts are resolved by letting the last synchronization "win" and
+by backing up the other version to a special "found" directory from
+which it can be recovered.
+
+Another form of conflict involves directories: user1 removes a
+container, synchronizes while user2 edits something in it. This is
+resolved by removing this container, but moving its contents to the
+"found" directory as well.
+
+Set up
+------
+
+Before we set up items, we need to tell it how to get the revision number
+of the last change. For now, this is just ``0``::
+
+  >>> from z3c.vcsync.tests import Container, Item
+  >>> def get_revision_nr(self):
+  ...     return 0
+  >>> Item.get_revision_nr = get_revision_nr
+
+Let's set up a simple tree::
+
+  >>> root1 = Container()
+  >>> root1.__name__ = 'root'
+  >>> root1['data'] = data1 = Container()
+  >>> data1['bar'] = Item(payload=1)
+  >>> data1['sub'] = Container()
+  >>> data1['sub']['qux'] = Item(payload=3)
+
+To create conflicts, we need to represent the state twice (once for
+each user). Let's represent this tree in ``state1`` first::
+
+  >>> from z3c.vcsync.tests import TestState
+  >>> state1 = TestState(root1)
+
+Let's make sure we can save and load the objects by grokking the
+right serializers, parser and factories::
+
+  >>> import grok  
+  >>> from z3c.vcsync.tests import (ItemSerializer, ItemParser, ItemFactory, 
+  ...    ContainerParser, ContainerFactory)
+  >>> grok.testing.grok('z3c.vcsync')
+  >>> grok.testing.grok_component('ItemSerializer', ItemSerializer)
+  True
+  >>> grok.testing.grok_component('ItemParser', ItemParser)
+  True
+  >>> grok.testing.grok_component('ItemFactory', ItemFactory)
+  True
+  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  True
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  True
+
+Let's set up an SVN repository and initial checkout::
+
+  >>> from z3c.vcsync.svn import SvnCheckout
+  >>> from z3c.vcsync.tests import svn_repo_wc
+  >>> repo, wc1 = svn_repo_wc()
+  >>> checkout1 = SvnCheckout(wc1)
+
+And a synchronizer::
+
+  >>> from z3c.vcsync.vc import Synchronizer
+  >>> s1 = Synchronizer(checkout1, state1)
+  >>> current_synchronizer = s1
+
+We can now return the correct revision nr::
+
+  >>> def get_revision_nr(self):
+  ...   return current_synchronizer.state.get_revision_nr()
+  >>> Item.get_revision_nr = get_revision_nr
+
+Let's synchronize the state to the server::
+
+  >>> info = s1.sync("Synchronize")
+
+And synchronize it back into another tree::
+
+  >>> root2 = Container()
+  >>> root2.__name__ = 'root'
+  >>> state2 = TestState(root2)
+
+  >>> import py
+  >>> wc2 = py.test.ensuretemp('wc2')
+  >>> wc2 = py.path.svnwc(wc2)
+  >>> wc2.checkout(repo)
+  >>> checkout2 = SvnCheckout(wc2)
+  >>> s2 = Synchronizer(checkout2, state2)
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+
+We now should have a ``data`` folder in ``root2`` as well::
+
+  >>> data2 = root2['data']
+
+File conflicts
+--------------
+
+We define a function first that can get the output of the
+``files_changed`` method on ``info`` and normalize it into testable
+paths::
+
+  >>> def files_changed(synchronizer, info):
+  ...   result = []
+  ...   checkout_path = synchronizer.checkout.path
+  ...   for path in info.files_changed():
+  ...       result.append(path.relto(checkout_path))
+  ...   return sorted(result, key=lambda path: len(path))
+
+Let's now generate a conflict: we change the same object in both trees
+at the same time::
+
+  >>> current_synchronizer = s1
+  >>> data1['bar'].payload = 200
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 250
+
+Let's synchronize the second tree first. This won't generate a
+conflict yet by itself, but sets up for it::
+
+  >>> info = s2.sync("synchronize")
+  >>> files_changed(s2, info)
+  []
+  >>> info.objects_changed()
+  ['/data/bar']
+
+Now we'll synchronize the first tree. This will generate a conflict, as
+we saved a different value from the second tree::
+
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("synchronize")
+  >>> files_changed(s1, info)
+  ['found', 'found/data', 'data/bar.test', 'found/data/bar.test']
+  >>> sorted(info.objects_changed())
+  ['/data/bar']
+
+Note that since ``found`` and ``found/data`` were also newly added to
+the tree, they show up in ``files_changed``.
+
+The conflict will have been resolved in favor of the first tree, as
+this synchronized last::
+
+  >>> data1['bar'].payload
+  200
+
+The other version of the conflicting object is not gone. It is stored
+under a special ``found`` directory. We see the conflicting value that
+was stored by the second tree in here::
+
+  >>> found1 = root1['found']
+  >>> found1['data']['bar'].payload
+  250
+  
+When we synchronize from the second tree again, we will see the
+resolved value appear as well::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("synchronize")
+  >>> files_changed(s2, info)
+  ['found', 'found/data', 'data/bar.test', 'found/data/bar.test']
+  >>> data2['bar'].payload
+  200
+
+Since ``found`` and ``found/data`` are new to ``s2``, they show up as
+changed files again.
+
+The other version of the conflicting object is also available to the
+second hierarchy::
+
+  >>> found2 = root2['found']
+  >>> found2['data']['bar'].payload
+  250
+
+Conflicts in subdirectories should also be resolved properly::
+
+  >>> current_synchronizer = s1
+  >>> data1['sub']['qux'].payload = 35 
+  >>> current_synchronizer = s2
+  >>> data2['sub']['qux'].payload = 36
+  >>> info = s2.sync("Synchronize")
+
+No conflict occured yet, so no files changed::
+
+  >>> files_changed(s2, info)
+  []
+
+Now we generate the conflict::
+
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  ['found/data/sub', 'data/sub/qux.test', 'found/data/sub/qux.test']
+
+Note that only those files actually changed as a result of this will
+show up, not ``found`` or ``found/data``.
+
+  >>> data1['sub']['qux'].payload
+  35
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['found/data/sub', 'data/sub/qux.test', 'found/data/sub/qux.test']
+
+  >>> data2['sub']['qux'].payload
+  35
+
+The found version in this case will reside in the same subdirectory,
+``sub``::
+
+  >>> found2['data']['sub']['qux'].payload
+  36
+
+Conflict of new files
+---------------------
+
+If both trees have a file with the same name added, these files are in
+conflict before either of them enters svn. This can lead to an SVN
+error when an ``svn up`` is issued - the file is newly updated but has
+also been locally added.
+
+  >>> current_synchronizer = s1
+  >>> data1['simulnew'] = Item(200)
+  >>> current_synchronizer = s2
+  >>> data2['simulnew'] = Item(250)
+
+Let's synchronize the second tree first. This won't be a problem by
+itself::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("synchronize")
+
+The file ``simulnew`` is now in SVN, but at the same time, it will get
+added by ``s1`` as we synchronize it::
+
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("synchronize")
+
+Normally the conflict will have resolved in favor of the one that resolves
+last, but this is currently technically rather hard to do, so we'll favor
+the one that first got the file into SVN::
+
+  >>> data1['simulnew'].payload
+  250
+
+The other version of the conflicting object is stored under the
+``found`` directory::
+
+  >>> found1 = root1['found']
+  >>> found1['data']['simulnew'].payload
+  200
+
+Re-occurrence of a conflict
+---------------------------
+
+If a conflict occurs for the same file the second time, and the file
+was already in the ``found`` directory, the file in the found
+directory is overwritten with the latest version::
+
+  >>> current_synchronizer = s1
+  >>> data1['bar'].payload = 201
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 251
+  >>> info = s2.sync("Synchronize")
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("Synchronize")
+
+The conflict will be resolved in favor of the last synchronization::
+
+  >>> data1['bar'].payload
+  201
+
+The ``found`` directory will contain the other part of the conflict
+(having overwritten the previous value)::
+
+  >>> found1 = root1['found']
+  >>> found1['data']['bar'].payload
+  251
+
+Conflicting file conflicts
+--------------------------
+
+The ``found`` directory can have files removed in it by a user. What
+if a user removes a file from the ``found`` directory, and at the same
+time, another user creates a conflict that causes this file to be
+re-created?
+
+Let's make sure the second user also has the same content::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+
+We currently already have a conflicting object in ``found2``::
+
+  >>> found2['data']['bar'].payload
+  251
+
+Now the user throws away the ``bar`` object from ``found``::
+
+  >>> from z3c.vcsync.vc import get_object_path
+  >>> state2._removed.append(
+  ...    get_object_path(root2, found2['data']['bar']))
+  >>> del found2['data']['bar']
+
+Now let's generate a conflict on ``bar`` again::
+
+  >>> current_synchronizer = s1
+  >>> data1['bar'].payload = 202
+  >>> current_synchronizer = s2
+  >>> data2['bar'].payload = 252
+  >>> info = s2.sync("Synchronize")
+  >>> current_synchronizer = s1
+  >>> info = s1.sync("Synchronize")
+
+The result should be that the found object is there, updated to the
+new conflict::
+
+  >>> found1['data']['bar'].payload
+  252
+
+Folder conflicts
+----------------
+
+Let's now examine a case of a conflict in case of containers.
+
+A user (``user1``) creates a new container in ``data`` with some
+content in it, and synchronizes it::
+
+  >>> current_synchronizer = s1
+  >>> data1['folder'] = Container()
+  >>> data1['folder']['content'] = Item(14)
+  >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  []
+
+We'll synchronize this into ``data2`` so that the second user
+(``user2``) has access to it::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['data/folder', 'data/bar.test', 'found/data/bar.test', 'data/folder/content.test']
+
+``user1`` now throws away ``folder`` in ``data`` and synchronizes this,
+causing ``folder`` to be gone in SVN::
+
+  >>> current_synchronizer = s1
+  >>> state1._removed.append(get_object_path(root1, root1['data']['folder']))
+  >>> del root1['data']['folder']
+  >>> info = s1.sync("Synchronize")
+  >>> files_changed(s1, info)
+  []
+
+It's really gone now::
+
+  >>> 'folder' in root1['data']
+  False
+
+It's also gone in SVN::
+
+  >>> s1.checkout.path.join('data').join('folder').check()
+  False
+
+Meanwhile, ``user2`` happily alters data in ``folder`` by changing
+``content`` in instance 2::
+
+  >>> current_synchronizer = s2
+  >>> data2['folder']['content'].payload = 15
+
+Now ``user2`` does a synchronization too::
+
+  >>> info = s2.sync("Synchronize")
+  >>> files_changed(s2, info)
+  ['found/data/folder', 'found/data/folder/content.test']
+
+Since the folder was previously removed, all changes ``user2`` made
+are now gone, as ``folder`` is gone::
+
+  >>> 'folder' in data2
+  False
+
+The folder with its content can however be retrieved in the found data
+section::
+
+  >>> found2['data']['folder']['content'].payload
+  15
+
+Adding an object that was just removed: Py error
+------------------------------------------------
+
+In some cases an object that was removed in a state is later re-added,
+such as in the following scenario:
+
+* there is an object 'testing'
+ 
+* synchronized
+
+* the object is removed
+
+* a new object is created with the same name, 'testing'
+  
+* resynchronization
+
+The result is an error in the Py lib that the svn status code ``R``
+cannot be processed. 
+
+The interface of ``IState`` states that it is safe for the ``removed``
+method to return objects that were removed but were since then
+re-added (and thus also appear in the ``objects`` list). Unfortunately
+the 
+
+This is however not the underlying error. The true error is that the
+object got added to the removed list of the state while it is also in
+the modified list of the state (as it was re-added). Let's demonstrate
+the error::
+
+  >>> current_synchronizer = s1
+  >>> data1['testing'] = Item(200)
+  >>> info = s1.sync("synchronize")
+
+We claim the object is removed::
+
+  >>> state1._removed.append(
+  ...    get_object_path(root1, data1['testing']))
+  >>> del data1['testing']
+
+But we also claim it is modified (the test state declares everything
+modified)::
+
+  >>> data1['testing'] = Item(250)
+
+The result is an error when synchronizing::
+
+  >>> info = s1.sync("synchronize")
+
+
+Conflicting directory conflicts
+-------------------------------
+
+A directory was removed in the conflict directory: should be all right
+
+XXX A directory was removed in the conflict directory, but more conflicts
+created files within that directory.
+
