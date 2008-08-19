@@ -67,3 +67,10 @@
 
     >>> QueryParser("set [ c in ICourse; c.code==2  or c.code==3 | c ]")(None)
     Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c))
+
+    >>> QueryParser("set [ c in ICourse; a as c.name; a=='C1' | c]")(None)
+    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(name))); Eq(Identifier(a), Constant('C1')), Identifier(c))
+
+    >>> qo = QueryParser("set [ s in IStudents; a as s.major; a=='test' | s ]")(None)
+    Query(<type 'set'>, In(Identifier(s), Identifier(IStudents)); Alias(Identifier(a), Property(Identifier(s), Identifier(major))); Eq(Identifier(a), Constant('test')), Identifier(s))
+     
