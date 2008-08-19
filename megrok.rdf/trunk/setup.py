@@ -25,7 +25,7 @@ setup(name='megrok.rdf',
       install_requires=[
           'setuptools',
           'grok >= 0.13',
-          'RDFLib == 2.4.0'
+          'rdflib == 2.4.0'
          ],
       entry_points="""
       # -*- Entry points: -*-
