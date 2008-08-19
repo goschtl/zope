@@ -45,7 +45,7 @@ class EventStub(object):
         self.database = db
 
 #
-# TODO: some methods from the boostap modue are not tested
+# TODO: some methods from the boostap module are not tested
 #
 
 class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
