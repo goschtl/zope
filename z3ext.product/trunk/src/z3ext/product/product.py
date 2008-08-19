@@ -71,7 +71,7 @@ class Product(object):
 
         if not self.__installed__:
             raise interfaces.ProductNotInstalledError(
-                _('Product not installed.'))
+                _('Product is not installed.'))
 
         sm = getSiteManager()
         registry = getattr(z3ext.product, self.__product_name__)

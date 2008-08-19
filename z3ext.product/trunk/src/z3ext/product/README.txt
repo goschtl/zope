@@ -132,12 +132,12 @@ we can't uninstall or update not installed product
   >>> product.uninstall()
   Traceback (most recent call last):
   ...
-  ProductNotInstalledError: Product not installed.
+  ProductNotInstalledError: Product is not installed.
 
   >>> product.update()
   Traceback (most recent call last):
   ...
-  ProductNotInstalledError: Product not installed.
+  ProductNotInstalledError: Product is not installed.
 
 
 Product extension
