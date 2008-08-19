@@ -353,8 +353,9 @@ class Quantor(QueryObject):
         self.setProp('expr', expr)
 
     def __repr__(self):
-        return "(%s)" % (
-            self.__class__.__name__
+        return "(%s, %s)" % (
+            self.__class__.__name__,
+            str(self.expr)
             )
 
 class Quanted(Child):
@@ -368,6 +369,12 @@ class Quanted(Child):
         Child.__init__(self)
         self.setProp('quantor', quantor)
         self.setProp('expression', expression)
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (
+            self.__class__.__name__,
+            str(self.quantor), str(self.expression)
+            )
 
 # Quantors
 class Every(Quantor):
