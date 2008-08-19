@@ -4,7 +4,15 @@ z3c.vcsync changes
 0.15 (unreleased)
 -----------------
 
-* ...
+* Fix a bug where the SVN "R" status was not recognized by the py lib.
+  Monkey-patch py for now, though a fix should be released with py
+  0.9.2 eventually. Strictly depend on py 0.9.1 for now to make sure
+  monkey-patch applies cleanly.
+
+* A bit of refactoring of duplicated code in retrieving the objects
+  modified and objects removed lists. Still not happy that this gets
+  called twice per synchronization, but it was already doing this so
+  doesn't get worse either.
 
 0.14 (2008-07-04)
 -----------------

@@ -25,7 +25,7 @@ setup(name='z3c.vcsync',
       install_requires=[
         'setuptools',
         'grok',
-        'py >= 0.9.1',
+        'py == 0.9.1',
       ],
       license="ZPL 2.1",
       entry_points="""

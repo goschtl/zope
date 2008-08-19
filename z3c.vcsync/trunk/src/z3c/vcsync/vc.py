@@ -104,12 +104,10 @@ class Synchronizer(object):
 
     def sync(self, message='', modified_function=None):
         revision_nr = self.state.get_revision_nr()
-        # store these to report in SynchronizationInfo below
-        objects_removed = list(self.state.removed(revision_nr))
-        root = self.state.root
-        objects_changed = [get_object_path(root, obj) for obj in
-                           self.state.objects(revision_nr)]
-        # now save the state to the checkout
+        # store some information for the synchronization info
+        objects_changed, object_paths_changed, object_paths_removed =\
+                         self._get_changed_removed(revision_nr)
+        # save the state to the checkout
         self.save(revision_nr)
         # update the checkout
         self.checkout.up()
@@ -141,15 +139,37 @@ class Synchronizer(object):
         
         # we store the new revision number in the state
         self.state.set_revision_nr(revision_nr)
-        # and we return some informatino about happened
+        # and we return some information about what happened
         return SynchronizationInfo(revision_nr,
-                                   objects_removed, objects_changed,
+                                   object_paths_removed, object_paths_changed,
                                    files_removed, files_changed)
 
+    def _get_changed_removed(self, revision_nr):
+        """Construct the true lists of objects that are changed and removed.
+
+        Returns tuple with:
+
+        * actual objects changed
+        * object paths changed
+        * object paths removed
+        """
+        # store these to report in SynchronizationInfo below
+        object_paths_removed = list(self.state.removed(revision_nr))
+        root = self.state.root
+        objects_changed = list(self.state.objects(revision_nr))
+        object_paths_changed = [get_object_path(root, obj) for obj in
+                           objects_changed]
+        return objects_changed, object_paths_changed, object_paths_removed
+        
     def save(self, revision_nr):
+        """Save objects to filesystem.
+        """
+        objects_changed, object_paths_changed, object_paths_removed =\
+                         self._get_changed_removed(revision_nr)
+        
         # remove all files that have been removed in the database
         path = self.checkout.path
-        for removed_path in self.state.removed(revision_nr):
+        for removed_path in object_paths_removed:
             # construct path to directory containing file/dir to remove
             # note: this is a state-specific path which always uses /, so we
             # shouldn't use os.path.sep here
@@ -178,10 +198,10 @@ class Synchronizer(object):
 
         # now save all files that have been modified/added
         root = self.state.root
-        for obj in self.state.objects(revision_nr):
+        for obj in objects_changed:
             if obj is not root:
                 IDump(obj).save(self._get_container_path(root, obj))
-
+  
     def load(self, revision_nr):
         # remove all objects that have been removed in the checkout
         root = self.state.root

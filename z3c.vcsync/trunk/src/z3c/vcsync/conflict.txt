@@ -391,6 +391,55 @@ section::
   >>> found2['data']['folder']['content'].payload
   15
 
+Adding an object that was just removed: Py error
+------------------------------------------------
+
+In some cases an object that was removed in a state is later re-added,
+such as in the following scenario:
+
+* there is an object 'testing'
+ 
+* synchronized
+
+* the object is removed
+
+* a new object is created with the same name, 'testing'
+  
+* resynchronization
+
+The result is an error in the Py lib that the svn status code ``R``
+cannot be processed. 
+
+The interface of ``IState`` states that it is safe for the ``removed``
+method to return objects that were removed but were since then
+re-added (and thus also appear in the ``objects`` list). Unfortunately
+the 
+
+This is however not the underlying error. The true error is that the
+object got added to the removed list of the state while it is also in
+the modified list of the state (as it was re-added). Let's demonstrate
+the error::
+
+  >>> current_synchronizer = s1
+  >>> data1['testing'] = Item(200)
+  >>> info = s1.sync("synchronize")
+
+We claim the object is removed::
+
+  >>> state1._removed.append(
+  ...    get_object_path(root1, data1['testing']))
+  >>> del data1['testing']
+
+But we also claim it is modified (the test state declares everything
+modified)::
+
+  >>> data1['testing'] = Item(250)
+
+The result is an error when synchronizing::
+
+  >>> info = s1.sync("synchronize")
+
+
 Conflicting directory conflicts
 -------------------------------
 
