@@ -1,0 +1,125 @@
+    >>> from zope.component import provideAdapter
+    >>> from ocql.testing.database import TestMetadata
+    >>> provideAdapter(TestMetadata)
+    >>> from ocql.engine import OCQLEngine
+    >>> engine = OCQLEngine()
+    
+Number constant -- set:
+    >>> engine.compile("set [ | 1 ]").execute()
+    set([1])
+
+Number constant -- list:
+    >>> engine.compile("list [ | 1 ]").execute()
+    [1]
+
+# Number constant -- bag:
+#     >>> engine.compile("bag [ | 1 ]").execute()
+
+# FIXME: Not working
+# Number constant -- negative:
+#     >>> engine.compile("set [ | -1 ]").execute()
+#     set([-1])
+
+# FIXME: Not working
+# Number constant -- real:
+#     >>> engine.compile("set [ | 3.1415 ]").execute()
+#     set([-1])
+
+String constant:
+    >>> engine.compile("set [ | \"ocql\" ]").execute()
+    set(['ocql'])
+
+# TODO: Not implemented yet.
+# Set constant:
+#    >>> engine.compile("set [ | set { \"ocql\" } ]").execute()
+#    set(['ocql'])
+
+# TODO: Not implemented yet.
+# Integer range constant
+#    >>> engine.compile("list [ | list { 1 ... 5 } ]").execute()
+#    set([1,2,3,4,5])
+
+Union (set, set):
+    >>> engine.compile("set [ | 1] union set [|2]").execute()
+    set([1, 2])
+
+Union (set, set):
+    >>> engine.compile("set [ | 1] union set [|1]").execute()
+    set([1])
+
+Union (set, list):
+    >>> engine.compile("set [ | 1] union list [|1]").execute()
+    set([1])
+
+# The result type of the infix collection operators is the type of its first
+# argument (or meaningless ???).
+# Union (list, list):
+#     >>> engine.compile("list [ | 1] union list [|1]").execute()
+#     [1, 1]
+
+# The result type of the infix collection operators is the type of its first
+# argument (or meaningless ???).
+# Union (list, set):
+#     >>> engine.compile("list [ | 1] union set [|1]").execute()
+#     [1, 1]
+
+Differ (set, set):
+    >>> engine.compile("set [ | 1] differ set [|2]").execute()
+    set([1])
+
+Differ (set, set):
+    >>> engine.compile("set [ | 1] differ set [|1]").execute()
+    set([])
+
+Differ (set, list):
+    >>> engine.compile("set [ | 1] differ list [|1]").execute()
+    set([])
+
+# Differ (list, list):
+# meaningless - there's no difference of lists (???)
+#     >>> engine.compile("list [ | 1] differ list [|1]").execute()
+
+# Differ (list, set):
+# meaningless - there's no difference of lists (???)
+#     >>> engine.compile("list [ | 1] differ set [|1]").execute()
+
+Simple in expression (eg select):
+    >>> engine.compile("set [ i in ICourse| i ]").execute()
+    set([Course <C1>, Course <C2>, Course <C3>])
+
+Simple condition (eg where):
+    >>> engine.compile("list [ d in IDepartments; d.name == \"Computing Science\" | d  ]").execute()
+    [Department <Computing Science>]
+
+# FIXME: not working!
+# Join using existentially quantified expressions:
+#     >>> engine.compile("""list [ d in IDepartments; c in ICourse; d.name == "Computing Science"; d == some c.runBy | c  ]""").execute()
+#     set([Course <C1>, Course <C3>])
+
+# FIXME: not working!
+# Join using universally quantified expressions:
+#      >>> engine.compile("""list [ d in IDepartments; c in ICourse; d.name == "Computing Science"; d == every c.runBy | c  ]""").execute()
+#      set([Course <C3>])
+
+# FIXME: not working!
+# Expression in the result:
+#     >>> engine.compile("set [ i in ICourse | i.runBy  ]").execute()
+#     set([set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])])
+
+Expression in the result:
+    >>> engine.compile("list [ i in ICourse | i.runBy  ]").execute()
+    [set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])]
+
+# FIXME: not working!
+# Size expression in the result:
+#     >>> engine.compile("list [ c in ICourse ; size c.runBy == 1 | c ]").execute()
+#     [Course <C3>]
+
+# FIXME: not working!
+# Size operator in the result:
+#     >>> engine.compile("list [ c in ICourse | size c.runBy  ]").execute()
+#     [2, 0, 1]
+
+More test ideas:
+engine.compile("""list [ d in IDepartments; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()
+engine.compile("""list [ d in IDepartments; | list {d, size set [ some c.runBy = d ; c in ICurses; c.credits <= 2 | c ] } ]""").execute()
