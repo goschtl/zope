@@ -57,7 +57,7 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     # wait for the server to start
     old_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(5)
-    url = base_url %{'port': port}
+    url = base_url % {'port': port}
     url += ('/@@/selenium/TestRunner.html'
             '?test=tests%%2FTestSuite.html&'
             'baseUrl=%s&'
