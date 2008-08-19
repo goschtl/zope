@@ -1,0 +1,23 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   i18n_domain="z3ext">
+
+  <includeDependencies package="z3ext.product" />
+
+  <permission
+     id="z3ext.ManageProducts"
+     title="Manage products" />
+
+  <z3ext:configlet
+     name="product"
+     schema=".interfaces.IProductInstaller"
+     title="Products management"
+     description="This is the Add-on Products install section."
+     class=".installer.ProductsInstaller"
+     permission="z3ext.ManageProducts" />
+
+  <include file="browser.zcml" />
+
+</configure>

@@ -1,0 +1,71 @@
+=======
+CHANGES
+=======
+
+1.1.2 (2008-08-19)
+------------------
+
+- Calculate installed status
+
+
+1.1.0 (2008-08-05)
+------------------
+
+- Implemented product management for enclosed site objects
+
+
+1.0.2 (2008-05-26)
+------------------
+
+- During product instalation, first install CA registry, then call update
+
+
+1.0.1 (2008-05-15)
+------------------
+
+- Compatibility with z3ext.controlpanel >= 1.2.3
+
+
+1.0.0 (2008-03-26)
+------------------
+
+- Tests added
+
+- Code moved to svn.zope.org
+
+
+0.11.1 (2008-03-04)
+-------------------
+
+- Added 'broken' base registry in case product not available.
+
+
+0.11 (2008-02-28)
+-----------------
+
+- Use z3c.baseregistry
+
+- Use z3c.autoinclude
+
+- Create components registry for each product.
+  now it's possible to use <registerIn registry="z3ext.product.productName'/>
+  for registering product adapters and utulities.
+
+
+0.10.2 (2008-02-18)
+------------------
+
+- Don't show 'Products Management' configlet
+  if there are no installable products
+
+
+0.10.1 (2008-02-01)
+------------------
+
+- Removed `grant` directives
+
+
+0.10 (2008-02-01)
+------------------
+
+- Initial release
