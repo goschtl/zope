@@ -172,6 +172,11 @@ class TestConfigurationSchema(unittest.TestCase):
             urlpath = urlpath[1:]
         return "file:///" + urlpath
 
+    def test_productconfig_xml(self):
+        path = os.path.join(self.schema_dir, "productconfig.xml")
+        url = self.path2url(path)
+        schema = ZConfig.loadSchema(url)
+
     def test_schema_xml(self):
         path = os.path.join(self.schema_dir, "schema.xml")
         url = self.path2url(path)

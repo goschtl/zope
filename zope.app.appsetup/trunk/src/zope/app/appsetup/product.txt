@@ -174,3 +174,61 @@ The saved configuration state can be restored:
     None
     >>> print product.getProductConfiguration("second")
     {'you': 'there'}
+
+There's an additional function that can be used to load product configuration
+from a file object; only product configuration components are accepted.  The
+function returns a mapping of names to configuration objects suitable for
+passing to ``setProductConfiguration``.  Using this with
+``setProductConfigurations`` would require constructing ``FauxConfiguration``
+objects.
+
+Let's create some sample configuration text:
+
+    >>> product_config = '''
+    ... <product-config product1>
+    ...   key1 product1-value1
+    ...   key2 product1-value2
+    ... </product-config>
+    ...
+    ... <product-config product2>
+    ...   key1 product2-value1
+    ...   key3 product2-value2
+    ... </product-config>
+    ... '''
+
+We can now load the configuration using the ``loadConfiguration`` function:
+
+    >>> import StringIO
+    >>> import pprint
+
+    >>> sio = StringIO.StringIO(product_config)
+    >>> config = product.loadConfiguration(sio)
+
+    >>> pprint.pprint(config, width=1)
+    {'product1': {'key1': 'product1-value1',
+                  'key2': 'product1-value2'},
+     'product2': {'key1': 'product2-value1',
+                  'key3': 'product2-value2'}}
+
+Extensions that provide product configurations can be used as well:
+
+    >>> product_config = '''
+    ... %import zope.app.appsetup.testproduct
+    ...
+    ... <testproduct foobar>
+    ... </testproduct>
+    ...
+    ... <testproduct barfoo>
+    ...   key1 value1
+    ...   key2 value2
+    ... </testproduct>
+    ... '''
+
+    >>> sio = StringIO.StringIO(product_config)
+    >>> config = product.loadConfiguration(sio)
+
+    >>> pprint.pprint(config, width=1)
+    {'barfoo': {'key1': 'value1',
+                'key2': 'value2',
+                'product-name': 'barfoo'},
+     'foobar': {'product-name': 'foobar'}}

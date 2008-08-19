@@ -3,9 +3,12 @@
 """
 __docformat__ = "reStructuredText"
 
+import ZConfig
+import os.path
 import zope.testing.cleanup
 
 _configs = {}
+_schema = None
 
 zope.testing.cleanup.addCleanUp(_configs.clear)
 
@@ -46,6 +49,17 @@ def restoreConfiguration(state):
     """Restore the configuration state based on a state value."""
     _configs.clear()
     _configs.update(state)
+
+
+def loadConfiguration(file, url=None):
+    global _schema
+    if _schema is None:
+        here = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(here, "schema", "productconfig.xml")
+        _schema = ZConfig.loadSchema(path)
+    data, handlers = ZConfig.loadConfigFile(_schema, file, url=url)
+    return dict((sect.getSectionName(), sect.mapping)
+                for sect in data.product_config)
 
 
 class FauxConfiguration(object):
