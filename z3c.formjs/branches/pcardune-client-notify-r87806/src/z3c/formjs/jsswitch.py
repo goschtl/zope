@@ -145,7 +145,7 @@ class WidgetModeSwitcher(ajax.AJAXRequestHandler):
         widget = self._getWidget('input')
         data, errors = self.extractData()
         if errors:
-            return errors[0].message
+            return unicode(errors[0].message)
         self.applyChanges(data)
         return ''
 

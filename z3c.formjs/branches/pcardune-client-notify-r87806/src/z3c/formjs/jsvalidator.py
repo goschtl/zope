@@ -57,5 +57,5 @@ class MessageValidator(BaseValidator):
     def validate(self):
         data, errors = self._validate()
         if errors:
-            return errors[0].message
+            return unicode(errors[0].message)
         return u'' # all OK

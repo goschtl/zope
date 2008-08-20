@@ -84,6 +84,8 @@ class AJAXHandler(object):
 
     def __call__(self, view):
         result = mapply(self.func, (view,), view.request)
+        if type(result) != str and type(result) != unicode:
+            return cjson.encode(result)
         return result
 
     def __repr__(self):
