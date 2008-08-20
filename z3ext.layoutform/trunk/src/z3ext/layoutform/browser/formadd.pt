@@ -10,7 +10,7 @@
 	    Short Name is part of the item's web address.
 	  </div>
 	  <div>
-	    <input type="text" name="add_input_name"
+	    <input type="text" name="add_input_name" id="add_input_name"
 		   tal:attributes="value request/add_input_name | nothing" />
 	  </div>
 	</div>
