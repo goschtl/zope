@@ -1,0 +1,14 @@
+<html>
+<body>
+<h2>RDB Example</h2>
+<h3>Faculty listing</h3>
+<ul>
+  <li tal:repeat="faculty view/faculties">
+    <a tal:attributes="href python:view.url(faculty)" tal:content="faculty/title"></a>
+  </li>
+</ul>
+<p>
+  <a tal:attributes="href python:view.url('addfaculty')">Add Faculty</a>
+</p>
+</body>
+</html>
