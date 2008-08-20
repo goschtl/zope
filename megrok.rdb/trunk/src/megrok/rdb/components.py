@@ -38,10 +38,16 @@ class Container(MappedCollection):
             keyfunc = default_keyfunc
         MappedCollection.__init__(self, keyfunc=keyfunc)
 
-    def _sa_on_link(self, adapter):
-        self.__parent__ = adapter.owner_state.obj()
-        self.__name__ = unicode(adapter.attr.key)
-        
+    @collection.on_link
+    def on_link(self, adapter):
+        if adapter is not None:
+            self.__parent__ = adapter.owner_state.obj()
+            self.__name__ = unicode(adapter.attr.key)
+        else:
+            # unlinking collection from parent
+            self.__parent__ = None
+            self.__name__ = None
+            
     def __setitem__(self, key, item):
         self._receive(item)
         MappedCollection.__setitem__(self, key, item)
