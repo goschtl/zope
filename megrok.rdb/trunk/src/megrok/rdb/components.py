@@ -38,6 +38,26 @@ class Container(MappedCollection):
             keyfunc = default_keyfunc
         MappedCollection.__init__(self, keyfunc=keyfunc)
 
+    def _sa_on_link(self, adapter):
+        self.__parent__ = adapter.owner_state.obj()
+        self.__name__ = unicode(adapter.attr.key)
+        
+    def __setitem__(self, key, item):
+        self._receive(item)
+        MappedCollection.__setitem__(self, key, item)
+
+    def __delitem__(self, key):
+        self._release(self[key])
+        MappedCollection.__delitem__(self, key)
+
+    def _receive(self, item):
+        item.__name__ = unicode(self.keyfunc(item))
+        item.__parent__ = self
+
+    def _release(self, item):
+        del item.__name__
+        del item.__parent__
+    
     @collection.internally_instrumented
     @collection.appender
     def set(self, value, _sa_initiator=None):
@@ -47,4 +67,3 @@ class Container(MappedCollection):
             session.flush()
             key = self.keyfunc(value)
         self.__setitem__(key, value, _sa_initiator)
-

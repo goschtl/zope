@@ -49,6 +49,11 @@ def test_suite():
         setUp=zopeSetUp,
         tearDown=zopeTearDown,
         optionflags=optionflags))
+    suite.addTest(doctest.DocTestSuite(
+        'megrok.rdb.tests.location',
+        setUp=zopeSetUp,
+        tearDown=zopeTearDown,
+        optionflags=optionflags))
     suite.addTest(doctest.DocFileSuite(
         '../schema.txt',
         optionflags=optionflags,
