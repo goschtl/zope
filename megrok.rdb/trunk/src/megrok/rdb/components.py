@@ -1,6 +1,7 @@
 from sqlalchemy.orm.collections import MappedCollection, collection
 
 from zope.interface import implements
+from zope.location.interfaces import ILocation
 
 from grokcore.component import Context
 from grok.interfaces import IContainer
@@ -26,7 +27,7 @@ def default_keyfunc(node):
             "don't know how to do keying with composite primary keys")
 
 class Container(MappedCollection):
-    implements(IContainer)
+    implements(IContainer, ILocation)
 
     def __init__(self, *args, **kw):
         rdb_key = directive.key.bind().get(self)
@@ -73,3 +74,55 @@ class Container(MappedCollection):
             session.flush()
             key = self.keyfunc(value)
         self.__setitem__(key, value, _sa_initiator)
+
+class QueryContainer(object):
+    """A read-only Container backed by set of SQLAlchemy queries.
+
+    This container is often used as the "root" object for an application.
+    """
+    # XXX should really only implement IReadContainer, but this requires
+    # a bit of refactoring in Grok
+    implements(IContainer, ILocation)
+
+    def query(self):
+        raise NotImplementedError
+
+    def __getitem__(self, key):
+        result = self.query().get(key)
+        if result is None:
+            raise KeyError(key)
+        result.__parent__ = self
+        result.__name__ = key
+        return result
+    
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+    
+    def __contains__(self, key):
+        try:
+            self[key]
+            return True
+        except KeyError:
+            return False
+
+    def has_key(self, key):
+        return key in self
+
+    def keys(self):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+    
+    def values(self):
+        raise NotImplementedError
+
+    def items(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        return self.query().count()
+    

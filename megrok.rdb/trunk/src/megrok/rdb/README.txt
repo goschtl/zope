@@ -266,3 +266,64 @@ We can now verify that the courses are there, with the names as the keys::
   Quantum Mechanics Quantum Mechanics Physics
   Relativity Relativity Physics
 
+Custom query container
+----------------------
+
+Sometimes we want to expose objects as a (read-only) container based
+on a query, not a relation. This is useful when constructing an
+application and you need a "starting point", a root object that
+launches into SQLAlchemy-mapped object that itself is not directly
+managed by SQLAlchemy.
+
+We can construct such a special container by subclassing from ``rdb.QueryContainer`` and implementing
+the special ``query`` method::
+
+  >>> class MyQueryContainer(rdb.QueryContainer):
+  ...   def query(self):
+  ...      return session.query(Department)
+  >>> qc = MyQueryContainer()
+
+Let's try some common read-only container operations, such as
+``__getitem__``1::
+
+  >>> qc[1].name
+  u'Philosophy'
+  >>> qc[2].name
+  'Physics'
+
+XXX Why the unicode difference?
+
+``__getitem__`` with a ``KeyError``::
+
+  >>> qc[3]
+  Traceback (most recent call last):
+    ...
+  KeyError: 3
+
+``get``::
+
+  >>> qc.get(1).name
+  u'Philosophy'
+  >>> qc.get(3) is None
+  True
+  >>> qc.get(3, 'foo')
+  'foo'
+
+``__contains__``::
+
+  >>> 1 in qc
+  True
+  >>> 3 in qc
+  False
+
+``has_key``::
+
+  >>> qc.has_key(1)
+  True
+  >>> qc.has_key(3)
+  False
+
+``len``::
+
+  >>> len(qc)
+  2
