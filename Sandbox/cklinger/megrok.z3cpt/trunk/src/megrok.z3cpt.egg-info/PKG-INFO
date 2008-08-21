@@ -1,0 +1,23 @@
+Metadata-Version: 1.0
+Name: megrok.z3cpt
+Version: 0.1
+Summary: Grok extension to use z3c.pt
+Home-page: http://pypi.python.org/pypi/megrok.z3cpt
+Author: Christian Klinger
+Author-email: cklinger@.de
+License: ZPL
+Description: 
+        
+        Changelog
+        =========
+        
+        0.1 (2008-07-12)
+        ----------------
+        
+        Initial release.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Zope3
+Classifier: License :: OSI Approved :: Zope Public License
