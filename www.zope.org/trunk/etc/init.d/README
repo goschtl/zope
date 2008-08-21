@@ -1,0 +1,2 @@
+This folder contains SysV-compatible startup scripts. These scripts 
+contain HARDCODED PATHS, so check and adjust them before usage.

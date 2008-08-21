@@ -1,0 +1,63 @@
+#!/bin/sh
+# Startup script for Zope client
+
+# chkconfig: 2345 93 03
+# description: Start Zope Corp Zope Client
+# by chrism 01/10/2001
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+instance="/var/zope/www.zope.org"
+zopectl="$instance/bin/instance1"
+
+[ -f $zopectl ] || exit 0
+
+prog="zope.org ZEO client 1"
+
+start() {
+    echo -n $"Starting $prog: " 
+    daemon --user=zope $zopectl start
+    RETVAL=$?
+    echo
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    $zopectl stop
+    RETVAL=$?
+        echo
+    return $RETVAL
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+
+        restart)
+            $zopectl restart
+            ;;
+
+    logtail)
+        $zopectl logtail
+        ;;
+
+
+    rotate)
+        $zopectl logreopen
+        ;;
+
+        *)
+            echo $"Usage: $0 {start|stop|restart|logtail|rotate}"
+            exit 1
+
+esac
+
+exit $RETVAL
+

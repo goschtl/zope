@@ -1,0 +1,57 @@
+#!/bin/sh
+# Startup script for ZEO using zeoctl
+# by Chris McDonough (chrism@zope.com)
+#
+# chkconfig: 2345 80 20
+# description: ZEO, the distributed Zope Object Database
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+instance="/var/zope/www.zope.org"
+zeoctl="$instance/bin/zeoserver"
+name="zope.org ZEO server"
+
+[ -f $zeoctl ] || exit 1
+
+RETVAL=0
+
+start() {
+    echo -n $"Starting $name: " 
+    daemon --user=zope $zeoctl start
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && touch "/var/lock/subsys/$name"
+    echo
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $name: " 
+    $zeoctl stop
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && rm -f "/var/lock/subsys/$name"
+    echo
+    return $RETVAL
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+        
+        stop)
+            stop
+            ;;
+        
+        restart)
+            stop
+            start
+            ;;
+        
+        *)
+            echo $"Usage: $0 {start|stop|restart}"
+            exit 1
+
+esac
+
+exit $REVAL

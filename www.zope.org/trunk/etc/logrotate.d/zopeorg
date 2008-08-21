@@ -1,0 +1,8 @@
+/var/zope/www.zope.org/var/log/*.log {
+    weekly
+    rotate 4
+    compress
+    notifempty
+    missingok
+    copytruncate
+}
