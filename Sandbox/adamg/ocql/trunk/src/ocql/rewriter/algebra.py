@@ -257,16 +257,6 @@ class Binary(BaseAlgebra):
     def __repr__(self):
         return "%s %s %s" % (self.left, self.op, self.right)
 
-class Operator(BaseAlgebra):
-    implements(IOperator)
-
-    def __init__(self, op):
-        BaseAlgebra.__init__(self)
-        self.op = op
-
-    def __repr__(self):
-        return self.op
-
 #class Property:
 #   def __init__(self, left, right):
 #        self.left = left
@@ -277,3 +267,13 @@ class Operator(BaseAlgebra):
 #
 #    def __repr__(self):
 #        return '%s.%s' (self.left,self.right)
+
+class Operator(BaseAlgebra):
+    implements(IOperator)
+
+    def __init__(self, op):
+        BaseAlgebra.__init__(self)
+        self.op = op
+
+    def __repr__(self):
+        return self.op
