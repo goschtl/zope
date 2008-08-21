@@ -86,14 +86,20 @@ class Trail(object):
     to result in URLs like '/account/brandon'.
 
     """
-    def __init__(self, spec, cls):
+    def __init__(self, spec, constructor, cls=None):
         """Create a Trail to an object.
 
-        Calls should look like: Trail('/account/:username', Account)
+        Calls should look like one of:
+
+        Trail('/account/:username', Account) # if Account(3) returns it
+        Trail('/account/:username', lookup_account, Account)
 
         """
         self.spec = spec
         self.parts = spec.strip('/').split('/')
+        if cls is None:
+            cls = constructor
+        self.constructor = constructor
         self.cls = cls
         tf = TrailAbsoluteURLFactory(self)
         provideAdapter(tf, (cls, IHTTPRequest), IAbsoluteURL)
@@ -123,7 +129,7 @@ class Trail(object):
                 result[part[1:]] = name
             elif part != name:
                 return None
-        return self.cls(**result)
+        return self.constructor(**result)
 
     def url(self, obj, request):
         """Return the URL of an object as defined by this Trail.
