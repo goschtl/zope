@@ -1,5 +1,22 @@
 
-Checking here how an optimized algebra for zope indexes compiles into python code
+Optimized compilation
+=====================
+
+Checking here how an optimized algebra for zope indexes compiles into python code.
+
+Actually the algebra optimizer does much of the work. It identifies the
+possibility of the optimization and replaces the objects in the algebra
+tree for the optimized ones.
+
+Some support is needed from the database (metadata class).
+It employs a method to support the retrieval from the index, otherwise it would
+be quite difficult to do the retrieval inline.
+
+Note: this optimization is very much preliminary.
+
+
+
+We need some imports and setup:
 
     >>> from ocql.engine import OCQLEngine
 
@@ -19,13 +36,16 @@ Let's use the IUnOptimizedClass:
     >>> run = OCQLEngine().compile(query)
 
 Here is the runnable code:
+It uses metadata.getAll, which simply returns all objects of an IF.
 
     >>> run
-    RunnableQuery: reduce(set.union, map(lambda i: set([i]), set(metadata.getAll("IUnOptimizedClass"))), set())
+    RunnableQuery: reduce(set.union, map(lambda i: set([i]),
+    set(metadata.getAll("IUnOptimizedClass"))), set())
 
     >>> result = run.execute()
     >>> sorted(list(result), key=lambda x:x.value)
-    [UnOpt: 0, UnOpt: 1, UnOpt: 2, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6, UnOpt: 7, UnOpt: 8, UnOpt: 9]
+    [UnOpt: 0, UnOpt: 1, UnOpt: 2, UnOpt: 3, UnOpt: 4, UnOpt: 5, UnOpt: 6,
+    UnOpt: 7, UnOpt: 8, UnOpt: 9]
     >>> type(result)
     <type 'set'>
 
@@ -37,6 +57,8 @@ IUnOptimizedClass with a filter condition:
     >>> run = OCQLEngine().compile(query)
 
 Here is the runnable code:
+It still uses metadata.getAll, because there is no index for this class and
+property.
 
     >>> run
     RunnableQuery:
@@ -59,6 +81,7 @@ IOptimizedClass with a filter condition:
     >>> run = OCQLEngine().compile(query)
 
 Here is the runnable code:
+It uses now metadata.getFromIndex as there is an index for the class and property.
 
     >>> run
     RunnableQuery:
