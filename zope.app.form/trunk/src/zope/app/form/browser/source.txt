@@ -48,7 +48,7 @@ our tests::
   ...
   ...     def getValue(self, token):
   ...         return token.decode('base64')
-  
+
 This view just uses the unicode representations of values as titles
 and the base-64 encoding of the titles as tokens.  This is a very
 simple strategy that's only approriate when the values have short and
@@ -116,7 +116,7 @@ just create the view directly::
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
 
-Since the field ist required, an empty selection is not valid:
+Since the field is required, an empty selection is not valid:
 
   >>> widget.getInputValue()
   Traceback (most recent call last):
@@ -186,9 +186,9 @@ SourceRadioWidget that provides a radio button group for the items::
   <div>
   <div class="value">
   <label for="field.dog.0"><input class="radioType" id="field.dog.0"
-      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br
   /><label for="field.dog.1"><input class="radioType" id="field.dog.1"
-      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br
   /><label for="field.dog.2"><input class="radioType" id="field.dog.2"
       name="field.dog" type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
   /><label for="field.dog.3"><input class="radioType" id="field.dog.3"
@@ -198,7 +198,7 @@ SourceRadioWidget that provides a radio button group for the items::
   </div>
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
-  
+
 We'll select an item by setting the appropriate fields in the request::
 
   >>> request.form['field.dog-empty-marker'] = '1'
@@ -210,9 +210,9 @@ We'll select an item by setting the appropriate fields in the request::
   <div>
   <div class="value">
   <label for="field.dog.0"><input class="radioType" id="field.dog.0"
-      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br 
+      name="field.dog" type="radio" value="c3BvdA==" />&nbsp;spot</label><br
   /><label for="field.dog.1"><input class="radioType" id="field.dog.1"
-      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br 
+      name="field.dog" type="radio" value="Ym93c2Vy" />&nbsp;bowser</label><br
   /><label for="field.dog.2"><input class="radioType" id="field.dog.2"
       name="field.dog" type="radio" value="cHJpbmNl" />&nbsp;prince</label><br
   /><label for="field.dog.3"><input class="radioType" id="field.dog.3"
@@ -223,10 +223,10 @@ We'll select an item by setting the appropriate fields in the request::
   </div>
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
-  
+
 For list-valued fields with items chosen from iterable sources, there are the
 SourceMultiSelectWidget and SourceOrderedMultiSelectWidget widgets.
-The latter widget includes support for re-ording the list items. 
+The latter widget includes support for re-ording the list items.
 SourceOrderedMultiSelectWidget is configured as the default widget
 for lists of choices.
 
@@ -243,7 +243,7 @@ the simpler SourceMultiSelectWidget::
   ...     )
   ... )
   >>> dogs = dogs.bind(object()) # give the field a context
-  
+
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceMultiSelectWidget(
   ...     dogs, dogSource, request)
@@ -390,7 +390,7 @@ Insted, we'll inspect the properties of the widget::
   ... except MissingInputError:
   ...     print 'no input'
   no input
-  
+
   >>> widget.choices() == [
   ...     {'text': u'spot',    'value': 'c3BvdA=='},
   ...     {'text': u'bowser',  'value': 'Ym93c2Vy'},
@@ -399,20 +399,20 @@ Insted, we'll inspect the properties of the widget::
   ...     {'text': u'lassie',  'value': 'bGFzc2ll'}
   ... ]
   True
-  
+
   >>> widget.selected()
   []
-  
+
 Let's try out selecting items. Select one item::
-  
+
   >>> request.form['field.dogs-empty-marker'] = '1'
   >>> request.form['field.dogs'] = ['bGFzc2ll']
   >>> widget.selected() # doctest: +NORMALIZE_WHITESPACE
   [{'text': u'lassie',  'value': 'bGFzc2ll'}]
-  
+
   >>> widget.getInputValue()
   ['lassie']
-  
+
 Select two items::
 
   >>> request.form['field.dogs'] = ['c3BvdA==', 'bGFzc2ll']
@@ -438,13 +438,13 @@ For set-valued fields, use SourceMultiSelectSetWidget::
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceMultiSelectSetWidget(
   ...     dogSet, dogSource, request)
-  
+
   >>> try:
   ...     widget.getInputValue()
   ... except zope.app.form.interfaces.MissingInputError:
   ...     print 'no input'
   no input
-  
+
   >>> print widget()  # doctest: +NORMALIZE_WHITESPACE
   <div>
   <div class="value">
@@ -457,20 +457,20 @@ For set-valued fields, use SourceMultiSelectSetWidget::
   </div>
   <input name="field.dogSet-empty-marker" type="hidden" value="1" />
   </div>
-  
+
 Let's try out selecting items. Select one item::
-  
+
   >>> request.form['field.dogSet-empty-marker'] = '1'
   >>> request.form['field.dogSet'] = ['bGFzc2ll']
   >>> widget.getInputValue()
   Set(['lassie'])
-  
+
 Select two items::
 
   >>> request.form['field.dogSet'] = ['c3BvdA==', 'bGFzc2ll']
   >>> widget.getInputValue()
   Set(['spot', 'lassie'])
-  
+
 The rendered widget (still with the two items selected) looks like this::
 
   >>> print widget()  # doctest: +NORMALIZE_WHITESPACE
@@ -488,7 +488,7 @@ The rendered widget (still with the two items selected) looks like this::
   </div>
 
 
-  
+
 Source Widget Query Framework
 -----------------------------
 
@@ -1061,26 +1061,26 @@ Using vocabulary-dependent widgets with sources
 ------------------------------------------------
 
 if you have a widget that uses old-style vocabularies but don't have the
-time to rewrite it for sources, all is not lost! The wrapper 
-IterableSourceVocabulary can be used to make sources and ITerms look like 
-a vocabulary. This allows us to use vocabulary-based widgets with sources 
+time to rewrite it for sources, all is not lost! The wrapper
+IterableSourceVocabulary can be used to make sources and ITerms look like
+a vocabulary. This allows us to use vocabulary-based widgets with sources
 instead of vocabularies.
 
 Usage::
-    
+
   >>> from zope.schema.vocabulary import SimpleTerm
-  
+
   >>> values  = [u'a', u'b', u'c']
   >>> tokens  = [ '0',  '1',  '2']
   >>> titles  = [u'A', u'B', u'C']
-  
+
   >>> terms = [SimpleTerm(values[i], token=tokens[i], title=titles[i]) \
   ...     for i in range(0,len(values))]
-  
+
   >>> class TestSource(list):
   ...     zope.interface.implements(zope.schema.interfaces.IIterableSource)
   >>> source = TestSource(values)
-  
+
   >>> from zope.app.form.browser.interfaces import ITerms
   >>> class TestTerms(object):
   ...     zope.interface.implements(ITerms)
@@ -1092,11 +1092,11 @@ Usage::
   ...     def getValue(self, token):
   ...         index = tokens.index(token)
   ...         return values[index]
-  
+
   >>> zope.component.provideAdapter(
   ...     TestTerms,
   ...     (TestSource, zope.publisher.interfaces.browser.IBrowserRequest))
-  
+
   >>> from zope.app.form.browser.source import IterableSourceVocabulary
   >>> request = TestRequest()
   >>> vocab = IterableSourceVocabulary(source, request)
@@ -1106,7 +1106,7 @@ Usage::
   True
   >>> verifyObject(zope.schema.interfaces.IVocabularyTokenized, vocab)
   True
-  
+
   >>> len(vocab)
   3
   >>> (u'a' in vocab) and (u'b' in vocab) and (u'c' in vocab)
@@ -1119,4 +1119,3 @@ Usage::
   >>> term = vocab.getTermByToken('2')
   >>> (term.value, term.token, term.title)
   (u'c', '2', u'C')
-
