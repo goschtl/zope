@@ -5,9 +5,6 @@
 $Id$
 """
 
-#BIG-BIG-BIG TODO:
-# move all class.compile to here, using the adapter pattern
-
 from zope.component import adapts
 from zope.interface import implements
 from zope.component import provideAdapter
@@ -50,7 +47,7 @@ class AlgebraCompiler(object):
 
 class BaseCompiler(object):
     def __init__(self, context):
-        #context becomes the adapted object
+        #context becomes the adapted (algebra) object
         self.context = context
 
 class EmptyCompiler(BaseCompiler):

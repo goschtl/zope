@@ -5,10 +5,6 @@
 $Id$
 """
 
-#BIG-BIG-BIG TODO:
-# move all queryobject.rewrite to this package
-# using adapters to do the rewrite
-
 from zope.component import adapts
 from zope.interface import implements
 from zope.location import locate
@@ -89,7 +85,7 @@ class QueryRewriter(ChildRewriter):
             elif isinstance(firstTerm, ocql.queryobject.queryobject.Alias):
                 rv = Iter(
                         self.context.collection_type,
-                        Lambda(IRewriter(firstTerm.identifier)(), 
+                        Lambda(IRewriter(firstTerm.identifier)(),
                                Single(self.context.collection_type, IRewriter(firstTerm.identifier)())),
                         Single(self.context.collection_type, IRewriter(firstTerm.expression)()))
 

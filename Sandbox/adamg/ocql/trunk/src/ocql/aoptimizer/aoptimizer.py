@@ -1,15 +1,12 @@
 # -*- coding: UTF-8 -*-
 
-""" Optimizing will be done later,
-at the moment this is just a stub returning it's input
+""" Algebra optimizer
 
 $Id$
 """
-from collections import deque
+
 from zope.component import adapts
 from zope.interface import implements
-from zope.location import locate
-#from zope.security.proxy import removeSecurityProxy
 from zope.interface import directlyProvidedBy
 from zope.interface import directlyProvides
 
@@ -91,7 +88,6 @@ class AlgebraOptimizer(object):
 
     def __init__(self, context):
         self.context = context
-        #self.db = db
 
     def __call__(self, metadata):
         results = findItrTreePattern(self.context.tree)

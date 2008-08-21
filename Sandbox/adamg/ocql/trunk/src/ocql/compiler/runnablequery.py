@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 
 """Runnable query object
+
+Contains the runnable python code
 This will return the resultset
 
 $Id$
@@ -15,6 +17,8 @@ from ocql.exceptions import ReanalyzeRequired
 _marker = object()
 
 #these are here helper functions to debug compiled code
+#set breakpoints here
+#feel free to add classes and methods to debug
 
 def d_reduce(function, sequence, initializer=_marker):
     if initializer is _marker:

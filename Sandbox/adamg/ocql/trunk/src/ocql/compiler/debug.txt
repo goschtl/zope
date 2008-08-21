@@ -1,0 +1,49 @@
+
+Debugging queries
+=================
+
+There are some helper functions built into runnablequery to ease
+debugging.
+Debugging cannot be tested here, but results still need to be the
+same with or without debugging.
+Only difference canbe the returned type's class.
+
+    >>> from zope.component import provideAdapter
+    >>> from ocql.testing.database import TestMetadata
+    >>> provideAdapter(TestMetadata)
+    >>> from ocql.engine import OCQLEngine
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ | 1 ]")
+
+    >>> run.execute()
+    set([1])
+
+    >>> run.execute(debug=True)
+    d_set([1])
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ i in ICourse | i ]")
+
+    >>> result = run.execute()
+    >>> sorted(list(result), key=lambda i: i.code)
+    [Course <C1>, Course <C2>, Course <C3>]
+
+    >>> result = run.execute(debug=True)
+    >>> sorted(list(result), key=lambda i: i.code)
+    [Course <C1>, Course <C2>, Course <C3>]
+
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ c in ICourse | c.code ]")
+
+    >>> result = run.execute()
+    >>> sorted(list(result))
+    ['C1', 'C2', 'C3']
+
+    >>> result = run.execute(debug=True)
+    >>> sorted(list(result))
+    ['C1', 'C2', 'C3']

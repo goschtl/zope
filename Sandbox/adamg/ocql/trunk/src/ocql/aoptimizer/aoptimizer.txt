@@ -30,6 +30,8 @@ best it can. The output is also an algebra tree.
     >>> out.tree
     `foo-bar`
 
+The algebra optimizer adds the marker interface IOptimizedAlgebraObject:
+
     >>> IOptimizedAlgebraObject.providedBy(out)
     True
 

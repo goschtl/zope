@@ -1,0 +1,6 @@
+
+TODOs
+=====
+
+Problem: we want to test object equality by intid, what if the object defines
+         it's own __cmp__? Needs to be loaded and called.

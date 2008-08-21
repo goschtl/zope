@@ -36,43 +36,6 @@ class IDepartments(Interface):
         required=True
         )
 
-#I moved these classes to metadata, is it ok?
-
-#class MClass(metadata.MetaType):
-    #interface suspect thing
-#    def __init__(self, klass):
-#        self.klass = klass
-
-    #def is_collection(self):
-     #   return True
-
-#    def get_collection_type(self):
-#        return set
-
-#    def get_contained(self):
-#        return self.klass
-
-#    def __getitem__(self, name):
-#        x = self.klass[name]._type
-#        try:
-#            return x[-1]
-#        except TypeError:
-#            return x
-
-class MType(MetaType):
-    def __init__(self, klass, collection_type=None):
-        self.klass = klass
-        self.collection_type = collection_type
-
-    def is_collection(self):
-        return (self.collection_type is not None)
-
-    def get_collection_type(self):
-        return self.collection_type
-
-    def get_contained(self):
-        return self.klass
-
 class Department(object):
     implements(IDepartments)
 

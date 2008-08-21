@@ -5,11 +5,6 @@
 $Id$
 """
 
-#
-# decided to let these depend on the database
-# so this is the implementation
-#
-
 from zope.interface import implements
 
 from ocql.interfaces import IAlgebraObject
@@ -271,10 +266,3 @@ class Operator(BaseAlgebra):
 #
 #    def __repr__(self):
 #        return '%s.%s' (self.left,self.right)
-
-def _test():
-    import doctest
-    doctest.testmod()
-
-if __name__ == "__main__":
-    _test()

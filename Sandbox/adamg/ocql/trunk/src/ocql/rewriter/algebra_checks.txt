@@ -65,11 +65,11 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyObject(IMake, Make(baseAlgebra, baseAlgebra, baseAlgebra))
     True
 
-    #Uncomment this after merge other branch modifications
-    #>>> verifyClass(IMakeFromIndex, MakeFromIndex)
-    #True
-    #>>> verifyObject(IMakeFromIndex, MakeFromIndex(baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
-    #True
+    Uncomment this after merge other branch modifications
+    >>> verifyClass(IMakeFromIndex, MakeFromIndex)
+    True
+    >>> verifyObject(IMakeFromIndex, MakeFromIndex(baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra, baseAlgebra))
+    True
 
     >>> verifyClass(IIf, If)
     True

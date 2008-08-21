@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 
-""" Optimizing will be done later,
+""" Query optimizer
+
+Optimizing will be done later,
 at the moment this is just a stub returning it's input
 
 $Id$

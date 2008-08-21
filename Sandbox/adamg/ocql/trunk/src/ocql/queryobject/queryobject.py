@@ -6,11 +6,6 @@ $Id$
 """
 
 #TODOS:
-#move self.rewrite to ocql.rewriter into adapters
-
-#add self.__repr__ to ALL, see Query class
-
-#implement a traversable tree of queryobjects (parent, child, sibling, ....)
 
 # TODO: missing:
 #xi{Es}

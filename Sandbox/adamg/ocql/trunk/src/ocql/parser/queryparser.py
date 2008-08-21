@@ -5,10 +5,9 @@
 """
 
 #TODOs:
-#add metadata into the picture!!!
 #remove shift/reduce conflicts, when possible
 #look after raise "Help"
-#revise according to new grammar
+#parser caching does not work yet
 
 from ply import lex, yacc
 from collections import deque
@@ -39,7 +38,12 @@ class SymbolContainer:
     def current(self):
         return self.stack[-1]
 
-tokens = ('SET', 'LIST', 'COMMA', 'NOT_EQUAL', 'UNION', 'AS', 'EVERY', 'ATMOST', 'LT', 'GT', 'ELLIPSIS', 'BRACKET_R', 'OR', 'PIPE', 'DOT', 'IN', 'LTE', 'SOME', 'AND', 'CBRACKET_L', 'CONSTANT', 'EQUAL', 'GTE', 'ISINSTANCE', 'SEMI_COLON', 'BRACKET_L', 'ASSIGN', 'NOT_ASSIGN', 'FOR', 'CBRACKET_R', 'JUST', 'IDENTIFIER', 'DIFFER', 'LEN', 'BAG', 'SBRACKET_L', 'NOT', 'ATLEAST', 'SBRACKET_R')
+tokens = ('SET', 'LIST', 'COMMA', 'NOT_EQUAL', 'UNION', 'AS', 'EVERY',
+          'ATMOST', 'LT', 'GT', 'ELLIPSIS', 'BRACKET_R', 'OR', 'PIPE',
+          'DOT', 'IN', 'LTE', 'SOME', 'AND', 'CBRACKET_L', 'CONSTANT',
+          'EQUAL', 'GTE', 'ISINSTANCE', 'SEMI_COLON', 'BRACKET_L', 'ASSIGN',
+          'NOT_ASSIGN', 'FOR', 'CBRACKET_R', 'JUST', 'IDENTIFIER', 'DIFFER',
+          'LEN', 'BAG', 'SBRACKET_L', 'NOT', 'ATLEAST', 'SBRACKET_R')
 
 precedence = (
     ('left', 'UNION'),
@@ -50,9 +54,9 @@ precedence = (
     ('left', 'AND'),
     ('left', 'OR'),
     ('right', 'NOT'),
-    #('left', 'COND_OP'),
-#    ('left', 'PLUS', 'MINUS'),
-#    ('left', 'MUL', 'DIV'),
+#   ('left', 'COND_OP'),
+#   ('left', 'PLUS', 'MINUS'),
+#   ('left', 'MUL', 'DIV'),
 #   ('token', 'IDENTIFIER'),
 #   ('token', 'BRACEL'),
 #   ('token', 'BRACER'),
@@ -378,7 +382,7 @@ class Parser(object):
         else:
             t[0] = t[1]
             t[0].extend(t[3])
-            
+
         if DEBUG: print 'reducing "qualifier SEMI_COLON qualifier" to "qualifier"', t[0]
 
 #    def p_qualifier_6(self, t):
@@ -522,7 +526,7 @@ class Parser(object):
     def p_definition_as(self, t):
         r'''definition : IDENTIFIER AS expression
         '''
-        t[0] = Alias(self.metadata, self.symbols, 
+        t[0] = Alias(self.metadata, self.symbols,
                      Identifier(self.metadata, self.symbols, t[1]),
                      t[3])
         if DEBUG: print 'reducing "IDENTIFIER AS expression" to "definition"', t[0]

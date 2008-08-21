@@ -7,6 +7,8 @@ $Id$
 
 #TODO: not optimal, uses FieldIndex with a value of always 1
 
+#TODO: later: keep a count of objects stored for len() and optimization
+
 import zope.index.field
 import zope.interface
 import zope.schema
