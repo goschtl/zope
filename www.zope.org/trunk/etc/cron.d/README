@@ -1,0 +1,5 @@
+This folder contains cron snippets for various maintenance tasks. These can
+be linked or copied into /etc/cron.d.
+
+Please not that these files contain HARDCODED PATHS, so check and adjust 
+them before usage. 

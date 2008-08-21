@@ -1,0 +1,2 @@
+# Pack the zope.org storage every Sunday at 4:43 AM
+43 4 * * 0      zope    /var/zope/www.zope.org/bin/zeopack
