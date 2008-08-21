@@ -112,6 +112,6 @@ We just want to see how the algebra compiles to code:
 
     >>> aopt, run = make("len(list [ i in ICourse | i ])")
     >>> aopt
-    Head(Reduce(<type 'list'>, `0`, Lambda i: `1`, +, Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))))
+    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))))
     >>> run.code
     'reduce(operator.add, map(lambda i: 1, reduce(operator.add, map(lambda i: [i], list(metadata.getAll("ICourse"))), [])), 0)'

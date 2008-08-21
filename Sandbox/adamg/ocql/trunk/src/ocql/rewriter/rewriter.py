@@ -192,7 +192,7 @@ class NotRewriter(BinaryRewriter):
     adapts(INot)
 
     def __call__(self):
-        return Not(IRewriter(self.context.expression)())
+        return Not(set, IRewriter(self.context.expression)())
 
 class CountRewriter(ChildRewriter):
     implements(IRewriter)
@@ -200,7 +200,7 @@ class CountRewriter(ChildRewriter):
 
     def __call__(self):
         return Reduce(
-            self.context.expression.collection_type, # FIXME milyen bag
+            set, # FIXME milyen bag
             Constant(0),
             Lambda('i', Constant(1)),
             Operator('+'),

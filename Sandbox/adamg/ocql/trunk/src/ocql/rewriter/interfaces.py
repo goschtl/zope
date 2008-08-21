@@ -37,6 +37,13 @@ class IDiffer(IAlgebraObject):
     coll1 = Attribute('first collection')
     coll2 = Attribute('second collection')
 
+class INot(IAlgebraObject):
+    """Objects providing this interface represent the
+    Not Algebra object
+    """
+    klass = Attribute('collection type name')
+    coll = Attribute('collection')
+
 class IIter(IAlgebraObject):
     """Objects providing this interface represent the
     Iter Algebra object

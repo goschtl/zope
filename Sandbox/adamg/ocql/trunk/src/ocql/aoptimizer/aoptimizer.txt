@@ -94,12 +94,12 @@ This one uses a comparison but still on the class that does not have an index.
 
     >>> alg
     Head(Iter(<type 'set'>,
-    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Lambda i: If(i.value == `5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
     Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
 
     >>> algopt
     Head(Iter(<type 'set'>,
-    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Lambda i: If(i.value == `5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
     Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
 
 With index
@@ -115,7 +115,7 @@ Let's see what happens when we switch to the optimized class.
 
     >>> alg
     Head(Iter(<type 'set'>,
-    Lambda i: If(i.value==`5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
+    Lambda i: If(i.value == `5`, Single(<type 'set'>, i.name), Empty(<type 'set'>)),
     Make(<type 'set'>, <type 'set'>, IOptimizedClass)))
 
 Here is the difference. The algebra gets a special object that uses the available

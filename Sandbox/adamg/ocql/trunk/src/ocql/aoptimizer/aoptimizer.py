@@ -37,7 +37,8 @@ def findItrTreePattern(tree):
         #need to check If and Make objects present
         if (isinstance(iter_obj.func, Lambda) and isinstance(iter_obj.coll, Make)):
             if isinstance(iter_obj.func.expr, If):
-                if isinstance(iter_obj.func.expr.cond , Binary):
+                if isinstance(iter_obj.func.expr.cond , Binary) \
+                and isinstance(iter_obj.func.expr.cond.left, Identifier):
                     return iter_obj
                 else:
                     iter_obj = bfsFind(iter_obj.func)

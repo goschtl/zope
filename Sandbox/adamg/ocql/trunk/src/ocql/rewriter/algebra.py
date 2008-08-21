@@ -90,6 +90,17 @@ class Differ(BaseAlgebra):
     def __repr__(self):
         return 'Differ(%s, %s, %s)' % (self.klass, self.coll1, self.coll2)
 
+class Not(BaseAlgebra):
+    implements(INot)
+
+    def __init__(self, klass, coll):
+        BaseAlgebra.__init__(self)
+        self.setProp('klass', klass)
+        self.setProp('coll', coll)
+
+    def __repr__(self):
+        return "Not(%s, %s)"%(self.klass, self.coll)
+
 class Iter(BaseAlgebra):
     implements(IIter)
 
@@ -244,7 +255,7 @@ class Binary(BaseAlgebra):
         self.setProp('right', right)
 
     def __repr__(self):
-        return "%s%s%s" % (self.left, self.op, self.right)
+        return "%s %s %s" % (self.left, self.op, self.right)
 
 class Operator(BaseAlgebra):
     implements(IOperator)

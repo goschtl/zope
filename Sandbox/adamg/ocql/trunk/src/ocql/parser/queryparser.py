@@ -417,7 +417,7 @@ class Parser(object):
     def p_filter_not(self, t):
         r'''filter : NOT condition
         '''
-        t[0] = Not(self.metadata, self.symbols, t[1], t[3])
+        t[0] = Not(self.metadata, self.symbols, t[2])
         if DEBUG: print 'reducing "NOT condition" to "filter"', t[0]
 
     def p_filter_condition(self, t):

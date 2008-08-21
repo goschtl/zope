@@ -84,8 +84,8 @@ Differ (set, list):
 #     >>> engine.compile("list [ | 1] differ set [|1]").execute()
 
 Simple in expression (eg select):
-    >>> engine.compile("set [ i in ICourse| i ]").execute()
-    set([Course <C1>, Course <C2>, Course <C3>])
+    >>> sorted(engine.compile("set [ i in ICourse| i ]").execute())
+    [Course <C1>, Course <C2>, Course <C3>]
 
 Simple condition (eg where):
     >>> engine.compile("list [ d in IDepartments; d.name == \"Computing Science\" | d  ]").execute()
@@ -107,18 +107,16 @@ Simple condition (eg where):
 #     set([set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])])
 
 Expression in the result:
-    >>> engine.compile("list [ i in ICourse | i.runBy  ]").execute()
-    [set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])]
+    >>> sorted(engine.compile("list [ i in ICourse | i.runBy  ]").execute())
+    [set([]), set([Department <Computing Science>]), set([Department <Other department>, Department <Computing Science>])]
 
-# FIXME: not working!
-# Size expression in the result:
-#     >>> engine.compile("list [ c in ICourse ; size c.runBy == 1 | c ]").execute()
-#     [Course <C3>]
+Size expression in the result:
+     >>> engine.compile("list [ c in ICourse ; len(c.runBy) == 1 | c ]").execute()
+     [Course <C3>]
 
-# FIXME: not working!
-# Size operator in the result:
-#     >>> engine.compile("list [ c in ICourse | size c.runBy  ]").execute()
-#     [2, 0, 1]
+ Size operator in the result:
+     >>> engine.compile("list [ c in ICourse | len(c.runBy)  ]").execute()
+     [2, 0, 1]
 
 More test ideas:
 engine.compile("""list [ d in IDepartments; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()
