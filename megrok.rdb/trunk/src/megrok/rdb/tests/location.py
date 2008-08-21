@@ -75,29 +75,16 @@ from megrok import rdb
 
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.types import Integer, String
-from sqlalchemy.orm import relation, MapperExtension, EXT_CONTINUE
+from sqlalchemy.orm import relation
 
 metadata = rdb.MetaData()
 
 rdb.metadata(metadata)
-
-# class MyExtension(MapperExtension):
-#     def init_instance(self, mapper, class_, oldinit, instance, args, kwargs):
-#         if isinstance(instance, Department):
-#             instance.courses.__name__ = u'courses'
-#             instance.courses.__parent__ = instance
-#         return EXT_CONTINUE
     
 class Courses(rdb.Container):
-    __parent__ = None
-    __name__ = None
-   
-class Department(rdb.Model):
-#     __mapper_args__ = {'extension': MyExtension()}
+    pass
 
-    __parent__ = None
-    __name__ = None
-    
+class Department(rdb.Model):    
     id = Column('id', Integer, primary_key=True)
     name = Column('name', String(50))
     courses = relation('Course', 
@@ -105,9 +92,6 @@ class Department(rdb.Model):
                        collection_class=Courses)
 
 class Course(rdb.Model):
-    __parent__ = None
-    __name__ = None
-   
     id = Column('id', Integer, primary_key=True)
     department_id = Column('department_id', Integer, 
                            ForeignKey('department.id'))

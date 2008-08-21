@@ -10,6 +10,11 @@ from megrok.rdb import directive
 from z3c.saconfig import Session
 
 class Model(Context):
+    implements(ILocation)
+
+    __parent__ = None
+    __name__ = None
+    
     def __init__(self, **kwargs):
         # XXX can we use the __init__ that sqlalchemy.ext.declarative sets up?
         for k in kwargs:
@@ -18,6 +23,17 @@ class Model(Context):
                                 (k, type(self).__name__))
             setattr(self, k, kwargs[k])
 
+class LocatedModel(Model):
+    implements(ILocation)
+
+    @property
+    def __parent__(self):
+        return
+
+    @property
+    def __name__(self):
+        return
+    
 def default_keyfunc(node):
     primary_keys = node.__table__.primary_key.keys()
     if len(primary_keys) == 1:
@@ -29,6 +45,9 @@ def default_keyfunc(node):
 class Container(MappedCollection):
     implements(IContainer, ILocation)
 
+    __parent__ = None
+    __name__ = None
+    
     def __init__(self, *args, **kw):
         rdb_key = directive.key.bind().get(self)
         if rdb_key:
