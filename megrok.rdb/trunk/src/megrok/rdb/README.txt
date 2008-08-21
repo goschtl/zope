@@ -291,7 +291,7 @@ Let's try some common read-only container operations, such as
   >>> qc[2].name
   'Physics'
 
-XXX Why the unicode difference?
+XXX Why the unicode difference between u'Philosophy' and 'Physics'?
 
 ``__getitem__`` with a ``KeyError``::
 
@@ -332,3 +332,33 @@ XXX Why the unicode difference?
 
   >>> sorted([v.name for v in qc.values()])
   [u'Philosophy', 'Physics']
+
+The parents of all the values are the query container::
+
+  >>> [v.__parent__ is qc for v in qc.values()]
+  [True, True]
+  >>> sorted([v.__name__ for v in qc.values()])
+  [u'1', u'2']
+
+``keys``::
+
+  >>> sorted([key for key in qc.keys()])
+  [u'1', u'2']
+
+``items``::
+
+  >>> sorted([(key, value.name) for (key, value) in qc.items()])
+  [(u'1', u'Philosophy'), (u'2', 'Physics')]
+
+  >>> [value.__parent__ is qc for (key, value) in qc.items()]
+  [True, True]
+  >>> sorted([value.__name__ for (key, value) in qc.items()])
+  [u'1', u'2']
+
+``__iter__``::
+  
+  >>> result = []
+  >>> for key in qc:
+  ...   result.append(key)
+  >>> sorted(result)
+  [u'1', u'2']

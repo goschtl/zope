@@ -1,4 +1,5 @@
 from sqlalchemy.orm.collections import MappedCollection, collection
+from sqlalchemy.orm.util import identity_key
 
 from zope.interface import implements
 from zope.location.interfaces import ILocation
@@ -131,17 +132,39 @@ class QueryContainer(object):
         return key in self
 
     def keys(self):
-        raise NotImplementedError
+        result = []
+        # XXX probably not the most efficient way to do this
+        for v in self.query().all():
+            result.append(self.keyfunc(v))
+        return result
 
     def __iter__(self):
-        raise NotImplementedError
+        for key in self.keys():
+            yield key
     
     def values(self):
-        return self.query().all()
+        result = []
+        for v in self.query().all():
+            v.__parent__ = self
+            v.__name__ = self.keyfunc(v)
+            result.append(v)
+        return result
         
     def items(self):
-        raise NotImplementedError
+        result = []
+        for v in self.query().all():
+            v.__parent__ = self
+            key = v.__name__ = self.keyfunc(v)
+            result.append((key, v))
+        return result
 
     def __len__(self):
         return self.query().count()
     
+    def keyfunc(self, value):
+        """Get the key for this value.
+        """
+        # XXX this isn't very general...
+        class_, key_tuple = identity_key(instance=value)
+        return unicode(key_tuple[0])
+
