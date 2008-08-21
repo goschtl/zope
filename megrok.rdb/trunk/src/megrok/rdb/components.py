@@ -137,8 +137,8 @@ class QueryContainer(object):
         raise NotImplementedError
     
     def values(self):
-        raise NotImplementedError
-
+        return self.query().all()
+        
     def items(self):
         raise NotImplementedError
 

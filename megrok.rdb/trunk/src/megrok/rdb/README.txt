@@ -327,3 +327,8 @@ XXX Why the unicode difference?
 
   >>> len(qc)
   2
+
+``values``::
+
+  >>> sorted([v.name for v in qc.values()])
+  [u'Philosophy', 'Physics']
