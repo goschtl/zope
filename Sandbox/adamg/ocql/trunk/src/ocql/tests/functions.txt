@@ -3,7 +3,7 @@
     >>> provideAdapter(TestMetadata)
     >>> from ocql.engine import OCQLEngine
     >>> engine = OCQLEngine()
-    
+
 Number constant -- set:
     >>> engine.compile("set [ | 1 ]").execute()
     set([1])
@@ -107,8 +107,8 @@ Simple condition (eg where):
 #     set([set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])])
 
 Expression in the result:
-    >>> sorted(engine.compile("list [ i in ICourse | i.runBy  ]").execute())
-    [set([]), set([Department <Computing Science>]), set([Department <Other department>, Department <Computing Science>])]
+    >>> sorted(engine.compile("list [ i in ICourse | i.runBy  ]").execute(), key=lambda x:sorted(x, key=lambda y:y.name))
+    [set([]), set([Department <Computing Science>]), set([Department <Computing Science>, Department <Other department>])]
 
 Size expression in the result:
      >>> engine.compile("list [ c in ICourse ; len(c.runBy) == 1 | c ]").execute()
