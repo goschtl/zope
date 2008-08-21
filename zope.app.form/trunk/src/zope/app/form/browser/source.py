@@ -560,6 +560,7 @@ class SourceDropdownWidget(SourceSelectWidget):
     """Variation of the SourceSelectWidget that uses a drop-down list."""
 
     size = 1
+    explicit_empty_selection = True
 
 class SourceRadioWidget(RadioWidget):
     """Radio widget for single item choices."""

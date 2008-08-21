@@ -297,6 +297,11 @@ class SetDisplayWidget(ItemsMultiDisplayWidget):
 
 ## Edit-Widgets for Items-related fields.
 
+# BBB Set to False to never display an item for the missing value if the field
+# is required, which was the behaviour of versions up to and including 3.5.0.
+EXPLICIT_EMPTY_SELECTION = True
+
+
 class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
     """Widget Base for rendering item-related fields.
 
@@ -309,6 +314,10 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
     tag = 'select'
 
     _displayItemForMissingValue = True
+
+    # Whether an empty selection should always be made explicit, i.e. even
+    # if the field is required.
+    explicit_empty_selection = False
 
     def __init__(self, field, vocabulary, request):
         """Initialize the widget."""
@@ -359,7 +368,13 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         # Handle case of missing value
         missing = self._toFormValue(self.context.missing_value)
 
-        if self._displayItemForMissingValue and not self.context.required:
+        if self._displayItemForMissingValue and (
+            not self.context.required or
+            EXPLICIT_EMPTY_SELECTION and
+            self.explicit_empty_selection and
+            missing in values and
+            self.context.default is None):
+
             if missing in values:
                 render = self.renderSelectedItem
             else:
@@ -432,6 +447,7 @@ class SelectWidget(ItemsEditWidgetBase):
 class DropdownWidget(SelectWidget):
     """Variation of the SelectWidget that uses a drop-down list."""
     size = 1
+    explicit_empty_selection = True
 
 
 class RadioWidget(SelectWidget):

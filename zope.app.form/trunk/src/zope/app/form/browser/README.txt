@@ -152,3 +152,27 @@ any appropriate vocabulary and `BagWidget` is some appropriate widget::
       factory=".BagWidget"
       permission="zope.Public"
       />
+
+
+Choice widgets and the missing value
+====================================
+
+Choice widgets for a non-required field include a "no value" item to allow for
+not selecting any value at all. This value used to be omitted for required
+fields on the assumption that the widget should avoid invalid input from the
+start.
+
+However, if the context object doesn't yet have a field value set and there's
+no default value, a dropdown widget would have to select an arbitrary value
+due to the way it is displayed in the browser. This way, the field would
+always validate, but possibly with a value the user never chose consciously.
+
+Starting with version 3.6.0, dropdown widgets for required fields display a
+"no value" item even for required fields if an arbitrary value would have to
+be selected by the widget otherwise.
+
+To switch the old behaviour back on for backwards compatibility, do
+
+  zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION = False
+
+during application start-up.

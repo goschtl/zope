@@ -24,6 +24,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import ConversionError
+import zope.app.form.browser.itemswidgets
 from zope.app.form.browser.itemswidgets import ItemsWidgetBase
 from zope.app.form.browser.itemswidgets import ItemDisplayWidget
 from zope.app.form.browser.itemswidgets import ItemsMultiDisplayWidget
@@ -319,6 +320,27 @@ class DropdownWidgetTest(SelectWidgetTest):
 
     _widget = DropdownWidget
     _size = 1
+
+    def test_renderItems_firstItem(self):
+        widget = self._makeWidget()
+        widget.setPrefix('field.')
+        widget.firstItem = True
+        self.assertEqual(
+            widget.renderItems(widget._toFormValue(widget.context.missing_value)),
+            [u'<option selected="selected" value="">(no value)</option>',
+             u'<option value="token1">One</option>',
+             u'<option value="token2">Two</option>',
+             u'<option value="token3">Three</option>'])
+        try:
+            # test BBB starting with 3.6.0
+            zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION = False
+            self.assertEqual(
+                widget.renderItems(widget._toFormValue(widget.context.missing_value)),
+                [u'<option value="token1">One</option>',
+                 u'<option value="token2">Two</option>',
+                 u'<option value="token3">Three</option>'])
+        finally:
+            zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION = True
 
 
 class RadioWidgetTest(ItemsEditWidgetBaseTest):

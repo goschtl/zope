@@ -2,8 +2,12 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ==================
+
+- Dropdown widgets display an item for the missing value even if the field is
+  required when no value is selected. See zope/app/form/browser/README.txt on
+  how to switch this off for BBB.
 
 3.5.0 (2008-06-05)
 ==================
