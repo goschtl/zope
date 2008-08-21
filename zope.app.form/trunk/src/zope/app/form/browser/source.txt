@@ -116,6 +116,17 @@ just create the view directly::
   <input name="field.dog-empty-marker" type="hidden" value="1" />
   </div>
 
+Since the field ist required, an empty selection is not valid:
+
+  >>> widget.getInputValue()
+  Traceback (most recent call last):
+  MissingInputError: ('field.dog', u'Dogs', None)
+
+Also, the widget is required in this case:
+
+  >>> widget.required
+  True
+
 If the request contains a value, it is marked as selected::
 
   >>> request.form["field.dog-empty-marker"] = "1"

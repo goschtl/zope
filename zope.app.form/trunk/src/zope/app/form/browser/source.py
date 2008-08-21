@@ -35,6 +35,8 @@ from zope.app.form.browser.interfaces import ITerms, IWidgetInputErrorView
 from zope.app.form.browser import \
     SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
     MultiCheckBoxWidget, MultiSelectSetWidget, MultiSelectFrozenSetWidget
+import zope.app.form.browser.itemswidgets
+
 
 class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
 
@@ -552,9 +554,11 @@ class SourceSelectWidget(SelectWidget):
     def __init__(self, field, source, request):
         super(SourceSelectWidget, self).__init__(
             field, IterableSourceVocabulary(source, request), request)
-        # Even if the field is required, no input is needed, so don't
-        # worry the user about it:
-        self.required = False
+        # BBB
+        if not zope.app.form.browser.itemswidgets.EXPLICIT_EMPTY_SELECTION:
+            # Even if the field is required, no input is needed, so don't
+            # worry the user about it:
+            self.required = False
 
 class SourceDropdownWidget(SourceSelectWidget):
     """Variation of the SourceSelectWidget that uses a drop-down list."""

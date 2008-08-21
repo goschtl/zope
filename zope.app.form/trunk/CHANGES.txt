@@ -8,6 +8,10 @@ CHANGES
 - Dropdown widgets display an item for the missing value even if the field is
   required when no value is selected. See zope/app/form/browser/README.txt on
   how to switch this off for BBB.
+- Source select widgets for required fields are now required as well. They
+  used not to be required on the assumption that some value would be selected
+  by the browser, which had always been wrong except for dropdown widgets.
+
 
 3.5.0 (2008-06-05)
 ==================
