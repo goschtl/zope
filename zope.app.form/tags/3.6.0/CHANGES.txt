@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2008-08-22)
 ==================
 
 - Dropdown widgets display an item for the missing value even if the field is
