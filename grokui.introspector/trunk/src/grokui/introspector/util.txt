@@ -62,8 +62,8 @@ often safer (if available):
   >>> render_text('Hello!\n', module=introspector)
   u'<p>Hello!</p>\n'
 
-render_docstring(docstring, heading_only=False)
-==============================================
+render_docstring(docstring, heading_only=False, format=None)
+============================================================
 
 A function that renders a docstring as restructured text::
 
@@ -102,3 +102,18 @@ CVS '$Id' tags are silently skipped from output::
   ...
   ... Use it to bazzle bozes.''')
   u'<p>A function to boze bazzles.</p>\n<p>Use it to bazzle bozes.</p>\n'
+
+By default the docstring will be rendered as ReSTructured Text, but we
+can require a different format::
+
+  >>> render_docstring('''
+  ... A line
+  ... Another line''')
+  u'<p>A line\nAnother line</p>\n'
+
+Now the same string rendered as plain text::
+
+  >>> render_docstring('''
+  ... A line
+  ... Another line''', format='zope.source.plaintext')
+  u'A line<br />\nAnother line'
