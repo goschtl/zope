@@ -117,7 +117,13 @@ added here.
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: If(Not(<type 'set'>, c.code == `2` or c.code == `3`), Single(<type 'set'>, c), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
 
-#    >>> qo = QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(TestMetadata())
+    >>> qo = QueryParser("set [ s in IStudents; s.major.address.street == 'Hillhead Street' | s ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda s: If(s.major.address.street == `'Hillhead Street'`, Single(<type 'set'>, s), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, IStudents)))
+
+#    >>> qo = QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' | s ]")(TestMetadata())
 #    >>> opt = QueryOptimizer(qo)()
 #    >>> alg = Rewriter(opt)()
 #    >>> print str(alg)

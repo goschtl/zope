@@ -22,6 +22,13 @@ class IExpression(ITerm, IObjectQuery):
     Expression Query object
     """
 
+class IIsinstance(IExpression):
+    """Objects providing this interface represent the
+    isinstance Query object
+    """
+    objekt = Attribute('object')
+    tipe = Attribute('type')
+
 class IhasClassWith(IExpression):
     """Objects providing this interface represent the
     hasClassWith Query object

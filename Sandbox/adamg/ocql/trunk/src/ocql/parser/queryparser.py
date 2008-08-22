@@ -302,9 +302,9 @@ class Parser(object):
 
 #TODO add a test
     def p_expr_for_query(self, t):
-        r'''expression : collection SBRACKET_L qualifier FOR expression SBRACKET_R
+        r'''expression : collection SBRACKET_L expression FOR qualifier  SBRACKET_R
         '''
-        t[0] = Query(self.metadata, self.symbols, t[1], t[3], t[5])
+        t[0] = Query(self.metadata, self.symbols, t[1], t[5], t[3])
         if DEBUG: print 'reducing "collection SBRACKET_L qualifier FOR expression SBRACKET_R" to "expression"', t[0]
 
     def p_expr_literal(self, t):
@@ -484,7 +484,7 @@ class Parser(object):
     def p_condition_isinstance(self, t):
         r'''condition : ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R
         '''
-        raise NotImplementedError('isinstance')
+        t[0] = Isinstace(self.metadata, self.symbols, t[3], t[5])
         if DEBUG: print 'reducing "ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R" to "condition"', t[0]
 
     def p_quantified_expression(self, t):

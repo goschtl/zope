@@ -42,6 +42,11 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyObject(IExpression, Expression(metadata, symbols, child, child))
     True
 
+    >>> verifyClass(IIsinstance, Isinstance)
+    True
+    >>> verifyObject(IIsinstance, Isinstance(metadata, symbols, child, Child))
+    True
+
     >>> verifyClass(IhasClassWith, hasClassWith)
     True
     >>> verifyObject(IhasClassWith, hasClassWith(metadata, symbols, child, set, child))

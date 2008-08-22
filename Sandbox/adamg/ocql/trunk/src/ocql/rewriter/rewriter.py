@@ -157,7 +157,7 @@ class PropertyRewriter(BinaryRewriter):
 
     def __call__(self):
         return Identifier(
-            '.'.join([self.context.left.name, self.context.right.name]))
+            '.'.join([IRewriter(self.context.left)().name, IRewriter(self.context.right)().name]))
 
 class AddRewriter(BinaryRewriter):
     implements(IRewriter)

@@ -42,6 +42,9 @@ query is still buggy.
     >>> QueryParser("set [ i in ICourse | i ]")(None)
     Head(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
+    >>> QueryParser("set [ i for i in ICourse ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
+
     >>> QueryParser("list [ i in ICourse | i ]")(None)
     Head(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
@@ -72,6 +75,9 @@ query is still buggy.
     >>> QueryParser("set [ c in ICourse; c.credits <= 3 | c.code ]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Le(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
 
+    >>> QueryParser("set [ c in ICourse; c.credits != 3 | c.code ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Ne(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
+
     >>> QueryParser("set [ c in ICourse | c.code ]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code))))
 
@@ -80,6 +86,9 @@ query is still buggy.
 
     >>> QueryParser("set [ c in ICourse; c.code==2  or c.code==3 | c ]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c)))
+
+    >>> QueryParser("set [ c in ICourse; c.code==2  and c.code==3 | c ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); And(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c)))
 
     >>> QueryParser("set [ c in ICourse; not (c.code==2  or c.code==3) | c ]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Not(Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3)))), Identifier(c)))
@@ -91,3 +100,6 @@ query is still buggy.
     Head(Query(<type 'set'>, In(Identifier(s), Identifier(IStudents));
     Alias(Identifier(a), Property(Identifier(s), Property(Identifier(major), Property(Identifier(address), Identifier(street)))));
     Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s)))
+
+    >>> QueryParser("set [ i in IPerson; isinstance(i, Tutor) | i ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(i), Identifier(IPerson)); Isinstace(Identifier(i), Tutor), Identifier(i)))

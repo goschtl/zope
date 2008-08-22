@@ -105,6 +105,24 @@ class Expression(Term, QueryObject):
 #
 # General
 #
+class Isinstace(Expression):
+    implements(IIsinstance)
+
+    def __init__(self, metadata, symbols, objekt, tipe):
+        self.metadata = metadata
+        self.symbols = symbols
+        Child.__init__(self)
+        self.setProp('objekt', objekt)
+        self.setProp('tipe', tipe)
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (
+            self.__class__.__name__,
+            str(self.objekt),
+            str(self.tipe)
+            )
+
+
 class hasClassWith(Expression):
     #NotImplementedError
     implements(IhasClassWith)
@@ -274,15 +292,17 @@ class Property(Binary):
         return t
 
     def get_collection_type(self):
-        t = self.left.get_class()
-        try:
-            r = t[self.right.name]
-        except:
-            from pub.dbgpclient import brk; brk()
-
+        if isinstance(self.right, Identifier):
+            t = self.left.get_class()
+            try:
+                r = t[self.right.name]
+            except:
+                from pub.dbgpclient import brk; brk()
         #print self.left.name+'.'+self.right.name,r
+            return r
 
-        return r
+        else:
+            return self.right.get_collection_type()
 
 class Index(Binary):
     #NotImplementedError
