@@ -102,4 +102,4 @@ query is still buggy.
     Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s)))
 
     >>> QueryParser("set [ i in IPerson; isinstance(i, Tutor) | i ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(i), Identifier(IPerson)); Isinstace(Identifier(i), Tutor), Identifier(i)))
+    Head(Query(<type 'set'>, In(Identifier(i), Identifier(IPerson)); Isinstance(Identifier(i), Tutor), Identifier(i)))

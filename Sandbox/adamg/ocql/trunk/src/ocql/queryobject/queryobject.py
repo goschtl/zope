@@ -105,7 +105,7 @@ class Expression(Term, QueryObject):
 #
 # General
 #
-class Isinstace(Expression):
+class Isinstance(Expression):
     implements(IIsinstance)
 
     def __init__(self, metadata, symbols, objekt, tipe):

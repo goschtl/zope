@@ -484,7 +484,7 @@ class Parser(object):
     def p_condition_isinstance(self, t):
         r'''condition : ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R
         '''
-        t[0] = Isinstace(self.metadata, self.symbols, t[3], t[5])
+        t[0] = Isinstance(self.metadata, self.symbols, t[3], t[5])
         if DEBUG: print 'reducing "ISINSTANCE BRACKET_L expression COMMA IDENTIFIER BRACKET_R" to "condition"', t[0]
 
     def p_quantified_expression(self, t):
