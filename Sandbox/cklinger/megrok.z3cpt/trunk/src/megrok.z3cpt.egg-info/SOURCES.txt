@@ -1,5 +1,6 @@
 CHANGES.txt
 README.txt
+bootstrap.py
 buildout.cfg
 setup.cfg
 setup.py
@@ -14,6 +15,9 @@ src/megrok.z3cpt.egg-info/not-zip-safe
 src/megrok.z3cpt.egg-info/requires.txt
 src/megrok.z3cpt.egg-info/top_level.txt
 src/megrok/z3cpt/__init__.py
+src/megrok/z3cpt/ftesting.zcml
+src/megrok/z3cpt/meta.zcml
 src/megrok/z3cpt/template.py
 src/megrok/z3cpt/tests/__init__.py
 src/megrok/z3cpt/tests/test_functional.py
+src/megrok/z3cpt/tests/test_functional_templates/indexfs.3pt

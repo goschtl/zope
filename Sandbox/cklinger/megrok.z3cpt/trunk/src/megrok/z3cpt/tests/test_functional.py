@@ -11,13 +11,25 @@ As an anonymous user, we only see the unprotected menu items:
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
+
+Check an inline template
+
   >>> browser.open('http://localhost/app/view')
   >>> browser.contents
   '...Hello World...'
-  
+
+Check a template in ...templates directory
+
   >>> browser.open('http://localhost/app/indexfs')
   >>> browser.contents
   '...Hello World...'
+
+Check some basic information about the page you visit:
+
+  >>> browser.url
+  'http://localhost/app/indexfs'
+  >>> browser.headers.get('Status').upper()
+  '200 OK'
 
 """
 import grok
