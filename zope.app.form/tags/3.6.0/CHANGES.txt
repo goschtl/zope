@@ -1,0 +1,46 @@
+=======
+CHANGES
+=======
+
+3.6.0 (unreleased)
+==================
+
+- Dropdown widgets display an item for the missing value even if the field is
+  required when no value is selected. See zope/app/form/browser/README.txt on
+  how to switch this off for BBB.
+- Source select widgets for required fields are now required as well. They
+  used not to be required on the assumption that some value would be selected
+  by the browser, which had always been wrong except for dropdown widgets.
+
+
+3.5.0 (2008-06-05)
+==================
+
+- Translate the title on SequenceWidget's "Add <title>" button.
+- No longer uses zapi.
+
+3.4.2 (2008-02-07)
+==================
+
+- Made display widgets for sources translate message IDs correctly.
+
+3.4.1 (2007-10-31)
+==================
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+==================
+
+- ``zope.app.form`` now supports Python2.5
+
+- Initial release independent of the main Zope tree.
+
+
+Before 3.4
+==========
+
+This package was part of the Zope 3 distribution and did not have its own
+CHANGES.txt. For earlier changes please refer to either our subversion log or
+the CHANGES.txt of earlier Zope 3 releases.
