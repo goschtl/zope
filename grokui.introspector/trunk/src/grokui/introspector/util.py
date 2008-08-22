@@ -66,7 +66,7 @@ def render_text(text, module=None, format=None, dedent=True):
     renderer = getMultiAdapter((source, TestRequest()))
     return renderer.render()
 
-def render_docstring(docstring, heading_only=False):
+def render_docstring(docstring, heading_only=False, format=None):
     """Get the doc string of the module ReST formatted.
     """
     if docstring is None:
@@ -82,4 +82,4 @@ def render_docstring(docstring, heading_only=False):
         lines = headlines
     # Get rid of possible CVS id.
     lines = [line for line in lines if not line.startswith('$Id')]
-    return render_text('\n'.join(lines))
+    return render_text('\n'.join(lines), format=format)

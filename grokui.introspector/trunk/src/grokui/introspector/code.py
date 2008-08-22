@@ -41,6 +41,8 @@ class GrokUIPackage(Package):
         if item is None:
             item=self.context.context
         docstring = IDocString(item).getDocString(heading_only=heading_only)
+        if heading_only:
+            return render_docstring(docstring, format='zope.source.plaintext')
         return render_docstring(docstring)
 
     def url(self, *args, **kw):
