@@ -1,80 +1,93 @@
 
+Parser
+======
+
+Input: query string
+Output: Queryobject tree
+
+The task of the parser is to parse the inputted string to Queryobject tree.
+
+For the syntax see ../USAGE.txt
+
+Let's see now how the parser works on more and more sophisticated queries.
+
+Currently not much type and symbol checking is done in the parser. All that
+task is left to the execution so might turn out that a correctly parsed
+query is still buggy.
 
     >>> from ocql.parser.queryparser import QueryParser
 
-
-
     #FAILS, why?
     #>>> QueryParser("set [ ]")(None)
-    #Query(<type 'set'>, , None)
+    #Head(Query(<type 'set'>, , None))
 
     >>> QueryParser("set [ | 1 ]")(None)
-    Query(<type 'set'>, , Constant(1))
+    Head(Query(<type 'set'>, , Constant(1)))
 
     >>> QueryParser("list [ | 1 ]")(None)
-    Query(<type 'list'>, , Constant(1))
+    Head(Query(<type 'list'>, , Constant(1)))
 
     >>> QueryParser("set [ | 1 ] union set [|2]")(None)
-    Union(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
+    Head(Union(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2))))
 
     >>> QueryParser("list [ | 1 ] union list [|2]")(None)
-    Union(Query(<type 'list'>, , Constant(1)), Query(<type 'list'>, , Constant(2)))
+    Head(Union(Query(<type 'list'>, , Constant(1)), Query(<type 'list'>, , Constant(2))))
 
     >>> QueryParser("set [ | 1 ] differ set [|2]")(None)
-    Differ(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2)))
+    Head(Differ(Query(<type 'set'>, , Constant(1)), Query(<type 'set'>, , Constant(2))))
 
     >>> QueryParser("list [ | 1 ] differ list [|2]")(None)
-    Differ(Query(<type 'list'>, , Constant(1)), Query(<type 'list'>, , Constant(2)))
+    Head(Differ(Query(<type 'list'>, , Constant(1)), Query(<type 'list'>, , Constant(2))))
 
     >>> QueryParser("set [ i in ICourse | i ]")(None)
-    Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))
+    Head(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
     >>> QueryParser("list [ i in ICourse | i ]")(None)
-    Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))
+    Head(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
 
     >>> QueryParser("len ( set [ i in ICourse | i ] )")(None)
-    Count(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
+    Head(Count(Query(<type 'set'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))))
 
     >>> QueryParser("len ( list [ i in ICourse | i ] )")(None)
-    Count(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i)))
+    Head(Count(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))))
 
     >>> QueryParser("set [ d in IDepartments; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
-    Query(<type 'set'>, In(Identifier(d), Identifier(IDepartments));
-    Eq((Every, Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); 
-    Eq((Some, Property(Identifier(c), Identifier(runBy))), Identifier(d)), Property(Identifier(c), Identifier(credits)))), 
-    Constant(2)), Property(Identifier(d), Identifier(name)))
-    
+    Head(Query(<type 'set'>, In(Identifier(d), Identifier(IDepartments));
+    Eq((Every, Query(<type 'set'>, In(Identifier(c), Identifier(ICourse));
+    Eq((Some, Property(Identifier(c), Identifier(runBy))), Identifier(d)), Property(Identifier(c), Identifier(credits)))),
+    Constant(2)), Property(Identifier(d), Identifier(name))))
+
     >>> QueryParser("set [ c in ICourse; c.credits > 3 | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
 
     >>> QueryParser("list [ c in ICourse; c.credits > 3 | c.code ]")(None)
-    Query(<type 'list'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+    Head(Query(<type 'list'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
 
     >>> QueryParser("set [ c in ICourse; c.credits >= 3 | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Ge(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
-    
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Ge(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
+
     >>> QueryParser("set [ c in ICourse; c.credits < 3 | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Lt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Lt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
 
     >>> QueryParser("set [ c in ICourse; c.credits <= 3 | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Le(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code)))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Le(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
 
     >>> QueryParser("set [ c in ICourse | c.code ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code)))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)), Property(Identifier(c), Identifier(code))))
 
     >>> QueryParser("set [ c in ICourse; a as c.code | a]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(code))), Identifier(a))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(code))), Identifier(a)))
 
     >>> QueryParser("set [ c in ICourse; c.code==2  or c.code==3 | c ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3))), Identifier(c)))
 
     >>> QueryParser("set [ c in ICourse; not (c.code==2  or c.code==3) | c ]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Not(Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3)))), Identifier(c))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Not(Or(Eq(Property(Identifier(c), Identifier(code)), Constant(2)), Eq(Property(Identifier(c), Identifier(code)), Constant(3)))), Identifier(c)))
 
     >>> QueryParser("set [ c in ICourse; a as c.name; a=='C1' | c]")(None)
-    Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(name))); Eq(Identifier(a), Constant('C1')), Identifier(c))
+    Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(name))); Eq(Identifier(a), Constant('C1')), Identifier(c)))
 
     >>> QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(None)
-    Query(<type 'set'>, In(Identifier(s), Identifier(IStudents)); 
-    Alias(Identifier(a), Property(Identifier(s), Property(Identifier(major), Property(Identifier(address), Identifier(street))))); 
-    Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s))
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(IStudents));
+    Alias(Identifier(a), Property(Identifier(s), Property(Identifier(major), Property(Identifier(address), Identifier(street)))));
+    Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s)))

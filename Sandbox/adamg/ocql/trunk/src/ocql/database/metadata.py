@@ -141,7 +141,7 @@ class Metadata:
             >>> result = db.getFromIndex('IOptimizedClass', 'value', '<=', 5)
             >>> type(result)
             <type 'list'>
-            >>> sorted(result)
+            >>> sorted(result, key=lambda x:x.name)
             [Opt: 0, Opt: 1, Opt: 2, Opt: 3, Opt: 4, Opt: 5]
         """
         catalogs = getUtilitiesFor(ICatalog)
