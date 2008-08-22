@@ -20,13 +20,13 @@ import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
 
 class IAllIndex(zope.interface.Interface):
-    """I index objects by first adapting them to an interface, then
-       retrieving a field on the adapted object.
+    """Index all objects of a specified interface.
+    Collects all instances, not any property value.
     """
 
     interface = zope.schema.Choice(
         title=_(u"Interface"),
-        description=_(u"Objects will be adapted to this interface"),
+        description=_(u"Collect objects of this interface"),
         vocabulary="Interfaces",
         required=False,
         )
@@ -38,7 +38,7 @@ class IAllMixinIndex(IAllIndex,
     """
 
 class AllMixinIndex(object):
-    """Index interface-defined attributes
+    """Index all objects of a specified interface.
 
        Mixin for indexing all objects providing a particular interface.
 

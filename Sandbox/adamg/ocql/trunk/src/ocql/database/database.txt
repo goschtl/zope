@@ -1,0 +1,19 @@
+
+Database
+========
+
+This package contains classes related to database specific functions.
+
+index.py:
+---------
+There is a special index which holds all instances of objects with a specified
+interface. This is needed to be able to simply retrieve all instances of a kind.
+
+metadata.py:
+------------
+Classes here provide information about the data in the database and object
+instances as well.
+This is the gateway between the engine and the database.
+
+
+See each file for detailes infos

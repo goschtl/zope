@@ -2,6 +2,9 @@
 Algebra optimizer
 =================
 
+Input: Algebra tree
+Output: Algebra tree (optimized)
+
 The Algebra optimizer's task is to optimize the inputted algebra tree the
 best it can. The output is also an algebra tree.
 

@@ -92,3 +92,35 @@ It uses now metadata.getFromIndex as there is an index for the class and propert
     >>> result = run.execute()
     >>> result
     set([u'5'])
+
+
+    >>> query = "set [ i in IOptimizedClass ; i.value <= 5 | i.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> result = run.execute()
+    >>> sorted(result)
+    [u'0', u'1', u'2', u'3', u'4', u'5']
+
+    >>> query = "set [ i in IOptimizedClass ; i.value >= 5 | i.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> result = run.execute()
+    >>> sorted(result)
+    [u'5', u'6', u'7', u'8', u'9']
+
+
+    >>> query = "set [ i in IOptimizedClass ; i.value < 5 | i.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> result = run.execute()
+    >>> sorted(result)
+    [u'0', u'1', u'2', u'3', u'4']
+
+    >>> query = "set [ i in IOptimizedClass ; i.value > 5 | i.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> result = run.execute()
+    >>> sorted(result)
+    [u'6', u'7', u'8', u'9']
+
+    >>> query = "set [ i in IOptimizedClass ; i.value != 5 | i.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> result = run.execute()
+    >>> sorted(result)
+    [u'0', u'1', u'2', u'3', u'4', u'6', u'7', u'8', u'9']

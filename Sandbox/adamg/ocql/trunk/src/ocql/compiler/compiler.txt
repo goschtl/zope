@@ -2,6 +2,9 @@
 Compiler
 ========
 
+Input: Algebra tree
+Output: RunnableQuery (python code)
+
 The task of the compiler is to compile the inputted algebra tree to python code.
 
 I'm sorry, but I'm lazy here, in reality we would have to create
