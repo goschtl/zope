@@ -200,6 +200,15 @@ We can now verify that the courses are there::
 As you can see, the automatically generated primary key is also used
 as the container key now.
 
+The keys to the container are always integer, even if we're dealing with
+a primary key::
+
+  >>> philosophy.courses['1'].name
+  'Logic'
+
+  >>> philosophy.courses.get('1').name
+  'Logic'
+
 Custom key with ``rdb.key``
 ---------------------------
 
@@ -286,41 +295,41 @@ the special ``query`` method::
 Let's try some common read-only container operations, such as
 ``__getitem__``1::
 
-  >>> qc[1].name
+  >>> qc['1'].name
   u'Philosophy'
-  >>> qc[2].name
+  >>> qc['2'].name
   'Physics'
 
 XXX Why the unicode difference between u'Philosophy' and 'Physics'?
 
 ``__getitem__`` with a ``KeyError``::
 
-  >>> qc[3]
+  >>> qc['3']
   Traceback (most recent call last):
     ...
-  KeyError: 3
+  KeyError: '3'
 
 ``get``::
 
-  >>> qc.get(1).name
+  >>> qc.get('1').name
   u'Philosophy'
-  >>> qc.get(3) is None
+  >>> qc.get('3') is None
   True
-  >>> qc.get(3, 'foo')
+  >>> qc.get('3', 'foo')
   'foo'
 
 ``__contains__``::
 
-  >>> 1 in qc
+  >>> '1' in qc
   True
-  >>> 3 in qc
+  >>> '3' in qc
   False
 
 ``has_key``::
 
-  >>> qc.has_key(1)
+  >>> qc.has_key('1')
   True
-  >>> qc.has_key(3)
+  >>> qc.has_key('3')
   False
 
 ``len``::

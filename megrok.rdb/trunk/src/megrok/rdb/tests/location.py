@@ -62,9 +62,9 @@ Let's now add them to the courses container::
 
 They now should have the proper parents::
 
-  >>> philosophy.courses[1].__name__
+  >>> philosophy.courses['1'].__name__
   u'1'
-  >>> philosophy.courses[1].__parent__ is philosophy.courses
+  >>> philosophy.courses['1'].__parent__ is philosophy.courses
   True
   
 """

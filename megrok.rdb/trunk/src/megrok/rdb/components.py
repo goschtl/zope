@@ -70,15 +70,17 @@ class Container(MappedCollection):
             self.__name__ = None
             
     def __setitem__(self, key, item):
-        self._receive(item)
+        key = unicode(key)
+        self._receive(item, key)
         MappedCollection.__setitem__(self, key, item)
 
     def __delitem__(self, key):
+        key = unicode(key)
         self._release(self[key])
         MappedCollection.__delitem__(self, key)
-
-    def _receive(self, item):
-        item.__name__ = unicode(self.keyfunc(item))
+        
+    def _receive(self, item, key):
+        item.__name__ = key
         item.__parent__ = self
 
     def _release(self, item):
