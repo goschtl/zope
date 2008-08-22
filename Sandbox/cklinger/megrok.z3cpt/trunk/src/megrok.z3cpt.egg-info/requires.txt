@@ -1,5 +1,0 @@
-setuptools
-martian
-z3c.pt
-grokcore.component
-grok
