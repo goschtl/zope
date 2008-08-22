@@ -15,7 +15,7 @@ class IAddress(Interface):
         required=True
         )
 
-class IDepartment(Interface):
+class IDepartments(Interface):
     name = TextLine(
         title=u"name",
         required=True
@@ -77,7 +77,7 @@ class IStaff(IPerson):
         title=u"Name",
         )
 
-class IStudent(IPerson):
+class IStudents(IPerson):
     major = Choice(
         title=u"Department",
         vocabulary="vocab_of_IDepartment",
@@ -97,7 +97,7 @@ class IStudent(IPerson):
             )
         )
 
-class ITutor(IStaff, IStudent):
+class ITutors(IStaff, IStudents):
     pass
 
 class IVisitingStaff(IStaff):
@@ -116,7 +116,7 @@ class Address(object):
         )
 
 class Department(object):
-    implements(IDepartment)
+    implements(IDepartments)
 
     def __init__(self, name, address):
         self.name = name
@@ -167,7 +167,7 @@ class Staff(Person):
 
 
 class Student(Person):
-    implements(IStudent)
+    implements(IStudents)
 
     def __init__(self, name, major, supervisedBy, takes):
         self.name= name
@@ -176,7 +176,7 @@ class Student(Person):
         self.takes = takes
 
 class Tutor(Staff, Student):
-    implements(ITutor)
+    implements(ITutors)
 
 class VisitingStaff(Staff):
     implements(IVisitingStaff)
@@ -209,20 +209,20 @@ class TestMetadata(Metadata):
 
     db = {
             'IAddress': [A1, A2],
-            'IDepartment': [D1, D2],
+            'IDepartments': [D1, D2],
             'ICourse': [C1, C2, C3],
             'IStaff': [S1, S2],
-            'IStudent': [St1, St2],
-            'ITutor': [T1],
+            'IStudents': [St1, St2],
+            'ITutors': [T1],
             'IVisitingStaff': [V1]
         }
     classes = {
             'IAddress': MClass(IAddress),
-            'IDepartment': MClass(IDepartment),
+            'IDepartments': MClass(IDepartments),
             'ICourse': MClass(ICourse),
             'IStaff': MClass(IStaff),
-            'IStudent': MClass(IStudent),
-            'ITutor': MClass(ITutor),
+            'IStudents': MClass(IStudents),
+            'ITutors': MClass(ITutors),
             'IVisitingStaff': MClass(IVisitingStaff),
             }
 
