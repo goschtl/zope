@@ -1,0 +1,4 @@
+# svn ps -F EXTERNALS.txt svn:externals . 
+grokcore.component svn://svn.zope.org/repos/main/grokcore.component/trunk
+grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk
+martian svn://svn.zope.org/repos/main/martian/trunk
