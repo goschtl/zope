@@ -1,8 +1,0 @@
-0.1
----
-
-  Features added:
-
-    - Switched to refactored martian/grokcore.component directives
-    - syntax Inital version
-   
