@@ -5,7 +5,11 @@ Changelog for five.grok
 
 five.grok - 0.1 Unreleased
 
-    - Added support for static resource directory [thefunny42]
+    - Added support for formlib forms with grokcore.formlib.
+      [thefunny42]
+
+    - Added support for static resource directory.
+      [thefunny42]
 
     - Added support for inline templates and made Zope 2 template semantics
       the default when doing 'from five import grok' and using
@@ -13,13 +17,13 @@ five.grok - 0.1 Unreleased
       [optilude]
 
     - Added override to make templates use Five's ViewPageTemplateFile instead
-      of the one from zope.app.pagetemplate
+      of the one from zope.app.pagetemplate.
       [optilude]
 
-    - Added tests for grok.subscriber directive
+    - Added tests for grok.subscriber directive.
       [kamon]
 
     - Initial release (tests for adapters and utilities, initial support for
-      views)
+      views).
       [regebro, gotcha]
 

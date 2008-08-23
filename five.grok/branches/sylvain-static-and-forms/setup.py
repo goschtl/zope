@@ -32,6 +32,7 @@ setup(name='five.grok',
           'martian',
           'grokcore.component',
           'grokcore.view',
+          'grokcore.formlib',
       ],
       entry_points="""
       """,

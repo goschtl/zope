@@ -77,6 +77,8 @@ class ZopeTwoPageTemplate(PageTemplate):
         namespace.update(template.pt_getContext())
         return template(namespace)
 
+# resource
+
 from Products.Five.browser import resource
 
 class DirectoryResource(resource.DirectoryResource):
@@ -102,3 +104,29 @@ class DirectoryResourceFactory(resource.DirectoryResourceFactory):
         resource = DirectoryResource(self.__rsrc, request)
         resource.__name__ = self.__name # We need to add name
         return resource
+
+# forms from formlib
+
+from grokcore.formlib.components import GrokForm
+from Products.Five.formlib import formbase
+
+import martian
+
+class Form(GrokForm, formbase.PageForm, View):
+
+    martian.baseclass()
+
+
+class AddForm(GrokForm, formbase.AddForm, View):
+
+    martian.baseclass()
+
+
+class EditForm(GrokForm, formbase.EditForm, View):
+
+    martian.baseclass()
+
+
+class DisplayForm(GrokForm, formbase.DisplayForm, View):
+
+    martian.baseclass()
