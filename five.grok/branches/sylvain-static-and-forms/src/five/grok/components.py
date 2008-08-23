@@ -76,3 +76,29 @@ class ZopeTwoPageTemplate(PageTemplate):
         template = self._template.__of__(view)
         namespace.update(template.pt_getContext())
         return template(namespace)
+
+from Products.Five.browser import resource
+
+class DirectoryResource(resource.DirectoryResource):
+    # We subclass this, because we want to override the default factories for
+    # the resources so that .pt and .html do not get created as page
+    # templates
+
+    resource_factories = {}
+    for type, factory in (resource.DirectoryResource.resource_factories.items()):
+        if factory is resource.PageTemplateResourceFactory:
+            continue
+        resource_factories[type] = factory
+
+
+class DirectoryResourceFactory(resource.DirectoryResourceFactory):
+    # __name__ is needed if you want to get url's of resources
+
+    def __init__(self, name, path):
+        self.__name = name
+        self.__rsrc = self.factory(path, name)
+
+    def __call__(self, request):
+        resource = DirectoryResource(self.__rsrc, request)
+        resource.__name__ = self.__name # We need to add name
+        return resource

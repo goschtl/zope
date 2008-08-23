@@ -5,6 +5,8 @@ Changelog for five.grok
 
 five.grok - 0.1 Unreleased
 
+    - Added support for static resource directory [thefunny42]
+
     - Added support for inline templates and made Zope 2 template semantics
       the default when doing 'from five import grok' and using
       grok.PageTemplate.
