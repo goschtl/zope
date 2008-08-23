@@ -98,6 +98,9 @@ def test_suite():
             module='five.grok.tests.subscribers',
             setUp=setUp, tearDown=testing.tearDown),
 
+        doctestunit.DocTestSuite(
+            module='five.grok.tests.resource',
+            setUp=setUp, tearDown=testing.tearDown),
         ])
 
 
