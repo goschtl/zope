@@ -43,7 +43,8 @@ tokens = ('SET', 'LIST', 'COMMA', 'NOT_EQUAL', 'UNION', 'AS', 'EVERY',
           'DOT', 'IN', 'LTE', 'SOME', 'AND', 'CBRACKET_L', 'CONSTANT',
           'EQUAL', 'GTE', 'ISINSTANCE', 'SEMI_COLON', 'BRACKET_L', 'ASSIGN',
           'NOT_ASSIGN', 'FOR', 'CBRACKET_R', 'JUST', 'IDENTIFIER', 'DIFFER',
-          'LEN', 'BAG', 'SBRACKET_L', 'NOT', 'ATLEAST', 'SBRACKET_R')
+          'LEN', 'BAG', 'SBRACKET_L', 'NOT', 'ATLEAST', 'SBRACKET_R', 
+          'PLUS', 'MINUS', 'MUL', 'DIV')
 
 precedence = (
     ('left', 'UNION'),
@@ -55,8 +56,8 @@ precedence = (
     ('left', 'OR'),
     ('right', 'NOT'),
 #   ('left', 'COND_OP'),
-#   ('left', 'PLUS', 'MINUS'),
-#   ('left', 'MUL', 'DIV'),
+   ('left', 'PLUS', 'MINUS'),
+   ('left', 'MUL', 'DIV'),
 #   ('token', 'IDENTIFIER'),
 #   ('token', 'BRACEL'),
 #   ('token', 'BRACER'),
@@ -170,7 +171,6 @@ class Lexer(object):
         r','
         return t
 
-#this may be != sign
     def t_NOT_EQUAL(self, t):
         r'!='
         return t
@@ -239,17 +239,17 @@ class Lexer(object):
         r'~='
         return t
 
-#    def t_DIV(self, t):
-#        r'/'
-#        return t
+    def t_PLUS(self, t):
+        r'\+'
+        return t
 
-#    def t_PLUS(self, t):
-#        r'\+'
-#        return t
+    def t_MINUS(self, t):
+        r'-'
+        return t
 
-#    def t_MINUS(self, t):
-#        r'-'
-#        return t
+    def t_DIV(self, t):
+        r'/'
+        return t
 
     def t_SBRACKET_L(self, t):
         r'\['
@@ -287,6 +287,30 @@ class Parser(object):
         '''
         t[0] = Differ(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print 'reducing "expression DIFFER expression" to "expression"', t[0]
+
+    def p_expr_plus(self, t):
+        r'''expression : expression PLUS expression
+        '''
+        t[0] = Add(self.metadata, self.symbols, t[1], t[3])
+        if DEBUG: print 'reducing "expression UNION expression" to "expression"', t[0]
+
+    def p_expr_minus(self, t):
+        r'''expression : expression MINUS expression
+        '''
+        t[0] = Sub(self.metadata, self.symbols, t[1], t[3])
+        if DEBUG: print 'reducing "expression UNION expression" to "expression"', t[0]
+
+    def p_expr_mul(self, t):
+        r'''expression : expression MUL expression
+        '''
+        t[0] = Mul(self.metadata, self.symbols, t[1], t[3])
+        if DEBUG: print 'reducing "expression UNION expression" to "expression"', t[0]
+
+    def p_expr_div(self, t):
+        r'''expression : expression DIV expression
+        '''
+        t[0] = Div(self.metadata, self.symbols, t[1], t[3])
+        if DEBUG: print 'reducing "expression UNION expression" to "expression"', t[0]
 
 #    def p_expr_3(self, t):
 #        r'''expression : collection SBRACKET_L expression SBRACKET_R
@@ -499,12 +523,6 @@ class Parser(object):
         t[0] = Some(self.metadata, self.symbols, t[2])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
-    def p_quantified_just(self, t):
-        r'''quantified : JUST expression
-        '''
-        t[0] = Just(self.metadata, self.symbols, t[2])
-        if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
-
     def p_quantified_every(self, t):
         r'''quantified : EVERY expression
         '''
@@ -512,15 +530,21 @@ class Parser(object):
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_atleast(self, t):
-        r'''quantified : ATLEAST expression
+        r'''quantified : ATLEAST CONSTANT expression
         '''
-        t[0] = Atleast(self.metadata, self.symbols, t[2])
+        t[0] = Atleast(self.metadata, self.symbols, t[2], t[3])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_almost(self, t):
-        r'''quantified : ATMOST expression
+        r'''quantified : ATMOST CONSTANT expression
         '''
-        t[0] = Atmost(self.metadata, self.symbols, t[2])
+        t[0] = Atmost(self.metadata, self.symbols, t[2], t[3])
+        if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
+
+    def p_quantified_just(self, t):
+        r'''quantified : JUST CONSTANT expression
+        '''
+        t[0] = Just(self.metadata, self.symbols, t[2], t[3])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_definition_as(self, t):

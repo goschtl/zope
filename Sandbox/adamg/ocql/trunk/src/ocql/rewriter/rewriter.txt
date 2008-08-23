@@ -123,6 +123,40 @@ added here.
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda s: If(s.major.address.street == `'Hillhead Street'`, Single(<type 'set'>, s), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, IStudents)))
 
+    >>> qo = QueryParser("set [ c in ICourse; c.credits == 2 and c.code == 'C1' | c ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: If(c.credits == `2` and c.code == `'C1'`, Single(<type 'set'>, c), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) + len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) + 
+    Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
+
+    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) - len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) -
+    Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
+
+    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) * len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) *
+    Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
+
+    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) / len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) /
+    Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
+
 #    >>> qo = QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' | s ]")(TestMetadata())
 #    >>> opt = QueryOptimizer(qo)()
 #    >>> alg = Rewriter(opt)()

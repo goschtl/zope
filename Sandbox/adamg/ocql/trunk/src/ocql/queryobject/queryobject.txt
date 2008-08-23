@@ -167,6 +167,11 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyObject(IQuantor, Quantor(metadata, symbols, child))
     True
 
+    >>> verifyClass(INumericalQuantor, NumericalQuantor)
+    True
+    >>> verifyObject(INumericalQuantor, NumericalQuantor(metadata, symbols, 2, child))
+    True
+
     >>> verifyClass(IQuanted, Quanted)
     True
     >>> verifyObject(IQuanted, Quanted(metadata, symbols, child, child))
@@ -184,17 +189,17 @@ Checks here make sure that Interfaces are properly implemented
 
     >>> verifyClass(IAtmost, Atmost)
     True
-    >>> verifyObject(IAtmost, Atmost(metadata, symbols, child))
+    >>> verifyObject(IAtmost, Atmost(metadata, symbols, 2, child))
     True
 
     >>> verifyClass(IAtleast, Atleast)
     True
-    >>> verifyObject(IAtleast, Atleast(metadata, symbols, child))
+    >>> verifyObject(IAtleast, Atleast(metadata, symbols, 2, child))
     True
 
     >>> verifyClass(IJust, Just)
     True
-    >>> verifyObject(IJust, Just(metadata, symbols, child))
+    >>> verifyObject(IJust, Just(metadata, symbols, 2, child))
     True
 
     >>> verifyClass(ICondition, Condition)

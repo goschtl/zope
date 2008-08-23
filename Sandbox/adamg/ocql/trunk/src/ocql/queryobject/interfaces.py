@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from zope.interface import Attribute, Interface
-from zope.schema import TextLine
+from zope.schema import TextLine, Int
 
 from ocql.interfaces import IObjectQuery
 
@@ -178,6 +178,13 @@ class IQuantor(IObjectQuery):
     """Objects providing this interface represent the
     Quantor Query object
     """
+    expr = Attribute('expression')
+
+class INumericalQuantor(IQuantor):
+    """Objects providing this interface represent the
+    NeumericalQuantor Query object
+    """
+    quantity = Int(title=u"numerical quantity")
     expr = Attribute('expression')
 
 class IQuanted(IObjectQueryChild):

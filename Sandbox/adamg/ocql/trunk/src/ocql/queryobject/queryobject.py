@@ -373,6 +373,22 @@ class Quantor(QueryObject):
             str(self.expr)
             )
 
+class NumericalQuantor(Quantor):
+    implements(INumericalQuantor)
+    def __init__(self, metadata, symbols, quantity, expr):
+        self.metadata = metadata
+        self.symbols = symbols
+        Child.__init__(self)
+        self.setProp('expr', expr)
+        self.setProp('quantity', quantity)
+
+    def __repr__(self):
+        return "(%s(%s, %s))" % (
+            self.__class__.__name__,
+            str(self.quantity),
+            str(self.expr)
+            )
+
 class Quanted(Child):
     implements(IQuanted)
     quantor = None
@@ -398,16 +414,14 @@ class Every(Quantor):
 class Some(Quantor):
     implements(ISome)
 
-class Atmost(Quantor):
+class Atmost(NumericalQuantor):
     implements(IAtmost)
 
-class Atleast(Quantor):
+class Atleast(NumericalQuantor):
     implements(IAtleast)
-    #expr = None
 
-class Just(Quantor):
+class Just(NumericalQuantor):
     implements(IJust)
-    #expr = None
 
 # Logical operators
 class Condition(Expression):
