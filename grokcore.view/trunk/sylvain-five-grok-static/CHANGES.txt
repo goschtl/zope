@@ -1,0 +1,13 @@
+Changes
+=======
+
+1.1 (unreleased)
+----------------
+
+* ...
+
+1.0 (2006-08-07)
+----------------
+
+* Created ``grokcore.view`` in July 2008 by factoring security-related
+  components, grokkers and directives out of Grok.
