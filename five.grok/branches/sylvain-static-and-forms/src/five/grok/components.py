@@ -1,15 +1,24 @@
-from zope import interface
+import martian
+
 from zope.annotation.interfaces import IAttributeAnnotatable
-
-import grokcore.view
-
-from grokcore.view.components import PageTemplate
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
+from zope import interface, component
 
 from grokcore.component.interfaces import IContext
+from grokcore.formlib.components import GrokForm as BaseGrokForm
+from grokcore.formlib.components import default_display_template, default_form_template
+from grokcore.view.components import PageTemplate
+import grokcore.view
 
-import Acquisition
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.Five.browser.pagetemplatefile import getEngine
+from Products.Five.browser import resource
+from Products.Five.formlib import formbase
+from Products.PageTemplates.Expressions import SecureModuleImporter
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
+import Acquisition
+
 
 class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
@@ -17,16 +26,12 @@ class Model(SimpleItem):
     # can be established.
     interface.implements(IAttributeAnnotatable, IContext)
 
+
 class View(grokcore.view.View, Acquisition.Explicit):
     pass
 
-# TODO: This should probably move to Products.Five.browser
 
-from Acquisition import aq_inner
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.PageTemplates.Expressions import SecureModuleImporter
-from Products.Five.browser.pagetemplatefile import getEngine
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
+# TODO: This should probably move to Products.Five.browser
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
     
@@ -43,7 +48,7 @@ class ViewAwareZopePageTemplate(ZopePageTemplate):
                 root = None
 
         view = self._getContext()
-        here = aq_inner(self.context)
+        here = Acquisition.aq_inner(self.context)
 
         request = getattr(root, 'REQUEST', None)
         c = {'template': self,
@@ -77,9 +82,6 @@ class ZopeTwoPageTemplate(PageTemplate):
         namespace.update(template.pt_getContext())
         return template(namespace)
 
-# resource
-
-from Products.Five.browser import resource
 
 class DirectoryResource(resource.DirectoryResource):
     # We subclass this, because we want to override the default factories for
@@ -107,26 +109,35 @@ class DirectoryResourceFactory(resource.DirectoryResourceFactory):
 
 # forms from formlib
 
-from grokcore.formlib.components import GrokForm
-from Products.Five.formlib import formbase
+class GrokForm(BaseGrokForm):
 
-import martian
+    def __init__(self, *args):
+        super(GrokForm, self).__init__(*args)
+        self.__name__ = self.__view_name__
+        # super should not work correctly since this is needed again.
+        self.static = component.queryAdapter(
+            self.request, interface.Interface,
+            name = self.module_info.package_dotted_name)
+
 
 class Form(GrokForm, formbase.PageForm, View):
 
     martian.baseclass()
-
+    template = default_form_template
 
 class AddForm(GrokForm, formbase.AddForm, View):
 
     martian.baseclass()
+    template = default_form_template
 
 
 class EditForm(GrokForm, formbase.EditForm, View):
 
     martian.baseclass()
+    template = default_form_template
 
 
 class DisplayForm(GrokForm, formbase.DisplayForm, View):
 
     martian.baseclass()
+    template = default_display_template
