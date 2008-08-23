@@ -13,11 +13,8 @@
 ##############################################################################
 """Grokkers for the various components."""
 
-import os
-
 import zope.component.interface
 from zope import interface, component
-from zope.security.checker import NamesChecker
 from zope.interface.interface import InterfaceClass
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -177,48 +174,6 @@ class UnassociatedTemplatesGrokker(martian.GlobalGrokker):
             )
         return True
 
-
-allowed_resource_names = ('GET', 'HEAD', 'publishTraverse', 'browserDefault',
-                          'request', '__call__')
-allowed_resourcedir_names = allowed_resource_names + ('__getitem__', 'get')
-
-class StaticResourcesGrokker(martian.GlobalGrokker):
-
-    def grok(self, name, module, module_info, config, **kw):
-        # we're only interested in static resources if this module
-        # happens to be a package
-        if not module_info.isPackage():
-            return False
-
-        resource_path = module_info.getResourcePath('static')
-        if os.path.isdir(resource_path):
-            static_module = module_info.getSubModuleInfo('static')
-            if static_module is not None:
-                if static_module.isPackage():
-                    raise GrokError(
-                        "The 'static' resource directory must not "
-                        "be a python package.",
-                        module_info.getModule())
-                else:
-                    raise GrokError(
-                        "A package can not contain both a 'static' "
-                        "resource directory and a module named "
-                        "'static.py'", module_info.getModule())
-
-        # public checker by default
-        checker = NamesChecker(allowed_resourcedir_names)
-
-        resource_factory = components.DirectoryResourceFactory(
-            resource_path, checker, module_info.dotted_name)
-        adapts = (IDefaultBrowserLayer,)
-        provides = interface.Interface
-        name = module_info.dotted_name
-        config.action(
-            discriminator=('adapter', adapts, provides, name),
-            callable=component.provideAdapter,
-            args=(resource_factory, adapts, provides, name),
-            )
-        return True
 
 
 _skin_not_used = object()

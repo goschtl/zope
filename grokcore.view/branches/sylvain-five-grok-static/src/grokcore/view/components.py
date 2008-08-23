@@ -23,9 +23,6 @@ from zope.publisher.browser import BrowserPage
 from zope.publisher.publish import mapply
 from zope.pagetemplate import pagetemplate, pagetemplatefile
 from zope.app.pagetemplate.engine import TrustedAppPT
-from zope.app.publisher.browser import directoryresource
-from zope.app.publisher.browser.pagetemplateresource import \
-    PageTemplateResourceFactory
 
 import martian.util
 from grokcore.view import interfaces, util
@@ -227,27 +224,3 @@ class PageTemplateFile(PageTemplate):
             _prefix = os.path.dirname(module.__file__)
         self.setFromFilename(filename, _prefix)
 
-class DirectoryResource(directoryresource.DirectoryResource):
-    # We subclass this, because we want to override the default factories for
-    # the resources so that .pt and .html do not get created as page
-    # templates
-
-    resource_factories = {}
-    for type, factory in (directoryresource.DirectoryResource.
-                          resource_factories.items()):
-        if factory is PageTemplateResourceFactory:
-            continue
-        resource_factories[type] = factory
-
-
-class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
-    # We need this to allow hooking up our own GrokDirectoryResource
-    # and to set the checker to None (until we have our own checker)
-
-    def __call__(self, request):
-        # Override this method for the following line, in which our
-        # custom DirectoryResource class is instantiated.
-        resource = DirectoryResource(self.__dir, request)
-        resource.__Security_checker__ = self.__checker
-        resource.__name__ = self.__name
-        return resource
