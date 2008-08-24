@@ -65,7 +65,8 @@ def handler(include, layer, manager, info):
 
         if manager is None:
             # create new resource manager
-            managers[key] = manager = ResourceManager()
+            managers[key] = manager = component.createObject(
+                'z3c.resourceinclude.ResourceManager')
 
             # maintain order by creating a name that corresponds to
             # the current number of resource managers

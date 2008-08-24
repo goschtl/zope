@@ -114,7 +114,7 @@ class ResourceCollector(object):
         resources = []
         names = []
 
-        request = TemporaryRequest(self.request)
+        request = self._get_request()
         
         for name, manager in self._get_managers():
             items = manager.getResources(request)
@@ -138,6 +138,9 @@ class ResourceCollector(object):
 
     def merge(self, resources):
         pass
+
+    def _get_request(self):
+        return TemporaryRequest(self.request)
     
     def _get_managers(self):
         managers = [(name, manager) for name, manager in \

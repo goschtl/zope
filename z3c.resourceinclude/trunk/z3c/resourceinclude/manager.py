@@ -19,6 +19,10 @@ class ResourceManager(object):
         if name not in self.names:
             self.names.append(name)
 
+    def searchResource(self, request, name):
+        return component.queryAdapter(
+                request, name=name)
+
     def getResources(self, request):
         resources = []
         
@@ -28,8 +32,7 @@ class ResourceManager(object):
             else:
                 path = None
 
-            resource = component.queryAdapter(
-                request, name=name)
+            resource = self.searchResource(request, name)
 
             if path is not None:
                 resource = resource[path]
@@ -38,4 +41,18 @@ class ResourceManager(object):
             resources.append((name, resource))
 
         return resources
+
+
+class ResourceManagerFactory(object):
+
+    interface.implements(component.IFactory)
+
+    title = "z3c.resourceinclude.ResourceManager"
+    descript = "Build a resource manager"
+
+    def getInterfaces(self):
+        return [IResourceManager,]
+
+    def __call__(self):
+        return ResourceManager()
 

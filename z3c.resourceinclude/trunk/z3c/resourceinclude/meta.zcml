@@ -12,4 +12,10 @@
     
   </meta:directives>
 
+  <utility
+     factory=".manager.ResourceManagerFactory"
+     provides="zope.component.IFactory"
+     name="z3c.resourceinclude.ResourceManager"
+     />
+
 </configure>
