@@ -1,0 +1,23 @@
+<html metal:use-macro="context/@@master/macros/page">
+  <head>
+    <title metal:fill-slot="title">
+   	  <span tal:replace="python:context.__parent__.__name__" /> -
+	  <span tal:replace="python:context.__name__" />
+    </title>
+  </head>
+  <body>
+
+    <metal:block metal:fill-slot="buttons">
+      <span class="item">
+        <input type="button" 
+          tal:attributes="onclick python:'location.href=\'%s\'' % view.url('@@edit')" 
+          value="Edit This Page"/>
+      </span>
+    </metal:block>
+
+    <metal:block metal:fill-slot="body">
+      <tal:block tal:content="structure view/wikified_content" />
+    </metal:block>
+
+  </body>
+</html>

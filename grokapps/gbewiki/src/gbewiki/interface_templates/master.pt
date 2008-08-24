@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:define-macro="page">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title metal:define-slot="title" tal:content="python:context.__parent__.__name__"></title>
+    <link tal:attributes="href static/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" tal:content="view/js_newpage"></script>
+    <metal:block define-slot="head" />
+  </head>
+  <body>
+    <div id="header">
+      <div class="top">
+        <div class="login">
+          <span class="item nickname" tal:content="view/user|nothing"/>
+          <tal:block tal:condition="not:view/isManager">
+            <tal:block tal:condition="view/user">
+              |
+              <span class="item"><a tal:attributes="href python:view.url('@@logout')">Sign out</a></span>
+            </tal:block>
+            <tal:block tal:condition="not:view/user">
+              <span class="item"><a tal:attributes="href python:view.url('@@login')">Sign in</a></span>
+            </tal:block>
+          </tal:block>
+        </div>
+        <div class="title">
+          <a href="/" tal:attributes="href python:view.application_url()"><img 
+            tal:attributes="src static/logo.png" alt="Google Wiki"/></a>
+        </div>
+      </div>
+      <div class="messages">
+        <tal:block tal:repeat="message view/messages">
+          <div class="message" tal:condition="repeat/message/start" 
+                             tal:content="structure message/message" />
+        </tal:block>
+      </div>
+      <div class="bottom">
+        <div class="attribution">
+          <tal:block condition="view/exists|nothing">
+            Edited on <span tal:replace="python:view.dc().modified.strftime('%a, %b %d, %Y \t %I:%M %p')" /> by
+            <tal:block tal:condition="view/editor" tal:replace="view/editor" />
+          </tal:block>
+        </div>
+        <div class="buttons">
+          <span class="item">
+            <input type="button"
+              value="New Page" onclick="NewPage()"/>
+          </span><metal:block define-slot="buttons" />
+        </div>
+        <div style="clear: both"></div>
+      </div>
+    </div>
+    <div id="body"><metal:block define-slot="body" /></div>
+    <div id="footer"></div>
+  </body>      	
+</html>

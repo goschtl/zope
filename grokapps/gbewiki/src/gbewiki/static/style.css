@@ -1,0 +1,24 @@
+#body{clear:both;margin:20px 30px 30px;position:relative}
+#body a[href ^="http"]{background:url(external.png) no-repeat center right;color:#36b;padding-right:13px}
+#body h1 a.wikiword,#body h1 a.wikiword:visited{color:#000;text-decoration:none}
+#header .bottom{background:#FFD700;clear:both;padding:3px 7px 3px 5px}
+#header .bottom .attribution{float:right;padding-right:4px;padding-top:3px}
+#header .bottom .buttons .item{margin-right:4px}
+#header .top{height:33px;position:relative}
+#header .top .login{position:absolute;right:7px;top:7px}
+#header .top .login .nickname{font-weight:700}
+#header .top .title{left:6px;position:absolute;top:5px}
+#header .top .title img{border:0}
+#toc{border-top:1px solid #aaa;color:#000;font-weight:400;margin-top:4em;padding-bottom:.5em;padding-top:.17em}
+.message{background:#c3d9ff;font-weight:700;padding:6px;text-align:center}
+a.button,input[type^="submit"],input[type^="button"]{background:url("button-background.gif") repeat-x #ddd;border:1px solid #aaa;color:#222;cursor:default;font-family:Arial, Sans-serif;font-size:12px;margin:0;padding:2px 5px;text-decoration:none}
+a.button:hover,input[type^="submit"]:hover,input[type^="button"]:hover{border-color:#9cf #69e #69e #7af}
+body{font-family:Arial;font-size:10pt;margin:0}
+h1{font-size:188%}
+h1,h2,h3,h4,h5,h6{border-bottom:1px solid #aaa;color:#000;font-weight:400;margin:0;padding-bottom:.17em;padding-top:.5em}
+h2{font-size:150%}
+h3{font-size:132%}
+h3,h4,h5,h6{border-bottom:none;font-weight:700}
+li{margin-bottom:.25em}
+pre{background:#f5f5f5;border:1px solid silver;margin:2em;overflow:auto;padding:.5em}
+pre,code{color:#007000;font-family:monospace;font-size:10pt}
