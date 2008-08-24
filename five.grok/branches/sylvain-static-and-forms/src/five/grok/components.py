@@ -10,7 +10,8 @@ from grokcore.formlib.components import default_display_template, default_form_t
 from grokcore.view.components import PageTemplate
 import grokcore.view
 
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
+    as BaseViewPageTemplateFile
 from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
@@ -65,8 +66,20 @@ class ViewAwareZopePageTemplate(ZopePageTemplate):
             c['view'] = view
             c['views'] = ViewMapper(here, request)
 
+        if hasattr(self, 'pt_grokContext'):
+            c.update(self.pt_grokContext)
+
         return c
 
+
+class ViewPageTemplateFile(BaseViewPageTemplateFile):
+
+    def pt_getContext(self):
+        c = super(ViewPageTemplateFile, self).pt_getContext()
+        if hasattr(self, 'pt_grokContext'):
+            c.update(self.pt_grokContext)
+
+        return c
 
 class ZopeTwoPageTemplate(PageTemplate):
 
@@ -79,8 +92,8 @@ class ZopeTwoPageTemplate(PageTemplate):
     def render(self, view):
         namespace = self.getNamespace(view)
         template = self._template.__of__(view)
-        namespace.update(template.pt_getContext())
-        return template(namespace)
+        template.pt_grokContext = namespace
+        return template()
 
 
 class DirectoryResource(resource.DirectoryResource):
