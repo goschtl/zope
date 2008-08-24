@@ -28,8 +28,15 @@ class Model(SimpleItem):
     interface.implements(IAttributeAnnotatable, IContext)
 
 
-class View(grokcore.view.View, Acquisition.Explicit):
-    pass
+class View(grokcore.view.View, Acquisition.Implicit):
+
+    def __init__(self, *args):
+        super(View, self).__init__(*args)
+        if not (self.static is None):
+            # static should be wrapper correctly with acquisition,
+            # otherwise you will not be able to compute URL for
+            # resources.
+            self.static = self.static.__of__(self)
 
 
 # TODO: This should probably move to Products.Five.browser
@@ -127,10 +134,12 @@ class GrokForm(BaseGrokForm):
     def __init__(self, *args):
         super(GrokForm, self).__init__(*args)
         self.__name__ = self.__view_name__
-        # super should not work correctly since this is needed again.
+        # super seems not to work correctly since this is needed again. 
         self.static = component.queryAdapter(
             self.request, interface.Interface,
             name = self.module_info.package_dotted_name)
+        if not (self.static is None):
+            self.static = self.static.__of__(self)
 
 
 class Form(GrokForm, formbase.PageForm, View):
