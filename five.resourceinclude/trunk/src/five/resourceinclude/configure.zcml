@@ -1,0 +1,9 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <include package="z3c.pt" />
+
+  <adapter factory=".collector.ResourceCollector"
+           provides="z3c.resourceinclude.interfaces.IResourceCollector" />
+
+</configure>
