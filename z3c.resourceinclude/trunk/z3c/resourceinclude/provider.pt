@@ -2,7 +2,7 @@
      xmlns:tal="http://xml.zope.org/namespaces/tal"
      tal:omit-tag="">
 
-  <tal:resource repeat="resource resources">
+  <tal:resource repeat="resource options.resources">
 
     <script type="text/javascript"
 	    tal:condition="resource.content_type == 'application/x-javascript'"
@@ -11,7 +11,7 @@
 
     <style type="text/css" media="all"
 	   tal:condition="resource.content_type == 'text/css'">
-      ${comment('@import url("%s");' % resource.url)}
+      ${options.comment('@import url("%s");' % resource.url)}
     </style>
 	    
     <link type="text/kss"

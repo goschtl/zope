@@ -6,7 +6,7 @@ from zope.publisher.interfaces.browser import IBrowserView
 from zope.contentprovider.interfaces import IContentProvider
 
 from z3c.resourceinclude.interfaces import IResourceCollector
-from z3c.pt import PageTemplateFile
+from z3c.pt import ViewPageTemplateFile
 
 def html_comment(u):
     return u'<!-- %s -->' % u
@@ -22,7 +22,7 @@ class ResourceIncludeProvider(object):
     interface.implements(IContentProvider)
     component.adapts(interface.Interface, IBrowserRequest, IBrowserView)
 
-    template = PageTemplateFile("provider.pt")
+    template = ViewPageTemplateFile("provider.pt")
 
     def __init__(self, context, request, view):
         self.context = context
