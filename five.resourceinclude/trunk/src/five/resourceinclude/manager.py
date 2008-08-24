@@ -6,7 +6,9 @@ class ResourceManager(manager.ResourceManager, Acquisition.Implicit):
 
     def searchResource(self, request, name):
         resource = super(ResourceManager, self).searchResource(request, name)
-        return resource.__of__(self)
+        if resource:
+            return resource.__of__(self)
+        return resource
 
 
 class ResourceManagerFactory(manager.ResourceManagerFactory):
