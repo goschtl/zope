@@ -107,8 +107,10 @@ Simple condition (eg where):
 #     set([set([Department <Computing Science>, Department <Other department>]), set([]), set([Department <Computing Science>])])
 
 Expression in the result:
-    >>> sorted(engine.compile("list [ i in ICourse | i.runBy  ]").execute(), key=lambda x:sorted(x, key=lambda y:y.name))
-    [set([]), set([Department <Computing Science>]), set([Department <Computing Science>, Department <Other department>])]
+    >>> result = engine.compile("list [ i in ICourse | i.runBy  ]").execute()
+    >>> result = sorted([sorted(r, key=lambda y:y.name) for r in result], key=lambda x:str(x))
+    >>> result
+    [[Department <Computing Science>, Department <Other department>], [Department <Computing Science>], []]
 
 Size expression in the result:
     >>> engine.compile("list [ c in ICourse ; len(c.runBy) == 1 | c ]").execute()
