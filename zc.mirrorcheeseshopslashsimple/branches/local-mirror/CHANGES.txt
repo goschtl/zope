@@ -1,0 +1,10 @@
+Change history
+~~~~~~~~~~~~~~
+
+0.3.0 (2008-08-12)
+------------------
+
+- added test(s)
+- added CHANGES.txt
+- fixed check for ascii package names
+
