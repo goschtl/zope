@@ -2,11 +2,26 @@
 Change History
 **************
 
+1.1.0 (2008-08-25)
+==================
+
+- Requiring at least zope.testing 3.6.0.
+
+- Fixed a bug: Parallel runs of layers failed when using
+  working-directory parameter.
+
+
+1.0.0 (2007-11-04)
+==================
+
+- Preparing stable release.
+
+
 1.0.0b8 (2007-07-17)
 ====================
 
 - Added the ability to use `initialization` option that will be inserted into
-the bin/test after the environment is set up.
+  the bin/test after the environment is set up.
 
 1.0.0b7 (2007-04-26)
 ====================

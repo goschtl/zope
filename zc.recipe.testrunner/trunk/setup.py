@@ -20,9 +20,6 @@ setup(
         '**********************\n'
         + '\n' +
         read('src', 'zc', 'recipe', 'testrunner', 'README.txt')
-        + '\n' +
-        'Download\n'
-        '**********************\n'
         ),
     license = "ZPL 2.1",
     keywords = "development build testing",
@@ -32,8 +29,9 @@ setup(
     include_package_data = True,
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
-    install_requires = ['zc.buildout  >=1.0.0b12',
-                        'zope.testing', 'setuptools',
+    install_requires = ['zc.buildout >=1.0.0b12',
+                        'zope.testing >=3.6.0', 
+                        'setuptools',
                         'zc.recipe.egg  >=1.0.0a3',
                         ],
     test_suite = name+'.tests.test_suite',
