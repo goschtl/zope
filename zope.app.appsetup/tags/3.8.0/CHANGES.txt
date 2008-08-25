@@ -1,0 +1,48 @@
+=======
+CHANGES
+=======
+
+Version 3.8.0 (2008-08-25)
+--------------------------
+
+- Feature: Developed an entry point that allows you to quickly bring up an
+  application instance for debugging purposes. (Implemented by Marius Gedminas
+  and Stephan Richter.)
+
+
+Version 3.7.0 (2008-08-19)
+--------------------------
+
+- Added ``.product.loadConfiguration`` test-support function; loads product
+  configuration (only) from a file object, allowing test code (including
+  setup) to make use of the same configuration schema support used by normal
+  startup.
+
+
+Version 3.6.0 (2008-07-23)
+--------------------------
+
+- Added additional test support functions to set the configuration for a
+  single section, and save/restore the entire configuration.
+
+
+Version 3.5.0 (2008-06-17)
+--------------------------
+
+- Added helper class for supporting product configuration tests.
+
+- Added documentation for the product configuration API, with tests.
+
+
+Version 3.4.1 (2007-09-27)
+--------------------------
+
+- Egg was faulty, re-released
+
+
+Version 3.4.0 (2007-09-25)
+--------------------------
+
+- Initial documented release
+
+- Reflect changes form zope.app.error refactoring
