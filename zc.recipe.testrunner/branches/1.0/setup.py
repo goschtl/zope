@@ -33,7 +33,7 @@ setup(
     package_dir = {'':'src'},
     namespace_packages = ['zc', 'zc.recipe'],
     install_requires = ['zc.buildout  >=1.0.0b12',
-                        'zope.testing', 'setuptools',
+                        'zope.testing<=3.4.9999', 'setuptools',
                         'zc.recipe.egg  >=1.0.0a3',
                         ],
     test_suite = name+'.tests.test_suite',
