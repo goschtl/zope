@@ -4,11 +4,11 @@ from pkg_resources import resource_listdir
 from zope.testing import doctest, cleanup, renormalizing
 from zope.configuration import xmlconfig
 import zope.component.eventtesting
-import megrok.z3cform.tests
+import megrok.z3cform
 
 def setUpZope(test):
     zope.component.eventtesting.setUp(test)
-    xmlconfig.file('configure.zcml', package=megrok.z3cform.tests)
+    xmlconfig.file('testing.zcml', package=megrok.z3cform)
 
 def cleanUpZope(test):
     cleanup.cleanUp()
