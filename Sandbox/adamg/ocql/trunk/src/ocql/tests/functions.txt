@@ -111,12 +111,20 @@ Expression in the result:
     [set([]), set([Department <Computing Science>]), set([Department <Computing Science>, Department <Other department>])]
 
 Size expression in the result:
-     >>> engine.compile("list [ c in ICourse ; len(c.runBy) == 1 | c ]").execute()
-     [Course <C3>]
+    >>> engine.compile("list [ c in ICourse ; len(c.runBy) == 1 | c ]").execute()
+    [Course <C3>]
 
- Size operator in the result:
-     >>> engine.compile("list [ c in ICourse | len(c.runBy)  ]").execute()
-     [2, 0, 1]
+Size operator in the result:
+    >>> engine.compile("list [ c in ICourse | len(c.runBy)  ]").execute()
+    [2, 0, 1]
+
+Sample from the presentation:
+    >>> engine.compile("set [ p in IStaff; p.salary < 2300 | p ]").execute()
+    set([Staff <S1>])
+
+Sample from the presentation:
+    >>> engine.compile("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]").execute()
+    Student1, Student2
 
 More test ideas:
 engine.compile("""list [ d in IDepartments; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()
