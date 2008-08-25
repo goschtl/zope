@@ -27,7 +27,7 @@ setup(
     name='zope.app.appsetup',
     version='3.7.1dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description="Zope app setup helper",
     long_description=(
         read('README.txt')
