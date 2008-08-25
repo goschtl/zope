@@ -88,17 +88,17 @@ Simple in expression (eg select):
     [Course <C1>, Course <C2>, Course <C3>]
 
 Simple condition (eg where):
-    >>> engine.compile("list [ d in IDepartments; d.name == \"Computing Science\" | d  ]").execute()
+    >>> engine.compile("list [ d in IDepartment; d.name == \"Computing Science\" | d  ]").execute()
     [Department <Computing Science>]
 
 # FIXME: not working!
 # Join using existentially quantified expressions:
-#     >>> engine.compile("""list [ d in IDepartments; c in ICourse; d.name == "Computing Science"; d == some c.runBy | c  ]""").execute()
+#     >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == some c.runBy | c  ]""").execute()
 #     set([Course <C1>, Course <C3>])
 
 # FIXME: not working!
 # Join using universally quantified expressions:
-#      >>> engine.compile("""list [ d in IDepartments; c in ICourse; d.name == "Computing Science"; d == every c.runBy | c  ]""").execute()
+#      >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == every c.runBy | c  ]""").execute()
 #      set([Course <C3>])
 
 # FIXME: not working!
@@ -123,9 +123,9 @@ Sample from the presentation:
     set([Staff <S1>])
 
 Sample from the presentation:
-    >>> engine.compile("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]").execute()
+    >>> engine.compile("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]").execute()
     Student1, Student2
 
 More test ideas:
-engine.compile("""list [ d in IDepartments; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()
-engine.compile("""list [ d in IDepartments; | list {d, size set [ some c.runBy = d ; c in ICurses; c.credits <= 2 | c ] } ]""").execute()
+engine.compile("""list [ d in IDepartment; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()
+engine.compile("""list [ d in IDepartment; | list {d, size set [ some c.runBy = d ; c in ICurses; c.credits <= 2 | c ] } ]""").execute()

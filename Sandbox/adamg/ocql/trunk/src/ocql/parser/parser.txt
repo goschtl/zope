@@ -54,8 +54,8 @@ query is still buggy.
     >>> QueryParser("len ( list [ i in ICourse | i ] )")(None)
     Head(Count(Query(<type 'list'>, In(Identifier(i), Identifier(ICourse)), Identifier(i))))
 
-    >>> QueryParser("set [ d in IDepartments; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(d), Identifier(IDepartments));
+    >>> QueryParser("set [ d in IDepartment; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(d), Identifier(IDepartment));
     Eq((Every, Query(<type 'set'>, In(Identifier(c), Identifier(ICourse));
     Eq((Some, Property(Identifier(c), Identifier(runBy))), Identifier(d)), Property(Identifier(c), Identifier(credits)))),
     Constant(2)), Property(Identifier(d), Identifier(name))))
@@ -96,41 +96,41 @@ query is still buggy.
     >>> QueryParser("set [ c in ICourse; a as c.name; a=='C1' | c]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Alias(Identifier(a), Property(Identifier(c), Identifier(name))); Eq(Identifier(a), Constant('C1')), Identifier(c)))
 
-    >>> QueryParser("set [ s in IStudents; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(IStudents));
+    >>> QueryParser("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(IStudent));
     Alias(Identifier(a), Property(Identifier(s), Property(Identifier(major), Property(Identifier(address), Identifier(street)))));
     Or(Eq(Identifier(a), Constant('Hillhead Street')), Eq(Identifier(a), Constant('Gibson Street'))), Identifier(s)))
 
     >>> QueryParser("set [ i in IPerson; isinstance(i, Tutor) | i ]")(None)
     Head(Query(<type 'set'>, In(Identifier(i), Identifier(IPerson)); Isinstance(Identifier(i), Tutor), Identifier(i)))
 
-    >>> QueryParser("set [ s in Staff; set [st in IStudents; some st.takes == atleast 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudents)); 
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atleast(2, Property(Identifier(s), Identifier(teaches))))), 
+    >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == atleast 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atleast(2, Property(Identifier(s), Identifier(teaches))))),
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
 
-    >>> QueryParser("set [ s in Staff; set [st in IStudents; some st.takes == just 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudents)); 
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Just(2, Property(Identifier(s), Identifier(teaches))))), 
+    >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == just 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq((Some, Property(Identifier(st), Identifier(takes))), (Just(2, Property(Identifier(s), Identifier(teaches))))),
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
 
-    >>> QueryParser("set [ s in Staff; set [st in IStudents; some st.takes == atmost 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudents)); 
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atmost(2, Property(Identifier(s), Identifier(teaches))))), 
+    >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == atmost 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atmost(2, Property(Identifier(s), Identifier(teaches))))),
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
 
     >>> QueryParser("len ( set [ i in IStaff | i ] ) + len ( set [ j in IVisitingStaff | j ] )")(None)
-    Head(Add(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))), 
+    Head(Add(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))
 
     >>> QueryParser("len ( set [ i in IStaff | i ] ) - len ( set [ j in IVisitingStaff | j ] )")(None)
-    Head(Sub(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))), 
+    Head(Sub(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))
 
     >>> QueryParser("len ( set [ i in IStaff | i ] ) * len ( set [ j in IVisitingStaff | j ] )")(None)
-    Head(Mul(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))), 
+    Head(Mul(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))
 
     >>> QueryParser("len ( set [ i in IStaff | i ] ) / len ( set [ j in IVisitingStaff | j ] )")(None)
-    Head(Div(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))), 
+    Head(Div(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))

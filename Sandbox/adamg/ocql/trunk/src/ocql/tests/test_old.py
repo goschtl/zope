@@ -327,10 +327,10 @@ class testOLD(unittest.TestCase):
         #
         # join -- Departments running curses
         #
-        # set [ c in ICourse d, in IDepartments ,
+        # set [ c in ICourse d, in IDepartment ,
         # some c.runBy = d  | d.name ]
         #
-        query = "[ c in ICourse, d in IDepartments, d = some c.runBy | d.name  ]"
+        query = "[ c in ICourse, d in IDepartment, d = some c.runBy | d.name  ]"
         qo=Head(Query(
             metadata, symbols,
             set, [
@@ -341,7 +341,7 @@ class testOLD(unittest.TestCase):
                 In(
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
-                    Identifier(metadata, symbols,'IDepartments')),
+                    Identifier(metadata, symbols,'IDepartment')),
                 Eq(
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
@@ -362,7 +362,7 @@ class testOLD(unittest.TestCase):
         #
         # set [ d in ICourse, c in ICourse, c.credits=3, some c.runBy = d | d.name ]
         #
-        query = "[ c in ICourse, d in IDepartments, c.credits=3, d = some c.runBy | d.name  ]"
+        query = "[ c in ICourse, d in IDepartment, c.credits=3, d = some c.runBy | d.name  ]"
         qo=Head(Query(
             metadata, symbols,
             set,
@@ -374,7 +374,7 @@ class testOLD(unittest.TestCase):
                 In(
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
-                    Identifier(metadata, symbols,'IDepartments')),
+                    Identifier(metadata, symbols,'IDepartment')),
                 Eq(
                     metadata, symbols,
                     Identifier(metadata, symbols,'c.credits'),
@@ -397,9 +397,9 @@ class testOLD(unittest.TestCase):
         symbols = SymbolContainer()
         # join -- Departments running some not 3 credits curses
         #
-        # [ d in IDepartments, c in ICourse, some c.runBy = d, some c.credits != 3| d.name ]
+        # [ d in IDepartment, c in ICourse, some c.runBy = d, some c.credits != 3| d.name ]
         #
-        query = """[ d in IDepartments,
+        query = """[ d in IDepartment,
         c in ICourse,
         some c.runBy = d, c.credits != 3| d.name ]"""
         qo=Head(Query(
@@ -409,7 +409,7 @@ class testOLD(unittest.TestCase):
                 In(
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
-                    Identifier(metadata, symbols,'IDepartments')),
+                    Identifier(metadata, symbols,'IDepartment')),
                 In(
                     metadata, symbols,
                     Identifier(metadata, symbols,'c'),
@@ -438,9 +438,9 @@ class testOLD(unittest.TestCase):
         #
         # join -- Departments running just 2 credits curses
         #
-        # set [ d in IDepartments, every set [ c in ICourse, some c.runBy = d | c.credits ] = 3  | d.name ]
+        # set [ d in IDepartment, every set [ c in ICourse, some c.runBy = d | c.credits ] = 3  | d.name ]
         #
-        query = """set [ d in IDepartments,
+        query = """set [ d in IDepartment,
             every
             set [ c in ICourse, some c.runBy = d | c.credits ] = 2
             | d.name ]"""
@@ -451,7 +451,7 @@ class testOLD(unittest.TestCase):
                 In(
                     metadata, symbols,
                     Identifier(metadata, symbols,'d'),
-                    Identifier(metadata, symbols,'IDepartments')),
+                    Identifier(metadata, symbols,'IDepartment')),
                 Eq(
                     metadata, symbols,
                     Quanted(
@@ -506,7 +506,7 @@ class testOLD(unittest.TestCase):
                          Identifier(metadata, symbols, 'c'),
                          Identifier(metadata, symbols, 'code')))
             ] ,Identifier(metadata, symbols,'a')))
-        
+
         self.doit(query, qo, set(['C1','C2','C3']))
 
 def test_suite():
