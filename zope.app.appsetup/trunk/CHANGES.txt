@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+Version 3.8.0 (2008-??-??)
+--------------------------
+
+- Feature: Developed an entry point that allows you to quickly bring up an
+  application instance for debugging purposes. (Implemented by Marius Gedminas
+  and Stephan Richter.)
+
 Version 3.7.0 (2008-08-19)
 --------------------------
 
@@ -9,7 +16,6 @@ Version 3.7.0 (2008-08-19)
   configuration (only) from a file object, allowing test code (including
   setup) to make use of the same configuration schema support used by normal
   startup.
-
 
 Version 3.6.0 (2008-07-23)
 --------------------------

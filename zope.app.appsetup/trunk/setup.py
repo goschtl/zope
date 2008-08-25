@@ -46,7 +46,7 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://cheeseshop.python.org/pypi/zope.app.appsetup',
+    url='http://pypi.python.org/pypi/zope.app.appsetup',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     extras_require=dict(test=['zope.app.testing']),
@@ -67,4 +67,8 @@ setup(
                       ],
     include_package_data=True,
     zip_safe=False,
+    entry_points = """
+        [console_scripts]
+        debug = zope.app.appsetup.debug:main
+        """,
     )
