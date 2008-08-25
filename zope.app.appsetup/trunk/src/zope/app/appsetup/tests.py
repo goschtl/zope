@@ -16,7 +16,8 @@
 $Id$
 """
 import ZConfig
-import os.path
+import os
+import sys
 import unittest
 import urllib
 import transaction
@@ -186,6 +187,30 @@ class TestConfigurationSchema(unittest.TestCase):
 def bootstraptearDown(test):
     test.globs['db'].close()
 
+
+def setUpDebug(test):
+    placelesssetup.setUp(test)
+    test.real_stderr = sys.stderr
+    test.real_argv = list(sys.argv)
+    test.olddir = os.getcwd()
+    os.chdir(os.path.join(os.path.dirname(__file__), 'testdata'))
+    from zope.security.management import endInteraction
+    endInteraction()
+
+
+def tearDownDebug(test):
+    sys.stderr = test.real_stderr
+    sys.argv[:] = test.real_argv
+    os.chdir(test.olddir)
+    # make sure we don't leave environment variables that would cause
+    # Python to open an interactive console
+    if 'PYTHONINSPECT' in os.environ:
+        del os.environ['PYTHONINSPECT']
+    from zope.security.management import endInteraction
+    endInteraction()
+    placelesssetup.tearDown(test)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
@@ -196,6 +221,10 @@ def test_suite():
     suite.addTest(doctest.DocFileSuite(
         'bootstrap.txt', 'product.txt',
         setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+        ))
+    suite.addTest(doctest.DocFileSuite(
+        'debug.txt',
+        setUp=setUpDebug, tearDown=tearDownDebug,
         ))
     return suite
 

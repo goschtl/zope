@@ -1,0 +1,5 @@
+<configure>
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.component" />
+  <include package="zope.app.appsetup" />
+</configure>

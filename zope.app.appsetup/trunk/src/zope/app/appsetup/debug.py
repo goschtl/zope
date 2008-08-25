@@ -25,7 +25,6 @@ import zope.app.appsetup.product
 import zope.event
 from zope.app.publication.zopepublication import ZopePublication
 
-os.environ["PYTHONINSPECT"] = "true"
 
 def load_options(args=None):
     if args is None:
@@ -34,8 +33,9 @@ def load_options(args=None):
     options.schemadir = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), 'schema')
     options.realize(args)
+    if options.configroot is None:
+        options.usage("please specify a configuration file")
     options = options.configroot
-
     if options.path:
         sys.path[:0] = [os.path.abspath(p) for p in options.path]
     return options
@@ -60,3 +60,8 @@ def main(args=None):
         execfile(os.environ["PYTHONSTARTUP"])
     sys.modules['__main__'].root = db.open().root()[ZopePublication.root_name]
     print 'The application root is known as `root`.'
+    os.environ["PYTHONINSPECT"] = "true"
+
+
+if __name__ == '__main__':
+    main()
