@@ -4,7 +4,9 @@
 
   <include package="z3c.form" file="meta.zcml" />
   <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.view" file="meta.zcml" />
 
   <grok:grok package=".meta" />
 
 </configure>
+

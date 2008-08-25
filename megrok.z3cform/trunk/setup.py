@@ -3,6 +3,19 @@ import os
 
 version = '0.1'
 
+install_requires = [
+    'setuptools',
+    'grokcore.component',
+    'grokcore.view',
+    'grokcore.formlib',
+    'z3c.form',
+    ]
+
+# The grok dependency is not added explicitly, so we can factor out a
+# version of this package for Zope 2 which is not going to install
+# grok. But we want the dependency to run tests.
+test_requires = install_requires + ['grok',]
+
 setup(name='megrok.z3cform',
       version=version,
       description="Z3C Forms support for Grok",
@@ -28,13 +41,8 @@ setup(name='megrok.z3cform',
       include_package_data=True,
       zip_safe=False,
       # We need to factor out the dependency on grokcore.formlib
-      install_requires=[
-          'setuptools',
-          'grokcore.component',
-          'grokcore.view',
-          'grokcore.formlib',
-          'z3c.form'
-      ],
+      install_requires=install_requires,
+      extras_require={'test': test_requires,},
       entry_points="""
       # -*- Entry points: -*-
       """,

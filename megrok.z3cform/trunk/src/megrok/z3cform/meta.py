@@ -25,7 +25,7 @@ def get_auto_fields(context):
     # from any schemas defined by the context
     fields = field.Fields(*most_specialized_interfaces(context))
     # we pull in this field by default, but we don't want it in our form
-    fields = field.omit('__name__')
+    fields = fields.omit('__name__')
     return fields
 
 
@@ -41,14 +41,14 @@ class FormGrokker(martian.ClassGrokker):
         # Set fields by default.
         if isinstance(form.fields, components.DefaultFields):
             form.fields = get_auto_fields(context)
-
+ 
         # Don't override render method.
         if not getattr(form.render, 'base_method', False):
             raise GrokError(
                 "It is not allowed to specify a custom 'render' "
                 "method for form %r. Forms either use the default "
-                "template or a custom-supplied one." % factory,
-                factory)
+                "template or a custom-supplied one." % form,
+                form)
 
         return True
 
