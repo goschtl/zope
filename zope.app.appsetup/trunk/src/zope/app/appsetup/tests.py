@@ -201,6 +201,8 @@ def setUpDebug(test):
 def tearDownDebug(test):
     sys.stderr = test.real_stderr
     sys.argv[:] = test.real_argv
+    if hasattr(sys, 'ps1'):
+        del sys.ps1
     os.chdir(test.olddir)
     # make sure we don't leave environment variables that would cause
     # Python to open an interactive console

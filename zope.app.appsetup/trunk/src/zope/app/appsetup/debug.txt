@@ -45,4 +45,17 @@ PYTHONINSPECT environment variable
     >>> os.environ.get('PYTHONINSPECT')
     'true'
 
+We have to do extra work to honor the PYTHONSTARTUP environment variable:
+
+    >>> pythonstartup = os.path.join(os.path.dirname(debug.__file__),
+    ...                              'testdata', 'pythonstartup')
+    >>> os.environ['PYTHONSTARTUP'] = pythonstartup
+    >>> run('-C', 'test.conf')
+    The application root is known as `root`.
+
+You can see that our pythonstartup file was executed because it changed
+the prompt
+
+    >>> sys.ps1
+    'debug> '
 
