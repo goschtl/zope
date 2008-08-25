@@ -16,8 +16,10 @@
 $Id$
 """
 
-import os, sys
+import os
+import os.path
 import pkg_resources
+import sys
 import zc.buildout.easy_install
 import zc.recipe.egg
 
@@ -55,6 +57,7 @@ class TestRunner:
             else:
                 os.mkdir(wd)
             dest.append(wd)
+        wd = os.path.abspath(wd)
         initialization = initialization_template % wd
 
         env_section = options.get('environment', '').strip()

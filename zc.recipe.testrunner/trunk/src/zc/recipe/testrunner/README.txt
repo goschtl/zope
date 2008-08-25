@@ -168,11 +168,14 @@ We can run the test script to run our demo test:
 
 >>> print system(os.path.join(sample_buildout, 'bin', 'test') + ' -vv'),
 Running tests at level 1
-Running unit tests:
+Running zope.testing.testrunner.layer.UnitTests tests:
+  Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
   Running:
  test (demo.tests.TestDemo)
  test2 (demo2.tests.Demo2Tests)
   Ran 2 tests with 0 failures and 0 errors in 0.000 seconds.
+Tearing down left over layers:
+  Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
 
 Note that we didn't run the demoneeded tests.  Tests are only run for
 the eggs listed, not for their dependencies.
@@ -201,8 +204,11 @@ script will get it's name from the part:
 We can run the test script to run our demo test:
 
 >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -q'),
-Running unit tests:
-  Ran 1 tests with 0 failures and 0 errors in 0.000 seconds.
+Running zope.testing.testrunner.layer.UnitTests tests:
+  Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
+  Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
+Tearing down left over layers:
+  Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
 
 If we need to include other paths in our test script, we can use the
 extra-paths option to specify them:
@@ -229,6 +235,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   '/usr/local/zope/lib/python',
   ]
@@ -271,6 +278,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   '/usr/local/zope/lib/python',
   ]
@@ -325,6 +333,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.4.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   '/usr/local/zope/lib/python',
   ]
@@ -368,11 +377,13 @@ include a check for an environment variable:
 
 Running them with the current buildout will produce a failure:
 
->>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'), # doctest: +REPORT_NDIFF +ELLIPSIS
+>>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'), # doctest: +ELLIPSIS
 Running tests at level 1
-Running unit tests:
+Running zope.testing.testrunner.layer.UnitTests tests:
+  Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
   Running:
- test (demo.tests.DemoTests)
+ test (demo.tests.DemoTests) (0.000 s)
+<BLANKLINE>
 <BLANKLINE>
 Failure in test test (demo.tests.DemoTests)
 Traceback (most recent call last):
@@ -382,6 +393,8 @@ AssertionError: '42' != '23'
 <BLANKLINE>
 <BLANKLINE>
   Ran 1 tests with 1 failures and 0 errors in 0.001 seconds.
+Tearing down left over layers:
+  Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
 <BLANKLINE>
 Tests with failures:
    test (demo.tests.DemoTests)
@@ -418,6 +431,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   ]
 <BLANKLINE>
@@ -436,10 +450,13 @@ if __name__ == '__main__':
 
 >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'),
 Running tests at level 1
-Running unit tests:
+Running zope.testing.testrunner.layer.UnitTests tests:
+  Set up zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
   Running:
  test (demo.tests.DemoTests)
   Ran 1 tests with 0 failures and 0 errors in 0.001 seconds.
+Tearing down left over layers:
+  Tear down zope.testing.testrunner.layer.UnitTests in 0.001 seconds.
 
 One can add initialization steps in the buildout.  These will be added to the
 end of the script:
@@ -470,6 +487,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   '/usr/local/zope/lib/python',
   ]
@@ -517,6 +535,7 @@ import sys
 sys.path[0:0] = [
   '/sample-buildout/demo',
   '/sample-buildout/eggs/zope.testing-3.0-py2.3.egg',
+  '/sample-buildout/eggs/zope.interface-3.4.1-py2.4.egg',
   '/sample-buildout/eggs/setuptools-0.6-py1.3.egg',
   '/usr/local/zope/lib/python',
   ]

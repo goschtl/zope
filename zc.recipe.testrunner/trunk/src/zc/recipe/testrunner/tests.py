@@ -12,36 +12,40 @@
 #
 ##############################################################################
 
+import doctest
 import re
-import zc.buildout.testing
-
 import unittest
-import zope.testing
-from zope.testing import doctest, renormalizing
+
+import zc.buildout.testing
+import zope.testing.doctest
+import zope.testing.renormalizing
+
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.testrunner', test)
     zc.buildout.testing.install_develop('zc.recipe.egg', test)
     zc.buildout.testing.install('zope.testing', test)
+    zc.buildout.testing.install('zope.interface', test)
 
 def test_suite():
     return unittest.TestSuite((
-        #doctest.DocTestSuite(),
-        doctest.DocFileSuite(
-            'README.txt',
+        zope.testing.doctest.DocFileSuite(
+            'README.txt', 
+            'bugfixes.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-            checker=renormalizing.RENormalizing([
-               zc.buildout.testing.normalize_path,
-               zc.buildout.testing.normalize_script,
-               zc.buildout.testing.normalize_egg_py,
-               (re.compile('#!\S+py\S*'), '#!python'),
-               (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
-               (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
-               (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
-               ])
+            checker=zope.testing.renormalizing.RENormalizing(
+                    [zc.buildout.testing.normalize_path,
+                     zc.buildout.testing.normalize_script,
+                     zc.buildout.testing.normalize_egg_py,
+                     (re.compile('#!\S+py\S*'), '#!python'),
+                     (re.compile('\d[.]\d+ seconds'), '0.001 seconds'),
+                     (re.compile('zope.testing-[^-]+-'), 'zope.testing-X-'),
+                     (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
+                     (re.compile('zope.interface-[^-]+-'), 'zope.interface-X-'),
+                     ]),
+            optionflags=doctest.REPORT_NDIFF,
             ),
-
         ))
 
 if __name__ == '__main__':
