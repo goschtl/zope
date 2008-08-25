@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <adapter
-      factory=".converter.FileUploadDataConverter"
-      />
-
-</configure>
