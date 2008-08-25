@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 3.8.0 (2008-??-??)
+Version 3.8.0 (2008-08-25)
 --------------------------
 
 - Feature: Developed an entry point that allows you to quickly bring up an

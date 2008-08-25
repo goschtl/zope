@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.appsetup',
-    version='3.7.1dev',
+    version='3.8.0',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description="Zope app setup helper",
