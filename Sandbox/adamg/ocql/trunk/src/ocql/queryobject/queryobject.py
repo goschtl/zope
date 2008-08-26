@@ -289,7 +289,7 @@ class Property(Binary):
 
     def get_collection_type(self):
         t = self.left.get_class()
-        if isinstance(self.right, Identifier):
+        if IIdentifier.providedBy(self.right):
             try:
                 r = t[self.right.name]
             except:
@@ -300,7 +300,7 @@ class Property(Binary):
                 r = t[self.right.left.name]
             except:
                 from pub.dbgpclient import brk; brk()
-            
+
         return r
 
         #else:

@@ -61,8 +61,7 @@ class QueryRewriter(ChildRewriter):
                 t.addSymbol()
 
             firstTerm = self.context.terms[0]
-            if isinstance(firstTerm, ocql.queryobject.queryobject.In):
-
+            if ocql.queryobject.interfaces.IIn.providedBy(firstTerm):
                 ctype = firstTerm.get_collection_type()
 
                 rv = Iter(
@@ -82,12 +81,14 @@ class QueryRewriter(ChildRewriter):
                             IRewriter(firstTerm.expression)()
                             ) # FIXME: ?set? must be determined by type(firstTerm.expression)
                 )
-            elif isinstance(firstTerm, ocql.queryobject.queryobject.Alias):
+            elif ocql.queryobject.interfaces.IAlias.providedBy(firstTerm):
                 rv = Iter(
                         self.context.collection_type,
                         Lambda(IRewriter(firstTerm.identifier)(),
-                               Single(self.context.collection_type, IRewriter(firstTerm.identifier)())),
-                        Single(self.context.collection_type, IRewriter(firstTerm.expression)()))
+                               Single(self.context.collection_type,
+                                      IRewriter(firstTerm.identifier)())),
+                        Single(self.context.collection_type,
+                               IRewriter(firstTerm.expression)()))
 
             else:
                 rv = If(
@@ -157,7 +158,8 @@ class PropertyRewriter(BinaryRewriter):
 
     def __call__(self):
         return Identifier(
-            '.'.join([IRewriter(self.context.left)().name, IRewriter(self.context.right)().name]))
+            '.'.join([IRewriter(self.context.left)().name,
+                      IRewriter(self.context.right)().name]))
 
 class AddRewriter(BinaryRewriter):
     implements(IRewriter)
@@ -220,7 +222,8 @@ class QuentedRewriter(ChildRewriter):
     adapts(IQuanted)
 
     def __call__(self, expression, operator):
-        return IRewriter(self.context.quantor)(expression, self.context.expression, operator)
+        return IRewriter(self.context.quantor)(
+            expression, self.context.expression, operator)
 
 class EveryRewriter(ChildRewriter):
     implements(IRewriter)
@@ -275,10 +278,12 @@ class ConditionRewriter(ChildRewriter):
     adapts(ICondition)
 
     def __call__(self):
-        if isinstance(self.context.left, ocql.queryobject.queryobject.Quanted):
-            return IRewriter(self.context.left)(self.context.right, self.context)
-        if isinstance(self.context.right, ocql.queryobject.queryobject.Quanted):
-            return IRewriter(self.context.right)(self.context.left, self.context)
+        if ocql.queryobject.interfaces.IQuanted.providedBy(self.context.left):
+            return IRewriter(self.context.left)(
+                self.context.right, self.context)
+        if ocql.queryobject.interfaces.IQuanted.providedBy(self.context.right):
+            return IRewriter(self.context.right)(
+                self.context.left, self.context)
         else:
             return Binary(
                 IRewriter(self.context.left)(),

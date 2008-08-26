@@ -11,7 +11,7 @@ from zope.app.intid import IIntIds
 from BTrees.IFBTree import difference
 
 from ocql.interfaces import IDB
-from ocql.database.index import AllIndex
+from ocql.database.index import IAllIndex
 from ocql.exceptions import ReanalyzeRequired
 
 class MetaType:
@@ -124,7 +124,7 @@ class Metadata:
         intids = getUtility(IIntIds)
         for name, catalog in catalogs:
             for iname, index in catalog.items():
-                if isinstance(index, AllIndex):
+                if IAllIndex.providedBy(index):
                     if index.interface.__name__ == klassname:
                         results = catalog.apply({iname:(1,1)})
                         obj_list = [intids.getObject(result) for result in results]
