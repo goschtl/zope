@@ -1,4 +1,8 @@
-CMFTopic README
+===================
+ Products.CMFTopic
+===================
 
-  This product declares a topic content type for the
-  Zope Content Management Framework (CMF).
+.. contents::
+
+This product declares a topic content type for the
+Zope Content Management Framework (CMF).
