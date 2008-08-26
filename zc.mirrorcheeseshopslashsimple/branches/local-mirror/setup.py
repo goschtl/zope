@@ -22,7 +22,7 @@ setup(
     classifiers=CLASSIFIERS,
     long_description=long_desc,
     package_dir = {'': 'src'},
-    install_requires = ['zc.lockfile'],
+    install_requires = ['zc.lockfile', 'BeautifulSoup'],
     entry_points = dict(console_scripts=[
         'update-simple-mirror = zc.mirrorcheeseshopslashsimple:update',
         ])
