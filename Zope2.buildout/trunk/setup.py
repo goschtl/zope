@@ -15,7 +15,7 @@
 """
 from setuptools import setup, find_packages, Extension
 
-EXTENSIONCLASS_INCLUDEDIRS = ['include', 'lib/python']
+EXTENSIONCLASS_INCLUDEDIRS = ['include', 'src']
 
 setup(name='Zope2',
       version = '2.12.dev',
@@ -26,8 +26,8 @@ setup(name='Zope2',
       author_email='zope-dev@zope.org',
       long_description='',
       
-      packages=find_packages('lib/python'),
-      package_dir={'': 'lib/python'},
+      packages=find_packages('src'),
+      package_dir={'': 'src'},
 
       data_files=[
         ('skel', ['skel/README.txt']),
@@ -60,7 +60,7 @@ setup(name='Zope2',
         Extension(
               name='AccessControl.cAccessControl',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['lib/python/AccessControl/cAccessControl.c'],
+              sources=['src/AccessControl/cAccessControl.c'],
               depends=['include/ExtensionClass/ExtensionClass.h',
                        'include/ExtensionClass/pickle/pickle.c',
                        'include/Acquisition/Acquisition.h']),
@@ -69,69 +69,69 @@ setup(name='Zope2',
         Extension(
               name='ComputedAttribute._ComputedAttribute',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['lib/python/ComputedAttribute/_ComputedAttribute.c'],
+              sources=['src/ComputedAttribute/_ComputedAttribute.c'],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
 
         # DocumentTemplate
         Extension(
               name='DocumentTemplate.cDocumentTemplate',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['lib/python/DocumentTemplate/cDocumentTemplate.c']),
+              sources=['src/DocumentTemplate/cDocumentTemplate.c']),
 
         Extension(
               name='MultiMapping._MultiMapping',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=["lib/python/MultiMapping/_MultiMapping.c"],
+              sources=["src/MultiMapping/_MultiMapping.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
         Extension(
               name='ThreadLock._ThreadLock',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=["lib/python/ThreadLock/_ThreadLock.c"],
+              sources=["src/ThreadLock/_ThreadLock.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
         Extension(
               name='Missing._Missing',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=["lib/python/Missing/_Missing.c"],
+              sources=["src/Missing/_Missing.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
         Extension(
               name='Record._Record',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=["lib/python/Record/_Record.c"],
+              sources=["src/Record/_Record.c"],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
 
         # initgroups
         Extension(
               name='initgroups._initgroups',
-              sources=['lib/python/initgroups/_initgroups.c']),
+              sources=['src/initgroups/_initgroups.c']),
 
         # indexes
         Extension(
               name='Products.PluginIndexes.TextIndex.Splitter.'
                    'ZopeSplitter.ZopeSplitter',
-              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+              sources=['src/Products/PluginIndexes/TextIndex/Splitter/'
                        'ZopeSplitter/src/ZopeSplitter.c']),
         Extension(
               name='Products.PluginIndexes.TextIndex.Splitter.'
                    'ISO_8859_1_Splitter.ISO_8859_1_Splitter',
-              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+              sources=['src/Products/PluginIndexes/TextIndex/Splitter/'
                        'ISO_8859_1_Splitter/src/ISO_8859_1_Splitter.c']),
         Extension(
               name='Products.PluginIndexes.TextIndex.Splitter.'
                    'UnicodeSplitter.UnicodeSplitter',
-              sources=['lib/python/Products/PluginIndexes/TextIndex/Splitter/'
+              sources=['src/Products/PluginIndexes/TextIndex/Splitter/'
                        'UnicodeSplitter/src/UnicodeSplitter.c']),
         Extension(
               name='Products.ZCTextIndex.stopper',
-              sources=['lib/python/Products/ZCTextIndex/stopper.c']),
+              sources=['src/Products/ZCTextIndex/stopper.c']),
         Extension(
               name='Products.ZCTextIndex.okascore',
-              sources=['lib/python/Products/ZCTextIndex/okascore.c']),
+              sources=['src/Products/ZCTextIndex/okascore.c']),
 
         # MethodObject
         Extension(
               name='MethodObject._MethodObject',
               include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['lib/python/MethodObject/_MethodObject.c'],
+              sources=['src/MethodObject/_MethodObject.c'],
               depends=["include/ExtensionClass/ExtensionClass.h"]),
 
       ],
