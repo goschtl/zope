@@ -70,6 +70,10 @@ def get_page(dest, package, force=False):
             return
 
     write(page, pdest, 'index.html')
+    mirror_package(package, page, dest)
+
+def mirror_package(package, page, dest):
+    print package, dest
 
 def save_time(dest, timestamp):
     open(os.path.join(dest, poll_time_path), 'w').write(
