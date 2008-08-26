@@ -8,7 +8,6 @@ setup(name='five.grok',
       description="Grok-like layer for Zope 2",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Environment :: Web Environment",
           "Intended Audience :: Developers",
@@ -26,11 +25,10 @@ setup(name='five.grok',
       package_dir={'': 'src'},
       namespace_packages=['five'],
       include_package_data=True,
-      zip_safe=False,	
+      zip_safe=False,
       install_requires=[
           'setuptools',
           'martian',
-          'grokcore.component',
           'grokcore.view',
       ],
       entry_points="""
