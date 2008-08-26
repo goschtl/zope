@@ -127,7 +127,7 @@ zope index of the interface to retrieve object instances.
     >>> algopt
     Head(Iter(<type 'set'>,
     Lambda i: Single(<type 'set'>, i.name),
-    MakeFromIndex(<type 'set'>, <type 'set'>, IOptimizedClass, value, 5)))
+    MakeFromIndex(<type 'set'>, <type 'set'>, IOptimizedClass, value, ==, 5)))
 
 
 

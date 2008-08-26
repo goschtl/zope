@@ -157,8 +157,18 @@ added here.
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) /
     Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
 
+    >>> qo = QueryParser("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")(TestMetadata())
+    >>> opt = QueryOptimizer(qo)()
+    >>> alg = Rewriter(opt)()
+    >>> print str(alg)
+    Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>, 
+    Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.credits)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
+
     >>> qo = QueryParser("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' | s ]")(TestMetadata())
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Head(???)
+    Head(Iter(<type 'set'>, Lambda s: 
+    Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, s.major.address.street)), 
+    Make(<type 'set'>, <type 'set'>, IStudent)))

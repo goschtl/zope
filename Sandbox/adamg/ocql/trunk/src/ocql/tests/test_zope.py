@@ -162,7 +162,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent , c.country="USA" | c.name]
         #
-        query = "[c in IStudent , c.country=USA | c.name]"
+        query = "[c in IStudent , c.country==USA | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,

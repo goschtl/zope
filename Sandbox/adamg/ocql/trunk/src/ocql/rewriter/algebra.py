@@ -192,8 +192,8 @@ class MakeFromIndex(BaseAlgebra):
         self.setProp('value', value)
 
     def __repr__(self):
-        return "MakeFromIndex(%s, %s, %s, %s, %s)" % (
-            self.coll1, self.coll2, self.expr1, self.expr2, self.value)
+        return "MakeFromIndex(%s, %s, %s, %s, %s, %s)" % (
+            self.coll1, self.coll2, self.expr1, self.expr2, self.operator, self.value)
 
 
 #class And:

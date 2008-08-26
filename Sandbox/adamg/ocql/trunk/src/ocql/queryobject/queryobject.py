@@ -288,21 +288,26 @@ class Property(Binary):
 
     def get_class(self):
         t = self.left.get_class()
-
         return t
 
     def get_collection_type(self):
+        t = self.left.get_class()
         if isinstance(self.right, Identifier):
-            t = self.left.get_class()
             try:
                 r = t[self.right.name]
             except:
                 from pub.dbgpclient import brk; brk()
         #print self.left.name+'.'+self.right.name,r
-            return r
-
         else:
-            return self.right.get_collection_type()
+            try:
+                r = t[self.right.left.name]
+            except:
+                from pub.dbgpclient import brk; brk()
+            
+        return r
+
+        #else:
+         #   return self.right.get_collection_type()
 
 class Index(Binary):
     #NotImplementedError
