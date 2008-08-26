@@ -13,7 +13,6 @@
 ##############################################################################
 """Setup for the Acquisition egg package
 """
-import os
 from setuptools import setup, find_packages, Extension
 
 EXTENSIONCLASS_INCLUDEDIRS = ['include', 'lib/python']
@@ -65,6 +64,13 @@ setup(name='Zope2',
               depends=['include/ExtensionClass/ExtensionClass.h',
                        'include/ExtensionClass/pickle/pickle.c',
                        'include/Acquisition/Acquisition.h']),
+
+        # ComputedAttribute
+        Extension(
+              name='ComputedAttribute._ComputedAttribute',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=['lib/python/ComputedAttribute/_ComputedAttribute.c'],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
 
         # DocumentTemplate
         Extension(
@@ -120,6 +126,14 @@ setup(name='Zope2',
         Extension(
               name='Products.ZCTextIndex.okascore',
               sources=['lib/python/Products/ZCTextIndex/okascore.c']),
+
+        # MethodObject
+        Extension(
+              name='MethodObject._MethodObject',
+              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
+              sources=['lib/python/MethodObject/_MethodObject.c'],
+              depends=["include/ExtensionClass/ExtensionClass.h"]),
+
       ],
 
       install_requires=['Acquisition',
@@ -157,8 +171,8 @@ setup(name='Zope2',
                         'zope.filerepresentation',
                         'zope.formlib',
                         'zope.hookable',
-                        'zope.i18nmessageid',
                         'zope.i18n',
+                        'zope.i18nmessageid',
                         'zope.index',
                         'zope.interface',
                         'zope.lifecycleevent',
@@ -171,15 +185,15 @@ setup(name='Zope2',
                         'zope.rdb',
                         'zope.schema',
                         'zope.security',
-                        'zope.sequencesort',
+                        'zope.securitypolicy',
                         'zope.sendmail',
+                        'zope.sequencesort',
                         'zope.server',
                         'zope.session',
                         'zope.size',
-                        'zope.securitypolicy',
                         'zope.structuredtext',
-                        'zope.tales',
                         'zope.tal',
+                        'zope.tales',
                         'zope.testbrowser',
                         'zope.testing',
                         'zope.thread',
@@ -197,14 +211,11 @@ setup(name='Zope2',
                         'zope.app.component',
                         'zope.app.container',
                         'zope.app.content',
-                        #'zope.app.content_types==3.4.0',       XXX
                         'zope.app.debug',
                         'zope.app.dependable',
                         'zope.app.error',
-                        #'zope.app.event==3.4.0',               XXX
                         'zope.app.exception',
                         'zope.app.file',
-                        #'zope.app.filerepresentation==3.4.0',  XXX
                         'zope.app.folder',
                         'zope.app.form',
                         'zope.app.generations',
@@ -215,8 +226,6 @@ setup(name='Zope2',
                         'zope.app.keyreference',
                         'zope.app.layers',
                         'zope.app.locales',
-                        #'zope.app.location==3.4.0',            XXX
-                        #'zope.app.mail==3.4.0',                XXX
                         'zope.app.onlinehelp',
                         'zope.app.pagetemplate',
                         'zope.app.pluggableauth',
@@ -225,16 +234,11 @@ setup(name='Zope2',
                         'zope.app.principalannotation',
                         'zope.app.publication',
                         'zope.app.publisher',
-                        #'zope.app.rdb==3.4.0',                 XXX
                         'zope.app.renderer',
                         'zope.app.rotterdam',
                         'zope.app.schema',
                         'zope.app.security',
-                        #'zope.app.securitypolicy==3.4.6',      XXX dep. issues
-                        #'zope.app.servicnames==3.4.0',         XXX
                         'zope.app.session',
-                        #'zope.app.site==3.4.0',                XXX
-                        #'zope.app.size==3.4.0',                XXX
                         'zope.app.skins',
                         'zope.app.sqlscript',
                         'zope.app.testing',
