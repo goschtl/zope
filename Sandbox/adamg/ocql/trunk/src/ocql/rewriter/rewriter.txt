@@ -161,7 +161,7 @@ added here.
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>, 
+    breaks: where is a>3 Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
     Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.credits)),
     Make(<type 'set'>, <type 'set'>, ICourse)))
 
@@ -169,6 +169,6 @@ added here.
     >>> opt = QueryOptimizer(qo)()
     >>> alg = Rewriter(opt)()
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda s: 
-    Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, s.major.address.street)), 
+    Head(Iter(<type 'set'>, Lambda s:
+    Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, s.major.address.street)),
     Make(<type 'set'>, <type 'set'>, IStudent)))

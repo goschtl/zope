@@ -70,3 +70,10 @@ Now we'll see how a query runs
     >>> run = run.reanalyze()
     >>> sorted(list(run.execute()))
     ['C1', 'C2', 'C3']
+
+
+
+    >>> engine = OCQLEngine()
+    >>> run = engine.compile("set [ c in ICourse; a as c.credits; a > 2 | c.code ]")
+    >>> sorted(run.execute())
+    ['C2', 'C3']

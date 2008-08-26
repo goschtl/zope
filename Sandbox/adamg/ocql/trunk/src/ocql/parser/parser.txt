@@ -6,6 +6,8 @@ Input: query string
 Output: Queryobject tree
 
 The task of the parser is to parse the inputted string to Queryobject tree.
+This Queryobject tree can be manipulated and converted later easier.
+See the queryobject.txt for further details.
 
 For the syntax see ../USAGE.txt
 
@@ -134,3 +136,10 @@ query is still buggy.
     >>> QueryParser("len ( set [ i in IStaff | i ] ) / len ( set [ j in IVisitingStaff | j ] )")(None)
     Head(Div(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))
+
+    >>> QueryParser("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")(None)
+    Head(Query(<type 'set'>,
+    In(Identifier(c), Identifier(ICourse));
+    Alias(Identifier(a), Property(Identifier(c), Identifier(credits)));
+    Gt(Identifier(a), Constant(3)),
+    Property(Identifier(c), Identifier(code))))

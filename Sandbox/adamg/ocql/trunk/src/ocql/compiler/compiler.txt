@@ -118,3 +118,12 @@ We just want to see how the algebra compiles to code:
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))))
     >>> run.code
     'reduce(operator.add, map(lambda i: 1, reduce(operator.add, map(lambda i: [i], list(metadata.getAll("ICourse"))), [])), 0)'
+
+
+    >>> aopt, run = make("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")
+    >>> aopt
+    Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
+    Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.credits)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
+    >>> run.code
+    breaks: where is a>3 'reduce(set.union, map(lambda c: reduce(set.union, map(lambda a: set([a]), set([c.credits])), set()), set(metadata.getAll("ICourse"))), set())'
