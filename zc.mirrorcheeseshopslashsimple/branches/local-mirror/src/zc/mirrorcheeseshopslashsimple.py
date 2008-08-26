@@ -16,6 +16,9 @@ import ConfigParser
 import os, sys, time, urllib, urllib2, xmlrpclib
 import zc.lockfile
 import util
+from BeautifulSoup import BeautifulSoup
+from glob import fnmatch
+from md5 import md5
 
 lock_file_path = 'pypi-poll-access.lock'
 poll_time_path = 'pypi-poll-timestamp'
@@ -42,6 +45,11 @@ def get_controlled_packages(dest):
     return tuple(config.sections())
 
 def get_page(dest, package, force=False):
+
+    package_matches = ["zope.app.*",]
+    if not True in [fnmatch.fnmatch(package, package_match) for package_match in package_matches]:
+        return
+
 
     if not util.isASCII(package):
         print 'skipping %r which has a non-ascii name' % `package`
@@ -72,7 +80,72 @@ def get_page(dest, package, force=False):
     write(page, pdest, 'index.html')
     mirror_package(package, page, dest)
 
+def fetch_package(url):
+    try:
+        package_file_data = urllib2.urlopen(url).read()
+    except urllib2.HTTPError, v:
+        if '404' in str(v):             # sigh
+            raise "404: " % url
+    except urllib2.URLError, v:
+        # this happens on that url for example:
+        # http://pypi.python.org/packages/source/a/appwsgi/appwsgi 667.tar.bz2
+        # don't care, just continue.
+        # XXX TODO: urlencode the path so that spaces work.
+        raise "Invalid url: %s" % url
+    return package_file_data
+
+
 def mirror_package(package, page, dest):
+    # XXX TODO: Check if the provided list of links is the same as
+    # the list on the FS and delete local copies in case they're missing
+    # online. Make this configurable.
+
+    html = BeautifulSoup(page)
+    links = [link["href"] for link in html.findAll("a")]
+    # interesting links look like this:
+    # http://pypi.python.org/packages/2.4/4/4Suite-XML/4Suite_XML-1.0.2-py2.4-win32.egg#md5=b561e3750ba422ade50f81f2f70b55e2
+    # Let's split the filename and the md5 hash.
+    for link in links:
+        (url, hash) = urllib.splittag(link)
+        package_dest_path = "%s/%s/%s" % (dest, package, os.path.basename(url))
+
+        if not hash:
+            continue
+        try:
+            (hashname, hash) = hash.split("=")
+        except ValueError:
+            continue
+        if not hashname == "md5":
+            continue
+
+        # XXX TODO: Put this in the config file
+        allowed_matches = ["*.egg", "*.tar.gz", "*.tar.bz2",]
+        if not True in [fnmatch.fnmatch(url, allowed_match) for allowed_match in allowed_matches]:
+            continue
+
+        # alright, fetch the url if the md5 doesn't match an existing package.
+        if os.path.exists(package_dest_path):
+            current_md5_hex = md5(open(package_dest_path, "rb").read()).hexdigest()
+            if current_md5_hex == hash:
+                print "Skipping %s, already there." % package_dest_path
+                continue
+
+        try:
+            package_file_data = fetch_package(url)
+        except:
+            continue
+
+        if not package_file_data:
+            continue
+
+        md5_hex = md5(package_file_data).hexdigest()
+        if not hash == md5_hex:
+            print 'Skipping', `package`, "which doesn't match the provided md5 checksum."
+
+        # save package
+        print "Storing package %s [%s bytes]" % (package_dest_path, len(package_file_data))
+        open(package_dest_path, "wb").write(package_file_data)
+
     print package, dest
 
 def save_time(dest, timestamp):
