@@ -1,6 +1,12 @@
 Change history
 ~~~~~~~~~~~~~~
 
+0.4.0 (unreleased)
+------------------
+
+- performing local download of download files
+- optional download filter
+
 0.3.0 (2008-08-12)
 ------------------
 
