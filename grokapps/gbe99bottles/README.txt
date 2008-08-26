@@ -6,7 +6,7 @@ Grok-by-Example: 99 Bottles Song
              and deduce from both
 
 A basic Grok 'Hello world' application [source__], cf implementations in other
-languages at the '99 Bootles of Beer' website, eg. the Python version [source__].
+languages at the '99 Bottles of Beer' website, eg. the Python version [source__].
 
 __ http://svn.zope.org/grokapps/gbe99bottles/src/gbe99bottles/app.py?view=markup
 __ http://99-bottles-of-beer.net/language-python-808.html
