@@ -27,7 +27,9 @@ def loadSite():
     setDebugMode(0)
 
 
-class ResourceIncludeLayer(object):
+from Testing.ZopeTestCase.layer import ZopeLite
+
+class ResourceIncludeLayer(ZopeLite):
 
     @classmethod
     def setUp(self):

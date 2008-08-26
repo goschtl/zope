@@ -1,2 +1,2 @@
 # svn propset svn:externals -F EXTERNALS.txt .
-z3c.resouceinclude svn://svn.zope.org/repos/main/z3c.resourceinclude/trunk
+z3c.resourceinclude svn://svn.zope.org/repos/main/z3c.resourceinclude/trunk
