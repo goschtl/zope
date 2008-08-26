@@ -1,7 +1,10 @@
+==========================
 Grok-by-Example: Guestbook
 ==========================
 
-:Author: d2m (michael at d2m.at)
+.. contents:: Contents
+
+:Author: d2m (michael@d2m.at)
 
 A basic 'Grok Guestbook' application [source__] ported from the 
 Google Appengine [GAE] demo application [source__].
@@ -10,17 +13,18 @@ __ http://svn.zope.org/grokapps/gbeguestbook/src/gbeguestbook/app.py?view=markup
 __ http://code.google.com/p/googleappengine/source/browse/trunk/demos/guestbook/guestbook.py
 
 Overview
-~~~~~~~~
+========
 
 The application presents you a list of 10 guestbook entries both by 
 authenticated and anonymous users, reverse sorted by date of creation
 and a form to submit new entries to the guestbook. Response text 
-formatting is done using python string templates only.
+formatting is done using Python string templates only.
+
 
 Review
-~~~~~~
+======
 
-Let's now compare how the code is laid out for both frameworks:
+Let's now compare how the code is laid out for both frameworks.
 
 Application object
 ------------------
@@ -113,8 +117,8 @@ Typed properties are defined inside the class definition::
     class Greeting(db.Model):
       author = db.UserProperty()
 
-Persistency
------------
+Persistent Storage
+------------------
 
 Grok content objects are instantiated, modified and finally inserted into 
 a container (which here is the application object itself). A local-unique name

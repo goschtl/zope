@@ -1,7 +1,7 @@
 Grok-by-Example: Guestbook
 ==========================
 
-:Author: d2m (michael at d2m.at)
+:Author: d2m (michael@d2m.at)
 :Motivation: look at the original source and the Grok code side-by-side 
              and deduce from both
 

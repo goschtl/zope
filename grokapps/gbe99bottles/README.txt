@@ -13,15 +13,15 @@ __ http://99-bottles-of-beer.net/language-python-808.html
 
 
 Overview
---------
+========
 
 The '99 Bottles of Beer' website holds a collection of the Song 99 Bottles of 
 Beer programmed in different programming languages. Actually the song is 
 represented in more than 1200 different programming languages and variations.
 
-The Grok implementation uses persistent 'wall' and 'bottle' objects. It follows
-the song lyrics by putting bottles on the wall, taking them off again and at
-each step reporting the state of the scenery.
+The Grok implementation uses persistent 'Wall' and 'Bottle' objects. It follows
+the song lyrics by putting bottles on the wall, taking them off again and - at
+each step - reporting the state of the scenery.
 
 Usage
 -----

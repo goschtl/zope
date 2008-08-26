@@ -31,13 +31,15 @@ Application initialization
 --------------------------
 
 When we create the 'Song' Application object, we want to set it to an initial 
-state, like creating a Wall, a number of Bootles and add them to the Wall.
+state, like creating a Wall, creating a number of Bootles and adding them to the
+Wall.
 
 Grok also is an event driven framework. Events can be sent and subscribed to.
-When the Application object is created it is added to the object graph an 
+When the Application object is created it is added to the object graph and an 
 'ObjectAddedEvent' is sent by the framework. We can now simply *subscribe* to
 that event (or the Interface that describes the event type) and initialize our
-application objects by adding a container and filling it with objects::
+application objects by adding a container to the application object and filling
+it with Bottle objects::
 
     @grok.subscribe(Song, grok.IObjectAddedEvent)
     def handle(obj, event):
@@ -51,7 +53,7 @@ __ http://grok.zope.org/doc/current/grok_overview.html#events
 Request
 -------
 
-The application accepts only one request: the default view.
+The application accepts only one distinct request: the default view.
 
 Grok uses 'index' for its default view name (lowercase of the class name). 
 This view class is bound to the 'Song' application object::
@@ -94,8 +96,8 @@ grok.Container.
 Persistent Storage
 ------------------
 
-When a Response is created by the view class Bottle objects are removed from and
-added to the Wall container by calling methods of the Wall instance object::
+When a Response is created by the view class, Bottle objects are removed from 
+and added to the Wall container by calling methods of the Wall instance object::
 
     def remove_a_bottle(self):
         bottles=list(self.keys())

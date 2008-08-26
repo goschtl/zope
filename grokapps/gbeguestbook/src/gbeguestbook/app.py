@@ -22,6 +22,7 @@ class MainPage(grok.View):
 
     def render(self):
         out=['<html><body>']    
+        out.append('<h1>Grok-by-Example: Guestbook</h1>')
         greetings=[(x.date, x) for x in self.context.values()]
         greetings=list(reversed(sorted(greetings)))
         for date,greeting in greetings[:10]:

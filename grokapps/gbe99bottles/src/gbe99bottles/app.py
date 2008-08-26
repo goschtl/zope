@@ -48,7 +48,8 @@ class Index(grok.View):
         self.wall=self.context['wall']
         
     def render(self):
-        out=[]
+        out=['Grok-by-Example: 99 Bottles of Beer']
+        out.append('===================================')
         while self.still_beer():
             description=self.describe_wall()
             out.append('%s on the wall, %s.' % (description, description.lower()))
