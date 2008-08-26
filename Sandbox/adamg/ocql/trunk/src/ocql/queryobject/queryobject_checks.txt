@@ -1,0 +1,238 @@
+
+Checks here make sure that Interfaces are properly implemented
+
+#TODO: extend for all Interfaces and classes
+
+    >>> from ocql.interfaces import IObjectQuery
+    >>> from ocql.interfaces import IObjectQueryHead
+    >>> from ocql.queryobject.interfaces import *
+
+    >>> from ocql.queryobject.queryobject import *
+    >>> from ocql.testing.database import TestMetadata
+    >>> from ocql.parser.queryparser import SymbolContainer
+
+    >>> from zope.interface.verify import verifyClass, verifyObject
+
+    >>> child = Child()
+    >>> metadata = TestMetadata()
+    >>> symbols = SymbolContainer()
+
+    >>> verifyClass(IObjectQueryHead, Head)
+    True
+    >>> verifyObject(IObjectQueryHead, Head(child))
+    True
+
+    >>> verifyClass(IObjectQueryChild, Child)
+    True
+    >>> verifyObject(IObjectQueryChild, child)
+    True
+
+    >>> verifyClass(IObjectQuery, QueryObject)
+    True
+    >>> verifyObject(IObjectQuery, QueryObject(metadata, symbols))
+    True
+
+    >>> verifyClass(ITerm, Term)
+    True
+    >>> verifyObject(ITerm, Term(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IExpression, Expression)
+    True
+    >>> verifyObject(IExpression, Expression(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IIsinstance, Isinstance)
+    True
+    >>> verifyObject(IIsinstance, Isinstance(metadata, symbols, child, Child))
+    True
+
+    >>> verifyClass(IhasClassWith, hasClassWith)
+    True
+    >>> verifyObject(IhasClassWith, hasClassWith(metadata, symbols, child, set, child))
+    True
+
+    >>> verifyClass(IIdentifier, Identifier)
+    True
+    >>> verifyObject(IIdentifier, Identifier(metadata, symbols, child))
+    True
+
+    >>> verifyClass(IConstant, Constant)
+    True
+    >>> verifyObject(IConstant, Constant(metadata, symbols, child))
+    True
+
+    >>> verifyClass(IQuery, Query)
+    True
+    >>> verifyObject(IQuery, Query(metadata, symbols, set, [child], child))
+    True
+
+    >>> verifyClass(IIn, In)
+    True
+    >>> verifyObject(IIn, In(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IAlias, Alias)
+    True
+    >>> verifyObject(IAlias, Alias(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IBinary, Binary)
+    True
+    >>> verifyObject(IBinary, Binary(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IUnion, Union)
+    True
+    >>> verifyObject(IUnion, Union(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IDiffer, Differ)
+    True
+    >>> verifyObject(IDiffer, Differ(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IAnd, And)
+    True
+    >>> verifyObject(IAnd, And(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IOr, Or)
+    True
+    >>> verifyObject(IOr, Or(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IProperty, Property)
+    True
+    >>> verifyObject(IProperty, Property(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IIndex, Index)
+    True
+    >>> verifyObject(IIndex, Index(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IArithmetic, Arithmetic)
+    True
+    >>> verifyObject(IArithmetic, Arithmetic(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IAdd, Add)
+    True
+    >>> verifyObject(IAdd, Add(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IMul, Mul)
+    True
+    >>> verifyObject(IMul, Mul(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(ISub, Sub)
+    True
+    >>> verifyObject(ISub, Sub(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IDiv, Div)
+    True
+    >>> verifyObject(IDiv, Div(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IUnary, Unary)
+    True
+    >>> verifyObject(IUnary, Unary(metadata, symbols, child))
+    True
+
+    >>> verifyClass(INot, Not)
+    True
+    >>> verifyObject(INot , Not(metadata, symbols, child))
+    True
+
+    >>> verifyClass(IAggregate, Aggregate)
+    True
+    >>> verifyObject(IAggregate, Aggregate(metadata, symbols, child))
+    True
+
+    >>> verifyClass(ICount, Count)
+    True
+    >>> verifyObject(ICount, Count(metadata, symbols, child))
+    True
+
+    >>> verifyClass(ISum, Sum)
+    True
+    >>> verifyObject(ISum, Sum(metadata, symbols, child))
+    True
+
+    >>> verifyClass(IQuantor, Quantor)
+    True
+    >>> verifyObject(IQuantor, Quantor(metadata, symbols, child))
+    True
+
+    >>> verifyClass(INumericalQuantor, NumericalQuantor)
+    True
+    >>> verifyObject(INumericalQuantor, NumericalQuantor(metadata, symbols, 2, child))
+    True
+
+    >>> verifyClass(IQuanted, Quanted)
+    True
+    >>> verifyObject(IQuanted, Quanted(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IEvery, Every)
+    True
+    >>> verifyObject(IEvery, Every(metadata, symbols, child))
+    True
+
+    >>> verifyClass(ISome, Some)
+    True
+    >>> verifyObject(ISome, Some(metadata, symbols, child))
+    True
+
+    >>> verifyClass(IAtmost, Atmost)
+    True
+    >>> verifyObject(IAtmost, Atmost(metadata, symbols, 2, child))
+    True
+
+    >>> verifyClass(IAtleast, Atleast)
+    True
+    >>> verifyObject(IAtleast, Atleast(metadata, symbols, 2, child))
+    True
+
+    >>> verifyClass(IJust, Just)
+    True
+    >>> verifyObject(IJust, Just(metadata, symbols, 2, child))
+    True
+
+    >>> verifyClass(ICondition, Condition)
+    True
+    >>> verifyObject(ICondition, Condition(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IEq, Eq)
+    True
+    >>> verifyObject(IEq, Eq(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(INe, Ne)
+    True
+    >>> verifyObject(INe, Ne(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(ILt, Lt)
+    True
+    >>> verifyObject(ILt, Lt(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IGt, Gt)
+    True
+    >>> verifyObject(IGt, Gt(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(ILe, Le)
+    True
+    >>> verifyObject(ILe, Le(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IGe, Ge)
+    True
+    >>> verifyObject(IGe, Ge(metadata, symbols, child, child))
+    True

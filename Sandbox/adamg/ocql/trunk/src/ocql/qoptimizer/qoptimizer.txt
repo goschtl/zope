@@ -2,6 +2,16 @@
 Queryobject optimizer
 =====================
 
+Input: Queryobject tree
+Output: Queryobject tree
+
+The task of the Queryobject optimizer is to do optimizations on the queryobject
+tree.
+Some basic optimizations can be done based on equivalence.
+Those decisions can be based on static properties of the database.
+Like which class is derived from which one. See the 1994 paper.
+Definitely no dynamic properties can be taken into account, like objects in an index.
+
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.interfaces import IOptimizedObjectQuery
 
@@ -25,5 +35,3 @@ Currently the optimizer is doing NOTHING, it just returns what it gets.
 
     >>> IOptimizedObjectQuery.providedBy(out)
     True
-
-There are some options to optimize the queryobject tree.

@@ -26,7 +26,7 @@ from ocql.queryobject.interfaces import *
 class Head(Location):
     implements(IObjectQueryHead)
     def __init__(self, tree):
-        self.name = 'head'
+        self.__name__ = 'head'
         self.tree = tree
         locate(tree, self, 'tree')
 
@@ -49,12 +49,10 @@ class Child(Location):
         setattr(self, name, value)
         for term in value:
             if ILocation.providedBy(term):
-                locate(term, self, 'term')
+                locate(term, self, name)
         self.children.extend(value)
 
 class QueryObject(Child):
-    #TODO: this is dirty here, at the end we'll need to have a tree of
-    #QueryObject's whose topmost element will only get this IF
     implements(IObjectQuery)
 
     metadata = None
@@ -124,7 +122,6 @@ class Isinstance(Expression):
 
 
 class hasClassWith(Expression):
-    #NotImplementedError
     implements(IhasClassWith)
 
     expression = None
