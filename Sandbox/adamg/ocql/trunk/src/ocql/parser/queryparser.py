@@ -520,31 +520,31 @@ class Parser(object):
     def p_quantified_some(self, t):
         r'''quantified : SOME expression
         '''
-        t[0] = Some(self.metadata, self.symbols, t[2])
+        t[0] = Quanted(self.metadata, self.symbols, Some(self.metadata, self.symbols, "''"), t[2])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_every(self, t):
         r'''quantified : EVERY expression
         '''
-        t[0] = Every(self.metadata, self.symbols, t[2])
+        t[0] = Quanted(self.metadata, self.symbols, Every(self.metadata, self.symbols, "''"), t[2])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_atleast(self, t):
         r'''quantified : ATLEAST CONSTANT expression
         '''
-        t[0] = Atleast(self.metadata, self.symbols, t[2], t[3])
+        t[0] = Quanted(self.metadata, self.symbols, Atleast(self.metadata, self.symbols, t[2]), t[3])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_almost(self, t):
         r'''quantified : ATMOST CONSTANT expression
         '''
-        t[0] = Atmost(self.metadata, self.symbols, t[2], t[3])
+        t[0] = Quanted(self.metadata, self.symbols, Atmost(self.metadata, self.symbols, t[2]), t[3])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_quantified_just(self, t):
         r'''quantified : JUST CONSTANT expression
         '''
-        t[0] = Just(self.metadata, self.symbols, t[2], t[3])
+        t[0] = Quanted(self.metadata, self.symbols, Just(self.metadata, self.symbols, t[2]), t[3])
         if DEBUG: print 'reducing "quantification expression" to "quantified"', t[0]
 
     def p_definition_as(self, t):

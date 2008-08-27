@@ -58,9 +58,9 @@ query is still buggy.
 
     >>> QueryParser("set [ d in IDepartment; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]")(None)
     Head(Query(<type 'set'>, In(Identifier(d), Identifier(IDepartment));
-    Eq((Every, Query(<type 'set'>, In(Identifier(c), Identifier(ICourse));
-    Eq((Some, Property(Identifier(c), Identifier(runBy))), Identifier(d)), Property(Identifier(c), Identifier(credits)))),
-    Constant(2)), Property(Identifier(d), Identifier(name))))
+    Eq(Quanted((Every, ''), Query(<type 'set'>, In(Identifier(c), Identifier(ICourse));
+    Eq(Quanted((Some, ''), Property(Identifier(c), Identifier(runBy))), Identifier(d)),
+    Property(Identifier(c), Identifier(credits)))), Constant(2)), Property(Identifier(d), Identifier(name))))
 
     >>> QueryParser("set [ c in ICourse; c.credits > 3 | c.code ]")(None)
     Head(Query(<type 'set'>, In(Identifier(c), Identifier(ICourse)); Gt(Property(Identifier(c), Identifier(credits)), Constant(3)), Property(Identifier(c), Identifier(code))))
@@ -107,20 +107,26 @@ query is still buggy.
     Head(Query(<type 'set'>, In(Identifier(i), Identifier(IPerson)); Isinstance(Identifier(i), Tutor), Identifier(i)))
 
     >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == atleast 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atleast(2, Property(Identifier(s), Identifier(teaches))))),
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); 
+    Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq(Quanted((Some, ''), Property(Identifier(st), Identifier(takes))), 
+    Quanted((Atleast, 2), Property(Identifier(s), Identifier(teaches)))),
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
 
     >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == just 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Just(2, Property(Identifier(s), Identifier(teaches))))),
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff));
+    Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq(Quanted((Some, ''), Property(Identifier(st), Identifier(takes))),
+    Quanted((Just, 2), Property(Identifier(s), Identifier(teaches)))), 
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
 
     >>> QueryParser("set [ s in Staff; set [st in IStudent; some st.takes == atmost 2 s.teaches | st.name] == 'St1' | i.name ]")(None)
-    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff)); Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
-    Eq((Some, Property(Identifier(st), Identifier(takes))), (Atmost(2, Property(Identifier(s), Identifier(teaches))))),
+    Head(Query(<type 'set'>, In(Identifier(s), Identifier(Staff));
+    Eq(Query(<type 'set'>, In(Identifier(st), Identifier(IStudent));
+    Eq(Quanted((Some, ''), Property(Identifier(st), Identifier(takes))),
+    Quanted((Atmost, 2), Property(Identifier(s), Identifier(teaches)))), 
     Property(Identifier(st), Identifier(name))), Constant('St1')), Property(Identifier(i), Identifier(name))))
-
+ 
     >>> QueryParser("len ( set [ i in IStaff | i ] ) + len ( set [ j in IVisitingStaff | j ] )")(None)
     Head(Add(Count(Query(<type 'set'>, In(Identifier(i), Identifier(IStaff)), Identifier(i))),
     Count(Query(<type 'set'>, In(Identifier(j), Identifier(IVisitingStaff)), Identifier(j)))))
@@ -148,28 +154,5 @@ query is still buggy.
     Head(Query(<type 'set'>,
     In(Identifier(c), Identifier(ICourse));
     In(Identifier(d), Identifier(IDepartment));
-    Eq(Identifier(d), Quanted(Some, Property(Identifier(c), Identifier(runBy)))),
+    Eq(Identifier(d), Quanted((Some, ''), Property(Identifier(c), Identifier(runBy)))),
     Property(Identifier(d), Identifier(name))))
-
-    The above should match with:
-    Head(Query(
-            metadata, symbols,
-            set, [
-                In(
-                    metadata, symbols,
-                    Identifier(metadata, symbols,'c'),
-                    Identifier(metadata, symbols,'ICourse')),
-                In(
-                    metadata, symbols,
-                    Identifier(metadata, symbols,'d'),
-                    Identifier(metadata, symbols,'IDepartment')),
-                Eq(
-                    metadata, symbols,
-                    Identifier(metadata, symbols,'d'),
-                    Quanted(metadata, symbols,
-                            Some(metadata, symbols, ''),
-                            Property(metadata, symbols,
-                                    Identifier(metadata, symbols, 'c'),
-                                    Identifier(metadata, symbols, 'runBy'))
-                                )),
-            ] ,Identifier(metadata, symbols,'d.name')))

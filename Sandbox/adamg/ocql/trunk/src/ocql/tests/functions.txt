@@ -125,6 +125,10 @@ Sample from the presentation:
     set([Staff <S1>])
 
 Sample from the presentation:
+    >>> engine.compile("set [ c in ICourse; a as c.credits; a < 2 | a ]").execute()
+    set([Course <C2>], Course <C3>])
+
+Sample from the presentation:
     >>> engine.compile("set [ c in ICourse; a as c.credits; a > 2 | c ]").execute()
     set([Course <C2>], Course <C3>])
 
