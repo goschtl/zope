@@ -1,0 +1,30 @@
+
+<h1 id="header">JavaScript Buttons</h1>
+<div id="leftside">
+  <div id="jsarea">
+    <h1>Generated JS
+    <span tal:repeat="action view/actions/values" 
+	  tal:replace="structure action/render" /></h1>
+      <pre id="javascript" style="display: none;"
+	   tal:content="provider:IJavaScript" />
+  </div>
+</div>
+<div id="rightside">
+  <div id="codearea">
+    <h1>Code
+      <span tal:content="structure view/widgets/file/render" />
+    </h1>
+    <div id="browser-py" class="code" style="display: none;">
+      <h2>browser.py</h2>
+      <pre tal:content="python: view.getFile('browser.py')" />
+    </div>
+    <div id="button-pt" class="code" style="display: none;">
+      <h2>button.pt</h2>
+      <pre tal:content="python: view.getFile('button.pt')" />
+    </div>
+    <div id="configure-zcml" class="code" style="display: none;">
+      <h2>configure.zcml</h2>
+      <pre tal:content="python: view.getFile('configure.zcml')" />
+    </div>
+  </div>
+</div>

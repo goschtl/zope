@@ -1,0 +1,43 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <!-- Resources -->
+
+  <browser:viewlet
+      name="jquery-switch.js"
+      view=".browser.ContactForm"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class=".browser.WidgetSwitchJSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:zrt-resource
+      name="widgetswitch.css"
+      file="widgetswitch.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <browser:viewlet
+      name="widgetswitch.css"
+      view=".browser.ContactForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.WidgetSwitchCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- Views -->
+
+  <z3c:pagelet
+      name="widgetswitch.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.ContactForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+</configure>

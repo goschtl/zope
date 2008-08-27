@@ -1,0 +1,84 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <!-- div layout demo skin -->
+  <zope:interface
+      interface="z3c.formjsdemo.skin.IDivDemoBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Z3CFormJSDemo"
+      />
+
+  <!-- resource -->
+  <zrt-resource
+      name="demo.css"
+      file="demo.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- viewlet managers -->
+  <viewletManager
+      name="ICSS"
+      provides="z3c.formjsdemo.skin.ICSS"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <viewletManager
+      name="IJavaScript"
+      provides="z3c.formjsdemo.skin.IJavaScript"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+
+  <!-- viewlets -->
+  <viewlet
+      name="demo.css"
+      for="*"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".DemoCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="jquery"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class="jquery.javascript.browser.JQueryJavaScriptViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+
+  <viewlet
+      name="subscriptions"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSSubscriptions"
+      class="z3c.formjs.jsevent.JSSubscriptionsViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="functions"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSFunctions"
+      class="z3c.formjs.jsfunction.JSFunctionsViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <!-- layout template -->
+  <z3c:layout
+      for="*"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      template="template.pt"
+      />
+
+
+</configure>

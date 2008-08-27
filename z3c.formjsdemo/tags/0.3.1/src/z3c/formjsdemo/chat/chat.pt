@@ -1,0 +1,16 @@
+<h1 id="header" tal:content="context/topic">Topic</h1> 
+<div id="connect">
+  <span tal:content="structure string:nick: ${view/widgets/nick/render}" />
+  <div tal:replace="structure view/actions/connect/render" />
+</div>
+<div id="online" class="translucent">
+  <div id="chat-window">
+  </div>
+  <div id="controls">
+    <div tal:replace="structure view/widgets/message/render" />
+    <div tal:replace="structure view/actions/send/render" />
+  </div>
+</div>
+<div id="footer">
+This demo brought to you by z3c.formjs
+</div>

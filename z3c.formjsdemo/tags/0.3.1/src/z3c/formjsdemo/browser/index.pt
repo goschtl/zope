@@ -1,0 +1,42 @@
+<h1>Z3C formJS demos</h1>
+
+<div class="demo" tal:define="baseurl context/@@absolute_url">
+  <h4>Simple Demos</h4>
+
+  <div>
+    <a tal:attributes="href string:${baseurl}/button.html">JavaScript Buttons</a>
+  </div>
+  <div>
+    <a tal:attributes="href string:${baseurl}/calculator.html">JavaScript Calculator</a>
+  </div>
+  <div>
+    <a tal:attributes="href string:${baseurl}/validator.html">Validator</a>
+  </div>
+  <div>
+    <a tal:attributes="href string:${baseurl}/widgetswitch.html">Widget Switching</a>
+  </div>
+
+
+  <h4>Advanced Demos</h4>
+
+  <div>
+    <a tal:attributes="href string:${baseurl}/addChatRoom.html">AJAX Chat Room</a>
+    <ul>
+      <li tal:repeat="room view/chatRooms">
+	<a tal:attributes="href room/@@absolute_url"
+	   tal:content="room/topic">Chat Room</a>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <a tal:attributes="href string:${baseurl}/addTreeNode.html">Trees</a>
+    <ul>
+      <li tal:repeat="node view/treeNodes">
+	<a tal:attributes="href node/@@absolute_url"
+	   tal:content="node/title">Tree Node</a>
+      </li>
+    </ul>
+  </div>
+
+</div>

@@ -1,0 +1,7 @@
+====
+TODO
+====
+
+ - add keyboard shortcuts to calculator
+
+ - slide show demo???

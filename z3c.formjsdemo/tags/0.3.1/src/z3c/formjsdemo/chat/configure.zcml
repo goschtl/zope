@@ -1,0 +1,78 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formjsdemo">
+
+  <zope:class class=".chat.ChatRoom">
+    <allow
+	interface=".interfaces.IChatRoom"
+	/>
+    <require
+	permission="zope.View"
+	set_schema=".interfaces.IChatRoom"
+	/>
+  </zope:class>
+
+  <z3c:pagelet
+      name="addChatRoom.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.ChatRoomAddForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.IChatRoom"
+      class=".browser.ChatForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="chat.pt"
+      for=".browser.ChatForm"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <zrt-resource
+      name="chat.css"
+      file="chat.css"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <zrt-resource
+      name="chat.js"
+      file="chat.js"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="chat.css"
+      view=".browser.ChatForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.ChatCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="chat.css"
+      view=".browser.ChatRoomAddForm"
+      manager="z3c.formjsdemo.skin.ICSS"
+      class=".browser.ChatCSSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+  <viewlet
+      name="chat.js"
+      view=".browser.ChatForm"
+      manager="z3c.formjsdemo.skin.IJavaScript"
+      class=".browser.ChatJSViewlet"
+      permission="zope.Public"
+      layer="z3c.formjsdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

@@ -1,0 +1,7 @@
+<div metal:use-macro="macro:form">
+  <div metal:fill-slot="extra-info">
+    So what's going on here?  Whenever you change the value of the
+    field, that value will be sent back to the server for validation.
+    If the value is no good, the widget will be modified to reflect that.
+  </div>
+</div>
