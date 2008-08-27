@@ -14,7 +14,7 @@
 """For each package in the KGS, find all versions later than the last one
 listed in the KGS for that package.
 
-Usage: %s [-m] package-cfg-path
+Usage: %s [-m] package-cfg-path [packagename ...]
 
 * -m
 
@@ -23,6 +23,12 @@ Usage: %s [-m] package-cfg-path
 * ``package-cfg-path``
 
   This is the path to the controlled packages configuration file.
+
+* ``packagename``
+
+  If you're interested in only some of the KGS packages, you can limit the
+  output to those by listing their names on the command line.
+
 """
 import lxml.etree
 import os
@@ -53,10 +59,13 @@ def getAllVersions(packageName):
     return versions
 
 
-def generateList(packageConfigPath, minorOnly):
+def generateList(packageConfigPath, minorOnly, packages=()):
     kgs = zope.kgs.kgs.KGS(packageConfigPath)
 
     for package in kgs.packages:
+        if packages and package.name not in packages:
+            continue
+
         kgsVersion = pkg_resources.parse_version(package.versions[-1])
         serverVersions = getAllVersions(package.name)
 
@@ -78,7 +87,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    if len(args) < 1:
+    if len(args) < 1 or args[0] in ('-h', '--help'):
         print __file__.__doc__ % sys.argv[0]
         sys.exit(1)
 
@@ -89,4 +98,4 @@ def main(args=None):
 
     packageConfigPath = os.path.abspath(args[0])
 
-    generateList(packageConfigPath, minorOnly)
+    generateList(packageConfigPath, minorOnly, args[1:])

@@ -323,6 +323,14 @@ version:
   >>> latest.main(('-m', cfgFileReal))
   z3c.formdemo: 1.1.1, 1.1.2
 
+Sometimes you're only interested in changes that apply to a single package,
+and you won't want to wait for the script to query all of the others
+
+  >>> latest.main(('-m', cfgFileReal, 'zope.app.server'))
+
+  >>> latest.main(('-m', cfgFileReal, 'z3c.formdemo'))
+  z3c.formdemo: 1.1.1, 1.1.2
+
 
 Introduction Page
 -----------------
