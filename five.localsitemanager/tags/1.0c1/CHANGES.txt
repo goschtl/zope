@@ -1,10 +1,6 @@
 Changelog
 =========
 
-1.0
----
-
-
 1.0c1 - 2008-08-27
 ------------------
 
@@ -36,14 +32,12 @@ Changelog
   and >3.5.0dev.
   [wichert]
 
-
 0.3 - 2007-12-24
 ----------------
 
 * Fixed potential aq problem when assigning various values to the utilities
   registry of the component registry.
   [hannosch]
-
 
 0.2 - 2007-06-30
 ----------------
@@ -73,3 +67,4 @@ Changelog
 ----------------
 
 * Initial version
+
