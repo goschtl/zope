@@ -1,11 +1,11 @@
 Changes
 =======
 
-0.4.0 (unreleased)
+0.3.4 (2008-08-27)
 ------------------
 
     - Added all documents in package to long description, so they are
-      readable in pypi.
+      readable in pypi. [icemac]
 
 0.3.3 (2008-06-10)
 ------------------

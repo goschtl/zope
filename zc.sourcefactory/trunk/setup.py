@@ -29,6 +29,17 @@ setup(
         "\n\n" + 
         read_file("CHANGES.txt")
         ),
+    classifiers = [
+        "Topic :: Software Development",
+        "Framework :: Zope3",
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved",
+        "License :: OSI Approved :: Zope Public License",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        ],
 
     packages=find_packages('src'),
     package_dir={'':'src'},
