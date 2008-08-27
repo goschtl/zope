@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 1.5.3 (2008-08-26)
+--------------------------
+
+- Refactoring: make links relative so it will work better with virtual
+  hosting.
+
 Version 1.5.2 (2008-04-24)
 --------------------------
 
