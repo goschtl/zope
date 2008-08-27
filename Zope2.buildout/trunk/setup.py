@@ -65,13 +65,6 @@ setup(name='Zope2',
                        'include/ExtensionClass/pickle/pickle.c',
                        'include/Acquisition/Acquisition.h']),
 
-        # ComputedAttribute
-        Extension(
-              name='ComputedAttribute._ComputedAttribute',
-              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['src/ComputedAttribute/_ComputedAttribute.c'],
-              depends=["include/ExtensionClass/ExtensionClass.h"]),
-
         # DocumentTemplate
         Extension(
               name='DocumentTemplate.cDocumentTemplate',
@@ -126,13 +119,6 @@ setup(name='Zope2',
         Extension(
               name='Products.ZCTextIndex.okascore',
               sources=['src/Products/ZCTextIndex/okascore.c']),
-
-        # MethodObject
-        Extension(
-              name='MethodObject._MethodObject',
-              include_dirs=EXTENSIONCLASS_INCLUDEDIRS,
-              sources=['src/MethodObject/_MethodObject.c'],
-              depends=["include/ExtensionClass/ExtensionClass.h"]),
 
       ],
 
