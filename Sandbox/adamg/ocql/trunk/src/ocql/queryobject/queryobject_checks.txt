@@ -1,8 +1,6 @@
 
 Checks here make sure that Interfaces are properly implemented
 
-#TODO: extend for all Interfaces and classes
-
     >>> from ocql.interfaces import IObjectQuery
     >>> from ocql.interfaces import IObjectQueryHead
     >>> from ocql.queryobject.interfaces import *
