@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.formjs">
+
+  <!-- AJAX Traversers -->
+  <adapter
+      trusted="True"
+      for=".interfaces.IFormTraverser
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
+      factory="z3c.traverser.browser.PluggableBrowserTraverser"
+      permission="zope.Public"
+      name="ajax"
+      />
+
+  <subscriber
+      for=".interfaces.IFormTraverser
+	   zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="z3c.traverser.interfaces.ITraverserPlugin"
+      factory=".ajax.AJAXRequestTraverserPlugin"
+      />
+
+  <class class=".ajax.AJAXView">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPage" />
+  </class>
+
+  <!-- JavaScript Event Utitilities -->
+  <utility
+      name="click"
+      component="z3c.formjs.jsevent.CLICK"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="dblclick"
+      component="z3c.formjs.jsevent.DBLCLICK"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="change"
+      component="z3c.formjs.jsevent.CHANGE"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="load"
+      component="z3c.formjs.jsevent.LOAD"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="blur"
+      component="z3c.formjs.jsevent.BLUR"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="focus"
+      component="z3c.formjs.jsevent.FOCUS"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="keydown"
+      component="z3c.formjs.jsevent.KEYDOWN"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="keyup"
+      component="z3c.formjs.jsevent.KEYUP"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="mousedown"
+      component="z3c.formjs.jsevent.MOUSEDOWN"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="mousemove"
+      component="z3c.formjs.jsevent.MOUSEMOVE"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="mouseout"
+      component="z3c.formjs.jsevent.MOUSEOUT"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="mouseover"
+      component="z3c.formjs.jsevent.MOUSEOVER"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="mouseup"
+      component="z3c.formjs.jsevent.MOUSEUP"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="resize"
+      component="z3c.formjs.jsevent.RESIZE"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="select"
+      component="z3c.formjs.jsevent.SELECT"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+  <utility
+      name="submit"
+      component="z3c.formjs.jsevent.SUBMIT"
+      provides="z3c.formjs.interfaces.IJSEvent"
+      />
+
+  <!-- Action Managers and Handlers -->
+  <adapter
+      factory=".jsaction.JSButtonAction"
+      provides="z3c.form.interfaces.IButtonAction"
+      />
+
+  <subscriber
+      handler=".jsaction.createSubscriptionsForWidget"
+      />
+
+  <!-- JavaScript Viewlet Manager and Viewlets -->
+
+  <browser:viewletManager
+      name="z3c.formjs.interfaces.IDynamicJavaScript"
+      provides=".interfaces.IDynamicJavaScript"
+      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      layer="z3c.form.interfaces.IFormLayer"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      name="z3c.formjs.subscriptions"
+      manager=".interfaces.IDynamicJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSSubscriptions"
+      class="z3c.formjs.jsevent.JSSubscriptionsViewlet"
+      permission="zope.Public"
+      layer="z3c.form.interfaces.IFormLayer"
+      />
+
+  <browser:viewlet
+      name="z3c.formjs.functions"
+      manager=".interfaces.IDynamicJavaScript"
+      view="z3c.formjs.interfaces.IHaveJSFunctions"
+      class="z3c.formjs.jsfunction.JSFunctionsViewlet"
+      permission="zope.Public"
+      layer="z3c.form.interfaces.IFormLayer"
+      />
+
+  <!-- Specific Javascript-backend implementations -->
+
+  <include file="jqueryrenderer.zcml" />
+
+
+  <!-- Server Side to Client Event Subscriber -->
+  <subscriber
+      handler=".jsclientevent.serverToClientEventLoader"
+      />
+
+
+</configure>

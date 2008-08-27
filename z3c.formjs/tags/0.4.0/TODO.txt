@@ -1,0 +1,6 @@
+====
+TODO
+====
+
+ - client side js validators for simple fields.  (maybe we can use an
+   existing library?)
