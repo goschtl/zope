@@ -120,6 +120,13 @@ We just want to see how the algebra compiles to code:
     'reduce(operator.add, map(lambda i: 1, reduce(operator.add, map(lambda i: [i], list(metadata.getAll("ICourse"))), [])), 0)'
 
 
+    >>> aopt, run = make("list [ c in ICourse; c.credits > 3 | c.code ]")
+    >>> aopt
+    Head(Iter(<type 'list'>, Lambda c: If(c.credits > `3`, Single(<type 'list'>, c.code), Empty(<type 'list'>)), Make(<type 'list'>, <type 'set'>, ICourse)))
+    >>> run.code
+    'reduce(operator.add, map(lambda c: ((c.credits>3) and ([c.code]) or ([])), list(metadata.getAll("ICourse"))), [])'
+
+
     >>> aopt, run = make("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")
     >>> aopt
     Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
