@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.formdemo">
+
+  <!-- default z3c.form layer -->
+  <interface
+      interface="z3c.formdemo.layer.IDemoBrowserLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <include package=".skin" />
+  <include package=".browser" />
+
+  <!-- Examples -->
+
+  <include package=".message" />
+  <include package=".sqlmessage" />
+  <include package=".widgets" />
+  <include package=".questionnaire" />
+  <include package=".calculator" />
+  <include package=".wizard" />
+  <include package=".spreadsheet" />
+  <include package=".addressbook" />
+
+</configure>

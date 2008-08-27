@@ -1,0 +1,4 @@
+<div class="row"
+     tal:repeat="widget view/forms">
+  <div metal:use-macro="macro:widget-row" />
+</div>

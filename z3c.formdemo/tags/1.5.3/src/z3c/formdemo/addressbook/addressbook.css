@@ -1,0 +1,211 @@
+h1 {
+  background-color: #619FDF;
+  border: 1px solid #3B81C8;
+  color: white;
+  padding: 5px 7px 2px 7px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  -moz-border-radius: 3px;
+}
+
+h1 span {
+  text-shadow: 1px 1px 1px black;
+}
+
+h2 {
+  border-top: 2px solid #3B81C8;
+  border-bottom: 2px solid #3B81C8;
+  color: #3B81C8;
+  font-weight: bold;
+  padding: 0;
+  margin: 10px 0px 5px 0px;
+}
+
+h2 span {
+  font-size: 95%;
+  font-weight: normal;
+  text-shadow: 1px 1px 1px #285989;
+}
+
+input, select, textarea {
+  background-color: #FFFFA0;
+}
+
+input[type=submit] {
+  background-color: #619FDF;
+  border: 2px solid #3B81C8;
+  color: white;
+  font-weight: bold;
+  -moz-border-radius: 3px;
+}
+
+span.dateselect .year {
+  width: 6em;
+}
+
+span.dateselect .month {
+  width: 4em;
+}
+
+span.dateselect .day {
+  width: 4em;
+}
+
+hr.separator {
+  height: 2px;
+  color: #3B81C8;
+  background-color: #3B81C8;
+  margin-top: 15px;
+  border: 0;
+}
+
+div.status {
+  color: red;
+}
+
+div#layout {
+  clear: both;
+}
+
+div#contact-table {
+  float: left;
+  margin-right: 20px;
+}
+
+div#contact-form {
+  float: right;
+  border: 2px solid #3B81C8;
+  -moz-border-radius: 3px;
+  padding: 10px;
+  width: 400px;
+}
+
+div.section-content {
+  margin: 0px 10px;
+}
+
+table.contact-list {
+  border-collapse: collapse;
+}
+
+table.contact-list th {
+  background-color: #619FDF;
+  border-top: 1px solid #3B81C8;
+  border-bottom: 1px solid #3B81C8;
+  padding: 3px 5px;
+  text-align: left;
+  color: white;
+}
+
+table.contact-list th a {
+  color: white;
+}
+
+table.contact-list th a:visited {
+  color: white;
+}
+
+table.contact-list th a:hover {
+  color: white;
+}
+
+table.contact-list td {
+  padding: 2px 5px;
+  border-bottom: 1px solid #DBE1E6;
+}
+
+table.contact-list tr.even {
+  background-color: #EDF4F9;
+}
+
+table.contact-list tr.selected {
+  background-color: #FFFFA0;
+}
+
+table.contact-list a {
+  color: black;
+}
+
+table.contact-list a:visited {
+  color: black;
+}
+
+table.contact-list a:hover {
+  color: black;
+}
+
+div#addresses {
+  margin-top: 10px;
+}
+
+div#add-address {
+  margin-top: 10px;
+}
+
+select#form-widgets-addressName {
+  width: 150px;
+}
+
+fieldset.address {
+  background-color: #EDF4F9;
+  border: 1px solid #DBE1E6;
+  margin-top: 7px;
+}
+
+fieldset.address legend {
+  color: #3B81C8;
+}
+
+fieldset.address div.buttons {
+  margin: 0;
+  padding: 0;
+}
+
+div.inline, div.inline div {
+  display: inline;
+}
+
+input.city {
+  width: 12em;
+}
+
+input.state {
+  width: 2em;
+}
+
+input.zip {
+  width: 5em;
+}
+
+
+/* ----[ Phone Styles ]----------------------------------------------------- */
+
+div#phones {
+  margin-top: 20px;
+}
+
+input.countryCode {
+  width: 2em;
+}
+
+input.areaCode {
+  width: 3em;
+}
+
+input.number {
+  width: 9em;
+}
+
+input.extension {
+  width: 6em;
+}
+
+/* ----[ E-Mail Styles ]---------------------------------------------------- */
+
+div#emails {
+  margin-top: 20px;
+}
+
+input.email {
+  width: 20em;
+}

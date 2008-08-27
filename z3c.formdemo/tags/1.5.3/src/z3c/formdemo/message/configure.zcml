@@ -1,0 +1,59 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <permission
+      id="z3c.formdemo.ManageHelloWorld"
+      title="Manage Hello World (z3c.formdemo)"
+      />
+
+  <class class=".message.HelloWorld">
+    <allow
+        interface=".interfaces.IHelloWorld"
+        />
+    <require
+        permission="z3c.formdemo.ManageHelloWorld"
+        set_schema=".interfaces.IHelloWorld"
+        />
+  </class>
+
+  <!-- Default widget value for "when" -->
+  <adapter
+      factory=".browser.DefaultDate"
+      name="default" />
+
+  <!-- Add Form -->
+  <z3c:pagelet
+      name="addHelloWorld.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.HelloWorldAddForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- Edit Form -->
+  <z3c:pagelet
+      name="edit.html"
+      for=".interfaces.IHelloWorld"
+      class=".browser.HelloWorldEditForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <!-- Display Form -->
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.IHelloWorld"
+      class=".browser.HelloWorldDisplayForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="display.pt"
+      for=".browser.HelloWorldDisplayForm"
+      layer="z3c.formdemo.layer.IDemoBrowserLayer"
+      />
+
+</configure>

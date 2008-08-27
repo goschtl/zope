@@ -1,0 +1,46 @@
+<div class="wizard">
+  <div class="header">
+    <h1 tal:content="view/title">Wizard</h1>
+  </div>
+  <table class="breadcrumbs"><tr>
+    <td tal:repeat="info view/stepsInfo"
+        tal:attributes="class info/class">
+      <div>
+        <span
+           tal:condition="info/active"
+           tal:content="info/number" />
+        <a href=""
+           tal:condition="not:info/active"
+           tal:attributes="href string:${request/URL}?step=${info/name}"
+           tal:content="info/number" />
+      </div>
+    </td>
+  </tr></table>
+  <div metal:use-macro="macro:form">
+    <div metal:fill-slot="info"
+         tal:replace="nothing" />
+    <fieldset class="step"
+              metal:fill-slot="main">
+      <legend tal:content="view/step/label">Label</legend>
+      <div class="status" tal:condition="view/step/status">
+        <div class="summary" tal:content="view/step/status">
+          Form status summary
+        </div>
+      </div>
+      <div tal:content="structure view/step/render" />
+      <div metal:use-macro="macro:form-required-info" />
+    </fieldset>
+    <div class="buttons" metal:fill-slot="buttons">
+      <span class="back">
+        <input tal:repeat="action view/actions/backActions"
+             tal:replace="structure action/render"
+             />
+      </span>
+      <span class="forward">
+        <input tal:repeat="action view/actions/forwardActions"
+             tal:replace="structure action/render"
+             />
+      </span>
+    </div>
+  </div>
+</div>

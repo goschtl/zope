@@ -1,0 +1,21 @@
+<h1>SQL Hello World Message Demo</h1>
+
+<div id="body">
+  <div class="status"
+         tal:define="status view/status"
+         tal:condition="status">
+    <div class="summary"
+         tal:content="status">
+      status summary
+    </div>
+  </div>
+
+  <div tal:replace="structure view/table" />
+
+  <div class="actions">
+    <a href="addSQLHelloWorld.html">[Add message]</a>
+    <a href="showAllSQLHelloWorld.html?initialize=1">
+      [Initialize the database]
+    </a>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<div>
+  <div metal:use-macro="macro:form-header" />
+  <div tal:replace="structure view/widgets/fullAddress/render" />
+  <div tal:replace="structure view/actions/delete/render" />
+</div>

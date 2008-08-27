@@ -1,0 +1,45 @@
+<div id="calculator">
+  <h1>
+    <span class="name">A simple calculator</span>
+    <span class="version">v1.0</span>
+  </h1>
+  <div id="display">
+    <div id="stack">
+      <span class="label">Stack:</span>
+      <span class="value" tal:content="view/stack">4</span>
+    </div>
+    <div id="operator">
+      <span class="label">Operator:</span>
+      <span class="value" tal:content="view/operator/title|nothing">+</span>
+    </div>
+    <div id="current">
+      <span class="label">Current:</span>
+      <span class="value"
+            tal:condition="view/current"
+            tal:content="view/current">4</span>
+      <span class="value"
+            tal:condition="not:view/current"
+            tal:content="view/stack">4</span>
+    </div>
+  </div>
+  <div metal:use-macro="macro:form">
+    <div metal:fill-slot="info"
+         tal:replace="nothing" />
+    <div id="buttons" metal:fill-slot="buttons">
+      <table>
+        <tr tal:repeat="row view/actions/grid">
+          <td tal:repeat="action row">
+            <input tal:replace="structure action/render" />
+          </td>
+        </tr>
+      </table>
+      <input tal:replace="structure view/actions/clear/render" />
+    </div>
+  </div>
+</div>
+<div class="info">
+  <p>This example is best viewed in Firefox with the <a
+    href="http://desktoppub.about.com/library/fonts/dd/uc_digitalreadout.htm"
+    >Digital Readout</a> font installed.
+  <p>
+</div>
