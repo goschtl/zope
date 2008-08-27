@@ -2,18 +2,15 @@
 CHANGES
 =======
 
-Version 0.3.1 (unreleased)
+Version 0.4.0 (2008-08-26)
 --------------------------
 
-- Bug: Widgets that were being updated multiple times were generating
-  duplicate javascript event subscriptions. This is now fixed.
-
 - Feature: There is now a special unique prefix generator that uses
-  z3c.form's new createCSSId function to generate css selectable
+  `z3c.form`'s new ``createCSSId()`` function to generate css selectable
   prefixes for ajax forms.
 
 - Feature: There is now a viewlet manager already registered with all
-  the viewlets necessary to use z3c.formjs.  You can now just do:
+  the viewlets necessary to use `z3c.formjs`.  You can now just do:
 
     <script tal:replace="structure
                          provider:z3c.formjs.interfaces.IDynamicJavaScript">
@@ -23,8 +20,14 @@ Version 0.3.1 (unreleased)
   lists and tuples), the data is automatically converted into JSON
   format before delivery.
 
+- Restructure: Make package run on latest z3c.form 1.9.0 release.
+
+- Bug: Widgets that were being updated multiple times were generating
+  duplicate javascript event subscriptions. This is now fixed.
+
+
 Version 0.3.0 (2007-10-03)
--------------------------
+--------------------------
 
 - Feature: Made a JavaScript renderer for calls to JS Functions.
 
@@ -39,7 +42,7 @@ Version 0.3.0 (2007-10-03)
 
 
 Version 0.2.0 (2007-07-18)
--------------------------
+--------------------------
 
 - Feature: Registration of public AJAX server calls via a simple
   decorator. The calls are made available via a special ``ajax`` view on the
@@ -60,7 +63,7 @@ Version 0.2.0 (2007-07-18)
 - Feature: Implementation of AJAX request handlers in forms.
 
 Version 0.1.0 (2007-06-29)
--------------------------
+--------------------------
 
 - Initial Release
 
