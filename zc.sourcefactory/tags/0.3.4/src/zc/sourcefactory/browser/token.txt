@@ -18,8 +18,8 @@ Unicode
 =======
 
   >>> zc.sourcefactory.browser.token.fromUnicode(
-  ...     u'somestring with strange chars #*&_;^°~)')
-  '707361a0fd902878117fbe32e5c423a5'
+  ...     u'somestring with strange chars #*&_;)')
+  'f33b8a6b56403c9d560e2ef772336798'
 
 Integer
 =======
