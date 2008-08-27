@@ -2,11 +2,17 @@
 CHANGES
 =======
 
-Version 0.3.1 (unreleased)
+Version 0.3.1 (2008-08-26)
 --------------------------
+
+- Restructure: Made links on index page relative to context so you can do
+  better virtual hosting.
+
+- Restructure: Changed dates to ISO-8601 format.
 
 - Restructure: Removed deprecations warnings for ``ISession`` and
   ``ZopeSecurityPlicy``.
+
 
 Version 0.3.0 (2007-10-03)
 --------------------------
@@ -16,6 +22,7 @@ Version 0.3.0 (2007-10-03)
 
 - Feature: Widget Switching demo.  Shows off ajax switching between
   display and input widgets.
+
 
 Version 0.2.0 (2007-07-18)
 -------------------------
@@ -27,6 +34,7 @@ Version 0.2.0 (2007-07-18)
 
 - Restructure: Code updated to keep up with the changes in the API of
   ``z3c.formjs``.
+
 
 Version 0.1.0 (2007-06-29)
 -------------------------
