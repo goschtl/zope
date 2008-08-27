@@ -13,9 +13,23 @@ We need to set up an engine::
   >>> from megrok.rdb.testing import configureEngine
   >>> engine = configureEngine()
 
+When the database is set up there is an ``rdb.IDatabaseSetupEvent``
+that can be hooked into to do some extra configuration. The event is
+fired after all other database is completed. Here we just print
+something so we can test whether it was fired correctly::
+
+  >>> from zope import component
+  >>> @component.adapter(rdb.IDatabaseSetupEvent)
+  ... def setupHandler(event):
+  ...    print 'Database setup event'
+  >>> component.provideHandler(setupHandler)
+  
 We now need to create the tables we defined in our database::
 
   >>> rdb.setupDatabase(metadata)
+  Database setup event
+
+As we can see the database setup event was indeed fired.
 
 Let's start using the database now::
 

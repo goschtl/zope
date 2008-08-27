@@ -1,4 +1,4 @@
-from zope.interface import Interface
+from zope.interface import Interface, Attribute, implements
 
 from zope.app.container.interfaces import IContainer as IContainerBase
 
@@ -18,3 +18,12 @@ class IContainer(IContainerBase):
         
         Defined by SQLAlchemy dictionary-based collections.
         """
+
+class IDatabaseSetupEvent(Interface):
+    metadata = Attribute("Metadata that was just set up")
+
+class DatabaseSetupEvent(object):
+    implements(IDatabaseSetupEvent)
+    
+    def __init__(self, metadata):
+        self.metadata = metadata

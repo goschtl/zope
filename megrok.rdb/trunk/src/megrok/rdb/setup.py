@@ -1,9 +1,11 @@
 from zope import component
+from zope.event import notify
 
 from sqlalchemy.orm import mapper
 from sqlalchemy.ext.declarative import instrument_declarative
 
 from z3c.saconfig.interfaces import IEngineFactory
+from megrok.rdb.interfaces import DatabaseSetupEvent
 
 def setupDatabase(metadata):
     """Set up of ORM for engine in current site.
@@ -17,7 +19,8 @@ def setupDatabase(metadata):
     """
     reflectTables(metadata)
     createTables(metadata)
-
+    notify(DatabaseSetupEvent(metadata))
+    
 def reflectTables(metadata):
     """Reflect tables into ORM.
     """
