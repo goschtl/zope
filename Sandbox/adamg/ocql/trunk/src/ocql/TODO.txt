@@ -3,4 +3,16 @@ TODOs
 =====
 
 Problem: we want to test object equality by intid, what if the object defines
-         it's own __cmp__? Needs to be loaded and called.
+         it's own __cmp__? Object needs to be loaded and __cmp__ called.
+
+Problem: we seem to add classes related to optimization to the general
+         algebra classes. zope index related optimizations might not be mixed
+         with the general algebra classes.
+         Even the optimization depends more and more on the database.
+         Think about how to make this more general, or how to put database
+         dependent classes separated.
+         More general question: how to do the optimization that it knows about
+         the database properties but ....
+         Seems that the optimization will be either split into two parts: one
+         database independent-generic, one database dependent -- or -- it will
+         be one part and that part depends always on the database.
