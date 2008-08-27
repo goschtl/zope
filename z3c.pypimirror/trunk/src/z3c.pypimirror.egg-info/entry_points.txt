@@ -1,3 +1,0 @@
-[console_scripts]
-pypimirror = z3c.pypimirror.mirror:run
-
