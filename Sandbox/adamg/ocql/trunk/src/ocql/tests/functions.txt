@@ -91,15 +91,19 @@ Simple condition (eg where):
     >>> engine.compile("list [ d in IDepartment; d.name == \"Computing Science\" | d  ]").execute()
     [Department <Computing Science>]
 
-# FIXME: not working!
-# Join using existentially quantified expressions:
-#     >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == some c.runBy | c  ]""").execute()
-#     set([Course <C1>, Course <C3>])
+Join using existentially quantified expressions:
+    >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == some c.runBy | c  ]""").execute()
+    [Course <C1>, Course <C3>]
+
+Join using universally quantified expressions:
+    >>> engine.compile("""set [ d in IDepartment; every set [ c in ICourse; some c.runBy == d | c.credits ] == 2 | d.name ]""").execute()
+    set(['Other department'])
+
 
 # FIXME: not working!
-# Join using universally quantified expressions:
-#      >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == every c.runBy | c  ]""").execute()
-#      set([Course <C3>])
+#Join using universally quantified expressions:
+#    >>> engine.compile("""list [ d in IDepartment; c in ICourse; d.name == "Computing Science"; d == every c.runBy | c  ]""").execute()
+#    [Course <C3>]
 
 # FIXME: not working!
 # Expression in the result:
