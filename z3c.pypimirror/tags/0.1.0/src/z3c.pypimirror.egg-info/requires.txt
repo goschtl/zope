@@ -1,0 +1,6 @@
+setuptools
+zc.lockfile
+BeautifulSoup
+
+[test]
+zc.buildout
