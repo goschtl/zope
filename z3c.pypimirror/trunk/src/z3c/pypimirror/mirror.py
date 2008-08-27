@@ -157,6 +157,8 @@ class Package:
                     continue
                 # fetch what is behind the link and see if it's html.
                 # If it is html, download anything from there.
+                # This is extremely unreliable and therefore commented out.
+                """
                 site = urllib2.urlopen(link)
                 if site.headers.type != "text/html":
                     continue
@@ -170,7 +172,7 @@ class Package:
                     real_download_link = urllib.basejoin(site.url, real_download_link)
                     if not filename_matches or self.matches(real_download_link, filename_matches):
                         yield(real_download_link)
-
+                """
 
     def _links(self, filename_matches=None, external_links=False):
         """ This is an iterator which returns useful links on files for
@@ -206,7 +208,7 @@ class Package:
         return False
 
     def ls(self, filename_matches=None, external_links=False):
-        links = self._links(filename_matches=filename_matches)
+        links = self._links(filename_matches=filename_matches, external_links=external_links)
         return [(link[0], os.path.basename(link[0]), link[1]) for link in links]
 
     def _get(self, url, filename, md5_hex=None):
@@ -285,7 +287,7 @@ class Mirror:
         return filenames
 
     def _html_link(self, filename):
-        return "<a href='%s'>%s</a>" % (filename, filename)
+        return "<a href='%s/'>%s</a>" % (filename, filename)
 
     def _index_html(self):
         header = "<html><body><h1>PyPi Mirror</h1><h2>Last update: " + \
@@ -298,8 +300,12 @@ class Mirror:
         content = self._index_html()
         open(os.path.join(self.base_path, "index.html"), "wb").write(content)
 
-    def mirror(self, package_list, filename_matches, verbose, cleanup, create_indexes, external_links):
+    def full_html(self, full_list):
+        open(os.path.join(self.base_path, "full.html"), "wb").write("<br />\n".join(full_list))
+
+    def mirror(self, package_list, filename_matches, verbose, cleanup, create_indexes, external_links, base_url):
         stats = Stats()
+        full_list = []
         for package_name in package_list:
             try:
                 package = Package(package_name)
@@ -335,6 +341,10 @@ class Mirror:
                         print "Invalid URL: %s" % v
                         continue
 
+                    # XXX TODO: We should use the filename coming from
+                    # urllib2 when the thing was downloaded, as it might
+                    # follow redirects.
+                    # Example: downman.py?file=configobj-4.3.0.zip
                     mirror_package.write(filename, data, md5_hash)
                     stats.stored(filename)
                     if verbose: 
@@ -343,14 +353,16 @@ class Mirror:
                     stats.found(filename)
                     if verbose: 
                         print "Found: %s" % filename
+                full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
             if cleanup:
                 mirror_package.cleanup(links, verbose)
             if create_indexes:
-                mirror_package.index_html()
+                mirror_package.index_html(base_url)
         if cleanup:
             self.cleanup(package_list, verbose)
         if create_indexes:
             self.index_html()
+            self.full_html(full_list)
         print stats
 
 class MirrorPackage:
@@ -399,10 +411,10 @@ class MirrorPackage:
                 filenames.append(filename)
         return filenames
 
-    def _html_link(self, filename, md5_hash):
-        return "<a href='%s#md5=%s'>%s</a>" % (filename, md5_hash, filename)
+    def _html_link(self, base_url, filename, md5_hash):
+        return "<a href='%s%s/%s#md5=%s'>%s</a>" % (base_url, self.package_name, filename, md5_hash, filename)
 
-    def _index_html(self):
+    def _index_html(self, base_url):
         header = "<html><body>"
         footer = "</body></html>"
 
@@ -410,12 +422,12 @@ class MirrorPackage:
         for link in self.ls():
             file = MirrorFile(self, link)
             md5_hash = file.md5
-            link_list.append(self._html_link(link, md5_hash))
+            link_list.append(self._html_link(base_url, link, md5_hash))
         links = "<br />\n".join(link_list)
         return "%s%s%s" % (header, links, footer)
 
-    def index_html(self):
-        content = self._index_html()
+    def index_html(self, base_url):
+        content = self._index_html(base_url)
         self.write("index.html", content)
 
     def cleanup(self, original_file_list, verbose=False):
@@ -482,6 +494,7 @@ class MirrorFile:
 ################# Config file parser
 
 config_defaults = {
+    'base_url': 'http://your-host.com/index/',
     'mirror_file_path': '/tmp/mirror',
     'lock_file_name': 'pypi-poll-access.lock',
     'filename_matches': '*.zip *.tgz *.egg *.tar.gz *.tar.bz2', # may be "" for *
@@ -556,6 +569,6 @@ def run(args=None):
     package_list = PypiPackageList().list(package_matches)
     mirror = Mirror(config["mirror_file_path"])
     lock = zc.lockfile.LockFile(os.path.join(config["mirror_file_path"], config["lock_file_name"]))
-    mirror.mirror(package_list, filename_matches, verbose, cleanup, create_indexes, external_links)
+    mirror.mirror(package_list, filename_matches, verbose, cleanup, create_indexes, external_links, config["base_url"])
 
 

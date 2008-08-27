@@ -3,6 +3,9 @@
 # if necessary it will be created for you
 mirror_file_path = /tmp/mirror
 
+# where's your mirror on the net?
+base_url = http://your-host.com/
+
 # ???
 lock_file_name = pypi-poll-access.lock
 
