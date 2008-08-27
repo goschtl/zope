@@ -7,7 +7,7 @@ standard interfaces that can be adapters are re-adapted as using a
 multi-adapter for (FactoredSource, SourceFactory).
 
 ISourceQueriables
------------------
+=================
 
   >>> from zc.sourcefactory.basic import BasicSourceFactory
   >>> class Factory(BasicSourceFactory):

@@ -1,6 +1,10 @@
 from setuptools import setup, find_packages
 import os.path
 
+def read_file(*args):
+    return open(os.path.join(os.path.dirname(__file__), *args), "r").read()
+
+
 setup(
     name="zc.sourcefactory",
     version="0.4.0dev",
@@ -10,12 +14,21 @@ setup(
 
     description="An easy way to create custom Zope 3 sources.",
 
-    long_description=(open(
-        os.path.join(os.path.dirname(__file__),
-                     "src", "zc", "sourcefactory", "README.txt"),
-        "r").read() + "\n\n" + 
-        open(os.path.join(os.path.dirname(__file__), "CHANGES.txt"),
-             "r").read()),
+    long_description=(
+        read_file("src", "zc", "sourcefactory", "README.txt") +
+        "\n\n" + 
+        read_file("src", "zc", "sourcefactory", "mapping.txt") +
+        "\n\n" + 
+        read_file("src", "zc", "sourcefactory", "constructors.txt") +
+        "\n\n" + 
+        read_file("src", "zc", "sourcefactory", "adapters.txt") +
+        "\n\n" + 
+        read_file("src", "zc", "sourcefactory", "browser", "README.txt") +
+        "\n\n" + 
+        read_file("src", "zc", "sourcefactory", "browser", "token.txt") +
+        "\n\n" + 
+        read_file("CHANGES.txt")
+        ),
 
     packages=find_packages('src'),
     package_dir={'':'src'},

@@ -14,6 +14,7 @@ reduce the amount of work to do for some standard cases, the source factories
 allow users to define only the business relevant code for getting a list of
 values, getting a token and a title to display.
 
+.. contents
 
 Simple case
 ===========
