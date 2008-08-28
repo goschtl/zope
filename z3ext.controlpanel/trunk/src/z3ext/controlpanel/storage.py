@@ -21,8 +21,8 @@ from zope import interface, component, event
 from zope.proxy import removeAllProxies
 from zope.location.pickling import locationCopy
 from zope.location.interfaces import ILocation
-from zope.app.component.hooks import getSite
 from zope.app.component.interfaces import ISite
+from zope.app.component.hooks import getSite, setSite
 from zope.annotation.interfaces import IAnnotations
 from zope.lifecycleevent import ObjectCopiedEvent
 from zope.lifecycleevent.interfaces import IObjectCopiedEvent
@@ -71,6 +71,9 @@ class DataStorage(object):
 
 @component.adapter(ISite, IObjectCopiedEvent)
 def dataStorageCopied(site, appevent):
+    oldSite = getSite()
+    setSite(site)
+
     ann = IAnnotations(removeAllProxies(appevent.original), None)
     if ann is None:
         return
@@ -101,3 +104,5 @@ def dataStorageCopied(site, appevent):
                 copy[subkey] = subcopy
 
         newStorage[key] = copy
+
+    setSite(oldSite)
