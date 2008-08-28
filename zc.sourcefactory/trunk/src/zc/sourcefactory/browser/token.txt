@@ -17,9 +17,12 @@ We have generators for strings:
 Unicode
 =======
 
+  Argh, I have to write the umlauts as unicode escapes otherwise
+  distutils will have a encoding error in preparing upload to pypi:
+
   >>> zc.sourcefactory.browser.token.fromUnicode(
-  ...     u'somestring with strange chars #*&_;)')
-  'f33b8a6b56403c9d560e2ef772336798'
+  ...     u'somestring with umlauts \u00F6\u00E4\u00FC')
+  '45dadc304e0d6ae7f4864368bad74951'
 
 Integer
 =======
