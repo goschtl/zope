@@ -1,6 +1,6 @@
 Change history
 ~~~~~~~~~~~~~~
-0.2.1 (unreleased)
+0.2.1 (2008-08-28)
 ------------------
 
 - ls() returns filenames in sorted order
