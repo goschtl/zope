@@ -284,7 +284,7 @@ class Mirror:
         for filename in os.listdir(self.base_path):
             if os.path.isdir(os.path.join(self.base_path, filename)):
                 filenames.append(filename)
-        filesnames.sort()
+        filenames.sort()
         return filenames
 
     def _html_link(self, filename):
@@ -410,7 +410,7 @@ class MirrorPackage:
             if os.path.isfile(self.path(filename)) and filename != "index.html"\
                and not filename.endswith(".md5"):
                 filenames.append(filename)
-        filesnames.sort()
+        filenames.sort()
         return filenames
 
     def _html_link(self, base_url, filename, md5_hash):
