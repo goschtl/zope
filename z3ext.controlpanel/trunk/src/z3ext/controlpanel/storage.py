@@ -70,8 +70,8 @@ class DataStorage(object):
 
 
 @component.adapter(ISite, IObjectCopiedEvent)
-def dataStorageCopied(site, event):
-    ann = IAnnotations(removeAllProxies(event.original), None)
+def dataStorageCopied(site, appevent):
+    ann = IAnnotations(removeAllProxies(appevent.original), None)
     if ann is None:
         return
 
@@ -94,7 +94,7 @@ def dataStorageCopied(site, event):
         if isinstance(obj, OOBTree):
             for subkey, subobj in obj.items():
                 subcopy = locationCopy(subobj)
-                if ILocation.providedBy(obj):
+                if ILocation.providedBy(subobj):
                     subcopy.__parent__ = subcopy.__name__ = None
                     event.notify(ObjectCopiedEvent(subcopy, subobj))
 
