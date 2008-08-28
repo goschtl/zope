@@ -540,6 +540,8 @@ def run(args=None):
     parser = optparse.OptionParser()
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       default=False, help='verbose on')
+    parser.add_option('-i', '--indexes-only', dest='indexes_only', action='store_true',
+                      default=False, help='create indexes only (no mirroring)')
     options, args = parser.parse_args()
     if len(args) != 1:
         print "Usage: mirror <config-file>"
@@ -559,12 +561,15 @@ def run(args=None):
     package_list = PypiPackageList().list(package_matches)
     mirror = Mirror(config["mirror_file_path"])
     lock = zc.lockfile.LockFile(os.path.join(config["mirror_file_path"], config["lock_file_name"]))
-    mirror.mirror(package_list, 
-                  filename_matches, 
-                  verbose, 
-                  cleanup, 
-                  create_indexes, 
-                  external_links, 
-                  config["base_url"])
+    if options.indexes_only:
+        mirror.index_html()
+    else:
+        mirror.mirror(package_list, 
+                      filename_matches, 
+                      verbose, 
+                      cleanup, 
+                      create_indexes, 
+                      external_links, 
+                      config["base_url"])
 
 
