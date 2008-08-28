@@ -35,10 +35,10 @@ Now we create a `index.html` for the package.
 >>> packagename in open(path_package_index, 'r').read()
 True
 
-Now we create a `index.html` for the mirror.
+Now we create a `index2.html` for the mirror.
 
 >>> mirror.index_html()
->>> path_index = join(mirror.base_path, 'index.html')
+>>> path_index = join(mirror.base_path, 'index2.html')
 >>> packagename in open(path_index, 'r').read()
 True
 

@@ -288,21 +288,28 @@ class Mirror:
         return filenames
 
     def _html_link(self, filename):
-        return "<a href='%s/'>%s</a>" % (filename, filename)
+        return '<a href="%s/">%s</a>' % (filename, filename)
 
     def _index_html(self):
         header = "<html><body><h1>PyPi Mirror</h1><h2>Last update: " + \
-                 time.strftime("%c %Z")+"</h2>"
+                 time.strftime("%c %Z")+"</h2>\n"
         links = "<br />\n".join([self._html_link(link) for link in self.ls()])
-        footer = "</body></html>"
+        footer = "</body></html>\n"
         return "%s%s%s" % (header, links, footer)
 
     def index_html(self):
         content = self._index_html()
-        open(os.path.join(self.base_path, "index.html"), "wb").write(content)
+        open(os.path.join(self.base_path, "index2.html"), "wb").write(content)
 
     def full_html(self, full_list):
-        open(os.path.join(self.base_path, "full.html"), "wb").write("<br />\n".join(full_list))
+        header = "<html><body><h1>PyPi Mirror</h1><h2>Last update: " + \
+                 time.strftime("%c %Z")+"</h2>\n"
+        footer = "</body></html>\n"
+        fp = file(os.path.join(self.base_path, "index.html"), "wb")
+        fp.write(header)
+        fp.write("<br />\n".join(full_list))
+        fp.write(footer)
+        fp.close()
 
     def mirror(self, package_list, filename_matches, verbose, cleanup, create_indexes, external_links, base_url):
         stats = Stats()
@@ -414,7 +421,7 @@ class MirrorPackage:
         return filenames
 
     def _html_link(self, base_url, filename, md5_hash):
-        return "<a href='%s%s/%s#md5=%s'>%s</a>" % (base_url, self.package_name, filename, md5_hash, filename)
+        return '<a href="%s%s/%s#md5=%s">%s</a>' % (base_url, self.package_name, filename, md5_hash, filename)
 
     def _index_html(self, base_url):
         header = "<html><body>"
