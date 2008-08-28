@@ -1,0 +1,25 @@
+<div class="topframe" tal:define="configlets view/data" i18n:domain="z3ext">
+  <h1 tal:content="context/__title__">Configlet category</h1>
+  <div class="pageDescription" 
+       tal:content="context/__description__">Description</div>
+
+  <div tal:condition="not:configlets" i18n:translate="">
+    There are no configlets in this category.
+  </div>
+
+  <ul class="listing" tal:condition="configlets" metal:define-macro="configlets">
+    <li tal:repeat="configlet configlets">
+      <div class="icon">
+	<tal:block tal:content="structure configlet/icon|nothing" />
+      </div>
+      <div class="details">
+	<a tal:attributes="href string:${configlet/configlet/@@absolute_url}/"
+	   tal:content="configlet/title"></a>
+	<div><tal:block tal:content="configlet/description" /> &nbsp;</div>
+	<tal:block define="configlets configlet/items" condition="configlets">
+	  <metal:block use-macro="view/template/macros/configlets" />
+	</tal:block>
+      </div>
+    </li>
+  </ul>
+</div>

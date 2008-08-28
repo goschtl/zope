@@ -1,0 +1,23 @@
+<tal:block tal:repeat="viewlet view/viewlets"
+	   tal:content="structure viewlet/render" />
+
+<div class="x-listing box small">
+  <tal:block tal:repeat="item view/data">
+    <metal:block metal:define-macro="level">
+      <div class="x-listing-item"
+	   tal:attributes="class python:item['selected'] and 'x-listing-item-selected' 
+			   or 'x-listing-item'">
+	<div tal:omit-tag="not:item/level|nothing"
+	     tal:attributes="class string:level${item/level|nothing}">
+	  <a tal:attributes="href string:${item/configlet/@@absolute_url}/">
+	    <al:block tal:content="structure item/icon" />
+	    <tal:block tal:content="item/title" />
+	  </a>
+	</div>
+      </div>
+      <tal:block tal:repeat="item item/items">
+	<metal:block use-macro="view/template/macros/level"/>
+      </tal:block>
+    </metal:block>
+  </tal:block>
+</div>
