@@ -36,7 +36,7 @@ Now configlet registration:
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext"
   ...    i18n_domain="zope">
   ...   <z3ext:configlet
-  ...	    name="configlet1"
+  ...	   name="configlet1"
   ...      schema="z3ext.controlpanel.README.ITestConfiglet1"
   ...      title="Test configlet1"
   ...      description="Test configlet1 description" />

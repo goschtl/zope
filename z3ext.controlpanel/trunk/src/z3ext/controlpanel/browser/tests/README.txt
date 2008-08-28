@@ -82,4 +82,3 @@ By default control panel create edit for each configlet, form name 'index.html'
 
   >>> browser.getLink('Configlet1').click()
   >>> browser.getControl(name='form.buttons.save').click()
-  >>> browser.getControl(name='form.buttons.cancel').click()

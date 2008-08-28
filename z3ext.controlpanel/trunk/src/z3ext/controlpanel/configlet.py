@@ -15,6 +15,7 @@
 
 $Id$
 """
+import traceback
 from zope import schema, interface
 from zope.location import Location
 from zope.component import getUtility, queryUtility
@@ -36,8 +37,16 @@ class Configlet(Location):
 
     @property
     def data(self):
-        data = getUtility(IDataStorage)
-        return removeSecurityProxy(data)[self.__name__]
+        storage = removeSecurityProxy(getUtility(IDataStorage))
+
+        if self.__id__ in storage:
+            return storage[self.__id__]
+
+        if self.__name__ in storage:
+            storage[self.__id__] = storage[self.__name__]
+            del storage[self.__name__]
+
+        return storage[self.__id__]
 
     def isAvailable(self):
         for test in self.__tests__:

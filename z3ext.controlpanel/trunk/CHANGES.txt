@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-1.2.5 (2008-06-??)
+1.2.5 (2008-08-28)
 ------------------
 
 - Remove wrong html tag for category view
+
+- Fix configlet storage name
+
+- Added copier for data storage
 
 
 1.2.4 (2008-05-26)

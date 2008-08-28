@@ -23,6 +23,8 @@
   <!-- data storage -->
   <utility factory=".storage.DataStorage" />
 
+  <subscriber handler=".storage.dataStorageCopied" />
+
   <!-- default categories -->
   <z3ext:configlet
      name="system"
