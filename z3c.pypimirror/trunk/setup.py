@@ -15,7 +15,7 @@ long_description = desc + '\n\nChanges\n=======\n\n'  + changes
 
 setup(
     name='z3c.pypimirror',
-    version='0.1.1',
+    version='0.1.2',
     author='Daniel Kraft et al.',
     author_email='dk@d9t.de',
     description='A module for building a complete or a partial PyPI mirror',
@@ -24,13 +24,11 @@ setup(
     maintainer_email='lists@zopyx.com',
     classifiers=CLASSIFIERS,
     package_dir = {'': 'src'},
-    namespace_packages=['z3c', 'z3c.pypimirror'],
+    namespace_packages=['z3c'] ,
     packages=find_packages('src'),
+    package_dirs={'' : 'src'},
     include_package_data=True,
     zip_safe=False,
-    package_data = {
-        '': ['*.sample'],
-    },
     install_requires = ['setuptools',
                         'zc.lockfile',
                         'BeautifulSoup'],
