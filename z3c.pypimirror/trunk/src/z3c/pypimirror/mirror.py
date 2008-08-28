@@ -284,6 +284,7 @@ class Mirror:
         for filename in os.listdir(self.base_path):
             if os.path.isdir(os.path.join(self.base_path, filename)):
                 filenames.append(filename)
+        filesnames.sort()
         return filenames
 
     def _html_link(self, filename):
