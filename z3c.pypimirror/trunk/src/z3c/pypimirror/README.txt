@@ -30,7 +30,7 @@ True
 
 Now we create a `index.html` for the package.
 
->>> mirrorpackage.index_html()
+>>> mirrorpackage.index_html('http://pypi.python.org/simple')
 >>> path_package_index = mirrorpackage.path('index.html')
 >>> packagename in open(path_package_index, 'r').read()
 True
