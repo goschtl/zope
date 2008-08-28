@@ -537,25 +537,6 @@ def get_config_options(config_filename):
     return config.defaults()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def run(args=None):
     if args is None:
         args = sys.argv[1:]
@@ -578,6 +559,12 @@ def run(args=None):
     package_list = PypiPackageList().list(package_matches)
     mirror = Mirror(config["mirror_file_path"])
     lock = zc.lockfile.LockFile(os.path.join(config["mirror_file_path"], config["lock_file_name"]))
-    mirror.mirror(package_list, filename_matches, verbose, cleanup, create_indexes, external_links, config["base_url"])
+    mirror.mirror(package_list, 
+                  filename_matches, 
+                  verbose, 
+                  cleanup, 
+                  create_indexes, 
+                  external_links, 
+                  config["base_url"])
 
 
