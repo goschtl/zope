@@ -1,0 +1,72 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext">
+
+  <z3ext:layout
+     layout="portal"
+     name="workspace"
+     for="..interfaces.IRootConfiglet"
+     template="layout.pt"
+     hidden="yes" />
+
+  <browser:icon
+     name="zmi_icon"
+     for="..interfaces.IConfiglet"
+     file="preferences-system.png" />
+
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.IConfiglet" />
+
+  <browser:menuItem
+     for="..interfaces.IConfiglet"
+     title="View"
+     menu="zmi_views"
+     action="index.html"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     name="index.html"
+     for="..interfaces.IConfiglet"
+     class=".configlet.Configlet"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     name="index.html"
+     for="..interfaces.ICategory"
+     template="category.pt"
+     class=".category.CategoryView"
+     permission="zope.Public" />
+
+  <!-- navigation -->
+  <browser:viewletManager
+     name="z3ext.controlpanel-navigation"
+     provides=".interfaces.IConfigletNavigation"
+     template="navigation.pt"
+     class=".navigation.Navigation"
+     permission="zope.Public" />
+
+  <!-- for ILocalSiteManager -->
+  <browser:menuItem
+     for="zope.app.component.interfaces.ISite"
+     menu="zmi_actions"
+     title="System settings"
+     action="settings/"
+     permission="z3ext.Configure" />
+
+  <browser:menuItem
+     for="zope.app.component.interfaces.ILocalSiteManager"
+     menu="zmi_actions"
+     title="System settings"
+     action="../settings/"
+     permission="z3ext.Configure" />
+
+  <!-- configlet breadcrumb -->
+  <adapter 
+     zcml:condition="installed z3c.breadcrumb"
+     factory=".breadcrumb.ConfigletBreadcrumb" />
+
+</configure>
