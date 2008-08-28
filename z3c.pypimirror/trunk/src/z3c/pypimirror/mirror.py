@@ -2,10 +2,12 @@ import os
 import xmlrpclib
 import sys
 import util
+import shutil
 import urllib 
 import urllib2
 import time
 import ConfigParser
+import optparse
 from glob import fnmatch
 from md5 import md5
 from BeautifulSoup import BeautifulSoup
@@ -273,11 +275,7 @@ class Mirror:
     def rmr(self, path):
         """ delete a package recursively (not really.)
         """
-        # delete files
-        for filename in os.listdir(path):
-            os.unlink(os.path.join(path, filename))
-        # delete dir
-        os.rmdir(path)
+        shutil.rmtree(path)
 
     def ls(self):
         filenames = []
@@ -538,9 +536,11 @@ def get_config_options(config_filename):
 
 
 def run(args=None):
-    if args is None:
-        args = sys.argv[1:]
 
+    parser = optparse.OptionParser()
+    parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
+                      default=False, help='verbose on')
+    options, args = parser.parse_args()
     if len(args) != 1:
         print "Usage: mirror <config-file>"
         sys.exit(1)
@@ -553,7 +553,7 @@ def run(args=None):
     package_matches = config["package_matches"].split()
     cleanup = config["cleanup"] in ("True", "1")
     create_indexes = config["create_indexes"] in ("True", "1")
-    verbose = config["verbose"] in ("True", "1")
+    verbose = config["verbose"] in ("True", "1") or options.verbose
     external_links = config["external_links"] in ("True", "1")
 
     package_list = PypiPackageList().list(package_matches)
