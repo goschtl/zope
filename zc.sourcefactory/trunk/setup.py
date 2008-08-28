@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 import os.path
 
 def read_file(*args):
-    return open(os.path.join(os.path.dirname(__file__), *args), "r").read()
-
+    path = os.path.join(os.path.dirname(__file__), *args)
+    file_contents = open(path, "r").read()
+    return file_contents
 
 setup(
     name="zc.sourcefactory",
