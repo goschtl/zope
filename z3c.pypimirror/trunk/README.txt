@@ -25,11 +25,11 @@ Zope Public License 2.1 (ZPL 2.1)
 
 Authors
 =======
-z3c.pypimirror was part of the Blackforest Sprint 2008 by the following
-persons:
+z3c.pypimirror took place at the Blackforest Sprint 2008 and involved the
+the following persons:
 
 - Daniel Kraft (Lead)
 - Gottfried Ganssauge
-- Josip Delíc
+- Josip Delic
 - Andreas Jung
 
