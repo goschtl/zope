@@ -17,3 +17,19 @@ To set up a mirror:
   This will initialize the mirror.
 
 - Set up a cron job to run update-mirror periodically.
+
+
+LICENSE
+=======
+Zope Public License 2.1 (ZPL 2.1)
+
+Authors
+=======
+z3c.pypimirror was part of the Blackforest Sprint 2008 by the following
+persons:
+
+- Daniel Kraft (Lead)
+- Gottfried Ganssauge
+- Josip Delíc
+- Andreas Jung
+

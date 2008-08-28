@@ -26,8 +26,10 @@ setup(
     package_dir = {'': 'src'},
     namespace_packages=['z3c'] ,
     packages=find_packages('src'),
-    package_dirs={'' : 'src'},
     include_package_data=True,
+    package_data={
+        '' : ['*.txt', '*.sample'],
+    },
     zip_safe=False,
     install_requires = ['setuptools',
                         'zc.lockfile',
