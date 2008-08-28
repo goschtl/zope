@@ -13,20 +13,18 @@
 ##############################################################################
 """Crude Tracelog Hack for ZServer
 """
-import datetime, re, logging
-
-import zope.component
-
-from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http import wsgihttpserver
-import zope.server.http.httprequestparser
-
-import zope.server.http.httpserverchannel
 from zope.app.server import servertype
-
 from zope.app.wsgi import WSGIPublisherApplication
-
+from zope.server.http import wsgihttpserver
+from zope.server.http.commonaccesslogger import CommonAccessLogger
+import datetime
+import logging
+import re
 import zope.app.appsetup.interfaces
+import zope.component
+import zope.server.http.httprequestparser
+import zope.server.http.httpserverchannel
+
 
 logger = logging.getLogger('zc.tracelog')
 
