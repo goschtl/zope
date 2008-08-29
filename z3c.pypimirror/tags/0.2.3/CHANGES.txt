@@ -1,0 +1,38 @@
+Change history
+~~~~~~~~~~~~~~
+0.2.3 (2008-08-29)
+------------------
+
+- added --follow-external-links option
+
+0.2.2 (2008-08-28)
+------------------
+
+- renamed index.html to index2.html
+- renamed full.html to index.html
+- some internal cleanup
+
+0.2.1 (2008-08-28)
+------------------
+
+- ls() returns filenames in sorted order
+
+0.2.0 (2008-08-28)
+------------------
+
+- setup.py cleanup and fixes
+- fixed license file
+- updated README.txt
+
+0.1.1 (2008-08-27)
+------------------
+
+- corrected the index pages for packages (have full urls now)
+- added a full.html for packages (you better gz this ;) )
+- removed html page download for external sites
+
+
+0.1.0 (2008-08-27)
+------------------
+
+- initial release
