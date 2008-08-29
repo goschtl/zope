@@ -22,12 +22,7 @@ We need some imports and setup:
 
     >>> import ocql.testing.utils_opt
     >>> ocql.testing.utils_opt.setupInterfaces(None)
-    >>> import ocql.testing.utils
-    >>> ocql.testing.utils.setupInterfaces(None)
-    >>> import ocql.testing.utils_opt
     >>> ocql.testing.utils_opt.setupCatalog(None)
-    >>> import ocql.testing.utils_opt
-    >>> ocql.testing.utils.setupCatalog(None)
 
 We'll use the same queries as in aoptimizer.txt.
 Algebra trees get omitted as they are already checked over there.
@@ -128,16 +123,3 @@ It uses now metadata.getFromIndex as there is an index for the class and propert
     >>> result = run.execute()
     >>> sorted(result)
     [u'0', u'1', u'2', u'3', u'4', u'6', u'7', u'8', u'9']
-
-
-
-    >>> query = "set [ c in IStudent; c.country == 'USA' | c.name ]"
-    >>> run = OCQLEngine().compile(query)
-    >>> run
-    RunnableQuery:
-    reduce(set.union,
-    map(lambda c: set([c.name]),
-    set(metadata.getFromIndex("IStudent", "country", "==", 'USA'))), set())
-    >>> result = run.execute()
-    >>> result
-    set([u'Jane'])

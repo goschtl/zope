@@ -210,7 +210,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent; c.country <= "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent; c.country <= 'Sri Lanka' | c.name]"
+        query = "set [c in IStudent; c.country <= 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -234,7 +234,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent; c.country >= "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent; c.country >= 'Sri Lanka' | c.name]"
+        query = "set [c in IStudent; c.country >= 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -258,7 +258,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent; c.country < "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent; c.country < 'Sri Lanka' | c.name]"
+        query = "set [c in IStudent; c.country < 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -282,7 +282,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent; c.country > "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent; c.country > 'Sri Lanka' | c.name]"
+        query = "set [c in IStudent; c.country > 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,

@@ -1,0 +1,92 @@
+
+Optimized compilation
+=====================
+
+Checking here how an optimized algebra for zope indexes compiles into python code.
+Also refer the compiler_optimized.txt
+
+We need some imports and setup:
+
+    >>> from ocql.engine import OCQLEngine
+
+    >>> import ocql.testing.utils
+    >>> ocql.testing.utils.setupInterfaces(None)
+    >>> ocql.testing.utils.setupCatalog(None)
+
+    >>> query = "set [ c in IStudent; c.country == 'USA' | c.name ]"
+    >>> run = OCQLEngine().compile(query)
+
+Here is the runnable code:
+It uses metadata.getFromIndex as there is an index for the class and property.
+
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", "==", 'USA'))), set())
+
+Results of the query:
+
+    >>> result = run.execute()
+    >>> result
+    set([u'Jane'])
+
+
+    >>> query = "set [c in IStudent; c.country != 'USA' | c.name]"
+    >>> run = OCQLEngine().compile(query)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", "!=", 'USA'))), set())
+    >>> result = run.execute()
+    >>> result
+    set([u'Ann', u'Charith', u'Stewart'])
+
+
+    >>> query = "set [ c in IStudent; c.country <= 'USA' | c.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", "<=", 'USA'))), set())
+    >>> result = run.execute()
+    >>> result
+    set([u'Jane', u'Ann', u'Charith', u'Stewart'])
+
+
+    >>> query = "set [ c in IStudent; c.country >= 'USA' | c.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", ">=", 'USA'))), set())
+    >>> result = run.execute()
+    >>> result
+    set([u'Jane'])
+
+
+    >>> query = "set [ c in IStudent; c.country < 'USA' | c.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", "<", 'USA'))), set())
+    >>> result = run.execute()
+    >>> result
+    set([u'Ann', u'Charith', u'Stewart'])
+
+
+    >>> query = "set [ c in IStudent; c.country > 'USA' | c.name ]"
+    >>> run = OCQLEngine().compile(query)
+    >>> run
+    RunnableQuery:
+    reduce(set.union,
+    map(lambda c: set([c.name]),
+    set(metadata.getFromIndex("IStudent", "country", ">", 'USA'))), set())
+    >>> result = run.execute()
+    >>> result
+    set([])

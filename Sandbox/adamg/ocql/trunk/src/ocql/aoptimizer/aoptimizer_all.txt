@@ -17,14 +17,19 @@ We need some setup to demonstrate this:
     >>> from ocql.rewriter.rewriter import Rewriter
     >>> from ocql.compiler.compiler import AlgebraCompiler
 
-    >>> from ocql.testing.utils_opt import setupInterfaces
-    >>> setupInterfaces(None)
-    >>> from ocql.testing.utils_opt import setupCatalog
-    >>> setupCatalog(None)
+    >>> import ocql.testing.utils_opt
+    >>> ocql.testing.utils_opt.setupInterfaces(None)
+    >>> ocql.testing.utils_opt.setupCatalog(None)
+
+    >>> import ocql.testing.utils
+    >>> ocql.testing.utils.setupInterfaces(None)
+    >>> ocql.testing.utils.setupCatalog(None)
 
     >>> testmeta = IDB(None)
 
+
 Here is a very basic query to show how the algebra looks like unoptimized.
+--------------------------------------------------------------------------
 
     >>> query = "set [ i in IUnOptimizedClass | i ]"
 
@@ -46,3 +51,120 @@ Here is a very basic query to show how the algebra looks like unoptimized.
     Lambda i: Single(<type 'set'>, i),
     Make(<type 'set'>, <type 'set'>, IUnOptimizedClass)))
 
+
+
+Queries using test data to show how the algebra looks like unoptimized.
+-----------------------------------------------------------------------
+
+    >>> query = "set [ c in IStudent; c.country == 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country == `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, ==, 'USA')))
+
+
+    >>> query = "set [ c in IStudent; c.country != 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country != `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, !=, 'USA')))
+
+
+    >>> query = "set [ c in IStudent; c.country <= 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country <= `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, <=, 'USA')))
+
+
+    >>> query = "set [ c in IStudent; c.country >= 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country >= `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, >=, 'USA')))
+
+
+    >>> query = "set [ c in IStudent; c.country < 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country < `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, <, 'USA')))
+
+
+    >>> query = "set [ c in IStudent; c.country > 'USA' | c.name ]"
+    >>> optqo = QueryOptimizer(QueryParser(query)(testmeta))()
+    >>> alg = Rewriter(optqo)()
+    >>> algopt = AlgebraOptimizer(alg)(testmeta)
+
+unoptimized algebra tree
+    >>> alg
+    Head(Iter(<type 'set'>,
+    Lambda c:
+    If(c.country > `'USA'`, Single(<type 'set'>, c.name), Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, IStudent)))
+
+optimized algebra tree
+    >>> algopt
+    Head(Iter(<type 'set'>,
+    Lambda c: Single(<type 'set'>, c.name),
+    MakeFromIndex(<type 'set'>, <type 'set'>, IStudent, country, >, 'USA')))

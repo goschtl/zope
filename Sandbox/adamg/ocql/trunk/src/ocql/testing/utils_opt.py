@@ -120,4 +120,4 @@ def setupCatalog(test, optCount=10, unoptCount=10, halfCount=10):
         id = intids.register(o)
         cat.index_doc(id, o)
 
-    component.provideUtility(cat, ICatalog, name='boo-catalog')
+    component.provideUtility(cat, ICatalog, name='foo-catalog')
