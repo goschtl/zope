@@ -99,7 +99,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent | c ]
         #
-        query = "[c in IStudent | c]"
+        query = "set [c in IStudent | c]"
         qo = Head(Query(
                 metadata, symbols,
                 set,
@@ -119,7 +119,7 @@ class testZope(unittest.TestCase):
         #
         # set [ c in IStudent | c.name ]
         #
-        query = "[c in IStudent | c.name]"
+        query = "set [c in IStudent | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -136,9 +136,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result
         #
-        # set [ c in IProject , c.description="test" | c.name]
+        # set [ c in IProject; c.description="test" | c.name]
         #
-        query = "[c in IProject , c.description=test | c.name]"
+        query = "set [c in IProject; c.description==test | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -160,9 +160,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country="USA" | c.name]
+        # set [ c in IStudent; c.country="USA" | c.name]
         #
-        query = "[c in IStudent , c.country==USA | c.name]"
+        query = "set [c in IStudent; c.country==USA | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -184,9 +184,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country!="USA" | c.name]
+        # set [ c in IStudent; c.country!="USA" | c.name]
         #
-        query = "[c in IStudent , c.country != USA | c.name]"
+        query = "[c in IStudent; c.country != USA | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -208,9 +208,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country <= "Sri Lanka" | c.name]
+        # set [ c in IStudent; c.country <= "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent , c.country <= 'Sri Lanka' | c.name]"
+        query = "[c in IStudent; c.country <= 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -232,9 +232,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country >= "Sri Lanka" | c.name]
+        # set [ c in IStudent; c.country >= "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent , c.country >= 'Sri Lanka' | c.name]"
+        query = "[c in IStudent; c.country >= 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -256,9 +256,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country < "Sri Lanka" | c.name]
+        # set [ c in IStudent; c.country < "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent , c.country < 'Sri Lanka' | c.name]"
+        query = "[c in IStudent; c.country < 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -280,9 +280,9 @@ class testZope(unittest.TestCase):
         #
         # Filtering --one result using optimization
         #
-        # set [ c in IStudent , c.country > "Sri Lanka" | c.name]
+        # set [ c in IStudent; c.country > "Sri Lanka" | c.name]
         #
-        query = "[c in IStudent , c.country > 'Sri Lanka' | c.name]"
+        query = "[c in IStudent; c.country > 'Sri Lanka' | c.name]"
         qo = Head(Query(
                    metadata, symbols,
                    set,
@@ -305,11 +305,11 @@ class testZope(unittest.TestCase):
         #
         # join -- Mentor who is mentoring Hungary student
         #
-        # set [ m in IMentor, every set [ s in IStudent, some s.mentor = m | s.country ] == Hungary  | m.name ]
+        # set [ m in IMentor; every set [ s in IStudent; some s.mentor == m | s.country ] == Hungary  | m.name ]
         #
-        query = """set [ m in IMentor,
+        query = """set [ m in IMentor;
             every
-            set [ s in IStudent, some s.mentor = m; s.country=Hungary | s.name] == Stewart
+            set [ s in IStudent; some s.mentor == m; s.country == Hungary | s.name] == Stewart
             | m.name ]"""
         qo=Head(Query(
             metadata, symbols,
