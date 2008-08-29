@@ -542,6 +542,8 @@ def run(args=None):
                       default=False, help='verbose on')
     parser.add_option('-i', '--indexes-only', dest='indexes_only', action='store_true',
                       default=False, help='create indexes only (no mirroring)')
+    parser.add_option('-e', '--follow-external-links', dest='external_links', action='store_true',
+                      default=False, help='Follow and download external links)')
     options, args = parser.parse_args()
     if len(args) != 1:
         print "Usage: mirror <config-file>"
@@ -556,7 +558,7 @@ def run(args=None):
     cleanup = config["cleanup"] in ("True", "1")
     create_indexes = config["create_indexes"] in ("True", "1")
     verbose = config["verbose"] in ("True", "1") or options.verbose
-    external_links = config["external_links"] in ("True", "1")
+    external_links = config["external_links"] in ("True", "1") or options.external_links
 
     package_list = PypiPackageList().list(package_matches)
     mirror = Mirror(config["mirror_file_path"])
@@ -571,5 +573,4 @@ def run(args=None):
                       create_indexes, 
                       external_links, 
                       config["base_url"])
-
 
