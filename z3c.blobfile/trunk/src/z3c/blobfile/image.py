@@ -22,7 +22,7 @@ from zope.size.interfaces import ISized
 from zope.size import byteDisplay
 from zope.contenttype import guess_content_type
 
-from zope.app.file.i18n import ZopeMessageFactory as _
+from z3c.blobfile.i18n import ZopeMessageFactory as _
 from z3c.blobfile.file import File
 from zope.app.file.interfaces import IImage
 

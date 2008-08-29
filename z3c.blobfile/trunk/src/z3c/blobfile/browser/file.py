@@ -25,7 +25,7 @@ from zope.schema import Text
 from zope.exceptions.interfaces import UserError
 
 from zope.app.file.interfaces import IFile
-from zope.app.file.i18n import ZopeMessageFactory as _
+from z3c.blobfile.i18n import ZopeMessageFactory as _
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.app.file.browser.file import FileUpdateView
 import zope.datetime
