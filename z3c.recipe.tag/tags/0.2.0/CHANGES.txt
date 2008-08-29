@@ -1,0 +1,24 @@
+=======
+CHANGES
+=======
+
+0.2.0 (2008-08-28)
+------------------
+
+* Allow command-line choices for what files to build, and what languages ctags
+  should parse.  (Note that the default behavior of running ``./bin/tags``
+  is the same as previous releases.)
+
+* Support the Mac OS X packaging system "macports" (exuberant ctags is
+  ``ctags-exuberant`` in Ubuntu and ``ctags`` in macports).
+
+* Support creating BBEdit-style ctags files.
+
+* Small changes for development (use bootstrap external, set svn:ignore)
+
+0.1.0 (2008-03-16)
+------------------
+
+- Initial release.
+
+  * buildout recipe for generating ctags of eggs used.
