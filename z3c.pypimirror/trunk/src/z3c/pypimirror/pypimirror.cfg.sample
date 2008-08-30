@@ -35,3 +35,5 @@ verbose = True
 # This is highly experimental and shouldn't be used right now.
 external_links = False
 
+# logfile 
+log_filename = /tmp/pypimirror.log

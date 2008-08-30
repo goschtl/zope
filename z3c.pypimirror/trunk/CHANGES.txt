@@ -1,5 +1,12 @@
 Change history
 ~~~~~~~~~~~~~~
+0.2.4 (unreleased)
+------------------
+
+- added logging support
+- minor internal cleanup
+- commandline options handling updated
+
 0.2.3 (2008-08-29)
 ------------------
 

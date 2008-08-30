@@ -8,15 +8,19 @@ import urllib2
 import time
 import ConfigParser
 import optparse
+import zc.lockfile
+import socket
+import tempfile
+from BeautifulSoup import BeautifulSoup
 from glob import fnmatch
 from md5 import md5
-from BeautifulSoup import BeautifulSoup
-import zc.lockfile
+from logger import getLogger
 
-import socket
 # timeout in seconds
 timeout = 10
 socket.setdefaulttimeout(timeout)
+
+LOG = None
 
 class Stats:
     """ This is just for statistics """
@@ -49,7 +53,7 @@ class Stats:
     def error_invalid_url(self, name):
         self._error_invalid_url.append(name)
 
-    def __str__(self):
+    def getStats(self):
         ret = []
         ret.append("Statistics")
         ret.append("----------")
@@ -59,7 +63,7 @@ class Stats:
         ret.append("Invalid packages:       %d" % len(self._error_invalid_package))
         ret.append("Invalid URLs:           %d" % len(self._error_invalid_url))
         ret.append("Runtime:                %s" % self.runtime())
-        return "\n".join(ret)
+        return ret
 
 
 class PypiPackageList:
@@ -265,11 +269,11 @@ class Mirror:
             try:
                 if local_dir not in remote_list:
                     if verbose: 
-                        print "Removing package: %s" % local_dir
+                        LOG.debug("Removing package: %s" % local_dir)
                     self.rmr(os.path.join(self.base_path, local_dir))
             except UnicodeDecodeError:
                 if verbose: 
-                    print "Removing package: %s" % local_dir
+                    LOG.debug("Removing package: %s" % local_dir)
                 self.rmr(os.path.join(self.base_path, local_dir))
 
     def rmr(self, path):
@@ -317,14 +321,14 @@ class Mirror:
                 package = Package(package_name)
             except PackageError, v:
                 stats.error_invalid_package(package_name)
-                print "Package is not valid."
+                LOG.debug("Package is not valid.")
                 continue
 
             try:
                 links = package.ls(filename_matches, external_links)
             except PackageError, v:
                 stats.error_404(package_name)
-                print "Package not available: %s" % v
+                LOG.debug("Package not available: %s" % v)
                 continue
 
             mirror_package = self.package(package_name)
@@ -337,14 +341,15 @@ class Mirror:
                     if not md5_hash:
                         remote_size = package.content_length(url)
                         if mirror_package.size_match(filename, remote_size):
-                            if verbose: print "Found: %s" % filename
+                            if verbose: 
+                                LOG.debug("Found: %s" % filename)
                             continue
 
                     try:
                         data = package.get(link)
                     except PackageError, v:
                         stats.error_invalid_url(link)
-                        print "Invalid URL: %s" % v
+                        LOG.info("Invalid URL: %s" % v)
                         continue
 
                     # XXX TODO: We should use the filename coming from
@@ -354,11 +359,11 @@ class Mirror:
                     mirror_package.write(filename, data, md5_hash)
                     stats.stored(filename)
                     if verbose: 
-                        print "Stored: %s [%d kB]" % (filename, len(data)//1024)
+                        LOG.debug("Stored: %s [%d kB]" % (filename, len(data)//1024))
                 else:
                     stats.found(filename)
                     if verbose: 
-                        print "Found: %s" % filename
+                        LOG.debug("Found: %s" % filename)
                 full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
             if cleanup:
                 mirror_package.cleanup(links, verbose)
@@ -369,7 +374,9 @@ class Mirror:
         if create_indexes:
             self.index_html()
             self.full_html(full_list)
-        print stats
+
+        for line in stats.getStats():
+            LOG.debug(line)
 
 class MirrorPackage:
     """ This checks for already existing files and creates the index
@@ -444,7 +451,7 @@ class MirrorPackage:
             if not local_file.endswith(".md5") and \
                     local_file not in remote_list:
                 if verbose: 
-                    print "Removing: %s" % local_file
+                    LOG.debug("Removing: %s" % local_file)
                 self.rm(local_file)
 
 
@@ -493,12 +500,9 @@ class MirrorFile:
         md5_path = os.path.dirname(self.path)
         return os.path.join(md5_path, md5_filename)
 
-
-
-
-
-
 ################# Config file parser
+
+default_logfile = os.path.join(tempfile.tempdir or '/tmp', 'pypimirror.log')
 
 config_defaults = {
     'base_url': 'http://your-host.com/index/',
@@ -509,8 +513,13 @@ config_defaults = {
     'cleanup': True, # delete local copies that are remotely not available
     'create_indexes': True, # create index.html files
     'verbose': True, # log output
+    'log_filename': default_logfile,
     'external_links': False, # experimental external link resolve and download
 }
+
+
+# ATT: fix the configuration behaviour (with non-existing configuration files,
+# etc.)
 
 def get_config_options(config_filename):
     """
@@ -537,16 +546,22 @@ def get_config_options(config_filename):
 
 def run(args=None):
 
-    parser = optparse.OptionParser()
+    global LOG
+    usage = "usage: pypimirror [options] <config-file>"
+    parser = optparse.OptionParser(usage=usage)
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       default=False, help='verbose on')
+    parser.add_option('-f', '--log-filename', dest='log_filename', action='store',
+                      default=False, help='Name of logfile')
+    parser.add_option('-c', '--log-console', dest='log_console', action='store_true',
+                      default=False, help='Also log to console')
     parser.add_option('-i', '--indexes-only', dest='indexes_only', action='store_true',
                       default=False, help='create indexes only (no mirroring)')
     parser.add_option('-e', '--follow-external-links', dest='external_links', action='store_true',
                       default=False, help='Follow and download external links)')
     options, args = parser.parse_args()
     if len(args) != 1:
-        print "Usage: mirror <config-file>"
+        parser.error("No configuration file specified")
         sys.exit(1)
 
     config_file_name = os.path.abspath(args[0])
@@ -559,10 +574,16 @@ def run(args=None):
     create_indexes = config["create_indexes"] in ("True", "1")
     verbose = config["verbose"] in ("True", "1") or options.verbose
     external_links = config["external_links"] in ("True", "1") or options.external_links
+    log_filename = config['log_filename']
+    if options.log_filename:
+        log_filename = options.log_filename
 
     package_list = PypiPackageList().list(package_matches)
     mirror = Mirror(config["mirror_file_path"])
     lock = zc.lockfile.LockFile(os.path.join(config["mirror_file_path"], config["lock_file_name"]))
+    LOG = getLogger(filename=log_filename,
+                    log_console=options.log_console)
+
     if options.indexes_only:
         mirror.index_html()
     else:
