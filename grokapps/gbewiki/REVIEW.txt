@@ -107,6 +107,14 @@ within the views registered directly for the current context object or more
 general registrations. ZPTs then are rendered to the methods and attributes 
 provided by the calling view class.
 
+The templates also display the pages last modification date and editor. 
+GAE stores the date of modification with the object, Grok adapts the context 
+object to the IZopeDublinCore interface to retrieve modification info inside the 
+view class::
+
+    def dc(self):
+        return IZopeDublinCore(self.context)
+
 
 Loading and Storing
 -------------------
@@ -215,6 +223,16 @@ grok.View classes::
         grok.name('wiki.WikiWords')
         grok.context(grok.View)
         ...
+
+
+Action based feedback
+---------------------
+
+Several actions return a feedback message to the user which is displayed on the
+next response page above the content.
+
+    self.flash('Your account has been created. You are now logged in')
+
 
 Overall
 -------
