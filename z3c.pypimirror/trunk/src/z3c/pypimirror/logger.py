@@ -1,10 +1,15 @@
+
+"""
+A simple logger for z3c.pypymirror
+"""
+
 import logging
 
 def getLogger(filename='/tmp/pypymirror.log', log_console=False):
 
     LOG = logging.getLogger()
     LOG.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(levelname)-6s %(message)s')
+    formatter = logging.Formatter('%(asctime)s %(levelname)-6s %(message)s')
     filehandler = logging.FileHandler(filename)
     filehandler.setFormatter(formatter)
     LOG.addHandler(filehandler)
