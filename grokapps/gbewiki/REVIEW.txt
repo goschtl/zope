@@ -1,5 +1,5 @@
-Grok-by-Example: Guestbook
-==========================
+Grok-by-Example: Wiki
+=====================
 
 :Author: d2m (michael@d2m.at)
 
