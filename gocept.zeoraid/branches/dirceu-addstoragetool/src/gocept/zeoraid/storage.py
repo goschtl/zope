@@ -1,4 +1,4 @@
-##############################################################################
+#/home/ctheune/Development/ZODB/trunk#############################################################################
 #
 # Copyright (c) 2007-2008 Zope Foundation and contributors.
 # All Rights Reserved.
@@ -83,12 +83,6 @@ class RAIDStorage(object):
     # we bring them back into the pool of optimal storages.
     _db = None
 
-    # The last transaction that we know of. This is used to keep a global
-    # knowledge of the current assumed state and verify storages that might
-    # have fallen out of sync. It is also used as a point of reference
-    # for generating new TIDs.
-    _last_tid = None
-
     def __init__(self, name, openers, read_only=False, blob_dir=None,
                  shared_blob_dir=False):
         self.__name__ = name
@@ -139,8 +133,8 @@ class RAIDStorage(object):
                 "Can't start without at least one working storage.")
 
         # Set up list of optimal storages
-        self._last_tid = max(tids)
-        self.storages_optimal = tids.pop(self._last_tid)
+        last_tid = max(tids)
+        self.storages_optimal = tids.pop(last_tid)
 
         # Set up list of degraded storages
         self.storages_degraded = []
@@ -194,9 +188,7 @@ class RAIDStorage(object):
 
     def lastTransaction(self):
         """Return the id of the last committed transaction."""
-        if self.raid_status() == 'failed':
-            raise gocept.zeoraid.interfaces.RAIDError('RAID is failed.')
-        return self._last_tid
+        return self._apply_single_storage('lastTransaction')[0]
 
     def __len__(self):
         """The approximate number of objects in the storage."""
@@ -320,7 +312,7 @@ class RAIDStorage(object):
 
             if tid is None:
                 # No TID was given, so we create a new one.
-                tid = self._new_tid(self._last_tid)
+                tid = self._new_tid(self.lastTransaction())
             self._tid = tid
 
             self._apply_all_storages('tpc_begin',
@@ -345,7 +337,6 @@ class RAIDStorage(object):
                     # ClientStorage contradict each other and the documentation
                     # is non-existent. We trust ClientStorage here.
                     callback(self._tid)
-                self._last_tid = self._tid
                 return self._tid
             finally:
                 self._transaction = None
