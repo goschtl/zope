@@ -20,28 +20,10 @@ from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
-
-# simple vocabularies performing enumerated-like tasks
+from zope.schema.term import SimpleTerm
 
 _marker = object()
 
-class SimpleTerm(object):
-    """Simple tokenized term used by SimpleVocabulary."""
-
-    implements(ITokenizedTerm)
-
-    def __init__(self, value, token=None, title=None):
-        """Create a term for value and token. If token is omitted,
-        str(value) is used for the token.  If title is provided, 
-        term implements ITitledTokenizedTerm.
-        """
-        self.value = value
-        if token is None:
-            token = value
-        self.token = str(token)
-        self.title = title
-        if title is not None:
-            directlyProvides(self, ITitledTokenizedTerm)
 
 class SimpleVocabulary(object):
     """Vocabulary that works from a sequence of terms."""

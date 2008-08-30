@@ -500,6 +500,7 @@ class ITitledTokenizedTerm(ITokenizedTerm):
 
     title = TextLine(title=_(u"Title"))
 
+
 class ISource(Interface):
     """A set of values from which to choose
 
@@ -514,6 +515,94 @@ class ISource(Interface):
     def __contains__(value):
         """Return whether the value is available in this source
         """
+
+class IIterableSource(ISource):
+    """Source which supports iteration over allowed values.
+
+    The objects iteration provides must be values from the source.
+    """
+
+    def __iter__():
+        """Return an iterator which provides the values from the source."""
+
+    def __len__():
+        """Return the number of valid values, or sys.maxint."""
+
+class ITokenizedSource(ISource):
+    """Tokenized source."""
+
+    def getTerm(value):
+        """Return the ITerm object for the term 'value'.
+
+        If `value` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+    def getValue(token):
+        """Return a value for a given identifier token
+
+        If `value` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+    def getTermByToken(token):
+        """Return an ITokenizedTerm for the passed-in token.
+
+        If `token` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+class IIterableTokenizedSource(IIterableSource, ITokenizedSource):
+    """Iterable tokenized source."""
+
+
+class IContextSourceBinder(Interface):
+
+    def __call__(context):
+        """Return a context-bound instance that implements ISource.
+        """
+
+class ITerms(Interface):
+    """Terms offer a simple query API for ISource used in schema fields
+
+    Since the ITerms API needs to offer a concept for communicate the term
+    values via HTML force and back we provide by default the tokenized term
+    concept. There are some use case which terms can use the real values 
+    intead of the token representation, but that's not relevant.
+    
+    To use a token as value representation is always a good idea even if the
+    token representaents the real value.
+
+    Terms returned from getTerm() and provided by iteration must
+    conform to ITokenizedTerm.
+    """
+
+    def getTerm(value):
+        """Return the ITokenizedTerm object for the term 'value'.
+
+        If `value` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+    def getValue(token):
+        """Return a value for a given identifier token
+
+        If `value` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+    def getTermByToken(token):
+        """Return an ITokenizedTerm for the passed-in token.
+
+        If `token` is not represented in the source, `LookupError`
+        is raised.
+        """
+
+    def __iter__():
+        """Return an iterator which provides the values from the source."""
+
+    def __len__():
+        """Return the number of valid values, or sys.maxint."""
 
 class ISourceQueriables(Interface):
     """A collection of objects for querying sources
@@ -538,11 +627,6 @@ class ISourceQueriables(Interface):
 
         """
 
-class IContextSourceBinder(Interface):
-    def __call__(context):
-        """Return a context-bound instance that implements ISource.
-        """
-
 
 class IBaseVocabulary(ISource):
     """Representation of a vocabulary.
@@ -558,19 +642,6 @@ class IBaseVocabulary(ISource):
 
         If 'value' is not a valid term, this method raises LookupError.
         """
-
-
-class IIterableSource(ISource):
-    """Source which supports iteration over allowed values.
-
-    The objects iteration provides must be values from the source.
-    """
-
-    def __iter__():
-        """Return an iterator which provides the values from the source."""
-
-    def __len__():
-        """Return the number of valid values, or sys.maxint."""
 
 
 # BBB vocabularies are pending deprecation, hopefully in 3.3
