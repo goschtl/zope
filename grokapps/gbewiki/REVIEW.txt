@@ -1,0 +1,228 @@
+Grok-by-Example: Guestbook
+==========================
+
+:Author: d2m (michael@d2m.at)
+
+.. contents:: 
+
+A basic 'Grok Wiki' application [source__] ported from a 
+Google Appengine [GAE] example application [source__].
+
+__ http://svn.zope.org/grokapps/gbewiki/src/gbewiki/
+__ http://code.google.com/p/google-app-engine-samples/source/browse/trunk/cccwiki/wiki.py
+
+
+Overview
+~~~~~~~~
+
+A simple Grok wiki application.
+
+Editing is in a WYSIWYG editor (TinyMCE) rather than a text editor with special
+syntax. Users need to create an account and authenticate to edit pages. 
+WikiName linking and auto-linking to plain text URLs is supported.
+
+
+Review
+~~~~~~
+
+This example app is a bit larger than the two we looked at before (gbeguestbook 
+and gbe99bottles). It is also quite usable as an app on its own, as a HTML based 
+wiki engine.
+
+The GAE wiki and the Grok port are - again - about the same size/lines of code.
+The Grok app is split into 4 code modules (app, page, interface, utils) with
+their related template folders.
+
+Include and use the JS library with the application
+---------------------------------------------------
+
+*gbewiki* utilizes the recently published megrok.tinymce__ package to include the 
+TinyMCE library (there is no more need to distribute the app together with the 
+JS package). megrok.tinymce is simply added to the 'include-requires' 
+requirements list in the packages setup.py module::
+
+    install_requires=['setuptools',
+                      'grok',
+                      ...
+                      'megrok.tinymce',
+                      ],
+
+This adds the megrok.tinymce packages to the .buildout/eggs folder when 
+zc.buildout is run and registers the TinyMCE folder as a resource library. 
+Usage within a pagetemplate looks like so::
+
+    <script type="text/javascript"
+      tal:attributes="src context/++resource++TinyMCE/tiny_mce.js"></script>
+
+__ http://pypi.python.org/pypi/megrok.tinymce
+
+
+Application object
+------------------
+
+GAE uses the webapp.WSGIApplication and already configures the URL dispatching
+as a wildcard pattern::
+
+    application = webapp.WSGIApplication([('/(.*)', WikiPage)], debug=_DEBUG)
+
+WikiPage here is a Requesthandler class that handles GET/POST HTTP requests.
+
+Grok subclasses from both grok.Application and grok.Container and defines a
+'traverse' method to handle request paths::
+  
+    class WikiPage(grok.Application, grok.Container):
+        ...
+        def traverse(self, page_name=default_page_name):
+            ...
+
+Groks application object tries to traverse to and return the requested Page 
+object or a new default Page 'MainPage'. Requests are than handled by the Page 
+object view classes (@@index, @@edit).
+
+
+Request methods
+---------------
+
+While GAE webapp.RequestHandler classes understand HTTP methods and dispatch
+accordingly, Grok uses grok.View classes that 'render' the representation of the
+current context object.
+
+
+Creating the Response 
+---------------------
+
+Here both frameworks use templating to render the context object and
+return the result.
+
+GAE explicitly by defining a handler class that creates a dict of values, renders 
+a template to this values and writes the result to the 'response.out' stream::
+
+    class BaseRequestHandler(webapp.RequestHandler):
+        def generate(self, template_name, template_values={}):
+            ...
+            self.response.out.write(template.render(path, values, debug=_DEBUG))
+            
+Grok implicitly by following conventions. The requested view name is searched 
+within the views registered directly for the current context object or more
+general registrations. ZPTs then are rendered to the methods and attributes 
+provided by the calling view class.
+
+
+Loading and Storing
+-------------------
+
+In this example GAE uses the low-level 'datastore' API to store and retrieve
+Page objects to and from the appengine datastore::
+
+    def load(name):
+        query = datastore.Query('Page')
+        ...
+        
+    def save(self):
+        datastore.Put(entity)
+
+
+Grok stores and retrieves the Page objects to and from the application container.
+New Pages are added by the application containers @@add view and saved by the 
+Page objects @@save view. 
+
+
+User management and Permissions
+--------------------------------
+
+GAE uses the appengine 'users' API to handle posting new or edited existing wiki 
+pages. The user must be logged in with her google account::
+
+    def post(self, page_name):
+        if not users.get_current_user():
+            self.redirect(users.create_login_url(self.request.uri))
+        ...
+
+With Grok one needs to setup the authentication first. We use the 
+PluggableAuthentication utility defined on the application object as 
+LocalUtility::
+
+    class WikiPage(grok.Application, grok.Container):
+        grok.local_utility(PluggableAuthentication, IAuthentication,
+                           setup=setup_pau_principal)
+
+Besides the authentication plugins the utility also defines a storage for 
+Principal (user) objects::
+
+    pau['principals'] = PrincipalFolder()                           
+
+Two application wide permissions are created to rule adding and editing of Page
+objects::
+
+    class PermissionEditPage(grok.Permission):
+        """Permission to edit a Page """
+        grok.name('wiki.EditPage')
+        
+    class PermissionAddPage(grok.Permission):
+        """Permission to add a Page """
+        grok.name('wiki.AddPage')
+        
+During authentication the submitted login-name is searched within the 
+PrincipalFolder. If found the user is logged in. If no user object is found a 
+new principal object is created with the credentials provided by the login form. 
+Both the 'wiki.AddPage' and 'wiki.EditPage' permissions are granted on the 
+principal and the user is logged in immediately::
+
+    permission_mngr = IPrincipalPermissionManager(grok.getSite())
+    permission_mngr.grantPermissionToPrincipal(
+       'wiki.AddPage', principals.prefix + login)
+    permission_mngr.grantPermissionToPrincipal(
+       'wiki.EditPage', principals.prefix + login)
+
+This directly happens inside the @@login view update method::
+
+    class Login(Master):
+        def update(self, login_submit=None):
+            ...
+
+
+Wikification of Page content
+----------------------------
+
+Before returning the rendered Page (@@index view) to the user, the page content 
+gets wikified. In our example a list of transformations is applied to the 
+'content' by adapting the view object itself::
+
+    class Index(Master):
+    
+        def wikified_content(self):
+            self.content = self.context.content
+            ...
+    
+            transforms = [
+              'wiki.AutoLink',
+              'wiki.ListOfPages',
+              'wiki.WikiWords',
+            ]
+           
+            for transform in transforms:
+                self.content = getAdapter(self, ITransform, transform).run()
+            return self.content
+
+Each of the transforms is created as a named adapter, registered for 
+grok.View classes::
+
+    class ITransform(Interface):
+        pass
+    
+    class WikiWords(grok.Adapter):
+        grok.implements(ITransform)
+        grok.name('wiki.WikiWords')
+        grok.context(grok.View)
+        ...
+
+Overall
+-------
+
+Porting this application took quite some time (about 1 day), mostly because 
+of implementing the user management (again) and getting megrok.tinymce working.
+The wiki app is usable as is and also works fine when used inside an existing
+grok application. Transformation/Wikification of page contents through adapters 
+could easily be made into a plugin-like configuration (using a distinct admin 
+form). Also the renderer (TinyMCE and HTML) could be pluggable replaced by a 
+RestructuredText based engine.
