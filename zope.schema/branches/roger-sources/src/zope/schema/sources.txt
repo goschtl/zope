@@ -9,9 +9,9 @@ Sources are designed with three concepts:
   This can return any kind of object it wants. It doesn't have to care
   for browser representation, encoding, ...
 
-- A way to map a value from the iterable to something that can be used
-  for form *values* - this is called a token. A token is commonly a
-  (unique) 7bit representation of the value.
+- A way to map a value from the source (iterable) to something that can be used
+  for form *values* - this is called a token. A token is commonly a unique
+  7bit representation of the value.
 
 - A way to map a value to something that can be displayed to the user -
   this is called a title
@@ -35,10 +35,10 @@ is used, it will be used as the source for valid values.
 
 Create a source for all odd numbers.
 
-    >>> from zope import interface
+    >>> import zope.interface
     >>> from zope.schema.interfaces import ISource, IContextSourceBinder
     >>> class MySource(object):
-    ...     interface.implements(ISource)
+    ...     zope.interface.implements(ISource)
     ...     divisor = 2
     ...     def __contains__(self, value):
     ...         return bool(value % self.divisor)
@@ -48,8 +48,8 @@ Create a source for all odd numbers.
     >>> 2 in my_source
     False
 
-    >>> from zope.schema import Choice
-    >>> choice = Choice(__name__='number', source=my_source)
+    >>> import zope.schema
+    >>> choice = zope.schema.Choice(__name__='number', source=my_source)
     >>> bound = choice.bind(object())
     >>> bound.vocabulary
     <...MySource...>
@@ -63,15 +63,238 @@ result must implement ISource and will be used as the source.
     ...     source = MySource()
     ...     source.divisor = context.divisor
     ...     return source
-    >>> interface.directlyProvides(my_binder, IContextSourceBinder)
+    >>> zope.interface.directlyProvides(my_binder, IContextSourceBinder)
 
     >>> class Context(object):
     ...     divisor = 3
 
-    >>> choice = Choice(__name__='number', source=my_binder)
+    >>> choice = zope.schema.Choice(__name__='number', source=my_binder)
     >>> bound = choice.bind(Context())
     Binder was called.
     >>> bound.vocabulary
     <...MySource...>
     >>> bound.vocabulary.divisor
     3
+
+
+==========
+Variations
+==========
+
+There are several ways to make a source component available. The following 
+tests will show the different options we have to implement and use sources.
+
+Let's define a generic context providing some test values for the next couple 
+tests:
+
+    >>> class Context(object):
+    ...     values = [4, 5, 6]
+    >>> context = Context()
+
+We also need to setup the vocabulary register:
+
+   >>> vr = zope.schema.vocabulary.getVocabularyRegistry()
+
+
+Source as named adapter
+-----------------------
+
+This example shows how to implement a ISource component as a named adapter.
+The source is registered as a named adapter providing ISource and the name
+is used in the IChoice field. The choice field will adapt the source within the
+field context if we bind the field to the context.
+
+    >>> class NamedSource(object):
+    ...     zope.interface.implements(ISource)
+    ... 
+    ...     values = [1, 2, 3]
+    ... 
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ... 
+    ...     def __contains__(self, value):
+    ...         return value in self.values
+
+Register the named source in our vocabulary registry:
+
+   >>> vr.register('Named Source', NamedSource)
+
+We can use such a source within a IChoice field like:
+
+    >>> field = zope.schema.Choice(
+    ...     source='Named Source')
+
+Without bind the context to the field, the source doesn't work because of it's
+half ready initialization:
+
+   >>> field.vocabulary is None
+   True
+
+   >>> field.vocabularyName
+   'Named Source'
+
+This source must get bound the context:
+
+  >>> boundField = field.bind(context)
+  >>> boundField
+  <zope.schema._field.Choice object at ...>
+
+Now, the bound field provides a working source:
+
+   >>> 1 in boundField.vocabulary
+   True
+
+   >>> 42 in boundField.vocabulary
+   False
+
+
+Source as named context binder
+------------------------------
+
+The following source, registered as named source, uses the vocabulary
+registry as named adapter storage. The IChoice uses the vocabulary name as
+a key for lookup the source and will adapt the given field context if we bind
+the field to the context.
+
+    >>> class NamedContextBinderSource(object):
+    ...     zope.interface.implements(ISource, IContextSourceBinder)
+    ... 
+    ...     def __init__(self, context):
+    ...         self.context = context
+    ...
+    ...     def __contains__(self, value):
+    ...         return value in self.context.values
+
+Register the named source in our vocabulary registry:
+
+    >>> vr.register('Named Context Binder Source',  NamedContextBinderSource)
+
+We can use such a source within a IChoice field like:
+
+    >>> field = zope.schema.Choice(
+    ...     source='Named Context Binder Source')
+
+Without bind the context to the field, the source doesn't work because of it's
+half ready initialization:
+
+    >>> field.vocabulary is None
+    True
+
+    >>> field.vocabularyName
+    'Named Context Binder Source'
+
+This source must get bound the context:
+
+    >>> boundField = field.bind(context)
+    >>> boundField
+    <zope.schema._field.Choice object at ...>
+
+Now we can check our source:
+
+    >>> 4 in boundField.vocabulary
+    True
+
+    >>> 42 in boundField.vocabulary
+    False
+
+
+Source as component
+-------------------
+
+This simple source works out of the box and doesn't need to get adapted. The
+source will not be served from the vocabulary registry. The source get assinged
+as a instance of the fields source argument. This means the source will work 
+without to bind the field to the context.
+
+    >>> class SimpleSource(object):
+    ...     zope.interface.implements(ISource)
+    ...
+    ...     values = [1, 2, 3]
+    ... 
+    ...     def __contains__(self, value):
+    ...         return value in self.values
+
+    >>> simpleSource = SimpleSource()
+
+We can use such a source within a IChoice field like:
+
+    >>> field = zope.schema.Choice(
+    ...     source=simpleSource)
+
+This source can be used without to bind the context to the field:
+
+    >>> 1 in field.vocabulary
+    True
+
+    >>> 42 in field.vocabulary
+    False
+
+If we bind the context to the field:
+
+    >>> boundField = field.bind(context)
+    >>> boundField
+    <zope.schema._field.Choice object at ...>
+
+We still get the same result as before:
+
+    >>> 1 in boundField.vocabulary
+    True
+
+    >>> 42 in boundField.vocabulary
+    False
+
+
+Source as context binder
+------------------------
+
+This source implementation provides a context source binder and will be
+served as named adapter from the vocabulary registry. The source context binder
+name is used in the fields source argument. The choice field will adapt the 
+source within the field context if we bind the field to the context.
+
+    >>> class ContextBinderSource(object):
+    ...     zope.interface.implements(ISource, IContextSourceBinder)
+    ... 
+    ...     context = None
+    ... 
+    ...     def __call__(self, context):
+    ...         self.context = context
+    ...         return self
+    ...
+    ...     def __contains__(self, value):
+    ...         return value in self.context.values
+
+We can use such a source within a IChoice field like:
+
+    >>> field = zope.schema.Choice(
+    ...     source=ContextBinderSource())
+
+Without bind the context to the field, the source doesn't work because of it's
+missing adaption:
+
+    >>> field.vocabulary
+    <ContextBinderSource object at ...>
+
+    >>> field.vocabulary.context is None
+    True
+
+    >>> field.vocabularyName is None
+    True
+
+The field must bind the source to the field:
+
+    >>> boundField = field.bind(context)
+    >>> boundField
+    <zope.schema._field.Choice object at ...>
+
+Now we can check our source:
+
+    >>> 4 in boundField.vocabulary
+    True
+
+    >>> 42 in boundField.vocabulary
+    False
+
+Reset the vocabulary registry:
+
+    >>> zope.schema.vocabulary._clear()
