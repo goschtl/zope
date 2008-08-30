@@ -1,6 +1,6 @@
 import logging
 
-def getLogger(filename='/tmp/pypymirror.log'):
+def getLogger(filename='/tmp/pypymirror.log', log_console=False):
 
     LOG = logging.getLogger()
     LOG.setLevel(logging.DEBUG)
@@ -8,9 +8,16 @@ def getLogger(filename='/tmp/pypymirror.log'):
     filehandler = logging.FileHandler(filename)
     filehandler.setFormatter(formatter)
     LOG.addHandler(filehandler)
+    if log_console:
+        streamhandler = logging.StreamHandler()
+        streamhandler.setFormatter(formatter)
+        LOG.addHandler(streamhandler)
     return LOG
 
 if __name__ == '__main__':
     LOG = getLogger()
+    LOG.info('hello')
+    LOG.error('hello')
+    LOG = getLogger(log_console=True)
     LOG.info('hello')
     LOG.error('hello')
