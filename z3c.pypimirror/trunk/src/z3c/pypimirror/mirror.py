@@ -126,7 +126,10 @@ class Package:
             html = urllib2.urlopen(self.url()).read()
         except urllib2.HTTPError, v:
             if '404' in str(v):             # sigh
-                raise PackageError("Package not available: %s" % self.url())
+                raise PackageError("Package not available (404): %s" % self.url())
+            raise PackageError("Package not available (unknown reason): %s" % self.url())
+        except urllib2.URLError, v:
+            raise PackageError("URL Error: %s " % url)
         return html
 
     def _fetch_links(self, html):
@@ -225,8 +228,11 @@ class Package:
         except urllib2.HTTPError, v:
             if '404' in str(v):             # sigh
                 raise PackageError("404: %s" % url)
+            raise PackageError("Couldn't download (HTTP Error): %s" % url)
         except urllib2.URLError, v:
             raise PackageError("URL Error: %s " % url)
+        except:
+            raise PackageError("Couldn't download (unknown reason): %s" % url)
         if md5_hex:
             # check for md5 checksum
             data_md5 = md5(data).hexdigest()
@@ -343,6 +349,7 @@ class Mirror:
                         if mirror_package.size_match(filename, remote_size):
                             if verbose: 
                                 LOG.debug("Found: %s" % filename)
+                            full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
                             continue
 
                     try:
@@ -358,13 +365,14 @@ class Mirror:
                     # Example: downman.py?file=configobj-4.3.0.zip
                     mirror_package.write(filename, data, md5_hash)
                     stats.stored(filename)
+                    full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
                     if verbose: 
                         LOG.debug("Stored: %s [%d kB]" % (filename, len(data)//1024))
                 else:
                     stats.found(filename)
+                    full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
                     if verbose: 
                         LOG.debug("Found: %s" % filename)
-                full_list.append(mirror_package._html_link(base_url, filename, md5_hash))
             if cleanup:
                 mirror_package.cleanup(links, verbose)
             if create_indexes:
