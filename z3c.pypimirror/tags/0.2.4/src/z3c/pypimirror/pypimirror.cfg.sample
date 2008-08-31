@@ -1,0 +1,45 @@
+[DEFAULT]
+# the root folder of all mirrored packages.
+# if necessary it will be created for you
+mirror_file_path = /tmp/mirror
+
+# where's your mirror on the net?
+base_url = http://your-host.com/
+
+# ???
+lock_file_name = pypi-poll-access.lock
+
+# Pattern for package files, only those matching will be mirrored
+filename_matches =
+    *.zip
+    *.tgz
+    *.egg
+    *.tar.gz
+    *.tar.bz2
+
+# Pattern for package names; only packages having matching names will
+# be mirrored
+package_matches = 
+    zope.app.*
+    plone.app.*
+
+# remove packages not on pypi (or externals) anymore
+cleanup = True
+
+# create index.html files
+create_indexes = True
+
+# be more verbose
+verbose = True
+
+# resolve download_url links on pypi which point to files and download
+# the files from there (if they match filename_matches).
+# The filename and filesize (from the download header) are used
+# to find out if the file is already on the mirror. Not all servers
+# support the content-length header, so be prepared to download
+# a lot of data on each mirror update.
+# This is highly experimental and shouldn't be used right now.
+external_links = False
+
+# logfile 
+log_filename = /tmp/pypimirror.log
