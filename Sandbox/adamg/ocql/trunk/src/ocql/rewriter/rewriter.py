@@ -84,10 +84,16 @@ class QueryRewriter(ChildRewriter):
             elif ocql.queryobject.interfaces.IAlias.providedBy(firstTerm):
                 rv = Iter(
                         self.context.collection_type,
-                        Lambda(IRewriter(firstTerm.identifier)(),
-                               Single(self.context.collection_type,
-                                      IRewriter(firstTerm.identifier)())),
-                        Single(self.context.collection_type,
+                        Lambda(
+                            firstTerm.identifier.name,
+                            IRewriter(ocql.queryobject.queryobject.Query(
+                                self.context.metadata,
+                                self.context.symbols,
+                                self.context.collection_type,
+                                self.context.terms[1:],
+                                self.context.target
+                                ))()
+                        ), Single(self.context.collection_type,
                                IRewriter(firstTerm.expression)()))
 
             else:
