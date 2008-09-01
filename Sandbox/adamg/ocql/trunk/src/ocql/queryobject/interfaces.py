@@ -77,6 +77,14 @@ class IQuery(IExpression):
     terms = Attribute('terms')
     target = Attribute('target')
 
+class IConstantSet(ITerm):
+    """Objects providing this interface represent the
+    Constant Set Query object
+    """
+    collection_type = Attribute('collection type')
+    identifier = Attribute('identifier')
+    terms = Attribute('terms')
+
 class IIn(ITerm):
     """Objects providing this interface represent the
     In Query object
@@ -86,6 +94,14 @@ class IAlias(ITerm):
     """Objects providing this interface represent the
     Alias Query object
     """
+
+class IRange(ITerm):
+    """Objects providing this interface represent the
+    Range Query object
+    """
+    collection = Attribute('collection type')
+    start = Attribute('range start point')
+    end = Attribute('range end point')
 
 class IBinary(IExpression):
     """Objects providing this interface represent the

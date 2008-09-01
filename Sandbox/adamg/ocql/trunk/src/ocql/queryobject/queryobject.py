@@ -206,6 +206,35 @@ class Query(Expression):
     def get_collection_type(self, klass=None):
         return self.collection_type
 
+class ConstantSet(Term):
+    implements(IConstantSet)
+
+    def __init__(self, metadata, symbols, collection_type, identifier, elements):
+        self.metadata = metadata
+        self.symbols = symbols
+        Child.__init__(self)
+        self.setProp('collection_type', collection_type)
+        self.setProp('identifier', identifier)
+        if isinstance(elements, Range):
+            self.setProp('elements', elements)
+        else:
+            self.setProperties('elements', elements)
+
+    def addSymbol(self):
+        s = self.symbols.current()
+        s[self.identifier] = self.__class__.__name__ 
+
+    def get_collection_type(self):
+        return self.__class__.__name__
+
+    def __repr__(self):
+        return "%s(%s, %s, %s)" % (
+            self.__class__.__name__,
+            str(self.collection_type),
+            str(self.identifier),
+            str(self.elements)
+            )
+
 class In(Term):
     implements(IIn)
     def __repr__(self):
@@ -245,6 +274,23 @@ class Alias(Term):
         rv = self.expression.get_collection_type()
         #print self.expression.name,rv
         return rv
+
+class Range(Term):
+    implements(IRange)
+
+    def __init__(self, metadata, symbols, start, end):
+        self.metadata = metadata
+        self.symbols = symbols
+        Child.__init__(self)
+        self.setProp('start', start)
+        self.setProp('end', end)
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (
+            self.__class__.__name__,
+            str(self.start),
+            str(self.end)
+            )
 
 #
 # Binary operators

@@ -156,3 +156,24 @@ query is still buggy.
     In(Identifier(d), Identifier(IDepartment));
     Eq(Identifier(d), Quanted((Some, ''), Property(Identifier(c), Identifier(runBy)))),
     Property(Identifier(d), Identifier(name))))
+
+    >>> QueryParser("set [ c in ICourse; d in set{1 ... 4}; d == some c.credits | c.code  ]")(None)
+    Head(Query(<type 'set'>,
+    In(Identifier(c), Identifier(ICourse));
+    ConstantSet(<type 'set'>, Identifier(d), Range(Constant(1), Constant(4)));
+    Eq(Identifier(d), Quanted((Some, ''), Property(Identifier(c), Identifier(credits)))),
+    Property(Identifier(c), Identifier(code))))
+
+    >>> QueryParser("set [ c in ICourse; d in set{1, 2}; d == some c.credits | c.code  ]")(None)
+    Head(Query(<type 'set'>,
+    In(Identifier(c), Identifier(ICourse));
+    ConstantSet(<type 'set'>, Identifier(d), [Constant(1), Constant(2)]);
+    Eq(Identifier(d), Quanted((Some, ''), Property(Identifier(c), Identifier(credits)))),
+    Property(Identifier(c), Identifier(code))))
+
+    >>> QueryParser("set [ c in ICourse; d in set{}; d == some c.credits | c.code  ]")(None)
+    Head(Query(<type 'set'>,
+    In(Identifier(c), Identifier(ICourse));
+    ConstantSet(<type 'set'>, Identifier(d), []);
+    Eq(Identifier(d), Quanted((Some, ''), Property(Identifier(c), Identifier(credits)))),
+    Property(Identifier(c), Identifier(code))))

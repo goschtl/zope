@@ -41,8 +41,8 @@ class SymbolContainer:
 tokens = ('SET', 'LIST', 'COMMA', 'NOT_EQUAL', 'UNION', 'AS', 'EVERY',
           'ATMOST', 'LT', 'GT', 'ELLIPSIS', 'BRACKET_R', 'OR', 'PIPE',
           'DOT', 'IN', 'LTE', 'SOME', 'AND', 'CBRACKET_L', 'CONSTANT',
-          'EQUAL', 'GTE', 'ISINSTANCE', 'SEMI_COLON', 'BRACKET_L', 'ASSIGN',
-          'NOT_ASSIGN', 'FOR', 'CBRACKET_R', 'JUST', 'IDENTIFIER', 'DIFFER',
+          'EQUAL', 'GTE', 'ISINSTANCE', 'SEMI_COLON', 'BRACKET_L',
+          'FOR', 'CBRACKET_R', 'JUST', 'IDENTIFIER', 'DIFFER',
           'LEN', 'BAG', 'SBRACKET_L', 'NOT', 'ATLEAST', 'SBRACKET_R', 
           'PLUS', 'MINUS', 'MUL', 'DIV')
 
@@ -231,14 +231,6 @@ class Lexer(object):
         r'\)'
         return t
 
-    def t_ASSIGN(self, t):
-        r'='
-        return t
-
-    def t_NOT_ASSIGN(self, t):
-        r'~='
-        return t
-
     def t_PLUS(self, t):
         r'\+'
         return t
@@ -312,19 +304,12 @@ class Parser(object):
         t[0] = Div(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print 'reducing "expression UNION expression" to "expression"', t[0]
 
-#    def p_expr_3(self, t):
-#        r'''expression : collection SBRACKET_L expression SBRACKET_R
-#        '''
-#        t[0] = Query(self.metadata, self.symbols, t[1], [], t[3])
-#        if DEBUG: print 'reducing "collection SBRACKET_L qualifier PIPE expression SBRACKET_R" to "expression"'
-
     def p_expr_query(self, t):
         r'''expression : collection SBRACKET_L qualifier PIPE expression SBRACKET_R
         '''
         t[0] = Query(self.metadata, self.symbols, t[1], t[3], t[5])
         if DEBUG: print 'reducing "collection SBRACKET_L qualifier PIPE expression SBRACKET_R" to "expression"', t[0]
 
-#TODO add a test
     def p_expr_for_query(self, t):
         r'''expression : collection SBRACKET_L expression FOR qualifier  SBRACKET_R
         '''
@@ -404,12 +389,6 @@ class Parser(object):
         t[0] = t[1]
         if DEBUG: print 'reducing "qualifier SEMI_COLON qualifier" to "qualifier"', t[0]
 
-#    def p_qualifier_6(self, t):
-#        r'''qualifier : expression
-#        '''
-#        t[0] = t[1]
-#        if DEBUG: print 'reducing "expression" to "qualifier"'
-
     def p_generator_in(self, t):
         r'''generator : IDENTIFIER IN expression
         '''
@@ -420,6 +399,18 @@ class Parser(object):
                              t[1]),
                   t[3])
         if DEBUG: print 'reducing "IDENTIFIER IN expression" to "generator"', t[0]
+
+    def p_constantset_in(self, t):
+        r'''generator : IDENTIFIER IN collection CBRACKET_L element_list CBRACKET_R
+        '''
+        t[0] = ConstantSet(self.metadata,
+                  self.symbols,
+                  t[3],
+                  Identifier(self.metadata,
+                             self.symbols,
+                             t[1]),
+                  t[5])
+        if DEBUG: print 'IDENTIFIER IN collection CBRACKET_L element CBRACKET_R', t[0]
 
     def p_filter_and(self, t):
         r'''filter : filter AND filter
@@ -450,18 +441,6 @@ class Parser(object):
         '''
         t[0] = t[2]
         if DEBUG: print 'reducing "BRACKET_L filter BRACKET_R" to "condition"', t[0]
-
-    def p_condition_assign(self, t):
-        r'''condition : quantified ASSIGN quantified
-        '''
-        raise NotImplementedError('assign')
-        if DEBUG: print 'reducing "quantified operator quantified" to "condition"', t[0]
-
-    def p_condition_not_assign(self, t):
-        r'''condition : quantified NOT_ASSIGN quantified
-        '''
-        raise NotImplementedError('not assign')
-        if DEBUG: print 'reducing "quantified operator quantified" to "condition"', t[0]
 
     def p_condition_lt(self, t):
         r'''condition : quantified LT quantified
@@ -556,35 +535,29 @@ class Parser(object):
         t[0] = Constant(self.metadata, self.symbols, t[1])
         if DEBUG: print 'reducing "CONSTANT" to "literal"', t[0]
 
-    def p_literal_element(self, t):
-        r'''literal : collection CBRACKET_L element CBRACKET_R
-        '''
-        raise NotImplementedError('collection set')
-        if DEBUG: print 'reducing "collection CBRACKET_L element CBRACKET_R" to "literal"', t[0]
-
     def p_element_null(self, t):
-        r'''element :
+        r'''element_list :
         '''
-        t[0] = None
+        t[0] = []
         if DEBUG: print 'reducing "" to "element"', t[0]
 
     def p_element_expression(self, t):
-        r'''element : expression
+        r'''element_list : expression
         '''
-        t[0] = t[1]
+        t[0] = [t[1]]
         if DEBUG: print 'reducing "expression" to "element"', t[0]
 
-# Why this raise a shift/reduce conflict
-#    def p_element_comma(self, t):
-#        r'''element : element COMMA element
-#        '''
-#        raise NotImplementedError('element list')
-#        if DEBUG: print 'reducing "element COMMA element" to "element"', t[0]
+    def p_element_element(self, t):
+        r'''element_list : element_list COMMA expression
+        '''
+        t[1].append(t[3])
+        t[0] = t[1]
+        if DEBUG: print 'reducing "qualifier SEMI_COLON qualifier" to "qualifier"', t[0]
 
     def p_element_ellipsis(self, t):
-        r'''element : expression ELLIPSIS expression
+        r'''element_list : expression ELLIPSIS expression
         '''
-        raise NotImplementedError('range')
+        t[0] = Range(self.metadata, self.symbols, t[1], t[3])
         if DEBUG: print 'reducing "expression ELLIPSIS expression" to "element"', t[0]
 
     def p_path_identifier(self, t):

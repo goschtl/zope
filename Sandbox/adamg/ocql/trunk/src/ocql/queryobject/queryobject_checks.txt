@@ -65,6 +65,11 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyObject(IQuery, Query(metadata, symbols, set, [child], child))
     True
 
+    >>> verifyClass(IConstantSet, ConstantSet)
+    True
+    >>> verifyObject(IConstantSet, ConstantSet(metadata, symbols, set, child, [child]))
+    True
+
     >>> verifyClass(IIn, In)
     True
     >>> verifyObject(IIn, In(metadata, symbols, child, child))
@@ -73,6 +78,11 @@ Checks here make sure that Interfaces are properly implemented
     >>> verifyClass(IAlias, Alias)
     True
     >>> verifyObject(IAlias, Alias(metadata, symbols, child, child))
+    True
+
+    >>> verifyClass(IRange, Range)
+    True
+    >>> verifyObject(IRange, Range(metadata, symbols, child, child))
     True
 
     >>> verifyClass(IBinary, Binary)
