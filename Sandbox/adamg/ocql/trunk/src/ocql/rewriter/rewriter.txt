@@ -1,35 +1,96 @@
 
-I'm sorry, but I'm lazy here, in reality we would have to create
-stubs for all ocql.queryobject classes and use those...
-But it's a lot faster to reuse the parser and the existing classes.
+Rewriter
+========
 
+Input: Queryobject tree
+Output: Algebra tree
+
+The task of the rewriter is to convert the Queryobject tree into Algebra tree.
+It converts the human-level query objects to machine level algebra objects.
+
+Samples below use the existing parser to keep the noise at a minimum.
 Add queries first to parser.txt doctest, after they pass there they can be
 added here.
+
+We need some imports for the samples to work:
 
     >>> from ocql.parser.queryparser import QueryParser
     >>> from ocql.qoptimizer.qoptimizer import QueryOptimizer
     >>> from ocql.rewriter.rewriter import Rewriter
 
     >>> from ocql.testing.database import TestMetadata
+    >>> metadata = TestMetadata()
 
+We define this to keep noise down:
 
-    >>> qo = QueryParser("set [ | 1 ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> def make(query):
+    ...     qo = QueryParser(query)(metadata)
+    ...     opt = QueryOptimizer(qo)()
+    ...     alg = Rewriter(opt)()
+    ...     return qo, alg
+
+Let's start with a simple example:
+
+    >>> qo, alg = make("set [ | 1 ]")
+
+'qo' is always the Queryobject tree:
+
+    >>> print str(qo)
+    Head(Query(<type 'set'>, , Constant(1)))
+
+'alg' is always the Algebra tree:
+
     >>> print str(alg)
     Head(Single(<type 'set'>, `1`))
 
-    >>> qo = QueryParser("list [ | 1 ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+The algebra tree is also a real tree as the queryobject tree.
+As seen above it also has the Head element.
+The Head element contains the whole tree:
+
+    >>> alg.tree
+    Single(<type 'set'>, `1`)
+
+All tree elements know about their child elements:
+
+    >>> alg.tree.children
+    [`1`]
+
+And all child elements know about their parents:
+
+    >>> alg.tree.expr.__parent__
+    Single(<type 'set'>, `1`)
+
+They also know their 'name' or 'role':
+
+    >>> alg.tree.expr.__name__
+    'expr'
+
+Though built-in types don't get into the tree:
+(as you might noticed, this is also not in children list)
+
+    >>> alg.tree.klass
+    <type 'set'>
+
+    >>> alg.tree.klass.__parent__
+    Traceback (most recent call last):
+    ...
+    AttributeError: type object 'set' has no attribute '__parent__'
+
+
+Let's continue with more complexity:
+
+    >>> qo, alg = make("list [ | 1 ]")
     >>> print str(alg)
     Head(Single(<type 'list'>, `1`))
 
-    >>> qo = QueryParser("set [ | 1 ] union set [|2]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ | 1 ] union set [|2]")
     >>> print str(alg)
-    Head(Union(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`)))
+    Head(Union(<type 'set'>,
+    Single(<type 'set'>, `1`),
+    Single(<type 'set'>, `2`)))
+
+
+The tree can be walked, this should be a helper function for later:
 
     >>> for i in alg.walk():
     ...     print i
@@ -39,135 +100,130 @@ added here.
     Single(<type 'set'>, `2`)
     `2`
 
-    >>> qo = QueryParser("list [ | 1 ] union list [|2]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
-    >>> print str(alg)
-    Head(Union(<type 'list'>, Single(<type 'list'>, `1`), Single(<type 'list'>, `2`)))
 
-    >>> qo = QueryParser("set [ | 1 ] differ set [|2]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
-    >>> print str(alg)
-    Head(Differ(<type 'set'>, Single(<type 'set'>, `1`), Single(<type 'set'>, `2`)))
 
-    >>> qo = QueryParser("list [ | 1 ] differ list [|2]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("list [ | 1 ] union list [|2]")
     >>> print str(alg)
-    Head(Differ(<type 'list'>, Single(<type 'list'>, `1`), Single(<type 'list'>, `2`)))
+    Head(Union(<type 'list'>,
+    Single(<type 'list'>, `1`),
+    Single(<type 'list'>, `2`)))
 
-    >>> qo = QueryParser("set [ i in ICourse | i ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ | 1 ] differ set [|2]")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Differ(<type 'set'>,
+    Single(<type 'set'>, `1`),
+    Single(<type 'set'>, `2`)))
 
-    >>> qo = QueryParser("list [ i in ICourse | i ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("list [ | 1 ] differ list [|2]")
     >>> print str(alg)
-    Head(Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse)))
+    Head(Differ(<type 'list'>,
+    Single(<type 'list'>, `1`),
+    Single(<type 'list'>, `2`)))
 
-    >>> qo = QueryParser("len(set [ i in ICourse | i ])")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+As we start to access the database, 'Make' comes into the picture:
+
+    >>> qo, alg = make("set [ i in ICourse | i ]")
     >>> print str(alg)
-    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, ICourse))))
+    Head(Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("len(list [ i in ICourse | i ])")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("list [ i in ICourse | i ]")
     >>> print str(alg)
-    Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'list'>, Lambda i: Single(<type 'list'>, i), Make(<type 'list'>, <type 'set'>, ICourse))))
+    Head(Iter(<type 'list'>,
+    Lambda i: Single(<type 'list'>, i),
+    Make(<type 'list'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits > 3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+At the moment 'len' gets expanded to some basic functions.
+
+    >>> qo, alg = make("len(set [ i in ICourse | i ])")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda c: If(c.credits > `3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Reduce(<type 'set'>, `0`,
+    Lambda i: `1`, +, Iter(<type 'set'>,
+    Lambda i: Single(<type 'set'>, i),
+    Make(<type 'set'>, <type 'set'>, ICourse))))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits >= 3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("len(list [ i in ICourse | i ])")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda c: If(c.credits >= `3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Reduce(<type 'set'>, `0`,
+    Lambda i: `1`, +, Iter(<type 'list'>,
+    Lambda i: Single(<type 'list'>, i),
+    Make(<type 'list'>, <type 'set'>, ICourse))))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits < 3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+Let's add some comparisons:
+
+    >>> qo, alg = make("set [ c in ICourse; c.credits > 3 | c.code ]")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda c: If(c.credits < `3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Iter(<type 'set'>,
+    Lambda c: If(c.credits > `3`,
+    Single(<type 'set'>, c.code),
+    Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits <= 3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ c in ICourse; c.credits >= 3 | c.code ]")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda c: If(c.credits <= `3`, Single(<type 'set'>, c.code), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Iter(<type 'set'>,
+    Lambda c: If(c.credits >= `3`, Single(<type 'set'>, c.code),
+    Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ c in ICourse; a as c.code | a ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ c in ICourse; c.credits < 3 | c.code ]")
+    >>> print str(alg)
+    Head(Iter(<type 'set'>,
+    Lambda c: If(c.credits < `3`, Single(<type 'set'>, c.code),
+    Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo, alg = make("set [ c in ICourse; c.credits <= 3 | c.code ]")
+    >>> print str(alg)
+    Head(Iter(<type 'set'>,
+    Lambda c: If(c.credits <= `3`, Single(<type 'set'>, c.code),
+    Empty(<type 'set'>)),
+    Make(<type 'set'>, <type 'set'>, ICourse)))
+
+    >>> qo, alg = make("set [ c in ICourse; a as c.code | a ]")
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.code)), Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ c in ICourse; not ( c.code == 2 or c.code == 3) | c ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ c in ICourse; not ( c.code == 2 or c.code == 3) | c ]")
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: If(Not(<type 'set'>, c.code == `2` or c.code == `3`), Single(<type 'set'>, c), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ s in IStudent; s.major.address.street == 'Hillhead Street' | s ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ s in IStudent; s.major.address.street == 'Hillhead Street' | s ]")
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda s: If(s.major.address.street == `'Hillhead Street'`, Single(<type 'set'>, s), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, IStudent)))
 
-    >>> qo = QueryParser("set [ c in ICourse; c.credits == 2 and c.code == 'C1' | c ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ c in ICourse; c.credits == 2 and c.code == 'C1' | c ]")
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda c: If(c.credits == `2` and c.code == `'C1'`, Single(<type 'set'>, c), Empty(<type 'set'>)), Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) + len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("len ( set [ i in IStaff | i ] ) + len ( set [ j in IVisitingStaff | j ] )")
     >>> print str(alg)
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) +
     Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
 
-    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) - len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("len ( set [ i in IStaff | i ] ) - len ( set [ j in IVisitingStaff | j ] )")
     >>> print str(alg)
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) -
     Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
 
-    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) * len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("len ( set [ i in IStaff | i ] ) * len ( set [ j in IVisitingStaff | j ] )")
     >>> print str(alg)
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) *
     Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
 
-    >>> qo = QueryParser("len ( set [ i in IStaff | i ] ) / len ( set [ j in IVisitingStaff | j ] )")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("len ( set [ i in IStaff | i ] ) / len ( set [ j in IVisitingStaff | j ] )")
     >>> print str(alg)
     Head(Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda i: Single(<type 'set'>, i), Make(<type 'set'>, <type 'set'>, IStaff))) /
     Reduce(<type 'set'>, `0`, Lambda i: `1`, +, Iter(<type 'set'>, Lambda j: Single(<type 'set'>, j), Make(<type 'set'>, <type 'set'>, IVisitingStaff))))
 
-    >>> qo = QueryParser("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")
     >>> print str(alg)
     breaks: where is a>3 Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
     Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.credits)),
     Make(<type 'set'>, <type 'set'>, ICourse)))
 
-    >>> qo = QueryParser("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' | s ]")(TestMetadata())
-    >>> opt = QueryOptimizer(qo)()
-    >>> alg = Rewriter(opt)()
+    >>> qo, alg = make("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' | s ]")
     >>> print str(alg)
     Head(Iter(<type 'set'>, Lambda s:
     Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, s.major.address.street)),

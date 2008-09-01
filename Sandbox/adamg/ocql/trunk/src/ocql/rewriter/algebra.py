@@ -17,7 +17,7 @@ class Head(Location):
     implements(IAlgebraObjectHead)
 
     def __init__(self, tree):
-        name = 'head'
+        __name__ = 'head'
         self.tree = tree
         locate(tree, self, 'tree')
 
