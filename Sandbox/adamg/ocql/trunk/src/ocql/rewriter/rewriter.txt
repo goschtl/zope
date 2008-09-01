@@ -219,12 +219,14 @@ Let's add some comparisons:
 
     >>> qo, alg = make("set [ c in ICourse; a as c.credits; a > 3 | c.code ]")
     >>> print str(alg)
-    breaks: where is a>3 Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
-    Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, c.credits)),
-    Make(<type 'set'>, <type 'set'>, ICourse)))
+    Head(Iter(<type 'set'>, Lambda c: Iter(<type 'set'>,
+    Lambda a: If(a > `3`, Single(<type 'set'>, c.code),
+    Empty(<type 'set'>)), Single(<type 'set'>, c.credits)), Make(<type 'set'>,
+    <type 'set'>, ICourse)))
 
     >>> qo, alg = make("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' | s ]")
     >>> print str(alg)
-    Head(Iter(<type 'set'>, Lambda s:
-    Iter(<type 'set'>, Lambda a: Single(<type 'set'>, a), Single(<type 'set'>, s.major.address.street)),
+    Head(Iter(<type 'set'>, Lambda s: Iter(<type 'set'>,
+    Lambda a: If(a == `'Hillhead Street'`, Single(<type 'set'>, s),
+    Empty(<type 'set'>)), Single(<type 'set'>, s.major.address.street)),
     Make(<type 'set'>, <type 'set'>, IStudent)))
