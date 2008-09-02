@@ -19,11 +19,19 @@ For these examples, we'll add a log handler that outputs to standard out.
     >>> logger.setLevel(logging.INFO)
     >>> logger.addHandler(stdout_handler)
 
+
+Server Startup
+==============
+
 There is an event handler to log when the Z server starts.
 
     >>> zc.zservertracelog.tracelog.started(
     ...     zope.app.appsetup.interfaces.ProcessStarting())
     S 0 2008-08-26T11:55:00
+
+
+Tracing Applications
+====================
 
 The tracelog machinery is implemented as a WSGI layer, so we'll pass a fake
 WSGI application to tracelog for these examples.
@@ -58,6 +66,9 @@ Process a simple request.
     A 23423600 2008-08-27T10:54:08 200 ?
     E 23423600 2008-08-27T10:54:08
 
+
+Application Errors
+==================
 
 The tracelog will also log application errors.  To show this, we'll set up
 our test application to raise an error when called.
