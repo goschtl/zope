@@ -525,6 +525,7 @@ config_defaults = {
     'verbose': True, # log output
     'log_filename': default_logfile,
     'external_links': False, # experimental external link resolve and download
+    'follow_external_index_pages' : False, # experimental
 }
 
 
@@ -569,6 +570,8 @@ def run(args=None):
                       default=False, help='create indexes only (no mirroring)')
     parser.add_option('-e', '--follow-external-links', dest='external_links', action='store_true',
                       default=False, help='Follow and download external links)')
+    parser.add_option('-x', '--follow-external-index-pages', dest='follow_external_index_pages', action='store_true',
+                      default=False, help='Follow external index pages and scan for links')
     options, args = parser.parse_args()
     if len(args) != 1:
         parser.error("No configuration file specified")
@@ -584,6 +587,7 @@ def run(args=None):
     create_indexes = config["create_indexes"] in ("True", "1")
     verbose = config["verbose"] in ("True", "1") or options.verbose
     external_links = config["external_links"] in ("True", "1") or options.external_links
+    follow_external_index_pages = config["follow_external_index_pages"] in ("True", "1") or options.follow_external_index_pages
     log_filename = config['log_filename']
     if options.log_filename:
         log_filename = options.log_filename
