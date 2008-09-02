@@ -325,9 +325,6 @@ class Mirror:
         stats = Stats()
         full_list = []
         for package_name in package_list:
-            if not package_name.lower() == 'feedparser':
-                continue
-            import pdb; pdb.set_trace() 
             try:
                 package = Package(package_name)
             except PackageError, v:
