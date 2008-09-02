@@ -157,8 +157,10 @@ class Package:
             if link.renderContents().endswith("download_url"):
                 # we have a download_url!! Yeah.
                 url = link.get("href")
-                if not url: continue
+                if not url: 
+                    continue
                 download_links.add(url)
+
         for link in download_links:
             # check if the link points directly to a file
             # and get it if it matches filename_matches
@@ -321,7 +323,15 @@ class Mirror:
         fp.write(footer)
         fp.close()
 
-    def mirror(self, package_list, filename_matches, verbose, cleanup, create_indexes, external_links, base_url):
+    def mirror(self, 
+               package_list, 
+               filename_matches, 
+               verbose, 
+               cleanup, 
+               create_indexes, 
+               external_links, 
+               follow_external_index_pages, 
+               base_url):
         stats = Stats()
         full_list = []
         for package_name in package_list:
@@ -607,5 +617,6 @@ def run(args=None):
                       cleanup, 
                       create_indexes, 
                       external_links, 
+                      follow_external_index_pages,
                       config["base_url"])
 
