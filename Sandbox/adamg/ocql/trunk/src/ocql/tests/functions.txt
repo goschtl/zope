@@ -130,19 +130,19 @@ Sample from the presentation:
 
 Sample from the presentation:
     >>> engine.compile("set [ c in ICourse; a as c.credits; a < 2 | a ]").execute()
-    set([Course <C2>], Course <C3>])
+    set([])
 
 Sample from the presentation:
-    >>> engine.compile("set [ c in ICourse; a as c.credits; a > 2 | c ]").execute()
-    set([Course <C2>], Course <C3>])
+    >>> sorted(engine.compile("set [ c in ICourse; a as c.credits; a > 2 | c ]").execute())
+    [Course <C2>, Course <C3>]
 
 Sample from the presentation:
     >>> engine.compile("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' | s ]").execute()
-    Student2
+    set([Student <St2>])
 
 Sample from the presentation:
     >>> engine.compile("set [ s in IStudent; a as s.major.address.street; a=='Hillhead Street' or a=='Gibson Street' | s ]").execute()
-    Student1, Student2
+    set([Student <St1>, Student <St2>])
 
 More test ideas:
 engine.compile("""list [ d in IDepartment; c in ICourse; d == some c.runBy | list {d.name, c}  ]""").execute()

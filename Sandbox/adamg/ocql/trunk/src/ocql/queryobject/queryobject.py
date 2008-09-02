@@ -220,13 +220,6 @@ class ConstantSet(Term):
         else:
             self.setProperties('elements', elements)
 
-    def addSymbol(self):
-        s = self.symbols.current()
-        s[self.identifier] = self.__class__.__name__ 
-
-    def get_collection_type(self):
-        return self.__class__.__name__
-
     def __repr__(self):
         return "%s(%s, %s, %s)" % (
             self.__class__.__name__,

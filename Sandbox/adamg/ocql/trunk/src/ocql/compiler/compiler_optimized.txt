@@ -62,7 +62,7 @@ property.
     >>> run
     RunnableQuery:
     reduce(set.union,
-    map(lambda i: ((i.value==5) and (set([i.name])) or (set())),
+    map(lambda i: ((i.value == 5) and (set([i.name])) or (set())),
     set(metadata.getAll("IUnOptimizedClass"))), set())
 
 Results of the query:

@@ -229,7 +229,7 @@ class BinaryCompiler(BaseCompiler):
     adapts(IBinary)
 
     def __call__(self):
-        return '%s%s%s' % (
+        return '%s %s %s' % (
             compile(self.context.left),
             self.context.op.op,
             compile(self.context.right))

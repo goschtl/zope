@@ -83,7 +83,7 @@ class IConstantSet(ITerm):
     """
     collection_type = Attribute('collection type')
     identifier = Attribute('identifier')
-    terms = Attribute('terms')
+    elements = Attribute('elements')
 
 class IIn(ITerm):
     """Objects providing this interface represent the
@@ -99,7 +99,6 @@ class IRange(ITerm):
     """Objects providing this interface represent the
     Range Query object
     """
-    collection = Attribute('collection type')
     start = Attribute('range start point')
     end = Attribute('range end point')
 
