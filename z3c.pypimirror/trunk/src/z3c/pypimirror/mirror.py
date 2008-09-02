@@ -129,7 +129,7 @@ class Package:
                 raise PackageError("Package not available (404): %s" % self.url())
             raise PackageError("Package not available (unknown reason): %s" % self.url())
         except urllib2.URLError, v:
-            raise PackageError("URL Error: %s " % url)
+            raise PackageError("URL Error: %s " % self.url())
         return html
 
     def _fetch_links(self, html):
@@ -323,6 +323,9 @@ class Mirror:
         stats = Stats()
         full_list = []
         for package_name in package_list:
+            if not package_name.lower() == 'feedparser':
+                continue
+            import pdb; pdb.set_trace() 
             try:
                 package = Package(package_name)
             except PackageError, v:
