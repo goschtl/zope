@@ -41,5 +41,10 @@ verbose = True
 # This is highly experimental and shouldn't be used right now.
 external_links = False
 
+# similar to 'external_links' but also follows an index page if no
+# download links are available on the referenced download_url page
+# of a given package.
+follow_external_index_pages = False
+
 # logfile 
 log_filename = /tmp/pypimirror.log
