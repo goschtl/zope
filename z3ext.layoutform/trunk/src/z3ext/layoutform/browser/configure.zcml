@@ -52,6 +52,11 @@
      for="z3c.form.interfaces.ISubForm"
      layer="..interfaces.ILayoutFormLayer" />
 
+  <z3c:template
+     template="formgroup.pt"
+     for="z3c.form.group.Group"
+     layer="..interfaces.ILayoutFormLayer" />
+
   <!-- Error View -->
   <z3c:template
      for="z3c.form.interfaces.IErrorViewSnippet"
@@ -66,21 +71,21 @@
      layer="..interfaces.ILayoutFormLayer" />
 
   <z3c:macro
-     view="..interfaces.IPageletForm"
+     view="z3c.form.interfaces.IForm"
      name="form-header"
      macro="header"
      template="form.pt"
      layer="..interfaces.ILayoutFormLayer" />
 
   <z3c:macro
-     view="..interfaces.IPageletForm"
+     view="z3c.form.interfaces.IForm"
      name="widget-rows"
      macro="widget-rows"
      template="form.pt"
      layer="..interfaces.ILayoutFormLayer" />
 
   <z3c:macro
-     view="..interfaces.IPageletForm"
+     view="z3c.form.interfaces.IForm"
      name="widget-row"
      macro="widget-row"
      template="form.pt"

@@ -1,0 +1,8 @@
+<fieldset>
+  <legend tal:content="view/label"></legend>
+  <div class="pageDescription" tal:content="view/description|nothing"></div>
+
+  <tal:block tal:repeat="widget view/widgets/values">
+    <metal:block use-macro="macro:widget-row" />
+  </tal:block>
+</fieldset>
