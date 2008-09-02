@@ -29,6 +29,23 @@ checker = zope.testing.renormalizing.RENormalizing([
     ])
 
 
+_null_app = lambda environ, start_response: None
+
+
+class FauxApplication(object):
+    """Fake WSGI application.  Doesn't need to do much!"""
+
+    app_hook = None
+
+    def __call__(self, environ, start_response):
+        app = self.app_hook or _null_app
+        return app(environ, start_response)
+
+
+def setUp(test):
+    test.globs['FauxApplication'] = FauxApplication
+
+
 def test_suite():
     return unittest.TestSuite([
         doctest.DocFileTest(
@@ -38,5 +55,6 @@ def test_suite():
                 | doctest.ELLIPSIS
                 | doctest.INTERPRET_FOOTNOTES),
             checker=checker,
+            setUp=setUp,
             ),
         ])

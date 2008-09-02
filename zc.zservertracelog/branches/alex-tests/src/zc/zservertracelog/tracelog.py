@@ -77,8 +77,7 @@ class Server(wsgihttpserver.WSGIHTTPServer):
             logger.info("E %s %s", id(task.channel), now())
             raise
         else:
-            accumulated_headers = (
-                getattr(task, 'accumulated_headers', ()) or ())
+            accumulated_headers = getattr(task, 'accumulated_headers') or ()
             length = [h.split(': ')[1].strip()
                       for h in accumulated_headers
                       if h.lower().startswith('content-length: ')]

@@ -25,18 +25,17 @@ There is an event handler to log when the Z server starts.
     ...     zope.app.appsetup.interfaces.ProcessStarting())
     S 0 2008-08-26T11:55:00
 
-The tracelog machinery is implemented as a WSGI layer, so we'll define a fake
-WSGI application for tracelog to use.
+The tracelog machinery is implemented as a WSGI layer, so we'll pass a fake
+WSGI application to tracelog for these examples.
 
-    >>> def faux_application(environ, start_response):
-    ...     """Fake WSGI application.  Doesn't need to do much!"""
+    >>> faux_app = FauxApplication()
 
 Now, let's create an instance of the tracelog server.
 
     >>> addr, port = '127.0.0.1', 12345
 
     >>> trace_server = zc.zservertracelog.tracelog.Server(
-    ...     faux_application, None, addr, port)
+    ...     faux_app, None, addr, port)
 
 Let's also define a convenience function for processing requests.
 
@@ -47,14 +46,41 @@ Let's also define a convenience function for processing requests.
 Process a simple request.
 
     >>> req1 = """\
-    ... GET / HTTP/1.1
+    ... GET /test-req1 HTTP/1.1
     ... Host: www.example.com
     ...
     ... """
 
     >>> invokeRequest(req1)
-    B 23423600 2008-08-27T10:54:08 GET /
+    B 23423600 2008-08-27T10:54:08 GET /test-req1
     I 23423600 2008-08-27T10:54:08 0
     C 23423600 2008-08-27T10:54:08
     A 23423600 2008-08-27T10:54:08 200 ?
     E 23423600 2008-08-27T10:54:08
+
+
+The tracelog will also log application errors.  To show this, we'll set up
+our test application to raise an error when called.
+
+    >>> def test_failure(*args, **kwargs):
+    ...     raise Exception('oh noes!')
+    >>> faux_app.app_hook = test_failure
+
+We can see that all trace points were hit and that the error was written to
+the log.
+
+    >>> try:
+    ...     invokeRequest(req1)
+    ... except:
+    ...     pass
+    B 21663984 2008-09-02T11:19:26 GET /test-req1
+    I 21663984 2008-09-02T11:19:26 0
+    C 21663984 2008-09-02T11:19:26
+    A 21663984 2008-09-02T11:19:26 Error: oh noes!
+    E 21663984 2008-09-02T11:19:26
+
+
+TODO
+====
+
+  * show a task write exception
