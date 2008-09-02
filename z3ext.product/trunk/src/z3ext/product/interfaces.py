@@ -41,12 +41,18 @@ class ProductWarningError(ProductError):
     """ dependencies error """
 
 
+class RequiredProductNotFound(ProductError):
+    """ """
+
+
 class IProduct(interface.Interface):
     """ product information """
 
     __product_name__ = schema.TextLine(
         title = u'Product name',
         required = True)
+
+    __required__ = interface.Attribute(u'Required products.')
 
     __installed__ = interface.Attribute(u'Is product installed.')
 

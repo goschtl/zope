@@ -37,12 +37,18 @@ class IProductDirective(IConfigletDirective):
         default = False,
         required = False)
 
+    required = fields.Tokens(
+        title = u'Required',
+        value_type = schema.TextLine(),
+        required = False)
+
 
 class ProductDirective(ConfigletDirective):
 
     def __init__(self, _context, name, schema, title,
                  description='', class_=None, provides=(),
-                 permission='z3ext.ManageProducts', tests=(), configurable=False):
+                 permission='z3ext.ManageProducts', tests=(),
+                 configurable=False, required = ()):
 
         if '.' not in name:
             product_class = Product
@@ -74,6 +80,7 @@ class ProductDirective(ConfigletDirective):
             _context, name, schema, title,
             description, class_, provides, permission, tests)
 
+        self._class.__required__ = required
         self._class.__product_name__ = productName
 
         if configurable:

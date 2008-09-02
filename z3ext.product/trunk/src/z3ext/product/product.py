@@ -41,7 +41,29 @@ class Product(object):
         registry = getattr(z3ext.product, self.__product_name__)
         return registry in sm.__bases__
 
+    def _checkRequiredInstall(self):
+        for productId in self.__required__:
+            product = queryUtility(IProduct, productId)
+            if product is None:
+                raise interfaces.RequiredProductNotFound(
+                    _('Required product is not found.'))
+            if not product.__installed__:
+                product.install()
+
+    def _checkRequiredUpdate(self):
+        for productId in self.__required__:
+            product = queryUtility(IProduct, productId)
+            if product is None:
+                raise interfaces.RequiredProductNotFound(
+                    _('Required product is not found.'))
+            if not product.__installed__:
+                product.install()
+            else:
+                product.update()
+
     def install(self):
+        self._checkRequiredInstall()
+        
         if self.__installed__:
             raise interfaces.ProductAlreadyInstalledError(
                 _('Product already installed.'))
@@ -63,6 +85,8 @@ class Product(object):
         configure(self, {})
         event.notify(
             interfaces.ProductUpdatedEvent(self.__product_name__, self))
+
+        self._checkRequiredUpdate()
 
     def uninstall(self):
         for name, ext in self.items():
