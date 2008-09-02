@@ -94,7 +94,7 @@ class ExtendedGrantInfo(object):
         if parent is None:
             for principal, setting in globalPrincipalsForRole(role):
                 if principal not in principals:
-                    principal[role] = setting
+                    principals[principal] = setting
         else:
             info = IExtendedGrantInfo(parent)
             for principal, setting in info.getPrincipalsForRole(role):

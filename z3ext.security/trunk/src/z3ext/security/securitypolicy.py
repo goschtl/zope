@@ -123,7 +123,6 @@ class SecurityPolicy(ZopeSecurityPolicy):
 
         cache_principal_roles[principal] = roles
         return roles
-
         
     def cached_prinper(self, parent, principal, groups, permission):
         # Compute the permission, if any, for the principal.
@@ -175,9 +174,8 @@ class SecurityPolicy(ZopeSecurityPolicy):
         if permission in cache_decision_prin:
             return cache_decision_prin[permission]
 
-        # cache_decision_prin[permission] is the cached decision for a
-        # principal and permission.
-            
+        # cache_decision_prin[permission] is the cached
+        # decision for a principal and permission.
         decision = self.cached_prinper(parent, principal, groups, permission)
         if (decision is None) and groups:
             decision = self._group_based_cashed_prinper(

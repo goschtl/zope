@@ -24,13 +24,19 @@ initialization:
    ...   pass
 
    >>> class Ob:
-   ...    __parent__ = None
-   ...    zope.interface.implements(IAttributeAnnotatable, IMyObject)
+   ...     __name__ = u''
+   ...     __parent__ = None
+   ...     zope.interface.implements(IAttributeAnnotatable, IMyObject)
+   ...     
+   ...     def __init__(self, name):
+   ...         self.__name__ = name
+   ...     def __repr__(self):
+   ...         return '<Ob "%s">'%self.__name__
 
-   >>> ob1 = Ob()
-   >>> ob2 = Ob()
-   >>> ob3 = Ob()
-   >>> ob4 = Ob()
+   >>> ob1 = Ob('ob1')
+   >>> ob2 = Ob('ob2')
+   >>> ob3 = Ob('ob3')
+   >>> ob4 = Ob('ob4')
 
 Let's build parents dependencies: ob1->ob2->ob3, ob1->ob4
 
@@ -90,27 +96,30 @@ on ob2 so ob3 should have allow for P1 permission on role role3
 getRolesForPrincipal
 --------------------
 
+   >>> from zope.securitypolicy.principalrole import principalRoleManager
+   >>> principalRoleManager.assignRoleToPrincipal('role10', 'bob', False)
+
    >>> grantinfo = IExtendedGrantInfo(ob3)
    >>> grantinfo.getRolesForPrincipal('bob')
-   []
+   [('role10', PermissionSetting: Allow)]
 
    >>> prinrole  = interfaces.IPrincipalRoleManager(ob3)
    >>> prinrole.assignRoleToPrincipal('role1', 'bob')
 
    >>> grantinfo.getRolesForPrincipal('bob')
-   [('role1', PermissionSetting: Allow)]
+   [('role1', PermissionSetting: Allow), ('role10', PermissionSetting: Allow)]
 
    >>> prinrole  = interfaces.IPrincipalRoleManager(ob2)
    >>> prinrole.assignRoleToPrincipal('role2', 'bob')
 
    >>> grantinfo.getRolesForPrincipal('bob')
-   [('role1', PermissionSetting: Allow), ('role2', PermissionSetting: Allow)]
+   [('role1', PermissionSetting: Allow), ('role10', PermissionSetting: Allow), ('role2', PermissionSetting: Allow)]
 
    >>> prinrole  = interfaces.IPrincipalRoleManager(ob1)
    >>> prinrole.assignRoleToPrincipal('role3', 'bob')
 
    >>> grantinfo.getRolesForPrincipal('bob')
-   [('role1', PermissionSetting: Allow), ('role3', PermissionSetting: Allow), ('role2', PermissionSetting: Allow)]
+   [('role1', PermissionSetting: Allow), ('role10', PermissionSetting: Allow), ('role3', PermissionSetting: Allow), ('role2', PermissionSetting: Allow)]
 
 role3 role allowed for principal 'bob' on ob1, we can deny this role on object ob2
 and on ob3 role3 should be denied
@@ -119,18 +128,20 @@ and on ob3 role3 should be denied
    >>> prinrole.removeRoleFromPrincipal('role3', 'bob')
 
    >>> grantinfo.getRolesForPrincipal('bob')
-   [('role1', PermissionSetting: Allow), ('role3', PermissionSetting: Deny), ('role2', PermissionSetting: Allow)]
+   [('role1', PermissionSetting: Allow), ('role10', PermissionSetting: Allow), ('role3', PermissionSetting: Deny), ('role2', PermissionSetting: Allow)]
 
 
 getPrincipalsForRole
 --------------------
+
+   >>> principalRoleManager.assignRoleToPrincipal('role1', 'bob2', False)
 
 This is new method in extended version, it usefull when we need get all
 principals that have role, for example for cataloging.
 
    >>> grantinfo = IExtendedGrantInfo(ob3)
    >>> grantinfo.getPrincipalsForRole('role1')
-   [('bob', PermissionSetting: Allow)]
+   [('bob', PermissionSetting: Allow), ('bob2', PermissionSetting: Allow)]
 
 We can get info about other principals with same role
 
@@ -138,4 +149,4 @@ We can get info about other principals with same role
    >>> prinrole.assignRoleToPrincipal('role1', 'bob1')
 
    >>> grantinfo.getPrincipalsForRole('role1')
-   [('bob', PermissionSetting: Allow), ('bob1', PermissionSetting: Allow)]
+   [('bob', PermissionSetting: Allow), ('bob2', PermissionSetting: Allow), ('bob1', PermissionSetting: Allow)]
