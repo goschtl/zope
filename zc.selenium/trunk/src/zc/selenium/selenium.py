@@ -44,7 +44,7 @@ def run_zope(config, port):
 
 def make_wsgi_run_zope(app_path):
     module, name = app_path.rsplit('.', 1)
-    app_factory = getattr(__import__(module, globals(), locals(), [1]), name)
+    app_factory = getattr(__import__(module, globals(), locals(), ["extra"]), name)
     def run_zope(config, port):
         server = wsgiref.simple_server.make_server(
             '0.0.0.0', int(port), app_factory(config))

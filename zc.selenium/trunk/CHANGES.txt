@@ -14,8 +14,9 @@ CHANGES
 
 - Bug: Added documentation on how to setup `zc.selenium`.
 
-- First public release.
+- Bug: Allow wsgi option to work with python 2.5
 
+- First public release.
 
 1.0.0 (200?-??-??)
 ------------------
