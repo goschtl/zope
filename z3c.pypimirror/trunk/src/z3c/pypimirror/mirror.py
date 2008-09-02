@@ -130,6 +130,8 @@ class Package:
             raise PackageError("Package not available (unknown reason): %s" % self.url())
         except urllib2.URLError, v:
             raise PackageError("URL Error: %s " % self.url())
+        except Exception, e:
+            raise PackageError('Generic error: %s' % e)
         return html
 
     def _fetch_links(self, html):
