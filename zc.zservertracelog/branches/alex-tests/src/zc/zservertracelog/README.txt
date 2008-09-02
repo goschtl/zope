@@ -73,12 +73,12 @@ Application Errors
 The tracelog will also log application errors.  To show this, we'll set up
 our test application to raise an error when called.
 
-    >>> def test_failure(*args, **kwargs):
+    >>> def app_failure(*args, **kwargs):
     ...     raise Exception('oh noes!')
-    >>> faux_app.app_hook = test_failure
+    >>> faux_app.app_hook = app_failure
 
-We can see that all trace points were hit and that the error was written to
-the log.
+Invoking the request produces log entries for every trace point, and the
+application error is written to the *Application End (A)* trace entry.
 
     >>> try:
     ...     invokeRequest(req1)
@@ -91,7 +91,26 @@ the log.
     E 21663984 2008-09-02T11:19:26
 
 
-TODO
-====
+Response Errors
+===============
 
-  * show a task write exception
+The tracelog also handles errors that can be generated when writing to the
+response.  To show this, we'll set up our test application to return a
+response that produces an error when written to.
+
+    >>> def response_of_wrong_type(*args, **kwargs):
+    ...     return object()
+    >>> faux_app.app_hook = response_of_wrong_type
+
+Invoking the request produces log entries for every trace point, and the
+error is written to the *Request End (E)* trace entry.
+
+    >>> try:
+    ...     invokeRequest(req1)
+    ... except:
+    ...     pass
+    B 21651664 2008-09-02T13:59:02 GET /test-req1
+    I 21651664 2008-09-02T13:59:02 0
+    C 21651664 2008-09-02T13:59:02
+    A 21651664 2008-09-02T13:59:02 200 ?
+    E 21651664 2008-09-02T13:59:02 Error: iteration over non-sequence
