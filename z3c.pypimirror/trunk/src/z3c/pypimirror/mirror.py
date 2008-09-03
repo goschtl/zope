@@ -201,8 +201,16 @@ class Package:
 
                         real_download_link = urllib.basejoin(site.url, real_download_link)
                         if not filename_matches or self.matches(real_download_link, filename_matches):
+
                             # we're not interested in dev packages
                             if not dev_package_regex.search(real_download_link):
+
+                                # Consider only download links that starts with
+                                # the current package name
+                                filename = urlparse.urlsplit(real_download_link)[2].split('/')[-1]
+                                if not filename.startswith(self.name):
+                                    continue
+
                                 candidates.append(real_download_link)
 
                     def sort_candidates(url1, url2):
@@ -211,8 +219,8 @@ class Package:
                         parts2 = urlparse.urlsplit(url2)[2].split('/')[-1]
                         return cmp(parse_version(parts1), parse_version(parts2))
 
+                    # and return the 20 latest files
                     candidates.sort(sort_candidates)
-                    # and return the 10 latest files
                     for c in candidates[-20:][::-1]:
                         yield c
 
@@ -383,6 +391,9 @@ class Mirror:
         stats = Stats()
         full_list = []
         for package_name in package_list:
+
+            LOG.debug('Processing package %s' % package_name)
+
             try:
                 package = Package(package_name)
             except PackageError, v:
