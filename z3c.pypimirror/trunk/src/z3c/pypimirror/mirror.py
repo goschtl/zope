@@ -181,7 +181,12 @@ class Package:
                 # This is extremely unreliable and therefore commented out.
 
                 if follow_external_index_pages:
-                    site = urllib2.urlopen(link)
+                    try:
+                        site = urllib2.urlopen(link)
+                    except Exception, e:
+                        LOG.warn('Unload downloading %s (%s)' % (link, e))
+                        continue
+
                     if site.headers.type != "text/html":
                         continue
 
