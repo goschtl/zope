@@ -287,16 +287,17 @@ class Package:
         # First try to determine the content-length through
         # HEAD request in order to save bandwidth
 
-        parts = urlparse.urlsplit(link)
-        c = httplib.HTTPConnection(parts[1])
-        c.request('HEAD', parts[2])
-        response = c.getresponse()
-        ct = response.getheader('content-length')
-        if ct is not None:
-            ct = long(ct)
-            return ct
-
-        LOG.warn('Could not obtain content-length through a HEAD request from %s' % link)
+        try:
+            parts = urlparse.urlsplit(link)
+            c = httplib.HTTPConnection(parts[1])
+            c.request('HEAD', parts[2])
+            response = c.getresponse()
+            ct = response.getheader('content-length')
+            if ct is not None:
+                ct = long(ct)
+                return ct
+        except Exception, e:
+            LOG.warn('Could not obtain content-length through a HEAD request from %s (%s)' % (link, e))
 
         try:
             return long(urllib2.urlopen(link).headers.get("content-length"))
