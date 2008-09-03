@@ -6,6 +6,10 @@ Change history
 
 - added highly experimental follow_external_index_pages option
   in order to deal with external in a better way
+- fetching external download files only if they match the
+  current package name
+- some more logging
+- using TimedRotatingFileHandler for logging (rotating after one day)
 
 0.2.7 (2008-09-02)
 ------------------
