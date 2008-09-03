@@ -28,7 +28,7 @@ class Model(SimpleItem):
     interface.implements(IAttributeAnnotatable, IContext)
 
 
-class View(grokcore.view.View, Acquisition.Implicit):
+class View(grokcore.view.View, Acquisition.Explicit):
 
     def __init__(self, *args):
         super(View, self).__init__(*args)
@@ -37,6 +37,10 @@ class View(grokcore.view.View, Acquisition.Implicit):
             # otherwise you will not be able to compute URL for
             # resources.
             self.static = self.static.__of__(self)
+
+    # We let getPhysicalPath to be acquired. This make static URL's
+    # work, and prevent us to inherit from Acquisition.Implicit
+    getPhysicalPath = Acquisition.Acquired
 
 
 # TODO: This should probably move to Products.Five.browser
