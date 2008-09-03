@@ -1,3 +1,5 @@
+
+import re
 import os
 import xmlrpclib
 import sys
@@ -11,6 +13,8 @@ import optparse
 import zc.lockfile
 import socket
 import tempfile
+import urlparse
+from pkg_resources import parse_version
 from BeautifulSoup import BeautifulSoup
 from glob import fnmatch
 from md5 import md5
@@ -21,6 +25,8 @@ timeout = 10
 socket.setdefaulttimeout(timeout)
 
 LOG = None
+
+dev_package_regex = re.compile(r'\ddev[-_]')
 
 class Stats:
     """ This is just for statistics """
@@ -145,11 +151,11 @@ class Package:
 
     def _links_external(self, html, filename_matches=None, follow_external_index_pages=False):
         """ pypi has external "download_url"s. We try to get anything
-        from there too. This is really ugly and I'm not sure if there's
-        a sane way.
-        The download_url directs either to a website which contains many
-        download links or directly to a package.
+            from there too. This is really ugly and I'm not sure if there's
+            a sane way.  The download_url directs either to a website which
+            contains many download links or directly to a package.
         """
+
         download_links = set()
         soup = BeautifulSoup(html)
         links = soup.findAll("a")
@@ -169,24 +175,40 @@ class Package:
                 if self.matches(link, filename_matches):
                     yield link
                     continue
+
                 # fetch what is behind the link and see if it's html.
                 # If it is html, download anything from there.
                 # This is extremely unreliable and therefore commented out.
-                import pdb; pdb.set_trace() 
-                site = urllib2.urlopen(link)
-                if site.headers.type != "text/html":
-                    continue
 
-                # we have a valid html page now. Parse links and download them.
-                # They have mostly no md5 hash.
-                html = site.read()
-                real_download_links = self._fetch_links(html)
-                for real_download_link in real_download_links:
-                    # build absolute links
-                    real_download_link = urllib.basejoin(site.url, real_download_link)
-                    if not filename_matches or self.matches(real_download_link, filename_matches):
-                        yield(real_download_link)
-            
+                if follow_external_index_pages:
+                    site = urllib2.urlopen(link)
+                    if site.headers.type != "text/html":
+                        continue
+
+                    # we have a valid html page now. Parse links and download them.
+                    # They have mostly no md5 hash.
+                    html = site.read()
+                    real_download_links = self._fetch_links(html)
+                    candidates = list()
+                    for real_download_link in real_download_links:
+                        # build absolute links
+
+                        real_download_link = urllib.basejoin(site.url, real_download_link)
+                        if not filename_matches or self.matches(real_download_link, filename_matches):
+                            # we're not interested in dev packages
+                            if not dev_package_regex.search(real_download_link):
+                                candidates.append(real_download_link)
+
+                    def sort_candidates(url1, url2):
+                        """ Sort all download links by package version """
+                        parts1 = urlparse.urlsplit(url1)[2].split('/')[-1]
+                        parts2 = urlparse.urlsplit(url2)[2].split('/')[-1]
+                        return cmp(parse_version(parts1), parse_version(parts2))
+
+                    # and return the 10 latest files
+                    for c in candidates[-10:]:
+                        yield c
+
 
     def _links(self, filename_matches=None, external_links=False, follow_external_index_pages=False):
         """ This is an iterator which returns useful links on files for
