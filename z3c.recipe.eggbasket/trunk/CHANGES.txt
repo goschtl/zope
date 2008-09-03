@@ -1,7 +1,10 @@
 0.4.0 (unreleased)
 ==================
 
-* ...
+* When installing the requirements from the tarball, we now look in
+  the default index (python cheese shop usually) when the requirements
+  can not be met by only the tarball.  This should not happen, but it
+  does.  [maurits]
 
 0.3.1 (2008-07-13)
 ==================

@@ -8,15 +8,30 @@ import tempfile
 import urllib
 
 
-def install_distributions(distributions, target_dir, links=[]):
+def install_distributions(distributions, target_dir, links=[],
+                          use_empty_index=False):
+    """Install distributions.
+
+    Distributions is a list of requirements, e.g. ['grok==0.13']
+
+    When use_empty_index is True we only try to install the required
+    distributions by using the supplied links.  We do not use the
+    python cheese shop index then.
+
+    """
     from zc.buildout.easy_install import install
     from zc.buildout.easy_install import MissingDistribution
     try:
         empty_index = tempfile.mkdtemp()
+        if use_empty_index:
+            index = 'file://' + empty_index
+        else:
+            # Use the default index (python cheese shop)
+            index = None
 
         try:
             install(distributions, target_dir, newest=False,
-                    links=links, index='file://' + empty_index)
+                    links=links, index=index)
         except MissingDistribution:
             return False
         else:
@@ -31,7 +46,7 @@ def distributions_are_installed_in_dir(distributions, target_dir):
     # letting easy_install only look inside that same target dir while
     # doing that.
     result = install_distributions(distributions, target_dir,
-                                   links=[target_dir])
+                                   links=[target_dir], use_empty_index=True)
     return result
 
 
