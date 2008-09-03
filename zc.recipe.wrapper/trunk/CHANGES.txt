@@ -1,0 +1,13 @@
+CHANGES
+=======
+
+1.0.0 (2008-09-03)
+------------------
+
+- First Open Source release.
+
+
+1.0.0a1 (2008-08-28)
+--------------------
+
+- First internal release
