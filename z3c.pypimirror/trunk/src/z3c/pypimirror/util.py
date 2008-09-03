@@ -1,3 +1,10 @@
+################################################################
+# z3c.pypimirror - A PyPI mirroring solution
+# Written by Daniel Kraft, Josip Delic, Gottfried Ganssauge and
+# Andreas Jung
+#
+# Published under the Zope Public License 2.1
+################################################################
 
 
 def isASCII(s):
