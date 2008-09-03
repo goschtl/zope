@@ -1,6 +1,12 @@
 Change history
 ~~~~~~~~~~~~~~
 
+0.2.8 (2008-09-03)
+------------------
+
+- added highly experimental follow_external_index_pages option
+  in order to deal with external in a better way
+
 0.2.7 (2008-09-02)
 ------------------
 

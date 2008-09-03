@@ -143,7 +143,7 @@ class Package:
                 links.append(href)
         return links
 
-    def _links_external(self, html, filename_matches=None):
+    def _links_external(self, html, filename_matches=None, follow_external_index_pages=False):
         """ pypi has external "download_url"s. We try to get anything
         from there too. This is really ugly and I'm not sure if there's
         a sane way.
@@ -157,13 +157,14 @@ class Package:
             if link.renderContents().endswith("download_url"):
                 # we have a download_url!! Yeah.
                 url = link.get("href")
-                if not url: 
+                if not url:
                     continue
                 download_links.add(url)
 
         for link in download_links:
             # check if the link points directly to a file
             # and get it if it matches filename_matches
+
             if filename_matches:
                 if self.matches(link, filename_matches):
                     yield link
@@ -171,7 +172,7 @@ class Package:
                 # fetch what is behind the link and see if it's html.
                 # If it is html, download anything from there.
                 # This is extremely unreliable and therefore commented out.
-                """
+                import pdb; pdb.set_trace() 
                 site = urllib2.urlopen(link)
                 if site.headers.type != "text/html":
                     continue
@@ -185,9 +186,9 @@ class Package:
                     real_download_link = urllib.basejoin(site.url, real_download_link)
                     if not filename_matches or self.matches(real_download_link, filename_matches):
                         yield(real_download_link)
-                """
+            
 
-    def _links(self, filename_matches=None, external_links=False):
+    def _links(self, filename_matches=None, external_links=False, follow_external_index_pages=False):
         """ This is an iterator which returns useful links on files for
             mirroring
         """
@@ -211,7 +212,7 @@ class Package:
             yield (url, hash)
 
         if external_links:
-            for link in self._links_external(remote_index_html, filename_matches):
+            for link in self._links_external(remote_index_html, filename_matches, follow_external_index_pages):
                 yield (link, None)
 
     def matches(self, filename, filename_matches):
@@ -220,8 +221,10 @@ class Package:
                 return True
         return False
 
-    def ls(self, filename_matches=None, external_links=False):
-        links = self._links(filename_matches=filename_matches, external_links=external_links)
+    def ls(self, filename_matches=None, external_links=False, follow_external_index_pages=False):
+        links = self._links(filename_matches=filename_matches, 
+                            external_links=external_links, 
+                            follow_external_index_pages=follow_external_index_pages)
         return [(link[0], os.path.basename(link[0]), link[1]) for link in links]
 
     def _get(self, url, filename, md5_hex=None):
@@ -343,7 +346,7 @@ class Mirror:
                 continue
 
             try:
-                links = package.ls(filename_matches, external_links)
+                links = package.ls(filename_matches, external_links, follow_external_index_pages)
             except PackageError, v:
                 stats.error_404(package_name)
                 LOG.debug("Package not available: %s" % v)
@@ -535,7 +538,7 @@ config_defaults = {
     'verbose': True, # log output
     'log_filename': default_logfile,
     'external_links': False, # experimental external link resolve and download
-    'follow_external_index_pages' : False, # experimental
+    'follow_external_index_pages' : False, # experimental, scan index pages for links
 }
 
 

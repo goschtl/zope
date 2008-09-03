@@ -15,8 +15,8 @@ long_description = desc + '\n\nChanges\n=======\n\n'  + changes
 
 setup(
     name='z3c.pypimirror',
-    version='0.2.7',
-    author='Daniel Kraft et al.',
+    version='0.2.8',
+    author='Daniel Kraft, Andreas Jung et al.',
     author_email='dk@d9t.de',
     description='A module for building a complete or a partial PyPI mirror',
     long_description=long_description,
