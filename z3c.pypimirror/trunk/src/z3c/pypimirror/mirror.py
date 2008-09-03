@@ -5,6 +5,7 @@ import xmlrpclib
 import sys
 import util
 import shutil
+import httplib
 import urllib 
 import urllib2
 import time
@@ -210,8 +211,9 @@ class Package:
                         parts2 = urlparse.urlsplit(url2)[2].split('/')[-1]
                         return cmp(parse_version(parts1), parse_version(parts2))
 
+                    candidates.sort(sort_candidates)
                     # and return the 10 latest files
-                    for c in candidates[-10:]:
+                    for c in candidates[-20:][::-1]:
                         yield c
 
 
@@ -281,6 +283,21 @@ class Package:
         return self._get(*link)
 
     def content_length(self, link):
+
+        # First try to determine the content-length through
+        # HEAD request in order to save bandwidth
+
+        parts = urlparse.urlsplit(link)
+        c = httplib.HTTPConnection(parts[1])
+        c.request('HEAD', parts[2])
+        response = c.getresponse()
+        ct = response.getheader('content-length')
+        if ct is not None:
+            ct = long(ct)
+            return ct
+
+        LOG.warn('Could not obtain content-length through a HEAD request from %s' % link)
+
         try:
             return long(urllib2.urlopen(link).headers.get("content-length"))
         except:
