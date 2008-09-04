@@ -62,6 +62,13 @@ class PublisherConnection(object):
         self._response = None
 
 
+class SSLPublisherConnection(PublisherConnection):
+
+    def __init__(self, server, port=None):
+        print "Using SSL"
+        PublisherConnection.__init__(self, server, port=port)
+
+
 class PublisherResponse(object):
     """Adapter of Zope 3 response objects into httplib.HTTPResponse."""
 
@@ -81,6 +88,7 @@ class RESTClient(client.RESTClient):
     zope.interface.implements(interfaces.IPublisherRESTClient)
 
     connectionFactory = PublisherConnection
+    sslConnectionFactory = SSLPublisherConnection
 
     @apply
     def handleErrors():

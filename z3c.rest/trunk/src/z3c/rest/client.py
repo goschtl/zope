@@ -86,6 +86,7 @@ class RESTClient(object):
     zope.interface.implements(interfaces.IRESTClient)
 
     connectionFactory = httplib.HTTPConnection
+    sslConnectionFactory = httplib.HTTPSConnection
 
     def __init__(self, url=None):
         self.requestHeaders = {}
@@ -123,7 +124,10 @@ class RESTClient(object):
 
         # Make a connection and retrieve the result
         pieces = urlparse.urlparse(self.url)
-        connection = self.connectionFactory(pieces[1])
+        if pieces[0] == 'https':
+            connection = self.sslConnectionFactory(pieces[1])
+        else:
+            connection = self.connectionFactory(pieces[1])
         try:
             connection.request(
                 method, getFullPath(pieces, params), data, requestHeaders)

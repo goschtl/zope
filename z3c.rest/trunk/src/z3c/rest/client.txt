@@ -39,6 +39,20 @@ You can also instantiate the client providing a URL:
     <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
   </folder>
 
+HTTPS URLs are also supported
+
+  >>> client = testing.RESTClient('https://localhost/')
+  Using SSL
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
 
 Getting Resources
 -----------------

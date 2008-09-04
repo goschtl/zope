@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.2.4 (unreleased)
+------------------
+
+- RESTClient() now correctly interprets https:// URLs.
+
+
 0.2.3 (2008-03-20)
 ------------------
 
