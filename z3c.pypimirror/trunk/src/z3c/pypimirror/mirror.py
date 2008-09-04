@@ -460,6 +460,7 @@ class Mirror:
             self.cleanup(package_list, verbose)
         if create_indexes:
             self.index_html()
+            full_list.sort()
             self.full_html(full_list)
 
         for line in stats.getStats():
