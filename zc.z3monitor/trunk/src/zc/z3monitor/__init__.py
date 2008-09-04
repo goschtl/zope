@@ -32,12 +32,16 @@ import zope.app.publication.interfaces
 
 import zc.ngi.adapters
 
+INTERACTIVE_MARKER = object()
+QUIT_MARKER = object()
+
 class Server:
 
     def __init__(self, connection):
         connection = zc.ngi.adapters.Lines(connection)
         self.connection = connection
         connection.setHandler(self)
+        self.mode = QUIT_MARKER
 
     def handle_input(self, connection, data):
         args = data.strip().split()
@@ -48,16 +52,41 @@ class Server:
             zc.z3monitor.interfaces.IZ3MonitorPlugin,
             command_name)
         if command is None:
-            connection.write('invalid command %r\n' % command_name)
+            connection.write(
+                'Invalid command %r\nTry "help".\n' % command_name)
         else:
             try:
-                command(connection, *args)
+                res = command(connection, *args)
             except Exception, v:
                 traceback.print_exc(100, connection)
                 print >> connection, "%s: %s\n" % (v.__class__.__name__, v)
+            if res is INTERACTIVE_MARKER:
+                self.mode = res
+            elif res is QUIT_MARKER:
+                self.mode = res
 
-        connection.write(zc.ngi.END_OF_DATA)
+        if self.mode is QUIT_MARKER:
+            connection.write(zc.ngi.END_OF_DATA)
 
+
+def interactive(connection):
+    """Turn on monitor's interactive mode
+    
+    Normally, the monitor releases the connection after a single command.
+    By entering the interactive mode, the monitor will not end the connection
+    until you enter the "quit" command.
+    """
+    connection.write('Interactive mode on.  Use "quit" To exit.\n')
+    return INTERACTIVE_MARKER
+
+def quit(connection):
+    """Quit the monitor
+    
+    This is only really useful in interactive mode (see the "interactive"
+    command).
+    """
+    connection.write('Goodbye.\n')
+    return QUIT_MARKER
 
 def help(connection, command_name=None):
     """Get help about server commands
@@ -84,7 +113,9 @@ def help(connection, command_name=None):
 
 opened_time_search = re.compile('[(](\d+[.]\d*)s[)]').search
 
-def monitor(connection, long=100):
+def monitor(connection, long=100, database=''):
+    # this order of arguments is often inconvenient, but supports legacy usage
+    # in which ``database`` was not an option.
     """Get general process info
 
     The minimal output has:
@@ -98,10 +129,13 @@ def monitor(connection, long=100):
     default, connections are considered old if they are greater than 100
     seconds old. You can pass a minimum old connection age in seconds.
     If you pass a value of 0, you'll see all connections.
+
+    If you pass a name after the integer, this is used as the database name.
+    The database name defaults to the empty string ('').
     """
 
     min = float(long)
-    db = zope.component.getUtility(ZODB.interfaces.IDatabase)
+    db = zope.component.getUtility(ZODB.interfaces.IDatabase, database)
 
     result = []
     nconnections = 0

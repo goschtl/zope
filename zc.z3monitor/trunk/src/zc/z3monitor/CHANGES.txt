@@ -2,8 +2,20 @@
 Change History
 ==============
 
-0.5 (2008-4-4)
-==============
+0.6.0 (2008-??-??)
+==================
+
+Features
+--------
+
+* The new ``interactive`` command makes connections continue through multiple
+  commands until you use the ``quit`` command.
+
+* The ``monitor`` command takes an optional database argument (after the legacy
+  ``long`` argument).
+
+0.5.0 (2008-4-4)
+================
 
 Features
 --------

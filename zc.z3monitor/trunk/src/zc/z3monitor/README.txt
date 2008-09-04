@@ -48,6 +48,10 @@ them so we can see what they do:
 
     >>> zope.component.provideUtility(zc.z3monitor.help,
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'help')
+    >>> zope.component.provideUtility(zc.z3monitor.interactive,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'interactive')
+    >>> zope.component.provideUtility(zc.z3monitor.quit,
+    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'quit')
     >>> zope.component.provideUtility(zc.z3monitor.monitor,
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'monitor')
     >>> zope.component.provideUtility(zc.z3monitor.dbinfo,
@@ -65,7 +69,9 @@ list of available commands:
       dbinfo -- Get database statistics
       hello -- Say hello
       help -- Get help about server commands
+      interactive -- Turn on monitor's interactive mode
       monitor -- Get general process info
+      quit -- Quit the monitor
       zeocache -- Get ZEO client cache statistics
       zeostatus -- Get ZEO client status information
     -> CLOSE
@@ -91,8 +97,36 @@ We can get detailed help by specifying a command name:
     <BLANKLINE>
     -> CLOSE
 
+The ``interactive`` command switches the monitor into interactive mode.  As
+seen above, the monitor usually responds to a single command and then closes
+the connection.  In "interactive mode", the connection is not closed until
+the ``quit`` command is used.  This can be useful when accessing the monitor
+via telnet for diagnostics.
 
-The commands that come with the monitor use database information.  
+    >>> connection.test_input('interactive\n')
+    Interactive mode on.  Use "quit" To exit.
+    >>> connection.test_input('help interactive\n')
+    Help for interactive:
+    <BLANKLINE>
+    Turn on monitor's interactive mode
+    <BLANKLINE>
+        Normally, the monitor releases the connection after a single command.
+        By entering the interactive mode, the monitor will not end the connection
+        until you enter the "quit" command.
+    <BLANKLINE>
+    >>> connection.test_input('help quit\n')
+    Help for quit:
+    <BLANKLINE>
+    Quit the monitor
+    <BLANKLINE>
+        This is only really useful in interactive mode (see the "interactive"
+        command).
+    <BLANKLINE>
+    >>> connection.test_input('quit\n')
+    Goodbye.
+    -> CLOSE
+
+The other commands that come with the monitor use database information.  
 They access databases as utilities.  Let's create some test databases
 and register them as utilities.
 
@@ -133,9 +167,18 @@ command:
         seconds old. You can pass a minimum old connection age in seconds.
         If you pass a value of 0, you'll see all connections.
     <BLANKLINE>
+        If you pass a name after the integer, this is used as the database name.
+        The database name defaults to the empty string ('').
+    <BLANKLINE>
     -> CLOSE
 
     >>> connection.test_input('monitor\n')
+    0 
+    VmSize:	   35284 kB 
+    VmRSS:	   28764 kB 
+    -> CLOSE
+
+    >>> connection.test_input('monitor 100 other\n')
     0 
     VmSize:	   35284 kB 
     VmRSS:	   28764 kB 
