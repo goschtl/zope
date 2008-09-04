@@ -52,7 +52,7 @@ class IProduct(interface.Interface):
         title = u'Product name',
         required = True)
 
-    __required__ = interface.Attribute(u'Required products.')
+    __require__ = interface.Attribute(u'Require products.')
 
     __installed__ = interface.Attribute(u'Is product installed.')
 

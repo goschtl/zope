@@ -42,7 +42,7 @@ class Product(object):
         return registry in sm.__bases__
 
     def _checkRequiredInstall(self):
-        for productId in self.__required__:
+        for productId in self.__require__:
             product = queryUtility(IProduct, productId)
             if product is None:
                 raise interfaces.RequiredProductNotFound(
@@ -51,7 +51,7 @@ class Product(object):
                 product.install()
 
     def _checkRequiredUpdate(self):
-        for productId in self.__required__:
+        for productId in self.__require__:
             product = queryUtility(IProduct, productId)
             if product is None:
                 raise interfaces.RequiredProductNotFound(

@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-1.2.0 (2008-??-??)
+1.2.0 (2008-09-04)
 ------------------
 
-- Added product dependencies (required attribute)
+- Added product dependencies (require attribute)
 
 
 1.1.2 (2008-08-13)

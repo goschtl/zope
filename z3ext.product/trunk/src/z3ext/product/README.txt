@@ -95,7 +95,7 @@ and product name
 Product manipulation
 --------------------
 
-instalation status
+Instalation status
 
   >>> product.isInstalled()
   False
@@ -105,7 +105,7 @@ or
   >>> product.__installed__
   False
 
-instalation
+Instalation
 
   >>> product.install()
   >>> product.__installed__
@@ -117,7 +117,7 @@ instalation
   ProductAlreadyInstalledError: Product already installed.
   
 
-updateing product
+Updateing product
 
   >>> product.update()
 
@@ -214,6 +214,61 @@ If we uninstall product, extension will uninstall also
   [u'ext']
 
 
+Product dependencies
+--------------------
+Product can depends on other products.
+
+  >>> class IMyProduct2(interface.Interface):
+  ...     """ Product 2 """
+  ...
+  ...     email = schema.TextLine(
+  ...         title=u"E-mail Address",
+  ...         description=u"E-mail Address used to send notifications")
+
+  >>> context = xmlconfig.string('''
+  ... <configure
+  ...    xmlns:z3ext="http://namespaces.zope.org/z3ext" i18n_domain="test">
+  ... 
+  ...   <z3ext:product
+  ...     name="my-product2"
+  ...     title="My product2"
+  ...     require="my-product"
+  ...     schema="z3ext.product.README.IMyProduct2" />
+  ...
+  ... </configure>''', context)
+
+'my-product2' is depends on 'my-product'
+
+  >>> product = component.getUtility(IMyProduct)
+  >>> product.__installed__
+  False
+
+  >>> product2 = component.getUtility(IMyProduct2)
+  >>> product2.__require__
+  [u'my-product']
+
+Let's install my-product2
+
+  >>> product2.install()
+
+Now both products are installed
+
+  >>> product.__installed__
+  True
+
+  >>> product2.__installed__
+  True
+
+But on uninstall required products stay intalled
+
+  >>> product2.uninstall()
+  
+  >>> product.__installed__
+  True
+
+  >>> product.uninstall()
+
+
 Component registry
 ------------------
 
@@ -258,7 +313,7 @@ Product configlet
 
   >>> installer = component.getUtility(IConfiglet, 'product')
   >>> installer.keys()
-  (u'my-product',)
+  (u'my-product', u'my-product2')
 
   >>> installer.isAvailable()
   True
