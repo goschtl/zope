@@ -117,14 +117,17 @@ class QueryContainer(object):
         return value
 
     def __getitem__(self, key):
-        result = self.query().get(key)
+        result = self.dbget(key)
         if result is None:
             raise KeyError(key)
         result = self.convert(result)
         result.__parent__ = self
         result.__name__ = key
         return result
-    
+
+    def dbget(self, key):        
+        return self.query().get(key)
+
     def get(self, key, default=None):
         try:
             return self[key]

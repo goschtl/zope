@@ -442,4 +442,27 @@ The parents of all the values are the query container::
   [True, True]
   >>> sorted([value.__name__ for (key, value) in qc.items()])
   [u'1', u'2']
-  
+ 
+Customizing QueryContainer further
+----------------------------------
+
+Sometimes it's useful to define a custom keyfunc and custom method to
+retrieve the key from the database - these usually are implemented
+together::
+
+  >>> class KeyfuncQueryContainer(rdb.QueryContainer):
+  ...   def query(self):
+  ...      return session.query(Department)
+  ...   def keyfunc(self, value):
+  ...      return 'd' + unicode(value.id)
+  ...   def dbget(self, key):
+  ...      if not key.startswith('d'):
+  ...          return None
+  ...      return self.query().get(key[1:])
+
+  >>> qc = KeyfuncQueryContainer()
+  >>> qc.keys()
+  [u'd1', u'd2']
+  >>> qc[u'd1'].id
+  1
+
