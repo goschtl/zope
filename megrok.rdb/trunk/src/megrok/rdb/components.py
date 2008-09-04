@@ -107,12 +107,20 @@ class QueryContainer(object):
     implements(IContainer, ILocation)
 
     def query(self):
+        """Implement this returning the result of a query.
+        """
         raise NotImplementedError
+
+    def convert(self, value):
+        """Override this to convert output of query container.
+        """
+        return value
 
     def __getitem__(self, key):
         result = self.query().get(key)
         if result is None:
             raise KeyError(key)
+        result = self.convert(result)
         result.__parent__ = self
         result.__name__ = key
         return result
@@ -147,17 +155,19 @@ class QueryContainer(object):
     def values(self):
         result = []
         for v in self.query().all():
-            v.__parent__ = self
-            v.__name__ = self.keyfunc(v)
-            result.append(v)
+            converted = self.convert(v)
+            converted.__parent__ = self
+            converted.__name__ = self.keyfunc(v)
+            result.append(converted)
         return result
         
     def items(self):
         result = []
         for v in self.query().all():
-            v.__parent__ = self
-            key = v.__name__ = self.keyfunc(v)
-            result.append((key, v))
+            converted = self.convert(v)
+            converted.__parent__ = self
+            key = converted.__name__ = self.keyfunc(v)
+            result.append((key, converted))
         return result
 
     def __len__(self):

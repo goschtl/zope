@@ -10,6 +10,12 @@ database.
 
 .. _SQLAlchemy: http://www.sqlalchemy.org
 
+XXX a hack to make things work in doctests. In some particular setup
+this hack wasn't needed anymore, but I am unable at this time to
+reestablish this combination of packages::
+
+  >>> __file__ = 'foo'
+
 In this document we will show you how to use ``megrok.rdb``.
 
 ``megrok.rdb`` uses SQLAlchemy's ORM system, in particular its
@@ -371,3 +377,69 @@ The parents of all the values are the query container::
   ...   result.append(key)
   >>> sorted(result)
   [u'1', u'2']
+
+Converting results of QueryContainer
+------------------------------------
+
+Sometimes it's useful to convert (or modify) the output of the query
+to something else before they appear in the container. You can implement
+the ``convert`` method to do so. It takes the individual value resulting
+from the value and should return the converted value::
+
+  >>> class ConvertingQueryContainer(rdb.QueryContainer):
+  ...   def query(self):
+  ...      return session.query(Department)
+  ...   def convert(self, value):
+  ...      return SpecialDepartment(value.id)
+
+  >>> class SpecialDepartment(object):
+  ...    def __init__(self, id):
+  ...      self.id = id
+
+  >>> qc = ConvertingQueryContainer()
+
+Let's now check that all values are ``SpecialDepartment``::
+
+  >>> isinstance(qc['1'], SpecialDepartment)
+  True
+  >>> isinstance(qc['2'], SpecialDepartment)
+  True
+
+KeyError still works::
+
+  >>> qc['3']
+  Traceback (most recent call last):
+    ...
+  KeyError: '3'
+
+``get``::
+
+  >>> isinstance(qc.get('1'), SpecialDepartment)
+  True
+  >>> qc.get('3') is None
+  True
+  >>> qc.get('3', 'foo')
+  'foo'
+
+``values``::
+
+  >>> [isinstance(v, SpecialDepartment) for v in qc.values()]
+  [True, True]
+
+The parents of all the values are the query container::
+
+  >>> [v.__parent__ is qc for v in qc.values()]
+  [True, True]
+  >>> sorted([v.__name__ for v in qc.values()])
+  [u'1', u'2']
+
+``items``::
+
+  >>> sorted([(key, isinstance(value, SpecialDepartment)) for (key, value) in qc.items()])
+  [(u'1', True), (u'2', True)]
+
+  >>> [value.__parent__ is qc for (key, value) in qc.items()]
+  [True, True]
+  >>> sorted([value.__name__ for (key, value) in qc.items()])
+  [u'1', u'2']
+  
