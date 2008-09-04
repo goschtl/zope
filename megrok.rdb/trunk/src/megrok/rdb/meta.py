@@ -1,6 +1,7 @@
 import martian
 from martian.error import GrokError
 from sqlalchemy.ext.declarative import instrument_declarative
+import sqlalchemy
 
 from megrok import rdb
 
@@ -26,7 +27,15 @@ class ModelGrokker(martian.ClassGrokker):
         # to make sure it's unique per metadata. A bit of a hack..
         if not hasattr(metadata, '_decl_registry'):
             metadata._decl_registry = {}
-        instrument_declarative(class_, metadata._decl_registry, metadata)
+        try:
+            instrument_declarative(class_, metadata._decl_registry, metadata)
+        except sqlalchemy.exc.InvalidRequestError:
+            # XXX scary - catching too many errors
+            # allows re-grokking of classes that were already
+            # instrument. Better would be to un-instrument classes
+            # after tests, but how to uninstrument?
+            pass
+
         return True
     
 class ContainerGrokker(martian.ClassGrokker):
