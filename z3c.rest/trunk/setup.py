@@ -31,7 +31,7 @@ chapters = '\n'.join(
 
 setup (
     name='z3c.rest',
-    version='0.2.4dev',
+    version='0.2.4',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "A REST Framework for Zope 3 Applications",
