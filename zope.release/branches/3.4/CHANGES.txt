@@ -17,6 +17,10 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 - Upgraded z3c.formdemo to 1.5.3
 - Upgraded z3c.formjs to 0.4.0
 - Upgraded z3c.formjsdemo to 0.3.1
+- Upgraded zdaemon to 2.0.2
+
+  - Fixed backwards incompatible change in handling of environment option.
+  - Seems to have fixed sporadic test failures under high system load
 
 
 3.4.0c6 (2008-08-14)
