@@ -1,0 +1,48 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+<view
+    for="zope.app.folder.interfaces.IFolder"
+    name="GET"
+    type="..interfaces.IRESTRequest"
+    factory=".folder.FolderAPI"
+    permission="zope.View"
+    allowed_attributes="GET"
+    />
+
+<view
+    for="zope.app.folder.interfaces.IFolder"
+    name="POST"
+    type="..interfaces.IRESTRequest"
+    factory=".folder.FolderAPI"
+    permission="zope.ManageContent"
+    allowed_attributes="POST"
+    />
+
+<view
+    for="zope.app.folder.interfaces.IFolder"
+    name="PUT"
+    type="..interfaces.IRESTRequest"
+    factory=".folder.FolderAPI"
+    permission="zope.ManageContent"
+    allowed_attributes="PUT"
+    />
+
+<view
+    name="NullPUT"
+    for="zope.app.folder.interfaces.IFolder"
+    type="..interfaces.IRESTRequest"
+    factory=".folder.FolderAPI"
+    permission="zope.ManageContent"
+    allowed_attributes="NullPUT"
+    />
+
+<view
+    for="zope.app.folder.interfaces.IFolder"
+    name="DELETE"
+    type="..interfaces.IRESTRequest"
+    factory=".folder.FolderAPI"
+    permission="zope.ManageContent"
+    allowed_attributes="DELETE"
+    />
+
+</configure>

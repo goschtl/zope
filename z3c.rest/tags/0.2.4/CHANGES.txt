@@ -1,0 +1,59 @@
+=======
+CHANGES
+=======
+
+0.2.4 (2008-09-04)
+------------------
+
+- RESTClient() now correctly interprets https:// URLs.
+
+
+0.2.3 (2008-03-20)
+------------------
+
+- Bug/Misfeature: Sigh, getting the trailing slash handled correctly turned
+  out to be a big pain. I really hope I got it working the way it should be
+  for a REST client now.
+
+
+0.2.2 (2008-03-19)
+------------------
+
+- Bug/Misfeature: The client always added a slash to the end of the URL. But
+  some REST APIs are very sensitive to this. Now the slash is only preserved
+  if present, but nothing will be added otherwise.
+
+
+0.2.1 (2008-03-06)
+------------------
+
+- Bug: Sometimes the response body was not read and the contents of the client
+  was empty. Unfortunately, this problem could not be reliably reproduced, but
+  debugging showed that the connection was closed to early. (Roy Mathew)
+
+- Feature: Make the package Python 2.4 and 2.5 compatible.
+
+- Feature: Require lxml 2.0 for z3c.rest.
+
+
+0.2.0 (2008-03-03)
+------------------
+
+- Feature: Made the HTTP caller pluggable for the REST client, allowing
+  request types other than ``RESTRequest``.
+
+
+0.1.0 (2008-03-03)
+------------------
+
+- Initial Release
+
+  * Publisher hooks to build dedicated REST servers
+
+  * Error view support
+
+  * Pluggable REST traverser based on `z3c.traverser`
+
+  * REST client
+
+  * Minimal sample application

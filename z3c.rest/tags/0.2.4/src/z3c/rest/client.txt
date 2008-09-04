@@ -1,0 +1,549 @@
+===========
+REST Client
+===========
+
+The REST client provides a simple Python API to interact easily with RESTive
+Web services. It was designed to have a similar API to Zope's test
+browser.
+
+Let's start by instantiating the the client. Of course we have a version of
+the client that talks directly to the Zope publisher:
+
+  >>> from z3c.rest import testing
+  >>> client = testing.RESTClient()
+
+For testing purposes, we have defined a simple REST API for folders. The
+simplest call is to retrieve the contents of the root folder:
+
+  >>> client.open('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+You can also instantiate the client providing a URL:
+
+  >>> client = testing.RESTClient('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+HTTPS URLs are also supported
+
+  >>> client = testing.RESTClient('https://localhost/')
+  Using SSL
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+
+Getting Resources
+-----------------
+
+The ``open()`` method implicitely uses the "GET" HTTP method. An alternative
+would be to use this:
+
+  >>> client.get('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+There are several other pieces of information of the response that are
+available:
+
+  >>> client.url
+  'http://localhost/'
+  >>> client.status
+  200
+  >>> client.reason
+  'Ok'
+  >>> client.fullStatus
+  '200 Ok'
+  >>> client.headers
+  [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)'),
+   ('Content-Length', '204'),
+   ('Content-Type', 'text/xml;charset=utf-8')]
+
+If we try to access a non-existent resource, no exception is raised, but the
+status is '404' (not found) of course:
+
+  >>> client.get('http://localhost/unknown')
+  >>> client.fullStatus
+  '404 Not Found'
+  >>> client.contents
+  ''
+  >>> client.headers
+  [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)'),
+   ('Content-Length', '0')]
+
+As in the original test browser, I can turn off the Zope error handling and
+the Python exception will propagate through the publisher:
+
+  >>> client.handleErrors = False
+  >>> client.get('http://localhost/unknown')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <zope.app.folder.folder.Folder ...>, name: u'unknown'
+
+  >>> client.handleErrors = True
+
+As RESTive APIs often use query string key-value pairs to parameterize the
+request, this REST client has strong support for it. For example, you can
+simply specify the parameters in the URL:
+
+  >>> client.get('http://localhost/?noitems=1')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+You can also specify the parameter via an argument:
+
+  >>> client.get('http://localhost/', params={'noitems': 1})
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+You can even combine the two methods of specifying parameters:
+
+  >>> client.get('http://localhost/?noitems=1', params={'notitle': 1})
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+But our little demo API can do more. Parameters can also be specified as a
+header with a special prefix. Headers can be globally specified and are then
+used for every request:
+
+  >>> client.requestHeaders['demo-noitems'] = 'on'
+  >>> client.get('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+There is also a headers argument to the "open" methods that specify the header
+once:
+
+  >>> client.get('http://localhost/', headers={'demo-notitle': 1})
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+  >>> del client.requestHeaders['demo-noitems']
+
+Finally, when dealing with a real site, a socket error might occur. The error
+is propagated, but the error number and message are recorded:
+
+  >>> from z3c.rest.client import RESTClient
+  >>> realClient = RESTClient()
+  >>> realClient.open('http://localhost:65000')
+  Traceback (most recent call last):
+  ...
+  error: (111, 'Connection refused')
+
+  >>> realClient.fullStatus
+  '111 Connection refused'
+
+
+Creating new resources
+----------------------
+
+Let's now create a new resource in the server root. Our little sample
+application will simply create another collection:
+
+  >>> client.put(
+  ...     'http://localhost/folder1',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder />''')
+
+  >>> client.fullStatus
+  '401 Unauthorized'
+
+Accessing the folder resource is available to everyone. But if you want to
+modify any resource, you have to log in:
+
+  >>> client.setCredentials('globalmgr', 'globalmgrpw')
+
+So let's try this again:
+
+  >>> client.put(
+  ...     'http://localhost/folder1',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder />''')
+
+  >>> client.fullStatus
+  '201 Created'
+  >>> client.headers
+  [('X-Powered-By', 'Zope (www.zope.org), Python (www.python.org)'),
+   ('Content-Length', '0'),
+   ('Location', 'http://localhost/folder1')]
+
+We can now look at the root container and see the item there:
+
+  >>> client.get('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder1"
+            xlink:title="folder1"/>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+By the way, you can now use a relative URL to access the `folder1` resource:
+
+  >>> client.get('folder1')
+
+  >>> client.url
+  'http://localhost/folder1'
+
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name>folder1</name>
+    <title></title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+When we try to create a resource on top of a non-existent resource, we get a
+404 error:
+
+  >>> client.put(
+  ...     'http://localhost/folder2/folder21',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder />''')
+
+  >>> client.fullStatus
+  '404 Not Found'
+
+
+Modifying Resources
+-------------------
+
+Modifying a given resource can be done via POST or PUT, but they have different
+semantics. Let's have a look at POST first. We would now like to change the
+title of the folder; this can be done as follows:
+
+  >>> client.post(
+  ...     'http://localhost/folder1',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder>
+  ...          <title>My Folder 1</title>
+  ...        </folder>''')
+
+  >>> client.fullStatus
+  '200 Ok'
+
+  >>> client.get()
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name>folder1</name>
+    <title>My Folder 1</title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+As mentioned above, it must also work for PUT:
+
+  >>> client.put(
+  ...     'http://localhost/folder1',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder>
+  ...          <title>Folder 1</title>
+  ...        </folder>''')
+
+  >>> client.fullStatus
+  '200 Ok'
+
+  >>> client.get()
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name>folder1</name>
+    <title>Folder 1</title>
+    <items>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+
+Deleting Resources
+------------------
+
+Deleting a resource is as simple as all of the other methods. Let's delete our
+`folder1`:
+
+  >>> client.delete('http://localhost/folder1')
+
+  >>> client.fullStatus
+  '200 Ok'
+
+So the resource is really gone:
+
+  >>> client.get()
+  >>> client.fullStatus
+  '404 Not Found'
+
+It should not be possible to delete a non-existing resource:
+
+  >>> client.delete('http://localhost/folder2')
+  >>> client.fullStatus
+  '404 Not Found'
+
+Also, we cannot delete the root folder:
+
+  >>> client.delete('http://localhost/')
+  >>> client.fullStatus
+  '405 Method Not Allowed'
+
+
+Searching the Response Data
+---------------------------
+
+While not required, most REST services are XML-based. Thus, the client
+supports inspecting the result XML using XPath. Let's create a couple of
+folders for this to be more interesting:
+
+  >>> client.put(
+  ...     'http://localhost/folder1',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder />''')
+
+  >>> client.put(
+  ...     'http://localhost/folder2',
+  ...     '''<?xml version="1.0" ?>
+  ...        <folder />''')
+
+Next we get the root folder resource:
+
+  >>> client.get('http://localhost/')
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder1"
+            xlink:title="folder1"/>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder2"
+            xlink:title="folder2"/>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+But in general, inspecting the XML output on the string level is tedious. So
+let's write a cool XPath expression that extracts the xlink title of all
+items:
+
+  >>> nsmap = {'xlink': "http://www.w3.org/1999/xlink"}
+  >>> client.xpath('//folder/items/item/@xlink:title', nsmap)
+  ['folder1', 'folder2']
+
+Oftentimes, however, we specifically query for one result. In those cases we
+do not want to receive a list:
+
+  >>> client.xpath('//folder/items/item[@xlink:title="folder1"]', nsmap, True)
+  <Element item ...>
+
+Now, if multiple matches are detected, even though we only expect one, then a
+``ValueError`` is raised:
+
+  >>> client.xpath('//folder/items/item', nsmap, True)
+  Traceback (most recent call last):
+  ...
+  ValueError: XPath expression returned more than one result.
+
+
+Accessing Links
+---------------
+
+Since we want the REST client to behave like a browser -- at least a little
+bit -- we can also use the ``getLink()`` method to access links:
+
+  >>> client.getLink('folder1')
+  <XLink title='folder1' url='http://localhost/folder1'>
+
+By default, the link is looked up by title. But you can also look it up by
+URL:
+
+  >>> client.getLink(url='http://localhost/folder1')
+  <XLink title='folder1' url='http://localhost/folder1'>
+
+If you forget to specify a title or URL, you receive a ``ValueError``:
+
+  >>> client.getLink()
+  Traceback (most recent call last):
+  ...
+  ValueError: You must specify a title or URL.
+
+Links can also be relative, such as the one for ACL:
+
+  >>> client.open('http://localhost/folder1')
+  >>> client.getLink('ACL')
+  <XLink title='ACL' url='http://localhost/folder1/acl'>
+
+  >>> client.open('http://localhost/folder1/')
+  >>> client.getLink('ACL')
+  <XLink title='ACL' url='http://localhost/folder1/acl'>
+
+The cool part about the link is that you can click it:
+
+  >>> client.open('http://localhost/')
+  >>> client.url
+  'http://localhost/'
+
+  >>> client.getLink('folder1').click()
+
+  >>> client.url
+  'http://localhost/folder1'
+
+
+Moving through time
+-------------------
+
+Like in a real browser, you can go back to a previous state. For example,
+currently we are looking at `folder1`, ...
+
+  >>> client.url
+  'http://localhost/folder1'
+
+but if I go back one step, I am back at the root folder:
+
+  >>> client.goBack()
+
+  >>> client.url
+  'http://localhost/'
+
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder1"
+            xlink:title="folder1"/>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder2"
+            xlink:title="folder2"/>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+But going back in history is only cool, if you can also reload. So let's
+delete `folder2`:
+
+  >>> client.getLink('folder2').click()
+  >>> client.delete()
+
+Now we go back 2 steps:
+
+  >>> client.goBack(2)
+
+  >>> client.url
+  'http://localhost/'
+
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder1"
+            xlink:title="folder1"/>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder2"
+            xlink:title="folder2"/>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+As expected, the contents has not changed yet. So let's reload:
+
+  >>> client.reload()
+
+  >>> client.url
+  'http://localhost/'
+
+  >>> print client.contents
+  <?xml version="1.0" ?>
+  <folder xmlns:xlink="http://www.w3.org/1999/xlink">
+    <name></name>
+    <title></title>
+    <items>
+      <item xlink:type="simple"
+            xlink:href="http://localhost/folder1"
+            xlink:title="folder1"/>
+    </items>
+    <acl xlink:type="simple" xlink:href="acl" xlink:title="ACL"/>
+  </folder>
+
+Note that going back zero steps does nothing:
+
+  >>> client.url
+  'http://localhost/'
+
+  >>> client.getLink('folder1').click()
+  >>> client.goBack(0)
+
+  >>> client.url
+  'http://localhost/folder1'
+
+Also, if you try to go back beyond the beginning of time, a value error is
+raised:
+
+  >>> client.goBack(1000)
+  Traceback (most recent call last):
+  ...
+  ValueError: There is not enough history.

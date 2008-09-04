@@ -1,0 +1,85 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <!-- NULL Resource support -->
+
+  <class class=".null.NullResource">
+    <allow interface="zope.app.http.interfaces.INullResource" />
+  </class>
+
+  <!-- Basic Container traversers -->
+
+  <view
+      for="*"
+      type=".interfaces.IRESTRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory=".traverser.RESTPluggableTraverser"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+      />
+
+  <subscriber
+      factory=".traverser.ContainerItemTraverserPlugin"
+      provides="z3c.traverser.interfaces.ITraverserPlugin" />
+
+  <view
+      for="zope.app.http.interfaces.INullResource"
+      name="PUT"
+      type=".interfaces.IRESTRequest"
+      factory=".null.NullPUT"
+      permission="zope.Public"
+      allowed_attributes="PUT"
+      />
+
+  <!-- Basic REST publishing setup -->
+
+  <class class=".rest.RESTRequest">
+    <require
+        permission="zope.View"
+        interface="zope.publisher.interfaces.http.IHTTPApplicationRequest"/>
+  </class>
+
+  <configure
+      zcml:condition="have twisted">
+
+    <utility
+        name="REST-HTTP"
+        component=".twist.rest"
+        provides="zope.app.twisted.interfaces.IServerType"
+        />
+
+  </configure>
+
+  <configure
+      zcml:condition="have zserver">
+
+    <utility
+        name="REST-HTTP"
+        component=".zserver.rest"
+        provides="zope.app.server.interfaces.IServerType"
+        />
+
+  </configure>
+
+  <!-- Register error views -->
+
+  <!-- Setup the default view name for rest request exception views.
+       Have to use big hack to get this installed. -->
+
+  <browser:defaultView
+      for="zope.interface.common.interfaces.IException"
+      name=""
+      layer="z3c.rest.interfaces.IRESTRequest"
+      />
+
+  <view
+      for="zope.interface.common.interfaces.IException"
+      type=".interfaces.IRESTRequest"
+      factory=".error.XMLErrorView"
+      allowed_attributes="__call__"
+      permission="zope.Public"
+      />
+
+</configure>
