@@ -75,7 +75,7 @@ class Downloader(Eggs):
                     links = links)
                 if result is False:
                     log.error("Failed to install required eggs with the tar "
-                              "ball. Continuing with buildout instead.")
+                              "ball.")
             finally:
                 shutil.rmtree(extraction_dir)
                 os.unlink(temp_tarball_name)

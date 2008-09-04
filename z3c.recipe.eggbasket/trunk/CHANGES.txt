@@ -1,6 +1,11 @@
 0.4.0 (unreleased)
 ==================
 
+* When the download fails, do not say "Continuing with buildout
+  instead" as the downloader just exits then and it is up to the
+  calling code or the user to continue the buildout if so wished.
+  [maurits]
+
 * When installing the requirements from the tarball, we now look in
   the default index (python cheese shop usually) when the requirements
   can not be met by only the tarball.  This should not happen, but it
