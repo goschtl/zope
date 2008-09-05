@@ -1,0 +1,14 @@
+<component>
+  <description>
+     Definition for counting log handler 
+  </description>
+
+  <sectiontype name="counter"
+               datatype="zc.monitorlogstats.zconfig.Counter"
+               implements="ZConfig.logger.handler"
+               extends="ZConfig.logger.base-log-handler">
+    <key name="format"
+         default="%(name)s %(message)s"
+         datatype="ZConfig.components.logger.handlers.log_format"/>
+  </sectiontype>
+</component>

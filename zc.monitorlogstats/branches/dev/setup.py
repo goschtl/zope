@@ -12,40 +12,37 @@
 #
 ##############################################################################
 
-name, version = '', '0'
+name, version = 'zc.monitorlogstats', '0'
 
-import os
-from setuptools import setup, find_packages
-
-entry_points = """
-"""
+import os, setuptools
 
 def read(rname):
     return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
                              )).read()
 
-long_description = (
-        read('src/zc/?/README.txt')
-        + '\n' +
-        'Download\n'
-        '--------\n'
-        )
+entry_points = """
+"""
 
-setup(
+setuptools.setup(
     name = name,
     version = version,
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = '',
-    long_description=long_description,
+    long_description = (
+        read('src/zc/%s/README.txt' % name.split('.')[-1])
+        + '\n' +
+        'Download\n'
+        '--------\n'
+        ),
     license = 'ZPL 2.1',
     
     include_package_data = True,
-    packages = find_packages('src'),
+    packages = setuptools.find_packages('src'),
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
     install_requires = ['setuptools'],
     zip_safe = False,
     entry_points=entry_points,
-    include_package_data = True,
+    extras_require = dict(test=['ZConfig'])
     )
