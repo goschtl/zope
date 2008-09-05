@@ -189,3 +189,45 @@ it.
     C 21714736 2008-09-05T13:45:44
     A 21714736 2008-09-05T13:45:44 200 ?
     E 21714736 2008-09-05T13:45:44
+
+So far, we've only added extensions for the *Request Start* trace point, and
+adding extensions for other trace points is done in almost the exact same
+way.  The only difference is the interface which an extension is registered
+for.
+
+Here, we'll register the tracer component in the previous examples for the
+other trace points.
+
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestInputAcquired,
+    ...     'example.CountTracer')
+
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceApplicationStart,
+    ...     'example.CountTracer')
+
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceApplicationEnd,
+    ...     'example.CountTracer')
+
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestEnd,
+    ...     'example.CountTracer')
+
+Now, that extension is fired at every trace point.
+
+    >>> invokeRequest(req1)
+    B 21930320 2008-09-05T15:53:47 GET /test-req1
+    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 4
+    I 21930320 2008-09-05T15:53:47 0
+    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 5
+    C 21930320 2008-09-05T15:53:47
+    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 6
+    A 21930320 2008-09-05T15:53:47 200 ?
+    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 7
+    E 21930320 2008-09-05T15:53:47
+    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 8
