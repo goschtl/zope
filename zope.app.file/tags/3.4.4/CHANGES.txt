@@ -1,0 +1,38 @@
+=======
+CHANGES
+=======
+
+3.4.5 (unreleased)
+
+-
+
+3.4.4 (2008-09-05)
+------------------
+
+- Bug: Get actual filename instead of full filesystem path when adding file/image
+  using Internet Explorer.
+
+3.4.3 (2008-06-18)
+------------------
+
+- Using IDCTimes interface instead of IZopeDublinCore to determine the
+  modification date of a file.
+
+3.4.2 (2007-11-09)
+------------------
+
+- Include information about which attributes changed in the
+  ``IObjectModifiedEvent`` after upload.
+
+  This fixes https://bugs.launchpad.net/zope3/+bug/98483.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
