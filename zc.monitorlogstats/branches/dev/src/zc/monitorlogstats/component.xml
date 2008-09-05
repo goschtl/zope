@@ -8,7 +8,7 @@
                implements="ZConfig.logger.handler"
                extends="ZConfig.logger.base-log-handler">
     <key name="format"
-         default="%(name)s %(message)s"
+         default="%(asctime)s %(name)s %(message)s"
          datatype="ZConfig.components.logger.handlers.log_format"/>
   </sectiontype>
 </component>
