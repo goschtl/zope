@@ -114,3 +114,70 @@ error is written to the *Request End (E)* trace entry.
     C 21651664 2008-09-02T13:59:02
     A 21651664 2008-09-02T13:59:02 200 ?
     E 21651664 2008-09-02T13:59:02 Error: iteration over non-sequence
+
+Let's clean up before moving on.
+
+    >>> faux_app.app_hook = None
+
+
+Tracelog Extensions
+===================
+
+Additional information can be written to the trace log through the use of
+extensions.  Extensions can be registered as named-utilities for any of the
+trace points mentioned above.
+
+    >>> import zc.zservertracelog.interfaces
+    >>> import zope.component
+    >>> import zope.interface
+
+    >>> site_manager = zope.component.getSiteManager()
+
+Extensions implement one or more of the sub-interfaces of ``ITracer``.  Here,
+we'll define a simple extension that just logs how many times it's been
+called.
+
+    >>> class CountTracer(object):
+    ...
+    ...     count = 0
+    ...
+    ...     def __call__(self, logger, trace_point):
+    ...         self.count += 1
+    ...         logger.log(
+    ...             'count: %s' % self.count, extension_id='counttracer')
+
+    >>> count_tracer = CountTracer()
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestStart,
+    ...     'example.CountTracer')
+
+Extensions appear in the log with the *X* prefix immediately after any trace
+point they are registered for.
+
+    >>> invokeRequest(req1)
+    B 17954544 2008-09-05T09:47:00 GET /test-req1
+    X 17954544 2008-09-05T09:47:00 counttracer count: 1
+    I 17954544 2008-09-05T09:47:00 0
+    C 17954544 2008-09-05T09:47:00
+    A 17954544 2008-09-05T09:47:00 200 ?
+    E 17954544 2008-09-05T09:47:00
+
+
+Removing an Extension
+---------------------
+
+Unregistering the utility removes the extension.
+
+    >>> site_manager.unregisterUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestStart,
+    ...     'example.CountTracer')
+    True
+
+    >>> invokeRequest(req1)
+    B 21714736 2008-09-05T13:45:44 GET /test-req1
+    I 21714736 2008-09-05T13:45:44 0
+    C 21714736 2008-09-05T13:45:44
+    A 21714736 2008-09-05T13:45:44 200 ?
+    E 21714736 2008-09-05T13:45:44
