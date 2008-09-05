@@ -68,7 +68,7 @@ class TraceLog(object):
             trace_code, self.channel_id, _format_datetime(timestamp))
 
         if self.extension_id:
-            entry += ' [%s]' % self.extension_id
+            entry += ' %s' % self.extension_id
 
         if msg:
             entry += ' %s' % msg
