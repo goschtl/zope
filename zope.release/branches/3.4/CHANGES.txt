@@ -22,7 +22,6 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 - Upgraded z3c.traverser to 0.2.2, 0.2.3
 - Upgraded zope.annotation to 3.4.1
 - Upgraded zope.app.file to 3.4.3
-- Upgraded zope.app.testing to 3.4.4
 - Upgraded zope.cachedescriptors to 3.4.1
 - Upgraded zope.securitypolicy to 3.4.1
 - Upgraded zc.buildout to 1.1.1
