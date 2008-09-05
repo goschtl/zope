@@ -9,7 +9,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 
 - Upgraded zope.server to 3.4.3
 - Upgraded zope.app.server to 3.4.1 and 3.4.2
-- Upgraded zope.publisher to 3.4.4, 3.4.5, 3.4.6
+- Upgraded zope.publisher to 3.4.5, 3.4.6
 - Upgraded zc.zope3recipes to 0.6.2
 - Upgraded zope.testing to 3.5.6
 - Upgraded z3c.form to 1.9.0
