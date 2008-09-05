@@ -150,14 +150,14 @@ called.
     >>> site_manager.registerUtility(
     ...     count_tracer,
     ...     zc.zservertracelog.interfaces.ITraceRequestStart,
-    ...     'example.CountTracer')
+    ...     'example.Tracer')
 
 Extensions appear in the log with the *X* prefix immediately after any trace
 point they are registered for.
 
     >>> invokeRequest(req1)
     B 17954544 2008-09-05T09:47:00 GET /test-req1
-    X 17954544 2008-09-05T09:47:00 example.CountTracer count: 1
+    X 17954544 2008-09-05T09:47:00 example.Tracer count: 1
     I 17954544 2008-09-05T09:47:00 0
     C 17954544 2008-09-05T09:47:00
     A 17954544 2008-09-05T09:47:00 200 ?
@@ -184,7 +184,7 @@ it.
 
     >>> invokeRequest(req1)
     B 21714736 2008-09-05T13:45:44 GET /test-req1
-    X 23418928 2008-08-26T10:55:00 example.CountTracer count: 3
+    X 23418928 2008-08-26T10:55:00 example.Tracer count: 3
     I 21714736 2008-09-05T13:45:44 0
     C 21714736 2008-09-05T13:45:44
     A 21714736 2008-09-05T13:45:44 200 ?
@@ -201,33 +201,72 @@ other trace points.
     >>> site_manager.registerUtility(
     ...     count_tracer,
     ...     zc.zservertracelog.interfaces.ITraceRequestInputAcquired,
-    ...     'example.CountTracer')
+    ...     'example.Tracer')
 
     >>> site_manager.registerUtility(
     ...     count_tracer,
     ...     zc.zservertracelog.interfaces.ITraceApplicationStart,
-    ...     'example.CountTracer')
+    ...     'example.Tracer')
 
     >>> site_manager.registerUtility(
     ...     count_tracer,
     ...     zc.zservertracelog.interfaces.ITraceApplicationEnd,
-    ...     'example.CountTracer')
+    ...     'example.Tracer')
 
     >>> site_manager.registerUtility(
     ...     count_tracer,
     ...     zc.zservertracelog.interfaces.ITraceRequestEnd,
-    ...     'example.CountTracer')
+    ...     'example.Tracer')
 
 Now, that extension is fired at every trace point.
 
     >>> invokeRequest(req1)
     B 21930320 2008-09-05T15:53:47 GET /test-req1
-    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 4
+    X 21930320 2008-09-05T15:53:47 example.Tracer count: 4
     I 21930320 2008-09-05T15:53:47 0
-    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 5
+    X 21930320 2008-09-05T15:53:47 example.Tracer count: 5
     C 21930320 2008-09-05T15:53:47
-    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 6
+    X 21930320 2008-09-05T15:53:47 example.Tracer count: 6
     A 21930320 2008-09-05T15:53:47 200 ?
-    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 7
+    X 21930320 2008-09-05T15:53:47 example.Tracer count: 7
     E 21930320 2008-09-05T15:53:47
-    X 21930320 2008-09-05T15:53:47 example.CountTracer count: 8
+    X 21930320 2008-09-05T15:53:47 example.Tracer count: 8
+
+
+Overriding Extensions
+---------------------
+
+One extension can be overriden with another just by registering the new
+extension with the same name.
+
+Let's add a new extension to demonstrate this.
+
+    >>> class StreetLightTracer(object):
+    ...
+    ...     light = 0
+    ...     colors = ['green', 'yellow', 'red']
+    ...
+    ...     def __call__(self, logger, trace_point):
+    ...         self.light = self.light + 1 % 3
+    ...         logger.log('color: %s' % self.colors[self.light])
+
+    >>> street_light_tracer = StreetLightTracer()
+
+    >>> site_manager.registerUtility(
+    ...     street_light_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestStart,
+    ...     'example.Tracer')
+
+Now, we see output from the new extension.
+
+    >>> invokeRequest(req1)
+    B 23418928 2008-08-26T10:55:00 GET /test-req1
+    X 23418928 2008-08-26T10:55:00 example.Tracer color: yellow
+    I 23418928 2008-08-26T10:55:00 0
+    X 23418928 2008-08-26T10:55:00 example.Tracer count: 9
+    C 23418928 2008-08-26T10:55:00
+    X 23418928 2008-08-26T10:55:00 example.Tracer count: 10
+    A 23418928 2008-08-26T10:55:00 200 ?
+    X 23418928 2008-08-26T10:55:00 example.Tracer count: 11
+    E 23418928 2008-08-26T10:55:00
+    X 23418928 2008-08-26T10:55:00 example.Tracer count: 12
