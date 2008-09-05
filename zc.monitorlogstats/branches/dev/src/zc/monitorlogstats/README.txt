@@ -44,17 +44,20 @@ We can ask the handler for statistics:
     >>> handler.start_time
     datetime.datetime(2008, 9, 5, 21, 10, 14)
 
-    >>> for level, count, time, message in handler.statistics:
-    ...     print level, count, time
+    >>> for level, count, message in handler.statistics:
+    ...     print level, count
     ...     print `message`
-    20 21 2008-09-05 21:11:01
+    20 21
     'yawn'
-    30 12 2008-09-05 21:10:40
+    30 12
     'hm'
-    40 9 2008-09-05 21:10:28
+    40 9
     'oops'
-    50 5 2008-09-05 21:10:19
+    50 5
     'Yipes'
+
+The statistics consist of the log level, the count of log messages,
+and the formatted text of last message.
 
 We can also ask it to clear it's statistics:
 
@@ -63,12 +66,12 @@ We can also ask it to clear it's statistics:
     ...     logging.getLogger('foo').critical('Eek')
 
     >>> handler.start_time
-    datetime.datetime(2008, 9, 5, 21, 11, 2)
+    datetime.datetime(2008, 9, 5, 21, 10, 15)
 
-    >>> for level, count, time, message in handler.statistics:
-    ...     print level, count, time
+    >>> for level, count, message in handler.statistics:
+    ...     print level, count
     ...     print `message`
-    50 3 2008-09-05 21:11:05
+    50 3
     'Eek'
 
 There's ZConfig support for defining counting handlers:
@@ -88,6 +91,7 @@ There's ZConfig support for defining counting handlers:
     ...     name test
     ...     level INFO
     ...     <counter>
+    ...        format %(name)s %(message)s
     ...     </counter>
     ... </logger>
     ... """))
@@ -96,22 +100,71 @@ There's ZConfig support for defining counting handlers:
 
     >>> for i in range(2):
     ...     logging.getLogger('test').critical('Waaa')
+    >>> for i in range(22):
+    ...     logging.getLogger('test.foo').info('Zzzzz')
 
-    >>> for level, count, time, message in handler.statistics:
-    ...     print level, count, time
+    >>> for level, count, message in handler.statistics:
+    ...     print level, count
     ...     print `message`
-    50 5 2008-09-05 21:11:10
+    20 22
+    'Zzzzz'
+    50 5
     'Waaa'
 
-
-    >>> for level, count, time, message in testhandler.statistics:
-    ...     print level, count, time
+    >>> for level, count, message in testhandler.statistics:
+    ...     print level, count
     ...     print `message`
-    50 2 2008-09-05 21:11:09
-    'Waaa'
+    20 22
+    'test.foo Zzzzz'
+    50 2
+    'test Waaa'
+
+Note that the message output from the test handler reflects the format
+we used when we set it up. 
 
 The example above illustrates that you can install as many counting
 handlers as you want to.
+
+Monitor Plugin
+--------------
+
+The zc.monitorlogstats Monitor plugin can be used to query log statistics.
+
+    >>> import sys
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout)
+    2008-09-05T21:10:15
+    20 22 'Zzzzz'
+    50 5 'Waaa'
+
+The output consists of the start time and line for each log level for
+which there are statistics.  Each statistics line has the log level,
+entry count, and a repr of the last log message.
+
+By default, the root logger will be used. You can specify a logger name:
+
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, 'test')
+    2008-09-05T21:10:16
+    20 22 'test.foo Zzzzz'
+    50 2 'test Waaa'
+
+You can use '.' for the root logger:
+
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, '.')
+    2008-09-05T21:10:15
+    20 22 'Zzzzz'
+    50 5 'Waaa'
+
+Note that if there are multiple counting handlers for a logger, only
+the first will be used. (So don't define more than one. :)
+
+It is an error to name a logger without a counting handler:
+
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, 'test.foo')
+    Traceback (most recent call last):
+    ...
+    ValueError: Invalid logger name: test.foo
+
+
 
 .. Cleanup:
 

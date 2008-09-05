@@ -23,12 +23,11 @@ class CountingHandler(logging.Handler):
         levelno = record.levelno
         statistics = self._statitistics.get(levelno)
         if statistics is None:
-            statistics = [levelno, 0, None, None]
+            statistics = [levelno, 0, '']
             self._statitistics[levelno] = statistics
 
         statistics[1] += 1
-        statistics[2] = datetime.datetime.utcnow()
-        statistics[3] = record.getMessage()
+        statistics[2] = self.format(record)
 
     @property
     def statistics(self):
@@ -38,4 +37,17 @@ class CountingHandler(logging.Handler):
     def clear(self):
         self._statitistics = {}
         self.start_time = datetime.datetime.utcnow()
-    
+
+def monitor(f, loggername='.', clear=''):
+    if loggername == '.':
+        logger = logging.getLogger(None)
+    else:
+        logger = logging.getLogger(loggername)
+    for handler in logger.handlers:
+        if isinstance(handler, CountingHandler):
+            f.write(handler.start_time.isoformat('T')+'\n')
+            for record in handler.statistics:
+                f.write("%s %s %r\n" % record)
+            break
+    else:
+        raise ValueError("Invalid logger name: "+loggername)
