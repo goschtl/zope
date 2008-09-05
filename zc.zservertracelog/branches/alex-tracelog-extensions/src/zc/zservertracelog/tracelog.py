@@ -37,19 +37,23 @@ def _format_datetime(dt):
 def _run_trace_extensions(trace_point, logger):
     tracers = zope.component.getUtilitiesFor(trace_point)
     for tname, tracer in tracers:
+        logger.extension_id = tname
         tracer(logger, trace_point)
+    logger.extension_id = None
 
 
 class TraceLog(object):
     zope.interface.implements(zc.zservertracelog.interfaces.ITraceLog)
 
+    extension_id = None
+
     def __init__(self, channel):
         self.channel_id = id(channel)
 
-    # this implementation adds a `trace_code` option which is meant to be
+    # this implementation adds the `trace_code` option which is meant to be
     # used internally and not for use by extensions.
     def log(
-        self, msg=None, timestamp=None, extension_id=None, trace_code=None):
+        self, msg=None, timestamp=None, trace_code=None):
 
         if timestamp is None:
             timestamp = datetime.datetime.now()
@@ -57,14 +61,14 @@ class TraceLog(object):
         if not trace_code:
             trace_code = 'X'
 
-        if trace_code == 'X' and extension_id is None:
-            raise ValueError('extension_id is required')
+        if trace_code == 'X' and not self.extension_id:
+            raise ValueError('Unnamed Tracelog Extension')
 
         entry = '%s %s %s' % (
             trace_code, self.channel_id, _format_datetime(timestamp))
 
-        if extension_id:
-            entry += ' %s' % extension_id
+        if self.extension_id:
+            entry += ' [%s]' % self.extension_id
 
         if msg:
             entry += ' %s' % msg

@@ -21,7 +21,7 @@ import zope.interface
 class ITraceLog(zope.interface.Interface):
     """Logs records from writers."""
 
-    def log(msg=None, timestamp=None, extension_id=None):
+    def log(msg=None, timestamp=None):
         """Write a message to the trace log."""
 
 

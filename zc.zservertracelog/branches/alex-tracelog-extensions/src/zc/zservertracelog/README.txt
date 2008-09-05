@@ -144,7 +144,7 @@ called.
     ...     def __call__(self, logger, trace_point):
     ...         self.count += 1
     ...         logger.log(
-    ...             'count: %s' % self.count, extension_id='counttracer')
+    ...             'count: %s' % self.count)
 
     >>> count_tracer = CountTracer()
     >>> site_manager.registerUtility(
@@ -157,26 +157,35 @@ point they are registered for.
 
     >>> invokeRequest(req1)
     B 17954544 2008-09-05T09:47:00 GET /test-req1
-    X 17954544 2008-09-05T09:47:00 counttracer count: 1
+    X 17954544 2008-09-05T09:47:00 [example.CountTracer] count: 1
     I 17954544 2008-09-05T09:47:00 0
     C 17954544 2008-09-05T09:47:00
     A 17954544 2008-09-05T09:47:00 200 ?
     E 17954544 2008-09-05T09:47:00
 
+Unnamed extension registrations are not allowed and will result in a
+`ValueError` if present during execution.
 
-Removing an Extension
----------------------
+    >>> site_manager.registerUtility(
+    ...     count_tracer,
+    ...     zc.zservertracelog.interfaces.ITraceRequestStart)
 
-Unregistering the utility removes the extension.
+    >>> invokeRequest(req1)
+    Traceback (most recent call last):
+    ...
+    ValueError: Unnamed Tracelog Extension
+
+To fix the problem, we'll just remove the extension.  Since extensions are
+just utilities, all we have to do is unregister them.
 
     >>> site_manager.unregisterUtility(
     ...     count_tracer,
-    ...     zc.zservertracelog.interfaces.ITraceRequestStart,
-    ...     'example.CountTracer')
+    ...     zc.zservertracelog.interfaces.ITraceRequestStart)
     True
 
     >>> invokeRequest(req1)
     B 21714736 2008-09-05T13:45:44 GET /test-req1
+    X 23418928 2008-08-26T10:55:00 [example.CountTracer] count: 3
     I 21714736 2008-09-05T13:45:44 0
     C 21714736 2008-09-05T13:45:44
     A 21714736 2008-09-05T13:45:44 200 ?
