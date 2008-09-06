@@ -121,29 +121,6 @@ class TemplateGrokker(martian.GlobalGrokker):
         return True
 
 
-class ModulePageTemplateGrokker(martian.InstanceGrokker):
-    martian.component(components.BaseTemplate)
-    # this needs to happen before any other grokkers execute that actually
-    # use the templates
-    martian.priority(1000)
-
-    def grok(self, name, instance, module_info, config, **kw):
-        templates = module_info.getAnnotation('grok.templates', None)
-        if templates is None:
-            return False
-        config.action(
-            discriminator=None,
-            callable=templates.register,
-            args=(name, instance)
-            )
-        config.action(
-            discriminator=None,
-            callable=instance._annotateGrokInfo,
-            args=(name, module_info.dotted_name)
-            )
-        return True
-
-
 class FilesystemPageTemplateGrokker(martian.GlobalGrokker):
     # do this early on, but after ModulePageTemplateGrokker, as
     # findFilesystem depends on module-level templates to be
