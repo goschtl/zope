@@ -15,7 +15,7 @@ expressions can resolve paths:
   >>> manfred = Mammoth()
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
-  >>> view = component.getMultiAdapter((manfred, request), name='cavepainting')
+  >>> view = component.getMultiAdapter((manfred, request), name='cavepainter')
   >>> print view()
   <html>
   <body>
@@ -23,24 +23,18 @@ expressions can resolve paths:
   <h1>red</h1>
   </body>
   </html>
-  
+
 
 """
 import grokcore.view as grok
 
+grok.templatedir('templates')
+
 class Mammoth(grok.Context):
     pass
 
-class CavePainting(grok.View):
+class CavePainter(grok.View):
+    grok.template('update')
+
     def update(self):
         self.color = "red"
-
-
-cavepainting = grok.PageTemplate("""\
-<html>
-<body>
-<h1 tal:content="view/color"/>
-<h1 tal:content="python: view.color"/>
-</body>
-</html>
-""")

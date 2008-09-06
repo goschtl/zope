@@ -29,7 +29,7 @@ It also works if templates are both associated explicitly:
 Because the template is associated, we do not expect it to be
 registered as its own view:
 
-  >>> view = component.getMultiAdapter((manfred, request), name='templ')
+  <<< view = component.getMultiAdapter((manfred, request), name='templ')
   Traceback (most recent call last):
     ...
   ComponentLookupError:
@@ -41,13 +41,13 @@ registered as its own view:
 """
 import grokcore.view as grok
 
+grok.templatedir('templates')
+
 class Mammoth(grok.Context):
     pass
 
 class A(grok.View):
-    pass
-
-a = grok.PageTemplate("View A")
+    grok.template('a')
 
 class B(grok.View):
     grok.template('a')
@@ -57,5 +57,3 @@ class C(grok.View):
 
 class D(grok.View):
     grok.template('templ')
-
-templ = grok.PageTemplate('Template')

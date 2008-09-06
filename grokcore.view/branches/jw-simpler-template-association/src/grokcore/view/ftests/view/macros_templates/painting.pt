@@ -1,0 +1,5 @@
+<html metal:use-macro="context/@@layout/macros/main">
+<div metal:fill-slot="slot">
+GROK SLOT!
+</div>
+</html>

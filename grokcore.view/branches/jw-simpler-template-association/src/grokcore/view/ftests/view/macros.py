@@ -61,55 +61,20 @@ class Grilled(grok.View):
         self.spices = "Pepper and salt"
 
 class Painting(grok.View):
-    pass
-
-painting = grok.PageTemplate("""\
-<html metal:use-macro="context/@@layout/macros/main">
-<div metal:fill-slot="slot">
-GROK SLOT!
-</div>
-</html>
-""")
+    grok.template('painting')
 
 class Layout(grok.View):
-    pass
-
-layout = grok.PageTemplate("""\
-<html metal:define-macro="main">
-<body>
-<h1>GROK MACRO!</h1>
-<div metal:define-slot="slot">
-</div>
-</body>
-</html>""")
+    grok.template('layout')
 
 class Dancing(grok.View):
-    pass
-
-dancing = grok.PageTemplate("""\
-<html metal:use-macro="context/@@dancinghall/macros/something">
-</html>
-""")
+    grok.template('dancing')
 
 class GrillDish(grok.View):
-    pass
-
-grilldish = grok.PageTemplate("""
-<html metal:use-macro="context/@@grilled/macros/spices">
-</html>""")
+    grok.template('grilldish')
 
 class Burnt(grok.View):
-    pass
-
-burnt = grok.PageTemplate("""\
-<html metal:use-macro="context/@@grilled/spices">
-</html>""")
+    grok.template('burnt')
 
 class Grilled(grok.View):
-    pass
-
-grilled = grok.PageTemplate("""\
-<html metal:define-macro="spices">
-Curry
-</html>""")
+    grok.template('grilled')
 

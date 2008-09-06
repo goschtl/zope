@@ -1,0 +1,5 @@
+<html>
+<body>
+<h1 tal:content="this-is-an-error" />
+</body>
+</html>

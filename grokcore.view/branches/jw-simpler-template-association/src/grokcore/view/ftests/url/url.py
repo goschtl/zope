@@ -22,7 +22,7 @@ The views in this test implement self.url():
   >>> browser.open("http://localhost/herd/manfred/yetanother")
   >>> print browser.contents
   http://localhost/herd/manfred/yetanother
-  
+
 We get the views manually so we can do a greater variety of url() calls:
 
   >>> from zope import component
@@ -72,11 +72,11 @@ view on the context object will be constructed:
   >>> another_view.url('yet_another_view')
   'http://127.0.0.1/herd/manfred/yet_another_view'
 
-The url() method supports a data argument which is converted to a CGI type query 
-string. If any of the values are of type unicode it's converted to a string 
+The url() method supports a data argument which is converted to a CGI type query
+string. If any of the values are of type unicode it's converted to a string
 assuming the encoding is UTF-8.
 
-There is some object/name/data resolution code available that provides the magic 
+There is some object/name/data resolution code available that provides the magic
 to make mixing of positional arguments and keyword arguments work.
 
 This is the key word argument signature::
@@ -90,13 +90,13 @@ This is the key word argument signature::
   >>> index_view.url(data=dict(age=28))
   'http://127.0.0.1/herd/manfred/index?age=28'
 
-There is no problem putting one of the 'reserved' arguments inside the data 
+There is no problem putting one of the 'reserved' arguments inside the data
 argument or explicitely supplying 'None':
 
   >>> index_view.url(herd, None, data=dict(name="Peter"))
   'http://127.0.0.1/herd?name=Peter'
 
-Since order in dictionairies is arbitrary we'll test the presence of multiple 
+Since order in dictionairies is arbitrary we'll test the presence of multiple
 keywords by using find()
 
   >>> url = index_view.url('sample_view', data=dict(a=1, b=2, c=3))
@@ -133,21 +133,21 @@ Some combinations of arguments just don't make sense:
   Traceback (most recent call last):
     ...
   TypeError: url() data argument must be a dict.
-  
-Since we're relying on urllib to do the CGI parameter encoding it's quite 
+
+Since we're relying on urllib to do the CGI parameter encoding it's quite
 smart but fails on unicode objects but url() is programmed to automatically
 convert unicode to UTF-8 on the fly.
 
   >>> index_view.url(data={'name':u'Andr\xe9'})
   'http://127.0.0.1/herd/manfred/index?name=Andr%C3%A9'
-   
+
 As we're relying on urllib to do the url encoding, it also converts values that
 are lists to repeated key value pairs such that key=[1,2] becomes key=1&key=2
 
   >>> index_view.url(data={'key':[1,2]})
   'http://127.0.0.1/herd/manfred/index?key=1&key=2'
 
-We also make sure the values in the list that are unicode instances are encoded 
+We also make sure the values in the list that are unicode instances are encoded
 properly:
 
   >>> result = index_view.url(data={'key':[u'\xe9',2]})
@@ -183,19 +183,17 @@ grok.context(Mammoth)
 class Index(grok.View):
     def render(self):
         return self.url()
-    
+
 class Another(grok.View):
     def render(self):
         return self.url()
 
 class YetAnother(grok.View):
-    pass
+    grok.template('yetanother')
 
 class Multiplier(grok.View):
     def update(self, age=0):
         self.age = age
-    
+
     def render(self):
         return unicode(self.age * 2)
-
-yetanother = grok.PageTemplate('<p tal:replace="view/url" />')

@@ -85,7 +85,7 @@ class TemplateRegistry(object):
                 "grokking %r: %s.  Define view classes inheriting "
                 "from grok.View to enable the template(s)." % (
                 module_info.dotted_name, ', '.join(unassociated)))
-            warnings.warn(msg, UserWarning, 1)
+            #warnings.warn(msg, UserWarning, 1)
 
     def checkTemplates(self, module_info, factory, component_name,
                        has_render, has_no_render):

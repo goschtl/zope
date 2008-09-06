@@ -1,0 +1,11 @@
+<html>
+<body>
+<h1 tal:content="string:Mammoth Cave Painting"/>
+<ul>
+  <li tal:content="structure python:repr(request)" />
+  <li tal:content="structure nocall:view" />
+  <li tal:content="structure nocall:context" />
+  <li tal:content="structure nocall:modules" />
+</ul>
+</body>
+</html>

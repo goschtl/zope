@@ -19,12 +19,4 @@ class Mammoth(grok.Context):
     pass
 
 class Painting(grok.View):
-    pass
-
-painting = grok.PageTemplate("""\
-<html>
-<body>
-<h1>Hello, world!</h1>
-</body>
-</html>
-""")
+    grok.template('painting')

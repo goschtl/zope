@@ -37,15 +37,7 @@ class Mammoth(grok.Context):
     pass
 
 class CaveDrawings(grok.View):
-    pass
-
-cavedrawings = grok.PageTemplate("""\
-<html>
-<body>
-<h1>Hello, world!</h1>
-</body>
-</html>
-""")
+    grok.template('cavedrawings')
 
 class MoreDrawings(grok.View):
     grok.layer(rotterdam)

@@ -23,14 +23,4 @@ class Mammoth(grok.Context):
     pass
 
 class Index(grok.View):
-    pass
-
-index = grok.PageTemplate("""\
-<html>
-<body>
-<h1>Hello, world!</h1>
-<span tal:content="structure python:context.__class__">green</span>
-<span tal:content="structure context/__class__">green</span>
-</body>
-</html>
-""")
+    grok.template('index')

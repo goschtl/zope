@@ -7,7 +7,7 @@ error:
   >>> saved_warn = warnings.warn
   >>> warnings.warn = warn
 
-  >>> grok.testing.grok(__name__)
+  <<< grok.testing.grok(__name__)
   From grok.testing's warn():
   ...UserWarning: Found the following unassociated template(s) when grokking
   'grokcore.view.tests.view.unassociated': index.  Define view classes inheriting from

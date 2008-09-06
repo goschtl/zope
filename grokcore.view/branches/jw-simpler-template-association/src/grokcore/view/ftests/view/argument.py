@@ -65,9 +65,3 @@ class UpdateWithArguments(grok.View):
     def update(self, message, another):
         self.message = message
         self.another = another
-
-update = grok.PageTemplate("""
-Coming to us from update():
-Message: <span tal:replace="view/message" />
-Another: <span tal:replace="view/another" />
-""")

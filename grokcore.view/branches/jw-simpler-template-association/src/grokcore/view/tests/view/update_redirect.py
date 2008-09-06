@@ -8,7 +8,7 @@ is not executed subsequently.
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> from zope.component import getMultiAdapter
-  >>> view = getMultiAdapter((manfred, request), name='cavepainting')
+  >>> view = getMultiAdapter((manfred, request), name='cavepaintbrush')
   >>> print view()
   None
   >>> print request.response.getStatus()
@@ -19,18 +19,13 @@ is not executed subsequently.
 """
 import grokcore.view as grok
 
+grok.templatedir('templates')
+
 class Mammoth(grok.Context):
     pass
 
-class CavePainting(grok.View):
+class CavePaintbrush(grok.View):
+    grok.template('thisisanerror')
+
     def update(self):
         self.request.response.redirect('somewhere-else')
-
-
-cavepainting = grok.PageTemplate("""\
-<html>
-<body>
-<h1 tal:content="this-is-an-error" />
-</body>
-</html>
-""")

@@ -1,5 +1,4 @@
 """
-
   >>> grok.testing.grok(__name__)
 
 View with an associated PageTemplate that is referred to using
@@ -21,11 +20,10 @@ View with an associated PageTemplate that is referred to using
 import grokcore.view as grok
 import os.path
 
+grok.templatedir('templatedirectoryname')
+
 class Mammoth(grok.Context):
     pass
 
 class Food(grok.View):
-    pass
-
-food = grok.PageTemplate(filename=os.path.join('templatedirectoryname',
-                                               'food.pt'))
+    grok.template('food')

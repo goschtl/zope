@@ -22,20 +22,14 @@ View with an associated PageTemplate that is referred to using
 """
 import grokcore.view as grok
 
+grok.templatedir('templates')
+
 class Mammoth(grok.Context):
     pass
 
 class Painting(grok.View):
-    grok.template('cavepainting')
-
-cavepainting = grok.PageTemplate("""\
-<html><body><h1>GROK PAINT MAMMOTH!</h1></body></html>
-""")
+    grok.template('painting')
 
 class Food(grok.View):
     grok.template('food_template')
     grok.name('meal')
-
-food_template = grok.PageTemplate("""\
-<html><body><h1>GROK EAT MAMMOTH!</h1></body></html>
-""")
