@@ -7,6 +7,7 @@ Version 0.1.1 (unreleased)
 
 - Bug: Make blob versions of File and Image implement IBlobFile and
   IBlobImage interfaces respectively.
+- Bug: Use local ZopeMessageFactory. This fixes import error on Zope 2.10
 
 Version 0.1.0 (2008-02-27)
 --------------------------
