@@ -28,7 +28,7 @@ setuptools.setup(
     version = version,
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
-    description = '',
+    description = 'Log handler and zc.z3monitor plugin to monitor log activity',
     long_description = (
         read('src/zc/%s/README.txt' % name.split('.')[-1])
         + '\n' +
