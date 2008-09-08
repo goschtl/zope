@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import logging, datetime
+import datetime
+import logging
 
 class CountingHandler(logging.Handler):
 
@@ -58,3 +59,9 @@ def monitor(f, loggername='.', clear=''):
             break
     else:
         raise ValueError("Invalid logger name: "+loggername)
+
+def RootRegistedMonitor():
+    handler = CountingHandler()
+    handler.setFormatter(logging.Formatter("%(asctime)s %(name)s %(message)s"))
+    logging.getLogger().addHandler(handler)
+    return monitor
