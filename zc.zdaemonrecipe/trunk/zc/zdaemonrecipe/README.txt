@@ -108,6 +108,7 @@ deployment-defined locations:
     ... deployment = deploy
     ...
     ... [deploy]
+    ... name = test-deploy
     ... etc-directory = etc
     ... rc-directory = init.d
     ... log-directory = logs
@@ -119,7 +120,7 @@ deployment-defined locations:
     >>> print system(buildout),
     Uninstalling run.
     Installing run.
-    Generated script '/sample-buildout/init.d/deploy-run'.
+    Generated script '/sample-buildout/init.d/test-deploy-run'.
 
     >>> import os
     >>> os.path.exists('parts/run')
@@ -144,7 +145,7 @@ deployment-defined locations:
       </logfile>
     </eventlog>
 
-    >>> cat('init.d', 'deploy-run')
+    >>> cat('init.d', 'test-deploy-run')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -161,12 +162,12 @@ deployment-defined locations:
             ]+sys.argv[1:]
             )
 
-    >>> cat('logrotate', 'deploy-run')
+    >>> cat('logrotate', 'test-deploy-run')
     logs/run.log {
       rotate 5
       weekly
       postrotate
-        init.d/deploy-run -C etc/run-zdaemon.conf reopen_transcript
+        init.d/test-deploy-run -C etc/run-zdaemon.conf reopen_transcript
       endscript
     }
 

@@ -24,13 +24,16 @@ class Recipe:
 
         deployment = self.deployment = options.get('deployment')
         if deployment:
+            # Note we use get below to work with old zc.recipe.deployment eggs.
+            self.deployment = buildout[deployment].get('name', deployment)
+
             options['rc-directory'] = buildout[deployment]['rc-directory']
             options['run-directory'] = buildout[deployment]['run-directory']
             options['log-directory'] = buildout[deployment]['log-directory']
             options['etc-directory'] = buildout[deployment]['etc-directory']
             options['logrotate'] = os.path.join(
                 buildout[deployment]['logrotate-directory'],
-                deployment + '-' + name)
+                self.deployment + '-' + name)
             options['user'] = buildout[deployment]['user']
         else:
             options['rc-directory'] = buildout['buildout']['bin-directory']
