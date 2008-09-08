@@ -29,8 +29,7 @@ setup(name='zope.app.form',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Documentation\n'
-          '----------------------\n'
+          'Detailed documentation:\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'form', 'browser', 'README.txt')
           + '\n\n' +

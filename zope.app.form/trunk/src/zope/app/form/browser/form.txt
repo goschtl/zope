@@ -96,7 +96,7 @@ edit view removing the requirement to implement the `getData()` and
 
 
 Using the `browser:form` directive
-----------------------------------
+==================================
 
 Let's now see how the form directive works. The first task is to load the
 necessary meta-configuration:

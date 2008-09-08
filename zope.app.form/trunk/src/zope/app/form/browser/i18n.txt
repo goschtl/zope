@@ -52,7 +52,7 @@ with an error...
 
 
 Translated
-----------
+==========
 
 And now the add form in German:
 
@@ -119,7 +119,7 @@ The same with an input error:
 
 
 Source widgets
---------------
+==============
 
 Titles of terms are translated by the source widgets. Let's create a source
 for which the terms create message ids:

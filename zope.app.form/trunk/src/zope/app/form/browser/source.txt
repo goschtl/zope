@@ -64,7 +64,7 @@ We'll also need request objects::
 
 
 Iterable Source Widgets
------------------------
+=======================
 
 Iterable sources are expected to be simpler than queriable sources, so
 they represent a good place to start.  The most important aspect of
@@ -490,7 +490,7 @@ The rendered widget (still with the two items selected) looks like this::
 
 
 Source Widget Query Framework
------------------------------
+=============================
 
 An important aspect of sources is that they may have too many values
 to enumerate.  Rather than listing all of the values, we, instead,
@@ -1058,7 +1058,7 @@ buttons that allow us to remove selections::
 
 
 Using vocabulary-dependent widgets with sources
-------------------------------------------------
+===============================================
 
 if you have a widget that uses old-style vocabularies but don't have the
 time to rewrite it for sources, all is not lost! The wrapper
