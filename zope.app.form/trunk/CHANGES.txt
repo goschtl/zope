@@ -5,6 +5,8 @@ CHANGES
 3.6.1 (unreleased)
 ==================
 
+- Fixed restructured text in doc tests to unbreak the PyPI page.
+
 
 3.6.0 (2008-08-22)
 ==================
