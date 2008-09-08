@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.6.1 (2008-09-08)
 ==================
 
 - Fixed restructured text in doc tests to unbreak the PyPI page.
