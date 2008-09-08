@@ -164,7 +164,24 @@ It is an error to name a logger without a counting handler:
     ...
     ValueError: Invalid logger name: test.foo
 
+You can specify a second argument with a value of 'clear', ro clear
+statistics:
 
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, 'test', 'clear')
+    2008-09-05T21:10:16
+    20 22 'test.foo Zzzzz'
+    50 2 'test Waaa'
+
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, 'test', 'clear')
+    2008-09-05T21:10:17
+
+.. Edge case:
+ 
+    >>> plugin = zc.monitorlogstats.monitor(sys.stdout, 'test', 'yes')
+    Traceback (most recent call last):
+    ...
+    ValueError: The second argument, if present, must have the value 'clear'.
+   
 
 .. Cleanup:
 

@@ -43,11 +43,18 @@ def monitor(f, loggername='.', clear=''):
         logger = logging.getLogger(None)
     else:
         logger = logging.getLogger(loggername)
+
+    if clear and clear != 'clear':
+        raise ValueError(
+            "The second argument, if present, must have the value 'clear'.")
+
     for handler in logger.handlers:
         if isinstance(handler, CountingHandler):
             f.write(handler.start_time.isoformat('T')+'\n')
             for record in handler.statistics:
                 f.write("%s %s %r\n" % record)
+            if clear:
+                handler.clear()
             break
     else:
         raise ValueError("Invalid logger name: "+loggername)
