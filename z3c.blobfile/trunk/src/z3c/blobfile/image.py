@@ -24,14 +24,15 @@ from zope.contenttype import guess_content_type
 
 from z3c.blobfile.i18n import ZopeMessageFactory as _
 from z3c.blobfile.file import File
-from zope.app.file.interfaces import IImage
 
 from ZODB.blob import Blob
+
+import interfaces
 
 IMAGE_INFO_BYTES = 1024
 
 class Image(File):
-    implements(IImage)
+    implements(interfaces.IBlobImage)
 
     def __init__(self, data=''):
         '''See interface `IFile`'''

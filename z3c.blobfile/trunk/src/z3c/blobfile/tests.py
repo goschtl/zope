@@ -19,6 +19,7 @@ from zope.interface.verify import verifyClass
 from zope.app.file.interfaces import IImage
 from z3c.blobfile.image import Image, FileFactory, ImageSized, getImageInfo
 from z3c.blobfile.file import File, FileWriteFile, FileReadFile
+from z3c.blobfile.interfaces import IBlobFile, IBlobImage
 
 import testing
 import storages
@@ -70,6 +71,9 @@ class TestImage(unittest.TestCase):
     def testInterface(self):
         self.failUnless(IImage.implementedBy(Image))
         self.failUnless(verifyClass(IImage, Image))
+        self.failUnless(IBlobFile.implementedBy(Image))
+        self.failUnless(IBlobImage.implementedBy(Image))
+        self.failUnless(verifyClass(IBlobFile, Image))
 
 class TestFileAdapters(unittest.TestCase):
 

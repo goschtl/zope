@@ -20,7 +20,6 @@ from zope.interface import implements
 import zope.component
 import zope.component.interfaces
 import zope.app.publication.interfaces
-import zope.app.file.interfaces
 
 from ZODB.blob import Blob
 
@@ -30,7 +29,7 @@ class File(Persistent):
     """A persistent content component storing binary file data."""
 
     implements(zope.app.publication.interfaces.IFileContent, 
-               zope.app.file.interfaces.IFile)
+               interfaces.IBlobFile)
 
     size = 0
     

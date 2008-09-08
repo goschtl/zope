@@ -2,10 +2,11 @@
 CHANGES
 =======
 
-Version 0.2.0 (unreleased)
+Version 0.1.1 (unreleased)
 --------------------------
 
-- 
+- Bug: Make blob versions of File and Image implement IBlobFile and
+  IBlobImage interfaces respectively.
 
 Version 0.1.0 (2008-02-27)
 --------------------------
