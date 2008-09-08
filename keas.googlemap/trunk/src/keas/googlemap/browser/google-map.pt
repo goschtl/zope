@@ -1,7 +1,6 @@
 <div tal:attributes="id options/view/id;
 		     style options/view/style">
-[Google Map - If you see this, your browser is not compatible with
-google maps, or there was an error.]
+Loading Map...
 </div>
 
 <script type="text/javascript" tal:content="structure options/view/javascript">
