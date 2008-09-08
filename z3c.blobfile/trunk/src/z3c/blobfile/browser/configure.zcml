@@ -1,7 +1,15 @@
 <configure
     xmlns="http://namespaces.zope.org/browser"
-    i18n_domain='zope'
+    xmlns:zope="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
     >
+
+  <!-- IResult adapter for opened BlobFiles -->
+  <zope:adapter
+      for="ZODB.blob.BlobFile"
+      provides="zope.publisher.http.IResult"
+      factory="zope.app.wsgi.fileresult.FileResult"
+      />
 
   <!-- directives for File -->
   
@@ -12,15 +20,15 @@
       label="Change a file"
       permission="zope.ManageContent"
       class="zope.app.file.browser.file.FileEdit"
-      >
-  </form>
+      />
 
   <menuItem
       menu="zmi_views" title="Edit"
       for="z3c.blobfile.interfaces.IBlobFile"
       action="edit.html"
       filter="python:context.contentType.startswith('text/')"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent"
+      />
 
   <page
       name="upload.html"
@@ -36,8 +44,8 @@
       name="index.html"
       permission="zope.View"
       class="z3c.blobfile.browser.file.FileView"
-      attribute="show" />
-
+      attribute="show"
+      />
 
   <addMenuItem
       class="z3c.blobfile.file.File"
@@ -78,7 +86,7 @@
       for="z3c.blobfile.interfaces.IBlobImage"
       permission="zope.View"
       allowed_attributes="__call__ tag"
-      class="zope.app.file.browser.image.ImageData"
+      class=".image.ImageData"
       />
 
   <icon
