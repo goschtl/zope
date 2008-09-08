@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-name, version = 'zc.monitorlogstats', '0.1.0'
+name, version = 'zc.monitorlogstats', '0'
 
 import os, setuptools
 
