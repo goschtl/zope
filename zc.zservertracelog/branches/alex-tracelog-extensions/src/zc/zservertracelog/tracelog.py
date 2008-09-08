@@ -96,7 +96,7 @@ class Channel(zope.server.http.httpserverchannel.HTTPServerChannel):
             zc.zservertracelog.interfaces.ITraceRequestStart, logger)
         logger.log(str(parser.content_length), trace_code='I')
         _run_trace_extensions(
-            zc.zservertracelog.interfaces.ITraceRequestInputAcquired, logger)
+            zc.zservertracelog.interfaces.ITraceInputAcquired, logger)
         zope.server.http.httpserverchannel.HTTPServerChannel.handle_request(
             self, parser)
 

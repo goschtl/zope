@@ -36,7 +36,7 @@ class ITraceRequestStart(ITracer):
     """Enters the *Request Start* trace point."""
 
 
-class ITraceRequestInputAcquired(ITracer):
+class ITraceInputAcquired(ITracer):
     """Enters the *Request Input Acquired* trace point."""
 
 

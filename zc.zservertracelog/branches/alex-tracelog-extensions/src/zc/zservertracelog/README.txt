@@ -200,7 +200,7 @@ other trace points.
 
     >>> site_manager.registerUtility(
     ...     count_tracer,
-    ...     zc.zservertracelog.interfaces.ITraceRequestInputAcquired,
+    ...     zc.zservertracelog.interfaces.ITraceInputAcquired,
     ...     'example.Tracer')
 
     >>> site_manager.registerUtility(
