@@ -27,3 +27,5 @@ def isASCII(s):
     else:
         raise TypeError('isASCII() requires a string or unicode string')
 
+def test():
+    # bloedsinn
