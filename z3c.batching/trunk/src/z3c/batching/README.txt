@@ -219,13 +219,13 @@ Slicing
   [<Batch start=0, size=3>]
 	
   >>> batch.batches[:]
-  [<Batch start=0, size=3>, <Batch start=3, size=3>, <Batch start=6, size=3>]
+  [<Batch start=0, size=3>, <Batch start=3, size=3>, <Batch start=6, size=3>, <Batch start=9, size=3>]
 	
   >>> batch.batches[1:2]
   [<Batch start=3, size=3>]
 	
   >>> batch.batches[1:]
-  [<Batch start=3, size=3>, <Batch start=6, size=3>]
+  [<Batch start=3, size=3>, <Batch start=6, size=3>, <Batch start=9, size=3>]
 
   >>> batch.batches[10:]
   []
