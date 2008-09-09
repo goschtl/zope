@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,9 +13,8 @@
 ##############################################################################
 """z3c.blobfile common test related classes/functions/objects.
 
-$Id: testing.py 72426 2007-02-07 13:57:45Z baijum $
+$Id$
 """
-
 __docformat__ = "reStructuredText"
 
 import os.path

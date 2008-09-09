@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -27,7 +27,7 @@ setup(name='z3c.blobfile',
       author_email = "zope3-dev@zope.org",
       license = "ZPL 2.1",
       keywords = "zope3 ZODB blob file image content",
-      url='http://svn.zope.org/z3c.blobfile',
+      url='http://pypi.python.org/pypi/z3c.blobfile',
       description='File and Image Using Blob Support of ZODB -- Zope 3 Content Components',
       long_description=(
           read('README.txt')

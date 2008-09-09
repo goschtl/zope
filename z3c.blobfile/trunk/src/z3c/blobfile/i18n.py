@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Customization of zope.i18n for the Zope application server
 
-$Id: i18n.py 73772 2007-03-27 15:09:19Z dobe $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 

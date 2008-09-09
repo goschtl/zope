@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """File views.
 
-$Id: file.py 81031 2007-10-24 14:08:53Z srichter $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
