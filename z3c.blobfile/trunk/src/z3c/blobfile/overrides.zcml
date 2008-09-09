@@ -1,9 +1,10 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser">
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n:domain="zope"
+  >
 
-  <!-- Provide local overrides of standard configurations -->
-
-    <!-- content classes -->
+  <!-- Provide overrides of zope.app.file configurations -->
 
   <class class=".file.File">
 
@@ -25,9 +26,6 @@
 
   </class>
 
-  <!-- include browser package -->
-
-  <include package="z3c.blobfile.browser" />
-
+  <include package=".browser" />
 
 </configure>
