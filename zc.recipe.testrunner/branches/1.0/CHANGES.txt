@@ -23,7 +23,7 @@ Change History
 ====================
 
 - Added the ability to use `initialization` option that will be inserted into
-the bin/test after the environment is set up.
+  the bin/test after the environment is set up.
 
 1.0.0b7 (2007-04-26)
 ====================
