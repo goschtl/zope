@@ -12,7 +12,7 @@
 #
 ##############################################################################
 name = 'zc.zdaemonrecipe'
-version = '0.2dev'
+version = '0.3dev'
 
 import os
 from setuptools import setup, find_packages
