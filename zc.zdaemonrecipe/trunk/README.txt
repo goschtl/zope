@@ -10,7 +10,7 @@ scripts.
 Releases
 ********
 
-0.2 (unreleased)
+0.2 (2008-09-10)
 ================
 
 - Added support for the deployment recipe ``name`` option. 
