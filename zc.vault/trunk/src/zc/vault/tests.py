@@ -167,8 +167,12 @@ def test_suite():
 
     try:
         import zc.shortcut
+        normalize_string_checker = renormalizing.RENormalizing([
+            (re.compile(r"\bu('[^']*')"), r'\1'),
+            ])
         tests += (doctest.DocFileSuite(
-                    'traversal.txt', 
+                    'traversal.txt',
+                    checker=normalize_string_checker,
                     setUp=traversalSetUp, tearDown=tearDown),)
     except ImportError:
         pass
