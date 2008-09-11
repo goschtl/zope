@@ -6,7 +6,7 @@
   <form action="." tal:attributes="action request/URL"
         method="post" enctype="multipart/form-data">
 
-    <h3 i18n:translate="">Add a File (Blob)</h3>
+    <h3 i18n:translate="">Add a File</h3>
 
     <div tal:define="errors view/errors" tal:content="errors"
         i18n:translate=""/>

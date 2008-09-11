@@ -4,7 +4,10 @@ CHANGES
 
 Version 0.1.2 (unreleased)
 
-- Bug: Set i18n domain in "overrides.zcml" to avoid warnings. 
+- Bug: Set i18n domain in "overrides.zcml" to avoid warnings.
+- Don't expose Blob implementation details in add/upload forms. Also, "zope"
+  translation domain has no translations for "Upload a File (Blob)", it just
+  has "Upload a File" translations, so use it.
 
 Version 0.1.1 (2008-09-08)
 --------------------------
