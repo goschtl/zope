@@ -1,0 +1,42 @@
+=======
+CHANGES
+=======
+
+0.3.1 (2008-09-11)
+------------------
+
+- Relax M2Crypto version requirements to 0.18 or newer.
+
+
+0.3.0 (2008-09-04)
+------------------
+
+- A simple KeyHolder utility is available in keas.kmi.keyholder.
+
+
+0.2.0 (2008-09-04)
+------------------
+
+- Sample server shows how to enable SSL
+
+- Front page now shows the number of stored keys instead of a
+  ComponentLookupError message.
+
+- Command-line client for testing a remote Key Management Server
+
+- Bugfix: LocalKeyManagementFacility was broken (AttributeError: 'RESTClient'
+  object has no attribute 'POST')
+
+
+0.1.0 (2008-09-03)
+------------------
+
+- Initial Release
+
+  * Key Generation Service
+
+  * Encryption Service (Master and Local)
+
+  * REST API for key communication between encryption services
+
+  * Encrypted Persistent Storage
