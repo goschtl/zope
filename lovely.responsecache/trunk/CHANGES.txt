@@ -5,6 +5,8 @@ Changes for lovely.responsecache
 trunk
 =====
 
+ - added purge testing utilities
+
 2008/07/17 1.2.0
 ================
 

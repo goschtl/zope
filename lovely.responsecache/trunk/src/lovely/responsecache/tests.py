@@ -31,6 +31,10 @@ from lovely.memcached.interfaces import IMemcachedClient
 
 from zope.testing.loggingsupport import InstalledHandler
 
+from lovely.responsecache.purge import PurgeUtil
+
+import testing.purge
+
 from view import ResponseCacheSettings
 
 
@@ -72,6 +76,16 @@ def tearDown(test):
     setup.placefulTearDown()
 
 
+def purgeSetUp(test):
+    # before we can use the purge test utilities we need to have a purge
+    # utility.
+    component.provideUtility(PurgeUtil(['varnish'], 1, 60)) # , IPurge)
+    testing.purge.setUpPurge(test)
+
+def purgeTearDown(test):
+    testing.purge.tearDownPurge(test)
+
+
 def test_suite():
     fsuite = functional.FunctionalDocFileSuite('PURGEVIEW.txt')
     fsuite.layer=ResponseCacheLayer
@@ -91,6 +105,10 @@ def test_suite():
             ),
         DocFileSuite(
             'PURGEDISK.txt', setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+        DocFileSuite(
+            'testing/purge.txt', setUp=purgeSetUp, tearDown=purgeTearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
         fsuite,
