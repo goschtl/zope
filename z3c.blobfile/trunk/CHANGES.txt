@@ -3,10 +3,12 @@ CHANGES
 =======
 
 Version 0.1.3 (unreleased)
+--------------------------
 
 -
 
 Version 0.1.2 (2008-09-11)
+--------------------------
 
 - Bug: Set i18n domain in "overrides.zcml" to avoid warnings.
 - Don't expose Blob implementation details in add/upload forms. Also, "zope"
