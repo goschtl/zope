@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.blobfile',
-      version='0.1.2dev',
+      version='0.1.3dev',
       author = "Zope Community",
       author_email = "zope3-dev@zope.org",
       license = "ZPL 2.1",
