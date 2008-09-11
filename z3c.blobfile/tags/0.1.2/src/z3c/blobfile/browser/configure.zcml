@@ -1,0 +1,131 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
+
+  <!-- IResult adapter for opened BlobFiles -->
+  <zope:adapter
+      for="ZODB.blob.BlobFile"
+      provides="zope.publisher.http.IResult"
+      factory="zope.app.wsgi.fileresult.FileResult"
+      />
+
+  <!-- directives for File -->
+  
+  <form
+      name="edit.html"
+      for="z3c.blobfile.interfaces.IBlobFile"
+      schema="zope.app.file.browser.file.IFileEditForm"
+      label="Change a file"
+      permission="zope.ManageContent"
+      class="zope.app.file.browser.file.FileEdit"
+      />
+
+  <menuItem
+      menu="zmi_views" title="Edit"
+      for="z3c.blobfile.interfaces.IBlobFile"
+      action="edit.html"
+      filter="python:context.contentType.startswith('text/')"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      name="upload.html"
+      menu="zmi_views" title="Upload"
+      for="z3c.blobfile.interfaces.IBlobFile"
+      template="file_upload.pt"
+      class="zope.app.file.browser.file.FileUpload"
+      permission="zope.ManageContent"
+      />
+
+  <page
+      for="z3c.blobfile.interfaces.IBlobFile"
+      name="index.html"
+      permission="zope.View"
+      class="z3c.blobfile.browser.file.FileView"
+      attribute="show"
+      />
+
+  <addMenuItem
+      class="z3c.blobfile.file.File"
+      title="File"
+      description="A File"
+      permission="zope.ManageContent"
+      view="z3c.blobfile.file.File"
+      />
+
+  <page
+      name="z3c.blobfile.file.File"
+      for="zope.app.container.interfaces.IAdding"
+      template="file_add.pt"
+      class=".file.FileAdd"
+      permission="zope.ManageContent"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="z3c.blobfile.interfaces.IBlobFile"
+      file="file_icon.gif"
+      />
+
+  <!-- Directives for Image -->
+
+  <editform
+      schema="z3c.blobfile.interfaces.IBlobImage"
+      name="upload.html"
+      menu="zmi_views" title="Upload"
+      label="Upload an image"
+      permission="zope.ManageContent"
+      class="zope.app.file.browser.image.ImageUpload"
+      template="image_edit.pt"
+      />
+
+  <page
+      name="index.html"
+      for="z3c.blobfile.interfaces.IBlobImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      class=".image.ImageData"
+      />
+
+  <icon
+      name="zmi_icon"
+      for="z3c.blobfile.interfaces.IBlobImage"
+      file="image_icon.gif"
+      />
+
+  <addMenuItem
+      class="z3c.blobfile.image.Image"
+      title="Image"
+      description="An Image"
+      permission="zope.ManageContent"
+      view="z3c.blobfile.image.Image"
+      />
+
+  <addform
+      schema="z3c.blobfile.interfaces.IBlobImage"
+      label="Add an Image"
+      content_factory="z3c.blobfile.image.Image"
+      class="zope.app.file.browser.image.ImageAdd"
+      name="z3c.blobfile.image.Image"
+      permission="zope.ManageContent"
+      />
+
+    <page
+        for="z3c.blobfile.interfaces.IBlobFile"
+        name="preview.html"
+        template="preview.pt"
+        permission="zope.ManageContent"
+        menu="zmi_views" title="Preview"
+        />
+
+    <page
+        for="z3c.blobfile.interfaces.IBlobImage"
+        name="preview.html"
+        template="preview.pt"
+        permission="zope.ManageContent"
+        menu="zmi_views" title="Preview"
+        />
+
+</configure>
