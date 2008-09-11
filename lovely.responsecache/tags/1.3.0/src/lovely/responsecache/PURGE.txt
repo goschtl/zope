@@ -1,0 +1,277 @@
+=========================
+Purging an external cache
+=========================
+
+ - multiple caches
+ - zmi UI to manually purge
+ - implemented as utility
+ - configured by zcml
+
+
+Let's create a purge utility. To ::
+
+    >>> from zope import component
+    >>> from lovely.responsecache.purge import PurgeUtil
+    >>> HTTP_PORT = 33334
+    >>> hosts = ['http://localhost:%d' % HTTP_PORT]
+    >>> util = PurgeUtil(hosts, timeout=1, retryDelay=0)
+    >>> component.provideUtility(util)
+
+Let's purge an expression::
+
+    >>> util.purge('http://domain/purge_expression1')
+
+Purging is integrated into the transaction manager, that means the real purge
+is done on transaction commit and only if the the second phase of the commit
+is used. This makes sure we do not purge if a request fails.
+
+    >>> import transaction
+
+Before we commit the transaction we clear the log to check for purges.
+
+    >>> log_info.clear()
+
+Now we commit.
+
+    >>> transaction.commit()
+
+And have our purge in the log.
+
+    >>> print log_info
+    lovely.responsecache.purge ERROR
+      unable to purge 'http://localhost:33334/purge_expression1', reason: (...)
+
+As we can see we could not reach any server. So let's set up a http server::
+
+    >>> import threading
+    >>> from BaseHTTPServer import HTTPServer
+    >>> from SimpleHTTPServer import SimpleHTTPRequestHandler
+
+    >>> class StoppableHttpServer(HTTPServer):
+    ...     """http server that reacts to self.stop flag"""
+    ...     def serve_forever (self):
+    ...         """Handle one request at a time until stopped."""
+    ...         self.stop = False
+    ...         while not self.stop:
+    ...             self.handle_request()
+
+    >>> purgedUrls = []
+    >>> class StoppableHttpRequestHandler(SimpleHTTPRequestHandler):
+    ...     """http request handler with QUIT stopping the server"""
+    ...     def do_QUIT (self):
+    ...         """send 200 OK response, and set server.stop to True"""
+    ...         self.send_response(200)
+    ...         self.end_headers()
+    ...         self.server.stop = True
+    ...     def do_PURGE (self):
+    ...         """log the purge"""
+    ...         purgedUrls.append(self.path)
+    ...         self.send_response(200)
+    ...         self.end_headers()
+
+    >>> def startServer():
+    ...     address = ("localhost", HTTP_PORT)
+    ...     server = StoppableHttpServer(address, StoppableHttpRequestHandler)
+    ...     server.serve_forever()
+
+    >>> serverThread = threading.Thread(target=startServer)
+    >>> serverThread.start()
+
+OK, next try to purge some cache entries::
+
+    >>> log_info.clear()
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33334/purge_expression1'
+
+    >>> purgedUrls
+    ['/purge_expression1']
+
+If we commit without adding a new purge nothing happens.
+
+    >>> purgedUrls = []
+    >>> transaction.commit()
+    >>> purgedUrls
+    []
+
+Now call purge with more than one expressions::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> util.purge('http://domain/purge_expression2')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression2']
+
+Now call purge with duplicated expressions::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> util.purge('http://domain/purge_expression2')
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression2']
+
+If we abort the transaction, no purge will happen::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.abort()
+    >>> transaction.commit()
+    >>> purgedUrls
+    []
+
+Savepoints are supported::
+
+    >>> sp = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    []
+
+The same savepoint can be rolled back multiple times::
+
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp.rollback()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+And we can have multiple savepoints::
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp1 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp2 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp2.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression2']
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> sp1 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression2')
+    >>> sp2 = transaction.savepoint()
+    >>> util.purge('http://domain/purge_expression3')
+    >>> sp1.rollback()
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+If there are multiple hosts to purge it has to work this way::
+
+    >>> HTTP_PORT2 = 33335
+    >>> hosts = ['http://localhost:%d' % HTTP_PORT,
+    ...          'http://localhost:%d' % HTTP_PORT2]
+    >>> util.hosts = hosts
+
+    >>> def startServer2():
+    ...     address = ("localhost", HTTP_PORT2)
+    ...     server = StoppableHttpServer(address, StoppableHttpRequestHandler)
+    ...     server.serve_forever()
+
+    >>> serverThread2 = threading.Thread(target=startServer2)
+    >>> serverThread2.start()
+
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression1']
+
+If a server is not reachable it should be ignored for the configured
+retryDelay. Currently the retryDelay is set to zero so we have to set
+a proper one::
+
+    >>> util.retryDelay = 2
+
+    >>> from httplib import HTTPConnection
+    >>> conn = HTTPConnection("localhost:%d" % HTTP_PORT)
+    >>> conn.request("QUIT", "/")
+    >>> ret = conn.getresponse()
+
+    >>> log_info.clear()
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+As we can see there is just one purge in the list. So we have to checkout
+the logging info::
+
+    >>> print log_info
+    lovely.responsecache.purge ERROR
+      unable to purge 'http://localhost:33334/purge_expression1', reason: (...)
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
+
+The failed host is listed in the dict failedHosts::
+
+    >>> util.failedHosts
+    {'http://localhost:33334': ...}
+
+If we purge once again the host on the failedHosts should not get purged::
+
+    >>> log_info.clear()
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
+
+If the host is up again it will be ignored till the rertyDelay elapsed::
+
+    >>> serverThread = threading.Thread(target=startServer)
+    >>> serverThread.start()
+
+    >>> log_info.clear()
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1']
+
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      purged 'http://localhost:33335/purge_expression1'
+
+Now lets wait until the retryDelay was elapsed and than the host will
+get purged again::
+
+    >>> from time import sleep
+    >>> sleep(2)
+
+    >>> log_info.clear()
+    >>> purgedUrls = []
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> purgedUrls
+    ['/purge_expression1', '/purge_expression1']
+
+Stopping the http servers::
+
+    >>> from httplib import HTTPConnection
+    >>> conn = HTTPConnection("localhost:%d" % HTTP_PORT)
+    >>> conn.request("QUIT", "/")
+    >>> ret = conn.getresponse()
+
+    >>> from httplib import HTTPConnection
+    >>> conn = HTTPConnection("localhost:%d" % HTTP_PORT2)
+    >>> conn.request("QUIT", "/")
+    >>> ret = conn.getresponse()
