@@ -6,8 +6,11 @@ class IAppRoot(IApplication, IReadContainer):
     def getStore(self):
 	""" Return the default store megrok.rdb.store """
 
-    def add(self):
-	""" Add an object to the default store """
+    def delete(self, item):
+	""" Delete item form store"""
+
+    def add(self, item):
+	""" Add item to the default store """
 
     def __delitem__(self, name):
 	""" Delets the object with the pk-key name """

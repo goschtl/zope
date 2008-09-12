@@ -8,9 +8,12 @@ from zope.component import getUtility
 from zope.configuration.name import resolve
 import megrok.storm
 from interfaces import IAppRoot
+from zope.location.interfaces import ILocation
+from zope.interface import implements
+from grokcore.component import Context
 
-class AppRoot(grok.Model):
-    grok.implements(IAppRoot)
+class AppRoot(object):
+    grok.implements(IAppRoot, ILocation)
 
     def getStore(self):
 	name = megrok.storm.directive.storename.bind().get(self)
@@ -27,7 +30,13 @@ class AppRoot(grok.Model):
     def __iter__(self):
         store = self.getStore()
 	object = megrok.storm.directive.rdb_object.bind().get(self)
-        return iter( store.find(object))
+	key = megrok.storm.directive.key.bind().get(self)
+	rc = []
+	for obj in store.find(object):
+	    obj.__name__ = getattr(obj, key)
+	    obj.__parent__ = self
+	    rc.append(obj)
+        return iter( rc )
 
     def __getitem__(self, name):
         store = self.getStore()
@@ -35,6 +44,10 @@ class AppRoot(grok.Model):
 	key = megrok.storm.directive.key.bind().get(self)
         key_property = getattr(object, key)
         item = store.find(object, key_property == name).one()
+        ### Set ILocation if item
+	if item:
+	    item.__parent__ = self
+	    item.__name__ = name 
         return item
 
     def  __setitem__(self, name, item):
@@ -42,10 +55,22 @@ class AppRoot(grok.Model):
         setattr(item, key, name)
         store = self.getStore()
         store.add(item)
+	### Add Location Information
+	key = megrok.storm.directive.key.bind().get(self)
+	item.__name__ = getattr(item, key) 
+	item.__parent__ = self
 
     def add(self, item):
         store = self.getStore()
         store.add(item)
+	### Add Location Information
+	key = megrok.storm.directive.key.bind().get(self)
+	item.__name__ = getattr(item, key) 
+	item.__parent__ = self
+
+    def delete(self, item):	
+        store = self.getStore()
+        store.remove(item)
 
     def __len__(self):
         store = self.getStore()
@@ -67,6 +92,11 @@ class AppRoot(grok.Model):
 	result = store.find(object, *args, **kwargs)
 	return result
 
+    def get(self, key, default=None):
+        try:
+	    return self[key]
+	except TypeError:
+	    return default
 
 class Store(object):
     pass
@@ -86,7 +116,10 @@ class store(martian.MultipleTimesDirective):
 	return (storename, uri)
 
 
-class Model(grokcore.component.Context):
-    pass
+class Model(Context):
+    implements(ILocation)
+
+    __parent__ = None
+    __name__ = None
 
 
