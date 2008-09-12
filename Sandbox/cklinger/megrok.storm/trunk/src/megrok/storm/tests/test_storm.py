@@ -36,7 +36,7 @@
   'name'
 
   >>> megrok.storm.directive.rdb_object.bind().get(app)
-  <class 'megrok.storm.tests.helper.Person'>
+  <class 'megrok.storm.tests.test_storm.Person'>
 
   The megrok.storm.AppRoot acts like a container
   ----------------------------------------------
@@ -57,7 +57,13 @@
   >>> joe.name=u"Joe"
   >>> joe.age=35
   >>> joe
-  <megrok.storm.tests.helper.Person...>
+  <megrok.storm.tests.test_storm.Person...>
+
+  Our Model provieds the ILocation Interface
+
+  >>> ILocation.providedBy(joe)
+  True
+
   >>> app[u"joe"] = joe
 
   Now the len of our application should be one
@@ -68,13 +74,13 @@
   and we should find our object if we iterate about the app
 
   >>> [x for x in app]
-  [<megrok.storm.tests.helper.Person object at ...>]
+  [<megrok.storm.tests.test_storm.Person object at ...>]
 
   We get the object with the container api
 
   >>> obj = app[u'joe']
   >>> obj
-  <megrok.storm.tests.helper.Person...>
+  <megrok.storm.tests.test_storm.Person...>
 
   >>> obj.name
   u'joe'
@@ -85,7 +91,7 @@
   [u'joe']
 
   >>> app.items()
-  [<megrok.storm.tests.helper.Person object at ...>]
+  [<megrok.storm.tests.test_storm.Person object at ...>]
 
   Of course we can use our store to use pure SQL
 
@@ -112,7 +118,7 @@
   >>> result.count()
   1
 
-  and we should find 0 tom´s
+  and we should find 0 entries for tom
 
   >>> result = app.filter(name = u'tom')
   >>> result.count()
@@ -132,13 +138,27 @@
   >>> len(app)
   1
 
+  It is also possible to use the delete method on our app
+
+  >>> app.delete(chris)
+  >>> len(app)
+  0
+
+
 """
 import grok
 import megrok.storm
+from storm.locals import *
 from zope.component import getUtility
 from storm.zope.interfaces import IZStorm
-from megrok.storm.tests.helper import Person
 from megrok.storm.interfaces import IAppRoot
+from zope.location.interfaces import ILocation
+
+class Person(megrok.storm.Model):
+    __storm_table__ = "person"
+
+    name = Unicode(primary=True)
+    age = Int()
 
 class MyDB(megrok.storm.Store):
     """ A Store which has the name 'mydb' """
