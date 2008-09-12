@@ -19,7 +19,7 @@ import zope.interface
 
 
 class ITraceLog(zope.interface.Interface):
-    """Logs records from writers."""
+    """Writes messages to the trace log."""
 
-    def log(msg=None, timestamp=None):
+    def log(msg=None):
         """Write a message to the trace log."""

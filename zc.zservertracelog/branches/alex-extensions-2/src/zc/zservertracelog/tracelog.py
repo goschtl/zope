@@ -32,43 +32,26 @@ def _format_datetime(dt):
     return dt.replace(microsecond=0).isoformat()
 
 
-def _log(logger, trace_code, msg=None, timestamp=None):
-    logger.trace_code = trace_code
-    logger.extension_id = None
-    logger.log(msg, timestamp)
-    logger.trace_code = None
+def _log(channel_id, trace_code='X', msg=None, timestamp=None):
+    if timestamp is None:
+        timestamp = datetime.datetime.now()
+
+    entry = '%s %s %s' % (trace_code, channel_id, _format_datetime(timestamp))
+
+    if msg:
+        entry += ' %s' % repr(msg)[1:-1]
+
+    tracelog.info(entry)
 
 
 class TraceLog(object):
     zope.interface.implements(zc.zservertracelog.interfaces.ITraceLog)
 
-    extension_id = None
-    trace_code = None
+    def __init__(self, channel_id):
+        self.channel_id = channel_id
 
-    def __init__(self, channel):
-        self.channel_id = id(channel)
-
-    def log(self, msg=None, timestamp=None):
-
-        if timestamp is None:
-            timestamp = datetime.datetime.now()
-
-        if not self.trace_code:
-            self.trace_code = 'X'
-
-        if self.trace_code == 'X' and not self.extension_id:
-            raise ValueError('Unnamed Tracelog Extension')
-
-        entry = '%s %s %s' % (
-            self.trace_code, self.channel_id, _format_datetime(timestamp))
-
-        if self.extension_id:
-            entry += ' %s' % self.extension_id
-
-        if msg:
-            entry += ' %s' % repr(msg)[1:-1]
-
-        tracelog.info(entry)
+    def log(self, msg=None):
+        _log(self.channel_id, 'X', msg)
 
 
 class Parser(zope.server.http.httprequestparser.HTTPRequestParser):
@@ -82,16 +65,15 @@ class Channel(zope.server.http.httpserverchannel.HTTPServerChannel):
     parser_class = Parser
 
     def handle_request(self, parser):
-        logger = TraceLog(self)
-
         full_path = parser.path
         if parser.query:
             full_path += '?%s' % parser.query
         elif parser.query is not None:
             full_path += '?'
 
-        _log(logger, 'B', '%s %s' % (parser.command, full_path), parser.__B)
-        _log(logger, 'I', str(parser.content_length))
+        cid = id(self)
+        _log(cid, 'B', '%s %s' % (parser.command, full_path), parser.__B)
+        _log(cid, 'I', str(parser.content_length))
 
         zope.server.http.httpserverchannel.HTTPServerChannel.handle_request(
             self, parser)
@@ -107,10 +89,11 @@ class Server(wsgihttpserver.WSGIHTTPServer):
 
     def executeRequest(self, task):
         """Overrides HTTPServer.executeRequest()."""
-        logger = TraceLog(task.channel)
-        _log(logger, 'C')
+        cid = id(task.channel)
+        _log(cid, 'C')
         env = task.getCGIEnvironment()
         env['wsgi.input'] = task.request_data.getBodyStream()
+        env['zc.zservertracelog.TraceLog'] = TraceLog(cid)
 
         def start_response(status, headers):
             # Prepare the headers for output
@@ -125,10 +108,11 @@ class Server(wsgihttpserver.WSGIHTTPServer):
         try:
             response = self.application(env, start_response)
         except Exception, v:
-            _log(logger, 'A', 'Error: %s' % v)
-            _log(logger, 'E')
+            _log(cid, 'A', 'Error: %s' % v)
+            _log(cid, 'E')
             raise
         else:
+            del env['zc.zservertracelog.TraceLog']
             accumulated_headers = getattr(task, 'accumulated_headers') or ()
             length = [h.split(': ')[1].strip()
                       for h in accumulated_headers
@@ -138,15 +122,15 @@ class Server(wsgihttpserver.WSGIHTTPServer):
             else:
                 length = '?'
 
-            _log(logger, 'A', '%s %s' % (getattr(task, 'status', '?'), length))
+            _log(cid, 'A', '%s %s' % (getattr(task, 'status', '?'), length))
 
             try:
                 task.write(response)
             except Exception, v:
-                _log(logger, 'E', 'Error: %s' % v)
+                _log(cid, 'E', 'Error: %s' % v)
                 raise
             else:
-                _log(logger, 'E')
+                _log(cid, 'E')
 
 
 http = servertype.ServerType(

@@ -172,3 +172,26 @@ Empty query strings are also preserved.
     C 21598352 2008-09-12T11:40:27
     A 21598352 2008-09-12T11:40:27 200 ?
     E 21598352 2008-09-12T11:40:27
+
+
+Adding Additional Entries to the Trace Log
+==========================================
+
+A tracelog object is added to the WSGI environment on each request.  This
+object implements ``ITraceLog`` and provides applications a method to add
+custom entries to the log.
+
+Here is an example application that adds a custom entry to the tracelog.
+
+    >>> def noisy_app(environ, start_response):
+    ...     logger = environ['zc.zservertracelog.TraceLog']
+    ...     logger.log('beep! beep!')
+    >>> faux_app.app_hook = noisy_app
+
+    >>> invokeRequest(req1)
+    B 21569456 2008-09-12T15:51:05 GET /test-req1
+    I 21569456 2008-09-12T15:51:05 0
+    C 21569456 2008-09-12T15:51:05
+    X 21569456 2008-09-12T15:51:05 beep! beep!
+    A 21569456 2008-09-12T15:51:05 200 ?
+    E 21569456 2008-09-12T15:51:05
