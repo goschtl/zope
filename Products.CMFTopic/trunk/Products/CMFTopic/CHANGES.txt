@@ -4,6 +4,9 @@ Products.CMFTopic Changelog
 2.2.0 (unreleased)
 ------------------
 
+- ZMI: Removed the ability to create content from the ZMI. It was never
+  fully supported and carried the risk of creating half-formed content.
+
 - unit tests: Add a functional testing layer for CMFTopic, and use it.
 
 - Topic: 'addTopic' no longer sends add events.

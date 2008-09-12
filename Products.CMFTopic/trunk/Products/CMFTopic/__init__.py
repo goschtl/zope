@@ -15,8 +15,6 @@
 $Id$
 """
 
-from Products.CMFCore.utils import ContentInit
-
 import Topic
 from permissions import AddTopics
 
@@ -32,10 +30,3 @@ def initialize(context):
 
     context.registerHelpTitle( 'CMF Topic Help' )
     context.registerHelp( directory='help' )
-
-    # BBB: register oldstyle constructors
-    ContentInit( 'CMF Topic Content'
-               , content_types=()
-               , permission=AddTopics
-               , extra_constructors=(Topic.addTopic,)
-               ).initialize( context )

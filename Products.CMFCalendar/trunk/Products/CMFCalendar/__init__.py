@@ -15,7 +15,6 @@
 $Id$
 """
 
-from Products.CMFCore.utils import ContentInit
 from Products.CMFCore.utils import ToolInit
 
 import Event
@@ -32,10 +31,3 @@ def initialize(context):
             , tools=(CalendarTool.CalendarTool,)
             , icon='tool.gif'
             ).initialize( context )
-
-    # BBB: register oldstyle constructors
-    ContentInit( 'CMF Calendar Content'
-               , content_types=()
-               , permission=AddPortalContent
-               , extra_constructors=(Event.addEvent,)
-               ).initialize( context )
