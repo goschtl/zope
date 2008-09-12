@@ -66,7 +66,7 @@ class TraceLog(object):
             entry += ' %s' % self.extension_id
 
         if msg:
-            entry += ' %s' % msg
+            entry += ' %s' % repr(msg)[1:-1]
 
         tracelog.info(entry)
 

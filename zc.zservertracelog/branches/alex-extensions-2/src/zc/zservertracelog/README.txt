@@ -118,3 +118,23 @@ error is written to the *Request End (E)* trace entry.
 Let's clean up before moving on.
 
     >>> faux_app.app_hook = None
+
+
+Log Messages Containing Line Breaks
+===================================
+
+Messages to the tracelog that contain newline characters will not split a log
+entry into multiple lines.
+
+    >>> req2 = """\
+    ... GET /test-req2/%0Aohnoes/ HTTP/1.1
+    ... Host: www.example.com/linebreak
+    ...
+    ... """
+
+    >>> invokeRequest(req2)
+    B 21598352 2008-09-12T11:40:27 GET /test-req2/\nohnoes/
+    I 21598352 2008-09-12T11:40:27 0
+    C 21598352 2008-09-12T11:40:27
+    A 21598352 2008-09-12T11:40:27 200 ?
+    E 21598352 2008-09-12T11:40:27
