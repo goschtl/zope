@@ -11,3 +11,5 @@
 
 * fixed bug where log entries could be split by messages containing newline
   characters.
+
+* added request query strings to log.

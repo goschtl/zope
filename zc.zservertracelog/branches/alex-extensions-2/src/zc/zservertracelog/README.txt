@@ -138,3 +138,37 @@ entry into multiple lines.
     C 21598352 2008-09-12T11:40:27
     A 21598352 2008-09-12T11:40:27 200 ?
     E 21598352 2008-09-12T11:40:27
+
+
+Request Query Strings
+=====================
+
+The tracelog preserves request query strings.
+
+    >>> req3 = """\
+    ... GET /test-req3/?creature=unicorn HTTP/1.1
+    ... Host: www.example.com/query-string
+    ...
+    ... """
+
+    >>> invokeRequest(req3)
+    B 21598352 2008-09-12T11:40:27 GET /test-req3/?creature=unicorn
+    I 21598352 2008-09-12T11:40:27 0
+    C 21598352 2008-09-12T11:40:27
+    A 21598352 2008-09-12T11:40:27 200 ?
+    E 21598352 2008-09-12T11:40:27
+
+Empty query strings are also preserved.
+
+    >>> req4 = """\
+    ... GET /test-req4/? HTTP/1.1
+    ... Host: www.example.com/empty-query-string
+    ...
+    ... """
+
+    >>> invokeRequest(req4)
+    B 21598352 2008-09-12T11:40:27 GET /test-req4/?
+    I 21598352 2008-09-12T11:40:27 0
+    C 21598352 2008-09-12T11:40:27
+    A 21598352 2008-09-12T11:40:27 200 ?
+    E 21598352 2008-09-12T11:40:27

@@ -83,8 +83,16 @@ class Channel(zope.server.http.httpserverchannel.HTTPServerChannel):
 
     def handle_request(self, parser):
         logger = TraceLog(self)
-        _log(logger, 'B', '%s %s' % (parser.command, parser.path), parser.__B)
+
+        full_path = parser.path
+        if parser.query:
+            full_path += '?%s' % parser.query
+        elif parser.query is not None:
+            full_path += '?'
+
+        _log(logger, 'B', '%s %s' % (parser.command, full_path), parser.__B)
         _log(logger, 'I', str(parser.content_length))
+
         zope.server.http.httpserverchannel.HTTPServerChannel.handle_request(
             self, parser)
 
