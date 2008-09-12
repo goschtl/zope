@@ -26,17 +26,7 @@ import zope.component
 import zope.server.http.httprequestparser
 import zope.server.http.httpserverchannel
 
-
-trace_points = {
-    'B': zc.zservertracelog.interfaces.ITraceRequestStart,
-    'I': zc.zservertracelog.interfaces.ITraceInputAcquired,
-    'C': zc.zservertracelog.interfaces.ITraceApplicationStart,
-    'A': zc.zservertracelog.interfaces.ITraceApplicationEnd,
-    'E': zc.zservertracelog.interfaces.ITraceRequestEnd,
-    }
-
 tracelog = logging.getLogger('zc.tracelog')
-
 
 def _format_datetime(dt):
     return dt.replace(microsecond=0).isoformat()
@@ -46,16 +36,7 @@ def _log(logger, trace_code, msg=None, timestamp=None):
     logger.trace_code = trace_code
     logger.extension_id = None
     logger.log(msg, timestamp)
-    _run_trace_extensions(trace_points[trace_code], logger)
-
-
-def _run_trace_extensions(trace_point, logger):
-    logger.trace_code = 'X'
-    tracers = zope.component.getUtilitiesFor(trace_point)
-    for tname, tracer in tracers:
-        logger.extension_id = tname
-        tracer(logger, trace_point)
-    logger.extension_id = None
+    logger.trace_code = None
 
 
 class TraceLog(object):
