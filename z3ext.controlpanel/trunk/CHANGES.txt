@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.7 (Unreleased)
+------------------
+
+- Added `settings` traverser
+
+
 1.2.6 (2008-08-28)
 ------------------
 
