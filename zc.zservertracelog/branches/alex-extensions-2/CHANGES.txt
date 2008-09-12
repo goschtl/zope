@@ -1,0 +1,12 @@
+
+=========
+ Changes
+=========
+
+
+0.4 (unreleased)
+================
+
+* added automated tests.
+
+* added hooks for tracelog extensions.
