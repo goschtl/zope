@@ -32,12 +32,10 @@ class FunctionalLayer(FunctionalZCMLLayer):
     def setUp(cls):
         import Products.CMFCalendar
         import Products.CMFDefault
-        import Products.CMFTopic
         import Products.DCWorkflow
 
         zcml.load_config('configure.zcml', Products.CMFCalendar)
         zcml.load_config('configure.zcml', Products.CMFDefault)
-        zcml.load_config('configure.zcml', Products.CMFTopic)
         zcml.load_config('configure.zcml', Products.DCWorkflow)
 
         app = ZopeTestCase.app()
