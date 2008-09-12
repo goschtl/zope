@@ -4,6 +4,8 @@ Products.CMFTopic Changelog
 2.2.0 (unreleased)
 ------------------
 
+- unit tests: Add a functional testing layer for CMFTopic, and use it.
+
 - Topic: 'addTopic' no longer sends add events.
 
 - interfaces: Removed deprecated oldstyle interfaces.

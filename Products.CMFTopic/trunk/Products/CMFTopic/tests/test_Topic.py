@@ -19,8 +19,11 @@ import unittest
 from Testing import ZopeTestCase
 ZopeTestCase.installProduct('CMFTopic', 1)
 
+from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.User import UnrestrictedUser
 from Acquisition import Implicit
 
+from zope.app.component.hooks import setSite
 from zope.component import getSiteManager
 from zope.interface.verify import verifyClass
 
@@ -31,6 +34,7 @@ from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import TypesTool
+from Products.CMFTopic.testing import FunctionalLayer
 
 
 class FauxBrain( Implicit ):
@@ -194,32 +198,6 @@ class TestTopic(ConformsToFolder, SecurityTest):
         self.assertEqual( query[ 'foo' ], 'bar' )
         self.assertEqual( query[ 'baz' ], 43 )
 
-    def test_Nested( self ):
-        self.site._setObject( 'portal_types', TypesTool() )
-        self.site.portal_types._setObject('Topic', FTI(id='Topic',
-                                      product='CMFTopic', factory='addTopic'))
-        topic = self._makeOne('top')
-        topic._setPortalTypeName('Topic')
-
-        topic.addCriterion( 'foo', 'String Criterion' )
-        topic.getCriterion( 'foo' ).edit( 'bar' )
-
-        topic.addSubtopic( 'qux' )
-        subtopic = topic.qux
-
-        subtopic.addCriterion( 'baz', 'String Criterion' )
-        subtopic.getCriterion( 'baz' ).edit( 'bam' )
-
-        query = subtopic.buildQuery()
-        self.assertEqual( len( query ), 2 )
-        self.assertEqual( query['foo'], 'bar' )
-        self.assertEqual( query['baz'], 'bam' )
-
-        subtopic.acquireCriteria = 0
-        query = subtopic.buildQuery()
-        self.assertEqual( len( query ), 1 )
-        self.assertEqual( query['baz'], 'bam' )
-
     def test_selfIndexing(self):
         # The Topic object is CatalogAware and should be in the catalog
         # after it has beeen instantiated.
@@ -324,6 +302,39 @@ class TestTopic(ConformsToFolder, SecurityTest):
             self.failUnless( object.description in _DOCUMENTS.values() )
 
 
+class TestTopicFunctional(ZopeTestCase.FunctionalTestCase):
+
+    layer = FunctionalLayer
+
+    def afterSetUp(self):
+        setSite(self.app.site)
+        self.app.site.setupCurrentSkin(self.app.REQUEST)
+        newSecurityManager(None, UnrestrictedUser('god', '', ['Manager'], ''))
+
+    def test_Nested( self ):
+        self.app.site.invokeFactory('Topic', 'top')
+        topic = self.app.site.top
+
+        topic.addCriterion( 'foo', 'String Criterion' )
+        topic.getCriterion( 'foo' ).edit( 'bar' )
+
+        topic.addSubtopic( 'qux' )
+        subtopic = topic.qux
+
+        subtopic.addCriterion( 'baz', 'String Criterion' )
+        subtopic.getCriterion( 'baz' ).edit( 'bam' )
+
+        query = subtopic.buildQuery()
+        self.assertEqual( len( query ), 2 )
+        self.assertEqual( query['foo'], 'bar' )
+        self.assertEqual( query['baz'], 'bam' )
+
+        subtopic.acquireCriteria = 0
+        query = subtopic.buildQuery()
+        self.assertEqual( len( query ), 1 )
+        self.assertEqual( query['baz'], 'bam' )
+
+
 _DOCUMENTS = \
 { 'one'     : "something in the way she moves"
 , 'two'     : "I don't know much about history"
@@ -338,6 +349,7 @@ _DOCUMENTS = \
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestTopic),
+        unittest.makeSuite(TestTopicFunctional),
         ))
 
 if __name__ == '__main__':
