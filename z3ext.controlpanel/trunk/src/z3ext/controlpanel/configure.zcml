@@ -48,6 +48,8 @@
      provides="zope.interface.Interface"
      factory=".root.getSettings" />
 
+  <adapter factory=".root.Traversable" />
+
   <!-- Configlet publisher -->
   <adapter
      for=".interfaces.IConfiglet *"

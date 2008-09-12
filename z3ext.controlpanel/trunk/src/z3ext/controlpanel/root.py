@@ -19,6 +19,7 @@ from zope import interface, component
 from zope.component import getUtility
 from zope.security import checkPermission
 from zope.security.interfaces import Unauthorized
+from zope.traversing.adapters import DefaultTraversable
 
 from zope.app.component.hooks import getSite
 from zope.app.component.interfaces import ISite
@@ -53,3 +54,12 @@ def getSettings(site, request):
     if not checkPermission('z3ext.Configure', site):
         raise Unauthorized('settings')
     return getUtility(IConfiglet)
+
+
+class Traversable(DefaultTraversable):
+    component.adapts(ISite)
+
+    def traverse(self, name, furtherPath):
+        if name == 'settings':
+            return getUtility(IConfiglet)
+        return super(Traversable, self).traverse(name, furtherPath)
