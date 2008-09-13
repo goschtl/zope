@@ -15,14 +15,25 @@
 $Id$
 """
 
-import zope.component
+from zope import component
 from zope.pagetemplate.interfaces import IPageTemplate
-from zope.app.pagetemplate import ViewPageTemplateFile
 
+from z3c.pt import compat
 from z3c.template import interfaces
-from z3c.template.macro import Macro
 
+class Macro(object):
+    def __init__(self, template, macroName, view, request, contentType):
+        self.template = template
+        self.macroName = macroName
+        self.view = view
+        self.request = request
+        self.contentType = contentType
 
+    def __call__(self, **kwargs):
+        render = compat.bind_macro(
+            self.template, self.view, self.request, self.macroName)
+        return render(content_type=self.contentType, **kwargs)
+        
 class TemplateFactory(object):
     """Template factory."""
 
@@ -31,15 +42,14 @@ class TemplateFactory(object):
     def __init__(self, filename, contentType, macro=None):
         self.macro = macro
         self.contentType = contentType
-        self.template = ViewPageTemplateFile(filename,
+        self.template = compat.ViewPageTemplateFile(filename,
             content_type=contentType)
 
     def __call__(self, view, request):
         if self.macro is None:
             return self.template
-        return Macro(self.template, self.macro, view, request,
-            self.contentType)
-
+        return Macro(
+            self.template, self.macro, view, request, self.contentType)
 
 class BoundViewTemplate(object):
     def __init__(self, pt, ob):
@@ -59,7 +69,6 @@ class BoundViewTemplate(object):
     def __repr__(self):
         return "<BoundViewTemplate of %r>" % self.im_self
 
-
 class ViewTemplate(object):
 
     def __init__(self, provides=IPageTemplate, name=u''):
@@ -67,7 +76,7 @@ class ViewTemplate(object):
         self.name = name
 
     def __call__(self, instance, *args, **keywords):
-        template = zope.component.getMultiAdapter(
+        template = component.getMultiAdapter(
                 (instance, instance.request), self.provides, name=self.name)
         return template(instance, *args, **keywords)
 

@@ -88,8 +88,8 @@ We register the factory on a view interface and a layer.
   >>> template = component.getMultiAdapter((view, request),
   ...     interfaces.IPageTemplate)
   >>> template
-  <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile object at ...>
-
+  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  
 Now that we have a registered layout template for the default layer we can
 call our view again.
 
@@ -116,7 +116,7 @@ We create a new template.
 
 and a view:
 
-  >>> from zope.app.pagetemplate import ViewPageTemplateFile
+  >>> from z3c.pt.compat import ViewPageTemplateFile
   >>> class MyViewWithTemplate(BrowserPage):
   ...     zope.interface.implements(IMyView)
   ...     template = ViewPageTemplateFile(viewContent)
@@ -169,7 +169,7 @@ ILayoutTemplate interface.
   >>> layout = component.getMultiAdapter(
   ...     (view2, request), interfaces.ILayoutTemplate)
   >>> layout
-  <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile ...>
+  <z3c.pt.compat.ViewPageTemplateFile ...>
 
 Now that we have a registered layout template for the default layer we can
 call our view again.

@@ -18,7 +18,7 @@ We need a custom content template
 
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
-  >>> file = os.path.join(temp_dir, 'file.pt')
+  >>> file = os.path.join(temp_dir, 'content.pt')
   >>> open(file, 'w').write('''<div>content</div>''')
 
 and a interface
@@ -67,7 +67,7 @@ Let's get the template
 and check them:
 
   >>> template
-  <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile object ...>
+  <z3c.pt.compat.ViewPageTemplateFile object ...>
 
   >>> print template(view)
   <div>content</div>
@@ -78,7 +78,7 @@ Layout template
 
 Define a layout template
 
-  >>> file = os.path.join(temp_dir, 'file.pt')
+  >>> file = os.path.join(temp_dir, 'layout.pt')
   >>> open(file, 'w').write('''<div>layout</div>''')
 
 and register them as a layout template within the ``z3c:layout`` directive:
@@ -102,7 +102,7 @@ Let's get the template
 and check them:
 
   >>> layout
-  <zope.app.pagetemplate.viewpagetemplatefile.ViewPageTemplateFile object ...>
+  <z3c.pt.compat.ViewPageTemplateFile object ...>
 
   >>> print layout(view)
   <div>layout</div>
