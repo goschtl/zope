@@ -4,6 +4,9 @@ Products.CMFCalendar Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Event: Added basic iCal and vCal views
+  (https://bugs.launchpad.net/zope-cmf/+bug/161714)
+
 - ZMI: Prevent users from creating content through the ZMI by hiding the
   entry for "CMFCalendar Content".
 

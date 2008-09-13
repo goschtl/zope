@@ -51,6 +51,22 @@
       permission="zope2.View"
       />
 
+  <browser:page
+      for="Products.CMFCalendar.interfaces.IEvent"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="view.ics"
+      class=".event.EventiCalView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      for="Products.CMFCalendar.interfaces.IEvent"
+      layer="Products.CMFDefault.interfaces.ICMFDefaultSkin"
+      name="view.vcs"
+      class=".event.EventvCalView"
+      permission="zope2.View"
+      />
+
   <browser:resource
       name="event_icon.gif"
       image="../skins/zpt_calendar/event_icon.gif"

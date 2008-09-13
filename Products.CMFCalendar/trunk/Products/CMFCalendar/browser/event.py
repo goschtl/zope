@@ -40,6 +40,9 @@ from Products.CMFDefault.formlib.vocabulary import SimpleVocabulary
 from Products.CMFCalendar.interfaces import IMutableEvent
 from Products.CMFCalendar.utils import Message as _
 
+from zope.app.pagetemplate import ViewPageTemplateFile
+from Products.CMFDefault.browser.utils import decode, ViewBase
+import time
 
 class EventTypeVocabulary(object):
 
@@ -161,6 +164,8 @@ class EventView(EventViewMixin, DisplayFormBase):
     """View for IEvent.
     """
 
+    template = ViewPageTemplateFile('templates/event_view.pt')
+
     form_fields = form.FormFields(IEventSchema)
 
 
@@ -172,3 +177,52 @@ class EventEditView(EventViewMixin, ContentEditFormBase):
     form_fields = form.FormFields(IEventSchema)
     form_fields['start_date'].custom_widget = DatetimeI18nWidget
     form_fields['stop_date'].custom_widget = DatetimeI18nWidget
+
+class EventiCalView(ViewBase):
+    
+    """iCal view"""
+        
+    form_fields = form.FormFields(IEventSchema)
+    icalformat = "%Y%m%dT%H%M%SZ" # Zulu time enforces UTC
+    
+    def mk_iCal(self, dt):
+        """Convert a datetime type to its iCal using it's representation
+        Unfortunately not available directly. Depends upon the underlying OS timezone"""
+        dt = time.gmtime(dt.timeTime())
+        return time.strftime(self.icalformat, dt)
+
+    @decode
+    def location(self):
+        return self.context.location
+        
+    @decode
+    def contact_name(self):
+        return self.context.contact_name
+        
+    def __call__(self):
+        self.creation_date = self.mk_iCal(self.context.creation_date)
+        self.timestamp = time.strftime(self.icalformat, time.gmtime())
+        self.tz = self.context.start().timezone()
+        self.start = self.mk_iCal(self.context.start())
+        self.end = self.mk_iCal(self.context.end())
+        self.UID = "%s-%s" %(self.context.Title(), self.creation_date)
+        return self._write_body()
+
+    def _write_body(self):
+        response = self.request.response
+        body = ViewPageTemplateFile('templates/event_ical.pt')(self)
+        response.setHeader('Content-Type', 'text/iCal')
+        response.setHeader('Content-Disposition', 'filename=cmf.ics')
+        response.write(body.encode("UTF-8"))
+
+class EventvCalView(EventiCalView):
+
+    """vCal view"""
+
+    def _write_body(self):
+        response = self.request.response
+        body = ViewPageTemplateFile('templates/event_vcal.pt')(self)
+        response.setHeader('Content-Type', 'text/vCal')
+        response.setHeader('Content-Disposition', 'filename=cmf.vcs')
+        response.write(body.encode("UTF-8"))
+
