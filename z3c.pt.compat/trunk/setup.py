@@ -28,7 +28,7 @@ setup(name='z3c.pt.compat',
           'setuptools',
           ],
       extras_require = dict(
-        zpt = ['zope.app.pagetemplate'],
+        zpt = ['zope.app.pagetemplate', 'zope.tal'],
         z3cpt = ['z3c.pt'],
         )
       )
