@@ -20,8 +20,8 @@ setup(
     namespace_packages = ['zc'],
     package_dir = {'': 'src'},
     install_requires = [
-        'setuptools', 'zc.ngi', 'ZODB3', 'zope.component',
-        'zope.publisher', 'zope.app.appsetup',
+        'setuptools', 'zc.monitor', 'ZODB3', 'zope.component',
+        'zope.publisher', 'zope.app.appsetup', 'zope.testing',
         ],
     include_package_data = True,
     zip_safe = False,

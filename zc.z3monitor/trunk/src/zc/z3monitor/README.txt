@@ -2,56 +2,54 @@
 Zope 3 Monitor Server
 =====================
 
-The Zope 3 monitor server is a server that runs in a Zope 3 process
-and that provides a command-line interface to request various bits of
-information.  The server is zc.ngi based, so we can use the zc.ngi
-testing infrastructure to demonstrate it.
+The Zope 3 monitor server is a server that runs in a Zope 3 process and that
+provides a command-line interface to request various bits of information.  It
+is based on zc.monitor, which is itself based on zc.ngi, so we can use the
+zc.ngi testing infrastructure to demonstrate it.
+
+This package provides several Zope 3 and ZODB monitoring and introspection
+tools that work within the zc.monitor server.  These are demonstrated below.
+
+Please see the zc.monitor documentation for details on how the server works.
+
+This package also supports starting a monitor using ZConfig, and provides a
+default configure.zcml for registering plugins.  
+
+The ZConfig setup is not demonstrated in this documentation, but the usage is
+simple.  In your ZConfig file, provide a "product-config" stanza for
+zc.z3monitor that specifies the port on which the zc.monitor server should
+listen.  For instance, this stanza will start a monitor server on port 8888::
+
+    <product-config zc.z3monitor>
+        port 8888
+    </product-config>
+
+To include the default commands of zc.monitor and zc.z3monitor, simply include
+the configure.zcml from this package::
+
+    <include package="zc.z3monitor" />
+
+Now let's look at the commands that this package provides.  We'll get a test
+connection to the monitor server and register the plugins that zc.monitor and
+zc.z3monitor provide.
 
     >>> import zc.ngi.testing
+    >>> import zc.monitor
+    >>> import zc.monitor.interfaces
     >>> import zc.z3monitor
+    >>> import zc.z3monitor.interfaces
+    >>> import zope.component
 
     >>> connection = zc.ngi.testing.TextConnection()
-    >>> server = zc.z3monitor.Server(connection)
+    >>> server = zc.monitor.Server(connection)
 
-The server supports an extensible set of commands.  It looks up
-commands as named zc.z3monitor.interfaces.IZ3MonitorPlugin plugins.
+    >>> zope.component.provideUtility(zc.monitor.help,
+    ...     zc.monitor.interfaces.IMonitorPlugin, 'help')
+    >>> zope.component.provideUtility(zc.monitor.interactive,
+    ...     zc.monitor.interfaces.IMonitorPlugin, 'interactive')
+    >>> zope.component.provideUtility(zc.monitor.quit,
+    ...     zc.monitor.interfaces.IMonitorPlugin, 'quit')
 
-To see this, we'll create a hello plugin:
-
-    >>> def hello(connection, name='world'):
-    ...     """Say hello
-    ...     
-    ...     Provide a name if you're not the world.
-    ...     """
-    ...     connection.write("Hi %s, nice to meet ya!\n" % name) 
-
-and register it:
-
-    >>> import zope.component, zc.z3monitor.interfaces
-    >>> zope.component.provideUtility(
-    ...   hello, zc.z3monitor.interfaces.IZ3MonitorPlugin, 'hello')
-
-Now we can give the hello command to the server:
-
-    >>> connection.test_input('hello\n')
-    Hi world, nice to meet ya!
-    -> CLOSE
-
-We can pass a name:
-
-    >>> connection.test_input('hello Jim\n')
-    Hi Jim, nice to meet ya!
-    -> CLOSE
-
-The server comes with a number of useful commands.  Let's register
-them so we can see what they do:
-
-    >>> zope.component.provideUtility(zc.z3monitor.help,
-    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'help')
-    >>> zope.component.provideUtility(zc.z3monitor.interactive,
-    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'interactive')
-    >>> zope.component.provideUtility(zc.z3monitor.quit,
-    ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'quit')
     >>> zope.component.provideUtility(zc.z3monitor.monitor,
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'monitor')
     >>> zope.component.provideUtility(zc.z3monitor.dbinfo,
@@ -61,13 +59,12 @@ them so we can see what they do:
     >>> zope.component.provideUtility(zc.z3monitor.zeostatus,
     ...     zc.z3monitor.interfaces.IZ3MonitorPlugin, 'zeostatus')
 
-The first is the help command.  Giving help without input, gives a
-list of available commands:
+We'll use the zc.monitor ``help`` command to see the list of available
+commands:
 
     >>> connection.test_input('help\n')
     Supported commands:
       dbinfo -- Get database statistics
-      hello -- Say hello
       help -- Get help about server commands
       interactive -- Turn on monitor's interactive mode
       monitor -- Get general process info
@@ -76,59 +73,9 @@ list of available commands:
       zeostatus -- Get ZEO client status information
     -> CLOSE
 
-We can get detailed help by specifying a command name:
-
-    >>> connection.test_input('help help\n')
-    Help for help:
-    <BLANKLINE>
-    Get help about server commands
-    <BLANKLINE>
-        By default, a list of commands and summaries is printed.  Provide
-        a command name to get detailed documentation for a command.
-    <BLANKLINE>
-    -> CLOSE
-
-    >>> connection.test_input('help hello\n')
-    Help for hello:
-    <BLANKLINE>
-    Say hello
-    <BLANKLINE>
-        Provide a name if you're not the world.
-    <BLANKLINE>
-    -> CLOSE
-
-The ``interactive`` command switches the monitor into interactive mode.  As
-seen above, the monitor usually responds to a single command and then closes
-the connection.  In "interactive mode", the connection is not closed until
-the ``quit`` command is used.  This can be useful when accessing the monitor
-via telnet for diagnostics.
-
-    >>> connection.test_input('interactive\n')
-    Interactive mode on.  Use "quit" To exit.
-    >>> connection.test_input('help interactive\n')
-    Help for interactive:
-    <BLANKLINE>
-    Turn on monitor's interactive mode
-    <BLANKLINE>
-        Normally, the monitor releases the connection after a single command.
-        By entering the interactive mode, the monitor will not end the connection
-        until you enter the "quit" command.
-    <BLANKLINE>
-    >>> connection.test_input('help quit\n')
-    Help for quit:
-    <BLANKLINE>
-    Quit the monitor
-    <BLANKLINE>
-        This is only really useful in interactive mode (see the "interactive"
-        command).
-    <BLANKLINE>
-    >>> connection.test_input('quit\n')
-    Goodbye.
-    -> CLOSE
-
-The other commands that come with the monitor use database information.  
-They access databases as utilities.  Let's create some test databases
-and register them as utilities.
+The commands that come with the zc.z3monitor package use database information.
+They access databases as utilities.  Let's create some test databases and
+register them as utilities.
 
     >>> from ZODB.tests.util import DB
     >>> main = DB()

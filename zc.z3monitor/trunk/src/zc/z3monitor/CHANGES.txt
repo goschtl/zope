@@ -5,7 +5,18 @@ Change History
 0.7.0 (2008-??-??)
 ==================
 
-(No changes at this time)
+Features
+--------
+
+* The zc.monitor ``interactive`` mode now supports repeating the previous
+  command by sending an empty line.
+
+Other
+-----
+
+* The server and the ``help``, ``interactive``, and ``quit`` commands have
+  been factored out into a new zc.monitor package, on which zc.z3monitor now
+  depends.
 
 0.6.0 (2008-09-14)
 ==================

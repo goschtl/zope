@@ -1,12 +1,12 @@
 <configure xmlns="http://namespaces.zope.org/zope">
   <subscriber handler=".initialize" />
   <subscriber handler=".save_request_in_connection_info" />
-  <utility component=".interactive"
-           provides=".interfaces.IZ3MonitorPlugin" name="interactive" />
-  <utility component=".quit"
-           provides=".interfaces.IZ3MonitorPlugin" name="quit" />
-  <utility component=".help"
-           provides=".interfaces.IZ3MonitorPlugin" name="help" />
+  <utility component="zc.monitor.interactive"
+           provides="zc.monitor.interfaces.IMonitorPlugin" name="interactive" />
+  <utility component="zc.monitor.quit"
+           provides="zc.monitor.interfaces.IMonitorPlugin" name="quit" />
+  <utility component="zc.monitor.help"
+           provides="zc.monitor.interfaces.IMonitorPlugin" name="help" />
   <utility component=".monitor"
            provides=".interfaces.IZ3MonitorPlugin" name="monitor" />
   <utility component=".dbinfo"

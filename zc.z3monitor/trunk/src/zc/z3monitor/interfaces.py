@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2005-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,14 +12,7 @@
 #
 ##############################################################################
 
-import zope.interface
+import zc.monitor.interfaces
 
-class IZ3MonitorPlugin(zope.interface.Interface):
-
-    def __call__(output, *args):
-        """Compute some monitoring information
-
-        The output argument is a file-like object with write method.
-
-        A variable number of arguments are passed.
-        """
+class IZ3MonitorPlugin(zc.monitor.interfaces.IMonitorPlugin):
+    pass
