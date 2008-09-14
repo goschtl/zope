@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.schema
 import zope.schema.interfaces
+
 from z3c.schema.i18n import MessageFactory as _
 
 class IIPAddress(zope.schema.interfaces.IBytesLine):

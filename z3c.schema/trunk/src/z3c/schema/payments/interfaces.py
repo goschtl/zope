@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Foundation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,14 +12,15 @@
 #
 ##############################################################################
 """
-$Id$
+$Id:$
 """
-
 __docformat__ = "reStructuredText"
 
 import zope.schema
 import zope.schema.interfaces
+
 from z3c.schema.i18n import MessageFactory as _
+
 
 class IISO7812CreditCard(zope.schema.interfaces.ITextLine):
     """A credit card with a valid check digit"""

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Foundation and Contributors.
+# Copyright (c) 2008 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id$
+$Id:$
 """
-
 __docformat__ = "reStructuredText"
 
 import unittest

@@ -16,10 +16,12 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import zope.interface
 import zope.schema
 
 from z3c.schema.dateselect import interfaces
+
 
 class DateSelect(zope.schema.Date):
     zope.interface.implements(interfaces.IDateSelect)

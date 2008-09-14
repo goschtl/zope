@@ -1,13 +1,20 @@
-###############################################################################
+##############################################################################
 #
-# Copyright 2006 by refline (Schweiz) AG, CH-5630 Muri
+# Copyright (c) 2008 Zope Foundation and Contributors.
+# All Rights Reserved.
 #
-###############################################################################
-"""Refline Recruiter Tests
-
-$Id$
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """
-__docformat__ = 'restructuredtext'
+$Id:$
+"""
+__docformat__ = "reStructuredText"
 
 import unittest
 from zope.testing import doctest

@@ -21,6 +21,7 @@ import zope.schema.interfaces
 
 from z3c.schema.i18n import MessageFactory as _
 
+
 class IRegex(zope.schema.interfaces.IASCIILine):
     """Regular Expression field"""
 
