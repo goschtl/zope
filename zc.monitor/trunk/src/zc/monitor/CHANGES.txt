@@ -2,6 +2,13 @@
 Change History
 ==============
 
+0.1.2 (2008-09-15)
+------------------
+
+- Bugfix: The z3monitor server lacked a handle_close method, which
+  caused errors to get logged when users closed connections before
+  giving commands.
+
 0.1.1 (2008-09-14)
 ------------------
 
