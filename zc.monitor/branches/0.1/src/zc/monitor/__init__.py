@@ -65,6 +65,9 @@ class Server:
         if self.mode is QUIT_MARKER:
             connection.write(zc.ngi.END_OF_DATA)
 
+    def handle_close(self, connection, reason):
+        pass                            # Don't care
+
 
 def start(port):
     """start monitor server.

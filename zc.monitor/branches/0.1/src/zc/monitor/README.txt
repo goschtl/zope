@@ -142,3 +142,9 @@ traceback on the connection.
     TypeError: hello() takes at most 2 arguments (3 given)
     <BLANKLINE>
     -> CLOSE
+
+.. Edge cases
+
+   Closing the connection:
+
+   >>> connection.test_close('test')
