@@ -132,3 +132,13 @@ Now we will use ``quit`` to close the connection.
     >>> connection.test_input('quit\n')
     Goodbye.
     -> CLOSE
+
+Finally, it's worth noting that exceptions will generate a
+traceback on the connection.
+
+    >>> connection.test_input('hello Jim 42\n') # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    TypeError: hello() takes at most 2 arguments (3 given)
+    <BLANKLINE>
+    -> CLOSE

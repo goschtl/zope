@@ -56,10 +56,11 @@ class Server:
             except Exception, v:
                 traceback.print_exc(100, connection)
                 print >> connection, "%s: %s\n" % (v.__class__.__name__, v)
-            if res is INTERACTIVE_MARKER:
-                self.mode = res
-            elif res is QUIT_MARKER:
-                self.mode = res
+            else:
+                if res is INTERACTIVE_MARKER:
+                    self.mode = res
+                elif res is QUIT_MARKER:
+                    self.mode = res
 
         if self.mode is QUIT_MARKER:
             connection.write(zc.ngi.END_OF_DATA)

@@ -2,6 +2,11 @@
 Change History
 ==============
 
+0.1.1 (2008-09-14)
+------------------
+
+- Bugfix: fixed and added test for regression in displaying tracebacks.
+
 0.1.0 (2008-09-14)
 ------------------
 
