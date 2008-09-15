@@ -8,7 +8,7 @@ long_description = (open('src/zc/z3monitor/README.txt').read() +
 
 setup(
     name = name,
-    version = '0.6.0',
+    version = '0.6.1',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     license = 'ZPL 2.1',
