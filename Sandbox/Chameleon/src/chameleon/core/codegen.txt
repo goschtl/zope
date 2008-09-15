@@ -10,7 +10,7 @@ Suite
 The ``Suite`` class compiles a source code suite and makes a code
 object available.
 
-  >>> from z3c.pt.codegen import Suite
+  >>> from chameleon.core.codegen import Suite
   >>> suite = Suite("""\
   ... print 'Hello World!'
   ... """)

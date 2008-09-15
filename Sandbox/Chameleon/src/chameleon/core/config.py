@@ -4,12 +4,12 @@ import os
 TRUEVALS = ('y', 'yes', 't', 'true', 'on', '1')
 
 # in debug-mode, templates on disk are reloaded if they're modified
-DEBUG_MODE_KEY = 'Z3C_PT_DEBUG'
+DEBUG_MODE_KEY = 'CHAMELEON_DEBUG'
 DEBUG_MODE = os.environ.get(DEBUG_MODE_KEY, 'false')
 DEBUG_MODE = DEBUG_MODE.lower() in TRUEVALS
 
 # disable disk-cache to prevent the compiler from caching on disk
-DISK_CACHE_KEY = 'Z3C_PT_CACHE'
+DISK_CACHE_KEY = 'CHAMELEON_CACHE'
 DISK_CACHE = os.environ.get(DISK_CACHE_KEY, 'true')
 DISK_CACHE = DISK_CACHE.lower() in TRUEVALS
 CACHE_EXTENSION = "cache"
@@ -20,7 +20,7 @@ VALIDATION = DEBUG_MODE
 
 # use the disable-i18n flag to disable the translation machinery; this
 # will speed up templates that use internationalization
-DISABLE_I18N_KEY = 'Z3C_PT_DISABLE_I18N'
+DISABLE_I18N_KEY = 'CHAMELEON_DISABLE_I18N'
 DISABLE_I18N = os.environ.get(DISABLE_I18N_KEY, 'false')
 DISABLE_I18N = DISABLE_I18N.lower() in TRUEVALS
 

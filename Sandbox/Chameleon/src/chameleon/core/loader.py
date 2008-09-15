@@ -1,7 +1,5 @@
 import errno
 import os.path
-from z3c.pt.pagetemplate import PageTemplateFile
-from z3c.pt.texttemplate import TextTemplateFile
 
 def cache(func):
     def load(self, *args):
@@ -28,7 +26,7 @@ class TemplateLoader(object):
         self.registry = {}
 
     @cache
-    def _load(self, filename, klass):
+    def load(self, filename, klass):
         if os.path.isabs(filename):
             return klass(filename, self.parser)
 
@@ -42,10 +40,4 @@ class TemplateLoader(object):
                     raise
 
         raise ValueError("Can not find template %s" % filename)
-
-    def load_page(self, filename):
-        return self._load(filename, PageTemplateFile)
-
-    def load_text(self, filename):
-        return self._load(filename, TextTemplateFile)
 

@@ -15,7 +15,7 @@ try:
     unicode_required_flag = False
 except UnicodeEncodeError:
     unicode_required_flag = True
-    log = logging.getLogger('z3c.pt')
+    log = logging.getLogger('Chameleon')
     log.info("Default system encoding is set to '%s'; "
              "the template engine will perform better if "
              "an encoding that coerces gracefully to "

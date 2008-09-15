@@ -1,0 +1,33 @@
+Template classes
+================
+
+chameleon.core.template.Template
+--------------------------------
+
+  >>> from chameleon.core.template import Template
+  >>> from chameleon.core.testing import mock_parser
+  
+  >>> print Template("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml">
+  ...   Hello World!
+  ... </div>""", mock_parser)()
+  <div>
+    Hello World!
+  </div>
+
+chameleon.core.template.TemplateFile
+------------------------------------
+
+  >>> from chameleon.core.template import TemplateFile
+  >>> from chameleon.core import tests
+  >>> path = tests.__path__[0]
+  >>> t = TemplateFile(path+'/helloworld.pt', mock_parser)
+  >>> print t()
+  <div>
+    Hello World!
+  </div>
+
+  >>> import os
+  >>> t.filename.startswith(os.sep)
+  True
+

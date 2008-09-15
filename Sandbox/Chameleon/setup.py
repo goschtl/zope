@@ -7,18 +7,14 @@ install_requires = [
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
-    'zope.traversing',
-    'zope.contentprovider',
     ]
 
 if sys.version_info[:3] < (2,5,0):
     install_requires.append('elementtree')
 
-setup(name='z3c.pt',
+setup(name='Chameleon',
       version=version,
-      description="Python template compiler which supports the Genshi and "
-                  "ZPT template languages including macro extensions and "
-                  "internationalization.",
+      description="Attribute language template compiler",
       long_description=open("README.txt").read() + open("CHANGES.txt").read(),
       classifiers=[
         "Programming Language :: Python",
@@ -30,8 +26,8 @@ setup(name='z3c.pt',
       author='Malthe Borch and the Zope Community',
       author_email='zope-dev@zope.org',
       url='',
-      license='ZPL',
-      namespace_packages=['z3c'],
+      license='BSD',
+      namespace_packages=['chameleon'],
       packages = find_packages('src'),
       package_dir = {'':'src'},
       include_package_data=True,

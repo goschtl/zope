@@ -7,9 +7,6 @@ import etree
 import config
 import utils
 
-import zpt
-import genshi
-
 from StringIO import StringIO
 from cPickle import dumps, loads
 
@@ -46,33 +43,6 @@ def render_text(body, **kwargs):
         body, mock_parser, implicit_doctype=doctypes.xhtml)
     template = compiler(parameters=sorted(kwargs.keys()))
     return template.render(**kwargs)    
-
-def render_zpt(body, **kwargs):
-    compiler = TestCompiler(
-        body, zpt.ZopePageTemplateParser(), implicit_doctype=doctypes.xhtml)
-    template = compiler(parameters=sorted(kwargs.keys()))
-    return template.render(**kwargs)    
-
-def render_genshi(body, encoding=None, **kwargs):
-    compiler = TestCompiler(
-        body, genshi.GenshiParser(),
-        encoding=encoding, implicit_doctype=doctypes.xhtml)
-    template = compiler(parameters=sorted(kwargs.keys()))
-    kwargs.update(template.selectors)
-    return template.render(**kwargs)    
-
-class MockTemplate(object):
-    def __init__(self, body, parser):
-        self.body = body
-        self.parser = parser
-
-    @property
-    def macros(self):
-        def render(name, parameters={}):
-            compiler = TestCompiler(self.body, self.parser)
-            template = compiler(macro=name, parameters=parameters)
-            return template.render(**parameters)
-        return template.Macros(render)
 
 class MockElement(translation.Element, translation.VariableInterpolation):
     translator = expressions.python_translation
@@ -134,3 +104,26 @@ class MockParser(etree.Parser):
         config.XI_NS: {None: MockXiElement}}
 
 mock_parser = MockParser()
+
+class MockTemplate(object):
+    def __init__(self, body, parser=mock_parser, doctype=None):
+        self.body = body
+        self.parser = parser
+        self.doctype = doctype
+        
+    @property
+    def macros(self):
+        def render(name, parameters={}):
+            compiler = TestCompiler(self.body, self.parser)
+            template = compiler(macro=name, parameters=parameters)
+            return template.render(**parameters)
+        return template.Macros(render)
+
+    def render(self, **kwargs):
+        compiler = TestCompiler(
+            self.body, self.parser,
+            implicit_doctype=doctypes.xhtml, explicit_doctype=self.doctype)
+        template = compiler(parameters=sorted(kwargs.keys()))
+        return template.render(**kwargs)    
+
+    __call__ = render

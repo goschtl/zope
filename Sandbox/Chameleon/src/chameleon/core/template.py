@@ -4,7 +4,7 @@ import doctypes
 import filecache
 import translation
 
-class BaseTemplate(object):
+class Template(object):
     """Constructs a template object using the template language
     defined by ``parser`` (``ZopePageTemplateParser`` or
     ``GenshiParser`` as of this writing). Must be passed an input
@@ -76,7 +76,7 @@ class BaseTemplate(object):
     def __call__(self, **kwargs):
         return self.render(**kwargs)
     
-class BaseTemplateFile(BaseTemplate):
+class TemplateFile(Template):
     """Constructs a template object using the template language
     defined by ``parser``. Must be passed an absolute (or
     current-working-directory-relative) filename as ``filename``. If
@@ -88,7 +88,7 @@ class BaseTemplateFile(BaseTemplate):
     
     def __init__(self, filename, parser, format=None,  doctype=None,
                  auto_reload=False):
-        BaseTemplate.__init__(
+        Template.__init__(
             self, None, parser, format=format, doctype=doctype)
 
         self.auto_reload = auto_reload
@@ -148,11 +148,11 @@ class BaseTemplateFile(BaseTemplate):
         if self.auto_reload and self._v_last_read != self.mtime():
             self.read()
 
-        return BaseTemplate.cook_check(self, **kwargs)
+        return Template.cook_check(self, **kwargs)
 
     def render(self, **kwargs):
         kwargs[config.SYMBOLS.xincludes] = self.xincludes
-        return super(BaseTemplateFile, self).render(**kwargs)
+        return super(TemplateFile, self).render(**kwargs)
 
     def mtime(self):
         try:

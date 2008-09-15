@@ -3,7 +3,7 @@ Translation
 
 This document contains functional template tests.
 
-  >>> from z3c.pt.testing import render_xhtml
+  >>> from chameleon.core.testing import render_xhtml
 
 XHTML
 -----
@@ -115,7 +115,7 @@ Literals
 Text templates
 --------------
 
-  >>> from z3c.pt.testing import render_text
+  >>> from chameleon.core.testing import render_text
 
 An example with a CSS stylesheet document:
   
@@ -142,7 +142,7 @@ Ghosted templates
 
 To facilitate disk-caching, template instances can be pickled.
 
-  >>> from z3c.pt.testing import compile_xhtml
+  >>> from chameleon.core.testing import compile_xhtml
   >>> template = compile_xhtml("""\
   ... <div xmlns="http://www.w3.org/1999/xhtml">
   ...   Hello World!
@@ -155,7 +155,7 @@ To facilitate disk-caching, template instances can be pickled.
 Check that we're getting a template object back.
   
   >>> template
-  <ByteCodeTemplate parser="z3c.pt.testing.MockParser">
+  <ByteCodeTemplate parser="chameleon.core.testing.MockParser">
 
 Let's try and render the template.
  

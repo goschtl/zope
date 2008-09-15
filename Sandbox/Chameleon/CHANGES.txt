@@ -1,8 +1,12 @@
 Changelog
----------
+=========
 
 Version 1.0dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Package changes
+
+- Split out compiler to separate egg. [malthe]
 
   Backwards incompatibilities
 

@@ -1,11 +1,11 @@
-from z3c.pt import types
-from z3c.pt import config
-from z3c.pt import etree
-from z3c.pt import utils
+from chameleon.core import types
+from chameleon.core import config
+from chameleon.core import etree
+from chameleon.core import utils
 
 class Assign(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     We'll define some values for use in the tests.
 
@@ -138,7 +138,7 @@ class Assign(object):
 
 class Define(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     Variable scope:
 
@@ -303,7 +303,7 @@ class Define(object):
 
 class Condition(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     Unlimited scope:
 
@@ -425,7 +425,7 @@ class Visit(object):
 
 class Tag(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     Dynamic attribute:
 
@@ -607,11 +607,11 @@ class Tag(object):
 
 class Repeat(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     We need to set up the repeat object.
 
-    >>> from z3c.pt import utils
+    >>> from chameleon.core import utils
     >>> repeat = utils.repeatdict()
 
     Simple repeat loop and repeat data structure:
@@ -721,7 +721,7 @@ class Repeat(object):
 
 class Write(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     Basic write:
 
@@ -824,7 +824,7 @@ class Write(object):
 
 class UnicodeWrite(Write):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
 
     Basic write:
 
@@ -873,7 +873,7 @@ class UnicodeWrite(Write):
 
 class Out(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
       
     >>> _out, _write, stream = testing.setup_stream()
     >>> out = Out('Hello World!')
@@ -899,7 +899,7 @@ class Out(object):
 
 class Method(object):
     """
-    >>> from z3c.pt import testing
+    >>> from chameleon.core import testing
       
     >>> _out, _write, stream = testing.setup_stream()
     >>> _scope = {}
