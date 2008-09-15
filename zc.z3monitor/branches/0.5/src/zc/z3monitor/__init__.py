@@ -58,6 +58,9 @@ class Server:
 
         connection.write(zc.ngi.END_OF_DATA)
 
+    def handle_close(self, connection, reason):
+        pass                            # Don't care
+
 
 def help(connection, command_name=None):
     """Get help about server commands

@@ -322,3 +322,9 @@ change it, then the zeocache output will change:
     False 
     -> CLOSE
 
+
+.. Edge cases
+
+   Closing the connection:
+
+   >>> connection.test_close('test')
