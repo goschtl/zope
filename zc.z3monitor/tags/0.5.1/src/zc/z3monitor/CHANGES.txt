@@ -1,0 +1,68 @@
+==============
+Change History
+==============
+
+0.5.1 (2008-09-15)
+==================
+
+Bugs Fixed:
+
+- The z3monitor server lacked a handle_close method, which caused
+  errors to get logged when users closed connections before giving
+  commands. 
+
+0.5 (2008-4-4)
+==============
+
+Features
+--------
+
+* If the requested monitor port is in use, log and move on, rather than
+  stopping the process with an exception.  This lets ``zopectl debug``
+  work with a running instance.
+
+0.4.1 (2008-3-31)
+=================
+
+Initial release to PyPI
+
+Bug Fixes
+---------
+
+* added zope.app.appsetup to dependencies, based on failing tests
+
+Other
+-----
+
+* added comment that monitor examples currently fail on systems without procfs
+
+* tweaked setup.py for PyPI release
+
+0.4.0 (2007-11-29)
+==================
+
+New Features
+------------
+
+* Moved ZEO cache status to the zeostatus command.
+
+0.3.0 (2007-11-29)
+==================
+
+New Features
+------------
+
+* Commands are now provided as utilities.  This means that z3monitor
+  commands can be added by simply implementing simple utilities.
+
+* Added a working help command.
+
+* Added ZEO connection status to the zeocache output.
+
+0.2.0 (2007-11-15)
+==================
+
+New Features
+------------
+
+* Added a command to get ZEO cache statistics.
