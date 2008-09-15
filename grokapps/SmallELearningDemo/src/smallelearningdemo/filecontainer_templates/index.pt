@@ -1,0 +1,13 @@
+<html metal:use-macro="context/@@master/macros/master">
+<div metal:fill-slot="content">
+
+<ul>
+<li tal:repeat="i context/values">
+<a tal:attributes="href i/@@absolute_url" tal:content="i/zope:name"></a>
+</li>
+</ul>
+
+<a href="add" tal:attributes="href python:view.url(name='add')">Add File</a>
+
+</div>
+</html>

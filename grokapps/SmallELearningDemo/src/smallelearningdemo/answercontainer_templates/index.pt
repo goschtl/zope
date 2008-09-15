@@ -1,0 +1,15 @@
+<html metal:use-macro="context/@@master/macros/master">
+<div metal:fill-slot="content">
+
+<h1>Answers</h1>
+
+<ul>
+<li tal:repeat="i context/values">
+<a tal:attributes="href i/@@absolute_url" tal:content="i/zope:name"></a>
+</li>
+</ul>
+
+<a tal:attributes="href python:view.url(context.__parent__)">Back</a>
+
+</div>
+</html>

@@ -1,0 +1,31 @@
+<html metal:use-macro="context/@@master/macros/master">
+<div metal:fill-slot="content">
+
+<h1>Answer</h1>
+
+<div tal:content="context/title"></div>
+
+<pre tal:content="context/comment"></pre>
+
+<h2>Attachments</h2>
+
+<ul>
+<li tal:repeat="i view/getFiles">
+<a tal:attributes="href i/@@absolute_url" tal:content="i/zope:name"></a>
+</li>
+</ul>
+
+<div>
+<a href="answers/add" tal:attributes="href python:view.url('files/add')">Add File</a>
+</div>
+
+<div>
+<a href="edit" tal:attributes="href python:view.url('edit')">Edit</a>
+</div>
+
+<div>
+<a tal:attributes="href context/__parent__/@@absolute_url">Back</a>
+</div>
+
+</div>
+</html>

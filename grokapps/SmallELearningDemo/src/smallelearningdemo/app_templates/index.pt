@@ -1,0 +1,23 @@
+<html metal:use-macro="context/@@master/macros/master">
+<div metal:fill-slot="content">
+
+<h1>Exercise List</h1>
+
+
+<form action="delete" tal:attributes="action python:view.url('delete')">
+<ul>
+  <li tal:repeat="i context/values">
+    <input type="checkbox" name="names:list" tal:attributes="value i/__name__">
+    <a tal:attributes="href i/@@absolute_url" tal:content="i/title"></a>
+  </li>
+</ul>
+<input tal:condition="python:len(context)" type="submit" value="Delete">
+</form>
+
+
+<div>
+<a href="add" tal:attributes="href python:view.url(name='add')">Add new exercise</a>
+</div>
+
+</div>
+</html>

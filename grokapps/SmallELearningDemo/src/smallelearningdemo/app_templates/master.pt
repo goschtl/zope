@@ -1,0 +1,15 @@
+<html metal:define-macro="master">
+<head>
+<title>Simple e-Learning Demo</title>
+</head>
+<body style="padding:0;">
+<div style="margin:0; padding:0; height:50px; font-size:24pt; background-color:#bbf">
+Simple e-Learning Demo
+</div>
+
+<div metal:define-slot="content">
+
+</div>
+
+</body>
+</html>
