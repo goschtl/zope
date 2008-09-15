@@ -68,6 +68,9 @@ class Server:
         if self.mode is QUIT_MARKER:
             connection.write(zc.ngi.END_OF_DATA)
 
+    def handle_close(self, connection, reason):
+        pass                            # Don't care
+
 
 def interactive(connection):
     """Turn on monitor's interactive mode
@@ -87,6 +90,7 @@ def quit(connection):
     """
     connection.write('Goodbye.\n')
     return QUIT_MARKER
+
 
 def help(connection, command_name=None):
     """Get help about server commands
