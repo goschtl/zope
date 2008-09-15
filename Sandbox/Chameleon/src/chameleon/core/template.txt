@@ -31,3 +31,14 @@ chameleon.core.template.TemplateFile
   >>> t.filename.startswith(os.sep)
   True
 
+XInclude support
+----------------
+
+  >>> template = TemplateFile(path+"/xinclude1.pt", mock_parser)
+  >>> print template()
+  <div>
+    <div>
+    <span>Hello, world!</span>
+    </div>
+  </div>
+
