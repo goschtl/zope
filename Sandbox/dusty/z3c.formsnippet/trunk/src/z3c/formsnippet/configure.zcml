@@ -28,7 +28,22 @@
       name="div"
       mode="input"
       layer="z3c.form.interfaces.IFormLayer"
-      template="pt/snippet_input_cb.pt"
+      template="pt/snippet_div_input_cb.pt"
+      widget="z3c.form.interfaces.ICheckBoxWidget"
+      />
+
+  <z3c:snippetTemplate
+      name="td"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_td_input.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="td"
+      mode="input"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_td_input_cb.pt"
       widget="z3c.form.interfaces.ICheckBoxWidget"
       />
 
@@ -43,7 +58,7 @@
       name="span"
       mode="input"
       layer="z3c.form.interfaces.IFormLayer"
-      template="pt/snippet_input_cb.pt"
+      template="pt/snippet_span_input_cb.pt"
       widget="z3c.form.interfaces.ICheckBoxWidget"
       />
 
@@ -52,6 +67,13 @@
       mode="display"
       layer="z3c.form.interfaces.IFormLayer"
       template="pt/snippet_div_display.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="td"
+      mode="display"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_td_display.pt"
       />
 
   <z3c:snippetTemplate
@@ -66,6 +88,13 @@
       mode="hidden"
       layer="z3c.form.interfaces.IFormLayer"
       template="pt/snippet_div_hidden.pt"
+      />
+
+  <z3c:snippetTemplate
+      name="td"
+      mode="hidden"
+      layer="z3c.form.interfaces.IFormLayer"
+      template="pt/snippet_td_hidden.pt"
       />
 
   <z3c:snippetTemplate

@@ -1,0 +1,5 @@
+<td>
+<div class="widget" tal:content="structure view/render">
+ <input type="text"/>
+</div>
+</td>

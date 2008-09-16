@@ -1,0 +1,6 @@
+<span class="widget" tal:content="structure view/render">
+ <input type="text"/>
+</span>
+<span class="error" tal:condition="view/error">
+ <span tal:replace="structure view/error/render">error</span>
+</span>

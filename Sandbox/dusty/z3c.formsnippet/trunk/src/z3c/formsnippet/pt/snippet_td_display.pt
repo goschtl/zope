@@ -1,0 +1,4 @@
+<td>
+<div tal:content="structure view/label">widget label</div>
+<div tal:content="structure view/render">widget</div>
+</td>
