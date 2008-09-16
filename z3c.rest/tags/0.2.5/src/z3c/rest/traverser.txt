@@ -1,0 +1,87 @@
+=========================
+REST Traverser Components
+=========================
+
+Being able to control and extend traversal is essential to any RESTive
+API. This package uses the pluggable traverser implementation of the
+``z3c.traverser`` package to provide a flexible traversal mechanism.
+
+
+REST Pluggable Traverser
+------------------------
+
+The REST pluggable traverser is registered for all types of components. Its
+implementation is fully tested in the ``z3c.traverser`` package.
+
+  >>> from z3c.rest import traverser
+
+  >>> import StringIO
+  >>> from z3c.rest import rest
+  >>> request = rest.RESTRequest(StringIO.StringIO(), {})
+
+  >>> pluggable = traverser.RESTPluggableTraverser(object(), request)
+  >>> pluggable
+  <z3c.rest.traverser.RESTPluggableTraverser object at ...>
+
+
+Item Container Traverser Plugin
+-------------------------------
+
+The item mapping interface -- from which item container inherits -- is the
+most minimal mapping interface in Python. Thus, once traversing through this
+item container is implemented, it can be used by all other container
+interfaces and implementations.
+
+Let's start by creating a very simple item container implementation:
+
+  >>> import zope.interface
+  >>> from zope.app.container.interfaces import IItemContainer
+
+  >>> class SimpleContainer(dict):
+  ...     zope.interface.implements(IItemContainer)
+  ...     def __init__(self, name=''):
+  ...         self.name = name
+  ...     def __repr__(self):
+  ...         return '<Container name=%s>' %self.name
+
+  >>> container = SimpleContainer()
+
+  >>> container['sub1'] = SimpleContainer('sub1')
+  >>> container['sub2'] = SimpleContainer('sub2')
+
+After creating a traverser plugin instance,
+
+  >>> request = rest.RESTRequest(StringIO.StringIO(), {})
+
+  >>> containerTraverser = traverser.ContainerItemTraverserPlugin(
+  ...     container, request)
+
+we can traverse to a sub-object of that container:
+
+  >>> containerTraverser.publishTraverse(request, 'sub1')
+  <Container name=sub1>
+
+If no proper sub-item can be found, some interesting can happen. In a normal
+case, ``NotFound`` is raised:
+
+  >>> containerTraverser.publishTraverse(request, 'unknown')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <Container name=>, name: 'unknown'
+
+However, if the request is a PUT request, we must generate a null resource:
+
+  >>> request.method = 'PUT'
+  >>> containerTraverser.publishTraverse(request, 'unknown')
+  <NullResource 'unknown'>
+
+However, a null resource is only created, if the current resource is the last
+one in the traversal stack:
+
+  >>> request.setTraversalStack(('sub11',))
+  >>> containerTraverser.publishTraverse(request, 'unknown')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: <Container name=>, name: 'unknown'
+
+And that's it.
