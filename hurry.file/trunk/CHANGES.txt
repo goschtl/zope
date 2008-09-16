@@ -1,0 +1,64 @@
+hurry.file changes
+==================
+
+1.2 (unreleased)
+----------------
+
+* ...
+
+1.1 (2008-08-07)
+----------------
+
+* Add in a buildout.cfg that installs the test runner.
+
+* List dependencies in setup.py.
+
+* Rely on zope.session instead of zope.app.session to stop deprecation
+  warnings.
+
+* Add long description in setup.py based on README.txt and file.txt
+  doctests, and CHANGES.txt.
+
+1.0 (2006-10-25)
+----------------
+
+* Support for Tramline (fast file uploads/downloads) through
+  IFileRetrieval. By default, nothing changes.
+
+  If a subclass of TramlineFileRetrievalBase is registered as a
+  IFileRetrieval utility, hurry.file becomes Tramline aware. If files
+  are created manually, they can be created through the
+  createHurryFile function, or the 'createFile' method of the
+  IFileRetrieval service. This will take care of storing the file in
+  the right place.
+
+  Tramline can be found here: http://codespeak.net/svn/rr/tramline/trunk
+
+0.9.3 (2006-10-23)
+------------------
+
+* Send tramline_ok header back when redisplaying widget, in case we're
+  working with tramline.
+
+0.9.2 (2006-09-28)
+------------------
+
+* Zope 3.3 has a change in the way it deals with file name encoding
+  which broke hurry.file. This includes a workaround.
+
+0.9.1 (2006-09-22)
+------------------
+
+* first cheeseshop release.
+
+0.9 (2006-06-15)
+----------------
+
+* separation from general hurry package into hurry.file
+
+* eggification
+
+0.8 (2006-05-01)
+----------------
+
+Initial public release.
