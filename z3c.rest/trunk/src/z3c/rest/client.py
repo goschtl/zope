@@ -34,20 +34,24 @@ def isRelativeURL(url):
 
 def absoluteURL(base, url):
     """Convertes a URL to an absolute URL given a base."""
-    if isRelativeURL(url):
-        if not base.endswith('/'):
-            base += '/'
-        fullUrl = urlparse.urljoin(base, url)
-    else:
-        fullUrl = url
-    pieces = list(urlparse.urlparse(fullUrl))
+    if not isRelativeURL(url):
+        return url
+
+    pieces = list(urlparse.urlparse(base))
+    urlPieces = list(urlparse.urlparse(url))
+
     if not pieces[2].endswith('/'):
         pieces[2] += '/'
-    newUrl = urlparse.urlunparse(pieces)
-    # Some systems really do not like the trailing /
-    if not url.endswith('/') and newUrl.endswith('/'):
-        newUrl = newUrl[:-1]
-    return newUrl
+    pieces[2] = urlparse.urljoin(pieces[2], urlPieces[2])
+
+    if urlPieces[4]:
+        if pieces[4]:
+            pieces[4] = pieces[4] + '&' + urlPieces[4]
+        else:
+            pieces[4] = urlPieces[4]
+
+    return urlparse.urlunparse(pieces)
+
 
 def getFullPath(pieces, params):
     """Build a full httplib request path, including a query string."""

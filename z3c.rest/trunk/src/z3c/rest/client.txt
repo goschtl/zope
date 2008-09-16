@@ -547,3 +547,72 @@ raised:
   Traceback (most recent call last):
   ...
   ValueError: There is not enough history.
+
+
+Absolute URLs
+-------------
+
+As mentioned above, we allow specifying relative URLs, a call with an absolute
+URL has been made. A function called ``absoluteURL()`` is used to compute the
+new absolute URL.
+
+  >>> from z3c.rest.client import absoluteURL
+
+The basic functionality is simple:
+
+  >>> absoluteURL('http://localhost/folder1/', 'folder11')
+  'http://localhost/folder1/folder11'
+
+It also detects, if the new part of the URL is absolute, in which case it
+replaces the original base URL:
+
+  >>> absoluteURL('http://einstein/folder1', 'http://localhost/folder11')
+  'http://localhost/folder11'
+
+If the base URL does not have a trailing slash, it is added automatically:
+
+  >>> absoluteURL('http://localhost/folder1', 'folder11')
+  'http://localhost/folder1/folder11'
+
+Any slashes at the end of the new URL are preserved:
+
+  >>> absoluteURL('http://localhost/folder1', 'folder11/')
+  'http://localhost/folder1/folder11/'
+
+  >>> absoluteURL('http://einstein/folder1', 'http://localhost/folder11/')
+  'http://localhost/folder11/'
+
+The function also handles more complex URLs containing a query string
+correctly:
+
+  >>> absoluteURL('http://localhost/folder1', 'folder11?max=1')
+  'http://localhost/folder1/folder11?max=1'
+
+  >>> absoluteURL('http://localhost/folder1', 'folder11/?max=1')
+  'http://localhost/folder1/folder11/?max=1'
+
+If the base URL contains a query string, the resulting URL will as well:
+
+  >>> absoluteURL('http://localhost/folder1?max=1', 'folder11/')
+  'http://localhost/folder1/folder11/?max=1'
+
+  >>> absoluteURL('http://localhost/folder1/?max=1', 'folder11/')
+  'http://localhost/folder1/folder11/?max=1'
+
+  >>> absoluteURL('http://localhost/folder1?max=1', 'folder11')
+  'http://localhost/folder1/folder11?max=1'
+
+  >>> absoluteURL('http://localhost/folder1/?max=1', 'folder11')
+  'http://localhost/folder1/folder11?max=1'
+
+If both, the base and relative URL provide query strings, they are merged:
+
+  >>> absoluteURL('http://localhost/folder1/?max=1', 'folder11?min=0')
+  'http://localhost/folder1/folder11?max=1&min=0'
+
+  >>> absoluteURL('http://localhost/folder1/?max=1', 'folder11?min=0&start=0')
+  'http://localhost/folder1/folder11?max=1&min=0&start=0'
+
+  >>> absoluteURL('http://localhost/folder1/?max=1&start=0', 'folder11?min=0')
+  'http://localhost/folder1/folder11?max=1&start=0&min=0'
+
