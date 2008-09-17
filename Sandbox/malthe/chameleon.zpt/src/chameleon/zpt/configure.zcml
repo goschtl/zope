@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           package="chameleon.zpt">
+           
+  <include package="zope.component" file="meta.zcml" />
+  
+  <utility
+     name="python"
+     component=".expressions.python_translator" />
+
+  <adapter
+     name="string"
+     factory=".expressions.StringTranslator" />
+
+</configure>

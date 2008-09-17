@@ -1,0 +1,34 @@
+Template classes
+================
+
+The ``chameleon.zpt`` package provides the ``PageTemplate`` and
+``PageTemplateFile`` classes which allow easy usage of templates in
+your application.
+
+Usage
+-----
+
+  >>> from chameleon.zpt.template import PageTemplate
+  
+  >>> print PageTemplate("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml">
+  ...   Hello World!
+  ... </div>""")()
+  <div>
+    Hello World!
+  </div>
+
+  >>> from chameleon.zpt.template import PageTemplateFile
+  >>> from chameleon.zpt import tests
+  
+  >>> path = tests.__path__[0]
+  >>> t = PageTemplateFile(path+'/helloworld.pt')
+  >>> print t()
+  <div>
+    Hello World!
+  </div>
+
+  >>> import os
+  >>> t.filename.startswith(os.sep)
+  True
+
