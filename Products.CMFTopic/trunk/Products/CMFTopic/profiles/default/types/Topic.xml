@@ -19,21 +19,23 @@
  <alias from="index.html" to="topic_view"/>
  <alias from="view" to="topic_view"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}" visible="True">
+    url_expr="string:${object_url}" 
+    icon_expr="string:${portal_url}/preview_icon.png" visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/topic_edit_form" visible="True">
+    url_expr="string:${object_url}/topic_edit_form" 
+    icon_expr="string:${portal_url}/edit_icon.png" visible="True">
   <permission value="Change portal topics"/>
  </action>
  <action title="Criteria" action_id="criteria" category="object"
     condition_expr="" url_expr="string:${object_url}/topic_criteria_form"
-    visible="True">
+    icon_expr="string:${portal_url}/criteria_icon.png" visible="True">
   <permission value="Change portal topics"/>
  </action>
  <action title="Subtopics" action_id="folderContents" category="object"
     condition_expr="" url_expr="string:${object_url}/folder_contents"
-    visible="True">
+    icon_expr="string:${portal_url}/folder_icon.png" visible="True">
   <permission value="List folder contents"/>
  </action>
  <action title="New..." action_id="new" category="object" condition_expr=""

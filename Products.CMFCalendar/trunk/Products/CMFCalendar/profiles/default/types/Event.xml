@@ -17,11 +17,13 @@
  <alias from="(Default)" to="@@view.html"/>
  <alias from="view" to="@@view.html"/>
  <action title="View" action_id="view" category="object" condition_expr=""
-    url_expr="string:${object_url}" visible="True">
+    url_expr="string:${object_url}" 
+    icon_expr="string:${portal_url}/preview_icon.png" visible="True">
   <permission value="View"/>
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
-    url_expr="string:${object_url}/edit.html" visible="True">
+    url_expr="string:${object_url}/edit.html" 
+    icon_expr="string:${portal_url}/edit_icon.png" visible="True">
   <permission value="Change portal events"/>
  </action>
 </object>
