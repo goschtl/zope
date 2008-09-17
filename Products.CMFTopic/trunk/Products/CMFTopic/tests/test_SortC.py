@@ -21,7 +21,7 @@ import Testing
 from common import CriterionTestCase
 
 
-class SortCriterionTests(CriterionTestCase):
+class SortCriterionTests(CriterionTestCase, unittest.TestCase):
 
     def _getTargetClass(self):
         from Products.CMFTopic.SortCriterion import SortCriterion

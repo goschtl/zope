@@ -34,7 +34,7 @@ def _replace_DC__as_of(new_callable):
     return old_value
 
 
-class FriendlyDateCriterionTests(CriterionTestCase):
+class FriendlyDateCriterionTests(CriterionTestCase, unittest.TestCase):
 
     lessThanFiveDaysOld = { 'value': 5
                           , 'operation': 'max'

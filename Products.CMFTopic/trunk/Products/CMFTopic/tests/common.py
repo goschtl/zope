@@ -20,7 +20,7 @@ from unittest import TestCase
 from zope.interface.verify import verifyClass
 
 
-class CriterionTestCase(TestCase):
+class CriterionTestCase:
 
     def _makeOne(self, id, *args, **kw):
         return self._getTargetClass()(id, *args, **kw)

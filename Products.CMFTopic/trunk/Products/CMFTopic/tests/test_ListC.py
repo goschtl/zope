@@ -21,7 +21,7 @@ import Testing
 from common import CriterionTestCase
 
 
-class ListCriterionTests(CriterionTestCase):
+class ListCriterionTests(CriterionTestCase, unittest.TestCase):
 
     def _getTargetClass(self):
         from Products.CMFTopic.ListCriterion import ListCriterion
