@@ -1,23 +1,17 @@
 import translation
 import template
 import generation
-import expressions
 import doctypes
 import etree
 import config
 import utils
+import types
 
 from StringIO import StringIO
 from cPickle import dumps, loads
 
-class TestCompiler(translation.Compiler):
-    def __call__(self, *args, **kwargs):
-        template = translation.Compiler.__call__(self, *args, **kwargs)
-        template = loads(dumps(template))
-        return template
-
-def pyexp(string):
-    return expressions.python_translation.expression(string)
+def pyexp(*exps):
+    return types.parts([types.value(exp) for exp in exps])
 
 def setup_stream(encoding=None):
     class symbols(translation.Node.symbols):
@@ -44,12 +38,19 @@ def render_text(body, **kwargs):
     template = compiler(parameters=sorted(kwargs.keys()))
     return template.render(**kwargs)    
 
-class MockElement(translation.Element, translation.VariableInterpolation):
-    translator = expressions.python_translation
-    
-    def update(self):
-        translation.VariableInterpolation.update(self)
-        
+def compile_template(parser, body, **kwargs):
+    compiler = TestCompiler(
+        body, parser, implicit_doctype=doctypes.xhtml)
+    template = compiler(parameters=sorted(kwargs.keys()))
+    return template.render(**kwargs)    
+
+class TestCompiler(translation.Compiler):
+    def __call__(self, *args, **kwargs):
+        template = translation.Compiler.__call__(self, *args, **kwargs)
+        template = loads(dumps(template))
+        return template
+
+class MockElement(translation.Element):
     class node(translation.Node):
         def __getattr__(self, name):
             return None
@@ -78,7 +79,9 @@ class MockElement(translation.Element, translation.VariableInterpolation):
 
         @property
         def include(self):
-            return self.element.xi_href
+            href = self.element.xi_href
+            if href is not None:
+                return types.value(repr(href))
 
         @property
         def format(self):
@@ -93,8 +96,7 @@ class MockMetaElement(MockElement, translation.MetaElement):
     pass
     
 class MockXiElement(MockElement):
-    xi_href = utils.attribute(
-        "href", lambda p: expressions.StringTranslation(p).expression)
+    xi_href = utils.attribute('href')
     xi_parse = utils.attribute("parse", default="xml")
 
 class MockParser(etree.Parser):

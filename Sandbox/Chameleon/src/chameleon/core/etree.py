@@ -3,15 +3,12 @@ import config
 import utils
 import cgi
 import copy
+import base64
 import xml.parsers.expat
-from StringIO import StringIO
 
-class ValidationError(ValueError):
-    def __str__(self):
-        value, = self.args
-        return "Insertion of %s is not allowed." % \
-               repr(value)
-        
+from StringIO import StringIO
+from cPickle import dumps, loads
+
 def import_elementtree():
     try:
         import xml.etree.ElementTree as ET
@@ -28,13 +25,34 @@ def validate(string):
         import_elementtree().fromstring("<div>%s</div>" % string)
     except xml.parsers.expat.ExpatError:
         raise ValidationError(string)
-        
+
+class ValidationError(ValueError):
+    def __str__(self):
+        value, = self.args
+        return "Insertion of %s is not allowed." % \
+               repr(value)
+
 class Parser(object):
     element_mapping = utils.emptydict()
-
+    
     def parse(self, body):
         return parse(body, self.element_mapping)
-        
+
+class Annotation(property):
+    def __init__(self, name, default=None):
+        property.__init__(self, self._get, self._set)
+        self.name = name
+        self.default = default
+
+    def _get(instance, element):
+        value = element.attrib.get(instance.name)
+        if value is not None:
+            return loads(base64.decodestring(value))
+        return instance.default
+
+    def _set(instance, element, value):
+        element.attrib[instance.name] = base64.encodestring(dumps(value))
+
 try:
     import lxml.etree
 
@@ -55,7 +73,7 @@ try:
 
                 element = self.makeelement(
                     utils.xhtml_attr('cdata'))
-                element.attrib[utils.meta_attr('cdata')] = ""
+                element.meta_cdata = ""
                 element.text = cdata
                 element.tail = after
                 
@@ -69,7 +87,7 @@ try:
 
                 element = self.makeelement(
                     utils.xhtml_attr('cdata'))
-                element.attrib[utils.meta_attr('cdata')] = ""
+                element.meta_cdata = ""
                 self.addnext(element)
 
                 element.text = cdata

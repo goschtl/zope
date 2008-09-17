@@ -667,27 +667,25 @@ class Repeat(object):
 
     def __init__(self, v, e, scope=(), repeatdict=True):
         self.variable = v
-        self.expression = e
+        #self.expression = e
         self.define = Define(v)
         self.assign = Assign(e)
         self.repeatdict = repeatdict
-
+        self.e = e
+        
     def begin(self, stream):
         variable = self.variable
 
+        # initialize variable scope
+        self.define.begin(stream)
+
+        # assign iterator
+        iterator = stream.save()
+        self.assign.begin(stream, iterator)
+
         if self.repeatdict:
-            # initialize variable scope
-            self.define.begin(stream)
-
-            # assign iterator
-            iterator = stream.save()
-            self.assign.begin(stream, iterator)
-
-            # initialize iterator
             stream.write("%s = repeat.insert('%s', %s)" % (
                 iterator, variable, iterator))
-
-            # loop
             stream.write("try:")
             stream.indent()
             stream.write("%s = None" % variable)
@@ -695,15 +693,15 @@ class Repeat(object):
             stream.write("while True:")
             stream.indent()
         else:
-            stream.write("for %s in %s:" % (variable, self.expression))
+            stream.write("for %s in %s:" % (variable, iterator))
             stream.indent()
 
     def end(self, stream):
         # cook before leaving loop
         stream.cook()
-
+        iterator = stream.restore()
+        
         if self.repeatdict:
-            iterator = stream.restore()
             stream.write("%s = %s.next()" % (self.variable, iterator))
             
         stream.out('\n')
@@ -716,8 +714,8 @@ class Repeat(object):
             stream.write("pass")
             stream.outdent()
 
-            self.define.end(stream)
-            self.assign.end(stream)
+        self.assign.end(stream)
+        self.define.end(stream)
 
 class Write(object):
     """
@@ -736,7 +734,7 @@ class Write(object):
     Try-except parts:
 
     >>> _out, _write, stream = testing.setup_stream()
-    >>> write = Write(testing.pyexp("undefined | 'New Delhi'"))
+    >>> write = Write(testing.pyexp('undefined', '"New Delhi"'))
     >>> write.begin(stream)
     >>> write.end(stream)
     >>> exec stream.getvalue()

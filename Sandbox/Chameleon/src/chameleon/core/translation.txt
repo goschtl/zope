@@ -102,15 +102,29 @@ Literals
       Hello World!
     </html>
 
+:: HTML comments
+
+  >>> print render_xhtml("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml">
+  ...   <!-- a comment -->
+  ...   <!-- a multi-
+  ...        line comment -->
+  ... </div>""")
+  <div>
+    <!-- a comment -->
+    <!-- a multi-
+         line comment -->
+  </div>
+
 :: Literal comments (without embedded expressions) output literally
 
   >>> print render_xhtml("""\
   ... <html xmlns="http://www.w3.org/1999/xhtml">
   ...   <!-- hello world -->
   ... </html>""")
-    <html>
-      <!-- hello world -->
-    </html>
+  <html>
+    <!-- hello world -->
+  </html>
   
 Text templates
 --------------
@@ -121,7 +135,7 @@ An example with a CSS stylesheet document:
   
   >>> css = """\
   ... #some-region {
-  ...    background: url(${'http://nohost/plone'}/logo.gif) no-repeat;
+  ...    background: url(http://nohost/plone/logo.gif) no-repeat;
   ... }"""
 
   >>> print render_text(css)
@@ -132,10 +146,10 @@ An example with a CSS stylesheet document:
 A javascript document that prints out HTML:
 
   >>> js = """\
-  ... print '<div class="description">Hello ${'World!'}</div>';"""
+  ... print '<div class="description">Hello, world!</div>';"""
 
   >>> print render_text(js)
-  print '<div class="description">Hello World!</div>';
+  print '<div class="description">Hello, world!</div>';
 
 Ghosted templates
 -----------------

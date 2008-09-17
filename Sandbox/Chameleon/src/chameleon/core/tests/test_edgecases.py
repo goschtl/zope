@@ -2,35 +2,6 @@ import unittest
 
 from zope.component.testing import PlacelessSetup
 
-class TestNumericEntityPlusUnicodeParameterInsertedLiterally(unittest.TestCase,
-                                                             PlacelessSetup):
-    # See also
-    # http://groups.google.com/group/z3c_pt/browse_thread/thread/aea963d25a1778d0?hl=en
-    def setUp(self):
-        PlacelessSetup.setUp(self)
-
-    def tearDown(self):
-        PlacelessSetup.tearDown(self)
-            
-    def test_it(self):
-        import chameleon.core
-        from chameleon.core.testing import MockTemplate
-        body = u"""\
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml">
-        ${foo} &#169;
-        </html>
-        """
-        expected = u"""\
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml">
-        foo \xa9
-        </html>"""
-        t = MockTemplate(body)
-        self.assertEqual(norm(t.render(foo=u'foo')), norm(expected))
-
 class TestExplicitDoctypes(unittest.TestCase, PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)

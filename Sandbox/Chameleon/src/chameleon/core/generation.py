@@ -4,7 +4,6 @@ from zope.i18nmessageid import Message
 
 import utils
 import etree
-import expressions
 
 template_wrapper = """\
 def render(%(init)s, %(args)s%(extra)s%(language)s=None):

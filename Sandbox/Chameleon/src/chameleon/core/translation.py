@@ -1,7 +1,6 @@
 from StringIO import StringIO
 
 import generation
-import expressions
 import codegen
 import clauses
 import doctypes
@@ -344,7 +343,7 @@ class Node(object):
         index = self.element.index(element)
 
         t = self.element.makeelement(utils.meta_attr('literal'))
-        t.attrib['omit-tag'] = ''
+        t.meta_omit = ""
         t.tail = element.tail
         t.text = unicode(element)
         for child in element.getchildren():
@@ -389,7 +388,7 @@ class Element(etree.ElementBase):
     providing a code stream object.
     """
 
-    translator = expressions.python_translation
+    translator = None
     
     class node(Node):
         @property
@@ -422,105 +421,26 @@ class Element(etree.ElementBase):
 
         raise ValueError("Can't locate stream object.")
 
-    meta_cdata = utils.attribute(
+    meta_cdata = etree.Annotation(
         utils.meta_attr('cdata'))
     
-    meta_omit = utils.attribute(
+    meta_omit = etree.Annotation(
         utils.meta_attr('omit-tag'))
+    
+    meta_attributes = etree.Annotation(
+        utils.meta_attr('attributes'))
 
-    meta_attributes =  utils.attribute(
-        utils.meta_attr('attributes'), lambda p: p.definitions)
-
-    meta_replace = utils.attribute(
-        utils.meta_attr('replace'), lambda p: p.output)
+    meta_replace = etree.Annotation(
+        utils.meta_attr('replace'))
 
 class MetaElement(Element):
-    meta_cdata = utils.attribute('cdata')
+    meta_cdata = etree.Annotation('cdata')
     
     meta_omit = True
-    
-    meta_attributes =  utils.attribute(
-        'attributes', lambda p: p.definitions)
-    meta_replace = utils.attribute(
-        'replace', lambda p: p.output)
 
-class NativeAttributePrefixSupport:
-    """Element mix-in which allows native attributes to appear with
-    namespace prefix.
+    meta_attributes = etree.Annotation('attributes')
 
-    >>> class MockElement(NativeAttributePrefixSupport):
-    ...     nsmap = {'prefix1': 'ns1'}
-    ...     prefix = 'prefix1'
-    ...     attrib = {'{ns1}attr1': '1', 'attr2': '2', '{ns2}attr3': '3'}
-
-    >>> element = MockElement()
-    >>> element.update()
-    >>> keys = utils.get_attributes_from_namespace(element, 'ns1').keys()
-    >>> tuple(sorted(keys))
-    ('attr1', 'attr2')
-    """
-    
-    def update(self):
-        namespace = self.nsmap[self.prefix]
-        for name, value in self.attrib.items():
-            if name.startswith('{%s}' % namespace):
-                del self.attrib[name]
-                name = name.split('}')[-1]
-                self.attrib[name] = value
-    
-class VariableInterpolation:
-    def update(self):
-        translator = self.translator
-        
-        if self.text is not None:
-            while self.text:
-                text = self.text
-                m = translator.interpolate(text)
-                if m is None:
-                    break
-
-                t = self.makeelement(utils.meta_attr('interpolation'))
-                expression = "structure " + \
-                             (m.group('expression') or m.group('variable'))
-                t.attrib['replace'] = expression
-                t.tail = text[m.end():]
-                self.insert(0, t)
-                t.update()
-
-                if m.start() == 0:
-                    self.text = text[2-len(m.group('prefix')):m.start()+1]
-                else:
-                    self.text = text[:m.start()+1]
-
-        if self.tail is not None:
-            while self.tail:
-                m = translator.interpolate(self.tail)
-                if m is None:
-                    break
-
-                t = self.makeelement(utils.meta_attr('interpolation'))
-                expression = "structure " + \
-                             (m.group('expression') or m.group('variable'))
-                t.attrib['replace'] = expression
-                t.tail = self.tail[m.end():]
-                parent = self.getparent()
-                parent.insert(parent.index(self)+1, t)
-                t.update()
-                                
-                self.tail = self.tail[:m.start()+len(m.group('prefix'))-1]
-
-        for name in utils.get_attributes_from_namespace(self, config.XHTML_NS):
-            value = self.attrib[name]
-
-            if translator.interpolate(value):
-                del self.attrib[name]
-
-                attributes = utils.meta_attr('attributes')
-                expr = '%s string:%s' % (name, value)
-                if attributes in self.attrib:
-                    self.attrib[attributes] += '; %s' % expr
-                else:
-                    self.attrib[attributes] = expr
+    meta_replace = etree.Annotation('replace')
 
 class Compiler(object):
     """Template compiler. ``implicit_doctype`` will be used as the
@@ -586,7 +506,7 @@ class Compiler(object):
             "<html xmlns='%s'></html>" % config.XHTML_NS, parser,
             implicit_doctype=None, encoding=kwargs.get('encoding'))
         compiler.root.text = body
-        compiler.root.attrib[utils.meta_attr('omit-tag')] = ""
+        compiler.root.meta_omit = ""
         return compiler
 
     def __call__(self, macro=None, global_scope=True, parameters=()):

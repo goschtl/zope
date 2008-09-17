@@ -1,4 +1,5 @@
 from zope import interface
+from zope import component
 
 import sys
 import config
@@ -38,21 +39,22 @@ def handler(key=None):
         return g
     return decorate
 
-def attribute(ns, factory=None, default=None, encoding=None):
+def attribute(tokens, factory=None, default=None, encoding=None):
     def get(self):
-        value = self.attrib.get(ns)
-        if value is not None:
-            if encoding or self.stream.encoding:
-                value = value.encode(encoding or self.stream.encoding)
-            if factory is None:
-                return value
-            f = factory(self.translator)
-            return f(value)
-        elif default is not None:
+        for token in isinstance(tokens, tuple) and tokens or (tokens,):
+            value = self.attrib.get(token)
+            if value is not None:
+                if encoding or self.stream.encoding:
+                    value = value.encode(encoding or self.stream.encoding)
+                if factory is None:
+                    return value
+                f = factory(self.translator)
+                return f(value)
+
+        if default is not None:
             return default
-    def set(self, value):
-        self.attrib[ns] = value
-    return property(get, set)
+    
+    return property(get)
 
 def escape(string, quote=None, encoding=None):
     if not isinstance(string, unicode) and encoding:
@@ -76,9 +78,6 @@ def escape(string, quote=None, encoding=None):
         string = string.encode(encoding)
         
     return string
-
-def identity(x):
-    return x
 
 class scope(list):
     def __init__(self, *args):
