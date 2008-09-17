@@ -2,8 +2,22 @@
 CHANGES
 =======
 
-0.2.0 (2007-11-01)
-------------------
+TODO
+----
+
+Deprecate this package, add deprectaion warnings and point to the new 
+z3c.menu.simple package since the z3c.menu is a namespace and offers
+z3c.menu.simple and z3c.menu.ready2go.
+
+
+Version 0.3.0dev (unreleased)
+-----------------------------
+
+- ...
+
+
+Version 0.2.0 (2007-11-01)
+--------------------------
 
 - Initial release.
 
