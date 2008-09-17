@@ -4,6 +4,9 @@ Products.CMFTopic Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Topic GenericSetup definition: Add an icon URL expression to the Topic
+  content type definition.
+
 - ZMI: Prevent users from creating content through the ZMI by hiding the
   entry for "CMFTopic Content".
 

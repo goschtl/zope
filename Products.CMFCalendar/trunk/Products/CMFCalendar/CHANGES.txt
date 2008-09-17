@@ -4,6 +4,9 @@ Products.CMFCalendar Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Event GenericSetup type definition: Add an icon URL expression to the 
+  Event content type definition.
+
 - Event: Added basic iCal and vCal views
   (https://bugs.launchpad.net/zope-cmf/+bug/161714)
 
