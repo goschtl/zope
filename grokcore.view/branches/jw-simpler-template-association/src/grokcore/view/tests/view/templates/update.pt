@@ -1,6 +1,0 @@
-<html>
-<body>
-<h1 tal:content="view/color"/>
-<h1 tal:content="python: view.color"/>
-</body>
-</html>
