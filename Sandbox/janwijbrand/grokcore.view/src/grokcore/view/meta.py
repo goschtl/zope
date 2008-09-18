@@ -40,12 +40,30 @@ def default_view_name(factory, module=None, **data):
 def default_fallback_to_name(factory, module, name, **data):
     return name
 
+def find_template_dir(viewclass):
+    templatedir = grokcore.view.templatedir.bind().get(viewclass)
+    if templatedir is None:
+        # Think of a template dir ourselves based on the path of the
+        # factory's module.
+        modulename = viewclass.__module__.split('.')[-1]
+        templatedir = modulename + '_templates'
+    return templatedir
+
+def find_implicit_template(viewclass):
+    templatedir = find_template_dir(viewclass)
+    templatename = viewclass.__class__.__name__.lower()
+
+    # If the found template exists, we're done. Else we walk up the mro
+    # to find possible implictely associated templates.
+
+    return templatedir, templatename
 
 class ViewGrokker(martian.ClassGrokker):
     martian.component(components.View)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
+    martian.directive(grokcore.view.template)
 
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info object on the view class so that it
@@ -53,7 +71,16 @@ class ViewGrokker(martian.ClassGrokker):
         factory.module_info = module_info
         return super(ViewGrokker, self).grok(name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, name, **kw):
+    def execute(self, factory, config, context, layer, name, template, **kw):
+        if template is not None:
+            templatedir = find_template_dir(factory)
+        else:
+            # Search implicitely associated template for factory or one of
+            # its baseclasses. The more specific the better.
+            templatedir, template = find_implicit_template(factory)
+
+        # now do something with the found template!
+
         # find templates
         templates = factory.module_info.getAnnotation('grok.templates', None)
         if templates is not None:

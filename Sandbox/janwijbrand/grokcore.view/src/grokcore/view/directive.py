@@ -13,6 +13,8 @@
 ##############################################################################
 """Grok directives.
 """
+import os.path
+
 import martian
 from martian.error import GrokImportError
 from martian.directive import StoreOnce
@@ -23,6 +25,14 @@ class template(martian.Directive):
     scope = martian.CLASS
     store = martian.ONCE
     validate = martian.validateText
+
+    def factory(self, value):
+        # Details, details, details: we can get to the filename of the
+        # frame. We could've used the inspect module, but its trying
+        # so hard to solve all kinds of different cases, it probabley
+        # doing to much.
+        path, _ = os.path.splitext(self.frame.f_code.co_filename)
+        return (path, value)
 
 class templatedir(martian.Directive):
     scope = martian.MODULE
