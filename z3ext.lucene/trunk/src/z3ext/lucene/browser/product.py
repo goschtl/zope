@@ -40,9 +40,6 @@ class LuceneProduct(PageletEditForm):
     def getContent(self):
         return getUtility(ILuceneIndex)
 
-    def cancelURL(self):
-        return absoluteURL(self.context.__parent__, self.request) + '/'
-
     def getStatistics(self):
         index = getUtility(ILuceneIndex)
 

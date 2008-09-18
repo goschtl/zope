@@ -21,6 +21,15 @@ from zope.component import getUtilitiesFor
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 
+class Vocabulary(SimpleVocabulary):
+
+    def getTerm(self, value):
+        try:
+            return super(Vocabulary, self).getTerm(value)
+        except LookupError:
+            return self._terms[0]
+
+
 class LuceneVocabulary(object):
 
     def __call__(self, context):
@@ -30,4 +39,4 @@ class LuceneVocabulary(object):
                           SimpleTerm(utility.name, utility.name, str(utility))))
 
         terms.sort()
-        return SimpleVocabulary([term for t, term in terms])
+        return Vocabulary([term for t, term in terms])
