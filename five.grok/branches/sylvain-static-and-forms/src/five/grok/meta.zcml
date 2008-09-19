@@ -6,13 +6,13 @@
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.security" file="meta.zcml" />
 
-  <!-- Load by hand grokcore.view grokkers, since we don't want the
-  static one. --> 
-  <grok:grok package="grokcore.view.meta.views" />
-  <grok:grok package="grokcore.view.meta.templates" />
+  <!-- Load minimal support of grokcore.view, views + templates  -->
+  <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.formlib" file="meta.zcml" />
+
+  <!-- Include skin support as well -->
   <grok:grok package="grokcore.view.meta.skin" />
 
-  <include package="grokcore.formlib" file="meta.zcml" />
   <grok:grok package=".meta" />
 
 </configure>
