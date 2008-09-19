@@ -40,7 +40,7 @@ setup(name='z3c.dobbin',
       zip_safe=False,
       extras_require = dict(
         test = [
-            'pysqlite',
+            'pysqlite==2.4.1',
             ],
         ),
       install_requires = [ 'setuptools',
