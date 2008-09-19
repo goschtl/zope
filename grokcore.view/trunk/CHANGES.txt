@@ -4,7 +4,10 @@ Changes
 1.1 (unreleased)
 ----------------
 
-* ...
+* ``meta.py`` module which contains all grokkers have been split in a
+  package, which contains a separate file for views, templats, skin
+  and static resources. This let applications to use only grokkers
+  they needs (and maybe redefine others).
 
 1.0 (2006-08-07)
 ----------------
