@@ -6,7 +6,7 @@ version = '0.1'
 install_requires = [
     'setuptools',
     'grokcore.component',
-    'grokcore.view',
+    'grokcore.view > 1.0',
     'grokcore.formlib',
     'z3c.form',
     ]

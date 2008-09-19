@@ -3,7 +3,7 @@ from zope.interface.interfaces import IInterface
 
 import grokcore.component
 import grokcore.view
-from grokcore.view.meta import ViewGrokker
+from grokcore.view.meta.views import ViewGrokker
 from grokcore.formlib.formlib import most_specialized_interfaces
 
 from martian.error import GrokError
