@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok">
+  <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.security" file="meta.zcml" />
+
+  <!-- This version of the meta.zcml only include views and templates
+  features. --> 
+  <grok:grok package=".meta.views" />
+  <grok:grok package=".meta.templates" />
+
+</configure>
