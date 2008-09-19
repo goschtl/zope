@@ -7,3 +7,4 @@ from five.grok.components import View, Model, Form, AddForm, EditForm, DisplayFo
 
 # Override the one from grokcore.view so that we get Zope 2 semantics
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate
+

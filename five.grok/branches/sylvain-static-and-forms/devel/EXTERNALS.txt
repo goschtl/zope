@@ -1,3 +1,3 @@
 # svn ps -F EXTERNALS.txt svn:externals . 
-grokcore.view svn://svn.zope.org/repos/main/grokcore.view/branches/sylvain-five-grok-static
+grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk
 grokcore.formlib svn://svn.zope.org/repos/main/grokcore.formlib/trunk 
