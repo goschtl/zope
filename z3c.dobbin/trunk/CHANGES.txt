@@ -4,6 +4,11 @@ Change log
 0.4dev
 ------
 
+0.4.2
+-----
+
+- Compatibility with SQLAlchemy 0.5rc1.
+
 0.4.1
 -----
 
