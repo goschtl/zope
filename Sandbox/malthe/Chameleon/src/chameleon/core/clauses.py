@@ -103,7 +103,7 @@ class Assign(object):
         elif isinstance(value, types.join):
             parts = []
             _v_count = 0
-            
+
             for part in value:
                 if isinstance(part, types.template):
                     part = types.value(part % symbols)
@@ -757,11 +757,21 @@ class Write(object):
 
     value = assign = None
     
-    def __init__(self, value):
+    def __init__(self, value, defer=False):
         self.assign = Assign(value)
         self.structure = not isinstance(value, types.escape)
+        self.defer = defer
         
     def begin(self, stream):
+        if not self.defer:
+            self.write(stream)
+            
+    def end(self, stream):
+        stream.cook()
+        if self.defer:
+            self.write(stream)
+    
+    def write(self, stream):
         temp = stream.save()
         symbols = stream.symbols.as_dict()
         value = self.value
@@ -815,7 +825,6 @@ class Write(object):
             stream.symbol_mapping[stream.symbols.validate] = etree.validate
             write("%(validate)s(%(tmp)s)")
 
-    def end(self, stream):
         if self.assign:
             self.assign.end(stream)
         stream.restore()

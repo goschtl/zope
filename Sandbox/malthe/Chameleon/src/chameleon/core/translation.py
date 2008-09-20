@@ -49,6 +49,18 @@ class Node(object):
         self.element = element
 
     @property
+    def text(self):
+        if self.element.text is None:
+            return ()
+        return (self.element.text,)
+
+    @property
+    def tail(self):
+        if self.element.tail is None:
+            return ()
+        return (self.element.tail,)
+    
+    @property
     def stream(self):
         return self.element.stream
     
@@ -102,19 +114,21 @@ class Node(object):
                 else:
                     _.append(clauses.Define(declaration, expression))
 
+        # tag tail (deferred)
+        tail = self.tail
+        if self.fill_slot is None:
+            for part in reversed(tail):
+                if isinstance(part, types.expression):
+                    _.append(clauses.Write(part, defer=True))
+                else:
+                    _.append(clauses.Out(part, defer=True))
+            
         # macro method
         macro = self.macro
         if macro is not None:
             _.append(clauses.Method(
                 macro.name, macro.args))
                 
-        # tag tail (deferred)
-        tail = self.element.tail
-        if tail and not self.fill_slot:
-            if isinstance(tail, unicode) and self.stream.encoding:
-                tail = tail.encode(self.stream.encoding)
-            _.append(clauses.Out(tail, defer=True))
-
         # condition
         if self.condition is not None:
             _.append(clauses.Condition(self.condition))
@@ -185,9 +199,9 @@ class Node(object):
             attributes[variable] = expression
 
         # tag
-        text = self.element.text
+        text = self.text
         if self.omit is not True:
-            selfclosing = text is None and not dynamic and len(self.element) == 0
+            selfclosing = not text and not dynamic and len(self.element) == 0
             tag = clauses.Tag(
                 self.element.tag, attributes,
                 expression=self.dict_attributes, selfclosing=selfclosing,
@@ -199,10 +213,12 @@ class Node(object):
                 _.append(tag)
 
         # tag text (if we're not replacing tag body)
-        if text and not dynamic and not self.use_macro:
-            if isinstance(text, unicode) and self.stream.encoding:
-                text = text.encode(self.stream.encoding)
-            _.append(clauses.Out(text))
+        if len(text) and not dynamic and not self.use_macro:
+            for part in text:
+                if isinstance(part, types.expression):
+                    _.append(clauses.Write(part))
+                else:
+                    _.append(clauses.Out(part))
 
         # dynamic content
         if content:
@@ -326,7 +342,7 @@ class Node(object):
 
             subclauses = []
             if self.element.text:
-                subclauses.append(clauses.Out(self.element.text.encode('utf-8')))
+                subclauses.append(clauses.Out(self.element.text))
             for element in self.element:
                 name = element.node.translation_name
                 if name:
@@ -356,6 +372,7 @@ class Node(object):
         """Create an i18n msgid from the tag contents."""
 
         out = StringIO(self.element.text)
+        
         for element in self.element:
             name = element.node.translation_name
             if name:
