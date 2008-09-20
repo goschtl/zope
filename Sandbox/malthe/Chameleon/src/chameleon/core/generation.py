@@ -108,8 +108,10 @@ class CodeIO(BufferIO):
         self.annotations[self.l_counter] = item
 
     def out(self, string):
+        if isinstance(string, unicode) and self.encoding:
+            string = string.encode(self.encoding)
         self.queue += string
-
+            
     def cook(self):
         if self.queue:
             queue = self.queue
