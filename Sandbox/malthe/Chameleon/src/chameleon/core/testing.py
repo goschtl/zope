@@ -38,9 +38,9 @@ def render_text(body, **kwargs):
     template = compiler(parameters=sorted(kwargs.keys()))
     return template.render(**kwargs)    
 
-def compile_template(parser, body, **kwargs):
+def compile_template(parser, body, encoding=None, **kwargs):
     compiler = TestCompiler(
-        body, parser, implicit_doctype=doctypes.xhtml)
+        body, parser, encoding=encoding, implicit_doctype=doctypes.xhtml)
     template = compiler(parameters=sorted(kwargs.keys()))
     return template.render(**kwargs)    
 
