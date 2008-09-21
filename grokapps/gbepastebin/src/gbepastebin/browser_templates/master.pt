@@ -1,0 +1,42 @@
+<metal:block define-macro="master">   
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:tal="http://xml.zope.org/namespaces/tal">
+  <head>
+    <title>gbepastebin</title>
+    <link rel="stylesheet" type="text/css"
+          tal:attributes="href static/styles.css" />
+  </head>
+  <body>
+    <div id="main">
+
+      <div class="header">Grok-By-Example Pastebin v<tal:block replace="view/version" /> by <a
+         href="http://d2m.at" >d2m</a>
+         <br />
+         <small>based on ClueGun by <a
+         href="http://repoze.org" >Agendaless Consulting</a> based on ClueBin by <a
+         href="http://www.serverzen.com">ServerZen Software</a></small>
+      </div>
+      <div tal:condition="view/messages|nothing">
+        <div class="message" tal:repeat="message view/messages"
+		     tal:content="structure message/message">Error message</div>
+		<br />
+	  </div>
+
+      <div class="userinfo">
+<metal:block define-slot="userinfo" />   
+      </div>
+
+      <div class="left">
+<metal:block define-slot="left" />      
+      </div>
+
+      <div class="right">
+<metal:block define-slot="right" />      
+      </div>
+      
+      <div class="clear" />
+	  
+    </div>
+  </body>
+</html>
+</metal:block>

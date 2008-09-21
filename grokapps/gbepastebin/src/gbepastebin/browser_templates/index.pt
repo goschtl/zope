@@ -1,0 +1,54 @@
+<metal:block use-macro="context/@@master/macros/master">
+  <metal:block fill-slot="left">
+        <form tal:attributes="action string:@@paste" method="POST">
+          <input type="hidden" name="form.submitted"/>
+          <fieldset>
+            <legend>Paste Info</legend>
+            <div class="field">
+              <label for="author_name">Name</label>
+              <input type="text" name="author_name" tal:attributes="value view/preferred_author|string:" />
+            </div>
+            <div class="field">
+              <label for="language">Language</label>
+              <select name="language">
+                <option value="">-- Auto detect --</option>
+                <option tal:repeat="lexer view/lexers"
+                        tal:attributes="value lexer/alias; selected python:lexer['alias']==view.preferred_language()" 
+						tal:content="lexer/name"
+                        />
+              </select>
+            </div>
+            <div class="field">
+              <label for="paste">Paste Text</label>
+              <textarea name="paste"></textarea>
+            </div>
+            <input type="submit" />
+          </fieldset>
+        </form>
+
+  </metal:block>
+	
+  <metal:block fill-slot="right">	  
+     <tal:block define="pastes context/list_pastes" condition="pastes">
+        <fieldset>
+          <legend>Previous Pastes</legend>
+          <ul>
+            <li tal:repeat="paste pastes">
+              <a tal:attributes="href string:${view/application_url}/${paste/pasteid}"
+			     tal:define="date python:paste.date.strftime('%x at %X')"
+                 tal:content="string:${paste/author_name} on ${date}" />
+            </li>
+          </ul>
+        </fieldset>
+      </tal:block>
+  </metal:block>
+  
+  <metal:block fill-slot="userinfo">
+  	  <div class="userinfo" tal:condition="view/isManager">
+          <a tal:attributes="href string:@@manage">Manage</a> /
+          <a tal:attributes="href string:/@@logout.html">Log Out</a>
+      <br />&nbsp;
+      </div>
+  </metal:block>
+  
+</metal:block>

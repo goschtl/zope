@@ -1,0 +1,5 @@
+<html>
+  <body>
+    <b>ERROR</b> - <tal:block content="context.__class__.__name__" />
+  </body>
+</html>

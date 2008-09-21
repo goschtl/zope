@@ -1,0 +1,145 @@
+Do a functional doctest test on the app.
+========================================
+
+:Test-Layer: functional
+
+
+Test the basic functionality
+----------------------------
+
+Let's first create an instance of gbepastebin at the top level:
+
+   >>> from gbepastebin.app import Application
+   >>> from gbepastebin.paste import Paste
+   >>> root = getRootFolder()
+   >>> root['app'] = app = Application()
+   
+Now test the base functionality: add 3 pastes.
+
+   >>> for paste in range(3):
+   ...     app.add_paste(Paste(author_name='name', paste='text', language='Python'))
+   '1'
+   '2'
+   '3'
+   
+List the Pastebin:
+
+   >>> def show_pastebin():
+   ...     return sorted([x.pasteid for x in app.list_pastes()])
+   >>> show_pastebin()
+   ['1', '2', '3']
+   
+Delete Paste #1, returns True if successful:
+
+   >>> app.delete_paste('1')
+   True
+   >>> app.delete_paste('1')
+   False
+   >>> show_pastebin()
+   ['2', '3']
+   
+Delete several Pastes, returns False if only one of the deletions was not 
+successful:
+
+   >>> app.delete_pastes(['1','3'])
+   False
+   >>> show_pastebin()
+   ['2']
+   
+
+
+Run tests in the testbrowser
+----------------------------
+
+Create a browser and visit the instance you just created:
+
+   >>> from zope.testbrowser.testing import Browser
+   >>> browser = Browser()
+   >>> browser.open('http://localhost/app')
+   
+Paste #2 should show in the 'Previous Pastes' listing:
+
+   >>> '<a href="http://localhost/app/2">' in browser.contents
+   True
+   
+Add another Paste, should be #3:
+
+   >>> browser.open('http://localhost/app/@@paste?author_name=name&paste=text&language=python')
+   >>> '<base href="http://localhost/app/3/@@index" />' in browser.contents
+   True
+   
+Delete Paste #3  (Deletions must be authenticated):
+
+   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+   >>> browser.open('http://localhost/app/3/@@delete')
+   >>> '<a href="http://localhost/app/3">' in browser.contents
+   False
+   
+Management Screen, shows a list of existing Pastes:
+
+   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+   >>> browser.open('http://localhost/app/@@manage')
+   >>> for paste in ['1','2','3']:
+   ...     ('href="http://localhost/app/%s"' % paste) in browser.contents
+   False
+   True
+   False
+
+Cleanup the Pastebin:
+
+   >>> app.delete_pastes(show_pastebin())
+   True
+   >>> show_pastebin()
+   []
+   
+   
+
+Test the REST views
+-------------------
+
+Add a few pastes and list the Pastebin contents:
+
+   >>> import simplejson
+   >>> for paste in range(3):
+   ...     browser.open('http://localhost/++rest++json/app/', 'author_name=name&paste=text&language=python')
+   >>> browser.open('http://localhost/++rest++json/app/')
+   >>> simplejson.loads(browser.contents)
+   [u'1', u'2', u'3']
+   
+Delete Paste #2 (Deletions must be authenticated):
+
+   >>> from grok.ftests.test_grok_functional import http_call
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2')
+   Traceback (most recent call last):
+   ...
+   Unauthorized: (<grok.meta.JSONPaste ...>, '__call__', 'gbepastebin.manage')
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2',Authorization='Basic mgr:mgrpw')
+   >>> simplejson.loads(response.getBody())
+   True
+   
+Delete it again:
+
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2',Authorization='Basic mgr:mgrpw')
+   Traceback (most recent call last):
+   ...
+   NotFound: Object: <gbepastebin.app.Application object at ...>, name: u'2'
+    
+Delete all Pastes:
+
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/',Authorization='Basic mgr:mgrpw')
+   >>> simplejson.loads(response.getBody())
+   True
+   
+Show the Pastebin contents.
+
+   >>> browser.open('http://localhost/++rest++json/app/')
+   >>> simplejson.loads(browser.contents)
+   []
+   
+Test the 'languages' command:
+
+   >>> browser.open('http://localhost/++rest++json/app/languages')
+   >>> ['python', 'Python'] in simplejson.loads(browser.contents)
+   True
+   
+   

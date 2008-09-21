@@ -1,0 +1,29 @@
+<metal:block use-macro="context/@@master/macros/master">
+  <metal:block fill-slot="left">
+    <tal:block define="format view/format">
+        
+        <style tal:content="structure format/style_defs"></style>
+                
+        <dl class="previous_paste">
+          <dt>Paste Entry #<tal:block content="context/pasteid" /></dt>
+          <dd>Author: <tal:block content="context/author_name" /></dd>
+          <dd>Date: <tal:block content="python:context.date.strftime('%x at %X')" /></dd>
+          <dd>Format: <tal:block content="format/language" /></dd>
+          <dd><tal:block content="structure format/formatted_paste" /></dd>
+        </dl>
+
+    </tal:block>
+  </metal:block>
+
+  <metal:block fill-slot="userinfo">
+      <div class="userinfo">
+          <a href="..">Main Page</a>
+          <tal:block tal:condition="view/isManager"> /
+            <a tal:attributes="href string:@@delete">Delete</a> /
+            <a tal:attributes="href string:/@@logout.html">Log Out</a>
+          </tal:block>
+      </div>
+  </metal:block>
+
+</metal:block>
+

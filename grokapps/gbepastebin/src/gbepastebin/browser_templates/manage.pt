@@ -1,0 +1,32 @@
+<metal:block use-macro="context/@@master/macros/master">
+  <metal:block fill-slot="left">       
+      <tal:block define="pastes context/list_pastes" condition="pastes">
+        <fieldset>
+          <legend>Delete Pastes</legend>
+          <form action="@@manage" method="POST">
+            <ul class="nobullet">
+              <li tal:repeat="paste pastes">
+                <input type="checkbox" name="delete:list" 
+                   tal:attributes="value paste/pasteid" />
+                <a tal:attributes="href string:${view/application_url}/${paste/pasteid}"
+				   tal:define="date python:paste.date.strftime('%x at %X')"
+                   tal:content="string:#${paste/pasteid} by ${paste/author_name} on ${date}" />
+              </li>
+            </ul>
+            <input type="submit" name="form.submitted" value="Delete"/>
+          </form>
+        </fieldset>
+      </tal:block>  
+  </metal:block>
+  
+  <metal:block fill-slot="userinfo">
+      <div class="userinfo">
+          <a href=".">Main Page</a>
+          <tal:block tal:condition="view/isManager"> /
+            <a tal:attributes="href string:/@@logout.html">Log Out</a>
+          </tal:block>
+      </div>
+	  <br />
+  </metal:block>
+
+</metal:block>
