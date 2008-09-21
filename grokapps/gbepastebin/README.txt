@@ -6,7 +6,7 @@ Grok-by-Example: Pastebin
              and deduce from both
 
 A basic 'Grok Pastebin' application [source__] ported from repoze.cluegun 
-[source__], a port of ClueBin [source__].
+[source__], a port of ClueBin__.
 
 __ http://svn.zope.org/grokapps/gbepastebin/src/gbepastebin/
 __ http://repoze.org/viewcvs/repoze.cluegun/trunk/
