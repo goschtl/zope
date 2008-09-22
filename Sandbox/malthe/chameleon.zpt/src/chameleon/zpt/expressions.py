@@ -5,6 +5,7 @@ from zope import interface
 from zope import component
 
 from chameleon.core import types
+from chameleon.core import parsing
 
 import interfaces
 
@@ -391,138 +392,17 @@ class StringTranslator(ExpressionTranslator):
         self._translator = translator
 
     def validate(self, string):
-        self.interpolate(string)
         self.split(string)
             
     def translate(self, string):
         return types.join(self.split(string))
             
     def split(self, string):
-        """Split up an interpolation string expression into parts that
-        are either unicode strings or ``value``-tuples.
-
-        >>> class MockTranslator(object):
-        ...     def tales(self, string):
-        ...         return types.value(string)
-        
-        >>> split = StringTranslator(MockTranslator()).split
-
-        >>> split("${abc}")
-        (value('abc'),)
-
-        >>> split(" ${abc}")
-        (' ', value('abc'))
-
-        >>> split("abc${def}")
-        ('abc', value('def'))
-
-        >>> split("${def}abc")
-        (value('def'), 'abc')
-
-        >>> split("abc${def}ghi")
-        ('abc', value('def'), 'ghi')
-
-        >>> split("abc${def}ghi${jkl}")
-        ('abc', value('def'), 'ghi', value('jkl'))
-
-        >>> split("abc${def}")
-        ('abc', value('def'))
-
-        >>> print split(u"abc${ghi}")
-        (u'abc', value('ghi'))
-        
-        """
-
-        m = self.interpolate(string)
-        if m is None:
-            return (self._unescape(string),)
-
-        prefix = m.group('prefix')
-        parts = []
-        
-        start = m.start() + len(prefix) - 1
-        if start > 0:
-            text = string[:start]
-            parts.append(self._unescape(text))
-
-        expression = m.group('expression')
-        variable = m.group('variable')
-
-        if expression:
-            parts.append(self._translator.tales(expression))
-        elif variable:
-            parts.append(self._translator.tales(variable))
-                
-        rest = string[m.end():]
-        if len(rest):
-            parts.extend(self.split(rest))
-
-        return tuple(parts)
-
-    def interpolate(self, string):
-        """Search for an interpolation and return a match.
-
-        >>> class MockTranslator(object):
-        ...     def tales(self, string):
-        ...         return types.parts((types.value(string),))
-
-        >>> interpolate = StringTranslator(MockTranslator()).interpolate
-        
-        >>> interpolate('${abc}').group('expression')
-        'abc'
-
-        >>> interpolate(' ${abc}').group('expression')
-        'abc'
-
-        >>> interpolate('abc${def}').group('expression')
-        'def'
-
-        >>> interpolate('abc${def}ghi${jkl}').group('expression')
-        'def'
-
-        >>> interpolate('$abc').group('variable')
-        'abc'
-
-        >>> interpolate('${abc')
-        Traceback (most recent call last):
-          ...
-        SyntaxError: Interpolation expressions must be of the form ${<expression>} (${abc)
-        
-        """
-
-        m = self.re_interpolation.search(string)
-        if m is None:
-            return None
-
-        expression = m.group('expression')
-        variable = m.group('variable')
-        
-        if expression:
-            left = m.start()+len(m.group('prefix'))+1
-            right = string.find('}')
-
-            while right != -1:
-                match = string[left:right]
-                try:
-                    exp = self._translator.tales(match)
-                    break
-                except SyntaxError:
-                    right = string.find('}', right)
-            else:
-                raise
-
-            string = string[:right+1]
-            return self.re_interpolation.search(string)
-
-        if m is None or (expression is None and variable is None):
-            raise SyntaxError(
-                "Interpolation expressions must be of the "
-                "form ${<expression>} (%s)" % string)
-
-        if expression and not m.group('expression'):
-            raise SyntaxError(expression)
-
-        return m
+        parts = parsing.interpolate(string, self._translator.tales)
+        if parts is not None:
+            return map(
+                lambda part: isinstance(part, types.expression) and \
+                part or self._unescape(part), parts)    
 
     def _unescape(self, string):
         """
