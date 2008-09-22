@@ -1,5 +1,4 @@
 # svn propset svn:externals -F EXTERNALS.txt .
 grokcore.formlib svn://svn.zope.org/repos/main/grokcore.formlib/trunk
-grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk
 grok svn://svn.zope.org/repos/main/grok/trunk
 
