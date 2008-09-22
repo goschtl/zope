@@ -1,3 +1,7 @@
+Whats different in this branch
+
+- Merged Dieter Mauer's object-size-based object cache branch 
+
 
 Whats new in ZODB 3.8.1
 =======================
