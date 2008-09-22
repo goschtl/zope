@@ -364,42 +364,7 @@ class ExpressionTranslator(object):
         return types.parts(parts)
 
     def split(self, string):
-        parts = parsing.interpolate(string, self.translator.tales)
-        if parts is not None:
-            return map(
-                lambda part: isinstance(part, types.expression) and \
-                part or self._unescape(part), parts)    
-
-    def _unescape(self, string):
-        """
-        >>> unescape = StringTranslator(None)._unescape
-        
-        >>> unescape('string:Hello World')
-        'string:Hello World'
-        
-        >>> unescape('; string:Hello World')
-        Traceback (most recent call last):
-         ...
-        SyntaxError: Semi-colons in string-expressions must be escaped.
-
-        >>> unescape(';; string:Hello World')
-        '; string:Hello World'
-
-        >>> unescape('string:Hello World;')
-        'string:Hello World;'
-        
-        """
-        
-        i = string.rfind(';')
-        if i < 0 or i == len(string) - 1:
-            return string
-        
-        j = string.rfind(';'+';')
-        if j < 0 or i != j + 1:
-            raise SyntaxError(
-                "Semi-colons in string-expressions must be escaped.")
-        
-        return string.replace(';;', ';')
+        return parsing.interpolate(string, self.translator.tales)
 
 class PythonTranslator(ExpressionTranslator):
     """Implements Python expression translation."""
@@ -437,3 +402,42 @@ class StringTranslator(ExpressionTranslator):
             
     def translate(self, string):
         return types.join(self.split(string))            
+
+    def split(self, string):
+        parts = super(StringTranslator, self).split(string)
+        if parts is not None:
+            return map(
+                lambda part: isinstance(part, types.expression) and \
+                part or self._unescape(part), parts)
+
+    def _unescape(self, string):
+        """
+        >>> unescape = StringTranslator(None)._unescape
+        
+        >>> unescape('string:Hello World')
+        'string:Hello World'
+        
+        >>> unescape('; string:Hello World')
+        Traceback (most recent call last):
+         ...
+        SyntaxError: Semi-colons in string-expressions must be escaped.
+
+        >>> unescape(';; string:Hello World')
+        '; string:Hello World'
+
+        >>> unescape('string:Hello World;')
+        'string:Hello World;'
+        
+        """
+        
+        i = string.rfind(';')
+        if i < 0 or i == len(string) - 1:
+            return string
+        
+        j = string.rfind(';'+';')
+        if j < 0 or i != j + 1:
+            raise SyntaxError(
+                "Semi-colons in string-expressions must be escaped.")
+        
+        return string.replace(';;', ';')
+
