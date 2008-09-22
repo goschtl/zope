@@ -55,7 +55,6 @@ class SYMBOLS(object):
     negotiate = '_negotiate'
     translate = '_translate'
     validate = '_validate'
-    path = '_path'
 
     # advertised symbols
     repeat = 'repeat'
