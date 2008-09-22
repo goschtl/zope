@@ -17,6 +17,8 @@ class IResourceSpec(Interface):
     library = Attribute("The resource library this resource is in")
     relpath = Attribute("The relative path of the resource "
                         "within the resource library")
+    part_of = Attribute("A list of potential rollups that this "
+                        "resource is part of")
 
     def ext():
         """Get the filesystem extension of this resource.
@@ -36,18 +38,6 @@ class IResourceSpec(Interface):
         
         If we cannot find a particular mode for a resource, the
         resource spec is also used.
-        """
-
-    def consolidated():
-        """Get the resource spec in consolidated form.
-
-        A resource can be part of a larger resource, for instance
-        multiple CSS files or .js files concatenated to each
-        other. This is done for performance reasons to cut down on the
-        amount of requests.
-
-        Returns the resource spec of the consolidated resource, or
-        None if no such larger resource is known.
         """
         
     def key():

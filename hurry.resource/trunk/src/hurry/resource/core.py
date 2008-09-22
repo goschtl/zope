@@ -28,16 +28,27 @@ class ResourceSpec(object):
         relpath - the relative path from the root of the library indicating
                   the actual resource
         part_of - optionally, a resource is also part of a larger
-                  consolidated resource. This can be a path to the
-                  larger resource in the same library, or a fully
-                  specified ResourceSpec.
+                  consolidated resource. This can be a list of paths to the
+                  larger resource in the same library. A list entry can also
+                  be a fully specified ResourceSpec.
         key word arguments - different paths that represent the same
                   resource in different modes (debug, minified, etc),
                   or alternatively a fully specified ResourceSpec.
         """
         self.library = library
         self.relpath = relpath
-        self.part_of = part_of
+
+        assert not isinstance(part_of, basestring)
+        part_of = part_of or []
+        normalized_part_of = []
+        for part in part_of:
+            if isinstance(part, ResourceSpec):
+                normalized_part_of.append(part)
+            else:
+                normalized_part_of.append(
+                    ResourceSpec(self.library, part))
+        self.part_of = normalized_part_of
+        
         self.modes = kw
         
     def ext(self):
@@ -56,23 +67,8 @@ class ResourceSpec(object):
         except KeyError:
             # fall back on the default mode if mode not found
             return self
-
-    def consolidated(self):
-        """Get the resource spec in consolidated form.
-
-        A resource can be part of a larger resource. Returns the
-        resource spec of the consolidated resource, or None if no
-        such larger resource exists.
-        """
-        if self.part_of is None:
-            return None
-        if isinstance(self.part_of, ResourceSpec):
-            return self.part_of
-        return ResourceSpec(self.library, self.part_of)
     
     def key(self):
-        # XXX has to be a tuple right now as consolidation code depends
-        # on this
         return self.library.name, self.relpath
     
     def __repr__(self):
@@ -164,29 +160,32 @@ def remove_duplicates(resources):
     return result
 
 def consolidate(resources):
-    consolidated = {}
-    processed = []
+    # first map rollup -> list of resources that are in this rollup
+    rollup_to_resources = {}   
     for resource in resources:
-        c = resource.consolidated()
-        if c is None:
-            processed.append(resource)
-        else:
-            processed.append(c.key())
-            r = consolidated.setdefault(c.key(), [])
-            r.append(resource)
+        for rollup in resource.part_of:
+            rollup_to_resources.setdefault(rollup.key(), []).append(resource)
+
+    # now replace resource with rollup consolidated biggest amount of
+    # resources, or keep resource if no such rollup exists
     result = []
-    for resource in processed:
-        if type(resource) is TupleType:
-            key = resource
-            r = consolidated[key]
-            if len(r) == 1:
-                result.append(r[0])
-            else:
-                result.append(r[0].consolidated())
+    for resource in resources:
+        potential_rollups = []
+        for rollup in resource.part_of:
+            potential_rollups.append((len(rollup_to_resources[rollup.key()]),
+                                      rollup))
+        if not potential_rollups:
+            # no rollups at all
+            result.append(resource)
+            continue
+        sorted_rollups = sorted(potential_rollups)
+        amount, rollup = sorted_rollups[-1]
+        if amount > 1:
+            result.append(rollup)
         else:
             result.append(resource)
     return result
-    
+
 def render_css(url):
     return ('<link rel="stylesheet" type="text/css" href="%s" />' %
             url)

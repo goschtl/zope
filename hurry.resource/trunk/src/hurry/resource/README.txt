@@ -295,16 +295,17 @@ We can however also get the resource for mode ``debug`` and get
   >>> needed.resources(mode='debug')
   [<Resource 'a2-debug.js' in library 'foo'>]
 
-Consolidation
--------------
+"Rollups"
+---------
 
 For performance reasons it's often useful to consolidate multiple
-resources into a single, larger resource. Multiple javascript files
-could for instance be offered in a single, larger one. These
-consolidations can be specified when specifying the resource::
+resources into a single, larger resource, a so-called
+"rollup". Multiple javascript files could for instance be offered in a
+single, larger one. These consolidations can be specified when
+specifying the resource::
 
-  >>> b1 = ResourceSpec(foo, 'b1.js', part_of='giant.js')
-  >>> b2 = ResourceSpec(foo, 'b2.js', part_of='giant.js')
+  >>> b1 = ResourceSpec(foo, 'b1.js', part_of=['giant.js'])
+  >>> b2 = ResourceSpec(foo, 'b2.js', part_of=['giant.js'])
 
 If we find multiple resources that are also part of a consolidation, the
 system automatically collapses them::
@@ -326,9 +327,10 @@ is present::
   >>> needed.resources()
   [<Resource 'b1.js' in library 'foo'>]
 
-``part_of`` can also be expressed as a fully specified ``ResourceSpec``::
+``part_of`` can also be expressed as a list of fully specified
+``ResourceSpec``::
 
-  >>> b3 = ResourceSpec(foo, 'b3.js', part_of=ResourceSpec(foo, 'giant.js'))
+  >>> b3 = ResourceSpec(foo, 'b3.js', part_of=[ResourceSpec(foo, 'giant.js')])
   >>> inclusion3 = Inclusion([b1, b2, b3])
   >>> needed = NeededInclusions()
   >>> needed.need(inclusion3)
@@ -338,12 +340,12 @@ is present::
 Consolidation also can work with modes::
 
   >>> b4 = ResourceSpec(foo, 'b4.js', 
-  ...   part_of='giant.js',
-  ...   debug=ResourceSpec(foo, 'b4-debug.js', part_of='giant-debug.js'))
+  ...   part_of=['giant.js'],
+  ...   debug=ResourceSpec(foo, 'b4-debug.js', part_of=['giant-debug.js']))
 
   >>> b5 = ResourceSpec(foo, 'b5.js',
-  ...   part_of='giant.js',
-  ...   debug=ResourceSpec(foo, 'b5-debug.js', part_of='giant-debug.js'))
+  ...   part_of=['giant.js'],
+  ...   debug=ResourceSpec(foo, 'b5-debug.js', part_of=['giant-debug.js']))
 
   >>> inclusion4 = Inclusion([b4, b5])
   >>> needed = NeededInclusions()
@@ -352,6 +354,21 @@ Consolidation also can work with modes::
   [<Resource 'giant.js' in library 'foo'>]
   >>> needed.resources(mode='debug')
   [<Resource 'giant-debug.js' in library 'foo'>]
+
+A resource can be part of multiple rollups. In this case the rollup that
+rolls up the most resources is used::
+
+  >>> b6 = ResourceSpec(foo, 'b6.js',
+  ...   part_of=['giant.js', 'even_bigger.js'])
+  >>> b7 = ResourceSpec(foo, 'b7.js',
+  ...   part_of=['giant.js', 'even_bigger.js'])
+  >>> b8 = ResourceSpec(foo, 'b8.js',
+  ...   part_of=['even_bigger.js'])
+  >>> inclusion5 = Inclusion([b6, b7, b8])
+  >>> needed = NeededInclusions()
+  >>> needed.need(inclusion5)
+  >>> needed.resources()
+  [<Resource 'even_bigger.js' in library 'foo'>]
 
 Rendering resources
 -------------------
