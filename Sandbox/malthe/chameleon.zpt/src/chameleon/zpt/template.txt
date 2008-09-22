@@ -64,3 +64,32 @@ Page templates expose macros in their ``macros`` attribute.
     </div>
   </html>  
   
+Error handling
+--------------
+
+When an exception is raised which does not expose a bug in the TAL
+translation machinery, we expect the exception to contain the part of
+the template source that caused the exception.
+
+Exception while evaluating expression:
+
+  >>> PageTemplate("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span tal:content="range()" />
+  ... </div>""").render()
+  Traceback (most recent call last):
+    ...
+  TypeError: range expected at least 1 arguments, got 0
+
+Exception while evaluating definition:
+
+  >>> PageTemplate("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span tal:define="dummy range()" />
+  ... </div>""").render()
+  Traceback (most recent call last):
+    ...
+  TypeError: range expected at least 1 arguments, got 0
+
