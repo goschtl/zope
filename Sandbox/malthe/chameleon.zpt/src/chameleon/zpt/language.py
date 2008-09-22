@@ -5,6 +5,7 @@ import itertools
 from chameleon.core import translation
 from chameleon.core import config
 from chameleon.core import etree
+from chameleon.core import types
 from chameleon.core import utils
 
 import interfaces
@@ -57,8 +58,27 @@ class ZopePageTemplateElement(translation.Element):
 
         @property
         def dynamic_attributes(self):
-            return (self.element.tal_attributes or ()) + \
-                   (self.element.meta_attributes or ())
+            attributes = []
+
+            xhtml_attributes = utils.get_attributes_from_namespace(
+                self.element, config.XHTML_NS)
+            
+            for name, value in xhtml_attributes.items():
+                parts = self.element.translator.split(value)
+                for part in parts:
+                    if isinstance(part, types.expression):
+                        attributes.append(
+                            (types.declaration((name,)), types.join(parts)))
+                        break
+                    
+            if self.element.tal_attributes is not None:
+                attributes.extend(self.element.tal_attributes)
+
+            if self.element.meta_attributes is not None:
+                attributes.extend(self.element.meta_attributes)
+
+            if len(attributes) > 0:
+                return attributes
 
         @property
         def translated_attributes(self):

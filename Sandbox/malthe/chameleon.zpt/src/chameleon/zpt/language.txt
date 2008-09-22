@@ -295,6 +295,8 @@ Expression interpolation
 The ``chameleon.zpt`` parser supports Genshi interpolation
 expressions.
 
+Outside tags:
+
   >>> print render("""\
   ... <div xmlns="http://www.w3.org/1999/xhtml"
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
@@ -302,4 +304,15 @@ expressions.
   ... </div>""")
   <div>
     Interpolation expressions are convenient.
+  </div>
+
+Inside tags:
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <img alt="Interpolation ${'expressions'} are ${'convenient'}" />
+  ... </div>""")
+  <div>
+    <img alt="Interpolation expressions are convenient" />
   </div>
