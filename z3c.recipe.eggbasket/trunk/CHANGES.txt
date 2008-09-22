@@ -1,4 +1,4 @@
-0.4.0 (unreleased)
+0.4.0 (2008-09-22)
 ==================
 
 * When the download fails, do not say "Continuing with buildout
