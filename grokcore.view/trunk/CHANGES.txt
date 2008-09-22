@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.1 (unreleased)
+1.1 (2008-09-22)
 ----------------
 
 * ``meta.py`` module containing the grokkers has been split in a
