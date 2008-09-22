@@ -23,7 +23,7 @@ def setUp(suite):
 
 def test_suite():
     filesuites = 'language.txt', 'template.txt', 'i18n.txt'
-    testsuites = 'language',
+    testsuites = 'language', 'expressions'
 
     globs = dict(render=render_template)
     
