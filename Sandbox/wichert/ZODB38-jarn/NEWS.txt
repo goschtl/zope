@@ -1,6 +1,9 @@
 Whats different in this branch
+==============================
 
 - Merged Dieter Mauer's object-size-based object cache branch 
+
+- Merged Shane Hathaway's poll-invalidation patch, as needed for RelStorage
 
 
 Whats new in ZODB 3.8.1
