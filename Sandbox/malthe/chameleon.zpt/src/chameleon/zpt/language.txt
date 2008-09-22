@@ -288,3 +288,18 @@ metal:define-slot, metal:fill-slot
     </div>
   <BLANKLINE>
   </div>
+
+Expression interpolation
+------------------------
+
+The ``chameleon.zpt`` parser supports Genshi interpolation
+expressions.
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   Interpolation ${'expressions'} are ${'convenient'}.
+  ... </div>""")
+  <div>
+    Interpolation expressions are convenient.
+  </div>

@@ -43,6 +43,13 @@ Some notable changes:
 
 4. The default expression type is Python.
 
+5. Genshi expression interpolation syntax is supported outside tags, e.g.
+
+      <span>
+         Hello, ${'world'}!
+      </span>
+
+      
 .. _TAL: http://wiki.zope.org/ZPT/TALSpecification14
 
 

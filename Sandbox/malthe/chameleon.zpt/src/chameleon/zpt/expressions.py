@@ -18,7 +18,10 @@ class ExpressionTranslator(object):
     re_method = re.compile(r'^(?P<name>[A-Za-z0-9_]+)'
                            '(\((?P<args>[A-Za-z0-9_]+\s*(,\s*[A-Za-z0-9_]+)*)\))?')
 
-    def translator(self, name):
+    def __init__(self):
+        self.translator = self
+    
+    def pragma(self, name):
         return component.queryUtility(
             interfaces.IExpressionTranslator, name=name) or \
             component.queryAdapter(
@@ -327,7 +330,7 @@ class ExpressionTranslator(object):
                 match = self.re_pragma.match(string[i:])
                 if match is not None:
                     pragma = match.group('pragma')
-                    translator = self.translator(pragma)
+                    translator = self.pragma(pragma)
                     if translator is not None:
                         i += match.end()
                         continue
@@ -360,45 +363,8 @@ class ExpressionTranslator(object):
 
         return types.parts(parts)
 
-class PythonTranslator(ExpressionTranslator):
-    """Implements Python expression translation."""
-    
-    def validate(self, string):
-        """We use the ``parser`` module to determine if
-        an expression is a valid python expression."""
-
-        if isinstance(string, unicode):
-            string = string.encode('utf-8')
-            
-        parser.expr(string.strip())
-
-    def translate(self, string):
-        if isinstance(string, str):
-            string = string.decode('utf-8')
-
-        return types.value(string.strip())
-
-python_translator = PythonTranslator()
-
-class StringTranslator(ExpressionTranslator):
-    """Implements string translation expression."""
-
-    component.adapts(interfaces.IExpressionTranslator)
-    
-    re_interpolation = re.compile(r'(?P<prefix>[^\\]\$|^\$)({((?P<expression>.*)})?|'
-                                  '(?P<variable>[A-Za-z][A-Za-z0-9_]*))')
-    
-    def __init__(self, translator):
-        self._translator = translator
-
-    def validate(self, string):
-        self.split(string)
-            
-    def translate(self, string):
-        return types.join(self.split(string))
-            
     def split(self, string):
-        parts = parsing.interpolate(string, self._translator.tales)
+        parts = parsing.interpolate(string, self.translator.tales)
         if parts is not None:
             return map(
                 lambda part: isinstance(part, types.expression) and \
@@ -434,3 +400,40 @@ class StringTranslator(ExpressionTranslator):
                 "Semi-colons in string-expressions must be escaped.")
         
         return string.replace(';;', ';')
+
+class PythonTranslator(ExpressionTranslator):
+    """Implements Python expression translation."""
+    
+    def validate(self, string):
+        """We use the ``parser`` module to determine if
+        an expression is a valid python expression."""
+
+        if isinstance(string, unicode):
+            string = string.encode('utf-8')
+            
+        parser.expr(string.strip())
+
+    def translate(self, string):
+        if isinstance(string, str):
+            string = string.decode('utf-8')
+
+        return types.value(string.strip())
+
+python_translator = PythonTranslator()
+
+class StringTranslator(ExpressionTranslator):
+    """Implements string translation expression."""
+
+    component.adapts(interfaces.IExpressionTranslator)
+    
+    re_interpolation = re.compile(r'(?P<prefix>[^\\]\$|^\$)({((?P<expression>.*)})?|'
+                                  '(?P<variable>[A-Za-z][A-Za-z0-9_]*))')
+    
+    def __init__(self, translator):
+        self.translator = translator
+
+    def validate(self, string):
+        self.split(string)
+            
+    def translate(self, string):
+        return types.join(self.split(string))            

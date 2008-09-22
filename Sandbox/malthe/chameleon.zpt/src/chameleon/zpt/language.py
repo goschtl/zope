@@ -97,6 +97,18 @@ class ZopePageTemplateElement(translation.Element):
         def cdata(self):
             return self.element.meta_cdata
 
+        @property
+        def text(self):
+            if self.element.text is not None:
+                return self.element.translator.split(self.element.text)
+            return ()
+
+        @property
+        def tail(self):
+            if self.element.tail is not None:
+                return self.element.translator.split(self.element.tail)
+            return ()
+
     node = property(node)
 
     @property

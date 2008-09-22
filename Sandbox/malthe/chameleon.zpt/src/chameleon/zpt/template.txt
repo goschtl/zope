@@ -93,3 +93,13 @@ Exception while evaluating definition:
     ...
   TypeError: range expected at least 1 arguments, got 0
 
+Exception while evaluating interpolation:
+
+  >>> PageTemplate("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
+  ...   <span>${range()}</span>
+  ... </div>""").render()
+  Traceback (most recent call last):
+    ...
+  TypeError: range expected at least 1 arguments, got 0
