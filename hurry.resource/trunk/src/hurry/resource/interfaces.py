@@ -14,6 +14,9 @@ class IResourceSpec(Interface):
 
     A resource specification specifies a single resource in a library.
     """
+    library = Attribute("The resource library this resource is in")
+    relpath = Attribute("The relative path of the resource "
+                        "within the resource library")
 
     def ext():
         """Get the filesystem extension of this resource.
@@ -93,12 +96,26 @@ class INeededInclusions(Interface):
     def resources(mode=None):
         """Give all resources needed.
 
-        mode - optional argument that tries to give inclusions in
+        mode - optional argument that tries to put inclusions into
                a particular mode (such as debug, minified, etc)
-               Has no effect if none of the included resources know
-               about that mode.
+               Has no effect if an included resource does not know
+               about that mode; the original resource will be included.
+
+        Returns a list of resource specifications needed.
         """
 
+    def render(self, mode=None):
+        """Render all resources
+
+        mode - optional argument that tries to put inclusions into
+               a particular mode (such as debug, minified, etc).
+               Has no effect if an included resource does not know
+               about that mode; the original resource will be included.
+
+        Returns a HTML snippet that includes the required resources.
+        """
+        
+        
 class ICurrentNeededInclusions(Interface):
     def __call__():
         """Return the current needed inclusions object.
@@ -106,3 +123,7 @@ class ICurrentNeededInclusions(Interface):
         These can for instance be retrieved from the current request.
         """
 
+class IResourceUrl(Interface):
+    def __call__(resource):
+        """Return the URL for given resource spec.
+        """

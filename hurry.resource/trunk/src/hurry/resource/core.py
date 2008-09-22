@@ -137,10 +137,11 @@ class NeededInclusions(object):
         resources = apply_mode(resources, mode)
         return remove_duplicates(consolidate(resources))
             
-    def render(self):
+    def render(self, mode=None):
         result = []
-        for resource in self.resources():
-            url = ''
+        get_resource_url = component.getUtility(interfaces.IResourceUrl)
+        for resource in self.resources(mode):
+            url = get_resource_url(resource)
             result.append(render_resource(resource, url))
         return '\n'.join(result)
 

@@ -352,3 +352,48 @@ Consolidation also can work with modes::
   [<Resource 'giant.js' in library 'foo'>]
   >>> needed.resources(mode='debug')
   [<Resource 'giant-debug.js' in library 'foo'>]
+
+Rendering resources
+-------------------
+
+Let's define some needed resource inclusions::
+
+  >>> needed = NeededInclusions()
+  >>> needed.need(y)
+  >>> needed.resources()
+  [<Resource 'b.css' in library 'foo'>, 
+   <Resource 'd.css' in library 'foo'>, 
+   <Resource 'a.js' in library 'foo'>, 
+   <Resource 'c.js' in library 'foo'>]
+
+Now let's try to render these inclusions::
+
+  >>> print needed.render()
+  Traceback (most recent call last):
+    ...
+  ComponentLookupError: (<InterfaceClass hurry.resource.interfaces.IResourceUrl>, '')
+
+That didn't work. In order to render a resource, we need to tell
+``hurry.resource`` how to get the URL for a resource specification. So
+let's define a function that renders resources as some static URL on
+localhost::
+
+  >>> def get_resource_url(resource):
+  ...    return 'http://localhost/static/%s/%s' % (
+  ...      resource.library.name, resource.relpath)
+
+We should now register this function as a``IResourceUrl`` utility so the system
+can find it::
+
+  >>> from hurry.resource.interfaces import IResourceUrl
+  >>> component.provideUtility(get_resource_url, 
+  ...     IResourceUrl)
+
+Rendering the resources now will will result in the HTML fragment we need::
+
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/d.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
