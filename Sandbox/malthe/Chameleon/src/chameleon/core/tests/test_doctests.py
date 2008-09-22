@@ -13,7 +13,7 @@ def setUp(suite):
     
 def test_suite():
     filesuites = 'template.txt', 'codegen.txt', 'translation.txt'
-    testsuites = 'translation', 'clauses'
+    testsuites = 'translation', 'clauses', 'parsing'
 
     chameleon.core.config.DISK_CACHE = False
     
