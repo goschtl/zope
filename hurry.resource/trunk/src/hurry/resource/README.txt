@@ -148,13 +148,12 @@ Okay, let's check which resources our request needs currently::
   >>> c().resources()
   []
 
-Nothing yet. 
-
-Let's now make ``y`` needed using our simplified spelling::
+Nothing yet.  So, let's now make ``y`` needed using our simplified
+spelling::
 
   >>> y.need()
 
-The resource will now indeed be needed::
+The resource inclusion will now indeed be needed::
 
   >>> c().resources()
   [<Resource 'b.css' in library 'foo'>, 
@@ -162,28 +161,38 @@ The resource will now indeed be needed::
    <Resource 'a.js' in library 'foo'>, 
    <Resource 'c.js' in library 'foo'>]
 
-By the way, we have a handy reference to ``c`` to get us the current needed
-inclusions, but that doesn't work as soon as we lose that reference. Here is
-how can get it back again::
+By the way, we have a handy reference to ``c`` to get us the current
+needed inclusions, but that doesn't work as soon as we lose that
+reference. Here is how can get to it in general::
 
   >>> c_retrieved = component.getUtility(ICurrentNeededInclusions)
   >>> c_retrieved is c
   True
 
-rewrite below XXX
+Multiple requirements
+---------------------
 
-Let's now see what resources are needed::
+Let's go back to the original spelling of ``needed.need(y)`` now. This
+is a bit more cumbersome in application code, but more clear to read
+in this document.
 
+Let's create a new set of needed inclusions::
+
+  >>> needed = NeededInclusions()
+  >>> needed.resources()
+  []
+
+We need ``y`` again::
+
+  >>> needed.need(y)
   >>> needed.resources()
   [<Resource 'b.css' in library 'foo'>, 
    <Resource 'd.css' in library 'foo'>, 
    <Resource 'a.js' in library 'foo'>, 
    <Resource 'c.js' in library 'foo'>]
 
-
-
 Needing the same inclusion twice won't make any difference for the
-resources needed::
+resources needed. Let's try needing ``y`` againx::
 
   >>> needed.need(y)
   >>> needed.resources()
@@ -238,8 +247,8 @@ We can also state the need for ``z`` first, then for ``y``::
    <Resource 'a.js' in library 'foo'>, 
    <Resource 'c.js' in library 'foo'>]
 
-Note that the sort order is still the same as before; inclusions with
-less depth are sorted after ones with more depth.
+The sort order is still the same as before; inclusions with less depth
+are sorted after ones with more depth.
 
 Modes
 -----
