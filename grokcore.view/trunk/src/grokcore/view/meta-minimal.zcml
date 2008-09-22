@@ -4,8 +4,7 @@
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.security" file="meta.zcml" />
 
-  <!-- This version of the meta.zcml only include views and templates
-  features. --> 
+  <!-- Only load view and template grokkers --> 
   <grok:grok package=".meta.views" />
   <grok:grok package=".meta.templates" />
 
