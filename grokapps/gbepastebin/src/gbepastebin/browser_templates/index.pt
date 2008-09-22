@@ -46,7 +46,7 @@
   <metal:block fill-slot="userinfo">
   	  <div class="userinfo" tal:condition="view/isManager">
           <a tal:attributes="href string:@@manage">Manage</a> /
-          <a tal:attributes="href string:/@@logout.html">Log Out</a>
+          <a tal:attributes="href string:@@logout.html?nextURL=${view/application_url}">Log Out</a>
       <br />&nbsp;
       </div>
   </metal:block>

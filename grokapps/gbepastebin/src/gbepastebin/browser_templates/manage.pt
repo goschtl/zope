@@ -23,7 +23,7 @@
       <div class="userinfo">
           <a href=".">Main Page</a>
           <tal:block tal:condition="view/isManager"> /
-            <a tal:attributes="href string:/@@logout.html">Log Out</a>
+            <a tal:attributes="href string:@@logout.html?nextURL=${view/application_url}">Log Out</a>
           </tal:block>
       </div>
 	  <br />

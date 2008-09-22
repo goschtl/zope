@@ -4,6 +4,7 @@ from pygments import formatters
 from pygments import util
 from zope.interface import Interface
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.security.interfaces import IAuthentication
 from zope.component import getUtility
 import z3c.flashmessage.interfaces
 import grok
@@ -105,6 +106,10 @@ class Entry(Master):
     grok.context(PasteBase)
     grok.name('index')
         
+    def application_url(self):
+        site=grok.getSite()
+        return self.url(site)
+    
     def format(self):
         context = self.context
         language=''
