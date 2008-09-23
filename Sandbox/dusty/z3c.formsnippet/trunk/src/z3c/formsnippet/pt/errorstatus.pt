@@ -1,10 +1,12 @@
+<div tal:condition="view/status" class="status">
+
 <div tal:condition="not:view/widgets/errors"
      tal:content="view/status"
-     class="status-noerror"/>
-
-<div class="status-error"
-     tal:condition="view/widgets/errors">
-<div tal:content="view/status" />
+     class="statusmsg-noerror"/>
+<div tal:condition="view/widgets/errors"
+     tal:content="view/status"
+     class="statusmsg-error"/>
+     
 <ul class="errors"
     tal:condition="view/widgets/errors">
    <li tal:repeat="error view/widgets/errors">
@@ -15,4 +17,3 @@
    </li>
 </ul>
 </div>
-
