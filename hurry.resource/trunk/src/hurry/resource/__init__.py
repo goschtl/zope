@@ -1,2 +1,1 @@
-from hurry.resource.core import (Library, Inclusion, ResourceSpec,
-                                 NeededInclusions)
+from hurry.resource.core import (Library, ResourceInclusion, NeededInclusions)

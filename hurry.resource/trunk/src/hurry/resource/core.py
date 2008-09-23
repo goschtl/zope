@@ -14,43 +14,55 @@ class Library(object):
     def __init__(self, name):
         self.name = name
 
-class ResourceSpec(object):
-    """Resource specification
-
-    A resource specification specifies a single resource in a library.
-    """
-    implements(interfaces.IResourceSpec)
+class ResourceInclusion(object):
+    """Resource inclusion
     
-    def __init__(self, library, relpath, part_of=None, **kw):
-        """Create a resource specification
+    A resource inclusion specifies how to include a single resource in
+    a library.
+    """
+    implements(interfaces.IResourceInclusion)
+    
+    def __init__(self, library, relpath, depends=None, rollups=None, **kw):
+        """Create a resource inclusion
 
         library - the library this resource is in
         relpath - the relative path from the root of the library indicating
                   the actual resource
-        part_of - optionally, a resource is also part of a larger
-                  consolidated resource. This can be a list of paths to the
-                  larger resource in the same library. A list entry can also
-                  be a fully specified ResourceSpec.
-        key word arguments - different paths that represent the same
+        depends - optionally, a list of resources that this resource depends
+                  on. Entries in the list can be
+                  ResourceInclusions or strings indicating the path.
+                  In case of a string, a ResourceInclusion assumed based
+                  on the same library as this inclusion.
+        rollups - optionally, a list of resources that this resource can
+                  be rolled up into. Entries in the list can be
+                  ResourceInclusions or strings indicating the path.
+                  In case of a string, a ResourceInclusion assumed based
+                  on the same library as this inclusion.
+        keyword arguments - different paths that represent the same
                   resource in different modes (debug, minified, etc),
-                  or alternatively a fully specified ResourceSpec.
+                  or alternatively a fully specified ResourceInclusion.
         """
         self.library = library
         self.relpath = relpath
 
-        assert not isinstance(part_of, basestring)
-        part_of = part_of or []
-        normalized_part_of = []
-        for part in part_of:
-            if isinstance(part, ResourceSpec):
-                normalized_part_of.append(part)
-            else:
-                normalized_part_of.append(
-                    ResourceSpec(self.library, part))
-        self.part_of = normalized_part_of
+        assert not isinstance(rollups, basestring)
+        rollups = rollups or []
+        self.rollups = normalize_inclusions(library, rollups)
+
+        assert not isinstance(depends, basestring)
+        depends = depends or []
+        self.depends = normalize_inclusions(library, depends)
+
+        normalized_modes = {}
+        for mode_name, inclusion in kw.items():
+            normalized_modes[mode_name] = normalize_inclusion(
+                library, inclusion)
+        self.modes = normalized_modes
         
-        self.modes = kw
-        
+    def __repr__(self):
+        return "<ResourceInclusion '%s' in library '%s'>" % (
+            self.relpath, self.library.name)
+
     def ext(self):
         name, ext = os.path.splitext(self.relpath)
         return ext
@@ -60,56 +72,37 @@ class ResourceSpec(object):
             return self
         # try getting the alternative
         try:
-            mode_info = self.modes[mode]
-            if isinstance(mode_info, ResourceSpec):
-                return mode_info
-            return ResourceSpec(self.library, mode_info)
+            return self.modes[mode]
         except KeyError:
             # fall back on the default mode if mode not found
             return self
     
     def key(self):
         return self.library.name, self.relpath
-    
-    def __repr__(self):
-        return "<Resource '%s' in library '%s'>" % (
-            self.relpath, self.library.name)
-
-class Inclusion(object):
-    implements(interfaces.IInclusion)
-    
-    def __init__(self, resources, depends=None):
-        """Create an inclusion
-
-        resources - the list of resource specs that should be on the page
-                    when this inclusion is used.
-        depends - one or more inclusions that this inclusion depends on.
-        """
-        self._resources = r = {}
-        for resource in resources:
-            ext_resources = r.setdefault(resource.ext(), [])
-            ext_resources.append(resource)
-        self.depends = depends or []
-
-    def depth(self):
-        depth = 0
-        for depend in self.depends:
-            depend_depth = depend.depth()
-            if depend_depth > depth:
-                depth = depend_depth
-        return depth + 1
-        
-    def resources_of_ext(self, ext):
-        resources = []
-        for depend in self.depends:
-            resources.extend(depend.resources_of_ext(ext))
-        resources.extend(self._resources.get(ext, []))
-        return resources
 
     def need(self):
         needed = component.getUtility(
             interfaces.ICurrentNeededInclusions)()
         needed.need(self)
+
+    def inclusions(self):
+        """Get all inclusions needed by this inclusion, including itself.
+        """
+        result = []
+        for depend in self.depends:
+            result.extend(depend.inclusions())
+        result.append(self)
+        return result
+
+def normalize_inclusions(library, inclusions):
+    return [normalize_inclusion(library, inclusion)
+            for inclusion in inclusions]
+
+def normalize_inclusion(library, inclusion):
+    if isinstance(inclusion, ResourceInclusion):
+        return inclusion
+    assert isinstance(inclusion, basestring)
+    return ResourceInclusion(library, inclusion)
 
 class NeededInclusions(object):
     def __init__(self):
@@ -121,70 +114,93 @@ class NeededInclusions(object):
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
     
-    def resources(self, mode=None):
-        resources_of_ext = {}
-        for inclusion in self._sorted_inclusions():
-            for ext in EXTENSIONS:
-                r = resources_of_ext.setdefault(ext, [])
-                r.extend(inclusion.resources_of_ext(ext))
-        resources = []
-        for ext in EXTENSIONS:
-            resources.extend(resources_of_ext.get(ext, []))
-        resources = apply_mode(resources, mode)
-        return remove_duplicates(consolidate(resources))
+    def inclusions(self, mode=None):
+        inclusions = []
+        for inclusion in self._inclusions:
+            inclusions.extend(inclusion.inclusions())
+
+        inclusions = apply_mode(inclusions, mode)
+        inclusions = consolidate(inclusions)
+        inclusions = sort_inclusions(inclusions)
+        inclusions = remove_duplicates(inclusions)
+        return inclusions
             
     def render(self, mode=None):
         result = []
-        get_resource_url = component.getUtility(interfaces.IResourceUrl)
-        for resource in self.resources(mode):
-            url = get_resource_url(resource)
-            result.append(render_resource(resource, url))
+        get_inclusion_url = component.getUtility(interfaces.IInclusionUrl)
+        for inclusion in self.inclusions(mode):
+            url = get_inclusion_url(inclusion)
+            result.append(render_inclusion(inclusion, url))
         return '\n'.join(result)
 
-def apply_mode(resources, mode):
-    result = []
-    for resource in resources:
-        result.append(resource.mode(mode))
-    return result
+def apply_mode(inclusions, mode):
+    return [inclusion.mode(mode) for inclusion in inclusions]
 
-def remove_duplicates(resources):
-    """Given a set of resources, consolidate them so resource only occurs once.
+def remove_duplicates(inclusions):
+    """Given a set of inclusions, consolidate them so each nly occurs once.
     """
     seen = set()
     result = []
-    for resource in resources:
-        if resource.key() in seen:
+    for inclusion in inclusions:
+        if inclusion.key() in seen:
             continue
-        seen.add(resource.key())
-        result.append(resource)
+        seen.add(inclusion.key())
+        result.append(inclusion)
     return result
 
-def consolidate(resources):
-    # first map rollup -> list of resources that are in this rollup
-    rollup_to_resources = {}   
-    for resource in resources:
-        for rollup in resource.part_of:
-            rollup_to_resources.setdefault(rollup.key(), []).append(resource)
+def consolidate(inclusions):
+    # first map rollup -> list of inclusions that are in this rollup
+    rollup_to_inclusions = {}   
+    for inclusion in inclusions:
+        for rollup in inclusion.rollups:
+            rollup_to_inclusions.setdefault(rollup.key(), []).append(
+                inclusion)
 
-    # now replace resource with rollup consolidated biggest amount of
-    # resources, or keep resource if no such rollup exists
+    # now replace inclusion with rollup consolidated biggest amount of
+    # inclusions, or keep inclusion if no such rollup exists
     result = []
-    for resource in resources:
+    for inclusion in inclusions:
         potential_rollups = []
-        for rollup in resource.part_of:
-            potential_rollups.append((len(rollup_to_resources[rollup.key()]),
+        for rollup in inclusion.rollups:
+            potential_rollups.append((len(rollup_to_inclusions[rollup.key()]),
                                       rollup))
         if not potential_rollups:
             # no rollups at all
-            result.append(resource)
+            result.append(inclusion)
             continue
         sorted_rollups = sorted(potential_rollups)
         amount, rollup = sorted_rollups[-1]
         if amount > 1:
             result.append(rollup)
         else:
-            result.append(resource)
+            result.append(inclusion)
     return result
+
+def sort_inclusions(inclusions):
+# XXX this is not necessary as we can rely on Python's stable
+# sort to get the right order for inclusions.
+
+#     depend_sortkey = {}
+#     for inclusion in inclusions:
+#         for d in inclusion.depends:
+#             c = depend_sortkey.get(d.key(), 0)
+#             c += 1
+#             depend_sortkey[d.key()] = c
+
+#     depend_sortkey2 = {}
+#     for inclusion in inclusions:
+#         v = depend_sortkey.get(inclusion.key(), 0)
+#         for d in inclusion.depends:
+#             c = depend_sortkey2.get(d.key(), 0)
+#             c += v
+#             depend_sortkey2[d.key()] = c
+
+    def key(inclusion):
+        return EXTENSIONS.index(inclusion.ext())
+               #, -depend_sortkey2.get(inclusion.key(), 0))
+
+    # this relies on stable sorting in Python
+    return sorted(inclusions, key=key)
 
 def render_css(url):
     return ('<link rel="stylesheet" type="text/css" href="%s" />' %
@@ -197,16 +213,16 @@ def render_js(url):
     return ('<script type="text/javascript" src="%s"></script>' %
             url)
 
-resource_renderers = {
+inclusion_renderers = {
     '.css': render_css,
     '.kss': render_kss,
     '.js': render_js,
     }
 
-def render_resource(resource, url):
-    renderer = resource_renderers.get(resource.ext(), None)
+def render_inclusion(inclusion, url):
+    renderer = inclusion_renderers.get(inclusion.ext(), None)
     if renderer is None:
         raise UnknownResourceExtension(
-            "Unknown resource extension %s for resource: %s" %
-            (resource.ext(), repr(resource)))
+            "Unknown resource extension %s for resource inclusion: %s" %
+            (inclusion.ext(), repr(inclusion)))
     return renderer(url)
