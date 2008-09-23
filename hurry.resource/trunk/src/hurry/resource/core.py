@@ -121,7 +121,9 @@ class NeededInclusions(object):
 
         inclusions = apply_mode(inclusions, mode)
         inclusions = consolidate(inclusions)
-        inclusions = sort_inclusions(inclusions)
+        # sort only by extension, not dependency, as we can rely on
+        # python's stable sort to keep inclusion order intact
+        inclusions = sort_inclusions_by_extension(inclusions)
         inclusions = remove_duplicates(inclusions)
         return inclusions
             
@@ -176,31 +178,36 @@ def consolidate(inclusions):
             result.append(inclusion)
     return result
 
-def sort_inclusions(inclusions):
-# XXX this is not necessary as we can rely on Python's stable
-# sort to get the right order for inclusions.
-
-#     depend_sortkey = {}
-#     for inclusion in inclusions:
-#         for d in inclusion.depends:
-#             c = depend_sortkey.get(d.key(), 0)
-#             c += 1
-#             depend_sortkey[d.key()] = c
-
-#     depend_sortkey2 = {}
-#     for inclusion in inclusions:
-#         v = depend_sortkey.get(inclusion.key(), 0)
-#         for d in inclusion.depends:
-#             c = depend_sortkey2.get(d.key(), 0)
-#             c += v
-#             depend_sortkey2[d.key()] = c
+def sort_inclusions_by_extension(inclusions):
 
     def key(inclusion):
         return EXTENSIONS.index(inclusion.ext())
-               #, -depend_sortkey2.get(inclusion.key(), 0))
 
-    # this relies on stable sorting in Python
     return sorted(inclusions, key=key)
+
+def sort_inclusions_topological(inclusions):
+    """Sort inclusions by dependency.
+
+    Note that this is not actually used in the system, but can be used
+    to resort inclusions in case sorting order is lost - or if the
+    assumptions in this library turn out to be incorrect.
+    """
+    dead = {}
+    result = []
+    for inclusion in inclusions:
+        dead[inclusion.key()] = False
+
+    for inclusion in inclusions:
+        _visit(inclusion, result, dead)
+    return result
+
+def _visit(inclusion, result, dead):
+    if dead[inclusion.key()]:
+        return
+    dead[inclusion.key()] = True
+    for depend in inclusion.depends:
+        _visit(depend, result, dead)
+    result.append(inclusion)
 
 def render_css(url):
     return ('<link rel="stylesheet" type="text/css" href="%s" />' %

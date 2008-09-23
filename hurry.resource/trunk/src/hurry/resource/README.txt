@@ -233,7 +233,6 @@ Let's try it with more complicated dependency structures now::
   >>> a2 = ResourceInclusion(foo, 'a2.js', depends=[a1])
   >>> a3 = ResourceInclusion(foo, 'a3.js', depends=[a2])
   >>> a4 = ResourceInclusion(foo, 'a4.js', depends=[a1])
-  >>> a5 = ResourceInclusion(foo, 'a5.js', depends=[a4, a3])
   >>> needed.need(a3)
   >>> needed.inclusions()
   [<ResourceInclusion 'a1.js' in library 'foo'>,
@@ -292,42 +291,42 @@ A resource can optionally exist in several modes, such as for instance
 a minified and a debug version. Let's define a resource that exists in
 two modes (a main one and a debug alternative)::
 
-  >>> a1 = ResourceInclusion(foo, 'a.js', debug='a-debug.js')
+  >>> k1 = ResourceInclusion(foo, 'k.js', debug='k-debug.js')
 
 Let's need this resource::
 
   >>> needed = NeededInclusions()
-  >>> needed.need(a1)
+  >>> needed.need(k1)
 
-By default, we get ``a.js``::
+By default, we get ``k.js``::
 
   >>> needed.inclusions()
-  [<ResourceInclusion 'a.js' in library 'foo'>]
+  [<ResourceInclusion 'k.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
-``a-debug.js``::
+``k-debug.js``::
 
   >>> needed.inclusions(mode='debug')
-  [<ResourceInclusion 'a-debug.js' in library 'foo'>]
+  [<ResourceInclusion 'k-debug.js' in library 'foo'>]
 
 Modes can also be specified fully with a resource inclusion, which allows
 you to specify a different ``library`` and ``part_of`` argumnent::
 
-  >>> a2 = ResourceInclusion(foo, 'a2.js', 
-  ...                        debug=ResourceInclusion(foo, 'a2-debug.js'))
+  >>> k2 = ResourceInclusion(foo, 'k2.js', 
+  ...                        debug=ResourceInclusion(foo, 'k2-debug.js'))
   >>> needed = NeededInclusions()
-  >>> needed.need(a2)
+  >>> needed.need(k2)
 
-By default we get ``a2.js``::
+By default we get ``k2.js``::
 
   >>> needed.inclusions()
-  [<ResourceInclusion 'a2.js' in library 'foo'>]
+  [<ResourceInclusion 'k2.js' in library 'foo'>]
 
 We can however also get the resource for mode ``debug`` and get
 ``a2-debug.js``::
 
   >>> needed.inclusions(mode='debug')
-  [<ResourceInclusion 'a2-debug.js' in library 'foo'>]
+  [<ResourceInclusion 'k2-debug.js' in library 'foo'>]
 
 Note that modes are assumed to be identical in dependency structure;
 they functionally should do the same.
@@ -452,3 +451,24 @@ Rendering the inclusions now will will result in the HTML fragment we need::
   <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
+Sorting inclusions by dependency
+--------------------------------
+
+This is more a footnote than something that you should be concerned
+about. In case assumptions in this library are wrong or there are
+other reasons you would like to sort resource inclusions that come in
+some arbitrary order into one where the dependency relation makes
+sense, you can use ``sort_inclusions_topological``::
+
+  >>> from hurry.resource import sort_inclusions_topological
+
+Let's make a list of resource inclusions not sorted by dependency::
+
+  >>> i = [a5, a3, a1, a2, a4]
+  >>> sort_inclusions_topological(i)
+  [<ResourceInclusion 'a1.js' in library 'foo'>, 
+   <ResourceInclusion 'a4.js' in library 'foo'>, 
+   <ResourceInclusion 'a2.js' in library 'foo'>, 
+   <ResourceInclusion 'a3.js' in library 'foo'>, 
+   <ResourceInclusion 'a5.js' in library 'foo'>]
