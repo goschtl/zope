@@ -2,6 +2,8 @@ import sys, os
 import urllib2
 import simplejson
 
+from hurry.resource import Library, ResourceInclusion, generate_code
+
 YUILOADER_URL_TEMPLATE = ('http://yui.yahooapis.com/%s/build/yuiloader'
                           '/yuiloader-beta.js')
 
@@ -12,54 +14,45 @@ def main():
         print "Usage: yuidepend <YUI version>"
         return
     d = load_json(version)
-
-    items = sorted_dependencies(d)
     
-    resources_text = []
-    for key, value in items:
-        path = deminize(value['path'])
-        name = normalize_name(key)
-        resource = '%s_resource = ResourceSpec(yui,\n    "%s"' % (
-            name, path)
-        
-        modes = get_modes(path)
-        if modes:
-            for key, mode_path in sorted(modes.items()):
-                resource += ',\n    %s="%s"' % (key, mode_path)
-        resource += ')'
-        resources_text.append(resource)
+    convert_to_inclusions(d)
 
-    resources_text = '\n'.join(resources_text)
+def convert_to_inclusions(d):
+    yui = Library('yui')
+    inclusion_map = {}
+    for name, value in d.items():
+        name = normalize_name(name)
+        inclusion_map[name] = ResourceInclusion(yui,
+                                                deminize(value['path']))
+
+    # fix up dependency structure, rollups
+    for name, value in d.items():
+        name = normalize_name(name)
+        inclusion = inclusion_map[name]
+        require_inclusions = []
+        for require in value.get('requires', []):
+            require = normalize_name(require)
+            require_inclusions.append(inclusion_map[require])
+        inclusion.depends = require_inclusions
+        rollup_inclusions = []
+        for rollup_name in value.get('supersedes', []):
+            rollup_name = normalize_name(rollup_name)
+            r = inclusion_map[rollup_name]
+            rollup_inclusion = ResourceInclusion(
+                yui, r.relpath)
+            rollup_inclusions.append(rollup_inclusion)
+        inclusion.rollups = rollup_inclusions
+        mode_inclusions = {}
+        for mode_name, path in get_modes(inclusion.relpath).items():
+            mode_inclusions[mode_name] = ResourceInclusion(
+                yui, path) # XXX rollups
+        inclusion.modes = mode_inclusions
+        
+    # now generate code
+    print generate_code(**inclusion_map)
     
-    inclusions_text = []
-    for key, value in items:
-        name = normalize_name(key)
-        inclusion = '%s = Inclusion([%s_resource]' % (
-            name, name)
-        requires = value.get('requires', [])
-        if requires:
-            requires = [normalize_name(n) for n in requires]
-            depends_on = '[%s]' % (', '.join(requires))
-            inclusion += ', depends_on=%s' % depends_on
-        
-        inclusion += ')'
-        inclusions_text.append(inclusion)
-        
-    inclusions_text = '\n'.join(inclusions_text)
-
-    python = """\
-from hurry.resource import Library, Inclusion, ResourceSpec
-
-yui = Library('yui')
-
-%s
-
-%s
-""" % (resources_text, inclusions_text)
-    print python
-
 def normalize_name(n):
-    return n.replace('-', '_')
+    return str(n.replace('-', '_'))
 
 def deminize(path):
     rest, ext = os.path.splitext(path)
@@ -82,30 +75,8 @@ def sorted_dependencies(d):
 
     Sort by how much we depend.
     """
-    # count dependencies of each item
-    depend_sortkey = {}
-    for key, value in d.items():
-        for r in value.get('requires', []):
-            c = depend_sortkey.get(r, 0)
-            c += 1
-            depend_sortkey[r] = c
-
-    # add up numbers of dependencies
-    depend_sortkey2 = {}
-    for key, value in d.items():
-        v = depend_sortkey.get(key, 0)
-        for r in value.get('requires', []):
-            c = depend_sortkey2.get(r, 0)
-            c += v
-            depend_sortkey2[r] = c
-
-    # sort items by consolidated sort key
-    items = d.items()
-    items = sorted(items, key=lambda (key, value):
-                   depend_sortkey2.get(key, 0))
-    # reverse result so that things depended on most appear first
-    return list(reversed(items))
-
+    
+    
 def load_json(version):
     f = urllib2.urlopen(YUILOADER_URL_TEMPLATE % version)
     data = f.read()
