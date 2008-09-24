@@ -120,19 +120,15 @@ Base classes
 ------------
 
 ``EditForm``
-
   Extends ``Form`` to create an edit form for your content.
 
 ``DisplayForm``
-
   Creates simple display forms.
 
 ``Form``
-
   Is a base class to create generic forms.
 
 ``AddForm``
-
   Extends ``Form`` to create add forms. You have to provide the *add*
   action which is going to create the new object.
 
@@ -142,7 +138,6 @@ Decorators
 ----------
 
 ``action``
-
   Is a decorator to create an action on the form. Your action only has
   to accept values from the form as parameters.
 
@@ -150,21 +145,18 @@ Helpers
 -------
 
 ``AutoFields``
-
   Create form fields from the given context. If the context is an
   interface, Zope fields defined in that interface are going to be
   used to build form fields.
-
   If the context is a regular object, Zope fields of all implemented
   interfaces of that object are going to used to build form fields.
 
 ``Fields``
-
   Create and reorder fields on the form.
 
 
 Additionally, the ``grokcore.formlib`` package exposes the
-`grokcore.component`_, `grokcore.security`_ and `grokcore.view` APIs.
+`grokcore.component`_, `grokcore.security`_ and `grokcore.view`_ APIs.
 
 .. _grokcore.component: http://pypi.python.org/pypi/grokcore.component
 .. _grokcore.formlib: http://pypi.python.org/pypi/grokcore.formlib
