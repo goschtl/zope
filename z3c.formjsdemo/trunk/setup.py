@@ -76,7 +76,6 @@ setup (
         'z3c.layer',
         'z3c.pagelet',
         'z3c.template',
-        'z3c.viewlet',
         'z3c.zrtresource',
         'zope.viewlet',
 	'zope.session',

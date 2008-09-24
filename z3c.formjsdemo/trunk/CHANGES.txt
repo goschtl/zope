@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+Version 0.3.2 (unreleased)
+--------------------------
+
+- Bug: Add zope.i18n meta.zcml inclusion as newer z3c.form uses the
+  i18n:registerTranslations directive for its i18n support.
+- Do not depend on z3c.viewlet, as newer z3c.formjs doesn't use it. 
+
 Version 0.3.1 (2008-08-26)
 --------------------------
 
