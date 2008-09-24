@@ -12,16 +12,16 @@
 
   <genericsetup:importStep
       name="action-icons"
-      title="Action Icons"
-      description="Import action icon definitions"
+      title="Action Icons (deprecated)"
+      description="Import action icon definitions (folded into CMFDefault)"
       handler="Products.CMFActionIcons.exportimport.importActionIconsTool">
     <depends name="componentregistry"/>
   </genericsetup:importStep>
 
   <genericsetup:exportStep
       name="action-icons"
-      title="Action Icons"
-      description="Export action icon definitions"
+      title="Action Icons (deprecated)"
+      description="Export action icon definitions (folded into CMFDefault)"
       handler="Products.CMFActionIcons.exportimport.exportActionIconsTool"
       />
 
@@ -29,7 +29,7 @@
 
   <genericsetup:registerProfile
       name="actionicons"
-      title="CMFActionIcons"
+      title="CMFActionIcons (deprecated/folded into CMFDefault)"
       description="Adds action icon tool / settings."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       for="Products.CMFCore.interfaces.ISiteRoot"
