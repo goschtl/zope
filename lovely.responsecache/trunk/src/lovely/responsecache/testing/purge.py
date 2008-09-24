@@ -44,7 +44,10 @@ class PurgeInfo(object):
     def __call__(self):
         result = str(self.log_info)
         self.log_info.clear()
-        return REMOVE_LINES.sub('', result)
+        result = REMOVE_LINES.sub('', result)
+        lines = result.split('\n')
+        lines.sort()
+        return '\n'.join(lines)
 
 
 def setUpPurge(test):

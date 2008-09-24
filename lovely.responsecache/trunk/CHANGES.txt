@@ -5,6 +5,8 @@ Changes for lovely.responsecache
 trunk
 =====
 
+ - purgeInfo returns a sorted result
+
 2008/09/11 1.3.0
 ================
 

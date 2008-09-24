@@ -41,6 +41,6 @@ A second call to purgeInfo returns nothing because the stored log was deleted.
   >>> purger.purge('expr 2')
   >>> transaction.commit()
   >>> print purgeInfo()
-  purged 'expr 2'
   purged 'expr 1'
+  purged 'expr 2'
 
