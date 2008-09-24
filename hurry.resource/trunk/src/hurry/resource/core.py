@@ -234,7 +234,14 @@ def render_inclusion(inclusion, url):
             (inclusion.ext(), repr(inclusion)))
     return renderer(url)
 
-def generate_code(inclusions):
+def generate_code(**kw):
+    name_to_inclusion = kw
+    inclusion_to_name = {}
+    inclusions = []
+    for name, inclusion in kw.items():
+        inclusion_to_name[inclusion.key()] = name
+        inclusions.append(inclusion)
+        
     # libraries with the same name are the same libraries
     libraries = {}
     for inclusion in inclusions:
@@ -250,15 +257,10 @@ def generate_code(inclusions):
         result.append("%s = Library('%s')" % (library.name, library.name))
     result.append("")
 
-    # figure out inclusion names, try to base on filename 
-    used_names = set()
-    inclusion_to_name = {}
+    # sort inclusions in the order we want them to be
     inclusions = sort_inclusions_by_extension(
         sort_inclusions_topological(inclusions))
-    for inclusion in inclusions:
-        name = generate_inclusion_name(inclusion, used_names)
-        inclusion_to_name[inclusion.key()] = name
-
+ 
     # now generate inclusion code
     for inclusion in inclusions:
         s = "%s = ResourceInclusion(%s, '%s'" % (

@@ -457,10 +457,10 @@ Generating resource code
 
 Sometimes it is useful to generate code that expresses a complex
 resource dependency structure. One example of that is in
-``hurry.yui``. We can use this to render a list of resources::
+``hurry.yui``. We can use this to render resource inclusions::
 
   >>> from hurry.resource import generate_code
-  >>> print generate_code([a1, a2, a3, a4, a5])
+  >>> print generate_code(a1=a1, a2=a2, a3=a3, a4=a4, a5=a5)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
   foo = Library('foo')
@@ -473,7 +473,7 @@ resource dependency structure. One example of that is in
 
 Let's look at an example with modes and rollups::
 
-  >>> print generate_code([b4, b5])
+  >>> print generate_code(b4=b4, b5=b5)
   from hurry.resource import Library, ResourceInclusion
   <BLANKLINE>
   foo = Library('foo')
@@ -481,6 +481,16 @@ Let's look at an example with modes and rollups::
   b4 = ResourceInclusion(foo, 'b4.js', rollups=['giant.js'], debug=ResourceInclusion(foo, 'b4-debug.js', rollups=['giant-debug.js']))
   b5 = ResourceInclusion(foo, 'b5.js', rollups=['giant.js'], debug=ResourceInclusion(foo, 'b5-debug.js', rollups=['giant-debug.js']))
 
+We can control the name the inclusion will get in the source code by
+using keyword parameters::
+
+  >>> print generate_code(hoi=a1)
+  from hurry.resource import Library, ResourceInclusion
+  <BLANKLINE>
+  foo = Library('foo')
+  <BLANKLINE>
+  hoi = ResourceInclusion(foo, 'a1.js')
+ 
 Sorting inclusions by dependency
 --------------------------------
 
