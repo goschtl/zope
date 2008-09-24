@@ -452,6 +452,35 @@ Rendering the inclusions now will will result in the HTML fragment we need::
   <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
 
+Generating resource code
+------------------------
+
+Sometimes it is useful to generate code that expresses a complex
+resource dependency structure. One example of that is in
+``hurry.yui``. We can use this to render a list of resources::
+
+  >>> from hurry.resource import generate_code
+  >>> print generate_code([a1, a2, a3, a4, a5])
+  from hurry.resource import Library, ResourceInclusion
+  <BLANKLINE>
+  foo = Library('foo')
+  <BLANKLINE>
+  a1 = ResourceInclusion(foo, 'a1.js')
+  a2 = ResourceInclusion(foo, 'a2.js', depends=[a1])
+  a3 = ResourceInclusion(foo, 'a3.js', depends=[a2])
+  a4 = ResourceInclusion(foo, 'a4.js', depends=[a1])
+  a5 = ResourceInclusion(foo, 'a5.js', depends=[a4, a3])
+
+Let's look at an example with modes and rollups::
+
+  >>> print generate_code([b4, b5])
+  from hurry.resource import Library, ResourceInclusion
+  <BLANKLINE>
+  foo = Library('foo')
+  <BLANKLINE>
+  b4 = ResourceInclusion(foo, 'b4.js', rollups=['giant.js'], debug=ResourceInclusion(foo, 'b4-debug.js', rollups=['giant-debug.js']))
+  b5 = ResourceInclusion(foo, 'b5.js', rollups=['giant.js'], debug=ResourceInclusion(foo, 'b5-debug.js', rollups=['giant-debug.js']))
+
 Sorting inclusions by dependency
 --------------------------------
 

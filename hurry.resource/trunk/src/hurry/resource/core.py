@@ -45,13 +45,13 @@ class ResourceInclusion(object):
         self.library = library
         self.relpath = relpath
 
-        assert not isinstance(rollups, basestring)
-        rollups = rollups or []
-        self.rollups = normalize_inclusions(library, rollups)
-
         assert not isinstance(depends, basestring)
         depends = depends or []
         self.depends = normalize_inclusions(library, depends)
+    
+        assert not isinstance(rollups, basestring)
+        rollups = rollups or []
+        self.rollups = normalize_inclusions(library, rollups)
 
         normalized_modes = {}
         for mode_name, inclusion in kw.items():
@@ -233,3 +233,91 @@ def render_inclusion(inclusion, url):
             "Unknown resource extension %s for resource inclusion: %s" %
             (inclusion.ext(), repr(inclusion)))
     return renderer(url)
+
+def generate_code(inclusions):
+    # libraries with the same name are the same libraries
+    libraries = {}
+    for inclusion in inclusions:
+        libraries[inclusion.library.name] = inclusion.library
+    libraries = sorted(libraries.values())
+
+    result = []
+    # import on top
+    result.append("from hurry.resource import Library, ResourceInclusion")
+    result.append("")
+    # define libraries
+    for library in libraries:
+        result.append("%s = Library('%s')" % (library.name, library.name))
+    result.append("")
+
+    # figure out inclusion names, try to base on filename 
+    used_names = set()
+    inclusion_to_name = {}
+    inclusions = sort_inclusions_by_extension(
+        sort_inclusions_topological(inclusions))
+    for inclusion in inclusions:
+        name = generate_inclusion_name(inclusion, used_names)
+        inclusion_to_name[inclusion.key()] = name
+
+    # now generate inclusion code
+    for inclusion in inclusions:
+        s = "%s = ResourceInclusion(%s, '%s'" % (
+            inclusion_to_name[inclusion.key()],
+            inclusion.library.name,
+            inclusion.relpath)
+        if inclusion.depends:
+            depends_s = ', depends=[%s]' % ', '.join(
+                [inclusion_to_name[d.key()] for d in inclusion.depends])
+            s += depends_s
+        if inclusion.rollups:
+            s += ', ' + _generate_inline_rollups(inclusion)
+        if inclusion.modes:
+            items = []
+            for mode_name, mode in inclusion.modes.items():
+                items.append((mode_name,
+                              generate_inline_inclusion(mode, inclusion)))
+            items = sorted(items)
+            modes_s = ', %s' % ', '.join(["%s=%s" % (name, mode) for
+                                          (name, mode) in items])
+            s += modes_s
+        s += ')'
+        result.append(s)
+    return '\n'.join(result)
+
+def generate_inline_inclusion(inclusion, associated_inclusion):
+    if (inclusion.library.name == associated_inclusion.library.name and
+        not inclusion.rollups):
+        return "'%s'" % inclusion.relpath
+    else:
+        s = "ResourceInclusion(%s, '%s'" % (inclusion.library.name,
+                                            inclusion.relpath)
+        if inclusion.rollups:
+            s += ', ' + _generate_inline_rollups(inclusion)
+        s += ')'
+        return s
+
+def _generate_inline_rollups(inclusion):
+    return 'rollups=[%s]' % ', '.join(
+        [generate_inline_inclusion(r, inclusion)
+         for r in inclusion.rollups])
+        
+def generate_inclusion_name(inclusion, used_names):
+    rest, fullname = os.path.split(inclusion.relpath)
+    name, ext = os.path.splitext(fullname)
+    if name not in used_names:
+        used_names.add(name)
+        return name
+    name = name + ext
+    name = name.replace('.', '_')
+    if name not in used_names:
+        used_names.add(name)
+        return name
+    i = 0
+    while True:
+        name = name + str(i)
+        if name not in used_names:
+            used_names.add(name)
+            return name
+    assert False, "Not possible to generate a unique name!"
+
+    
