@@ -123,7 +123,7 @@
   <browser:viewletManager
       name="z3c.formjs.interfaces.IDynamicJavaScript"
       provides=".interfaces.IDynamicJavaScript"
-      class="z3c.viewlet.manager.WeightOrderedViewletManager"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
       layer="z3c.form.interfaces.IFormLayer"
       permission="zope.Public"
       />

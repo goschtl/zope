@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Version 0.4.1 (unreleased)
+--------------------------
+
+- Restructure: Use WeightOrderedViewletManager from zope.viewlet instead
+  of z3c.viewlet, that removes additional egg requirement.
+
 Version 0.4.0 (2008-08-26)
 --------------------------
 
