@@ -18,9 +18,11 @@ class IResourceInclusion(Interface):
     library = Attribute("The resource library this resource is in")
     relpath = Attribute("The relative path of the resource "
                         "within the resource library")
+    depends = Attribute("A list of ResourceInclusions that this "
+                        "resource depends on")
     rollups = Attribute("A list of potential rollup ResourceInclusions "
                         "that this resource is part of")
-
+    
     def ext():
         """Get the filesystem extension of this resource.
 
