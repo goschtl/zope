@@ -1,0 +1,135 @@
+================================
+Changes for lovely.responsecache
+================================
+
+trunk
+=====
+
+2008/09/24 1.4.0
+================
+
+ - purgeInfo returns a sorted result
+
+2008/09/11 1.3.0
+================
+
+ - added purge testing utilities
+
+2008/07/17 1.2.0
+================
+
+ - added savepoint support to the transaction datamanager
+
+2008/06/20 1.1.0
+================
+
+ - added a disk purge utility to remove files from disk storage by using
+   regular expressions. just get the util by getUtility(IPurge, 'disk')
+   and call purge(expr) on it.
+
+2008/06/16 1.0.0a1
+==================
+
+This is a major version update to signal that the new version is no longer
+automatically using pyCurl but using a fallback to httplib if pycurl is not
+present. Using httplib is a huge performance problem, so whenever possible
+pycurl should be used.
+
+- removed pycurl as install requirement.
+  The application which want's to use pycurl must add it to it's setup.
+- Added a WARNING to the log at startup alerting about performance because of
+  using httplib instead of pycurl.
+- added support for httplib if pyCurl is not available
+
+2008/02/16 0.4.3a2
+==================
+
+- handle special case when clean is called twice in purge which
+  throwed an AttributeError
+
+2008/02/13 0.4.3a1
+==================
+
+- use a transaction datamanager to do the purge
+
+2008/02/07 0.4.2
+================
+
+- make _purgeURLS method more robust (must not raise an exception)
+
+2008/01/29 0.4.1
+================
+
+- make the failedHosts access thread safe
+- bugfix: missing parameter on ignorWrite
+- added some logging info after successful purges
+- removed default values on required fields in purge directive
+
+2008/01/19 0.4.0
+================
+
+- added a utility to purge cache entries. a page to manually purge cache
+  entries is also included
+
+2007/12/04 0.3.0a3
+==================
+
+- set cookie lifetime to let z3.authenticated cookie live over browser
+  sessions.
+
+2007/11/23 0.3.0a2
+==================
+
+- handle None principal in cookie setter
+
+2007/10/14 0.3.0a1
+==================
+
+- arbitrary arguments are now allowed in zcml directive
+
+- added dependencies attribute to zcml to define string types
+  dependencies
+
+2007/07/09 0.2.6a1
+==================
+
+- added a credentials plugin for user dependant cleint ids.
+
+2007/07/09 0.2.5
+================
+
+- reactivated z3.authenticated cookie and set cookie path to /
+
+2007/07/09 0.2.4
+================
+
+- temporarily remove the cookie because of problems with IE
+
+2007/07/09 0.2.3
+================
+
+- fixed the change in 0.2.3 to work with nginx
+
+2007/07/09 0.2.3
+================
+
+- remove proxied when a view has a dependency on it's context
+
+2007/06/07 0.2.2
+================
+
+- moved to svn.zope.org
+- ZPL license
+
+2007/06/03 0.2.1
+================
+
+- bugfix: fix discriminators in zcml directive
+
+2007/06/03 0.2.0
+================
+
+- we now only cache contentproviders on beforeupdateevent this is much
+  cleaner, also we can cache viewletmanagers and viewlets without
+  traversing them.
+

@@ -1,0 +1,29 @@
+<configure xmlns:zope="http://namespaces.zope.org/zope"
+           xmlns="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <zope:view
+      for="zope.contentprovider.interfaces.IContentProvider"
+      factory=".views.HourCacheSettings"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="..interfaces.IResponseCacheSettings"
+      />
+  
+  <page
+      for="*"
+      name="test.html"
+      class=".views.TestPage"
+      permission="zope.Public"/>
+
+  <viewletManager
+      name="IContent"
+      permission="zope.Public"/>
+
+  <viewlet
+      name="MyViewlet"
+      template="viewlet.pt"
+      permission="zope.Public"/>
+  
+</configure>
+

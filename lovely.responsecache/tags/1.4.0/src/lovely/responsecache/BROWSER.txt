@@ -1,0 +1,93 @@
+============
+Cached Views
+============
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.handleErrors = False
+
+At first we have misses
+
+  >>> browser.open('http://localhost/test.html')
+  >>> print browser.headers
+  Status: 200 Ok
+  ...
+  X-Memcached-Miss: /test.html /test.html/IContent /test.html/MyViewlet
+  ...
+  >>> uncachedContent = browser.contents
+
+
+The second request is cached. Note that due to the reason we cached
+the whole view, the viewletmanager and the viewlet are not even
+getting called, so not miss/hit is in the header.
+
+  >>> browser.open('http://localhost/test.html')
+  >>> print browser.headers
+  Status: 200 Ok
+  ...
+  X-Memcached-Hit: /test.html
+  ...
+  >>> uncachedContent == browser.contents
+  True
+
+
+Authentication Information
+==========================
+
+Sometimes it is useful for frontend servers (the ones that do the
+calls to our server) have information about if the user is
+authenticated, to rewrite caching urls. So we have defined a handler for
+endrequest, that sets a cookie with authentication information.
+
+#  >>> browser.headers.get('set-cookie')
+#  'z3.authenticated=False;'
+
+Let us log in.
+
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization','Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+  >>> browser.open('http://localhost/')
+
+#  >>> browser.headers.get('set-cookie')
+#  'z3.authenticated=True;'
+
+Caching Key namespace
+=====================
+
+The ckey namespace allows to set arbitrary keys for differentiate on
+specific keys for frontent url rewriting which would otherwise be not
+visible in the bare url. For example we could have different cache
+entries for authenticated or unauthenticated requests.
+
+  >>> browser = Browser()
+  >>> browser.handleErrors = False
+  >>> browser.open('http://localhost/++ckey++anonymous/test.html')
+  >>> browser.url
+  'http://localhost/++ckey++anonymous/test.html'
+  >>> print browser.headers.get('x-memcached-miss')
+  /++ckey++anonymous/test.html
+  /++ckey++anonymous/test.html/IContent
+  /++ckey++anonymous/test.html/MyViewlet
+
+  >>> browser.open('http://localhost/++ckey++authenticated/test.html')
+  >>> print browser.headers.get('x-memcached-miss')
+  /++ckey++authenticated/test.html
+  /++ckey++authenticated/test.html/IContent
+  /++ckey++authenticated/test.html/MyViewlet
+
+We can also cascade such keys.
+
+  >>> browser.open('http://localhost/++ckey++anonymous/'
+  ...              '++ckey++aSessionId/test.html')
+  >>> print browser.headers.get('x-memcached-miss')
+  /++ckey++anonymous/++ckey++aSessionId/test.html
+  /++ckey++anonymous/++ckey++aSessionId/test.html/IContent
+  /++ckey++anonymous/++ckey++aSessionId/test.html/MyViewlet
+
+  >>> browser.open('http://localhost/++ckey++anonymous/'
+  ...              '++ckey++aSessionId/test.html')
+  >>> print browser.headers.get('x-memcached-hit')
+  /++ckey++anonymous/++ckey++aSessionId/test.html
+
+
