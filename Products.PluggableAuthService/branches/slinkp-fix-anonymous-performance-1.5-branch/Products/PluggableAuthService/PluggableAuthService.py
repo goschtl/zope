@@ -758,9 +758,13 @@ class PluggableAuthService( Folder, Cacheable ):
 
     security.declarePrivate( '_verifyUser' )
     def _verifyUser( self, plugins, user_id=None, login=None ):
-
         """ user_id -> info_dict or None
         """
+        if user_id is None and login is None:
+            # Avoid possible hugely expensive and/or wrong behavior of
+            # plugin enumerators.
+            return None
+
         criteria = {'exact_match': True}
 
         if user_id is not None:
@@ -769,7 +773,7 @@ class PluggableAuthService( Folder, Cacheable ):
         if login is not None:
             criteria[ 'login' ] = login
 
-        if criteria:
+        if criteria:  # Um, this is always true.
             view_name = createViewName('_verifyUser', user_id or login)
             keywords = createKeywords(**criteria)
             cached_info = self.ZCacheable_get( view_name=view_name
