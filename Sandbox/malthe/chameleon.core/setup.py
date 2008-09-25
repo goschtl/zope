@@ -12,7 +12,7 @@ install_requires = [
 if sys.version_info[:3] < (2,5,0):
     install_requires.append('elementtree')
 
-setup(name='Chameleon',
+setup(name='chameleon.core',
       version=version,
       description="Attribute language template compiler",
       long_description=open("README.txt").read() + open("CHANGES.txt").read(),
