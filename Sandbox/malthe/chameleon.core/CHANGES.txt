@@ -4,5 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0a1 (released 9/24/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- First release.
 
 
