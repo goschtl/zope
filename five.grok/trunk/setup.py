@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '1.0dev'
 
 setup(name='five.grok',
       version=version,
@@ -29,7 +29,9 @@ setup(name='five.grok',
       install_requires=[
           'setuptools',
           'martian',
-          'grokcore.view',
+          'grokcore.security',
+          'grokcore.view >= 1.1',
+          'grokcore.formlib',
       ],
       entry_points="""
       """,

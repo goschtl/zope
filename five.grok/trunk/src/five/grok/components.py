@@ -1,15 +1,25 @@
-from zope import interface
+import martian
+
 from zope.annotation.interfaces import IAttributeAnnotatable
-
-import grokcore.view
-
-from grokcore.view.components import PageTemplate
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
+from zope import interface, component
 
 from grokcore.component.interfaces import IContext
+from grokcore.formlib.components import GrokForm as BaseGrokForm
+from grokcore.formlib.components import default_display_template, default_form_template
+from grokcore.view.components import PageTemplate
+import grokcore.view
 
-import Acquisition
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
+    as BaseViewPageTemplateFile
+from Products.Five.browser.pagetemplatefile import getEngine
+from Products.Five.browser import resource
+from Products.Five.formlib import formbase
+from Products.PageTemplates.Expressions import SecureModuleImporter
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
+import Acquisition
+
 
 class Model(SimpleItem):
     # XXX Inheritance order is important here. If we reverse this,
@@ -17,16 +27,23 @@ class Model(SimpleItem):
     # can be established.
     interface.implements(IAttributeAnnotatable, IContext)
 
+
 class View(grokcore.view.View, Acquisition.Explicit):
-    pass
+
+    def __init__(self, *args):
+        super(View, self).__init__(*args)
+        if not (self.static is None):
+            # static should be wrapper correctly with acquisition,
+            # otherwise you will not be able to compute URL for
+            # resources.
+            self.static = self.static.__of__(self)
+
+    # We let getPhysicalPath to be acquired. This make static URL's
+    # work, and prevent us to inherit from Acquisition.Implicit
+    getPhysicalPath = Acquisition.Acquired
+
 
 # TODO: This should probably move to Products.Five.browser
-
-from Acquisition import aq_inner
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
-from Products.PageTemplates.Expressions import SecureModuleImporter
-from Products.Five.browser.pagetemplatefile import getEngine
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
     
@@ -43,7 +60,7 @@ class ViewAwareZopePageTemplate(ZopePageTemplate):
                 root = None
 
         view = self._getContext()
-        here = aq_inner(self.context)
+        here = Acquisition.aq_inner(self.context)
 
         request = getattr(root, 'REQUEST', None)
         c = {'template': self,
@@ -60,8 +77,20 @@ class ViewAwareZopePageTemplate(ZopePageTemplate):
             c['view'] = view
             c['views'] = ViewMapper(here, request)
 
+        if hasattr(self, 'pt_grokContext'):
+            c.update(self.pt_grokContext)
+
         return c
 
+
+class ViewPageTemplateFile(BaseViewPageTemplateFile):
+
+    def pt_getContext(self):
+        c = super(ViewPageTemplateFile, self).pt_getContext()
+        if hasattr(self, 'pt_grokContext'):
+            c.update(self.pt_grokContext)
+
+        return c
 
 class ZopeTwoPageTemplate(PageTemplate):
 
@@ -74,5 +103,67 @@ class ZopeTwoPageTemplate(PageTemplate):
     def render(self, view):
         namespace = self.getNamespace(view)
         template = self._template.__of__(view)
-        namespace.update(template.pt_getContext())
-        return template(namespace)
+        template.pt_grokContext = namespace
+        return template()
+
+
+class DirectoryResource(resource.DirectoryResource):
+    # We subclass this, because we want to override the default factories for
+    # the resources so that .pt and .html do not get created as page
+    # templates
+
+    resource_factories = {}
+    for type, factory in (resource.DirectoryResource.resource_factories.items()):
+        if factory is resource.PageTemplateResourceFactory:
+            continue
+        resource_factories[type] = factory
+
+
+class DirectoryResourceFactory(resource.DirectoryResourceFactory):
+    # __name__ is needed if you want to get url's of resources
+
+    def __init__(self, name, path):
+        self.__name = name
+        self.__rsrc = self.factory(path, name)
+
+    def __call__(self, request):
+        resource = DirectoryResource(self.__rsrc, request)
+        resource.__name__ = self.__name # We need to add name
+        return resource
+
+# forms from formlib
+
+class GrokForm(BaseGrokForm):
+
+    def __init__(self, *args):
+        super(GrokForm, self).__init__(*args)
+        self.__name__ = self.__view_name__
+        # super seems not to work correctly since this is needed again. 
+        self.static = component.queryAdapter(
+            self.request, interface.Interface,
+            name = self.module_info.package_dotted_name)
+        if not (self.static is None):
+            self.static = self.static.__of__(self)
+
+
+class Form(GrokForm, formbase.PageForm, View):
+
+    martian.baseclass()
+    template = default_form_template
+
+class AddForm(GrokForm, formbase.AddForm, View):
+
+    martian.baseclass()
+    template = default_form_template
+
+
+class EditForm(GrokForm, formbase.EditForm, View):
+
+    martian.baseclass()
+    template = default_form_template
+
+
+class DisplayForm(GrokForm, formbase.DisplayForm, View):
+
+    martian.baseclass()
+    template = default_display_template
