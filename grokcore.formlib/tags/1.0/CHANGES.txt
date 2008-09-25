@@ -1,0 +1,9 @@
+Changes
+=======
+
+1.0 (25/09/2008)
+----------------
+
+* Created ``grokcore.formlib`` in July 2008 by factoring
+  ``zope.formlib``-based components, grokkers and directives out of
+  Grok.
