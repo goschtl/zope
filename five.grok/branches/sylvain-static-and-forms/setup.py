@@ -1,14 +1,13 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '1.0dev'
 
 setup(name='five.grok',
       version=version,
       description="Grok-like layer for Zope 2",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?:action=list_classifiers
       classifiers=[
           "Environment :: Web Environment",
           "Intended Audience :: Developers",
@@ -32,7 +31,7 @@ setup(name='five.grok',
           'martian',
           'grokcore.component',
           'grokcore.security',
-          'grokcore.view > 1.0',
+          'grokcore.view >= 1.1',
           'grokcore.formlib',
       ],
       entry_points="""
