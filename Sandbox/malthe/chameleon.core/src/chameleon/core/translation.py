@@ -76,12 +76,22 @@ class Node(object):
         self.stream.scope.pop()
 
     def body(self):
-        if not self.skip:
-            for element in self.element:
-                element.node.update()
+        if isinstance(self.skip, types.expression):
+            assert isinstance(self.skip, types.value), \
+                   "Dynamic skip condition can't be of type %s." % type(self.skip)
+            condition = clauses.Condition(types.value("not (%s)" % self.skip))
+            condition.begin(self.stream)
+        elif self.skip:
+            return
+        
+        for element in self.element:
+            element.node.update()
 
-            for element in self.element:
-                element.node.visit()
+        for element in self.element:
+            element.node.visit()
+
+        if isinstance(self.skip, types.expression):
+            condition.end(self.stream)
                     
     def visit(self):
         assert self.stream is not None, "Must use ``start`` method."
