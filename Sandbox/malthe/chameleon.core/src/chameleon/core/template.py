@@ -102,10 +102,11 @@ class TemplateFile(Template):
         self.read()
 
         # persist template registry on disk
+        
         if config.DISK_CACHE:
-            self.registry = self.global_registry.setdefault(
-                filename, filecache.TemplateCache(filename))
+            self.registry = filecache.TemplateCache(filename)
 
+        self.global_registry.setdefault(filename, self)
         self.xincludes = XIncludes(
             self.global_registry, os.path.dirname(filename), self.clone)
         

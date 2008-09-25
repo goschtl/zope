@@ -42,3 +42,13 @@ XInclude support
     </div>
   </div>
 
+  >>> from cPickle import dumps, loads
+  >>> for key, bct in template.registry.items():
+  ...     template.registry[key] = loads(dumps(bct))
+
+  >>> print template()
+  <div>
+    <div>
+    <span>Hello, world!</span>
+    </div>
+  </div>

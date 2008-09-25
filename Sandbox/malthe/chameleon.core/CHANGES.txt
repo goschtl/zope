@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Fixed bug where an AttributeError would be raised when using the
+  file cache. [malthe]
+
 1.0a1 (released 9/24/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
