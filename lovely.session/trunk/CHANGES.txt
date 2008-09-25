@@ -2,10 +2,16 @@
 CHANGES
 =======
 
-0.1.5 (unreleased)
+0.2.1 (unreleased)
 ------------------
 
 - ...
+
+
+0.2.0 (2008-09-25)
+------------------
+
+- Made the DataManager savepoint aware.
 
 
 0.1.4 (2008-07-31)
@@ -34,4 +40,3 @@ CHANGES
 ------------------
 
 - Fixed dependency on `lovely.memcached`.
-

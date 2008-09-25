@@ -15,6 +15,9 @@ want to run this test you need to use --all as parameter to your test.
 
 Start a memcache instance with : memcached <optional options>
 
+
+Once memcached is running, we can start testing:
+
   >>> from zope import component
   >>> from lovely.memcached.interfaces import IMemcachedClient
   >>> from lovely.memcached.utility import MemcachedClient
@@ -51,13 +54,19 @@ We can now get data from the session.
   >>> data
   {'info': 'stored in memcache'}
 
+
+
+Transaction support
+~~~~~~~~~~~~~~~~~~~
+
 Because the MemCacheSession is transaction aware we need to commit the
 transaction to store data in the memcache.
 
   >>> import transaction
+
   >>> transaction.commit()
 
-If we now read session data is is read back from the memcache.
+If we now read session data it is read back from the memcache.
 
   >>> session = sessionData['mySessionId']
   >>> session['myData']
@@ -66,3 +75,77 @@ If we now read session data is is read back from the memcache.
   >>> sessionData.items()
   [('mySessionId', <lovely.session.memcached.DataManager object at ...>)]
 
+
+MemCacheSession is now also savepoint aware, let's check how that works:
+
+We first set some data:
+
+  >>> session = sessionData['mySessionId']
+  >>> data = session['myData']
+  >>> data['info'] = 'we want to keep this'
+
+Set a savepoint:
+
+  >>> savepoint = transaction.savepoint()
+
+Change the data:
+
+  >>> data['info'] = 'this should be dumped'
+
+Rollback to the previous value:
+
+  >>> savepoint.rollback()
+
+And here it is, the before value:
+
+  >>> data['info']
+  'we want to keep this'
+
+Newly added data must also go away:
+
+We add a new data:
+
+  >>> data['newinfo'] = 'go away'
+
+And a new container:
+
+  >>> newdata = session['myNewData']
+  >>> newdata['foo'] = 'bar'
+
+Roll it back to the previous savepoint:
+
+  >>> savepoint.rollback()
+
+The data is gone:
+
+  >>> data['newinfo']
+  Traceback (most recent call last):
+  ...
+  KeyError: 'newinfo'
+
+The container is empty, because it gets always created on retrieval:
+
+  >>> session['myNewData']
+  {}
+
+Let's see what happens on commit:
+
+  >>> transaction.commit()
+
+If we now read session data it is read back from the memcache.
+
+  >>> session = sessionData['mySessionId']
+  >>> session['myData']
+  {'info': 'we want to keep this'}
+
+The data is not present:
+
+  >>> data['newinfo']
+  Traceback (most recent call last):
+  ...
+  KeyError: 'newinfo'
+
+The container is empty, because it gets always created on retrieval:
+
+  >>> session['myNewData']
+  {}

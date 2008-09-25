@@ -23,7 +23,8 @@ from threading import local
 
 import persistent
 import transaction
-from transaction.interfaces import IDataManager
+from transaction.interfaces import ISavepointDataManager
+from transaction.interfaces import IDataManagerSavepoint
 
 from zope import interface
 from zope import component
@@ -152,7 +153,7 @@ class MemCachePkgData(dict):
 
 class DataManager(object):
     """A data manager for the transaction management of the session data"""
-    interface.implements(IDataManager)
+    interface.implements(ISavepointDataManager)
 
     def __init__(self, sessionData, key):
         self.sessionData = sessionData
@@ -193,3 +194,43 @@ class DataManager(object):
     def sortKey(self):
         return str(id(self))
 
+    def savepoint(self):
+        # When we create the savepoint, we save the existing database state.
+        return Savepoint(self, cPickle.dumps(self._data))
+
+    def _rollback_savepoint(self, data):
+        # When we rollback the savepoint, we restore the saved data.
+        # Caution:  without the pickle, further changes to the database
+        # could reflect in savepoint.data, and then `savepoint` would no
+        # longer contain the originally saved data, and so `savepoint`
+        # couldn't restore the original state if a rollback to this
+        # savepoint was done again.  IOW, pickle is necessary.
+
+        # there is also a small dance around with the container and
+        # and data not to break referenced variables
+        # the MemCachedSessionDataContainer / MemCacheSessionData / MemCachePkgData
+        # seems to be stable so this seems to be reasonable
+
+        state = cPickle.loads(data)
+        self._data.lastAccessTime = state.lastAccessTime
+        for k,v in state.items():
+            self._data[k].update(v)
+            todel = [x for x in self._data[k].keys() if x not in v.keys()]
+            for x in todel:
+                del self._data[k][x]
+
+        todel = [x for x in self._data.keys() if x not in state.keys()]
+        for x in todel:
+            del self._data[x]
+
+
+class Savepoint(object):
+
+    interface.implements(IDataManagerSavepoint)
+
+    def __init__(self, data_manager, data):
+        self.data_manager = data_manager
+        self.data = data
+
+    def rollback(self):
+        self.data_manager._rollback_savepoint(self.data)
