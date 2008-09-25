@@ -1,0 +1,23 @@
+Dynamic HTML template
+=====================
+
+  >>> from chameleon.html.template import DynamicHTMLFile
+
+  >>> template = DynamicHTMLFile(os.path.join(path, 'layouts', 'example.html'))
+  >>> print template(
+  ...     content={'title': u"Document title",
+  ...              'content': u"Document content"},
+  ...     attributes={'meta-generator': {'content': u"Chameleon"},
+  ...                 'meta-description': {'content': u"Document description"},
+  ...                 'meta-keywords': {'content': u"Keywords"}})
+  <html>
+    <head>
+      <title>Document title</title>
+      <meta content="Chameleon" name="generator" />
+      <meta content="Document description" name="description" />
+      <meta content="Keywords" name="keywords" />
+    </head>
+    <body>
+      <div>Document content</div>
+    </body>
+  </html>
