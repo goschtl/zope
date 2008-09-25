@@ -53,8 +53,8 @@ class ZopePageTemplateElement(translation.Element):
                 if variable in itertools.chain(*self.stream.scope):
                     return True
 
-            return self.content or \
-                   self.use_macro or self.translate is not None
+            return bool(self.content) or \
+                   bool(self.use_macro) or self.translate is not None
 
         @property
         def dynamic_attributes(self):
