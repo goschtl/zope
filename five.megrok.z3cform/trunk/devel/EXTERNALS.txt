@@ -1,6 +1,3 @@
 # svn propset svn:externals -F EXTERNALS.txt .
 five.grok svn://svn.zope.org/repos/main/five.grok/trunk
 megrok.z3cform svn://svn.zope.org/repos/main/megrok.z3cform/trunk
-grokcore.formlib svn://svn.zope.org/repos/main/grokcore.formlib/trunk
-grokcore.view svn://svn.zope.org/repos/main/grokcore.view/trunk
-
