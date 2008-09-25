@@ -132,6 +132,8 @@ class Assign(object):
             
             for i in range(_v_count):
                 stream.restore()
+        else:
+            raise TypeError("Can't assign value of type %s" % type(value))
         
     def end(self, stream):
         pass
