@@ -15,8 +15,7 @@
 
 $Id$
 """
-from zope import interface, event
-from zope.lifecycleevent import ObjectCreatedEvent
+from zope import interface
 from zope.traversing.browser import absoluteURL
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IWriteContainer
@@ -26,12 +25,11 @@ from z3c.form import form, button
 from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-import interfaces
-from interfaces import _
+from interfaces import _, IPageletAddForm, IAddButton, ICancelButton
 
 
 class PageletAddForm(form.AddForm, BrowserPagelet):
-    interface.implements(interfaces.IPageletAddForm)
+    interface.implements(IPageletAddForm)
 
     render = BrowserPagelet.render
     __call__ = BrowserPagelet.__call__
@@ -40,8 +38,7 @@ class PageletAddForm(form.AddForm, BrowserPagelet):
 
     formCancelMessage = _(u'Action has been canceled.')
 
-    @button.buttonAndHandler(_(u'Add'), name='add',
-                             provides=interfaces.IAddButton)
+    @button.buttonAndHandler(_(u'Add'), name='add', provides=IAddButton)
     def handleAdd(self, action):
         data, errors = self.extractData()
 
@@ -55,8 +52,7 @@ class PageletAddForm(form.AddForm, BrowserPagelet):
                 self._finishedAdd = True
                 self.redirect(self.nextURL())
 
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel',
-                             provides=interfaces.ICancelButton)
+    @button.buttonAndHandler(_(u'Cancel'), name='cancel', provides=ICancelButton)
     def handleCancel(self, action):
         self._finishedAdd = True
         self.redirect(self.cancelURL())
@@ -64,8 +60,9 @@ class PageletAddForm(form.AddForm, BrowserPagelet):
 
     def createAndAdd(self, data):
         obj = self.create(data)
-        event.notify(ObjectCreatedEvent(obj))
-        self.add(obj)
+        addedObj = self.add(obj)
+        if addedObj is not None:
+            return addedObj
         return obj
 
     def nextURL(self):
