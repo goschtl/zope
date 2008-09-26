@@ -1,0 +1,108 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3c="http://namespaces.zope.org/z3c">
+
+  <!-- buttons -->
+  <adapter 
+     provides="z3c.form.interfaces.IButtonAction"
+     factory=".buttons.ButtonAction" />
+
+  <adapter 
+     provides="z3c.form.interfaces.IButtonAction"
+     factory=".buttons.AddButtonAction" />
+
+  <adapter 
+     provides="z3c.form.interfaces.IButtonAction"
+     factory=".buttons.SaveButtonAction" />
+
+  <adapter 
+     provides="z3c.form.interfaces.IButtonAction"
+     factory=".buttons.CancelButtonAction" />
+
+  <!-- TextArea widget -->
+  <class class=".textarea.TextAreaWidget">
+    <require
+       permission="zope.Public"
+       interface="z3c.form.interfaces.ITextAreaWidget" />
+  </class>
+  
+  <adapter 
+     for="zope.schema.interfaces.IText
+          ..interfaces.ILayoutFormLayer"
+     factory=".textarea.TextAreaFieldWidget" />
+
+  <!-- templates -->
+  <z3c:template
+     template="form.pt"
+     for="..interfaces.IPageletForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:template
+     template="formadd.pt"
+     for="..interfaces.IPageletAddForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:template
+     template="formedit.pt"
+     for="..interfaces.IPageletEditForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:template
+     template="subform.pt"
+     for="z3c.form.interfaces.ISubForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:template
+     template="formgroup.pt"
+     for="z3c.form.group.Group"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <!-- Error View -->
+  <z3c:template
+     for="z3c.form.interfaces.IErrorViewSnippet"
+     template="error.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <!-- form macros -->
+  <z3c:macro
+     view="..interfaces.IPageletForm"
+     name="form"
+     template="form.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:macro
+     view="z3c.form.interfaces.IForm"
+     name="form-header"
+     macro="header"
+     template="form.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:macro
+     view="z3c.form.interfaces.IForm"
+     name="widget-rows"
+     macro="widget-rows"
+     template="form.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:macro
+     view="z3c.form.interfaces.IForm"
+     name="widget-row"
+     macro="widget-row"
+     template="form.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:macro
+     view="..interfaces.IPageletForm"
+     name="form-buttons"
+     macro="buttons"
+     template="form.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3c:macro
+     view="..interfaces.IPageletAddForm"
+     name="form-buttons"
+     macro="buttons"
+     template="formadd.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+</configure>

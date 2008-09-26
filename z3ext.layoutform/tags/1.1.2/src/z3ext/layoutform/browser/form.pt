@@ -1,0 +1,76 @@
+<div class="z-form z-form-standard">
+  <form action="." method="post" enctype="multipart/form-data" 
+	tal:attributes="method view/method;
+			enctype view/enctype;
+			acceptCharset view/acceptCharset;
+			accept view/accept;
+			action view/action;
+			name view/name;
+			id view/id"
+	metal:define-macro="form">
+
+    <div metal:define-slot="viewspace">
+      <metal:block define-macro="header">
+	<metal:block define-slot="header">
+	  <h1 i18n:translate=""
+	      tal:condition="view/label|nothing"
+	      tal:content="view/label|nothing"
+	      metal:define-slot="heading">Do something</h1>
+	  <div class="z-form-description" 
+	       tal:condition="view/description|nothing"
+	       tal:content="view/description|nothing"></div>
+	</metal:block>
+      </metal:block>
+
+      <div metal:define-slot="extra-info" tal:replace="nothing"></div>
+
+      <div metal:define-slot="main">
+	<div class="z-form-fieldset">
+	  <metal:block define-macro="widget-rows">
+	    <metal:block metal:define-slot="extra-top" />
+
+	    <tal:block tal:repeat="widget view/widgets/values">
+	      <div class="z-form-field" metal:define-macro="widget-row"
+		   tal:define="error widget/error|nothing"
+		   tal:attributes="class python:error and 'z-form-field error' or 'z-form-field'">
+		<label for="widget.id" title="The widget's hint"
+		       tal:attributes="for widget/id;
+				       title widget/field/description"
+		       tal:content="widget/label">The Label</label>
+
+		<span class="z-form-fieldRequired" tal:condition="widget/required">&nbsp;</span>
+
+		<div tal:condition="error" tal:replace="structure error/render">
+		  The Error
+		</div>
+		<div class="z-form-help" tal:content="structure widget/field/description"></div>
+		<div tal:content="structure widget/render">
+		  <input type="text" style="width:100%"/>
+		</div>
+	      </div>
+	    </tal:block>
+	    
+	    <tal:block tal:repeat="group view/groups|python:[]">
+	      <tal:block tal:content="structure python:group.render()" />
+	    </tal:block>
+
+	    <metal:block metal:define-slot="extra-bottom" />
+	  </metal:block>
+	</div>
+      </div>
+      <metal:block define-slot="above-buttons"></metal:block>
+    </div>
+
+    <metal:block define-slot="buttons">
+      <div class="z-form-controls" metal:define-macro="buttons">
+	<span tal:condition="view/actions/values"
+	      metal:define-slot="bottom_buttons">
+	  <hr />
+	  <input tal:repeat="action view/actions/values"
+		 tal:replace="structure action/render" />
+	</span>
+	<metal:block define-slot="bottom-buttons"/>
+      </div>
+    </metal:block>
+  </form>
+</div>
