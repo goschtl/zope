@@ -1,6 +1,8 @@
 import unittest
 import os
 
+import zope.interface
+import zope.component
 import zope.testing
 import zope.component.testing
 import zope.configuration.xmlconfig
@@ -26,7 +28,12 @@ def test_suite():
     filesuites = 'language.txt', 'template.txt'
     testsuites = ()
     
-    globs = dict(render_xss=render_xss, os=os, path=chameleon.html.tests.__path__[0])
+    globs = dict(
+        render_xss=render_xss,
+        interface=zope.interface,
+        component=zope.component,
+        os=os,
+        path=chameleon.html.tests.__path__[0])
     
     chameleon.core.config.DISK_CACHE = False
     
