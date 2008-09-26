@@ -8,7 +8,7 @@ install_requires = [
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
-    'chameleon.core',
+    'chameleon.core >=1.0a3dev',
     ]
 
 setup(name='chameleon.zpt',
