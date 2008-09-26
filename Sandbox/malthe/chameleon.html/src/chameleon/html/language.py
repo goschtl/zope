@@ -180,12 +180,22 @@ class XSSTemplateParser(etree.Parser):
         config.META_NS: {None: MetaElement}}
 
 class DynamicHTMLParser(XSSTemplateParser):
+    slots = attributes = ()
+    
     def __init__(self, filename):
         self.path = os.path.dirname(filename)
+
+        # parse the body at initialization to fill the slots and
+        # attributes lists
+        self.parse(file(filename).read())
         
     def parse(self, body):
         root, doctype = super(DynamicHTMLParser, self).parse(body)
 
+        # reset dynamic identifier lists
+        self.slots = []
+        self.attributes = []
+        
         # process dynamic rules
         links = root.xpath(
             './/xmlns:link[@rel="xss"]', namespaces={'xmlns': config.XHTML_NS})
@@ -208,6 +218,7 @@ class DynamicHTMLParser(XSSTemplateParser):
                 for element in root.xpath(
                     selector.path, namespaces=rule.namespaces):
                     if rule.name:
+                        self.slots.append(rule.name)
                         element.attrib[
                             '{http://namespaces.repoze.org/xss}content'] = \
                             rule.name
@@ -216,6 +227,7 @@ class DynamicHTMLParser(XSSTemplateParser):
                             '{http://namespaces.repoze.org/xss}structure'] = \
                             rule.structure
                     if rule.attributes:
+                        self.attributes.append(rule.attributes)
                         element.attrib[
                             '{http://namespaces.repoze.org/xss}attributes'] = \
                             rule.attributes
