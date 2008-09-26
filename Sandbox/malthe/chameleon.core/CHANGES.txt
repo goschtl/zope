@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0a2 (released 9/26/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Added support for dynamic skip condition. [malthe]
 
 - Fixed bug where an AttributeError would be raised when using the
