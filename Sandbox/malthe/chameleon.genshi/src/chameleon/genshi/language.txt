@@ -435,4 +435,28 @@ py:match
   <BLANKLINE>
   </div>
 
+
+  You can use a loop variable with py:with:
+
+  >>> print render("""\
+  ... <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  ...     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  ... <html xmlns="http://www.w3.org/1999/xhtml"
+  ...       xmlns:py="http://genshi.edgewall.org/">
+  ...   <body>
+  ...     <div py:for="article in [dict(wfstate='new'), dict(wfstate='pending')]">
+  ...       <span py:choose="article['wfstate']"/>
+  ...     </div>
+  ...   </body>
+  ... </html>""")
+  <html>
+    <body>
+      <div>
+        <span/>
+        <span/>
+      </div>
+    </body>
+  </html>
+
+
 .. _py:with specs: http://genshi.edgewall.org/wiki/Documentation/0.4.x/xml-templates.html#py-with
