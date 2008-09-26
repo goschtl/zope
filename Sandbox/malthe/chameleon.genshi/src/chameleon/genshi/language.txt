@@ -436,7 +436,7 @@ py:match
   </div>
 
 
-  You can use a loop variable with py:with:
+  You can use a loop variable with py:choose:
 
   >>> print render("""\
   ... <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
