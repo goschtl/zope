@@ -4,6 +4,10 @@ Changelog
 Head
 ~~~~
 
+- TemplateLoader now checks a default_parser class attribute if no
+  parser is specified. [wichert]
+
+
 1.0a2 (released 9/26/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

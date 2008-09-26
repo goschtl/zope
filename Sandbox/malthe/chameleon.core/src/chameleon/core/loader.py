@@ -23,6 +23,8 @@ class TemplateLoader(object):
         self.search_path = search_path
         self.auto_reload = auto_reload
         self.parser = parser
+        if parser is None:
+            self.parser = getattr(self, 'default_parser', None)
         self.registry = {}
 
     @cache
