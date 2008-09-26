@@ -59,16 +59,18 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
                         "resource directory and a module named "
                         "'static.py'", module_info.getModule())
 
-        # FIXME: This is public, we need to set security on resources ?
-        name = module_info.dotted_name
-        resource_factory = components.DirectoryResourceFactory(
-            name, resource_path)
-        adapts = (IDefaultBrowserLayer,)
-        provides = interface.Interface
+            # FIXME: This is public, we need to set security on resources ?
+            name = module_info.dotted_name
+            resource_factory = components.DirectoryResourceFactory(
+                name, resource_path)
+            adapts = (IDefaultBrowserLayer,)
+            provides = interface.Interface
 
-        config.action(
-            discriminator=('adapter', adapts, provides, name),
-            callable=component.provideAdapter,
-            args=(resource_factory, adapts, provides, name),
-            )
-        return True
+            config.action(
+                discriminator=('adapter', adapts, provides, name),
+                callable=component.provideAdapter,
+                args=(resource_factory, adapts, provides, name),
+                )
+            return True
+
+        return False
