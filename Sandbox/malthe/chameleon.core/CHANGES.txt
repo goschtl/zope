@@ -4,7 +4,8 @@ Changelog
 head
 ~~~~
 
-- Add missing dependency on PDIS_XPath. [wichert]
+- Make lxml a hard dependency for now until the lxml-less logic is stable.
+  [wichert]
 
 1.0a3 (released 9/26/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

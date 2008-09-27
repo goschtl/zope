@@ -7,6 +7,7 @@ install_requires = [
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
+    'lxml>=2.1.1',
     ]
 
 if sys.version_info[:3] < (2,5,0):
