@@ -7,7 +7,6 @@ install_requires = [
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
-    'PDIS_XPath',
     ]
 
 if sys.version_info[:3] < (2,5,0):
