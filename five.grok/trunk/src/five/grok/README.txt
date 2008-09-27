@@ -4,7 +4,8 @@ five.grok
 Overview
 --------
 
-This package is meant to provide all the grok functionalities into Zope 2.
+This package is meant to provide all the grok functionalities into
+Zope 2.
 
 How-to
 ------
@@ -64,6 +65,10 @@ Let's create a view on the GrokVillage.
     ...             cavesInfos.append(caveInfo)
     ...         return cavesInfos
 
+
+Views
+`````
+
 The example above uses a filesystem template. We can also use inline
 templates, like this:
 
@@ -73,7 +78,7 @@ templates, like this:
 
     <<< inlinegrokvillage = grok.PageTemplate(u'Village: <b tal:content="here/id"></b>')
 
-Or, we could specify the render() method explicitly:
+Or, we could specify the ``render()`` method explicitly:
 
     <<< class Cave(SimpleFolder):
     ...
@@ -88,6 +93,10 @@ Or, we could specify the render() method explicitly:
     ...                                 (self.context.id,
     ...                                  self.context.numberOfCaveWomen())
 
+Let's create an add view, and a new content ``CaveWoman``. You can
+provide some actual code in the ``update()`` method which is called
+before ``render()``::
+
     <<< class AddCaveWoman(grok.View):
     ...     grok.context(Cave)
     ...     grok.name(u'cave-woman-add')
@@ -101,7 +110,20 @@ Or, we could specify the render() method explicitly:
     ...         self.context._setObject(id, CaveWoman(name, age, hairType,
     ...                                               size, weight))
 
+A ``CaveWoman`` is defined using an interface::
+
+    <<< from zope.interface import Interface
+    <<< from zope import schema
+
+    <<< class ICaveWoman(Interface):
+    ...     name = schema.TextLine(title=u"Name")
+    ...     age = schema.Int(title=u"Age")
+    ...     hairType = schema.TextLine(title=u"Hair Type")
+    ...     size = schema.Int(title=u"Size")
+    ...     weight = schema.Int(title=u"Weight")
+
     <<< class CaveWoman(grok.Model):
+    ...     grok.implements(ICaveWoman)
     ...
     ...     def __init__(self, name, age, hairType, size,
     ...                  weight):
@@ -111,7 +133,48 @@ Or, we could specify the render() method explicitly:
     ...         self.size = size
     ...         self.weight = weight
 
-    <<< from zope.interface import Interface
+
+Forms
+`````
+
+We are going to define a display form for a ``CaveWoman``, it's going
+to be the default view::
+
+    <<< class Index(grok.DisplayForm):
+    ...     grok.context(CaveWoman)
+
+And the same way an edition form::
+
+    <<< class Edit(grok.EditForm):
+    ...     grok.context(CaveWoman)
+
+
+We can even create custom forms::
+
+    <<< class ISearchWoman(Interface):
+    ...     name = schema.TextLine(title=u"Woman to search")
+
+    <<< class Search(grok.Form):
+    ...     grok.context(Cave)
+    ...
+    ...     form_fields = grok.Fields(ISearchWoman)
+    ...
+    ...     def update(self):
+    ...         # Default search results
+    ...         self.results = []
+    ...
+    ...     @grok.action(u"Search")
+    ...     def search(self, name):
+    ...         # Stupid not efficient search
+    ...         for cave in self.context.objectValues():
+    ...             if cave.id.startswith(name):
+    ...                 self.results.append(cave)
+
+Adapters
+````````
+
+Now, we can create an adapter for our new ``CaveWoman`` content which
+is going to give information her facebook profile::
 
     <<< class ICaveWomanSummarizer(Interface):
     ...
@@ -128,6 +191,13 @@ Or, we could specify the render() method explicitly:
     ...         return {'hair': self.context.hairType,
     ...                 'weight': self.context.weight,
     ...                 'size': self.context.size}
+
+
+Global utility
+``````````````
+
+We can create a local utility. When a ``CaveWoman`` is added, we can
+lookup our utility and use it::
 
     <<< from zope.app.container.interfaces import IObjectAddedEvent
     <<< from zope.component import getUtility
@@ -169,6 +239,12 @@ Or, we could specify the render() method explicitly:
     ...  * Hair Type: %(hair)s
     ...  * Weight: %(weight)s
     ...  * Size: %(size)s""" % profile.info()
+
+
+Test
+````
+
+And finally we can test all created components::
 
     >>> from zope.component import queryMultiAdapter
 
