@@ -1,0 +1,20 @@
+===============================
+Changes in z3c.conditionalviews
+===============================
+
+1.0 (2008-09-27)
+================
+
+- Using IDCTimes instead of IZopeDublinCore because IDCTimes is the actual
+  required interface.
+
+
+1.0b
+====
+
+- Fixed time zone issue in processing `If-Modified` protocol.
+
+0.9
+===
+
+- Initial release.
