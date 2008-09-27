@@ -4,6 +4,7 @@ Changelog
 head
 ~~~~
 
+- Add missing dependency on PDIS_XPath. [wichert]
 
 1.0a3 (released 9/26/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
