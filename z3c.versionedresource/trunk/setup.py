@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.versionedresource',
-    version='0.4.0dev',
+    version='0.4.0',
     author = "Stephan Richter and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Versioned Resources",

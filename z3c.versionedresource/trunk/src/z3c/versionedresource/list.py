@@ -34,24 +34,30 @@ def removeExcludedNames(list):
         if name in list:
             list.remove(name)
 
-def getResources(layerPath, url='http://localhost/'):
-    # Get the layer interface
-    moduleName, layerName = layerPath.rsplit('.', 1)
-    module = __import__(moduleName, {}, {}, [1])
-    layer = getattr(module, layerName)
-    # Now we create a test request with that layer and our custom base URL.
-    request = TestRequest(environ={'SERVER_URL': url})
-    zope.interface.alsoProvides(request, layer)
-    # Next we look up all the resources
-    return tuple(
-        zope.component.getAdapters((request,), interfaces.IVersionedResource))
+def getResources(layerPaths, url='http://localhost/'):
+    resources = ()
+    for layerPath in layerPaths:
+        # Get the layer interface
+        moduleName, layerName = layerPath.rsplit('.', 1)
+        module = __import__(moduleName, {}, {}, ['None'])
+        layer = getattr(module, layerName)
+        # Now we create a test request with that layer and our custom base URL.
+        request = TestRequest(environ={'SERVER_URL': url})
+        zope.interface.alsoProvides(request, layer)
+        # Next we look up all the resources
+        resources += tuple(
+            zope.component.getAdapters(
+                (request,), interfaces.IVersionedResource))
+    return resources
 
 def getResourceUrls(resources):
     paths = []
     for name, res in resources:
         # For file-based resources, just report their URL.
         if not isinstance(res, DirectoryResource):
-            paths.append(res())
+            # Avoid duplicate paths
+            if res() not in paths:
+                paths.append(res())
         # For directory resources, we want to walk the tree.
         baseURL = res()
         path = res.context.path
@@ -62,7 +68,10 @@ def getResourceUrls(resources):
             # Produce a path for the resource
             relativePath = root.replace(path, '')
             for file in files:
-                paths.append(baseURL + relativePath + '/' + file)
+                fullPath = baseURL + relativePath + '/' + file
+                # Avoid duplicate paths
+                if fullPath not in paths:
+                    paths.append(fullPath)
     return paths
 
 def storeResource(dir, name, resource, zip=False):
@@ -93,7 +102,7 @@ def produceResources(options):
     # Run the configuration
     context = xmlconfig.file(options.zcml)
     # Get resource list
-    resources = getResources(options.layer, options.url)
+    resources = getResources(options.layers, options.url)
     # If we only want to list the paths
     if options.listOnly:
         paths = getResourceUrls(resources)
@@ -117,8 +126,7 @@ config = optparse.OptionGroup(
     parser, "Configuration", "Configuration of lookup and reporting parameters.")
 
 config.add_option(
-    '--layer', '-l', action="store", dest='layer',
-    default='zope.interface.Interface',
+    '--layer', '-l', action="append", dest='layers',
     help="""The layer for which to lookup the resources.""")
 
 config.add_option(

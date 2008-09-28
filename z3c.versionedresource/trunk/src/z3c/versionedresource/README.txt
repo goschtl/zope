@@ -412,7 +412,8 @@ This function retrieves all versioned resources from the system for a given
 layer. Optionally a URL can be passed in to alter the resource URLs.
 
   >>> resources = list.getResources(
-  ...     'z3c.versionedresource.tests.test_doc.ITestLayer')
+  ...     ['z3c.versionedresource.tests.test_doc.ITestLayer',
+  ...      'z3c.versionedresource.tests.test_doc.ITestLayer2'])
   >>> sorted(resources)
   [(u'zcml-subdir', <DirectoryResource u'.../testfiles/subdir'>),
    (u'zcml-test.gif', <FileResource u'.../testfiles/test.gif'>)]

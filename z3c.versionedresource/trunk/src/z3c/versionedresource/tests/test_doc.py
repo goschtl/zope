@@ -28,6 +28,9 @@ from z3c.versionedresource import interfaces, resource
 class ITestLayer(IDefaultBrowserLayer):
     pass
 
+class ITestLayer2(IDefaultBrowserLayer):
+    pass
+
 class ResourceFactory(object):
 
     def __init__(self, request):
