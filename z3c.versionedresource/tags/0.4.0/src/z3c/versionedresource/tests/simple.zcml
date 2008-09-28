@@ -1,0 +1,18 @@
+<configure
+    xmlns:browser="http://namespaces.zope.org/browser"
+    package="z3c.versionedresource">
+
+  <include file="meta.zcml" />
+
+  <browser:versionedResource
+      name="zcml-test.gif"
+      image="tests/testfiles/test.gif"
+      layer=".tests.test_doc.ITestLayer"
+      />
+
+  <browser:versionedResourceDirectory
+      name="zcml-subdir"
+      directory="tests/testfiles/subdir"
+      layer=".tests.test_doc.ITestLayer"
+      />
+</configure>

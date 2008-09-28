@@ -1,0 +1,37 @@
+=======
+CHANGES
+=======
+
+Version 0.4.0 (2008-09-27)
+--------------------------
+
+* Feature: Add ability to specify multiple layers.
+
+Version 0.3.0 (2008-08-09)
+--------------------------
+
+* Feature: Do not fail, if a directory already exists.
+
+* Feature: Print an error before exiting with exit code 1.
+
+* Feature: Files in a directory ending in *.html are now converted to regular
+  file resources and not as page template resources.
+
+Version 0.2.0 (2008-08-09)
+--------------------------
+
+- Feature: List script can now also create directory with all resources in
+  it. There is also an option to store the resources in gzip format.
+
+- Bug: Fixed test coverage to 100%.
+
+Version 0.1.0 (2008-08-04)
+--------------------------
+
+- Initial Release
+
+  * Version Manager manages the current version of resources.
+
+  * Implemented custom resources and their directives.
+
+  * Provided script to extract all versioned resources and produces their URLs.
