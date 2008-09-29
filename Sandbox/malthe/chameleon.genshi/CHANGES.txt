@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Head
-~~~~
+1.0a2 (released 9/29/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Fixed scoping errors when using ``py:choose`` inside a loop. [malthe]
 
