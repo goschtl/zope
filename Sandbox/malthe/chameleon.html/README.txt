@@ -12,11 +12,11 @@ The XSS rule language uses a CSS-compliant syntax to let you match HTML
 elements using CSS selectors and set up dynamic content
 definitions.
 
-To associate a template with a rule file, use the <link> tag:
+To associate a template with a rule file, use the <link> tag::
 
   <link rel="xss" type="text/xss" src="rules.xss" />
 
-XSS files contain rules like the following:
+XSS files contain rules like the following::
 
   html > head > title {
     name: document-heading;
