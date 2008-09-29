@@ -109,7 +109,7 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     print 'Selenium test result:', results['result']
     if results['result'] != 'passed':
         print
-        print results['log']
+        print results['log'].replace('\r', '')
         print
     print '%s tests passed, %s tests failed.' % (
               results['numTestPasses'], results['numTestFailures'])
