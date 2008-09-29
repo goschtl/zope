@@ -67,7 +67,7 @@ class CodeIO(BufferIO):
     annotations and temporary variables."""
 
     t_prefix = '_tmp'
-    v_prefix = '_var'
+    v_prefix = '_tmpv'
 
     def __init__(self, symbols=None, encoding=None,
                  indentation=0, indentation_string="\t"):
@@ -83,8 +83,13 @@ class CodeIO(BufferIO):
         self.annotations = {}
         self._variables = {}
         self.t_counter = 0
+        self.v_counter = 0
         self.l_counter = 0
 
+    def new_var(self):
+        self.v_counter += 1
+        return "%s%d" % (self.v_prefix, self.v_counter)
+        
     def save(self):
         self.t_counter += 1
         return "%s%d" % (self.t_prefix, self.t_counter)
