@@ -31,7 +31,7 @@ Loading zcml configuration
   ...
   ... </configure>""")
 
-  >>> from zope import component
+  >>> from zope import component, interface
   >>> from z3ext.controlpanel.interfaces import IConfiglet
 
   >>> installer = component.getUtility(IConfiglet, 'product')

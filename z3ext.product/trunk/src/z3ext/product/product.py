@@ -20,6 +20,7 @@ from BTrees.OOBTree import OOBTree
 from zope import interface, event
 from zope.component import getSiteManager
 from zope.component import getUtility, queryUtility, getUtilitiesFor
+from zope.app.component.interfaces import ILocalSiteManager
 
 from z3c.configurator import configure
 
@@ -73,6 +74,10 @@ class Product(object):
         registry = getattr(z3ext.product, self.__product_name__)
         sm.__bases__ = (registry,) + sm.__bases__
 
+        if ILocalSiteManager.providedBy(sm):
+            for subsm in sm.subs:
+                subsm.__bases__ = subsm.__bases__
+
         event.notify(interfaces.ProductInstalledEvent(self.__product_name__, self))
 
         self.update()
@@ -103,6 +108,10 @@ class Product(object):
         bases = list(sm.__bases__)
         bases.remove(registry)
         sm.__bases__ = tuple(bases)
+
+        if ILocalSiteManager.providedBy(sm):
+            for subsm in sm.subs:
+                subsm.__bases__ = subsm.__bases__
 
         event.notify(
             interfaces.ProductUninstalledEvent(self.__product_name__, self))
