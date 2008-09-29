@@ -1,8 +1,8 @@
 Changelog
 =========
 
-head
-~~~~
+1.0a4 (released 9/29/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Added method to generate unscoped temporary variables.  [malthe]
 
