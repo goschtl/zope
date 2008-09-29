@@ -1,13 +1,8 @@
+import sys
 import unittest
-from chameleon.genshi import language
-from chameleon.core.testing import compile_template
-
+from chameleon.genshi.tests.test_doctests import render_template
 
 class UnicodeTortureTests(unittest.TestCase):
-
-    def render(self, body, **kwargs):
-        parser = language.Parser()
-        return compile_template(parser, body, **kwargs)
 
     def test_torture(self):
         body = """\
@@ -28,9 +23,8 @@ class UnicodeTortureTests(unittest.TestCase):
         </html>"""
 
         c = unicode('\xc2\xa9', 'utf-8')
-        self.assertEqual(self.render(body, foo=c), expected)
+        self.assertEqual(render_template(body, foo=c), expected)
 
 def test_suite():
-    import sys
     return unittest.findTestCases(sys.modules[__name__])
 
