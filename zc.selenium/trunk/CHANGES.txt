@@ -9,7 +9,7 @@ CHANGES
 - Feature: Updated to the latest Selenium Core release 0.8.3.
 
 - Feature: Added a `--base-url` option to the selenium script, so that one is
-  not depndent to include the default layer in the default skin. (Who does
+  not dependent to include the default layer in the default skin. (Who does
   this? What a security hole!)
 
 - Bug: Added documentation on how to setup `zc.selenium`.
