@@ -439,21 +439,28 @@ py:match
   You can use a loop variable with py:choose:
 
   >>> print render("""\
-  ... <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  ...     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
   ... <html xmlns="http://www.w3.org/1999/xhtml"
   ...       xmlns:py="http://genshi.edgewall.org/">
   ...   <body>
   ...     <div py:for="article in [dict(wfstate='new'), dict(wfstate='pending')]">
-  ...       <span py:choose="article['wfstate']"/>
+  ...       <span py:choose="article['wfstate']">
+  ...           <span py:when="'pending'">Pending</span>
+  ...           <span py:when="'new'">New</span>
+  ...       </span>
   ...     </div>
   ...   </body>
   ... </html>""")
   <html>
     <body>
       <div>
-        <span/>
-        <span/>
+        <span>
+            <span>New</span>
+        </span>
+      </div>
+      <div>
+        <span>
+            <span>Pending</span>
+        </span>
       </div>
     </body>
   </html>

@@ -112,7 +112,7 @@ class GenshiElement(translation.Element):
         stream = self.stream
         choose_expression = self._pull_attribute(utils.py_attr('choose'))
         if choose_expression is not None:
-            choose_variable = stream.save()
+            choose_variable = stream.new_var()
             
             if choose_expression:
                 self._add_define(choose_variable, choose_expression)
@@ -125,7 +125,7 @@ class GenshiElement(translation.Element):
                 namespaces={'py': config.PY_NS}):
 
                 expression = element._pull_attribute(utils.py_attr('when'))
-                variable = stream.save()
+                variable = stream.new_var()
                 variables.append(variable)
 
                 # add definition to ancestor

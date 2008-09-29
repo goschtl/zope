@@ -4,8 +4,9 @@ Changelog
 Head
 ~~~~
 
-- Add a specialized TemplateLoader. [wichert]
+- Fixed scoping errors when using ``py:choose`` inside a loop. [malthe]
 
+- Add a specialized TemplateLoader. [wichert]
 
 
 1.0a1 (released 9/24/2008)
