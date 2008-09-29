@@ -35,7 +35,7 @@ a demo-storage database.  Here's an example buildout::
   recipe = zc.zope3recipes:instance
   application = application
   zope.conf =
-    devmode on 
+    devmode on
     <zodb>
       <demostorage>
       </demostorage>
@@ -64,8 +64,8 @@ zc.selenium. The selenium.zcml used in this example look like this::
     <include package="zope.app.server" />
     <include package="zc.selenium" />
 
-    <adapter 
-       factory="zc.extjs.selenium.SeleniumTests" 
+    <adapter
+       factory="zc.extjs.selenium.SeleniumTests"
        name="zc.extjs.tests.SeleniumTests.html"
        permission="zope.Public"
        />
@@ -79,7 +79,7 @@ the test runner currently requires that the zope.server server is used!
 The buildout defines an instance with the demo part.  Two things to
 note about this:
 
-1. A demo storage is used.  This is important because it guarentees we
+1. A demo storage is used.  This is important because it guarantees we
    have the same baseline for each test.
 
 2. We have the name "http0" for the server.  This name is used by the
@@ -132,4 +132,4 @@ I think this could and should be cleaned up a bit in the future:
 - Have the test runner be a control script that simply starts the
   instance as a sub-process, rather than a thread.
 
-- Find a better way to control the port used.  
+- Find a better way to control the port used.

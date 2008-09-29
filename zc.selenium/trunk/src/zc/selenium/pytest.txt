@@ -1,7 +1,7 @@
 Writing Selenium Tests in Python
 ================================
 
-HTML is a cumbersome format for writting tests.  Selenium's test
+HTML is a cumbersome format for writing tests.  Selenium's test
 format, HTML rows, leads to lots of extra boilerplate that is a pain to
 manage and that distracts from the actual test content.
 
@@ -12,7 +12,7 @@ go from source like this::
    <td>verifyLocation</td>
    <td>/FIPS/home/fred/addIntelProductProcessFromHomePage.html</td>
    <td>&nbsp;</td>
-  </tr> 
+  </tr>
 
 to source like this::
 
@@ -30,8 +30,8 @@ The Python format provides other benefits:
 
 - Organization of tests into Python methods.
 
-- The option of using Python scripting (fuctions, loops, etc.) to improve test
-  structuring.
+- The option of using Python scripting (functions, loops, etc.) to improve
+  test structuring.
 
 - Automatic test discovery.  Tests don't have to be put in a central
   place and hand knit into the test suite.
@@ -66,7 +66,7 @@ zc.selenium.pytest.Test:
     ...
     ...     def test2(self):
     ...         """Show something
-    ...         """    
+    ...         """
     ...         s = self.selenium
     ...         s.foo('bar')
     ...
@@ -174,16 +174,16 @@ HTML table:
 There are a number of things to note about this example.
 
 - Each test class defines a single Selenium test, ultimately a
-  Selenium table. 
+  Selenium table.
 
-- Tests are orgaized into test methods.  Methods with names that start
+- Tests are organized into test methods.  Methods with names that start
   with "test" are called automatically in name order.  Other methods
   can be defined for whatever purpose.
 
 - Methods emit Selenium commands by calling methods on self.selenium.
   The method names become Selenium commands.  Methods take one or 2
   string arguments.  The pytest framework will accept any method name
-  a blindly create a Selenium statement.  In this example, I used
+  and blindly create a Selenium statement.  In this example, I used
   invalid Selenium commands, "foo" and "splat" to illustrate
   this. Ultimately, we're just generating HTML rows. :)
 
@@ -191,11 +191,11 @@ There are a number of things to note about this example.
   giving the file name and line number.  (The details of the generated
   comments are not guaranteed, and are strictly for human consumption.)
 
-- Selenium push and pop cals are generated at the beginning and end of
+- Selenium push and pop calls are generated at the beginning and end of
   the test and for each test method.  This allows the test to be
   independent from other tests and for test methods to be independent
   from one another.  This behavior can be overridden, as we'll see
-  later. 
+  later.
 
 - The test doc string is used to create the test documentation:
 
@@ -214,7 +214,7 @@ It's also possible to control what frame is used as the source for
 line number and filename reporting by using the `frame` keyword
 argument to the command function.  This can be used to allow helper
 methods to report the "test logic" location of caller rather than
-cluttering the test with it's own location.
+cluttering the test with its own location.
 
     >>> import sys
     >>> class FrameSample(zc.selenium.pytest.Test):
@@ -287,14 +287,14 @@ Open calls
 
 Note that the example above is very generic.  It uses generic method
 names like "foo" and "splat".  In practice, you'll need to use
-functions from the selenium API.  Whe using the open API, you'll want
+functions from the selenium API.  When using the open API, you'll want
 to pass a server-relative path, as in::
 
   s.open('/foo/bar.html')
 
 rather than::
 
-  s.open('http://localhost/foo/bar.html')
+  s.open('http://localhost/foo/bar.html')  # <-- don't do this
 
 The test runner will set the Selenium URL base to the server it
 starts.
@@ -468,7 +468,7 @@ Some things to note, in addition to the fact that our set-up and
 tear-down methods were called:
 
 - If a set-up or tear-down method has a doc string, it is output as a
-  comment. 
+  comment.
 
 - The selenium object has a variable, server, that can be used to
   generate URLs, as illustrated by the testx method.
@@ -486,8 +486,8 @@ To get our tests to be used in the Selenium test suite, we need to
 register them as request adapters.  We would normally use ZCML like
 the following::
 
-    <adapter 
-        factory=".Second" 
+    <adapter
+        factory=".Second"
         name="some-url-for-the-second-test.html"
         permission="zope.Public"
         />
