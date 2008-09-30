@@ -22,22 +22,24 @@ class ResourceInclusion(object):
     """
     implements(interfaces.IResourceInclusion)
     
-    def __init__(self, library, relpath, depends=None, rollups=None, **kw):
+    def __init__(self, library, relpath, depends=None,
+                 supersedes=None, eager_superseder=False, **kw):
         """Create a resource inclusion
 
-        library - the library this resource is in
-        relpath - the relative path from the root of the library indicating
-                  the actual resource
-        depends - optionally, a list of resources that this resource depends
-                  on. Entries in the list can be
-                  ResourceInclusions or strings indicating the path.
-                  In case of a string, a ResourceInclusion assumed based
-                  on the same library as this inclusion.
-        rollups - optionally, a list of resources that this resource can
-                  be rolled up into. Entries in the list can be
-                  ResourceInclusions or strings indicating the path.
-                  In case of a string, a ResourceInclusion assumed based
-                  on the same library as this inclusion.
+        library  - the library this resource is in
+        relpath  - the relative path from the root of the library indicating
+                   the actual resource
+        depends  - optionally, a list of resources that this resource depends
+                   on. Entries in the list can be
+                   ResourceInclusions or strings indicating the path.
+                   In case of a string, a ResourceInclusion assumed based
+                   on the same library as this inclusion.
+        supersedes - optionally, a list of resources that this resource
+                   supersedes as a rollup resource. If all these
+                   resources are required, the superseding resource
+                   instead will show up.
+        eager_superseder - even if only part of the requirements are
+                           met, supersede anyway
         keyword arguments - different paths that represent the same
                   resource in different modes (debug, minified, etc),
                   or alternatively a fully specified ResourceInclusion.
@@ -48,17 +50,35 @@ class ResourceInclusion(object):
         assert not isinstance(depends, basestring)
         depends = depends or []
         self.depends = normalize_inclusions(library, depends)
-    
-        assert not isinstance(rollups, basestring)
-        rollups = rollups or []
-        self.rollups = normalize_inclusions(library, rollups)
+        
+        self.rollups = []
 
         normalized_modes = {}
         for mode_name, inclusion in kw.items():
             normalized_modes[mode_name] = normalize_inclusion(
                 library, inclusion)
         self.modes = normalized_modes
+ 
+        assert not isinstance(supersedes, basestring)
+        self.supersedes = supersedes or []
+        self.eager_superseder = eager_superseder
         
+        # create a reference to the superseder in the superseded inclusion
+        for inclusion in self.supersedes:
+            inclusion.rollups.append(self)
+        # also create a reference to the superseding mode in the superseded
+        # mode
+        # XXX what if mode is full-fledged resource inclusion which lists
+        # supersedes itself?
+        for mode_name, mode in self.modes.items():
+            for inclusion in self.supersedes:
+                superseded_mode = inclusion.mode(mode_name)
+                # if there is no such mode, let's skip it
+                if superseded_mode is inclusion:
+                    continue
+                mode.supersedes.append(superseded_mode)
+                superseded_mode.rollups.append(mode)
+    
     def __repr__(self):
         return "<ResourceInclusion '%s' in library '%s'>" % (
             self.relpath, self.library.name)
@@ -151,31 +171,38 @@ def remove_duplicates(inclusions):
     return result
 
 def consolidate(inclusions):
-    # first map rollup -> list of inclusions that are in this rollup
-    rollup_to_inclusions = {}   
+    # keep track of rollups: rollup key -> set of inclusion keys
+    potential_rollups = {}
     for inclusion in inclusions:
         for rollup in inclusion.rollups:
-            rollup_to_inclusions.setdefault(rollup.key(), []).append(
-                inclusion)
+            s = potential_rollups.setdefault(rollup.key(), set())
+            s.add(inclusion.key())
 
-    # now replace inclusion with rollup consolidated biggest amount of
-    # inclusions, or keep inclusion if no such rollup exists
+    # now go through inclusions, replacing them with rollups if
+    # conditions match
     result = []
     for inclusion in inclusions:
-        potential_rollups = []
+        eager_superseders = []
+        exact_superseders = []
         for rollup in inclusion.rollups:
-            potential_rollups.append((len(rollup_to_inclusions[rollup.key()]),
-                                      rollup))
-        if not potential_rollups:
-            # no rollups at all
-            result.append(inclusion)
-            continue
-        sorted_rollups = sorted(potential_rollups)
-        amount, rollup = sorted_rollups[-1]
-        if amount > 1:
-            result.append(rollup)
+            s = potential_rollups[rollup.key()]
+            if rollup.eager_superseder:
+                eager_superseders.append(rollup)
+            if len(s) == len(rollup.supersedes):
+                exact_superseders.append(rollup)
+        if eager_superseders:
+            # use the eager superseder that rolls up the most
+            eager_superseders = sorted(eager_superseders,
+                                       key=lambda i: len(i.supersedes))
+            result.append(eager_superseders[-1])
+        elif exact_superseders:
+            # use the exact superseder that rolls up the most
+            exact_superseders = sorted(exact_superseders,
+                                       key=lambda i: len(i.supersedes))
+            result.append(exact_superseders[-1])
         else:
-            result.append(inclusion)
+            # nothing to supersede resource so use it directly
+            result.append(inclusion)                
     return result
 
 def sort_inclusions_by_extension(inclusions):
@@ -186,11 +213,7 @@ def sort_inclusions_by_extension(inclusions):
     return sorted(inclusions, key=key)
 
 def sort_inclusions_topological(inclusions):
-    """Sort inclusions by dependency.
-
-    Note that this is not actually used in the system, but can be used
-    to resort inclusions in case sorting order is lost - or if the
-    assumptions in this library turn out to be incorrect.
+    """Sort inclusions by dependency and supersedes.
     """
     dead = {}
     result = []
@@ -207,6 +230,8 @@ def _visit(inclusion, result, dead):
     dead[inclusion.key()] = True
     for depend in inclusion.depends:
         _visit(depend, result, dead)
+    for depend in inclusion.supersedes:
+        _visit(depend ,result, dead)
     result.append(inclusion)
 
 def render_css(url):
@@ -271,8 +296,10 @@ def generate_code(**kw):
             depends_s = ', depends=[%s]' % ', '.join(
                 [inclusion_to_name[d.key()] for d in inclusion.depends])
             s += depends_s
-        if inclusion.rollups:
-            s += ', ' + _generate_inline_rollups(inclusion)
+        if inclusion.supersedes:
+            supersedes_s = ', supersedes=[%s]' % ', '.join(
+                [inclusion_to_name[i.key()] for i in inclusion.supersedes])
+            s += supersedes_s
         if inclusion.modes:
             items = []
             for mode_name, mode in inclusion.modes.items():
@@ -287,39 +314,9 @@ def generate_code(**kw):
     return '\n'.join(result)
 
 def generate_inline_inclusion(inclusion, associated_inclusion):
-    if (inclusion.library.name == associated_inclusion.library.name and
-        not inclusion.rollups):
+    if inclusion.library.name == associated_inclusion.library.name:
         return "'%s'" % inclusion.relpath
     else:
-        s = "ResourceInclusion(%s, '%s'" % (inclusion.library.name,
-                                            inclusion.relpath)
-        if inclusion.rollups:
-            s += ', ' + _generate_inline_rollups(inclusion)
-        s += ')'
-        return s
-
-def _generate_inline_rollups(inclusion):
-    return 'rollups=[%s]' % ', '.join(
-        [generate_inline_inclusion(r, inclusion)
-         for r in inclusion.rollups])
-        
-def generate_inclusion_name(inclusion, used_names):
-    rest, fullname = os.path.split(inclusion.relpath)
-    name, ext = os.path.splitext(fullname)
-    if name not in used_names:
-        used_names.add(name)
-        return name
-    name = name + ext
-    name = name.replace('.', '_')
-    if name not in used_names:
-        used_names.add(name)
-        return name
-    i = 0
-    while True:
-        name = name + str(i)
-        if name not in used_names:
-            used_names.add(name)
-            return name
-    assert False, "Not possible to generate a unique name!"
-
+        return "ResourceInclusion(%s, '%s')" % (inclusion.library.name,
+                                                inclusion.relpath)
     
