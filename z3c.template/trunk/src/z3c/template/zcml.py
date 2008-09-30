@@ -51,10 +51,10 @@ class ITemplateDirective(zope.interface.Interface):
         description = u"""
             The macro to be used.
             This allows us to define different macros in one template.
-            The template designer can now create hole site, the
+            The template designer can now create a whole site, the
             ViewTemplate can then extract the macros for single viewlets
             or views.
-            If no macro is given the hole template is used for rendering.
+            If no macro is given the whole template is used for rendering.
             """,
         default = u'',
         required = False,
