@@ -12,6 +12,9 @@ CHANGES
   not dependent to include the default layer in the default skin. (Who does
   this? What a security hole!)
 
+- Feature: Added a `-t` option to filter selenium tests by regexps.  You can
+  also specify multiple `-t` options.
+
 - Bug: Added documentation on how to setup `zc.selenium`.
 
 - Bug: Allow wsgi option to work with python 2.5

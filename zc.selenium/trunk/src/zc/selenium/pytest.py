@@ -18,6 +18,7 @@ $Id: pytest.py 13165 2006-08-14 22:33:23Z fred $
 import os.path
 import sys
 import urlparse
+import re
 from xml.sax.saxutils import escape
 
 import zope.publisher.interfaces.browser
@@ -26,16 +27,57 @@ from zope import component, interface
 
 
 class ISeleniumTest(zope.publisher.interfaces.browser.IBrowserPublisher):
-    """A page that is a selenium test
-    """
+    """A page that is a selenium test."""
 
     def __call__():
-        """Return the selenium test
-        """
+        """Return the selenium test as an HTML string."""
+
+
+PATTERNS = ()
+
+
+def selectTestsToRun(patterns):
+    """Filter the Selenium tests in the test suite.
+
+    Only tests with names matching any of the regular expressions in the
+    list of patterns will be run.
+
+    selectTestsToRun([]) removes any filtering.
+    """
+    global PATTERNS
+    PATTERNS = patterns
+
+
+def matchesAnyPattern(name, patterns):
+    """Check if a test name matches any of the patterns.
+
+        >>> matchesAnyPattern('foobar', ['ab', 'ob'])
+        True
+        >>> matchesAnyPattern('foobar', ['bo', 'bu'])
+        False
+
+    The patterns are regular expressions
+
+        >>> matchesAnyPattern('foobar', ['^f.*ar$'])
+        True
+
+    If the pattern list is empty, returns True
+
+        >>> matchesAnyPattern('foobar', [])
+        True
+
+    """
+    for pattern in patterns:
+        if re.search(pattern, name):
+            return True
+    return not patterns
+
 
 def suite(request):
-    tests = [item for item in component.getAdapters([request], ISeleniumTest)]
-    tests.sort()
+    tests = sorted(component.getAdapters([request], ISeleniumTest))
+    if PATTERNS:
+        tests = [(name, test) for name, test in tests
+                 if matchesAnyPattern(name, PATTERNS)]
     return '\n'.join([
         ('<tr><td><a href="/@@/%s">%s</a></td></tr>' % (
              name,

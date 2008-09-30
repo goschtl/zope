@@ -29,6 +29,8 @@ import wsgiref.simple_server
 
 from zope.testing import testrunner
 
+from zc.selenium.pytest import selectTestsToRun
+
 # Compute a default port; this is simple and doesn't ensure that the
 # port is available, but does better than just hardcoding a port
 # number.  The goal is to avoid browser cache effects due to resource
@@ -168,6 +170,8 @@ def parseOptions():
     parser.add_option('-u', '--base-url', dest='base_url',
                       default='http://localhost:%(port)s/',
                       help='The base URL of the Zope site (may contain skin).')
+    parser.add_option('-t', '--test', action="append", dest='tests',
+                      help='specify tests to run')
     parser.add_option(
         '--coverage', action="store", type='string', dest='coverage',
         help="""\
@@ -199,6 +203,8 @@ def main():
     options = parseOptions()
     if options.random_port:
         options.port = random_port()
+
+    selectTestsToRun(options.tests)
 
     runner = run_zope
     if options.wsgi_app:

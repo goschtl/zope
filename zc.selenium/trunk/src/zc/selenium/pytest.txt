@@ -508,3 +508,17 @@ compute rows for the test suite:
 For each test, a row is output with a link to the test resource and a
 link title computed from the test doc string.  The tests are output in
 adapter (resource) name order.
+
+You can specify a test filter
+
+    >>> zc.selenium.pytest.selectTestsToRun(['first'])
+    >>> print zc.selenium.pytest.suite(TestRequest())
+    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+
+or reset it
+
+    >>> zc.selenium.pytest.selectTestsToRun([])
+    >>> print zc.selenium.pytest.suite(TestRequest())
+    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@/second.html">My second test</a></td></tr>
+

@@ -22,9 +22,11 @@ from zope.testing import doctest
 
 
 def test_suite():
-    return doctest.DocFileSuite(
-        'pytest.txt',
-        optionflags=(doctest.ELLIPSIS | doctest.REPORT_NDIFF))
+    return unittest.TestSuite([
+        doctest.DocFileSuite('pytest.txt',
+                    optionflags=doctest.ELLIPSIS|doctest.REPORT_NDIFF),
+        doctest.DocTestSuite('zc.selenium.pytest'),
+    ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
