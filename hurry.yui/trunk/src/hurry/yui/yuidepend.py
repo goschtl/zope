@@ -24,29 +24,30 @@ def convert_to_inclusions(d):
         name = normalize_name(name)
         inclusion_map[name] = ResourceInclusion(yui,
                                                 deminize(value['path']))
-
-    # fix up dependency structure, rollups
+                
+    # fix up dependency structure
+    # XXX note that this doesn't establish proper rollup backreferences
+    # but this doesn't matter as we're just going to generate the
+    # code that does...
     for name, value in d.items():
         name = normalize_name(name)
         inclusion = inclusion_map[name]
-        require_inclusions = []
+
         for require in value.get('requires', []):
             require = normalize_name(require)
-            require_inclusions.append(inclusion_map[require])
-        inclusion.depends = require_inclusions
-        rollup_inclusions = []
-        for rollup_name in value.get('supersedes', []):
-            rollup_name = normalize_name(rollup_name)
-            r = inclusion_map[rollup_name]
-            rollup_inclusion = ResourceInclusion(
-                yui, r.relpath)
-            rollup_inclusions.append(rollup_inclusion)
-        inclusion.rollups = rollup_inclusions
-        mode_inclusions = {}
-        for mode_name, path in get_modes(inclusion.relpath).items():
-            mode_inclusions[mode_name] = ResourceInclusion(
-                yui, path) # XXX rollups
-        inclusion.modes = mode_inclusions
+            inclusion.depends.append(inclusion_map[require])
+
+        for supersede_name in value.get('supersedes', []):
+            orig_supersede_name = supersede_name
+            supersede_name = normalize_name(supersede_name)
+            r = inclusion_map[supersede_name]
+            # only supersede things that don't supersede themselves
+            if not d[orig_supersede_name].get('supersedes'):
+                inclusion.supersedes.append(r)
+
+        for mode_name in get_modes(inclusion):
+            inclusion.modes[mode_name] = mode_inclusion = convert_to_mode(
+                inclusion, mode_name)
         
     # now generate code
     print generate_code(**inclusion_map)
@@ -60,15 +61,27 @@ def deminize(path):
         rest = rest[:-len('-min')]
     return rest + ext
 
-def get_modes(path):
-    rest, ext = os.path.splitext(path)
-    if ext == '.css':
-        return {'minified': rest + '-min' + ext}
-    elif ext == '.js':
-        return {'minified': rest + '-min' + ext,
-                'debug': rest + '-debug' + ext}
+def convert_to_mode(inclusion, mode):
+    rest, ext = os.path.splitext(inclusion.relpath)
+    if mode == 'minified':
+        result = ResourceInclusion(inclusion.library,
+                                   rest + '-min' + ext)
+    elif mode == 'debug':
+        result = ResourceInclusion(inclusion.library,
+                                   rest + '-debug' + ext)
     else:
-        return {}
+        result = inclusion
+        
+    return result
+
+def get_modes(inclusion):
+    ext = inclusion.ext()
+    if ext == '.css':
+        return ['minified']
+    elif ext == '.js':
+        return ['minified', 'debug']
+    else:
+        return []
     
 def sorted_dependencies(d):
     """Given dictionary created sorted list of items.
