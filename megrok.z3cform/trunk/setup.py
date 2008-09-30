@@ -14,7 +14,7 @@ install_requires = [
 # The grok dependency is not added explicitly, so we can factor out a
 # version of this package for Zope 2 which is not going to install
 # grok. But we want the dependency to run tests.
-test_requires = install_requires + ['grok',]
+test_requires = install_requires + ['grok >= 0.14',]
 
 setup(name='megrok.z3cform',
       version=version,
