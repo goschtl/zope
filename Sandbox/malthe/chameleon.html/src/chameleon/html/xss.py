@@ -3,10 +3,10 @@ import chameleon.core.config
 
 class Element(object):
     def __init__(self, selector, namespaces, name="",
-                 attributes=None, structure=False, **kwargs):
+                 attributes=None, structure=False, mode='content', **kwargs):
         if kwargs:
             for name in kwargs:
-                raise ValueError("Unknown property: " % name)
+                raise ValueError("Unknown property: %s" % repr(name))
         self.namespaces = namespaces
         self.selector = selector
         self.name = name
