@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Template is invalidated when XSS-files are modified. [malthe]
+
 - Added resource rebase support. [malthe]
 
 

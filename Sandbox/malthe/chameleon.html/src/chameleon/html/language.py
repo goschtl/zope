@@ -187,6 +187,7 @@ class DynamicHTMLParser(XSSTemplateParser):
 
         # parse the body at initialization to fill the slots and
         # attributes lists
+        self.file_dependencies = []
         self.parse(file(filename).read())
         
     def parse(self, body):
@@ -211,6 +212,9 @@ class DynamicHTMLParser(XSSTemplateParser):
                 raise ValueError(
                     "File not found: %s" % repr(href))
 
+            # add to file dependencies
+            self.file_dependencies.append(filename)
+                        
             # parse and apply rules
             rules = parse_xss(filename)
             for rule in rules:
@@ -259,5 +263,5 @@ class DynamicHTMLParser(XSSTemplateParser):
                     element.insert(index, comment)
                     comment.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'true'
                     comment.text = text
-                    
+
         return root, doctype
