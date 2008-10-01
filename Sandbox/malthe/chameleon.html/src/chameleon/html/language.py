@@ -223,9 +223,31 @@ class DynamicHTMLParser(XSSTemplateParser):
                     selector.path, namespaces=rule.namespaces):
                     if rule.name:
                         self.slots.append(rule.name)
-                        element.attrib[
-                            '{http://namespaces.repoze.org/xss}content'] = \
-                            rule.name
+                               
+                        if rule.mode == 'content':
+                            element.attrib[
+                                '{http://namespaces.repoze.org/xss}content'] = \
+                                rule.name
+                        elif rule.mode == 'append':
+                            new = element.makeelement(
+                                utils.xhtml_attr('div'))
+                            new.attrib.update(
+                                {'{http://namespaces.repoze.org/xss}content': rule.name,
+                                 '{http://namespaces.repoze.org/xss}omit': 'true'})
+                            element.append(new)
+                            element = new
+                        elif rule.mode == 'prepend':
+                            new = element.makeelement(
+                                utils.xhtml_attr('div'))
+                            new.attrib.update(
+                                {'{http://namespaces.repoze.org/xss}content': rule.name,
+                                 '{http://namespaces.repoze.org/xss}omit': 'true'})
+                            element.insert(0, new)
+                            element = new
+                        else:
+                            raise ValueError(
+                                "Unsupported insertion mode: %s" % rule.mode)
+                            
                     if rule.structure:
                         element.attrib[
                             '{http://namespaces.repoze.org/xss}structure'] = \

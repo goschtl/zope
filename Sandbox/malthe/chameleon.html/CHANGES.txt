@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Added 'append' and 'prepend' insertion modes. [malthe]
+
 - Template is invalidated when XSS-files are modified. [malthe]
 
 - Added resource rebase support. [malthe]

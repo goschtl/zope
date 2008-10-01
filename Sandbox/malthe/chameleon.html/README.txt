@@ -22,6 +22,7 @@ XSS files contain rules like the following::
     name: document-heading;
     structure: true;
     attributes: document-attributes;
+    mode: content;
   }
 
 This rule will associate the <title> tag with the dynamic content
@@ -31,6 +32,15 @@ the dynamic attributes bound to the "document-attributes" identifier.
 See the file ``template.txt`` within the package for documentation on
 how to render templates and provide dynamic content and attributes.
 
+Syntax
+------
+
+Brief explanation of the properties in the XSS format::
+
+ @name        dynamic content slot name
+ @structure   if set to true, inserts content without escaping
+ @attributes  inserts dynamic attributes into tag
+ @mode        one of ('content', 'append', 'prepend') 
 
 Resource rebase functionality
 -----------------------------

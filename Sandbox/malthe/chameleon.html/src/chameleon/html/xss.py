@@ -10,6 +10,7 @@ class Element(object):
         self.namespaces = namespaces
         self.selector = selector
         self.name = name
+        self.mode = mode
         self.attributes = attributes
         self.structure = structure
 
