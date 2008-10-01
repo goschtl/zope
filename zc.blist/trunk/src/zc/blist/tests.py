@@ -257,6 +257,9 @@ class Canary(BigOperationCanary):
 
 
 class CanaryTestCase(unittest.TestCase):
+
+    level = 2
+
     def test_canary(self):
         c = Canary([])
         c()
