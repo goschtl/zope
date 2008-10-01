@@ -12,64 +12,74 @@
         Document actions (print, sendto etc)
     </div>
 
-    <h1 class="documentFirstHeading">Documentation for Grok</h1>
-        
-    <div style="background: #ffffff; float: right; padding: 0 0 1em 2em;">
-    <img src="#" alt=""
-        tal:attributes="src string:${portal_url}/grok-caveman.png" />
+    <h1 class="documentFirstHeading">Official Grok Documentation</h1>
+    
+    <p>
+    The <a href="http://grok.zope.org/doc/current/">Official Grok Documentation</a>
+    documents the core features of the Grok framework.
+    </p>
+    
+    <div style="width: 70%; padding-left: 1em" >
+
+      <div style="background: #ffffff; float: right; padding: 0 0 0.5em 1em;">
+      <img src="#" alt=""
+           tal:attributes="src string:${portal_url}/grok-caveman.png" />
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/tutorial_icon.gif" /> 
+      <a href="http://grok.zope.org/doc/current/tutorial.html">
+        The Grok Tutorial
+      </a>
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/referencemanual_icon.gif" /> 
+        <a href="http://grok.zope.org/doc/current/grok_overview.html">
+        The Grok Developer's Notes
+        </a>
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/referencemanual_icon.gif" /> 
+        <a href="http://grok.zope.org/doc/current/reference/">
+        The Grok Reference
+        </a>
+      </div>
     </div>
     
-    <h2>The Grok Tutorial</h2>
-    
-    <p>
-    Brand new to Grok?
-    The <a href="./book/">Grok Tutorial</a> is place to start learning
-    about Grok.
-    </p>
-        
-    <h2 i18n:translate="phc_doc_search">Search the Documentation</h2>
+    <h1 class="documentFirstHeading">Community Grok Documentation</h1>
 
-    <p>Searches are limited to just the Grok Documentation section of this site.</p>
-    
-    <form name="searchform"
-          action="phc_search"
-          tal:attributes="action string:${here/absolute_url}/phc_search">
-            
-            <label for="searchGadget"
-                   class="hiddenStructure"
-                   i18n:domain="plone"
-                   i18n:translate="text_search">
-                Search
-            </label>
-            
-            <input name="SearchableText"
-                   type="text"
-                   size="50"
-                   value=""
-                   alt="Search"
-                   title="Search"
-                   accesskey="accesskeys-search"
-                   tal:attributes="value request/SearchableText|nothing;
-                                   tabindex tabindex/next" 
-            />
-
-            <input class="searchButton"
-                   type="submit"
-                   value="Search"
-                   accesskey="accesskeys-search"
-                   tal:attributes="tabindex tabindex/next"
-                   i18n:attributes="value accesskey" />
-    
-    </form>
-    
     <p>
-      <img tal:replace="structure here/rss.gif" />
-      <a tal:attributes="href view/getSyndicationURL" 
-         i18n:translate="phc_rss_all">
-        Feed for all documentation
-      </a>
-    </p>
+    The community documentation covers a much wider scope than the official
+    docs. However documentation assets in here may not always be applicable
+    to the current release of Grok.
+    <div>
     
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/howto_icon.gif" /> 
+      <a href=""
+         tal:attributes="href string:$portal_url/feeds/all-howtos-tutorials" >
+              All Howtos and Tutorials
+      </a> 
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/info_icon.gif" /> 
+      <a href="./tutorial/contribute-to-the-grok-documentation" >
+           Writing Documentation for Grok
+      </a> 
+      </div>
+
+      <div style="margin-bottom: 1em" >
+      <img tal:replace="structure here/rss.gif" /> 
+      <a tal:attributes="href string:$portal_url/feeds/community-documentation/RSS" >
+           Feed for all documentation
+      </a> 
+      </div>
+
+    </div>
+
     <div class="visualClear"></div>
     
     <h2>Browse Documentation By Topic</h2>
@@ -88,16 +98,6 @@
     </dl>
 
     <div class="visualClear"></div>
-
-    <h2>Contribute to the Documentation</h2>
-    
-    <p>
-    Found something that's not documented?
-    Learn how you can 
-    <a href="./tutorial/contribute-to-the-grok-documentation">
-    contribute to the Grok Documentation project
-    </a>.
-    <p>
 
   </div>
 
