@@ -122,7 +122,7 @@ In its implementation, the sequence is an adapted B+ tree. Indexes are keys, but
 each bucket or branch starts at 0. For instance, a perfectly-balanced bucket
 sequence with 16 items, and a limit of 3 entries in a bucket or branch, would
 have "keys" like this. In the diagram, the top three rows are indexes, and the
-bottom row consists of buckets.
+bottom row consists of buckets::
 
         0           8
      0     4     0     4
