@@ -77,7 +77,7 @@ setup(
     package_dir={'':'src'},
     zip_safe=False,
     author='Gary Poster',
-    author_email='gary@zope.com',
+    author_email='gary.poster@canonical.com',
     description='ZODB-friendly BTree-based list implementation',
     long_description=text(
         'src/zc/blist/README.txt',
@@ -89,7 +89,6 @@ setup(
         'ZODB3 >= 3.7',
         'rwproperty',
         'setuptools',
-        
         'zope.testing',
         ],
     include_package_data=True,
