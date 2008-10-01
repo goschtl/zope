@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Set default value for `auto-reload` based on the CHAMELEON_DEBUG
+  environment variable check. [malthe]
 
 1.0a4 (released 9/29/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +20,6 @@ head
 
 - TemplateLoader now checks a default_parser class attribute if no
   parser is specified. [wichert]
-
 
 1.0a2 (released 9/26/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

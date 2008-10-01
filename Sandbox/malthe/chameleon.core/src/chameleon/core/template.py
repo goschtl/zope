@@ -87,7 +87,7 @@ class TemplateFile(Template):
     global_registry = {}
     
     def __init__(self, filename, parser, format=None,  doctype=None,
-                 auto_reload=False):
+                 auto_reload=config.DEBUG_MODE):
         Template.__init__(
             self, None, parser, format=format, doctype=doctype)
 
