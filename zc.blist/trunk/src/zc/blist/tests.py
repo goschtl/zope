@@ -23,196 +23,6 @@ from zope.testing import doctest
 import zc.blist
 import zc.blist.testing
 
-def by_hand_regression_test():
-    """
-    ==================
-    Regression Testing
-    ==================
-    
-    We'll use a `matches` function to compare a bucket sequence with a standard
-    Python list to which the same modifications have made.  This also checks for
-    bucket health.
-    
-        >>> import zc.blist
-        >>> from zc.blist.testing import matches, checkIndex
-        >>> b = zc.blist.BList(bucket_size=5, index_size=4) # we want > 3 so min is > 1
-        >>> matches(b, [])
-        True
-        >>> b.append(0)
-        >>> matches(b, [0])
-        True
-        >>> del b[0]
-        >>> matches(b, [])
-        True
-        >>> b.extend(range(10))
-        >>> comparison = range(10)
-        >>> matches(b, comparison)
-        True
-        >>> b.reverse()
-        >>> comparison.reverse()
-        >>> matches(b, comparison)
-        True
-        >>> for i in range(10):
-        ...     b[i] = i+10
-        ...     comparison[i] = i+10
-        ...
-        >>> matches(b, comparison)
-        True
-        >>> b[5:10] = [9, 8, 7, 6, 5]
-        >>> comparison[5:10] = [9, 8, 7, 6, 5]
-        >>> matches(b, comparison)
-        True
-        >>> b[0:0] = [-3, -2, -1]
-        >>> comparison[0:0] = [-3, -2, -1]
-        >>> matches(b, comparison)
-        True
-        >>> b.extend(range(90, 100))
-        >>> comparison.extend(range(90,100))
-        >>> matches(b, comparison)
-        True
-        >>> b[10:10] = range(20, 90)
-        >>> comparison[10:10] = range(20, 90)
-        >>> matches(b, comparison)
-        True
-        >>> b[b.index(82)]
-        82
-        >>> del b[:4]
-        >>> del comparison[:4]
-        >>> matches(b, comparison)
-        True
-        >>> comparison[2:10:2] = [100, 102, 104, 106]
-        >>> b[2:10:2] = [100, 102, 104, 106]
-        >>> matches(b, comparison)
-        True
-        >>> del b[1:88]
-        >>> del comparison[1:88]
-        >>> matches(b, comparison)
-        True
-        >>> list(b[:])
-        [11, 99]
-        >>> b[0] = 0
-        >>> b[2] = 100
-        >>> b[3] = 101
-        >>> b[4] = 102
-        >>> matches(b, [0, 99, 100, 101, 102])
-        True
-    
-    Switching two values is most efficiently done with slice notation.
-    
-        >>> b[:] = range(1000)
-        >>> b[5:996:990] = (b[995], b[5])
-        >>> list(b[:7])
-        [0, 1, 2, 3, 4, 995, 6]
-        >>> list(b[994:])
-        [994, 5, 996, 997, 998, 999]
-        >>> comparison = range(1000)
-        >>> comparison[5] = 995
-        >>> comparison[995] = 5
-        >>> matches(b, comparison)
-        True
-    
-    We'll test some of the other methods
-    
-        >>> b.pop(995) == comparison.pop(995)
-        True
-        >>> matches(b, comparison)
-        True
-        >>> b.insert(995, 5)
-        >>> comparison.insert(995, 5)
-        >>> matches(b, comparison)
-        True
-    
-    These are some more stress and regression tests.
-    
-        >>> del b[900:]
-        >>> del comparison[900:]
-        >>> matches(b, comparison)
-        True
-    
-        >>> del comparison[::2]
-        >>> del b[::2] # 1
-        >>> matches(b, comparison)
-        True
-        >>> del b[::2] # 2
-        >>> del comparison[::2]
-        >>> matches(b, comparison)
-        True
-        >>> del b[::2] # 3
-        >>> del comparison[::2]
-        >>> matches(b, comparison)
-        True
-    
-        >>> alt = zc.blist.BList(b)
-        >>> alt_comp = comparison[:]
-        >>> matches(b, comparison)
-        True
-        >>> del alt[::3]
-        >>> del alt_comp[::3]
-        >>> matches(alt, alt_comp)
-        True
-        >>> del alt[::3]
-        >>> del alt_comp[::3]
-        >>> matches(alt, alt_comp)
-        True
-        >>> del alt[-1:5:-2]
-        >>> del alt_comp[-1:5:-2]
-        >>> matches(alt, alt_comp)
-        True
-    
-    The ``copy`` method gives a complete copy, reusing buckets and indexes.
-    
-        >>> from zc.blist.testing import checkCopies
-        >>> old_comparison = comparison[:]
-        >>> new = b.copy()
-        >>> new == b
-        True
-        >>> def check():
-        ...     assert matches(new, comparison)
-        ...     assert matches(b, old_comparison)
-        ...     return checkCopies(b, new)
-        ...
-
-    So, ``checkCopies`` and ``check`` return three lists: the bucket
-    identifiers that are only in b, the bucket identifiers that are only in
-    new, and the bucket identifiers that are in both, but different. Initially,
-    all three lists are empty, because the two blists share all buckets and
-    indexes.
-
-        >>> check()
-        ([], [], [])
-        >>> del new[4]
-        >>> del comparison[4]
-        >>> [len(v) for v in check()] # 4 = 1 bucket, 3 indexes
-        [0, 0, 4]
-        >>> del old_comparison[10]
-        >>> del b[10]
-        >>> [len(v) for v in check()]
-        [0, 1, 9]
-        >>> new.append(999999999)
-        >>> comparison.append(999999999)
-        >>> [len(v) for v in check()]
-        [0, 1, 10]
-        >>> new.extend(range(5000, 5100))
-        >>> comparison.extend(range(5000, 5100))
-        >>> [len(v) for v in check()]
-        [0, 27, 13]
-        >>> del new[15:50]
-        >>> del comparison[15:50]
-        >>> [len(v) for v in check()]
-        [20, 27, 16]
-        >>> del new[::3]
-        >>> del comparison[::3]
-        >>> [len(v) for v in check()]
-        [35, 26, 28]
-        >>> del new[::2]
-        >>> del comparison[::2]
-        >>> [len(v) for v in check()]
-        [56, 19, 10]
-        >>> del new[-1:5:-2]
-        >>> del comparison[-1:5:-2]
-        >>> [len(v) for v in check()]
-        [56, 7, 10]
-    """
 
 class AbstractCanary(object):
     def __init__(self, comp, blist=None, generator=None):
@@ -308,6 +118,7 @@ class AbstractCanary(object):
     def _getvals(self):
         return [self._getval() for i in range(random.randint(1, 100))]
 
+
 class BigOperationCanary(AbstractCanary):
 
     def e_extend(self):
@@ -346,6 +157,7 @@ class BigOperationCanary(AbstractCanary):
             del self.comp[start:stop:step]
             del self.blist[start:stop:step]
         return test, (start, stop, step)
+
 
 class Canary(BigOperationCanary):
 
@@ -444,7 +256,6 @@ class Canary(BigOperationCanary):
         return test, (location, val)
 
 
-
 class CanaryTestCase(unittest.TestCase):
     def test_canary(self):
         c = Canary([])
@@ -477,12 +288,13 @@ class CanaryTestCase(unittest.TestCase):
                 zc.blist.BList(range(10000), bucket_size=5, index_size=4))
             c(2000)
 
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'README.txt',
+            'regression.txt',
             optionflags=doctest.INTERPRET_FOOTNOTES),
-        doctest.DocTestSuite(),
         unittest.TestLoader().loadTestsFromTestCase(CanaryTestCase),
         ))
 
