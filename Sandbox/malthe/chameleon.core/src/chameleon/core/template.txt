@@ -31,6 +31,20 @@ chameleon.core.template.TemplateFile
   >>> t.filename.startswith(os.sep)
   True
 
+Macros
+------
+
+In this package, macros are supported only as a framework for actual
+language implementations.
+
+  >>> from chameleon.core.template import Macros
+  
+  >>> def render(name, parameters={}):
+  ...     print parameters.items()
+  
+  >>> Macros(render).bind(test=u"Hello, world!")[""].render()
+  [('test', u'Hello, world!')]
+  
 XInclude support
 ----------------
 

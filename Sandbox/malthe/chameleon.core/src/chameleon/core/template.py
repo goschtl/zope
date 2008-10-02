@@ -187,10 +187,15 @@ class Macro(object):
         self.render = render
 
 class Macros(object):
-    def __init__(self, render_macro):
+    def __init__(self, render_macro, **kwargs):
         self.render = render_macro
+        self.bound_parameters = kwargs
 
     def __getitem__(self, name):
         def render(**kwargs):
+            kwargs.update(self.bound_parameters)
             return self.render(name, parameters=kwargs)
         return Macro(render)
+
+    def bind(self, **kwargs):
+        return Macros(self.render, **kwargs)
