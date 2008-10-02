@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+- Fixed bugs related to temporary variables with loops and
+  conditions. [malthe]
+
 - Set default value for `auto-reload` based on the CHAMELEON_DEBUG
   environment variable check. [malthe]
 

@@ -368,19 +368,23 @@ class Condition(object):
             if self.finalize:
                 for clause in reversed(self.clauses):
                     clause.end(stream)
+                stream.restore()
             stream.outdent()
-        
+        elif self.finalize:
+            stream.restore()
+            
     def end(self, stream):
-        temp = stream.restore()
-
         if self.clauses:
             if not self.finalize:
+                temp = stream.restore()
                 stream.write("if %s:" % temp)
                 stream.indent()
                 for clause in reversed(self.clauses):
                     clause.end(stream)
                     stream.outdent()
         else:
+            if not self.finalize:
+                stream.restore()
             stream.outdent()
         self.assign.end(stream)
 
@@ -869,7 +873,7 @@ class UnicodeWrite(Write):
     ''
     """
 
-    def begin(self, stream):
+    def write(self, stream):
         temp = stream.save()
 
         if self.value:
@@ -879,6 +883,11 @@ class UnicodeWrite(Write):
             expr = temp
 
         stream.write("%s(%s)" % (stream.symbols.write, expr))
+        
+        if not self.value:
+            self.assign.end(stream)
+
+        stream.restore()
 
 class Out(object):
     """
