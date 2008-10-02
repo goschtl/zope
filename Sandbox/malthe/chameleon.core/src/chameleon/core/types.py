@@ -22,7 +22,7 @@ class value(unicode, expression):
 
 class template(value):
     def __repr__(self):
-        return 'template(%s)' % str.__repr__(self)
+        return 'template(%s)' % value.__repr__(self)
 
 class join(tuple, expression):
     def __repr__(self):
