@@ -349,8 +349,8 @@ class Node(object):
             result = types.value(self.symbols.result)
             result.symbol_mapping[self.symbols.marker] = generation.marker
             condition = types.template('%(result)s is not %(marker)s')
-            _.append(clauses.Condition(condition,
-                        [clauses.UnicodeWrite(result)]))
+            _.append(clauses.Condition(
+                condition, [clauses.UnicodeWrite(result)], finalize=True))
 
             subclauses = []
             if self.element.text:
