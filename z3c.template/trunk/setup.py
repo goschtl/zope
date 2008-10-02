@@ -57,7 +57,7 @@ setup (
         test = ['zope.app.testing',
                 'zope.testing',
                 'lxml>=2.1.1',
-                'z3c.pt'],
+                'z3c.pt>=1.0b1'],
         ),
     install_requires = [
         'setuptools',
