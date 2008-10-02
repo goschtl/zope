@@ -4,9 +4,13 @@ Changelog
 Head
 ~~~~
 
+1.0a2 (released 10/2/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Add a specialized TemplateLoader. [wichert]
 
-
+- Fixed an incompatibility where non-boolean values would be returned
+  as a skip node value. [malthe]
 
 1.0a1 (released 9/24/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
