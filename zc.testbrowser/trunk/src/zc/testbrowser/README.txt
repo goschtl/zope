@@ -45,6 +45,15 @@ Making assertions about page contents is easy.
     True
 
 
+The doctype and <html> node are also part of the contents:
+
+    >>> browser.open('doctype.html')
+    >>> print browser.contents
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html>
+    <head>...
+
+
 Checking for HTML
 -----------------
 

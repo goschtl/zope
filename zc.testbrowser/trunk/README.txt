@@ -11,10 +11,3 @@ browser (zc.testbrowser.real).  All flavors of testbrowser have the same API.
 
 This project originates in the Zope 3 community, but is not Zope-specific (the
 zc namespace package stands for "Zope Corporation").
-
-
-Note:
-=====
-
-zc.testbrowser.real requires 0.1.8 of MozLab. 0.1.9 does not work
-because of changes in the API.

@@ -295,7 +295,7 @@ function tb_get_control_by_name(name, index, contextToken, xpath) {
     return tb_get_control_by_predicate(
         function (control) {
             var controlName = control.getAttribute('name');
-            return controlName != null && controlName.indexOf(name) != -1;
+            return controlName != null && controlName == name;
         }, index, true, tb_tokens[contextToken], xpath)
 }
 
@@ -570,4 +570,21 @@ function tb_get_listcontrol_item_tokens(token) {
         tokens.push(tb_next_token++);
     }
     return tokens;
+}
+
+function tb_get_contents() {
+    // get doctype
+    var node = content.document.firstChild;
+    var contents = '';
+    while (node) {
+      if (node.nodeType == node.DOCUMENT_TYPE_NODE) {
+        contents += '<!DOCTYPE ' + node.name.toLowerCase() + ' PUBLIC "' +
+          node.publicId + '" "' + node.systemId + '">\n';
+      } else if (node.nodeType == node.ELEMENT_NODE) {
+        var name = node.nodeName.toLowerCase();
+        contents += '<' + name + '>\n' + node.innerHTML + '</' + name + '>';
+      }
+      node = node.nextSibling;
+    }
+    return contents;
 }
