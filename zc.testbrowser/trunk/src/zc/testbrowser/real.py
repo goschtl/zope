@@ -112,14 +112,16 @@ class Browser(zc.testbrowser.browser.SetattrErrorsMixin):
             self.open(url)
 
     def init_repl(self, host, port):
-        dir = os.path.dirname(__file__)
-        js_path = os.path.join(dir, 'real.js')
         try:
             self.telnet = telnetlib.Telnet(host, port)
         except socket.error, e:
             raise RuntimeError('Error connecting to Firefox at %s:%s.'
                 ' Is MozRepl running?' % (host, port))
+        self.load_realjs()
 
+    def load_realjs(self):
+        dir = os.path.dirname(__file__)
+        js_path = os.path.join(dir, 'real.js')
         self.load_file(js_path)
 
     def load_file(self, file_path):
