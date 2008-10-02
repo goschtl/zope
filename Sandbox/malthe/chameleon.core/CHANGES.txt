@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+1.0b1 (released 2/10/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Fixed bugs related to temporary variables with loops and
   conditions. [malthe]
 
