@@ -274,3 +274,23 @@ Passing German:
     <span title="Mock translation of 'aid'.">Mock translation of 'tid'.</span>
     <span>Mock translation of 'tid'.</span>
   </div>
+
+Make sure translations play nice with loops.
+  
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal" i18n:domain="test">
+  ...   <div tal:repeat="i range(1)">
+  ...     <span i18n:translate="tid">Default</span>
+  ...   </div>
+  ... </div>"""
+
+Not passing a language:
+
+  >>> print PageTemplate(body).render()
+  <div>
+    <div>
+      <span>Default</span>
+    </div>
+  </div>
