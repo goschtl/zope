@@ -1,0 +1,341 @@
+# installing zipimport hook
+import zipimport # builtin
+# installed zipimport hook
+# /opt/python-2.4.4/lib/python2.4/site.pyc matches /opt/python-2.4.4/lib/python2.4/site.py
+import site # precompiled from /opt/python-2.4.4/lib/python2.4/site.pyc
+# /opt/python-2.4.4/lib/python2.4/os.pyc matches /opt/python-2.4.4/lib/python2.4/os.py
+import os # precompiled from /opt/python-2.4.4/lib/python2.4/os.pyc
+import posix # builtin
+# /opt/python-2.4.4/lib/python2.4/posixpath.pyc matches /opt/python-2.4.4/lib/python2.4/posixpath.py
+import posixpath # precompiled from /opt/python-2.4.4/lib/python2.4/posixpath.pyc
+# /opt/python-2.4.4/lib/python2.4/stat.pyc matches /opt/python-2.4.4/lib/python2.4/stat.py
+import stat # precompiled from /opt/python-2.4.4/lib/python2.4/stat.pyc
+# /opt/python-2.4.4/lib/python2.4/UserDict.pyc matches /opt/python-2.4.4/lib/python2.4/UserDict.py
+import UserDict # precompiled from /opt/python-2.4.4/lib/python2.4/UserDict.pyc
+# /opt/python-2.4.4/lib/python2.4/copy_reg.pyc matches /opt/python-2.4.4/lib/python2.4/copy_reg.py
+import copy_reg # precompiled from /opt/python-2.4.4/lib/python2.4/copy_reg.pyc
+# /opt/python-2.4.4/lib/python2.4/types.pyc matches /opt/python-2.4.4/lib/python2.4/types.py
+import types # precompiled from /opt/python-2.4.4/lib/python2.4/types.pyc
+# zipimport: found 25 names in /opt/python-2.4.4/lib/python2.4/site-packages/yolk-0.4.1-py2.4.egg
+# zipimport: found 29 names in /opt/python-2.4.4/lib/python2.4/site-packages/elementtree-1.2.7_20070827_preview-py2.4.egg
+# /opt/python-2.4.4/lib/python2.4/warnings.pyc matches /opt/python-2.4.4/lib/python2.4/warnings.py
+import warnings # precompiled from /opt/python-2.4.4/lib/python2.4/warnings.pyc
+# /opt/python-2.4.4/lib/python2.4/linecache.pyc matches /opt/python-2.4.4/lib/python2.4/linecache.py
+import linecache # precompiled from /opt/python-2.4.4/lib/python2.4/linecache.pyc
+import encodings # directory /opt/python-2.4.4/lib/python2.4/encodings
+# /opt/python-2.4.4/lib/python2.4/encodings/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/encodings/__init__.py
+import encodings # precompiled from /opt/python-2.4.4/lib/python2.4/encodings/__init__.pyc
+# /opt/python-2.4.4/lib/python2.4/codecs.pyc matches /opt/python-2.4.4/lib/python2.4/codecs.py
+import codecs # precompiled from /opt/python-2.4.4/lib/python2.4/codecs.pyc
+import _codecs # builtin
+# /opt/python-2.4.4/lib/python2.4/encodings/aliases.pyc matches /opt/python-2.4.4/lib/python2.4/encodings/aliases.py
+import encodings.aliases # precompiled from /opt/python-2.4.4/lib/python2.4/encodings/aliases.pyc
+# /opt/python-2.4.4/lib/python2.4/encodings/ascii.pyc matches /opt/python-2.4.4/lib/python2.4/encodings/ascii.py
+import encodings.ascii # precompiled from /opt/python-2.4.4/lib/python2.4/encodings/ascii.pyc
+Python 2.4.4 (#3, Jan  7 2008, 17:54:50) 
+[GCC 4.0.1 (Apple Inc. build 5465)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+import zopyx # directory /opt/python-2.4.4/lib/python2.4/site-packages/zopyx.convert-1.1.8-py2.4.egg/zopyx
+# /opt/python-2.4.4/lib/python2.4/site-packages/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.py
+import zopyx # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.pyc
+# /opt/python-2.4.4/lib/python2.4/site-packages/setuptools-0.6c8-py2.4.egg/pkg_resources.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/setuptools-0.6c8-py2.4.egg/pkg_resources.py
+import pkg_resources # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/setuptools-0.6c8-py2.4.egg/pkg_resources.pyc
+import time # dynamically loaded from /opt/python-2.4.4/lib/python2.4/lib-dynload/time.so
+# /opt/python-2.4.4/lib/python2.4/re.pyc matches /opt/python-2.4.4/lib/python2.4/re.py
+import re # precompiled from /opt/python-2.4.4/lib/python2.4/re.pyc
+# /opt/python-2.4.4/lib/python2.4/sre.pyc matches /opt/python-2.4.4/lib/python2.4/sre.py
+import sre # precompiled from /opt/python-2.4.4/lib/python2.4/sre.pyc
+# /opt/python-2.4.4/lib/python2.4/sre_compile.pyc matches /opt/python-2.4.4/lib/python2.4/sre_compile.py
+import sre_compile # precompiled from /opt/python-2.4.4/lib/python2.4/sre_compile.pyc
+import _sre # builtin
+# /opt/python-2.4.4/lib/python2.4/sre_constants.pyc matches /opt/python-2.4.4/lib/python2.4/sre_constants.py
+import sre_constants # precompiled from /opt/python-2.4.4/lib/python2.4/sre_constants.pyc
+# /opt/python-2.4.4/lib/python2.4/sre_parse.pyc matches /opt/python-2.4.4/lib/python2.4/sre_parse.py
+import sre_parse # precompiled from /opt/python-2.4.4/lib/python2.4/sre_parse.pyc
+import imp # builtin
+# /opt/python-2.4.4/lib/python2.4/new.pyc matches /opt/python-2.4.4/lib/python2.4/new.py
+import new # precompiled from /opt/python-2.4.4/lib/python2.4/new.pyc
+import distutils # directory /opt/python-2.4.4/lib/python2.4/distutils
+# /opt/python-2.4.4/lib/python2.4/distutils/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/__init__.py
+import distutils # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/__init__.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/util.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/util.py
+import distutils.util # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/util.pyc
+# /opt/python-2.4.4/lib/python2.4/string.pyc matches /opt/python-2.4.4/lib/python2.4/string.py
+import string # precompiled from /opt/python-2.4.4/lib/python2.4/string.pyc
+import strop # dynamically loaded from /opt/python-2.4.4/lib/python2.4/lib-dynload/strop.so
+# /opt/python-2.4.4/lib/python2.4/distutils/errors.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/errors.py
+import distutils.errors # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/errors.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/dep_util.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/dep_util.py
+import distutils.dep_util # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/dep_util.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/spawn.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/spawn.py
+import distutils.spawn # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/spawn.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/log.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/log.py
+import distutils.log # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/log.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/sysconfig.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/sysconfig.py
+import distutils.sysconfig # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/sysconfig.pyc
+# /opt/python-2.4.4/lib/python2.4/distutils/text_file.pyc matches /opt/python-2.4.4/lib/python2.4/distutils/text_file.py
+import distutils.text_file # precompiled from /opt/python-2.4.4/lib/python2.4/distutils/text_file.pyc
+# /opt/python-2.4.4/lib/python2.4/pkgutil.pyc matches /opt/python-2.4.4/lib/python2.4/pkgutil.py
+import pkgutil # precompiled from /opt/python-2.4.4/lib/python2.4/pkgutil.pyc
+import zc # directory /opt/python-2.4.4/lib/python2.4/site-packages/zc.buildout-1.1.1-py2.4.egg/zc
+# /opt/python-2.4.4/lib/python2.4/site-packages/zc.buildout-1.1.1-py2.4.egg/zc/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/zc.buildout-1.1.1-py2.4.egg/zc/__init__.py
+import zc # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/zc.buildout-1.1.1-py2.4.egg/zc/__init__.pyc
+import zc # directory /opt/python-2.4.4/lib/python2.4/site-packages/zc.lockfile-1.0.0b1-py2.4.egg/zc
+# /opt/python-2.4.4/lib/python2.4/site-packages/zc.lockfile-1.0.0b1-py2.4.egg/zc/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/zc.lockfile-1.0.0b1-py2.4.egg/zc/__init__.py
+import zc # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/zc.lockfile-1.0.0b1-py2.4.egg/zc/__init__.pyc
+import paste # directory /opt/python-2.4.4/lib/python2.4/site-packages/PasteScript-1.6.3-py2.4.egg/paste
+# /opt/python-2.4.4/lib/python2.4/site-packages/PasteScript-1.6.3-py2.4.egg/paste/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/PasteScript-1.6.3-py2.4.egg/paste/__init__.py
+import paste # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/PasteScript-1.6.3-py2.4.egg/paste/__init__.pyc
+# /opt/python-2.4.4/lib/python2.4/modulefinder.pyc matches /opt/python-2.4.4/lib/python2.4/modulefinder.py
+import modulefinder # precompiled from /opt/python-2.4.4/lib/python2.4/modulefinder.pyc
+# /opt/python-2.4.4/lib/python2.4/dis.pyc matches /opt/python-2.4.4/lib/python2.4/dis.py
+import dis # precompiled from /opt/python-2.4.4/lib/python2.4/dis.pyc
+# /opt/python-2.4.4/lib/python2.4/opcode.pyc matches /opt/python-2.4.4/lib/python2.4/opcode.py
+import opcode # precompiled from /opt/python-2.4.4/lib/python2.4/opcode.pyc
+import marshal # builtin
+import paste # directory /opt/python-2.4.4/lib/python2.4/site-packages/PasteDeploy-1.3.2-py2.4.egg/paste
+# /opt/python-2.4.4/lib/python2.4/site-packages/PasteDeploy-1.3.2-py2.4.egg/paste/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/PasteDeploy-1.3.2-py2.4.egg/paste/__init__.py
+import paste # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/PasteDeploy-1.3.2-py2.4.egg/paste/__init__.pyc
+import paste # directory /opt/python-2.4.4/lib/python2.4/site-packages/Paste-1.7.1-py2.4.egg/paste
+# /opt/python-2.4.4/lib/python2.4/site-packages/Paste-1.7.1-py2.4.egg/paste/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/Paste-1.7.1-py2.4.egg/paste/__init__.py
+import paste # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/Paste-1.7.1-py2.4.egg/paste/__init__.pyc
+import zlib # dynamically loaded from /opt/python-2.4.4/lib/python2.4/lib-dynload/zlib.so
+# zipimport: zlib available
+import zopyx # directory /Users/ajung/src/zopyx.smartprintng.core/zopyx
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/__init__.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/__init__.py
+import zopyx # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/__init__.pyc
+import zopyx # directory /Users/ajung/.buildout/eggs/zopyx.convert-1.1.8-py2.4.egg/zopyx
+# /Users/ajung/.buildout/eggs/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.pyc matches /Users/ajung/.buildout/eggs/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.py
+import zopyx # precompiled from /Users/ajung/.buildout/eggs/zopyx.convert-1.1.8-py2.4.egg/zopyx/__init__.pyc
+import z3c # directory /opt/python-2.4.4/lib/python2.4/site-packages/z3c.pypimirror-0.2.8-py2.4.egg/z3c
+# /opt/python-2.4.4/lib/python2.4/site-packages/z3c.pypimirror-0.2.8-py2.4.egg/z3c/__init__.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/z3c.pypimirror-0.2.8-py2.4.egg/z3c/__init__.py
+import z3c # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/z3c.pypimirror-0.2.8-py2.4.egg/z3c/__init__.pyc
+import zopyx.smartprintng # directory /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/__init__.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/__init__.py
+import zopyx.smartprintng # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/__init__.pyc
+import zopyx.smartprintng.core # directory /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/__init__.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/__init__.py
+import zopyx.smartprintng.core # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/__init__.pyc
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/transformation.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/transformation.py
+import zopyx.smartprintng.core.transformation # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/transformation.pyc
+# /opt/python-2.4.4/lib/python2.4/site-packages/BeautifulSoup-3.0.7a-py2.4.egg/BeautifulSoup.pyc matches /opt/python-2.4.4/lib/python2.4/site-packages/BeautifulSoup-3.0.7a-py2.4.egg/BeautifulSoup.py
+import BeautifulSoup # precompiled from /opt/python-2.4.4/lib/python2.4/site-packages/BeautifulSoup-3.0.7a-py2.4.egg/BeautifulSoup.pyc
+# /opt/python-2.4.4/lib/python2.4/__future__.pyc matches /opt/python-2.4.4/lib/python2.4/__future__.py
+import __future__ # precompiled from /opt/python-2.4.4/lib/python2.4/__future__.pyc
+# /opt/python-2.4.4/lib/python2.4/sgmllib.pyc matches /opt/python-2.4.4/lib/python2.4/sgmllib.py
+import sgmllib # precompiled from /opt/python-2.4.4/lib/python2.4/sgmllib.pyc
+# /opt/python-2.4.4/lib/python2.4/markupbase.pyc matches /opt/python-2.4.4/lib/python2.4/markupbase.py
+import markupbase # precompiled from /opt/python-2.4.4/lib/python2.4/markupbase.pyc
+# /opt/python-2.4.4/lib/python2.4/htmlentitydefs.pyc matches /opt/python-2.4.4/lib/python2.4/htmlentitydefs.py
+import htmlentitydefs # precompiled from /opt/python-2.4.4/lib/python2.4/htmlentitydefs.pyc
+import zope # directory /opt/zope/2.11.0b1/lib/python/zope
+# /opt/zope/2.11.0b1/lib/python/zope/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/__init__.py
+import zope # precompiled from /opt/zope/2.11.0b1/lib/python/zope/__init__.pyc
+import zope.component # directory /opt/zope/2.11.0b1/lib/python/zope/component
+# /opt/zope/2.11.0b1/lib/python/zope/component/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/__init__.py
+import zope.component # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/__init__.pyc
+import zope.deferredimport # directory /opt/zope/2.11.0b1/lib/python/zope/deferredimport
+# /opt/zope/2.11.0b1/lib/python/zope/deferredimport/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/deferredimport/__init__.py
+import zope.deferredimport # precompiled from /opt/zope/2.11.0b1/lib/python/zope/deferredimport/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/deferredimport/deferredmodule.pyc matches /opt/zope/2.11.0b1/lib/python/zope/deferredimport/deferredmodule.py
+import zope.deferredimport.deferredmodule # precompiled from /opt/zope/2.11.0b1/lib/python/zope/deferredimport/deferredmodule.pyc
+import zope.proxy # directory /opt/zope/2.11.0b1/lib/python/zope/proxy
+# /opt/zope/2.11.0b1/lib/python/zope/proxy/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/proxy/__init__.py
+import zope.proxy # precompiled from /opt/zope/2.11.0b1/lib/python/zope/proxy/__init__.pyc
+import zope.interface # directory /opt/zope/2.11.0b1/lib/python/zope/interface
+# /opt/zope/2.11.0b1/lib/python/zope/interface/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/__init__.py
+import zope.interface # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/interface/interface.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/interface.py
+import zope.interface.interface # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/interface.pyc
+# /opt/python-2.4.4/lib/python2.4/weakref.pyc matches /opt/python-2.4.4/lib/python2.4/weakref.py
+import weakref # precompiled from /opt/python-2.4.4/lib/python2.4/weakref.pyc
+import _weakref # dynamically loaded from /opt/python-2.4.4/lib/python2.4/lib-dynload/_weakref.so
+# /opt/zope/2.11.0b1/lib/python/zope/interface/ro.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/ro.py
+import zope.interface.ro # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/ro.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/interface/exceptions.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/exceptions.py
+import zope.interface.exceptions # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/exceptions.pyc
+import zope.interface._zope_interface_coptimizations # dynamically loaded from /opt/zope/2.11.0b1/lib/python/zope/interface/_zope_interface_coptimizations.so
+# /opt/zope/2.11.0b1/lib/python/zope/interface/declarations.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/declarations.py
+import zope.interface.declarations # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/declarations.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/interface/advice.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/advice.py
+import zope.interface.advice # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/advice.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/interface/interfaces.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/interfaces.py
+import zope.interface.interfaces # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/interfaces.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/proxy/interfaces.pyc matches /opt/zope/2.11.0b1/lib/python/zope/proxy/interfaces.py
+import zope.proxy.interfaces # precompiled from /opt/zope/2.11.0b1/lib/python/zope/proxy/interfaces.pyc
+import zope.proxy._zope_proxy_proxy # dynamically loaded from /opt/zope/2.11.0b1/lib/python/zope/proxy/_zope_proxy_proxy.so
+# /opt/zope/2.11.0b1/lib/python/zope/component/interfaces.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/interfaces.py
+import zope.component.interfaces # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/interfaces.pyc
+import zope.component.bbb # directory /opt/zope/2.11.0b1/lib/python/zope/component/bbb
+# /opt/zope/2.11.0b1/lib/python/zope/component/bbb/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/bbb/__init__.py
+import zope.component.bbb # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/bbb/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/bbb/interfaces.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/bbb/interfaces.py
+import zope.component.bbb.interfaces # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/bbb/interfaces.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/factory.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/factory.py
+import zope.component.factory # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/factory.pyc
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/interfaces.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/interfaces.py
+import zopyx.smartprintng.core.interfaces # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/interfaces.pyc
+# /opt/python-2.4.4/lib/python2.4/inspect.pyc matches /opt/python-2.4.4/lib/python2.4/inspect.py
+import inspect # precompiled from /opt/python-2.4.4/lib/python2.4/inspect.pyc
+# /opt/python-2.4.4/lib/python2.4/tokenize.pyc matches /opt/python-2.4.4/lib/python2.4/tokenize.py
+import tokenize # precompiled from /opt/python-2.4.4/lib/python2.4/tokenize.pyc
+# /opt/python-2.4.4/lib/python2.4/token.pyc matches /opt/python-2.4.4/lib/python2.4/token.py
+import token # precompiled from /opt/python-2.4.4/lib/python2.4/token.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/globalregistry.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/globalregistry.py
+import zope.component.globalregistry # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/globalregistry.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/interface/adapter.pyc matches /opt/zope/2.11.0b1/lib/python/zope/interface/adapter.py
+import zope.interface.adapter # precompiled from /opt/zope/2.11.0b1/lib/python/zope/interface/adapter.pyc
+import zope.deprecation # directory /opt/zope/2.11.0b1/lib/python/zope/deprecation
+# /opt/zope/2.11.0b1/lib/python/zope/deprecation/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/deprecation/__init__.py
+import zope.deprecation # precompiled from /opt/zope/2.11.0b1/lib/python/zope/deprecation/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/deprecation/deprecation.pyc matches /opt/zope/2.11.0b1/lib/python/zope/deprecation/deprecation.py
+import zope.deprecation.deprecation # precompiled from /opt/zope/2.11.0b1/lib/python/zope/deprecation/deprecation.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/registry.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/registry.py
+import zope.component.registry # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/registry.pyc
+import zope.event # directory /opt/zope/2.11.0b1/lib/python/zope/event
+# /opt/zope/2.11.0b1/lib/python/zope/event/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/event/__init__.py
+import zope.event # precompiled from /opt/zope/2.11.0b1/lib/python/zope/event/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/_declaration.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/_declaration.py
+import zope.component._declaration # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/_declaration.pyc
+import zope.testing # directory /opt/zope/2.11.0b1/lib/python/zope/testing
+# /opt/zope/2.11.0b1/lib/python/zope/testing/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/testing/__init__.py
+import zope.testing # precompiled from /opt/zope/2.11.0b1/lib/python/zope/testing/__init__.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/testing/cleanup.pyc matches /opt/zope/2.11.0b1/lib/python/zope/testing/cleanup.py
+import zope.testing.cleanup # precompiled from /opt/zope/2.11.0b1/lib/python/zope/testing/cleanup.pyc
+# /opt/zope/2.11.0b1/lib/python/zope/component/_api.pyc matches /opt/zope/2.11.0b1/lib/python/zope/component/_api.py
+import zope.component._api # precompiled from /opt/zope/2.11.0b1/lib/python/zope/component/_api.pyc
+import zope.hookable # directory /opt/zope/2.11.0b1/lib/python/zope/hookable
+# /opt/zope/2.11.0b1/lib/python/zope/hookable/__init__.pyc matches /opt/zope/2.11.0b1/lib/python/zope/hookable/__init__.py
+import zope.hookable # precompiled from /opt/zope/2.11.0b1/lib/python/zope/hookable/__init__.pyc
+import zope.hookable._zope_hookable # dynamically loaded from /opt/zope/2.11.0b1/lib/python/zope/hookable/_zope_hookable.so
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/highlevel.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/highlevel.py
+import zopyx.smartprintng.core.highlevel # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/highlevel.pyc
+# /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/resources.pyc matches /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/resources.py
+import zopyx.smartprintng.core.resources # precompiled from /Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/resources.pyc
+# /opt/python-2.4.4/lib/python2.4/ConfigParser.pyc matches /opt/python-2.4.4/lib/python2.4/ConfigParser.py
+import ConfigParser # precompiled from /opt/python-2.4.4/lib/python2.4/ConfigParser.pyc
+Traceback (most recent call last):
+  File "demo_app.py", line 13, in ?
+    from zopyx.smartprintng.core.highlevel import convert
+  File "/Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/highlevel.py", line 13, in ?
+    from resources import getResourcesFor
+  File "/Users/ajung/src/zopyx.smartprintng.core/zopyx/smartprintng/core/resources.py", line 15, in ?
+    from ConfigParser import ConfigParser
+  File "/opt/python-2.4.4/lib/python2.4/ConfigParser.py", line 88, in ?
+    """
+KeyboardInterrupt
+# clear __builtin__._
+# clear sys.path
+# clear sys.argv
+# clear sys.ps1
+# clear sys.ps2
+# clear sys.exitfunc
+# clear sys.exc_type
+# clear sys.exc_value
+# clear sys.exc_traceback
+# clear sys.last_type
+# clear sys.last_value
+# clear sys.last_traceback
+# clear sys.path_hooks
+# clear sys.path_importer_cache
+# clear sys.meta_path
+# restore sys.stdin
+# restore sys.stdout
+# restore sys.stderr
+# cleanup __main__
+# cleanup[1] distutils
+# cleanup[1] distutils.sysconfig
+# cleanup[1] distutils.dep_util
+# cleanup[1] signal
+# cleanup[1] token
+# cleanup[1] zc
+# cleanup[1] encodings
+# cleanup[1] zopyx
+# cleanup[1] paste
+# cleanup[1] sre
+# cleanup[1] distutils.spawn
+# cleanup[1] opcode
+# cleanup[1] __future__
+# cleanup[1] distutils.util
+# cleanup[1] pkgutil
+# cleanup[1] BeautifulSoup
+# cleanup[1] sre_constants
+# cleanup[1] _codecs
+# cleanup[1] zlib
+# cleanup[1] modulefinder
+# cleanup[1] posix
+# cleanup[1] encodings.aliases
+# cleanup[1] exceptions
+# cleanup[1] sre_parse
+# cleanup[1] sre_compile
+# cleanup[1] site
+# cleanup[1] pkg_resources
+# cleanup[1] strop
+# cleanup[1] z3c
+# cleanup[1] encodings.ascii
+# cleanup[1] htmlentitydefs
+# cleanup[1] _weakref
+# cleanup[1] distutils.errors
+# cleanup[1] time
+# cleanup[1] distutils.text_file
+# cleanup[1] sgmllib
+# cleanup[1] zopyx.smartprintng
+# cleanup[1] zipimport
+# cleanup[1] zopyx.smartprintng.core
+# cleanup[1] distutils.log
+# cleanup[1] new
+# cleanup[1] codecs
+# cleanup[1] marshal
+# cleanup[1] zopyx.smartprintng.core.transformation
+# cleanup[1] _sre
+# cleanup[1] markupbase
+# cleanup[1] zopyx.smartprintng.core.interfaces
+# cleanup[1] inspect
+# cleanup[1] tokenize
+# cleanup[1] imp
+# cleanup[1] string
+# cleanup[1] dis
+# cleanup[1] re
+# cleanup[2] zope.hookable
+# cleanup[2] zope.event
+# cleanup[2] zope.component.bbb
+# cleanup[2] zope.interface.adapter
+# cleanup[2] zope.interface.advice
+# cleanup[2] zope.testing.cleanup
+# cleanup[2] zope.interface.interfaces
+# cleanup[2] zope.proxy.interfaces
+# cleanup[2] zope.deprecation.deprecation
+# cleanup[2] zope.interface.declarations
+# cleanup[2] UserDict
+# cleanup[2] zope.proxy._zope_proxy_proxy
+# cleanup[2] posixpath
+# cleanup[2] zope.proxy
+# cleanup[2] zope.deferredimport.deferredmodule
+# cleanup[2] weakref
+# cleanup[2] os
+# cleanup[2] zope.component._api
+# cleanup[2] zope.testing
+# cleanup[2] zope.deprecation
+# cleanup[2] zope.component.factory
+# cleanup[2] zope.component.bbb.interfaces
+# cleanup[2] types
+# cleanup[2] zope.interface.interface
+# cleanup[2] zope.component._declaration
+# cleanup[2] zope.deferredimport
+# cleanup[2] zope.component.registry
+# cleanup[2] zope.component.globalregistry
+# cleanup[2] copy_reg
+# cleanup[2] zope.interface
+# cleanup[2] zope.hookable._zope_hookable
+# cleanup[2] zope
+# cleanup[2] stat
+# cleanup[2] warnings
+# cleanup[2] zope.interface.ro
+# cleanup[2] zope.interface._zope_interface_coptimizations
+# cleanup[2] os.path
+# cleanup[2] zope.interface.exceptions
+# cleanup[2] linecache
+# cleanup sys
+# cleanup __builtin__
+# cleanup ints: 329 unfreed ints in 8 out of 13 blocks
+# cleanup floats
