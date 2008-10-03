@@ -147,7 +147,7 @@ class Renderer(object):
             src = img['src'].encode('ascii', 'ignore')
             try:
                 image_path = self._fetchImage(src)
-                img['src'] = img_path
+                img['src'] = image_path
             except Exception, e:
                 LOG.error('Error handling image (%s)' % e, exc_info=True)
                 # remove image from soup since we can handle # the error on our
@@ -173,6 +173,6 @@ class Renderer(object):
         # different image types.
         new_img_path = '%s/%s.png' % (self.tempdir, random.random())
         pil_img = PIL.Image.open(cStringIO.StringIO(img_data))
-        pil_img.save(new_img, 'PNG')
+        pil_img.save(new_img_path, 'PNG')
         del pil_img
         LOG.debug('Image %s stored as %s' % (src, new_img_path))

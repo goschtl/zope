@@ -20,7 +20,6 @@ class ExternalImageFetcher(object):
         self.context = context
 
     def fetch(self, src):
-
         img_tp = urlparse.urlparse(src)
         if not img_tp[0] in ('http', 'https', 'ftp'):
             raise ValueError('Unable to handle image reference %s' % src)
