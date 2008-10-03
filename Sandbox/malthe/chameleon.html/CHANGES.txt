@@ -4,10 +4,13 @@ Changelog
 Head
 ~~~~
 
+chameleon.html 0.3 (released 10/2/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Comments are now ignored (previously an exception would be
   raised). [malthe]
 
-chameleon.html 0.2 (released 9/25/2008)
+chameleon.html 0.2 (released 10/1/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Added 'append' and 'prepend' insertion modes. [malthe]
