@@ -580,6 +580,40 @@ class CalendarRequestTests(ZopeTestCase.FunctionalTestCase):
         events = caltool.getEventsForThisDay(thisDay=DateTime('2002/5/31'))
         self.assertEqual( len(events), 3 )
 
+    def test_veryLongEvent(self):
+        # Proper handling of events that last more than 1 year
+        # and end in the same month
+        site = self.app.site
+        site.invokeFactory('Event', id='long', title='A long event',
+                           start_date='2007/10/12 00:00:00',
+                           end_date='2008/10/12 00:00:00')
+        site.portal_workflow.doActionFor(site.long, 'publish')
+        expected = {'eventslist': [{'start': None, 'end': None, 
+                                    'title': 'A long event'}], 
+                                    'event': 1, 'day': 13}
+        events = site.portal_calendar.catalog_getevents(2007, 10)
+        self.assertEqual(events[13], expected)
+        
+    def test_lastDayRenderingOfLongEvent(self):
+        # Bug in catalog_getevents doesn't include events
+        # that spawn over months in the last day of each month
+        site = self.app.site
+        site.invokeFactory('Event', id='long', title='A long event',
+                           start_date='2007/10/12 23:50:00',
+                           end_date='2008/03/20 00:00:00')
+
+        site.portal_workflow.doActionFor(site.long, 'publish')
+        expected = {'eventslist': [{'start': None, 'end': None, 
+                                    'title': 'A long event'}], 
+                                    'event': 1}
+        # some dates to try: (day,month,year)
+        dates = ( (30,10,2007), (31,10,2007), (29,11,2007), (30,11,2007),
+                  (30,12,2007), (31,12,2007), (28,2,2008), (28,2,2008) )
+        for (day,month,year) in dates:
+            events = site.portal_calendar.catalog_getevents(year, month)
+            expected['day'] = day
+            self.assertEqual(events[day], expected)
+
     def test_lastDayRendering(self):
         # Bug in catalog_getevents included events starting at 00:00:00
         # on the next day
