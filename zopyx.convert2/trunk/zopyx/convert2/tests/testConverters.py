@@ -13,11 +13,11 @@ import sys
 import unittest
 
 from zope.interface.verify import verifyClass
-from zopyx.convert.interfaces import IFOConverter, IHTML2FOConverter, IXSLFOConverter
+from zopyx.convert2.interfaces import IFOConverter, IHTML2FOConverter, IXSLFOConverter
 
-from zopyx.convert import HTML2FOConverter
-from zopyx.convert import RTFConverter, WMLConverter, DOCXConverter, ODTConverter
-from zopyx.convert import PDFConverter, Converter
+from zopyx.convert2 import HTML2FOConverter
+from zopyx.convert2 import RTFConverter, WMLConverter, DOCXConverter, ODTConverter
+from zopyx.convert2 import PDFConverter, Converter
 
 
 html1 = os.path.join(os.path.dirname(__file__), 'data', 'test1.html')
