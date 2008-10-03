@@ -1,0 +1,59 @@
+=======
+CHANGES
+=======
+
+version 3.7.0 (2008-10-03)
+--------------------------
+
+New features:
+
+- Added a 'postOnly' option on CookieClientIdManagers to only allow setting
+  the client id cookie on POST requests.  This is to further reduce risk from
+  broken caches handing the same client id out to multiple users. (Of
+  course, it doesn't help if caches are broken enough to cache POSTs.)
+
+version 3.6.0 (2008-08-12)
+--------------------------
+
+New features:
+
+- Added a 'secure' option on CookieClientIdManagers to cause the secure
+  set-cookie option to be used, which tells the browser not to send the
+  cookie over http.
+
+  This provides enhanced security for ssl-only applications.
+
+- Only set the client-id cookie if it isn't already set and try to
+  prevent the header from being cached.  This is to minimize risk from
+  broken caches handing the same client id out to multiple users. 
+
+version 3.5.2 (2008-06-12)
+--------------------------
+
+- Remove ConflictErrors caused on SessionData caused by setting
+  ``lastAccessTime``.
+
+Version 3.5.1 (2008-04-30)
+--------------------------
+
+- Split up the ZCML to make it possible to re-use more reasonably.
+
+
+Version 3.5.0 (2008-03-11)
+--------------------------
+
+- Change the default session "resolution" to a sane value and document/test it.
+
+
+Version 3.4.1 (2007-09-25)
+--------------------------
+
+- Fixed some meta data and switch to tgz release.
+
+
+Version 3.4.0 (2007-09-25)
+--------------------------
+
+- Initial release
+
+- Moved parts from ``zope.app.session`` to this packages
