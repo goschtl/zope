@@ -4,6 +4,9 @@ Products.CMFCalendar Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Fixed a bug were the last day of each month was missed.
+  (see https://dev.plone.org/plone/ticket/7238)
+
 - Event GenericSetup type definition: Add an icon URL expression to the 
   Event content type definition.
 

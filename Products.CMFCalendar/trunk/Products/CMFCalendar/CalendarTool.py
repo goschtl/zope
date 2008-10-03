@@ -226,16 +226,17 @@ class CalendarTool (UniqueObject, SimpleItem):
                 includedevents.append(result.getRID())
             event={}
             # we need to deal with events that end next month
-            if  result.end.month() != month:
-                # doesn't work for events that last ~12 months
-                # fix it if it's a problem, otherwise ignore
+            if  result.end.greaterThan(last_date):
                 eventEndDay = last_day
                 event['end'] = None
             else:
                 eventEndDay = result.end.day()
-                event['end'] = result.end.Time()
+                if result.end == result.end.earliestTime():
+                    event['end'] = (result.end - 1).latestTime().Time()
+                else:
+                    event['end'] = result.end.Time()
             # and events that started last month
-            if result.start.month() != month:  # same as above (12 month thing)
+            if result.start.lessThan(first_date):
                 eventStartDay = 1
                 event['start'] = None
             else:
@@ -259,14 +260,17 @@ class CalendarTool (UniqueObject, SimpleItem):
                          'title': event['title']} )
                     eventDays[eventday]['event'] = 1
 
-                if result.end == result.end.earliestTime():
+                if (result.end == result.end.earliestTime() and 
+                    event['end'] is not None): 
+                    # ends some day this month at midnight
                     last_day_data = eventDays[allEventDays[-2]]
                     last_days_event = last_day_data['eventslist'][-1]
                     last_days_event['end'] = (result.end-1).latestTime().Time()
                 else:
                     eventDays[eventEndDay]['eventslist'].append( 
-                        { 'end': result.end.Time()
-                        , 'start': None, 'title': event['title']} )
+                        { 'end': event['end'],
+                          'start': None,
+                          'title': event['title']} )
                     eventDays[eventEndDay]['event'] = 1
             else:
                 eventDays[eventStartDay]['eventslist'].append(event)
