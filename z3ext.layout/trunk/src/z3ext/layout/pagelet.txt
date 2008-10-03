@@ -225,18 +225,36 @@ We can get default pagelet view for content. First register default view
 
 Pagelet without name
 
-  >>> class IMyPagelet(interface.Interface):
+  >>> class IMyPagelet1(interface.Interface):
   ...     pass
+
+  >>> class IMyPagelet2(interface.Interface):
+  ...     pass
+
+  >>> template2 = os.path.join(temp_dir, 'pagelet2.pt')
+  >>> open(template2, 'w').write('''<div>My pagelet2</div>''')
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
   ...       template="%s"
-  ...       provides="z3ext.layout.TESTS.IMyPagelet"
+  ...       provides="z3ext.layout.TESTS.IMyPagelet1"
+  ...       permission="zope.Public" />
+  ...   <z3ext:pagelet
+  ...       template="%s"
+  ...       provides="z3ext.layout.TESTS.IMyPagelet2"
   ...       permission="zope.Public" />
   ... </configure>
-  ... """%template, context)
+  ... """%(template, template2), context)
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet)
-  >>> IMyPagelet.providedBy(pagelet)
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet1)
+  >>> IMyPagelet1.providedBy(pagelet)
   True
+  >>> pagelet.render()
+  u'<div>My pagelet</div>'
+  
+  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet2)
+  >>> IMyPagelet2.providedBy(pagelet)
+  True
+  >>> pagelet.render()
+  u'<div>My pagelet2</div>'

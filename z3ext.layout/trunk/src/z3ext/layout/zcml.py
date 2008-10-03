@@ -330,7 +330,7 @@ def pageletDirective(
     # register pagelet
     for iface in provides:
         _context.action(
-            discriminator = ('z3ext:pagelet', for_, layer, name),
+            discriminator = ('z3ext:pagelet', for_, layer, name, iface),
             callable = handler,
             args = ('registerAdapter',
                     new_class, (for_, layer), iface, name, _context.info))
