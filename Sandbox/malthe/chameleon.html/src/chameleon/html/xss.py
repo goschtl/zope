@@ -22,6 +22,10 @@ def parse_xss(stream):
 
     parser = CSSParser(loglevel=0)
     for rule in parser.parseFile(stream):
+        # ignore comments,
+        if rule.type == -1:
+            continue
+        
         properties = {}
         for prop in rule.style:
             properties[str(prop.name)] = prop.value
