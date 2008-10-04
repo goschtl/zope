@@ -8,9 +8,6 @@ import os
 import sys
 from elementtree.ElementTree import parse, tostring, SubElement        
 
-from zope.interface import implements
-
-from interfaces import IFOConverter
 from config import java
 from tidy import tidyhtml
 from util import newTempfile, runcmd, which, win32, checkEnvironment

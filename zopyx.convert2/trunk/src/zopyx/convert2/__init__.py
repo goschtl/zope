@@ -4,7 +4,6 @@
 # (C) 2007, 2008, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
-from interfaces import IFOConverter, IHTML2FOConverter, IXSLFOConverter
 
 import fo
 import xinc

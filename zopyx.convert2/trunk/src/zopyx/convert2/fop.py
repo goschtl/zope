@@ -11,9 +11,6 @@ from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment
 from logger import LOG
 
-from zope.interface import implements
-from interfaces import IFOConverter
-
 fop_home = os.environ.get('FOP_HOME')
 
 def _check_fop():

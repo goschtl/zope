@@ -6,9 +6,6 @@
 
 import os
 
-from zope.interface import implements
-
-from interfaces import IXSLFOConverter
 from fo import HTML2FO
 import registry
 
@@ -42,7 +39,6 @@ class Converter(object):
 class BaseConverter(object):
     """High-level OO interface to XSL-FO conversions """
 
-    implements(IXSLFOConverter)
 
     def __init__(self, filename, encoding='utf-8', cleanup=False, verbose=False):
         self.filename = filename

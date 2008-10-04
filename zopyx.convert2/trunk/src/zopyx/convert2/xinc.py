@@ -11,8 +11,6 @@ from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment
 from logger import LOG
 
-from zope.interface import implements
-from interfaces import IFOConverter
 
 xinc_home = os.environ.get('XINC_HOME')
 

@@ -11,8 +11,6 @@ from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment
 from logger import LOG
 
-from zope.interface import implements
-from interfaces import IFOConverter
 from tidy import tidyhtml
 
 def _check_prince():

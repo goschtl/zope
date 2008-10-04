@@ -11,10 +11,7 @@ from convert import BaseConverter
 from util import runcmd, which, win32, checkEnvironment
 from logger import LOG
 
-from zope.interface import implements
-from interfaces import IFOConverter
-
-xfc_dir = os.environ.get('XFC_DIR')
+/bin/bash: :qa: command not found
 
 def _check_xfc():
     if not checkEnvironment('XFC_DIR'):
