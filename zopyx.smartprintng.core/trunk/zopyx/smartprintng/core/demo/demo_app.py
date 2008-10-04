@@ -21,7 +21,7 @@ class ITestContent(Interface):
 class TestContent(object):
     implements(ITestContent)
 
-html = file(os.path.join(os.path.dirname(__file__, 'demo.html'))).read()
+html = file(os.path.join(os.path.dirname(__file__), 'demo.html')).read()
 
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
