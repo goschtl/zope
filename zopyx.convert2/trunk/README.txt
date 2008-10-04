@@ -1,9 +1,8 @@
-=======================================
-A Python interface to XSL-FO libraries. 
-=======================================
+A Python interface to external converters performing conversions of HTML to PDF, RTF, ODT, OOXML or WML
+-------------------------------------------------------------------------------------------------------
 
-The zopyx.convert package helps you to convert HTML to PDF, RTF, ODT, DOCX and
-WML using XSL-FO technology.
+The zopyx.convert2 package helps you to convert HTML to PDF, RTF, ODT, DOCX and
+WML using XSL-FO technology or using PrinceXML.
 
 
 Requirements
@@ -27,6 +26,10 @@ __ http://www.lunasil.com/products.html
 
 __ http://xmlgraphics.apache.org/fop/download.html#dist-type                                            
 
+- or `PrinceXML`__ (commercial) for PDF support 
+
+__ http://www.princexml.com/
+
 - `BeautifulSoup`__  (will be installed automatically through easy_install. See Installation.)
 
 __ http://www.crummy.com/software/BeautifulSoup/
@@ -38,11 +41,12 @@ __ http://effbot.org/zone/element-index.html
 Installation
 ============
 
-- install **zopyx.convert** either using ``easy_install`` or by downloading the sources from the Python Cheeseshop. 
+- install **zopyx.convert2** either using ``easy_install`` or by downloading the sources from the Python Cheeseshop. 
   This will install automatically the Beautifulsoup and Elementree modules if necessary.
 - the environment variable *$XFC_DIR* must be set and point to the root of your XFC installation directory
 - the environment variable *$XINC_HOME* must be set and to point to the root of your XINC installation directory
 - the environment variable *$FOP_HOME* must be set and point to the root of your FOP installation directory
+- the 'prince' binary must be in the $PATH if you are using PrinceXML
 
 Supported platforms
 ===================
@@ -53,7 +57,7 @@ Windows, Unix
 Subversion repository
 =====================
 
-- http://svn-public.zopyx.com/viewvc/python-projects/zopyx.convert/trunk/
+- https://zope/zopyx.convert2/trunk (for read-only checkouts)/python-projects/zopyx.convert2/trunk/
 
 
 Usage
@@ -61,7 +65,7 @@ Usage
 
 Some examples from the Python command-line::
 
-  from zopyx.convert import Converter
+  from zopyx.convert2 import Converter
   C = Converter('/path/to/some/file.html')
   pdf_filename = C('pdf')         # using XINC
   pdf2_filename = C('pdf2')       # using FOP
@@ -72,13 +76,13 @@ Some examples from the Python command-line::
 
 A very simple command-line converter is also available::
 
-  xslfo-convert --format rtf --output foo.rtf sample.html
+  html-convert --format rtf --output foo.rtf sample.html
 
 
-`xslfo-convert` has a --test option that will convert some
+`html-convert` has a --test option that will convert some
 sample HTML. If everything is ok then you should see something like that::
 
-  >xslfo-convert --test
+  >html-convert --test
   Entering testmode
   pdf: /tmp/tmpuOb37m.html -> /tmp/tmpuOb37m.pdf
   rtf: /tmp/tmpuOb37m.html -> /tmp/tmpuOb37m.rtf
@@ -92,7 +96,7 @@ sample HTML. If everything is ok then you should see something like that::
   wml: /tmp/tmpZ6PGo9.html -> /tmp/tmpZ6PGo9.wml
 
 
-How zopyx.convert works internally
+How zopyx.convert2 works internally
 ==================================
 
 - The source HTML file is converted to XHTML using mxTidy
@@ -106,7 +110,7 @@ How zopyx.convert works internally
 Known issues
 ============
 
-- If you are using zopyx.convert together with FOP: use the latest FOP 0.94
+- If you are using zopyx.convert2 together with FOP: use the latest FOP 0.94
   only.  Don't use any packaged FOP version like the one from MacPorts which is
   known to be broken.    
 
@@ -118,13 +122,13 @@ Known issues
 Author
 ======
 
-**zopyx.convert** was written by Andreas Jung for ZOPYX Ltd. & Co. KG, Tuebingen, Germany.
+**zopyx.convert2** was written by Andreas Jung for ZOPYX Ltd. & Co. KG, Tuebingen, Germany.
 
 
 License
 =======
 
-**zopyx.convert** is published under the Zope Public License (ZPL 2.1).
+**zopyx.convert2** is published under the Zope Public License (ZPL 2.1).
 See LICENSE.txt.
 
 
