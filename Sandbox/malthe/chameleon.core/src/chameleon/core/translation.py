@@ -246,6 +246,35 @@ class Node(object):
                 
             _.append(clauses.Write(content))
 
+        # dynamic text
+        elif self.translate is not None and \
+                 True in map(lambda part: isinstance(part, types.expression), text):
+            if len(self.element):
+                raise ValueError(
+                    "Can't translate dynamic text block with elements in it.")
+                
+            subclauses = []
+            subclauses.append(clauses.Define(
+                types.declaration((self.symbols.out, self.symbols.write)),
+                types.template('%(init)s.initialize_stream()')))
+
+            for part in text:
+                if isinstance(part, types.expression):
+                    subclauses.append(clauses.Write(part))
+                else:
+                    part = part.strip().replace('  ', ' ').replace('\n', '')
+                    if part != "":
+                        subclauses.append(clauses.Out(part))
+
+            # attempt translation
+            subclauses.append(clauses.Assign(
+                self.translate_expression(
+                types.value('%(out)s.getvalue()'), 
+                default=None), self.symbols.tmp))
+
+            _.append(clauses.Group(subclauses))
+            _.append(clauses.Write(types.value(self.symbols.tmp)))
+
         # include
         elif self.include:
             # compute macro function arguments and create argument string

@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+- Added support for translating dynamic body text (used in
+  interpolation expressions). [malthe]
+
 - Added support for macros prebound to keyword arguments. [malthe]
 
 1.0b1 (released 2/10/2008)
