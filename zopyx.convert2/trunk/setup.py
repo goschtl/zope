@@ -12,7 +12,7 @@ CLASSIFIERS = [
     'Programming Language :: Python',
 ]
 
-version = '2.0.0-dev'
+version = '2.0.0b1'
 
 desc = unicode(open('README.txt').read().strip(), 'utf-8')
 changes = open('CHANGES.txt').read().strip()
