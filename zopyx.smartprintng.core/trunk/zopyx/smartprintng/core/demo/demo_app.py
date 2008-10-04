@@ -25,18 +25,22 @@ html = file(os.path.join(os.path.dirname(__file__), 'demo.html')).read()
 
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
-resources_configuration_file = os.path.join(os.path.dirname(__file__), 'resources', 'resources.ini')
-resources.registerResource(ITestContent, resources_configuration_file)
 
-context = TestContent()
-result = convert(context=context,
-                 html=html,
-                 aggregator_name='foo',
-                 styles=['fop_styles.css', 'demo_styles.css'],
-                 transformations=['zopyx.smartprintng.imageremover', 'zopyx.smartprintng.pagebreaker'],
-                 resource_name='demo',
-                 converter='pdf-prince',
-                 beautify_html=False,
-                 destination_filename='demo.pdf')
+def main():
+    resources_configuration_file = os.path.join(os.path.dirname(__file__), 'resources', 'resources.ini')
+    resources.registerResource(ITestContent, resources_configuration_file)
 
-print result
+    context = TestContent()
+    result = convert(context=context,
+                     html=html,
+                     aggregator_name='foo',
+                     styles=['fop_styles.css', 'demo_styles.css'],
+                     transformations=['zopyx.smartprintng.imageremover', 'zopyx.smartprintng.pagebreaker'],
+                     resource_name='demo',
+                     converter='pdf-prince',
+                     destination_filename='demo.pdf')
+    print 'Generated:', 
+    print os.path.abspath(result)
+
+if __name__ == '__main__':
+    sys.exit(main())

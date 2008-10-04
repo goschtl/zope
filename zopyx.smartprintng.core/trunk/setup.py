@@ -31,7 +31,5 @@ setup(name='zopyx.smartprintng.core',
           # -*- Extra requirements: -*-
       ],
       extras_require=dict(test=['pysqlite', 'zope.testing']),
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points={'console_scripts': ['spng-demo= zopyx.smartprintng.core.demo.demo_app:main',]},
       )
