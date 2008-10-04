@@ -20,7 +20,7 @@ def _check_xinc():
     if not checkEnvironment('XINC_HOME'):
         return False
 
-    exe_name = win32 and 'xinc.exe' or 'xinc'
+    exe_name = win32 and '\\bin\\windows\\xinc.exe' or 'bin/unix/xinc'
     full_exe_name = os.path.join(xinc_home, exe_name)
     if not os.path.exists(full_exe_name):
         LOG.debug('%s does not exist' % full_exe_name)
@@ -38,7 +38,7 @@ def fo2pdf(fo_filename, output_filename=None):
         raise RuntimeError("The external XINC converter isn't available")
 
     if sys.platform == 'win32':
-        cmd = '%s\\xinc.exe -fo "%s" -pdf "%s"' % (xinc_home, fo_filename, output_filename)
+        cmd = '%s\\bin\\windows\\xinc.exe -fo "%s" -pdf "%s"' % (xinc_home, fo_filename, output_filename)
     else:
         cmd = '"%s/bin/unix/xinc" -fo "%s" -pdf "%s"' % (xinc_home, fo_filename, output_filename)
     status, output = runcmd(cmd)
