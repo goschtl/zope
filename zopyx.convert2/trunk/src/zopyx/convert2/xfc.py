@@ -7,7 +7,8 @@
 import os
 import sys
 
-from util import newTempfile, runcmd, which, win32, checkEnvironment
+from convert import BaseConverter
+from util import runcmd, which, win32, checkEnvironment
 from logger import LOG
 
 from zope.interface import implements
@@ -18,6 +19,14 @@ xfc_dir = os.environ.get('XFC_DIR')
 def _check_xfc():
     if not checkEnvironment('XFC_DIR'):
         return False
+
+    # check only for fo2rtf (we expect that all other fo2XXX
+    # converters are also installed properly)
+    full_exe_name = os.path.join(xfc_dir, 'fo2rtf')
+    if not os.path.exists(full_exe_name):
+        LOG.debug('%s does not exist' % full_exe_name)
+        return False
+
     return True
 
 
@@ -40,32 +49,50 @@ def fo2xfc(fo_filename, format='rtf', output_filename=None):
     status, output = runcmd(cmd)
     if status != 0:
         raise RuntimeError('Error executing: %s' % cmd)
-
     return output_filename
 
+class RTFConverter(BaseConverter):
 
-class RTFConverter(object):
+    name = 'rtf-xfc'
+    output_format = 'rtf'
+    visible_name = 'RTF (XINC)'
+    visible = True
 
-    implements(IFOConverter)
-    def convert(self, fo_filename, output_filename=None):
-        return fo2xfc(fo_filename, 'rtf', output_filename)
+    @staticmethod
+    def available():
+        return xfc_available
 
-class ODTConverter(object):
+    def convert(self, output_filename=None, **options):
 
-    implements(IFOConverter)
-    def convert(self, fo_filename, output_filename=None):
-        return fo2xfc(fo_filename, 'odt', output_filename)
+        self.convert2FO(**options)
+        return fo2xfc(self.fo_filename, self.output_format, output_filename)
 
-class WMLConverter(object):
+class WMLConverter(RTFConverter):
 
-    implements(IFOConverter)
-    def convert(self, fo_filename, output_filename=None):
-        return fo2xfc(fo_filename, 'wml', output_filename)
+    name = 'wml-xfc'
+    output_format = 'wml'
+    visible_name = 'WML (XINC)'
+    visible = True
 
-class DOCXConverter(object):
+class DOCXConverter(RTFConverter):
 
-    implements(IFOConverter)
-    def convert(self, fo_filename, output_filename=None):
-        return fo2xfc(fo_filename, 'docx', output_filename)
+    name = 'ooxml-xfc'
+    output_format = 'docx'
+    visible_name = 'OOXML (XINC)'
+    visible = True
+
+class ODTConverter(RTFConverter):
+
+    name = 'odt-xfc'
+    output_format = 'odt'
+    visible_name = 'ODT (XINC)'
+    visible = True
+
 
 xfc_available = _check_xfc()
+
+from registry import registerConverter
+registerConverter(RTFConverter)
+registerConverter(WMLConverter)
+registerConverter(DOCXConverter)
+registerConverter(ODTConverter)
