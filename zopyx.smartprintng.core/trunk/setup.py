@@ -27,7 +27,7 @@ setup(name='zopyx.smartprintng.core',
           'zope.component',
           'zope.pagetemplate',
           'zope.app.testing',
-          'zopyx.convert',
+          'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
       extras_require=dict(test=['pysqlite', 'zope.testing']),
