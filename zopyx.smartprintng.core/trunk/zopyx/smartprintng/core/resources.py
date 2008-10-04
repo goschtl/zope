@@ -28,7 +28,7 @@ class Resource(dict):
         template_filename - path to template file
         description - textual description of the template
         styles - dict mapping style names to their full filenames
-        for_converters - list of converter name as defined through zopyx.convert
+        for_converters - list of converter name as defined through zopyx.convert2
         configuration_filename - full path of defining configuration file
     """
 
