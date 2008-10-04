@@ -12,6 +12,7 @@ from util import newTempfile
 import fo
 import fop
 import xinc
+import xfc
 import prince
 import registry 
 
