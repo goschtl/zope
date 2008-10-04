@@ -37,4 +37,4 @@ setup(name='zopyx.convert2',
       install_requires=['setuptools', 'elementtree', 'BeautifulSoup'],
       namespace_packages=['zopyx'],
       entry_points={'console_scripts': ['xslfo-convert = zopyx.convert.cli:main',]},
-      )                       
+      )
