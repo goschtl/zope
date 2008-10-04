@@ -12,8 +12,8 @@ Highlevel API for 3rd-party applications
 
 from resources import getResourcesFor
 from renderer import Renderer
-from zopyx.convert.registry import availableConverters
-from zopyx.convert.convert import Converter
+from zopyx.convert2.registry import availableConverters
+from zopyx.convert2.convert import Converter
 
 
 def convert(context,
