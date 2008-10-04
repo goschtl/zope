@@ -1,0 +1,6 @@
+2.0.0b1 (04.10.2008)
+====================
+
+- initial release
+- complete new reimplementation of zopyx.convert
+- added support for PrinceXML
