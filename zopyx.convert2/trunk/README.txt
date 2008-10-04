@@ -2,7 +2,8 @@ A Python interface to external converters performing conversions of HTML to PDF,
 -------------------------------------------------------------------------------------------------------
 
 The zopyx.convert2 package helps you to convert HTML to PDF, RTF, ODT, DOCX and
-WML using XSL-FO technology or using PrinceXML.
+WML using XSL-FO technology or using PrinceXML. This package is used as the
+low-level API for zopyx.smartprintng.core.
 
 
 Requirements
@@ -97,7 +98,7 @@ sample HTML. If everything is ok then you should see something like that::
 
 
 How zopyx.convert2 works internally
-==================================
+===================================
 
 - The source HTML file is converted to XHTML using mxTidy
 - the XHTML file is converted to FO using the great "csstoxslfo" converter
