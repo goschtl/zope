@@ -34,7 +34,7 @@ setup(name='zopyx.convert2',
       package_dir = {'': 'src'},
       include_package_data = True,
       zip_safe=False,
-      install_requires=['setuptools', 'elementtree', 'BeautifulSoup'],
+      install_requires=['setuptools', 'elementtree', 'BeautifulSoup', 'zope.interface'],
       namespace_packages=['zopyx'],
       entry_points={'console_scripts': ['html-convert = zopyx.convert.cli:main',]},
       )
