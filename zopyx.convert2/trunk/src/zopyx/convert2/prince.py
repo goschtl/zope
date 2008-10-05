@@ -24,7 +24,7 @@ def html2pdf(html_filename, output_filename=None, **prince_options):
     """ Convert a HTML file to PDF using FOP"""
 
     if not output_filename:
-        output_filename = self.newTempfile(suffix='.pdf')
+        output_filename = newTempfile(suffix='.pdf')
 
     if not prince_available:
         raise RuntimeError("The external PrinceXML converter isn't available")
