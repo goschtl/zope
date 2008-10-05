@@ -1,0 +1,67 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   i18n_domain="z3ext">
+
+  <includeDependencies package="z3ext.layout" />
+
+  <!-- adapter provides IPagelet for (context, request) -->
+  <adapter factory=".pagelet.queryPagelet" />
+  
+  <!-- @@pagelet view -->
+  <adapter
+     name="pagelet"
+     factory=".pagelet.PageletPublisher" />
+
+  <class class=".pagelet.PageletPublisher">
+    <allow 
+       attributes="__getitem__"
+       interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </class>
+
+  <!-- default layouts -->
+  <z3ext:layout
+     layout="viewspace"
+     for="zope.app.component.interfaces.ISite"
+     title="Default layout (z3ext.layout)"
+     description="Default layout, registered for IDefaultBrowserLayer."
+     template="layoutcontent.pt" />
+
+  <z3ext:layout
+     name="viewspace"
+     layout="workspace"
+     title="Viewspace layout (z3ext.layout)"
+     description="Default viewpsace layout, registered for IDefaultBrowserLayer."
+     for="zope.app.component.interfaces.ISite"
+     template="layoutviewspace.pt" />
+
+  <z3ext:layout
+     name="workspace"
+     layout="portal"
+     title="Workspace layout (z3ext.layout)"
+     description="Default workspace layout, registered for IDefaultBrowserLayer."
+     for="zope.app.component.interfaces.ISite"
+     template="layoutworkspace.pt" />
+
+  <z3ext:layout
+     name="portal"
+     title="Portal layout (z3ext.layout)"
+     description="Default portal layout, registered for IDefaultBrowserLayer"
+     for="zope.app.component.interfaces.ISite"
+     template="layoutportal.pt" />
+
+  <!-- Registering documentation with API doc -->
+  <configure
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     xmlns:apidoc="http://namespaces.zope.org/apidoc"
+     zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+       id="z3ext-layout"
+       title="z3ext.layout - Template Layouts"
+       doc_path="README.txt"
+       parent="z3ext" />
+  </configure>
+
+</configure>
