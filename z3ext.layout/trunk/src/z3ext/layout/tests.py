@@ -33,6 +33,9 @@ class IFolder1_1(interface.Interface):
 class IFolder1_1_1(interface.Interface):
     pass
 
+class ITestPagelet(interface.Interface):
+    pass
+
 
 class Folder(SampleContainer):
     pass
@@ -48,6 +51,7 @@ def setUp(test):
     root.__name__ = 'root'
     test.globs['root'] = root
     component.provideAdapter(pagelet.queryPagelet)
+    component.provideAdapter(pagelet.PageletPublisher, name='pagelet')
     setup.setUpTestAsModule(test, 'z3ext.layout.TESTS')
 
 

@@ -8,6 +8,17 @@
 
   <!-- adapter provides IPagelet for (context, request) -->
   <adapter factory=".pagelet.queryPagelet" />
+  
+  <!-- @@pagelet view -->
+  <adapter
+     name="pagelet"
+     factory=".pagelet.PageletPublisher" />
+
+  <class class=".pagelet.PageletPublisher">
+    <allow 
+       attributes="__getitem__"
+       interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </class>
 
   <!-- default layouts -->
   <z3ext:layout

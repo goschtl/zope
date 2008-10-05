@@ -234,11 +234,13 @@ Pagelet without name
   >>> template2 = os.path.join(temp_dir, 'pagelet2.pt')
   >>> open(template2, 'w').write('''<div>My pagelet2</div>''')
 
+  >>> from z3ext.layout.tests import ITestPagelet
+
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
   ...       template="%s"
-  ...       provides="z3ext.layout.TESTS.IMyPagelet1"
+  ...       provides="z3ext.layout.tests.ITestPagelet"
   ...       permission="zope.Public" />
   ...   <z3ext:pagelet
   ...       template="%s"
@@ -247,14 +249,25 @@ Pagelet without name
   ... </configure>
   ... """%(template, template2), context)
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet1)
-  >>> IMyPagelet1.providedBy(pagelet)
+  >>> pagelet = component.queryMultiAdapter(
+  ...     (object(), TestRequest()), ITestPagelet)
+  
+  >>> ITestPagelet.providedBy(pagelet)
   True
   >>> pagelet.render()
   u'<div>My pagelet</div>'
-  
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), IMyPagelet2)
+
+  >>> request = TestRequest()
+  >>> pagelet = component.queryMultiAdapter((object(), request), IMyPagelet2)
   >>> IMyPagelet2.providedBy(pagelet)
   True
   >>> pagelet.render()
   u'<div>My pagelet2</div>'
+
+Access nameless pagelet from view
+
+  >>> pagelet = component.getMultiAdapter((object(), request), name='pagelet')
+
+  >>> print pagelet.publishTraverse(
+  ...     request, 'z3ext.layout.tests.ITestPagelet')
+  <div>My pagelet</div>

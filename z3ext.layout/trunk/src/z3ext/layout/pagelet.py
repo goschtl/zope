@@ -18,6 +18,8 @@ $Id$
 from zope import interface, component
 from zope.component import queryMultiAdapter
 from zope.publisher.browser import BrowserPage
+from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.tales.expressions import SimpleModuleImporter
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.publisher.browser import queryDefaultViewName
 
@@ -89,3 +91,38 @@ class BrowserPagelet(BrowserPage):
             self.request.response.redirect(url)
 
         self.isRedirected = True
+
+
+class PageletPublisher(object):
+    interface.implements(IBrowserPublisher)
+    component.adapts(interface.Interface, interface.Interface)
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        self.modules = SimpleModuleImporter()
+
+    def publishTraverse(self, request, name):
+        try:
+            return self[name]
+        except KeyError:
+            pass
+
+        raise NotFound(self.context, name, request)
+
+    def __getitem__(self, name):
+        if name:
+            iface, name = name.rsplit('.', 1)
+            iface = getattr(self.modules[iface], name)
+        else:
+            iface = IPagelet
+
+        view = queryMultiAdapter((self.context, self.request), iface)
+        if view is not None:
+            view.update()
+            return view.render()
+
+        raise KeyError(name)
+
+    def browserDefault(self, request):
+        return self.context, ('',)

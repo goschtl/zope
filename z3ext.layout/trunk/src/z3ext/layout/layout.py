@@ -18,7 +18,6 @@ $Id$
 from zope import interface
 from zope.publisher import browser
 from zope.component import getMultiAdapter
-
 from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
