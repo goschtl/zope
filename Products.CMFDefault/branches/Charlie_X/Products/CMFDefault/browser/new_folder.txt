@@ -1,0 +1,86 @@
+Browser Views for IFolderish
+
+
+  The required environment:
+
+    Setting up a dummy site with required tools::
+
+      >>> from Products.CMFCore.tests.base.dummy import DummySite
+      >>> site = DummySite('site')
+
+      >>> from Products.CMFCore.tests.base.dummy import DummyTool
+      >>> from zope.component import getSiteManager
+      >>> from Products.CMFCore.interfaces import IPropertiesTool
+      >>> sm = getSiteManager()
+      >>> mtool = site._setObject('portal_membership', DummyTool())
+      >>> ptool = site._setObject('portal_properties', DummyTool())
+      >>> sm.registerUtility(ptool, IPropertiesTool)
+      >>> ttool = site._setObject('portal_types', DummyTool())
+      >>> utool = site._setObject('portal_url', DummyTool())
+
+
+  Basic functionality without security setup:
+
+    Setting up a simple request and an empty context object::
+
+      >>> class DummyRequest(dict):
+      ...     def __init__(self):
+      ...         self['ACTUAL_URL'] = 'actual_url'
+      ...         self.form = {}
+      >>> request = DummyRequest()
+
+      >>> from Products.CMFCore.PortalFolder import PortalFolder
+      >>> context = PortalFolder('foo').__of__(site)
+
+    The FolderView interface used by templates::
+
+      >>> from Products.CMFDefault.browser.folder import FolderView
+      >>> view = FolderView(context, request)
+
+      >>> view.title()
+      u''
+
+      >>> view.description()
+      u''
+
+      >>> view.has_local()
+      False
+
+    The FolderContentsView interface used by templates::
+
+      >>> from Products.CMFDefault.browser.new_folder import ContentsView
+      >>> view = ContentsView(context, request)
+
+      >>> view.title()
+      u''
+
+      >>> view.description()
+      u''
+
+      >>> view.up_info()
+      {'url': u'', 'id': u'Root', 'icon': u''}
+
+
+      >>> view.layout_fields()
+      []
+
+      >>> view.is_orderable()
+      False
+
+      >>> view.is_sortable()
+      False
+
+    The FolderContentsView checkers used by button actions::
+
+      >>> view.check_clipboard_data()
+      False
+
+      >>> view.check_items()
+      False
+
+    Finally we have to clean up::
+
+      >>> from zope.testing.cleanup import cleanUp
+      >>> cleanUp()
+    
+    The tests need extending with some dummy objects for sorting, deleting, etc.
