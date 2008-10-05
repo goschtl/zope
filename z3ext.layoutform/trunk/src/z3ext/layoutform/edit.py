@@ -17,23 +17,22 @@ $Id$
 """
 from zope import interface, event
 from zope.traversing.browser import absoluteURL
-from zope.lifecycleevent import ObjectCreatedEvent
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IWriteContainer
 from zope.app.container.interfaces import IContainerNamesContainer
 
 from z3c.form import form, button
-from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
+from form import PageletForm
 from interfaces import _, IPageletEditForm, ISaveButton
 
 
-class PageletEditForm(form.EditForm, BrowserPagelet):
+class PageletEditForm(form.EditForm, PageletForm):
     interface.implements(IPageletEditForm)
 
-    render = BrowserPagelet.render
-    __call__ = BrowserPagelet.__call__
+    render = PageletForm.render
+    __call__ = PageletForm.__call__
 
     @button.buttonAndHandler(
         _(u'Save'), name='save', provides=ISaveButton)

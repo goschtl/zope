@@ -16,15 +16,30 @@
 $Id$
 """
 from zope import interface
+from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.pagetemplate.interfaces import IPageTemplate
 
 from z3c.form import form
+from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
 
-from interfaces import IPageletForm
+from interfaces import IPageletForm, IPageletFormView
 
 
 class PageletForm(form.Form, BrowserPagelet):
     interface.implements(IPageletForm)
 
-    render = BrowserPagelet.render
     __call__ = BrowserPagelet.__call__
+
+    def render(self):
+        # render content template 
+        if self.template is None:
+            view = queryMultiAdapter((self, self.request), IPageletFormView)
+            if view is not None:
+                view.update()
+                return view.render()
+
+            template = getMultiAdapter((self, self.request), IPageTemplate)
+            return template(self)
+
+        return self.template()

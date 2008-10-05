@@ -1,25 +1,4 @@
-<div class="z-form z-form-add" i18n:domain="z3ext">
-  <metal:block metal:use-macro="macro:form">
-    <metal:block metal:fill-slot="buttons">
-      <div class="z-form-controls" metal:define-macro="buttons">
-	<hr />
-	<div class="z-form-field" tal:condition="view/nameAllowed|nothing">
-	  <label i18n:translate="" for="add_input_name">Content short name</label>
-	  <div class="z-form-help" i18n:translate="">
-	    Should not contain spaces, underscores or mixed case. 
-	    Short Name is part of the item's web address.
-	  </div>
-	  <div>
-	    <input type="text" name="add_input_name" id="add_input_name"
-		   tal:attributes="value request/add_input_name | nothing" />
-	  </div>
-	</div>
-
-	<span tal:condition="view/actions/values">
-	  <input tal:repeat="action view/actions/values"
-		 tal:replace="structure action/render" />
-	</span>
-      </div>
-    </metal:block>
-  </metal:block>
+<div class="z-form z-form-add"
+     tal:content="structure
+		  context/@@pagelet/z3ext.layoutform.browser.interfaces.IForm">
 </div>

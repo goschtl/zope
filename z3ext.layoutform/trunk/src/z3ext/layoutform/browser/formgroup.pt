@@ -1,8 +1,8 @@
 <fieldset>
-  <legend tal:content="view/label"></legend>
-  <div class="pageDescription" tal:content="view/description|nothing"></div>
+  <legend tal:content="context/label"></legend>
+  <div class="pageDescription" tal:content="context/description|nothing"></div>
 
-  <tal:block tal:repeat="widget view/widgets/values">
-    <metal:block use-macro="macro:widget-row" />
-  </tal:block>
+  <tal:block tal:repeat="widget context/widgets/values"
+       tal:content="structure 
+           widget/@@pagelet/z3ext.layoutform.browser.interfaces.IWidget" />
 </fieldset>

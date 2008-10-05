@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -25,6 +25,10 @@ _ = MessageFactory('z3ext')
 
 class ILayoutFormLayer(IFormLayer):
     """ browser layer """
+
+
+class IPageletFormView(IPagelet):
+    """ pagelet form view """
 
 
 class IPageletForm(IPagelet):

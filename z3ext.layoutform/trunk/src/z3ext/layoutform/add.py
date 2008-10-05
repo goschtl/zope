@@ -22,17 +22,17 @@ from zope.app.container.interfaces import IWriteContainer
 from zope.app.container.interfaces import IContainerNamesContainer
 
 from z3c.form import form, button
-from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
+from form import PageletForm
 from interfaces import _, IPageletAddForm, IAddButton, ICancelButton
 
 
-class PageletAddForm(form.AddForm, BrowserPagelet):
+class PageletAddForm(form.AddForm, PageletForm):
     interface.implements(IPageletAddForm)
 
-    render = BrowserPagelet.render
-    __call__ = BrowserPagelet.__call__
+    render = PageletForm.render
+    __call__ = PageletForm.__call__
 
     _addedObject = None
 

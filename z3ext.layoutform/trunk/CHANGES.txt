@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+1.2.0 (2008-10-06)
+------------------
+
+- Added default css styles
+
+- Removed z3c packages dependencies
+
+- Use pagelets instead of macros
+
+
 1.1.2 (2008-09-26)
 ------------------
 

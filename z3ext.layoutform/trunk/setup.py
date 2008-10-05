@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.1.3dev'
+version='1.2.0dev'
 
 
 setup(name='z3ext.layoutform',
@@ -56,14 +56,11 @@ setup(name='z3ext.layoutform',
 			  'zope.pagetemplate',
 			  'zope.app.pagetemplate',
 			  'zope.i18nmessageid',
-			  'zope.lifecycleevent',
-
-			  'z3c.form',
-                          'z3c.macro',
-                          'z3c.template',
 			  'z3c.autoinclude',
 
-                          'z3ext.layout',
+                          'z3ext.layout>=1.5.0',
+                          'z3ext.resource>=1.2.0',
+			  'z3ext.resourcepackage>=1.2.0',
 			  'z3ext.statusmessage',
                           ],
       include_package_data = True,

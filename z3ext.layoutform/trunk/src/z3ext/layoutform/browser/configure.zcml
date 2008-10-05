@@ -1,6 +1,6 @@
 <configure 
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:z3c="http://namespaces.zope.org/z3c">
+   xmlns:z3ext="http://namespaces.zope.org/z3ext">
 
   <!-- buttons -->
   <adapter 
@@ -32,77 +32,105 @@
      factory=".textarea.TextAreaFieldWidget" />
 
   <!-- templates -->
-  <z3c:template
+  <z3ext:pagelet
      template="form.pt"
      for="..interfaces.IPageletForm"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     provides="..interfaces.IPageletFormView"
+     permission="zope.Public" />
 
-  <z3c:template
+  <z3ext:pagelet
      template="formadd.pt"
      for="..interfaces.IPageletAddForm"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     provides="..interfaces.IPageletFormView"
+     permission="zope.Public" />
 
-  <z3c:template
+  <z3ext:pagelet
      template="formedit.pt"
      for="..interfaces.IPageletEditForm"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     provides="..interfaces.IPageletFormView"
+     permission="zope.Public" />
 
-  <z3c:template
+  <z3ext:pagelet
      template="subform.pt"
      for="z3c.form.interfaces.ISubForm"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     provides="..interfaces.IPageletFormView"
+     permission="zope.Public" />
 
-  <z3c:template
+  <z3ext:pagelet
      template="formgroup.pt"
      for="z3c.form.group.Group"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     provides="..interfaces.IPageletFormView"
+     permission="zope.Public" />
 
   <!-- Error View -->
-  <z3c:template
+  <z3ext:pagelet
      for="z3c.form.interfaces.IErrorViewSnippet"
      template="error.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <!-- form macros -->
-  <z3c:macro
-     view="..interfaces.IPageletForm"
-     name="form"
-     template="form.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- form view -->
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IForm"
+     template="formview.pt"
+     provides="z3ext.layoutform.browser.interfaces.IForm"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <z3c:macro
-     view="z3c.form.interfaces.IForm"
-     name="form-header"
-     macro="header"
-     template="form.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- viewspace view -->
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formviewspace.pt"
+     provides="z3ext.layoutform.browser.interfaces.IViewspace"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <z3c:macro
-     view="z3c.form.interfaces.IForm"
-     name="widget-rows"
-     macro="widget-rows"
-     template="form.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- form buttons -->
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formbuttons.pt"
+     provides="z3ext.layoutform.browser.interfaces.IFormButtons"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <z3c:macro
-     view="z3c.form.interfaces.IForm"
-     name="widget-row"
-     macro="widget-row"
-     template="form.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- widget view -->
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IWidget"
+     template="widget.pt"
+     provides="z3ext.layoutform.browser.interfaces.IWidget"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <z3c:macro
-     view="..interfaces.IPageletForm"
-     name="form-buttons"
-     macro="buttons"
-     template="form.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- add form buttons -->
+  <z3ext:pagelet
+     for="..interfaces.IPageletAddForm"
+     template="formaddbuttons.pt"
+     provides="z3ext.layoutform.browser.interfaces.IFormButtons"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
 
-  <z3c:macro
-     view="..interfaces.IPageletAddForm"
-     name="form-buttons"
-     macro="buttons"
-     template="formadd.pt"
-     layer="..interfaces.ILayoutFormLayer" />
+  <!-- styles -->
+  <z3ext:resourceinclude
+     name="z3ext-layoutform.css"
+     library="z3ext"
+     type="stylesheet"
+     file="form.css" filetype="zrt" />
+
+  <z3ext:resource
+     file="required.gif"
+     name="z3ext-layoutform-required.gif" />
+
+  <z3ext:resource
+     file="linkOpaque.gif"
+     name="z3ext-layoutform-linkOpaque.gif" />
+
+  <z3ext:resource
+     file="linkTransparent.gif"
+     name="z3ext-layoutform-linkTransparent.gif" />
 
 </configure>
