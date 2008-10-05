@@ -64,7 +64,7 @@ Paste #2 should show in the 'Previous Pastes' listing:
    
 Add another Paste, should be #3:
 
-   >>> browser.open('http://localhost/app/@@paste?author_name=name&paste=text&language=python')
+   >>> browser.open('http://localhost/app/@@paste','author_name=name&paste=text&language=python')
    >>> '<base href="http://localhost/app/3/@@index" />' in browser.contents
    True
    

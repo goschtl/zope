@@ -4,7 +4,6 @@ from pygments import formatters
 from pygments import util
 from zope.interface import Interface
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.security.interfaces import IAuthentication
 from zope.component import getUtility
 import z3c.flashmessage.interfaces
 import grok

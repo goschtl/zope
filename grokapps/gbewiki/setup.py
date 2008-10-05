@@ -22,6 +22,7 @@ http://code.google.com/p/google-app-engine-samples/source/browse/trunk/cccwiki/
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
+                        'grokui.admin',
                         'z3c.testsetup',
                         'megrok.tinymce',
                         ],

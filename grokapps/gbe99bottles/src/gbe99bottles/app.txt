@@ -24,6 +24,8 @@ Sing the '99 Bottles of Beer' Song (original lyrics at
 http://99-bottles-of-beer.net/lyrics.html):
 
    >>> print browser.contents
+   Grok-by-Example: 99 Bottles of Beer
+   ===================================
    99 bottles of beer on the wall, 99 bottles of beer.
    Take one down and pass it around, 98 bottles of beer on the wall.
    ...

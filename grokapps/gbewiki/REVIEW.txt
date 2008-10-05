@@ -38,7 +38,7 @@ Include and use the JS library with the application
 
 *gbewiki* utilizes the recently published megrok.tinymce__ package to include the 
 TinyMCE library (there is no more need to distribute the app together with the 
-JS package). megrok.tinymce is simply added to the 'include-requires' 
+JS package). megrok.tinymce is simply added to the 'install-requires' 
 requirements list in the packages setup.py module::
 
     install_requires=['setuptools',
@@ -65,7 +65,7 @@ as a wildcard pattern::
 
     application = webapp.WSGIApplication([('/(.*)', WikiPage)], debug=_DEBUG)
 
-WikiPage here is a Requesthandler class that handles GET/POST HTTP requests.
+WikiPage here is a Requesthandler class that handles all GET/POST HTTP requests.
 
 Grok subclasses from both grok.Application and grok.Container and defines a
 'traverse' method to handle request paths::
@@ -138,8 +138,8 @@ Page objects @@save view.
 User management and Permissions
 --------------------------------
 
-GAE uses the appengine 'users' API to handle posting new or edited existing wiki 
-pages. The user must be logged in with her google account::
+GAE uses the appengine 'users' API to handle the posting of new or editing 
+existing wiki pages. The user must be logged in with her google account::
 
     def post(self, page_name):
         if not users.get_current_user():

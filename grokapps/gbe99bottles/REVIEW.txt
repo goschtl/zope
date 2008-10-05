@@ -1,7 +1,9 @@
 Grok-by-Example: 99 Bottles Song
 ================================
 
-:Author: d2m (michael at d2m.at)
+.. contents:: Contents
+
+:Author: d2m (michael@d2m.at)
 
 A basic Grok 'Hello world' application [source__], cf implementations in other
 languages at the '99 Bottles of Beer' website, eg. the Python version [source__].
