@@ -30,17 +30,24 @@ def main():
     resources_configuration_file = os.path.join(os.path.dirname(__file__), 'resources', 'resources.ini')
     resources.registerResource(ITestContent, resources_configuration_file)
 
-    context = TestContent()
-    result = convert(context=context,
-                     html=html,
-                     aggregator_name='foo',
-                     styles=['fop_styles.css', 'demo_styles.css'],
-                     transformations=['zopyx.smartprintng.imageremover', 'zopyx.smartprintng.pagebreaker'],
-                     resource_name='demo',
-                     converter='pdf-prince',
-                     destination_filename='demo.pdf')
-    print 'Generated:', 
-    print os.path.abspath(result)
+    from zopyx.convert2.registry import availableConverters
+
+    for c in availableConverters():
+
+        print 'Converter: %s' % c
+        context = TestContent()
+        result = convert(context=context,
+                         html=html,
+                         aggregator_name='foo',
+                         styles=['fop_styles.css', 'demo_styles.css'],
+                         transformations=['zopyx.smartprintng.imageremover', 'zopyx.smartprintng.pagebreaker'],
+                         resource_name='demo',
+                         converter=c,
+                        )
+                        
+        print 'Generated:', os.path.abspath(result)
+        print
 
 if __name__ == '__main__':
+    import sys
     sys.exit(main())
