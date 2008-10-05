@@ -53,9 +53,7 @@
      factory=".fileresource.FileResourceAdapter"
      permission="zope.Public" />
 
-  <zcml:configure zcml:condition="installed z3c.zrtresource">
-    <include package="z3ext.resource.stylesheet" />
-    <include package="z3ext.resource.zrtresource" />
-  </zcml:configure>
+  <include package="z3ext.resource.stylesheet" />
+  <include package="z3ext.resource.zrtresource" />
 
 </configure>

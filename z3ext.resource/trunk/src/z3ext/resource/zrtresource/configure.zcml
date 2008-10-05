@@ -2,8 +2,6 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <include package="z3c.zrtresource" file="meta.zcml" />
-
   <utility
      name="zrt"
      provides="z3ext.resource.resource.IResourceFactoryType"
