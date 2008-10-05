@@ -1,0 +1,84 @@
+html {
+    border: 0;
+    padding: 0;
+}
+
+#Masthead {
+    background: #369 url(Zope_logo.gif) no-repeat top left;
+    border: 0.2em;
+    border-color: #369;
+    padding-left: 12em;
+    height: 3em;
+    width: 43em;
+}
+
+#NavBar {
+    height: 3em;
+    float: right;
+}
+
+#UserBar {
+    border-top: #AAA solid 1px;
+    clear: left;
+    float: left;
+    background: #59C;
+    width: 54em;
+    padding-left: 1em;
+}
+
+.ActionLink{
+    list-style-type: none;
+    padding: 1px;
+    color: #F00;
+}
+
+.ActionTitle {
+    display: inline;
+}
+
+#UserName {
+    float: left;
+}
+
+#MemberActionsBox{
+    float: right;
+    text-align: right;
+    display: inline;
+    margin: 0;
+}
+
+#MemberActionsBox ul, #MemberActionsBox li{
+    display: inline;
+}
+
+#main_body {
+    float: left;
+    border-top: #FFF solid 1px;
+
+}
+
+#ContextActionsBox {
+    margin-left: -55em;
+    width: 9em;
+    height: 15em;
+    background-color: #AAA;
+    padding: 1em;
+    float: left;
+}
+
+#Desktop {
+    float: left;
+    border-left: #AAA solid 11em;
+    width: 42em;
+    padding: 1em;
+    background: #FFF;
+}
+
+#content_well {
+    float: left;
+}
+
+#right_sidebar {
+    float: right;
+}
+
