@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment
+from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
 
 from tidy import tidyhtml
