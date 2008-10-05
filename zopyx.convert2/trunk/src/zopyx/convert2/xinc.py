@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment
+from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
 
 
@@ -30,7 +30,7 @@ def fo2pdf(fo_filename, output_filename=None):
     """ Convert a FO file to PDF using XINC """
 
     if not output_filename:
-        output_filename = self.newTempfile(suffix='.pdf')
+        output_filename = newTempfile(suffix='.pdf')
 
     if not xinc_available:
         raise RuntimeError("The external XINC converter isn't available")
