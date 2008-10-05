@@ -1,0 +1,17 @@
+##########################################################################
+# zopyx.convert - XSL-FO related functionalities
+#
+# (C) 2007, 2008, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+##########################################################################
+
+
+import fo
+import xinc
+import fop
+import prince
+import xfc
+
+
+if __name__ == '__main__':
+    import registry
+    print registry.availableConverters()
