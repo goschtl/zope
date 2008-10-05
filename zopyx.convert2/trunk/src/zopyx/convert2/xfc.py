@@ -8,7 +8,7 @@ import os
 import sys
 
 from convert import BaseConverter
-from util import runcmd, which, win32, checkEnvironment
+from util import runcmd, which, win32, checkEnvironment, newTempfile
 from logger import LOG
 
 xfc_dir = os.environ.get('XFC_DIR')
