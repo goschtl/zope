@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:zcml="http://namespaces.zope.org/zcml">
 
-  <include package="z3ext.cacheheaders" />
+  <includeDependencies package="." />
 
   <utility
      component=".fileresource.filefactory"
@@ -53,7 +53,6 @@
      factory=".fileresource.FileResourceAdapter"
      permission="zope.Public" />
 
-  <include package="z3ext.resource.stylesheet" />
-  <include package="z3ext.resource.zrtresource" />
+  <include package=".zrtresource" />
 
 </configure>
