@@ -1,4 +1,0 @@
-- need much better tests.  Leaning towards randomly-generated test suite, in
-  part.
-
-- ...someday... maybe push some of this to C.
