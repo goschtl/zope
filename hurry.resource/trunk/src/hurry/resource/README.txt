@@ -554,10 +554,7 @@ For the purposes of this document, we define a function that renders
 resources as some static URL on localhost::
 
   >>> def get_library_url(library):
-  ...    return 'http://localhost/static/%s/' % library.name
-
-Note that the library URL should end with a ``/`` so we can add
-``inclusion.relpath`` to it.
+  ...    return 'http://localhost/static/%s' % library.name
 
 We should now register this function as a``ILibrarUrl`` adapter for
 ``Library`` so the system can find it::

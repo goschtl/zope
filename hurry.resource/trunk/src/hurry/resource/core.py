@@ -152,10 +152,14 @@ class NeededInclusions(object):
         library_urls = {}        
         for inclusion in self.inclusions(mode):
             library = inclusion.library
+            # get cached library url
             library_url = library_urls.get(library.name)
             if library_url is None:
-                library_urls[library.name] = library_url =\
-                                             interfaces.ILibraryUrl(library)
+                # if we can't find it, recalculate it
+                library_url = interfaces.ILibraryUrl(library)
+                if not library_url.endswith('/'):
+                    library_url += '/'
+                library_urls[library.name] = library_url
             result.append(render_inclusion(inclusion,
                                            library_url + inclusion.relpath))
         return '\n'.join(result)
