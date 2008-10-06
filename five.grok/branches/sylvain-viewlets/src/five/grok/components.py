@@ -1,6 +1,7 @@
 import martian
 
 from zope.annotation.interfaces import IAttributeAnnotatable
+from zope.contentprovider.interfaces import IContentProvider
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope import interface, component
 
@@ -167,3 +168,53 @@ class DisplayForm(GrokForm, formbase.DisplayForm, View):
 
     martian.baseclass()
     template = default_display_template
+
+
+# Content provider/viewlets
+
+class ContentProviderBase(Acquisition.Explicit):
+
+    martian.baseclass()
+
+    def __init__(self, context, request, view):
+        self.context = context
+        self.request = request
+        self.view = view
+        static = component.queryAdapter(
+            self.request, interface.Interface,
+            name = self.module_info.package_dotted_name)
+        if not (static is None):
+            self.static = static.__of__(self)
+        else:
+            self.static = static
+        self.__parent__ = view
+        self.__name__ = self.__view_name__
+
+    getPhysicalPath = Acquisition.Acquired
+
+    def namespace(self):
+        return {}
+
+    def default_namespace(self):
+        namespace = {}
+        namespace['view'] = self.view
+        namespace['static'] = self.static
+        return namespace
+
+
+class ViewletManager(ContentProviderBase):
+
+    interface.implements(IContentProvider)
+
+    martian.baseclass()
+
+    def default_namespace(self):
+        namespace = super(ContentProvider, self).default_namespace()
+        namespace['provider'] = self
+        return namespace
+
+    def update(self):
+        pass
+
+    def render(self):
+        return self.template.render(self)

@@ -2,11 +2,16 @@
 import martian
 import five.grok
 import grokcore.security
+import grokcore.view
+import grokcore.component
 
 from zope import interface, component
+from zope.contentprovider.interfaces import IContentProvider
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components
 from martian.error import GrokError
+
+from grokcore.view.meta.views import default_view_name
 
 from Products.Five.security import protectClass
 from Globals import InitializeClass as initializeClass
@@ -74,3 +79,52 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
             return True
 
         return False
+
+
+class ViewletManagerGrokker(martian.ClassGrokker):
+
+    martian.component(components.ViewletManager)
+    martian.directive(grokcore.component.name, get_default=default_view_name)
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.view.layer)
+    martian.directive(five.grok.view)
+
+    def grok(self, name, provider, module_info, **kw):
+        # Store module_info on the object.
+        provider.__view_name__ = name
+        provider.module_info = module_info
+        return super(ViewletManagerGrokker, self).grok(
+            name, provider, module_info, **kw)
+
+    def execute(self, provider, name, context, view, layer, config, **kw):
+        """Register a content provider.
+        """
+
+        if view is None:
+            # Can't set default on the directive because of import loop.
+            view = interface.Interface
+
+        templates = provider.module_info.getAnnotation('grok.templates', None)
+        if templates is not None:
+            config.action(
+                discriminator=None,
+                callable=self.checkTemplates,
+                args=(templates, provider.module_info, provider)
+                )
+
+        for_ = (context, layer, view,)
+        config.action(
+            discriminator=('adapter', for_, IContentProvider, name),
+            callable=component.provideAdapter,
+            args=(provider, for_, IContentProvider, name),
+            )
+
+        return True
+
+    def checkTemplates(self, templates, module_info, provider):
+        def has_render(provider):
+            return provider.render != components.ViewletManager.render
+        def has_no_render(provider):
+            return not has_render(provider)
+        templates.checkTemplates(module_info, provider, 'contentprovider',
+                                 has_render, has_no_render)
