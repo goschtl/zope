@@ -6,7 +6,9 @@
   }
 
   .z-page .z-form-add,
-  .z-page .z-form-edit {
+  .z-page .z-form-edit,
+  .page .z-form-add,
+  .page .z-form-edit {
     border: borderWidth borderStyle globalExtraBorderColor;
     margin-top: 0em;
     padding: 1em;
@@ -15,9 +17,12 @@
   
   .z-frame .z-form-edit,
   .z-frame .z-form-standard,
+  .z-topframe .z-form-standard,
+  .frame .z-form-edit,
+  .frame .z-form-standard,
+  .topframe .z-form-standard,
   #z-context-view .z-form-edit,
-  #z-context-view .z-form-standard,
-  .z-topframe .z-form-standard {
+  #z-context-view .z-form-standard {
     border: none;
     padding: 0em;
   }
