@@ -49,8 +49,7 @@ Let's try rendering the javascript needed to create such a map.
 
   >>> print gmap.render()
   <div style="width: 500px; height: 400px" id="google-map">
-  [Google Map - If you see this, your browser is not compatible with
-  google maps, or there was an error.]
+  Loading Map...
   </div>
   <BLANKLINE>
   <script type="text/javascript">
@@ -81,8 +80,7 @@ Now we will add this marker to the map and render it again.
   >>> gmap.markers.append(marker)
   >>> print gmap.render()
   <div style="width: 500px; height: 400px" id="google-map">
-  [Google Map - If you see this, your browser is not compatible with
-  google maps, or there was an error.]
+  Loading Map...
   </div>
   <BLANKLINE>
   <script type="text/javascript">

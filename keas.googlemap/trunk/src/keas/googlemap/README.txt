@@ -214,7 +214,7 @@ dynamically.
   ... except IOError, e:
   ...   geo = geocode.Geocode(38.29793, -77.459799)
   >>> print geo
-  Geocode(38.29793, -77.459799)
+  Geocode(38.2..., -77.4...)
 
 
 Annotating Objects with Geocodes
