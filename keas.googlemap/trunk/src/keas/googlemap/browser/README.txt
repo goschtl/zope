@@ -27,6 +27,8 @@ By default, the map has the following attributes:
   1
   >>> gmap.type
   u'G_NORMAL_MAP'
+  >>> gmap.controls
+  ['GLargeMapControl', 'GMapTypeControl']
 
 A quick note about the google map types.  There are three types known
 to this API, and they are stored in the following global variables.
@@ -37,6 +39,24 @@ to this API, and they are stored in the following global variables.
   u'G_SATELLITE_MAP'
   >>> interfaces.HYBRID_MAP
   u'G_HYBRID_MAP'
+
+There are also several different typs of controls that can be
+displayed on a map.
+
+  >>> interfaces.GLargeMapControl
+  'GLargeMapControl'
+  >>> interfaces.GSmallMapControl
+  'GSmallMapControl'
+  >>> interfaces.GSmallZoomControl
+  'GSmallZoomControl'
+  >>> interfaces.GScaleControl
+  'GScaleControl'
+  >>> interfaces.GMapTypeControl
+  'GMapTypeControl'
+  >>> interfaces.GHierarchicalMapTypeControl
+  'GHierarchicalMapTypeControl'
+  >>> interfaces.GOverviewMapControl
+  'GOverviewMapControl'
 
   >>> gmap.width
   500

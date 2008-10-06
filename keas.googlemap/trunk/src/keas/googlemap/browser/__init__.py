@@ -71,6 +71,7 @@ class GoogleMap(object):
     id = FieldProperty(interfaces.IGoogleMap['id'])
     zoom = FieldProperty(interfaces.IGoogleMap['zoom'])
     type = FieldProperty(interfaces.IGoogleMap['type'])
+    controls = FieldProperty(interfaces.IGoogleMap['controls'])
     width = FieldProperty(interfaces.IGoogleMap['width'])
     height = FieldProperty(interfaces.IGoogleMap['height'])
     markers = FieldProperty(interfaces.IGoogleMap['markers'])

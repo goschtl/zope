@@ -25,6 +25,14 @@ NORMAL_MAP = u'G_NORMAL_MAP'
 SATELLITE_MAP = u'G_SATELLITE_MAP'
 HYBRID_MAP = u'G_HYBRID_MAP'
 
+GLargeMapControl = 'GLargeMapControl'
+GSmallMapControl = 'GSmallMapControl'
+GSmallZoomControl = 'GSmallZoomControl'
+GScaleControl = 'GScaleControl'
+GMapTypeControl = 'GMapTypeControl'
+GHierarchicalMapTypeControl = 'GHierarchicalMapTypeControl'
+GOverviewMapControl = 'GOverviewMapControl'
+
 class IJavaScript(IViewletManager):
     """Viewlet manager for google map javascript viewlets."""
 
@@ -48,6 +56,19 @@ class IGoogleMap(zope.interface.Interface):
         values=(NORMAL_MAP, SATELLITE_MAP, HYBRID_MAP),
         default=NORMAL_MAP,
         required=True)
+
+    controls = zope.schema.List(
+        title=u'Controls',
+        value_type=zope.schema.Choice(
+            values=(GLargeMapControl,
+                    GSmallMapControl,
+                    GSmallZoomControl,
+                    GScaleControl,
+                    GMapTypeControl,
+                    GHierarchicalMapTypeControl,
+                    GOverviewMapControl,
+                    )),
+        default=[GLargeMapControl,GMapTypeControl])
 
     markers = zope.schema.List(
         title=u'Markers',
