@@ -72,7 +72,7 @@ def text(*args, **kwargs):
 
 setup(
     name='zc.blist',
-    version='1.0b1',
+    version='1.0b2dev',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
