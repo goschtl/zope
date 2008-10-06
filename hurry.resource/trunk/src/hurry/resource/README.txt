@@ -543,24 +543,30 @@ Now let's try to render these inclusions::
   >>> print needed.render()
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass hurry.resource.interfaces.IInclusionUrl>, '')
+  TypeError: ('Could not adapt', <hurry.resource.core.Library object at ...>, <InterfaceClass hurry.resource.interfaces.ILibraryUrl>)
 
 That didn't work. In order to render an inclusion, we need to tell
-``hurry.resource`` how to get the URL for a resource inclusion. 
+``hurry.resource`` how to get the URL for a resource inclusion. We
+already know the relative URL, so we need to specify how to get a URL
+to the library itself that the relative URL can be added to.
 
 For the purposes of this document, we define a function that renders
 resources as some static URL on localhost::
 
-  >>> def get_inclusion_url(inclusion):
-  ...    return 'http://localhost/static/%s/%s' % (
-  ...      inclusion.library.name, inclusion.relpath)
+  >>> def get_library_url(library):
+  ...    return 'http://localhost/static/%s/' % library.name
 
-We should now register this function as a``IInclusionUrl`` utility so
-the system can find it::
+Note that the library URL should end with a ``/`` so we can add
+``inclusion.relpath`` to it.
 
-  >>> from hurry.resource.interfaces import IInclusionUrl
-  >>> component.provideUtility(get_inclusion_url, 
-  ...     IInclusionUrl)
+We should now register this function as a``ILibrarUrl`` adapter for
+``Library`` so the system can find it::
+
+  >>> from hurry.resource.interfaces import ILibraryUrl
+  >>> component.provideAdapter(
+  ...     factory=get_library_url,
+  ...     adapts=(Library,), 
+  ...     provides=ILibraryUrl)
 
 Rendering the inclusions now will will result in the HTML fragment we need::
 

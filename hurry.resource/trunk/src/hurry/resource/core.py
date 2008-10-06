@@ -149,10 +149,15 @@ class NeededInclusions(object):
             
     def render(self, mode=None):
         result = []
-        get_inclusion_url = component.getUtility(interfaces.IInclusionUrl)
+        library_urls = {}        
         for inclusion in self.inclusions(mode):
-            url = get_inclusion_url(inclusion)
-            result.append(render_inclusion(inclusion, url))
+            library = inclusion.library
+            library_url = library_urls.get(library.name)
+            if library_url is None:
+                library_urls[library.name] = library_url =\
+                                             interfaces.ILibraryUrl(library)
+            result.append(render_inclusion(inclusion,
+                                           library_url + inclusion.relpath))
         return '\n'.join(result)
 
 def apply_mode(inclusions, mode):

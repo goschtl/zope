@@ -98,7 +98,10 @@ class ICurrentNeededInclusions(Interface):
         These can for instance be retrieved from the current request.
         """
 
-class IInclusionUrl(Interface):
+class ILibraryUrl(Interface):
     def __call__(inclusion):
-        """Return the URL for given resource inclusion.
+        """Return the URL for the library.
+
+        This is the URL that we can add inclusion.rel_path to, to obtain
+        the complete URL of the resource.
         """
