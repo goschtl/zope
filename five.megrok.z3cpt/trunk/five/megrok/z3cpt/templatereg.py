@@ -17,7 +17,8 @@ class ZopeTwoPageTemplate(PageTemplate):
         pass
 
     def render(self, view):
-        return self._template(view)()
+        namespace = self.getNamespace(view)
+        return self._template.render(view, default_namespace=namespace)()
 
 
 class ZopeTwoPageTemplateFileFactory(grok.GlobalUtility):
