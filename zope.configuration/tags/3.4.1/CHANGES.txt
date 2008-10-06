@@ -1,0 +1,23 @@
+=======
+Changes
+=======
+
+3.4.1 (2008-10-06)
+------------------
+
+- Use built-in 'set' type, rather than importin the 'sets' module,
+  which is deprecated in Python 2.6.
+
+- Added support to bootstrap on Jython.
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release as a standalone package.
+
+Before 3.4.0
+------------
+
+This package was part of the Zope 3 distribution and did not have its own
+CHANGES.txt. For earlier changes please refer to either our subversion log or
+the CHANGES.txt of earlier Zope 3 releases.
