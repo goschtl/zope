@@ -209,8 +209,8 @@ class ViewletManager(ContentProviderBase):
     martian.baseclass()
 
     def default_namespace(self):
-        namespace = super(ContentProvider, self).default_namespace()
-        namespace['provider'] = self
+        namespace = super(ViewletManager, self).default_namespace()
+        namespace['viewletmanager'] = self
         return namespace
 
     def update(self):
