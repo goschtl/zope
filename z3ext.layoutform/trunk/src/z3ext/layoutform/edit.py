@@ -39,7 +39,8 @@ class PageletEditForm(form.EditForm, PageletForm):
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:
-            IStatusMessage(self.request).add(self.formErrorsMessage, 'warning')
+            IStatusMessage(self.request).add(
+                (self.formErrorsMessage,) + errors, 'formError')
         else:
             changes = self.applyChanges(data)
             if changes:

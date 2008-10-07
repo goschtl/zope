@@ -114,12 +114,15 @@
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
 
+  <!-- status message -->
+  <adapter factory=".message.Message" />
+
   <!-- styles -->
   <z3ext:resourceinclude
      name="z3ext-layoutform.css"
      library="z3ext"
      type="stylesheet"
-     file="form.css" filetype="zrt" />
+     file="styles.css" filetype="zrt" />
 
   <z3ext:resource
      file="required.gif"
