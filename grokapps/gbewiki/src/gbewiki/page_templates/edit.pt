@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@master/macros/page">
+<html metal:use-macro="context/@@wikimaster/macros/page">
   <title metal:fill-slot="title">
     <span tal:replace="python:context.__parent__.__name__" /> -
     <span tal:replace="python:context.__name__" />

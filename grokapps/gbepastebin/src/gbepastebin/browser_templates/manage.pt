@@ -1,4 +1,4 @@
-<metal:block use-macro="context/@@master/macros/master">
+<metal:block use-macro="context/@@pastebinmaster/macros/master">
   <metal:block fill-slot="left">       
       <tal:block define="pastes context/list_pastes" condition="pastes">
         <fieldset>

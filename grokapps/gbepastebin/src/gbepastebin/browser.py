@@ -17,7 +17,7 @@ style_defs = formatter.get_style_defs()
 COOKIE_AUTHOR='gbepastebin.last_author'
 COOKIE_LANGUAGE='gbepastebin.last_language'
 
-class Master(grok.View):
+class PastebinMaster(grok.View):
     grok.context(Interface)
 
     def version(self):
@@ -33,7 +33,7 @@ class Master(grok.View):
             message.prepare(source)
             yield message
 
-class Index(Master):
+class Index(PastebinMaster):
     grok.context(Application)
         
     def preferred_author(self):
@@ -84,7 +84,7 @@ class Delete(grok.View):
     def render(self):
         return self.redirect(self.url(grok.getSite()))
     
-class Manage(Master):
+class Manage(PastebinMaster):
     grok.context(Application)
     grok.require('gbepastebin.manage')
 
@@ -101,7 +101,7 @@ class Manage(Master):
             else:
                 self.flash('<b>Problem:</b> could not delete all Pastes requested')
             
-class Entry(Master):
+class Entry(PastebinMaster):
     grok.context(PasteBase)
     grok.name('index')
         

@@ -12,7 +12,7 @@ import z3c.flashmessage.interfaces
 
 grok.context(Interface)
 
-class Master(grok.View):
+class WikiMaster(grok.View):
     """The master page template macro """
 
     def logged_in(self):
@@ -80,7 +80,7 @@ function NewPage() {
 """ % self.application_url()
         return out
     
-class Login(Master):
+class Login(WikiMaster):
     """Login form and handler."""
     def update(self, login_submit=None):
         if login_submit is not None:

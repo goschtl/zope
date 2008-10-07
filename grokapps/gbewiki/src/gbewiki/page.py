@@ -1,7 +1,7 @@
 import grok
 from zope.component import getAdapter
 
-from gbewiki.interface import Master
+from gbewiki.interface import WikiMaster
 from gbewiki.utils import ITransform
 
 default_page_name = 'MainPage'
@@ -16,7 +16,7 @@ class Page(grok.Model):
         self.content = '<h1>%s</h1>' % name
         self.editor=None
 
-class Index(Master):
+class Index(WikiMaster):
 
     def wikified_content(self):
         self.content = self.context.content
@@ -50,7 +50,7 @@ class Index(Master):
                save the page to '
                           'store it to the database' % self.context.__name__)
     
-class Edit(Master):
+class Edit(WikiMaster):
     grok.require('wiki.EditPage')
    
     def update(self):

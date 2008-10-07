@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@master/macros/page">
+<html metal:use-macro="context/@@wikimaster/macros/page">
   <body>
     <div metal:fill-slot="body">
       <h1>Login</h1>
