@@ -23,6 +23,8 @@ setup(name='SmallELearningDemo',
                         'grokui.admin',
                         'z3c.testsetup',
                         'zope.app.file',
+                        'zope.file',
+                        'zope.mimetype',
                         # Add extra requirements here
                         ],
       entry_points="""
