@@ -1,0 +1,57 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   i18n_domain="z3ext" package="z3ext">
+
+  <!-- This file is the equivalent of site.zcml and it is -->
+  <!-- used for functional testing setup -->
+
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.app.pagetemplate" file="meta.zcml" />
+
+  <include package="zope.securitypolicy" />
+  <include package="zope.contentprovider" />
+  <include package="zope.app.security" />
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.authentication" />
+  <include package="zope.session" />
+
+  <include package="z3c.autoinclude" file="meta.zcml" />
+  <include package="z3ext.controlpanel" file="meta.zcml" />
+  <include package="z3ext.controlpanel" />
+  <include package="z3ext.controlpanel.browser.tests" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+
+  <!-- Replace the following directive if you don't want public access -->
+  <grant permission="zope.View"
+         role="zope.Anonymous" />
+
+  <grant permission="zope.app.dublincore.view"
+         role="zope.Anonymous" />
+
+  <!-- Principals -->
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <!-- Principal that tests generally run as -->
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw" />
+
+  <grant role="zope.Manager" principal="zope.mgr" />
+
+  <grantAll role="zope.Manager" />
+
+</configure>
