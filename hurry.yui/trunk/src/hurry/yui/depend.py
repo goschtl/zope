@@ -10,16 +10,7 @@ YUILOADER_BETA_URL_TEMPLATE = ('http://yui.yahooapis.com/%s/build/yuiloader'
 YUILOADER_URL_TEMPLATE = ('http://yui.yahooapis.com/%s/build/yuiloader'
                          '/yuiloader.js')
 
-
-def main():
-    try:
-        version = sys.argv[1]
-    except IndexError:
-        print "Usage: yuidepend <YUI version>"
-        return
-    print yuidepend(version)
-
-def yuidepend(version):
+def depend(version):
     d = load_json(version)
     return convert_to_inclusions(d)
 
@@ -88,13 +79,6 @@ def get_modes(inclusion):
         return ['minified', 'debug']
     else:
         return []
-    
-def sorted_dependencies(d):
-    """Given dictionary created sorted list of items.
-
-    Sort by how much we depend.
-    """
-    
     
 def load_json(version):
     try:

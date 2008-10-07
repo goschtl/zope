@@ -1,8 +1,8 @@
 import os, sys
 import shutil
 
-from hurry.yui.yuidepend import yuidepend
-from hurry.yui.yuidl import download
+from hurry.yui.depend import depend
+from hurry.yui.download import download
 
 def main():
     try:
@@ -26,7 +26,7 @@ def main():
     download(version, copy_yui)
 
     # get dependency structure and create 'yui.py' into package
-    code = yuidepend(version)
+    code = depend(version)
     yui_py_path = os.path.join(package_dir, 'yui.py')
     f = open(yui_py_path, 'w')
     f.write(code)

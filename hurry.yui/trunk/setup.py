@@ -23,7 +23,6 @@ setup(
     entry_points= {
     'console_scripts': [
       'yuiprepare = hurry.yui.prepare:main',
-      'yuidepend = hurry.yui.yuidepend:main',
       ]
     },
 
