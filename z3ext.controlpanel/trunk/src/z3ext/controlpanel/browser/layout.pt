@@ -1,7 +1,8 @@
 <div id="z-controlpanel"
      tal:define="context nocall:maincontext;
 		 nav provider:z3ext.controlpanel-navigation;
-		 noNav not:nav; rendered view/render">
+		 noNav not:nav; rendered view/render;
+		 dummy resourcepackage:z3ext">
   <table class="z-cp-layout" tal:omit-tag="noNav">
     <tr tal:omit-tag="noNav">
       <td class="z-cp-nav-wrapper"
