@@ -20,6 +20,9 @@ setup(name='SmallELearningDemo',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
+                        'grokui.admin',
+                        'z3c.testsetup',
+                        'zope.app.file',
                         # Add extra requirements here
                         ],
       entry_points="""
