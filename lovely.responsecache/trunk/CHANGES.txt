@@ -5,6 +5,8 @@ Changes for lovely.responsecache
 trunk
 =====
 
+ - correctly qoute the expire date for z3.authenticated cookie
+
 2008/09/24 1.4.0
 ================
 
