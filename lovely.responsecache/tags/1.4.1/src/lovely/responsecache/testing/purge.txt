@@ -1,0 +1,46 @@
+=======================
+Purge Testing Utilities
+=======================
+
+The module lovely.testing.purge allowes simple logging of purge expressions
+sent from a purge utility.
+
+To activate the purge expression test functionality the setUpPurge and
+tearDownPurge funktions must be used in your test setUp and tearDown
+functions.
+
+After that the function purgeInfo is available in the doc test.
+
+  >>> purgeInfo()
+  ''
+  >>> from zope import component
+  >>> from lovely.responsecache.interfaces import IPurge
+  >>> purger = component.getUtility(IPurge)
+  >>> purger.purge('expression')
+
+We still got no purge info because purging is done on transaction.commit().
+
+  >>> purgeInfo()
+  ''
+
+After a commit we get the purge info.
+
+  >>> import transaction
+  >>> transaction.commit()
+  >>> print purgeInfo()
+  purged 'expression'
+
+A second call to purgeInfo returns nothing because the stored log was deleted.
+
+  >>> purgeInfo()
+  ''
+
+ Multiple purge expressions.
+
+  >>> purger.purge('expr 1')
+  >>> purger.purge('expr 2')
+  >>> transaction.commit()
+  >>> print purgeInfo()
+  purged 'expr 1'
+  purged 'expr 2'
+

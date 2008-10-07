@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="cacheSettings"
+        schema=".zcml.ICacheSettingsDirective"
+        handler=".zcml.cacheSettingsDirective"
+        />
+
+    <meta:directive
+        name="purge"
+        schema=".zcml.IPurgeDirective"
+        handler=".zcml.purgeDirective"
+        />
+
+    <meta:directive
+        name="purgeDisk"
+        schema=".zcml.IPurgeDiskDirective"
+        handler=".zcml.purgeDiskDirective"
+        />
+
+  </meta:directives>
+
+</configure>
+

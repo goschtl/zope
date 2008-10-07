@@ -1,0 +1,105 @@
+==========================
+Purging a filesystem cache
+==========================
+
+ - multiple caches
+ - zmi UI to manually purge
+ - implemented as utility
+ - configured by zcml
+
+
+Let's create a purge utility. To ::
+
+    >>> from zope import component
+    >>> from lovely.responsecache.purge import PurgeDiskUtil
+    >>> import tempfile
+    >>> cachedir = tempfile.mkdtemp()
+    >>> util = PurgeDiskUtil([cachedir])
+    >>> component.provideUtility(util, name='disk')
+
+Let's purge an expression::
+
+    >>> util.purge('purge_expression1.*')
+    >>> print log_info
+    <BLANKLINE>
+
+Now lets commit the transaction::
+
+    >>> import transaction
+    >>> log_info.clear()
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      directory ... purged 'purge_expression1.*'
+
+If the transaction was commited get called twice there should not be more
+to purge::
+
+    >>> log_info.clear()
+    >>> transaction.commit()
+    >>> print log_info
+    <BLANKLINE>
+
+Now call purge with more than one expressions::
+
+    >>> log_info.clear()
+    >>> util.purge('http://domain/purge_expression1')
+    >>> util.purge('http://domain/purge_expression2')
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression1'
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression2'
+
+Now call purge with duplicated expressions::
+
+    >>> log_info.clear()
+    >>> util.purge('http://domain/purge_expression1')
+    >>> util.purge('http://domain/purge_expression2')
+    >>> util.purge('http://domain/purge_expression1')
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression1'
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression2'
+
+If there are multiple paths to purge it has to work this way::
+
+    >>> log_info.clear()
+    >>> cachedir2 = tempfile.mkdtemp()
+    >>> util.paths.append(cachedir2)
+    >>> util.purge('http://domain/purge_expression1')
+    >>> util.purge('http://domain/purge_expression2')
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression1'
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression2'
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression1'
+    lovely.responsecache.purge INFO
+      directory '...' purged 'http://domain/purge_expression2'
+
+Let's see if files in the folder get deleted::
+
+    >>> log_info.clear()
+    >>> util.paths = [cachedir]
+
+    >>> cachefile = tempfile.mktemp(dir=cachedir)
+    >>> expr = cachefile.replace(cachedir+'/', "")
+    >>> open(cachefile, "w").write("<h1>holla</h1>")
+    >>> import os
+    >>> os.path.exists(cachefile)
+    True
+
+    >>> util.purge(".*%s.*" % expr)
+    >>> transaction.commit()
+    >>> print log_info
+    lovely.responsecache.purge INFO
+      directory '...' purged '...'
+
+    >>> os.path.exists(cachefile)
+    False
