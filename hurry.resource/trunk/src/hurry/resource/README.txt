@@ -1,8 +1,8 @@
 hurry.resource
-==============
+**************
 
 Introduction
-------------
+============
 
 Resources are files that are used as resources in the display of a web
 page, such as CSS files, Javascript files and images. Resources
@@ -28,7 +28,7 @@ of the component.
 libraries, inclusion and inclusion requirements.
 
 A resource library
-------------------
+==================
 
 We define a library ``foo``::
 
@@ -36,7 +36,7 @@ We define a library ``foo``::
   >>> foo = Library('foo')
 
 Inclusion
----------
+=========
 
 We now create an inclusion of a particular resource in a library. This
 inclusion needs ``a.js`` from ``library`` and ``b.js`` as well::
@@ -50,7 +50,7 @@ Let's now make an inclusion ``y1`` that depends on ``x1`` and ``x2``::
   >>> y1 = ResourceInclusion(foo, 'c.js', depends=[x1, x2])
 
 Inclusion requirements
-----------------------
+======================
 
 When rendering a web page we want to require the inclusion of a
 resource anywhere within the request handling process. We might for
@@ -78,7 +78,7 @@ Let's now see what resources are needed by this inclusion::
 As you can see, ``css`` resources are sorted before ``js`` resources.
 
 A convenience spelling
-----------------------
+======================
 
 When specifying that we want a resource inclusion to be rendered, we
 now need access to the current ``NeededInclusions`` object and the
@@ -170,7 +170,7 @@ now. While this is a bit more cumbersome to use in application code, it is
 easier to read for the purposes of this document.
 
 Multiple requirements
----------------------
+=====================
 
 In this section, we will show what happens in various scenarios where
 we requiring multiple ``ResourceInclusion`` objects.
@@ -284,7 +284,7 @@ though the sorting order is different::
    <ResourceInclusion 'a5.js' in library 'foo'>]
 
 Modes
------
+=====
 
 A resource can optionally exist in several modes, such as for instance
 a minified and a debug version. Let's define a resource that exists in
@@ -331,7 +331,7 @@ Note that modes are assumed to be identical in dependency structure;
 they functionally should do the same.
 
 "Rollups"
----------
+=========
 
 For performance reasons it's often useful to consolidate multiple
 resources into a single, larger resource, a so-called
@@ -524,10 +524,8 @@ resources, not rolled up::
   [<ResourceInclusion 'h1-debug.js' in library 'foo'>,
    <ResourceInclusion 'h2-debug.js' in library 'foo'>]
 
-XXX superseding along with dependencies...
-
 Rendering resources
--------------------
+===================
 
 Let's define some needed resource inclusions::
 
@@ -573,7 +571,7 @@ Rendering the inclusions now will will result in the HTML fragment we need::
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
 
 Generating resource code
-------------------------
+========================
 
 Sometimes it is useful to generate code that expresses a complex
 resource dependency structure. One example of that is in
@@ -633,7 +631,7 @@ using keyword parameters::
   i2 = ResourceInclusion(foo, 'i2.js', depends=[hoi])
 
 Sorting inclusions by dependency
---------------------------------
+================================
 
 This is more a footnote than something that you should be concerned
 about. In case assumptions in this library are wrong or there are
