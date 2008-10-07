@@ -1,9 +1,10 @@
 from setuptools import setup, find_packages
-import sys, os
+
+YUI_VERSION = '2.6.0'
 
 setup(
     name='hurry.yui',
-    version='0.1dev',
+    version=YUI_VERSION + 'dev',
     description="YUI for hurry.resource.",
     classifiers=[],
     keywords='',
@@ -21,6 +22,7 @@ setup(
         ],
     entry_points= {
     'console_scripts': [
+      'yuiprepare = hurry.yui.prepare:main',
       'yuidepend = hurry.yui.yuidepend:main',
       ]
     },

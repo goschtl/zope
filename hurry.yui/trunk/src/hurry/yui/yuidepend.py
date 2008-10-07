@@ -17,9 +17,11 @@ def main():
     except IndexError:
         print "Usage: yuidepend <YUI version>"
         return
+    print yuidepend(version)
+
+def yuidepend(version):
     d = load_json(version)
-    
-    convert_to_inclusions(d)
+    return convert_to_inclusions(d)
 
 def convert_to_inclusions(d):
     yui = Library('yui')
@@ -52,9 +54,9 @@ def convert_to_inclusions(d):
         for mode_name in get_modes(inclusion):
             inclusion.modes[mode_name] = mode_inclusion = convert_to_mode(
                 inclusion, mode_name)
-        
+
     # now generate code
-    print generate_code(**inclusion_map)
+    return generate_code(**inclusion_map)
     
 def normalize_name(n):
     return str(n.replace('-', '_'))
