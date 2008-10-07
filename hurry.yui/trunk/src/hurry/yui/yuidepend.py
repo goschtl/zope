@@ -4,8 +4,12 @@ import simplejson
 
 from hurry.resource import Library, ResourceInclusion, generate_code
 
+YUILOADER_BETA_URL_TEMPLATE = ('http://yui.yahooapis.com/%s/build/yuiloader'
+                               '/yuiloader-beta.js')
+
 YUILOADER_URL_TEMPLATE = ('http://yui.yahooapis.com/%s/build/yuiloader'
-                          '/yuiloader-beta.js')
+                         '/yuiloader.js')
+
 
 def main():
     try:
@@ -91,9 +95,14 @@ def sorted_dependencies(d):
     
     
 def load_json(version):
-    f = urllib2.urlopen(YUILOADER_URL_TEMPLATE % version)
-    data = f.read()
-    f.close()
+    try:
+        f = urllib2.urlopen(YUILOADER_URL_TEMPLATE % version)
+        data = f.read()
+        f.close()
+    except urllib2.HTTPError:
+        f = urllib2.urlopen(YUILOADER_BETA_URL_TEMPLATE % version)
+        data = f.read()
+        f.close()
     s = "'moduleInfo': "
     i = data.find(s)
     i = i + len(s)
