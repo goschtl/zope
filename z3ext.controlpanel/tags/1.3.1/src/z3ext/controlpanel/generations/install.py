@@ -16,6 +16,7 @@
 $Id$
 """
 from zope import event
+from zc.copy import copy
 from zope.app.component.interfaces import ISite
 from zope.app.generations.utility import findObjectsProviding
 from zope.app.publication.zopepublication import ZopePublication
