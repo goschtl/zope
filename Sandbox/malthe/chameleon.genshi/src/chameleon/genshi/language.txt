@@ -436,7 +436,7 @@ py:match
   </div>
 
 
-  You can use a loop variable with py:choose:
+:: You can use a loop variable with py:choose
 
   >>> print render("""\
   ... <html xmlns="http://www.w3.org/1999/xhtml"
@@ -462,6 +462,20 @@ py:match
             <span>Pending</span>
         </span>
       </div>
+    </body>
+  </html>
+
+
+:: Text is not interpolated unless necessary
+  >>> print render("""\
+  ... <html xmlns="http://www.w3.org/1999/xhtml"
+  ...       xmlns:py="http://genshi.edgewall.org/">
+  ...   <body py:with="form_errors=''">
+  ...     <em py:if="'name' in form_errors">${form_errors{'name'}</em>
+  ...   </body>
+  ... </html>""")
+  <html>
+    <body>
     </body>
   </html>
 
