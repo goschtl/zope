@@ -49,10 +49,12 @@ def evolve(context):
             configlet = ConfigletData()
             event.notify(ObjectCreatedEvent(storage))
             storage[name] = configlet
-            
-            for n, v in cdata.items():
-                configlet[n] = v
 
-            print configlet
+            for n, v in cdata.items():
+                if hasattr(v, '_p_jar'):
+                    if storage._p_jar is not v._p_jar:
+                        v = copy(v)
+
+                configlet[n] = v
 
         del ann['z3ext.controlpanel.Settings']

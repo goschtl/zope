@@ -28,7 +28,6 @@ Register persistent utility
   >>> setSite(site)
 
   >>> configlet = component.getUtility(IConfiglet)
-  >>> configlet, configlet.data
 
   >>> myutility = Folder()
   >>> interface.directlyProvides(myutility, IMyUtility)
