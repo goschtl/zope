@@ -11,13 +11,16 @@ and consolidations.
 Let's set up a way to render URLs; typically the framework has already
 done this::
 
-  >>> def get_inclusion_url(inclusion):
-  ...    return 'http://localhost/static/%s/%s' % (
-  ...      inclusion.library.name, inclusion.relpath)
-  >>> from hurry.resource.interfaces import IInclusionUrl
+  >>> def get_library_url(library):
+  ...    return 'http://localhost/static/%s' % (
+  ...      library.name)
+  >>> from hurry.resource import Library
+  >>> from hurry.resource.interfaces import ILibraryUrl
   >>> from zope import component
-  >>> component.provideUtility(get_inclusion_url, 
-  ...     IInclusionUrl)
+  >>> component.provideAdapter(
+  ...     factory=get_library_url, 
+  ...     adapts=(Library,),
+  ...     provides=ILibraryUrl)
 
 
 Let's check the YUI structure by picking out a resource in it::
