@@ -1,0 +1,11 @@
+<h1 tal:condition="context/label|nothing"
+    tal:content="context/label|nothing">Do something</h1>
+<div class="z-form-description" 
+     tal:condition="context/description|nothing"
+     tal:content="context/description|nothing"></div>
+
+<div class="z-form-fieldset">
+  <tal:block tal:repeat="widget context/widgets/values"
+       tal:content="structure 
+           widget/@@pagelet/z3ext.layoutform.browser.interfaces.IWidget" />
+</div>

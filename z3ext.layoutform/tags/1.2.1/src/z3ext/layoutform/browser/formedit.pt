@@ -1,0 +1,4 @@
+<div class="z-form z-form-edit"
+     tal:content="structure
+		  context/@@pagelet/z3ext.layoutform.browser.interfaces.IForm">
+</div>
