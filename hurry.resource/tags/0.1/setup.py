@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.resource',
-    version='0.1dev',
+    version='0.1',
     description="Flexible resources.",
     long_description=long_description,
     classifiers=[],
