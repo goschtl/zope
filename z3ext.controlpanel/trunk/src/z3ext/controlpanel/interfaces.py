@@ -19,7 +19,7 @@ from zope import schema, interface
 from zope.location.interfaces import ILocation
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('z3ext')
+_ = MessageFactory('z3ext.controlpanel')
 
 
 class ICategory(interface.Interface):
@@ -40,16 +40,6 @@ class IPrincipalsConfiglet(interface.Interface):
 
 class IUIConfiguration(interface.Interface):
     """ Portal UI related settings """
-
-
-class IDataStorage(interface.Interface):
-    """ data storage """
-
-    def get(name):
-        """ get named data """
-
-    def __getitem__(name):
-        """ get named data """
 
 
 class IConfiglet(ILocation):
@@ -74,3 +64,15 @@ class IConfiglet(ILocation):
 
     def isAvailable():
         """ is configlet available in current site """
+
+
+class IConfigletData(interface.Interface):
+    """ configlet data storage """
+
+
+class IConfigletDataFactory(interface.Interface):
+    """ configlet data factory """
+
+
+class IConfigletDataStorage(interface.Interface):
+    """ container for IConfigletData """

@@ -1,9 +1,10 @@
 <configure 
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.controlpanel">
 
-  <includeDependencies package="z3ext.controlpanel" />
+  <includeDependencies package="." />
 
   <permission
      id="z3ext.Configure"
@@ -20,9 +21,22 @@
 		  zope.interface.common.mapping.IEnumerableMapping" />
   </class>
 
-  <!-- data storage -->
-  <utility factory=".storage.DataStorage" />
-  <subscriber handler=".storage.dataStorageCopied" />
+  <!-- configlet data -->
+  <adapter factory=".storage.getConfigletData" />
+  <adapter factory=".storage.getConfigletDataStorage" />
+  <adapter factory=".storage.DefaultConfigletDataFactory" />
+
+  <class class=".storage.ConfigletData">
+    <require
+       permission="zope.ManageApplication"
+       interface="zope.app.container.interfaces.IContainer" />
+  </class>
+
+  <class class=".storage.ConfigletDataStorage">
+    <require
+       permission="zope.ManageApplication"
+       interface="zope.app.container.interfaces.IContainer" />
+  </class>
 
   <!-- default categories -->
   <z3ext:configlet
@@ -47,8 +61,6 @@
      for="zope.app.component.interfaces.ISite *"
      provides="zope.interface.Interface"
      factory=".root.getSettings" />
-
-  <adapter factory=".root.Traversable" />
 
   <!-- Configlet publisher -->
   <adapter
@@ -75,5 +87,14 @@
        doc_path="README.txt"
        parent="z3ext" />
   </configure>
+
+  <!-- generations -->
+  <utility
+     name="z3ext.controlpanel"
+     provides="zope.app.generations.interfaces.ISchemaManager"
+     component=".generations.schemaManager" />
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
 
 </configure>

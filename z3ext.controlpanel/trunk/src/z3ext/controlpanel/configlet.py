@@ -22,7 +22,7 @@ from zope.component import getUtility, queryUtility
 from zope.security.proxy import removeSecurityProxy
 from zope.interface.common.mapping import IEnumerableMapping
 
-from interfaces import IConfiglet, IDataStorage
+from interfaces import IConfiglet, IConfigletData
 
 _marker = object()
 
@@ -37,16 +37,7 @@ class Configlet(Location):
 
     @property
     def data(self):
-        storage = removeSecurityProxy(getUtility(IDataStorage))
-
-        if self.__id__ in storage:
-            return storage[self.__id__]
-
-        if self.__name__ in storage:
-            storage[self.__id__] = storage[self.__name__]
-            del storage[self.__name__]
-
-        return storage[self.__id__]
+        return IConfigletData(self)
 
     def isAvailable(self):
         for test in self.__tests__:

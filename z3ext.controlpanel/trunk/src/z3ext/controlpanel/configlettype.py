@@ -21,6 +21,7 @@ from zope.schema import getFields
 from z3ext.controlpanel.interfaces import _
 from z3ext.controlpanel.configlet import Configlet
 
+
 _marker = object()
 
 
@@ -121,6 +122,7 @@ class ConfigletProperty(object):
 
     Now we need content class
 
+    >>> from z3ext.controlpanel.storage import ConfigletData
     >>> from z3ext.controlpanel.configlettype import ConfigletProperty
     >>> class Content(object):
     ...
@@ -129,7 +131,7 @@ class ConfigletProperty(object):
     Lets create class instance and add field values storage
 
     >>> ob = Content()
-    >>> ob.data = {}
+    >>> ob.data = ConfigletData()
     
     By default we should get field default value
 
@@ -145,6 +147,9 @@ class ConfigletProperty(object):
 
     >>> ob.attr1 = u'value1'
     >>> ob.attr1
+    u'value1'
+
+    >>> ob.data['attr1']
     u'value1'
 
     If storage contains field value we shuld get it
@@ -183,10 +188,11 @@ class ConfigletProperty(object):
     def __set__(self, inst, value):
         field = self.__field.bind(inst)
         field.validate(value)
-        if field.readonly and self.__name in inst.data:
+        if field.readonly and \
+               inst.data.get(self.__name, _marker) is not _marker:
             raise ValueError(self.__name, _(u'Field is readonly'))
+
         inst.data[self.__name] = value
 
     def __delete__(self, inst):
-        if self.__name in inst.data:
-            del inst.data[self.__name]
+        del inst.data[self.__name]

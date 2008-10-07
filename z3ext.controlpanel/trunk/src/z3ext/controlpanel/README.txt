@@ -196,8 +196,8 @@ directive.
   ... </configure>""", context)
 
 
-Custom class implementation
----------------------------
+Custom configlet implementation
+-------------------------------
 
 We can use custom configlet implementation
 

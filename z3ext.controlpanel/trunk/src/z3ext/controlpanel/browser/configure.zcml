@@ -3,7 +3,7 @@
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.controlpanel">
 
   <z3ext:layout
      layout="portal"
@@ -68,5 +68,12 @@
   <adapter 
      zcml:condition="installed z3c.breadcrumb"
      factory=".breadcrumb.ConfigletBreadcrumb" />
+
+  <!-- css styles -->
+  <z3ext:resourceinclude
+     name="z3ext-controlpanel.css"
+     library="z3ext"
+     type="stylesheet"
+     file="styles.css" filetype="zrt" />
 
 </configure>
