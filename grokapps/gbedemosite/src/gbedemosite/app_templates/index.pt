@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Grok-By-Example: Demo site</title>
+<base target="_blank" />
+</head>
+<body>
+<h1>Grok-By-Example</h1>
+<p>Basic Grok apps ported from other python web frameworks
+(<a href="http://pypi.python.org/pypi/Grok-By-Example">PyPI: Grok-By-Example</a>)</p>
+
+<ul>
+	<li>
+		<a tal:attributes="href string:${view/application_url}/Guestbook">Guestbook</a>
+	</li>
+    <li>
+        <a tal:attributes="href string:${view/application_url}/Song">99 Bottles of Beer</a>
+    </li>
+    <li>
+        <a tal:attributes="href string:${view/application_url}/Wiki">Wiki</a>
+    </li>
+    <li>
+        <a tal:attributes="href string:${view/application_url}/Pastebin">Pastebin</a>
+    </li>
+</ul>
+</body>
+</html>
