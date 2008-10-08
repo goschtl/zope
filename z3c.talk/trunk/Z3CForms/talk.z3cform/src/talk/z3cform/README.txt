@@ -26,25 +26,24 @@ Let's create a message component first:
 We should be forwarded to the message's display screen:
 
   >>> print manager.contents
-  <html...
-  <h1>
+  <html>
+    <body>
+      <h1>
         A <span id="form-widgets-what"
-        class="select-widget required choice-field">
-    <span class="selected-option">sunny</span>
-    </span>
-    Hello World
+        class="select-widget required choice-field"><span
+      class="selected-option">sunny</span></span>
+   Hello World
         from <span id="form-widgets-who"
-        class="text-widget required textline-field">
-    Stephan
-  </span>
+        class="text-widget required textline-field">Stephan</span>
   <BLANKLINE>
         on <span id="form-widgets-when"
-        class="text-widget required date-field">
-    1/1/07
-  </span>
+        class="text-widget required date-field">1/1/07</span>
   !
-  </h1>
-  ...
+      </h1>
+      <a href="http://localhost:8080/++skin++Form/helloworld-0/edit.html">
+        Edit Message</a>
+    </body>
+  </html>
 
 
 You can click the edit button to change the data:
@@ -60,22 +59,21 @@ You can click the edit button to change the data:
 This action forwards you again to the view page:
 
   >>> print manager.contents
-  <html...
-  <h1>
+  <html>
+    <body>
+      <h1>
         A <span id="form-widgets-what"
-        class="select-widget required choice-field">
-    <span class="selected-option">best</span>
-    </span>
-    Hello World
+        class="select-widget required choice-field"><span
+      class="selected-option">best</span></span>
+   Hello World
         from <span id="form-widgets-who"
-        class="text-widget required textline-field">
-    Roger
-  </span>
+        class="text-widget required textline-field">Roger</span>
   <BLANKLINE>
         on <span id="form-widgets-when"
-        class="text-widget required date-field">
-    1/2/07
-  </span>
+        class="text-widget required date-field">1/2/07</span>
   !
-  </h1>
-  ...
+      </h1>
+      <a href="http://localhost:8080/++skin++Form/helloworld-0/edit.html">
+        Edit Message</a>
+    </body>
+  </html>

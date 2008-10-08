@@ -32,4 +32,12 @@
       permission="zope.Public"
       />
 
+  <page
+      name="index.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.HelloWorldAddForm"
+      layer=".browser.IFormSkin"
+      permission="zope.Public"
+      />
+
 </configure>

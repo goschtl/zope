@@ -1,4 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="getstarted">
 
   <include package="zope.security" file="meta.zcml" />
@@ -49,6 +50,7 @@
 
   <include package="talk.z3cform" />
 
+  <browser:defaultSkin name="Form" />
 
   <unauthenticatedPrincipal
       id="zope.anybody"
@@ -82,5 +84,7 @@
   <grantAll role="zope.Manager" />
   <grant role="zope.Manager"
          principal="zope.manager" />
+  <grant role="zope.Manager"
+         principal="zope.anybody" />
 
 </configure>
