@@ -44,6 +44,12 @@ def _log(channel_id, trace_code='X', msg=None, timestamp=None):
     tracelog.info(entry)
 
 
+@zope.component.adapter(zope.publisher.interfaces.IRequest)
+@zope.interface.implementer(zc.zservertracelog.interfaces.ITraceLog)
+def get(request):
+    return request['zc.zservertracelog.interfaces.ITraceLog']
+
+
 class TraceLog(object):
     zope.interface.implements(zc.zservertracelog.interfaces.ITraceLog)
 
@@ -93,7 +99,7 @@ class Server(wsgihttpserver.WSGIHTTPServer):
         _log(cid, 'C')
         env = task.getCGIEnvironment()
         env['wsgi.input'] = task.request_data.getBodyStream()
-        env['zc.zservertracelog.TraceLog'] = TraceLog(cid)
+        env['zc.zservertracelog.interfaces.ITraceLog'] = TraceLog(cid)
 
         def start_response(status, headers):
             # Prepare the headers for output
@@ -112,7 +118,6 @@ class Server(wsgihttpserver.WSGIHTTPServer):
             _log(cid, 'E')
             raise
         else:
-            del env['zc.zservertracelog.TraceLog']
             accumulated_headers = getattr(task, 'accumulated_headers') or ()
             length = [h.split(': ')[1].strip()
                       for h in accumulated_headers

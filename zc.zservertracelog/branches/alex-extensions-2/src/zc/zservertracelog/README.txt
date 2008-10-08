@@ -184,7 +184,7 @@ custom entries to the log.
 Here is an example application that adds a custom entry to the tracelog.
 
     >>> def noisy_app(environ, start_response):
-    ...     logger = environ['zc.zservertracelog.TraceLog']
+    ...     logger = environ['zc.zservertracelog.interfaces.ITraceLog']
     ...     logger.log('beep! beep!')
     >>> faux_app.app_hook = noisy_app
 
