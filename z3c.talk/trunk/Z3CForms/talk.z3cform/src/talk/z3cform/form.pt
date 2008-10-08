@@ -1,0 +1,11 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="somestyle.css" media="all"
+          tal:attributes="href context/++resource++div-form.css" />
+  </head>
+  <body>
+    <div metal:use-macro="macro:form">
+      Form goes here.
+    </div>
+  </body>
+</html>

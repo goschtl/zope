@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formdemo">
+
+  <permission
+      id="talk.z3cform.ManageHelloWorld"
+      title="Manage Hello World (z3c.formdemo)"
+      />
+
+  <class class=".message.HelloWorldMessage">
+    <allow
+        interface=".interfaces.IHelloWorldMessage"
+        />
+    <require
+        permission="talk.z3cform.ManageHelloWorld"
+        set_schema=".interfaces.IHelloWorldMessage"
+        />
+  </class>
+
+  <!-- Default widget value for "when" -->
+  <adapter
+      factory=".browser.DefaultDate"
+      name="default" />
+
+  <include file="browser.zcml" />
+
+</configure>

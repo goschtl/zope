@@ -1,0 +1,757 @@
+.. include:: <s5defs.txt>
+
+.. Creative Commons Attribution-Share Alike 2.5 License.
+.. (c) Stephan Richter
+
+========================
+ Introduction Z3C Forms
+========================
+
+:Location: Plone Conference 2008, Washington, DC
+:Date: October 10, 2008
+:Presenter: Stephan Richter, Keas Inc.
+
+.. class:: center big
+
+   Mastering the digital bureaucracy perferctly.
+
+
+Getting Started
+===============
+
+- Read the freaking manual! (409kB ~ 400 pages)
+
+- Install, run and study ``z3c.formdemo``::
+
+  $ svn co svn://svn.zope.org/repos/main/z3c.formdemo/trunk formdemo
+  $ cd formdemo
+  $ python bootstrap.py
+  $ ./bin/buildout -N
+  $ ./bin/demo fg
+
+- Ask a question if something is unclear
+
+
+Just Kidding
+============
+
+.. class:: big center
+
+  Juuuussttt kidding!
+
+
+Your Choice
+===========
+
+Today you have the choice between:
+
+1. a typical talk about ``z3c.form`` and its extensions
+
+or
+
+2. a tutorial (as promised in the brochure) building a small ``z3c.form`` app
+
+
+Form Automation
+===============
+
+* Writing forms and form handlers is a pain
+
+* Schemas/Fields usually carry enough information to generate forms
+
+* Benefits
+
+  + form framework does all the tedious bits
+
+  + automatic validation against schema
+
+  + nice error messages
+
+  + reusable form components (widgets)
+
+.. class:: handout
+
+  Form automation is an extremely viable part in making Zope 3 a
+  high-productivity environment. In fact, the implementation presented in this
+  session is already the third generation of form machinery. Older versions
+  are still available in ``zope.app.form`` and ``zope.formlib`` but is not
+  used anymore other than in legacy code.
+
+
+Forms
+=====
+
+* Presentation component
+
+* Must not be a full page (in fact, in viewlet- and pagelet-driven UIs it is
+  not)
+
+* Uses *(form) fields* and *widgets* to render a form
+
+* Defines *buttons* that generate form *actions*
+
+* Commonly a *template* is associated with a form to describe the layout
+
+.. class:: handout
+
+  If the UI requirements are consistent enough, it is sufficient to use one
+  generic template for all or most forms. In my experience, however, this has
+  not been the case and I have always ended up writing templates for each
+  form. With enough helper functions this is commonly a quick task and does
+  not represent a significant amount of the development time.
+
+
+Fields
+======
+
+* Fields represent attributes/properties in the form
+
+  See ``z3c.form.field``
+
+* Extend schema fields with form-specific information (name prefixes,
+  editability, custom widget, etc.)
+
+* (Form) fields are the traffickers between the form, schema field, and widget
+
+* An API exists to selectively choose fields of a schema to become form fields
+
+
+Creating a Schema
+=================
+
+* Schemas are just interfaces:
+
+  .. code-block:: Python
+
+    import zope.interface
+    import zope.schema
+
+    class IHelloWorldMessage(zope.interface.Interface):
+        """Information about a hello world message"""
+
+        who = zope.schema.TextLine(
+            title=u'Who',
+            description=u'Name of the person sending the message',
+            required=True)
+
+        when = zope.schema.Date(
+            title=u'When',
+            description=u'Date of the message sent.',
+            required=True)
+
+        what = zope.schema.Choice(
+            title=u'What',
+            description=u'What type of message it is.',
+            values=(u'cool', u'sunny', u'silent', u'best'),
+            required=True)
+
+
+Selecting Fields
+================
+
+* Selecting all fields of a schema:
+
+  .. code-block:: Python
+
+    fields = field.Fields(IHelloWorldMessage)
+
+* Selecting only a limited set of fields or changing the order:
+
+  .. code-block:: Python
+
+    fields = field.Fields(IHelloWorldMessage).select('when', 'who')
+
+* Omitting a particular field:
+
+  .. code-block:: Python
+
+    fields = field.Fields(IHelloWorldMessage).omit('what')
+
+* Combining fields from different schemas:
+
+  .. code-block:: Python
+
+    fields = (
+        field.Fields(IHelloWorldMessage, prefix='msg') +
+        field.Fields(IZopeDublinCore, prefix='dc', for_display=True)
+        )
+
+  .. class:: handout
+
+    I have never needed this feature. :-)
+
+
+Widgets
+=======
+
+* Represent an input method in a particular user interface, for example a
+  "text" input in HTML forms
+
+* Presentation component of a schema field (field widget)
+
+  See ``z3c.form.widget`` and ``z3c.form.browser``
+
+* Modes determine whether a display, edit or hidden widget is displayed
+
+.. class:: handout
+
+  In contrast to previous widget implementations, the ``z3c.form`` package's
+  widgets are very simple and are only respsonsible for ensuring the correct
+  rendering in the output media, in our case most often HTML forms.
+
+
+Widget-Related Components
+=========================
+
+* *Converters* are used to convert internal or field values to
+  widget-processable values
+
+  .. class:: handout
+
+  For example, if we want to edit an integer in a standard text input, then it
+  has to be converted to a string, since this is the only value type the
+  widget knows how to process. So 1200.67 might be converted to "1,200.67".
+
+* *Validators* are used to validate submitted input
+
+* Validators can raise ``ValidationError`` errors which use
+  ``ErrorViewSnippet`` presentation components to render themselves
+
+* *Data Managers* are used to store a value to a content component
+
+  .. class:: handout
+
+  In older form implementations, forms were only able to store field values
+  into instances. Providing the abstraction of a data manager, allows us to
+  store submitted data in other types of components, such as dictionaries.
+
+
+Widget Components Graph
+=======================
+
+.. image:: widget-graph.png
+   :alt: Widget Component Structure
+   :align: center
+
+
+Buttons
+=======
+
+* Defines actions of a form
+
+  See ``z3c.form.button``
+
+* Simple extension to schema fields
+
+* *Conditions* determine the availability of a button
+
+* Many ways to create buttons
+
+* A form can have multiple sets of button sets
+
+
+Actions
+=======
+
+* Actions are the widgets for buttons
+
+* In HTML rendered as submit or button input field
+
+* *Handlers* define set of instructions to execute when action is called
+  (i.e. button is pressed)
+
+  - Can be registered for specifc buttons or types of buttons
+
+  - High-level decorators are used to declare handlers
+
+
+Declaring Buttons (1)
+=====================
+
+* Buttons as schema fields:
+
+  .. code-block:: Python
+
+    class IButtons(zope.interface.Interface):
+        apply = button.Button(title=u'Apply')
+
+    class MyForm(Form):
+        buttons = button.Buttons(IButtons)
+
+* Single buttons within the form:
+
+  .. code-block:: Python
+
+    class MyForm(Form):
+        buttons = button.Buttons(
+            button.Button('apply', title=u'Apply'))
+
+Declaring Buttons (2)
+=====================
+
+* Declaring buttons via decorators:
+
+  .. code-block:: Python
+
+    @button.buttonAndHandler(u'Apply')
+    def apply(self, action):
+        ...
+
+  - First argument is title of button
+
+  - Accepts all (keyword) arguments of the button field
+
+  - ``provides`` argument allows directly providing interfaces
+
+* Copy buttons, actions and handlers from the super-form:
+
+  .. code-block:: Python
+
+       form.extends(EditForm)
+
+  .. class:: handout
+
+    It is fairly common to extend a form super-class. This is needed when the
+    sub-class wants to define/override additional buttons, actions or
+    handlers.  others. If any of the three component collections are not
+    copied, the assignment will override the collections in the super-class,
+    which in turn affects all sub-classes, not just thw current one.
+
+
+Form Classes
+============
+
+* ``BaseForm`` for basic machinery
+
+* ``DisplayForm`` for standard forms to display values
+
+* ``Form`` for basic machinery including buttons
+
+* ``AddForm`` for standard add forms
+
+* ``EditForm`` for standard edit forms
+
+* ``DisplayForm`` for standard forms to display values
+
+.. class:: handout
+
+  To keep matters simple within the form package, those forms do not directly
+  proivde the correct APIs for advanced UI patterns such as viewlets and view
+  templates. However, the overhead to make them work well with those pattersn
+  is very small and a common base class is quickly developed.
+
+
+Form Components Graph
+=====================
+
+.. image:: form-graph.png
+   :alt: Form Component Structure
+   :align: center
+
+
+Hello World Content
+===================
+
+.. code-block:: Python
+
+  import persistent
+  import zope.location
+  from zope.schema.fieldproperty import FieldProperty
+  from training.z3cform import interfaces
+
+  class HelloWorldMessage(zope.location.Location, persistent.Persistent):
+      zope.interface.implements(interfaces.IHelloWorldMessage)
+
+      who = FieldProperty(interfaces.IHelloWorldMessage['who'])
+      when = FieldProperty(interfaces.IHelloWorldMessage['when'])
+      what = FieldProperty(interfaces.IHelloWorldMessage['what'])
+
+      def __init__(self, who, when, what):
+          self.who = who
+          self.when = when
+          self.what = what
+
+
+Hooking up the Content
+======================
+
+* Declarations made in ZCML:
+
+  .. code-block:: XML
+
+    <class class=".message.HelloWorldMessage">
+      <allow
+          interface=".interfaces.IHelloWorldMessage"
+          />
+      <allow
+          permission="zope.Public"
+          set_schema=".interfaces.IHelloWorldMessage"
+          />
+    </class>
+
+  .. class:: handout
+
+    These directives effectively define the setup of the checker for the
+    class. The ``zope:allow`` and ``zope:require`` directives are used to
+    define the get- and set-permissions needed for accessing each
+    attribute. If no permission is assigned to an attribute getter/setter,
+    then the attribute is unavailable to all while the component is security
+    proxied.
+
+* ZCML directives are well-documented in the API Docs at
+  http://apidoc.zope.org
+
+
+Add Forms
+=========
+
+* Create object with an initial set of data
+
+* Validate data before object is created
+
+* ``IAdding`` components not directly supported, but support exists
+
+  See ``z3c.form.adding.AddForm``
+
+  .. class:: handout
+
+    ``IAdding`` is a component designed to control the process of adding a new
+    content component to a container. It controls the object to be created and
+    the name that is given. The Adding component was originally developed for
+    CMS-like applications, but it turns out that it is a lot of overhead for
+    non-CMS sites. Thus it is advisable to avoid the adding component in
+    general.
+
+* Implementation:
+
+  .. class:: small
+
+  + Must create object from data
+
+  + Must notify the system of the object creation
+
+  + Must add the object to the container/parent component
+
+  + Must specify what to do next (specify next URL)
+
+
+Message Add Form (1)
+====================
+
+.. code-block:: Python
+
+  from zope.traversing.browser import absoluteURL
+  from z3c.form import form, field
+  from training.form import interfaces, message
+
+  class HelloWorldAddForm(form.AddForm):
+      label = u'Hello World Message Add Form'
+      fields = field.Fields(interfaces.IHelloWorldMessage)
+      template = pagetemplate.ViewPageTemplateFile('form.pt')
+
+      def create(self, data):
+          return message.HelloWorldMessage(**data)
+
+      def add(self, object):
+          count = 0
+          while 'helloworld-%i' %count in self.context:
+              count += 1;
+          self._name = 'helloworld-%i' %count
+          self.context[self._name] = object
+          return object
+
+      def nextURL(self):
+          return absoluteURL(self.context[self._name], self.request)
+
+.. class:: handout
+
+  As you can see, we only need to implement three simple methods. The
+  ``create()`` method's job is to create a valid component from the data of
+  the form and return it. Next, the ``add(object)`` method is responsible for
+  adding the object -- usually to a contained. Part of its contract is that it
+  chooses a valid name. The ``nextURL()`` method simply returns a path to
+  redirect to.
+
+Message Add Form (2)
+====================
+
+* Register form as a simple page of ``IFolder``:
+
+  .. code-block:: XML
+
+    <page
+        name="addHelloWorld.html"
+        for="zope.app.folder.interfaces.IFolder"
+        class=".browser.HelloWorldAddForm"
+        layer=".browser.IFormSkin"
+        permission="zope.Public"
+        />
+
+  .. class:: small
+
+    Note: We must create a custom skin so that registrations are included.
+
+    .. code-block:: Python
+
+      from z3c.form.interfaces import IFormLayer
+      from z3c.formui.interfaces import IDivFormLayer
+
+      class IFormSkin(IDivFormLayer, IFormLayer, rotterdam.Rotterdam):
+          """Form Skin"""
+
+* After restarting Zope 3, the add form should be available
+
+* There is no link in the ZMI, because no menu was registered
+
+  .. class:: handout
+
+    Since we skipped the overhead of ``IAdding``, adding a menu item is hard,
+    unfortunately.  Note, however, that you will almost never use the ZMI to
+    add objects, so filling the ZMI add menu is pretty pointless anyways.
+
+
+Message Add Form (3)
+====================
+
+.. code-block:: XML
+
+  <html>
+    <head>
+      <link type="text/css" rel="stylesheet"
+            href="somestyle.css" media="all"
+            tal:attributes="href context/++resource++div-form.css" />
+    </head>
+    <body>
+      <div metal:use-macro="macro:form">
+        Form goes here.
+      </div>
+    </body>
+  </html>
+
+.. class:: handout
+
+  ``z3c.form`` was written with pagelets in mind. Since we want to keep the
+  example as self-contained as possible, we are not using pagelets, which
+  means that we have to define our own form templates. The ``div-form.css``
+  CSS resource and the ``form`` macro are registered in the ``IDivFormLayer``
+  layer.
+
+
+Custom Widget Value
+===================
+
+* Framework allows us to create custom attribute values for several widget
+  attributes
+
+* Make today's date the default for the ``when`` field
+
+  .. code-block:: Python
+
+    import datetime
+    from z3c.form import widget
+    from z3c.form.interfaces import IAddForm
+    from training.z3cform import interfaces
+
+    DefaultDate = widget.ComputedWidgetAttribute(
+        lambda adapter: datetime.date.today(),
+        field=interfaces.IHelloWorldMessage['when'], view=IAddForm)
+
+* A simple adapter to register
+
+  .. code-block:: XML
+
+    <adapter
+        factory=".browser.DefaultDate"
+        name="default" />
+
+  .. class:: handout
+
+    Note that the name of the adapter must be the name of the attribute that
+    we are providing the value for.
+
+
+Display Forms
+=============
+
+* Bad idea to display data right out of the content object
+
+* Some data requires formatting, such as dates and vocabulary values
+
+* Display forms produce human-readable representations of data
+
+* Display widgets are used
+
+.. class:: handout
+
+  While writing display forms every time you want to present a value might
+  seem tedious at first, but it is worth the discipline. Otherwise you will
+  eventually have unwanted presentation bugs. Common base classes can easily
+  be created to make this a very trivial part of the development.
+
+
+Message Display (1)
+===================
+
+* The Python view class:
+
+  .. code-block:: Python
+
+    class HelloWorldDisplayForm(form.DisplayForm):
+        fields = field.Fields(interfaces.IHelloWorldMessage)
+        template = pagetemplate.ViewPageTemplateFile('display.pt')
+
+        def __call__(self):
+            self.update()
+            return self.render()
+
+
+Message Display (2)
+===================
+
+* The page template using the widgets:
+
+  .. code-block:: XML
+
+    <html>
+      <body>
+        <h1>
+          A <span tal:replace="structure view/widgets/what/render" />
+          Hello World
+          from <span tal:replace="structure view/widgets/who/render" />
+          on <span tal:replace="structure view/widgets/when/render" />!
+        </h1>
+        <a href="./edit.html"
+           tal:attributes="href
+               string:${context/@@absolute_url}/edit.html"
+           >Edit Message</a>
+      </body>
+    </html>
+
+
+Message Display (3)
+===================
+
+* Registering the display view:
+
+  .. code-block:: XML
+
+    <page
+        name="index.html"
+        for=".interfaces.IHelloWorldMessage"
+        class=".browser.HelloWorldDisplayForm"
+        layer=".browser.IFormSkin"
+        permission="zope.Public"
+        />
+
+* To add an entry to the tabs, add the following to the page directive:
+
+  .. code-block:: XML
+
+    menu="zmi_views" title="View"
+
+
+Edit Forms
+==========
+
+* Change existing objects
+
+* Can stack multiple forms into one page
+
+* Switching between edit and view mode relatively simple
+
+.. class:: handout
+
+  Edit forms are great, because their scope is limited and they can be easily
+  used within other presentation components, allowing you to implement many
+  interesting patterns.
+
+
+Hello World Edit Form (1)
+=========================
+
+* An edit form with an additional custom button that switches back to the
+  display view after saving the changes.
+
+  .. code-block:: Python
+
+    from z3c.form import button
+
+    class HelloWorldEditForm(form.EditForm):
+        form.extends(form.EditForm)
+        label = u'Hello World Message Edit Form'
+        fields = field.Fields(interfaces.IHelloWorldMessage)
+
+        @button.buttonAndHandler(u'Apply and View', name='applyView')
+        def handleApplyView(self, action):
+            self.handleApply(self, action)
+            if not self.widgets.errors:
+                url = absoluteURL(self.context, self.request)
+                self.request.response.redirect(url)
+
+.. class:: handout
+
+  In this case we are using an existing action and just extend it. The
+  existing "Apply" action saves the data, but also remains in the edit
+  view. Our new action, "Apply and View", saves the data, but forwards the
+  user to the view page.
+
+
+Hello World Edit Form (2)
+=========================
+
+* Register form as a simple page of ``IHelloWorldMessage``:
+
+  .. code-block:: XML
+
+    <page
+        name="edit.html"
+        for=".interfaces.IHelloWorldMessage"
+        class=".browser.HelloWorldEditForm"
+        layer=".browser.IFormSkin"
+        permission="zope.Public"
+        />
+
+* After restarting Zope 3, the edit form should be available
+
+* Add to tabs, add the following to the page directive:
+
+  .. code-block:: XML
+
+    menu="zmi_views" title="Edit"
+
+
+The Future -- ``z3c.form`` 2.0
+==============================
+
+- Integration of ``z3c.pt``
+
+  * Benchmarks show that form generation is 2-3 times faster
+
+- New widgets:
+
+  * ``TextLinesWidget`` widget to edit a sequence of simple values in a text area
+
+  * ``MultiWidget`` wisget to manage a sequence of simple types
+
+  * ``ObjectWidget`` widget provides a simple way to edit ``Object`` fields
+
+- Translations
+
+
+Extensions to ``z3c.form``
+==========================
+
+- ``z3c.formjs`` -- Javascript and Ajax
+
+  * See ``z3c.formjsdemo``
+
+- ``z3c.formwidget.query`` -- A widget to query a large collection and select
+  a value from the query results
+
+- ``plone.z3cform`` -- Integration of ``z3c.form`` into CMF and Plone
+
+- ``megrok.z3cform`` -- Integration of ``z3c.form`` into Grok
+
+- ``five.megrok.z3cform`` -- Five bridge of ``megrok.z3cform``
+
+- ``z3c.formext`` -- Soon to come from Keas

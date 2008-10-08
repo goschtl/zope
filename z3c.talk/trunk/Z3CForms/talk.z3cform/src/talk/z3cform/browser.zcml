@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:zope="http://namespaces.zope.org/zope">
+
+  <zope:interface
+      interface=".browser.IFormSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Form"
+      />
+
+  <page
+      name="index.html"
+      for=".interfaces.IHelloWorldMessage"
+      class=".browser.HelloWorldDisplayForm"
+      layer=".browser.IFormSkin"
+      permission="zope.Public"
+      />
+
+  <page
+      name="edit.html"
+      for=".interfaces.IHelloWorldMessage"
+      class=".browser.HelloWorldEditForm"
+      layer=".browser.IFormSkin"
+      permission="zope.Public"
+      />
+
+  <page
+      name="addHelloWorld.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.HelloWorldAddForm"
+      layer=".browser.IFormSkin"
+      permission="zope.Public"
+      />
+
+</configure>
