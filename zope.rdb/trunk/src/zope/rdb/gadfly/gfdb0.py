@@ -4,6 +4,12 @@ verbosity = 0
 
 import os
 
+try:
+    from hashlib import md5
+except ImportError:
+    # Python 2.4 and earlier
+    from md5 import md5
+
 # use whatever kjbuckets sqlsem is using
 #from sqlsem import kjbuckets, maketuple
 
@@ -12,8 +18,7 @@ StorageError = "StorageError"
 
 # use md5 checksum (stub if md5 unavailable?)
 def checksum(string):
-    from md5 import new
-    return new(string).digest()
+    return md5(string).digest()
 
 def recursive_dump(data, prefix="["):
     """for debugging"""

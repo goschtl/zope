@@ -89,12 +89,6 @@ class IResultSet(Interface):
 class DatabaseException(Exception):
     """Generic Database Error"""
 
-    def __init__(self, message):
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
 class DatabaseAdapterError(DatabaseException):
     pass
 

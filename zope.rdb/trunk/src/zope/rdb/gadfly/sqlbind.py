@@ -54,7 +54,7 @@ def dropview(l, c):
 
 # create view statement stuff
 def createview(l, c):
-    [create, view, name, namelist, as, selection] = l
+    [create, view, name, namelist, as_, selection] = l
     from sqlsem import CreateView
     return CreateView(name, namelist, selection)
 
@@ -306,11 +306,11 @@ def trlna(l,c):
     return others
 
 def trl1as(l,c):
-    [name, as, alias] = l
+    [name, as_, alias] = l
     return [(name, alias)]
 
 def trlnas(l,c):
-    [name, as, alias, comma, others] = l
+    [name, as_, alias, comma, others] = l
     others.insert(0, (name, alias))
     return others
 
@@ -584,7 +584,7 @@ def selectit(list, context):
     return (exp, None) # no binding!
 
 def selectname(list, context):
-    [exp, as, alias] = list
+    [exp, as_, alias] = list
     return (exp, alias)
 
 colalias = elt0
