@@ -239,7 +239,7 @@ class ViewletManager(ContentProviderBase, ViewletManagerBase):
     def filter(self, viewlets):
         # Wrap viewlet in aquisition, and only return viewlets
         # accessible to the user.
-        parent = self.aq_parent
+        parent = self.context.aq_parent
         security_manager = getSecurityManager()
 
         def checkPermission(viewlet):
@@ -258,7 +258,7 @@ class ViewletManager(ContentProviderBase, ViewletManagerBase):
     def render(self):
         """See zope.contentprovider.interfaces.IContentProvider"""
         # Now render the view
-        if self.template:
+        if getattr(self, 'template', None):
             return self.template.render(self)
         else:
             return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
