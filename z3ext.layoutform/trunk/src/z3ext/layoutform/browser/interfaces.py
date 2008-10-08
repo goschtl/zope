@@ -22,13 +22,33 @@ class IForm(interface.Interface):
     """ form view """
 
 
-class IWidget(interface.Interface):
-    """ widget view """
+class IExtraFormInfo(interface.Interface):
+    """ extra form information """
 
 
 class IViewspace(interface.Interface):
     """ form viewspace """
 
 
+class IExtraViewspaceInfo(interface.Interface):
+    """ extra widget information """
+
+
+class IWidget(interface.Interface):
+    """ widget view """
+
+
+class IExtraBeforeWidget(interface.Interface):
+    """ extra widget information """
+
+
+class IExtraAfterWidget(interface.Interface):
+    """ extra widget information """
+
+
 class IFormButtons(interface.Interface):
     """ form buttons """
+
+
+class IExtraFormButtonsInfo(interface.Interface):
+    """ extra buttons information """

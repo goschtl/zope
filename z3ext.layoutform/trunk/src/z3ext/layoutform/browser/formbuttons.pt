@@ -1,4 +1,7 @@
 <div class="z-form-controls">
+  <tal:block tal:content="structure
+       context/@@pagelet/z3ext.layoutform.browser.interfaces.IExtraFormButtonsInfo|nothing" />
+
   <span tal:condition="context/actions/values">
     <hr />
     <input tal:repeat="action context/actions/values"

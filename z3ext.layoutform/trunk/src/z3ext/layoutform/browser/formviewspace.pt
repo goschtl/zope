@@ -4,6 +4,9 @@
      tal:condition="context/description|nothing"
      tal:content="context/description|nothing"></div>
 
+<tal:block tal:content="structure
+  context/@@pagelet/z3ext.layoutform.browser.interfaces.IExtraViewspaceInfo|nothing" />
+
 <div class="z-form-fieldset">
   <tal:block tal:repeat="widget context/widgets/values"
        tal:content="structure 

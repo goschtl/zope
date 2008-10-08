@@ -8,6 +8,9 @@
 		      id context/id">
 
   <tal:block tal:content="structure
+      context/@@pagelet/z3ext.layoutform.browser.interfaces.IExtraFormInfo|nothing" />
+
+  <tal:block tal:content="structure
 	  context/@@pagelet/z3ext.layoutform.browser.interfaces.IViewspace" />
 
   <tal:block tal:content="structure
