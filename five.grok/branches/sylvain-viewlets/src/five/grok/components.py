@@ -1,7 +1,8 @@
 import martian
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.contentprovider.interfaces import IContentProvider
+from zope.viewlet.interfaces import IViewletManager
+from zope.security.interfaces import IPermission
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope import interface, component
 
@@ -10,15 +11,19 @@ from grokcore.formlib.components import GrokForm as BaseGrokForm
 from grokcore.formlib.components import default_display_template, default_form_template
 from grokcore.view.components import PageTemplate
 import grokcore.view
+import grokcore.security
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
     as BaseViewPageTemplateFile
 from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
+from Products.Five.viewlet.manager import ViewletManagerBase
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
+
+from AccessControl import getSecurityManager
 import Acquisition
 
 
@@ -202,19 +207,59 @@ class ContentProviderBase(Acquisition.Explicit):
         return namespace
 
 
-class ViewletManager(ContentProviderBase):
+class ViewletManager(ContentProviderBase, ViewletManagerBase):
 
-    interface.implements(IContentProvider)
+    interface.implements(IViewletManager)
 
     martian.baseclass()
+
+    def __init__(self, context, request, view):
+        ContentProviderBase.__init__(self, context, request, view)
+        ViewletManagerBase.__init__(self, context, request, view)
 
     def default_namespace(self):
         namespace = super(ViewletManager, self).default_namespace()
         namespace['viewletmanager'] = self
         return namespace
 
-    def update(self):
-        pass
+    def sort(self, viewlets):
+        s_viewlets = []
+        for name, viewlet in viewlets:
+             viewlet.__viewlet_name__ = name
+             s_viewlets.append(viewlet)
+
+        def sort_key(viewlet):
+            # If components have a grok.order directive, sort by that.
+            #explicit_order, implicit_order = silvaconf.order.bind().get(viewlet)
+            return (viewlet.__module__,
+                    viewlet.__class__.__name__)
+        s_viewlets = sorted(s_viewlets, key=sort_key)
+        return [(viewlet.__viewlet_name__, viewlet) for viewlet in s_viewlets]
+
+    def filter(self, viewlets):
+        # Wrap viewlet in aquisition, and only return viewlets
+        # accessible to the user.
+        parent = self.aq_parent
+        security_manager = getSecurityManager()
+
+        def checkPermission(viewlet):
+            _, viewlet = viewlet
+            # Unfortuanetly, we don't have easy way to check the permission.
+            permission = grokcore.security.require.bind().get(viewlet)
+            if (permission is None) or (permission == 'zope.Public'):
+                return True
+            if isinstance(permission, str):
+                permission = component.getUtility(IPermission, permission)
+            return security_manager.checkPermission(permission.title, viewlet)
+
+        return filter(checkPermission,
+                      [(name, viewlet.__of__(parent)) for name, viewlet in viewlets])
 
     def render(self):
-        return self.template.render(self)
+        """See zope.contentprovider.interfaces.IContentProvider"""
+        # Now render the view
+        if self.template:
+            return self.template.render(self)
+        else:
+            return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
+
