@@ -125,6 +125,7 @@ class ViewletManagerGrokker(martian.ClassGrokker):
         def has_render(provider):
             return provider.render != components.ViewletManager.render
         def has_no_render(provider):
-            return not has_render(provider)
-        templates.checkTemplates(module_info, provider, 'contentprovider',
+            # always has a render method
+            return False
+        templates.checkTemplates(module_info, provider, 'viewlet manager',
                                  has_render, has_no_render)
