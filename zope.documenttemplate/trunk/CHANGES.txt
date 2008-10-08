@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.4.1 (Unreleased)
+------------------
+
+- Fixed usage of 'with' as a variable name. It is now a keyword in
+  Python 2.6, causing a SyntaxError. ``zope.documenttemplate`` now
+  supports Python 2.6.
+
 3.4.0 (2007/10/02)
 ------------------
 

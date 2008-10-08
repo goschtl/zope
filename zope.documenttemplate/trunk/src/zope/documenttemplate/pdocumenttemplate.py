@@ -228,9 +228,11 @@ class TemplateDict:
                 v = v()
         return v
 
-    def reorder(self, s, with=None, without=()):
-        if with is None:
-            with = s
+    def reorder(self, s, with_=None, without=(), **kw):
+        if with_ is None and kw.has_key('with'):
+            with_ = kw['with']
+        if with_ is None:
+            with_ = s
         d = {}
         for i in s:
             if isinstance(i, TupleType) and len(i) == 2:
@@ -250,11 +252,11 @@ class TemplateDict:
             if h(k):
                 del d[k]
 
-        for i in with:
+        for i in with_:
             if isinstance(i, TupleType) and len(i) == 2:
                 k, v = i
             else:
-                k= v = i
+                k = v = i
             if h(k):
                 a((k,d[k]))
                 del d[k]
