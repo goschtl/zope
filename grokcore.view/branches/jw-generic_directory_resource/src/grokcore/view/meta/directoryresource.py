@@ -77,7 +77,7 @@ class DirectoryResourceGrokker(martian.ClassGrokker):
 
     def execute(self, factory, config, name, path, layer, **kw):
         resource_path = _get_resource_path(factory.module_info, path)
-        name = name or module_info.dotted_name
+        name = name or factory.module_info.dotted_name
         return _register(config, resource_path, name, layer)
 
 class StaticResourcesGrokker(martian.GlobalGrokker):
