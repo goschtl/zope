@@ -12,6 +12,7 @@ setup(
     author_email='faassen@startifact.com',
     license='ZPL 2.1',
     packages=find_packages('src'),
+    namespace_packages=['hurry'],
     package_dir={'': 'src'},
     include_package_data=True,
     zip_safe=False,
