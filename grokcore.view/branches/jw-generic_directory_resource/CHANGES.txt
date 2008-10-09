@@ -1,0 +1,21 @@
+Changes
+=======
+
+1.2 (unreleased)
+----------------
+
+* ...
+
+1.1 (2008-09-22)
+----------------
+
+* ``meta.py`` module containing the grokkers has been split in a
+  package with separate modules for the view, template, skin and
+  static resources grokkers. This allows applications to use only
+  grokkers they need (and maybe redefine others).
+
+1.0 (2006-08-07)
+----------------
+
+* Created ``grokcore.view`` in July 2008 by factoring security-related
+  components, grokkers and directives out of Grok.
