@@ -5,8 +5,9 @@ contents will be available as static resources under a URL:
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  >>> browser.open('http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/'
-  ...              'file.txt')
+  >>> browser.open(
+  ...     'http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/'
+  ...     'file.txt')
   >>> print browser.contents
   some text
 
@@ -26,7 +27,9 @@ to resources:
 
 Static also means that page templates will not be interpreted:
 
-  >>> browser.open('http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/static.pt')
+  >>> browser.open(
+  ...     'http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/'
+  ...     'static.pt')
   >>> print browser.contents
   <html>
   <body>
@@ -36,7 +39,9 @@ Static also means that page templates will not be interpreted:
 
 We also support subdirectories for resources:
 
-  >>> browser.open('http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/subdir/otherfile.txt')
+  >>> browser.open(
+  ...     'http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/'
+  ...     'subdir/otherfile.txt')
   >>> print browser.contents
   This is yet another file.
 
