@@ -1,0 +1,37 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   zcml:condition="installed z3ext.controlpanel"
+   i18n_domain="z3ext.cssregistry">
+
+  <include package="z3ext.controlpanel" file="meta.zcml" />
+
+  <z3ext:configlet
+     name="ui.cssregistry"
+     title="CSS Properties"
+     description="CSS properties registry configuration."
+     schema=".interfaces.ICSSRegistryConfiglet"
+     class=".configlet.CSSRegistryConfiglet" />
+  
+  <adapter factory=".configlet.portalCssRegistry" />
+
+  <class class=".configlet.CSSRegistryConfiglet">
+    <require
+       permission="zope.Public"
+       attributes="name title"
+       interface="zope.interface.common.mapping.IEnumerableMapping" />
+    <require
+       permission="z3ext.Configure"
+       interface="zope.interface.common.mapping.IWriteMapping" />
+  </class>
+  
+  <browser:page
+     name="index.html"
+     for=".interfaces.ICSSRegistryConfiglet"
+     template="configletview.pt"
+     class=".configletview.ViewRegistry"
+     permission="z3ext.Configure" />
+
+</configure>
