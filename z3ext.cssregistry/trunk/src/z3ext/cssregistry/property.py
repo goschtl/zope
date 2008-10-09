@@ -22,7 +22,7 @@ from persistent import Persistent
 from interfaces import ICSSProperty
 
 
-class CSSProperty(Persistent):
+class Property(object):
     interface.implements(ICSSProperty)
 
     def __init__(self, name, value, description='', type=''):
@@ -34,3 +34,7 @@ class CSSProperty(Persistent):
     def process(self, text):
         regex = re.compile(re.escape(self.name))
         return regex.subn(self.value, text)[0]
+
+
+class CSSProperty(Property, Persistent):
+    pass

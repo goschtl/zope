@@ -19,10 +19,9 @@ from zope import interface
 from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-from z3ext.cssregistry.i18n import _
+from z3ext.cssregistry.property import Property
 from z3ext.cssregistry.registry import registries
-from z3ext.cssregistry.property import CSSProperty
-from z3ext.cssregistry.interfaces import ICSSRegistry
+from z3ext.cssregistry.interfaces import _, ICSSRegistry
 
 
 class ViewRegistry(BrowserPagelet):
@@ -32,7 +31,7 @@ class ViewRegistry(BrowserPagelet):
         for key, registry in registries.items():
             name, layer = key
 
-            regs.append({'name': name or 'Without name', 
+            regs.append({'name': name or _('Without name'),
                          'layer': '%s.%s'%(layer.__module__, layer.__name__),
                          'registry': registry})
 
@@ -44,16 +43,13 @@ class ViewRegistry(BrowserPagelet):
         if 'form.copy' in request:
             reg = request.get('registry', None)
 
-            try:
-                registry = self.listRegistries()[int(reg)]['registry']
+            registry = self.listRegistries()[int(reg)]['registry']
 
-                for prop, value in registry.items():
-                    self.context[prop] = value
+            for prop, value in registry.items():
+                self.context[prop] = value
 
-                IStatusMessage(request).add(
-                    _(u"CSS Registry has been copied."))
-            except:
-                pass
+            IStatusMessage(request).add(
+                _(u"CSS Registry has been copied."))
 
         if 'form.add' in request:
             name = request.get('form.add.name', '').strip()
@@ -61,7 +57,7 @@ class ViewRegistry(BrowserPagelet):
                 IStatusMessage(request).add(
                     _(u"Can't add property with emtpy name."), 'error')
             else:
-                self.context[name] = CSSProperty(
+                self.context[name] = Property(
                     name, request.get('form.add.value', ''))
 
         if 'form.remove' in request:
@@ -70,11 +66,14 @@ class ViewRegistry(BrowserPagelet):
             IStatusMessage(request).add(_(u"Properties have been removed."))
 
         if 'form.save' in request:
-
             for key, value in request.form.items():
                 if key.startswith('prop-'):
                     key = key[5:]
-                    self.context[key].value = value
+                    old = self.context[key]
+                    property = Property(
+                        old.name, value, old.description, old.type)
+
+                    self.context[key] = property
 
             if request.get('form.enabled') == 'yes':
                 self.context.enabled = True
@@ -84,3 +83,4 @@ class ViewRegistry(BrowserPagelet):
             IStatusMessage(request).add(_(u"Properties have been changed."))
 
         return self.index()
+

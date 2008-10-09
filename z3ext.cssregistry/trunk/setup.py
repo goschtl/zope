@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.3dev'
+version = '1.3.0dev'
 
 
 setup(name='z3ext.cssregistry',
@@ -59,12 +59,18 @@ setup(name='z3ext.cssregistry',
                           'zope.component',
 			  'zope.i18nmessageid',
 			  'zope.configuration',
+                          'z3c.autoinclude',
                           'z3c.zrtresource>=1.1.0',
                           ],
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
                                   'zope.publisher',
                                   'zope.traversing',
+                                  'zope.securitypolicy',
+                                  'zope.app.zcmlfiles',
+                                  'z3ext.layout',
+                                  'z3ext.controlpanel',
+                                  'z3ext.statusmessage',
                                   ]),
       include_package_data = True,
       zip_safe = False,

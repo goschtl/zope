@@ -17,8 +17,9 @@ $Id$
 """
 from zope import schema, interface
 from zope.interface.common.mapping import IMapping
+from zope.i18nmessageid import MessageFactory
 
-from z3ext.cssregistry.i18n import _
+_ = MessageFactory('z3ext.cssregistry')
 
 
 class ICSSRegistry(IMapping):

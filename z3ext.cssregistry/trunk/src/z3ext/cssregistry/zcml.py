@@ -20,83 +20,82 @@ from zope import schema, interface
 from zope.component.zcml import handler
 from zope.configuration.fields import GlobalObject
 
-from i18n import _
-from property import CSSProperty
+from property import Property
 from registry import CSSRegistry, registries
 
-from interfaces import ICSSRegistry, ICSSRegistryLayer
+from interfaces import _, ICSSRegistry, ICSSRegistryLayer
 
 
 class ICSSRegistryDirective(interface.Interface):
 
     name = schema.TextLine(
-	title = _(u'Name'),
-        description = _(u'Registry name'),
+	title = u'Name',
+        description = u'Registry name',
 	required = False)
 
     title = schema.TextLine(
-	title = _(u'Title'),
+	title = u'Title',
 	required = False)
 
     layer = GlobalObject(
-        title=_(u"The layer the css registry should be found in"),
-        required=False)
+        title = u"The layer the css registry should be found in",
+        required = False)
 
 
 class ICSSPropertySubDirective(interface.Interface):
 
     name = schema.TextLine(
-	title = _(u'Name'),
-        description = _(u'Property name'),
+	title = u'Name',
+        description = u'Property name',
 	required = True)
 
     value = schema.TextLine(
-	title = _(u'Value'),
-        description = _(u'Property value'),
+	title = u'Value',
+        description = u'Property value',
 	required = True)
 
     description = schema.TextLine(
-	title = _(u'Description'),
-        description = _(u'Property description'),
+	title = u'Description',
+        description = u'Property description',
 	required = False)
 
     type = schema.TextLine(
-	title = _(u'Type'),
-        description = _(u'Property type. (color, font, size)'),
+	title = u'Type',
+        description = u'Property type. (color, font, size)',
 	required = False)
-    
+
 
 class ICSSPropertyDirective(interface.Interface):
 
     registry = schema.TextLine(
-	title = _(u'Registry'),
+	title = u'Registry',
 	required = False)
 
     layer = GlobalObject(
-        title = _(u"The layer the css registry should be found in"),
+        title = u"The layer the css registry should be found in",
         required=False)
 
     name = schema.TextLine(
-	title = _(u'Name'),
+	title = u'Name',
 	required = True)
 
     value = schema.TextLine(
-	title = _(u'Value'),
+	title = u'Value',
 	required = True)
 
     description = schema.TextLine(
-	title = _(u'Description'),
-        description = _(u'Property description'),
+	title = u'Description',
+        description = u'Property description',
 	required = False)
 
     type = schema.TextLine(
-	title = _(u'Type'),
-        description = _(u'Property type. (color, font, size)'),
+	title = u'Type',
+        description = u'Property type. (color, font, size)',
 	required = False)
 
 
 class Factory(object):
-    
+
     def __init__(self, registry):
         self.registry = registry
 
@@ -127,10 +126,10 @@ class cssregistryHandler(object):
 	    )
 
     def property(self, _context, name, value, description='', type=''):
-        self.registry[name] = CSSProperty(name, value, description, type)
+        self.registry[name] = Property(name, value, description, type)
 
 
-def csspropertyHandler(_context, name, value, registry='', 
+def csspropertyHandler(_context, name, value, registry='',
                        layer=interface.Interface, description='', type=''):
     registry = registries[(registry, layer)]
-    registry[name] = CSSProperty(name, value, description, type)
+    registry[name] = Property(name, value, description, type)

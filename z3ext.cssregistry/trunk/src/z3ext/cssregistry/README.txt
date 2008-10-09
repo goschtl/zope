@@ -187,11 +187,11 @@ Registry methods
 
    >>> for key, prop in registry.items():
    ...     print key, prop
-   color1 <z3ext.cssregistry.property.CSSProperty ...>
-   color3 <z3ext.cssregistry.property.CSSProperty ...>
-   color2 <z3ext.cssregistry.property.CSSProperty ...>
-   fontFamilyH2 <z3ext.cssregistry.property.CSSProperty ...>
-   fontFamilyH1 <z3ext.cssregistry.property.CSSProperty ...>
+   color1 <z3ext.cssregistry.property.Property ...>
+   color3 <z3ext.cssregistry.property.Property ...>
+   color2 <z3ext.cssregistry.property.Property ...>
+   fontFamilyH2 <z3ext.cssregistry.property.Property ...>
+   fontFamilyH1 <z3ext.cssregistry.property.Property ...>
 
    >>> len(registry)
    5
@@ -200,7 +200,7 @@ Registry methods
    True
 
    >>> registry.get(u'color1')
-   <z3ext.cssregistry.property.CSSProperty ...>
+   <z3ext.cssregistry.property.Property ...>
 
    >>> del registry[u'color1']
    >>> registry.keys()

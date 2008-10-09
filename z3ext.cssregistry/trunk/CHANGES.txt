@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.3.0 (2008-10-10)
+------------------
+
+- Update i18n
+
+- Do not use Persistent for registry and property
+
+
 1.2.2 (2008-04-01)
 ------------------
 

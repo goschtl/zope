@@ -16,13 +16,12 @@
 $Id$
 """
 from zope import interface
-from persistent import Persistent
 from interfaces import ICSSRegistry
 
 registries = {}
 
 
-class CSSRegistry(Persistent):
+class CSSRegistry(object):
     interface.implements(ICSSRegistry)
 
     @property
