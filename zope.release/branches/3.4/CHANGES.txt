@@ -4,8 +4,8 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
-3.4.0c7 (unreleased)
---------------------
+3.4.0c7 (2008-09)
+-----------------
 
 - Upgraded zope.server to 3.4.3
 - Upgraded zope.app.server to 3.4.1 and 3.4.2
