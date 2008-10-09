@@ -15,9 +15,11 @@
 
 $Id$
 """
+import logging, sys
 from zope import interface, component
 from zope.component import queryMultiAdapter
 from zope.publisher.browser import BrowserPage
+from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.tales.expressions import SimpleModuleImporter
 from zope.pagetemplate.interfaces import IPageTemplate
@@ -105,8 +107,9 @@ class PageletPublisher(object):
     def publishTraverse(self, request, name):
         try:
             return self[name]
-        except KeyError:
-            pass
+        except Exception, err:
+            log = logging.getLogger('z3ext.content')
+            log.debug(err)
 
         raise NotFound(self.context, name, request)
 
