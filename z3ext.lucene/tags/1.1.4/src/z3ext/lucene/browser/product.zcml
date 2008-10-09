@@ -1,0 +1,21 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext">
+
+  <registerIn registry="z3ext.product.z3ext-lucene">
+    <browser:menuItem
+       for="..interfaces.ILuceneProduct"
+       menu="zmi_views"
+       title="View"
+       action="@@index.html"
+       permission="z3ext.ManageProducts" />
+
+    <browser:page
+       for="..interfaces.ILuceneProduct"
+       name="index.html"
+       class=".product.LuceneProduct"
+       permission="z3ext.ManageProducts" />
+  </registerIn>
+
+</configure>
