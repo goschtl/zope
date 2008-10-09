@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.1.4dev'
+version = '1.1.5dev'
 
 
 setup(name='z3ext.lucene',
