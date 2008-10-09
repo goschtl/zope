@@ -11,6 +11,7 @@ setup(
     license='ZPL 2.1',
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    namespace_packages=['hurry'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
