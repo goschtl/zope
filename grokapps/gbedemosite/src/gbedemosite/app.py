@@ -1,6 +1,7 @@
 import grok
 
 import zope.component
+from zope.exceptions import DuplicationError
 
 class Demosite(grok.Application, grok.Container):
     pass

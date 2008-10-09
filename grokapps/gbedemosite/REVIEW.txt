@@ -1,0 +1,228 @@
+Grok-by-Example: Demosite
+=========================
+
+:Author: d2m (michael@d2m.at)
+
+.. contents:: Contents
+
+
+Overview
+~~~~~~~~
+
+This demosite shows how to install multiple Grok applications and make
+them available from a single Grok instance.
+
+
+Review
+~~~~~~
+
+Now that you have a few working Grok apps (Grok-By-Example__), how about serving
+them all together from a single Grok instance? 
+
+__ http://pypi.python.org/pypi/Grok-By-Example
+
+
+Setup multiple applications for your demosite
+---------------------------------------------
+
+One possible setup is to create the demosite as a Grok app on its own. You just
+construct the basic app layout (or let grokproject__ do it for you or simply 
+checkout the 'gbedemosite' application). I strongly recommend to run your 
+development from inside a virtualenv__::
+
+    $ svn co svn://svn.zope.org/repos/main/grokapps/gbedemosite
+    $ cd gbedemosite
+    $ virtualenv --no-site-packages .
+    
+__ http://pypi.python.org/pypi/grokproject
+__ http://pypi.python.org/pypi/virtualenv
+
+You then apply the necessary changes for a multi-app setup. Lets start with 
+'setup.py'. Add the package name of the apps you want to run to the 
+'install-requires' section::
+
+    install_requires=[...
+                      'gbeguestbook',
+                      'gbe99bottles',
+                      'gbewiki',
+                      'gbepastebin',
+                      ...
+                     ],
+
+Now checkout the packages from SVN to your 'gbedemosite' folder.
+If the packages where available from PyPI or another package repository you
+could just **skip this and the next step**, buildout would fetch and install the 
+packages on the next run::
+
+    svn co svn://svn.zope.org/repos/main/grokapps/gbeguestbook
+    svn co svn://svn.zope.org/repos/main/grokapps/gbe99bottles
+    svn co svn://svn.zope.org/repos/main/grokapps/gbewiki
+    svn co svn://svn.zope.org/repos/main/grokapps/gbepastebin
+
+In 'buildout.cfg' add the same packages to 'develop'::
+
+    [buildout]
+    develop = . gbeguestbook gbe99bottles gbewiki gbepastebin
+   
+Run bootstrap (if you have not already) and buildout::
+
+    $ bin/python bootstrap.py
+    $ bin/buildout
+    
+That's all for now, lets move on to create the 'gbedemosite' app itself.
+
+
+Create the 'demosite' application
+---------------------------------
+
+You basically only need to change the 'app.py' template file. Lets assume you
+created the app by `"grokproject Demosite"`, you already have a 'Demosite' 
+application class, with an Index view and the associated 'app_templates/index.pt' 
+template file.
+
+You want to setup all available example apps automatically when creating an 
+instance of the demosite application. Add an event subscription handler for
+the 'Demosite' class does just that::
+
+    @grok.subscribe(Demosite, grok.IObjectAddedEvent)
+    def handle(obj, event):
+        applications=(('gbeguestbook.app.Application','Guestbook'),
+                      ('gbe99bottles.app.Song','Song'),
+                      ('gbewiki.app.WikiPage','Wiki'),
+                      ('gbepastebin.app.Application','Pastebin'),
+                      )
+        for application, name in applications:
+            app = zope.component.getUtility(grok.interfaces.IApplication,
+                                            name=application)
+            try:
+                obj[name] = app()
+            except DuplicationError:
+                pass
+
+The 'applications' list defines the example apps and their instance names. 
+Whenever you create a new instance of your 'Demosite' class the example apps 
+will be created with their fixed names inside it.
+
+
+Make your demosite ready for public
+-----------------------------------
+
+If you want to serve your apps to the public, your site also should provide a
+'robots.txt' file for the webcrawlers.
+
+Add another grok.View to your application class and give it the name 
+'robots.txt'::
+
+    class Robots(grok.View):
+        grok.name('robots.txt')
+
+Then create another template file in 'app_templates/robots.pt'. The template
+could be empty or hold instructions following the `robots exclusion standard`__.
+
+__ http://en.wikipedia.org/wiki/Robots.txt
+
+Next create a virtual host to serve the demosite from behind Apache::
+
+    <VirtualHost *>
+    ServerName    your.server.name
+    ...    
+    RewriteEngine On
+    RewriteRule ^/(.*)  http://127.0.0.1:8080/<demosite>/++vh++http:your.server.name:80/++/$1 [P,L]
+    </VirtualHost>
+
+(with <demosite> having the name of your public demosite instance). This should
+make your apps available at root level. Your 'app_templates/index.pt' template
+already holds links to all installed example apps and serves as default page for
+the Grok instance. If you need to access the 'admin' screens again point your 
+browser to::
+
+    http://localhost:8080/applications
+    
+
+Enable ZEO
+----------
+
+Finally you want to debug the running demosite. Some of the example apps have no
+means to delete existing objects - you can simply delete objects from the 
+debugger too.
+
+Debugging a running zope instance needs a change in the server setup: you create 
+a ZEO__ server that holds the ZODB (Data.fs) and 2 ZEO clients that access their
+data from the ZEO server. One client ('zopectl') will serve the Demosite 
+application, the other client ('instance2') will be used for debugging.
+
+You need to change 'buildout.cfg', add and modify parts::
+
+    [buildout]
+    ...
+    parts = ... zodb server instance2
+
+    [zodb]
+    recipe = zc.recipe.egg:script
+    eggs = ZODB3
+    
+    [server]
+    recipe = zc.zodbrecipes:server
+    zeo.conf =
+       <zeo>
+          address 8100
+       </zeo>
+       <filestorage 1>
+          path ${buildout:parts-directory}/data/ZEOData.fs
+       </filestorage>
+
+    [zopectl]
+    recipe = zc.zope3recipes:instance
+    application = app
+    address = 8080
+    zope.conf = devmode on
+        <zodb>
+          <zeoclient>
+            server 8100
+          </zeoclient>
+        </zodb>
+        site-definition ${buildout:parts-directory}/app/site.zcml
+        
+        <accesslog>
+          <logfile>
+            path ${buildout:parts-directory}/zopectl/access.log
+          </logfile>
+        </accesslog>
+        
+        <eventlog>
+          <logfile>
+            formatter zope.exceptions.log.Formatter
+            path STDOUT
+          </logfile>
+        </eventlog>
+    
+    [instance2]
+    recipe = zc.zope3recipes:instance
+    extends = zopectl
+    address = 9080
+
+__ http://wiki.zope.org/ZODB
+    
+
+Finally
+-------
+
+Run buildout again, run the tests, start the server, start the client::
+
+    $ bin/buildout
+    $ bin/test
+    $ bin/server start
+    $ bin/zopectl fg
+    
+Setup apache::
+
+    $ sudo a2ensite your-vhost-id
+    $ sudo /etc/init.d/apachectl restart
+    
+Access the demosite admin screens, create a 'demosite' instance and use it::
+
+    http://your.server.name/applications
+    
+Hope that gets you up and running in record time - creating the demosite 
+application was done in an hour. As always writing the docs took a bit longer ;)
+    
