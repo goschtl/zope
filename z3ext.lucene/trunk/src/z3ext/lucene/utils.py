@@ -45,7 +45,7 @@ def unindexObject(object, index=None, intids=None):
             intids = queryUtility(IIntIds)
 
         if intids is not None:
-            id = intids.getId(object)
-            
+            id = intids.queryId(object)
+
             if id is not None:
                 index.unindex_doc(id)
