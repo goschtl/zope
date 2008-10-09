@@ -67,3 +67,8 @@ class skin(martian.Directive):
     scope = martian.CLASS
     store = TaggedValueStoreOnce()
     validate = martian.validateText
+
+class path(martian.Directive):
+    scope = martian.CLASS
+    store = martian.ONCE
+    validate = martian.validateText

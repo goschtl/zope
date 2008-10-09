@@ -21,7 +21,8 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from grokcore.view.components import View
 from grokcore.view.components import PageTemplate, PageTemplateFile
-from grokcore.view.directive import layer, template, templatedir, skin
+from grokcore.view.components import DirectoryResource
+from grokcore.view.directive import layer, template, templatedir, skin, path
 from grokcore.view.util import url
 
 # Import this module so that it's available as soon as you import the

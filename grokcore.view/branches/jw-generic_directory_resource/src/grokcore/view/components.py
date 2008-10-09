@@ -239,7 +239,6 @@ class DirectoryResource(directoryresource.DirectoryResource):
             continue
         resource_factories[type] = factory
 
-
 class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
     # We need this to allow hooking up our own GrokDirectoryResource
     # and to set the checker to None (until we have our own checker)
