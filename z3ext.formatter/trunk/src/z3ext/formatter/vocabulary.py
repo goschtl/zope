@@ -19,8 +19,9 @@ import pytz
 from zope import interface
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+from zope.i18nmessageid import MessageFactory
 
-from i18n import _
+_ = MessageFactory('z3ext.formatter')
 
 
 timezonesOptions = SimpleVocabulary(

@@ -1,9 +1,10 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:tales="http://namespaces.zope.org/tales"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.formatter">
 
   <includeDependencies package="z3ext.formatter" />
 
@@ -53,5 +54,8 @@
        parent="z3ext" />
 
   </configure>
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
 
 </configure>

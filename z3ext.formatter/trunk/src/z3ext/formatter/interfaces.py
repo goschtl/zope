@@ -17,8 +17,9 @@ $Id$
 """
 import vocabulary
 from zope import schema, interface
+from zope.i18nmessageid import MessageFactory
 
-from i18n import _
+_ = MessageFactory('z3ext.formatter')
 
 
 class FormatterNotDefined(Exception):

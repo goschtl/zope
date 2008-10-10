@@ -33,7 +33,7 @@ from z3ext.formatter.expression import FormatterExpression
 
 
 def setUp(test):
-    setup.placelessSetUp(True)
+    setup.placefulSetUp(True)
     setup.setUpTraversal()
     setUpControlPanel()
 

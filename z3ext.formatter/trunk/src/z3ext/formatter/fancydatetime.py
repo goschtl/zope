@@ -23,8 +23,7 @@ from zope.component import getUtility
 from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from i18n import _
-from interfaces import IFormatter, IFormatterFactory, IFormatterConfiglet
+from interfaces import _, IFormatter, IFormatterFactory, IFormatterConfiglet
 
 
 class FancyDatetimeFormatter(object):
