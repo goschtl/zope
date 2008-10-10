@@ -5,6 +5,9 @@ CHANGES
 Version 0.5.1dev (unreleased)
 -----------------------------
 
+- Fixed advanced batching implementation, and extracted it in a separate
+  function
+
 - Implemented GetAttrFormatterColumn. This column can be used for simple 
   value formatting columns.
 

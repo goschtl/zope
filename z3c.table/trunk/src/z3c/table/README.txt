@@ -1,11 +1,13 @@
 =========
-Z3C Table
+z3c Table
 =========
+
+.. sectnum::
+.. contents::
 
 The goal of this package is to offer a modular table rendering library. We use 
 the content provider pattern and the column are implemented as adapters which 
 will give us a powerful base concept.
-
 
 Some important concepts we use
 ------------------------------
@@ -23,7 +25,7 @@ No skins
 This package does not provide any kind of template or skin support. Most the 
 time if you need to render a table, you will use your own skin concept. This means
 you can render the table or batch within your own templates. This will ensure
-that we have as less dependencies as possible in this package and the package
+that we have as few dependencies as possible in this package and the package
 can get reused with any skin concept.
 
 Note
@@ -32,7 +34,7 @@ Note
 As you probably know, batching is only possible after sorting columns. This is 
 a nightmare if it comes to performance. The reason is, all data need to get 
 sorted before the batch can start at the given position. And sorting can most 
-the time only be done by touching each object. This means you have to be careful
+of the time only be done by touching each object. This means you have to be careful
 if you are using a large set of data, even if you use batching.
 
 Sample data setup
@@ -86,7 +88,7 @@ we will not get anything that looks like a table. We just get an empty string:
 Column Adapter
 --------------
 
-Now we can register a column for our table:
+We can create a column for our table:
 
   >>> import zope.component
   >>> from z3c.table import interfaces
@@ -100,7 +102,7 @@ Now we can register a column for our table:
   ...     def renderCell(self, item):
   ...         return u'Title: %s' % item.title
 
-Now we can register our column adapter.
+Now we can register the column.
 
   >>> zope.component.provideAdapter(TitleColumn,
   ...     (None, None, interfaces.ITable), provides=interfaces.IColumn,
@@ -166,7 +168,7 @@ Now we will get an additional column:
 Colspan
 -------
 
-Now let's show how we can define a colspan condition of 2 for an column:
+Now let's show how we can define a colspan condition of 2 for a column:
 
   >>> class ColspanColumn(column.NameColumn):
   ... 
@@ -244,7 +246,7 @@ Setup columns
 -------------
 
 The existing implementation allows us to define a table in a class without
-to use the modular adapter pattern for columns. 
+using the modular adapter pattern for columns. 
 
 First we need to define a column which can render a value for our items:
 
@@ -1216,7 +1218,7 @@ We use our previous batching table and render the batch with the built-in
   <a href="...html?table-batchStart=11&table-batchSize=5" class="current">3</a>
   <a href="...html?table-batchStart=15&table-batchSize=5" class="last">4</a>
 
-Now let's add more items that we can test the skipped links in large batches:
+Now let's add more items so that we can test the skipped links in large batches:
 
   >>> for i in range(1000):
   ...     idx = i+20
@@ -1232,7 +1234,7 @@ and sorted on the second numbered column:
   >>> requestBatchingTable = BatchingTable(container, batchingRequest)
   >>> requestBatchingTable.startBatchingAt = 5
 
-We also need to give the table a location and a name like we normaly setup
+We also need to give the table a location and a name like we normally setup
 in traversing:
 
   >>> requestBatchingTable.__parent__ = container
@@ -1319,6 +1321,47 @@ As you can see the spacer get changed now:
   <a href="...html?table-batchStart=115&table-batchSize=5">24</a>
   xxx
   <a href="...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
+
+Now test the extremities, need to define a new batchingRequest:
+Beginning by the left end point:
+  
+  >>> leftBatchingRequest = TestRequest(form={'table-batchStart': '10',
+  ...                                        'table-batchSize': '5',
+  ...                                       'table-sortOn': 'table-number-1'})
+  >>> leftRequestBatchingTable = BatchingTable(container, leftBatchingRequest)
+  >>> leftRequestBatchingTable.__parent__ = container
+  >>> leftRequestBatchingTable.__name__ = u'leftRequestBatchingTable.html'
+  >>> leftRequestBatchingTable.update()
+  >>> print leftRequestBatchingTable.renderBatch()
+  <a href="http://...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  <a href="http://...html?table-batchStart=5&table-batchSize=5">2</a>
+  <a href="http://...html?table-batchStart=10&table-batchSize=5" class="current">3</a>
+  <a href="http://...html?table-batchStart=15&table-batchSize=5">4</a>
+  <a href="http://...html?table-batchStart=20&table-batchSize=5">5</a>
+  <a href="http://...html?table-batchStart=25&table-batchSize=5">6</a>
+  xxx
+  <a href="http://...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
+Go on with the right extremity:
+
+  >>> rightBatchingRequest = TestRequest(form={'table-batchStart': '1005',
+  ...                                     'table-batchSize': '5',
+  ...                                     'table-sortOn': 'table-number-1'})
+  >>> rightRequestBatchingTable = BatchingTable(container, rightBatchingRequest)
+  >>> rightRequestBatchingTable.__parent__ = container
+  >>> rightRequestBatchingTable.__name__ = u'rightRequestBatchingTable.html'
+  >>> rightRequestBatchingTable.update()
+  >>> print rightRequestBatchingTable.renderBatch()
+  <a href="http://...html?table-batchStart=0&table-batchSize=5" class="first">1</a>
+  xxx
+  <a href="http://...html?table-batchStart=990&table-batchSize=5">199</a>
+  <a href="http://...html?table-batchStart=995&table-batchSize=5">200</a>
+  <a href="http://...html?table-batchStart=1000&table-batchSize=5">201</a>
+  <a href="http://...html?table-batchStart=1005&table-batchSize=5" class="current">202</a>
+  <a href="http://...html?table-batchStart=1010&table-batchSize=5">203</a>
+  <a href="http://...html?table-batchStart=1015&table-batchSize=5" class="last">204</a>
+
 
 None previous and next batch size. Probably it doesn't make sense but let's 
 show what happens if we set the previous and next batch size to 0 (zero):
