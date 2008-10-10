@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.1 (Unreleased)
+3.4.1 (2008/10/10)
 ------------------
 
 - Fixed usage of 'with' as a variable name. It is now a keyword in
