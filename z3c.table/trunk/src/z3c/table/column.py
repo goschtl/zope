@@ -201,10 +201,18 @@ class CheckBoxColumn(Column):
     def getItemValue(self, item):
         return api.getName(item)
 
+    def isSelected(self, item):
+        v = self.request.get(self.getItemKey(item), [])
+        if not isinstance(v, list):
+            # ensure that we have a list which prevents to compare strings
+            v = [v]
+        if self.getItemValue(item) in v:
+            return True
+        return False
+
     def update(self):
         self.selectedItems = [item for item in self.table.values
-                              if self.getItemValue(item)
-                              in self.request.get(self.getItemKey(item), [])]
+                              if self.isSelected(item)]
 
     def renderCell(self, item):
         selected = u''
