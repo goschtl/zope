@@ -4,6 +4,11 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
+3.4.0c8 (unreleased)
+---------------------
+- Upgraded setuptools to 0.6c9
+- Upgraded ZODB3 to 3.8.1b9
+
 3.4.0c7 (2008-09)
 -----------------
 
