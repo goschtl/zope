@@ -1,0 +1,9 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+    <include package="Products.Five" file="configure.zcml"/>
+    <include package="five.clids" />
+
+</configure>

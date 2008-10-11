@@ -8,16 +8,16 @@ from plone.clids.interfaces import IUniqueId
 from plone.clids.interfaces import IResolver
 from plone.clids.interfaces import IResolvable
 
-from Zope2 import App
-
 
 class Resolver(object):
     implements(IResolver)
 
-    def resolve(self, data):
-        return App().restrictedTraverse('/'.join(data))
+    def __init__(self, context):
+        self.context = context
 
-resolver = Resolver()
+    def resolve(self, data):
+        app = self.context.getPhysicalRoot()
+        return app.unrestrictedTraverse(data)
 
 
 class Resolvable(grokcore.component.Adapter):
@@ -30,7 +30,7 @@ class Resolvable(grokcore.component.Adapter):
 
     @property
     def resolver(self):
-        return resolver
+        return Resolver
 
 
 class UniqueForSimpleItem(grokcore.component.Adapter):
