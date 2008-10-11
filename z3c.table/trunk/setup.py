@@ -35,6 +35,8 @@ setup (
         + '\n\n' +
         read('src', 'z3c', 'table', 'README.txt')
         + '\n\n' +
+        read('src', 'z3c', 'table', 'column.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",

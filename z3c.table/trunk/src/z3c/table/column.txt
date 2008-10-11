@@ -1,6 +1,6 @@
-======
-Column
-======
+=============
+Table Columns
+=============
 
 Let's show the different columns we offer by default. But first take a look at
 the README.txt which explains the Table and Column concepts. 
@@ -9,7 +9,7 @@ the README.txt which explains the Table and Column concepts.
 Sample data setup
 -----------------
 
-Let's create a sample container that we can use as our iterable context:
+Let's create a sample container that we can use as our iterable context::
 
   >>> from zope.app.container import btree
   >>> class Container(btree.BTreeContainer):
@@ -17,7 +17,7 @@ Let's create a sample container that we can use as our iterable context:
   >>> container = Container()
   >>> root['container'] = container
 
-and create a sample content object that we use as container item:
+and create a sample content object that we use as container item::
 
   >>> class Content(object):
   ...     """Sample content."""
@@ -25,7 +25,7 @@ and create a sample content object that we use as container item:
   ...         self.title = title
   ...         self.number = number
 
-Now setup some items:
+Now setup some items::
 
   >>> container[u'zero'] = Content('Zero', 0)
   >>> container[u'first'] = Content('First', 1)
@@ -33,7 +33,7 @@ Now setup some items:
   >>> container[u'third'] = Content('Third', 3)
   >>> container[u'fourth'] = Content('Fourth', 4)
 
-Let's also create a simple number sortable column:
+Let's also create a simple number sortable column::
 
   >>> from z3c.table import column
   >>> class NumberColumn(column.Column):
@@ -51,7 +51,7 @@ Let's also create a simple number sortable column:
 NameColumn
 ----------
 
-Let's define a table using the NameColumn:
+Let's define a table using the NameColumn::
 
   >>> from z3c.table import table
   >>> class NameTable(table.Table):
@@ -65,7 +65,7 @@ Let's define a table using the NameColumn:
   ...             ]
 
 Now create, update and render our table and you can see that the NameColumn
-renders the name of the item using the zope.traversing.api.getName() concept:
+renders the name of the item using the zope.traversing.api.getName() concept::
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -107,7 +107,7 @@ renders the name of the item using the zope.traversing.api.getName() concept:
 RadioColumn
 -----------
 
-Let's define a table using the RadioColumn:
+Let's define a table using the RadioColumn::
 
   >>> class RadioTable(table.Table):
   ... 
@@ -119,7 +119,7 @@ Let's define a table using the RadioColumn:
   ...                              weight=2, header=u'Number')
   ...             ]
 
-Now create, update and render our table:
+Now create, update and render our table::
 
   >>> request = TestRequest()
   >>> radioTable = RadioTable(container, request)
@@ -157,7 +157,7 @@ Now create, update and render our table:
   </table>
 
 As you can see, we can force to render the radio input field as selected with a
-given request value:
+given request value::
 
   >>> radioRequest = TestRequest(form={'table-radioColumn-0-selectedItem': 'third'})
   >>> radioTable = RadioTable(container, radioRequest)
@@ -198,7 +198,7 @@ given request value:
 CheckBoxColumn
 --------------
 
-Let's define a table using the RadioColumn:
+Let's define a table using the RadioColumn::
 
   >>> class CheckBoxTable(table.Table):
   ... 
@@ -210,7 +210,7 @@ Let's define a table using the RadioColumn:
   ...                              weight=2, header=u'Number')
   ...             ]
 
-Now create, update and render our table:
+Now create, update and render our table::
 
 
   >>> request = TestRequest()
@@ -249,7 +249,7 @@ Now create, update and render our table:
   </table>
 
 And again you can set force to render the checkbox input field as selected with 
-a given request value:
+a given request value::
 
   >>> checkBoxRequest = TestRequest(form={'table-checkBoxColumn-0-selectedItems':
   ...                                     ['first', 'third']})
@@ -288,7 +288,7 @@ a given request value:
   </table>
 
 If you select a row, you can also give them an additional CSS style. This could
-be used in combination with alternating ``even`` and ``odd`` styles:
+be used in combination with alternating ``even`` and ``odd`` styles::
 
   >>> checkBoxRequest = TestRequest(form={'table-checkBoxColumn-0-selectedItems':
   ...                                     ['first', 'third']})
@@ -330,7 +330,7 @@ be used in combination with alternating ``even`` and ``odd`` styles:
     </tbody>
   </table>
 
-Let's test the ``cssClassSelected`` without any other css class
+Let's test the ``cssClassSelected`` without any other css class::
 
   >>> checkBoxRequest = TestRequest(form={'table-checkBoxColumn-0-selectedItems':
   ...                                     ['first', 'third']})
@@ -373,7 +373,7 @@ Let's test the ``cssClassSelected`` without any other css class
 CreatedColumn
 -------------
 
-Let's define a table using the CreatedColumn:
+Let's define a table using the CreatedColumn::
 
   >>> class CreatedColumnTable(table.Table):
   ... 
@@ -384,7 +384,7 @@ Let's define a table using the CreatedColumn:
   ...             ]
 
 Now create, update and render our table. Note, we use a Dublin Core stub 
-adapter which only returns ``01/01/01 01:01`` as created date:
+adapter which only returns ``01/01/01 01:01`` as created date::
 
   >>> request = TestRequest()
   >>> createdColumnTable = CreatedColumnTable(container, request)
@@ -419,7 +419,7 @@ adapter which only returns ``01/01/01 01:01`` as created date:
 ModifiedColumn
 --------------
 
-Let's define a table using the CreatedColumn:
+Let's define a table using the CreatedColumn::
 
   >>> class ModifiedColumnTable(table.Table):
   ... 
@@ -430,7 +430,7 @@ Let's define a table using the CreatedColumn:
   ...             ]
 
 Now create, update and render our table. Note, we use a Dublin Core stub 
-adapter which only returns ``02/02/02 02:02`` as modified date:
+adapter which only returns ``02/02/02 02:02`` as modified date::
 
   >>> request = TestRequest()
   >>> modifiedColumnTable = ModifiedColumnTable(container, request)
@@ -467,7 +467,7 @@ GetAttrColumn
 
 The ``GetAttrColumn`` column is a mixin which is used in ``CreatedColumn`` and 
 in ``ModifiedColumn``. Not all code get used if everything is fine. So let's 
-test the column itself and force some usecase:
+test the column itself and force some usecase::
 
 
   >>> class GetTitleColumn(column.GetAttrColumn):
@@ -485,7 +485,7 @@ test the column itself and force some usecase:
   ...             column.addColumn(self, GetTitleColumn, u'title'),
   ...             ]
 
-Render and update the table:
+Render and update the table::
 
   >>> request = TestRequest()
   >>> getAttrColumnTable = GetAttrColumnTable(container, request)
@@ -517,7 +517,7 @@ Render and update the table:
   </table>
 
 If we use a non-existing Attribute, we do not raise an AttributeError, we will
-get the default value defined from the ``GetAttrColumnTable``
+get the default value defined from the ``GetAttrColumnTable``::
 
   >>> class UndefinedAttributeColumn(column.GetAttrColumn):
   ... 
@@ -534,7 +534,7 @@ get the default value defined from the ``GetAttrColumnTable``
   ...             column.addColumn(self, UndefinedAttributeColumn, u'missing'),
   ...             ]
 
-Render and update the table:
+Render and update the table::
 
   >>> request = TestRequest()
   >>> getAttrColumnTable = GetAttrColumnTable(container, request)
@@ -566,7 +566,7 @@ Render and update the table:
   </table>
 
 A missing ``attrName`` in ``GetAttrColumn`` would also end in return the
-``defaultValue``:
+``defaultValue``::
 
   >>> class BadAttributeColumn(column.GetAttrColumn):
   ... 
@@ -580,7 +580,7 @@ A missing ``attrName`` in ``GetAttrColumn`` would also end in return the
 
 If we try to access a protected attribute the object raises an ``Unauthorized``.
 In this case we also return the defaultValue. Let's setup an object which
-raises such an error if we access the title:
+raises such an error if we access the title::
 
   >>> from zope.security.interfaces import Unauthorized
   >>> class ProtectedItem(object):
@@ -589,7 +589,7 @@ raises such an error if we access the title:
   ...     def forbidden(self):
   ...         raise Unauthorized, 'forbidden'
 
-Setup and test the item:
+Setup and test the item::
 
   >>> protectedItem = ProtectedItem()
   >>> protectedItem.forbidden
@@ -597,14 +597,14 @@ Setup and test the item:
   ...
   Unauthorized: forbidden
 
-Now define a column:
+Now define a column::
 
   >>> class ForbiddenAttributeColumn(column.GetAttrColumn):
   ... 
   ...     attrName = 'forbidden'
   ...     defaultValue = u'missing'
 
-And test the attribute access:
+And test the attribute access::
 
   >>> simpleTable = table.Table(container, request)
   >>> badColumn = column.addColumn(simpleTable, ForbiddenAttributeColumn, u'x')
@@ -616,7 +616,7 @@ GetAttrFormatterColumn
 ----------------------
 
 The ``GetAttrFormatterColumn`` column is a get attr column which is able to 
-format the value. Let's use the Dublin Core adapter for our sample:
+format the value. Let's use the Dublin Core adapter for our sample::
 
   >>> from zope.dublincore.interfaces import IZopeDublinCore
   >>> class GetCreatedColumn(column.GetAttrFormatterColumn):
@@ -632,7 +632,7 @@ format the value. Let's use the Dublin Core adapter for our sample:
   ...             column.addColumn(self, GetCreatedColumn, u'created'),
   ...             ]
 
-Render and update the table:
+Render and update the table::
 
   >>> request = TestRequest()
   >>> getAttrFormatterColumnTable = GetAttrFormatterColumnTable(container,
@@ -665,7 +665,7 @@ Render and update the table:
   </table>
 
 
-We can also change the formatter settings in such a column:
+We can also change the formatter settings in such a column::
 
   >>> class LongCreatedColumn(column.GetAttrFormatterColumn):
   ... 
@@ -684,7 +684,7 @@ We can also change the formatter settings in such a column:
   ...             column.addColumn(self, LongCreatedColumn, u'created'),
   ...             ]
 
-Render and update the table:
+Render and update the table::
 
   >>> request = TestRequest()
   >>> longFormatterColumnTable = LongFormatterColumnTable(container,
@@ -721,7 +721,7 @@ LinkColumn
 ----------
 
 Let's define a table using the LinkColumn. This column allows us to write
-columns which can point to a page with the item as context:
+columns which can point to a page with the item as context::
 
   >>> class MyLinkColumns(column.LinkColumn):
   ...     linkName = 'myLink.html'
@@ -738,7 +738,7 @@ columns which can point to a page with the item as context:
   ...                              weight=2, header=u'Number')
   ...             ]
 
-Now create, update and render our table:
+Now create, update and render our table::
 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
@@ -783,7 +783,7 @@ ContentsLinkColumn
 ------------------
 
 There are some predefined link columns available. This one will generate a 
-``contents.html`` link for each item:
+``contents.html`` link for each item::
 
   >>> class ContentsLinkTable(table.Table):
   ... 
@@ -835,7 +835,7 @@ There are some predefined link columns available. This one will generate a
 IndexLinkColumn
 ---------------
 
-This one will generate a ``index.html`` link for each item:
+This one will generate a ``index.html`` link for each item::
 
   >>> class IndexLinkTable(table.Table):
   ... 
@@ -887,7 +887,7 @@ This one will generate a ``index.html`` link for each item:
 EditLinkColumn
 --------------
 
-And this one will generate a ``edit.html`` link for each item:
+And this one will generate a ``edit.html`` link for each item::
 
   >>> class EditLinkTable(table.Table):
   ... 
