@@ -1,5 +1,5 @@
 Zope integration for hurry.resource
-===================================
+***********************************
 
 This package provides Zope integration for hurry.resource. This means
 three taking care of three things:

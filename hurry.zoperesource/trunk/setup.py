@@ -1,10 +1,23 @@
 from setuptools import setup, find_packages
 import sys, os
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('src', 'hurry', 'zoperesource', 'README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
 setup(
     name='hurry.zoperesource',
     version='0.1dev',
-    description="Flexible resources for Zope.",
+    description="hurry.resource integration for Zope.",
+    long_description=long_description,
     classifiers=[],
     keywords='',
     author='Martijn Faassen',
