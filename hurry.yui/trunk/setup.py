@@ -2,10 +2,26 @@ from setuptools import setup, find_packages
 
 YUI_VERSION = '2.6.0'
 
+import sys, os
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('src', 'hurry', 'yui', 'README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
+
 setup(
     name='hurry.yui',
     version=YUI_VERSION + 'dev',
-    description="YUI for hurry.resource.",
+    description="hurry.resource style resources for YUI.",
+    long_description = long_description,
     classifiers=[],
     keywords='',
     author='Martijn Faassen',

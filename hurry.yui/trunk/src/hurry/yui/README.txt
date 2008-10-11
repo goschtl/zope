@@ -1,8 +1,5 @@
 hurry.yui
-=========
-
-Introduction
-------------
+*********
 
 This library packages YUI for ``hurry.resource``. It is aware of YUI's
 dependency structure and different modes (normal, minified and debug)
@@ -54,4 +51,3 @@ Let's get the same, minified::
 
   >>> print needed.render(mode="minified")
   <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids-min.css" />
-
