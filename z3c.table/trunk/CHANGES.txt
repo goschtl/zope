@@ -2,16 +2,15 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+Version 0.6dev (unreleased)
+---------------------------
 
 - Bugfix: CheckBoxColumn, ensure that we allways use a list for compare
   selected items. It was possible that if only one item get selected
   we compared a string. If this string was a sub string of another existing
   item the other item get selected too.
 
-- Fixed advanced batching implementation, and extracted it in a separate
-  function
+- Moved advanced batching implementation into z3c.batching
 
 - Implemented GetAttrFormatterColumn. This column can be used for simple 
   value formatting columns.
