@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    package="hurry.zoperesource.tests">
+
+  <!-- set up enough of Zope to run the tests -->
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.authentication" />
+
+  <!-- principals -->
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <include package="zope.securitypolicy" file="meta.zcml"/>
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <grant permission="zope.View"
+         role="zope.Anonymous" />
+
+  <include package="hurry.zoperesource"/>
+
+  <!-- some pages to use in the tests -->
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="hurry.zoperesource.test_single"
+    permission="zope.Public"
+    template="test_single.pt"
+    class=".view.TestSingle"
+    />
+
+  <browser:page
+    for="zope.interface.Interface"
+    name="hurry.zoperesource.test_multiple"
+    permission="zope.Public"
+    template="test_multiple.pt"
+    class=".view.TestMultiple"
+    />
+
+</configure>
