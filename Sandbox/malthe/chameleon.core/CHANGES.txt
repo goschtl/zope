@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+1.0b2 (released 11/10/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Added support for translating dynamic body text (used in
   interpolation expressions). [malthe]
 
