@@ -28,13 +28,14 @@ setup(name='z3c.batching',
       description='Batching',
       long_description=(
           read('README.txt')
-          + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '======================\n'
-          + '\n\n' +
-          read('src', 'z3c', 'batching', 'README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
+          + '\n\n'
+          + '======================\n'
+          + 'Detailed Documentation\n'
+          + '======================\n'
+          + '\n\n'
+          + read('src', 'z3c', 'batching', 'README.txt')
+          + '\n\n'
+          + read('CHANGES.txt')
           ),
       keywords = "zope3 batching",
       classifiers = [

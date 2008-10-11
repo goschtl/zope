@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.1.0 (unreleased)
+------------------
+
+- Added a function to build a small neighbourhood list of the current batch,
+  from a large batch list. (extracted from z3c.table)
+
 1.0.1 (2008-09-09)
 ------------------
 
