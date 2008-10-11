@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.zopeyui',
-    version='0.1dev',
+    version='0.1',
     description="Zope integration for hurry.yui.",
     long_description=long_description,
     classifiers=[],
