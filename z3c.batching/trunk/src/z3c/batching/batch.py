@@ -179,9 +179,7 @@ class Batches(object):
             raise IndexError(key)
 
     def __getslice__(self, i, j):
-        if j > self.total:
-            j = self.total-1
-
+        j = min(j, self.total)
         return [self[idx] for idx in range(i, j)]
 
 

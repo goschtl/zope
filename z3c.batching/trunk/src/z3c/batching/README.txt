@@ -193,7 +193,7 @@ Total batches::
   >>> batch.total
   4
 
-We can get access to all batches::
+We can have access to all batches::
 
   >>> len(batch.batches)
   4
@@ -231,6 +231,9 @@ Slicing::
 
   >>> batch.batches[10:]
   []
+
+  >>> batch.batches[2:50]
+  [<Batch start=6, size=3>, <Batch start=9, size=3>]
 
 Batch neighbourhood of a large batch list
 -----------------------------------------
