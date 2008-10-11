@@ -1,0 +1,5 @@
+#
+# Create this file: svn propget svn:externals . > EXTERNALS.txt
+# Apply this file: svn propset svn:externals -F EXTERNALS.txt .
+#
+plone.clids  https://svn.plone.org/svn/plone/plone.clids/trunk
