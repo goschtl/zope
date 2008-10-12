@@ -203,12 +203,12 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
      * a None separator if necessary
      * the last batch
 
-    Example::
+    Example:
 
       >>> from z3c.batching.batch import first_neighbours_last as f_n_l
       >>> batches = range(100) # it works with real batches as well
 
-    We try to get subsets at different levels::
+    We try to get subsets at different levels:
 
       >>> for i in range(0,6):
       ...    f_n_l(batches, i, 2, 2)
@@ -228,7 +228,7 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
       [0, None, 95, 96, 97, 98, 99]
       [0, None, 96, 97, 98, 99]
 
-    Try with no previous and no next batch::
+    Try with no previous and no next batch:
 
       >>> f_n_l(batches, 0, 0, 0)
       [0, None, 99]
@@ -237,7 +237,7 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
       >>> f_n_l(batches, 2, 0, 0)
       [0, None, 2, None, 99]
 
-    Try with only 1 previous and 1 next batch::
+    Try with only 1 previous and 1 next batch:
 
       >>> f_n_l(batches, 0, 1, 1)
       [0, 1, None, 99]
@@ -248,7 +248,7 @@ def first_neighbours_last(batches, currentBatchIdx, nb_left, nb_right):
       >>> f_n_l(batches, 3, 1, 1)
       [0, None, 2, 3, 4, None, 99]
 
-    Try with incoherent values::
+    Try with incoherent values:
 
       >>> f_n_l(batches, 0, -4, -10)
       Traceback (most recent call last):
