@@ -24,4 +24,4 @@ from keas.googlemap import geocode
 def setUpGoogleMap():
     setup.setUpAnnotations()
     zope.component.provideAdapter(geocode.getGeocodeAnnotation)
-
+    zope.component.provideAdapter(geocode.getGeocodeFromQuery)
