@@ -1,1 +1,1 @@
-This package provides an modular table rendering implementation for Zope3.
+This package provides a modular table rendering implementation for Zope3.
