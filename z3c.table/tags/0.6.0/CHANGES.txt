@@ -1,0 +1,38 @@
+=======
+CHANGES
+=======
+
+Version 0.6.0 (2008-11-12))
+---------------------------
+
+- Bugfix: Allow to switch the sort order on the header link. This was blocked to
+  descending after the first click
+
+- Bugfix: CheckBoxColumn, ensure that we allways use a list for compare
+  selected items. It was possible that if only one item get selected
+  we compared a string. If this string was a sub string of another existing
+  item the other item get selected too.
+
+- Moved advanced batching implementation into z3c.batching
+
+- Implemented GetAttrFormatterColumn. This column can be used for simple 
+  value formatting columns.
+
+- Bad typo in columns.py: Renamed ``getLinkConent`` to ``getLinkContent``
+
+- Bug: Changed return string in getLinkCSS. It was using css="" instead of
+  class="" for CSS classes. Thanks to Dan for reporting this bugs.
+
+- Implemented SelectedItemColumn
+
+- Fix CheckBoxColumn, use always the correct selectedItems. Use always real
+  selectedItems form the table
+
+- Fix RadioColumn, use always the correct selectedItem from the selectedItems 
+  list. Use always the first selectedItems form the tables selectedItems
+
+
+Version 0.5.0 (2008-04-13)
+--------------------------
+
+- Initial Release
