@@ -2,7 +2,7 @@
 z3c Table
 =========
 
-.. contents:
+.. contents::
 
 The goal of this package is to offer a modular table rendering library. We use 
 the content provider pattern and the column are implemented as adapters which 
