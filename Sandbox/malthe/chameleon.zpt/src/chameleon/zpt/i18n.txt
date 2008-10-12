@@ -254,6 +254,12 @@ A simple example to start with.
   ...         tal:content="string:tid">
   ...     Default, "default", 'default'
   ...   </span>
+  ...   <span i18n:domain="test" i18n:translate="">
+  ...     ${'tid'}
+  ...   </span>
+  ...   <span i18n:domain="test" i18n:translate="">
+  ...     t${'i'}${'d'}
+  ...   </span>
   ... </div>"""
 
 Not passing a language:
@@ -265,6 +271,8 @@ Not passing a language:
       Default, "default", 'default'
     </span>
     <span>tid</span>
+    <span>tid</span>
+    <span>tid</span>    
   </div>
 
 Passing German:
@@ -272,6 +280,8 @@ Passing German:
   >>> print template.render(target_language='de')
   <div>
     <span title="Mock translation of 'aid'.">Mock translation of 'tid'.</span>
+    <span>Mock translation of 'tid'.</span>
+    <span>Mock translation of 'tid'.</span>
     <span>Mock translation of 'tid'.</span>
   </div>
 
