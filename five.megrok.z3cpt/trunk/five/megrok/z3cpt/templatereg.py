@@ -3,12 +3,12 @@ from grokcore.view.components import PageTemplate
 from grokcore.view.interfaces import ITemplateFileFactory
 
 from five import grok
-from five.pt.pagetemplate import ViewPageTemplateFile
+from five.pt.pagetemplate import ViewPageTemplateFile, ViewPageTemplate
 
 class ZopeTwoPageTemplate(PageTemplate):
 
     def setFromString(self, string):
-        raise NotImplementedError
+        self._template = ViewPageTemplate
 
     def setFromFilename(self, filename, _prefix=None):
         self._template = ViewPageTemplateFile(filename, _prefix)
