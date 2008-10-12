@@ -84,7 +84,9 @@ class SortingColumnHeader(ColumnHeader):
         sortOrder = table.sortOrder
         if int(sortID) == int(currentSortID):
             # ordering the same column so we want to reverse the order
-            if currentSortOrder == table.sortOrder:
+            if currentSortOrder in table.reverseSortOrderNames:
+                sortOrder = 'ascending'
+            elif currentSortOrder == 'ascending':
                 sortOrder = table.reverseSortOrderNames[0]
 
         args = self.getQueryStringArgs()

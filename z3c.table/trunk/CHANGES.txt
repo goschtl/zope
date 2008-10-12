@@ -5,6 +5,9 @@ CHANGES
 Version 0.6dev (unreleased)
 ---------------------------
 
+- Bugfix: Allow to switch the sort order on the header link. This was blocked to
+  descending after the first click
+
 - Bugfix: CheckBoxColumn, ensure that we allways use a list for compare
   selected items. It was possible that if only one item get selected
   we compared a string. If this string was a sub string of another existing

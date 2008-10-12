@@ -1685,6 +1685,38 @@ column as ascending:
   ...
   </table>
 
+If the table is initially set to descending, the link should allow to switch to
+ascending again:
+
+  >>> myTable.sortOrder = 'descending'
+  >>> print myTable.render()
+  <table>
+   <thead>
+    <tr>
+     <th><a
+      href="?table-sortOrder=ascending&table-sortOn=table-titleColumn-0"
+      title="Sort">Title</a></th>
+  ...
+  </table>
+
+If the table is ascending but the request was descending, the link should allow to switch again to ascending:
+
+  >>> descendingRequest = TestRequest(form={'table-sortOn': 'table-titleColumn-0',
+  ...                                   'table-sortOrder':'descending'})
+  >>> myTable = myTableClass(container, descendingRequest)
+  >>> myTable.sortOrder = 'ascending'
+  >>> myTable.update()
+  >>> print myTable.render()
+  <table>
+   <thead>
+    <tr>
+     <th><a
+      href="?table-sortOrder=ascending&table-sortOn=table-titleColumn-0"
+      title="Sort">Title</a></th>
+  ...
+  </table>
+
+
 
 Miscellaneous
 -------------
