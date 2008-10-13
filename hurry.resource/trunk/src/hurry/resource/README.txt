@@ -305,7 +305,8 @@ By default, we get ``k.js``::
 We can however also get the resource for mode ``debug`` and get
 ``k-debug.js``::
 
-  >>> needed.inclusions(mode='debug')
+  >>> needed.mode('debug')
+  >>> needed.inclusions()
   [<ResourceInclusion 'k-debug.js' in library 'foo'>]
 
 Modes can also be specified fully with a resource inclusion, which allows
@@ -324,11 +325,44 @@ By default we get ``k2.js``::
 We can however also get the resource for mode ``debug`` and get
 ``a2-debug.js``::
 
-  >>> needed.inclusions(mode='debug')
+  >>> needed.mode('debug')
+  >>> needed.inclusions()
   [<ResourceInclusion 'k2-debug.js' in library 'foo'>]
 
 Note that modes are assumed to be identical in dependency structure;
 they functionally should do the same.
+
+Mode convenience
+================
+
+Like for ``need``, there is also a convenience spelling for
+``mode``. It uses ``ICurrentNeededInclusions``, which we've already
+set up to look at the ``request.needed`` variable. Let's set up
+a new request::
+
+  >>> request = Request()
+
+Let's set up a resource and need it::
+
+  >>> l1 = ResourceInclusion(foo, 'l1.js', debug='l1-debug.js')
+  >>> l1.need()
+
+Let's look at the resources needed by default::
+
+  >>> c = component.getUtility(ICurrentNeededInclusions)
+  >>> c().inclusions()
+  [<ResourceInclusion 'l1.js' in library 'foo'>]
+
+Let's now change the mode using the convenience
+``hurry.resource.mode`` spelling::
+
+  >>> from hurry.resource import mode
+  >>> mode('debug')
+
+When we request the resources now, we get them in the ``debug`` mode::
+
+  >>> c().inclusions()
+  [<ResourceInclusion 'l1-debug.js' in library 'foo'>]
 
 "Rollups"
 =========
@@ -486,7 +520,8 @@ Consolidation also works with modes::
   >>> needed.need(f2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantf.js' in library 'foo'>]
-  >>> needed.inclusions(mode='debug')
+  >>> needed.mode('debug')
+  >>> needed.inclusions()
   [<ResourceInclusion 'giantf-debug.js' in library 'foo'>]
 
 What if the rolled up resources have no mode but the superseding resource
@@ -502,7 +537,8 @@ modes have no effect::
   >>> needed.need(g2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
-  >>> needed.inclusions(mode='debug')
+  >>> needed.mode('debug')
+  >>> needed.inclusions()
   [<ResourceInclusion 'giantg.js' in library 'foo'>]
 
 What if the rolled up resources have a mode but the superseding resource
@@ -520,7 +556,8 @@ does not? Let's look at that scenario::
 Since there is no superseder for the debug mode, we will get the two 
 resources, not rolled up::
 
-  >>> needed.inclusions(mode='debug')
+  >>> needed.mode('debug')
+  >>> needed.inclusions()
   [<ResourceInclusion 'h1-debug.js' in library 'foo'>,
    <ResourceInclusion 'h2-debug.js' in library 'foo'>]
 

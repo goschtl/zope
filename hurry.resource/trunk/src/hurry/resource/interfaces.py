@@ -69,24 +69,36 @@ class INeededInclusions(Interface):
         See also IInclusion.need() for a convenience method.
         """
 
-    def inclusions(mode=None):
-        """Give all resource inclusions needed.
+    def mode(mode):
+        """Set the mode in which needed inclusions will be returned.
 
-        mode - optional argument that tries to put inclusions into
-               a particular mode (such as debug, minified, etc)
-               Has no effect if an included resource does not know
-               about that mode; the original resource will be included.
+        try to put inclusions returned by ``render`` and
+        ``inclusions`` into a particular mode (such as debug,
+        minified, etc) Has no effect if an included resource does not
+        know about that mode; the original resource will be included.
+
+        The default mode is None; it is suggested this is the
+        non-compressed/minified version of the Javascript/CSS to make
+        debugging easier.
+        
+        Some suggested modes to use generally are 'debug' and 'minified'.
+        'debug' is for full-source versions of the code so that it is
+        easy to debug, while 'minified' is 
+        
+        mode - a string indicating the mode, or None if no mode.
+
+        NOTE: there is also a ``hurry.resource.mode`` function which
+        can be used to set the mode for the currently needed inclusions.
+        """
+        
+    def inclusions():
+        """Give all resource inclusions needed.
 
         Returns a list of resource inclusions needed.
         """
 
-    def render(self, mode=None):
+    def render():
         """Render all resource inclusions for HTML header.
-
-        mode - optional argument that tries to put inclusions into
-               a particular mode (such as debug, minified, etc).
-               Has no effect if an included resource does not know
-               about that mode; the original resource will be included.
 
         Returns a HTML snippet that includes the required resource inclusions.
         """

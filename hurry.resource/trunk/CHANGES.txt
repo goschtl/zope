@@ -4,7 +4,12 @@ CHANGES
 0.2 (unreleased)
 ================
 
-* ...
+* Changed the API to set the mode. Instead of passing it to ``render``
+  and ``inclusions``, the requested mode can be set with the ``mode``
+  method on ``INeededInclusions``. For convenience there is a ``mode``
+  function as well that can be imported directly from
+  ``hurry.resource`` that sets the mode for the current needed
+  inclusions.
 
 0.1 (2008-10-07)
 ================

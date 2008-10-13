@@ -127,19 +127,23 @@ def normalize_inclusion(library, inclusion):
 class NeededInclusions(object):
     def __init__(self):
         self._inclusions = []
-
+        self._mode = None
+        
     def need(self, inclusion):
         self._inclusions.append(inclusion)
 
+    def mode(self, mode):
+        self._mode = mode
+        
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
     
-    def inclusions(self, mode=None):
+    def inclusions(self):
         inclusions = []
         for inclusion in self._inclusions:
             inclusions.extend(inclusion.inclusions())
 
-        inclusions = apply_mode(inclusions, mode)
+        inclusions = apply_mode(inclusions, self._mode)
         inclusions = consolidate(inclusions)
         # sort only by extension, not dependency, as we can rely on
         # python's stable sort to keep inclusion order intact
@@ -147,10 +151,10 @@ class NeededInclusions(object):
         inclusions = remove_duplicates(inclusions)
         return inclusions
             
-    def render(self, mode=None):
+    def render(self):
         result = []
         library_urls = {}        
-        for inclusion in self.inclusions(mode):
+        for inclusion in self.inclusions():
             library = inclusion.library
             # get cached library url
             library_url = library_urls.get(library.name)
@@ -163,6 +167,13 @@ class NeededInclusions(object):
             result.append(render_inclusion(inclusion,
                                            library_url + inclusion.relpath))
         return '\n'.join(result)
+
+def mode(mode):
+    """Set the mode for the currently needed resources.
+    """
+    needed = component.getUtility(
+            interfaces.ICurrentNeededInclusions)()
+    needed.mode(mode)
 
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]
