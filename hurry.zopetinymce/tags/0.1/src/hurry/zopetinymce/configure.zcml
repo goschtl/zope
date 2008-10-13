@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+  <include package="hurry.zoperesource" />
+
+  <configure package="hurry.tinymce"> 
+    <browser:resourceDirectory 
+      name="tinymce"
+      directory="tinymce-build" />
+  </configure>
+
+</configure>
