@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.zopetinymce',
-    version='0.1dev',
+    version='0.2dev',
     description="Zope integration for hurry.tinymce.",
     long_description=long_description,
     classifiers=[],
