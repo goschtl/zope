@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="version" content="S5 1.1" />
+<title>The State of Zope 3</title>
+<meta name="date" content="October 10, 2008" />
+<style type="text/css">
+
+@import url(../s5-themes/zope/docutils.css);
+
+</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<script src="../s5-themes/zope/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="../s5-themes/zope/slides.css"
+      type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../s5-themes/zope/outline.css"
+      type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../s5-themes/zope/print.css"
+      type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../s5-themes/zope/opera.css"
+      type="text/css" media="projection" id="operaFix" />
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+<h1>The State of Zope 3</h1>
+
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+<h1 class="title">The State of Zope 3</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr class="field"><th class="docinfo-name">Location:</th><td class="field-body">Plone Conference 2008, Washington, DC</td>
+</tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>October 10, 2008</td></tr>
+<tr class="field"><th class="docinfo-name">Presenter:</th><td class="field-body">Stephan Richter, Keas Inc.</td>
+</tr>
+</tbody>
+</table>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Incremental Display
+=================== -->
+<!-- Creative Commons Attribution-Share Alike 2.5 License. -->
+<!-- (c) Stephan Richter -->
+<p class="center big">Changing Dynamics</p>
+
+</div>
+<div class="slide" id="the-pre-historic-past">
+<h1>The Pre-historic Past</h1>
+<ul class="simple">
+<li>Started development of Zope 3 in January 2002</li>
+<li>Used 42 Sprints to complete it</li>
+<li>Release of Zope X3.0.0 on November 6, 2004</li>
+<li>Other Releases<ul>
+<li>Zope 3.1.0: October 2, 2005</li>
+<li>Zope 3.2.0: March 16, 2006</li>
+<li>Zope 3.3.0: September 27, 2006</li>
+<li>Zope 3.3.1: January 14, 2007</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="the-last-20-months">
+<h1>The Last 20 Months</h1>
+<ul class="simple">
+<li>Zope Explosion - Packages and the KGS</li>
+<li>API Stabilization</li>
+<li>Grok</li>
+<li>Lots of Add-on Packages</li>
+</ul>
+<p class="small">(since February 1, 2007)</p>
+</div>
+<div class="slide" id="the-last-20-months-in-numbers">
+<h1>The Last 20 Months in Numbers</h1>
+<ul class="simple">
+<li>Contributors: 149 (total: 290)</li>
+<li>New Contributors: 77</li>
+<li>Checkins: 27187 (total: 91893)</li>
+<li>Total Amount of Packages: 581</li>
+<li>New Packages: 372 (exluding explosion: 283)</li>
+<li>Package Releases: 1331</li>
+</ul>
+<p class="small">(Statistics include work on Zope 2)</p>
+</div>
+<div class="slide" id="packages-by-pypi-categories">
+<h1>Packages By PyPI Categories</h1>
+<ul class="simple">
+<li>Packages in PyPI: 5199</li>
+<li>Buildout: 112 (2.2%)</li>
+<li>Plone: 375 (7.2%)</li>
+<li>ZODB: 9 (0.2%)</li>
+<li>Zope2: 328 (6.3%)</li>
+<li>Zope3: 617 (11.9%)</li>
+<li>Total Zope-related: 1441 (27.7%)</li>
+</ul>
+<p class="small">(Based on Trove Environment classifiers. Some packages might be double
+counted, if multiple environments were specified.)</p>
+</div>
+<div class="slide" id="packages-by-namespaces">
+<h1>Packages By Namespaces</h1>
+<p>New packages by namespace (since April 1, 2007)</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="35%" />
+<col width="37%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">cc</span></tt> : 2</td>
+<td><tt class="docutils literal"><span class="pre">lovely</span></tt> : 10</td>
+<td><tt class="docutils literal"><span class="pre">zam</span></tt> : 4</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">gocept</span></tt> : 3</td>
+<td><tt class="docutils literal"><span class="pre">megrok</span></tt> : 12</td>
+<td><tt class="docutils literal"><span class="pre">zamplugin</span></tt> : 8</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">grokcore</span></tt> : 4</td>
+<td><tt class="docutils literal"><span class="pre">plone</span></tt> : 2</td>
+<td><tt class="docutils literal"><span class="pre">zc</span></tt> : <strong>32</strong></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">grokui</span></tt> : 2</td>
+<td><tt class="docutils literal"><span class="pre">vanguardistas</span></tt> : 1</td>
+<td><tt class="docutils literal"><span class="pre">zope</span></tt> : 28</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">gzo</span></tt> : 2</td>
+<td><tt class="docutils literal"><span class="pre">z3</span></tt> : 1</td>
+<td><tt class="docutils literal"><span class="pre">zopeorg</span></tt> : 2</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">hurry</span></tt> : 6</td>
+<td><tt class="docutils literal"><span class="pre">z3c</span></tt> : <strong>99</strong></td>
+<td><tt class="docutils literal"><span class="pre">zopyx</span></tt> : 2</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">jquery</span></tt> : 7</td>
+<td><tt class="docutils literal"><span class="pre">z3ext</span></tt> : 17</td>
+<td><tt class="docutils literal"><span class="pre">five</span></tt> : 5</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">keas</span></tt> : 2</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="slide" id="top-contributors-by-releases">
+<h1>Top Contributors By Releases</h1>
+<table border="1" class="small docutils">
+<colgroup>
+<col width="26%" />
+<col width="26%" />
+<col width="26%" />
+<col width="23%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">srichter</span></tt>: 241</td>
+<td><tt class="docutils literal"><span class="pre">gary</span></tt> : 36</td>
+<td><tt class="docutils literal"><span class="pre">baijum</span></tt> : 13</td>
+<td><tt class="docutils literal"><span class="pre">shane</span></tt> : 7</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">ctheune</span></tt> : 129</td>
+<td><tt class="docutils literal"><span class="pre">jens</span></tt> : 34</td>
+<td><tt class="docutils literal"><span class="pre">rossp</span></tt> : 12</td>
+<td><tt class="docutils literal"><span class="pre">schwendi</span></tt>:6</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">andreasj</span></tt> : 87</td>
+<td><tt class="docutils literal"><span class="pre">faassen</span></tt> : 32</td>
+<td><tt class="docutils literal"><span class="pre">mkerrin</span></tt> : 12</td>
+<td><tt class="docutils literal"><span class="pre">shh</span></tt> : 5</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">philikon</span></tt> : 82</td>
+<td><tt class="docutils literal"><span class="pre">dobe</span></tt> : 22</td>
+<td><tt class="docutils literal"><span class="pre">zagy</span></tt> : 11</td>
+<td><tt class="docutils literal"><span class="pre">nathan</span></tt> : 5</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">jim</span></tt> : 82</td>
+<td><tt class="docutils literal"><span class="pre">berndroe</span></tt> : 19</td>
+<td><tt class="docutils literal"><span class="pre">hannosch</span></tt>:10</td>
+<td><tt class="docutils literal"><span class="pre">jackie</span></tt> : 5</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">fafhrd</span></tt> : 72</td>
+<td><tt class="docutils literal"><span class="pre">benji_yo</span></tt> : 19</td>
+<td><tt class="docutils literal"><span class="pre">tlotze</span></tt> : 9</td>
+<td><tt class="docutils literal"><span class="pre">satchit</span></tt> : 4</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">fdrake</span></tt> : 59</td>
+<td><tt class="docutils literal"><span class="pre">mgedmin</span></tt> : 17</td>
+<td><tt class="docutils literal"><span class="pre">pcardune</span></tt> : 9</td>
+<td><tt class="docutils literal"><span class="pre">nadako</span></tt> : 4</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">rogerine</span></tt> : 58</td>
+<td><tt class="docutils literal"><span class="pre">batlogg</span></tt> : 16</td>
+<td><tt class="docutils literal"><span class="pre">janwijbr</span></tt> : 9</td>
+<td><tt class="docutils literal"><span class="pre">mauritsv</span></tt>:4</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">jukart</span></tt> : 58</td>
+<td><tt class="docutils literal"><span class="pre">aaron</span></tt> : 14</td>
+<td><tt class="docutils literal"><span class="pre">ulif</span></tt> : 8</td>
+<td><tt class="docutils literal"><span class="pre">malthe</span></tt> : 4</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">tseaver</span></tt> : 45</td>
+<td><tt class="docutils literal"><span class="pre">ccomb</span></tt> : 13</td>
+<td><tt class="docutils literal"><span class="pre">jinty</span></tt> : 8</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<!-- class`` :`` : small
+
+Cutoff`` : 4 releases -->
+<!-- class`` :`` : handout
+
+- ``tarek`` : 3
+- ``rocky`` : 3
+- ``nouri`` : 3
+- ``ldr`` : 3
+- ``kteague`` : 3
+- ``icemac`` : 3
+- ``hdima`` : 3
+- ``ejucovy`` : 3
+- ``chrism`` : 3
+- ``adamg`` : 3
+- ``zvezdan`` : 2
+- ``witsch`` : 2
+- ``wichert`` : 2
+- ``thefunny`` : 2
+- ``gotcha`` : 2
+- ``asmith`` : 2
+- ``alga`` : 2
+- ``zotya`` : 1
+- ``regebro`` : 1
+- ``patricks`` : 1
+- ``optilude`` : 1
+- ``opetznic`` : 1
+- ``luciano`` : 1
+- ``brandon_`` : 1 -->
+</div>
+<div class="slide" id="top-contributors-by-checkins">
+<h1>Top Contributors By Checkins</h1>
+<table border="1" class="small docutils">
+<colgroup>
+<col width="27%" />
+<col width="26%" />
+<col width="26%" />
+<col width="21%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">philikon</span></tt> : 1555</td>
+<td><tt class="docutils literal"><span class="pre">hannosch</span></tt> : 330</td>
+<td><tt class="docutils literal"><span class="pre">blackburnd</span></tt> : 243</td>
+<td><tt class="docutils literal"><span class="pre">ccomb</span></tt> : 111</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">ctheune</span></tt> : 1405</td>
+<td><tt class="docutils literal"><span class="pre">wichert</span></tt> : 328</td>
+<td><tt class="docutils literal"><span class="pre">luciano</span></tt> : 237</td>
+<td><tt class="docutils literal"><span class="pre">gotcha</span></tt> : 109</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">srichter</span></tt> : 1180</td>
+<td><tt class="docutils literal"><span class="pre">jens</span></tt> : 319</td>
+<td><tt class="docutils literal"><span class="pre">benji...</span></tt> : 235</td>
+<td><tt class="docutils literal"><span class="pre">thefu...</span></tt>:103</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">andreas...</span></tt>:1163</td>
+<td><tt class="docutils literal"><span class="pre">mgedmin</span></tt> : 305</td>
+<td><tt class="docutils literal"><span class="pre">yuppie</span></tt> : 207</td>
+<td><tt class="docutils literal"><span class="pre">kteague</span></tt> : 102</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">ulif</span></tt> : 1102</td>
+<td><tt class="docutils literal"><span class="pre">zagy</span></tt> : 301</td>
+<td><tt class="docutils literal"><span class="pre">adamg</span></tt> : 185</td>
+<td><tt class="docutils literal"><span class="pre">chrism</span></tt> : 102</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">jim</span></tt> : 1099</td>
+<td><tt class="docutils literal"><span class="pre">gary</span></tt> : 300</td>
+<td><tt class="docutils literal"><span class="pre">regebro</span></tt> : 172</td>
+<td><tt class="docutils literal"><span class="pre">batlogg</span></tt> : 95</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">rogeri...</span></tt>:756</td>
+<td><tt class="docutils literal"><span class="pre">darrylc...</span></tt>:297</td>
+<td><tt class="docutils literal"><span class="pre">mkerrin</span></tt> : 170</td>
+<td><tt class="docutils literal"><span class="pre">shane</span></tt> : 93</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">faassen</span></tt> : 723</td>
+<td><tt class="docutils literal"><span class="pre">janwijb...</span></tt>: 285</td>
+<td><tt class="docutils literal"><span class="pre">alex</span></tt> : 170</td>
+<td><tt class="docutils literal"><span class="pre">witsch</span></tt> : 79</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">malthe</span></tt> : 507</td>
+<td><tt class="docutils literal"><span class="pre">pcardune</span></tt> : 280</td>
+<td><tt class="docutils literal"><span class="pre">rossp</span></tt> : 164</td>
+<td><tt class="docutils literal"><span class="pre">nikhil_n</span></tt> : 78</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">dobe</span></tt> : 460</td>
+<td><tt class="docutils literal"><span class="pre">jukart</span></tt> : 274</td>
+<td><tt class="docutils literal"><span class="pre">shh</span></tt> : 150</td>
+<td><tt class="docutils literal"><span class="pre">jinty</span></tt> : 78</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">tseaver</span></tt> : 448</td>
+<td><tt class="docutils literal"><span class="pre">fafhrd</span></tt> : 257</td>
+<td><tt class="docutils literal"><span class="pre">tlotze</span></tt> : 143</td>
+<td><tt class="docutils literal"><span class="pre">icemac</span></tt> : 76</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">fdrake</span></tt> : 433</td>
+<td><tt class="docutils literal"><span class="pre">baijum</span></tt> : 255</td>
+<td><tt class="docutils literal"><span class="pre">maurits...</span></tt> : 139</td>
+<td><tt class="docutils literal"><span class="pre">paran...</span></tt> : 75</td>
+</tr>
+</tbody>
+</table>
+<p class="small">(Data for the entire repository from February 1, 2007 to October 8, 2008.)</p>
+</div>
+<div class="slide" id="eggification-an-explosive-story">
+<h1>Eggification - An Explosive Story</h1>
+<ul class="simple">
+<li>Goal: Split up Zope 3 source tree into small, reusable packages</li>
+<li>Enabled by packaging work: distutils and setuptools</li>
+<li>Work began in February 2006 (as far as I can tell)</li>
+<li>Final packages converted in March 2007</li>
+</ul>
+</div>
+<div class="slide" id="explosive-hazards-1">
+<h1>Explosive Hazards (1)</h1>
+<ul class="simple">
+<li>No tools for project/package management<ul>
+<li><tt class="docutils literal"><span class="pre">zc.buildout</span></tt> to provide a deployment solution</li>
+<li>Today there are 112 buildout related packages on PyPI, mostly recipes</li>
+<li><tt class="docutils literal"><span class="pre">zope3project</span></tt>/<tt class="docutils literal"><span class="pre">grokproject</span></tt> to assemble minimum setup</li>
+</ul>
+</li>
+<li>Unreliable package server<ul>
+<li>The python.org PyPI server had frequent outages, stalling development</li>
+<li><tt class="docutils literal"><span class="pre">z3c.pypimirror</span></tt>/<tt class="docutils literal"><span class="pre">zc.mirrorcheeseshopslashsimple</span></tt> provide scripts to
+produce mirrors of the PyPI package index.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="id1">
+<h1>Explosive Hazards (1)</h1>
+<ul>
+<li><p class="first">Complex package inter-dependencies</p>
+<ul class="simple">
+<li>Requiring one package pulls in about 60 other packages.</li>
+<li>It's very tedious to unscrew dependencies</li>
+<li>Tools like <tt class="docutils literal"><span class="pre">gtkeggdeps</span></tt> help with discovery</li>
+<li><tt class="docutils literal"><span class="pre">zc.configuration</span></tt> (<tt class="docutils literal"><span class="pre">&lt;zope:exclude&gt;</span></tt> directive) and ZAM (<tt class="docutils literal"><span class="pre">zam.*</span></tt> and
+<tt class="docutils literal"><span class="pre">zamplugin.*</span></tt>) help</li>
+</ul>
+<p class="handout"><tt class="docutils literal"><span class="pre">zc.configuration</span></tt> enables a developer to ignore all browser-related
+ZCML declarations of a package, thus usally reducing the list of
+dependencies. ZAM, on the other hand, is a pluggable replacement for the
+management aspects of the Rotterdam skin, which reduces the dependency
+tree drastically.</p>
+</li>
+<li><p class="first">No version management</p>
+<ul class="simple">
+<li>A typical Zope application uses about 200 packages</li>
+<li>Package-tests themselves have about 80 packages</li>
+<li>Everyone uses different sets of package releases for tests and application
+development</li>
+<li>Version-dependencies are hard-coded in <tt class="docutils literal"><span class="pre">setup.py</span></tt> causing version
+conflicts and stalled development</li>
+<li>Caused huge disarray in the community in October 2007</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="the-known-good-set-kgs">
+<h1>The Known Good Set (KGS)</h1>
+<ul class="simple">
+<li>Goal: Provide a standard set of packages and their versions that is
+guaranteed to work together</li>
+<li>Serves as a base for everyone to develop on<ul>
+<li>A starting point for custom applications</li>
+</ul>
+</li>
+<li>Works together with existing infrastructure and software<ul>
+<li>Creates an index with limited version availability of controlled packages</li>
+<li>Creates an index containing only the controlled packages</li>
+<li>Creates &quot;version&quot;-block for usage in buildout configuration</li>
+<li>Creates a package links page</li>
+<li>Creates a complete buildout configuration for testing</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="zope-3-kgs">
+<h1>Zope 3 KGS</h1>
+<ul>
+<li><p class="first">A KGS for all Zope 3 related packages maintained in <a class="reference" href="http://svn.zope.org">http://svn.zope.org</a></p>
+</li>
+<li><p class="first">Introduction URL: <a class="reference" href="http://download.zope.org/zope3.4/intro.html">http://download.zope.org/zope3.4/intro.html</a></p>
+</li>
+<li><p class="first">Zope 3's KGS serves as a base to Grok's or Plone's KGS (for example)</p>
+</li>
+<li><p class="first">Managed Packages: 170</p>
+</li>
+<li><p class="first">Combined tests: 12217</p>
+</li>
+<li><p class="first">Currently all tests are passing: <a class="reference" href="http://zope3.pov.lt/buildbot/">http://zope3.pov.lt/buildbot/</a></p>
+<p>(except for some random non-deterministic ZODB-related failures)</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="plans-for-zope-3-4">
+<h1>Plans for Zope 3.4</h1>
+<ul>
+<li><p class="first">Yes, there is a plan!</p>
+</li>
+<li><p class="first">Work on a Zope 3 KGS based release since November 2007 (3.4.0b2)</p>
+</li>
+<li><p class="first">Most recent release: September 5, 2008 (3.4.0c7)</p>
+</li>
+<li><p class="first">Commitment to produce a tree-based source release</p>
+<p class="small">We have a script to do this for us.</p>
+</li>
+<li><p class="first">No commitment on a time scale due to lack of interest</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="zope-3-4-release">
+<h1>Zope 3.4 Release</h1>
+<ul class="simple">
+<li>Work done<ul>
+<li>Create a KGS with all tests passing</li>
+<li>Release process</li>
+<li>Backward-compatibility</li>
+</ul>
+</li>
+<li>Work to be done<ul>
+<li>Script to produce change log</li>
+<li>Tweaks to the KGS site (i.e. include dates in release, improve wording,
+maybe a skin)</li>
+<li>Cut the release and announcement</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="trends">
+<h1>Trends</h1>
+<ul class="simple">
+<li>Stability</li>
+<li>Performance</li>
+<li>Scalability</li>
+<li>Portability</li>
+<li>Security</li>
+<li>Deployment</li>
+</ul>
+</div>
+<div class="slide" id="stability">
+<h1>Stability</h1>
+<ul class="simple">
+<li>Only few enhancements to the core packages' feature sets</li>
+<li>Lots of bug fixes</li>
+<li>Several buildout recipes provide features to maintain code</li>
+</ul>
+</div>
+<div class="slide" id="performance">
+<h1>Performance</h1>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">lovely.responsecache</span></tt> / <tt class="docutils literal"><span class="pre">z3c.versionedresource</span></tt> /
+<tt class="docutils literal"><span class="pre">z3c.resourcecollector</span></tt></li>
+<li>ZODB BLOB support</li>
+<li><tt class="docutils literal"><span class="pre">zc.zodbactivitylog</span></tt> / <tt class="docutils literal"><span class="pre">z3c.zodbtracing</span></tt> / <tt class="docutils literal"><span class="pre">z3c.profiler</span></tt></li>
+<li>RelStorage (RDB storage backend for ZODB)</li>
+<li>ZODB Object Cache improvements</li>
+<li><tt class="docutils literal"><span class="pre">z3c.pt</span></tt> from Malthe Borch improves rendering 18-20 times<ul>
+<li>Keas pays Malthe to port <tt class="docutils literal"><span class="pre">z3c.form*</span></tt>, <tt class="docutils literal"><span class="pre">z3c.template</span></tt>, <tt class="docutils literal"><span class="pre">z3c.pagelet</span></tt>,
+<tt class="docutils literal"><span class="pre">z3c.macro</span></tt> to <tt class="docutils literal"><span class="pre">z3c.pt</span></tt></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="scalability">
+<h1>Scalability</h1>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">lovely.memcached</span></tt> / <tt class="docutils literal"><span class="pre">lovely.session</span></tt> (memchached integration)</li>
+<li><tt class="docutils literal"><span class="pre">lovely.remotetask</span></tt> / <tt class="docutils literal"><span class="pre">zc.async</span></tt> (async-based task execution)</li>
+<li><tt class="docutils literal"><span class="pre">gocept.zeoraid</span></tt> (A RAID controller system for ZODB)</li>
+<li><tt class="docutils literal"><span class="pre">z3c.extfile</span></tt> (Storing files external to Zope App)</li>
+<li>Soon: <tt class="docutils literal"><span class="pre">keas.messaging</span></tt>, an Amazon Simple Queue Service connector</li>
+<li>Soon: <tt class="docutils literal"><span class="pre">keas.sharding</span></tt>, a sharding solution for the ZODB</li>
+</ul>
+</div>
+<div class="slide" id="portability">
+<h1>Portability</h1>
+<ul class="simple">
+<li>Good support for WSGI</li>
+<li>Support for Paster</li>
+<li>Google Summer of Code project to port Zope libraries to Jython</li>
+<li>Initial Google App Engine work</li>
+</ul>
+</div>
+<div class="slide" id="security">
+<h1>Security</h1>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">z3c.password</span></tt> (Advanced password generation and verification utility)</li>
+<li><tt class="docutils literal"><span class="pre">z3c.tan</span></tt> (Temporarily granting additional permissions)</li>
+<li><tt class="docutils literal"><span class="pre">z3c.securitytool</span></tt> (Discovery of security settings)</li>
+<li><tt class="docutils literal"><span class="pre">gocept.registration</span></tt> (Hash-based registration confirmation)</li>
+<li><tt class="docutils literal"><span class="pre">keas.kmi</span></tt> (Key Management Infrastructure - PCI and HIPAA compliant)</li>
+<li>Unfortunately Common Criteria certification cancelled</li>
+</ul>
+</div>
+<div class="slide" id="deployment">
+<h1>Deployment</h1>
+<ul class="simple">
+<li>buildout</li>
+<li>many recipes</li>
+<li><tt class="docutils literal"><span class="pre">zc.sourcerelease</span></tt> (creates complete archives)</li>
+</ul>
+</div>
+<div class="slide" id="relevance-to-plone">
+<h1>Relevance to Plone</h1>
+<ul class="simple">
+<li>All Zope 3 packages can be used within Plone<ul>
+<li>some integration (Five) code might be needed</li>
+<li>Zope 3 packages usually do not have a UI</li>
+<li>for example: <tt class="docutils literal"><span class="pre">z3c.form</span></tt> --&gt; <tt class="docutils literal"><span class="pre">plone.z3cform</span></tt></li>
+</ul>
+</li>
+<li>buildout also changed the deployment story for Plone</li>
+<li>Scalability and performance tuning benefits Plone directly</li>
+</ul>
+</div>
+<div class="slide" id="the-future">
+<h1>The Future</h1>
+<ul class="simple">
+<li>Package dependency resolution</li>
+<li>Easier entry into Zope 3 world</li>
+<li>Stablize core further</li>
+<li>Concentrate on scalability</li>
+<li>Build more add on packages</li>
+</ul>
+</div>
+<div class="slide" id="challenges">
+<h1>Challenges</h1>
+<ul class="simple">
+<li>Rich client-side apps lessens importance of heavy app servers</li>
+<li>Opportunity and Challenge</li>
+<li>Web 2.0 and REST</li>
+<li>Much more JS support needed</li>
+<li>Zope becomes a middleware server</li>
+<li>Documentation</li>
+</ul>
+</div>
+<div class="slide" id="in-case-you-wonder">
+<h1>In case you wonder ...</h1>
+<ul class="simple">
+<li>I joined a startup called Keas, Inc.</li>
+<li>Preliminary site: keas.com</li>
+<li>We are in stealth mode, so I cannot give many specifics yet</li>
+<li>We are looking for Zope 3 and other Web developers in SF and NY</li>
+</ul>
+</div>
+<div class="slide" id="questions-and-comments">
+<h1>Questions and Comments</h1>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,495 @@
+.. include:: <s5defs.txt>
+
+.. Creative Commons Attribution-Share Alike 2.5 License.
+.. (c) Stephan Richter
+
+=====================
+ The State of Zope 3
+=====================
+
+:Location: Plone Conference 2008, Washington, DC
+:Date: October 10, 2008
+:Presenter: Stephan Richter, Keas Inc.
+
+.. class:: center big
+
+   Changing Dynamics
+
+
+The Pre-historic Past
+=====================
+
+- Started development of Zope 3 in January 2002
+
+- Used 42 Sprints to complete it
+
+- Release of Zope X3.0.0 on November 6, 2004
+
+- Other Releases
+
+  * Zope 3.1.0: October 2, 2005
+
+  * Zope 3.2.0: March 16, 2006
+
+  * Zope 3.3.0: September 27, 2006
+
+  * Zope 3.3.1: January 14, 2007
+
+
+The Last 20 Months
+==================
+
+- Zope Explosion - Packages and the KGS
+
+- API Stabilization
+
+- Grok
+
+- Lots of Add-on Packages
+
+.. class:: small
+
+  (since February 1, 2007)
+
+
+The Last 20 Months in Numbers
+=============================
+
+- Contributors: 149 (total: 290)
+
+- New Contributors: 77
+
+- Checkins: 27187 (total: 91893)
+
+- Total Amount of Packages: 581
+
+- New Packages: 372 (exluding explosion: 283)
+
+- Package Releases: 1331
+
+.. class:: small
+
+  (Statistics include work on Zope 2)
+
+
+Packages By PyPI Categories
+===========================
+
+- Packages in PyPI: 5199
+
+- Buildout: 112 (2.2%)
+
+- Plone: 375 (7.2%)
+
+- ZODB: 9 (0.2%)
+
+- Zope2: 328 (6.3%)
+
+- Zope3: 617 (11.9%)
+
+- Total Zope-related: 1441 (27.7%)
+
+.. class:: small
+
+  (Based on Trove Environment classifiers. Some packages might be double
+  counted, if multiple environments were specified.)
+
+
+Packages By Namespaces
+======================
+
+New packages by namespace (since April 1, 2007)
+
+================= ====================== =======================
+``cc`` : 2        ``lovely`` : 10        ``zam`` : 4
+``gocept`` : 3    ``megrok`` : 12        ``zamplugin`` : 8
+``grokcore`` : 4  ``plone`` : 2          ``zc`` : **32**
+``grokui`` : 2    ``vanguardistas`` : 1  ``zope`` : 28
+``gzo`` : 2       ``z3`` : 1             ``zopeorg`` : 2
+``hurry`` : 6     ``z3c`` : **99**       ``zopyx`` : 2
+``jquery`` : 7    ``z3ext`` : 17         ``five`` : 5
+``keas`` : 2
+================= ====================== =======================
+
+
+Top Contributors By Releases
+============================
+
+.. class:: small
+
+  =================== =================== =================== =================
+  ``srichter``: 241   ``gary`` : 36       ``baijum`` : 13     ``shane`` : 7
+  ``ctheune`` : 129   ``jens`` : 34       ``rossp`` : 12      ``schwendi``:6
+  ``andreasj`` : 87   ``faassen`` : 32    ``mkerrin`` : 12    ``shh`` : 5
+  ``philikon`` : 82   ``dobe`` : 22       ``zagy`` : 11       ``nathan`` : 5
+  ``jim`` : 82        ``berndroe`` : 19   ``hannosch``:10     ``jackie`` : 5
+  ``fafhrd`` : 72     ``benji_yo`` : 19   ``tlotze`` : 9      ``satchit`` : 4
+  ``fdrake`` : 59     ``mgedmin`` : 17    ``pcardune`` : 9    ``nadako`` : 4
+  ``rogerine`` : 58   ``batlogg`` : 16    ``janwijbr`` : 9    ``mauritsv``:4
+  ``jukart`` : 58     ``aaron`` : 14      ``ulif`` : 8        ``malthe`` : 4
+  ``tseaver`` : 45    ``ccomb`` : 13      ``jinty`` : 8
+  =================== =================== =================== =================
+
+.. class`` :`` : small
+
+  Cutoff`` : 4 releases
+
+.. class`` :`` : handout
+
+  - ``tarek`` : 3
+  - ``rocky`` : 3
+  - ``nouri`` : 3
+  - ``ldr`` : 3
+  - ``kteague`` : 3
+  - ``icemac`` : 3
+  - ``hdima`` : 3
+  - ``ejucovy`` : 3
+  - ``chrism`` : 3
+  - ``adamg`` : 3
+  - ``zvezdan`` : 2
+  - ``witsch`` : 2
+  - ``wichert`` : 2
+  - ``thefunny`` : 2
+  - ``gotcha`` : 2
+  - ``asmith`` : 2
+  - ``alga`` : 2
+  - ``zotya`` : 1
+  - ``regebro`` : 1
+  - ``patricks`` : 1
+  - ``optilude`` : 1
+  - ``opetznic`` : 1
+  - ``luciano`` : 1
+  - ``brandon_`` : 1
+
+
+Top Contributors By Checkins
+============================
+
+.. class:: small
+
+  ====================== ===================== ===================== =================
+  ``philikon`` : 1555    ``hannosch`` : 330    ``blackburnd`` : 243  ``ccomb`` : 111
+  ``ctheune`` : 1405     ``wichert`` : 328     ``luciano`` : 237     ``gotcha`` : 109
+  ``srichter`` : 1180    ``jens`` : 319        ``benji...`` : 235    ``thefu...``:103
+  ``andreas...``:1163    ``mgedmin`` : 305     ``yuppie`` : 207      ``kteague`` : 102
+  ``ulif`` : 1102        ``zagy`` : 301        ``adamg`` : 185       ``chrism`` : 102
+  ``jim`` : 1099         ``gary`` : 300        ``regebro`` : 172     ``batlogg`` : 95
+  ``rogeri...``:756      ``darrylc...``:297    ``mkerrin`` : 170     ``shane`` : 93
+  ``faassen`` : 723      ``janwijb...``: 285   ``alex`` : 170        ``witsch`` : 79
+  ``malthe`` : 507       ``pcardune`` : 280    ``rossp`` : 164       ``nikhil_n`` : 78
+  ``dobe`` : 460         ``jukart`` : 274      ``shh`` : 150         ``jinty`` : 78
+  ``tseaver`` : 448      ``fafhrd`` : 257      ``tlotze`` : 143      ``icemac`` : 76
+  ``fdrake`` : 433       ``baijum`` : 255      ``maurits...`` : 139  ``paran...`` : 75
+  ====================== ===================== ===================== =================
+
+  (Data for the entire repository from February 1, 2007 to October 8, 2008.)
+
+
+Eggification - An Explosive Story
+=================================
+
+- Goal: Split up Zope 3 source tree into small, reusable packages
+
+- Enabled by packaging work: distutils and setuptools
+
+- Work began in February 2006 (as far as I can tell)
+
+- Final packages converted in March 2007
+
+
+Explosive Hazards (1)
+=====================
+
+- No tools for project/package management
+
+  * ``zc.buildout`` to provide a deployment solution
+
+  * Today there are 112 buildout related packages on PyPI, mostly recipes
+
+  * ``zope3project``/``grokproject`` to assemble minimum setup
+
+- Unreliable package server
+
+  * The python.org PyPI server had frequent outages, stalling development
+
+  * ``z3c.pypimirror``/``zc.mirrorcheeseshopslashsimple`` provide scripts to
+    produce mirrors of the PyPI package index.
+
+
+Explosive Hazards (1)
+=====================
+
+- Complex package inter-dependencies
+
+  * Requiring one package pulls in about 60 other packages.
+
+  * It's very tedious to unscrew dependencies
+
+  * Tools like ``gtkeggdeps`` help with discovery
+
+  * ``zc.configuration`` (``<zope:exclude>`` directive) and ZAM (``zam.*`` and
+    ``zamplugin.*``) help
+
+  .. class:: handout
+
+    ``zc.configuration`` enables a developer to ignore all browser-related
+    ZCML declarations of a package, thus usally reducing the list of
+    dependencies. ZAM, on the other hand, is a pluggable replacement for the
+    management aspects of the Rotterdam skin, which reduces the dependency
+    tree drastically.
+
+- No version management
+
+  * A typical Zope application uses about 200 packages
+
+  * Package-tests themselves have about 80 packages
+
+  * Everyone uses different sets of package releases for tests and application
+    development
+
+  * Version-dependencies are hard-coded in ``setup.py`` causing version
+    conflicts and stalled development
+
+  * Caused huge disarray in the community in October 2007
+
+
+The Known Good Set (KGS)
+========================
+
+- Goal: Provide a standard set of packages and their versions that is
+  guaranteed to work together
+
+- Serves as a base for everyone to develop on
+
+  * A starting point for custom applications
+
+- Works together with existing infrastructure and software
+
+  * Creates an index with limited version availability of controlled packages
+
+  * Creates an index containing only the controlled packages
+
+  * Creates "version"-block for usage in buildout configuration
+
+  * Creates a package links page
+
+  * Creates a complete buildout configuration for testing
+
+
+Zope 3 KGS
+==========
+
+- A KGS for all Zope 3 related packages maintained in http://svn.zope.org
+
+- Introduction URL: http://download.zope.org/zope3.4/intro.html
+
+- Zope 3's KGS serves as a base to Grok's or Plone's KGS (for example)
+
+- Managed Packages: 170
+
+- Combined tests: 12217
+
+- Currently all tests are passing: http://zope3.pov.lt/buildbot/
+
+  (except for some random non-deterministic ZODB-related failures)
+
+
+Plans for Zope 3.4
+==================
+
+- Yes, there is a plan!
+
+- Work on a Zope 3 KGS based release since November 2007 (3.4.0b2)
+
+- Most recent release: September 5, 2008 (3.4.0c7)
+
+- Commitment to produce a tree-based source release
+
+  .. class:: small
+
+    We have a script to do this for us.
+
+- No commitment on a time scale due to lack of interest
+
+
+Zope 3.4 Release
+================
+
+- Work done
+
+  * Create a KGS with all tests passing
+
+  * Release process
+
+  * Backward-compatibility
+
+- Work to be done
+
+  * Script to produce change log
+
+  * Tweaks to the KGS site (i.e. include dates in release, improve wording,
+    maybe a skin)
+
+  * Cut the release and announcement
+
+
+Trends
+======
+
+- Stability
+
+- Performance
+
+- Scalability
+
+- Portability
+
+- Security
+
+- Deployment
+
+
+Stability
+=========
+
+- Only few enhancements to the core packages' feature sets
+
+- Lots of bug fixes
+
+- Several buildout recipes provide features to maintain code
+
+
+Performance
+===========
+
+- ``lovely.responsecache`` / ``z3c.versionedresource`` /
+  ``z3c.resourcecollector``
+
+- ZODB BLOB support
+
+- ``zc.zodbactivitylog`` / ``z3c.zodbtracing`` / ``z3c.profiler``
+
+- RelStorage (RDB storage backend for ZODB)
+
+- ZODB Object Cache improvements
+
+- ``z3c.pt`` from Malthe Borch improves rendering 18-20 times
+
+  * Keas pays Malthe to port ``z3c.form*``, ``z3c.template``, ``z3c.pagelet``,
+    ``z3c.macro`` to ``z3c.pt``
+
+
+Scalability
+===========
+
+- ``lovely.memcached`` / ``lovely.session`` (memchached integration)
+
+- ``lovely.remotetask`` / ``zc.async`` (async-based task execution)
+
+- ``gocept.zeoraid`` (A RAID controller system for ZODB)
+
+- ``z3c.extfile`` (Storing files external to Zope App)
+
+- Soon: ``keas.messaging``, an Amazon Simple Queue Service connector
+
+- Soon: ``keas.sharding``, a sharding solution for the ZODB
+
+
+Portability
+===========
+
+- Good support for WSGI
+
+- Support for Paster
+
+- Google Summer of Code project to port Zope libraries to Jython
+
+- Initial Google App Engine work
+
+
+Security
+========
+
+- ``z3c.password`` (Advanced password generation and verification utility)
+
+- ``z3c.tan`` (Temporarily granting additional permissions)
+
+- ``z3c.securitytool`` (Discovery of security settings)
+
+- ``gocept.registration`` (Hash-based registration confirmation)
+
+- ``keas.kmi`` (Key Management Infrastructure - PCI and HIPAA compliant)
+
+- Unfortunately Common Criteria certification cancelled
+
+
+Deployment
+==========
+
+- buildout
+
+- many recipes
+
+- ``zc.sourcerelease`` (creates complete archives)
+
+
+Relevance to Plone
+==================
+
+- All Zope 3 packages can be used within Plone
+
+  * some integration (Five) code might be needed
+
+  * Zope 3 packages usually do not have a UI
+
+  * for example: ``z3c.form`` --> ``plone.z3cform``
+
+- buildout also changed the deployment story for Plone
+
+- Scalability and performance tuning benefits Plone directly
+
+
+The Future
+==========
+
+- Package dependency resolution
+
+- Easier entry into Zope 3 world
+
+- Stablize core further
+
+- Concentrate on scalability
+
+- Build more add on packages
+
+
+Challenges
+==========
+
+- Rich client-side apps lessens importance of heavy app servers
+
+- Opportunity and Challenge
+
+- Web 2.0 and REST
+
+- Much more JS support needed
+
+- Zope becomes a middleware server
+
+- Documentation
+
+
+In case you wonder ...
+======================
+
+- I joined a startup called Keas, Inc.
+
+- Preliminary site: keas.com
+
+- We are in stealth mode, so I cannot give many specifics yet
+
+- We are looking for Zope 3 and other Web developers in SF and NY
+
+
+Questions and Comments
+======================
