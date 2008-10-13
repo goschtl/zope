@@ -109,7 +109,7 @@ def match_interpolate(string, translator):
                 exp = translator(match)
                 break
             except SyntaxError:
-                right = string.find('}', right)
+                right = string.find('}', right+1)
         else:
             raise
 
