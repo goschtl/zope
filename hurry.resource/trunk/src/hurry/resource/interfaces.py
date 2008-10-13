@@ -22,6 +22,9 @@ class IResourceInclusion(Interface):
                         "resource depends on")
     rollups = Attribute("A list of potential rollup ResourceInclusions "
                         "that this resource is part of")
+    bottom = Attribute("A flag. When set to True, this resource "
+                       "can be safely included on the bottom of a HTML "
+                       "page, just before the </body> tag.")
     
     def ext():
         """Get the filesystem extension of this resource.
@@ -90,6 +93,24 @@ class INeededInclusions(Interface):
         NOTE: there is also a ``hurry.resource.mode`` function which
         can be used to set the mode for the currently needed inclusions.
         """
+
+    def bottom(force=False, disable=False):
+        """Control the behavior of ``render_topbottom``.
+
+        If not called or called with ``disable`` set to ``True``,
+        resources will only be included in the top fragment returned
+        by ``render_topbottom``.
+
+        If called without arguments, resource inclusions marked safe
+        to render at the bottom are rendered in the bottom fragment returned
+        by ``render_topbottom``.
+
+        If called with the ``force`` argument set to ``True``, Javascript
+        (``.js``) resource inclusions are always included at the bottom.
+
+        NOTE: there is also a ``hurry.resource.mode`` function which
+        can be used to set the mode for the currently needed inclusions.
+        """
         
     def inclusions():
         """Give all resource inclusions needed.
@@ -100,9 +121,39 @@ class INeededInclusions(Interface):
     def render():
         """Render all resource inclusions for HTML header.
 
-        Returns a HTML snippet that includes the required resource inclusions.
-        """
+        Returns a single HTML snippet to be included in the HTML
+        page just after the ``<head>`` tag.
 
+        ``force_bottom`` settings are ignored; everything is always
+        rendered on top.
+        """
+        
+    def render_topbottom():
+        """Render all resource inclusions into top and bottom snippet.
+
+        Returns two HTML snippets that include the required resource
+        inclusions, one for the top of the page, one for the bottom.
+
+        if ``bottom`` was not called, behavior is like ``render``;
+        only the top fragment will ever contain things to include, the
+        bottom fragment will be empty.
+        
+        if ``bottom`` was called, bottom will include all resource
+        inclusions that have ``bottom`` set to True (safe to include
+        at the bottom of the HTML page), top will contain the rest.
+
+        if ``bottom`` was called with the ``force`` argument set to
+        ``True``, both top and bottom snippet will return content. top
+        will contain all non-javascript resources, and bottom all
+        javascript resources.
+
+        The bottom fragment can be used to speed up page rendering:
+
+        http://developer.yahoo.com/performance/rules.html
+        
+        Returns top and bottom HTML fragments.
+        """
+        
 class ICurrentNeededInclusions(Interface):
     def __call__():
         """Return the current needed inclusions object.

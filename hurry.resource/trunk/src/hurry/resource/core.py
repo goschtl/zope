@@ -23,7 +23,8 @@ class ResourceInclusion(object):
     implements(interfaces.IResourceInclusion)
     
     def __init__(self, library, relpath, depends=None,
-                 supersedes=None, eager_superseder=False, **kw):
+                 supersedes=None, eager_superseder=False,
+                 bottom=False, **kw):
         """Create a resource inclusion
 
         library  - the library this resource is in
@@ -40,13 +41,20 @@ class ResourceInclusion(object):
                    instead will show up.
         eager_superseder - even if only part of the requirements are
                            met, supersede anyway
+        bottom - optionally, indicate that this resource can be
+                 safely included on the bottom of the page (just
+                 before ``</body>``). This can be used to
+                 improve the performance of page loads when javascript
+                 resources are in use. Not all javascript-based resources
+                 can however be safely included that way.
         keyword arguments - different paths that represent the same
                   resource in different modes (debug, minified, etc),
                   or alternatively a fully specified ResourceInclusion.
         """
         self.library = library
         self.relpath = relpath
-
+        self.bottom = bottom
+        
         assert not isinstance(depends, basestring)
         depends = depends or []
         self.depends = normalize_inclusions(library, depends)
@@ -128,12 +136,23 @@ class NeededInclusions(object):
     def __init__(self):
         self._inclusions = []
         self._mode = None
+        self._bottom = False
+        self._force_bottom = False
         
     def need(self, inclusion):
         self._inclusions.append(inclusion)
 
     def mode(self, mode):
         self._mode = mode
+
+    def bottom(self, force=False, disable=False):
+        if disable:
+            self._bottom = False
+            self._force_bottom = False
+            return
+        self._bottom = True
+        if force:
+            self._force_bottom = True
         
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
@@ -149,24 +168,38 @@ class NeededInclusions(object):
         # python's stable sort to keep inclusion order intact
         inclusions = sort_inclusions_by_extension(inclusions)
         inclusions = remove_duplicates(inclusions)
+        
         return inclusions
-            
+
     def render(self):
-        result = []
-        library_urls = {}        
-        for inclusion in self.inclusions():
-            library = inclusion.library
-            # get cached library url
-            library_url = library_urls.get(library.name)
-            if library_url is None:
-                # if we can't find it, recalculate it
-                library_url = interfaces.ILibraryUrl(library)
-                if not library_url.endswith('/'):
-                    library_url += '/'
-                library_urls[library.name] = library_url
-            result.append(render_inclusion(inclusion,
-                                           library_url + inclusion.relpath))
-        return '\n'.join(result)
+        return render_inclusions(self.inclusions())
+    
+    def render_topbottom(self):
+        inclusions = self.inclusions()
+
+        # seperate inclusions in top and bottom inclusions if this is needed
+        if self._bottom:
+            top_inclusions = []
+            bottom_inclusions = []
+            if not self._force_bottom:
+                for inclusion in inclusions:
+                    if inclusion.bottom:
+                        bottom_inclusions.append(inclusion)
+                    else:
+                        top_inclusions.append(inclusion)
+            else:
+                for inclusion in inclusions:
+                    if inclusion.ext() == '.js':
+                        bottom_inclusions.append(inclusion)
+                    else:
+                        top_inclusions.append(inclusion)
+        else:
+            top_inclusions = inclusions
+            bottom_inclusions = []
+
+        library_urls = {}
+        return (render_inclusions(top_inclusions, library_urls),
+                render_inclusions(bottom_inclusions, library_urls))
 
 def mode(mode):
     """Set the mode for the currently needed resources.
@@ -175,6 +208,13 @@ def mode(mode):
             interfaces.ICurrentNeededInclusions)()
     needed.mode(mode)
 
+def bottom(force=False):
+    """Try to include resources at the bottom of the page, not just on top.
+    """
+    needed = component.getUtility(
+            interfaces.ICurrentNeededInclusions)()
+    needed.bottom(force)
+    
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]
 
@@ -270,6 +310,30 @@ inclusion_renderers = {
     '.kss': render_kss,
     '.js': render_js,
     }
+
+def render_inclusions(inclusions, library_urls=None):
+    """Render a set of inclusions.
+
+    inclusions - the inclusions to render
+    library_urls - optionally a dictionary for maintaining cached library
+                   URLs. Doing render_inclusions with the same
+                   dictionary can reduce component lookups.
+    """
+    result = []
+    library_urls = library_urls or {}
+    for inclusion in inclusions:
+        library = inclusion.library
+        # get cached library url
+        library_url = library_urls.get(library.name)
+        if library_url is None:
+            # if we can't find it, recalculate it
+            library_url = interfaces.ILibraryUrl(library)
+            if not library_url.endswith('/'):
+                library_url += '/'
+            library_urls[library.name] = library_url
+        result.append(render_inclusion(inclusion,
+                                       library_url + inclusion.relpath))
+    return '\n'.join(result)
 
 def render_inclusion(inclusion, url):
     renderer = inclusion_renderers.get(inclusion.ext(), None)

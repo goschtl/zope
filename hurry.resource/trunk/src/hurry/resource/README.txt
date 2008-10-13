@@ -600,12 +600,159 @@ We should now register this function as a``ILibrarUrl`` adapter for
   ...     adapts=(Library,), 
   ...     provides=ILibraryUrl)
 
-Rendering the inclusions now will will result in the HTML fragment we need::
+Rendering the inclusions now will will result in the HTML fragments we
+need to include on the top of our page (just under the ``<head>`` tag
+for instance)::
 
   >>> print needed.render()
   <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
   <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
   <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
+Top and bottom fragments
+========================
+
+It's also possible to render the resource inclusions into two
+fragments, some to be included just after the ``<head>`` tag, but some
+to be included at the very bottom of the HTML page, just before the
+``</body>`` tag. This is useful as it can `speed up page load times`_. 
+
+.. _`speed up page load times`: http://developer.yahoo.com/performance/rules.html
+
+Let's look at the same resources, now rendered separately into ``top``
+and ``bottom`` fragments::
+
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  >>> print bottom
+  <BLANKLINE>
+
+There is effectively no change; all the resources are still on the
+top. We can enable bottom rendering by calling the ``bottom`` method before
+we render::
+
+  >>> needed.bottom()
+
+Since none of the resources indicated it was safe to render them at
+the bottom, even this explicit call will not result in any changes::
+ 
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  >>> print bottom
+  <BLANKLINE>
+
+``bottom(force=True)`` will however force all javascript inclusions to be
+rendered in the bottom fragment::
+
+  >>> needed.bottom(force=True)
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  >>> print bottom
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+
+Let's now introduce a javascript resource that says it is safe to be
+included on the bottom::
+ 
+  >>> y2 = ResourceInclusion(foo, 'y2.js', bottom=True)
+
+When we start over without ``bottom`` enabled, we get this resource
+show up in the top fragment after all::
+
+  >>> needed = NeededInclusions()
+  >>> needed.need(y1)
+  >>> needed.need(y2)
+
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script>
+  >>> print bottom
+  <BLANKLINE>
+
+We now tell the system that it's safe to render inclusions at the bottom::
+
+  >>> needed.bottom()
+
+We now see the resource ``y2`` show up in the bottom fragment::
+
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  >>> print bottom
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script>
+
+When we force bottom rendering of Javascript, there is no effect of
+making a resource bottom-safe: all ``.js`` resources will be rendered
+at the bottom anyway::
+
+  >>> needed.bottom(force=True)
+  >>> top, bottom = needed.render_topbottom()
+  >>> print top
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/foo/b.css" />
+  >>> print bottom
+  <script type="text/javascript" src="http://localhost/static/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/c.js"></script>
+  <script type="text/javascript" src="http://localhost/static/foo/y2.js"></script>
+
+Note that if ``bottom`` is enabled, it makes no sense to have a
+resource inclusion ``b`` that depends on a resource inclusion ``a``
+where ``a`` is bottom-safe and ``b``, that depends on it, is not
+bottom-safe. In this case ``a`` would be included on the page at the
+bottom *after* ``b`` in the ``<head>`` section, and this might lead to
+ordering problems. Likewise a rollup resource shouldn't combine
+resources where some are bottom-safe and others aren't.
+
+The system makes no sanity checks for misconfiguration of
+bottom-safety however; it could be the user simply never enables
+``bottom`` mode at all and doesn't care about this issue. In this case
+the user will want to write Javascript code that isn't safe to be
+included at the bottom of the page and still be able to depend on
+Javascript code that is.
+
+bottom convenience
+==================
+
+Like for ``need`` and ``mode``, there is also a convenience spelling for
+``bottom``::
+
+  >>> request = Request()
+  >>> l1 = ResourceInclusion(foo, 'l1.js', bottom=True)
+  >>> l1.need()
+
+Let's look at the resources needed by default::
+
+  >>> c = component.getUtility(ICurrentNeededInclusions)
+  >>> top, bottom = c().render_topbottom()
+  >>> print top
+  <script type="text/javascript" src="http://localhost/static/foo/l1.js"></script>
+  >>> print bottom
+  <BLANKLINE>
+
+Let's now change the bottom mode using the convenience
+``hurry.resource.bottom`` spelling::
+
+  >>> from hurry.resource import bottom
+  >>> bottom()
+
+Re-rendering will show it's honoring the bottom setting::
+
+  >>> top, bottom = c().render_topbottom()
+  >>> print top
+  <BLANKLINE>
+  >>> print bottom
+  <script type="text/javascript" src="http://localhost/static/foo/l1.js"></script>
 
 Generating resource code
 ========================
