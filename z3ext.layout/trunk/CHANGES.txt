@@ -7,6 +7,8 @@ CHANGES
 
 - Fixed missing NotFount in @@pagelet 
 
+- Log errors in @@pagelet
+
 
 1.5.0 (2008-10-06)
 ------------------

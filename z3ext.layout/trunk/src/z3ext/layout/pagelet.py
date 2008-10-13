@@ -109,7 +109,7 @@ class PageletPublisher(object):
             return self[name]
         except Exception, err:
             log = logging.getLogger('z3ext.content')
-            log.debug(err)
+            log.exception(err)
 
         raise NotFound(self.context, name, request)
 
@@ -120,10 +120,14 @@ class PageletPublisher(object):
         else:
             iface = IPagelet
 
-        view = queryMultiAdapter((self.context, self.request), iface)
-        if view is not None:
-            view.update()
-            return view.render()
+        try:
+            view = queryMultiAdapter((self.context, self.request), iface)
+            if view is not None:
+                view.update()
+                return view.render()
+        except Exception, err:
+            log = logging.getLogger('z3ext.content')
+            log.exception(err)
 
         raise KeyError(name)
 
