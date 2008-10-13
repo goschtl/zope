@@ -1,0 +1,19 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2008-10-13)
+------------------
+
+- Remove deprecated code slated for removal on 3.5.
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
