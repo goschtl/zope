@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+1.0b3 (released 13/10/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Fixed issue with parsing expression containing curly
   braces. [malthe]
 
