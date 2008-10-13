@@ -1,0 +1,51 @@
+hurry.yui basic tests
+=====================
+
+Here are some basic tests for hurry.yui.
+
+Let's set up a way to render URLs; typically the framework has already
+done this::
+
+  >>> def get_library_url(library):
+  ...    return 'http://localhost/static/%s' % (
+  ...      library.name)
+  >>> from hurry.resource import Library
+  >>> from hurry.resource.interfaces import ILibraryUrl
+  >>> from zope import component
+  >>> component.provideAdapter(
+  ...     factory=get_library_url, 
+  ...     adapts=(Library,),
+  ...     provides=ILibraryUrl)
+
+
+Let's check the YUI structure by picking out a resource in it::
+
+  >>> from hurry import yui
+  >>> from hurry.resource import NeededInclusions
+  >>> needed = NeededInclusions()
+  >>> needed.need(yui.fonts)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/fonts/fonts.css" />
+
+Let's try a resource that has a dependency on fonts, namely
+``grids``::
+
+  >>> needed = NeededInclusions()
+  >>> needed.need(yui.grids)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/fonts/fonts.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/grids/grids.css" />
+
+Now let's try to see consolidation: we include grids and reset at the
+same time, and we expect a consolidation to ``reset-fonts-grids``::
+
+  >>> needed = NeededInclusions()
+  >>> needed.need(yui.grids)
+  >>> needed.need(yui.reset)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids.css" />
+
+Let's get the same, minified::
+
+  >>> print needed.render(mode="minified")
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids-min.css" />
