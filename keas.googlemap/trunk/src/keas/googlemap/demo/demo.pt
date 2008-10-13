@@ -14,3 +14,8 @@
     </td>
   </tr>
 </table>
+<script type="text/javascript">
+$(document).ready(function(){
+keas_googlemap_maploader();
+});
+</script>

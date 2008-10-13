@@ -6,13 +6,10 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="pragma" content="no-cache" />
-    <script type="text/javascript" src="++resource++jquery.js"></script>
-    <script type="text/javascript" src="++resource++keas.googlemap.js"></script>
-    <script tal:replace="structure provider:IJavaScript"> </script>
-    <script tal:replace="structure provider:ICSS"> </script>
     <script type="text/javascript"
-	    src="http://gmaps-utility-library.googlecode.com/svn/trunk/markermanager/release/src/markermanager.js">
+            tal:attributes="src context/++resource++jquery.js">
     </script>
+    <style tal:replace="structure provider:ICSS"> </style>
     <style type="text/css">
       body{
         font-size: small;
@@ -33,5 +30,6 @@
   <body>
     <div tal:replace="structure provider:pagelet"/>
   </body>
+  <script tal:replace="structure provider:IJavaScript"> </script>
 
 </html>

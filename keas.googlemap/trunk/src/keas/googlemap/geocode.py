@@ -19,7 +19,6 @@ $Id$
 # Interesting Python library for geocoding here:
 # http://code.google.com/p/geolocator/source/browse/trunk/geolocator/gislib.py
 
-import simplejson
 import urllib
 from math import asin, sqrt, cos, sin, pi
 
@@ -29,8 +28,8 @@ from zope.schema.fieldproperty import FieldProperty
 from zope.app.container.btree import BTreeContainer
 import zope.annotation
 
-from keas.googlemap import interfaces
-from keas.googlemap import apikey
+from keas.googlemap import interfaces, apikey
+from keas.googlemap import jsoncompat as json
 
 GEOCODE_BASE = 'http://maps.google.com/maps/geo'
 
@@ -82,7 +81,7 @@ def getGeocodeFromQuery(geoQuery):
              'output' : 'json',
              'q'      : geoQuery.query }
     url = GEOCODE_BASE + '?' + urllib.urlencode(dict)
-    info = simplejson.load(urllib.urlopen(url))
+    info = json.decode(urllib.urlopen(url).read())
     if info['Status']['code'] == 200:
         coords = info['Placemark'][0]['Point']['coordinates']
         return Geocode(coords[1], coords[0])

@@ -46,19 +46,31 @@
       />
 
   <browser:viewlet
-      name="googleMapsAPIKey"
-      manager=".browser.IJavaScript"
-      class="keas.googlemap.apikey.APIKeyViewlet"
-      permission="zope.Public"
-      layer=".interfaces.IGoogleMapSkin"
-      />
-
-  <browser:viewlet
       name="googleMapJS"
       manager=".browser.IJavaScript"
       class="keas.googlemap.browser.GoogleMapJavaScriptViewlet"
       permission="zope.Public"
       layer=".interfaces.IGoogleMapSkin"
+      wieght="1"
       />
+
+  <browser:viewlet
+      name="googleMapsAPIKey"
+      manager=".browser.IJavaScript"
+      class="keas.googlemap.apikey.StaticAPIKeyViewlet"
+      permission="zope.Public"
+      layer=".interfaces.IGoogleMapSkin"
+      weight="5"
+      />
+
+  <browser:viewlet
+      name="markermanager.js"
+      manager=".browser.IJavaScript"
+      class="keas.googlemap.browser.GoogleMapMarkersViewletLocal"
+      permission="zope.Public"
+      layer=".interfaces.IGoogleMapSkin"
+      weight="7"
+      />
+
 
 </configure>

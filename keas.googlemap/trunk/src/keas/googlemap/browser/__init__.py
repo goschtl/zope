@@ -27,6 +27,7 @@ from zope.viewlet.viewlet import ViewletBase
 
 from keas.googlemap.geocode import Geocode
 from keas.googlemap.browser import interfaces
+from keas.googlemap import jsoncompat as json
 
 
 class IGoogleMapBrowserLayer(IBrowserRequest):
@@ -92,12 +93,11 @@ class GoogleMap(object):
         return self.template(view=self)
 
     def javascript(self):
-        markerString = '['
-        for marker in self.markers:
-            markerString += '{latitude:%s, longitude:%s, html:%s},' % (marker.geocode.latitude,
-                                                                         marker.geocode.longitude,
-                                                                         jsString(marker.html))
-        markerString += ']'
+        markerString = json.encode(
+            [dict(latitude=marker.geocode.latitude,
+                  longitude=marker.geocode.longitude,
+                  html=marker.html)
+             for marker in self.markers])
         return """
           var keas_googlemap_maploader = function(){
                keas.googlemap.initialize({id:'%(id)s',
@@ -110,13 +110,6 @@ class GoogleMap(object):
                      zoom=self.zoom,
                      type=self.type,
                      markers=markerString)
-
-def jsString(s):
-    """Returns the string as a one line javascript representation."""
-    if type(s) is unicode:
-        return repr(s)[1:]
-    return repr(s)
-
 
 class GoogleMapBrowserView(BrowserView, GoogleMap):
 
