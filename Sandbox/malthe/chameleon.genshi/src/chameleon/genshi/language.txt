@@ -471,7 +471,7 @@ py:match
   ... <html xmlns="http://www.w3.org/1999/xhtml"
   ...       xmlns:py="http://genshi.edgewall.org/">
   ...   <body py:with="form_errors=''">
-  ...     <em py:if="'name' in form_errors">${form_errors{'name'}</em>
+  ...     <em py:if="'name' in form_errors">${form_errors['name']}</em>
   ...   </body>
   ... </html>""")
   <html>
