@@ -103,7 +103,8 @@ class DemoPage(layout.FormLayoutSupport, group.GroupForm, form.EditForm):
 
     template = ViewPageTemplateFile("demo.pt")
 
-    fields = field.Fields(interfaces.IGoogleMap).select('zoom','type','width','height')
+    fields = field.Fields(interfaces.IGoogleMap).select(
+        'zoom','type','width','height','controls')
 
     googleMap = SessionProperty('googleMap')
 

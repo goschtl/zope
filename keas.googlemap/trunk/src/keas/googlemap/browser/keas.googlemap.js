@@ -5,6 +5,7 @@ keas.googlemap = {
           {id: "some-dom-element-id",
           zoom: 12, //the desired zoom level,
           type: G_NORMAL_MAP, //a google maps map type string.
+          controls: ['GLargeMapControl'],
           markers: [{latitude: 3.1234,
                      longitude: 4.52342,
                      html: "stuff that appears in the window"}]} //an array of markers.
@@ -20,8 +21,9 @@ keas.googlemap = {
             }
             var map = new GMap2(document.getElementById(config.id));
 
-            map.addControl(new GLargeMapControl());
-            map.addControl(new GMapTypeControl());
+            for (var i=0; i<config.controls.length; i++){
+                map.addControl(eval("(new "+config.controls[i]+"())"));
+            }
             map.setCenter(center, config.zoom, config.type);
             var bounds = map.getBounds();
             var mgr = new MarkerManager(map);

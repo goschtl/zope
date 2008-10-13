@@ -103,12 +103,14 @@ class GoogleMap(object):
                keas.googlemap.initialize({id:'%(id)s',
                                           zoom:%(zoom)s,
                                           type:%(type)s,
+                                          controls:%(controls)s,
                                           markers:%(markers)s});
           };
           $(document).unload( function() {GUnload();} );
           """ % dict(id=self.id,
                      zoom=self.zoom,
                      type=self.type,
+                     controls=json.encode(self.controls),
                      markers=markerString)
 
 class GoogleMapBrowserView(BrowserView, GoogleMap):
