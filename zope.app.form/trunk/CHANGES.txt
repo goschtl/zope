@@ -5,6 +5,9 @@ CHANGES
 3.6.3 (unreleased)
 ==================
 
+- Get rid of deprecated usage of LayerField from
+  zope.app.component.back35, replaced by
+  zope.configuration.fields.GlobalInterface.
 
 3.6.2 (2008-09-08)
 ==================
