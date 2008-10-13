@@ -7,7 +7,7 @@ def main():
     try:
         version = sys.argv[1]
     except IndexError:
-        print "Usage: tinymceprepare <YUI version>"
+        print "Usage: tinymceprepare <tinyMCE version>"
         return
 
     # download tinymce library into package

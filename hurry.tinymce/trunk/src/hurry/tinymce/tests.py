@@ -7,7 +7,7 @@ def test_suite():
     suite = unittest.TestSuite()
     
     suite.addTest(doctest.DocFileSuite(
-        'README.txt',
+        'basic.txt',
         globs=globs,
         optionflags=optionflags))
     return suite

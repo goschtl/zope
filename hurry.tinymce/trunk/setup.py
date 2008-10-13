@@ -1,11 +1,26 @@
 from setuptools import setup, find_packages
 
-TINYMCE_VERSION = '2.6.0'
+TINYMCE_VERSION = '3.2.0.2'
+
+import sys, os
+
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
 
 setup(
     name='hurry.tinymce',
     version=TINYMCE_VERSION + 'dev',
-    description="tinymce for hurry.resource.",
+    description="TinyMCE for hurry.resource.",
+    long_description=long_description,
     classifiers=[],
     keywords='',
     author='Martijn Faassen',

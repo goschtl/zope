@@ -1,10 +1,7 @@
-hurry.yui
-=========
+some basic tests for hurry.tinymce
+==================================
 
-Introduction
-------------
-
-This library packages tinymce for ``hurry.resource``. 
+This library packages TinyMCE for ``hurry.resource``. 
 
 Let's set up a way to render URLs; typically the framework has already
 done this::
