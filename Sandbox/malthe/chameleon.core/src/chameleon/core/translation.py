@@ -30,6 +30,7 @@ class Node(object):
     skip = None
     cdata = None
     omit = None
+    assign = None
     define = None
     macro = None
     use_macro = None
@@ -153,6 +154,15 @@ class Node(object):
                     "Cannot unpack more than one variable in a "
                     "repeat statement.")
             _.append(clauses.Repeat(variables[0], expression))
+
+        # assign
+        if self.assign is not None:
+            for declaration, expression in self.assign:
+                if len(declaration) != 1:
+                    raise ValueError("Can only assign single variable.")
+                variable = declaration[0]
+                _.append(clauses.Assign(
+                    expression, variable))        
 
         content = self.content
 

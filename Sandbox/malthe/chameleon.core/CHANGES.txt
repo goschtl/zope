@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Added support for unscoped variable assignment. [malthe]
+
 1.0b2 (released 11/10/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
