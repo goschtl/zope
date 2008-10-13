@@ -10,4 +10,4 @@
 </div>
 
 <tal:block tal:content="structure
-	context/@@pagelet/z3ext.layoutform.browser.interfaces.IFormButtons" />
+     context/@@pagelet/z3ext.layoutform.browser.interfaces.IFormButtons" />

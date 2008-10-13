@@ -90,6 +90,14 @@
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
 
+  <!-- groups view -->
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formgroups.pt"
+     provides="z3ext.layoutform.browser.interfaces.IFormGroups"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
   <!-- form buttons -->
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
