@@ -25,22 +25,6 @@ class UnicodeTortureTests(unittest.TestCase):
         result = render_template(body, foo=c).encode('utf-8')
         self.assertEqual(norm(result), norm(expected))
 
-class WeirdoForms(unittest.TestCase):
-    def test_lots_of_options(self):
-        option = """<option value="one" py:attrs="dict(selected=value=='one' and 'yes' or None)">one</option>\n"""
-        select = """<select py:with="value='one'">%s</select>\n""" % (70*option)
-
-        body = """\
-        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:xi="http://www.w3.org/2001/XInclude"
-        xmlns:py="http://genshi.edgewall.org/">
-        %s
-        </html>
-        """ % (20*select)
-        result = render_template(body)
-
 def norm(s):
     s = s.replace(' ', '')
     s = s.replace('\n', '')
