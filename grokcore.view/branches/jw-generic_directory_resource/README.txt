@@ -110,6 +110,30 @@ package and you can refer to files inside this directory like so::
 
   <img src="hello.png" tal:attributes="src static/hello.png" />
 
+DirectoryResource
+-----------------
+
+In addition to the very convenient "static resources", one can use more
+explicitly configured and flexible DirectoryResource components.
+DirectoryResource component allow for differentiating resources based on layers
+and names and provide a way to register resources in one package and make use
+of these resources in another package's views::
+
+  class FooResource(grokcore.view.DirectoryResource):
+      grokcore.view.path('foo')
+
+Or with an explicit name::
+
+  class BarResource(grokcore.view.DirectoryResource):
+      grokcore.view.name('bar')
+      grokcore.view.path('bar')
+
+Registered for a layer::
+
+  class BazResource(grokcore.view.DirectoryResource):
+      grokcore.view.layer(ISomeLayer)
+      grokcore.view.path('baz/qux')
+
 Layers and skins
 ----------------
 
@@ -229,6 +253,11 @@ Directives
 ``skin(skin_name)``
     Directive used on a layer interface to register it as skin using a
     human-readable name (``skin_name``).
+
+``path(relative_or_absolute_path)``
+    Directove used in a DirectoryResource registration to point to a non-
+    package directory(hierarchy) containing resources like images, css files,
+    etc.
 
 Other
 -----
