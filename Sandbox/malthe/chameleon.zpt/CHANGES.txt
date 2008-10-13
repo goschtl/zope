@@ -4,6 +4,11 @@ Changelog
 Head
 ~~~~
 
+- Tags are now omitted if a "tal:content" expression evaluates to
+  ``None``. This behavior differs from the reference implementation,
+  but does away with the need for a similar "tal:condition"
+  attribute. [malthe]
+
 1.0a2 (released 10/2/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -18,6 +18,8 @@ class ZopePageTemplateElement(translation.Element):
     """
 
     class node(translation.Node):
+        content_symbol = '_content'
+        
         @property
         def omit(self):
             if self.element.tal_omit is not None:
@@ -28,10 +30,22 @@ class ZopePageTemplateElement(translation.Element):
                 return True
             if self.element.metal_use or self.element.metal_fillslot:
                 return True
-            
+            if self.content is not None:
+                return types.parts(
+                    (types.value("%s is None" % self.content_symbol),))
+
         @property
         def define(self):
             return self.element.tal_define
+
+        @property
+        def assign(self):
+            content = self._content
+            if content is not None:
+                definition = (
+                    types.declaration((self.content_symbol,)),
+                    content)
+                return types.definitions((definition,))
 
         @property
         def condition(self):
@@ -43,9 +57,18 @@ class ZopePageTemplateElement(translation.Element):
 
         @property
         def content(self):
-            return self.element.tal_content or self.element.tal_replace or \
+            content = self._content
+            if content is not None:
+                if isinstance(content, types.escape):
+                    return types.escape((types.value(self.content_symbol),))
+                return types.parts((types.value(self.content_symbol),))
+        
+        @property
+        def _content(self):
+            return self.element.tal_content or \
+                   self.element.tal_replace or \
                    self.element.meta_replace
-
+                    
         @property
         def skip(self):
             if self.define_slot:

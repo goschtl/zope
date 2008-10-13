@@ -17,7 +17,7 @@ TAL
     Hello, world!
   <BLANKLINE>
 
-tal:define, tal:attributes, tal:contents    
+tal:define, tal:attributes, tal:content, tal:replace
   
   >>> print render("""\
   ... <div xmlns="http://www.w3.org/1999/xhtml"
@@ -36,7 +36,6 @@ tal:define, tal:attributes, tal:contents
       <span class="defabc" style="hij" onclick="alert();" id="test">abcghi</span>
       Hello World!
       Hello World!
-      <span></span>
     </div>
 
 tal:attributes 'checked' and 'selected' toggles
