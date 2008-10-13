@@ -3,9 +3,9 @@
 .. Creative Commons Attribution-Share Alike 2.5 License.
 .. (c) Stephan Richter
 
-========================
- Introduction Z3C Forms
-========================
+===========================
+ Introduction to Z3C Forms
+===========================
 
 :Location: Plone Conference 2008, Washington, DC
 :Date: October 10, 2008

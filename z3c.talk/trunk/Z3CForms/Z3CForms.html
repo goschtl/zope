@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
+<meta name="version" content="S5 1.1" />
+<title>Introduction to Z3C Forms</title>
+<meta name="date" content="October 10, 2008" />
+<style type="text/css">
+
+@import url(../s5-themes/zope/docutils.css);
+
+</style>
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<script src="../s5-themes/zope/slides.js" type="text/javascript"></script>
+<link rel="stylesheet" href="../s5-themes/zope/slides.css"
+      type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="../s5-themes/zope/outline.css"
+      type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="../s5-themes/zope/print.css"
+      type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="../s5-themes/zope/opera.css"
+      type="text/css" media="projection" id="operaFix" />
+
+<style type="text/css">
+#currentSlide {display: none;}
+</style>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header">
+
+</div>
+<div id="footer">
+<h1>Introduction to Z3C Forms</h1>
+
+</div>
+</div>
+<div class="presentation">
+<div class="slide" id="slide0">
+<h1 class="title">Introduction to Z3C Forms</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr class="field"><th class="docinfo-name">Location:</th><td class="field-body">Plone Conference 2008, Washington, DC</td>
+</tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>October 10, 2008</td></tr>
+<tr class="field"><th class="docinfo-name">Presenter:</th><td class="field-body">Stephan Richter, Keas Inc.</td>
+</tr>
+</tbody>
+</table>
+<!-- Definitions of interpreted text roles (classes) for S5/HTML data. -->
+<!-- This data file has been placed in the public domain. -->
+<!-- Colours
+======= -->
+<!-- Text Sizes
+========== -->
+<!-- Display in Slides (Presentation Mode) Only
+========================================== -->
+<!-- Display in Outline Mode Only
+============================ -->
+<!-- Display in Print Only
+===================== -->
+<!-- Incremental Display
+=================== -->
+<!-- Creative Commons Attribution-Share Alike 2.5 License. -->
+<!-- (c) Stephan Richter -->
+<p class="center big">Mastering the digital bureaucracy perferctly.</p>
+
+</div>
+<div class="slide" id="getting-started">
+<h1>Getting Started</h1>
+<ul>
+<li><p class="first">Read the freaking manual! (409kB ~ 400 pages)</p>
+</li>
+<li><p class="first">Install, run and study <tt class="docutils literal"><span class="pre">z3c.formdemo</span></tt>:</p>
+<pre class="literal-block">
+$ svn co svn://svn.zope.org/repos/main/z3c.formdemo/trunk formdemo
+$ cd formdemo
+$ python bootstrap.py
+$ ./bin/buildout -N
+$ ./bin/demo fg
+</pre>
+</li>
+<li><p class="first">Ask a question if something is unclear</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="just-kidding">
+<h1>Just Kidding</h1>
+<p class="big center">Juuuussttt kidding!</p>
+</div>
+<div class="slide" id="your-choice">
+<h1>Your Choice</h1>
+<p>Today you have the choice between:</p>
+<ol class="arabic simple">
+<li>a typical talk about <tt class="docutils literal"><span class="pre">z3c.form</span></tt> and its extensions</li>
+</ol>
+<p>or</p>
+<ol class="arabic simple" start="2">
+<li>a tutorial (as promised in the brochure) building a small <tt class="docutils literal"><span class="pre">z3c.form</span></tt> app</li>
+</ol>
+</div>
+<div class="slide" id="form-automation">
+<h1>Form Automation</h1>
+<ul class="simple">
+<li>Writing forms and form handlers is a pain</li>
+<li>Schemas/Fields usually carry enough information to generate forms</li>
+<li>Benefits<ul>
+<li>form framework does all the tedious bits</li>
+<li>automatic validation against schema</li>
+<li>nice error messages</li>
+<li>reusable form components (widgets)</li>
+</ul>
+</li>
+</ul>
+<p class="handout">Form automation is an extremely viable part in making Zope 3 a
+high-productivity environment. In fact, the implementation presented in this
+session is already the third generation of form machinery. Older versions
+are still available in <tt class="docutils literal"><span class="pre">zope.app.form</span></tt> and <tt class="docutils literal"><span class="pre">zope.formlib</span></tt> but is not
+used anymore other than in legacy code.</p>
+</div>
+<div class="slide" id="forms">
+<h1>Forms</h1>
+<ul class="simple">
+<li>Presentation component</li>
+<li>Must not be a full page (in fact, in viewlet- and pagelet-driven UIs it is
+not)</li>
+<li>Uses <em>(form) fields</em> and <em>widgets</em> to render a form</li>
+<li>Defines <em>buttons</em> that generate form <em>actions</em></li>
+<li>Commonly a <em>template</em> is associated with a form to describe the layout</li>
+</ul>
+<p class="handout">If the UI requirements are consistent enough, it is sufficient to use one
+generic template for all or most forms. In my experience, however, this has
+not been the case and I have always ended up writing templates for each
+form. With enough helper functions this is commonly a quick task and does
+not represent a significant amount of the development time.</p>
+</div>
+<div class="slide" id="fields">
+<h1>Fields</h1>
+<ul>
+<li><p class="first">Fields represent attributes/properties in the form</p>
+<p>See <tt class="docutils literal"><span class="pre">z3c.form.field</span></tt></p>
+</li>
+<li><p class="first">Extend schema fields with form-specific information (name prefixes,
+editability, custom widget, etc.)</p>
+</li>
+<li><p class="first">(Form) fields are the traffickers between the form, schema field, and widget</p>
+</li>
+<li><p class="first">An API exists to selectively choose fields of a schema to become form fields</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="creating-a-schema">
+<h1>Creating a Schema</h1>
+<ul>
+<li><p class="first">Schemas are just interfaces:</p>
+<div class="code-block">
+<span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">interface</span><span class="p_default"><br/>
+</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">schema</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">IHelloWorldMessage</span><span class="p_operator">(</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">interface</span><span class="p_operator">.</span><span class="p_identifier">Interface</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_tripledouble">"""Information&nbsp;about&nbsp;a&nbsp;hello&nbsp;world&nbsp;message"""</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">who</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">schema</span><span class="p_operator">.</span><span class="p_identifier">TextLine</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">title</span><span class="p_operator">=</span><span class="p_character">u'Who'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">description</span><span class="p_operator">=</span><span class="p_character">u'Name&nbsp;of&nbsp;the&nbsp;person&nbsp;sending&nbsp;the&nbsp;message'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">required</span><span class="p_operator">=</span><span class="p_identifier">True</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">when</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">schema</span><span class="p_operator">.</span><span class="p_identifier">Date</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">title</span><span class="p_operator">=</span><span class="p_character">u'When'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">description</span><span class="p_operator">=</span><span class="p_character">u'Date&nbsp;of&nbsp;the&nbsp;message&nbsp;sent.'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">required</span><span class="p_operator">=</span><span class="p_identifier">True</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">what</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">schema</span><span class="p_operator">.</span><span class="p_identifier">Choice</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">title</span><span class="p_operator">=</span><span class="p_character">u'What'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">description</span><span class="p_operator">=</span><span class="p_character">u'What&nbsp;type&nbsp;of&nbsp;message&nbsp;it&nbsp;is.'</span><span class="p_operator">,</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">values</span><span class="p_operator">=(</span><span class="p_character">u'cool'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_character">u'sunny'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_character">u'silent'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_character">u'best'</span><span class="p_operator">),</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">required</span><span class="p_operator">=</span><span class="p_identifier">True</span><span class="p_operator">)</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="selecting-fields">
+<h1>Selecting Fields</h1>
+<ul>
+<li><p class="first">Selecting all fields of a schema:</p>
+<div class="code-block">
+<span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">)</span>
+</div>
+</li>
+<li><p class="first">Selecting only a limited set of fields or changing the order:</p>
+<div class="code-block">
+<span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">).</span><span class="p_identifier">select</span><span class="p_operator">(</span><span class="p_character">'when'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_character">'who'</span><span class="p_operator">)</span>
+</div>
+</li>
+<li><p class="first">Omitting a particular field:</p>
+<div class="code-block">
+<span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">).</span><span class="p_identifier">omit</span><span class="p_operator">(</span><span class="p_character">'what'</span><span class="p_operator">)</span>
+</div>
+</li>
+<li><p class="first">Combining fields from different schemas:</p>
+<div class="code-block">
+<span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">prefix</span><span class="p_operator">=</span><span class="p_character">'msg'</span><span class="p_operator">)</span><span class="p_default">&nbsp;</span><span class="p_operator">+</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">IZopeDublinCore</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">prefix</span><span class="p_operator">=</span><span class="p_character">'dc'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">for_display</span><span class="p_operator">=</span><span class="p_identifier">True</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_operator">)</span>
+</div>
+<p class="handout">I have never needed this feature. :-)</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="widgets">
+<h1>Widgets</h1>
+<ul>
+<li><p class="first">Represent an input method in a particular user interface, for example a
+&quot;text&quot; input in HTML forms</p>
+</li>
+<li><p class="first">Presentation component of a schema field (field widget)</p>
+<p>See <tt class="docutils literal"><span class="pre">z3c.form.widget</span></tt> and <tt class="docutils literal"><span class="pre">z3c.form.browser</span></tt></p>
+</li>
+<li><p class="first">Modes determine whether a display, edit or hidden widget is displayed</p>
+</li>
+</ul>
+<p class="handout">In contrast to previous widget implementations, the <tt class="docutils literal"><span class="pre">z3c.form</span></tt> package's
+widgets are very simple and are only respsonsible for ensuring the correct
+rendering in the output media, in our case most often HTML forms.</p>
+</div>
+<div class="slide" id="widget-related-components">
+<h1>Widget-Related Components</h1>
+<ul>
+<li><p class="first"><em>Converters</em> are used to convert internal or field values to
+widget-processable values</p>
+<p class="handout">For example, if we want to edit an integer in a standard text input, then it
+has to be converted to a string, since this is the only value type the
+widget knows how to process. So 1200.67 might be converted to &quot;1,200.67&quot;.</p>
+</li>
+<li><p class="first"><em>Validators</em> are used to validate submitted input</p>
+</li>
+<li><p class="first">Validators can raise <tt class="docutils literal"><span class="pre">ValidationError</span></tt> errors which use
+<tt class="docutils literal"><span class="pre">ErrorViewSnippet</span></tt> presentation components to render themselves</p>
+</li>
+<li><p class="first"><em>Data Managers</em> are used to store a value to a content component</p>
+<p class="handout">In older form implementations, forms were only able to store field values
+into instances. Providing the abstraction of a data manager, allows us to
+store submitted data in other types of components, such as dictionaries.</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="widget-components-graph">
+<h1>Widget Components Graph</h1>
+<div align="center" class="align-center"><img alt="Widget Component Structure" class="align-center" src="widget-graph.png" /></div>
+</div>
+<div class="slide" id="buttons">
+<h1>Buttons</h1>
+<ul>
+<li><p class="first">Defines actions of a form</p>
+<p>See <tt class="docutils literal"><span class="pre">z3c.form.button</span></tt></p>
+</li>
+<li><p class="first">Simple extension to schema fields</p>
+</li>
+<li><p class="first"><em>Conditions</em> determine the availability of a button</p>
+</li>
+<li><p class="first">Many ways to create buttons</p>
+</li>
+<li><p class="first">A form can have multiple sets of button sets</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="actions">
+<h1>Actions</h1>
+<ul class="simple">
+<li>Actions are the widgets for buttons</li>
+<li>In HTML rendered as submit or button input field</li>
+<li><em>Handlers</em> define set of instructions to execute when action is called
+(i.e. button is pressed)<ul>
+<li>Can be registered for specifc buttons or types of buttons</li>
+<li>High-level decorators are used to declare handlers</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="declaring-buttons-1">
+<h1>Declaring Buttons (1)</h1>
+<ul>
+<li><p class="first">Buttons as schema fields:</p>
+<div class="code-block">
+<span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">IButtons</span><span class="p_operator">(</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">interface</span><span class="p_operator">.</span><span class="p_identifier">Interface</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">apply</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">button</span><span class="p_operator">.</span><span class="p_identifier">Button</span><span class="p_operator">(</span><span class="p_identifier">title</span><span class="p_operator">=</span><span class="p_character">u'Apply'</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">MyForm</span><span class="p_operator">(</span><span class="p_identifier">Form</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">buttons</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">button</span><span class="p_operator">.</span><span class="p_identifier">Buttons</span><span class="p_operator">(</span><span class="p_identifier">IButtons</span><span class="p_operator">)</span>
+</div>
+</li>
+<li><p class="first">Single buttons within the form:</p>
+<div class="code-block">
+<span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">MyForm</span><span class="p_operator">(</span><span class="p_identifier">Form</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">buttons</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">button</span><span class="p_operator">.</span><span class="p_identifier">Buttons</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">button</span><span class="p_operator">.</span><span class="p_identifier">Button</span><span class="p_operator">(</span><span class="p_character">'apply'</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">title</span><span class="p_operator">=</span><span class="p_character">u'Apply'</span><span class="p_operator">))</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="declaring-buttons-2">
+<h1>Declaring Buttons (2)</h1>
+<ul>
+<li><p class="first">Declaring buttons via decorators:</p>
+<div class="code-block">
+<span class="p_decorator">@button.buttonAndHandler(u'Apply')</span><span class="p_default"><br/>
+</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">apply</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">action</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_operator">...</span>
+</div>
+<ul class="simple">
+<li>First argument is title of button</li>
+<li>Accepts all (keyword) arguments of the button field</li>
+<li><tt class="docutils literal"><span class="pre">provides</span></tt> argument allows directly providing interfaces</li>
+</ul>
+</li>
+<li><p class="first">Copy buttons, actions and handlers from the super-form:</p>
+<div class="code-block">
+<span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">extends</span><span class="p_operator">(</span><span class="p_identifier">EditForm</span><span class="p_operator">)</span>
+</div>
+<p class="handout">It is fairly common to extend a form super-class. This is needed when the
+sub-class wants to define/override additional buttons, actions or
+handlers.  others. If any of the three component collections are not
+copied, the assignment will override the collections in the super-class,
+which in turn affects all sub-classes, not just thw current one.</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="form-classes">
+<h1>Form Classes</h1>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">BaseForm</span></tt> for basic machinery</li>
+<li><tt class="docutils literal"><span class="pre">DisplayForm</span></tt> for standard forms to display values</li>
+<li><tt class="docutils literal"><span class="pre">Form</span></tt> for basic machinery including buttons</li>
+<li><tt class="docutils literal"><span class="pre">AddForm</span></tt> for standard add forms</li>
+<li><tt class="docutils literal"><span class="pre">EditForm</span></tt> for standard edit forms</li>
+<li><tt class="docutils literal"><span class="pre">DisplayForm</span></tt> for standard forms to display values</li>
+</ul>
+<p class="handout">To keep matters simple within the form package, those forms do not directly
+proivde the correct APIs for advanced UI patterns such as viewlets and view
+templates. However, the overhead to make them work well with those pattersn
+is very small and a common base class is quickly developed.</p>
+</div>
+<div class="slide" id="form-components-graph">
+<h1>Form Components Graph</h1>
+<div align="center" class="align-center"><img alt="Form Component Structure" class="align-center" src="form-graph.png" /></div>
+</div>
+<div class="slide" id="hello-world-content">
+<h1>Hello World Content</h1>
+<div class="code-block">
+<span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">persistent</span><span class="p_default"><br/>
+</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">location</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">schema</span><span class="p_operator">.</span><span class="p_identifier">fieldproperty</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">FieldProperty</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">training</span><span class="p_operator">.</span><span class="p_identifier">z3cform</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">interfaces</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">HelloWorldMessage</span><span class="p_operator">(</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">location</span><span class="p_operator">.</span><span class="p_identifier">Location</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">persistent</span><span class="p_operator">.</span><span class="p_identifier">Persistent</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">interface</span><span class="p_operator">.</span><span class="p_identifier">implements</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">who</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">FieldProperty</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">[</span><span class="p_character">'who'</span><span class="p_operator">])</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">when</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">FieldProperty</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">[</span><span class="p_character">'when'</span><span class="p_operator">])</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">what</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">FieldProperty</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">[</span><span class="p_character">'what'</span><span class="p_operator">])</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">__init__</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">who</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">when</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">what</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">who</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">who</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">when</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">when</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">what</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">what</span>
+</div>
+</div>
+<div class="slide" id="hooking-up-the-content">
+<h1>Hooking up the Content</h1>
+<ul>
+<li><p class="first">Declarations made in ZCML:</p>
+<div class="code-block">
+<span class="h_tag">&lt;class</span><span class="h_other">&nbsp;</span><span class="h_attribute">class</span><span class="h_other">=</span><span class="h_doublestring">".message.HelloWorldMessage"</span><span class="h_tag">&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;allow</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">interface</span><span class="h_other">=</span><span class="h_doublestring">".interfaces.IHelloWorldMessage"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;allow</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">permission</span><span class="h_other">=</span><span class="h_doublestring">"zope.Public"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">set_schema</span><span class="h_other">=</span><span class="h_doublestring">".interfaces.IHelloWorldMessage"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default"><br/>
+</span><span class="h_tag">&lt;/class&gt;</span>
+</div>
+<p class="handout">These directives effectively define the setup of the checker for the
+class. The <tt class="docutils literal"><span class="pre">zope:allow</span></tt> and <tt class="docutils literal"><span class="pre">zope:require</span></tt> directives are used to
+define the get- and set-permissions needed for accessing each
+attribute. If no permission is assigned to an attribute getter/setter,
+then the attribute is unavailable to all while the component is security
+proxied.</p>
+</li>
+<li><p class="first">ZCML directives are well-documented in the API Docs at
+<a class="reference" href="http://apidoc.zope.org">http://apidoc.zope.org</a></p>
+</li>
+</ul>
+</div>
+<div class="slide" id="add-forms">
+<h1>Add Forms</h1>
+<ul>
+<li><p class="first">Create object with an initial set of data</p>
+</li>
+<li><p class="first">Validate data before object is created</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">IAdding</span></tt> components not directly supported, but support exists</p>
+<p>See <tt class="docutils literal"><span class="pre">z3c.form.adding.AddForm</span></tt></p>
+<p class="handout"><tt class="docutils literal"><span class="pre">IAdding</span></tt> is a component designed to control the process of adding a new
+content component to a container. It controls the object to be created and
+the name that is given. The Adding component was originally developed for
+CMS-like applications, but it turns out that it is a lot of overhead for
+non-CMS sites. Thus it is advisable to avoid the adding component in
+general.</p>
+</li>
+<li><p class="first">Implementation:</p>
+<ul class="small simple">
+<li>Must create object from data</li>
+<li>Must notify the system of the object creation</li>
+<li>Must add the object to the container/parent component</li>
+<li>Must specify what to do next (specify next URL)</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="slide" id="message-add-form-1">
+<h1>Message Add Form (1)</h1>
+<div class="code-block">
+<span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">zope</span><span class="p_operator">.</span><span class="p_identifier">traversing</span><span class="p_operator">.</span><span class="p_identifier">browser</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">absoluteURL</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">form</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">training</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">interfaces</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">message</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">HelloWorldAddForm</span><span class="p_operator">(</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">AddForm</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">label</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_character">u'Hello&nbsp;World&nbsp;Message&nbsp;Add&nbsp;Form'</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">template</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">pagetemplate</span><span class="p_operator">.</span><span class="p_identifier">ViewPageTemplateFile</span><span class="p_operator">(</span><span class="p_character">'form.pt'</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">create</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">data</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">return</span><span class="p_default">&nbsp;</span><span class="p_identifier">message</span><span class="p_operator">.</span><span class="p_identifier">HelloWorldMessage</span><span class="p_operator">(**</span><span class="p_identifier">data</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">add</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">object</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">count</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_number">0</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">while</span><span class="p_default">&nbsp;</span><span class="p_character">'helloworld-%i'</span><span class="p_default">&nbsp;</span><span class="p_operator">%</span><span class="p_identifier">count</span><span class="p_default">&nbsp;</span><span class="p_word">in</span><span class="p_default">&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">context</span><span class="p_operator">:</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">count</span><span class="p_default">&nbsp;</span><span class="p_operator">+=</span><span class="p_default">&nbsp;</span><span class="p_number">1</span><span class="p_operator">;</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">_name</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_character">'helloworld-%i'</span><span class="p_default">&nbsp;</span><span class="p_operator">%</span><span class="p_identifier">count</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">context</span><span class="p_operator">[</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">_name</span><span class="p_operator">]</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">object</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">return</span><span class="p_default">&nbsp;</span><span class="p_identifier">object</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">nextURL</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">return</span><span class="p_default">&nbsp;</span><span class="p_identifier">absoluteURL</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">context</span><span class="p_operator">[</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">_name</span><span class="p_operator">],</span><span class="p_default">&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">request</span><span class="p_operator">)</span>
+</div>
+<p class="handout">As you can see, we only need to implement three simple methods. The
+<tt class="docutils literal"><span class="pre">create()</span></tt> method's job is to create a valid component from the data of
+the form and return it. Next, the <tt class="docutils literal"><span class="pre">add(object)</span></tt> method is responsible for
+adding the object -- usually to a contained. Part of its contract is that it
+chooses a valid name. The <tt class="docutils literal"><span class="pre">nextURL()</span></tt> method simply returns a path to
+redirect to.</p>
+</div>
+<div class="slide" id="message-add-form-2">
+<h1>Message Add Form (2)</h1>
+<ul>
+<li><p class="first">Register form as a simple page of <tt class="docutils literal"><span class="pre">IFolder</span></tt>:</p>
+<div class="code-block">
+<span class="h_tag">&lt;page</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">name</span><span class="h_other">=</span><span class="h_doublestring">"addHelloWorld.html"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">for</span><span class="h_other">=</span><span class="h_doublestring">"zope.app.folder.interfaces.IFolder"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">class</span><span class="h_other">=</span><span class="h_doublestring">".browser.HelloWorldAddForm"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">layer</span><span class="h_other">=</span><span class="h_doublestring">".browser.IFormSkin"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">permission</span><span class="h_other">=</span><span class="h_doublestring">"zope.Public"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tagend">/&gt;</span>
+</div>
+<p class="small">Note: We must create a custom skin so that registrations are included.</p>
+<div class="small"><div class="code-block">
+<span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">interfaces</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">IFormLayer</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">formui</span><span class="p_operator">.</span><span class="p_identifier">interfaces</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">IDivFormLayer</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">IFormSkin</span><span class="p_operator">(</span><span class="p_identifier">IDivFormLayer</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">IFormLayer</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">rotterdam</span><span class="p_operator">.</span><span class="p_identifier">Rotterdam</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_tripledouble">"""Form&nbsp;Skin"""</span>
+</div>
+</div></li>
+<li><p class="first">After restarting Zope 3, the add form should be available</p>
+</li>
+<li><p class="first">There is no link in the ZMI, because no menu was registered</p>
+<p class="handout">Since we skipped the overhead of <tt class="docutils literal"><span class="pre">IAdding</span></tt>, adding a menu item is hard,
+unfortunately.  Note, however, that you will almost never use the ZMI to
+add objects, so filling the ZMI add menu is pretty pointless anyways.</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="message-add-form-3">
+<h1>Message Add Form (3)</h1>
+<div class="code-block">
+<span class="h_tag">&lt;html&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;head&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;link</span><span class="h_other">&nbsp;</span><span class="h_attribute">type</span><span class="h_other">=</span><span class="h_doublestring">"text/css"</span><span class="h_other">&nbsp;</span><span class="h_attribute">rel</span><span class="h_other">=</span><span class="h_doublestring">"stylesheet"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">href</span><span class="h_other">=</span><span class="h_doublestring">"somestyle.css"</span><span class="h_other">&nbsp;</span><span class="h_attribute">media</span><span class="h_other">=</span><span class="h_doublestring">"all"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">tal:attributes</span><span class="h_other">=</span><span class="h_doublestring">"href&nbsp;context/++resource++div-form.css"</span><span class="h_other">&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;/head&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;body&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;div</span><span class="h_other">&nbsp;</span><span class="h_attribute">metal:use-macro</span><span class="h_other">=</span><span class="h_doublestring">"macro:form"</span><span class="h_tag">&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Form&nbsp;goes&nbsp;here.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;/div&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;/body&gt;</span><span class="h_default"><br/>
+</span><span class="h_tag">&lt;/html&gt;</span>
+</div>
+<p class="handout"><tt class="docutils literal"><span class="pre">z3c.form</span></tt> was written with pagelets in mind. Since we want to keep the
+example as self-contained as possible, we are not using pagelets, which
+means that we have to define our own form templates. The <tt class="docutils literal"><span class="pre">div-form.css</span></tt>
+CSS resource and the <tt class="docutils literal"><span class="pre">form</span></tt> macro are registered in the <tt class="docutils literal"><span class="pre">IDivFormLayer</span></tt>
+layer.</p>
+</div>
+<div class="slide" id="custom-widget-value">
+<h1>Custom Widget Value</h1>
+<ul>
+<li><p class="first">Framework allows us to create custom attribute values for several widget
+attributes</p>
+</li>
+<li><p class="first">Make today's date the default for the <tt class="docutils literal"><span class="pre">when</span></tt> field</p>
+<div class="code-block">
+<span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">datetime</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">widget</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">interfaces</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">IAddForm</span><span class="p_default"><br/>
+</span><span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">training</span><span class="p_operator">.</span><span class="p_identifier">z3cform</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">interfaces</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_identifier">DefaultDate</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">widget</span><span class="p_operator">.</span><span class="p_identifier">ComputedWidgetAttribute</span><span class="p_operator">(</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">lambda</span><span class="p_default">&nbsp;</span><span class="p_identifier">adapter</span><span class="p_operator">:</span><span class="p_default">&nbsp;</span><span class="p_identifier">datetime</span><span class="p_operator">.</span><span class="p_identifier">date</span><span class="p_operator">.</span><span class="p_identifier">today</span><span class="p_operator">(),</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">=</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">[</span><span class="p_character">'when'</span><span class="p_operator">],</span><span class="p_default">&nbsp;</span><span class="p_identifier">view</span><span class="p_operator">=</span><span class="p_identifier">IAddForm</span><span class="p_operator">)</span>
+</div>
+</li>
+<li><p class="first">A simple adapter to register</p>
+<div class="code-block">
+<span class="h_tag">&lt;adapter</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">factory</span><span class="h_other">=</span><span class="h_doublestring">".browser.DefaultDate"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">name</span><span class="h_other">=</span><span class="h_doublestring">"default"</span><span class="h_other">&nbsp;</span><span class="h_tagend">/&gt;</span>
+</div>
+<p class="handout">Note that the name of the adapter must be the name of the attribute that
+we are providing the value for.</p>
+</li>
+</ul>
+</div>
+<div class="slide" id="display-forms">
+<h1>Display Forms</h1>
+<ul class="simple">
+<li>Bad idea to display data right out of the content object</li>
+<li>Some data requires formatting, such as dates and vocabulary values</li>
+<li>Display forms produce human-readable representations of data</li>
+<li>Display widgets are used</li>
+</ul>
+<p class="handout">While writing display forms every time you want to present a value might
+seem tedious at first, but it is worth the discipline. Otherwise you will
+eventually have unwanted presentation bugs. Common base classes can easily
+be created to make this a very trivial part of the development.</p>
+</div>
+<div class="slide" id="message-display-1">
+<h1>Message Display (1)</h1>
+<ul>
+<li><p class="first">The Python view class:</p>
+<div class="code-block">
+<span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">HelloWorldDisplayForm</span><span class="p_operator">(</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">DisplayForm</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">template</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">pagetemplate</span><span class="p_operator">.</span><span class="p_identifier">ViewPageTemplateFile</span><span class="p_operator">(</span><span class="p_character">'display.pt'</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">__call__</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">update</span><span class="p_operator">()</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">return</span><span class="p_default">&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">render</span><span class="p_operator">()</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="message-display-2">
+<h1>Message Display (2)</h1>
+<ul>
+<li><p class="first">The page template using the widgets:</p>
+<div class="code-block">
+<span class="h_tag">&lt;html&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;body&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;h1&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;</span><span class="h_tag">&lt;span</span><span class="h_other">&nbsp;</span><span class="h_attribute">tal:replace</span><span class="h_other">=</span><span class="h_doublestring">"structure&nbsp;view/widgets/what/render"</span><span class="h_other">&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hello&nbsp;World<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;</span><span class="h_tag">&lt;span</span><span class="h_other">&nbsp;</span><span class="h_attribute">tal:replace</span><span class="h_other">=</span><span class="h_doublestring">"structure&nbsp;view/widgets/who/render"</span><span class="h_other">&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;</span><span class="h_tag">&lt;span</span><span class="h_other">&nbsp;</span><span class="h_attribute">tal:replace</span><span class="h_other">=</span><span class="h_doublestring">"structure&nbsp;view/widgets/when/render"</span><span class="h_other">&nbsp;</span><span class="h_tagend">/&gt;</span><span class="h_default">!<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;/h1&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&lt;a</span><span class="h_other">&nbsp;</span><span class="h_attribute">href</span><span class="h_other">=</span><span class="h_doublestring">"./edit.html"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">tal:attributes</span><span class="h_other">=</span><span class="h_doublestring">"href<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string:${context/@@absolute_url}/edit.html"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tag">&gt;</span><span class="h_default">Edit&nbsp;Message</span><span class="h_tag">&lt;/a&gt;</span><span class="h_default"><br/>
+&nbsp;&nbsp;</span><span class="h_tag">&lt;/body&gt;</span><span class="h_default"><br/>
+</span><span class="h_tag">&lt;/html&gt;</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="message-display-3">
+<h1>Message Display (3)</h1>
+<ul>
+<li><p class="first">Registering the display view:</p>
+<div class="code-block">
+<span class="h_tag">&lt;page</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">name</span><span class="h_other">=</span><span class="h_doublestring">"index.html"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">for</span><span class="h_other">=</span><span class="h_doublestring">".interfaces.IHelloWorldMessage"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">class</span><span class="h_other">=</span><span class="h_doublestring">".browser.HelloWorldDisplayForm"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">layer</span><span class="h_other">=</span><span class="h_doublestring">".browser.IFormSkin"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">permission</span><span class="h_other">=</span><span class="h_doublestring">"zope.Public"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tagend">/&gt;</span>
+</div>
+</li>
+<li><p class="first">To add an entry to the tabs, add the following to the page directive:</p>
+<div class="code-block">
+<span class="h_default">menu="zmi_views"&nbsp;title="View"</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="edit-forms">
+<h1>Edit Forms</h1>
+<ul class="simple">
+<li>Change existing objects</li>
+<li>Can stack multiple forms into one page</li>
+<li>Switching between edit and view mode relatively simple</li>
+</ul>
+<p class="handout">Edit forms are great, because their scope is limited and they can be easily
+used within other presentation components, allowing you to implement many
+interesting patterns.</p>
+</div>
+<div class="slide" id="hello-world-edit-form-1">
+<h1>Hello World Edit Form (1)</h1>
+<ul>
+<li><p class="first">An edit form with an additional custom button that switches back to the
+display view after saving the changes.</p>
+<div class="code-block">
+<span class="p_word">from</span><span class="p_default">&nbsp;</span><span class="p_identifier">z3c</span><span class="p_operator">.</span><span class="p_identifier">form</span><span class="p_default">&nbsp;</span><span class="p_word">import</span><span class="p_default">&nbsp;</span><span class="p_identifier">button</span><span class="p_default"><br/>
+<br/>
+</span><span class="p_word">class</span><span class="p_default">&nbsp;</span><span class="p_classname">HelloWorldEditForm</span><span class="p_operator">(</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">EditForm</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">extends</span><span class="p_operator">(</span><span class="p_identifier">form</span><span class="p_operator">.</span><span class="p_identifier">EditForm</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">label</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_character">u'Hello&nbsp;World&nbsp;Message&nbsp;Edit&nbsp;Form'</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">fields</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">field</span><span class="p_operator">.</span><span class="p_identifier">Fields</span><span class="p_operator">(</span><span class="p_identifier">interfaces</span><span class="p_operator">.</span><span class="p_identifier">IHelloWorldMessage</span><span class="p_operator">)</span><span class="p_default"><br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_decorator">@button.buttonAndHandler(u'Apply&nbsp;and&nbsp;View',&nbsp;name='applyView')</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">def</span><span class="p_default">&nbsp;</span><span class="p_defname">handleApplyView</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">action</span><span class="p_operator">):</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">handleApply</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">action</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_word">if</span><span class="p_default">&nbsp;</span><span class="p_word">not</span><span class="p_default">&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">widgets</span><span class="p_operator">.</span><span class="p_identifier">errors</span><span class="p_operator">:</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">url</span><span class="p_default">&nbsp;</span><span class="p_operator">=</span><span class="p_default">&nbsp;</span><span class="p_identifier">absoluteURL</span><span class="p_operator">(</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">context</span><span class="p_operator">,</span><span class="p_default">&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">request</span><span class="p_operator">)</span><span class="p_default"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="p_identifier">self</span><span class="p_operator">.</span><span class="p_identifier">request</span><span class="p_operator">.</span><span class="p_identifier">response</span><span class="p_operator">.</span><span class="p_identifier">redirect</span><span class="p_operator">(</span><span class="p_identifier">url</span><span class="p_operator">)</span>
+</div>
+</li>
+</ul>
+<p class="handout">In this case we are using an existing action and just extend it. The
+existing &quot;Apply&quot; action saves the data, but also remains in the edit
+view. Our new action, &quot;Apply and View&quot;, saves the data, but forwards the
+user to the view page.</p>
+</div>
+<div class="slide" id="hello-world-edit-form-2">
+<h1>Hello World Edit Form (2)</h1>
+<ul>
+<li><p class="first">Register form as a simple page of <tt class="docutils literal"><span class="pre">IHelloWorldMessage</span></tt>:</p>
+<div class="code-block">
+<span class="h_tag">&lt;page</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">name</span><span class="h_other">=</span><span class="h_doublestring">"edit.html"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">for</span><span class="h_other">=</span><span class="h_doublestring">".interfaces.IHelloWorldMessage"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">class</span><span class="h_other">=</span><span class="h_doublestring">".browser.HelloWorldEditForm"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">layer</span><span class="h_other">=</span><span class="h_doublestring">".browser.IFormSkin"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_attribute">permission</span><span class="h_other">=</span><span class="h_doublestring">"zope.Public"</span><span class="h_other"><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="h_tagend">/&gt;</span>
+</div>
+</li>
+<li><p class="first">After restarting Zope 3, the edit form should be available</p>
+</li>
+<li><p class="first">Add to tabs, add the following to the page directive:</p>
+<div class="code-block">
+<span class="h_default">menu="zmi_views"&nbsp;title="Edit"</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="slide" id="the-future-z3c-form-2-0">
+<h1>The Future -- <tt class="docutils literal"><span class="pre">z3c.form</span></tt> 2.0</h1>
+<ul class="simple">
+<li>Integration of <tt class="docutils literal"><span class="pre">z3c.pt</span></tt><ul>
+<li>Benchmarks show that form generation is 2-3 times faster</li>
+</ul>
+</li>
+<li>New widgets:<ul>
+<li><tt class="docutils literal"><span class="pre">TextLinesWidget</span></tt> widget to edit a sequence of simple values in a text area</li>
+<li><tt class="docutils literal"><span class="pre">MultiWidget</span></tt> wisget to manage a sequence of simple types</li>
+<li><tt class="docutils literal"><span class="pre">ObjectWidget</span></tt> widget provides a simple way to edit <tt class="docutils literal"><span class="pre">Object</span></tt> fields</li>
+</ul>
+</li>
+<li>Translations</li>
+</ul>
+</div>
+<div class="slide" id="extensions-to-z3c-form">
+<h1>Extensions to <tt class="docutils literal"><span class="pre">z3c.form</span></tt></h1>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">z3c.formjs</span></tt> -- Javascript and Ajax<ul>
+<li>See <tt class="docutils literal"><span class="pre">z3c.formjsdemo</span></tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal"><span class="pre">z3c.formwidget.query</span></tt> -- A widget to query a large collection and select
+a value from the query results</li>
+<li><tt class="docutils literal"><span class="pre">plone.z3cform</span></tt> -- Integration of <tt class="docutils literal"><span class="pre">z3c.form</span></tt> into CMF and Plone</li>
+<li><tt class="docutils literal"><span class="pre">megrok.z3cform</span></tt> -- Integration of <tt class="docutils literal"><span class="pre">z3c.form</span></tt> into Grok</li>
+<li><tt class="docutils literal"><span class="pre">five.megrok.z3cform</span></tt> -- Five bridge of <tt class="docutils literal"><span class="pre">megrok.z3cform</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">z3c.formext</span></tt> -- Soon to come from Keas</li>
+</ul>
+</div>
+</div>
+</body>
+</html>
