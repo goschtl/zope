@@ -16,7 +16,7 @@ CHANGES
   the other to be included just before the ``</body>`` section. In 
   some circumstances doing this can `speed up page load time`_.
 
-  .. `speed up page load time`: http://developer.yahoo.net/blog/archives/2007/07/high_performanc_5.html
+  .. _`speed up page load time`: http://developer.yahoo.net/blog/archives/2007/07/high_performanc_5.html
 
 0.1 (2008-10-07)
 ================
