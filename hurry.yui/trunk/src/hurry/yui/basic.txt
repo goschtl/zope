@@ -1,9 +1,7 @@
-hurry.yui
-*********
+hurry.yui basic tests
+=====================
 
-This library packages YUI for ``hurry.resource``. It is aware of YUI's
-dependency structure and different modes (normal, minified and debug)
-and consolidations.
+Here are some basic tests for hurry.yui.
 
 Let's set up a way to render URLs; typically the framework has already
 done this::

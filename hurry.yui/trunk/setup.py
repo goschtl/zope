@@ -8,7 +8,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 long_description = (
-    read('src', 'hurry', 'yui', 'README.txt')
+    read('README.txt')
     + '\n' +
     read('CHANGES.txt')
     + '\n' +
