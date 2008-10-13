@@ -3,7 +3,6 @@
 from urllib2 import \
      URLError, \
      HTTPError, \
-     GopherError, \
      HTTPPasswordMgr, \
      HTTPPasswordMgrWithDefaultRealm, \
      AbstractBasicAuthHandler, \
@@ -32,7 +31,6 @@ from urllib2 import \
      FTPHandler, \
      CacheFTPHandler, \
      FileHandler, \
-     GopherHandler
 # ...and from mechanize
 from _urllib2_support import \
      HTTPHandler, \
