@@ -1,0 +1,24 @@
+CHANGES
+*******
+
+0.2 (2008-10-13)
+================
+
+* Changed the API to set the mode. Instead of passing it to ``render``
+  and ``inclusions``, the requested mode can be set with the ``mode``
+  method on ``INeededInclusions``. For convenience there is a ``mode``
+  function as well that can be imported directly from
+  ``hurry.resource`` that sets the mode for the current needed
+  inclusions.
+
+* Added support for rendering resources into two fragments, one to
+  be included at the top of the HTML page in the ``<head>`` section,
+  the other to be included just before the ``</body>`` section. In 
+  some circumstances doing this can `speed up page load time`_.
+
+  .. `speed up page load time`: http://developer.yahoo.net/blog/archives/2007/07/high_performanc_5.html
+
+0.1 (2008-10-07)
+================
+
+* Initial public release.
