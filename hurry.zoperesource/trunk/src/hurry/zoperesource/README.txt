@@ -51,3 +51,17 @@ automatically included::
   <p>the widget HTML itself</p>
   </body>
   </html>
+
+Let's force all javascript resources to be forced to be included at
+the bottom now, just before the ``</body>`` tag::
+
+  >>> browser.open('http://localhost/hurry.zoperesource.test_bottom')
+  >>> print browser.contents 
+  <html>
+  <head>
+  </head>
+  <body>
+  <p>the widget HTML itself</p>
+  <script type="text/javascript" src="http://localhost/@@/foo/a.js"></script>
+  <script type="text/javascript" src="http://localhost/@@/foo/b.js"></script></body>
+  </html>

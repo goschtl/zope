@@ -54,11 +54,13 @@ class Response(BrowserResponse):
 
             needed = component.getUtility(ICurrentNeededInclusions)()
 
-            html = needed.render()
+            top, bottom = needed.render_topbottom()
             
-            if html:
-                body = body.replace('<head>', '<head>\n    %s\n' %
-                                    html, 1)
+            if top:
+                body = body.replace('<head>', '<head>\n    %s\n' % top, 1)
+            if bottom:
+                body = body.replace('</body>', '%s</body>' % bottom, 1)
+
         return super(Response, self)._implicitResult(body)
 
 class NoRequestError(Exception):

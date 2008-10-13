@@ -38,7 +38,7 @@ setup(
         'zope.traversing',
         'zope.securitypolicy',
         'zope.testbrowser',
-        'hurry.resource',
+        'hurry.resource > 0.1',
         ],
     entry_points={},
     )

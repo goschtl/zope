@@ -46,4 +46,12 @@
     class=".view.TestMultiple"
     />
 
+  <browser:page
+    for="zope.interface.Interface"
+    name="hurry.zoperesource.test_bottom"
+    permission="zope.Public"
+    template="test_bottom.pt"
+    class=".view.TestBottom"
+    />
+
 </configure>
