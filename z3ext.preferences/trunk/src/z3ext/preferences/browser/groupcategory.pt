@@ -1,0 +1,9 @@
+<tal:block tal:condition="view/hasFields"
+	   tal:content="structure context/@@pagelet/preference.editGroup" />
+
+<div class="z-frame" tal:condition="view/subgroups">
+  <tal:block tal:repeat="group view/subgroups">
+    <tal:block tal:content="structure group/@@pagelet/preference.previewGroup" />
+    <br />
+  </tal:block>
+</div>

@@ -45,6 +45,7 @@ class Navigation(ViewletManagerBase):
 
     def _process(self, context, path, level=1):
         request = self.request
+        maincontext = self.context
 
         if path:
             data = []
@@ -70,7 +71,7 @@ class Navigation(ViewletManagerBase):
 
                 if prefs.__id__ == self.context.__id__:
                     info['selected'] = True
-                    info['items'] = self._process(prefs, [prefs], level+1)
+                    #info['items'] = self._process(prefs, [prefs], level+1)
 
                 if IPreferenceCategory.providedBy(prefs) and not info['items']:
                     if not self._process(prefs, [prefs], level+1):
@@ -85,4 +86,3 @@ class Navigation(ViewletManagerBase):
             return u''
         else:
             return super(Navigation, self).render()
-

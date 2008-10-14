@@ -1,36 +1,32 @@
-<tal:block tal:define="img context/++resource++z3ext-images/bullet2.gif|nothing">
-  <div class="frame">
-    <ul class="listing">
-      <li tal:repeat="item view/groups">
-	<tal:block tal:define="group item/group">
-	  <div class="icon" tal:define="icon group/@@zmi_icon|nothing"
-	       tal:condition="python:icon or img">
-	    <tal:block tal:condition="icon" tal:content="structure icon"/>
-	    <img tal:condition="not:icon" tal:attributes="src img" />
-	  </div>
-	  <div class="details">
-	    <a tal:attributes="href string:${group/__id__}/">
-	      <tal:block tal:content="group/__title__"/></a>
-	    <div><tal:block tal:content="group/__description__"/> &nbsp;</div>
-	    
-	    <ul class="listing" tal:condition="item/subgroups">
-	      <li tal:repeat="sgroup item/subgroups">
-		<div class="icon" tal:define="icon sgroup/group/@@zmi_icon|nothing"
-		     tal:condition="python:icon or img">
-		  <tal:block tal:condition="icon" tal:content="structure icon" />
-		  <img tal:condition="not:icon" tal:attributes="src img"/>
-		</div>
-		<div class="details">
-		  <a tal:attributes="href string:${group/__id__}/${sgroup/id}/">
-		    <tal:block tal:content="sgroup/group/__title__"/></a>
-		  <div><tal:block tal:content="sgroup/group/__description__"/> 
-		    &nbsp;</div>
-		</div>
-	      </li>
-	    </ul>
-	  </div>
-	</tal:block>
-      </li>
-    </ul>
-  </div>
-</tal:block>
+<div class="z-frame">
+  <ul class="listing">
+    <li tal:repeat="item view/groups">
+      <tal:block tal:define="group item/group">
+	<div class="icon" tal:define="icon group/@@zmi_icon|nothing"
+	     tal:condition="icon">
+	  <tal:block tal:condition="icon" tal:content="structure icon"/>
+	</div>
+	<div class="details">
+	  <a tal:attributes="href string:${group/__id__}/">
+	    <tal:block tal:content="group/__title__"/></a>
+	  <div><tal:block tal:content="group/__description__"/> &nbsp;</div>
+	  
+	  <ul class="listing" tal:condition="item/subgroups">
+	    <li tal:repeat="sgroup item/subgroups">
+	      <div class="icon" tal:define="icon sgroup/group/@@zmi_icon|nothing"
+		   tal:condition="icon">
+		<tal:block tal:condition="icon" tal:content="structure icon" />
+	      </div>
+	      <div class="details">
+		<a tal:attributes="href string:${group/__id__}/${sgroup/id}/">
+		  <tal:block tal:content="sgroup/group/__title__"/></a>
+		<div><tal:block tal:content="sgroup/group/__description__"/> 
+		  &nbsp;</div>
+	      </div>
+	    </li>
+	  </ul>
+	</div>
+      </tal:block>
+    </li>
+  </ul>
+</div>

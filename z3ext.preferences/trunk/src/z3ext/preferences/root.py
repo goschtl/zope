@@ -19,9 +19,8 @@ from zope import interface
 from zope.app.component.hooks import getSite
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 
-from i18n import _
 from preference import PreferenceGroup
-from interfaces import IBound, IRootPreferences, IPreferenceCategory
+from interfaces import _, IBound, IRootPreferences, IPreferenceCategory
 
 
 class PersonalPreferences(PreferenceGroup):

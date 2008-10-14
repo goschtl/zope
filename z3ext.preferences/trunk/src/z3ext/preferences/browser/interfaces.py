@@ -15,7 +15,16 @@
 
 $Id$
 """
+from zope import interface
 from zope.viewlet.interfaces import IViewletManager
+
+
+class IEdit(interface.Interface):
+    """ preference group edit view """
+
+
+class IPreview(interface.Interface):
+    """ preference group preview """
 
 
 class IPreferencesNavigation(IViewletManager):

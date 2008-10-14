@@ -17,9 +17,7 @@ $Id$
 """
 from zope import interface, component
 from z3c.breadcrumb.browser import GenericBreadcrumb
-
-from z3ext.preferences.i18n import _
-from z3ext.preferences.interfaces import IPreferenceGroup
+from z3ext.preferences.interfaces import _, IPreferenceGroup
 
 
 class PreferenceGroupBreadcrumb(GenericBreadcrumb):

@@ -16,12 +16,28 @@
 $Id$
 """
 from zope import schema
-from zope.component import getMultiAdapter
 from zope.cachedescriptors.property import Lazy
 from z3ext.layoutform import Fields, PageletEditForm
 
 
-class PreferenceGroup(PageletEditForm):
+class PreferenceGroup(object):
+
+    def update(self):
+        context = self.context
+        request = self.request
+
+        subgroups = []
+
+        for name, group in context.items():
+            if not group.isAvailable():
+                continue
+            subgroups.append(group)
+
+        self.subgroups = subgroups
+        self.hasFields = bool(schema.getFields(self.context.__schema__))
+
+
+class PreferenceGroupView(PageletEditForm):
 
     @property
     def prefix(self):
@@ -38,32 +54,3 @@ class PreferenceGroup(PageletEditForm):
     @Lazy
     def fields(self):
         return Fields(self.context.__schema__, omitReadOnly=True)
-
-    def update(self):
-        super(PreferenceGroup, self).update()
-
-        context = self.context
-        request = self.request
-
-        subgroups = []
-
-        for name, group in context.items():
-            if not group.isAvailable():
-                continue
-
-            view = getMultiAdapter((group, request), name='index.html')
-            view.update()
-
-            subgroups.append(view)
-
-        self.groups = subgroups
-
-    def render(self):
-        result = []
-        
-        if bool(schema.getFields(self.context.__schema__)):
-            result.append(super(PreferenceGroup, self).render())
-
-        result.extend([group.render() for group in self.groups])
-
-        return u'<br />\n'.join(result)

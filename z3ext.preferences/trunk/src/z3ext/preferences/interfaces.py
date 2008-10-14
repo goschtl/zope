@@ -18,6 +18,9 @@ $Id$
 from zope import schema, interface
 from zope.configuration import fields
 from zope.location.interfaces import ILocation
+from zope.i18nmessageid import MessageFactory
+
+_ = MessageFactory('z3ext.preferences')
 
 ANNOTATION_KEY = 'zope.app.user.UserPreferences'
 

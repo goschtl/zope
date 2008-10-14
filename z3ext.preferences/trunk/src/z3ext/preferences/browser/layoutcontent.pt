@@ -1,5 +1,5 @@
 <h1 tal:content="layoutcontext/__title__"></h1>
-<div class="pageDescription" tal:content="layoutcontext/__description__"></div>
+<div class="z-page-description" tal:content="layoutcontext/__description__"></div>
 
 <div id="z-viewspace" tal:content="structure view/render">
   [rendered body]

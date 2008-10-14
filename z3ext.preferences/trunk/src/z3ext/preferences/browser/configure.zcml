@@ -19,6 +19,17 @@
      template="layoutcontent.pt"
      hidden="yes" />
 
+  <!-- pagelet types -->
+  <interface
+     name="preference.editGroup"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface=".interfaces.IEdit" />
+
+  <interface
+     name="preference.previewGroup"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface=".interfaces.IPreview" />
+
   <!-- browser view -->
   <adapter
      name="preferences"
@@ -44,25 +55,31 @@
      class=".index.PreferencesView"
      permission="zope.View" />
 
-  <!-- preference category view -->
-  <z3ext:pagelet
-     name="index.html"
-     for="..interfaces.IPreferenceCategory"
-     template="category.pt"
-     class=".category.PreferenceCategory"
-     permission="zope.Public" />
-
   <!-- preference group view -->
   <z3ext:pagelet
      name="index.html"
      for="..interfaces.IPreferenceGroup"
+     template="group.pt"
      class=".group.PreferenceGroup"
      permission="zope.Public" />
 
   <z3ext:pagelet
-     name="view.html"
+     name="index.html"
+     for="..interfaces.IPreferenceCategory"
+     template="groupcategory.pt"
+     class=".group.PreferenceGroup"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
      for="..interfaces.IPreferenceGroup"
-     template="group.pt"
+     provides=".interfaces.IEdit"
+     class=".group.PreferenceGroupView"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPreferenceGroup"
+     template="grouppreview.pt"
+     provides=".interfaces.IPreview"
      permission="zope.Public" />
 
   <!-- navigation -->

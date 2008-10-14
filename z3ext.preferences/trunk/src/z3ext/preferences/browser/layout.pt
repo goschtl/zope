@@ -3,7 +3,7 @@
                  nav provider:z3ext.preferences-navigation;
 		 noNav not:nav;
 		 rendered view/render">
-  <div class="page">
+  <div class="z-page">
     <table class="wide" tal:omit-tag="noNav">
       <tr style="vertical-align: top" tal:omit-tag="noNav">
 	<td style="padding-right: 1em; width: 200px"

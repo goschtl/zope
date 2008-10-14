@@ -18,8 +18,7 @@ $Id$
 import sys
 from zope import interface
 from zope.schema import getFields
-
-from z3ext.preferences.i18n import _
+from z3ext.preferences.interfaces import _
 from z3ext.preferences.preference import PreferenceGroup
 
 _marker = object()

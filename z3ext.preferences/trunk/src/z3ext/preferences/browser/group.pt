@@ -1,3 +1,4 @@
-<h2><a tal:attributes="href string:${context/@@absolute_url}/"
-       tal:content="context/__title__"></a></h2>
-<div class="discreet" tal:content="context/__description__"></div>
+<tal:block tal:condition="view/hasFields"
+	   tal:content="structure context/@@pagelet/preference.editGroup" />
+<tal:block tal:repeat="group view/subgroups"
+	   tal:content="structure group/@@pagelet/preference.editGroup" />
