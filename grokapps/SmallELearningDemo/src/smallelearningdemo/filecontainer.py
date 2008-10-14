@@ -45,7 +45,7 @@ class Add(grok.AddForm):
 
   @grok.action('Add file')
   def addFile(self, data):
-    self.upload(**data)
+    self.upload(data)
     self.redirect(self.url(self.context.__parent__))
 
   def upload(self, data):
