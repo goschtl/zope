@@ -40,6 +40,10 @@ class IPagelet(IBrowserPage):
         """Render the pagelet content w/o o-wrap."""
 
 
+class IPageletType(interface.interfaces.IInterface):
+    """ pagelet interface type """
+
+
 class ILayout(IBrowserPage):
     """ layout """
 

@@ -2,12 +2,14 @@
 CHANGES
 =======
 
-1.5.1 (2008-10-??)
+1.5.1 (2008-10-14)
 ------------------
 
 - Fixed missing NotFount in @@pagelet 
 
 - Log errors in @@pagelet
+
+- Default css styles
 
 
 1.5.0 (2008-10-06)

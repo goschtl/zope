@@ -246,8 +246,11 @@ Pagelet without name
   ...       template="%s"
   ...       provides="z3ext.layout.TESTS.IMyPagelet2"
   ...       permission="zope.Public" />
+  ...   <z3ext:pagelet
+  ...       template="%s"
+  ...       permission="zope.Public" />
   ... </configure>
-  ... """%(template, template2), context)
+  ... """%(template, template2, template2), context)
 
   >>> pagelet = component.queryMultiAdapter(
   ...     (object(), TestRequest()), ITestPagelet)
@@ -264,10 +267,34 @@ Pagelet without name
   >>> pagelet.render()
   u'<div>My pagelet2</div>'
 
+
 Access nameless pagelet from view
 
   >>> pagelet = component.getMultiAdapter((object(), request), name='pagelet')
 
   >>> print pagelet.publishTraverse(
+  ...     request, 'test.unknown')
+  Traceback (most recent call last):
+  ...
+  NotFound: Object: ..., name: 'test.unknown'
+
+  >>> pagelet.browserDefault(request)
+  (..., ('',))
+
+by default IPagelet
+
+  >>> print pagelet.publishTraverse(request, '')
+  <div>My pagelet2</div>
+
+  >>> print pagelet.publishTraverse(
   ...     request, 'z3ext.layout.tests.ITestPagelet')
+  <div>My pagelet</div>
+
+We can register our marker interface as named utility and use name
+instead of full module path
+
+  >>> component.provideUtility(
+  ...     ITestPagelet, z3ext.layout.interfaces.IPageletType, name='testPageletType')
+
+  >>> print pagelet.publishTraverse(request, 'testPageletType')
   <div>My pagelet</div>

@@ -17,6 +17,7 @@ $Id$
 """
 import logging, sys
 from zope import interface, component
+from zope.component import queryUtility
 from zope.component import queryMultiAdapter
 from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
@@ -25,7 +26,7 @@ from zope.tales.expressions import SimpleModuleImporter
 from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.publisher.browser import queryDefaultViewName
 
-from z3ext.layout.interfaces import IPagelet, ILayout
+from z3ext.layout.interfaces import IPagelet, IPageletType, ILayout
 
 
 @interface.implementer(IPagelet)
@@ -107,16 +108,20 @@ class PageletPublisher(object):
     def publishTraverse(self, request, name):
         try:
             return self[name]
-        except Exception, err:
-            log = logging.getLogger('z3ext.content')
-            log.exception(err)
+        except KeyError:
+            pass
 
         raise NotFound(self.context, name, request)
 
     def __getitem__(self, name):
         if name:
-            iface, name = name.rsplit('.', 1)
-            iface = getattr(self.modules[iface], name)
+            iface = queryUtility(IPageletType, name)
+            if iface is None:
+                try:
+                    iface, iname = name.rsplit('.', 1)
+                    iface = getattr(self.modules[iface], iname)
+                except:
+                    raise KeyError(name)
         else:
             iface = IPagelet
 
@@ -126,7 +131,7 @@ class PageletPublisher(object):
                 view.update()
                 return view.render()
         except Exception, err:
-            log = logging.getLogger('z3ext.content')
+            log = logging.getLogger('z3ext.layout')
             log.exception(err)
 
         raise KeyError(name)
