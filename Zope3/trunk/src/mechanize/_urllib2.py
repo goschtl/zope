@@ -30,7 +30,7 @@ from urllib2 import \
      UnknownHandler, \
      FTPHandler, \
      CacheFTPHandler, \
-     FileHandler, \
+     FileHandler
 # ...and from mechanize
 from _urllib2_support import \
      HTTPHandler, \
