@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 import sys
 
-version = '1.0a2'
+version = '1.0b1'
 
 install_requires = [
     'setuptools',
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
-    'chameleon.core >=1.0a3dev',
+    'chameleon.core >=1.0b3',
     ]
 
 setup(name='chameleon.zpt',
