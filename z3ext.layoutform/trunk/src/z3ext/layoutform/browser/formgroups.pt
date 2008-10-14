@@ -1,9 +1,3 @@
-<div class="z-form-fieldset" tal:repeat="group context/groups">
-  <h3 tal:content="group/label|nothing"></h3>
-  <div class="z-form-description"
-       tal:content="group/description|nothing"></div>
-
-  <tal:block tal:repeat="widget group/widgets/values"
-	     tal:content="structure 
-			  widget/@@pagelet/z3ext.layoutform.browser.interfaces.IWidget" />
-</div>
+<tal:block
+   tal:repeat="group context/groups"
+   tal:content="structure group/@@pagelet/layoutform.group" />

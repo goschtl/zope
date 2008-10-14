@@ -5,8 +5,7 @@
        tal:content="context/description|nothing"></div>
 
   <tal:block tal:repeat="widget context/widgets/values"
-       tal:content="structure 
-           widget/@@pagelet/z3ext.layoutform.browser.interfaces.IWidget" />
+       tal:content="structure widget/@@pagelet/layoutform.widget" />
 </div>
 
 <tal:block tal:content="structure

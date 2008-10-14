@@ -1,6 +1,6 @@
 <div class="z-form-controls">
   <tal:block tal:content="structure
-       context/@@pagelet/z3ext.layoutform.browser.interfaces.IExtraFormButtonsInfo|nothing" />
+             context/@@pagelet/layoutform.buttonsInfo|nothing" />
 
   <span tal:condition="context/actions/values">
     <hr />

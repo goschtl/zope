@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-1.2.3 (2008-10-??)
+1.2.3 (2008-10-14)
 ------------------
 
 - Groups support restored
+
+- Use IPageletType for views
 
 
 1.2.2 (2008-10-08)

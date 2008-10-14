@@ -46,6 +46,10 @@ class IExtraAfterWidget(interface.Interface):
     """ extra widget information """
 
 
+class IGroup(interface.Interface):
+    """ group """
+
+
 class IFormGroups(interface.Interface):
     """ form groups """
 

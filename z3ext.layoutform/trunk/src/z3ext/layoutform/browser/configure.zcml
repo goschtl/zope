@@ -75,6 +75,11 @@
      permission="zope.Public" />
 
   <!-- form view -->
+  <interface
+     name="layoutform.form"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IForm" />
+
   <z3ext:pagelet
      for="z3c.form.interfaces.IForm"
      template="formview.pt"
@@ -83,6 +88,11 @@
      permission="zope.Public" />
 
   <!-- viewspace view -->
+  <interface
+     name="layoutform.viewspace"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IViewspace" />
+
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formviewspace.pt"
@@ -90,15 +100,12 @@
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
 
-  <!-- groups view -->
-  <z3ext:pagelet
-     for="..interfaces.IPageletForm"
-     template="formgroups.pt"
-     provides="z3ext.layoutform.browser.interfaces.IFormGroups"
-     layer="..interfaces.ILayoutFormLayer"
-     permission="zope.Public" />
-
   <!-- form buttons -->
+  <interface
+     name="layoutform.buttons"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IFormButtons" />
+
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formbuttons.pt"
@@ -107,10 +114,41 @@
      permission="zope.Public" />
 
   <!-- widget view -->
+  <interface
+     name="layoutform.widget"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IWidget" />
+
   <z3ext:pagelet
      for="z3c.form.interfaces.IWidget"
      template="widget.pt"
      provides="z3ext.layoutform.browser.interfaces.IWidget"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
+  <!-- group view -->
+  <interface
+     name="layoutform.group"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IGroup" />
+
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IGroup"
+     template="formgroup.pt"
+     provides="z3ext.layoutform.browser.interfaces.IGroup"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
+  <!-- groups view -->
+  <interface
+     name="layoutform.groups"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IFormGroups" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formgroups.pt"
+     provides="z3ext.layoutform.browser.interfaces.IFormGroups"
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
 
@@ -121,6 +159,32 @@
      provides="z3ext.layoutform.browser.interfaces.IFormButtons"
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
+
+  <!-- extra form views -->
+  <interface
+     name="layoutform.formInfo"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IExtraFormInfo" />
+
+  <interface
+     name="layoutform.viewspaceInfo"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IExtraViewspaceInfo" />
+
+  <interface
+     name="layoutform.widgetBefore"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IExtraBeforeWidget" />
+
+  <interface
+     name="layoutform.widgetAfter"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IExtraAfterWidget" />
+
+  <interface
+     name="layoutform.buttonsInfo"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IExtraFormButtonsInfo" />
 
   <!-- status message -->
   <adapter factory=".message.Message" />

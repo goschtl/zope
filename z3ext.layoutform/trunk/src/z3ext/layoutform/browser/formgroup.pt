@@ -1,8 +1,7 @@
-<fieldset>
-  <legend tal:content="context/label"></legend>
-  <div class="pageDescription" tal:content="context/description|nothing"></div>
+<div class="z-form-fieldset">
+  <h3 tal:content="context/label"></h3>
+  <div class="z-page-description" tal:content="context/description|nothing"></div>
 
   <tal:block tal:repeat="widget context/widgets/values"
-       tal:content="structure 
-           widget/@@pagelet/z3ext.layoutform.browser.interfaces.IWidget" />
-</fieldset>
+       tal:content="structure widget/@@pagelet/layoutform.widget" />
+</div>
