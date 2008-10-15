@@ -169,6 +169,44 @@ Let's go back to the original spelling of ``needed.need(y)``
 now. While this is a bit more cumbersome to use in application code, it is
 easier to read for the purposes of this document.
 
+A note on optimization
+======================
+
+There are various optimizations for resource inclusion that
+``hurry.resource`` supports. Because some optimizations can make
+debugging more difficult, the optimizations are disabled by default.
+
+We will summarize the optimization features here and tell you how to
+enable them. Later sections below go into more details.
+
+* minified resources. Resources can specify minified versions using
+  the mode system. You can use ``hurry.resource.mode('minified')``
+  somewhere in the request handling of your application. This will
+  make sure that resources included on your page are supplied as
+  minified versions, if these are available. 
+
+* rolling up of resources.  Resource libraries can specify rollup
+  resources that combine multiple resources into one. This reduces the
+  amount of server requests to be made by the web browser, and can
+  help with caching. To enable rolling up, call
+  ``hurry.resource.rollup`` somewhere in your request handling.
+
+* javascript inclusions at the bottom of the web page. If your
+  framework integration uses the special ``render_topbottom`` method,
+  you can enable the inclusion of javascript files at the bottom by
+  calling ``hurry.resource.bottom()``. This will only include
+  resources at the bottom that have explicitly declared themselves to
+  be *bottom-safe*. You can declare a resource bottom safe by passing
+  ``bottom=True`` when constructing a ``ResourceInclusion``. If you
+  want to force all javascript to be including at the bottom of the
+  page by default, you can call ``hurry.resource.bottom(force=True)``.
+
+To find out more about these and other optimizations, please read this
+`best practices article`_ that describes some common optimizations to
+speed up page load times.
+
+.. _`best practices article`: http://developer.yahoo.com/performance/rules.html
+
 Multiple requirements
 =====================
 
