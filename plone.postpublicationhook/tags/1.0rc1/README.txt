@@ -7,7 +7,7 @@ and the response is returned to the requesting browser. This is practical for
 caching purposes: it is the ideal place to determine and insert caching headers
 into the response.
 
-Hooks use `zope.eventz_'s event mechanism using the
+Hooks use `zope.event`_'s event mechanism using the
 plone.validatehook.interfaces.IPostValidationEvent. This is based on the
 standard ObjectEvent from `zope.component`_.
 
