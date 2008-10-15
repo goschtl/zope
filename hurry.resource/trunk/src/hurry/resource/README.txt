@@ -394,12 +394,14 @@ In the case of rollups, several resources can be consolidated into one
 larger one for optimization purposes. A library might only offer a
 minified version of a rollup resource; if the developer wants to
 debug, it is expected he uses the resources in non-rolledup format.
-In this case it is safe to make the default mode the minified version
-and to supply no minified version at all for the rolled up
-resource. If the developerw wants to debug, he will need to disable
-rolling up (by calling ``hurry.resource.rollup(disable=True)``, or by
-simply never calling ``hurry.resource.rollup()`` in the request
-cycle).
+In this case you should make a resource inclusion where the default
+mode is equal to the minified mode, like this::
+
+  >>> example = ResourceInclusion(foo, 'k.js', minified='k.js')
+
+If the developer wants to debug, he will need to disable rolling up
+(by calling ``hurry.resource.rollup(disable=True)``, or by simply
+never calling ``hurry.resource.rollup()`` in the request cycle).
 
 Mode convenience
 ================
