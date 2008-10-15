@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.6.3 (unreleased)
+3.6.3 (2008-10-15)
 ==================
 
 - Get rid of deprecated usage of LayerField from
