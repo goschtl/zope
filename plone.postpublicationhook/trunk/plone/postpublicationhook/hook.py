@@ -12,7 +12,7 @@ from zope.security.management import endInteraction
 from zExceptions import Redirect
 
 import zope.event
-from plone.postpublicationhook import AfterPublicationEvent
+from plone.postpublicationhook.event import AfterPublicationEvent
 
 
 def publish(request, module_name, after_list, debug=0,
@@ -77,7 +77,7 @@ def publish(request, module_name, after_list, debug=0,
             response.setBody(result)
 
         # This is the only change from the canonical publish method
-        zope.event.notify(AfterPublicationEvent(request, object))
+        zope.event.notify(AfterPublicationEvent(object, request))
 
         if transactions_manager:
             transactions_manager.commit()
