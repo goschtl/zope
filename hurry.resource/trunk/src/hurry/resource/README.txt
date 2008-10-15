@@ -380,7 +380,7 @@ return its default resource instead::
   [<ResourceInclusion 'k.js' in library 'foo'>]
 
 ``hurry.resource`` suggests resource libraries follow the following
-conventions for modes::
+conventions for modes:
 
   * default - the original source text, non-minified, and without any
    special extra debugging functionality.
