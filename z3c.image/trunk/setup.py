@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "z3c.image",
-    version = "1.0.0a2",
+    version = "1.0.0",
     author = "Zope Contributors",
     author_email = "office@mopacreative.com",
     description = "Image utils for zope3",
