@@ -10,9 +10,9 @@ setup(
     keywords = "zope3 image",
     url='http://svn.zope.org/z3c.image',
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         "License :: OSI Approved :: Zope Public License",
-        "Framework :: Zope :: UI",
+        "Framework :: Zope3",
         ],
     packages = find_packages('src'),
     include_package_data = True,
