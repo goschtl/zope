@@ -1,0 +1,88 @@
+/* zrt-cssregistry: */
+
+@media all {
+
+  .z-page, .page {
+    padding: 1.5em;
+    border: borderWidth borderStyle globalBorderColor;
+    border-top: borderWidth borderStyle globalBorderColor;
+    background-color: globalBackgroundColor;
+    font-size: 100%;
+  }
+
+  .z-page h1 {
+    padding-top: 0;
+  }
+
+  .z-page h4 {
+    border-bottom: borderWidth borderStyle globalBorderColor;
+  }
+
+  .z-page legend {
+    background-color: transparent;
+  }
+
+  .z-page-description,
+  .pageDescription {
+    color: discreetColor;
+    font-size: fontSmallSize;
+    font-weight: normal;
+    margin-bottom: 1.5em;
+  }
+
+  .z-frame, .z-topframe,
+  .frame, .topframe {
+    padding: 1em;
+    margin-top: 1em;
+    background: contentBackgroundColor;
+    border: borderWidth borderStyle globalExtraBorderColor;
+  }
+
+  .z-topframe, .topframe {
+    margin-top: 0em;
+  }
+
+  .z-frame h4 {
+    border-bottom: borderWidth borderStyle globalExtraBorderColor;
+    font-weight: normal;
+  }
+
+  #z-portal {
+    background-color: contentBackgroundColor;
+  }
+
+  #z-portal-workspace {
+    margin: 2em 1.5em 1.5em 1.5em;
+  }
+
+  #z-portal-workspace {
+    font-size: 110%;
+    background: contentBackgroundColor;
+  }
+  
+  #z-portal-workspace h1 {
+    font-size: 120%;
+    font-weight: bold;
+  }
+  
+  #z-portal-workspace h2 {
+    font-size: 110%;
+  }
+  
+  #z-portal-workspace h3 {
+    font-size: 100%;
+  }
+  
+  #z-portal-workspace h5,
+  #z-portal-workspace h6 {
+    color: discreetColor;
+  }
+
+}
+
+@media print {
+  .z-page-description,
+  .pageDescription {
+    font-weight: normal;
+  }
+}
