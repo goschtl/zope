@@ -370,6 +370,37 @@ We can however also get the resource for mode ``debug`` and get
 Note that modes are assumed to be identical in dependency structure;
 they functionally should do the same.
 
+If you request a mode and a resource doesn't support it, it will
+return its default resource instead::
+
+  >>> needed = NeededInclusions()
+  >>> needed.mode('minified')
+  >>> needed.need(k1)
+  >>> needed.inclusions()
+  [<ResourceInclusion 'k.js' in library 'foo'>]
+
+``hurry.resource`` suggests resource libraries follow the following
+conventions for modes::
+
+  * default - the original source text, non-minified, and without any
+   special extra debugging functionality.
+
+  * debug - an optional version of the source text that offers more
+    debugging support, such as logging.
+
+  * minified - an optional minified (compressed) form of the resource.
+
+In the case of rollups, several resources can be consolidated into one
+larger one for optimization purposes. A library might only offer a
+minified version of a rollup resource; if the developer wants to
+debug, it is expected he uses the resources in non-rolledup format.
+In this case it is safe to make the default mode the minified version
+and to supply no minified version at all for the rolled up
+resource. If the developerw wants to debug, he will need to disable
+rolling up (by calling ``hurry.resource.rollup(disable=True)``, or by
+simply never calling ``hurry.resource.rollup()`` in the request
+cycle).
+
 Mode convenience
 ================
 
