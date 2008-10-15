@@ -4,7 +4,11 @@ Changes
 1.2 (unreleased)
 ----------------
 
-* ...
+* Expose the ``DirectoryResource`` class as a component for registering
+  directories as resources. This is accompanied by the ``path`` directive that
+  is used to point to the directory holding resources by way of an relative (to
+  the module) or absolute path. ``DirectoryResource`` components can be
+  differentiated by name and layer.
 
 1.1 (2008-09-22)
 ----------------

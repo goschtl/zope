@@ -42,6 +42,6 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['view', 'static', 'skin', 'template']:
+    for name in ['view', 'static', 'skin', 'template', 'directoryresource']:
         suite.addTest(suiteFromPackage(name))
     return suite
