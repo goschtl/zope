@@ -34,7 +34,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'hurry.resource',
+        'hurry.resource > 0.2',
         'simplejson',
         ],
     entry_points= {

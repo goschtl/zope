@@ -36,16 +36,43 @@ Let's try a resource that has a dependency on fonts, namely
   <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/fonts/fonts.css" />
   <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/grids/grids.css" />
 
-Now let's try to see consolidation: we include grids and reset at the
-same time, and we expect a consolidation to ``reset-fonts-grids``::
+Let's need two resources at the same time::
 
   >>> needed = NeededInclusions()
   >>> needed.need(yui.grids)
   >>> needed.need(yui.reset)
   >>> print needed.render()
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/fonts/fonts.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/grids/grids.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset/reset.css" />
 
 Let's get the same, minified::
 
-  >>> print needed.render(mode="minified")
-  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids-min.css" />
+  >>> needed.mode('minified')
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/fonts/fonts-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/grids/grids-min.css" />
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset/reset-min.css" />
+
+Now let's try to see consolidation: we include grids and reset at the
+same time. Since this time we enable rolling up, we expect to see the
+rollup ``reset-fonts-grids``::
+
+  >>> needed = NeededInclusions()
+  >>> needed.rollup()
+  >>> needed.need(yui.grids)
+  >>> needed.need(yui.reset)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids.css" />
+
+Requesting minification has no effect on rollups, as the original
+rollup is already minified::
+
+  >>> needed = NeededInclusions()
+  >>> needed.rollup()
+  >>> needed.mode('minified')
+  >>> needed.need(yui.grids)
+  >>> needed.need(yui.reset)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/yui/reset-fonts-grids/reset-fonts-grids.css" />
+

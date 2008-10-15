@@ -60,10 +60,10 @@ def deminize(path):
 
 def convert_to_mode(inclusion, mode):
     rest, ext = os.path.splitext(inclusion.relpath)
-    if mode == 'minified':
+    if mode == 'minified' and not inclusion.supersedes:
         result = ResourceInclusion(inclusion.library,
                                    rest + '-min' + ext)
-    elif mode == 'debug':
+    elif mode == 'debug' and not inclusion.supersedes:
         result = ResourceInclusion(inclusion.library,
                                    rest + '-debug' + ext)
     else:
