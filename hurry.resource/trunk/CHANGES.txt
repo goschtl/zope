@@ -16,6 +16,11 @@ Features added
   debug can choose not to call it (or call
   ``hurry.resource.rollup(disable=True``).
 
+* Added an optimization section to the documentation.
+
+* Added some more details about how modes are expected to be used to
+  the documentation.
+
 Bug fixes
 ---------
 
