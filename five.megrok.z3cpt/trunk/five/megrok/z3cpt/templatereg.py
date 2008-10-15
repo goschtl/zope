@@ -8,7 +8,7 @@ from five.pt.pagetemplate import ViewPageTemplateFile, ViewPageTemplate
 class ZopeTwoPageTemplate(PageTemplate):
 
     def setFromString(self, string):
-        self._template = ViewPageTemplate
+        self._template = ViewPageTemplate(string)
 
     def setFromFilename(self, filename, _prefix=None):
         self._template = ViewPageTemplateFile(filename, _prefix)

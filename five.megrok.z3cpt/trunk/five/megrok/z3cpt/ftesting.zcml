@@ -1,0 +1,14 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:grok="http://namespaces.zope.org/grok">
+
+  <!-- This file acts kinda like a virtual "site.zcml" during
+  ftesting. -->
+  <include package="five.grok" file="ftesting.zcml" />
+  <include package="five.megrok.z3cpt" file="configure.zcml" />
+
+  <!-- And also grok all the ftests /-->
+  <grok:grok package="five.megrok.z3cpt.ftests" />
+
+
+</configure>

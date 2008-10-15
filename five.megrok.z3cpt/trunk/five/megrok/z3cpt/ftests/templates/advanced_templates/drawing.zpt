@@ -1,0 +1,7 @@
+<html>
+<body>
+<h1>Hello World</h1>
+<p tal:content="view.description">Description</p>
+</body>
+</html>
+
