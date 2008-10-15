@@ -18,7 +18,7 @@ setup(
     version='0.3dev',
     description="hurry.resource integration for Zope.",
     long_description=long_description,
-    classifiers=[],
+    classifiers=['Framework :: Zope3'],
     keywords='',
     author='Martijn Faassen',
     author_email='faassen@startifact.com',
@@ -38,7 +38,7 @@ setup(
         'zope.traversing',
         'zope.securitypolicy',
         'zope.testbrowser',
-        'hurry.resource > 0.1',
+        'hurry.resource > 0.2',
         ],
     entry_points={},
     )
