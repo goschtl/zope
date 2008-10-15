@@ -17,8 +17,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import md5
-import sha
+try:
+    from hashlib import md5, sha1
+except ImportError:
+    # Python 2.4
+    from md5 import new as md5
+    from sha import new as sha1
+
 from random import randint
 from codecs import getencoder
 
@@ -95,7 +100,7 @@ class MD5PasswordManager(PlainTextPasswordManager):
     def encodePassword(self, password, salt=None):
         if salt is None:
             salt = "%08x" % randint(0, 0xffffffff)
-        return salt + md5.new(_encoder(password)[0]).hexdigest()
+        return salt + md5(_encoder(password)[0]).hexdigest()
 
     def checkPassword(self, storedPassword, password):
         salt = storedPassword[:-32]
@@ -137,7 +142,7 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     def encodePassword(self, password, salt=None):
         if salt is None:
             salt = "%08x" % randint(0, 0xffffffff)
-        return salt + sha.new(_encoder(password)[0]).hexdigest()
+        return salt + sha1(_encoder(password)[0]).hexdigest()
 
     def checkPassword(self, storedPassword, password):
         salt = storedPassword[:-40]
