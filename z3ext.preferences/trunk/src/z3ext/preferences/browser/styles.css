@@ -10,8 +10,21 @@
     font-size: 110%;
   }
 
-  #z-preferences h1 {
+  #z-preferences .z-prefs-title {
     font-weight: bold;
+  }
+
+  #z-preferences h1 {
+    font-size: 130%;
+    font-weight: bold;
+  }
+
+  #z-preferences h2 {
+    font-size: 120%;
+  }
+
+  #z-preferences h2 {
+    font-size: 130%;
   }
 
   #z-preferences table.z-prefs-layout {
