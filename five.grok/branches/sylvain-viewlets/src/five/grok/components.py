@@ -1,7 +1,7 @@
 import martian
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.viewlet.interfaces import IViewletManager
+from zope.viewlet.interfaces import IViewletManager, IViewlet
 from zope.security.interfaces import IPermission
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope import interface, component
@@ -19,6 +19,7 @@ from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
 from Products.Five.viewlet.manager import ViewletManagerBase
+from Products.Five.viewlet.viewlet import ViewletBase
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
@@ -52,10 +53,10 @@ class View(grokcore.view.View, Acquisition.Explicit):
 # TODO: This should probably move to Products.Five.browser
 
 class ViewAwareZopePageTemplate(ZopePageTemplate):
-    
+
     def pt_getEngine(self):
         return getEngine()
-    
+
     def pt_getContext(self):
         try:
             root = self.getPhysicalRoot()
@@ -105,7 +106,7 @@ class ZopeTwoPageTemplate(PageTemplate):
 
     def setFromFilename(self, filename, _prefix=None):
         self._template = ViewPageTemplateFile(filename, _prefix)
-    
+
     def render(self, view):
         namespace = self.getNamespace(view)
         template = self._template.__of__(view)
@@ -144,7 +145,7 @@ class GrokForm(BaseGrokForm):
     def __init__(self, *args):
         super(GrokForm, self).__init__(*args)
         self.__name__ = self.__view_name__
-        # super seems not to work correctly since this is needed again. 
+        # super seems not to work correctly since this is needed again.
         self.static = component.queryAdapter(
             self.request, interface.Interface,
             name = self.module_info.package_dotted_name)
@@ -256,10 +257,34 @@ class ViewletManager(ContentProviderBase, ViewletManagerBase):
                       [(name, viewlet.__of__(parent)) for name, viewlet in viewlets])
 
     def render(self):
-        """See zope.contentprovider.interfaces.IContentProvider"""
+        """See zope.contentprovider.interfaces.IContentProvider
+        """
         # Now render the view
         if getattr(self, 'template', None):
             return self.template.render(self)
-        else:
-            return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
+        return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
+
+
+
+class Viewlet(ContentProviderBase, ViewletBase):
+
+    interface.implements(IViewlet)
+
+    martian.baseclass()
+
+    def __init__(self, context, request, view, viewletmanager):
+        ContentProviderBase.__init__(self, context, request, view)
+        self.viewletmanager = viewletmanager
+
+    def default_namespace(self):
+        namespace = super(ContentProvider, self).default_namespace()
+        namespace['viewlet'] = self
+        namespace['viewletmanager'] = self.viewletmanager
+        return namespace
+
+    def update(self):
+        pass
+
+    def render(self):
+        return self.template.render(self)
 
