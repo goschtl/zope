@@ -113,6 +113,14 @@ class PageletPublisher(object):
 
         raise NotFound(self.context, name, request)
 
+    def __call__(self):
+        try:
+            return self['']
+        except KeyError:
+            pass
+
+        return u''
+
     def __getitem__(self, name):
         if name:
             iface = queryUtility(IPageletType, name)

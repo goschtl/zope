@@ -283,6 +283,9 @@ Access nameless pagelet from view
 
 by default IPagelet
 
+  >>> print pagelet()
+  <div>My pagelet2</div>
+
   >>> print pagelet.publishTraverse(request, '')
   <div>My pagelet2</div>
 
