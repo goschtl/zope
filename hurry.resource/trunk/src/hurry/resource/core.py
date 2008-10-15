@@ -136,6 +136,7 @@ class NeededInclusions(object):
     def __init__(self):
         self._inclusions = []
         self._mode = None
+        self._rollup = False
         self._bottom = False
         self._force_bottom = False
         
@@ -153,6 +154,11 @@ class NeededInclusions(object):
         self._bottom = True
         if force:
             self._force_bottom = True
+
+    def rollup(self, disable=False):
+        if disable:
+            self._rollup = False
+        self._rollup = True
         
     def _sorted_inclusions(self):
         return reversed(sorted(self._inclusions, key=lambda i: i.depth()))
@@ -163,7 +169,8 @@ class NeededInclusions(object):
             inclusions.extend(inclusion.inclusions())
 
         inclusions = apply_mode(inclusions, self._mode)
-        inclusions = consolidate(inclusions)
+        if self._rollup:
+            inclusions = consolidate(inclusions)
         # sort only by extension, not dependency, as we can rely on
         # python's stable sort to keep inclusion order intact
         inclusions = sort_inclusions_by_extension(inclusions)
@@ -208,13 +215,18 @@ def mode(mode):
             interfaces.ICurrentNeededInclusions)()
     needed.mode(mode)
 
-def bottom(force=False):
+def bottom(force=False, disable=False):
     """Try to include resources at the bottom of the page, not just on top.
     """
     needed = component.getUtility(
             interfaces.ICurrentNeededInclusions)()
-    needed.bottom(force)
-    
+    needed.bottom(force, disable)
+
+def rollup(disable=False):
+    needed = component.getUtility(
+        interfaces.ICurrentNeededInclusions)()
+    needed.rollup(disable)
+
 def apply_mode(inclusions, mode):
     return [inclusion.mode(mode) for inclusion in inclusions]
 

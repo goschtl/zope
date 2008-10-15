@@ -4,7 +4,23 @@ CHANGES
 0.3 (unreleased)
 ================
 
-* ...
+Features added
+--------------
+
+* Consolidating resources into rollups is now disabled by
+  default. This is to help developers with debugging; rollups are
+  typically minified for optimization purposes, and libraries such as
+  YUI do not offer rollups in non-minified form. Since rollups must
+  now be explicitly enabled by the application developer
+  (``hurry.resource.rollup()``), an application developer who needs to
+  debug can choose not to call it (or call
+  ``hurry.resource.rollup(disable=True``).
+
+Bug fixes
+---------
+
+* ``hurry.resource.bottom`` now takes a second optional ``disable``
+  parameter.
 
 0.2 (2008-10-13)
 ================

@@ -377,13 +377,29 @@ resource::
   >>> b2 = ResourceInclusion(foo, 'b2.js')
   >>> giant = ResourceInclusion(foo, 'giant.js', supersedes=[b1, b2])
 
-If we find multiple resources that are also part of a consolidation, the
-system automatically collapses them::
+Rolling up of resources is not enabled by default, as sometimes a
+library only offers these rollups in minified form, and automatically
+rolling up would not be nice during debugging. It's therefore a
+performance feature you can enable.
+
+Without rollups enabled nothing special happens::
 
   >>> needed = NeededInclusions()
   >>> needed.need(b1)
   >>> needed.need(b2)
+  >>> needed.inclusions()
+  [<ResourceInclusion 'b1.js' in library 'foo'>, <ResourceInclusion 'b2.js' in library 'foo'>]
 
+Let's enable rollups::
+
+  >>> needed = NeededInclusions()
+  >>> needed.rollup()
+
+If we now find multiple resources that are also part of a
+consolidation, the system automatically collapses them::
+
+  >>> needed.need(b1)
+  >>> needed.need(b2)
   >>> needed.inclusions()
   [<ResourceInclusion 'giant.js' in library 'foo'>]
 
@@ -391,6 +407,7 @@ The system will by default only consolidate exactly. That is, if only a single
 resource out of two is present, the consolidation will not be triggered::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(b1)
   >>> needed.inclusions()
   [<ResourceInclusion 'b1.js' in library 'foo'>]
@@ -405,6 +422,7 @@ Let's look at this with a larger consolidation of 3 resources::
 It will not roll up one resource::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(c1)
   >>> needed.inclusions()
   [<ResourceInclusion 'c1.css' in library 'foo'>]
@@ -412,6 +430,7 @@ It will not roll up one resource::
 Neither will it roll up two resources::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(c1)
   >>> needed.need(c2)
   >>> needed.inclusions()
@@ -421,6 +440,7 @@ Neither will it roll up two resources::
 It will however roll up three resources::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(c1)
   >>> needed.need(c2)
   >>> needed.need(c3)
@@ -451,6 +471,7 @@ We will see ``giantd.js`` kick in even if we only require ``d1`` and
 ``d2``::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.inclusions()
@@ -460,6 +481,7 @@ In fact even if we only need a single resource the eager superseder will
 show up instead::
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.inclusions()
   [<ResourceInclusion 'giantd.js' in library 'foo'>]
@@ -471,6 +493,7 @@ be taken::
   >>> giantd_bigger = ResourceInclusion(foo, 'giantd-bigger.js', 
   ...   supersedes=[d1, d2, d3, d4], eager_superseder=True)
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.inclusions()
@@ -482,6 +505,7 @@ will be taken::
   >>> giantd_noneager = ResourceInclusion(foo, 'giantd-noneager.js',
   ...   supersedes=[d1, d2, d3, d4])
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(d1)
   >>> needed.need(d2)
   >>> needed.need(d3)
@@ -502,6 +526,7 @@ resources will be used::
   >>> giante_three = ResourceInclusion(foo, 'giante-three.js',
   ...   supersedes=[e1, e2, e3])
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(e1)
   >>> needed.need(e2)
   >>> needed.need(e3)
@@ -516,6 +541,7 @@ Consolidation also works with modes::
   ...                            debug='giantf-debug.js')
 
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(f1)
   >>> needed.need(f2)
   >>> needed.inclusions()
@@ -533,6 +559,7 @@ modes have no effect::
   >>> giantg = ResourceInclusion(foo, 'giantg.js', supersedes=[g1, g2],
   ...                            debug='giantg-debug.js')
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(g1)
   >>> needed.need(g2)
   >>> needed.inclusions()
@@ -548,6 +575,7 @@ does not? Let's look at that scenario::
   >>> h2 = ResourceInclusion(foo, 'h2.js', debug='h2-debug.js')
   >>> gianth = ResourceInclusion(foo, 'gianth.js', supersedes=[h1, h2])
   >>> needed = NeededInclusions()
+  >>> needed.rollup()
   >>> needed.need(h1)
   >>> needed.need(h2)
   >>> needed.inclusions()

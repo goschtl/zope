@@ -111,7 +111,16 @@ class INeededInclusions(Interface):
         NOTE: there is also a ``hurry.resource.mode`` function which
         can be used to set the mode for the currently needed inclusions.
         """
-        
+
+    def rollup(disable=False):
+        """Enable rolling up of resources.
+
+        If not called or called with disable set to ``True``,
+        resources are never consolidated into rollups.
+
+        If called, resources will be consolidated into rollups if possible.
+        """
+
     def inclusions():
         """Give all resource inclusions needed.
 
