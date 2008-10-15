@@ -1,15 +1,13 @@
-<div id="z-portal-workspace"
+<div id="z-preferences"
      tal:define="context nocall:maincontext;
                  nav provider:z3ext.preferences-navigation;
 		 noNav not:nav;
 		 rendered view/render">
-  <div class="z-page">
-    <table class="wide" tal:omit-tag="noNav">
-      <tr style="vertical-align: top" tal:omit-tag="noNav">
-	<td style="padding-right: 1em; width: 200px"
-	    tal:condition="nav" tal:content="structure nav"></td>
-	<td tal:omit-tag="noNav" tal:content="structure rendered"></td>
-      </tr>
-    </table>
-  </div>
+  <table class="z-prefs-layout" tal:omit-tag="noNav">
+    <tr tal:omit-tag="noNav">
+      <td class="z-prefs-nav-wrapper"
+	  tal:condition="nav" tal:content="structure nav"></td>
+      <td tal:omit-tag="noNav" tal:content="structure rendered"></td>
+    </tr>
+  </table>
 </div>

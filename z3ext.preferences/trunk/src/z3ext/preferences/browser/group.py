@@ -35,6 +35,7 @@ class PreferenceGroup(object):
 
         self.subgroups = subgroups
         self.hasFields = bool(schema.getFields(self.context.__schema__))
+        self.render = self.render()
 
 
 class PreferenceGroupView(PageletEditForm):

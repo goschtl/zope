@@ -96,4 +96,11 @@
      zcml:condition="installed z3c.breadcrumb"
      factory=".breadcrumb.PreferenceGroupBreadcrumb" />
 
+  <!-- styles -->
+  <z3ext:resourceinclude
+     name="z3ext-preferences.css"
+     library="z3ext"
+     type="stylesheet"
+     file="styles.css" filetype="zrt" />
+
 </configure>
