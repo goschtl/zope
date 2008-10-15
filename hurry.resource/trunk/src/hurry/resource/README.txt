@@ -433,6 +433,11 @@ Let's enable rollups::
   >>> needed = NeededInclusions()
   >>> needed.rollup()
 
+The convenience spelling to enable rollups during request handling
+looks like this::
+
+  hurry.resource.rollup()
+
 If we now find multiple resources that are also part of a
 consolidation, the system automatically collapses them::
 
