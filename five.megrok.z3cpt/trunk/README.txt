@@ -17,6 +17,6 @@ You are able to specify a filename as well:
 
    index = z3cpt.PageTemplate(filename="template.zpt")
 
-You are able to creating a template with the extension ``.zpt`` in
+You are able to create a template with the extension ``.zpt`` in
 your associated templates directory of your current module.
 
