@@ -2,12 +2,9 @@ from setuptools import setup, find_packages
 import sys, os
 
 setup(
-    name='z3c.relationfield',
+    name='z3c.relationfieldui',
     version='0.1dev',
-    description="A relation field framework.",
-    long_description="""z3c.relationfield defines a Zope 3 schema field to
-    manage relations, and a widget to set them. Relations are automatically
-    indexed and can be queried, using zc.relation as a base.""",
+    description="A widget for z3c.relationfield.",
     classifiers=[],
     keywords='',
     author='Martijn Faassen',
@@ -15,14 +12,12 @@ setup(
     license='',
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    namespace_packages=['z3c'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'grok',
-        'z3c.schema2xml',
-        'z3c.objpath',
-        'zc.relation',
+        'z3c.relationfield',
         ],
     entry_points={},
     )
