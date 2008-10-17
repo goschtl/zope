@@ -22,8 +22,20 @@ Let's set up a test application with content in it, including a relation
 from ``b`` to ``a``::
 
   >>> root = getRootFolder()['root'] = TestApp()
+  >>> from zope.app.component.site import LocalSiteManager
+  >>> root.setSiteManager(LocalSiteManager(root))
   >>> from zope.app.component.hooks import setSite
   >>> setSite(root)
+  >>> from zope.app.intid import IntIds
+  >>> from zope.app.intid.interfaces import IIntIds
+  >>> root['intids'] = intids = IntIds() 
+  >>> sm = root.getSiteManager()
+  >>> sm.registerUtility(intids, provided=IIntIds)
+  >>> from z3c.relationfield import RelationCatalog
+  >>> from zc.relation.interfaces import ICatalog
+  >>> root['catalog'] = catalog = RelationCatalog()
+  >>> sm.registerUtility(catalog, provided=ICatalog)
+
   >>> root['a'] = Item()
   >>> from z3c.relationfield import RelationValue
   >>> b = Item()
