@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2008 Zope Corporation and Contributors.
+# Copyright (c) 2007-2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Grok test helpers
+"""
+from zope.configuration.config import ConfigurationMachine
+from grokcore.component import zcml
 
-import grokcore.component
-from grokcore.component.interfaces import IContext
-
-from persistent import Persistent
-
-from zope.interface import implements
-
-from zope.app.component.site import SiteManagerContainer,  LocalSiteManager
-
-from zope.app.container.contained import Contained
-
-class Site(SiteManagerContainer):
-    pass
-
-class LocalUtility(Contained, Persistent):
-    implements(IContext)
+def grok(module_name):
+    config = ConfigurationMachine()
+    zcml.do_grok('grokcore.component.meta', config)
+    zcml.do_grok('grokcore.site.meta', config)
+    zcml.do_grok(module_name, config)
+    config.execute_actions()

@@ -13,7 +13,10 @@
 ##############################################################################
 
 from grokcore.site.directive import local_utility
+from grokcore.component import provides
 from grokcore.site.components import Site, LocalUtility
+
+import grokcore.site.testing
 
 from grokcore.site.interfaces import IGrokcoreSiteAPI
 __all__ = list(IGrokcoreSiteAPI)

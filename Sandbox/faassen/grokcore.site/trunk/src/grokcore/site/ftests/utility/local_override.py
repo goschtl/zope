@@ -18,22 +18,21 @@ grok.local_utility:
   >>> list(cave.getSiteManager().keys())
   [u'SpikyClub']
 """
-import grok
+import grokcore.site
 from zope import interface
-import persistent
 
 class IClub(interface.Interface):
     pass
 
-class Club(grok.LocalUtility):
-    grok.implements(IClub)
+class Club(grokcore.site.LocalUtility):
+    interface.implements(IClub)
 
-class SpikyClub(grok.LocalUtility):
-    grok.implements(IClub)
+class SpikyClub(grokcore.site.LocalUtility):
+    interface.implements(IClub)
 
-class Cave(grok.Model, grok.Site):
-    grok.local_utility(Club)
+class Cave(grokcore.site.Site):
+    grokcore.site.local_utility(Club)
 
 class SpikyCave(Cave):
-    grok.local_utility(SpikyClub)
+    grokcore.site.local_utility(SpikyClub)
 

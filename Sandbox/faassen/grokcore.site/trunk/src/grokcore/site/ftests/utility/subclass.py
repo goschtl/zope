@@ -38,7 +38,7 @@ Those do not influence the base class:
   >>> painting = component.getUtility(IPainting)
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.subclass.IPainting>, '')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.subclass.IPainting>, '')
 
 This works various levels of inheritance deep:
 
@@ -64,7 +64,7 @@ times through different routes:
   >>> bad_painting = component.getUtility(IPainting, 'bad')
 
 """
-import grok
+import grokcore.site
 from zope import interface
 
 class IFireplace(interface.Interface):
@@ -73,27 +73,27 @@ class IFireplace(interface.Interface):
 class IPainting(interface.Interface):
     pass
 
-class Fireplace(grok.LocalUtility):
-    grok.implements(IFireplace)
+class Fireplace(grokcore.site.LocalUtility):
+    interface.implements(IFireplace)
 
-class Painting(grok.LocalUtility):
-    grok.implements(IPainting)
+class Painting(grokcore.site.LocalUtility):
+    interface.implements(IPainting)
 
-class Cave(grok.Model, grok.Site):
+class Cave(grokcore.site.Site):
     # we use name_in_container here to prevent multiple registrations
     # since storing the utilities multiple times under the same name
     # would raise a DuplicationError
-    grok.local_utility(Fireplace, name_in_container='fireplace')
+    grokcore.site.local_utility(Fireplace, name_in_container='fireplace')
 
 class BigCave(Cave):
     pass
 
 class HollowCave(Cave):
-    grok.local_utility(Painting)
+    grokcore.site.local_utility(Painting)
 
 class VeryHollowCave(HollowCave):
-    grok.local_utility(Painting, name='great')
-    grok.local_utility(Painting, name='bad')
+    grokcore.site.local_utility(Painting, name='great')
+    grokcore.site.local_utility(Painting, name='bad')
 
 # this cave subclasses from Cave twice
 class ScaryCave(VeryHollowCave, Cave):

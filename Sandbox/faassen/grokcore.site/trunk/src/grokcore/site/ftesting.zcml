@@ -1,35 +1,16 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:grok="http://namespaces.zope.org/grok"
-   i18n_domain="grok"
-   package="grok"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="grokcore.site"
+   package="grokcore.site"
    >
 
-  <include package="grok" />
-  <grok:grok package="grok.ftests" />
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="grokcore.site" file="meta.zcml" />
 
-  <securityPolicy
-      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
-      />
-
-  <unauthenticatedPrincipal
-      id="zope.anybody"
-      title="Unauthenticated User"
-      />
-  <grant
-      permission="zope.View"
-      principal="zope.anybody"
-      />
-
-  <principal
-      id="zope.mgr"
-      title="Manager"
-      login="mgr"
-      password="mgrpw"
-      />
-
-  <role id="zope.Manager" title="Site Manager" />
-  <grantAll role="zope.Manager" />
-  <grant role="zope.Manager" principal="zope.mgr" />
+  <include package="zope.app.zcmlfiles" />
+  <include package="grokcore.site" />
+  <grok:grok package="grokcore.site.ftests" />
 
 </configure>

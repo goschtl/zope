@@ -32,6 +32,11 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
+                      'zope.app.component',
                       'grokcore.component',
+
+                      # for ftests:
+                      # TODO move these to extra_requires?
+                      'zope.app.zcmlfiles',
                       ],
 )

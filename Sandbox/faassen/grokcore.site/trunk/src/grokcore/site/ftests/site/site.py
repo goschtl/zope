@@ -34,16 +34,18 @@ When a site is added to a container it will be initialized as a site
   >>> ISite.providedBy(herd)
   True
 """
-import grok
+import grokcore.site
+from persistent import Persistent
+from zope.app.container.btree import BTreeContainer
 
-class Mammoth(grok.Model, grok.Site):
+class Mammoth(grokcore.site.Site):
     pass
 
-class Herd(grok.Container, grok.Site):
+class Herd(grokcore.site.Site):
     pass
 
-class NonSite(grok.Model):
+class NonSite(Persistent):
     pass
 
-class NonSiteContainer(grok.Container):
+class NonSiteContainer(BTreeContainer):
     pass

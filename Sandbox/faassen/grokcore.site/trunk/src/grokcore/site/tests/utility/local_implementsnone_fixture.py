@@ -1,8 +1,8 @@
-import grok
+import grokcore.site
 from zope import interface
 
 class Fireplace(object):
     pass
 
-class Cave(grok.Model, grok.Site):
-    grok.local_utility(Fireplace)
+class Cave(grokcore.site.Site):
+    grokcore.site.local_utility(Fireplace)

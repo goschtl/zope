@@ -25,17 +25,20 @@ name_in_container can also be used for objects stored under the site manager
 
 """
 
-import grok
+import grokcore.site
 from zope import interface
+from zope.app.container.btree import BTreeContainer
 
 class IFireplace(interface.Interface):
     pass
 
-class Fireplace(grok.LocalUtility):
-    grok.implements(IFireplace)
+class Fireplace(grokcore.site.LocalUtility):
+    interface.implements(IFireplace)
     
-class Cave(grok.Container, grok.Site):
-    grok.local_utility(Fireplace, public=True, name_in_container='fireplace')
+class Cave(BTreeContainer, grokcore.site.Site):
+    grokcore.site.local_utility(Fireplace, public=True,
+                                name_in_container='fireplace')
 
-class Cave2(grok.Container, grok.Site):
-    grok.local_utility(Fireplace, public=False, name_in_container='fireplace')
+class Cave2(BTreeContainer, grokcore.site.Site):
+    grokcore.site.local_utility(Fireplace, public=False,
+                                name_in_container='fireplace')

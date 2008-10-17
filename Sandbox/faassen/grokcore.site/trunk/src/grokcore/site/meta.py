@@ -23,9 +23,6 @@ from martian import util
 
 import grokcore.site
 
-from grokcore.view.meta.views import (
-    default_view_name, default_fallback_to_name)
-
 class SiteGrokker(martian.ClassGrokker):
     martian.component(grokcore.site.Site)
     martian.priority(500)

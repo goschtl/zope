@@ -1,14 +1,15 @@
 import re
 import unittest
-import grok
 import os.path
+
+import grokcore.site
 
 from pkg_resources import resource_listdir
 from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
-ftesting_zcml = os.path.join(os.path.dirname(grok.__file__), 'ftesting.zcml')
+ftesting_zcml = os.path.join(os.path.dirname(grokcore.site.__file__), 'ftesting.zcml')
 GrokFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'GrokFunctionalLayer',
                                 allow_teardown=True)
 
@@ -51,7 +52,7 @@ def suiteFromPackage(name):
         if filename == '__init__.py':
             continue
 
-        dottedname = 'grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grokcore.site.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
@@ -70,8 +71,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['xmlrpc', 'traversal', 'form', 'url', 'security',
-                 'utility', 'catalog', 'site', 'rest', 'viewlet']:
+    for name in ['utility', 'site']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

@@ -57,39 +57,39 @@ Since it is a local utility, it is not available outside its site:
   >>> component.getUtility(IFireplace)
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IFireplace>, '')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IFireplace>, '')
 
   >>> component.getUtility(IClub)
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IClub>, '')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IClub>, '')
 
   >>> component.getUtility(IClub, name='spiky')
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IClub>, 'spiky')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IClub>, 'spiky')
 
   >>> component.getUtility(IMammoth)
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IMammoth>, '')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IMammoth>, '')
 
   >>> component.getUtility(IMammoth, name='tiger')
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IMammoth>, 'tiger')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IMammoth>, 'tiger')
 
   >>> component.getUtility(IPainting, name='blackandwhite')
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IPainting>, 'blackandwhite')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IPainting>, 'blackandwhite')
 
   >>> component.getUtility(IPainting, name='color')
   Traceback (most recent call last):
     ...
-  ComponentLookupError: (<InterfaceClass grok.ftests.utility.local.IPainting>, 'color')
+  ComponentLookupError: (<InterfaceClass grokcore.site.ftests.utility.local.IPainting>, 'color')
 """
-import grok
+import grokcore.site
 from zope import interface
 import persistent
 
@@ -105,37 +105,37 @@ class ISpiky(interface.Interface):
 class IMammoth(interface.Interface):
     pass
 
-class Fireplace(grok.LocalUtility):
-    grok.implements(IFireplace)
+class Fireplace(grokcore.site.LocalUtility):
+    interface.implements(IFireplace)
 
 class Club(object):
-    grok.implements(IClub)
+    interface.implements(IClub)
 
 class SpikyClub(object):
-    grok.implements(IClub, ISpiky)
+    interface.implements(IClub, ISpiky)
 
-class Mammoth(grok.LocalUtility):
-    grok.implements(IMammoth, IClub)
+class Mammoth(grokcore.site.LocalUtility):
+    interface.implements(IMammoth, IClub)
 
-class SabretoothTiger(grok.LocalUtility):
-    grok.implements(IMammoth, IClub)
-    grok.provides(IMammoth)
+class SabretoothTiger(grokcore.site.LocalUtility):
+    interface.implements(IMammoth, IClub)
+    grokcore.site.provides(IMammoth)
 
 class IPainting(persistent.interfaces.IPersistent):
     pass
 
-class CavePainting(grok.LocalUtility):
-    grok.implements(IPainting)
+class CavePainting(grokcore.site.LocalUtility):
+    interface.implements(IPainting)
 
-class ColoredCavePainting(grok.LocalUtility):
-    grok.implements(IPainting)
-    grok.provides(IPainting)
+class ColoredCavePainting(grokcore.site.LocalUtility):
+    interface.implements(IPainting)
+    grokcore.site.provides(IPainting)
 
-class Cave(grok.Model, grok.Site):
-    grok.local_utility(Fireplace)
-    grok.local_utility(Club)
-    grok.local_utility(SpikyClub, provides=IClub, name='spiky')
-    grok.local_utility(Mammoth, provides=IMammoth)
-    grok.local_utility(SabretoothTiger, name='tiger')
-    grok.local_utility(CavePainting, name='blackandwhite', provides=IPainting)
-    grok.local_utility(ColoredCavePainting, name='color')
+class Cave(grokcore.site.Site):
+    grokcore.site.local_utility(Fireplace)
+    grokcore.site.local_utility(Club)
+    grokcore.site.local_utility(SpikyClub, provides=IClub, name='spiky')
+    grokcore.site.local_utility(Mammoth, provides=IMammoth)
+    grokcore.site.local_utility(SabretoothTiger, name='tiger')
+    grokcore.site.local_utility(CavePainting, name='blackandwhite', provides=IPainting)
+    grokcore.site.local_utility(ColoredCavePainting, name='color')

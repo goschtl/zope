@@ -15,7 +15,8 @@
 """
 
 import grokcore.component
-import grokcore.site
+
+from grokcore.site.components import LocalUtility
 
 from zope import interface
 from zope.interface.interfaces import IInterface
@@ -38,9 +39,8 @@ class local_utility(martian.Directive):
             provides = grokcore.component.provides.bind().get(factory)
 
         if provides is None:
-            if util.check_subclass(factory, grokcore.site.LocalUtility):
-                baseInterfaces = interface.implementedBy(
-                    grokcore.site.LocalUtility)
+            if util.check_subclass(factory, LocalUtility):
+                baseInterfaces = interface.implementedBy(LocalUtility)
                 utilityInterfaces = interface.implementedBy(factory)
                 provides = list(utilityInterfaces - baseInterfaces)
 

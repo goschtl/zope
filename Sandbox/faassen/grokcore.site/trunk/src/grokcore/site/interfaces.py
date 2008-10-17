@@ -33,7 +33,11 @@ class IDirectives(Interface):
                  The site should in this case be a container.
         name_in_container - the name to use for storing the utility
         """
-
+        
+    def provides(interface):
+        """Explicitly specify with which interface a component will be
+        looked up."""
+    
 class IGrokcoreSiteAPI(IBaseClasses, IDirectives):
     """grokcore.site's public API."""
 
