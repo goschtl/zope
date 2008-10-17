@@ -11,8 +11,8 @@ long_description = (
     )
 
 setup(
-    name='grokcore.component',
-    version='1.6dev',
+    name='grokcore.site',
+    version='0.9dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
@@ -32,10 +32,6 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'martian >= 0.10',
-                      'zope.component',
-                      'zope.configuration',
-                      'zope.interface',
-                      'zope.event', # for tests
+                      'grokcore.component',
                       ],
 )
