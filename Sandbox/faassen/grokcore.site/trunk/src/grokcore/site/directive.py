@@ -14,20 +14,13 @@
 """Grok directives.
 """
 
-import sys
 import grok
 from zope import interface
 from zope.interface.interfaces import IInterface
-from zope.interface.interface import TAGGED_DATA
-
-from zope.publisher.interfaces.browser import IBrowserView
 
 import martian
 from martian import util
-from martian.error import GrokImportError, GrokError
-from martian.directive import StoreOnce, StoreMultipleTimes
-from grokcore.component.scan import UnambiguousComponentScope
-from grok import components
+from martian.error import GrokImportError
 
 class local_utility(martian.Directive):
     scope = martian.CLASS

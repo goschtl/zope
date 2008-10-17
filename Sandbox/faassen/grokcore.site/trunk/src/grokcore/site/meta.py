@@ -11,54 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Grokkers for the various components."""
 
-import zope.component.interface
-from zope import interface, component
-from zope.publisher.interfaces.browser import (IDefaultBrowserLayer,
-                                               IBrowserRequest,
-                                               IBrowserPublisher)
-from zope.publisher.interfaces.http import IHTTPRequest
+from zope import component
 
-from zope.publisher.interfaces.xmlrpc import IXMLRPCRequest
-from zope.viewlet.interfaces import IViewletManager, IViewlet
-from zope.securitypolicy.interfaces import IRole
-from zope.securitypolicy.rolepermission import rolePermissionManager
-
-from zope.annotation.interfaces import IAnnotations
-
-from zope.app.publisher.xmlrpc import MethodPublisher
-from zope.app.container.interfaces import IContainer
+from zope.app.container.interfaces import IContainer, IObjectAddedEvent
 from zope.app.container.interfaces import INameChooser
-from zope.app.container.contained import contained
-
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
-from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.interfaces import ICatalog
-
-from zope.exceptions.interfaces import DuplicationError
 
 import martian
 from martian.error import GrokError
 from martian import util
 
-import grok
-from grok import components
-from grok.util import make_checker
-from grok.interfaces import IRESTSkinType
-from grok.interfaces import IViewletManager as IGrokViewletManager
-
-from grokcore.component.scan import determine_module_component
-from grokcore.security.meta import PermissionGrokker
+import grokcore.site
 
 from grokcore.view.meta.views import (
     default_view_name, default_fallback_to_name)
 
 class SiteGrokker(martian.ClassGrokker):
-    martian.component(grok.Site)
+    martian.component(grokcore.site.Site)
     martian.priority(500)
-    martian.directive(grok.local_utility, name='infos')
+    martian.directive(grokcore.site.local_utility, name='infos')
 
     def execute(self, factory, config, infos, **kw):
         if not infos:
@@ -76,7 +47,7 @@ class SiteGrokker(martian.ClassGrokker):
         # site class. They will be picked up by a subscriber doing the
         # actual registrations in definition order.
         factory.__grok_utilities_to_install__ = sorted(infos)
-        adapts = (factory, grok.IObjectAddedEvent)
+        adapts = (factory, IObjectAddedEvent)
 
         config.action(
             discriminator=None,
