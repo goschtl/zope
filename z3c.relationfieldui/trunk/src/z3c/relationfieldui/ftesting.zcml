@@ -6,7 +6,7 @@
    >
 
   <include package="grok" />
-  <include package="z3c.relationfield" />
+  <include package="z3c.relationfieldui" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy

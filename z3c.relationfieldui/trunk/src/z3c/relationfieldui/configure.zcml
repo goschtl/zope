@@ -4,6 +4,7 @@
 
   <include package="grok" file="meta.zcml" />
   <include package="grok" />
+  <include package="z3c.relationfield" />
 
   <grok:grok package="."/>
   
