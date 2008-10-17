@@ -38,17 +38,6 @@ tal:define, tal:attributes, tal:content, tal:replace
       Hello World!
     </div>
 
-path expressions
-
-  >>> print render("""\
-  ... <div xmlns="http://www.w3.org/1999/xhtml"
-  ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
-  ...   <span tal:content="path: a/b/c"/>
-  ... </div>""", a={'b':{'c':'see'}})
-   <div>
-      <span>see</span>
-   </div>
-
 tal:attributes 'checked' and 'selected' toggles
 
   >>> print render("""\
