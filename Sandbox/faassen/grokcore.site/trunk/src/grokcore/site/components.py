@@ -12,18 +12,21 @@
 #
 ##############################################################################
 
-from zope import component
-from zope import interface
+import grokcore.component
+from grokcore.component.interfaces import IContext
+
+from persistent import Persistent
+
+from zope.interface import implements
+from zope.app.component.site import SiteManagerContainer,  LocalSiteManager
 
 from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.interfaces import IOrderedContainer
-from zope.app.component.site import SiteManagerContainer
-from zope.app.component.site import LocalSiteManager
+from zope.app.container.contained import Contained
 
 class Site(SiteManagerContainer):
     pass
 
-@component.adapter(Site, IObjectAddedEvent)
+@grokcore.component.subscribe(Site, IObjectAddedEvent)
 def addSiteHandler(site, event):
     sitemanager = LocalSiteManager(site)
     # LocalSiteManager creates the 'default' folder in its __init__.
@@ -32,5 +35,5 @@ def addSiteHandler(site, event):
     del sitemanager['default']
     site.setSiteManager(sitemanager)
 
-class LocalUtility(Model):
-    pass
+class LocalUtility(Contained, Persistent):
+    implements(IContext)

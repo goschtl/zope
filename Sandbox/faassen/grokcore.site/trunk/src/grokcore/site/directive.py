@@ -14,7 +14,9 @@
 """Grok directives.
 """
 
-import grok
+import grokcore.component
+import grokcore.site
+
 from zope import interface
 from zope.interface.interfaces import IInterface
 
@@ -33,11 +35,12 @@ class local_utility(martian.Directive):
                                   "provides argument of %s." % self.name)
 
         if provides is None:
-            provides = grok.provides.bind().get(factory)
+            provides = grokcore.component.provides.bind().get(factory)
 
         if provides is None:
-            if util.check_subclass(factory, grok.LocalUtility):
-                baseInterfaces = interface.implementedBy(grok.LocalUtility)
+            if util.check_subclass(factory, grokcore.site.LocalUtility):
+                baseInterfaces = interface.implementedBy(
+                    grokcore.site.LocalUtility)
                 utilityInterfaces = interface.implementedBy(factory)
                 provides = list(utilityInterfaces - baseInterfaces)
 
@@ -88,9 +91,3 @@ class LocalUtilityInfo(object):
         # LocalUtilityInfos have an inherit sort order by which the
         # registrations take place.
         return cmp(self.order, other.order)
-
-
-class site(martian.Directive):
-    scope = martian.CLASS
-    store = martian.ONCE
-    validate = martian.validateInterfaceOrClass
