@@ -40,19 +40,22 @@ def main():
     from zopyx.convert2.registry import availableConverters
 
     for fullname in ('Andreas Jung', 'Heinz Becker', 'Hilde Becker'):
+        for debug in (False, True):
+            styles= debug and ['business_card.css', 'debug.css'] or ['business_card.css']
+            ext = debug and '_debug' or ''
 
-        context = TestContent()
-        result = convert(context=context,
-                         html='',
-                         styles=['business_card.css'],
-                         resource_name='demo',
-                         converter='pdf-prince',
-                         template_options=dict(fullname=fullname),
-                         destination_filename=os.path.join(os.getcwd(), '%s.pdf' % fullname),
-                        )
-                        
-        print 'Generated:', os.path.abspath(result)
-        print
+            context = TestContent()
+            result = convert(context=context,
+                             html='',
+                             styles=styles,
+                             resource_name='demo',
+                             converter='pdf-prince',
+                             template_options=dict(fullname=fullname),
+                             destination_filename=os.path.join(os.getcwd(), '%s%s.pdf' % (fullname, ext)),
+                            )
+                            
+            print 'Generated:', os.path.abspath(result)
+            print
 
 if __name__ == '__main__':
     import sys
