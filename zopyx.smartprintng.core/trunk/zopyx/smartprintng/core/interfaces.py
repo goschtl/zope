@@ -48,4 +48,12 @@ class IHTMLExtractor(Interface):
             is implemented by an utility.
         """
 
+class ITemplateOptionProvider(Interface):
+    """ An extended version of IHTMLExtractor """
+
+    def getTemplateOptions():
+        """ Returns a dict of options to passed into the template
+            for rendering. We assume that the template is able to
+            render the contents itself.
+        """
 
