@@ -34,13 +34,13 @@ ztapi.provideAdapter(ITestContent, IImageFetcher, ExternalImageFetcher)
 from zopyx.smartprintng.core import resources
 
 def main():
+
     resources_configuration_file = os.path.join(os.path.dirname(__file__), 'resources', 'resources.ini')
     resources.registerResource(ITestContent, resources_configuration_file)
 
-    from zopyx.convert2.registry import availableConverters
-
     for fullname in ('Andreas Jung', 'Heinz Becker', 'Hilde Becker'):
         for debug in (False, True):
+
             styles= debug and ['business_card.css', 'debug.css'] or ['business_card.css']
             ext = debug and '_debug' or ''
 
