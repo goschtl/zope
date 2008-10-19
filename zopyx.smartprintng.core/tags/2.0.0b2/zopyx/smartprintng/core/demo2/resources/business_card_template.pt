@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <tal:loop repeat="css options/stylesheets">
+            <style type="text/css"
+                   tal:content="structure options/stylesheets/?css"  
+            />
+        </tal:loop>
+    </head>
+    <body>
+        <div id="logo">
+
+            <img src="http://zopyx.com/test_resources/zopyx1.png" />
+        </div>
+        <div id="desc">
+            <ul>
+                <li>
+            Python, Zope &amp; Plone
+                </li>
+                <li>
+            Software Development
+                </li>
+                <li>
+            Training and Coaching
+                <li>
+            E-Publishing, Web-to-Print
+            </li>
+        </ul>
+        </div>
+            
+        <div id="address">
+            <span tal:replace="options/fullname | nothing">Andreas Jung</span>
+            <br/>
+            Charlottenstr. 37/1
+            <br/>
+            D-72070 T&uuml;bingen
+            <br/>
+            Tel. +49-(0)7071-793257
+            <br/>
+            Fax. +49-(0)7071-7936840
+            <br/>
+            E-Mail: info@zopyx.com
+            <br/>
+            Web: www.zopyx.com
+         </div>
+    </body>
+</html>
