@@ -21,8 +21,6 @@ class ITestContent(Interface):
 class TestContent(object):
     implements(ITestContent)
 
-html = file(os.path.join(os.path.dirname(__file__), 'demo.html')).read()
-
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
 
@@ -32,17 +30,15 @@ def main():
 
     from zopyx.convert2.registry import availableConverters
 
-    for c in availableConverters():
+    for fullname in ('Andreas Jung', 'Heinz Becker', ' Hilde Becker'):
 
-        print 'Converter: %s' % c
         context = TestContent()
         result = convert(context=context,
-                         html=html,
-                         aggregator_name='foo',
-                         styles=['fop_styles.css', 'demo_styles.css'],
-                         transformations=['zopyx.smartprintng.imageremover', 'zopyx.smartprintng.pagebreaker'],
+                         html='',
+                         styles=['business_card.css'],
                          resource_name='demo',
-                         converter=c,
+                         converter='pdf-prince',
+                         template_options=dict(fullname=fullname),
                         )
                         
         print 'Generated:', os.path.abspath(result)
