@@ -7,12 +7,19 @@
 
 
 import os
+from zope.interface import Interface, implements
 
 # initialize/register all HTML transformations
 import zopyx.smartprintng.core.transformation
 from zopyx.smartprintng.core.highlevel import convert
+from zopyx.smartprintng.core.interfaces import IImageFetcher
+from zopyx.smartprintng.core.adapters import ExternalImageFetcher
 
-from zope.interface import Interface, implements
+from zope.app.testing import ztapi
+
+from zopyx.smartprintng.core.renderer import Renderer
+from zopyx.smartprintng.core.interfaces import IImageFetcher
+from zopyx.smartprintng.core.adapters import ExternalImageFetcher
 
 
 class ITestContent(Interface):
@@ -20,6 +27,8 @@ class ITestContent(Interface):
 
 class TestContent(object):
     implements(ITestContent)
+
+ztapi.provideAdapter(ITestContent, IImageFetcher, ExternalImageFetcher)
 
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
@@ -39,7 +48,7 @@ def main():
                          resource_name='demo',
                          converter='pdf-prince',
                          template_options=dict(fullname=fullname),
-                         destination_filename='%s.pdf' % fullname,
+                         destination_filename=os.path.join(os.getcwd(), '%s.pdf' % fullname),
                         )
                         
         print 'Generated:', os.path.abspath(result)
