@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.0b2 (19.10.2008)
+--------------------
+
+* added demo2 application for generating business cards as PDF
+* now dealingn with images defined within a HTML template instead
+  of the HTML snippet only
+
 2.0.0b1 (05.10.2008)
 --------------------
 
