@@ -103,7 +103,10 @@ class Renderer(object):
 
         # Download remote images and make them local 
         # ATT: handling of local images
-        soup = self.makeImagesLocal(soup)
+        # moved code to the end of the pipline because
+        # the render template might also contain images
+        # soup = self.makeImagesLocal(soup)
+
 
         # now pass the modified HTML fragment to the template
         # in order to render a proper HTML document
@@ -123,6 +126,13 @@ class Renderer(object):
         rendered_html = template(**params)
         if beautify_html:
             rendered_html = BeautifulSoup(rendered_html).prettify()
+
+        # Download remote images and make them local 
+        # ATT: handling of local images
+        soup2 = BeautifulSoup(rendered_html)    
+        soup2 = self.makeImagesLocal(soup2)
+        rendered_html = soup2.renderContents()
+        
         self.rendered_html = rendered_html
         return self.rendered_html
 
@@ -176,3 +186,4 @@ class Renderer(object):
         pil_img.save(new_img_path, 'PNG')
         del pil_img
         LOG.debug('Image %s stored as %s' % (src, new_img_path))
+        return new_img_path
