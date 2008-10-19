@@ -1,1 +1,2 @@
-A small application showing the basic usage of the SmartPrintNG API
+A small demonstration showing  how to generate simple business cards
+as PDF (requires(!) PrinceXML).
