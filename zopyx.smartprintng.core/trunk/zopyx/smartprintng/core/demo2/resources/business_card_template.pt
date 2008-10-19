@@ -41,5 +41,11 @@
             <br/>
             Web: www.zopyx.com
          </div>
-    </body>
+         <svg viewBox="0 0 200 200" 
+             width="5cm" height="5cm">
+      <g fill="none" stroke="gray" stroke-width="20">
+     <circle cx="100" cy="100" r="100"/>
+ </g>
+ </svg>
+  </body>
 </html>

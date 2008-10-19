@@ -39,23 +39,27 @@ def main():
     resources.registerResource(ITestContent, resources_configuration_file)
 
     for fullname in ('Andreas Jung', 'Heinz Becker', 'Hilde Becker'):
-        for debug in (False, True):
+        for orientation in (0, 1):
+            for debug in (False, True):
 
-            styles= debug and ['business_card.css', 'debug.css'] or ['business_card.css']
-            ext = debug and '_debug' or ''
+                css = orientation == 1 and 'business_card.css' or  'business_card2.css'
+                orientation_ext = orientation==1 and '_landscape' or '_upside'
+                styles= debug and [css, 'debug.css'] or [css]
+                ext = debug and '_debug' or ''
 
-            context = TestContent()
-            result = convert(context=context,
-                             html='',
-                             styles=styles,
-                             resource_name='demo',
-                             converter='pdf-prince',
-                             template_options=dict(fullname=fullname),
-                             destination_filename=os.path.join(os.getcwd(), '%s%s.pdf' % (fullname, ext)),
-                            )
-                            
-            print 'Generated:', os.path.abspath(result)
-            print
+                context = TestContent()
+                result = convert(context=context,
+                                 html='',
+                                 styles=styles,
+                                 resource_name='demo',
+                                 converter='pdf-prince',
+                                 template_options=dict(fullname=fullname),
+                                 destination_filename=os.path.join(os.getcwd(), 
+                                                                   '%s%s%s.pdf' % (fullname, orientation_ext, ext)),
+                                )
+                                
+                print 'Generated:', os.path.abspath(result)
+                print
 
 if __name__ == '__main__':
     import sys
