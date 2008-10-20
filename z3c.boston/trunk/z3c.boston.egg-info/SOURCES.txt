@@ -19,4 +19,6 @@ z3c/boston/demo.py
 z3c/boston/ftesting.zcml
 z3c/boston/testing.py
 z3c/boston/tests.py
+z3c/boston/resources/demo.css
+z3c/boston/resources/demo.js
 z3c/boston/templates/layout.pt
