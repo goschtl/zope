@@ -1,0 +1,26 @@
+Metadata-Version: 1.0
+Name: z3c.rotterdam
+Version: 1.0.1devdev
+Summary: A version of the rotterdam skin which supports z3c.pagelet and z3c.form
+Home-page: http://pypi.python.org/pypi/z3c.rotterdam
+Author: Kevin Gill and the Zope Community
+Author-email: zope-dev@zope.org
+License: ZPL 2.1
+Description: Introduction
+        ============
+        
+        A version of the rotterdam skin which supports z3c.pagelet and z3c.form
+        
+        Changelog
+        =========
+        
+        1.0.1dev - Unreleased
+        ----------------
+        
+        * Initial release
+        
+        
+Keywords: zope3 pagelet form skin
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

@@ -1,0 +1,73 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.rotterdam">
+
+  <!-- Include the Rotterdam Skin and its dependencies -->
+  <include package="zope.app.rotterdam" />
+
+  <!-- dependencies for z3c.rotterdam -->
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="z3c.zrtresource" file="meta.zcml"/>
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+
+  <include package="zope.contentprovider"/>
+  <include package="z3c.pagelet" />
+  <include package="z3c.formui" />
+  <include package="z3c.form" />
+  <include package="jquery.layer" />
+  <include package="z3c.formjs"/>
+
+  <!-- Configure for the z3c.rotterdam skin -->
+
+  <interface
+      interface=".IPageletLayer"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      />
+
+  <interface
+      interface=".Rotterdam"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="z3c_rotterdam"
+      />
+
+  <z3c:layout
+      for="*"
+      layer=".Rotterdam"
+      template="templates/template_tablelayout.pt"
+      />
+
+  <browser:page
+      for="*"
+      name="skin_macros"
+      permission="zope.View"
+      template="templates/template_tablelayout.pt"
+      layer=".Rotterdam"
+      />
+
+  <!-- The rotterdam needs to have the viewlet managers
+      to support zope.viewlet.viewlet.CSSViewlet and
+      zope.viewlet.viewlet.JavascriptViewlet -->
+
+  <browser:viewletManager
+      name="ICSS"
+      provides=".ICSS"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".Rotterdam"
+      permission="zope.Public"
+      />
+
+  <browser:viewletManager
+      name="IJavaScript"
+      provides=".IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".Rotterdam"
+      permission="zope.Public"
+      />
+
+</configure>
+

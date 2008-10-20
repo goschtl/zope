@@ -1,0 +1,16 @@
+README.txt
+setup.cfg
+setup.py
+z3c/__init__.py
+z3c.rotterdam.egg-info/PKG-INFO
+z3c.rotterdam.egg-info/SOURCES.txt
+z3c.rotterdam.egg-info/dependency_links.txt
+z3c.rotterdam.egg-info/entry_points.txt
+z3c.rotterdam.egg-info/namespace_packages.txt
+z3c.rotterdam.egg-info/not-zip-safe
+z3c.rotterdam.egg-info/requires.txt
+z3c.rotterdam.egg-info/top_level.txt
+z3c/rotterdam/__init__.py
+z3c/rotterdam/demo.py
+z3c/rotterdam/testing.py
+z3c/rotterdam/tests.py

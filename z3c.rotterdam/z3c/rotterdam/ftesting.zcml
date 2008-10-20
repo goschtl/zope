@@ -1,0 +1,98 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.rotterdam"
+    package="z3c.rotterdam"
+    >
+
+  <!-- This file is the equivalent of site.zcml and it is -->
+  <!-- used for functional testing setup -->
+
+  <include package="zope.app.onlinehelp" file="meta.zcml"/>
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.onlinehelp"/>
+  <include package="zope.app.authentication" />
+  <include package="zope.contentprovider" />
+  <include package="zope.app.dtmlpage" />
+
+  <include package="z3c.rotterdam" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <z3c:pagelet
+      name="demo.html"
+      for="*"
+      class=".demo.DemoPagelet"
+      permission="zope.Public"
+      />
+
+  <browser:resource
+      name="demo.css"
+      file="resources/demo.css"
+      />
+
+  <browser:resource
+      name="demo.js"
+      file="resources/demo.js"
+      />
+
+  <browser:viewlet
+      name="demo.css"
+      for="*"
+      manager=".ICSS"
+      class=".demo.DemoCSSViewlet"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      name="demo.js"
+      for="*"
+      manager=".IJavaScript"
+      class=".demo.DemoJSViewlet"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="demo_form.html"
+      for="*"
+      class=".demo.DemoForm"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="demo_formjs.html"
+      for="*"
+      class=".demo.DemoFormJS"
+      permission="zope.Public"
+      />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+  <grantAll role="zope.Manager" />
+
+  <include package="zope.app.securitypolicy.tests" file="functional.zcml" />
+
+  <!-- Principal that tests generally run as -->
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw" />
+
+  <!-- Bootstrap principal used to make local grant to the principal above -->
+  <principal
+      id="zope.globalmgr"
+      title="Manager"
+      login="globalmgr"
+      password="globalmgrpw" />
+
+  <grant role="zope.Manager" principal="zope.globalmgr" />
+
+</configure>
