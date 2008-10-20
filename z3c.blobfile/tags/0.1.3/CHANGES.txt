@@ -1,0 +1,35 @@
+=======
+CHANGES
+=======
+
+Version 0.1.3 (2008-10-20)
+--------------------------
+
+- Bug: Don't get/set image data twice on Image initialization.
+- Cache file size and invalidate it on write access.
+- Download file/image using new openDetached method that provides
+  read-only file-like access to the blob, detached from the database
+  connection.
+
+Version 0.1.2 (2008-09-11)
+--------------------------
+
+- Bug: Set i18n domain in "overrides.zcml" to avoid warnings.
+- Don't expose Blob implementation details in add/upload forms. Also, "zope"
+  translation domain has no translations for "Upload a File (Blob)", it just
+  has "Upload a File" translations, so use it.
+
+Version 0.1.1 (2008-09-08)
+--------------------------
+
+- Bug: Register zope.app.wsgi.fileresult.FileResult as an adapter for BlobFile,
+  making optimized file views really work.
+- Bug: Also use optimized file view for z3c.blobfile.image.Image.
+- Bug: Make blob versions of File and Image implement IBlobFile and
+  IBlobImage interfaces respectively. This enables z3c.blobfile's views.
+- Bug: Use local ZopeMessageFactory. This fixes import error on Zope 2.10
+
+Version 0.1.0 (2008-02-27)
+--------------------------
+
+- Initial Release
