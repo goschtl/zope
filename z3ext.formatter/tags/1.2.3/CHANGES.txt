@@ -1,0 +1,54 @@
+=======
+CHANGES
+=======
+
+1.2.3 (2008-10-20)
+------------------
+
+- Added translations: nl, ru
+
+
+1.2.2 (2008-10-10)
+------------------
+
+- Use new i18n domain z3ext.formatter
+
+
+1.2.1 (2008-05-16)
+------------------
+
+- Replace 'autoinclude' with 'includeDependendcies'
+
+
+1.2.0 (2008-03-25)
+------------------
+
+- Use z3c.autoinclude
+
+- Code moved to svn.zope.org
+
+
+1.1.2 (2008-03-06)
+------------------
+
+- Fixed bug in fancyDatetime formatter
+
+
+1.1.1 (2008-02-05)
+------------------
+
+- Added 'Timezones' vocabulary
+
+- Cleanup code
+
+
+1.1.0 (2007-12-21)
+------------------
+
+- Added controlpanel configlet
+
+
+1.0.0 (2007-12-07)
+------------------
+
+- Initial release.
