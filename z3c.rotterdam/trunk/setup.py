@@ -39,12 +39,6 @@ setup(name='z3c.rotterdam',
           'jquery.javascript',
           'jquery.layer',
 
-          'zope.app.testing',
-          'zope.testbrowser',
-          'zope.app.dtmlpage',
-          'zope.app.onlinehelp',
-          'zope.app.securitypolicy',
-          'zope.app.zcmlfiles'
       ],
       extras_require = dict(
             test = [

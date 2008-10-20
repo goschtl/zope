@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: z3c.rotterdam
-Version: 1.0.1devdev
+Version: 1.0.1devdev-r92401
 Summary: A version of the rotterdam skin which supports z3c.pagelet and z3c.form
 Home-page: http://pypi.python.org/pypi/z3c.rotterdam
 Author: Kevin Gill and the Zope Community

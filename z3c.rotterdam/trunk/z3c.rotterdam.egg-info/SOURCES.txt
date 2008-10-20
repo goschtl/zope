@@ -1,6 +1,7 @@
 README.txt
 setup.cfg
 setup.py
+docs/HISTORY.txt
 z3c/__init__.py
 z3c.rotterdam.egg-info/PKG-INFO
 z3c.rotterdam.egg-info/SOURCES.txt
@@ -10,7 +11,14 @@ z3c.rotterdam.egg-info/namespace_packages.txt
 z3c.rotterdam.egg-info/not-zip-safe
 z3c.rotterdam.egg-info/requires.txt
 z3c.rotterdam.egg-info/top_level.txt
+z3c/rotterdam/README.txt
 z3c/rotterdam/__init__.py
+z3c/rotterdam/configure.zcml
+z3c/rotterdam/default_skin.zcml
 z3c/rotterdam/demo.py
+z3c/rotterdam/ftesting.zcml
 z3c/rotterdam/testing.py
 z3c/rotterdam/tests.py
+z3c/rotterdam/resources/demo.css
+z3c/rotterdam/resources/demo.js
+z3c/rotterdam/templates/template_tablelayout.pt
