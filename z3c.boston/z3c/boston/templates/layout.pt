@@ -1,0 +1,110 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en" lang="en"
+      i18n:domain="zope">
+<head>
+  <title metal:define-slot="title"
+         tal:content="string:Zope 3: ${context/zope:title_or_name}">
+    Zope 3: title
+  </title>
+
+  <!-- head viewlets -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <tal:block replace="structure provider:zope.app.boston.IHead" />
+  <metal:block define-slot="headers"></metal:block>
+
+  <!-- css viewlets -->
+  <tal:block replace="structure provider:zope.app.boston.ICSS" />
+  <metal:block define-slot="style_slot"></metal:block>
+
+  <!-- javascripts viewlets -->
+  <tal:block replace="structure provider:zope.app.boston.IJavaScript" />
+  <metal:block define-slot="ecmascript_slot"></metal:block>
+
+  <link rel="icon" type="image/png"
+        tal:attributes="href context/++resource++favicon.png" />
+</head>
+
+<body tal:attributes="onload body_onload | nothing"
+                        tal:define="global rooturl request/getApplicationURL;
+                  global thisbaseurl request/URL/-1">
+
+  <table id="layout">
+    <tr class="menu">
+      <td colspan="2">
+        <!-- toolbar region (zmi_action) -->
+        <tal:block replace="structure provider:zope.app.boston.IToolBar" />
+        <div id="userDetails" metal:define-slot="user_details">
+          <metal:block define-macro="logged_user">
+            <span tal:omit-tag="" i18n:translate="">User:</span>
+            <tal:block replace="request/principal/title">User</tal:block>
+          </metal:block>
+          <metal:block define-slot="login_logout">
+            <metal:macro define-macro="login_logout">
+              <tal:block content="structure context/@@login_logout" />
+            </metal:macro>
+          </metal:block>
+        </div>
+      </td>
+    </tr>
+    <tr class="head">
+      <td class="logo">
+        <metal:slot define-slot="logo">
+          <img width="107" height="38"
+            tal:attributes="src context/++resource++logo.gif" />
+        </metal:slot>
+      </td>
+      <td>
+        <div id="breadcrumbs" metal:define-macro="breadcrumbs">
+          <span tal:omit-tag="" i18n:translate="">Location:&nbsp;</span>
+          <tal:block repeat="breadcrumb context/@@absolute_url/breadcrumbs">
+            <a href=""
+               tal:condition="repeat/breadcrumb/start"
+               tal:attributes="href
+                    string:${breadcrumb/url}/@@SelectedManagementView.html"
+               i18n:translate="">[top]</a>
+            <a href=""
+               tal:condition="not:repeat/breadcrumb/start"
+               tal:content="string:${breadcrumb/name}"
+               tal:attributes="href
+                    string:${breadcrumb/url}/@@SelectedManagementView.html"
+               >breadcrumb item</a>
+            /
+          </tal:block>
+        </div>
+      </td>
+    </tr>
+    <tr class="content">
+      <td id="navigation" class="navigation">
+        <div id="slotbox">
+                <tal:block replace="structure provider:zope.app.boston.ILeft" />
+        </div>
+      </td>
+      <td id="content">
+        <!-- context menu (zmi_views) just visible in view template -->
+        <div id="contextmenu"
+             tal:define="views context/@@view_get_menu/zmi_views"
+             tal:condition="views">
+          <span tal:repeat="view views">
+            <a href=""
+               tal:attributes="href view/action;
+                               class view/selected;"
+               tal:content="view/title"
+               i18n:translate="">label</a>
+          </span>
+        </div>
+        <!-- content area -->
+        <div metal:define-slot="message" id="message" />
+        <div id="body" metal:define-slot="body">
+          <tal:block replace="structure provider:pagelet" />
+        </div>
+        <div id="footer" metal:define-macro="footer" />
+        <div id="logger" />
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+</metal:block>

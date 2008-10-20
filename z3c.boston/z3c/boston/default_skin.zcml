@@ -1,0 +1,21 @@
+<!--
+
+To make the z3c.boston skin your default skin, add this 
+line to your site.zcml file.
+
+    <includeOverrides
+        package="z3c.boston"
+        file="default_skin.zcml"
+        />
+
+-->
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.boston">
+
+  <browser:defaultSkin
+      name="z3c_boston"
+      />
+
+</configure>

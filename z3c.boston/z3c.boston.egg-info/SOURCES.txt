@@ -1,0 +1,16 @@
+README.txt
+setup.cfg
+setup.py
+z3c/__init__.py
+z3c.boston.egg-info/PKG-INFO
+z3c.boston.egg-info/SOURCES.txt
+z3c.boston.egg-info/dependency_links.txt
+z3c.boston.egg-info/entry_points.txt
+z3c.boston.egg-info/namespace_packages.txt
+z3c.boston.egg-info/not-zip-safe
+z3c.boston.egg-info/requires.txt
+z3c.boston.egg-info/top_level.txt
+z3c/boston/__init__.py
+z3c/boston/demo.py
+z3c/boston/testing.py
+z3c/boston/tests.py

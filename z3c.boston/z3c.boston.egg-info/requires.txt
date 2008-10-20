@@ -1,0 +1,9 @@
+setuptools
+zope.app.boston
+z3c.pagelet
+z3c.formui
+z3c.layer
+jquery.layer
+z3c.template
+
+[test]
