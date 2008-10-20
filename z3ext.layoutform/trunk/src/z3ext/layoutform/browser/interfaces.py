@@ -38,6 +38,10 @@ class IWidget(interface.Interface):
     """ widget view """
 
 
+class IWidgetDisplay(interface.Interface):
+    """ dispaly widget view """
+
+
 class IExtraBeforeWidget(interface.Interface):
     """ extra widget information """
 

@@ -23,7 +23,7 @@ from z3c.form import form
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
 
-from interfaces import IPageletForm, IPageletFormView
+from interfaces import IPageletForm, IPageletDisplayForm, IPageletFormView
 
 
 class PageletForm(form.Form, BrowserPagelet):
@@ -43,3 +43,10 @@ class PageletForm(form.Form, BrowserPagelet):
             return template(self)
 
         return self.template()
+
+
+class PageletDisplayForm(form.DisplayForm, PageletForm):
+    interface.implements(IPageletDisplayForm)
+
+    render = PageletForm.render
+    __call__ = PageletForm.__call__

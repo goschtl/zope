@@ -81,8 +81,15 @@
      interface="z3ext.layoutform.browser.interfaces.IForm" />
 
   <z3ext:pagelet
-     for="z3c.form.interfaces.IForm"
+     for="..interfaces.IPageletForm"
      template="formview.pt"
+     provides="z3ext.layoutform.browser.interfaces.IForm"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPageletDisplayForm"
+     template="formdisplay.pt"
      provides="z3ext.layoutform.browser.interfaces.IForm"
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
@@ -96,6 +103,13 @@
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formviewspace.pt"
+     provides="z3ext.layoutform.browser.interfaces.IViewspace"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPageletDisplayForm"
+     template="formviewspacedisp.pt"
      provides="z3ext.layoutform.browser.interfaces.IViewspace"
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
@@ -123,6 +137,19 @@
      for="z3c.form.interfaces.IWidget"
      template="widget.pt"
      provides="z3ext.layoutform.browser.interfaces.IWidget"
+     layer="..interfaces.ILayoutFormLayer"
+     permission="zope.Public" />
+
+  <!-- display widget view -->
+  <interface
+     name="layoutform.widgetDisplay"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IWidgetDisplay" />
+
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IWidget"
+     template="widgetDisplay.pt"
+     provides="z3ext.layoutform.browser.interfaces.IWidgetDisplay"
      layer="..interfaces.ILayoutFormLayer"
      permission="zope.Public" />
 
@@ -165,6 +192,11 @@
      name="layoutform.formInfo"
      type="z3ext.layout.interfaces.IPageletType"
      interface="z3ext.layoutform.browser.interfaces.IExtraFormInfo" />
+
+  <interface
+     name="layoutform.formGroups"
+     type="z3ext.layout.interfaces.IPageletType"
+     interface="z3ext.layoutform.browser.interfaces.IFormGroups" />
 
   <interface
      name="layoutform.viewspaceInfo"

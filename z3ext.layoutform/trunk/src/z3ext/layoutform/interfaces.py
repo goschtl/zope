@@ -55,6 +55,10 @@ class IPageletAddForm(IPageletForm):
         """Return whether names can be input by the user."""
 
 
+class IPageletDisplayForm(IPagelet):
+    """ Display form mixin """
+
+
 class IPageletEditForm(IPageletForm):
     """Edit form mixin for pagelet implementation."""
 
