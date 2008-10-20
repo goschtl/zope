@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,7 +10,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
@@ -31,13 +31,13 @@ msgstr ""
 msgid "Portal formatters"
 msgstr ""
 
-#: src/z3ext/formatter/fancydatetime.py:72
 #. Default: ""
+#: src/z3ext/formatter/fancydatetime.py:72
 msgid "Today at ${value}"
 msgstr ""
 
-#: src/z3ext/formatter/fancydatetime.py:82
 #. Default: ""
+#: src/z3ext/formatter/fancydatetime.py:82
 msgid "Yesterday at ${value}"
 msgstr ""
 
@@ -49,8 +49,7 @@ msgstr ""
 msgid "Portal timezone."
 msgstr ""
 
-#: src/z3ext/formatter/interfaces.py:42
-#: src/z3ext/formatter/interfaces.py:43
+#: src/z3ext/formatter/interfaces.py:42 src/z3ext/formatter/interfaces.py:43
 msgid "Timezone format"
 msgstr ""
 
@@ -73,4 +72,3 @@ msgstr ""
 #: src/z3ext/formatter/vocabulary.py:30
 msgid "Timezone name"
 msgstr ""
-

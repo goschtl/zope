@@ -68,7 +68,9 @@ class FancyDatetimeFormatter(object):
             if pos < 0:
                 pos = pattern.find('H')
 
-            formatter.setPattern("'%s '"%_(u'Today at') + pattern[pos:])
+            formatter.setPattern(pattern[pos:])
+            return _(u'Today at ${value}',
+                     mapping={'value': formatter.format(value)})
 
         if delta.days == 1:
             pattern = formatter.getPattern()
@@ -76,7 +78,9 @@ class FancyDatetimeFormatter(object):
             if pos < 0:
                 pos = pattern.find('H')
 
-            formatter.setPattern("'%s '"%_(u'Yesterday at') + pattern[pos:])
+            formatter.setPattern(pattern[pos:])
+            return _(u'Yesterday at ${value}',
+                     mapping={'value': formatter.format(value)})
 
         if timezoneFormat == 3:
             if self.tp in ('full',):
