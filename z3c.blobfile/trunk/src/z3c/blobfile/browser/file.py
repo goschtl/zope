@@ -48,25 +48,26 @@ class FileView(object):
         try:
             modified = IZopeDublinCore(self.context).modified
         except TypeError:
-            modified=None
-        if modified is None or not isinstance(modified,datetime):
-            return self.context.open()
+            modified = None
+        if modified is None or not isinstance(modified, datetime):
+            return self.context.openDetached()
 
         header= self.request.getHeader('If-Modified-Since', None)
         lmt = zope.datetime.time(modified.isoformat())
         if header is not None:
             header = header.split(';')[0]
-            try:    mod_since=long(zope.datetime.time(header))
-            except: mod_since=None
+            try:
+                mod_since = long(zope.datetime.time(header))
+            except:
+                mod_since = None
             if mod_since is not None:
                 if lmt <= mod_since:
                     self.request.response.setStatus(304)
                     return ''
-        self.request.response.setHeader('Last-Modified',
-                                        zope.datetime.rfc1123_date(lmt))
 
-        return self.context.open()
+        self.request.response.setHeader('Last-Modified', zope.datetime.rfc1123_date(lmt))
 
+        return self.context.openDetached()
 
 class FileAdd(FileUpdateView):
     """View that adds a new File object based on a file upload."""
@@ -77,4 +78,3 @@ class FileAdd(FileUpdateView):
         self.context.add(f)
         self.request.response.redirect(self.context.nextURL())
         return ''
-

@@ -1,8 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain='zope'
+    i18n_domain="zope"
     >
-
 
   <!-- content classes -->
 
@@ -14,12 +13,13 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IBlobFile"
+        attributes="contentType data getSize openDetached"
         />
 
     <require
         permission="zope.ManageContent"
-        set_schema=".interfaces.IBlobFile"
+        attributes="open"
+        set_attributes="contentType data"
         />
 
     <implements
@@ -31,12 +31,13 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IBlobImage"
+        attributes="contentType data getSize getImageSize openDetached"
         />
 
     <require
         permission="zope.ManageContent"
-        set_schema="zope.app.file.interfaces.IFile"
+        set_attributes="contentType data"
+        attributes="open"
         />
 
     <implements

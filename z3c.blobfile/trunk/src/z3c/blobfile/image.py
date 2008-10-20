@@ -37,19 +37,14 @@ IMAGE_INFO_BYTES = 1024
 class Image(File):
     implements(interfaces.IBlobImage)
 
-    def __init__(self, data=''):
-        '''See interface `IFile`'''
-        self._blob = Blob()
-        self.data = data
-        firstbytes = self.getFirstBytes()
-        self.contentType, self._width, self._height = getImageInfo(firstbytes)
-
     def _setData(self, data):
         super(Image, self)._setData(data)
         firstbytes = self.getFirstBytes()
         contentType, self._width, self._height = getImageInfo(firstbytes)
         if contentType:
             self.contentType = contentType
+
+    data = property(File._getData, _setData)
 
     def getFirstBytes(self):
         """Returns the first bytes of the file.
@@ -64,9 +59,6 @@ class Image(File):
     def getImageSize(self):
         """See interface `IImage`"""
         return (self._width, self._height)
-
-    data = property(File._getData, _setData)
-
 
 class ImageSized(object):
     implements(ISized)

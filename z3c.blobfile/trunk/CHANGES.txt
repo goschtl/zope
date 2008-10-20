@@ -2,10 +2,18 @@
 CHANGES
 =======
 
-Version 0.1.3 (unreleased)
---------------------------
+Version 0.1.4 (unreleased)
 
 -
+
+Version 0.1.3 (2008-10-20)
+--------------------------
+
+- Bug: Don't get/set image data twice on Image initialization.
+- Cache file size and invalidate it on write access.
+- Download file/image using new openDetached method that provides
+  read-only file-like access to the blob, detached from the database
+  connection.
 
 Version 0.1.2 (2008-09-11)
 --------------------------

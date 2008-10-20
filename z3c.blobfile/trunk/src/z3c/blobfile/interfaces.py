@@ -25,9 +25,12 @@ class IOpenable(zope.interface.Interface):
     """Openable file
     """
 
-    def open(mode):
+    def open(mode='r'):
         """Open file and return the file descriptor
         """
+
+    def openDetached():
+        '''Return a read-only file descriptor, detached from ZODB connection'''
 
 class IBlobFile(zope.app.file.interfaces.IFile, IOpenable):
     """A file that uses Blobs as data storage."""

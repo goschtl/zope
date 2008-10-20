@@ -34,17 +34,25 @@ class File(Persistent):
     implements(zope.app.publication.interfaces.IFileContent, 
                interfaces.IBlobFile)
 
-    size = 0
-    
     def __init__(self, data='', contentType=''):
-        self._blob = Blob()
         self.contentType = contentType
+        self._blob = Blob()
+        f = self._blob.open('w')
+        f.write('')
+        f.close()
         self._setData(data)
 
-    def open(self, mode="r"):
+    def open(self, mode='r'):
+        if mode != 'r' and 'size' in self.__dict__:
+            del self.__dict__['size']
         return self._blob.open(mode)
 
+    def openDetached(self):
+        return open(self._blob.committed(), 'rb')
+
     def _setData(self, data):
+        if 'size' in self.__dict__:
+            del self.__dict__['size']
         # Search for a storable that is able to store the data
         dottedName = ".".join((data.__class__.__module__,
                                data.__class__.__name__))
@@ -63,12 +71,13 @@ class File(Persistent):
 
     @property
     def size(self):
-        if self._blob == "":
-            return 0
+        if 'size' in self.__dict__:
+            return self.__dict__['size']
         reader = self._blob.open()
         reader.seek(0,2)
         size = int(reader.tell())
         reader.close()
+        self.__dict__['size'] = size
         return size
 
     def getSize(self):
