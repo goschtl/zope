@@ -42,4 +42,8 @@ def exclude(_context, file=None, package=None, files=None):
         paths = [context.path(file)]
 
     for path in paths:
+        # processFile returns a boolean indicating if the file has been
+        # processed or not, it *also* marks the file as having been processed,
+        # here the side effect is used to keep the given file from being
+        # processed in the future
         context.processFile(path)
