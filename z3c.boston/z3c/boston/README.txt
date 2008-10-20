@@ -74,3 +74,27 @@ A demo pagelet is defined in demo.py. Load the pagelet.
     >>> browser.open('http://localhost/++skin++z3c_boston/@@demo.html')
     >>> browser.contents
     '...PAGELET CONTENT...'
+
+Verify standard viewlets 
+
+    >>> browser.open('http://localhost/++skin++z3c_boston/@@demo.html')
+    >>> browser.contents
+    '...demo.css...'
+    >>> browser.contents
+    '...demo.js...'
+
+Verify that the CSS for forms is included
+
+    >>> browser.open('http://localhost/++skin++z3c_boston/@@demo_form.html')
+    >>> browser.contents
+    '...div-form.css...'
+
+Verify that formjs works
+
+    >>> browser.open('http://localhost/++skin++z3c_boston/@@demo_formjs.html')
+    >>> browser.contents
+    '...div-form.css...'
+    >>> browser.contents
+    '...jquery.js...'
+    >>> browser.contents
+    '...alert...'

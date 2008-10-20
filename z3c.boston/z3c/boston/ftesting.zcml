@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="z3c.boston"
     package="z3c.boston"
@@ -31,6 +32,46 @@
     class=".demo.DemoPagelet"
     permission="zope.Public"
     />
+
+  <browser:resource
+      name="demo.css"
+      file="resources/demo.css"
+      />
+
+  <browser:resource
+      name="demo.js"
+      file="resources/demo.js"
+      />
+
+  <browser:viewlet
+      name="demo.css"
+      for="*"
+      manager=".ICSS"
+      class=".demo.DemoCSSViewlet"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      name="demo.js"
+      for="*"
+      manager=".IJavaScript"
+      class=".demo.DemoJSViewlet"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="demo_form.html"
+      for="*"
+      class=".demo.DemoForm"
+      permission="zope.Public"
+      />
+
+  <z3c:pagelet
+      name="demo_formjs.html"
+      for="*"
+      class=".demo.DemoFormJS"
+      permission="zope.Public"
+      />
 
 
 

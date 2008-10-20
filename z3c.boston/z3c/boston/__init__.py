@@ -22,6 +22,7 @@ import zope.app.boston
 import z3c.layer.pagelet
 import z3c.form.interfaces
 import z3c.formui.interfaces
+import z3c.formjs.interfaces
 from jquery.layer import IJQueryJavaScriptBrowserLayer    # required for formjs
 
 class IPageletLayer(z3c.form.interfaces.IFormLayer,
@@ -35,3 +36,12 @@ class Boston(zope.app.boston.Boston,
                                                           # use the table layer
             IPageletLayer):
     pass
+
+class ICSS(z3c.formui.interfaces.ICSS, zope.app.boston.ICSS):
+    """CSS viewlet manager."""
+
+class IJavaScript(
+        IJQueryJavaScriptBrowserLayer,
+        z3c.formjs.interfaces.IDynamicJavaScript,
+        zope.app.boston.IJavaScript):
+    """JavaScript viewlet manager."""

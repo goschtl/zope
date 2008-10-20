@@ -15,11 +15,11 @@
   <metal:block define-slot="headers"></metal:block>
 
   <!-- css viewlets -->
-  <tal:block replace="structure provider:zope.app.boston.ICSS" />
+  <tal:block replace="structure provider:ICSS" />
   <metal:block define-slot="style_slot"></metal:block>
 
   <!-- javascripts viewlets -->
-  <tal:block replace="structure provider:zope.app.boston.IJavaScript" />
+  <tal:block replace="structure provider:IJavaScript" />
   <metal:block define-slot="ecmascript_slot"></metal:block>
 
   <link rel="icon" type="image/png"

@@ -10,9 +10,19 @@
   <include package="zope.app.boston" />
 
   <!-- dependencies for z3c.boston -->
+  <include package="z3c.zrtresource" file="meta.zcml"/>
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
 
-  <!-- Configure for the z3c.boston skin -->
+  <include package="z3c.pagelet" />
+  <include package="z3c.formui" />
+  <include package="z3c.form" />
+  <include package="jquery.layer" />
+  <include package="z3c.formjs"/>
+
+  <!-- Configuration the z3c.boston skin -->
 
   <interface
       interface=".IPageletLayer"
@@ -37,6 +47,22 @@
       permission="zope.View"
       template="templates/layout.pt"
       layer=".Boston"
+      />
+
+  <browser:viewletManager
+      name="ICSS"
+      provides=".ICSS"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".Boston"
+      permission="zope.Public"
+      />
+
+  <browser:viewletManager
+      name="IJavaScript"
+      provides=".IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".Boston"
+      permission="zope.Public"
       />
 
 </configure>
