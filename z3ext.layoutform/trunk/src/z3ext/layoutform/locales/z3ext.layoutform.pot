@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Mon Oct 20 14:35:29 2008\n"
+"POT-Creation-Date: Wed Oct 22 00:56:57 2008\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -33,6 +33,14 @@ msgstr ""
 
 #: src/z3ext/layoutform/add.py:59
 msgid "Cancel"
+msgstr ""
+
+#: src/z3ext/layoutform/browser/formaddbuttons.pt:4
+msgid "Content short name"
+msgstr ""
+
+#: src/z3ext/layoutform/browser/formaddbuttons.pt:5
+msgid "Should not contain spaces, underscores or mixed case. Short Name is part of the item's web address."
 msgstr ""
 
 #: src/z3ext/layoutform/edit.py:38

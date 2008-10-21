@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,11 +10,11 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Mon Oct 20 14:29:47 2008\n"
+"POT-Creation-Date: Tue Oct 21 20:29:16 2008\n"
 "PO-Revision-Date: 2008-10-20 14:35+0600\n"
 "Last-Translator: Nikolay Kim <fafhrd91@gmail.com>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -25,7 +25,7 @@ msgstr ""
 
 #: src/z3ext/layoutform/add.py:41
 msgid "Action has been canceled."
-msgstr "Добавление было прервано."
+msgstr "Добавление элемента прервано."
 
 #: src/z3ext/layoutform/add.py:43
 msgid "Add"
@@ -34,6 +34,18 @@ msgstr "Добавить"
 #: src/z3ext/layoutform/add.py:59
 msgid "Cancel"
 msgstr "Отменить"
+
+#: src/z3ext/layoutform/browser/formaddbuttons.pt:4
+msgid "Content short name"
+msgstr "Короткое имя"
+
+#: src/z3ext/layoutform/browser/formaddbuttons.pt:5
+msgid ""
+"Should not contain spaces, underscores or mixed case. Short Name is part of "
+"the item's web address."
+msgstr ""
+"Имя не должно содержать пробелов, подчеркивания и смешанный регистр. "
+"Короткое имя часть веб адреса элемента."
 
 #: src/z3ext/layoutform/edit.py:38
 msgid "Save"
