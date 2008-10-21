@@ -1,0 +1,34 @@
+<!--
+This is a set of packages auomatically imported by z3c.rotterdam,
+to support the packages that it needs, above and beyond the
+base installation created by zopeproject.
+
+Inclusion is condition on z3c.rotterdam:dependencies not being defined.
+-->
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    >
+
+  <!-- Include the Rotterdam Skin and its dependencies -->
+  <include package="zope.app.rotterdam" />
+
+  <!-- dependencies for z3c.rotterdam -->
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="z3c.zrtresource" file="meta.zcml"/>
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+
+  <include package="zope.contentprovider"/>
+  <include package="z3c.pagelet" />
+  <include package="z3c.formui" />
+  <include package="z3c.form" />
+  <include package="jquery.layer" />
+  <include package="z3c.formjs"/>
+
+  <meta:provides feature="z3c.rotterdam:dependencies" />
+
+</configure>
+

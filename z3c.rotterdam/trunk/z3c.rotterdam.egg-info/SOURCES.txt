@@ -1,4 +1,6 @@
 README.txt
+bootstrap.py
+buildout.cfg
 setup.cfg
 setup.py
 docs/HISTORY.txt
@@ -16,6 +18,7 @@ z3c/rotterdam/__init__.py
 z3c/rotterdam/configure.zcml
 z3c/rotterdam/default_skin.zcml
 z3c/rotterdam/demo.py
+z3c/rotterdam/dependencies.zcml
 z3c/rotterdam/ftesting.zcml
 z3c/rotterdam/testing.py
 z3c/rotterdam/tests.py
