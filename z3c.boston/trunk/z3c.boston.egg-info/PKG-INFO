@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: z3c.boston
-Version: 1.0.1-r92422
+Version: 1.0.2
 Summary: A version of the zope.app.boston skin which support pagelets.
 Home-page: http://pypi.python.org/pypi/z3c.boston
 Author: Kevin Gill and the Zope Community
@@ -9,8 +9,29 @@ License: ZPL 2.1
 Description: Introduction
         ============
         
-        z3c.pagelet is a skin built on top of zope.app.boston in order to support
-        pagelets, z3c.form and z3c.formjs.
+        This skin is a derivative of the zope.app.boston.Boston skin, which
+        supports pagelets, forms and javascript forms.
+        
+        Usage:
+        
+        
+        It includes the information needed to configure itself. To add it
+        to your configuration;
+        
+        1.  Add it to your buildout...
+        
+        eggs=...
+        z3c.boston
+        
+        2.  To use the skin, you can use a traversal adapter:
+        
+        http://localhost:8080/++skin++z3c_boston/index.html
+        
+        3.  To configure this as your default skin, add this line to your
+        site.zcml file:
+        
+        &lt;includeOverrides package="z3c.boston" file="default_skin.zcml" /&gt;
+        
         
         Changelog
         =========
@@ -23,5 +44,12 @@ Description: Introduction
         
 Keywords: zope3 pagelet form skin
 Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Zope Public License
 Classifier: Programming Language :: Python
-Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Framework :: Zope3
