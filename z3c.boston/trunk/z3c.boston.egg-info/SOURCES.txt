@@ -1,4 +1,6 @@
 README.txt
+bootstrap.py
+buildout.cfg
 setup.cfg
 setup.py
 docs/HISTORY.txt
@@ -16,6 +18,7 @@ z3c/boston/__init__.py
 z3c/boston/configure.zcml
 z3c/boston/default_skin.zcml
 z3c/boston/demo.py
+z3c/boston/dependencies.zcml
 z3c/boston/ftesting.zcml
 z3c/boston/testing.py
 z3c/boston/tests.py

@@ -1,28 +1,14 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="z3c.boston">
 
-  <!-- Include the Boston Skin and its dependencies -->
-  <include package="zope.viewlet" file="meta.zcml" />
-  <include package="zope.contentprovider"/>
-  <include package="zope.app.boston" />
-
-  <!-- dependencies for z3c.boston -->
-  <include package="z3c.zrtresource" file="meta.zcml"/>
-  <include package="z3c.form" file="meta.zcml" />
-  <include package="z3c.pagelet" file="meta.zcml" />
-  <include package="z3c.macro" file="meta.zcml" />
-  <include package="z3c.template" file="meta.zcml" />
-
-  <include package="z3c.pagelet" />
-  <include package="z3c.formui" />
-  <include package="z3c.form" />
-  <include package="jquery.layer" />
-  <include package="z3c.formjs"/>
-
-  <!-- Configuration the z3c.boston skin -->
+  <include
+    zcml:condition="not-have z3c.boston:dependencies"
+    package="z3c.boston"
+    file="dependencies.zcml" />
 
   <interface
       interface=".IPageletLayer"
