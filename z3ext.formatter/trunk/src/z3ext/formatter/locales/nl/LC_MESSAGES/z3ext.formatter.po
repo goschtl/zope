@@ -1,4 +1,4 @@
-# #############################################################################
+###############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
 "POT-Creation-Date: Mon Oct 20 22:53:40 2008\n"
-"PO-Revision-Date: 2008-10-14 17:25+0100\n"
+"PO-Revision-Date: 2008-10-21 10:01+0100\n"
 "Last-Translator: F. Kooman <fkooman@tuxed.net>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr ""
 
 #: src/z3ext/formatter/configure.zcml:26
 msgid "Configure portal formatters."
-msgstr "Website formatters instellingen"
+msgstr "Website datum/tijd instellingen."
 
 #: src/z3ext/formatter/configure.zcml:26
 msgid "Portal formatters"
-msgstr "Website formatters"
+msgstr "Website datum/tijd"
 
 #. Default: ""
 #: src/z3ext/formatter/fancydatetime.py:72
@@ -43,27 +43,28 @@ msgstr "Gisteren om ${value}"
 
 #: src/z3ext/formatter/interfaces.py:35
 msgid "Timezone"
-msgstr ""
+msgstr "Tijdzone"
 
 #: src/z3ext/formatter/interfaces.py:36
 msgid "Portal timezone."
-msgstr "Website tijdszone"
+msgstr "Tijdzone van website."
 
-#: src/z3ext/formatter/interfaces.py:42 src/z3ext/formatter/interfaces.py:43
+#: src/z3ext/formatter/interfaces.py:42
+#: src/z3ext/formatter/interfaces.py:43
 msgid "Timezone format"
-msgstr ""
+msgstr "Tijdzoneformaat"
 
 #: src/z3ext/formatter/interfaces.py:49
 msgid "Use principal timezone"
-msgstr "Tijdszone"
+msgstr "Tijdzone"
 
 #: src/z3ext/formatter/interfaces.py:50
 msgid "Render datetime with user selected timezone."
-msgstr ""
+msgstr "Geef de datum en tijd weer in de door de gebruiker gespecificeerde tijdzone."
 
 #: src/z3ext/formatter/vocabulary.py:28
 msgid "No timezone"
-msgstr ""
+msgstr "Geen tijdzone"
 
 #: src/z3ext/formatter/vocabulary.py:29
 msgid "Number of hours"
@@ -71,4 +72,5 @@ msgstr "Aantal uren"
 
 #: src/z3ext/formatter/vocabulary.py:30
 msgid "Timezone name"
-msgstr ""
+msgstr "Naam van tijdzone"
+

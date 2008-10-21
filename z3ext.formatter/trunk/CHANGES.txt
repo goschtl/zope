@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.2.4 (2008-10-21)
+------------------
+
+- Fixed russian translation
+
+- nl translation updated
+
+
 1.2.3 (2008-10-20)
 ------------------
 

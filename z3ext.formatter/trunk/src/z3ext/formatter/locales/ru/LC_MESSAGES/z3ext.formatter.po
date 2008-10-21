@@ -1,4 +1,4 @@
-# #############################################################################
+###############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
 "POT-Creation-Date: Mon Oct 20 22:53:40 2008\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2008-10-21 13:43+0600\n"
 "Last-Translator: Nikolay Kim <fafhrd91@gmail.com>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,11 +25,11 @@ msgstr ""
 
 #: src/z3ext/formatter/configure.zcml:26
 msgid "Configure portal formatters."
-msgstr ""
+msgstr "Конфигурация средств форматирования."
 
 #: src/z3ext/formatter/configure.zcml:26
 msgid "Portal formatters"
-msgstr ""
+msgstr "Cредства форматирования"
 
 #. Default: ""
 #: src/z3ext/formatter/fancydatetime.py:72
@@ -39,7 +39,7 @@ msgstr "Сегодня в ${value}"
 #. Default: ""
 #: src/z3ext/formatter/fancydatetime.py:82
 msgid "Yesterday at ${value}"
-msgstr "Вчера в ${pattern}"
+msgstr "Вчера в ${value}"
 
 #: src/z3ext/formatter/interfaces.py:35
 msgid "Timezone"
