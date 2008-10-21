@@ -1,4 +1,4 @@
-<div class="z-form-controls" i18n:domain="z3ext">
+<div class="z-form-controls" i18n:domain="z3ext.layoutform">
   <hr />
   <div class="z-form-field" tal:condition="context/nameAllowed|nothing">
     <label i18n:translate="" for="add_input_name">Content short name</label>

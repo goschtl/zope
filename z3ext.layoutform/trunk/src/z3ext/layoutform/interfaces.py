@@ -21,7 +21,7 @@ from z3c.form.interfaces import IFormLayer
 from z3ext.layout.interfaces import IPagelet
 from z3ext.statusmessage.interfaces import IMessage
 
-_ = MessageFactory('z3ext')
+_ = MessageFactory('z3ext.layoutform')
 
 
 class ILayoutFormLayer(IFormLayer):
