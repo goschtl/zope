@@ -1,0 +1,21 @@
+=======
+CHANGES
+=======
+
+
+Version 0.5.0dev (unreleased)
+-----------------------------
+
+- Initial released on pypi
+
+
+Version 0.2.0 (2007-09-21)
+--------------------------
+
+- Feature: Added ``DateSelect`` field.
+
+
+Version 0.1.0 (2007-06-04)
+--------------------------
+
+- Initial release
