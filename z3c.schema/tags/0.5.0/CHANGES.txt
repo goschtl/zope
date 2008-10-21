@@ -3,10 +3,10 @@ CHANGES
 =======
 
 
-Version 0.5.0dev (unreleased)
+Version 0.5.0 (2008-10-21)
 -----------------------------
 
-- Initial released on pypi
+- Initial release on pypi
 
 
 Version 0.2.0 (2007-09-21)

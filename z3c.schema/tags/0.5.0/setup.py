@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.schema',
-    version = '0.5.0dev',
+    version = '0.5.0',
     author = 'Zope Community',
       author_email = "zope3-dev@zope.org",
       description = "Additional schema fields for Zope 3",
