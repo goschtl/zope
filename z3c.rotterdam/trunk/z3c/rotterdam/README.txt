@@ -12,7 +12,7 @@ to your configuration;
         eggs=...
             z3c.rotterdam
 
-    2.  To use the skin, you can use a path adapter:
+    2.  To use the skin, you can use a traversal adapter:
 
         http://localhost:8080/++skin++z3c_rotterdam/index.html
 
