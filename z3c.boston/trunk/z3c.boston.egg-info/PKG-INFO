@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: z3c.boston
-Version: 1.0.1devdev-r92403
+Version: 1.0.1-r92422
 Summary: A version of the zope.app.boston skin which support pagelets.
 Home-page: http://pypi.python.org/pypi/z3c.boston
 Author: Kevin Gill and the Zope Community
