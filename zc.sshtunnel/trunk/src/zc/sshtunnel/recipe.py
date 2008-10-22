@@ -118,7 +118,7 @@ def main(args=None):
         if os.path.exists(pid_file):
             print "Pid file %s already exists" % pid_file
             return
-        os.execvp('ssh', ('-TnaxqNL'+specification,  via))
+        os.execlp('ssh', 'ssh', '-TnaxqNL'+specification, via)
     elif verb == 'status':
         if os.path.exists(pid_file):
             pid = int(open(pid_file).read().strip())
