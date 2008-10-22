@@ -315,6 +315,6 @@ And finally we can test all created components::
     </body>
     </html>
     <BLANKLINE>
-    
+
     >>> print queryMultiAdapter((village, request), name='inline')()
     Village: <b>amsterdam</b>

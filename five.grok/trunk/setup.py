@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0dev'
+version = '1.0a1dev'
 
 setup(name='five.grok',
       version=version,
@@ -9,13 +9,13 @@ setup(name='five.grok',
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
-          "Environment :: Web Environment",
-          "Intended Audience :: Developers",
-          "License :: OSI Approved :: Zope Public License",
-          "Programming Language :: Python",
-          "Topic :: Software Development :: Libraries :: Python Modules",
-          "Framework :: Zope2",
-          ],
+        "Environment :: Web Environment",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Zope Public License",
+        "Programming Language :: Python",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Framework :: Zope2",
+        ],
       keywords='zope2 grok',
       author='Lennart Regebro, Godefroid Chapelle',
       author_email='grok-dev@zope.org',
@@ -27,12 +27,11 @@ setup(name='five.grok',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'setuptools',
-          'martian',
-          'grokcore.security',
-          'grokcore.view >= 1.1',
-          'grokcore.formlib',
-      ],
-      entry_points="""
-      """,
+        'setuptools',
+        'martian',
+        'grokcore.component',
+        'grokcore.security',
+        'grokcore.view >= 1.1',
+        'grokcore.formlib',
+        ],
       )

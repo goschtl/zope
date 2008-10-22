@@ -1,0 +1,15 @@
+Credits
+=======
+
+The following people helped five.grok development:
+
+* Godefroid Chapelle
+
+* Lennart Regebro
+
+* Sylvain Viollon
+
+* Martijn Aspelli
+
+* Kamon Ayeva
+
