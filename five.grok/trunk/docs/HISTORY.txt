@@ -19,6 +19,9 @@ five.grok - 1.0a1 Unreleased
   of the one from zope.app.pagetemplate.
   [optilude]
 
+* Added grokcore.view support with tests
+  [regebro, jfroche, gotcha et al.]
+
 * Added tests for grok.subscriber directive.
   [kamon]
 
