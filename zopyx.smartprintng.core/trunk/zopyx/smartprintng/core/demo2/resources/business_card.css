@@ -44,7 +44,3 @@
                  list-style-position: inside;
              }
 
-            @font-face {
-                font-family: sans-serif;
-                src: local("Trebuchet MS")
-            }
