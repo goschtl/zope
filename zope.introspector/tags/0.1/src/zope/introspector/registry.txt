@@ -1,0 +1,122 @@
+zope.introspector.registry
+**************************
+
+:Test-Layer: functional
+
+zope.interface provides the ``RegistryInfoUtility`` to search for and
+list all registered Utilities, Adapters, Handlers and
+SubscriptionAdapters. To list all registered Utilities::
+
+  >>> from zope.introspector.interfaces import IRegistryInfo
+  >>> from zope.component import getUtility
+  >>> registry_util = getUtility(IRegistryInfo)
+  >>> registry_util.getAllUtilities()
+  [UtilityRegistration...]
+  
+The same thing can be done for Adapters::
+
+  >>> registry_util.getAllAdapters()
+  [AdapterRegistration...]
+  
+  >>> registry_util.getAllAdapters(registry='test')
+  []
+
+For Handlers::
+
+  >>> registry_util.getAllHandlers()
+  [HandlerRegistration...]
+  
+And for SubscriptionAdapters::
+
+  >>> registry_util.getAllSubscriptionAdapters()
+  [...]
+
+So far this has been empty.
+Or you can get all registrations::
+
+  >>> registry_util.getAllRegistrations()
+  [AdapterRegistration...]
+
+However if you are looking for something special you can do a search
+in the registry to see if it registered.
+
+So first we will create a dummy utility so we have something to find
+when we search::
+
+  >>> from zope.interface import Interface, implements
+  >>> from zope.component import provideUtility
+  >>> class IDummy(Interface):
+  ...    pass
+  >>> class Dummy(object):
+  ...    implements(IDummy)
+
+Now provide the Utility globaly::
+
+  >>> provideUtility(Dummy, IDummy)
+
+And use the RegistryInfoUtility to search for it::
+
+  >>> registry_util.getRegistrationsForInterface("Dummy")
+  [UtilityRegistration(<BaseGlobalComponents base>, IDummy, u'', Dummy, None, u'')...]
+
+Also local utilities can be found. We create a site, where we can
+register local components::
+
+  >>> from zope.app.folder import folder
+  >>> local_site1 = folder.rootFolder()
+  >>> getRootFolder()['local_site'] = local_site1
+
+  >>> from zope.app.component import site
+  >>> sm = site.LocalSiteManager(local_site1)
+  >>> local_site1.setSiteManager(sm)
+
+We register a utility in this site, this time a named one::
+
+  >>> local_utility1 = Dummy()
+  >>> sm.registerUtility(Dummy, IDummy, 'local_u1')
+
+As a last step, we create a placeful object, that we put into this
+site::
+
+  >>> class Mammoth(object):
+  ...   pass
+
+  >>> fred = Mammoth()
+  >>> local_site1['fred'] = fred
+  >>> fred.__parent__ = local_site1
+
+The utility is available, if we ask the local site manager directly::
+
+  >>> sm.queryUtility(IDummy, 'local_u1')
+  <class 'Dummy'>
+
+If we now ask for utilities, that are available to `fred`, we get also
+the local utilitiy::
+
+  >>> from pprint import pprint
+  >>> pprint(sorted([(x.registry, x.name, x.component, x.provided)
+  ...         for x in registry_util.getAllUtilities(context=fred)
+  ...         if 'Dummy' in str(x.component)]))
+  [(<BaseGlobalComponents base>,
+    u'',
+    <class 'Dummy'>,
+    <InterfaceClass __builtin__.IDummy>),
+   (<LocalSiteManager ++etc++site>,
+    'local_u1',
+    <class 'Dummy'>,
+    <InterfaceClass __builtin__.IDummy>)]
+
+Depending on what type of registration that is searched different
+things are examined.  Utilites you can search for either name of
+utility or provided interface.  Adapters you can search for name,
+provided interfaces, factory or required interfaces.  Handlers you can
+search for name, factory, or required interfaces.
+
+There is also a way to get all registrations in a dictionary ordered
+by package name.
+
+  >>> registry_util.getAllInterfaces()
+  {...: {...: {...: {...: [...Registration...]}...}...}...}
+
+This is mainly useful for browsing the complete component registry if
+you are not really sure what you are looking for.

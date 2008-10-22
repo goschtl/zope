@@ -1,0 +1,43 @@
+Introspector
+************
+
+:Test-Layer: functional
+ 
+When we introspect an object, we want to find out information on
+whatever aspects the introspector can provide. An introspection aspect
+is called an ``IInfo``.
+
+  >>> from grokcore.component.testing import grok
+  >>> grok('zope.introspector')
+
+Let's make an object to introspect::
+
+  >>> class Foo(object):
+  ...    pass
+  >>> foo = Foo()
+
+Let's see what ``IInfo`` objects exist for ``foo``. In order to
+retrieve all of them, we can use the ``IInfos`` adapter::
+
+  >>> from zope.introspector.interfaces import IInfos
+  >>> infos = IInfos(foo)
+ 
+And then in order to find all ``IInfo`` objects, we call the ``infos``
+method. There are a few standard ``Infos`` available for all objects, so
+we'll find them::
+
+  >>> sorted(infos.infos())
+  [(u'object', <zope.introspector.objectinfo.ObjectInfo object at ...), 
+   (u'view', <zope.introspector.viewinfo.ViewInfo object at ...>)]
+
+Packages
+========
+
+The introspector can give us infos about Python packages::
+
+  >>> import zope.introspector
+  >>> infos = IInfos(zope.introspector)
+  >>> sorted(infos.infos())
+  [(u'module', <zope.introspector...ModuleInfo object at 0x...>),
+   (u'object', <zope.introspector...ObjectInfo object at 0x...>),
+   (u'view', <zope.introspector...ViewInfo object at 0x...>)]
