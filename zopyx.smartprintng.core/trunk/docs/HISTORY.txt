@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.0b3 (22.10.2008)
+--------------------
+
+* tweaking the fonts in demo2 in order to make the demos work
+  on Linux
+
 2.0.0b2 (19.10.2008)
 --------------------
 
