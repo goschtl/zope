@@ -114,6 +114,11 @@ def main(args=None):
         else:
             wait(wait_port)
             print name, 'started'
+    elif verb == 'fg':
+        if os.path.exists(pid_file):
+            print "Pid file %s already exists" % pid_file
+            return
+        os.execvp('ssh', ('-TnaxqNL'+specification,  via))
     elif verb == 'status':
         if os.path.exists(pid_file):
             pid = int(open(pid_file).read().strip())
