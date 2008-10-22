@@ -140,7 +140,13 @@ class ConfigletData(BTreeContainer):
 @interface.implementer(IConfigletData)
 def getConfigletData(configlet):
     site = getSite()
-    storage = IConfigletDataStorage(site.getSiteManager())
+
+    storage = None
+    if site is not None:
+        storage = IConfigletDataStorage(site.getSiteManager())
+
+    if storage is None:
+        return IConfigletDataFactory(configlet)()
 
     if configlet.__id__ not in storage:
         data = IConfigletDataFactory(configlet)()

@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,12 +10,12 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: z3ext.controlpanel\n"
-"POT-Creation-Date: Tue Oct  7 18:55:43 2008\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: Wed Oct 22 13:17:55 2008\n"
+"PO-Revision-Date: 2008-10-22 13:22+0600\n"
 "Last-Translator: Nikolay Kim <fafhrd91@gmail.com>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
@@ -35,23 +35,23 @@ msgstr "Просмотр"
 msgid "Field is readonly"
 msgstr "Поле только для чтения"
 
-#: src/z3ext/controlpanel/configure.zcml:41
+#: src/z3ext/controlpanel/configure.zcml:42
 msgid "This area allows you to configure system."
-msgstr ""
+msgstr "Конфиглеты в этой категории позволяют вам конфигурировать систему."
 
-#: src/z3ext/controlpanel/configure.zcml:41
+#: src/z3ext/controlpanel/configure.zcml:42
 msgid "System configuration"
 msgstr "Конфигурация системы"
 
-#: src/z3ext/controlpanel/configure.zcml:49
+#: src/z3ext/controlpanel/configure.zcml:50
 msgid "User interface configuration"
 msgstr "Конфигурация пользовательского интерфейса"
 
-#: src/z3ext/controlpanel/configure.zcml:49
+#: src/z3ext/controlpanel/configure.zcml:50
 msgid "This area allows you to configure portal look&feel."
-msgstr ""
+msgstr "Конфиглеты в этой категории позволяют вам конфигурировать как выглядит сайт."
 
-#: src/z3ext/controlpanel/configure.zcml:8
+#: src/z3ext/controlpanel/configure.zcml:9
 msgid "Configure control panel's configlets."
 msgstr ""
 

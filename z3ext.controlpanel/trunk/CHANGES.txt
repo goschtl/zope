@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.3.2 (2008-10-22)
+------------------
+
+- Fixed configlet storage if ISite doesn't exists
+
+- Updated translations: nl, ru
+
+
 1.3.1 (2008-10-07)
 ------------------
 
