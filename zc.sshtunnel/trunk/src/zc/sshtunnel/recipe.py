@@ -116,7 +116,7 @@ def main(args=None):
             print name, 'started'
     elif verb == 'fg':
         if os.path.exists(pid_file):
-            print "Pid file %s already exists" % pid_file
+            print "Pid file %%s already exists" %% pid_file
             return
         os.execlp('ssh', 'ssh', '-TnaxqNL'+specification, via)
     elif verb == 'status':
