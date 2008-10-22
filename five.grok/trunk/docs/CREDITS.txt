@@ -9,7 +9,7 @@ The following people helped five.grok development:
 
 * Sylvain Viollon
 
-* Martijn Aspeli
+* Martin Aspeli
 
 * Kamon Ayeva
 
