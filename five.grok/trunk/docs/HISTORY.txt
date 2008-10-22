@@ -1,8 +1,8 @@
 Changelog for five.grok
 -----------------------
 
-five.grok - 1.0a1 Unreleased
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+five.grok - 1.0a1 (2008/10/22)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Added support for formlib forms with grokcore.formlib.
   [thefunny42]
