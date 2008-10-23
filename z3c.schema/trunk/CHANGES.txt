@@ -6,6 +6,9 @@ CHANGES
 Version 0.6.0dev (unreleased)
 -----------------------------
 
+- Humanized exception's doc strings.
+- Added translations support.
+- Added Russian translation.
 
 Version 0.5.0 (2008-10-21)
 -----------------------------

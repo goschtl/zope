@@ -26,4 +26,4 @@ class IRegex(zope.schema.interfaces.IASCIILine):
     """Regular Expression field"""
 
 class InvalidRegex(zope.schema.ValidationError):
-    __doc__ = _("""The specified Regular Expression is not valid.""")
+    __doc__ = _("""The specified regular expression is not valid.""")

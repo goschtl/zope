@@ -28,4 +28,4 @@ class IHostName(zope.schema.interfaces.IURI,
 
 
 class InvalidHostName(zope.schema.ValidationError):
-    __doc__ = _("""The specified HostName is not valid.""")
+    __doc__ = _("""The specified host name is not valid.""")

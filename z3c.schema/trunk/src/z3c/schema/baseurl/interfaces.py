@@ -32,4 +32,4 @@ class IBaseURL(zope.schema.interfaces.IURI,
 
 
 class InvalidBaseURL(zope.schema.ValidationError):
-    __doc__ = _("""The specified BaseURL is not valid.""")
+    __doc__ = _("""The specified base URL is not valid.""")
