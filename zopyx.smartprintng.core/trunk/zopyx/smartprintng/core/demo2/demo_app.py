@@ -15,52 +15,53 @@ from zopyx.smartprintng.core.highlevel import convert
 from zopyx.smartprintng.core.interfaces import IImageFetcher
 from zopyx.smartprintng.core.adapters import ExternalImageFetcher
 
-from zope.app.testing import ztapi
 
 from zopyx.smartprintng.core.renderer import Renderer
 from zopyx.smartprintng.core.interfaces import IImageFetcher
 from zopyx.smartprintng.core.adapters import ExternalImageFetcher
 
 
-class ITestContent(Interface):
-    pass
-
-class TestContent(object):
-    implements(ITestContent)
-
-ztapi.provideAdapter(ITestContent, IImageFetcher, ExternalImageFetcher)
-
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
 
-def main():
+def demo_convert(fullname, orientation='horizontal', debug=False):
+    from zope.app.testing import ztapi
+
+    class ITestContent(Interface):
+        pass
+
+    class TestContent(object):
+        implements(ITestContent)
+   
+    try:
+        ztapi.provideAdapter(ITestContent, IImageFetcher, ExternalImageFetcher)
+    except:
+        pass
 
     resources_configuration_file = os.path.join(os.path.dirname(__file__), 'resources', 'resources.ini')
     resources.registerResource(ITestContent, resources_configuration_file)
 
-    for fullname in ('Andreas Jung', 'Heinz Becker', 'Hilde Becker'):
-        for orientation in (0, 1):
-            for debug in (False, True):
+    css = orientation == 'horizontal' and 'business_card.css' or  'business_card2.css'
+    orientation_ext = orientation=='horizontal' and '_landscape' or '_upside'
+    styles = debug and [css, 'debug.css'] or [css]
+    ext = debug and '_debug' or ''
 
-                css = orientation == 1 and 'business_card.css' or  'business_card2.css'
-                orientation_ext = orientation==1 and '_landscape' or '_upside'
-                styles= debug and [css, 'debug.css'] or [css]
-                ext = debug and '_debug' or ''
+    context = TestContent()
+    result = convert(context=context,
+                     html='',
+                     styles=styles,
+                     resource_name='demo',
+                     converter='pdf-prince',
+                     template_options=dict(fullname=fullname),
+                     destination_filename=os.path.join(os.getcwd(), 
+                                                       '%s%s%s.pdf' % (fullname, orientation_ext, ext)),
+                    )
 
-                context = TestContent()
-                result = convert(context=context,
-                                 html='',
-                                 styles=styles,
-                                 resource_name='demo',
-                                 converter='pdf-prince',
-                                 template_options=dict(fullname=fullname),
-                                 destination_filename=os.path.join(os.getcwd(), 
-                                                                   '%s%s%s.pdf' % (fullname, orientation_ext, ext)),
-                                )
-                                
-                print 'Generated:', os.path.abspath(result)
-                print
+    return os.path.abspath(result)
 
 if __name__ == '__main__':
-    import sys
-    sys.exit(main())
+
+    for fullname in ('Andreas Jung', 'Heinz Becker', 'Hilde Becker'):
+        for orientation in ('horizontal', 'vertical'):
+            filename = demo_convert(fullname, orientation)
+            print fullname, orientation, filename
