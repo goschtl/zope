@@ -19,6 +19,7 @@ clean:
 	rm -f build-python?.?
 	rm -rf build
 	rm -rf dist
+	find -iname '*.pyc' -exec rm -f {} \;
 	dh_clean
 
 clean-python%:
