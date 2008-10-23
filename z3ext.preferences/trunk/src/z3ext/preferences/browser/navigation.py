@@ -17,6 +17,7 @@ $Id$
 """
 from zope.component import queryMultiAdapter
 from zope.viewlet.manager import ViewletManagerBase
+from z3ext.preferences.utils import hasEditableFields
 from z3ext.preferences.interfaces import IRootPreferences
 from z3ext.preferences.interfaces import IPreferenceGroup
 from z3ext.preferences.interfaces import IPreferenceCategory
@@ -74,7 +75,8 @@ class Navigation(ViewletManagerBase):
                     #info['items'] = self._process(prefs, [prefs], level+1)
 
                 if IPreferenceCategory.providedBy(prefs) and not info['items']:
-                    if not self._process(prefs, [prefs], level+1):
+                    if not self._process(prefs, [prefs], level+1) \
+                            and not hasEditableFields(prefs):
                         continue
 
                 data.append(info)

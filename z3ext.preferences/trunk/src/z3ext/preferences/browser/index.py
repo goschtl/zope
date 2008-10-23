@@ -18,6 +18,7 @@ $Id$
 from zope.interface import Interface
 from zope.component import getUtility
 from zope.security import checkPermission
+from z3ext.preferences.utils import hasEditableFields
 from z3ext.preferences.interfaces import IPreferenceGroup, IPreferenceCategory
 
 
@@ -37,7 +38,7 @@ class PreferencesView(object):
                               sgroup.__id__.split('.')[-1], sgroup)
                              for t, sgroup in group.items() 
                              if sgroup.isAvailable()]
-                if subgroups:
+                if subgroups or hasEditableFields(group):
                     groups.append((group.__title__, group,
                                    [{'id': id, 'group': sgroup}
                                     for t, id, sgroup in subgroups]))

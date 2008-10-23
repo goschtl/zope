@@ -40,9 +40,10 @@ $Id$
   >>> print utils.isMemberAwareGroup(prefs)
   False
 """
-
 from zope import interface
+from zope.schema import getFieldNames
 from zope.security import checkPermission
+from zope.security.checker import canWrite
 from zope.security.interfaces import IPrincipal, IGroup, IMemberAwareGroup
 
 
@@ -57,6 +58,14 @@ def isGroup(group):
 
 def isMemberAwareGroup(group):
     return IMemberAwareGroup.providedBy(group.__principal__)
+
+
+def hasEditableFields(group):
+    for name in getFieldNames(group.__schema__):
+        if canWrite(group, name):
+            return True
+
+    return False
 
 
 class PrincipalChecker(object):
