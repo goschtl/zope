@@ -32,6 +32,7 @@ setup(name='five.grok',
           'grokcore.security',
           'grokcore.view >= 1.1',
           'grokcore.formlib',
+          'grokcore.viewlet',
       ],
       entry_points="""
       """,
