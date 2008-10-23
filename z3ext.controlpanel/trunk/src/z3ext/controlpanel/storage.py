@@ -22,6 +22,7 @@ from zope.lifecycleevent import ObjectCreatedEvent
 from zope.app.container.btree import BTreeContainer
 from zope.app.component.hooks import getSite
 from zope.app.component.interfaces import ILocalSiteManager
+from zope.annotation.interfaces import IAttributeAnnotatable
 
 from interfaces import IConfiglet, IConfigletData, IRootConfiglet
 from interfaces import IConfigletDataStorage, IConfigletDataFactory
@@ -97,7 +98,7 @@ class ConfigletData(BTreeContainer):
 
     """
     
-    interface.implements(IConfigletData)
+    interface.implements(IConfigletData, IAttributeAnnotatable)
 
     def get(self, name, default=None):
         if name in self:
