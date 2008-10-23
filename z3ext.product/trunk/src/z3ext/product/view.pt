@@ -1,11 +1,11 @@
-<div i18n:domain="z3ext" tal:define="data view/getProducts">
-  <div class="topframe" tal:condition="data/installed">
-    <h1>Installed Products</h1>
+<div i18n:domain="z3ext.product" tal:define="data view/getProducts">
+  <div class="z-topframe" tal:condition="data/installed">
+    <h1 i18n:translate="">Installed Products</h1>
 
     <form tal:attributes="action request/URL" method="post">
-      <ul class="listing">
+      <ul class="z-listing">
 	<li tal:repeat="product data/installed">
-	  <div class="icon">
+	  <div class="z-listing-icon">
 	    <input class="noborder" type="checkbox" name="products:list" 
 		   tal:attributes="value product/name"
 		   tal:condition="product/uninstallable" />
@@ -13,7 +13,7 @@
 	      &nbsp;&nbsp;&nbsp;&nbsp;</tal:block>
 	    <img tal:replace="structure product/product/@@zmi_icon" />
 	  </div>
-	  <div class="details">
+	  <div class="z-listing-details">
 	    <a tal:omit-tag="not:product/configlet"
 	       tal:attributes="href string:${product/name}/">
 	      <span tal:content="product/title"></span>
@@ -24,12 +24,12 @@
 	       tal:define="name product/name;
 			   extensions python:view.getExtensions(product['product'])"
 	       tal:condition="extensions">
-	    <ul class="listing">
+	    <ul class="z-listing-listing">
 	      <li tal:repeat="product extensions">
-		<div class="icon">
+		<div class="z-listing-icon">
 		  <img tal:replace="structure product/@@zmi_icon" />
 		</div>
-		<div class="details">
+		<div class="z-listing-details">
 		  <span>
 		    <a tal:omit-tag="not:product/isAvailable"
 		       tal:attributes="href string:${product/__parent__/__name__}/${product/__name__}/">
@@ -37,12 +37,12 @@
 		    </a>
 		    <a tal:attributes="href 
 		         string:${context/@@absolute_url}/?extension=${product/__id__}"
-		       tal:condition="product/__installed__">
+		       tal:condition="product/__installed__" i18n:translate="">
 		      (Installed)
 		    </a>
 		    <a tal:attributes="href
 		         string:${context/@@absolute_url}/?extension=${product/__id__}"
-		       tal:condition="not:product/__installed__">
+		       tal:condition="not:product/__installed__" i18n:translate="">
 		      (Not installed)
 		    </a>
 		  </span>
@@ -54,35 +54,38 @@
 	</li>
       </ul>
 
-      <div class="formControls" tal:condition="data/hasUninstallable">
-	<input type="submit" class="z-form-button" name="update" value="Update" />
-	<input type="submit" class="z-form-removebutton" name="uninstall" value="Uninstall" />
+      <div class="z-form-controls" tal:condition="data/hasUninstallable">
+	<input type="submit" class="z-form-button" name="update" 
+	       value="Update" i18n:attributes="value" />
+	<input type="submit" class="z-form-removebutton" name="uninstall" 
+	       value="Uninstall" i18n:attributes="value" />
       </div>
     </form>
   </div>
   
   <div class="frame" tal:condition="data/notinstalled"
        tal:attributes="class python:not data['installed'] and 'topframe' or 'frame'">
-    <h1>Products available for install</h1>
-    <p>This is the Add-on Products install section, you can add products in the lists below.</p>
+    <h1 i18n:translate="">Products available for install</h1>
+    <p i18n:translate="">This is the Add-on Products install section, you can add products in the lists below.</p>
 
     <form tal:attributes="action request/URL" method="post">
-      <ul class="listing">
+      <ul class="z-listing">
 	<li tal:repeat="product data/notinstalled">
-	  <div class="icon">
+	  <div class="z-listing-icon">
 	    <input class="noborder" type="checkbox"
                    name="products:list" tal:attributes="value product/name" />
 	    <img tal:replace="structure product/product/@@zmi_icon" />
 	  </div>
-	  <div class="details">
+	  <div class="z-listing-details">
 	    <span tal:content="product/title"></span>
 	    <div tal:content="product/description"></div>
 	  </div>
 	</li>
       </ul>
 
-      <div class="formControls">
-	<input type="submit" class="context" name="install" value="Install" />
+      <div class="z-form-controls">
+	<input type="submit" class="context" name="install" 
+	       value="Install" i18n:attributes="value" />
       </div>
     </form>
   </div>

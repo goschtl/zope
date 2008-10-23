@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.product">
 
   <browser:icon
      name="zmi_icon"

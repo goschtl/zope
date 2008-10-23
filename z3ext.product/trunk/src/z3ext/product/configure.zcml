@@ -2,7 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.product">
 
   <includeDependencies package="z3ext.product" />
 

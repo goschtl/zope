@@ -18,7 +18,7 @@ $Id: interfaces.py 1843 2008-03-25 18:39:00Z fafhrd91 $
 from zope import schema, interface
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('z3ext')
+_ = MessageFactory('z3ext.product')
 
 
 class ProductError(Exception):
