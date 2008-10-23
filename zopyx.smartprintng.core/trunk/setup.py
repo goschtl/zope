@@ -26,7 +26,7 @@ setup(name='zopyx.smartprintng.core',
           'setuptools',
           'zope.component',
           'zope.pagetemplate',
-          'zope.app.testing',
+#          'zope.app.testing',
           'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
