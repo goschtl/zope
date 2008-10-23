@@ -1,0 +1,401 @@
+zope.introspector.code
+**********************
+
+Representing code objects.
+
+:Test-Layer: unit
+
+Much functionality of the ``code`` module relies on
+adapters. Therefore we first grok the module to register all adapters
+included there::
+
+  >>> import grokcore.component as grok
+  >>> grok.testing.grok('zope.introspector.code')
+
+We also define a simple function to get normalized file paths::
+
+  >>> import os
+  >>> def pnorm(string):
+  ...    return string.replace(os.sep, '/')
+
+Code objects
+============
+
+The introspector represents code entities like packages, modules or
+classes as ``Code`` objects.
+
+``Code`` objects expect a dotted name to be created::
+
+  >>> from zope.introspector.code import Code
+  >>> Code('zope.app')
+  <zope.introspector.code.Code object at 0x...>
+
+``Code`` objects do two things: they store the dotted name and
+provide an ``IContext`` interface::
+
+  >>> code = Code('zope.app')
+  >>> code.dotted_name
+  'zope.app'
+
+  >>> from grokcore.component.interfaces import IContext
+  >>> IContext.providedBy(code)
+  True
+
+The ``IContext`` marker interface helps us to associate ``Code``
+objects with certain object types when adapters search for this.
+
+A third purpose of code representations based on ``Code`` is to
+provide a set of subobjects if such exist. Those code representations
+then implement a ``__get_item__`` method.
+
+The ``Code`` class, as the most simple object representation does not
+provide subitems and is the fallback for any object type, that cannot
+be determined more exactly.
+
+Packages
+========
+
+The ``zope.introspector`` package provides a bunch of code
+representations, that also deliver subitems, which comes in handy when
+traversing a dotted name.
+
+The ``Package`` class is one of those container-like representations,
+because packages can contain other packages, modules and text files.
+
+A ``Package`` representation can be created easily::
+
+  >>> from zope.introspector.code import Package
+  >>> pkg = Package('zope.introspector')
+  >>> pkg
+  <zope.introspector.code.Package object at 0x...>
+
+It also provides the capabilities of a normal ``Code`` object::
+
+  >>> pkg.dotted_name
+  'zope.introspector'
+
+  >>> pnorm(pkg.getPath())
+  '.../src/zope/introspector'
+
+Furthermore we can ask it for subitems::
+
+  >>> pkg['tests']
+  <zope.introspector.code.Package object at 0x...>
+
+  >>> pkg['code.txt']
+  <zope.introspector.code.File object at 0x...>
+
+  >>> pkg['util']
+  <zope.introspector.code.Module object at 0x...>
+
+Note, that we got different kinds of code representations, depending
+on the type of the object we asked for.
+
+If a name cannot be found, a ``KeyError`` is raised::
+
+  >>> pkg['not-existing-name']
+  Traceback (most recent call last):
+  ...
+  KeyError
+
+For convenience reasons there is also a method ``getModuleInfo``
+available, that delivers a martian ``ModuleInfo`` of the package::
+
+  >>> pkg.getModuleInfo()
+  <ModuleInfo object for 'zope.introspector'>
+
+
+PackageInfos
+------------
+
+The ``Package`` class is merely a wrapper around real packages, while
+``PackageInfo`` objects provide us with the interesting informations
+about a certain package.
+
+As in the whole module, XXXInfo classes are adapters, that adapt a
+certain code representation type to the ``IInfo`` interface.
+
+Thus, we create a ``PackageInfo`` object normally, by asking the
+component architechture for an appropriate adapter to ``IInfo``.
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> infos = list(component.getAdapters((pkg,), IInfo))
+  >>> infos
+  [(u'package', <zope.introspector.code.PackageInfo object at 0x...>)]
+
+We examine the generated ``PackageInfo`` object further. We can ask
+for the txt-files contained in the package::
+
+  >>> info = infos[0][1]
+  >>> sorted(info.getPackageFiles())
+  ['README.txt', 'adapters.txt', ..., 'viewinfo.txt']
+
+We can get all ZCML files::
+
+  >>> sorted(info.getZCMLFiles())
+  ['configure.zcml', 'ftesting.zcml', 'meta.zcml']
+
+We can determine, whether this package is a namespace package::
+
+  >>> info.isNamespacePackage()
+  False
+
+We can get all subpackages::
+
+  >>> sorted(list(info.getSubPackages()))
+  [<ModuleInfo object for 'zope.introspector.tests'>]
+
+We can get all modules contained in the package::
+
+  >>> mods = list(info.getModules())
+  >>> from pprint import pprint
+  >>> pprint(sorted(mods, key=lambda x: x.dotted_name))
+  [<ModuleInfo object for 'zope.introspector.adapters'>,
+   <ModuleInfo object for 'zope.introspector.code'>,
+  ...
+   <ModuleInfo object for 'zope.introspector.util'>,
+   <ModuleInfo object for 'zope.introspector.viewinfo'>]
+
+We can get some information about the egg, this package is part of (if
+any). We get the egg name, version, Python version and egg location::
+
+  >>> pprint(info.getEggInfo())
+  {'location': '.../src',
+   'name': 'zope.introspector',
+   'py_version': None,
+   'version': '0...'}
+
+We can also grab the basic information provided by the adapted
+``Package`` object::
+
+  >>> info.getDottedName()
+  'zope.introspector'
+
+  >>> pnorm(info.getPath())
+  '/.../src/zope/introspector'
+
+If a package is a namespace package, we can also get all submodules::
+
+  >>> from zope.introspector.code import PackageInfo
+  >>> pkg = Package('zope')
+  >>> info = PackageInfo(pkg)
+  >>> sorted(list(info.getSubPackages()), key=lambda x: x.dotted_name)
+  [<ModuleInfo object for 'zope.annotation'>,
+   ..., <ModuleInfo object for 'zope.traversing'>]
+
+
+Modules
+=======
+
+`Module` objects are representations of Python modules.
+
+The ``Module`` class is one of those container-like representations,
+because packages can contain other packages, modules and text files.
+
+A ``Module`` representation can be created easily::
+
+  >>> from zope.introspector.code import Module
+  >>> mod = Module('zope.introspector.code')
+  >>> mod
+  <zope.introspector.code.Module object at 0x...>
+
+It also provides the capabilities of a normal ``Code`` object::
+
+  >>> mod.dotted_name
+  'zope.introspector.code'
+
+  >>> pnorm(mod.getPath())
+  '.../src/zope/introspector/code.py'
+
+Furthermore we can ask it for subitems. Supported subitem types
+currently are classes and functions::
+
+  >>> mod['Code']
+  <zope.introspector.code.Class object at 0x...>
+
+  >>> mod = Module('zope.introspector.util')
+  >>> mod['resolve']
+  <zope.introspector.code.Function object at 0x...>
+
+ModuleInfos
+-----------
+
+The ``Module`` class is merely a wrapper around real modules, while
+``ModuleInfo`` objects provide us with the interesting informations
+about a certain module.
+
+As in the whole module, XXXInfo classes are adapters, that adapt a
+certain code representation type to the ``IInfo`` interface.
+
+Thus, we create a ``ModuleInfo`` object normally, by asking the
+component architechture for an appropriate adapter to ``IInfo``.
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> infos = list(component.getAdapters((mod,), IInfo))
+  >>> infos
+  [(u'module', <zope.introspector.code.ModuleInfo object at 0x...>)]
+
+We examine the generated ``ModuleInfo`` object further. We can ask
+for the classes defined in the module::
+
+  >>> info = infos[0][1]
+  >>> info.getClasses()
+  []
+
+  >>> func_list = info.getFunctions()
+  >>> func_list
+  [<zope.introspector.code.Function object at 0x...>, ...]
+
+  >>> func_names = [x.dotted_name.split('.')[-1] for x in func_list]
+  >>> sorted(func_names)
+  ['get_attributes', ..., 'resolve']
+
+
+Classes
+=======
+
+`Class` objects are representations of Python classes.
+
+A ``Class`` representation can be created easily::
+
+  >>> from zope.introspector.code import Class
+  >>> klass = Class('zope.introspector.code.Class')
+  >>> klass
+  <zope.introspector.code.Class object at 0x...>
+
+It also provides the capabilities of a normal ``Code`` object::
+
+  >>> klass.dotted_name
+  'zope.introspector.code.Class'
+
+ClassInfos
+-----------
+
+The ``Class`` class is merely a wrapper around real classes, while
+``ClassInfo`` objects provide us with the interesting informations
+about a certain class.
+
+As in the whole module, XXXInfo classes are adapters, that adapt a
+certain code representation type to the ``IInfo`` interface.
+
+Thus, we create a ``ClassInfo`` object normally, by asking the
+component architechture for an appropriate adapter to ``IInfo``.
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> infos = list(component.getAdapters((klass,), IInfo))
+  >>> infos
+  [(u'class', <zope.introspector.code.ClassInfo object at 0x...>)]
+
+We examine the generated ``ClassInfo`` object further. We can ask
+for the base classes of the class. Note, that we will get
+representations of the base classes, not the classes themselves::
+
+  >>> info = infos[0][1]
+  >>> tuple(info.getBases())
+  (<zope.introspector.code.Class object at 0x...>,)
+
+The bases, however are ordered.
+
+We can get the interfaces implemented by the class::
+
+  >>> info.getInterfaces()
+  (<InterfaceClass grokcore.component.interfaces.IContext>,)
+
+Let's create an info object of a more interesting class::
+
+  >>> from zope.introspector.code import Class, ClassInfo
+  >>> info = ClassInfo(Class('zope.introspector.code.ClassInfo'))
+
+We can get the attributes of a class::
+
+  >>> info.getAttributes()
+  [('grokcore.component.directive.context', <class '...Class'>, None),
+   ...]
+
+We can get the methods of a class::
+
+  >>> info.getMethods()
+  [('getAttributes', <unbound method ..., None), ...]
+
+
+Files
+=====
+
+Files are simple representations of text files contained in a
+package. Currently supported are .txt, .rst and .zcml files.
+
+A ``File`` representation can be created by passing the dotted name of
+the containing package and the filename::
+
+  >>> from zope.introspector.code import File
+  >>> file_obj = File('zope.introspector', 'README.txt')
+  >>> file_obj
+  <zope.introspector.code.File object at 0x...>
+
+File objects provide their dotted name, their filename and their
+filesystem path as attributes::
+
+  >>> file_obj.dotted_name
+  'zope.introspector'
+
+  >>> file_obj.name
+  'README.txt'
+
+  >>> pnorm(file_obj.path)
+  '/...zope/introspector/README.txt'
+
+FileInfos
+---------
+
+``FileInfo`` objects provide the (basic) data of ``File`` objects in
+an own API. As with all `Info` objects herein we get the appropriate
+``FileInfo`` by looking up a named adapter::
+
+  >>> from zope import component
+  >>> from zope.introspector.interfaces import IInfo
+  >>> info = component.getAdapter(file_obj, IInfo, 'file')
+  >>> info
+  <zope.introspector.code.FileInfo object at 0x...>
+
+The `Info` object gives us some basic information about a file::
+
+  >>> info.getDottedName()
+  'zope.introspector'
+
+  >>> info.getName()
+  'README.txt'
+
+  >>> pnorm(info.getPath())
+  '/.../zope/introspector/README.txt'
+
+
+Functions
+=========
+
+Functions are simple representations of functions contained in a
+module::
+
+  >>> from zope.introspector.code import Function
+  >>> func = Function('zope.introspector.util.resolve')
+  >>> func
+  <zope.introspector.code.Function object at 0x...>
+
+`Function` objects provide their wrapped function as `func`
+attribute::
+
+  >>> func.func
+  <function resolve at 0x...>
+
+FunctionInfos
+-------------
+
+`FunctionInfo`s know about the signature of the described function and
+provide it as string::
+
+  >>> from zope.introspector.code import FunctionInfo
+  >>> info = FunctionInfo(func)
+  >>> info.getSignature()
+  '(obj_or_dotted_name)'

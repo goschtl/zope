@@ -1,0 +1,122 @@
+zope.introspector.adapters
+**************************
+
+:Test-Layer: functional
+
+Adapters to search utilities, handlers and adapters.
+
+We provide some adapters, to adapt different types of registrations to
+our local IRegistrySearch type.
+
+We create a simple fake registration, for this registration to behave normally we also need some 
+fake interfaces a FakeProvided, FakeRequired and a FakeFactory::
+
+  >>> class FakeProvided:
+  ...   pass
+  >>> class FakeRequired:
+  ...   pass
+  >>> class FakeFactory:
+  ...   pass
+  >>> class base:
+  ...   pass
+  >>> class FakeRegistration(object):
+  ...   provided = FakeProvided
+  ...   name = "FakeName"
+  ...   factory = FakeFactory
+  ...   required = [FakeRequired]
+  ...   registry = base
+  >>> fake_reg = FakeRegistration()
+
+In the Component Registry there are four different types of registrations, ``IAdapterRegistration``,
+ ``IHandlerRegistration`` and ``IUtilityRegistration``. The fourth``ISubscriptionAdapterRegistration`` 
+ is just a sub-class of ``IAdapterRegistration`` and does not add anything to ``IAdapterRegistration``.
+We let this `fake_reg` now provide ``IAdapterRegistration`` to let the
+framework think, it is a real adapter registration::
+
+  >>> from zope.interface import directlyProvides
+  >>> from zope.component.interfaces import IAdapterRegistration
+  >>> directlyProvides(fake_reg, IAdapterRegistration)
+
+We can now get an ``AdapterSearch`` from the IRegistrySearch, that we can use to search the registration
+and see if this registration has anything with that name. You can also specify if the search should be 
+within a special registry or default to 'base'
+::
+
+  >>> from zope.introspector.interfaces import IRegistrySearch
+  >>> adapterSearch = IRegistrySearch(fake_reg)
+  >>> adapterSearch.searchRegistration("FakeName")
+  True
+
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> adapterSearch.searchRegistration("FakeName", registry='test')
+  False
+
+  >>> adapterSearch.searchRegistration("FakeProvided")
+  True
+  
+  >>> adapterSearch.searchRegistration("FakeFactory")
+  True
+
+We can also get the full paths of the involved interfaces::
+
+  >>> adapterSearch.getInterfaces()
+  ['__builtin__.FakeRequired', '__builtin__.FakeProvided']
+
+And if we want get the registration itself::
+  
+  >>> adapterSearch.getObject()
+  <FakeRegistration object at 0x...>
+  
+The same works with handler registrations. We attach the interface
+using ``directlyProvides`` to remove any other interfaces from the
+fake registry::
+
+  >>> from zope.component.interfaces import IHandlerRegistration
+  >>> directlyProvides(fake_reg, IHandlerRegistration)
+  >>> handlerSearch = IRegistrySearch(fake_reg)
+  >>> handlerSearch.searchRegistration("FakeName")
+  True
+  
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> handlerSearch.searchRegistration("FakeName", registry='test')
+  False
+  
+  >>> handlerSearch.searchRegistration("FakeFactory")
+  True
+  
+  >>> handlerSearch.searchRegistration("FakeRequired")
+  True
+  
+  >>> handlerSearch.getInterfaces()
+  ['__builtin__.FakeRequired', '__builtin__.FakeFactory']
+  
+  >>> handlerSearch.getObject()
+  <FakeRegistration object at 0x...>
+  
+  
+Finally we have also an adapter for utility registrations::
+
+  >>> from zope.component.interfaces import IUtilityRegistration
+  >>> directlyProvides(fake_reg, IUtilityRegistration)
+  >>> utilitySearch = IRegistrySearch(fake_reg)
+  >>> utilitySearch.searchRegistration("FakeName")
+  True
+
+Since fake_reg is registered in the base registry nothing is found when searching in a made up registry.
+
+  >>> utilitySearch.searchRegistration("FakeName", registry='test')
+  False
+
+  >>> utilitySearch.searchRegistration("FakeProvided")
+  True
+  
+  >>> utilitySearch.getInterfaces()
+  ['__builtin__.FakeProvided']
+  
+  >>> utilitySearch.getObject()
+  <FakeRegistration object at 0x...>
+  
+  
+  
