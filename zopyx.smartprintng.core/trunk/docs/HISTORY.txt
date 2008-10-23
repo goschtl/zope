@@ -4,7 +4,7 @@ Changelog
 2.0.0b4 (unreleased)
 --------------------
 
-- Nothing changed yet.
+- removed zope.app.dependency
 
 
 2.0.0b3 (22.10.2008)
