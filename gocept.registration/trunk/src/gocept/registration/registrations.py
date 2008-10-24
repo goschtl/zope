@@ -20,6 +20,18 @@ import sha
 import zope.app.container.btree
 import zope.interface
 
+
+class Registration(zope.app.container.contained.Contained,
+                   persistent.Persistent):
+
+    zope.interface.implements(gocept.registration.interfaces.IRegistration)
+
+    def __init__(self, hash, email, data):
+        self.hash = hash
+        self.email = email
+        self.data = data
+
+
 class Registrations(zope.app.container.btree.BTreeContainer):
 
     zope.interface.implements(gocept.registration.interfaces.IRegistrations)
@@ -27,10 +39,10 @@ class Registrations(zope.app.container.btree.BTreeContainer):
     def _createHash(self, email, data=None):
         return sha.new(email+datetime.datetime.now().isoformat()).hexdigest()
 
-    def register(self, email, data=None):
+    def register(self, email, data=None, factory=Registration):
         """Create a new registration for the given email address and data."""
         hash = self._createHash(email, data)
-        self[hash] = registration = Registration(hash, email, data)
+        self[hash] = registration = factory(hash, email, data)
         return registration
 
     def confirm(self, hash):
@@ -42,14 +54,3 @@ class Registrations(zope.app.container.btree.BTreeContainer):
         zope.event.notify(event)
 
         del self[hash]
-
-
-class Registration(zope.app.container.contained.Contained,
-                   persistent.Persistent):
-
-    zope.interface.implements(gocept.registration.interfaces.IRegistration)
-
-    def __init__(self, hash, email, data):
-        self.hash = hash
-        self.email = email
-        self.data = data

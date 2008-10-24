@@ -43,6 +43,31 @@ anymore:
   Traceback (most recent call last):
   KeyError: '<SHA-HASH>'
 
+Customizing the Registration Object
+===================================
+
+When calling the ``register`` method, we can also optionally pass in a
+factory to construct the registration.  This is useful when
+subclassing the ``Registration`` class.
+
+  >>> from gocept.registration.registrations import Registration
+  >>> class MyRegistration(Registration):
+  ...     def __init__(self, hash, email, data):
+  ...         assert data.has_key('agentNumber'), 'missing agent number!'
+  ...         super(MyRegistration, self).__init__(hash, email, data)
+
+  >>> registrations.register('james@bond.com',
+  ...                        {'name': u'James Bond'},
+  ...                        factory=MyRegistration)
+  Traceback (most recent call last):
+  ...
+  AssertionError: missing agent number!
+  >>> registrations.register('james@bond.com',
+  ...                        {'name': u'James Bond',
+  ...                         'agentNumber': u'007'},
+  ...                        factory=MyRegistration)
+  <MyRegistration object at ...>
+
 
 Application hooks
 =================

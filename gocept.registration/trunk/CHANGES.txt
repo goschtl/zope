@@ -2,8 +2,11 @@ Changes
 =======
 
 
-0.3.0 (2008-??-??)
+0.3.0 (unreleased)
 ------------------
+
+- Feature: Allowing passing in a factory to the register of the
+  ``Registrations`` object.
 
 0.2.0 (2008-05-10)
 ------------------
