@@ -1,0 +1,268 @@
+zope.introspectorui.code
+************************
+
+UI components for code oriented infos.
+
+:Test-Layer:  functional
+
+The `code` module provides viewing components for rendering info
+objects related to code. 'Code' in that respect means packages,
+modules, classes and the like.
+
+The infos are grabbed by the ``zope.introspector`` package.
+
+Prerequisites
+=============
+
+We prepare a browser request, that can be used lateron::
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+The code objects must be located to provide meaningful URLs. We create
+a faked root and add a 'zope' package representation::
+
+  >>> from zope.location.location import located
+  >>> from zope.introspector.code import Package
+  >>> root = located(object(), None, '')
+  >>> zope_pkg = located(Package('zope'), root, u'zope')
+
+We use pprint to make complex output ordered and readable::
+
+  >>> from pprint import pprint
+
+Packages
+========
+
+We can display package information. For this we have to get the infos
+related to a dotted name, which represents a package::
+
+  >>> from zope.component import getAdapter, getMultiAdapter
+  >>> from zope.introspector.interfaces import IInfo
+  >>> from zope.introspector.code import Package, PackageInfo
+  >>> pkg = located(Package('zope.introspector'), 
+  ...                            zope_pkg, u'introspector')
+
+The package must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(pkg, IInfo, name='package')
+  >>> info
+  <zope.introspector.code.PackageInfo object at 0x...>
+
+While the ``zope.introspector`` package provides us infos about
+things, we need the ``zope.introspectorui`` to get an appropriate
+view. The views should already be registered and can be looked up::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+  >>> print view()
+    <div>
+      <h2>Package: <a href="http://127.0.0.1/zope">zope</a>.<a href="http://127.0.0.1/zope/introspector">introspector</a></h2>
+    ...
+
+As we see, the view provides only an HTML fragment, like a widget, to
+render its infos. Such, we can concatenate several infos and their
+views on one page.
+
+The package view shows us contained ZCML files, other text files,
+subpackages and modules contained in the package. Furthermore it gives
+us infos about the path and (if it is the top package of an egg), egg
+infos::
+
+  >>> print view()
+    <div>
+      <h2>Package: <a href="http://127.0.0.1/zope">zope</a>.<a href="http://127.0.0.1/zope/introspector">introspector</a></h2>
+    ...
+    <div>
+      Egg: zope.introspector
+      0...
+    ...
+
+Modules
+=======
+
+We can display module information. For this we have to get the infos
+related to a dotted name, which represents a module. We create module
+representations for the local `code` module (which contains classes)
+and the local `util` module (which contains functions)::
+
+  >>> from zope.introspector.code import Module, ModuleInfo
+  >>> mod_code = located(Module('zope.introspector.code'), 
+  ...                    zope_pkg, u'code')
+  >>> mod_util = located(Module('zope.introspector.util'), 
+  ...                    zope_pkg, u'util')
+
+The module must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
+  >>> info_code = getAdapter(mod_code, IInfo, name='module')
+  >>> info_code
+  <zope.introspector.code.ModuleInfo object at 0x...>
+
+The same can happen with the ``util`` module::
+
+  >>> info_util = getAdapter(mod_util, IInfo, name='module')
+
+Finally we can create the views on the modules::
+
+  >>> view_code = getMultiAdapter((info_code, request), name='index')
+  >>> view_code
+  <zope.introspectorui.code.Module object at 0x...>
+
+  >>> view_util = getMultiAdapter((info_util, request), name='index')
+
+Module views provide lists of dicts for contained classes and
+functions. Each dict tells about the name, the URL and the docstring
+of a contained item::
+
+  >>> view_code.getClassURLs()
+  [{'url': 'http://127.0.0.1/zope/introspector/code/Class', 
+    'doc': u'', 
+    'name': 'Class'},
+   {'url': 'http://127.0.0.1/zope/introspector/code/ClassInfo', 
+    'doc': u'',
+    'name': 'ClassInfo'},  
+  ...
+
+The ``util`` module provides some functions for which we also get the
+name, the URL and the docstring::
+
+  >>> pprint(view_util.getFunctionURLs())
+  [...{'doc': 'Determine the interface in which an attribute is defined.',
+    'name': 'get_interface_for_attribute',
+    'url': 'http://127.0.0.1/zope/.../util/get_interface_for_attribute'},
+  ...]
+
+We can also get a list of dicts that provide the function signatures::
+
+  >>> view_util.getFunctions()
+  [...
+   {'doc': 'Return the signature of a function or method.',
+    'fullname': 'get_function_signature(func)',
+    'name': 'get_function_signature',
+    'signature': '(func)'},
+   ...]
+
+Of course we can render the views::
+
+  >>> print view_code()
+  <div>
+    <h2>Module: <a href="...">zope</a>.<a href="...">code</a></h2>    
+  ...
+    <div>
+      Path: ...code.py
+    </div>
+  ...
+
+By default functions are presented as strings and not as links. Also a
+docstring is presented, if it exists::
+
+  >>> print view_util()
+  <div>
+  ...
+  ...<li>
+  ...<div>get_function_signature(func)</div>...
+  ...<div>Return the signature of a function or method.</div>...
+  ...<li>
+  ...
+
+Classes
+=======
+
+We can display class information. For this we have to get the infos
+related to a dotted name, which represents a class::
+
+  >>> from zope.introspector.code import Class, ClassInfo
+  >>> klass = located(Class('zope.introspector.code.ClassInfo'), 
+  ...                 mod_code, u'ClassInfo')
+
+The class must be located to provide meaningful URLs. We get an
+appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(klass, IInfo, name='class')
+  >>> info
+  <zope.introspector.code.ClassInfo object at 0x...>
+
+Finally we can create a view on the class::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+
+Views on `ClassInfo` objects provide information about the bases of
+the class. Because they are returned as generators we build the list::
+
+  >>> list(view.getBases())
+  [{'url': 'http://127.0.0.1/grokcore/component/components/Adapter', 
+    'doc': u'', 
+    'name': 'grokcore.component.components.Adapter'}]
+
+We can view the attributes of a class::
+
+  >>> view.getAttributes()
+  ['grokcore.component.directive.context', 
+   'grokcore.component.directive.name', 
+   'grokcore.component.directive.provides']
+
+We can view the methods of a class::
+
+  >>> view.getMethods()
+  [{'doc': u'', 'name': 'getAttributes(self)'},
+   ...]
+
+Of course we can render the view::
+
+  >>> print view()
+  <div>
+    <h2>Class: <a href="...">zope</a>.<a href="...">ClassInfo</a></h2>    
+  ...
+  
+
+Files
+=====
+
+We can display text files of type .txt, .rst and .zcml, that are
+contained in a Python package::
+
+  >>> from zope.component import getAdapter, getMultiAdapter
+  >>> from zope.introspector.code import File
+  >>> from zope.introspector.interfaces import IInfo
+  >>> from zope.introspector.code import Package, PackageInfo
+  >>> file_obj = located(File('zope.introspector', 'README.txt'), 
+  ...                    pkg, u'README.txt')
+
+We get an appropriate info simply by looking up adapters::
+
+  >>> info = getAdapter(file_obj, IInfo, name='file')
+  >>> info
+  <zope.introspector.code.FileInfo object at 0x...>
+
+The view can then be looked up by querying multi adapters::
+
+  >>> view = getMultiAdapter((info, request), name='index')
+  >>> view
+  <zope.introspectorui.code.File object at 0x...>
+
+File views provide a breadcrumb method and a method to grab the raw
+file contents::
+
+  >>> print view.getRaw()
+  zope.introspector
+  *****************
+  <BLANKLINE>
+  An introspector for Zope.
+  ...
+
+Finally the view can be rendered to provide an HTML fragment
+representing the file::
+
+  >>> print view()
+  <div>
+    <h2>File: <a href="...">zope</a>...<a href="...">README.txt</a></h2>
+  </div>
+  ...
+      Path: ...
+  ...
+  <div>zope.introspector
+  *****************
+  <BLANKLINE>
+  An introspector for Zope.
+  ...

@@ -1,0 +1,12 @@
+<h1>
+  Package: <span tal:content="structure context/getDottedName">dot.ted.name</span>
+</h1>
+<div>
+  Contained text files:
+  <span tal:condition="not: view/files">
+    None
+  </span>
+</div>
+<ul>
+  <li tal:repeat="item view/files" tal:content="structure item/url" />
+</ul>

@@ -1,0 +1,10 @@
+CHANGES
+*******
+
+0.1 (2008-10-24)
+================
+
+Feature changes
+---------------
+
+* Initial Release

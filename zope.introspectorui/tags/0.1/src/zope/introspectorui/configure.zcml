@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok"
+           i18n_domain="zope.introspector">
+  
+  <include package="zope.introspector" file="meta.zcml" />
+  <include package="zope.introspector" />
+  <include package="grokcore.view" file="meta.zcml" />
+  <include package="grokcore.view" />
+  <grok:grok package="." />
+
+</configure>

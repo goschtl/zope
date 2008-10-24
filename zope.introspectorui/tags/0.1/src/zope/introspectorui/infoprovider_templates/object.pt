@@ -1,0 +1,30 @@
+<table>
+  <tr>
+    <td>Type:</td>
+    <td tal:content="view/getType"/>
+  </tr>
+  <tr>
+    <td>Class:</td>
+    <td tal:content="context/getDottedName"/>
+  </tr>
+  <tr>
+    <td>File:</td>
+    <td tal:content="context/getFile"/>
+  </tr>
+  <tr>
+    <td>Methods:</td>
+    <td>Name</td>
+    <td>Arguments</td>
+    <td>Comment</td>
+    <td>Doc</td>
+  </tr>
+  <tr tal:repeat="method context/getMethods">
+      <td />
+      <td tal:content="method/id"/>
+      <td tal:content="method/args" />
+      <td tal:content="method/comment" />
+      <td tal:content="method/doc" />
+      
+  </tr>
+  
+</table>

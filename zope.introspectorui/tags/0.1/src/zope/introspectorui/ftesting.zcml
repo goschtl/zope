@@ -1,0 +1,16 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:grok="http://namespaces.zope.org/grok"
+           i18n_domain="zope.introspector"
+           package="zope.introspectorui">
+  
+  <include package="zope.introspector" file="meta.zcml" />
+  <include package="zope.introspector" />
+  <include package="grokcore.view" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
+  <include package="zope.app.component" file="meta.zcml" />
+  <include package="grokcore.view" />
+  <include package="zope.traversing" />
+  <grok:grok package="." />
+  <grok:grok package=".tests" />
+
+</configure>

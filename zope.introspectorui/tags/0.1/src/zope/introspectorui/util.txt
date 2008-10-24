@@ -1,0 +1,185 @@
+zope.introspectorui.util
+************************
+
+Helpers for the zope.introspectorui
+
+:Test-Layer: functional
+
+This module provides some helpers, mainly for dealing with
+URLs.
+
+CodeBreadcrumbProvider
+======================
+
+An adapter that provides HTML breadcrumbs for a certain code view.
+
+We construct a package representation for ``zope.introspector``::
+
+  >>> from zope.introspector.code import Package
+  >>> pkg = Package('zope.introspector')
+
+The package must be located to be referencable by an URL. We fake a
+location tree with a faked root::
+
+  >>> from zope.location.location import located
+  >>> root = object()
+  >>> pkg_zope = located(Package('zope'), root, 'zope')
+  >>> pkg_introspector = Package('zope.introspector')
+  >>> pkg = located(pkg_introspector, pkg_zope, 'introspector')
+
+Now we get the appropriate info object for this representation. This
+is normally done using adapters, but we can shorten the way here and
+use the ``PackageInfo`` directly::
+
+  >>> from zope.introspector.code import PackageInfo
+  >>> info = PackageInfo(pkg)
+
+To create an appropriate view, however, we need a request::
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> request = TestRequest()
+
+Finally we can create the view::
+
+  >>> from zope.introspectorui.code import Package as PackageView
+  >>> view = PackageView(info, request)
+
+We can now get breadcrumbs for this view using the adapter. This
+adapter provides support for objects, that implement
+``zope.introspectorui.interfaes.ICodeView`` only::
+
+  >>> from zope.introspectorui.interfaces import IBreadcrumbProvider
+  >>> from zope.component import getAdapter
+  >>> provider = IBreadcrumbProvider(view)
+  >>> provider
+  <zope.introspectorui.util.CodeBreadcrumbProvider object at 0x...>
+
+This provider gives us the breadcrumbs for the view of the
+`zope.introspector` package as HTML code::
+
+  >>> provider.getBreadcrumbs()
+  '<a href="http://.../zope">zope</a>.<a href="http://.../zope/introspector">introspector</a>'
+
+
+`get_doc_format(module)`
+========================
+
+This function was taken from ``zope.app.apidoc``. It inspects a module
+to determine the supported documentation format. The function returns
+a valid renderer source factory id.
+
+If the `__docformat__` module attribute is specified, its value will
+be used to look up the factory id::
+
+  >>> from zope.introspectorui.util import get_doc_format
+  >>> from zope import introspectorui
+  >>> get_doc_format(introspectorui)
+  'zope.source.rest'
+
+By default and different to ``zope.app.apidoc``, restructured text is
+returned::
+
+  >>> from zope.introspectorui import tests
+  >>> get_doc_format(tests)
+  'zope.source.rest'
+
+The `__docformat__` attribute can also optionally specify a language field. We
+simply ignore it::
+
+  >>> class Module(object):
+  ...     pass
+  >>> module = Module()
+  >>> module.__docformat__ = 'structuredtext en'
+  >>> get_doc_format(module)
+  'zope.source.stx'
+
+The third supported source factory id is 'plaintext'::
+
+  >>> module.__docformat__ = 'plaintext'
+  >>> get_doc_format(module)
+  'zope.source.plaintext'
+
+`dedent_string(text)`
+=====================
+
+This function was taken from ``zope.app.apidoc``.
+
+Before doc strings can be processed using STX or ReST they must be dendented,
+since otherwise the output will be incorrect. Let's have a look at some
+docstrings and see how they are correctly dedented.
+
+Let's start with a simple one liner. Nothing should happen:
+
+  >>> def func():
+  ...     '''One line documentation string'''
+
+  >>> from zope.introspectorui.util import dedent_string
+  >>> dedent_string(func.__doc__)
+  'One line documentation string'
+
+Now what about one line docstrings that start on the second line? While this
+format is discouraged, it is frequently used:
+
+  >>> def func():
+  ...     '''
+  ...     One line documentation string
+  ...     '''
+
+  >>> dedent_string(func.__doc__)
+  '\nOne line documentation string\n'
+
+We can see that the leading whitespace on the string is removed, but not the
+newline character. Let's now try a simple multi-line docstring:
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...     Lengthy description, giving some more background information and
+  ...     discuss some edge cases.
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+  Lengthy description, giving some more background information and
+  discuss some edge cases.
+  <BLANKLINE>
+
+Again, the whitespace was removed only after the first line. Also note that
+the function determines the indentation level correctly. So what happens if
+there are multiple indentation levels? The smallest amount of indentation is
+chosen:
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...     Root Level
+  ...
+  ...       Second Level
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+  Root Level
+  <BLANKLINE>
+    Second Level
+  <BLANKLINE>
+
+  >>> def func():
+  ...     '''Short description
+  ...
+  ...       $$$ print 'example'
+  ...       example
+  ...
+  ...     And now the description.
+  ...     '''
+
+  >>> print dedent_string(func.__doc__)
+  Short description
+  <BLANKLINE>
+    $$$ print 'example'
+    example
+  <BLANKLINE>
+  And now the description.
+  <BLANKLINE>
