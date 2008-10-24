@@ -128,7 +128,7 @@ The ``util`` module provides some functions for which we also get the
 name, the URL and the docstring::
 
   >>> pprint(view_util.getFunctionURLs())
-  [{'doc': 'Determine the interface in which an attribute is defined.',
+  [...{'doc': 'Determine the interface in which an attribute is defined.',
     'name': 'get_interface_for_attribute',
     'url': 'http://127.0.0.1/zope/.../util/get_interface_for_attribute'},
   ...]
