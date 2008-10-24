@@ -5,9 +5,7 @@ version = '0.0'
 setup(name='Adder',
       version=version,
       description="",
-      long_description="""\
-""",
-      # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      long_description="",
       classifiers=[], 
       keywords="",
       author="",
@@ -20,9 +18,9 @@ setup(name='Adder',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
-                        # Add extra requirements here
+                        'grokui.admin',
+                        'z3c.testsetup',
+                        'zope.app.file',
                         ],
-      entry_points="""
-      # Add entry points here
-      """,
-      )
+      entry_points="",
+)

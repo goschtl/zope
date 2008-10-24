@@ -1,4 +1,5 @@
-"""
+:Test-Layer: functional
+
 The Index view of the Adder app has a form for entering items to be added
 
   >>> from adder.app import Adder
@@ -13,15 +14,16 @@ Since we've just started the Adder, there shouldn't be a "Clear" button
   >>> browser.getControl('bt_clear')
   Traceback (innermost last):
   ...
-  LookupError: name 'bt_clear'
+  LookupError: label 'bt_clear'
   
 There should be an entry field for the number to be added
 and a "+" button.
 
-  >>> browser.getControl('term').value = '1.234'
-  >>> browser.getControl('bt_add').value
+  >>> browser.getControl(name='term').value = '1.234'
+  >>> add_button = browser.getControl(name='bt_add')
+  >>> add_button.value
   '+'
-  >>> browser.getControl('bt_add').click()
+  >>> add_button.click()
 
 We should find the '1.234' value twice: one in the total, one in the "tape"
 
@@ -30,8 +32,8 @@ We should find the '1.234' value twice: one in the total, one in the "tape"
 
 We can add another number:
   
-    >>> browser.getControl('term').value = '2'
-    >>> browser.getControl('bt_add').click()
+    >>> browser.getControl(name='term').value = '2'
+    >>> browser.getControl(name='bt_add').click()
 
 And see the total and the "tape" numbers:
 
@@ -45,8 +47,7 @@ And see the total and the "tape" numbers:
 Also, now that we have some numbers in the "tape", there should be a "Clear"
 button, which clears the tape and the total:
 
-    >>> browser.getControl('bt_clear').click()
+    >>> browser.getControl(name='bt_clear').click()
     >>> '3.234' in browser.contents
     False
 
-"""
