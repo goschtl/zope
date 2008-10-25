@@ -37,6 +37,7 @@ setup(
                       'grokcore.component >= 1.5',
                       'grokcore.security',
                       'grokcore.view >= 1.1',
+                      'zope.viewlet',
                       # for tests:
                       'zope.testing',
                       'zope.lifecycleevent',

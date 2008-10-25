@@ -21,7 +21,7 @@ as it is associated with the interface::
 
 """
 
-import grok
+import grokcore.viewlet as grok
 from zope.interface import Interface
 
 class ICavemenViewletManager(Interface):
@@ -37,7 +37,7 @@ class FredViewlet(grok.Viewlet):
     def render(self):
         return 'Me Fred'
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 class Index(grok.View):

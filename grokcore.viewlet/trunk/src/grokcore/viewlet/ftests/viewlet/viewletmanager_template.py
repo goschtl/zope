@@ -32,9 +32,9 @@ registered for the default layer, with the anybody permission::
   <BLANKLINE>
 """
 
-import grok
+import grokcore.viewlet as grok
 
-class Fred(grok.Model):
+class Fred(grok.Context):
     pass
 
 class OrderView(grok.View):

@@ -42,9 +42,9 @@ viewletmanager to override the sort() method::
 
 """
 
-import grok
+import grokcore.viewlet as grok
 
-class Fred(grok.Model):
+class Fred(grok.Context):
     pass
 
 class OrderView(grok.View):

@@ -1,15 +1,31 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:grok="http://namespaces.zope.org/grok"
+   xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="grok"
-   package="grok"
-   >
+   package="grokcore.viewlet">
 
-  <include package="grok" />
-  <grok:grok package="grok.ftests" />
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+
+  <!-- Viewlet includes only minimal view, need full for testing -->
+  <include package="grokcore.view" file="meta.zcml" />
+  <include package="grokcore.viewlet" file="meta.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.authentication" />
+  <include package="zope.contentprovider" />
+  <include package="grokcore.viewlet" />
+
+  <grok:grok package="grokcore.viewlet.ftests" />
 
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <browser:defaultView
+      for="grokcore.component.interfaces.IContext"
+      name="index"
       />
 
   <unauthenticatedPrincipal

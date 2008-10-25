@@ -1,6 +1,6 @@
 import re
 import unittest
-import grok
+import grokcore.viewlet
 import os.path
 
 from pkg_resources import resource_listdir
@@ -8,7 +8,7 @@ from zope.testing import doctest, renormalizing
 from zope.app.testing.functional import (HTTPCaller, getRootFolder,
                                          FunctionalTestSetup, sync, ZCMLLayer)
 
-ftesting_zcml = os.path.join(os.path.dirname(grok.__file__), 'ftesting.zcml')
+ftesting_zcml = os.path.join(os.path.dirname(grokcore.viewlet.__file__), 'ftesting.zcml')
 GrokFunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'GrokFunctionalLayer',
                                 allow_teardown=True)
 
@@ -31,7 +31,7 @@ def http_call(method, path, data=None, **kw):
     data - (body) data to submit
     kw - any request parameters
     """
-    
+
     if path.startswith('http://localhost'):
         path = path[len('http://localhost'):]
     request_string = '%s %s HTTP/1.1\n' % (method, path)
@@ -51,7 +51,7 @@ def suiteFromPackage(name):
         if filename == '__init__.py':
             continue
 
-        dottedname = 'grok.ftests.%s.%s' % (name, filename[:-3])
+        dottedname = 'grokcore.viewlet.ftests.%s.%s' % (name, filename[:-3])
         test = doctest.DocTestSuite(
             dottedname, setUp=setUp, tearDown=tearDown,
             checker=checker,
@@ -70,8 +70,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['xmlrpc', 'traversal', 'form', 'url', 'security',
-                 'utility', 'catalog', 'site', 'rest', 'viewlet']:
+    for name in ['viewlet']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

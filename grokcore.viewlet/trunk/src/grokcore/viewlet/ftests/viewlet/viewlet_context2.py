@@ -3,8 +3,8 @@ This file is used by viewlet_context. It defines a model that the viewlets
 and viewlet manager should *not* be associating with.
 """
 
-import grok
+import grokcore.viewlet as grok
 
-class Club(grok.Model):
+class Club(grok.Context):
     pass
 

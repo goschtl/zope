@@ -37,10 +37,10 @@ registered for::
   True
 """
 
-import grok
+import grokcore.viewlet as grok
 from zope import interface
 
-class AContext(grok.Model):
+class AContext(grok.Context):
     pass
 
 class ViewWithItems(grok.View):

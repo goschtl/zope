@@ -17,7 +17,7 @@ Viewing the cave object should result in the viewlet being displayed::
   <p>Hi, this is the fred viewlet speaking</p>
 
 """
-import grok
+import grokcore.viewlet as grok
 
 class CavemenViewletManager(grok.ViewletManager):
     grok.name('manage.cavemen')
@@ -25,7 +25,7 @@ class CavemenViewletManager(grok.ViewletManager):
 class FredViewlet(grok.Viewlet):
     grok.viewletmanager(CavemenViewletManager)
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 class Index(grok.View):

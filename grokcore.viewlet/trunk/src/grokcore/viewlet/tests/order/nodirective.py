@@ -5,7 +5,7 @@ name.
 
   >>> components = [First(), Second(), Third(), Fourth(), Fifth()]
 
-  >>> from grok.util import sort_components
+  >>> from grokcore.viewlet.util import sort_components
   >>> sort_components(components)
   [<...Fifth object at ...>,
    <...First object at ...>,

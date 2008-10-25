@@ -102,7 +102,7 @@ get those names.
 """
 
 
-import grok
+import grokcore.viewlet as grok
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
@@ -110,10 +110,10 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 class Gold(grok.Permission):
     grok.name('bone.gold')
 
-class CaveWoman(grok.Model):
+class CaveWoman(grok.Context):
     pass
 
-class CaveMan(grok.Model):
+class CaveMan(grok.Context):
     pass
 
 class CaveView(grok.View):
@@ -140,11 +140,6 @@ class BrackerBone(grok.Viewlet):
 
     def render(self):
         return "Brack Bone"
-
-class BoneOwner(grok.Role):
-    grok.name('grok.BoneOwner')
-    grok.title('Bone Ownwer')
-    grok.permissions('bone.gold')
 
 class GoldBone(grok.Viewlet):
     grok.context(Interface)

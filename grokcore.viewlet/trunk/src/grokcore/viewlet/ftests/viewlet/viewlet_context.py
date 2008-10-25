@@ -22,7 +22,7 @@ Let's get a viewletmanager associated with ``cave``::
   >>> from zope.contentprovider.interfaces import IContentProvider
   >>> mgr = component.getMultiAdapter((cave, request, view), IContentProvider,
   ...   'manage.cavemen')
-  
+
 We cannot get this viewletmanager for ``club``, as there is no viewlet
 manager associated with that as a context::
 
@@ -31,9 +31,9 @@ manager associated with that as a context::
   True
 
 We can get the viewlet for ``cave``::
-  
+
   >>> mgr['fredviewlet']
-  <grok.ftests.viewlet.viewlet_context.FredViewlet object at ...>
+  <grokcore.viewlet.ftests.viewlet.viewlet_context.FredViewlet object at ...>
 
 We can also directly look it up using a manual lookup::
 
@@ -52,7 +52,7 @@ with the same context::
 
 """
 
-import grok
+import grokcore.viewlet as grok
 from zope.interface import Interface
 
 class CavemenViewletManager(grok.ViewletManager):
@@ -64,7 +64,7 @@ class FredViewlet(grok.Viewlet):
     def render(self):
         return 'Me Fred'
 
-class Cave(grok.Model):
+class Cave(grok.Context):
     pass
 
 class Index(grok.View):

@@ -22,9 +22,9 @@ registered for the default layer, with the anybody permission::
 
 """
 
-import grok
+import grokcore.viewlet as grok
 
-class Fred(grok.Model):
+class Fred(grok.Context):
     pass
 
 class CaveView(grok.View):
