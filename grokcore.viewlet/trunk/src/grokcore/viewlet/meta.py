@@ -46,7 +46,7 @@ class ViewletManagerGrokker(martian.ClassGrokker):
     martian.directive(grokcore.viewlet.context)
     martian.directive(grokcore.viewlet.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.viewlet.view)
-    martian.directive(grokcore.viewlet.name)
+    martian.directive(grokcore.viewlet.name, get_default=default_view_name)
 
     def grok(self, name, factory, module_info, **kw):
         # Need to store the module info object on the view class so that it
