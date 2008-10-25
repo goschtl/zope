@@ -1,3 +1,16 @@
+#############################################################################
+#
+# Copyright (c) 2008 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 
 import martian
 import five.grok
@@ -13,7 +26,7 @@ from martian.error import GrokError
 
 from grokcore.view.meta.views import default_view_name
 
-from Products.Five.security import protectClass
+from Products.Five.security import protectClass, protectName
 from Globals import InitializeClass as initializeClass
 
 import os.path
@@ -82,81 +95,31 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         return False
 
 
-class ViewletManagerGrokker(martian.ClassGrokker):
+class ViewletSecurityGrokker(martian.ClassGrokker):
+    martian.component(five.grok.Viewlet)
+    martian.directive(grokcore.security.require, name='permission')
 
-    martian.component(components.ViewletManager)
-    martian.directive(grokcore.component.name, get_default=default_view_name)
-    martian.directive(grokcore.component.context)
-    martian.directive(grokcore.view.layer)
-    martian.directive(five.grok.view)
+    def execute(self, factory, config, permission, **kw):
+        if permission is None:
+            permission = 'zope.Public'
 
-    def grok(self, name, provider, module_info, **kw):
-        # Store module_info on the object.
-        provider.__view_name__ = name
-        provider.module_info = module_info
-        return super(ViewletManagerGrokker, self).grok(
-            name, provider, module_info, **kw)
-
-    def execute(self, provider, name, context, view, layer, config, **kw):
-        """Register a content provider.
-        """
-        templates = provider.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, provider.module_info, provider)
-                )
-
-        for_ = (context, layer, view,)
+        attributes = ['update', 'render',]
         config.action(
-            discriminator=('adapter', for_, IContentProvider, name),
-            callable=component.provideAdapter,
-            args=(provider, for_, IContentProvider, name),
+            discriminator = ('five:protectClass', factory),
+            callable = protectClass,
+            args = (factory, permission)
+            )
+        config.action(
+            discriminator = ('five:protectName', factory, attributes),
+            callable = protectname,
+            args = (factory, attributes, permission)
+            )
+
+        # Protect the class
+        config.action(
+            discriminator = ('five:initialize:class', factory),
+            callable = initializeClass,
+            args = (factory,)
             )
 
         return True
-
-    def checkTemplates(self, templates, module_info, provider):
-        def has_render(provider):
-            return provider.render != components.ViewletManager.render
-        def has_no_render(provider):
-            # always has a render method
-            return False
-        templates.checkTemplates(module_info, provider, 'viewlet manager',
-                                 has_render, has_no_render)
-
-
-class ViewletGrokker(ViewletManagerGrokker):
-
-    martian.component(components.Viewlet)
-    martian.directive(five.grok.viewletmanager)
-
-    def execute(self, provider, name, context, view,
-                layer, viewletmanager, config, **kw):
-        """Register a viewlet.
-        """
-        templates = provider.module_info.getAnnotation('grok.templates', None)
-        if templates is not None:
-            config.action(
-                discriminator=None,
-                callable=self.checkTemplates,
-                args=(templates, provider.module_info, provider)
-                )
-
-        for_ = (context, layer, view, viewletmanager)
-        config.action(
-            discriminator=('adapter', for_, IViewlet, name),
-            callable=provideAdapter,
-            args=(provider, for_, IViewlet, name),
-            )
-
-        return True
-
-    def checkTemplates(self, templates, module_info, provider):
-        def has_render(provider):
-            return provider.render != components.Viewlet.render
-        def has_no_render(provider):
-            return not has_render(provider)
-        templates.checkTemplates(module_info, provider, 'viewlet',
-                                 has_render, has_no_render)

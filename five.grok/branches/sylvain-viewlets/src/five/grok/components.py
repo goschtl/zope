@@ -1,3 +1,17 @@
+#############################################################################
+#
+# Copyright (c) 2008 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
 import martian
 
 from zope.annotation.interfaces import IAttributeAnnotatable
@@ -10,6 +24,8 @@ from grokcore.component.interfaces import IContext
 from grokcore.formlib.components import GrokForm as BaseGrokForm
 from grokcore.formlib.components import default_display_template, default_form_template
 from grokcore.view.components import PageTemplate
+from grokcore.viewlet.components import Viewlet as BaseViewlet
+from grokcore.viewlet.components import ViewletManager as BaseViewletManager
 import grokcore.view
 import grokcore.security
 
@@ -18,8 +34,8 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
 from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
-from Products.Five.viewlet.manager import ViewletManagerBase
-from Products.Five.viewlet.viewlet import ViewletBase
+from Products.Five.viewlet.manager import ViewletManagerBase as \
+    ZopeTwoBaseViewletManager
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
@@ -176,115 +192,40 @@ class DisplayForm(GrokForm, formbase.DisplayForm, View):
     template = default_display_template
 
 
-# Content provider/viewlets
+# Viewlet / Viewlet Manager
 
-class ContentProviderBase(Acquisition.Explicit):
+
+class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
 
     martian.baseclass()
 
     def __init__(self, context, request, view):
-        self.context = context
-        self.request = request
-        self.view = view
-        static = component.queryAdapter(
-            self.request, interface.Interface,
-            name = self.module_info.package_dotted_name)
-        if not (static is None):
-            self.static = static.__of__(self)
-        else:
-            self.static = static
-        self.__parent__ = view
-        self.__name__ = self.__view_name__
+        super(ViewletManager, self).__init__(context, request, view)
+        if not (self.static is None):
+            # XXX See View
+            self.static = self.static.__of__(self)
 
+    # XXX See View
     getPhysicalPath = Acquisition.Acquired
 
-    def namespace(self):
-        return {}
-
-    def default_namespace(self):
-        namespace = {}
-        namespace['view'] = self.view
-        namespace['static'] = self.static
-        return namespace
-
-
-class ViewletManager(ContentProviderBase, ViewletManagerBase):
-
-    interface.implements(IViewletManager)
-
-    martian.baseclass()
-
-    def __init__(self, context, request, view):
-        ContentProviderBase.__init__(self, context, request, view)
-        ViewletManagerBase.__init__(self, context, request, view)
-
-    def default_namespace(self):
-        namespace = super(ViewletManager, self).default_namespace()
-        namespace['viewletmanager'] = self
-        return namespace
-
-    def sort(self, viewlets):
-        s_viewlets = []
-        for name, viewlet in viewlets:
-             viewlet.__viewlet_name__ = name
-             s_viewlets.append(viewlet)
-
-        def sort_key(viewlet):
-            # If components have a grok.order directive, sort by that.
-            #explicit_order, implicit_order = silvaconf.order.bind().get(viewlet)
-            return (viewlet.__module__,
-                    viewlet.__class__.__name__)
-        s_viewlets = sorted(s_viewlets, key=sort_key)
-        return [(viewlet.__viewlet_name__, viewlet) for viewlet in s_viewlets]
-
     def filter(self, viewlets):
-        # Wrap viewlet in aquisition, and only return viewlets
-        # accessible to the user.
-        parent = self.context.aq_parent
-        security_manager = getSecurityManager()
+        # XXX Need Zope 2 filter
+        return ZopeTwoBaseViewletManager.filter(self, viewlets)
 
-        def checkPermission(viewlet):
-            _, viewlet = viewlet
-            # Unfortuanetly, we don't have easy way to check the permission.
-            permission = grokcore.security.require.bind().get(viewlet)
-            if (permission is None) or (permission == 'zope.Public'):
-                return True
-            if isinstance(permission, str):
-                permission = component.getUtility(IPermission, permission)
-            return security_manager.checkPermission(permission.title, viewlet)
-
-        return filter(checkPermission,
-                      [(name, viewlet.__of__(parent)) for name, viewlet in viewlets])
-
-    def render(self):
-        """See zope.contentprovider.interfaces.IContentProvider
-        """
-        # Now render the view
-        if getattr(self, 'template', None):
-            return self.template.render(self)
-        return u'\n'.join([viewlet.render() for viewlet in self.viewlets])
+    def __getitem__(self, key):
+        # XXX Need Zope 2 __getitem__
+        return ZopeTwoBaseViewletManager.__getitem__(self, key)
 
 
-
-class Viewlet(ContentProviderBase, ViewletBase):
-
-    interface.implements(IViewlet)
+class Viewlet(BaseViewlet, Acquisition.Explicit):
 
     martian.baseclass()
 
-    def __init__(self, context, request, view, viewletmanager):
-        ContentProviderBase.__init__(self, context, request, view)
-        self.viewletmanager = viewletmanager
+    def __init__(self, context, request, view, manager):
+        super(ViewletManager, self).__init__(context, request, view, manager)
+        if not (self.static is None):
+            # XXX See View
+            self.static = self.static.__of__(self)
 
-    def default_namespace(self):
-        namespace = super(ContentProvider, self).default_namespace()
-        namespace['viewlet'] = self
-        namespace['viewletmanager'] = self.viewletmanager
-        return namespace
-
-    def update(self):
-        pass
-
-    def render(self):
-        return self.template.render(self)
-
+    # XXX See View
+    getPhysicalPath = Acquisition.Acquired

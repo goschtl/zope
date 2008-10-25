@@ -8,6 +8,7 @@
 
   <!-- Load minimal support of grokcore.view, views + templates  -->
   <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.viewlet" file="meta.zcml" />
   <include package="grokcore.formlib" file="meta.zcml" />
 
   <!-- Include skin support as well -->
