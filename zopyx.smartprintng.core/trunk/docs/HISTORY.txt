@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.0b6 (unreleased)
+2.0.0b6 (2008-10-26)
 --------------------
 
 - Nothing changed yet.
