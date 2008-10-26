@@ -1,0 +1,28 @@
+Changelog
+=========
+
+2.0.0b4 (26.10.2008)
+--------------------
+
+- removed zope.app.dependency
+- fixed logger issue in zcml.py
+
+
+2.0.0b3 (22.10.2008)
+--------------------
+
+* tweaking the fonts in demo2 in order to make the demos work
+  on Linux
+
+2.0.0b2 (19.10.2008)
+--------------------
+
+* added demo2 application for generating business cards as PDF
+* now dealingn with images defined within a HTML template instead
+  of the HTML snippet only
+
+2.0.0b1 (05.10.2008)
+--------------------
+
+* Initial release
+

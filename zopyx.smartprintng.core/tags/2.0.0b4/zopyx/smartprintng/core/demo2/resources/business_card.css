@@ -1,0 +1,46 @@
+            @page {
+                size: 57mm 81mm ;
+                margin: 5mm 5mm 5mm 5mm;
+            }
+
+            #logo {
+                position: absolute;
+                margin-left: 5mm;
+                margin-top: 0mm;
+                width: 40mm;
+                height: 10mm;
+            }
+
+            #desc {
+                position: absolute;
+                font-family: sans-serif;
+                font-size: 10px;
+                color: #555555;
+                margin-left: 5mm;
+                margin-top: 25mm;
+                width: 40mm;
+                height: 15mm;
+            }
+
+            #address {
+                position: absolute;
+                font-family: sans-serif;
+                font-size: 9px;
+                margin-left: 5mm;
+                margin-top: 45mm;
+                height: 20mm;
+                width: 40mm;
+                text-align: right;
+            }
+
+            ul { 
+                    margin: 0mm;
+                    margin-left: 0mm;
+                    margin-top: 0mm;
+              }
+
+            li { 
+                 padding-left: 0mm; 
+                 list-style-position: inside;
+             }
+
