@@ -1,10 +1,10 @@
 Changelog
 =========
 
-2.0.0b5 (unreleased)
+2.0.0b5 (2008-10-26)
 --------------------
 
-- Nothing changed yet.
+- extended demo2
 
 
 2.0.0b4 (26.10.2008)
