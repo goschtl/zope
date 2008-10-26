@@ -14,7 +14,6 @@ Request     Method                          Returns                  Role
 ----------- ------- ----------------------- ------------------------ ---------            
 /           GET     list all pastes         ['pasteid', ...]         Anonymous
 /           POST    add new paste           'pasteid'                Anonymous
-/           DELETE  delete all pastes       Boolean                  Manager
 /<id>       GET     return paste (id)       Paste                    Anonymous
 /<id>       DELETE  delete paste (id)       Boolean                  Manager
 /languages  GET     list languages          [('alias', 'name'), ...] Anonymous
@@ -31,7 +30,10 @@ class JSONProtocol(grok.RESTProtocol):
 class BaseApplication(object):
     
     def list_pastes(self):
-        return self.context.list_pasteids()
+        pasteids=self.context.list_pasteids()
+        site=grok.getSite()
+        site_url=grok.url(self.request,site)
+        return ['%s/%s' % (site_url, pasteid) for pasteid in pasteids]
     
     def add_paste(self):
         author_name=self.request.get('author_name')
@@ -41,7 +43,7 @@ class BaseApplication(object):
         return self.context.add_paste(paste_obj)
     
     def delete_pastes(self):
-        pastelist=self.list_pastes()
+        pastelist=self.list_pasts()
         return self.context.delete_pastes(pastelist)
         
 class JSONApplication(grok.REST, BaseApplication):
@@ -53,10 +55,6 @@ class JSONApplication(grok.REST, BaseApplication):
     
     def POST(self):
         return simplejson.dumps(self.add_paste())
-
-    @grok.require('gbepastebin.manage')
-    def DELETE(self):
-        return simplejson.dumps(self.delete_pastes())
 
 class Utils(grok.Model):
     

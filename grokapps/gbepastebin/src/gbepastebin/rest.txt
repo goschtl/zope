@@ -1,0 +1,73 @@
+Do a functional doctest test on the app.
+========================================
+
+:Test-Layer: functional
+
+
+Test the REST views
+-------------------
+
+Let's first create an instance of gbepastebin at the top level:
+
+   >>> from gbepastebin.app import Application
+   >>> from gbepastebin.paste import Paste
+   >>> root = getRootFolder()
+   >>> root['app'] = app = Application()
+
+Create a browser and visit the instance you just created:
+
+   >>> from zope.testbrowser.testing import Browser
+   >>> browser = Browser()
+
+
+Add a few pastes and list the Pastebin contents:
+
+   >>> import simplejson
+   >>> for paste in range(3):
+   ...     browser.open('http://localhost/++rest++json/app/', 'author_name=name&paste=text&language=python')
+   >>> browser.open('http://localhost/++rest++json/app/')
+   >>> sorted(simplejson.loads(browser.contents))
+   [u'http://localhost/++rest++json/app/1', u'http://localhost/++rest++json/app/2', u'http://localhost/++rest++json/app/3']
+   
+Delete Paste #2 (Deletions must be authenticated):
+
+   >>> from grok.ftests.test_grok_functional import http_call
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2')
+   Traceback (most recent call last):
+   ...
+   Unauthorized: (<grok.meta.JSONPaste ...>, '__call__', 'gbepastebin.manage')
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2',Authorization='Basic mgr:mgrpw')
+   >>> simplejson.loads(response.getBody())
+   True
+   
+Delete it again:
+
+   >>> response = http_call('DELETE', 'http://localhost/++rest++json/app/2',Authorization='Basic mgr:mgrpw')
+   Traceback (most recent call last):
+   ...
+   NotFound: Object: <gbepastebin.app.Application object at ...>, name: u'2'
+    
+Delete all Pastes:
+
+   >>> browser.open('http://localhost/++rest++json/app/')
+   >>> pastes = simplejson.loads(browser.contents)
+   >>> response = True
+   >>> for paste in pastes:
+   ...    res = http_call('DELETE', paste, Authorization='Basic mgr:mgrpw')
+   ...    response = response and simplejson.loads(res.getBody())
+   >>> response
+   True
+   
+Show the Pastebin contents.
+
+   >>> browser.open('http://localhost/++rest++json/app/')
+   >>> simplejson.loads(browser.contents)
+   []
+   
+Test the 'languages' command:
+
+   >>> browser.open('http://localhost/++rest++json/app/languages')
+   >>> ['python', 'Python'] in simplejson.loads(browser.contents)
+   True
+   
+   

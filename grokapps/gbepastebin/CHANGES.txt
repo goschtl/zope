@@ -1,0 +1,9 @@
+CHANGES
+-------
+
+0.1.1   split tests (app.txt, rest.txt)
+        switch to absolute urls for pasteids (rest)
+        see: http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
+        remove the delete_pastes method from the rest module
+
+0.1     initial release
