@@ -1,10 +1,11 @@
 Changelog
 =========
 
-2.0.0b4 (unreleased)
+2.0.0b4 (26.10.2008)
 --------------------
 
 - removed zope.app.dependency
+- fixed logger issue in zcml.py
 
 
 2.0.0b3 (22.10.2008)
