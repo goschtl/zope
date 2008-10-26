@@ -15,12 +15,7 @@ import os
 from zope.interface import Interface
 from zope.schema import TextLine 
 import zope.configuration.fields
-
-from logger import LOG
-
 import resources
-LOG = logging.getLogger()
-
 
 class IResourcesDirectory(Interface):
     """ Used for specifying SmartPrintNG resources """
