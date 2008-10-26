@@ -27,13 +27,15 @@
         </div>
             
         <div class="block" id="address">
-            <span tal:replace="options/fullname | nothing">Andreas Jung</span>
+            <span tal:replace="options/fullname | nothing">Fullname</span>
+            <br/>
+            <span tal:replace="options/position| nothing">Position</span>
             <br/>
             Charlottenstr. 37/1
             <br/>
             D-72070 T&uuml;bingen
             <br/>
-            Tel. +49-(0)7071-793257
+            <span tal:replace="options/phone| nothing">Phone number</span>
             <br/>
             Fax. +49-(0)7071-7936840
             <br/>

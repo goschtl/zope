@@ -24,7 +24,7 @@ from zopyx.smartprintng.core.adapters import ExternalImageFetcher
 # register resources directory for demo purposes 
 from zopyx.smartprintng.core import resources
 
-def demo_convert(fullname, orientation='horizontal', debug=False):
+def demo_convert(fullname, orientation='horizontal', phone='', position='', debug=False):
     from zope.app.testing import ztapi
 
     class ITestContent(Interface):
@@ -52,7 +52,7 @@ def demo_convert(fullname, orientation='horizontal', debug=False):
                      styles=styles,
                      resource_name='demo',
                      converter='pdf-prince',
-                     template_options=dict(fullname=fullname),
+                     template_options=dict(fullname=fullname, phone=phone, position=position),
                      destination_filename=os.path.join(os.getcwd(), 
                                                        '%s%s%s.pdf' % (fullname, orientation_ext, ext)),
                     )
