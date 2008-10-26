@@ -41,10 +41,6 @@ class BaseApplication(object):
         language=self.request.get('language')
         paste_obj=PasteBase(author_name, paste, language)
         return self.context.add_paste(paste_obj)
-    
-    def delete_pastes(self):
-        pastelist=self.list_pasts()
-        return self.context.delete_pastes(pastelist)
         
 class JSONApplication(grok.REST, BaseApplication):
     grok.context(Application)
