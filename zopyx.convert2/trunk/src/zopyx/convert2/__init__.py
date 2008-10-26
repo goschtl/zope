@@ -10,6 +10,7 @@ import xinc
 import fop
 import prince
 import xfc
+from convert import Converter
 
 
 if __name__ == '__main__':
