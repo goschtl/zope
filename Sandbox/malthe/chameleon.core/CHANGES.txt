@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Refactored string coercion. [malthe]
+
 1.0b3 (released 13/10/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -156,6 +156,31 @@ class CodeIO(BufferIO):
         self.indent()
         self.write("%s = %s.replace('\"', '&quot;')" % (variable, variable))
         self.outdent()
+
+    def convert_to_string(self, variable):
+        self.write("if isinstance(%s, unicode):" % variable)
+        self.indent()
+        self.write("%s = %s.encode('%s')" % (variable, variable, self.encoding))
+        self.outdent()
+
+    def coerce_to_string(self, variable):
+        self.write("if isinstance(%s, unicode):" % variable)
+        self.indent()
+        self.write("%s = %s.encode('%s')" % (variable, variable, self.encoding))
+        self.outdent()
+        self.write("elif not isinstance(%s, str):" % variable)
+        self.indent()
+        self.write("%s = str(%s)" % (variable, variable))
+        self.outdent()
+
+    def coerce_to_unicode(self, variable):
+        """Coerces variable to unicode (actually ``str``, because it's
+        much faster)."""
+        
+        self.write("if not isinstance(%s, (str, unicode)):" % variable)
+        self.indent()
+        self.write("%s = str(%s)" % (variable, variable))
+        self.outdent()
         
     def begin(self, clauses):
         if isinstance(clauses, (list, tuple)):

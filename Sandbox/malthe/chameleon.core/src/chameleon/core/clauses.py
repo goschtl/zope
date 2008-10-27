@@ -444,6 +444,47 @@ class Tag(object):
     >>> _out.getvalue()
     '<div alt="Hello World!">Hello Universe!</div>'
 
+    >>> _out, _write, stream = testing.setup_stream('utf-8')
+    >>> tag = Tag('div', dict(alt=testing.pyexp(repr('Hello World!'))))
+    >>> tag.begin(stream)
+    >>> stream.out('Hello Universe!')
+    >>> tag.end(stream)
+    >>> exec stream.getvalue()
+    >>> _out.getvalue()
+    '<div alt="Hello World!">Hello Universe!</div>'
+
+    Verify that unicode data is handled correctly.
+
+    >>> _out, _write, stream = testing.setup_stream()
+    >>> tag = Tag('div', dict(
+    ...     alt=testing.pyexp(repr(unicode('La Pe\xc3\xb1a', 'utf-8')))))
+    >>> tag.begin(stream)
+    >>> stream.out('Hello Universe!')
+    >>> tag.end(stream)
+    >>> exec stream.getvalue()
+    >>> 'Hello' in _out.getvalue()
+    True
+
+    Dictionary attributes:
+
+    >>> _out, _write, stream = testing.setup_stream()
+    >>> tag = Tag('div', expression=testing.pyexp(repr({'alt': 'Hello World!'})))
+    >>> tag.begin(stream)
+    >>> stream.out('Hello Universe!')
+    >>> tag.end(stream)
+    >>> exec stream.getvalue()
+    >>> _out.getvalue()
+    '<div alt="Hello World!">Hello Universe!</div>'
+    
+    >>> _out, _write, stream = testing.setup_stream('utf-8')
+    >>> tag = Tag('div', expression=testing.pyexp(repr({'alt': 'Hello World!'})))
+    >>> tag.begin(stream)
+    >>> stream.out('Hello Universe!')
+    >>> tag.end(stream)
+    >>> exec stream.getvalue()
+    >>> _out.getvalue()
+    '<div alt="Hello World!">Hello Universe!</div>'
+
     Self-closing tag:
 
     >>> _out, _write, stream = testing.setup_stream()
@@ -453,18 +494,6 @@ class Tag(object):
     >>> exec stream.getvalue()
     >>> _out.getvalue()
     '<br />'
-
-    Unicode:
-
-    >>> _out, _write, stream = testing.setup_stream()
-    >>> tag = Tag('div', dict(alt=testing.pyexp(repr('La Pe\xc3\xb1a'))))
-    >>> tag.begin(stream)
-    >>> stream.out('Hello Universe!')
-    >>> tag.end(stream)
-    >>> exec stream.getvalue()
-    >>> _out.getvalue() == '<div alt="La Pe\xc3\xb1a">Hello Universe!</div>'
-    True
-
     """
 
     def __init__(self, tag, attributes=None,
@@ -512,25 +541,10 @@ class Tag(object):
             # whether we're dealing with unicode strings or not,
             # before writing out the attribute
             if stream.encoding is not None:
-                # attribute name
-                stream.write("if isinstance(%s, unicode):" % temp)
-                stream.indent()
-                stream.write("%s = %s.encode('%s')" % (temp, temp, stream.encoding))
-                stream.outdent()
-
-                # attribute expression
-                stream.write("if isinstance(%s, unicode):" % temp2)
-                stream.indent()
-                stream.write("%s = %s.encode('%s')" % (temp2, temp2, stream.encoding))
-                stream.outdent()
-                stream.write("elif not isinstance(%s, str):" % temp2)
+                stream.convert_to_string(temp)
+                stream.coerce_to_string(temp2)
             else:
-                stream.write("if not isinstance(%s, (str, unicode)):" % temp2)
-
-            # make sure this is a string
-            stream.indent()
-            stream.write("%s = str(%s)" % (temp2, temp2))
-            stream.outdent()
+                stream.coerce_to_unicode(temp2)
                 
             # escape expression
             stream.escape(temp2)
@@ -554,19 +568,10 @@ class Tag(object):
             # whether we're dealing with unicode strings or not,
             # before writing out the attribute
             if stream.encoding is not None:
-                stream.write("if isinstance(%s, unicode):" % temp)
-                stream.indent()
-                stream.write("%s = %s.encode('%s')" % (temp, temp, stream.encoding))
-                stream.outdent()
-                stream.write("elif not isinstance(%s, str):" % temp)
+                stream.coerce_to_string(temp)
             else:
-                stream.write("if not isinstance(%s, (str, unicode)):" % temp)
+                stream.coerce_to_unicode(temp)
                 
-            # make sure this is a string
-            stream.indent()
-            stream.write("%s = str(%s)" % (temp, temp))
-            stream.outdent()
-
             # escape expression
             stream.escape(temp)
 
@@ -737,6 +742,14 @@ class Write(object):
     >>> _out.getvalue()
     'New York'
 
+    >>> _out, _write, stream = testing.setup_stream('utf-8')
+    >>> write = Write(testing.pyexp("'New York'"))
+    >>> write.begin(stream)
+    >>> write.end(stream)
+    >>> exec stream.getvalue()
+    >>> _out.getvalue()
+    'New York'
+
     Try-except parts:
 
     >>> _out, _write, stream = testing.setup_stream()
@@ -799,19 +812,10 @@ class Write(object):
         stream.indent()
 
         if stream.encoding is not None:
-            write("if isinstance(%(tmp)s, unicode):")
-            stream.indent()
-            write("%%(tmp)s = %%(tmp)s.encode('%s')" % stream.encoding)
-            stream.outdent()
-            write("elif not isinstance(%(tmp)s, str):")
+            stream.coerce_to_string(stream.symbols.tmp)
         else:
-            write("if not isinstance(%(tmp)s, (str, unicode)):")
-            
-        # make sure this is a string
-        stream.indent()
-        write("%(tmp)s = str(%(tmp)s)")
-        stream.outdent()
-
+            stream.coerce_to_unicode(stream.symbols.tmp)
+                        
         if self.structure:
             write("%(write)s(%(tmp)s)")
         else:
