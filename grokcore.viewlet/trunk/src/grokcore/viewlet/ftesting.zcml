@@ -14,8 +14,14 @@
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
+  <include package="zope.securitypolicy" />
   <include package="zope.contentprovider" />
   <include package="grokcore.viewlet" />
+
+  <!-- We define our test permission here (don't have grok.Role) -->
+  <permission id="bone.gold" title="Gold Bone" />
+  <role id="grok.BoneOwner" title="Bone Owner" />
+  <grant role="grok.BoneOwner" permission="bone.gold" />
 
   <grok:grok package="grokcore.viewlet.ftests" />
 

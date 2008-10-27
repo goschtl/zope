@@ -107,9 +107,6 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 
-class Gold(grok.Permission):
-    grok.name('bone.gold')
-
 class CaveWoman(grok.Context):
     pass
 
@@ -144,7 +141,7 @@ class BrackerBone(grok.Viewlet):
 class GoldBone(grok.Viewlet):
     grok.context(Interface)
     grok.viewletmanager(Pot)
-    grok.require(Gold)
+    grok.require('bone.gold')
 
     def render(self):
         return 'Gold Bone'
