@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+Version 0.4.1 (unreleased)
+
+* Bug: Fix registering of Resources and move configure.zcml to overrides.zcml,
+  because it overrides the zope.app.publisher's registration.
+
 Version 0.4.0 (2008-09-27)
 --------------------------
 
