@@ -109,11 +109,12 @@ class ViewletSecurityGrokker(martian.ClassGrokker):
             callable = protectClass,
             args = (factory, permission)
             )
-        config.action(
-            discriminator = ('five:protectName', factory, attributes),
-            callable = protectname,
-            args = (factory, attributes, permission)
-            )
+        for attribute in attributes:
+            config.action(
+                discriminator = ('five:protectName', factory, attribute),
+                callable = protectName,
+                args = (factory, attribute, permission)
+                )
 
         # Protect the class
         config.action(

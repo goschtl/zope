@@ -222,7 +222,7 @@ class Viewlet(BaseViewlet, Acquisition.Explicit):
     martian.baseclass()
 
     def __init__(self, context, request, view, manager):
-        super(ViewletManager, self).__init__(context, request, view, manager)
+        super(Viewlet, self).__init__(context, request, view, manager)
         if not (self.static is None):
             # XXX See View
             self.static = self.static.__of__(self)
