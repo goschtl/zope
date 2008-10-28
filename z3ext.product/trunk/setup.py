@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.2dev'
+version = '1.2.3dev'
 
 
 setup(name='z3ext.product',
@@ -63,9 +63,8 @@ setup(name='z3ext.product',
                           'zope.lifecycleevent',
                           'zope.configuration',
                           'zope.app.component',
-			  'z3c.baseregistry',
-			  'z3c.configurator',
 			  'z3c.autoinclude',
+			  'z3c.baseregistry',
 			  'z3ext.layout',
 			  'z3ext.controlpanel',
                           'z3ext.statusmessage',
