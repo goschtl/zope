@@ -45,7 +45,6 @@ class CSSRegistryCommand(object):
 
         if registry is None:
             return text
-
         for property in removeAllProxies(registry).values():
             text = property.process(text)
 

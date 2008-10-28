@@ -2,7 +2,7 @@
       i18n:domain="z3ext.cssregistry">
   <div class="z-topframe" tal:define="props context/keys">
     <h1 tal:content="context/__title__">Portal CSS properties</h1>
-    <div class="pageDescription" tal:content="context/__description__"></div>
+    <div class="z-page-description" tal:content="context/__description__"></div>
 
     <div class="z-form-field">
       <label i18n:translate="">Status</label>

@@ -55,7 +55,7 @@ class CSSRegistry(object):
 
     def __delitem__(self, key):
         del self.properties[key]
-    
+
     def get(self, key, default=None):
         return self.properties.get(key, default)
 

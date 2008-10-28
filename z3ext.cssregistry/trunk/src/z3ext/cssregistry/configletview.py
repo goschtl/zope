@@ -16,10 +16,12 @@
 $Id$
 """
 from zope import interface
+from zope.security.proxy import getObject
+
 from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-from z3ext.cssregistry.property import Property
+from z3ext.cssregistry.property import Property, CSSProperty
 from z3ext.cssregistry.registry import registries
 from z3ext.cssregistry.interfaces import _, ICSSRegistry
 
@@ -46,7 +48,8 @@ class ViewRegistry(BrowserPagelet):
             registry = self.listRegistries()[int(reg)]['registry']
 
             for prop, value in registry.items():
-                self.context[prop] = value
+                self.context[prop] = CSSProperty(
+                        value.name, value.value, value.description, value.type)
 
             IStatusMessage(request).add(
                 _(u"CSS Registry has been copied."))
@@ -57,7 +60,7 @@ class ViewRegistry(BrowserPagelet):
                 IStatusMessage(request).add(
                     _(u"Can't add property with emtpy name."), 'error')
             else:
-                self.context[name] = Property(
+                self.context[name] = CSSProperty(
                     name, request.get('form.add.value', ''))
 
         if 'form.remove' in request:
@@ -70,7 +73,7 @@ class ViewRegistry(BrowserPagelet):
                 if key.startswith('prop-'):
                     key = key[5:]
                     old = self.context[key]
-                    property = Property(
+                    property = CSSProperty(
                         old.name, value, old.description, old.type)
 
                     self.context[key] = property
