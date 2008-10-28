@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct  9 22:21:34 2008\n"
+"POT-Creation-Date: Tue Oct 28 21:57:49 2008\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -79,23 +79,23 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/z3ext/cssregistry/configletview.py:34
+#: src/z3ext/cssregistry/configletview.py:36
 msgid "Without name"
 msgstr ""
 
-#: src/z3ext/cssregistry/configletview.py:52
+#: src/z3ext/cssregistry/configletview.py:55
 msgid "CSS Registry has been copied."
 msgstr ""
 
-#: src/z3ext/cssregistry/configletview.py:58
+#: src/z3ext/cssregistry/configletview.py:61
 msgid "Can't add property with emtpy name."
 msgstr ""
 
-#: src/z3ext/cssregistry/configletview.py:66
+#: src/z3ext/cssregistry/configletview.py:69
 msgid "Properties have been removed."
 msgstr ""
 
-#: src/z3ext/cssregistry/configletview.py:83
+#: src/z3ext/cssregistry/configletview.py:86
 msgid "Properties have been changed."
 msgstr ""
 

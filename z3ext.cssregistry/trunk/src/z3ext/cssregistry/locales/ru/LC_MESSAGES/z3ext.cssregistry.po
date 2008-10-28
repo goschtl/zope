@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,13 +10,13 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct  9 22:21:34 2008\n"
+"POT-Creation-Date: Tue Oct 28 21:28:43 2008\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Nikolay Kim <fafhrd91@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,130 +25,129 @@ msgstr ""
 
 #: src/z3ext/cssregistry/configlet.zcml:11
 msgid "CSS Properties"
-msgstr ""
+msgstr "Свойства CSS"
 
 #: src/z3ext/cssregistry/configlet.zcml:11
 msgid "CSS properties registry configuration."
-msgstr ""
+msgstr "Конфигурация реестра css свойств."
 
 #: src/z3ext/cssregistry/configletview.pt:15
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
 #: src/z3ext/cssregistry/configletview.pt:25
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: src/z3ext/cssregistry/configletview.pt:30
 msgid "Property"
-msgstr ""
+msgstr "Свойство"
 
 #: src/z3ext/cssregistry/configletview.pt:44
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: src/z3ext/cssregistry/configletview.pt:46
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: src/z3ext/cssregistry/configletview.pt:51
 msgid "There are no any defined properties."
-msgstr ""
+msgstr "Свойства неопределены."
 
 #: src/z3ext/cssregistry/configletview.pt:57
 msgid "Add property"
-msgstr ""
+msgstr "Добавить свойство"
 
 #: src/z3ext/cssregistry/configletview.pt:76
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: src/z3ext/cssregistry/configletview.pt:8
 msgid "Status"
-msgstr ""
+msgstr "Статус"
 
 #: src/z3ext/cssregistry/configletview.pt:83
 msgid "Copy/Update properties from existent registries"
-msgstr ""
+msgstr "Копировать/Обновить свойства из существующих реестров"
 
 #: src/z3ext/cssregistry/configletview.pt:87
 msgid "Registry"
-msgstr ""
+msgstr "Реестр"
 
 #: src/z3ext/cssregistry/configletview.pt:96
 msgid "Copy"
-msgstr ""
+msgstr "Копировать"
 
-#: src/z3ext/cssregistry/configletview.py:34
+#: src/z3ext/cssregistry/configletview.py:36
 msgid "Without name"
-msgstr ""
+msgstr "Без имени"
 
-#: src/z3ext/cssregistry/configletview.py:52
+#: src/z3ext/cssregistry/configletview.py:55
 msgid "CSS Registry has been copied."
-msgstr ""
+msgstr "CSS Реестр скопирован."
 
-#: src/z3ext/cssregistry/configletview.py:58
+#: src/z3ext/cssregistry/configletview.py:61
 msgid "Can't add property with emtpy name."
-msgstr ""
+msgstr "Не возможно добавить свойство без имени."
 
-#: src/z3ext/cssregistry/configletview.py:66
+#: src/z3ext/cssregistry/configletview.py:69
 msgid "Properties have been removed."
-msgstr ""
+msgstr "Свойства удалены."
 
-#: src/z3ext/cssregistry/configletview.py:83
+#: src/z3ext/cssregistry/configletview.py:86
 msgid "Properties have been changed."
-msgstr ""
+msgstr "Свойства изменены."
 
 #: src/z3ext/cssregistry/interfaces.py:30
 #: src/z3ext/cssregistry/interfaces.py:45
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 #: src/z3ext/cssregistry/interfaces.py:31
 msgid "CSS Registry name"
-msgstr ""
+msgstr "Имя CSS Реестра"
 
 #: src/z3ext/cssregistry/interfaces.py:36
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: src/z3ext/cssregistry/interfaces.py:37
 msgid "CSS Registry title"
-msgstr ""
+msgstr "Заголовок CSS реестра"
 
 #: src/z3ext/cssregistry/interfaces.py:46
 #: src/z3ext/cssregistry/configletview.pt:60
 msgid "Property name"
-msgstr ""
+msgstr "Имя свойства"
 
 #: src/z3ext/cssregistry/interfaces.py:50
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: src/z3ext/cssregistry/interfaces.py:51
 msgid "Property description"
-msgstr ""
+msgstr "Описаник свойства"
 
 #: src/z3ext/cssregistry/interfaces.py:55
 #: src/z3ext/cssregistry/configletview.pt:31
 #: src/z3ext/cssregistry/configletview.pt:68
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: src/z3ext/cssregistry/interfaces.py:56
 msgid "Property value"
-msgstr ""
+msgstr "Знячение свойства"
 
 #: src/z3ext/cssregistry/interfaces.py:60
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: src/z3ext/cssregistry/interfaces.py:61
 msgid "Property type. (color, font, size)"
-msgstr ""
+msgstr "Тип свойства. (color, font, size)"
 
 #: src/z3ext/cssregistry/interfaces.py:82
 #: src/z3ext/cssregistry/configletview.pt:11
 msgid "Enabled"
-msgstr ""
-
+msgstr "Включить"

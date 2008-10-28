@@ -1,4 +1,4 @@
-##############################################################################
+# #############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
@@ -10,11 +10,11 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+# #############################################################################
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct  9 22:21:34 2008\n"
+"POT-Creation-Date: Tue Oct 28 21:28:43 2008\n"
 "PO-Revision-Date: 2008-10-28 11:19+0100\n"
 "Last-Translator: F. Kooman <fkooman@tuxed.net>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -79,23 +79,23 @@ msgstr "Register"
 msgid "Copy"
 msgstr "Kopiëren"
 
-#: src/z3ext/cssregistry/configletview.py:34
+#: src/z3ext/cssregistry/configletview.py:36
 msgid "Without name"
 msgstr "Zonder naam"
 
-#: src/z3ext/cssregistry/configletview.py:52
+#: src/z3ext/cssregistry/configletview.py:55
 msgid "CSS Registry has been copied."
 msgstr "Lettertypen -en kleurenregister is gekopieerd."
 
-#: src/z3ext/cssregistry/configletview.py:58
+#: src/z3ext/cssregistry/configletview.py:61
 msgid "Can't add property with emtpy name."
 msgstr "Kan geen eigenschap zonder naam toevoegen."
 
-#: src/z3ext/cssregistry/configletview.py:66
+#: src/z3ext/cssregistry/configletview.py:69
 msgid "Properties have been removed."
 msgstr "Eigenschappen zijn verwijderd."
 
-#: src/z3ext/cssregistry/configletview.py:83
+#: src/z3ext/cssregistry/configletview.py:86
 msgid "Properties have been changed."
 msgstr "Eigenschappen zijn gewijzigd."
 
@@ -151,4 +151,3 @@ msgstr "Eigenschaptype. (kleur, lettertype, grootte)"
 #: src/z3ext/cssregistry/configletview.pt:11
 msgid "Enabled"
 msgstr "Ingeschakeld"
-
