@@ -3,6 +3,7 @@ from zope.event import notify
 
 from sqlalchemy.orm import mapper
 from sqlalchemy.ext.declarative import instrument_declarative
+from sqlalchemy.schema import Table
 
 from z3c.saconfig.interfaces import IEngineFactory
 from megrok.rdb.interfaces import DatabaseSetupEvent
@@ -32,6 +33,10 @@ def reflectTables(metadata):
         return
     # first reflect database-defined schemas into metadata
     engine = Engine()
+    for class_ in metadata._reflected_registry.keys():
+        _reflectTableForClass(class_, metadata, engine)
+    # reflect any remaining tables. This will not reload tables already loaded
+    # (XXX is this necessary?)
     metadata.reflect(bind=engine)
     if not hasattr(metadata, '_decl_registry'):
         metadata._decl_registry = {}
@@ -41,6 +46,28 @@ def reflectTables(metadata):
     # XXX thread safety?
     metadata._reflected_completed = True
 
+def _reflectTableForClass(class_, metadata, bind):
+    """Reflect an individual table defined for a class.
+
+    This supports the special 'schema' indicator in '__table_args__',
+    allowing reflection of tables not in the default schema.
+    metadata.reflect() doesn't allow this in declarative mode.
+    """
+    reflect_opts = {'autoload': True}
+    reflect_opts['autoload_with'] = bind
+    conn = bind.contextual_connect()
+
+    table_args = getattr(class_, '__table_args__', {})
+    if type(table_args) is tuple:
+        table_args = table_args[-1]
+        if type(table_args) is not dict:
+            table_args = {}
+    schema = table_args.get('schema', None)
+    if schema is not None:
+        reflect_opts['schema'] = schema
+
+    Table(class_.__tablename__, metadata, **reflect_opts)
+        
 def createTables(metadata):
     """Create class-specified tables.
     """
