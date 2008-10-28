@@ -21,3 +21,15 @@ class reflected(MarkerDirective):
     scope = CLASS_OR_MODULE
     store = ONCE
 
+class tableargs(Directive):
+    scope = CLASS
+    store = ONCE
+    default = None
+
+    def factory(self, *args, **kw):
+        if args:
+            return args + (kw,)
+        elif kw:
+            return kw
+        else:
+            return None

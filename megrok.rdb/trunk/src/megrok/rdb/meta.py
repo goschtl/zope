@@ -13,9 +13,13 @@ class ModelGrokker(martian.ClassGrokker):
     martian.directive(rdb.tablename, get_default=default_tablename)
     martian.directive(rdb.metadata)
     martian.directive(rdb.reflected)
+    martian.directive(rdb.tableargs)
     
-    def execute(self, class_, tablename, metadata, reflected, **kw):
+    def execute(self, class_, tablename, metadata, reflected, tableargs, **kw):
         class_.__tablename__ = tablename
+        if tableargs is not None:
+            class_.__table_args__ = tableargs
+        
         if reflected:
             if not hasattr(metadata, '_reflected_registry'):
                 metadata._reflected_registry = {}

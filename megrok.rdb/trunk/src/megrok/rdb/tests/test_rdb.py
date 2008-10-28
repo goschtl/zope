@@ -8,6 +8,8 @@ from megrok import rdb
     
 from z3c.saconfig.interfaces import IEngineFactory, IScopedSession
 
+from megrok.rdb.tests import tableargs
+
 def moduleSetUp(test):
     # using zope.testing.module.setUp to work around
     # __module__ being '__builtin__' by default
@@ -58,4 +60,5 @@ def test_suite():
         '../schema.txt',
         optionflags=optionflags,
         ))
+    suite.addTest(tableargs.suite())
     return suite
