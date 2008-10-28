@@ -1,6 +1,6 @@
 """
-A reflected model is a model that defined by the table in the database
-(as opposed to defining the database table in Python).
+A reflected model is a model that is defined by the table in the
+database (as opposed to defining the database table in Python).
 
 Let's first grok things::
 
