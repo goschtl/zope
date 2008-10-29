@@ -301,3 +301,169 @@ instead of full module path
 
   >>> print pagelet.publishTraverse(request, 'testPageletType')
   <div>My pagelet</div>
+
+
+The TALES `pagelet` expression
+==============================
+
+The ``pagelet`` expression will look up the interaface or IPageletType
+name, call it and return the HTML content. The first step, however, will be to
+register our pagelet with the component architecture:
+
+Let's now create a view using a page template:
+
+  >>> import os, tempfile
+  >>> temp_dir = tempfile.mkdtemp()
+  >>> templateFileName = os.path.join(temp_dir, 'template.pt')
+  >>> open(templateFileName, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>My Web Page</h1>
+  ...     <div class="left-column">
+  ...       <tal:block replace="structure pagelet:z3ext.layout.tests.ITestPagelet" />
+  ...     </div>
+  ...     <div class="main">
+  ...       Content here
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+Also we should register tales expression
+
+  >>> from z3ext.layout import tales
+  >>> from zope.app.pagetemplate.metaconfigure import registerType
+  >>> registerType('pagelet', tales.TALESPageletExpression)
+
+Finally we look up the view and render it.
+
+  >>> from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+
+  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
+  >>> component.provideAdapter(
+  ...     FrontPage,
+  ...     (interface.Interface, interface.Interface), interface.Interface,
+  ...     name='main.html')
+
+  >>> view = component.getMultiAdapter((object(), request), name='main.html')
+  >>> print view()
+  <html>
+    <body>
+      <h1>My Web Page</h1>
+      <div class="left-column">
+        <div>My pagelet</div>
+      </div>
+      <div class="main">
+        Content here
+      </div>
+    </body>
+  </html>
+
+Or we can use typed pagelet interface
+
+  >>> open(templateFileName, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>My Web Page</h1>
+  ...     <div class="left-column">
+  ...       <tal:block replace="structure pagelet:testPageletType" />
+  ...     </div>
+  ...     <div class="main">
+  ...       Content here
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
+  >>> component.provideAdapter(
+  ...     FrontPage,
+  ...     (interface.Interface, interface.Interface), interface.Interface,
+  ...     name='main.html')
+
+  >>> view = component.getMultiAdapter((object(), request), name='main.html')
+  >>> print view()
+  <html>
+    <body>
+      <h1>My Web Page</h1>
+      <div class="left-column">
+        <div>My pagelet</div>
+      </div>
+      <div class="main">
+        Content here
+      </div>
+    </body>
+  </html>
+
+Default IPagelet
+
+  >>> open(templateFileName, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>My Web Page</h1>
+  ...     <div class="left-column">
+  ...       <tal:block replace="structure pagelet:" />
+  ...     </div>
+  ...     <div class="main">
+  ...       Content here
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
+  >>> component.provideAdapter(
+  ...     FrontPage,
+  ...     (interface.Interface, interface.Interface), interface.Interface,
+  ...     name='main.html')
+
+  >>> view = component.getMultiAdapter((object(), request), name='main.html')
+  >>> print view()
+  <html>
+    <body>
+      <h1>My Web Page</h1>
+      <div class="left-column">
+        <div>My pagelet2</div>
+      </div>
+      <div class="main">
+        Content here
+      </div>
+    </body>
+  </html>
+
+
+If pagelet is not exist, just return empty string
+
+  >>> open(templateFileName, 'w').write('''
+  ... <html>
+  ...   <body>
+  ...     <h1>My Web Page</h1>
+  ...     <div class="left-column">
+  ...       <tal:block replace="structure pagelet:test.unknown" />
+  ...     </div>
+  ...     <div class="main">
+  ...       Content here
+  ...     </div>
+  ...   </body>
+  ... </html>
+  ... ''')
+
+  >>> FrontPage = SimpleViewClass(templateFileName, name='main.html')
+  >>> component.provideAdapter(
+  ...     FrontPage,
+  ...     (interface.Interface, interface.Interface), interface.Interface,
+  ...     name='main.html')
+
+  >>> view = component.getMultiAdapter((object(), request), name='main.html')
+  >>> print view()
+  <html>
+    <body>
+      <h1>My Web Page</h1>
+      <div class="left-column">
+  <BLANKLINE>
+      </div>
+      <div class="main">
+        Content here
+      </div>
+    </body>
+  </html>

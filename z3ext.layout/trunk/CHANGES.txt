@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.5.4 (2008-10-30)
+------------------
+
+- Added 'pagelet' tales expression (same as @@pagelet)
+
+
 1.5.3 (2008-10-16)
 ------------------
 

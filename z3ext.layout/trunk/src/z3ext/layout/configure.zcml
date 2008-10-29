@@ -2,12 +2,18 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:tales="http://namespaces.zope.org/tales"
    i18n_domain="z3ext.layout">
 
   <includeDependencies package="z3ext.layout" />
 
   <!-- adapter provides IPagelet for (context, request) -->
   <adapter factory=".pagelet.queryPagelet" />
+
+  <!-- pagelet: tales expression -->
+  <tales:expressiontype
+     name="pagelet"
+     handler=".tales.TALESPageletExpression" />
 
   <!-- @@pagelet view -->
   <adapter

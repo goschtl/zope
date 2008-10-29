@@ -26,7 +26,7 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-from interfaces import IPagelet
+from interfaces import IPagelet, IPageletType
 from interfaces import ILayout, ILayoutCreatedEvent
 
 from pagelet import BrowserPagelet
@@ -328,12 +328,18 @@ def pageletDirective(
     defineChecker(new_class, Checker(required))
 
     # register pagelet
+    _context.action(
+        discriminator = ('z3ext.layout:registerPagelets', new_class),
+        callable = registerPagelets,
+        args = (for_, layer, new_class, provides, name, _context.info))
+
+
+def registerPagelets(for_, layer, newClass, provides, name, info):
     for iface in provides:
-        _context.action(
-            discriminator = ('z3ext:pagelet', for_, layer, name, iface),
-            callable = handler,
-            args = ('registerAdapter',
-                    new_class, (for_, layer), iface, name, _context.info))
+        if IPageletType.providedBy(iface):
+            handler('registerAdapter', newClass, (for_, layer), iface, '', info)
+        else:
+            handler('registerAdapter', newClass, (for_, layer), iface, name, info)
 
 
 def _handle_allowed_interface(
