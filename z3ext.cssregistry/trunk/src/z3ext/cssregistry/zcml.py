@@ -54,6 +54,11 @@ class ICSSPropertySubDirective(interface.Interface):
         description = u'Property value',
 	required = True)
 
+    title = MessageID(
+	title = u'Title',
+        description = u'Property title',
+	required = False)
+
     description = MessageID(
 	title = u'Description',
         description = u'Property description',
@@ -130,6 +135,7 @@ class cssregistryHandler(object):
 
 
 def csspropertyHandler(_context, name, value, registry='',
-                       layer=interface.Interface, description='', type=''):
+                       layer=interface.Interface,
+                       title='', description='', type=''):
     registry = registries[(registry, layer)]
-    registry[name] = Property(name, value, description, type)
+    registry[name] = Property(name, value, title, description, type)

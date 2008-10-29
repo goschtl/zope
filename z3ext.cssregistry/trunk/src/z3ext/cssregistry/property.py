@@ -25,9 +25,10 @@ from interfaces import ICSSProperty
 class Property(object):
     interface.implements(ICSSProperty)
 
-    def __init__(self, name, value, description='', type=''):
+    def __init__(self, name, value, title='', description='', type=''):
         self.name = name
         self.value = value
+        self.title = title
         self.description = description
         self.type = type
 

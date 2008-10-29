@@ -46,6 +46,11 @@ class ICSSProperty(interface.Interface):
 	description = _(u'Property name'),
 	required = True)
 
+    title = schema.TextLine(
+	title = _(u'Title'),
+        description = _(u'Property title'),
+	required = False)
+
     description = schema.TextLine(
 	title = _(u'Description'),
         description = _(u'Property description'),
