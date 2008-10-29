@@ -50,6 +50,8 @@ class TALESPageletExpression(StringExpr):
             view = queryMultiAdapter((context, request), iface)
             if view is not None:
                 view.update()
+                if view.isRedirected:
+                    return u''
                 return view.render()
         except Exception, err:
             log = logging.getLogger('z3ext.layout')

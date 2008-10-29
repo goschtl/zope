@@ -78,7 +78,7 @@ class BrowserPagelet(BrowserPage):
     def __call__(self):
         self.update()
 
-        if self.isRedirected:
+        if self.isRedirected or self.request.response.getStatus() in (302, 303):
             return u''
 
         layout = queryLayout(self, self.request, name=self.layoutname)
@@ -137,6 +137,8 @@ class PageletPublisher(object):
             view = queryMultiAdapter((self.context, self.request), iface)
             if view is not None:
                 view.update()
+                if view.isRedirected:
+                    return u''
                 return view.render()
         except Exception, err:
             log = logging.getLogger('z3ext.layout')
