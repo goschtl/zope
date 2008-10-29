@@ -49,7 +49,8 @@ class ViewRegistry(BrowserPagelet):
 
             for prop, value in registry.items():
                 self.context[prop] = CSSProperty(
-                        value.name, value.value, value.description, value.type)
+                    value.name, value.value,
+                    value.title, value.description, value.type)
 
             IStatusMessage(request).add(
                 _(u"CSS Registry has been copied."))
@@ -74,7 +75,8 @@ class ViewRegistry(BrowserPagelet):
                     key = key[5:]
                     old = self.context[key]
                     property = CSSProperty(
-                        old.name, value, old.description, old.type)
+                        old.name, value,
+                        old.title, old.description, old.type)
 
                     self.context[key] = property
 
