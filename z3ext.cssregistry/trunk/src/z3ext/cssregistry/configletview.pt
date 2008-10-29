@@ -34,7 +34,7 @@
 	    tal:attributes="class python:repeat['prop'].even() and 'even' or 'odd'">
 	  <td><input type="checkbox" name="property:list"
 		     tal:attributes="value prop" /></td>
-	  <td tal:content="prop"></td>
+	  <td tal:content="python:context[prop].description or prop"></td>
 	  <td><input type="text" 
 		     tal:attributes="name string:prop-$prop;
 				     value python:context[prop].value" /></td>

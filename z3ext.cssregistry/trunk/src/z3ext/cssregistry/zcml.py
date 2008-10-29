@@ -18,7 +18,7 @@ $Id$
 
 from zope import schema, interface
 from zope.component.zcml import handler
-from zope.configuration.fields import GlobalObject
+from zope.configuration.fields import MessageID, GlobalObject
 
 from property import Property
 from registry import CSSRegistry, registries
@@ -54,7 +54,7 @@ class ICSSPropertySubDirective(interface.Interface):
         description = u'Property value',
 	required = True)
 
-    description = schema.TextLine(
+    description = MessageID(
 	title = u'Description',
         description = u'Property description',
 	required = False)
