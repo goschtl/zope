@@ -130,8 +130,9 @@ class cssregistryHandler(object):
                     ICSSRegistry, name, _context.info),
 	    )
 
-    def property(self, _context, name, value, description='', type=''):
-        self.registry[name] = Property(name, value, description, type)
+    def property(self, _context, name, value,
+                 title=u'', description='', type=''):
+        self.registry[name] = Property(name, value, title, description, type)
 
 
 def csspropertyHandler(_context, name, value, registry='',
