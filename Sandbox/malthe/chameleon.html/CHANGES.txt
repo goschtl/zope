@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Changed test setup to allow for python based tests, i.e. not
+  using the zope test runner. [seletz]
+
 chameleon.html 0.3 (released 10/2/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
