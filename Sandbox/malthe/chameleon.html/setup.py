@@ -34,4 +34,5 @@ setup(name='chameleon.html',
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
+      test_suite="chameleon.html.tests.test_doctests.test_suite",
       )
