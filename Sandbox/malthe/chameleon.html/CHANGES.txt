@@ -1,7 +1,7 @@
 Changelog
 =========
 
-Head
+HEAD
 ~~~~
 
 chameleon.html 0.4 (released 10/28/2008)
