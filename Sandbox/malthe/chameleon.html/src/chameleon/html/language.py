@@ -47,9 +47,9 @@ def merge_dicts(dict1, dict2):
 def composite_attr_dict(attrib, *dicts):
     return reduce(merge_dicts, (dict(attrib),) + dicts)
 
-def rebase(context, request, path):
-    return component.getMultiAdapter(
-        (context, request, path), IResourceLocation)
+def rebase(context, request, rel_path, abs_path):
+    return component.queryMultiAdapter(
+        (context, request, abs_path), IResourceLocation) or rel_path
 
 def ensure_absolute(path, relative_path):
     if not os.path.isabs(relative_path):
@@ -87,12 +87,15 @@ class Element(translation.Element):
 
         @property
         def dynamic_attributes(self):
+            path = self.element.getroottree().getroot().xss_path
+            
             for scope in self.stream.scope:
                 if 'context' in scope and 'request' in scope:
                     if self.element.xss_rebase is not None:
-                        name = self.element.attrib[self.element.xss_rebase]
-                        value = types.value("%s(context, request, %s)" % (
-                            self.rebase_symbol, repr(name)))
+                        rel_url = self.element.attrib[self.element.xss_rebase]
+                        abs_url = ensure_absolute(path, rel_url)
+                        value = types.value("%s(context, request, %s, %s)" % (
+                            self.rebase_symbol, repr(rel_url), repr(abs_url)))
                         value.symbol_mapping[self.rebase_symbol] = rebase
                         return [(types.declaration((self.element.xss_rebase,)), value)]
             
@@ -144,6 +147,9 @@ class Element(translation.Element):
     xss_rebase = utils.attribute(
         '{http://namespaces.repoze.org/xss}rebase')
 
+    xss_path = utils.attribute(
+        '{http://namespaces.repoze.org/xss}path')                    
+
 class MetaElement(translation.MetaElement):
     class node(translation.Node):
         rebase_symbol = '_rebase'
@@ -157,19 +163,29 @@ class MetaElement(translation.MetaElement):
 
         @property
         def content(self):
+            path = self.element.getroottree().getroot().xss_path
+
             if self.element.xss_rebase and self.element.text:
                 for scope in self.stream.scope:
-                    if 'context' in scope and 'request' in scope:
-                        m = re_stylesheet_import.match(self.element.text)
-                        assert m is not None
-                        before = m.group(1)
-                        path = m.group(2)
-                        after = m.group(3)
-                        value = types.value(
-                            "'<!-- %s' + %s(context, request, %s) + '%s -->'" % (
-                            before, self.rebase_symbol, repr(path), after))
-                        value.symbol_mapping[self.rebase_symbol] = rebase
-                        break
+                    if 'context' not in scope or 'request' not in scope:
+                        continue
+                    
+                    m = re_stylesheet_import.match(self.element.text)
+                    assert m is not None
+
+                    before = m.group(1)
+                    after = m.group(3)
+
+                    rel_url = m.group(2)
+                    abs_url = ensure_absolute(path, rel_url)
+
+                    value = types.value(
+                        "'<!-- %s' + %s(context, request, %s, %s) + '%s -->'" % (
+                        before, self.rebase_symbol,
+                        repr(rel_url), repr(abs_url), after))
+
+                    value.symbol_mapping[self.rebase_symbol] = rebase
+                    break
                 else:
                     value = types.value("'<!-- %s -->'" % self.element.text)
                 return value
@@ -179,6 +195,9 @@ class MetaElement(translation.MetaElement):
 
     xss_rebase = utils.attribute(
         '{http://namespaces.repoze.org/xss}rebase')                    
+
+    xss_path = utils.attribute(
+        '{http://namespaces.repoze.org/xss}path')                    
 
 class XSSTemplateParser(etree.Parser):
     """XSS template parser."""
@@ -224,6 +243,10 @@ class DynamicHTMLParser(XSSTemplateParser):
     def parse(self, body):
         root, doctype = super(DynamicHTMLParser, self).parse(body)
 
+        # set template path attribute on root element
+        root.attrib[
+            '{http://namespaces.repoze.org/xss}path'] = self.path
+        
         # reset dynamic identifier lists
         self.slots = []
         self.attributes = []
@@ -303,11 +326,9 @@ class DynamicHTMLParser(XSSTemplateParser):
         for element in elements:
             href = element.attrib.get('href')
             if href is not None:
-                element.attrib['href'] = ensure_absolute(self.path, href)
                 element.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'href'
             src = element.attrib.get('src')
             if src is not None:
-                element.attrib['src'] = ensure_absolute(self.path, src)
                 element.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'src'
         elements = root.xpath(
             './/xmlns:style', namespaces={'xmlns': config.XHTML_NS})

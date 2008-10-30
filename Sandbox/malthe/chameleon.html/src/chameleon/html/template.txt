@@ -54,8 +54,8 @@ If we pass in ``context`` and ``request`` arguments, resources
 referenced in the template are rebased if a resource location
 component is available.
 
-  >>> def resource_location(context, request, path):
-  ...     return 'http://host/%s' % path
+  >>> def resource_location(context, request, abs_path):
+  ...     return 'http://host/%s' % abs_path[len(path+'/layouts')+1:]
 
   >>> from chameleon.html.interfaces import IResourceLocation  
   >>> component.provideAdapter(

@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Use relative URL if resource location component is
+  unavailable. [malthe]
+
 - Added code to enable ``glob`` style matching of resources [seletz]
 
 - Resource URLs are now made absolute to dettach them from the
