@@ -226,11 +226,11 @@ class DynamicHTMLParser(XSSTemplateParser):
             else:
                 new = deepcopy(tag)
                 new.attrib[attribute] = match
-                new.tail = "\n"
-                tag.tail = "\n"
                 tag.addnext(new)
+                tag.tail = new.tail
+                new.tail = "\n"
                 tag = new
-
+                
     def glob_resources(self, root, attribute, xpath, ns={}):
         """Resource globbing"""
         tags = root.xpath(xpath, namespaces=ns)

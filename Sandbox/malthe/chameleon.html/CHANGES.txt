@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Add newline character between glob-exploded tags. [malthe]
+
 - Use relative URL if resource location component is
   unavailable. [malthe]
 
