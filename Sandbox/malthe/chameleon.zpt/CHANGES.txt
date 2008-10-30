@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0b2 (released 10/28/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Fixed missing attribute. [malthe]
 
 1.0b1 (released 10/14/2008)
