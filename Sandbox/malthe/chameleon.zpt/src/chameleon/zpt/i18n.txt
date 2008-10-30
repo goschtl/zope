@@ -114,8 +114,7 @@ We could also add a named block inside the tag.
   >>> print template.render(target_language='de')
   <div>
     <p>Mock translation of '${count} bananas.'
-       mapping={'count': '<span>18</span>'}
-    </p>
+       mapping={'count': '<span>18</span>'}.</p>
   </div>
 
 Or two:
@@ -144,10 +143,8 @@ In German:
 
   >>> print template.render(target_language='de')
   <div>
-    <span>
-      Mock translation of 'I want ${bananas} bananas and  ${apples} apples.'
-      mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.
-    </span>
+    <span>Mock translation of 'I want ${bananas} bananas and ${apples} apples.'
+      mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.</span>
   </div>
 
 Translation of tag attributes
