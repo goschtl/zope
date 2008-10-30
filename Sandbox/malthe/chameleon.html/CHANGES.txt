@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Resource URLs are now made absolute to dettach them from the
+  template object. [malthe]
+
 - Changed test setup to allow for python based tests, i.e. not
   using the zope test runner. [seletz]
 

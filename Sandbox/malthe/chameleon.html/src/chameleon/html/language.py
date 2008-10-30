@@ -47,6 +47,11 @@ def composite_attr_dict(attrib, *dicts):
 def rebase(context, request, path):
     return component.getMultiAdapter(
         (context, request, path), IResourceLocation)
+
+def ensure_absolute(path, relative_path):
+    if not os.path.isabs(relative_path):
+        return os.path.join(path, relative_path)
+    return relative_path
     
 class Element(translation.Element):
     """The XSS template language base element."""
@@ -200,6 +205,7 @@ class DynamicHTMLParser(XSSTemplateParser):
         # process dynamic rules
         links = root.xpath(
             './/xmlns:link[@rel="xss"]', namespaces={'xmlns': config.XHTML_NS})
+
         for link in links:
             try:
                 href = link.attrib['href']
@@ -267,9 +273,11 @@ class DynamicHTMLParser(XSSTemplateParser):
         for element in elements:
             href = element.attrib.get('href')
             if href is not None:
+                element.attrib['href'] = ensure_absolute(self.path, href)
                 element.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'href'
             src = element.attrib.get('src')
             if src is not None:
+                element.attrib['src'] = ensure_absolute(self.path, src)
                 element.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'src'
         elements = root.xpath(
             './/xmlns:style', namespaces={'xmlns': config.XHTML_NS})
