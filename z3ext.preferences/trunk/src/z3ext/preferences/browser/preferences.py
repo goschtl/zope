@@ -18,6 +18,9 @@ $Id$
 from zope import interface, component
 from zope.component import getUtility
 from zope.app.component.interfaces import ISite
+from zope.security.interfaces import Unauthorized
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
+
 from z3ext.preferences.interfaces import IPreferenceGroup
 
 
@@ -25,6 +28,10 @@ from z3ext.preferences.interfaces import IPreferenceGroup
 def getPreferences(site, request):
     rootGroup = getUtility(IPreferenceGroup)
     rootGroup = rootGroup.__bind__()
+
+    if IUnauthenticatedPrincipal.providedBy(rootGroup.__principal__):
+        raise Unauthorized('preferences')
+
     if rootGroup.isAvailable():
         return rootGroup
     else:
