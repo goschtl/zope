@@ -24,7 +24,10 @@ msgids:
   ...         if target_language != 'de':
   ...             return default
   ...
-  ...         return "Mock translation of '%s'." % msgid
+  ...         mock ="Mock translation of '%s'" % msgid
+  ...         if mapping:
+  ...             mock += ' mapping=%s' % mapping
+  ...         return mock + '.'
 
   >>> td = MockTranslationDomain()
   >>> component.provideUtility(td, ITranslationDomain, name="test")
@@ -110,7 +113,41 @@ We could also add a named block inside the tag.
     
   >>> print template.render(target_language='de')
   <div>
-    <p>Mock translation of '${count} bananas.'.</p>
+    <p>Mock translation of '${count} bananas.'
+       mapping={'count': '<span>18</span>'}
+    </p>
+  </div>
+
+Or two:
+
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+  ...   <span i18n:domain="test" i18n:translate="">
+  ...     I want <span i18n:name="bananas">12</span> bananas and
+  ...     <span i18n:name="apples">8</span> apples.
+  ...   </span>
+  ... </div>"""
+
+Without a language this gives:
+
+  >>> template = PageTemplate(body)
+  >>> print template.render()
+  <div>
+    <span>
+       I want <span>12</span> bananas and
+       <span>8</span> apples.
+    </span>
+  </div>
+
+In German:
+
+  >>> print template.render(target_language='de')
+  <div>
+    <span>
+      Mock translation of 'I want ${bananas} bananas and  ${apples} apples.'
+      mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.
+    </span>
   </div>
 
 Translation of tag attributes
