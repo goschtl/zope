@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Fixed missing attribute. [malthe]
+
 1.0b1 (released 10/14/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
