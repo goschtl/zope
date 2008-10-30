@@ -10,6 +10,10 @@ install_requires = [
     'zope.i18n >= 3.5',
     'chameleon.core >=1.0b4',
     ]
+test_requires = install_requires + [
+    'zope.configuration',
+    'zope.security'
+    ]
 
 setup(name='chameleon.zpt',
       version=version,
@@ -32,4 +36,5 @@ setup(name='chameleon.zpt',
       include_package_data=True,
       zip_safe=False,
       install_requires=install_requires,
+      extras_require = {'test': test_requires},
       )
