@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Fixed translation issues (see recently added tests). [malthe]
+
 - Refactored string coercion. [malthe]
 
 1.0b3 (released 13/10/2008)

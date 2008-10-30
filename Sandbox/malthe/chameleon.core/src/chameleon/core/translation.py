@@ -429,7 +429,8 @@ class Node(object):
     def create_msgid(self):
         """Create an i18n msgid from the tag contents."""
 
-        out = StringIO(self.element.text)
+        out = StringIO()
+        out.write(self.element.text)
         
         for element in self.element:
             name = element.node.translation_name
