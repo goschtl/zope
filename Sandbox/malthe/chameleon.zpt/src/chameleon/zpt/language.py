@@ -169,6 +169,7 @@ class ZopePageTemplateElement(translation.Element):
     metal_fillslot = None
     metal_defineslot = None
 
+    i18n_name = None
     i18n_domain = None
     i18n_translate = None
     i18n_attributes = None
