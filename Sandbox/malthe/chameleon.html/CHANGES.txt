@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+chameleon.html 0.4 (released 10/28/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Add newline character between glob-exploded tags. [malthe]
 
 - Use relative URL if resource location component is
