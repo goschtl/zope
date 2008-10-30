@@ -129,7 +129,7 @@ class Node(object):
 
         # tag tail (deferred)
         tail = self.tail
-        if self.fill_slot is None:
+        if self.fill_slot is None and self.translation_name is None:
             for part in reversed(tail):
                 if isinstance(part, types.expression):
                     _.append(clauses.Write(part, defer=True))
@@ -333,7 +333,7 @@ class Node(object):
                 subclauses.append(clauses.Assign(
                     types.template('%(out)s.getvalue()'), variable))
                 _.append(clauses.Group(subclauses))
-                
+
             _.append(clauses.Assign(self.use_macro, self.symbols.metal))
 
             # compute macro function arguments and create argument string
@@ -401,6 +401,13 @@ class Node(object):
                     subclauses.append(clauses.Write(value))
                 else:
                     subclauses.append(clauses.Out(element.tostring()))
+                    
+                for part in reversed(element.node.tail):
+                    if isinstance(part, types.expression):
+                        subclauses.append(clauses.Write(part))
+                    else:
+                        subclauses.append(clauses.Out(part))
+                    
             if subclauses:
                 _.append(clauses.Else(subclauses))
 
