@@ -1,7 +1,10 @@
 import cgi
 import os
 import re
+import glob
 import lxml.cssselect
+
+from copy import deepcopy
 
 from zope import component
 
@@ -194,14 +197,41 @@ class DynamicHTMLParser(XSSTemplateParser):
         # attributes lists
         self.file_dependencies = []
         self.parse(file(filename).read())
-        
+
+    def expand_tag(self, original, matches, attribute="href"):
+        tag = original
+        for nr, match in enumerate(matches):
+            match = match[len(self.path)+1:]
+            if nr == 0:
+                tag.attrib[attribute] = match
+            else:
+                new = deepcopy(tag)
+                new.attrib[attribute] = match
+                new.tail = "\n"
+                tag.tail = "\n"
+                tag.addnext(new)
+                tag = new
+
+    def glob_resources(self, root, attribute, xpath, ns={}):
+        """Resource globbing"""
+        tags = root.xpath(xpath, namespaces=ns)
+        for tag in tags:
+            href = tag.attrib.get(attribute)
+            matches = glob.glob(os.path.join(self.path, href))
+            if len(matches):
+                self.expand_tag(tag, matches, attribute)
+
     def parse(self, body):
         root, doctype = super(DynamicHTMLParser, self).parse(body)
 
         # reset dynamic identifier lists
         self.slots = []
         self.attributes = []
-        
+
+        # process possible resource globbing
+        self.glob_resources(root, "href", './/xmlns:link', ns={'xmlns': config.XHTML_NS})
+        self.glob_resources(root, "src", './/xmlns:script', ns={'xmlns': config.XHTML_NS})
+
         # process dynamic rules
         links = root.xpath(
             './/xmlns:link[@rel="xss"]', namespaces={'xmlns': config.XHTML_NS})

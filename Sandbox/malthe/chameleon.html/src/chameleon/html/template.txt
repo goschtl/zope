@@ -86,3 +86,29 @@ the adapter.
       <img src="http://host/example.png" />
     </body>
   </html>
+
+Globbing support for easy resource inclusion
+--------------------------------------------
+
+It's tedious to inlude all the resources for a template manually. Let's use
+simple globbing::
+
+    >>> filename = os.path.join(path, 'layouts', 'example2.html')
+    >>> template = DynamicHTMLFile(filename)
+    >>> print template(context=object(), request=object())
+    <html>
+      <head>
+        <link href="http://host/one.css" rel="stylesheet" type="text/css" />
+        <link href="http://host/two.css" rel="stylesheet" type="text/css" />
+        <script src="http://host/example.js" type="text/javascript">
+        </script>
+        <script src="http://host/foo.js" type="text/javascript">
+        </script>
+      </head>
+      <body>
+        <div id="content">
+          This is the content area.
+        </div>
+      </body>
+    </html>
+

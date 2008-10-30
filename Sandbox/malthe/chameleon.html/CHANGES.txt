@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Added code to enable ``glob`` style matching of resources [seletz]
+
 - Resource URLs are now made absolute to dettach them from the
   template object. [malthe]
 
