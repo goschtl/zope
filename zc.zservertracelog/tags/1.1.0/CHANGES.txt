@@ -1,0 +1,28 @@
+=========
+ Changes
+=========
+
+(unreleased)
+------------
+
+- fixed tracelog extension format so that it doesn't conflict with the Zope2
+  trace code for server shutdown.
+
+- added *summary-only* and *summary-lines* options to tracereport.
+
+- added shading of alternating rows in tracereport table output.
+
+- fixed a documentation error for loghandler configuration.
+
+
+0.4 (2008-10-09)
+----------------
+
+- added automated tests.
+
+- fixed bug where log entries could be split by messages containing newline
+  characters.
+
+- added request query strings to log.
+
+- added the tracelog to the WSGI environment.
