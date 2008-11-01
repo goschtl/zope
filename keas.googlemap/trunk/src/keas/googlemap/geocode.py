@@ -79,7 +79,7 @@ class GeocodeQuery(object):
 def getGeocodeFromQuery(geoQuery):
     dict = { 'key'    : apikey.LocalhostAPIKey.key,
              'output' : 'json',
-             'q'      : geoQuery.query }
+             'q'      : geoQuery.query.encode('utf-8') }
     url = GEOCODE_BASE + '?' + urllib.urlencode(dict)
     info = json.decode(urllib.urlopen(url).read())
     if info['Status']['code'] == 200:

@@ -61,6 +61,17 @@ for you in zcml),
   >>> geo
   Geocode(33.944066, -118.408294)
 
+We can also use non-latin letters for queries, let's try to query
+Saint-Petersburg, Russia in Russian
+
+  >>> geoQuery = geocode.GeocodeQuery(u'\u0420\u043e\u0441\u0441\u0438\u044f, \u0421\u0430\u043d\u043a\u0442-\u041f\u0435\u0442\u0435\u0440\u0431\u0443\u0440\u0433')
+  >>> try:
+  ...     geo = interfaces.IGeocode(geoQuery)
+  ... except IOError, e:
+  ...     geo = geocode.Geocode(59.939039, 30.315785)
+  >>> geo 
+  Geocode(59.939039, 30.315785)
+
 Managing Google Map API Keys
 ----------------------------
 

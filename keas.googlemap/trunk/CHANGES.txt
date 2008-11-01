@@ -5,6 +5,8 @@ CHANGES
 Version 0.5.1 (unreleased)
 --------------------------
 
+- Bug: Fix error with non-lating geocode queries. 
+
 - Feature: You can now do::
 
     <script
