@@ -11,8 +11,8 @@
 
   <include package="zope.app.zcmlfiles" />
   <include package="zope.formlib" />
+  <include package="zope.session" />
   <include package="zope.app.authentication" />
-  <include package="zope.app.session" />
   <include package="zope.app.securitypolicy" />
 
   <securityPolicy

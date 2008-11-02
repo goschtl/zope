@@ -5,6 +5,8 @@ Changes
 3.4.4 (unreleased)
 ------------------
 
+* Depend on zope.session instead of zope.app.session. The first one
+  currently has all functionality we need.
 * Fix deprecation warnings for ``md5`` and ``sha`` on Python 2.6.
 
 3.4.3 (2008-08-07)
