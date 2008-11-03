@@ -25,7 +25,7 @@ and specify configuration data.
     ... ''')
 
 Here we specified a minimal configuration using a "foo" storage.  We
-can use aby kind of storage we want.  Here we ised an import statement
+can use any kind of storage we want.  Here we used an import statement
 to import the schema definition that defined the foo section.  Any
 imports are simply copied to the generated configuration file.  When
 we run the buildout:
@@ -548,7 +548,6 @@ value. We also need to cause a zdaemon script to be generated:
     ... shell-script = true
     ...
     ... [demo]
-    ... name = Demo
     ... crontab-directory = %(cron)s
     ... etc-directory = %(etc)s
     ... log-directory = %(log)s
@@ -564,9 +563,76 @@ value. We also need to cause a zdaemon script to be generated:
     Installing zdaemon.
     Generated script '/sample-buildout/bin/zdaemon'.
     Installing server.
-    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/Demo-server'.
+    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/demo-server'.
 
-    >>> cat('rc', 'Demo-server')
+    >>> cat('rc', 'demo-server')
     #!/bin/sh
     su bob -c \
       "/sample-buildout/bin/zdaemon -C '/sample-buildout/etc/server-zdaemon.conf' $*"
+
+Names
+=====
+
+Names can be specified for deployments and for individual server
+parts. These names determine names of files generated.
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = zodb zdaemon server
+    ... 
+    ... [zodb]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = ZODB3
+    ... 
+    ... [zdaemon]
+    ... recipe = zc.recipe.egg:script
+    ... eggs = zdaemon
+    ... 
+    ... [server]
+    ... name = Server
+    ... recipe = zc.zodbrecipes:server
+    ... zeo.conf = 
+    ...    <zeo>
+    ...       address 8100
+    ...       monitor-address 8101
+    ...       transaction-timeout 300
+    ...    </zeo>
+    ...    %%import foo
+    ...    <foo main>
+    ...       path /databases/Data.fs
+    ...    </foo>
+    ... deployment = demo
+    ... pack = 1 1 * * 0 3 jim@zope.com
+    ... shell-script = true
+    ...
+    ... [demo]
+    ... name = Demo
+    ... crontab-directory = %(cron)s
+    ... etc-directory = %(etc)s
+    ... log-directory = %(log)s
+    ... logrotate-directory = %(rotate)s
+    ... rc-directory = %(rc)s
+    ... run-directory = %(run)s
+    ... user = bob
+    ... ''' % globals())
+
+    >>> print system(buildout+' -D'),
+    Uninstalling server.
+    Updating zodb.
+    Updating zdaemon.
+    Installing server.
+    zc.zodbrecipes: Generated shell script '/sample-buildout/rc/Demo-Server'.
+
+    >>> ls(cron)
+    -  pack-Demo-Server
+
+    >>> ls(etc)
+    -  Server-zdaemon.conf
+    -  Server-zeo.conf
+
+    >>> ls(rotate)
+    -  Demo-Server
+
+    >>> ls(rc)
+    -  Demo-Server

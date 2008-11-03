@@ -9,6 +9,20 @@ Recipes for working with ZODB.
 Changes
 *******
 
+0.5.0 (2008-11-03)
+================
+
+New Features
+------------
+
+You can now specify a name option in server parts to have installed
+files use a different name than the section name.
+
+Bugs Fixed
+----------
+
+Pack crontab files weren't removed when parts were removed or renamed.
+
 0.4 (2008-02-18)
 ================
 

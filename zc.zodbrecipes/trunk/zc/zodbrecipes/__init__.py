@@ -23,7 +23,7 @@ logger = logging.getLogger('zc.zodbrecipes')
 class StorageServer:
 
     def __init__(self, buildout, name, options):
-        self.name, self.options = name, options
+        self.name, self.options = options.get('name', name), options
 
         deployment = self.deployment = options.get('deployment')
         if deployment:
@@ -35,7 +35,7 @@ class StorageServer:
             options['etc-directory'] = buildout[deployment]['etc-directory']
             options['logrotate'] = os.path.join(
                 buildout[deployment]['logrotate-directory'],
-                options['deployment-name'] + '-' + name)
+                options['deployment-name'] + '-' + self.name)
             options['crontab-directory'] = buildout[
                 deployment]['crontab-directory']
             options['user'] = buildout[deployment]['user']
@@ -95,10 +95,9 @@ class StorageServer:
                 conf=zdaemon_conf_path,
                 ))
 
-
-            creating = [zeo_conf_path, zdaemon_conf_path, logrotate,
-                        os.path.join(options['rc-directory'], rc),
-                        ]
+            options.created(zeo_conf_path, zdaemon_conf_path, logrotate,
+                            os.path.join(options['rc-directory'], rc),
+                            )
 
             pack = options.get('pack')
             if pack:
@@ -122,9 +121,9 @@ class StorageServer:
             event_log_path = os.path.join(run_directory, 'zeo.log')
             socket_path = os.path.join(run_directory, 'zdaemon.sock')
             rc = self.name
-            creating = [run_directory,
-                        os.path.join(options['rc-directory'], rc),
-                        ]
+            options.created(run_directory,
+                            os.path.join(options['rc-directory'], rc),
+                            )
             if not os.path.exists(run_directory):
                 os.mkdir(run_directory)
             pack = pack_path = None
@@ -253,8 +252,9 @@ class StorageServer:
                             options['zeopack'], address, storage, days,
                             ))
                 f.close()
+                options.created(pack_path)
 
-            return creating
+            return options.created()
 
         except:
             for f in creating:
