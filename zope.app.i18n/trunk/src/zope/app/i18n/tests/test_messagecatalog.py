@@ -37,7 +37,7 @@ class TestILocalMessageCatalog(object):
         self._catalog = self._getMessageCatalog()
 
     def testInterface(self):
-        verifyObject(ILocalMessageCatalog, self._catalog)        
+        verifyObject(ILocalMessageCatalog, self._catalog)
 
     def testGetFullMessage(self):
         catalog = self._catalog
@@ -80,9 +80,8 @@ class TestILocalMessageCatalog(object):
         self.assertEqual(ids, ['greeting', 'short_greeting'])
 
 
-class LocalMessageCatalogTest(unittest.TestCase,
-                              TestIMessageCatalog,
-                              TestILocalMessageCatalog):
+class LocalMessageCatalogTest(TestIMessageCatalog,
+                               TestILocalMessageCatalog):
 
     def setUp(self):
         TestIMessageCatalog.setUp(self)
