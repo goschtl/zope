@@ -2,21 +2,21 @@
 CHANGES
 =======
 
-Version 3.5.0dev (unreleased)
------------------------------
+3.5.0dev (unreleased)
+---------------------
 
 - removed OnlineHelpTopicFactory, simple and SimpleViewClass. All of them where
   using old deprecated and removed Zope3 imports. None of them where used and
   tested.
 
 
-Version 3.4.1 (2007-10-25)
---------------------------
+3.4.1 (2007-10-25)
+------------------
 
 - Package meta-data update.
 
 
-Version 3.4.0 (2007-10-23)
---------------------------
+3.4.0 (2007-10-23)
+------------------
 
 - Initial release independent of the main Zope tree.
