@@ -22,24 +22,31 @@
   <adapter name="fancyDatetime"
 	   factory=".fancydatetime.FancyDatetimeFormatterFactory" />
 
-  <!-- formatter configlet -->
-  <z3ext:configlet
-     name="system.formatter"
-     schema=".interfaces.IFormatterConfiglet"
-     title="Portal formatters"
-     description="Configure portal formatters.">
-    <allow interface=".interfaces.IFormatterConfiglet" />
-  </z3ext:configlet>
-
-  <browser:icon
-     name="zmi_icon"
-     for=".interfaces.IFormatterConfiglet"
-     file="preferences-formatter.png" />
-
   <!-- vocabularies -->
   <utility
      name="Timezones"
      factory=".vocabulary.Timezones" />
+
+  <!-- formatter configlet -->
+  <configure
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     xmlns:browser="http://namespaces.zope.org/browser"
+     zcml:condition="installed z3ext.controlpanel">
+    <include package="z3ext.controlpanel" />
+
+    <z3ext:configlet
+       name="system.formatter"
+       schema=".interfaces.IFormatterConfiglet"
+       title="Portal formatters"
+       description="Configure portal formatters.">
+      <allow interface=".interfaces.IFormatterConfiglet" />
+    </z3ext:configlet>
+
+    <browser:icon
+       name="zmi_icon"
+       for=".interfaces.IFormatterConfiglet"
+       file="preferences-formatter.png" />
+  </configure>
 
   <!-- Registering documentation with API doc -->
   <configure
@@ -52,7 +59,6 @@
        title="z3ext.formatter - formatter TALES expression"
        doc_path="README.txt"
        parent="z3ext" />
-
   </configure>
 
   <!-- translations -->
