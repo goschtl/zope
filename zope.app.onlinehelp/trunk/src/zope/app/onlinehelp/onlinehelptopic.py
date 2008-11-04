@@ -22,7 +22,6 @@ import os
 
 from persistent import Persistent
 from zope.interface import implements
-from zope.component import getGlobalService, servicenames
 from zope.configuration.exceptions import ConfigurationError
 from zope.contenttype import guess_content_type
 
@@ -438,73 +437,3 @@ class ZPTOnlineHelpTopic(BaseOnlineHelpTopic):
     """
 
     implements(IZPTOnlineHelpTopic)
-
-
-def OnlineHelpTopicFactory(name, schema, label, permission, layer,
-                    template, default_template, bases, for_, fields,
-                    fulledit_path=None, fulledit_label=None, menu=u''):
-    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
-    class_.schema = schema
-    class_.label = label
-    class_.fieldNames = fields
-
-    class_.fulledit_path = fulledit_path
-    if fulledit_path and (fulledit_label is None):
-        fulledit_label = "Full edit"
-
-    class_.fulledit_label = fulledit_label
-
-    class_.generated_form = ViewPageTemplateFile(default_template)
-
-    defineChecker(class_,
-                  NamesChecker(("__call__", "__getitem__",
-                                "browserDefault", "publishTraverse"),
-                               permission))
-    if layer is None:
-        layer = IDefaultBrowserLayer
-
-    s = getGlobalService(servicenames.Adapters)
-    s.register((for_, layer), Interface, name, class_)
-
-
-
-import sys
-from zope.interface import implements
-from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.publisher.interfaces import NotFound
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-class simple(BrowserView):
-
-    implements(IBrowserPublisher)
-
-    def browserDefault(self, request):
-        return self, ()
-
-    def publishTraverse(self, request, name):
-        if name == 'index.html':
-            return self.index
-
-        raise NotFound(self, name, request)
-
-    # TODO: we need some unittests for this !!!
-    def __getitem__(self, name):
-        return self.index.macros[name]
-
-    def __call__(self, *args, **kw):
-        return self.index(*args, **kw)
-
-def SimpleViewClass(src, offering=None, used_for=None, bases=()):
-    if offering is None:
-        offering = sys._getframe(1).f_globals
-
-    bases += (simple, )
-
-    class_ = type("SimpleViewClass from %s" % src, bases,
-                  {'index': ViewPageTemplateFile(src, offering)})
-
-    if used_for is not None:
-        class_.__used_for__ = used_for
-
-    return class_
