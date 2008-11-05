@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Enabled error handler for macro renderer. [malthe]
+
 - Added error handler which adds debugging information to the
   exception object's string output (in debug-mode only). [malthe]
 

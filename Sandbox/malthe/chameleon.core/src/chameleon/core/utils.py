@@ -2,6 +2,7 @@ from zope import interface
 from zope import component
 
 import sys
+import pprint
 import config
 import logging
 import interfaces
@@ -254,11 +255,42 @@ def i18n_attr(name):
 def py_attr(name):
     return "{%s}%s" % (config.PY_NS, name)
 
-def reraise(exc_info=(None, None, None), error_msg=""):
-    """Re-raise the latest exception given by ``exc_info`` tuple (see
-    ``sys.exc_info``) with an additional ``error_msg`` text."""
+def raise_template_exception(source, description, kwargs, exc_info):
+    """Re-raise exception raised while calling ``template``, given by
+    the ``exc_info`` tuple (see ``sys.exc_info``)."""
 
+    # omit keyword arguments that begin with an underscore; these are
+    # used internally be the template engine and should not be exposed
+    kwargs = kwargs.copy()
+    map(kwargs.__delitem__, [k for k in kwargs if k.startswith('_')])
+
+    # format keyword arguments; consecutive arguments are indented for
+    # readability
+    formatted_arguments = pprint.pformat(kwargs).split('\n')
+    for index, string in enumerate(formatted_arguments[1:]):
+        formatted_arguments[index+1] = " "*15 + string
+
+    # extract line number from traceback object
     cls, exc, tb = exc_info
+    lineno = tb.tb_next.tb_next.tb_lineno-1
+
+    # locate source code annotation (these are available from
+    # the template source as comments)
+    source = source.split('\n')
+    for i in reversed(range(lineno)):
+        if source[i].lstrip().startswith('#'):
+            annotation = source[i].split('#', 1)[-1].lstrip()
+            break
+    else:
+        annotation = ""
+
+    error_msg = (
+        "Caught exception rendering template."
+        "\n\n"
+        " - Expression: \"%s\"\n"
+        " - Instance:   %s\n"
+        " - Arguments:  %s\n"
+        ) % (annotation, description, "\n".join(formatted_arguments))    
 
     __dict__ = exc.__dict__
     error_string = str(exc)
