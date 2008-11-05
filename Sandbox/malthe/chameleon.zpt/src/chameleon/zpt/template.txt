@@ -80,6 +80,8 @@ Exception while evaluating expression:
   ... </div>""").render()
   Traceback (most recent call last):
     ...
+  RuntimeError: Caught exception rendering template.
+    ...
   TypeError: range expected at least 1 arguments, got 0
 
 Exception while evaluating definition:
@@ -91,6 +93,8 @@ Exception while evaluating definition:
   ... </div>""").render()
   Traceback (most recent call last):
     ...
+  RuntimeError: Caught exception rendering template.
+    ...
   TypeError: range expected at least 1 arguments, got 0
 
 Exception while evaluating interpolation:
@@ -101,5 +105,7 @@ Exception while evaluating interpolation:
   ...   <span>${range()}</span>
   ... </div>""").render()
   Traceback (most recent call last):
+    ...
+  RuntimeError: Caught exception rendering template.
     ...
   TypeError: range expected at least 1 arguments, got 0
