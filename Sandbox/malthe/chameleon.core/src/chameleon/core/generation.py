@@ -69,6 +69,8 @@ class CodeIO(BufferIO):
     t_prefix = '_tmp'
     v_prefix = '_tmpv'
 
+    annotation = None
+    
     def __init__(self, symbols=None, encoding=None,
                  indentation=0, indentation_string="\t"):
         BufferIO.__init__(self)
@@ -110,7 +112,7 @@ class CodeIO(BufferIO):
             self.indentation -= amount
 
     def annotate(self, item):
-        self.annotations[self.l_counter] = item
+        self.annotation = self.annotations[self.l_counter] = item
 
     def out(self, string):
         if isinstance(string, unicode) and self.encoding:
@@ -130,10 +132,18 @@ class CodeIO(BufferIO):
             string = string.encode(self.encoding)
 
         self.l_counter += len(string.split('\n'))-1
-
         self.cook()
-        BufferIO.write(self,
-            self.indentation_string * self.indentation + string + '\n')
+        
+        indent = self.indentation_string * self.indentation
+
+        # if a source code annotation is set, write it as a comment
+        # prior to the source code line
+        if self.annotation:
+            BufferIO.write(
+                self, "%s# %s\n" % (indent, self.annotation))
+            self.annotation = None
+            
+        BufferIO.write(self, indent + string + '\n')
 
     def getvalue(self):
         self.cook()

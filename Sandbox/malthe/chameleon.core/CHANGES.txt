@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Added error handler which adds debugging information to the
+  exception object's string output (in debug-mode only). [malthe]
+
 1.0b4 (released 28/10/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

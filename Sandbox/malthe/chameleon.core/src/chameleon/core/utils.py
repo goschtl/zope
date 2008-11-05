@@ -253,3 +253,23 @@ def i18n_attr(name):
 
 def py_attr(name):
     return "{%s}%s" % (config.PY_NS, name)
+
+def reraise(exc_info=(None, None, None), error_msg=""):
+    """Re-raise the latest exception given by ``exc_info`` tuple (see
+    ``sys.exc_info``) with an additional ``error_msg`` text."""
+
+    cls, exc, tb = exc_info
+
+    __dict__ = exc.__dict__
+    error_string = str(exc)
+    
+    if issubclass(cls, Exception):
+        class RuntimeError(cls):
+            def __str__(self):
+                return "%s\n%s: %s" % (
+                    error_msg, cls.__name__, error_string)
+
+        exc = RuntimeError.__new__(RuntimeError)
+        exc.__dict__.update(__dict__)            
+            
+    raise cls, exc, tb

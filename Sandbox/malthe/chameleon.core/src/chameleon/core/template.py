@@ -1,4 +1,7 @@
 import os
+import sys
+import utils
+import pprint
 import config
 import doctypes
 import filecache
@@ -60,8 +63,41 @@ class Template(object):
 
     def render(self, **kwargs):
         template = self.cook_check(parameters=kwargs)
-        return template.render(**kwargs)
+        if config.DEBUG_MODE is False:
+            return template.render(**kwargs)
+        
+        try:
+            return template.render(**kwargs)
+        except:
+            tb = sys.exc_info()[-1]
+            lineno = tb.tb_next.tb_next.tb_lineno-1
+            del tb
 
+            # locate source code annotation (these are available from
+            # the template source as comments)
+            source = template.source.split('\n')
+            for i in reversed(range(lineno)):
+                if source[i].lstrip().startswith('#'):
+                    annotation = source[i].split('#', 1)[-1].lstrip()
+                    break
+            else:
+                annotation = ""
+                
+            formatted_arguments = pprint.pformat(kwargs).split('\n')
+            
+            # indent consecutive arguments for readability
+            for index, string in enumerate(formatted_arguments[1:]):
+                formatted_arguments[index+1] = " "*15 + string
+            
+            utils.reraise(
+                sys.exc_info(),
+                ("Caught exception rendering template."
+                 "\n\n"
+                 " - Expression: %s\n"
+                 " - Instance:   %s\n"
+                 " - Arguments:  %s\n"
+                 ) % (annotation, repr(self), "\n".join(formatted_arguments)))
+                      
     def render_macro(self, macro, global_scope=False, parameters={}):
         template = self.cook_check(
             parameters=parameters, macro=macro, global_scope=global_scope)
