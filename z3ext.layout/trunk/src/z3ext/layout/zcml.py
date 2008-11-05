@@ -301,11 +301,17 @@ def pageletDirective(
 
     new_class = type('PageletClass from %s'%class_, bases, cdict)
 
+    # add IPagelet to provides
+    inProvides = False
+    for iface in provides:
+        if IPagelet.isOrExtends(iface) and not IPageletType.providedBy(iface):
+            inProvides = True
+
+    if not inProvides:
+        provides.append(IPagelet)
+
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)
-    if IPagelet not in provides:
-        allowed_interface.append(IPagelet)
-
     allowed_attributes.extend(kwargs.keys())
     allowed_attributes.extend(('__call__', 'browserDefault',
                                'update', 'render', 'publishTraverse'))
