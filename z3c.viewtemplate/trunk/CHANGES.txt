@@ -2,6 +2,8 @@
 CHANGES
 =======
 
+ - added support for TAL debug flags
+
 0.3.2 (2007-11-01)
 ------------------
 

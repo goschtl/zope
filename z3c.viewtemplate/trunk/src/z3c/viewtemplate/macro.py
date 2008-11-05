@@ -41,9 +41,17 @@ class Macro(object):
                                                 self.request,
                                                 options=kwargs)
         context = self.template.pt_getEngineContext(namespace)
-        TALInterpreter(program, None,
-                       context, output, tal=True, showtal=False,
-                       strictinsert=0, sourceAnnotations=False)()
+        debug_flags = self.request.debug
+        TALInterpreter(
+                program,
+                None,
+                context,
+                output,
+                tal=True,
+                showtal=getattr(debug_flags, 'showTAL', 0),
+                strictinsert=0,
+                sourceAnnotations=getattr(debug_flags, 'sourceAnnotations', 0),
+                )()
         if not self.request.response.getHeader("Content-Type"):
             self.request.response.setHeader("Content-Type",
                                             self.contentType)

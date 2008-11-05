@@ -93,6 +93,17 @@ Now we register a new template on the specific interface of our view.
   >>> print view()
   <div>IMyView</div>
 
+We can also render the view with debug flags set.
+
+  >>> request.debug.sourceAnnotations = True
+  >>> print view()
+  <!--
+  ==============================================================================
+  .../myViewTemplate.pt
+  ==============================================================================
+  --><div>IMyView</div>
+  >>> request.debug.sourceAnnotations = False
+
 It is possible to provide the template directly.
 
 We create a new template.
