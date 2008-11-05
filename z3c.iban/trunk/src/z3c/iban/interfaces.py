@@ -23,3 +23,14 @@ from z3c.iban.i18n import MessageFactory as _
 
 class IIBAN(interfaces.IField):
    """IBAN Field"""
+
+class NotValidIBAN(zope.schema.ValidationError):
+   __doc__ = _(u"Value is no valid IBAN")
+   
+   
+class IBIC(interfaces.IField):
+   """BIC Field"""
+
+class NotValidBIC(zope.schema.ValidationError):
+   __doc__ = _(u"Value is no valid BIC")
+   

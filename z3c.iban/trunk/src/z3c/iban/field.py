@@ -26,12 +26,28 @@ from zope.schema.fieldproperty import FieldProperty
 
 from z3c.iban import interfaces
 
-class IBAN(zope.schema.Orderable, zope.schema.Field):
+class IBAN(zope.schema.TextLine):
     zope.interface.implements(interfaces.IIBAN)
 
     def _validate(self, value):
         if not valid(value):
-            raise zope.schema.ValidationError(
-                "Value is no valid IBAN")
+            raise interfaces.NotValidIBAN(value)
         super(IBAN, self)._validate(value)
+        
+class BIC(zope.schema.TextLine):
+    zope.interface.implements(interfaces.IBIC)
+    
+    def _validate(self, value):
+        value = value.strip()
+        if len(value) != 8 and len(value) != 11:
+            # length must be 8 or 11 characters
+            raise interfaces.NotValidBIC(value)
+        if not value[:6].isalpha():
+            # Characters 0-6 must be letters
+            raise interfaces.NotValidBIC(value)
+        if not value[6:8].isalnum():
+            # Characters 7,8 must me alphanumeric
+            raise interfaces.NotValidBIC(value)
+        super(BIC, self)._validate(value)
+        
 
