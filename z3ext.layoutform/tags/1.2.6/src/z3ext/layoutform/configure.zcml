@@ -1,0 +1,23 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   xmlns:i18n="http://namespaces.zope.org/i18n">
+
+  <includeDependencies package="z3ext.layoutform" />
+
+  <!-- form error status message -->
+  <utility
+     name="formError"
+     provides="z3ext.statusmessage.interfaces.IMessageFactory"
+     component=".error.FormErrorStatusMessage" />
+
+  <class class=".error.FormErrorStatusMessage">
+    <allow interface=".interfaces.IFormErrorStatusMessage" />
+  </class>
+
+  <include package=".browser" />
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
+
+</configure>
