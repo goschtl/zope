@@ -28,7 +28,7 @@ class ILayoutFormLayer(IFormLayer):
     """ browser layer """
 
 
-class IPageletFormView(IPagelet):
+class IPageletFormView(interface.Interface):
     """ pagelet form view """
 
 
