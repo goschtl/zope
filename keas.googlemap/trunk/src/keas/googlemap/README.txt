@@ -72,6 +72,17 @@ Saint-Petersburg, Russia in Russian
   >>> geo 
   Geocode(59.939039, 30.315785)
 
+The ValueError will be raised if no geocode found for the query:
+
+  >>> geoQuery = geocode.GeocodeQuery(u'sgzsdfg')
+  >>> try:
+  ...     interfaces.IGeocode(geoQuery)
+  ... except IOError, e:
+  ...     raise ValueError('Could not get geocode for sgzsdfg')
+  Traceback (most recent call last):
+  ...
+  ValueError: Could not get geocode for sgzsdfg
+
 Managing Google Map API Keys
 ----------------------------
 
