@@ -8,6 +8,7 @@ the directive.
   >>> import os, tempfile
   >>> from zope import interface, component
   >>> from zope.configuration import xmlconfig
+  >>> from z3ext.layout.interfaces import IPagelet
   >>> import z3ext.layout
   >>> context = xmlconfig.file('meta.zcml', z3ext.layout)
 
@@ -100,7 +101,7 @@ Now register the pagelet within a interface.
   ...       name="new.html"
   ...       class="z3ext.layout.TESTS.NewPagelet"
   ...       permission="zope.Public"
-  ... provides="z3ext.layout.TESTS.INewPagelet" />
+  ...       provides="z3ext.layout.TESTS.INewPagelet" />
   ... </configure>
   ... """, context)
 
@@ -298,9 +299,64 @@ instead of full module path
 
   >>> component.provideUtility(
   ...     ITestPagelet, z3ext.layout.interfaces.IPageletType, name='testPageletType')
+  >>> interface.alsoProvides(ITestPagelet, z3ext.layout.interfaces.IPageletType)
 
   >>> print pagelet.publishTraverse(request, 'testPageletType')
   <div>My pagelet</div>
+
+We can register nameless pagelet only if provided interface is not
+inherited from IBrowserPublisher, because we can override
+IBrowserPublisher for content.
+
+  >>> class IWrongPageletInterface(IPagelet):
+  ...     pass
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       template="%s"
+  ...       provides="z3ext.layout.TESTS.IWrongPageletInterface"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """%template, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError:...
+      ConfigurationError: You can't register nameless pagelet...
+
+If we still need nameless adapter we can use IPagelet interface
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       for="z3ext.layout.TESTS.IContent"
+  ...       template="%s"
+  ...       provides="z3ext.layout.interfaces.IPagelet"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """%template, context)
+
+
+If we register named pagelet and provided interface provides IPageletType,
+also nameless adapter registered
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="test.html"
+  ...       for="z3ext.layout.TESTS.IContent"
+  ...       template="%s"
+  ...       provides="z3ext.layout.TESTS.ITestPagelet"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """%template, context)
+
+  >>> content = Content()
+  >>> pagelet1 = component.getMultiAdapter((content, request), name='test.html')
+  >>> pagelet2 = component.getMultiAdapter((content, request), ITestPagelet)
+
+  >>> pagelet1.__class__ is pagelet2.__class__
+  True
 
 
 The TALES `pagelet` expression

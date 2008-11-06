@@ -22,6 +22,7 @@ from zope.component.zcml import handler, adapter, utility
 from zope.security.checker import defineChecker, Checker, CheckerPublic
 from zope.configuration.fields import Path, Tokens, GlobalObject, GlobalInterface
 from zope.configuration.exceptions import ConfigurationError
+from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -301,17 +302,33 @@ def pageletDirective(
 
     new_class = type('PageletClass from %s'%class_, bases, cdict)
 
-    # add IPagelet to provides
-    inProvides = False
-    for iface in provides:
-        if IPagelet.isOrExtends(iface) and not IPageletType.providedBy(iface):
-            inProvides = True
+    # check name
+    if not name:
+        for iface in provides:
+            # allow register nameless pagelet as IPagelet
+            if iface is IPagelet:
+                continue
 
-    if not inProvides:
-        provides.append(IPagelet)
+            if iface.isOrExtends(IBrowserPublisher):
+                raise ConfigurationError(
+                    "You can't register nameless pagelet, "\
+                    "interface '%s' is or extends IBrowserPublisher"%iface)
+
+    # add IPagelet to provides
+    if name:
+        inProvides = False
+        for iface in provides:
+            if IPagelet.isOrExtends(iface) and not IPageletType.providedBy(iface):
+                inProvides = True
+
+        if not inProvides:
+            provides.append(IPagelet)
 
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)
+    if IPagelet not in provides:
+        allowed_interface.append(IPagelet)
+
     allowed_attributes.extend(kwargs.keys())
     allowed_attributes.extend(('__call__', 'browserDefault',
                                'update', 'render', 'publishTraverse'))
