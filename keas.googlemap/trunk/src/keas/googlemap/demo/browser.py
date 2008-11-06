@@ -68,7 +68,7 @@ class MarkersForm(form.AddForm):
     template = ViewPageTemplateFile("markers.pt")
 
     ignoreContext = True
-    fields = field.Fields(interfaces.IMarker).select('html')
+    fields = field.Fields(interfaces.IMarker).select('html', 'popup_on_load')
     fields+= field.Fields(zope.schema.TextLine(
         title=u'Query',
         __name__='query',
@@ -83,7 +83,8 @@ class MarkersForm(form.AddForm):
     def create(self, data):
         query = geocode.GeocodeQuery(data['query'])
         marker = Marker(geocode=IGeocode(query),
-                        html=data['html'])
+                        html=data['html'],
+                        popup_on_load=data['popup_on_load'])
         return marker
 
     def add(self, obj):

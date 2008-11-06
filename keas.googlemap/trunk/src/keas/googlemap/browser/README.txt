@@ -111,7 +111,29 @@ Now we will add this marker to the map and render it again.
                                             zoom:1,
                                             type:G_NORMAL_MAP,
                                             controls:["GLargeMapControl", "GMapTypeControl"],
-                                            markers:[{"latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
+                                            markers:[{"popup_on_load": false, "latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
+            };
+            $(document).unload( function() {GUnload();} );
+            </script>
+  <BLANKLINE>
+
+By default, marker's popup appears when marker is clicked, but we can change it to
+get popup apper on page load. Note that with Google maps, only one popup can be
+visible at the same time.
+
+  >>> marker.popup_on_load = True
+  >>> print gmap.render()
+  <div style="width: 500px; height: 400px" id="google-map">
+  Loading Map...
+  </div>
+  <BLANKLINE>
+  <script type="text/javascript">
+            var keas_googlemap_maploader = function(){
+                 keas.googlemap.initialize({id:'google-map',
+                                            zoom:1,
+                                            type:G_NORMAL_MAP,
+                                            controls:["GLargeMapControl", "GMapTypeControl"],
+                                            markers:[{"popup_on_load": true, "latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
             };
             $(document).unload( function() {GUnload();} );
             </script>

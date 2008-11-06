@@ -52,10 +52,12 @@ class Marker(object):
 
     geocode = FieldProperty(interfaces.IMarker['geocode'])
     html = FieldProperty(interfaces.IMarker['html'])
+    popup_on_load = FieldProperty(interfaces.IMarker['popup_on_load'])
 
-    def __init__(self, geocode=None, html=u''):
+    def __init__(self, geocode=None, html=u'', popup_on_load=False):
         self.geocode = geocode or Geocode()
         self.html = html
+        self.popup_on_load = popup_on_load
 
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__.__name__,
@@ -96,7 +98,8 @@ class GoogleMap(object):
         markerString = json.encode(
             [dict(latitude=marker.geocode.latitude,
                   longitude=marker.geocode.longitude,
-                  html=marker.html)
+                  html=marker.html,
+                  popup_on_load=marker.popup_on_load)
              for marker in self.markers])
         return """
           var keas_googlemap_maploader = function(){

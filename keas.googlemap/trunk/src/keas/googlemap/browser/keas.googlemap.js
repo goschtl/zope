@@ -8,7 +8,8 @@ keas.googlemap = {
           controls: ['GLargeMapControl'],
           markers: [{latitude: 3.1234,
                      longitude: 4.52342,
-                     html: "stuff that appears in the window"}]} //an array of markers.
+                     html: "stuff that appears in the window",
+                     popup_on_mode: false}]} //an array of markers.
         */
         if (GBrowserIsCompatible()) {
             var center;
@@ -41,6 +42,13 @@ keas.googlemap = {
             map.setCenter(bounds.getCenter());
 
             mgr.refresh();
+
+            for (var i=0; i < markers.length; i++){
+                var conf = config.markers[i];
+                if (conf.popup_on_load)
+                    markers[i].openInfoWindowHtml(conf.html);
+            }
+
         }
     }
 };
