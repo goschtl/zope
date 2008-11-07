@@ -1,0 +1,38 @@
+Release History
+===============
+
+0.3 (unreleased)
+----------------
+
+New Features
+++++++++++++
+
+When trunk, tags or branches is in the svn url, try to compile a
+better name instead of e.g. trunk.tgz.  For tags, use
+name_version.tgz.
+
+Bugs Fixed
+++++++++++
+
+Having an absolute eggs-directory in buildout.cfg will now give an
+error instead of running forever trying to find a relative path. 
+
+0.2 (2007-10-25)
+----------------
+
+New Features
+++++++++++++
+
+Added support for passing buildout option settings as command-line
+options when building sources to supply values normally provided by
+~/.buildout/default.cfg.
+
+Bugs Fixed
+++++++++++
+
+Non-standard eggs-directory settings weren't handled correctly.
+
+0.1 (2007-10-24)
+----------------
+
+Initial release
