@@ -67,7 +67,11 @@ class SimpleProcessor(object):
 
     @property
     def running(self):
-        return threading.currentThread().running
+        thread = threading.currentThread()
+        if thread is not None:
+            return thread.running
+        log.error('SimpleProcessor: no currentThread')
+        return False
 
     def __init__(self, db, servicePath, waitTime=1.0):
         self.db = db
