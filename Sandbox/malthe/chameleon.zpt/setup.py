@@ -7,6 +7,8 @@ install_requires = [
     'setuptools',
     'zope.interface',
     'zope.component',
+    'zope.security',
+    'zope.configuration',
     'zope.i18n >= 3.5',
     'chameleon.core >=1.0b4',
     ]
