@@ -6,6 +6,7 @@ keas.googlemap = {
           zoom: 12, //the desired zoom level,
           type: G_NORMAL_MAP, //a google maps map type string.
           controls: ['GLargeMapControl'],
+          popup_marker: null, // number of the marker with popup or null
           markers: [{latitude: 3.1234,
                      longitude: 4.52342,
                      html: "stuff that appears in the window",
@@ -43,11 +44,10 @@ keas.googlemap = {
 
             mgr.refresh();
 
-            for (var i=0; i < markers.length; i++){
-                var conf = config.markers[i];
-                if (conf.popup_on_load)
-                    markers[i].openInfoWindowHtml(conf.html);
-            }
+			if (config.popup_marker != null) {
+				var i = config.popup_marker;
+				markers[i].openInfoWindowHtml(config.markers[i].html)
+			}
 
         }
     }

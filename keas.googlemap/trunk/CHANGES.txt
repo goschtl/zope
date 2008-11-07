@@ -18,7 +18,7 @@ Version 0.5.1 (unreleased)
 
 - Feature: markers has now a popupOnLoad attribute that can be set to True
   to get marker's info window displayed when page is loaded, not only when
-  marker is clicked.
+  marker is clicked. Note that only one marker can have popupOnLoad == True.
 
 Version 0.5.0 (2008-07-28)
 --------------------------

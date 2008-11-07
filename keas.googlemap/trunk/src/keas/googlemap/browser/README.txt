@@ -78,6 +78,7 @@ Let's try rendering the javascript needed to create such a map.
                                             zoom:1,
                                             type:G_NORMAL_MAP,
                                             controls:["GLargeMapControl", "GMapTypeControl"],
+                                            popup_marker:null,
                                             markers:[]});
             };
             $(document).unload( function() {GUnload();} );
@@ -111,7 +112,8 @@ Now we will add this marker to the map and render it again.
                                             zoom:1,
                                             type:G_NORMAL_MAP,
                                             controls:["GLargeMapControl", "GMapTypeControl"],
-                                            markers:[{"popup_on_load": false, "latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
+                                            popup_marker:null,
+                                            markers:[{"latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
             };
             $(document).unload( function() {GUnload();} );
             </script>
@@ -133,11 +135,25 @@ visible at the same time.
                                             zoom:1,
                                             type:G_NORMAL_MAP,
                                             controls:["GLargeMapControl", "GMapTypeControl"],
-                                            markers:[{"popup_on_load": true, "latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
+                                            popup_marker:0,
+                                            markers:[{"latitude": 37.2..., "html": "\n<h1>My Marker</h1>\n<p>This is my marker</p>\n", "longitude": -23.1...}]});
             };
             $(document).unload( function() {GUnload();} );
             </script>
   <BLANKLINE>
+
+If we'll try to add one more marker with popupOnLoad == True, the map's ``render``
+method will raise a ValueError:
+
+  >>> marker = browser.Marker(geocode=geocode.Geocode(37.231,-23.123),
+  ...                         html=u'Test',
+  ...                         popupOnLoad=True)
+
+  >>> gmap.markers.append(marker)
+  >>> print gmap.render()
+  Traceback (most recent call last):
+  ...
+  ValueError: Only one marker can have popup on load at the same time
 
 To properly display markers, you will need to include the
 markermanager.js utility script from google.  There is a viewlet that

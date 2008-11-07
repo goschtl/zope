@@ -95,18 +95,25 @@ class GoogleMap(object):
         return self.template(view=self)
 
     def javascript(self):
-        markerString = json.encode(
-            [dict(latitude=marker.geocode.latitude,
-                  longitude=marker.geocode.longitude,
-                  html=marker.html,
-                  popup_on_load=marker.popupOnLoad)
-             for marker in self.markers])
+        markers = []
+        popup_marker = None
+        for i, marker in enumerate(self.markers):
+            if marker.popupOnLoad:
+                if popup_marker is not None:
+                    raise ValueError('Only one marker can have popup on load at the same time')
+                else:
+                    popup_marker = i
+            markers.append(dict(latitude=marker.geocode.latitude,
+                                longitude=marker.geocode.longitude,
+                                html=marker.html))
+        markerString = json.encode(markers)
         return """
           var keas_googlemap_maploader = function(){
                keas.googlemap.initialize({id:'%(id)s',
                                           zoom:%(zoom)s,
                                           type:%(type)s,
                                           controls:%(controls)s,
+                                          popup_marker:%(popup_marker)s,
                                           markers:%(markers)s});
           };
           $(document).unload( function() {GUnload();} );
@@ -114,6 +121,7 @@ class GoogleMap(object):
                      zoom=self.zoom,
                      type=self.type,
                      controls=json.encode(self.controls),
+                     popup_marker=json.encode(popup_marker),
                      markers=markerString)
 
 class GoogleMapBrowserView(BrowserView, GoogleMap):

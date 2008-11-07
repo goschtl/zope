@@ -88,6 +88,10 @@ class MarkersForm(form.AddForm):
         return marker
 
     def add(self, obj):
+        if obj.popupOnLoad:
+            for marker in self.markers:
+                if marker.popupOnLoad:
+                    marker.popupOnLoad = False
         self.markers.append(obj)
 
     def nextURL(self):
