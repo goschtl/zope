@@ -9,6 +9,7 @@ from zope.schema import vocabulary
 from z3c.formui import layout
 from z3c.formui.interfaces import ICSS as ICSSFormUI
 from z3c.form import button, field, form, group, widget
+from z3c.form.browser.checkbox import CheckBoxFieldWidget
 
 from keas.googlemap.interfaces import IGeocodeQuery, IGeocode, ICenteredGeocodes
 from keas.googlemap import geocode
@@ -110,6 +111,7 @@ class DemoPage(layout.FormLayoutSupport, group.GroupForm, form.EditForm):
 
     fields = field.Fields(interfaces.IGoogleMap).select(
         'zoom','type','width','height','controls')
+    fields['controls'].widgetFactory = CheckBoxFieldWidget
 
     googleMap = SessionProperty('googleMap')
 

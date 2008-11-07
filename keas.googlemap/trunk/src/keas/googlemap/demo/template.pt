@@ -24,6 +24,9 @@
       h2{
         font-size: medium;
       }
+      #form-widgets-controls-row span.option {
+        display: block;
+      }
     </style>
   </head>
 
