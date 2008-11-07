@@ -1,0 +1,37 @@
+=======
+CHANGES
+=======
+
+Version 0.5.1 (2008-11-07)
+--------------------------
+
+- Bug: Fix error with non-lating geocode queries. 
+
+- Feature: You can now do::
+
+    <script
+    tal:replace="provider:keas.googlemap.browser.interfaces.IJavaScript"
+    />
+
+  and magically get all the necessary javascript viewlets to use the
+  google map.
+
+- Feature: marker now has a popupOnLoad attribute that can be set to True
+  to get marker's info window displayed when page is loaded, not only when
+  marker is clicked. Note that only one marker can have popupOnLoad == True.
+
+Version 0.5.0 (2008-07-28)
+--------------------------
+
+- Initial Release
+
+- Look up geocodes (latitude and longitude coordinates) for any
+  query string
+
+- Manage Google Map API keys for multiple domains
+
+- Sort geocodes by distance using the haversine function
+
+- Python representation of a google map that will render all the
+  necessary javascript to display the map, including geocode
+  markers.

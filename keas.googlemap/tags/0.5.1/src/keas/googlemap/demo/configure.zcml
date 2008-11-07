@@ -1,0 +1,76 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface
+      interface=".interfaces.IGoogleMapSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="GoogleMap"
+      />
+
+  <browser:resource
+      name="jquery.js"
+      file="jquery-1.2.3.js"
+      layer=".interfaces.IGoogleMapSkin"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.DemoPage"
+      layer=".interfaces.IGoogleMapSkin"
+      permission="zope.Public"
+      />
+
+  <z3c:layout
+      for="*"
+      layer=".interfaces.IGoogleMapSkin"
+      template="template.pt"
+      />
+
+  <browser:viewletManager
+      name="IJavaScript"
+      provides=".browser.IJavaScript"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".interfaces.IGoogleMapSkin"
+      permission="zope.Public"
+      />
+
+  <browser:viewletManager
+      name="ICSS"
+      provides=".browser.ICSS"
+      class="zope.viewlet.manager.WeightOrderedViewletManager"
+      layer=".interfaces.IGoogleMapSkin"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      name="googleMapJS"
+      manager=".browser.IJavaScript"
+      class="keas.googlemap.browser.GoogleMapJavaScriptViewlet"
+      permission="zope.Public"
+      layer=".interfaces.IGoogleMapSkin"
+      wieght="1"
+      />
+
+  <browser:viewlet
+      name="googleMapsAPIKey"
+      manager=".browser.IJavaScript"
+      class="keas.googlemap.apikey.StaticAPIKeyViewlet"
+      permission="zope.Public"
+      layer=".interfaces.IGoogleMapSkin"
+      weight="5"
+      />
+
+  <browser:viewlet
+      name="markermanager.js"
+      manager=".browser.IJavaScript"
+      class="keas.googlemap.browser.GoogleMapMarkersViewletLocal"
+      permission="zope.Public"
+      layer=".interfaces.IGoogleMapSkin"
+      weight="7"
+      />
+
+
+</configure>

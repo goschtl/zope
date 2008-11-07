@@ -1,0 +1,21 @@
+<table>
+  <tr>
+    <td>
+      <div tal:replace="structure view/geocodeForm/render"></div>
+    </td>
+    <td>
+      <div tal:replace="structure view/markersForm/render"></div>
+    </td>
+    <td>
+      <div metal:use-macro="macro:form"></div>
+    </td>
+    <td>
+      <div tal:replace="structure view/googleMap/render"></div>
+    </td>
+  </tr>
+</table>
+<script type="text/javascript">
+$(document).ready(function(){
+keas_googlemap_maploader();
+});
+</script>

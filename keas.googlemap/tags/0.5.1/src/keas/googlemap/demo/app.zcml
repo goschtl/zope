@@ -1,0 +1,71 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="keas.googlemap">
+
+  <include package="zc.configuration" file="meta.zcml" />
+  <include package="zope.i18n" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.macro" file="meta.zcml" />
+  <include package="z3c.template" file="meta.zcml" />
+  <include package="z3c.pagelet" file="meta.zcml" />
+
+  <exclude package="zope.app.authentication.browser" />
+  <exclude package="zope.app.authentication.browser"
+           file="session.zcml" />
+  <exclude package="zope.app.authentication.browser"
+           file="httpplugins.zcml" />
+  <exclude package="zope.app.authentication.browser"
+           file="principalfolder.zcml" />
+  <exclude package="zope.app.authentication.browser"
+           file="groupfolder.zcml" />
+
+  <include package="zope.publisher" />
+  <include package="zope.traversing" />
+  <include package="zope.traversing.browser" />
+  <include package="zope.app.authentication" />
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.twisted" />
+  <include package="zope.session" />
+
+  <include package="z3c.form" />
+  <include package="z3c.formui" />
+  <include package="z3c.macro" />
+  <include package="z3c.pagelet" />
+  <include package="zope.contentprovider" />
+
+  <include package="keas.googlemap" />
+  <include package="keas.googlemap" file="apikey.zcml" />
+  <include package="keas.googlemap.demo" />
+  <browser:defaultSkin name="GoogleMap" />
+  <browser:defaultView for="*" name="index.html" />
+
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.app.securitypolicy" />
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <!-- Initial administrator account.  Disable this for production -->
+  <principal id="zope.manager"
+             title="Manager"
+             login="admin"
+             password_manager="Plain Text"
+             password="admin"
+             />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <grant role="zope.Manager"
+         principal="zope.manager" />
+  <grant permission="zope.View"
+         principal="zope.anybody" />
+
+</configure>
