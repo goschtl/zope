@@ -121,7 +121,7 @@ By default, marker's popup appears when marker is clicked, but we can change it 
 get popup apper on page load. Note that with Google maps, only one popup can be
 visible at the same time.
 
-  >>> marker.popup_on_load = True
+  >>> marker.popupOnLoad = True
   >>> print gmap.render()
   <div style="width: 500px; height: 400px" id="google-map">
   Loading Map...

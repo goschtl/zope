@@ -4,6 +4,6 @@
   <span tal:content="marker/geocode/latitude"/>, <span tal:content="marker/geocode/longitude"/><br />
   <div tal:content="structure marker/html">Body</div> 
   <div>
-  	(display on load: <tal:block replace="marker/popup_on_load" />)
+  	(display on load: <tal:block replace="marker/popupOnLoad" />)
   </div> 
 </div>

@@ -99,7 +99,7 @@ class IMarker(zope.interface.Interface):
         description=u'HTML that goes inside the marker popup.',
         required=False)
 
-    popup_on_load = zope.schema.Bool(
+    popupOnLoad = zope.schema.Bool(
         title=u"Popup on load",
         description=u"Show marker popup when page is loaded",
         default=False,

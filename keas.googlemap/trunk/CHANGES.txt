@@ -16,7 +16,7 @@ Version 0.5.1 (unreleased)
   and magically get all the necessary javascript viewlets to use the
   google map.
 
-- Feature: markers has now a popup_on_load attribute that can be set to True
+- Feature: markers has now a popupOnLoad attribute that can be set to True
   to get marker's info window displayed when page is loaded, not only when
   marker is clicked.
 
