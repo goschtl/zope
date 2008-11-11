@@ -57,6 +57,8 @@ class Annotation(property):
 try:
     import lxml.etree
 
+    XMLSyntaxError = lxml.etree.XMLSyntaxError
+
     class ElementBase(lxml.etree.ElementBase):
         def tostring(self):
             return lxml.etree.tostring(self)
@@ -216,6 +218,8 @@ except ImportError:
     except ImportError:
         raise ImportError("PDIS-XPath is required when lxml is unavailable.")
 
+    XMLSyntaxError = ET.XMLSyntaxError
+    
     class ElementBase(object, ET._ElementInterface):
         _parent = None
         

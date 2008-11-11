@@ -1,5 +1,6 @@
 import os
 import sys
+import etree
 import utils
 import config
 import doctypes
@@ -149,7 +150,11 @@ class TemplateFile(Template):
         self._v_last_read = mtime
 
     def cook(self, **kwargs):
-        template = self.compiler(**kwargs)
+        try:
+            template = self.compiler(**kwargs)
+        except etree.XMLSyntaxError, exception:
+            exception.msg += ' (%s)' % self.filename
+            raise exception
 
         if config.DEBUG_MODE:
             filename = "%s.py" % self.filename

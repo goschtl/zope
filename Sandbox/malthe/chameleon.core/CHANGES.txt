@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added filename to XML syntax error exception message. [malthe]
+
 - Fixed bug where a template would be wrapped with namespace
   definitions even if an XML header is present. [malthe]
 
