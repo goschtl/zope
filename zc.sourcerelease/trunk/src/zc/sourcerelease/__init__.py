@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import optparse
 import os
 import shutil
 import subprocess
@@ -52,6 +53,14 @@ def source_release(args=None):
     if args is None:
         args = sys.argv[1:]
 
+    # set up command line options
+    parser = optparse.OptionParser()
+    parser.add_option("-n", "--name", dest="filename",
+        help="create custom named files", default="None")
+
+    # retrieve options
+    (options, args) = parser.parse_args(args)
+
     url = args.pop(0)
     config = args.pop(0)
 
@@ -73,6 +82,11 @@ def source_release(args=None):
             name = name + '_' + url_parts[-1]
     else:
         name = url_parts[-1]
+
+    # use optparse to find custom filename
+    if options.filename != 'None':
+        name = options.filename
+
     t1 = tempfile.mkdtemp('source-release1')
     t2 = tempfile.mkdtemp('source-release2')
     co1 = os.path.join(t1, name)
