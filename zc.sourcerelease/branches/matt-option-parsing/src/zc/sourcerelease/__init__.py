@@ -53,22 +53,22 @@ def source_release(args=None):
     if args is None:
         args = sys.argv[1:]
 
-    url = args.pop(0)
-    config = args.pop(0)
-
     # set up command line options
     parser = optparse.OptionParser()
     parser.add_option("-n", "--name", dest="filename",
-        help="create custom named files", metavar="NAME_FILE")
+        help="create custom named files", default="None")
 
     # retrieve options
-    (options, args_two) = parser.parse_args(['-n','none','--name','none'])
+    (options, args) = parser.parse_args(args)
+
+    url = args.pop(0)
+    config = args.pop(0)
 
     clopts = []
-    #for arg in args:
-    #    name, value = arg.split('=', 1)
-    #    section, option = name.split(':')
-    #    clopts.append((section, option, value))
+    for arg in args:
+        name, value = arg.split('=', 1)
+        section, option = name.split(':')
+        clopts.append((section, option, value))
     
     if url.endswith('/'):
         # Remove ending slash
@@ -84,11 +84,8 @@ def source_release(args=None):
         name = url_parts[-1]
 
     # use optparse to find custom filename
-    if options.filename != "none":
+    if options.filename != 'None':
         name = options.filename
-        title, value = name.split('=', 1)
-        section, option = title.split(':')
-        clopts.append((section, option, value))
 
     t1 = tempfile.mkdtemp('source-release1')
     t2 = tempfile.mkdtemp('source-release2')

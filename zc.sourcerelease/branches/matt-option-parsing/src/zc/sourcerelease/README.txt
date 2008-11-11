@@ -115,7 +115,7 @@ Let's extract the tar file to a temporary directory:
 The extracted sample directory has eggs for buildout and setuptools:
 
     >>> ls('test', 'sample', 'eggs')
-    d  setuptools-0.6c7-py2.4.egg
+    -  setuptools-0.6c7-py2.4.egg
     d  zc.buildout-99.99-py2.4.egg
 
 Note that version 99.99 of zc.buildout was used because it was the
@@ -298,6 +298,20 @@ We'll run the release script against this configuration file:
     Creating source release in sample.tgz
     Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
 
+And while we have this configuration set up, we can use it to test the
+'--name' and '-n' notation:
+
+    >>> print system(join('bin', 'buildout-source-release')
+    ...        +' file://'+sample+' wrong.cfg -n name_test'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in name_test.tgz
+    Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
+
+    >>> print system(join('bin', 'buildout-source-release')
+    ...        +' file://'+sample+' wrong.cfg --name name_test_two'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in name_test_two.tgz
+    Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
 
 .. [#zip_in_future] It is possible that an option will be added in the
   future to generate zip files rather than tar archives.
