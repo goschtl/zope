@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed bug where a template would be wrapped with namespace
+  definitions even if an XML header is present. [malthe]
+
 - Added support for fallback element. [malthe]
 
 - Enabled error handler for macro renderer. [malthe]

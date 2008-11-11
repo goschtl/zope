@@ -534,11 +534,12 @@ class Compiler(object):
         # definitions; this represents a 'convention' over
         # 'configuration' approach to template documents
         no_doctype_declaration = '<!DOCTYPE' not in body
-
+        no_xml_declaration = '<?xml ' not in body
+        require_wrapping = no_xml_declaration and no_doctype_declaration
+        
         # add default namespace declaration if no explicit document
         # type has been set
-        if implicit_doctype and explicit_doctype is None and \
-               no_doctype_declaration:
+        if implicit_doctype and explicit_doctype is None and require_wrapping:
             body = """\
             <meta:declare-ns
             xmlns="%s" xmlns:tal="%s" xmlns:metal="%s" xmlns:i18n="%s"
@@ -551,7 +552,7 @@ class Compiler(object):
 
         # prepend the implicit doctype to the document source and add
         # entity definitions
-        if implicit_doctype and no_doctype_declaration:
+        if implicit_doctype and require_wrapping:
             entities = "".join((
                 '<!ENTITY %s "&#%s;">' % (name, text) for (name, text) in \
                 htmlentitydefs.name2codepoint.items()))
