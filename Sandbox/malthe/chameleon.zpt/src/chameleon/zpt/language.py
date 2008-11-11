@@ -264,6 +264,8 @@ class Parser(etree.Parser):
         config.TAL_NS: {None: TALElement},
         config.METAL_NS: {None: METALElement}}
 
+    fallback = XHTMLElement
+    
     default_expression = 'python'
 
     def __init__(self, default_expression=None):
