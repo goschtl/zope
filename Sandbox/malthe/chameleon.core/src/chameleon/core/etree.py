@@ -34,9 +34,10 @@ class ValidationError(ValueError):
 
 class Parser(object):
     element_mapping = utils.emptydict()
+    fallback = None
     
     def parse(self, body):
-        return parse(body, self.element_mapping)
+        return parse(body, self.element_mapping, fallback=self.fallback)
 
 class Annotation(property):
     def __init__(self, name, default=None):
@@ -55,7 +56,7 @@ class Annotation(property):
 
 try:
     import lxml.etree
-    
+
     class ElementBase(lxml.etree.ElementBase):
         def tostring(self):
             return lxml.etree.tostring(self)
@@ -185,8 +186,9 @@ try:
             for child in tuple(node):
                 convert_cdata_section(child)
         
-    def parse(body, element_mapping):
-        lookup = lxml.etree.ElementNamespaceClassLookup()
+    def parse(body, element_mapping, fallback=None):
+        lookup = lxml.etree.ElementNamespaceClassLookup(
+            fallback=lxml.etree.ElementDefaultClassLookup(fallback))
         parser = lxml.etree.XMLParser(resolve_entities=False, strip_cdata=False)
         parser.setElementClassLookup(lookup)
 
@@ -213,7 +215,7 @@ except ImportError:
         from pdis.xpath import XPath
     except ImportError:
         raise ImportError("PDIS-XPath is required when lxml is unavailable.")
-    
+
     class ElementBase(object, ET._ElementInterface):
         _parent = None
         

@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added support for fallback element. [malthe]
+
 - Enabled error handler for macro renderer. [malthe]
 
 - Added error handler which adds debugging information to the
