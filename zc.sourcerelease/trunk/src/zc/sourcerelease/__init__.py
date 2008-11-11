@@ -70,18 +70,7 @@ def source_release(args=None):
         section, option = name.split(':')
         clopts.append((section, option, value))
     
-    if url.endswith('/'):
-        # Remove ending slash
-        url = url[:-1]
-    url_parts = url.split('/')
-    if len(url_parts) > 1 and url_parts[-1] == 'trunk':
-        name = url_parts[-2]
-    elif len(url_parts) > 2 and url_parts[-2] in ('tags', 'branches'):
-        name = url_parts[-3]
-        if url_parts[-2] == 'tags':
-            name = name + '_' + url_parts[-1]
-    else:
-        name = url_parts[-1]
+    name = url.split('/')[-1]
 
     # use optparse to find custom filename
     if options.filename != 'None':

@@ -244,36 +244,6 @@ server. First, we'll put the sample eggs back on the link server:
     >>> print system(join('svntest', 'svnsample', 'bin', 'sample')),
     sample from svn called
 
-When making a source release of a subversion export, we want to make
-sure it has a decent name instead of trunk.tgz.  We check this with
-some locations that do not actually exist, but are fine for testing.
-We can handle the default subversion convention of trunk, branches and
-tags.
-
-    >>> print system(join('bin', 'buildout-source-release')+' '+
-    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
-    ...     '/trunk buildout.cfg'),
-    ... # doctest: +ELLIPSIS
-    Creating source release in svnsample.tgz
-    svn: URL ... doesn't exist
-    ...
-
-    >>> print system(join('bin', 'buildout-source-release')+' '+
-    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
-    ...     '/branches/1.0 buildout.cfg'),
-    ... # doctest: +ELLIPSIS
-    Creating source release in svnsample.tgz
-    svn: URL ... doesn't exist
-    ...
-
-    >>> print system(join('bin', 'buildout-source-release')+' '+
-    ...     'svn://svn.zope.org/repos/main/zc.sourcerelease/svnsample'+
-    ...     '/tags/1.0.1 buildout.cfg'),
-    ... # doctest: +ELLIPSIS
-    Creating source release in svnsample_1.0.1.tgz
-    svn: URL ... doesn't exist
-    ...
-
 You can specify a different configuration file of course.  Let's
 create one with an error as it contains an absolute path for the
 eggs-directory.
