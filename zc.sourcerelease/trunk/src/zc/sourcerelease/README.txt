@@ -94,7 +94,35 @@ We end up with a tar file:
     d  sample
     -  sample.tgz
 
-Let's extract the tar file to a temporary directory:
+If we want to give the file a custom name, in this case something other than
+sample.tgz, we can use the '-n' or '--name' option to specify one:
+
+    >>> print system(join('bin', 'buildout-source-release')
+    ...        +' file://'+sample+' buildout.cfg -n custom_name_one'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in custom_name_one.tgz
+    ...
+
+    >>> print system(join('bin', 'buildout-source-release')
+    ...        +' file://'+sample+' buildout.cfg --name custom_name_two'),
+    ... # doctest: +ELLIPSIS
+    Creating source release in custom_name_two.tgz
+    ...
+
+    >>> ls('.')
+    -  .installed.cfg
+    d  bin
+    -  buildout.cfg
+    -  custom_name_one.tgz
+    -  custom_name_two.tgz
+    d  develop-eggs
+    d  eggs
+    d  parts
+    d  sample
+    -  sample.tgz
+
+Let's continue with the example using sample.tgz. Extract the tar file to a
+temporary directory:
 
     >>> mkdir('test')
     >>> import tarfile
@@ -221,6 +249,8 @@ server. First, we'll put the sample eggs back on the link server:
     -  .installed.cfg
     d  bin
     -  buildout.cfg
+    -  custom_name_one.tgz
+    -  custom_name_two.tgz
     d  develop-eggs
     d  eggs
     d  parts
@@ -266,21 +296,6 @@ We'll run the release script against this configuration file:
     ...        +' file://'+sample+' wrong.cfg'),
     ... # doctest: +ELLIPSIS
     Creating source release in sample.tgz
-    Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
-
-And while we have this configuration set up, we can use it to test the
-'--name' and '-n' notation:
-
-    >>> print system(join('bin', 'buildout-source-release')
-    ...        +' file://'+sample+' wrong.cfg -n name_test'),
-    ... # doctest: +ELLIPSIS
-    Creating source release in name_test.tgz
-    Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
-
-    >>> print system(join('bin', 'buildout-source-release')
-    ...        +' file://'+sample+' wrong.cfg --name name_test_two'),
-    ... # doctest: +ELLIPSIS
-    Creating source release in name_test_two.tgz
     Invalid eggs directory (perhaps not a relative path) /somewhere/shared-eggs
 
 .. [#zip_in_future] It is possible that an option will be added in the
