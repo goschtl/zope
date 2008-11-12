@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- If an element does not belong to a known namespace, assume it's the
+  default namespace. This change is relevant after the introduction of
+  fallback elements. [malthe]
+
 - XML declarations should be printed with or without a doctype
   element, and only if the template includes it. [malthe]
 

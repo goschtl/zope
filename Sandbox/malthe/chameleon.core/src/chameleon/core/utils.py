@@ -29,6 +29,7 @@ def coerces_gracefully(encoding):
     return True
 
 s_counter = 0
+marker = object()
 
 def handler(key=None):
     def decorate(f):
@@ -223,7 +224,7 @@ class odict(UserDict):
         return map(self.get, self._keys)
     
 def get_attributes_from_namespace(element, namespace):
-    if element.nsmap.get(element.prefix) == namespace:
+    if element.nsmap.get(element.prefix, marker) in (namespace, marker):
         return dict([
             (name, value) for (name, value) in element.attrib.items() \
             if '{' not in name])
