@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Added update-tool to walk a source tree and automatically rewrite
+  template import statements in each file. [malthe]
+
 - Added meta-directives for browser pages and viewlets. These build
   upon the original implementations, but make sure that the Chameleon
   template engine is used. [malthe]
