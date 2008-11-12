@@ -153,7 +153,7 @@ class ResourceCollector(object):
 
 class DigestResourceCollector(ResourceCollector):
 
-    def _build_factory(f, resource, content_type, name):
+    def _build_factory(self, f, resource, content_type, name):
         # adopt last resource's security checker
         checker = resource.__Security_checker__
 
