@@ -267,3 +267,5 @@ class Parser(etree.Parser):
                        'def': PyDefElement,
                        'with': PyWithElement,
                        'match': PyMatchElement}}
+
+    fallback = XHTMLElement
