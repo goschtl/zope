@@ -25,6 +25,7 @@ def tearDownREADME(test):
     placelesssetup.tearDown(test)
     test.globs['db'].close()
 
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
@@ -34,7 +35,3 @@ def test_suite():
         doctest.DocTestSuite('zope.app.generations.generations'),
         doctest.DocTestSuite('zope.app.generations.utility'),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
