@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Added meta-directives for browser pages and viewlets. These build
+  upon the original implementations, but make sure that the Chameleon
+  template engine is used. [malthe]
+
 - Added ``PageTemplateFile``. [malthe]
 
 0.3 (released 10/2/2008)
