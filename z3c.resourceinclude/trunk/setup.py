@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.3.0dev'
+version = '0.3'
 
 setup(name='z3c.resourceinclude',
       version=version,
