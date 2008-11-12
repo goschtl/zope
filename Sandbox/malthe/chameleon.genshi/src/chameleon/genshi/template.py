@@ -24,3 +24,13 @@ class GenshiTemplateFile(template.TemplateFile):
             parser = self.default_parser
         super(GenshiTemplateFile, self).__init__(
             filename, parser, format, doctype, **kwargs)
+
+class GenshiTextTemplate(GenshiTemplate):
+    __doc__ = template.Template.__doc__ # for Sphinx autodoc
+
+    format = 'text'
+
+class GenshiTextTemplateFile(GenshiTemplateFile):
+    __doc__ = template.Template.__doc__ # for Sphinx autodoc
+
+    format = 'text'

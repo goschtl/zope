@@ -32,6 +32,15 @@ Usage
   >>> t.filename.startswith(os.sep)
   True
 
+  >>> from chameleon.genshi.template import GenshiTextTemplate
+  
+  >>> print GenshiTextTemplate("Hello World!")()
+  Hello World!
+
+  >>> t = GenshiTemplateFile(path+'/helloworld.txt')
+  >>> print t()
+  Hello World!
+  
 Compiler integration
 --------------------
 

@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Added text template classes. [malthe]
+
 - Added default element to parser class. [malthe]
 
 1.0a2 (released 9/29/2008)
