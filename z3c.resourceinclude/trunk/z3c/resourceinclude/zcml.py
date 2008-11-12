@@ -1,8 +1,7 @@
 from zope import interface
 from zope import component
 
-from zope.app.component.back35 import LayerField
-from zope.configuration.fields import Tokens, GlobalObject
+from zope.configuration.fields import Tokens, GlobalObject, GlobalInterface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema import TextLine
@@ -22,8 +21,8 @@ class IResourceIncludeDirective(interface.Interface):
     base = TextLine(
         title=u"Base path for includes",
         required=False)
-    
-    layer = LayerField(
+
+    layer = GlobalInterface(
         title=u"The layer the resource should be found in",
         description=u"""
         For information on layers, see the documentation for the skin
@@ -34,7 +33,7 @@ class IResourceIncludeDirective(interface.Interface):
     manager = GlobalObject(
         title=u"Include manager",
         required=False)
-       
+
 def includeDirective(_context, include, base=u"", layer=IDefaultBrowserLayer, manager=None):
     if base:
         include = [base+'/'+name for name in include]
@@ -59,7 +58,7 @@ def handler(include, layer, manager, info):
             extension = None
 
         key = (layer, extension)
-        
+
         if not manager_override:
             manager = managers.get(key)
 
@@ -78,4 +77,4 @@ def handler(include, layer, manager, info):
 
         manager.add(path)
 
-        
+

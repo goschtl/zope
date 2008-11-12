@@ -26,7 +26,7 @@ class TemporaryResource(Resource):
         self.content_type = content_type
         self.lmt = lmt
         self.context = self
-        
+
     def publishTraverse(self, request, name):
         '''See interface IBrowserPublisher'''
         raise NotFound(None, name)
@@ -82,7 +82,7 @@ class TemporaryResourceFactory(object):
         self.__checker = checker
         self.content_type = content_type
         self.lmt = time.time()
-        
+
     def __call__(self, request):
         resource = TemporaryResource(request, self.__file, self.content_type, self.lmt)
         resource.__Security_checker__ = self.__checker
@@ -102,11 +102,11 @@ class TemporaryRequest(TestRequest):
 
     def getVirtualHostRoot(self):
         return self.__request.getVirtualHostRoot()
-    
+
 class ResourceCollector(object):
     interface.implements(IResourceCollector)
     component.adapts(IBrowserRequest)
-    
+
     def __init__(self, request):
         self.request = request
 
@@ -115,13 +115,13 @@ class ResourceCollector(object):
         names = []
 
         request = self._get_request()
-        
+
         for name, manager in self._get_managers():
             items = manager.getResources(request)
 
             # filter out duplicates
             rs = [resource for name, resource in items if name not in names]
-            names.extend((name for name, resource in items)) 
+            names.extend((name for name, resource in items))
 
             # sort
             self.sort(rs)
@@ -141,17 +141,24 @@ class ResourceCollector(object):
 
     def _get_request(self):
         return TemporaryRequest(self.request)
-    
+
     def _get_managers(self):
         managers = [(name, manager) for name, manager in \
                     component.getAdapters((self.request,), IResourceManager) if \
                     manager.available()]
-        
+
         managers.sort(key=lambda (name, manager): name)
 
         return managers
 
 class DigestResourceCollector(ResourceCollector):
+
+    def _build_factory(f, resource, content_type, name):
+        # adopt last resource's security checker
+        checker = resource.__Security_checker__
+
+        return TemporaryResourceFactory(f, checker, content_type, name)
+
     def merge(self, resources):
         by_type = {}
         for resource in resources:
@@ -159,7 +166,7 @@ class DigestResourceCollector(ResourceCollector):
 
         del resources[:]
         merged = resources
-        
+
         for content_type, resources in by_type.items():
             f = tempfile.TemporaryFile()
 
@@ -180,11 +187,8 @@ class DigestResourceCollector(ResourceCollector):
             res = component.queryAdapter((self.request,), name=name)
 
             if res is None:
-                # adopt last resource's security checker
-                checker = resource.__Security_checker__
-            
-                factory = TemporaryResourceFactory(
-                    f, checker, content_type, name)
+                factory = self._build_factory(
+                    f, resource, content_type, name)
 
                 # register factory
                 component.provideAdapter(

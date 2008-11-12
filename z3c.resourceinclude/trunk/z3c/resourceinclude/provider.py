@@ -6,7 +6,7 @@ from zope.publisher.interfaces.browser import IBrowserView
 from zope.contentprovider.interfaces import IContentProvider
 
 from z3c.resourceinclude.interfaces import IResourceCollector
-from z3c.pt import ViewPageTemplateFile
+from z3c.pt.pagetemplate import ViewPageTemplateFile
 
 def html_comment(u):
     return u'<!-- %s -->' % u
@@ -17,7 +17,7 @@ if not '.kss' in mimetypes.types_map:
 
 def guess_mimetype(resource):
     return resource.context.content_type
-    
+
 class ResourceIncludeProvider(object):
     interface.implements(IContentProvider)
     component.adapts(interface.Interface, IBrowserRequest, IBrowserView)

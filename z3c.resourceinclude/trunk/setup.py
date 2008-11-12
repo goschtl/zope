@@ -31,7 +31,7 @@ setup(name='z3c.resourceinclude',
           'zope.app.cache',
           'zope.contentprovider',
           'plone.memoize',
-          'z3c.pt [lxml]',
+          'z3c.pt',
           # -*- Extra requirements: -*-
       ],
       entry_points="""
