@@ -10,8 +10,9 @@ Zope Page Template engines:
 Usage
 -----
 
-Use the following import-clause:
+Import page template classes directly from this package:
 
+  >>> from z3c.pt.compat import PageTemplateFile
   >>> from z3c.pt.compat import ViewPageTemplateFile
 
 If the environment-variable ``PREFER_Z3C_PT`` is set to a true value,
