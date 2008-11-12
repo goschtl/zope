@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0b3 (released 11/12/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Added default element to parser class. [malthe]
 
 1.0b2 (released 10/28/2008)
