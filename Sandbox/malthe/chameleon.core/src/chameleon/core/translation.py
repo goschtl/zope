@@ -539,7 +539,7 @@ class Compiler(object):
         require_wrapping = no_xml_declaration and no_doctype_declaration
 
         if no_xml_declaration is False:
-            self.xml_declaration = body[:body.find('\n')+1]
+            self.xml_declaration = body[:body.find('\n', body.find('?>'))+1]
             
         # add default namespace declaration if no explicit document
         # type has been set
