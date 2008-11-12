@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b5 (released 12/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Encode code annotations if encoding is required. [malthe]
 
 - Added filename to XML syntax error exception message. [malthe]
