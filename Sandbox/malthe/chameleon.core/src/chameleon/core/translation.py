@@ -525,6 +525,7 @@ class Compiler(object):
     doctype regardless of what the template defines."""
 
     doctype = None
+    xml_declaration = None
     implicit_doctype = ""
     
     def __init__(self, body, parser, implicit_doctype=None,
@@ -534,9 +535,12 @@ class Compiler(object):
         # definitions; this represents a 'convention' over
         # 'configuration' approach to template documents
         no_doctype_declaration = '<!DOCTYPE' not in body
-        no_xml_declaration = '<?xml ' not in body
+        no_xml_declaration = not body.startswith('<?xml ')
         require_wrapping = no_xml_declaration and no_doctype_declaration
-        
+
+        if no_xml_declaration is False:
+            self.xml_declaration = body[:body.find('\n')+1]
+            
         # add default namespace declaration if no explicit document
         # type has been set
         if implicit_doctype and explicit_doctype is None and require_wrapping:
@@ -630,16 +634,22 @@ class Compiler(object):
             (stream.symbols.out, stream.symbols.write, stream.symbols.scope) + \
             tuple(parameters)))
 
-        # output doctype if any
-        if self.doctype and not macro:
-            doctype = self.doctype + '\n'
-            if self.encoding:
-                doctype = doctype.encode(self.encoding)
-            out = clauses.Out(doctype)
-            stream.scope.append(set())
-            stream.begin([out])
-            stream.end([out])
-            stream.scope.pop()
+        # output XML headers, if applicable
+        if not macro:
+            header = ""
+            if self.xml_declaration is not None:
+                header += self.xml_declaration
+            if self.doctype:
+                doctype = self.doctype + '\n'
+                if self.encoding:
+                    doctype = doctype.encode(self.encoding)
+                header += doctype
+            if header:
+                out = clauses.Out(header)
+                stream.scope.append(set())
+                stream.begin([out])
+                stream.end([out])
+                stream.scope.pop()
 
         # start generation
         self.root.start(stream)

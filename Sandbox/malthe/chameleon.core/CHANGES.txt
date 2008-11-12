@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- XML declarations should be printed with or without a doctype
+  element, and only if the template includes it. [malthe]
+
 1.0b5 (released 12/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

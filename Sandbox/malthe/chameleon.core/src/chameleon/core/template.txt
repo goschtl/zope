@@ -67,6 +67,19 @@ XInclude support
     </div>
   </div>
 
+XML-support
+-----------
+  
+  >>> print Template("""\
+  ... <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  ... <div xmlns="http://www.w3.org/1999/xhtml">
+  ...   Hello World!
+  ... </div>""", mock_parser)()
+  <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    Hello World!
+  </div>  
+
 Error handling
 --------------
 
