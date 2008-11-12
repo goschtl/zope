@@ -60,7 +60,7 @@ class BufferIO(list):
 
     def getvalue(self):
         return ''.join(self)
-
+        
 class CodeIO(BufferIO):
     """Stream buffer suitable for writing Python-code. This class is
     used internally by the compiler to manage variable scopes, source
@@ -139,6 +139,8 @@ class CodeIO(BufferIO):
         # if a source code annotation is set, write it as a comment
         # prior to the source code line
         if self.annotation:
+            if isinstance(self.annotation, unicode) and self.encoding:
+                self.annotation = self.annotation.encode(self.encoding)            
             BufferIO.write(
                 self, "%s# %s\n" % (indent, self.annotation))
             self.annotation = None
