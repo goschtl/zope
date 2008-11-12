@@ -1,0 +1,30 @@
+==========
+lovely.tal
+==========
+
+2008/11/12 0.5.0a1:
+===================
+
+ - added "softcut" function to cut at word boundaries
+
+2008/07/08 0.4.0a1:
+===================
+
+ - fixed version number
+ - added "clear-html" as the first executed command
+ - moved the "cut" command to the front
+
+2008/03/03 0.3a:
+================
+
+ - urlparse condition added
+
+2007/08/29 0.2.1:
+=================
+ - prepare checkin on zope.org
+
+2007/08/29 0.2.0:
+=================
+
+ - increased version number to get rid of "dev" revision
+ - changed buildout evironment

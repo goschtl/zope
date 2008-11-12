@@ -1,0 +1,27 @@
+<!-- here is a sample of how to use textFormatter -->
+
+<!--
+   option replace: takes a list of tuples, which characters or strings shoul be
+                   replaced by what, e.g. 
+                   "replace python:[(origChar, repChar), (origChar2, repChar2), ...]"
+                   
+   option allow:   takes a list of html-tags which shall be allowed in the string
+                   e.g. "allow python:['a', 'br', 'ul', 'li']"
+                   if this option is not set, the string is restricted to
+                   contain no html-tags, therefor the < and > are replaced 
+                   by &lt;, &gt;
+                   
+   option allow-all: allow all html-tags in the string
+   					 e. g. "allow-all: 'True'"
+   
+   option break-string: force the string to break after a given number of characters
+   						e.g. "break-string python:25" breaks the string after 
+   						a sequence of 25 characters not containing a linebreak
+                   
+
+-->
+
+<span tal:define="replace python:[('\n', '<br />')];
+                  allow python:['a', 'br'];
+                  break-string python:25"
+      tal:content="structure textFormatter: view/description">Description</span>

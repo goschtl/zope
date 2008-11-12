@@ -1,0 +1,10 @@
+<configure
+	    xmlns:tales="http://namespaces.zope.org/tales">
+	 
+  <!-- registering the new tal-expression textFormatter -->
+  <tales:expressiontype
+      name="textFormatter"
+      handler=".textformatter.TextFormatter"
+      />   
+	    
+</configure>
