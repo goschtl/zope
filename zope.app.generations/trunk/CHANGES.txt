@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.4.2 (unreleased)
+------------------
+
+- Fixed bug: A failing last generation would allow starting an app server
+  without having evolved to the minimum generation.
+   
 3.4.1 (2007-10-31)
 ------------------
 

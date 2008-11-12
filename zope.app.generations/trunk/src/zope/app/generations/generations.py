@@ -280,10 +280,10 @@ def evolve(db, how=EVOLVE):
 
     If we set the minimum generation for app1 to something greater than 3:
 
-      >>> app1.minimum_generation = 5
+      >>> app1.minimum_generation = 4
 
     Then we'll get an error if we try to evolve, since we can't get
-    past 3 and 3 is less than 5:
+    past 3 and 3 is less than 4:
 
       >>> evolve(db)
       Traceback (most recent call last):
@@ -317,7 +317,7 @@ def evolve(db, how=EVOLVE):
       >>> evolve(db, EVOLVENOT)
       Traceback (most recent call last):
       ...
-      GenerationTooLow: (3, u'app1', 5)
+      GenerationTooLow: (3, u'app1', 4)
 
     We got an error because we aren't at the minimum generation for
     app1.  The database generation for app1 is still 3 because we
@@ -335,9 +335,9 @@ def evolve(db, how=EVOLVE):
       >>> evolve(db, EVOLVEMINIMUM)
       >>> conn.sync()
       >>> root[generations_key]['app1']
-      5
+      4
       >>> root.get('app1')
-      5
+      4
 
     If we happen to install an app that has a generation that is less
     that the database generation, we'll get an error, because there is
@@ -349,7 +349,7 @@ def evolve(db, how=EVOLVE):
       >>> evolve(db)
       Traceback (most recent call last):
       ...
-      GenerationTooHigh: (5, u'app1', 2)
+      GenerationTooHigh: (4, u'app1', 2)
 
     We'd better clean up:
 
@@ -422,7 +422,7 @@ def evolve(db, how=EVOLVE):
                         "Failed to evolve database to generation %d for %s",
                         generation, key)
 
-                    if generation < manager.minimum_generation:
+                    if generation <= manager.minimum_generation:
                         raise UnableToEvolve(generation, key,
                                              manager.generation)
                     break
