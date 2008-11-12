@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added tests for meta-directives and fixed some minor errors. [malthe]
+
 - Added update-tool to walk a source tree and automatically rewrite
   template import statements in each file. [malthe]
 

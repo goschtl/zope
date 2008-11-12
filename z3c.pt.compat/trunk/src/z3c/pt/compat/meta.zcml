@@ -10,7 +10,7 @@
     <meta:directive
        name="page"
        schema="zope.app.publisher.browser.metadirectives.IPageDirective"
-       handler=".zcml.page"
+       handler=".zcml.page_directive"
        />
 
     <meta:directive

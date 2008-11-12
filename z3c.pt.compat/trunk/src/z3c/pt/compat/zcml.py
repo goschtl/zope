@@ -59,7 +59,7 @@ def ViewletManager(name, interface, template=None, bases=()):
     classImplements(ViewletManager, interface)
     return ViewletManager
 
-def page(_context, name, *args, **kwargs):
+def page_directive(_context, name, *args, **kwargs):
     class_ = kwargs.get('class_')
     template = kwargs.get('template')
 
@@ -84,7 +84,7 @@ def viewlet_directive(_context, name, *args, **kwargs):
 def viewlet_manager_directive(_context, name, *args, **kwargs):
     class_ = kwargs.get('class_')
     template = kwargs.get('template')
-    provides = kwargs.get('provides')
+    provides = kwargs.setdefault('provides', IViewletManager)
     
     if template:
         bases = class_ and (class_,) or ()
@@ -92,4 +92,4 @@ def viewlet_manager_directive(_context, name, *args, **kwargs):
             name, provides, template=str(template), bases=bases)
         del kwargs['template']
         
-    return viewletmeta.viewletDirective(_context, name, *args, **kwargs)
+    return viewletmeta.viewletManagerDirective(_context, name, *args, **kwargs)

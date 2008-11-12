@@ -30,5 +30,13 @@ setup(name='z3c.pt.compat',
       extras_require = dict(
         zpt = ['zope.app.pagetemplate', 'zope.tal'],
         z3cpt = ['z3c.pt'],
-        )
+        ), 
+      tests_require = [
+          'z3c.pt',
+          'zope.tal',
+          'zope.viewlet',
+          'zope.app.publisher',
+          'zope.app.pagetemplate',
+          ],
+      test_suite="z3c.pt.compat.tests.test_doctests.test_suite",
       )
