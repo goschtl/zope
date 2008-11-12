@@ -21,6 +21,7 @@ import config
 
 if config.PREFER_Z3C_PT:
     from z3c.pt.pagetemplate import ViewPageTemplateFile
+    from z3c.pt.pagetemplate import PageTemplateFile
 
     def bind_template(pt, view):
         return pt.bind(view)
@@ -31,6 +32,7 @@ if config.PREFER_Z3C_PT:
     
 else:
     from zope.tal.talinterpreter import TALInterpreter
+    from zope.pagetemplate.pagetemplatefile import PageTemplateFile
     from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile    
     from zope.app.pagetemplate.viewpagetemplatefile import BoundPageTemplate as \
          bind_template

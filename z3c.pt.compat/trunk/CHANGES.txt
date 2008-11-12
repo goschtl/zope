@@ -1,0 +1,22 @@
+Changelog
+---------
+
+HEAD
+~~~~
+
+- Added ``PageTemplateFile``. [malthe]
+
+0.3 (released 10/2/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Various changes.
+
+0.2 (released 9/13/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Various changes.
+
+0.1 (released 9/9/2008)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initial release.
