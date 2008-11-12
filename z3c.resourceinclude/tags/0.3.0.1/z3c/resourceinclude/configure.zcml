@@ -1,0 +1,14 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+	   xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <include package="z3c.pt" />
+  
+  <adapter
+     zcml:condition="have devmode"
+     factory=".collector.ResourceCollector" />
+
+  <adapter
+     zcml:condition="not-have devmode"
+     factory=".collector.DigestResourceCollector" />
+     
+</configure>
