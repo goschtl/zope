@@ -233,6 +233,20 @@ and attach a string to the expression::
   'ein superlangerstrin...'
 
 
+Option 'softcut'
+===============
+
+the option softcut works together with cut and prevents cutting words::
+
+  >>> context = Context({'cut':20, 'attach':'&hellip;', 'softcut':True})
+  >>> tf._doFormat('ein superlangerstring mit ein paar kurzen strings', context)
+  'ein&hellip;'
+
+  >>> context = Context({'cut':25, 'attach':'&hellip;', 'softcut':True})
+  >>> tf._doFormat('ein superlangerstring mit ein paar kurzen strings', context)
+  'ein superlangerstring&hellip;'
+
+
 Option 'urlparse'
 =================
 

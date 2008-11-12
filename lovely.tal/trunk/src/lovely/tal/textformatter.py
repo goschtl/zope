@@ -148,6 +148,8 @@ class TextFormatter(PathExpr):
         if len(rendered) <= cut:
             return rendered
         rendered = rendered[:cut]
+        if 'softcut' in context.vars:
+            rendered = rendered.rsplit(' ', 1)[0]
         if 'attach' in context.vars:
             rendered = self._attach(rendered, context)
         return rendered
