@@ -10,7 +10,6 @@ import utils
 import config
 import etree
 import marshal
-import htmlentitydefs
 
 class Node(object):
     """Element translation class.
@@ -557,11 +556,7 @@ class Compiler(object):
         # prepend the implicit doctype to the document source and add
         # entity definitions
         if implicit_doctype and require_wrapping:
-            entities = "".join((
-                '<!ENTITY %s "&#%s;">' % (name, text) for (name, text) in \
-                htmlentitydefs.name2codepoint.items()))
-
-            implicit_doctype = implicit_doctype[:-1] + '  [ %s ]>' % entities
+            implicit_doctype = implicit_doctype[:-1] + '  [ %s ]>' % utils.entities
             self.implicit_doctype = implicit_doctype
             body = implicit_doctype + "\n" + body
 

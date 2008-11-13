@@ -28,6 +28,10 @@ def coerces_gracefully(encoding):
         return False
     return True
 
+entities = "".join((
+    '<!ENTITY %s "&#%s;">' % (name, text) for (name, text) in \
+    htmlentitydefs.name2codepoint.items()))
+
 s_counter = 0
 marker = object()
 
