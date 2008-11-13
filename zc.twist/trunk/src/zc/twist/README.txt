@@ -772,7 +772,7 @@ Footnotes
     >>> print pickle.loads(pickle.dumps(res)).getTraceback(detail='verbose')
     ... # doctest: +ELLIPSIS
     *--- Failure #... (pickled) ---
-    /Users/gary/opt/zc.twist/src/zc/twist/__init__.py:...: _call(...)
+    .../src/zc/twist/__init__.py:...: _call(...)
      [ Locals...
       self : '<zc.twist.Partial obj[...]...
      ( Globals )
