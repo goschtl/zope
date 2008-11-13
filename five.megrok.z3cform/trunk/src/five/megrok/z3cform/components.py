@@ -22,7 +22,7 @@ class GrokForm(components.GrokForm):
         return super(GrokForm, self).__call__()
 
 class Form(GrokForm, form.Form, grok.View):
-    
+
     martian.baseclass()
 
 class AddForm(GrokForm, form.AddForm, grok.View):
@@ -31,7 +31,7 @@ class AddForm(GrokForm, form.AddForm, grok.View):
 
 
 class EditForm(GrokForm, form.EditForm, grok.View):
-    
+
     martian.baseclass()
 
 
