@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b6 (released 13/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - When validating inserted content (in debug-mode), make sure we wrap
   content as a proper HTML document, including HTML entity
   definitions. [malthe]
