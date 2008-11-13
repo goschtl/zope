@@ -87,6 +87,21 @@ the adapter.
     </body>
   </html>
 
+Layouts as macros
+-----------------
+
+Layouts may be used as macros in which case the slots are filled using
+METAL's `fill-slot` construct.
+
+  >>> from chameleon.core.config import SYMBOLS
+  >>> print template(**{
+  ...    SYMBOLS.slot+"title": u"Title from macro"})
+  <html>
+    ...
+    <title>Title from macro</title>
+    ...
+  </html>
+  
 Globbing support for easy resource inclusion
 --------------------------------------------
 

@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added support for macro usage. [malthe]
+
 chameleon.html 0.4 (released 10/28/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

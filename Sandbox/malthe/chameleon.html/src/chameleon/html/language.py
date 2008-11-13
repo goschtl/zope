@@ -111,7 +111,7 @@ class Element(translation.Element):
         @property
         def content(self):
             content = self.element.xss_content
-            if content is not None:
+            if content is not None and self.define_slot is None:
                 expression = types.value(
                     "%s or %s" % (self.define_symbol, repr(self.element.text)))
 
@@ -121,15 +121,26 @@ class Element(translation.Element):
                 return expression
 
         @property
+        def define_slot(self):
+            name = self.element.xss_content
+            if name is not None:
+                variable = self.symbols.slot + name
+                for scope in self.stream.scope:
+                    if variable in scope:
+                        return name
+        
+        @property
         def static_attributes(self):
             return utils.get_attributes_from_namespace(
                 self.element, config.XHTML_NS)
 
         @property
         def skip(self):
+            if self.define_slot is not None:
+                return True
             if self.element.xss_content is not None:
                 return types.value(self.define_symbol)
-                
+        
     node = property(node)
 
     xss_omit = utils.attribute(
