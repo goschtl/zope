@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- When validating inserted content (in debug-mode), make sure we wrap
+  content as a proper HTML document, including HTML entity
+  definitions. [malthe]
+
 - If an element does not belong to a known namespace, assume it's the
   default namespace. This change is relevant after the introduction of
   fallback elements. [malthe]

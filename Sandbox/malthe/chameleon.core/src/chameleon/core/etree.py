@@ -21,8 +21,14 @@ def import_elementtree():
     return ET
 
 def validate(string):
+    """Wraps string as a proper HTML document and validates it by
+    attempting to parse it using the active ElementTree parser."""
+    
+    validation_string = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" [ %s ]><div>%s</div>' % (
+        utils.entities, string)
+    
     try:
-        import_elementtree().fromstring("<div>%s</div>" % string)
+        import_elementtree().fromstring(validation_string)
     except xml.parsers.expat.ExpatError:
         raise ValidationError(string)
 
