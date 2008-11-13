@@ -235,6 +235,16 @@ py:match
       <span style="position: absolute" class="my-class itemLast" />
     </div>
 
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:py="http://genshi.edgewall.org/">
+  ...   ${'$'}{22*2-2} = ${22*2-2}
+  ... </div>""")
+  <div>
+    ${22*2-2} = 42
+  </div>
+
+
 :: Simple variable names do not need { .. }. From `py:with specs`_.
 
   >>> print render("""\
