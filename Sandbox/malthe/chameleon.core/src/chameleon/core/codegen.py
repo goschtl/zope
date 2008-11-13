@@ -41,7 +41,7 @@ class Lookup(object):
         except AttributeError, e:
             try:
                 return obj[key]
-            except (KeyError, TypeError):
+            except (KeyError, TypeError, AttributeError):
                 raise e
 
     @classmethod
