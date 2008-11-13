@@ -4,7 +4,7 @@ Changelog
 head
 ~~~~
 
-- Added text template classes. [malthe]
+- Added text template classes. [malthe, wichert]
 
 - Added default element to parser class. [malthe]
 
