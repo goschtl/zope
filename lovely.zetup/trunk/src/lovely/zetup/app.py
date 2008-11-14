@@ -16,16 +16,20 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import xmlrpclib
+
+from zope import interface
+
+import zope.publisher.xmlrpc
 from zope.app.wsgi import WSGIPublisherApplication
 from zope.app.publication.interfaces import IPublicationRequestFactory
 from zope.publisher.browser import BrowserRequest
+from zope.app.publication.httpfactory import chooseClasses
 from publication import NoZODBPublication
-from zope import interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import setDefaultSkin
 from zope.publisher.publish import publish
-import zope.publisher.xmlrpc
-import xmlrpclib
+
 
 class XMLRPCRequest(zope.publisher.xmlrpc.XMLRPCRequest):
 
@@ -46,21 +50,24 @@ class PublicationRequestFactory(object):
     interface.implements(IPublicationRequestFactory)
 
     def __init__(self):
+
         """See `zope.app.publication.interfaces.IPublicationRequestFactory`"""
         self._publication_cache = {}
         self._publication = NoZODBPublication()
 
     def __call__(self, input_stream, env):
+
         """See
         `zope.app.publication.interfaces.IPublicationRequestFactory`"""
         method = env.get('REQUEST_METHOD', 'GET').upper()
-        contentType = env.get('CONTENT_TYPE', '')
-        if method=='POST' and contentType == 'text/xml':
-            klass = XMLRPCRequest
-        else:
-            klass = BrowserRequest
-        request = klass(input_stream, env)
-        request.setPublication(self._publication)
+        requestClass, publicationClass = chooseClasses(method, env)
+        request = requestClass(input_stream, env)
+        # we must hack the publication's getApplication method because it uses
+        # ZODB.
+        publication = publicationClass(None)
+        publication.getApplication = self._publication.getApplication
+        publication._app = self._publication._app
+        request.setPublication(publication)
         if IBrowserRequest.providedBy(request):
             # only browser requests have skins
             setDefaultSkin(request)

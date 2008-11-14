@@ -51,8 +51,6 @@ def app_factory(gcfg, cfg=None, logging=True):
     ...
     RuntimeError: There is already another config running '.../testing.py'
     """
-    if logging in ("0", "no", "false", "off"):
-        logging = False
     if cfg is None:
         raise ValueError, "Missing config path %r" % cfg
     global _app, _configPath
@@ -65,6 +63,7 @@ def app_factory(gcfg, cfg=None, logging=True):
     _configPath = cfgFile
     if _app is not None:
         return _app
+    logging = logging not in ("0", "no", "false", "off")
     cfg = Config(cfgFile, withLogging=logging)
     component.provideUtility(cfg)
     _app = Application()

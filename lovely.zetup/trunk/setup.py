@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="lovely.zetup",
-    version="0.0.1a1",
+    version="0.1.0a1",
     zip_safe = False,
     include_package_data = True,
     packages = find_packages('src'),

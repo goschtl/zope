@@ -2,6 +2,11 @@
 Changes in lovely.zetup
 =======================
 
+2008/11/14 0.1.0a1
+==================
+
+- made the publication request factory more generic (to accept jsonrpc requests)
+
 0.0.1a1
 =======
 
