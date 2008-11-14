@@ -107,12 +107,14 @@ def match_interpolate(string, translator):
         right = string.find('}')
 
         while right != -1:
-            match = string[left:right]
-            try:
-                exp = translator(match)
-                break
-            except SyntaxError:
-                right = string.find('}', right+1)
+            if right > left:
+                match = string[left:right]
+                try:
+                    exp = translator(match)
+                    break
+                except SyntaxError:
+                    pass
+            right = string.find('}', right+1)
         else:
             raise
 

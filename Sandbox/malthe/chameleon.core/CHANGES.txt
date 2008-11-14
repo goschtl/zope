@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed interpolation edge where a right curly brace not part of an
+  interpolation expression would cancel a succeeding
+  interpolation. [malthe]
+
 - Pass `target_language` when using macros. [malthe]
 
 1.0b6 (released 13/11/2008)
