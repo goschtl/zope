@@ -35,7 +35,10 @@ def interpolate(string, translator):
 
     >>> print interpolate(u"abc${ghi}", translator)
     (u'abc', value('ghi'))
-        
+
+    >>> print interpolate(u"}${abc}", translator)
+    (u'}', value('abc'))
+    
     """
 
     m = match_interpolate(string, translator)
