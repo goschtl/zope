@@ -146,4 +146,7 @@ class JSSubscriptionsViewlet(viewlet.ViewletBase):
 
     def render(self):
         content = self.renderer.render()
-        return u'<script type="text/javascript">\n%s\n</script>' % content
+        if content:
+            return u'<script type="text/javascript">\n%s\n</script>' % content
+        else:
+            return u''

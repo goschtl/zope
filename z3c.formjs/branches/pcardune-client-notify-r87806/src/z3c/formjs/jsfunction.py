@@ -142,4 +142,7 @@ class JSFunctionsViewlet(viewlet.ViewletBase):
 
     def render(self):
         content = self.__parent__.jsFunctions.render()
-        return u'<script type="text/javascript">\n%s\n</script>' % content
+        if content:
+            return u'<script type="text/javascript">\n%s\n</script>' % content
+        else:
+            return u''

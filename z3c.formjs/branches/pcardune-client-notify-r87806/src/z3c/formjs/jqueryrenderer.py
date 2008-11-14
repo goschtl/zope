@@ -113,8 +113,12 @@ class JQuerySubscriptionsRenderer(object):
             self.renderers.append(renderer)
 
     def render(self):
-        return '$(document).ready(function(){\n  %s\n})' %(
-            '\n  '.join([r.render() for r in self.renderers]) )
+        parts = [r.render() for r in self.renderers]
+        if parts:
+            return '$(document).ready(function(){\n  %s\n})' %(
+                '\n  '.join(parts) )
+        else:
+            return ''
 
 class JQueryObjectEventRenderer(object):
     zope.component.adapts(IObjectEvent,
