@@ -1,0 +1,107 @@
+===================================
+Site creating none zodb publication
+===================================
+
+This publication does not require zodb and creates the root folder and
+sites by using ini files.
+
+    >>> from lovely.zetup import publication
+
+The publication requires an IConfig utility to be registered globally.
+
+    >>> from lovely.zetup import config
+    >>> from zope import component
+    >>> import os
+    >>> configFile = os.path.join(os.path.dirname(publication.__file__),
+    ...                           'testing', 'testing.py')
+
+We disable the logging conf for the test. This also configures the
+ftesting.zcml file.
+
+    >>> cfg = config.Config(configFile, withLogging=False)
+
+And register the config.
+
+    >>> component.provideUtility(cfg)
+
+  >>> from zope.component.eventtesting import clearEvents, getEvents
+  >>> clearEvents()
+
+Now let us create the publication. This creates a global app instance
+and runs all configurators defined in the config file. Two
+configurators where added for testing, one with data.
+
+    >>> pub = publication.NoZODBPublication()
+    called: 'ConfTwo', on u'testsite' with data: ...
+    called: 'ConfOne', on u'testsite' with data: ...
+    called: 'ConfTwo', on u'secondsite' with data: ...
+    called: 'ConfOne', on u'secondsite' with data: ...
+
+There is an event fired after a new application has been fully created.
+
+  >>> from lovely.zetup.interfaces import INoZODBStarted
+  >>> events = getEvents(INoZODBStarted)
+  >>> events
+  [<lovely.zetup.interfaces.NoZODBStarted object at ...>]
+  >>> [e.root for e in events]
+  [<App>]
+
+Let us get the app. We need a request for this.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+
+The application is actualy a subclass of dict that holds the sites
+defined by the config. In order to get some subobjects of the site we
+need to have at least an interaction.
+
+    >>> from zope.security.management import newInteraction, endInteraction
+    >>> newInteraction()
+    >>> app = pub.getApplication(request)
+    >>> sorted(app.items())
+    [(u'secondsite', <zope.app.folder.folder.Folder object at ...>),
+     (u'testsite', <zope.app.folder.folder.Folder object at ...>)]
+
+
+The app is security proxied
+
+    >>> type(app)
+    <type 'zope.security._proxy._Proxy'>
+
+The application is a singleton
+
+    >>> app is pub.getApplication(request)
+    True
+
+Let us get the test site and the site config for it.
+
+    >>> from lovely.zetup.interfaces import ISiteConfig
+    >>> site = app['testsite']
+    >>> siteConfig = ISiteConfig(site)
+
+Now we can get the site configuration dictionarry.
+
+    >>> c = siteConfig.config
+    >>> from pprint import pprint
+    >>> pprint(c)
+    {'configurators': {'testconfigurator.one': {'alist': ['server1:11211',
+                                                          'server2:11211'],
+                                                'someunicode': u'noreply@example.com'},
+                       'testconfigurator.two': {'afloat': 1.0,
+                                                'astring': 'Value of Name'}},
+     'factory': 'zope.app.content.Folder',
+     'settings': {'testing.option1': 1}}
+
+Let us get some settings.
+
+    >>> c.get('settings')['testing.option1']
+    1
+
+Also the factory that was used to create the testsite is in this
+config. This is actually the only option that is required for a site
+config.
+
+    >>> c.get('factory')
+    'zope.app.content.Folder'
+
+    >>> endInteraction()

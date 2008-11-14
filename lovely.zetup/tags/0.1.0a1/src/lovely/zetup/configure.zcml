@@ -1,0 +1,28 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <class class=".publication.App">
+    <allow
+        attributes="getSiteManager"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="setSiteManager"
+        />
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer" 
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+  </class>
+
+  <adapter factory=".config.SiteConfig"/>
+
+  <subscriber handler=".event.applyConfigurators"/>
+
+  <include package=".browser" />
+
+</configure>

@@ -1,0 +1,52 @@
+===========
+Paste Layer
+===========
+
+This layer creates a paste application using lovely.zetup. This test
+actually runs on this layer so we can get the appplication.
+
+    >>> from lovely.zetup import testing
+
+This is a single app application so the paste application object is
+actually the same as the zope application.
+
+    >>> testing.getPasteApplication()
+    <lovely.zetup.app.Application object at ...>
+
+We can get the root folder.
+
+    >>> rf = testing.getRootFolder()
+    >>> rf
+    <App>
+
+By defautl the root folder is security proxied.
+
+    >>> type(rf)
+    <type 'zope.security._proxy._Proxy'>
+
+We can remove the proxy.
+
+    >>> rf = testing.getRootFolder(proxied=False)
+    >>> type(rf)
+    <class 'lovely.zetup.publication.App'>
+
+Now we can access attributes.
+
+    >>> sorted(rf.keys())
+    [u'secondsite', u'testsite']
+
+There is also a convinience function to get a paste TestApp object.
+
+    >>> ta = testing.getTestApp()
+    >>> ta
+    <paste.fixture.TestApp object at ...>
+    >>> ta.get('/secondsite/@@absolute_url').body
+    'http://localhost/secondsite'
+
+We can also start a wsgi interception and get a test browser.
+
+    >>> testing.setUpInterceptServer()
+    >>> browser = testing.Browser()
+    >>> browser.open('http://nohost/@@absolute_url')
+    >>> browser.url
+    'http://nohost/@@absolute_url'

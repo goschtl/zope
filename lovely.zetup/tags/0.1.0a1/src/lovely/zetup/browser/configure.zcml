@@ -1,0 +1,22 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+  <page
+      name="index.html"
+      for="zope.app.container.interfaces.IContainer"
+      class=".views.NoZODBContents"
+      template="contents.pt"
+      permission="zope.View"
+      menu="zmi_views" title="Contents"
+      />
+
+  <page
+      name="contents.html"
+      for="zope.app.container.interfaces.IContainer"
+      class=".views.NoZODBContents"
+      template="contents.pt"
+      permission="zope.View"
+      menu="zmi_views" title="Contents"
+      />
+
+</configure>
+
