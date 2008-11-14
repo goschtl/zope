@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b7 (released 15/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Fixed interpolation edge where a right curly brace not part of an
   interpolation expression would cancel a succeeding
   interpolation. [malthe]
