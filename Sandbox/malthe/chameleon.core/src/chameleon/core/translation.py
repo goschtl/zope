@@ -338,7 +338,7 @@ class Node(object):
             # compute macro function arguments and create argument string
             if 'xmlns' in self.element.attrib:
                 kwargs.append(('include_ns_attribute', repr(True)))
-                
+
             arguments = ", ".join(
                 tuple("%s=%s" % (arg, arg) for arg in \
                       itertools.chain(*self.stream.scope))+
@@ -626,7 +626,10 @@ class Compiler(object):
 
         # initialize variable scope
         stream.scope.append(set(
-            (stream.symbols.out, stream.symbols.write, stream.symbols.scope) + \
+            (stream.symbols.out,
+             stream.symbols.write,
+             stream.symbols.scope,
+             stream.symbols.language) + \
             tuple(parameters)))
 
         # output XML headers, if applicable

@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Pass `target_language` when using macros. [malthe]
+
 1.0b6 (released 13/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
