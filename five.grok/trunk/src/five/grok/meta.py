@@ -19,12 +19,9 @@ import grokcore.view
 import grokcore.component
 
 from zope import interface, component
-from zope.contentprovider.interfaces import IContentProvider
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components
 from martian.error import GrokError
-
-from grokcore.view.meta.views import default_view_name
 
 from Products.Five.security import protectClass, protectName
 from Globals import InitializeClass as initializeClass

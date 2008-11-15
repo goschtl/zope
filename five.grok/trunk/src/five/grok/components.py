@@ -19,8 +19,6 @@ import os.path
 import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.viewlet.interfaces import IViewletManager, IViewlet
-from zope.security.interfaces import IPermission
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope import interface, component
 
@@ -44,7 +42,6 @@ from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
 
-from AccessControl import getSecurityManager
 import Acquisition
 
 
