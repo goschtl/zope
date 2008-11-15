@@ -4,6 +4,12 @@ Changelog
 HEAD
 ~~~~
 
+- Only pretend to delete variables; this improves performance and
+  guarantees that we don't attempt to delete a variables which is used
+  in a nested scope (closure). It works, because the code generation
+  transform silently drops the delete-statements, but removes them
+  from its internal scope dictionary. [malthe]
+
 - Remove variables from scope dictionary upon block exit. [malthe]
 
 - Split out compile-function such that we can always write the source

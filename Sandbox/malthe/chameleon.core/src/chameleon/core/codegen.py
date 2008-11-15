@@ -82,6 +82,7 @@ class TemplateASTTransformer(ASTTransformer):
             else:
                 self.locals[-1].remove(node.name)
                 self.names.remove(node.name)
+                return None
         return node
 
     def visitClass(self, node):
