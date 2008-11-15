@@ -26,3 +26,5 @@ from five.grok.components import ViewletManager, Viewlet
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate
 from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile
 
+# Override DirectoryResource to use Zope 2 one
+from five.grok.components import ZopeTwoDirectoryResource as DirectoryResource

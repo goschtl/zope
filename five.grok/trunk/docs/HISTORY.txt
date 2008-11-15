@@ -12,6 +12,10 @@ five.grok - 1.0a2 (Unreleased)
   with grok.PageTemplate).
   [thefunny42]
 
+* Added support for the DirectoryResource component (new in
+  `grokcore.view`_ 1.2).
+  [thefunny42]
+
 five.grok - 1.0a1 (2008-10-22)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -30,7 +34,7 @@ five.grok - 1.0a1 (2008-10-22)
   of the one from zope.app.pagetemplate.
   [optilude]
 
-* Added grokcore.view support with tests.
+* Added `grokcore.view`_ support with tests.
   [regebro, jfroche, gotcha et al.]
 
 * Added tests for grok.subscriber directive.
@@ -40,6 +44,6 @@ five.grok - 1.0a1 (2008-10-22)
   views).
   [regebro, gotcha]
 
-
+.. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
 .. _grokcore.viewlet: http://pypi.python.org/pypi/grokcore.viewlet
 .. _grokcore.formlib: http://pypi.python.org/pypi/grokcore.formlib

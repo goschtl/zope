@@ -141,7 +141,7 @@ class ZopeTwoPageTemplateFile(ZopeTwoPageTemplate):
         self.setFromFilename(filename, _prefix)
 
 
-class DirectoryResource(resource.DirectoryResource):
+class ZopeTwoDirectoryResource(resource.DirectoryResource):
     # We subclass this, because we want to override the default factories for
     # the resources so that .pt and .html do not get created as page
     # templates
@@ -153,7 +153,7 @@ class DirectoryResource(resource.DirectoryResource):
         resource_factories[type] = factory
 
 
-class DirectoryResourceFactory(resource.DirectoryResourceFactory):
+class ZopeTwoDirectoryResourceFactory(resource.DirectoryResourceFactory):
     # __name__ is needed if you want to get url's of resources
 
     def __init__(self, name, path):
@@ -161,7 +161,7 @@ class DirectoryResourceFactory(resource.DirectoryResourceFactory):
         self.__rsrc = self.factory(path, name)
 
     def __call__(self, request):
-        resource = DirectoryResource(self.__rsrc, request)
+        resource = ZopeTwoDirectoryResource(self.__rsrc, request)
         resource.__name__ = self.__name # We need to add name
         return resource
 

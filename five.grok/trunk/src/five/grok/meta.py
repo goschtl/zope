@@ -21,6 +21,7 @@ import grokcore.component
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components
+from grokcore.view.meta.directoryresource import _get_resource_path
 from martian.error import GrokError
 
 from Products.Five.security import protectClass, protectName
@@ -52,6 +53,40 @@ class ViewSecurityGrokker(martian.ClassGrokker):
         return True
 
 
+def _register_resource(config, resource_path, name, layer):
+    resource_factory = components.ZopeTwoDirectoryResourceFactory(
+        name, resource_path)
+    adapts = (layer,)
+    provides = interface.Interface
+
+    config.action(
+        discriminator=('adapter', adapts, provides, name),
+        callable=component.provideAdapter,
+        args=(resource_factory, adapts, provides, name),
+        )
+    return True
+
+
+class DirectoryResourceGrokker(martian.ClassGrokker):
+    martian.component(components.ZopeTwoDirectoryResource)
+
+    martian.directive(grokcore.view.name, default=None)
+    martian.directive(grokcore.view.path)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+
+    def grok(self, name, factory, module_info, **kw):
+        # Need to store the module info object on the directory resource
+        # class so that it can look up the actual directory.
+        factory.module_info = module_info
+        return super(DirectoryResourceGrokker, self).grok(
+            name, factory, module_info, **kw)
+
+    def execute(self, factory, config, name, path, layer, **kw):
+        resource_path = _get_resource_path(factory.module_info, path)
+        name = name or factory.module_info.dotted_name
+        return _register_resource(config, resource_path, name, layer)
+
+
 class StaticResourcesGrokker(martian.GlobalGrokker):
 
     def grok(self, name, module, module_info, config, **kw):
@@ -59,37 +94,10 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         # happens to be a package
         if not module_info.isPackage():
             return False
-
-        resource_path = module_info.getResourcePath('static')
-        if os.path.isdir(resource_path):
-            static_module = module_info.getSubModuleInfo('static')
-            if static_module is not None:
-                if static_module.isPackage():
-                    raise GrokError(
-                        "The 'static' resource directory must not "
-                        "be a python package.",
-                        module_info.getModule())
-                else:
-                    raise GrokError(
-                        "A package can not contain both a 'static' "
-                        "resource directory and a module named "
-                        "'static.py'", module_info.getModule())
-
-            # FIXME: This is public, we need to set security on resources ?
-            name = module_info.dotted_name
-            resource_factory = components.DirectoryResourceFactory(
-                name, resource_path)
-            adapts = (IDefaultBrowserLayer,)
-            provides = interface.Interface
-
-            config.action(
-                discriminator=('adapter', adapts, provides, name),
-                callable=component.provideAdapter,
-                args=(resource_factory, adapts, provides, name),
-                )
-            return True
-
-        return False
+        resource_path = _get_resource_path(module_info, 'static')
+        name = module_info.dotted_name
+        layer = IDefaultBrowserLayer
+        return _register_resource(config, resource_path, name, layer)
 
 
 class ViewletSecurityGrokker(martian.ClassGrokker):
