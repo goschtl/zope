@@ -19,7 +19,8 @@ from zope.publisher.interfaces.browser import IBrowserPage, IBrowserView
 
 class IBaseClasses(Interface):
     View = Attribute("Base class for browser views.")
-
+    DirectoryResource = Attribute("Base class to create new "
+                                  "directory resource.")
 
 class IDirectives(Interface):
 
@@ -28,6 +29,11 @@ class IDirectives(Interface):
 
         This directive acts as a contraint on the 'request' of
         grok.View. This directive can only be used on class level."""
+
+    def path(path):
+        """Declare which path to use on a DirectoryResource.
+
+        This directive can only be used on class level."""
 
     def skin(skin):
         """Declare this layer as a named skin.
@@ -52,8 +58,8 @@ class IGrokcoreViewAPI(IBaseClasses, IDirectives):
     def url(request, obj, name=None, data=None):
         """Generate the URL to an object with optional name attached.
         An optional argument 'data' can be a dictionary that is converted
-        into a query string appended to the URL.
-        """
+        into a query string appended to the URL."""
+
     def PageTemplate(template):
         """Create a Grok PageTemplate object from ``template`` source
         text.  This can be used for inline PageTemplates."""
