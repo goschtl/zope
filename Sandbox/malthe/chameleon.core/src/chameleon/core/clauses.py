@@ -181,7 +181,6 @@ class Define(object):
     >>> define2.end(stream)
     >>> define1.end(stream)
     >>> del a; del c
-    >>> stream.scope[-1].remove('a'); stream.scope[-1].remove('c')
     >>> exec stream.getvalue()
     >>> a
     Traceback (most recent call last):
@@ -194,6 +193,27 @@ class Define(object):
     >>> b is not None and d is not None
     True
 
+    Redefining a variable which is in scope:
+    
+    >>> _out, _write, stream = testing.setup_stream()
+    >>> define1 = Define("a", testing.pyexp("b"))
+    >>> define2 = Define("a", testing.pyexp("c"))
+    >>> b = object()
+    >>> c = object()
+    >>> define1.begin(stream)
+    >>> define2.begin(stream)
+    >>> exec stream.getvalue()
+    >>> a is c
+    True
+    >>> define2.end(stream)
+    >>> define1.end(stream)
+    >>> del a
+    >>> exec stream.getvalue()
+    >>> a
+    Traceback (most recent call last):
+        ...
+    NameError: name 'a' is not defined
+    
     Tuple assignments:
 
     >>> _out, _write, stream = testing.setup_stream()
@@ -296,19 +316,18 @@ class Define(object):
             for var in reversed(self.declaration):
                 temp = stream.restore()
 
-                # If we set the variable in this scope already
+                # if we set the variable in this scope already
                 if var in stream.scope[-1]:
-
                     # we'll check if it's set in one of the older scopes
                     for scope in stream.scope[:-1]:
                         if var in scope:
                             # in which case we restore it
                             stream.write('%s = %s' % (var, temp))
-                            stream.scope[-1].remove(var)
                             break
                     else:
                         stream.write("del %s" % var)
-
+                    stream.scope[-1].remove(var)
+                            
 class Condition(object):
     """
     >>> from chameleon.core import testing, etree

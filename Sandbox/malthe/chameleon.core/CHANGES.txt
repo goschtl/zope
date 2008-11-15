@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Remove variables from scope dictionary upon block exit. [malthe]
+
 - Split out compile-function such that we can always write the source
   code to disk in debug-mode. [malthe]
 
