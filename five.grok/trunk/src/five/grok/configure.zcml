@@ -4,6 +4,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="five.grok">
 
+  <include package="five.grok" file="meta.zcml" />
+
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
   <include package="grokcore.formlib" />
