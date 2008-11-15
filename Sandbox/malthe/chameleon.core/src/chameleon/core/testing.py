@@ -36,17 +36,20 @@ def render_text(body, **kwargs):
     compiler = TestCompiler.from_text(
         body, mock_parser, implicit_doctype=doctypes.xhtml)
     template = compiler(parameters=sorted(kwargs.keys()))
+    template.compile()
     return template.render(**kwargs)    
 
 def compile_template(parser, body, encoding=None, **kwargs):
     compiler = TestCompiler(
         body, parser, encoding=encoding, implicit_doctype=doctypes.xhtml)
     template = compiler(parameters=sorted(kwargs.keys()))
+    template.compile()
     return template.render(**kwargs)    
 
 class TestCompiler(translation.Compiler):
     def __call__(self, *args, **kwargs):
         template = translation.Compiler.__call__(self, *args, **kwargs)
+        template.compile()
         template = loads(dumps(template))
         return template
 

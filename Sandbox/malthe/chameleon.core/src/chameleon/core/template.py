@@ -57,7 +57,9 @@ class Template(object):
             encoding=self.encoding)
 
     def cook(self, **kwargs):
-        return self.compiler(**kwargs)
+        template = self.compiler(**kwargs)
+        template.compile()
+        return template
     
     def cook_check(self, parameters, **kwargs):
         key = tuple(parameters), \
@@ -156,11 +158,14 @@ class TemplateFile(Template):
             exception.msg += ' (%s)' % self.filename
             raise exception
 
-        if config.DEBUG_MODE:
-            filename = "%s.py" % self.filename
-            f = open(filename, 'w')
-            f.write(template.source)
-            f.close()
+        try:
+            template.compile()
+        finally:
+            if config.DEBUG_MODE:
+                filename = "%s.py" % self.filename
+                f = open(filename, 'w')
+                f.write(template.source)
+                f.close()
 
         return template
 

@@ -16,7 +16,9 @@ CACHE_EXTENSION = "cache"
 
 # when validation is enabled, dynamically inserted content is
 # validated against the XHTML standard
-VALIDATION = DEBUG_MODE
+VALIDATION_KEY = 'CHAMELEON_VALIDATE'
+VALIDATION = os.environ.get(VALIDATION_KEY, 'false')
+VALIDATION = VALIDATION.lower() in TRUEVALS
 
 # use the disable-i18n flag to disable the translation machinery; this
 # will speed up templates that use internationalization

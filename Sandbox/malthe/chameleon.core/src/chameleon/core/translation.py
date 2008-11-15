@@ -702,22 +702,22 @@ class Compiler(object):
 class ByteCodeTemplate(object):
     """Template compiled to byte-code."""
 
+    func = None
+    
     def __init__(self, source, symbols, xmldoc, parser, tree):
-        # compile code
-        suite = codegen.Suite(source, globals=symbols)
-        suite._globals.update(symbols)
-        
-        # execute code
-        _locals = {}
-        exec suite.code in suite._globals, _locals
-
-        # keep state
-        self.func = _locals['render']
         self.source = source
         self.symbols = symbols
         self.xmldoc = xmldoc
         self.parser = parser
         self.tree = tree
+
+    def compile(self):
+        suite = codegen.Suite(self.source, globals=self.symbols)
+        suite._globals.update(self.symbols)
+
+        _locals = {}
+        exec suite.code in suite._globals, _locals
+        self.func = _locals['render']
             
     def __reduce__(self):
         reconstructor, (cls, base, state), kwargs = \
