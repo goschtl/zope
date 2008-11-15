@@ -49,7 +49,7 @@ def grok_component(name, component,
     result = zcml.the_multi_grokker.grok(name, component,
                                          module_info=module_info,
                                          config=config)
-    config.execute_actions()    
+    config.execute_actions()
     return result
 
 def warn(message, category=None, stacklevel=1):
@@ -121,5 +121,3 @@ class Layer:
 
 GrokFunctionalLayer = Layer
 
-
- 

@@ -1,14 +1,32 @@
+#############################################################################
+#
+# Copyright (c) 2008 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 
 import martian
 import five.grok
 import grokcore.security
+import grokcore.view
+import grokcore.component
 
 from zope import interface, component
+from zope.contentprovider.interfaces import IContentProvider
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from five.grok import components
 from martian.error import GrokError
 
-from Products.Five.security import protectClass
+from grokcore.view.meta.views import default_view_name
+
+from Products.Five.security import protectClass, protectName
 from Globals import InitializeClass as initializeClass
 
 import os.path
@@ -16,7 +34,7 @@ import os.path
 class ViewSecurityGrokker(martian.ClassGrokker):
     martian.component(five.grok.View)
     martian.directive(grokcore.security.require, name='permission')
-    
+
     def execute(self, factory, config, permission, **kw):
         if permission is None:
             permission = 'zope.Public'
@@ -35,6 +53,7 @@ class ViewSecurityGrokker(martian.ClassGrokker):
             )
 
         return True
+
 
 class StaticResourcesGrokker(martian.GlobalGrokker):
 
@@ -74,3 +93,34 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
             return True
 
         return False
+
+
+class ViewletSecurityGrokker(martian.ClassGrokker):
+    martian.component(five.grok.Viewlet)
+    martian.directive(grokcore.security.require, name='permission')
+
+    def execute(self, factory, config, permission, **kw):
+        if permission is None:
+            permission = 'zope.Public'
+
+        attributes = ['update', 'render',]
+        config.action(
+            discriminator = ('five:protectClass', factory),
+            callable = protectClass,
+            args = (factory, permission)
+            )
+        for attribute in attributes:
+            config.action(
+                discriminator = ('five:protectName', factory, attribute),
+                callable = protectName,
+                args = (factory, attribute, permission)
+                )
+
+        # Protect the class
+        config.action(
+            discriminator = ('five:initialize:class', factory),
+            callable = initializeClass,
+            args = (factory,)
+            )
+
+        return True

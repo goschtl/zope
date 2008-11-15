@@ -4,12 +4,13 @@ Changelog for five.grok
 five.grok - 1.0a2 (Unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ...
+* Added support for viewlets with `grokcore.viewlet`_.
+  [thefunny42]
 
-five.grok - 1.0a1 (2008/10/22)
+five.grok - 1.0a1 (2008-10-22)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Added support for formlib forms with grokcore.formlib.
+* Added support for formlib forms with `grokcore.formlib`_.
   [thefunny42]
 
 * Added support for static resource directory.
@@ -34,3 +35,6 @@ five.grok - 1.0a1 (2008/10/22)
   views).
   [regebro, gotcha]
 
+
+.. _grokcore.viewlet: http://pypi.python.org/pypi/grokcore.viewlet
+.. _grokcore.formlib: http://pypi.python.org/pypi/grokcore.formlib
