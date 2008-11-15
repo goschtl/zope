@@ -7,6 +7,11 @@ five.grok - 1.0a2 (Unreleased)
 * Added support for viewlets with `grokcore.viewlet`_.
   [thefunny42]
 
+* Added support for using Zope 2 templates by default when doing ``from
+  five import grok`` and using grok.PageTemplateFile (being consistent
+  with grok.PageTemplate).
+  [thefunny42]
+
 five.grok - 1.0a1 (2008-10-22)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -17,7 +22,7 @@ five.grok - 1.0a1 (2008-10-22)
   [thefunny42]
 
 * Added support for inline templates and made Zope 2 template semantics
-  the default when doing 'from five import grok' and using
+  the default when doing ``from five import grok`` and using
   grok.PageTemplate.
   [optilude]
 

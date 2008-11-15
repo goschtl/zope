@@ -24,4 +24,5 @@ from five.grok.components import ViewletManager, Viewlet
 
 # Override the one from grokcore.view so that we get Zope 2 semantics
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate
+from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile
 

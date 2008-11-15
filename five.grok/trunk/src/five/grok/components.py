@@ -13,6 +13,10 @@
 ##############################################################################
 
 import martian
+import martian.util
+
+import os.path
+import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.viewlet.interfaces import IViewletManager, IViewlet
@@ -128,6 +132,16 @@ class ZopeTwoPageTemplate(PageTemplate):
         template = self._template.__of__(view)
         template.pt_grokContext = namespace
         return template()
+
+
+class ZopeTwoPageTemplateFile(ZopeTwoPageTemplate):
+
+    def __init__(self, filename, _prefix=None):
+        self.__grok_module__ = martian.util.caller_module()
+        if _prefix is None:
+            module = sys.modules[self.__grok_module__]
+            _prefix = os.path.dirname(module.__file__)
+        self.setFromFilename(filename, _prefix)
 
 
 class DirectoryResource(resource.DirectoryResource):

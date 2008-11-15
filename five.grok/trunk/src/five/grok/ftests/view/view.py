@@ -9,7 +9,7 @@
   >>> print browser.contents
   <html>
   <body>
-  <h1>Hello, world!</h1>
+  <h1>Hello, world manfred!</h1>
   </body>
   </html>
 
@@ -17,7 +17,11 @@
 from five import grok
 
 class Mammoth(grok.Model):
-    pass
+
+    def __init__(self, id):
+        super(Mammoth, self).__init__(id=id)
+        self.id = id
+
 
 class Painting(grok.View):
     pass
@@ -25,7 +29,7 @@ class Painting(grok.View):
 painting = grok.PageTemplate("""\
 <html>
 <body>
-<h1>Hello, world!</h1>
+<h1>Hello, world <tal:replace tal:replace="here/id" />!</h1>
 </body>
 </html>
 """)
