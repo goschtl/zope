@@ -120,11 +120,8 @@ class Node(object):
         # variable definitions
         if self.define is not None:
             for declaration, expression in self.define:
-                if declaration.global_scope:
-                    _.append(clauses.Define(
-                        declaration, expression, self.symbols.scope))
-                else:
-                    _.append(clauses.Define(declaration, expression))
+                _.append(clauses.Define(
+                    declaration, expression, self.symbols.scope))
 
         # tag tail (deferred)
         tail = self.tail
@@ -168,9 +165,17 @@ class Node(object):
         # macro slot definition
         if self.define_slot:
             # check if slot has been filled
-            variable = self.symbols.slot + self.define_slot
-            if variable in itertools.chain(*self.stream.scope):
-                content = types.value(variable)
+            name = self.symbols.slot + self.define_slot
+            if name in itertools.chain(*self.stream.scope):
+                _.append(clauses.Condition(
+                    types.value('not isinstance(%s, basestring)' % name),
+                    (clauses.Assign(
+                    types.value('%s(%s)' % (
+                    name, self.symbols.scope)),
+                    name),),
+                    finalize=True))
+                     
+                content = types.value(name)
 
         # set dynamic content flag
         dynamic = content or self.translate is not None
@@ -321,16 +326,24 @@ class Node(object):
                     # (chrism)
                     continue
 
-                variable = self.symbols.slot+element.node.fill_slot
-                kwargs.append((variable, variable))
+                callback = self.symbols.slot+element.node.fill_slot
+                remote_scope = self.symbols.scope+"_remote"
+                kwargs.append((callback, callback))
                 
                 subclauses = []
-                subclauses.append(clauses.Define(
-                    types.declaration((self.symbols.out, self.symbols.write)),
-                    types.template('%(init)s.initialize_stream()')))
-                subclauses.append(clauses.Visit(element.node))
+                subclauses.append(
+                    clauses.Method(callback, (
+                    remote_scope,), types.value(
+                    '%s.getvalue()' % self.symbols.out)))
+                subclauses.append(
+                    clauses.UpdateScope(self.symbols.scope, remote_scope))
                 subclauses.append(clauses.Assign(
-                    types.template('%(out)s.getvalue()'), variable))
+                    types.template('%(init)s.initialize_stream()'),
+                    (self.symbols.out, self.symbols.write)))
+                subclauses.append(clauses.Visit(element.node))
+                
+                #subclauses.append(clauses.Assign(
+                #    types.template('%(out)s.getvalue()'), variable))
                 _.append(clauses.Group(subclauses))
 
             _.append(clauses.Assign(self.use_macro, self.symbols.metal))

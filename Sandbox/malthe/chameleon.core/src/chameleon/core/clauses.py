@@ -67,6 +67,10 @@ class Assign(object):
             parts = types.parts((parts,))
 
         self.parts = parts
+
+        if isinstance(variable, tuple):
+            variable = ", ".join(variable)
+            
         self.variable = variable
         
     def begin(self, stream, variable=None):
@@ -924,6 +928,19 @@ class Out(object):
         if self.defer:
             stream.out(self.string)
 
+class UpdateScope(object):
+    """Updates variable scope."""
+    
+    def __init__(self, scope, remote):
+        self.scope = scope
+        self.remote = remote
+
+    def begin(self, stream):
+        stream.write("%s.update(%s)" % (self.scope, self.remote))
+
+    def end(self, stream):
+        pass
+
 class Method(object):
     """
     >>> from chameleon.core import testing
@@ -940,18 +957,29 @@ class Method(object):
       
     """
 
-    def __init__(self, name, args):
+    ret = None
+    
+    def __init__(self, name, args, ret=None):
         self.name = name
         self.args = args
+
+        if ret is not None:
+            self.ret = Assign(ret, '_ret')
 
     def begin(self, stream):
         stream.write('def %s(%s):' % (self.name, ", ".join(self.args)))
         stream.indent()
 
     def end(self, stream):
+        if self.ret is not None:
+            self.ret.begin(stream)
+            stream.write('return _ret')
+            self.ret.end(stream)
+        
         stream.outdent()
         assign = Assign(
             types.value(self.name), "%s['%s']" % \
             (stream.symbols.scope, self.name))
         assign.begin(stream)
         assign.end(stream)
+        

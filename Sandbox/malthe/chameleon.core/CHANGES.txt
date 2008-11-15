@@ -4,6 +4,11 @@ Changelog
 HEAD
 ~~~~
 
+- Correctly transfer scope to callback-function that will fill macro
+  slot contents. Previously, we would precompute fill-slots, but this
+  was wrong since it's expected to inherit the scope of the macro
+  currently in use. [malthe]
+
 - Made error handler compatible with Python 2.4 [malthe]
 
 - Maintain symbol mappings for joined expressions. [malthe]
