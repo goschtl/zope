@@ -1,8 +1,10 @@
 Changes
 =======
 
-1.0 (unreleased)
+1.0 (2008-11-15)
 ----------------
 
-* Initial release.
+* Created ``grokcore.viewlet`` in November 2008 by factoring
+  ``zope.viewlet``-based components, grokkers and directives out of
+  Grok.
 
