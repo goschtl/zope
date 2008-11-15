@@ -307,11 +307,12 @@ class Define(object):
 
 class Condition(object):
     """
-    >>> from chameleon.core import testing
+    >>> from chameleon.core import testing, etree
 
     Unlimited scope:
 
     >>> _out, _write, stream = testing.setup_stream()
+    >>> _validate = etree.validate
     >>> true = Condition(testing.pyexp("True"))
     >>> false = Condition(testing.pyexp("False"))
     >>> true.begin(stream)
@@ -732,11 +733,12 @@ class Repeat(object):
 
 class Write(object):
     """
-    >>> from chameleon.core import testing
+    >>> from chameleon.core import testing, etree
 
     Basic write:
 
     >>> _out, _write, stream = testing.setup_stream()
+    >>> _validate = etree.validate
     >>> write = Write(testing.pyexp("'New York'"))
     >>> write.begin(stream)
     >>> write.end(stream)
@@ -843,11 +845,12 @@ class Write(object):
 
 class UnicodeWrite(Write):
     """
-    >>> from chameleon.core import testing
+    >>> from chameleon.core import testing, etree
 
     Basic write:
 
     >>> _out, _write, stream = testing.setup_stream()
+    >>> _validate = etree.validate
     >>> write = Write(types.value("'New York'"))
     >>> write.begin(stream)
     >>> write.end(stream)
