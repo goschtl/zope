@@ -105,6 +105,8 @@ class Assign(object):
             _v_count = 0
 
             for part in value:
+                if isinstance(part, types.expression):
+                    stream.symbol_mapping.update(part.symbol_mapping)
                 if isinstance(part, types.template):
                     part = types.value(part % symbols)
                 if isinstance(part, (types.parts, types.join)):

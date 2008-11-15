@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Maintain symbol mappings for joined expressions. [malthe]
+
 1.0b7 (released 15/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
