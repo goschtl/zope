@@ -126,6 +126,7 @@ customized ``__str__`` method.
 
   >>> class CustomException(Exception):
   ...     def __init__(self, msg):
+  ...         Exception.__init__(self, msg)
   ...         self.msg = msg
   
   >>> def dummy():
@@ -136,4 +137,3 @@ customized ``__str__`` method.
   ... except CustomException, exc:
   ...    print exc.msg
   This is a custom error message.
-

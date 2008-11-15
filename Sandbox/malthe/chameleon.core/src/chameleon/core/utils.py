@@ -9,6 +9,8 @@ import interfaces
 import htmlentitydefs
 import re, string
 
+types = sys.modules['types']
+
 from UserDict import UserDict
 
 # check if we're able to coerce unicode to str
@@ -298,15 +300,20 @@ def raise_template_exception(source, description, kwargs, exc_info):
         ) % (annotation, description, "\n".join(formatted_arguments))    
 
     __dict__ = exc.__dict__
-    error_string = str(exc)
+    __name__ = cls.__name__
     
+    error_string = str(exc)
+        
     if issubclass(cls, Exception):
         class RuntimeError(cls):
             def __str__(self):
                 return "%s\n%s: %s" % (
-                    error_msg, cls.__name__, error_string)
+                    error_msg, __name__, error_string)
 
-        exc = RuntimeError.__new__(RuntimeError)
-        exc.__dict__.update(__dict__)            
+        if isinstance(cls, types.TypeType):
+            exc = RuntimeError.__new__(RuntimeError)
+            exc.__dict__.update(__dict__)
+        else:
+            cls = RuntimeError
             
     raise cls, exc, tb
