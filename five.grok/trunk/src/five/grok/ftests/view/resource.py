@@ -36,7 +36,6 @@
   </body>
   </html>
 
-  
 """
 from five import grok
 

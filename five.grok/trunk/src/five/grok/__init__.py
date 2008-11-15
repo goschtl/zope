@@ -22,6 +22,10 @@ from five.grok.components import View, Model, Form, AddForm
 from five.grok.components import EditForm, DisplayForm
 from five.grok.components import ViewletManager, Viewlet
 
+# Temporary import explicitly path from grokcore.view (it was missing
+# in its API interface)
+from grokcore.view import path
+
 # Override the one from grokcore.view so that we get Zope 2 semantics
 from five.grok.components import ZopeTwoPageTemplate as PageTemplate
 from five.grok.components import ZopeTwoPageTemplateFile as PageTemplateFile

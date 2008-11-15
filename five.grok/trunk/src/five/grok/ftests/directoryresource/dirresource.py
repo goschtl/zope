@@ -3,12 +3,12 @@ A directory resource defined without an explicit name direective is available
 through the dotted name of the module in which the directoryresource is
 defined::
 
-  >>> from zope.testbrowser.testing import Browser
+  >>> from Products.Five.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
   >>> browser.open(
-  ...     'http://localhost/@@/'
-  ...     'grokcore.view.ftests.directoryresource.fixture.resource/file.txt')
+  ...     'http://localhost/'
+  ...     '++resource++five.grok.ftests.directoryresource.fixture.resource/file.txt')
   >>> print browser.contents
   Foo resource file's content.
 
@@ -16,51 +16,51 @@ Directoryresource registrations can be differentiated based on layers (and
 skins)::
 
   >>> browser.open(
-  ...     'http://localhost/++skin++another/@@/'
-  ...     'grokcore.view.ftests.directoryresource.fixture.resource/file.txt')
+  ...     'http://localhost/++skin++another/'
+  ...     '++resource++five.grok.ftests.directoryresource.fixture.resource/file.txt')
   >>> print browser.contents
   Anotherfoo resource file's content.
 
 This resource is only available on the particular layer::
 
   >>> browser.open(
-  ...     'http://localhost/++skin++another/@@/'
-  ...     'grokcore.view.ftests.directoryresource.fixture.resource/'
+  ...     'http://localhost/++skin++another/'
+  ...     '++resource++five.grok.ftests.directoryresource.fixture.resource/'
   ...     'anotherfile.txt')
   >>> print browser.contents
   Anotherfoo resource anotherfile's content.
 
   >>> browser.handleErrors = True
   >>> browser.open(
-  ...     'http://localhost/@@/'
-  ...     'grokcore.view.ftests.directoryresource.fixture.resource/'
+  ...     'http://localhost/'
+  ...     '++resource++five.grok.ftests.directoryresource.fixture.resource/'
   ...     'anotherfile.txt')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 404: Not Found
+  HTTPError: HTTP Error 404: Not Found
 
 Directoryresources can be registered under an explicit name::
 
   >>> browser.handleErrors = False
-  >>> browser.open('http://localhost/@@/fropple/file.txt')
+  >>> browser.open('http://localhost/++resource++fropple/file.txt')
   >>> print browser.contents
   Bar resource file's content.
 
 Subdirectories are published as directoryresources recusively::
 
-  >>> browser.open('http://localhost/@@/fropple/baz/file.txt')
+  >>> browser.open('http://localhost/++resource++fropple/baz/file.txt')
   >>> print browser.contents
   Baz resource file's content.
 
 A relative path to a directory with resources::
 
-  >>> browser.open('http://localhost/@@/frepple/file.txt')
+  >>> browser.open('http://localhost/++resource++frepple/file.txt')
   >>> print browser.contents
   Baz resource file's content.
 
 An absolute path to a directory with resources::
 
-  >>> browser.open('http://localhost/@@/frupple/file.txt')
+  >>> browser.open('http://localhost/++resource++frupple/file.txt')
   >>> print browser.contents
   Baz resource file's content.
 
