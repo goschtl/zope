@@ -1,3 +1,2 @@
-# svn propset svn:externals -F EXTERNALS.txt
-five.grok svn://svn.zope.org/repos/main/five.grok/trunk
+# svn propset svn:externals -F EXTERNALS.txt .
 five.pt svn://svn.zope.org/repos/main/five.pt/trunk
