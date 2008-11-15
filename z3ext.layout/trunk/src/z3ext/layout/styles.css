@@ -5,7 +5,6 @@
   .z-page, .page {
     padding: 1.5em;
     border: borderWidth borderStyle globalBorderColor;
-    border-top: borderWidth borderStyle globalBorderColor;
     background-color: globalBackgroundColor;
     font-size: 100%;
   }
@@ -134,7 +133,7 @@
   }
   
   ul.z-listing li {
-    border: 1px solid contentBackgroundColor;
+    border: 1px solid transparent;
   }
   
   ul.z-listing li .z-listing-details div {
@@ -214,6 +213,101 @@
   .z-level4 {
     padding-left: 3.2em;
   }
+
+  .even {
+    background-color: evenRowBackgroundColor;
+  }
+  
+  .odd {
+    background-color: oddRowBackgroundColor;
+  }
+  
+  .visualHighlight {
+    background-color: evenRowBackgroundColor;
+  }
+  
+  .discreet {
+    color: discreetColor;
+    font-size: fontSmallSize;
+    font-weight: normal;
+  }
+  
+  .discreet a { 
+    color: discreetColor;
+    text-decoration: underline;
+  }
+  
+  .discreet a:hover {
+    text-decoration: none;
+  }
+  
+  .visualClear {
+    display: block;
+    clear: both;
+  }
+
+  .hiddenStructure {
+    display: block;
+    background: transparent;
+    background-image: none; /* safari bug */
+    border: none;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    margin: -1px 0 0 -1px;
+    width: 1px;
+  }
+  
+  .hiddenLabel {
+    display: block;
+    background: transparent;
+    background-image: none; /* safari bug */
+    border: none;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    margin: -1px 0 0 -1px;
+    width: 1px;
+  }
+  
+  .wide {
+    width: 100%;
+  }
+  
+  .nowrap {
+    white-space: nowrap;
+  }
+  
+  .strong {
+    font-weight: bold;
+  }
+  
+  .small { 
+    font-size: fontSmallSize;
+  }
+  
+  td.error {
+    width: auto !important;
+  }
+  
+  .center {
+    text-align: center;
+  }
+  
+  .warning {
+    color: notifyBorderColor;
+    font-weight: bold;
+  }
+  
+  .spacer { 
+    padding-top: 1.5em;
+    padding-bottom: 1.5em;
+  }
+  
+  .u {
+    border-bottom: borderWidth borderStyle globalBorderColor;
+  }
+  
 }
 
 @media print {
