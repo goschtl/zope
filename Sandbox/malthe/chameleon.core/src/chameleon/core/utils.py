@@ -279,8 +279,11 @@ def raise_template_exception(source, description, kwargs, exc_info):
 
     # extract line number from traceback object
     cls, exc, tb = exc_info
-    lineno = tb.tb_next.tb_next.tb_lineno-1
-
+    try:
+        lineno = tb.tb_next.tb_next.tb_lineno-1
+    except AttributeError:
+        lineno = 1
+        
     # locate source code annotation (these are available from
     # the template source as comments)
     source = source.split('\n')
@@ -306,6 +309,9 @@ def raise_template_exception(source, description, kwargs, exc_info):
         
     if issubclass(cls, Exception):
         class RuntimeError(cls):
+            def __init__(self, *args, **kwargs):
+                pass
+            
             def __str__(self):
                 return "%s\n%s: %s" % (
                     error_msg, __name__, error_string)
