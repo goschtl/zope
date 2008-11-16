@@ -54,9 +54,9 @@ Page templates expose macros in their ``macros`` attribute.
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal"
   ...      xmlns:metal="http://xml.zope.org/namespaces/metal"
   ...      metal:use-macro="main.macros['master']">
-  ...   <div metal:fill-slot="content">
-  ...       I replace you: ${foo}.
-  ...   </div>
+  ...     <div metal:fill-slot="content">
+  ...         <tal:block i18n:domain="bar">I replace you: ${foo}.</tal:block>
+  ...     </div>
   ... </div>""")
 
   >>> print content(main=main)
