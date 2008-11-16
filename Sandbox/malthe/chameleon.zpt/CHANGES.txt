@@ -4,6 +4,13 @@ Changelog
 Head
 ~~~~
 
+- `validate`-method is no longer formally required; errors are
+  expected to be raised by the `translate`-method. [malthe]
+
+- Formalized character escape requirement; this allows compatibility
+  with ZPT with regards to semi-colon escapes in attribute
+  declarations. [malthe]
+
 - Allow chained pragmas. [malthe]
 
 1.0b3 (released 11/12/2008)

@@ -115,12 +115,9 @@ class ExpressionTranslator(object):
         """Semi-colon separated variable definitions.
         
         >>> class MockExpressionTranslator(ExpressionTranslator):
-        ...     def validate(self, string):
-        ...         if string == '' or ';' in string:
+        ...     def tales(self, string, escape=None):
+        ...         if string == '' or ';' in string.replace("';'", "''"):
         ...             raise SyntaxError()
-        ...
-        ...     def tales(self, string):
-        ...         self.validate(string)
         ...         return types.value(string.strip())
 
         >>> definitions = MockExpressionTranslator().definitions
@@ -135,7 +132,14 @@ class ExpressionTranslator(object):
         >>> definitions("variable1 expression1; variable2 expression2")
         definitions((declaration('variable1'), value('expression1')),
                     (declaration('variable2'), value('expression2')))
+
+        Defines are only split on semi-colon if a valid declaration is
+        available.
         
+        >>> definitions("variable1 ';'+expression1; variable2 expression2")
+        definitions((declaration('variable1'), value("';'+expression1")),
+                    (declaration('variable2'), value('expression2')))
+
         Tuple define:
         
         >>> definitions("(variable1, variable2) (expression1, expression2)")
@@ -224,7 +228,7 @@ class ExpressionTranslator(object):
                 i += 3
 
             try:
-                expr = self.tales(string[i:])
+                expr = self.tales(string[i:], ';')
                 j = -1
             except SyntaxError, e:
                 expr = None
@@ -236,7 +240,7 @@ class ExpressionTranslator(object):
                     raise e
 
                 try:
-                    expr = self.tales(string[i:j])
+                    expr = self.tales(string[i:j], ';')
                 except SyntaxError, e:
                     if string.rfind(';', i, j) > 0:
                         continue
@@ -264,10 +268,7 @@ class ExpressionTranslator(object):
         """String output; supports 'structure' keyword.
         
         >>> class MockExpressionTranslator(ExpressionTranslator):
-        ...     def validate(self, string):
-        ...         return True
-        ...
-        ...     def translate(self, string):
+        ...     def translate(self, string, escape=None):
         ...         return types.value(string)
 
         >>> output = MockExpressionTranslator().output
@@ -292,16 +293,13 @@ class ExpressionTranslator(object):
 
         return types.escape((expression,))
             
-    def tales(self, string):
+    def tales(self, string, escape=None):
         """We need to implement the ``validate`` and
         ``translate``-methods. Let's define that an expression is
         valid if it contains an odd number of characters.
         
         >>> class MockExpressionTranslator(ExpressionTranslator):
-        ...     def validate(self, string):
-        ...         return True
-        ...
-        ...     def translate(self, string):
+        ...     def translate(self, string, escape=None):
         ...         return types.value(string)
 
         >>> tales = MockExpressionTranslator().tales
@@ -311,7 +309,6 @@ class ExpressionTranslator(object):
 
         >>> tales('a|b')
         parts(value('a'), value('b'))
-    
         """
 
         string = string.replace('\n', '').strip()
@@ -343,15 +340,14 @@ class ExpressionTranslator(object):
             expr = string[i:j]
 
             try:
-                translator.validate(expr)
+                value = translator.translate(expr, escape)
             except Exception, e:
                 if j < len(string):
                     continue
 
                 # re-raise with traceback
-                translator.validate(expr)
+                value = translator.translate(expr, escape)
 
-            value = translator.translate(expr)
             parts.append(value)
             translator = self
             
@@ -368,7 +364,7 @@ class ExpressionTranslator(object):
 class PythonTranslator(ExpressionTranslator):
     """Implements Python expression translation."""
     
-    def validate(self, string):
+    def translate(self, string, escape=None):
         """We use the ``parser`` module to determine if
         an expression is a valid python expression."""
 
@@ -376,8 +372,7 @@ class PythonTranslator(ExpressionTranslator):
             string = string.encode('utf-8')
             
         parser.expr(string.strip())
-
-    def translate(self, string):
+        
         if isinstance(string, str):
             string = string.decode('utf-8')
 
@@ -396,47 +391,43 @@ class StringTranslator(ExpressionTranslator):
     def __init__(self, translator):
         self.translator = translator
 
-    def validate(self, string):
-        self.split(string)
-            
-    def translate(self, string):
-        return types.join(self.split(string))            
-
-    def split(self, string):
-        parts = super(StringTranslator, self).split(string)
-        if parts is not None:
-            return map(
+    def translate(self, string, escape=None):
+        parts = self.split(string)
+        
+        if escape is not None:
+            parts = map(
                 lambda part: isinstance(part, types.expression) and \
-                part or self._unescape(part), parts)
+                part or self._unescape(part, escape), parts)
 
-    def _unescape(self, string):
+        return types.join(parts)            
+
+    def _unescape(self, string, symbol):
         """
         >>> unescape = StringTranslator(None)._unescape
         
-        >>> unescape('string:Hello World')
+        >>> unescape('string:Hello World', ';')
         'string:Hello World'
         
-        >>> unescape('; string:Hello World')
+        >>> unescape('; string:Hello World', ';')
         Traceback (most recent call last):
          ...
-        SyntaxError: Semi-colons in string-expressions must be escaped.
+        SyntaxError: Must escape symbol ';'.
 
-        >>> unescape(';; string:Hello World')
+        >>> unescape(';; string:Hello World', ';')
         '; string:Hello World'
 
-        >>> unescape('string:Hello World;')
+        >>> unescape('string:Hello World;', ';')
         'string:Hello World;'
-        
         """
-        
-        i = string.rfind(';')
+
+        i = string.rfind(symbol)
         if i < 0 or i == len(string) - 1:
             return string
         
-        j = string.rfind(';'+';')
+        j = string.rfind(symbol+symbol)
         if j < 0 or i != j + 1:
             raise SyntaxError(
-                "Semi-colons in string-expressions must be escaped.")
+                "Must escape symbol %s." % repr(symbol))
         
-        return string.replace(';;', ';')
+        return string.replace(symbol+symbol, symbol)
 
