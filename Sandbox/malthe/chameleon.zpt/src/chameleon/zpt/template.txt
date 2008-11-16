@@ -43,6 +43,7 @@ Page templates expose macros in their ``macros`` attribute.
   ...       xmlns:metal="http://xml.zope.org/namespaces/metal"
   ...       metal:define-macro="master">
   ...     <tal:defines define="foo 'bar'">
+  ...       Who are you, ${foo}?
   ...       <div metal:define-slot="content">
   ...          I will be replaced
   ...       </div>
@@ -61,8 +62,9 @@ Page templates expose macros in their ``macros`` attribute.
 
   >>> print content(main=main)
   <html>
+    Who are you, bar?
     <div>
-         I replace you: bar.
+       I replace you: bar.
     </div>
   </html>  
   
