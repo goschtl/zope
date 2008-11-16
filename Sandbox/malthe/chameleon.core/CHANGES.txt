@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b8 (released 16/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Only pretend to delete variables; this improves performance and
   guarantees that we don't attempt to delete a variables which is used
   in a nested scope (closure). It works, because the code generation
