@@ -223,7 +223,7 @@ class XHTMLElement(ZopePageTemplateElement):
 class MetaElement(XHTMLElement, translation.MetaElement):
     pass
 
-class TALElement(ZopePageTemplateElement):
+class TALElement(XHTMLElement):
     """TAL namespace element."""
     
     tal_define = utils.attribute(
@@ -241,7 +241,7 @@ class TALElement(ZopePageTemplateElement):
     tal_omit = utils.attribute(
         ("omit-tag", utils.tal_attr("omit-tag")), lambda p: p.tales, u"")    
     
-class METALElement(ZopePageTemplateElement):
+class METALElement(XHTMLElement):
     """METAL namespace element."""
 
     tal_omit = True

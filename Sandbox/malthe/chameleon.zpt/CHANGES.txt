@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- TAL- and METAL-elements now subclass the XHTML-element class; this
+  allows mixed usage of TAL and METAL. [malthe]
+
 - `validate`-method is no longer formally required; errors are
   expected to be raised by the `translate`-method. [malthe]
 
