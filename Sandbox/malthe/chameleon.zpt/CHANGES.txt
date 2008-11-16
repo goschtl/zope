@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Allow chained pragmas. [malthe]
+
 1.0b3 (released 11/12/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

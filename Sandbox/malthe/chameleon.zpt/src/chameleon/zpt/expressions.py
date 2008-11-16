@@ -326,16 +326,15 @@ class ExpressionTranslator(object):
 
         i = j = 0
         while i < len(string):
-            if translator is self:
-                match = self.re_pragma.match(string[i:])
-                if match is not None:
-                    pragma = match.group('pragma')
-                    translator = self.pragma(pragma)
-                    if translator is not None:
-                        i += match.end()
-                        continue
+            match = self.re_pragma.match(string[i:])
+            if match is not None:
+                pragma = match.group('pragma')
+                translator = self.pragma(pragma)
+                if translator is not None:
+                    i += match.end()
+                    continue
 
-                    translator = self
+                translator = self
 
             j = string.find('|', j + 1)
             if j == -1:
