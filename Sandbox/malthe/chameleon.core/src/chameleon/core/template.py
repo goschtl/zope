@@ -154,7 +154,7 @@ class TemplateFile(Template):
     def cook(self, **kwargs):
         try:
             template = self.compiler(**kwargs)
-        except etree.XMLSyntaxError, exception:
+        except (SyntaxError, etree.XMLSyntaxError), exception:
             exception.msg += ' (%s)' % self.filename
             raise exception
 
