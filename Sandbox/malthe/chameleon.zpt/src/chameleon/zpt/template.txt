@@ -42,12 +42,12 @@ Page templates expose macros in their ``macros`` attribute.
   ...       xmlns:tal="http://xml.zope.org/namespaces/tal"
   ...       xmlns:metal="http://xml.zope.org/namespaces/metal"
   ...       metal:define-macro="master">
-  ...     <tal:defines define="foo 'bar'">
+  ...     <metal:block tal:define="foo 'bar'">
   ...       Who are you, ${foo}?
   ...       <div metal:define-slot="content">
   ...          I will be replaced
   ...       </div>
-  ...     </tal:defines>
+  ...     </metal:block>
   ... </html>""")
 
   >>> content = PageTemplate("""\
