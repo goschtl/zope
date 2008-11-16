@@ -378,15 +378,21 @@ class Condition(object):
 
     """
       
-    def __init__(self, value, clauses=None, finalize=True):
+    def __init__(self, value, clauses=None, finalize=True, invert=False):
         self.assign = Assign(value)
         self.clauses = clauses
         self.finalize = finalize
+        self.invert = False
         
     def begin(self, stream):
         temp = stream.save()
         self.assign.begin(stream, temp)
-        stream.write("if %s:" % temp)
+
+        if self.invert:
+            stream.write("if not (%s):" % temp)
+        else:
+            stream.write("if %s:" % temp)
+            
         stream.indent()
         if self.clauses:
             for clause in self.clauses:

@@ -79,7 +79,7 @@ class Node(object):
         if isinstance(self.skip, types.expression):
             assert isinstance(self.skip, types.value), \
                    "Dynamic skip condition can't be of type %s." % type(self.skip)
-            condition = clauses.Condition(types.value("not (%s)" % self.skip))
+            condition = clauses.Condition(self.skip, invert=True)
             if len(self.element):
                 condition.begin(self.stream)
         elif self.skip:
@@ -168,12 +168,13 @@ class Node(object):
             name = self.symbols.slot + self.define_slot
             if name in itertools.chain(*self.stream.scope):
                 _.append(clauses.Condition(
-                    types.value('not isinstance(%s, basestring)' % name),
+                    types.value('isinstance(%s, basestring)' % name),
                     (clauses.Assign(
                     types.value('%s(%s)' % (
                     name, self.symbols.scope)),
                     name),),
-                    finalize=True))
+                    finalize=True,
+                    invert=True))
                      
                 content = types.value(name)
 
@@ -234,7 +235,7 @@ class Node(object):
                 cdata=self.cdata is not None)
             if self.omit:
                 _.append(clauses.Condition(
-                    types.value("not (%s)" % self.omit), [tag], finalize=False))
+                    self.omit, [tag], finalize=False, invert=True))
             else:
                 _.append(tag)
 

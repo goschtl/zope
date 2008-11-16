@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Conditions may now be inverted; this facilitates the bug-fix of an
+  issue where omit conditions were multi-part. [malthe]
+
 - Make sure that arguments passed into the `render`-method are
   introduced in every nested scope. [malthe]
 
