@@ -382,7 +382,7 @@ class Condition(object):
         self.assign = Assign(value)
         self.clauses = clauses
         self.finalize = finalize
-        self.invert = False
+        self.invert = invert
         
     def begin(self, stream):
         temp = stream.save()
