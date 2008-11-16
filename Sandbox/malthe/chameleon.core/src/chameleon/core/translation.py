@@ -329,12 +329,16 @@ class Node(object):
                 callback = self.symbols.slot+element.node.fill_slot
                 remote_scope = self.symbols.scope+"_remote"
                 kwargs.append((callback, callback))
-                
+
+                scope_args = tuple(
+                    "%s=%s" % (variable, variable) for variable in \
+                    itertools.chain(*self.stream.scope))
+
                 subclauses = []
                 subclauses.append(
                     clauses.Method(
                     callback, (
-                    remote_scope, "%s=%s" % (self.symbols.domain, self.symbols.domain)),
+                    remote_scope,) + scope_args,
                     types.value('%s.getvalue()' % self.symbols.out)))
                 subclauses.append(
                     clauses.UpdateScope(self.symbols.scope, remote_scope))
@@ -342,9 +346,6 @@ class Node(object):
                     types.template('%(init)s.initialize_stream()'),
                     (self.symbols.out, self.symbols.write)))
                 subclauses.append(clauses.Visit(element.node))
-                
-                #subclauses.append(clauses.Assign(
-                #    types.template('%(out)s.getvalue()'), variable))
                 _.append(clauses.Group(subclauses))
 
             _.append(clauses.Assign(self.use_macro, self.symbols.metal))

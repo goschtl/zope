@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Make sure that arguments passed into the `render`-method are
+  introduced in every nested scope. [malthe]
+
 - Added translation language to main scope and make sure redefining it
   inside a closure does not cause issues with nested scope
   locals. [malthe]
