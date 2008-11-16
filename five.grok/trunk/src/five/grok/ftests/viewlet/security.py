@@ -1,6 +1,7 @@
 """
   >>> from five.grok.ftests.viewlet.security import *
-  >>> id = getRootFolder()._setObject("manfred", Mammoth(id='manfred'))
+  >>> root = getRootFolder()
+  >>> id = root._setObject("manfred", Mammoth(id='manfred'))
 
   >>> from Products.Five.testbrowser import Browser
   >>> browser = Browser()
@@ -10,6 +11,16 @@
   <html>
   <body>
   <p>A common gallery with rembrandt</p>
+  </body>
+  </html>
+
+  >>> root.manfred.manage_permission('View management screens', ['Anonymous',])
+  >>> browser.reload()
+  >>> print browser.contents
+  <html>
+  <body>
+  <p>A common gallery with rembrandt</p>
+  <p>Non exposed content</p>
   </body>
   </html>
 
