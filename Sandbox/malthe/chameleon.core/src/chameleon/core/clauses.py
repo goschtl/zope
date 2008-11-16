@@ -409,7 +409,10 @@ class Condition(object):
         if self.clauses:
             if not self.finalize:
                 temp = stream.restore()
-                stream.write("if %s:" % temp)
+                if self.invert:
+                    stream.write("if not (%s):" % temp)
+                else:
+                    stream.write("if %s:" % temp)
                 stream.indent()
                 for clause in reversed(self.clauses):
                     clause.end(stream)
