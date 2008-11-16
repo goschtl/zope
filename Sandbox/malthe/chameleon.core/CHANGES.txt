@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Added translation language to main scope and make sure redefining it
+  inside a closure does not cause issues with nested scope
+  locals. [malthe]
+
 1.0b8 (released 16/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

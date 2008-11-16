@@ -332,9 +332,10 @@ class Node(object):
                 
                 subclauses = []
                 subclauses.append(
-                    clauses.Method(callback, (
-                    remote_scope,), types.value(
-                    '%s.getvalue()' % self.symbols.out)))
+                    clauses.Method(
+                    callback, (
+                    remote_scope, "%s=%s" % (self.symbols.domain, self.symbols.domain)),
+                    types.value('%s.getvalue()' % self.symbols.out)))
                 subclauses.append(
                     clauses.UpdateScope(self.symbols.scope, remote_scope))
                 subclauses.append(clauses.Assign(
@@ -642,6 +643,7 @@ class Compiler(object):
             (stream.symbols.out,
              stream.symbols.write,
              stream.symbols.scope,
+             stream.symbols.domain,
              stream.symbols.language) + \
             tuple(parameters)))
 
