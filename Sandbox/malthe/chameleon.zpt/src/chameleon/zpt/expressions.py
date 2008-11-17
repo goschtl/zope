@@ -273,7 +273,7 @@ class ExpressionTranslator(object):
         
         >>> class MockExpressionTranslator(ExpressionTranslator):
         ...     def translate(self, string, escape=None):
-        ...         return types.value(string)
+        ...         if string: return types.value(string)
 
         >>> output = MockExpressionTranslator().output
 
@@ -304,7 +304,7 @@ class ExpressionTranslator(object):
         
         >>> class MockExpressionTranslator(ExpressionTranslator):
         ...     def translate(self, string, escape=None):
-        ...         return types.value(string)
+        ...         if string: return types.value(string)
 
         >>> tales = MockExpressionTranslator().tales
                 
@@ -356,6 +356,10 @@ class ExpressionTranslator(object):
             
             i = j + 1
 
+        value = translator.translate("", escape)
+        if value is not None:
+            parts.append(value)
+
         if len(parts) == 1:
             return parts[0]
 
@@ -374,12 +378,13 @@ class PythonTranslator(ExpressionTranslator):
         if isinstance(string, unicode):
             string = string.encode('utf-8')
             
-        parser.expr(string.strip())
+        if string:
+            parser.expr(string.strip())
         
-        if isinstance(string, str):
-            string = string.decode('utf-8')
+            if isinstance(string, str):
+                string = string.decode('utf-8')
 
-        return types.value(string.strip())
+            return types.value(string.strip())
 
 python_translator = PythonTranslator()
 
@@ -395,6 +400,14 @@ class StringTranslator(ExpressionTranslator):
         self.translator = translator
 
     def translate(self, string, escape=None):
+        """
+        >>> translate = StringTranslator(python_translator).translate
+
+        >>> translate("")
+        join('',)
+        
+        """
+        
         parts = self.split(string)
         if escape is not None:
             parts = map(

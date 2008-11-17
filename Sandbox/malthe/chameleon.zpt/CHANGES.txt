@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Allow empty expressions; for string-expressions, this means an empty
+  string, rather than no expression. [malthe]
+
 - Fixed string escape issue. [malthe]
 
 - Fixed issue where translation pragma would be reset if a
