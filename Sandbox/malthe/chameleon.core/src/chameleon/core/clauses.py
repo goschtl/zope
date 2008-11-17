@@ -605,7 +605,14 @@ class Tag(object):
             stream.outdent()
             
         for attribute, value in dynamic:
-            default = self.defaults.get(attribute)
+            # as an optimization, we only define the `default` symbol,
+            # if it's present in the evaluation value (as string
+            # representation).
+            if stream.symbols.default in str(value):
+                default = self.defaults.get(attribute)
+            else:
+                default = None
+
             if default is not None:
                 stream.write("%s = %s" % (stream.symbols.default, repr(default)))
             
