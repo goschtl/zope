@@ -588,7 +588,8 @@ class Compiler(object):
             self.doctype = parsed_doctype
 
         # limit self-closing tags to the allowed subset for templates
-        # with a non-XML compliant document type (non-strict)
+        # with a non-XML compliant document type (non-strict); see
+        # http://www.w3.org/TR/xhtml1/#C_3 for more information.
         ldoctype = (self.doctype or implicit_doctype or "").lower()
         if 'html' in ldoctype and 'strict' not in ldoctype:
             for element in self.root.getiterator():
