@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="z3c.amf">
+
+  <browser:page
+    for="*"
+    name="crossdomain.xml"
+    permission="zope.Public"
+    template="crossdomain.xml"/>
+
+</configure>
+

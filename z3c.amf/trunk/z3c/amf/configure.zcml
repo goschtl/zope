@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="z3c.amf">
+
+  <permission
+      id="zope2.FlashAccess"
+      title="Flash Access"/>
+
+</configure>
+

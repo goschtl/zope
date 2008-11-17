@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           i18n_domain="z3c.amf">
+
+  <meta:directive
+       namespace="http://namespaces.zope.org/flash"
+       name="view"
+       schema=".metadirectives.IViewDirective"
+       handler=".metaconfigure.view" />
+
+</configure>
+
