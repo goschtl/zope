@@ -4,6 +4,11 @@ Changelog
 Head
 ~~~~
 
+- Fixed string escape issue. [malthe]
+
+- Fixed issue where translation pragma would be reset if a
+  non-matching pragma was found. [malthe]
+
 - Fixed bug that would parse global defines incorrectly. [malthe]
 
 - TAL- and METAL-elements now subclass the XHTML-element class; this

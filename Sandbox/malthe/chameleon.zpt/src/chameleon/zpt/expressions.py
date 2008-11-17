@@ -330,12 +330,11 @@ class ExpressionTranslator(object):
             match = self.re_pragma.match(string[i:])
             if match is not None:
                 pragma = match.group('pragma')
-                translator = self.pragma(pragma)
-                if translator is not None:
+                new_translator = self.pragma(pragma)
+                if new_translator is not None:
+                    translator = new_translator
                     i += match.end()
                     continue
-
-                translator = self
 
             j = string.find('|', j + 1)
             if j == -1:
@@ -391,13 +390,12 @@ class StringTranslator(ExpressionTranslator):
     
     re_interpolation = re.compile(r'(?P<prefix>[^\\]\$|^\$)({((?P<expression>.*)})?|'
                                   '(?P<variable>[A-Za-z][A-Za-z0-9_]*))')
-    
+
     def __init__(self, translator):
         self.translator = translator
 
     def translate(self, string, escape=None):
         parts = self.split(string)
-        
         if escape is not None:
             parts = map(
                 lambda part: isinstance(part, types.expression) and \
@@ -411,25 +409,33 @@ class StringTranslator(ExpressionTranslator):
         
         >>> unescape('string:Hello World', ';')
         'string:Hello World'
+
+        >>> unescape('string:Hello World;', ';')
+        'string:Hello World;'
+
+        >>> unescape('string:Hello World;;', ';')
+        'string:Hello World;'
         
         >>> unescape('; string:Hello World', ';')
         Traceback (most recent call last):
          ...
         SyntaxError: Must escape symbol ';'.
 
+        >>> unescape('; string:Hello World;', ';')
+        Traceback (most recent call last):
+         ...
+        SyntaxError: Must escape symbol ';'.
+
+        >>> unescape('string:Hello; World', ';')
+        Traceback (most recent call last):
+         ...
+        SyntaxError: Must escape symbol ';'.
+
         >>> unescape(';; string:Hello World', ';')
         '; string:Hello World'
-
-        >>> unescape('string:Hello World;', ';')
-        'string:Hello World;'
         """
 
-        i = string.rfind(symbol)
-        if i < 0 or i == len(string) - 1:
-            return string
-        
-        j = string.rfind(symbol+symbol)
-        if j < 0 or i != j + 1:
+        if re.search("([^%s]|^)%s[^%s]" % (symbol, symbol, symbol), string):
             raise SyntaxError(
                 "Must escape symbol %s." % repr(symbol))
         
