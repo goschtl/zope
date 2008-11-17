@@ -215,9 +215,11 @@ class Node(object):
                 else:
                     expression = self.translate_expression(value)
             else:
-                if variable in dynamic_attr_names or variable in attributes:
-                    text = '"%s"' % attributes[variable]
-                    expression = self.translate_expression(text)
+                value = attributes.get(variable)
+                if value is not None:
+                    if variable not in dynamic_attr_names:
+                        value = '"%s"' % value
+                    expression = self.translate_expression(value)
                 else:
                     raise ValueError("Must be either static or dynamic "
                                      "attribute when no message id "
