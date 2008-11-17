@@ -147,6 +147,24 @@ In German:
       mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.</span>
   </div>
 
+Entities and dynamic translation strings:
+  
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+  ...   <span i18n:domain="test" i18n:translate="">
+  ...     <sup>&reg;</sup>
+  ...   </span>
+  ... </div>"""
+
+  >>> template = PageTemplate(body)
+  >>> print template.render()
+  <div>
+    <span>
+      <sup>&reg;</sup>
+    </span>
+  </div>
+
 Translation of tag attributes
 -----------------------------
 
