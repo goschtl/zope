@@ -11,7 +11,7 @@ class ASTTransformer(object):
         if node is None:
             return None
         if type(node) is tuple:
-            return tuple([self.visit(n) for n in node])
+            return tuple(self.visit(n) for n in node)
         visitor = getattr(self, 'visit%s' % node.__class__.__name__,
                           self._visitDefault)
         return visitor(node)
@@ -85,9 +85,9 @@ class ASTTransformer(object):
         return self._clone(node, self.visit(node.test), self.visit(node.fail))
 
     def visitAssign(self, node):
-        return self._clone(node, [self.visit(x) for x in node.nodes],
-            self.visit(node.expr)
-        )
+        expr = self.visit(node.expr)
+        return self._clone(
+            node, [self.visit(x) for x in node.nodes], expr)
 
     def visitAssAttr(self, node):
         return self._clone(node, self.visit(node.expr), node.attrname,
