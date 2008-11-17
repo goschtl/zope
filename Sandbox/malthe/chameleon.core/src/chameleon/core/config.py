@@ -57,7 +57,8 @@ class SYMBOLS(object):
     negotiate = '_negotiate'
     translate = '_translate'
     validate = '_validate'
-
+    default = 'default'
+    
     # advertised symbols
     repeat = 'repeat'
     language = 'target_language'

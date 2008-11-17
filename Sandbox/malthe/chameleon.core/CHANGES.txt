@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Make `default` symbol available to dynamic attribute
+  evaluations. [malthe]
+
 - Visit evaluation before assignment in order to support assignments
   that rely on the same name in the dynamic variable scope. [malthe]
 

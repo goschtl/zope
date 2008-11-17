@@ -488,6 +488,18 @@ class Tag(object):
     >>> _out.getvalue()
     '<div alt="Hello World!">Hello Universe!</div>'
 
+    Attribute default value is available under the `default` symbol.
+
+    >>> _out, _write, stream = testing.setup_stream('utf-8')
+    >>> tag = Tag('div', dict(alt=testing.pyexp('default')),
+    ...     defaults=dict(alt='Hello World!'))
+    >>> tag.begin(stream)
+    >>> stream.out('Hello Universe!')
+    >>> tag.end(stream)
+    >>> exec stream.getvalue()
+    >>> _out.getvalue()
+    '<div alt="Hello World!">Hello Universe!</div>'
+
     Verify that unicode data is handled correctly.
 
     >>> _out, _write, stream = testing.setup_stream()
@@ -531,9 +543,10 @@ class Tag(object):
     '<br />'
     """
 
-    def __init__(self, tag, attributes=None,
-                 selfclosing=False, expression=None, cdata=False):
+    def __init__(self, tag, attributes=None, selfclosing=False,
+                 expression=None, cdata=False, defaults={}):
         self.tag = tag.split('}')[-1]
+        self.defaults = defaults
         self.selfclosing = selfclosing
         self.attributes = attributes or {}
         self.expression = expression and Assign(expression)
@@ -592,9 +605,16 @@ class Tag(object):
             stream.outdent()
             
         for attribute, value in dynamic:
+            default = self.defaults.get(attribute)
+            if default is not None:
+                stream.write("%s = %s" % (stream.symbols.default, repr(default)))
+            
             assign = Assign(value)
             assign.begin(stream, temp)
 
+            if default is not None:
+                stream.write("%s = None" % stream.symbols.default)
+                
             # only include attribute if expression is not ``None`` or ``False``
             stream.write("if %s is not None and %s is not False:" % (temp, temp))
             stream.indent()

@@ -234,7 +234,7 @@ class Node(object):
             tag = clauses.Tag(
                 self.element.tag, attributes,
                 expression=self.dict_attributes, selfclosing=selfclosing,
-                cdata=self.cdata is not None)
+                cdata=self.cdata is not None, defaults=self.static_attributes)
             if self.omit:
                 _.append(clauses.Condition(
                     self.omit, [tag], finalize=False, invert=True))
