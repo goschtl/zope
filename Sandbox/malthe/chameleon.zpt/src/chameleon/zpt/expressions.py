@@ -151,6 +151,10 @@ class ExpressionTranslator(object):
         >>> definitions("global variable expression")
         definitions((declaration('variable', global_scope=True), value('expression')),)
 
+        >>> definitions("variable1 expression1; global variable2 expression2")
+        definitions((declaration('variable1'), value('expression1')),
+                    (declaration('variable2', global_scope=True), value('expression2')))
+
         Space, the 'in' operator and '=' may be used to separate
         variable from expression.
 
@@ -187,13 +191,13 @@ class ExpressionTranslator(object):
         defines = []
         i = 0
         while i < len(string):
-            global_scope = False
-            if string.startswith('global'):
-                global_scope = True
-                i += 6
-
             while string[i] == ' ':
                 i += 1
+
+            global_scope = False
+            if string[i:].startswith('global'):
+                global_scope = True
+                i += 6
 
             # get variable definition
             if string[i] == '(':

@@ -4,6 +4,8 @@ Changelog
 Head
 ~~~~
 
+- Fixed bug that would parse global defines incorrectly. [malthe]
+
 - TAL- and METAL-elements now subclass the XHTML-element class; this
   allows mixed usage of TAL and METAL. [malthe]
 
