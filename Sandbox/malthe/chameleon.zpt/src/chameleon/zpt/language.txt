@@ -26,14 +26,14 @@ tal:define, tal:attributes, tal:content, tal:replace
   ...         class="dummy"
   ...         onclick=""
   ...         tal:define="a 'abc'"
-  ...         tal:attributes="class 'def' + a; style 'hij'; onClick 'alert();'"
+  ...         tal:attributes="class 'def' + a + default; style 'hij'; onClick 'alert();'"
   ...         tal:content="a + 'ghi'" />
   ...   <span tal:replace="'Hello World!'">Hello <b>Universe</b>!</span>
   ...   <span tal:replace="'Hello World!'"><b>Hello Universe!</b></span>
   ...   <span tal:content="None" />
   ... </div>""")
     <div>
-      <span class="defabc" style="hij" onclick="alert();" id="test">abcghi</span>
+      <span class="defabcdummy" style="hij" onclick="alert();" id="test">abcghi</span>
       Hello World!
       Hello World!
     </div>
