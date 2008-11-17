@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Use custom serialization method to serialize static default
+  translation blocks; we can't rely on `lxml` for sane
+  output. [malthe]
+
 - Make `default` symbol available to dynamic attribute
   evaluations. [malthe]
 

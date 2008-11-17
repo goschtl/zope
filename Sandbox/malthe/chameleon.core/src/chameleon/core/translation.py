@@ -417,7 +417,7 @@ class Node(object):
                     value = types.value("%s['%s']" % (mapping, name))
                     subclauses.append(clauses.Write(value))
                 else:
-                    subclauses.append(clauses.Out(element.tostring()))
+                    subclauses.append(clauses.Out(utils.serialize(element)))
                     
                 for part in reversed(element.node.tail):
                     if isinstance(part, types.expression):
@@ -459,7 +459,7 @@ class Node(object):
 
         msgid = out.getvalue().strip()
         msgid = msgid.replace('  ', ' ').replace('\n', '')
-        
+
         return msgid
 
     def translate_expression(self, value, mapping=None, default=None):

@@ -87,6 +87,37 @@ def escape(string, quote=None, encoding=None):
         
     return string
 
+def serialize(element, encoding=None):
+    return "".join(serialize_element(element, encoding))
+
+def serialize_element(element, encoding):
+    try:
+        name = element.tag.split('}')[-1]
+    except AttributeError:
+        yield element.text; return
+    
+    # tag opening
+    yield "<%s" % name
+
+    # attributes
+    for key, value in element.attrib.items():
+        yield ' %s="%s"' % (key, escape('"', encoding=encoding))
+
+    # elements with no text which have no children are self-closing.
+    if element.text is None and len(element) == 0:
+        yield ' />'; return
+
+    yield '>'
+            
+    if element.text is not None:
+        yield element.text
+
+    for child in element:
+        for string in serialize_element(child, encoding):
+            yield string
+
+    yield '</%s>' % name
+
 class scope(list):
     def __init__(self, *args):
         global s_counter
