@@ -82,12 +82,12 @@ Literals
   ...   Hello &nbsp; World!
   ...   <a href="localhost" title="Singing &amp; Dancing"
   ...   >&rarr;</a>
-  ...   <span class="&rarr;" />
+  ...   <span class="&rarr;"></span>
   ... </html>""")
     <html>
       Hello &nbsp; World!
       <a href="localhost" title="Singing &amp; Dancing">&rarr;</a>
-      <span class="&rarr;" />
+      <span class="&rarr;"></span>
     </html>
 
 :: Processing instructions output literally

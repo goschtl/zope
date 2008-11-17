@@ -586,7 +586,22 @@ class Compiler(object):
             self.doctype = explicit_doctype
         elif parsed_doctype and not no_doctype_declaration:
             self.doctype = parsed_doctype
-            
+
+        # limit self-closing tags to the allowed subset for templates
+        # with a non-XML compliant document type (non-strict)
+        ldoctype = (self.doctype or implicit_doctype or "").lower()
+        if 'html' in ldoctype and 'strict' not in ldoctype:
+            for element in self.root.getiterator():
+                try:
+                    tag = element.tag.split('}')[-1]
+                except AttributeError:
+                    continue
+
+                if element.text is None and tag not in (
+                    'area', 'base', 'basefont', 'br',
+                    'hr', 'input', 'img', 'link', 'meta'):
+                    element.text = ""
+                    
         self.parser = parser
 
         if utils.coerces_gracefully(encoding):
