@@ -49,8 +49,8 @@ tal:attributes 'checked' and 'selected' toggles
   ...   <input tal:attributes="checked False"/>
   ... </div>""")
     <div>
-       <option selected="True" />
-       <option />
+       <option selected="True"></option>
+       <option></option>
        <input checked="True" />
        <input />
     </div>
