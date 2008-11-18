@@ -20,12 +20,6 @@ VALIDATION_KEY = 'CHAMELEON_VALIDATE'
 VALIDATION = os.environ.get(VALIDATION_KEY, 'false')
 VALIDATION = VALIDATION.lower() in TRUEVALS
 
-# use the disable-i18n flag to disable the translation machinery; this
-# will speed up templates that use internationalization
-DISABLE_I18N_KEY = 'CHAMELEON_DISABLE_I18N'
-DISABLE_I18N = os.environ.get(DISABLE_I18N_KEY, 'false')
-DISABLE_I18N = DISABLE_I18N.lower() in TRUEVALS
-
 # these definitions are standard---change at your own risk!
 XHTML_NS = "http://www.w3.org/1999/xhtml"
 TAL_NS = "http://xml.zope.org/namespaces/tal"
