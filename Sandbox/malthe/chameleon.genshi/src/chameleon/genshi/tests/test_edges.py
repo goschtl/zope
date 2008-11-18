@@ -11,7 +11,7 @@ class UnicodeTortureTests(unittest.TestCase):
         <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:py="http://genshi.edgewall.org/">
         <title>\xc2\xa9</title>
-        <div id="${foo}" py:attrs="dict(label=foo)"/>
+        <div id="${foo}" py:attrs="dict(label=foo)"></div>
         </html>
         """
         expected = """
@@ -19,7 +19,7 @@ class UnicodeTortureTests(unittest.TestCase):
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html xmlns="http://www.w3.org/1999/xhtml">
         <title>\xc2\xa9</title>
-        <div label="\xc2\xa9" id="\xc2\xa9"/>
+        <div label="\xc2\xa9" id="\xc2\xa9"></div>
         </html>"""
         c = unicode('\xc2\xa9', 'utf-8')
         result = render_template(body, foo=c).encode('utf-8')
