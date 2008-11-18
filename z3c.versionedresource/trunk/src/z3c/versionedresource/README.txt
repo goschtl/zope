@@ -77,7 +77,7 @@ The resources object is a browser view:
   True
   >>> resources.__name__
 
-The view is also a browser publisher. But it dows not support a default:
+The view is also a browser publisher. But it does not support a default:
 
   >>> resources.browserDefault(request)
   (<function empty at ...>, ())
