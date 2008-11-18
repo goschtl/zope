@@ -149,6 +149,17 @@ class TestDT_Var(DTMLTestBase):
                               korean=u'\uc548\ub155, \uc138\uc0c1!'),
                          expected)
 
+
+    def testNewlineToBr(self):
+        from zope.documenttemplate import dt_var
+        text = '\none\ntwo\n\nthree\n\n'
+        expected = '<br>\none<br>\ntwo<br>\n<br>\nthree<br>\n<br>\n'
+        self.assertEqual(dt_var.newline_to_br(text), expected)
+
+        dos = text.replace('\n', '\r\n')
+        self.assertEqual(dt_var.newline_to_br(dos), expected)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestDT_Var))

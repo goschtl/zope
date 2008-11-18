@@ -5,7 +5,9 @@ CHANGES
 3.4.3 (Unreleased)
 ------------------
 
-- ...
+- Simpler, faster implementation of dt_var.newline_to_br().
+  (It still uses HTML 4 style <br> tags rather than XHTML style.)
+
 
 3.4.2 (2008/10/10)
 ------------------
