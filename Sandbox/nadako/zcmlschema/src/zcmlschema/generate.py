@@ -26,8 +26,6 @@ def main():
     common = namespaces.pop('', ())
 
     for ns, directives in namespaces.items():
-        seenDirectives = set()
-
         filename = quoteNS(ns) + '.xsd'
         file = open(filename, 'w')
         doc = dom.createDocument('http://www.w3.org/2001/XMLSchema', 'schema', None)
@@ -40,33 +38,29 @@ def main():
         directives.update(common)
 
         for directive in directives:
-            schema = directives[directive][0]
-            type_name = '%s.%s' % (schema.__module__, schema.__name__)
-
-            if type_name not in seenDirectives:
-                type = doc.createElement('complexType')
-                type.setAttribute('name', type_name)
-
-                if schema.__doc__:
-                    addDoc(doc, type, schema.__doc__)
-
-                for name, field in getFieldsInOrder(schema):
-                    if name.endswith('_') and iskeyword(name[:-1]):
-                        name = name[:-1]
-                    attr = doc.createElement('attribute')
-                    attr.setAttribute('name', name)
-                    attr.setAttribute('type', 'string')
-
-                    if field.__doc__:
-                        addDoc(doc, attr, field.__doc__)
-
-                    type.appendChild(attr)
-                root.appendChild(type)
-                seenDirectives.add(type_name)
-
             el = doc.createElement('element')
             el.setAttribute('name', directive)
-            el.setAttribute('type', 'target:' + type_name)
+
+            type = doc.createElement('complexType')
+
+            schema = directives[directive][0]
+
+            if schema.__doc__:
+                addDoc(doc, type, schema.__doc__)
+
+            for name, field in getFieldsInOrder(schema):
+                if name.endswith('_') and iskeyword(name[:-1]):
+                    name = name[:-1]
+                attr = doc.createElement('attribute')
+                attr.setAttribute('name', name)
+                attr.setAttribute('type', 'string')
+
+                if field.__doc__:
+                    addDoc(doc, attr, field.__doc__)
+
+                type.appendChild(attr)
+
+            el.appendChild(type)
             root.appendChild(el)
 
         doc.writexml(file, addindent='\t', newl='\n')
