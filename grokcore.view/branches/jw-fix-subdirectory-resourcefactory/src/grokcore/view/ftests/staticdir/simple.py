@@ -45,4 +45,18 @@ We also support subdirectories for resources:
   >>> print browser.contents
   This is yet another file.
 
+There used to be a bug where subdirectories of the static directory were not
+instances of grokcore.view.component.DirectoryResource and as a result,
+pagetemplate files were actually executed. This is fixed.
+
+  >>> browser.open(
+  ...     'http://localhost/@@/grokcore.view.ftests.staticdir.simple_fixture/'
+  ...     'subdir/static.pt')
+  >>> print browser.contents
+  <html>
+  <body>
+  <h1 tal:content="string:will not be interpreted"/>
+  </body>
+  </html>
+
 """
