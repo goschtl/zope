@@ -291,16 +291,17 @@ class Define(object):
         else:
             # save local variables already in in scope
             for var in self.declaration:
-                temp = stream.save()
-
-                # If we didn't set the variable in this scope already
+                
+                # if we didn't set the variable in this scope already
                 if var not in stream.scope[-1]:
 
-                    # we'll check if it's set in one of the older scopes
+                    # we'll check if it's set in one of the older
+                    # scopes, e.g. if a backup is at all required
                     for scope in stream.scope[:-1]:
                         if var in scope:
-                            # in which case we back it up
-                            stream.write('%s = %s' % (temp, var))
+                            # in which case we back it up to a custom variable name
+                            stream.write('%s = %s' % (
+                                stream.symbols.tmp+var, var))
 
                     stream.scope[-1].add(var)
 
@@ -314,15 +315,14 @@ class Define(object):
         if not self.declaration.global_scope:
             # restore the variables that were previously in scope
             for var in reversed(self.declaration):
-                temp = stream.restore()
-
                 # if we set the variable in this scope already
                 if var in stream.scope[-1]:
                     # we'll check if it's set in one of the older scopes
                     for scope in stream.scope[:-1]:
                         if var in scope:
                             # in which case we restore it
-                            stream.write('%s = %s' % (var, temp))
+                            stream.write('%s = %s' % (
+                                var, stream.symbols.tmp+var))
                             break
                     else:
                         stream.write("del %s" % var)
@@ -898,7 +898,7 @@ class Write(object):
             stream.symbol_mapping[stream.symbols.validate] = etree.validate
             write("%(validate)s(%(tmp)s)")
 
-        if self.assign:
+        if not value:
             self.assign.end(stream)
         stream.restore()
 

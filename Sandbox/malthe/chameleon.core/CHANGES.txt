@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed issue where multiple defines would cause integrity
+  issues. [malthe]
+
 - Avoid self-closing tags that are not allowed in transitional
   HTML. [malthe]
 
