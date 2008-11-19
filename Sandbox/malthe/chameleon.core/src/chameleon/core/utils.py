@@ -87,6 +87,10 @@ def escape(string, quote=None, encoding=None):
         
     return string
 
+re_normalize = re.compile(r'(^[0-9]|\b[^A-Za-z])')
+def normalize_slot_name(name):
+    return re_normalize.sub('_', name)
+    
 def serialize(element, encoding=None):
     return "".join(serialize_element(element, encoding))
 

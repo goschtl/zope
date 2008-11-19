@@ -165,7 +165,7 @@ class Node(object):
         # macro slot definition
         if self.define_slot:
             # check if slot has been filled
-            name = self.symbols.slot + self.define_slot
+            name = self.symbols.slot + utils.normalize_slot_name(self.define_slot)
             if name in itertools.chain(*self.stream.scope):
                 _.append(clauses.Condition(
                     types.value('isinstance(%s, basestring)' % name),
@@ -329,7 +329,8 @@ class Node(object):
                     # (chrism)
                     continue
 
-                callback = self.symbols.slot+element.node.fill_slot
+                callback = self.symbols.slot + \
+                           utils.normalize_slot_name(element.node.fill_slot)
                 remote_scope = self.symbols.scope+"_remote"
                 kwargs.append((callback, callback))
 

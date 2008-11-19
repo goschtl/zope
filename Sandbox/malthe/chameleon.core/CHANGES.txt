@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Normalize METAL slot names to ensure they're valid Python variable
+  names. Non-valid characters are converted to underscore. [malthe]
+
 - Renamed dynamic scope variable to `econtext` in order to reduce
   compatibility issues with ZPT. [malthe]
 
