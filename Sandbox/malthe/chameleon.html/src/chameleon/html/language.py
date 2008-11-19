@@ -124,7 +124,7 @@ class Element(translation.Element):
         def define_slot(self):
             name = self.element.xss_content
             if name is not None:
-                variable = self.symbols.slot + name
+                variable = self.symbols.slot + utils.normalize_slot_name(name)
                 for scope in self.stream.scope:
                     if variable in scope:
                         return name
