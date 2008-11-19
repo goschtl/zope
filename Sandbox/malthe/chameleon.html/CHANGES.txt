@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added 'replace' mode. [malthe]
+
 - Remove quotes which may be used on attribute values to comply with
   CSS3, e.g. dot ('.'). [malthe]
 

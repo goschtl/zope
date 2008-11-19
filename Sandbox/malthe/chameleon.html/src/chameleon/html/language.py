@@ -298,6 +298,12 @@ class DynamicHTMLParser(XSSTemplateParser):
                             element.attrib[
                                 '{http://namespaces.repoze.org/xss}content'] = \
                                 rule.name
+                        elif rule.mode == 'replace':
+                            element.attrib[
+                                '{http://namespaces.repoze.org/xss}content'] = \
+                                rule.name
+                            element.attrib[
+                                '{http://namespaces.repoze.org/xss}omit'] = "1"
                         elif rule.mode == 'append':
                             new = element.makeelement(
                                 utils.xhtml_attr('div'))
