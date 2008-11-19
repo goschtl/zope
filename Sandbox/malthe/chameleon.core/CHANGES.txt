@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Changed generation.marker back to a normal object instance. Otherwise we get
+  PicklingError: Can't pickle <class 'chameleon.core.generation.marker'>:
+  it's not the same object as chameleon.core.generation.marker. [hannosch]
+
 - Changed two isinstance checks to check for basestring instead of str or
   unicode. [hannosch]
 

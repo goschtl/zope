@@ -27,7 +27,7 @@ class marker(object):
     def __nonzero__(self):
         return False
 
-marker = marker()
+marker = object()
 
 def fast_translate(msgid, domain=None, mapping=None, context=None,
                    target_language=None, default=None):
