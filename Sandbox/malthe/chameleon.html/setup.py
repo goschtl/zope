@@ -9,7 +9,7 @@ install_requires = [
     'zope.component',
     'zope.i18n >= 3.5',
     'chameleon.core',
-    'cssutils',
+    'cssutils >= 0.9.5.1',
     'lxml >= 2.1.1',
     ]
 
