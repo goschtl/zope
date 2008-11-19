@@ -1,4 +1,6 @@
 from cssutils.parse import CSSParser
+
+import re
 import chameleon.core.config
 
 class Element(object):
@@ -17,6 +19,8 @@ class Element(object):
 namespace = 'xmlns'
 namespaces = {namespace: chameleon.core.config.XHTML_NS}
 
+re_unqoute = re.compile(r'["\']')
+
 def parse_xss(stream):
     elements = []
 
@@ -28,7 +32,7 @@ def parse_xss(stream):
         
         properties = {}
         for prop in rule.style:
-            properties[str(prop.name)] = prop.value
+            properties[str(prop.name)] = re_unqoute.sub("", prop.value)
 
         for selector in rule.selectorList:
             selectors = []
