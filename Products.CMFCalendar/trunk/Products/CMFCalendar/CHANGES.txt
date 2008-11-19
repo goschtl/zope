@@ -4,6 +4,8 @@ Products.CMFCalendar Changelog
 2.2.0 (unreleased)
 ------------------
 
+- profiles: Added an add view expression to the Event content type definition.
+
 - Fixed a bug were the last day of each month was missed.
   (see https://dev.plone.org/plone/ticket/7238)
 

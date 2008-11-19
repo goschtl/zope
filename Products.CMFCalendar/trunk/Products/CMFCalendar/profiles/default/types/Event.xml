@@ -9,7 +9,7 @@
  <property name="content_meta_type">CMF Event</property>
  <property name="product"></property>
  <property name="factory">cmf.calendar.event</property>
- <property name="add_view_expr"></property>
+ <property name="add_view_expr">string:${folder_url}/++add++Event</property>
  <property name="immediate_view">edit.html</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
