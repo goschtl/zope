@@ -124,6 +124,10 @@ class econtext(dict):
     
     set_local = setLocal = dict.__setitem__
     set_global = setGlobal = dict.__setitem__
+
+    @property
+    def vars(self):
+        return self
     
 class scope(list):
     def __init__(self, *args):
