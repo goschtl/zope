@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Changed two isinstance checks to check for basestring instead of str or
+  unicode. [hannosch]
+
 1.0b9 (released 19/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

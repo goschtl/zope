@@ -46,7 +46,7 @@ def fast_translate(msgid, domain=None, mapping=None, context=None,
     if default is None:
         default = unicode(msgid)
 
-    if not isinstance(default, (str, unicode)):
+    if not isinstance(default, basestring):
         return default
     
     return interpolate(default, mapping)
@@ -196,7 +196,7 @@ class CodeIO(BufferIO):
         """Coerces variable to unicode (actually ``str``, because it's
         much faster)."""
         
-        self.write("if not isinstance(%s, (str, unicode)):" % variable)
+        self.write("if not isinstance(%s, basestring):" % variable)
         self.indent()
         self.write("%s = str(%s)" % (variable, variable))
         self.outdent()
