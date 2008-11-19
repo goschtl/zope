@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+chameleon.html 0.6 (released 11/19/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Added 'replace' mode. [malthe]
 
 - Remove quotes which may be used on attribute values to comply with
