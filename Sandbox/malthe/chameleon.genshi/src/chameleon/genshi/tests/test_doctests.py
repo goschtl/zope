@@ -5,7 +5,6 @@ OPTIONFLAGS = (zope.testing.doctest.ELLIPSIS |
                zope.testing.doctest.NORMALIZE_WHITESPACE)
 
 import zope.component.testing
-import zope.configuration.xmlconfig
 
 import chameleon.core.config
 import chameleon.core.testing
