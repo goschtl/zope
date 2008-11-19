@@ -1001,7 +1001,7 @@ class Method(object):
     >>> from chameleon.core import testing
       
     >>> _out, _write, stream = testing.setup_stream()
-    >>> _scope = {}
+    >>> econtext = {}
     >>> method = Method('test', ('a', 'b', 'c'))
     >>> method.begin(stream)
     >>> stream.write('print a, b, c')

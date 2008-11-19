@@ -118,6 +118,13 @@ def serialize_element(element, encoding):
 
     yield '</%s>' % name
 
+class econtext(dict):
+    """Dynamic scope dictionary which is compatible with the
+    `econtext` of ZPT."""
+    
+    set_local = setLocal = dict.__setitem__
+    set_global = setGlobal = dict.__setitem__
+    
 class scope(list):
     def __init__(self, *args):
         global s_counter

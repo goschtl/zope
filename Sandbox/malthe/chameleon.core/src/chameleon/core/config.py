@@ -38,7 +38,6 @@ class SYMBOLS(object):
     metal = '_metal'
     include = '_include'
     macro = '_macro'
-    scope = '_scope'
     out = '_out'
     tmp = '_tmp'
     write = '_write'
@@ -51,13 +50,14 @@ class SYMBOLS(object):
     negotiate = '_negotiate'
     translate = '_translate'
     validate = '_validate'
-    default = 'default'
     
     # advertised symbols
     repeat = 'repeat'
     language = 'target_language'
     xincludes = 'xincludes'
-    
+    default = 'default'
+    scope = 'econtext'
+
     @classmethod
     def as_dict(cls):
         return dict((name, getattr(cls, name)) for name in dir(cls))

@@ -141,7 +141,7 @@ class TemplateASTTransformer(ASTTransformer):
         # generator expression, leave it alone
         if not node.name in self.names:
             # Otherwise, translate the name ref into a context lookup
-            func_args = [ast.Name('_scope'), ast.Const(node.name)]
+            func_args = [ast.Name('econtext'), ast.Const(node.name)]
             node = ast.CallFunc(ast.Name('_lookup_name'), func_args)
         return node
 

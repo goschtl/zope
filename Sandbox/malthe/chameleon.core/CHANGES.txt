@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Renamed dynamic scope variable to `econtext` in order to reduce
+  compatibility issues with ZPT. [malthe]
+
 - Fixed issue where multiple defines would cause integrity
   issues. [malthe]
 
