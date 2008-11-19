@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0b4 (released 11/19/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Allow empty expressions; for string-expressions, this means an empty
   string, rather than no expression. [malthe]
 
