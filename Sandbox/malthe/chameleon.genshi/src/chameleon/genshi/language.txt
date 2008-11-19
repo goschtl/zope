@@ -93,6 +93,19 @@ py:for
   <li>4</li>
   </ul>
 
+py:for with tuples
+
+  >>> print render("""\
+  ... <ul xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:py="http://genshi.edgewall.org/">
+  ...   <li py:for="(key,value) item in dict(one=1,two=2,three=3).items()">${key}=$value</li>
+  ... </ul>""")
+  <ul>
+  <li>one=1</li>
+  <li>two=2</li>
+  <li>three=3</li>
+  </ul>
+
 py:def
 
   >>> print render("""\
