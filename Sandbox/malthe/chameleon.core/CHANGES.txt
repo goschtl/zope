@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b9 (released 19/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Added ``label`` property to expressions; this allows providing a
   human-readable label for values that are going to
   evaluated. [malthe]
