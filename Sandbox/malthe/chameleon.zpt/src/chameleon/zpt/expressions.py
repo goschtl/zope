@@ -351,6 +351,7 @@ class ExpressionTranslator(object):
                 # re-raise with traceback
                 value = translator.translate(expr, escape)
 
+            value.label = expr
             parts.append(value)
             translator = self
             
@@ -358,6 +359,7 @@ class ExpressionTranslator(object):
 
         value = translator.translate("", escape)
         if value is not None:
+            value.label = ""
             parts.append(value)
 
         if len(parts) == 1:
