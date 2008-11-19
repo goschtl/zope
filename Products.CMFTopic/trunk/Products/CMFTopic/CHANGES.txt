@@ -4,6 +4,8 @@ Products.CMFTopic Changelog
 2.2.0 (unreleased)
 ------------------
 
+- profiles: Added an add view expression to the Topic content type definition.
+
 - Topic GenericSetup definition: Add an icon URL expression to the Topic
   content type definition.
 
