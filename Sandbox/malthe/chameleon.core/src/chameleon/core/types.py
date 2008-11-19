@@ -1,8 +1,9 @@
 from utils import emptydict
 
 class expression:
+    label = None
     symbol_mapping = emptydict()
-
+    
 class parts(tuple, expression):
     def __repr__(self):
         return 'parts'+tuple.__repr__(self)
@@ -11,7 +12,7 @@ class value(unicode, expression):
     def __init__(self, *args):
         super(value, self).__init__()
         self.symbol_mapping = {}
-
+        
     def __repr__(self):
         try:
             r = repr(self.encode())

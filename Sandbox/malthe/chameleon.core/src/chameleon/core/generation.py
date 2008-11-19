@@ -116,8 +116,10 @@ class CodeIO(BufferIO):
             self.cook()
             self.indentation -= amount
 
-    def annotate(self, item):
-        self.annotation = self.annotations[self.l_counter] = item
+    def annotate(self, annotation):
+        if annotation.label is not None:
+            annotation = annotation.label
+        self.annotation = self.annotations[self.l_counter] = annotation
 
     def out(self, string):
         if isinstance(string, unicode) and self.encoding:

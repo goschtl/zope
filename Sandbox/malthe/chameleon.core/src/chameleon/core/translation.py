@@ -363,8 +363,10 @@ class Node(object):
                       itertools.chain(*self.stream.scope))+
                 tuple("%s=%s" % kwarg for kwarg in kwargs))
 
-            _.append(clauses.Write(
-                types.value("%s.render(%s)" % (self.symbols.metal, arguments))))
+            value = types.value(
+                "%s.render(%s)" % (self.symbols.metal, arguments))
+            value.label = self.use_macro.label
+            _.append(clauses.Write(value))
 
         # translate body
         elif self.translate is not None:

@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Added ``label`` property to expressions; this allows providing a
+  human-readable label for values that are going to
+  evaluated. [malthe]
+
 - Normalize METAL slot names to ensure they're valid Python variable
   names. Non-valid characters are converted to underscore. [malthe]
 
