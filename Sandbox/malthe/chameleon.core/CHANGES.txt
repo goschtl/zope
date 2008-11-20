@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed tuple unpacking in repeat loops. [malthe]
+
 - Use a custom simple BufferIO class for the lxml.etree parser instead of
   standard StringIO. [hannosch]
 

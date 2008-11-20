@@ -145,11 +145,11 @@ class Node(object):
         # repeat
         if self.repeat is not None:
             variables, expression = self.repeat
-            if len(variables) != 1:
-                raise ValueError(
-                    "Cannot unpack more than one variable in a "
-                    "repeat statement.")
-            _.append(clauses.Repeat(variables[0], expression))
+            if len(variables) > 1:
+                repeat = clauses.Repeat(variables, expression, repeatdict=False)
+            else:
+                repeat = clauses.Repeat(variables, expression)
+            _.append(repeat)
 
         # assign
         if self.assign is not None:

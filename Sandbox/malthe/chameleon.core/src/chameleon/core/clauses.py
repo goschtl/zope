@@ -690,7 +690,7 @@ class Repeat(object):
     Simple repeat loop and repeat data structure:
 
     >>> _out, _write, stream = testing.setup_stream()
-    >>> _repeat = Repeat("i", testing.pyexp("range(5)"))
+    >>> _repeat = Repeat(types.declaration(("i",)), testing.pyexp("range(5)"))
     >>> _repeat.begin(stream)
     >>> stream.write("r = repeat['i']")
     >>> stream.write(
@@ -707,7 +707,16 @@ class Repeat(object):
     A repeat over an empty set.
 
     >>> _out, _write, stream = testing.setup_stream()
-    >>> _repeat = Repeat("j", testing.pyexp("range(0)"))
+    >>> _repeat = Repeat(types.declaration(("j",)), testing.pyexp("range(0)"))
+    >>> _repeat.begin(stream)
+    >>> _repeat.end(stream)
+    >>> exec stream.getvalue()
+
+    A tuple repeat over an empty set.
+
+    >>> _out, _write, stream = testing.setup_stream()
+    >>> _repeat = Repeat(types.declaration(("j", "k")),
+    ...      testing.pyexp("range(0)"), repeatdict=False)
     >>> _repeat.begin(stream)
     >>> _repeat.end(stream)
     >>> exec stream.getvalue()
@@ -715,7 +724,7 @@ class Repeat(object):
     A repeat over a non-iterable raises an exception.
 
     >>> _out, _write, stream = testing.setup_stream()
-    >>> _repeat = Repeat("j", testing.pyexp("None"))
+    >>> _repeat = Repeat(types.declaration(("j",)), testing.pyexp("None"))
     >>> _repeat.begin(stream)
     >>> _repeat.end(stream)
     >>> exec stream.getvalue()
@@ -726,7 +735,8 @@ class Repeat(object):
     Simple for loop:
   
     >>> _out, _write, stream = testing.setup_stream()
-    >>> _for = Repeat("i", testing.pyexp("range(3)"), repeatdict=False)
+    >>> _for = Repeat(types.declaration(("i",)),
+    ...     testing.pyexp("range(3)"), repeatdict=False)
     >>> _for.begin(stream)
     >>> stream.write("print i")
     >>> _for.end(stream)
@@ -738,17 +748,16 @@ class Repeat(object):
 
     """
 
-    def __init__(self, v, e, scope=(), repeatdict=True):
-        self.variable = v
-        #self.expression = e
-        self.define = Define(v)
-        self.assign = Assign(e)
+    def __init__(self, declaration, value, scope=(), repeatdict=True):
+        if len(declaration) > 1:
+            assert repeatdict is False
+
+        self.declaration = declaration            
+        self.define = Define(declaration)
+        self.assign = Assign(value)
         self.repeatdict = repeatdict
-        self.e = e
         
     def begin(self, stream):
-        variable = self.variable
-
         # initialize variable scope
         self.define.begin(stream)
 
@@ -756,26 +765,35 @@ class Repeat(object):
         iterator = stream.save()
         self.assign.begin(stream, iterator)
 
+        # initialize variables
+        stream.write("%s = %s" % (
+            ", ".join(self.declaration),
+            ", ".join((repr(None),)*len(self.declaration))))
+        
         if self.repeatdict:
+            variable = self.declaration[0]
+            assert ',' not in variable
             stream.write("%s = repeat.insert('%s', %s)" % (
                 iterator, variable, iterator))
             stream.write("try:")
             stream.indent()
-            stream.write("%s = None" % variable)
             stream.write("%s = %s.next()" % (variable, iterator))
             stream.write("while True:")
             stream.indent()
         else:
-            stream.write("for %s in %s:" % (variable, iterator))
+            stream.write("for %s in %s:" % (
+                ", ".join(self.declaration), iterator))
             stream.indent()
 
     def end(self, stream):
         # cook before leaving loop
         stream.cook()
         iterator = stream.restore()
+
+        variable = self.declaration[0]
         
         if self.repeatdict:
-            stream.write("%s = %s.next()" % (self.variable, iterator))
+            stream.write("%s = %s.next()" % (variable, iterator))
             
         stream.out('\n')
         stream.outdent()
@@ -784,7 +802,7 @@ class Repeat(object):
             stream.outdent()
             stream.write("except StopIteration:")
             stream.indent()
-            stream.write("pass")
+            stream.write("%s = None" % variable)
             stream.outdent()
 
         self.assign.end(stream)
