@@ -16,30 +16,54 @@
 $Id$
 """
 import cgi
-import interfaces
-from zope import interface
+from zope import interface, component
+from zope.contentprovider.interfaces import IContentProvider
+from zope.publisher.interfaces.browser import IBrowserRequest
+
+from interfaces import IMessage
 
 
 class Message(object):
-    interface.classProvides(interfaces.IMessageFactory)
+    interface.implements(IMessage)
+    component.adapts(IBrowserRequest)
 
-    def __init__(self, message):
-        self.message = message
+    def __init__(self, request):
+        self.request = request
 
 
 class InformationMessage(Message):
-    interface.implements(interfaces.IInformationMessage)
+
+    def render(self, message):
+        return '<div class="statusMessage">%s</div>'%message
 
 
 class WarningMessage(Message):
-    interface.implements(interfaces.IWarningMessage)
+
+    def render(self, message):
+        return '<div class="statusWarningMessage">%s</div>'%message
 
 
 class ErrorMessage(Message):
-    interface.implements(interfaces.IErrorMessage)
 
-    def __init__(self, e):
+    def render(self, e):
         if isinstance(e, Exception):
-            self.message = '%s: %s'%(e.__class__.__name__, cgi.escape(str(e), True))
+            message = '%s: %s'%(e.__class__.__name__, cgi.escape(str(e), True))
         else:
-            self.message = e
+            message = e
+
+        return '<div class="statusStopMessage">%s</div>'%message
+
+
+class StatusMessage(object):
+    interface.implements(IContentProvider)
+    component.adapts(
+        interface.Interface, IBrowserRequest, interface.Interface)
+
+    def __init__(self, context, request, view):
+        self.context, self.request, self.view = context, request, view
+
+    def update(self):
+        pass
+
+    def render(self):
+        return u'<!--z3ext-statusmessage-->'

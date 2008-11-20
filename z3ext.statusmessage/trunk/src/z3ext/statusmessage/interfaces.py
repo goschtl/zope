@@ -20,33 +20,11 @@ from zope import interface
 SESSIONKEY = 'z3ext.statusmessage'
 
 
-class StatusMessageError(Exception):
-    """ general message service error """
-
-
 class IMessage(interface.Interface):
     """ message """
 
-    message = interface.Attribute('Message text')
-
-
-class IMessageFactory(interface.Interface):
-    """ message factory """
-
-    def __call__(message):
-        """ create IMessage with message """
-
-
-class IInformationMessage(IMessage):
-    """ information message """
-
-
-class IWarningMessage(IMessage):
-    """ wranning message """
-
-
-class IErrorMessage(IMessage):
-    """ error message """
+    def render(message):
+        """ render message """
 
 
 class IStatusMessage(interface.Interface):
@@ -55,18 +33,5 @@ class IStatusMessage(interface.Interface):
     def add(text, type='info'):
         """ add message text as message to service """
 
-    def addMessage(message):
-        """ add IMessage object to service """
-
-    def list():
-        """ list all messages """
-
-    def clear():
-        """ return all messages and clear service """
-
-    def hasMessages():
+    def __nonzero__():
         """ check is service has messages """
-
-
-class IMessageView(interface.Interface):
-    """ message view interface """

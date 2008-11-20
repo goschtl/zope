@@ -53,7 +53,7 @@ def setUp(test):
     provideAdapter(browser.InformationMessage)
     provideAdapter(browser.ErrorMessage)
     provideAdapter(browser.WarningMessage)
-    
+
 
 def tearDown(test):
     session.__init__()
@@ -62,8 +62,8 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-            doctest.DocFileSuite(
-                'README.txt',
-                setUp=setUp, tearDown=tearDown,
-                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-            ))
+        doctest.DocFileSuite(
+            'README.txt',
+            setUp=setUp, tearDown=tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        ))

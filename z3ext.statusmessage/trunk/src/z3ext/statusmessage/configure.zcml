@@ -2,42 +2,25 @@
 
   <includeDependencies package="z3ext.statusmessage" />
 
-  <utility
+  <!-- messages -->
+  <adapter
      name="info"
-     provides=".interfaces.IMessageFactory"
-     component=".message.InformationMessage" />
-
-  <class class=".message.InformationMessage">
-    <allow interface=".interfaces.IMessage" />
-  </class>
-
-  <utility
-     name="warning"
-     provides=".interfaces.IMessageFactory"
-     component=".message.WarningMessage" />
-
-  <class class=".message.WarningMessage">
-    <allow interface=".interfaces.IMessage" />
-  </class>
-
-  <utility
-     name="error"
-     provides=".interfaces.IMessageFactory"
-     component=".message.ErrorMessage" />
-
-  <class class=".message.ErrorMessage">
-    <allow interface=".interfaces.IMessage" />
-  </class>
-
-  <class class=".session.SessionMessageService">
-    <allow interface=".interfaces.IStatusMessage" />
-  </class>
+     factory=".message.InformationMessage" />
 
   <adapter
-     for="zope.publisher.interfaces.browser.IHTTPRequest"
-     provides=".interfaces.IStatusMessage"
-     factory=".session.getSessionMessageService" />
+     name="warning"
+     factory=".message.WarningMessage" />
 
-  <include file="browser.zcml" />
+  <adapter
+     name="error"
+     factory=".message.ErrorMessage" />
+
+  <!-- default message service -->
+  <adapter factory=".session.MessageService" />
+
+  <!-- browser views -->
+  <adapter
+     name="statusMessage"
+     factory=".message.StatusMessage" />
 
 </configure>
