@@ -1,13 +1,11 @@
 import htmlentitydefs
 import config
 import utils
-import cgi
-import copy
 import base64
 import xml.parsers.expat
 
-from StringIO import StringIO
 from cPickle import dumps, loads
+
 
 def import_elementtree():
     try:
@@ -64,6 +62,18 @@ try:
     import lxml.etree
 
     XMLSyntaxError = lxml.etree.XMLSyntaxError
+
+    class BufferIO(list):
+        write = list.append
+
+        def __init__(self, value):
+            self.append(value)
+
+        def tell(self):
+            return 0
+
+        def getvalue(self):
+            return ''.join(self)
 
     class ElementBase(lxml.etree.ElementBase):
         def tostring(self):
@@ -208,8 +218,8 @@ try:
 
         for key, mapping in element_mapping.items():
             ns_lookup(key).update(mapping)
-        
-        tree = lxml.etree.parse(StringIO(body), parser)
+
+        tree = lxml.etree.parse(BufferIO(body), parser)
         root = tree.getroot()
 
         convert_cdata_section(root)

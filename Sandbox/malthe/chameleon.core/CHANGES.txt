@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Use a custom simple BufferIO class for the lxml.etree parser instead of
+  standard StringIO. [hannosch]
+
 - This was the wrong fix, however; what needed to be changed is that
   the class of the marker isntance must be available at
   module-scope. [malthe]
