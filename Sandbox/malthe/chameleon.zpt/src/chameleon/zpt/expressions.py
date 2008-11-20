@@ -42,6 +42,9 @@ class ExpressionTranslator(object):
         >>> declaration("variable1, variable2")
         declaration('variable1', 'variable2')
 
+        >>> declaration("variable1,variable2")
+        declaration('variable1', 'variable2')
+
         Repeat not allowed:
 
         >>> declaration('repeat')
@@ -56,7 +59,7 @@ class ExpressionTranslator(object):
         """
 
         variables = []
-        for var in string.split(', '):
+        for var in string.split(','):
             var = var.strip()
 
             if var in ('repeat',):
