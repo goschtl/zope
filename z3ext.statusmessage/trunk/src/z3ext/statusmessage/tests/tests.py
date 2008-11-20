@@ -15,18 +15,21 @@
 
 $Id$
 """
-__docformat__ = "reStructuredText"
-
-import unittest, doctest
+import os, unittest, doctest
 from zope.app.testing import setup
 
 from zope import interface, component
 from zope.component import provideAdapter
 from zope.session.interfaces import ISession
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.component import provideUtility
+from zope.app.testing.functional import ZCMLLayer
+from zope.app.testing.functional import FunctionalDocFileSuite
+from z3ext.statusmessage import message
 
-import browser
+
+statusmessageLayer = ZCMLLayer(
+    os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
+    __name__, 'statusmessageLayer', allow_teardown=True)
 
 
 class Session(dict):
@@ -47,23 +50,25 @@ def getSession(request):
 
 def setUp(test):
     setup.placelessSetUp()
-    provideAdapter(getSession)
-    provideAdapter(browser.StatusMessage, name='statusMessage')
-    provideAdapter(browser.Message)
-    provideAdapter(browser.InformationMessage)
-    provideAdapter(browser.ErrorMessage)
-    provideAdapter(browser.WarningMessage)
+    component.provideAdapter(getSession)
+    component.provideAdapter(message.StatusMessage, name='statusMessage')
 
 
 def tearDown(test):
     session.__init__()
     setup.placelessTearDown()
-    
+
 
 def test_suite():
+    testbrowser = FunctionalDocFileSuite(
+        "testbrowser.txt",
+        optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
+    testbrowser.layer = statusmessageLayer
+
     return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt',
-            setUp=setUp, tearDown=tearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
-        ))
+            testbrowser,
+            doctest.DocFileSuite(
+                '../README.txt',
+                setUp=setUp, tearDown=tearDown,
+                optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+            ))

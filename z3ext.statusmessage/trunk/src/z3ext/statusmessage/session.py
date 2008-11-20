@@ -55,11 +55,15 @@ class MessageService(object):
                     return messages
         return ()
 
-    def __nonzero__(self):
-        session = ISession(request, None)
+    def messages(self):
+        session = ISession(self.request, None)
         if session is not None:
             data = session.get(SESSIONKEY)
-            if data:
-                return len(data.get('messages', ())) > 0
-        else:
-            return False
+            if data is not None:
+                messages = data.get('messages')
+                if messages:
+                    return messages
+        return ()
+
+    def __nonzero__(self):
+        return bool(self.messages())

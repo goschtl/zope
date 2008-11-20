@@ -3,7 +3,7 @@ Portal status message
 =====================
 
 Instead include notification messages directly to template,
- developer can use messaging service.
+developer can use messaging service.
 
 Main interface is IStatusMessage, it is adapter for IBrowserRequest
 so we can have different implementations, for example cookie based or session.
@@ -13,20 +13,19 @@ By default only session based service implemented.
    >>> from zope import interface, component
    >>> from zope.interface.verify import verifyClass
 
-   >>> from z3ext.statusmessage import tests
-   >>> from z3ext.statusmessage import interfaces, session, message, browser
+   >>> from z3ext.statusmessage import interfaces, session, message
 
-   >>> verifyClass(interfaces.IStatusMessage, session.SessionMessageService)
+   >>> verifyClass(interfaces.IStatusMessage, session.MessageService)
    True
 
-   >>> component.provideAdapter(session.getSessionMessageService)
+   >>> component.provideAdapter(session.MessageService)
 
    >>> from zope.publisher.browser import TestRequest
    >>> request = TestRequest()
 
    >>> service = interfaces.IStatusMessage(request)
 
-   >>> service.hasMessages()
+   >>> bool(service)
    False
 
    >>> service.add('Test message')
@@ -40,112 +39,48 @@ By default only session based service implemented.
 
 Before we can use message service we need register message type.
 
-   >>> verifyClass(interfaces.IMessage, message.InformationMessage)
-   True
+   >>> component.provideAdapter(message.InformationMessage, name='info')
 
-   >>> component.provideUtility(message.InformationMessage, 
-   ...   interfaces.IMessageFactory, 'info')
+   >>> msg = component.getAdapter(request, interfaces.IMessage, 'info')
+   >>> msg.render('Test message')
+   '<div class="statusMessage">Test message</div>'
 
 Now we can add messages.
 
    >>> service.add('Test message')
 
-   >>> service.hasMessages()
+   >>> bool(service)
    True
 
-   >>> service.list()
-   [<z3ext.statusmessage.message.InformationMessage ...>]
+   >>> service.messages()
+   ['<div class="statusMessage">Test message</div>']
 
 
 Let's register another message type.
 
-   >>> verifyClass(interfaces.IMessage, message.WarningMessage)
-   True
-
-   >>> component.provideUtility(message.WarningMessage, 
-   ...   interfaces.IMessageFactory, 'warning')
+   >>> component.provideAdapter(message.WarningMessage, name='warning')
 
    >>> service.add('Warning message', 'warning')
 
-   >>> service.list()
-   [<...InformationMessage ...>, <...WarningMessage ...>]
-
-Also we can add message directly
-
-   >>> verifyClass(interfaces.IMessage, message.ErrorMessage)
-   True
+   >>> service.messages()
+   ['<div class="statusMessage">Test message</div>', '<div class="statusWarningMessage">Warning message</div>']
 
 Error message, we can add exception object
 
-   >>> service.addMessage(message.ErrorMessage(Exception('Error message')))
+   >>> component.provideAdapter(message.ErrorMessage, name='error')
+
+   >>> service.add(Exception('Error message'), 'error')
 
 or text message
 
-   >>> service.addMessage(message.ErrorMessage('Error message'))
+   >>> service.add('Error message', 'error')
 
-   >>> service.list()
-   [<...InformationMessage ...>, <...WarningMessage ...>, <...ErrorMessage ...>, <...ErrorMessage ...>]
-
-
-Message renderes
-----------------
-
-We should provider IMesasgeView adater for each message type.
-
-   >>> msg = service.list()[0]
-   >>> renderer = component.getMultiAdapter((msg, request), interfaces.IMessageView)
-   >>> renderer.render()
-   '<div class="statusMessage">Test message</div>'
-
-Same for other mesages
-
-   >>> msg = service.list()[1]
-   >>> renderer = component.getMultiAdapter((msg, request), interfaces.IMessageView)
-   >>> renderer.render()
-   '<div class="statusWarningMessage">Warning message</div>'
-
-   >>> msg = service.list()[2]
-   >>> renderer = component.getMultiAdapter((msg, request), interfaces.IMessageView)
-   >>> renderer.render()
-   '<div class="statusStopMessage">Exception: Error message</div>'
-
-To render all messages, we can use 'statusMessage' content provider.
-Also 'statusMessage' provider clears service
-
-   >>> from zope.contentprovider.interfaces import IContentProvider
-   >>> renderer = component.getMultiAdapter(
-   ...     (None, request, None), IContentProvider, 'statusMessage')
-   >>> renderer.update()
-   >>> print renderer.render()
+   >>> for msg in service.messages():
+   ...     print msg
    <div class="statusMessage">Test message</div>
    <div class="statusWarningMessage">Warning message</div>
    <div class="statusStopMessage">Exception: Error message</div>
    <div class="statusStopMessage">Error message</div>
-
-   >>> service.hasMessages()
-   False
-
-It is possible to add new messages to service with 'statusMessages' provider
-
-   >>> renderer.add('Test message')
-   >>> service.list()
-   [<...InformationMessage ...>]
-
-With different type:
-
-   >>> renderer.add('Warning message', 'warning')
-   >>> service.list()
-   [<...InformationMessage ...>, <...WarningMessage ...>]
-
-   >>> renderer.addIf('')
-   >>> len(service.list())
-   2
-
-   >>> renderer.addIf('test')
-   >>> len(service.list())
-   3
-
-   >>> t = service.clear()
 
 
 Clearing service
@@ -153,10 +88,12 @@ Clearing service
 
 clear() method return all messages and clear service.
 
-   >>> service.addMessage(message.ErrorMessage('Error message'))
+   >>> for msg in service.clear():
+   ...     print msg
+   <div class="statusMessage">Test message</div>
+   <div class="statusWarningMessage">Warning message</div>
+   <div class="statusStopMessage">Exception: Error message</div>
+   <div class="statusStopMessage">Error message</div>
 
-   >>> service.clear()
-   [<...ErrorMessage ...>]
-
-   >>> service.hasMessages()
+   >>> bool(service)
    False

@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.2dev'
+version = '1.3.0dev'
 
 
 setup(name='z3ext.statusmessage',
@@ -64,6 +64,9 @@ setup(name='z3ext.statusmessage',
                           ],
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
+				  'zope.testbrowser',
+                                  'zope.app.zcmlfiles',
+                                  'zope.securitypolicy',
                                   ]),
       include_package_data = True,
       zip_safe = False

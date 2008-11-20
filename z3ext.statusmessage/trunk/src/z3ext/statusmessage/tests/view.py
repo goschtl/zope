@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,33 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+""" 
+
+$Id:  2007-12-12 12:27:02Z fafhrd $
 """
-
-$Id$
-"""
-from zope import interface
-
-SESSIONKEY = 'z3ext.statusmessage'
+from zope.app.pagetemplate import ViewPageTemplateFile
+from z3ext.statusmessage.interfaces import IStatusMessage
 
 
-class IMessage(interface.Interface):
-    """ message """
+class TestView(object):
 
-    def render(message):
-        """ render message """
+    index = ViewPageTemplateFile('test.pt')
 
+    def __call__(self):
+        return self.index()
 
-class IStatusMessage(interface.Interface):
-    """ message service """
+    def test(self):
+        IStatusMessage(self.request).add('Test message')
+        return self.index()
 
-    def add(text, type='info'):
-        """ add message text as message to service """
-
-    def clear():
-        """ return all mesasges and clear """
-
-    def messages():
-        """ return all messages """
-
-    def __nonzero__():
-        """ check is service has messages """
+    def redirect(self):
+        IStatusMessage(self.request).add('Test message with redirect')
+        self.request.response.redirect('test.html')
