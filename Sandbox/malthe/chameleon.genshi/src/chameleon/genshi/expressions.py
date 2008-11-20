@@ -26,6 +26,9 @@ class ExpressionTranslator(object):
 
         Multiple variables:
 
+        >>> declaration("variable1,variable2")
+        declaration('variable1', 'variable2')
+
         >>> declaration("variable1, variable2")
         declaration('variable1', 'variable2')
 
@@ -43,7 +46,7 @@ class ExpressionTranslator(object):
         """
 
         variables = []
-        for var in string.split(', '):
+        for var in string.split(','):
             var = var.strip()
 
             if var in ('repeat',):
@@ -133,7 +136,11 @@ class ExpressionTranslator(object):
 
         >>> definitions("variable in expression")
         definitions((declaration('variable'), value('expression')),)        
-        
+
+        >>> definitions("(variable1,variable2, variable3) in expression")
+        definitions((declaration('variable1', 'variable2', 'variable3'),
+        value('expression')),)        
+
         >>> definitions("variable1 = expression1; variable2 = expression2")
         definitions((declaration('variable1'), value('expression1')),
                     (declaration('variable2'), value('expression2')))
