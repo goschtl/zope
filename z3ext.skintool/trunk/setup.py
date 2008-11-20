@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.0.3dev'
+version = '1.1.0dev'
 
 
 setup(name='z3ext.skintool',
@@ -57,12 +57,13 @@ setup(name='z3ext.skintool',
 			  'zope.proxy',
                           'zope.component',
                           'zope.interface',
-                          'zope.i18nmessageid',
-			  'zope.lifecycleevent',
 			  'zope.security',
 			  'zope.configuration',
+			  'zope.lifecycleevent',
                           'zope.app.component',
 			  'zope.app.publication',
+                          'zope.i18nmessageid',
+                          'zope.i18n',
 			  'z3c.autoinclude',
 			  'z3ext.controlpanel',
                           ],

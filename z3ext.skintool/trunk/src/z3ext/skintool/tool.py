@@ -25,6 +25,8 @@ from zope.app.component.hooks import getSite
 
 from interfaces import IDefaultLayer, IDefaultLayers, ISkinTool
 
+skins_byname = {}
+skins_registry = {}
 layers_byname = {}
 layers_registry = {}
 
@@ -32,15 +34,38 @@ layers_registry = {}
 class SkinTool(object):
     interface.implements(ISkinTool)
 
+    skin = None
+    layers = []
+
     def generate(self):
-        layers = tuple(self.user_layers)
+        bases = []
 
-        bases = self._get_default()
+        # first add default layers
+        for name, adapter in getAdapters((getSite(),), IDefaultLayers):
+            for layer in adapter.layers:
+                if layer not in bases:
+                    bases.append(layer)
 
-        for name in layers:
+        for name, layer in getUtilitiesFor(IDefaultLayer):
+            if layer not in bases:
+                bases.append(layer)
+
+        # second add skin
+        if self.skin:
+            skin = skins_byname.get(self.skin)
+            if skin:
+                bases.append(skin)
+                info = skins_registry.get(skin)
+                if info:
+                    for layer in info[4]:
+                        if layer not in bases:
+                            bases.append(layer)
+
+        #third add layers
+        for name in self.layers:
             layer = layers_byname.get(name)
-            if layer is not None:
-                self._get_layers(layer, bases)
+            if layer and layer not in bases:
+                bases.append(layer)
 
         # get base skin
         adapters = getSiteManager().adapters
@@ -52,29 +77,6 @@ class SkinTool(object):
 
         bases.reverse()
         return bases
-
-    def _get_default(self):
-        layers = []
-        for name, adapter in getAdapters((getSite(),), IDefaultLayers):
-            for layer in adapter.layers:
-                self._get_layers(layer, layers)
-
-        for name, layer in getUtilitiesFor(IDefaultLayer):
-            self._get_layers(layer, layers)
-
-        return layers
-
-    def _get_layers(self, layer, layers):
-        if layer in layers:
-            return
-
-        info = layers_registry.get(layer)
-
-        if info is not None:
-            for l in info[4]:
-                self._get_layers(l, layers)
-
-        layers.append(layer)
 
 
 @component.adapter(ISkinTool, IObjectModifiedEvent)

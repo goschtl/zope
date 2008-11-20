@@ -5,6 +5,11 @@
   <meta:directives namespace="http://namespaces.zope.org/z3ext">
 
     <meta:directive
+       name="skin"
+       schema=".zcml.ISkinDirective"
+       handler=".zcml.skinDirectiveHandler" />
+
+    <meta:directive
        name="layer"
        schema=".zcml.ILayerDirective"
        handler=".zcml.layerDirectiveHandler" />

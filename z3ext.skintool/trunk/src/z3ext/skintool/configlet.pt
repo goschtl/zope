@@ -1,0 +1,36 @@
+<tal:block i18n:domain="z3ext.skintool">
+  <h1 tal:content="context/__title__"></h1>
+  <div class="z-page-description" tal:content="context/__description__"></div>
+
+  <form action="index.html" method="post">
+    <div class="z-frame">
+      <h3 i18n:translate="">Skin</h3>
+      <div class="z-page-description" i18n:translate="">Please select portal skin.</div>
+      <div class="z-listing" 
+	   tal:repeat="item view/listSkins">
+	<input type="radio" name="skin"
+	       tal:attributes="value item/name; checked item/selected" />
+	<tal:block content="item/title"/>
+	<p tal:content="item/description" />
+      </div>
+    </div>
+    
+    <div class="z-frame">
+      <h3 i18n:translate="">Layers</h3>
+      <div class="z-page-description" i18n:translate="">Please select layers.</div>
+      <div class="z-listing" 
+	   tal:repeat="item view/listLayers">
+	<input type="checkbox" name="layers:list"
+	       tal:attributes="value item/name; checked item/selected" />
+	<tal:block content="item/title"/>
+	<p tal:content="item/description" />
+      </div>
+    </div>
+    
+    <div class="z-form-controls">
+      <hr />
+      <input type="submit" name="form.buttons.save" value="Save"
+	     class="z-form-button" i18n:attributes="value" />
+    </div>
+  </form>
+</tal:block>

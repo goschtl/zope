@@ -2,6 +2,16 @@
 CHANGES
 =======
 
+1.1.0 (2008-11-??)
+------------------
+
+- Added z3ext:skin directive
+
+- API refactored
+
+- Added translations: nl, ru
+
+
 1.0.2 (2008-08-07)
 ------------------
 

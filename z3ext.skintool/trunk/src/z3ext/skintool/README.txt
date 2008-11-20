@@ -17,17 +17,30 @@ We need site object and request
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
 
-Now let's define layer
+Now let's define layer and skin
 
   >>> from zope import interface
+  >>> class IMySkin(interface.Interface):
+  ...     pass
   >>> class IMyLayer(interface.Interface):
   ...     pass
 
-Before we can use IMyLayer we should register it in local registry
+Before we can use IMySkin and IMyLayer we should register it in local registry
 
-  >>> zcml.layerDirective(IMyLayer, u'mylayer', u'My layer', '', ())
+  >>> zcml.skinDirective(IMySkin, u'myskin', u'My skin', '', ())
+  >>> zcml.layerDirective(IMyLayer, u'mylayer', u'My layer', '')
 
-Now layer should be listed in vocabulary.
+Now skin and layer should be listed in vocabulary.
+
+  >>> from z3ext.skintool.vocabulary import SkinsVocabulary
+  >>> voc = SkinsVocabulary()(site)
+  >>> term = voc.getTerm(IMySkin)
+  >>> term.value == u'myskin'
+  True
+  >>> term.title == 'My skin'
+  True
+  >>> term.token == u'myskin'
+  True
 
   >>> from z3ext.skintool.vocabulary import LayersVocabulary
   >>> voc = LayersVocabulary()(site)
@@ -49,6 +62,9 @@ Let's check layer for our request.
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
 
+  >>> IMySkin.providedBy(request)
+  False
+
   >>> IMyLayer.providedBy(request)
   False
 
@@ -60,18 +76,21 @@ site object should implement ISkinable interface.
 Let's configure skin tool
 
   >>> tool = component.getUtility(interfaces.ISkinTool)
-  >>> tool.user_layers = [u'mylayer']
+  >>> tool.skin = u'myskin'
+  >>> tool.layers = [u'mylayer']
   >>> skinToolModified()
-  
+
 Let's try again
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
+  >>> IMySkin.providedBy(request)
+  True
   >>> IMyLayer.providedBy(request)
   True
 
 Change layers config
 
-  >>> tool.user_layers = []
+  >>> tool.layers = []
   >>> skinToolModified()
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
@@ -79,17 +98,17 @@ Change layers config
   False
 
 
-Some layers can depends on other layers
+Skin can depends on other layers
 
-  >>> class IMyLayer2(interface.Interface):
+  >>> class IMySkin2(interface.Interface):
   ...     pass
 
-  >>> zcml.layerDirective(IMyLayer2, u'mylayer2', u'My layer2', '', (IMyLayer,))
-  >>> tool.user_layers = [u'mylayer2']
+  >>> zcml.skinDirective(IMySkin2, u'myskin2', u'My skin2', '', (IMyLayer,))
+  >>> tool.skin = u'myskin2'
   >>> skinToolModified()
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
-  >>> IMyLayer2.providedBy(request)
+  >>> IMySkin2.providedBy(request)
   True
   >>> IMyLayer.providedBy(request)
   True
@@ -102,7 +121,7 @@ We can define default layer, that will added automaticly
 We have to register utility IDefaultLayer
 
   >>> component.provideUtility(IDefaultLayer, interfaces.IDefaultLayer, 'default')
-  >>> tool.user_layers = [u'mylayer']
+  >>> tool.layers = [u'mylayer']
   >>> skinToolModified()
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
@@ -149,18 +168,18 @@ We can do same with z3ext:layer directive. We need load zcml file:
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext"
   ...    xmlns="http://namespaces.zope.org/zope" i18n_domain="z3ext">
-  ...  <z3ext:layer
-  ...    name="mylayer4"
-  ...    layer="z3ext.skintool.README.IMyLayer2"
-  ...    title="My zcml layer4"
+  ...  <z3ext:skin
+  ...    name="myskin4"
+  ...    layer="z3ext.skintool.README.IMySkin2"
+  ...    title="My zcml skin4"
   ...    require="z3ext.skintool.README.IMyLayer" />
   ... </configure>""", context)
 
-  >>> tool.user_layers = [u'mylayer2']
+  >>> tool.skin = u'myskin4'
   >>> skinToolModified()
 
   >>> threadServiceSubscriber(site, BeforeTraverseEvent(site, request))
-  >>> IMyLayer2.providedBy(request)
+  >>> IMySkin2.providedBy(request)
   True
   >>> IMyLayer.providedBy(request)
   True

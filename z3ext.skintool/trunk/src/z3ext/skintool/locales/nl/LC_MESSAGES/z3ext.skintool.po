@@ -1,0 +1,71 @@
+##############################################################################
+#
+# Copyright (c) 2003-2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+msgid ""
+msgstr ""
+"Project-Id-Version: Development/Unknown\n"
+"POT-Creation-Date: Fri Nov 21 02:52:22 2008\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: zope/app/locales/extract.py\n"
+
+#: src/z3ext/skintool/configlet.pt:20
+msgid "Please select layers."
+msgstr ""
+
+#: src/z3ext/skintool/configlet.pt:32
+msgid "Save"
+msgstr ""
+
+#: src/z3ext/skintool/configlet.pt:8
+msgid "Please select portal skin."
+msgstr ""
+
+#: src/z3ext/skintool/configlet.py:42
+msgid "No skin"
+msgstr ""
+
+#: src/z3ext/skintool/configlet.py:71
+msgid "Changes has been saved."
+msgstr ""
+
+#: src/z3ext/skintool/configure.zcml:23
+msgid "Portal skin"
+msgstr ""
+
+#: src/z3ext/skintool/configure.zcml:23
+msgid "Portal skin configuration."
+msgstr ""
+
+#: src/z3ext/skintool/interfaces.py:46
+#: src/z3ext/skintool/configlet.pt:7
+msgid "Skin"
+msgstr ""
+
+#: src/z3ext/skintool/interfaces.py:47
+msgid "Select portal skin."
+msgstr ""
+
+#: src/z3ext/skintool/interfaces.py:52
+#: src/z3ext/skintool/configlet.pt:19
+msgid "Layers"
+msgstr ""
+
+#: src/z3ext/skintool/interfaces.py:53
+msgid "Select skin layers."
+msgstr ""
+

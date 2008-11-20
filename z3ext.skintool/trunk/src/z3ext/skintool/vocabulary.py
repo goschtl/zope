@@ -19,7 +19,7 @@ from zope import interface
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
-from tool import layers_registry
+from z3ext.skintool import tool
 
 
 class Vocabulary(SimpleVocabulary):
@@ -31,14 +31,27 @@ class Vocabulary(SimpleVocabulary):
             return self.by_value[self.by_value.keys()[0]]
 
 
+class SkinsVocabulary(object):
+    interface.implements(IVocabularyFactory)
+
+    def __call__(self, context):
+        terms = []
+        for layer, info in tool.skins_registry.items():
+            terms.append((info[2], info[1]))
+
+        terms.sort()
+        return Vocabulary(
+            [SimpleTerm(name,name,title) for title, name in terms])
+
+
 class LayersVocabulary(object):
     interface.implements(IVocabularyFactory)
 
     def __call__(self, context):
         terms = []
-        for layer, info in layers_registry.items():
+        for layer, info in tool.layers_registry.items():
             terms.append((info[2], info[1]))
 
         terms.sort()
-        return Vocabulary([SimpleTerm(name,name,title) 
-                           for title, name in terms])
+        return Vocabulary(
+            [SimpleTerm(name,name,title) for title, name in terms])

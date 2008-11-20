@@ -18,7 +18,7 @@ $Id$
 from zope import schema, interface
 from zope.i18nmessageid import MessageFactory
 
-_ = MessageFactory('z3ext')
+_ = MessageFactory('z3ext.skintool')
 
 
 class ISkinable(interface.Interface):
@@ -42,10 +42,16 @@ class IDefaultLayers(interface.Interface):
 class ISkinTool(interface.Interface):
     """ skin tool, allow generate skin on the fly """
 
-    user_layers = schema.List(
+    skin = schema.Choice(
+        title = _('Skin'),
+        description = _(u'Select portal skin.'),
+        vocabulary = "z3ext skins",
+        required = False)
+
+    layers = schema.List(
         title = _(u'Layers'),
         description = _(u'Select skin layers.'),
-        value_type = schema.Choice(vocabulary = "z3ext skin layers"),
+        value_type = schema.Choice(vocabulary = "z3ext layers"),
         default = [],
         required = False)
 
