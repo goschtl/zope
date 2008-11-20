@@ -16,14 +16,15 @@
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface
+from zope.app.pagetemplate import ViewPageTemplateFile
 from z3ext.statusmessage.message import Message
-
-from interfaces import IFormErrorStatusMessage
 
 
 class FormErrorStatusMessage(Message):
-    interface.implements(IFormErrorStatusMessage)
 
-    def __init__(self, message):
+    index = ViewPageTemplateFile('browser/message.pt')
+
+    def render(self, message):
         self.message = message[0]
         self.errors = [err for err in message[1:] if err.widget is None]
+        return self.index()

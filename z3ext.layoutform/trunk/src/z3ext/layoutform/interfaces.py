@@ -19,7 +19,6 @@ from zope import interface
 from zope.i18nmessageid import MessageFactory
 from z3c.form.interfaces import IFormLayer
 from z3ext.layout.interfaces import IPagelet
-from z3ext.statusmessage.interfaces import IMessage
 
 _ = MessageFactory('z3ext.layoutform')
 
@@ -76,7 +75,3 @@ class ISaveButton(interface.Interface):
 
 class ICancelButton(interface.Interface):
     """ cancel button """
-
-
-class IFormErrorStatusMessage(IMessage):
-    """ form error status message """

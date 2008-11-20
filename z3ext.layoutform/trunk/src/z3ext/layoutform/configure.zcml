@@ -6,15 +6,11 @@
   <includeDependencies package="z3ext.layoutform" />
 
   <!-- form error status message -->
-  <utility
+  <adapter
      name="formError"
-     provides="z3ext.statusmessage.interfaces.IMessageFactory"
-     component=".error.FormErrorStatusMessage" />
+     factory=".error.FormErrorStatusMessage" />
 
-  <class class=".error.FormErrorStatusMessage">
-    <allow interface=".interfaces.IFormErrorStatusMessage" />
-  </class>
-
+  <!-- browser views -->
   <include package=".browser" />
 
   <!-- translations -->

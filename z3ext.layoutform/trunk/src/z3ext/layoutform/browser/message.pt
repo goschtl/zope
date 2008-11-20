@@ -1,9 +1,9 @@
 <div class="statusWarningMessage">
-  <tal:block content="context/message" />
-  <tal:block condition="context/errors">
+  <tal:block content="view/message" />
+  <tal:block condition="view/errors">
     <br />
     <ul>
-      <li tal:repeat="err context/errors"
+      <li tal:repeat="err view/errors"
 	  tal:content="structure err/render">
       </li>
     </ul>

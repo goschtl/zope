@@ -134,8 +134,11 @@
     clear: both;
     margin-top: 1em;
   }
-  
-  
+
+  .z-form-controls div {
+    padding-top: 0.5em;
+  }
+
   .z-form-button {
     background: transparent url(z3ext-layoutform-linkTransparent.gif) no-repeat;
     background-position: 5px center;

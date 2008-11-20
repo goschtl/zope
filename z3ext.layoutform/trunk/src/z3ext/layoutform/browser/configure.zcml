@@ -218,9 +218,6 @@
      type="z3ext.layout.interfaces.IPageletType"
      interface="z3ext.layoutform.browser.interfaces.IExtraFormButtonsInfo" />
 
-  <!-- status message -->
-  <adapter factory=".message.Message" />
-
   <!-- styles -->
   <z3ext:resourceinclude
      name="z3ext-layoutform.css"

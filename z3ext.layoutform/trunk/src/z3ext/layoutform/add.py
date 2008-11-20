@@ -71,18 +71,21 @@ class PageletAddForm(form.AddForm, PageletForm):
 
     def nextURL(self):
         if self._addedObject is None:
-            return '%s/@@SelectedManagementView.html'%\
-                   absoluteURL(self.context, self.request)
+            url = absoluteURL(self.context, self.request)
         else:
-            return absoluteURL(self._addedObject, self.request) + '/'
+            url = absoluteURL(self._addedObject, self.request)
+            
+        return '%s/@@SelectedManagementView.html'%url
 
     def cancelURL(self):
         context = self.context
 
         if IAdding.providedBy(context):
-            return '%s/'%absoluteURL(context.context, self.request)
+            url = absoluteURL(context.context, self.request)
         else:
-            return '%s/'%absoluteURL(context, self.request)
+            url = absoluteURL(context, self.request)
+
+        return '%s/@@SelectedManagementView.html'%url
 
     def nameAllowed(self):
         """Return whether names can be input by the user."""
