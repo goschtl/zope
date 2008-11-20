@@ -23,11 +23,11 @@ def render(%(init)s, %(kwargs)s%(extra)s):
 %(body)s
 """
 
-class marker(object):
+class Marker(object):
     def __nonzero__(self):
         return False
 
-marker = object()
+marker = Marker()
 
 def fast_translate(msgid, domain=None, mapping=None, context=None,
                    target_language=None, default=None):

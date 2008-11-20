@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- This was the wrong fix, however; what needed to be changed is that
+  the class of the marker isntance must be available at
+  module-scope. [malthe]
+
 - Changed generation.marker back to a normal object instance. Otherwise we get
   PicklingError: Can't pickle <class 'chameleon.core.generation.marker'>:
   it's not the same object as chameleon.core.generation.marker. [hannosch]
