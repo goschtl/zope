@@ -2,6 +2,11 @@
 Five Changes
 ============
 
+HEAD
+====
+
+* Forward-ported viewlet manager directive fix (see c69896).
+
 Five 1.5.8 (2008-07-13)
 =======================
 
