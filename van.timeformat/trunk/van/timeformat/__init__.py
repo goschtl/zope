@@ -19,10 +19,7 @@ from van.timeformat.interfaces import ITimeFormat
 def timefmt(obj, format='iso'):
     assert isinstance(obj, date), "format only accepts date or datetime objects"
     if format == 'iso':
-        if isinstance(obj, datetime):
-            s = obj.isoformat(sep=" ")
-        else:
-            s = obj.isoformat()
+        s = obj.isoformat()
     else:
         format = getUtility(ITimeFormat, name=format).format
         format = format.encode('utf-8')

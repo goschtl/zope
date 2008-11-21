@@ -25,7 +25,7 @@ default formatting
 If no format argument is specified, dates and datetimes are formatted using .isoformat(" "):
 
     >>> print timefmt(mydatetime)
-    1975-12-17 05:24:36
+    1975-12-17T05:24:36
 
     >>> print timefmt(mydate)
     1975-12-17
@@ -33,7 +33,7 @@ If no format argument is specified, dates and datetimes are formatted using .iso
 The 'iso' format also triggers this:
     
     >>> print timefmt(mydatetime, format='iso')
-    1975-12-17 05:24:36
+    1975-12-17T05:24:36
 
 rfc2822
 +++++++
@@ -65,7 +65,7 @@ Unicode
 The return type is a unicode string:
 
     >>> timefmt(mydatetime)
-    u'1975-12-17 05:24:36'
+    u'1975-12-17T05:24:36'
 
 And we can have unicode in the formats:
 
