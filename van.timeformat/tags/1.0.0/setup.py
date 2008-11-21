@@ -25,7 +25,7 @@ long_description = (
     )
 
 setup(name="van.timeformat",
-      version='1.0.0dev',
+      version='1.0.0',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.timeformat',
       packages=find_packages(),
