@@ -28,7 +28,7 @@ import z3ext.product
 from z3ext.controlpanel.configlettype import ConfigletProperty
 
 from z3ext.product import interfaces
-from z3ext.product.interfaces import _, IProduct, IProductExtension
+from z3ext.product.interfaces import _, IProduct
 
 
 class Product(object):
@@ -94,10 +94,6 @@ class Product(object):
         self._checkRequiredUpdate()
 
     def uninstall(self):
-        for name, ext in self.items():
-            if IProductExtension.providedBy(ext) and ext.__installed__:
-                ext.uninstall()
-
         if not self.__installed__:
             raise interfaces.ProductNotInstalledError(
                 _('Product is not installed.'))
@@ -136,37 +132,7 @@ class Product(object):
         seen = set()
         return self._checkInstalled(sm, registry, seen)
 
-    def listExtensions(self):
-        exts = []
-        for name, ext in self.items():
-            if IProductExtension.providedBy(ext):
-                exts.append(name)
-
-        return exts
-
     def isUninstallable(self):
         sm = getSiteManager()
         registry = getattr(z3ext.product, self.__product_name__)
         return registry in sm.__bases__
-
-
-class ProductExtension(Product):
-    interface.implements(IProductExtension)
-
-    def install(self):
-        if not self.__parent__.__installed__:
-            raise interfaces.ProductNotInstalledError(
-                self.__parent__.__product_name__)
-        super(ProductExtension, self).install()
-
-    def update(self):
-        if not self.__parent__.__installed__:
-            raise interfaces.ProductNotInstalledError(
-                self.__parent__.__product_name__)
-        super(ProductExtension, self).update()
-
-    def isInstalled(self):
-        if self.__parent__.__installed__:
-            return self.__installed__
-        else:
-            return False

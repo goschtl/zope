@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Thu Oct 23 12:08:54 2008\n"
+"POT-Creation-Date: Fri Nov 21 17:10:38 2008\n"
 "PO-Revision-Date: 2008-10-23 10:18+0100\n"
 "Last-Translator: F. Kooman <fkooman@tuxed.net>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -22,10 +22,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
-
-#: src/z3ext/product/browser.zcml:19
-msgid "Product extension"
-msgstr "Productuitbreiding"
 
 #: src/z3ext/product/browser.zcml:7
 msgid "Product"
@@ -35,9 +31,8 @@ msgstr "Product"
 msgid "This is the Add-on Products install section."
 msgstr "Dit is de product installatiemodule."
 
-#: src/z3ext/product/configure.zcml:13
-#: src/z3ext/product/browser.zcml:13
-#: src/z3ext/product/browser.zcml:32
+#: src/z3ext/product/configure.zcml:13 src/z3ext/product/browser.zcml:13
+#: src/z3ext/product/browser.zcml:26
 msgid "Products management"
 msgstr "Productbeheer"
 
@@ -45,8 +40,7 @@ msgstr "Productbeheer"
 msgid "Manage products"
 msgstr "Beheer producten"
 
-#: src/z3ext/product/product.py:50
-#: src/z3ext/product/product.py:59
+#: src/z3ext/product/product.py:50 src/z3ext/product/product.py:59
 msgid "Required product is not found."
 msgstr "Vereist product is niet gevonden."
 
@@ -54,8 +48,7 @@ msgstr "Vereist product is niet gevonden."
 msgid "Product already installed."
 msgstr "Product is al geïnstalleerd."
 
-#: src/z3ext/product/product.py:88
-#: src/z3ext/product/product.py:103
+#: src/z3ext/product/product.py:88 src/z3ext/product/product.py:99
 msgid "Product is not installed."
 msgstr "Product is niet geïnstalleerd."
 
@@ -67,55 +60,64 @@ msgstr "Dit product is beschadigd!!!"
 msgid "Can't create utility."
 msgstr "Kan utility niet aanmaken."
 
+#: src/z3ext/product/view.pt:27
+msgid "Update"
+msgstr "Bijwerken"
+
+#: src/z3ext/product/view.pt:29
+msgid "Uninstall"
+msgstr "Verwijderen"
+
 #: src/z3ext/product/view.pt:3
 msgid "Installed Products"
 msgstr "Geïnstalleerde producten"
 
-#: src/z3ext/product/view.pt:38
-msgid "(Installed)"
-msgstr "(Geïnstalleerd)"
-
-#: src/z3ext/product/view.pt:43
-msgid "(Not installed)"
-msgstr "(Niet geïnstalleerd)"
-
-#: src/z3ext/product/view.pt:58
-msgid "Update"
-msgstr "Bijwerken"
-
-#: src/z3ext/product/view.pt:60
-msgid "Uninstall"
-msgstr "Verwijderen"
-
-#: src/z3ext/product/view.pt:68
+#: src/z3ext/product/view.pt:37
 msgid "Products available for install"
 msgstr "Producten beschikbaar voor installatie"
 
-#: src/z3ext/product/view.pt:69
-msgid "This is the Add-on Products install section, you can add products in the lists below."
-msgstr "Dit is de product installatiemodule, u kunt producten selecteren in de onderstaande lijst."
+#: src/z3ext/product/view.pt:38
+msgid ""
+"This is the Add-on Products install section, you can add products in the "
+"lists below."
+msgstr ""
+"Dit is de product installatiemodule, u kunt producten selecteren in de "
+"onderstaande lijst."
 
-#: src/z3ext/product/view.pt:87
+#: src/z3ext/product/view.pt:56
 msgid "Install"
 msgstr "Installeren"
 
-#: src/z3ext/product/view.py:102
-msgid "Select one or more products to update."
-msgstr "Selecteer één of meer producten om bij te werken."
-
-#: src/z3ext/product/view.py:117
+#: src/z3ext/product/view.py:107
 msgid "Select one or more products to uninstall."
 msgstr "Selecteer één of meer producten om te verwijderen."
 
-#: src/z3ext/product/view.py:124
+#: src/z3ext/product/view.py:114
 msgid "Selected products has been uninstalled."
 msgstr "Geselecteerde producten zijn verwijderd."
 
-#: src/z3ext/product/view.py:84
+#: src/z3ext/product/view.py:72
 msgid "Select one or more products to install."
 msgstr "Selecteer één of meer producten om te installeren."
 
-#: src/z3ext/product/view.py:91
+#: src/z3ext/product/view.py:79
 msgid "Selected products has been installed."
 msgstr "Geselecteerde producten zijn geïnstalleerd."
 
+#: src/z3ext/product/view.py:91
+msgid "Select one or more products to update."
+msgstr "Selecteer één of meer producten om bij te werken."
+
+#: src/z3ext/product/view.py:98
+#, fuzzy
+msgid "Selected products has been updated."
+msgstr "Geselecteerde producten zijn verwijderd."
+
+#~ msgid "Product extension"
+#~ msgstr "Productuitbreiding"
+
+#~ msgid "(Installed)"
+#~ msgstr "(Geïnstalleerd)"
+
+#~ msgid "(Not installed)"
+#~ msgstr "(Niet geïnstalleerd)"

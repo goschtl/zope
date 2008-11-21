@@ -18,19 +18,16 @@ $Id: view.py 1839 2008-03-25 13:28:26Z fafhrd91 $
 import logging, sys
 from transaction import abort
 from zope.component import getUtility, queryUtility, getUtilitiesFor
-
-from z3ext.layout.pagelet import BrowserPagelet
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-from z3ext.product.interfaces import _, IProductExtension
-from z3ext.product.interfaces import ProductWarningError
+from z3ext.product.interfaces import _, ProductWarningError
 
 def log_exc(msg=''):
     log = logging.getLogger(u'z3ext.product')
     log.log(logging.ERROR, msg, exc_info=sys.exc_info())
 
 
-class InstallerView(BrowserPagelet):
+class InstallerView(object):
 
     def getProducts(self):
         context = self.context
@@ -63,23 +60,14 @@ class InstallerView(BrowserPagelet):
         return {'installed': installed, 'notinstalled': notinstalled,
                 'hasUninstallable': hasUninstallable}
 
-    def getExtensions(self, product):
-        extensions = []
-
-        for name in product.listExtensions():
-            ext = product.get(name)
-            extensions.append((ext.__title__, ext))
-        extensions.sort()
-        return [ext for t, ext in extensions]
-
     def update(self, *args, **kw):
         request = self.request
         context = self.context
 
         service = IStatusMessage(request)
-        products = request.get('products', ())
-
+        
         if request.has_key('install'):
+            products = request.get('availproducts', ())
             if not products:
                 service.add(_('Select one or more products to install.'), 'warning')
             else:
@@ -98,6 +86,7 @@ class InstallerView(BrowserPagelet):
                     service.add(e, 'error')
 
         elif request.has_key('update'):
+            products = request.get('products', ())
             if not products:
                 service.add(_('Select one or more products to update.'), 'warning')
             else:
@@ -106,13 +95,14 @@ class InstallerView(BrowserPagelet):
                         product = context.get(product_id)
                         product.update()
 
-                    service.add('Selected products has been updated.')
+                    service.add(_('Selected products has been updated.'))
                 except Exception, e:
                     abort()
                     log_exc(str(e))
                     service.add(e, 'error')
 
         elif request.has_key('uninstall'):
+            products = request.get('products', ())
             if not products:
                 service.add(_('Select one or more products to uninstall.'), 'warning')
             else:
@@ -126,29 +116,3 @@ class InstallerView(BrowserPagelet):
                     abort()
                     log_exc(str(e))
                     service.add(e, 'error')
-
-        elif request.has_key('extension'):
-            try:
-                product = ''
-                extension = request.get('extension', '')
-                if '.' in extension:
-                    c, product, extension = extension.split('.', 2)
-
-                product = context.get(product)
-                if product is not None:
-                    extension = product.get(extension)
-                
-                if not IProductExtension.providedBy(extension):
-                    extension = None
-
-                if extension is None:
-                    service.add("Can't fine extension.", 'error')
-                else:
-                    if extension.__installed__:
-                        extension.uninstall()
-                    else:
-                        extension.install()
-            except Exception, e:
-                abort()
-                log_exc(str(e))
-                service.add(e, 'error')

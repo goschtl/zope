@@ -26,8 +26,8 @@ import z3ext.product
 from z3ext.controlpanel.zcml import IConfigletDirective, ConfigletDirective
 
 from interfaces import IProduct
+from product import Product
 from registry import ProductRegistry
-from product import Product, ProductExtension
 
 
 class IProductDirective(IConfigletDirective):
@@ -50,11 +50,7 @@ class ProductDirective(ConfigletDirective):
                  permission='z3ext.ManageProducts', tests=(),
                  configurable=False, require = ()):
 
-        if '.' not in name:
-            product_class = Product
-        else:
-            product_class = ProductExtension
-
+        product_class = Product
         if class_ is None:
             class_ = product_class
         else:

@@ -2,4 +2,4 @@
 
 registries = {}
 
-from z3ext.product.product import Product, ProductExtension
+from z3ext.product.product import Product

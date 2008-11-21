@@ -24,7 +24,7 @@ from zope.app.component.hooks import getSite
 from zope.app.component.site import SiteManagementFolder
 from zope.app.component.interfaces import ISite
 
-from z3ext.product.interfaces import _, IProduct, IProductExtension
+from z3ext.product.interfaces import _, IProduct
 
 
 def registerUtility(id, factory, ifaces, container='system'):
@@ -87,10 +87,6 @@ class ProductTest(object):
 
     def __call__(self, *args, **kw):
         product = queryUtility(IProduct, self.product)
-        if product is not None:
-            return product.__installed__
-
-        product = queryUtility(IProductExtension, self.product)
         if product is not None:
             return product.__installed__
 

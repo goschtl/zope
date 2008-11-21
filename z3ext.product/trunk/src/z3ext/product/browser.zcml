@@ -16,12 +16,6 @@
      for=".interfaces.IProductInstaller"
      file="product_icon.gif" />
 
-  <browser:icon
-     name="zmi_icon"
-     title="Product extension"
-     for=".interfaces.IProductExtension"
-     file="product_icon.gif" />
-
   <z3ext:pagelet
      name="index.html"
      for=".interfaces.IProductInstaller"
