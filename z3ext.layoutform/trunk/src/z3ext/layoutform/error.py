@@ -24,6 +24,10 @@ class FormErrorStatusMessage(Message):
 
     index = ViewPageTemplateFile('browser/message.pt')
 
+    @property
+    def context(self):
+        return self
+
     def render(self, message):
         self.message = message[0]
         self.errors = [err for err in message[1:] if err.widget is None]
