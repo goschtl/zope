@@ -23,7 +23,7 @@ long_description = (
     )
 
 setup(name="van.testing",
-      version='1.0.0dev',
+      version='1.0.1dev',
       license = 'ZPL 2.1',
       url = 'http://pypi.python.org/pypi/van.timeformat',
       author="Vanguardistas LLC",
