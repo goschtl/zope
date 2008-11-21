@@ -24,13 +24,14 @@ long_description = (
 
 setup(name="van.testing",
       version='1.0.1dev',
-      license = 'ZPL 2.1',
-      url = 'http://pypi.python.org/pypi/van.timeformat',
+      license='ZPL 2.1',
+      url='http://pypi.python.org/pypi/van.timeformat',
+      author_email='zope-dev@zope.org',
       author="Vanguardistas LLC",
       description="Layers for zope.testing to simplify test setups",
       packages=find_packages(),
       namespace_packages=["van"],
-      install_requires = [
+      install_requires=[
           'setuptools',
           'zope.app.appsetup',
           'zope.testing',
