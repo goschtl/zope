@@ -12,6 +12,8 @@ aq_base = Acquisition.aq_base
 class ViewletManagerBase(origManagerBase, Acquisition.Explicit):
     """A base class for Viewlet managers to work in Zope2"""
 
+    template = None
+    
     def __getitem__(self, name):
         """See zope.interface.common.mapping.IReadMapping"""
         # Find the viewlet
@@ -64,9 +66,10 @@ class ViewletManagerBase(origManagerBase, Acquisition.Explicit):
         return sorted(viewlets, lambda x, y: cmp(aq_base(x[1]), aq_base(y[1])))
 
 def ViewletManager(name, interface, template=None, bases=()):
-
+    attrDict = {'__name__': name}
+    
     if template is not None:
-        template = ZopeTwoPageTemplateFile(template)
+        attrDict['template'] = ZopeTwoPageTemplateFile(template)
 
     if ViewletManagerBase not in bases:
         # Make sure that we do not get a default viewlet manager mixin, if the
@@ -76,8 +79,7 @@ def ViewletManager(name, interface, template=None, bases=()):
             bases = bases + (ViewletManagerBase,)
 
     ViewletManager = type(
-        '<ViewletManager providing %s>' % interface.getName(),
-        bases,
-        {'template': template, '__name__': name})
+        '<ViewletManager providing %s>' % interface.getName(), bases, attrDict)
+
     zope.interface.classImplements(ViewletManager, interface)
     return ViewletManager
