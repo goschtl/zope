@@ -5,6 +5,7 @@ Changes
 ------------------
 
 - Re-add tests mistakenly removed.
+- Update dependencies: van.testing is only needed for tests.
 
 1.0.0 (2008-11-21)
 ------------------
