@@ -1,0 +1,53 @@
+<tal:block i18n:domain="z3ext.skintool"
+	   tal:define="skins view/listSkins; 
+		       layers view/listLayers;
+		       noForm python: not (skins or layers)">
+  <h1 tal:content="context/__title__"></h1>
+  <div class="z-page-description" tal:content="context/__description__"></div>
+
+  <form action="index.html" method="post" tal:omit-tag="noForm">
+    <div class="z-frame" tal:condition="skins">
+      <h3 i18n:translate="">Skin</h3>
+      <div class="z-page-description" i18n:translate="">Please select portal skin.</div>
+      <ul class="z-listing">
+	<li tal:repeat="item skins">
+	  <div class="z-listing-icon">
+	    <input type="radio" name="skin"
+		   tal:attributes="value item/name; checked item/selected" />
+	  </div>
+	  <div class="z-listing-details">
+	    <span tal:content="item/title"/>
+	    <div tal:content="item/description" />
+	  </div>
+	</li>
+      </ul>
+    </div>
+
+    <div class="z-frame" tal:condition="layers">
+      <h3 i18n:translate="">Layers</h3>
+      <div class="z-page-description" i18n:translate="">Please select layers.</div>
+      <ul class="z-listing">
+	<li tal:repeat="item layers">
+	  <div class="z-listing-icon">
+	    <input type="checkbox" name="layers:list"
+		   tal:attributes="value item/name; checked item/selected" />
+	  </div>
+	  <div class="z-listing-details">
+	    <span tal:content="item/title"></span>
+	    <div tal:content="item/description"></div>
+	  </div>
+	</li>
+      </ul>
+    </div>
+    
+    <div class="z-form-controls" tal:condition="not:noForm">
+      <hr />
+      <input type="submit" name="form.buttons.save" value="Save"
+	     class="z-form-button" i18n:attributes="value" />
+    </div>
+  </form>
+
+  <div class="z-frame" tal:condition="noForm" i18n:translate="">
+    There are no any configurable skins or layers.
+  </div>
+</tal:block>
