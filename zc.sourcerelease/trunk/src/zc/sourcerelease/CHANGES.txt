@@ -4,6 +4,12 @@ Release History
 0.3 (unreleased)
 ----------------
 
+New Features
+++++++++++++
+
+You can now use a --name (or -n) option to specify the name for a
+generated release.
+
 Bugs Fixed
 ++++++++++
 
