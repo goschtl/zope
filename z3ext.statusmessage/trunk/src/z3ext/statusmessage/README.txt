@@ -43,7 +43,7 @@ Before we can use message service we need register message type.
 
    >>> msg = component.getAdapter(request, interfaces.IMessage, 'info')
    >>> msg.render('Test message')
-   '<div class="statusMessage">Test message</div>'
+   u'<div class="statusMessage">Test message</div>'
 
 Now we can add messages.
 
@@ -53,7 +53,7 @@ Now we can add messages.
    True
 
    >>> service.messages()
-   ['<div class="statusMessage">Test message</div>']
+   [u'<div class="statusMessage">Test message</div>']
 
 
 Let's register another message type.
@@ -63,7 +63,7 @@ Let's register another message type.
    >>> service.add('Warning message', 'warning')
 
    >>> service.messages()
-   ['<div class="statusMessage">Test message</div>', '<div class="statusWarningMessage">Warning message</div>']
+   [u'<div class="statusMessage">Test message</div>', u'<div class="statusWarningMessage">Warning message</div>']
 
 Error message, we can add exception object
 

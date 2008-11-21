@@ -24,6 +24,7 @@ from zope.session.interfaces import ISession
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.testing.functional import ZCMLLayer
 from zope.app.testing.functional import FunctionalDocFileSuite
+from zope.traversing.testing import setUp as setUpTraversing
 from z3ext.statusmessage import message
 
 
@@ -50,6 +51,7 @@ def getSession(request):
 
 def setUp(test):
     setup.placelessSetUp()
+    setUpTraversing()
     component.provideAdapter(getSession)
     component.provideAdapter(message.StatusMessage, name='statusMessage')
 

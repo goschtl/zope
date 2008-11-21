@@ -36,9 +36,11 @@ def newAfterCall(self, request, ob):
         messages = service.clear()
 
         if messages:
+            msg = u'\n'.join(messages)
+            msg = msg.encode('utf-8', 'ignore')
+
             body = response.consumeBody()
-            body = body.replace(
-                '<!--z3ext-statusmessage-->', str(u'\n'.join(messages)), 1)
+            body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
             response.setResult(body)
 
     afterCall(self, request, ob)
