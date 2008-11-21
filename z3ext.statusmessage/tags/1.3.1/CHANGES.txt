@@ -1,0 +1,44 @@
+=======
+CHANGES
+=======
+
+1.3.1 (2008-11-21)
+------------------
+
+- Fixed UnicodeEncodeError
+
+
+1.3.0 (2008-11-20)
+------------------
+
+- API refactored
+
+- Allow add messages at any stage of page processing
+
+
+1.2.1 (2008-05-14)
+------------------
+
+- Replace 'autoinclude' with 'includeDependendcies'
+
+
+1.2.0 (2008-03-21)
+------------------
+
+- rename to z3ext.statusmessage
+
+- moved to svn.zope.org
+
+
+1.1.0 (2008-03-18)
+------------------
+
+- Use z3c.autoinclude
+
+- Code cleanup
+
+
+1.0.0 (2007-12-08)
+------------------
+
+- Initial release.
