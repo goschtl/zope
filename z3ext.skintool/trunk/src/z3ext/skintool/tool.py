@@ -34,9 +34,6 @@ layers_registry = {}
 class SkinTool(object):
     interface.implements(ISkinTool)
 
-    skin = None
-    layers = []
-
     def generate(self):
         bases = []
 

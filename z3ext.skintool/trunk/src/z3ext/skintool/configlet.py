@@ -41,7 +41,7 @@ class SkintoolEditForm(object):
                          {'name': '__no__',
                           'title': _(u'No skin'),
                           'selected': self.tool.skin == None,
-                          'description': u''}))
+                          'description': _(u'Do not use any skin.')}))
         return [info for t, n, info in skins]
     
     def listLayers(self):
