@@ -34,9 +34,12 @@ setup(name="van.timeformat",
       namespace_packages=["van"],
       install_requires = [
           'setuptools',
-          'van.testing',
           'zope.i18n',
+          'zope.tales',
           ],
+      extras_require = {
+          'test': ['van.testing']
+      },
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
