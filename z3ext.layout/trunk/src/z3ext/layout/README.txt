@@ -95,10 +95,10 @@ use 'workspace' layout as parent.
 
   >>> print view()
   <html>
-     <body>
+  <body>
         <div id="portal">
           <div id="workspace">
-          <div id="content">root</div></div></div>
+          <div id="content">root</div>...
      </body>
   </html>
 
@@ -115,7 +115,7 @@ Now let's create several more content objects
     <body>
       <div id="portal">
         <div id="workspace">
-        <div id="content">folder1</div></div></div>
+        <div id="content">folder1</div>...
     </body>
   </html>
 
@@ -132,7 +132,7 @@ And another one.
     <body>
       <div id="portal">
         <div id="workspace">
-          <div id="content">folder1_1_1</div></div></div>
+          <div id="content">folder1_1_1</div>...
     </body>
   </html>
 
@@ -174,10 +174,10 @@ We register new layout for different interafce
           <tr>
             <td id="column1">Column1</td>
             <td id="column2">
-              <div id="content">folder1</div></td>
+              <div id="content">folder1</div>...
             <td id="column3">Column3</td>
           </tr>
-        </table></div>
+        </table>...
     </body>
   </html>
 
@@ -191,10 +191,10 @@ folder1 uses new 'workspace' layout, but what about other folders
           <tr>
             <td id="column1">Column1</td>
             <td id="column2">
-              <div id="content">folder1_1</div></td>
+              <div id="content">folder1_1</div>...
             <td id="column3">Column3</td>
           </tr>
-        </table></div>
+        </table>...
     </body>
   </html>
 
@@ -207,10 +207,10 @@ folder1 uses new 'workspace' layout, but what about other folders
           <tr>
             <td id="column1">Column1</td>
             <td id="column2">
-              <div id="content">folder1_1_1</div></td>
+              <div id="content">folder1_1_1</div>...
             <td id="column3">Column3</td>
           </tr>
-        </table></div>
+        </table>...
     </body>
   </html>
 
@@ -247,10 +247,10 @@ Also we can use nameless layout as parent with layout="."
                 <div id="content1_1">
                   <h1>Folder1_1</h1>
                   <div>folder1_1</div>
-                </div></div></td>
+                </div>...
             <td id="column3">Column3</td>
           </tr>
-        </table></div>
+        </table>...
      </body>
   </html>
 
@@ -289,11 +289,9 @@ And same for folder1_1_1
                   <div>
                     <div id="content1_1_1">
                       <h1>Folder1_1_1</h1>
-                      <div>folder1_1_1</div>
-                    </div></div>
-                </div></div></td>
+                      <div>folder1_1_1</div>...
             <td id="column3">Column3</td>
           </tr>
-        </table></div>
+        </table>...
     </body>
   </html>

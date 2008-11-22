@@ -172,7 +172,6 @@ Pagelet rendering
 
   >>> print pagelet.render()
   <div>My pagelet</div>
-  <BLANKLINE>
 
 We should use page template as template for pagelet or we should
 provide IPageTemplate adapter for pagelet
@@ -194,7 +193,6 @@ provide IPageTemplate adapter for pagelet
 
   >>> print pagelet()
   <div>My pagelet</div>
-  <BLANKLINE>
 
 We can redirect during pagelet rendering, in this case render method
 doesn't call.
@@ -258,15 +256,15 @@ Pagelet without name
   
   >>> ITestPagelet.providedBy(pagelet)
   True
-  >>> pagelet.render()
-  u'<div>My pagelet</div>'
+  >>> print pagelet.render()
+  <div>My pagelet</div>
 
   >>> request = TestRequest()
   >>> pagelet = component.queryMultiAdapter((object(), request), IMyPagelet2)
   >>> IMyPagelet2.providedBy(pagelet)
   True
-  >>> pagelet.render()
-  u'<div>My pagelet2</div>'
+  >>> print pagelet.render()
+  <div>My pagelet2</div>
 
 
 Access nameless pagelet from view
