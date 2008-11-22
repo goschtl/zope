@@ -1,35 +1,44 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:browser="http://namespaces.zope.org/browser"
-           i18n_domain="zope">
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
  
   <include package="zope.app" />
 
   <include package="zope.viewlet" file="meta.zcml"/>
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="z3c.sampledata" file="meta.zcml" />
   
   <include package="zope.app.server" />
   <include package="zope.app.authentication" />
   <securityPolicy
-    component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
-  <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
+    component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+  <include package="zope.securitypolicy" />
   
+  <include package="zope.session" />
   <include package="zope.contentprovider"/>
   <include package="zope.viewlet"/>
   <include package="zope.formlib"/>
   <include package="z3c.sampledata"/>
   
-  <role id="zope.Anonymous" title="Everybody"
-      description="All users have this role implicitly" />
-  <role id="zope.Manager" title="Site Manager" />
-  <grantAll role="zope.Manager" />
+  <role
+      id="zope.Anonymous" title="Everybody"
+      description="All users have this role implicitly"
+      />
+  <role
+      id="zope.Manager"
+      title="Site Manager"
+      />
+  <grantAll
+      role="zope.Manager"
+      />
 
   <principal
      id="zope.manager"
      title="Administrator"
      login="mgr"
-     password="mgrpw" />
+     password="mgrpw"
+     />
   <grant
      role="zope.Manager"
      principal="zope.manager"
