@@ -105,7 +105,7 @@ Static Cache set 'Cache-Control', 'Expires', 'Last-Modified' headers for browser
   '..., ... GMT'
 
   >>> response.getHeader('Last-Modified')
-  'Wed, 10 Oct 2007 00:00:00 GMT'
+  'Wed, 10 Oct 2007 01:00:00 GMT'
 
 It also should automaticly convert modified date to utc timezone
 
@@ -114,7 +114,7 @@ It also should automaticly convert modified date to utc timezone
   >>> strategy = getStaticCache(ob).__bind__(request)
   >>> strategy.setCacheHeaders()
   >>> response.getHeader('Last-Modified')
-  'Wed, 10 Oct 2007 00:00:00 GMT'
+  'Wed, 10 Oct 2007 01:00:00 GMT'
 
   >>> ModInfo.dt = datetime.datetime(
   ...   2007, 10, 9, 18, 0, 0, 0, pytz.timezone('Asia/Almaty'))
@@ -122,7 +122,7 @@ It also should automaticly convert modified date to utc timezone
   >>> strategy = getStaticCache(ob).__bind__(request)
   >>> strategy.setCacheHeaders()
   >>> response.getHeader('Last-Modified')
-  'Wed, 10 Oct 2007 00:00:00 GMT'
+  'Wed, 10 Oct 2007 01:00:00 GMT'
 
   >>> ModInfo.dt = datetime.datetime(2007, 10, 10, 0, 0, 0, 0, tzinfo=pytz.utc)
 
@@ -151,7 +151,7 @@ Or content
   200
 
   >>> response.getHeader('Last-Modified')
-  'Wed, 10 Oct 2007 00:00:00 GMT'
+  'Wed, 10 Oct 2007 01:00:00 GMT'
 
 
 Additional feature, calculating duration of call.
