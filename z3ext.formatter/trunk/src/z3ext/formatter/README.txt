@@ -93,7 +93,6 @@ DateTime formatter
 By default we use UTC timezone for output:
 
    >>> print page.render(request, now=dt)
-   <BLANKLINE>
    <html>
      <body>
        1/1/07 12:00 AM
@@ -103,12 +102,11 @@ By default we use UTC timezone for output:
        Jan 1, 2007 12:00:00 AM
      </body>
    </html>
-   <BLANKLINE>
+
 
 If datetime object doesn't contain timezone information, UTC is used
 
    >>> print page.render(request, now=datetime(2007, 1, 1, 0, 0))
-   <BLANKLINE>
    <html>
      <body>
        1/1/07 12:00 AM
@@ -118,7 +116,6 @@ If datetime object doesn't contain timezone information, UTC is used
        Jan 1, 2007 12:00:00 AM
      </body>
    </html>
-   <BLANKLINE>
 
 
 Now let's chane timezone to US/Pacific, we change only time zone 
@@ -127,7 +124,6 @@ not datetime value
    >>> configlet.timezone = 'US/Pacific'
 
    >>> print page.render(request, now=dt)
-   <BLANKLINE>
    <html>
      <body>
        12/31/06 4:00 PM
@@ -137,14 +133,13 @@ not datetime value
        Dec 31, 2006 4:00:00 PM
      </body>
    </html>
-   <BLANKLINE>
+
 
 Now we can change timezone format to 3 (Timezone name)
 
    >>> configlet.timezoneFormat = 3
    
    >>> print page.render(request, now=dt)
-   <BLANKLINE>
    <html>
      <body>
        12/31/06 4:00 PM
@@ -154,7 +149,7 @@ Now we can change timezone format to 3 (Timezone name)
        Dec 31, 2006 4:00:00 PM US/Pacific
      </body>
    </html>
-   <BLANKLINE>
+
 
 We also can redefine timezone for principal if we use principalTimezone true
 
@@ -181,7 +176,6 @@ We also can redefine timezone for principal if we use principalTimezone true
 
    >>> request.setPrincipal(Principal('user1'))
    >>> print page.render(request, now=dt)
-   <BLANKLINE>
    <html>
      <body>
        1/1/07 1:00 AM
@@ -191,11 +185,9 @@ We also can redefine timezone for principal if we use principalTimezone true
        Jan 1, 2007 1:00:00 AM Europe/Paris
      </body>
    </html>
-   <BLANKLINE>
 
    >>> request.setPrincipal(Principal('user2'))
    >>> print page.render(request, now=dt)
-   <BLANKLINE>
    <html>
      <body>
        1/1/07 6:00 AM
@@ -205,7 +197,6 @@ We also can redefine timezone for principal if we use principalTimezone true
        Jan 1, 2007 6:00:00 AM Asia/Almaty
      </body>
    </html>
-   <BLANKLINE>
 
    >>> request.setPrincipal(None)
 
@@ -232,16 +223,14 @@ Today's datetime
    >>> today = now - timedelta(hours=1)
 
    >>> print fpage.render(request, now=today)
-   <BLANKLINE>
    <html>
      <body>
        Today at ...
        Today at ...
        Today at ...
-       Today at ... US/Pacific
+       Today at ...
      </body>
    </html>
-   <BLANKLINE>
 
 
 Yesterday's datetime
@@ -249,31 +238,28 @@ Yesterday's datetime
    >>> yesterday = now - timedelta(hours=25)
 
    >>> print fpage.render(request, now=yesterday)
-   <BLANKLINE>
    <html>
      <body>
        Yesterday at ...
        Yesterday at ...
        Yesterday at ...
-       Yesterday at ... US/Pacific
+       Yesterday at ...
      </body>
    </html>
-   <BLANKLINE>
+
 
 Default timezone is UTC
 
-   >>> now = datetime.now()
+   >>> now = datetime.now(UTC)
    >>> print fpage.render(request, now=now)
-   <BLANKLINE>
    <html>
      <body>
        Today at ...
        Today at ...
        Today at ...
-       Today at ... US/Pacific
+       Today at ...
      </body>
    </html>
-   <BLANKLINE>
 
 
 Date formatter
@@ -293,14 +279,12 @@ Date formatter
    datetime.date(2007, 1, 1)
 
    >>> print datepage.render(request, today=d)
-   <BLANKLINE>
    <html>
      <body>
        Jan 1, 2007
        1/1/07
      </body>
    </html>
-   <BLANKLINE>
 
 
 Also you can get formatter from python code
@@ -392,7 +376,5 @@ Now we can use formatter
    ... </tal:block>''')
 
    >>> print page.render(request)
-   <BLANKLINE>
    121.04 $
    121.04 Eur
-   <BLANKLINE>
