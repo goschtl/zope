@@ -1,7 +1,7 @@
 Changelog for five.grok
 -----------------------
 
-five.grok - 1.0a2 (Unreleased)
+five.grok - 1.0a2 (2008-11-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Added support for viewlets with `grokcore.viewlet`_.
