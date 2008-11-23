@@ -18,7 +18,7 @@ from megrok.z3cpt import PageTemplate
 import grokcore.component
 
 
-class ZopeTwoPageTemplateFileFactory(grokcore.component.GlobalUtility):
+class PageTemplateFileFactory(grokcore.component.GlobalUtility):
     implements(ITemplateFileFactory)
     grokcore.component.name('zpt')
 
