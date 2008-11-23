@@ -1,0 +1,69 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:tales="http://namespaces.zope.org/tales"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext.formatter">
+
+  <includeDependencies package="z3ext.formatter" />
+
+  <!-- zope.conf configuration -->
+  <subscriber handler=".config.initFormatter" />
+
+  <!-- formatter: tales expresison -->
+  <tales:expressiontype
+     name="formatter"
+     handler=".expression.FormatterExpression" />
+
+  <!-- formatters -->
+  <adapter name="date" factory=".dformatter.DateFormatterFactory" />
+  <adapter name="dateTime" factory=".dtformatter.DatetimeFormatterFactory" />
+  <adapter name="fancyDatetime"
+	   factory=".fancydatetime.FancyDatetimeFormatterFactory" />
+
+  <!-- vocabularies -->
+  <utility
+     name="Timezones"
+     factory=".vocabulary.Timezones" />
+
+  <!-- formatter configlet -->
+  <configure
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     xmlns:browser="http://namespaces.zope.org/browser"
+     zcml:condition="installed z3ext.controlpanel">
+
+    <include package="z3ext.controlpanel" file="meta.zcml" />
+    <include package="z3ext.controlpanel" />
+
+    <z3ext:configlet
+       name="system.formatter"
+       schema=".interfaces.IFormatterConfiglet"
+       title="Portal formatters"
+       description="Configure portal formatters.">
+      <allow interface=".interfaces.IFormatterConfiglet" />
+    </z3ext:configlet>
+
+    <browser:icon
+       name="zmi_icon"
+       for=".interfaces.IFormatterConfiglet"
+       file="preferences-formatter.png" />
+  </configure>
+
+  <!-- Registering documentation with API doc -->
+  <configure
+     xmlns:apidoc="http://namespaces.zope.org/apidoc"
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+       id="z3ext-formatter"
+       title="z3ext.formatter - formatter TALES expression"
+       doc_path="README.txt"
+       parent="z3ext" />
+  </configure>
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
+
+</configure>
