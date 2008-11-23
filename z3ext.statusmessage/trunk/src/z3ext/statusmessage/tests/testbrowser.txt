@@ -11,12 +11,8 @@ Render Status Messages
 Render message in current request
 
   >>> actor.open("http://localhost/test1.html")
-  >>> print actor.contents
-  <html>
-    <body>
-      <div><div class="statusMessage">Test message</div></div>
-    </body>
-  </html>
+  >>> '<div class="statusMessage">Test message</div>' in actor.contents
+  True
 
 Render message in next request after redirect
 
@@ -27,6 +23,6 @@ Render message in next request after redirect
   >>> print actor.contents
   <html>
     <body>
-      <div><div class="statusMessage">Test message with redirect</div></div>
+      <div><div class="statusMessage">Test message with redirect</div>...
     </body>
   </html>
