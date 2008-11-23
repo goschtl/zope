@@ -1,0 +1,58 @@
+Changelog for five.grok
+-----------------------
+
+five.grok - 1.0a2 (2008-11-23)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Added support for viewlets with `grokcore.viewlet`_.
+  [thefunny42]
+
+* Added support for the DirectoryResource component (new in
+  `grokcore.view`_ 1.2).
+  [thefunny42]
+
+* Added support for using Zope 2 templates by default when doing ``from
+  five import grok`` and using grok.PageTemplateFile (being consistent
+  with grok.PageTemplate).
+  [thefunny42]
+
+* Added a convenient grok.Container.
+  [thefunny42]
+
+* Fix AutoFields (and form grokker) not to include OFS Zope 2 defined
+  fields by default. This use to add a lot of buggy and wanted
+  fields.
+  [thefunny42]
+
+
+five.grok - 1.0a1 (2008-10-22)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Added support for formlib forms with `grokcore.formlib`_.
+  [thefunny42]
+
+* Added support for static resource directory.
+  [thefunny42]
+
+* Added support for inline templates and made Zope 2 template semantics
+  the default when doing ``from five import grok`` and using
+  grok.PageTemplate.
+  [optilude]
+
+* Added override to make templates use Five's ViewPageTemplateFile instead
+  of the one from zope.app.pagetemplate.
+  [optilude]
+
+* Added `grokcore.view`_ support with tests.
+  [regebro, jfroche, gotcha et al.]
+
+* Added tests for grok.subscriber directive.
+  [kamon]
+
+* Initial release (tests for adapters and utilities, initial support for
+  views).
+  [regebro, gotcha]
+
+.. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
+.. _grokcore.viewlet: http://pypi.python.org/pypi/grokcore.viewlet
+.. _grokcore.formlib: http://pypi.python.org/pypi/grokcore.formlib
