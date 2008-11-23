@@ -20,7 +20,7 @@ import grokcore.component
 
 from zope import interface, component
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from five.grok import components
+from five.grok import components, formlib
 from grokcore.view.meta.directoryresource import _get_resource_path
 from martian.error import GrokError
 
@@ -28,6 +28,21 @@ from Products.Five.security import protectClass, protectName
 from Globals import InitializeClass as initializeClass
 
 import os.path
+
+
+class FormGrokker(martian.ClassGrokker):
+
+    martian.component(components.GrokForm)
+    martian.directive(grokcore.component.context)
+    martian.priority(800)       # Must be run before real formlib grokker.
+
+    def execute(self, factory, config, context, **kw):
+        # Set up form_fields from context class if they haven't been
+        # configured manually already using our version of get_auto_fields
+        if getattr(factory, 'form_fields', None) is None:
+            factory.form_fields = formlib.get_auto_fields(context)
+        return True
+
 
 class ViewSecurityGrokker(martian.ClassGrokker):
     martian.component(five.grok.View)

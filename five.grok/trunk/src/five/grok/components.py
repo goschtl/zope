@@ -24,7 +24,8 @@ from zope import interface, component
 
 from grokcore.component.interfaces import IContext
 from grokcore.formlib.components import GrokForm as BaseGrokForm
-from grokcore.formlib.components import default_display_template, default_form_template
+from grokcore.formlib.components import default_display_template, \
+    default_form_template
 from grokcore.view.components import PageTemplate
 from grokcore.viewlet.components import Viewlet as BaseViewlet
 from grokcore.viewlet.components import ViewletManager as BaseViewletManager
@@ -41,14 +42,16 @@ from Products.Five.viewlet.manager import ViewletManagerBase as \
 from Products.PageTemplates.Expressions import SecureModuleImporter
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
 
 import Acquisition
 
 
 class Model(SimpleItem):
-    # XXX Inheritance order is important here. If we reverse this,
-    # then containers can't be models anymore because no unambigous MRO
-    # can be established.
+    interface.implements(IAttributeAnnotatable, IContext)
+
+
+class Container(Folder):
     interface.implements(IAttributeAnnotatable, IContext)
 
 

@@ -18,9 +18,11 @@ from grokcore.view import *
 from grokcore.viewlet import *
 from grokcore.formlib import *
 
-from five.grok.components import View, Model, Form, AddForm
+from five.grok.components import Model, Container
+from five.grok.components import View, Form, AddForm
 from five.grok.components import EditForm, DisplayForm
 from five.grok.components import ViewletManager, Viewlet
+from five.grok.formlib import AutoFields
 
 # Temporary import explicitly path from grokcore.view (it was missing
 # in its API interface)

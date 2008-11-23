@@ -39,6 +39,10 @@ def suiteFromPackage(name):
             continue
         if filename == '__init__.py':
             continue
+        if filename[0] in ('.', '#'):
+            # Some editor create temporary files which can be
+            # annoying.
+            continue
 
         dottedname = 'five.grok.ftests.%s.%s' % (name, filename[:-3])
         test = FunctionalDocTestSuite(
