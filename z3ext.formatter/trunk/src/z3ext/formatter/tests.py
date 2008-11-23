@@ -23,13 +23,22 @@ from zope.component import provideAdapter
 from zope.testing.cleanup import cleanUp
 from zope.app.testing import setup
 
-from zope.app.pagetemplate.engine import Engine, TrustedEngine
+from zope.pagetemplate.pagetemplate import PageTemplate
+from zope.app.pagetemplate.engine import Engine, TrustedEngine, TrustedAppPT
 from zope.app.pagetemplate.metaconfigure import clear
 
 from z3ext.controlpanel.testing import setUpControlPanel
 
 from z3ext.formatter import dformatter, dtformatter, fancydatetime
 from z3ext.formatter.expression import FormatterExpression
+
+
+class ZPTPage(TrustedAppPT, PageTemplate):
+    
+    def render(self, request, *args, **kw):
+        namespace = self.pt_getContext(args, kw)
+        namespace['request'] = request
+        return self.pt_render(namespace)
 
 
 def setUp(test):

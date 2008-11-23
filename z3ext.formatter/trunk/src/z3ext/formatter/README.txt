@@ -73,9 +73,9 @@ Setup request
 DateTime formatter
 ------------------
 
-   >>> from zope.app.zptpage import ZPTPage
+   >>> from z3ext.formatter.tests import ZPTPage
    >>> page = ZPTPage()
-   >>> page.setSource(u'''
+   >>> page.pt_edit(u'''
    ... <html>
    ...   <body>
    ...     <tal:block tal:content="formatter:dateTime,short:options/now" />
@@ -84,7 +84,7 @@ DateTime formatter
    ...     <tal:block tal:content="formatter:dateTime,full:options/now" />
    ...     <tal:block tal:content="formatter:dateTime:options/now" />
    ...   </body>
-   ... </html>''')
+   ... </html>''', 'text/html')
 
    >>> dt = datetime(2007, 1, 1, 0, 0, 0, tzinfo=UTC)
    >>> dt
@@ -206,9 +206,8 @@ fancyDatetime formatter
 
    >>> now = datetime.now(UTC)
 
-   >>> from zope.app.zptpage import ZPTPage
    >>> fpage = ZPTPage()
-   >>> fpage.setSource(u'''
+   >>> fpage.pt_edit(u'''
    ... <html>
    ...   <body>
    ...     <tal:block tal:content="formatter:fancyDatetime:options/now" />
@@ -216,7 +215,7 @@ fancyDatetime formatter
    ...     <tal:block tal:content="formatter:fancyDatetime,medium:options/now" />
    ...     <tal:block tal:content="formatter:fancyDatetime,full:options/now" />
    ...   </body>
-   ... </html>''')
+   ... </html>''', 'text/html')
 
 Today's datetime
 
@@ -266,13 +265,13 @@ Date formatter
 --------------
 
    >>> datepage = ZPTPage()
-   >>> datepage.setSource(u'''
+   >>> datepage.pt_edit(u'''
    ... <html>
    ...   <body>
    ...     <tal:block tal:content="formatter:date:options/today" />
    ...     <tal:block tal:content="formatter:date,short:options/today" />
    ...   </body>
-   ... </html>''')
+   ... </html>''', 'text/html')
 
    >>> d = date(2007, 1, 1)
    >>> d
@@ -304,8 +303,8 @@ We will get FormatterNotDefined if formatter is unknown
 Wrong format, we should add path expression
 
    >>> errpage = ZPTPage()
-   >>> errpage.setSource(u'''
-   ...     <tal:block tal:content="formatter:unknown" />''')
+   >>> errpage.pt_edit(u'''
+   ...     <tal:block tal:content="formatter:unknown" />''', 'text/html')
    >>> print errpage.render(request)
    Traceback (most recent call last):
    ...
@@ -314,8 +313,8 @@ Wrong format, we should add path expression
 Unknown formatter
 
    >>> errpage = ZPTPage()
-   >>> errpage.setSource(u'''
-   ...     <tal:block tal:content="formatter:unknown:opitons/now" />''')
+   >>> errpage.pt_edit(u'''
+   ...     <tal:block tal:content="formatter:unknown:opitons/now" />''', 'text/html')
    >>> print errpage.render(request)
    Traceback (most recent call last):
    ...
@@ -370,10 +369,10 @@ Now we need register factory as named adapter for IHTTPRequest
 Now we can use formatter
 
    >>> page = ZPTPage()
-   >>> page.setSource(u'''<tal:block tal:define="value python:121.04">
+   >>> page.pt_edit(u'''<tal:block tal:define="value python:121.04">
    ... <tal:block tal:content="formatter:currency,usd:value" />
    ... <tal:block tal:content="formatter:currency,euro:value" />
-   ... </tal:block>''')
+   ... </tal:block>''', 'text/html')
 
    >>> print page.render(request)
    121.04 $

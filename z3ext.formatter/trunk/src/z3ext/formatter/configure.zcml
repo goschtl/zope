@@ -32,6 +32,8 @@
      xmlns:zcml="http://namespaces.zope.org/zcml"
      xmlns:browser="http://namespaces.zope.org/browser"
      zcml:condition="installed z3ext.controlpanel">
+
+    <include package="z3ext.controlpanel" file="meta.zcml" />
     <include package="z3ext.controlpanel" />
 
     <z3ext:configlet
