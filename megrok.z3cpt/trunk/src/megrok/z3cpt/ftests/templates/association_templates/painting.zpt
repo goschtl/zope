@@ -1,0 +1,6 @@
+<html>
+<body>
+<h1>Hello ${view/name}!</h1>
+</body>
+</html>
+

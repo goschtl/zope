@@ -1,0 +1,13 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:grok="http://namespaces.zope.org/grok">
+
+  <include package="z3c.pt" />
+
+  <!-- We use meta-minimal so the extension is available for Zope 2 as well -->
+  <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.view" />
+
+  <grok:grok package=".templatereg" />
+
+</configure>
