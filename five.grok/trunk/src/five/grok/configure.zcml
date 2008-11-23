@@ -8,7 +8,6 @@
 
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
-  <include package="grokcore.formlib" />
 
   <browser:defaultView
       for="grokcore.component.interfaces.IContext"
