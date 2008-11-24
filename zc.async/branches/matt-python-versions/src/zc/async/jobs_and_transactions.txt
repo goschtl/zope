@@ -1,0 +1,268 @@
+This is a document for maintainers and for testing.
+
+Jobs manage their own transactions when they are called.  In normal
+use, this means that transactions are committed and aborted by the
+job itself at the points marked "COMMIT" and "ABORT" in this list
+(other software components will make commits, just not the partial):
+
+- client creates a job, puts it in a queue, and assigns callbacks to it
+  before it is run.
+- an agent claims a job
+- a dispatcher calls a job for the agent in a thread
+- job changes status to ACTIVE: COMMIT
+- job runs the wrapped callable, stores the result on its "result"
+  attribute, changes the status to CALLBACKS, and tries to COMMIT.
+  * if there is a ZODB.POSException.TransactionError, abort and retry 5
+    times, after which ABORT, set a Failure on the result attribute,
+    COMMIT, and skip to `complete`_ step below.
+  * if there is a SystemExit, KeyboardInterrupt, or any non-TransactionError
+    ZODB.POSException.POSError (which includes all ZEO-related storage
+    errors) ABORT and raise.
+  * if there are any other exceptions, ABORT, set a Failure on the result
+    attribute, COMMIT, and skip to `complete`_ step below.
+- If the result of the wrapped callable is a job or Twisted deferred,
+  add a callable for a method that sets the result, sets the status to
+  CALLBACKS, tries to commit as described above, and then proceeds with
+  the `complete`_ step.  COMMIT and return.
+- _`complete`: for each callback (which is itself a job), call it.
+  Each callback job will commit as described here.  The top job
+  catches no errors while it runs the callbacks.
+- When all callbacks have been called, set status to COMPLETED and COMMIT.
+  if there is a ZODB.POSException.TransactionError, look in the callbacks to
+  see if there is a new one.  If there is, perform it and try again; otherwise,
+  retry this forever, logging every time, because this should not happen
+  except in the case of a new additional callback.
+  logging retries: there should be no conflict errors, because no two
+  workers should be touching this job.
+- If a callback is added to this completed job, perform the callback
+  and COMMIT.  If anything fails, including a ConflictError, just raise it.
+  Someone else should abort as necessary.
+- If a callback is added to a job in any other status, set the job's
+  _p_changed to True and commit so that we raise a ConflictError, check the
+  status again, and retry if the job's status changed while we were
+  checking it.
+
+Note the following:
+- if a job's wrapped callable returns a failure, that means that it
+  is taking responsibility for any necessary abort: the job will still
+  attempt to commit.
+- the status never changes out of COMPLETED even when a new callback is
+  added.
+- __call__ *can* raise a ConflictError; the only known way is to have two
+  workers start the same job, which should not be possible in normal
+  zc.async usage.
+- addCallbacks may raise a ConflictError: this would happen, for instance,
+  when status is COMPLETED so callbacks are performed immediately.
+
+What could go wrong?  In this list "T1" stands for one hypothetical
+thread, and "T2" stands for another hypothetical thread, often
+overlapping in time with T1.
+
+- T1 goes to CALLBACKS status and begins evaluating callbacks.  T2 adds another
+  callback [#set_up]_.  We need to be careful that the callback is executed.
+
+    >>> import threading
+    >>> _thread_lock = threading.Lock()
+    >>> _main_lock = threading.Lock()
+    >>> called = 0
+    >>> def safe_release(lock):
+    ...     while not lock.locked():
+    ...         pass
+    ...     lock.release()
+    ...
+    >>> def locked_call(res=None):
+    ...     global called
+    ...     safe_release(_main_lock)
+    ...     _thread_lock.acquire()
+    ...     called += 1
+    ...
+    >>> def call_from_thread(j):
+    ...     id = j._p_oid
+    ...     def call():
+    ...         conn = db.open()
+    ...         j = conn.get(id)
+    ...         j()
+    ...     return call
+    ...
+    >>> _thread_lock.acquire()
+    True
+    >>> _main_lock.acquire()
+    True
+    >>> import zc.async.job
+    >>> root['j'] = j = zc.async.job.Job(locked_call)
+    >>> j2 = j.addCallbacks(locked_call)
+    >>> import transaction
+    >>> transaction.commit()
+    >>> t = threading.Thread(target=call_from_thread(j))
+    >>> t.start()
+    >>> _main_lock.acquire()
+    True
+    >>> called
+    0
+    >>> trans = transaction.begin()
+    >>> j.status == zc.async.interfaces.ACTIVE
+    True
+    >>> safe_release(_thread_lock)
+    >>> _main_lock.acquire()
+    True
+    >>> called # the main call
+    1
+    >>> trans = transaction.begin()
+    >>> j.status == zc.async.interfaces.CALLBACKS
+    True
+    >>> j3 = j.addCallbacks(locked_call)
+    >>> transaction.commit()
+    >>> safe_release(_thread_lock)
+    >>> _main_lock.acquire()
+    True
+    >>> called # call back number one
+    2
+    >>> safe_release(_thread_lock)
+    >>> safe_release(_thread_lock)
+    >>> while t.isAlive():
+    ...     pass
+    ...
+    >>> called # call back number two
+    ...        # (added while first callback was in progress)
+    3
+    >>> _main_lock.release()
+
+- T1 goes to CALLBACKS status.  In the split second between checking for
+  any remaining callbacks and changing status to COMPLETED, T2 adds a
+  callback and commits.  T1 commits.  T2 thinks that callbacks are still
+  being processed, so does not process the callback, but meanwhile the
+  status is being switched to COMPLETED, and the new callback is never
+  made. For this, we could turn off MVCC, but we don't want to do that
+  if we can help it because of efficiency.  A better solution is to set
+  _p_changed in T2 on the job, and commit; if there's a conflict
+  error, re-get the status because its change may have caused the
+  conflict.
+
+    >>> import sys
+    >>> class LockedSetter(object):
+    ...     def __init__(self, name, condition, initial=None):
+    ...         self.name = name
+    ...         self.condition = condition
+    ...         self.value = initial
+    ...     def __get__(self, obj, typ=None):
+    ...         if obj is None:
+    ...             return self
+    ...         return getattr(obj, '_z_locked_' + self.name, self.value)
+    ...     def __set__(self, obj, value):
+    ...         if self.condition(obj, value):
+    ...             safe_release(_main_lock)
+    ...             _thread_lock.acquire()
+    ...         setattr(obj, '_z_locked_' + self.name, value)
+    ...
+    >>> import zc.async.job
+    >>> class Job(zc.async.job.Job):
+    ...     _status_id = LockedSetter(
+    ...         '_status_id',
+    ...         lambda o, v: v == 3,
+    ...         0)
+    ...
+    >>> called = 0
+    >>> def call(res=None):
+    ...     global called
+    ...     called += 1
+    ...
+    >>> root['j2'] = j = Job(call)
+    >>> transaction.commit()
+    >>> _thread_lock.acquire()
+    True
+    >>> _main_lock.acquire()
+    True
+    >>> t = threading.Thread(target=call_from_thread(j))
+    >>> t.start()
+    >>> _main_lock.acquire()
+    True
+    >>> trans = transaction.begin()
+    >>> called
+    1
+    >>> j.status == zc.async.interfaces.CALLBACKS
+    True
+    >>> j2 = j.addCallbacks(call)
+    >>> transaction.commit()
+    >>> safe_release(_thread_lock)
+    >>> _main_lock.acquire()
+    True
+    >>> trans = transaction.begin()
+    >>> called
+    2
+    >>> j.status == zc.async.interfaces.CALLBACKS
+    True
+    >>> safe_release(_thread_lock)
+    >>> safe_release(_thread_lock)
+    >>> while t.isAlive():
+    ...     pass
+    ...
+    >>> _main_lock.release()
+
+  Note, because of this, addCallbacks can raise a ConflictError: it probably
+  means that the status changed out from under it.  Just retry.
+
+- T1 is performing callbacks.  T2 begins and adds a callback.  T1 changes status
+  to COMPLETED and commits.  T2 commits.  If we don't handle it carefully,
+  the callback is never called.  So we handle it carefully.
+
+    >>> _thread_lock.acquire()
+    True
+    >>> _main_lock.acquire()
+    True
+    >>> called = 0
+    >>> root['j3'] = j = zc.async.job.Job(call)
+    >>> j1 = j.addCallbacks(locked_call)
+    >>> transaction.commit()
+    >>> t = threading.Thread(target=call_from_thread(j))
+    >>> t.start()
+    >>> _main_lock.acquire()
+    True
+    >>> called
+    1
+    >>> trans = transaction.begin()
+    >>> def call_and_unlock(res):
+    ...     global called
+    ...     called += 1
+    ...
+    >>> j2 = j.addCallbacks(call_and_unlock)
+    >>> safe_release(_thread_lock)
+    >>> safe_release(_thread_lock)
+    >>> while t.isAlive():
+    ...     pass
+    ...
+    >>> called # the main call
+    2
+    >>> transaction.commit() # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ConflictError: database conflict error (..., class zc.async.job.Job)
+    >>> transaction.abort()
+    >>> j2 = j.addCallbacks(call_and_unlock)
+    >>> called
+    3
+    >>> transaction.commit()
+    >>> _main_lock.release()
+
+- T1 adds a callback to COMPLETED status.  It immediately runs the callback.
+  Simultaneously, T2 adds a callback to COMPLETED status.  No problem.
+
+- two workers might claim and start the same job.  This should
+  already be stopped by workers committing transactions after they claimed
+  them.  This is considered to be a pathological case.
+
+- Generally, if a worker is determined to be dead, and its jobs are
+  handed out to other workers, but the worker is actually alive, this can
+  be a serious problem.  This is also considered to be a pathological case.
+
+=========
+Footnotes
+=========
+
+.. [#set_up] We'll actually create the state that the text needs here.
+
+    >>> from ZODB.tests.util import DB
+    >>> db = DB()
+    >>> conn = db.open()
+    >>> root = conn.root()
+    >>> import zc.async.configure
+    >>> zc.async.configure.base()
