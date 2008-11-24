@@ -54,7 +54,7 @@ class TestCompiler(translation.Compiler):
         return template
 
 class MockElement(translation.Element):
-    class node(translation.Node):
+    class Node(translation.Node):
         def __getattr__(self, name):
             return None
 
@@ -90,7 +90,7 @@ class MockElement(translation.Element):
         def format(self):
             return self.element.xi_parse
 
-    node = property(node)
+    node = property(Node)
 
     xi_href = None
     xi_parse = None
@@ -108,6 +108,8 @@ class MockParser(etree.Parser):
         config.META_NS: {None: MockMetaElement},
         config.XI_NS: {None: MockXiElement}}
 
+    fallback = MockElement
+    
 mock_parser = MockParser()
 
 class MockTemplate(object):
