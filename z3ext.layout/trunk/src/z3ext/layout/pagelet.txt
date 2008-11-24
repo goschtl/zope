@@ -5,10 +5,11 @@ Pagelet directive
 Show how we can use the pagelet directive. Register the meta configuration for 
 the directive.
 
-  >>> import os, tempfile
+  >>> import os, tempfile, sys
   >>> from zope import interface, component
   >>> from zope.configuration import xmlconfig
   >>> from z3ext.layout.interfaces import IPagelet
+
   >>> import z3ext.layout
   >>> context = xmlconfig.file('meta.zcml', z3ext.layout)
 
@@ -182,6 +183,12 @@ provide IPageTemplate adapter for pagelet
   Traceback (most recent call last):
   ...
   LookupError: Can't find IPageTemplate for pagelet.
+
+  >>> try:
+  ...     __file__
+  ... except NameError:
+  ...     from z3ext.layout import tests
+  ...     __file__ = tests.__file__
 
   >>> from zope.pagetemplate.interfaces import IPageTemplate
   >>> from zope.app.pagetemplate import ViewPageTemplateFile
