@@ -19,7 +19,13 @@ class ZopePageTemplateElement(translation.Element):
 
     class node(translation.Node):
         content_symbol = '_content'
-        
+
+        ns_omit = (
+            "http://xml.zope.org/namespaces/meta",
+            "http://xml.zope.org/namespaces/tal",
+            "http://xml.zope.org/namespaces/metal",
+            "http://xml.zope.org/namespaces/i18n")
+
         @property
         def omit(self):
             if self.element.tal_omit is not None:
@@ -107,11 +113,6 @@ class ZopePageTemplateElement(translation.Element):
         def translated_attributes(self):
             return self.element.i18n_attributes
         
-        @property
-        def static_attributes(self):
-            return utils.get_attributes_from_namespace(
-                self.element, config.XHTML_NS)
-            
         @property
         def translate(self):
             return self.element.i18n_translate
