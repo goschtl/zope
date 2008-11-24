@@ -276,14 +276,20 @@ class odict(UserDict):
         return map(self.get, self._keys)
     
 def get_attributes_from_namespace(element, namespace):
-    if element.nsmap.get(element.prefix, marker) in (namespace, marker):
-        return dict([
+    if namespace is None:
+        attrs = dict([
             (name, value) for (name, value) in element.attrib.items() \
             if '{' not in name])
+    else:
+        attrs = dict([
+            (name, value) for (name, value) in element.attrib.items() \
+            if name.startswith('{%s}' % namespace)])
+        
+    if namespace == config.XHTML_NS and element.prefix is None:
+        attrs.update(get_attributes_from_namespace(
+            element, None))
 
-    return dict([
-        (name, value) for (name, value) in element.attrib.items() \
-        if name.startswith('{%s}' % namespace)])
+    return attrs
 
 def get_namespace(element):
     if '}' in element.tag:

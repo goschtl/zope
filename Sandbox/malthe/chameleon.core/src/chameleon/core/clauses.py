@@ -545,7 +545,7 @@ class Tag(object):
 
     def __init__(self, tag, attributes=None, selfclosing=False,
                  expression=None, cdata=False, defaults={}):
-        self.tag = tag.split('}')[-1]
+        self.tag = tag
         self.defaults = defaults
         self.selfclosing = selfclosing
         self.attributes = attributes or {}

@@ -42,9 +42,11 @@ class Node(object):
     include = None
     format = None
     dict_attributes = None
-    static_attributes = utils.emptydict()
     dynamic_attributes = utils.emptydict()
 
+    ns_omit = (
+        "http://xml.zope.org/namespaces/meta")
+    
     def __init__(self, element):
         self.element = element
 
@@ -69,6 +71,23 @@ class Node(object):
         if self.element.tail is None:
             return ()
         return (self.element.tail,)
+
+    @property
+    def static_attributes(self):
+        result = {}
+
+        for prefix, ns in self.element.nsmap.items():
+            if ns not in self.ns_omit:
+                attrs = utils.get_attributes_from_namespace(self.element, ns)            
+                for tag, value in attrs.items():
+                    name = tag.split('}')[-1]
+                    
+                    if prefix:
+                        result["%s:%s" % (prefix, name)] = value
+                    else:
+                        result[name] = value
+                        
+        return result
 
     @property
     def stream(self):

@@ -59,11 +59,6 @@ class MockElement(translation.Element):
             return None
 
         @property
-        def static_attributes(self):
-            return utils.get_attributes_from_namespace(
-                self.element, config.XHTML_NS)
-
-        @property
         def omit(self):
             if self.element.meta_omit is not None:
                 return self.element.meta_omit or True

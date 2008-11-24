@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Static attributes are now computed such that attributes are omitted
+  according to a `ns_omit` flag, and they are always prefixed
+  according to the element's `nsmap`. [malthe]
+
 - Do not fix-up self-closing tags if an XML declaration is present
   without a DOCTYPE. [malthe]
 
