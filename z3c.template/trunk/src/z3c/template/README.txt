@@ -87,9 +87,11 @@ We register the factory on a view interface and a layer.
   ...     interfaces.IContentTemplate)
   >>> template = component.getMultiAdapter((view, request),
   ...     interfaces.IPageTemplate)
-  >>> template
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
-  
+
+  >>> from z3c.pt.compat import ViewPageTemplateFile
+  >>> isinstance(template, ViewPageTemplateFile)
+  True
+ 
 Now that we have a registered layout template for the default layer we can
 call our view again.
 
@@ -168,8 +170,9 @@ ILayoutTemplate interface.
   ...      interfaces.ILayoutTemplate)
   >>> layout = component.getMultiAdapter(
   ...     (view2, request), interfaces.ILayoutTemplate)
-  >>> layout
-  <z3c.pt.compat.ViewPageTemplateFile ...>
+
+  >>> isinstance(layout, ViewPageTemplateFile)
+  True
 
 Now that we have a registered layout template for the default layer we can
 call our view again.

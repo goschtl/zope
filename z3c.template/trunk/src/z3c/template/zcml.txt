@@ -66,8 +66,9 @@ Let's get the template
 
 and check them:
 
-  >>> template
-  <z3c.pt.compat.ViewPageTemplateFile object ...>
+  >>> from z3c.pt.compat import ViewPageTemplateFile
+  >>> isinstance(template, ViewPageTemplateFile)
+  True
 
   >>> print template(view)
   <div>content</div>
@@ -101,8 +102,8 @@ Let's get the template
 
 and check them:
 
-  >>> layout
-  <z3c.pt.compat.ViewPageTemplateFile object ...>
+  >>> isinstance(layout, ViewPageTemplateFile)
+  True
 
   >>> print layout(view)
   <div>layout</div>
