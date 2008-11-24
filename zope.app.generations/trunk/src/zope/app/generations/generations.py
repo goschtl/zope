@@ -28,6 +28,7 @@ from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
 from interfaces import ISchemaManager, IInstallableSchemaManager
 
 
+logger = logging.getLogger('zope.app.generations')
 generations_key = 'zope.app.generations'
 
 
@@ -166,20 +167,23 @@ class SchemaManager(object):
         return evolver.evolve.__doc__
 
 
-
 class Context(object):
     pass
+
 
 def findManagers():
     # Hook to let Chris use this for Zope 2
     return zope.component.getUtilitiesFor(ISchemaManager)
+
 
 def PersistentDict():
     # Another hook to let Chris use this for Zope 2
     import persistent.dict
     return persistent.dict.PersistentDict()
 
-EVOLVE, EVOLVENOT, EVOLVEMINIMUM = 0, 1, 2
+
+EVOLVE, EVOLVENOT, EVOLVEMINIMUM = 'EVOLVE', 'EVOLVENOT', 'EVOLVEMINIMUM'
+
 
 def evolve(db, how=EVOLVE):
     """Evolve a database
@@ -203,6 +207,15 @@ def evolve(db, how=EVOLVE):
       ...
       ...         context.connection.root()[self.name] = generation
 
+    Evolving a database will cause log messages to be written, so we need a
+    logging handler:
+
+      >>> from zope.testing import loggingsupport
+      >>> loghandler = loggingsupport.InstalledHandler('zope.app.generations')
+      >>> def print_log():
+      ...    print loghandler
+      ...    loghandler.clear()
+
     We also need to set up the component system, since we'll be
     registering utilities:
 
@@ -221,7 +234,7 @@ def evolve(db, how=EVOLVE):
     the generation data:
 
       >>> from ZODB.tests.util import DB
-      >>> db = DB()
+      >>> db = DB(database_name='testdb')
       >>> conn = db.open()
       >>> root = conn.root()
       >>> evolve(db)
@@ -230,6 +243,10 @@ def evolve(db, how=EVOLVE):
       1
       >>> root[generations_key]['app2']
       11
+
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVE
 
     But nothing will have been done to the database:
 
@@ -240,6 +257,16 @@ def evolve(db, how=EVOLVE):
 
       >>> app1.generation += 1
       >>> evolve(db)
+
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVE
+      zope.app.generations INFO
+        testdb/app1: currently at generation 1, targetting generation 2
+      zope.app.generations DEBUG
+        testdb/app1: evolving to generation 2
+      zope.app.generations DEBUG
+        testdb/app2: up-to-date at generation 11
 
     We'll see that the generation data has updated:
 
@@ -259,16 +286,23 @@ def evolve(db, how=EVOLVE):
     generation is greater than the minimum generation, then we won't
     get an error from evolve, but we will get a log message.
 
-      >>> from zope.testing import loggingsupport
-      >>> handler = loggingsupport.InstalledHandler('zope.app.generations')
-
       >>> app1.erron = 4
       >>> app1.generation = 7
       >>> evolve(db)
 
-      >>> print handler
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVE
+      zope.app.generations INFO
+        testdb/app1: currently at generation 2, targetting generation 7
+      zope.app.generations DEBUG
+        testdb/app1: evolving to generation 3
+      zope.app.generations DEBUG
+        testdb/app1: evolving to generation 4
       zope.app.generations ERROR
-        Failed to evolve database to generation 4 for app1
+        testdb/app1: failed to evolve to generation 4
+      zope.app.generations DEBUG
+        testdb/app2: up-to-date at generation 11
 
     The database will have been updated for previous generations:
 
@@ -292,11 +326,15 @@ def evolve(db, how=EVOLVE):
 
     We'll also get a log entry:
 
-      >>> print handler
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVE
+      zope.app.generations INFO
+        testdb/app1: currently at generation 3, targetting generation 7
+      zope.app.generations DEBUG
+        testdb/app1: evolving to generation 4
       zope.app.generations ERROR
-        Failed to evolve database to generation 4 for app1
-      zope.app.generations ERROR
-        Failed to evolve database to generation 4 for app1
+        testdb/app1: failed to evolve to generation 4
 
     So far, we've used evolve in its default policy, in which we evolve
     as far as we can up to the current generation.  There are two
@@ -319,6 +357,12 @@ def evolve(db, how=EVOLVE):
       ...
       GenerationTooLow: (3, u'app1', 4)
 
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVENOT
+      zope.app.generations ERROR
+        testdb/app1: current generation too low (3 < 4) but mode is EVOLVENOT
+
     We got an error because we aren't at the minimum generation for
     app1.  The database generation for app1 is still 3 because we
     didn't do any evolution:
@@ -339,6 +383,16 @@ def evolve(db, how=EVOLVE):
       >>> root.get('app1')
       4
 
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVEMINIMUM
+      zope.app.generations INFO
+        testdb/app1: currently at generation 3, targetting generation 4
+      zope.app.generations DEBUG
+        testdb/app1: evolving to generation 4
+      zope.app.generations DEBUG
+        testdb/app2: up-to-date at generation 11
+
     If we happen to install an app that has a generation that is less
     that the database generation, we'll get an error, because there is
     no way to get the database to a generation that the app
@@ -351,14 +405,23 @@ def evolve(db, how=EVOLVE):
       ...
       GenerationTooHigh: (4, u'app1', 2)
 
+      >>> print_log()
+      zope.app.generations INFO
+        testdb: evolving in mode EVOLVE
+      zope.app.generations ERROR
+        testdb/app1: current generation too high (4 > 2)
+
     We'd better clean up:
 
-      >>> handler.uninstall()
+      >>> loghandler.uninstall()
       >>> conn.close()
       >>> db.close()
       >>> tearDown()
 
     """
+    db_name = db.database_name or 'main db'
+    logger.info('%s: evolving in mode %s' %
+                (db_name, how))
     conn = db.open()
     try:
         context = Context()
@@ -373,6 +436,8 @@ def evolve(db, how=EVOLVE):
             generation = generations.get(key)
 
             if generation == manager.generation:
+                logger.debug('%s/%s: up-to-date at generation %s' %
+                             (db_name, key, generation))
                 continue
 
             if generation is None:
@@ -380,12 +445,13 @@ def evolve(db, how=EVOLVE):
 
                 if IInstallableSchemaManager.providedBy(manager):
                     try:
+                        logger.info("%s/%s: running install generation",
+                                    db_name, key)
                         manager.install(context)
                     except:
                         transaction.abort()
-                        logging.getLogger('zope.app.generations').exception(
-                            "Failed to install %s",
-                            key)
+                        logger.exception("%s/%s: failed to run install",
+                                         db_name, key)
                         raise
 
                 generations[key] = manager.generation
@@ -393,10 +459,18 @@ def evolve(db, how=EVOLVE):
                 continue
 
             if generation > manager.generation:
+                logger.error('%s/%s: current generation too high (%d > %d)',
+                             db_name, key,
+                             generation, manager.generation)
                 raise GenerationTooHigh(generation, key, manager.generation)
 
             if generation < manager.minimum_generation:
                 if how == EVOLVENOT:
+                    logger.error('%s/%s: current generation too low '
+                                 '(%d < %d) but mode is %s',
+                                 db_name, key,
+                                 generation, manager.minimum_generation,
+                                 how)
                     raise GenerationTooLow(
                         generation, key, manager.minimum_generation)
             else:
@@ -408,19 +482,24 @@ def evolve(db, how=EVOLVE):
             else:
                 target = manager.generation
 
+            logger.info('%s/%s: currently at generation %d, targetting generation %d',
+                        db_name, key, generation, target)
+
             while generation < target:
                 generation += 1
                 try:
                     transaction.begin()
+                    logger.debug('%s/%s: evolving to generation %d',
+                                 db_name, key, generation)
                     manager.evolve(context, generation)
                     generations[key] = generation
                     transaction.commit()
                 except:
                     # An unguarded handler is intended here
                     transaction.abort()
-                    logging.getLogger('zope.app.generations').exception(
-                        "Failed to evolve database to generation %d for %s",
-                        generation, key)
+                    logger.exception(
+                        "%s/%s: failed to evolve to generation %d",
+                        db_name, key, generation)
 
                     if generation <= manager.minimum_generation:
                         raise UnableToEvolve(generation, key,
@@ -430,12 +509,13 @@ def evolve(db, how=EVOLVE):
         conn.close()
 
 
-
 def evolveSubscriber(event):
     evolve(event.database, EVOLVE)
 
+
 def evolveNotSubscriber(event):
     evolve(event.database, EVOLVENOT)
+
 
 def evolveMinimumSubscriber(event):
     evolve(event.database, EVOLVEMINIMUM)
