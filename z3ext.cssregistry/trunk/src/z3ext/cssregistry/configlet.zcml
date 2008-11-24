@@ -7,6 +7,7 @@
    i18n_domain="z3ext.cssregistry">
 
   <include package="z3ext.controlpanel" file="meta.zcml" />
+  <include package="z3ext.controlpanel" />
 
   <z3ext:configlet
      name="ui.cssregistry"
