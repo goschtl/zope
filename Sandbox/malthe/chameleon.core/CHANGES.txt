@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Do not fix-up self-closing tags if an XML declaration is present
+  without a DOCTYPE. [malthe]
+
 - Prefix tags which do not belong to the default namespace. [malthe]
 
 1.0b10 (released 24/11/2008)

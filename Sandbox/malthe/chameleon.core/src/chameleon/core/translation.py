@@ -44,7 +44,7 @@ class Node(object):
     dict_attributes = None
     static_attributes = utils.emptydict()
     dynamic_attributes = utils.emptydict()
-    
+
     def __init__(self, element):
         self.element = element
 
@@ -69,7 +69,7 @@ class Node(object):
         if self.element.tail is None:
             return ()
         return (self.element.tail,)
-    
+
     @property
     def stream(self):
         return self.element.stream
@@ -600,11 +600,13 @@ class Compiler(object):
         elif parsed_doctype and not no_doctype_declaration:
             self.doctype = parsed_doctype
 
-        # limit self-closing tags to the allowed subset for templates
-        # with a non-XML compliant document type (non-strict); see
+        # if the document has no XML declaration, limit self-closing
+        # tags to the allowed subset for templates with a non-XML
+        # compliant document type (non-strict); see
         # http://www.w3.org/TR/xhtml1/#C_3 for more information.
         ldoctype = (self.doctype or implicit_doctype or "").lower()
-        if 'html' in ldoctype and 'strict' not in ldoctype:
+        if no_xml_declaration and \
+               'html' in ldoctype and 'strict' not in ldoctype:
             for element in self.root.getiterator():
                 try:
                     tag = element.tag.split('}')[-1]
