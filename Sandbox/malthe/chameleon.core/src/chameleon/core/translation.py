@@ -49,6 +49,16 @@ class Node(object):
         self.element = element
 
     @property
+    def tag(self):
+        tag = self.element.tag
+        if '}' in tag:
+            url, tag = tag[1:].split('}')
+            for prefix, _url in self.element.nsmap.items():
+                if prefix is not None and _url == url:
+                    return "%s:%s" % (prefix, tag)
+        return tag
+    
+    @property
     def text(self):
         if self.element.text is None:
             return ()
@@ -232,7 +242,7 @@ class Node(object):
         if self.omit is not True:
             selfclosing = not text and not dynamic and len(self.element) == 0
             tag = clauses.Tag(
-                self.element.tag, attributes,
+                self.tag, attributes,
                 expression=self.dict_attributes, selfclosing=selfclosing,
                 cdata=self.cdata is not None, defaults=self.static_attributes)
             if self.omit:
