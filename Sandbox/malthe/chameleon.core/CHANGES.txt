@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b10 (released 24/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Do not apply namespace attribute 'xmlns' to root element if not
   set. [malthe]
 
