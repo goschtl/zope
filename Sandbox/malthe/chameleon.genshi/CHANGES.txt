@@ -4,6 +4,8 @@ Changelog
 head
 ~~~~
 
+- Update handling of static attributes. [malthe]
+
 - Added text template classes. [malthe, wichert]
 
 - Added default element to parser class. [malthe]

@@ -12,6 +12,12 @@ class GenshiElement(translation.Element):
     translator = expressions.translator
     
     class node(translation.Node):
+        ns_omit = (
+            "http://xml.zope.org/namespaces/meta",
+            "http://xml.zope.org/namespaces/i18n",
+            "http://www.w3.org/2001/XInclude",
+            "http://genshi.edgewall.org/")
+
         @property
         def omit(self):
             if self.element.py_strip is not None:
@@ -69,11 +75,6 @@ class GenshiElement(translation.Element):
             if len(attributes) > 0:
                 return attributes
             
-        @property
-        def static_attributes(self):
-            return utils.get_attributes_from_namespace(
-                self.element, config.XHTML_NS)
-
         @property
         def macro(self):
             return self.element.py_def
