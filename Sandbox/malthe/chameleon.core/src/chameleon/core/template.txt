@@ -80,6 +80,24 @@ XML-support
     Hello World!
   </div>  
 
+Foreign attributes and elements are included as-is.
+  
+  >>> print Template("""\
+  ... <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  ... <info xmlns:xlink="http://www.w3.org/1999/xlink">
+  ...   <order xlink:type="simple" xlink:href="./status" />
+  ...   <xlink:description>
+  ...       My order
+  ...   </xlink:description>
+  ... </info>""", mock_parser)()
+  <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  <info>
+    <order xlink:type="simple" xlink:href="./status" />
+    <xlink:description>
+       My order
+    </xlink:description>
+  </info>
+  
 Error handling
 --------------
 
