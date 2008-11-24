@@ -78,12 +78,3 @@ class Layer(object):
     interface.implements(ICSSRegistryLayer)
 
 Layer = Layer()
-
-
-class ICSSRegistryConfiglet(ICSSRegistry):
-    """ css registry configlet """
-
-    enabled = schema.Bool(
-        title = _(u'Enabled'),
-        default = False,
-        required = True)

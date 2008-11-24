@@ -1,7 +1,5 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:i18n="http://namespaces.zope.org/i18n"
-   xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.cssregistry">
 
   <includeDependencies package="." />
@@ -42,9 +40,9 @@
     <property name="contentBackgroundColor" value="white" />
 
     <property name="fontFamily"
-	      value="Verdana, Tahoma, Helvetica, Arial, sans-serif" />
+	      value="'Lucida Grande', Verdana, Tahoma, Helvetica, Sans-Serif" />
     <property name="headingFontFamily"
-	      value="Verdana, Tahoma, Helvetica, Arial, sans-serif" />
+	      value="'Lucida Grande', Verdana, Tahoma, Helvetica, Sans-Serif" />
     <property name="monospaceFontFamily" 
 	      value="Monaco, 'Courier New', Courier, monospace" />
 
@@ -82,10 +80,5 @@
     <property name="notifyBorderColor" value="#ffa500" />
     <property name="notifyBackgroundColor" value="#ffce7b" />
   </browser:cssregistry>
-
-  <include file="configlet.zcml" />
-
-  <!-- translations -->
-  <i18n:registerTranslations directory="locales"/>
 
 </configure>
