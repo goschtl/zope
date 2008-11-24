@@ -647,9 +647,11 @@ class Compiler(object):
                 del element.attrib[utils.metal_attr('define-macro')]
                 
         if macro is None or 'include_ns_attribute' in parameters:
-            # add namespace attribute to 
-            namespace = self.root.tag.split('}')[0][1:]
-            self.root.attrib['xmlns'] = namespace
+            # is root element carries a namespace, add 'xmlns'
+            # attribute to it
+            if '}' in self.root.tag:
+                namespace = self.root.tag.split('}')[0][1:]
+                self.root.attrib['xmlns'] = namespace
         
         if global_scope:
             wrapper = generation.template_wrapper
