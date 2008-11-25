@@ -60,6 +60,10 @@ class GenshiElement(translation.Element):
 
             xhtml_attributes = utils.get_attributes_from_namespace(
                 self.element, config.XHTML_NS)
+
+            if self.element.prefix is None:
+                xhtml_attributes.update(utils.get_attributes_from_namespace(
+                    self.element, None))
             
             for name, value in xhtml_attributes.items():
                 parts = self.element.translator.split(value)
