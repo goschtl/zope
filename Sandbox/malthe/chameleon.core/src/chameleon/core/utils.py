@@ -187,12 +187,33 @@ class repeatitem(object):
 class repeatdict(dict):
     def insert(self, key, iterable):
         try:
-            length = len(iterable)
+            # this may seem convoluted, but in some cases, looking up
+            # the ``__len__`` attribute may raise an exception, in
+            # which case we'll pretend it isn't there; in this case, a
+            # safe way to get the length is to coerce the iterable
+            # into a tuple from which we can always get the length
+            __len__ = getattr(iterable, '__len__')
+        except AttributeError:
+            # some objects may provide a length but not possess a
+            # ``__len__`` in which case we'll try using the builtin
+            # method to obtain the length
+            try:
+                __len__ = length = len(iterable)
+            except TypeError:
+                # only if this results in a type-error, do we let is
+                # pass through; we do not want to mask any errors
+                # caused by actual code
+                __len__ = None
+        except (KeyboardInterrupt, SystemExit):
+            # these should never be caught; re-raise exception
+            raise
         except:
-            # we catch all exceptions here, because it's not required
-            # for iteration
-            length = None
-            
+            __len__ = None
+        else:
+            # it should be safe to obtain the length from the
+            # ``__len__`` method; remove safety gloves.
+            length = __len__()
+
         try:
             # We used to do iterable.__iter__() but, e.g. BTreeItems
             # objects are iterable (via __getitem__) but don't possess
@@ -203,8 +224,14 @@ class repeatdict(dict):
             raise TypeError(
                 "Can only repeat over an iterable object (%s)." % iterable)
 
-        if length is not None:
-            self[key] = (iterator, length)
+        # if no length was obtained, coerce iterable to a tuple first
+        if __len__ is None:
+            generated = tuple(iterator)
+            iterator = iter(generated)
+            length = len(generated)            
+
+        # insert iterable into repeat structure
+        self[key] = (iterator, length)
             
         return iterator
         

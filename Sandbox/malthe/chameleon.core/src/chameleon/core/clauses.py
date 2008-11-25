@@ -721,6 +721,25 @@ class Repeat(object):
     >>> _repeat.end(stream)
     >>> exec stream.getvalue()
 
+    A repeat over an iterable which has no length, renders the generator.
+
+    >>> class iterator(object):
+    ...     def __iter__(self):
+    ...         yield 1; yield 2; yield 3
+    
+    >>> _out, _write, stream = testing.setup_stream()
+    >>> _repeat = Repeat(types.declaration(("i",)), testing.pyexp("iterator()"))
+    >>> _repeat.begin(stream)
+    >>> stream.write("r = repeat['i']")
+    >>> stream.write(
+    ...     "print (i, r.index, r.start, r.end, r.number(), r.odd(), r.even())")
+    >>> _repeat.end(stream)
+    >>> exec stream.getvalue()
+    (1, 0, True, False, 1, False, True)
+    (2, 1, False, False, 2, True, False)
+    (3, 2, False, True, 3, False, True)
+    >>> _repeat.end(stream)
+
     A repeat over a non-iterable raises an exception.
 
     >>> _out, _write, stream = testing.setup_stream()

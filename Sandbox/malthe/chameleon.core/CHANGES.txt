@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Made repeat-variable work with iterables which do not announce their
+  length before execution. [malthe]
+
 - Added namespace attribute support. [malthe]
 
 - Static attributes are now computed such that attributes are omitted
