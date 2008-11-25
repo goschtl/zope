@@ -200,7 +200,7 @@ class repeatdict(dict):
         except TypeError:
             raise TypeError(
                 "Can only repeat over an iterable object (%s)." % iterable)
-        
+
         self[key] = (iterator, length)
         return iterator
         
@@ -284,10 +284,6 @@ def get_attributes_from_namespace(element, namespace):
         attrs = dict([
             (name, value) for (name, value) in element.attrib.items() \
             if name.startswith('{%s}' % namespace)])
-        
-    if namespace == config.XHTML_NS and element.prefix is None:
-        attrs.update(get_attributes_from_namespace(
-            element, None))
 
     return attrs
 

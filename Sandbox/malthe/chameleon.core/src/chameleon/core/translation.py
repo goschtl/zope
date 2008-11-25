@@ -44,8 +44,7 @@ class Node(object):
     dict_attributes = None
     dynamic_attributes = utils.emptydict()
 
-    ns_omit = (
-        "http://xml.zope.org/namespaces/meta")
+    ns_omit = "http://xml.zope.org/namespaces/meta",
     
     def __init__(self, element):
         self.element = element
@@ -73,6 +72,23 @@ class Node(object):
         return (self.element.tail,)
 
     @property
+    def ns_attributes(self):
+        prefix_omit = set()
+        namespaces = self.element.nsmap.values()
+
+        parent = self.element.getparent()
+        while parent is not None:
+            for prefix, ns in parent.nsmap.items():
+                if ns in namespaces:
+                    prefix_omit.add(prefix)
+            parent = parent.getparent()
+
+        return dict(
+            ((prefix and "xmlns:%s" % prefix or "xmlns", ns) for (prefix, ns) in \
+             self.element.nsmap.items() if \
+             ns not in self.ns_omit and prefix not in prefix_omit)
+    
+    @property
     def static_attributes(self):
         result = {}
 
@@ -86,7 +102,11 @@ class Node(object):
                         result["%s:%s" % (prefix, name)] = value
                     else:
                         result[name] = value
-                        
+
+        if self.element.prefix is None:
+            result.update(
+                utils.get_attributes_from_namespace(self.element, None))
+            
         return result
 
     @property
@@ -213,6 +233,7 @@ class Node(object):
         # static attributes are at the bottom of the food chain
         attributes = utils.odict()
         attributes.update(self.static_attributes)
+        attributes.update(self.ns_attributes)
 
         # dynamic attributes
         dynamic_attrs = self.dynamic_attributes or ()
@@ -677,13 +698,6 @@ class Compiler(object):
             else:
                 del element.attrib[utils.metal_attr('define-macro')]
                 
-        if macro is None or 'include_ns_attribute' in parameters:
-            # is root element carries a namespace, add 'xmlns'
-            # attribute to it
-            if '}' in self.root.tag:
-                namespace = self.root.tag.split('}')[0][1:]
-                self.root.attrib['xmlns'] = namespace
-        
         if global_scope:
             wrapper = generation.template_wrapper
         else:

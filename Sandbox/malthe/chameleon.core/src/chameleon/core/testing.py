@@ -55,6 +55,10 @@ class TestCompiler(translation.Compiler):
 
 class MockElement(translation.Element):
     class Node(translation.Node):
+        ns_omit = (
+            "http://xml.zope.org/namespaces/meta",
+            "http://www.w3.org/2001/XInclude")
+        
         def __getattr__(self, name):
             return None
 
