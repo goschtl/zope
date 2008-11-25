@@ -38,14 +38,19 @@ class AMFParser(object):
         context = pyamf.get_context(pyamf.AMF0)
         self.requests = remoting.decode(data, context)
         self.auth = None
+        self.paths = None
 
     def parse(self):
         name, request = self.requests.items()[0]
         if self.requests.headers:
             self.auth = self.requests.headers.get(u'Credentials')
         self.method = request.target
+        if '.' in self.method:
+            paths = self.method.split('.')
+            self.method = paths[-1]
+            self.paths = paths[:-1]
         params = request.body
-        if params[0] is None:
+        if len(params) == 0 or params[0] is None:
             self.args = tuple()
         else:
             self.args = tuple(params)
@@ -122,7 +127,8 @@ class AMFResponse:
                                     type='Resource not found',
                                     description=str(v))
         elif not isinstance(v, pyamf.BaseError): # 500
-            f = remoting.ErrorFault(code=str(t), type=str(v), description=content)
+            f = remoting.ErrorFault(code=str(t), type=str(v),
+                                    description=content)
         self.setBody(f)
         return tb
 

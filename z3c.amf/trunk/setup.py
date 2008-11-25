@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1'
+version = '0.2'
 
 setup(name='z3c.amf',
       version=version,
@@ -34,8 +34,4 @@ setup(name='z3c.amf',
           'pyamf',
           'Products.CMFCore',
           'Products.PluggableAuthService'
-      ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
-      )
+      ])

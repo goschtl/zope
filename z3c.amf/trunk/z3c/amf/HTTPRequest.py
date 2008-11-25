@@ -80,6 +80,10 @@ def processInputs(
             aparser.parse()
             meth = aparser.method
             self.args = aparser.args
+            if aparser.paths:
+                splitedPath = environ['PATH_INFO'].split('/')
+                splitedPath.extend(aparser.paths)
+                environ['PATH_INFO'] = "/".join(splitedPath)
             response = amfgateway.AMFResponse(response)
             response._amfVersion = aparser.amfVersion
             response._clientType = aparser.clientType

@@ -35,6 +35,9 @@ Let's write a simple AMF view that echoes various types of input:
   ...   def echoTuple(self, value):
   ...       return tuple(value)
   ...
+  ...   def echoParams(self, value1, value2):
+  ...       return "%s-%s" % (value1, value2)
+  ...
   ...   def echoDate(self):
   ...       return datetime(2008, 11, 17, 11, 11)
   ...
@@ -62,7 +65,7 @@ view for folder objects and call it on the default folder of the user:
   ...   <flash:view
   ...       for="OFS.interfaces.IFolder"
   ...       methods="echoString echoList echoDict echoVoid echoTuple
-  ...                echoDate echoXML"
+  ...                echoDate echoXML echoParams"
   ...       class="z3c.amf.README.EchoView"
   ...       permission="zope.Public"
   ...       />
@@ -80,12 +83,15 @@ view for folder objects and call it on the default folder of the user:
 We create some helper functions.
 For Requests:
 
-  >>> def createAMFRequest(target, body, username=None, password=None):
+  >>> def createAMFRequest(target, body, username=None, password=None, multiParameters=False):
   ...   envelope = remoting.Envelope(pyamf.AMF0, pyamf.ClientTypes.Flash9)
   ...   if username is not None and password is not None:
   ...       envelope.headers['Credentials'] = dict(userid=unicode(username),
   ...                                              password=unicode(password))
-  ...   request = remoting.Request(target, [body], envelope)
+  ...   if multiParameters:
+  ...       request = remoting.Request(target, body, envelope)
+  ...   else:
+  ...       request = remoting.Request(target, [body], envelope)
   ...   envelope[u'/1'] = request
   ...   amfRequest = remoting.encode(envelope)
   ...   amfRequest.seek(0)
@@ -196,6 +202,20 @@ XML
   (u'/1', <Response status=/onResult><Element html at ...></Response>,
    <type 'instance'>)
 
+Multi Parameters
+----------------
+
+  >>> amfRequest = createAMFRequest(target='echoParams', body=['foo', 'bar'],
+  ...                               multiParameters=True)
+  >>> response = http(r"""
+  ... POST /test_folder_1_ HTTP/1.0
+  ... Content-Length: 102
+  ... Content-Type: application/x-amf
+  ...
+  ... %s""" % amfRequest)
+  >>> printAMFResponse(response)
+  (u'/1', <Response status=/onResult>foo-bar</Response>, <type 'unicode'>)
+
 Errors
 ------
 
@@ -244,3 +264,18 @@ Now try to access with login/pass:
   ... %s""" % amfRequest)
   >>> printAMFResponse(response)
   (u'/1', <Response status=/onResult>Hello World!</Response>, <type 'unicode'>)
+
+Path in service
+---------------
+
+  >>> amfRequest = createAMFRequest(target='test_folder_1_.echoProtectedString',
+  ...                               body='It works!', username=user_name,
+  ...                               password=user_password)
+  >>> response = http(r"""
+  ... POST / HTTP/1.0
+  ... Content-Length: 200
+  ... Content-Type: application/x-amf
+  ...
+  ... %s""" % amfRequest)
+  >>> printAMFResponse(response)
+  (u'/1', <Response status=/onResult>It works!</Response>, <type 'unicode'>)
