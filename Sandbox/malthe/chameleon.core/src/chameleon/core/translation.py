@@ -86,7 +86,7 @@ class Node(object):
         return dict(
             ((prefix and "xmlns:%s" % prefix or "xmlns", ns) for (prefix, ns) in \
              self.element.nsmap.items() if \
-             ns not in self.ns_omit and prefix not in prefix_omit)
+             ns not in self.ns_omit and prefix not in prefix_omit))
     
     @property
     def static_attributes(self):
