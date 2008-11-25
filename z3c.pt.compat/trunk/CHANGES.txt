@@ -4,6 +4,10 @@ Changelog
 HEAD
 ~~~~
 
+- Added optional option ``doctest`` for output checker to allow usage
+  with alternative implementations, e.g. the Zope doctest
+  module. [malthe]
+
 - Added tests for meta-directives and fixed some minor errors. [malthe]
 
 - Added update-tool to walk a source tree and automatically rewrite
