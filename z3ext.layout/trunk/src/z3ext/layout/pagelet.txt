@@ -185,7 +185,7 @@ provide IPageTemplate adapter for pagelet
   LookupError: Can't find IPageTemplate for pagelet.
 
   >>> try:
-  ...     __file__
+  ...     tmp = __file__
   ... except NameError:
   ...     from z3ext.layout import tests
   ...     __file__ = tests.__file__
