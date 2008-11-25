@@ -30,7 +30,7 @@ more then one template. Now let's take a look how we an use this templates.
 Content template
 ----------------
 
-First let's show how we use a template for produce conent from a view:
+First let's show how we use a template for produce content from a view:
 
   >>> import os, tempfile
   >>> temp_dir = tempfile.mkdtemp()
@@ -525,4 +525,4 @@ Cleanup
 Pagelet
 -------
 
-See z3c.pagelet for another template based layout genering implementation.
+See z3c.pagelet for another template based layout generating implementation.
