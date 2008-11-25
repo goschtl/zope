@@ -188,7 +188,9 @@ class repeatdict(dict):
     def insert(self, key, iterable):
         try:
             length = len(iterable)
-        except TypeError:
+        except:
+            # we catch all exceptions here, because it's not required
+            # for iteration
             length = None
             
         try:
@@ -201,7 +203,9 @@ class repeatdict(dict):
             raise TypeError(
                 "Can only repeat over an iterable object (%s)." % iterable)
 
-        self[key] = (iterator, length)
+        if length is not None:
+            self[key] = (iterator, length)
+            
         return iterator
         
     def __getitem__(self, key):
