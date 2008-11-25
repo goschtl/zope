@@ -101,9 +101,10 @@ We need some temporary directories and files
   >>> dn = tempfile.mkdtemp()
   >>> os.mkdir(os.path.join(dn, 'subfolder'))
   >>> open(os.path.join(dn, 'resource1.css'), 'w').write('''\
+  ... /* zrt-cssregistry: */ 
   ... h1 {
-  ...   color: red;
-  ...   font: fontName;
+  ...   color: fontColor;
+  ...   font: fontFamily;
   ...   background: url('../img1/mybackground.gif');
   ... }''')
   >>> open(os.path.join(dn, 'resource2.js'), 'w').write('test')
@@ -132,8 +133,8 @@ resource types:
   ...   <z3ext:resourcedirectory
   ...       name="myresources"
   ...       directory="%s"
-  ...	    mapping=".css:custom .js:fileresource
-  ...                resource3.css:fileresource .png:null" />
+  ...	    mapping=".css:zrt .js:fileresource
+  ...                resource3.css:cutom .png:null" />
   ... </configure>
   ... ''' %dn, context=context)
 
@@ -148,15 +149,15 @@ Now we can get resource
   >>> resource = dirresource.publishTraverse(request, 'resource1.css')
   >>> print resource.GET()
   h1 {
-      color: red;
-      font: fontName;
+      color: #11111111;
+      font: Verdana;
       background: url('../img1/mybackground.gif');
   }
 
   >>> print dirresource['resource1.css'].GET()
   h1 {
-      color: red;
-      font: fontName;
+      color: #11111111;
+      font: Verdana;
       background: url('../img1/mybackground.gif');
   }
 
@@ -179,7 +180,7 @@ custom type, '.js' should be file resource and filename 'test.css'
 should be file resource, '.png' should be not available
 
   >>> dirresource.publishTraverse(request, 'resource1.css')
-  <z3ext.resource.tests.CustomResource object at ...>
+  <z3ext.resource.zrtresource.zrtresource.ZRTFileResource ...>
 
   >>> dirresource.publishTraverse(request, 'resource2.js')
   <z3ext.resource.fileresource.FileResource object at ...>
@@ -202,9 +203,9 @@ Or we can use 'resourceType' subdirective:
   ...   <z3ext:resourcedirectory
   ...       name="myresources2"
   ...       directory="%s">
-  ...     <resourceType file=".css" type="custom" />
+  ...     <resourceType file=".css" type="zrt" />
   ...     <resourceType file=".js" type="fileresource" />
-  ...     <resourceType file="resource3.css" type="fileresource" />
+  ...     <resourceType file="resource3.css" type="custom" />
   ...     <resourceType file=".png" type="null" />
   ...   </z3ext:resourcedirectory>
   ... </configure>
@@ -214,13 +215,13 @@ Or we can use 'resourceType' subdirective:
   ...    request, interface.Interface, name='myresources2')
 
   >>> dirresource.publishTraverse(request, 'resource1.css')
-  <z3ext.resource.tests.CustomResource object at ...>
+  <z3ext.resource.zrtresource.zrtresource.ZRTFileResource ...>
 
   >>> dirresource.publishTraverse(request, 'resource2.js')
   <z3ext.resource.fileresource.FileResource object at ...>
 
   >>> dirresource.publishTraverse(request, 'resource3.css')
-  <z3ext.resource.fileresource.FileResource object at ...>
+  <z3ext.resource.tests.CustomResource object at ...>
 
   >>> dirresource.publishTraverse(request, 'resource4.jpg')
   <z3ext.resource.fileresource.FileResource object at ...>

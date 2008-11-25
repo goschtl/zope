@@ -18,15 +18,21 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import doctest, unittest
-from zope import component
+from zope import component, interface
 from zope.app.testing import placelesssetup
 from zope.traversing import testing
 from zope.traversing.interfaces import ITraversable
 from zope.traversing.namespace import view
 from zope.app.publisher.browser.fileresource import FileResource
 
+from z3c.zrtresource.interfaces import IZRTCommandFactory
+
+from zrtresource import zrtresource
+
 from z3ext.resource import fileresource
 from z3ext.resource.interfaces import IResourceFactoryType
+from z3ext.cssregistry.registry import CSSRegistry
+from z3ext.cssregistry import zcml, command, property, interfaces
 
 
 class CustomResource(fileresource.FileResource):
@@ -53,9 +59,23 @@ def setUp(test):
         fileresource.filefactory, IResourceFactoryType, name='fileresource')
     component.provideUtility(
         fileresource.imagefactory, IResourceFactoryType, name='imageresource')
+    component.provideUtility(
+        zrtresource.zrtfactory, IResourceFactoryType, name='zrt')
 
     component.provideAdapter(
         fileresource.FileResourceAdapter, (FileResource,))
+
+    component.provideUtility(
+        command.cssregistry_factory, IZRTCommandFactory, 'cssregistry')
+
+    registry = CSSRegistry()
+    registry['fontColor']= property.Property('fontColor', '#11111111')
+    registry['fontFamily']= property.Property('fontFamily', 'Verdana')
+
+    component.provideAdapter(
+        zcml.Factory(registry),
+        (interfaces.ICSSRegistryLayer, interfaces.ICSSRegistryLayer,
+         interface.Interface), interfaces.ICSSRegistry, '')
 
 
 def test_suite():
