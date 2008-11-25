@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Reworked repeat-variable logic. An iterator would be realized at any
+  rate, so let's not try to be clever. [malthe]
+
 - Made repeat-variable work with iterables which do not announce their
   length before execution. [malthe]
 

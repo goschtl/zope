@@ -749,7 +749,7 @@ class Repeat(object):
     >>> exec stream.getvalue()
     Traceback (most recent call last):
      ...
-    TypeError: Can only repeat over an iterable object (None).
+    TypeError: 'NoneType' object is not iterable
 
     Simple for loop:
   
