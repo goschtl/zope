@@ -91,7 +91,7 @@ Foreign attributes and elements are included as-is.
   ...   </xlink:description>
   ... </info>""", mock_parser)()
   <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-  <info>
+  <info xmlns:xlink="http://www.w3.org/1999/xlink">
     <order xlink:href="./status" xlink:type="simple" />
     <xlink:description>
        My order
