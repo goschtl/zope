@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+1.6.0 (2008-11-27)
+------------------
+
+- Added 'uid' attribute to z3ext:layout directive.
+  Send ILayoutCreatedEvent event only if layout has uid
+
+
 1.5.9 (2008-11-24)
 ------------------
 

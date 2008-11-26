@@ -83,6 +83,11 @@ IPageletDirective.setTaggedValue('keyword_arguments', True)
 
 class ILayoutDirective(interface.Interface):
 
+    uid = schema.TextLine(
+        title = u"Unique layout id",
+        default = u'',
+        required = False)
+
     template = Path(
         title=u'Layout template.',
         description=u"Refers to a file containing a page template (should "
@@ -154,7 +159,7 @@ ILayoutDirective.setTaggedValue('keyword_arguments', True)
 
 
 def layoutDirective(
-    _context, template='', for_=None, view=None, name = u'',
+    _context, uid='', template='', for_=None, view=None, name = u'',
     layer = IDefaultBrowserLayer, provides = ILayout,
     contentType='text/html', class_ = None, layout = '', 
     title='', description='', **kwargs):
@@ -224,11 +229,12 @@ def layoutDirective(
                     provides, (interface.Interface, for_, layer))
 
         # send ILayoutCreatedEvent event
-        _context.action(
-            discriminator = ('z3ext.layout', name, interface.Interface, for_, layer),
-            callable = sendNotification,
-            args = (name, interface.Interface, for_, layer, newclass, kwargs),
-            order = 99999999)
+        if uid:
+            _context.action(
+                discriminator = ('z3ext.layout', uid),
+                callable = sendNotification,
+                args = (uid, name, interface.Interface, for_, layer, newclass, kwargs),
+                order = 99999999)
 
     if view is not None:
         # register the template
@@ -240,17 +246,20 @@ def layoutDirective(
                     provides, (view, interface.Interface, layer))
 
         # send ILayoutCreatedEvent event
-        _context.action(
-            discriminator = ('z3ext.layout', name, view, interface.Interface, layer),
-            callable = sendNotification,
-            args = (name, view, interface.Interface, layer, newclass, kwargs),
-            order = 99999999)
+        if uid:
+            _context.action(
+                discriminator = ('z3ext.layout', uid),
+                callable = sendNotification,
+                args = (uid, name, view, interface.Interface, layer, newclass, kwargs),
+                order = 99999999)
 
 
 class LayoutCreatedEvent(object):
     interface.implements(ILayoutCreatedEvent)
 
-    def __init__(self, name, view, context, layer, layoutclass, keywords):
+    def __init__(self, uid, name, view, 
+                 context, layer, layoutclass, keywords):
+        self.uid = uid
         self.name = name
         self.view = view
         self.context = context
@@ -259,9 +268,9 @@ class LayoutCreatedEvent(object):
         self.keywords = keywords
 
 
-def sendNotification(name, view, context, layer, layoutclass, keywords):
+def sendNotification(uid, name, view, context, layer, layoutclass, keywords):
     event.notify(LayoutCreatedEvent(
-            name, view, context, layer, layoutclass, keywords))
+            uid, name, view, context, layer, layoutclass, keywords))
 
 
 # pagelet directive

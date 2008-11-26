@@ -30,14 +30,14 @@
   <z3ext:layout
      layout="viewspace"
      for="zope.app.component.interfaces.ISite"
-     title="Default layout (z3ext.layout)"
      description="Default layout, registered for IDefaultBrowserLayer."
      template="layoutcontent.pt" />
 
   <z3ext:layout
      name="viewspace"
+     title="Viewspace"
      layout="workspace"
-     title="Viewspace layout (z3ext.layout)"
+     uid="default.viewspace"
      description="Default viewpsace layout, registered for IDefaultBrowserLayer."
      for="zope.app.component.interfaces.ISite"
      template="layoutviewspace.pt" />
@@ -45,14 +45,16 @@
   <z3ext:layout
      name="workspace"
      layout="portal"
-     title="Workspace layout (z3ext.layout)"
+     title="Workspace"
+     uid="default.workspace"
      description="Default workspace layout, registered for IDefaultBrowserLayer."
      for="zope.app.component.interfaces.ISite"
      template="layoutworkspace.pt" />
 
   <z3ext:layout
      name="portal"
-     title="Portal layout (z3ext.layout)"
+     title="Portal"
+     uid="default.portal"
      description="Default portal layout, registered for IDefaultBrowserLayer"
      for="zope.app.component.interfaces.ISite"
      template="layoutportal.pt" />

@@ -67,6 +67,8 @@ class ILayoutTemplateFile(interface.Interface):
 class ILayoutCreatedEvent(interface.Interface):
     """ notification about new layout """
 
+    uid = interface.Attribute('UID')
+
     name = interface.Attribute('Name')
 
     view = interface.Attribute('View')
