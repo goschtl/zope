@@ -139,7 +139,7 @@ class TemplateASTTransformer(ASTTransformer):
     def visitName(self, node):
         # If the name refers to a local inside a lambda, list comprehension, or
         # generator expression, leave it alone
-        if not node.name in self.names:
+        if not node.name in self.names and 'econtext' in self.names:
             # Otherwise, translate the name ref into a context lookup
             func_args = [ast.Name('econtext'), ast.Const(node.name)]
             node = ast.CallFunc(ast.Name('_lookup_name'), func_args)
@@ -171,7 +171,7 @@ class Suite(object):
             source = source.encode('utf-8')
             
         node = parse(source, self.mode)
-
+        
         # build tree
         transform = TemplateASTTransformer(globals)
         tree = transform.visit(node)
