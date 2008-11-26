@@ -5,7 +5,8 @@ CHANGES
 3.7.0 (unreleased)
 ==================
 
-- ...
+- Depending on zope.schema>=3.5a1 which uses the builtin ``set`` instead of the
+  ``sets`` module.
 
 3.6.3 (2008-10-15)
 ==================

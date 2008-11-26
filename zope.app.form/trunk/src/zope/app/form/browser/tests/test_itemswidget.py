@@ -15,7 +15,6 @@
 
 $Id$
 """
-import sets
 import unittest
 
 from zope.interface import Interface, implements
@@ -484,10 +483,10 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
         self._field = ICollector.get('letters')
         widget = self._makeWidget(form={'field.letters-empty-marker': '1'})
         widget.setPrefix('field.')
-        self.assertEqual(widget.getInputValue(), sets.Set())
+        self.assertEqual(widget.getInputValue(), set([]))
         widget = self._makeWidget(form={'field.letters': ['token2', 'token3']})
         widget.setPrefix('field.')
-        self.assertEqual(widget.getInputValue(), sets.Set(['two', 'three']))
+        self.assertEqual(widget.getInputValue(), set(['two', 'three']))
 
         self._field = ICollector.get('frozenLetters')
         widget = self._makeWidget(form={'field.frozenLetters-empty-marker':

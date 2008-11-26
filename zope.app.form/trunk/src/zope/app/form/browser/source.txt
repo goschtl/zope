@@ -463,13 +463,13 @@ Let's try out selecting items. Select one item::
   >>> request.form['field.dogSet-empty-marker'] = '1'
   >>> request.form['field.dogSet'] = ['bGFzc2ll']
   >>> widget.getInputValue()
-  Set(['lassie'])
+  set(['lassie'])
 
 Select two items::
 
   >>> request.form['field.dogSet'] = ['c3BvdA==', 'bGFzc2ll']
   >>> widget.getInputValue()
-  Set(['spot', 'lassie'])
+  set(['spot', 'lassie'])
 
 The rendered widget (still with the two items selected) looks like this::
 
