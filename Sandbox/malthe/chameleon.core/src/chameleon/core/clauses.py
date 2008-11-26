@@ -96,6 +96,7 @@ class Assign(object):
     def _assign(self, variable, value, stream):
         stream.annotate(value)
         symbols = stream.symbols.as_dict()
+        variable = variable % symbols
 
         if value.symbol_mapping:
             stream.symbol_mapping.update(value.symbol_mapping)
