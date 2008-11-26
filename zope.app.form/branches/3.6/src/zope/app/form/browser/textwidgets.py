@@ -216,6 +216,9 @@ class URIDisplayWidget(DisplayWidget):
             content = self._data
         else:
             content = self.context.default
+        if not content:
+            # If there is no content it is not useful to render an anchor.
+            return ''
         content = escape(content)
         kw = dict(contents=content, href=content)
         if self.linkTarget:

@@ -150,6 +150,13 @@ class URIDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(), ["<a", 'href="uri:fake"',
                                            'target="there"'])
 
+    def testEmptyRenderReturnsEmptyString(self):
+        self._widget.setRenderedValue(None)
+        self.assertEquals(self._widget(), "")
+        self._widget.setRenderedValue('')
+        self.assertEquals(self._widget(), "")
+
+
 class DateDisplayWidgetTest(BrowserWidgetTest):
 
     _WidgetFactory = DateDisplayWidget
