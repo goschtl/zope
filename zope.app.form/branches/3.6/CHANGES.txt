@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.6.4 (unreleased)
+3.6.4 (2008-11-26)
 ==================
 
 - The URIDisplayWidget doesn't render an anchor for empty/None values.
