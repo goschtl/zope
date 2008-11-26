@@ -724,6 +724,9 @@ class Compiler(object):
         stream.symbol_mapping['_init_scope'] = generation.initialize_scope
         stream.symbol_mapping['_init_tal'] = generation.initialize_tal
 
+        # add code-generation lookup globals
+        stream.symbol_mapping.update(codegen.lookup_globals)
+        
         if global_scope:
             assignments = (
                 clauses.Assign(
@@ -822,7 +825,7 @@ class ByteCodeTemplate(object):
         suite = codegen.Suite(self.source)
 
         _locals = {}
-        exec suite.code in suite._globals, _locals
+        exec suite.code in _locals
         self.bind = _locals['bind']
         self.func = self.bind()
             
@@ -874,7 +877,7 @@ class GhostedByteCodeTemplate(object):
         tree, doctype = parser.parse(xmldoc)        
 
         _locals = {}
-        exec cls.suite.code in cls.suite._globals, _locals
+        exec cls.suite.code in _locals
 
         bind = _locals['bind']
         bind.func_defaults = ((None,)*state['defaults']) or None

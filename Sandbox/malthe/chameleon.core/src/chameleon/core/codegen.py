@@ -21,35 +21,25 @@ def flatten(list):
             l.append(elt)
     return l
 
-class Lookup(object):
-    """Abstract base class for variable lookup implementations."""
-
-    @classmethod
-    def globals(cls):
-        """Construct the globals dictionary to use as the execution context for
-        the expression or suite.
-        """
-        return {
-            '_lookup_attr': cls.lookup_attr,
-            '_lookup_name': cls.lookup_name,
-        }
-
-    @classmethod
-    def lookup_attr(cls, obj, key):
+def lookup_attr(obj, key):
+    try:
+        return getattr(obj, key)
+    except AttributeError, e:
         try:
-            return getattr(obj, key)
-        except AttributeError, e:
-            try:
-                return obj[key]
-            except (KeyError, TypeError, AttributeError):
-                raise e
+            return obj[key]
+        except (KeyError, TypeError, AttributeError):
+            raise e
 
-    @classmethod
-    def lookup_name(cls, data, name):
-        try:
-            return data[name]
-        except KeyError:
-            raise NameError(name)
+def lookup_name(data, name):
+    try:
+        return data[name]
+    except KeyError:
+        raise NameError(name)
+    
+lookup_globals = {
+    '_lookup_attr': lookup_attr,
+    '_lookup_name': lookup_name,
+    }       
 
 class TemplateASTTransformer(ASTTransformer):
     """Concrete AST transformer that implements the AST transformations needed
@@ -181,7 +171,9 @@ class Suite(object):
         gen = ModuleCodeGenerator(tree)
         gen.optimized = True
 
-        self._globals = Lookup.globals()
+        from sourcecodegen import ModuleSourceCodeGenerator
+        generated = ModuleSourceCodeGenerator(tree).getSourceCode()
+
         self.code = gen.getCode()
 
     def __hash__(self):

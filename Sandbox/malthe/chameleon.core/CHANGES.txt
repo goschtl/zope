@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Bind code-generation utilities in closure as well. [malthe]
+
 - Reworked global scope initialization; we now bind these using a
   closure. [malthe]
 
