@@ -5,23 +5,27 @@ from zope.i18nmessageid import Message
 import utils
 import etree
 
-template_wrapper = """\
-def render(%(init)s, %(args)s%(extra)s%(language)s=None):
-\t%(out)s, %(write)s = %(init)s.initialize_stream()
-\t%(attributes)s, %(repeat)s = %(init)s.initialize_tal()
-\t%(scope)s = %(init)s.initialize_scope()
-\t%(domain)s = None
-
-%(body)s
-\treturn %(out)s.getvalue()
+function_template = """\
+def bind():
+%(imports)s
+\tdef %(name)s(%(arguments)s):
+%(source)s
+%(return)s
+\treturn %(name)s
 """
 
-macro_wrapper = """\
-def render(%(init)s, %(kwargs)s%(extra)s):
-\t%(attributes)s, %(repeat)s = %(init)s.initialize_tal()
-\t%(domain)s = None
-%(body)s
-"""
+def indent_block(text, level=2):
+    return "\n".join(("\t" * level + s for s in text.split('\n')))
+                     
+def function_wrap(name, args, imports, source, return_expr=""):
+    format_values = {
+        'name': name,
+        'imports': indent_block('\n'.join(imports), 1),
+        'arguments': ', '.join(args),
+        'source': indent_block(source),
+        'return': indent_block("return %s" % return_expr)}
+    
+    return function_template % format_values
 
 class Marker(object):
     def __nonzero__(self):

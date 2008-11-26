@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Reworked global scope initialization; we now bind these using a
+  closure. [malthe]
+
 - Reworked repeat-variable logic. An iterator would be realized at any
   rate, so let's not try to be clever. [malthe]
 

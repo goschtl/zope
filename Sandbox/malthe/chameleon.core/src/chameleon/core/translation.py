@@ -1,4 +1,5 @@
 from StringIO import StringIO
+from cPickle import dumps
 
 import generation
 import codegen
@@ -319,11 +320,13 @@ class Node(object):
             if len(self.element):
                 raise ValueError(
                     "Can't translate dynamic text block with elements in it.")
-                
+
+            init_stream = types.value('_init_stream()')
+            init_stream.symbol_mapping['_init_stream'] = generation.initialize_stream
+            
             subclauses = []
             subclauses.append(clauses.Define(
-                types.declaration((self.symbols.out, self.symbols.write)),
-                types.template('%(init)s.initialize_stream()')))
+                types.declaration((self.symbols.out, self.symbols.write)), init_stream))
 
             for part in text:
                 if isinstance(part, types.expression):
@@ -388,6 +391,9 @@ class Node(object):
                     "%s=%s" % (variable, variable) for variable in \
                     itertools.chain(*self.stream.scope))
 
+                init_stream = types.value('_init_stream()')
+                init_stream.symbol_mapping['_init_stream'] = generation.initialize_stream
+
                 subclauses = []
                 subclauses.append(
                     clauses.Method(
@@ -397,8 +403,7 @@ class Node(object):
                 subclauses.append(
                     clauses.UpdateScope(self.symbols.scope, remote_scope))
                 subclauses.append(clauses.Assign(
-                    types.template('%(init)s.initialize_stream()'),
-                    (self.symbols.out, self.symbols.write)))
+                    init_stream, (self.symbols.out, self.symbols.write)))
                 subclauses.append(clauses.Visit(element.node))
                 _.append(clauses.Group(subclauses))
 
@@ -437,10 +442,12 @@ class Node(object):
             for element in elements:
                 name = element.node.translation_name
 
+                init_stream = types.value('_init_stream()')
+                init_stream.symbol_mapping['_init_stream'] = generation.initialize_stream
+
                 subclauses = []
                 subclauses.append(clauses.Define(
-                    types.declaration((self.symbols.out, self.symbols.write)),
-                    types.template('%(init)s.initialize_stream()')))
+                    types.declaration((self.symbols.out, self.symbols.write)), init_stream))
                 subclauses.append(clauses.Visit(element.node))
                 subclauses.append(clauses.Assign(
                     types.template('%(out)s.getvalue()'),
@@ -698,15 +705,10 @@ class Compiler(object):
             else:
                 del element.attrib[utils.metal_attr('define-macro')]
                 
-        if global_scope:
-            wrapper = generation.template_wrapper
-        else:
-            wrapper = generation.macro_wrapper
-            
         # initialize code stream object
         stream = generation.CodeIO(
             self.root.node.symbols, encoding=self.encoding,
-            indentation=1, indentation_string="\t")
+            indentation=0, indentation_string="\t")
 
         # initialize variable scope
         stream.scope.append(set(
@@ -716,6 +718,32 @@ class Compiler(object):
              stream.symbols.domain,
              stream.symbols.language) + \
             tuple(parameters)))
+
+        # set up initialization code
+        stream.symbol_mapping['_init_stream'] = generation.initialize_stream
+        stream.symbol_mapping['_init_scope'] = generation.initialize_scope
+        stream.symbol_mapping['_init_tal'] = generation.initialize_tal
+
+        if global_scope:
+            assignments = (
+                clauses.Assign(
+                     types.value("_init_stream()"), ("%(out)s", "%(write)s")),
+                clauses.Assign(
+                     types.value("_init_scope()"), "%(scope)s"),
+                clauses.Assign(
+                     types.value("_init_tal()"), ("%(attributes)s", "%(repeat)s")),
+                clauses.Assign(
+                     types.template("None"), "%(domain)s"))
+        else:
+            assignments = (
+                clauses.Assign(
+                    types.value("_init_tal()"), ("%(attributes)s", "%(repeat)s")),
+                clauses.Assign(
+                     types.template("None"), "%(domain)s"))
+                
+        for clause in assignments:
+            clause.begin(stream)
+            clause.end(stream)
 
         # output XML headers, if applicable
         if not macro:
@@ -742,54 +770,61 @@ class Compiler(object):
         if 'xmlns' in self.root.attrib:
             del self.root.attrib['xmlns']
         
+        # symbols dictionary
+        __dict__ = stream.symbols.__dict__
+
         # prepare args
-        ignore = 'target_language',
-        args = ', '.join((param for param in parameters if param not in ignore))
-        if args:
-            args += ', '
+        args = list(parameters)
 
         # prepare kwargs
-        kwargs = ', '.join("%s=None" % param for param in parameters)
-        if kwargs:
-            kwargs += ', '
+        defaults = ["%s = None" % param for param in parameters]
 
         # prepare selectors
-        extra = ''
         for selector in stream.selectors:
-            extra += '%s=None, ' % selector
+            args.append('%s = None' % selector)
+            defaults.append('%s = None' % selector)
 
+        args.append('%(language)s = None' % __dict__)
+
+        # prepare globals
+        _globals = ["from cPickle import loads as _loads"]
+        for symbol, value in stream.symbol_mapping.items():
+            _globals.append(
+                "%s = _loads(%s)" % (symbol, repr(dumps(value))))
+            
         # wrap generated Python-code in function definition
-        mapping = dict(
-            args=args, kwargs=kwargs, extra=extra, body=body)
-        mapping.update(stream.symbols.__dict__)
-        source = wrapper % mapping
+        if global_scope:
+            source = generation.function_wrap(
+                'render', args, _globals, body,
+                "%(out)s.getvalue()" % stream.symbols.__dict__)
+        else:
+            source = generation.function_wrap(
+                'render', defaults, _globals, body)
 
         # serialize document
         xmldoc = self.implicit_doctype + "\n" + self.root.tostring()
 
         return ByteCodeTemplate(
-            source, stream.symbol_mapping,
-            xmldoc, self.parser, self.root)
+            source, xmldoc, self.parser, self.root)
 
 class ByteCodeTemplate(object):
     """Template compiled to byte-code."""
 
     func = None
     
-    def __init__(self, source, symbols, xmldoc, parser, tree):
+    def __init__(self, source, xmldoc, parser, tree):
         self.source = source
-        self.symbols = symbols
         self.xmldoc = xmldoc
         self.parser = parser
         self.tree = tree
 
     def compile(self):
-        suite = codegen.Suite(self.source, globals=self.symbols)
-        suite._globals.update(self.symbols)
+        suite = codegen.Suite(self.source)
 
         _locals = {}
         exec suite.code in suite._globals, _locals
-        self.func = _locals['render']
+        self.bind = _locals['bind']
+        self.func = self.bind()
             
     def __reduce__(self):
         reconstructor, (cls, base, state), kwargs = \
@@ -805,7 +840,7 @@ class ByteCodeTemplate(object):
 
     def render(self, *args, **kwargs):
         kwargs.update(self.selectors)
-        return self.func(generation, *args, **kwargs)
+        return self.func(*args, **kwargs)
 
     @property
     def selectors(self):
@@ -822,36 +857,34 @@ class ByteCodeTemplate(object):
         return selectors
 
 class GhostedByteCodeTemplate(object):
-    suite = codegen.Suite("def render(): pass")
+    suite = codegen.Suite("def bind(): pass")
     
     def __init__(self, template):
-        self.code = marshal.dumps(template.func.func_code)
-        self.defaults = len(template.func.func_defaults or ())
-        self.symbols = template.symbols
+        self.code = marshal.dumps(template.bind.func_code)
+        self.defaults = len(template.bind.func_defaults or ())
         self.source = template.source
         self.xmldoc = template.xmldoc
         self.parser = template.parser
         
     @classmethod
     def rebuild(cls, state):
-        symbols = state['symbols']
         source = state['source']
         xmldoc = state['xmldoc']
         parser = state['parser']
         tree, doctype = parser.parse(xmldoc)        
 
         _locals = {}
-        _globals = symbols.copy()
-        _globals.update(cls.suite._globals)
-        exec cls.suite.code in _globals, _locals
-        
-        func = _locals['render']
-        func.func_defaults = ((None,)*state['defaults']) or None
-        func.func_code = marshal.loads(state['code'])
+        exec cls.suite.code in cls.suite._globals, _locals
 
+        bind = _locals['bind']
+        bind.func_defaults = ((None,)*state['defaults']) or None
+        bind.func_code = marshal.loads(state['code'])
+
+        func = bind()
+        
         return dict(
+            bind=bind,
             func=func,
-            symbols=symbols,
             source=source,
             xmldoc=xmldoc,
             parser=parser,
