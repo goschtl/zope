@@ -544,7 +544,7 @@ Now let's see if we get ``uid`` from the content object:
   >>> res[0] == uid
   True
 
-A none existent value will return a emtpy result:
+A none existent value will return a empty result:
 
   >>> textQuery = TextQuery('textIndex', 'bad')
   >>> query = SearchQuery(textQuery)
@@ -564,7 +564,7 @@ Search with a Eq query:
   >>> res[0] == uid
   True
 
-A none existent value will return a emtpy result:
+A none existent value will return a empty result:
 
   >>> eqQuery = Eq('fieldIndex', 'bad')
   >>> query = SearchQuery(eqQuery)
@@ -580,7 +580,7 @@ Search with a NotEq query:
   >>> res[0] == uid
   True
 
-A existent value will return a emtpy result:
+A existent value will return a empty result:
 
   >>> notEqQuery = NotEq('fieldIndex', 'Field')
   >>> query = SearchQuery(notEqQuery)
@@ -596,7 +596,7 @@ Search with a Between query:
   >>> res[0] == uid
   True
 
-A wrong min and max value will return a emtpy result:
+A wrong min and max value will return a empty result:
 
   >>> betweenQuery = Between('fieldIndex', 'Fielder', 'Fiel')
   >>> query = SearchQuery(betweenQuery)
@@ -612,7 +612,7 @@ Search with a Ge query:
   >>> res[0] == uid
   True
 
-A wrong max value will return a emtpy result:
+A wrong max value will return a empty result:
 
   >>> geQuery = Ge('fieldIndex', 'Fielder')
   >>> query = SearchQuery(geQuery)
@@ -628,7 +628,7 @@ Search with a Le query:
   >>> res[0] == uid
   True
 
-A wrong min value will return a emtpy result:
+A wrong min value will return a empty result:
 
   >>> leQuery = Le('fieldIndex', 'Fiel')
   >>> query = SearchQuery(leQuery)
@@ -644,7 +644,7 @@ Search with a In query:
   >>> res[0] == uid
   True
 
-A list of none existent values will return a emtpy result:
+A list of none existent values will return a empty result:
 
   >>> inQuery = In('fieldIndex', ['Fielder', 1, 2])
   >>> query = SearchQuery(inQuery)
@@ -663,7 +663,7 @@ Search with a Eq query:
   >>> res[0] == uid
   True
 
-A none existent value will return a emtpy result:
+A none existent value will return a empty result:
 
   >>> eqQuery = Eq('valueIndex', 'bad')
   >>> query = SearchQuery(eqQuery)
@@ -678,7 +678,7 @@ Search with a NotEq query:
   >>> res[0] == uid
   True
 
-A existent value will return a emtpy result:
+A existent value will return a empty result:
 
   >>> notEqQuery = NotEq('valueIndex', 'Value')
   >>> query = SearchQuery(notEqQuery)
@@ -693,7 +693,7 @@ Search with a Between query:
   >>> res[0] == uid
   True
 
-A wrong min and max value will return a emtpy result:
+A wrong min and max value will return a empty result:
 
   >>> betweenQuery = Between('valueIndex', 'Values', 'Val')
   >>> query = SearchQuery(betweenQuery)
@@ -708,7 +708,7 @@ Search with a Ge query:
   >>> res[0] == uid
   True
 
-A wrong max value will return a emtpy result:
+A wrong max value will return a empty result:
 
   >>> geQuery = Ge('valueIndex', 'Values')
   >>> query = SearchQuery(geQuery)
@@ -723,7 +723,7 @@ Search with a Le query:
   >>> res[0] == uid
   True
 
-A wrong min value will return a emtpy result:
+A wrong min value will return a empty result:
 
   >>> leQuery = Le('valueIndex', 'Val')
   >>> query = SearchQuery(leQuery)
@@ -738,7 +738,7 @@ Search with a In query:
   >>> res[0] == uid
   True
 
-A list of none existent values will return a emtpy result:
+A list of none existent values will return a empty result:
 
   >>> inQuery = In('valueIndex', ['Values', 1, 2])
   >>> query = SearchQuery(inQuery)
@@ -780,7 +780,7 @@ Search with a AnyOf query:
   >>> res[0] == uid
   True
 
-A list of none existent values will return a emtpy result:
+A list of none existent values will return a empty result:
 
   >>> anyOfQuery = AnyOf('setIndex', ['Iter', 3])
   >>> query = SearchQuery(anyOfQuery)
@@ -805,7 +805,7 @@ A list of to less values will return the same result:
   >>> res[0] == uid
   True
 
-A list of to much values will return a emtpy result:
+A list of to much values will return a empty result:
 
   >>> allOfQuery = AllOf('setIndex', ['Iterable', 1, 2, 3])
   >>> query = SearchQuery(allOfQuery)
@@ -820,7 +820,7 @@ Search with a Between query:
   >>> res[0] == uid
   True
 
-A wrong min and max value will return a emtpy result:
+A wrong min and max value will return a empty result:
 
   >>> betweenQuery = Between('setIndex', 'Iterables', 'Iter')
   >>> query = SearchQuery(betweenQuery)
@@ -835,7 +835,7 @@ Search with a Ge query:
   >>> res[0] == uid
   True
 
-A wrong max value will return a emtpy result:
+A wrong max value will return a empty result:
 
   >>> geQuery = Ge('setIndex', 'Iterables')
   >>> query = SearchQuery(geQuery)
@@ -850,7 +850,7 @@ Search with a Le query:
   >>> res[0] == uid
   True
 
-A wrong min value will return a emtpy result:
+A wrong min value will return a empty result:
 
   >>> leQuery = Le('setIndex', 0)
   >>> query = SearchQuery(leQuery)
@@ -919,7 +919,7 @@ Now we can see that we have 3 items in the text index:
   >>> textIndex.documentCount()
   4
 
-Let's buold some query:
+Let's build some query:
 
   >>> appleQuery = TextQuery('textIndex', 'Apple')
   >>> houseQuery = TextQuery('textIndex', 'House')
@@ -1034,7 +1034,7 @@ This will returnd the same objects as before:
 Batching
 --------
 
-This ResultSet described above can be used together with the BAtch 
+This ResultSet described above can be used together with the Batch 
 implementation defined in the z3c.batching package.
 
 
