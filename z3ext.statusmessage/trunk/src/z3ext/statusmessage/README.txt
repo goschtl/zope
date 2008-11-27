@@ -18,7 +18,7 @@ By default only session based service implemented.
    >>> verifyClass(interfaces.IStatusMessage, session.MessageService)
    True
 
-   >>> component.provideAdapter(session.MessageService)
+   >>> component.provideAdapter(session.getMessageService)
 
    >>> from zope.publisher.browser import TestRequest
    >>> request = TestRequest()

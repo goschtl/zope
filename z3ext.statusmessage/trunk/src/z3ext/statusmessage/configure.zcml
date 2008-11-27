@@ -16,7 +16,7 @@
      factory=".message.ErrorMessage" />
 
   <!-- default message service -->
-  <adapter factory=".session.MessageService" />
+  <adapter factory=".session.getMessageService" />
 
   <!-- browser views -->
   <adapter
