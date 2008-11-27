@@ -1,8 +1,10 @@
-0.1.1 (unreleased)
+0.1.1 (27-11-2008)
 ------------------
 
 * Add regression tests for Paste name translation (surprisingly they already pass):
     src/vanguardistas/pydebdep/tests/translations.txt    
+* Make sure we don't include .pyc files in packages (changes included debian/rules file).
+  Seems to happen with namespace packages at the top level rather than in an src directory.
 
 0.1.0 (13-04-2008)
 ------------------
