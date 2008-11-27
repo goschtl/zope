@@ -4,6 +4,11 @@ Changelog
 HEAD
 ~~~~
 
+- Use ``sourcecodegen`` package to generate Python-code from AST; this
+  is done to avoid generating code using the ``compiler.pycodegen``
+  module, which has serious issues. Interestingly, this approach cuts
+  compilation time in half. [malthe]
+
 - Bind code-generation utilities in closure as well. [malthe]
 
 - Reworked global scope initialization; we now bind these using a

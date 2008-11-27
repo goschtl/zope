@@ -11,6 +11,9 @@ import utils
 import config
 import etree
 import marshal
+import sys
+
+GLOBALS = globals()
 
 class Node(object):
     """Element translation class.
@@ -787,7 +790,8 @@ class Compiler(object):
             args.append('%s = None' % selector)
             defaults.append('%s = None' % selector)
 
-        args.append('%(language)s = None' % __dict__)
+        if not stream.symbols.language in args:
+            args.append('%(language)s = None' % __dict__)
 
         # prepare globals
         _globals = ["from cPickle import loads as _loads"]
@@ -822,13 +826,13 @@ class ByteCodeTemplate(object):
         self.tree = tree
 
     def compile(self):
-        suite = codegen.Suite(self.source)
-
+        suite = codegen.Suite(self.source)        
         _locals = {}
-        exec suite.code in _locals
+        exec suite.source in _locals
         self.bind = _locals['bind']
         self.func = self.bind()
-            
+        self.source = suite.source
+        
     def __reduce__(self):
         reconstructor, (cls, base, state), kwargs = \
                        GhostedByteCodeTemplate(self).__reduce__()
@@ -860,8 +864,6 @@ class ByteCodeTemplate(object):
         return selectors
 
 class GhostedByteCodeTemplate(object):
-    suite = codegen.Suite("def bind(): pass")
-    
     def __init__(self, template):
         self.code = marshal.dumps(template.bind.func_code)
         self.defaults = len(template.bind.func_defaults or ())
@@ -876,12 +878,8 @@ class GhostedByteCodeTemplate(object):
         parser = state['parser']
         tree, doctype = parser.parse(xmldoc)        
 
-        _locals = {}
-        exec cls.suite.code in _locals
-
-        bind = _locals['bind']
-        bind.func_defaults = ((None,)*state['defaults']) or None
-        bind.func_code = marshal.loads(state['code'])
+        bind = sys.modules['types'].FunctionType(
+            marshal.loads(state['code']), GLOBALS, "bind")
 
         func = bind()
         

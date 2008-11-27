@@ -1,5 +1,5 @@
 from compiler import ast, parse
-from compiler.pycodegen import ModuleCodeGenerator
+from sourcecodegen import ModuleSourceCodeGenerator
 
 from transformer import ASTTransformer
 
@@ -150,7 +150,7 @@ class TemplateASTTransformer(ASTTransformer):
             ])
 
 class Suite(object):
-    __slots__ = ['code', '_globals']
+    __slots__ = ['source', '_globals']
 
     mode = 'exec'
     
@@ -167,17 +167,11 @@ class Suite(object):
         tree = transform.visit(node)
         filename = tree.filename = '<script>'
 
-        # generate code
-        gen = ModuleCodeGenerator(tree)
-        gen.optimized = True
-
-        from sourcecodegen import ModuleSourceCodeGenerator
-        generated = ModuleSourceCodeGenerator(tree).getSourceCode()
-
-        self.code = gen.getCode()
-
+        # generate source code
+        self.source = ModuleSourceCodeGenerator(tree).getSourceCode()
+        
     def __hash__(self):
-        return hash(self.code)
+        return hash(self.source)
 
     def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.code)
+        return '%s(%r)' % (self.__class__.__name__, self.source)

@@ -34,6 +34,8 @@ entities = "".join((
     '<!ENTITY %s "&#%s;">' % (name, text) for (name, text) in \
     htmlentitydefs.name2codepoint.items()))
 
+re_annotation = re.compile(r'^\s*u?\'(.*)\'$')
+
 s_counter = 0
 marker = object()
 
@@ -331,8 +333,9 @@ def raise_template_exception(source, description, kwargs, exc_info):
     # the template source as comments)
     source = source.split('\n')
     for i in reversed(range(lineno)):
-        if source[i].lstrip().startswith('#'):
-            annotation = source[i].split('#', 1)[-1].lstrip()
+        m = re_annotation.match(source[i])
+        if m is not None:
+            annotation = m.group(1)
             break
     else:
         annotation = ""

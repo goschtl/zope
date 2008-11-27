@@ -123,6 +123,17 @@ class CodeIO(BufferIO):
     def annotate(self, annotation):
         if annotation.label is not None:
             annotation = annotation.label
+
+        # make sure the annotation is a base string type
+        if isinstance(annotation, unicode):
+            annotation = unicode(annotation)
+        else:
+            annotation = str(annotation)
+
+        # encode unicode string if required
+        if isinstance(annotation, unicode) and self.encoding:
+            annotation = annotation.encode(self.encoding)
+            
         self.annotation = self.annotations[self.l_counter] = annotation
 
     def out(self, string):
@@ -147,13 +158,13 @@ class CodeIO(BufferIO):
         
         indent = self.indentation_string * self.indentation
 
-        # if a source code annotation is set, write it as a comment
-        # prior to the source code line
+        # if a source code annotation is set, write it as a
+        # triple-quoted string prior to the source line
         if self.annotation:
             if isinstance(self.annotation, unicode) and self.encoding:
-                self.annotation = self.annotation.encode(self.encoding)            
+                self.annotation = self.annotation.encode(self.encoding)
             BufferIO.write(
-                self, "%s# %s\n" % (indent, self.annotation))
+                self, "%s%s\n" % (indent, repr(self.annotation)))
             self.annotation = None
             
         BufferIO.write(self, indent + string + '\n')
