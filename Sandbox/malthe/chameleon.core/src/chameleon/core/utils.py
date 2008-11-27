@@ -34,7 +34,7 @@ entities = "".join((
     '<!ENTITY %s "&#%s;">' % (name, text) for (name, text) in \
     htmlentitydefs.name2codepoint.items()))
 
-re_annotation = re.compile(r'^\s*u?\'(.*)\'$')
+re_annotation = re.compile(r'^\s*u?[\'"](.*)[\'"]$')
 
 s_counter = 0
 marker = object()
