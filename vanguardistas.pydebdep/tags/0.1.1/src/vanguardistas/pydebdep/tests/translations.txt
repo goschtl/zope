@@ -1,0 +1,16 @@
+Test various builtin translations
+=================================
+
+
+    >>> from vanguardistas.pydebdep.translator import PackageNameTranslator
+    >>> trans = PackageNameTranslator()
+
+Paste
+-----
+
+    >>> print trans.egg_to_binary("Paste")
+    python-paste
+    >>> print trans.egg_to_binary("PasteDeploy")
+    python-pastedeploy
+    >>> print trans.egg_to_binary("PasteScript")
+    python-pastescript

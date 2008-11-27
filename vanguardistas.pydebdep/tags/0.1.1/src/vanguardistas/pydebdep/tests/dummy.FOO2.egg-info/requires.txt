@@ -1,0 +1,4 @@
+foo > 0.1
+foobar
+bar != 0.2
+bar < 0.3

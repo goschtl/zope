@@ -1,0 +1,29 @@
+0.1.1 (27-11-2008)
+------------------
+
+* Add regression tests for Paste name translation (surprisingly they already pass):
+    src/vanguardistas/pydebdep/tests/translations.txt    
+* Make sure we don't include .pyc files in packages (changes included debian/rules file).
+  Seems to happen with namespace packages at the top level rather than in an src directory.
+
+0.1.0 (13-04-2008)
+------------------
+
+* Add a venguardistas.pydebdep.translator.egg_to_deb function that converts egg
+  versions to debian versions maintaining their sort order.
+* Hook above function into the deb/egg version compare function.
+* Produce dependeny lines that contain dpkg-ized version rather than egg versions.
+
+NOTE: The tests of the above changes fail with the setuptools 0.6c3, but pass with 0.6c8.
+      This is because of the way that "dev" sorts specially in later setuptools versions.
+
+0.0.3 (10-04-2008)
+------------------
+
+* Add ZPL text to all files and source tree.
+* Make moving the -nspkg.pth file conditional on one actually existing. Extends the rules.1 file to work with non-namespace eggs.
+* Add dependency mappings for PILwoTk, Reportlab and pytz.
+* Add mappings from ZODB3 to python-zodb and zodb.
+* Guess only lower case names for Debian packages.
+* Add README.txt and CHANGES.txt
+* Imported into svn.zope.org.
