@@ -64,10 +64,7 @@ setup(name='z3ext.layoutform',
 			  'z3ext.resourcepackage>=1.2.0',
 			  'z3ext.statusmessage',
                           ],
-      extras_require = dict(test=['zope.app.testing',
-                                  'zope.testing',
-				  'zope.testbrowser',
-                                  ]),
+      extras_require = dict(test=['zope.testing']),
       include_package_data = True,
       zip_safe = False
       )

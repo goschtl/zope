@@ -74,7 +74,7 @@ class PageletAddForm(form.AddForm, PageletForm):
             url = absoluteURL(self.context, self.request)
         else:
             url = absoluteURL(self._addedObject, self.request)
-            
+
         return '%s/@@SelectedManagementView.html'%url
 
     def cancelURL(self):
