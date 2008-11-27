@@ -8,7 +8,7 @@ z3c.form ui
   >>> from zope import interface, schema
 
   >>> class AgeError(schema.interfaces.ValidationError):
-  ...     __doc__ = _("""Minimu age is 20 years.""")
+  ...     __doc__ = u"""Minimu age is 20 years."""
 
   >>> class IPerson(interface.Interface):
   ...
