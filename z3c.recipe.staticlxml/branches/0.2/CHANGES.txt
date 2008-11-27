@@ -1,5 +1,5 @@
-trunk
-=====
+0.2 (2008-11-27)
+================
 
 - Fix Documentation REsT [seletz]
 - Rerelease due to setup.cfg messup [seletz]
