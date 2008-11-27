@@ -25,9 +25,67 @@ Once memcached is running, we can start testing:
   >>> component.provideUtility(util, IMemcachedClient, name='session')
   >>> util.invalidateAll()
 
-Now we create a memcache session and connect it to the memcached client.
+
+Import the container we will use for caching tests.
 
   >>> from lovely.session.memcached import MemCachedSessionDataContainer
+
+Timeout behavior
+~~~~~~~~~~~~~~~~
+
+We need to test the timeout capability of the container.  We can do this by simulating the passage of time while minimizing the timeout period.
+
+Create a new session data that we will cause to timeout.
+
+  >>> timeoutSessionData = MemCachedSessionDataContainer()
+  >>> timeoutSessionData.cacheName = u'session'
+  >>> timeoutSessionData.__name__ = 'MemCacheSession'
+
+  >>> timeoutSession = timeoutSessionData['mySessionId']
+  >>> timeoutSession
+  {}
+
+So we expect it is empty at this point.  Get a new session from it.
+
+  >>> timeoutData = timeoutSession['myData1']
+  >>> timeoutData
+  {}
+
+Okay, so now add some data to that session.
+
+  >>> timeoutData['info'] = 'stored in memcache'
+  >>> timeoutData
+  {'info': 'stored in memcache'}
+
+Now get that sessionData from the session.  It should just give it to us and the sessionData should have data.
+
+  >>> timeoutData = timeoutSession['myData1']
+  >>> timeoutData
+  {'info': 'stored in memcache'}
+
+Now simulate the effect of a timeout by forcing one.
+
+  >>> timeoutSessionData.timeout=1
+  >>> timeoutSessionData.lastAccessTime=0
+
+Now ask the sessionData for the session again.  If the timeout worked, the session will be empty.
+
+  >>> timeoutSession = timeoutSessionData['mySessionId']
+  >>> timeoutSession
+  {}
+
+Attempt to get the data from the session anyway and it will also be empty.
+
+  >>> timeoutData = timeoutSession['myData1']
+  >>> timeoutData
+  {}
+
+
+Normal memcache access
+~~~~~~~~~~~~~~~~~~~~~~
+
+Now we create a memcache session and connect it to the memcached client.
+
   >>> sessionData = MemCachedSessionDataContainer()
   >>> sessionData.cacheName = u'session'
 
@@ -53,7 +111,6 @@ We can now get data from the session.
   >>> data['info'] = 'stored in memcache'
   >>> data
   {'info': 'stored in memcache'}
-
 
 
 Transaction support

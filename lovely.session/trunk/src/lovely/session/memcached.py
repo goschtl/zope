@@ -51,6 +51,7 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
     def __init__(self):
         self.resolution = 5*60
         self.timeout = 1 * 60 * 60
+        self.lastAccessTime = int(time.time())
 
     def get(self, key, default=None):
         return self[key]
@@ -62,7 +63,18 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
         # getitem never fails to make sure the session uses our own PkgData
         # implementation.
         if key in self.dataManagers:
-            dm = self.dataManagers[key]
+            if int(time.time()) - self.lastAccessTime < self.timeout:
+                dm = self.dataManagers[key]
+            else:
+                del self.dataManagers[key]
+                dm = DataManager(self, key)
+                txn = transaction.manager.get()
+                txn.join(dm)
+                self.dataManagers[key] = dm
+                item = self.client.query(self._buildKey(key))
+                if item is None:
+                    item = MemCacheSessionData()
+                dm.data = item
         else:
             dm = DataManager(self, key)
             txn = transaction.manager.get()
@@ -72,6 +84,11 @@ class MemCachedSessionDataContainer(persistent.Persistent, Contained):
             if item is None:
                 item = MemCacheSessionData()
             dm.data = item
+
+        now = int(time.time())
+        if self.lastAccessTime + self.resolution < now:
+            self.lastAccessTime = now
+            
         return dm.data
 
     def __setitem__(self, key, value):
