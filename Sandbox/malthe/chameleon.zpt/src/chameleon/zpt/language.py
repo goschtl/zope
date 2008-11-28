@@ -9,7 +9,6 @@ from chameleon.core import types
 from chameleon.core import utils
 
 import interfaces
-import expressions
 
 class ZopePageTemplateElement(translation.Element):
     """Zope Page Template element.
