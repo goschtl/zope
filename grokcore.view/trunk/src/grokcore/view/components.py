@@ -247,6 +247,7 @@ class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
         # Override this method for the following line, in which our
         # custom DirectoryResource class is instantiated.
         resource = DirectoryResource(self.__dir, request)
+        resource.directory_factory = DirectoryResourceFactory
         resource.__Security_checker__ = self.__checker
         resource.__name__ = self.__name
         return resource

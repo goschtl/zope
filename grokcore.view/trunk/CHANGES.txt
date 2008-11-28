@@ -4,6 +4,9 @@ Changes
 1.3 (unreleased)
 ----------------
 
+* Fix the factory for subdirectories of the DirectoryResource implementation
+  by using hooks in zope.app.publihser.browser.directoryresource.
+
 * Update APIs interfaces to include the new ``path`` directive and
   new ``DirectoryResource`` component.
 
