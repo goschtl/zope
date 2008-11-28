@@ -154,9 +154,11 @@ Here's an example from a template for a calendar widget:
   ...      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
   ...   <div i18n:translate="" tal:omit-tag="">
   ...       <span i18n:name="monthname"
+  ...             i18n:translate=""
   ...             tal:content="monthname"
   ...             tal:omit-tag="">monthname</span>
   ...       <span i18n:name="year"
+  ...             i18n:translate=""
   ...             tal:content="year"
   ...             tal:omit-tag="">year</span>
   ...   </div>
