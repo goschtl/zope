@@ -4,7 +4,6 @@ from cPickle import dumps
 import generation
 import codegen
 import clauses
-import doctypes
 import itertools
 import types
 import utils

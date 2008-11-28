@@ -1,12 +1,11 @@
 from zope import interface
-from zope import component
 
 import sys
 import pprint
 import config
 import interfaces
 import htmlentitydefs
-import re, string
+import re
 
 types = sys.modules['types']
 

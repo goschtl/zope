@@ -10,7 +10,6 @@ class TestExplicitDoctypes(unittest.TestCase, PlacelessSetup):
         PlacelessSetup.tearDown(self)
 
     def test_doctype_declared_in_constructor_adds_doctype(self):
-        import chameleon.core
         from chameleon.core.testing import MockTemplate
         from chameleon.core import doctypes
         body = u"""\
@@ -26,7 +25,6 @@ class TestExplicitDoctypes(unittest.TestCase, PlacelessSetup):
         self.assertEqual(norm(t.render()), norm(expected))
 
     def test_doctype_declared_in_constructor_overrides_template_doctype(self):
-        import chameleon.core
         from chameleon.core.testing import MockTemplate
         from chameleon.core import doctypes
         body = u"""\
@@ -44,7 +42,6 @@ class TestExplicitDoctypes(unittest.TestCase, PlacelessSetup):
         self.assertEqual(norm(t.render()), norm(expected))
 
     def test_doctype_assigned_to_instance_overrides_constructor_doctype(self):
-        import chameleon.core
         from chameleon.core.testing import MockTemplate
         from chameleon.core import doctypes
         body = u"""\
@@ -63,7 +60,6 @@ class TestExplicitDoctypes(unittest.TestCase, PlacelessSetup):
         self.assertEqual(norm(t.render()), norm(expected))
 
     def test_no_doctype_overrides_parsed_doctype(self):
-        import chameleon.core
         from chameleon.core.testing import MockTemplate
         from chameleon.core import doctypes
         body = u"""\

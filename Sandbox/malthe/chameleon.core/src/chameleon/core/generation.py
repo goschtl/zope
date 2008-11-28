@@ -3,7 +3,6 @@ from zope.i18n import translate
 from zope.i18nmessageid import Message
 
 import utils
-import etree
 
 function_template = """\
 def bind():

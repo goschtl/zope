@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Removed unused imports, thanks to PyFlakes. [hannosch]
+
 - Removed warning about utf-8 as a recommend default encoding. There is no
   apparent speed improvement anymore. [hannosch]
 
