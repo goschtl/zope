@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b11 (released 29/11/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Ensure that function arguments passed into macros are unique. [hannosch]
 
 - Removed unused imports, thanks to PyFlakes. [hannosch]
