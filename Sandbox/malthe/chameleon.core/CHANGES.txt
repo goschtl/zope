@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Removed warning about utf-8 as a recommend default encoding. There is no
+  apparent speed improvement anymore. [hannosch]
+
 - Use ``sourcecodegen`` package to generate Python-code from AST; this
   is done to avoid generating code using the ``compiler.pycodegen``
   module, which has serious issues. Interestingly, this approach cuts

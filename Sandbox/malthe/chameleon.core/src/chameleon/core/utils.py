@@ -4,7 +4,6 @@ from zope import component
 import sys
 import pprint
 import config
-import logging
 import interfaces
 import htmlentitydefs
 import re, string
@@ -19,11 +18,6 @@ try:
     unicode_required_flag = False
 except UnicodeEncodeError:
     unicode_required_flag = True
-    log = logging.getLogger('Chameleon')
-    log.info("Default system encoding is set to '%s'; "
-             "the template engine will perform better if "
-             "an encoding that coerces gracefully to "
-             "unicode is used ('utf-8' recommended)." % sys.getdefaultencoding())
 
 def coerces_gracefully(encoding):
     if encoding != sys.getdefaultencoding() and unicode_required_flag:
