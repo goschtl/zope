@@ -417,7 +417,7 @@ class Node(object):
 
             arguments = ", ".join(
                 tuple("%s=%s" % (arg, arg) for arg in \
-                      itertools.chain(*self.stream.scope))+
+                      set(itertools.chain(*self.stream.scope)))+
                 tuple("%s=%s" % kwarg for kwarg in kwargs))
 
             value = types.value(

@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Ensure that function arguments passed into macros are unique. [hannosch]
+
 - Removed unused imports, thanks to PyFlakes. [hannosch]
 
 - Removed warning about utf-8 as a recommend default encoding. There is no
