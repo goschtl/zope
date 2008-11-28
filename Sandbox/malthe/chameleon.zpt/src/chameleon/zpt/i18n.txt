@@ -147,6 +147,46 @@ In German:
       mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.</span>
   </div>
 
+Here's an example from a template for a calendar widget:
+
+  >>> body = """\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+  ...   <div i18n:translate="" tal:omit-tag="">
+  ...       <span i18n:name="monthname"
+  ...             tal:content="monthname"
+  ...             tal:omit-tag="">monthname</span>
+  ...       <span i18n:name="year"
+  ...             tal:content="year"
+  ...             tal:omit-tag="">year</span>
+  ...   </div>
+  ... </div>"""
+
+We'll set up the tests such that pass in an i18n message for the month
+name.
+  
+  >>> from zope.i18nmessageid import Message
+  
+  >>> year = 2008
+  >>> monthname = Message(u'month_nov', domain="test", default=u"November")
+
+Without passing a language.
+
+  >>> template = PageTemplate(body)
+  >>> print template.render(year=year, monthname=monthname)
+  <div>
+      November
+      2008
+  </div>
+
+Passing German:
+  
+  >>> print template.render(year=year, monthname=monthname, target_language='de')
+  <div>
+      Mock translation of 'month_nov'.
+      2008
+  </div>
+  
 Entities and dynamic translation strings:
   
   >>> body = """\
