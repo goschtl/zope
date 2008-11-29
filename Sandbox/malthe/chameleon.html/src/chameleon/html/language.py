@@ -63,7 +63,11 @@ class Element(translation.Element):
         define_symbol = '_define'
         composite_attr_symbol = '_composite_attr'
         rebase_symbol = '_rebase'
-        
+
+        ns_omit = (
+            "http://xml.zope.org/namespaces/meta",
+            "http://namespaces.repoze.org/xss")
+
         @property
         def omit(self):
             return self.element.xss_omit.lower() in true_values
@@ -73,6 +77,11 @@ class Element(translation.Element):
             if self.element.xss_attributes is not None:
                 xhtml_attributes = utils.get_attributes_from_namespace(
                     self.element, config.XHTML_NS)
+
+                if self.element.prefix is None:
+                    xhtml_attributes.update(utils.get_attributes_from_namespace(
+                        self.element, None))
+
                 attrib = repr(tuple(xhtml_attributes.items()))
 
                 names = self.element.xss_attributes.split(',')
@@ -131,8 +140,14 @@ class Element(translation.Element):
         
         @property
         def static_attributes(self):
-            return utils.get_attributes_from_namespace(
+            xhtml_attributes = utils.get_attributes_from_namespace(
                 self.element, config.XHTML_NS)
+
+            if self.element.prefix is None:
+                xhtml_attributes.update(utils.get_attributes_from_namespace(
+                    self.element, None))
+
+            return xhtml_attributes
 
         @property
         def skip(self):
