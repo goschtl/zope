@@ -352,7 +352,7 @@ class Node(object):
             # compute macro function arguments and create argument string
             arguments = ", ".join(
                 ("%s=%s" % (arg, arg) for arg in \
-                 itertools.chain(*self.stream.scope)))
+                 set(itertools.chain(*self.stream.scope))))
 
             # XInclude's are similar to METAL macros, except the macro
             # is always defined as the entire template.
@@ -391,7 +391,7 @@ class Node(object):
 
                 scope_args = tuple(
                     "%s=%s" % (variable, variable) for variable in \
-                    itertools.chain(*self.stream.scope))
+                    set(itertools.chain(*self.stream.scope)))
 
                 init_stream = types.value('_init_stream()')
                 init_stream.symbol_mapping['_init_stream'] = generation.initialize_stream

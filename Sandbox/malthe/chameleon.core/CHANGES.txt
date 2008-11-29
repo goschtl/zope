@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Protect all `itertools.chain` statements with an encapsulating set() to
+  ensure uniqueness. [hannosch]
+
 1.0b11 (released 29/11/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
