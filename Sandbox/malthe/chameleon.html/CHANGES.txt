@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+chameleon.html 0.7 (released 11/19/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Updated static attributes handling. [malthe]
 
 chameleon.html 0.6 (released 11/19/2008)
