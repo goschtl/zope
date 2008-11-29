@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 import sys
 
-version = '1.0a3'
+version = '1.0b1'
 
 install_requires = [
     'setuptools',
     'zope.interface',
     'zope.component',
     'zope.i18n >= 3.5',
-    'chameleon.core >=1.0a4',
+    'chameleon.core >=1.0b11',
     ]
 
 setup(name='chameleon.genshi',

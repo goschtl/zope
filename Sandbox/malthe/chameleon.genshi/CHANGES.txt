@@ -4,6 +4,9 @@ Changelog
 head
 ~~~~
 
+1.0b1 (released 11/29/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Update handling of static attributes. [malthe]
 
 - Added text template classes. [malthe, wichert]
