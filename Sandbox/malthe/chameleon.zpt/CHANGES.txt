@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+1.0b5 (released 11/29/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Removed unused imports, thanks to PyFlakes. [hannosch]
 
 - Updated handling of static attributes. [malthe]
