@@ -415,10 +415,10 @@ class Node(object):
             if 'xmlns' in self.element.attrib:
                 kwargs.append(('include_ns_attribute', repr(True)))
 
-            arguments = ", ".join(
-                tuple("%s=%s" % (arg, arg) for arg in \
-                      set(itertools.chain(*self.stream.scope)))+
-                tuple("%s=%s" % kwarg for kwarg in kwargs))
+            arguments = tuple("%s=%s" % (arg, arg) for arg in \
+                              itertools.chain(*self.stream.scope))+ \
+                        tuple("%s=%s" % kwarg for kwarg in kwargs)
+            arguments = ", ".join(set(arguments))
 
             value = types.value(
                 "%s.render(%s)" % (self.symbols.metal, arguments))

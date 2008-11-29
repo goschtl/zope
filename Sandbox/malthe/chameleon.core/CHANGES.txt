@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Ensure argument uniqueness for macro functions over the combined set of
+  scope and keyword arguments. [hannosch]
+
 - Protect all `itertools.chain` statements with an encapsulating set() to
   ensure uniqueness. [hannosch]
 
