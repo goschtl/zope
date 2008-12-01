@@ -63,6 +63,17 @@ try:
 
     XMLSyntaxError = lxml.etree.XMLSyntaxError
 
+    def elements_with_attribute(element, ns, name, value=None):
+        if value is None:
+            expression = './/*[@prefix:%s] | .//prefix:*[@%s]' % (name, name)
+        else:
+            expression = './/*[@prefix:%s="%s"] | .//prefix:*[@%s="%s"]' % (
+                name, value, name, value)
+            
+        return element.xpath(
+            expression,
+            namespaces={'prefix': ns})
+
     class BufferIO(list):
         write = list.append
 
@@ -229,13 +240,23 @@ try:
 except ImportError:
     ET = import_elementtree()
 
-    try:
-        from pdis.xpath import XPath
-    except ImportError:
-        raise ImportError("PDIS-XPath is required when lxml is unavailable.")
+    XMLSyntaxError = SyntaxError
 
-    XMLSyntaxError = ET.XMLSyntaxError
-    
+    def elements_with_attribute(element, ns, name, value=None):
+        attributes = utils.get_attributes_from_namespace(
+            element, ns)
+
+        if value is not None:
+            if value in (
+                attributes.get(name), attributes.get('{%s}%s' % (ns, name))):
+                yield element
+        elif 'name' in attributes or '{%s}%s' % (ns, name) in attributes:
+            yield element
+            
+        for child in element:
+            for match in elements_with_attribute(child, ns, name):
+                yield match
+            
     class ElementBase(object, ET._ElementInterface):
         _parent = None
         
@@ -268,8 +289,8 @@ except ImportError:
             return ET.tostring(self)
 
         def xpath(self, path, namespaces={}):
-            xpath = XPath(path, namespace_mapping=namespaces)
-            return xpath.evaluate(self)
+            raise NotImplementedError(
+                "No XPath-engine available.")
             
         @property
         def nsmap(self):
@@ -335,7 +356,7 @@ except ImportError:
         def handle_cdata_end(self):
             self._target.end(utils.xhtml_attr('cdata'))
             
-    def parse(body, element_mapping):
+    def parse(body, element_mapping, fallback=None):
         def element_factory(tag, attrs=None, nsmap=None):
             if attrs is None:
                 attrs = {}
@@ -348,7 +369,7 @@ except ImportError:
                 ns_tag = None
 
             namespace = element_mapping[ns]
-            factory = namespace.get(ns_tag) or namespace.get(None) or ElementBase
+            factory = namespace.get(ns_tag) or namespace.get(None) or fallback
 
             element = object.__new__(factory)
             element.__init__(tag, attrs)
@@ -359,6 +380,7 @@ except ImportError:
         parser = XMLParser(target=target)
         parser.entity = dict([(name, "&%s;" % name) for name in htmlentitydefs.entitydefs])
         parser.feed(body)
+
         root = parser.close()
 
         return root, parser.doctype

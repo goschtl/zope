@@ -372,9 +372,8 @@ class Node(object):
             # for each fill-slot element, create a new output stream
             # and save value in a temporary variable
             kwargs = []
-            for element in self.element.xpath(
-                './/*[@metal:fill-slot] | .//metal:*[@fill-slot]',
-                namespaces={'metal': config.METAL_NS}):
+            for element in etree.elements_with_attribute(
+                self.element, config.METAL_NS, 'fill-slot'):
                 if element.node.fill_slot is None:
                     # XXX this should not be necessary, but the above
                     # xpath expression finds non-"metal:fill-slot"
@@ -691,10 +690,8 @@ class Compiler(object):
         # if macro is non-trivial, start compilation at the element
         # where the macro is defined
         if macro:
-            elements = self.root.xpath(
-                'descendant-or-self::*[@metal:define-macro="%s"] |'
-                'descendant-or-self::metal:*[@define-macro="%s"]' % (macro, macro),
-                namespaces={'metal': config.METAL_NS})
+            elements = tuple(etree.elements_with_attribute(
+                self.root, config.METAL_NS, 'define-macro', macro))
 
             if not elements:
                 raise ValueError("Macro not found: %s." % macro)
@@ -855,8 +852,11 @@ class ByteCodeTemplate(object):
             return selectors
 
         self._selectors = selectors = {}
-        for element in self.tree.xpath(
-            './/*[@meta:select]', namespaces={'meta': config.META_NS}):
+
+        elements = etree.elements_with_attribute(
+            self.tree, config.META_NS, 'select')
+
+        for element in elements:
             name = element.attrib[utils.meta_attr('select')]
             selectors[name] = element.xpath
 

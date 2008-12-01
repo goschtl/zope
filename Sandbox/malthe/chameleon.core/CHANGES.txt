@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Do not use XPath-expressions during compilation if lxml is not
+  available. [malthe]
+
 - Ensure argument uniqueness for macro functions over the combined set of
   scope and keyword arguments. [hannosch]
 
