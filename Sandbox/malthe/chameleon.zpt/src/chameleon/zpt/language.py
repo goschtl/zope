@@ -162,7 +162,7 @@ class ZopePageTemplateElement(translation.Element):
         @property
         def tail(self):
             if self.element.tail is not None:
-                if not self._interpolation_enabled:
+                if not self.element.getparent().node._interpolation_enabled:
                     return (self.element.tail,)
                 else:
                     return self.element.translator.split(self.element.tail)
