@@ -16,3 +16,4 @@
 $Id$
 """
 from ClientForm import *
+from ClientForm import _create_bs_classes
