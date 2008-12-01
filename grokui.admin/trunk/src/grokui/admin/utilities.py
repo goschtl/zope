@@ -14,6 +14,7 @@
 """Helper functions for grok admin.
 """
 import re
+import urllib
 from zope.tal.taldefs import attrEscape
 from urlparse import urlparse, urlunparse
 
@@ -250,3 +251,19 @@ def getParentURL(url):
     path = path.rsplit('/', 1)[0] + '/'
     url_list[2] = path
     return urlunparse(url_list)
+
+def getURLWithParams(url, data=None):
+    """Get the url with data appended as URL parameters.
+
+    This is a reimplementation of functionality from ``grokcore.view``
+    to enable use of ``grokui.admin`` with Grok versions < 0.13.
+    """
+    if data:
+        for k,v in data.items():
+            if isinstance(v, unicode):
+                data[k] = v.encode('utf-8')
+            if isinstance(v, (list, set, tuple)):
+                data[k] = [isinstance(item, unicode) and item.encode('utf-8')
+                or item for item in v]
+        url += '?' + urllib.urlencode(data, doseq=True)
+    return url
