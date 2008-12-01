@@ -152,18 +152,20 @@ class ZopePageTemplateElement(translation.Element):
 
         @property
         def text(self):
-            if not self._interpolation_enabled:
-                return (self.element.text,)
             if self.element.text is not None:
-                return self.element.translator.split(self.element.text)
+                if not self._interpolation_enabled:
+                    return (self.element.text,)
+                else:
+                    return self.element.translator.split(self.element.text)
             return ()
 
         @property
         def tail(self):
-            if not self._interpolation_enabled:
-                return (self.element.tail,)
             if self.element.tail is not None:
-                return self.element.translator.split(self.element.tail)
+                if not self._interpolation_enabled:
+                    return (self.element.tail,)
+                else:
+                    return self.element.translator.split(self.element.tail)
             return ()
 
     node = property(node)
