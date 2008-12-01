@@ -69,6 +69,37 @@ We can go to the object browser for every installed application:
   ...<span ...>...<a href=...>MammothManager</a> object at ...></span>
   ... 
 
+We can also rename applications. For this we choose the application we
+installed and click `Rename`::
+
+  >>> browser.open("http://localhost/applications")
+  >>> ctrl = browser.getControl(name='items')
+  >>> ctrl.getControl(value='my-mammoth-manager').selected = True
+  >>> browser.getControl('Rename').click()
+
+We get a form were we can enter new names::
+
+  >>> print browser.contents
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  ...
+  <legend> Rename applications: </legend>
+  ...
+  >>> subform = browser.getForm()
+  >>> subform.getControl(name='new_names:list').value = 'my-new-mammoth-manager'
+  >>> subform.getControl('Rename').click()
+
+Our app was indeed renamed::
+
+  >>> print browser.contents
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  ...
+  ...<legend>Installed applications</legend>
+  ...
+  ...<a href="http://localhost/my-new-mammoth-manager">
+  ...my-new-mammoth-manager
+  ...(MammothManager)
+  ...
+  
 We are able to delete installed mammoth-managers
 
   >>> browser.open("http://localhost/applications")
@@ -78,7 +109,7 @@ We are able to delete installed mammoth-managers
   ... <legend>Installed applications</legend>
   ...
   >>> ctrl = browser.getControl(name='items')
-  >>> ctrl.getControl(value='my-mammoth-manager').selected = True
+  >>> ctrl.getControl(value='my-new-mammoth-manager').selected = True
   >>> browser.getControl('Delete Selected').click()
   >>> print browser.contents
   <html xmlns="http://www.w3.org/1999/xhtml">
