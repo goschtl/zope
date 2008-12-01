@@ -13,6 +13,8 @@ CHANGES
   conflict resolution when they are used as keys or set members in ZODB
   `BTrees` data structures.
 
+- Don't depend on zope.testing, use standard doctest instead.
+
 3.4.0 (2007-10-24)
 ------------------
 

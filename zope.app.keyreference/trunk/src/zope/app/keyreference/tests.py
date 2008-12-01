@@ -15,6 +15,7 @@
 
 $Id$
 """
+import doctest
 import unittest
 
 def test_multi_databases():
@@ -50,7 +51,6 @@ def test_multi_databases():
 """
 
 def test_suite():
-    from zope.testing import doctest
     return unittest.TestSuite((
         doctest.DocFileSuite('persistent.txt'),
         doctest.DocTestSuite(),
