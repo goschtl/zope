@@ -3,7 +3,7 @@ Key References for Persistent Objects
 =====================================
 
 `zope.keyreference.persistent.KeyReferenceToPersistent` provides an
-`zope.app.keyreference.interfaces.IReference` reference for persistent
+`zope.app.keyreference.interfaces.IKeyReference` reference for persistent
 objects.
 
 Let's look at an example. First, we'll create some persistent objects
