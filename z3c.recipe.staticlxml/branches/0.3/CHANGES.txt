@@ -1,5 +1,5 @@
-trunk
-=====
+0.3 (2008-12-01)
+================
 
 - Only add ``iconv`` on darwin. [seletz]
 
