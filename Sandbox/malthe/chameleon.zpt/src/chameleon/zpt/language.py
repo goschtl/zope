@@ -10,6 +10,7 @@ from chameleon.core import utils
 
 import interfaces
 
+
 class ZopePageTemplateElement(translation.Element):
     """Zope Page Template element.
 
@@ -24,6 +25,10 @@ class ZopePageTemplateElement(translation.Element):
             "http://xml.zope.org/namespaces/tal",
             "http://xml.zope.org/namespaces/metal",
             "http://xml.zope.org/namespaces/i18n")
+
+        @property
+        def _interpolation_enabled(self):
+            return self.element.meta_interpolation in config.TRUEVALS + ('',)
 
         @property
         def omit(self):
@@ -95,13 +100,14 @@ class ZopePageTemplateElement(translation.Element):
                 xhtml_attributes.update(utils.get_attributes_from_namespace(
                     self.element, None))
             
-            for name, value in xhtml_attributes.items():
-                parts = self.element.translator.split(value)
-                for part in parts:
-                    if isinstance(part, types.expression):
-                        attributes.append(
-                            (types.declaration((name,)), types.join(parts)))
-                        break
+            if self._interpolation_enabled:
+                for name, value in xhtml_attributes.items():
+                    parts = self.element.translator.split(value)
+                    for part in parts:
+                        if isinstance(part, types.expression):
+                            attributes.append(
+                                (types.declaration((name,)), types.join(parts)))
+                            break
                     
             if self.element.tal_attributes is not None:
                 attributes.extend(self.element.tal_attributes)
@@ -146,12 +152,16 @@ class ZopePageTemplateElement(translation.Element):
 
         @property
         def text(self):
+            if not self._interpolation_enabled:
+                return (self.element.text,)
             if self.element.text is not None:
                 return self.element.translator.split(self.element.text)
             return ()
 
         @property
         def tail(self):
+            if not self._interpolation_enabled:
+                return (self.element.tail,)
             if self.element.tail is not None:
                 return self.element.translator.split(self.element.tail)
             return ()
@@ -187,6 +197,8 @@ class ZopePageTemplateElement(translation.Element):
 
     meta_translator = etree.Annotation(
         utils.meta_attr('translator'))
+    meta_interpolation = utils.attribute(
+        utils.meta_attr('interpolation'), default='true')
 
 class XHTMLElement(ZopePageTemplateElement):
     """XHTML namespace element."""
@@ -244,7 +256,7 @@ class TALElement(XHTMLElement):
         ("content", utils.tal_attr("content")), lambda p: p.output)
     tal_omit = utils.attribute(
         ("omit-tag", utils.tal_attr("omit-tag")), lambda p: p.tales, u"")    
-    
+
 class METALElement(XHTMLElement):
     """METAL namespace element."""
 

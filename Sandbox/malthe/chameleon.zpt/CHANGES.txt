@@ -4,6 +4,9 @@ Changelog
 Head
 ~~~~
 
+- Added a ``interpolation`` meta attribute to control $-interpolation of
+  expressions.  This defaults to ``true`` for chameleon.zpt. [seletz]
+
 1.0b5 (released 11/29/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
