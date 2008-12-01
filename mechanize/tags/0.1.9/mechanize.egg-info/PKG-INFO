@@ -1,0 +1,53 @@
+Metadata-Version: 1.0
+Name: mechanize
+Version: 0.1.9
+Summary: Stateful programmatic web browsing.
+Home-page: http://wwwsearch.sourceforge.net/mechanize/
+Author: John J. Lee
+Author-email: jjl@pobox.com
+License: BSD
+Download-URL: http://wwwsearch.sourceforge.net/mechanize/src/mechanize-0.1.9.tar.gz
+Description: Stateful programmatic web browsing, after Andy Lester's Perl module
+        WWW::Mechanize.
+        
+        The library is layered: mechanize.Browser (stateful web browser),
+        mechanize.UserAgent (configurable URL opener), plus urllib2 handlers.
+        
+        Features include: ftp:, http: and file: URL schemes, browser history,
+        high-level hyperlink and HTML form support, HTTP cookies, HTTP-EQUIV and
+        Refresh, Referer [sic] header, robots.txt, redirections, proxies, and
+        Basic and Digest HTTP authentication.  mechanize's response objects are
+        (lazily-) .seek()able and still work after .close().
+        
+        Much of the code originally derived from Perl code by Gisle Aas
+        (libwww-perl), Johnny Lee (MSIE Cookie support) and last but not least
+        Andy Lester (WWW::Mechanize).  urllib2 was written by Jeremy Hylton.
+        
+        
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: BSD License
+Classifier: License :: OSI Approved :: Zope Public License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet
+Classifier: Topic :: Internet :: File Transfer Protocol (FTP)
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Internet :: WWW/HTTP :: Browsers
+Classifier: Topic :: Internet :: WWW/HTTP :: Indexing/Search
+Classifier: Topic :: Internet :: WWW/HTTP :: Site Management
+Classifier: Topic :: Internet :: WWW/HTTP :: Site Management :: Link Checking
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Testing :: Traffic Generation
+Classifier: Topic :: System :: Archiving :: Mirroring
+Classifier: Topic :: System :: Networking :: Monitoring
+Classifier: Topic :: System :: Systems Administration
+Classifier: Topic :: Text Processing
+Classifier: Topic :: Text Processing :: Markup
+Classifier: Topic :: Text Processing :: Markup :: HTML
+Classifier: Topic :: Text Processing :: Markup :: XML
