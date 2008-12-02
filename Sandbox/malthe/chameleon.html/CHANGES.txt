@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed namespace handling; the XML parser now makes sure that the
+  default namespace gets registered as such. [malthe]
+
 chameleon.html 0.7 (released 11/19/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

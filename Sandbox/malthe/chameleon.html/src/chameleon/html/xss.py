@@ -39,7 +39,10 @@ def parse_xss(stream):
             for item in selector.seq:
                 if item.type == 'type-selector':
                     extra, name = item.value
-                    selectors.append('%s|%s' % (namespace, name))
+                    if name.lower() == 'html':
+                        selectors.append('%s|%s' % (namespace, name))
+                    else:
+                        selectors.append(name)
                 else:
                     selectors.append(item.value)
             selector = "".join(selectors)

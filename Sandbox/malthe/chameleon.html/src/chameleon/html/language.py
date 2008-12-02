@@ -259,9 +259,9 @@ class DynamicHTMLParser(XSSTemplateParser):
                 new.tail = "\n"
                 tag = new
                 
-    def glob_resources(self, root, attribute, xpath, ns={}):
+    def glob_resources(self, root, attribute, xpath):
         """Resource globbing"""
-        tags = root.xpath(xpath, namespaces=ns)
+        tags = root.xpath(xpath)
         for tag in tags:
             href = tag.attrib.get(attribute)
             matches = glob.glob(os.path.join(self.path, href))
@@ -281,19 +281,20 @@ class DynamicHTMLParser(XSSTemplateParser):
         self.attributes = []
 
         # process possible resource globbing
-        self.glob_resources(root, "href", './/xmlns:link', ns={'xmlns': config.XHTML_NS})
-        self.glob_resources(root, "src", './/xmlns:script', ns={'xmlns': config.XHTML_NS})
+        self.glob_resources(
+            root, "href", './/link')
+        self.glob_resources(
+            root, "src", './/script')
 
         # process dynamic rules
-        links = root.xpath(
-            './/xmlns:link[@rel="xss"]', namespaces={'xmlns': config.XHTML_NS})
-
+        links = root.xpath('.//link[@rel="xss"]')
         for link in links:
             try:
                 href = link.attrib['href']
             except KeyError:
                 raise AttributeError(
-                    "Attribute missing from tag: 'href' (line %d)." % link.sourceline)
+                    "Attribute missing from tag: "
+                    "'href' (line %d)." % link.sourceline)
 
             filename = os.path.join(self.path, href)
             if not os.path.exists(filename):
@@ -356,8 +357,7 @@ class DynamicHTMLParser(XSSTemplateParser):
 
         # prepare reference rebase logic
         elements = root.xpath(
-            './/xmlns:link[@href] | .//xmlns:img[@src] | .//xmlns:script[@src]',
-            namespaces={'xmlns': config.XHTML_NS})
+            './/link[@href] | .//img[@src] | .//script[@src]')
         for element in elements:
             href = element.attrib.get('href')
             if href is not None:
@@ -365,8 +365,7 @@ class DynamicHTMLParser(XSSTemplateParser):
             src = element.attrib.get('src')
             if src is not None:
                 element.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'src'
-        elements = root.xpath(
-            './/xmlns:style', namespaces={'xmlns': config.XHTML_NS})
+        elements = root.xpath('.//style')
         for element in elements:
             for comment in element:
                 text = comment.text
