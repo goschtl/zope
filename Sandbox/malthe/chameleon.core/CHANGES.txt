@@ -4,6 +4,8 @@ Changelog
 HEAD
 ~~~~
 
+- Added namespace prefix 'xml' to default namespace mapping. [malthe]
+
 - Fixed root cause of issue with self-closing tags; an empty element
   text is now correctly differentiated from a self-closed
   tag (which does not have this attribute set). [malthe]

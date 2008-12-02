@@ -21,6 +21,7 @@ VALIDATION = os.environ.get(VALIDATION_KEY, 'false')
 VALIDATION = VALIDATION.lower() in TRUEVALS
 
 # these definitions are standard---change at your own risk!
+XML_NS = "http://www.w3.org/XML/1998/namespace"
 XHTML_NS = "http://www.w3.org/1999/xhtml"
 TAL_NS = "http://xml.zope.org/namespaces/tal"
 META_NS = "http://xml.zope.org/namespaces/meta"
@@ -32,6 +33,7 @@ PY_NS = "http://genshi.edgewall.org/"
 # default prefix namespace mapping
 DEFAULT_NS_MAP = {
     None: XHTML_NS,
+    'xml': XML_NS,
     'meta': META_NS,
     'py': PY_NS,
     'tal': TAL_NS,
