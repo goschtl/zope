@@ -4,6 +4,16 @@ Changelog
 HEAD
 ~~~~
 
+- Fixed root cause of issue with self-closing tags; an empty element
+  text is now correctly differentiated from a self-closed
+  tag (which does not have this attribute set). [malthe]
+
+- Removed support for compilation without ``lxml``. [malthe]
+
+- Use ``xml.parsers.expat`` to parse template document instead of
+  using ``lxml``. This gives much greater control over edge-cases and
+  allows us to lose many workarounds. [malthe]
+
 - Do not use XPath-expressions during compilation if lxml is not
   available. [malthe]
 

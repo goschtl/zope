@@ -22,7 +22,6 @@ class Template(object):
     format = 'xml'
     filename = '<string>'
     
-    implicit_doctype = doctypes.xhtml
     explicit_doctype = None
     
     def __init__(self, body, parser, format=None, doctype=None, encoding=None):
@@ -52,7 +51,6 @@ class Template(object):
     def compiler(self):
         return self.compilers[self.format](
             self.body, self.parser,
-            implicit_doctype=self.implicit_doctype,
             explicit_doctype=self.explicit_doctype,
             encoding=self.encoding)
 

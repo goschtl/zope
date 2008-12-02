@@ -280,7 +280,7 @@ def get_attributes_from_namespace(element, namespace):
 def get_namespace(element):
     if '}' in element.tag:
         return element.tag.split('}')[0][1:]
-    return element.nsmap[None]
+    return element.nsmap.get(None)
 
 def xhtml_attr(name):
     return "{%s}%s" % (config.XHTML_NS, name)

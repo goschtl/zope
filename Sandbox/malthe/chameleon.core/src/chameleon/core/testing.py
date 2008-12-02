@@ -25,7 +25,7 @@ def setup_stream(encoding=None):
 
 def compile_xhtml(body, **kwargs):
     compiler = TestCompiler(
-        body, mock_parser, implicit_doctype=doctypes.xhtml)
+        body, mock_parser)
     return compiler(parameters=sorted(kwargs.keys()))
 
 def render_xhtml(body, **kwargs):
@@ -34,14 +34,14 @@ def render_xhtml(body, **kwargs):
     
 def render_text(body, **kwargs):
     compiler = TestCompiler.from_text(
-        body, mock_parser, implicit_doctype=doctypes.xhtml)
+        body, mock_parser)
     template = compiler(parameters=sorted(kwargs.keys()))
     template.compile()
     return template.render(**kwargs)    
 
 def compile_template(parser, body, encoding=None, **kwargs):
     compiler = TestCompiler(
-        body, parser, encoding=encoding, implicit_doctype=doctypes.xhtml)
+        body, parser, encoding=encoding)
     template = compiler(parameters=sorted(kwargs.keys()))
     template.compile()
     return template.render(**kwargs)    
@@ -128,7 +128,7 @@ class MockTemplate(object):
     def render(self, **kwargs):
         compiler = TestCompiler(
             self.body, self.parser,
-            implicit_doctype=doctypes.xhtml, explicit_doctype=self.doctype)
+            explicit_doctype=self.doctype)
         template = compiler(parameters=sorted(kwargs.keys()))
         return template.render(**kwargs)    
 

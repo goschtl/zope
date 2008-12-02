@@ -28,8 +28,17 @@ METAL_NS = "http://xml.zope.org/namespaces/metal"
 XI_NS = "http://www.w3.org/2001/XInclude"
 I18N_NS = "http://xml.zope.org/namespaces/i18n"
 PY_NS = "http://genshi.edgewall.org/"
-NS_MAP = dict(py=PY_NS, tal=TAL_NS, metal=METAL_NS)
 
+# default prefix namespace mapping
+DEFAULT_NS_MAP = {
+    None: XHTML_NS,
+    'meta': META_NS,
+    'py': PY_NS,
+    'tal': TAL_NS,
+    'metal': METAL_NS,
+    'i18n': I18N_NS,
+    'xi': XI_NS}
+    
 # the symbols table below is used internally be the compiler
 class SYMBOLS(object):
     # internal use only

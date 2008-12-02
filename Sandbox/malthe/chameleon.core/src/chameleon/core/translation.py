@@ -76,6 +76,10 @@ class Node(object):
 
     @property
     def ns_attributes(self):
+        root = self.element.getroottree().getroot()
+        if root is None or utils.get_namespace(root) == config.META_NS:
+            return {}
+        
         prefix_omit = set()
         namespaces = self.element.nsmap.values()
 
@@ -86,10 +90,12 @@ class Node(object):
                     prefix_omit.add(prefix)
             parent = parent.getparent()
 
-        return dict(
+        attrs = dict(
             ((prefix and "xmlns:%s" % prefix or "xmlns", ns) for (prefix, ns) in \
              self.element.nsmap.items() if \
              ns not in self.ns_omit and prefix not in prefix_omit))
+
+        return attrs
     
     @property
     def static_attributes(self):
@@ -109,7 +115,7 @@ class Node(object):
         if self.element.prefix is None:
             result.update(
                 utils.get_attributes_from_namespace(self.element, None))
-            
+
         return result
 
     @property
@@ -350,9 +356,9 @@ class Node(object):
         # include
         elif self.include:
             # compute macro function arguments and create argument string
-            arguments = ", ".join(
-                ("%s=%s" % (arg, arg) for arg in \
-                 set(itertools.chain(*self.stream.scope))))
+            arguments = [
+                "%s=%s" % (arg, arg) for arg in \
+                 set(itertools.chain(*self.stream.scope))]
 
             # XInclude's are similar to METAL macros, except the macro
             # is always defined as the entire template.
@@ -365,7 +371,7 @@ class Node(object):
             _.append(clauses.Write(
                 types.template(
                 "%%(xincludes)s.get(%%(include)s, %s).render_xinclude(%s)" % \
-                (repr(self.format), arguments))))
+                (repr(self.format), ", ".join(arguments)))))
             
         # use macro
         elif self.use_macro:
@@ -604,70 +610,25 @@ class Compiler(object):
 
     doctype = None
     xml_declaration = None
-    implicit_doctype = ""
-    
-    def __init__(self, body, parser, implicit_doctype=None,
-                 explicit_doctype=None, encoding=None):
-        # documents without a document type declaration are augmented
-        # with default namespace declarations and proper XML entity
-        # definitions; this represents a 'convention' over
-        # 'configuration' approach to template documents
-        no_doctype_declaration = '<!DOCTYPE' not in body
-        no_xml_declaration = not body.startswith('<?xml ')
-        require_wrapping = no_xml_declaration and no_doctype_declaration
-
-        if no_xml_declaration is False:
-            self.xml_declaration = body[:body.find('\n', body.find('?>'))+1]
-            
-        # add default namespace declaration if no explicit document
-        # type has been set
-        if implicit_doctype and explicit_doctype is None and require_wrapping:
-            body = """\
-            <meta:declare-ns
-            xmlns="%s" xmlns:tal="%s" xmlns:metal="%s" xmlns:i18n="%s"
-            xmlns:py="%s" xmlns:xinclude="%s" xmlns:meta="%s"
-            >%s</meta:declare-ns>""" % (
-                config.XHTML_NS, config.TAL_NS,
-                config.METAL_NS, config.I18N_NS,
-                config.PY_NS, config.XI_NS, config.META_NS,
-                body)
-
-        # prepend the implicit doctype to the document source and add
-        # entity definitions
-        if implicit_doctype and require_wrapping:
-            implicit_doctype = implicit_doctype[:-1] + '  [ %s ]>' % utils.entities
-            self.implicit_doctype = implicit_doctype
-            body = implicit_doctype + "\n" + body
-
-        # parse document
-        self.root, parsed_doctype = parser.parse(body)
-
-        # explicit document type has priority
-        if explicit_doctype is not None:
-            self.doctype = explicit_doctype
-        elif parsed_doctype and not no_doctype_declaration:
-            self.doctype = parsed_doctype
-
-        # if the document has no XML declaration, limit self-closing
-        # tags to the allowed subset for templates with a non-XML
-        # compliant document type (non-strict); see
-        # http://www.w3.org/TR/xhtml1/#C_3 for more information.
-        ldoctype = (self.doctype or implicit_doctype or "").lower()
-        if no_xml_declaration and \
-               'html' in ldoctype and 'strict' not in ldoctype:
-            for element in self.root.getiterator():
-                try:
-                    tag = element.tag.split('}')[-1]
-                except AttributeError:
-                    continue
-
-                if element.text is None and tag not in (
-                    'area', 'base', 'basefont', 'br',
-                    'hr', 'input', 'img', 'link', 'meta'):
-                    element.text = ""
-                    
+        
+    def __init__(self, body, parser, explicit_doctype=None, encoding=None):
+        self.tree = parser.parse(body)
         self.parser = parser
 
+        # it's not clear from the tree if an XML declaration was
+        # present in the document source; the following is a
+        # work-around to ensure that output matches input
+        if '<?xml ' in body:
+            self.xml_declaration = \
+            """<?xml version="%s" encoding="%s" standalone="no" ?>""" % (
+                self.tree.docinfo.xml_version, self.tree.docinfo.encoding)
+            
+        # explicit document type has priority over a parsed doctype
+        if explicit_doctype is not None:
+            self.doctype = explicit_doctype
+        elif self.tree.docinfo.doctype:
+            self.doctype = self.tree.docinfo.doctype
+        
         if utils.coerces_gracefully(encoding):
             self.encoding = None
         else:
@@ -677,36 +638,47 @@ class Compiler(object):
     def from_text(cls, body, parser, **kwargs):
         compiler = Compiler(
             "<html xmlns='%s'></html>" % config.XHTML_NS, parser,
-            implicit_doctype=None, encoding=kwargs.get('encoding'))
-        compiler.root.text = body
-        compiler.root.meta_omit = ""
+            encoding=kwargs.get('encoding'))
+        root = compiler.tree.getroot()
+        root.text = body
+        root.meta_omit = ""
         return compiler
 
     def __call__(self, macro=None, global_scope=True, parameters=()):
-        if not isinstance(self.root, Element):
+        root = self.tree.getroot()
+
+        if not isinstance(root, Element):
             raise ValueError(
-                "Must define valid namespace for tag: '%s.'" % self.root.tag)
+                "Must define valid namespace for tag: '%s.'" % root.tag)
 
         # if macro is non-trivial, start compilation at the element
         # where the macro is defined
         if macro:
             elements = tuple(etree.elements_with_attribute(
-                self.root, config.METAL_NS, 'define-macro', macro))
+                root, config.METAL_NS, 'define-macro', macro))
 
             if not elements:
                 raise ValueError("Macro not found: %s." % macro)
 
-            self.root = element = elements[0]
+            element = elements[0]
+            element.meta_translator = root.meta_translator
 
-            # remove attribute from tag
-            if element.nsmap[element.prefix] == config.METAL_NS:
+            # if element is the document root, render as a normal
+            # template, e.g. unset the `macro` mode
+            if root is element:
+                macro = None
+            else:
+                root = element
+
+            # remove macro definition attribute from element
+            if element.nsmap.get(element.prefix) == config.METAL_NS:
                 del element.attrib['define-macro']
             else:
                 del element.attrib[utils.metal_attr('define-macro')]
-                
+
         # initialize code stream object
         stream = generation.CodeIO(
-            self.root.node.symbols, encoding=self.encoding,
+            root.node.symbols, encoding=self.encoding,
             indentation=0, indentation_string="\t")
 
         # initialize variable scope
@@ -747,11 +719,18 @@ class Compiler(object):
             clause.begin(stream)
             clause.end(stream)
 
+        if macro is not None:
+            if macro == "" and 'xmlns' in root.attrib:
+                del root.attrib['xmlns']        
+            wrap = root.makeelement(utils.meta_attr('wrap'))
+            wrap.append(root)
+            root = wrap        
+            
         # output XML headers, if applicable
         if not macro:
             header = ""
             if self.xml_declaration is not None:
-                header += self.xml_declaration
+                header += self.xml_declaration + '\n'
             if self.doctype:
                 doctype = self.doctype + '\n'
                 if self.encoding:
@@ -765,13 +744,9 @@ class Compiler(object):
                 stream.scope.pop()
 
         # start generation
-        self.root.start(stream)
+        root.start(stream)
         body = stream.getvalue()
 
-        # remove namespace declaration
-        if 'xmlns' in self.root.attrib:
-            del self.root.attrib['xmlns']
-        
         # symbols dictionary
         __dict__ = stream.symbols.__dict__
 
@@ -804,11 +779,10 @@ class Compiler(object):
             source = generation.function_wrap(
                 'render', defaults, _globals, body)
 
-        # serialize document
-        xmldoc = self.implicit_doctype + "\n" + self.root.tostring()
+        xmldoc = self.parser.serialize(self.tree)
 
         return ByteCodeTemplate(
-            source, xmldoc, self.parser, self.root)
+            source, xmldoc, self.parser, root)
 
 class ByteCodeTemplate(object):
     """Template compiled to byte-code."""
@@ -875,7 +849,7 @@ class GhostedByteCodeTemplate(object):
         source = state['source']
         xmldoc = state['xmldoc']
         parser = state['parser']
-        tree, doctype = parser.parse(xmldoc)        
+        tree = parser.parse(xmldoc)        
 
         bind = sys.modules['types'].FunctionType(
             marshal.loads(state['code']), GLOBALS, "bind")

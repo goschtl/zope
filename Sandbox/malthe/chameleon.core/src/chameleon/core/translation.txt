@@ -14,9 +14,9 @@ XHTML
   ... <div xmlns="http://www.w3.org/1999/xhtml">
   ...   Hello World!
   ... </div>""")
-    <div>
-      Hello World!
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    Hello World!
+  </div>
 
 :: Setting DOCTYPE
 
@@ -38,10 +38,10 @@ XHTML
   ...   La Peña
   ...   <img alt="La Peña" />
   ... </div>""")
-    <div>
-      La Peña
-      <img alt="La Pe&ntilde;a" />
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    La Peña
+    <img alt="La Pe&ntilde;a" />
+  </div>
 
 :: CDATA blocks
   >>> print render_xhtml("""\
@@ -51,12 +51,12 @@ XHTML
   ...   /* ]]> */
   ...   <span>Not protected</span> <![CDATA[ This is protected ]]>
   ... </div>""")
-    <div>
-      /* <![CDATA[ */
-      This is protected
-      /* ]]> */
-      <span>Not protected</span> <![CDATA[ This is protected ]]>
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    /* <![CDATA[ */
+    This is protected
+    /* ]]> */
+    <span>Not protected</span> <![CDATA[ This is protected ]]>
+  </div>
 
 Literals
 --------
@@ -84,7 +84,7 @@ Literals
   ...   >&rarr;</a>
   ...   <span class="&rarr;"></span>
   ... </html>""")
-    <html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
       Hello &nbsp; World!
       <a href="localhost" title="Singing &amp; Dancing">&rarr;</a>
       <span class="&rarr;"></span>
@@ -97,7 +97,7 @@ Literals
   ...   <?xml-stylesheet href="classic.xsl" type="text/xml"?>
   ...   Hello World!
   ... </html>""")
-    <html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
       <?xml-stylesheet href="classic.xsl" type="text/xml"?>
       Hello World!
     </html>
@@ -110,7 +110,7 @@ Literals
   ...   <!-- a multi-
   ...        line comment -->
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <!-- a comment -->
     <!-- a multi-
          line comment -->
@@ -122,7 +122,7 @@ Literals
   ... <html xmlns="http://www.w3.org/1999/xhtml">
   ...   <!-- hello world -->
   ... </html>""")
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <!-- hello world -->
   </html>
   
@@ -174,7 +174,7 @@ Check that we're getting a template object back.
 Let's try and render the template.
  
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -193,19 +193,6 @@ We expect the xml-parser to raise an exception.
   >>> render_xhtml(body)
   Traceback (most recent call last):
     ...
-  XMLSyntaxError: ...
+  ExpatError: unclosed token: line 1, column 0
 
 :: Missing namespace definition
-
-If a document type is provided, namespaces must be declared.
-
-  >>> body = """\
-  ... <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  ...                       "http://www.w3.org/TR/html4/loose.dtd">
-  ... <div xmlns="http://www.w3.org/1999/xhtml" tal:content="'Hello World'" />
-  ... """
-
-  >>> print render_xhtml(body)
-  Traceback (most recent call last):
-    ...
-  XMLSyntaxError: Namespace prefix tal for content on div is not defined...
