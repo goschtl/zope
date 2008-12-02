@@ -232,6 +232,8 @@ class XSSTemplateParser(etree.Parser):
         config.XHTML_NS: {None: Element},
         config.META_NS: {None: MetaElement}}
 
+    fallback = Element
+    
 class DynamicHTMLParser(XSSTemplateParser):
     slots = attributes = ()
     
@@ -267,7 +269,8 @@ class DynamicHTMLParser(XSSTemplateParser):
                 self.expand_tag(tag, matches, attribute)
 
     def parse(self, body):
-        root, doctype = super(DynamicHTMLParser, self).parse(body)
+        tree = super(DynamicHTMLParser, self).parse(body)
+        root = tree.getroot()
 
         # set template path attribute on root element
         root.attrib[
@@ -377,4 +380,4 @@ class DynamicHTMLParser(XSSTemplateParser):
                     comment.attrib['{http://namespaces.repoze.org/xss}rebase'] = 'true'
                     comment.text = text
 
-        return root, doctype
+        return tree
