@@ -46,7 +46,8 @@ class ExpatParser(object):
     element with trivial body text as self-closing."""
     
     root = None
-
+    index = None
+    
     # doctype
     doctype = None
 
@@ -54,7 +55,7 @@ class ExpatParser(object):
     xml_version = None
     encoding = None
     standalone = None
-    
+
     def __init__(self, parser, body, expat):
         self.parser = parser
         self.body = body
@@ -63,6 +64,7 @@ class ExpatParser(object):
     def StartElementHandler(self, tag, attrs):
         # update prefix to namespace mapping
         if self.root is None:
+            self.index = self.expat.CurrentByteIndex
             nsmap = {}
         else:
             nsmap = self.root.nsmap.copy()
@@ -243,25 +245,63 @@ def parse(body, element_mapping, fallback=None):
     parser = lxml.etree.XMLParser(resolve_entities=False, strip_cdata=False)
     parser.setElementClassLookup(lookup)
 
-    # set up expat parser
-    expat = xml.parsers.expat.ParserCreate(None)
-    expat.UseForeignDTD()
-    expat.SetParamEntityParsing(
-        xml.parsers.expat.XML_PARAM_ENTITY_PARSING_ALWAYS)
+    junk = ""
+    tree = None
+    parts = []
+    while tree is None:
+        # set up expat parser
+        expat = xml.parsers.expat.ParserCreate(None)
+        expat.UseForeignDTD()
+        expat.SetParamEntityParsing(
+            xml.parsers.expat.XML_PARAM_ENTITY_PARSING_ALWAYS)
 
-    # attach expat parser methods
-    parser = ExpatParser(parser, body, expat)
-    for name in type(parser).__dict__.keys():
+        # attach expat parser methods
+        expatparser = ExpatParser(parser, body, expat)
+        for name in type(expatparser).__dict__.keys():
+            try:
+                setattr(expat, name, getattr(expatparser, name))
+            except AttributeError:
+                pass
+
         try:
-            setattr(expat, name, getattr(parser, name))
-        except AttributeError:
-            pass
+            # attempt to parse this body; if we're not successful,
+            # this may be because the document source consists of
+            # several 'parts'; although this is not valid XML, we do
+            # support it, being a template engine, not a XML
+            # validator :-)
+            expat.Parse(body, 1)
 
-    # parse document body 
-    expat.Parse(body, 1)
+            if parts:
+                parts.append(expatparser.root)
+                root = parser.makeelement(
+                    utils.meta_attr('fragments'))
+                for i, part in enumerate(parts):
+                    if isinstance(part, basestring):
+                        parts[i-1].tail = part
+                    else:
+                        root.append(part)
+                tree = root.getroottree()
+            else:
+                tree = expatparser.root.getroottree()
+        except xml.parsers.expat.ExpatError:
+            # if we are not able to find a tree root, we give up and
+            # let the exception through
+            if expatparser.root is None:
+                raise
 
-    # return document root tree
-    return parser.root.getroottree()
+            # add the root as a tree fragment and update the body
+            # source to the next possible chunk
+            parts.append(expatparser.root)
+            body = body[:expatparser.index] + body[expat.CurrentByteIndex:]
+
+            # a simple heuristic is used here to allow chunks of
+            # 'junk' in-between the tree fragments
+            pos = body.find('<')
+            junk = body[:pos]
+            body = body[pos:]
+            parts.append(junk)
+            
+    return tree
 
 def serialize(tree):
     """Serialize tree using lxml."""

@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Support template fragments, e.g. documents with more than one
+  root element. [malthe]
+
 - Added namespace prefix 'xml' to default namespace mapping. [malthe]
 
 - Fixed root cause of issue with self-closing tags; an empty element

@@ -67,6 +67,27 @@ XInclude support
     </div>
   </div>
 
+Fragmented documents
+--------------------
+  
+  >>> print Template("""
+  ... <div>
+  ...   Hello, world!
+  ... </div>
+  ...
+  ... Hello &amp; goodbye!
+  ...
+  ... <div>
+  ...   Hello, earth!
+  ... </div>""", mock_parser)()
+  <div>
+    Hello, world!
+  </div>
+  Hello &amp; goodbye!
+  <div>
+    Hello, earth!
+  </div>
+
 XML-support
 -----------
   
