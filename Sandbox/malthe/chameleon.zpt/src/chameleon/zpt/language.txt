@@ -32,28 +32,28 @@ tal:define, tal:attributes, tal:content, tal:replace
   ...   <span tal:replace="'Hello World!'"><b>Hello Universe!</b></span>
   ...   <span tal:content="None" />
   ... </div>""")
-    <div>
-      <span class="defabcdummy" style="hij" onclick="alert();" id="test">abcghi</span>
-      Hello World!
-      Hello World!
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    <span class="defabcdummy" style="hij" onclick="alert();" id="test">abcghi</span>
+    Hello World!
+    Hello World!
+  </div>
 
 tal:attributes 'checked' and 'selected' toggles
 
   >>> print render("""\
   ... <div xmlns="http://www.w3.org/1999/xhtml"
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
-  ...   <option tal:attributes="selected True"/>
-  ...   <option tal:attributes="selected None"/>
-  ...   <input tal:attributes="checked True"/>
-  ...   <input tal:attributes="checked False"/>
+  ...   <option tal:attributes="selected True"></option>
+  ...   <option tal:attributes="selected None"></option>
+  ...   <input tal:attributes="checked True" />
+  ...   <input tal:attributes="checked False" />
   ... </div>""")
-    <div>
-       <option selected="True"></option>
-       <option></option>
-       <input checked="True" />
-       <input />
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+     <option selected="True"></option>
+     <option></option>
+     <input checked="True" />
+     <input />
+  </div>
 
 tal:repeat
     
@@ -64,15 +64,15 @@ tal:repeat
   ...     <li tal:repeat="i range(5)"><span tal:replace="'Item ' + str(i) + ')'" /></li>
   ...   </ul>
   ... </div>""")
-    <div>
-      <ul>
-        <li>Item 0)</li>
-        <li>Item 1)</li>
-        <li>Item 2)</li>
-        <li>Item 3)</li>
-        <li>Item 4)</li>
-      </ul>
-    </div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
+    <ul>
+      <li>Item 0)</li>
+      <li>Item 1)</li>
+      <li>Item 2)</li>
+      <li>Item 3)</li>
+      <li>Item 4)</li>
+    </ul>
+  </div>
 
 tal:repeat (repeat-variable)
 
@@ -83,7 +83,7 @@ tal:repeat (repeat-variable)
   ...     <li tal:repeat="i range(3)"><span tal:replace="str(i) + ' ' + str(repeat['i'].even())" /></li>
   ...   </ul>
   ... </div>""")
-    <div>
+    <div xmlns="http://www.w3.org/1999/xhtml">
       <ul>
         <li>0 True</li>
         <li>1 False</li>
@@ -103,7 +103,7 @@ tal:condition
   ...     Do not show me!
   ...   </div>
   ... </div>""")
-    <div>
+    <div xmlns="http://www.w3.org/1999/xhtml">
       <div>
         Show me!
       </div>
@@ -120,7 +120,7 @@ tal:condition
   ...   <tal:multiple repeat="i range(3)" replace="i" />
   ...   <tal:div condition="True">True</tal:div>
   ... </div>""")
-    <div>
+    <div xmlns="http://www.w3.org/1999/xhtml">
       Hello World!
       Hello World!
       Hello World!
@@ -139,7 +139,7 @@ tal:omit-tag
   ...   <p tal:omit-tag="True">No paragraph here either.</p>
   ...   <p tal:omit-tag="False">A paragraph here.</p>
   ... </div>""")
-    <div>
+    <div xmlns="http://www.w3.org/1999/xhtml">
       No paragraph here.
       No paragraph here either.
       <p>A paragraph here.</p>
@@ -155,7 +155,7 @@ tal:omit-tag
   ...   <span tal:replace="'%sbr /%s' % (chr(60), chr(62))" />
   ...   <span tal:content="unicode('La Pe\xc3\xb1a', 'utf-8')" />
   ... </div>""")
-    <div>
+    <div xmlns="http://www.w3.org/1999/xhtml">
       <img title="&lt;Hello&gt;" />
       <br />
       &lt;br /&gt;
@@ -171,7 +171,7 @@ tal:omit-tag
   ...   <img tal:attributes="alt string:Leonardo da Vinci;; Musee du Louvre, 1503;
   ...                        title string:Mona Lisa" />
   ... </div>""", request=object(), greeting=u'Hello')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello, world!
     <img alt="Leonardo da Vinci; Musee du Louvre, 1503" title="Mona Lisa" />
   </div>
@@ -184,7 +184,7 @@ tal:omit-tag
   ...      <span tal:replace="abc|1" />
   ...      <span tal:replace="2|abc" />
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
        1
        2
   </div>
@@ -196,7 +196,7 @@ tal:omit-tag
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
   ...   <span tal:replace="structure dir" />
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <built-in function dir>
   </div>
 
@@ -222,7 +222,7 @@ metal:define-macro, metal:use-macro
 
   >>> template = MockTemplate(body, Parser())
   >>> print render(body, template=template)
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <div class="greeting">
       Hello, earth!
     </div>
@@ -263,7 +263,7 @@ metal:define-slot, metal:fill-slot
 
   >>> template = MockTemplate(body, Parser())
   >>> print render(body, template=template)
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <div>
       Hey, <span class="name">
       a <em>stranger!</em></span>
@@ -301,7 +301,7 @@ Outside tags:
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
   ...   Interpolation ${'expressions'} are ${'convenient'}.
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Interpolation expressions are convenient.
   </div>
 
@@ -312,7 +312,7 @@ Inside tags:
   ...      xmlns:tal="http://xml.zope.org/namespaces/tal">
   ...   <img alt="Interpolation ${'expressions'} are ${'convenient'}" />
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <img alt="Interpolation expressions are convenient" />
   </div>
 
@@ -326,7 +326,7 @@ We can disable this feature using ``meta:interpolation``::
   ...     ${'foo'}
   ...   </div>
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <div>
       ${'foo'}
     </div>
@@ -353,7 +353,7 @@ it's parent::
   ...     </span>
   ...   </div>
   ... </div>""")
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <div>
       ${nope}
     </div>

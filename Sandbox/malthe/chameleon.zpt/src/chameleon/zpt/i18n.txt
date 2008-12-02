@@ -53,7 +53,7 @@ First we need to turn the template into a callable:
 Let's try rendering this template without passing a target language.
     
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>
       Default
     </span>
@@ -62,7 +62,7 @@ Let's try rendering this template without passing a target language.
 Now we'll render the template again---passing German as the language.
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>Mock translation of 'test_msgid'.</span>
   </div>
 
@@ -80,7 +80,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>
       Default
     </span>
@@ -89,7 +89,7 @@ Not passing a language:
 Passing German:
   
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>Mock translation of 'Default'.</span>
   </div>
 
@@ -105,14 +105,14 @@ We could also add a named block inside the tag.
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <p>
       <span>18</span> bananas.
     </p>
   </div>
     
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <p>Mock translation of '${count} bananas.'
        mapping={'count': '<span>18</span>'}.</p>
   </div>
@@ -132,7 +132,7 @@ Without a language this gives:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>
        I want <span>12</span> bananas and
        <span>8</span> apples.
@@ -142,7 +142,7 @@ Without a language this gives:
 In German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>Mock translation of 'I want ${bananas} bananas and ${apples} apples.'
       mapping={'bananas': '<span>12</span>', 'apples': '<span>8</span>'}.</span>
   </div>
@@ -176,7 +176,7 @@ Without passing a language.
 
   >>> template = PageTemplate(body)
   >>> print template.render(year=year, monthname=monthname)
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
       November
       2008
   </div>
@@ -184,7 +184,7 @@ Without passing a language.
 Passing German:
   
   >>> print template.render(year=year, monthname=monthname, target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
       Mock translation of 'month_nov'.
       2008
   </div>
@@ -201,7 +201,7 @@ Entities and dynamic translation strings:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span>
       <sup>&reg;</sup>
     </span>
@@ -224,7 +224,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Simple Title">
       Default
     </span>
@@ -233,7 +233,7 @@ Not passing a language:
 Passing German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Mock translation of 'Simple Title'.">
       Default
     </span>
@@ -254,7 +254,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Simple Title">
       Default
     </span>
@@ -263,7 +263,7 @@ Not passing a language:
 Passing German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Mock translation of 'title_simple'.">
       Default
     </span>
@@ -284,7 +284,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Simple Title">
       Default
     </span>
@@ -293,7 +293,7 @@ Not passing a language:
 Passing German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Mock translation of 'title_simple'.">
       Default
     </span>
@@ -315,7 +315,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Simple Title" longdesc="A not so short description.">
       Default
     </span>
@@ -324,7 +324,7 @@ Not passing a language:
 Passing German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Mock translation of 'title_simple'."
           longdesc="Mock translation of 'desc_short'.">
       Default
@@ -360,7 +360,7 @@ Not passing a language:
 
   >>> template = PageTemplate(body)
   >>> print template.render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Title">
       Default, "default", 'default'
     </span>
@@ -372,7 +372,7 @@ Not passing a language:
 Passing German:
 
   >>> print template.render(target_language='de')
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <span title="Mock translation of 'aid'.">Mock translation of 'tid'.</span>
     <span>Mock translation of 'tid'.</span>
     <span>Mock translation of 'tid'.</span>
@@ -393,7 +393,7 @@ Make sure translations play nice with loops.
 Not passing a language:
 
   >>> print PageTemplate(body).render()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <div>
       <span>Default</span>
     </div>

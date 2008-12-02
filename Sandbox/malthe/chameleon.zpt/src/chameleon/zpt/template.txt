@@ -14,7 +14,7 @@ Usage
   ... <div xmlns="http://www.w3.org/1999/xhtml">
   ...   Hello World!
   ... </div>""")()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -24,7 +24,7 @@ Usage
   >>> path = tests.__path__[0]
   >>> t = PageTemplateFile(path+'/helloworld.pt')
   >>> print t()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -63,7 +63,7 @@ Page templates expose macros in their ``macros`` attribute.
   ... </div>""")
 
   >>> print content(main=main, bar='bar')
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     Who are you, foo?
     <div>
        I replace you: foo (boo).
