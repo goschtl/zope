@@ -721,10 +721,12 @@ class Compiler(object):
 
         if macro is not None:
             if macro == "" and 'xmlns' in root.attrib:
-                del root.attrib['xmlns']        
-            wrap = root.makeelement(utils.meta_attr('wrap'))
-            wrap.append(root)
-            root = wrap        
+                del root.attrib['xmlns']
+
+            wrapper = self.tree.parser.makeelement(
+                utils.meta_attr('wrapper'), root.attrib)
+            wrapper.append(root)
+            root = wrapper
             
         # output XML headers, if applicable
         if not macro:
