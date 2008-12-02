@@ -6,20 +6,20 @@ Intro
 -----
 
 The existing catalog and index implementation get a little out of sync
-because there are at leasst 3 different type of indexes. This are FieldIndex,
-ValueIndex and SetIndex. Each of them uses a different API if it comes to the
-search part. This implementation will make it easier to use all the relevant
-catalog index concepts. It also makes the catalog itself obsolate because
+because there are at least 3 different type of indexes. These are FieldIndex,
+ValueIndex and SetIndex. Each of them uses a different API when it comes to the
+searching. This implementation will make it easier to use all the relevant
+catalog index concepts. It also makes the catalog itself obsolete because
 the search query API interacts directly with indexes.
 
 The explicit usage of this components will also allow you to index object
 if you need them and not because a container likes to do it explicit because
 of some default registered generic catalog index subscribers.
 
-This packages tries to improve the different search query concept as well. This
-is done in two different levels. The And,Or and Not query are implemented as
-a chainable query processor which allows to apply intersections and union etc.
-based on previous results form the query chain. Other query hooks are directly
+This package tries to improve the different search query concept as well. This
+is done in two different levels. The And, Or and Not queries are implemented as
+a chainable query processor which allows to apply intersections, unions etc.
+based on previous results from the query chain. Other query hooks are directly
 implemented at the index level. This allows us to improve the query concept
 directly at the index implementation level for each query index combination.
 
@@ -39,18 +39,18 @@ Especialy there is no subscriber which does something for you. You need to
 find your own pattern how and when you need to index your objects. Nothing will
 index or unindex objects by default. This is probably not the right concept
 for every project but it's needed for one of my project which started having
-performance issues during a search. So I started to review and rethink about
-the existing patterns. As far as I can see, there is not much potential for
+performance issues during a search. So I started to review and rethink
+existing patterns. As far as I can see, there is not much potential for
 improvments in the indexing implementation, but the search and indexing concept
-offered by this package provide a hugh performance win. One of my page in a
+offered by this package provide a huge performance win. One of my page in a
 project which uses a complex query for list some items is now 9 times faster
 because of the new chainable search query. Also note, indexing and build
-inteligent search query patterns are not a easy part and this package can
+intelligent search query patterns are not an easy part and this package can
 only help to improve your work if you know what you are doing ;-)
 
-Let me say it again, you can get very quick into trouble if you chain the
-And, Or and Not parts in a bad order. But on the other hand this concept can
-incredible speedup your search query because it compares combined queries
+Let me say it again, you can get into trouble very quickly if you chain the
+And, Or and Not parts in wrong order. But on the other hand this concept can
+incredibly speedup your search query because it compares combined queries
 against each other and not against all available objects.
 
 Performeance
@@ -156,7 +156,7 @@ The goals of this package are:
 indexing
 ~~~~~~~~
 
-  - Allow to explicit define of what, where and when get indexed
+  - Allow to explicitly define of what, where and when get indexed.
 
   - Reduce index calls. The existing zope.app.catalog implementation forces to
     index every object which raises a ObjectAddedEvent. This ends in trying to
@@ -164,13 +164,13 @@ indexing
 
   - Get rid of persistent catalog as a single indexing utility.
 
-  - Use indexes as utilities
+  - Use indexes as utilities.
 
 searching
 ~~~~~~~~~
 
-  - Offer a optimized query function for build search queries. Implement a
-    chainable search query builder
+  - Offer an optimized query function for build search queries. Implement a
+    chainable search query builder.
 
 
 Concepts
@@ -178,9 +178,9 @@ Concepts
 
 The concepts used in this package are:
 
-- Each index is a utility
+- Each index is an utility.
 
-- The IIndexer can index objects in one or more index
+- The IIndexer can index objects in one or more index.
 
 - The default IIndexer adapter will lookup a IIndexValue multi adapter for each
   (object, index) tuple and get the right value from this adapter. You can
@@ -191,8 +191,10 @@ The concepts used in this package are:
   to get the value which get indexed. Only needed if no IIndexer adapter is
   available for your custom object.
 
-- Everything is explicit. This means it does not base on IntIdAddedEvent by
-  default. But you can write your own subscriber if you need to use it.
+- Everything is explicit. This means that there's no default actions on
+  the IntIdAddedEvent by. But you can easily write your own subscriber if
+  you need to use it. This package provides ready-to-use event handlers
+  for that.
 
 
 This will allow you to
