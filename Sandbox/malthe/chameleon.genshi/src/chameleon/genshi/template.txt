@@ -14,7 +14,7 @@ Usage
   ... <div xmlns="http://www.w3.org/1999/xhtml">
   ...   Hello World!
   ... </div>""")()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -24,7 +24,7 @@ Usage
   >>> path = tests.__path__[0]
   >>> t = GenshiTemplateFile(path+'/helloworld.html')
   >>> print t()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -37,7 +37,8 @@ Usage
   >>> print GenshiTextTemplate("Hello World!")()
   Hello World!
 
-  >>> t = GenshiTemplateFile(path+'/helloworld.txt')
+  >>> from chameleon.genshi.template import GenshiTextTemplateFile
+  >>> t = GenshiTextTemplateFile(path+'/helloworld.txt')
   >>> print t()
   Hello World!
   
@@ -52,11 +53,11 @@ py:match
   >>> print GenshiTemplate("""\
   ... <div xmlns="http://www.w3.org/1999/xhtml"
   ...      xmlns:py="http://genshi.edgewall.org/">
-  ...   <py:match path=".//xmlns:greeting">Hello ${select('@name')[0]}!</py:match>
+  ...   <py:match path=".//greeting">Hello ${select('@name')[0]}!</py:match>
   ...   <greeting name="World" />
   ... </div>
   ... """)()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     Hello World!
   </div>
 
@@ -70,7 +71,7 @@ carried over from the included template. This is demonstrated below.
   >>> template2 = GenshiTemplateFile(path+"/xinclude2.html")
   
   >>> print template1()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <p class="greeting">
       Hello, world!
     </p>
@@ -85,7 +86,7 @@ template.
   ...         registry[key] = loads(dumps(bct))
 
   >>> print template1()
-  <div>
+  <div xmlns="http://www.w3.org/1999/xhtml">
     <p class="greeting">
       Hello, world!
     </p>

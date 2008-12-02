@@ -4,6 +4,10 @@ Changelog
 head
 ~~~~
 
+- The XPath ``select`` methods available to match-templates now match
+  the XHTML namespace by default; this is due to the improved parsing
+  in the template compiler. [malthe]
+
 1.0b1 (released 11/29/2008)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
