@@ -16,7 +16,6 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-import BTrees
 import zope.interface
 import zope.component
 from zope.app.intid.interfaces import IIntIds
@@ -60,9 +59,6 @@ class ResultSet:
         return '<%s len: %s>' %(self.__class__.__name__, len(self.uids))
 
 
-# TODO: allow to initialize with query=None and set the first given query as 
-#       the initial one. If we don't do that, And & Or are never return 
-#       something because of the initial empty IF.Set() 
 class SearchQuery(object):
     """Chainable query processor.
     
@@ -76,6 +72,7 @@ class SearchQuery(object):
     zope.interface.implements(interfaces.ISearchQuery)
 
     family = FamilyProperty()
+    searchResultFactory = ResultSet
     _results = None
 
     def __init__(self, query=None, family=None):
@@ -104,12 +101,16 @@ class SearchQuery(object):
     def apply(self):
         return self.results
 
-    def searchResults(self, intids=None):
+    def searchResults(self, intids=None, searchResultFactory=None):
+        if searchResultFactory is None:
+            searchResultFactory = self.searchResultFactory
+        else:
+            searchResultFactory = searchResultFactory
         results = []
         if len(self.results) > 0:
             if intids is None:
                 intids = zope.component.getUtility(IIntIds)
-            results = ResultSet(self.results, intids)
+            results = searchResultFactory(self.results, intids)
         return results
 
     def Or(self, query):

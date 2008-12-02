@@ -56,41 +56,96 @@ against each other and not against all available objects.
 Performeance
 ------------
 
-See also the performance test located in this package. Here is a sample output
-from my 2 GHz Duo Core Laptop:
+See also the performance test located in this package. The interesting part is
+the speedup different for a larger amount of indexes. Here is a sample output
+from my 2,53 GHz Thinkpad W500:
 
-- 1000 x repeat tests
-
+Run test with
+-------------
+- 100 x repeat tests
 - 10000 objects
-
 - 3 relevant indexes
-
-- 50 other indexes
-
+- 25 other indexes
 Note, the index update get only processed one time.
 
-Result for 10000 objects with 3 relevant and 50 other indexes
- ------------------------------------------------------------------------
-| type    | indexing |   query | not query |  update |  modify |  remove |
- ------------------------------------------------------------------------
-| catalog |   37.39s |  17.83s |    17.83s |  31.14s |   0.05s |  28.53s |
- ------------------------------------------------------------------------
-| indexer |    4.84s |  10.75s |    10.84s |   1.66s |   0.03s |   3.73s |
- ------------------------------------------------------------------------
-| speedup |   32.55s |   7.08s |    70.03s |  29.48s |   0.02s |  24.80s |
- ------------------------------------------------------------------------
-| speedup |     672% |     66% |      646% |   1780% |     47% |    664% |
- ------------------------------------------------------------------------
+z3c.indexer
+indexer based indexing time:  2.47 s
+indexer based query time:     0.72 s
+indexer based not query time: 0.73 s
+indexer based update time:    1.05 s
+indexer object modified time: 0.02 s
+indexer parent modified time: 0.00 s
+indexer object moved time:    0.00 s
+indexer parent moved time:    15.00 s
+indexer object remove time:   2.08 s
 
-This speedup tests shows that the indexing and object remove time get improved
-by more then 6 times. This is a very common usecase in many application. The
-indexer update test is probably not really comparable since we do not update
-all indexes. We only update the relevant objects in the index which makes
-it very fast. But that's the goal of this package, it offers the concepts
-for doing things which can prevent to run into performance problems. Which 
-means we can compare the update speedup because the indexes get updated
-with the relevant objects. I've you can agree on this, the speedup for 
-index update is more then 17 times ;-)
+zope.app.catalog
+catalog based indexing time:  14.41 s
+catalog based query time:     0.97 s
+catalog based not query time: 3.63 s
+catalog based update time:    7.72 s
+catalog object modified time: 0.09 s
+catalog parent modified time: 0.02 s
+catalog object moved time:    0.00 s
+catalog parent moved time:    15.11 s
+catalog object remove time:   8.47 s
+
+Result for 10000 objects with 3 relevant and 25 other indexes
+ ----------------------------------------------------------------------------------
+| type    | indexing |   query | not query |  update |  modify |   moved |  remove |
+ ----------------------------------------------------------------------------------
+| catalog |   14.41s |   0.97s |     3.63s |   7.72s |   0.09s |   0.00s |   8.47s |
+ ----------------------------------------------------------------------------------
+| indexer |    2.47s |   0.72s |     0.73s |   1.05s |   0.02s |   0.00s |   2.08s |
+ ----------------------------------------------------------------------------------
+| speedup |   11.94s |   0.25s |     2.89s |   6.67s |   0.08s |   0.00s |   6.39s |
+ ----------------------------------------------------------------------------------
+| speedup |     483% |     35% |      393% |    638% |    487% |      0% |    308% |
+ ----------------------------------------------------------------------------------
+
+
+Run test with
+-------------
+- 100 x repeat tests
+- 10000 objects
+- 3 relevant indexes
+- 75 other indexes
+Note, the index update get only processed one time.
+
+z3c.indexer
+indexer based indexing time:  2.63 s
+indexer based query time:     0.72 s
+indexer based not query time: 0.73 s
+indexer based update time:    1.03 s
+indexer object modified time: 0.02 s
+indexer parent modified time: 0.00 s
+indexer object moved time:    0.00 s
+indexer parent moved time:    15.09 s
+indexer object remove time:   2.09 s
+
+zope.app.catalog
+catalog based indexing time:  36.92 s
+catalog based query time:     0.75 s
+catalog based not query time: 2.66 s
+catalog based update time:    22.33 s
+catalog object modified time: 0.22 s
+catalog parent modified time: 0.02 s
+catalog object moved time:    0.00 s
+catalog parent moved time:    15.22 s
+catalog object remove time:   19.53 s
+
+Result for 10000 objects with 3 relevant and 75 other indexes
+ ----------------------------------------------------------------------------------
+| type    | indexing |   query | not query |  update |  modify |   moved |  remove |
+ ----------------------------------------------------------------------------------
+| catalog |   36.92s |   0.75s |     2.66s |  22.33s |   0.22s |   0.00s |  19.53s |
+ ----------------------------------------------------------------------------------
+| indexer |    2.63s |   0.72s |     0.73s |   1.03s |   0.02s |   0.00s |   2.09s |
+ ----------------------------------------------------------------------------------
+| speedup |   34.30s |   0.03s |     1.92s |  21.30s |   0.20s |   0.00s |  17.44s |
+ ----------------------------------------------------------------------------------
+| speedup |    1307% |      4% |      261% |   2066% |   1269% |      0% |    833% |
+ ----------------------------------------------------------------------------------
 
 
 Goals
@@ -101,17 +156,13 @@ The goals of this package are:
 indexing
 ~~~~~~~~
 
-  - Allow to explicit define of what, where get indexed
+  - Allow to explicit define of what, where and when get indexed
 
   - Reduce index calls. The existing zope.app.catalog implementation forces to 
     index every object which raises a ObjectAddedEvent. This ends in trying to
-    index each object on every existing index contained in a catalog.
+    index each object on every existing index contained in a catalog. 
 
-  - The existing container add item concept forces to reindex every item
-    in a container which is most the time not needed. This is because the 
-    existing event dispatching to it's sublocation.  
-
-  - Get rid of persistent catalog and it's index items.
+  - Get rid of persistent catalog as a single indexing utility.
 
   - Use indexes as utilities
 
@@ -403,126 +454,6 @@ And check our indexes:
   >>> valueIndex.documentCount()
   1
 
-
-Auto indexing
--------------
-
-Sometimes, you like to ensure that each object get indexed or updated in the 
-index like we us to do in the default zope.app.catalog implementation. This 
-means each object get index after adding or updated on object modification.
-We offer a solution for this behavior with the IAutoIndexer adapter call.
-On each object added event or object modified event, a subscriber tries to 
-lookup an IAutoIndexer which could index or update the object values in the 
-relevant indexes. Since the subscriber calls getAdapters, it's allowed to 
-have more then one such indexer adapter. 
-
-First register a new index:
-
-  >>> from z3c.indexer.index import TextIndex
-  >>> autoIndex = TextIndex()
-  >>> sm['default']['autoIndex'] = textIndex
-  >>> sm.registerUtility(autoIndex, interfaces.IIndex, name='autoIndex')
-
-The new auto (text) index does not contain any indexed objects right now:
-
-  >>> autoIndex.documentCount()
-  0
-
-Let's now define a IAutoIndexer adapter:
-
-  >>> from z3c.indexer.indexer import ValueAutoIndexer
-  >>> class MyDemoContentAutoIndexer(ValueAutoIndexer):
-  ...     zope.component.adapts(IDemoContent)
-  ... 
-  ...     indexName = 'autoIndex'
-  ... 
-  ...     @property
-  ...     def value(self):
-  ...         """Get the value form context."""
-  ...         return 'auto indexed value: %s %s' % (self.context.title,
-  ...             self.context.body)
-
-and register them:
-
-  >>> zope.component.provideAdapter(MyDemoContentAutoIndexer, name='Auto')
-
-Now we need to register our subscriber which calls the IAutoIndexer adapters:
-
-  >>> from z3c.indexer import subscriber
-  >>> zope.component.provideHandler(subscriber.autoIndexSubscriber)
-  >>> zope.component.provideHandler(subscriber.autoUnindexSubscriber)
-
-and we also need to register the intid subscribers:
-
-  >>> from zope.app.intid import addIntIdSubscriber
-  >>> from zope.app.intid import removeIntIdSubscriber
-  >>> zope.component.provideHandler(addIntIdSubscriber)
-  >>> zope.component.provideHandler(removeIntIdSubscriber)
-
-If we now add a new object it get auomaticly indexed without to call the 
-indexer method explicit:
-
-  >>> autoIndex.documentCount()
-  0
-
-  >>> textIndex.documentCount()
-  1
-
-  >>> setIndex.documentCount()
-  1
-
-  >>> valueIndex.documentCount()
-  1
-
-Let's now add a new content object:
-
-  >>> autoDemo = DemoContent(u'Auto')
-  >>> autoDemo.description = u'Auto Demo'
-  >>> autoDemo.field = u'Auto field'
-  >>> autoDemo.value = u'auto value'
-  >>> autoDemo.iterable = (1, 2, 'Iterable')
-  >>> site['autoDemo'] = autoDemo
-
-You can see that we've got a key reference for the new object:
-
-  >>> intids.getId(autoDemo) is not None
-  True
-
-You can see that the new object get added without to call the index method
-defined in indexer module:
-
-  >>> autoIndex.documentCount()
-  1
-
-  >>> textIndex.documentCount()
-  1
-
-  >>> setIndex.documentCount()
-  1
-
-  >>> valueIndex.documentCount()
-  1
-
-As you can see only the ``autoIndex`` get used.
-
-Of corse there is also a ``auto`` unindex implementation which get used if we
-remove the object:
-
-  >>> del site['autoDemo']
-
-As you can see the object got removed from the ``autoIndex``:
-
-  >>> autoIndex.documentCount()
-  0
-
-  >>> textIndex.documentCount()
-  1
-
-  >>> setIndex.documentCount()
-  1
-
-  >>> valueIndex.documentCount()
-  1
 
 
 SearchQuery
@@ -1116,7 +1047,13 @@ And the ValueIndexer does not implement the value attribute:
 
 Another use case which we didn't test is that a applyIn can contain the
 same object twice with different values. Let's test the built in union
-which removes such duplications:
+which removes such duplications. Since this is the first test which uses 
+IIntId subscribers let' register them:
+
+  >>> from zope.app.intid import addIntIdSubscriber
+  >>> from zope.app.intid import removeIntIdSubscriber
+  >>> zope.component.provideHandler(addIntIdSubscriber)
+  >>> zope.component.provideHandler(removeIntIdSubscriber)
 
   >>> demo1 = DemoContent(u'Demo 1')
   >>> demo1.description = u'Description'

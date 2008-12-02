@@ -5,26 +5,31 @@ CHANGES
 Version 0.5.1dev (unreleased)
 -----------------------------
 
-- bugfix: SearchQuery wasn't able to act correct if initialized with query=None
+- Bugfix: SearchQuery wasn't able to act correct if initialized with query=None
   because of an empty result setup. The And() and Not() methods could not act
   correctly with this an empty initilized result.
 
-- bugfix: SearchQuery.And() and Not() didn't return an empty result if previous
-  query result was empty. And() method didn't return a empty result if given
-  query was empty. The previous result was returned.
+- Bugfix: SearchQuery.And() and Not() didn't return an empty result if previous
+  or given query result was empty. The previous result was returned.
 
-- bugfix: performance tests, not query did not show the right timer in catalog
+- Feature: implemented new indexing strategy which uses transaction and thread 
+  local for prevent to index an object more then once per transaction.
+
+- Bugfix: performance tests, not query did not show the right timer in catalog
   cell.
 
-- feature: Expose SearchQuery.results property. Ensure that we return always an
+- Feature: added optional searchResultFactory. This class get used as a search
+  result wrapper. By default the SearchResult class get used.
+
+- Feature: Expose SearchQuery.results property. Ensure that we return always an
   empty result if None is given and allow to override existing results as a
   part of the SearchQuery API.
 
-- feature: Implemented optional intids argument in SearchQuery.searchResults 
+- Feature: Implemented optional intids argument in SearchQuery.searchResults 
   method. This intids is used instead of query the IntIds util. This is usefull
   if you use builtin IIntIds objects for optimized access.
 
-- Added __repr__ for ResultSet with result lenght
+- Added __repr__ for ResultSet with result lenght.
 
 - Optimized SearchQuery.And() and Not() methods. Skip given query processing 
   if previous result is empty.

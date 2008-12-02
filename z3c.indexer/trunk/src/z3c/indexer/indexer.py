@@ -18,10 +18,20 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.component
+import zope.deferredimport
 from zope.cachedescriptors.property import Lazy
 from zope.app.intid.interfaces import IIntIds
 
 from z3c.indexer import interfaces
+
+# deprecated IAutoIndexer (remove in 1.0.0 release)
+zope.deferredimport.deprecated(
+    "IAutoIndexer will go away in 1.0.0 release. Implement IIndexerSubscriber "
+    "and use them within the new intIdAddedEventDispatcher and "
+    "intIdRemovedEventDispatcher subscribers.",
+    ValueAutoIndexer = 'z3c.indexer._bbb:ValueAutoIndexer',
+    MultiAutoIndexer = 'z3c.indexer._bbb:MultiAutoIndexer',
+    )
 
 
 def index(context):
@@ -68,8 +78,17 @@ class IndexerBase(object):
 
     @Lazy
     def oid(self):
-        """Get IntId for the adapted context."""
-        intids = zope.component.getUtility(IIntIds, context=self.context)
+        """Get IntId for the adapted context.
+        
+        This attribute must be Lazy stored and the oid must get accessed right 
+        after we collect the indexer in our transaction data manager. The 
+        reason is; the oid will not be available at the end of our transaction 
+        if we remove objects because the object get removed from the IIntids 
+        utility before we process the indexer. If you access other objects
+        during unindexing make sure they still exist at the end of the 
+        transactions or keep a reference to them in the indexer adapter.
+        """
+        intids = zope.component.getUtility(IIntIds)
         return intids.getId(self.context)
 
     def doIndex(self):
@@ -89,8 +108,7 @@ class ValueIndexerBase(IndexerBase):
 
     @Lazy
     def index(self):
-        return zope.component.getUtility(interfaces.IIndex, self.indexName,
-            context=self.context)
+        return zope.component.getUtility(interfaces.IIndex, self.indexName)
 
     @property
     def value(self):
@@ -110,12 +128,6 @@ class ValueIndexer(ValueIndexerBase):
     zope.interface.implements(interfaces.IValueIndexer)
 
 
-class ValueAutoIndexer(ValueIndexerBase):
-    """Value (auto) indexer implementation."""
-
-    zope.interface.implements(interfaces.IValueAutoIndexer)
-
-
 # multi indexer
 class MultiIndexerBase(IndexerBase):
     """Can be used a s base for index a object in more then one index."""
@@ -125,8 +137,7 @@ class MultiIndexerBase(IndexerBase):
         self.context = context
 
     def getIndex(self, indexName):
-        return zope.component.getUtility(interfaces.IIndex, indexName,
-            context=self.context)
+        return zope.component.getUtility(interfaces.IIndex, indexName)
 
     def doIndex(self):
         """Implement your own indexing pattern."""
@@ -138,12 +149,6 @@ class MultiIndexerBase(IndexerBase):
 
 
 class MultiIndexer(MultiIndexerBase):
-    """Can be used a s base for index a object in more then one index."""
+    """Can be used as base for index a object in more then one index."""
 
     zope.interface.implements(interfaces.IMultiIndexer)
-
-
-class MultiAutoIndexer(MultiIndexerBase):
-    """Can be used a s base for index a object in more then one index."""
-
-    zope.interface.implements(interfaces.IMultiAutoIndexer)

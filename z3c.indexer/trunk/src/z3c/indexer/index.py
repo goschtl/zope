@@ -39,8 +39,7 @@ class IndexMixin(object):
         self.unindex_doc(oid)
 
 
-class TextIndex(IndexMixin, textindex.TextIndex,
-    contained.Contained):
+class TextIndex(IndexMixin, textindex.TextIndex, contained.Contained):
     """Text index based on zope.index.text.textindex.TextIndex"""
 
     zope.interface.implements(interfaces.ITextIndex)

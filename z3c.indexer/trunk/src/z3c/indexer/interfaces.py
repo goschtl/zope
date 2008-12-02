@@ -18,13 +18,24 @@ __docformat__ = "reStructuredText"
 
 
 import zope.interface
+import zope.deferredimport
 
+from transaction.interfaces import IDataManager
 from zope.index.interfaces import IInjection
 from zope.index.interfaces import IIndexSearch
 from zope.index.interfaces import IStatistics
 from zope.app.container.interfaces import IContained
 
 NOVALUE = object()
+
+# deprecated auto index subscribers
+zope.deferredimport.deprecated(
+    "IAutoIndexer will go away in 1.0.0 release. Use the new optimized "
+    "intIdAddedEventDispatcher and intIdRemovedEventDispatcher subscribers.",
+    IAutoIndexer = 'z3c.indexer._bbb:IAutoIndexer',
+    IValueAutoIndexer = 'z3c.indexer._bbb:IValueAutoIndexer',
+    IMultiAutoIndexer = 'z3c.indexer._bbb:IMultiAutoIndexer',
+    )
 
 
 class ISearchQuery(zope.interface.Interface):
@@ -69,6 +80,7 @@ class ISearchQuery(zope.interface.Interface):
         """
 
 
+# adapter based indexing concept
 class IIndexer(zope.interface.Interface):
     """An Indexer knows how to index objects."""
 
@@ -91,33 +103,6 @@ class IValueIndexer(IIndexer):
 
 class IMultiIndexer(IIndexer):
     """Can be used a s base for index a object in more then one index."""
-
-    def getIndex(indexName):
-        """The named index utility getter method."""
-
-
-class IAutoIndexer(zope.interface.Interface):
-    """Auto indexer adapter get called by the auto indexer subscriber."""
-
-    oid = zope.interface.Attribute("""IIntId of context.""")
-
-    def doIndex():
-        """Index the context in the relevant index."""
-
-    def doUnIndex():
-        """Unindex the context in the relevant index."""
-
-
-class IValueAutoIndexer(IAutoIndexer):
-    """Value (auto) indexer."""
-
-    index = zope.interface.Attribute("""The named index utility.""")
-
-    value = zope.interface.Attribute("""Value for context/index combination.""")
-
-
-class IMultiAutoIndexer(IAutoIndexer):
-    """Multi (auto) indexer"""
 
     def getIndex(indexName):
         """The named index utility getter method."""
@@ -317,3 +302,14 @@ class IIndexValue(zope.interface.Interface):
     """Knows how to lookup index values."""
 
     value = zope.interface.Attribute("""Index value of context.""")
+
+
+# transaction based indexing concept
+class IIndexerCollector(IDataManager):
+    """Collects IIndexer which get processed at the end of the transaction."""
+
+    def addIndexer(obj):
+        """Add an object indexer."""
+
+    def addUnIndexer(obj):
+        """Add an object un-indexer."""
