@@ -37,7 +37,7 @@ class ResultSet:
 
     def __contains__(self, item):
         idx = self.intids.queryId(item)
-        if idx and idx in self.uids:
+        if idx is not None and idx in self.uids:
             return True
         else:
             return False
@@ -47,12 +47,14 @@ class ResultSet:
         stop = slice.stop
         if stop > len(self):
             stop = len(self)
-        return [self.intids.getObject(self.uids[idx])
-                for idx in range(start, stop)]
+        uids = self.uids
+        getObject = self.intids.getObject
+        return [getObject(uids[idx]) for idx in xrange(start, stop)]
 
     def __iter__(self):
+        getObject = self.intids.getObject
         for uid in self.uids:
-            obj = self.intids.getObject(uid)
+            obj = getObject(uid)
             yield obj
 
     def __repr__(self):
@@ -61,10 +63,10 @@ class ResultSet:
 
 class SearchQuery(object):
     """Chainable query processor.
-    
+
     Note: this search query is and acts as a chain. This means if you apply two
     query with the And method, the result will contain the intersection of both
-    results. If you later add a query ithin the Or method to the chain the 
+    results. If you later add a query ithin the Or method to the chain the
     new result will contain items in the result we skipped with the And method
     before if the new query contains such (previous Not() filtered) items.
     """
@@ -87,7 +89,7 @@ class SearchQuery(object):
 
     @apply
     def results():
-        """Ensure a empty result if None is given and allows to override 
+        """Ensure a empty result if None is given and allows to override
            existing results.
         """
         def get(self):
@@ -104,8 +106,6 @@ class SearchQuery(object):
     def searchResults(self, intids=None, searchResultFactory=None):
         if searchResultFactory is None:
             searchResultFactory = self.searchResultFactory
-        else:
-            searchResultFactory = searchResultFactory
         results = []
         if len(self.results) > 0:
             if intids is None:
@@ -116,7 +116,7 @@ class SearchQuery(object):
     def Or(self, query):
         """Enhance search results. (union)
 
-        The result will contain intids which exist in the existing result 
+        The result will contain intids which exist in the existing result
         and/or in the result from te given query.
         """
         res = query.apply()
@@ -151,9 +151,9 @@ class SearchQuery(object):
 
         The result will only contain intids which exist in the existing
         result but do not exist in the result from te given query.
-        
-        This is faster if the existing result is small. But note, it get 
-        processed in a chain, results added after this query get added again. 
+
+        This is faster if the existing result is small. But note, it get
+        processed in a chain, results added after this query get added again.
         So probably you need to call this at the end of the chain.
         """
         if len(self.results) == 0:
