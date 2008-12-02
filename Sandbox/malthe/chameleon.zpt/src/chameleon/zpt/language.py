@@ -291,6 +291,6 @@ class Parser(etree.Parser):
             self.default_expression = default_expression
 
     def parse(self, body):
-        root, doctype = super(Parser, self).parse(body)
-        root.meta_translator = self.default_expression
-        return root, doctype
+        tree = super(Parser, self).parse(body)
+        tree.getroot().meta_translator = self.default_expression
+        return tree
