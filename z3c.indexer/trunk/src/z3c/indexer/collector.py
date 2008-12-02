@@ -27,8 +27,8 @@ from z3c.indexer import interfaces
 class IndexerCollector(object):
     """The collector stores pending indexer and their indexing state.
     
-    This indexer get calculated and the relevant indexer get processed at the 
-    end of the transaction.
+    These indexer get calculated and the relevant indexer get processed at
+    the end of the transaction.
     """
     zope.interface.implements(interfaces.IIndexerCollector)
 
@@ -124,7 +124,7 @@ class IndexerCollector(object):
     def _checkTransaction(self, transaction):
         if (self.transaction is not None and
             self.transaction is not transaction):
-            raise TypeError("Transaction missmatch",
+            raise TypeError("Transaction mismatch",
                             transaction, self.transaction)
 
     def sortKey(self):
