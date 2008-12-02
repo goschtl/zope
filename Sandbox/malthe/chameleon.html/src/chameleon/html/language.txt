@@ -10,7 +10,7 @@ This language is used internally by the template compiler.
   ...      <span>Default content</span>
   ...   </div>
   ... </html>""", content={'document-content': u"Dynamic content"})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div>Dynamic content</div>
   </html>
 
@@ -24,7 +24,7 @@ left untouched.
   ...      <span>Default content</span>
   ...   </div>
   ... </html>""", content={})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div>
        <span>Default content</span>
     </div>
@@ -39,7 +39,7 @@ If the xss:omit attribute is set, the tag will be replaced by the dynamic conten
   ...      <span>Default content</span>
   ...   </div>
   ... </html>""", content={'document-content': u"Dynamic content"})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     Dynamic content
   </html>
 
@@ -53,7 +53,7 @@ escaped.
   ...      <span>Default content</span>
   ...   </div>
   ... </html>""", content={'document-content': u"<span>Dynamic content</span>"})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div><span>Dynamic content</span></div>
   </html>
 
@@ -67,7 +67,7 @@ xss:attributes.
   ...      Content
   ...   </div>
   ... </html>""", attributes={'example': {'class': 'example-class'}})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div class="example-class">
        Content
     </div>
@@ -87,7 +87,7 @@ override an existing "class" attribute on the element, but extend it
   ...      Content
   ...   </span>
   ... </html>""", attributes={'example': {'id': 'new', 'class': 'additional-class'}})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div id="new" class="existing-class additional-class">
        Content
     </div>
@@ -107,7 +107,7 @@ comma.
   ...   </div>
   ... </html>""", attributes={'example1': {'class': 'foo', 'style': 'bar'},
   ...                         'example2': {'class': 'bar', 'style': 'foo'}})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <div style="foo" id="existing" class="existing-class foo bar">
        Content
     </div>

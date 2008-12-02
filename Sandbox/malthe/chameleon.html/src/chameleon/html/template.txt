@@ -32,7 +32,7 @@ dictionary is a mapping of element attribute names and values.
 Passing these arguments by keyword, we can verify the rendered output.
   
   >>> print template(content=content, attributes=attributes)
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Document title</title>
       <!-- meta -->
@@ -67,7 +67,7 @@ Notice in the following that URLs of resource is rebased as defined in
 the adapter.
   
   >>> print template(context=object(), request=object())
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
       <title>Example layout</title>
       <!-- meta -->
@@ -96,7 +96,7 @@ METAL's `fill-slot` construct.
   >>> from chameleon.core.config import SYMBOLS
   >>> print template(**{
   ...    SYMBOLS.slot+"title": u"Title from macro"})
-  <html>
+  <html xmlns="http://www.w3.org/1999/xhtml">
     ...
     <title>Title from macro</title>
     ...
@@ -111,7 +111,7 @@ simple globbing::
     >>> filename = os.path.join(path, 'layouts', 'example2.html')
     >>> template = DynamicHTMLFile(filename)
     >>> print template(context=object(), request=object())
-    <html>
+    <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <link href="http://host/one.css" rel="stylesheet" type="text/css" />
         <link href="http://host/two.css" rel="stylesheet" type="text/css" />
