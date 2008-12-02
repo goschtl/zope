@@ -17,9 +17,9 @@ if you need them and not because a container likes to do it explicit because
 of some default registered generic catalog index subscribers.
 
 This packages tries to improve the different search query concept as well. This
-is done in two different levels. The And,Or and Not query are implemented as 
-a chainable query processor which allows to apply intersections and union etc. 
-based on previous results form the query chain. Other query hooks are directly 
+is done in two different levels. The And,Or and Not query are implemented as
+a chainable query processor which allows to apply intersections and union etc.
+based on previous results form the query chain. Other query hooks are directly
 implemented at the index level. This allows us to improve the query concept
 directly at the index implementation level for each query index combination.
 
@@ -35,20 +35,20 @@ Note
 This package does nothing out of the box, everything is explicit and you have
 to decide what you like to do and how. The package offers you a ready to use
 API and a nice set of adapters and utilities which you can register and use.
-Especialy there is no subscriber which does something for you. You need to 
+Especialy there is no subscriber which does something for you. You need to
 find your own pattern how and when you need to index your objects. Nothing will
 index or unindex objects by default. This is probably not the right concept
-for every project but it's needed for one of my project which started having 
+for every project but it's needed for one of my project which started having
 performance issues during a search. So I started to review and rethink about
-the existing patterns. As far as I can see, there is not much potential for 
+the existing patterns. As far as I can see, there is not much potential for
 improvments in the indexing implementation, but the search and indexing concept
 offered by this package provide a hugh performance win. One of my page in a
-project which uses a complex query for list some items is now 9 times faster 
-because of the new chainable search query. Also note, indexing and build 
+project which uses a complex query for list some items is now 9 times faster
+because of the new chainable search query. Also note, indexing and build
 inteligent search query patterns are not a easy part and this package can
 only help to improve your work if you know what you are doing ;-)
 
-Let me say it again, you can get very quick into trouble if you chain the 
+Let me say it again, you can get very quick into trouble if you chain the
 And, Or and Not parts in a bad order. But on the other hand this concept can
 incredible speedup your search query because it compares combined queries
 against each other and not against all available objects.
@@ -158,9 +158,9 @@ indexing
 
   - Allow to explicit define of what, where and when get indexed
 
-  - Reduce index calls. The existing zope.app.catalog implementation forces to 
+  - Reduce index calls. The existing zope.app.catalog implementation forces to
     index every object which raises a ObjectAddedEvent. This ends in trying to
-    index each object on every existing index contained in a catalog. 
+    index each object on every existing index contained in a catalog.
 
   - Get rid of persistent catalog as a single indexing utility.
 
@@ -169,7 +169,7 @@ indexing
 searching
 ~~~~~~~~~
 
-  - Offer a optimized query function for build search queries. Implement a 
+  - Offer a optimized query function for build search queries. Implement a
     chainable search query builder
 
 
@@ -183,7 +183,7 @@ The concepts used in this package are:
 - The IIndexer can index objects in one or more index
 
 - The default IIndexer adapter will lookup a IIndexValue multi adapter for each
-  (object, index) tuple and get the right value from this adapter. You can 
+  (object, index) tuple and get the right value from this adapter. You can
   register custom IIndexer adapters for your objects if you like to avoid this
   additional adapter call.
 
@@ -191,7 +191,7 @@ The concepts used in this package are:
   to get the value which get indexed. Only needed if no IIndexer adapter is
   available for your custom object.
 
-- Everything is explicit. This means it does not base on IntIdAddedEvent by 
+- Everything is explicit. This means it does not base on IntIdAddedEvent by
   default. But you can write your own subscriber if you need to use it.
 
 
@@ -203,11 +203,11 @@ This will allow you to
 - choose how you index, e.g.
 
   - in AddForm
-  
+
     - call index per object
 
   - in large data imports
-  
+
     - call update on index after import all objects
 
 
@@ -240,7 +240,7 @@ Setup a site
   >>> sm = LocalSiteManager(site)
   >>> site.setSiteManager(sm)
 
-And set the site as the current site. This is normaly done by traversing to a 
+And set the site as the current site. This is normaly done by traversing to a
 site:
 
   >>> from zope.app.component import hooks
@@ -314,19 +314,19 @@ Now we define a content object:
   ...     title = zope.schema.TextLine(
   ...         title=u'Title',
   ...         default=u'')
-  ... 
+  ...
   ...     body = zope.schema.TextLine(
   ...         title=u'Body',
   ...         default=u'')
-  ... 
+  ...
   ...     field = zope.schema.TextLine(
   ...         title=u'a field',
   ...         default=u'')
-  ... 
+  ...
   ...     value = zope.schema.TextLine(
   ...         title=u'A value',
   ...         default=u'')
-  ... 
+  ...
   ...     iterable = zope.schema.Tuple(
   ...         title=u'A sequence of values',
   ...         default=())
@@ -334,16 +334,16 @@ Now we define a content object:
   >>> class DemoContent(persistent.Persistent, contained.Contained):
   ...     """Demo content."""
   ...     zope.interface.implements(IDemoContent)
-  ... 
+  ...
   ...     title = FieldProperty(IDemoContent['title'])
   ...     body = FieldProperty(IDemoContent['body'])
   ...     field = FieldProperty(IDemoContent['field'])
   ...     value = FieldProperty(IDemoContent['value'])
   ...     iterable = FieldProperty(IDemoContent['iterable'])
-  ... 
+  ...
   ...     def __init__(self, title=u''):
   ...         self.title = title
-  ... 
+  ...
   ...     def __repr__(self):
   ...         return '<%s %r>' % (self.__class__.__name__, self.title)
 
@@ -372,9 +372,9 @@ which knows how to index text given from body and description attribute:
   >>> from z3c.indexer.indexer import ValueIndexer
   >>> class DemoValueIndexer(ValueIndexer):
   ...     zope.component.adapts(IDemoContent)
-  ... 
+  ...
   ...     indexName = 'textIndex'
-  ... 
+  ...
   ...     @property
   ...     def value(self):
   ...         """Get the value form context."""
@@ -384,37 +384,37 @@ Register the adapter as a named adapter:
 
   >>> zope.component.provideAdapter(DemoValueIndexer, name='textIndex')
 
-We can also use a indexer wich knows how to index the object in different 
+We can also use a indexer wich knows how to index the object in different
 indexes.
 
   >>> from z3c.indexer.indexer import MultiIndexer
   >>> class DemoMultiIndexer(MultiIndexer):
   ...     zope.component.adapts(IDemoContent)
-  ... 
+  ...
   ...     def doIndex(self):
-  ... 
+  ...
   ...         # index context in fieldIndex
   ...         fieldIndex = self.getIndex('fieldIndex')
   ...         fieldIndex.doIndex(self.oid, self.context.field)
-  ... 
+  ...
   ...         # index context in setIndex
   ...         setIndex = self.getIndex('setIndex')
   ...         setIndex.doIndex(self.oid, self.context.iterable)
-  ... 
+  ...
   ...         # index context in valueIndex
   ...         valueIndex = self.getIndex('valueIndex')
   ...         valueIndex.doIndex(self.oid, self.context.value)
-  ... 
+  ...
   ...     def doUnIndex(self):
-  ... 
+  ...
   ...         # index context in fieldIndex
   ...         fieldIndex = self.getIndex('fieldIndex')
   ...         fieldIndex.doUnIndex(self.oid)
-  ... 
+  ...
   ...         # index context in setIndex
   ...         setIndex = self.getIndex('setIndex')
   ...         setIndex.doUnIndex(self.oid)
-  ... 
+  ...
   ...         # index context in valueIndex
   ...         valueIndex = self.getIndex('valueIndex')
   ...         valueIndex.doUnIndex(self.oid)
@@ -809,11 +809,11 @@ Search with a ExtentNone query:
 Chainable Search Query
 ----------------------
 
-A search query is chainable. This means we can append queries to queries 
-itself. The result of a previous query will be used for the next query in the 
-chain. Note, this pattern can give you hugh speedup but you have to take care 
+A search query is chainable. This means we can append queries to queries
+itself. The result of a previous query will be used for the next query in the
+chain. Note, this pattern can give you hugh speedup but you have to take care
 on what you chain in which order or you will very quickly get a wrong result.
-But the speedup can be hugh, I optimized one of my application with this 
+But the speedup can be hugh, I optimized one of my application with this
 pattern and got a speedup by 900%.
 
 Let's cleanup the text index first:
@@ -828,13 +828,13 @@ And add some more demo object with different values:
 
   >>> house = DemoContent(u'House')
   >>> site['house'] = house
-  >>> houseId = intids.register(house) 
+  >>> houseId = intids.register(house)
 
-  >>> tower = DemoContent(u'Tower') 
+  >>> tower = DemoContent(u'Tower')
   >>> site['tower'] = tower
   >>> towerId = intids.register(tower)
 
-  >>> every = DemoContent(u'Apple House Tower') 
+  >>> every = DemoContent(u'Apple House Tower')
   >>> site['every'] = every
   >>> everyId = intids.register(every)
 
@@ -855,6 +855,7 @@ Let's build some query:
   >>> appleQuery = TextQuery('textIndex', 'Apple')
   >>> houseQuery = TextQuery('textIndex', 'House')
   >>> towerQuery = TextQuery('textIndex', 'Tower')
+  >>> badQuery = TextQuery('textIndex', 'Bad')
 
 
 And SearchQuery
@@ -872,15 +873,33 @@ This is only the case for the ``every`` object:
   >>> intids.getObject(res[0])
   <DemoContent u'Apple House Tower'>
 
+We'll always get an empty result if we use And to an empty query:
+
+  >>> query = SearchQuery().And(appleQuery)
+  >>> len(query.apply())
+  0
+
+Or if we'll use And to non-empty query with an empty one:
+
+  >>> query = SearchQuery(appleQuery).And(badQuery)
+  >>> len(query.apply())
+  0
 
 Or SearchQuery
 --------------
 
-A Or search query will return all object which are contained in each query. The
-search query below will return all 4 objects becaues each of them get found by 
+The Or search query will return all object which are contained in each query. The
+search query below will return all 4 objects becaues each of them get found by
 one of the existing queries. And the ``every`` object will only get listed once:
 
   >>> allQuery = SearchQuery(appleQuery).Or(houseQuery).Or(towerQuery)
+  >>> res = allQuery.apply()
+  >>> len(res)
+  4
+
+It will return the same if we start with empty query:
+
+  >>> allQuery = SearchQuery().Or(appleQuery).Or(houseQuery).Or(towerQuery)
   >>> res = allQuery.apply()
   >>> len(res)
   4
@@ -889,10 +908,10 @@ one of the existing queries. And the ``every`` object will only get listed once:
 Not SearchQuery
 ---------------
 
-A Not search query will return all object which are not contained in the given 
-query. The search query below will return all objects except the ones which 
-contains the word ``Apple`` becaues we exclude them within the appleQuery. 
-Another interesting thing is, that we can use the previous query and simple 
+A Not search query will return all object which are not contained in the given
+query. The search query below will return all objects except the ones which
+contains the word ``Apple`` becaues we exclude them within the appleQuery.
+Another interesting thing is, that we can use the previous query and simple
 add another query to the chain. This is a very interesting pattern for filters.
 
   >>> query = allQuery.Not(appleQuery)
@@ -906,15 +925,23 @@ add another query to the chain. This is a very interesting pattern for filters.
   >>> intids.getObject(sorted(res)[1])
   <DemoContent u'Tower'>
 
+Again, the Not query will return nothing on an empty query:
+
+  >>> query = SearchQuery().Not(appleQuery)
+  >>> len(query.apply())
+  0
+
 
 ResultSet
 ---------
 
-The SearchQuery provides also a ResultSet wrapper. We can get an iterable 
+The SearchQuery provides also a ResultSet wrapper. We can get an iterable
 ResultSet instance if we call ``searchResults`` from the search query:
 
   >>> allQuery = SearchQuery(appleQuery).Or(houseQuery).Or(towerQuery)
   >>> resultSet = allQuery.searchResults()
+  >>> resultSet
+  <ResultSet len: 4>
   >>> len(resultSet)
   4
 
@@ -942,12 +969,11 @@ Or we can iterate over the ResultSet:
 
 Or check if a item is a part of the result set:
 
-  >>> resultSet.__contains__(object())
+  >>> object() in resultSet
   False
 
-  >>> resultSet.__contains__(apple)
+  >>> apple in resultSet
   True
-
 
 There is an optional intids argument in searchResults. If given, it's used for
 query the objects instead of lookup the IIntIds utility.
@@ -965,14 +991,14 @@ This will returnd the same objects as before:
 Batching
 --------
 
-This ResultSet described above can be used together with the Batch 
+This ResultSet described above can be used together with the Batch
 implementation defined in the z3c.batching package.
 
 
 unindex
 -------
 
-Now after the different index and serch tests we are ready to unindex our 
+Now after the different index and serch tests we are ready to unindex our
 indexed objects. Let's see what we have in the indexes:
 
   >>> textIndex.documentCount()
@@ -1007,7 +1033,7 @@ Coverage
 --------
 
 Let's test some line of code which are not used right now. First test if the
-base class IndexerBase raises a NotImplementedError if we do not implement the 
+base class IndexerBase raises a NotImplementedError if we do not implement the
 methods:
 
   >>> from z3c.indexer.indexer import IndexerBase
@@ -1047,7 +1073,7 @@ And the ValueIndexer does not implement the value attribute:
 
 Another use case which we didn't test is that a applyIn can contain the
 same object twice with different values. Let's test the built in union
-which removes such duplications. Since this is the first test which uses 
+which removes such duplications. Since this is the first test which uses
 IIntId subscribers let' register them:
 
   >>> from zope.app.intid import addIntIdSubscriber
@@ -1074,9 +1100,9 @@ IIntId subscribers let' register them:
   >>> inQuery = In('fieldIndex', ['Field', 'Field'])
   >>> query = SearchQuery(inQuery)
   >>> resultSet = query.searchResults()
-  >>> resultSet.__contains__(demo1)
+  >>> demo1 in resultSet
   True
-  >>> resultSet.__contains__(demo2)
+  >>> demo2 in resultSet
   True
 
 A SearchQuery allows us to set a BTrees family argument:
@@ -1090,5 +1116,5 @@ A SearchQuery allows us to set a BTrees family argument:
 
   >>> textQuery = TextQuery('textIndex', 'Text Demo')
   >>> query = SearchQuery(textQuery, BTrees.family32)
-  >>> resultSet.__contains__(demo1)
+  >>> demo1 in resultSet
   True
