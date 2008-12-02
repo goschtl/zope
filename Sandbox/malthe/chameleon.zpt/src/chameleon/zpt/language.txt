@@ -315,3 +315,58 @@ Inside tags:
   <div>
     <img alt="Interpolation expressions are convenient" />
   </div>
+
+We can disable this feature using ``meta:interpolation``::
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:tal="http://xml.zope.org/namespaces/tal"
+  ...      xmlns:meta="http://xml.zope.org/namespaces/meta">
+  ...   <div meta:interpolation="false">
+  ...     ${'foo'}
+  ...   </div>
+  ... </div>""")
+  <div>
+    <div>
+      ${'foo'}
+    </div>
+  </div>
+
+The ``tail`` of an element does get intepolated depending oon
+it's parent::
+
+  >>> print render("""\
+  ... <div xmlns="http://www.w3.org/1999/xhtml"
+  ...      xmlns:meta="http://xml.zope.org/namespaces/meta">
+  ...   <div meta:interpolation="false">
+  ...     ${nope}
+  ...   </div>
+  ...   ${'interpolation'}
+  ...   <div>
+  ...     ${'interpolation'}
+  ...     <span meta:interpolation="false">
+  ...       ${nope}
+  ...       <span meta:interpolation="true">
+  ...         ${'interpolation'}
+  ...       </span>
+  ...       ${'nope'}
+  ...     </span>
+  ...   </div>
+  ... </div>""")
+  <div>
+    <div>
+      ${nope}
+    </div>
+    interpolation
+    <div>
+      interpolation
+      <span>
+        ${nope}
+        <span>
+          interpolation
+        </span>
+        ${'nope'}
+      </span>
+    </div>
+  </div>
+
