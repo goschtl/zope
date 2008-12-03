@@ -26,6 +26,8 @@ class LayoutNotFound(LookupError):
 class IPagelet(IBrowserPage):
     """ pagelet """
 
+    managers = interface.Attribute('Additional managers')
+
     isRedirected = interface.Attribute('is redirected')
 
     def redirect(url=''):

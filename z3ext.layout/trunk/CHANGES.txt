@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+1.7.0 (Unreleased)
+------------------
+
+- Added `manager` attribute to z3ext:pagelet directive
+  this allow use getMultiAdapter((content, request, manager1, manager2, ...), IPagelet)
+
+- Use 'provides' schema for converting kwargs in z3ext:pagelet directive
+
+
 1.6.0 (2008-11-27)
 ------------------
 

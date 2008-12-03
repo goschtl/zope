@@ -17,6 +17,7 @@ $Id$
 """
 import os.path
 from zope import schema, interface, event
+from zope.schema.interfaces import IFromUnicode
 from zope.component.interface import provideInterface
 from zope.component.zcml import handler, adapter, utility
 from zope.security.checker import defineChecker, Checker, CheckerPublic
@@ -50,6 +51,12 @@ class IPageletDirective(IBasicViewInformation):
         title = u"The name of the pagelet.",
         description = u"The name shows up in URLs/paths. For example 'foo'.",
         required = False)
+
+    manager = Tokens(
+        title = u"Additional managers.",
+        description = u"""A pagelet can adapt (for, layer). With managers pagelet can adats as (for, layer, manager1, manager2, manager3, ...)""",
+        required = False,
+        value_type = GlobalObject())
 
     provides = Tokens(
         title = u"The interface this pagelets provides.",
@@ -275,8 +282,8 @@ def sendNotification(uid, name, view, context, layer, layoutclass, keywords):
 
 # pagelet directive
 def pageletDirective(
-    _context, permission, name=u'', class_=None, for_=interface.Interface,
-    layer=IDefaultBrowserLayer, provides=[IPagelet,],
+    _context, permission, for_=interface.Interface, name=u'', manager=(), 
+    class_=None, layer=IDefaultBrowserLayer, provides=[IPagelet,],
     allowed_interface=[], allowed_attributes=[],
     template=u'', layout=u'', **kwargs):
 
@@ -310,6 +317,21 @@ def pageletDirective(
         bases = (BrowserPagelet,)
 
     new_class = type('PageletClass from %s'%class_, bases, cdict)
+
+    # convert kwargs
+    for iface in provides:
+        for fname, field in schema.getFields(iface).items():
+            if fname in kwargs:
+                if not IFromUnicode.providedBy(field):
+                    raise ConfigurationError("Can't convert value", fname)
+
+                setattr(new_class, fname, field.fromUnicode(kwargs[fname]))
+            else:
+                if field.required and not hasattr(new_class, fname):
+                    raise ConfigurationError("Required field is missing", fname)
+
+                if not hasattr(new_class, fname):
+                    setattr(new_class, fname, field.default)
 
     # check name
     if not name:
@@ -363,15 +385,20 @@ def pageletDirective(
     _context.action(
         discriminator = ('z3ext.layout:registerPagelets', new_class),
         callable = registerPagelets,
-        args = (for_, layer, new_class, provides, name, _context.info))
+        args = (for_, layer, new_class, manager, provides, name, _context.info))
 
 
-def registerPagelets(for_, layer, newClass, provides, name, info):
+def registerPagelets(for_, layer, newClass, managers, provides, name, info):
+    if managers:
+        required = [for_, layer] + managers
+    else:
+        required = (for_, layer)
+
     for iface in provides:
         if IPageletType.providedBy(iface):
-            handler('registerAdapter', newClass, (for_, layer), iface, '', info)
+            handler('registerAdapter', newClass, required, iface, '', info)
         else:
-            handler('registerAdapter', newClass, (for_, layer), iface, name, info)
+            handler('registerAdapter', newClass, required, iface, name, info)
 
 
 def _handle_allowed_interface(

@@ -61,6 +61,10 @@ class BrowserPagelet(BrowserPage):
     index = None
     template = None
 
+    def __init__(self, context, request, *args):
+        self.managers = args
+        super(BrowserPagelet, self).__init__(context, request)
+
     def update(self):
         pass
 

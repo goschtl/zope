@@ -6,7 +6,7 @@ Show how we can use the pagelet directive. Register the meta configuration for
 the directive.
 
   >>> import os, tempfile, sys
-  >>> from zope import interface, component
+  >>> from zope import interface, component, schema
   >>> from zope.configuration import xmlconfig
   >>> from z3ext.layout.interfaces import IPagelet
 
@@ -34,8 +34,8 @@ Register a pagelet within the directive with minimal attributes:
 Let's get the pagelet
 
   >>> from zope.publisher.browser import TestRequest
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
-  ...     name='index.html')
+  >>> pagelet = component.queryMultiAdapter(
+  ...     (object(), TestRequest()), name='index.html')
 
 and check them:
 
@@ -117,6 +117,67 @@ pagelet interface:
   >>> INewPagelet.providedBy(pagelet)
   True
 
+If any of provides interfaces define schema field, newlly create class
+will have this attribute. Let' redefine INewPagelet interface
+
+  >>> class INewPagelet2(interface.Interface):
+  ...     """New pagelet interface."""
+  ...     
+  ...     number = schema.Int(
+  ...         title = u'Number',
+  ...         required = True)
+
+Because NewPagelet class doesn't have 'number' attribute and we don't
+supply it in directive we get exception.
+
+  >>> xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="new.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       permission="zope.Public"
+  ...       provides="z3ext.layout.TESTS.INewPagelet2" />
+  ... </configure>
+  ... """, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...Required field is missing...number...
+
+Let's provide 'number' in directive
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="new1.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       permission="zope.Public"
+  ...       provides="z3ext.layout.TESTS.INewPagelet2"
+  ...       number="10" />
+  ... </configure>
+  ... """, context)
+
+  >>> pagelet = component.getMultiAdapter(
+  ...     (object(), TestRequest()), INewPagelet2, name='new1.html')
+  >>> print pagelet.number, ':', type(pagelet.number)
+  10 : <type 'int'>
+
+Value should be in right format
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="new1.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       permission="zope.Public"
+  ...       provides="z3ext.layout.TESTS.INewPagelet2"
+  ...       number="xxxxx" />
+  ... </configure>
+  ... """, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...invalid literal for int()...
+
+
 We can create pagelet without specific class
 
   >>> context = xmlconfig.string("""
@@ -127,8 +188,8 @@ We can create pagelet without specific class
   ... </configure>
   ... """, context) 
 
-  >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
-  ...     name='noclass.html')
+  >>> pagelet = component.queryMultiAdapter(
+  ...     (object(), TestRequest()), name='noclass.html')
   >>> pagelet
   <z3ext.layout.zcml.PageletClass from None ...>
 
@@ -168,6 +229,35 @@ We can create pagelet with template:
 
   >>> pagelet.template
   <BoundPageTemplateFile of <z3ext.layout.zcml.PageletClass from None ...>>
+
+We can create pagelet with additional context
+
+  >>> class IContext2(interface.Interface):
+  ...     """ additional context """
+
+  >>> class Context2(object):
+  ...     interface.implements(IContext2)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="index.html"
+  ...       for="*"
+  ...       manager="z3ext.layout.TESTS.IContext2"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """, context) 
+
+  >>> context2 = Context2()
+
+  >>> c2Pagelet = component.queryMultiAdapter(
+  ...     (object(), TestRequest(), context2), name='index.html')
+  >>> c2Pagelet
+  <z3ext.layout.zcml.PageletClass from None ...>
+
+  >>> c2Pagelet.managers
+  (<z3ext.layout.TESTS.Context2 ...>,)
+
 
 Pagelet rendering
 
