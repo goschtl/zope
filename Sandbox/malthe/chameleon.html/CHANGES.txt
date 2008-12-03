@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+chameleon.html 0.8 (released 12/03/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Fixed namespace handling; the XML parser now makes sure that the
   default namespace gets registered as such. [malthe]
 
