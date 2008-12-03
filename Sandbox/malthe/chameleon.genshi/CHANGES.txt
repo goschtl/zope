@@ -1,8 +1,11 @@
 Changelog
 =========
 
-head
+Head
 ~~~~
+
+1.0b2 (released 12/03/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - The XPath ``select`` methods available to match-templates now match
   the XHTML namespace by default; this is due to the improved parsing
