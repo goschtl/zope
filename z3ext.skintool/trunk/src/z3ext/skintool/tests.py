@@ -17,14 +17,19 @@ $Id$
 """
 import unittest, doctest
 from zope import interface, component
+from zope.app.intid import IntIds
+from zope.app.intid.interfaces import IIntIds
 from zope.app.testing import setup
 
 from tool import SkinTool
 
 
 def setUp(test):
-    setup.placefulSetUp(site=True)
+    site = setup.placefulSetUp(site=True)
     setup.setUpTestAsModule(test, 'z3ext.skintool.README')
+
+    site['intid'] = IntIds()
+    component.provideUtility(site['intid'], IIntIds)
 
     # register utility
     tool = SkinTool()

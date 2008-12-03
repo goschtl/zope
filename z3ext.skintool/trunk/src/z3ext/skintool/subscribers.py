@@ -19,9 +19,11 @@ from zope import component
 from zope.proxy import removeAllProxies
 from zope.component import getUtility
 from zope.interface import directlyProvides
+from zope.app.intid.interfaces import IIntIds
 from zope.app.component.interfaces import ISite
 from zope.app.publication.interfaces import IBeforeTraverseEvent
 
+from tool import cache
 from interfaces import ISkinTool, ISkinable, INoSkinSwitching
 
 
@@ -39,10 +41,12 @@ def threadServiceSubscriber(site, event,
     if not ISkinable.providedBy(site):
         return
 
-    skin = getattr(site, '_v_skin', None)
-    if skin is None:
+    id = getUtility(IIntIds).queryId(site)
+    if id not in cache:
         skin = getUtility(ISkinTool).generate()
-        site._v_skin = skin
+        cache[id] = skin
+    else:
+        skin = cache[id]
 
     if skin:
         directlyProvides(event.request, *skin)

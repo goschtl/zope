@@ -16,15 +16,18 @@
 $Id$
 """
 from zope import interface, component
-from zope.component import getSiteManager, getAdapters, getUtilitiesFor
+from zope.component import getSiteManager
+from zope.component import getUtility, getAdapters, getUtilitiesFor
 from zope.security.proxy import removeSecurityProxy
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.publisher.interfaces.browser import \
      IDefaultSkin, IBrowserRequest, IDefaultBrowserLayer
 from zope.app.component.hooks import getSite
+from zope.app.intid.interfaces import IIntIds
 
 from interfaces import IDefaultLayer, IDefaultLayers, ISkinTool
 
+cache = {}
 skins_byname = {}
 skins_registry = {}
 layers_byname = {}
@@ -78,7 +81,8 @@ class SkinTool(object):
 
 @component.adapter(ISkinTool, IObjectModifiedEvent)
 def skinToolModified(*args):
-    try:
-        del removeSecurityProxy(getSite())._v_skin
-    except:
-        pass
+    global cache
+
+    id = getUtility(IIntIds).queryId(getSite())
+    if id in cache:
+        del cache[id]
