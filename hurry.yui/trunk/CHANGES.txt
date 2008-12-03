@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-2.6.0.3 (unreleased)
+2.6.0.3 (2008-12-03)
 ====================
 
 * Add the sam skin to hurry.yui. This is the consolidated minified SAM
