@@ -46,6 +46,10 @@ def convert_to_inclusions(d):
             inclusion.modes[mode_name] = mode_inclusion = convert_to_mode(
                 inclusion, mode_name)
 
+    # add the SAM skin
+    sam = ResourceInclusion(yui, 'assets/skins/sam/skin.css')
+    inclusion_map['sam'] = sam
+    
     # now generate code
     return generate_code(**inclusion_map)
     
