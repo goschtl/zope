@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+1.0b12 (released 03/12/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - Support template fragments, e.g. documents with more than one
   root element. [malthe]
 
