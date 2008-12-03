@@ -2,6 +2,9 @@
 CHANGES
 =======
 
+- Added subform support
+
+
 1.2.8 (2008-11-21)
 ------------------
 

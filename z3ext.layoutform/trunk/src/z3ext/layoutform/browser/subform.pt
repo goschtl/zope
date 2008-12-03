@@ -7,6 +7,4 @@
   <tal:block tal:repeat="widget context/widgets/values"
        tal:content="structure widget/@@pagelet/layoutform.widget" />
 </div>
-
-<tal:block tal:content="structure
-     context/@@pagelet/z3ext.layoutform.browser.interfaces.IFormButtons" />
+=========

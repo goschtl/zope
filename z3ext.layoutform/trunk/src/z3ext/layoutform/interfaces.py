@@ -65,6 +65,10 @@ class IPageletEditForm(IPageletForm):
         """ as next url use newly created content url """
 
 
+class IPageletEditSubForm(IPageletForm):
+    """ Sub form mixin for pagelet implementation."""
+
+
 class IAddButton(interface.Interface):
     """ add button """
 
