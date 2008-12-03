@@ -1,8 +1,8 @@
 CHANGES
 *******
 
-2.6.0.3 (2008-12-03)
-====================
+2.6.0.3 (2008-12-03) (YUI version 2.6.0)
+========================================
 
 * Add the sam skin to hurry.yui. This is the consolidated minified SAM
   skin - the split up .css files would require more work to implement.
