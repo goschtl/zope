@@ -10,6 +10,7 @@
      name="formError"
      factory=".error.FormErrorStatusMessage" />
 
+  <!-- form -->
   <interface
      name="form"
      type="z3ext.layout.interfaces.IPageletType"

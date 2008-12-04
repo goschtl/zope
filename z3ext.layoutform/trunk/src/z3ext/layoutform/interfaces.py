@@ -15,9 +15,9 @@
 
 $Id$
 """
-from zope import interface
+from zope import interface, schema
 from zope.i18nmessageid import MessageFactory
-from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import IFormLayer, IButton
 from z3ext.layout.interfaces import IPagelet
 
 _ = MessageFactory('z3ext.layoutform')
@@ -69,13 +69,17 @@ class IPageletEditSubForm(IPageletForm):
     """ Sub form mixin for pagelet implementation."""
 
 
-class IAddButton(interface.Interface):
+class IAddButton(IButton):
     """ add button """
 
 
-class ISaveButton(interface.Interface):
+class ISaveButton(IButton):
     """ save button """
 
 
-class ICancelButton(interface.Interface):
+class ICancelButton(IButton):
     """ cancel button """
+
+
+class IBackButton(IButton):
+    """A button that returns to some previous state or screen."""

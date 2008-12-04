@@ -23,6 +23,7 @@ from z3c.form import form, subform, button
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 from form import PageletForm
+from utils import applyChanges
 from interfaces import _, IPageletEditSubForm, ISaveButton
 
 
@@ -41,7 +42,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletForm):
                 (self.formErrorsMessage,) + errors, 'formError')
         else:
             content = self.getContent()
-            changed = form.applyChanges(self, content, data)
+            changed = applyChanges(self, content, data)
             if changed:
                 event.notify(ObjectModifiedEvent(content))
                 IStatusMessage(self.request).add(self.successMessage)
