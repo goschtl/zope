@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Explorer tests</title>
+<link rel="stylesheet" type="text/css" href="http://developer.yahoo.com/yui/examples/treeview/assets/css/folders/tree.css" />
+
+<style type="text/css">
+#yui-history-iframe {
+  position:absolute;
+  top:0; left:0;
+  width:1px; height:1px;
+  visibility:hidden;
+}
+</style>
+</head>
+
+<body class="yui-skin-sam">
+<!-- required by UI browser history manager IE support -->
+<iframe id="yui-history-iframe" tal:attributes="src static/history_asset.gif"></iframe>
+<input id="yui-history-field" type="hidden" />
+
+<h1>Explorer tests</h1>
+
+<div id="rootpath" rootpath="/" />
+
+<div id="doc" class="yui-t1">
+
+  <div id="hd">
+    <strong>Location:</strong> <span id="location"></span>
+  </div>
+  <div id="bd">
+    <div id="yui-main">
+      <div class="yui-b">
+        <div id="main" class="yui-navset"></div>
+      </div>
+    </div>
+    <div class="yui-b">
+      <div id="tree"></div>
+    </div>
+  </div>
+  <div id="ft"></div>
+</div>
+
+</body>
+</html>

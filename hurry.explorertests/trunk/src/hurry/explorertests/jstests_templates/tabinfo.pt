@@ -1,0 +1,4 @@
+<p>This is object <span tal:replace="view/container/__name__"></span></p>
+<div id="datatable"></div>
+<div id="buttons"></div>
+

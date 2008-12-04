@@ -1,0 +1,17 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="grok" file="meta.zcml" />
+  <include package="grok" />
+
+  <includeDependencies package="." />
+ 
+  <grok:grok package="."/>
+ 
+  <browser:resourceDirectory
+      name="explorertests"
+      directory="resources" />
+
+</configure>
