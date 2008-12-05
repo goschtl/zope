@@ -18,7 +18,16 @@ class CurrentNeededInclusions(grok.GlobalUtility):
     grok.provides(ICurrentNeededInclusions)
     
     def __call__(self):
-        request = getRequest()
+        try:
+            request = getRequest()
+        except NoRequestError:
+            # in some situations no request is set up
+            # to let 'need()' happen freely in places where
+            # no request is available (such as tests) we will
+            # silently assume that this is all right and return
+            # an empty NeededInclusions
+            return NeededInclusions()
+        
         if not hasattr(request, 'hurry_resource_needed'):
             request.hurry_resource_needed = NeededInclusions()
         return request.hurry_resource_needed
