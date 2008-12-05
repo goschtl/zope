@@ -1,10 +1,18 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
-  xmlns:grok="http://namespaces.zope.org/grok">
+  xmlns:grok="http://namespaces.zope.org/grok"
+  xmlns:browser="http://namespaces.zope.org/browser">
 
   <include package="grokcore.component" file="meta.zcml" />
+  <include package="grokcore.view" file="meta.zcml" />
+
+  <include package="hurry.zoperesource" />
   <include package="z3c.relationfield" />
 
   <grok:grok package="."/>
+
+  <browser:resourceDirectory 
+      name="z3c.relationfieldui"
+      directory="resources" />
   
 </configure>

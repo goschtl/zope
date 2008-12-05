@@ -8,10 +8,15 @@ from zope import component
 from zope.component.interfaces import ComponentLookupError
 from zope.app.form.browser.widget import renderElement
 from zope.traversing.browser import absoluteURL
+
 from z3c.objpath.interfaces import IObjectPath
+from hurry.resource import Library, ResourceInclusion
 
 from z3c.relationfield.schema import IRelation
 from z3c.relationfield.interfaces import IRelationInfo
+
+relation_lib = Library('z3c.relationfieldui')
+relation_resource = ResourceInclusion(relation_lib, 'relation.js')
 
 class RelationWidget(grok.MultiAdapter, TextWidget):
     grok.adapts(IRelation, IBrowserRequest)
@@ -26,8 +31,9 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
             'input', type='button', value='get relation',
             onclick="Z3C.relation.popup(this.previousSibling, '%s')" %
             explorer_url)
+        relation_resource.need()
         return result
-    
+
     def _toFieldValue(self, input):
         if not input:
             return None

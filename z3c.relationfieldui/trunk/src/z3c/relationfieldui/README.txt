@@ -1,25 +1,36 @@
-===================
+*******************
 z3c.relationfieldui 
-===================
+*******************
 
-This package implements a widget for relations as defined by
-`z3c.relationfield`_.
+This package implements a ``zope.formlib`` compatible widget for
+relations as defined by `z3c.relationfield`_.
 
 .. `_z3c.relationfield`: http://pypy.python.org/pypi/z3c.relationfield
 
 Setup
------
+=====
 
-In order to demonstrate our widget, we need to set up a relation field.
+In order to demonstrate our widget, we need to first set up a relation
+field (for the details of this see z3c.relationfield's
+documentation)::
 
-We first need to grok ftests to make sure we have the right utilities
-registered::
+  >>> from z3c.relationfield import Relation
+  >>> from zope.interface import Interface
+  >>> class IItem(Interface):
+  ...   rel = Relation(title=u"Relation")
+  >>> from z3c.relationfield.interfaces import IHasRelations
+  >>> from persistent import Persistent
+  >>> from zope.interface import implements
+  >>> class Item(Persistent):
+  ...   implements(IItem, IHasRelations)
+  ...   def __init__(self):
+  ...     self.rel = None
+  >>> from zope.app.component.site import SiteManagerContainer
+  >>> from zope.app.container.btree import BTreeContainer
+  >>> class TestApp(SiteManagerContainer, BTreeContainer):
+  ...   pass
 
-  >>> import grok
-  >>> grok.testing.grok('z3c.relationfieldui.ftests')
-
-Let's set up a test application with content in it, including a relation
-from ``b`` to ``a``::
+Set up the application with the right utilities::
 
   >>> root = getRootFolder()['root'] = TestApp()
   >>> from zope.app.component.site import LocalSiteManager
@@ -36,6 +47,8 @@ from ``b`` to ``a``::
   >>> root['catalog'] = catalog = RelationCatalog()
   >>> sm.registerUtility(catalog, provided=ICatalog)
 
+Items ``a`` and ``b`` with a relation from ``b`` to ``a``::
+
   >>> root['a'] = Item()
   >>> from z3c.relationfield import RelationValue
   >>> b = Item()
@@ -49,6 +62,7 @@ from ``b`` to ``a``::
 We also need to set up a utility that knows how to generate an object
 path for a given object, and back::
 
+  >>> import grokcore.component as grok
   >>> from z3c.objpath.interfaces import IObjectPath
   >>> class ObjectPath(grok.GlobalUtility):
   ...   grok.provides(IObjectPath)
@@ -56,12 +70,11 @@ path for a given object, and back::
   ...       return obj.__name__
   ...   def resolve(self, path):
   ...       return root[path]
-
   >>> grok.testing.grok_component('ObjectPath', ObjectPath)
   True
 
 The relation widget
--------------------
+===================
 
 The relation widget can be looked up for a relation field. The widget
 will render with a button that can be used to set the
@@ -71,17 +84,11 @@ to be available on the context object (that the relation is defined
 on). This view must be named "explorerurl". We'll provide one here::
 
   >>> from zope.interface import Interface
-  >>> class ExplorerUrl(grok.View):
+  >>> import grokcore.view
+  >>> class ExplorerUrl(grokcore.view.View):
   ...   grok.context(Interface)
   ...   def render(self):
   ...      return 'http://grok.zope.org'
-
-XXX in order to grok a view in the tests we need to supply the
-``BuiltinModuleInfo`` class with a ``package_dotted_name`` attribute.
-This should be fixed in Martian::
-
-  >>> from martian.scan import BuiltinModuleInfo
-  >>> BuiltinModuleInfo.package_dotted_name = 'foo'
 
 Now we can Grok the view::
 
@@ -98,7 +105,7 @@ Let's take a look at the relation widget now::
   <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value=""  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org')" type="button" value="get relation" />
 
 Relation display widget
------------------------
+=======================
 
 The display widget for relation will render a URL to the object it relates
 to. What this URL will be exactly can be controlled by defining a view
@@ -119,7 +126,7 @@ The widget will point to the plain URL of ``rel``'s ``to_object``::
 
 Now we register a special ``relationurl`` view::
 
-  >>> class RelationUrl(grok.View):
+  >>> class RelationUrl(grokcore.view.View):
   ...   grok.context(Interface)
   ...   def render(self):
   ...      return self.url('edit')

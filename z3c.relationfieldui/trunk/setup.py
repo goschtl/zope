@@ -18,6 +18,11 @@ setup(
     install_requires=[
         'setuptools',
         'z3c.relationfield',
+        'z3c.schema2xml >= 1.0',
+        'grokcore.component',
+        'grokcore.view',
+        'hurry.resource',
+        'hurry.zoperesource >= 0.3', # for testing
         ],
     entry_points={},
     )
