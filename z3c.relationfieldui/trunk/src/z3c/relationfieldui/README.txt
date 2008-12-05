@@ -5,7 +5,7 @@ z3c.relationfieldui
 This package implements a ``zope.formlib`` compatible widget for
 relations as defined by `z3c.relationfield`_.
 
-.. `_z3c.relationfield`: http://pypy.python.org/pypi/z3c.relationfield
+.. _`z3c.relationfield`: http://pypi.python.org/pypi/z3c.relationfield
 
 Setup
 =====

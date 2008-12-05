@@ -1,10 +1,23 @@
 from setuptools import setup, find_packages
 import sys, os
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+long_description = (
+    read('src', 'z3c', 'relationfieldui', 'README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
 setup(
     name='z3c.relationfieldui',
     version='0.1dev',
     description="A widget for z3c.relationfield.",
+    long_description=long_description,
     classifiers=[],
     keywords='',
     author='Martijn Faassen',
