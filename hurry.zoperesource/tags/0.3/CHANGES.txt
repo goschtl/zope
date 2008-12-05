@@ -1,0 +1,27 @@
+CHANGES
+*******
+
+0.3 (2008-12-05)
+================
+
+* ``resource.need()`` needed a request object set up in order to
+  function.  This is rather annoying in tests, which often don't have
+  a request object set up. We now instead return a dummy
+  ``NeededResources`` object in such cases (which will then be thrown
+  away). As a result, it's always safe to call ``resource.need()``
+  during tests, though if no request can be found it will have no
+  effect.
+
+0.2 (2008-10-13)
+================
+
+* Add support for rendering fragments at the bottom of the page. When
+  you call ``hurry.resource.bottom`` resources which are marked bottom-safe
+  will be rendered at the bottom of the web page instead of in the ``<head>``
+  section. When you call ``hurry.resource.bottom(force=True)``, *all*
+  ``.js`` resources will be included at the bottom.
+
+0.1 (2008-10-11)
+================
+
+* Initial public release.
