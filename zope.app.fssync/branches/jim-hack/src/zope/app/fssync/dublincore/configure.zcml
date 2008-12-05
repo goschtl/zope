@@ -5,14 +5,14 @@
       component="zope.app.fssync.dublincore.adapter.ZDCAnnotationDataSynchronizer"
       name="zope.dublincore.annotatableadapter.ZDCAnnotationData"
       provides="zope.fssync.interfaces.ISynchronizerFactory"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
    <class
       class="zope.app.fssync.dublincore.adapter.ZDCAnnotationDataSynchronizer">
 
       <require
-          permission="zope.ManageContent"
+          permission="zope.View"
           interface="zope.fssync.interfaces.IDefaultSynchronizer" />
 
    </class>

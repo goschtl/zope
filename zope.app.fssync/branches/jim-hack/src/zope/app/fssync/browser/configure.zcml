@@ -17,7 +17,7 @@
   <page
       for="zope.interface.Interface"
       name="fromFS.snarf"
-      permission="zope.ManageContent"
+      permission="zope.View"
       class=".SnarfCommit"
       attribute="run"
       />
@@ -26,7 +26,7 @@
   <page
       for="zope.interface.Interface"
       name="checkin.snarf"
-      permission="zope.ManageContent"
+      permission="zope.View"
       class=".SnarfCheckin"
       attribute="run"
       />

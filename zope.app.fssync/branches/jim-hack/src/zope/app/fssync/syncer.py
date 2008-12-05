@@ -61,7 +61,7 @@ def getSynchronizer(obj, raise_error=True):
     permission = checker.get_permissions['__call__']
     if checkPermission(permission, obj):
         return ProxyFactory(factory(proxy.removeAllProxies(obj)))
-
+    # XXX Fail here
 
 def toFS(obj, name, location):
     filesystem = repository.FileSystemRepository()

@@ -19,14 +19,14 @@
       component="zope.fssync.synchronizer.DirectorySynchronizer"
       provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.fssync.synchronizer.Extras"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
    <utility
       component="zope.fssync.synchronizer.DirectorySynchronizer"
       provides="zope.fssync.interfaces.ISynchronizerFactory"
       name="zope.fssync.synchronizer.SynchronizableAnnotations"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
    
@@ -53,7 +53,7 @@
       class="zope.fssync.synchronizer.Extras">
 
       <require
-          permission="zope.ManageContent"
+          permission="zope.View"
           interface="zope.interface.common.mapping.IMapping" />
 
       <require
@@ -66,7 +66,7 @@
       class="zope.fssync.synchronizer.SynchronizableAnnotations">
 
       <require
-          permission="zope.ManageContent"
+          permission="zope.View"
           interface="zope.fssync.interfaces.ISynchronizableAnnotations" />
           
       <require
@@ -93,7 +93,7 @@
           interface="zope.fssync.interfaces.IDirectorySerializer" />
 
       <require
-          permission="zope.ManageContent"
+          permission="zope.View"
           interface="zope.fssync.interfaces.IDirectoryDeserializer" />
 
    </class>
@@ -101,13 +101,13 @@
    <utility
       factory="zope.fssync.synchronizer.FileGenerator"
       provides="zope.fssync.interfaces.IFileGenerator"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
    <utility
       factory="zope.fssync.synchronizer.DirectoryGenerator"
       provides="zope.fssync.interfaces.IDirectoryGenerator"
-      permission="zope.ManageContent"
+      permission="zope.View"
       />
 
 
