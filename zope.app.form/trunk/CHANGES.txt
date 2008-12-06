@@ -7,6 +7,9 @@ CHANGES
 
 - Depending on zope.schema>=3.5a1 which uses the builtin ``set`` instead of the
   ``sets`` module.
+
+3.6.4 (2008-11-26)
+
 - The URIDisplayWidget doesn't render an anchor for empty/None values.
 
 3.6.3 (2008-10-15)
