@@ -5,6 +5,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 tests_require = [
+    'zope.testing',
     'zope.app.testing',
     'zope.component',
     ]
