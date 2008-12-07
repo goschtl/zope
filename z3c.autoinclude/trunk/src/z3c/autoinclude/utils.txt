@@ -33,3 +33,7 @@ package contained within it::
     >>> import foo
     >>> distributionForPackage(foo)
     FooPackage 0.0 (...FooPackage-0.0...egg)
+
+    >>> import F.G
+    >>> distributionForPackage(F.G)
+    SiblingPackage 0.0 (...SiblingPackage-0.0...egg)

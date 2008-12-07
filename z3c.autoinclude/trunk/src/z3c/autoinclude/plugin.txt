@@ -35,6 +35,9 @@ overridden::
 Finally, we know how to get a list of all module dottednames within
 a distribution, through the DistributionManager adapter::
 
+    >>> import foo
+    >>> from z3c.autoinclude.utils import distributionForPackage
+    >>> foo_dist = distributionForPackage(foo)
     >>> from z3c.autoinclude.utils import DistributionManager
     >>> DistributionManager(foo_dist).dottedNames()
     ['foo']

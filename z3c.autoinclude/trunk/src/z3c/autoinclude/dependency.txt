@@ -14,6 +14,10 @@ dependencies.
 Given the distribution for the project named ``APackage``, we can ask
 for the requirements of that distribution::
 
+    >>> import a
+    >>> from z3c.autoinclude.utils import distributionForPackage
+    >>> a_dist = distributionForPackage(a)
+
     >>> reqs = a_dist.requires()
     >>> pprint(sorted(reqs, key=lambda r:r.project_name))
     [Requirement.parse('BCPackage'),
@@ -30,7 +34,13 @@ We can adapt a distribution to a DependencyFinder::
     >>> from z3c.autoinclude.dependency import DependencyFinder
     >>> a_include_finder = DependencyFinder(a_dist)
     >>> b_include_finder = DependencyFinder(b_dist)
+    
+    >>> import x.y.z
+    >>> xyz_dist = distributionForPackage(x.y.z)
     >>> xyz_include_finder = DependencyFinder(xyz_dist)
+
+    >>> import F.G
+    >>> sibling_dist = distributionForPackage(F.G)
     >>> sibling_include_finder = DependencyFinder(sibling_dist)
 
 The include finder provides functionality to determine what namespace
@@ -143,10 +153,3 @@ Note that it will not catch DistributionNotFound errors::
      Traceback (most recent call last):
      ...
      DistributionNotFound: NonexistentPackage
-
-Now let's just clean up our test log in preparation for the next test::
-
-    >>> from testdirective.zcml import clear_test_log
-    >>> clear_test_log()
-    >>> pprint(test_log)
-    []
