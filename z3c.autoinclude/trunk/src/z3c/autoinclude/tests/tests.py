@@ -59,7 +59,7 @@ def testSetUp(test):
 
 
 def test_suite():
-    suite = doctest.DocFileSuite('../utils.txt', '../README.txt', '../plugin.txt',
+    suite = doctest.DocFileSuite('../utils.txt', '../dependency.txt', '../plugin.txt',
                                  setUp=testSetUp,
                                  tearDown=testing.buildoutTearDown,
                                  globs={'pprint':pprint},
