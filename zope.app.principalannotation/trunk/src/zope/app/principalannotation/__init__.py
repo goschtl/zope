@@ -42,6 +42,15 @@ class PrincipalAnnotationUtility(Persistent, Contained):
     def __init__(self):
         self.annotations = OOBTree()
 
+    def __getstate__(self):
+        # We can't use the _v_ attribute because we surely don't want
+        # it to be wiped out from the cache, so we just exclude our
+        # attribute from object's state :)
+        state = super(PrincipalAnnotationUtility, self).__getstate__()
+        if '_newAnnotationsCache' in state:
+            del state['_newAnnotationsCache']
+        return state
+
     def getAnnotations(self, principal):
         """Return object implementing IAnnotations for the given principal.
 
@@ -57,9 +66,15 @@ class PrincipalAnnotationUtility(Persistent, Contained):
 
         annotations = self.annotations.get(principalId)
         if annotations is None:
-            annotations = Annotations(principalId, store=self.annotations)
-            annotations.__parent__ = self
-            annotations.__name__ = principalId
+            if not hasattr(self, '_newAnnotationsCache'):
+                self._newAnnotationsCache = {}
+            if principalId in self._newAnnotationsCache:
+                return self._newAnnotationsCache[principalId]
+            else:
+                annotations = Annotations(principalId, store=self.annotations, cache=self._newAnnotationsCache)
+                annotations.__parent__ = self
+                annotations.__name__ = principalId
+                self._newAnnotationsCache[principalId] = annotations
 
         return annotations
 
@@ -73,13 +88,14 @@ class Annotations(Persistent, Location):
 
     interface.implements(IAnnotations)
 
-    def __init__(self, principalId, store=None):
+    def __init__(self, principalId, store=None, cache=None):
         self.principalId = principalId
         self.data = PersistentDict() # We don't really expect that many
 
         # _v_store is used to remember a mapping object that we should
         # be saved in if we ever change
         self._v_store = store
+        self._v_cache = cache
 
     def __getitem__(self, key):
         try:
@@ -98,6 +114,9 @@ class Annotations(Persistent, Location):
             # be saved in if we ever change
             self._v_store[self.principalId] = self
             del self._v_store
+            if getattr(self, '_v_cache', None) is not None:
+                del self._v_cache[self.principalId]
+                del self._v_cache
 
         self.data[key] = value
 

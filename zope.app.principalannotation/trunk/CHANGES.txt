@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.4.1 (unreleased)
+
+- Fix the case described in LP:#237985, when two unstored
+  Annotations are got and then tried to store itself, overriding
+  each other. This is done by caching unstored objects on the
+  utility.
+
 3.4.0 (2007-10-26)
 ------------------
 
