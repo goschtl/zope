@@ -30,7 +30,7 @@ setup(name='zopyx.smartprintng.core',
           'zopyx.convert2',
           # -*- Extra requirements: -*-
       ],
-      extras_require=dict(test=['pysqlite', 'zope.testing']),
+      extras_require=dict(test=['pysqlite', 'zope.testing', 'zope.app.testing']),
       entry_points={'console_scripts': ['spng-demo=zopyx.smartprintng.core.demo.demo_app:main',
                                         'spng-demo2=zopyx.smartprintng.core.demo2.demo_app:main',
                          ]},
