@@ -26,7 +26,6 @@ Usage: generate-buildout package-cfg-path [output-cfg-path]
   directory under the name 'test-buildout.cfg'.
 
 """
-import ConfigParser
 import os
 
 from zope.kgs import kgs
