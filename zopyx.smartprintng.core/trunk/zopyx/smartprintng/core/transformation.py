@@ -164,7 +164,7 @@ class LinkListAdder(BaseTransform):
         self.enumerateLinks()
         soup = self.soup
 
-        if links:                      
+        if links:
             pat = '<li>[%d] %s</li>'
             div = Tag(soup, 'div')
             div['id'] = 'enumerated-links'
@@ -211,6 +211,50 @@ class PageBreaker(BaseTransform):
 
         html2 = '\n'.join(parts)
         self.soup = BeautifulSoup(html2)
+
+
+class EmptyElementRemover(BaseTransform):
+    implements(IHTMLTransformation)
+
+    name = 'zopyx.smartprintng.emptyelementremover'
+    description = 'Removes empty elements from document'
+
+    def transform(self, remove_elements=('p', 'div')):
+        soup = self.soup
+        for e in soup.findAll(remove_elements):
+            if not e.contents:
+                e.extract()
+
+
+class LinksToPrinceFootnotes(BaseTransform):
+    implements(IHTMLTransformation)
+
+    name = 'zopyx.smartprintng.linkstoprincefootnotes'
+    description = 'Convert links to external URLs to PrinceXML footnotes'
+
+    def transform(self):
+        soup = self.soup
+        for a in soup.findAll('a'):
+
+            try:
+                href = a['href']
+            except KeyError:
+                continue
+
+            if not re.match(r'^(http|http|ftp)://', href):
+                continue
+
+            contents = a.contents
+            span1 = Tag(soup, 'span')
+            span1['class'] = 'generated-footnote-text'
+            span1.insert(0, NavigableString(contents[0]))
+            span2 = Tag(soup, 'span')
+            span2['class'] = 'generated-footnote'
+            span2.insert(0, NavigableString(href))
+            span1.insert(1, span2)
+            a.replaceWith(span1)
+
+
 
 
 # register factories for all transformations

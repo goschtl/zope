@@ -80,6 +80,19 @@ class TransformationTests(unittest.TestCase):
         self.assertEqual('<span>Control Panel</span>' in result, True)
         self.assertEqual('<span>foo bar</span>' in result, True)
 
+    def testEmptyElementRemover(self):
+        T = transformation.EmptyElementRemover('<div>hello world<div></div><p></p></div>') 
+        T.transform()
+        result = str(T)
+        self.assertEqual(result, '<div>hello world</div>')
+
+
+    def testLinksToPrinceFootnotes(self):
+        T = transformation.LinksToPrinceFootnotes('<a href="http://plone.org">plone.org</a>')
+        T.transform()
+        result = str(T)
+        self.assertEqual(result, '<span class="generated-footnote-text">plone.org<span class="generated-footnote">http://plone.org</span></span>')
+
 def test_suite():
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
