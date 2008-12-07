@@ -332,6 +332,37 @@ and you won't want to wait for the script to query all of the others
   z3c.formdemo: 1.1.1, 1.1.2
 
 
+Extracting Change Information
+-----------------------------
+
+When releasing a version of the KGS, it is desirable to produce a list of
+changes since the last release. Changes are commonly compared to an older
+version.
+
+  >>> cfgFileRealOrig = tempfile.mktemp('-cp.cfg')
+  >>> open(cfgFileRealOrig, 'w').write('''\
+  ... [DEFAULT]
+  ... tested = true
+  ...
+  ... [KGS]
+  ... name = zope-dev
+  ... version = 3.4.0b1
+  ...
+  ... [PIL]
+  ... versions = 1.1.6
+  ...
+  ... [zope.component]
+  ... versions = 3.4.0
+  ...
+  ... [zope.interface]
+  ... versions = 3.4.0
+  ... ''')
+
+
+  >>> from zope.kgs import change
+  >>> change.main((cfgFileReal, cfgFileRealOrig))
+
+
 Introduction Page
 -----------------
 

@@ -16,7 +16,8 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
+import os
+import pickle
 import unittest
 import urllib2
 import xmlrpclib
@@ -29,7 +30,7 @@ from zope.testing.doctestunit import DocFileSuite
 class FakeServer(object):
     """Pretend Cheeseshop XML-RPC server."""
 
-    testdata = {
+    url_data = {
         ('z3c.formdemo', '1.1.0'): [
             dict(url="http://pypi.python.org/packages/2.4/z/z3c.formdemo/z3c.formdemo-1.1.0-py2.4.egg",
                  md5_digest="9d605bd559ea33ac57ce11f5c80fa3d3",
@@ -61,11 +62,18 @@ class FakeServer(object):
         ],
     }
 
+    releasedata = None
+
     def __init__(self, url):
-        pass
+        self.releasedata = pickle.load(
+            open(os.path.join(os.path.dirname(__file__),
+                              'release_data.dat'), 'r'))
 
     def package_urls(self, package_name, version):
-        return self.testdata.get((package_name, version), [])
+        return self.url_data.get((package_name, version), [])
+
+    def release_data(self, package_name, version):
+        return self.releasedata.get((package_name, version), [])
 
 
 testpages = {
