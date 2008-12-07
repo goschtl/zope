@@ -33,25 +33,38 @@ import zope.kgs.kgs
 
 SERVER_URL = "http://cheeseshop.python.org/pypi"
 
+def extractChanges(text, firstVersion, lastVersion):
+    return text[text.find(lastVersion):text.find(firstVersion)]
+
 def generateChanges(currentPath, origPath):
     kgs = zope.kgs.kgs.KGS(currentPath)
-    #origKgs = zope.kgs.kgs.KGS(origPath)
     server = xmlrpclib.Server(SERVER_URL)
+
+    origVersions = {}
+    if origPath:
+        origKgs = zope.kgs.kgs.KGS(origPath)
+        for package in origKgs.packages:
+            origVersions[package.name] = package.versions[-1]
 
     changes = []
 
     for package in kgs.packages:
         data = server.release_data(package.name, package.versions[-1])
-        changes.append((package.name, data['description']))
+        firstVersion = origVersions.get(package.name, package.versions[0])
+        lastVersion = package.versions[-1]
+        changes.append(
+            (package.name, firstVersion, lastVersion,
+             extractChanges(data['description'], firstVersion, lastVersion))
+            )
 
     return changes
 
 def printChanges(changes):
-    for name, description in changes:
-        print name
-        print '='*len(name)
+    for name, firstVersion, lastVersion, changes in changes:
+        print '%s (%s - %s)' %(name, firstVersion, lastVersion)
+        print '='*(len(name+firstVersion+lastVersion)+6)
         print
-        print description
+        print changes
         print
         print
 
@@ -70,4 +83,4 @@ def main(args=None):
         origPackageConfigPath = os.path.abspath(args[1])
 
     changes = generateChanges(currentPackageConfigPath, origPackageConfigPath)
-    #printChanges(changes)
+    printChanges(changes)

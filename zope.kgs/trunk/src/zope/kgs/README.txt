@@ -358,9 +358,15 @@ version.
   ... versions = 3.4.0
   ... ''')
 
+Let's now produce the changes:
 
   >>> from zope.kgs import change
-  >>> change.main((cfgFileReal, cfgFileRealOrig))
+  >>> #change.main((cfgFileReal, cfgFileRealOrig))
+
+You can also create the changes without an original file, in which case only
+the versions listed in the current KGS are considered.
+
+  >>> change.main((cfgFileReal,))
 
 
 Introduction Page
