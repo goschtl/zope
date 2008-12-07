@@ -361,13 +361,105 @@ version.
 Let's now produce the changes:
 
   >>> from zope.kgs import change
-  >>> #change.main((cfgFileReal, cfgFileRealOrig))
+  >>> change.main((cfgFileReal, cfgFileRealOrig))
+  ===                                                                               
+  PIL                                                                               
+  ===                                                                               
+  <BLANKLINE>                                                                       
+  <BLANKLINE>                                                                       
+  ============                                                                      
+  z3c.formdemo                                                                      
+  ============                                                                      
+  <BLANKLINE>                                                                       
+  1.1.0 (None)                                                                      
+  ------------                                                                      
+  <BLANKLINE>                                                                       
+  - Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with         
+    non-object data. Specificically, this small application demonstrates using a    
+    Gadfly database using pure SQL calls without any ORM.                           
+  <BLANKLINE>                                                                       
+  - Feature: New "Address Book" demo that demonstrates more complex use cases,      
+    such as subforms, composite widgets, and mappings/lists
+  <BLANKLINE>
+  <BLANKLINE>
+  ==============
+  zope.component
+  ==============
+  <BLANKLINE>
+  3.4.0 (2007-09-29)
+  ------------------
+  <BLANKLINE>
+  No further changes since 3.4.0a1.
+  <BLANKLINE>
+  <BLANKLINE>
+  ==============
+  zope.interface
+  ==============
+  <BLANKLINE>
+  3.4.1 (None)
+  ------------
+  <BLANKLINE>
+  Fixed a setup bug that prevented installation from source on systems
+  without setuptools.
+  <BLANKLINE>
+  3.4.0 (None)
+  ------------
+  <BLANKLINE>
+  Final release for 3.4.0.
+  <BLANKLINE>
+  <BLANKLINE>
+
 
 You can also create the changes without an original file, in which case only
 the versions listed in the current KGS are considered.
 
   >>> change.main((cfgFileReal,))
-
+  ===                                                                               
+  PIL                                                                               
+  ===                                                                               
+  <BLANKLINE>                                                                       
+  <BLANKLINE>                                                                       
+  ============                                                                      
+  z3c.formdemo                                                                      
+  ============                                                                      
+  <BLANKLINE>                                                                       
+  1.1.0 (None)                                                                      
+  ------------                                                                      
+  <BLANKLINE>                                                                       
+  - Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with         
+    non-object data. Specificically, this small application demonstrates using a    
+    Gadfly database using pure SQL calls without any ORM.                           
+  <BLANKLINE>                                                                       
+  - Feature: New "Address Book" demo that demonstrates more complex use cases,      
+    such as subforms, composite widgets, and mappings/lists
+  <BLANKLINE>
+  <BLANKLINE>
+  ==============
+  zope.component
+  ==============
+  <BLANKLINE>
+  3.4.0 (2007-09-29)
+  ------------------
+  <BLANKLINE>
+  No further changes since 3.4.0a1.
+  <BLANKLINE>
+  <BLANKLINE>
+  ==============
+  zope.interface
+  ==============
+  <BLANKLINE>
+  3.4.1 (None)
+  ------------
+  <BLANKLINE>
+  Fixed a setup bug that prevented installation from source on systems
+  without setuptools.
+  <BLANKLINE>
+  3.4.0 (None)
+  ------------
+  <BLANKLINE>
+  Final release for 3.4.0.
+  <BLANKLINE>
+  <BLANKLINE>
 
 Introduction Page
 -----------------

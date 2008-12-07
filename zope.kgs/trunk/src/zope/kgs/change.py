@@ -27,14 +27,66 @@ Usage: %s current-package-cfg-path [orig-package-cfg-path]
 
 """
 import os
+import re
 import sys
 import xmlrpclib
+import pkg_resources
 import zope.kgs.kgs
 
 SERVER_URL = "http://cheeseshop.python.org/pypi"
 
+# version_line finds a version number and an optional date
+version_line = re.compile(
+    r"(version\s*|)([0-9.][0-9a-zA-Z.]*)(\s*[(]([0-9a-z?-]+)[)])?",
+    re.IGNORECASE)
+
+# decoration_line matches lines to ignore
+decoration_line = re.compile(r"---|===")
+
+def parseReleases(lines):
+    """Parse the list of releases from a CHANGES.txt file.
+
+    Yields (version, release_date, [line]) for each release listed in the
+    change log.
+    """
+    if isinstance(lines, basestring):
+        lines = lines.split('\n')
+
+    version = None
+    release_date = None
+    changes = None
+
+    for line in lines:
+        line = line.rstrip()
+        mo = version_line.match(line)
+        if mo is not None:
+            if changes is not None:
+                yield version, release_date, changes
+            changes = []
+            version = mo.group(2)
+            release_date = mo.group(4)
+        elif changes is not None and decoration_line.match(line) is None:
+            changes.append(line)
+
+    # include the last list of changes
+    if version is not None and changes is not None:
+        yield version, release_date, changes
+
 def extractChanges(text, firstVersion, lastVersion):
-    return text[text.find(lastVersion):text.find(firstVersion)]
+    """Parse the changes out of a CHANGES.txt in the given range.
+
+    For each release, yields (version, release_date, change text).
+    """
+    first = pkg_resources.parse_version(firstVersion)
+    last = pkg_resources.parse_version(lastVersion)
+    for version, release_date, changes in parseReleases(text):
+        try:
+            v = pkg_resources.parse_version(version)
+        except AttributeError:
+            import pdb; pdb.set_trace()
+            raise
+        if first <= v <= last:
+            yield version, release_date, '\n'.join(changes)
 
 def generateChanges(currentPath, origPath):
     kgs = zope.kgs.kgs.KGS(currentPath)
@@ -52,20 +104,25 @@ def generateChanges(currentPath, origPath):
         data = server.release_data(package.name, package.versions[-1])
         firstVersion = origVersions.get(package.name, package.versions[0])
         lastVersion = package.versions[-1]
-        changes.append(
-            (package.name, firstVersion, lastVersion,
-             extractChanges(data['description'], firstVersion, lastVersion))
-            )
+        versions = list(
+            extractChanges(data['description'], firstVersion, lastVersion))
+        changes.append((package.name, versions))
 
     return changes
 
 def printChanges(changes):
-    for name, firstVersion, lastVersion, changes in changes:
-        print '%s (%s - %s)' %(name, firstVersion, lastVersion)
-        print '='*(len(name+firstVersion+lastVersion)+6)
+    for name, versions in changes:
+        print '=' * len(name)
+        print name
+        print '=' * len(name)
         print
-        print changes
-        print
+        for version, release_date, text in versions:
+            s = '%s (%s)' % (version, release_date)
+            print s
+            print '-' * len(s)
+            print
+            print text.strip()
+            print
         print
 
 

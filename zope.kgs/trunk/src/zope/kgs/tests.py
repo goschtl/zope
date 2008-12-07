@@ -26,6 +26,7 @@ from StringIO import StringIO
 from zope.testing import doctest
 from zope.testing.doctestunit import DocFileSuite
 
+from zope.kgs.changes_tests import ChangesTests
 
 class FakeServer(object):
     """Pretend Cheeseshop XML-RPC server."""
@@ -187,6 +188,7 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(ChangesTests),
         DocFileSuite('README.txt',
                      setUp=setUp,
                      tearDown=tearDown,
