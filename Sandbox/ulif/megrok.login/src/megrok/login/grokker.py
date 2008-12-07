@@ -7,6 +7,7 @@ from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
+from megrok.login.authplugins import PrincipalRegistryAuthenticator
 
 class ApplicationGrokker(martian.ClassGrokker):
     martian.component(grok.Site)
@@ -26,13 +27,16 @@ class ApplicationGrokker(martian.ClassGrokker):
         return True
 
 def authenticationSubscriber(site, event):
-    grok.meta.setupUtility(site, PluggableAuthentication(),
-                      IAuthentication, setup=setupPAU)
+    grok.meta.setupUtility(site, PluggableAuthentication(), IAuthentication,
+                           setup=setupPAU,
+                           name_in_container='megrok_login_pau')
+
 
 def setupPAU(pau):
     """Callback to setup the Pluggable Authentication Utility """
-    pau['principals'] = PrincipalFolder() 
-    pau.authenticatorPlugins = ('principals',)
+    pau['principals'] = PrincipalFolder()
+    pau['readonly_principals'] = PrincipalRegistryAuthenticator()
+    pau.authenticatorPlugins = ('principals', 'readonly_principals')
     pau['session'] = session = SessionCredentialsPlugin()
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
     site = pau.__parent__.__parent__
