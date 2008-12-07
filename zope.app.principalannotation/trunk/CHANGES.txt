@@ -4,11 +4,6 @@ CHANGES
 
 3.4.1 (unreleased)
 
-- Fix the case described in LP:#237985, when two unstored
-  Annotations are got and then tried to store itself, overriding
-  each other. This is done by caching unstored objects on the
-  utility.
-
 - Move boostrap subscriber to bootstrap.zcml file and browser
   menu item definition to browser.zcml file to ease overriding
   and excluding configuration.

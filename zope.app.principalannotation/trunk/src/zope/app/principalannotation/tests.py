@@ -56,37 +56,6 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         # But now we should have the annotation:
         self.assert_(self.util.hasAnnotations(prince))
 
-        # Another scenery, say we get annotations two
-        # times.
-        king = Principal('somebody2')
-        self.assert_(not self.util.hasAnnotations(king))
-
-        kingAnnotation = self.util.getAnnotations(king)
-        self.assert_(not self.util.hasAnnotations(king))
-        
-        kingAnnotation2 = self.util.getAnnotations(king)
-        self.assert_(not self.util.hasAnnotations(king))
-
-        # These objects should be the same
-        self.assert_(kingAnnotation is kingAnnotation2)
-
-        # So this should work:
-        kingAnnotation['something'] = 'whatever'
-        self.assert_(self.util.hasAnnotations(king))
-
-        kingAnnotation2['something2'] = 'whatever2'
-        self.assert_(self.util.hasAnnotations(king))
-        
-        # Let's check the results:
-        annot = self.util.getAnnotations(king)
-        self.assert_(annot.get('something2'))
-        self.assert_(annot.get('something'))
-        
-        # This is done using the internal cache object in the utility,
-        # but it should not be stored in the database, so it won't be
-        # in object's state:
-        self.assertEquals(self.util.__getstate__().keys(), ['annotations'])
-        
     def testGetFromLayered(self):
         princeSomebody = Principal('somebody')
         sm1 = self.makeSite('folder1')
