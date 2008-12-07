@@ -9,6 +9,10 @@ CHANGES
   each other. This is done by caching unstored objects on the
   utility.
 
+- Move boostrap subscriber to bootstrap.zcml file and browser
+  menu item definition to browser.zcml file to ease overriding
+  and excluding configuration.
+
 3.4.0 (2007-10-26)
 ------------------
 

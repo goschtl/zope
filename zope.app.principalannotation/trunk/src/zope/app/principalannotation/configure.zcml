@@ -16,25 +16,14 @@
         />
   </class>
 
-  <!-- Principal annotations (user data) utility -->
-
-  <browser:addMenuItem
-      class=".PrincipalAnnotationUtility"
-      permission="zope.ManageServices"
-      title="Principal Annotation Utility"
-      description="Stores Annotations for Principals"
-      />
-
-  <subscriber
-      for="zope.app.appsetup.IDatabaseOpenedEvent"
-      handler=".bootstrap.bootStrapSubscriber"
-      />
-
   <adapter factory=".annotations" />
 
   <adapter
       for="zope.security.interfaces.IPrincipal *"
       factory=".annotations"
       />
+
+  <include file="bootstrap.zcml" />
+  <include file="browser.zcml" />
 
 </configure>
