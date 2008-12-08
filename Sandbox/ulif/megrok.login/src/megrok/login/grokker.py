@@ -14,8 +14,9 @@ class ApplicationGrokker(martian.ClassGrokker):
     martian.priority(100)
     martian.directive(megrok.login.enable, default=False)
     martian.directive(megrok.login.viewname, default=u'loginForm.html')
-
-    def execute(self, factory, config, enable, viewname, **kw):
+    martian.directive(megrok.login.strict, default=False)
+    
+    def execute(self, factory, config, enable, viewname, strict, **kw):
         if enable is False:
             return False
         adapts = (factory, grok.IObjectAddedEvent)
@@ -34,12 +35,16 @@ def authenticationSubscriber(site, event):
 
 def setupPAU(pau):
     """Callback to setup the Pluggable Authentication Utility """
-    pau['principals'] = PrincipalFolder()
-    pau['readonly_principals'] = PrincipalRegistryAuthenticator()
-    pau.authenticatorPlugins = ('principals', 'readonly_principals')
-    pau['session'] = session = SessionCredentialsPlugin()
-    pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
     site = pau.__parent__.__parent__
     viewname = megrok.login.component.viewname.bind().get(site)
-    session.loginpagename = viewname
+    strict = megrok.login.component.strict.bind().get(site)
 
+    pau['principals'] = PrincipalFolder()
+    pau.authenticatorPlugins = ('principals', )
+    if strict is False:
+        pau['readonly_principals'] = PrincipalRegistryAuthenticator()
+        pau.authenticatorPlugins = ('principals', 'readonly_principals')
+
+    pau['session'] = session = SessionCredentialsPlugin()
+    pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
+    session.loginpagename = viewname
