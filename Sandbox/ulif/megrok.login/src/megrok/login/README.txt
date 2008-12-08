@@ -81,8 +81,6 @@ See ``tests/customlogin.py`` for details.
 ``megrok.login.strict()``
 -------------------------
 
-XXX: not available yet
-
 Normally, ``megrok.login`` installs two authenticator plugins for your
 site:
 
