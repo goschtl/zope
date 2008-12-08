@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- this configure.zcml should only be loaded in a zope context -->
+
+  <browser:resourceDirectory 
+      name="explorer"
+      directory="resources" />
+
+</configure>

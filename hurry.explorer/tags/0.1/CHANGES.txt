@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+0.1 (2008-12-08)
+================
+
+* Initial public release. Needs a lot more documentation...
