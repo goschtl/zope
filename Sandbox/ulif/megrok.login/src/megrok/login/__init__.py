@@ -1,1 +1,1 @@
-from megrok.login.component import enable, viewname, strict
+from megrok.login.component import enable, viewname, strict, autoregister
