@@ -4,30 +4,23 @@ import os.path
 def read_file(*args):
     path = os.path.join(os.path.dirname(__file__), *args)
     file_contents = open(path, "r").read()
-    return file_contents
+    return file_contents + "\n\n"
 
 setup(
     name="zc.sourcefactory",
-    version="0.4.0dev",
+    version="0.3.5dev",
     author="Zope Corporation and Contributors",
     author_email="zope3-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
-
+    keywords="zope zope3 vocabulary source factory",
     description="An easy way to create custom Zope 3 sources.",
-
     long_description=(
         read_file("src", "zc", "sourcefactory", "README.txt") +
-        "\n\n" + 
         read_file("src", "zc", "sourcefactory", "mapping.txt") +
-        "\n\n" + 
         read_file("src", "zc", "sourcefactory", "constructors.txt") +
-        "\n\n" + 
         read_file("src", "zc", "sourcefactory", "adapters.txt") +
-        "\n\n" + 
         read_file("src", "zc", "sourcefactory", "browser", "README.txt") +
-        "\n\n" + 
         read_file("src", "zc", "sourcefactory", "browser", "token.txt") +
-        "\n\n" + 
         read_file("CHANGES.txt")
         ),
     classifiers = [
