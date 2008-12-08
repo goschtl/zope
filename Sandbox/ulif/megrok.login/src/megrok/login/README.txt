@@ -100,8 +100,6 @@ See ``tests/strict.py`` for details.
 ``megrok.login.autoregister()``
 -------------------------------
 
-XXX: not available yet
-
 If this directive is used, the authentication system will register
 automatically any user that still does not exist on login and add it
 to the ``PrincipalFolder``.
