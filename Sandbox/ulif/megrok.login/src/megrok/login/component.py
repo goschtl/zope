@@ -23,3 +23,6 @@ class strict(martian.MarkerDirective):
     scope = martian.CLASS
     store = martian.ONCE
 
+class autoregister(martian.MultipleTimesDirective):
+    scope = martian.CLASS
+
