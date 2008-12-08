@@ -2,8 +2,12 @@
 Changes
 =======
 
-0.4.0 (unreleased)
+0.3.5 (unreleased)
 ==================
+
+    - Fixed bug in __new__ of contexual factories that would disallow
+      subclasses to use constructors that expect a different
+      signature. [icemac]
 
 
 0.3.4 (2008-08-27)
