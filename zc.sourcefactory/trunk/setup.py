@@ -14,6 +14,7 @@ setup(
     url="http://svn.zope.org/zc.sourcefactory",
     keywords="zope zope3 vocabulary source factory",
     description="An easy way to create custom Zope 3 sources.",
+    license="ZPL 2.1",
     long_description=(
         read_file("src", "zc", "sourcefactory", "README.txt") +
         read_file("src", "zc", "sourcefactory", "mapping.txt") +
