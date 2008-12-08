@@ -2,25 +2,10 @@ from setuptools import setup, find_packages
 
 import sys, os
 
-def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-
-long_description = ''
-#(
-#    read('README.txt')
-#    + '\n' +
-#    read('CHANGES.txt')
-#    + '\n' +
-#    'Download\n'
-#    '********\n'
-#    )
-
-
 setup(
     name='hurry.explorer',
     version='0.1dev',
-    description="An explorer UI built with YUI.",
-    long_description = long_description,
+    description="A (object) filesystem explorer UI built with YUI.",
     classifiers=[],
     keywords='',
     author='Martijn Faassen',
