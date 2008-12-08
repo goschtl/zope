@@ -19,4 +19,7 @@ class viewname(martian.Directive):
                 "to the 'megrok.login.viewname' directive.")
         return viewname
 
-    
+class strict(martian.MarkerDirective):
+    scope = martian.CLASS
+    store = martian.ONCE
+
