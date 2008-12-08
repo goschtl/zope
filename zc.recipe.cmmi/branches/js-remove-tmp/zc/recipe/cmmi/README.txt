@@ -30,6 +30,7 @@ It creates a make file which is also run:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
 
 The recipe also creates the parts directory:
 
@@ -65,6 +66,7 @@ You can supply extra configure options:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
 
 The recipe sets the location option, which can be read by other
 recipes, to the location where the part is installed:
@@ -109,6 +111,7 @@ or make. This can be done by adding an environment statement:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
 
 Sometimes it's necessary to patch the sources before building a package.
 You can specify the name of the patch to apply and (optional) patch options:
@@ -166,6 +169,7 @@ passed, -p0 is appended by default.
     building foo patched
     echo installing foo patched
     installing foo patched
+    foo: removing temporary directory
 
 It is possible to autogenerate the configure files:
 
@@ -191,3 +195,4 @@ It is possible to autogenerate the configure files:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory

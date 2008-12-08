@@ -71,6 +71,7 @@ Now let's create a buildout.cfg file.
     building foo patched
     echo installing foo patched
     installing foo patched
+    foo: removing temporary directory
 
 Any downloaded patch files can be cached in a download cache if available, in
 exactly the same way as for tarballs.  Similarly, if the build is set to offline

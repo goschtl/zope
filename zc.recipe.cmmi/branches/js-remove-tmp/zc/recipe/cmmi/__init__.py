@@ -114,6 +114,8 @@ class Recipe:
                 system("make install")
             finally:
                 os.chdir(here)
+            logger.info('removing temporary directory')
+            shutil.rmtree(tmp)
         except:
             shutil.rmtree(dest)
             raise

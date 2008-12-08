@@ -51,6 +51,7 @@ It creates a make file which is also run:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
     <BLANKLINE>
 
 We'll also get the download cache populated.  The buildout doesn't put
@@ -96,6 +97,7 @@ files are not downloaded afresh:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
     <BLANKLINE>
 
 This is because the ones in the download cache are used.
@@ -122,6 +124,7 @@ are also removed, then it is downloaded afresh:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
     <BLANKLINE>
 
 If the cache location is changed, and the installed parts are removed,
@@ -156,6 +159,7 @@ the new cache is created and repopulated:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
     <BLANKLINE>
 
 The old cache is left in place:
@@ -207,6 +211,7 @@ been removed, the files from the cache are used:
     building foo
     echo installing foo
     installing foo
+    foo: removing temporary directory
     <BLANKLINE>
 
 However, in offline mode, if we remove the installed parts and clear
