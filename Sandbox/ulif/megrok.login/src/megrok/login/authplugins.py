@@ -20,7 +20,7 @@ from zope.app.authentication.principalfolder import (PrincipalInfo,
 from zope.app.authentication.principalfolder import ISearchSchema
 from zope.app.container.interfaces import DuplicateIDError
 from zope.app.security.principalregistry import principalRegistry
-from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
+from zope.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.interface import implements
 
 class PrincipalRegistryAuthenticator(object):
