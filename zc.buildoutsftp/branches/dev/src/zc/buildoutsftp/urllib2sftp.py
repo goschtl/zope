@@ -16,7 +16,7 @@
 $Id$
 """
 
-import cStringIO, getpass, logging, mimetypes, os, re, stat, sys
+import atexit, cStringIO, getpass, logging, mimetypes, os, re, stat, sys
 import urllib, urllib2
 import paramiko
 
@@ -74,6 +74,15 @@ class Result:
     def __getattr__(self, name):
         return getattr(self._fp, name)
 
+_connection_pool = {}
+def cleanup():
+    for k in list(_connection_pool):
+        trans = _connection_pool.pop(k)
+        if trans is not False:
+            trans.close()
+    
+atexit.register(cleanup)
+
 class SFTPHandler(urllib2.BaseHandler):
 
     def sftp_open(self, req):        
@@ -114,31 +123,44 @@ class SFTPHandler(urllib2.BaseHandler):
                 "No stored host key", host)
 
         if pw is not None:
-            trans = paramiko.Transport((host, port))
-            try:
-                trans.connect(username=user, password=pw)
-            except paramiko.AuthenticationException:
-                trans.close()
-                raise
+            pool_key = (host, port, user, pw)
+            trans = _connection_pool.get(pool_key)
+            if trans is None:
+                trans = paramiko.Transport((host, port))
+                try:
+                    trans.connect(username=user, password=pw)
+                except paramiko.AuthenticationException:
+                    trans.close()
+                    raise
         else:
             for key in paramiko.Agent().get_keys():
+                pool_key = (host, port, str(key))
+                trans = _connection_pool.get(pool_key)
+                if trans is not None:
+                    if trans is False:
+                        # Failed previously, so don't try again
+                        continue
+                    break
                 trans = paramiko.Transport((host, port))
                 try:
                     trans.connect(username=user, pkey=key)
                     break
                 except paramiko.AuthenticationException:
-                    trans.close()                
+                    trans.close()
+                    _connection_pool[pool_key] = False
             else:
                 raise paramiko.AuthenticationException(
                     "Authentication failed.")
 
 
-        # Check host key
-        remote_server_key = trans.get_remote_server_key()
-        host_key = host_keys.get(remote_server_key.get_name())
-        if host_key != remote_server_key:
-            raise paramiko.AuthenticationException(
-                "Remote server authentication failed.", host) 
+        if pool_key not in _connection_pool:
+            # Check host key
+            remote_server_key = trans.get_remote_server_key()
+            host_key = host_keys.get(remote_server_key.get_name())
+            if host_key != remote_server_key:
+                raise paramiko.AuthenticationException(
+                    "Remote server authentication failed.", host) 
+            _connection_pool[pool_key] = trans
 
         sftp = paramiko.SFTPClient.from_transport(trans)
 

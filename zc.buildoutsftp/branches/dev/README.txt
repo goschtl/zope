@@ -60,6 +60,15 @@ This package is experimental.  It seems to work based on manual
 testing. I'm still trying to figure out how to write automated tests
 for this.
 
+0.5.0 (2008/12/08)
+------------------
+
+Added connection pooling. This speeds up multiple downloads from the
+same server substantially.
+
+Adjust the paramiko logging level relative to the buioldout logging
+level to make it less chatty.
+
 0.4.0 (2007/12/6)
 -----------------
 

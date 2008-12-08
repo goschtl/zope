@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import logging
 import urllib2
 import zc.buildoutsftp.urllib2sftp
 
@@ -19,3 +20,5 @@ def install(buildout=None):
     urllib2.install_opener(
         urllib2.build_opener(zc.buildoutsftp.urllib2sftp.SFTPHandler)
         )
+    logging.getLogger('paramiko').setLevel(
+        logging.getLogger().getEffectiveLevel()+10)
