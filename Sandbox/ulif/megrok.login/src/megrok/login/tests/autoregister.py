@@ -4,10 +4,17 @@ How to setup auto registering authentication
 
 :Test-Layer: functional
 
-If the `megrok.login.enable` directive is used, we get a login page
-when trying to access a protected view.
+When (beside `megrok.login.enable()`, which is always necessary), the
+`megrok.login.autoregister()` directive is used, then all credentials
+that contain a new username are automatically registered and accepted
+when logging in.
 
-We create an instance of App and store it in the ZODB::
+The `autoregister` directive expects a permission name as
+argument. This permission is granted to each auto-registered user. You
+can also use this directive multiple times to grant more than one
+permission.
+
+We create an instance of ``AutoRegisterApp`` and store it in the ZODB::
 
   >>> from megrok.login.tests.autoregister import AutoRegisterApp
   >>> root = getRootFolder()
