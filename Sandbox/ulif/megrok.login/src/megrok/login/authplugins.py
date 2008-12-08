@@ -14,9 +14,13 @@
 
 from zope.app.authentication.interfaces import IAuthenticatorPlugin
 from zope.app.authentication.interfaces import IQuerySchemaSearch
-from zope.app.authentication.principalfolder import PrincipalInfo
+from zope.app.authentication.principalfolder import (PrincipalInfo,
+                                                     PrincipalFolder,
+                                                     InternalPrincipal)
 from zope.app.authentication.principalfolder import ISearchSchema
+from zope.app.container.interfaces import DuplicateIDError
 from zope.app.security.principalregistry import principalRegistry
+from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.interface import implements
 
 class PrincipalRegistryAuthenticator(object):
@@ -81,3 +85,40 @@ class PrincipalRegistryAuthenticator(object):
                         or (batch_size is not None and n > batch_size)):
                     n += 1
                     yield u''+value.__name__
+
+
+class AutoRegisteringPrincipalFolder(PrincipalFolder):
+    """A principalfolder, that autoregisters new principals.
+    """
+    def __init__(self, prefix='', autopermissions=()):
+        super(AutoRegisteringPrincipalFolder, self).__init__(prefix)
+        self.__id_by_login = self._newContainerData()
+        self.auto_permissions = autopermissions
+ 
+    def authenticateCredentials(self, credentials):
+        """An authentication that adds the credentials if possible.
+        """
+        if not isinstance(credentials, dict):
+            return None
+        if not ('login' in credentials and 'password' in credentials):
+            return None
+        id = self.__id_by_login.get(credentials['login'])
+        if id is None:
+            # Create new principal...
+            id = credentials['login']
+            principal = InternalPrincipal(id, credentials['password'], id)
+            try:
+                self[id] = principal
+                perm_mgr = IPrincipalPermissionManager(
+                    self.__parent__.__parent__.__parent__)
+                for perm in self.auto_permissions:
+                    perm_mgr.grantPermissionToPrincipal(
+                        perm, self.prefix + id)
+            except DuplicateIDError:
+                pass
+        internal = self[id]
+        if not internal.checkPassword(credentials["password"]):
+            return None
+        return PrincipalInfo(self.prefix + id, internal.login, internal.title,
+                             internal.description)
+
