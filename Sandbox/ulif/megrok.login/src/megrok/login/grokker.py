@@ -7,7 +7,8 @@ from zope.app.authentication import PluggableAuthentication
 from zope.app.authentication.principalfolder import PrincipalFolder
 from zope.app.authentication.session import SessionCredentialsPlugin
 from zope.app.security.interfaces import IAuthentication
-from megrok.login.authplugins import PrincipalRegistryAuthenticator
+from megrok.login.authplugins import (PrincipalRegistryAuthenticator,
+                                      AutoRegisteringPrincipalFolder)
 
 class ApplicationGrokker(martian.ClassGrokker):
     martian.component(grok.Site)
@@ -15,10 +16,13 @@ class ApplicationGrokker(martian.ClassGrokker):
     martian.directive(megrok.login.enable, default=False)
     martian.directive(megrok.login.viewname, default=u'loginForm.html')
     martian.directive(megrok.login.strict, default=False)
+    martian.directive(megrok.login.autoregister, default=u'')
     
-    def execute(self, factory, config, enable, viewname, strict, **kw):
+    def execute(self, factory, config, enable, viewname, strict,
+                autoregister, **kw):
         if enable is False:
             return False
+        # XXX: check autoregister values
         adapts = (factory, grok.IObjectAddedEvent)
         config.action(
             discriminator=None,
@@ -38,8 +42,13 @@ def setupPAU(pau):
     site = pau.__parent__.__parent__
     viewname = megrok.login.component.viewname.bind().get(site)
     strict = megrok.login.component.strict.bind().get(site)
+    autoregister = megrok.login.component.autoregister.bind().get(site)
 
-    pau['principals'] = PrincipalFolder()
+    if len(autoregister) > 0 :
+        pau['principals'] = AutoRegisteringPrincipalFolder(
+            autopermissions = autoregister)
+    else:
+        pau['principals'] = PrincipalFolder()
     pau.authenticatorPlugins = ('principals', )
     if strict is False:
         pau['readonly_principals'] = PrincipalRegistryAuthenticator()
