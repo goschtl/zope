@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.0.0b8 dev'
+version = '2.0.0b8'
 
 setup(name='zopyx.smartprintng.core',
       version=version,
