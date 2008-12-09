@@ -17,9 +17,10 @@ class ApplicationGrokker(martian.ClassGrokker):
     martian.directive(megrok.login.viewname, default=u'loginForm.html')
     martian.directive(megrok.login.strict, default=False)
     martian.directive(megrok.login.autoregister, default=u'')
+    martian.directive(megrok.login.setup, default=None)
     
     def execute(self, factory, config, enable, viewname, strict,
-                autoregister, **kw):
+                autoregister, setup, **kw):
         if enable is False:
             return False
         # XXX: check autoregister values
@@ -40,10 +41,17 @@ def authenticationSubscriber(site, event):
 def setupPAU(pau):
     """Callback to setup the Pluggable Authentication Utility """
     site = pau.__parent__.__parent__
+    setup = megrok.login.component.setup.bind().get(site)
     viewname = megrok.login.component.viewname.bind().get(site)
     strict = megrok.login.component.strict.bind().get(site)
     autoregister = megrok.login.component.autoregister.bind().get(site)
 
+    if setup is not None:
+        # Call a customer defined callable.
+        result = setup(pau, viewname=viewname, strict=strict,
+                       autoregister=autoregister)
+        return result
+    
     if len(autoregister) > 0 :
         pau['principals'] = AutoRegisteringPrincipalFolder(
             autopermissions = autoregister)
@@ -57,3 +65,4 @@ def setupPAU(pau):
     pau['session'] = session = SessionCredentialsPlugin()
     pau.credentialsPlugins = ('No Challenge if Authenticated', 'session',)
     session.loginpagename = viewname
+    return None
