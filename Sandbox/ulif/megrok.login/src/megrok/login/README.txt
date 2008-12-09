@@ -110,8 +110,6 @@ See ``tests/autoregister.py`` for details.
 ``megrok.login.setup(<callable>)``
 ----------------------------------
 
-XXX: not available yet
-
 If you want to setup the Pluggable Authentication Utility (PAU)
 yourself, then you can use this directive. It expects a callable as
 argument, that will be called with an already created PAU instance as
