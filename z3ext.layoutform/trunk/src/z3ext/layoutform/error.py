@@ -18,6 +18,7 @@ $Id:  2007-12-12 12:27:02Z fafhrd $
 from zope import interface
 from zope.app.pagetemplate import ViewPageTemplateFile
 from z3ext.statusmessage.message import Message
+from z3c.form.interfaces import IErrorViewSnippet
 
 
 class FormErrorStatusMessage(Message):
@@ -30,5 +31,6 @@ class FormErrorStatusMessage(Message):
 
     def render(self, message):
         self.message = message[0]
-        self.errors = [err for err in message[1:] if err.widget is None]
+        self.errors = [err for err in message[1:] 
+                       if IErrorViewSnippet.providedBy(err) and err.widget is None]
         return self.index()

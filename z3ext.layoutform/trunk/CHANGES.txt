@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-- Added subform support
+1.3.0 (Unreleased)
+------------------
+
+- Added subforms
+
+- Fixed 'formError' status message
 
 
 1.2.8 (2008-11-21)

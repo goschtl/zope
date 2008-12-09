@@ -33,8 +33,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletForm):
     render = PageletForm.render
     __call__ = PageletForm.__call__
 
-    @button.buttonAndHandler(
-        _(u'Save'), name='save', provides=ISaveButton)
+    @button.buttonAndHandler(_(u'Save'), name='save', provides=ISaveButton)
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:

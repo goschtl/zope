@@ -1,4 +1,4 @@
-<div class="z-form-controls">
+<div class="z-form-controls" tal:condition="context/actions">
   <tal:block tal:content="structure
              context/@@pagelet/layoutform.buttonsInfo|nothing" />
 

@@ -38,6 +38,8 @@ class IPageletForm(IPagelet):
 
     description = interface.Attribute('Form label')
 
+    forms = interface.Attribute('Ordered list of sub forms')
+
 
 class IPageletAddForm(IPageletForm):
     """Add form mixin for pagelet implementation."""
@@ -69,6 +71,16 @@ class IPageletEditSubForm(IPageletForm):
     """ Sub form mixin for pagelet implementation."""
 
 
+class IPageletSubform(IPageletForm):
+    """ Subform """
+
+    weight = schema.Int(
+        title = u'Weight',
+        description = u'Weight for order',
+        default = 9999,
+        required = False)
+
+
 class IAddButton(IButton):
     """ add button """
 
@@ -79,7 +91,3 @@ class ISaveButton(IButton):
 
 class ICancelButton(IButton):
     """ cancel button """
-
-
-class IBackButton(IButton):
-    """A button that returns to some previous state or screen."""
