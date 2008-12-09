@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+Version 0.9.1
+-------------
+
+- Support for Grok 0.14. (Paul Wilson)
+
 Version 0.9
 -----------
 

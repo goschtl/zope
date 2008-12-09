@@ -14,9 +14,10 @@
 """Genshi components"""
 import zope.interface
 import genshi.template
+import grokcore.view.components
 import grok
 
-class GenshiTemplateBase(grok.components.GrokTemplate):
+class GenshiTemplateBase(grokcore.view.components.GrokTemplate):
         
     def render(self, view):
         stream = self._template.generate(**self.getNamespace(view))
@@ -39,7 +40,7 @@ class GenshiTextTemplate(GenshiTemplateBase):
     result_type = 'text'
     cls = genshi.template.TextTemplate
         
-class GenshiMarkupTemplateFactory(grok.components.GlobalUtility):
+class GenshiMarkupTemplateFactory(grok.GlobalUtility):
 
     zope.interface.implements(grok.interfaces.ITemplateFileFactory)
     grok.name('g')
@@ -47,7 +48,7 @@ class GenshiMarkupTemplateFactory(grok.components.GlobalUtility):
     def __call__(self, filename, _prefix=None):
         return GenshiMarkupTemplate(filename=filename, _prefix=_prefix)
 
-class GenshiTextTemplateFactory(grok.components.GlobalUtility):
+class GenshiTextTemplateFactory(grok.GlobalUtility):
 
     zope.interface.implements(grok.interfaces.ITemplateFileFactory)
     grok.name('gt')
