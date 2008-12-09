@@ -26,3 +26,9 @@ class strict(martian.MarkerDirective):
 class autoregister(martian.MultipleTimesDirective):
     scope = martian.CLASS
 
+class setup(martian.Directive):
+    scope = martian.CLASS
+    store = martian.ONCE
+    default = None
+
+    # XXX: Check, that the given callable exists
