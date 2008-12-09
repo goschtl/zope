@@ -11,8 +11,8 @@ For more information on Grok and Genshi see:
 Requirements
 ------------
 
-- Genshi.  Tested with v 0.4.4.
-- Grok v0.11 or later.  Tested with 0.11.
+- Genshi.  Tested with v 0.5.1.
+- Grok v0.14 or later.  Tested with 0.14.
 
 Installation
 ------------
@@ -41,7 +41,7 @@ current package. It should look something like this::
 Then run bin/buildout again. You should now see buildout saying something like::
 
    Getting distribution for 'megrok.genshi'.
-   Got megrok.genshi 0.9.
+   Got megrok.genshi 1.0.
 
 That's all. You can now start using Genshi in your Grok application!
 
