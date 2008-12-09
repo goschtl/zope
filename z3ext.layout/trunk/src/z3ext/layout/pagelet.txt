@@ -143,6 +143,31 @@ supply it in directive we get exception.
   ...
   ZopeXMLConfigurationError: ...Required field is missing...number...
 
+Schema can provide default value
+
+  >>> class INewPagelet2(interface.Interface):
+  ...     """New pagelet interface."""
+  ...     
+  ...     number = schema.Int(
+  ...         title = u'Number',
+  ...         required = False,
+  ...         default = 9)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="new.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       permission="zope.Public"
+  ...       provides="z3ext.layout.TESTS.INewPagelet2" />
+  ... </configure>
+  ... """, context)
+
+  >>> pagelet = component.getMultiAdapter(
+  ...     (object(), TestRequest()), INewPagelet2, name='new.html')
+  >>> print pagelet.number
+  9
+
 Let's provide 'number' in directive
 
   >>> context = xmlconfig.string("""
@@ -176,6 +201,29 @@ Value should be in right format
   Traceback (most recent call last):
   ...
   ZopeXMLConfigurationError: ...invalid literal for int()...
+
+Schema field should implement IFromUnicode 
+
+  >>> class INewPagelet3(interface.Interface):
+  ...     
+  ...     date = schema.Date(
+  ...         title = u'Date',
+  ...         required = False)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       name="new.html"
+  ...       class="z3ext.layout.TESTS.NewPagelet"
+  ...       permission="zope.Public"
+  ...       date="2007-10-10"
+  ...       provides="z3ext.layout.TESTS.INewPagelet3" />
+  ... </configure>
+  ... """, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError:...ConfigurationError: ("Can't convert value", 'date')
+
 
 
 We can create pagelet without specific class

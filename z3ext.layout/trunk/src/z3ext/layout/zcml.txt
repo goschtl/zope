@@ -1,5 +1,5 @@
-
 Just tests
+----------
 
   >>> import tempfile, os.path
   >>> import z3ext.layout
@@ -84,3 +84,38 @@ We can use custom layout class
   ...     class="z3ext.layout.tests.MyLayout"
   ...     template="%s" />
   ... </configure>"""%layoutportal, context)
+
+layout uid
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="testlayout"
+  ...     uid="test.layout"
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+  >>> from zope.component.eventtesting import getEvents
+  >>> ev = getEvents()[-1]
+  >>> print ev
+  <z3ext.layout.zcml.LayoutCreatedEvent ...>
+
+  >>> ev.uid, ev.name, ev.layoutclass
+  (u'test.layout', u'testlayout', <class 'z3ext.layout.zcml.Layout<testlayout>'>)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="testlayout"
+  ...     uid="test.layout2"
+  ...     for="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+  >>> ev = getEvents()[-1]
+  >>> print ev
+  <z3ext.layout.zcml.LayoutCreatedEvent ...>
+
+  >>> ev.uid, ev.name, ev.layoutclass
+  (u'test.layout2', u'testlayout', <class 'z3ext.layout.zcml.Layout<testlayout>'>)
