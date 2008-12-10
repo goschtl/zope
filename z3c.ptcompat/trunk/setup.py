@@ -3,7 +3,14 @@ import sys, os
 
 version = '0.3'
 
-setup(name='z3c.pt.compat',
+tests_require = ['z3c.pt',
+                 'zope.tal',
+                 'zope.viewlet',
+                 'zope.app.publisher',
+                 'zope.app.pagetemplate',
+                 ],
+
+setup(name='z3c.ptcompat',
       version=version,
       description="Compatibility-layer for Zope Page Template engines.",
       long_description=open('README.txt').read(),
@@ -21,7 +28,7 @@ setup(name='z3c.pt.compat',
       license='ZPL',
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      namespace_packages=['z3c', 'z3c.pt'],
+      namespace_packages=['z3c'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
@@ -30,13 +37,8 @@ setup(name='z3c.pt.compat',
       extras_require = dict(
         zpt = ['zope.app.pagetemplate', 'zope.tal'],
         z3cpt = ['z3c.pt'],
+        test = tests_require, # used by buildout.cfg testrunner
         ), 
-      tests_require = [
-          'z3c.pt',
-          'zope.tal',
-          'zope.viewlet',
-          'zope.app.publisher',
-          'zope.app.pagetemplate',
-          ],
-      test_suite="z3c.pt.compat.tests.test_doctests.test_suite",
+      tests_require = tests_require,
+      test_suite="z3c.ptcompat.tests.test_doctests.test_suite",
       )

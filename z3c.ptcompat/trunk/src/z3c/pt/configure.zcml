@@ -1,5 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-  <include package="z3c.pt.pagetemplate" file="configure.zcml" />
-  
-</configure>

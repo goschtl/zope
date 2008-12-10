@@ -19,13 +19,13 @@ re_vptf_sub = (
     re.compile(
     r'^from zope\.app\.pagetemplate(\.viewpagetemplatefile)? import ViewPageTemplateFile$',
     re.M),
-    r'from z3c.pt.compat import ViewPageTemplateFile')
+    r'from z3c.ptcompat import ViewPageTemplateFile')
 
 re_ptf_sub = (
     re.compile(
     r'^from zope\.pagetemplate(\.pagetemplatefile)? import PageTemplateFile$',
     re.M),
-    r'from z3c.pt.compat import PageTemplateFile')
+    r'from z3c.ptcompat import PageTemplateFile')
 
 def log(msg):
     for line in msg.split('\n'):

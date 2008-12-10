@@ -4,6 +4,9 @@ Changelog
 HEAD
 ~~~~
 
+- Rename project to z3c.ptcompat to deal with setuptools issues (as discussed
+  on zope-dev http://mail.zope.org/pipermail/zope-dev/2008-December/033820.html)
+
 - Added optional option ``doctest`` for output checker to allow usage
   with alternative implementations, e.g. the Zope doctest
   module. [malthe]

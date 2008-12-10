@@ -10,7 +10,7 @@ actions are executed, the configuration machine is emptied.
 Pages
 -----
   
-  >>> from z3c.pt.compat import zcml
+  >>> from z3c.ptcompat import zcml
   >>> zcml.page_directive(
   ...    context, "test1", "zope.View", None,
   ...    template=os.path.join(path, "test.pt"))
@@ -25,7 +25,7 @@ Verify that page has been registered as a component.
   ...     interface.Interface, name="test1")
 
   >>> factory.index
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
 We can base the view on an existing class.
   
@@ -43,7 +43,7 @@ We can base the view on an existing class.
   ...     interface.Interface, name="test2")
 
   >>> factory.index
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
   >>> issubclass(factory, View)
   True
@@ -68,7 +68,7 @@ Verify that page has been registered as a component.
   ...     IViewletManager, name="test1")
 
   >>> factory.template
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
 We can base the viewlet manager on an existing class.
 
@@ -88,7 +88,7 @@ Verify that page has been registered as a component.
   ...     IViewletManager, name="test2")
 
   >>> factory.template
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
   >>> issubclass(factory, ViewletManager)
   True
@@ -109,7 +109,7 @@ Verify that page has been registered as a component.
   ...     interface.Interface, name="test1")
 
   >>> factory.index
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
 We can base the viewlet on an existing class.
 
@@ -129,7 +129,7 @@ Verify that page has been registered as a component.
   ...     interface.Interface, name="test2")
 
   >>> factory.index
-  <z3c.pt.compat.ViewPageTemplateFile object at ...>
+  <z3c.ptcompat.ViewPageTemplateFile object at ...>
 
   >>> issubclass(factory, Viewlet)
   True

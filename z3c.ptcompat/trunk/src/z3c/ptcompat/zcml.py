@@ -8,7 +8,7 @@ from zope.viewlet.interfaces import IViewletManager
 from zope.app.publisher.browser import viewmeta
 from zope.app.pagetemplate import simpleviewclass
 
-from z3c.pt.compat import ViewPageTemplateFile
+from z3c.ptcompat import ViewPageTemplateFile
 
 def SimpleViewClass(src, offering=None, used_for=None, bases=(), name=u''):
     if offering is None:
