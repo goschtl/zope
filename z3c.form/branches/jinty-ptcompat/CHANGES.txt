@@ -1,0 +1,518 @@
+=======
+CHANGES
+=======
+
+Version 2.0.0 (2008-??-??)
+--------------------------
+
+- Fix: IMPORTANT - the signature of z3c.form.util.extractFileName function changed
+  because of spelling mistake fix in argument name. The ``allowEmtpyPostFix`` is
+  now called ``allowEmptyPostfix`` (note ``Empty`` instead of ``Emtpy`` and
+  ``Postfix`` instead of ``PostFix``).
+
+- Changes: around objectwidget
+  - zcml objectWidgetTemplate to be able to register widget templates for
+    specific field schemas
+  - subwidgets prefix will come from the main-widget
+  - subform discriminator on field.schema did not work
+
+- Fixes: MultiWidget:
+  - setting (sub)widgets early
+  - setting subwidgets.form
+
+- Feature: When no file is specified in the file upload widget, instead of
+  overwriting the value with a missing one, the old data is retained.
+
+- Feature: Added a new flag ``ignoreContext`` to the form field, so that one
+  can individually select which fields should and which ones should not ignore
+  the context.
+
+- Feature: Allow raw request values of sequence widgets to be non-sequence
+  values, which makes integration with Javascript libraries easier.
+
+- Feature: Preliminary support for widgets of schema.IObject.
+  There is a big caveat, read: object-caveat.txt
+
+- Feature: Added support in the file upload widget's testing flavor to specify
+  'base64'-encoded strings in the hidden text area, so that binary data can be
+  uploaded as well.
+
+- Feature: Allow overriding the "required" widget attribute using IValue adapter
+  just like it's done for "label" and "name" attributes.
+
+- Refactoring: Use the ``z3c.pt.compat`` template engine compatibility
+  layer.
+
+- Feature: Added benchmarking suite demonstrating performance gain
+  when using ``z3c.pt``.
+
+- Feature: Added support for ``z3c.pt``. Usage is switched on via the
+  "PREFER_Z3C_PT" environment variable.
+
+- Refactoring: Templates now declare XML namespaces.
+
+- Refactoring: HTML output is now compared using a modified version of
+  the XML-aware output checker provided by ``lxml``.
+
+- Feature: The `SequenceDataConverter` and `CollectionSequenceDataConverter`
+  converter classes now ignore values that are not present in the terms when
+  converting to a widget value.
+
+- Feature: Add support for internationalization of z3c.form's messages.
+  Added Russian, French, German and Chinese translations.
+
+- Feature: The `TypeError` message used when a field does not provide
+  ``IFormUnicode`` now also contains the type of the field.
+
+- Feature: Implemented the `MultiWidget` widget. This widget allows to use
+  simple fields like `ITextLine`, `IInt`, `IPassword`, etc. in a `IList` or
+  `ITuple` sequence.
+
+- Feature: Implemented `TextLinesWidget` widget. This widget offers a text
+  area element and splits lines in sequence items. This is usfull for power
+  user interfaces.  The widget can be used for sequence fields (e.g. `IList`)
+  that specify a simple value type field (e.g. `ITextLine` or `IInt`).
+
+- Bug: When dealing with `Bytes` fields, we should do a null conversion when
+  going to its widget value.
+
+- Bug: Use ``nocall:`` modifier in `orderedselect_input.pt` to avoid calling
+  list entry if it is callable.
+
+- Bug: Remove unused imports, adjust buildout dependencies in `setup.py`.
+
+- Bug: SingleCheckBoxFieldWidget doesn't repeat the label twice (once in
+  <div class="label">, and once in the <label> next to the checkbox).
+
+
+Version 1.9.0 (2008-08-26)
+--------------------------
+
+- Feature: Use the ``query()`` method in the widget manager to try extract a
+  value. This ensures that the lookup is never failing, which is particularly
+  helpful for dictionary-based data managers, where dictionaries might not
+  have all keys.
+
+- Feature: Changed the ``get()`` method of the data manager to throw an error
+  when the data for the field cannot be found. Added ``query()`` method to
+  data manager that returns a default value, if no value can be found.
+
+- Feature: Deletion of widgets from field widget managers is now possible.
+
+- Feature: Groups now produce detailed `ObjectModifiedEvent` descriptions like
+  regular edit forms do. (Thanks to Carsten Senger for providing a patch.)
+
+- Feature: The widget manager's ``extract()`` method now supports an optional
+  ``setErrors`` (default value: True) flag that allows one to not set errors
+  on the widgets and widget manager during data extraction. Use case: You want
+  to inspect the entered data and handle errors manually.
+
+- Bug: The ``ignoreButtons`` flag of the ``z3c.form.form.extends()`` method
+  was not honored. (Thanks to Carsten Senger for providing a patch.)
+
+- Bug: Group classes now implement ``IGroup``. This also helps with the
+  detection of group instantiation. (Thanks to Carsten Senger for providing a
+  patch.)
+
+- Bug: The list of changes in a group were updated incorrectly, since it was
+  assumed that groups would modify mutually exclusive interfaces. Instead of
+  using an overwriting dictionary ``update()`` method, a purely additive merge
+  is used now. (Thanks to Carsten Senger for providing a patch.)
+
+- Bug: Added a widget for ``IDecimal`` field in testing setup.
+
+- Feature: The ``z3c.form.util`` module has a new function, ``createCSSId()``
+  method that generates readable ids for use with css selectors from any
+  unicode string.
+
+- Bug: The ``applyChanges()`` method in group forms did not return a changes
+  dictionary, but simply a boolean. This is now fixed and the group form
+  changes are now merged with the main form changes.
+
+- Bug: Display widgets did not set the style attribute if it was
+  available, even though the input widgets did set the style attribute.
+
+
+Version 1.8.2 (2008-04-24)
+--------------------------
+
+- Bug: Display Widgets added spaces (due to code indentation) to the displayed
+  values, which in some cases, like when displaying Python source code, caused
+  the appearance to be incorrect.
+
+- Bug: Prevent to call ``__len__`` on ``ITerms`` and use ``is None`` for check
+  for existence. Because ``__len__`` is not a part of the ITerms API and ``not
+  widget.terms`` will end in calling ``__len__`` on existing terms.
+
+
+Version 1.8.1 (2008-04-08)
+--------------------------
+
+- Bug: Fixed a bug that prohibited groups from having different contents than
+  the parent form.  Previously, the groups contents were not being properly
+  updated. Added new documentation on how to use groups to generate
+  object-based sub-forms. Thanks to Paul Carduner for providing the fix and
+  documentation.
+
+
+Version 1.8.0 (2008-01-23)
+--------------------------
+
+- Feature: Implemented ``IDisplayForm`` interface.
+
+- Feature: Added integration tests for form interfaces. Added default class
+  attribute called ``widgets`` in form class with default value ``None``. This
+  helps to pass the integration tests. Now, the ``widgets`` attribute can also
+  be used as a indicator for updated forms.
+
+- Feature: Implemented additional ``createAndAdd`` hook in ``AddForm``. This
+  allows you to implement create and add in a single method. It also supports
+  graceful abortion of a create and add process if we do not return the new
+  object. This means it can also be used as a hook for custom error messages
+  for errors happen during create and add.
+
+- Feature: Add a hidden widget template for the ``ISelectWidget``.
+
+- Feature: Arrows in the ordered select widget replaced by named entities.
+
+- Feature: Added ``CollectionSequenceDataConverter`` to ``setupFormDefaults``.
+
+- Feature: Templates for the CheckBox widget are now registered in
+  ``checkbox.zcml``.
+
+- Feature: If a value cannot be converted from its unicode representation to a
+  field value using the field's ``IFromUnicode`` interface, the resulting type
+  error now shows the field name, if available.
+
+- Bug: ``createId`` could not handle arbitrary unicode input. Thanks to
+  Andreas Reuleaux for reporting the bug and a patch for it. (Added
+  descriptive doctests for the function in the process.)
+
+- Bug: Interface invariants where not working when not all fields needed for
+  computing the invariant are in the submitted form.
+
+- Bug: Ordered select didn't submit selected values.
+
+- Bug: Ordered select lists displayed tokens instead of value,
+
+- Bug: ``SequenceWidget`` displayed tokens instead of value.
+
+
+Version 1.7.0 (2007-10-09)
+--------------------------
+
+- Feature: Implemented ``ImageButton``, ``ImageAction``, ``ImageWidget``, and
+  ``ImageFieldWidget`` to support imge submit buttons.
+
+- Feature: The ``AttributeField`` data manager now supports adapting
+  the content to the fields interface when the content doesn't implement
+  this interface.
+
+- Feature: Implemented single checkbox widget that can be used for boolean
+  fields. They are not available by default but can be set using the
+  ``widgetFactory`` attribute.
+
+- Bug: More lingual issues have been fixed in the documentation. Thanks to
+  Martijn Faassen for doing this.
+
+- Bug: When an error occurred during processing of the request the
+  widget ended up being security proxied and the system started
+  throwing `TraversalError`-'s trying to access the `label` attribute of
+  the widget. Declared that the widgets require the `zope.Public`
+  permission in order to access these attributes.
+
+- Bug: When rendering a widget the ``style`` attribute was not honored. Thanks
+  to Andreas Reuleaux for reporting.
+
+- Bug: When an error occurred in the sub-form, the status message was not set
+  correctly. Fixed the code and the incorrect test. Thanks to Markus
+  Kemmerling for reporting.
+
+- Bug: Several interfaces had the ``self`` argument in the method
+  signature. Thanks to Markus Kemmerling for reporting.
+
+
+Version 1.6.0 (2007-08-24)
+--------------------------
+
+- Feature: An event handler for ``ActionErrorOccurred`` events is registered
+  to merge the action error into the form's error collectors, such as
+  ``form.widgets.errors`` and ``form.widgets['name'].error`` (if
+  applicable). It also sets the status of the form. (Thanks to Herman
+  Himmelbauer, who requested the feature, for providing use cases.)
+
+- Feature: Action can now raise ``ActionExecutionError`` exceptions that will
+  be handled by the framework. These errors wrap the original error. If an
+  error is specific to a widget, then the widget name is passed to a special
+  ``WidgetActionExecutionError`` error. (Thanks to Herman Himmelbauer, who
+  requested the feature, for providing use cases.)
+
+- Feature: After an action handler has been executed, an action executed event
+  is sent to the system. If the execution was successful, the event is
+  ``ActionSuccessfull`` event is sent. If an action execution error was
+  raised, the ``ActionErrorOccurred`` event is raised. (Thanks to Herman
+  Himmelbauer, who requested the feature, for providing use cases.)
+
+- Feature: The ``applyChanges()`` function now returns a dictionary of changes
+  (grouped by interface) instead of a boolean. This allows us to generate a
+  more detailed object-modified event. If no changes are applied, an empty
+  dictionary is returned. The new behavior is compatible with the old one, so
+  no changes to your code are required. (Thanks to Darryl Cousins for the
+  request and implementation.)
+
+- Feature: A new ``InvalidErrorViewSnippet`` class provides an error view
+  snippet for ``zope.interface.Invalid`` exceptions, which are frequently used
+  for invariants.
+
+- Feature: When a widget is required, HTML-based widgets now declare a
+  "required" class.
+
+- Feature: The validation data wrapper now knows about the context of the
+  validation, which provides a hook for invariants to access the environment.
+
+- Feature: The BoolTerms term tokens are now cosntants and stay the same, even
+  if the label has changed. The choice for the token is "true" and "false". By
+  default it used to be "yes" and "no", so you probably have to change some
+  unit tests. Functional tests are still okay, because you select by term
+  title.
+
+- Feature: BoolTerms now expose the labels for the true and false values
+  to the class. This makes it a matter of doing trivial sub-classing to
+  change the labels for boolean terms.
+
+- Feature: Exposed several attributes of the widget manager to the form for
+  convenience. The attributes are: mode, ignoreContext, ignoreRequest,
+  ignoreReadonly.
+
+- Feature: Provide more user-friendly error messages for number formatting.
+
+- Refactoring: The widget specific class name was in camel-case. A converntion
+  that later developed uses always dash-based naming of HTML/CSS related
+  variables. So for example, the class name "textWidget" is now
+  "text-widget". This change will most likely require some changes to your CSS
+  declarations!
+
+- Documentation: The text of ``field.txt`` has been reviewed linguistically.
+
+- Documentation: While reviewing the ``form.txt`` with some people, several
+  unclear and incomplete statements were discovered and fixed.
+
+- Bug (IE): In Internet Explorer, when a label for a radio input field is only
+  placed around the text describing the choice, then only the text is
+  surrounded by a dashed box. IE users reported this to be confusing, thus we
+  now place the label around the text and the input element so that both are
+  surrounded by the dashed border. In Firefox and KHTML (Safari) only the
+  radio button is surrounded all the time.
+
+- Bug: When extracting and validating data in the widget manager, invariant
+  errors were not converted to error view snippets.
+
+- Bug: When error view snippets were not widget-specific -- in other words,
+  the ``widget`` attribute was ``None`` -- rendering the template would fail.
+
+
+Version 1.5.0 (2007-07-18)
+--------------------------
+
+- Feature: Added a span around values for widgets in display mode. This allows
+  for easier identification widget values in display mode.
+
+- Feature: Added the concept of widget events and implemented a particular
+  "after widget update" event that is called right after a widget is updated.
+
+- Feature: Restructured the approach to customize button actions, by requiring
+  the adapter to provide a new interface ``IButtonAction``. Also, an adapter
+  is now provided by default, still allowing cusotmization using the usual
+  methods though.
+
+- Feature: Added button widget. While it is not very useful without
+  Javascript, it still belongs into this package for completion.
+
+- Feature: All ``IFieldWidget`` instances that are also HTML element widgets
+  now declare an additional CSS class of the form "<fieldtype.lower()>-field".
+
+- Feature: Added ``addClass()`` method to HTML element widgets, so that adding
+  a new CSS class is simpler.
+
+- Feature: Renamed "css" attribute of the widget to "klass", because the class
+  of an HTML element is a classification, not a CSS marker.
+
+- Feature: Reviewed all widget attributes. Added all available HTML attributes
+  to the widgets.
+
+- Documentation: Removed mentioning of widget's "hint" attribute, since it
+  does not exist.
+
+- Optimization: The terms for a sequence widget were looked up multiple times
+  among different components. The widget is now the canonical source for the
+  terms and other components, such as the converter uses them. This avoids
+  looking up the terms multiple times, which can be an expensive process for
+  some applications.
+
+- Bug/Feature: Correctly create labels for radio button choices.
+
+- Bug: Buttons did not honor the name given by the schema, if created within
+  one, because we were too anxious to give buttons a name. Now name assignment
+  is delayed until the button is added to the button manager.
+
+- Bug: Button actions were never updated in the actions manager.
+
+- Bug: Added tests for textarea widget.
+
+
+Version 1.4.0 (2007-06-29)
+--------------------------
+
+- Feature: The select widget grew a new ``prompt`` flag, which allows you to
+  explicitely request a selection prompt as the first option in the selection
+  (even for required fields). When set, the prompt message is shown. Such a
+  prompt as option is common in Web-UIs.
+
+- Feature: Allow "no value message" of select widgets to be dynamically
+  changed using an attribute value adapter.
+
+- Feature: Internationalized data conversion for date, time, date/time,
+  integer, float and decimal. Now the locale data is used to format and parse
+  those data types to provide the bridge to text-based widgets. While those
+  features require the latest zope.i18n package, backward compatibility is
+  provided.
+
+- Feature: All forms now have an optional label that can be used by the UI.
+
+- Feature: Implemented groups within forms. Groups allow you to combine a set
+  of fields/widgets into a logical unit. They were designed with ease of use
+  in mind.
+
+- Feature: Button Actions -- in other words, the widget for the button field
+  -- can now be specified either as the "actionFactory" on the button field or
+  as an adapter.
+
+- Bug: Recorded all public select-widget attributes in the interface.
+
+
+Version 1.3.0 (2007-06-22)
+--------------------------
+
+- Feature: In an edit form applying the data and generating all necessary
+  messages was all done within the "Apply" button handler. Now the actual task
+  of storing is factored out into a new method called "applyChanges(data)",
+  which returns whether the data has been changed. This is useful for forms
+  not dealing with objects.
+
+- Feature: Added support for ``hidden`` fields. You can now use the ``hidden``
+  mode for widgets which should get rendered as ``<input type="hidden"
+  />``.
+
+  Note: Make sure you use the new formui templates which will avoid rendering
+        labels for hidden widgets or adjust your custom form macros.
+
+- Feature: Added ``missing_value`` support to data/time converters
+
+- Feature: Added named vocabulary lookup in ``ChoiceTerms`` and
+  ``CollectionTerms``.
+
+- Feature: Implemented support for ``FileUpload`` in ``FileWidget``.
+
+  * Added helper for handling ``FileUpload`` widgets:
+
+    + ``extractContentType(form, id)``
+
+      Extracts the content type if ``IBytes``/``IFileWidget`` was used.
+
+    + ``extractFileName(form, id, cleanup=True, allowEmtpyPostFix=False)``
+
+      Extracts a filename if ``IBytes``/``IFileWidget`` was used.
+
+      Uploads from win/IE need some cleanup because the filename includes also
+      the path. The option ``cleanup=True`` will do this for you. The option
+      ``allowEmtpyPostFix`` allows you to pass a filename without
+      extensions. By default this option is set to ``False`` and will raise a
+      ``ValueError`` if a filename doesn't contain an extension.
+
+  * Created afile upload data converter registered for
+    ``IBytes``/``IFileWidget`` ensuring that the converter will only be used
+    for fiel widgets. The file widget is now the default for the bytes
+    field. If you need to use a text area widget for ``IBytes``, you have to
+    register a custom widget in the form using::
+
+      fields['foobar'].widgetFactory = TextWidget
+
+- Feature: Originally, when an attribute access failed in Unauthorized or
+  ForbiddenAttribute exceptions, they were ignored as if the attribute would
+  have no value. Now those errors are propagated and the system will fail
+  providing the developer with more feedback. The datamanager also grew a new
+  ``query()`` method that returns always a default and the ``get()`` method
+  propagates any exceptions.
+
+- Feature: When writing to a field is forbidden due to insufficient
+  priviledges, the resulting widget mode will be set to "display". This
+  behavior can be overridden by explicitely specifying the mode on a field.
+
+- Feature: Added an add form implementation against ``IAdding``. While this is
+  not an encouraged method of adding components, many people still use this
+  API to extend the ZMI.
+
+- Feature: The ``IFields`` class' ``select()`` and ``omit()`` method now
+  support two ketword arguments "prefix" and "interface" that allow the
+  selection and omission of prefixed fields and still specify the short
+  name. Thanks to Nikolay Kim for the idea.
+
+- Feature: HTML element ids containing dots are not very good, because then
+  the "element#id" CSS selector does not work and at least in Firefox the
+  attribute selector ("element[attr=value]") does not work for the id
+  either. Converted the codebase to use dashes in ids instead.
+
+- Bug/Feature: The ``IWidgets`` component is now an adapter of the form
+  content and not the form context. This guarantees that vocabulary factories
+  receive a context that is actually useful.
+
+- Bug: The readonly flag within a field was never honored. When a field is
+  readonly, it is displayed in "display" mode now. This can be overridden by
+  the widget manager's "ignoreReadonly" flag, which is necessary for add
+  forms.
+
+- Bug: The mode selection made during the field layout creation was not
+  honored and the widget manager always overrode the options providing its
+  value. Now the mode specified in the field is more important than the one
+  from the widget manager.
+
+- Bug: It sometimes happens that the sequence widget has the no-value token as
+  one element. This caused ``displayValue()`` to fail, since it tried to find
+  a term for it. For now we simply ignore the no-value token.
+
+- Bug: Fixed the converter when the incoming value is an empty string. An
+  empty string really means that we have no value and it is thus missing,
+  returning the missing value.
+
+- Bug: Fix a slightly incorrect implementation. It did not cause any harm in
+  real-world forms, but made unit testing much harder, since an API
+  expectation was not met correctly.
+
+- Bug: When required selections where not selected in radio and checkbox
+  widgets, then the conversion did not behave correctly. This also revealed
+  some issues with the converter code that have been fixed now.
+
+- Bug: When fields only had a vocabulary name, the choice terms adaptation
+  would fail, since the field was not bound. This has now been corrected.
+
+- Documentation: Integrated English language and content review improvements
+  by Roy Mathew in ``form.txt``.
+
+
+Version 1.2.0 (2007-05-30)
+--------------------------
+
+- Feature: Added ability to change the button action title using an ``IValue``
+  adapter.
+
+
+Version 1.1.0 (2007-05-30)
+--------------------------
+
+- Feature: Added compatibility for Zope 3.3 and thus Zope 2.10.
+
+
+Version 1.0.0 (2007-05-24)
+--------------------------
+
+- Initial Release
