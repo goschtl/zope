@@ -71,7 +71,7 @@ Z3C.namespace = function(name) {
             this._el.setAttribute('value', values[0]);
         }
         // break potential circular reference
-        delete this._win.relation_creator;
+        this._win.relation_creator = null;
         this._win.close();
     };
 
