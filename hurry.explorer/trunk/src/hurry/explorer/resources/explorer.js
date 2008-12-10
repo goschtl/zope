@@ -186,7 +186,7 @@ PLOR.namespace = function(name) {
             {key: 'name', label: "Name"},
             {key: 'title', label: "Title"},
             {key: 'type', label: "Type"},
-            {key: 'last_modified', label: "Last modified"},
+            {key: 'last_modified', label: "Last modified"}
         ];
         
         datatable = new YAHOO.widget.DataTable('datatable', 
@@ -266,8 +266,9 @@ PLOR.namespace = function(name) {
     PLOR.explorer.getDataTable = function() {
         return datatable;
     };
-
+  
     //*** initialization
+
     YAHOO.util.Event.onDOMReady(treeInit);
     YAHOO.util.Event.onDOMReady(tabInit);
     YAHOO.util.Event.onDOMReady(historyInit);
