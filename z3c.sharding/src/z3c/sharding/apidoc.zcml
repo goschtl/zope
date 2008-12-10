@@ -1,0 +1,19 @@
+
+<configure xmlns="http://namespaces.zope.org/zope"
+           i18n_domain="zope">
+
+  <configure
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="z3c.sharding"
+        title="Container Database Sharding (z3c.sharding)"
+        doc_path="README.txt"
+        parent="z3c"
+        />
+
+  </configure>
+
+</configure>
