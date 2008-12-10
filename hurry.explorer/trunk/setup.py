@@ -4,7 +4,7 @@ import sys, os
 
 setup(
     name='hurry.explorer',
-    version='0.1.1dev',
+    version='0.1.2dev',
     description="A (object) filesystem explorer UI built with YUI.",
     classifiers=[],
     keywords='',
