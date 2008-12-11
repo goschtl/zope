@@ -2,8 +2,13 @@
 CHANGES
 =======
 
-3.5.3 (2008-12-11)
+3.5.4dev (unreleased)
 ---------------------
+
+- ...
+
+3.5.3 (2008-12-11)
+------------------
 
 - use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
 
