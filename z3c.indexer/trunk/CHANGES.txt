@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+0.5.1 (2008-12-11)
+------------------
 
 - Bugfix: SearchQuery wasn't able to act correct if initialized with query=None
   because of an empty result setup. The And() and Not() methods could not act
@@ -36,7 +36,8 @@ Version 0.5.1dev (unreleased)
 
 - Code is now 100% covered by tests.
 
-Version 0.5.0 (2008-05-02)
---------------------------
+
+0.5.0 (2008-05-02)
+------------------
 
 - Initial release
