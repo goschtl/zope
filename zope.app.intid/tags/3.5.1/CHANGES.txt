@@ -3,6 +3,7 @@ CHANGES
 =======
 
 3.5.1 (2008-12-11)
+------------------
 
 - Make it possible to subscribe object-specific handlers
   for IntIdAddedEvent/IntIdRemovedEvent. Use them like
