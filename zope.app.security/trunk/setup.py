@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.security',
-      version = '3.5.3dev',
+      version = '3.5.3',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Security Components for Zope 3 Applications',
@@ -64,6 +64,7 @@ setup(name='zope.app.security',
       namespace_packages=['zope', 'zope.app'],
       extras_require=dict(test=['zope.app.testing']),
       install_requires=['setuptools',
+                        'zope.browser',
                         'zope.app.authentication',
                         'zope.app.component',
                         'zope.app.container',

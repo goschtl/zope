@@ -19,9 +19,9 @@ __docformat__ = "reStructuredText"
 
 from zope.component import getUtility
 from zope.interface import implements
+from zope.browser.interfaces import ITerms
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-from zope.app.form.browser.interfaces import ITerms
 from zope.app.security.interfaces import IAuthentication, IPrincipalSource
 
 class Term(object):

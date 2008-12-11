@@ -13,7 +13,7 @@
   <adapter
       for="zope.app.security.interfaces.IPrincipalSource
            zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.ITerms"
+      provides="zope.browser.interfaces.ITerms"
       factory="zope.app.security.browser.principalterms.PrincipalTerms"
       />
 
