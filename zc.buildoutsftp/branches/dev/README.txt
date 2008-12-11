@@ -66,7 +66,7 @@ for this.
 Added connection pooling. This speeds up multiple downloads from the
 same server substantially.
 
-Adjust the paramiko logging level relative to the buioldout logging
+Adjust the paramiko logging level relative to the buildout logging
 level to make it less chatty.
 
 0.4.0 (2007/12/6)
