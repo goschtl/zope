@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.7.0 (Unreleased)
+1.7.0 (2008-12-11)
 ------------------
 
 - Added `manager` attribute to z3ext:pagelet directive
