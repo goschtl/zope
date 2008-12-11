@@ -30,7 +30,7 @@ from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
-from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility
+from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility, subscribers
 from zope.component.interfaces import IFactory
 
 from zope.app.container.interfaces import IObjectRemovedEvent
@@ -38,7 +38,7 @@ from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference, NotYet
 
-from zope.app.intid.interfaces import IIntIds
+from zope.app.intid.interfaces import IIntIds, IIntIdEvent
 from zope.app.intid.interfaces import IntIdRemovedEvent
 from zope.app.intid.interfaces import IntIdAddedEvent
 
@@ -170,8 +170,15 @@ def addIntIdSubscriber(ob, event):
         key = IKeyReference(ob, None)
         # Register only objects that adapt to key reference
         if key is not None:
+            idmap = {}
             for utility in utilities:
-                utility.register(key)
+                idmap[utility] = utility.register(key)
             # Notify the catalogs that this object was added.
-            notify(IntIdAddedEvent(ob, event))
+            notify(IntIdAddedEvent(ob, event, idmap))
 
+@adapter(IIntIdEvent)
+def intIdEventNotify(event):
+    """Event subscriber to dispatch IntIdEvent to interested adapters."""
+    adapters = subscribers((event.object, event), None)
+    for adapter in adapters:
+        pass # getting them does the work

@@ -4,9 +4,11 @@ CHANGES
 
 3.5.1 (unreleased)
 
-- Make IIntIdAddedEvent and IIntIdRemovedEvent subclass
-  zope.component.interfaces.IObjectEvent to make subscribers
-  for like (ISomeObject, IIntIdAddedEvent) work.
+- Make it possible to subscribe object-specific handlers
+  for IntIdAddedEvent/IntIdRemovedEvent. Use them like
+  the zope.app.container.interfaces.IObjectAddedEvent.
+- Include utility->id mapping of added ids to the
+  IntIdAddedEvent.
 
 3.5.0 (2008-06-19)
 ------------------

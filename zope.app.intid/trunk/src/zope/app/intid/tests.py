@@ -36,7 +36,7 @@ from zope.traversing.api import traverse
 from zope.app.testing import setup, ztapi
 from zope.app.component.hooks import setSite
 
-from zope.app.intid import IntIds
+from zope.app.intid import IntIds, intIdEventNotify
 from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.testing import IntIdLayer
 from zope.app.keyreference.persistent import KeyReferenceToPersistent
@@ -190,6 +190,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
         from zope.app.folder import Folder, rootFolder
+        from zope.component import provideHandler
 
         ReferenceSetupMixin.setUp(self)
 
@@ -203,6 +204,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         sm1_1 = setup.createSiteManager(self.folder1_1)
         self.utility1 = setup.addUtility(sm1_1, '2', IIntIds, IntIds())
+        provideHandler(intIdEventNotify)
 
     def test_removeIntIdSubscriber(self):
         from zope.app.intid import removeIntIdSubscriber
@@ -218,9 +220,10 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
+        objevents = []
 
         def appendObjectEvent(obj, event):
-            events.append((obj, event))
+            objevents.append((obj, event))
 
         ztapi.subscribe([IIntIdRemovedEvent], None, events.append)
         ztapi.subscribe([IFolder, IIntIdRemovedEvent], None, appendObjectEvent)
@@ -232,12 +235,14 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, self.utility.getObject, id)
         self.assertRaises(KeyError, self.utility1.getObject, id1)
 
-        self.assertEquals(len(events), 2)
-        self.assertEquals(events[0][0], folder)
-        self.assertEquals(events[0][1].object, folder)
-        self.assertEquals(events[0][1].original_event.object, parent_folder)
-        self.assertEquals(events[1].object, folder)
-        self.assertEquals(events[1].original_event.object, parent_folder)
+        self.assertEquals(len(events), 1)
+        self.assertEquals(events[0].object, folder)
+        self.assertEquals(events[0].original_event.object, parent_folder)
+
+        self.assertEquals(len(objevents), 1)
+        self.assertEquals(objevents[0][0], folder)
+        self.assertEquals(objevents[0][1].object, folder)
+        self.assertEquals(objevents[0][1].original_event.object, parent_folder)
 
     def test_addIntIdSubscriber(self):
         from zope.app.intid import addIntIdSubscriber
@@ -249,9 +254,10 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
+        objevents = []
 
         def appendObjectEvent(obj, event):
-            events.append((obj, event))
+            objevents.append((obj, event))
 
         ztapi.subscribe([IIntIdAddedEvent], None, events.append)
         ztapi.subscribe([IFolder, IIntIdAddedEvent], None, appendObjectEvent)
@@ -264,13 +270,20 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         id = self.utility.getId(folder)
         id1 = self.utility1.getId(folder)
 
-        self.assertEquals(len(events), 2)
-        self.assertEquals(events[0][1].original_event.object, parent_folder)
-        self.assertEquals(events[0][1].object, folder)
-        self.assertEquals(events[0][0], folder)
-        self.assertEquals(events[1].original_event.object, parent_folder)
-        self.assertEquals(events[1].object, folder)
+        self.assertEquals(len(events), 1)
+        self.assertEquals(events[0].original_event.object, parent_folder)
+        self.assertEquals(events[0].object, folder)
 
+        self.assertEquals(len(objevents), 1)
+        self.assertEquals(objevents[0][1].original_event.object, parent_folder)
+        self.assertEquals(objevents[0][1].object, folder)
+        self.assertEquals(objevents[0][0], folder)
+
+        idmap = events[0].idmap
+        self.assert_(idmap is objevents[0][1].idmap)
+        self.assertEquals(len(idmap), 2)
+        self.assertEquals(idmap[self.utility], id)
+        self.assertEquals(idmap[self.utility1], id1)
 
 class TestIntIds64(TestIntIds):
 
