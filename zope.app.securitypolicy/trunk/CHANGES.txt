@@ -2,10 +2,14 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2008-12-11)
 ------------------
 
-- ...
+- use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
+  This version requires zope.app.form 3.7.0 or higher if you use the browser
+  part of this package. (grant form)
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302
 
 
 3.4.6 (2007-11-09)

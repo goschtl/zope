@@ -86,7 +86,7 @@ principals. The view unfortunately depends on a lot of other components:
 
     >>> from zope.app.security.interfaces import IPrincipalSource
     >>> from zope.app.security.browser.principalterms import PrincipalTerms
-    >>> from zope.app.form.browser.interfaces import ITerms
+    >>> from zope.browser.interfaces import ITerms
     >>> ztapi.browserViewProviding(IPrincipalSource, PrincipalTerms, ITerms)
 
     >>> from zope.app.security.browser.auth import AuthUtilitySearchView

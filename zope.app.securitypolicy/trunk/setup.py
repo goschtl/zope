@@ -24,7 +24,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.securitypolicy',
-    version = '3.5.0dev',
+    version = '3.5.0',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
     description="Zope's Default Security Policy ZMI Support",
@@ -52,6 +52,7 @@ setup(name='zope.app.securitypolicy',
     extras_require = dict(test=['zope.app.testing']),
     install_requires=['setuptools',
                       'zope.annotation',
+                      'zope.browser',
                       'zope.app.form',
                       'zope.app.security',
                       'zope.component [hook]',
