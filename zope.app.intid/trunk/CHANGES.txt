@@ -9,6 +9,7 @@ CHANGES
   the zope.app.container.interfaces.IObjectAddedEvent.
 - Include utility->id mapping of added ids to the
   IntIdAddedEvent.
+- Removed testing dependencies from install_requires.
 
 3.5.0 (2008-06-19)
 ------------------
