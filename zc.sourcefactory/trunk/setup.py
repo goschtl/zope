@@ -43,7 +43,6 @@ setup(
     install_requires=[
         "setuptools",
         "ZODB3",
-        "zope.app.form",
         "zope.app.intid",
         "zope.component",
         "zope.dublincore",

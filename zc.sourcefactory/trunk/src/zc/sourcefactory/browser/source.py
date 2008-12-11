@@ -19,10 +19,9 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.component
+import zope.browser.interfaces
 import zope.publisher.interfaces.browser
 import zope.schema.interfaces
-
-import zope.app.form.browser.interfaces
 
 import zc.sourcefactory.source
 
@@ -32,7 +31,7 @@ class FactoredTerms(object):
     created through a source factory.
     """
 
-    zope.interface.implements(zope.app.form.browser.interfaces.ITerms)
+    zope.interface.implements(zope.browser.interfaces.ITerms)
 
     zope.component.adapts(
         zc.sourcefactory.source.FactoredSource,

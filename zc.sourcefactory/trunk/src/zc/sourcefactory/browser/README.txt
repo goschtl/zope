@@ -22,11 +22,11 @@ Let's start with a simple source factory:
 We need a request first, then we can adapt the source to ITerms:
 
   >>> from zope.publisher.browser import TestRequest
-  >>> import zope.app.form.browser.interfaces
+  >>> import zope.browser.interfaces
   >>> import zope.component
   >>> request = TestRequest()
   >>> terms = zope.component.getMultiAdapter(
-  ...     (source, request), zope.app.form.browser.interfaces.ITerms)
+  ...     (source, request), zope.browser.interfaces.ITerms)
   >>> terms
   <zc.sourcefactory.browser.source.FactoredTerms object at 0x...>
 
@@ -89,7 +89,7 @@ determine the title for a value:
   ...         return 'Custom title ' + value.custom_title
   >>> source2 = DemoSourceWithTitles()
   >>> terms2 = zope.component.getMultiAdapter(
-  ...     (source2, request), zope.app.form.browser.interfaces.ITerms)
+  ...     (source2, request), zope.browser.interfaces.ITerms)
   >>> o1 = MyObject()
   >>> o1.custom_title = u"Object one"
   >>> o2 = MyObject()
@@ -123,7 +123,7 @@ token for a value:
 
   >>> source3 = DemoSourceWithTokens()
   >>> terms3 = zope.component.getMultiAdapter(
-  ...     (source3, request), zope.app.form.browser.interfaces.ITerms)
+  ...     (source3, request), zope.browser.interfaces.ITerms)
 
   >>> terms3.getTerm(o1).token
   'one'
@@ -170,7 +170,7 @@ Let's start with an object that we can use as the context:
 Let's look at the terms:
 
   >>> terms = zope.component.getMultiAdapter(
-  ...     (source, request), zope.app.form.browser.interfaces.ITerms)
+  ...     (source, request), zope.browser.interfaces.ITerms)
   >>> terms
   <zc.sourcefactory.browser.source.FactoredContextualTerms object at 0x...>
 

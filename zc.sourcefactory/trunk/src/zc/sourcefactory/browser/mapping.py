@@ -20,9 +20,8 @@ __docformat__ = "reStructuredText"
 import zope.proxy
 import zope.interface
 import zope.component
+import zope.browser
 import zope.publisher.interfaces.browser
-
-import zope.app.form.browser.interfaces
 
 import zc.sourcefactory.mapping
 
@@ -32,14 +31,14 @@ class MappedTerms(object):
     created through a source factory.
     """
 
-    zope.interface.implements(zope.app.form.browser.interfaces.ITerms)
+    zope.interface.implements(zope.browser.interfaces.ITerms)
 
     zope.component.adapts(zc.sourcefactory.mapping.ValueMappingSource,
         zope.publisher.interfaces.browser.IBrowserRequest)
 
     def __init__(self, source, request):
         self.base = zope.component.getMultiAdapter(
-            [source.base, request], zope.app.form.browser.interfaces.ITerms)
+            [source.base, request], zope.browser.interfaces.ITerms)
         self.source = source
         self.request = request
 

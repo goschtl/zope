@@ -5,7 +5,8 @@ Changes
 0.3.6 (unreleased)
 ==================
 
-    - 
+    - removed zope.app.form dependency. Changed ITerms import
+      from zope.app.form.browser.interfaces to zope.browser.interfaces
 
 
 0.3.5 (2008-12-08)
