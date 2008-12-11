@@ -4,6 +4,7 @@ Interfaces for the unique id utility.
 $Id$
 """
 from zope.interface import Interface, Attribute, implements
+from zope.component.interfaces import IObjectEvent
 
 
 class IIntIdsQuery(Interface):
@@ -64,14 +65,12 @@ class IIntIds(IIntIdsSet, IIntIdsQuery, IIntIdsManage):
     """
 
 
-class IIntIdRemovedEvent(Interface):
+class IIntIdRemovedEvent(IObjectEvent):
     """A unique id will be removed
 
     The event is published before the unique id is removed
     from the utility so that the indexing objects can unindex the object.
     """
-
-    object = Attribute("The object being removed")
 
     original_event = Attribute("The IObjectRemoveEvent related to this event")
 
@@ -88,14 +87,12 @@ class IntIdRemovedEvent:
         self.original_event = event
 
 
-class IIntIdAddedEvent(Interface):
+class IIntIdAddedEvent(IObjectEvent):
     """A unique id has been added
 
     The event gets sent when an object is registered in a
     unique id utility.
     """
-
-    object = Attribute("The object being added")
 
     original_event = Attribute("The ObjectAddedEvent related to this event")
 

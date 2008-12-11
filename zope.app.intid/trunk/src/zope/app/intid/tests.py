@@ -208,6 +208,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         from zope.app.intid import removeIntIdSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
         from zope.app.intid.interfaces import IIntIdRemovedEvent
+        from zope.app.folder.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         id = self.utility.register(folder)
@@ -217,7 +218,12 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
+
+        def appendObjectEvent(obj, event):
+            events.append((obj, event))
+
         ztapi.subscribe([IIntIdRemovedEvent], None, events.append)
+        ztapi.subscribe([IFolder, IIntIdRemovedEvent], None, appendObjectEvent)
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
@@ -226,20 +232,29 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, self.utility.getObject, id)
         self.assertRaises(KeyError, self.utility1.getObject, id1)
 
-        self.assertEquals(len(events), 1)
-        self.assertEquals(events[0].object, folder)
-        self.assertEquals(events[0].original_event.object, parent_folder)
+        self.assertEquals(len(events), 2)
+        self.assertEquals(events[0][0], folder)
+        self.assertEquals(events[0][1].object, folder)
+        self.assertEquals(events[0][1].original_event.object, parent_folder)
+        self.assertEquals(events[1].object, folder)
+        self.assertEquals(events[1].original_event.object, parent_folder)
 
     def test_addIntIdSubscriber(self):
         from zope.app.intid import addIntIdSubscriber
         from zope.app.container.contained import ObjectAddedEvent
         from zope.app.intid.interfaces import IIntIdAddedEvent
+        from zope.app.folder.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         setSite(self.folder1_1)
 
         events = []
+
+        def appendObjectEvent(obj, event):
+            events.append((obj, event))
+
         ztapi.subscribe([IIntIdAddedEvent], None, events.append)
+        ztapi.subscribe([IFolder, IIntIdAddedEvent], None, appendObjectEvent)
 
         # This should register the object in all utilities, not just the
         # nearest one.
@@ -249,9 +264,12 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         id = self.utility.getId(folder)
         id1 = self.utility1.getId(folder)
 
-        self.assertEquals(len(events), 1)
-        self.assertEquals(events[0].original_event.object, parent_folder)
-        self.assertEquals(events[0].object, folder)
+        self.assertEquals(len(events), 2)
+        self.assertEquals(events[0][1].original_event.object, parent_folder)
+        self.assertEquals(events[0][1].object, folder)
+        self.assertEquals(events[0][0], folder)
+        self.assertEquals(events[1].original_event.object, parent_folder)
+        self.assertEquals(events[1].object, folder)
 
 
 class TestIntIds64(TestIntIds):
