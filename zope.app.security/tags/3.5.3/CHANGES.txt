@@ -1,0 +1,38 @@
+=======
+CHANGES
+=======
+
+3.5.3 (2008-12-11)
+---------------------
+
+- use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
+
+3.5.2 (2008-07-31)
+------------------
+
+- Bug: It turned out that checking for regex was not much better of an idea,
+  since it causes deprecation warnings in Python 2.4. Thus let's look for a
+  library that was added in Python 2.5.
+
+3.5.1 (2008-06-24)
+------------------
+
+- Bug: The `gopherlib` module has been deprecated in Python 2.5. Whenever the
+  ZCML of this package was included when using Python 2.5, a deprecation
+  warning had been raised stating that `gopherlib` has been
+  deprecated. Provided a simple condition to check whether Python 2.5 or later
+  is installed by checking for the deleted `regex` module and thus optionally
+  load the security declaration for `gopherlib`.
+
+3.5.0 (2008-02-05)
+------------------
+
+- Feature:
+  `zope.app.security.principalregistry.PrincipalRegistry.getPrincipal` returns
+  `zope.security.management.system_user` when its id is used for the search
+  key.
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
