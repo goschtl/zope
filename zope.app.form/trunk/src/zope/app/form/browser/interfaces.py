@@ -17,9 +17,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import zope.deferredimport
 from zope.interface import Interface
 from zope.schema import TextLine, Bool
 from zope.app.form.interfaces import IWidget, IInputWidget
+
+zope.deferredimport.deprecated(
+    "It has moved to zope.browser.interfaces This reference will be gone sometimes.",
+    ITerms = 'zope.browser.interfaces:ITerms',
+    )
 
 
 class IBrowserWidget(IWidget):
@@ -158,20 +164,6 @@ class IWidgetInputErrorView(Interface):
     def snippet():
         """Convert a widget input error to an html snippet."""
 
-
-class ITerms(Interface):
-
-    def getTerm(value):
-        """Return an ITitledTokenizedTerm object for the given value
-
-        LookupError is raised if the value isn't in the source
-        """
-
-    def getValue(token):
-        """Return a value for a given identifier token
-
-        LookupError is raised if there isn't a value in the source.
-        """
 
 class ISourceQueryView(Interface):
     """View support for querying non-iterable sources

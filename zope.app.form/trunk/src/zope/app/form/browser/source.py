@@ -22,6 +22,7 @@ import xml.sax.saxutils
 
 from zope.component import adapts, getMultiAdapter
 from zope.interface import implements
+import zope.browser.interfaces
 import zope.schema.interfaces
 from zope.schema.interfaces import \
     ISourceQueriables, ValidationError, IVocabularyTokenized, IIterableSource
@@ -31,7 +32,7 @@ import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.i18n import _
-from zope.app.form.browser.interfaces import ITerms, IWidgetInputErrorView
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 from zope.app.form.browser import \
     SelectWidget, RadioWidget, MultiSelectWidget, OrderedMultiSelectWidget, \
     MultiCheckBoxWidget, MultiSelectSetWidget, MultiSelectFrozenSetWidget
@@ -67,10 +68,8 @@ class SourceDisplayWidget(zope.app.form.browser.widget.DisplayWidget):
             value = self._translate(_("SourceDisplayWidget-missing",
                                       default="Nothing"))
         else:
-            terms = getMultiAdapter(
-                (self.source, self.request),
-                zope.app.form.browser.interfaces.ITerms,
-                )
+            terms = getMultiAdapter((self.source, self.request),
+                zope.browser.interfaces.ITerms)
 
             try:
                 term = terms.getTerm(value)
@@ -97,10 +96,8 @@ class SourceSequenceDisplayWidget(SourceDisplayWidget):
         else:
             seq = self.context.default
 
-        terms = getMultiAdapter(
-            (self.source, self.request),
-            zope.app.form.browser.interfaces.ITerms,
-            )
+        terms = getMultiAdapter((self.source, self.request),
+            zope.browser.interfaces.ITerms)
         result = []
         for value in seq:
             try:
@@ -125,10 +122,8 @@ class SourceInputWidget(zope.app.form.InputWidget):
     def __init__(self, field, source, request):
         super(SourceInputWidget, self).__init__(field, request)
         self.source = source
-        self.terms = getMultiAdapter(
-            (source, self.request),
-            zope.app.form.browser.interfaces.ITerms,
-            )
+        self.terms = getMultiAdapter((source, self.request),
+            zope.browser.interfaces.ITerms)
 
     def queryviews(self):
         queriables = ISourceQueriables(self.source, None)
@@ -527,8 +522,8 @@ class IterableSourceVocabulary(object):
 
     def __init__(self, source, request):
         self.source = source
-        self.terms = getMultiAdapter(
-            (source, request), zope.app.form.browser.interfaces.ITerms)
+        self.terms = getMultiAdapter((source, request),
+            zope.browser.interfaces.ITerms)
 
     def getTerm(self, value):
         return self.terms.getTerm(value)

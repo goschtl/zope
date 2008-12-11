@@ -2,15 +2,20 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.7.0 (2008-12-11)
 ==================
+
+- use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
 
 - Depending on zope.schema>=3.5a1 which uses the builtin ``set`` instead of the
   ``sets`` module.
 
+
 3.6.4 (2008-11-26)
+==================
 
 - The URIDisplayWidget doesn't render an anchor for empty/None values.
+
 
 3.6.3 (2008-10-15)
 ==================
@@ -21,6 +26,7 @@ CHANGES
 
 3.6.2 (2008-09-08)
 ==================
+
 
 - Fixed restructured text in doc tests to unbreak the PyPI page.
 
@@ -46,10 +52,12 @@ CHANGES
 
 - No longer uses zapi.
 
+
 3.4.2 (2008-02-07)
 ==================
 
 - Made display widgets for sources translate message IDs correctly.
+
 
 3.4.1 (2007-10-31)
 ==================

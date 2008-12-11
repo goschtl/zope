@@ -2,21 +2,20 @@
 Source Widgets
 ==============
 
-Sources are objects that represent sets of values from which one might
-choose and are used with Choice schema fields.  Source widgets
-currently fall into two categories:
+Sources are objects that represent sets of values from which one might choose
+and are used with Choice schema fields. Source widgets currently fall into two
+categories:
 
 - widgets for iterable sources
 
 - widgets for queryable sources
 
-Sources (combined with the available adapters) may support both
-approaches, but no widgets currently support both.
+Sources (combined with the available adapters) may support both approaches, but
+no widgets currently support both.
 
-In both cases, the widgets need views that can be used to get tokens
-to represent source values in forms, as well as textual
-representations of values.  We use the
-`zope.app.form.browser.interfaces.ITerms` views for that.
+In both cases, the widgets need views that can be used to get tokens to
+represent source values in forms, as well as textual representations of values.
+We use the `zope.browser.interfaces.ITerms` views for that.
 
 All of our examples will be using the component architecture::
 
@@ -27,13 +26,13 @@ All of our examples will be using the component architecture::
 This `ITerms` implementation can be used for the sources involved in
 our tests::
 
+  >>> from zope.browser.interfaces import ITerms
   >>> import zope.publisher.interfaces.browser
   >>> import zope.app.form.browser.interfaces
   >>> from zope.schema.vocabulary import SimpleTerm
   >>> class ListTerms:
   ...
-  ...     zope.interface.implements(
-  ...         zope.app.form.browser.interfaces.ITerms)
+  ...     zope.interface.implements(ITerms)
   ...
   ...     def __init__(self, source, request):
   ...         pass # We don't actually need the source or the request :)
@@ -49,10 +48,10 @@ our tests::
   ...     def getValue(self, token):
   ...         return token.decode('base64')
 
-This view just uses the unicode representations of values as titles
-and the base-64 encoding of the titles as tokens.  This is a very
-simple strategy that's only approriate when the values have short and
-unique unicode representations.
+This view just uses the unicode representations of values as titles and the
+base-64 encoding of the titles as tokens.  This is a very simple strategy
+that's only approriate when the values have short and unique unicode
+representations.
 
 All of the source widgets are in a single module::
 
@@ -66,11 +65,10 @@ We'll also need request objects::
 Iterable Source Widgets
 =======================
 
-Iterable sources are expected to be simpler than queriable sources, so
-they represent a good place to start.  The most important aspect of
-iterable sources for widgets is that it's actually possible to
-enumerate all the values from the source.  This allows each possible
-value to be listed in a  <select> form field.
+Iterable sources are expected to be simpler than queriable sources, so they
+represent a good place to start.  The most important aspect of iterable sources
+for widgets is that it's actually possible to enumerate all the values from the
+source.  This allows each possible value to be listed in a  <select> form field.
 
 Let's start with a simple example.  We have a very trivial source,
 which is basically a list::
@@ -94,9 +92,9 @@ Let's define a choice field using our iterable source::
 
   >>> dog = dog.bind(object())
 
-When we get a choice input widget for a choice field, the default
-widget factory gets a view on the field and the field's source.  We'll
-just create the view directly::
+When we get a choice input widget for a choice field, the default widget
+factory gets a view on the field and the field's source.  We'll just create the
+view directly::
 
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceSelectWidget(
@@ -225,10 +223,10 @@ We'll select an item by setting the appropriate fields in the request::
   </div>
 
 For list-valued fields with items chosen from iterable sources, there are the
-SourceMultiSelectWidget and SourceOrderedMultiSelectWidget widgets.
-The latter widget includes support for re-ording the list items.
-SourceOrderedMultiSelectWidget is configured as the default widget
-for lists of choices.
+SourceMultiSelectWidget and SourceOrderedMultiSelectWidget widgets. The latter
+widget includes support for re-ording the list items.
+SourceOrderedMultiSelectWidget is configured as the default widget for lists of
+choices.
 
 If you don't need ordering support through the web UI, then you can use
 the simpler SourceMultiSelectWidget::
@@ -492,29 +490,28 @@ The rendered widget (still with the two items selected) looks like this::
 Source Widget Query Framework
 =============================
 
-An important aspect of sources is that they may have too many values
-to enumerate.  Rather than listing all of the values, we, instead,
-provide interfaces for querying values and selecting values from query
-results.  Matters are further complicated by the fact that different
-sources may have very different interfaces for querying them.
+An important aspect of sources is that they may have too many values to
+enumerate.  Rather than listing all of the values, we, instead, provide
+interfaces for querying values and selecting values from query results.
+Matters are further complicated by the fact that different sources may have
+very different interfaces for querying them.
 
-To make matters more interesting, a source may be an aggregation of
-several collections, each with their own querying facilities.
-An example of such a source is a principal source, where principals
-might come from a number of places, such as an LDAP database and
-ZCML-based principal definitions.
+To make matters more interesting, a source may be an aggregation of several
+collections, each with their own querying facilities. An example of such a
+source is a principal source, where principals might come from a number of
+places, such as an LDAP database and ZCML-based principal definitions.
 
 The default widgets for selecting values from sources use the
 following approach:
 
-- One or more query objects are obtained from the source by adapting
-  the source to `zope.schema.ISourceQueriables`.  If no adapter is
-  obtained, then the source itself is assumed to be queriable.
+- One or more query objects are obtained from the source by adapting the source
+  to `zope.schema.ISourceQueriables`. If no adapter is obtained, then the
+  source itself is assumed to be queriable.
 
 - For each queriable found, a
-  `zope.app.form.browser.interfaces.ISourceQueryView` view is looked
-  up.  This view is used to obtain the HTML for displaying a query
-  form.  The view is also used to obtain search results.
+  `zope.app.form.browser.interfaces.ISourceQueryView` view is looked up. This
+  view is used to obtain the HTML for displaying a query form. The view is also
+  used to obtain search results.
 
 Let's start with a simple example.  We have a very trivial source,
 which is basically a list:
@@ -528,9 +525,9 @@ We need to register our `ITerms` view::
   ...     ListTerms,
   ...     (SourceList, zope.publisher.interfaces.browser.IBrowserRequest))
 
-We aren't going to provide an adapter to `ISourceQueriables`, so the
-source itself will be used as it's own queriable.  We need to provide a
-query view for the source::
+We aren't going to provide an adapter to `ISourceQueriables`, so the source
+itself will be used as it's own queriable.  We need to provide a query view
+for the source::
 
   >>> class ListQueryView:
   ...
@@ -578,8 +575,8 @@ As before, we'll just create the view directly::
   >>> widget = zope.app.form.browser.source.SourceInputWidget(
   ...     dog, dog.source, request)
 
-Now if we render the widget, we'll see the input value (initially
-nothing) and a form elements for seaching for values::
+Now if we render the widget, we'll see the input value (initially nothing) and
+a form elements for seaching for values::
 
   >>> print widget()
   <div class="value">
@@ -602,10 +599,9 @@ nothing) and a form elements for seaching for values::
     </div> <!-- queries -->
   </div> <!-- value -->
 
-This shows that we haven't selected a dog. We get a search box that we
-can type seach strings into.  Let's supply a search string.  We do
-this by providing data in the form and by "selecting" the submit
-button::
+This shows that we haven't selected a dog. We get a search box that we can type
+seach strings into.  Let's supply a search string. We do this by providing data
+in the form and by "selecting" the submit button::
 
   >>> request.form['field.dog.displayed'] = u'y'
   >>> request.form['field.dog.query.string'] = u'o'
@@ -706,8 +702,8 @@ We should also be able to get the input value::
   >>> widget.getInputValue()
   'spot'
 
-Now, let's look at a more complicated example.  We'll define a source
-that combines multiple sources::
+Now, let's look at a more complicated example. We'll define a source that
+combines multiple sources::
 
   >>> class MultiSource:
   ...
@@ -728,9 +724,8 @@ that combines multiple sources::
   ...     def getQueriables(self):
   ...         return self.sources
 
-This multi-source implements `ISourceQueriables`. It assumes that the
-sources it's given are queriable and just returns the sources as the
-queryable objects.
+This multi-source implements `ISourceQueriables`. It assumes that the sources
+it's given are queriable and just returns the sources as the queryable objects.
 
 We can reuse our terms view::
 
@@ -877,8 +872,8 @@ and we can get the input value::
   >>> widget.getInputValue()
   'tabby'
 
-There's a display widget, which doesn't use queriables, since it
-doesn't assign values::
+There's a display widget, which doesn't use queriables, since it doesn't assign
+values::
 
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceDisplayWidget(
@@ -903,9 +898,9 @@ If we specify a list of choices::
   >>> pets = zope.schema.List(__name__ = 'pets', title=u"Pets",
   ...                         value_type=pet)
 
-when a widget is computed for the field, a view will be looked up
-for the field and the source, where, in this case, the field is a
-list field.   We'll just call the widget factory directly::
+when a widget is computed for the field, a view will be looked up for the field
+and the source, where, in this case, the field is a list field. We'll just call
+the widget factory directly::
 
   >>> widget = zope.app.form.browser.source.SourceListInputWidget(
   ...     pets, pets.value_type.source, request)
@@ -931,10 +926,9 @@ If we render the widget::
     </div> <!-- queries -->
   </div> <!-- value -->
 
-Here the output looks very similar to the simple choice case.  We get
-a search input for each source.  In this case, we don't show any
-inputs (TODO we probably should make it clearer that there are no
-selected values.)
+Here the output looks very similar to the simple choice case.  We get a search
+input for each source.  In this case, we don't show any inputs
+(TODO we probably should make it clearer that there are no selected values.)
 
 As before, we can search one of the sources::
 
@@ -1021,8 +1015,8 @@ We can get the selected values::
   >>> widget.getInputValue()
   ['tabby', 'tiger', 'tom']
 
-We now see the values we selected.  We also have checkboxes and
-buttons that allow us to remove selections::
+We now see the values we selected.  We also have checkboxes and buttons that
+allow us to remove selections::
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> request.form['field.pets'] = [u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
@@ -1060,10 +1054,10 @@ buttons that allow us to remove selections::
 Using vocabulary-dependent widgets with sources
 ===============================================
 
-if you have a widget that uses old-style vocabularies but don't have the
-time to rewrite it for sources, all is not lost! The wrapper
-IterableSourceVocabulary can be used to make sources and ITerms look like
-a vocabulary. This allows us to use vocabulary-based widgets with sources
+if you have a widget that uses old-style vocabularies but don't have the time
+to rewrite it for sources, all is not lost! The wrapper
+IterableSourceVocabulary can be used to make sources and ITerms look like a
+vocabulary. This allows us to use vocabulary-based widgets with sources
 instead of vocabularies.
 
 Usage::
@@ -1081,7 +1075,6 @@ Usage::
   ...     zope.interface.implements(zope.schema.interfaces.IIterableSource)
   >>> source = TestSource(values)
 
-  >>> from zope.app.form.browser.interfaces import ITerms
   >>> class TestTerms(object):
   ...     zope.interface.implements(ITerms)
   ...     def __init__(self, source, request):
