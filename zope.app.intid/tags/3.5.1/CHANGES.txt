@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+3.5.1 (2008-12-11)
+
+- Make it possible to subscribe object-specific handlers
+  for IntIdAddedEvent/IntIdRemovedEvent. Use them like
+  the zope.app.container.interfaces.IObjectAddedEvent.
+- Include utility->id mapping of added ids to the
+  IntIdAddedEvent.
+- Removed testing dependencies from install_requires.
+
+3.5.0 (2008-06-19)
+------------------
+
+- Separate subscriber configuration into a separate ZCML file.
+
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
