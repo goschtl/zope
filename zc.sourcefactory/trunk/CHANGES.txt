@@ -2,11 +2,12 @@
 Changes
 =======
 
-0.3.6 (unreleased)
+0.4.0 (2008-12-11)
 ==================
 
-    - removed zope.app.form dependency. Changed ITerms import
-      from zope.app.form.browser.interfaces to zope.browser.interfaces
+    - Removed zope.app.form dependency. Changed ITerms import from
+      zope.app.form.browser.interfaces to
+      zope.browser.interfaces. [projekt01]
 
 
 0.3.5 (2008-12-08)

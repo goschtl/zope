@@ -44,6 +44,7 @@ setup(
         "setuptools",
         "ZODB3",
         "zope.app.intid",
+        "zope.browser",
         "zope.component",
         "zope.dublincore",
         "zope.interface",
