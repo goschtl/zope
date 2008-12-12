@@ -4,6 +4,8 @@ zope.i18nmessageid Package Changelog
 Version 3.5.0 (unreleased)
 -------------------------
 
+- Make sure messages are immutable.
+
 - Removed C-extension.
 
 - Added support to bootstrap on Jython.
