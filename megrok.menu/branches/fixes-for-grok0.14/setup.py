@@ -30,6 +30,7 @@ setup(name='megrok.menu',
           'grokcore.component',
           'grokcore.view',
           'grokcore.security',
+          'grok', # needed for testing
       ],
       entry_points="""
       # -*- Entry points: -*-
