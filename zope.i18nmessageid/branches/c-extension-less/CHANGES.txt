@@ -4,6 +4,8 @@ zope.i18nmessageid Package Changelog
 Version 3.5.0 (unreleased)
 -------------------------
 
+- Removed C-extension.
+
 - Added support to bootstrap on Jython.
 
 Version 3.4.3 (2007/9/26)

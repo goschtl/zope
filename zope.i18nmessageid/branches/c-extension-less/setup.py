@@ -23,7 +23,6 @@ from setuptools import setup, find_packages, Extension
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-
 setup(name='zope.i18nmessageid',
     version = '3.5.0dev',
     author='Zope Corporation and Contributors',
@@ -49,11 +48,6 @@ setup(name='zope.i18nmessageid',
     url='http://pypi.python.org/pypi/zope.i18nmessageid',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
-    ext_modules=[
-        Extension("zope.i18nmessageid._zope_i18nmessageid_message",
-                  [os.path.join('src', 'zope', 'i18nmessageid',
-                                "_zope_i18nmessageid_message.c") ]),
-        ],
     namespace_packages=['zope',],
     tests_require = ['zope.testing'],
     install_requires=['setuptools'],
