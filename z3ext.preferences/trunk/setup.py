@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.4.3dev'
+version='1.4.4dev'
 
 
 setup(name = 'z3ext.preferences',
