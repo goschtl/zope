@@ -35,6 +35,12 @@ class PreferenceGroup(object):
 
         self.subgroups = subgroups
         self.hasFields = bool(schema.getFields(self.context.__schema__))
+
+        if not self.hasFields and len(subgroups) == 1:
+            self.oneSubgroup = True
+        else:
+            self.oneSubgroup = False
+
         self.render = self.render()
 
 

@@ -40,118 +40,35 @@
     width: 200px;
   }
   
-  #z-preferences .z-prefs-nav {
+  .z-prefs-nav {
     border: borderWidth borderStyle globalBorderColor;
     border-bottom: none;
     background: contentBackgroundColor;
     font-size: fontSmallSize;
   }
   
-  #z-preferences .z-prefs-nav a {
+  .z-prefs-nav a {
     text-decoration: none;
   }
   
-  #z-preferences .z-prefs-nav-item {
+  .z-prefs-nav-item {
     padding: 0.8em 0.4em 0.5em 0.4em;
     border-bottom: borderWidth borderStyle globalBorderColor;
   }
   
-  #z-preferences .z-prefs-nav-item-selected {
+  .z-prefs-nav-item-selected {
     padding: 0.8em 0.4em 0.5em 0.4em;
     background-color: globalBackgroundColor;
     border-bottom: borderWidth borderStyle globalBorderColor;
   }
   
-  #z-preferences .z-prefs-nav-item:hover {
+  .z-prefs-nav-item:hover {
     background-color: globalBackgroundColor;
   }
   
-  #z-preferences .z-prefs-nav-item li span {
+  .z-prefs-nav-item li span {
     border: 0;
     border-bottom: 1px dotted discreetColor;
-  }
-
-  ul.z-prefs-listing {
-    margin: 0.5em 0;
-    list-style: none;
-    list-style-image: none;
-    list-style-type: none;
-  }
-  
-  ul.z-prefs-listing li {
-    clear: both;
-    margin-bottom: 0.5em;
-    list-style: none;
-    list-style-image: none;
-  }
-  
-  ul.z-prefs-listing li .z-prefs-icon {
-    float: left;
-    padding-top: 8px;
-    padding-right: 0.5em;
-    height: 32px;
-  }
-  
-  ul.z-prefs-listing li a,
-  ul.z-prefs-listing li .z-cp-details a {
-    color: linkColor;
-    border: 0;
-    border-bottom: 1px dotted discreetColor;
-    text-decoration: none;
-  }
-  
-  ul.z-prefs-listing li a:visited,
-  ul.z-prefs-listing li .z-prefs-details a:visited {
-    color: linkColor;
-    background-color: transparent;
-  }
-  
-  ul.z-prefs-listing li a:active,
-  ul.z-prefs-listing li .z-prefs-details a:active {
-    color: linkColor;
-    background-color: transparent;
-  }
-  
-  ul.z-prefs-listing li span {
-    border: 0;
-    border-bottom: 1px dotted discreetColor;
-  }
-  
-  ul.z-prefs-listing li .z-prefs-details span a {
-    border-bottom: 0px;
-  }
-  
-  ul.z-prefs-listing li label {
-    font-weight: bold;
-    border-bottom: borderWidth dotted discreetColor;
-  }
-  
-  ul.z-prefs-listing li {
-    border: 1px solid contentBackgroundColor;
-  }
-  
-  ul.z-prefs-listing li .z-prefs-details div {
-    color: discreetColor;
-    font-size: fontSmallSize;
-  }
-  
-  ul.z-prefs-listing li ul.z-prefs-listing {
-    margin-left: 1.5em;
-    font-size: 110%;
-  }
-  
-  ul.z-prefs-listing li .z-prefs-details div span {
-    color: discreetColor;
-    font-size: fontSmallSize;
-    border: 0;
-  }
-
-  .z-prefs-level1 {
-    padding-left: 0.8em;
-  }
-  
-  .z-prefs-level2 {
-    padding-left: 1.6em;
   }
 
   #z-preferences .z-form,

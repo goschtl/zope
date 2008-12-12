@@ -8,8 +8,10 @@
 	   tal:attributes="class python:item['selected'] and 'z-prefs-nav-item-selected' 
 			   or 'z-prefs-nav-item'">
 	<div tal:omit-tag="not:item/level|nothing"
-	     tal:attributes="class string:z-prefs-level${item/level|nothing}">
-	  <a tal:attributes="href string:${item/prefs/@@absolute_url}/">
+	     tal:attributes="class string:z-level${item/level|nothing}">
+	  <a tal:attributes="href string:${item/prefs/@@absolute_url}/;
+			     title item/description"
+	     tal:omit-tag="not:item/editable">
 	    <al:block tal:content="structure item/icon" />
 	    <tal:block tal:content="item/title" />
 	  </a>

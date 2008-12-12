@@ -38,10 +38,12 @@ class PreferencesView(object):
                               sgroup.__id__.split('.')[-1], sgroup)
                              for t, sgroup in group.items() 
                              if sgroup.isAvailable()]
-                if subgroups or hasEditableFields(group):
+                if (len(subgroups) > 1) or hasEditableFields(group):
                     groups.append((group.__title__, group,
                                    [{'id': id, 'group': sgroup}
                                     for t, id, sgroup in subgroups]))
+                elif len(subgroups) == 1:
+                    groups.append((group.__title__, group, ()))
             else:
                 groups.append((group.__title__, group, ()))
 
