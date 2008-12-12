@@ -1,0 +1,14 @@
+<tal:block tal:condition="view/hasFields"
+	   tal:content="structure context/@@pagelet/preference.editGroup" />
+
+<tal:block tal:condition="nocall:view/oneSubgroup">
+  <tal:block tal:define="group python:view.subgroups[0]"
+	     tal:content="structure group/@@pagelet/preference.editGroup" />
+</tal:block>
+
+<div class="z-form" tal:condition="python: not view.oneSubgroup and view.subgroups">
+  <tal:block tal:repeat="group view/subgroups">
+    <tal:block tal:content="structure group/@@pagelet/preference.previewGroup" />
+    <br />
+  </tal:block>
+</div>
