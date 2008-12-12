@@ -37,10 +37,10 @@ class Index(PastebinMaster):
     grok.context(Application)
         
     def preferred_author(self):
-        return self.request.cookies.get(COOKIE_AUTHOR,'')       
+        return self.request.cookies.get(COOKIE_AUTHOR,'Anonymous User')       
     
     def preferred_language(self):
-        return self.request.cookies.get(COOKIE_LANGUAGE,'')       
+        return self.request.cookies.get(COOKIE_LANGUAGE,'python')       
   
     def lexers(self):
         all_lexers = list(lexers.get_all_lexers())

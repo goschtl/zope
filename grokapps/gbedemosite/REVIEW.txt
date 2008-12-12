@@ -33,6 +33,7 @@ development from inside a virtualenv__::
     $ svn co svn://svn.zope.org/repos/main/grokapps/gbedemosite
     $ cd gbedemosite
     $ virtualenv --no-site-packages .
+    $ source bin/activate
     
 __ http://pypi.python.org/pypi/grokproject
 __ http://pypi.python.org/pypi/virtualenv
@@ -217,7 +218,7 @@ Run buildout again, run the tests, start the server, start the client::
 Setup apache::
 
     $ sudo a2ensite your-vhost-id
-    $ sudo /etc/init.d/apachectl restart
+    $ sudo /etc/init.d/apache2 restart
     
 Access the demosite admin screens, create a 'demosite' instance and use it::
 
