@@ -2,7 +2,9 @@ import martian
 import grokcore.component
 import megrok.menu
 from martian.error import GrokError
-from grok.meta import ViewGrokker, default_view_name
+#from grok.meta import ViewGrokker, default_view_name
+from grokcore.view.meta.views import ViewGrokker, default_view_name
+
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IBrowserPage
 from zope.app.publisher.browser.menumeta import menuDirective, menuItemDirective
