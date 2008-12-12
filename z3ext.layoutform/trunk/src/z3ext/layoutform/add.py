@@ -30,11 +30,11 @@ from interfaces import _, IPageletAddForm, IAddButton, ICancelButton
 from zope.proxy import removeAllProxies
 
 
-class PageletAddForm(form.AddForm, PageletForm):
+class PageletAddForm(PageletForm, form.AddForm):
     interface.implements(IPageletAddForm)
 
-    render = PageletForm.render
-    __call__ = PageletForm.__call__
+    ignoreContext = True
+    ignoreReadonly = True
 
     _addedObject = None
 

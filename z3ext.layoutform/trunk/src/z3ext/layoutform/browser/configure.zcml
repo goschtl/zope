@@ -55,7 +55,7 @@
 
   <z3ext:pagelet
      template="subform.pt"
-     for="..interfaces.IPageletEditSubForm"
+     for="z3c.form.interfaces.ISubForm"
      layer="..interfaces.ILayoutFormLayer"
      provides="..interfaces.IPageletFormView"
      permission="zope.Public" />

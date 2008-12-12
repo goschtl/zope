@@ -16,24 +16,29 @@
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface, event
+from zope.component import queryMultiAdapter
 from zope.traversing.browser import absoluteURL
 from zope.lifecycleevent import ObjectModifiedEvent
 
-from z3c.form import form, subform, button
+from z3c.form import subform, button
+from z3c.form.interfaces import IActionHandler
 from z3ext.statusmessage.interfaces import IStatusMessage
 
-from form import PageletForm
 from utils import applyChanges
-from interfaces import _, IPageletEditSubForm, ISaveButton
+from form import PageletBaseForm
+from interfaces import _, IPageletEditSubForm, IPageletSubform, ISaveButton
 
 
-class PageletEditSubForm(subform.EditSubForm, PageletForm):
+class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
     interface.implements(IPageletEditSubForm)
 
-    render = PageletForm.render
-    __call__ = PageletForm.__call__
+    label = u''
+    description = u''
 
-    @button.buttonAndHandler(_(u'Save'), name='save', provides=ISaveButton)
+    render = PageletBaseForm.render
+    __call__ = PageletBaseForm.__call__
+
+    @button.handler(ISaveButton)
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:
@@ -47,3 +52,22 @@ class PageletEditSubForm(subform.EditSubForm, PageletForm):
                 IStatusMessage(self.request).add(self.successMessage)
             else:
                 IStatusMessage(self.request).add(self.noChangesMessage)
+
+    def executeActions(self):
+        request = self.request
+        content = self.getContent()
+
+        for action in self.parentForm.actions.executedActions:
+            adapter = queryMultiAdapter(
+                (self, request, content, action), IActionHandler)
+            if adapter:
+                adapter()
+
+    def update(self):
+        self.updateWidgets()
+        
+        if not IPageletSubform.providedBy(self):
+            self.executeActions()
+
+    def postUpdate(self):
+        self.executeActions()        

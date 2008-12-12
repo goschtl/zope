@@ -21,7 +21,7 @@ from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.pagetemplate.interfaces import IPageTemplate
 
 from z3c.form import form
-from z3c.form.interfaces import IGroup
+from z3c.form.interfaces import IGroup, ISubForm
 
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
@@ -30,25 +30,9 @@ from interfaces import IPageletForm, IPageletSubform
 from interfaces import IPageletDisplayForm, IPageletFormView
 
 
-class PageletForm(form.Form, BrowserPagelet):
-    interface.implements(IPageletForm)
-
-    forms = ()
+class PageletBaseForm(form.BaseForm, BrowserPagelet):
 
     __call__ = BrowserPagelet.__call__
-
-    def extractData(self):
-        data, errors = super(PageletForm, self).extractData()
-        for form in self.forms:
-            if IGroup.providedBy(form):
-                formData, formErrors = form.extractData()
-                data.update(formData)
-                if formErrors:
-                    if errors:
-                        errors += formErrors
-                    else:
-                        errors = formErrors
-        return data, errors
 
     def render(self):
         # render content template 
@@ -63,12 +47,64 @@ class PageletForm(form.Form, BrowserPagelet):
 
         return self.template()
 
+
+class PageletForm(form.Form, PageletBaseForm):
+    interface.implements(IPageletForm)
+
+    label = u''
+    description = u''
+
+    forms = ()
+    groups = ()
+    subforms = ()
+
+    render = PageletBaseForm.render
+    __call__ = PageletBaseForm.__call__
+
+    def extractData(self):
+        data, errors = super(PageletForm, self).extractData()
+        for form in self.groups:
+            formData, formErrors = form.extractData()
+            data.update(formData)
+            if formErrors:
+                if errors:
+                    errors += formErrors
+                else:
+                    errors = formErrors
+
+        for form in self.subforms:
+            formData, formErrors = form.extractData()
+            if formErrors:
+                if errors:
+                    errors += formErrors
+                else:
+                    errors = formErrors
+
+        return data, errors
+
+    def _loadSubforms(self):
+        return [form for name, form in 
+                getAdapters((self.context, self.request, self), IPageletSubform)]
+
     def updateForms(self):
         forms = []
-        for name, form in getAdapters(
-            (self.context, self.request, self), IPageletSubform):
+        groups = []
+        subforms = []
+        for form in self._loadSubforms():
             form.update()
-            forms.append((form.weight, name, form))
+
+            if IGroup.providedBy(form):
+                groups.append((form.weight, form.__name__, form))
+            elif ISubForm.providedBy(form):
+                subforms.append((form.weight, form.__name__, form))
+            else:
+                forms.append((form.weight, form.__name__, form))
+
+        groups.sort()
+        self.groups = [form for weight, name, form in groups]
+
+        subforms.sort()
+        self.subforms = [form for weight, name, form in subforms]
 
         forms.sort()
         self.forms = [form for weight, name, form in forms]
@@ -77,6 +113,18 @@ class PageletForm(form.Form, BrowserPagelet):
         self.updateWidgets()
         self.updateActions()
         self.updateForms()
+
+        if not IPageletSubform.providedBy(self):
+            self.actions.execute()
+
+        for form in self.groups:
+            form.postUpdate()
+        for form in self.subforms:
+            form.postUpdate()
+        for form in self.forms:
+            form.postUpdate()
+
+    def postUpdate(self):
         self.actions.execute()
 
 

@@ -28,11 +28,8 @@ from form import PageletForm
 from interfaces import _, IPageletEditForm, ISaveButton
 
 
-class PageletEditForm(form.EditForm, PageletForm):
+class PageletEditForm(PageletForm, form.EditForm):
     interface.implements(IPageletEditForm)
-
-    render = PageletForm.render
-    __call__ = PageletForm.__call__
 
     @button.buttonAndHandler(
         _(u'Save'), name='save', provides=ISaveButton)

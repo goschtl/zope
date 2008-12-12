@@ -31,14 +31,23 @@ class IPageletFormView(interface.Interface):
     """ pagelet form view """
 
 
-class IPageletForm(IPagelet):
+class IPageletBaseForm(IPagelet):
+    """ Base interface for pagelet forms """
+
+
+class IPageletForm(IPageletBaseForm):
     """Form mixin for pagelet implementation."""
 
     label = interface.Attribute('Form label')
 
     description = interface.Attribute('Form label')
 
-    forms = interface.Attribute('Ordered list of sub forms')
+    forms = interface.Attribute('Ordered list of managed forms')
+    groups = interface.Attribute('Ordered list of managed groups')
+    subforms = interface.Attribute('Ordered list of managed subforms')
+
+    def updateForms():
+        """Update pagelet subforms."""
 
 
 class IPageletAddForm(IPageletForm):
@@ -56,7 +65,7 @@ class IPageletAddForm(IPageletForm):
         """Return whether names can be input by the user."""
 
 
-class IPageletDisplayForm(IPagelet):
+class IPageletDisplayForm(IPageletBaseForm):
     """ Display form mixin """
 
 
@@ -67,11 +76,11 @@ class IPageletEditForm(IPageletForm):
         """ as next url use newly created content url """
 
 
-class IPageletEditSubForm(IPageletForm):
+class IPageletEditSubForm(IPageletBaseForm):
     """ Sub form mixin for pagelet implementation."""
 
 
-class IPageletSubform(IPageletForm):
+class IPageletSubform(interface.Interface):
     """ Subform """
 
     weight = schema.Int(
@@ -79,6 +88,9 @@ class IPageletSubform(IPageletForm):
         description = u'Weight for order',
         default = 9999,
         required = False)
+
+    def postUpdate():
+        """Update form after manager form updated."""
 
 
 class IAddButton(IButton):
