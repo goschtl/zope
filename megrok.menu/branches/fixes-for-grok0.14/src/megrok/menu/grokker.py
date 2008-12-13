@@ -3,11 +3,14 @@ from martian.error import GrokError
 
 import grokcore.component
 import grokcore.view
+import grokcore.security
 from grokcore.security.util import protect_getattr
 from grokcore.view.meta.views import ViewSecurityGrokker, default_view_name
 
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.publisher.browser.menumeta import menuDirective, menuItemDirective
+from zope.app.publisher.browser.menumeta import menuDirective, \
+    menuItemDirective, subMenuItemDirective
+
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.interfaces.browser import IBrowserPage
 
@@ -23,6 +26,54 @@ class MenuGrokker(martian.ClassGrokker):
     def execute(self, factory, config, name, title, description, **kw):
         menuDirective(config, id=name, class_=factory,
                       title=title, description=description)
+        return True
+
+class SubMenuItemGrokker(martian.ClassGrokker):
+    martian.component(megrok.menu.SubMenuItem)
+
+    # We want to do this after MenuGrokker.
+    martian.priority(1000)
+
+    martian.directive(grokcore.component.name, get_default=default_view_name)
+    martian.directive(grokcore.component.title, default=u'')
+    martian.directive(grokcore.component.description, default=u'')
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
+    martian.directive(grokcore.security.require, name='permission')
+
+    martian.directive(megrok.menu.menuitem)
+
+    def execute(self, factory, config, name, title, description, \
+                    menuitem=None, context=None, layer=None, permission=None):
+
+        menuDirective(config, id=name, class_=factory,
+                      title=title, description=description)
+
+        if menuitem is None:
+            return False
+
+        menu_id, icon, filter, order = menuitem
+        try:
+            menu = config.resolve('zope.app.menus.'+menu_id)
+        except ConfigurationError, v:
+            raise GrokError("The %r menu could not be found.  Please use "
+                            "megrok.menu.Menu to register a menu first."
+                            % menu_id, factory)
+
+        subMenuItemDirective(config, menu=menu, for_=context, submenu=name,
+                          title=title, description=description, icon=icon,
+                          filter=filter, permission=permission, layer=layer,
+                          order=order, action='')
+
+        for method_name in IBrowserPage:
+            if method_name == '__call__':
+                continue
+            config.action(
+                discriminator=('protectMenuName', factory, method_name),
+                callable=protect_getattr,
+                args=(factory, method_name, permission),
+                )
+
         return True
 
 class MenuItemGrokker(ViewSecurityGrokker):
