@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+3.0 (unreleased) (wforms version: 3.0)
+======================================
+
+* Initial public release.
