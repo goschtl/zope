@@ -35,7 +35,8 @@ setup(
         'grokcore.component',
         'grokcore.view',
         'hurry.resource',
-        'hurry.zoperesource >= 0.3', # for testing
+        'hurry.zoperesource >= 0.3',
+        'hurry.js.wforms',
         ],
     entry_points={},
     )

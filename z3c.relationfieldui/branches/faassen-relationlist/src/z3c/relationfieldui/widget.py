@@ -3,7 +3,7 @@ from xml.sax.saxutils import escape
 
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.form.browser import TextWidget, DisplayWidget, SimpleInputWidget
+from zope.app.form.browser import TextWidget, DisplayWidget
 from zope import component
 from zope.component.interfaces import ComponentLookupError
 from zope.app.form.browser.widget import renderElement
@@ -80,7 +80,7 @@ class RelationListWidget(grok.MultiAdapter, TextWidget):
 
     def __call__(self):
         result = '<fieldset class="repeat" id="%s">' % self.name
-#        result += '<div class="oneField">'
+ #       result += '<div class="oneField">'
         result += TextWidget.__call__(self)
         explorer_url = component.getMultiAdapter((self.context.context,
                                                  self.request),
@@ -89,7 +89,7 @@ class RelationListWidget(grok.MultiAdapter, TextWidget):
             'input', type='button', value='get relation',
             onclick="Z3C.relation.popup(this.previousSibling, '%s')" %
             (explorer_url))
- #       result += '</div>'
+#        result += '</div>'
         result += '</fieldset>'
         wforms.need()
         relation_resource.need()
@@ -134,4 +134,6 @@ class RelationListWidget(grok.MultiAdapter, TextWidget):
     def _toFormValue(self, value):
         if value is None:
             return ''
-        return value.to_path
+        return ''
+    
+    #    return value.to_path
