@@ -35,20 +35,3 @@ out of the box.
 .. _`hurry.zoperesource`: http://pypi.python.org/pypi/hurry.zoperesource
 
 .. _Grok: http://grok.zope.org
-
-Preparing hurry.js.wforms before release
-========================================
-
-This section is only relevant to release managers of ``hurry.js.wforms``; if 
-you don't know whether you are, you aren't.
-
-When releasing ``hurry.js.wforms``, an extra step should be
-taken. Follow the regular package `release instructions`_, but before
-egg generation (``python setup.py register sdist upload``) first
-execute ``bin/wformsprepare <version number>`` (you may have to run
-``buildout`` first to install the prepare command), where version
-number is the version of the wforms release, such as ``1.0``. This will
-download the code of that version and place it in the egg. After that
-you can upload it.
-
-.. _`release instructions`: http://grok.zope.org/documentation/how-to/releasing-software

@@ -17,7 +17,7 @@ long_description = (
     )
 
 setup(
-    name='hurry.js.wforms2',
+    name='hurry.js.wforms',
     version=WFORMS_VERSION + 'dev',
     description="wforms for hurry.resource.",
     long_description=long_description,
@@ -35,10 +35,4 @@ setup(
         'setuptools',
         'hurry.resource',
         ],
-    entry_points= {
-    'console_scripts': [
-      'wformsprepare = hurry.js.wforms.prepare:main',
-      ]
-    },
-
     )

@@ -1,1 +1,1 @@
-from hurry.base2.base2 import *
+from hurry.js.wforms._wforms import *
