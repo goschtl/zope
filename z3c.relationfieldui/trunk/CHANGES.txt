@@ -4,7 +4,9 @@ CHANGES
 0.1.2 (unreleased)
 ==================
 
-* ...
+* Update the value of the input field using ``.value`` instead of
+  using ``setAttribute('value', ...)``. The latter did not update
+  dynamically updated input fields, and the former does.
 
 0.1.1 (2008-12-10)
 ==================

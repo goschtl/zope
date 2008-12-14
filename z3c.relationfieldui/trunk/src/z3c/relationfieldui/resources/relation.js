@@ -68,7 +68,7 @@ Z3C.namespace = function(name) {
 
     Z3C.relation.RelationCreator.prototype.setRelations = function(values) {
         if (values.length > 0) {
-            this._el.setAttribute('value', values[0]);
+            this._el.value = values[0];
         }
         // break potential circular reference
         this._win.relation_creator = null;
