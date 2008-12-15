@@ -21,7 +21,7 @@ from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.pagetemplate.interfaces import IPageTemplate
 
 from z3c.form import form
-from z3c.form.interfaces import IGroup, ISubForm
+from z3c.form.interfaces import IForm, IGroup, ISubForm
 
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
@@ -64,6 +64,9 @@ class PageletForm(form.Form, PageletBaseForm):
     def extractData(self):
         data, errors = super(PageletForm, self).extractData()
         for form in self.groups:
+            if not IForm.providedBy(form):
+                continue
+
             formData, formErrors = form.extractData()
             data.update(formData)
             if formErrors:
@@ -73,6 +76,9 @@ class PageletForm(form.Form, PageletBaseForm):
                     errors = formErrors
 
         for form in self.subforms:
+            if not IForm.providedBy(form):
+                continue
+
             formData, formErrors = form.extractData()
             if formErrors:
                 if errors:
