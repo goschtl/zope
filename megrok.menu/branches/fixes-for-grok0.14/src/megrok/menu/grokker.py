@@ -52,7 +52,7 @@ class SubMenuItemGrokker(martian.ClassGrokker):
         if menuitem is None:
             return False
 
-        menu_id, icon, filter, order = menuitem
+        menu_id, icon, filter, order, extra = menuitem
         try:
             menu = config.resolve('zope.app.menus.'+menu_id)
         except ConfigurationError, v:
@@ -63,7 +63,7 @@ class SubMenuItemGrokker(martian.ClassGrokker):
         subMenuItemDirective(config, menu=menu, for_=context, submenu=name,
                           title=title, description=description, icon=icon,
                           filter=filter, permission=permission, layer=layer,
-                          order=order, action='')
+                          order=order, action='', extra=extra)
 
         for method_name in IBrowserPage:
             if method_name == '__call__':
@@ -89,7 +89,7 @@ class MenuItemGrokker(ViewSecurityGrokker):
 
         if menuitem is None:
             return False
-        menu_id, icon, filter, order = menuitem
+        menu_id, icon, filter, order, extra = menuitem
         try:
             menu = config.resolve('zope.app.menus.'+menu_id)
         except ConfigurationError, v:
@@ -99,7 +99,7 @@ class MenuItemGrokker(ViewSecurityGrokker):
         menuItemDirective(config, menu=menu, for_=context, action=name,
                           title=title, description=description, icon=icon,
                           filter=filter, permission=permission, layer=layer,
-                          order=order)
+                          order=order, extra=extra)
 
         # Menu items check whether the view that they refer to can be
         # traversed to.  Unfortunately, views will end up being
