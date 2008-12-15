@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.7.1 (2008-12-??)
+------------------
+
+- Check if context provides interface in @@pagelet view and pagelet: tales expresion
+
+
 1.7.0 (2008-12-11)
 ------------------
 

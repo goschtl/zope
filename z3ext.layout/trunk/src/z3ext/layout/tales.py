@@ -46,6 +46,9 @@ class TALESPageletExpression(StringExpr):
         else:
             iface = IPagelet
 
+        if iface.providedBy(context):
+            return context.render()
+
         try:
             view = queryMultiAdapter((context, request), iface)
             if view is not None:

@@ -137,6 +137,9 @@ class PageletPublisher(object):
         else:
             iface = IPagelet
 
+        if iface.providedBy(self.context):
+            return self.context.render()
+
         try:
             view = queryMultiAdapter((self.context, self.request), iface)
             if view is not None:
