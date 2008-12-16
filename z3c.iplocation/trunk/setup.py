@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.iplocation',
-    version='0.5.0dev',
+    version='0.5.1dev',
     author = "Roger Ineichen, Stephan Richter and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Geo location utility for Zope3",

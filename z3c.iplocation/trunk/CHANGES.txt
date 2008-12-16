@@ -2,11 +2,16 @@
 CHANGES
 =======
 
-Unreleased
-----------
+0.5.1 (unreleased)
+------------------
+
+- ... 
+
+0.5.0 (2008-12-16)
+------------------
+
+- Initial Release
 
 - Implemented update concept. The new update method allows to update the 
   iplocation data based on a file upload or a file path. Added tests and 
   update to new coverage recipe.
-
-- Initial Release
