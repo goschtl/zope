@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.schema',
       version = '3.5.0',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Component Architecture based Vocabulary Registry',
       long_description=(
           read('README.txt')
@@ -44,7 +44,7 @@ setup(name='zope.app.schema',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.schema',
+      url='http://pypi.python.org/pypi/zope.app.schema',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
