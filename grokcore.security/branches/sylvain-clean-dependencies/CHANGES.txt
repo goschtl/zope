@@ -1,0 +1,13 @@
+Changes
+=======
+
+1.1 (unreleased)
+----------------
+
+* Improved documentation.
+
+1.0 (2008-08-03)
+----------------
+
+* Created ``grokcore.security`` in July 2008 by factoring
+  security-related components, grokkers and directives out of Grok.
