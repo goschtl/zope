@@ -25,7 +25,7 @@ setup (
     name='z3c.iplocation',
     version='0.5.0dev',
     author = "Roger Ineichen, Stephan Richter and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Geo location utility for Zope3",
     long_description=(
         read('README.txt')
@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.iplocation',
+    url = 'http://pypi.python.org/pypi/z3c.iplocation',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
