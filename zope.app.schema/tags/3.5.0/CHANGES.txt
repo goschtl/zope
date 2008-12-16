@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2008-12-16)
+------------------
+
+- Remove deprecated ``vocabulary`` directive.
+- Add test for component-based vocabulary registry.
+
+3.4.0 (2007-10-27)
+------------------
+
+- Initial release independent of the main Zope tree.
