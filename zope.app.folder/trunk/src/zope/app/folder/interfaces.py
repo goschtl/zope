@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.traversing.interfaces import IContainmentRoot
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
-from zope.app.component.interfaces import IPossibleSite
+from zope.location.interfaces import IPossibleSite
 
 class IFolder(IContainer, IPossibleSite, IAttributeAnnotatable):
     """The standard Zope Folder object interface."""
