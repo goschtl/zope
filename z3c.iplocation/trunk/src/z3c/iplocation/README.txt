@@ -24,7 +24,7 @@ If the passed in value is not a valid IP address, an error is raised:
   >>> loc.get('10.0.0.x')
   Traceback (most recent call last):
   ...
-  ValueError: invalid literal for int(): x
+  ValueError: invalid literal for int()...
 
 An extension to the ip locator API is the ip location management, which allows
 you to manage the locations within the utility. Let's now add a location.
