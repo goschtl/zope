@@ -1,0 +1,151 @@
+====================
+JavaScript Functions
+====================
+
+When developing JavaScript-enabled user interfaces, it is often necessary to
+create small callback functions. The usual way of creating those functions is
+to write and register a resource, then create a viewlet for it that integrates
+it. Those steps can be tedious when writing small functions. Thus, this
+package provides a way to convert a Python method to a Javascript function.
+
+  >>> from z3c.formjs import jsfunction
+
+So let's create a simple view with a JavaScript function in it:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function('hw')
+  ...     def showHelloWorldMessage(self):
+  ...         return u"alert('Hello World!');"
+
+The argument to ``jsfunction.function`` is the namspace into which the
+function will be placed. This argument is optional. The Python method is
+expected to return the Javascript code as a string. All functions are
+collected in a special attribute called "jsFunctions"
+
+  >>> View.jsFunctions
+  <JSFunctions
+      {'hw': [<JSFunction showHelloWorldMessage>]}>
+
+The functions can be rendered directly:
+
+  >>> print View.jsFunctions.render()
+  var hw = {
+    showHelloWorldMessage: function() {
+      alert('Hello World!');
+    }
+  }
+
+Similarly to Javascript subscriptions, a JavaScript viewlet exists for
+any view containing JavaScript functions that provides the following
+output:
+
+  >>> viewlet = jsfunction.JSFunctionsViewlet(
+  ...     object(), object(), View(), object())
+  >>> viewlet.update()
+  >>> print viewlet.render()
+  <script type="text/javascript">
+    var hw = {
+      showHelloWorldMessage: function() {
+        alert('Hello World!');
+      }
+    }
+  </script>
+
+Let's now have a closer look at the decorator. As mentioned before,
+the namespace is optional. So what happens if the namespace is not
+specified? Then the function should be declared normally:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function()
+  ...     def showHelloWorldMessage(self):
+  ...         return u"alert('Hello World!');"
+
+  >>> print View.jsFunctions.render()
+  function showHelloWorldMessage() {
+    alert('Hello World!');
+  }
+
+Of course you can mix namespace and non-namespace functions:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function()
+  ...     def show1(self):
+  ...         return u"alert('Hello World!');"
+  ...
+  ...     @jsfunction.function('ns1')
+  ...     def show1(self):
+  ...         return u"alert('Hello World!');"
+  ...
+  ...     @jsfunction.function('ns1')
+  ...     def show2(self):
+  ...         return u"alert('Hello World!');"
+
+  >>> print View.jsFunctions.render()
+  function show1() {
+    alert('Hello World!');
+  }
+  var ns1 = {
+    show1: function() {
+      alert('Hello World!');
+    },
+    show2: function() {
+      alert('Hello World!');
+    }
+  }
+
+What about arguments? The arguments are directly extracted into the
+code. Currently, keyword arguments, and variable positional and keyword
+arguments are not supported, as they are not supported by JavaScript either:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function('ns')
+  ...     def show(self, title):
+  ...         return u"alert('Title' + title);"
+
+  >>> print View.jsFunctions.render()
+  var ns = {
+    show: function(title) {
+      alert('Title' + title);
+    }
+  }
+
+And that is realy everything that there is to it.
+
+
+Calling JSFunctions from Python
+-------------------------------
+
+We can also render a JavaScript call to a JSFunction from within
+python using the call method of the function.  We can even pass
+the call method the arguments to be rendered.
+
+  >>> View.show.call(u"Some Title")
+  "ns.show('Some Title');"
+  >>> View.show.call("Some Title")
+  "ns.show('Some Title');"
+  >>> View.show.call(3.0)
+  'ns.show(3.0);'
+  >>> View.show.call(1)
+  'ns.show(1);'
+  >>> View.show.call(True)
+  'ns.show(true);'
+
+Unsupported data types are just rendered as stritree/ngs.
+
+  >>> View.show.call(object())
+  "ns.show('<object object at ...>');"
+
+Functions without namespaces also render correctly:
+
+  >>> class View(object):
+  ...
+  ...     @jsfunction.function()
+  ...     def show(self, title):
+  ...         return u"alert('Title' + title);"
+
+  >>> View.show.call(u"Some Title")
+  "show('Some Title');"
