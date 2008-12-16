@@ -29,6 +29,8 @@ setup(name='zope.app.schema',
       long_description=(
           read('README.txt')
           + '\n\n' +
+          read('src', 'zope', 'app', 'schema', 'README.txt')
+          + '\n\n' +
           read('CHANGES.txt')
           ),
       keywords = "zope3 vocabulary registry local component",
