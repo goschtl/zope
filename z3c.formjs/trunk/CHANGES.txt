@@ -2,7 +2,11 @@
 CHANGES
 =======
 
-Version 0.4.1 (unreleased)
+Version 0.4.2 (unreleased)
+
+- ...
+
+Version 0.4.1 (2008-12-16)
 --------------------------
 
 - Restructure: Use WeightOrderedViewletManager from zope.viewlet instead

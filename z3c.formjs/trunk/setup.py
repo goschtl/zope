@@ -32,9 +32,9 @@ chapters = '\n'.join(
 
 setup (
     name='z3c.formjs',
-    version='0.4.1dev',
+    version='0.4.2dev',
     author = "Paul Carduner and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Javascript integration into ``z3c.form``",
     long_description=(
         read('README.txt')
@@ -59,7 +59,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://svn.zope.org/z3c.formjs',
+    url = 'http://pypi.python.org/pypi/z3c.formjs',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
