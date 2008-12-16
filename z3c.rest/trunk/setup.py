@@ -84,7 +84,8 @@ setup (
     install_requires = [
         'lxml>=2.0.0', # Changes in API, since 1.3.6.
         'setuptools',
-        'z3c.traverser',
+        'z3c.traverser>=0.2.2', # BasePluggableTraverser only available
+                                # in 0.2.2 and higher
         'zope.publisher',
         ],
     zip_safe = False,
