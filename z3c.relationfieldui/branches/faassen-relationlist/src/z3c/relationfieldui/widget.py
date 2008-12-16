@@ -14,7 +14,7 @@ from hurry.resource import Library, ResourceInclusion
 from hurry.js.wforms import wforms
 
 from z3c.relationfield.schema import IRelation, IRelationList
-from z3c.relationfield.interfaces import IRelationInfo
+from z3c.relationfield import create_relation
 
 relation_lib = Library('z3c.relationfieldui')
 relation_resource = ResourceInclusion(relation_lib, 'relation.js')
@@ -41,7 +41,7 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
         # convert path to Relation object
         obj = self.resolve(input)
         # XXX if obj is none, cannot create path
-        return IRelationInfo(obj).createRelation()
+        return create_relation(obj)
 
     def _toFormValue(self, value):
         if value is None:
@@ -128,7 +128,7 @@ class RelationListWidget(grok.MultiAdapter, TextWidget):
         resolve = object_path.resolve
         for path in paths:
             obj = resolve(path)
-            result.append(IRelationInfo(obj).createRelation())
+            result.append(create_relation(obj))
         return result
         
     def _toFormValue(self, value):
