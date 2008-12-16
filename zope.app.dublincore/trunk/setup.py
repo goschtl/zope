@@ -18,7 +18,7 @@ $Id$
 from setuptools import setup, find_packages
 
 setup(name='zope.app.dublincore',
-      version = '3.4.0',
+      version = '3.5.0dev1',
       url='http://pypi.python.org/pypi/zope.app.dublincore',
       license='ZPL 2.1',
       description='''A deprecated backwards compatibility package
