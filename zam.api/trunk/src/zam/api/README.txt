@@ -9,11 +9,11 @@ optional features into clearly separated packages.
 
 There are two different type of plugins offered. A simple plugin can do what it
 needs to do during the install and unistall process. The other base registry
-supported plugin will install a customcomponent registry.
+supported plugin will install a custom component registry.
 
 The fundamental concept of the package is that a plugin can be installed for a
 particular site. At any time, you can ask the plugin, whether it has been
-installed for a prticular site. The third API method allows you to uninstall
+installed for a particular site. The third API method allows you to uninstall
 the plugin from a site.
 
 So let's implement a trivial plugin that stores an attribute:
@@ -157,36 +157,36 @@ Uninstalling a second time does nothing:
 Layers
 ------
 
-We offer a fine graind layer concept which allows you to use the ZAM skin
+We offer a fine grained layer concept which allows you to use the ZAM skin
 out of the box or you can define your own skins offering what you need.
 Each ZAM plugin should configure it's component for the IZAMBrwoserLayer and
 not for the IZAMCoreLayer. This allows others to use the IZAMCoreLayer without
-any plugin configuration. See the different layer descriptions below for more 
+any plugin configuration. See the different layer descriptions below for more
 information about the ZAM layer concept.
 
 
 Big note
 ~~~~~~~~
 
-This is only important if you like to define a own skin which uses 
+This is only important if you'd like to define a own skin which uses
 selective zam plugins.
 
-The layer concept has some limitations if it comes to the adapter lookup. It's 
+The layer concept has some limitations if it comes to the adapter lookup. It's
 not possible to define a custom layer and make an existing layer act like it
-whould inherit this layer. Implements and provide concept only work on classes 
-but not on interfaces. Let's be correct, they work but doesn't affet the 
-request. Which means the request doesn't know about such applied layers. This 
-means there is no[*] way to apply an later defined layer to an existing layer. 
-This is there reason why we offer all plugin layer in the zam.api.layer package.
-But what does this mean if you like to define custom plugins and their layers? 
-You have to define your own skin and inherit your new layers in this skin. 
+whould inherit this layer. Implements and provide concept only work on classes
+but not on interfaces. Let's be correct, they work but doesn't affect the
+request. Which means the request doesn't know about such applied layers. This
+means there is no[*] way to apply a later defined layer to an existing layer.
+This is the reason why we offer all plugin layers in the zam.api.layer package.
+But what does this mean if you'd like to define custom plugins and their layers?
+You have to define your own skin and inherit your new layers in this skin.
 You can skip the named skin configuration and configure your custom skin.
 
 [*] Ok, there is a way to apply layers to an existing layer or at least it will
 do the same effect. There are two ways, you can add a SkinChangedEvent which
-will do a alsoProvide and inject your layer or you can use a before traversal
-event subscriber which does the same. I decided not using this patterns here
-as default because such subscriber will affect every skin and will cost 
+will do an alsoProvide and inject your layer or you can use a before traversal
+event subscriber which does the same. I decided not to use these patterns here
+as default because such subscriber will affect every skin and will cost
 processing time on every request. The option we have with defining an explicit
 configuration for a custom skin is to small to pay that price.
 
@@ -194,32 +194,32 @@ configuration for a custom skin is to small to pay that price.
 IZAMCoreLayer
 ~~~~~~~~~~~~~
 
-The core layer provides the ZAM core management views but no plugins and 
+The core layer provides the ZAM core management views but no plugins and
 skin configuration. This allows us to write skins with a selective choice
-of plugins. Of corse we each plugin must be configured again for your
-cusotm skin. There is no way to offer out of the box a working set wihtout
+of plugins. Of course each plugin must be configured again for your
+custom skin. There is no way to offer out of the box a working set without
 to configure a plugin twice using two different layers.
 
 
 IZAMPluginLayer
 ~~~~~~~~~~~~~~~
 
-The zam plugin layer should not be used in plugins. You need to define a 
+The zam plugin layer should not be used in plugins. You need to define a
 plugin layer for your plugin in zam.api.layer and use this new defined layer.
-This layer will then become a part of the IZAMPluginLayer. This makes it 
+This layer will then become a part of the IZAMPluginLayer. This makes it
 possible to use the IZAMPluginLayer and get all it's configuration.
 
-But what happens if you don't devlop in the zamplugin.* namespace? Then you
+But what happens if you don't develop in the zamplugin.* namespace? Then you
 only have the option to configure your plugins for an additional layer and use
-another skin which uses the IZAMPluginLayer and you custom layer. Using the
-IAZMPluginLayer for your configuration and sharing such packages ends in 
+another skin which uses the IZAMPluginLayer and your custom layer. Using the
+IAZMPluginLayer for your configuration and sharing such packages ends in
 bad configuration and others needs to exlude your configuration and if this
 is not needed in every skin they provide and is based on IZAMPluginLayer.
-Of corse can you do this in your own private projects, but please do not
-use it for public shared packages and help us to provide a clean 
+Of course you can do this in your own private projects, but please do not
+use it for public shared packages and help us to provide a clean
 IZAMPluginLayer.
 
-Any improvment which offers us a better layer usage concept is very welcome if
+Any improvement which offers us a better layer usage concept is very welcome if
 it doesn't need to configure additional subscribers.
 
 
@@ -227,20 +227,20 @@ IZAMBrowserLayer
 ~~~~~~~~~~~~~~~~
 
 This is the "all in one" layer which can be used for build skins which knows
-about all plugin configurations. All plugin should use this layer.
+about all plugin configurations. All plugins should use this layer.
 
 
 IZAMSkinLayer
 ~~~~~~~~~~~~~
 
 The IZAMSkinLayer offers the UI part for ZAM but is not registered as skin.
-You can use this layer as base if you like to develope a custom skin. This 
+You can use this layer as base if you'd like to develop a custom skin. This
 layer contains the nested div menu implementation.
 
 
 IZAMBrowserSkin
 ~~~~~~~~~~~~~~~
 
-The IZAMBrowserSkin uses the IZAMSkinLayer and IZAMBrowserLayer and offers the 
-UI part for ZAM as named skin. This means the IZAMBrowserSkin is accessible 
+The IZAMBrowserSkin uses the IZAMSkinLayer and IZAMBrowserLayer and offers the
+UI part for ZAM as named skin. This means the IZAMBrowserSkin is accessible
 as ++skin++ZAM.
