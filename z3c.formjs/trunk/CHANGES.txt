@@ -4,7 +4,7 @@ CHANGES
 
 Version 0.4.2 (unreleased)
 
-- ...
+- Bug: Avoid ForbiddenAttribute in jsvalidator.MessageValidator.
 
 Version 0.4.1 (2008-12-16)
 --------------------------

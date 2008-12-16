@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.component
 from zope.publisher.interfaces import NotFound
+from zope.security.proxy import removeSecurityProxy
 
 from z3c.form.interfaces import IWidget, IField
 
@@ -57,5 +58,7 @@ class MessageValidator(BaseValidator):
     def validate(self):
         data, errors = self._validate()
         if errors:
-            return errors[0].message
+            # ``message`` attribute is not a part of interface
+            # so to avoid ForbiddenAttribute errors, remove the proxy
+            return removeSecurityProxy(errors[0]).message
         return u'' # all OK
