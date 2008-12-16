@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.schema',
-      version = '3.5.0',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Component Architecture based Vocabulary Registry',
@@ -50,7 +50,6 @@ setup(name='zope.app.schema',
       extras_require = dict(test=['zope.app.testing']),
       install_requires=['setuptools',
                         'zope.component',
-                        'zope.configuration',
                         'zope.interface',
                         'zope.schema',
                         ],
