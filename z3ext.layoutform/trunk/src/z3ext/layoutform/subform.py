@@ -21,7 +21,7 @@ from zope.traversing.browser import absoluteURL
 from zope.lifecycleevent import ObjectModifiedEvent
 
 from z3c.form import subform, button
-from z3c.form.interfaces import IActionHandler
+from z3c.form.interfaces import ISubForm, IActionHandler
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 from utils import applyChanges
@@ -49,25 +49,31 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
             changed = applyChanges(self, content, data)
             if changed:
                 event.notify(ObjectModifiedEvent(content))
-                IStatusMessage(self.request).add(self.successMessage)
-            else:
-                IStatusMessage(self.request).add(self.noChangesMessage)
 
-    def executeActions(self):
+    def executeActions(self, form):
         request = self.request
         content = self.getContent()
 
-        for action in self.parentForm.actions.executedActions:
-            adapter = queryMultiAdapter(
-                (self, request, content, action), IActionHandler)
-            if adapter:
-                adapter()
+        if hasattr(form, 'actions'):
+            for action in form.actions.executedActions:
+                adapter = queryMultiAdapter(
+                    (self, request, content, action), IActionHandler)
+                if adapter:
+                    adapter()
+
+        if ISubForm.providedBy(form):
+            self.executeActions(form.parentForm)
+        elif IPageletSubform.providedBy(form) and form.managers:
+            self.executeActions(form.managers[0])
 
     def update(self):
         self.updateWidgets()
-        
+
         if not IPageletSubform.providedBy(self):
-            self.executeActions()
+            self.executeActions(self.parentForm)
+
+    def isAvailable(self):
+        return True
 
     def postUpdate(self):
-        self.executeActions()        
+        self.executeActions(self.parentForm)

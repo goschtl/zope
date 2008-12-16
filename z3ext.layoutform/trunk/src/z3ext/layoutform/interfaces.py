@@ -79,6 +79,9 @@ class IPageletEditForm(IPageletForm):
 class IPageletEditSubForm(IPageletBaseForm):
     """ Sub form mixin for pagelet implementation."""
 
+    def executeActions(form):
+        """Execute form actions."""
+
 
 class IPageletSubform(interface.Interface):
     """ Subform """
@@ -88,6 +91,9 @@ class IPageletSubform(interface.Interface):
         description = u'Weight for order',
         default = 9999,
         required = False)
+
+    def isAvailable():
+        """If subform available."""
 
     def postUpdate():
         """Update form after manager form updated."""

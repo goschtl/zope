@@ -28,7 +28,7 @@ from z3ext.layoutform.interfaces import ILayoutFormLayer
 class TextAreaWidget(textarea.TextAreaWidget):
     """Textarea widget implementation."""
 
-    rows = 6
+    rows = 5
 
 
 @component.adapter(schema.interfaces.IField, ILayoutFormLayer)
@@ -36,17 +36,3 @@ class TextAreaWidget(textarea.TextAreaWidget):
 def TextAreaFieldWidget(field, request):
     """IFieldWidget factory for TextWidget."""
     return FieldWidget(field, TextAreaWidget(request))
-
-
-
-class DescriptionWidget(textarea.TextAreaWidget):
-    """Textarea widget implementation."""
-
-    rows = 4
-
-
-@component.adapter(schema.interfaces.IField, ILayoutFormLayer)
-@interface.implementer(interfaces.IFieldWidget)
-def DescriptionFieldWidget(field, request):
-    """IFieldWidget factory for TextWidget."""
-    return FieldWidget(field, DescriptionWidget(request))
