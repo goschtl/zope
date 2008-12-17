@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version='1.7.2dev'
+version='1.7.3dev'
 
 
 setup(name='z3ext.layout',
