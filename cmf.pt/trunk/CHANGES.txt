@@ -1,11 +1,12 @@
 Changelog
 =========
 
-HEAD
-~~~~
+In next release
 
+ - The ``func_code`` attribute of file-system page templates should
+   simulate a function taking no arguments.
+ 
 cmf.pt 0.1 (released 11/29/2008)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Initial release.
+ - Initial release.
 

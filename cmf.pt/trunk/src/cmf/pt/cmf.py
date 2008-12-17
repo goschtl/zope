@@ -9,6 +9,7 @@ from Products.CMFFormController.BaseControllerPageTemplate import \
 from Products.CMFFormController.FSControllerBase import FSControllerBase
 
 from Shared.DC.Scripts.Script import Script
+from Shared.DC.Scripts.Signature import FuncCode
 from AccessControl import ClassSecurityInfo
 from RestrictedPython import Utilities
 
@@ -22,15 +23,18 @@ class FSPageTemplate(BaseTemplateFile, FSObject, Script):
 
     _default_bindings = {'name_subpath': 'traverse_subpath'}
 
+    func_defaults = None
+    func_code = FuncCode((), 0)
+
     utility_builtins = Utilities.utility_builtins
-    
+
     def __init__(self, id, filepath, fullname=None, properties=None):
         FSObject.__init__(self, id, filepath, fullname, properties)
         self.ZBindings_edit(self._default_bindings)
 
         # instantiate page template
         BaseTemplateFile.__init__(self, filepath)
-        
+
     def _readFile(self, reparse):
         # templates are lazy
         if reparse:
@@ -40,10 +44,6 @@ class FSPageTemplate(BaseTemplateFile, FSObject, Script):
         kwargs['args'] = args
         return BaseTemplateFile.__call__(self, self, **kwargs)    
 
-    @property
-    def func_code(self):
-        return self.render.func_code    
-    
 class FSControllerPageTemplate(FSPageTemplate, FSControllerBase, BaseCPT):
     def __init__(self, id, filepath, fullname=None, properties=None):
         FSPageTemplate.__init__(self, id, filepath, fullname, properties)  
