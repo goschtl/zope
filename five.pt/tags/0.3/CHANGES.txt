@@ -1,0 +1,52 @@
+Changelog
+=========
+
+five.pt 0.3 (released 12/17/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Use bobo traversal if ``OFS.interfaces.ITraversable`` interface is
+  provided. [malthe]
+
+- Adjusted the path expression to provide the full namespace to the render
+  function and not just the request. This matches Zope2 behavior. [hannosch]
+
+five.pt 0.2 (released 11/29/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- From Zope 2.12 onwards, do not acquisition-wrap content
+  provider. [malthe]
+
+- Split out CMF-related code to separate package. [malthe]
+
+- Compatibility changes to support Zope 2.10. [malthe]
+
+five.pt 0.1 (released 11/19/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initial release.
+
+- Simplified template class inheritance. [malthe]
+
+- Added ``path`` and ``exists`` functions to skin template
+  namespace. [malthe]
+
+- Added call-support for old-style classes in path
+  expressions. [malthe]
+
+- Added monkey-patches to replace template engine for module-level
+  view page template instances. [malthe]
+
+- Made `EContext` class more robust. [malthe]
+
+- Register custom file-system page template class for use with CMF
+  form controllers. [malthe]
+
+- Register custom file-system page template class for use with CMF
+  directory views. [malthe]
+
+- Added meta-directives to register browser views, viewlets and
+  viewlet managers using Chameleon templates. [malthe]
+
+- Updated to latest API. [malthe]
+
+- Package structure. [hannosch]
