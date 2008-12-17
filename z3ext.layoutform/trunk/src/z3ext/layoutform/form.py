@@ -97,10 +97,9 @@ class PageletForm(form.Form, PageletBaseForm):
         groups = []
         subforms = []
         for form in self._loadSubforms():
+            form.update()
             if not form.isAvailable():
                 continue
-
-            form.update()
 
             if IGroup.providedBy(form):
                 groups.append((form.weight, form.__name__, form))
