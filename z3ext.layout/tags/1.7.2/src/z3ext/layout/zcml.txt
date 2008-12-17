@@ -1,0 +1,121 @@
+Just tests
+----------
+
+  >>> import tempfile, os.path
+  >>> import z3ext.layout
+  >>> from zope.configuration import xmlconfig
+  >>> context = xmlconfig.file('meta.zcml', z3ext.layout)
+
+  >>> temp_dir = tempfile.mkdtemp()
+  >>> layoutportal = os.path.join(temp_dir, 'layoutportal.pt')
+  >>> open(layoutportal, 'w').write(
+  ... '''<html>
+  ...   <body>
+  ...      <div id="portal" tal:content="structure view/render">
+  ...      </div>
+  ...   </body>
+  ... </html>''')
+
+We should provide template 
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     layout="."
+  ...     template="unknown.pt" />
+  ... </configure>""", context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...
+  ... ConfigurationError: ('No such file', ...unknown.pt')
+
+We can register layout for context or for view
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     layout="."
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: ...
+  ... ConfigurationError: FOR or VIEW are required.
+
+We can register layout for view
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     layout="."
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="layout1"
+  ...     layout="."
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+We can add custom marker interface for layout
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="layout2"
+  ...     layout="."
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     provides="z3ext.layout.tests.IFolder1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+We can use custom layout class
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="layout3"
+  ...     layout="."
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     class="z3ext.layout.tests.MyLayout"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+layout uid
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="testlayout"
+  ...     uid="test.layout"
+  ...     view="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+  >>> from zope.component.eventtesting import getEvents
+  >>> ev = getEvents()[-1]
+  >>> print ev
+  <z3ext.layout.zcml.LayoutCreatedEvent ...>
+
+  >>> ev.uid, ev.name, ev.layoutclass
+  (u'test.layout', u'testlayout', <class 'z3ext.layout.zcml.Layout<testlayout>'>)
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:layout
+  ...     name="testlayout"
+  ...     uid="test.layout2"
+  ...     for="z3ext.layout.tests.IFolder1_1_1"
+  ...     template="%s" />
+  ... </configure>"""%layoutportal, context)
+
+  >>> ev = getEvents()[-1]
+  >>> print ev
+  <z3ext.layout.zcml.LayoutCreatedEvent ...>
+
+  >>> ev.uid, ev.name, ev.layoutclass
+  (u'test.layout2', u'testlayout', <class 'z3ext.layout.zcml.Layout<testlayout>'>)
