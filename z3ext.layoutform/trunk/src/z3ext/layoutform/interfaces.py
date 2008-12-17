@@ -17,10 +17,22 @@ $Id$
 """
 from zope import interface, schema
 from zope.i18nmessageid import MessageFactory
-from z3c.form.interfaces import IFormLayer, IButton
+from z3c.form.interfaces import IFormLayer
 from z3ext.layout.interfaces import IPagelet
 
 _ = MessageFactory('z3ext.layoutform')
+
+
+class IAddAction(interface.Interface):
+    """ add action """
+
+
+class ISaveAction(interface.Interface):
+    """ save action """
+
+
+class ICancelAction(interface.Interface):
+    """ cancel action """
 
 
 class ILayoutFormLayer(IFormLayer):
@@ -99,13 +111,13 @@ class IPageletSubform(interface.Interface):
         """Update form after manager form updated."""
 
 
-class IAddButton(IButton):
+class IAddButton(IAddAction):
     """ add button """
 
 
-class ISaveButton(IButton):
+class ISaveButton(ISaveAction):
     """ save button """
 
 
-class ICancelButton(IButton):
+class ICancelButton(ICancelAction):
     """ cancel button """

@@ -25,7 +25,7 @@ from z3c.form import form, button
 from z3ext.statusmessage.interfaces import IStatusMessage
 
 from form import PageletForm
-from interfaces import _, IPageletAddForm, IAddButton, ICancelButton
+from interfaces import _, IPageletAddForm, IAddAction, ICancelAction
 
 from zope.proxy import removeAllProxies
 
@@ -40,7 +40,7 @@ class PageletAddForm(PageletForm, form.AddForm):
 
     formCancelMessage = _(u'Action has been canceled.')
 
-    @button.buttonAndHandler(_(u'Add'), name='add', provides=IAddButton)
+    @button.buttonAndHandler(_(u'Add'), name='add', provides=IAddAction)
     def handleAdd(self, action):
         data, errors = self.extractData()
 
@@ -56,7 +56,7 @@ class PageletAddForm(PageletForm, form.AddForm):
                 self.redirect(self.nextURL())
 
     @button.buttonAndHandler(
-        _(u'Cancel'), name='cancel', provides=ICancelButton)
+        _(u'Cancel'), name='cancel', provides=ICancelAction)
     def handleCancel(self, action):
         self._finishedAdd = True
         self.redirect(self.cancelURL())

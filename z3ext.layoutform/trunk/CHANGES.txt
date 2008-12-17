@@ -9,6 +9,8 @@ CHANGES
 
 - Fixed 'formError' status message
 
+- Use button.handler instead of buttonAndHandler
+
 
 1.2.8 (2008-11-21)
 ------------------

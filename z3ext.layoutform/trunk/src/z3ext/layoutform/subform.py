@@ -26,7 +26,7 @@ from z3ext.statusmessage.interfaces import IStatusMessage
 
 from utils import applyChanges
 from form import PageletBaseForm
-from interfaces import _, IPageletEditSubForm, IPageletSubform, ISaveButton
+from interfaces import _, IPageletEditSubForm, IPageletSubform, ISaveAction
 
 
 class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
@@ -38,7 +38,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
 
-    @button.handler(ISaveButton)
+    @button.handler(ISaveAction)
     def handleApply(self, action):
         data, errors = self.extractData()
         if errors:
