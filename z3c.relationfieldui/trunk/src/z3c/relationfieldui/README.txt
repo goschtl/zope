@@ -7,6 +7,9 @@ relations as defined by `z3c.relationfield`_.
 
 .. _`z3c.relationfield`: http://pypi.python.org/pypi/z3c.relationfield
 
+This package does not provide a ``z3c.form`` widget, but it is hoped
+that will eventually be developed as well.
+
 Setup
 =====
 
