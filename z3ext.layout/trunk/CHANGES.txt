@@ -2,7 +2,13 @@
 CHANGES
 =======
 
-1.7.1 (2008-12-??)
+1.7.2 (2008-12-17)
+------------------
+
+- Update default styles
+
+
+1.7.1 (2008-12-15)
 ------------------
 
 - Check if context provides interface in @@pagelet view and pagelet: tales expresion
