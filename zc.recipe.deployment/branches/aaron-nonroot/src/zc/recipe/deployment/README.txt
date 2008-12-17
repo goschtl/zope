@@ -1,9 +1,9 @@
-Using the deployment recipe is pretty simple. Just specify a
+Using the deployment recipe is pretty simple. Jusr specify a
 deployment name, specified via the part name, and a deployment user.
 
 Let's add a deployment to a sample buildout:
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo
@@ -14,7 +14,8 @@ Let's add a deployment to a sample buildout:
     ... user = %s
     ... etc-user = %s
     ... ''' % (sample_buildout, user, user))
-    >>> buildout.install([])
+
+    >>> print system(join('bin', 'buildout')),
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
@@ -34,6 +35,7 @@ Let's add a deployment to a sample buildout:
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'USER'
+
 
 Note that we are providing a prefix and an etc-user here.  These options
 default to '/' and 'root', respectively.
@@ -74,7 +76,7 @@ by other recipes:
 
 If we uninstall, then the directories are removed.
 
-    >>> buildout.install([], uninstall_args=['foo'])
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -84,6 +86,7 @@ If we uninstall, then the directories are removed.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
+    >>> import os
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
     >>> os.path.exists(os.path.join(sample_buildout, 'var/log/foo'))
@@ -94,7 +97,7 @@ If we uninstall, then the directories are removed.
 The log and run directories are only removed if they are empty.
 To see that, we'll put a file in each of the directories created:
 
-    >>> buildout.install([])
+    >>> print system(join('bin', 'buildout')), # doctest: +ELLIPSIS
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
@@ -121,7 +124,7 @@ To see that, we'll put a file in each of the directories created:
 
 And then uninstall:
 
-    >>> buildout.install([], uninstall_args=['foo'])
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -142,12 +145,12 @@ And then uninstall:
 
 Here we see that the var and run directories are kept. The etc
 directory is discarded because only buildout recipes should write to
-it and all of it's data are expendible.
+it and all of its data are expendible.
 
 If we reinstall, remove the files, and uninstall, then the directories
 are removed:
 
-    >>> buildout.install([])
+    >>> print system(join('bin', 'buildout')),
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
@@ -171,7 +174,7 @@ are removed:
     >>> os.remove(os.path.join(sample_buildout, 'var/log/foo/x'))
     >>> os.remove(os.path.join(sample_buildout, 'var/run/foo/x'))
 
-    >>> buildout.install([], uninstall_args=['foo'])
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -195,7 +198,7 @@ The deployment name is used for naming generated files and directories.
 The deployment name defaults to the section name, but the deployment
 name can be specified explicitly:
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo
@@ -208,7 +211,7 @@ name can be specified explicitly:
     ... etc-user = %s
     ... ''' % (sample_buildout, user, user))
 
-    >>> buildout.install([])
+    >>> print system(join('bin', 'buildout')),
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/bar',
@@ -228,6 +231,7 @@ name can be specified explicitly:
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'USER'
+
 
     >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
     drwxr-xr-x USER USER PREFIX/etc/bar
@@ -272,7 +276,7 @@ used to do that.
 
 Let's add a configuration file to our buildout:
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo x.cfg
@@ -290,7 +294,15 @@ Let's add a configuration file to our buildout:
     ...        zzz
     ... ''' % (sample_buildout, user, user))
 
-    >>> buildout.install([])
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing 'PREFIX/etc/bar'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/bar'.
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/foo',
@@ -322,7 +334,7 @@ By default, the configuration is installed as a part:
 If a deployment is specified, then the file is placed in the
 deployment etc directory:
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo x.cfg
@@ -341,26 +353,9 @@ deployment etc directory:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> buildout.install([])
-    Installing foo.
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling x.cfg.
+    Updating foo.
     Installing x.cfg.
 
     >>> os.path.exists(join('parts', 'x.cfg'))
@@ -374,7 +369,9 @@ deployment etc directory:
 We can read data from a file rather than specifying in the
 configuration:
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('x.in', '1\n2\n3\n')
+
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo x.cfg
@@ -391,27 +388,9 @@ configuration:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> write('x.in', '1\n2\n3\n')
-    >>> buildout.install([])
-    Installing foo.
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling x.cfg.
+    Updating foo.
     Installing x.cfg.
 
     >>> cat(os.path.join(sample_buildout, 'etc/foo/x.cfg'))
@@ -436,7 +415,7 @@ The crontab recipe provides support for creating crontab files.  It
 uses a times option to specify times to run the command and a command
 option containing the command.
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo cron
@@ -454,26 +433,9 @@ option containing the command.
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> buildout.install([])
-    Installing foo.
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/log/foo',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/var/run/foo',
-        mode 750, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/cron.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/init.d',
-        mode 755, user 'USER', group 'USER'
-    zc.recipe.deployment: 
-        Creating 'PREFIX/etc/logrotate.d',
-        mode 755, user 'USER', group 'USER'
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling x.cfg.
+    Updating foo.
     Installing cron.
 
 This example creates PREFIX/etc/cron.d/foo-cron
@@ -484,7 +446,7 @@ This example creates PREFIX/etc/cron.d/foo-cron
 .. make sure cron recipe honors deployment name option:
 
 
-    >>> buildout = setupBuildout(sample_buildout, 'buildout.cfg',
+    >>> write('buildout.cfg',
     ... '''
     ... [buildout]
     ... parts = foo cron
@@ -503,7 +465,16 @@ This example creates PREFIX/etc/cron.d/foo-cron
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> buildout.install([])
+    >>> print system(join('bin', 'buildout')),
+    Uninstalling cron.
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing 'PREFIX/etc/foo'
+    zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
+    zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
     Installing foo.
     zc.recipe.deployment: 
         Creating 'PREFIX/etc/bar',
@@ -528,10 +499,9 @@ This example creates PREFIX/etc/cron.d/foo-cron
     >>> open(os.path.join(sample_buildout, 'etc/cron.d/bar-cron')).read()
     '30 23 * * *\tUSER\techo hello world!\n'
 
-
 .. cleanup
 
-    >>> buildout.install([], uninstall_args=['cron', 'foo'])
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
