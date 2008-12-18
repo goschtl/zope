@@ -320,7 +320,7 @@ provide IPageTemplate adapter for pagelet
   >>> pagelet.render()
   Traceback (most recent call last):
   ...
-  LookupError: Can't find IPageTemplate for pagelet.
+  LookupError: Can't find IPagelet for this pagelet.
 
   >>> try:
   ...     tmp = __file__
@@ -328,13 +328,16 @@ provide IPageTemplate adapter for pagelet
   ...     from z3ext.layout import tests
   ...     __file__ = tests.__file__
 
-  >>> from zope.pagetemplate.interfaces import IPageTemplate
-  >>> from zope.app.pagetemplate import ViewPageTemplateFile
-  >>> pt = ViewPageTemplateFile(template)
-  >>> def getPT(context, request):
-  ...     return pt
-  >>> component.getSiteManager().registerAdapter(
-  ...     getPT, (pagelet.__class__, interface.Interface), IPageTemplate, '')
+  >>> pageletClass = pagelet.__class__
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pagelet
+  ...       for="z3ext.layout.TESTS.pageletClass"
+  ...       template="%s"
+  ...       permission="zope.Public" />
+  ... </configure>
+  ... """%template, context)
 
   >>> print pagelet()
   <div>My pagelet</div>

@@ -23,7 +23,6 @@ from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.tales.expressions import SimpleModuleImporter
-from zope.pagetemplate.interfaces import IPageTemplate
 from zope.app.publisher.browser import queryDefaultViewName
 
 from z3ext.layout.interfaces import IPagelet, IPageletType, ILayout
@@ -32,7 +31,7 @@ from z3ext.layout.interfaces import IPagelet, IPageletType, ILayout
 @interface.implementer(IPagelet)
 @component.adapter(interface.Interface, interface.Interface)
 def queryPagelet(context, request):
-    name = queryDefaultViewName(context, request, 'index.html')
+    name = queryDefaultViewName(context, request, None)
     if name:
         view = queryMultiAdapter((context, request), name=name)
         if IPagelet.providedBy(view):
@@ -56,10 +55,8 @@ def queryLayout(view, request, context=None, iface=ILayout, name=''):
 class BrowserPagelet(BrowserPage):
     interface.implements(IPagelet)
 
-    layoutname = u''
-
-    index = None
     template = None
+    layoutname = u''
 
     def __init__(self, context, request, *args):
         self.managers = args
@@ -69,15 +66,14 @@ class BrowserPagelet(BrowserPage):
         pass
 
     def render(self):
-        template = queryMultiAdapter((self, self.request), IPageTemplate)
-
-        if template is None:
-            template = self.template or self.index
-            if template is None:
-                raise LookupError("Can't find IPageTemplate for pagelet.")
-            return template()
-
-        return template(self)
+        if self.template is not None:
+            return self.template()
+        else:
+            template = queryMultiAdapter((self, self.request), IPagelet, name='')
+            if template is not None:
+                template.update()
+                return template.render()
+            raise LookupError("Can't find IPagelet for this pagelet.")
 
     def __call__(self):
         self.update()
