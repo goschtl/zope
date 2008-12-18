@@ -24,7 +24,6 @@
   <exclude package="zope.app.folder.browser" />
   <exclude package="zope.app.i18n.browser" />
   <exclude package="zope.app.securitypolicy.browser" />
-  <exclude package="zope.app.session" file="browser.zcml" />
   <exclude package="zope.dublincore.browser" />
 
   <!-- meta configure -->
@@ -55,7 +54,6 @@
   <include package="zope.app.publisher.browser" />
   <include package="zope.app.security" />
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
   <include package="zope.component" />

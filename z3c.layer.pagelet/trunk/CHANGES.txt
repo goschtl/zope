@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+1.0.2dev (unreleased)
+---------------------
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered
+
+
 1.0.1 (2008-01-24)
 ------------------
 
