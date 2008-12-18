@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <include package="five.pt" />
-  <include package=".cmf" />
+  <include package=".fs" />
   
 </configure>
