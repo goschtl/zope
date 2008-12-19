@@ -57,6 +57,14 @@ def addColumn(self, class_, name, cellRenderer=None, headCellRenderer=None,
     return column
 
 
+def getName(item):
+    # probably not IPhysicallyLocatable but still could have a __name__
+    try:
+        return api.getName(item)
+    except TypeError, e:
+        return item.__name__
+
+
 def safeGetAttr(obj, attr, default):
     try:
         return getattr(obj, attr, default)
@@ -134,7 +142,7 @@ class NameColumn(Column):
     header = _('Name')
 
     def renderCell(self, item):
-        return api.getName(item)
+        return getName(item)
 
 
 class RadioColumn(Column):
@@ -153,13 +161,13 @@ class RadioColumn(Column):
         return property(get, set)
 
     def getSortKey(self, item):
-        return api.getName(item)
+        return getName(item)
 
     def getItemKey(self, item):
         return '%s-selectedItem' % self.id
 
     def getItemValue(self, item):
-        return api.getName(item)
+        return getName(item)
 
     def update(self):
         items = [item for item in self.table.values
@@ -193,13 +201,13 @@ class CheckBoxColumn(Column):
         return property(get, set)
 
     def getSortKey(self, item):
-        return api.getName(item)
+        return getName(item)
 
     def getItemKey(self, item):
         return '%s-selectedItems' % self.id
 
     def getItemValue(self, item):
-        return api.getName(item)
+        return getName(item)
 
     def isSelected(self, item):
         v = self.request.get(self.getItemKey(item), [])
@@ -326,7 +334,7 @@ class LinkColumn(Column):
 
     def getLinkContent(self, item):
         """Setup link content."""
-        return self.linkContent or api.getName(item)
+        return self.linkContent or getName(item)
 
     def renderCell(self, item):
         # setup a tag
@@ -349,7 +357,7 @@ class SelectedItemColumn(LinkColumn):
         return '%s-selectedItems' % self.id
 
     def getItemValue(self, item):
-        return api.getName(item)
+        return getName(item)
 
     def getSortKey(self, item):
         """Returns the sort key used for column sorting."""
@@ -357,7 +365,7 @@ class SelectedItemColumn(LinkColumn):
 
     def getLinkContent(self, item):
         """Setup link content."""
-        return self.linkContent or api.getName(item)
+        return self.linkContent or getName(item)
 
     def getLinkURL(self, item):
         """Setup link url."""
