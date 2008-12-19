@@ -1,0 +1,3 @@
+<div class="z-form-display"
+     tal:content="structure context/@@pagelet/layoutform.form">
+</div>

@@ -11,6 +11,8 @@ CHANGES
 
 - Use button.handler instead of buttonAndHandler
 
+- Use new pagelet api for rendering widgets
+
 
 1.2.8 (2008-11-21)
 ------------------

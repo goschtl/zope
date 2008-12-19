@@ -137,7 +137,7 @@ class PageletForm(form.Form, PageletBaseForm):
         self.actions.execute()
 
 
-class PageletDisplayForm(form.DisplayForm, PageletForm):
+class PageletDisplayForm(PageletForm, form.DisplayForm):
     interface.implements(IPageletDisplayForm)
 
     render = PageletForm.render

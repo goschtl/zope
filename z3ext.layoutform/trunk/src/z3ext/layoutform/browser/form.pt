@@ -2,5 +2,5 @@
      tal:content="structure context/@@pagelet/layoutform.form">
 </div>
 
-<tal:block tal:repeat="form context/forms"
-	   tal:content="structure form/@@pagelet/layoutform.form" />
+<tal:block tal:repeat="context context/forms"
+	   tal:content="structure pagelet:form" />

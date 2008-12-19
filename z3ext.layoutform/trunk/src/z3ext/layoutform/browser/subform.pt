@@ -4,6 +4,6 @@
   <div class="z-form-description"
        tal:condition="context/description" tal:content="context/description"></div>
 
-  <tal:block tal:repeat="widget context/widgets/values"
-       tal:content="structure widget/@@pagelet/layoutform.widget" />
+  <tal:block tal:repeat="context context/widgets/values"
+	     tal:content="structure pagelet:layoutform.widget" />
 </div>

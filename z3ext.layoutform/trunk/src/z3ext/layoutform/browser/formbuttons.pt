@@ -1,7 +1,4 @@
 <div class="z-form-controls" tal:condition="context/actions|nothing">
-  <tal:block tal:content="structure
-             context/@@pagelet/layoutform.buttonsInfo|nothing" />
-
   <span tal:condition="context/actions/values">
     <hr />
     <input tal:repeat="action context/actions/values"

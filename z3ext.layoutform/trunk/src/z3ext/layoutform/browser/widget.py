@@ -15,24 +15,12 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-from zope import interface
+from zope import interface, component
+from z3c.form.interfaces import IWidget
+from z3ext.layout.interfaces import IPageletManager
 
 
-class IForm(interface.Interface):
-    """ form view """
-
-
-class IViewspace(interface.Interface):
-    """ form viewspace """
-
-
-class IExtraViewspaceInfo(interface.Interface):
-    """ extra widget information """
-
-
-class IWidget(interface.Interface):
-    """ widget view """
-
-
-class IFormButtons(interface.Interface):
-    """ form buttons """
+@component.adapter(IWidget)
+@interface.implementer(IPageletManager)
+def getWidgetManager(widget):
+    return widget.field, widget.form
