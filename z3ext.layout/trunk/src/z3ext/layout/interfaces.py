@@ -46,6 +46,13 @@ class IPageletType(interface.interfaces.IInterface):
     """ pagelet interface type """
 
 
+class IPageletManager(interface.Interface):
+    """ pagelet manager """
+
+class IPageletManagerType(IPageletType):
+    """ pagelet interface type with view as manager """
+
+
 class ILayout(IBrowserPage):
     """ layout """
 

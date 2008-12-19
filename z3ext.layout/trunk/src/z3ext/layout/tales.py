@@ -21,6 +21,7 @@ from zope.component import queryMultiAdapter
 from zope.tales.expressions import StringExpr
 
 from interfaces import IPagelet, IPageletType
+from interfaces import IPageletManager, IPageletManagerType
 
 
 class TALESPageletExpression(StringExpr):
@@ -34,7 +35,10 @@ class TALESPageletExpression(StringExpr):
 
         # lookup pagelet
         if name:
-            iface = queryUtility(IPageletType, name)
+            iface = queryUtility(IPageletManagerType, name)
+            if iface is None:
+                iface = queryUtility(IPageletType, name)
+
             if iface is None:
                 try:
                     iface, iname = name.rsplit('.', 1)
@@ -49,15 +53,23 @@ class TALESPageletExpression(StringExpr):
         if iface.providedBy(context):
             return context.render()
 
-        try:
+        if IPageletManagerType.providedBy(iface):
+            manager = IPageletManager(context, None)
+            context = [context, request]
+            if type(manager) in (list, tuple):
+                context.extend(manager)
+            view = queryMultiAdapter(context, iface)
+        else:
             view = queryMultiAdapter((context, request), iface)
-            if view is not None:
+
+        if view is not None:
+            try:
                 view.update()
                 if view.isRedirected:
                     return u''
                 return view.render()
-        except Exception, err:
-            log = logging.getLogger('z3ext.layout')
-            log.exception(err)
+            except Exception, err:
+                log = logging.getLogger('z3ext.layout')
+                log.exception(err)
 
         return u''

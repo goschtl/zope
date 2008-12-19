@@ -25,7 +25,8 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.tales.expressions import SimpleModuleImporter
 from zope.app.publisher.browser import queryDefaultViewName
 
-from z3ext.layout.interfaces import IPagelet, IPageletType, ILayout
+from z3ext.layout.interfaces import IPagelet, ILayout, IPageletType
+from z3ext.layout.interfaces import IPageletManager, IPageletManagerType
 
 
 @interface.implementer(IPagelet)
@@ -123,7 +124,10 @@ class PageletPublisher(object):
 
     def __getitem__(self, name):
         if name:
-            iface = queryUtility(IPageletType, name)
+            iface = queryUtility(IPageletManagerType, name)
+            if iface is None:
+                iface = queryUtility(IPageletType, name)
+
             if iface is None:
                 try:
                     iface, iname = name.rsplit('.', 1)
@@ -133,19 +137,29 @@ class PageletPublisher(object):
         else:
             iface = IPagelet
 
-        if iface.providedBy(self.context):
-            return self.context.render()
+        context = self.context
 
-        try:
-            view = queryMultiAdapter((self.context, self.request), iface)
-            if view is not None:
+        if iface.providedBy(context):
+            return context.render()
+
+        if IPageletManagerType.providedBy(iface):
+            manager = IPageletManager(context, None)
+            context = [context, self.request]
+            if type(manager) in (list, tuple):
+                context.extend(manager)
+            view = queryMultiAdapter(context, iface)
+        else:
+            view = queryMultiAdapter((context, self.request), iface)
+
+        if view is not None:
+            try:
                 view.update()
                 if view.isRedirected:
                     return u''
                 return view.render()
-        except Exception, err:
-            log = logging.getLogger('z3ext.layout')
-            log.exception(err)
+            except Exception, err:
+                log = logging.getLogger('z3ext.layout')
+                log.exception(err)
 
         raise KeyError(name)
 

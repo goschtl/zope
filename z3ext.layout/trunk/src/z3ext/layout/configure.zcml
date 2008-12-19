@@ -21,7 +21,7 @@
      factory=".pagelet.PageletPublisher" />
 
   <class class=".pagelet.PageletPublisher">
-    <allow 
+    <allow
        attributes="__getitem__"
        interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
   </class>

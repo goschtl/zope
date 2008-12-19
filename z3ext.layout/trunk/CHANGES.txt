@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.7.4 (2008-12-??)
+------------------
+
+- Added IPageletManagerType, same as IPageletType but use extra parameters for adopter
+
+
 1.7.3 (2008-12-18)
 ------------------
 

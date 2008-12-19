@@ -282,7 +282,7 @@ def sendNotification(uid, name, view, context, layer, layoutclass, keywords):
 
 # pagelet directive
 def pageletDirective(
-    _context, permission, for_=interface.Interface, name=u'', manager=(), 
+    _context, permission, for_=interface.Interface, name=u'', manager=(),
     class_=None, layer=IDefaultBrowserLayer, provides=[IPagelet,],
     allowed_interface=[], allowed_attributes=[],
     template=u'', layout=u'', **kwargs):
