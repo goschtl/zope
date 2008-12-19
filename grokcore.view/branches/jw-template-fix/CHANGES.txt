@@ -1,0 +1,34 @@
+Changes
+=======
+
+1.3 (unreleased)
+----------------
+
+* Fix the factory for subdirectories of the DirectoryResource implementation
+  by using hooks in zope.app.publihser.browser.directoryresource.
+
+* Update APIs interfaces to include the new ``path`` directive and
+  new ``DirectoryResource`` component.
+
+1.2 (2008-10-16)
+----------------
+
+* Expose the ``DirectoryResource`` class as a component for registering
+  directories as resources. This is accompanied by the ``path`` directive that
+  is used to point to the directory holding resources by way of an relative (to
+  the module) or absolute path. ``DirectoryResource`` components can be
+  differentiated by name and layer.
+
+1.1 (2008-09-22)
+----------------
+
+* ``meta.py`` module containing the grokkers has been split in a
+  package with separate modules for the view, template, skin and
+  static resources grokkers. This allows applications to use only
+  grokkers they need (and maybe redefine others).
+
+1.0 (2006-08-07)
+----------------
+
+* Created ``grokcore.view`` in July 2008 by factoring security-related
+  components, grokkers and directives out of Grok.
