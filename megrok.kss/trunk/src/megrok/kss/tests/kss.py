@@ -34,6 +34,7 @@ non-authenticated users::
   
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser()
+  >>> browser.handleErrors = False
   >>> browser.open('http://localhost/model/@@testview/@@getId')
   >>> print browser.contents
   <?xml version="1.0" ?>
