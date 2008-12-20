@@ -1,9 +1,11 @@
-<div class="z-form-fieldset">
+<div class="z-form-group">
   <h1 class="z-form-label" 
       tal:condition="context/label" tal:content="context/label">Do something</h1>
   <div class="z-form-description"
        tal:condition="context/description" tal:content="context/description"></div>
-
-  <tal:block tal:repeat="context context/widgets/values"
-	     tal:content="structure pagelet:layoutform.widget" />
+  
+  <div class="z-form-fieldset">
+    <tal:block tal:repeat="context context/widgets/values"
+	       tal:content="structure pagelet:layoutform.widget" />
+  </div>
 </div>
