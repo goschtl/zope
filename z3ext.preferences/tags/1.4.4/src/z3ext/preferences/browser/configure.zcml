@@ -1,0 +1,101 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="z3ext.preferences">
+
+  <!-- layouts -->
+  <z3ext:layout
+     layout="portal"
+     name="workspace"
+     for="..interfaces.IRootPreferences"
+     template="layout.pt"
+     hidden="yes" />
+
+  <z3ext:layout
+     layout="workspace"
+     for="..interfaces.IPreferenceCategory"
+     template="layoutcontent.pt"
+     hidden="yes" />
+
+  <!-- pagelet types -->
+  <z3ext:pageletType
+     name="preference.editGroup"
+     interface=".interfaces.IEdit" />
+
+  <z3ext:pageletType
+     name="preference.previewGroup"
+     interface=".interfaces.IPreview" />
+
+  <!-- browser view -->
+  <adapter
+     name="preferences"
+     provides="zope.publisher.interfaces.browser.IBrowserView"
+     factory=".preferences.getPreferences" />
+
+  <browser:defaultView
+     name="index.html"
+     for="..interfaces.IPreferenceGroup" />
+
+  <browser:menuItem
+     action="index.html"
+     for="..interfaces.IPreferenceGroup"
+     menu="zmi_views"
+     title="View"
+     permission="zope.Public" />
+
+  <!-- root preferences view -->
+  <z3ext:pagelet
+     for="..interfaces.IRootPreferences"
+     name="index.html"
+     template="index.pt"
+     class=".index.PreferencesView"
+     permission="zope.View" />
+
+  <!-- preference group view -->
+  <z3ext:pagelet
+     name="index.html"
+     for="..interfaces.IPreferenceGroup"
+     template="group.pt"
+     class=".group.PreferenceGroup"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     name="index.html"
+     for="..interfaces.IPreferenceCategory"
+     template="groupcategory.pt"
+     class=".group.PreferenceGroup"
+     permission="zope.Public" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPreferenceGroup"
+     class=".group.PreferenceGroupView"
+     type="preference.editGroup" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPreferenceGroup"
+     template="grouppreview.pt"
+     type="preference.previewGroup" />
+
+  <!-- navigation -->
+  <browser:viewletManager
+     name="z3ext.preferences-navigation"
+     provides=".interfaces.IPreferencesNavigation"
+     for="..interfaces.IPreferenceGroup"
+     template="navigation.pt"
+     class=".navigation.Navigation"
+     permission="zope.Public" />
+
+  <!-- breadcrumb -->
+  <adapter
+     zcml:condition="installed z3c.breadcrumb"
+     factory=".breadcrumb.PreferenceGroupBreadcrumb" />
+
+  <!-- styles -->
+  <z3ext:resourceinclude
+     name="z3ext-preferences.css"
+     library="z3ext" type="stylesheet"
+     file="styles.css" filetype="zrt" />
+
+</configure>
