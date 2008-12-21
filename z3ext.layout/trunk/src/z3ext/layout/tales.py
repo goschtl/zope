@@ -16,12 +16,10 @@
 $Id: tales.py 2720 2008-08-25 11:15:10Z fafhrd91 $
 """
 import logging, sys
-from zope.component import queryUtility
-from zope.component import queryMultiAdapter
 from zope.tales.expressions import StringExpr
+from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 
-from interfaces import IPagelet, IPageletType
-from interfaces import IPageletManager, IPageletManagerType
+from interfaces import IPagelet, IPageletType, IPageletContext
 
 
 class TALESPageletExpression(StringExpr):
@@ -35,9 +33,7 @@ class TALESPageletExpression(StringExpr):
 
         # lookup pagelet
         if name:
-            iface = queryUtility(IPageletManagerType, name)
-            if iface is None:
-                iface = queryUtility(IPageletType, name)
+            iface = queryUtility(IPageletType, name)
 
             if iface is None:
                 try:
@@ -53,12 +49,15 @@ class TALESPageletExpression(StringExpr):
         if iface.providedBy(context):
             return context.render()
 
-        if IPageletManagerType.providedBy(iface):
-            manager = IPageletManager(context, None)
-            context = [context, request]
-            if type(manager) in (list, tuple):
-                context.extend(manager)
-            view = queryMultiAdapter(context, iface)
+        contexts = queryAdapter(context, IPageletContext, name)
+        if contexts is not None:
+            required = [context]
+            if type(contexts) in (list, tuple):
+                required.extend(contexts)
+            else:
+                required.append(contexts)
+            required.append(request)
+            view = queryMultiAdapter(required, iface)
         else:
             view = queryMultiAdapter((context, request), iface)
 

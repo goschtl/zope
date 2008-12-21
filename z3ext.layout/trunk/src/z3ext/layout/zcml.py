@@ -18,6 +18,7 @@ $Id$
 import os.path
 from zope import schema, interface, event
 from zope.schema.interfaces import IFromUnicode
+from zope.component import getUtility, queryUtility
 from zope.component.interface import provideInterface
 from zope.component.zcml import handler, adapter, utility
 from zope.security.checker import defineChecker, Checker, CheckerPublic
@@ -27,12 +28,27 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.security.zcml import Permission
 
 from interfaces import IPagelet, IPageletType
 from interfaces import ILayout, ILayoutCreatedEvent
 
 from pagelet import BrowserPagelet
 from layout import Layout, LayoutTemplateFile
+
+
+class IPageletTypeDirective(interface.Interface):
+    """A directive to register a new pagelet type."""
+
+    name = schema.TextLine(
+        title = u'Name',
+        description = u'Pagelet type name',
+        required = True)
+
+    interface = GlobalInterface(
+        title = u'Interface',
+        description = u'Interface that is used as pagelet type.',
+        required = True)
 
 
 class IPageletDirective(IBasicViewInformation):
@@ -42,29 +58,27 @@ class IPageletDirective(IBasicViewInformation):
     that are set as attributes on the pagelet after creation.
     """
 
-    for_ = GlobalObject(
+    for_ = Tokens(
         title = u"Context",
         description = u"The content interface or class this pagelet is for.",
-        required = False)
+        value_type = GlobalObject(missing_value=object()),
+        required = True)
 
     name = schema.TextLine(
         title = u"The name of the pagelet.",
         description = u"The name shows up in URLs/paths. For example 'foo'.",
         required = False)
 
-    manager = Tokens(
-        title = u"Additional managers.",
-        description = u"""A pagelet can adapt (for, layer). With managers pagelet can adats as (for, layer, manager1, manager2, manager3, ...)""",
+    type = Tokens(
+        title = u"Pagelet type.",
         required = False,
-        value_type = GlobalObject())
+        value_type = schema.TextLine())
 
     provides = Tokens(
         title = u"The interface this pagelets provides.",
-        description = u"""A pagelet can provide an interface.  This would be used for
-        views that support other views.""",
+        description = u"""A pagelet can provide an interface.  This would be used for views that support other views.""",
         required = False,
-        value_type = GlobalInterface(),
-        default = [IPagelet,])
+        value_type = GlobalInterface())
 
     class_ = GlobalObject(
         title=u"Class",
@@ -83,6 +97,13 @@ class IPageletDirective(IBasicViewInformation):
         description = u"The name is used to look up the layout.",
         default=u'',
         required=False)
+
+    layer = GlobalObject(
+        title = u'Layer',
+        description = u'The layer for which the template should be available',
+        required = False,
+        default = IDefaultBrowserLayer)
+
 
 # Arbitrary keys and values are allowed to be passed to the pagelet.
 IPageletDirective.setTaggedValue('keyword_arguments', True)
@@ -165,10 +186,14 @@ class ILayoutDirective(interface.Interface):
 ILayoutDirective.setTaggedValue('keyword_arguments', True)
 
 
+def pageletTypeDirective(_context, name, interface):
+    provideInterface(name, interface, IPageletType)
+
+
 def layoutDirective(
     _context, uid='', template='', for_=None, view=None, name = u'',
     layer = IDefaultBrowserLayer, provides = ILayout,
-    contentType='text/html', class_ = None, layout = '', 
+    contentType='text/html', class_ = None, layout = '',
     title='', description='', **kwargs):
 
     if not layout:
@@ -280,12 +305,17 @@ def sendNotification(uid, name, view, context, layer, layoutclass, keywords):
             uid, name, view, context, layer, layoutclass, keywords))
 
 
+Type = type
+
 # pagelet directive
-def pageletDirective(
-    _context, permission, for_=interface.Interface, name=u'', manager=(),
-    class_=None, layer=IDefaultBrowserLayer, provides=[IPagelet,],
-    allowed_interface=[], allowed_attributes=[],
-    template=u'', layout=u'', **kwargs):
+def pageletDirective(_context, for_, name=u'', type=(),
+                     class_=None, layer=IDefaultBrowserLayer, provides=[],
+                     allowed_interface=[], allowed_attributes=[],
+                     template=u'', layout=u'', permission='zope.Public', **kwargs):
+
+    provides = list(provides)
+    if IPagelet not in provides:
+        provides.append(IPagelet)
 
     # Security map dictionary
     required = {}
@@ -316,7 +346,13 @@ def pageletDirective(
     else:
         bases = (BrowserPagelet,)
 
-    new_class = type('PageletClass from %s'%class_, bases, cdict)
+    new_class = Type('PageletClass from %s'%class_, bases, cdict)
+
+    # extend provides with type
+    for tp in type:
+        iface = queryUtility(IPageletType, tp)
+        if iface is not None:
+            provides.append(iface)
 
     # convert kwargs
     for iface in provides:
@@ -328,6 +364,7 @@ def pageletDirective(
                 setattr(new_class, fname, field.fromUnicode(kwargs[fname]))
             else:
                 if field.required and not hasattr(new_class, fname):
+                    print provides, new_class, fname
                     raise ConfigurationError("Required field is missing", fname)
 
                 if not hasattr(new_class, fname):
@@ -357,9 +394,6 @@ def pageletDirective(
 
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)
-    if IPagelet not in provides:
-        allowed_interface.append(IPagelet)
-
     allowed_attributes.extend(kwargs.keys())
     allowed_attributes.extend(('__call__', 'browserDefault',
                                'update', 'render', 'publishTraverse'))
@@ -382,28 +416,39 @@ def pageletDirective(
     defineChecker(new_class, Checker(required))
 
     # register pagelet
-    _context.action(
-        discriminator = ('z3ext.layout:registerPagelets', new_class),
-        callable = registerPagelets,
-        args = (for_, layer, new_class, manager, provides, name, _context.info))
-
-
-def registerPagelets(for_, layer, newClass, managers, provides, name, info):
-    if managers:
-        required = [for_, layer] + managers
+    for_.append(layer)
+    if type:
+        _context.action(
+            discriminator = ('z3ext.layout:registerPagelets', new_class),
+            callable = registerTypedPagelets,
+            args = (for_, new_class, type, name, _context.info))
     else:
-        required = (for_, layer)
+        _context.action(
+            discriminator = ('z3ext.layout:registerPagelets', tuple(for_), layer, name),
+            callable = registerPagelets,
+            args = (for_, new_class, provides, name, _context.info))
+
+
+def registerPagelets(required, newClass, provides, name, info):
+    handler('registerAdapter', newClass, required, IPagelet, name, info)
 
     for iface in provides:
+        if iface is IPagelet:
+            continue
+
         if IPageletType.providedBy(iface):
             handler('registerAdapter', newClass, required, iface, '', info)
-        else:
-            handler('registerAdapter', newClass, required, iface, name, info)
+
+
+def registerTypedPagelets(required, newClass, type, name, info):
+    for tp in type:
+        iface = getUtility(IPageletType, tp)
+        handler('registerAdapter', newClass, required, iface, name, info)
 
 
 def _handle_allowed_interface(
     _context, allowed_interface, permission, required):
-    # Allow access for all names defined by named interfaces 
+    # Allow access for all names defined by named interfaces
     if allowed_interface:
         for i in allowed_interface:
             _context.action(
@@ -423,8 +468,9 @@ def _handle_allowed_attributes(
             required[name] = permission
 
 def _handle_for(_context, for_):
-    if for_ is not None:
-        _context.action(
-            discriminator = None,
-            callable = provideInterface,
-            args = ('', for_))
+    for iface in for_:
+        if iface is not None:
+            _context.action(
+                discriminator = None,
+                callable = provideInterface,
+                args = ('', iface))

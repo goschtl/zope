@@ -12,6 +12,11 @@
        name="pagelet"
        schema=".zcml.IPageletDirective"
        handler=".zcml.pageletDirective" />
+
+    <meta:directive
+       name="pageletType"
+       schema=".zcml.IPageletTypeDirective"
+       handler=".zcml.pageletTypeDirective" />
   </meta:directives>
 
 </configure>

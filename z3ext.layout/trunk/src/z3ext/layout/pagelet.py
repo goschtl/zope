@@ -17,16 +17,14 @@ $Id$
 """
 import logging, sys
 from zope import interface, component
-from zope.component import queryUtility
-from zope.component import queryMultiAdapter
+from zope.component import queryUtility, queryAdapter, queryMultiAdapter
 from zope.publisher.browser import BrowserPage
 from zope.publisher.interfaces import NotFound
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.tales.expressions import SimpleModuleImporter
 from zope.app.publisher.browser import queryDefaultViewName
 
-from z3ext.layout.interfaces import IPagelet, ILayout, IPageletType
-from z3ext.layout.interfaces import IPageletManager, IPageletManagerType
+from interfaces import ILayout, IPagelet, IPageletType, IPageletContext
 
 
 @interface.implementer(IPagelet)
@@ -59,9 +57,15 @@ class BrowserPagelet(BrowserPage):
     template = None
     layoutname = u''
 
-    def __init__(self, context, request, *args):
-        self.managers = args
+    def __init__(self, context, *args):
+        request = args[-1]
         super(BrowserPagelet, self).__init__(context, request)
+
+        args = args[:-1]
+        self.contexts = args
+
+        for idx in range(len(args)):
+            setattr(self, 'context%s'%idx, args[idx])
 
     def update(self):
         pass
@@ -70,7 +74,7 @@ class BrowserPagelet(BrowserPage):
         if self.template is not None:
             return self.template()
         else:
-            template = queryMultiAdapter((self, self.request), IPagelet, name='')
+            template = queryMultiAdapter((self, self.request), IPagelet)
             if template is not None:
                 template.update()
                 return template.render()
@@ -114,9 +118,9 @@ class PageletPublisher(object):
 
         raise NotFound(self.context, name, request)
 
-    def __call__(self):
+    def __call__(self, name=''):
         try:
-            return self['']
+            return self[name]
         except KeyError:
             pass
 
@@ -124,9 +128,7 @@ class PageletPublisher(object):
 
     def __getitem__(self, name):
         if name:
-            iface = queryUtility(IPageletManagerType, name)
-            if iface is None:
-                iface = queryUtility(IPageletType, name)
+            iface = queryUtility(IPageletType, name)
 
             if iface is None:
                 try:
@@ -142,12 +144,15 @@ class PageletPublisher(object):
         if iface.providedBy(context):
             return context.render()
 
-        if IPageletManagerType.providedBy(iface):
-            manager = IPageletManager(context, None)
-            context = [context, self.request]
-            if type(manager) in (list, tuple):
-                context.extend(manager)
-            view = queryMultiAdapter(context, iface)
+        contexts = queryAdapter(context, IPageletContext, name)
+        if contexts is not None:
+            required = [context]
+            if type(contexts) in (list, tuple):
+                required.extend(contexts)
+            else:
+                required.append(contexts)
+            required.append(self.request)
+            view = queryMultiAdapter(required, iface)
         else:
             view = queryMultiAdapter((context, self.request), iface)
 

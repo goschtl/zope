@@ -7,6 +7,10 @@
 
   <includeDependencies package="z3ext.layout" />
 
+  <z3ext:pageletType
+     name="pagelet"
+     interface="z3ext.layout.interfaces.IPageletType" />
+
   <!-- adapter provides IPagelet for (context, request) -->
   <adapter factory=".pagelet.queryPagelet" />
 

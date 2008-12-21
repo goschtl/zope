@@ -2,10 +2,19 @@
 CHANGES
 =======
 
-1.7.4 (2008-12-??)
+2.0.0 (2008-12-22)
 ------------------
 
-- Added IPageletManagerType, same as IPageletType but use extra parameters for adopter
+- Added 'type' attribute to 'z3ext:pagelet' 
+
+- Added 'z3ext:pageletType' directive for registering new pagelet types
+
+- multiple params is allowed for 'for' attribute
+
+- Removed pagelet 'manager' attribute
+
+- 'pagelet' tales expression and 'pagelet' view checks additional context IPageletContext
+  if exists use it as adapter parameter
 
 
 1.7.3 (2008-12-18)

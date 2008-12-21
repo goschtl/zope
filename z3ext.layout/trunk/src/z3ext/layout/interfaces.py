@@ -26,7 +26,7 @@ class LayoutNotFound(LookupError):
 class IPagelet(IBrowserPage):
     """ pagelet """
 
-    managers = interface.Attribute('Additional managers')
+    contexts = interface.Attribute('Additional contexts')
 
     isRedirected = interface.Attribute('is redirected')
 
@@ -46,11 +46,8 @@ class IPageletType(interface.interfaces.IInterface):
     """ pagelet interface type """
 
 
-class IPageletManager(interface.Interface):
-    """ pagelet manager """
-
-class IPageletManagerType(IPageletType):
-    """ pagelet interface type with view as manager """
+class IPageletContext(interface.Interface):
+    """ pagelet contexts """
 
 
 class ILayout(IBrowserPage):
