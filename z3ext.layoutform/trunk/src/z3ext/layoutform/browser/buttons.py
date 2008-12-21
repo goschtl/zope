@@ -21,7 +21,7 @@ from zope import interface, component
 from z3c.form import interfaces, widget, action, button
 
 from z3ext.layoutform.interfaces import \
-    IAddButton, ISaveButton, ICancelButton, ILayoutFormLayer
+    IAddAction, ISaveAction, ICancelAction, ILayoutFormLayer
 
 
 class ButtonAction(button.ButtonAction):
@@ -33,20 +33,20 @@ class ButtonAction(button.ButtonAction):
 
 class AddButtonAction(button.ButtonAction):
     interface.implements(interfaces.IButtonAction)
-    component.adapts(ILayoutFormLayer, IAddButton)
+    component.adapts(ILayoutFormLayer, IAddAction)
 
     klass="z-form-addbutton"
 
 
 class SaveButtonAction(button.ButtonAction):
     interface.implements(interfaces.IButtonAction)
-    component.adapts(ILayoutFormLayer, ISaveButton)
+    component.adapts(ILayoutFormLayer, ISaveAction)
 
     klass="z-form-savebutton"
 
 
 class CancelButtonAction(button.ButtonAction):
     interface.implements(interfaces.IButtonAction)
-    component.adapts(ILayoutFormLayer, ICancelButton)
+    component.adapts(ILayoutFormLayer, ICancelAction)
 
     klass="z-form-cancelbutton"

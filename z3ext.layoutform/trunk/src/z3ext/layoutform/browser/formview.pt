@@ -6,6 +6,6 @@
 		      action context/action;
 		      name context/name;
 		      id context/id">
-  <tal:block tal:content="structure context/@@pagelet/layoutform.viewspace" />
-  <tal:block tal:content="structure context/@@pagelet/layoutform.buttons" />
+  <tal:block tal:content="structure pagelet:form.viewspace" />
+  <tal:block tal:content="structure pagelet:form.buttons" />
 </form>

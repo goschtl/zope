@@ -35,17 +35,15 @@ class PageletBaseForm(form.BaseForm, BrowserPagelet):
     __call__ = BrowserPagelet.__call__
 
     def render(self):
-        # render content template 
-        if self.template is None:
+        if self.template is not None:
+            return self.template()
+        else:
             view = queryMultiAdapter((self, self.request), IPageletFormView)
             if view is not None:
                 view.update()
                 return view.render()
 
-            template = getMultiAdapter((self, self.request), IPageTemplate)
-            return template(self)
-
-        return self.template()
+        raise LookupError("Can't find IPageletFormView view for this form.")
 
 
 class PageletForm(form.Form, PageletBaseForm):
@@ -57,6 +55,7 @@ class PageletForm(form.Form, PageletBaseForm):
     forms = ()
     groups = ()
     subforms = ()
+    views = ()
 
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
@@ -90,12 +89,13 @@ class PageletForm(form.Form, PageletBaseForm):
 
     def _loadSubforms(self):
         return [form for name, form in 
-                getAdapters((self.context, self.request, self), IPageletSubform)]
+                getAdapters((self.context, self, self.request), IPageletSubform)]
 
     def updateForms(self):
         forms = []
         groups = []
         subforms = []
+        views = []
         for form in self._loadSubforms():
             form.update()
             if not form.isAvailable():
@@ -105,8 +105,10 @@ class PageletForm(form.Form, PageletBaseForm):
                 groups.append((form.weight, form.__name__, form))
             elif ISubForm.providedBy(form):
                 subforms.append((form.weight, form.__name__, form))
-            else:
+            elif IPageletForm.providedBy(form):
                 forms.append((form.weight, form.__name__, form))
+            else:
+                views.append((form.weight, form.__name__, form))
 
         groups.sort()
         self.groups = [form for weight, name, form in groups]
@@ -116,6 +118,9 @@ class PageletForm(form.Form, PageletBaseForm):
 
         forms.sort()
         self.forms = [form for weight, name, form in forms]
+
+        views.sort()
+        self.views = [view for weight, name, view in views]
 
     def update(self):
         self.updateWidgets()
@@ -137,8 +142,8 @@ class PageletForm(form.Form, PageletBaseForm):
         self.actions.execute()
 
 
-class PageletDisplayForm(PageletForm, form.DisplayForm):
+class PageletDisplayForm(PageletBaseForm, form.DisplayForm):
     interface.implements(IPageletDisplayForm)
 
-    render = PageletForm.render
-    __call__ = PageletForm.__call__
+    render = PageletBaseForm.render
+    __call__ = PageletBaseForm.__call__

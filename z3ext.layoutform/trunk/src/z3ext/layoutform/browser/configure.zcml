@@ -43,36 +43,31 @@
      template="formadd.pt"
      for="..interfaces.IPageletAddForm"
      layer="..interfaces.ILayoutFormLayer"
-     provides="..interfaces.IPageletFormView"
-     permission="zope.Public" />
+     name="form" />
 
   <z3ext:pagelet
      template="formedit.pt"
      for="..interfaces.IPageletEditForm"
      layer="..interfaces.ILayoutFormLayer"
-     provides="..interfaces.IPageletFormView"
-     permission="zope.Public" />
+     type="form" />
 
   <z3ext:pagelet
      template="formdisp.pt"
      for="..interfaces.IPageletDisplayForm"
      layer="..interfaces.ILayoutFormLayer"
-     provides="..interfaces.IPageletFormView"
-     permission="zope.Public" />
+     type="form" />
 
   <z3ext:pagelet
      template="subform.pt"
      for="z3c.form.interfaces.ISubForm"
      layer="..interfaces.ILayoutFormLayer"
-     provides="..interfaces.IPageletFormView"
-     permission="zope.Public" />
+     type="form" />
 
   <z3ext:pagelet
      template="formgroup.pt"
      for="z3c.form.group.Group"
      layer="..interfaces.ILayoutFormLayer"
-     provides="..interfaces.IPageletFormView"
-     permission="zope.Public" />
+     type="form" />
 
   <!-- Error View -->
   <z3ext:pagelet
@@ -82,79 +77,72 @@
      permission="zope.Public" />
 
   <!-- form view -->
-  <interface
-     name="layoutform.form"
-     type="z3ext.layout.interfaces.IPageletType"
+  <z3ext:pageletType
+     name="form.view"
      interface="z3ext.layoutform.browser.interfaces.IForm" />
 
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formview.pt"
-     provides="z3ext.layoutform.browser.interfaces.IForm"
      layer="..interfaces.ILayoutFormLayer"
-     permission="zope.Public" />
+     type="form.view" />
 
   <!-- viewspace view -->
-  <interface
-     name="layoutform.viewspace"
-     type="z3ext.layout.interfaces.IPageletType"
+  <z3ext:pageletType
+     name="form.viewspace"
      interface="z3ext.layoutform.browser.interfaces.IViewspace" />
 
-  <interface
-     name="layoutform.viewspaceInfo"
-     type="z3ext.layout.interfaces.IPageletType"
+  <z3ext:pageletType
+     name="form.viewspaceInfo"
      interface="z3ext.layoutform.browser.interfaces.IExtraViewspaceInfo" />
 
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formviewspace.pt"
-     provides="z3ext.layoutform.browser.interfaces.IViewspace"
      layer="..interfaces.ILayoutFormLayer"
-     permission="zope.Public" />
+     type="form.viewspace" />
 
   <!-- form buttons -->
-  <interface
-     name="layoutform.buttons"
-     type="z3ext.layout.interfaces.IPageletType"
+  <z3ext:pageletType
+     name="form.buttons"
      interface="z3ext.layoutform.browser.interfaces.IFormButtons" />
 
   <z3ext:pagelet
      for="..interfaces.IPageletForm"
      template="formbuttons.pt"
-     provides="z3ext.layoutform.browser.interfaces.IFormButtons"
      layer="..interfaces.ILayoutFormLayer"
-     permission="zope.Public" />
+     type="form.buttons" />
 
   <!-- widget view -->
-  <interface
-     name="layoutform.widget"
-     type="z3ext.layout.interfaces.IPageletManagerType"
+  <z3ext:pageletType
+     name="form.widget"
      interface="z3ext.layoutform.browser.interfaces.IWidget" />
 
   <z3ext:pagelet
-     for="z3c.form.interfaces.IWidget"
-     manager="zope.schema.interfaces.IField z3c.form.interfaces.IForm"
-     provides="z3ext.layoutform.browser.interfaces.IWidget"
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IForm"
      template="widget.pt"
-     permission="zope.Public" />
+     type="form.widget" />
 
-  <adapter factory=".widget.getWidgetManager" />
+  <adapter 
+     name="form.widget"
+     factory=".widget.getWidgetManager" />
 
   <!-- display widget view -->
   <z3ext:pagelet
-     for="z3c.form.interfaces.IWidget"
-     manager="zope.schema.interfaces.IField z3c.form.interfaces.IDisplayForm"
-     provides="z3ext.layoutform.browser.interfaces.IWidget"
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IDisplayForm"
      template="widgetDisplay.pt"
-     permission="zope.Public" />
+     type="form.widget"  />
 
   <!-- add form buttons -->
   <z3ext:pagelet
      for="..interfaces.IPageletAddForm"
      template="formaddbuttons.pt"
-     provides="z3ext.layoutform.browser.interfaces.IFormButtons"
      layer="..interfaces.ILayoutFormLayer"
-     permission="zope.Public" />
+     type="form.buttons" />
 
   <!-- styles -->
   <z3ext:resourceinclude

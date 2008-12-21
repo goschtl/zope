@@ -17,10 +17,10 @@ $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface, component
 from z3c.form.interfaces import IWidget
-from z3ext.layout.interfaces import IPageletManager
+from z3ext.layout.interfaces import IPageletContext
 
 
 @component.adapter(IWidget)
-@interface.implementer(IPageletManager)
+@interface.implementer(IPageletContext)
 def getWidgetManager(widget):
     return widget.field, widget.form

@@ -38,6 +38,9 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
 
+    def __init__(self, context, parentForm, request):
+        super(PageletEditSubForm, self).__init__(context, request, parentForm)
+
     @button.handler(ISaveAction)
     def handleApply(self, action):
         data, errors = self.extractData()

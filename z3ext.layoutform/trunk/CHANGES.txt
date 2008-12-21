@@ -5,7 +5,7 @@ CHANGES
 1.3.0 (Unreleased)
 ------------------
 
-- Added subforms concept based on new z3ext.layout pagelet manager api
+- Added subforms based on new z3ext.layout pagelet api
 
 - Fixed 'formError' status message
 
