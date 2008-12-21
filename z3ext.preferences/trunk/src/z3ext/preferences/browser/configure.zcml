@@ -3,7 +3,7 @@
    xmlns:zcml="http://namespaces.zope.org/zcml"
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.preferences">
 
   <!-- layouts -->
   <z3ext:layout
@@ -20,14 +20,12 @@
      hidden="yes" />
 
   <!-- pagelet types -->
-  <interface
+  <z3ext:pageletType
      name="preference.editGroup"
-     type="z3ext.layout.interfaces.IPageletType"
      interface=".interfaces.IEdit" />
 
-  <interface
+  <z3ext:pageletType
      name="preference.previewGroup"
-     type="z3ext.layout.interfaces.IPageletType"
      interface=".interfaces.IPreview" />
 
   <!-- browser view -->
@@ -72,15 +70,13 @@
 
   <z3ext:pagelet
      for="..interfaces.IPreferenceGroup"
-     provides=".interfaces.IEdit"
      class=".group.PreferenceGroupView"
-     permission="zope.Public" />
+     type="preference.editGroup" />
 
   <z3ext:pagelet
      for="..interfaces.IPreferenceGroup"
      template="grouppreview.pt"
-     provides=".interfaces.IPreview"
-     permission="zope.Public" />
+     type="preference.previewGroup" />
 
   <!-- navigation -->
   <browser:viewletManager
@@ -99,8 +95,7 @@
   <!-- styles -->
   <z3ext:resourceinclude
      name="z3ext-preferences.css"
-     library="z3ext"
-     type="stylesheet"
+     library="z3ext" type="stylesheet"
      file="styles.css" filetype="zrt" />
 
 </configure>

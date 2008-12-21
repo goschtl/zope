@@ -16,12 +16,17 @@
 $Id$
 """
 from zope import interface, component
+from zope.traversing.browser import absoluteURL
 from z3c.breadcrumb.browser import GenericBreadcrumb
 from z3ext.preferences.interfaces import _, IPreferenceGroup
 
 
 class PreferenceGroupBreadcrumb(GenericBreadcrumb):
     component.adapts(IPreferenceGroup, interface.Interface)
+
+    @property
+    def url(self):
+        return '%s/'%(absoluteURL(self.context, self.request))
     
     @property
     def name(self):

@@ -1,4 +1,4 @@
 <tal:block tal:condition="view/hasFields"
-	   tal:content="structure context/@@pagelet/preference.editGroup" />
-<tal:block tal:repeat="group view/subgroups"
-	   tal:content="structure group/@@pagelet/preference.editGroup" />
+	   tal:content="structure pagelet:preference.editGroup" />
+<tal:block tal:repeat="context view/subgroups"
+	   tal:content="structure pagelet:preference.editGroup" />
