@@ -9,7 +9,7 @@
 
   <z3ext:pageletType
      name="pagelet"
-     interface="z3ext.layout.interfaces.IPageletType" />
+     interface="z3ext.layout.interfaces.IPagelet" />
 
   <!-- adapter provides IPagelet for (context, request) -->
   <adapter factory=".pagelet.queryPagelet" />

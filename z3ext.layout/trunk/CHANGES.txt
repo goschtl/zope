@@ -5,7 +5,9 @@ CHANGES
 2.0.0 (2008-12-22)
 ------------------
 
-- Added 'type' attribute to 'z3ext:pagelet' 
+- Pagelet without name is not allowed
+
+- Added 'type' attribute to 'z3ext:pagelet'
 
 - Added 'z3ext:pageletType' directive for registering new pagelet types
 

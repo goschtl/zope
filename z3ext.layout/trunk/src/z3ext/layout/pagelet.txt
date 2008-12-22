@@ -331,7 +331,7 @@ Pagelet rendering
   <div>My pagelet</div>
 
 We should use page template as template for pagelet or we should
-provide IPageTemplate adapter for pagelet
+provide IPagelet adapter for pagelet
 
   >>> pagelet = component.queryMultiAdapter((object(), TestRequest()), 
   ...     name='noclass.html')
@@ -350,7 +350,10 @@ provide IPageTemplate adapter for pagelet
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pageletType name="pagelet"
+  ...       interface="z3ext.layout.interfaces.IPagelet" />
   ...   <z3ext:pagelet
+  ...       type="pagelet"
   ...       for="z3ext.layout.TESTS.pageletClass"
   ...       template="%s"
   ...       permission="zope.Public" />
@@ -388,6 +391,25 @@ We can get default pagelet view for content. First register default view
   u'index.html'
 
 
+Pagelte Type
+
+pagelet type can't be IPublishTraverse
+
+  >>> from zope.publisher.interfaces import IPublishTraverse
+
+  >>> class IMyPageletType(IPublishTraverse):
+  ...     pass
+
+  >>> context = xmlconfig.string("""
+  ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
+  ...   <z3ext:pageletType name="pagelet"
+  ...       interface="z3ext.layout.TESTS.IMyPageletType" />
+  ... </configure>""", context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError:...ConfigurationError: Can't use IPublishTraverse as base for pagelet type
+
+
 Typed pagelets
 
   >>> class IMyPagelet2(interface.Interface):
@@ -402,8 +424,6 @@ We need register types
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
-  ...   <z3ext:pageletType name="pagelet"
-  ...       interface="z3ext.layout.interfaces.IPagelet" />
   ...   <z3ext:pageletType name="myPagelet1"
   ...       interface="z3ext.layout.tests.ITestPagelet" />
   ...   <z3ext:pageletType name="myPagelet2"
@@ -556,9 +576,8 @@ Or multiple contexts
   <div>My pagelet5</div>
 
 
-We can register nameless pagelet only if provided interface is not
-inherited from IBrowserPublisher, because we can override
-IBrowserPublisher for content.
+We can't register nameless pagelet, we can register only typed pagelet
+without name
 
   >>> class IWrongPageletInterface(IPagelet):
   ...     pass
@@ -568,23 +587,22 @@ IBrowserPublisher for content.
   ...   <z3ext:pagelet
   ...       for="*"
   ...       template="%s"
-  ...       provides="z3ext.layout.TESTS.IWrongPageletInterface"
   ...       permission="zope.Public" />
   ... </configure>
   ... """%template, context)
   Traceback (most recent call last):
   ...
   ZopeXMLConfigurationError:...
-      ConfigurationError: You can't register nameless pagelet...
+      ConfigurationError: Can't create pagelet without name.
 
 If we still need nameless adapter we can use IPagelet interface
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
   ...   <z3ext:pagelet
+  ...       type="pagelet"
   ...       for="z3ext.layout.TESTS.IContent"
   ...       template="%s"
-  ...       provides="z3ext.layout.interfaces.IPagelet"
   ...       permission="zope.Public" />
   ... </configure>
   ... """%template, context)

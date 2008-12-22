@@ -80,7 +80,7 @@ class BrowserPagelet(BrowserPage):
                 return template.render()
             raise LookupError("Can't find IPagelet for this pagelet.")
 
-    def __call__(self):
+    def __call__(self, *args, **kw):
         self.update()
 
         if self.isRedirected or self.request.response.getStatus() in (302, 303):

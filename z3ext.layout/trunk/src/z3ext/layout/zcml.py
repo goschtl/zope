@@ -24,6 +24,7 @@ from zope.component.zcml import handler, adapter, utility
 from zope.security.checker import defineChecker, Checker, CheckerPublic
 from zope.configuration.fields import Path, Tokens, GlobalObject, GlobalInterface
 from zope.configuration.exceptions import ConfigurationError
+from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
@@ -187,6 +188,9 @@ ILayoutDirective.setTaggedValue('keyword_arguments', True)
 
 
 def pageletTypeDirective(_context, name, interface):
+    if interface is not IPagelet and interface.isOrExtends(IPublishTraverse):
+        raise ConfigurationError("Can't use IPublishTraverse as base for pagelet type")
+
     provideInterface(name, interface, IPageletType)
 
 
@@ -313,6 +317,11 @@ def pageletDirective(_context, for_, name=u'', type=(),
                      allowed_interface=[], allowed_attributes=[],
                      template=u'', layout=u'', permission='zope.Public', **kwargs):
 
+    # Check paeglet name
+    if not name and not type:
+        raise ConfigurationError("Can't create pagelet without name.")
+
+    # Add IPagelet to provides
     provides = list(provides)
     if IPagelet not in provides:
         provides.append(IPagelet)
@@ -369,18 +378,6 @@ def pageletDirective(_context, for_, name=u'', type=(),
 
                 if not hasattr(new_class, fname):
                     setattr(new_class, fname, field.default)
-
-    # check name
-    if not name:
-        for iface in provides:
-            # allow register nameless pagelet as IPagelet
-            if iface is IPagelet:
-                continue
-
-            if iface.isOrExtends(IBrowserPublisher):
-                raise ConfigurationError(
-                    "You can't register nameless pagelet, "\
-                    "interface '%s' is or extends IBrowserPublisher"%iface)
 
     # add IPagelet to provides
     if name:
