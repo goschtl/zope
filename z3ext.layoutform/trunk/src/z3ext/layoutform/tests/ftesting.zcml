@@ -10,5 +10,6 @@
 
   <include package="z3c.autoinclude" file="meta.zcml" />
   <include package="z3ext.layoutform" />
+  <adapter factory="z3ext.statusmessage.tests.tests.getSession" />
 
 </configure>

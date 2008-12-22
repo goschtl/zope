@@ -63,27 +63,15 @@ class PageletForm(form.Form, PageletBaseForm):
     def extractData(self):
         data, errors = super(PageletForm, self).extractData()
         for form in self.groups:
-            if not IForm.providedBy(form):
-                continue
-
             formData, formErrors = form.extractData()
             data.update(formData)
             if formErrors:
-                if errors:
-                    errors += formErrors
-                else:
-                    errors = formErrors
+                errors += formErrors
 
         for form in self.subforms:
-            if not IForm.providedBy(form):
-                continue
-
             formData, formErrors = form.extractData()
             if formErrors:
-                if errors:
-                    errors += formErrors
-                else:
-                    errors = formErrors
+                errors += formErrors
 
         return data, errors
 

@@ -25,9 +25,14 @@ layoutformLayer = ZCMLLayer(
 
 
 def test_suite():
+    form = FunctionalDocFileSuite(
+        "form.txt",
+        optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
+    form.layer = layoutformLayer
+
     tests = FunctionalDocFileSuite(
         "tests.txt",
         optionflags=doctest.ELLIPSIS|doctest.NORMALIZE_WHITESPACE)
     tests.layer = layoutformLayer
 
-    return unittest.TestSuite((tests,))
+    return unittest.TestSuite((form, tests,))
