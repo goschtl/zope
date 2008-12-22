@@ -1,1 +1,1 @@
-<div tal:content="view/message">Error</div>
+<div class="error" tal:content="context/message">Error</div>

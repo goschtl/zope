@@ -142,8 +142,8 @@ class PageletForm(form.Form, PageletBaseForm):
         self.actions.execute()
 
 
-class PageletDisplayForm(PageletBaseForm, form.DisplayForm):
+class PageletDisplayForm(PageletForm, form.DisplayForm):
     interface.implements(IPageletDisplayForm)
 
-    render = PageletBaseForm.render
-    __call__ = PageletBaseForm.__call__
+    render = PageletForm.render
+    __call__ = PageletForm.__call__
