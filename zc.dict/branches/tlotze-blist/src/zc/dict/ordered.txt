@@ -41,6 +41,11 @@ as it has to wake up all buckets in the tree from the database.
     >>> d._len()
     2
 
+The order of the keys is stored in a BList so buckets are used for it as well:
+
+    >>> d._order
+    <zc.blist.BList object at ...>
+
 In order to keep updates efficient for small changes, we unroll them
 as a series of setitems.
 
