@@ -29,14 +29,20 @@ class Install:
             options['name'] = name
 
         name = options['name']
-        
+
         create = []
 
-        options['run-directory'] = os.path.join(options.get('run', '/var/run'),
+        options['run-directory'] = os.path.join(options.get('run-directory',
+                                                options.get('run',
+                                                            '/var/run')),
                                                 name)
-        options['log-directory'] = os.path.join(options.get('log', '/var/log'),
+        options['log-directory'] = os.path.join(options.get('log-directory',
+                                                options.get('log',
+                                                            '/var/log')),
                                                 name)
-        options['etc-directory'] = os.path.join(options.get('etc', '/etc'),
+        options['etc-directory'] = os.path.join(options.get('etc-directory',
+                                                options.get('etc',
+                                                            '/etc')),
                                                 name)
         options['crontab-directory'] = options.get('crontab-directory',
                                                    '/etc/cron.d')
@@ -47,11 +53,11 @@ class Install:
 
     def install(self):
         options = self.options
-        user = options['user']
+        user = options.get('user', pwd.getpwuid(os.getuid())[0])
         uid, gid = pwd.getpwnam(user)[2:4]
         created = []
         try:
-            make_dir(options['etc-directory'],   0,   0, 0755, created)
+            make_dir(options['etc-directory'], uid, gid, 0755, created)
             make_dir(options['log-directory'], uid, gid, 0755, created)
             make_dir(options['run-directory'], uid, gid, 0750, created)
         except Exception:
@@ -145,4 +151,3 @@ class Crontab:
         return options['location']
 
     update = install
-    
