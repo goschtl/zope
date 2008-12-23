@@ -71,11 +71,6 @@
             Server Control
           </span>
         </span>
-<!--
-        &nbsp;&nbsp;
-        <a href=""
-          tal:attributes="href view/root_url">Debug</a>
--->
         &nbsp;&nbsp;
         <a href=""
           tal:attributes="href string:${view/root_url}/docgrok/">
@@ -87,6 +82,10 @@
         <div id="content">
 
           <div id="messages" tal:content="structure context/@@messages" />
+
+	  <div id="securitynotifications"
+	       tal:content="structure provider:grokadmin_security"
+	       tal:on-error="nothing" />
 
           <div metal:define-slot="content">
 
