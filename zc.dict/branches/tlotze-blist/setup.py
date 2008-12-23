@@ -5,7 +5,7 @@ long_description = (open("src/zc/dict/dict.txt").read() +
                     open("src/zc/dict/ordered.txt").read())
 setup(
     name="zc.dict",
-    version="1.2.1",
+    version="1.3dev",
     license="ZPL 2.1",
     author="Zope Corporation",
     author_email="zope3-dev@zope.org",
