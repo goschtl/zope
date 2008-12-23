@@ -144,7 +144,7 @@
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
   
   .z-form-standalonebtn {
@@ -152,7 +152,7 @@
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
   
   .z-form-addbutton {
@@ -160,7 +160,7 @@
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
   
   .z-form-savebutton {
@@ -168,23 +168,22 @@
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
-  
+
   .z-form-cancelbutton {
     background: globalBackgroundColor url(z3ext-layoutform-linkOpaque.gif) no-repeat;
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
-  
+
   .z-form-removebutton {
     background: globalBackgroundColor url(z3ext-layoutform-linkOpaque.gif) no-repeat;
     background-position: 5px center;
     cursor: pointer;
     font-size: fontSmallSize;
-    padding: 1px 1px 1px 14px;
+    padding: 1px 1px 1px 16px;
   }
-
 }
