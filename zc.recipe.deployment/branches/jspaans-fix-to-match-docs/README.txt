@@ -18,7 +18,7 @@ crontab-directory
 etc-directory
     The name of the directory where configuration files should be
     placed.  This is /etc/NAME, where NAME is the deployment
-    name. 
+    name.
 
 log-directory
     The name of the directory where application instances should write
@@ -39,12 +39,33 @@ rc-directory
     The name of the directory where run-control scripts should be
     installed.  This is /etc/init.d.
 
-The etc, log, and run directories are created in such a way that the 
+The etc, log, and run directories are created in such a way that the
 directories are owned by the user specified in the user option and are
 writable by the user and the user's group.
 
 Changes
 *******
+
+0.6.1 (unreleased)
+==================
+
+Feature added
+-------------
+
+- If no user is specified in the deploy section of buildout, try to
+  install as the user running the buildout script.
+
+Bugs fixed
+----------
+
+- Make the etc-directory owned by user specified in the user option
+  instead of by root (as documented above).
+
+- Use the names documented above (that is, run-directory, log-directory
+  and etc-directory) in addition to the shorter version (run, log,
+  etc) which were the only ones used up until 0.6.
+
+- Major overhaul of the tests, which now actually do run.
 
 0.6 (2008-02-01)
 ================
