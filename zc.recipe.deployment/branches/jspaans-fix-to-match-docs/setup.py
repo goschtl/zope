@@ -20,7 +20,7 @@ def read(*rnames):
 
 setup(
     name = name,
-    version = '0.7dev',
+    version = '0.6.1dev',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Unix deployments',
@@ -38,7 +38,7 @@ setup(
     'Download\n'
     '**********************\n'
     ),
-    
+
     install_requires = ['setuptools'],
     extras_require = {'test': 'zc.buildout'},
     entry_points = entry_points,
@@ -48,4 +48,3 @@ setup(
     zip_safe = False,
     include_package_data = True,
     )
-
