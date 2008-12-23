@@ -36,8 +36,8 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.app.security.protectclass import \
     protectName, protectSetAttribute, protectLikeUnto
 
-from interfaces import IPreferenceGroup
 from preference import PreferenceGroup
+from interfaces import IPreferenceGroup
 from preferencetype import PreferenceType
 from utils import PrincipalChecker, PermissionChecker
 
@@ -85,6 +85,11 @@ class IPreferenceGroupDirective(interface.Interface):
 
     permission = Permission(
         title = u'Permission',
+        description = u'Default set schema permission.',
+        required = False)
+
+    accesspermission = Permission(
+        title = u'Access permission',
         description = u'Default access permission.',
         required = False)
 
@@ -114,16 +119,22 @@ class PreferenceGroupDirective(object):
 
     def __init__(self, _context, id, schema, title,
                  for_=None, description=u'', class_=None, provides=[],
-                 permission='z3ext.ModifyPreference', tests=(), order = 9999):
+                 permission='z3ext.ModifyPreference', accesspermission='',
+                 tests=(), order = 9999):
+
+        if not accesspermission:
+            accesspermission = permission
 
         Class = PreferenceType(str(id), schema, class_, title, description)
         Class.order = order
+        Class.__permission__ = permission
+        Class.__accesspermission__ = accesspermission
 
+        tests = tuple(tests)
+        if permission != 'zope.Public':
+            tests = tests + (PermissionChecker,)
         if interface.interfaces.IInterface.providedBy(for_):
             tests = tests + (PrincipalChecker(for_),)
-
-        if permission != 'zope.Public':
-            tests = tuple(tests) + (PermissionChecker(permission),)
 
         group = Class(tests)
 
@@ -139,13 +150,16 @@ class PreferenceGroupDirective(object):
         self._context = _context
         self._permission = permission
 
-        self.require(_context, permission,
-                     interface=(IPreferenceGroup, schema), set_schema=(schema,))
+        self.require(_context, permission, set_schema=(schema,))
+        self.require(_context, accesspermission,
+                     interface=(IPreferenceGroup, schema))
+
         self.require(_context, CheckerPublic,
                      interface=(IEnumerableMapping, ILocation),
                      attributes=('isAvailable',
                                  '__id__', '__schema__',
-                                 '__title__', '__description__'))
+                                 '__title__', '__description__',
+                                 '__permission__'))
 
         schema.setTaggedValue('preferenceID', id)
 
@@ -155,11 +169,8 @@ class PreferenceGroupDirective(object):
 
     def require(self, _context,
                 permission=None, attributes=None, interface=None,
-                like_class=None, set_attributes=None, set_schema=None):
+                set_attributes=None, set_schema=None):
         """Require a permission to access a specific aspect"""
-        if like_class:
-            self.__mimic(_context, like_class)
-
         if not (interface or attributes or set_attributes or set_schema):
             if like_class:
                 return
@@ -182,14 +193,6 @@ class PreferenceGroupDirective(object):
         if set_schema:
             for s in set_schema:
                 self.__protectSetSchema(s, permission)
-
-    def __mimic(self, _context, class_):
-        """Base security requirements on those of the given class"""
-        _context.action(
-            discriminator=('z3ext:preferences:mimic', self._class),
-            callable=protectLikeUnto,
-            args=(self._class, class_),
-            )
 
     def allow(self, _context, attributes=None, interface=None):
         """Like require, but with permission_id zope.Public"""

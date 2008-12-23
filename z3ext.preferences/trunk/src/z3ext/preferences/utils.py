@@ -77,10 +77,5 @@ class PrincipalChecker(object):
         return self.iface.providedBy(group.__principal__)
 
 
-class PermissionChecker(object):
-
-    def __init__(self, permission):
-        self.permission = permission
-
-    def __call__(self, prefs):
-        return checkPermission(self.permission, prefs)
+def PermissionChecker(prefs):
+    return checkPermission(prefs.__permission__, prefs)

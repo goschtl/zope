@@ -16,6 +16,8 @@
 $Id$
 """
 from zope import schema
+from zope.security import checkPermission
+from zope.security.interfaces import Unauthorized
 from zope.cachedescriptors.property import Lazy
 from z3ext.layoutform import Fields, PageletEditForm
 
@@ -23,6 +25,9 @@ from z3ext.layoutform import Fields, PageletEditForm
 class PreferenceGroup(object):
 
     def update(self):
+        if not checkPermission(self.context.__permission__, self.context):
+            raise Unauthorized()
+
         context = self.context
         request = self.request
 
@@ -61,3 +66,9 @@ class PreferenceGroupView(PageletEditForm):
     @Lazy
     def fields(self):
         return Fields(self.context.__schema__, omitReadOnly=True)
+
+    def update(self):
+        if not checkPermission(self.context.__permission__, self.context):
+            raise Unauthorized()
+
+        super(PreferenceGroupView, self).update()

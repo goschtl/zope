@@ -66,6 +66,8 @@ class IPreferenceGroup(ILocation):
         required = False)
 
     __principal__ = interface.Attribute('Owner principal of preferences')
+    __permission__ = interface.Attribute('Set schema permission')
+    __accesspermission__ = interface.Attribute('Access schema permission')
 
     def isAvailable():
         """ is group available for bound principal """
