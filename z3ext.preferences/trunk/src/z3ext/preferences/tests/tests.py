@@ -31,14 +31,14 @@ def tearDown(test):
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-            'README.txt',
+            '../README.txt',
             setUp=setUp, tearDown=tearDown,
             globs={'pprint': doctestunit.pprint},
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite(
-            'z3ext.preferences.utils',
+            '../z3ext.preferences.utils',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         doctest.DocTestSuite(
-            'z3ext.preferences.preferencetype',
+            '../z3ext.preferences.preferencetype',
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
         ))
