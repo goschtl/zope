@@ -160,7 +160,7 @@ class OrderedDict(Dict):
         self._data[key] = value
 
     def updateOrder(self, order):
-        order = zc.blist.BList(order)
+        order = list(order)
 
         if len(order) != len(self._order):
             raise ValueError("Incompatible key set.")
@@ -173,7 +173,7 @@ class OrderedDict(Dict):
         if order_set.difference(self._order):
             raise ValueError("Incompatible key set.")
 
-        self._order = order
+        self._order[:] = order
 
     def clear(self):
         super(OrderedDict, self).clear()
