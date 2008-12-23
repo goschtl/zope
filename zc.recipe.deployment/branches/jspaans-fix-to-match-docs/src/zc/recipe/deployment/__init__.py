@@ -51,10 +51,11 @@ class Install:
         options['logrotate-directory'] = options.get('logrotate-directory',
                                                      '/etc/logrotate.d')
 
+        options['user'] = options.get('user', pwd.getpwuid(os.getuid())[0])
+
     def install(self):
         options = self.options
-        user = options.get('user', pwd.getpwuid(os.getuid())[0])
-        uid, gid = pwd.getpwnam(user)[2:4]
+        uid, gid = pwd.getpwnam(options['user'])[2:4]
         created = []
         try:
             make_dir(options['etc-directory'], uid, gid, 0755, created)
