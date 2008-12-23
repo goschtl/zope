@@ -126,8 +126,9 @@ class Dict(persistent.Persistent):
             raise KeyError, 'container is empty'
         return (key, self.pop(key))
 
+
 class OrderedDict(Dict):
-    """A Ordered BTree-based dict-like persistent object that can be safely
+    """An ordered BTree-based dict-like persistent object that can be safely
     inherited from.
 
     """
@@ -153,13 +154,10 @@ class OrderedDict(Dict):
         return [(key, self._data[key]) for key in self._order]
 
     def __setitem__(self, key, value):
-        delta = 1
-        if key in self._data:
-            delta = 0
-        self._data[key] = value
-        if delta:
+        if key not in self._data:
             self._order.append(key)
-            self._len.change(delta)
+            self._len.change(1)
+        self._data[key] = value
 
     def updateOrder(self, order):
         order = zc.blist.BList(order)
@@ -168,7 +166,7 @@ class OrderedDict(Dict):
             raise ValueError("Incompatible key set.")
 
         order_set = set(order)
-        
+
         if len(order) != len(order_set):
             raise ValueError("Duplicate keys in order.")
 
@@ -217,5 +215,3 @@ class OrderedDict(Dict):
             self._len.change(-1)
             self._order.remove(key)
         return res
-
-    
