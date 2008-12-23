@@ -20,7 +20,7 @@ import copy
 import BTrees
 import BTrees.Length
 import persistent
-import persistent.list
+import zc.blist
 
 
 class Dict(persistent.Persistent):
@@ -129,9 +129,7 @@ class Dict(persistent.Persistent):
 class OrderedDict(Dict):
     """A Ordered BTree-based dict-like persistent object that can be safely
     inherited from.
-    
-    This class does not have as good behavior with large numbers of members
-    as the Dict class because the _order object is not in buckets.
+
     """
 
     # what do we get from the superclass:
@@ -139,11 +137,11 @@ class OrderedDict(Dict):
     # get, __delitem__
 
     def __init__(self, *args, **kwargs):
-        self._order = persistent.list.PersistentList()
+        self._order = zc.blist.BList()
         super(OrderedDict, self).__init__(*args, **kwargs)
 
     def keys(self):
-        return self._order[:]
+        return list(self._order)
 
     def __iter__(self):
         return iter(self._order)
@@ -164,7 +162,7 @@ class OrderedDict(Dict):
             self._len.change(delta)
 
     def updateOrder(self, order):
-        order = persistent.list.PersistentList(order)
+        order = zc.blist.BList(order)
 
         if len(order) != len(self._order):
             raise ValueError("Incompatible key set.")
@@ -190,7 +188,7 @@ class OrderedDict(Dict):
         order = self._order
         try:
             self._data = OOBTree()
-            self._order = persistent.list.PersistentList()
+            self._order = zc.blist.BList()
             c = copy.copy(self)
         finally:
             self._data = data

@@ -14,7 +14,7 @@ setup(
     packages=["zc", "zc.dict"],
     package_dir={"": "src"},
     include_package_data=True,
-    install_requires=["setuptools", "zope.interface", "ZODB3"],
+    install_requires=["setuptools", "zope.interface", "ZODB3", "zc.blist"],
     tests_require=["zope.testing"],
     description=open('README.txt').read(),
     long_description=long_description,
