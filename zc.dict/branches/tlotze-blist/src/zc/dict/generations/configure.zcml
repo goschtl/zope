@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- The name of this utility is used as a persistent reference. Do not
+  change. -->
+  <utility
+    name="zc.dict"
+    provides="zope.app.generations.interfaces.ISchemaManager"
+    component=".schema_manager"
+    />
+
+</configure>

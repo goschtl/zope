@@ -11,20 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zc.dict
 
-$Id$
-"""
-import unittest
-from zope.testing import doctest
+import zope.app.generations.utility
 
-def test_suite():
-    return unittest.TestSuite([
-        doctest.DocFileSuite('dict.txt', 'ordered.txt',
-                             'generations/evolve1.txt',
-                             optionflags=doctest.INTERPRET_FOOTNOTES
-                             |doctest.REPORT_NDIFF|doctest.ELLIPSIS),
-        ])
+import zc.blist
+import zc.dict
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+
+generation = 1
+
+
+def evolve(context):
+    root = context.connection.root()
+    for obj in zope.app.generations.utility.findObjectsMatching(
+        root, lambda obj: isinstance(obj, zc.dict.OrderedDict)):
+        if type(obj._order) is not zc.blist.BList:
+            obj._order = zc.blist.BList(obj._order)

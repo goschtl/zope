@@ -1,0 +1,82 @@
+===========================================
+Evolve generation 1: OrderedDict and BLists
+===========================================
+
+
+Originally, ordered dicts stored the order of the keys in plain persistent
+lists, which have bad behaviour for large amounts of data. This was changed
+into using BLists. The evolution of database generation 1 handles the
+conversion of these structures.
+
+Let's create some ordered dicts [testdb]_:
+
+>>> from zc.dict import OrderedDict
+>>> from persistent.list import PersistentList
+>>> d1 = OrderedDict()
+>>> d1[1] = 2
+>>> d1[3] = 4
+>>> d2 = OrderedDict()
+>>> d2[7] = 8
+>>> d2[5] = 6
+>>> d = root['d'] = OrderedDict()
+>>> d['d2'] = d2
+>>> d['d1'] = d1
+
+Now we convert the order storages to persistent lists in order to create the
+old data structures:
+
+>>> d1._order = PersistentList(d1._order)
+>>> d1._order
+[1, 3]
+>>> type(d1._order)
+<class 'persistent.list.PersistentList'>
+
+>>> d2._order = PersistentList(d2._order)
+>>> d2._order
+[7, 5]
+>>> type(d2._order)
+<class 'persistent.list.PersistentList'>
+
+>>> d._order = PersistentList(d._order)
+>>> d._order
+['d2', 'd1']
+>>> type(d._order)
+<class 'persistent.list.PersistentList'>
+
+After running the evolution, all order storages should be BLists with the same
+contents as the PersistentLists:
+
+>>> from zc.dict.generations.evolve1 import evolve
+>>> evolve(context)
+
+>>> d1._order
+<zc.blist.BList object at 0x...>
+>>> list(d1._order)
+[1, 3]
+
+>>> d2._order
+<zc.blist.BList object at 0x...>
+>>> list(d2._order)
+[7, 5]
+
+>>> d._order
+<zc.blist.BList object at 0x...>
+>>> list(d._order)
+['d2', 'd1']
+
+
+
+.. [testdb] **Setting up a test database**
+
+    >>> from ZODB.tests.util import DB
+    >>> db = DB()
+    >>> conn = db.open()
+    >>> class Context(object): pass
+    >>> context = Context()
+    >>> context.connection = conn
+    >>> root = conn.root()
+
+
+.. Local Variables:
+.. mode: rst
+.. End:
