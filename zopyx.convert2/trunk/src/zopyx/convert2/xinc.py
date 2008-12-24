@@ -1,5 +1,5 @@
 ##########################################################################
-# zopyx.convert - XSL-FO related functionalities
+# zopyx.convert - SmartPrintNG low-level functionality
 #
 # (C) 2007, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
