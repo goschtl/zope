@@ -29,7 +29,7 @@ follow this recipe.
 
  3. Copy 'ClientForm.py' from the import to the 'as_package' directory::
 
-    $ svn mkdir -m "Package-ize ClientForm $NEW_VERSION" \
+    $ svn cp -m "Package-ize ClientForm $NEW_VERSION" \
       $ZSVN/ClientForm/tags/$NEW_VERSION/ClientForm.py \
       $ZSVN/ClientForm/as_package/$NEW_VERSION/__init__.py
 
