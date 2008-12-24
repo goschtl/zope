@@ -1,6 +1,6 @@
 <div class="z-form-group">
-  <h1 class="z-form-label" 
-      tal:condition="context/label" tal:content="context/label">Do something</h1>
+  <h2 class="z-form-label" 
+      tal:condition="context/label" tal:content="context/label">Do something</h2>
   <div class="z-form-description"
        tal:condition="context/description" tal:content="context/description"></div>
   

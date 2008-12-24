@@ -25,10 +25,16 @@ def applyChanges(form, content, data):
         # If the field is not in the data, then go on to the next one
         if name not in data:
             continue
+
         # Get the datamanager and get the original value
         dm = getMultiAdapter((content, field.field), IDataManager)
         # Only update the data, if it is different
-        if dm.query() != data[name]:
+        try:
+            value = dm.get()
+        except:
+            value = object()
+
+        if value != data[name]:
             dm.set(data[name])
             # Record the change using information required later
             changes.setdefault(dm.field.interface, []).append(name)

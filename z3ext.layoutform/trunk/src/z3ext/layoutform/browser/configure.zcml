@@ -65,7 +65,7 @@
   <z3ext:pagelet
      type="form"
      template="formgroup.pt"
-     for="z3c.form.group.Group"
+     for="z3c.form.interfaces.IGroup"
      layer="..interfaces.ILayoutFormLayer" />
 
   <!-- Error View -->
