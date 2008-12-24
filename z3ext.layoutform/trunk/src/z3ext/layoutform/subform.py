@@ -66,6 +66,7 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
 
         if ISubForm.providedBy(form):
             self.executeActions(form.parentForm)
+
         elif IPageletSubform.providedBy(form) and form.managers:
             self.executeActions(form.managers[0])
 

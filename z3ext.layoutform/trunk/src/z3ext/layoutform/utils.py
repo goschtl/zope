@@ -38,4 +38,5 @@ def applyChanges(form, content, data):
             dm.set(data[name])
             # Record the change using information required later
             changes.setdefault(dm.field.interface, []).append(name)
+
     return changes

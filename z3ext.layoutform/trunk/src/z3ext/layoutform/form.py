@@ -118,15 +118,20 @@ class PageletForm(form.Form, PageletBaseForm):
         if not IPageletSubform.providedBy(self):
             self.actions.execute()
 
-        for form in self.subforms:
-            form.postUpdate()
-        for form in self.forms:
-            form.postUpdate()
+            for form in self.subforms:
+                form.postUpdate()
+            for form in self.forms:
+                form.postUpdate()
 
     def isAvailable(self):
         return True
 
     def postUpdate(self):
+        for form in self.subforms:
+            form.postUpdate()
+        for form in self.forms:
+            form.postUpdate()
+
         self.actions.execute()
 
 
