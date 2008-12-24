@@ -101,13 +101,6 @@ class Renderer(object):
             T.transform()
             soup = T.soup
 
-        # Download remote images and make them local 
-        # ATT: handling of local images
-        # moved code to the end of the pipline because
-        # the render template might also contain images
-        # soup = self.makeImagesLocal(soup)
-
-
         # now pass the modified HTML fragment to the template
         # in order to render a proper HTML document
         html2 = soup.renderContents()
