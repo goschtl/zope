@@ -7,10 +7,10 @@
        You should do this for production -->
   <include file="apidoc.zcml" />
 
-  <include package="zope.app.securitypolicy" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.app.securitypolicy" />
   <securityPolicy 
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <unauthenticatedPrincipal id="zope.anybody"
                             title="Unauthenticated User" />
@@ -29,12 +29,18 @@
              password="${passwd}"
              />
 
-  <!-- Replace the following directive if you don't want public access -->
+  <!-- With the default zope securitypolicy, this is a
+       special role that every user has -->
+  <role id="zope.Anonymous"
+        title="Everybody"
+        description="All users have this role implicitly" />
+
+  <!-- Replace the following directives if you don't want public access -->
   <grant permission="zope.View"
-         principal="zope.Anybody" />
+         role="zope.Anonymous" />
   <grant permission="zope.app.dublincore.view"
-         principal="zope.Anybody" />
-  
+         role="zope.Anonymous" />
+    
   <role id="zope.Manager" title="Site Manager" />
   <role id="zope.Member" title="Site Member" />
   <grantAll role="zope.Manager" />

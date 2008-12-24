@@ -4,7 +4,17 @@ Changes
 0.4.2 (unreleased)
 ------------------
 
-...
+* Added blobstorage proxy to default ZODB config in zope.conf.
+
+* Use ZopeSecurityPolicy from zope.securitypolicy instead
+  of zope.app.securitypolicy, which is a deprecated place for
+  that.
+
+* The zope.securitypolicy uses a special role name, 
+  the ``zope.Anonymous`` that every user has, define
+  it in site.zcml and grant view permissions to it,
+  instead of zope.Anybody unauthenticated group.
+  
 
 0.4.1 (2007-09-29)
 ------------------
