@@ -1,0 +1,15 @@
+2.0.0b3 (25.12.2008)
+====================
+- tidy: rewrite image references relative to the html
+  file to be converted
+
+2.0.0b2 (05.10.2008)
+====================
+- fixed some import errors
+- now working with zopyx.smartprintng.core
+
+2.0.0b1 (04.10.2008)
+====================
+- initial release
+- complete new reimplementation of zopyx.convert
+- added support for PrinceXML
