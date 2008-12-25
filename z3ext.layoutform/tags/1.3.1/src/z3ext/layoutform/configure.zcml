@@ -1,0 +1,28 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext">
+
+  <includeDependencies package="." />
+
+  <!-- form error status message -->
+  <adapter
+     name="formError"
+     factory=".error.FormErrorStatusMessage" />
+
+  <!-- pagelet types -->
+  <z3ext:pageletType
+     name="form"
+     interface="z3ext.layoutform.interfaces.IPageletFormView" />
+
+  <z3ext:pageletType
+     name="form.subform"
+     interface="z3ext.layoutform.interfaces.IPageletSubform" />
+
+  <!-- browser views -->
+  <include package=".browser" />
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
+
+</configure>
