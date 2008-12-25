@@ -16,7 +16,6 @@
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
 from zope import interface
-from zope.pagetemplate.interfaces import IPageTemplate
 
 
 class IForm(interface.Interface):
