@@ -74,10 +74,10 @@
      interface=".interfaces.IErrorView" />
 
   <z3ext:pagelet
+     type="form.errorView"
      for="z3c.form.interfaces.IErrorViewSnippet"
      template="error.pt"
-     layer="..interfaces.ILayoutFormLayer"
-     type="form.errorView" />
+     layer="..interfaces.ILayoutFormLayer" />
 
   <!-- form view -->
   <z3ext:pageletType

@@ -39,5 +39,5 @@ class IFormButtons(interface.Interface):
     """ form buttons """
 
 
-class IErrorView(IPageTemplate):
+class IErrorView(interface.Interface):
     """ Error view snippet view """

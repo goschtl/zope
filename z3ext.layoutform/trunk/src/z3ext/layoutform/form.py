@@ -122,6 +122,8 @@ class PageletForm(form.Form, PageletBaseForm):
                 form.postUpdate()
             for form in self.subforms:
                 form.postUpdate()
+            for form in self.forms:
+                form.postUpdate()
 
     def isAvailable(self):
         return True
@@ -130,6 +132,8 @@ class PageletForm(form.Form, PageletBaseForm):
         for form in self.groups:
             form.postUpdate()
         for form in self.subforms:
+            form.postUpdate()
+        for form in self.forms:
             form.postUpdate()
 
         self.actions.execute()
