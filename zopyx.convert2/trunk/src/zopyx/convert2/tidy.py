@@ -23,7 +23,14 @@ def tidyhtml(filename, encoding='utf-8'):
     for img in soup.findAll('img'):
         src = img['src']
         if not os.path.exists(src):
-            raise IOError('No image file found: %s' % src)
+            # try to find the image relative to the location of
+            # the HTML file
+            html_dirname = os.path.dirname(filename)
+            possible_img = os.path.join(html_dirname, src)
+            if os.path.exists(possible_img):
+                img['src'] = possible_img
+            else:
+                raise IOError('No image file found: %s' % src)
 
     html = soup.renderContents()
 
