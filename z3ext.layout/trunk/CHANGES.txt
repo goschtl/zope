@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+2.0.1 (2008-12-25)
+------------------
+
+- Pagelet should implement provided interfaces
+
+
 2.0.0 (2008-12-22)
 ------------------
 

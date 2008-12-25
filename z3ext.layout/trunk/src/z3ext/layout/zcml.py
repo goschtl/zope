@@ -17,6 +17,7 @@ $Id$
 """
 import os.path
 from zope import schema, interface, event
+from zope.interface.verify import verifyClass
 from zope.schema.interfaces import IFromUnicode
 from zope.component import getUtility, queryUtility
 from zope.component.interface import provideInterface
@@ -373,7 +374,6 @@ def pageletDirective(_context, for_, name=u'', type=(),
                 setattr(new_class, fname, field.fromUnicode(kwargs[fname]))
             else:
                 if field.required and not hasattr(new_class, fname):
-                    print provides, new_class, fname
                     raise ConfigurationError("Required field is missing", fname)
 
                 if not hasattr(new_class, fname):
@@ -408,6 +408,8 @@ def pageletDirective(_context, for_, name=u'', type=(),
     for iface in provides:
         if not iface.implementedBy(new_class):
             interface.classImplements(new_class, iface)
+
+        verifyClass(iface, new_class)
 
     # Create the security checker for the new class
     defineChecker(new_class, Checker(required))
