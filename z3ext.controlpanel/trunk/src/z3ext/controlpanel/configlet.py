@@ -15,7 +15,6 @@
 
 $Id$
 """
-import traceback
 from zope import schema, interface
 from zope.location import Location
 from zope.component import getUtility, queryUtility
