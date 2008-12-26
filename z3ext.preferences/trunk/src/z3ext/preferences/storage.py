@@ -53,7 +53,7 @@ class DataStorage(object):
         if attr in self.__btree__:
             return self.__btree__[attr]
         else:
-            raise AttributeError()
+            raise AttributeError(attr)
 
     def __setattr__(self, attr, value):
         self.__btree__[attr] = value

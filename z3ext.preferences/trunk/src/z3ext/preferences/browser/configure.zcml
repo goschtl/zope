@@ -69,14 +69,14 @@
      permission="zope.Public" />
 
   <z3ext:pagelet
+     type="preference.editGroup"
      for="..interfaces.IPreferenceGroup"
-     class=".group.PreferenceGroupView"
-     type="preference.editGroup" />
+     class=".group.PreferenceGroupView" />
 
   <z3ext:pagelet
+     type="preference.previewGroup"
      for="..interfaces.IPreferenceGroup"
-     template="grouppreview.pt"
-     type="preference.previewGroup" />
+     template="grouppreview.pt" />
 
   <!-- navigation -->
   <browser:viewletManager
