@@ -1,0 +1,7 @@
+megrok.login changes
+********************
+
+0.1 (2008-12-26)
+================
+
+(initial version)
