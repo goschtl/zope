@@ -30,7 +30,7 @@ setup(
     author='Uli Fouquet and the Zope Community',
     author_email='uli@gnufix.de',
     url = 'http://pypi.python.org/pypi/megrok.login',
-    description='Providing login screens for your Grokapps made easy.',
+    description='Providing login screens for your Grok apps made easy.',
     long_description=long_description,
     license='ZPL 2.1',
     keywords="zope3 zope login grok",
