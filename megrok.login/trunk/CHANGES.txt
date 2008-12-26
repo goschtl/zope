@@ -1,7 +1,7 @@
 megrok.login changes
 ********************
 
-0.1 (unreleased)
+0.1 (2008-12-26)
 ================
 
 (initial version)
