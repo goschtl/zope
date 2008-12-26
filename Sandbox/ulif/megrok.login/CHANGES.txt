@@ -1,7 +1,0 @@
-megrok.login changes
-********************
-
-0.1 (unreleased)
-================
-
-(initial version)
