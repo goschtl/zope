@@ -33,6 +33,6 @@ Installation
 
 2) Run::
 
-  $ ./bin/buildout
+    $ ./bin/buildout
 
 3) Use ``megrok.login`` in your code.
