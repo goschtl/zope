@@ -4,6 +4,8 @@
 # (C) 2007, 2008, ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
+
+import sys
 import tempfile
 from optparse import OptionParser
 from convert import Converter
@@ -33,13 +35,15 @@ def convert(options, args):
                 cls = registry.converter_registry[name]
                 print '%s: %s.html -> %s.%s' % (name, tmpf, tmpf, cls.output_format)
                 C = Converter(tmpf + '.html', verbose=True)
-                output_filename = C(name, output_filename=tmpf + '.' + cls.output_format)
+                try:
+                    output_filename = C(name, output_filename=tmpf + '.' + cls.output_format)
+                except:
+                    print 'FAILED'
 
             print
 
     elif options.show_converters:
         print 'Available converters: %s' % ', '.join(registry.availableConverters())
-
     else:
 
         for fn in args:
@@ -50,8 +54,8 @@ def convert(options, args):
    
 
 def main():
-
-    parser = OptionParser()
+    usage = "usage: %prog [options] arg1 arg2"
+    parser = OptionParser(usage=usage)
     parser.add_option('-v', '--verbose', dest='verbose', action='store_true',
                       default=False, help='verbose on')
     parser.add_option('-f', '--format', dest='format',
@@ -63,8 +67,10 @@ def main():
     parser.add_option('-t', '--test', dest='test_mode', action='store_true',
                       help='test converters')
     (options, args) = parser.parse_args()
+    if not args and not options.test_mode:
+        parser.print_help()
+        sys.exit(1)
     convert(options, args)
-
 
 if __name__ == '__main__':
     main()
