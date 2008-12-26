@@ -14,8 +14,8 @@ CLASSIFIERS = [
 
 version = '2.0.0b3'
 
-desc = unicode(open('README.txt').read().strip(), 'utf-8')
-changes = open('CHANGES.txt').read().strip()
+desc = unicode(file('README.txt').read().strip(), 'utf-8')
+changes = file('CHANGES.txt').read().strip()
 long_description = desc + '\n\nChanges:\n========\n\n' + changes
 
 
