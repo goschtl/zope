@@ -4,8 +4,6 @@ megrok.login
 
 Setting up login pages for your webapp made easy.
 
-:Test-Layer: functional
-
 With `megrok.login` you can setup simple session based login pages
 for your ``grok.Application`` and other ``grok.Site`` instances. This
 is different to out-of-the-box behaviour, where authentication happens
@@ -41,15 +39,6 @@ be found in the `tests` subdirectory:
 
 * More advanced stuff:
 
- - ``customprincipals.py``:
-
-   How to setup session based authentication with your own
-   implementation of principals (users).
-
- - ``customsession.py``:
-
-   How to setup session based authentication with your own 
-
  - ``custompausetup.py``:
 
    How to setup session based authentication with your own setup of
@@ -66,15 +55,66 @@ What you can do with ``megrok.login``:
 -------------------------
 
 Enables session based authentication. This marker directive *must* be
-used in order to use ``megrok.login`` functionality.
+used in order to use ``megrok.login`` functionality. It can be set on
+any `grok.Site` class::
 
+  import grok
+  class MyApp(grok.Application, grok.Container):
+    megrok.login.enable()
+
+If no other ``megrok.login`` directive is used, it enables session
+based authentication (login screens instead of basic-auth).
 
 ``megrok.login.viewname(<viewname>)``
------------------------------------
+-------------------------------------
 
 Registers the view with the name ``<viewname>`` as login page. This
 way you can specify your own login page. You must also use
-``megrok.login.enable()`` to make this work.
+``megrok.login.enable()`` to make this work::
+
+  import grok
+    
+  class MyApp(grok.Application, grok.Container):
+    megrok.login.enable()
+    megrok.login.viewname('login')
+
+  class Login(grok.View):
+    def render(self):
+
+    def update(self, camefrom=None, SUBMIT=None):
+        self.camefrom=camefrom
+        if SUBMIT is not None and camefrom is not None:
+            # The credentials were entered. Go back. If the entered
+            # credentials are not valid, another redirect will happen
+            # to this view.
+            self.redirect(camefrom)
+        return
+
+whereas the template for the login view might look like this::
+
+  <html>
+    <head>
+      <title>Login</title>
+    </head>
+    <body>
+      <h1>Custom Login Page</h1>
+      <form method="post">
+        <div>
+  	  <label for="login">Username</label>
+          <input type="text" name="login" id="login" />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" />
+        </div>
+        <div>
+          <input type="hidden" name="camefrom"
+                 tal:attributes="value view/camefrom" />
+          <input type="submit" name="SUBMIT" value="Log in" />
+        </div>
+      </form>
+    </body>
+  </html>
 
 See ``tests/customlogin.py`` for details.
 
@@ -94,6 +134,13 @@ If you use ``megrok.login.strict()``, the latter is not installed and
 users like the manager user defined in your site.zcml won't be
 accepted by your login page.
 
+Example::
+
+  import grok
+  class MyApp(grok.Application, grok.Container):
+    megrok.login.enable()
+    megrok.login.strict()
+
 See ``tests/strict.py`` for details.
 
 
@@ -103,6 +150,16 @@ See ``tests/strict.py`` for details.
 If this directive is used, the authentication system will register
 automatically any user that still does not exist on login and add it
 to the ``PrincipalFolder``.
+
+Example::
+
+  class ManageApp(grok.Permission):
+      grok.name('app.ManageAutoRegister')
+
+  class AutoRegisterApp(grok.Application, grok.Container):
+      megrok.login.enable()
+      # We grant this permission to autoregistered users.
+      megrok.login.autoregister('app.ManageAutoRegister')
 
 See ``tests/autoregister.py`` for details.
 
@@ -118,74 +175,4 @@ added to the ZODB.
 
 See ``tests/custompausetup.py`` for details.
 
-
-Setting up session-based authentication
-=======================================
-
-In the most basic form you can declare an application to use login
-pages instead of basic-auth like this::
-
-  >>> import grok
-  >>> import megrok.login
-  >>> class App(grok.Application, grok.Container):
-  ...   megrok.login.enable()
-
-Now let's define a view and protect it with a permission::
-
-  >>> class ManageApp(grok.Permission):
-  ...   grok.name('app.ManageApp')
-  
-  >>> class Index(grok.View):
-  ...   grok.context(App)
-  ...   grok.require('app.ManageApp')
-  ...
-  ...   def render(self):
-  ...     return "Hello from App!"
-  ...
-
-Before we can make use of ``megrok.login`` we have to grok it. This
-normally happens via ZCML, but here we do it manually::
-
-  >>> import grok.testing
-  >>> grok.testing.grok('megrok.login')
-
-Furthermore we have to grok our app components. This normally also
-happens at startup::
-
-  >>> from grok.testing import grok_component
-  >>> grok_component('ManageApp', ManageApp)
-  True
-
-  >>> grok_component('App', App)
-  True
-
-  >>> grok_component('Index', Index)
-  True
-
-The authentication mechanism needs a site to be plugged in. A Grok
-application becomes a site as soon as it is stored in the ZODB. We
-do that::
-
-  >>> root = getRootFolder()
-  >>> root['app'] = App()
-
-We try to watch the `index` page with a browser. Normally we would get
-an error page, as we did not authenticate against the system
-before. But this time we are asked to login::
-
-  >>> from zope.testbrowser.testing import Browser
-  >>> browser = Browser()
-  >>> browser.open('http://localhost/app')
-  >>> browser.headers['status']
-  '200 Ok'
-
-  >>> print browser.contents
-  <!DOCTYPE html ...
-  Please provide Login Information...
-  <input type="text" name="login" id="login" />
-  ...
-
-What we can see here, is the standard login page provided by
-``zope.app.authentication``. It is named `loginForm.html` and the
-default, if you do not specify a different viewname as login page.
 
