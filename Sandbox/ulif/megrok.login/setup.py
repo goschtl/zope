@@ -7,7 +7,7 @@ def read(*rnames):
 tests_require = [
     'zope.testing',
     'zope.app.testing',
-    'zope.component',
+    'zope.testbrowser',
     ]
 
 long_description = (
@@ -50,11 +50,12 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'grok',
-                      'grokcore.component',
                       'martian',
-                      'zope.app.security',
                       'zope.app.authentication',
+                      'zope.app.security',
+                      'zope.app.container',
                       'zope.component',
+                      'zope.interface',
                       'zope.securitypolicy',
                       ],
     tests_require = tests_require,
