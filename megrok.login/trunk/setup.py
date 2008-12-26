@@ -33,7 +33,7 @@ setup(
     description='Providing login screens for your Grok apps made easy.',
     long_description=long_description,
     license='ZPL 2.1',
-    keywords="zope3 zope login grok",
+    keywords="zope3 zope login grok security PAU",
     classifiers=['Development Status :: 3 - Alpha',
                  'Environment :: Web Environment',
                  'Intended Audience :: Developers',
