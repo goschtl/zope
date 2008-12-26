@@ -1,7 +1,7 @@
 ##########################################################################
 # zopyx.convert2 - XSL-FO related functionalities
 #
-# (C) 2007, ZOPYX Ltd & Co. KG, Tuebingen, Germany
+# (C) 2007, 2008 ZOPYX Ltd & Co. KG, Tuebingen, Germany
 ##########################################################################
 
 import os
@@ -33,6 +33,7 @@ setup(name='zopyx.convert2',
       packages=['zopyx', 'zopyx.convert2'],
       package_dir = {'': 'src'},
       include_package_data = True,
+      test_suite='nose.collector',
       zip_safe=False,
       install_requires=['setuptools', 'elementtree', 'BeautifulSoup'],
       namespace_packages=['zopyx'],
