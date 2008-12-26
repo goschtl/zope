@@ -25,48 +25,14 @@ this::
 See detailed documentation below for details on finetuning
 authentication with ``megrok.login``.
 
+
 Installation
 ============
-
-Using ``megrok.login`` in a Grok project
-----------------------------------------
-
-As ``megrok.login`` is not released yet, you have to grab the sources
-manually and then register it with buildout.
-
-1) Go to your Grok project root directory::
-
-  $ cd MyProject
-
-2) Get the sources::
-
-    $ svn co svn://svn.zope.org/repos/main/Sandbox/ulif/megrok.login \
-        megrok.login
-
-   This will create the sources in your project root.
-
-3) Register the created dir with buildout.
-
-   Edit ``buildout.cfg`` and add ``megrok.login`` at the ``develop``
-   entry::
-
-     [buildout]
-     develop = . megrok.login
-     parts = eggbasket app data zopectl ...
-     ....
-
-4) Run buildout::
-
-
-    $ ./bin/buildout
-
-5) Use ``megrok.login`` in your code::
-
-    
-  
 
 1) Add `megrok.login` to the dependencies in your ``setup.py``.
 
 2) Run::
 
   $ ./bin/buildout
+
+3) Use ``megrok.login`` in your code.
