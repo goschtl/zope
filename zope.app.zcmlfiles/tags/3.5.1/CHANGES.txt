@@ -1,0 +1,39 @@
+Change History
+==============
+
+3.5.1 (2008-12-28)
+------------------
+
+- Add include of zope.app.schema's configure.zcml. Because component-based
+  vocabularies are used everywhere and we need to import zope.app.schema
+  somehow to make it work. This is needed because of removal of the include
+  of zope.app.schema's meta.zcml in the previous release.
+
+3.5.0 (2008-12-16)
+------------------
+
+- Remove deprecated include of zope.app.component.browser meta.zcml.
+- Remove deprecated include of zope.app.schema meta.zcml.
+- Remove use of zope.modulealias.
+
+3.4.3 (2007-11-01)
+------------------
+
+- Fix test failure due to missing ``zope.app.container.browser.ftests``
+   directory.  Now it is moved to ``zope.app.container.browser.tests``.
+
+3.4.2 (2007-10-30)
+------------------
+
+- Fix test failure due to missing ``zope.app.form.browser.ftests`` directory.
+  Now it is moved to ``zope.app.form.browser.tests``.
+
+3.4.1 (2007-10-23)
+------------------
+
+- Added missing dependency.
+
+3.4.0 (2007-10-03)
+------------------
+
+- Initial public release as an individual package.
