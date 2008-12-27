@@ -15,20 +15,20 @@
 $Id$
 """
 
-from Products.CMFCore.utils import ContentInit
-
-import Topic
-from permissions import AddTopics
-
-
-# Make sure security is initialized
-import DateCriteria
-import ListCriterion
-import SimpleIntCriterion
-import SimpleStringCriterion
-import SortCriterion
-
 def initialize(context):
+
+    from Products.CMFCore.utils import ContentInit
+
+    import Topic
+    from permissions import AddTopics
+
+
+    # Make sure security is initialized
+    import DateCriteria
+    import ListCriterion
+    import SimpleIntCriterion
+    import SimpleStringCriterion
+    import SortCriterion
 
     context.registerHelpTitle( 'CMF Topic Help' )
     context.registerHelp( directory='help' )

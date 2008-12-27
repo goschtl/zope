@@ -15,16 +15,16 @@
 $Id$
 """
 
-from AccessControl import ClassSecurityInfo
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from DateTime.DateTime import DateTime
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from zope.interface import implements
 
-from AbstractCriterion import AbstractCriterion
-from interfaces import ICriterion
-from permissions import ChangeTopics
-from permissions import View
-from Topic import Topic
+from Products.CMFTopic.AbstractCriterion import AbstractCriterion
+from Products.CMFTopic.interfaces import ICriterion
+from Products.CMFTopic.permissions import ChangeTopics
+from Products.CMFTopic.permissions import View
+from Products.CMFTopic.Topic import Topic
 
 _as_of = DateTime  # Allow for controlled value when testing
 

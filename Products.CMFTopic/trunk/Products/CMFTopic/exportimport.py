@@ -22,15 +22,13 @@ from zope.interface import implements
 from Products.GenericSetup.interfaces import IFilesystemExporter
 from Products.GenericSetup.interfaces import IFilesystemImporter
 from Products.GenericSetup.content import FolderishExporterImporter
-
 try:
     from Products.GenericSetup.utils import PageTemplateResource
 except ImportError: # BBB:  no egg support
     from Products.PageTemplates.PageTemplateFile \
         import PageTemplateFile as PageTemplateResource
 
-
-from Topic import Topic
+from Products.CMFTopic.Topic import Topic
 
 class TopicExportImport(FolderishExporterImporter):
     """ Dump topic criteria to / from an XML file.

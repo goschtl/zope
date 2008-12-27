@@ -14,14 +14,14 @@
 
 $Id$
 """
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import Implicit
-from AccessControl import ClassSecurityInfo
-from Persistence import Persistent
-from Globals import InitializeClass
+from App.class_init import default__class_init__ as InitializeClass
 from OFS.SimpleItem import Item
+from Persistence import Persistent
 
-from permissions import AccessContentsInformation
-from permissions import ChangeTopics
+from Products.CMFTopic.permissions import AccessContentsInformation
+from Products.CMFTopic.permissions import ChangeTopics
 
 
 class AbstractCriterion( Persistent, Item, Implicit ):
