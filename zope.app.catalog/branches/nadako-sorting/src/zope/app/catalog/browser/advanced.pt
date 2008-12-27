@@ -1,0 +1,32 @@
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
+<body>
+<div metal:fill-slot="body">
+
+<h2 i18n:translate="">Catalog statistics</h2>
+
+<table class="listing" summary="Indexes">
+   <tr><th i18n:translate="">Index</th>
+       <th i18n:translate="">Document Count</th>
+       <th i18n:translate="">Word Count</th>
+   </tr>
+   <tr tal:repeat="indexname context">
+       <td tal:content="indexname">foo</td>
+       <td tal:content="context/?indexname/documentCount | default">-</td>
+       <td tal:content="context/?indexname/wordCount | default">-</td>
+    </tr>
+</table>
+
+<form method="post" action="reindex.html">
+    <input type="submit" value="Reindex"
+           i18n:attributes="value reindex-button"/>
+</form>
+
+<div>
+  Please make sure to install an IntId utility before using the reindex
+  function.  
+</div>
+
+</div>
+</body>
+</html>
