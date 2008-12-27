@@ -59,6 +59,7 @@ used in order to use ``megrok.login`` functionality. It can be set on
 any `grok.Site` class::
 
   import grok
+  import megrok.login
   class MyApp(grok.Application, grok.Container):
     megrok.login.enable()
 
@@ -73,6 +74,7 @@ way you can specify your own login page. You must also use
 ``megrok.login.enable()`` to make this work::
 
   import grok
+  import megrok.login
     
   class MyApp(grok.Application, grok.Container):
     megrok.login.enable()
@@ -137,6 +139,7 @@ accepted by your login page.
 Example::
 
   import grok
+  import megrok.login
   class MyApp(grok.Application, grok.Container):
     megrok.login.enable()
     megrok.login.strict()
@@ -152,6 +155,9 @@ automatically any user that still does not exist on login and add it
 to the ``PrincipalFolder``.
 
 Example::
+
+  import grok
+  import megrok.login
 
   class ManageApp(grok.Permission):
       grok.name('app.ManageAutoRegister')
