@@ -15,10 +15,10 @@
 $Id$
 """
 
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from DateTime.DateTime import DateTime
 import transaction
-from AccessControl import ClassSecurityInfo
-from DateTime import DateTime
-from Globals import InitializeClass
 from zope.component.factory import Factory
 from zope.interface import implements
 
@@ -33,12 +33,12 @@ from Products.CMFDefault.utils import parseHeadersBody
 from Products.CMFDefault.utils import SimpleHTMLParser
 from Products.GenericSetup.interfaces import IDAVAware
 
-from exceptions import ResourceLockedError
-from interfaces import IEvent
-from interfaces import IMutableEvent
-from permissions import ChangeEvents
-from permissions import ModifyPortalContent
-from permissions import View
+from Products.CMFCalendar.exceptions import ResourceLockedError
+from Products.CMFCalendar.interfaces import IEvent
+from Products.CMFCalendar.interfaces import IMutableEvent
+from Products.CMFCalendar.permissions import ChangeEvents
+from Products.CMFCalendar.permissions import ModifyPortalContent
+from Products.CMFCalendar.permissions import View
 
 
 def addEvent( self

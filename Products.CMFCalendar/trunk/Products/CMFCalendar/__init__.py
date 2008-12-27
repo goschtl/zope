@@ -15,18 +15,18 @@
 $Id$
 """
 
-from Products.CMFCore.utils import ContentInit
-from Products.CMFCore.utils import ToolInit
-
-import Event
-import CalendarTool
-from permissions import AddPortalContent
-
-
-# Make sure security is initialized
-import utils
-
 def initialize(context):
+
+    from Products.CMFCore.utils import ContentInit
+    from Products.CMFCore.utils import ToolInit
+
+    import Event
+    import CalendarTool
+    from permissions import AddPortalContent
+
+
+    # Make sure security is initialized
+    import utils
 
     ToolInit( 'CMF Calendar Tool'
             , tools=(CalendarTool.CalendarTool,)

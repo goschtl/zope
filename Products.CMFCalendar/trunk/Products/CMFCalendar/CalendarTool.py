@@ -17,9 +17,9 @@ $Id$
 
 import calendar
 
-from AccessControl import ClassSecurityInfo
-from DateTime import DateTime
-from Globals import InitializeClass
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from DateTime.DateTime import DateTime
+from App.class_init import default__class_init__ as InitializeClass
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
@@ -27,8 +27,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
-from interfaces import ICalendarTool
-from permissions import ManagePortal
+from Products.CMFCalendar.interfaces import ICalendarTool
+from Products.CMFCalendar.permissions import ManagePortal
 
 def sort_by_date(x, y):
     """ Utility function for sorting by start times, falling back on end times

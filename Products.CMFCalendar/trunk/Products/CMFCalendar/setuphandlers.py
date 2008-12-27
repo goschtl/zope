@@ -19,7 +19,7 @@ from zope.component import getUtility
 
 from Products.CMFCore.interfaces import IMetadataTool
 
-from exceptions import MetadataError
+from Products.CMFCalendar.exceptions import MetadataError
 
 
 def importVarious(context):
