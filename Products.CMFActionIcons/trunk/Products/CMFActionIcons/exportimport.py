@@ -17,9 +17,9 @@ $Id$
 
 import os
 
-from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
-from Globals import package_home
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import default__class_init__ as InitializeClass
+from App.Common import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from zope.component import getSiteManager
@@ -30,8 +30,8 @@ from Products.GenericSetup.utils import ExportConfiguratorBase
 from Products.GenericSetup.utils import ImportConfiguratorBase
 from Products.GenericSetup.utils import KEY
 
-from interfaces import IActionIconsTool
-from permissions import ManagePortal
+from Products.CMFActionIcons.interfaces import IActionIconsTool
+from Products.CMFActionIcons.permissions import ManagePortal
 
 _pkgdir = package_home( globals() )
 _xmldir = os.path.join( _pkgdir, 'xml' )
