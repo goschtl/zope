@@ -42,6 +42,19 @@
         />
   </class>
 
+  <class class=".keyword.KeywordIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics"
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </class>
+
+  <class class=".keyword.CaseSensitiveKeywordIndex">
+    <require like_class=".keyword.KeywordIndex" /> 
+  </class>
+
   <class class=".text.TextIndex">
     <require
         permission="zope.ManageServices"
