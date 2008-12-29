@@ -3,6 +3,12 @@ Changelog for megrok.kss
 
     (name of developer listed in brackets)
 
+megrok.kss - 0.3 Released 2008-12-29
+
+    - Fixes for compatibility with security-patched grok versions
+      (0.14.1, 0.13.1, 0.12.2)
+      [ulif]
+
 megrok.kss - 0.2  Released 2008-08-18
 
     - Fixes for 0.13 compatibility

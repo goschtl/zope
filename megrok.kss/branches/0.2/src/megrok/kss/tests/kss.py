@@ -21,6 +21,33 @@ KSS action calls `self.view.render()`.
   </commands>
   </kukit>
   <BLANKLINE>
+
+The KSS action can be called by non-authenticated users. We put our
+model into the ZODB to make it browsable::
+
+  >>> from zope.app.testing.functional import getRootFolder
+  >>> root = getRootFolder()
+  >>> root['model'] = mymodel
+
+Now we start the test-browser and try to access our action as
+non-authenticated users::
+  
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.handleErrors = False
+  >>> browser.open('http://localhost/model/@@testview/@@getId')
+  >>> print browser.contents
+  <?xml version="1.0" ?>
+  <kukit xmlns="http://www.kukit.org/commands/1.1">
+  <commands>
+  <command selector="#click-me" name="replaceHTML"
+           selectorType="">
+      <param name="html"><![CDATA[Something silly!]]></param>
+      <param name="withKssSetup">True</param>
+  </command>
+  </commands>
+  </kukit>
+
 """
 
 import grok

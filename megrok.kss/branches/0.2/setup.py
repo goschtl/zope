@@ -2,7 +2,7 @@ import os
 
 from setuptools import setup, find_packages
 
-version = '0.2'
+version = '0.2.1dev'
 
 
 def read(*rnames):
@@ -21,7 +21,7 @@ setup(name='megrok.kss',
       keywords="",
       author="Godefroid Chapelle",
       author_email="gotcha@bubblenet.be",
-      url="",
+      url="http://pypi.python.org/pypi/megrok.kss",
       license="ZPL",
       package_dir={'': 'src'},
       namespace_packages=['megrok'],
