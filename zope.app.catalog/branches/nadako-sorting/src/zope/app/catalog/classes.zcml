@@ -51,7 +51,7 @@
         />
   </class>
 
-  <class class=".keyword.CaseSensitiveKeywordIndex">
+  <class class=".keyword.CaseInsensitiveKeywordIndex">
     <require like_class=".keyword.KeywordIndex" /> 
   </class>
 

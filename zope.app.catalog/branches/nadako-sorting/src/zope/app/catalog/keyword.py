@@ -23,17 +23,17 @@ import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
 
 class IKeywordIndex(zope.app.catalog.interfaces.IAttributeIndex,
-                    zope.app.catalog.interfaces.ICatalogIndex):
+                     zope.app.catalog.interfaces.ICatalogIndex):
     """Interface-based catalog keyword index"""
 
 class KeywordIndex(zope.app.catalog.attribute.AttributeIndex,
-                   zope.index.keyword.KeywordIndex,
-                   zope.app.container.contained.Contained):
+                    zope.index.keyword.KeywordIndex,
+                    zope.app.container.contained.Contained):
 
     zope.interface.implements(IKeywordIndex)
 
-class CaseSensitiveKeywordIndex(zope.app.catalog.attribute.AttributeIndex,
-                                zope.index.keyword.CaseSensitiveKeywordIndex,
-                                zope.app.container.contained.Contained):
+class CaseInsensitiveKeywordIndex(zope.app.catalog.attribute.AttributeIndex,
+                                      zope.index.keyword.CaseInsensitiveKeywordIndex,
+                                      zope.app.container.contained.Contained):
 
     zope.interface.implements(IKeywordIndex)

@@ -83,21 +83,21 @@
    />
 
 <addform
-    name="AddCaseSensitiveKeywordIndex"
-    label="Add a keyword index (case-sensitive)"
+    name="AddCaseInsensitiveKeywordIndex"
+    label="Add a keyword index (case-omsensitive)"
     schema="..interfaces.IAttributeIndex"
     permission="zope.ManageServices"
-    content_factory="..keyword.CaseSensitiveKeywordIndex"
+    content_factory="..keyword.CaseInsensitiveKeywordIndex"
     arguments="field_name"
     keyword_arguments="interface field_callable"
     />
 
 <addMenuItem
-    title="Keyword Index (case-sensitive)"
+    title="Keyword Index (case-insensitive)"
     description="Index items based on sequence of keywords"
-    class="..keyword.CaseSensitiveKeywordIndex"
+    class="..keyword.CaseInsensitiveKeywordIndex"
     permission="zope.ManageServices"
-    view="AddCaseSensitiveKeywordIndex"
+    view="AddCaseInsensitiveKeywordIndex"
    />
 
 <schemadisplay
