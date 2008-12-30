@@ -984,11 +984,74 @@ query the objects instead of lookup the IIntIds utility.
   >>> len(resultSet)
   4
 
-This will returnd the same objects as before:
+This will return the same objects as before:
 
   >>> resultSet[-1:]
   [<DemoContent u'Apple House Tower'>]
 
+Also, the ``searchResults`` provides a way to sort objects
+by their indexed values. You can pass the ``sort_index``,
+``reverse`` and ``limit`` arguments.
+
+If ``sort_index`` is not specified, results are reversed/splitted
+by simple python list mechanisms. That doesn't make any sense
+though, as we can't guarantee any order with that.
+
+  >>> allQuery = SearchQuery(appleQuery).Or(houseQuery).Or(towerQuery)
+
+  >>> list(allQuery.searchResults())
+  [<DemoContent u'Apple'>, <DemoContent u'House'>, <DemoContent u'Tower'>,
+   <DemoContent u'Apple House Tower'>]
+
+  >>> list(allQuery.searchResults(reverse=True))
+  [<DemoContent u'Apple House Tower'>, <DemoContent u'Tower'>,
+   <DemoContent u'House'>, <DemoContent u'Apple'>]
+
+  >>> list(allQuery.searchResults(reverse=True, limit=2))
+  [<DemoContent u'Apple House Tower'>, <DemoContent u'Tower'>]
+
+  >>> list(allQuery.searchResults(limit=2))
+  [<DemoContent u'Apple'>, <DemoContent u'House'>]
+  
+However, when ``sort_index`` is specified, results are sorted
+by values, indexed by specified index using its ``sort`` method.
+Limiting and reversing order are also done by index itself, so
+index can do that efficiently. At the time of writing, only
+the FieldIndexes supports sorting.
+
+Let's provide sensible ``field`` value for our content and
+reindex it.
+
+  >>> apple.field = u'3'
+  >>> house.field = u'6'
+  >>> tower.field = u'2'
+  >>> every.field = u'4'
+  >>> index(apple)
+  >>> index(house)
+  >>> index(tower)
+  >>> index(every)
+
+  >>> list(allQuery.searchResults(sort_index='fieldIndex'))
+  [<DemoContent u'Tower'>, <DemoContent u'Apple'>,
+   <DemoContent u'Apple House Tower'>, <DemoContent u'House'>]
+
+  >>> list(allQuery.searchResults(sort_index='fieldIndex', reverse=True))
+  [<DemoContent u'House'>, <DemoContent u'Apple House Tower'>,
+   <DemoContent u'Apple'>, <DemoContent u'Tower'>]
+
+  >>> list(allQuery.searchResults(sort_index='fieldIndex', limit=2))
+  [<DemoContent u'Tower'>, <DemoContent u'Apple'>]
+
+  >>> list(allQuery.searchResults(sort_index='fieldIndex', reverse=True, limit=2))
+  [<DemoContent u'House'>, <DemoContent u'Apple House Tower'>]
+
+The index must provide the ``zope.index.interfaces.IIndexSort``
+interface, otherwise, TypeError is raised.
+
+  >>> allQuery.searchResults(sort_index='textIndex') 
+  Traceback (most recent call last):
+  ...
+  TypeError: Index textIndex does not implement sorting.
 
 Batching
 --------

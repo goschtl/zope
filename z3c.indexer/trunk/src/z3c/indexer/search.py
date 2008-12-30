@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.component
 from zope.app.intid.interfaces import IIntIds
+from zope.index.interfaces import IIndexSort
 
 from zc.catalog.index import FamilyProperty
 
@@ -103,14 +104,28 @@ class SearchQuery(object):
     def apply(self):
         return self.results
 
-    def searchResults(self, intids=None, searchResultFactory=None):
+    def searchResults(self, intids=None, searchResultFactory=None,
+                        sort_index=None, reverse=False, limit=None):
         if searchResultFactory is None:
             searchResultFactory = self.searchResultFactory
         results = []
         if len(self.results) > 0:
+            res = self.results
+            if sort_index is not None:
+                idx = zope.component.getUtility(interfaces.IIndex, name=sort_index)
+                if not IIndexSort.providedBy(idx):
+                    raise TypeError('Index %s does not implement sorting.' % sort_index)
+                res = list(idx.sort(res, reverse, limit))
+            else:
+                if reverse or limit:
+                    res = list(res)
+                if reverse:
+                    res.reverse()
+                if limit:
+                    del res[limit:]
             if intids is None:
                 intids = zope.component.getUtility(IIntIds)
-            results = searchResultFactory(self.results, intids)
+            results = searchResultFactory(res, intids)
         return results
 
     def Or(self, query):

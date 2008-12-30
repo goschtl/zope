@@ -23,9 +23,9 @@ def read(*rnames):
 
 setup (
     name='z3c.indexer',
-    version='0.5.2dev',
+    version='0.6.0dev',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "A new way to index objects for Zope3",
     long_description=(
         read('README.txt')
@@ -86,7 +86,7 @@ setup (
         'zope.component',
         'zope.deferredimport',
         'zope.event',
-        'zope.index',
+        'zope.index>=3.5.0',
         'zope.interface',
         'zope.lifecycleevent',
         'zope.location',
