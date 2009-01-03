@@ -99,15 +99,12 @@ class SessionDataManager(object):
         # Workaround for RDBMS w/o savepoint support. If the driver name
         # is set through the envvar $DUMMY_SAVEPOINT_SUPPORT
         # then a DummySavePoint object without functionality is returned
-        if set(engine.url.drivername
-               for engine in self.session.transaction._connections.keys()
-               if isinstance(engine, Engine)
-               ).intersection(DUMMY_SAVEPOINT_SUPPORT):
+        engines = set(engine.url.drivername
+                      for engine in self.session.transaction._connections.keys()
+                      if isinstance(engine, Engine))
+        if engines.intersection(DUMMY_SAVEPOINT_SUPPORT):
             return DummySavePoint(self.session)
-        if set(engine.url.drivername
-               for engine in self.session.transaction._connections.keys()
-               if isinstance(engine, Engine)
-               ).intersection(NO_SAVEPOINT_SUPPORT):
+        if engines.intersection(NO_SAVEPOINT_SUPPORT):
             raise AttributeError('savepoint')
         return self._savepoint
 
