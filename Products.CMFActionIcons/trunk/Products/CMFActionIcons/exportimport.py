@@ -18,20 +18,18 @@ $Id$
 import os
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.Common import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
 from zope.component import getSiteManager
 
+from Products.CMFActionIcons.interfaces import IActionIconsTool
+from Products.CMFActionIcons.permissions import ManagePortal
 from Products.GenericSetup.utils import CONVERTER
 from Products.GenericSetup.utils import DEFAULT
 from Products.GenericSetup.utils import ExportConfiguratorBase
 from Products.GenericSetup.utils import ImportConfiguratorBase
 from Products.GenericSetup.utils import KEY
-
-from Products.CMFActionIcons.interfaces import IActionIconsTool
-from Products.CMFActionIcons.permissions import ManagePortal
 
 _pkgdir = package_home( globals() )
 _xmldir = os.path.join( _pkgdir, 'xml' )

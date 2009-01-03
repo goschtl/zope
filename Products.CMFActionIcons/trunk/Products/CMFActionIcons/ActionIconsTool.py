@@ -18,19 +18,18 @@ $Id$
 import os
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from App.Common import package_home
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 
-from Products.CMFCore.Expression import Expression
-from Products.CMFCore.utils import registerToolInterface
-from Products.CMFCore.utils import UniqueObject
-
 from Products.CMFActionIcons.interfaces import IActionIconsTool
 from Products.CMFActionIcons.permissions import ManagePortal
 from Products.CMFActionIcons.permissions import View
+from Products.CMFCore.Expression import Expression
+from Products.CMFCore.utils import registerToolInterface
+from Products.CMFCore.utils import UniqueObject
 
 _wwwdir = os.path.join( package_home( globals() ), 'www' )
 
