@@ -60,7 +60,7 @@ setup(
     zip_safe=False,
     
     namespace_packages=['zope'],
-    
+    test_suite="nose.collector",    
     author='Laurence Rowe',
     author_email='laurence@lrowe.co.uk',
     url='http://pypi.python.org/pypi/zope.sqlalchemy',
@@ -87,6 +87,7 @@ setup(
         'test': [
             'zope.testing',
             'docutils',
+            'pysqlite2',
             ]
         },
     )
