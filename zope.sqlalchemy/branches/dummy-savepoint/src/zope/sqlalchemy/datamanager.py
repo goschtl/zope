@@ -26,8 +26,13 @@ STATUS_READONLY = 'readonly' # session joined to transaction, no writes allowed.
 STATUS_INVALIDATED = STATUS_CHANGED # BBB
 
 NO_SAVEPOINT_SUPPORT = set(['sqlite'])
-val = os.environ.get('DUMMY_SAVEPOINT_SUPPORT', None)
-DUMMY_SAVEPOINT_SUPPORT = set(val and val.split(',') or [])
+
+# For driver names listed here and a server version info
+# below the given minimum version: return a dummy savepoint
+# implementation
+SAVEPOINT_SUPPORT_MIN_VERSIONS = dict(
+postgres=(8,0,0),
+)
 
 _SESSION_STATE = {} # a mapping of id(session) -> status
 # This is thread safe because you are using scoped sessions
@@ -93,17 +98,27 @@ class SessionDataManager(object):
 
     @property
     def savepoint(self):
-        """Savepoints are only supported when all connections support subtransactions
+        """Savepoints are only supported when all connections support
+           subtransactions
         """
-
-        # Workaround for RDBMS w/o savepoint support. If the driver name
-        # is set through the envvar $DUMMY_SAVEPOINT_SUPPORT
-        # then a DummySavePoint object without functionality is returned
         engines = set(engine.url.drivername
-                      for engine in self.session.transaction._connections.keys()
-                      if isinstance(engine, Engine))
-        if engines.intersection(DUMMY_SAVEPOINT_SUPPORT):
-            return DummySavePoint(self.session)
+                  for engine in self.session.transaction._connections.keys()
+                  if isinstance(engine, Engine))
+
+        # Return a dummy savepoint implementation for listed driver 
+        # names and older version number
+
+        # ATT: is this always true?
+        assert len(engines) == 1, 'len(engines) != 1' 
+
+        engine = engines[0]
+        min_version = SAVEPOINT_SUPPORT_MIN_VERSIONS.get(engine.url.drivername,
+                                                         None)
+        if min_version is not None:
+            # server_version_info() return the server version number as tuple
+            if engine.dialect.server_version_info() < min_version:
+                return DummySavePoint(self.session)
+
         if engines.intersection(NO_SAVEPOINT_SUPPORT):
             raise AttributeError('savepoint')
         return self._savepoint
