@@ -32,8 +32,6 @@ from Products.CMFCore.testing import ConformsToFolder
 from Products.CMFCore.testing import EventZCMLLayer
 from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.testcase import SecurityTest
-from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
-from Products.CMFCore.TypesTool import TypesTool
 from Products.CMFTopic.testing import FunctionalLayer
 
 

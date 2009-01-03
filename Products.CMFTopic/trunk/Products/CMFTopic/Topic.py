@@ -17,21 +17,19 @@ $Id$
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from Acquisition import aq_parent, aq_inner
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from zope.component import getUtility
 from zope.component.factory import Factory
 from zope.interface import implements
 
-from Products.CMFDefault.SkinnedFolder import SkinnedFolder
 from Products.CMFCore.interfaces import ISyndicationTool
 from Products.CMFCore.utils import getToolByName
-
+from Products.CMFDefault.SkinnedFolder import SkinnedFolder
 from Products.CMFTopic.interfaces import IMutableTopic
 from Products.CMFTopic.interfaces import ITopic
 from Products.CMFTopic.permissions import View
 from Products.CMFTopic.permissions import AddTopics
 from Products.CMFTopic.permissions import ChangeTopics
-
 
 def addTopic(self, id, title='', REQUEST=None):
     """ Create an empty topic.

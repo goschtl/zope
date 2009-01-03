@@ -16,8 +16,8 @@ $Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
+from App.class_init import InitializeClass
 from DateTime.DateTime import DateTime
-from App.class_init import default__class_init__ as InitializeClass
 from zope.interface import implements
 
 from Products.CMFTopic.AbstractCriterion import AbstractCriterion
@@ -27,6 +27,7 @@ from Products.CMFTopic.permissions import View
 from Products.CMFTopic.Topic import Topic
 
 _as_of = DateTime  # Allow for controlled value when testing
+
 
 class FriendlyDateCriterion( AbstractCriterion ):
 
