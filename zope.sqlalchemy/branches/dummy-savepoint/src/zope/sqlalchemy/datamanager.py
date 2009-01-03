@@ -37,10 +37,10 @@ _SESSION_STATE = {} # a mapping of id(session) -> status
 
 class SessionDataManager(object):
     """Integrate a top level sqlalchemy session transaction into a zope transaction
-    
+
     One phase variant.
     """
-    
+
     implements(ISavepointDataManager)
 
     def __init__(self, session, status):
@@ -65,7 +65,7 @@ class SessionDataManager(object):
 
     def tpc_begin(self, trans):
         self.session.flush()
-    
+
     def commit(self, trans):
         status = _SESSION_STATE[id(self.session)]
         if status is not STATUS_INVALIDATED:
@@ -76,7 +76,7 @@ class SessionDataManager(object):
         if self.tx is not None: # there may have been no work to do
             self.tx.commit()
             self._finish('committed')
-                
+
     def tpc_finish(self, trans):
         pass
 
@@ -88,7 +88,7 @@ class SessionDataManager(object):
         # which allows Zope to roll back its transaction if the RDBMS 
         # threw a conflict error.
         return "~sqlalchemy:%d" % id(self.tx)
-    
+
     @property
     def savepoint(self):
         """Savepoints are only supported when all connections support subtransactions
@@ -105,7 +105,7 @@ class SessionDataManager(object):
                ).intersection(NO_SAVEPOINT_SUPPORT):
             raise AttributeError('savepoint')
         return self._savepoint
-    
+
     def _savepoint(self):
         return SessionSavepoint(self.session)
 
@@ -117,7 +117,7 @@ class TwoPhaseSessionDataManager(SessionDataManager):
         if self.tx is not None: # there may have been no work to do
             self.tx.prepare()
             self.state = 'voted'
-                
+
     def tpc_finish(self, trans):
         if self.tx is not None:
             self.tx.commit()
@@ -132,6 +132,18 @@ class TwoPhaseSessionDataManager(SessionDataManager):
         # Sort normally
         return "sqlalchemy.twophase:%d" % id(self.tx)
 
+class DummySessionSavepoint:
+    """ A dummy savepoint implementation for databases
+        without savepoint support (in order to make them
+        work together with ZODB savepoints.
+    """
+    implements(IDataManagerSavepoint)
+
+    def __init__(self, session):
+        self.session = session
+
+    def rollback(self):
+        pass
 
 class SessionSavepoint:
     implements(IDataManagerSavepoint)
@@ -149,15 +161,15 @@ class SessionSavepoint:
 
 def join_transaction(session, initial_state=STATUS_ACTIVE):
     """Join a session to a transaction using the appropriate datamanager.
-       
+
     It is safe to call this multiple times, if the session is already joined
     then it just returns.
-       
+
     `initial_state` is either STATUS_ACTIVE, STATUS_INVALIDATED or STATUS_READONLY
-    
+
     If using the default initial status of STATUS_ACTIVE, you must ensure that
     dirty_session(session) is called when data is written to the database.
-    
+
     The DirtyAfterFlush SessionExtension can be used to ensure that this is
     called automatically after session write operations.
     """
@@ -176,20 +188,20 @@ class ZopeTransactionExtension(SessionExtension):
     """Record that a flush has occurred on a session's connection. This allows
     the DataManager to rollback rather than commit on read only transactions.
     """
-    
+
     def __init__(self, initial_state=STATUS_ACTIVE):
         if initial_state=='invalidated': initial_state = STATUS_CHANGED #BBB
         SessionExtension.__init__(self)
         self.initial_state = initial_state
-    
+
     def after_begin(self, session, transaction, connection):
         join_transaction(session, self.initial_state)
-    
+
     def after_attach(self, session, instance):
         join_transaction(session, self.initial_state)
-    
+
     def after_flush(self, session, flush_context):
         mark_changed(session)
-    
+
     def before_commit(self, session):
         assert zope_transaction.get().status == 'Committing', "Transaction must be committed by zope"
