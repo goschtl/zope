@@ -17,9 +17,7 @@ Bugs fixed:
 * Call session.flush() unconditionally in tpc_begin.
 
 * Added (dummy) savepoint support for databases without savepoint support
-  (instead of raising an exception or runtime error). The environment variable   
-  DUMMY_SAVEPOINT_SUPPORT may hold a list of comma-separated driver names that
-  do not support savepoints.
+  (instead of raising an exception or runtime error). 
 
 0.3 (2008-07-29)
 ----------------
