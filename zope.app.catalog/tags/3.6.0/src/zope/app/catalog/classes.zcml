@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <class class=".catalog.Catalog">
+    <factory
+        id="zope.app.catalog"
+        />
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+    <require
+        interface="zope.app.catalog.interfaces.ICatalogQuery"
+        permission="zope.Public"
+        />
+    <require
+        interface="zope.app.catalog.interfaces.ICatalogEdit"
+        permission="zope.ManageServices"
+        />
+    <require
+        interface="zope.app.container.interfaces.IContainer"
+        permission="zope.ManageServices"
+        />
+  </class>
+
+  <class class=".catalog.ResultSet">
+    <require
+        attributes="__iter__ __len__"
+        permission="zope.Public"
+        />
+  </class>
+
+  <class class=".field.FieldIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics
+                  "
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </class>
+
+  <class class=".keyword.KeywordIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics"
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </class>
+
+  <class class=".keyword.CaseInsensitiveKeywordIndex">
+    <require like_class=".keyword.KeywordIndex" /> 
+  </class>
+
+  <class class=".text.TextIndex">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IAttributeIndex
+                   zope.index.interfaces.IStatistics
+                  "
+        set_schema=".interfaces.IAttributeIndex"
+        />
+  </class>
+
+  <interface interface="zope.index.text.interfaces.ISearchableText" />
+
+</configure>

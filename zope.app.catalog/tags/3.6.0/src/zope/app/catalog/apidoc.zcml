@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:apidoc="http://namespaces.zope.org/apidoc"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    zcml:condition="have apidoc"
+    i18n_domain="zope"
+    >
+
+  <apidoc:bookchapter
+      id="indexcatalog"
+      title="Indexes and Catalogs"
+      />
+  <apidoc:bookchapter
+      id="catalog"
+      title="Catalog"
+      doc_path="README.txt"
+      parent="indexcatalog"
+      />
+
+  <configure package="zope.index">
+    <apidoc:bookchapter
+        id="fieldindex"
+        title="Field Indexes"
+        doc_path="field/README.txt"
+        parent="indexcatalog"
+        />
+    <apidoc:bookchapter
+        id="testindex"
+        title="Text Indexes"
+        doc_path="text/textindex.txt"
+        parent="indexcatalog"
+        />
+  </configure>
+
+</configure>
