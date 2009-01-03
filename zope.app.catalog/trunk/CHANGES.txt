@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.6.1 (unreleased)
+------------------
+
+- ...
+
+3.6.0 (2009-01-03)
 ------------------
 
 - Make TextIndex addform use default values as specified in
