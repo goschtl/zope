@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import os
 import transaction as zope_transaction
 from zope.interface import implements
 from transaction.interfaces import ISavepointDataManager, IDataManagerSavepoint
@@ -25,7 +26,8 @@ STATUS_READONLY = 'readonly' # session joined to transaction, no writes allowed.
 STATUS_INVALIDATED = STATUS_CHANGED # BBB
 
 NO_SAVEPOINT_SUPPORT = set(['sqlite'])
-
+val = os.environ.get('DUMMY_SAVEPOINT_SUPPORT', None)
+DUMMY_SAVEPOINT_SUPPORT = set(val and val.split(',') or [])
 
 _SESSION_STATE = {} # a mapping of id(session) -> status
 # This is thread safe because you are using scoped sessions
@@ -94,11 +96,14 @@ class SessionDataManager(object):
         """Savepoints are only supported when all connections support subtransactions
         """
 
-        # ATT: the following check is weak since the savepoint capability 
-        # of a RDBMS also depends on its version. E.g. Postgres 7.X does not
-        # support savepoints but Postgres is whitelisted independent of its
-        # version. Possibly additional version information should be taken
-        # into account (ajung)
+        # Workaround for RDBMS w/o savepoint support. If the driver name
+        # is set through the envvar $DUMMY_SAVEPOINT_SUPPORT
+        # then a DummySavePoint object without functionality is returned
+        if set(engine.url.drivername
+               for engine in self.session.transaction._connections.keys()
+               if isinstance(engine, Engine)
+               ).intersection(DUMMY_SAVEPOINT_SUPPORT):
+            return DummySavePoint(self.session)
         if set(engine.url.drivername
                for engine in self.session.transaction._connections.keys()
                if isinstance(engine, Engine)
