@@ -22,6 +22,7 @@ we'll write the base index class:
     ...     zope.interface.implements(
     ...         zope.index.interfaces.IInjection,
     ...         zope.index.interfaces.IIndexSearch,
+    ...         zope.index.interfaces.IIndexSort,
     ...         )
     ...
     ...     def clear(self):
@@ -53,6 +54,12 @@ we'll write the base index class:
     ...         if set is None:
     ...             set = BTrees.IFBTree.IFTreeSet()
     ...         return set
+    ...
+    ...     def sort(self, docids, limit=None, reverse=False):
+    ...         for i, docid in enumerate(sorted(docids, key=self.backward.get, reverse=reverse)):
+    ...             yield docid
+    ...             if limit and i >= (limit - 1):
+    ...                 break
 
 The class implements `IInjection` to allow values to be indexed and
 unindexed and `IIndexSearch` to support searching via the `apply`
@@ -225,6 +232,54 @@ Result sets provide access to objects, rather than object ids:
     >>> len(result)
     2
     >>> list(result) == [o4, o5]
+    True
+
+The searchResults method also provides a way to sort, limit and reverse
+results.
+
+When not using sorting, limiting and reversing are done by simple slicing
+and list reversing.
+
+    >>> list(cat.searchResults(size=5, _reverse=True)) == [o5, o4]
+    True
+
+    >>> list(cat.searchResults(size=5, _limit=1)) == [o4]
+    True
+
+    >>> list(cat.searchResults(size=5, _limit=1, _reverse=True)) == [o5]
+    True
+
+However, when using sorting by index, the limit and reverse parameters
+are passed to the index ``sort`` method so it can do it efficiently.
+
+Let's index more objects to work with:
+
+    >>> o7 = DiscriminatingPerson(7, 'blue')
+    >>> o8 = DiscriminatingPerson(3, 'blue')
+    >>> o9 = DiscriminatingPerson(14, 'blue')
+    >>> o10 = DiscriminatingPerson(1, 'blue')
+    >>> ids.data.update({7: o7, 8: o8, 9: o9, 10: o10})
+    >>> cat.index_doc(7, o7)
+    >>> cat.index_doc(8, o8)
+    >>> cat.index_doc(9, o9)
+    >>> cat.index_doc(10, o10)
+
+Now we can search all people who like blue, ordered by age:
+
+    >>> results = list(cat.searchResults(color='blue', _sort_index='age'))
+    >>> results == [o3, o10, o8, o7, o6, o9]
+    True
+
+    >>> results = list(cat.searchResults(color='blue', _sort_index='age', _limit=3))
+    >>> results == [o3, o10, o8]
+    True
+
+    >>> results = list(cat.searchResults(color='blue', _sort_index='age', _reverse=True))
+    >>> results == [o9, o6, o7, o8, o10, o3]
+    True
+
+    >>> results = list(cat.searchResults(color='blue', _sort_index='age', _reverse=True, _limit=4))
+    >>> results == [o9, o6, o7, o8]
     True
 
 The index example we looked at didn't provide document scores.  Simple

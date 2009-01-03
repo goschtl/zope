@@ -28,7 +28,24 @@ class ICatalogQuery(zope.interface.Interface):
     """Provides Catalog Queries."""
 
     def searchResults(**kw):
-        """Search on the given indexes."""
+        """Search on the given indexes.
+        
+        Keyword arguments dictionary keys
+        are index names and values are queries
+        for these indexes.
+        
+        Keyword arguments has some special names,
+        used by the catalog itself:
+        
+         * _sort_index - The name of index to sort
+           results with. This index must implement
+           zope.index.interfaces.IIndexSort.
+         * _limit - Limit result set by this number,
+           useful when used with sorting.
+         * _reverse - Reverse result set, also
+           useful with sorting.
+
+        """
 
 
 class ICatalogEdit(zope.index.interfaces.IInjection):

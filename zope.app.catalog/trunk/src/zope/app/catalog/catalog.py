@@ -134,8 +134,23 @@ class Catalog(BTreeContainer):
         return result
 
     def searchResults(self, **searchterms):
+        sort_index = searchterms.pop('_sort_index', None)
+        limit = searchterms.pop('_limit', None)
+        reverse = searchterms.pop('_reverse', False)
         results = self.apply(searchterms)
         if results is not None:
+            if sort_index is not None:
+                index = self[sort_index]
+                if not zope.index.interfaces.IIndexSort.providedBy(index):
+                    raise ValueError('Index %s does not support sorting.' % sort_index)
+                results = list(index.sort(results, limit=limit, reverse=reverse))
+            else:
+                if reverse or limit:
+                    results = list(results)
+                if reverse:
+                    results.reverse()
+                if limit:
+                    del results[limit:]
             uidutil = component.getUtility(IIntIds)
             results = ResultSet(results, uidutil)
         return results

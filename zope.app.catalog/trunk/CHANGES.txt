@@ -5,7 +5,18 @@ CHANGES
 3.6.0 (unreleased)
 ------------------
 
-- ...
+- Make TextIndex addform use default values as specified in
+  zope.app.catalog.text.ITextIndex interface. Also, change
+  "searchableText" to "getSearchableText" there, as it's the
+  right value.
+
+- Add Keyword (case-insensitive and case-sensitive) catalog
+  indices. It's now possible to use them, because ones in
+  zope.index now implement IIndexSearch interface.
+
+- Add support for sorting, reversing and limiting result set
+  in the ``searchResults`` method, using new IIndexSort interface
+  features of zope.index.
 
 3.5.2 (2008-12-28)
 ------------------
