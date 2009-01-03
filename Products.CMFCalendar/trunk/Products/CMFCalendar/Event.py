@@ -16,12 +16,18 @@ $Id$
 """
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
-from App.class_init import default__class_init__ as InitializeClass
+from App.class_init import InitializeClass
 from DateTime.DateTime import DateTime
 import transaction
 from zope.component.factory import Factory
 from zope.interface import implements
 
+from Products.CMFCalendar.exceptions import ResourceLockedError
+from Products.CMFCalendar.interfaces import IEvent
+from Products.CMFCalendar.interfaces import IMutableEvent
+from Products.CMFCalendar.permissions import ChangeEvents
+from Products.CMFCalendar.permissions import ModifyPortalContent
+from Products.CMFCalendar.permissions import View
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import contributorsplitter
 from Products.CMFCore.utils import keywordsplitter
@@ -32,14 +38,6 @@ from Products.CMFDefault.utils import html_headcheck
 from Products.CMFDefault.utils import parseHeadersBody
 from Products.CMFDefault.utils import SimpleHTMLParser
 from Products.GenericSetup.interfaces import IDAVAware
-
-from Products.CMFCalendar.exceptions import ResourceLockedError
-from Products.CMFCalendar.interfaces import IEvent
-from Products.CMFCalendar.interfaces import IMutableEvent
-from Products.CMFCalendar.permissions import ChangeEvents
-from Products.CMFCalendar.permissions import ModifyPortalContent
-from Products.CMFCalendar.permissions import View
-
 
 def addEvent( self
             , id
