@@ -5,9 +5,20 @@ CHANGES
 0.6.0 (unreleased)
 ------------------
 
-- Feature: added support for sorting by indexed values,
-  introduced in zope.index 3.5.0.
+- Feature: Add support for sorting by indexed values, introduced in
+  zope.index 3.5.0. See description of the ``searchResults`` method
+  of ISearchQuery.
 
+- Bugfix: Make query object constructor work with index name
+  passed as unicode as well as with str.
+
+- Mention ``searchResultFactory`` argument in the ``searchResults`` method
+  of the ISearchQuery interface.
+
+- Added the "subscriber.zcml" file that contains ZCML-based intid subscriber
+  registrations for easy including in projects that use event-based indexing.
+
+- Reworded package description to make it nicer. Fix little docstring typos.
 
 0.5.1 (2008-12-11)
 ------------------

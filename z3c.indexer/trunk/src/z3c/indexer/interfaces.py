@@ -49,9 +49,23 @@ class ISearchQuery(zope.interface.Interface):
     def apply():
         """Return iterable search result wrapper."""
 
-    def searchResults(intids=None, sort_index=None, reverse=False, limit=None):
-        """Retruns an iterable search result objects. Optional the intids 
-        utility can be set for use within the ResulSet implementation.
+    def searchResults(intids=None, searchResultFactory=None, sort_index=None, reverse=False, limit=None):
+        """Returns an iterable search result objects.
+
+        The IntIds utility can be specified for use in the ResulSet using the ``intids`` argument.
+        
+        The ``searchResultFactory`` argument can be used to specify a factory
+        for the ResultSet object, returned by this method.
+        
+        The name of index to sort results with can be specified using the
+        ``sort_index`` argument. The index should provide the
+        zope.index.interfaces.IIndexSort interface. The optional ``reverse``
+        and ``limit`` argument will be used by the index for efficient sorting.
+        
+        Though the ``limit`` and ``reverse`` arguments can be used without the
+        ``sort_index``, it doesn't make much sense, because we can't guarantee
+        any particular order in unsorted result set.
+
         """
 
     def Or(query):

@@ -1,2 +1,2 @@
-This package provides an implementation for indexing objects and query indexes 
-for Zope3. This will make zope.app.catalog obsolate.
+This package provides a way to index objects and query indexes for Zope3. This
+implementation is different from zope.app.catalog and is an alternative to it.

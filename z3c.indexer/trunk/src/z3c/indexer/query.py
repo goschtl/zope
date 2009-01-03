@@ -24,7 +24,7 @@ class QueryMixin(object):
     """Index query."""
 
     def __init__(self, indexOrName):
-        if isinstance(indexOrName, str):
+        if isinstance(indexOrName, basestring):
             self.index = zope.component.getUtility(interfaces.IIndex,
                 name=indexOrName)
         else:

@@ -44,7 +44,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.indexer',
+    url = 'http://pypi.python.org/pypi/z3c.indexer',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},

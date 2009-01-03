@@ -29,13 +29,14 @@ from z3c.indexer import interfaces
 
 
 class IndexMixin(object):
-    """Text index based on zope.index.text.textindex.TextIndex"""
+    """Index mixin class for indexes implementing zope.index.interfaces.IInjection"""
 
     def doIndex(self, oid, value):
-        """Index a value by it's id."""
+        """Index a value by its object id."""
         self.index_doc(oid, value)
 
     def doUnIndex(self, oid):
+        """Unindex a value by its object id."""
         self.unindex_doc(oid)
 
 
@@ -47,7 +48,7 @@ class TextIndex(IndexMixin, textindex.TextIndex, contained.Contained):
 
 class FieldIndex(IndexMixin, fieldindex.FieldIndex,
     contained.Contained):
-    """Text index based on zope.index.text.textindex.TextIndex
+    """Field index based on zope.index.field.index.TextIndex
     
     Field index will use tuple in it's base apply method.
     """

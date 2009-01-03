@@ -185,11 +185,8 @@ The concepts used in this package are:
 - The default IIndexer adapter will lookup a IIndexValue multi adapter for each
   (object, index) tuple and get the right value from this adapter. You can
   register custom IIndexer adapters for your objects if you like to avoid this
-  additional adapter call.
-
-- Each obj, index pair can have a IIndexValue multi adapter which knows how
-  to get the value which get indexed. Only needed if no IIndexer adapter is
-  available for your custom object.
+  additional adapter call. (XXX: This is not actually true, is this pattern
+  deprecated?)
 
 - Everything is explicit. This means that there's no default actions on
   the IntIdAddedEvent by. But you can easily write your own subscriber if
