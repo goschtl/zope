@@ -113,7 +113,7 @@ class ValueIndexerBase(IndexerBase):
     @property
     def value(self):
         """Get the index value for the adapted context and relevant index."""
-        raise NotImplementedError("Subclass must implement value property.")
+        raise NotImplementedError("Subclass must implement the value property.")
 
     def doIndex(self):
         self.index.doIndex(self.oid, self.value)

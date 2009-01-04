@@ -18,6 +18,11 @@ CHANGES
 - Added the "subscriber.zcml" file that contains ZCML-based intid subscriber
   registrations for easy including in projects that use event-based indexing.
 
+- The IIndexValue interface and all its mentions in code and documentation
+  is removed, because it's not an actual part of concept and wasn't ever
+  used/implemented in this package. It's easy to implement it in custom
+  project, so we believe that it's not a problem.
+
 - Reworded package description to make it nicer. Fix little docstring typos.
 
 0.5.1 (2008-12-11)

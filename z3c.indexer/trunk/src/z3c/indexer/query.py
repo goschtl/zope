@@ -92,7 +92,7 @@ class Between(QueryMixin):
 
 
 class Ge(QueryMixin):
-    """Between query."""
+    """Greater (or equal) query."""
 
     zope.interface.implements(interfaces.IGeQuery)
 
@@ -106,7 +106,7 @@ class Ge(QueryMixin):
 
 
 class Le(QueryMixin):
-    """Between query."""
+    """Less (or equal) query."""
 
     zope.interface.implements(interfaces.ILeQuery)
 

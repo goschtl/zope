@@ -2,7 +2,7 @@
 Sample
 ======
 
-Sample for an index and unindex story dring the mypypi package development. As
+Sample for an index and unindex story during the mypypi package development. As
 you can see below, many objects (containers) get index more then one time. 
 E.g. the z3c.formdemo MirrorPackage get indexed 15 times. That's very bad and 
 just overhead.

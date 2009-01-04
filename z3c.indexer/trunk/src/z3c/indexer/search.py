@@ -59,7 +59,7 @@ class ResultSet:
             yield obj
 
     def __repr__(self):
-        return '<%s len: %s>' %(self.__class__.__name__, len(self.uids))
+        return '<%s len: %s>' % (self.__class__.__name__, len(self.uids))
 
 
 class SearchQuery(object):

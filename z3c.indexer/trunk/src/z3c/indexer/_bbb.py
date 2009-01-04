@@ -84,4 +84,3 @@ class MultiAutoIndexer(indexer.MultiIndexerBase):
     """Can be used as base for index a object in more then one index."""
 
     zope.interface.implements(interfaces.IMultiAutoIndexer)
-

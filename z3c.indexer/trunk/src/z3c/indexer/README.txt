@@ -53,8 +53,8 @@ And, Or and Not parts in wrong order. But on the other hand this concept can
 incredibly speedup your search query because it compares combined queries
 against each other and not against all available objects.
 
-Performeance
-------------
+Performance
+-----------
 
 See also the performance test located in this package. The interesting part is
 the speedup different for a larger amount of indexes. Here is a sample output
@@ -181,12 +181,6 @@ The concepts used in this package are:
 - Each index is an utility.
 
 - The IIndexer can index objects in one or more index.
-
-- The default IIndexer adapter will lookup a IIndexValue multi adapter for each
-  (object, index) tuple and get the right value from this adapter. You can
-  register custom IIndexer adapters for your objects if you like to avoid this
-  additional adapter call. (XXX: This is not actually true, is this pattern
-  deprecated?)
 
 - Everything is explicit. This means that there's no default actions on
   the IntIdAddedEvent by. But you can easily write your own subscriber if
@@ -1131,7 +1125,7 @@ And the ValueIndexer does not implement the value attribute:
   >>> valueIndexer.value
   Traceback (most recent call last):
   ...
-  NotImplementedError: Subclass must implement value property.
+  NotImplementedError: Subclass must implement the value property.
 
 Another use case which we didn't test is that a applyIn can contain the
 same object twice with different values. Let's test the built in union

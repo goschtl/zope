@@ -312,12 +312,6 @@ class IExtentNoneQuery(IQuery):
         """Query signature."""
 
 
-class IIndexValue(zope.interface.Interface):
-    """Knows how to lookup index values."""
-
-    value = zope.interface.Attribute("""Index value of context.""")
-
-
 # transaction based indexing concept
 class IIndexerCollector(IDataManager):
     """Collects IIndexer which get processed at the end of the transaction."""
