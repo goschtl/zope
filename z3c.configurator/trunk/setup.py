@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id:$
+$Id$
 """
 
 import os
@@ -25,10 +25,14 @@ setup(
     name = 'z3c.configurator',
     version='1.1.2dev',
     author = "Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "Dynamic configuration",
     long_description=(
         read('README.txt')
+        + '\n\n.. contents::\n\n' +
+        read('src', 'z3c', 'configurator', 'README.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'configurator', 'browser', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
