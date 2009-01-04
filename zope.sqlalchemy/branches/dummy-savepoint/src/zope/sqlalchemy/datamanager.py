@@ -25,13 +25,11 @@ STATUS_CHANGED = 'changed' # data has been written
 STATUS_READONLY = 'readonly' # session joined to transaction, no writes allowed.
 STATUS_INVALIDATED = STATUS_CHANGED # BBB
 
-NO_SAVEPOINT_SUPPORT = set(['sqlite'])
-
 # For driver names listed here and a server version info
 # below the given minimum version: return a dummy savepoint
 # implementation
-SAVEPOINT_SUPPORT_MIN_VERSIONS = dict(
-postgres=(8,0,0),
+RDBMS_WITH_SAVEPOINT_SUPPORT= dict(
+    postgres=(8,0,0),
 )
 
 _SESSION_STATE = {} # a mapping of id(session) -> status
@@ -101,27 +99,21 @@ class SessionDataManager(object):
         """Savepoints are only supported when all connections support
            subtransactions
         """
+
         engines = set(engine.url.drivername
                   for engine in self.session.transaction._connections.keys()
                   if isinstance(engine, Engine))
 
-        # Return a dummy savepoint implementation for listed driver 
-        # names and older version number
-
         # ATT: is this always true?
         assert len(engines) == 1, 'len(engines) != 1' 
-
         engine = engines[0]
-        min_version = SAVEPOINT_SUPPORT_MIN_VERSIONS.get(engine.url.drivername,
-                                                         None)
+        min_version = RDBMS_WITH_SAVEPOINT_SUPPORT.get(engine.url.drivername,
+                                                       None)
         if min_version is not None:
             # server_version_info() return the server version number as tuple
-            if engine.dialect.server_version_info() < min_version:
-                return DummySavePoint(self.session)
-
-        if engines.intersection(NO_SAVEPOINT_SUPPORT):
-            raise AttributeError('savepoint')
-        return self._savepoint
+            if engine.dialect.server_version_info() > min_version:
+                return self._savepoint
+        return DummySavePoint(self.session)
 
     def _savepoint(self):
         return SessionSavepoint(self.session)
