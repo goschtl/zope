@@ -100,23 +100,26 @@ class SessionDataManager(object):
            subtransactions
         """
 
-        engines = set(engine.url.drivername
+        engines = [engine
                   for engine in self.session.transaction._connections.keys()
-                  if isinstance(engine, Engine))
+                  if isinstance(engine, Engine)]
 
-        # ATT: is this always true?
         assert len(engines) == 1, 'len(engines) != 1' 
         engine = engines[0]
         min_version = RDBMS_WITH_SAVEPOINT_SUPPORT.get(engine.url.drivername,
                                                        None)
         if min_version is not None:
             # server_version_info() return the server version number as tuple
-            if engine.dialect.server_version_info() > min_version:
+            if engine.dialect.server_version_info(engine) > min_version:
                 return self._savepoint
-        return DummySavePoint(self.session)
+
+        return self._dummysavepoint
 
     def _savepoint(self):
         return SessionSavepoint(self.session)
+
+    def _dummysavepoint(self):
+        return DummySessionSavepoint(self.session)
 
 
 class TwoPhaseSessionDataManager(SessionDataManager):
