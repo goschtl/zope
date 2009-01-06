@@ -46,6 +46,8 @@ class GrokForm(object):
     'renaming' zope.formlib's update() to update_form() and by
     disallowing subclasses to have custom render() methods."""
 
+    actions = form.Actions()
+
     def update(self):
         """Subclasses can override this method just like on regular
         grok.Views. It will be called before any form processing

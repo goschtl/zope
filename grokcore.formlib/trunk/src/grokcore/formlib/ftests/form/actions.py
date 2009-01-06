@@ -42,6 +42,14 @@ Save again without any changes:
   >>> browser.getControl("Meet").click()
   >>> print browser.contents
   Manfred the Second meets Ellie
+
+There used to be a bug (or rather an inconvenience) where when no actions were
+defined, the template used for rendering a Form component would fail expecting
+to find an actions attribute on the component. This is fixed now and thus the
+following view does not raise an AttributeError anymore::
+
+  >>> browser.open("http://localhost/manfred/greet")
+
 """
 import grokcore.formlib as grok
 from zope import schema
@@ -57,8 +65,8 @@ class Mammoth(grok.testing.Model):
     grok.testing.protect_get(grok.Public, 'name', 'size')
     grok.testing.protect_set(grok.Public, 'name', 'size')
 
-    name = FieldProperty(IMammoth['name'])    
-    size = FieldProperty(IMammoth['size'])    
+    name = FieldProperty(IMammoth['name'])
+    size = FieldProperty(IMammoth['size'])
 
 class Edit(grok.EditForm):
     @grok.action("Apply")
@@ -81,3 +89,7 @@ class Meet(grok.Form):
     @grok.action('Meet')
     def meet(self, other):
         return self.context.name + ' meets ' + other
+
+class Greet(grok.Form):
+    form_fields = grok.Fields(
+        other = schema.TextLine(title=u'Mammoth to say hi to'))
