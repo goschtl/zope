@@ -1,0 +1,9 @@
+    <td>
+      <input class="editcheck" type="checkbox"
+             tal:attributes="
+                 name string:${view/name}.remove_0" />
+    </td>
+    <td>
+      <input tal:replace="structure view/widgetTemplate" />
+    </td>
+
