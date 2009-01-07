@@ -1,3 +1,3 @@
-// User extensions can be added here.
-//
-// Keep this file to avoid  mystifying "Invalid Character" error in IE
+// Add a comment action that ignores its arguments
+Selenium.prototype.doComment = function(text, text) {
+};
