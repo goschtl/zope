@@ -2,18 +2,28 @@
 
 <!-- Support for unit testing with storages that simulate errors. -->
 
-<component prefix="gocept.zeoraid.tests.failingstorage">
+<component prefix="gocept.zeoraid.tests">
 
     <sectiontype
         name="failingstorage"
         implements="ZODB.storage"
-        datatype=".Opener">
+        datatype=".failingstorage.Opener">
 
       <key name="blob-dir" required="no">
         <description>
           Path name to the blob cache directory.
         </description>
       </key>
+
+    </sectiontype>
+
+    <sectiontype 
+        name="loggingstorage" 
+        implements="ZODB.storage"
+        datatype=".loggingstorage.Opener">
+      
+      <key name="name" default="Logging Storage"/>
+      <section type="ZODB.storage" name="*" attribute="base"/>
 
     </sectiontype>
 

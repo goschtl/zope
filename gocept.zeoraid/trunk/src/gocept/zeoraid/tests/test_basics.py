@@ -13,6 +13,7 @@
 ##############################################################################
 """Test harness for gocept.zeoraid."""
 
+import random
 import unittest
 import tempfile
 import os
@@ -36,6 +37,7 @@ from ZODB.tests import StorageTestBase, BasicStorage, \
 
 import gocept.zeoraid.storage
 import gocept.zeoraid.tests.test_recovery
+from gocept.zeoraid.tests.loggingstorage import LoggingStorage
 
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
@@ -180,6 +182,9 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
         self._storage = gocept.zeoraid.storage.RAIDStorage(
             'teststorage', self._storages, blob_dir=blob_dir)
 
+        self.orig_choice = random.choice
+        random.choice = lambda seq: seq[0]
+
     def tearDown(self):
         self._storage.close()
         for server in self._servers:
@@ -188,6 +193,8 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
             os.waitpid(pid, 0)
         for path in self.temp_paths:
             shutil.rmtree(path)
+
+        random.choice = self.orig_choice
 
 
 class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
@@ -218,6 +225,9 @@ class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
         self._storage = gocept.zeoraid.storage.RAIDStorage(
             'teststorage', self._storages, blob_dir=blob_dir,
             shared_blob_dir=True)
+
+        self.orig_choice = random.choice
+        random.choice = lambda seq: seq[0]
 
 
 class FailingStorageTestBase(object):
@@ -1389,9 +1399,55 @@ def raise_exception():
     raise Exception()
 
 
+class LoggingStorageOpener(object):
+
+    def __init__(self, name, **kwargs):
+        self.name = name
+        self.file_handle, self.file_name = tempfile.mkstemp()
+
+    def open(self, **kwargs):
+        return LoggingStorage(self.name, self.file_name)
+
+
+class LoggingStorageDistributedTests(StorageTestBase.StorageTestBase):
+
+    # The backend and call counts have been chosen such that the probability
+    # of all calls being served by the same backend is about 1:10^6.
+    backend_count = 10
+    call_count = 6
+
+    def _backend(self, index):
+        return self._storage.storages[
+            self._storage.storages_optimal[index]]
+
+    def setUp(self):
+        self._storages = []
+        for i in xrange(self.backend_count):
+            self._storages.append(LoggingStorageOpener(str(i)))
+        self._storage = gocept.zeoraid.storage.RAIDStorage(
+            'teststorage', self._storages)
+
+    def tearDown(self):
+        self._storage.close()
+
+    def test_distributed_single_calls(self):
+        for i in xrange(self.call_count):
+            self._storage.getSize()
+
+        # assert that at least two storages gets called at least one time
+        storages_called = [x for x in xrange(self.backend_count)
+                           if len(self._backend(x)._log) >= 1]
+        self.assertEquals(storages_called >= 2, True)
+
+        # assert that six calls were made
+        self.assertEquals(6, sum([len(self._backend(x)._log)
+                                  for x in xrange(self.backend_count)]))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
+    suite.addTest(unittest.makeSuite(LoggingStorageDistributedTests))
     return suite

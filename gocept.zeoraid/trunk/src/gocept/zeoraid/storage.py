@@ -20,6 +20,7 @@ import tempfile
 import os
 import os.path
 import shutil
+import random
 
 import zc.lockfile
 import zope.interface
@@ -617,10 +618,16 @@ class RAIDStorage(object):
 
     @ensure_open_storage
     def _apply_single_storage(self, method_name, args=(), kw={}):
-        """Calls the given method on the first optimal storage."""
+        """Calls the given method on a random optimal storage."""
         # Try to find a storage that we can talk to. Stop after we found a
         # reliable result.
-        for name in self.storages_optimal[:]:
+        storages = self.storages_optimal[:]
+        reliable = False
+        while not reliable:
+            if not storages:
+                break
+            name = random.choice(storages)
+            storages.remove(name)
             reliable, result = self.__apply_storage(
                 name, method_name, args, kw)
             if reliable:
