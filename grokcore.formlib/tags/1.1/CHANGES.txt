@@ -1,0 +1,15 @@
+Changes
+=======
+
+1.1 (2009-01-07)
+----------------
+
+* Have GrokForm define an empty actions attribute by default, in order
+  for "action-less" forms to work easily.
+
+1.0 (2008-09-25)
+----------------
+
+* Created ``grokcore.formlib`` in July 2008 by factoring
+  ``zope.formlib``-based components, grokkers and directives out of
+  Grok.
