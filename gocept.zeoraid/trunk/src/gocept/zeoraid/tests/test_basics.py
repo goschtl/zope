@@ -244,20 +244,28 @@ class FailingStorageTestBase(object):
 
     def test_close_degrading(self):
         # See the comment on `test_close_failing`.
-        self._storage.storages[self._storage.storages_optimal[0]].fail('close')
+        backend = self._backend(0)
+        backend.close = raise_exception
         self._storage.close()
-        self.assertEquals([], self._storage.storages_degraded)
         self.assertEquals(True, self._storage.closed)
+        del backend.close
+        backend.close()
 
     def test_close_failing(self):
-        # Even though we make the server-side storage fail, we do not get
+        # Even though we make the server-side storage fail, we do not
         # receive an error or a degradation because the result of the failure
         # is that the connection is closed. This is actually what we wanted.
         # Unfortunately that means that an error can be hidden while closing.
-        self._backend(0).fail('close')
-        self._backend(1).fail('close')
+        backend0 = self._backend(0)
+        backend1 = self._backend(1)
+        backend0.close = raise_exception
+        backend1.close = raise_exception
         self._storage.close()
         self.assertEquals(True, self._storage.closed)
+        del backend0.close
+        del backend1.close
+        backend0.close()
+        backend1.close()
 
     def test_close_server_missing(self):
         # See the comment on `test_close_failing`.
@@ -1375,6 +1383,10 @@ class ZEOReplicationStorageTests(ZEOStorageBackendTests,
         # to exclude IServeable which has a method that is described as
         # optional in the doc string.
         pass
+
+
+def raise_exception():
+    raise Exception()
 
 
 def test_suite():
