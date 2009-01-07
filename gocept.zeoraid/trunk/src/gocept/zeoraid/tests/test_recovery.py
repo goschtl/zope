@@ -13,6 +13,7 @@
 ##############################################################################
 """Test harness for online recovery."""
 
+import itertools
 import os
 import unittest
 import tempfile
@@ -36,8 +37,8 @@ def compare(test, source, target):
         source, target, lambda target: None)
     protocol = list(recovery())
     test.assertEquals([('verified',), ('recovered',)], protocol[-2:])
-    for source_txn, target_txn in zip(source.iterator(),
-                                      target.iterator()):
+    for source_txn, target_txn in itertools.izip(source.iterator(),
+                                                 target.iterator()):
         # We need not compare the transaction metadata because that has
         # already been done by the recovery's verification run.
         source_records = list(source_txn)
@@ -57,6 +58,10 @@ def compare(test, source, target):
             except ZODB.POSException.POSKeyError:
                 test.assertRaises(
                     ZODB.POSException.POSKeyError,
+                    target.loadBlob, target_record.oid, target_record.tid)
+            except TypeError:
+                test.assertRaises(
+                    TypeError,
                     target.loadBlob, target_record.oid, target_record.tid)
             else:
                 target_file_name = target.loadBlob(

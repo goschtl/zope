@@ -53,7 +53,15 @@ class Recovery(object):
         self.source = source
         self.target = target
         self.finalize = finalize
-        self.recover_blobs = hasattr(source, 'loadBlob') and recover_blobs
+        if recover_blobs:
+            if hasattr(source, 'loadBlob'):
+                try:
+                    source.loadBlob(ZODB.utils.z64, ZODB.utils.z64)
+                except ZODB.POSException.POSKeyError:
+                    pass
+                except TypeError, e:
+                    recover_blobs = False
+        self.recover_blobs = recover_blobs
 
     def __call__(self):
         """Performs recovery."""
