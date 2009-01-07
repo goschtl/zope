@@ -1368,7 +1368,12 @@ class FailingStorageSharedBlobTests(FailingStorageTestBase,
 class ZEOReplicationStorageTests(ZEOStorageBackendTests,
                                  ReplicationStorageTests,
                                  ThreadTests.ThreadTests):
-    pass
+
+    def checkInterfaces(self):
+        # Overwrite this method because it tests all interfaces while we want
+        # to exclude IServeable which has a method that is described as
+        # optional in the doc string.
+        pass
 
 
 def test_suite():

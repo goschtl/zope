@@ -461,6 +461,10 @@ class RAIDStorage(object):
 
         return blob_filename
 
+    def openCommittedBlobFile(self, oid, serial, blob=None):
+        """Return a file for committed data for the given object id and serial
+        """
+
     def temporaryDirectory(self):
         """Return a directory that should be used for uncommitted blob data.
         """
