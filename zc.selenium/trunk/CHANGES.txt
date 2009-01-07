@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-1.1.0 (2008-??-??)
+1.1.0 (unreleased)
 ------------------
 
 - Feature: Updated to the latest Selenium Core release 0.8.3.
@@ -21,7 +21,7 @@ CHANGES
 
 - First public release.
 
-1.0.0 (200?-??-??)
+1.0.0 (2008-03-27)
 ------------------
 
 - Internal release.
