@@ -22,7 +22,9 @@ from zope.testing import doctest, renormalizing
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('gocept.zeoraid', test)
+    zc.buildout.testing.install('zc.lockfile', test)
     zc.buildout.testing.install('zc.zodbrecipes', test)
+    zc.buildout.testing.install('zope.event', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
     zc.buildout.testing.install('zdaemon', test)
