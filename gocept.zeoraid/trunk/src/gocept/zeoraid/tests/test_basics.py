@@ -22,6 +22,7 @@ import stat
 import threading
 import sys
 
+import zc.lockfile
 import zope.interface.verify
 
 import persistent.dict
@@ -586,27 +587,27 @@ class FailingStorageTestBase(object):
         revid = self._dostore(oid=oid, revid=None, data=1)
         revid2 = self._dostore(oid=oid, revid=revid, data=2)
 
-        self.assertEquals(264, self._backend(0).getSize())
-        self.assertEquals(264, self._backend(1).getSize())
-        self.assertEquals(264, self._storage.getSize())
+        self.assertEquals(256, self._backend(0).getSize())
+        self.assertEquals(256, self._backend(1).getSize())
+        self.assertEquals(256, self._storage.getSize())
 
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(134, self._backend(0).getSize())
-        self.assertEquals(134, self._backend(1).getSize())
-        self.assertEquals(134, self._storage.getSize())
+        self.assertEquals(130, self._backend(0).getSize())
+        self.assertEquals(130, self._backend(1).getSize())
+        self.assertEquals(130, self._storage.getSize())
 
         revid3 = self._dostore(oid=oid, revid=revid2, data=3)
-        self.assertEquals(264, self._backend(0).getSize())
-        self.assertEquals(264, self._backend(1).getSize())
-        self.assertEquals(264, self._storage.getSize())
+        self.assertEquals(256, self._backend(0).getSize())
+        self.assertEquals(256, self._backend(1).getSize())
+        self.assertEquals(256, self._storage.getSize())
 
         self._disable_storage(0)
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(134, self._backend(0).getSize())
-        self.assertEquals(134, self._storage.getSize())
+        self.assertEquals(130, self._backend(0).getSize())
+        self.assertEquals(130, self._storage.getSize())
 
         self._dostore(oid=oid, revid=revid3, data=4)
-        self.assertEquals(264, self._storage.getSize())
+        self.assertEquals(256, self._storage.getSize())
         self._disable_storage(0)
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
                           self._storage.pack,
@@ -620,17 +621,17 @@ class FailingStorageTestBase(object):
         oid = ZODB.utils.z64
         revid = self._dostore(oid=oid, revid=None, data=1)
         revid2 = self._dostore(oid=oid, revid=revid, data=2)
-        self.assertEquals(264, self._storage.getSize())
+        self.assertEquals(256, self._storage.getSize())
 
         self._backend(0).fail('pack')
         self._storage.pack(time.time(), ZODB.serialize.referencesf)
-        self.assertEquals(134, self._backend(0).getSize())
-        self.assertEquals(134, self._storage.getSize())
+        self.assertEquals(130, self._backend(0).getSize())
+        self.assertEquals(130, self._storage.getSize())
         self.assertEquals('degraded', self._storage.raid_status())
 
         revid3 = self._dostore(oid=oid, revid=revid2, data=3)
-        self.assertEquals(264, self._backend(0).getSize())
-        self.assertEquals(264, self._storage.getSize())
+        self.assertEquals(256, self._backend(0).getSize())
+        self.assertEquals(256, self._storage.getSize())
 
         self._backend(0).fail('pack')
         self.assertRaises(gocept.zeoraid.interfaces.RAIDError,
@@ -1244,7 +1245,7 @@ class FailingStorageTests(FailingStorageTestBase,
 
         # Test race condition that the lock is held during loadBlob() but the
         # file isn't put in place by the other party.
-        lock = ZODB.lock_file.LockFile(lock_filename)
+        lock = zc.lockfile.LockFile(lock_filename)
         thread = threading.Thread(target=try_loadBlob)
         thread.start()
         time.sleep(0.5)
@@ -1258,7 +1259,7 @@ class FailingStorageTests(FailingStorageTestBase,
         # Test race condition that the lock is held during loadBlob() and the
         # file is put in place correctly by the other party.
         return_value = []
-        lock = ZODB.lock_file.LockFile(lock_filename)
+        lock = zc.lockfile.LockFile(lock_filename)
         thread = threading.Thread(target=try_loadBlob)
         thread.start()
         time.sleep(0.5)

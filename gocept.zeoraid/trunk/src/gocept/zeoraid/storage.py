@@ -21,6 +21,7 @@ import os
 import os.path
 import shutil
 
+import zc.lockfile
 import zope.interface
 
 import ZEO.ClientStorage
@@ -428,13 +429,13 @@ class RAIDStorage(object):
         lock_filename = blob_filename + '.lock'
         self.blob_fshelper.createPathForOID(oid)
         try:
-            lock = ZODB.lock_file.LockFile(lock_filename)
-        except ZODB.lock_file.LockError:
+            lock = zc.lockfile.LockFile(lock_filename)
+        except zc.lockfile.LockError:
             while True:
                 time.sleep(0.1)
                 try:
-                    lock = ZODB.lock_file.LockFile(lock_filename)
-                except ZODB.lock_file.LockError:
+                    lock = zc.lockfile.LockFile(lock_filename)
+                except zc.lockfile.LockError:
                     pass
                 else:
                     # We have the lock. We should be able to get the file now.
