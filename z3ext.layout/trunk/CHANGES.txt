@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+2.0.2 (2009-01-08)
+------------------
+
+- Register layout for (view, for, layer), instead of view and for separatly
+
+
 2.0.1 (2008-12-25)
 ------------------
 

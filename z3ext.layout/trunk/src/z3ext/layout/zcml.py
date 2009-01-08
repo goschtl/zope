@@ -256,39 +256,21 @@ def layoutDirective(
     # security checker
     defineChecker(newclass, Checker(required))
 
-    if for_ is not None:
-        # register the template
-        if name:
-            adapter(_context, (newclass,),
-                    provides, (interface.Interface, for_, layer), name=name)
-        else:
-            adapter(_context, (newclass,),
-                    provides, (interface.Interface, for_, layer))
+    # register the template
+    if name:
+        adapter(_context, (newclass,),
+                provides, (view, for_, layer), name=name)
+    else:
+        adapter(_context, (newclass,),
+                provides, (view, for_, layer))
 
-        # send ILayoutCreatedEvent event
-        if uid:
-            _context.action(
-                discriminator = ('z3ext.layout', uid),
-                callable = sendNotification,
-                args = (uid, name, interface.Interface, for_, layer, newclass, kwargs),
-                order = 99999999)
-
-    if view is not None:
-        # register the template
-        if name:
-            adapter(_context, (newclass,),
-                    provides, (view, interface.Interface, layer), name=name)
-        else:
-            adapter(_context, (newclass,),
-                    provides, (view, interface.Interface, layer))
-
-        # send ILayoutCreatedEvent event
-        if uid:
-            _context.action(
-                discriminator = ('z3ext.layout', uid),
-                callable = sendNotification,
-                args = (uid, name, view, interface.Interface, layer, newclass, kwargs),
-                order = 99999999)
+    # send ILayoutCreatedEvent event
+    if uid:
+        _context.action(
+            discriminator = ('z3ext.layout', uid),
+            callable = sendNotification,
+            args = (uid, name, view, for_, layer, newclass, kwargs),
+            order = 99999999)
 
 
 class LayoutCreatedEvent(object):
