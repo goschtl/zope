@@ -13,7 +13,6 @@ listjs_resource = ResourceInclusion(listjs_lib, 'listjs.js')
 class _ListJsWidget(ListSequenceWidget):
 
     template = ViewPageTemplateFile('listjswidget.pt')
-    record_template = ViewPageTemplateFile('listjswidget_record.pt')
 
     def widgetTemplate(self):
         # XXX hack: always get a widget that isn't in the sequence

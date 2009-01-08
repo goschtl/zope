@@ -31,5 +31,5 @@
 <input type="hidden" tal:attributes="
             name string:${view/name}.template;
             id string:${view/name}.template;
-            value view/record_template" />
+            value view/widgetTemplate" />
 <input tal:replace="structure view/marker" />

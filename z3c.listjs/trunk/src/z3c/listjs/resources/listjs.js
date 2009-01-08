@@ -102,7 +102,7 @@ Z3C.namespace = function(name) {
         // update count
         var count_el = document.getElementById(prefix + '.count');
         count_el.value = els.length;
-    }
+    };
 
     // add a new repeating element to the list
     Z3C.listjs.add = function(prefix) {
@@ -111,10 +111,22 @@ Z3C.namespace = function(name) {
         var template_text = template_el.value;
         var buttons_el = document.getElementById(prefix + '.buttons');
 
+        // note that some DOM manipulation is needed as IE cannot
+        // use innerHTML on tr directly. Instead we create the td
+        // and put the widget contents in that.
         var new_tr = document.createElement('tr');
         new_tr.className = 'list_item';
-        buttons_el.parentNode.insertBefore(new_tr, buttons_el); 
-        new_tr.innerHTML = template_text;
+        buttons_el.parentNode.insertBefore(new_tr, buttons_el);
+        var td1 = document.createElement('td');
+        var td2 = document.createElement('td');
+        new_tr.appendChild(td1);
+        new_tr.appendChild(td2);
+        var cb = document.createElement('input');
+        cb.className = 'editcheck';
+        cb.type = 'checkbox';
+        cb.name = prefix + '.remove_0';
+        td1.appendChild(cb);
+        td2.innerHTML = template_text;
 
         updateAllNumbers(prefix);
     };
