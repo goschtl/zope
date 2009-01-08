@@ -42,6 +42,7 @@ from gocept.zeoraid.tests.loggingstorage import LoggingStorage
 from ZEO.ClientStorage import ClientStorage
 from ZEO.tests import forker, CommitLockTests, ThreadTests
 from ZEO.tests.testZEO import get_port
+import ZEO.runzeo
 
 import ZODB.interfaces
 import ZEO.interfaces
@@ -1239,6 +1240,9 @@ class FailingStorageTestBase(object):
         self._storage.tpc_begin(t)
         self.assertEquals('degraded', self._storage.raid_status())
 
+    def test_reload_without_zeo(self):
+        self.assertRaises(RuntimeError, self._storage.raid_reload)
+
 
 class FailingStorageTests(FailingStorageTestBase,
                           FailingStorageTestSetup):
@@ -1455,7 +1459,18 @@ class LoggingStorageDistributedTests(StorageTestBase.StorageTestBase):
 
 class ExtensionMethodsTests(ZEOStorageBackendTests):
 
-    def saveConfig(self, storages):
+    def open(self):
+        self.zeo_configfile = tempfile.mktemp()
+        self._server_storage_files.append(self.zeo_configfile)
+        self.update_config()
+
+        options = ZEO.runzeo.ZEOOptions()
+        options.realize(['-C', self.zeo_configfile])
+        zeo = ZEO.runzeo.ZEOServer(options)
+        zeo.open_storages()
+        self._storage = zeo.storages['teststorage']
+
+    def update_config(self):
         # create a config file and save it
         file_contents = """\
             %%import gocept.zeoraid
@@ -1463,10 +1478,10 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                 address 127.0.0.1:%s
             </zeo>
 
-            <raidstorage main>
+            <raidstorage teststorage>
             """ % get_port()
 
-        for count, storage in enumerate(storages):
+        for count, storage in enumerate(self._storages):
             file_contents += """\
                 <zeoclient %s>
                     server %s:%s
@@ -1479,15 +1494,15 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
             </raidstorage>
             """
 
-        filename = tempfile.mktemp()
-        self._server_storage_files = [ ]
-        self._server_storage_files.append(filename)
-        f = open(filename, 'w')
+        f = open(self.zeo_configfile, 'w')
         f.write(file_contents)
         f.close()
-        return filename
 
     def test_reload_add(self):
+        self.assertEquals(len(self._storage.openers), 5)
+        self.assertEquals([], self._storage.storages_degraded)
+
+        # set up a new backend
         port = get_port()
         zconf = forker.ZEOConfig(('', port))
         zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
@@ -1498,40 +1513,45 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                                         min_disconnect_poll=0.5, wait=1,
                                         wait_timeout=60))
 
-        filename = self.saveConfig(self._storages)
+        # configure the RAID to use the new backend
+        self.update_config()
+        self._storage.raid_reload()
 
-        self.assertEquals(len(self._storage.openers), 5)
-        self.assertEquals([], self._storage.storages_degraded)
-        self._storage.raid_reload(filename)
         self.assertEquals(len(self._storage.openers), 6)
         self.assertEquals(['5'], self._storage.storages_degraded)
 
+        # ensure that we can still write to the RAID
         oid = self._storage.new_oid()
         self._dostore(oid=oid, data='0', already_pickled=True)
+
+        # recover the newly added backend
         self._storage._recover_impl('5')
         self.assertEquals([], self._storage.storages_degraded)
 
+        # ensure that we can still write to the RAID
         oid2 = self._storage.new_oid()
         self._dostore(oid=oid2, data='1', already_pickled=True)
         self.assertEquals([], self._storage.storages_degraded)
 
+        # ensure that all transactions are available from the new backend
         self.assertEquals('5', self._storages[-1].name)
         s5 = self._storages[-1].open()
         self.assertEquals('0', s5.load(oid)[0])
         self.assertEquals('1', s5.load(oid2)[0])
+
         s5.close()
 
     def test_reload_remove(self):
-        # Remove the 4th storage
-        storages = [s for c,s in enumerate(self._storages) if c != 3]
-        filename = self.saveConfig(storages)
-
-        # test if the storage was removed (disabled, actually)
         self.assertEquals(len(self._storage.storages_degraded), 0)
-        self._storage.raid_reload(filename)
+
+        del self._storages[3]
+
+        # configure the RAID to no longer use the removed backend
+        self.update_config()
+        self._storage.raid_reload()
         self.assertEquals(len(self._storage.storages_degraded), 1)
 
-        # do a simple store to see if anything breaks
+        # ensure that we can still write to the RAID
         self._dostore()
 
 

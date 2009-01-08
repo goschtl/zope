@@ -42,6 +42,9 @@ class IRAIDStorage(zope.interface.Interface):
     def raid_recover(name):
         pass
 
+    def raid_reload():
+        pass
+
 
 class ITransactionInspection(zope.interface.Interface):
     """Storage API extension to allow inspecting historical transactions."""

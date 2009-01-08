@@ -120,10 +120,11 @@ class RAIDStorage(object):
     timeout = 60
 
     def __init__(self, name, openers, read_only=False, blob_dir=None,
-                 shared_blob_dir=False):
+                 shared_blob_dir=False, zeo=None):
         self.__name__ = name
         self.read_only = read_only
         self.shared_blob_dir = shared_blob_dir
+        self.zeo = zeo
         self.storages = {}
         self._threads = set()
         # Temporary files and directories that should be removed at the end of
@@ -595,13 +596,18 @@ class RAIDStorage(object):
         return 'recovering %r' % (name,)
 
     @ensure_open_storage
-    def raid_reload(self, path):
-        s = ""
+    def raid_reload(self):
+        if not self.zeo:
+            raise RuntimeError(
+                'Cannot reload config without running inside ZEO.')
+
         options = ZEOOptions()
-        options.realize(['-C',path])
+        options.realize(['-C', self.zeo.options.configfile])
         new_storages = dict([(o.name,o) for o in options.storages[0].config.storages])
         storages_to_add = [(name, opener) for name, opener in new_storages.items() if name not in self.openers]
         storages_to_remove = [(name, opener) for name, opener in self.openers.items() if name not in new_storages]
+
+        s = ""
         for name, opener in storages_to_remove:
             self.raid_disable(name)
             s += "removed %s\n" % name
