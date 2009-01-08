@@ -588,8 +588,6 @@ class RAIDStorage(object):
     def raid_recover(self, name):
         if name not in self.storages_degraded:
             return
-        self.storages_degraded.remove(name)
-        self.storage_recovering = name
         t = threading.Thread(target=self._recover_impl, args=(name,))
         self._threads.add(t)
         t.setDaemon(True)
@@ -777,6 +775,8 @@ class RAIDStorage(object):
         raise gocept.zeoraid.interfaces.RAIDError("RAID storage is failed.")
 
     def _recover_impl(self, name):
+        self.storages_degraded.remove(name)
+        self.storage_recovering = name
         storage = self.openers[name].open()
         self.storages[name] = storage
         recovery = gocept.zeoraid.recovery.Recovery(

@@ -68,7 +68,7 @@ class ZEOOpener(object):
         self.addr = addr
         self.kwargs = kwargs or {}
 
-    def open(self, **kwargs):
+    def open(self):
         return ClientStorage(self.addr, **self.kwargs)
 
 
@@ -1223,9 +1223,7 @@ class FailingStorageTestBase(object):
         self._disable_storage(0)
         self._dostore()
         self._dostore()
-        self._storage.raid_recover(self._storage.storages_degraded[0])
-        while self._storage.storage_recovering:
-            time.sleep(0.02)
+        self._storage._recover_impl(self._storage.storages_degraded[0])
         self.assertEquals('optimal', self._storage.raid_status())
         gocept.zeoraid.tests.test_recovery.compare(
             self, self._backend(0), self._backend(1))
@@ -1474,7 +1472,8 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
                     server %s:%s
                     storage 1
                 </zeoclient>
-            """ % (count, self._servers[count][0], (self._servers[count][1]-1))
+            """ % (storage.name, self._servers[count][0],
+                   (self._servers[count][1] - 1))
 
         file_contents += """\
             </raidstorage>
@@ -1489,27 +1488,38 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         return filename
 
     def test_reload_add(self):
-        # create and start a new ZEO server
         port = get_port()
         zconf = forker.ZEOConfig(('', port))
         zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
                                                               zconf, port)
         self._pids.append(pid)
         self._servers.append(adminaddr)
-        self._storages.append(ZEOOpener('6', zport, storage='1',
+        self._storages.append(ZEOOpener('5', zport, storage='1',
                                         min_disconnect_poll=0.5, wait=1,
                                         wait_timeout=60))
 
         filename = self.saveConfig(self._storages)
 
-        # test if the new ZEO server is added as a storage
         self.assertEquals(len(self._storage.openers), 5)
+        self.assertEquals([], self._storage.storages_degraded)
         self._storage.raid_reload(filename)
         self.assertEquals(len(self._storage.openers), 6)
+        self.assertEquals(['5'], self._storage.storages_degraded)
 
-        # do a simple store to see if anything breaks
         oid = self._storage.new_oid()
-        self._dostore(oid=oid)
+        self._dostore(oid=oid, data='0', already_pickled=True)
+        self._storage._recover_impl('5')
+        self.assertEquals([], self._storage.storages_degraded)
+
+        oid2 = self._storage.new_oid()
+        self._dostore(oid=oid2, data='1', already_pickled=True)
+        self.assertEquals([], self._storage.storages_degraded)
+
+        self.assertEquals('5', self._storages[-1].name)
+        s5 = self._storages[-1].open()
+        self.assertEquals('0', s5.load(oid)[0])
+        self.assertEquals('1', s5.load(oid2)[0])
+        s5.close()
 
     def test_reload_remove(self):
         # Remove the 4th storage
@@ -1522,8 +1532,7 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         self.assertEquals(len(self._storage.storages_degraded), 1)
 
         # do a simple store to see if anything breaks
-        oid = self._storage.new_oid()
-        self._dostore(oid=oid)
+        self._dostore()
 
 
 def test_suite():
