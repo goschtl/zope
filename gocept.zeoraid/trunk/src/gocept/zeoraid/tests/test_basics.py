@@ -1542,17 +1542,21 @@ class ExtensionMethodsTests(ZEOStorageBackendTests):
         s5.close()
 
     def test_reload_remove(self):
-        self.assertEquals(len(self._storage.storages_degraded), 0)
-
-        del self._storages[3]
+        storage = self._storages.pop(3).open()
 
         # configure the RAID to no longer use the removed backend
         self.update_config()
         self._storage.raid_reload()
-        self.assertEquals(len(self._storage.storages_degraded), 1)
+        self.assertEquals('optimal', self._storage.raid_status())
 
         # ensure that we can still write to the RAID
-        self._dostore()
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid)
+
+        # ensure that the transaction did not arrive at the removed backend
+        self.assertRaises(ZODB.POSException.POSKeyError, storage.load, oid)
+
+        storage.close()
 
 
 def test_suite():

@@ -603,19 +603,24 @@ class RAIDStorage(object):
 
         options = ZEOOptions()
         options.realize(['-C', self.zeo.options.configfile])
-        new_storages = dict([(o.name,o) for o in options.storages[0].config.storages])
-        storages_to_add = [(name, opener) for name, opener in new_storages.items() if name not in self.openers]
-        storages_to_remove = [(name, opener) for name, opener in self.openers.items() if name not in new_storages]
+        for candidate in options.storages:
+            if candidate.name == self.__name__:
+                storage = candidate
+                break
+        else:
+            raise RuntimeError(
+                'No storage section found for RAID %s.' % self.__name__)
+        new_storages = dict((opt.name, opt)
+                            for opt in storage.config.storages)
+        new_names = set(new_storages)
+        old_names = set(self.openers)
 
-        s = ""
-        for name, opener in storages_to_remove:
-            self.raid_disable(name)
-            s += "removed %s\n" % name
-        for name, opener in storages_to_add:
-            self.openers[name] = opener
+        for name in old_names - new_names:
+            self._close_storage(name)
+
+        for name in new_names - old_names:
+            self.openers[name] = new_storages[name]
             self.storages_degraded.append(name)
-            s += "added %s\n" % name
-        return s
 
     # internal
 
@@ -625,16 +630,18 @@ class RAIDStorage(object):
         assert hasattr(storage, 'supportsUndo') and storage.supportsUndo()
         self.storages[name] = storage
 
-    def _degrade_storage(self, name, fail=True):
+    def _close_storage(self, name):
         if name in self.storages_optimal:
             self.storages_optimal.remove(name)
-        self.storages_degraded.append(name)
-        storage = self.storages[name]
+        storage = self.storages.pop(name)
         t = threading.Thread(target=storage.close)
         self._threads.add(t)
         t.setDaemon(True)
         t.start()
-        del self.storages[name]
+
+    def _degrade_storage(self, name, fail=True):
+        self._close_storage(name)
+        self.storages_degraded.append(name)
         if not self.storages_optimal and fail:
             raise gocept.zeoraid.interfaces.RAIDError("No storages remain.")
 
