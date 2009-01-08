@@ -4,15 +4,35 @@ import sys, os
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+long_description = (
+    read('README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '********\n'
+    )
+
+
 setup(
     name='z3c.listjs',
-    version='0.1dev',
+    version='1.0a1dev',
     description="A formlib list widget that uses Javascript",
-    classifiers=[],
-    keywords='',
+    long_description=long_description,
+    keywords='zope3 form widget',
     author='Martijn Faassen',
     author_email='faassen@startifact.com',
-    license='',
+    license='ZPL 2.1',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Zope Public License',
+        'Programming Language :: Python',
+        'Natural Language :: English',
+        'Operating System :: OS Independent',
+        'Topic :: Internet :: WWW/HTTP',
+        'Framework :: Zope3'],
     packages=find_packages('src'),
     package_dir={'': 'src'},
     namespace_packages=['z3c'],
