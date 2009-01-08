@@ -110,12 +110,6 @@ class RAIDStorage(object):
     # we bring them back into the pool of optimal storages.
     _db = None
 
-    # The last transaction that we know of. This is used to keep a global
-    # knowledge of the current assumed state and verify storages that might
-    # have fallen out of sync. It is also used as a point of reference
-    # for generating new TIDs.
-    _last_tid = None
-
     # Timeout for threaded/parallel operations on backend storages.
     timeout = 60
 
@@ -163,6 +157,7 @@ class RAIDStorage(object):
                 continue
             tids.setdefault(tid, [])
             tids[tid].append(name)
+        print tids
 
         if not tids:
             # No storage is working.
@@ -170,8 +165,7 @@ class RAIDStorage(object):
                 "Can't start without at least one working storage.")
 
         # Set up list of optimal storages
-        self._last_tid = max(tids)
-        self.storages_optimal = tids.pop(self._last_tid)
+        self.storages_optimal = tids.pop(max(tids))
 
         # Set up list of degraded storages
         self.storages_degraded = []
@@ -227,7 +221,7 @@ class RAIDStorage(object):
         """Return the id of the last committed transaction."""
         if self.raid_status() == 'failed':
             raise gocept.zeoraid.interfaces.RAIDError('RAID is failed.')
-        return self._last_tid
+        return self._apply_all_storages('lastTransaction')
 
     def __len__(self):
         """The approximate number of objects in the storage."""
@@ -351,7 +345,7 @@ class RAIDStorage(object):
 
             if tid is None:
                 # No TID was given, so we create a new one.
-                tid = self._new_tid(self._last_tid)
+                tid = self._new_tid(self.lastTransaction())
             self._tid = tid
 
             self._apply_all_storages('tpc_begin',
@@ -376,7 +370,6 @@ class RAIDStorage(object):
                     # ClientStorage contradict each other and the documentation
                     # is non-existent. We trust ClientStorage here.
                     callback(self._tid)
-                self._last_tid = self._tid
                 return self._tid
             finally:
                 self._transaction = None
@@ -740,7 +733,7 @@ class RAIDStorage(object):
             t.start()
 
         # Wait for threads to finish and pick up results.
-        results = []
+        results = {}
         exceptions = []
         for thread in threads:
             # XXX The timeout should be calculated such that the total time
@@ -754,7 +747,7 @@ class RAIDStorage(object):
             if thread.exception:
                 exceptions.append(thread.exception)
             elif thread.reliable:
-                results.append(thread.result)
+                results[thread.storage_name] = thread.result
 
         # Analyse result consistency.
         consistent = True
@@ -765,12 +758,13 @@ class RAIDStorage(object):
             # must be consistent anyway.
             pass
         elif results:
-            ref = results[0]
-            for test in results:
+            ref = results.values()[0]
+            for test in results.values():
                 if test != ref:
                     consistent = False
                     break
         if not consistent:
+            import pdb; pdb.set_trace() 
             self.close()
             raise gocept.zeoraid.interfaces.RAIDError(
                 "RAID is inconsistent and was closed.")
@@ -779,7 +773,7 @@ class RAIDStorage(object):
         if exceptions:
             raise exceptions[0]
         if results:
-            return results[0]
+            return results.values()[0]
 
         # We did not get any reliable result, making this call effectively a
         # no-op.

@@ -49,9 +49,9 @@ import ZEO.interfaces
 import ZODB.config
 
 # Uncomment this to get helpful logging from the ZEO servers on the console
-#import logging
-#logging.getLogger().addHandler(logging.StreamHandler())
-#logging.getLogger().setLevel(0)
+import logging
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger().setLevel(0)
 
 
 def fail(obj, name):
@@ -235,6 +235,7 @@ class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
 class FailingStorageTestBase(object):
 
     def _disable_storage(self, index):
+        print self._storage.storages_optimal[index]
         self._storage.raid_disable(self._storage.storages_optimal[index])
 
     def test_apply_storage_disconnect(self):
@@ -1229,6 +1230,9 @@ class FailingStorageTestBase(object):
         gocept.zeoraid.tests.test_recovery.compare(
             self, self._backend(0), self._backend(1))
         self._storage.new_oid()
+        self.assertEquals('optimal', self._storage.raid_status())
+        # Make sure we can still write to the RAID.
+        self._dostore()
         self.assertEquals('optimal', self._storage.raid_status())
 
     def test_timeoutBackend(self):
