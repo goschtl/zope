@@ -1,7 +1,8 @@
 0.4.1 (unreleased)
 ==================
 
-* nothing changed yet
+* Windows compatibility fix: use ``'wb'`` for writing to make downloading
+  of the egg tarball succeeds on Windows.
 
 0.4.0 (2008-09-22)
 ==================

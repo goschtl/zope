@@ -43,7 +43,7 @@ class Downloader(Eggs):
                 extraction_dir = tempfile.mkdtemp()
                 filenum, temp_tarball_name = tempfile.mkstemp()
 
-                tarball = open(temp_tarball_name, 'w')
+                tarball = open(temp_tarball_name, 'wb')
                 try:
                     tarball.write(urllib.urlopen(url).read())
                 except IOError:
