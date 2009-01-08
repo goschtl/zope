@@ -36,7 +36,6 @@ setup(
         'grokcore.view',
         'hurry.resource',
         'hurry.zoperesource >= 0.3',
-        'z3c.listjs',
         ],
     entry_points={},
     )
