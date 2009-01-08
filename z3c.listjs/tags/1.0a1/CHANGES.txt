@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+1.0a1 (2009-01-08)
+==================
+
+* Initial public release.
