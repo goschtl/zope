@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-0.2 (unreleased)
+0.2 (2009-01-08)
 ================
 
 * Update the value of the input field using ``.value`` instead of
