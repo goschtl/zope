@@ -13,7 +13,7 @@ from z3c.objpath.interfaces import IObjectPath
 from hurry.resource import Library, ResourceInclusion
 
 from z3c.relationfield.schema import IRelation
-from z3c.relationfield.interfaces import IRelationInfo
+from z3c.relationfield import create_relation
 
 relation_lib = Library('z3c.relationfieldui')
 relation_resource = ResourceInclusion(relation_lib, 'relation.js')
@@ -40,7 +40,7 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
         # convert path to Relation object
         obj = self.resolve(input)
         # XXX if obj is none, cannot create path
-        return IRelationInfo(obj).createRelation()
+        return create_relation(obj)
 
     def _toFormValue(self, value):
         if value is None:
