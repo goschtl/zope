@@ -1230,6 +1230,15 @@ class FailingStorageTestBase(object):
         self._storage.new_oid()
         self.assertEquals('optimal', self._storage.raid_status())
 
+    def test_timeoutBackend(self):
+        self._storage.timeout = 2
+        def slow_tpc_begin(*args):
+            time.sleep(4)
+        self._backend(0).tpc_begin = slow_tpc_begin
+        t = transaction.Transaction()
+        self._storage.tpc_begin(t)
+        self.assertEquals('degraded', self._storage.raid_status())
+
 
 class FailingStorageTests(FailingStorageTestBase,
                           FailingStorageTestSetup):
