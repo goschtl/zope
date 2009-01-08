@@ -36,7 +36,7 @@ setup(
         'grokcore.view',
         'hurry.resource',
         'hurry.zoperesource >= 0.3',
-        'hurry.js.wforms',
+        'z3c.listjs',
         ],
     entry_points={},
     )

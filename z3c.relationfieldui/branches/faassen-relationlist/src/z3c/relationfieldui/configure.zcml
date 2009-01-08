@@ -8,7 +8,7 @@
 
   <include package="hurry.zoperesource" />
   <include package="z3c.relationfield" />
-  <include package="hurry.js.wforms" />
+  <include package="z3c.listjs" />
 
   <grok:grok package="."/>
 
