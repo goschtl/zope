@@ -34,6 +34,7 @@ import persistent.TimeStamp
 import transaction
 import transaction.interfaces
 import ZODB.blob
+from ZEO.runzeo import ZEOOptions
 
 import gocept.zeoraid.interfaces
 import gocept.zeoraid.recovery
@@ -558,7 +559,8 @@ class RAIDStorage(object):
     def getExtensionMethods(self):
         # This method isn't officially part of the interface but it is supported.
         methods = dict.fromkeys(
-            ['raid_recover', 'raid_status', 'raid_disable', 'raid_details'])
+            ['raid_recover', 'raid_status', 'raid_disable', 'raid_details',
+            'raid_reload'])
         return methods
 
     # IRAIDStorage
@@ -593,6 +595,23 @@ class RAIDStorage(object):
         t.setDaemon(True)
         t.start()
         return 'recovering %r' % (name,)
+
+    @ensure_open_storage
+    def raid_reload(self, path):
+        s = ""
+        options = ZEOOptions()
+        options.realize(['-C',path])
+        new_storages = dict([(o.name,o) for o in options.storages[0].config.storages])
+        storages_to_add = [(name, opener) for name, opener in new_storages.items() if name not in self.openers]
+        storages_to_remove = [(name, opener) for name, opener in self.openers.items() if name not in new_storages]
+        for name, opener in storages_to_remove:
+            self.raid_disable(name)
+            s += "removed %s\n" % name
+        for name, opener in storages_to_add:
+            self.openers[name] = opener
+            self.storages_degraded.append(name)
+            s += "added %s\n" % name
+        return s
 
     # internal
 

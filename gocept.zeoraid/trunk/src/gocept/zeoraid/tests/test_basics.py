@@ -63,12 +63,13 @@ def fail(obj, name):
 
 class ZEOOpener(object):
 
-    def __init__(self, name, **kwargs):
+    def __init__(self, name, addr, **kwargs):
         self.name = name
+        self.addr = addr
         self.kwargs = kwargs or {}
 
     def open(self, **kwargs):
-        return ClientStorage(self.name, **self.kwargs)
+        return ClientStorage(self.addr, **self.kwargs)
 
 
 class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
@@ -89,7 +90,7 @@ class ZEOStorageBackendTests(StorageTestBase.StorageTestBase):
                                                                   zconf, port)
             self._pids.append(pid)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(zport, storage='1',
+            self._storages.append(ZEOOpener(str(i), zport, storage='1',
                                             min_disconnect_poll=0.5, wait=1,
                                             wait_timeout=60))
         self.open()
@@ -172,7 +173,7 @@ class FailingStorageTestSetup(StorageTestBase.StorageTestBase):
             blob_dir = tempfile.mkdtemp()
             self.temp_paths.append(blob_dir)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(zport, storage='1',
+            self._storages.append(ZEOOpener(str(i), zport, storage='1',
                                             cache_size=12,
                                             blob_dir=blob_dir,
                                             min_disconnect_poll=0.5, wait=1,
@@ -216,7 +217,7 @@ class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
                 zconf, port)
             self._pids.append(pid)
             self._servers.append(adminaddr)
-            self._storages.append(ZEOOpener(zport, storage='1',
+            self._storages.append(ZEOOpener(str(i), zport, storage='1',
                                             cache_size=12,
                                             blob_dir=blob_dir,
                                             shared_blob_dir=True,
@@ -1205,7 +1206,8 @@ class FailingStorageTestBase(object):
         self.assertEquals(dict(raid_details=None,
                                raid_disable=None,
                                raid_recover=None,
-                               raid_status=None),
+                               raid_status=None,
+                               raid_reload=None),
                           methods)
 
     def test_getExtensionMethods_degrading(self):
@@ -1453,10 +1455,82 @@ class LoggingStorageDistributedTests(StorageTestBase.StorageTestBase):
                                   for x in xrange(self.backend_count)]))
 
 
+class ExtensionMethodsTests(ZEOStorageBackendTests):
+
+    def saveConfig(self, storages):
+        # create a config file and save it
+        file_contents = """\
+            %%import gocept.zeoraid
+            <zeo>
+                address 127.0.0.1:%s
+            </zeo>
+
+            <raidstorage main>
+            """ % get_port()
+
+        for count, storage in enumerate(storages):
+            file_contents += """\
+                <zeoclient %s>
+                    server %s:%s
+                    storage 1
+                </zeoclient>
+            """ % (count, self._servers[count][0], (self._servers[count][1]-1))
+
+        file_contents += """\
+            </raidstorage>
+            """
+
+        filename = tempfile.mktemp()
+        self._server_storage_files = [ ]
+        self._server_storage_files.append(filename)
+        f = open(filename, 'w')
+        f.write(file_contents)
+        f.close()
+        return filename
+
+    def test_reload_add(self):
+        # create and start a new ZEO server
+        port = get_port()
+        zconf = forker.ZEOConfig(('', port))
+        zport, adminaddr, pid, path = forker.start_zeo_server(self.getConfig(),
+                                                              zconf, port)
+        self._pids.append(pid)
+        self._servers.append(adminaddr)
+        self._storages.append(ZEOOpener('6', zport, storage='1',
+                                        min_disconnect_poll=0.5, wait=1,
+                                        wait_timeout=60))
+
+        filename = self.saveConfig(self._storages)
+
+        # test if the new ZEO server is added as a storage
+        self.assertEquals(len(self._storage.openers), 5)
+        self._storage.raid_reload(filename)
+        self.assertEquals(len(self._storage.openers), 6)
+
+        # do a simple store to see if anything breaks
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid)
+
+    def test_reload_remove(self):
+        # Remove the 4th storage
+        storages = [s for c,s in enumerate(self._storages) if c != 3]
+        filename = self.saveConfig(storages)
+
+        # test if the storage was removed (disabled, actually)
+        self.assertEquals(len(self._storage.storages_degraded), 0)
+        self._storage.raid_reload(filename)
+        self.assertEquals(len(self._storage.storages_degraded), 1)
+
+        # do a simple store to see if anything breaks
+        oid = self._storage.new_oid()
+        self._dostore(oid=oid)
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZEOReplicationStorageTests, "check"))
     suite.addTest(unittest.makeSuite(FailingStorageTests))
     suite.addTest(unittest.makeSuite(FailingStorageSharedBlobTests))
     suite.addTest(unittest.makeSuite(LoggingStorageDistributedTests))
+    suite.addTest(unittest.makeSuite(ExtensionMethodsTests))
     return suite
