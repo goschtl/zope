@@ -1,0 +1,22 @@
+CHANGES
+*******
+
+0.2 (2009-01-08)
+================
+
+* Update the value of the input field using ``.value`` instead of
+  using ``setAttribute('value', ...)``. The latter did not update
+  dynamically updated input fields, and the former does.
+
+* ``z3c.relationfield`` does not use ``IRelationInfo`` anymore and
+  instead exposes ``create_relation``. Use this instead.
+
+0.1.1 (2008-12-10)
+==================
+
+* Small internet Explorer compatibility tweaks.
+
+0.1 (2008-12-05)
+================
+
+* Initial public release.
