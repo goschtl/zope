@@ -36,6 +36,7 @@ class CacheEntry(object):
     prinper = None
     roles_adapters = None
     principal_roles_adapters = None
+    principal_permission_adapters = None
 
     def __init__(self):
         self.prin = {}
@@ -144,14 +145,15 @@ class SecurityPolicy(ZopeSecurityPolicy):
             cache_prin_per[permission] = prinper
             return prinper
 
-        prinper = cache.prinper
-        if prinper is None:
-            cache.prinper = prinper = IPrincipalPermissionMap(parent, None)
+        # cache adaters
+        adapters = cache.principal_permission_adapters
+        if adapters is None:
+            adapters = tuple(getAdapters((parent,), IPrincipalPermissionMap))
+            cache.principal_permission_adapters = adapters
 
-        if prinper is not None:
+        for name, prinper in adapters:
             prinper = SettingAsBoolean[
-                prinper.getSetting(permission, principal, None)
-                ]
+                prinper.getSetting(permission, principal, None)]
             if prinper is not None:
                 cache_prin_per[permission] = prinper
                 return prinper

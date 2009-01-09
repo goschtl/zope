@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.2 (2009-01-09)
+------------------
+
+- Query all IPrincipalPermissionMap adapter for context
+
+
 1.2.1 (2008-09-02)
 ------------------
 
