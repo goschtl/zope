@@ -12,7 +12,7 @@
 	  <a tal:attributes="href string:${item/prefs/@@absolute_url}/;
 			     title item/description"
 	     tal:omit-tag="not:item/editable">
-	    <al:block tal:content="structure item/icon" />
+	    <tal:block tal:content="structure item/icon" />
 	    <tal:block tal:content="item/title" />
 	  </a>
 	</div>

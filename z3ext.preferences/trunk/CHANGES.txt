@@ -2,8 +2,10 @@
 CHANGES
 =======
 
-1.4.5 (Unreleased)
+1.4.5 (2009-01-09)
 ------------------
+
+- Added 'accesspremission' attribute for preferenceGroup directive
 
 - Fixed security for preference group
 

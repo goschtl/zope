@@ -119,8 +119,8 @@ class PreferenceGroupDirective(object):
 
     def __init__(self, _context, id, schema, title,
                  for_=None, description=u'', class_=None, provides=[],
-                 permission='z3ext.ModifyPreference', accesspermission='',
-                 tests=(), order = 9999):
+                 permission='z3ext.ModifyPreference', 
+                 accesspermission='z3ext.ModifyPreference', tests=(), order = 9999):
 
         if not accesspermission:
             accesspermission = permission
