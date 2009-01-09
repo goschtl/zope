@@ -49,9 +49,9 @@ import ZEO.interfaces
 import ZODB.config
 
 # Uncomment this to get helpful logging from the ZEO servers on the console
-import logging
-logging.getLogger().addHandler(logging.StreamHandler())
-logging.getLogger().setLevel(0)
+#import logging
+#logging.getLogger().addHandler(logging.StreamHandler())
+#logging.getLogger().setLevel(0)
 
 
 def fail(obj, name):
@@ -235,7 +235,6 @@ class FailingStorageSharedBlobTestSetup(FailingStorageTestSetup):
 class FailingStorageTestBase(object):
 
     def _disable_storage(self, index):
-        print self._storage.storages_optimal[index]
         self._storage.raid_disable(self._storage.storages_optimal[index])
 
     def test_apply_storage_disconnect(self):

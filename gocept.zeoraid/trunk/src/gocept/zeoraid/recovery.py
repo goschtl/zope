@@ -133,8 +133,7 @@ class Recovery(object):
                             r.oid, r.tid, r.data, temp_file_name, r.version,
                             txn_info)
                         continue
-                self.target.restore(r.oid, r.tid, r.data, r.version,
-                                    r.data_txn, txn_info)
+                self.target.store(r.oid, r.tid, r.data, r.version, txn_info)
 
             self.target.tpc_vote(txn_info)
             self.target.tpc_finish(txn_info)

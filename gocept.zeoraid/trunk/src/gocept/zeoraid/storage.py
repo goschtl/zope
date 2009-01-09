@@ -157,7 +157,6 @@ class RAIDStorage(object):
                 continue
             tids.setdefault(tid, [])
             tids[tid].append(name)
-        print tids
 
         if not tids:
             # No storage is working.
@@ -764,7 +763,6 @@ class RAIDStorage(object):
                     consistent = False
                     break
         if not consistent:
-            import pdb; pdb.set_trace() 
             self.close()
             raise gocept.zeoraid.interfaces.RAIDError(
                 "RAID is inconsistent and was closed.")
