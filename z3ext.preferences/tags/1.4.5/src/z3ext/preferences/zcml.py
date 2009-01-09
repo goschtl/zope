@@ -119,11 +119,17 @@ class PreferenceGroupDirective(object):
 
     def __init__(self, _context, id, schema, title,
                  for_=None, description=u'', class_=None, provides=[],
-                 permission='z3ext.ModifyPreference', 
-                 accesspermission='z3ext.ModifyPreference', tests=(), order = 9999):
+                 permission='z3ext.ModifyPreference', accesspermission='',
+                 tests=(), order = 9999):
 
         if not accesspermission:
             accesspermission = permission
+
+        if permission == 'zope.Public':
+            permission = CheckerPublic
+
+        if accesspermission == 'zope.Public':
+            accesspermission = CheckerPublic 
 
         Class = PreferenceType(str(id), schema, class_, title, description)
         Class.order = order
@@ -131,7 +137,7 @@ class PreferenceGroupDirective(object):
         Class.__accesspermission__ = accesspermission
 
         tests = tuple(tests)
-        if permission != 'zope.Public':
+        if permission != CheckerPublic:
             tests = tests + (PermissionChecker,)
         if interface.interfaces.IInterface.providedBy(for_):
             tests = tests + (PrincipalChecker(for_),)
@@ -172,8 +178,6 @@ class PreferenceGroupDirective(object):
                 set_attributes=None, set_schema=None):
         """Require a permission to access a specific aspect"""
         if not (interface or attributes or set_attributes or set_schema):
-            if like_class:
-                return
             raise ConfigurationError("Nothing required")
 
         if not permission:
