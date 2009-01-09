@@ -1,0 +1,35 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- IPrincipalGroups adapter -->
+  <adapter
+     for="zope.security.interfaces.IPrincipal"
+     provides=".interfaces.IPrincipalGroups"
+     factory=".groups.PrincipalGroups" />
+
+  <!-- extended grant info -->
+  <adapter factory="z3ext.security.grantinfo.ExtendedGrantInfo" />
+
+  <class class=".grantinfo.ExtendedGrantInfo">
+    <allow interface=".interfaces.IExtendedGrantInfo" />
+  </class>
+
+  <!-- add security declaration for anonymous -->
+  <class class="zope.app.security.principalregistry.UnauthenticatedPrincipal">
+    <require
+       permission="zope.Public"
+       interface="zope.security.interfaces.IPrincipal" />
+  </class>
+
+  <!-- Registering documentation with API doc -->
+  <configure
+     xmlns:apidoc="http://namespaces.zope.org/apidoc"
+     xmlns:zcml="http://namespaces.zope.org/zcml"
+     zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+       id="z3ext"
+       title="z3ext packages" />
+
+  </configure>
+
+</configure>

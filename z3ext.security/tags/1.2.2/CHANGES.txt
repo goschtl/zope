@@ -1,0 +1,42 @@
+=======
+CHANGES
+=======
+
+1.2.2 (2009-01-09)
+------------------
+
+- Query all IPrincipalPermissionMap adapter for context
+
+
+1.2.1 (2008-09-02)
+------------------
+
+- Fixed bug in extended grant info
+
+
+1.2.0 (2008-03-21)
+------------------
+
+- Code cleanup
+
+- Move code to svn.zope.org
+
+
+1.1.1 (2008-02-16)
+------------------
+
+- Performance (Profiling)
+
+
+1.1.0 (2008-02-01)
+------------------
+
+- Code cleanup
+
+- Removed unused code
+
+
+1.0.0 (2007-12-08)
+------------------
+
+- Initial release.
