@@ -33,7 +33,7 @@ connect to a real LDAP server for these tests, a fake LDAP adapter was
 developed and has already been registered under the name
 `fake_ldap_adapter`.
 
-Now that the LDAP adapter is regsitered, we can instantiate the LDAP
+Now that the LDAP adapter is registered, we can instantiate the LDAP
 authentication:
 
   >>> auth = ldappas.authentication.LDAPAuthentication()
