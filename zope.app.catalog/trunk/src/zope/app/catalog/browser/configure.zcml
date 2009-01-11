@@ -9,7 +9,7 @@
     title="Catalog"
     description="A Catalog allows indexing and searching of objects"
     class="zope.app.catalog.catalog.Catalog"
-    permission="zope.ManageContent"
+    permission="zope.ManageServices"
     />
 
 <icon

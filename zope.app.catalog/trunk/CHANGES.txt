@@ -5,7 +5,10 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- ...
+- Change catalog's addMenuItem permission to zope.ManageServices
+  as it doesn't make any sense to add an empty catalog that you
+  can't modify with zope.ManageContent permission and it's completely
+  useless without indexes. So there's no need to show a menu item.
 
 3.6.0 (2009-01-03)
 ------------------
