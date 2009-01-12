@@ -51,6 +51,10 @@ Let's build parents dependencies: ob1->ob2->ob3, ob1->ob4
    >>> grantinfo.getRolesForPermission('P1')
    []
 
+
+getRolesForPermission
+---------------------
+
 This is standard behaviour:
 
    >>> roleper  = interfaces.IRolePermissionManager(ob3)
@@ -91,6 +95,14 @@ on ob2 so ob3 should have allow for P1 permission on role role3
    >>> grantinfo = IExtendedGrantInfo(ob4)
    >>> grantinfo.getRolesForPermission('P1')
    [('role3', PermissionSetting: Deny)]
+
+global RolesForPermission
+
+   >>> from zope.securitypolicy.rolepermission import rolePermissionManager
+   >>> rolePermissionManager.grantPermissionToRole('P1', 'role4', False)
+
+   >>> grantinfo.getRolesForPermission('P1')
+   [('role4', PermissionSetting: Allow), ('role3', PermissionSetting: Deny)]
 
 
 getRolesForPrincipal
@@ -150,3 +162,20 @@ We can get info about other principals with same role
 
    >>> grantinfo.getPrincipalsForRole('role1')
    [('bob', PermissionSetting: Allow), ('bob2', PermissionSetting: Allow), ('bob1', PermissionSetting: Allow)]
+
+
+getPrincipalsForPermission
+--------------------------
+
+   >>> from zope.securitypolicy.interfaces import IPrincipalPermissionManager
+   >>> from zope.securitypolicy.principalpermission import principalPermissionManager
+
+   >>> principalPermissionManager.grantPermissionToPrincipal('perm1', 'user1', False)
+
+   >>> grantinfo = IExtendedGrantInfo(ob3)
+   >>> grantinfo.getPrincipalsForPermission('perm1')
+   [('user1', PermissionSetting: Allow)]
+
+   >>> IPrincipalPermissionManager(ob2).denyPermissionToPrincipal('perm1', 'user1')
+   >>> grantinfo.getPrincipalsForPermission('perm1')
+   [('user1', PermissionSetting: Deny)]

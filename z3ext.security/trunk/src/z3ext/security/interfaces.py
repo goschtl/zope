@@ -38,3 +38,6 @@ class IExtendedGrantInfo(interface.Interface):
 
     def getPrincipalsForRole(role_id):
         """ Get the principals that have been granted a role. """
+
+    def getPrincipalsForPermission(permission):
+        """ Get principals for permission """

@@ -19,12 +19,17 @@ $Id$
 from zope import interface, component
 from zope.component import getAdapters
 from zope.security.proxy import removeSecurityProxy
+from zope.securitypolicy.interfaces import Unset
 
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
 from zope.securitypolicy.interfaces import IRolePermissionMap
+from zope.securitypolicy.interfaces import IPrincipalPermissionMap
 
 from zope.securitypolicy.principalrole import principalRoleManager
 globalPrincipalsForRole = principalRoleManager.getPrincipalsForRole
+
+from zope.securitypolicy.principalpermission import principalPermissionManager
+globalPrincipalPermission = principalPermissionManager.getPrincipalsForPermission
 
 from interfaces import IExtendedGrantInfo
 from securitypolicy import globalRolesForPrincipal, globalRolesForPermission
@@ -98,6 +103,28 @@ class ExtendedGrantInfo(object):
         else:
             info = IExtendedGrantInfo(parent)
             for principal, setting in info.getPrincipalsForRole(role):
+                if principal not in principals:
+                    principals[principal] = setting
+
+        return principals.items()
+
+    def getPrincipalsForPermission(self, permission):
+        context = removeSecurityProxy(self.context)
+
+        principals = {}
+        for name, prinper in getAdapters((context,), IPrincipalPermissionMap):
+            for principal, setting in prinper.getPrincipalsForPermission(permission):
+                if principal not in principals:
+                    principals[principal] = setting
+
+        parent = getattr(context, '__parent__', None)
+        if parent is None:
+            for principal, setting in globalPrincipalPermission(permission):
+                if principal not in principals:
+                    principals[principal] = setting
+        else:
+            info = IExtendedGrantInfo(parent)
+            for principal, setting in info.getPrincipalsForPermission(permission):
                 if principal not in principals:
                     principals[principal] = setting
 
