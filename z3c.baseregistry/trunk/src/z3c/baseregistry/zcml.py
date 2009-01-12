@@ -16,6 +16,8 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+import sys
+
 import zope.interface
 import zope.component.globalregistry
 import zope.configuration.config
@@ -111,6 +113,7 @@ class RegisterIn(zope.configuration.config.GroupingContextDecorator):
         self.context.action(
             discriminator=None,
             callable=resetOriginalRegistry,
-            args=(self,)
+            args=(self,),
+            order=sys.maxint,
             )
 
