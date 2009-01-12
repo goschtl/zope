@@ -1,0 +1,54 @@
+0.4.1 (2009-01-12)
+==================
+
+* Fixed temp dir removal error on Windows (fix makes the code saner
+  for other systems too).  Fixes
+  https://bugs.launchpad.net/grok/+bug/315227
+
+* Windows compatibility fix: use ``'wb'`` for writing to make downloading
+  of the egg tarball succeeds on Windows.
+
+0.4.0 (2008-09-22)
+==================
+
+* When the download fails, do not say "Continuing with buildout
+  instead" as the downloader just exits then and it is up to the
+  calling code or the user to continue the buildout if so wished.
+  [maurits]
+
+* When installing the requirements from the tarball, we now look in
+  the default index (python cheese shop usually) when the requirements
+  can not be met by only the tarball.  This should not happen, but it
+  does.  [maurits]
+
+0.3.1 (2008-07-13)
+==================
+
+* Got rid of annyoing "Unused options for basket: url" warning.
+
+0.3.0 (2008-05-30)
+==================
+
+* Now also downloading extra Windows specific eggs when creating the
+  tarball, as long as they are on the cheese shop.  [maurits]
+
+0.2.0 (2008-05-22)
+==================
+
+* Created script around create_source_tarball function with the
+  z3c.recipe.eggbasket:creator recipe.  Removed the releasemaker
+  console script from setup.py for now as it was not handling command
+  line arguments (yet).  [maurits]
+
+* Added function create_source_tarball for creating the kind of source
+  tarball that we are expecting.  The releasemaker console script
+  calls this.  [maurits]
+
+0.1.0 (2008-05-06)
+==================
+
+* Added tests.  [maurits]
+
+* Initial implementation.  [maurits, timte]
+
+* Created recipe with ZopeSkel.  [Grok Team].
