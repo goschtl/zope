@@ -1,6 +1,10 @@
 0.4.1 (unreleased)
 ==================
 
+* Fixed temp dir removal error on Windows (fix makes the code saner
+  for other systems too).  Fixes
+  https://bugs.launchpad.net/grok/+bug/315227
+
 * Windows compatibility fix: use ``'wb'`` for writing to make downloading
   of the egg tarball succeeds on Windows.
 

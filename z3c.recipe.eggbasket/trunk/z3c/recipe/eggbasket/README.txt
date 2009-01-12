@@ -133,10 +133,7 @@ In this case the recipe will do nothing.  So the url does not get
 used.  Running the buildout gives us::
 
     >>> print system(buildout)
-    Upgraded:
-      zc.buildout version ...;
-    restarting.
-    Generated script '/sample-buildout/bin/buildout'.
+    ...
     Installing basket.
     <BLANKLINE>
 
@@ -160,10 +157,14 @@ So now we create a tar ball in a directory::
     >>> cd(tarserver)
     >>> tarball = tarfile.open('colours.tgz', 'w:gz')
     >>> tarball.add(colours)
+
+Note: the order of the next listing is not guaranteed, so there might
+be a test failure here:
+
     >>> tarball.list(verbose=False)
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/
-    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/colour-0.1.zip
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/colour-0.1.zip
     >>> tarball.close()
     >>> ls(tarserver)
     -  colours.tgz
@@ -184,7 +185,9 @@ We make it available on a url and use it in our buildout::
     basket: Extracting tarball contents...
     basket: Installing eggs to .../sample-buildout/eggs which will take a while...
     Getting distribution for 'orange'.
+    ...
     Got orange 0.1.
     Getting distribution for 'colour'.
+    ...
     Got colour 0.1.
     <BLANKLINE>

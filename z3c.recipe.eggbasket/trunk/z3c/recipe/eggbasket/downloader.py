@@ -38,11 +38,16 @@ class Downloader(Eggs):
             tarball_name = url.split('/')[-1]
             log.info("Downloading %s ..." % url)
 
+            # Make temporary files and directories.
             try:
-                # Make temporary files and directories.
                 extraction_dir = tempfile.mkdtemp()
                 filenum, temp_tarball_name = tempfile.mkstemp()
-
+            except:
+                log.error("Could not create temporary file or directory")
+                # Reraise exception
+                raise
+            try:
+                # Note: 'b' mode needed for Windows.
                 tarball = open(temp_tarball_name, 'wb')
                 try:
                     tarball.write(urllib.urlopen(url).read())
@@ -77,8 +82,8 @@ class Downloader(Eggs):
                     log.error("Failed to install required eggs with the tar "
                               "ball.")
             finally:
-                shutil.rmtree(extraction_dir)
                 os.unlink(temp_tarball_name)
+                shutil.rmtree(extraction_dir)
 
         # Return files that were created by the recipe. The buildout
         # will remove all returned files upon reinstall.

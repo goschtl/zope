@@ -7,6 +7,10 @@ import tarfile
 import tempfile
 import urllib
 
+# XXX We may want to add command line argument handling.
+logging.basicConfig(level=logging.INFO,
+                    format='%(levelname)-5s %(name)-12s %(message)s')
+
 
 def install_distributions(distributions, target_dir, links=[],
                           use_empty_index=False):
@@ -21,14 +25,23 @@ def install_distributions(distributions, target_dir, links=[],
     """
     from zc.buildout.easy_install import install
     from zc.buildout.easy_install import MissingDistribution
-    try:
-        empty_index = tempfile.mkdtemp()
-        if use_empty_index:
-            index = 'file://' + empty_index
-        else:
-            # Use the default index (python cheese shop)
-            index = None
+    log = logging.getLogger('eggbasket.utils')
 
+    if use_empty_index:
+        # When the temp dir is not writable this throws an OSError,
+        # which we might want to catch, but actually it is probably
+        # fine to just let it bubble up to the user.
+        try:
+            empty_index = tempfile.mkdtemp()
+        except:
+            log.error("Could not create temporary file")
+            # Reraise exception
+            raise
+        index = 'file://' + empty_index
+    else:
+        # Use the default index (python cheese shop)
+        index = None
+    try:
         try:
             install(distributions, target_dir, newest=False,
                     links=links, index=index)
@@ -37,7 +50,8 @@ def install_distributions(distributions, target_dir, links=[],
         else:
             return True
     finally:
-        shutil.rmtree(empty_index)
+        if use_empty_index:
+            shutil.rmtree(empty_index)
 
 
 def distributions_are_installed_in_dir(distributions, target_dir):
@@ -51,9 +65,6 @@ def distributions_are_installed_in_dir(distributions, target_dir):
 
 
 def create_source_tarball(egg=None, versionfile='buildout.cfg'):
-    # XXX We may want to add command line argument handling.
-    logging.basicConfig(level=logging.INFO,
-                        format='%(levelname)-5s %(name)-12s %(message)s')
     log = logging.getLogger('eggbasket.utils')
     if egg is None:
         # XXX Having a way to read the setup.py in the current
