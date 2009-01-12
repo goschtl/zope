@@ -2,18 +2,7 @@
 CHANGES
 =======
 
-1.0.1 (unreleased)
-------------------
-
-- Ensure that original registry restoring action is
-  performed last, by specifying sys.maxint order for it.
-  This is a workaround for bug that appears when there's
-  actions with specified (large) order, so original registry
-  is restored _before_ that action is executed. One of
-  examples is _checkViewFor action in zope.app.publisher's
-  addMenuItem directive.
-
-1.0.0 (2008-01-24)
-------------------
+Version 1.0.0 (2008-01-24)
+--------------------------
 
 - Initial Release
