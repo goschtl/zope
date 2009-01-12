@@ -1,4 +1,4 @@
-0.4.1 (unreleased)
+0.4.1 (2009-01-12)
 ==================
 
 * Fixed temp dir removal error on Windows (fix makes the code saner
