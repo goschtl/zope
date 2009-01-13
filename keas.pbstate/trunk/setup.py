@@ -26,6 +26,7 @@ setup(
     packages=['keas.pbstate'],
     namespace_packages=['keas'],
     install_requires=[
+        'setuptools',
         'protobuf',
         ],
 )

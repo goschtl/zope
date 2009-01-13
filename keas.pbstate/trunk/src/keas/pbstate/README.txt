@@ -76,6 +76,32 @@ Try to set an attribute not declared in the .proto file.
     ...
     AttributeError: 'Contact' object has no attribute 'phone'
 
+
+Mixins
+------
+
+A class can mix in properties that access sub-messages.  This is
+useful when subclassing (although subclassing should be avoided).
+
+Here is a class that mixes the ContactPB properties and the AddressPB
+properties in a single class.
+
+    >>> class MixedContact(object):
+    ...     __metaclass__ = ProtobufState
+    ...     protobuf_type = ContactPB
+    ...     protobuf_mixins = ('address',)
+
+    >>> mc = MixedContact()
+    >>> mc.line1 = u'180 Market St.'
+    >>> mc.line1
+    u'180 Market St.'
+    >>> mc.address.line1
+    u'180 Market St.'
+
+
+Serialization
+-------------
+
 Try to serialize the object without providing all of the required fields.
 
     >>> c.__getstate__()
@@ -107,26 +133,57 @@ Create another contact, but this time provide no address information.
     >>> c2.__getstate__()
     ('\x08\xea\x07\x12\tMary Anne', {})
 
+
+Object References
+-----------------
+
+This library supports references to arbitrary objects through the use
+of an automatically generated reference identifier or "refid".
+
 Add a guardian to c2, but don't say who the guardian is yet.
 
     >>> guardian_ref = c2.guardians.add()
 
-Using the protobuf_refs attribute, assign c to be a guardian of c2.
-Note that the item interface of the protobuf_refs attribute is
-unusual.  Don't think of it like a mapping; just think of it as a way
-to refer to any object.  Under the covers, a reference
-ID will be generated, that ID will be assigned to guardian_ref._p_refid,
-and the refid and target object will be added to the internal
-state of the protobuf_refs object.  Any message with a _p_refid field
-is a reference.  Every _p_refid field should be of type uint32.
+Using subscript notation on the protobuf_refs attribute, assign c to be
+a guardian of c2.
 
     >>> c2.protobuf_refs[guardian_ref] = c
 
-Verify the reference is serialized correctly.
+Although this makes protobuf_refs look like a mapping, it does not behave
+like a mapping.  Under the covers, a reference ID was generated, then that
+ID was assigned to guardian_ref._p_refid, and the refid and target object
+were added to the internal state of the protobuf_refs attribute.  Any message
+with a _p_refid field is a reference.  Every _p_refid field should be
+of type uint32.
+
+(Editor's note: I suspect this may be a significant abuse of subscript
+notation, so in the future this may be replaced with a less surprising
+interface.)
+
+Read the reference.
+
+    >>> c2.protobuf_refs[guardian_ref] is c
+    True
+
+Verify the reference gets serialized correctly.
 
     >>> data, targets = c2.__getstate__()
     >>> targets[c2.guardians[0]._p_refid] is c
     True
+
+Delete the reference.
+
+    >>> del c2.protobuf_refs[guardian_ref]
+    >>> c2.protobuf_refs[guardian_ref]
+    Traceback (most recent call last):
+    ...
+    KeyError: 'No reference set'
+
+Verify the reference is no longer contained in the serialized state.
+
+    >>> data, targets = c2.__getstate__()
+    >>> len(targets)
+    0
 
 
 Features Designed for ZODB
@@ -142,6 +199,9 @@ attribute.
     ...         return getattr(self, '_changed', False)
     ...     def _set_changed(self, value):
     ...         self._changed = value
+    ...         if not value:
+    ...             # reset the _cache_byte_size_dirty flags
+    ...             self.protobuf.ByteSize()
     ...     _p_changed = property(_get_changed, _set_changed)
     ...
     >>> class PersistentContact(FakePersistent):
@@ -150,9 +210,11 @@ attribute.
     ...
 
     >>> c3 = PersistentContact()
+    >>> c3._p_changed
+    False
     >>> c3.create_time = 1003
     >>> c3.name = u'Snoopy'
-    >>> c3._p_changed = False; c3.__getstate__() and None
+    >>> c3._p_changed = False
 
 Reading an attribute does not set _p_changed.
 
@@ -169,7 +231,7 @@ Writing an attribute sets _p_changed.
 
 Adding to a repeated element sets _p_changed.
 
-    >>> c3._p_changed = False; c3.__getstate__() and None
+    >>> c3._p_changed = False
     >>> c3._p_changed
     False
     >>> c3.guardians.add()
@@ -189,10 +251,78 @@ should set _p_changed to true.
     >>> c4._p_changed
     True
 
-The tuple returned by __getstate__ is actually a subclass of tuple.  This
-might tell the serializer in ZODB to save the state without pickling.
+The tuple returned by __getstate__ is actually a subclass of tuple.  The
+StateTuple suggests to the ZODB serializer that it can save the state
+without pickling.
 
-TODO: __getstate__ returns StateTuple
+    >>> type(c.__getstate__())
+    <class 'keas.pbstate.state.StateTuple'>
 
-TODO: mixins
 
+Edge Cases
+----------
+
+Synthesize a refid hash collision.  First make a reference:
+
+    >>> guardian_ref = c2.guardians.add()
+    >>> c2.protobuf_refs[guardian_ref] = c
+
+Covertly change the target of that reference:
+
+    >>> c2.protobuf_refs._targets[guardian_ref._p_refid] = mc
+
+Add a new reference to the original target.  The first generated refid
+will collide, but he protobuf_refs should should choose a different
+refid automatically.
+
+    >>> guardian2_ref = c2.guardians.add()
+    >>> c2.protobuf_refs[guardian2_ref] = c
+    >>> guardian_ref._p_refid == guardian2_ref._p_refid
+    False
+
+
+Exception Conditions
+--------------------
+
+Deleting message attributes is not allowed.
+
+    >>> del c.name
+    Traceback (most recent call last):
+    ...
+    AttributeError: can't delete attribute
+    >>> del mc.line1
+    Traceback (most recent call last):
+    ...
+    AttributeError: can't delete attribute
+
+Mixin names are checked.
+
+    >>> class MixedUpContact(object):
+    ...     __metaclass__ = ProtobufState
+    ...     protobuf_type = ContactPB
+    ...     protobuf_mixins = ('bogus',)
+    Traceback (most recent call last):
+    ...
+    AttributeError: Field 'bogus' not defined for protobuf type <...>
+
+Create a broken reference by setting a reference using the wrong
+protobuf_refs.
+
+    >>> c.guardians.add()
+    <keas.pbstate.testclasses_pb2.Ref object at ...>
+    >>> c2.protobuf_refs[c.guardians[0]] = c
+    >>> c.__getstate__()
+    Traceback (most recent call last):
+    ...
+    KeyError: 'Object contains broken references: <Contact object at ...>'
+    >>> del c2.protobuf_refs[c.guardians[0]]
+    >>> del c.guardians[0]
+
+Don't omit the protobuf_type attribute.
+
+    >>> class FailedContact(object):
+    ...     __metaclass__ = ProtobufState
+    Traceback (most recent call last):
+    ...
+    TypeError: Class ...FailedContact needs a protobuf_type attribute
+    
