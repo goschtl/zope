@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Foundation and Contributors.
+# Copyright (c) 2008 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,20 +12,16 @@
 #
 ##############################################################################
 
-from setuptools import setup
+import unittest
 
-setup(
-    name='keas.pbstate',
-    version='0.1dev',
-    author='Shane Hathaway and the Zope Community',
-    author_email='zope-dev@zope.org',
-    description='Object state storage in a Google Protocol Buffer',
-    license='ZPL 2.1',
+from zope.testing import doctest
 
-    package_dir={'': 'src'},
-    packages=['keas.pbstate'],
-    namespace_packages=['keas'],
-    install_requires=[
-        'protobuf',
-        ],
-)
+def test_suite():
+    return unittest.TestSuite([
+        doctest.DocFileSuite(
+            'README.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+    ])
+
+if __name__ == '__main__':
+    unittest.main()

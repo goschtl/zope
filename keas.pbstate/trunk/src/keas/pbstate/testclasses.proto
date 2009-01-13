@@ -1,0 +1,20 @@
+
+message Ref {
+    required uint32 _p_refid = 1;
+}
+
+message AddressPB {
+    required string line1 = 1;
+    optional string line2 = 2;
+    required string city = 3;
+    optional string state = 4;
+    optional string postal_code = 5;
+    required string country = 6 [default = 'United States'];
+}
+
+message ContactPB {
+    required uint64 create_time = 1;
+    required string name = 2;
+    optional AddressPB address = 3;
+    repeated Ref guardians = 4;
+}

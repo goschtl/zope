@@ -213,13 +213,10 @@ class ProtobufState(type):
         # Arrange for class instances to always have the 'protobuf' and
         # 'protobuf_refs' instance attributes.  This is done by creating
         # or overriding the __new__() method of the new class.
-        parent__new__ = dct.get('__new__')
         def __new__(subclass, *args, **kw):
             # subclass is either created_class or a subclass of created_class.
-            create = parent__new__
-            if create is None:
-                create = super(created_class, subclass).__new__
-            instance = create(subclass, *args, **kw)
+            super_new = super(created_class, subclass).__new__
+            instance = super_new(subclass, *args, **kw)
             instance.protobuf_refs = ProtobufReferences({})
             instance.protobuf = subclass.protobuf_type()
             if hasattr(instance, '_p_changed'):
