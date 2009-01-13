@@ -27,6 +27,7 @@ Usage: %s current-package-cfg-path [orig-package-cfg-path]
 
 """
 import os
+import pickle
 import re
 import sys
 import xmlrpclib
@@ -34,6 +35,14 @@ import pkg_resources
 import zope.kgs.kgs
 
 SERVER_URL = "http://cheeseshop.python.org/pypi"
+
+def loadCache(fn):
+    if os.path.exists(fn):
+        return pickle.load(open(fn))
+    return {}
+
+def saveCache(fn, cache):
+    pickle.dump(cache, open(fn, 'w'))
 
 # version_line finds a version number and an optional date
 version_line = re.compile(
@@ -88,6 +97,7 @@ def extractChanges(text, firstVersion, lastVersion):
         if first <= v <= last:
             yield version, release_date, '\n'.join(changes)
 
+
 def generateChanges(currentPath, origPath):
     kgs = zope.kgs.kgs.KGS(currentPath)
     server = xmlrpclib.Server(SERVER_URL)
@@ -100,15 +110,26 @@ def generateChanges(currentPath, origPath):
 
     changes = []
 
+    cache = loadCache('descriptions.dat')
+
     for package in kgs.packages:
-        data = server.release_data(package.name, package.versions[-1])
+        key = package.name, package.versions[-1]
+        print key
+        if key in cache:
+            description = cache[key]
+        else:
+            data = server.release_data(package.name, package.versions[-1])
+            cache[key] = description = data['description']
+            saveCache('descriptions.dat', cache)
+
         firstVersion = origVersions.get(package.name, package.versions[0])
         lastVersion = package.versions[-1]
         versions = list(
-            extractChanges(data['description'], firstVersion, lastVersion))
+            extractChanges(description, firstVersion, lastVersion))
         changes.append((package.name, versions))
 
     return changes
+
 
 def printChanges(changes):
     for name, versions in changes:
