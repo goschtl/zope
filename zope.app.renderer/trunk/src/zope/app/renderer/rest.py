@@ -18,8 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import docutils.core
-from docutils.writers.html4css1 import HTMLTranslator
-from docutils.writers.html4css1 import Writer
 
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
@@ -38,26 +36,6 @@ class IReStructuredTextSource(ISource):
 ReStructuredTextSourceFactory = SourceFactory(
     IReStructuredTextSource, _("ReStructured Text (ReST)"),
     _("ReStructured Text (ReST) Source"))
-
-
-class ZopeTranslator(HTMLTranslator):
-    """
-    The ZopeTranslator extends the base HTML processor for reST.  It
-    augments reST by:
-
-    - Outputs *only* the 'body' parts of the document tree, using the
-      internal docutils structure.
-    """
-
-    def astext(self):
-        """
-        This is where we join the document parts that we want in
-        the output.
-        """
-        # use the title, subtitle, author, date, etc., plus the content
-        body = self.body_pre_docinfo + self.docinfo + self.body
-        return u"".join(body)
-
 
 class ReStructuredTextToHTMLRenderer(BrowserView):
     r"""An Adapter to convert from Restructured Text to HTML.
@@ -124,11 +102,9 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
             'initial_header_level': 3,
             }
         overrides.update(settings_overrides)
-        writer = Writer()
-        writer.translator_class = ZopeTranslator
-        html = docutils.core.publish_parts(
+        parts = docutils.core.publish_parts(
             self.context,
-            writer=writer,
+            writer_name='html',
             settings_overrides=overrides,
-            )['body']
-        return html
+            )
+        return u''.join((parts['body_pre_docinfo'], parts['docinfo'], parts['body']))
