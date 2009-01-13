@@ -22,9 +22,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.renderer',
-      version = '3.5.0',
+      version = '3.4.1dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Text Renderer Framework',
       long_description=(
           read('README.txt')
@@ -42,7 +42,7 @@ setup(name='zope.app.renderer',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.renderer',
+      url='http://pypi.python.org/pypi/zope.app.renderer',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

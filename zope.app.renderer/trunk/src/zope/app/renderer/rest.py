@@ -75,8 +75,8 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
       >>> renderer = ReStructuredTextToHTMLRenderer(source, TestRequest())
       >>> print renderer.render().strip()
       <p>This is source.</p>
-      <div class="section">
-      <h3><a id="header-3" name="header-3">Header 3</a></h3>
+      <div class="section" id="header-3">
+      <h3>Header 3</h3>
       <p>This is more source.</p>
       </div>
     """
@@ -107,11 +107,11 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
         ...              'doctitle_xform': 0 }
         >>> renderer = ReStructuredTextToHTMLRenderer(text, None)
         >>> print renderer.render(overrides)
-        <div class="section">
-        <h2><a id="heading-1" name="heading-1">Heading 1</a></h2>
+        <div class="section" id="heading-1">
+        <h2>Heading 1</h2>
         <p>hello world</p>
-        <div class="section">
-        <h3><a id="heading-2" name="heading-2">Heading 2</a></h3>
+        <div class="section" id="heading-2">
+        <h3>Heading 2</h3>
         </div>
         </div>
         <BLANKLINE>
@@ -126,9 +126,9 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
         overrides.update(settings_overrides)
         writer = Writer()
         writer.translator_class = ZopeTranslator
-        html = docutils.core.publish_string(
+        html = docutils.core.publish_parts(
             self.context,
             writer=writer,
             settings_overrides=overrides,
-            )
+            )['body']
         return html
