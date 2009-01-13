@@ -137,32 +137,28 @@ Create another contact, but this time provide no address information.
 Object References
 -----------------
 
-This library supports references to arbitrary objects through the use
-of an automatically generated reference identifier or "refid".
+Classes using the ProtobufState metaclass support references to arbitrary
+objects through the use of the 'protobuf_refs' attribute.
 
-Add a guardian to c2, but don't say who the guardian is yet.
+Add a guardian to c2, but don't say who the guardian is yet.  Note that
+the .proto file defines the guardians list as a list of messages that
+have a _p_refid attribute.
 
     >>> guardian_ref = c2.guardians.add()
 
-Using subscript notation on the protobuf_refs attribute, assign c to be
-a guardian of c2.
+Call protobuf_refs.set() to make guardian_ref refer to c.
 
-    >>> c2.protobuf_refs[guardian_ref] = c
+    >>> c2.protobuf_refs.set(guardian_ref, c)
 
-Although this makes protobuf_refs look like a mapping, it does not behave
-like a mapping.  Under the covers, a reference ID was generated, then that
+The set method generated a reference ID, then that
 ID was assigned to guardian_ref._p_refid, and the refid and target object
-were added to the internal state of the protobuf_refs attribute.  Any message
+were added to the internal state of the protobuf_refs instance.  Any message
 with a _p_refid field is a reference.  Every _p_refid field should be
 of type uint32.
 
-(Editor's note: I suspect this may be a significant abuse of subscript
-notation, so in the future this may be replaced with a less surprising
-interface.)
-
 Read the reference.
 
-    >>> c2.protobuf_refs[guardian_ref] is c
+    >>> c2.protobuf_refs.get(guardian_ref) is c
     True
 
 Verify the reference gets serialized correctly.
@@ -173,11 +169,9 @@ Verify the reference gets serialized correctly.
 
 Delete the reference.
 
-    >>> del c2.protobuf_refs[guardian_ref]
-    >>> c2.protobuf_refs[guardian_ref]
-    Traceback (most recent call last):
-    ...
-    KeyError: 'No reference set'
+    >>> c2.protobuf_refs.delete(guardian_ref)
+    >>> c2.protobuf_refs.get(guardian_ref, 'gone')
+    'gone'
 
 Verify the reference is no longer contained in the serialized state.
 
@@ -265,7 +259,7 @@ Edge Cases
 Synthesize a refid hash collision.  First make a reference:
 
     >>> guardian_ref = c2.guardians.add()
-    >>> c2.protobuf_refs[guardian_ref] = c
+    >>> c2.protobuf_refs.set(guardian_ref, c)
 
 Covertly change the target of that reference:
 
@@ -276,7 +270,7 @@ will collide, but he protobuf_refs should should choose a different
 refid automatically.
 
     >>> guardian2_ref = c2.guardians.add()
-    >>> c2.protobuf_refs[guardian2_ref] = c
+    >>> c2.protobuf_refs.set(guardian2_ref, c)
     >>> guardian_ref._p_refid == guardian2_ref._p_refid
     False
 
@@ -306,16 +300,17 @@ Mixin names are checked.
     AttributeError: Field 'bogus' not defined for protobuf type <...>
 
 Create a broken reference by setting a reference using the wrong
-protobuf_refs.
+protobuf_refs.  To prevent this condition, the protobuf_refs attribute
+and the first argument to protobuf_refs.set() must descend from the
+same containing object.
 
     >>> c.guardians.add()
     <keas.pbstate.testclasses_pb2.Ref object at ...>
-    >>> c2.protobuf_refs[c.guardians[0]] = c
+    >>> c2.protobuf_refs.set(c.guardians[0], c)
     >>> c.__getstate__()
     Traceback (most recent call last):
     ...
     KeyError: 'Object contains broken references: <Contact object at ...>'
-    >>> del c2.protobuf_refs[c.guardians[0]]
     >>> del c.guardians[0]
 
 Don't omit the protobuf_type attribute.

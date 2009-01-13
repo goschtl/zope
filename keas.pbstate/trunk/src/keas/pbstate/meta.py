@@ -109,7 +109,7 @@ class MessageRefidGatherer:
 
 
 class ProtobufReferences(object):
-    """A mapping-like object that gets or sets the target of references.
+    """Gets or sets the target of references.
 
     A reference is a protobuf message with a _p_refid field.
     The target can be any kind of pickleable object, including derivatives
@@ -120,14 +120,14 @@ class ProtobufReferences(object):
     def __init__(self, targets):
         self._targets = targets  # {refid -> target}
 
-    def __getitem__(self, message):
+    def get(self, ref_message, default=None):
         """Get a reference target"""
-        refid = message._p_refid
+        refid = ref_message._p_refid
         if not refid:
-            raise KeyError("No reference set")
+            return default
         return self._targets[refid]
 
-    def __setitem__(self, message, target):
+    def set(self, ref_message, target):
         """Set the target of a reference message"""
         targets = self._targets
         refid = id(target) % 0xffffffff
@@ -135,14 +135,14 @@ class ProtobufReferences(object):
             while not refid or refid in targets:
                 refid = (refid + 1) % 0xffffffff
             targets[refid] = target
-        message._p_refid = refid
+        ref_message._p_refid = refid
 
-    def __delitem__(self, message):
+    def delete(self, ref_message):
         """Unlink a target from a reference message"""
         # We can't actually remove the reference from the reference mapping
         # because something else might still have a reference.  __getstate__
         # will remove unused references.
-        message._p_refid = 0
+        ref_message._p_refid = 0
 
     def _get_targets(self, obj, used):
         """Clean out unused reference targets, then return the target dict.
