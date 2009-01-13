@@ -1,0 +1,22 @@
+=====
+To Do
+=====
+
+Release 3.4
+-----------
+
+* Produce a list of changes.
+
+* Produce nicer O-wrap for intro page.
+
+* Refactor KGS output, so that the index is not a PyPI index.
+
+* Add date to release information.
+
+* Invert order of releases.
+
+* Fix typos in intro text.
+
+
+Other
+-----
