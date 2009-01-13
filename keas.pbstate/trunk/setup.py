@@ -18,9 +18,13 @@ setup(
     name='keas.pbstate',
     version='0.1dev',
     author='Shane Hathaway and the Zope Community',
+    author_email='zope-dev@zope.org',
+    description='Method of storing object state in a Google Protocol Buffer',
+    license='ZPL 2.1',
 
     package_dir={'': 'src'},
     packages=['keas.pbstate'],
+    namespace_packages=['keas'],
     install_requires=[
         'protobuf',
         ],

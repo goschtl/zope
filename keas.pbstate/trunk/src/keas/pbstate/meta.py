@@ -11,11 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Provides the ProtobufState metaclass."""
 
 from google.protobuf.descriptor import FieldDescriptor
 
+from keas.pbstate.state import StateTuple
+
 
 def _protobuf_property(name):
+    """A property that delegates to a protobuf message"""
     def get(self):
         return getattr(self.protobuf, name)
     def set(self, value):
@@ -26,6 +30,7 @@ def _protobuf_property(name):
 
 
 def _protobuf_mixin_property(container_getter, name):
+    """A property that delegates to a protobuf sub-message"""
     def get_(self):
         return getattr(container_getter(self), name)
     def set_(self, value):
@@ -36,6 +41,7 @@ def _protobuf_mixin_property(container_getter, name):
 
 
 def _add_mixin(created_class, mixin_name):
+    """Add the properties from a protobuf sub-message to a class"""
     main_desc = created_class.protobuf_type.DESCRIPTOR
 
     # traverse to the named descriptor
@@ -153,13 +159,6 @@ class ProtobufReferences(object):
         for key in current.difference(used):
             del targets[key]
         return targets
-
-
-class StateTuple(tuple):
-    """Contains the persistent state of a ProtobufState object.
-
-    Contains data (a byte string) and targets (a map of refid to object).
-    """
 
 
 class StateClassMethods(object):
