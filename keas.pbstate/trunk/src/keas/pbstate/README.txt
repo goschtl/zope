@@ -4,7 +4,7 @@ Tests
 =====
 
 These are tests of keas.pbstate, a Python package that provides
-a method of storing object state in a Google Protocol Buffer.
+a way to store Python object state in a Google Protocol Buffer.
 These tests also serve as basic documentation of this package.
 This package is designed to be compatible with ZODB, but ZODB is
 not required.
@@ -90,7 +90,7 @@ Finish filling out the required fields, then serialize.
     >>> c.__getstate__()
     ('\x08\xe9\x07\x12\x08John Doe\x1a#\n\x10100 First Avenue\x1a\x07Toronto2\x06Canada', {})
 
-Create a contact and fill in its state from c.
+Create a contact and copy its state from c.
 
     >>> c_dup = Contact.__new__(Contact)
     >>> c_dup.__setstate__(c.__getstate__())
@@ -152,7 +152,7 @@ attribute.
     >>> c3 = PersistentContact()
     >>> c3.create_time = 1003
     >>> c3.name = u'Snoopy'
-    >>> c3._p_changed = False
+    >>> c3._p_changed = False; c3.__getstate__() and None
 
 Reading an attribute does not set _p_changed.
 
@@ -169,10 +169,30 @@ Writing an attribute sets _p_changed.
 
 Adding to a repeated element sets _p_changed.
 
-    >>> c3._p_changed = False
+    >>> c3._p_changed = False; c3.__getstate__() and None
     >>> c3._p_changed
     False
     >>> c3.guardians.add()
     <keas.pbstate.testclasses_pb2.Ref object at ...>
     >>> c3._p_changed
     True
+    >>> del c3.guardians[0]
+
+A copy of c3 should initially have _p_changed = False; setting an attribute
+should set _p_changed to true.
+
+    >>> c4 = PersistentContact.__new__(PersistentContact)
+    >>> c4.__setstate__(c3.__getstate__())
+    >>> c4._p_changed
+    False
+    >>> c4.name = u'Linus'
+    >>> c4._p_changed
+    True
+
+The tuple returned by __getstate__ is actually a subclass of tuple.  This
+might tell the serializer in ZODB to save the state without pickling.
+
+TODO: __getstate__ returns StateTuple
+
+TODO: mixins
+

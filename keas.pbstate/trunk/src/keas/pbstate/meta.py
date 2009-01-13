@@ -169,6 +169,9 @@ class StateClassMethods(object):
         # Clean up unused references and get the targets mapping.
         used = set(self._protobuf_find_refids(self.protobuf))
         targets = self.protobuf_refs._get_targets(self, used)
+        if hasattr(self, '_p_changed'):
+            # Reset the message's internal _cache_byte_size_dirty flag
+            self.protobuf.ByteSize()
         # Return the state and all reference targets.
         return StateTuple((self.protobuf.SerializeToString(), targets))
 
@@ -184,6 +187,8 @@ class StateClassMethods(object):
         self.protobuf.MergeFromString(data)
         if hasattr(self, '_p_changed'):
             self.protobuf._SetListener(PersistentChangeListener(self))
+            # Reset the message's internal _cache_byte_size_dirty flag
+            self.protobuf.ByteSize()
 
 
 class PersistentChangeListener(object):
