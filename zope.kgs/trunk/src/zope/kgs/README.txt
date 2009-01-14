@@ -370,13 +370,14 @@ Let's now produce the changes:
   PIL
   ===
   <BLANKLINE>
+  No changes or information not found.
   <BLANKLINE>
   ============
   z3c.formdemo
   ============
   <BLANKLINE>
-  1.1.0 (None)
-  ------------
+  1.1.0 (unknown)
+  ---------------
   <BLANKLINE>
   - Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with
     non-object data. Specificically, this small application demonstrates using a
@@ -400,14 +401,14 @@ Let's now produce the changes:
   zope.interface
   ==============
   <BLANKLINE>
-  3.4.1 (None)
-  ------------
+  3.4.1 (unknown)
+  ---------------
   <BLANKLINE>
   Fixed a setup bug that prevented installation from source on systems
   without setuptools.
   <BLANKLINE>
-  3.4.0 (None)
-  ------------
+  3.4.0 (unknown)
+  ---------------
   <BLANKLINE>
   Final release for 3.4.0.
   <BLANKLINE>
@@ -418,21 +419,22 @@ You can also create the changes without an original file, in which case only
 the versions listed in the current KGS are considered.
 
   >>> change.main((cfgFileReal,))
-  ('PIL', '1.1.6')
-  ('z3c.formdemo', '1.1.0')
-  ('zope.component', '3.4.0')
-  ('zope.interface', '3.4.1')
+  Processing ('PIL', '1.1.6')
+  Processing ('z3c.formdemo', '1.1.0')
+  Processing ('zope.component', '3.4.0')
+  Processing ('zope.interface', '3.4.1')
   ===
   PIL
   ===
   <BLANKLINE>
+  No changes or information not found.
   <BLANKLINE>
   ============
   z3c.formdemo
   ============
   <BLANKLINE>
-  1.1.0 (None)
-  ------------
+  1.1.0 (unknown)
+  ---------------
   <BLANKLINE>
   - Feature: New "SQL Message" demo shows how ``z3c.form`` can be used with
     non-object data. Specificically, this small application demonstrates using a
@@ -456,14 +458,14 @@ the versions listed in the current KGS are considered.
   zope.interface
   ==============
   <BLANKLINE>
-  3.4.1 (None)
-  ------------
+  3.4.1 (unknown)
+  ---------------
   <BLANKLINE>
   Fixed a setup bug that prevented installation from source on systems
   without setuptools.
   <BLANKLINE>
-  3.4.0 (None)
-  ------------
+  3.4.0 (unknown)
+  ---------------
   <BLANKLINE>
   Final release for 3.4.0.
   <BLANKLINE>

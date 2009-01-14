@@ -79,8 +79,15 @@ def parseReleases(lines):
             changes = []
             version = mo.group(2)
             release_date = mo.group(4)
-        elif changes is not None and decoration_line.match(line) is None:
-            changes.append(line)
+            continue
+        elif decoration_line.match(line) is not None:
+            continue
+        elif changes is None :
+            continue
+        elif line.startswith('Detailed Documentation'):
+            yield version, release_date, changes
+            break
+        changes.append(line)
 
     # include the last list of changes
     if version is not None and changes is not None:
@@ -154,14 +161,16 @@ def printChanges(changes, output):
         print >> output, name
         print >> output, '=' * len(name)
         print >> output
+        if not versions:
+            print >> output, 'No changes or information not found.'
         for version, release_date, text in versions:
-            s = '%s (%s)' % (version, release_date)
+            s = '%s (%s)' % (version, release_date or 'unknown')
             print >> output, s
             print >> output, '-' * len(s)
-            print >> output, '\n'
+            print >> output
             print >> output, text.strip()
-            print >> output, '\n'
-        print >> output, '\n'
+            print >> output
+        print >> output
 
 
 def main(args=None):
@@ -173,7 +182,8 @@ def main(args=None):
         sys.exit(1)
 
     logger.setLevel(1)
-    logger.addHandler(logging.StreamHandler(sys.stdout))
+    handler = logging.StreamHandler(sys.stdout)
+    logger.addHandler(handler)
 
     currentPackageConfigPath = os.path.abspath(args[0])
     origPackageConfigPath = None
@@ -182,3 +192,4 @@ def main(args=None):
 
     changes = generateChanges(currentPackageConfigPath, origPackageConfigPath)
     printChanges(changes, sys.stdout)
+    logger.removeHandler(handler)
