@@ -362,10 +362,10 @@ Let's now produce the changes:
 
   >>> from zope.kgs import change
   >>> change.main((cfgFileReal, cfgFileRealOrig))
-  ('PIL', '1.1.6')
-  ('z3c.formdemo', '1.1.0')
-  ('zope.component', '3.4.0')
-  ('zope.interface', '3.4.1')
+  Processing ('PIL', '1.1.6')
+  Processing ('z3c.formdemo', '1.1.0')
+  Processing ('zope.component', '3.4.0')
+  Processing ('zope.interface', '3.4.1')
   ===
   PIL
   ===

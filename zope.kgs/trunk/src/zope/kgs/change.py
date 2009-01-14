@@ -26,10 +26,12 @@ Usage: %s current-package-cfg-path [orig-package-cfg-path]
   This is the path to the current controlled packages configuration file.
 
 """
+import logging
 import os
 import pickle
 import re
 import sys
+import xml.parsers.expat
 import xmlrpclib
 import pkg_resources
 import zope.kgs.kgs
@@ -51,6 +53,9 @@ version_line = re.compile(
 
 # decoration_line matches lines to ignore
 decoration_line = re.compile(r"---|===")
+
+# define logger for output
+logger = logging.getLogger('info')
 
 def parseReleases(lines):
     """Parse the list of releases from a CHANGES.txt file.
@@ -114,15 +119,27 @@ def generateChanges(currentPath, origPath):
 
     for package in kgs.packages:
         key = package.name, package.versions[-1]
-        print key
+        logger.info('Processing ' + str(key))
         if key in cache:
             description = cache[key]
         else:
-            data = server.release_data(package.name, package.versions[-1])
-            cache[key] = description = data['description']
-            saveCache('descriptions.dat', cache)
+            # Extract release data from server.
+            try:
+                data = server.release_data(package.name, package.versions[-1])
+            except xml.parsers.expat.ExpatError, err:
+                logger.warn('XML-RPC Error: ' + err.message)
+                continue
 
-        firstVersion = origVersions.get(package.name, package.versions[0])
+            cache[key] = description = data['description']
+
+        if description is None:
+            logger.warn('No description found: ' + str(key))
+            continue
+
+        saveCache('descriptions.dat', cache)
+
+        firstVersion = origVersions.get(
+            package.name, package.versions[0])
         lastVersion = package.versions[-1]
         versions = list(
             extractChanges(description, firstVersion, lastVersion))
@@ -131,20 +148,20 @@ def generateChanges(currentPath, origPath):
     return changes
 
 
-def printChanges(changes):
+def printChanges(changes, output):
     for name, versions in changes:
-        print '=' * len(name)
-        print name
-        print '=' * len(name)
-        print
+        print >> output, '=' * len(name)
+        print >> output, name
+        print >> output, '=' * len(name)
+        print >> output
         for version, release_date, text in versions:
             s = '%s (%s)' % (version, release_date)
-            print s
-            print '-' * len(s)
-            print
-            print text.strip()
-            print
-        print
+            print >> output, s
+            print >> output, '-' * len(s)
+            print >> output, '\n'
+            print >> output, text.strip()
+            print >> output, '\n'
+        print >> output, '\n'
 
 
 def main(args=None):
@@ -155,10 +172,13 @@ def main(args=None):
         print __file__.__doc__ % sys.argv[0]
         sys.exit(1)
 
+    logger.setLevel(1)
+    logger.addHandler(logging.StreamHandler(sys.stdout))
+
     currentPackageConfigPath = os.path.abspath(args[0])
     origPackageConfigPath = None
     if len(args) > 1:
         origPackageConfigPath = os.path.abspath(args[1])
 
     changes = generateChanges(currentPackageConfigPath, origPackageConfigPath)
-    printChanges(changes)
+    printChanges(changes, sys.stdout)
