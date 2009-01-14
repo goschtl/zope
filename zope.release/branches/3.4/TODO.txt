@@ -17,6 +17,32 @@ Release 3.4
 
 * Fix typos in intro text.
 
+* Ability to add release notes.
+
+* Write release notes.
+
+* Write press release.
+
+* A method to upload and link the tar ball release.
+
+Needed Files:
+~~~~~~~~~~~~~
+
+- KGS file
+
+- Release Notes
+
+- Press Release
+
+Generated Files:
+~~~~~~~~~~~~~~~~
+
+- Web site
+
+- PyPI/KGS related files, such as index, versions, etc.
+
+- TAR ball
+
 
 Other
 -----
