@@ -4,6 +4,9 @@ Changes
 0.2.3 (unreleased)
 ------------------
 
+* Allow virtual namespace packages like 'plone' to be used as targets. I think this may need more thought for the 'dependency' case.
+* Allow ZCML <includePlugins> directive to specify a particular ZCML file to try to load from plugins, so that loading of meta, configure and overrides can be split across three ZCML files if desired.
+
 
 0.2.2 (2008-04-22)
 ------------------

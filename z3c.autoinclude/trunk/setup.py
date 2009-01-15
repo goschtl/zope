@@ -25,6 +25,7 @@ setup(name='z3c.autoinclude',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+          'PasteScript',
           'setuptools',
           'zope.dottedname',
 	  'zope.interface',
@@ -33,8 +34,9 @@ setup(name='z3c.autoinclude',
           'zc.buildout',
           # -*- Extra requirements: -*-
       ],
-      extras_require={'test': ['zc.buildout',]},
+      extras_require={'test': ['zc.buildout','zope.testing']},
       entry_points="""
-      # -*- Entry points: -*-
+      [console_scripts]
+      autoinclude-test = z3c.autoinclude.tests.tests:interactive_testing_env
       """,
       )

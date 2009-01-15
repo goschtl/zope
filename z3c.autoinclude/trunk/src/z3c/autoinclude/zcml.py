@@ -2,6 +2,7 @@ from zope.interface import Interface
 from zope.configuration.xmlconfig import include, includeOverrides
 from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
+from zope.schema import TextLine
 
 from z3c.autoinclude.dependency import DependencyFinder
 from z3c.autoinclude.utils import debug_includes
@@ -52,16 +53,26 @@ class IIncludePluginsDirective(Interface):
         required=True,
         )
 
-def includePluginsDirective(_context, package):
+    filename = TextLine(
+        title=u"ZCML filename to look for",
+        description=u"Name of a ZCML file to look for; if omitted, autoinclude will scan for (meta, configure, overrides)",
+        required=False,
+        )
+
+def includePluginsDirective(_context, package, filename=None):
     dist = distributionForPackage(package)
     dotted_name = package.__name__
-    info = PluginFinder(dotted_name).includableInfo(['meta.zcml',
-                                                     'configure.zcml',
-                                                     'overrides.zcml'])
+    if filename is None:
+        zcml_candidates = ['meta.zcml', 'configure.zcml', 'overrides.zcml']
+    else:
+        zcml_candidates = [filename]
+    info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
 
-    includeZCMLGroup(_context, dist, info, 'meta.zcml')
-    includeZCMLGroup(_context, dist, info, 'configure.zcml')
-    includeZCMLGroup(_context, dist, info, 'overrides.zcml', override=True)
+    for filename in zcml_candidates:
+        override = False
+        if filename == 'overrides.zcml':
+            override = True
+        includeZCMLGroup(_context, dist, info, filename, override=override)
 
 import warnings
 def deprecatedAutoIncludeDirective(_context, package):
