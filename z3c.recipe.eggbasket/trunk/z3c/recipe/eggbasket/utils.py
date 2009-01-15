@@ -26,7 +26,6 @@ def install_distributions(distributions, target_dir, links=[],
     """
     from zc.buildout.easy_install import install
     from zc.buildout.easy_install import MissingDistribution
-    log = logging.getLogger('eggbasket.utils')
 
     if use_empty_index:
         # When the temp dir is not writable this throws an OSError,
@@ -66,7 +65,6 @@ def distributions_are_installed_in_dir(distributions, target_dir):
 
 
 def create_source_tarball(egg=None, versionfile='buildout.cfg'):
-    log = logging.getLogger('eggbasket.utils')
     if egg is None:
         # XXX Having a way to read the setup.py in the current
         # directory and get an egg name and perhaps version number
@@ -154,7 +152,6 @@ def create_source_tarball(egg=None, versionfile='buildout.cfg'):
 
 
 def get_windows_egg(package, version, target_dir):
-    log = logging.getLogger('eggbasket.utils')
     base_url = 'http://pypi.python.org/simple/'
     package_page = base_url + package
     try:
