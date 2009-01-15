@@ -1,3 +1,8 @@
+.. Note: when releasing a new version of this package, also update the
+.. versions.cfg templates in grokproject as z3c.recipe.eggbasket is
+.. pinned there.
+
+
 0.4.2 (unreleased)
 ==================
 
