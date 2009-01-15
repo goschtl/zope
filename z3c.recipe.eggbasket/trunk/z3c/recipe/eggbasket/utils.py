@@ -202,3 +202,4 @@ def download_tarball(location, url):
         return False
     tarball.close()
     log.info("Finished downloading.")
+    return True
