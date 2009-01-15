@@ -1,0 +1,664 @@
+Index: src/ZODB/interfaces.py
+===================================================================
+--- src/ZODB/interfaces.py	(revision 93829)
++++ src/ZODB/interfaces.py	(working copy)
+@@ -955,3 +1005,87 @@
+ 
+ class BlobError(Exception):
+     pass
++
++class ISerialFormat(Interface):
++    """A method of serializing objects."""
++
++    def makeSerializer(persistent_id):
++        """Returns a new ISerializer provider.
++
++        The ISerializer must use the given persistent_id function.
++        """
++
++    def makeDeserializer(persistent_load, find_global=None):
++        """Returns a new IDeserializer provider.
++
++        The IDeserializer must use the given persistent_load and find_global
++        functions.  The find_global parameter is optional.
++        """
++
++    def listPersistentReferences(data):
++        """Return the list of persistent references from a serialized object.
++
++        If a format name header was provided when the object was dumped,
++        that header will still be in the data parameter.
++
++        Each reference in the returned list may take any of the forms
++        described in the "Persistent References" section of the ZODB.serialize
++        module documentation, such as a simple oid string,
++        (oid, class meta data), or [reference_type, args].
++        """
++
++class ISerializer(Interface):
++    """Serializes objects."""
++
++    def dump(classmeta, state):
++        """Return serialized data given class metadata and an instance state.
++
++        The implementation of this method must use the persistent_id
++        function (provided by makeDumper()) when storing persistent
++        references.  The persistent_id method both provides an identity
++        for targets and provides a way for the caller to generate a list of
++        persistent references.
++
++        The implementation needs to prepend a serialization format name
++        (in curly braces) unless this format is the default format.
++        """
++
++class IDeserializer(Interface):
++    """Deserializes objects."""
++
++    def getClassAndState(data):
++        """Return an iterator that produces the class metadata, then the state.
++
++        The recommended implementation is to use two yield statements,
++        making the method a generator.
++        """
++
++    def getClassMetadata(data):
++        """Return the class metadata portion of a serialized object.
++
++        If a format name header was provided when the object was dumped,
++        that header will still be in the data parameter.
++
++        The returned value can be any type of class metadata,
++        such as a class object or a tuple of (class, class_args);
++        the first element of that tuple can be a
++        (module_name, class_name) tuple instead of a class.
++
++        Implementations must use the persistent_load and find_global
++        functions provided to makeDeserializer() when they need to
++        resolve persistent references.
++        """
++
++    def getState(data):
++        """Return the state portion of a serialized object.
++
++        If a format name header was provided when the object was dumped,
++        that header will still be in the data parameter.
++
++        At some point, the returned state will be passed, unchanged,
++        to the __setstate__ method of an existing empty object.
++
++        Implementations must use the persistent_load and find_global
++        functions provided to makeDeserializer() when they need to
++        resolve persistent references.
++        """
+Index: src/ZODB/serialize.py
+===================================================================
+--- src/ZODB/serialize.py	(revision 93829)
++++ src/ZODB/serialize.py	(working copy)
+@@ -13,8 +13,9 @@
+ ##############################################################################
+ """Support for ZODB object serialization.
+ 
+-ZODB serializes objects using a custom format based on Python pickles.
+-When an object is unserialized, it can be loaded as either a ghost or
++Multiple types of object serialization are possible.  The default
++serialization uses a custom format based on Python pickles.
++When an object is deserialized, it can be loaded as either a ghost or
+ a real object.  A ghost is a persistent object of the appropriate type
+ but without any state.  The first time a ghost is accessed, the
+ persistence machinery traps access and loads the actual state.  A
+@@ -24,8 +25,8 @@
+ Pickle format
+ -------------
+ 
+-ZODB stores serialized objects using a custom format based on pickle.
+-Each serialized object has two parts: the class description and the
++By default, ZODB stores serialized objects using a custom format based on
++pickle.  Each serialized object has two parts: the class description and the
+ object state.  The class description must provide enough information
+ to call the class's ``__new__`` and create an empty object.  Once the
+ object exists as a ghost, its state is passed to ``__setstate__``.
+@@ -133,16 +134,14 @@
+ 
+ """
+ 
+-import cPickle
+-import cStringIO
+ import logging
+ 
+-
+ from persistent import Persistent
+ from persistent.wref import WeakRefMarker, WeakRef
+ from ZODB import broken
+ from ZODB.broken import Broken
+ from ZODB.POSException import InvalidObjectReference
++from ZODB.format import detect_format, get_format
+ 
+ _oidtypes = str, type(None)
+ 
+@@ -163,17 +162,15 @@
+ class ObjectWriter:
+     """Serializes objects for storage in the database.
+ 
+-    The ObjectWriter creates object pickles in the ZODB format.  It
+-    also detects new persistent objects reachable from the current
+-    object.
++    Objects can specify what serialization format to use, but the
++    default format is the ZODB pickle format.  This class also detects
++    new persistent objects reachable from the current object.
+     """
+ 
+     _jar = None
+ 
+     def __init__(self, obj=None):
+-        self._file = cStringIO.StringIO()
+-        self._p = cPickle.Pickler(self._file, 1)
+-        self._p.persistent_id = self.persistent_id
++        self._dumpers = {}  # {serial format name -> dump method}
+         self._stack = []
+         if obj is not None:
+             self._stack.append(obj)
+@@ -268,16 +265,16 @@
+ 
+         # Most objects are not persistent. The following cheap test
+         # identifies most of them.  For these, we return None,
+-        # signalling that the object should be pickled normally.
++        # signalling that the object should be serialized normally.
+         if not isinstance(obj, (Persistent, type, WeakRef)):
+-            # Not persistent, pickle normally
++            # Not persistent, serialize normally
+             return None
+ 
+         # Any persistent object must have an oid:
+         try:
+             oid = obj._p_oid
+         except AttributeError:
+-            # Not persistent, pickle normally
++            # Not persistent, serialize normally
+             return None
+ 
+         if not (oid is None or isinstance(oid, str)):
+@@ -287,7 +284,7 @@
+             if hasattr(oid, '__get__'):
+                 # The oid is a descriptor.  That means obj is a non-persistent
+                 # class whose instances are persistent, so ...
+-                # Not persistent, pickle normally
++                # Not persistent, serialize normally
+                 return None
+ 
+             if oid is WeakRefMarker:
+@@ -391,39 +388,36 @@
+         if (isinstance(getattr(klass, '_p_oid', 0), _oidtypes)
+               and klass.__module__):
+             # This is a persistent class with a non-empty module.  This
+-            # uses pickle format #3 or #7.
++            # uses class metadata format #3 or #7.
+             klass = klass.__module__, klass.__name__
+             if newargs is None:
+                 meta = klass, None
+             else:
+                 meta = klass, newargs()
+         elif newargs is None:
+-            # Pickle format #1.
++            # Class metadata format #1.
+             meta = klass
+         else:
+-            # Pickle format #2.
++            # Class metadata format #2.
+             meta = klass, newargs()
+ 
+-        return self._dump(meta, obj.__getstate__())
++        state = obj.__getstate__()
+ 
+-    def _dump(self, classmeta, state):
+-        # To reuse the existing cStringIO object, we must reset
+-        # the file position to 0 and truncate the file after the
+-        # new pickle is written.
+-        self._file.seek(0)
+-        self._p.clear_memo()
+-        self._p.dump(classmeta)
+-        self._p.dump(state)
+-        self._file.truncate()
+-        return self._file.getvalue()
++        serial_format_name = getattr(state, 'serial_format', '')
++        dump = self._dumpers.get(serial_format_name)
++        if dump is None:
++            sf = get_format(serial_format_name)
++            dump = sf.makeSerializer(self.persistent_id).dump
++            self._dumpers[serial_format_name] = dump
++        return dump(meta, state)
+ 
+     def __iter__(self):
+         return NewObjectIterator(self._stack)
+ 
+ class NewObjectIterator:
+ 
+-    # The pickler is used as a forward iterator when the connection
+-    # is looking for new objects to pickle.
++    # The ObjectWriter is used as a forward iterator when the connection
++    # is looking for new objects to serialize.
+ 
+     def __init__(self, stack):
+         self._stack = stack
+@@ -448,20 +442,16 @@
+     def _get_class(self, module, name):
+         return self._factory(self._conn, module, name)
+ 
+-    def _get_unpickler(self, pickle):
+-        file = cStringIO.StringIO(pickle)
+-        unpickler = cPickle.Unpickler(file)
+-        unpickler.persistent_load = self._persistent_load
++    def _get_deserializer(self, p):
+         factory = self._factory
+         conn = self._conn
+ 
+         def find_global(modulename, name):
+             return factory(conn, modulename, name)
+ 
+-        unpickler.find_global = find_global
++        sf = detect_format(p)
++        return sf.makeDeserializer(self._persistent_load, find_global)
+ 
+-        return unpickler
+-
+     loaders = {}
+ 
+     def _persistent_load(self, reference):
+@@ -554,9 +544,9 @@
+ 
+         return obj
+ 
+-    def getClassName(self, pickle):
+-        unpickler = self._get_unpickler(pickle)
+-        klass = unpickler.load()
++    def getClassName(self, data):
++        deserializer = self._get_deserializer(data)
++        klass = deserializer.getClassMetadata(data)
+         if isinstance(klass, tuple):
+             klass, args = klass
+             if isinstance(klass, tuple):
+@@ -564,9 +554,10 @@
+                 return "%s.%s" % klass
+         return "%s.%s" % (klass.__module__, klass.__name__)
+ 
+-    def getGhost(self, pickle):
+-        unpickler = self._get_unpickler(pickle)
+-        klass = unpickler.load()
++    def getGhost(self, data):
++        deserializer = self._get_deserializer(data)
++        klass = deserializer.getClassMetadata(data)
++
+         if isinstance(klass, tuple):
+             # Here we have a separate class and args.
+             # This could be an old record, so the class module ne a named
+@@ -590,23 +581,22 @@
+ 
+         return klass.__new__(klass, *args)
+ 
+-    def getState(self, pickle):
+-        unpickler = self._get_unpickler(pickle)
++    def getState(self, data):
++        deserializer = self._get_deserializer(data)
+         try:
+-            unpickler.load() # skip the class metadata
+-            return unpickler.load()
++            return deserializer.getState(data)
+         except EOFError, msg:
+             log = logging.getLogger("ZODB.serialize")
+-            log.exception("Unpickling error: %r", pickle)
++            log.exception("Deserialization error: %r", data)
+             raise
+ 
+-    def setGhostState(self, obj, pickle):
+-        state = self.getState(pickle)
++    def setGhostState(self, obj, p):
++        state = self.getState(p)
+         obj.__setstate__(state)
+ 
+ 
+ def referencesf(p, oids=None):
+-    """Return a list of object ids found in a pickle
++    """Return a list of object ids found in a serialized object.
+ 
+     A list may be passed in, in which case, information is
+     appended to it.
+@@ -615,11 +605,8 @@
+     Weak and multi-database references are not included.
+     """
+ 
+-    refs = []
+-    u = cPickle.Unpickler(cStringIO.StringIO(p))
+-    u.persistent_load = refs
+-    u.noload()
+-    u.noload()
++    sf = detect_format(p)
++    refs = sf.listPersistentReferences(p)
+ 
+     # Now we have a list of referencs.  Need to convert to list of
+     # oids:
+@@ -644,20 +631,17 @@
+     'w': lambda oid: None,
+     }
+ 
+-def get_refs(a_pickle):
+-    """Return oid and class information for references in a pickle
++def get_refs(p):
++    """Return oid and class information for references in a serialized object.
+ 
+     The result of a list of oid and class information tuples.
+     If the reference doesn't contain class information, then the
+     klass information is None.
+     """
+-    
+-    refs = []
+-    u = cPickle.Unpickler(cStringIO.StringIO(a_pickle))
+-    u.persistent_load = refs
+-    u.noload()
+-    u.noload()
+ 
++    sf = detect_format(p)
++    refs = sf.listPersistentReferences(p)
++
+     # Now we have a list of referencs.  Need to convert to list of
+     # oids and class info:
+ 
+Index: src/ZODB/format.py
+===================================================================
+--- src/ZODB/format.py	(revision 0)
++++ src/ZODB/format.py	(revision 0)
+@@ -0,0 +1,130 @@
++##############################################################################
++#
++# Copyright (c) 2009 Zope Corporation and Contributors.
++# All Rights Reserved.
++#
++# This software is subject to the provisions of the Zope Public License,
++# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
++# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
++# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
++# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
++# FOR A PARTICULAR PURPOSE.
++#
++##############################################################################
++"""Support for multiple object serialization formats in ZODB.
++
++This module implements the pickle serialization format, but it is
++possible to register other formats by calling register_format().
++"""
++
++import cPickle
++import cStringIO
++
++from ZODB.interfaces import ISerialFormat, ISerializer, IDeserializer
++from zope.interface import implements
++
++
++class PickleFormat(object):
++    """Implementation of ISerialFormat that reads/writes pickles"""
++    implements(ISerialFormat)
++
++    def makeSerializer(self, persistent_id):
++        return PickleSerializer(persistent_id)
++
++    def makeDeserializer(self, persistent_load, find_global=None):
++        return PickleDeserializer(persistent_load, find_global)
++
++    def listPersistentReferences(self, data):
++        refs = []
++        u = cPickle.Unpickler(cStringIO.StringIO(data))
++        u.persistent_load = refs
++        u.noload()
++        u.noload()
++        return refs
++
++
++class PickleSerializer(object):
++    """Implementation of ISerializer that dumps to pickles"""
++    implements(ISerializer)
++
++    def __init__(self, persistent_id):
++        self._file = cStringIO.StringIO()
++        self._p = cPickle.Pickler(self._file, 1)
++        self._p.persistent_id = persistent_id
++
++    def dump(self, classmeta, state):
++        # To reuse the existing cStringIO object, we must reset
++        # the file position to 0 and truncate the file after the
++        # new pickle is written.
++        self._file.seek(0)
++        self._p.clear_memo()
++        self._p.dump(classmeta)
++        self._p.dump(state)
++        self._file.truncate()
++        return self._file.getvalue()
++
++
++class PickleDeserializer(object):
++    """Implementation of IDeserializer that loads from a pair of pickles"""
++    implements(IDeserializer)
++
++    def __init__(self, persistent_load, find_global=None):
++        self.persistent_load = persistent_load
++        self.find_global = find_global
++
++    def getClassAndState(self, data):
++        unpickler = cPickle.Unpickler(cStringIO.StringIO(data))
++        unpickler.persistent_load = self.persistent_load
++        find_global = self.find_global
++        if find_global is not None:
++            unpickler.find_global = find_global
++        yield unpickler.load()
++        yield unpickler.load()
++
++    def getClassMetadata(self, data):
++        # load only the first pickle
++        return self.getClassAndState(data).next()
++
++    def getState(self, data):
++        i = self.getClassAndState(data)
++        i.next()
++        return i.next()
++
++# serial_formats: {name -> ISerialFormat provider}.
++serial_formats = {'': PickleFormat()}
++
++def register_format(name, impl):
++    """Register a serialization format.
++
++    name must be unique and impl must be an object that provides
++    ISerialFormat.
++    """
++    if name in serial_formats:
++        if serial_formats[name] is impl:
++            return
++        raise KeyError("Format %r is already registered" % name)
++    if not ISerialFormat.providedBy(impl):
++        raise ValueError("Object %r does not provide ISerialFormat" % impl)
++    serial_formats[name] = impl
++
++def detect_format(data):
++    """Detect the format of a serialized object and return an ISerialFormat.
++
++    Looks for a serial format name enclosed in curly braces at the
++    beginning of the data.  Note that the opening curly brace character
++    is not currently a Python pickle opcode, so this should not conflict
++    with any Python pickle.
++
++    Returns an object that provides ISerialFormat.
++    """
++    if data.startswith('{'):
++        pos = data.find('}', 1)
++        if pos < 0:
++            raise ValueError('Serialized object has incomplete format name')
++        sf_name = data[1:pos]
++        return serial_formats[sf_name]
++    return serial_formats['']
++
++def get_format(name):
++    """Return the named serial format."""
++    return serial_formats[name]
+Index: src/ZODB/utils.py
+===================================================================
+--- src/ZODB/utils.py	(revision 93829)
++++ src/ZODB/utils.py	(working copy)
+@@ -17,14 +17,13 @@
+ import struct
+ from struct import pack, unpack
+ from binascii import hexlify, unhexlify
+-import cPickle as pickle
+-from cStringIO import StringIO
+ import weakref
+ import warnings
+ from tempfile import mkstemp
+ import os
+ 
+ from persistent.TimeStamp import TimeStamp
++from ZODB.format import detect_format
+ 
+ __all__ = ['z64',
+            'p64',
+@@ -203,10 +202,14 @@
+         return modname, classname
+ 
+     # Else there are a bunch of other possible formats.
+-    f = StringIO(data)
+-    u = pickle.Unpickler(f)
++    def persistent_load(ref):
++        raise NotImplementedError(
++            "persistent_load not implemented in get_pickle_metadata")
++
++    sf = detect_format(data)
++    deserializer = sf.makeDeserializer(persistent_load)
+     try:
+-        class_info = u.load()
++        class_info = deserializer.getClassMetadata(data)
+     except Exception, err:
+         print "Error", err
+         return '', ''
+Index: src/ZODB/ExportImport.py
+===================================================================
+--- src/ZODB/ExportImport.py	(revision 93829)
++++ src/ZODB/ExportImport.py	(working copy)
+@@ -15,8 +15,6 @@
+ 
+ import os
+ 
+-from cStringIO import StringIO
+-from cPickle import Pickler, Unpickler
+ from tempfile import TemporaryFile
+ import logging
+ 
+@@ -25,6 +23,7 @@
+ from ZODB.POSException import ExportError, POSKeyError
+ from ZODB.serialize import referencesf
+ from ZODB.utils import p64, u64, cp, mktemp
++from ZODB.format import detect_format
+ 
+ logger = logging.getLogger('ZODB.ExportImport')
+ 
+@@ -166,18 +165,12 @@
+                 f.seek(-len(blob_begin_marker),1)
+                 blob_filename = None
+ 
+-            pfile = StringIO(data)
+-            unpickler = Unpickler(pfile)
+-            unpickler.persistent_load = persistent_load
++            sf = detect_format(data)
++            d = sf.makeDeserializer(persistent_load)
++            metadata, state = d.getClassAndState(data)
++            s = sf.makeSerializer(persistent_id)
++            data = s.dump(metadata, state)
+ 
+-            newp = StringIO()
+-            pickler = Pickler(newp, 1)
+-            pickler.persistent_id = persistent_id
+-
+-            pickler.dump(unpickler.load())
+-            pickler.dump(unpickler.load())
+-            data = newp.getvalue()
+-
+             if blob_filename is not None:
+                 self._storage.storeBlob(oid, None, data, blob_filename, 
+                                         version, transaction)
+Index: src/ZODB/ConflictResolution.py
+===================================================================
+--- src/ZODB/ConflictResolution.py	(revision 93829)
++++ src/ZODB/ConflictResolution.py	(working copy)
+@@ -13,14 +13,13 @@
+ ##############################################################################
+ 
+ import logging
+-from cStringIO import StringIO
+-from cPickle import Unpickler, Pickler
+ from pickle import PicklingError
+ 
+ import zope.interface
+ 
+ from ZODB.POSException import ConflictError
+ from ZODB.loglevels import BLATHER
++from ZODB.format import detect_format
+ 
+ logger = logging.getLogger('ZODB.ConflictResolution')
+ 
+@@ -53,12 +52,9 @@
+ 
+ def state(self, oid, serial, prfactory, p=''):
+     p = p or self.loadSerial(oid, serial)
+-    file = StringIO(p)
+-    unpickler = Unpickler(file)
+-    unpickler.find_global = find_global
+-    unpickler.persistent_load = prfactory.persistent_load
+-    unpickler.load() # skip the class tuple
+-    return unpickler.load()
++    sf = detect_format(p)
++    deserializer = sf.makeDeserializer(prfactory.persistent_load, find_global)
++    return deserializer.getState(p)
+ 
+ class IPersistentReference(zope.interface.Interface):
+     '''public contract for references to persistent objects from an object
+@@ -170,16 +166,16 @@
+     return object.data
+ 
+ _unresolvable = {}
+-def tryToResolveConflict(self, oid, committedSerial, oldSerial, newpickle,
++def tryToResolveConflict(self, oid, committedSerial, oldSerial, newdata,
+                          committedData=''):
+     # class_tuple, old, committed, newstate = ('',''), 0, 0, 0
+     try:
+         prfactory = PersistentReferenceFactory()
+-        file = StringIO(newpickle)
+-        unpickler = Unpickler(file)
+-        unpickler.find_global = find_global
+-        unpickler.persistent_load = prfactory.persistent_load
+-        meta = unpickler.load()
++        sf = detect_format(newdata)
++        deserializer = sf.makeDeserializer(
++            prfactory.persistent_load, find_global)
++        newdata_iter = deserializer.getClassAndState(newdata)
++        meta = newdata_iter.next()
+         if isinstance(meta, tuple):
+             klass = meta[0]
+             newargs = meta[1] or ()
+@@ -192,7 +188,7 @@
+         if klass in _unresolvable:
+             return None
+ 
+-        newstate = unpickler.load()
++        newstate = newdata_iter.next()
+         inst = klass.__new__(klass, *newargs)
+ 
+         try:
+@@ -206,12 +202,8 @@
+ 
+         resolved = resolve(old, committed, newstate)
+ 
+-        file = StringIO()
+-        pickler = Pickler(file,1)
+-        pickler.persistent_id = persistent_id
+-        pickler.dump(meta)
+-        pickler.dump(resolved)
+-        return file.getvalue(1)
++        serializer = sf.makeSerializer(persistent_id)
++        return serializer.dump(meta, resolved)
+     except (ConflictError, BadClassName):
+         return None
+     except:
