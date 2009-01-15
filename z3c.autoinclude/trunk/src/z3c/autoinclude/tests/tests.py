@@ -9,7 +9,8 @@ projects_dir = os.path.dirname(__file__)
 # to this list if you want it to be available for import in doctests!
 test_packages = ['APackage', 'BCPackage', 'XYZPackage',
                  'SiblingPackage', 'BasePackage', 'FooPackage',
-                 'base2', 'base2_plug', 'TestDirective']
+                 'base2', 'base2_plug', 'TestDirective',
+                 'enolp.ppa.foo', 'enolp.ppa.bar']
 
 
 from zc.buildout.easy_install import install
@@ -33,6 +34,17 @@ def install_projects(projects, target_dir):
         dist.activate()
     return new_working_set
 
+
+def interactive_testing_env():
+    """ an interactive debugger with the testing environment set up for free """
+
+    import tempfile
+    target_dir = tempfile.mkdtemp('.z3c.autoinclude.test-installs')
+    install_projects(test_packages, target_dir)
+    import code
+    code.interact()
+
+
 def testSetUp(test):
     """
     install test packages so that they can be imported
@@ -40,9 +52,8 @@ def testSetUp(test):
     """
     
     testing.buildoutSetUp(test)
-
     import tempfile
-    target_dir = tempfile.mkdtemp('.z3c.autoinclude.test-installs')    
+    target_dir = tempfile.mkdtemp('.z3c.autoinclude.test-installs')
     install_projects(test_packages, target_dir)
 
 
@@ -60,8 +71,8 @@ def test_suite():
 
     from pprint import pprint
     suite = doctest.DocFileSuite('../utils.txt',
-                                 '../dependency.txt',
-                                 '../plugin.txt',
+#                                 '../dependency.txt',
+#                                 '../plugin.txt',
                                  setUp=testSetUp,
                                  tearDown=testTearDown,
                                  globs={'pprint':pprint},
@@ -70,4 +81,7 @@ def test_suite():
     return unittest.TestSuite((suite,))
 
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    import zope.testing.testrunner
+    zope.testing.testrunner.run([
+  '--test-path', '/home/egj/z3c.autoinclude/src',
+  ])

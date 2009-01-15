@@ -65,6 +65,11 @@ def distributionForPackage(package):
     return distributionForDottedName(package_dottedname)
 
 def distributionForDottedName(package_dottedname):
+    """
+    This function is ugly and probably slow.
+    It needs to be heavily commented, it needs narrative doctests, and it needs some broad explanation.
+    Then it needs to be profiled.
+    """
     valid_dists_for_package = []
     for path in sys.path:
         dists = find_distributions(path, True)
@@ -73,14 +78,25 @@ def distributionForDottedName(package_dottedname):
                 continue
             packages = find_packages(dist.location) # TODO: don't use setuptools here; look for ``top_level.txt`` metadata instead
             ns_packages = namespaceDottedNames(dist)
-            if package_dottedname in ns_packages:
-                continue
+            #if package_dottedname in ns_packages:
+                #continue
             if package_dottedname not in packages:
                 continue
-            valid_dists_for_package.append(dist)
+            valid_dists_for_package.append((dist, ns_packages))
     assert valid_dists_for_package, "No distributions found for package %s." % package_dottedname
-    assert len(valid_dists_for_package) == 1, "Multiple distributions found for package %s; z3c.autoinclude refuses to guess." % package_dottedname
-    return valid_dists_for_package[0]
+    
+    if len(valid_dists_for_package) > 1:
+        non_namespaced_dists = filter(lambda x: len(x[1]) is 0, valid_dists_for_package)
+        if len(non_namespaced_dists) == 0:
+            # if we only have namespace packages at this point, 'foo.bar' and 'foo.baz', while looking for 'foo',
+            # we can just select the first because the choice has no effect
+            return valid_dists_for_package[0][0]
+
+        valid_dists_for_package = non_namespaced_dists ### if we have packages 'foo', 'foo.bar', and 'foo.baz', the correct one is 'foo'.
+        assert len(non_namespaced_dists) == 1          ### we really are in trouble if we get into a situation with more than one
+                                                       ### non-namespaced package at this point.
+
+    return valid_dists_for_package[0][0]
 
 def namespaceDottedNames(dist):
     """

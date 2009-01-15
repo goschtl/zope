@@ -22,6 +22,13 @@ package in the environment::
     >>> distributionForPackage(base2.plug)
     base2-plug 0.0 (...base2_plug-0.0...egg)
 
+If you have a virtual package (a namespace package that exists only
+by having been extended by nested packages) it should find a package::
+
+    >>> import enolp
+    >>> distributionForPackage(enolp)
+    enolp.ppa.foo 0.1 (...enolp.ppa.foo-0.1...egg)
+
 While we're at it, it should also find the correct distribution for
 packages whose distribution name has no bearing on the name of the
 package contained within it::
