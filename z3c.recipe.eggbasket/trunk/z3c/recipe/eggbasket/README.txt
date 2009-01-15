@@ -150,7 +150,7 @@ Next we will specify an egg but refer to a bad url::
     Installing basket.
     Couldn't find index page for 'orange' (maybe misspelled?)
     Getting distribution for 'orange'.
-    basket: Distributions are not installed. A tarball will be downloaded.
+    basket: Not all distributions are installed. A tarball will be downloaded.
     basket: Downloading http://nowhere ...
     basket: Url not found: http://nowhere.
     <BLANKLINE>
@@ -184,7 +184,7 @@ We make it available on a url and use it in our buildout::
     Installing basket.
     Couldn't find index page for 'orange' (maybe misspelled?)
     Getting distribution for 'orange'.
-    basket: Distributions are not installed. A tarball will be downloaded.
+    basket: Not all distributions are installed. A tarball will be downloaded.
     basket: Downloading .../tarserver/colours.tgz ...
     basket: Finished downloading.
     basket: Extracting tarball contents...

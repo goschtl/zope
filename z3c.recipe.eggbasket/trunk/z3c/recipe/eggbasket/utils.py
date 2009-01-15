@@ -10,7 +10,7 @@ import urllib
 # XXX We may want to add command line argument handling.
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)-5s %(name)-12s %(message)s')
-log = logging.getLogger('eggbasket.utils')
+log = logging.getLogger('basket')
 
 
 def install_distributions(distributions, target_dir, links=[],
