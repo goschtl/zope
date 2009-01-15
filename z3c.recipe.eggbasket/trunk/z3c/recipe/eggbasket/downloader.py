@@ -6,10 +6,10 @@ import tempfile
 import shutil
 import os
 import tarfile
-import urllib
 from zc.recipe.egg import Eggs
 from z3c.recipe.eggbasket.utils import distributions_are_installed_in_dir
 from z3c.recipe.eggbasket.utils import install_distributions
+from z3c.recipe.eggbasket.utils import download_tarball
 
 
 class Downloader(Eggs):
@@ -33,33 +33,59 @@ class Downloader(Eggs):
 
         if not distributions_are_installed_in_dir(distributions,
                                                   options['eggs-directory']):
-            log.info("Distributions are not installed. "
+            log.info("Not all distributions are installed. "
                      "A tarball will be downloaded.")
             tarball_name = url.split('/')[-1]
-            log.info("Downloading %s ..." % url)
 
-            # Make temporary files and directories.
+            # If the user has specified a download directory (in
+            # ~/.buildout/default.cfg probably) we will want to use
+            # it.
+            download_dir = self.buildout['buildout'].get('download-directory')
+            if download_dir:
+                if not os.path.exists(download_dir):
+                    os.mkdir(download_dir)
+                if not os.path.isdir(download_dir):
+                    # It exists but is not a file: we are not going to
+                    # use the download dir.
+                    download_dir = None
+
+            keep_tarball = False
+            if download_dir:
+                keep_tarball = True
+                tarball_location = os.path.join(download_dir, tarball_name)
+                if os.path.exists(tarball_location):
+                    log.info("Using already downloaded %s" % tarball_location)
+                else:
+                    result = download_tarball(tarball_location, url)
+                    if not result:
+                        # Give up.
+                        return tuple()
+
+            if not keep_tarball:
+                # Make temporary file.
+                try:
+                    filenum, tarball_location = tempfile.mkstemp()
+                except:
+                    log.error("Could not create temporary tarball file")
+                    # Reraise exception
+                    raise
+                result = download_tarball(tarball_location, url)
+                if not result:
+                    return tuple()
+
+            # We have the tarball.  Now we make a temporary extraction
+            # directory.
             try:
                 extraction_dir = tempfile.mkdtemp()
-                filenum, temp_tarball_name = tempfile.mkstemp()
             except:
-                log.error("Could not create temporary file or directory")
+                log.error("Could not create temporary extraction directory")
                 # Reraise exception
                 raise
-            try:
-                # Note: 'b' mode needed for Windows.
-                tarball = open(temp_tarball_name, 'wb')
-                try:
-                    tarball.write(urllib.urlopen(url).read())
-                except IOError:
-                    log.error("Url not found: %s." % url)
-                    return tuple()
-                tarball.close()
-                log.info("Finished downloading.")
-                log.info("Extracting tarball contents...")
 
+            try:
+                log.info("Extracting tarball contents...")
                 try:
-                    tf = tarfile.open(temp_tarball_name, 'r:gz')
+                    tf = tarfile.open(tarball_location, 'r:gz')
                 except tarfile.ReadError, e:
                     # Likely the download location is wrong and gives a 404.
                     # Or the tarball is not zipped.
@@ -82,7 +108,8 @@ class Downloader(Eggs):
                     log.error("Failed to install required eggs with the tar "
                               "ball.")
             finally:
-                os.unlink(temp_tarball_name)
+                if not keep_tarball:
+                    os.unlink(tarball_location)
                 shutil.rmtree(extraction_dir)
 
         # Return files that were created by the recipe. The buildout

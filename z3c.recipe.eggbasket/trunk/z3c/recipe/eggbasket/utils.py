@@ -10,6 +10,7 @@ import urllib
 # XXX We may want to add command line argument handling.
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)-5s %(name)-12s %(message)s')
+log = logging.getLogger('eggbasket.utils')
 
 
 def install_distributions(distributions, target_dir, links=[],
@@ -191,3 +192,16 @@ def get_windows_egg(package, version, target_dir):
         else:
             log.info("Finished downloading.")
             # TODO: check md5hash
+
+
+def download_tarball(location, url):
+    # Note: 'b' mode needed for Windows.
+    tarball = open(location, 'wb')
+    log.info("Downloading %s ..." % url)
+    try:
+        tarball.write(urllib.urlopen(url).read())
+    except IOError:
+        log.error("Url not found: %s." % url)
+        return False
+    tarball.close()
+    log.info("Finished downloading.")

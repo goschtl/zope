@@ -6,7 +6,9 @@
 0.4.2 (unreleased)
 ==================
 
-* ...
+* When the download-directory has been set in buildout.cfg or in
+  .buildout/default.cfg in the user's home directory, download the
+  tarball there and do not throw it away afterwards.
 
 0.4.1 (2009-01-12)
 ==================
