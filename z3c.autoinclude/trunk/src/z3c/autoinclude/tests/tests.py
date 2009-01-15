@@ -71,8 +71,8 @@ def test_suite():
 
     from pprint import pprint
     suite = doctest.DocFileSuite('../utils.txt',
-#                                 '../dependency.txt',
-#                                 '../plugin.txt',
+                                 '../dependency.txt',
+                                 '../plugin.txt',
                                  setUp=testSetUp,
                                  tearDown=testTearDown,
                                  globs={'pprint':pprint},
