@@ -1,6 +1,11 @@
 Goal of this recipe
 ===================
 
+.. Note: the tests for this package may fail when you use the buildout
+.. generated bin/test command but pass when you run 'python setup.py
+.. test'.  Also, all tests pass for python 2.4 but there is a failure
+.. with python 2.5.  Fixing these differences would be appreciated.
+
 You have an egg (for example ``grok``) that has a lot of dependencies.
 Other eggs that it depends on are found on the cheeseshop, on
 sourceforge, and perhaps on some more servers.  When even one of these
