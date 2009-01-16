@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name='z3c.relationfieldui',
-    version='0.3dev',
+    version='0.3',
     description="A widget for z3c.relationfield.",
     long_description=long_description,
     classifiers=[],
