@@ -103,9 +103,15 @@ Let's take a look at the relation widget now::
   >>> from zope.publisher.browser import TestRequest
   >>> from z3c.relationfieldui import RelationWidget
   >>> request = TestRequest()
-  >>> widget = RelationWidget(IItem['rel'], request)
+  >>> field = IItem['rel']
+  >>> class Context(object):
+  ...    pass
+  >>> obj = Context()
+  >>> obj.__name__ = 'something'
+  >>> field.context = obj
+  >>> widget = RelationWidget(field, request)
   >>> print widget()
-  <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value=""  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org')" type="button" value="get relation" />
+  <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value=""  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org?from_attribute=rel&amp;from_path=something')" type="button" value="get relation" />
 
 Relation display widget
 =======================

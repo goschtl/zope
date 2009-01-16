@@ -27,6 +27,11 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
         explorer_url = component.getMultiAdapter((self.context.context,
                                                  self.request),
                                                  name="explorerurl")()
+        from_attribute = self.context.__name__
+        object_path = component.getUtility(IObjectPath)
+        from_path = object_path.path(self.context.context)
+        explorer_url += '?from_attribute=%s&from_path=%s' % (
+            from_attribute, from_path)
         result += renderElement(
             'input', type='button', value='get relation',
             onclick="Z3C.relation.popup(this.previousSibling, '%s')" %
