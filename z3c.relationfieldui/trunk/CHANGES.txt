@@ -1,8 +1,13 @@
 CHANGES
 *******
 
-0.3 (unreleased)
-==================
+0.4 (unreleased)
+================
+
+* ...
+
+0.3 (2009-01-16)
+================
 
 * Pass along ``from_attribute`` and ``from_path`` URL parameters to
   explorer_url.
