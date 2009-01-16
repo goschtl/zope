@@ -53,26 +53,28 @@ class IIncludePluginsDirective(Interface):
         required=True,
         )
 
-    filename = TextLine(
+    file = TextLine(
         title=u"ZCML filename to look for",
         description=u"Name of a ZCML file to look for; if omitted, autoinclude will scan for (meta, configure, overrides)",
         required=False,
         )
 
-def includePluginsDirective(_context, package, filename=None):
+def includePluginsDirective(_context, package, file=None):
     dist = distributionForPackage(package)
     dotted_name = package.__name__
-    if filename is None:
+    if file is None:
         zcml_candidates = ['meta.zcml', 'configure.zcml', 'overrides.zcml']
     else:
-        zcml_candidates = [filename]
+        zcml_candidates = [file]
     info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
 
-    for filename in zcml_candidates:
+    for file in zcml_candidates:
         override = False
-        if filename == 'overrides.zcml':
+        if file == 'overrides.zcml':
+            # XXX this is really a hack
+            # parallel to <includeOverrides> this should be a separate directive <includePluginsOverrides>
             override = True
-        includeZCMLGroup(_context, dist, info, filename, override=override)
+        includeZCMLGroup(_context, dist, info, file, override=override)
 
 import warnings
 def deprecatedAutoIncludeDirective(_context, package):
