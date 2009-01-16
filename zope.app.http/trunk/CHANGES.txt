@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+3.4.2 (unreleased)
+------------------
+
+- Add a couple of tests to the OPTIONS verb.
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis and get
+  rid of zope.app.zapi as a dependency. See bug LP219302.
+
+
 3.4.1 (2007-10-31)
 ------------------
 
