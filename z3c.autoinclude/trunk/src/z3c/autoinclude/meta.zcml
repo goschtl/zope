@@ -3,27 +3,16 @@
     xmlns:meta="http://namespaces.zope.org/meta">
 
   <meta:directives namespace="http://namespaces.zope.org/zope">
+
     <meta:directive
         name="includeDependencies"
-        schema=".zcml.IAutoIncludeDirective"
-        handler=".zcml.autoIncludeDirective"
+        schema=".zcml.IIncludeDependenciesDirective"
+        handler=".zcml.includeDependenciesDirective"
         />
     <meta:directive
         name="includeDependenciesOverrides"
-        schema=".zcml.IAutoIncludeDirective"
-        handler=".zcml.autoIncludeOverridesDirective"
-        />
-
-    <!-- deprecated -->
-    <meta:directive
-        name="autoinclude"
-        schema=".zcml.IAutoIncludeDirective"
-        handler=".zcml.deprecatedAutoIncludeDirective"
-        />
-    <meta:directive
-        name="autoincludeOverrides"
-        schema=".zcml.IAutoIncludeDirective"
-        handler=".zcml.deprecatedAutoIncludeOverridesDirective"
+        schema=".zcml.IIncludeDependenciesDirective"
+        handler=".zcml.includeDependenciesOverridesDirective"
         />
 
     <meta:directive
@@ -31,6 +20,11 @@
         schema=".zcml.IIncludePluginsDirective"
         handler=".zcml.includePluginsDirective"
         />
+    <meta:directive
+        name="includePluginsOverrides"
+	schema=".zcml.IIncludePluginsDirective"
+	handler=".zcml.includePluginsOverridesDirective"
+	/>
 
   </meta:directives>
 

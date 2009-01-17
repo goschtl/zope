@@ -42,6 +42,7 @@ def autoIncludeDirective(_context, package):
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
 
+
 class IIncludePluginsDirective(Interface):
     """Auto-include any ZCML in the dependencies of this package."""
     
@@ -55,7 +56,7 @@ class IIncludePluginsDirective(Interface):
 
     file = TextLine(
         title=u"ZCML filename to look for",
-        description=u"Name of a ZCML file to look for; if omitted, autoinclude will scan for (meta, configure, overrides)",
+        description=u"Name of a particular ZCML file to look for; if omitted, autoinclude will scan for standard filenames",
         required=False,
         )
 
@@ -63,25 +64,23 @@ def includePluginsDirective(_context, package, file=None):
     dist = distributionForPackage(package)
     dotted_name = package.__name__
     if file is None:
-        zcml_candidates = ['meta.zcml', 'configure.zcml', 'overrides.zcml']
+        zcml_candidates = ['meta.zcml', 'configure.zcml']
     else:
         zcml_candidates = [file]
     info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
 
     for file in zcml_candidates:
-        override = False
-        if file == 'overrides.zcml':
-            # XXX this is really a hack
-            # parallel to <includeOverrides> this should be a separate directive <includePluginsOverrides>
-            override = True
-        includeZCMLGroup(_context, dist, info, file, override=override)
+        includeZCMLGroup(_context, dist, info, file)
 
-import warnings
-def deprecatedAutoIncludeDirective(_context, package):
-    warnings.warn("The <autoinclude> directive is deprecated and will be removed in z3c.autoinclude 0.3. Please use <includeDependencies> instead.", DeprecationWarning, stacklevel=2)
-    autoIncludeDirective(_context, package)
+def includePluginsOverridesDirective(_context, package, file=None):
+    dist = distributionForPackage(package)
+    dotted_name = package.__name__
+    if file is None:
+        zcml_candidates = ['overrides.zcml']
+    else:
+        zcml_candidates = [file]
+    info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
 
-def deprecatedAutoIncludeOverridesDirective(_context, package):
-    warnings.warn("The <autoincludeOverrides> directive is deprecated and will be removed in z3c.autoinclude 0.3. Please use <includeDependenciesOverrides> instead.", DeprecationWarning, stacklevel=2)
-    autoIncludeOverridesDirective(_context, package)
-
+    for file in zcml_candidates:
+        includeZCMLGroup(_context, dist, info, file, override=True)
+    
