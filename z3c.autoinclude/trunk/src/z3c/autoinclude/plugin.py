@@ -23,11 +23,9 @@ class PluginFinder(DistributionManager):
 
 
 def find_plugins(dotted_name):
-    plugins = []
     for ep in iter_entry_points('z3c.autoinclude.plugin'):
         if ep.module_name == dotted_name:
-            plugins.append(ep.dist)
-    return plugins
+            yield ep.dist
 
 def zcml_to_include(dotted_name, zcmlgroups=None):
     if zcmlgroups is None:
