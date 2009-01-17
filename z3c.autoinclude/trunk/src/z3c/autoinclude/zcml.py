@@ -57,36 +57,40 @@ class IIncludePluginsDirective(Interface):
     package = GlobalObject(
         title=u"Package to auto-include for",
         description=u"""
-        Auto-include all dependencies of this package.
+        Auto-include all plugins to this package.
         """,
         required=True,
         )
 
     file = TextLine(
         title=u"ZCML filename to look for",
-        description=u"Name of a particular ZCML file to look for; if omitted, autoinclude will scan for standard filenames",
+        description=u"""
+        Name of a particular ZCML file to look for.
+        If omitted, autoinclude will scan for standard filenames
+        (e.g. meta.zcml, configure.zcml, overrides.zcml)
+        """,
         required=False,
         )
 
 def includePluginsDirective(_context, package, file=None):
     dotted_name = package.__name__
     if file is None:
-        zcml_candidates = ['meta.zcml', 'configure.zcml']
+        zcml_to_look_for = ['meta.zcml', 'configure.zcml']
     else:
-        zcml_candidates = [file]
-    info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
+        zcml_to_look_for = [file]
+    info = PluginFinder(dotted_name).includableInfo(zcml_to_look_for)
 
-    for filename in zcml_candidates:
+    for filename in zcml_to_look_for:
         includeZCMLGroup(_context, info, filename)
 
 def includePluginsOverridesDirective(_context, package, file=None):
     dotted_name = package.__name__
     if file is None:
-        zcml_candidates = ['overrides.zcml']
+        zcml_to_look_for = ['overrides.zcml']
     else:
-        zcml_candidates = [file]
-    info = PluginFinder(dotted_name).includableInfo(zcml_candidates)
+        zcml_to_look_for = [file]
+    info = PluginFinder(dotted_name).includableInfo(zcml_to_look_for)
 
-    for filename in zcml_candidates:
+    for filename in zcml_to_look_for:
         includeZCMLGroup(_context, info, filename, override=True)
     
