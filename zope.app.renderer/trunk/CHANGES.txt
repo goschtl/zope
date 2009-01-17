@@ -11,6 +11,10 @@ CHANGES
   Instead, use publish_parts and join needed parts in the ``render``
   method of the renderer itself.
 
+- Removed deprecated meta.zcml stuff and zpkg stuff.
+
+- Replaced __used_for__ with zope.component.adapts calls.
+
 3.4.0 (2007-10-27)
 ------------------
 

@@ -19,8 +19,10 @@ __docformat__ = 'restructuredtext'
 
 import cgi
 
+from zope.component import adapts
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 from zope.app.renderer.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
@@ -47,7 +49,7 @@ class PlainTextToHTMLRenderer(BrowserView):
       u'I hear that 1 &gt; 2.<br />\n'
     """
     implements(IHTMLRenderer)
-    __used_for__ = IPlainTextSource
+    adapts(IPlainTextSource, IBrowserRequest)
 
     def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"

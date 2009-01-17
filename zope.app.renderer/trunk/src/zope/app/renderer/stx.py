@@ -19,10 +19,12 @@ __docformat__ = 'restructuredtext'
 
 import re
 
+from zope.component import adapts
 from zope.interface import implements
 from zope.structuredtext.document import Document
 from zope.structuredtext.html import HTML
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 from zope.app.renderer.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
@@ -58,7 +60,7 @@ class StructuredTextToHTMLRenderer(BrowserView):
       u'<p>This is \xc3\x9c.</p>\n'
     """
     implements(IHTMLRenderer)
-    __used_for__ = IStructuredTextSource
+    adapts(IStructuredTextSource, IBrowserRequest)
 
     def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"

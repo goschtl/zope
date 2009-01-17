@@ -19,8 +19,10 @@ __docformat__ = 'restructuredtext'
 
 import docutils.core
 
+from zope.component import adapts
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 from zope.app.renderer.i18n import ZopeMessageFactory as _
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
@@ -61,7 +63,7 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
 
 
     implements(IHTMLRenderer)
-    __used_for__ = IReStructuredTextSource
+    adapts(IReStructuredTextSource, IBrowserRequest)
 
     def render(self, settings_overrides={}):
         """See zope.app.interfaces.renderer.IHTMLRenderer
