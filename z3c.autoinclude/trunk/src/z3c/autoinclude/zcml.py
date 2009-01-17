@@ -2,7 +2,7 @@ from zope.interface import Interface
 from zope.configuration.xmlconfig import include, includeOverrides
 from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
-from zope.schema import TextLine
+from zope.schema import BytesLine
 
 from z3c.autoinclude.dependency import DependencyFinder
 from z3c.autoinclude.utils import distributionForPackage
@@ -62,7 +62,7 @@ class IIncludePluginsDirective(Interface):
         required=True,
         )
 
-    file = TextLine(
+    file = BytesLine(
         title=u"ZCML filename to look for",
         description=u"""
         Name of a particular ZCML file to look for.
@@ -71,6 +71,7 @@ class IIncludePluginsDirective(Interface):
         """,
         required=False,
         )
+
 
 def includePluginsDirective(_context, package, file=None):
     dotted_name = package.__name__
@@ -93,4 +94,3 @@ def includePluginsOverridesDirective(_context, package, file=None):
 
     for filename in zcml_to_look_for:
         includeZCMLGroup(_context, info, filename, override=True)
-    
