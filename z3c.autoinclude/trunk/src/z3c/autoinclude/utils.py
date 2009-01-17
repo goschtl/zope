@@ -1,6 +1,5 @@
 import os
 from pkg_resources import find_distributions
-from setuptools import find_packages
 import sys
 from zope.dottedname.resolve import resolve
 
@@ -80,7 +79,7 @@ def distributionForDottedName(package_dottedname):
         for dist in dists:
             if not isUnzippedEgg(dist.location):
                 continue
-            packages = find_packages(dist.location) # TODO: don't use setuptools here; look for ``top_level.txt`` metadata instead
+            packages = find_packages(dist.location)
             ns_packages = namespaceDottedNames(dist)
             #if package_dottedname in ns_packages:
                 #continue
@@ -113,7 +112,7 @@ def namespaceDottedNames(dist):
     except KeyError:
         ns_dottednames = []
     return ns_dottednames
-
+    
 def isUnzippedEgg(path):
     """
     Check whether a filesystem path points to an unzipped egg; z3c.autoinclude
@@ -122,3 +121,33 @@ def isUnzippedEgg(path):
     location of a distribution object.
     """
     return os.path.isdir(path)
+
+### cargo-culted from setuptools 0.6c9's __init__.py;
+#   importing setuptools is unsafe, but i can't find any
+#   way to get the information that find_packages provides
+#   using pkg_resources and i can't figure out a way to
+#   avoid needing it.
+from distutils.util import convert_path
+def find_packages(where='.', exclude=()):
+    """Return a list all Python packages found within directory 'where'
+
+    'where' should be supplied as a "cross-platform" (i.e. URL-style) path; it
+    will be converted to the appropriate local path syntax.  'exclude' is a
+    sequence of package names to exclude; '*' can be used as a wildcard in the
+    names, such that 'foo.*' will exclude all subpackages of 'foo' (but not
+    'foo' itself).
+    """
+    out = []
+    stack=[(convert_path(where), '')]
+    while stack:
+        where,prefix = stack.pop(0)
+        for name in os.listdir(where):
+            fn = os.path.join(where,name)
+            if ('.' not in name and os.path.isdir(fn) and
+                os.path.isfile(os.path.join(fn,'__init__.py'))
+            ):
+                out.append(prefix+name); stack.append((fn,prefix+name+'.'))
+    for pat in list(exclude)+['ez_setup']:
+        from fnmatch import fnmatchcase
+        out = [item for item in out if not fnmatchcase(item,pat)]
+    return out
