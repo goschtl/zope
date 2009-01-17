@@ -9,16 +9,6 @@ from z3c.autoinclude.utils import debug_includes
 from z3c.autoinclude.utils import distributionForPackage
 from z3c.autoinclude.plugin import PluginFinder
 
-class IAutoIncludeDirective(Interface):
-    """Auto-include any ZCML in the dependencies of this package."""
-    
-    package = GlobalObject(
-        title=u"Package to auto-include for",
-        description=u"""
-        Auto-include all dependencies of this package.
-        """,
-        required=True,
-        )
 
 def includeZCMLGroup(_context, dist, info, zcmlgroup, override=False):
     includable_zcml = list(info.get(zcmlgroup, []))
@@ -30,17 +20,29 @@ def includeZCMLGroup(_context, dist, info, zcmlgroup, override=False):
         else:
             include(_context, zcmlgroup, includable_package)
 
-def autoIncludeOverridesDirective(_context, package):
-    dist = distributionForPackage(package)
-    info = DependencyFinder(dist).includableInfo(['overrides.zcml'])
-    includeZCMLGroup(_context, dist, info, 'overrides.zcml', override=True)
 
-def autoIncludeDirective(_context, package):
+class IIncludeDependenciesDirective(Interface):
+    """Auto-include any ZCML in the dependencies of this package."""
+    
+    package = GlobalObject(
+        title=u"Package to auto-include for",
+        description=u"""
+        Auto-include all dependencies of this package.
+        """,
+        required=True,
+        )
+
+def includeDependenciesDirective(_context, package):
     dist = distributionForPackage(package)
     info = DependencyFinder(dist).includableInfo(['configure.zcml', 'meta.zcml'])
 
     includeZCMLGroup(_context, dist, info, 'meta.zcml')
     includeZCMLGroup(_context, dist, info, 'configure.zcml')
+
+def includeDependenciesOverridesDirective(_context, package):
+    dist = distributionForPackage(package)
+    info = DependencyFinder(dist).includableInfo(['overrides.zcml'])
+    includeZCMLGroup(_context, dist, info, 'overrides.zcml', override=True)
 
 
 class IIncludePluginsDirective(Interface):
