@@ -42,7 +42,7 @@
 
   <adapter
       provides=".interfaces.IChildObjects"
-      for="zope.app.component.interfaces.ISite"
+      for="zope.location.interfaces.ISite"
       factory=".adapters.ContainerSiteChildObjects"
       />
 
