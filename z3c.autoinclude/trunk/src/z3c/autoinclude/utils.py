@@ -1,11 +1,8 @@
-import logging
 import os
 from pkg_resources import find_distributions
 from setuptools import find_packages
 import sys
 from zope.dottedname.resolve import resolve
-
-log = logging.getLogger("z3c.autoinclude")
 
 class DistributionManager(object):
     def __init__(self, dist):
@@ -118,9 +115,3 @@ def isUnzippedEgg(path):
     location of a distribution object.
     """
     return os.path.isdir(path)
-
-def debug_includes(dist, include_type, dotted_names):
-    if not dotted_names:
-        return
-    log.debug('%s - autoinclude %s: %r', dist.project_name,
-              include_type, list(dotted_names))
