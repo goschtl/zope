@@ -1,4 +1,5 @@
 <form action="." method="post" enctype="multipart/form-data" 
+      tal:omit-tag="view/isWrapped"
       tal:attributes="method context/method;
 		      enctype context/enctype;
 		      acceptCharset context/acceptCharset;

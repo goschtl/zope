@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,33 +15,18 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-from zope import interface
+from interfaces import IFormWrapper
 
 
-class IForm(interface.Interface):
-    """ form view """
+class FormView(object):
 
+    def isWrapped(self):
+        context = self.context.__parent__
 
-class IViewspace(interface.Interface):
-    """ form viewspace """
+        while 1:
+            if IFormWrapper.providedBy(context):
+                return True
 
-
-class IExtraViewspaceInfo(interface.Interface):
-    """ extra widget information """
-
-
-class IWidget(interface.Interface):
-    """ widget view """
-
-
-class IFormButtons(interface.Interface):
-    """ form buttons """
-
-
-class IErrorView(interface.Interface):
-    """ Error view snippet view """
-
-
-class IFormWrapper(interface.Interface):
-    """ """
-
+            context = getattr(context, '__parent__', None)
+            if context is None:
+                return False

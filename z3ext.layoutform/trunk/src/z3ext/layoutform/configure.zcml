@@ -25,4 +25,13 @@
   <!-- translations -->
   <i18n:registerTranslations directory="locales"/>
 
+  <!-- security declarations -->
+  <class class="z3c.form.button.ButtonAction">
+    <allow interface="z3c.form.interfaces.IWidget" />
+  </class>
+
+  <class class="z3c.form.button.ButtonActions">
+    <allow interface="z3c.form.interfaces.IActions" />
+  </class>
+
 </configure>

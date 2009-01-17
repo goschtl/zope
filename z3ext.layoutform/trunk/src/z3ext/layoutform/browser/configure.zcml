@@ -2,22 +2,7 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:z3ext="http://namespaces.zope.org/z3ext">
 
-  <!-- buttons -->
-  <adapter 
-     provides="z3c.form.interfaces.IButtonAction"
-     factory=".buttons.ButtonAction" />
-
-  <adapter 
-     provides="z3c.form.interfaces.IButtonAction"
-     factory=".buttons.AddButtonAction" />
-
-  <adapter 
-     provides="z3c.form.interfaces.IButtonAction"
-     factory=".buttons.SaveButtonAction" />
-
-  <adapter 
-     provides="z3c.form.interfaces.IButtonAction"
-     factory=".buttons.CancelButtonAction" />
+  <include file="buttons.zcml" />
 
   <!-- TextArea widget -->
   <class class=".textarea.TextAreaWidget">
@@ -85,10 +70,11 @@
      interface="z3ext.layoutform.browser.interfaces.IForm" />
 
   <z3ext:pagelet
+     type="form.view"
      for="..interfaces.IPageletForm"
      template="formview.pt"
-     layer="..interfaces.ILayoutFormLayer"
-     type="form.view" />
+     class=".formview.FormView"
+     layer="..interfaces.ILayoutFormLayer" />
 
   <!-- viewspace view -->
   <z3ext:pageletType
