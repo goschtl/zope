@@ -33,6 +33,13 @@ class DistributionManager(object):
                 if subpackage not in ns_dottednames:
                     result.append(subpackage)
         return result
+
+class ZCMLInfo(dict):
+    def __init__(self, zcml_to_look_for):
+        dict.__init__(self)
+        for zcml_group in zcml_to_look_for:
+            self[zcml_group] = []
+
     
 def subpackageDottedNames(package_path, ns_dottedname=None):
     # we do not look for subpackages in zipped eggs

@@ -12,7 +12,9 @@ import logging
 log = logging.getLogger("z3c.autoinclude")
 
 def includeZCMLGroup(_context, info, filename, override=False):
-    includable_zcml = list(info.get(filename, []))
+    includable_zcml = info[filename]
+    # ^^ a key error would mean that we are trying to include a group of ZCML
+    #    with a filename that wasn't ever searched for. that *should* be an error
 
     zcml_context = repr(_context.info)
 
@@ -75,6 +77,7 @@ class IIncludePluginsDirective(Interface):
 
 def includePluginsDirective(_context, package, file=None):
     dotted_name = package.__name__
+
     if file is None:
         zcml_to_look_for = ['meta.zcml', 'configure.zcml']
     else:

@@ -140,13 +140,15 @@ include from the requirements of a given package::
 
     >>> from z3c.autoinclude import package_includes
     >>> pprint(package_includes('BCPackage'))
-    {'configure.zcml': ['F.H'], 'meta.zcml': ['testdirective', 'F.G', 'F.H']}
+    {'configure.zcml': ['F.H'],
+     'meta.zcml': ['testdirective', 'F.G', 'F.H'],
+     'overrides.zcml': []}
 
 As with ``includableInfo``, we can also supply a list of ZCML filenames to search for::
 
     >>> pprint(package_includes('BCPackage', ['configure.zcml', 'silly.zcml']))
-    {'configure.zcml': ['F.H']}
-    
+    {'configure.zcml': ['F.H'], 'silly.zcml': []}
+
 Note that it will not catch DistributionNotFound errors::
 
      >>> package_includes('NonexistentPackage')
