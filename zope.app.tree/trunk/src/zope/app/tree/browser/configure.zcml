@@ -42,15 +42,8 @@
 
   <!-- Set up the 'StaticTree' skin -->
 
-  <!-- BBB 2006/02/18, to be removed after 12 months -->
-  <browser:layer
-      zcml:condition="have deprecatedlayers"
-      interface=".IStaticTreeLayer"
-      name="statictree"
-      bbb_aware="true"
-      />
-
   <interface
+      zcml:condition="installed zope.app.rotterdam"
       interface=".IStaticTreeSkin"
       type="zope.publisher.interfaces.browser.IBrowserSkinType"
       name="StaticTree"

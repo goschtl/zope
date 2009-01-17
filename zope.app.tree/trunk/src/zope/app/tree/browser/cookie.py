@@ -18,10 +18,9 @@ $Id$
 import zope.traversing.api
 from zope.traversing.interfaces import IContainmentRoot
 from zope.component.interfaces import IComponentLookup
+from zope.location.interfaces import ISite
 
 from zope.app.container.interfaces import IContainer
-from zope.app.folder.interfaces import IFolder
-from zope.app.component.interfaces import ISite
 
 from zope.app.tree.filters import OnlyInterfacesFilter
 from zope.app.tree.browser import StatefulTreeView

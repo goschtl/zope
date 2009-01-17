@@ -2,6 +2,25 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Get rid of zope.app.zapi dependency, replacing its uses with
+  direct imports.
+
+- Clean up dependencies, move testing and rotterdam dependencies
+  to extra requires.
+
+- Fix mailing list address to zope-dev@zope.org instead of retired
+  zope3-dev@zope.org. Change `cheeseshop` to `pypi` in the package
+  url.
+
+- Replace __used_for__ in adapters.py with zope.component.adapts
+  calls to make more sense. 
+
+- Remove obsolete zpkg files, zcml include file for mkzopeinstance-based
+  installations, versions.txt that makes no sense now. 
+
 3.4.0 (2007-10-28)
 ------------------
 

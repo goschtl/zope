@@ -22,9 +22,9 @@ from zope.component import getMultiAdapter
 from zope.publisher.browser import TestRequest
 from zope.interface import alsoProvides
 from zope.traversing.interfaces import IContainmentRoot
+from zope.location.interfaces import ISite
 from zope.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import ztapi
-from zope.app.component.interfaces import ISite
 
 from zope.app.tree.utils import TreeStateEncoder
 from zope.app.tree.browser import StatefulTreeView

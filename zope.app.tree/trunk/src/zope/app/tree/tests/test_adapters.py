@@ -22,9 +22,8 @@ from zope.component.interfaces import ComponentLookupError
 from zope.security.checker import defineChecker
 from zope.security.checker import NamesChecker
 from zope.traversing.interfaces import IContainmentRoot
-from zope.location.interfaces import ILocation
+from zope.location.interfaces import ILocation, ISite
 
-from zope.app.component.interfaces import ISite
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.sample import SampleContainer
 from zope.app.container.contained import setitem

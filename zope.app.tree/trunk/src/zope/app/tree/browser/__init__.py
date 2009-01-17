@@ -23,19 +23,15 @@ from zope.publisher.browser import BrowserView
 
 from zope.app.tree.interfaces import ITreeStateEncoder
 from zope.app.tree.node import Node
-from zope.app.rotterdam import Rotterdam
 
 class IStaticTreeLayer(IBrowserRequest):
     """Layer that we can register our own navigation macro for."""
 
-class IStaticTreeSkin(IStaticTreeLayer, Rotterdam):
-    """Skin based on Rotterdam that includes the static tree
-    navigation macro."""
-
-# BBB 2006/02/18, to be removed after 12 months
-try:
-    import zope.app.skins
-    zope.app.skins.set('StaticTree', IStaticTreeSkin)
+try: # we try not to depend on zope.app.rotterdam hardly
+    from zope.app.rotterdam import Rotterdam
+    class IStaticTreeSkin(IStaticTreeLayer, Rotterdam):
+        """Skin based on Rotterdam that includes the static tree
+        navigation macro."""
 except ImportError:
     pass
 

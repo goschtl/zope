@@ -21,20 +21,20 @@ up with ComponentLookupErrors whenever encounter unknown objects.
 $Id$
 """
 from zope.interface import Interface, implements
+from zope.component import adapts
 from zope.component.interfaces import ComponentLookupError
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
-from zope.location.interfaces import ILocation
+from zope.location.interfaces import ILocation, ISite
 from zope.traversing.api import getParents
 
 from zope.app.container.interfaces import IReadContainer
-from zope.app.component.interfaces import ISite
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects
 
 class StubUniqueId(object):
     implements(IUniqueId)
-    __used_for__ = Interface
+    adapts(Interface)
 
     def __init__(self, context):
         self.context = context
@@ -45,7 +45,7 @@ class StubUniqueId(object):
 
 class StubChildObjects(object):
     implements(IChildObjects)
-    __used_for__ = Interface
+    adapts(Interface)
 
     def __init__(self, context):
         pass
@@ -58,7 +58,7 @@ class StubChildObjects(object):
 
 class LocationUniqueId(object):
     implements(IUniqueId)
-    __used_for__ = ILocation
+    adapts(ILocation)
 
     def __init__(self, context):
         self.context = context
@@ -75,7 +75,7 @@ class LocationUniqueId(object):
 
 class ContainerChildObjects(object):
     implements(IChildObjects)
-    __used_for__ = IReadContainer
+    adapts(IReadContainer)
 
     def __init__(self, context):
         self.context = context
@@ -101,7 +101,7 @@ class ContainerSiteChildObjects(ContainerChildObjects):
     """Adapter for read containers which are sites as well. The site
     manager will be treated as just another child object.
     """
-    __used_for__ = ISite
+    adapts(ISite)
 
     def hasChildren(self):
         if super(ContainerSiteChildObjects, self).hasChildren():
