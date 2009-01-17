@@ -5,7 +5,7 @@ long_description = (open('README.txt').read()
                     open('CHANGES.txt').read())
 
 setup(name='z3c.autoinclude',
-      version='0.2.3dev',
+      version='0.3dev',
       description="Automatically include ZCML for dependencies.",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers

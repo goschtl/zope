@@ -1,25 +1,36 @@
 Changes
 =======
 
-0.2.3 (unreleased)
+0.3 (unreleased)
 ------------------
 
-* Allow virtual namespace packages like 'plone' to be used as targets. I think this may need more thought for the 'dependency' case.
-* Allow ZCML <includePlugins> directive to specify a particular ZCML file to try to load from plugins, so that loading of meta, configure and overrides can be split across three ZCML files if desired.
-
+* Allow virtual namespace packages like 'plone' to be specified for the package. I think this
+  may need more thought for the dependency case.
+* Allow ZCML ``includePlugins`` directive to specify a particular ZCML file to try to load from
+  plugins, so that loading of meta, configure and overrides can be split across three ZCML files
+  if desired. You can specify a file like: <includePlugins package="." file="silly.zcml" />.
+* Provide a separate ``includePluginsOverrides`` directive to be used when loading overrides,
+  and no longer look for 'overrides.zcml' files by default with ``includePlugins``.
+* Removed the deprecated ``autoinclude`` and ``autoincludeOverrides`` directives.
 
 0.2.2 (2008-04-22)
 ------------------
 
-* Gracefully catch KeyErrors in ``namespaceForDottedName``; get_metadata_lines will sometimes throw this for certain distribution types, apparently. In particular, some systems' version of Python itself will be wrapped in a distribution which throws this error, resulting in system-dependent unresumable breakage of z3c.autoinclude prior to this fix.
+* Gracefully catch KeyErrors in ``namespaceForDottedName``; get_metadata_lines will sometimes
+  throw this for certain distribution types, apparently. In particular, some systems' version
+  of Python itself will be wrapped in a distribution which throws this error, resulting in
+  system-dependent unresumable breakage of z3c.autoinclude prior to this fix.
 
 0.2.1 (2008-04-21)
 ------------------
 
-* Fixed bug which prevented proper inclusion of packages when the base package's namespace has been extended by other installed packages.
+* Fixed bug which prevented proper inclusion of packages when the base package's namespace has
+  been extended by other installed packages.
 * Rewrote ``distributionForPackage`` function.
 * Added additional tests for ``includePlugins`` and utility functions.
-* Fixed bug which made z3c.autoinclude look for ZCML in namespaces of nested namespace packages (eg, if there happened to -- improperly -- be an x/y/configure.zcml in a x.y.z package with an x.y namespace, it would have been included; this is incorrect.) 
+* Fixed bug which made z3c.autoinclude look for ZCML in namespaces of nested namespace packages
+  (eg, if there happened to -- improperly -- be an x/y/configure.zcml in a x.y.z package with
+  an x.y namespace, it would have been included; this is incorrect.) 
 
 0.2 (2008-04-18)
 ----------------
