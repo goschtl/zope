@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <browser:resourceDirectory
+      name="selenium"
+      directory="resources"
+      />
+
+  <class class=".results.Results">
+    <require
+        permission="zope.Public"
+        interface="zope.publisher.interfaces.IPublishTraverse"
+        attributes="__call__"
+        />
+  </class>
+
+  <browser:resource
+      name="selenium_results"
+      factory=".results.Results"
+      permission="zope.Public"
+      />
+
+  <browser:resource
+      name="selenium-push.html"
+      factory=".dbs.PushDBs"
+      permission="zope.Public"
+      />
+
+  <browser:resource
+      name="selenium-pop.html"
+      factory=".dbs.PopDBs"
+      permission="zope.Public"
+      />
+
+  <module module=".pytest">
+    <allow attributes="suite" />
+  </module>
+
+  <adapter
+    factory=".tests.TestSelenium"
+    name="zc.selenium.tests.TestSelenium"
+    permission="zope.Public"
+    />
+
+</configure>
