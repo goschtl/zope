@@ -1,8 +1,8 @@
 CHANGES
 *******
 
-0.2 (unreleased)
-=================
+0.2 (2009-01-19)
+================
 
 * Set selectionMode to single for table so that only single items 
   can be selected.
