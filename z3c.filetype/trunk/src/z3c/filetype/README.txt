@@ -7,14 +7,12 @@ Filetype Package
 This package provides a way to get interfaces that are provided based
 on their content, filename or mime-type.
 
-  >>> from z3c.filetype import api, typeablefile
-  >>> from zope import event, component
-  >>> from zope.component import eventtesting
+  >>> from z3c.filetype import api
 
 We take some files for demonstration from the testdata directory.
 
   >>> import os
-  >>> testData = os.path.join(os.path.dirname(api.__file__), 'testdata')
+  >>> testData = os.path.join(os.path.dirname(api.__file__),'testdata')
 
   >>> fileNames = sorted(os.listdir(testData))
 
@@ -70,10 +68,7 @@ not trust the filename in most cases.
   >>> sorted(api.getInterfacesFor(f))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 
-  >>> sorted(api.getInterfacesForFile(os.path.join(testData, 'test.tar')))
-  [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
-
-  >>> sorted(api.getInterfacesForFilename('x.png'))
+  >>> sorted(api.getInterfacesFor(filename="x.png"))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IPNGFile>]
 
   >>> sorted(api.getInterfacesFor(f, filename="x.png"))
@@ -92,7 +87,7 @@ You can also provide a path instead of a stream.
 
   >>> f.name
   '...test.tar'
-  >>> sorted(api.getInterfacesForFilename(f.name))
+  >>> sorted(api.getInterfacesFor(f.name))
   [<InterfaceClass z3c.filetype.interfaces.filetypes.ITARFile>]
 
 
@@ -103,28 +98,34 @@ There are event handlers which apply filetype interfaces to an
 object. This object needs to implement ITypeableFile. So let us setup
 the event handling.
 
+  >>> from zope.component import eventtesting
+  >>> eventtesting.setUp()
+
   >>> from z3c.filetype import interfaces
   >>> from zope import interface
   >>> class Foo(object):
   ...     interface.implements(interfaces.ITypeableFile)
   ...     def __init__(self, f):
-  ...         f.seek(0)
-  ...         self.data = f.read()
+  ...         self.data = f
   >>> foo = Foo(f)
 
 There is also an event handler registered for IObjectCreatedEvent and
-IObjectModified on ITypeableFile.
+IObjectModified on  ITypeableFile. We register them here in the test.
+
+  >>> from zope import component
+  >>> component.provideHandler(api.handleCreated)
+  >>> component.provideHandler(api.handleModified)
+
 So we need to fire an IObjectCreatedEvent. Which is normally done by a
 factory.
 
   >>> from zope.lifecycleevent import ObjectCreatedEvent
   >>> from zope.lifecycleevent import ObjectModifiedEvent
-
+  >>> from zope.event import notify
   >>> eventtesting.clearEvents()
-  >>> event.notify(ObjectCreatedEvent(foo))
-
+  >>> notify(ObjectCreatedEvent(foo))
   >>> sorted(eventtesting.getEvents())
-  [<z3c.filetype.interfaces.FileTypeModifiedEvent object at ...>,
+  [<z3c.filetype.event.FileTypeModifiedEvent object at ...>,
    <zope.app.event.objectevent.ObjectCreatedEvent object at ...>]
 
 The object now implements the according interface. This is achieved by
@@ -145,15 +146,16 @@ A second applyInteraces does nothing.
 If we change the object the interface changes too. We need to fire
 an IObjectModifiedevent. Which is normally done by the implementation.
 
-  >>> foo.data = file(os.path.join(testData,'test.flv'), 'rb').read()
+  >>> foo.data = file(os.path.join(testData,'test.flv'), 'rb')
   >>> eventtesting.clearEvents()
-  >>> event.notify(ObjectModifiedEvent(foo))
+  >>> 
+  >>> notify(ObjectModifiedEvent(foo))
 
 Now we have two events, one we fired and one from our handler.
 
   >>> eventtesting.getEvents()
   [<zope.app.event.objectevent.ObjectModifiedEvent object at ...>,
-   <z3c.filetype.interfaces.FileTypeModifiedEvent object at ...>]
+   <z3c.filetype.event.FileTypeModifiedEvent object at ...>]
 
 Now the file should implement another filetype.
 
@@ -161,22 +163,20 @@ Now the file should implement another filetype.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
 
 
-IContentType adapters
-=====================
+IFileType adapters
+==================
 
-There is also an adapter from ITypedFile to IContentType, which can be
+There is also an adapter from ITypedFile to IFileType, which can be
 used to get the default content type for the interface.
 
   >>> from z3c.filetype import adapters
-  >>> component.provideAdapter(adapters.ContentType)
-
+  >>> component.provideAdapter(adapters.TypedFileType)
   >>> for name in fileNames:
-  ...     if name==".svn":
-  ...        continue
+  ...     if name==".svn": continue
   ...     path = os.path.join(testData, name)
   ...     i =  Foo(file(path, 'rb'))
-  ...     event.notify(ObjectModifiedEvent(i))
-  ...     print name + " --> " + interfaces.IContentType(i).contentType
+  ...     notify(ObjectModifiedEvent(i))
+  ...     print name + " --> " + interfaces.IFileType(i).contentType
   DS_Store --> application/octet-stream
   IMG_0504.JPG --> image/jpeg
   faces_gray.avi --> video/x-msvideo
@@ -210,22 +210,24 @@ IGIFFile.
   >>> component.provideAdapter(size.PNGFileSized)
   >>> component.provideAdapter(size.JPGFileSized)
 
-  >>> foo.data = file(os.path.join(testData,'thumbnailImage_small.jpeg'), 'rb').read()
-  >>> event.notify(ObjectModifiedEvent(foo))
+  >>> foo.data = file(os.path.join(testData,'thumbnailImage_small.jpeg'), 'rb')
+  >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '120', 'height': '90', 'size': '3'}
 
-  >>> foo.data = file(os.path.join(testData,'test.png'), 'rb').read()
-  >>> event.notify(ObjectModifiedEvent(foo))
+  >>> foo.data = file(os.path.join(testData,'test.png'), 'rb')
+  >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '279', 'height': '19', 'size': '4'}
 
-  >>> foo.data = file(os.path.join(testData,'logo.gif'), 'rb').read()
-  >>> event.notify(ObjectModifiedEvent(foo))
+  >>> foo.data = file(os.path.join(testData,'logo.gif'), 'rb')
+  >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '201', 'height': '54', 'size': '2'}
 
-  >>> foo.data = file(os.path.join(testData,'IMG_0504.JPG'), 'rb').read()
-  >>> event.notify(ObjectModifiedEvent(foo))
+  >>> foo.data = file(os.path.join(testData,'IMG_0504.JPG'), 'rb')
+  >>> notify(ObjectModifiedEvent(foo))
   >>> ISized(foo).sizeForDisplay().mapping
   {'width': '1600', 'height': '1200', 'size': '499'}
+
+

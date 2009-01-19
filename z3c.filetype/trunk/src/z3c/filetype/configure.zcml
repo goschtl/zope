@@ -1,23 +1,22 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:zcml="http://namespaces.zope.org/zcml"
-   i18n_domain="zope">
+ xmlns="http://namespaces.zope.org/zope"
+ i18n_domain="zope"
+ >
 
-  <adapter factory=".adapters.ContentType" />
+ <subscriber for=".interfaces.ITypeableFile
+                  zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+             handler=".api.handleModified"/>
 
-  <adapter factory=".typeablefile.TypeableFileData" />
-  <subscriber handler=".typeablefile.handleCreated" />
-  <subscriber handler=".typeablefile.handleModified" />
+ <subscriber for=".interfaces.ITypeableFile
+                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+             handler=".api.handleCreated"/>
 
-  <adapter factory=".size.PNGFileSized" />
-  <adapter factory=".size.JPGFileSized" />
-  <adapter factory=".size.GIFFileSized" />
+ 
+ <adapter factory=".adapters.TypedFileType"/>
 
-  <class class="z3c.blobfile.file.File"
-	 zcml:condition="installed z3c.blobfile">
-    <implements interface=".interfaces.IFileData" />
-  </class>
+ <adapter factory=".size.PNGFileSized" />
+ <adapter factory=".size.JPGFileSized" />
+ <adapter factory=".size.GIFFileSized" />
 
-  <include package=".converters" />
-
+ 
 </configure>

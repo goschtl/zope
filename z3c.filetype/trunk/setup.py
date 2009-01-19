@@ -13,63 +13,33 @@
 ##############################################################################
 """Setup for z3c.filetype package
 
-$Id$
+$Id: setup.py 82381 2007-12-21 10:08:32Z jukart $
 """
-import sys, os
+
 from setuptools import setup, find_packages
 
-version = '1.2.0'
-
-def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-
 setup(
-    name='z3c.filetype',
-    version=version,
-    description = 'Filetype Package',
-    long_description=(
-        'Detailed Dcoumentation\n' +
-        '======================\n'
-        + '\n\n' +
-        read('src', 'z3c', 'filetype', 'README.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
-        ),
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Zope Public License',
-        'Programming Language :: Python',
-        'Natural Language :: English',
-        'Operating System :: OS Independent',
-        'Topic :: Internet :: WWW/HTTP',
-        'Framework :: Zope3'],
-    author='Zope Community',
-    author_email='zope3-dev@zope.org',
-    url='http://svn.zope.org/z3c.filetype',
-    license='ZPL 2.1',
+    name="z3c.filetype",
+    version="1.1.0",
     namespace_packages=["z3c"],
     packages=find_packages("src"),
     package_dir={"": "src"},
     include_package_data=True,
     install_requires=[
         "setuptools",
+        "zope.cachedescriptors",
         "zope.component",
-        "zope.interface",
         "zope.contenttype",
         "zope.event",
         "zope.i18nmessageid",
+        "zope.interface",
         "zope.lifecycleevent",
         "zope.proxy",
         "zope.schema",
         "zope.size",
         ],
     extras_require={
-        "test": [
-            "zope.testing",
-            'zope.app.testing',
-            ],
+        "test": ["zope.testing"],
         },
     zip_safe=False,
     )
