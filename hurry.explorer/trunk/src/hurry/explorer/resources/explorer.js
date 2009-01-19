@@ -191,6 +191,7 @@ PLOR.namespace = function(name) {
         
         datatable = new YAHOO.widget.DataTable('datatable', 
                                                columnDefs, dataSource);
+        datatable.set('selectionMode', 'single');
         datatable.subscribe("rowClickEvent", rowClick);
     };
 
