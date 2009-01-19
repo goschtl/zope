@@ -73,4 +73,36 @@ parts directory.  You can then open it up in firefox and take a look::
 
   $ firefox parts/docs/z3c.form/build/index.html
 
-And that's it!
+Additional Options
+------------------
+
+By default, this recipe generates documentation that looks like the
+new zope website ( http://new.zope.org ) by ovveriding the default
+layout template and css file used by sphinx.  You can modify this
+behavior with options in your buildout configuration.
+
+Give me back Sphinx's default look!
+...................................
+
+To get back the default look of sphinx, you could use a configuration
+like this::
+
+  [docs]
+  recipe = z3c.recipe.sphinxdoc
+  eggs = z3c.form [docs]
+  default.css =
+  layout.html =
+
+I want my own custom look
+.........................
+
+You can also specify your own layout template and css like so::
+
+  [docs]
+  recipe = z3c.recipe.sphinxdoc
+  eggs = z3c.form [docs]
+  default.css = http://my.own.website.com/mystyles/some-theme.css
+  layout.html = /path/to/layout.html
+
+Note that you can either specify a path on the local file system or a
+url to an external css file.

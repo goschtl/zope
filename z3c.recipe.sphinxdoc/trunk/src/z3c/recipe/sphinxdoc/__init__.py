@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import urllib2
 import sys
 import os
 from os.path import join, dirname, isdir
@@ -47,6 +48,13 @@ class ZopeOrgSetup(object):
                                  options.get('script', self.name))
         self.egg = zc.recipe.egg.Egg(self.buildout, self.name, self.options)
 
+    def openfile(self, fn):
+        try:
+            f = open(fn)
+        except IOError:
+            f = urllib2.urlopen(fn)
+        return f
+
     def install(self):
         installed = []
         eggs, workingSet = self.egg.working_set()
@@ -75,18 +83,28 @@ class ZopeOrgSetup(object):
             if not isdir(staticDir):
                 os.mkdir(staticDir)
             installed.append(staticDir)
-            shutil.copy(join(recipeDir,'default.css'),
-                        join(staticDir, 'default.css'))
-            installed.append(join(staticDir, 'default.css'))
+            if 'default.css' not in self.options:
+                shutil.copy(join(recipeDir,'default.css'),
+                            join(staticDir, 'default.css'))
+                installed.append(join(staticDir, 'default.css'))
+            elif self.options['default.css']:
+                f = self.openfile(self.options['default.css'])
+                open(join(staticDir,'default.css'), 'w').write(f.read())
+                installed.append(join(staticDir, 'default.css'))
 
-            #create tempaltes directory
+            #create templates directory
             templatesDir = join(partDir, '.templates')
             if not isdir(templatesDir):
                 os.mkdir(templatesDir)
             installed.append(templatesDir)
-            shutil.copy(join(recipeDir,'layout.html'),
-                        join(templatesDir, 'layout.html'))
-            installed.append(join(templatesDir, 'layout.html'))
+            if 'layout.html' not in self.options:
+                shutil.copy(join(recipeDir,'layout.html'),
+                            join(templatesDir, 'layout.html'))
+                installed.append(join(templatesDir, 'layout.html'))
+            elif self.options['layout.html']:
+                f = self.openfile(self.options['layout.html'])
+                open(join(staticDir,'layout.html'), 'w').write(f.read())
+                installed.append(join(staticDir, 'layout.html'))
 
             metadata = dict(parser.Parser().parsestr('\n'.join(doc._get_metadata('PKG-INFO'))).items())
 
