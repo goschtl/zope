@@ -17,7 +17,15 @@ $Id: tests.py 12897 2006-07-26 20:11:41Z fred $
 """
 
 import unittest
+import zc.selenium.pytest
 from zope.testing import doctest
+
+
+class TestSelenium(zc.selenium.pytest.Test):
+
+    def test_open(self):
+        self.selenium.open('http://%s/' % self.selenium.server)
+        self.selenium.verifyTextPresent('Login')
 
 
 def test_suite():
