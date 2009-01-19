@@ -1,0 +1,18 @@
+CHANGES
+*******
+
+0.2 (2009-01-19)
+================
+
+* Set selectionMode to single for table so that only single items 
+  can be selected.
+
+0.1.1 (2008-12-10)
+==================
+
+* Small Internet Explorer tweaks.
+
+0.1 (2008-12-08)
+================
+
+* Initial public release. Needs a lot more documentation...
