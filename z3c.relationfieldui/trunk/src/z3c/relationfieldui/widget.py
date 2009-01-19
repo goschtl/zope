@@ -42,20 +42,12 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
     def _toFieldValue(self, input):
         if not input:
             return None
-        # convert path to Relation object
-        obj = self.resolve(input)
-        # XXX if obj is none, cannot create path
-        return create_relation(obj)
+        return create_relation(input)
 
     def _toFormValue(self, value):
         if value is None:
             return ''
         return value.to_path
-
-    def resolve(self, path):
-        object_path = component.getUtility(IObjectPath)
-        return object_path.resolve(path)
-
 
 class RelationDisplayWidget(grok.MultiAdapter, DisplayWidget):
     grok.adapts(IRelation, IBrowserRequest)
