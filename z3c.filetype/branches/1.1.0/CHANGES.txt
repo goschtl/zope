@@ -5,6 +5,9 @@ Changes in z3c.filetype
 After
 =====
 
+2009/01/19 1.2.0
+================
+
  - added interfaces for Microsoft office files
    Note : with the current magic.mimes file it is not possible to reliably
           detect Microsoft Office files. All Office files are detected as
