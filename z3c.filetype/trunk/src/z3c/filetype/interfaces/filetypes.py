@@ -40,14 +40,18 @@ class ITextFile(ITypedFile):
 ITextFile.setTaggedValue(MTM,re.compile('^text/.+$'))
 ITextFile.setTaggedValue(MT,'text/plain')
 
-class IImageFile(ITypedFile):
-    """image files"""
-IImageFile.setTaggedValue(MTM,re.compile('^image/.+$'))
+class IImageFile(interface.Interface):
+    """marker for image files"""
 
 class IPDFFile(IBinaryFile):
     """pdf files"""
 IPDFFile.setTaggedValue(MTM,re.compile('application/pdf'))
 IPDFFile.setTaggedValue(MT,'application/pdf')
+
+class IBMPFile(IImageFile, IBinaryFile):
+    """jpeg file"""
+IBMPFile.setTaggedValue(MTM,re.compile('image/bmp'))
+IBMPFile.setTaggedValue(MT,'image/bmp')
 
 class IJPGFile(IImageFile, IBinaryFile):
     """jpeg file"""
@@ -64,21 +68,20 @@ class IGIFFile(IImageFile, IBinaryFile):
 IGIFFile.setTaggedValue(MTM,re.compile('image/gif'))
 IGIFFile.setTaggedValue(MT,'image/gif')
 
-class IVideoFile(IBinaryFile):
-    """video file"""
-IVideoFile.setTaggedValue(MTM,re.compile('^video/.+$'))
+class IVideoFile(interface.Interface):
+    """marker for video file"""
 
-class IQuickTimeFile(IVideoFile):
+class IQuickTimeFile(IVideoFile, IBinaryFile):
     """Quicktime Video File Format"""
 IQuickTimeFile.setTaggedValue(MTM,re.compile('video/quicktime'))
 IQuickTimeFile.setTaggedValue(MT,'video/quicktime')
 
-class IAVIFile(IVideoFile):
+class IAVIFile(IVideoFile, IBinaryFile):
     """Quicktime Video File Format"""
 IAVIFile.setTaggedValue(MTM,re.compile('video/x-msvideo'))
 IAVIFile.setTaggedValue(MT,'video/x-msvideo')
 
-class IMPEGFile(IVideoFile):
+class IMPEGFile(IVideoFile, IBinaryFile):
     """MPEG Video File Format"""
 IMPEGFile.setTaggedValue(MTM,re.compile('video/mpe?g'))
 IMPEGFile.setTaggedValue(MT,'video/mpeg')
@@ -88,21 +91,20 @@ class IMP4File(IQuickTimeFile):
 IMP4File.setTaggedValue(MTM,re.compile('video/mp4'))
 IMP4File.setTaggedValue(MT,'video/mp4')
 
-class IFLVFile(IVideoFile):
+class IFLVFile(IVideoFile, IBinaryFile):
     """Macromedia Flash FLV Video File Format"""
 IFLVFile.setTaggedValue(MTM,re.compile('video/x-flv'))
 IFLVFile.setTaggedValue(MT,'video/x-flv')
 
-class IASFFile(IVideoFile):
+class IASFFile(IVideoFile, IBinaryFile):
     """Windows Media File Format"""
 IASFFile.setTaggedValue(MTM,re.compile('video/x-ms-asf'))
 IASFFile.setTaggedValue(MT,'video/x-ms-asf')
 
-class IAudioFile(ITypedFile):
+class IAudioFile(interface.Interface):
     """audio file"""
-IAudioFile.setTaggedValue(MTM,re.compile('^audio/.+$'))
 
-class IAudioMPEGFile(IAudioFile):
+class IAudioMPEGFile(IAudioFile, IBinaryFile):
     """audio file"""
 IAudioMPEGFile.setTaggedValue(MTM,re.compile('audio/mpeg'))
 IAudioMPEGFile.setTaggedValue(MT,'audio/mpeg')
@@ -116,3 +118,22 @@ class IXMLFile(ITextFile):
     """XML File"""
 IXMLFile.setTaggedValue(MTM,re.compile('text/xml'))
 IXMLFile.setTaggedValue(MT,'text/xml')
+
+class IMSOfficeFile(IBinaryFile):
+    """Microsoft Office File"""
+
+class IMSWordFile(IMSOfficeFile):
+    """Microsoft Word File"""
+IMSWordFile.setTaggedValue(MTM,re.compile('application/.*msword'))
+IMSWordFile.setTaggedValue(MT,'application/msword')
+
+class IMSExcelFile(IMSOfficeFile):
+    """Microsoft Excel File"""
+IMSExcelFile.setTaggedValue(MTM,re.compile('application/.*excel'))
+IMSExcelFile.setTaggedValue(MT,'application/msexcel')
+
+class IMSPowerpointFile(IMSOfficeFile):
+    """Microsoft Powerpoint File"""
+IMSPowerpointFile.setTaggedValue(MTM,re.compile('application/.*powerpoint'))
+IMSPowerpointFile.setTaggedValue(MT,'application/mspowerpoint')
+
