@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+0.0.6 (2009-01-19)
+------------------
+
+- Feature: Allow you to specify a url or local file path to your own
+  default.css and layout.html files.
+
+0.0.5 (2008-05-11)
+------------------
+
+- Initial release.
