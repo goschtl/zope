@@ -1,0 +1,18 @@
+========
+LICENCES
+========
+
+z3c.filetype.magic
+==================
+
+Unknown author without a license as stated in the source:
+
+# Found on a russian zope mailing list, and modified to fix bugs in parsing
+# the magic file and string making
+# -- Daniel Berlin <dberlin@dberlin.org>
+
+magic.mime file
+===============
+
+See attributions in file.
+

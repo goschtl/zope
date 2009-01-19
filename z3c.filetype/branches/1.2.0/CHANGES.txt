@@ -1,0 +1,33 @@
+=======================
+Changes in z3c.filetype
+=======================
+
+After
+=====
+
+2009/01/19 1.2.0
+================
+
+ - added interfaces for Microsoft office files
+   Note : with the current magic.mimes file it is not possible to reliably
+          detect Microsoft Office files. All Office files are detected as
+          application/msword. The only way for now is to use the filename to
+          detect the type. (see README.txt)
+
+2007/12/21 1.1.1
+================
+
+ - added an interface for BMP image files
+ - make sure unknown formats are not recognized as a default format
+
+ - Because tests failed and the author of the changes did not fixed them after
+   a year I reverted trunk to version 82160.
+
+2007/12/06 1.1.0
+================
+
+ - new mimetype interface IAudioMPEGType
+ - mimetype extension for audio/mpeg layer 3
+ - removed setup.cfg
+ - added CHANGES.txt
+

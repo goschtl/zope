@@ -1,0 +1,22 @@
+<configure
+ xmlns="http://namespaces.zope.org/zope"
+ i18n_domain="zope"
+ >
+
+ <subscriber for=".interfaces.ITypeableFile
+                  zope.lifecycleevent.interfaces.IObjectModifiedEvent"
+             handler=".api.handleModified"/>
+
+ <subscriber for=".interfaces.ITypeableFile
+                  zope.lifecycleevent.interfaces.IObjectCreatedEvent"
+             handler=".api.handleCreated"/>
+
+ 
+ <adapter factory=".adapters.TypedFileType"/>
+
+ <adapter factory=".size.PNGFileSized" />
+ <adapter factory=".size.JPGFileSized" />
+ <adapter factory=".size.GIFFileSized" />
+
+ 
+</configure>
