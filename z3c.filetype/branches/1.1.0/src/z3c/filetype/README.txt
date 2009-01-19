@@ -19,13 +19,15 @@ We take some files for demonstration from the testdata directory.
   >>> for name in fileNames:
   ...     if name==".svn": continue
   ...     path = os.path.join(testData, name)
-  ...     i =  api.getInterfacesFor(file(path, 'rb'))
+  ...     i =  api.getInterfacesFor(file(path, 'rb'), filename=name)
   ...     print name
   ...     print sorted(i)
   DS_Store
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]
   IMG_0504.JPG
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>]
+  excel.xls
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSWordFile>]
   faces_gray.avi
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IAVIFile>]
   ftyp.mov
@@ -42,6 +44,10 @@ We take some files for demonstration from the testdata directory.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IAudioMPEGFile>]
   noface.bmp
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IBMPFile>]
+  portable.pdf
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IPDFFile>]
+  powerpoingt.ppt
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSWordFile>]
   test.flv
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IFLVFile>]
   test.gnutar
@@ -62,6 +68,29 @@ We take some files for demonstration from the testdata directory.
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IHTMLFile>]
   thumbnailImage_small.jpeg
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IJPGFile>]
+  word.doc
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSWordFile>]
+
+It is not possible to reliably detect Microsoft Office files from file data.
+The only way right now is to use the filename.
+
+  >>> for name in fileNames:
+  ...     if name==".svn": continue
+  ...     i =  api.getInterfacesFor(filename=name)
+  ...     print name
+  ...     print sorted(i)
+  DS_Store
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IBinaryFile>]
+  ...
+  excel.xls
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSExcelFile>]
+  ...
+  powerpoingt.ppt
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSPowerpointFile>]
+  ...
+  word.doc
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSWordFile>]
+
 
 The filename is only used if no interface is found, because we should
 not trust the filename in most cases.

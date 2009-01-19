@@ -15,6 +15,7 @@ Extract filetypes from file content
   ...     print '%s --> %r' % (name,sorted(m.detect(file(path))))
   DS_Store --> []
   IMG_0504.JPG --> ['image/jpeg']
+  excel.xls --> ['application/msword']
   faces_gray.avi --> ['video/x-msvideo']
   ftyp.mov --> ['video/quicktime']
   ipod.mp4 --> ['video/mp4', 'video/quicktime']
@@ -23,6 +24,8 @@ Extract filetypes from file content
   logo.gif.bz2 --> ['application/x-bzip2']
   mpeglayer3.mp3 --> ['audio/mpeg']
   noface.bmp --> ['image/bmp']
+  portable.pdf --> ['application/pdf']
+  powerpoingt.ppt --> ['application/msword']
   test.flv --> ['video/x-flv']
   test.gnutar --> ['application/x-tar']
   test.html --> ['text/html']
@@ -33,3 +36,5 @@ Extract filetypes from file content
   test2.html --> ['text/html']
   test2.thml --> ['text/html']
   thumbnailImage_small.jpeg --> ['image/jpeg']
+  word.doc --> ['application/msword']
+

@@ -118,3 +118,22 @@ class IXMLFile(ITextFile):
     """XML File"""
 IXMLFile.setTaggedValue(MTM,re.compile('text/xml'))
 IXMLFile.setTaggedValue(MT,'text/xml')
+
+class IMSOfficeFile(IBinaryFile):
+    """Microsoft Office File"""
+
+class IMSWordFile(IMSOfficeFile):
+    """Microsoft Word File"""
+IMSWordFile.setTaggedValue(MTM,re.compile('application/.*msword'))
+IMSWordFile.setTaggedValue(MT,'application/msword')
+
+class IMSExcelFile(IMSOfficeFile):
+    """Microsoft Excel File"""
+IMSExcelFile.setTaggedValue(MTM,re.compile('application/.*excel'))
+IMSExcelFile.setTaggedValue(MT,'application/msexcel')
+
+class IMSPowerpointFile(IMSOfficeFile):
+    """Microsoft Powerpoint File"""
+IMSPowerpointFile.setTaggedValue(MTM,re.compile('application/.*powerpoint'))
+IMSPowerpointFile.setTaggedValue(MT,'application/mspowerpoint')
+

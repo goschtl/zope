@@ -13,7 +13,7 @@ magicFile = magic.MagicFile()
 def byMimeType(t):
 
     """returns interfaces implemented by mimeType"""
-    
+
     ifaces = [iface for name, iface in vars(filetypes).items() \
               if name.startswith("I")]
     res = InterfaceSet()
@@ -30,7 +30,7 @@ def getInterfacesFor(file=None, filename=None, mimeType=None):
     objects (file argument) with an optional filename as name or
     mimeType as mime-type
     """
-    
+
     ifaces = set()
     if file is not None:
         types = magicFile.detect(file)
