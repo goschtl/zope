@@ -20,8 +20,10 @@ import re
 import zc.buildout.buildout
 import zc.buildout.testing
 import zc.buildout.tests
+import zc.buildout.easy_install
 import StringIO
 import sys
+import traceback
 
 import unittest
 import zc.recipe.egg
@@ -30,6 +32,11 @@ import zc.recipe.testrunner
 import zope.testing
 import zope.testing.doctest
 import zope.testing.renormalizing
+import manuel
+import manuel.doctest
+import manuel.testing
+import textwrap
+import ConfigParser
 
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -73,6 +80,98 @@ def setupBuildout(test, install_eggs=tuple(), *args):
     return buildout
 
 
+class BuildoutEvaluation(object):
+    def __init__(self, example, actual=None, desired=None, traceback=None):
+        self.example = example
+        self.traceback = traceback
+        if traceback:
+            self.passed = False
+        else:
+            self.passed = True
+            self.successes = dict(desired)
+            self.failures = {}
+            for section_key, section in desired.iteritems():
+                if section_key not in actual:
+                    self.failures[section_key] = self.successes.pop(
+                        section_key)
+                    self.passed = False
+                else:
+                    for key, value in section.iteritems():
+                        if (key not in actual[section_key] or
+                            value != actual[section_key][key]):
+                            self.failures[section_key][key] = self.successes[
+                                section_key].pop(key)
+                            self.passed = False
+
+    def test_sections(self, actual, desired):
+        return list(key for key in desired
+            if key in actual and actual[key] == desired[key])
+
+
+START_RE = re.compile(r'^Buildout::$', re.MULTILINE)
+END_RE = re.compile(r'(.+?)\n(?=\n\S).+?Result::(.+?)\n(?=\n\S*)',
+    re.DOTALL)
+
+class BuildoutManuel(object):
+    def parse(self, document):
+        document.regions = document.find_regions(START_RE, END_RE)
+        for region in document:
+            buildout, want = [textwrap.dedent(s.lstrip('\n'))
+                for s in region.end_match.groups()]
+            example = zope.testing.doctest.Example(
+                buildout, want, lineno=region.lineno + 2)
+            document.replace_region(region, example)
+            region.parsed = example
+
+    def evaluate(self, document):
+        setupBuildout = self.test.globs['setupBuildout']
+        sample_buildout = self.test.globs['sample_buildout']
+        rmdir = self.test.globs['rmdir']
+        for region in document:
+            example = region.parsed
+            if not isinstance(example, zope.testing.doctest.Example):
+                continue
+            buildout = setupBuildout(
+                sample_buildout, "buildout.cfg", example.source)
+            try:
+                buildout.install([])
+                result_buildout = dict(buildout)
+                config = ConfigParser.RawConfigParser()
+                config.readfp(StringIO.StringIO(example.want))
+                result_desired = dict(
+                    (section, dict(pair for pair in config.items(section)))
+                    for section in config.sections())
+                region.evaluated = BuildoutEvaluation(
+                    example, actual=result_buildout, desired=result_desired)
+            except zc.buildout.easy_install.MissingDistribution, md:
+                region.evaluated = BuildoutEvaluation(
+                    example, traceback=''.join(
+                        traceback.format_exception(*(sys.exc_info()))))
+
+    def format(self, document):
+        for region in document:
+            evaluation = region.evaluated
+            if not isinstance(evaluation, BuildoutEvaluation):
+                continue
+            if not evaluation.passed:
+                if evaluation.traceback:
+                    region.formatted = evaluation.traceback
+#            else:
+#                cp = ConfigParser.RawConfigParser()
+#                for section_name, section in evaluation.successes.iteritems():
+#                    cp.add_section(section_name)
+#                    for key, val in section.iteritems():
+#                        cp.set(section_name, key, val)
+#                sio = StringIO.StringIO()
+#                cp.write(sio)
+#                region.formatted = sio.getvalue()
+#                sio.close()
+
+    def setUp(self, test):
+        self.test = test
+        setUp(test)
+
+
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
 
@@ -104,6 +203,20 @@ def test_suite():
                zc.buildout.tests.normalize_bang,
                ]), optionflags=optionflags
             ),)
+
+    m = manuel.doctest.Manuel(
+        optionflags=(zope.testing.doctest.NORMALIZE_WHITESPACE |
+                     zope.testing.doctest.ELLIPSIS))
+
+    bm = BuildoutManuel()
+    manuel_test = manuel.Manuel()
+    manuel_test.parser(timing='early')(bm.parse)
+    manuel_test.evaluater(bm.evaluate)
+    manuel_test.formatter(bm.format)
+
+    m.extend(manuel_test)
+    quickstart = manuel.testing.TestSuite(m, 'QUICKSTART.txt', setUp=bm.setUp)
+    suite.addTest(quickstart)
 
     return suite
 

@@ -108,6 +108,7 @@ setuptools.setup(
         "setuptools",
         "zc.recipe.testrunner",
         "zope.testing",
+        "manuel",
         ],
     include_package_data=True,
     zip_safe=False,
