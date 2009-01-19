@@ -1,0 +1,28 @@
+=======
+CHANGES
+=======
+
+
+1.1.0 (2009-01-19)
+------------------
+
+- Feature: Updated to the latest Selenium Core release 0.8.3.
+
+- Feature: Added a `--base-url` option to the selenium script, so that one is
+  not dependent to include the default layer in the default skin. (Who does
+  this? What a security hole!)
+
+- Feature: Added a `-t` option to filter selenium tests by regexps.  You can
+  also specify multiple `-t` options.
+
+- Bug: Added documentation on how to setup `zc.selenium`.
+
+- Bug: Allow wsgi option to work with python 2.5
+
+- First public release.
+
+1.0.0 (2008-03-27)
+------------------
+
+- Internal release.
+
