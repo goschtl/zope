@@ -7,6 +7,9 @@ setup(
     author_email='info@zope.com',
     url='http://svn.zope.org/zc.seleinum',
     description="Selenium integration for Zope 3",
+    long_description=(open('README.txt').read()
+                        + '\n\n'
+                        + open('CHANGES.txt').read()),
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     include_package_data=True,
