@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.2.3 (2009-01-??)
+1.2.3 (2009-01-19)
 ------------------
 
 - Added 'getPrincipalsForPermission' to IExtendedGrantInfo interface
