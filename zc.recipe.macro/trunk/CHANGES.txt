@@ -9,6 +9,7 @@ CHANGES
 - Put QUICKSTART.txt under test, using manuel.
 - Macro invocations will grow a result-sections value that lists the sections
   they modified or created.
+- README.txt is now mostly Manuellified.
 
 1.2.4 (2008-07-18)
 ------------------

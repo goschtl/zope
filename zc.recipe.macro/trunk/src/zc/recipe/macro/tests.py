@@ -184,7 +184,8 @@ class BuildoutManuel(object):
                     region.formatted = '\n'.join(list(difflib.unified_diff(
                         dict_to_cfg(evaluation.desired).split('\n'),
                         dict_to_cfg(evaluation.result).split('\n'),
-                        'desired', 'result')))
+                        '%s:%s DESIRED' % (document.location, region.lineno),
+                        '%s:%s RESULT' % (document.location, region.lineno))))
 
     def setUp(self, test):
         self.test = test
@@ -235,6 +236,7 @@ def test_suite():
 
     m.extend(manuel_test)
     quickstart = manuel.testing.TestSuite(m, 'QUICKSTART.txt', setUp=bm.setUp)
+    quickstart = manuel.testing.TestSuite(m, 'README.txt', setUp=bm.setUp)
     suite.addTest(quickstart)
 
     return suite
