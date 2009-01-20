@@ -60,6 +60,8 @@ class RelationDisplayWidget(grok.MultiAdapter, DisplayWidget):
             value = self.context.default
         if value == self.context.missing_value:
             return ""
+        if value.isBroken():
+            return u"Broken relation to: %s" % value.to_path
         to_object = value.to_object
         try:
             to_url = component.getMultiAdapter((to_object, self.request),

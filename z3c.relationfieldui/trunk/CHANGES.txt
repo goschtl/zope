@@ -4,7 +4,9 @@ CHANGES
 0.4 (unreleased)
 ================
 
-* ...
+* Use improved ``z3c.relationfield`` to better handle broken
+  relations.  Broken relations are now accepted by the UI but will be
+  stored as broken.
 
 0.3 (2009-01-16)
 ================

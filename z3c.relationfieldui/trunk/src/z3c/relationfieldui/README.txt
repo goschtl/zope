@@ -7,8 +7,9 @@ relations as defined by `z3c.relationfield`_.
 
 .. _`z3c.relationfield`: http://pypi.python.org/pypi/z3c.relationfield
 
-This package does not provide a ``z3c.form`` widget for ``z3c.relationfield``, but it is hoped
-that will eventually be developed as well (in another package).
+This package does not provide a ``z3c.form`` widget for
+``z3c.relationfield``, but it is hoped that will eventually be
+developed as well (in another package).
 
 Setup
 =====
@@ -72,8 +73,24 @@ path for a given object, and back::
   ...   def path(self, obj):
   ...       return obj.__name__
   ...   def resolve(self, path):
-  ...       return root[path]
+  ...       try:
+  ...           return root[path]
+  ...       except KeyError:
+  ...           raise ValueError("Cannot resolve: %s" % path)
   >>> grok.testing.grok_component('ObjectPath', ObjectPath)
+  True
+
+Let's also set up a broken relation::
+
+  >>> d = root['d'] = Item()
+  >>> d_id = intids.getId(root['d'])
+  >>> c = Item()
+  >>> c.rel = RelationValue(d_id)
+  >>> root['c'] = c
+  >>> del root['d']
+  >>> root['c'].rel.to_object is None
+  True
+  >>> root['c'].rel.isBroken()
   True
 
 The relation widget
@@ -104,14 +121,23 @@ Let's take a look at the relation widget now::
   >>> from z3c.relationfieldui import RelationWidget
   >>> request = TestRequest()
   >>> field = IItem['rel']
-  >>> class Context(object):
-  ...    pass
-  >>> obj = Context()
-  >>> obj.__name__ = 'something'
-  >>> field.context = obj
-  >>> widget = RelationWidget(field, request)
+  >>> bound = field.bind(root['b'])
+  >>> widget = RelationWidget(bound, request)
+  >>> widget.setRenderedValue(bound.get(root['b']))
   >>> print widget()
-  <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value=""  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org?from_attribute=rel&amp;from_path=something')" type="button" value="get relation" />
+  <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value="a"  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org?from_attribute=rel&amp;from_path=b')" type="button" value="get relation" />
+
+Let's also try it with the broken relation::
+
+  >>> bound = field.bind(root['c'])
+  >>> widget = RelationWidget(bound, request)
+  >>> widget.setRenderedValue(bound.get(root['c']))
+
+When we render the widget, the value is still correct (even though
+it's broken)::
+
+  >>> print widget()
+  <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value="d"  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org?from_attribute=rel&amp;from_path=c')" type="button" value="get relation" />
 
 Relation display widget
 =======================
@@ -122,11 +148,9 @@ on the object called "relationurl". Without such a view, the display
 widget will link directly to the object::
 
   >>> from z3c.relationfieldui import RelationDisplayWidget
-  >>> widget = RelationDisplayWidget(IItem['rel'], request)
-
-We have to set the widget up with some data::
-
-  >>> widget._data = b.rel 
+  >>> bound = field.bind(root['b'])
+  >>> widget = RelationDisplayWidget(bound, request)
+  >>> widget.setRenderedValue(bound.get(root['b']))
 
 The widget will point to the plain URL of ``rel``'s ``to_object``::
 
@@ -146,3 +170,11 @@ We should now see a link postfixed with ``/edit``::
 
   >>> print widget()
   <a href="http://127.0.0.1/root/a/edit">a</a>
+
+When the relation is broken, it will still display, but as broken::
+
+  >>> bound = field.bind(root['c'])
+  >>> widget = RelationDisplayWidget(bound, request)
+  >>> widget.setRenderedValue(bound.get(root['c']))
+  >>> print widget()
+  Broken relation to: d
