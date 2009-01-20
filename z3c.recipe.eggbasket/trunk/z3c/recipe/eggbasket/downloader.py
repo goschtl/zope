@@ -40,7 +40,7 @@ class Downloader(Eggs):
             # If the user has specified a download directory (in
             # ~/.buildout/default.cfg probably) we will want to use
             # it.
-            download_dir = self.buildout['buildout'].get('download-directory')
+            download_dir = self.buildout['buildout'].get('download-cache')
             if download_dir:
                 if not os.path.exists(download_dir):
                     os.mkdir(download_dir)
