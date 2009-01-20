@@ -7,6 +7,8 @@ CHANGES
 - Removed version sections from the documentation.
 - Improved test coverage.
 - Put QUICKSTART.txt under test, using manuel.
+- Macro invocations will grow a result-sections value that lists the sections
+  they modified or created.
 
 1.2.4 (2008-07-18)
 ------------------

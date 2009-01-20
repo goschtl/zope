@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+import difflib
 import logging
 import os
 import os.path
@@ -81,35 +82,61 @@ def setupBuildout(test, install_eggs=tuple(), *args):
 
 
 class BuildoutEvaluation(object):
-    def __init__(self, example, actual=None, desired=None, traceback=None):
+    def __init__(self, example, source=None, actual=None, desired=None, traceback=None):
         self.example = example
         self.traceback = traceback
+        self.actual = actual
+        self.desired = desired
         if traceback:
             self.passed = False
         else:
-            self.passed = True
-            self.successes = dict(desired)
-            self.failures = {}
-            for section_key, section in desired.iteritems():
-                if section_key not in actual:
-                    self.failures[section_key] = self.successes.pop(
-                        section_key)
-                    self.passed = False
-                else:
-                    for key, value in section.iteritems():
-                        if (key not in actual[section_key] or
-                            value != actual[section_key][key]):
-                            self.failures[section_key][key] = self.successes[
-                                section_key].pop(key)
-                            self.passed = False
+            # If there's no traceback, then we need to evaluate the results
+            # 1) The result begins as a copy of the full generated buildout
+            # 2) Sections and values that are not explicitly desired, and
+            #    and are present in the source are removed, since they
+            #    aren't interesting
+            # 3) The result should be equivalent to the desired dictionary
+            #    to pass
+
+            self.result = dict(actual)
+            for section_key, section in actual.iteritems():
+                if section_key in source:
+                    if section_key not in desired:
+                        del self.result[section_key]
+                    else:
+                        for key, value in dict(section).iteritems():
+                            if key in source[section_key]:
+                                if key not in desired[section_key]:
+                                    del self.result[section_key][key]
+            self.passed = self.result == self.desired
 
     def test_sections(self, actual, desired):
         return list(key for key in desired
             if key in actual and actual[key] == desired[key])
 
 
+def cfg_to_dict(cfg):
+    config = ConfigParser.RawConfigParser()
+    config.readfp(StringIO.StringIO(cfg))
+    return dict(
+        (section, dict(pair for pair in config.items(section)))
+        for section in config.sections())
+
+def dict_to_cfg(d):
+    cp = ConfigParser.RawConfigParser()
+    for section_name, section in d.iteritems():
+        cp.add_section(section_name)
+        for key, val in section.iteritems():
+            cp.set(section_name, key, val)
+    sio = StringIO.StringIO()
+    cp.write(sio)
+    cfg = sio.getvalue()
+    sio.close()
+    return cfg
+
+
 START_RE = re.compile(r'^Buildout::$', re.MULTILINE)
-END_RE = re.compile(r'(.+?)\n(?=\n\S).+?Result::(.+?)\n(?=\n\S*)',
+END_RE = re.compile(r'(.+?)\n(?=\n\S).+?Result::(.+?)\n(?=\n\S)',
     re.DOTALL)
 
 class BuildoutManuel(object):
@@ -136,13 +163,10 @@ class BuildoutManuel(object):
             try:
                 buildout.install([])
                 result_buildout = dict(buildout)
-                config = ConfigParser.RawConfigParser()
-                config.readfp(StringIO.StringIO(example.want))
-                result_desired = dict(
-                    (section, dict(pair for pair in config.items(section)))
-                    for section in config.sections())
-                region.evaluated = BuildoutEvaluation(
-                    example, actual=result_buildout, desired=result_desired)
+                region.evaluated = BuildoutEvaluation(example,
+                                                      source=cfg_to_dict(example.source),
+                                                      actual=result_buildout,
+                                                      desired=cfg_to_dict(example.want))
             except zc.buildout.easy_install.MissingDistribution, md:
                 region.evaluated = BuildoutEvaluation(
                     example, traceback=''.join(
@@ -156,16 +180,11 @@ class BuildoutManuel(object):
             if not evaluation.passed:
                 if evaluation.traceback:
                     region.formatted = evaluation.traceback
-#            else:
-#                cp = ConfigParser.RawConfigParser()
-#                for section_name, section in evaluation.successes.iteritems():
-#                    cp.add_section(section_name)
-#                    for key, val in section.iteritems():
-#                        cp.set(section_name, key, val)
-#                sio = StringIO.StringIO()
-#                cp.write(sio)
-#                region.formatted = sio.getvalue()
-#                sio.close()
+                else:
+                    region.formatted = '\n'.join(list(difflib.unified_diff(
+                        dict_to_cfg(evaluation.desired).split('\n'),
+                        dict_to_cfg(evaluation.result).split('\n'),
+                        'desired', 'result')))
 
     def setUp(self, test):
         self.test = test

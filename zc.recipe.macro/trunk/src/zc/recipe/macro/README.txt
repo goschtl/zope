@@ -101,6 +101,7 @@ Now we'll run the buildout.
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -114,6 +115,7 @@ Now we'll run the buildout.
                    'application': 'application',
                    'monitor-port': '9089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance1',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -184,6 +186,7 @@ This results in parts equivalent to the buildout:
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -197,6 +200,7 @@ This results in parts equivalent to the buildout:
                    'application': 'application',
                    'monitor-port': '9089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance1',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -264,6 +268,7 @@ Sometimes it is good to have a macro that does not result in a part.
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:empty',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -277,6 +282,7 @@ Sometimes it is good to have a macro that does not result in a part.
                    'application': 'application',
                    'monitor-port': '9089',
                    'recipe': 'zc.recipe.macro:empty',
+                   'result-sections': 'instance1',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -341,6 +347,7 @@ will come from an empty result-recipe option.
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:empty',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -354,6 +361,7 @@ will come from an empty result-recipe option.
                    'application': 'application',
                    'monitor-port': '9089',
                    'recipe': 'zc.recipe.macro:empty',
+                   'result-sections': 'instance1',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -395,7 +403,7 @@ options, and they can be used as parts.
     >>> buildout.install([])
     >>> buildout_pprint(buildout)
     {'buildout': {...},
-     'invoker': {'recipe': 'zc.recipe.macro:empty'},
+     'invoker': {'recipe': 'zc.recipe.macro:empty', 'result-sections': 'zero one'},
      'macro': {'output': 'I was invoked on $${:__name__}'},
      'one': {'output': 'I was invoked on one'},
      'zero': {'output': 'I was invoked on zero'}}
@@ -427,7 +435,7 @@ sections.
     >>> buildout.install([])
     >>> buildout_pprint(buildout)
     {'buildout': {...},
-     'invoker': {'recipe': 'zc.recipe.macro:empty'},
+     'invoker': {'recipe': 'zc.recipe.macro:empty', 'result-sections': 'zero one'},
      'macro': {'output': '$${:subject} was invoked on $${:__name__}'},
      'one': {'output': 'Fred was invoked on one'},
      'one-parameters': {'subject': 'Fred'},
@@ -484,6 +492,7 @@ It is possible to make default values in macros.
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>
@@ -516,7 +525,7 @@ It is possible to make default values in macros.
     >>> buildout.install([])
     >>> buildout_pprint(buildout)
     {'buildout': {...},
-     'invoker': {'recipe': 'zc.recipe.macro:empty'},
+     'invoker': {'recipe': 'zc.recipe.macro:empty', 'result-sections': 'zero'},
      'macro': {'output': '$${:subject} $${:verb} on $${:__name__}',
                'subject': 'I',
                'verb': 'was invoked'},
@@ -584,6 +593,7 @@ Now we'll make the buildout in memory, so that our monkeypatch will be effective
                    'application': 'application',
                    'monitor-port': '8089',
                    'recipe': 'zc.recipe.macro:test',
+                   'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
             <logfile>

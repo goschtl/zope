@@ -27,6 +27,7 @@ Result::
 
     [hard-rocker]
     recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker
     rocking-style = so hard
     question = Why do I rock so hard?
 
@@ -56,6 +57,7 @@ Result::
 
     [hard-rocker]
     recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker
     rocking-style = so hard
     question = Why do I rock so hard?
 
@@ -83,6 +85,7 @@ Result::
 
     [hard-rocker]
     recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker
     question = Why do I rock so hard?
     rocking-style = so hard
 
@@ -123,16 +126,23 @@ Buildout::
 
 Result::
 
+    [rockers]
+    recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker socks-rocker tired-rocker
+
     [hard-rocker]
     recipe = zc.recipe.macro:empty
+    rocking-style = so hard
     question = Why do I rock so hard?
 
     [socks-rocker]
     recipe = zc.recipe.macro:empty
+    rocking-style = my socks
     question = Why do I rock my socks?
 
     [tired-rocker]
     recipe = zc.recipe.macro:empty
+    rocking-style = all night
     question = Why do I rock all night?
 
 Special Variables
@@ -166,19 +176,24 @@ Buildout::
     targets =
         hard-rocker:hard-rocker-parameters
         socks-rocker:socks-rocker-parameters
-        rocking-style:tired-rocker-parameters
+        tired-rocker:tired-rocker-parameters
 
 Result::
 
-    [hard-rocker]
+    [rockers]
     recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker socks-rocker tired-rocker
+
+    [hard-rocker]
     question = Why does hard-rocker rock so hard?
+    recipe = zc.recipe.macro:empty
 
     [socks-rocker]
-    recipe = zc.recipe.macro:empty
     question = Why does socks-rocker rock my socks?
+    recipe = zc.recipe.macro:empty
 
     [tired-rocker]
-    recipe = zc.recipe.macro:empty
     question = Why does tired-rocker rock all night?
+    recipe = zc.recipe.macro:empty
 
+Done Now.

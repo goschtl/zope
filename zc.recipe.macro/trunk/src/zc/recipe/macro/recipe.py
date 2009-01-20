@@ -53,7 +53,9 @@ def Macro(buildout, name, options):
 
     macro_summation.update(dict(buildout[macro]))
 
+    new_sections = []
     for output, input in (parse_target(name, target) for target in targets):
+        new_sections.append(output)
         opt = Options(
                 buildout,
                 output,
@@ -67,6 +69,10 @@ def Macro(buildout, name, options):
             # If we're targetting some other section
             buildout._raw[output] = opt._raw
             #opt._initialize()
+
+    #Make a result-sections variable holding the sections that are modified
+    if new_sections:
+        options['result-sections'] = ' '.join(new_sections)
 
     #Make sure we have a recipe for this part, even if it is only the empty
     #one.
