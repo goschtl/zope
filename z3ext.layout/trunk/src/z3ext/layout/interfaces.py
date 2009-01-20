@@ -23,8 +23,10 @@ class LayoutNotFound(LookupError):
     """ Layout not found exception """
 
 
-class IPagelet(IBrowserPage):
+class IPagelet(interface.Interface):
     """ pagelet """
+
+    context = interface.Attribute('Context')
 
     contexts = interface.Attribute('Additional contexts')
 

@@ -77,7 +77,7 @@ class Layout(browser.BrowserPage):
         self.context = context
         self.request = request
 
-        self.__parent__ = view.context
+        self.__parent__ = view.__parent__
 
     def update(self):
         pass
@@ -101,14 +101,16 @@ class Layout(browser.BrowserPage):
             return self.render()
 
         if self.__name__ != self.layout:
-            layout = queryLayout(view, self.request, name=self.layout)
+            layout = queryLayout(
+                view, self.request, view.__parent__, name=self.layout)
             if layout is not None:
                 return layout(layout=self, view=view, *args, **kw)
         else:
-            if layoutview.context is not self.context.__parent__:
-                context = self.context.__parent__
+            context = self.context
+            if layoutview.context is not context.__parent__:
+                context = context.__parent__
             else:
-                context = getattr(self.context.__parent__, '__parent__')
+                context = getattr(context.__parent__, '__parent__', None)
 
             layout = queryLayout(self, self.request, context, name=self.layout)
             if layout is not None:

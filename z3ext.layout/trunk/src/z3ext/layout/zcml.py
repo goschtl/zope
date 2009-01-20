@@ -26,6 +26,7 @@ from zope.security.checker import defineChecker, Checker, CheckerPublic
 from zope.configuration.fields import Path, Tokens, GlobalObject, GlobalInterface
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces.browser import IBrowserPage
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.component.metadirectives import IBasicViewInformation
@@ -373,9 +374,9 @@ def pageletDirective(_context, for_, name=u'', type=(),
 
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)
+    allowed_interface.append(IBrowserPage)
     allowed_attributes.extend(kwargs.keys())
-    allowed_attributes.extend(('__call__', 'browserDefault',
-                               'update', 'render', 'publishTraverse'))
+    allowed_attributes.extend(('__call__', 'browserDefault', 'publishTraverse'))
 
     # Set up permission mapping for various accessible attributes
     _handle_allowed_interface(

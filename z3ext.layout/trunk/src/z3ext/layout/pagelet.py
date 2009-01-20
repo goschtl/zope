@@ -67,6 +67,8 @@ class BrowserPagelet(BrowserPage):
         for idx in range(len(args)):
             setattr(self, 'context%s'%idx, args[idx])
 
+        self.__parent__ = context
+
     def update(self):
         pass
 
@@ -86,7 +88,8 @@ class BrowserPagelet(BrowserPage):
         if self.isRedirected or self.request.response.getStatus() in (302, 303):
             return u''
 
-        layout = queryLayout(self, self.request, name=self.layoutname)
+        layout = queryLayout(
+            self, self.request, self.__parent__, name=self.layoutname)
         if layout is None:
             return self.render()
         else:
