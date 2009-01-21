@@ -24,6 +24,9 @@ except ImportError:
     from md5 import new as md5
     from sha import new as sha1
 
+from base64 import urlsafe_b64encode
+from base64 import urlsafe_b64decode
+from os import urandom
 from random import randint
 from codecs import getencoder
 
@@ -148,12 +151,56 @@ class SHA1PasswordManager(PlainTextPasswordManager):
         salt = storedPassword[:-40]
         return storedPassword == self.encodePassword(password, salt)
 
+class SSHAPasswordManager(PlainTextPasswordManager):
+    """SSHA password manager.
+
+    >>> from zope.interface.verify import verifyObject
+
+    >>> manager = SSHAPasswordManager()
+    >>> verifyObject(IPasswordManager, manager)
+    True
+
+    >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
+    >>> encoded = manager.encodePassword(password, salt="")
+    >>> encoded
+    '{SSHA}BLTuxxVMXzouxtKVb7gLgNxzdAI='
+
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> encoded = manager.encodePassword(password)
+    >>> manager.checkPassword(encoded, password)
+    True
+    >>> manager.checkPassword(encoded, password + u"wrong")
+    False
+
+    >>> manager.encodePassword(password) != manager.encodePassword(password)
+    True
+    """
+
+    implements(IPasswordManager)
+
+    def encodePassword(self, password, salt=None):
+        if salt is None:
+            salt = urandom(4)
+        hash = sha1(_encoder(password)[0])
+        hash.update(salt)
+        return '{SSHA}' + urlsafe_b64encode(
+            hash.digest() + salt)
+
+    def checkPassword(self, storedPassword, password):
+        byte_string = urlsafe_b64decode(storedPassword[6:])
+        salt = byte_string[20:]
+        return storedPassword == self.encodePassword(password, salt)
 
 # Simple registry used by mkzopeinstance script
 managers = [
     ("Plain Text", PlainTextPasswordManager()), # default
     ("MD5", MD5PasswordManager()),
     ("SHA1", SHA1PasswordManager()),
+    ("SSHA", SSHAPasswordManager()),
 ]
 
 
