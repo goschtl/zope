@@ -394,7 +394,7 @@ def evolve(db, how=EVOLVE):
         testdb/app2: up-to-date at generation 11
 
     If we happen to install an app that has a generation that is less
-    that the database generation, we'll get an error, because there is
+    than the database generation, we'll get an error, because there is
     no way to get the database to a generation that the app
     understands:
 
