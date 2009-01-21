@@ -137,7 +137,7 @@ def get():
     """Returns a index collector
 
     Threading local provides a storage for our index collector. This will 
-    ensure taht we never use more then one collector in a transaction.
+    ensure that we never use more then one collector in a transaction.
     """
     txn = transaction.manager.get()
     indexerCollector = getattr(_collector, 'z3cIndexerCollector', None)
