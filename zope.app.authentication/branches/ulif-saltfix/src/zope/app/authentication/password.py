@@ -71,6 +71,9 @@ class PlainTextPasswordManager(object):
 class MD5PasswordManager(PlainTextPasswordManager):
     """MD5 password manager.
 
+    Note: use of salt in this password manager is purely
+    cosmetical. Use SSHA if you want increased security.
+    
     >>> from zope.interface.verify import verifyObject
 
     >>> manager = MD5PasswordManager()
@@ -80,7 +83,7 @@ class MD5PasswordManager(PlainTextPasswordManager):
     >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
     >>> encoded = manager.encodePassword(password, salt="")
     >>> encoded
-    '86dddccec45db4599f1ac00018e54139'
+    '{MD5}86dddccec45db4599f1ac00018e54139'
     >>> manager.checkPassword(encoded, password)
     True
     >>> manager.checkPassword(encoded, password + u"wrong")
@@ -103,16 +106,22 @@ class MD5PasswordManager(PlainTextPasswordManager):
     def encodePassword(self, password, salt=None):
         if salt is None:
             salt = "%08x" % randint(0, 0xffffffff)
-        return salt + md5(_encoder(password)[0]).hexdigest()
+        return '{MD5}%s%s' % (salt, md5(_encoder(password)[0]).hexdigest())
 
     def checkPassword(self, storedPassword, password):
+        if storedPassword.startswith('{MD5}'):
+            salt = storedPassword[5:-32]
+            return storedPassword == self.encodePassword(password, salt)
         salt = storedPassword[:-32]
-        return storedPassword == self.encodePassword(password, salt)
+        return storedPassword == self.encodePassword(password, salt)[6:]
 
 
 class SHA1PasswordManager(PlainTextPasswordManager):
     """SHA1 password manager.
 
+    Note: use of salt in this password manager is purely
+    cosmetical. Use SSHA if you want increased security.
+    
     >>> from zope.interface.verify import verifyObject
 
     >>> manager = SHA1PasswordManager()
@@ -122,7 +131,7 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     >>> password = u"right \N{CYRILLIC CAPITAL LETTER A}"
     >>> encoded = manager.encodePassword(password, salt="")
     >>> encoded
-    '04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
+    '{SHA1}04b4eec7154c5f3a2ec6d2956fb80b80dc737402'
     >>> manager.checkPassword(encoded, password)
     True
     >>> manager.checkPassword(encoded, password + u"wrong")
@@ -145,15 +154,26 @@ class SHA1PasswordManager(PlainTextPasswordManager):
     def encodePassword(self, password, salt=None):
         if salt is None:
             salt = "%08x" % randint(0, 0xffffffff)
-        return salt + sha1(_encoder(password)[0]).hexdigest()
+        return '{SHA1}%s%s' % (salt, sha1(_encoder(password)[0]).hexdigest())
 
     def checkPassword(self, storedPassword, password):
+        if storedPassword.startswith('{SHA1}'):
+            salt = storedPassword[6:-40]
+            return storedPassword == self.encodePassword(password, salt)
         salt = storedPassword[:-40]
-        return storedPassword == self.encodePassword(password, salt)
+        return storedPassword == self.encodePassword(password, salt)[7:]
 
 class SSHAPasswordManager(PlainTextPasswordManager):
     """SSHA password manager.
 
+    SSHA is basically SHA1-encoding which also incorporates a salt
+    into the encoded string. This way, stored passwords are more
+    robust against dictionary attacks of attackers that could get
+    access to lists of encoded passwords.
+
+    SSHA is regularly used in LDAP databases and we should be
+    compatible with passwords used there.
+    
     >>> from zope.interface.verify import verifyObject
 
     >>> manager = SSHAPasswordManager()
