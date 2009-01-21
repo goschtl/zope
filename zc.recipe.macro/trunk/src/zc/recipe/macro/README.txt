@@ -400,9 +400,6 @@ subclass will be created that returns it's keys in a particular order.
     ...         return list(
     ...             reversed(sorted(zc.buildout.buildout.Options.keys(self))))
     >>> zc.recipe.macro.recipe.Options = OrderedOptions
-
-Now we'll make the buildout in memory, so that our monkeypatch will be effective:
-
     >>> buildout = setupBuildout(sample_buildout, "buildout.cfg",
     ... """
     ... [buildout]
@@ -456,8 +453,5 @@ Now we'll make the buildout in memory, so that our monkeypatch will be effective
             <product-config zc.z3monitor>
             port 8089
             </product-config>'}}
-
-And we'll return to the old Options:
-
     >>> zc.recipe.macro.recipe.Options = zc.buildout.buildout.Options
 

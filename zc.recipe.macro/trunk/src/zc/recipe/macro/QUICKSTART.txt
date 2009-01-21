@@ -77,14 +77,14 @@ Buildout::
 
     [hard-rocker]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:empty
+    result-recipe = zc.recipe.macro:test
     macro = rock
     rocking-style = so hard
 
 Result::
 
     [hard-rocker]
-    recipe = zc.recipe.macro:empty
+    recipe = zc.recipe.macro:test
     result-sections = hard-rocker
     question = Why do I rock so hard?
     rocking-style = so hard
@@ -144,6 +144,57 @@ Result::
     recipe = zc.recipe.macro:empty
     rocking-style = all night
     question = Why do I rock all night?
+
+In the previous example we hardcoded the result parts after the invoker in
+${buildout:parts}.  This is brittle, because someone might change the names of
+the targets or alphabetize the parts list. An invocation will have a list of
+the sections it modified in its result-sections variable, which is created when
+the macro is executed.
+
+Buildout::
+
+    [buildout]
+    parts = ${rockers:result-sections}
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        tired-rocker:tired-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test
+    rocking-style = so hard
+
+    [socks-rocker]
+    question = Why do I rock my socks?
+    recipe = zc.recipe.macro:test
+    rocking-style = my socks
+
+    [tired-rocker]
+    question = Why do I rock all night?
+    recipe = zc.recipe.macro:test
+    rocking-style = all night
+
 
 Special Variables
 -----------------
