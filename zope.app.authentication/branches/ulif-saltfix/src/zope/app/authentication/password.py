@@ -170,6 +170,19 @@ class SSHAPasswordManager(PlainTextPasswordManager):
     >>> manager.checkPassword(encoded, password + u"wrong")
     False
 
+    Using the `slappasswd` utility to encode ``secret``, we get
+    ``{SSHA}J4mrr3NQHXzLVaT0h9TuEWoJOrxeQ5lv`` as seeded hash.
+
+    Our password manager generates the same value when seeded with the
+    same salt, so we can be sure, our output is compatible with
+    standard LDAP tools that also use SSHA::
+    
+    >>> from base64 import urlsafe_b64decode
+    >>> salt = urlsafe_b64decode('XkOZbw==')
+    >>> encoded = manager.encodePassword('secret', salt)
+    >>> encoded
+    '{SSHA}J4mrr3NQHXzLVaT0h9TuEWoJOrxeQ5lv'
+    
     >>> encoded = manager.encodePassword(password)
     >>> manager.checkPassword(encoded, password)
     True
