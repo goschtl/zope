@@ -4,7 +4,13 @@ Changes
 
 3.5.0 (unreleased)
 
-* ...
+* Encoded passwords are now stored with a prefix ({MD5}, {SHA1},
+  {SSHA}) indicating the used encoding schema. Old (encoded) passwords
+  can still be used.
+
+* Add an SSHA password manager that is compatible with standard LDAP
+  passwords. As this encoding gives better security agains dictionary
+  attacks, users are encouraged to switch to this new password schema.
 
 3.4.4 (2008-12-12)
 ------------------
