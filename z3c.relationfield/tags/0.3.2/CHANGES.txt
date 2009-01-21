@@ -1,0 +1,61 @@
+CHANGES
+*******
+
+0.3.2 (2009-01-21)
+==================
+
+* When a relation is broken, properly re-catalog things.
+
+0.3.1 (2009-01-20)
+==================
+
+* Introduce sensible sort order for relations, based on a
+  ``(from_attribute, from_path, to_path)`` tuple.
+
+* Relations will now never compare to ``None``. 
+
+0.3 (2009-01-19)
+================
+
+* Introduce two new interfaces: ``IHasOutgoingRelations`` and
+  ``IHasIncomingRelations``. ``IHasOutgoingRelations`` should be provided
+  by objects that actually have relations set on them, so that 
+  they can be properly cataloged. ``IHasIncomingRelations`` should be
+  set on objects that can be related to, so that broken relations
+  can be properly tracked. ``IHasRelations`` now extends both,
+  so if you provide those on your object you have an object that can
+  have both outgoing as well as incoming relations.
+
+* Improve broken relations support. When you now break a relation (by
+  removing the relation target), ``to_id`` and ``to_object`` become
+  ``None``. ``to_path`` however will remain the path that the relation
+  last pointed to. ``TemporaryRelation`` objects that when realized
+  are broken relations can also be created.
+
+  You can also for broken status by calling ``isBroken`` on a
+  relation.
+
+* The signature of the top-level function ``create_relation``
+  changed. It used to take the object to which the relation was to be
+  created, but should now get the path (in ``IObjectPath`` terms).
+  ``create_relation`` will now create a broken relation object if the
+  path cannot be resolved.
+
+0.2 (2009-01-08)
+================
+
+* Added support for ``RelationList`` fields. This allows one to
+  maintain a list of ``RelationValue`` objects that will be cataloged
+  like the regular ``Relation`` fields.
+
+* Get rid of ``IRelationInfo`` adapter requirement. Just define a
+  ``create_relation`` function that does the same work.
+
+* When looking for relations on an object be more tolerant if those
+  cannot be found (just skip them) - this can happen when a schema is
+  changed.
+
+0.1 (2008-12-05)
+================
+
+* Initial public release.
