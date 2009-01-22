@@ -39,10 +39,4 @@
     <allow attributes="suite" />
   </module>
 
-  <adapter
-    factory=".tests.TestSelenium"
-    name="zc.selenium.tests.TestSelenium"
-    permission="zope.Public"
-    />
-
 </configure>
