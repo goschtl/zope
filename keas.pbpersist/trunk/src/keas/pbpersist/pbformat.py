@@ -7,6 +7,7 @@ from ZODB.interfaces import ISerialFormat, ISerializer, IDeserializer
 from ZODB.format import register_format
 from ZODB.utils import p64, u64
 from ZODB.POSException import POSError
+from ZODB.broken import find_global as default_find_global
 from keas.pbstate.state import StateTuple
 
 from keas.pbpersist.persistent_pb2 import ClassMetadata
@@ -26,53 +27,22 @@ def decode_record(data):
     res.MergeFromString(data[len(format_prefix):])
     return res
 
-def read_class_meta(class_meta):
-    """Return a ZODB formatted tuple given a ClassMetadata.
-
-    This uses class metadata format #3 described by the
-    ZODB.serialize docstring.
-    """
-    return (class_meta.module_name, class_meta.class_name), None
-
-def write_class_meta(class_meta, source):
-    """Set attributes of a ClassMetadata from a source class metadata object.
-
-    The source is in any of the formats described by the
-    ZODB.serialize docstring.
-    """
-    if not isinstance(source, tuple):
-        # source is in format #1
-        class_meta.module_name = source.__module__
-        class_meta.class_name = source.__name__
-    else:
-        klass, args = source
-        if args is not None:
-            # source is in format #2, 4, 6, or 7
-            raise POSError(
-                "ProtobufSerializer can not serialize classes "
-                "using __getnewargs__ or __getinitargs__")
-        if isinstance(klass, tuple):
-            # source is in format #3
-            class_meta.module_name, class_meta.class_name = klass
-        else:
-            # source is in format #5
-            class_meta.module_name = klass.__module__
-            class_meta.class_name = klass.__name__
-
-def read_reference(ref):
+def read_reference(ref, find_global):
     """Return a ZODB formatted reference given a Reference message."""
     oid = p64(ref.zoid)
     if ref.weak:
         return ['w', (oid,)]
     elif ref.database:
         if ref.class_meta:
-            cm = read_class_meta(ref.class_meta)
-            return ['m', (ref.database, oid, cm)]
+            klass = find_global(
+                ref.class_meta.module_name, ref.class_meta.class_name)
+            return ['m', (ref.database, oid, klass)]
         else:
             return ['n', (ref.database, oid)]
     elif ref.class_meta:
-        cm = read_class_meta(ref.class_meta)
-        return (oid, cm)
+        klass = find_global(
+            ref.class_meta.module_name, ref.class_meta.class_name)
+        return (oid, klass)
     else:
         return oid
 
@@ -88,7 +58,8 @@ class ProtobufFormat(object):
 
     def listPersistentReferences(self, data):
         record = decode_record(data)
-        return (read_reference(ref) for ref in record.references)
+        return (read_reference(ref, default_find_global)
+            for ref in record.references)
 
 
 class ProtobufSerializer(object):
@@ -100,7 +71,7 @@ class ProtobufSerializer(object):
     def dump(self, classmeta, state):
         """Serialize a persistent object as an ObjectRecord message."""
         record = ObjectRecord()
-        write_class_meta(record.class_meta, classmeta)
+        self.set_class(record.class_meta, classmeta)
         record.state, refs = state
 
         for refid, target in refs.iteritems():
@@ -116,6 +87,31 @@ class ProtobufSerializer(object):
 
         return '%s%s' % (format_prefix, record.SerializeToString())
 
+    def set_class(self, class_meta, source):
+        """Set attributes of a ClassMetadata from a source class metadata.
+
+        The source is in any of the formats described by the
+        ZODB.serialize docstring.
+        """
+        if not isinstance(source, tuple):
+            # source is in format #1
+            class_meta.module_name = source.__module__
+            class_meta.class_name = source.__name__
+        else:
+            klass, args = source
+            if args is not None:
+                # source is in format #2, 4, 6, or 7
+                raise POSError(
+                    "ProtobufSerializer can not serialize classes "
+                    "using __getnewargs__ or __getinitargs__")
+            if isinstance(klass, tuple):
+                # source is in format #3
+                class_meta.module_name, class_meta.class_name = klass
+            else:
+                # source is in format #5
+                class_meta.module_name = klass.__module__
+                class_meta.class_name = klass.__name__
+
     def add_reference(self, record, refid, p):
         """Add a reference to an ObjectRecord.
 
@@ -125,9 +121,9 @@ class ProtobufSerializer(object):
         r = record.references.add()
         r.refid = refid
         oid = None
-        cm = None
+        klass = None
         if isinstance(p, tuple):
-            oid, cm = p
+            oid, klass = p
         elif isinstance(p, str):
             oid = p
         elif len(p) == 1:
@@ -137,7 +133,7 @@ class ProtobufSerializer(object):
         else:
             ref_type, args = p
             if ref_type == 'm':
-                r.database, oid, cm = args
+                r.database, oid, klass = args
             elif ref_type == 'w':
                 (oid,) = args
                 r.weak = True
@@ -146,8 +142,9 @@ class ProtobufSerializer(object):
             else:
                 raise POSError("Unknown reference type: %s" % repr(ref_type))
         r.zoid = u64(oid)
-        if cm is not None:
-            write_class_meta(r.class_meta, cm)
+        if klass is not None:
+            r.class_meta.module_name = klass.__module__
+            r.class_meta.class_name = klass.__name__
 
 
 class ProtobufDeserializer(object):
@@ -155,14 +152,18 @@ class ProtobufDeserializer(object):
 
     def __init__(self, persistent_load, find_global=None):
         self.persistent_load = persistent_load
-        self.find_global = find_global
+        if find_global is None:
+            self.find_global = default_find_global
+        else:
+            self.find_global = find_global
 
     def getClassAndState(self, data):
         record = decode_record(data)
-        yield read_class_meta(record.class_meta)
+        cm = record.class_meta
+        yield (cm.module_name, cm.class_name), None
         ref_dict = {}
         for ref in record.references:
-            zodb_ref = read_reference(ref)
+            zodb_ref = read_reference(ref, self.find_global)
             target = self.persistent_load(zodb_ref)
             ref_dict[ref.refid] = target
         yield record.state, ref_dict
