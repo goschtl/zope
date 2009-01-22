@@ -22,11 +22,6 @@
 	 set_schema=".interfaces.ILuceneIndex" />
     </class>
 
-    <class class=".product.PortalLuceneIndex"
-	   zcml:condition="installed z3ext.catalog">
-      <implements interface="z3ext.catalog.interfaces.IFullTextIndex" />
-    </class>
-
     <include package="z3ext.lucene.browser" file="product.zcml" />
   </zcml:configure>
 
