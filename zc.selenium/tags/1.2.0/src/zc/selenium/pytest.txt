@@ -1,0 +1,535 @@
+Writing Selenium Tests in Python
+================================
+
+HTML is a cumbersome format for writing tests.  Selenium's test
+format, HTML rows, leads to lots of extra boilerplate that is a pain to
+manage and that distracts from the actual test content.
+
+The pytest module allows a much more concise format to be used.  Test
+go from source like this::
+
+  <tr>
+   <td>verifyLocation</td>
+   <td>/FIPS/home/fred/addIntelProductProcessFromHomePage.html</td>
+   <td>&nbsp;</td>
+  </tr>
+
+to source like this::
+
+  s.verifyLocation("/FIPS/home/fred/addIntelProductProcessFromHomePage.html")
+
+The Python format provides other benefits:
+
+- Generation of comments containing line information, so that, when a
+  test fails, there is clear indication of where in the test the
+  failure occurred.
+
+- Generation of test comments from doc strings.
+
+- Automatic management (push/pop) of demo storages.
+
+- Organization of tests into Python methods.
+
+- The option of using Python scripting (functions, loops, etc.) to improve
+  test structuring.
+
+- Automatic test discovery.  Tests don't have to be put in a central
+  place and hand knit into the test suite.
+
+How it works
+------------
+
+Python Selenium tests are request adapters (resources) that, when run,
+generate HTML tables.  They provide the ISeleniumTest marker interface.  This
+interface is used to look them up and knit them into the test suite.
+
+How to write a test
+-------------------
+
+To write a Selenium test, you need to create a Python component and
+register it in ZCML.  The component is written by subclassing
+zc.selenium.pytest.Test:
+
+    >>> import zc.selenium.pytest
+    >>> class Test(zc.selenium.pytest.Test):
+    ...     """My first test
+    ...
+    ...     Anyone can write a test
+    ...     in Python
+    ...     """
+    ...
+    ...     def test1(self):
+    ...         s = self.selenium
+    ...         s.comment("show something")
+    ...         s.foo('bar')
+    ...         s.splat('eeek', 'oy')
+    ...         s.foo(27)
+    ...
+    ...     def test2(self):
+    ...         """Show something
+    ...         """
+    ...         s = self.selenium
+    ...         s.foo('bar')
+    ...
+    ...     def Waaa(self):
+    ...         s = self.selenium
+    ...         s.comment("No one ever calls me!")
+
+If we use this to adapt a request, and call it, we'll get a single
+HTML table:
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> print Test(TestRequest())()
+    <html>
+    <head>
+    <title>My first test</title>
+    <style type="text/css">
+    ...
+    </style>
+    </head>
+    <body>
+    <table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+    <tr>
+    <td rowspan="1" colspan="3">
+    <h1>My first test</h1>
+    <br/>
+        Anyone can write a test<br/>
+        in Python<br/>
+        </td>
+    </tr>
+    <BLANKLINE>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>show something</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[1]>:11 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>bar</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[1]>:12 ...</td>
+    <td></td>
+    </tr>
+    <tr class="splat">
+    <td>splat</td>
+    <td>eeek</td>
+    <td>oy</td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[1]>:13 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>27</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h2>Show something</h2></td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[1]>:19 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>bar</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    </tbody></table></body></html>
+
+There are a number of things to note about this example.
+
+- Each test class defines a single Selenium test, ultimately a
+  Selenium table.
+
+- Tests are organized into test methods.  Methods with names that start
+  with "test" are called automatically in name order.  Other methods
+  can be defined for whatever purpose.
+
+- Methods emit Selenium commands by calling methods on self.selenium.
+  The method names become Selenium commands.  Methods take one or 2
+  arguments which are converted to a string.  The pytest framework will
+  accept any method name and blindly create a Selenium statement.  In
+  this example, I used invalid Selenium commands, "foo" and "splat" to
+  illustrate this. Ultimately, we're just generating HTML rows. :)
+
+- For each non-comment Selenium command, a comment was generated
+  giving the file name and line number.  (The details of the generated
+  comments are not guaranteed, and are strictly for human consumption.)
+
+- Selenium push and pop calls are generated at the beginning and end of
+  the test and for each test method.  This allows the test to be
+  independent from other tests and for test methods to be independent
+  from one another.  This behavior can be overridden, as we'll see
+  later.
+
+- The test doc string is used to create the test documentation:
+
+  o The first line of the docstring provides the title for the
+    generated HTML page and a heading line in the first line of the
+    documentation row.
+
+  o The remaining text is included in the documentation row, with a
+    break for each line ending in the text.
+
+- The doc strings for the test methods are included as comments.  The
+  first line is included as a heading and the remaining lines are
+  included, separated by breaks.
+
+It's also possible to control what frame is used as the source for
+line number and filename reporting by using the `frame` keyword
+argument to the command function.  This can be used to allow helper
+methods to report the "test logic" location of caller rather than
+cluttering the test with its own location.
+
+    >>> import sys
+    >>> class FrameSample(zc.selenium.pytest.Test):
+    ...     """Frame selection example."""
+    ...
+    ...     def test_frame_selection(self):
+    ...         """Show frame selection"""
+    ...         self.my_helper()
+    ...
+    ...     def my_helper(self):
+    ...         self.selenium.sample(frame=sys._getframe(1))
+
+    >>> print FrameSample(TestRequest())()
+    <html>
+    <head>
+    <title>Frame selection example.</title>
+    <style type="text/css">
+    ...
+    </style>
+    </head>
+    <body>
+    <table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+    <tr>
+    <td rowspan="1" colspan="3">
+    <h1>Frame selection example.</h1>
+    </td>
+    </tr>
+    <BLANKLINE>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h2>Show frame selection</h2></td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[5]>:6 ...</td>
+    <td></td>
+    </tr>
+    <tr class="sample">
+    <td>sample</td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    </tbody></table></body></html>
+
+Open calls
+----------
+
+Note that the example above is very generic.  It uses generic method
+names like "foo" and "splat".  In practice, you'll need to use
+functions from the selenium API.  When using the open API, you'll want
+to pass a server-relative path, as in::
+
+  s.open('/foo/bar.html')
+
+rather than::
+
+  s.open('http://localhost/foo/bar.html')  # <-- don't do this
+
+The test runner will set the Selenium URL base to the server it
+starts.
+
+Set up and tear down
+--------------------
+
+Tests can define setUp and tearDown methods that are run before and after each
+test method.  Test can also define sharedSetUp and sharedTearDown methods that
+are run at the beginning and end of the test.  The default setUp and
+sharedSetUp push a new demo storage. The default tearDown and sharedTearDown
+pop the storage that the set up methods pushed.
+
+
+    >>> import zc.selenium.pytest
+    >>> class Second(zc.selenium.pytest.Test):
+    ...     """My second test
+    ...     """
+    ...
+    ...     def sharedSetUp(self):
+    ...         """Basic set up
+    ...
+    ...         Because we can.
+    ...         """
+    ...         super(Second, self).sharedSetUp()
+    ...         self.selenium.foo('start')
+    ...
+    ...     def sharedTearDown(self):
+    ...         super(Second, self).sharedTearDown()
+    ...         self.selenium.foo('end')
+    ...
+    ...     def setUp(self):
+    ...         self.selenium.comment('No push needed')
+    ...
+    ...     def tearDown(self):
+    ...         """Doc strings for setUp and tearDown become comments
+    ...         """
+    ...         self.selenium.comment('No pop needed')
+    ...
+    ...     def testx(self):
+    ...         s = self.selenium
+    ...         s.open(s.server)
+    ...
+    ...     def testy(self):
+    ...         """Show something
+    ...         """
+    ...         s = self.selenium
+    ...         s.foo('bar')
+    ...         s.baz(lineno=False)
+
+    >>> print Second(TestRequest())()
+    <html>
+    <head>
+    <title>My second test</title>
+    <style type="text/css">
+    ...
+    </style>
+    </head>
+    <body>
+    <table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+    <tr>
+    <td rowspan="1" colspan="3">
+    <h1>My second test</h1>
+        </td>
+    </tr>
+    <BLANKLINE>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h2>Basic set up</h2><br/>
+            Because we can.</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[8]>:11 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>start</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>No push needed</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[8]>:27 ...</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>127.0.0.1</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h3>Doc strings for setUp and tearDown become comments</h3></td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>No pop needed</td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h2>Show something</h2></td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>No push needed</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[8]>:33 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>bar</td>
+    <td></td>
+    </tr>
+    <tr class="baz">
+    <td>baz</td>
+    <td></td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>
+    <h3>Doc strings for setUp and tearDown become comments</h3></td>
+    <td></td>
+    </tr>
+    <tr class="comment">
+    <td>comment</td>
+    <td>No pop needed</td>
+    <td></td>
+    </tr>
+    <tr class="open">
+    <td>open</td>
+    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td></td>
+    </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[8]>:15 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>end</td>
+    <td></td>
+    </tr>
+    </tbody></table></body></html>
+
+Some things to note, in addition to the fact that our set-up and
+tear-down methods were called:
+
+- If a set-up or tear-down method has a doc string, it is output as a
+  comment.
+
+- The selenium object has a variable, server, that can be used to
+  generate URLs, as illustrated by the testx method.
+
+- The lineno keyword argument to the selenium command function can be
+  used to disable the comment directive containing line number
+  information.  This can be useful with certain selenium directives
+  that deal with confirmation dialogs, since no intervening comment
+  directive may be allowed.
+
+Registration
+------------
+
+To get our tests to be used in the Selenium test suite, we need to
+register them as request adapters.  We would normally use ZCML like
+the following::
+
+    <adapter
+        factory=".Second"
+        name="some-url-for-the-second-test.html"
+        permission="zope.Public"
+        />
+
+We'll illustrate this using the component API:
+
+    >>> from zope import component
+    >>> component.provideAdapter(Test, name='first.html')
+    >>> component.provideAdapter(Second, name='second.html')
+
+The test suite used the zc.selenium.pytest.suite function to
+compute rows for the test suite:
+
+    >>> print zc.selenium.pytest.suite(TestRequest())
+    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@/second.html">My second test</a></td></tr>
+
+For each test, a row is output with a link to the test resource and a
+link title computed from the test doc string.  The tests are output in
+adapter (resource) name order.
+
+You can specify a test filter
+
+    >>> zc.selenium.pytest.selectTestsToRun(['first'])
+    >>> print zc.selenium.pytest.suite(TestRequest())
+    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+
+or reset it
+
+    >>> zc.selenium.pytest.selectTestsToRun([])
+    >>> print zc.selenium.pytest.suite(TestRequest())
+    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@/second.html">My second test</a></td></tr>
+
