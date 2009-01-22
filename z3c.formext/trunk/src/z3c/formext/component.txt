@@ -1,0 +1,438 @@
+================
+ExtJS Components
+================
+
+We can construct configuration objects for basic extjs components.
+
+  >>> from z3c.formext import interfaces, component, testing
+
+  >>> from pprint import pprint
+
+Setup
+-----
+
+  >>> testing.setupExtJSComponents()
+
+  >>> from z3c.form.testing import setupFormDefaults, TestRequest
+  >>> setupFormDefaults()
+
+Widgets
+-------
+
+TextWidget
+..........
+
+    >>> from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE
+    >>> from z3c.form.browser.text import TextWidget
+
+    >>> widget = TextWidget(TestRequest())
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'value': 'widget value',
+     'xtype': 'textfield'}
+
+    >>> widget.mode = HIDDEN_MODE
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'hidden': True,
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'value': 'widget value',
+     'xtype': 'textfield'}
+
+    >>> widget.mode = DISPLAY_MODE
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'disabled': True,
+     'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'value': 'widget value',
+     'xtype': 'textfield'}
+
+TextArea
+........
+
+    >>> from z3c.form.browser.textarea import TextAreaWidget
+
+    >>> widget = TextAreaWidget(TestRequest())
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'value': 'widget value',
+     'xtype': 'textarea'}
+
+Date Widget
+...........
+
+    >>> from z3c.formext.widget import ExtJSDateWidget
+
+    >>> widget = ExtJSDateWidget(TestRequest())
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'value': 'widget value',
+     'xtype': 'datefield'}
+
+Select Widget
+.............
+
+    >>> from z3c.form.browser.select import SelectFieldWidget
+    >>> from zope.schema import Choice
+
+    >>> widget = SelectFieldWidget(
+    ...     Choice(values=[1,2,3,4]),
+    ...     TestRequest())
+    >>> widget.update()
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'editable': False,
+     'fieldLabel': u'Widget Label',
+     'hiddenName': 'widget.name:list',
+     'id': 'widget-id',
+     'name': 'widget.name',
+     'store': [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')],
+     'triggerAction': 'all',
+     'value': 'widget value',
+     'xtype': 'combo'}
+
+Radio Widget
+............
+
+    >>> from z3c.form.browser.radio import RadioFieldWidget
+    >>> widget = RadioFieldWidget(
+    ...     Choice(values=[1, 2, 3]),
+    ...     TestRequest())
+    >>> widget.update()
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'items': [{'boxLabel': '1',
+                'checked': False,
+                'id': 'widget-id-0',
+                'inputValue': '1',
+                'name': 'widget.name'},
+               {'boxLabel': '2',
+                'checked': False,
+                'id': 'widget-id-1',
+                'inputValue': '2',
+                'name': 'widget.name'},
+               {'boxLabel': '3',
+                'checked': False,
+                'id': 'widget-id-2',
+                'inputValue': '3',
+                'name': 'widget.name'}],
+     'xtype': 'radiogroup'}
+
+An edge case is a radio widget that has no values to select.  ExtJS
+requires there to be an items attribute that is a non empty list.  To
+get a similar effect, we just add one hidden item to the items list.
+
+    >>> widget = RadioFieldWidget(
+    ...     Choice(values=[]),
+    ...     TestRequest())
+    >>> widget.update()
+    >>> widget.label = u'Widget Label'
+    >>> widget.id = 'widget-id'
+    >>> widget.name = 'widget.name'
+    >>> widget.value = 'widget value'
+
+    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+    {'fieldLabel': u'Widget Label',
+     'id': 'widget-id',
+     'items': [{'hidden': True}],
+     'xtype': 'radiogroup'}
+
+
+Form Panels
+-----------
+
+ExtJS has the concept of a form panel.  We can directly adapt a from
+from z3c.form.
+
+  >>> from z3c.form import form, field, button
+  >>> import zope.schema
+  >>> import zope.interface
+
+
+  >>> class IPerson(zope.interface.Interface):
+  ...
+  ...     id = zope.schema.TextLine(
+  ...         title=u'ID',
+  ...         readonly=True,
+  ...         required=True)
+  ...
+  ...     isCool = zope.schema.Bool(
+  ...         title=u'Are you Cool?',
+  ...         required=True)
+  ...
+  ...     name = zope.schema.TextLine(
+  ...         title=u'Name',
+  ...         required=True)
+  ...
+  ...     gender = zope.schema.Choice(
+  ...         title=u'Gender',
+  ...         values=('male', 'female'),
+  ...         required=False)
+  ...
+  ...     age = zope.schema.Int(
+  ...         title=u'Age',
+  ...         description=u"The person's age.",
+  ...         min=0,
+  ...         default=20,
+  ...         required=False)
+  ...
+  ...     passwd = zope.schema.Password(
+  ...         title=u'Password',
+  ...         required=True)
+  ...
+  ...     birthDay = zope.schema.Date(
+  ...         title=u'Birthday')
+  ...
+  ...     isNice = zope.schema.Bool(
+  ...         title=u'Are you Nice?',
+  ...         required=True)
+  ...
+
+  >>> from z3c.form.browser.checkbox import SingleCheckBoxFieldWidget
+  >>> from z3c.form.browser.password import PasswordFieldWidget
+  >>> from z3c.form.interfaces import HIDDEN_MODE
+  >>> from z3c.formext.widget import ExtJSDateFieldWidget
+  >>> class ContactForm(form.Form):
+  ...     label = u'My Contact Form'
+  ...     ignoreContext = True
+  ...     fields = field.Fields(IPerson)
+  ...     fields['isCool'].widgetFactory = SingleCheckBoxFieldWidget
+  ...     fields['passwd'].widgetFactory = PasswordFieldWidget
+  ...     fields['birthDay'].widgetFactory = ExtJSDateFieldWidget
+  ...     buttons = button.Buttons(button.Button(__name__='save', title=u'Save'))
+  ...     renderTo = 'my-dom-id'
+  ...     def updateWidgets(self):
+  ...         super(ContactForm, self).updateWidgets()
+  ...         self.widgets['id'].mode = HIDDEN_MODE
+
+  >>> myForm = ContactForm('context', TestRequest())
+
+  >>> formPanel = interfaces.IExtJSComponent(myForm)
+  >>> config = formPanel.getConfig()
+
+Now we can look more closely at what we actually get
+
+  >>> config['xtype']
+  'formpanel'
+  >>> config['title']
+  u'My Contact Form'
+  >>> config['id']
+  'form'
+  >>> config['renderTo']
+  'my-dom-id'
+
+Here is a simple text widget
+
+  >>> pprint(config['items'][0])
+  {'fieldLabel': u'ID',
+   'hidden': True,
+   'id': 'form-widgets-id',
+   'name': 'form.widgets.id',
+   'value': u'',
+   'xtype': 'textfield'}
+
+Here is a single checkbox widget
+
+  >>> pprint(config['items'][1])
+  {'checked': False,
+   'fieldLabel': u'Are you Cool?',
+   'id': 'form-widgets-isCool',
+   'name': 'form.widgets.isCool',
+   'xtype': 'checkbox'}
+
+Here is another simple text widget
+
+  >>> pprint(config['items'][2])
+  {'fieldLabel': u'Name',
+   'id': 'form-widgets-name',
+   'name': 'form.widgets.name',
+   'value': u'',
+   'xtype': 'textfield'}
+
+Here is a select widget
+
+    >>> pprint(config['items'][3])
+    {'editable': False,
+     'fieldLabel': u'Gender',
+     'hiddenName': 'form.widgets.gender:list',
+     'id': 'form-widgets-gender',
+     'name': 'form.widgets.gender',
+     'store': [('--NOVALUE--', u'no value'),
+               ('male', 'male'),
+               ('female', 'female')],
+     'triggerAction': 'all',
+     'value': (),
+     'xtype': 'combo'}
+
+  >>> pprint(config['buttons'])
+  [{'id': 'form-buttons-save',
+    'name': 'form.buttons.save',
+    'text': u'Save',
+    'title': u'Save',
+    'xtype': 'button'}]
+
+Here is an integer widget
+
+  >>> pprint(config['items'][4])
+  {'fieldLabel': u'Age',
+   'id': 'form-widgets-age',
+   'name': 'form.widgets.age',
+   'value': u'20',
+   'xtype': 'textfield'}
+
+Here is a password widget
+
+  >>> pprint(config['items'][5])
+  {'fieldLabel': u'Password',
+   'id': 'form-widgets-passwd',
+   'inputType': 'password',
+   'name': 'form.widgets.passwd',
+   'value': u'',
+   'xtype': 'textfield'}
+
+Here is a date widget
+
+  >>> pprint(config['items'][6])
+  {'fieldLabel': u'Birthday',
+   'id': 'form-widgets-birthDay',
+   'name': 'form.widgets.birthDay',
+   'value': u'',
+   'xtype': 'datefield'}
+
+Here is a radio group
+
+  >>> pprint(config['items'][7])
+  {'fieldLabel': u'Are you Nice?',
+   'id': 'form-widgets-isNice',
+   'items': [{'boxLabel': u'yes',
+              'checked': False,
+              'id': 'form-widgets-isNice-0',
+              'inputValue': 'true',
+              'name': 'form.widgets.isNice'},
+             {'boxLabel': u'no',
+              'checked': False,
+              'id': 'form-widgets-isNice-1',
+              'inputValue': 'false',
+              'name': 'form.widgets.isNice'}],
+   'xtype': 'radiogroup'}
+
+Helper functions
+----------------
+
+It is sometimes the case that we want to provide information about an
+extjs component in a format that doesn't quite fit what extjs wants to
+use, but which is easier for custom components to configure and play
+with.  For example, extjs likes container items to be a list, but if
+the script that uses the config object wants to present items in a
+different order, it is easier to reference the items by name rather
+than by index.
+
+Buttons
+.......
+
+For example, we can get the set of buttons in either a dictionary
+based format (easy for rearraging) or a list format (the way extjs
+likes it).
+
+  >>> pprint(component.getButtonsConfig(myForm))
+  {'save': {'id': 'form-buttons-save',
+            'name': 'form.buttons.save',
+            'text': u'Save',
+            'title': u'Save',
+            'xtype': 'button'}}
+
+  >>> pprint(component.getButtonsConfig(myForm, asDict=False))
+  [{'id': 'form-buttons-save',
+    'name': 'form.buttons.save',
+    'text': u'Save',
+    'title': u'Save',
+    'xtype': 'button'}]
+
+Widgets
+.......
+
+This works just like buttons, except for widgets.
+
+  >>> pprint(component.getWidgetsConfig(myForm)['isNice'])
+  {'fieldLabel': u'Are you Nice?',
+   'id': 'form-widgets-isNice',
+   'items': [{'boxLabel': u'yes',
+              'checked': False,
+              'id': 'form-widgets-isNice-0',
+              'inputValue': 'true',
+              'name': 'form.widgets.isNice'},
+             {'boxLabel': u'no',
+              'checked': False,
+              'id': 'form-widgets-isNice-1',
+              'inputValue': 'false',
+              'name': 'form.widgets.isNice'}],
+   'xtype': 'radiogroup'}
+
+  >>> pprint(component.getWidgetsConfig(myForm, asDict=False)[0])
+  {'fieldLabel': u'ID',
+   'hidden': True,
+   'id': 'form-widgets-id',
+   'name': 'form.widgets.id',
+   'value': u'',
+   'xtype': 'textfield'}
+
+
+Custom Widget Component Factories
+---------------------------------
+
+We can also specify custom components for widgets.
+
+  >>> class MyComponent(component.TextField):
+  ...   xtype = 'my-component'
+  >>> class ContactForm(form.Form):
+  ...     ignoreContext = True
+  ...     fields = field.Fields(IPerson).select('id')
+  ...     def updateWidgets(self):
+  ...         super(ContactForm, self).updateWidgets()
+  ...         self.widgets['id'].componentFactory = MyComponent
+
+  >>> myForm = ContactForm('context', TestRequest())
+
+  >>> formPanel = interfaces.IExtJSComponent(myForm)
+  >>> config = formPanel.getConfig()
+  >>> pprint(config['items'][0])
+  {'disabled': True,
+   'fieldLabel': u'ID',
+   'id': 'form-widgets-id',
+   'name': 'form.widgets.id',
+   'value': u'',
+   'xtype': 'my-component'}
+

@@ -1,0 +1,232 @@
+ExtJS Form Integration
+======================
+
+This package also provides a tight integration between z3c.form -
+which provides a server side model and validation system, and Ext JS
+forms which provide an advanced client side form model.
+
+  >>> from z3c.formext import form, interfaces
+
+Setup
+-----
+
+  >>> from z3c.formext import testing
+  >>> testing.setupFormExt()
+
+Script Provider
+---------------
+
+We have a base class that represents a component that provides some
+javascript.  It has support for several features which we will show
+off here.
+
+    >>> from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+    >>> class MyPage(form.ScriptProvider):
+    ...   script = ViewPageTemplateFile('tests/script.js')
+    ...   scriptDependencies = ('z3c.formext.form','someOtherLib')
+    ...   @form.jsproperty
+    ...   def appearsInJS(self):
+    ...       return ['yay','for',{'complex':'types'}]
+
+    >>> myPage = MyPage()
+    >>> myPage.request = testing.TestRequest()
+    >>> myPage.context = object()
+    >>> print myPage.scriptTag
+    <script type="text/javascript" language="Javascript">
+      (function(){
+    z3c.formext.ModuleLoader.load(
+      "z3c.formext.form",
+      function(){
+        z3c.formext.ModuleLoader.load(
+      "someOtherLib",
+      function(){
+            var appearsInJS=["yay", "for", {"complex": "types"}];
+    alert("foo!");
+      });
+      });
+    })();
+    </script>
+
+Creating forms
+--------------
+
+Ext JS forms are created in the same manner as regular z3c.form
+forms. First we will create an interface for the form.
+
+
+  >>> from z3c.form import field, button
+  >>> import zope.schema
+  >>> import zope.interface
+
+  >>> class IPerson(zope.interface.Interface):
+  ...
+  ...     id = zope.schema.TextLine(
+  ...         title=u'ID',
+  ...         readonly=True,
+  ...         required=True)
+  ...
+  ...     isCool = zope.schema.Bool(
+  ...         title=u'Are you Cool?',
+  ...         required=True)
+  ...
+  ...     name = zope.schema.TextLine(
+  ...         title=u'Name',
+  ...         required=True)
+  ...
+  ...     gender = zope.schema.Choice(
+  ...         title=u'Gender',
+  ...         values=('male', 'female'),
+  ...         required=False)
+  ...
+  ...     age = zope.schema.Int(
+  ...         title=u'Age',
+  ...         description=u"The person's age.",
+  ...         min=0,
+  ...         default=20,
+  ...         required=False)
+  ...
+  ...     passwd = zope.schema.Password(
+  ...         title=u'Password',
+  ...         required=True)
+
+Now we can create the form.
+
+  >>> from z3c.form.browser.checkbox import SingleCheckBoxFieldWidget
+  >>> from z3c.form.browser.password import PasswordFieldWidget
+  >>> from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+  >>> class ContactForm(testing.TestingForm, form.ExtJSForm):
+  ...     label = u'My Contact Form'
+  ...     ignoreContext = True
+  ...     fields = field.Fields(IPerson)
+  ...     fields['isCool'].widgetFactory = SingleCheckBoxFieldWidget
+  ...     fields['passwd'].widgetFactory = PasswordFieldWidget
+  ...
+  ...     ownerCt = 'my-ext-component-id'
+  ...
+  ...     @form.buttonAndHandler(title=u'Save', success='handleSave')
+  ...     def handleSave(self):
+  ...         pass
+  ...     jsproperties = form.ExtJSForm.jsproperties.copy()
+  ...     @form.jsproperty
+  ...     def foo(self):
+  ...         return 'the foo property'
+
+Note that the jsproperties are not changed on the superclass
+
+  >>> form.ExtJSForm.jsproperties.keys()
+  ['config']
+
+  >>> ContactForm.jsproperties.keys()
+  ['config', 'foo']
+
+Now we can invoke the form and try to extract the data.
+
+  >>> myForm = ContactForm(None, testing.TestRequest())
+  >>> myForm.update()
+  >>> data, errors = myForm.extractData()
+
+Since we have not entered in any data, there will be errors.
+
+  >>> len(errors)
+  3
+
+To propogate these errors to the client side ext js form, we must
+construct a json response.  This is done for us by ``ExtJSForm``.
+
+  >>> from pprint import pprint
+  >>> pprint(myForm.jsonResponse)
+  {'errors': {'form-widgets-isCool': u'Required input is missing.',
+              'form-widgets-name': u'Required input is missing.',
+              'form-widgets-passwd': u'Required input is missing.'},
+   'formErrors': [],
+   'success': False}
+
+The other nice part of this is the button handler, which is
+automatically converted into an ajax request handler
+
+  >>> myForm.handleSave
+  <AJAXHandler 'handleSave'>
+
+The ajax handler is published using the name of the button rather than
+the name of the handler.
+
+  >>> myForm.ajaxRequestHandlers
+  <AJAXHandlers ['save']>
+
+The form config object will then have an ajaxHandlers property that is
+a mapping from button id to the url which should be called for that button.
+
+  >>> config = interfaces.IExtJSComponent(myForm).getConfig()
+  >>> config['ajaxHandlers']
+  {'form-buttons-save': 'http://127.0.0.1/index.html/@@ajax/save'}
+
+This url is also available on the button.
+
+  >>> from pprint import pprint
+  >>> pprint(config['buttons'][0])
+  {'handler': {'success': 'handleSave'},
+   'id': 'form-buttons-save',
+   'name': 'form.buttons.save',
+   'text': u'Save',
+   'title': u'Save',
+   'url': 'http://127.0.0.1/index.html/@@ajax/save',
+   'xtype': 'button'}
+
+If we want to get the listing of buttons separately, and have it
+include the url, we can use the helper function getAjaxButtonsConfig:
+
+  >>> from z3c.formext import component
+  >>> pprint(component.getAjaxButtonsConfig(myForm))
+  {'save': {'handler': {'success': 'handleSave'},
+            'id': 'form-buttons-save',
+            'name': 'form.buttons.save',
+            'text': u'Save',
+            'title': u'Save',
+            'url': 'http://127.0.0.1/index.html/@@ajax/save',
+            'xtype': 'button'}}
+
+This also works in list form as well:
+
+    >>> pprint(component.getAjaxButtonsConfig(myForm, asDict=False))
+    [{'handler': {'success': 'handleSave'},
+      'id': 'form-buttons-save',
+      'name': 'form.buttons.save',
+      'text': u'Save',
+      'title': u'Save',
+      'url': 'http://127.0.0.1/index.html/@@ajax/save',
+      'xtype': 'button'}]
+
+
+    >>> print myForm.script()
+    z3c.formext.ModuleLoader.load(
+    'z3c.formext.form',
+    function(){
+      if (config.ownerCt){
+        var container = Ext.getCmp(config.ownerCt);
+        delete config.ownerCt;
+        container.add(new z3c.formext.form.Z3CFormPanel(config));
+        container.doLayout();
+      } else if (config.renderTo){
+        new z3c.formext.form.Z3CFormPanel(config);
+      }
+    });
+
+    >>> print myForm.scriptTag
+    <script type="text/javascript" language="Javascript">
+      (function(){
+        var config={"xtype": "formpanel", "title": "My Contact Form", "items": ...
+        var foo="the foo property";
+    z3c.formext.ModuleLoader.load(
+      'z3c.formext.form',
+      function(){
+        if (config.ownerCt){
+          var container = Ext.getCmp(config.ownerCt);
+          delete config.ownerCt;
+          container.add(new z3c.formext.form.Z3CFormPanel(config));
+          container.doLayout();
+        } else if (config.renderTo){
+          new z3c.formext.form.Z3CFormPanel(config);
+        }
+      });
+    })();
+    </script>

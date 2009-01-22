@@ -1,0 +1,1 @@
+/* an example js file from a third party that does not specify a namespace. */

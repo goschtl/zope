@@ -1,0 +1,1 @@
+This package provides integration of ExtJS into the z3c.form framework.

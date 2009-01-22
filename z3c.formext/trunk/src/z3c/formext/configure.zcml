@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c">
+
+
+  <!-- Data Converters -->
+  <adapter
+      factory=".converter.ExtJSDateDataConverter"
+      />
+  <adapter
+      factory=".converter.ExtJSSingleCheckBoxDataConverter"
+      />
+
+  <browser:versionedResource
+      name="z3c.formext.loader.js"
+      file="resources/z3c.formext.loader.js"
+      layer="z3c.form.interfaces.IFormLayer"
+      />
+
+  <z3c:jsmodule
+      file="resources/z3c.formext.form.js"
+      layer="z3c.form.interfaces.IFormLayer"
+      />
+
+  <!-- ExtJS Component adapters -->
+  <adapter
+      factory=".component.FormPanel"
+      />
+  <adapter
+      factory=".component.ExtFormPanel"
+      />
+  <adapter
+      factory=".component.TextField"
+      />
+  <adapter
+      factory=".component.TextArea"
+      />
+  <adapter
+      factory=".component.DateField"
+      />
+  <adapter
+      factory=".component.ComboBox"
+      />
+  <adapter
+      factory=".component.CheckBox"
+      />
+  <adapter
+      factory=".component.RadioGroup"
+      />
+  <adapter
+      factory=".component.Button"
+      />
+  <adapter
+      factory=".component.ClientButton"
+      />
+
+  <adapter
+      factory=".form.ClientButtonAction"
+      provides="z3c.form.interfaces.IButtonAction"
+      />
+
+  <z3c:template
+      for=".form.ScriptProvider"
+      template="form.pt"
+      layer="z3c.form.interfaces.IFormLayer" />
+
+</configure>

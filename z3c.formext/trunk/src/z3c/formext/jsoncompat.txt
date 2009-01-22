@@ -1,0 +1,56 @@
+=================================
+JSON Encoder Compatibility Module
+=================================
+
+Different versions of python have different json encoding modules
+available to them.  There is also c-optimized json encoder optionally
+available.  The ``z3c.formext.jsoncompat`` module picks the best
+available json encoder.
+
+
+i18n support
+------------
+
+Since much of the json that gets produced ends up being used in the
+UI, it's important that all translatable strings are translated before
+being sent to the encoder (which doesn't know about translation).  The
+``jsonEncode`` function in ``z3c.formext.jsoncompat`` translates all
+the messages before passing them on to the json encoder.  Let's try
+this out.
+
+
+  >>> from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
+  >>> test = SimpleTranslationDomain('test',
+  ...   {
+  ...     ('es', u'Hello'): u'Hola',
+  ...     ('es', u"What's up"): u'Que pasa',
+  ...     ('es', u'How are you'): u'Como estas',
+  ...   })
+
+  >>> from zope.component import provideUtility
+  >>> provideUtility(test, name='test')
+
+  >>> from zope.i18nmessageid.message import MessageFactory
+  >>> _ = MessageFactory('test')
+
+  >>> data = {
+  ...   'aList': [_(u'Hello'), _(u"What's up"), _(u'How are you')],
+  ...   'aTuple':(_(u'Hello'), _(u"What's up"), _(u'How are you')),
+  ...   'aNest': ([{'foo':_(u'How are you')}, _('Hello')], _(u"What's up")),
+  ...   }
+
+  >>> from z3c.formext import jsoncompat
+  >>> import zope.i18n
+  >>> jsoncompat.translate = lambda s: zope.i18n.translate(s, target_language='es')
+
+  >>> zope.i18n.translate(_(u'Hello'), target_language='es')
+  u'Hola'
+
+
+  >>> from pprint import pprint as pp
+  >>> pp(jsoncompat.jsonDecode(jsoncompat.jsonEncode(data)))
+  {'aList': ['Hola', 'Que pasa', 'Como estas'],
+   'aNest': [[{'foo': 'Como estas'}, 'Hola'], 'Que pasa'],
+   'aTuple': ['Hola', 'Que pasa', 'Como estas']}
+
+  >>> jsoncompat.translate = zope.i18n.translate
