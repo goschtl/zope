@@ -247,10 +247,12 @@ should set _p_changed to true.
 
 The tuple returned by __getstate__ is actually a subclass of tuple.  The
 StateTuple suggests to the ZODB serializer that it can save the state
-without pickling.
+in a different format than the default pickle format.
 
     >>> type(c.__getstate__())
     <class 'keas.pbstate.state.StateTuple'>
+    >>> c.__getstate__().serial_format
+    'protobuf'
 
 
 Edge Cases
