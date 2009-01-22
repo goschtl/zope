@@ -2,19 +2,15 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
-  <pages
+  <page
       for="*"
-      permission="zope.ManageContent"
-      class=".ErrorRedirect" >
-
-    <page name="errorRedirect.html" attribute="action" />
-  </pages>
-
-  <menuItem
-      for="*"
+      name="errorRedirect.html"
+      permission="zope.ManageServices"
+      class=".ErrorRedirect"
+      attribute="action"
       menu="zmi_actions"
       title="Errors"
-      action="@@errorRedirect.html" />
+      />
 
   <!--Error Logging Utility -->
 

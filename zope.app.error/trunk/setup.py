@@ -24,9 +24,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.error',
-    version = '3.5.1',
+    version = '3.5.2dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description = "Error reporting utility management UI for Zope3",
     long_description=(
         read('README.txt')
@@ -45,18 +45,15 @@ setup(name='zope.app.error',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://cheeseshop.python.org/pypi/zope.app.error',
+    url='http://pypi.python.org/pypi/zope.app.error',
 	packages=find_packages('src'),
 	package_dir = {'': 'src'},
     extras_require=dict(
         test=['zope.app.testing']),
     namespace_packages=['zope', 'zope.app'],
     install_requires=['setuptools',
-                      'zope.exceptions',
                       'zope.error',
-                      'zope.app.appsetup',
-                      'zope.publisher',
-                      'zope.app.container',
+                      'zope.app.publisher',
                       ],
     include_package_data = True,
 
