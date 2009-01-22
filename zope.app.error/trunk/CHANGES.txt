@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.2 (unreleased)
+3.5.2 (2009-01-22)
 ------------------
 
 - Removed zope.app.zapi from dependencies, replacing its
@@ -25,13 +25,13 @@ CHANGES
 - rebumped to replace faulty egg
 
 
-3.5.0 (unknown)
----------------
+3.5.0
+-----
 
 - Move core components to ``zope.error``
 
 
-3.4.0 (2007/9/24)
------------------
+3.4.0 (2007-09-24)
+------------------
 
 - Initial documented release
