@@ -313,10 +313,6 @@ def pageletDirective(_context, for_, name=u'', type=(),
     # Security map dictionary
     required = {}
 
-    # Get the permission; mainly to correctly handle CheckerPublic.
-    if permission == 'zope.Public':
-        permission = CheckerPublic
-
     # Make sure that the template exists
     if template:
         template = os.path.abspath(str(_context.path(template)))
@@ -347,6 +343,10 @@ def pageletDirective(_context, for_, name=u'', type=(),
         if iface is not None:
             provides.append(iface)
 
+    kwargs['type'] = type
+    kwargs['name'] = name
+    kwargs['permission'] = permission
+
     # convert kwargs
     for iface in provides:
         for fname, field in schema.getFields(iface).items():
@@ -371,6 +371,10 @@ def pageletDirective(_context, for_, name=u'', type=(),
 
         if not inProvides:
             provides.append(IPagelet)
+
+    # Handle CheckerPublic
+    if permission == 'zope.Public':
+        permission = CheckerPublic
 
     # prepare allowed interfaces and attributes
     allowed_interface.extend(provides)

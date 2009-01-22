@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+2.0.4 (2009-01-22)
+------------------
+
+- Pass permission to class required attributes
+
+
 2.0.3 (2009-01-20)
 ------------------
 
