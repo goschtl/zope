@@ -176,6 +176,6 @@ class ProtobufDeserializer(object):
         i.next()
         return i.next()
 
-
+protobuf_format = ProtobufFormat()
 def register():
-    register_format(StateTuple.serial_format, ProtobufFormat())
+    register_format(StateTuple.serial_format, protobuf_format)
