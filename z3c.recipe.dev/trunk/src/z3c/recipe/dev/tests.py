@@ -43,6 +43,7 @@ def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('z3c.recipe.dev', test)
     zc.buildout.testing.install('zope.testing', test)
+    zc.buildout.testing.install('zope.interface', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
     zc.buildout.testing.install('ZConfig', test)
     zc.buildout.testing.install('zc.recipe.filestorage', test)
@@ -57,6 +58,8 @@ checker = renormalizing.RENormalizing([
     ), ''),
     (re.compile("""['"][^\n"']+z3c.recipe.dev[^\n"']*['"],"""),
      "'/z3c.recipe.dev',"),
+    (re.compile("""['"][^\n"']+site-packages[^\n"']*['"],"""),
+     "'/site-packages',"),
     (re.compile('#![^\n]+\n'), ''),
     (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'),
      '-pyN.N.egg',

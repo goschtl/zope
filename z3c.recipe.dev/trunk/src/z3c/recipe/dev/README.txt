@@ -2,8 +2,8 @@
 Z3 development recipe
 =====================
 
-z3c.recipe.start
-----------------
+z3c.recipe.dev app
+------------------
 
 This Zope 3 recipes allows you to define Zope applications.
 
@@ -172,19 +172,20 @@ The bin folder contains the start script:
 The myapp-scrip.py contains the start code for our zope setup:
 
   >>> cat('bin', 'myapp-script.py')
-  #!C:\Python24\python.exe
+  #!"C:\Python24\python.exe"
   <BLANKLINE>
   import sys
   sys.path[0:0] = [
     '/sample-buildout/demo2',
     '/z3c.recipe.dev/trunk/src',
-    '/sample-buildout/eggs/zc.recipe.filestorage-1.0a5-py2.4.egg',
-    '/sample-buildout/eggs/zope.testing-3.5.1-py2.4.egg',
-    '/sample-buildout/eggs/zc.recipe.egg-1.0.0b6-py2.4.egg',
-    '/sample-buildout/eggs/zc.buildout-1.0.0b30-py2.4.egg',
-    '/sample-buildout/eggs/setuptools-0.6c7-py2.4.egg',
-    '/sample-buildout/eggs/zconfig-2.5-py2.4.egg',
+    '/sample-buildout/eggs/zc.recipe.filestorage-1.0.1-py2.4.egg',
+    '/sample-buildout/eggs/zope.testing-3.7.1-py2.4.egg',
+    '/sample-buildout/eggs/zc.recipe.egg-1.1.0-py2.4.egg',
+    '/sample-buildout/eggs/zc.buildout-1.1.1-py2.4.egg',
+    '/site-packages',
+    '/sample-buildout/eggs/zconfig-2.6.1-py2.4.egg',
     '/sample-buildout/demo1',
+    '/sample-buildout/eggs/zope.interface-3.5.0-py2.4-win32.egg',
     ]
   <BLANKLINE>
   import os
@@ -207,8 +208,8 @@ And the myapp folder contains the configure files:
   -  zope.conf
 
 
-`z3c.recipe.script`
--------------------
+z3c.recipe.dev script
+---------------------
 
 The script recipe allows us to point to scripts which the recipe will install
 a execute script hook for us. You can use this if you need to run a python
