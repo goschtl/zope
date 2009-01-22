@@ -22,6 +22,7 @@ from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.authentication.password import PlainTextPasswordManager
 from zope.app.authentication.password import MD5PasswordManager
 from zope.app.authentication.password import SHA1PasswordManager
+from zope.app.authentication.password import SSHAPasswordManager
 
 
 class PlacelessSetup(object):
@@ -31,3 +32,4 @@ class PlacelessSetup(object):
             "Plain Text")
         ztapi.provideUtility(IPasswordManager, MD5PasswordManager(), "MD5")
         ztapi.provideUtility(IPasswordManager, SHA1PasswordManager(), "SHA1")
+        ztapi.provideUtility(IPasswordManager, SSHAPasswordManager(), "SSHA")
