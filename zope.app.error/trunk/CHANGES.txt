@@ -17,6 +17,7 @@ CHANGES
   for errorRedirect view and menu item, because all IErrorReportingUtility
   views are registered for zope.ManageServices as well. 
 
+- Fix package's README.txt
 
 3.5.1 (2007-09-27)
 ------------------

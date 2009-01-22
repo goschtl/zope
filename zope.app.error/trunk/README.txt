@@ -1,1 +1,2 @@
-This package provides an error reporting utility which is able to store errors.
+This package provides management views for the error reporting
+utility defined in zope.error package.
