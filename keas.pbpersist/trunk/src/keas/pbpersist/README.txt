@@ -213,29 +213,85 @@ We can also make cross-database references.
     >>> storage_beta = DemoStorage()
     >>> db_beta = DB(storage_beta, database_name='beta', databases=db.databases)
     >>> root_beta = conn1.get_connection('beta').root()
+    >>> root_beta['obj'] = PersistentMapping()
+    >>> transaction.commit()
     >>> ref = bob.guardians.add()
-    >>> bob.protobuf_refs.set(ref, root_beta)
+    >>> bob.protobuf_refs.set(ref, root_beta['obj'])
     >>> transaction.commit()
 
-Access all of those references in another connection.
+We can make a reference to an instance of a class with a __getnewargs__
+method.  ZODB does not store the class metadata in references to instances
+of such classes.
+
+    >>> from keas.pbpersist.tests import Adder
+    >>> adder = Adder(7)
+    >>> conn1.root()['adder'] = adder
+    >>> ref = bob.guardians.add()
+    >>> bob.protobuf_refs.set(ref, adder)
+    >>> transaction.commit()
+
+We can make a reference to an instance of a class with a __getnewargs__
+method, even when that instance is in another database.
+
+    >>> adder = Adder(6)
+    >>> root_beta['adder'] = adder
+    >>> transaction.commit()
+    >>> ref = bob.guardians.add()
+    >>> bob.protobuf_refs.set(ref, adder)
+    >>> transaction.commit()
+
+Access all of those different kinds of references in another connection.
 
     >>> conn2 = db.open()
     >>> bob2 = conn2.root()['bob']
+    >>> len(bob2.guardians)
+    6
+
     >>> bob2.protobuf_refs.get(bob2.guardians[0])
     <keas.pbpersist.tests.PContact object at ...>
+
     >>> bob2.protobuf_refs.get(bob2.guardians[1])
     {}
     >>> bob2.protobuf_refs.get(bob2.guardians[1])._p_jar is conn2
     True
+
     >>> bob2.protobuf_refs.get(bob2.guardians[2])
     <persistent.wref.WeakRef object at ...>
     >>> bob2.protobuf_refs.get(bob2.guardians[2])()
     {}
+
     >>> bob2.protobuf_refs.get(bob2.guardians[3])
     {}
     >>> bob2.protobuf_refs.get(bob2.guardians[3])._p_jar is conn2
     False
+
+    >>> bob2.protobuf_refs.get(bob2.guardians[4])
+    <keas.pbpersist.tests.Adder object at ...>
+    >>> bob2.protobuf_refs.get(bob2.guardians[4]).add(3)
+    10
+
+    >>> bob2.protobuf_refs.get(bob2.guardians[5])
+    <keas.pbpersist.tests.Adder object at ...>
+    >>> bob2.protobuf_refs.get(bob2.guardians[5]).add(3)
+    9
+
     >>> conn2.close()
+
+
+Edge Cases
+----------
+
+We can't currently store instances of a ProtobufState Persistent class that
+implements __getnewargs__().
+
+    >>> from keas.pbpersist.tests import PContactWithGetNewArgs
+    >>> fail_contact = PContactWithGetNewArgs()
+    >>> fail_contact.name = u'Loser'
+    >>> conn1.root()['fail_contact'] = fail_contact
+    >>> transaction.commit()
+    Traceback (most recent call last):
+    ...
+    POSError: ProtobufSerializer can not serialize classes using __getnewargs__ or __getinitargs__
 
 
 Clean Up

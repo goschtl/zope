@@ -22,11 +22,37 @@ from keas.pbstate.testclasses_pb2 import ContactPB
 
 
 class PContact(Persistent):
+    """A simple ProtobufState class for testing"""
     __metaclass__ = ProtobufState
     protobuf_type = ContactPB
 
     def __init__(self):
         self.create_time = 1
+
+
+class Adder(Persistent):
+    """A Persistent class with a __getnewargs__ method for testing"""
+
+    def __new__(cls, constant):
+        res = super(cls, Adder).__new__(cls)
+        res.constant = constant
+        return res
+
+    def add(self, n):
+        return self.constant + n
+
+    def __getnewargs__(self):
+        return (self.constant,)
+
+
+class PContactWithGetNewArgs(PContact):
+    """A ProtobufState persistent class with a __getnewargs__ method.
+
+    This is here to demonstrate that such a class won't currently work,
+    because storing the result of __getnewargs__() would require pickling.
+    """
+    def __getnewargs__(self):
+        return ()
 
 
 def test_suite():

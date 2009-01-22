@@ -33,13 +33,13 @@ def read_reference(ref, find_global):
     if ref.weak:
         return ['w', (oid,)]
     elif ref.database:
-        if ref.class_meta:
+        if ref.HasField('class_meta'):
             klass = find_global(
                 ref.class_meta.module_name, ref.class_meta.class_name)
             return ['m', (ref.database, oid, klass)]
         else:
             return ['n', (ref.database, oid)]
-    elif ref.class_meta:
+    elif ref.HasField('class_meta'):
         klass = find_global(
             ref.class_meta.module_name, ref.class_meta.class_name)
         return (oid, klass)
