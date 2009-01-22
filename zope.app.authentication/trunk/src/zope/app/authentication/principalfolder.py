@@ -54,7 +54,7 @@ class IInternalPrincipal(interface.Interface):
         vocabulary="Password Manager Names",
         description=_("The password manager will be used"
             " for encode/check the password"),
-        default="Plain Text",
+        default="SSHA",
         # TODO: The password manager name may be changed only
         # if the password changed
         readonly=True
@@ -127,7 +127,7 @@ class InternalPrincipal(Persistent, Contained):
     # zope.app.zopeappgenerations.evolve2
 
     def __init__(self, login, password, title, description=u'',
-            passwordManagerName="Plain Text"):
+            passwordManagerName="SSHA"):
         self._login = login
         self._passwordManagerName = passwordManagerName
         self.password = password

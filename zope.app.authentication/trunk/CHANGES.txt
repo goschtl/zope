@@ -12,6 +12,8 @@ Changes
   passwords. As this encoding gives better security agains dictionary
   attacks, users are encouraged to switch to this new password schema.
 
+* InternalPrincipal now uses SSHA password manager by default.
+
 3.4.4 (2008-12-12)
 ------------------
 
