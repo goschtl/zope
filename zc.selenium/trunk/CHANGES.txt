@@ -8,6 +8,8 @@ CHANGES
 
 - Moved self-test from configure.zcml to tests.zcml to not automatically
   include them when zc.selenium is included.
+- pytest's selenium coverts arguments to unicode now. This allows calls like
+  ``self.selenium.pause(500)``.
 
 1.1.0 (2009-01-19)
 ------------------

@@ -63,6 +63,7 @@ zc.selenium.pytest.Test:
     ...         s.comment("show something")
     ...         s.foo('bar')
     ...         s.splat('eeek', 'oy')
+    ...         s.foo(27)
     ...
     ...     def test2(self):
     ...         """Show something
@@ -133,6 +134,16 @@ HTML table:
     <td>eeek</td>
     <td>oy</td>
     </tr>
+    <tr class="comment lineinfo">
+    <td>comment</td>
+    <td><doctest pytest.txt[1]>:13 ...</td>
+    <td></td>
+    </tr>
+    <tr class="foo">
+    <td>foo</td>
+    <td>27</td>
+    <td></td>
+    </tr>
     <tr class="open">
     <td>open</td>
     <td>http://127.0.0.1/@@/selenium-pop.html</td>
@@ -151,7 +162,7 @@ HTML table:
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[1]>:18 ...</td>
+    <td><doctest pytest.txt[1]>:19 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -182,10 +193,10 @@ There are a number of things to note about this example.
 
 - Methods emit Selenium commands by calling methods on self.selenium.
   The method names become Selenium commands.  Methods take one or 2
-  string arguments.  The pytest framework will accept any method name
-  and blindly create a Selenium statement.  In this example, I used
-  invalid Selenium commands, "foo" and "splat" to illustrate
-  this. Ultimately, we're just generating HTML rows. :)
+  arguments which are converted to a string.  The pytest framework will
+  accept any method name and blindly create a Selenium statement.  In
+  this example, I used invalid Selenium commands, "foo" and "splat" to
+  illustrate this. Ultimately, we're just generating HTML rows. :)
 
 - For each non-comment Selenium command, a comment was generated
   giving the file name and line number.  (The details of the generated

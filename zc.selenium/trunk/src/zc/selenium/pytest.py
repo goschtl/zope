@@ -104,7 +104,8 @@ class Row:
             comment_arg1 = ('%s:%s <span class="longpath">%s:%d</span>' %
                 (base, frame.f_lineno, filename, frame.f_lineno))
             self.raw('comment', comment_arg1, '', cssClass='lineinfo')
-        self.raw(self.__name__, escape(arg1), escape(arg2), self.cssClass)
+        self.raw(self.__name__, escape(unicode(arg1)), escape(unicode(arg2)),
+                 self.cssClass)
 
     def raw(self, name, arg1, arg2, cssClass):
         append = self.output.append
