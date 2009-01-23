@@ -264,8 +264,8 @@ setup(name='Zope2',
 #               "utilities/ZODBTools/netspace.py",
 #               "utilities/ZODBTools/zodbload.py",
 #               "utilities/ZODBTools/repozo.py",
-#               "utilities/ZODBTools/space.py"],
-
+#               "utilities/ZODBTools/space.py",
+        ],
       include_package_data=True,
       zip_safe=False,
       )
