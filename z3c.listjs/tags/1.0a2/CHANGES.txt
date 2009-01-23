@@ -1,0 +1,12 @@
+CHANGES
+*******
+
+1.0a2 (2009-01-23)
+==================
+
+* Allow moving individual list items up and down in the list. 
+
+1.0a1 (2009-01-08)
+==================
+
+* Initial public release.
