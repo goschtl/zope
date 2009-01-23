@@ -8,7 +8,8 @@ from zope import component
 from hurry.resource import Library, ResourceInclusion
 
 listjs_lib = Library('z3c.listjs')
-listjs_resource = ResourceInclusion(listjs_lib, 'listjs.js')
+listjs_js = ResourceInclusion(listjs_lib, 'listjs.js')
+listjs_css = ResourceInclusion(listjs_lib, 'listjs.css')
 
 class _ListJsWidget(ListSequenceWidget):
 
@@ -21,7 +22,8 @@ class _ListJsWidget(ListSequenceWidget):
     
     def __call__(self):
         result = ListSequenceWidget.__call__(self)
-        listjs_resource.need()
+        listjs_js.need()
+        listjs_css.need()
         return result
     
     def _getPresenceMarker(self, count=0):

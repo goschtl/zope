@@ -18,6 +18,12 @@ normal ``zope.formlib`` custom widget pattern::
 
   form_fields['foo'].custom_widget = ListJsWidget
 
-With  the  right   ZCML  override  it  should  also   be  possible  to
-automatically  use  this widget  in  all cases  ``ListSequenceWidget``
+With the right ZCML override it should also be possible to
+automatically use this widget in all cases ``ListSequenceWidget``
 would normally be used. Documentation contributions are welcome!
+
+Should you wish to override the CSS for the buttons, the CSS classes
+are ``up_button`` and ``down_button``. If you are using hurry.resource
+for your overriding CSS, your resource should depend on
+``z3c.listjs.listjs_css`` so that ordering is correct to make the
+override happen.

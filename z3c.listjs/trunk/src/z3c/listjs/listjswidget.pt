@@ -13,6 +13,10 @@
             tal:replace="structure error" tal:condition="error" />
       <input tal:replace="structure widget" />
     </td>
+    <td>
+      <div><a class="up_button" tal:attributes="onClick string: Z3C.listjs.up('${view/name}', this)"></a></div>
+      <div><a class="down_button" tal:attributes="onClick string: Z3C.listjs.down('${view/name}', this)"></a></div>
+    </td>
   </tr>
   <tr tal:attributes="id string:${view/name}.buttons">
     <td colspan="2">

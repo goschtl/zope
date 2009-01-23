@@ -153,5 +153,37 @@ Z3C.namespace = function(name) {
         updateAllNumbers(prefix);
     };
 
+    
+    Z3C.listjs.up = function(prefix, el) {
+        while (el.className != 'list_item') {
+            el = el.parentNode;
+        }
+        var previous_el = el.previousSibling;
+        while (previous_el != null && previous_el.className != 'list_item') {
+            previous_el = previous_el.previousSibling;
+        }
+        // first list element, no move possible
+        if (previous_el == null) {
+            return;
+        }
+        previous_el.parentNode.insertBefore(el, previous_el);
+        updateAllNumbers(prefix);
+    };
 
+    Z3C.listjs.down = function(prefix, el) {
+        while (el.className != 'list_item') {
+            el = el.parentNode;
+        }
+        var next_el = el.nextSibling;
+        while (next_el != null && next_el.className != 'list_item') {
+            next_el = next_el.nextSibling;
+        }
+        // last list element, no move possible
+        if (next_el == null) {
+            return;
+        }
+        next_el.parentNode.insertBefore(el, next_el.nextSibling);
+        updateAllNumbers(prefix);
+    };
+    
 })();
