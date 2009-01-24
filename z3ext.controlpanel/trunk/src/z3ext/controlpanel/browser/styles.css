@@ -171,6 +171,7 @@
   #z-controlpanel #z-content-adding { 
     border: borderWidth borderStyle globalExtraBorderColor;
     margin-top: 0em;
+    margin-bottom: 1em;
     padding: 1em;
     background: contentBackgroundColor;
   }
