@@ -21,6 +21,8 @@ Usage: %s site-dir
   located to generate the site. The generated site is in that directory as
   well.
 """
+import logging
+import optparse
 import os
 import shutil
 import sys
@@ -31,6 +33,7 @@ TIMESTAMP_FILENAME = 'cf-timestamp'
 
 def generateSite(siteDir):
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
+    logging.info("Building site using config: %s" %kgsPath)
     ver = kgs.KGS(kgsPath).version
 
     timestampPath = os.path.join(siteDir, TIMESTAMP_FILENAME)
@@ -41,6 +44,7 @@ def generateSite(siteDir):
         last_update = float(open(timestampPath, 'r').read())
         last_modified = os.stat(kgsPath)[-2]
         if last_update > last_modified:
+            logging.info("Site is up to date.")
             return
 
     # Save the last generation date-time.
@@ -54,11 +58,13 @@ def generateSite(siteDir):
 
     # Create the buildout config file and version it
     buildoutPath = os.path.join(siteDir, 'buildout.cfg')
+    logging.info("Generating buildout config: %s" % buildoutPath)
     buildout.generateBuildout(kgsPath, buildoutPath)
     shutil.copy(buildoutPath, os.path.join(siteDir, 'buildout-%s.cfg' %ver))
 
     # Create a versions config file and version it
     versionsPath = os.path.join(siteDir, 'versions.cfg')
+    logging.info("Generating version config file: %s" % versionsPath)
     version.generateVersions(kgsPath, versionsPath)
     shutil.copy(versionsPath, os.path.join(siteDir, 'versions-%s.cfg' %ver))
 
@@ -68,9 +74,11 @@ def generateSite(siteDir):
     shutil.copy(linksPath, os.path.join(siteDir, 'links-%s.html' %ver))
 
     # Update the full index (which is asummed to live in the site directory)
+    logging.info("updateing the index")
     ppix.generatePackagePages(kgsPath, siteDir)
 
     # Update the minimal index
+    logging.info("updateing the minimal index")
     midxDir = os.path.join(siteDir, 'minimal')
     if not os.path.exists(midxDir):
         os.mkdir(midxDir)
@@ -82,18 +90,31 @@ def generateSite(siteDir):
     shutil.copytree(midxDir, midxVerDir)
 
     # Update the intro page
+    logging.info("updateing the intro page")
     introPath = os.path.join(siteDir, 'intro.html')
     intro.main((introPath,))
 
+    logging.info("finished generating site.")
+
+
+parser = optparse.OptionParser()
+parser.add_option("-s","--site-dir", action="store",
+                  type="string", dest="siteDir", metavar="DIR",
+                  help="The directory where the site should be generated")
 
 def main(args=None):
+    logging.basicConfig(level=logging.INFO)
+
     if args is None:
         args = sys.argv[1:]
+    if not args:
+        args = ['-h']
 
-    if len(args) < 1:
-        print __file__.__doc__ % sys.argv[0]
+    options, args = parser.parse_args(args)
+    if not options.siteDir:
+        logging.error("You must specify the site directory with the -s option.")
         sys.exit(1)
 
-    siteDir = os.path.abspath(args[0])
+    siteDir = os.path.abspath(options.siteDir)
 
     generateSite(siteDir)
