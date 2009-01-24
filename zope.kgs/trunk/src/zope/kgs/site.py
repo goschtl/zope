@@ -91,8 +91,7 @@ def generateSite(siteDir):
 
     # Update the intro page
     logging.info("updateing the intro page")
-    introPath = os.path.join(siteDir, 'intro.html')
-    intro.main((introPath,))
+    intro.main(['-d',siteDir])
 
     logging.info("finished generating site.")
 

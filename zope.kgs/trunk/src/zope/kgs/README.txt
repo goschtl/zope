@@ -505,7 +505,7 @@ Let's now generate the page:
   >>> introPage = os.path.join(kgsDir, 'intro.html')
 
   >>> from zope.kgs import intro
-  >>> intro.main((introPage,))
+  >>> intro.main(['-d',kgsDir])
 
   >>> print open(introPage, 'r').read()
     <!DOCTYPE ...
@@ -572,7 +572,7 @@ this. The site generator script acts upon a directory, in which it assumes a
   >>> shutil.copy(cfgFileReal, cfgFileSite)
 
   >>> from zope.kgs import site
-  >>> site.main((siteDir,))
+  >>> site.main(['-s',siteDir])
 
 Let's have a look at the generated files:
 
@@ -597,7 +597,7 @@ previous generation:
   >>> tsPath = os.path.join(siteDir, 'cf-timestamp')
 
   >>> beforeTimestamp = open(tsPath).read()
-  >>> site.main((siteDir,))
+  >>> site.main(['-s',siteDir])
   >>> afterTimestamp = open(tsPath).read()
 
   >>> beforeTimestamp == afterTimestamp
