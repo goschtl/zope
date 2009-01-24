@@ -5,13 +5,13 @@ To Do
 Release 3.4
 -----------
 
-* Produce a list of changes.
-
 * Produce nicer O-wrap for intro page.
 
 * Refactor KGS output, so that the index is not a PyPI index.
 
 * Add date to release information.
+
+  -> Should be part of KGS file.
 
 * Invert order of releases.
 
@@ -30,9 +30,11 @@ Needed Files:
 
 - KGS file
 
-- Release Notes
+- TAR ball
 
-- Press Release
+- Changes File
+
+- Release Notes
 
 Generated Files:
 ~~~~~~~~~~~~~~~~
@@ -41,7 +43,28 @@ Generated Files:
 
 - PyPI/KGS related files, such as index, versions, etc.
 
-- TAR ball
+
+Site Layout
+~~~~~~~~~~~
+
+zope3.4/
+  3.4.0b1/
+    controlled-packages.cfg
+    versions.cfg
+    versions-3.4.0b1.cfg
+    index/
+    minimal-index/
+    CHANGES.txt
+    CHANGES.html
+    RELEASE-NOTES.txt
+    RELEASE-NOTES.html
+    Zope3-3.4.0b1.tgz
+  3.4.0/
+    ...
+  resources/
+  index.html
+  intro.html
+
 
 
 Other
