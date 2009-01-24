@@ -19,7 +19,9 @@ Usage: %s output-intro-path
 
   The path of the file under which the generated intro file is stored.
 """
+import logging
 import os
+import optparse
 import sys
 import zope.pagetemplate.pagetemplatefile
 
@@ -65,16 +67,30 @@ class IntroPage(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
         return rval
 
 
+parser = optparse.OptionParser(
+    usage="%prog [options] -d DIR",
+    description="This script regenerates the intro page for a kgs configuration")
+
+parser.add_option("-d","--dir", action="store",
+                  type="string", dest="outputDir", metavar="DIR",
+                  help="The directory where the kgs configuration is located.")
+
 def main(args=None):
+    logging.basicConfig(level=logging.INFO)
+
     if args is None:
         args = sys.argv[1:]
+    if not args:
+        args = ['-h']
 
-    if len(args) < 0:
-        print __file__.__doc__
+    options, args = parser.parse_args(args)
+    if not options.outputDir:
+        logging.error("You must specify the location of the kgs configuration "
+                      "the -d option.")
         sys.exit(1)
 
-    outputPath = args[0]
-
-    page = IntroPage(os.path.dirname(outputPath))
+    page = IntroPage(options.outputDir)
     page.update()
-    open(outputPath, 'w').write(page())
+    outputFile = os.path.join(options.outputDir, 'intro.html')
+    logging.info("Generating %s" % outputFile)
+    open(outputFile, 'w').write(page())
