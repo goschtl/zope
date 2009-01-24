@@ -1,0 +1,286 @@
+/* Main Styles for HTML Elements */
+html, body
+{
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  font-size: 103%;
+  /* possibly both of these should be removed */
+  color: #000;
+  background-color: #FFF;
+}
+
+
+h1,h2,h3,h4,h5 {
+  font-family: Georgia, "Bitstream Vera Serif", "New York", Palatino, serif;
+  font-weight:normal;
+  line-height: 1em;
+}
+
+h1
+{
+  font-size: 160%;
+  color: #234764;
+  margin: 0.7em 0 0.7em 0;
+  text-decoration: none;
+}
+
+h2
+{
+  font-size: 140%;
+  color: #366D9C;
+  margin: 0.7em 0 0.7em 0;
+}
+
+h3
+{
+  font-size: 135%;
+  font-style:italic;
+  color: #366D9C;
+  margin: 0.4em 0 0.0em 0;
+}
+
+h4
+{
+  font-size: 125%;
+  color: #366D9C;
+  margin: 0.4em 0 0.0em 0;
+}
+
+/* Logo */
+#header
+{
+  border: 0;
+  margin: 0;
+  padding: 50px 1px 1px 260px;
+  z-index: 1;
+  background-color:#F7F7F7;
+  background-image: url(header-bg2.png);
+  background-repeat: repeat-x;
+  border-bottom: 1px solid #999999;
+  height:34px;
+  }
+
+
+/* main content section */
+#content-body
+{
+  width: 93.9%;
+  z-index: 0;
+  font-size:75%;
+  margin-left:3.5%;
+  min-width:660px;
+}
+
+
+#body-main
+{
+  font-size:100%;
+  padding: 0 0.55em 40px 0.0em;
+  line-height: 1.4em;
+  font-family: Arial, Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  margin-left: 16em;
+}
+
+/* end subnav */
+/* Left Hand Navigation */
+#left-hand-navigation
+{
+  position: absolute;
+  left: 3%;
+  z-index: 1;
+  top: 100px;
+}
+
+#menu
+{
+
+  padding:0;
+  margin-bottom: 5px;
+  width: 16em;
+  font-size:75%;
+}
+
+#menu ul
+{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#menu li
+{
+  display:inline;
+}
+
+#menu ul.level-one a
+{
+  display: block;
+  border: 1px solid #DADADA;
+  padding: 2px 2px 2px 4px;
+  margin: 0 0 4px 1.4em;
+  width: 12em !important;
+  width /**/: 13.4em;
+  font-family: Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  color: #4B5A6A;
+  background-image: url(nav-off-bg.png);
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-color:#F5F5F5;
+  text-transform: uppercase
+
+}
+
+/*\*//*/
+#menu ul.level-one a
+{
+  width: 13.4em !important;
+}
+/**/
+
+#menu ul.level-one a:hover
+{
+  color:black;
+  text-decoration:underline;
+}
+
+#menu ul.level-one a.selected
+{
+  background-image: url(nav-on-bg.png);
+  background-color: #FFFFFF;
+  color:black;
+  border-left:3px solid #FFDB4C;
+}
+
+#menu ul.level-two li:first-child a
+{
+  border-top:0;
+}
+
+#menu ul.level-two a
+{
+
+  background-image: none;
+  background-color: transparent;
+  display: block;
+  border: 0;
+  border-top: 1px solid #DDD;
+  padding: 0.1em;
+  margin: 0 3em 0px 1.5em;
+  color: #3C4B7B;
+  background: none;
+  width: 11em !important;
+  width /**/: 11.2em;
+  font-family: Arial, Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  text-transform: none;
+}
+
+#menu ul.level-two a:hover
+{
+  text-decoration: underline;
+  color: black;
+}
+
+
+#menu ul.level-two a:visited
+{
+  color: #4C3B5B;
+}
+
+#menu ul.level-one ul.level-two a.selected
+{
+  background-image: url(../images/blank.gif);
+  background-color: #FFFFFF;
+  color:#000;
+  border-left:0;
+
+  font-weight:bold;
+}
+
+#menu li ul
+{
+  margin-bottom: 7px
+}
+
+#menu a
+{
+  text-decoration: none;
+}
+
+#menu ul.level-three a
+{
+
+  display: block;
+  border: 0;
+  padding: 0.1em;
+  margin: 0 3em 0px 1.8em;
+  padding-left:1em;
+  color: #5E72A5;
+  background-image: none;
+  width: 10em !important;
+  width /**/: 11.4em;
+  font-family: Arial, Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  font-size: 95%;
+}
+
+#menu ul.level-three a:hover
+{
+  text-decoration: underline;
+  color: black;
+}
+
+#menu ul.level-three li.selected a.selected
+{
+
+  background-image: url(bullet.gif);
+  background-repeat: no-repeat;
+  background-position: center left;
+  color:#000;
+  font-weight:normal;
+}
+
+#menu ul.level-three
+{
+margin-top:5px;
+}
+
+#left-hand-navigation h4
+{
+  font-family: Arial, Verdana, Geneva, "Bitstream Vera Sans", Helvetica, sans-serif;
+  font-size: 77%;
+  color: #4C5B6B;
+  padding: 0.4em 0 0 1.5em;
+  margin: 0.2em 0 0.3em 0;
+}
+
+#left-hand-navigation h4 a
+{
+  color:#4C5B6B;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+#left-hand-navigation h4 a:hover
+{
+  color:black;
+  text-decoration:underline;
+}
+
+#body-main a:link
+{
+  color: #00A;
+  text-decoration:none;
+
+}
+
+#body-main a:visited
+{
+  color: #551A8B;
+  text-decoration:none;
+}
+
+#body-main ul, #body-main li {
+  margin-left:1em;
+  padding-left:0;
+}

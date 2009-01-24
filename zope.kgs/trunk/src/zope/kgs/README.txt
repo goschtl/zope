@@ -509,51 +509,61 @@ Let's now generate the page:
 
   >>> print open(introPage, 'r').read()
     <!DOCTYPE ...
+    <html ...>
+      ...
       <body>
-        <h1>Introduction to the KGS</h1>
-        <h2>Available Versions</h2>
-        <h3>Version 1.0.0</h3>
-        <ul>
-          <li>
-            <a href="controlled-packages-1.0.0.cfg">Controlled Packages</a>
-          </li>
-          <li>
-            <a href="buildout-1.0.0.cfg">Buildout Configuration</a>
-          </li>
-          <li>
-            <a href="versions-1.0.0.cfg">Versions</a>
-          </li>
-          <li>
-            <a href="minimal-1.0.0">Minimal Index</a>
-          </li>
-          <li>
-            <a href="index.html">Index</a>
-          </li>
-        </ul>
-        <h3>Version 1.1.0</h3>
-        <ul>
-          <li>
-            <a href="controlled-packages-1.1.0.cfg">Controlled Packages</a>
-          </li>
-          <li>
-            <a href="buildout-1.1.0.cfg">Buildout Configuration</a>
-          </li>
-          <li>
-            <a href="versions-1.1.0.cfg">Versions</a>
-          </li>
-          <li>
-            <a href="links-1.1.0.html">Package Links</a>
-          </li>
-          <li>
-            <a href="minimal-1.1.0">Minimal Index</a>
-          </li>
-          <li>
-            <a href="index.html">Index</a>
-          </li>
-        </ul>
-        ...
-      </body>
-    </html>
+        <h1 id="header">Introduction to the KGS</h1>
+        <div id="left-hand-navigation">
+          <!-- Main Menu -->
+          <div id="menu">
+            <ul class="level-one">
+              <li>
+                <a href="#">Version 1.0.0</a>
+                <ul class="level-two" style="display: none;">
+                  <li>
+                    <a href="controlled-packages-1.0.0.cfg">Controlled Packages</a>
+                  </li>
+                  <li>
+                    <a href="buildout-1.0.0.cfg">Buildout Configuration</a>
+                  </li>
+                  <li>
+                    <a href="versions-1.0.0.cfg">Versions</a>
+                  </li>
+                  <li>
+                    <a href="minimal-1.0.0">Minimal Index</a>
+                  </li>
+                  <li>
+                    <a href="index.html">Index</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Version 1.1.0</a>
+                <ul class="level-two" style="display: none;">
+                  <li>
+                    <a href="controlled-packages-1.1.0.cfg">Controlled Packages</a>
+                  </li>
+                  <li>
+                    <a href="buildout-1.1.0.cfg">Buildout Configuration</a>
+                  </li>
+                  <li>
+                    <a href="versions-1.1.0.cfg">Versions</a>
+                  </li>
+                  <li>
+                    <a href="links-1.1.0.html">Package Links</a>
+                  </li>
+                  <li>
+                    <a href="minimal-1.1.0">Minimal Index</a>
+                  </li>
+                  <li>
+                    <a href="index.html">Index</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>...
+
 
 
 The Site Generator
@@ -576,16 +586,25 @@ this. The site generator script acts upon a directory, in which it assumes a
 
 Let's have a look at the generated files:
 
-  >>> sorted(os.listdir(siteDir))
-  ['PIL',
-   'buildout-3.4.0b2.cfg', 'buildout.cfg',
-   'cf-timestamp',
-   'controlled-packages-3.4.0b2.cfg', 'controlled-packages.cfg',
-   'intro.html',
-   'links-3.4.0b2.html', 'links.html',
-   'minimal', 'minimal-3.4.0b2',
-   'versions-3.4.0b2.cfg', 'versions.cfg',
-   'z3c.formdemo', 'zope.component', 'zope.interface']
+  >>> from pprint import pprint
+  >>> pprint(sorted(os.listdir(siteDir)))
+    ['PIL',
+     'buildout-3.4.0b2.cfg',
+     'buildout.cfg',
+     'cf-timestamp',
+     'controlled-packages-3.4.0b2.cfg',
+     'controlled-packages.cfg',
+     'intro.html',
+     'links-3.4.0b2.html',
+     'links.html',
+     'minimal',
+     'minimal-3.4.0b2',
+     'resources',
+     'versions-3.4.0b2.cfg',
+     'versions.cfg',
+     'z3c.formdemo',
+     'zope.component',
+     'zope.interface']
 
   >>> sorted(os.listdir(os.path.join(siteDir, 'minimal')))
   ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']

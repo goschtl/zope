@@ -30,11 +30,12 @@ import time
 from zope.kgs import version, buildout, ppix, link, intro, kgs
 
 TIMESTAMP_FILENAME = 'cf-timestamp'
+RESOURCES_PATH = os.path.join(os.path.dirname(__file__), 'templates','resources')
 
 def generateSite(siteDir):
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
-    logging.info("Building site using config: %s" %kgsPath)
     ver = kgs.KGS(kgsPath).version
+    logging.info("Building site for version %s using config: %s" % (ver, kgsPath))
 
     timestampPath = os.path.join(siteDir, TIMESTAMP_FILENAME)
 
@@ -73,12 +74,12 @@ def generateSite(siteDir):
     link.generateLinks(kgsPath, linksPath)
     shutil.copy(linksPath, os.path.join(siteDir, 'links-%s.html' %ver))
 
-    # Update the full index (which is asummed to live in the site directory)
-    logging.info("updateing the index")
+    # Update the full index (which is assumed to live in the site directory)
+    logging.info("updating the index")
     ppix.generatePackagePages(kgsPath, siteDir)
 
     # Update the minimal index
-    logging.info("updateing the minimal index")
+    logging.info("updating the minimal index")
     midxDir = os.path.join(siteDir, 'minimal')
     if not os.path.exists(midxDir):
         os.mkdir(midxDir)
@@ -89,8 +90,15 @@ def generateSite(siteDir):
         shutil.rmtree(midxVerDir)
     shutil.copytree(midxDir, midxVerDir)
 
+    # copy over the resource files
+    resourcesDir = os.path.join(siteDir, 'resources')
+    logging.info("copying resource files to %s" % resourcesDir)
+    if os.path.exists(resourcesDir):
+        shutil.rmtree(resourcesDir)
+    shutil.copytree(RESOURCES_PATH, resourcesDir)
+
     # Update the intro page
-    logging.info("updateing the intro page")
+    logging.info("updating the intro page")
     intro.main(['-d',siteDir])
 
     logging.info("finished generating site.")

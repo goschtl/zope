@@ -34,7 +34,7 @@ FEATURES = [
     ('index.html',                          u'Index'),
     ]
 
-TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'intro.pt')
+TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates', 'intro.pt')
 
 class IntroPage(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
 

@@ -71,7 +71,7 @@ the index. Here is the workflow for testing a new package against stable set:
      $ cd ..
      $ ./bin/generate-buildout
      $ ./bin/generate-versions
-     $ ./bin//upload
+     $ ./bin/upload
 
    Once the files are uploaded, a crontab-job, running every minute, will
    detect the changes in ``controlled-pages.cfg`` and will generate the new

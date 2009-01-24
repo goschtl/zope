@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Introduction to the KGS</title>
+    <link rel="stylesheet" type="text/css" href="resources/style.css" />
+    <script type="text/javascript" language="Javascript"
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript">
+      $(document).ready(
+        function(){
+
+          $("#left-hand-navigation .level-one > li").click(
+            function(){
+              $("#left-hand-navigation .level-one > li").removeClass('selected');
+              $("#left-hand-navigation .level-one > li > a").removeClass('selected');
+              $("#left-hand-navigation .level-two").hide();
+              $(this).children('a').andSelf().addClass('selected').find('.level-two').show();
+            });
+
+          $("#left-hand-navigation .level-one > li").eq(0).click();
+        });
+    </script>
+
+  </head>
+  <body>
+    <h1 id="header">Introduction to the KGS</h1>
+
+    <div id="left-hand-navigation">
+      <!-- Main Menu -->
+      <div id="menu">
+
+        <ul class="level-one">
+
+          <li tal:repeat="version self/versions">
+            <a href="#">Version <span tal:replace="version/name" /></a>
+            <ul class="level-two" style="display: none;">
+              <li tal:repeat="feature version/features">
+                <a href="versions-1.0.0.cfg"
+                   tal:attributes="href feature/url"
+                   tal:content="feature/title">Versions</a>
+              </li>
+            </ul>
+
+          </li>
+
+        </ul>
+      </div>
+    </div>
+
+    <div id="content-body">
+      <div id="body-main">
+
+        <div id="content">
+
+          <h1 id="pageheading">Known Good Sets</h1>
+
+          <h2>Usage</h2>
+
+          <p>
+            This KGS was designed to work with many of the tools developed to
+            manage and install Python pacakges. The following sub-sections will
+            explain its use in more detail.
+          </p>
+
+          <h3>The Index</h3>
+
+          <p>
+            You can use the index directly. It then behaves exactely like
+            <a href="http://pypi.python.org/simple">http://pypi.python.org/simple</a>,
+            except that for the controlled packages only the good versions are
+            available. The advantage of using the KGS as an index is that you get
+            bug fixes automatically.
+          </p>
+
+          <ul>
+            <li>
+              <div>Buildout, <code>buildout.cfg</code>:</div>
+              <pre>
+                [buildout]
+                index = http://download.project.org/kgs
+                ...
+              </pre>
+            </li>
+            <li>
+              <div>Setup Tools, <code>easy_install</code></div>
+              <pre>
+                $ easy_install -i http://download.project.org/kgs mypackage
+              </pre>
+            </li>
+          </ul>
+
+          <h3>Nailed or Pinned Versions</h3>
+
+          <p>
+            When deploying an application, it is often important to nail or pin down
+            the versions of all used packages, so that it can be guaranteed that the
+            setup is identical all the time.
+          </p>
+
+          <ul>
+            <li>
+              <div>Buildout, <code>buildout.cfg</code>:</div>
+              <pre>
+                [buildout]
+                versions = versions
+                ...
+                [version]
+                zope.interface = 3.4.0
+                (copy the content here)
+              </pre>
+              or
+              <pre>
+                [buildout]
+                extends = http://download.project.org/kgs/versions-1.0.0.cfg
+              </pre>
+            </li>
+            <li>
+              <div>Setup Tools itself cannot use the <code>version.cfg</code>
+              file.</div>
+            </li>
+          </ul>
+
+          <h3>Find Links</h3>
+
+          <p>
+            The way of providing the installation tools with additional locations to
+            look for packages is via find links. Those URLs are expected to be an
+            HTML page with links to files or files directly.
+          </p>
+
+          <ul>
+            <li>
+              <div>Buildout, <code>buildout.cfg</code>:</div>
+              <pre>
+                [buildout]
+                find-links = http://download.project.org/kgs/links.html
+                ...
+              </pre>
+            </li>
+            <li>
+              <div>Setup Tools, <code>easy_install</code></div>
+              <pre>
+                $ easy_install -f http://download.project.org/kgs/links.html mypackage
+              </pre>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>
