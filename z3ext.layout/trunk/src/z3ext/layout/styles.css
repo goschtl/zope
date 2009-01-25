@@ -77,75 +77,117 @@
     color: discreetColor;
   }
 
-  ul.z-listing {
+  ul.z-listing,
+  ul.z-hlisting {
     margin: 0;
     list-style: none;
     list-style-image: none;
     list-style-type: none;
   }
-  
-  ul.z-listing li {
+
+  ul.z-listing li,
+  ul.z-hlisting li {
     clear: both;
     list-style: none;
     list-style-image: none;
     border: 1px solid transparent;
   }
-  
-  ul.z-listing li .z-listing-icon {
+
+  ul.z-hlisting {
+    display: block;
+    position: relative;
+    vertical-align: top;
+  }
+
+  ul.z-hlisting li {
+    display: inline;
+    padding-right: 1em;
+  }
+
+  ul.z-hlisting div.z-listing-item {
+    display: inline;
+  }
+
+  ul.z-listing li .z-listing-icon,
+  ul.z-hlisting li .z-listing-icon {
     float: left;
     padding-top: 8px;
     padding-right: 0.5em;
   }
 
   ul.z-listing li a,
-  ul.z-listing li .z-listing-details a {
+  ul.z-hlisting li a,
+  ul.z-listing li .z-listing-details a,
+  ul.z-hlisting li .z-listing-details a {
     color: linkColor;
     border: 0;
     border-bottom: 1px dotted discreetColor;
     text-decoration: none;
   }
-  
+
   ul.z-listing li a:visited,
-  ul.z-listing li .z-listing-details a:visited {
+  ul.z-listing li .z-listing-details a:visited,
+  ul.z-hlisting li a:visited,
+  ul.z-hlisting li .z-listing-details a:visited {
     color: linkColor;
     background-color: transparent;
   }
   
   ul.z-listing li a:active,
-  ul.z-listing li .z-listing-details a:active {
+  ul.z-listing li .z-listing-details a:active,
+  ul.z-hlisting li a:active,
+  ul.z-hlisting li .z-listing-details a:active {
     color: linkColor;
     background-color: transparent;
   }
   
-  ul.z-listing li span {
+  ul.z-listing li span,
+  ul.z-hlisting li span {
     border: 0;
     border-bottom: 1px dotted discreetColor;
   }
   
-  ul.z-listing li .z-listing-details span a {
+  ul.z-listing li .z-listing-details span a,
+  ul.z-hlisting li .z-listing-details span a {
     border-bottom: 0px;
   }
   
-  ul.z-listing li label {
+  ul.z-listing li label,
+  ul.z-hlisting li label {
     font-weight: bold;
     border-bottom: borderWidth dotted discreetColor;
   }
 
-  ul.z-listing li .z-listing-details div {
+  ul.z-listing li .z-listing-details div,
+  ul.z-hlisting li .z-listing-details div {
     color: discreetColor;
     font-size: fontSmallSize;
   }
   
-  ul.z-listing li ul.z-listing {
+  ul.z-listing li ul.z-listing,
+  ul.z-hlisting li ul.z-listing {
     margin-left: 1.5em;
     font-size: 110%;
   }
   
-  ul.z-listing li .z-listing-details div span {
+  ul.z-listing li .z-listing-details div span,
+  ul.z-hlisting li .z-listing-details div span {
     color: discreetColor;
     font-size: fontSmallSize;
     border: 0;
   }
+
+  ul.z-listing .z-listing-selected,
+  ul.z-hlisting .z-listing-selected {
+    background: globalBackgroundColor;
+    border: borderWidth borderStyle globalBorderColor;
+    padding: 0.2em;
+  }
+
+  ul.z-listing img.z-listing-selected,
+  ul.z-hlisting img.z-listing-selected {
+    padding: 0.5em;
+  }  
 
   table.z-listing {
     border-collapse: collapse;
