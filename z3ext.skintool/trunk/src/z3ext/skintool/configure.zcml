@@ -27,13 +27,6 @@
      class=".tool.SkinTool"
      schema=".interfaces.ISkinTool" />
 
-  <z3ext:pagelet
-     name="index.html"
-     for=".interfaces.ISkinTool"
-     template="configlet.pt"
-     class=".configlet.SkintoolEditForm"
-     permission="z3ext.Configure" />
-
   <!-- translations -->
   <i18n:registerTranslations directory="locales"/>
 

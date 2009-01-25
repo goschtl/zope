@@ -17,6 +17,8 @@ $Id$
 """
 from zope import schema, interface
 from zope.i18nmessageid import MessageFactory
+from z3ext.widget.radio.field import RadioChoice
+from z3ext.widget.checkbox.field import CheckboxList
 
 _ = MessageFactory('z3ext.skintool')
 
@@ -42,16 +44,16 @@ class IDefaultLayers(interface.Interface):
 class ISkinTool(interface.Interface):
     """ skin tool, allow generate skin on the fly """
 
-    skin = schema.Choice(
+    skin = RadioChoice(
         title = _('Skin'),
         description = _(u'Select portal skin.'),
         vocabulary = "z3ext skins",
         required = False)
 
-    layers = schema.List(
+    layers = CheckboxList(
         title = _(u'Layers'),
         description = _(u'Select skin layers.'),
-        value_type = schema.Choice(vocabulary = "z3ext layers"),
+        vocabulary = "z3ext layers",
         default = [],
         required = False)
 

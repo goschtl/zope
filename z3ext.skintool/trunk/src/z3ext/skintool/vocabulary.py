@@ -37,11 +37,12 @@ class SkinsVocabulary(object):
     def __call__(self, context):
         terms = []
         for layer, info in tool.skins_registry.items():
-            terms.append((info[2], info[1]))
+            term = SimpleTerm(info[1], info[1], info[2])
+            term.description = info[3]
+            terms.append((info[2], info[1], term))
 
         terms.sort()
-        return Vocabulary(
-            [SimpleTerm(name,name,title) for title, name in terms])
+        return Vocabulary([term for title, name, term in terms])
 
 
 class LayersVocabulary(object):
@@ -50,8 +51,9 @@ class LayersVocabulary(object):
     def __call__(self, context):
         terms = []
         for layer, info in tool.layers_registry.items():
-            terms.append((info[2], info[1]))
+            term = SimpleTerm(info[1], info[1], info[2])
+            term.description = info[3]
+            terms.append((info[2], info[1], term))
 
         terms.sort()
-        return Vocabulary(
-            [SimpleTerm(name,name,title) for title, name in terms])
+        return Vocabulary([term for title, name, term in terms])
