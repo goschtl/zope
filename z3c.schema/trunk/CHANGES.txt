@@ -6,10 +6,12 @@ CHANGES
 Version 0.6.0dev (unreleased)
 -----------------------------
 
-- Added german translations
 - Humanized exception's doc strings.
 - Added translations support.
-- Added Russian translation.
+- Added german translations.
+- Added russian translations.
+- Changed mailing list address to zope-dev at zope.org, as
+  zope3-dev is retired now.
 
 Version 0.5.0 (2008-10-21)
 -----------------------------

@@ -27,7 +27,7 @@ setup(
     name = 'z3c.schema',
     version = '0.6.0dev',
     author = 'Zope Community',
-      author_email = "zope3-dev@zope.org",
+      author_email = "zope-dev@zope.org",
       description = "Additional schema fields for Zope 3",
     long_description=(
         read('README.txt')
