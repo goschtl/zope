@@ -2,9 +2,13 @@
 CHANGES
 =======
 
+Version 0.6.1 (unreleased)
+--------------------------
 
-Version 0.6.0dev (unreleased)
------------------------------
+- ...
+
+Version 0.6.0 (2009-01-26)
+--------------------------
 
 - Humanized exception's doc strings.
 - Added translations support.
@@ -14,7 +18,7 @@ Version 0.6.0dev (unreleased)
   zope3-dev is retired now.
 
 Version 0.5.0 (2008-10-21)
------------------------------
+--------------------------
 
 - Initial release on pypi
 
