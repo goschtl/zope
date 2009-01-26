@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.2 (unreleased)
+3.4.2 (2009-01-26)
 ------------------
 
 - Add a couple of tests to the OPTIONS verb.
