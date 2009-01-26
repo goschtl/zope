@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+3.4.2 (2009-01-26)
+------------------
+
+- Add a couple of tests to the OPTIONS verb.
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis and get
+  rid of zope.app.zapi as a dependency. See bug LP219302.
+
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
