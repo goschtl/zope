@@ -60,6 +60,7 @@ class FactoredContextualSourceBinder(object):
     def __init__(self, factory):
         self.factory = factory
 
-    def __call__(self, context):
-        return zc.sourcefactory.source.FactoredContextualSource(
-            self.factory, context)
+    def __call__(self, context, source_class=None, *args, **kwargs):
+        source_class = (source_class or
+            zc.sourcefactory.source.FactoredContextualSource)
+        return source_class(self.factory, context, *args, **kwargs)
