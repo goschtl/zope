@@ -11,15 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""An object database foundation based on Google's Protocol Buffers"""
 
+import os
 from setuptools import setup
+
+def read_file(*path):
+    base_dir = os.path.dirname(__file__)
+    file_path = (base_dir, ) + tuple(path)
+    return file(os.path.join(*file_path)).read()
 
 setup(
     name='keas.pbstate',
     version='0.1dev',
     author='Shane Hathaway and the Zope Community',
     author_email='zope-dev@zope.org',
-    description='Object state storage in a Google Protocol Buffer',
+    description=__doc__,
     license='ZPL 2.1',
 
     package_dir={'': 'src'},
@@ -29,4 +36,5 @@ setup(
         'setuptools',
         'protobuf',
         ],
+    long_description = read_file('src', 'keas', 'pbstate', 'README.txt'),
 )
