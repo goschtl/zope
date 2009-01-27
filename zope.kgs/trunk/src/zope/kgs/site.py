@@ -26,6 +26,7 @@ import docutils.core
 import logging
 import optparse
 import os
+import pkg_resources
 import re
 import shutil
 import sys
@@ -91,7 +92,8 @@ def generateData(src):
             }
 
         versions.append(versionData)
-    versions.sort(key=lambda x: x['name'], reverse=True)
+    versions.sort(key=lambda x: pkg_resources.parse_version(x['name']),
+                  reverse=True)
     return {'versions': versions,
             'latest': versions[0],
             'title': set.name,
