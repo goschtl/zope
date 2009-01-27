@@ -1,4 +1,5 @@
 import doctest
+import unittest
 import zc.buildout.testing
 
 
@@ -12,10 +13,12 @@ def tearDown(test):
 
 
 def test_suite():
-    return doctest.DocFileSuite('README.txt',
-                                setUp=setUp,
-                                tearDown=tearDown,
-                                optionflags=doctest.ELLIPSIS
-                                | doctest.REPORT_NDIFF
-                                | doctest.NORMALIZE_WHITESPACE)
-
+    ftests = doctest.DocFileSuite('README.txt',
+                                 setUp=setUp,
+                                 tearDown=tearDown,
+                                 optionflags=doctest.ELLIPSIS
+                                 | doctest.REPORT_NDIFF
+                                 | doctest.NORMALIZE_WHITESPACE)
+    suite = unittest.TestSuite()
+    suite.addTests(ftests)
+    return suite

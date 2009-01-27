@@ -9,8 +9,11 @@ z3c.recipe.kgstest
 ...
 ... [kgstest]
 ... recipe = z3c.recipe.kgstest
+... exclude = .*
+... include = zope.dottedname
 ... """)
 >>> print system(buildout)
 Installing kgstest.
-
->>> ls('parts')
+>>> ls('bin')
+- buildout
+- kgstest-zope.dottedname
