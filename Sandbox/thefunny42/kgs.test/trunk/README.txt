@@ -22,6 +22,8 @@ You can set those environment variable:
 
 - ``PYTHON_CACHE_EGG``: Where your cache egg is.
 
+- ``PYTHON_CACHE_DOWNLOAD``: Where your download directory is.
+
 - ``ZOPE3_SVN``: Url to the Zope SVN. By default it's
   ``svn://svn.zope.org/repos/main/``. You might want to change it to
   include your username, or use a mirror.

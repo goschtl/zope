@@ -28,11 +28,15 @@ DELETE_LIST = ['zope.app.boston',]
 IGNORED = BLACKLIST + DELETE_LIST
 
 
-def to_test(project, packages):
+def to_test(project, packages, check=False):
     """Gives back the egg to test.
     """
-    if len(packages) < 1:
-        import pdb; pdb.set_trace();
+    if check:
+        print "%s %s" % (project, packages[0].version)
+        requires = packages[0].requires()
+        for req in requires:
+            if len(req.specs):
+                print "Requirement %s" % req
     if 'test' in packages[0].extras:
         return project + ' [test]'
     return project
@@ -99,23 +103,26 @@ test-%:
     easy_install.download_cache(DOWNLOAD_CACHE)
 
     for project in projects:
-        print project
         if not os.path.isdir(project):
             os.system('svn co %s/%s/trunk %s' % (ZOPE3_SVN, project, project))
 
         script_name = project.replace('.', '-')
 
         # Released version
-        easy_install.install([project], os.path.abspath(EGG_CACHE), working_set=kgs_ws, newest=True)
         kgs_env = Environment([EGG_CACHE,])
         kgs_ws = WorkingSet(kgs_env)
         packages = kgs_env[project]
+        if not len(packages):
+            easy_install.install([project],
+                                 os.path.abspath(EGG_CACHE),
+                                 working_set=kgs_ws, newest=True)
+            packages = kgs_env[project]
 
         kgs_conf.write("""
 [test-%s]
 recipe = zc.recipe.testrunner
 eggs = %s
-""" % (script_name, to_test(project, packages)))
+""" % (script_name, to_test(project, packages, True)))
 
         # Trunk version
         packages = trunk_env[project]
