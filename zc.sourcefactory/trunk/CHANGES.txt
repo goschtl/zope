@@ -5,7 +5,9 @@ Changes
 0.4.1 (unreleased)
 ==================
 
-    - 
+    - FactoredContextualSourceBinder.__call__ now accepts arguments giving the
+      args to pass to source class.  ContextualSourceFactory now uses a class
+      variable to tell what kind of Source to make.
 
 
 0.4.0 (2008-12-11)

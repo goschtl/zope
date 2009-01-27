@@ -87,6 +87,28 @@ Modifying the context also modifies the data in the source:
   >>> len(source)
   4
 
+It's possible to have the default machinery return different sources, by
+providing a source_class argument when calling the binder.  One can also
+provide arguments to the source.
+
+  >>> class MultiplierSource(zc.sourcefactory.source.FactoredContextualSource):
+  ...     def __init__(self, factory, context, multiplier):
+  ...         super(MultiplierSource, self).__init__(factory, context)
+  ...         self.multiplier = multiplier
+  ...
+  ...     def _get_filtered_values(self):
+  ...         for value in self.factory.getValues(self.context):
+  ...             yield self.multiplier * value
+  >>> class MultiplierSourceFactory(MyDynamicSource):
+  ...     source_class = MultiplierSource
+  >>> binder = MultiplierSourceFactory()
+  >>> source = binder(context, multiplier=5)
+  >>> list(source)
+  [5, 10, 15, 20]
+  >>> 5 in source
+  True
+  >>> len(source)
+  4
 
 Filtering
 =========
