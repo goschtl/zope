@@ -15,6 +15,7 @@
 """
 import os
 import shutil
+import copy
 import zope.pagetemplate.pagetemplatefile
 
 class Template(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
@@ -30,7 +31,7 @@ class Template(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
             {'args': args,
              'nothing': None,
              'self': self,
-             'templates': self.templates
+             'templates': self.templates,
              })
         rval.update(self.pt_getEngine().getBaseNames())
         return rval
@@ -66,10 +67,15 @@ def generateSite(src, dst, data, templates=None):
         elif filename == 'VERSION':
             for version in data['versions']:
                 versionDir = os.path.join(dst, version['name'])
-                generateSite(srcPath, versionDir, data, templates)
+                newData = copy.deepcopy(data)
+                newData['version'] = version
+                newData['resourceDir'] = '../%s' % newData['resourceDir']
+                generateSite(srcPath, versionDir, newData, templates)
         elif os.path.isdir(srcPath):
             if not os.path.exists(dstPath):
                 os.mkdir(dstPath)
-            generateSite(srcPath, dstPath, data, templates)
+            newData = copy.deepcopy(data)
+            newData['resourceDir'] = '../%s' % newData['resourceDir']
+            generateSite(srcPath, dstPath, newData, templates)
         else:
             shutil.copyfile(srcPath, dstPath)

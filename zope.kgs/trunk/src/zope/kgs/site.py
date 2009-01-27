@@ -21,6 +21,7 @@ Usage: %s site-dir
   located to generate the site. The generated site is in that directory as
   well.
 """
+import docutils.core
 import logging
 import optparse
 import os
@@ -54,6 +55,13 @@ def _getRenderedFilename(version, filename):
     return '%s/%s' % (version,
                       os.path.split(filename)[-1].split('.')[0] + '.html')
 
+def _getRenderedTxt(filename):
+    if not filename:
+        return ""
+    f = open(filename)
+    parts = docutils.core.publish_parts(source=f.read(), writer_name='html')
+    return parts['html_body']
+
 def generateData(src):
     versions = []
     for filename in os.listdir(src):
@@ -68,16 +76,22 @@ def generateData(src):
             if filename in os.listdir(path):
                 features.append({'url': '%s/%s' % (set.version, filename),
                                  'title': title})
+        versionData = {
+            'name': set.version,
+            'features': features,
+            'changelog': {
+                'url':_getRenderedFilename(set.version, set.changelog),
+                'html': _getRenderedTxt(set.changelog)},
+            'announcement': {
+                'url':_getRenderedFilename(set.version, set.announcement),
+                'html': _getRenderedTxt(set.announcement)},
+            }
 
-        versions.append(
-            {'name': set.version,
-             'features': features,
-             'changelog': _getRenderedFilename(set.version, set.changelog),
-             'announcement': _getRenderedFilename(set.version, set.announcement),
-             })
+        versions.append(versionData)
 
     return {'versions': sorted(versions, key=lambda x: x['name']),
-            'title': set.name}
+            'title': set.name,
+            'resourceDir':'resources'}
 
 def generateSite(siteDir, templateDir, force=False):
     # Create some important variables

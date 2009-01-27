@@ -3,7 +3,9 @@
       metal:define-macro="page">
   <head>
     <title metal:define-slot="page-title">Page Title</title>
-    <link rel="stylesheet" type="text/css" href="resources/style.css" />
+    <link rel="stylesheet" type="text/css"
+          href="resources/style.css"
+          tal:attributes="href string:${resourceDir}/style.css"/>
     <script type="text/javascript" language="Javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
     <script type="text/javascript" language="Javascript">
@@ -24,7 +26,7 @@
 
   </head>
   <body>
-    <h1 id="header" metal:define-slot="title">KGS</h1>
+    <h1 id="header"><span metal:define-slot="title">KGS</span></h1>
 
     <div id="left-hand-navigation">
       <!-- Main Menu -->

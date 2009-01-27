@@ -4,5 +4,9 @@
     <title metal:fill-slot="page-title">Changes</title>
   </head>
   <body>
+    <div metal:fill-slot="title">Version <span tal:replace="version/name"/> Change Log</div>
+    <div metal:fill-slot="content">
+      <div tal:replace="structure version/changelog/html"/>
+    </div>
   </body>
 </html>
