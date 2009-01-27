@@ -88,8 +88,9 @@ def generateData(src):
             }
 
         versions.append(versionData)
-
-    return {'versions': sorted(versions, key=lambda x: x['name']),
+    versions.sort(key=lambda x: x['name'], reverse=True)
+    return {'versions': versions,
+            'latest': versions[0],
             'title': set.name,
             'resourceDir':'resources'}
 
