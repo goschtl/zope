@@ -17,6 +17,21 @@ from setuptools import setup, find_packages, Extension
 
 EXTENSIONCLASS_INCLUDEDIRS = ['include', 'src']
 
+from util import getVersionForPackage
+def getPackages(packages):
+    """ Return a list of egg names together with their
+        version specs according to the version-zopeX.cfg
+        files.
+    """
+    result = list()
+    for package in packages:
+        if ' ' in package:
+            package = package[:package.find(' ')]
+        version = getVersionForPackage(package)
+        result.append('%s==%s' % (package, version))
+    return result
+
+
 setup(name='Zope2',
       version = '2.12.dev',
       url='http://www.zope.org',
@@ -121,7 +136,7 @@ setup(name='Zope2',
 
       ],
 
-      install_requires=[
+      install_requires=getPackages([
         'Acquisition',
         'DateTime',
         'docutils',
@@ -173,10 +188,10 @@ setup(name='Zope2',
         'zope.app.publisher',
         'zope.app.schema',
         'zope.app.testing',
-      ],
+      ]),
 
       extras_require = dict(
-        zope_app = [
+        zope_app = getPackages([
           'zope.annotation',
           'zope.cachedescriptors',
           'zope.copypastemove',
@@ -241,7 +256,7 @@ setup(name='Zope2',
           'zope.app.zcmlfiles',
           'zope.app.zopeappgenerations',
           'zope.app.zptpage',
-          ],
+          ]),
       ),
 
       include_package_data=True,
