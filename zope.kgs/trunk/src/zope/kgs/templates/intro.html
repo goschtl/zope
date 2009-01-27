@@ -4,8 +4,7 @@
     <title metal:fill-slot="page-title">Introduction to the KGS</title>
   </head>
   <body>
-    <span metal:fill-slot="title"><em class="name" tal:replace="title">name</em> Known Good Set</span>
-
+    <span metal:fill-slot="title">KGS Introduction</span>
     <div metal:fill-slot="content">
       <h1 id="pageheading">Known Good Sets</h1>
 
@@ -29,15 +28,21 @@
 
       <ul>
         <li>
-          <div>In <strong>Buildout</strong> you can set this index in your <code>buildout.cfg</code> file:</div>
+          <div>
+            In <strong>Buildout</strong> you can set this index in
+            your <code>buildout.cfg</code> file:
+          </div>
           <pre>
 [buildout]
-index = http://download.project.org/kgs
+index = http://download.project.org/kgs/1.0.0/index
 ...</pre>
         </li>
         <li>
-          <div>With <strong>SetupTools</strong> you can specify the index as a command line option to the <code>easy_install</code> command:</div>
-          <pre>$ easy_install -i http://download.project.org/kgs mypackage</pre>
+          <div>
+            With <strong>SetupTools</strong> you can specify the index as a
+            command line option to the <code>easy_install</code> command:
+          </div>
+          <pre>$ easy_install -i http://download.project.org/kgs/1.0.0/index mypackage</pre>
         </li>
       </ul>
 
@@ -51,22 +56,27 @@ index = http://download.project.org/kgs
 
       <ul>
         <li>
-          <div>In <strong>Buildout</strong>, the versions can be specified in the <code>buildout.cfg</code> file like this by either copying the contents of <code>versions-*.cfg</code> or referencing it with the <code>extends</code> option:</div>
+          <div>
+            In <strong>Buildout</strong>, the versions can be specified
+            in the <code>buildout.cfg</code> file like this by either copying
+            the contents of <code>versions.cfg</code> or referencing it with
+            the <code>extends</code> option:</div>
           <pre>
 [buildout]
 versions = versions
 ...
-[version]
+[versions]
 zope.interface = 3.4.0
-&lt;copy the contents of versions-*.cfg here&gt;</pre>
+&lt;copy the contents of versions.cfg here&gt;</pre>
               or
           <pre>
 [buildout]
-extends = http://download.project.org/kgs/versions-1.0.0.cfg</pre>
+extends = http://download.project.org/kgs/1.0.0/versions.cfg</pre>
         </li>
         <li>
-          <div><strong>SetupTools</strong> itself cannot use the <code>version.cfg</code>
-          file.</div>
+          <div>
+            <strong>SetupTools</strong> itself cannot use the
+            <code>version.cfg</code> file.</div>
         </li>
       </ul>
 
@@ -83,12 +93,12 @@ extends = http://download.project.org/kgs/versions-1.0.0.cfg</pre>
           <div>Buildout, <code>buildout.cfg</code>:</div>
           <pre>
 [buildout]
-find-links = http://download.project.org/kgs/links.html
+find-links = http://download.project.org/kgs/1.0.0/links.html
 ...</pre>
         </li>
         <li>
           <div>Setup Tools, <code>easy_install</code></div>
-          <pre>$ easy_install -f http://download.project.org/kgs/links.html mypackage</pre>
+          <pre>$ easy_install -f http://download.project.org/kgs/1.0.0/links.html mypackage</pre>
         </li>
       </ul>
     </div>
