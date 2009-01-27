@@ -6,15 +6,16 @@
   </head>
   <body>
     <div metal:fill-slot="divider">
-      Check out the latest version:
-      <span tal:replace="latest/name"
-            tal:condition="not:latest/announcement/url"></span>
-      <a href="#"
+      Check out the latest version
+      (<span tal:replace="latest/name"
+            tal:condition="not:latest/announcement/url">
+      </span><a href="#"
          tal:attributes="href latest/announcement/url"
          tal:condition="latest/announcement/url"
          tal:content="latest/name">
-        Announcement
-      </a>
+        3.4.0
+      </a>)
+      released on <span tal:content="latest/date"/>:
       <a href="#"
          tal:attributes="href latest/changelog/url"
          tal:condition="latest/changelog/url">
@@ -25,7 +26,8 @@
       <h1>Versions</h1>
       <ul class="level-one">
         <li tal:repeat="version versions">
-          <a href="#">Version <span tal:replace="version/name">1</span></a>
+          <a href="#"><span tal:replace="version/name">3.4.0</span></a>
+          (<span tal:replace="version/date"/>)
           <ul class="level-two" style="display: none;">
             <li tal:condition="version/announcement/url">
               <a href="#"
