@@ -5,19 +5,7 @@ To Do
 Release 3.4
 -----------
 
-* Produce nicer O-wrap for intro page.
-
-* Refactor KGS output, so that the index is not a PyPI index.
-
-* Add date to release information.
-
-  -> Should be part of KGS file.
-
-* Invert order of releases.
-
 * Fix typos in intro text.
-
-* Ability to add release notes.
 
 * Write release notes.
 
