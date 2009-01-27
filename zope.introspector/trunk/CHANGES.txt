@@ -1,18 +1,17 @@
 CHANGES
 *******
 
-0.2 (unreleased)
-================
+0.1.2 (unreleased)
+==================
+
+* Fix test dependencies.
 
 0.1.1 (2008-10-22)
-================
+==================
 
 * The 0.1 egg was broken. 
 
 0.1 (2008-10-22)
 ================
-
-Feature changes
----------------
 
 * Initial Release

@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.2dev'
+version = '0.1.2dev'
 name='zope.introspector'
 
 long_description = (
@@ -65,6 +65,7 @@ setup(name=name,
                         ],
       extras_require = dict(
         test=['zope.app.testing',
+              'zope.app.zcmlfiles',
               'zope.testing',
               'z3c.testsetup',
               'zope.securitypolicy',

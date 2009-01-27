@@ -7,7 +7,6 @@ Tests for the package internal adapters and utilities.
 import unittest
 
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.zapi import getUtility
 
 from zope.introspector.registry import RegistryInfoUtility
 from zope.introspector.interfaces import IRegistryInfo, IRegistrySearch
