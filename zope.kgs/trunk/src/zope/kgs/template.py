@@ -60,12 +60,16 @@ def generateSite(src, dst, data, templates=None):
             continue
         elif srcPath.endswith('.pt'):
             continue
+        elif srcPath.endswith('.html'):
+            html = Template(srcPath, data, templates)()
+            open(dstPath, 'w').write(html)
+        elif filename == 'VERSION':
+            for version in data['versions']:
+                versionDir = os.path.join(dst, version['name'])
+                generateSite(srcPath, versionDir, data, templates)
         elif os.path.isdir(srcPath):
             if not os.path.exists(dstPath):
                 os.mkdir(dstPath)
             generateSite(srcPath, dstPath, data, templates)
-        elif srcPath.endswith('.html'):
-            html = Template(srcPath, data, templates)()
-            open(dstPath, 'w').write(html)
         else:
             shutil.copyfile(srcPath, dstPath)
