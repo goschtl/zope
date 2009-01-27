@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 3.4.5 (unreleased)
+Version 3.4.5 (2009/01/27)
 --------------------------
 
 - Fix a simple inconsistent MRO problem in tests
