@@ -1,0 +1,11 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+
+  <div tal:repeat="obj view/listPublishedItems" tal:omit-tag="">
+    <div tal:content="obj/url"/><br />
+  </div>
+
+</div>
+</body>
+</html>
