@@ -112,7 +112,6 @@ class SiteManagerContainer(Contained):
         zope.interface.directlyProvides(
             self, zope.location.interfaces.ISite,
             zope.interface.directlyProvidedBy(self))
-
         zope.event.notify(interfaces.NewLocalSite(sm))
 
 def _findNextSiteManager(site):

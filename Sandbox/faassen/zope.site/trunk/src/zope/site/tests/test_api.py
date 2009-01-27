@@ -19,20 +19,16 @@ __docformat__ = "reStructuredText"
 import unittest
 
 from zope.testing import doctest
-from zope.app.testing import setup
+from zope.site import testing
 
 def setUp(test):
-    setup.placefulSetUp()
+    testing.siteSetUp()
 
 def tearDown(test):
-    setup.placefulTearDown()
+    testing.siteTearDown()
 
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite('../README.txt',
                              setUp=setUp, tearDown=tearDown),
         ))
-
-if __name__ == "__main__":
-    unittest.main(defaultTest='test_suite')
-    

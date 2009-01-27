@@ -19,11 +19,12 @@ import unittest
 
 from zope.interface import Interface
 from zope.copypastemove import ObjectCopier
-from zope.app.component import site
+from zope import site
 from zope.app.folder import Folder
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-class I1(Interface):pass
+class I1(Interface):
+    pass
 
 class TestLocalSiteManager(PlacelessSetup, unittest.TestCase):
 
@@ -49,6 +50,3 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestLocalSiteManager),
         ))
-
-if __name__ == '__main__':
-    unittest.main()

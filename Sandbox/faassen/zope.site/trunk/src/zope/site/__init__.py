@@ -16,7 +16,8 @@
 $Id$
 """
 
-from zope.site.site import SiteManagerContainer, SiteManagementFolder
+from zope.site.site import (SiteManagerContainer, SiteManagementFolder,
+                            SiteManagerAdapter)
 from zope.site.site import LocalSiteManager, changeSiteConfigurationAfterMove
 from zope.site.site import threadSiteSubscriber
 from zope.site.site import clearThreadSiteSubscriber

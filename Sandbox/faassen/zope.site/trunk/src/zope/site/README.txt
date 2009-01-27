@@ -17,8 +17,7 @@ useful in the context of multiple sites and base component registries.
 
 It is common for a utility to delegate its answer to a utility
 providing the same interface in one of the component registry's
-bases. Let's start by creating a utility and inserting it in our
-folder hiearchy:
+bases. Let's first create a global utility::
 
   >>> import zope.interface
   >>> class IMyUtility(zope.interface.Interface):
@@ -29,19 +28,36 @@ folder hiearchy:
   ...     def __init__(self, id):
   ...         self.id = id
   ...     def __repr__(self):
-  ...         return "%s('%s')" %(self.__class__.__name__, self.id)
+  ...         return "%s('%s')" % (self.__class__.__name__, self.id)
 
   >>> gutil = MyUtility('global')
+  >>> from zope.component import getGlobalSiteManager
+  >>> gsm = getGlobalSiteManager()
   >>> gsm.registerUtility(gutil, IMyUtility, 'myutil')
 
-  >>> util1 = setup.addUtility(folder1_sm, 'myutil', IMyUtility,
-  ...                          MyUtility('one'))
+We create a simple folder hierarchy we can place our utilities in:
 
-  >>> folder1_1_sm = setup.createSiteManager(root['folder1']['folder1_1'])
-  >>> util1_1 = setup.addUtility(folder1_1_sm, 'myutil', IMyUtility,
-  ...                            MyUtility('one-one'))
+  >>> from zope.app.folder import Folder, rootFolder
+  >>> root = rootFolder()
+  >>> root[u'folder1'] = Folder()
+  >>> root[u'folder1'][u'folder1_1'] = Folder()
 
-Now, if we ask `util1_1` for its next available utility and we get
+We set up site managers in the folders::
+
+  >>> from zope.site import testing
+  >>> root_sm = testing.createSiteManager(root)
+  >>> folder1_sm = testing.createSiteManager(root['folder1'])
+  >>> folder1_1_sm = testing.createSiteManager(root['folder1']['folder1_1'])
+
+Now we create two utilities and insert them in our folder hierarchy:
+
+  >>> util1 = testing.addUtility(folder1_sm, 'myutil', IMyUtility,
+  ...                            MyUtility('one'))
+  >>> util1_1 = testing.addUtility(folder1_1_sm, 'myutil', IMyUtility,
+  ...                              MyUtility('one-one'))
+
+Now, if we ask `util1_1` for its next available utility we get the
+``one`` utility::
 
   >>> from zope import site
   >>> site.getNextUtility(util1_1, IMyUtility, 'myutil')
@@ -62,7 +78,7 @@ However, if we ask the global utility for the next one, an error is raised
   No more utilities for <InterfaceClass __builtin__.IMyUtility>,
   'myutil' have been found.
 
-or you can simply use the `queryNextUtility` and specify a default:
+You can also use `queryNextUtility` and specify a default:
 
   >>> site.queryNextUtility(gutil, IMyUtility, 'myutil', 'default')
   'default'
@@ -73,14 +89,16 @@ we create another base registry:
   >>> from zope.component import registry
   >>> myregistry = registry.Components()
 
+We now set up another utility into that registry:
+
   >>> custom_util = MyUtility('my_custom_util')
   >>> myregistry.registerUtility(custom_util, IMyUtility, 'my_custom_util')
 
-Now we add it as a base to the local site manager:
+We add it as a base to the local site manager:
 
   >>> folder1_sm.__bases__ = (myregistry,) + folder1_sm.__bases__
 
-Both, the ``myregistry`` and global utilities should be available:
+Both the ``myregistry`` and global utilities should be available:
 
   >>> site.queryNextUtility(folder1_sm, IMyUtility, 'my_custom_util')
   MyUtility('my_custom_util')

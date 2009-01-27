@@ -23,9 +23,11 @@ import zope.interface.verify
 from zope.testing import doctest
 from zope.location.interfaces import ISite, IPossibleSite
 
-from zope.app.testing import setup
-from zope.app.component import interfaces, site
 from zope.app.folder import folder
+
+from zope.site import interfaces
+from zope import site
+from zope.site import testing
 
 class SiteManagerStub(object):
     zope.interface.implements(interfaces.ILocalSiteManager)
@@ -51,7 +53,7 @@ def test_SiteManagerAdapter():
 
     then the adapter simply return's the site's site manager:
     
-      >>> from zope.app.component.site import SiteManagerAdapter
+      >>> from zope.site import SiteManagerAdapter
       >>> SiteManagerAdapter(site) is sm
       True
 
@@ -84,15 +86,15 @@ def test_setThreadSite_clearThreadSite():
     This test ensures that the site is corectly set and cleared in a thread
     during traversal using event subscribers. Before we start, no site is set:
 
-      >>> from zope.app.component import hooks
+      >>> from zope.site import hooks
       >>> hooks.getSite() is None
       True
 
 
       >>> request = object()
 
-      >>> from zope.app import publication
-      >>> from zope.app.component import site
+      >>> from zope.app.publication import interfaces
+      >>> from zope import site
 
       
     On the other hand, if a site is traversed, 
@@ -101,7 +103,7 @@ def test_setThreadSite_clearThreadSite():
       >>> mysite = CustomFolder('mysite')
       >>> mysite.setSiteManager(sm)
 
-      >>> ev = publication.interfaces.BeforeTraverseEvent(mysite, request)
+      >>> ev = interfaces.BeforeTraverseEvent(mysite, request)
       >>> site.threadSiteSubscriber(mysite, ev)
 
       >>> hooks.getSite()
@@ -109,7 +111,7 @@ def test_setThreadSite_clearThreadSite():
 
     Once the request is completed,
 
-      >>> ev = publication.interfaces.EndRequestEvent(mysite, request)
+      >>> ev = interfaces.EndRequestEvent(mysite, request)
       >>> site.clearThreadSiteSubscriber(ev)
 
     the site assignment is cleared again:
@@ -145,18 +147,16 @@ class BaseTestSiteManagerContainer(unittest.TestCase):
         self.assertRaises(Exception, smc.setSiteManager, self)
 
 
-
 class SiteManagerContainerTest(BaseTestSiteManagerContainer):
     def makeTestObject(self):
-        from zope.app.component.site import SiteManagerContainer
+        from zope.site import SiteManagerContainer
         return SiteManagerContainer()
 
-
 def setUp(test):
-    setup.placefulSetUp()
-
+    testing.siteSetUp()
+    
 def tearDown(test):
-    setup.placefulTearDown()
+    testing.siteTearDown()
 
 def test_suite():
     return unittest.TestSuite((
@@ -165,7 +165,4 @@ def test_suite():
         doctest.DocFileSuite('../site.txt',
                              setUp=setUp, tearDown=tearDown),
         ))
-
-if __name__ == "__main__":
-    unittest.main(defaultTest='test_suite')
     

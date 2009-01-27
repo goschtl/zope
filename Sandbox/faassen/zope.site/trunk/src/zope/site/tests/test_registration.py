@@ -34,7 +34,7 @@ from zope.app.testing import setup
 import zope.app.container.contained
 from zope import interface
 
-import zope.app.component.site
+import zope.site
 
 
 # test class for testing data conversion
@@ -49,22 +49,14 @@ class Foo(persistent.Persistent, zope.app.container.contained.Contained):
     def __repr__(self):
         return 'Foo(%r)' % self.name
 
-def setUpOld(test):
+def setUp(test):
     placelesssetup.setUp(test)
-    setup.setUpAnnotations()
-    setup.setUpDependable()
-    setup.setUpTraversal()
     test.globs['showwarning'] = warnings.showwarning
     warnings.showwarning = lambda *a, **k: None
 
 def tearDown(test):
     warnings.showwarning = test.globs['showwarning']
     placelesssetup.tearDown(test)
-
-def setUp(test):
-    placelesssetup.setUp(test)
-    test.globs['showwarning'] = warnings.showwarning
-    warnings.showwarning = lambda *a, **k: None
 
 def oldfs():
     return FileStorage(
@@ -114,8 +106,8 @@ We want to make sure that we see updates corrextly.
     >>> db = ZODB.tests.util.DB()
     >>> tm1 = transaction.TransactionManager()
     >>> c1 = db.open(transaction_manager=tm1)
-    >>> r1 = zope.app.component.site._LocalAdapterRegistry((base,))
-    >>> r2 = zope.app.component.site._LocalAdapterRegistry((r1,))
+    >>> r1 = zope.site.site._LocalAdapterRegistry((base,))
+    >>> r2 = zope.site.site._LocalAdapterRegistry((r1,))
     >>> c1.root()[1] = r1
     >>> c1.root()[2] = r2
     >>> tm1.commit()
@@ -205,7 +197,7 @@ Register an adapter::
     >>> manager.queryAdapter(bar, barmodule.IBaz)
     >>> manager.registerAdapter(Baz, [barmodule.IBar], barmodule.IBaz)
     >>> manager.getAdapter(bar, barmodule.IBaz) # doctest: +ELLIPSIS
-    <zope.app.component.tests.test_registration.Baz object at ...>
+    <zope.site.tests.test_registration.Baz object at ...>
 
 Before commit, the adapter is not available from another connection::
 
@@ -223,7 +215,7 @@ After commit, it is::
     >>> conn2.sync()
     >>> manager2.getAdapter(bar2, barmodule2.IBaz)
     ... # doctest: +ELLIPSIS
-    <zope.app.component.tests.test_registration.Baz object at ...>
+    <zope.site.tests.test_registration.Baz object at ...>
 
 Cleanup::
 
@@ -239,6 +231,3 @@ def test_suite():
         ))
     return suite
 
-
-if __name__ == "__main__":
-    unittest.main(defaultTest='test_suite')

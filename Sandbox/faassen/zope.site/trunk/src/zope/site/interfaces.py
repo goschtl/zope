@@ -20,11 +20,6 @@ import zope.deferredimport
 import zope.interface
 import zope.component.interfaces
 import zope.app.container.interfaces
-
-zope.deferredimport.deprecatedFrom(
-    "Moved to zope.location.interfaces. Importing from here will stop working in Zope 3.6",
-    "zope.location.interfaces",
-    "ISite", "IPossibleSite")
                     
 class INewLocalSite(zope.interface.Interface):
     """Event: a local site was created
@@ -32,7 +27,7 @@ class INewLocalSite(zope.interface.Interface):
 
     manager = zope.interface.Attribute("The new site manager")
 
-class NewLocalSite:
+class NewLocalSite(object):
     """Event: a local site was created
     """
     zope.interface.implements(INewLocalSite)

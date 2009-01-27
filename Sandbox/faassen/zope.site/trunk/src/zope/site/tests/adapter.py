@@ -17,7 +17,7 @@ $Id$
 """
 import zope.interface
 import zope.component
-import components
+from zope.site.tests import components
 
 class I1(zope.interface.Interface):
     pass
