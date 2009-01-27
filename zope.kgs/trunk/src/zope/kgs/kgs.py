@@ -86,6 +86,8 @@ class KGS(object):
 
     name = u'noname'
     version = u'unknown'
+    changelog = None
+    announcement = None
     packages = ()
 
     def __init__(self, path):
@@ -93,10 +95,23 @@ class KGS(object):
         self._extract()
 
     def _extract(self):
-        result = _open(os.path.dirname(self.path), self.path, [])
+        basePath = os.path.dirname(self.path)
+        result = _open(basePath, self.path, [])
         if MAIN_SECTION in result:
             self.name = result[MAIN_SECTION].get('name', self.name)
             self.version = result[MAIN_SECTION].get('version', self.version)
+            self.changelog = result[MAIN_SECTION].get(
+                'changelog', self.changelog)
+            if not os.path.isabs(self.changelog):
+                self.changelog = os.path.join(basePath, self.changelog)
+            if not os.path.exists(self.changelog):
+                self.changelog = None
+            self.announcement = result[MAIN_SECTION].get(
+                'announcement', self.announcement)
+            if not os.path.isabs(self.announcement):
+                self.announcement = os.path.join(basePath, self.announcement)
+            if not os.path.exists(self.announcement):
+                self.announcement = None
             del result[MAIN_SECTION]
         self.packages = []
         sections = result.keys()

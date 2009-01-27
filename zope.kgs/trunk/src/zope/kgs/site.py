@@ -33,9 +33,12 @@ TIMESTAMP_FILENAME = 'cf-timestamp'
 RESOURCES_PATH = os.path.join(os.path.dirname(__file__), 'templates','resources')
 
 def generateSite(siteDir):
+    # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
-    ver = kgs.KGS(kgsPath).version
-    logging.info("Building site for version %s using config: %s" % (ver, kgsPath))
+    set = kgs.KGS(kgsPath)
+    ver = set.version
+    logging.info(
+        "Building site for version %s using config: %s" % (ver, kgsPath))
 
     timestampPath = os.path.join(siteDir, TIMESTAMP_FILENAME)
 
@@ -53,58 +56,66 @@ def generateSite(siteDir):
     # generate the site than the scheduler's wait time.
     open(timestampPath, 'w').write(str(time.time()))
 
-    # Copy the KGS config file to a versioned version
-    shutil.copy(
-        kgsPath, os.path.join(siteDir, 'controlled-packages-%s.cfg' %ver))
+    # Create a directory for the new version
+    versionDir = os.path.join(siteDir, ver)
+    os.mkdir(versionDir)
 
-    # Create the buildout config file and version it
-    buildoutPath = os.path.join(siteDir, 'buildout.cfg')
+    # Copy the KGS config file, changelog and announcement file to the version
+    # directory
+    shutil.move(kgsPath, versionDir)
+    if set.changelog:
+        shutil.move(kgs.changelog, versionDir)
+    if set.announcement:
+        shutil.move(kgs.announcement, versionDir)
+
+    # Let's now recreate some of the important variables.
+    kgsPath = os.path.join(versionDir, 'controlled-packages.cfg')
+    set = kgs.KGS(kgsPath)
+
+    # Create the buildout config file
+    buildoutPath = os.path.join(versionDir, 'buildout.cfg')
     logging.info("Generating buildout config: %s" % buildoutPath)
     buildout.generateBuildout(kgsPath, buildoutPath)
-    shutil.copy(buildoutPath, os.path.join(siteDir, 'buildout-%s.cfg' %ver))
 
     # Create a versions config file and version it
-    versionsPath = os.path.join(siteDir, 'versions.cfg')
+    versionsPath = os.path.join(versionDir, 'versions.cfg')
     logging.info("Generating version config file: %s" % versionsPath)
     version.generateVersions(kgsPath, versionsPath)
-    shutil.copy(versionsPath, os.path.join(siteDir, 'versions-%s.cfg' %ver))
 
     # Create a links config file and version it
-    linksPath = os.path.join(siteDir, 'links.html')
+    linksPath = os.path.join(versionDir, 'links.html')
     link.generateLinks(kgsPath, linksPath)
-    shutil.copy(linksPath, os.path.join(siteDir, 'links-%s.html' %ver))
 
     # Update the full index (which is assumed to live in the site directory)
     logging.info("updating the index")
-    ppix.generatePackagePages(kgsPath, siteDir)
+    ppix.generatePackagePages(kgsPath, versionDir)
 
     # Update the minimal index
     logging.info("updating the minimal index")
-    midxDir = os.path.join(siteDir, 'minimal')
+    midxDir = os.path.join(versionDir, 'minimal')
     if not os.path.exists(midxDir):
         os.mkdir(midxDir)
     ppix.generatePackagePages(kgsPath, midxDir)
     ppix.generateIndexPage(kgsPath, midxDir)
-    midxVerDir = os.path.join(siteDir, 'minimal-%s' %ver)
-    if os.path.exists(midxVerDir):
-        shutil.rmtree(midxVerDir)
-    shutil.copytree(midxDir, midxVerDir)
 
     # copy over the resource files
-    resourcesDir = os.path.join(siteDir, 'resources')
+    resourcesDir = os.path.join(versionDir, 'resources')
     logging.info("copying resource files to %s" % resourcesDir)
     if os.path.exists(resourcesDir):
         shutil.rmtree(resourcesDir)
     shutil.copytree(RESOURCES_PATH, resourcesDir)
 
     # Update the intro page
-    logging.info("updating the intro page")
-    intro.main(['-d',siteDir])
+    #logging.info("updating the intro page")
+    #intro.main(['-d',versionDir])
 
     logging.info("finished generating site.")
 
 
 parser = optparse.OptionParser()
+parser.add_option("-v","--verbose", action="bool",
+                  type="string", dest="siteDir", metavar="DIR",
+                  help="The directory where the site should be generated")
 parser.add_option("-s","--site-dir", action="store",
                   type="string", dest="siteDir", metavar="DIR",
                   help="The directory where the site should be generated")
