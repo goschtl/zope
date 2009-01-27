@@ -31,7 +31,6 @@ import zope.component
 import zope.component.persistentregistry
 import zope.component.interfaces
 import zope.traversing.api
-import zope.deferredimport
 import zope.location
 
 from zope.component.interfaces import ComponentLookupError
