@@ -78,6 +78,7 @@ def generateData(src):
                                  'title': title})
         versionData = {
             'name': set.version,
+            'date': set.date and str(set.date) or None,
             'features': features,
             'changelog': {
                 'url':_getRenderedFilename(set.version, set.changelog),
@@ -144,8 +145,14 @@ def generateSite(siteDir, templateDir, force=False):
     if set.announcement:
         shutil.move(set.announcement, versionDir)
 
-    # Let's now recreate some of the important variables.
+    # Recreate the KGS Path
     kgsPath = os.path.join(versionDir, 'controlled-packages.cfg')
+
+    # Insert date into KGS, if it is not set.
+    if not set.date:
+        pass
+
+    # Recreate the KGS
     set = kgs.KGS(kgsPath)
 
     # Create the buildout config file

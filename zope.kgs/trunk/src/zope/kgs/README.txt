@@ -19,7 +19,9 @@ like:
   ... [KGS]
   ... name = zope-dev
   ... version = 1.2.0
+  ... date = 2009-01-01
   ... changelog = CHANGES.txt
+  ... announcement = ANNOUNCEMENT.txt
   ...
   ... [packageA]
   ... versions = 1.0.0
@@ -37,7 +39,33 @@ like:
 As you can see, this file uses an INI-style format. The "DEFAULT" section is
 special, as it will insert the specified options into all other sections as
 default. The "KGS" section specifies some global information about the KGS,
-such as the name of the KGS.
+such as the name of the KGS. Since this section references two external files,
+we should quickly create those.
+
+  >>> import os
+  >>> dir = os.path.dirname(cfgFile)
+
+  >>> open(os.path.join(dir, 'CHANGES.txt'), 'w').write('''\
+  ... =======
+  ... Changes
+  ... =======
+  ...
+  ... packageA
+  ... ========
+  ...
+  ... Version 1.0.0
+  ... -------------
+  ...
+  ... * Initial Release
+  ... ''')
+
+  >>> open(os.path.join(dir, 'ANNOUNCEMENT.txt'), 'w').write('''\
+  ... =======================
+  ... zope-dev 1.2.0 Released
+  ... =======================
+  ...
+  ... The announcement text!
+  ... ''')
 
 All other sections refer to package names. Currently each package section
 supports two options. The "versions" option lists all versions that are known
@@ -626,12 +654,22 @@ The class is simply instnatiated using the path to the config file:
   >>> myKGS
   <KGS 'zope-dev'>
 
-The name and version  of the KGS is available via:
+The name, version and date of the KGS is available via:
 
   >>> myKGS.name
   'zope-dev'
   >>> myKGS.version
   '1.2.0'
+  >>> myKGS.date
+  datetime.date(2009, 1, 1)
+
+When the changelog and/or announcement files are available, the KGS references
+the absolute path:
+
+  >>> myKGS.changelog
+  '.../CHANGES.txt'
+  >>> myKGS.announcement
+  '.../ANNOUNCEMENT.txt'
 
 The packages are available under `packages`:
 

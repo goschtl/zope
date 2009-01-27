@@ -49,6 +49,8 @@ setup(name='zope.kgs',
           test=['zope.testing'],
           ),
       install_requires=[
+          'dateutil',
+          'docutils',
           'lxml',
           'setuptools',
           'zc.buildout',

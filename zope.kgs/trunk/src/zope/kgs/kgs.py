@@ -12,6 +12,8 @@
 #
 ##############################################################################
 """KGS configuration file parser."""
+import datetime
+import dateutil.parser
 import os.path
 import urllib2
 import ConfigParser
@@ -95,6 +97,7 @@ class KGS(object):
 
     name = u'noname'
     version = u'unknown'
+    date = None
     changelog = None
     announcement = None
     packages = ()
@@ -114,6 +117,9 @@ class KGS(object):
                 section, basePath, 'changelog', self.changelog)
             self.announcement = _getAbsolutePath(
                 section, basePath, 'announcement', self.announcement)
+            dateStr = section.get('date')
+            if dateStr:
+                self.date = dateutil.parser.parse(dateStr).date()
             del result[MAIN_SECTION]
         self.packages = []
         sections = result.keys()
