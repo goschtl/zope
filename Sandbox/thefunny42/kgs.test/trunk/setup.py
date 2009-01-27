@@ -6,7 +6,7 @@ setup(name='kgs.test',
       author='Grok Contributors',
       author_email='grok-dev@zope.org',
       description='Tool to create test environement for KGS.',
-      long_description='',
+      long_description=open('README.txt').read(),
       keywords = "zope3 setuptools egg kgs",
       classifiers = [
           'Intended Audience :: Developers',
