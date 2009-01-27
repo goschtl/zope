@@ -45,11 +45,13 @@ class ContextualSourceFactory(BasicSourceFactory):
     Implementors must provide an implementation for `getValues`.
     """
 
+    source_class = zc.sourcefactory.source.FactoredContextualSource
+
     def __new__(cls, *args, **kw):
         """Create the factory object and return source."""
         factory = object.__new__(cls)
         factory.__init__(*args, **kw)
-        return FactoredContextualSourceBinder(factory)
+        return FactoredContextualSourceBinder(factory, self.source_class)
 
 
 class FactoredContextualSourceBinder(object):
@@ -57,10 +59,9 @@ class FactoredContextualSourceBinder(object):
 
     zope.interface.implements(zope.schema.interfaces.IContextSourceBinder)
 
-    def __init__(self, factory):
+    def __init__(self, factory, source_class):
         self.factory = factory
+        self.source_class = source_class
 
-    def __call__(self, context, source_class=None, *args, **kwargs):
-        source_class = (source_class or
-            zc.sourcefactory.source.FactoredContextualSource)
-        return source_class(self.factory, context, *args, **kwargs)
+    def __call__(self, context, *args, **kwargs):
+        return self.source_class(self.factory, context, *args, **kwargs)
