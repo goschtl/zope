@@ -16,7 +16,7 @@
 import os
 from setuptools import setup
 
-VERSION='0.1'
+VERSION='0.2dev'
 
 def read_file(*path):
     base_dir = os.path.dirname(__file__)
