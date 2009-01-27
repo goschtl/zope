@@ -16,6 +16,8 @@
 import os
 from setuptools import setup
 
+VERSION='0.1'
+
 def read_file(*path):
     base_dir = os.path.dirname(__file__)
     file_path = (base_dir, ) + tuple(path)
@@ -23,7 +25,7 @@ def read_file(*path):
 
 setup(
     name='keas.pbstate',
-    version='0.1dev',
+    version=VERSION,
     author='Shane Hathaway and the Zope Community',
     author_email='zope-dev@zope.org',
     description=__doc__,
