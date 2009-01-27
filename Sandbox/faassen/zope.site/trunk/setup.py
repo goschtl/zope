@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.component',
+setup(name='zope.site',
       version = '3.5.1dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
@@ -53,7 +53,7 @@ setup(name='zope.app.component',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
-      namespace_packages=['zope', 'zope.app'],
+      namespace_packages=['zope'],
       extras_require=dict(
           test=['zope.app.testing',
                 'zope.app.securitypolicy',

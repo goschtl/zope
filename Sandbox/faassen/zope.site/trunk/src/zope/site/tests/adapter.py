@@ -13,7 +13,7 @@
 ##############################################################################
 """Sample adapter class for testing
 
-$Id: adapter.py 29080 2005-02-08 00:07:11Z jim $
+$Id$
 """
 import zope.interface
 import zope.component
