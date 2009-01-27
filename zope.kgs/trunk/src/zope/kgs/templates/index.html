@@ -8,7 +8,7 @@
       <em class="name" tal:replace="title">name</em> Known Good Set
     </h1>
     <ul class="level-one" metal:fill-slot="left-nav">
-      <!--li tal:repeat="version self/versions">
+      <li tal:repeat="version versions">
           <a href="#">Version <span tal:replace="version/name">1</span></a>
           <ul class="level-two" style="display: none;">
           <li tal:repeat="feature version/features">
@@ -27,26 +27,9 @@
           </li>
           </ul>
 
-</li-->
-
-
+      </li>
       <li>
-        <a href="#">Version 2</a>
-        <ul class="level-two" style="display: none;">
-          <li>
-            <a href="#">Feature 1</a>
-          </li>
-          <li>
-            <a href="#">Feature 2</a>
-          </li>
-          <li>
-            <a href="#">Feature 3</a>
-          </li>
-          <li>
-            <a href="#">Feature 4</a>
-          </li>
-        </ul>
-
+          <a href="intro.html">KGS Introduction</a>
       </li>
     </ul>
 
