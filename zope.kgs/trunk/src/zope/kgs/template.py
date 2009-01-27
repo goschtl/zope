@@ -33,17 +33,6 @@ class Template(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
         return rval
 
 
-class FileContext(object):
-
-    def __init__(self, path, root):
-        self.path = path
-        self.root = root
-
-    def __call__(self):
-        pt = Template(self.path, self.root)
-        return pt()
-
-
 class DirectoryContext(object):
 
     def __init__(self, path, root=None):
@@ -53,7 +42,7 @@ class DirectoryContext(object):
     def __getitem__(self, name):
         path = os.path.join(self.path, name)
         if os.path.exists(path):
-            return FileContext(path, self.root)
+            return Template(path, self.root)
         return None
 
 
