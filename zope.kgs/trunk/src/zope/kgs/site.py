@@ -97,7 +97,7 @@ def generateData(src):
     return {'versions': versions,
             'latest': versions[0],
             'title': set.name,
-            'resourceDir':'resources'}
+            'siteRoot':''}
 
 def generateSite(siteDir, templateDir, force=False):
     # Create some important variables

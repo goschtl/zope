@@ -5,7 +5,7 @@
     <title metal:define-slot="page-title">Page Title</title>
     <link rel="stylesheet" type="text/css"
           href="resources/style.css"
-          tal:attributes="href string:${resourceDir}/style.css"/>
+          tal:attributes="href string:${siteRoot}resources/style.css"/>
     <script type="text/javascript" language="Javascript"
             src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"></script>
     <script type="text/javascript" language="Javascript">
@@ -32,10 +32,42 @@
       <!-- Main Menu -->
       <div id="menu">
 
-        <div class="level-one" metal:define-slot="left-nav">
+        <ul class="level-one" metal:define-slot="left-nav">
 
+          <li tal:repeat="version versions">
+            <a href="#">Version <span tal:replace="version/name">1</span></a>
+            <ul class="level-two" style="display: none;">
 
-        </div>
+              <li tal:condition="version/announcement/url">
+                <a href="#"
+                   tal:attributes="href version/announcement/url">Announcement</a>
+              </li>
+              <li tal:condition="version/changelog/url">
+                <a href="#"
+                   tal:attributes="href version/changelog/url">Changelog</a>
+              </li>
+              <li tal:repeat="feature version/features">
+                <a href="#"
+                   tal:attributes="href feature/url"
+                   tal:content="feature/title">Feature 1</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 2</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 3</a>
+              </li>
+              <li tal:replace="nothing">
+                <a href="#">Feature 4</a>
+              </li>
+            </ul>
+
+          </li>
+          <li>
+            <a href="intro.html">KGS Introduction</a>
+          </li>
+
+        </ul>
       </div>
     </div>
 

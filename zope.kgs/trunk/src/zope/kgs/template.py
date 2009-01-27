@@ -69,13 +69,13 @@ def generateSite(src, dst, data, templates=None):
                 versionDir = os.path.join(dst, version['name'])
                 newData = copy.deepcopy(data)
                 newData['version'] = version
-                newData['resourceDir'] = '../%s' % newData['resourceDir']
+                newData['siteRoot'] = '../%s' % newData['siteRoot']
                 generateSite(srcPath, versionDir, newData, templates)
         elif os.path.isdir(srcPath):
             if not os.path.exists(dstPath):
                 os.mkdir(dstPath)
             newData = copy.deepcopy(data)
-            newData['resourceDir'] = '../%s' % newData['resourceDir']
+            newData['siteRoot'] = '../%s' % newData['siteRoot']
             generateSite(srcPath, dstPath, newData, templates)
         else:
             shutil.copyfile(srcPath, dstPath)
