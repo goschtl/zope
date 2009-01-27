@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.workflow',
-      version = '3.5.0dev',
+      version = '3.4.2dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Workflow Engine for Zope 3',

@@ -31,8 +31,4 @@ class WorkflowSetup(PlacefulSetup):
 
         self.sm = PlacefulSetup.setUp(self, site=True)
         self.default = traverse(self.sm, "default")
-        self.cm = self.default.registrationManager
 
-        self.sm1 = self.makeSite('folder1')
-        self.default1 = traverse(self.sm1, "default")
-        self.cm1 = self.default1.registrationManager
