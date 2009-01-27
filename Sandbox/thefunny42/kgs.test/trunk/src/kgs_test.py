@@ -109,11 +109,11 @@ test-%:
         script_name = project.replace('.', '-')
 
         # Released version
-        kgs_env = Environment([egg_cache,])
-        kgs_ws = WorkingSet(kgs_env)
         easy_install.install([project],
                              os.path.abspath(egg_cache),
                              working_set=kgs_ws, newest=True)
+        kgs_env = Environment([EGG_CACHE,])
+        kgs_ws = WorkingSet(kgs_env)
         packages = kgs_env[project]
 
         kgs_conf.write("""
