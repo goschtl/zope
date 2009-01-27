@@ -51,7 +51,7 @@ class ContextualSourceFactory(BasicSourceFactory):
         """Create the factory object and return source."""
         factory = object.__new__(cls)
         factory.__init__(*args, **kw)
-        return FactoredContextualSourceBinder(factory, self.source_class)
+        return FactoredContextualSourceBinder(factory, cls.source_class)
 
 
 class FactoredContextualSourceBinder(object):

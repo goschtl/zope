@@ -99,7 +99,10 @@ provide arguments to the source.
   ...     def _get_filtered_values(self):
   ...         for value in self.factory.getValues(self.context):
   ...             yield self.multiplier * value
-  >>> source = binder(context, source_class=MultiplierSource, multiplier=5)
+  >>> class MultiplierSourceFactory(MyDynamicSource):
+  ...     source_class = MultiplierSource
+  >>> binder = MultiplierSourceFactory()
+  >>> source = binder(context, multiplier=5)
   >>> list(source)
   [5, 10, 15, 20]
   >>> 5 in source
