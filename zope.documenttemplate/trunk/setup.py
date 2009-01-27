@@ -48,7 +48,7 @@ setup(name='zope.documenttemplate',
       package_dir = {'': 'src'},
       namespace_packages=['zope'],
       extras_require = dict(
-          test=['zope.security',
+          test=['zope.security [test]',
                 'zope.testing',
                 ],
           untrusted=['zope.security[untrustedpython]'
