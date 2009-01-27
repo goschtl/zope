@@ -67,10 +67,14 @@ def main():
     makefile = open('Makefile', 'w')
 
     kgs_conf.write("""
+[versions]
+ZODB3 = 3.8
+
 [buildout]
 prefer-final = false
 newest = true
 unzip = true
+versions = versions
 parts = 
 """)
     makefile.write("""
