@@ -123,9 +123,9 @@ def generateSite(siteDir, templateDir, force=False):
     # directory
     shutil.move(kgsPath, versionDir)
     if set.changelog:
-        shutil.move(kgs.changelog, versionDir)
+        shutil.move(set.changelog, versionDir)
     if set.announcement:
-        shutil.move(kgs.announcement, versionDir)
+        shutil.move(set.announcement, versionDir)
 
     # Let's now recreate some of the important variables.
     kgsPath = os.path.join(versionDir, 'controlled-packages.cfg')

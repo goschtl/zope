@@ -11,20 +11,29 @@
       <li tal:repeat="version versions">
           <a href="#">Version <span tal:replace="version/name">1</span></a>
           <ul class="level-two" style="display: none;">
-          <li tal:repeat="feature version/features">
-          <a href="#"
-          tal:attributes="href feature/url"
-          tal:content="feature/title">Feature 1</a>
-          </li>
-          <li tal:replace="nothing">
-          <a href="#">Feature 2</a>
-          </li>
-          <li tal:replace="nothing">
-          <a href="#">Feature 3</a>
-          </li>
-          <li tal:replace="nothing">
-          <a href="#">Feature 4</a>
-          </li>
+
+            <li tal:condition="version/announcement">
+              <a href="#"
+                 tal:attributes="href version/announcement">Announcement</a>
+            </li>
+            <li tal:condition="version/changelog">
+              <a href="#"
+                 tal:attributes="href version/changelog">Changelog</a>
+            </li>
+            <li tal:repeat="feature version/features">
+              <a href="#"
+                 tal:attributes="href feature/url"
+                 tal:content="feature/title">Feature 1</a>
+            </li>
+            <li tal:replace="nothing">
+              <a href="#">Feature 2</a>
+            </li>
+            <li tal:replace="nothing">
+              <a href="#">Feature 3</a>
+            </li>
+            <li tal:replace="nothing">
+              <a href="#">Feature 4</a>
+            </li>
           </ul>
 
       </li>
