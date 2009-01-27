@@ -24,7 +24,7 @@
 
   </head>
   <body>
-    <h1 id="header">Introduction to the KGS</h1>
+    <h1 id="header" metal:define-slot="title">KGS</h1>
 
     <div id="left-hand-navigation">
       <!-- Main Menu -->

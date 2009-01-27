@@ -4,7 +4,9 @@
     <title metal:fill-slot="page-title">Introduction to the KGS</title>
   </head>
   <body>
-    <div metal:fill-slot="header">Introduction to the KGS</div>
+    <h1 id="header" metal:fill-slot="title">
+      <em class="name" tal:replace="title">name</em> Known Good Set
+    </h1>
     <ul class="level-one" metal:fill-slot="left-nav">
       <!--li tal:repeat="version self/versions">
           <a href="#">Version <span tal:replace="version/name">1</span></a>

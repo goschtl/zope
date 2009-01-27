@@ -19,36 +19,40 @@ import zope.pagetemplate.pagetemplatefile
 
 class Template(zope.pagetemplate.pagetemplatefile.PageTemplateFile):
 
-    def __init__(self, path, templates):
+    def __init__(self, path, data, templates):
         super(Template, self).__init__(path)
         self.templates = templates
+        self.data = data
 
     def pt_getContext(self, args=(), options=None, **ignore):
-        rval = {'args': args,
-                'nothing': None,
-                'self': self,
-                'templates': self.templates
-                }
+        rval = self.data.copy()
+        rval.update(
+            {'args': args,
+             'nothing': None,
+             'self': self,
+             'templates': self.templates
+             })
         rval.update(self.pt_getEngine().getBaseNames())
         return rval
 
 
 class DirectoryContext(object):
 
-    def __init__(self, path, root=None):
+    def __init__(self, path, data, root=None):
         self.path = path
+        self.data = data
         self.root = root or self
 
     def __getitem__(self, name):
         path = os.path.join(self.path, name)
         if os.path.exists(path):
-            return Template(path, self.root)
+            return Template(path, self.data, self.root)
         return None
 
 
 def generateSite(src, dst, data, templates=None):
     if templates is None:
-        templates = DirectoryContext(src)
+        templates = DirectoryContext(src, data)
     for filename in os.listdir(src):
         srcPath = os.path.join(src, filename)
         dstPath = os.path.join(dst, filename)
@@ -61,7 +65,7 @@ def generateSite(src, dst, data, templates=None):
                 os.mkdir(dstPath)
             generateSite(srcPath, dstPath, data, templates)
         elif srcPath.endswith('.html'):
-            data = Template(srcPath, templates)()
-            open(dstPath, 'w').write(data)
+            html = Template(srcPath, data, templates)()
+            open(dstPath, 'w').write(html)
         else:
             shutil.copyfile(srcPath, dstPath)

@@ -31,12 +31,50 @@ from zope.kgs import version, buildout, ppix, link, intro, kgs, template
 
 TIMESTAMP_FILENAME = 'cf-timestamp'
 
+FEATURES = [
+    ('controlled-packages.cfg', u'Controlled Packages'),
+    ('versions.cfg',            u'Versions'),
+    ('buildout.cfg',            u'Buildout Configuration'),
+    ('links.html',              u'Package Links'),
+    ('minimal',                 u'Minimal Index'),
+    ('index',                   u'Index'),
+    ]
+
 formatter = logging.Formatter('%(levelname)s - %(message)s')
 handler = logging.StreamHandler(sys.stdout)
 handler.setFormatter(formatter)
 logger = logging.getLogger('info')
 logger.addHandler(handler)
 logger.setLevel(logging.ERROR)
+
+
+def _getRenderedFilename(filename):
+    if not filename:
+        return
+    return os.path.split(filename)[-1].split('.')[0] + '.html'
+
+def generateData(src):
+    versions = []
+    for filename in os.listdir(src):
+        path = os.path.join(src, filename)
+        if not (os.path.isdir(path) and
+                os.path.exists(os.path.join(path, 'controlled-packages.cfg'))):
+            continue
+        kgsPath = os.path.join(path, 'controlled-packages.cfg')
+        set = kgs.KGS(kgsPath)
+        features = []
+        for (filename, title) in FEATURES:
+            if filename in os.listdir(path):
+                features.append({'url': filename, 'title': title})
+            versions.append(
+                {'name': set.version,
+                 'features': features,
+                 'changelog': _getRenderedFilename(set.changelog),
+                 'announcement': _getRenderedFilename(set.announcement),
+                 })
+
+    return {'versions': sorted(versions, key=lambda x: x['name']),
+            'title': set.name}
 
 def generateSite(siteDir, templateDir, force=False):
     # Create some important variables
@@ -109,7 +147,11 @@ def generateSite(siteDir, templateDir, force=False):
 
     # Update the full index (which is assumed to live in the site directory)
     logger.info("updating the index")
-    ppix.generatePackagePages(kgsPath, versionDir)
+    idxDir = os.path.join(versionDir, 'index')
+    if not os.path.exists(idxDir):
+        os.mkdir(idxDir)
+    ppix.generatePackagePages(kgsPath, idxDir)
+    ppix.generateIndexPage(kgsPath, idxDir)
 
     # Update the minimal index
     logger.info("updating the minimal index")
@@ -121,7 +163,7 @@ def generateSite(siteDir, templateDir, force=False):
 
     # Generate Web Site
     logger.info("Generating Web Site")
-    template.generateSite(templateDir, siteDir, None)
+    template.generateSite(templateDir, siteDir, generateData(siteDir))
 
     logger.info("finished generating site.")
 
