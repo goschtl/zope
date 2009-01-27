@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.2 (unreleased)
+3.4.2 (2009-01-27)
 ------------------
 
 - Provide more logging output for the various stages and actions of evolving a
@@ -10,7 +10,13 @@ CHANGES
 
 - Fixed bug: A failing last generation would allow starting an app server
   without having evolved to the minimum generation.
-   
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See
+  bug 219302.
+
+- Corrected author email and home page address.
+
+
 3.4.1 (2007-10-31)
 ------------------
 
