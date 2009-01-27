@@ -565,7 +565,6 @@ Let's now generate the page:
         </div>...
 
 
-
 The Site Generator
 ------------------
 
@@ -582,31 +581,20 @@ this. The site generator script acts upon a directory, in which it assumes a
   >>> shutil.copy(cfgFileReal, cfgFileSite)
 
   >>> from zope.kgs import site
-  >>> site.main(['-s',siteDir])
+  >>> site.main(['-s', siteDir])
 
 Let's have a look at the generated files:
 
   >>> from pprint import pprint
   >>> pprint(sorted(os.listdir(siteDir)))
-    ['PIL',
-     'buildout-3.4.0b2.cfg',
-     'buildout.cfg',
-     'cf-timestamp',
-     'controlled-packages-3.4.0b2.cfg',
-     'controlled-packages.cfg',
-     'intro.html',
-     'links-3.4.0b2.html',
-     'links.html',
-     'minimal',
-     'minimal-3.4.0b2',
-     'resources',
-     'versions-3.4.0b2.cfg',
-     'versions.cfg',
-     'z3c.formdemo',
-     'zope.component',
-     'zope.interface']
+  ['3.4.0b2', 'cf-timestamp']
 
-  >>> sorted(os.listdir(os.path.join(siteDir, 'minimal')))
+  >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2')))
+  ['PIL', 'buildout.cfg', 'controlled-packages.cfg', 'links.html',
+   'minimal', 'resources', 'versions.cfg', 'z3c.formdemo',
+   'zope.component', 'zope.interface']
+
+  >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2', 'minimal')))
   ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']
 
 If you try to generate the site again without changing the controlled packages
@@ -616,7 +604,8 @@ previous generation:
   >>> tsPath = os.path.join(siteDir, 'cf-timestamp')
 
   >>> beforeTimestamp = open(tsPath).read()
-  >>> site.main(['-s',siteDir])
+  >>> shutil.copy(cfgFileReal, cfgFileSite)
+  >>> site.main(['-s', siteDir])
   >>> afterTimestamp = open(tsPath).read()
 
   >>> beforeTimestamp == afterTimestamp

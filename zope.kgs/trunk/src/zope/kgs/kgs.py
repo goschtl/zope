@@ -70,6 +70,15 @@ def _open(base, filename, seen):
     seen.pop()
     return result
 
+def _getAbsolutePath(section, basePath, name, default):
+    path = section.get(name, default)
+    if path:
+        if not os.path.isabs(path):
+            path = os.path.join(basePath, path)
+        if path and not os.path.exists(path):
+            path = None
+    return path
+
 
 class Package(object):
 
@@ -98,20 +107,13 @@ class KGS(object):
         basePath = os.path.dirname(self.path)
         result = _open(basePath, self.path, [])
         if MAIN_SECTION in result:
-            self.name = result[MAIN_SECTION].get('name', self.name)
-            self.version = result[MAIN_SECTION].get('version', self.version)
-            self.changelog = result[MAIN_SECTION].get(
-                'changelog', self.changelog)
-            if not os.path.isabs(self.changelog):
-                self.changelog = os.path.join(basePath, self.changelog)
-            if not os.path.exists(self.changelog):
-                self.changelog = None
-            self.announcement = result[MAIN_SECTION].get(
-                'announcement', self.announcement)
-            if not os.path.isabs(self.announcement):
-                self.announcement = os.path.join(basePath, self.announcement)
-            if not os.path.exists(self.announcement):
-                self.announcement = None
+            section = result[MAIN_SECTION]
+            self.name = section.get('name', self.name)
+            self.version = section.get('version', self.version)
+            self.changelog = _getAbsolutePath(
+                section, basePath, 'changelog', self.changelog)
+            self.announcement = _getAbsolutePath(
+                section, basePath, 'announcement', self.announcement)
             del result[MAIN_SECTION]
         self.packages = []
         sections = result.keys()
