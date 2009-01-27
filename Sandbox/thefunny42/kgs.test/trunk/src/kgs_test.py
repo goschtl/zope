@@ -1,3 +1,4 @@
+import logging
 import os.path
 import os
 import popen2
@@ -36,6 +37,10 @@ def main():
     """Create buildout.cfg for running test independently on a set of
     packages.
     """
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logging.basicConfig()
 
     # Collect project
     projects = []
@@ -96,10 +101,8 @@ test-%:
         script_name = project.replace('.', '-')
 
         # Released version
+        easy_install.install([project], os.path.abspath(EGG_CACHE), working_set=kgs_ws, newest=True)
         packages = kgs_env[project]
-        if not len(packages):
-            easy_install.install(project, EGG_CACHE, working_set=kgs_ws)
-            packages = kgs_env[project]
 
         kgs_conf.write("""
 [test-%s]
