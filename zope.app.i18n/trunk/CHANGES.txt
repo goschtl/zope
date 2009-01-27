@@ -5,7 +5,8 @@ CHANGES
 Version 3.4.5 (unreleased)
 --------------------------
 
-- fix a simple inconsistent MRO problem in tests
+- Fix a simple inconsistent MRO problem in tests
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302 
 
 Version 3.4.4 (2007/10/23)
 --------------------------
