@@ -41,6 +41,9 @@ logger.setLevel(logging.ERROR)
 def generateSite(siteDir, templateDir, force=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
+    if not os.path.exists(kgsPath):
+        logger.error("The site directory specified does not have a controlled-packages.cfg file.")
+        return
     set = kgs.KGS(kgsPath)
     ver = set.version
     logger.info(
@@ -100,6 +103,7 @@ def generateSite(siteDir, templateDir, force=False):
 
     # Create a links config file and version it
     linksPath = os.path.join(versionDir, 'links.html')
+    logger.info("generating links")
     link.generateLinks(kgsPath, linksPath)
 
     # Update the full index (which is assumed to live in the site directory)
