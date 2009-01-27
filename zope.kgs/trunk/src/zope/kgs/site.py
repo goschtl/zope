@@ -73,11 +73,9 @@ def generateSite(siteDir, templateDir, force=False):
     versionDir = os.path.join(siteDir, ver)
     if os.path.exists(versionDir):
         if force:
+            logger.info('Recreating directory %s.' %versionDir)
             shutil.rmtree(versionDir)
-        else:
-            logger.error("The directory %s already exists.  Use --force to overwrite it." % versionDir)
-            return
-    os.mkdir(versionDir)
+            os.mkdir(versionDir)
 
     # Copy the KGS config file, changelog and announcement file to the version
     # directory
@@ -133,18 +131,22 @@ def generateSite(siteDir, templateDir, force=False):
 
 
 parser = optparse.OptionParser()
-parser.add_option("-v","--verbose", action="store_true",
-                  dest="verbose", default=False,
-                  help="When specified, debug information is created.")
-parser.add_option("-s","--site-dir", action="store",
-                  type="string", dest="siteDir", metavar="DIR",
-                  help="The directory where the site should be generated")
-parser.add_option("-t","--template-dir", action="store",
-                  type="string", dest="templateDir", metavar="DIR",
-                  default=os.path.join(os.path.dirname(__file__), 'templates'),
-                  help="The directory where the site templates are located.")
-parser.add_option("-f","--force", action="store_true", dest="force",
-                  help="For the site to rebuild even if it is already at the latest version.")
+parser.add_option(
+    "-v","--verbose", action="store_true",
+    dest="verbose", default=False,
+    help="When specified, debug information is created.")
+parser.add_option(
+    "-s","--site-dir", action="store",
+    type="string", dest="siteDir", metavar="DIR",
+    help="The directory where the site should be generated")
+parser.add_option(
+    "-t","--template-dir", action="store",
+    type="string", dest="templateDir", metavar="DIR",
+    default=os.path.join(os.path.dirname(__file__), 'templates'),
+    help="The directory where the site templates are located.")
+parser.add_option(
+    "-f","--force", action="store_true", dest="force",
+    help="For the site to rebuild even if it is already at the latest version.")
 
 def main(args=None):
     if args is None:
