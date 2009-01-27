@@ -9,7 +9,7 @@ from zc.buildout import easy_install
 ZOPE3_SVN = os.getenv('ZOPE3_SVN',
                       'svn://svn.zope.org/repos/main/')
 EGG_CACHE = os.getenv('PYTHON_CACHE_EGG',
-                      '/Users/sylvain/Library/Buildout/eggs')
+                      'eggs')
 DEVELOP_EGG = 'develop-eggs'
 BLACKLIST = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
                  'zope.app.fssync', 'zope.app.recorder', \
