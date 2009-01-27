@@ -18,8 +18,25 @@
               $(".left-nav .level-two").hide();
               $(this).children('a').andSelf().addClass('selected').find('.level-two').show();
             });
-
           $(".left-nav .level-one > li").eq(0).click();
+
+          $(".left-nav .level-one > li > a").each(
+            function(index){
+              var href = $(this).attr("href");
+              if (window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).parent().click();
+              }
+            });
+
+          $(".left-nav .level-one > li li > a").each(
+            function(index){
+              var href = $(this).attr("href").match(/[.*\/]*(.*.html)/);
+              href = href && href[1];
+              if (href && window.location.href.slice(window.location.href.length-href.length) === href){
+                $(this).addClass('selected').parents("li").click();
+              }
+            });
+
         });
     </script>
   </head>
@@ -54,8 +71,10 @@
             <h1>Versions</h1>
             <ul class="level-one">
               <li tal:repeat="version versions">
-                <span tal:replace="version/name">3.4.0</span>
-                (<span tal:replace="version/date"/>)
+                <a href="javascript:void(0);">
+                  <span tal:replace="version/name">3.4.0</span>
+                  (<span tal:replace="version/date"/>)
+                </a>
                 <ul class="level-two" style="display: none;">
                   <li tal:condition="version/announcement/url">
                     <a href="#"

@@ -124,6 +124,10 @@ code {
     text-decoration: none;
 }
 
+.left-nav a.selected{
+    text-decoration: underline;
+}
+
 #content-wrapper {
     padding: 35px;
     float: right;
