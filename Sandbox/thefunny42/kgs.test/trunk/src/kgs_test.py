@@ -11,6 +11,8 @@ ZOPE3_SVN = os.getenv('ZOPE3_SVN',
                       'svn://svn.zope.org/repos/main/')
 EGG_CACHE = os.getenv('PYTHON_CACHE_EGG',
                       'eggs')
+DOWNLOAD_CACHE = os.getenv('PYTHON_CACHE_DOWNLOAD',
+                      'download')
 DEVELOP_EGG = 'develop-eggs'
 BLACKLIST = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
                  'zope.app.fssync', 'zope.app.recorder', \
@@ -29,6 +31,8 @@ IGNORED = BLACKLIST + DELETE_LIST
 def to_test(project, packages):
     """Gives back the egg to test.
     """
+    if len(packages) < 1:
+        import pdb; pdb.set_trace();
     if 'test' in packages[0].extras:
         return project + ' [test]'
     return project
@@ -38,9 +42,9 @@ def main():
     packages.
     """
 
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-    logging.basicConfig()
+#     logger = logging.getLogger()
+#     logger.setLevel(logging.DEBUG)
+#     logging.basicConfig()
 
     # Collect project
     projects = []
@@ -60,8 +64,7 @@ def main():
 
     kgs_conf.write("""
 [buildout]
-extends = versions.cfg
-#versions = versions
+prefer-final = false
 newest = true
 unzip = true
 parts = 
@@ -89,9 +92,11 @@ test-%:
     if not os.path.isdir(DEVELOP_EGG):
         os.mkdir(DEVELOP_EGG)
 
+    trunk_env = Environment([DEVELOP_EGG,])
     kgs_env = Environment([EGG_CACHE,])
     kgs_ws = WorkingSet(kgs_env)
-    trunk_env = Environment([DEVELOP_EGG,])
+    easy_install.prefer_final(False)
+    easy_install.download_cache(DOWNLOAD_CACHE)
 
     for project in projects:
         print project
@@ -102,6 +107,8 @@ test-%:
 
         # Released version
         easy_install.install([project], os.path.abspath(EGG_CACHE), working_set=kgs_ws, newest=True)
+        kgs_env = Environment([EGG_CACHE,])
+        kgs_ws = WorkingSet(kgs_env)
         packages = kgs_env[project]
 
         kgs_conf.write("""
