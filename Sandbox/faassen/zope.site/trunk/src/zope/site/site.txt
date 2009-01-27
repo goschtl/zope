@@ -3,21 +3,18 @@ Sites and Local Site Managers
 =============================
 
 This chapter is an introduction of the location-based component
-architecture. This code uses the registration framework introduced in
-`registration.txt` and local adapter registries described in
-`adapterregistry.txt`.
-
+architecture.
 
 Creating and Accessing Sites
 ----------------------------
 
 *Sites* are used to provide custom component setups for parts of your
-application or Web site. Every folder,
+application or Web site. Every folder:
 
   >>> from zope.app.folder import folder
   >>> myfolder = folder.rootFolder()
 
-has the potential to become a site
+has the potential to become a site:
 
   >>> from zope.location.interfaces import ISite, IPossibleSite
   >>> IPossibleSite.providedBy(myfolder)
@@ -31,7 +28,7 @@ but is not yet one:
 If you would like your custom content component to be able to become a site,
 you can use the `SiteManagerContainer` mix-in class:
 
-  >>> from zope.app.component import site
+  >>> from zope import site
   >>> class MyContentComponent(site.SiteManagerContainer):
   ...     pass
 
@@ -118,13 +115,13 @@ site management folder is created:
   >>> sm = myfolder.getSiteManager()
   >>> default = sm['default']
   >>> default.__class__
-  <class 'zope.app.component.site.SiteManagementFolder'>
+  <class 'zope.site.site.SiteManagementFolder'>
 
 You can easily create a new site management folder:
 
   >>> sm['mySMF'] = site.SiteManagementFolder()
   >>> sm['mySMF'].__class__
-  <class 'zope.app.component.site.SiteManagementFolder'>
+  <class 'zope.site.site.SiteManagementFolder'>
 
 Once you have your site management folder -- let's use the default one -- we
 can register some components. Let's start with a utility
