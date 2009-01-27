@@ -32,9 +32,9 @@ setup(name='zope.site',
           'Detailed Documentation\n'
           '**********************\n'
           + '\n\n' +
-          read('src', 'zope', 'app', 'component', 'README.txt')
+          read('src', 'zope', 'site', 'README.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'component', 'site.txt')
+          read('src', 'zope', 'site', 'site.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),

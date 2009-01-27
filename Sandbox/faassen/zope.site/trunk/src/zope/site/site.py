@@ -39,10 +39,11 @@ from zope.traversing.interfaces import IContainmentRoot
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.filerepresentation.interfaces import IDirectoryFactory
 
-from zope.app.component import interfaces
-from zope.app.component.hooks import setSite
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import Contained
+
+from zope.site import interfaces
+from zope.site.hooks import setSite
 
 ##############################################################################
 # from zope.app.module import resolve

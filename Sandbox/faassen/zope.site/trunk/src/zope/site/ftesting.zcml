@@ -1,7 +1,7 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    i18n_domain="zope"
-   package="zope.app.component"
+   package="zope.site"
    >
 
   <!-- This file is the equivalent of site.zcml and it is -->
