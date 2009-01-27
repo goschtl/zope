@@ -405,12 +405,14 @@ def pageletDirective(_context, for_, name=u'', type=(),
     for_.append(layer)
     if type:
         _context.action(
-            discriminator = ('z3ext.layout:registerPagelets', new_class),
+            discriminator = (
+                'z3ext.layout:registerPagelets', tuple(type), tuple(for_), layer, name),
             callable = registerTypedPagelets,
             args = (for_, new_class, type, name, _context.info))
     else:
         _context.action(
-            discriminator = ('z3ext.layout:registerPagelets', tuple(for_), layer, name),
+            discriminator = (
+                'z3ext.layout:registerPagelets', tuple(for_), layer, name),
             callable = registerPagelets,
             args = (for_, new_class, provides, name, _context.info))
 
