@@ -1,0 +1,118 @@
+body {
+    background:#474747 url(body_bg.png) repeat-x;
+    margin: 0;
+    padding: 0;
+    color:#333333;
+    font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+    font-size:75%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color:#333333;
+    font-family:"Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+    margin:0.75em 0 0.25em;
+}
+
+a {
+    background-color:transparent;
+    color:#86C81B;
+}
+
+#page-wrapper {
+    background:#FFFFFF none repeat scroll 0 0;
+    margin:0 auto 1em;
+    padding:0;
+    width:999px;
+}
+
+#header-wrapper {
+    background-color:transparent;
+    margin:0;
+    padding:0;
+}
+
+#header {
+    background:#F9F9F9;
+    border-bottom: 1px solid #D3D3D3;
+    height: 49px;
+}
+
+#logo img {
+    border:0 none;
+    float:left;
+    margin:0.5em 0 0.5em 36px;
+    padding:0;
+}
+
+#divider {
+    background:#F9F9F9 url(light_grey_horizontal.png) repeat-x;
+    border-color:#D3D3D3;
+    border-style:solid none;
+    border-width:1px;
+    clear:left;
+    padding:0.5em 0 0.25em;
+    text-align:center;
+}
+
+#left-nav-wrapper {
+    width: 158px;
+    padding: 32px 0px 32px 32px;
+}
+
+.left-nav h1 {
+    background: #333333 url(dark_grey_horizontal.png) repeat-x;
+    border-color:#D3D3D3;
+    border-style:solid none;
+    border-width:1px;
+    color:#FFFFFF;
+    line-height:2.2em;
+    padding:0 1em;
+    text-align:center;
+    font-size: 1em;
+    margin: 0;
+}
+
+.left-nav ul.level-one{
+    border: 1px solid #D3D3D3;
+    border-top: 0;
+    margin: 0;
+    padding: 12px;
+}
+
+.left-nav ul.level-two{
+    padding-left: 1em;
+}
+
+.left-nav ul.level-one li {
+    list-style: inside url(folder_icon.gif);
+}
+
+.left-nav ul.level-two li {
+    list-style: inside url(document_icon.gif);
+}
+
+.left-nav li a{
+    margin-left: -10px;
+}
+
+.left-nav a{
+    text-decoration: none;
+}
+
+#content-wrapper {
+    padding: 35px;
+    float: right;
+    width: 738px;
+}
+
+#content-header {
+    margin-top: 0px;
+}
+
+#footer-wrapper {
+    font-size:0.95em;
+    margin:1em 0 0;
+    padding-bottom:2em;
+    text-align:center;
+    clear: both;
+}
