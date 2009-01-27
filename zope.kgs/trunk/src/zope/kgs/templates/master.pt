@@ -52,7 +52,9 @@
         <ul class="level-one" metal:define-slot="left-nav">
 
           <li tal:repeat="version versions">
-            <a href="javascript:void(0);">Version <span tal:replace="version/name">1</span></a>
+            <a href="#"
+               tal:attributes="href string:${siteRoot}index.html">
+              Version <span tal:replace="version/name">1</span></a>
             <ul class="level-two" style="display: none;">
 
               <li tal:condition="version/announcement/url">
