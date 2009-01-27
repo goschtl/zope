@@ -66,12 +66,13 @@ def generateData(src):
         for (filename, title) in FEATURES:
             if filename in os.listdir(path):
                 features.append({'url': filename, 'title': title})
-            versions.append(
-                {'name': set.version,
-                 'features': features,
-                 'changelog': _getRenderedFilename(set.changelog),
-                 'announcement': _getRenderedFilename(set.announcement),
-                 })
+
+        versions.append(
+            {'name': set.version,
+             'features': features,
+             'changelog': _getRenderedFilename(set.changelog),
+             'announcement': _getRenderedFilename(set.announcement),
+             })
 
     return {'versions': sorted(versions, key=lambda x: x['name']),
             'title': set.name}
