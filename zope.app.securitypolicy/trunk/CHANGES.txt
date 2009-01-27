@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.5.1dev (unreleased)
+3.5.1 (unreleased)
 ---------------------
 
-- ...
+- Added missing dependency for tests: zope.app.zcmlfiles
 
 3.5.0 (2008-12-11)
 ------------------
