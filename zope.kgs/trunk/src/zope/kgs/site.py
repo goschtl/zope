@@ -30,7 +30,6 @@ import time
 from zope.kgs import version, buildout, ppix, link, intro, kgs
 
 TIMESTAMP_FILENAME = 'cf-timestamp'
-RESOURCES_PATH = os.path.join(os.path.dirname(__file__), 'templates','resources')
 
 formatter = logging.Formatter('%(levelname)s - %(message)s')
 handler = logging.StreamHandler(sys.stdout)
@@ -39,7 +38,7 @@ logger = logging.getLogger('info')
 logger.addHandler(handler)
 logger.setLevel(logging.ERROR)
 
-def generateSite(siteDir):
+def generateSite(siteDir, templateDir, force=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
     set = kgs.KGS(kgsPath)
@@ -55,8 +54,12 @@ def generateSite(siteDir):
         last_update = float(open(timestampPath, 'r').read())
         last_modified = os.stat(kgsPath)[-2]
         if last_update > last_modified:
-            logger.info("Site is up to date.")
-            return
+            logger.info("Site is up to date.  Use --force "
+                        "on the command line to force a rebuild.")
+            if not force:
+                return
+            else:
+                logger.info("Site is up to date, but a rebuild has been forced.")
 
     # Save the last generation date-time.
     # Note: We want to do this operation first, since it might take longer to
@@ -65,6 +68,12 @@ def generateSite(siteDir):
 
     # Create a directory for the new version
     versionDir = os.path.join(siteDir, ver)
+    if os.path.exists(versionDir):
+        if force:
+            shutil.rmtree(versionDir)
+        else:
+            logger.error("The directory %s already exists.  Use --force to overwrite it." % versionDir)
+            return
     os.mkdir(versionDir)
 
     # Copy the KGS config file, changelog and announcement file to the version
@@ -110,7 +119,7 @@ def generateSite(siteDir):
     logger.info("copying resource files to %s" % resourcesDir)
     if os.path.exists(resourcesDir):
         shutil.rmtree(resourcesDir)
-    shutil.copytree(RESOURCES_PATH, resourcesDir)
+    shutil.copytree(os.path.join(templateDir, 'resources'), resourcesDir)
 
     # Update the intro page
     logger.info("updating the intro page")
@@ -126,6 +135,12 @@ parser.add_option("-v","--verbose", action="store_true",
 parser.add_option("-s","--site-dir", action="store",
                   type="string", dest="siteDir", metavar="DIR",
                   help="The directory where the site should be generated")
+parser.add_option("-t","--template-dir", action="store",
+                  type="string", dest="templateDir", metavar="DIR",
+                  default=os.path.join(os.path.dirname(__file__), 'templates'),
+                  help="The directory where the site templates are located.")
+parser.add_option("-f","--force", action="store_true", dest="force",
+                  help="For the site to rebuild even if it is already at the latest version.")
 
 def main(args=None):
     if args is None:
@@ -143,5 +158,5 @@ def main(args=None):
         sys.exit(1)
 
     siteDir = os.path.abspath(options.siteDir)
-
-    generateSite(siteDir)
+    templateDir = os.path.abspath(options.templateDir)
+    generateSite(siteDir, templateDir, force=options.force)
