@@ -121,7 +121,6 @@ def generateSite(siteDir, templateDir, force=False):
 
     # Generate Web Site
     logger.info("Generating Web Site")
-    #intro.main(['-d',versionDir])
     template.generateSite(templateDir, siteDir, None)
 
     logger.info("finished generating site.")
