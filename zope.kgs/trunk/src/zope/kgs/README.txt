@@ -588,12 +588,11 @@ Let's have a look at the generated files:
 
   >>> from pprint import pprint
   >>> pprint(sorted(os.listdir(siteDir)))
-  ['3.4.0b2', 'cf-timestamp']
+  ['3.4.0b2', 'cf-timestamp', 'index.html', 'resources']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2')))
-  ['PIL', 'buildout.cfg', 'controlled-packages.cfg', 'links.html',
-   'minimal', 'resources', 'versions.cfg', 'z3c.formdemo',
-   'zope.component', 'zope.interface']
+  ['CHANGES.html', 'buildout.cfg', 'controlled-packages.cfg', 'index',
+   'links.html', 'minimal', 'versions.cfg']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2', 'minimal')))
   ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']
