@@ -9,10 +9,6 @@ from zc.buildout import easy_install
 # Configuration
 ZOPE3_SVN = os.getenv('ZOPE3_SVN',
                       'svn://svn.zope.org/repos/main/')
-EGG_CACHE = os.getenv('PYTHON_CACHE_EGG',
-                      'eggs')
-DOWNLOAD_CACHE = os.getenv('PYTHON_CACHE_DOWNLOAD',
-                      'download')
 DEVELOP_EGG = 'develop-eggs'
 BLACKLIST = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
                  'zope.app.fssync', 'zope.app.recorder', \
@@ -41,7 +37,7 @@ def to_test(project, packages, check=False):
         return project + ' [test]'
     return project
 
-def main():
+def main(egg_cache, download_cache):
     """Create buildout.cfg for running test independently on a set of
     packages.
     """
@@ -101,10 +97,10 @@ test-%:
         os.mkdir(DEVELOP_EGG)
 
     trunk_env = Environment([DEVELOP_EGG,])
-    kgs_env = Environment([EGG_CACHE,])
+    kgs_env = Environment([egg_cache,])
     kgs_ws = WorkingSet(kgs_env)
     easy_install.prefer_final(False)
-    easy_install.download_cache(DOWNLOAD_CACHE)
+    easy_install.download_cache(download_cache)
 
     for project in projects:
         if not os.path.isdir(project):
@@ -113,10 +109,10 @@ test-%:
         script_name = project.replace('.', '-')
 
         # Released version
-        kgs_env = Environment([EGG_CACHE,])
+        kgs_env = Environment([egg_cache,])
         kgs_ws = WorkingSet(kgs_env)
         easy_install.install([project],
-                             os.path.abspath(EGG_CACHE),
+                             os.path.abspath(egg_cache),
                              working_set=kgs_ws, newest=True)
         packages = kgs_env[project]
 
