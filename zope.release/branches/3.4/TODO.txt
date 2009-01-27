@@ -5,55 +5,6 @@ To Do
 Release 3.4
 -----------
 
-* Fix typos in intro text.
-
 * Write release notes.
 
 * Write press release.
-
-* A method to upload and link the tar ball release.
-
-Needed Files:
-~~~~~~~~~~~~~
-
-- KGS file
-
-- TAR ball
-
-- Changes File
-
-- Release Notes
-
-Generated Files:
-~~~~~~~~~~~~~~~~
-
-- Web site
-
-- PyPI/KGS related files, such as index, versions, etc.
-
-
-Site Layout
-~~~~~~~~~~~
-
-zope3.4/
-  3.4.0b1/
-    controlled-packages.cfg
-    versions.cfg
-    versions-3.4.0b1.cfg
-    index/
-    minimal-index/
-    CHANGES.txt
-    CHANGES.html
-    RELEASE-NOTES.txt
-    RELEASE-NOTES.html
-    Zope3-3.4.0b1.tgz
-  3.4.0/
-    ...
-  resources/
-  index.html
-  intro.html
-
-
-
-Other
------
