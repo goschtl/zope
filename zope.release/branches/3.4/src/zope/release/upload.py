@@ -31,6 +31,7 @@ Usage: upload file-spec1, [file-spec2, ...] dest-location
   The server name and path of the remote directory.
 """
 import os, sys
+from zope.kgs import kgs
 
 DRY_RUN = False
 
@@ -42,10 +43,28 @@ def do(cmd):
             sys.exit(status)
 
 def upload(fileSpecs, destination):
-    """Generate a ``buildout.cfg`` from the list of controlled packages."""
+    """Upload files to the server."""
     for localPath, remoteName in fileSpecs:
         destinationPath = os.path.join(destination, remoteName)
         do('scp %s %s' %(localPath, destinationPath))
+
+def getAllFileSpecs(files):
+    fileSpecs = []
+    for filePath, name in files:
+        fileSpecs.append((filePath, name))
+        if not filePath.endswith('controlled-packages.cfg'):
+            continue
+        set = kgs.KGS(filePath)
+        if set.changelog:
+            fileSpecs.append((
+                set.changelog, os.path.split(set.changelog)[-1]))
+        if set.announcement:
+            fileSpecs.append((
+                set.announcement, os.path.split(set.announcement)[-1]))
+        for filePath in set.files:
+            fileSpecs.append((filePath, os.path.split(filePath)[-1]))
+    return fileSpecs
+
 
 def main(args=None):
     if args is None:
@@ -66,4 +85,4 @@ def main(args=None):
             spec = spec.strip()
             fileSpecs.append(
                 (spec, os.path.split(spec)[-1]))
-    upload(fileSpecs, destination)
+    upload(getAllFileSpecs(fileSpecs), destination)

@@ -9,7 +9,7 @@ the Zope 3 source tree and uploading files to the download location.
 Here is an examplatory controlled packages configuration file:
 
   >>> import tempfile
-  >>> cfgFile = tempfile.mktemp('-cp.cfg')
+  >>> cfgFile = tempfile.mktemp('-controlled-packages.cfg')
   >>> open(cfgFile, 'w').write('''\
   ... [DEFAULT]
   ... tested = true
@@ -17,6 +17,8 @@ Here is an examplatory controlled packages configuration file:
   ... [KGS]
   ... name = zope-dev
   ... version = 1.0.0
+  ... changelog = CHANGES.txt
+  ... files = zope-dev-1.0.0.tgz
   ...
   ... [packageA]
   ... versions = 1.0.0
@@ -32,6 +34,12 @@ Here is an examplatory controlled packages configuration file:
   ... ''')
 
 
+  >>> import os
+  >>> dir = os.path.dirname(cfgFile)
+
+  >>> open(os.path.join(dir, 'CHANGES.txt'), 'w').write('Changes')
+  >>> open(os.path.join(dir, 'zope-dev-1.0.0.tgz'), 'w').write('TGZ')
+
 Uploading Files
 ---------------
 
@@ -46,8 +54,9 @@ Usually we only need to upload the controlled packages file, since site script
 of the ``zope.kgs`` package will do the rest for us.
 
   >>> upload.main((cfgFile, 'download.zope.org:/zope-dev'))
-  scp ...-cp.cfg download.zope.org:/zope-dev/...-cp.cfg
-
+  scp ...controlled-packages.cfg ...controlled-packages.cfg
+  scp .../CHANGES.txt download.zope.org:/zope-dev/CHANGES.txt
+  scp ...zope-dev-1.0.0.tgz download.zope.org:/zope-dev/zope-dev-1.0.0.tgz
 
 Updating the Zope 3 Tree
 ------------------------
