@@ -48,10 +48,11 @@ logger.addHandler(handler)
 logger.setLevel(logging.ERROR)
 
 
-def _getRenderedFilename(filename):
+def _getRenderedFilename(version, filename):
     if not filename:
         return
-    return os.path.split(filename)[-1].split('.')[0] + '.html'
+    return '%s/%s' % (version,
+                      os.path.split(filename)[-1].split('.')[0] + '.html')
 
 def generateData(src):
     versions = []
@@ -65,13 +66,14 @@ def generateData(src):
         features = []
         for (filename, title) in FEATURES:
             if filename in os.listdir(path):
-                features.append({'url': '%s/%s' % (set.version, filename), 'title': title})
+                features.append({'url': '%s/%s' % (set.version, filename),
+                                 'title': title})
 
         versions.append(
             {'name': set.version,
              'features': features,
-             'changelog': _getRenderedFilename(set.changelog),
-             'announcement': _getRenderedFilename(set.announcement),
+             'changelog': _getRenderedFilename(set.version, set.changelog),
+             'announcement': _getRenderedFilename(set.version, set.announcement),
              })
 
     return {'versions': sorted(versions, key=lambda x: x['name']),
