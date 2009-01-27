@@ -31,7 +31,7 @@ import re
 import shutil
 import sys
 import time
-from zope.kgs import version, buildout, ppix, link, intro, kgs, template
+from zope.kgs import version, buildout, ppix, link, kgs, template
 
 TIMESTAMP_FILENAME = 'cf-timestamp'
 
@@ -119,9 +119,9 @@ def generateSite(siteDir, templateDir, force=False):
         last_update = float(open(timestampPath, 'r').read())
         last_modified = os.stat(kgsPath)[-2]
         if last_update > last_modified:
-            logger.info("Site is up to date.  Use --force "
-                        "on the command line to force a rebuild.")
             if not force:
+                logger.info("Site is up to date.  Use --force "
+                            "on the command line to force a rebuild.")
                 return
             else:
                 logger.info("Site is up to date, but a rebuild has been forced.")

@@ -500,99 +500,6 @@ the versions listed in the current KGS are considered.
   <BLANKLINE>
   <BLANKLINE>
 
-Introduction Page
------------------
-
-Once all the files have been created, one can generate an introduction page
-that explains how the files can be used. It also lists all the files by
-distribution. In order for this script to work, you need the following
-directory layout:
-
-  >>> kgsDir = tempfile.mkdtemp()
-
-  >>> open(os.path.join(kgsDir, 'controlled-packages.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'buildout.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'versions.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'links.html'), 'w').write(' ')
-  >>> os.mkdir(os.path.join(kgsDir, 'minimal'))
-
-  >>> open(os.path.join(kgsDir, 'controlled-packages-1.0.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'buildout-1.0.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'versions-1.0.0.cfg'), 'w').write(' ')
-  >>> os.mkdir(os.path.join(kgsDir, 'minimal-1.0.0'))
-
-  >>> open(os.path.join(kgsDir, 'controlled-packages-1.1.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'buildout-1.1.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'versions-1.1.0.cfg'), 'w').write(' ')
-  >>> open(os.path.join(kgsDir, 'links-1.1.0.html'), 'w').write(' ')
-  >>> os.mkdir(os.path.join(kgsDir, 'minimal-1.1.0'))
-
-  >>> open(os.path.join(kgsDir, 'index.html'), 'w').write(' ')
-
-Let's now generate the page:
-
-  >>> introPage = os.path.join(kgsDir, 'intro.html')
-
-  >>> from zope.kgs import intro
-  >>> intro.main(['-d',kgsDir])
-
-  >>> print open(introPage, 'r').read()
-    <!DOCTYPE ...
-    <html ...>
-      ...
-      <body>
-        <h1 id="header">Introduction to the KGS</h1>
-        <div id="left-hand-navigation">
-          <!-- Main Menu -->
-          <div id="menu">
-            <ul class="level-one">
-              <li>
-                <a href="#">Version 1.0.0</a>
-                <ul class="level-two" style="display: none;">
-                  <li>
-                    <a href="controlled-packages-1.0.0.cfg">Controlled Packages</a>
-                  </li>
-                  <li>
-                    <a href="buildout-1.0.0.cfg">Buildout Configuration</a>
-                  </li>
-                  <li>
-                    <a href="versions-1.0.0.cfg">Versions</a>
-                  </li>
-                  <li>
-                    <a href="minimal-1.0.0">Minimal Index</a>
-                  </li>
-                  <li>
-                    <a href="index.html">Index</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Version 1.1.0</a>
-                <ul class="level-two" style="display: none;">
-                  <li>
-                    <a href="controlled-packages-1.1.0.cfg">Controlled Packages</a>
-                  </li>
-                  <li>
-                    <a href="buildout-1.1.0.cfg">Buildout Configuration</a>
-                  </li>
-                  <li>
-                    <a href="versions-1.1.0.cfg">Versions</a>
-                  </li>
-                  <li>
-                    <a href="links-1.1.0.html">Package Links</a>
-                  </li>
-                  <li>
-                    <a href="minimal-1.1.0">Minimal Index</a>
-                  </li>
-                  <li>
-                    <a href="index.html">Index</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>...
-
 
 The Site Generator
 ------------------
@@ -619,7 +526,8 @@ Let's have a look at the generated files:
   ['3.4.0b2', 'cf-timestamp', 'index.html', 'resources']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2')))
-  ['CHANGES.html', 'buildout.cfg', 'controlled-packages.cfg', 'index',
+  ['ANNOUNCEMENT.html', 'CHANGES.html',
+   'buildout.cfg', 'controlled-packages.cfg', 'index',
    'links.html', 'minimal', 'versions.cfg']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2', 'minimal')))
