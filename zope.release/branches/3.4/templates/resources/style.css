@@ -112,6 +112,10 @@ code {
     list-style: inside url(document_icon.gif);
 }
 
+.left-nav li{
+    cursor: pointer;
+}
+
 .left-nav li a{
     margin-left: -10px;
 }

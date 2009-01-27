@@ -5,7 +5,6 @@
   </head>
   <body>
     <div metal:fill-slot="divider"><a href="..">Go back to the Home Page</a></div>
-    <div metal:fill-slot="left-nav"></div>
     <div metal:fill-slot="content">
       <h1 id="content-header">Version <span tal:replace="version/name"/> Announcement</h1>
       <div tal:replace="structure version/announcement/html"/>
