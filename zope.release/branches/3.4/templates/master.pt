@@ -13,7 +13,6 @@
 
           $(".left-nav .level-one > li").click(
             function(){
-              console.log("I got clicked!");
               $(".left-nav .level-one > li").removeClass('selected');
               $(".left-nav .level-one > li > a").removeClass('selected');
               $(".left-nav .level-two").hide();
