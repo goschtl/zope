@@ -9,7 +9,7 @@ We need setup security interaction and principals
 
   >>> from zope import interface, component, event
   >>> import zope.security.management
-  >>> from z3ext.ownership import tests
+  >>> from z3ext.ownership import tests, interfaces
   >>> from z3ext.ownership.interfaces import IOwnership
   >>> from z3ext.ownership.interfaces import IOwnerAware, IOwnerGroupAware
 
@@ -36,15 +36,18 @@ We need setup security interaction and principals
   >>> zope.security.management.newInteraction(participation)
   >>> interaction = zope.security.management.getInteraction()
 
+  >>> from zope.location import Location
   >>> from zope.lifecycleevent import ObjectCreatedEvent
   >>> from zope.annotation.interfaces import IAttributeAnnotatable
 
   >>> class IMyObject(IOwnerAware):
   ...   pass
 
-  >>> class Content:
-  ...    __parent__ = None
+  >>> class Content(Location):
   ...    interface.implements(IAttributeAnnotatable, IMyObject)
+  ...    
+  ...    def __init__(self, parent=None):
+  ...        self.__parent__ = parent
 
   >>> content = Content()
   >>> event.notify(ObjectCreatedEvent(content))
@@ -114,6 +117,8 @@ explicitly set marker interface for content
   >>> grantinfo.getRolesForPrincipal('bob')
   []
 
+  >>> interface.noLongerProvides(content, IInheritOwnership)
+
 
 We can assign only IPrincipal object
 
@@ -123,7 +128,93 @@ We can assign only IPrincipal object
   ValueError: IPrincipal object is required.
 
 
+Chain owner
+-----------
+
+let's create content chain, content -> content1 -> content2
+
+  >>> content1 = Content(content)
+  >>> content2 = Content(content1)
+
+  >>> grantinfo = IExtendedGrantInfo(content1)
+  >>> grantinfo.getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Deny)]
+  >>> grantinfo.getRolesForPrincipal('bob')
+  [('content.Owner', PermissionSetting: Deny)]
+
+now mark content1 as IInheritOwnership
+
+  >>> interface.directlyProvides(content1, IInheritOwnership)
+
+  >>> grantinfo = IExtendedGrantInfo(content1)
+  >>> grantinfo.getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Allow)]
+
+  >>> ownership = IOwnership(content1)
+  >>> ownership.ownerId
+  'meg'
+
+  >>> interfaces.IUnchangeableOwnership.providedBy(ownership)
+  True
+
+  >>> ownership.ownerId = 'bob'
+  Traceback (most recent call last):
+  ...
+  AttributeError: can't set attribute
+
+content2
+
+  >>> grantinfo = IExtendedGrantInfo(content2)
+  >>> grantinfo.getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Deny)]
+
+  >>> interface.directlyProvides(content2, IInheritOwnership)
+  >>> grantinfo.getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Allow)]
+
+  >>> IOwnership(content2).ownerId
+  'meg'
+  >>> IOwnership(content2).owner
+  <Principal 'meg'>
+
+  >>> IOwnership(content).ownerId = 'bob'
+  >>> IOwnership(content1).ownerId
+  'bob'
+  >>> IOwnership(content2).ownerId
+  'bob'
+
+  >>> IExtendedGrantInfo(content1).getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Deny)]
+  >>> IExtendedGrantInfo(content1).getRolesForPrincipal('bob')
+  [('content.Owner', PermissionSetting: Allow)]
+  >>> IExtendedGrantInfo(content2).getRolesForPrincipal('meg')
+  [('content.Owner', PermissionSetting: Deny)]
+  >>> IExtendedGrantInfo(content2).getRolesForPrincipal('bob')
+  [('content.Owner', PermissionSetting: Allow)]
+
+We need IOwnerAware parent for IInheritOwnership objects
+
+  >>> content4 = Content()
+  >>> interface.directlyProvides(content4, IInheritOwnership)
+  >>> IOwnership(content4)
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError
+
+just tests
+
+  >>> from zope.securitypolicy.interfaces import IPrincipalRoleMap
+  >>> map = component.getAdapter(content, IPrincipalRoleMap, 'z3ext.ownership-owner')
+  >>> map.getRolesForPrincipal('bob')
+  (('content.Owner', PermissionSetting: Allow),)
+  >>> map.getSetting('content.Owner', 'bob')
+  PermissionSetting: Allow
+  >>> map.getSetting('content.Owner', 'meg')
+  PermissionSetting: Deny
+
+
 Group owner
+-----------
 
   >>> from zope.security.interfaces import IGroup
   >>> interface.directlyProvides(principal1, IGroup)
@@ -150,6 +241,13 @@ Group owner
   >>> grantinfo.getRolesForPrincipal('meg')
   [('content.GroupOwner', PermissionSetting: Deny)]
 
-  >>> interface.alsoProvides(content, IInheritOwnership)
-  >>> grantinfo.getRolesForPrincipal('meg')
-  []
+
+just tests
+
+  >>> map = component.getAdapter(content, IPrincipalRoleMap, 'z3ext.ownership-groupowner')
+  >>> map.getRolesForPrincipal('bob')
+  (('content.GroupOwner', PermissionSetting: Allow),)
+  >>> map.getSetting('content.GroupOwner', 'bob')
+  PermissionSetting: Allow
+  >>> map.getSetting('content.GroupOwner', 'meg')
+  PermissionSetting: Deny

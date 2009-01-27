@@ -26,18 +26,21 @@ from interfaces import \
 @component.adapter(IOwnerAware)
 @interface.implementer(IPrincipalRoleMap)
 def getLocalRoles(context):
+    if IInheritOwnership.providedBy(context):
+        return
+
     owner = IOwnership(context)
     if owner.isGroup and IOwnerGroupAware.providedBy(context):
         return
     return LocalRoles(context, owner)
-    
+
+
 class LocalRoles(object):
     interface.implements(IPrincipalRoleMap)
 
     def __init__(self, context, owner):
         self.owner = owner
         self.ownerId = owner.ownerId
-        self.inherit = IInheritOwnership.providedBy(context)
 
     def getPrincipalsForRole(self, role_id):
         if (role_id == 'content.Owner'):
@@ -50,16 +53,12 @@ class LocalRoles(object):
                              allow = (('content.Owner', Allow),)):
         if principal_id == self.ownerId:
             return allow
-        elif self.inherit:
-            return ()
         else:
             return deny
 
     def getSetting(self, role_id, principal_id):
         if (principal_id == self.ownerId) and (role_id == 'content.Owner'):
             return Allow
-        if self.inherit:
-            return Unset
         else:
             return Deny
 
@@ -70,9 +69,13 @@ class LocalRoles(object):
 @component.adapter(IOwnerGroupAware)
 @interface.implementer(IPrincipalRoleMap)
 def getGroupLocalRoles(context):
+    if IInheritOwnership.providedBy(context):
+        return
+
     owner = IOwnership(context)
     if owner.isGroup:
         return GroupLocalRoles(context, owner)
+
 
 class GroupLocalRoles(object):
     interface.implements(IPrincipalRoleMap)
@@ -80,7 +83,6 @@ class GroupLocalRoles(object):
     def __init__(self, context, owner):
         self.owner = owner
         self.ownerId = owner.ownerId
-        self.inherit = IInheritOwnership.providedBy(context)
 
     def getPrincipalsForRole(self, role_id):
         if role_id == 'content.GroupOwner':
@@ -93,17 +95,12 @@ class GroupLocalRoles(object):
                              allow = (('content.GroupOwner', Allow),)):
         if principal_id == self.ownerId:
             return allow
-        elif self.inherit:
-            return ()
         else:
             return deny
 
     def getSetting(self, role_id, principal_id):
         if (principal_id == self.ownerId) and (role_id == 'content.GroupOwner'):
             return Allow
-
-        if self.inherit:
-            return Unset
         else:
             return Deny
 

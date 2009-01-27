@@ -25,8 +25,10 @@ from zope.security.interfaces import IPrincipal
 from z3ext.security import tests as sectests
 from z3ext.security.securitypolicy import SecurityPolicy
 
-from z3ext.ownership.owner import Ownership, initObjectOwnership
+from z3ext.ownership.owner import initObjectOwnership
+from z3ext.ownership.owner import Ownership, InheritedOwnership
 from z3ext.ownership.localroles import getLocalRoles, getGroupLocalRoles
+from z3ext.ownership.interfaces import IOwnership, IInheritOwnership
 
 
 class Principal:
@@ -45,14 +47,14 @@ class Participation:
 
 
 def setUp(test):
-    #placelesssetup.setUp(test)
     sectests.setUp(test)
     zope.security.management.setSecurityPolicy(SecurityPolicy)
     
     sm = component.getSiteManager()
     sm.registerAdapter(Ownership)
+    sm.registerAdapter(InheritedOwnership, (IInheritOwnership,), IOwnership)
     sm.registerAdapter(getLocalRoles, name="z3ext.ownership-owner")
-    sm.registerAdapter(getGroupLocalRoles, name="z3ext.ownership-group")
+    sm.registerAdapter(getGroupLocalRoles, name="z3ext.ownership-groupowner")
     sm.registerAdapter(AttributeAnnotations)
     sm.registerHandler(initObjectOwnership)
     

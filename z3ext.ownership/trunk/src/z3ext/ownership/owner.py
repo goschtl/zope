@@ -19,6 +19,7 @@ from rwproperty import getproperty, setproperty
 
 from zope import event, interface, component
 from zope.annotation.interfaces import IAnnotations
+from zope.component.interfaces import ComponentLookupError
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 
 from zope.security.proxy import removeSecurityProxy
@@ -27,6 +28,7 @@ from zope.security.interfaces import IPrincipal, IGroup
 from z3ext.security.utils import getPrincipal
 
 from z3ext.ownership import interfaces
+from z3ext.ownership.interfaces import IOwnership
 from z3ext.ownership.interfaces import IInheritOwnership
 from z3ext.ownership.interfaces import IUnchangeableOwnership
 from z3ext.ownership.interfaces import OwnerChangedEvent
@@ -36,7 +38,7 @@ ANNOTATION_KEY = 'z3ext.ownership.Owner'
 
 class Ownership(object):
     component.adapts(interfaces.IOwnerAware)
-    interface.implements(interfaces.IOwnership)
+    interface.implements(IOwnership)
 
     _ownerId = ''
     isGroup = False
@@ -84,6 +86,29 @@ class Ownership(object):
     @setproperty
     def ownerId(self, pid):
         self.owner = getPrincipal(pid)
+
+
+class InheritedOwnership(object):
+    component.adapts(interfaces.IInheritOwnership)
+    interface.implements(IOwnership, IUnchangeableOwnership)
+
+    def __init__(self, context):
+        parent = context
+
+        while IInheritOwnership.providedBy(parent):
+            parent = getattr(parent, '__parent__', None)
+            if parent is None:
+                raise ComponentLookupError()
+
+        self._owner = IOwnership(parent)
+
+    @property
+    def owner(self):
+        return self._owner.owner
+
+    @property
+    def ownerId(self):
+        return self._owner.ownerId
 
 
 @component.adapter(interfaces.IOwnerAware, IObjectCreatedEvent)

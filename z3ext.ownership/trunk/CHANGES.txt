@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.1.0 (2009-01-27)
+------------------
+
+- Added special IOwnership adapter for IInheritOwnership objects
+
+
 1.0.1 (2008-05-19)
 ------------------
 

@@ -1,6 +1,6 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="z3ext">
+   i18n_domain="z3ext.ownership">
 
   <includeDependencies package="z3ext.ownership" />
 
@@ -18,6 +18,10 @@
      description="Change object ownership." />
 
   <adapter factory=".owner.Ownership" />
+
+  <adapter
+     provides=".interfaces.IOwnership"
+     factory=".owner.InheritedOwnership" />
 
   <class class=".owner.Ownership">
     <require
