@@ -2,6 +2,20 @@
 CHANGES
 =======
 
+3.4.2 (unreleased)
+------------------
+
+- Fix tests. Remove unused code.
+
+- Add zope.testbrowser to testing dependencies for ZEO tests.
+
+- Remove unneeded dependency on ZODB3.
+
+- Remove dependency on zope.app.zapi, substituting its uses with direct
+  imports.
+
+- Change "cheeseshop" to "pypi" in the package homepage. 
+
 3.4.1 (2008-02-02)
 ------------------
 
