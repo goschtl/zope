@@ -26,7 +26,6 @@ from zope.location.interfaces import ISite, IPossibleSite
 from zope.app.testing import setup
 from zope.app.component import interfaces, site
 from zope.app.folder import folder
-import zope.app.publication.interfaces
 
 class SiteManagerStub(object):
     zope.interface.implements(interfaces.ILocalSiteManager)
