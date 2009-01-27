@@ -1,0 +1,32 @@
+from setuptools import setup, find_packages
+
+
+setup(name='z3c.recipe.kgstest',
+      version = '1.0dev',
+      author='Grok Contributors',
+      author_email='grok-dev@zope.org',
+      description='Tool to create test environement for KGS.',
+      long_description=open(
+        os.path.join('src', 'z3c', 'recipe', 'kgstest', 'README.txt')).read(),
+      keywords = "zope3 setuptools egg kgs",
+      classifiers = [
+          'Intended Audience :: Developers',
+          'License :: OSI Approved :: Zope Public License',
+          'Programming Language :: Python',
+          'Operating System :: OS Independent',
+          'Framework :: Zope3'],
+      url='',
+      license='ZPL 2.1',
+      packages=find_packages('src'),
+      package_dir = {'': 'src'},
+      namespace_packages=['z3c', 'z3c.recipe'],
+      install_requires=[
+          'setuptools',
+          'zc.buildout',
+          ],
+      entry_points = {
+          'zc.buildout': ['default = z3c.recipe.kgstest.recipe:Recipe'],
+          },
+      include_package_data = True,
+      zip_safe = True,
+      )
