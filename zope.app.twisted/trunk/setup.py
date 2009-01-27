@@ -22,14 +22,14 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'zope.app.twisted',
-      version = '3.4.2dev',
+      version = '3.4.3dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Twisted Integration for Zope 3 Applications',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
+          'Detailed Documentation\n' +
           '======================\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'twisted', 'README.txt')
