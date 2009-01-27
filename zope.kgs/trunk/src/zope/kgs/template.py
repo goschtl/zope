@@ -68,7 +68,8 @@ def generateSite(src, dst, data, templates=None):
         elif srcPath.endswith('.pt'):
             continue
         elif os.path.isdir(srcPath):
-            os.mkdir(dstPath)
+            if not os.path.exists(dstPath):
+                os.mkdir(dstPath)
             generateSite(srcPath, dstPath, data, templates)
         elif srcPath.endswith('.html'):
             data = Template(srcPath, templates)()

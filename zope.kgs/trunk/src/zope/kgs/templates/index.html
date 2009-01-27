@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html metal:use-macro="templates/master.pt/macros/page" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <title>Introduction to the KGS</title>
+    <title metal:fill-slot="page-title">Introduction to the KGS</title>
   </head>
   <body>
     <div tal:content="structure templates/menu.pt" />
