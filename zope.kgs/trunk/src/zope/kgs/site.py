@@ -21,10 +21,12 @@ Usage: %s site-dir
   located to generate the site. The generated site is in that directory as
   well.
 """
+import datetime
 import docutils.core
 import logging
 import optparse
 import os
+import re
 import shutil
 import sys
 import time
@@ -150,7 +152,10 @@ def generateSite(siteDir, templateDir, force=False):
 
     # Insert date into KGS, if it is not set.
     if not set.date:
-        pass
+        text = open(kgsPath, 'r').read()
+        pos = re.search('\[KGS\]\n(?:.+\n)*', text).end()
+        text = text[:pos] + 'date = %s\n' %datetime.date.today() + text[pos:]
+        open(kgsPath, 'w').write(text)
 
     # Recreate the KGS
     set = kgs.KGS(kgsPath)
