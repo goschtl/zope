@@ -5,6 +5,7 @@ CHANGES
 3.4.3 (unreleased)
 ------------------
 
+- Added missing depencendy: zope.app.zcmlfiles
 
 3.4.2 (2009-01-26)
 ------------------
