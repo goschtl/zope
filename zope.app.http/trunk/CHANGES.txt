@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.4.3 (unreleased)
+3.4.4 (unreleased)
+------------------
+
+- 
+
+3.4.3 (2009-01-27)
 ------------------
 
 - Added missing depencendy: zope.app.zcmlfiles
