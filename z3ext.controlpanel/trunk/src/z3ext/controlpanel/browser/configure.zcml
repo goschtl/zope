@@ -64,6 +64,11 @@
      action="../settings/"
      permission="z3ext.Configure" />
 
+  <browser:containerViews
+     for="..interfaces.IConfigletDataStorage"
+     index="z3ext.Configure"
+     contents="z3ext.Configure" />
+
   <!-- configlet breadcrumb -->
   <adapter 
      zcml:condition="installed z3c.breadcrumb"
