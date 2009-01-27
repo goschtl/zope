@@ -100,6 +100,7 @@ class KGS(object):
     date = None
     changelog = None
     announcement = None
+    files = ()
     packages = ()
 
     def __init__(self, path):
@@ -111,15 +112,28 @@ class KGS(object):
         result = _open(basePath, self.path, [])
         if MAIN_SECTION in result:
             section = result[MAIN_SECTION]
+            # Get name and version.
             self.name = section.get('name', self.name)
             self.version = section.get('version', self.version)
+            # Get the changelog.
             self.changelog = _getAbsolutePath(
                 section, basePath, 'changelog', self.changelog)
+            # Get the announcement.
             self.announcement = _getAbsolutePath(
                 section, basePath, 'announcement', self.announcement)
+            # Get the date.
             dateStr = section.get('date')
             if dateStr:
                 self.date = dateutil.parser.parse(dateStr).date()
+            # Get the release files.
+            files = section.get('files')
+            if files:
+                files = files.split()
+                for path in files:
+                    if not os.path.isabs(path):
+                        path = os.path.join(basePath, path)
+                        if path and os.path.exists(path):
+                            self.files += (path,)
             del result[MAIN_SECTION]
         self.packages = []
         sections = result.keys()

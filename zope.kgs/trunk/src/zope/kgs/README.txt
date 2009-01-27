@@ -22,6 +22,10 @@ like:
   ... date = 2009-01-01
   ... changelog = CHANGES.txt
   ... announcement = ANNOUNCEMENT.txt
+  ... files =
+  ...     zope-dev-1.2.0.tgz
+  ...     zope-dev-1.2.0.zip
+  ...     zope-dev-1.2.0.exe
   ...
   ... [packageA]
   ... versions = 1.0.0
@@ -39,8 +43,8 @@ like:
 As you can see, this file uses an INI-style format. The "DEFAULT" section is
 special, as it will insert the specified options into all other sections as
 default. The "KGS" section specifies some global information about the KGS,
-such as the name of the KGS. Since this section references two external files,
-we should quickly create those.
+such as the name of the KGS. Since this section references several external
+files, we should quickly create those.
 
   >>> import os
   >>> dir = os.path.dirname(cfgFile)
@@ -66,6 +70,9 @@ we should quickly create those.
   ...
   ... The announcement text!
   ... ''')
+
+  >>> open(os.path.join(dir, 'zope-dev-1.2.0.tgz'), 'w').write('tgz')
+  >>> open(os.path.join(dir, 'zope-dev-1.2.0.exe'), 'w').write('exe')
 
 All other sections refer to package names. Currently each package section
 supports two options. The "versions" option lists all versions that are known
@@ -523,7 +530,7 @@ Let's have a look at the generated files:
 
   >>> from pprint import pprint
   >>> pprint(sorted(os.listdir(siteDir)))
-  ['3.4.0b2', 'cf-timestamp', 'index.html', 'resources']
+  ['3.4.0b2', 'cf-timestamp', 'index.html', 'intro.html', 'resources']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2')))
   ['ANNOUNCEMENT.html', 'CHANGES.html',
@@ -578,6 +585,12 @@ the absolute path:
   '.../CHANGES.txt'
   >>> myKGS.announcement
   '.../ANNOUNCEMENT.txt'
+
+The same is true for other release-related files:
+
+  >>> myKGS.files
+  ('.../zope-dev-1.2.0.tgz',
+   '.../zope-dev-1.2.0.exe')
 
 The packages are available under `packages`:
 

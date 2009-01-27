@@ -79,6 +79,15 @@ def generateData(src):
             if filename in os.listdir(path):
                 features.append({'url': '%s/%s' % (set.version, filename),
                                  'title': title})
+
+        files = []
+        for filepath in set.files:
+            filename = os.path.split(filepath)[-1]
+            files.append({
+                'url': set.version + '/' + filename,
+                'name': filename
+                })
+
         versionData = {
             'name': set.version,
             'date': set.date and str(set.date) or None,
@@ -89,6 +98,7 @@ def generateData(src):
             'announcement': {
                 'url':_getRenderedFilename(set.version, set.announcement),
                 'html': _getRenderedTxt(set.announcement)},
+            'files': files,
             }
 
         versions.append(versionData)
@@ -124,7 +134,8 @@ def generateSite(siteDir, templateDir, force=False):
                             "on the command line to force a rebuild.")
                 return
             else:
-                logger.info("Site is up to date, but a rebuild has been forced.")
+                logger.info("Site is up to date, but a rebuild has been "
+                            "forced.")
 
     # Save the last generation date-time.
     # Note: We want to do this operation first, since it might take longer to
@@ -141,13 +152,15 @@ def generateSite(siteDir, templateDir, force=False):
     else:
         os.mkdir(versionDir)
 
-    # Copy the KGS config file, changelog and announcement file to the version
-    # directory
+    # Copy the KGS config file, changelog, announcement, and release files to
+    # the version directory
     shutil.move(kgsPath, versionDir)
     if set.changelog:
         shutil.move(set.changelog, versionDir)
     if set.announcement:
         shutil.move(set.announcement, versionDir)
+    for filepath in set.files:
+        shutil.move(filepath, versionDir)
 
     # Recreate the KGS Path
     kgsPath = os.path.join(versionDir, 'controlled-packages.cfg')
