@@ -19,6 +19,7 @@ like:
   ... [KGS]
   ... name = zope-dev
   ... version = 1.2.0
+  ... changelog = CHANGES.txt
   ...
   ... [packageA]
   ... versions = 1.0.0

@@ -27,7 +27,7 @@ import os
 import shutil
 import sys
 import time
-from zope.kgs import version, buildout, ppix, link, intro, kgs
+from zope.kgs import version, buildout, ppix, link, intro, kgs, template
 
 TIMESTAMP_FILENAME = 'cf-timestamp'
 
@@ -42,7 +42,8 @@ def generateSite(siteDir, templateDir, force=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
     if not os.path.exists(kgsPath):
-        logger.error("The site directory specified does not have a controlled-packages.cfg file.")
+        logger.error("The site directory specified does not "
+                     "have a controlled-packages.cfg file.")
         return
     set = kgs.KGS(kgsPath)
     ver = set.version
@@ -76,6 +77,8 @@ def generateSite(siteDir, templateDir, force=False):
             logger.info('Recreating directory %s.' %versionDir)
             shutil.rmtree(versionDir)
             os.mkdir(versionDir)
+    else:
+        os.mkdir(versionDir)
 
     # Copy the KGS config file, changelog and announcement file to the version
     # directory
@@ -116,16 +119,10 @@ def generateSite(siteDir, templateDir, force=False):
     ppix.generatePackagePages(kgsPath, midxDir)
     ppix.generateIndexPage(kgsPath, midxDir)
 
-    # copy over the resource files
-    resourcesDir = os.path.join(versionDir, 'resources')
-    logger.info("copying resource files to %s" % resourcesDir)
-    if os.path.exists(resourcesDir):
-        shutil.rmtree(resourcesDir)
-    shutil.copytree(os.path.join(templateDir, 'resources'), resourcesDir)
-
-    # Update the intro page
-    logger.info("updating the intro page")
+    # Generate Web Site
+    logger.info("Generating Web Site")
     #intro.main(['-d',versionDir])
+    template.generateSite(templateDir, siteDir, None)
 
     logger.info("finished generating site.")
 
@@ -145,7 +142,7 @@ parser.add_option(
     default=os.path.join(os.path.dirname(__file__), 'templates'),
     help="The directory where the site templates are located.")
 parser.add_option(
-    "-f","--force", action="store_true", dest="force",
+    "-f","--force", action="store_true", dest="force", default=False,
     help="For the site to rebuild even if it is already at the latest version.")
 
 def main(args=None):
