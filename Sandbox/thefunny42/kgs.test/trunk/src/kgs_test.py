@@ -115,12 +115,10 @@ test-%:
         # Released version
         kgs_env = Environment([EGG_CACHE,])
         kgs_ws = WorkingSet(kgs_env)
+        easy_install.install([project],
+                             os.path.abspath(EGG_CACHE),
+                             working_set=kgs_ws, newest=True)
         packages = kgs_env[project]
-        if not len(packages):
-            easy_install.install([project],
-                                 os.path.abspath(EGG_CACHE),
-                                 working_set=kgs_ws, newest=True)
-            packages = kgs_env[project]
 
         kgs_conf.write("""
 [test-%s]
