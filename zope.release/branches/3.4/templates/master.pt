@@ -1,7 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-      xmlns:metal="http://namespaces.zope.org/metal"
-      xmlns:tal="http://namespaces.zope.org/tal"
       metal:define-macro="page">
   <head>
     <title metal:define-slot="page-title">Introduction to the KGS</title>
@@ -51,43 +49,45 @@
       </div>
       <div id="left-nav-wrapper">
         <div class="left-nav">
-          <h1>Navigation Header</h1>
-          <ul class="level-one">
-            <li>
-              <a href="#">Version 2</a>
-              <ul class="level-two">
-                <li>
-                  <a href="#">Feature 1</a>
-                </li>
-                <li>
-                  <a href="#">Feature 2</a>
-                </li>
-                <li>
-                  <a href="#">Feature 3</a>
-                </li>
-                <li>
-                  <a href="#">Feature 4</a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href="#">Version 1</a>
-              <ul class="level-two" style="display: none;">
-                <li>
-                  <a href="#">Feature 1</a>
-                </li>
-                <li>
-                  <a href="#">Feature 2</a>
-                </li>
-                <li>
-                  <a href="#">Feature 3</a>
-                </li>
-                <li>
-                  <a href="#">Feature 4</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
+          <div metal:define-slot="left-nav">
+            <h1>Navigation Header</h1>
+            <ul class="level-one">
+              <li>
+                <a href="#">Version 2</a>
+                <ul class="level-two">
+                  <li>
+                    <a href="#">Feature 1</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 2</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 3</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 4</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Version 1</a>
+                <ul class="level-two" style="display: none;">
+                  <li>
+                    <a href="#">Feature 1</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 2</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 3</a>
+                  </li>
+                  <li>
+                    <a href="#">Feature 4</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div id="footer-wrapper">
