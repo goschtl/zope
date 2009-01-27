@@ -5,12 +5,36 @@
     <title metal:fill-slot="page-title">Zope 3 Known Good Sets</title>
   </head>
   <body>
+    <div metal:fill-slot="divider">
+      Check out the latest version:
+      <span tal:replace="latest/name"
+            tal:condition="not:latest/announcement/url"></span>
+      <a href="#"
+         tal:attributes="href latest/announcement/url"
+         tal:condition="latest/announcement/url"
+         tal:content="latest/name">
+        Announcement
+      </a>
+      <a href="#"
+         tal:attributes="href latest/changelog/url"
+         tal:condition="latest/changelog/url">
+        Changes
+      </a>
+    </div>
     <div metal:fill-slot="left-nav">
       <h1>Versions</h1>
       <ul class="level-one">
-        <li tal:repeat="version self/data/versions">
+        <li tal:repeat="version versions">
           <a href="#">Version <span tal:replace="version/name">1</span></a>
           <ul class="level-two" style="display: none;">
+            <li tal:condition="version/announcement/url">
+              <a href="#"
+                 tal:attributes="href version/announcement/url">Announcement</a>
+            </li>
+            <li tal:condition="version/changelog/url">
+              <a href="#"
+                 tal:attributes="href version/changelog/url">Changelog</a>
+            </li>
             <li tal:repeat="feature version/features">
               <a href="#"
                  tal:attributes="href feature/url"
