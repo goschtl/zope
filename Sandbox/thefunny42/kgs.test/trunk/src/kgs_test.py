@@ -84,7 +84,6 @@ test-%:
     if not os.path.isdir(DEVELOP_EGG):
         os.mkdir(DEVELOP_EGG)
 
-
     kgs_env = Environment([EGG_CACHE,])
     kgs_ws = WorkingSet(kgs_env)
     trunk_env = Environment([DEVELOP_EGG,])
@@ -127,6 +126,15 @@ eggs = %s
     # Clean develop-eggs, otherwise if you choose KGS you still have trunk
     for path in os.listdir(DEVELOP_EGG):
         os.remove(DEVELOP_EGG + '/' + path)
+
+    # Create a default buildout.cfg if it doesn't exits yet.
+    if not os.path.isfile('buildout.cfg'):
+        buildout_conf = open('buildout.cfg', 'w')
+        buildout_conf.write("""
+[buildout]
+extends = kgs.cfg
+""")
+
 
 if __name__ == '__main__':
     main()
