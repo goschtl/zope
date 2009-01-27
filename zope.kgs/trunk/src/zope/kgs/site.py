@@ -65,7 +65,7 @@ def generateData(src):
         features = []
         for (filename, title) in FEATURES:
             if filename in os.listdir(path):
-                features.append({'url': filename, 'title': title})
+                features.append({'url': '%s/%s' % (set.version, filename), 'title': title})
 
         versions.append(
             {'name': set.version,
