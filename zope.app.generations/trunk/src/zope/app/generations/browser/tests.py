@@ -25,8 +25,6 @@ from zope.app.generations.interfaces import ISchemaManager
 class TestDatabaseSchema(functional.BrowserTestCase):
 
     def test(self):
-        functional.BrowserTestCase.setUp(self)
-        
         root = self.getRootFolder()._p_jar.root()
         appkey = 'zope.app.generations.demo'
         root[generations_key][appkey] = 0
