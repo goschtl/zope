@@ -50,12 +50,15 @@ class Recipe(object):
                 if re.compile(regex).search(project):
                     skip = True
                     break
+            for regex in self.include:
+                if re.compile(regex).search(project):
+                    skip = False
+                    break
             if skip:
                 continue
             parts = project.split('.')
             if parts[0] in ('zope', 'grokcore', ):
                 projects.append(project)
-        projects.extend(self.include)
         return projects
 
     def update(self):
