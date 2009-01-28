@@ -36,7 +36,7 @@ class Recipe(object):
         self.exclude = string2list(self.options.get('exclude', ''), EXCLUDE)
         self.include = string2list(self.options.get('include', ''), INCLUDE)
 
-        self.script = self.options.get('script', 'test-kgs')
+        self.script = self.options.get('script', 'test-compat')
         self.wanted_packages = self._wanted_packages()
 
     def install(self):
