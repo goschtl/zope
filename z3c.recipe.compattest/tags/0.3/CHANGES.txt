@@ -1,0 +1,20 @@
+=======
+CHANGES
+=======
+
+0.3 (unreleased)
+================
+
+- Adding the exclude parameter in buildout causes the default exclude
+  list to be merged with the option in buildout.cfg.
+
+0.2 (2009-01-28)
+================
+
+- Implemented use_svn option to use SVN trunk checkouts instead of released
+  versions.
+
+0.1 (2009-01-28)
+================
+
+- first released version
