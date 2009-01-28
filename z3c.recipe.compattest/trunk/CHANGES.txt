@@ -5,7 +5,8 @@ CHANGES
 0.3 (unreleased)
 ================
 
-- 
+- Adding the exclude parameter in buildout causes the default exclude
+  list to be merged with the option in buildout.cfg.
 
 0.2 (2009-01-28)
 ================
