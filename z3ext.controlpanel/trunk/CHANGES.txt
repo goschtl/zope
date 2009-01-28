@@ -3,6 +3,11 @@ CHANGES
 =======
 
 
+1.4.0 (Unreleased)
+------------------
+
+- Added helper class for creating content container configlet
+
 - Added browser:containerViews for data storage
 
 - Styles updated
