@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-0.2 (unreleased)
+0.3 (unreleased)
+================
+
+- 
+
+0.2 (2009-01-28)
 ================
 
 - Implemented use_svn option to use SVN trunk checkouts instead of released

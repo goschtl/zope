@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='z3c.recipe.compattest',
-    version = '0.2dev',
+    version = '0.3dev',
     author='Grok Contributors',
     author_email='grok-dev@zope.org',
     description='Buildout recipe to create testrunners for testing compatibility with other packages',
