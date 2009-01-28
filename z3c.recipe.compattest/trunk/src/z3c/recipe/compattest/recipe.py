@@ -7,17 +7,36 @@ import zc.recipe.egg
 import zc.recipe.testrunner
 
 
-EXCLUDE = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
-           'zope.app.fssync', 'zope.app.recorder', \
-           'zope.app.schemacontent', 'zope.app.sqlexpr', \
-           'zope.app.styleguide', 'zope.app.tests', \
-           'zope.app.versioncontrol', 'zope.app.zopetop', \
-           'zope.bobo', 'zope.browserzcml2', 'zope.fssync', \
-           'zope.generic', 'zope.importtool', 'zope.kgs', \
-           'zope.release', 'zope.pytz', 'zope.timestamp', \
-           'zope.tutorial', 'zope.ucol', 'zope.weakset', \
-           'zope.webdev', 'zope.xmlpickle', 'zope.app.boston',]
 INCLUDE = ['^zope\..*', '^grokcore\..*']
+
+EXCLUDE = [
+    'zope.agxassociation',
+    'zope.app.boston',
+    'zope.app.css',
+    'zope.app.demo',
+    'zope.app.fssync',
+    'zope.app.recorder',
+    'zope.app.schemacontent',
+    'zope.app.sqlexpr',
+    'zope.app.styleguide',
+    'zope.app.tests',
+    'zope.app.versioncontrol',
+    'zope.app.zopetop',
+    'zope.bobo',
+    'zope.browserzcml2',
+    'zope.fssync',
+    'zope.generic',
+    'zope.importtool',
+    'zope.kgs',
+    'zope.pytz',
+    'zope.release',
+    'zope.timestamp',
+    'zope.tutorial',
+    'zope.ucol',
+    'zope.weakset',
+    'zope.webdev',
+    'zope.xmlpickle',
+    ]
 
 
 def string2list(string, default):
