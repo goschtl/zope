@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 
-setup(name='z3c.recipe.kgstest',
+setup(name='z3c.recipe.compattest',
       version = '1.0dev',
       author='Grok Contributors',
       author_email='grok-dev@zope.org',
       description='Tool to create test environement for KGS.',
       long_description=open(
-        os.path.join('src', 'z3c', 'recipe', 'kgstest', 'README.txt')).read(),
+        os.path.join('src', 'z3c', 'recipe', 'compattest', 'README.txt')).read(),
       keywords = "zope3 setuptools egg kgs",
       classifiers = [
           'Intended Audience :: Developers',
@@ -29,7 +29,7 @@ setup(name='z3c.recipe.kgstest',
             'zope.dottedname',
           ]),
       entry_points = {
-          'zc.buildout': ['default = z3c.recipe.kgstest.recipe:Recipe'],
+          'zc.buildout': ['default = z3c.recipe.compattest.recipe:Recipe'],
           },
       include_package_data = True,
       zip_safe = True,

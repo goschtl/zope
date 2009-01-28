@@ -1,26 +1,26 @@
-==================
-z3c.recipe.kgstest
-==================
+=====================
+z3c.recipe.compattest
+=====================
 
 >>> cd(sample_buildout)
 >>> write('buildout.cfg', """
 ... [buildout]
-... parts = kgstest
+... parts = compattest
 ...
-... [kgstest]
-... recipe = z3c.recipe.kgstest
-... include = z3c.recipe.kgstest
+... [compattest]
+... recipe = z3c.recipe.compattest
+... include = z3c.recipe.compattest
 ... """)
->>> system(buildout).find('Installing kgstest') != -1
+>>> system(buildout).find('Installing compattest') != -1
 True
 >>> ls('bin')
 - buildout
-- kgstest-z3c.recipe.kgstest
+- compattest-z3c.recipe.compattest
 - test-kgs
->>> cat('bin', 'kgstest-z3c.recipe.kgstest')
+>>> cat('bin', 'compattest-z3c.recipe.compattest')
 #!/...python...
 ...zope.dottedname...
 
 >>> cat('bin', 'test-kgs')
 #!/...python...
-...main(...kgstest-z3c.recipe.kgstest...
+...main(...compattest-z3c.recipe.compattest...

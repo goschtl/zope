@@ -6,7 +6,7 @@ import zc.buildout.testing
 def DocFileSuite(*args, **kw):
     def setUp(test):
         zc.buildout.testing.buildoutSetUp(test)
-        zc.buildout.testing.install_develop('z3c.recipe.kgstest', test)
+        zc.buildout.testing.install_develop('z3c.recipe.compattest', test)
 
         # need to explicitly name our dependencies for the buildout test
         # environment

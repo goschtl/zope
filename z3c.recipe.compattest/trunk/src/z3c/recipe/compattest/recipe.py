@@ -63,7 +63,7 @@ class Recipe(object):
 
     def _install_run_script(self):
         eggs = zc.recipe.egg.Egg(
-            self.buildout, self.name, dict(eggs='z3c.recipe.kgstest'))
+            self.buildout, self.name, dict(eggs='z3c.recipe.compattest'))
         _, ws = eggs.working_set()
 
         bindir = self.buildout['buildout']['bin-directory']
@@ -72,7 +72,7 @@ class Recipe(object):
         runners = [repr(os.path.join(bindir, runner)) for runner in runners]
 
         return zc.buildout.easy_install.scripts(
-            [(self.script, 'z3c.recipe.kgstest.runner', 'main')],
+            [(self.script, 'z3c.recipe.compattest.runner', 'main')],
             ws, self.buildout['buildout']['executable'],
             bindir, arguments = '%s' % ', '.join(runners))
 
