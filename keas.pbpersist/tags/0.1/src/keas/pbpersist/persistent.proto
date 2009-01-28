@@ -1,0 +1,23 @@
+// This structure is derived from the documentation in the
+// ZODB.serialize module, although this version restricts the structure of
+// class metadata.
+
+message ClassMetadata {
+    required string module_name = 1;
+    required string class_name = 2;
+}
+
+message Reference {
+    required uint32 refid = 1;  // Identity within the persistent object record
+    required uint64 zoid = 2;   // ZODB OID as an integer
+    optional ClassMetadata class_meta = 3;  // Optimization for loading ghosts
+    optional string database = 4;   // for inter-database references
+    optional bool weak = 5;     // True for weak references
+    // note that weak references ignore class_meta and database.
+}
+
+message ObjectRecord {
+    required ClassMetadata class_meta = 1;
+    required bytes state = 2;
+    repeated Reference references = 3;
+}
