@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,6 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.location.interfaces import ILocation
 from zope.location.location import Location, locate, LocationIterator
 from zope.location.location import inside, LocationProxy
-from zope.location.interfaces import ILocation

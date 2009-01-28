@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,8 +20,7 @@ __docformat__ = 'restructuredtext'
 import cPickle
 import tempfile
 import zope.interface
-from zope.traversing.interfaces import IContainmentRoot
-from zope.traversing.interfaces import ITraverser
+import zope.location.interfaces
 
 from zope.location.interfaces import ILocation
 from zope.location.location import Location, inside
@@ -195,17 +194,21 @@ class PathPersistent(object):
 
     >>> from zope.location.tests import TLocation
     >>> root = TLocation()
-    >>> zope.interface.directlyProvides(root, IContainmentRoot)
-    >>> o3 = TLocation(); o3.__name__ = 'o3'
-    >>> o3.__parent__ = root; root.o3 = o3
+    >>> zope.interface.directlyProvides(
+    ...     root, zope.location.interfaces.IRoot)
+    >>> o3 = TLocation()
+    >>> o3.__name__ = 'o3'
+    >>> o3.__parent__ = root
+    >>> root.o3 = o3
     >>> persistent.id(o3)
     u'/o3'
 
-    >>> o4 = TLocation(); o4.__name__ = 'o4'
-    >>> o4.__parent__ = o3; o3.o4 = o4
+    >>> o4 = TLocation()
+    >>> o4.__name__ = 'o4'
+    >>> o4.__parent__ = o3
+    >>> o3.o4 = o4
     >>> persistent.id(o4)
     u'/o3/o4'
-
 
     We also provide a load function that returns objects by traversing
     given paths.  It has to find the root based on the object given to
@@ -226,11 +229,10 @@ class PathPersistent(object):
         if ILocation.providedBy(object):
             if not inside(object, self.location):
                 return LocationPhysicallyLocatable(object).getPath()
-
         return None
 
     def load(self, path):
         if path[:1] != u'/':
             raise ValueError("ZPersistent paths must be absolute", path)
         root = LocationPhysicallyLocatable(self.location).getRoot()
-        return ITraverser(root).traverse(path[1:])
+        return zope.location.interfaces.ITraverser(root).traverse(path[1:])
