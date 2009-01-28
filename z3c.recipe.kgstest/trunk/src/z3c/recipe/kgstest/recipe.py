@@ -17,7 +17,7 @@ EXCLUDE = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
            'zope.release', 'zope.pytz', 'zope.timestamp', \
            'zope.tutorial', 'zope.ucol', 'zope.weakset', \
            'zope.webdev', 'zope.xmlpickle', 'zope.app.boston',]
-INCLUDE = ['zope.*', 'grokcore.*']
+INCLUDE = ['^zope\..*', '^grokcore\..*']
 
 
 def string2list(string, default):
@@ -81,16 +81,16 @@ class Recipe(object):
         svn_list, _ = popen2.popen2("svn ls %s" % self.svn_url)
         for project in svn_list:
             project = project[:-2]
-            skip = False
-            for regex in self.exclude:
-                if re.compile(regex).search(project):
-                    skip = True
-                    break
+            include = False
             for regex in self.include:
                 if re.compile(regex).search(project):
-                    skip = False
+                    include = True
                     break
-            if not skip:
+            for regex in self.exclude:
+                if re.compile(regex).search(project):
+                    include = False
+                    break
+            if include:
                 projects.append(project)
         return projects
 

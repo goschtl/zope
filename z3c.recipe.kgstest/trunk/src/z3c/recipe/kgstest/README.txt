@@ -9,7 +9,6 @@ z3c.recipe.kgstest
 ...
 ... [kgstest]
 ... recipe = z3c.recipe.kgstest
-... exclude = .*
 ... include = z3c.recipe.kgstest
 ... """)
 >>> system(buildout).find('Installing kgstest') != -1
