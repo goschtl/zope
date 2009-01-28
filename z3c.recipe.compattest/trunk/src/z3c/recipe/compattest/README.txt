@@ -22,6 +22,9 @@ No further configuration is required, but you can set the following options:
   details),
 - ``script``: the name of the runner script (default: test-compat).
 
+- ``use_svn``: use SVN checkouts instead of releases (see below)
+- ``svn_directory``: directory to place checkouts in (default: parts/<partname>)
+
 >>> cd(sample_buildout)
 >>> write('buildout.cfg', """
 ... [buildout]
@@ -36,8 +39,8 @@ For this test, we only include a single package. With the default
 include/exclude values, about 150 packages will be included, so be aware
 that running the buildout will take some time.
 
->>> system(buildout).find('Installing compattest') != -1
-True
+>>> print system(buildout)
+Couldn't...Installing compattest...
 
 Details
 =======
@@ -48,8 +51,8 @@ script (called `test-compat` by default) that will run all of them:
 >>> ls('bin')
 - buildout
 - compattest-z3c.recipe.compattest
-- test-compat
->>> cat('bin', 'test-compat')
+- test-compattest
+>>> cat('bin', 'test-compattest')
 #!/...python...
 ...main(...compattest-z3c.recipe.compattest...
 
@@ -61,3 +64,47 @@ picked up:
 >>> cat('bin', 'compattest-z3c.recipe.compattest')
 #!/...python...
 ...zope.dottedname...
+
+Using SVN checkouts
+===================
+
+When you set ``use_svn`` to true, the test runners will not refer to released
+eggs, but rather use development-egg links to SVN checkouts of the trunks of
+each package (the checkouts are placed in ``svn_directory``).
+
+Note: Even though the generated testrunners will use development-egg links, this
+does not change the develop-eggs for your buildout itself. We check that before
+the installation of the recipe, there's just the single develop-egg link of the
+package we're working on:
+
+>>> ls('develop-eggs')
+- z3c.recipe.compattest.egg-link
+
+>>> write('buildout.cfg', """
+... [buildout]
+... parts = compattest-trunk
+...
+... [compattest-trunk]
+... recipe = z3c.recipe.compattest
+... include = zope.dottedname
+... use_svn = true
+... """)
+>>> ignore = system(buildout)
+
+The checkouts are placed in the ``parts/`` folder by default, but you can
+override this by setting ``svn_directory`` -- so you can share checkouts
+between several buildouts, for example.
+
+>>> ls('parts/compattest-trunk')
+d zope.dottedname
+
+The testrunner uses the checked out version of zope.dottedname:
+
+>>> cat('bin', 'compattest-trunk-zope.dottedname')
+#!/...python...
+...parts/compattest-trunk/zope.dottedname/src...
+
+But no additional develop-egg links are present:
+
+>>> ls('develop-eggs')
+- z3c.recipe.compattest.egg-link

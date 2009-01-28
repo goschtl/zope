@@ -1,3 +1,4 @@
+import infrae.subversion
 import os
 import pkg_resources
 import popen2
@@ -52,19 +53,37 @@ class Recipe(object):
 
         self.svn_url = self.options.get('svn_url',
                                         'svn://svn.zope.org/repos/main/')
+        if self.svn_url[-1] != '/':
+            self.svn_url += '/'
         self.exclude = string2list(self.options.get('exclude', ''), EXCLUDE)
         self.include = string2list(self.options.get('include', ''), INCLUDE)
 
-        self.script = self.options.get('script', 'test-compat')
+        self.script = self.options.get('script', 'test-%s' % self.name)
         self.wanted_packages = self._wanted_packages()
 
+        self.use_svn = self.options.get('use_svn', False)
+        self.svn_directory = self.options.get(
+            'svn_directory', os.path.join(
+            self.buildout['buildout']['parts-directory'], self.name))
+
     def install(self):
+        if self.use_svn:
+            if not os.path.exists(self.svn_directory):
+                os.mkdir(self.svn_directory)
         return self.update()
 
     def update(self):
         installed = []
+
+        if self.use_svn:
+            self._checkout_or_update_trunks()
+
         installed.extend(self._install_testrunners())
         installed.extend(self._install_run_script())
+
+        if self.use_svn:
+            self._remove_develop_eggs()
+
         return installed
 
     def _install_testrunners(self):
@@ -119,3 +138,26 @@ class Recipe(object):
         eggs = zc.recipe.egg.Egg(self.buildout, self.name, dict(eggs=package))
         _, ws = eggs.working_set()
         return ws
+
+    def _checkout_or_update_trunks(self):
+        self.installed_develop_eggs = []
+
+        checkout_list = []
+        for package in self.wanted_packages:
+            working_copy = os.path.join(self.svn_directory, package)
+            checkout_list.append('%s%s/trunk %s' % (self.svn_url, package,
+                                                  package))
+            self.installed_develop_eggs.append(package)
+
+        infrae.subversion.Recipe(self.buildout, self.name, dict(
+            urls='\n'.join(checkout_list),
+            location=self.svn_directory,
+            as_eggs='true',
+            )).update()
+
+    def _remove_develop_eggs(self):
+        eggdir = self.buildout['buildout']['develop-eggs-directory']
+        for egg_link in os.listdir(eggdir):
+            egg, _ = os.path.splitext(egg_link)
+            if egg in self.installed_develop_eggs:
+                os.unlink(os.path.join(eggdir, egg_link))

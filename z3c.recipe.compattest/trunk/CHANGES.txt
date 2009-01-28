@@ -5,7 +5,8 @@ CHANGES
 0.2 (unreleased)
 ================
 
-- ...
+- Implemented use_svn option to use SVN trunk checkouts instead of released
+  versions.
 
 0.1 (2009-01-28)
 ================
