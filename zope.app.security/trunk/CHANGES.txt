@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-3.5.4dev (unreleased)
----------------------
+3.5.4 (unreleased)
+------------------
 
-- ...
+- Changed mailing list address to zope-dev at zope.org, because
+  zope3-dev is retired now. Changed "cheeseshop" to "pypi" in
+  the package homepage.
 
 3.5.3 (2008-12-11)
 ------------------
