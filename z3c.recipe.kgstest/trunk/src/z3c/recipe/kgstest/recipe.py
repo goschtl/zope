@@ -1,6 +1,7 @@
 import os
 import popen2
 import re
+import zc.recipe.testrunner
 
 
 EXCLUDE = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
@@ -13,7 +14,7 @@ EXCLUDE = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
            'zope.release', 'zope.pytz', 'zope.timestamp', \
            'zope.tutorial', 'zope.ucol', 'zope.weakset', \
            'zope.webdev', 'zope.xmlpickle', 'zope.app.boston',]
-
+INCLUDE = ['zope.*', 'grokcore.*']
 
 def string2list(string, default):
     result = string and string.split('\n') or default
@@ -29,15 +30,18 @@ class Recipe(object):
         self.svn_url = self.options.get('svn_url',
                                         'svn://svn.zope.org/repos/main/')
         self.exclude = string2list(self.options.get('exclude', ''), EXCLUDE)
-        self.include = string2list(self.options.get('include', ''), [])
+        self.include = string2list(self.options.get('include', ''), INCLUDE)
 
     def install(self):
+        self.update()
+
+    def update(self):
         files = []
         for project in self._wanted_projects():
-            testrunner = os.path.join(self.buildout['buildout']['bin-directory'],
-                                      'kgstest-%s' % project)
-            open(testrunner, 'w').write('foo')
-            files.append(testrunner)
+            options = dict(eggs=project)
+            recipe = zc.recipe.testrunner.TestRunner(
+                self.buildout, '%s-%s' % (self.name, project), options)
+            files.extend(recipe.install())
         return files
 
     def _wanted_projects(self):
@@ -54,12 +58,6 @@ class Recipe(object):
                 if re.compile(regex).search(project):
                     skip = False
                     break
-            if skip:
-                continue
-            parts = project.split('.')
-            if parts[0] in ('zope', 'grokcore', ):
+            if not skip:
                 projects.append(project)
         return projects
-
-    def update(self):
-        return []

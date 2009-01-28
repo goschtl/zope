@@ -23,7 +23,11 @@ setup(name='z3c.recipe.kgstest',
       install_requires=[
           'setuptools',
           'zc.buildout',
+          'zc.recipe.testrunner',
           ],
+      extras_require=dict(test=[
+            'zope.dottedname',
+          ]),
       entry_points = {
           'zc.buildout': ['default = z3c.recipe.kgstest.recipe:Recipe'],
           },
