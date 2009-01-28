@@ -1,6 +1,9 @@
 import os
+import pkg_resources
 import popen2
 import re
+import zc.buildout.easy_install
+import zc.recipe.egg
 import zc.recipe.testrunner
 
 
@@ -15,6 +18,7 @@ EXCLUDE = ['zope.agxassociation', 'zope.app.css', 'zope.app.demo', \
            'zope.tutorial', 'zope.ucol', 'zope.weakset', \
            'zope.webdev', 'zope.xmlpickle', 'zope.app.boston',]
 INCLUDE = ['zope.*', 'grokcore.*']
+
 
 def string2list(string, default):
     result = string and string.split('\n') or default
@@ -33,12 +37,16 @@ class Recipe(object):
         self.include = string2list(self.options.get('include', ''), INCLUDE)
 
     def install(self):
-        self.update()
+        return self.update()
 
     def update(self):
         files = []
         for project in self._wanted_projects():
-            options = dict(eggs=project)
+            if self._needs_test_dependencies(project):
+                extra = ' [test]'
+            else:
+                extra = ''
+            options = dict(eggs=project + extra)
             recipe = zc.recipe.testrunner.TestRunner(
                 self.buildout, '%s-%s' % (self.name, project), options)
             files.extend(recipe.install())
@@ -61,3 +69,14 @@ class Recipe(object):
             if not skip:
                 projects.append(project)
         return projects
+
+    def _needs_test_dependencies(self, package):
+        options = dict(eggs=package)
+        saved_newest = self.buildout['buildout'].get('newest', None)
+        self.buildout['buildout']['newest'] = 'true'
+        eggs = zc.recipe.egg.Egg(self.buildout, self.name, options)
+        _, ws = eggs.working_set()
+        latest = ws.find(pkg_resources.Requirement.parse(package))
+        if saved_newest:
+            self.buildout['buildout']['newest'] = saved_newest
+        return 'test' in latest.extras
