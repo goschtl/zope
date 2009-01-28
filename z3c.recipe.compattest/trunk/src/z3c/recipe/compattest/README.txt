@@ -13,15 +13,14 @@ Usage
 Add a part to your buildout.cfg that uses this recipe.
 No further configuration is required, but you can set the following options:
 
- - svn_url: SVN repository to search for packages
- - include: only packages matching this regex will be included
-   (default: '^zope\..*, ^grokcore\..*')
- - exclude: packages matching this regex will be excluded, even if they match
-   `include`
-    (default: a list of deprectated/obsolete zope.* packages, see
-    z3c.recipe.compattest.recipe for details)
- - script: the name of the runner script
-   (default: test-compat)
+- ``svn_url``: SVN repository to search for packages,
+- ``include``: only packages matching this regex will be included
+  (default:``^zope\..*``, ``^grokcore\..*``),
+- ``exclude``: packages matching this regex will be excluded, even if
+  they match ``include`` (default: a list of deprectated/obsolete
+  ``zope.*`` packages, see ``z3c.recipe.compattest.recipe`` for
+  details),
+- ``script``: the name of the runner script (default: test-compat).
 
 >>> cd(sample_buildout)
 >>> write('buildout.cfg', """
@@ -54,9 +53,10 @@ script (called `test-compat` by default) that will run all of them:
 #!/...python...
 ...main(...compattest-z3c.recipe.compattest...
 
-We take care about installing the test dependencies for the packages (from their
-extras_require['test']). Do demonstrate this, we declared a (superfluous) test
-dependency on zope.dottedname, which is picked up:
+We take care about installing the test dependencies for the packages
+(from their ``extras_require['test']``). Do demonstrate this, we
+declared a (superfluous) test dependency on ``zope.dottedname``, which is
+picked up:
 
 >>> cat('bin', 'compattest-z3c.recipe.compattest')
 #!/...python...
