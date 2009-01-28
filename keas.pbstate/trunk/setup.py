@@ -16,7 +16,7 @@
 import os
 from setuptools import setup
 
-VERSION='0.2dev'
+VERSION='0.1.1'
 
 def read_file(*path):
     base_dir = os.path.dirname(__file__)
@@ -32,7 +32,7 @@ setup(
     license='ZPL 2.1',
 
     package_dir={'': 'src'},
-    packages=['keas.pbstate'],
+    packages=['keas', 'keas.pbstate'],
     namespace_packages=['keas'],
     install_requires=[
         'setuptools',
