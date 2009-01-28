@@ -12,6 +12,8 @@ CHANGES
 - Moved the `protectclass` module to `zope.security` leaving only a
   compatibility module here that imports from the new location.
 
+- Moved the <module> directive implementation to `zope.security`.
+
 3.5.3 (2008-12-11)
 ------------------
 

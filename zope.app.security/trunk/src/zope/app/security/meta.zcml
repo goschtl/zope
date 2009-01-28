@@ -34,22 +34,4 @@
       schema=".metadirectives.IDefineEverybodyGroupDirective"
       handler=".metaconfigure.everybodyGroup" />
 
-  <meta:groupingDirective
-      name="module"
-      namespace="http://namespaces.zope.org/zope"
-      schema=".metadirectives.IModule"
-      handler="zope.configuration.config.GroupingContextDecorator" />
-
-  <meta:directive
-      name="allow"
-      namespace="http://namespaces.zope.org/zope"
-      schema=".metadirectives.IAllow"
-      handler=".metaconfigure.allow" />
-
-  <meta:directive
-      name="require"
-      namespace="http://namespaces.zope.org/zope"
-      schema=".metadirectives.IRequire"
-      handler=".metaconfigure.require" />
-
 </configure>
