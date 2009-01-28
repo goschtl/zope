@@ -95,11 +95,7 @@ class Recipe(object):
         return projects
 
     def _needs_test_dependencies(self, package):
-        saved_newest = self.buildout['buildout'].get('newest', None)
-        self.buildout['buildout']['newest'] = 'true'
         eggs = zc.recipe.egg.Egg(self.buildout, self.name, dict(eggs=package))
         _, ws = eggs.working_set()
-        latest = ws.find(pkg_resources.Requirement.parse(package))
-        if saved_newest:
-            self.buildout['buildout']['newest'] = saved_newest
-        return 'test' in latest.extras
+        package = ws.find(pkg_resources.Requirement.parse(package))
+        return 'test' in package.extras
