@@ -36,23 +36,47 @@ class Recipe(object):
         self.exclude = string2list(self.options.get('exclude', ''), EXCLUDE)
         self.include = string2list(self.options.get('include', ''), INCLUDE)
 
+        self.script = self.options.get('script', 'test-kgs')
+        self.wanted_packages = self._wanted_packages()
+
     def install(self):
         return self.update()
 
     def update(self):
-        files = []
-        for project in self._wanted_projects():
-            if self._needs_test_dependencies(project):
+        installed = []
+        installed.extend(self._install_testrunners())
+        installed.extend(self._install_run_script())
+        return installed
+
+    def _install_testrunners(self):
+        installed = []
+        for package in self.wanted_packages:
+            if self._needs_test_dependencies(package):
                 extra = ' [test]'
             else:
                 extra = ''
-            options = dict(eggs=project + extra)
+            options = dict(eggs=package + extra)
             recipe = zc.recipe.testrunner.TestRunner(
-                self.buildout, '%s-%s' % (self.name, project), options)
-            files.extend(recipe.install())
-        return files
+                self.buildout, '%s-%s' % (self.name, package), options)
+            installed.extend(recipe.install())
+        return installed
 
-    def _wanted_projects(self):
+    def _install_run_script(self):
+        eggs = zc.recipe.egg.Egg(
+            self.buildout, self.name, dict(eggs='z3c.recipe.kgstest'))
+        _, ws = eggs.working_set()
+
+        bindir = self.buildout['buildout']['bin-directory']
+        runners = ['%s-%s' % (self.name, package) for package
+                        in self.wanted_packages]
+        runners = [repr(os.path.join(bindir, runner)) for runner in runners]
+
+        return zc.buildout.easy_install.scripts(
+            [(self.script, 'z3c.recipe.kgstest.runner', 'main')],
+            ws, self.buildout['buildout']['executable'],
+            bindir, arguments = '[%s]' % ' ,'.join(runners))
+
+    def _wanted_packages(self):
         projects = []
         svn_list, _ = popen2.popen2("svn ls %s" % self.svn_url)
         for project in svn_list:
@@ -71,10 +95,9 @@ class Recipe(object):
         return projects
 
     def _needs_test_dependencies(self, package):
-        options = dict(eggs=package)
         saved_newest = self.buildout['buildout'].get('newest', None)
         self.buildout['buildout']['newest'] = 'true'
-        eggs = zc.recipe.egg.Egg(self.buildout, self.name, options)
+        eggs = zc.recipe.egg.Egg(self.buildout, self.name, dict(eggs=package))
         _, ws = eggs.working_set()
         latest = ws.find(pkg_resources.Requirement.parse(package))
         if saved_newest:
