@@ -402,7 +402,7 @@ inheritance has no meaning there::
   ...     multi('Two')
   ...
   >>> from martiantest.fake import module_with_directive
-  >>> print multi.bind().get(module=module_with_directive)
+  >>> print multi.bind().get(module_with_directive)
   ['One', 'Two']
 
   >>> from martian import MODULE
@@ -420,7 +420,7 @@ inheritance has no meaning there::
   ...     multi(2, 'Two')
   ...
   >>> from martiantest.fake import module_with_directive
-  >>> d = multi.bind().get(module=module_with_directive)
+  >>> d = multi.bind().get(module_with_directive)
   >>> print sorted(d.items())
   [(1, 'One'), (2, 'Two')]
 
