@@ -30,6 +30,8 @@ from zope.publisher.browser import BrowserPage
 
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.form.browser.textwidgets import TextWidget
+from zope.app.form.browser.itemswidgets import DropdownWidget
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 from lovely.remotetask.interfaces import CRONJOB, ICronJob
 
@@ -103,6 +105,12 @@ class DayOfWeekWidget(StringTupleWidget):
 
     values = tuple(range(0,7))
 
+class TaskWidget(DropdownWidget):
+    
+    def __init__(self, field, request):
+        terms = [SimpleTerm(name) for name in field.context.getAvailableTasks()]
+        vocabulary = SimpleVocabulary(terms)
+        super(TaskWidget, self).__init__(field, vocabulary, request)
 
 class CronJobFormBase(object):
     """base settings for all cron job forms"""
@@ -116,6 +124,7 @@ class CronJobFormBase(object):
             'dayOfWeek',
             'delay',
             )
+    form_fields['task'].custom_widget = TaskWidget
     form_fields['hour'].custom_widget = HourWidget
     form_fields['minute'].custom_widget = MinuteWidget
     form_fields['dayOfMonth'].custom_widget = DayOfMonthWidget
