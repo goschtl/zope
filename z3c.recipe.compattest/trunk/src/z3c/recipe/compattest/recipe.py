@@ -62,10 +62,6 @@ class Recipe(object):
         return installed
 
     def _install_run_script(self):
-        eggs = zc.recipe.egg.Egg(
-            self.buildout, self.name, dict(eggs='z3c.recipe.compattest'))
-        _, ws = eggs.working_set()
-
         bindir = self.buildout['buildout']['bin-directory']
         runners = ['%s-%s' % (self.name, package) for package
                         in self.wanted_packages]
@@ -73,7 +69,8 @@ class Recipe(object):
 
         return zc.buildout.easy_install.scripts(
             [(self.script, 'z3c.recipe.compattest.runner', 'main')],
-            ws, self.buildout['buildout']['executable'],
+            self._working_set('z3c.recipe.compattest'),
+            self.buildout['buildout']['executable'],
             bindir, arguments = '%s' % ', '.join(runners))
 
     def _wanted_packages(self):
@@ -95,7 +92,11 @@ class Recipe(object):
         return projects
 
     def _needs_test_dependencies(self, package):
-        eggs = zc.recipe.egg.Egg(self.buildout, self.name, dict(eggs=package))
-        _, ws = eggs.working_set()
+        ws = self._working_set(package)
         package = ws.find(pkg_resources.Requirement.parse(package))
         return 'test' in package.extras
+
+    def _working_set(self, package):
+        eggs = zc.recipe.egg.Egg(self.buildout, self.name, dict(eggs=package))
+        _, ws = eggs.working_set()
+        return ws
