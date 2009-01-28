@@ -159,6 +159,7 @@ class Recipe(object):
             urls='\n'.join(checkout_list),
             location=self.svn_directory,
             as_eggs='true',
+            no_warnings='true',
             )).update()
 
     def _remove_develop_eggs(self):

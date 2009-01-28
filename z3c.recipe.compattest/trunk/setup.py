@@ -25,11 +25,13 @@ setup(
     package_dir = {'': 'src'},
     namespace_packages=['z3c', 'z3c.recipe'],
     install_requires=[
-        'infrae.subversion',
+        'infrae.subversion>=1.4.4',
         'setuptools',
         'zc.buildout',
         'zc.recipe.testrunner',
         ],
+    # zope.dottedname is just used as a dummy package to demonstrate things
+    # with, it's not actually imported
     extras_require=dict(test=[
           'zope.dottedname',
         ]),
