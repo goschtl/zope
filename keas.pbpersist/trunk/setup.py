@@ -11,23 +11,33 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""ZODB Persistence in a Google Protocol Buffer"""
 
+import os
 from setuptools import setup
+
+VERSION = '0.1'
+
+def read_file(*path):
+    base_dir = os.path.dirname(__file__)
+    file_path = (base_dir, ) + tuple(path)
+    return file(os.path.join(*file_path)).read()
 
 setup(
     name='keas.pbpersist',
-    version='0.1dev',
+    version=VERSION,
     author='Shane Hathaway and the Zope Community',
     author_email='zope-dev@zope.org',
-    description='ZODB Persistence in a Google Protocol Buffer',
+    description=__doc__,
     license='ZPL 2.1',
 
     package_dir={'': 'src'},
-    packages=['keas.pbpersist'],
+    packages=['keas', 'keas.pbpersist'],
     namespace_packages=['keas'],
     install_requires=[
         'setuptools',
         'keas.pbstate',
         'ZODB3',
         ],
+    long_description = read_file('src', 'keas', 'pbpersist', 'README.txt'),
 )

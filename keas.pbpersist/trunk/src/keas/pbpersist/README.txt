@@ -1,18 +1,16 @@
 
 
-Tests and Documentation of keas.pbpersist
-=========================================
-
 Overview
 --------
 
 The keas.pbpersist package provides a way to store ZODB objects using
-Google Protocol Buffer encoding rather than pickling.  The Protocol
-Buffer format is more limited than pickles, but it is also simpler,
-better documented, and not dependent on any particular programming
-language.
+Google Protocol Buffer encoding rather than pickling.  It requires the
+keas.pbstate package.  The Protocol Buffer format is more limited than
+pickles, but it is also simpler, better documented, and not dependent
+on any particular programming language.
 
-Only Persistent objects that use the ProtobufState metaclass are eligible
+Only Persistent objects that use the ProtobufState metaclass
+(from the keas.pbstate.meta module) are eligible
 for this kind of serialization, so applications that want to take advantage
 of keas.pbpersist need to be refactored at the model level.  However,
 applications can be refactored gradually, since protobuf
@@ -23,9 +21,18 @@ This package is expected to be fully compatible with most ZODB
 storages, including FileStorage, ZEO, RelStorage, and any other storage
 that treats object records as opaque binary streams.
 
+Note that this package requires a patch to ZODB; see the "-polling-serial"
+patched version at the following site:
+
+    http://packages.willowrise.org
+
 
 How to Use This Package
 -----------------------
+
+The documentation below is in doctest format, meaning that it serves
+as both documentation and tests.  You can try out the code in a Python
+interpreter session.
 
 Register the protobuf serializer with ZODB.  This only needs to happen
 once per application run, but it does no harm if it happens more than once.
@@ -34,14 +41,17 @@ once per application run, but it does no harm if it happens more than once.
     >>> register()
     >>> register()
 
-Create a PContact instance.  PContact is a simple Persistent class that
-stores its state in a protobuf message.  Fill out the required field.
+PContact is a simple Persistent class that stores its state in a protobuf
+message.  See the source code; it's quite simple.  For this test, create
+an instance an fill out the required field.
 
     >>> from keas.pbpersist.tests import PContact
     >>> bob = PContact()
     >>> bob.name = u'Bob'
 
-Set up an in-memory object database and put the PContact in it.
+Set up an in-memory object database and put the PContact in it.  Of course,
+if you already have a database, you can instead attach the object to some
+object in your own database.
 
     >>> from ZODB.DemoStorage import DemoStorage
     >>> from ZODB.DB import DB
@@ -53,6 +63,8 @@ Set up an in-memory object database and put the PContact in it.
     >>> transaction.commit()
 
 Let's take a peek at what got stored in the database.  Look Ma, no pickles!
+The {protobuf} prefix tells ZODB to use code in the keas.pbpersist package
+to deserialize this object.
 
     >>> data, serial = storage.load(bob._p_oid, '')
     >>> data
@@ -79,14 +91,19 @@ protobuf message.
     >>> pbuf.name
     u'Bob'
 
-Ok, I'm happy that's possible, but now let's cut the noise and use nice
-ZODB operations to read the object.
+You could easily emulate that code in C++ or Java, the other two languages
+supported by Protocol Buffers at this time.  However, that was a
+noisy, complex operation.  ZODB makes reading objects dramatically simpler.
 
     >>> conn2 = db.open()
     >>> bob2 = conn2.root()['bob']
     >>> bob2.name
     u'Bob'
     >>> conn2.close()
+
+
+References
+----------
 
 Create another PContact and assign that contact to be a guardian for Bob.
 The add() method below is part of Google's protobuf API.  The
@@ -100,10 +117,10 @@ in keas.pbstate.
     >>> transaction.commit()
 
 [Ed: I sure don't like the way we manage references right now.  I'd much
-rather see "bob.guardians.add().target = alice", but that is not yet
-possible.]
+rather see "bob.guardians.append(alice)", but that is not yet possible.]
 
-Get Alice through Bob in another ZODB connection.
+Now let's see what happens if we get Alice through Bob in a different
+ZODB connection.
 
     >>> conn2 = db.open()
     >>> bob2 = conn2.root()['bob']
@@ -208,7 +225,7 @@ We can make weak references, though!
     >>> len(bob.guardians)
     3
 
-We can also make cross-database references.
+We can make cross-database references.
 
     >>> storage_beta = DemoStorage()
     >>> db_beta = DB(storage_beta, database_name='beta', databases=db.databases)
@@ -240,7 +257,8 @@ method, even when that instance is in another database.
     >>> bob.protobuf_refs.set(ref, adder)
     >>> transaction.commit()
 
-Access all of those different kinds of references in another connection.
+Just to be sure all those references work, access all of them in another
+connection.
 
     >>> conn2 = db.open()
     >>> bob2 = conn2.root()['bob']
@@ -297,7 +315,7 @@ implements __getnewargs__().
 Clean Up
 --------
 
-Close the object database.
+The tests are finished.  Close the object database.
 
     >>> transaction.abort()
     >>> conn1.close()
