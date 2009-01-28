@@ -55,7 +55,8 @@ class Recipe(object):
                                         'svn://svn.zope.org/repos/main/')
         if self.svn_url[-1] != '/':
             self.svn_url += '/'
-        self.exclude = string2list(self.options.get('exclude', ''), EXCLUDE)
+        self.exclude = (
+            string2list(self.options.get('exclude', ''), []) + EXCLUDE)
         self.include = string2list(self.options.get('include', ''), INCLUDE)
 
         self.script = self.options.get('script', 'test-%s' % self.name)
