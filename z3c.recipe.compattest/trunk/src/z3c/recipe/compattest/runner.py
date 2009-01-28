@@ -24,12 +24,18 @@ def main(*scripts):
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             close_fds=True)
-        p.wait()
-        if p.returncode:
-            failed[script] = p.stdout.read()
+        output = u''
+        data = p.stdout.read()
+        while data:
+            output += data
+            data = p.stdout.read()
+        if p.wait():
+            failed[script] = output
             print "Failed with:"
             print failed[script]
 
-    print "%d failures.%s" % (
-        len(failed), '\n- '.join(failed.keys()))
+    failures = len(failed)
+    print "%d failures." % failures
+    if failures:
+        print "- %s" % u"\n- ".join(failed.keys())
 
