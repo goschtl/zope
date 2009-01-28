@@ -74,7 +74,7 @@ class Recipe(object):
         return zc.buildout.easy_install.scripts(
             [(self.script, 'z3c.recipe.kgstest.runner', 'main')],
             ws, self.buildout['buildout']['executable'],
-            bindir, arguments = '[%s]' % ' ,'.join(runners))
+            bindir, arguments = '%s' % ', '.join(runners))
 
     def _wanted_packages(self):
         projects = []
