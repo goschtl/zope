@@ -76,7 +76,7 @@ class Recipe(object):
         installed = []
 
         if self.use_svn:
-            self._checkout_or_update_trunks()
+            self._install_checkouts()
 
         installed.extend(self._install_testrunners())
         installed.extend(self._install_run_script())
@@ -139,15 +139,21 @@ class Recipe(object):
         _, ws = eggs.working_set()
         return ws
 
-    def _checkout_or_update_trunks(self):
-        self.installed_develop_eggs = []
+    def _install_checkouts(self):
+        self.develop_eggs = []
+
+        eggdir = self.buildout['buildout']['develop-eggs-directory']
+        egg_links = os.listdir(eggdir)
+        installed_develop_eggs = [os.path.splitext(f)[0] for f in egg_links]
 
         checkout_list = []
         for package in self.wanted_packages:
+            if package in installed_develop_eggs:
+                continue
             working_copy = os.path.join(self.svn_directory, package)
             checkout_list.append('%s%s/trunk %s' % (self.svn_url, package,
                                                   package))
-            self.installed_develop_eggs.append(package)
+            self.develop_eggs.append(package)
 
         infrae.subversion.Recipe(self.buildout, self.name, dict(
             urls='\n'.join(checkout_list),
@@ -159,5 +165,5 @@ class Recipe(object):
         eggdir = self.buildout['buildout']['develop-eggs-directory']
         for egg_link in os.listdir(eggdir):
             egg, _ = os.path.splitext(egg_link)
-            if egg in self.installed_develop_eggs:
+            if egg in self.develop_eggs:
                 os.unlink(os.path.join(eggdir, egg_link))

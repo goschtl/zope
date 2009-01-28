@@ -14,9 +14,9 @@ Add a part to your buildout.cfg that uses this recipe.
 No further configuration is required, but you can set the following options:
 
 - ``svn_url``: SVN repository to search for packages,
-- ``include``: only packages matching this regex will be included
-  (default:``^zope\..*``, ``^grokcore\..*``),
-- ``exclude``: packages matching this regex will be excluded, even if
+- ``include``: only packages matching a regex in this list (one regex per line)
+  will be included (default:``^zope\..*``, ``^grokcore\..*``),
+- ``exclude``: packages matching any regex in this list will be excluded, even if
   they match ``include`` (default: a list of deprectated/obsolete
   ``zope.*`` packages, see ``z3c.recipe.compattest.recipe`` for
   details),
@@ -87,6 +87,7 @@ package we're working on:
 ... [compattest-trunk]
 ... recipe = z3c.recipe.compattest
 ... include = zope.dottedname
+...           z3c.recipe.compattest
 ... use_svn = true
 ... """)
 >>> ignore = system(buildout)
@@ -94,6 +95,9 @@ package we're working on:
 The checkouts are placed in the ``parts/`` folder by default, but you can
 override this by setting ``svn_directory`` -- so you can share checkouts
 between several buildouts, for example.
+
+Note that for packages that already exist as develop eggs (in our example,
+z3c.recipe.compattest), no checkout is performed.
 
 >>> ls('parts/compattest-trunk')
 d zope.dottedname
