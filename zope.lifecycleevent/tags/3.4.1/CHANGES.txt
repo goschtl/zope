@@ -1,0 +1,12 @@
+Change History
+==============
+
+3.4.1 (unreleased)
+------------------
+
+- Remove old module declarations from classes.
+
+3.4.0 (2007-09-01)
+------------------
+
+Initial release as an independent package
