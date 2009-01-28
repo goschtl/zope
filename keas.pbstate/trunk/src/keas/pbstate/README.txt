@@ -9,12 +9,10 @@ several programming languages.
 
 What if we combined those properties with an object database?  Object
 databases often provide an excellent software foundation.  Unfortunately,
-object databases are generally either joined to a complex object-relational
-mapper, or are bound to a single programming language due to the
-object serialization format.  This package uses the latter strategy, but
-uses Protocol Buffers as the serialization format, conceivably making
-it possible to build an object database that multiple programming languages
-can access.
+object databases are generally bound to a single programming language.
+This package provides object serialization using Protocol Buffers,
+conceivably making it possible to build an object database that
+multiple programming languages can access.
 
 Using this package also provides schema documentation.  The Protocol Buffers
 package requires programmers to write the schema of their data in a
