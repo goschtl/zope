@@ -31,7 +31,7 @@ from transaction.interfaces import IDataManager
 from zope.security.checker import NamesChecker
 
 from zope.interface import implements
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.rdb.interfaces import DatabaseException, DatabaseAdapterError
 from zope.rdb.interfaces import IResultSet
 from zope.rdb.interfaces import IZopeConnection, IZopeCursor

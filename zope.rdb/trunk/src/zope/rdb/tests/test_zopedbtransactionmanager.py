@@ -18,7 +18,6 @@ $Id$
 from unittest import TestCase, main, makeSuite, TestSuite
 import transaction
 from transaction.interfaces import IDataManager
-from transaction.tests.abstestIDataManager import IDataManagerTests
 
 from zope.interface.verify import verifyObject
 from zope.rdb import ZopeDBTransactionManager
@@ -26,7 +25,7 @@ from zope.rdb import ZopeConnection
 from zope.rdb.tests.stubs import ConnectionStub, TypeInfoStub
 
 
-class TxnMgrTest(IDataManagerTests, TestCase):
+class TxnMgrTest(TestCase):
 
     def setUp(self):
         self.conn = ConnectionStub()

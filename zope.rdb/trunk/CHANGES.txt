@@ -1,10 +1,10 @@
 Change History
 ==============
 
-3.4.3 (Unreleased)
+3.5.0 (Unreleased)
 ------------------
 
-- ...
+- Use zope.container instead of zope.app.container.
 
 3.4.2 (2008/10/10)
 ------------------

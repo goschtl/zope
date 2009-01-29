@@ -34,7 +34,7 @@ long_description = (
 
 setup(
     name='zope.rdb',
-    version='3.4.3dev',
+    version='3.5.0dev',
     url='http://pypi.python.org/pypi/zope.rdb',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
@@ -57,14 +57,16 @@ setup(
     namespace_packages=['zope',],
     include_package_data=True,
     install_requires=['setuptools',
+                      'transaction',
                       'ZODB3',
+                      'zope.container',
                       'zope.interface',
                       'zope.i18nmessageid',
                       'zope.security',
                       'zope.configuration',
+                      'zope.container',
                       'zope.schema',
                       'zope.thread',
-                      'zope.app.container',
                       ],
     zip_safe=False,
     )
