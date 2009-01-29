@@ -21,7 +21,6 @@ import zope.interface
 import zope.component
 
 # XXX import error when doing import zope.location.interfaces :/
-import zope.location.interfaces
 from zope.location.interfaces import ILocation
 from zope.proxy import ProxyBase, non_overridable
 from zope.proxy.decorator import DecoratorSpecificationDescriptor
@@ -33,7 +32,7 @@ class Location(object):
     It provides the `__parent__` and `__name__` attributes.
 
     """
-    zope.interface.implements(zope.location.interfaces.ILocation)
+    zope.interface.implements(ILocation)
 
     __parent__ = None
     __name__ = None
