@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.principalannotation',
-      version = '3.4.1dev',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Annotations for Zope Principals',

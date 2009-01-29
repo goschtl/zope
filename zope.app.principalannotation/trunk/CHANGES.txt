@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.4.1 (unreleased)
+3.5.0 (unreleased)
 ------------------
 
 - Move boostrap subscriber to bootstrap.zcml file and browser
