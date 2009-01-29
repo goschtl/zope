@@ -94,7 +94,16 @@ class Recipe(object):
     def _install_testrunners(self):
         installed = []
         for package in self.wanted_packages:
-            if self._needs_test_dependencies(package):
+            try:
+                needs_test = self._needs_test_dependencies(package)
+            except zc.buildout.easy_install.MissingDistribution, e:
+                if e.data[0].project_name == package and not self.use_svn:
+                    # This package has a project in subversion but no
+                    # release (yet). We'll ignore it for now.
+                    print "No release found for %s. Ignoring." % package
+                    continue
+                raise
+            if needs_test:
                 extra = ' [test]'
             else:
                 extra = ''

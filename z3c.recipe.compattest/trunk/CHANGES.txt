@@ -5,6 +5,9 @@ CHANGES
 0.4 (unreleased)
 ================
 
+- Ignore missing package releases for packages listed in Subversion (as
+  long as we don't try to run from Subversion).
+
 - Allow parallel execution of the individual test runners by stating
   'max_jobs=X' in the recipe's options.
 
