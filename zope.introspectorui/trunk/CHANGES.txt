@@ -3,16 +3,12 @@ CHANGES
 
 0.2 (unreleased)
 ================
-Feature changes
----------------
 
-*
+* Add explicit dependency to zope.location and clean up ZCML activation.
 
 
 0.1 (2008-10-24)
 ================
 
-Feature changes
----------------
 
 * Initial Release
