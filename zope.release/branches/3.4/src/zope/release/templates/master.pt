@@ -71,11 +71,16 @@
             <h1>Versions</h1>
             <ul class="level-one">
               <li tal:repeat="version versions">
-                <a href="javascript:void(0);">
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/name}/index.html">
                   <span tal:replace="version/name">3.4.0</span>
                   (<span tal:replace="version/date"/>)
                 </a>
                 <ul class="level-two" style="display: none;">
+                  <li>
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${version/name}/index.html">Homepage</a>
+                  </li>
                   <li tal:condition="version/announcement/url">
                     <a href="#"
                        tal:attributes="href string:${siteRoot}${version/announcement/url}">Announcement</a>
