@@ -34,7 +34,7 @@ from zope.traversing.api import traverse
 
 from zope.app.component.interfaces import ISite
 from zope.app.component import site
-from zope.app.container.interfaces import INameChooser
+from zope.container.interfaces import INameChooser
 from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.appsetup import interfaces
