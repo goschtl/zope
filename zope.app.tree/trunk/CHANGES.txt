@@ -5,7 +5,8 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Add compatibility for newer zope.traversing releases that require us
+  to explicitly set up testing. This also works with older releases.
 
 3.5.0 (2009-01-17)
 ------------------

@@ -23,6 +23,7 @@ from zope.security.checker import defineChecker
 from zope.security.checker import NamesChecker
 from zope.traversing.interfaces import IContainmentRoot
 from zope.location.interfaces import ILocation, ISite
+import zope.traversing.testing
 
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.sample import SampleContainer
@@ -62,6 +63,7 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(AdapterTestCase, self).setUp()
         # provide necessary components
+        zope.traversing.testing.setUp()
         ztapi.provideAdapter(None, IUniqueId, StubUniqueId)
         ztapi.provideAdapter(None, IChildObjects, StubChildObjects)
         ztapi.provideAdapter(ILocation, IUniqueId, LocationUniqueId)
@@ -173,8 +175,6 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         self.assert_(adapter.hasChildren())
         self.assertEqual(adapter.getChildObjects(), [sm])
 
+
 def test_suite():
     return unittest.makeSuite(AdapterTestCase)
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
