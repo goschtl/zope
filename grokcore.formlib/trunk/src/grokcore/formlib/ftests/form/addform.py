@@ -28,9 +28,9 @@ also use the ``applyData`` method to store the data on the object.
 import grokcore.formlib as grok
 from zope import schema
 from zope.interface import Interface, implements
-from zope.app.container.btree import BTreeContainer
-from zope.app.container.contained import Contained
-from zope.app.container.interfaces import IContainer
+from zope.container.btree import BTreeContainer
+from zope.container.contained import Contained
+from zope.container.interfaces import IContainer
 
 class Zoo(grok.testing.Model, BTreeContainer):
     grok.testing.protect_get(grok.Public, *IContainer)

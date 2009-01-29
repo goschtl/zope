@@ -43,6 +43,6 @@ setup(
                       'zope.lifecycleevent',
                       'zope.securitypolicy',
                       'zope.app.zcmlfiles',
-                      'zope.app.container',
+                      'zope.container',
                       ],
 )
