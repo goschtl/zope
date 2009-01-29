@@ -26,7 +26,7 @@ from zope.publisher.interfaces import NotFound
 from zope.traversing.api import traverse
 
 from zope.app.testing import ztapi
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 from zope.app.component.site import LocalSiteManager
 from zope.app.component.testing import PlacefulSetup
 from zope.app.folder.folder import Folder

@@ -128,7 +128,7 @@
       />
 
   <browser:pages
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       permission="zope.View"
       class=".xmlobject.ReadContainerXmlObjectView">
     <browser:page
