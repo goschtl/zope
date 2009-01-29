@@ -25,7 +25,7 @@ from zope.traversing.interfaces import IPhysicallyLocatable
 from zope.traversing.adapters import RootPhysicallyLocatable
 from zope.location.traversing import LocationPhysicallyLocatable
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
 from zope.app.testing import placelesssetup, ztapi

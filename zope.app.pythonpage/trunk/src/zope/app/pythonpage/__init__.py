@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 import re
 from persistent import Persistent
 import zope.component
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
