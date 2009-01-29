@@ -3,10 +3,12 @@ CHANGES
 =======
 
 3.4.1 (unreleased)
+------------------
 
 - Move boostrap subscriber to bootstrap.zcml file and browser
   menu item definition to browser.zcml file to ease overriding
   and excluding configuration.
+- Use zope.container instead of zope.app.container.
 
 3.4.0 (2007-10-26)
 ------------------
