@@ -20,7 +20,6 @@ $Id$
 """
 import unittest
 from zope.testing import doctest
-from zope import component
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.testing import ztapi, setup, placelesssetup
@@ -309,7 +308,6 @@ class TestIndexUpdating(unittest.TestCase) :
         setup.placefulSetUp(True)
 
         from zope.app.catalog.catalog import Catalog
-        from zope.app.container.contained import ContainerSublocations
 
         self.root = setup.buildSampleFolderTree()
 
@@ -381,7 +379,6 @@ class TestSubSiteCatalog(unittest.TestCase) :
         setup.placefulSetUp(True)
 
         from zope.app.catalog.catalog import Catalog
-        from zope.app.container.contained import ContainerSublocations
 
         self.root = setup.buildSampleFolderTree()
 
@@ -595,7 +592,6 @@ def setUp(test):
     test.globs['root'] = root
 
 def test_suite():
-    from zope.testing import doctest
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(unittest.makeSuite(TestEventSubscribers))
