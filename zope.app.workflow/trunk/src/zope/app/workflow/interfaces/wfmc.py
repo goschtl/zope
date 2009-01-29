@@ -21,7 +21,7 @@ from zope.interface import Interface, Attribute
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 
 # TODO:
 # - Specify all attributes as schema fields where possible

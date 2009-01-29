@@ -28,7 +28,7 @@ from zope.app.workflow.stateful.interfaces import ITransitionEvent
 from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
 from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
 from zope.app.workflow.instance import ProcessInstance
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 from zope.component import getUtility, getSiteManager
 from zope.event import notify

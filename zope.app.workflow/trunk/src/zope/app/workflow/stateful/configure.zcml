@@ -17,7 +17,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.container.interfaces.IReadContainer"
+      interface="zope.container.interfaces.IReadContainer"
       />
 </class>
 

@@ -23,7 +23,7 @@ from zope.interface import implements, classProvides
 from zope.schema.interfaces import IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm, IVocabularyFactory
 
-from zope.app.container.contained import Contained, setitem, uncontained
+from zope.container.contained import Contained, setitem, uncontained
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 

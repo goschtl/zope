@@ -23,8 +23,8 @@ from zope.proxy import removeAllProxies
 from zope.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.interface import implements
 
-from zope.app.container.interfaces import IContained
-from zope.app.container.contained import Contained, setitem, uncontained
+from zope.container.interfaces import IContained
+from zope.container.contained import Contained, setitem, uncontained
 from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 

@@ -25,7 +25,7 @@ from zope.lifecycleevent import ObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.traversing.api import traverse
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable

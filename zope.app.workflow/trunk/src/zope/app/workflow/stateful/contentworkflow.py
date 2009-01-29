@@ -28,7 +28,7 @@ from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.stateful.interfaces import IContentWorkflowsManager
 from zope.app.workflow.instance import createProcessInstance
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 
 def NewObjectProcessInstanceCreator(obj, event):

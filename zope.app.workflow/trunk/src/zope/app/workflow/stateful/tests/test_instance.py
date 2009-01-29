@@ -42,7 +42,7 @@ from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.app.workflow.stateful.instance import StateChangeInfo
 
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 from zope.app.testing import setup
 
 

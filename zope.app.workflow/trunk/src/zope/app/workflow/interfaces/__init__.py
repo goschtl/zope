@@ -17,7 +17,7 @@ $Id$
 """
 from zope.interface import Interface, Attribute
 from zope.i18nmessageid import ZopeMessageFactory as _
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 
 
 class IWorkflowEvent(Interface):

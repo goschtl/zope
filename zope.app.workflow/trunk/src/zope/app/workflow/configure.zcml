@@ -65,11 +65,11 @@
         />
     <require
         permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer"
+        interface="zope.container.interfaces.IReadContainer"
         />
     <require
         permission="zope.workflow.ManageProcessDefinitions"
-        interface="zope.app.container.interfaces.IWriteContainer"
+        interface="zope.container.interfaces.IWriteContainer"
         />
   </class>
 

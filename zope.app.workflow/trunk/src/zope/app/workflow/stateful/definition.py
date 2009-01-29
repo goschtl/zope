@@ -27,8 +27,8 @@ from zope.component.interfaces import ObjectEvent
 from zope.lifecycleevent import modified
 from zope.traversing.api import getParents
 
-from zope.app.container.interfaces import IReadContainer
-from zope.app.container.contained import Contained, containedEvent
+from zope.container.interfaces import IReadContainer
+from zope.container.contained import Contained, containedEvent
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
@@ -234,22 +234,22 @@ class StatefulProcessDefinition(ProcessDefinition):
         return self.get(key) is not None
 
     def __iter__(self):
-        """See zope.app.container.interfaces.IReadContainer"""
+        """See zope.container.interfaces.IReadContainer"""
         return iter(self.keys())
 
     def keys(self):
-        """See zope.app.container.interfaces.IReadContainer"""
+        """See zope.container.interfaces.IReadContainer"""
         return ['states', 'transitions']
 
     def values(self):
-        """See zope.app.container.interfaces.IReadContainer"""
+        """See zope.container.interfaces.IReadContainer"""
         return map(self.get, self.keys())
 
     def items(self):
-        """See zope.app.container.interfaces.IReadContainer"""
+        """See zope.container.interfaces.IReadContainer"""
         return [(key, self.get(key)) for key in self.keys()]
 
     def __len__(self):
-        """See zope.app.container.interfaces.IReadContainer"""
+        """See zope.container.interfaces.IReadContainer"""
         return 2
 
