@@ -46,10 +46,14 @@ def string2list(string, default):
 
 
 class Recipe(object):
+
     def __init__(self, buildout, name, options):
         self.buildout = buildout
         self.name = name
         self.options = options
+
+        if not 'max_jobs' in options:
+            options['max_jobs'] = '1'
 
         self.svn_url = self.options.get('svn_url',
                                         'svn://svn.zope.org/repos/main/')
@@ -110,7 +114,8 @@ class Recipe(object):
             [(self.script, 'z3c.recipe.compattest.runner', 'main')],
             self._working_set('z3c.recipe.compattest'),
             self.buildout['buildout']['executable'],
-            bindir, arguments = '%s' % ', '.join(runners))
+            bindir, arguments='%s, %s' % (self.options['max_jobs'],
+                                          ', '.join(runners)))
 
     def _wanted_packages(self):
         projects = []

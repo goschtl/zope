@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+0.4 (unreleased)
+================
+
+- Allow parallel execution of the individual test runners by stating
+  'max_jobs=X' in the recipe's options.
+
 0.3 (2009-01-28)
 ================
 
