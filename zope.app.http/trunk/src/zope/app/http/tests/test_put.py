@@ -30,7 +30,7 @@ from zope.location.interfaces import ILocation
 
 class File(object):
 
-    implements(IWriteFile)
+    implements(IWriteFile, ILocation)
 
     def __init__(self, name, content_type, data):
         self.name = name
