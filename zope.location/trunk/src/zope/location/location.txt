@@ -69,8 +69,8 @@ ancestor of l1.
 LocationProxy
 -------------
 
-The LocationProxy is a non-picklable proxy that can be put around objects that
-don't implement `ILocation`.
+The LocationProxy is a non-picklable proxy that can be put around
+objects that don't implement `ILocation`.
 
 >>> from zope.location.location import LocationProxy
 >>> l = [1, 2, 3]
@@ -121,13 +121,16 @@ If we locate the object again, nothing special happens:
 True
 
 
-If the object does not provide ILocation a LocationProxy is returned:
+If the object does not provide ILocation an adapter can be provided:
+
+>>> import zope.interface
+>>> import zope.component
+>>> sm = zope.component.getGlobalSiteManager()
+>>> sm.registerAdapter(LocationProxy, required=(zope.interface.Interface,))
 
 >>> l = [1, 2, 3]
 >>> parent = Location()
 >>> l_located = located(l, parent, 'l')
->>> l_located
-[1, 2, 3]
 >>> l_located.__parent__ is parent
 True
 >>> l_located.__name__
@@ -144,4 +147,7 @@ When changing the name, we still do not get a different proxied object:
 
 >>> l_located_3 = located(l_located, parent, 'new-name')
 >>> l_located_3 is l_located_2
+True
+
+>>> sm.unregisterAdapter(LocationProxy, required=(zope.interface.Interface,))
 True

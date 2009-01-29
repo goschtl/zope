@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Reverse the dependency between zope.location and zope.traversing. This
+  also causes the dependency to various other packages go away.
+
 3.4.0 (2007-10-02)
 ------------------
 

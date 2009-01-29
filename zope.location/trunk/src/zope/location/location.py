@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2003-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,65 +17,63 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-
 import zope.interface
+import zope.component
+
+# XXX import error when doing import zope.location.interfaces :/
 from zope.location.interfaces import ILocation
-from zope.proxy import ProxyBase, getProxiedObject, non_overridable
+from zope.proxy import ProxyBase, non_overridable
 from zope.proxy.decorator import DecoratorSpecificationDescriptor
-from zope.security.decorator import DecoratedSecurityCheckerDescriptor
 
 
 class Location(object):
-    """Stupid mix-in that defines `__parent__` and `__name__` attributes."""
+    """Mix-in that implements ILocation.
 
+    It provides the `__parent__` and `__name__` attributes.
+
+    """
     zope.interface.implements(ILocation)
 
-    __parent__ = __name__ = None
+    __parent__ = None
+    __name__ = None
 
 
-def locate(object, parent, name=None):
-    """Locate an object in another
-
-    This method should only be called from trusted code, because it
-    sets attributes that are normally unsettable.
-    """
-
-    object.__parent__ = parent
-    object.__name__ = name
+def locate(obj, parent, name=None):
+    """Update a location's coordinates."""
+    obj.__parent__ = parent
+    obj.__name__ = name
 
 
-def located(object, parent, name=None):
-    """Locate an object in another and return it.
+def located(obj, parent, name=None):
+    """Ensure and return the location of an object.
 
-    If the object does not provide ILocation a LocationProxy is returned.
+    Updates the location's coordinates.
 
     """
-    if ILocation.providedBy(object):
-        if parent is not object.__parent__ or name != object.__name__:
-            locate(object, parent, name)
-        return object
-    return LocationProxy(object, parent, name)
+    location = zope.location.interfaces.ILocation(obj)
+    locate(location, parent, name)
+    return location
 
 
 def LocationIterator(object):
+    """Iterate over an object and all of its parents."""
     while object is not None:
         yield object
         object = getattr(object, '__parent__', None)
 
 
 def inside(l1, l2):
-    """Is l1 inside l2
+    """Test whether l1 is a successor of l2.
 
-    L1 is inside l2 if l2 is an ancestor of l1.
+    l1 is a successor of l2 if l2 is in the chain of parents of l1 or l2
+    is l1.
 
     """
     while l1 is not None:
         if l1 is l2:
             return True
         l1 = l1.__parent__
-
     return False
-
 
 class ClassAndInstanceDescr(object):
 
@@ -96,6 +94,7 @@ class LocationProxy(ProxyBase):
 
     """
 
+    zope.component.adapts(zope.interface.Interface)
     zope.interface.implements(ILocation)
 
     __slots__ = '__parent__', '__name__'
@@ -122,5 +121,3 @@ class LocationProxy(ProxyBase):
     __reduce_ex__ = __reduce__
 
     __providedBy__ = DecoratorSpecificationDescriptor()
-
-    __Security_checker__ = DecoratedSecurityCheckerDescriptor()
