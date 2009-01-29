@@ -19,7 +19,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.kgs',
-      version = '0.2.0',
+      version = '1.0.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Known-Good-Set (KGS) Support',
@@ -32,7 +32,7 @@ setup(name='zope.kgs',
           ),
       keywords = "zope3 setuptools egg kgs",
       classifiers = [
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Stable',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',

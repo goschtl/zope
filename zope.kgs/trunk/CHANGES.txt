@@ -2,17 +2,22 @@
 CHANGES
 =======
 
-0.2.0 (2007-11-??)
+1.0.0 (2009-01-29)
 ------------------
 
 - Initial version as ``zope.kgs``.
+
+  * A script that extracts the relevant part of the changelog of each package
+    in the KGS.
 
   * A script that lists all versions of a package released after the latest
     version lsited in the KGS.
 
   * A script that manages the generation of the entire KGS site.
 
-  * Generate an intro page to the KGS.
+    + Generates generic and version-specific pages.
+
+    + Page generation is template-based for easy customization.
 
   * Generate `links.html` file which lists all controlled packages files.
 
