@@ -28,8 +28,8 @@ from zope.app.testing.functional import FunctionalDocFileSuite
 from zope.app.folder.interfaces import IFolder
 from zope.app.component.testing import PlacefulSetup
 from zope.app.component.tests.test_site import BaseTestSiteManagerContainer
-from zope.app.container.tests.test_icontainer import BaseTestIContainer
-from zope.app.container.tests.test_icontainer import DefaultTestData
+from zope.container.tests.test_icontainer import BaseTestIContainer
+from zope.container.tests.test_icontainer import DefaultTestData
 from zope.app.folder.testing import AppFolderLayer
 
 
