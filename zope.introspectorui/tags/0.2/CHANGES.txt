@@ -1,0 +1,14 @@
+CHANGES
+*******
+
+0.2 (2009-01-29)
+================
+
+* Add explicit dependency to zope.location and clean up ZCML activation.
+
+
+0.1 (2008-10-24)
+================
+
+
+* Initial Release

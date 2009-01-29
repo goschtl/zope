@@ -1,0 +1,85 @@
+  <div>
+
+    <h2>Package: <span tal:replace="structure view/getBreadcrumbs" /></h2>
+
+    <p tal:content="structure view/docstring">The package description</p>
+
+    <div>
+      <p tal:condition="context/isNamespacePackage">
+	This is a namespace package
+      </p>
+      <p tal:condition="not: context/isNamespacePackage">
+	Path: <span tal:replace="context/getPath" />
+      </p>
+    </div>     
+
+    <div>
+      <div tal:condition="context/getEggInfo"
+	 tal:define="info context/getEggInfo">
+	<div>
+	  Egg: <span tal:replace="info/name">egg.name</span>
+	  <span tal:replace="info/version">1.0</span>
+	</div>
+      </div>
+    </div>
+
+    <div>
+      Contained text files:
+      <span tal:condition="not: view/files">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/files">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">file.txt</a>
+	</li>
+      </ul>
+    </div>
+
+    <div>
+      Contained ZCML files:
+      <span tal:condition="not: view/zcmlfiles">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/zcmlfiles">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">file.zcml</a>
+	</li>
+      </ul>
+    </div>
+
+    <div>
+      Contained subpackages:
+      <span tal:condition="not: view/subpkgs">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/subpkgs">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">subpackage</a>
+	  <div tal:content="structure item/doc">subpackage docstring</div>
+	</li>
+      </ul>
+    </div>
+
+    <div>
+      Contained modules:
+      <span tal:condition="not: view/modules">
+	None
+      </span>
+      <ul>
+	<li tal:repeat="item view/modules">
+	  <a href="" 
+	     tal:attributes="href item/url"
+	     tal:content="structure item/name">module</a>
+	  <div tal:content="structure item/doc">module docstring</div>
+	</li>
+      </ul>
+    </div>
+
+  </div>
+

@@ -1,0 +1,23 @@
+Views for this object:
+<table>
+    <thead>
+        <tr>
+        <td>
+            Name
+        </td>
+        <td>
+            Factory
+        </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr tal:repeat="view context/getViews">
+        
+            <tal:cont define="view_name python:view[0];
+                        view_factory python:view[1];">
+             <td tal:content="view_name"/>
+             <td tal:content="nocall: view_factory" />
+             </tal:cont>
+        </tr>
+    </tbody>
+</table>

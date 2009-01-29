@@ -1,0 +1,11 @@
+<div>
+  <h2>File: <span tal:replace="structure view/getBreadcrumbs" /></h2>
+</div>
+<div>
+  <p>
+    Path: <span tal:replace="context/getPath" />
+  </p>
+</div>
+<div tal:content="view/getRaw">
+  The Document
+</div>
