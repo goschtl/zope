@@ -58,7 +58,7 @@
       />
 
   <pages
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       permission="zope.View"
       class="zope.app.rotterdam.xmlobject.ReadContainerXmlObjectView"
       layer="zope.app.boston.boston">

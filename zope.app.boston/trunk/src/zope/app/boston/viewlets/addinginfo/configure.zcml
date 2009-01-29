@@ -3,7 +3,7 @@
 
   <viewlet
       name="addinginfo"
-      for="zope.app.container.interfaces.IWriteContainer"
+      for="zope.container.interfaces.IWriteContainer"
       manager="zope.app.boston.ILeft"
       permission="zope.ManageContent"
       class=".browser.AddingInfoViewlet"
