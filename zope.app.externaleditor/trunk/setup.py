@@ -49,11 +49,11 @@ setup(name='zope.app.externaleditor',
       namespace_packages=['zope', 'zope.app'],
       extras_require=dict(
           test=['zope.app.testing',
+                'zope.container',
                 ]),
       install_requires = [
           'setuptools',
           'zope.app.component',
-          'zope.app.container',
           'zope.app.content',
           'zope.app.file',
           'zope.app.interface',

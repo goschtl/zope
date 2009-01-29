@@ -24,7 +24,7 @@ from zope.traversing.api import traverse
 
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 from zope.app.content.interfaces import IContentType
 from zope.app.file.file import File, FileReadFile
 

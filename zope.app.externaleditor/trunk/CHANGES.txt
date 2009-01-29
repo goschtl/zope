@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.4.1 (unreleased)
+------------------
+
+- Change dependency from zope.app.container to zope.container and make it
+  a test dependency as it's only used in the tests.
+
 3.4.0 (2007-11-03)
 ------------------
 
