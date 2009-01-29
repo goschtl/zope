@@ -530,29 +530,20 @@ Let's have a look at the generated files:
 
   >>> from pprint import pprint
   >>> pprint(sorted(os.listdir(siteDir)))
-  ['3.4.0b2', 'cf-timestamp', 'index.html', 'intro.html', 'resources']
+  ['3.4.0b2', 'index.html', 'intro.html', 'resources']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2')))
   ['ANNOUNCEMENT.html', 'CHANGES.html',
-   'buildout.cfg', 'controlled-packages.cfg', 'index',
+   'buildout.cfg', 'controlled-packages.cfg', 'index', 'index.html',
    'links.html', 'minimal', 'versions.cfg']
 
   >>> sorted(os.listdir(os.path.join(siteDir, '3.4.0b2', 'minimal')))
   ['PIL', 'index.html', 'z3c.formdemo', 'zope.component', 'zope.interface']
 
-If you try to generate the site again without changing the controlled packages
-config file, it will simply return, because it checks the timestamp from the
-previous generation:
+If you try to generate the site again without adding the controlled packages
+config file to the site directory again, it will simply return:
 
-  >>> tsPath = os.path.join(siteDir, 'cf-timestamp')
-
-  >>> beforeTimestamp = open(tsPath).read()
-  >>> shutil.copy(cfgFileReal, cfgFileSite)
   >>> site.main(['-s', siteDir])
-  >>> afterTimestamp = open(tsPath).read()
-
-  >>> beforeTimestamp == afterTimestamp
-  True
 
 
 Basic Parser API

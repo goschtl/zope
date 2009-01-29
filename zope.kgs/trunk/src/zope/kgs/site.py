@@ -112,35 +112,17 @@ def generateData(src):
 def generateSite(siteDir, templateDir, force=False, offline=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
+
+    # If the `controlled-packages.cfg` file is not found,
     if not os.path.exists(kgsPath):
-        logger.error("The site directory specified does not "
-                     "have a controlled-packages.cfg file.")
+        logger.info("The site is up-to-date. No new file "
+                    "`controlled-packages.cfg` was found.")
         return
+
     set = kgs.KGS(kgsPath)
     ver = set.version
     logger.info(
         "Building site for version %s using config: %s" % (ver, kgsPath))
-
-    timestampPath = os.path.join(siteDir, TIMESTAMP_FILENAME)
-
-    # If there have been no changes in the file since the last generation,
-    # simple do not do anything.
-    if os.path.exists(timestampPath):
-        last_update = float(open(timestampPath, 'r').read())
-        last_modified = os.stat(kgsPath)[-2]
-        if last_update > last_modified:
-            if not force:
-                logger.info("Site is up to date.  Use --force "
-                            "on the command line to force a rebuild.")
-                return
-            else:
-                logger.info("Site is up to date, but a rebuild has been "
-                            "forced.")
-
-    # Save the last generation date-time.
-    # Note: We want to do this operation first, since it might take longer to
-    # generate the site than the scheduler's wait time.
-    open(timestampPath, 'w').write(str(time.time()))
 
     # Create a directory for the new version
     versionDir = os.path.join(siteDir, ver)
@@ -215,6 +197,10 @@ def generateSite(siteDir, templateDir, force=False, offline=False):
 
 parser = optparse.OptionParser()
 parser.add_option(
+    "-q","--quiet", action="store_true",
+    dest="quiet", default=False,
+    help="When specified, no messages are displayed.")
+parser.add_option(
     "-v","--verbose", action="store_true",
     dest="verbose", default=False,
     help="When specified, debug information is created.")
@@ -228,11 +214,17 @@ parser.add_option(
     default=os.path.join(os.path.dirname(__file__), 'templates'),
     help="The directory where the site templates are located.")
 parser.add_option(
+    "-w","--website-only", action="store_true",
+    dest="websiteOnly", default=False,
+    help="When specified, only the Web site is (re-)generated.")
+parser.add_option(
     "-f","--force", action="store_true", dest="force", default=False,
-    help="Force the site to rebuild even if it is already at the latest version.")
+    help=("Force the site to rebuild even if it is already at the "
+          "latest version."))
 parser.add_option(
     "-o","--offline", action="store_true", dest="offlineMode", default=False,
-    help="Run in offline mode.  Doesn't really do much, good for developing templates.")
+    help=("Run in offline mode.  Doesn't really do much, good for "
+          "developing templates."))
 
 def main(args=None):
     if args is None:
@@ -244,6 +236,8 @@ def main(args=None):
 
     if options.verbose:
         logger.setLevel(logging.INFO)
+    if options.quiet:
+        logger.setLevel(logging.FATAL)
 
     if not options.siteDir:
         logger.error("You must specify the site directory with the -s option.")
@@ -251,4 +245,12 @@ def main(args=None):
 
     siteDir = os.path.abspath(options.siteDir)
     templateDir = os.path.abspath(options.templateDir)
-    generateSite(siteDir, templateDir, force=options.force, offline=options.offlineMode)
+
+    if options.websiteOnly:
+        # Generate Web Site
+        logger.info("Generating Web Site")
+        template.generateSite(templateDir, siteDir, generateData(siteDir))
+        logger.info("finished generating site.")
+    else:
+        generateSite(siteDir, templateDir, force=options.force,
+                     offline=options.offlineMode)
