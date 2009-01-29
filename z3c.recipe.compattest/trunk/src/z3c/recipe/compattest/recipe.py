@@ -163,12 +163,14 @@ class Recipe(object):
                                                   package))
             self.develop_eggs.append(package)
 
-        infrae.subversion.Recipe(self.buildout, self.name, dict(
+        recipe = infrae.subversion.Recipe(self.buildout, self.name, dict(
             urls='\n'.join(checkout_list),
             location=self.svn_directory,
             as_eggs='true',
             no_warnings='true',
-            )).update()
+            ))
+        recipe.newest = False
+        recipe.update()
 
     def _remove_develop_eggs(self):
         eggdir = self.buildout['buildout']['develop-eggs-directory']
