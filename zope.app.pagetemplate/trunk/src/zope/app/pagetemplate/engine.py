@@ -320,7 +320,7 @@ class ZopeEngine(ZopeBaseEngine):
     General path expressions provide objects that are wrapped in
     security proxies as well::
 
-      >>> from zope.app.container.sample import SampleContainer
+      >>> from zope.container.sample import SampleContainer
       >>> from zope.app.testing.placelesssetup import setUp, tearDown
       >>> from zope.security.checker import NamesChecker, defineChecker
 

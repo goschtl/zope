@@ -5,7 +5,7 @@ long_description = (open('README.txt').read() +
                     open('CHANGES.txt').read())
 
 setup(name='zope.app.pagetemplate',
-      version = '3.4.2dev',
+      version = '3.5dev',
       url='http://pypi.python.org/pypi/zope.app.pagetemplate',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
@@ -42,7 +42,8 @@ setup(name='zope.app.pagetemplate',
           "inline-evaluation": ['zope.app.interpreter'],
           # The tests appear not to need zope.app.interpreter; there
           # should be tests for that, though.  :-(
-          "test": ['zope.app.testing',
+          "test": ['zope.container',
+                   'zope.app.testing',
                    'zope.app.securitypolicy',
                    'zope.app.zcmlfiles'],
           },
