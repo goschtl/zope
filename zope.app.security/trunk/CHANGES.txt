@@ -14,17 +14,20 @@ CHANGES
 
 - Moved the <module> directive implementation to `zope.security`.
 
+- Use `zope.container` instead of `zope.app.container`;.
+
 3.5.3 (2008-12-11)
 ------------------
 
-- use zope.browser.interfaces.ITerms instead of zope.app.form.browser.interfaces
+- use zope.browser.interfaces.ITerms instead of
+  `zope.app.form.browser.interfaces`.
 
 3.5.2 (2008-07-31)
 ------------------
 
-- Bug: It turned out that checking for regex was not much better of an idea,
-  since it causes deprecation warnings in Python 2.4. Thus let's look for a
-  library that was added in Python 2.5.
+- Bug: It turned out that checking for regex was not much better of an
+  idea, since it causes deprecation warnings in Python 2.4. Thus let's
+  look for a library that was added in Python 2.5.
 
 3.5.1 (2008-06-24)
 ------------------
