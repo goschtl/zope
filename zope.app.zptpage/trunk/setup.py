@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.zptpage',
-    version='3.5.0dev',
+    version='3.5dev',
     url='http://pypi.python.org/pypi/zope.app.zptpage',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
@@ -51,7 +51,7 @@ setup(
     namespace_packages=['zope', 'zope.app'],
     include_package_data=True,
     install_requires=['setuptools',
-                      'zope.app.container',
+                      'zope.container',
                       'zope.app.pagetemplate',
                       'zope.app.publication',
                       'zope.filerepresentation',

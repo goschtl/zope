@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 from zope.app.zptpage.browser.zptpage import ZPTPageEval
 
 class Test(CleanUp, TestCase):

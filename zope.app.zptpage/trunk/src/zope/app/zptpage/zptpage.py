@@ -28,7 +28,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.zptpage.i18n import ZopeMessageFactory as _
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.publication.interfaces import IFileContent
 from zope.app.zptpage.interfaces import IZPTPage, IRenderZPTPage
 

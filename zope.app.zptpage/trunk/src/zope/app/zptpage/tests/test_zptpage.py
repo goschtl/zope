@@ -32,7 +32,7 @@ from zope.traversing.interfaces import IContainmentRoot
 
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 
 from zope.app.zptpage.interfaces import IZPTPage
 from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\
