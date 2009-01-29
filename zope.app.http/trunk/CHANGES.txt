@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.4.4 (unreleased)
+3.4.5 (unreleased)
+------------------
+
+- ...
+
+3.4.4 (2009-01-29)
 ------------------
 
 - Make tests compatible with new zope.traversing release.
