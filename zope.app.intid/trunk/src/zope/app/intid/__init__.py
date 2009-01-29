@@ -33,9 +33,9 @@ from zope.location.interfaces import ILocation
 from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility, subscribers
 from zope.component.interfaces import IFactory
 
-from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.contained import Contained
+from zope.container.interfaces import IObjectRemovedEvent
+from zope.container.interfaces import IObjectAddedEvent
+from zope.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference, NotYet
 
 from zope.app.intid.interfaces import IIntIds, IIntIdEvent

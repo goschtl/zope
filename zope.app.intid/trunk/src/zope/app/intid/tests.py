@@ -208,7 +208,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def test_removeIntIdSubscriber(self):
         from zope.app.intid import removeIntIdSubscriber
-        from zope.app.container.contained import ObjectRemovedEvent
+        from zope.container.contained import ObjectRemovedEvent
         from zope.app.intid.interfaces import IIntIdRemovedEvent
         from zope.app.folder.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
@@ -246,7 +246,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def test_addIntIdSubscriber(self):
         from zope.app.intid import addIntIdSubscriber
-        from zope.app.container.contained import ObjectAddedEvent
+        from zope.container.contained import ObjectAddedEvent
         from zope.app.intid.interfaces import IIntIdAddedEvent
         from zope.app.folder.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
