@@ -81,6 +81,7 @@ class Recipe(object):
         installed = []
 
         if self.use_svn:
+            zc.buildout.easy_install.distribution_cache = {}
             self._install_checkouts()
 
         installed.extend(self._install_testrunners())
@@ -88,6 +89,7 @@ class Recipe(object):
 
         if self.use_svn:
             self._remove_develop_eggs()
+            zc.buildout.easy_install.distribution_cache = {}
 
         return installed
 
