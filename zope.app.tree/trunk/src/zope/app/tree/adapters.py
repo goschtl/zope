@@ -28,7 +28,7 @@ from zope.security.interfaces import Unauthorized
 from zope.location.interfaces import ILocation, ISite
 from zope.traversing.api import getParents
 
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects
 

@@ -25,7 +25,7 @@ interface.
 $Id$
 """
 from zope.interface import implements
-from zope.app.container.interfaces import IObjectFindFilter
+from zope.container.interfaces import IObjectFindFilter
 
 class OnlyInterfacesFilter(object):
     """Only match objects that implement one of the given interfaces.

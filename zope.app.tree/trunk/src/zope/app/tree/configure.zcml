@@ -26,7 +26,7 @@
       factory=".adapters.StubChildObjects"
       />
 
-  <!-- adapters for zope.app.container machinery -->
+  <!-- adapters for zope.container machinery -->
 
   <adapter
       provides=".interfaces.IUniqueId"

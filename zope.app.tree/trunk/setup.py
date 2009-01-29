@@ -56,7 +56,7 @@ setup(name = 'zope.app.tree',
                       'skin': ['zope.app.rotterdam']
                       },
       install_requires = ['setuptools',
-                          'zope.app.container',
+                          'zope.container',
                           'zope.component',
                           'zope.interface',
                           'zope.location',

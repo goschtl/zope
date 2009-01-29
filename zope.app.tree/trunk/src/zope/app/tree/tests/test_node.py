@@ -18,7 +18,7 @@ $Id$
 import unittest
 from basetest import BaseTestCase
 from zope.interface import implements
-from zope.app.container.interfaces import IObjectFindFilter
+from zope.container.interfaces import IObjectFindFilter
 from zope.app.tree.node import Node
 
 class FilterByObject(object):

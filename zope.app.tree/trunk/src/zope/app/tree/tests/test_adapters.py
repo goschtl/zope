@@ -25,9 +25,9 @@ from zope.traversing.interfaces import IContainmentRoot
 from zope.location.interfaces import ILocation, ISite
 import zope.traversing.testing
 
-from zope.app.container.interfaces import IReadContainer
-from zope.app.container.sample import SampleContainer
-from zope.app.container.contained import setitem
+from zope.container.interfaces import IReadContainer
+from zope.container.sample import SampleContainer
+from zope.container.contained import setitem
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.testing import ztapi
 
