@@ -5,7 +5,8 @@ CHANGES
 0.5 (unreleased)
 ================
 
-- ...
+- Fix duplicate `url` parameter in setup.py that confused Python 2.4 but
+  got accepted by Python 2.5.
 
 0.4 (2009-01-29)
 ================
