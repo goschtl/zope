@@ -5,7 +5,7 @@ long_description = (open('README.txt').read() +
                     open('CHANGES.txt').read())
 
 setup(name='zope.app.pagetemplate',
-      version = '3.5dev',
+      version = '3.5.0dev',
       url='http://pypi.python.org/pypi/zope.app.pagetemplate',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
