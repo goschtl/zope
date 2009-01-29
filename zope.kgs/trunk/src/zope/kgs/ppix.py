@@ -46,18 +46,19 @@ SIMPLE_LINK_TEMPLATE = '<a href="%(url)s">%(name)s</a><br/>'
 
 SIMPLE_BASE_URL = "http://cheeseshop.python.org/simple/"
 
-def generatePackagePage(package, destDir, server):
+def generatePackagePage(package, destDir, server, offline=False):
     packagePath = os.path.join(destDir, package.name)
     links = []
-    for version in package.versions:
-        dist_links = server.package_urls(package.name, version)
-        for link in dist_links:
-            links.append(LINK_TEMPLATE %link)
+    if not offline:
+        for version in package.versions:
+            dist_links = server.package_urls(package.name, version)
+            for link in dist_links:
+                links.append(LINK_TEMPLATE %link)
 
     if not os.path.exists(packagePath):
         os.mkdir(packagePath)
 
-    if links:
+    if links or offline:
         open(os.path.join(packagePath, 'index.html'), 'w').write(
             TEMPLATE %{'title': 'Links for "%s"' %package.name,
                        'body': '\n'.join(links)})
@@ -68,12 +69,12 @@ def generatePackagePage(package, destDir, server):
         open(os.path.join(packagePath, 'index.html'), 'w').write(page)
 
 
-def generatePackagePages(packageConfigPath, destDir):
+def generatePackagePages(packageConfigPath, destDir, offline=False):
     kgs = zope.kgs.kgs.KGS(packageConfigPath)
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
 
     for package in kgs.packages:
-        generatePackagePage(package, destDir, server)
+        generatePackagePage(package, destDir, server, offline=offline)
 
 
 def generateIndexPage(packageConfigPath, destDir):

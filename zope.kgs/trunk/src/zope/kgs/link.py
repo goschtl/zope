@@ -41,18 +41,19 @@ TEMPLATE = ('<html>\n<head>\n'
 
 LINK_TEMPLATE = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
 
-def generateLinks(packageConfigPath, outputPath):
+def generateLinks(packageConfigPath, outputPath, offline=False):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     kgs = zope.kgs.kgs.KGS(packageConfigPath)
     server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
 
     # Collect all links
     links = []
-    for package in kgs.packages:
-        for version in package.versions:
-            dist_links = server.package_urls(package.name, version)
-            for link in dist_links:
-                links.append(LINK_TEMPLATE %link)
+    if not offline:
+        for package in kgs.packages:
+            for version in package.versions:
+                dist_links = server.package_urls(package.name, version)
+                for link in dist_links:
+                    links.append(LINK_TEMPLATE %link)
 
     # Write a new versions.cfg file
     open(outputPath, 'w').write(

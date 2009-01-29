@@ -109,7 +109,7 @@ def generateData(src):
             'title': set.name,
             'siteRoot':''}
 
-def generateSite(siteDir, templateDir, force=False):
+def generateSite(siteDir, templateDir, force=False, offline=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
     if not os.path.exists(kgsPath):
@@ -188,14 +188,14 @@ def generateSite(siteDir, templateDir, force=False):
     # Create a links config file and version it
     linksPath = os.path.join(versionDir, 'links.html')
     logger.info("generating links")
-    link.generateLinks(kgsPath, linksPath)
+    link.generateLinks(kgsPath, linksPath, offline=offline)
 
     # Update the full index (which is assumed to live in the site directory)
     logger.info("updating the index")
     idxDir = os.path.join(versionDir, 'index')
     if not os.path.exists(idxDir):
         os.mkdir(idxDir)
-    ppix.generatePackagePages(kgsPath, idxDir)
+    ppix.generatePackagePages(kgsPath, idxDir, offline=offline)
     ppix.generateIndexPage(kgsPath, idxDir)
 
     # Update the minimal index
@@ -203,7 +203,7 @@ def generateSite(siteDir, templateDir, force=False):
     midxDir = os.path.join(versionDir, 'minimal')
     if not os.path.exists(midxDir):
         os.mkdir(midxDir)
-    ppix.generatePackagePages(kgsPath, midxDir)
+    ppix.generatePackagePages(kgsPath, midxDir, offline=offline)
     ppix.generateIndexPage(kgsPath, midxDir)
 
     # Generate Web Site
@@ -229,7 +229,10 @@ parser.add_option(
     help="The directory where the site templates are located.")
 parser.add_option(
     "-f","--force", action="store_true", dest="force", default=False,
-    help="For the site to rebuild even if it is already at the latest version.")
+    help="Force the site to rebuild even if it is already at the latest version.")
+parser.add_option(
+    "-o","--offline", action="store_true", dest="offlineMode", default=False,
+    help="Run in offline mode.  Doesn't really do much, good for developing templates.")
 
 def main(args=None):
     if args is None:
@@ -248,4 +251,4 @@ def main(args=None):
 
     siteDir = os.path.abspath(options.siteDir)
     templateDir = os.path.abspath(options.templateDir)
-    generateSite(siteDir, templateDir, force=options.force)
+    generateSite(siteDir, templateDir, force=options.force, offline=options.offlineMode)
