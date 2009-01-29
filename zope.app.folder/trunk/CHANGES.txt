@@ -2,7 +2,8 @@
 CHANGES
 =======
 
-3.4.1 (unreleased)
+3.5.0 (unreleased)
+------------------
 
 - Import IPossibleSite from zope.location.interfaces
   instead of deprecated place in zope.app.component.interfaces.
