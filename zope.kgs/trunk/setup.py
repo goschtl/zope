@@ -32,7 +32,7 @@ setup(name='zope.kgs',
           ),
       keywords = "zope3 setuptools egg kgs",
       classifiers = [
-          'Development Status :: 5 - Stable',
+          'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
           'Programming Language :: Python',
