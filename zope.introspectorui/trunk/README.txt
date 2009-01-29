@@ -2,7 +2,7 @@ zope.introspectorui
 *******************
 
 What is zope.introspectorui?
-==========================
+============================
 
 `zope.introspectorui` is a set of views for the information objects provided
 by zope.introspector.
