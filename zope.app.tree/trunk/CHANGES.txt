@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.1 (2009-01-29)
 ------------------
 
 - Add compatibility for newer zope.traversing releases that require us
