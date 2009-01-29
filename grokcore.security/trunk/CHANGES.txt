@@ -6,6 +6,9 @@ Changes
 
 * Improved documentation.
 
+* Removed dependency on `zope.app.security` thanks to the `protectclass`
+  utility module having been moved to `zope.security`.
+
 1.0 (2008-08-03)
 ----------------
 

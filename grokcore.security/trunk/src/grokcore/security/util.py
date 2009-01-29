@@ -16,20 +16,21 @@
 from martian.error import GrokError
 from zope.component import queryUtility
 from zope.security.interfaces import IPermission
-from zope.app.security.protectclass import protectName
-from zope.app.security.protectclass import protectSetAttribute
+from zope.security.protectclass import protectName
+from zope.security.protectclass import protectSetAttribute
 
 def protect_getattr(class_, name, permission=None):
-    """Define a checker for reading an attribute (``name``) using a
-    permission.  If not supplied, the permission defaults to public
-    access."""
+    """Install a getattr permission check for the attribute ``name``.
+
+    If ``permission`` is not supplied, access will be public.
+    """
     permission = check_or_default_permission(class_, permission)
     protectName(class_, name, permission)
 
 def protect_setattr(class_, name, permission=None):
-    """Define a checker for setting an attribute (``name``) using a
-    permission.  If not supplied, the permission defaults to public
-    access.
+    """Install a setattr permission check for the attribute ``name``.
+
+    If ``permission`` is not supplied, access will be public.
     """
     permission = check_or_default_permission(class_, permission)
     protectSetAttribute(class_, name, permission)
