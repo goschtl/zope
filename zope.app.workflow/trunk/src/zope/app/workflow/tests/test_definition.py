@@ -37,7 +37,7 @@ class ProcessDefinitionTests(unittest.TestCase):
 
 
 
-from zope.app.container.tests.test_icontainer import TestSampleContainer
+from zope.container.tests.test_icontainer import TestSampleContainer
 
 class ProcessDefinitionElementContainerTests(TestSampleContainer):
 
