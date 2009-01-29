@@ -173,7 +173,7 @@ Zope magic!! Here we test casting parameters in the CGI query string:
 
 """
 import grokcore.view as grok
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 class Mammoth(Contained):
     pass

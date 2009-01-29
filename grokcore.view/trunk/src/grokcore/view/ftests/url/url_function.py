@@ -64,7 +64,7 @@ It works properly in the face of non-ascii characters in URLs:
 """
 import grokcore.view as grok
 from grokcore.view import url
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 
 class Mammoth(Contained):
     pass
