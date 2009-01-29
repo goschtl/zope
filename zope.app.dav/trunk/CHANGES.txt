@@ -2,15 +2,16 @@
 CHANGES
 =======
 
-3.4.3 (unreleased)
-------------------
+3.5 (unreleased)
+----------------
 
-- 
+- Use zope.container instead of zope.app.container.
 
 3.4.2 (2009-01-27)
 ------------------
 
-- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302.
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See
+  bug 219302.
 
 3.4.1 (2007-10-30)
 ------------------
