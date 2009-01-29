@@ -23,7 +23,7 @@ Now the manager will not be able to do much, because it does not know where to
 look for the principal home folders. Therefore we have to specify a folder
 container:
 
-  >>> from zope.app.container.btree import BTreeContainer
+  >>> from zope.container.btree import BTreeContainer
   >>> baseFolder = BTreeContainer()
   >>> manager.homeFolderBase = baseFolder
 

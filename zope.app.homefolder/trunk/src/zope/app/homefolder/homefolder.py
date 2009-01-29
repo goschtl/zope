@@ -23,7 +23,7 @@ from zope.interface import implements
 
 from zope import component
 from zope.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.dottedname.resolve import resolve
 
 from zope.app.homefolder.interfaces import IHomeFolder, IHomeFolderManager
