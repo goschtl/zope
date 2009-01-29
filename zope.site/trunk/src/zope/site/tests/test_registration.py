@@ -31,7 +31,7 @@ import zope.component.globalregistry
 import zope.component.testing as placelesssetup
 from zope.testing import doctest
 from zope.app.testing import setup
-import zope.app.container.contained
+import zope.container.contained
 from zope import interface
 
 import zope.site
@@ -40,7 +40,7 @@ import zope.site
 # test class for testing data conversion
 class IFoo(interface.Interface):
     pass
-class Foo(persistent.Persistent, zope.app.container.contained.Contained):
+class Foo(persistent.Persistent, zope.container.contained.Contained):
     interface.implements(IFoo)
     name = ''
     def __init__(self, name=''):

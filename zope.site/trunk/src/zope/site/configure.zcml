@@ -13,11 +13,11 @@
         interface="zope.annotation.interfaces.IAttributeAnnotatable" />
     <require
         permission="zope.ManageSite"
-        interface="zope.app.container.interfaces.IReadContainer" />
+        interface="zope.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageSite"
         interface="zope.component.interfaces.IComponentLookup
-                   zope.app.container.interfaces.IWriteContainer" />
+                   zope.container.interfaces.IWriteContainer" />
   </class>
 
   <class class="zope.component.registry.UtilityRegistration">    
@@ -34,10 +34,10 @@
         />
     <require
         permission="zope.ManageSite"
-        interface="zope.app.container.interfaces.IReadContainer" />
+        interface="zope.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageSite"
-        interface="zope.app.container.interfaces.IWriteContainer"
+        interface="zope.container.interfaces.IWriteContainer"
         />
   </class>
   
@@ -63,7 +63,7 @@
 
   <subscriber
       for="zope.location.interfaces.ISite
-           zope.app.container.interfaces.IObjectMovedEvent"
+           zope.container.interfaces.IObjectMovedEvent"
       handler=".site.changeSiteConfigurationAfterMove"
       />
 
