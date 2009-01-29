@@ -28,7 +28,7 @@ from zope.schema.interfaces import IVocabularyFactory
 from zope.rdb import queryForResults
 from zope.rdb.interfaces import IZopeDatabaseAdapter
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.component.vocabulary import UtilityVocabulary
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 
