@@ -22,7 +22,7 @@ import zope.interface
 import zope.component
 
 from zope.filerepresentation.interfaces import IFileFactory
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.module.interfaces import IModuleManager
 from zope.app.module import ZopeModuleRegistry
 
