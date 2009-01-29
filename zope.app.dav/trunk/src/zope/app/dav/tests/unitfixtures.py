@@ -24,7 +24,7 @@ from zope.annotation.interfaces import IAnnotatable
 from zope.filerepresentation.interfaces import IWriteFile
 from zope.filerepresentation.interfaces import IReadDirectory
 
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 from zope.app.file.interfaces import IFile
 
 class Folder(zope.location.Location, Persistent):

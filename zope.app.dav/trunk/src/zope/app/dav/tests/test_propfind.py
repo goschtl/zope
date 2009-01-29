@@ -37,7 +37,7 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 
 from zope.app.testing import ztapi
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 from zope.app.component.testing import PlacefulSetup
 from zope.app.file.interfaces import IFile
 

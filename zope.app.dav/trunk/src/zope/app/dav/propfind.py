@@ -19,7 +19,7 @@ from xml.dom import minidom
 from xml.parsers import expat
 from zope.component import getUtilitiesFor, queryMultiAdapter, queryUtility
 from zope.schema import getFieldNamesInOrder, getFields
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 from zope.app.form.utility import setUpWidgets
 from zope.security import proxy
 from zope.traversing.browser.absoluteurl import absoluteURL
