@@ -9,7 +9,7 @@
     -->
   
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       provides="zope.publisher.interfaces.ftp.IFTPPublisher"
       factory=".FTPView"
@@ -19,7 +19,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="type"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -29,7 +29,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="names"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -39,7 +39,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="ls"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -49,7 +49,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="readfile"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -59,7 +59,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="lsinfo"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -69,7 +69,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="mtime"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -79,7 +79,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="size"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -89,7 +89,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="mkdir"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -99,7 +99,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="remove"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -109,7 +109,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="rmdir"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -119,7 +119,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="rename"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -129,7 +129,7 @@
       />
 
   <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="writefile"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -139,7 +139,7 @@
       />
 
     <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="writable"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
@@ -149,7 +149,7 @@
       />
 
     <view 
-      for="zope.app.container.interfaces.IReadContainer"
+      for="zope.container.interfaces.IReadContainer"
       name="readable"
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"

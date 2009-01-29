@@ -33,7 +33,7 @@ from zope.filerepresentation.interfaces import IFileFactory
 from zope.filerepresentation.interfaces import IDirectoryFactory
 from zope.copypastemove.interfaces import IContainerItemRenamer
 
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 
 class FTPView(object):
     implements(IFTPPublisher)

@@ -34,8 +34,8 @@ from zope.copypastemove import ContainerItemRenamer
 from zope.app.testing import ztapi
 from zope.app.ftp import FTPView
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.container.contained import setitem, Contained
-from zope.app.container.interfaces import IContainer
+from zope.container.contained import setitem, Contained
+from zope.container.interfaces import IContainer
 
 import demofs
 
