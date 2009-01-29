@@ -14,7 +14,7 @@
 
           $("#left-hand-navigation .level-one > li").click(
             function(){
-              $("#left-hand-navigation .level-one > li").removeClass('selected');
+              $(this).removeClass('selected');
               $("#left-hand-navigation .level-one > li > a").removeClass('selected');
               $("#left-hand-navigation .level-two").hide();
               $(this).children('a').andSelf().addClass('selected').find('.level-two').show();
@@ -34,7 +34,7 @@
               var href = $(this).attr("href").match(/[.*\/]*(.*.html)/);
               href = href && href[1];
               if (href && window.location.href.slice(window.location.href.length-href.length) === href){
-                $(this).parents("li").click();
+                $(this).addClass('selected').parents("li").click();
               }
             });
 
@@ -52,11 +52,14 @@
         <ul class="level-one" metal:define-slot="left-nav">
 
           <li tal:repeat="version versions">
-            <a href="#"
-               tal:attributes="href string:${siteRoot}index.html">
+            <a href="javascript:void(0);">
               Version <span tal:replace="version/name">1</span></a>
             <ul class="level-two" style="display: none;">
 
+              <li>
+                <a href="#"
+                   tal:attributes="href string:${siteRoot}${version/name}/index.html">Home Page</a>
+              </li>
               <li tal:condition="version/announcement/url">
                 <a href="#"
                    tal:attributes="href string:${siteRoot}${version/announcement/url}">Announcement</a>

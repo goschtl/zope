@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html metal:use-macro="templates/master.pt/macros/page" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title metal:fill-slot="page-title">Introduction to the KGS</title>
+  </head>
+  <body>
+    <span metal:fill-slot="title"><em class="name" tal:replace="title">name</em> Known Good Set</span>
+
+    <div metal:fill-slot="content">
+      <h1 id="pageheading">
+        <span tal:replace="title" />
+        <span tal:replace="version/name"/> Has Been Released!
+      </h1>
+
+      <div tal:content="structure version/announcement/html"/>
+      <div tal:content="structure version/changelog/html"/>
+
+    </div>
+  </body>
+</html>
