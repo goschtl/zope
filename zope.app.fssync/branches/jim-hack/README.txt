@@ -36,6 +36,41 @@ Edit one of the files in the checkout directory and commit the changes:
 The modified file should now be available on the server.
 
 
+SSH
+---
+
+Zsync now supports communication over ssh in addition to http. ssh
+urls look like:
+
+  zsync+ssh://user:passwd@host:port/path
+
+The zsync protocol is the same as over HTTP, it simply is sent via
+ssh.
+
+On the server side, the ssh server can check public keys to enforce
+security (though the demo server doesn't bother), and is responsible
+for passing the zsync request to zope and returning the response over
+ssh.
+
+There is an example ssh server in src/zope/app/fssync/demo_server.py
+To use it, first make sure that zope is running. Then start the
+server:
+
+    sudo bin/demo-ssh-server
+
+This starts a demo ssh server on port 2200. The server must be run as
+root in order to read the ssh host keys.
+
+In another window use the zsync client to connect to it.
+
+    bin/zsync co zsync+ssh://zsync:zsync@localhost:2200/demo parts/co2
+
+This checks out the demo folder into the parts/co2 folder.
+
+You should be able to work in the check out normally. Zsync will use
+ssh to communicate, but will otherwise act normally.
+
+
 Extending zsync
 ---------------
 

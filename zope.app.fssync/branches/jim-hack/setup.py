@@ -32,6 +32,7 @@ setup(name='zope.app.fssync',
                ]
               ),
     install_requires=['setuptools',
+                    'paramiko',
                     'zope.dublincore',
                     'zope.fssync',
                     'zope.interface',

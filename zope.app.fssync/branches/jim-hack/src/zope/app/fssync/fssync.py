@@ -42,6 +42,7 @@ from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.passwd import PasswordManager
+from zope.app.fssync.ssh import SSHConnection
 
 if sys.platform[:3].lower() == "win":
     DEV_NULL = r".\nul"
@@ -136,8 +137,9 @@ class Network(PasswordManager):
             rooturl = roottype = rootpath = user_passwd = host_port = None
         else:
             roottype, rest = urllib.splittype(rooturl)
-            if roottype not in ("http", "https"):
-                raise Error("root url must be 'http' or 'https'", rooturl)
+            if roottype not in ("http", "https", "zsync+ssh"):
+                raise Error("root url must be 'http', 'https', or 'zsync+ssh'",
+                            rooturl)
             if roottype == "https" and not hasattr(httplib, "HTTPS"):
                 raise Error("https not supported by this Python build")
             netloc, rootpath = urllib.splithost(rest)
@@ -211,6 +213,8 @@ class Network(PasswordManager):
         path += view
         if self.roottype == "https":
             conn = httplib.HTTPSConnection(self.host_port)
+        elif self.roottype == "zsync+ssh":
+            conn = SSHConnection(self.host_port, self.user_passwd)
         else:
             conn = httplib.HTTPConnection(self.host_port)
          
