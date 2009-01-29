@@ -1,0 +1,35 @@
+=======
+CHANGES
+=======
+
+0.5 (2009-01-29)
+================
+
+- Fix duplicate `url` parameter in setup.py that confused Python 2.4 but
+  got accepted by Python 2.5.
+
+0.4 (2009-01-29)
+================
+
+- Ignore missing package releases for packages listed in Subversion (as
+  long as we don't try to run from Subversion).
+
+- Allow parallel execution of the individual test runners by stating
+  'max_jobs=X' in the recipe's options.
+
+0.3 (2009-01-28)
+================
+
+- Adding the exclude parameter in buildout causes the default exclude
+  list to be merged with the option in buildout.cfg.
+
+0.2 (2009-01-28)
+================
+
+- Implemented use_svn option to use SVN trunk checkouts instead of released
+  versions.
+
+0.1 (2009-01-28)
+================
+
+- first released version
