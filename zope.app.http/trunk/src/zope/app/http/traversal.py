@@ -19,7 +19,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.publisher.interfaces.http import IHTTPPublisher
-from zope.app.container.interfaces import ISimpleReadContainer, IItemContainer
+from zope.container.interfaces import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource
 from zope.publisher.interfaces import NotFound
 from zope.interface import implements
