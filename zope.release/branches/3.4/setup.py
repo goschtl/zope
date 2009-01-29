@@ -50,11 +50,13 @@ setup(name='zope.release',
       install_requires=[
           'setuptools',
           'zc.buildout',
+          'zc.lockfile',
           'zope.kgs',
           ],
       entry_points = dict(console_scripts=[
           'upload = zope.release.upload:main',
           'update-tree = zope.release.tree:main',
+          'update-index = zope.release.update:main',
           ]),
       include_package_data = True,
       zip_safe = False,
