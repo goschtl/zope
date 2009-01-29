@@ -23,18 +23,18 @@
         />
     <require
         permission="zope.View"
-        interface="zope.app.container.interfaces.IReadContainer" 
+        interface="zope.container.interfaces.IReadContainer" 
         />
     <require
         permission="zope.ManageContent"
-        interface="zope.app.container.interfaces.IWriteContainer"
+        interface="zope.container.interfaces.IWriteContainer"
         />
   </class>
 
   <adapter
       for=".interfaces.IFolder"
       provides="zope.filerepresentation.interfaces.IDirectoryFactory"
-      factory="zope.app.container.directory.Cloner"
+      factory="zope.container.directory.Cloner"
       permission="zope.ManageContent"
       />
 

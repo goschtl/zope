@@ -6,6 +6,7 @@ CHANGES
 
 - Import IPossibleSite from zope.location.interfaces
   instead of deprecated place in zope.app.component.interfaces.
+- Use zope.container instead of zope.app.container.
 
 3.4.0 (2007-10-24)
 ------------------

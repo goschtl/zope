@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from BTrees.OOBTree import OOBTree
 from interfaces import IFolder, IRootFolder
 from persistent import Persistent
-from zope.app.container.contained import Contained, setitem, uncontained
+from zope.container.contained import Contained, setitem, uncontained
 from zope.app.component.interfaces import ISite
 from zope.app.component.site import SiteManagerContainer
 from zope.exceptions import DuplicationError
