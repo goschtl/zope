@@ -20,7 +20,6 @@ setup(
         'Programming Language :: Python',
         'Operating System :: OS Independent',
         'Framework :: Zope3'],
-    url='',
     license='ZPL 2.1',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
