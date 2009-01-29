@@ -23,7 +23,7 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.security.interfaces import IGroupAwarePrincipal
 import zope.security.management
 from zope.app.security import interfaces
-from zope.app.container.contained import Contained, contained
+from zope.container.contained import Contained, contained
 
 
 class DuplicateLogin(Exception): pass
