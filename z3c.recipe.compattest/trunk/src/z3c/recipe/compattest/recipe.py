@@ -105,6 +105,7 @@ class Recipe(object):
                     # This package has a project in subversion but no
                     # release (yet). We'll ignore it for now.
                     print "No release found for %s. Ignoring." % package
+                    self.wanted_packages.remove(package)
                     continue
                 raise
             options = dict(eggs=package + extras)
