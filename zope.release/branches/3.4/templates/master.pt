@@ -84,6 +84,11 @@
                     <a href="#"
                        tal:attributes="href string:${siteRoot}${version/changelog/url}">Changelog</a>
                   </li>
+                  <li tal:repeat="file version/files">
+                    <a href="#"
+                       tal:attributes="href string:${siteRoot}${file/url}"
+                       tal:content="file/name">kgs-1.0.0.tgz</a>
+                  </li>
                   <li tal:repeat="feature version/features">
                     <a href="#"
                        tal:attributes="href string:${siteRoot}${feature/url}"
