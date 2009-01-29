@@ -23,7 +23,7 @@ def read(*rnames):
 
 
 setup(name='zope.app.dav',
-      version = '3.5dev',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Zope WebDAV Support(Basic)',
