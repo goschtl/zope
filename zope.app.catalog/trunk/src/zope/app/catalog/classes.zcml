@@ -20,7 +20,7 @@
         permission="zope.ManageServices"
         />
     <require
-        interface="zope.app.container.interfaces.IContainer"
+        interface="zope.container.interfaces.IContainer"
         permission="zope.ManageServices"
         />
   </class>

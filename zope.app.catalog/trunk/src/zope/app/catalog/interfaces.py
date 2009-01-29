@@ -19,8 +19,8 @@ $Id$
 import zope.index.interfaces
 import zope.interface
 import zope.schema
-import zope.app.container.interfaces
-import zope.app.container.constraints
+import zope.container.interfaces
+import zope.container.constraints
 
 from zope.i18nmessageid import ZopeMessageFactory as _
 
@@ -64,13 +64,13 @@ class ICatalogIndex(zope.index.interfaces.IInjection,
     
 
 class ICatalog(ICatalogQuery, ICatalogEdit,
-               zope.app.container.interfaces.IContainer): 
+               zope.container.interfaces.IContainer): 
     """Marker to describe a catalog in content space."""
 
-    zope.app.container.constraints.contains(ICatalogIndex)
+    zope.container.constraints.contains(ICatalogIndex)
 
 ICatalogIndex['__parent__'].constraint = (
-    zope.app.container.constraints.ContainerTypesConstraint(ICatalog))
+    zope.container.constraints.ContainerTypesConstraint(ICatalog))
 
 class IAttributeIndex(zope.interface.Interface):
     """I index objects by first adapting them to an interface, then

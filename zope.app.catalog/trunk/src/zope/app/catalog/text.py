@@ -21,7 +21,7 @@ import zope.interface
 
 import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
-import zope.app.container.contained
+import zope.container.contained
 from zope.i18nmessageid import ZopeMessageFactory as _
 
 class ITextIndex(zope.app.catalog.interfaces.IAttributeIndex,
@@ -52,6 +52,6 @@ class ITextIndex(zope.app.catalog.interfaces.IAttributeIndex,
 
 class TextIndex(zope.app.catalog.attribute.AttributeIndex,
                 zope.index.text.TextIndex,
-                zope.app.container.contained.Contained):
+                zope.container.contained.Contained):
 
     zope.interface.implements(ITextIndex)

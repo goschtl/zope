@@ -18,7 +18,7 @@ $Id:$
 import zope.index.keyword
 import zope.interface
 
-import zope.app.container.contained
+import zope.container.contained
 import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
 
@@ -28,12 +28,12 @@ class IKeywordIndex(zope.app.catalog.interfaces.IAttributeIndex,
 
 class KeywordIndex(zope.app.catalog.attribute.AttributeIndex,
                     zope.index.keyword.KeywordIndex,
-                    zope.app.container.contained.Contained):
+                    zope.container.contained.Contained):
 
     zope.interface.implements(IKeywordIndex)
 
 class CaseInsensitiveKeywordIndex(zope.app.catalog.attribute.AttributeIndex,
                                       zope.index.keyword.CaseInsensitiveKeywordIndex,
-                                      zope.app.container.contained.Contained):
+                                      zope.container.contained.Contained):
 
     zope.interface.implements(IKeywordIndex)

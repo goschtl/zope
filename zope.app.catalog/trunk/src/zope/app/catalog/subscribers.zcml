@@ -7,7 +7,7 @@
   <subscriber
       handler=".catalog.indexAdded"
       for=".interfaces.ICatalogIndex
-           zope.app.container.interfaces.IObjectAddedEvent"
+           zope.container.interfaces.IObjectAddedEvent"
       />
 
   <subscriber

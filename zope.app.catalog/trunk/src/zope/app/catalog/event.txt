@@ -29,7 +29,7 @@ We also need an intid util and a keyreference adapter.
     >>> from zope.app.keyreference.testing import SimpleKeyReference
     >>> component.provideAdapter(SimpleKeyReference)
 
-    >>> from  zope.app.container.contained import Contained
+    >>> from  zope.container.contained import Contained
     >>> class Dummy(Contained):
     ...     def __init__(self, name):
     ...         self.__name__ = name

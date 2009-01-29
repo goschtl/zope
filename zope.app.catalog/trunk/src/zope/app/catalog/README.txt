@@ -69,12 +69,12 @@ Now, we can use the AttributeIndex mixin to make this an attribute
 index:
 
     >>> import zope.app.catalog.attribute
-    >>> import zope.app.container.contained
+    >>> import zope.container.contained
     >>> import zope.app.catalog.interfaces
 
     >>> class Index(zope.app.catalog.attribute.AttributeIndex, 
     ...             BaseIndex,
-    ...             zope.app.container.contained.Contained,
+    ...             zope.container.contained.Contained,
     ...             ):
     ...    zope.interface.implements(zope.app.catalog.interfaces.ICatalogIndex)
 
@@ -330,7 +330,7 @@ values:
 
     >>> class KeywordIndex(zope.app.catalog.attribute.AttributeIndex, 
     ...                    BaseKeywordIndex,
-    ...                    zope.app.container.contained.Contained,
+    ...                    zope.container.contained.Contained,
     ...                    ):
     ...    zope.interface.implements(zope.app.catalog.interfaces.ICatalogIndex)
 

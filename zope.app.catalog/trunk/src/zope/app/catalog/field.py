@@ -18,7 +18,7 @@ $Id$
 import zope.index.field
 import zope.interface
 
-import zope.app.container.contained
+import zope.container.contained
 import zope.app.catalog.attribute
 import zope.app.catalog.interfaces
 
@@ -29,7 +29,7 @@ class IFieldIndex(zope.app.catalog.interfaces.IAttributeIndex,
 
 class FieldIndex(zope.app.catalog.attribute.AttributeIndex,
                  zope.index.field.FieldIndex,
-                 zope.app.container.contained.Contained):
+                 zope.container.contained.Contained):
 
     zope.interface.implements(IFieldIndex)
 

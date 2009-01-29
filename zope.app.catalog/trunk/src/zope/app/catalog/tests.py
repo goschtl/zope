@@ -232,7 +232,7 @@ class TestEventSubscribers(unittest.TestCase):
 
     def test_indexDocSubscriber(self):
         from zope.app.catalog.catalog import indexDocSubscriber
-        from zope.app.container.contained import ObjectAddedEvent
+        from zope.container.contained import ObjectAddedEvent
         from zope.app.intid.interfaces import IntIdAddedEvent
 
         ob = Stub()
@@ -271,7 +271,7 @@ class TestEventSubscribers(unittest.TestCase):
 
     def test_unindexDocSubscriber(self):
         from zope.app.catalog.catalog import unindexDocSubscriber
-        from zope.app.container.contained import ObjectRemovedEvent
+        from zope.container.contained import ObjectRemovedEvent
         from zope.app.intid.interfaces import IntIdRemovedEvent
 
         ob = Stub()
@@ -325,7 +325,7 @@ class TestIndexUpdating(unittest.TestCase) :
         setup.placefulTearDown()
 
     def iterAll(self, container) :
-        from zope.app.container.interfaces import IContainer
+        from zope.container.interfaces import IContainer
         for value in container.values() :
             yield value
             if IContainer.providedBy(value) :
@@ -345,7 +345,6 @@ class TestIndexUpdating(unittest.TestCase) :
         and call the updateIndexes method. The indexed objects should should
         be restricted to the sublocations.
         """
-
         self.cat.updateIndexes()
         index = self.cat['name']
         names = sorted([ob.__name__ for i, ob in index.doc.items()])
@@ -397,7 +396,7 @@ class TestSubSiteCatalog(unittest.TestCase) :
         setup.placefulTearDown()
 
     def iterAll(self, container) :
-        from zope.app.container.interfaces import IContainer
+        from zope.container.interfaces import IContainer
         for value in container.values() :
             yield value
             if IContainer.providedBy(value) :
@@ -412,7 +411,7 @@ class TestSubSiteCatalog(unittest.TestCase) :
         be restricted to the sublocations.
         """
         from zope.app.catalog.catalog import indexDocSubscriber
-        from zope.app.container.contained import ObjectAddedEvent
+        from zope.container.contained import ObjectAddedEvent
 
         ob = Stub()
         self.subfolder['ob'] = ob
@@ -461,9 +460,9 @@ class TestSubSiteCatalog(unittest.TestCase) :
         be restricted to the sublocations.
         """
         from zope.app.catalog.catalog import indexDocSubscriber
-        from zope.app.container.contained import ObjectAddedEvent
+        from zope.container.contained import ObjectAddedEvent
         from zope.app.catalog.catalog import unindexDocSubscriber
-        from zope.app.container.contained import ObjectRemovedEvent
+        from zope.container.contained import ObjectRemovedEvent
 
         ob = Stub()
         self.subfolder['ob'] = ob
