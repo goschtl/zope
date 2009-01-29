@@ -8,6 +8,7 @@ setup(
     author='Grok Contributors',
     author_email='grok-dev@zope.org',
     description='Buildout recipe to create testrunners for testing compatibility with other packages',
+    url='http://pypi.python.org/pypi/z3c.recipe.compattest',
     long_description= (
         open(os.path.join('src', 'z3c', 'recipe', 'compattest', 'README.txt')).read()
         + '\n\n'

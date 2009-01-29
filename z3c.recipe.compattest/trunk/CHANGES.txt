@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.4 (unreleased)
+0.4 (2009-01-29)
 ================
 
 - Ignore missing package releases for packages listed in Subversion (as
