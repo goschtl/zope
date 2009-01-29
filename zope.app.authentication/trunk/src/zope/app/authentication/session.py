@@ -29,7 +29,7 @@ from zope.session.interfaces import ISession
 from zope.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.component import hooks
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.authentication.interfaces import ICredentialsPlugin
 
 class ISessionCredentials(Interface):

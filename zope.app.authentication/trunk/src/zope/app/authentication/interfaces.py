@@ -22,8 +22,8 @@ import zope.schema
 import zope.security.interfaces
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 from zope.app.security.interfaces import ILogout
-from zope.app.container.constraints import contains, containers
-from zope.app.container.interfaces import IContainer
+from zope.container.constraints import contains, containers
+from zope.container.interfaces import IContainer
 
 
 class IPlugin(zope.interface.Interface):

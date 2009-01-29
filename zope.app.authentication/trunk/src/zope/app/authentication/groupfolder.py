@@ -24,9 +24,9 @@ from zope.interface import alsoProvides
 from zope.security.interfaces import (
     IGroup, IGroupAwarePrincipal, IMemberAwareGroup)
 
-from zope.app.container.btree import BTreeContainer
-import zope.app.container.constraints
-import zope.app.container.interfaces
+from zope.container.btree import BTreeContainer
+import zope.container.constraints
+import zope.container.interfaces
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 import zope.app.security.vocabulary
 from zope.app.security.interfaces import (
@@ -55,9 +55,9 @@ class IGroupInformation(interface.Interface):
         required=False)
 
 
-class IGroupFolder(zope.app.container.interfaces.IContainer):
+class IGroupFolder(zope.container.interfaces.IContainer):
 
-    zope.app.container.constraints.contains(IGroupInformation)
+    zope.container.constraints.contains(IGroupInformation)
 
     prefix = schema.TextLine(
         title=_("Group ID prefix"),
@@ -72,9 +72,9 @@ class IGroupFolder(zope.app.container.interfaces.IContainer):
         """Get principals which belong to the group"""
 
 
-class IGroupContained(zope.app.container.interfaces.IContained):
+class IGroupContained(zope.container.interfaces.IContained):
 
-    zope.app.container.constraints.containers(IGroupFolder)
+    zope.container.constraints.containers(IGroupFolder)
 
 class IGroupSearchCriteria(interface.Interface):
 

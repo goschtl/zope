@@ -3,6 +3,9 @@ Changes
 =======
 
 3.5.0 (unreleased)
+------------------
+
+* Use ``zope.container`` instead of ``zope.app.container``.
 
 * Encoded passwords are now stored with a prefix ({MD5}, {SHA1},
   {SSHA}) indicating the used encoding schema. Old (encoded) passwords

@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import re
 from zope.exceptions.interfaces import UserError
-from zope.app.container.contained import NameChooser
+from zope.container.contained import NameChooser
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 
 ok = re.compile('[!-~]+$').match

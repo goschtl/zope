@@ -19,7 +19,7 @@
 
     <require
         permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IContainer"
+        interface="zope.container.interfaces.IContainer"
         />
 
     <require
@@ -30,7 +30,7 @@
   </class>
 
   <adapter
-      provides="zope.app.container.interfaces.INameChooser"
+      provides="zope.container.interfaces.INameChooser"
       for=".principalfolder.IInternalPrincipalContainer"
       factory=".idpicker.IdPicker"
       />

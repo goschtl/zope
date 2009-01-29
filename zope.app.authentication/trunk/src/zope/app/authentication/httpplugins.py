@@ -22,7 +22,7 @@ from zope.interface import implements, Interface
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.schema import TextLine
 
-from zope.app.container.contained import Contained
+from zope.container.contained import Contained
 from zope.app.authentication import interfaces
 
 

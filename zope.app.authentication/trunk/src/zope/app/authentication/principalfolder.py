@@ -24,10 +24,10 @@ from zope.event import notify
 from zope.schema import Text, TextLine, Password, Choice
 from zope.publisher.interfaces import IRequest
 
-from zope.app.container.interfaces import DuplicateIDError
-from zope.app.container.contained import Contained
-from zope.app.container.constraints import contains, containers
-from zope.app.container.btree import BTreeContainer
+from zope.container.interfaces import DuplicateIDError
+from zope.container.contained import Contained
+from zope.container.constraints import contains, containers
+from zope.container.btree import BTreeContainer
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 from zope.app.security.interfaces import IAuthentication
 

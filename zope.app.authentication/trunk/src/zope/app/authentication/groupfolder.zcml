@@ -21,13 +21,13 @@
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IContainer
-                   zope.app.container.interfaces.INameChooser"
+        interface="zope.container.interfaces.IContainer
+                   zope.container.interfaces.INameChooser"
         />
   </class>
 
   <adapter
-      provides="zope.app.container.interfaces.INameChooser"
+      provides="zope.container.interfaces.INameChooser"
       for=".groupfolder.IGroupFolder"
       factory=".idpicker.IdPicker"
       />
