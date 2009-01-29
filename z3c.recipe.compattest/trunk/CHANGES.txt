@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.5 (unreleased)
+0.5 (2009-01-29)
 ================
 
 - Fix duplicate `url` parameter in setup.py that confused Python 2.4 but
