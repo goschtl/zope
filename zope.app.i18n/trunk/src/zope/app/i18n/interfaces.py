@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.i18n.interfaces import ITranslationDomain, IMessageCatalog
-from zope.app.container.interfaces import IContainer
+from zope.container.interfaces import IContainer
 
 
 class IWriteTranslationDomain(Interface):

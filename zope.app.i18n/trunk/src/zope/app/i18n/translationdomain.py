@@ -27,9 +27,9 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 
-from zope.app.container.btree import BTreeContainer
+from zope.container.btree import BTreeContainer
+from zope.container.contained import Contained
 from zope.app.i18n.interfaces import ILocalTranslationDomain
-from zope.app.container.contained import Contained
 from zope.app.component import queryNextUtility
 
 

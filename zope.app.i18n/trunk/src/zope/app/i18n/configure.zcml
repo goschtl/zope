@@ -40,7 +40,7 @@
         />
     <require
         permission="zope.ManageSite"
-        interface="zope.app.container.interfaces.IContainer"
+        interface="zope.container.interfaces.IContainer"
         />
     <require
         permission="zope.ManageSite"
