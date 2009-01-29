@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 from zope.app.dtmlpage.browser import DTMLPageEval
 
 class Test(TestCase):

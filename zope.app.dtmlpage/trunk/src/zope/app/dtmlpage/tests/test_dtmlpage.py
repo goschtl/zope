@@ -23,7 +23,7 @@ from zope.traversing.interfaces import ITraverser, ITraversable
 
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.testing import ztapi
-from zope.app.container.contained import contained
+from zope.container.contained import contained
 from zope.app.dtmlpage.dtmlpage import DTMLPage
 
 

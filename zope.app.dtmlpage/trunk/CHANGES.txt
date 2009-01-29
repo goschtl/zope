@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Reduced the dependency upon `zope.app.container` to be simply a
+  dependency upon `zope.container`.
+
+
 3.4.1 (2007-10-31)
 ------------------
 
