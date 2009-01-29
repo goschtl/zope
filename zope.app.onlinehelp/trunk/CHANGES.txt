@@ -5,10 +5,11 @@ CHANGES
 3.5.0dev (unreleased)
 ---------------------
 
-- removed OnlineHelpTopicFactory, simple and SimpleViewClass. All of them where
-  using old deprecated and removed Zope3 imports. None of them where used and
-  tested.
+- removed `OnlineHelpTopicFactory`, `simple` and
+  `SimpleViewClass`. All of them where using old deprecated and
+  removed Zope3 imports. None of them where used and tested.
 
+- Use `zope.container` instead of `zope.app.container`.
 
 3.4.1 (2007-10-25)
 ------------------

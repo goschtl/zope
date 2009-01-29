@@ -25,7 +25,7 @@ from zope.interface import implements
 from zope.configuration.exceptions import ConfigurationError
 from zope.contenttype import guess_content_type
 
-from zope.app.container.sample import SampleContainer
+from zope.container.sample import SampleContainer
 from zope.app.file.image import getImageInfo
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic
