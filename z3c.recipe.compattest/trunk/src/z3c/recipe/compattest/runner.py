@@ -3,6 +3,8 @@ import os.path
 import select
 import subprocess
 import sys
+import time
+import pickle
 
 
 def usage():
@@ -23,6 +25,7 @@ class Job(object):
         self.exitcode = None
 
     def start(self):
+        self.start = time.time()
         self.process = subprocess.Popen(
             [self.script, '--exit-with-status'] + self.args,
             stdin=subprocess.PIPE,
@@ -31,6 +34,8 @@ class Job(object):
 
     def poll(self):
         self.exitcode = self.process.poll()
+        if self.exitcode is not None:
+            self.end = time.time()
         read, _, _ = select.select([self.process.stdout], [], [], 0.01)
         if read:
             self.output.write(read[0].read())
@@ -46,6 +51,23 @@ def main(max_jobs, *scripts):
     completed = []
     scripts = list(scripts)
 
+    # Read statistics from the last run and re-order testing to start
+    # the slowest tests first.
+    stat_file_name = os.path.join(os.path.expanduser('~'), '.zope.teststats')
+    try:
+        stat_file = open(stat_file_name, 'r')
+    except IOError:
+        stats = {}
+    else:
+        stats = pickle.load(stat_file)
+        stat_file.close()
+    if stats:
+        default_time = sum(stats.values()) / float(len(stats))
+    else:
+        default_time = 0
+    scripts.sort(key=lambda package:-stats.get(os.path.basename(package), default_time))
+
+    # Main loop for controlling test runs
     while scripts or running:
         for job in running:
             job.poll()
@@ -64,7 +86,19 @@ def main(max_jobs, *scripts):
             job.start()
             running.append(job)
 
+    # Result output
     failures = [job for job in completed if job.exitcode]
     print "%d failure(s)." % len(failures)
     for job in failures:
         print "-", job.name
+
+    # Store statistics
+    for job in completed:
+        stats[job.name] = job.end - job.start
+    try:
+        stat_file = open(stat_file_name, 'w')
+    except IOError:
+        # Statistics aren't that important. Just ignore that.
+        pass
+    else:
+        pickle.dump(stats, stat_file)
