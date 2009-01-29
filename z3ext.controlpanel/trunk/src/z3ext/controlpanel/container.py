@@ -36,6 +36,14 @@ class ContentContainerConfiglet(ContentContainer, Configlet):
         Configlet.__init__(self, tests)
 
     @property
+    def title(self):
+        return self.__title__
+
+    @property
+    def description(self):
+        return self.__description__
+
+    @property
     def _SampleContainer__data(self):
         return self.data
 
