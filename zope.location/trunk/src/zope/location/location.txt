@@ -35,7 +35,7 @@ Usage within an Object field:
 >>> a.location = loc
 Traceback (most recent call last):
 ...
-WrongContainedType: [foo <type 'unicode'>]
+WrongContainedType: [WrongType('foo', <type 'unicode'>)]
 
 
 The `inside` Function
