@@ -29,11 +29,6 @@ setup(name='zope.app.folder',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '----------------------\n'
-          + '\n\n' +
-          read('src', 'zope', 'app', 'folder', 'filerepresentation.txt')
-          + '\n\n' +
           read('CHANGES.txt')
           ),
       keywords = "zope3 folder site local component",
@@ -52,8 +47,6 @@ setup(name='zope.app.folder',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['zope', 'zope.app'],
-      extras_require=dict(test=['zope.app.testing',
-                                'zope.app.zcmlfiles']),
       install_requires=['setuptools',
                         'zope.container',
                         'zope.datetime',
