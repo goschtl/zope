@@ -432,7 +432,6 @@ For set-valued fields, use SourceMultiSelectSetWidget::
   ...     )
   ... )
   >>> dogSet = dogSet.bind(object()) # give the field a context
-  >>> from sets import Set
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceMultiSelectSetWidget(
   ...     dogSet, dogSource, request)

@@ -16,7 +16,6 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-import sets
 from xml.sax.saxutils import escape
 
 from zope import component
@@ -544,7 +543,7 @@ class MultiSelectSetWidget(MultiSelectWidget):
     def _toFieldValue(self, input):
         value = super(MultiSelectSetWidget, self)._toFieldValue(input)
         if isinstance(value, list):
-            value = sets.Set(value)
+            value = set(value)
         return value
 
 

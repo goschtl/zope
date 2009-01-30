@@ -203,7 +203,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
 
         >>> widget.getInputValue()
         Traceback (most recent call last):
-        WidgetInputError: ('foo', u'Foo', bye world)
+        WidgetInputError: ('foo', u'Foo', ConstraintNotSatisfied(u'bye world'))
 
     Simple input widgets require that input be available in the form request.
     If input is not present, a ``MissingInputError`` is raised:
@@ -233,7 +233,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> field.required = True
         >>> widget.getInputValue()
         Traceback (most recent call last):
-        WidgetInputError: ('foo', u'Foo', )
+        WidgetInputError: ('foo', u'Foo', RequiredMissing())
 
     However, if the field is not required, the empty string will be converted
     by the widget into the field's `missing_value` and read as a legal field
