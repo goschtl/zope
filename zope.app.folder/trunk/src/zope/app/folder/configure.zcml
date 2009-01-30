@@ -3,56 +3,8 @@
     i18n_domain="zope"
     >
 
-  <interface 
-      interface=".interfaces.IFolder" 
-      type="zope.app.content.interfaces.IContentType"
-      /> 
-
-  <class class=".folder.Folder">
-    <factory
-        id="zope.app.content.Folder"
-        title="Folder"
-        description="Minimal folder"
-        />
-    <allow
-        attributes="getSiteManager"
-        />
-    <require
-        permission="zope.ManageServices"
-        attributes="setSiteManager"
-        />
-    <require
-        permission="zope.View"
-        interface="zope.container.interfaces.IReadContainer" 
-        />
-    <require
-        permission="zope.ManageContent"
-        interface="zope.container.interfaces.IWriteContainer"
-        />
-  </class>
-
-  <adapter
-      for=".interfaces.IFolder"
-      provides="zope.filerepresentation.interfaces.IDirectoryFactory"
-      factory="zope.container.directory.Cloner"
-      permission="zope.ManageContent"
-      />
-
-  <adapter
-      for=".interfaces.IFolder"
-      provides="zope.filerepresentation.interfaces.IReadDirectory"
-      factory=".filerepresentation.ReadDirectory"
-      permission="zope.View"
-      />
-
-  <adapter
-      provides="zope.location.interfaces.ISublocations"
-      for=".interfaces.IFolder"
-      factory=".folder.FolderSublocations"
-      />
-
-  <!-- include browser package -->
-
+  <include package="zope.site" />
+  <include package="zope.container" />
   <include package=".browser" />
 
 </configure>
