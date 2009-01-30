@@ -56,13 +56,13 @@ def getAllFileSpecs(files):
             continue
         set = kgs.KGS(filePath)
         if set.changelog:
-            fileSpecs.append((
+            fileSpecs.insert(0, (
                 set.changelog, os.path.split(set.changelog)[-1]))
         if set.announcement:
-            fileSpecs.append((
+            fileSpecs.insert(0, (
                 set.announcement, os.path.split(set.announcement)[-1]))
         for filePath in set.files:
-            fileSpecs.append((filePath, os.path.split(filePath)[-1]))
+            fileSpecs.insert(0, (filePath, os.path.split(filePath)[-1]))
     return fileSpecs
 
 

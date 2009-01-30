@@ -54,9 +54,9 @@ Usually we only need to upload the controlled packages file, since site script
 of the ``zope.kgs`` package will do the rest for us.
 
   >>> upload.main((cfgFile, 'download.zope.org:/zope-dev'))
-  scp ...controlled-packages.cfg ...controlled-packages.cfg
-  scp .../CHANGES.txt download.zope.org:/zope-dev/CHANGES.txt
   scp ...zope-dev-1.0.0.tgz download.zope.org:/zope-dev/zope-dev-1.0.0.tgz
+  scp .../CHANGES.txt download.zope.org:/zope-dev/CHANGES.txt
+  scp ...controlled-packages.cfg ...controlled-packages.cfg
 
 Updating the Zope 3 Tree
 ------------------------
