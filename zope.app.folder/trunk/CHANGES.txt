@@ -5,8 +5,12 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
+- Everything except zope.app.folder.browser moved to zope.site
+  and zope.container.
+
 - Import IPossibleSite from zope.location.interfaces
   instead of deprecated place in zope.app.component.interfaces.
+
 - Use zope.container instead of zope.app.container.
 
 3.4.0 (2007-10-24)
