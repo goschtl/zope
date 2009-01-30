@@ -3,10 +3,10 @@
     i18n_domain='zope'
     >
 
-  <interface 
-      interface=".interfaces.IZPTPage" 
+  <interface
+      interface=".interfaces.IZPTPage"
       type="zope.app.content.interfaces.IContentType"
-      /> 
+      />
 
   <class class=".zptpage.ZPTPage">
     <factory
@@ -32,22 +32,22 @@
         />
   </class>
 
-  <adapter 
-      for="zope.app.folder.interfaces.IFolder"
+  <adapter
+      for="zope.site.interfaces.IFolder"
       provides="zope.filerepresentation.interfaces.IFileFactory"
       name=".pt"
       factory=".zptpage.ZPTFactory"
       permission="zope.ManageContent"
       />
 
-  <adapter 
+  <adapter
       for=".interfaces.IZPTPage"
       provides="zope.filerepresentation.interfaces.IReadFile"
       factory=".zptpage.ZPTReadFile"
       permission="zope.ManageContent"
       />
 
-  <adapter 
+  <adapter
       for=".interfaces.IZPTPage"
       provides="zope.filerepresentation.interfaces.IWriteFile"
       factory=".zptpage.ZPTWriteFile"

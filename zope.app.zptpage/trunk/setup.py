@@ -25,7 +25,7 @@ def read(*rnames):
 
 setup(
     name='zope.app.zptpage',
-    version='3.5dev',
+    version='3.5.0dev',
     url='http://pypi.python.org/pypi/zope.app.zptpage',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
@@ -63,6 +63,7 @@ setup(
                       'zope.publisher',
                       'zope.schema',
                       'zope.security',
+                      'zope.site',
                       'zope.size',
                       'zope.traversing',
                       'ZODB3',
