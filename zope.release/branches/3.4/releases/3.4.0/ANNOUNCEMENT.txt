@@ -7,27 +7,26 @@ January 29, 2009 - The Zope 3 development team announces the Zope 3.4.0 release.
 After 2 years of development, the Zope Foundation and the larger Zope
 community is proud to announce the release of Zope 3.4.0.
 
-The focus of the Zope 3.4 development was the conversion from one monolithic
-source tree to a set of many small packages (eggs) that can be used
-independently of each other. The core further stabalized through lots of bug
-fixes and many new add-on packages were developed to provide a richer
-development experience.
+The focus of the Zope 3.4 development effort has been the conversion from a
+monolithic source tree, to a set of many small packages (eggs), that can be
+used independently of each other. The core has been further stabilized through
+numerous bug fixes, and many new add-on packages have been developed to
+provide a richer development experience.
 
-With this release comes also renewed commitment to a short and reliable
+With this release also comes a renewed commitment to a short and reliable
 release cycle of 6 months.
-
 
 Packages and Eggs
 -----------------
 
 Zope 3 is now fully converted to an egg-based system. While some work still
-remains, it integrates in the best possible way with the rest of the Python
-community. The conversion to eggs also enables other Python developers to only
-use small bits and pieces of the complete Zope software. The conversion
-largely means that Zope 3 developers do not use the classic Zope 3 TAR ball
-release anymore. However, for your convenience, the Zope 3 developers will
-provide the classic Zope 3 tar ball releases for at least the 3.4 series and
-probably for 3.5 as well.
+remains, it integrates very well with the rest of the Python community. The
+conversion to egg-based packaging also enables other Python developers to only
+have to use small bits and pieces of the complete Zope software system. The
+conversion means that Zope 3 developers do not use the classic Zope 3 tar-ball
+release anymore. However, for your convenience, Zope 3 developers will provide
+the classic Zope 3 tar ball releases for at least the 3.4 series and probably
+for 3.5 as well.
 
 So how are Zope 3 applications built using only eggs?
 
