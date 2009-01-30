@@ -5,7 +5,11 @@ CHANGES
 3.6.0 (unreleased)
 ------------------
 
-- Changed dependency from zope.app.container to zope.container.
+- Changed dependency from ``zope.app.container`` to
+  ``zope.container``.
+
+- Move test dependencies ``zope.app.folder`` and
+  ``zope.app.component`` as ``zope.site``.
 
 3.5.1 (2008-12-11)
 ------------------

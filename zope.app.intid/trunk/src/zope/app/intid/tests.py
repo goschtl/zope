@@ -34,7 +34,7 @@ from zope.component.interfaces import IFactory
 from zope.traversing.api import traverse
 
 from zope.app.testing import setup, ztapi
-from zope.app.component.hooks import setSite
+from zope.site.hooks import setSite
 
 from zope.app.intid import IntIds, intIdEventNotify
 from zope.app.intid.interfaces import IIntIds
@@ -189,7 +189,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
-        from zope.app.folder import Folder, rootFolder
+        from zope.site.folder import Folder, rootFolder
         from zope.component import provideHandler
 
         ReferenceSetupMixin.setUp(self)
@@ -210,7 +210,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         from zope.app.intid import removeIntIdSubscriber
         from zope.container.contained import ObjectRemovedEvent
         from zope.app.intid.interfaces import IIntIdRemovedEvent
-        from zope.app.folder.interfaces import IFolder
+        from zope.site.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         id = self.utility.register(folder)
@@ -248,7 +248,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         from zope.app.intid import addIntIdSubscriber
         from zope.container.contained import ObjectAddedEvent
         from zope.app.intid.interfaces import IIntIdAddedEvent
-        from zope.app.folder.interfaces import IFolder
+        from zope.site.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         setSite(self.folder1_1)
