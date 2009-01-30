@@ -2,12 +2,17 @@
 
   <subscriber
       handler=".bootstrap.bootStrapSubscriber"
-      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      for="zope.app.appsetup.interfaces.IDatabaseOpenedEvent"
       />
 
   <subscriber
       handler=".bootstrap.checkSecurityPolicy"
-      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      for="zope.app.appsetup.interfaces.IDatabaseOpenedEvent"
+      />  
+
+  <subscriber
+      handler=".errorlog.bootStrapSubscriber"
+      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
       />
 
 </configure>

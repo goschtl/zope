@@ -40,6 +40,8 @@ from zope.app.component.site import LocalSiteManager
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \
      ensureObject, ensureUtility
+from zope.app.appsetup.interfaces import DatabaseOpened
+from zope.app.appsetup.errorlog import bootStrapSubscriber as errorlogBootStrapSubscriber
 
 from zope.app.testing import placelesssetup
 
@@ -160,7 +162,27 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
         cx.close()
 
+    def test_errorReportingSetup(self):
+        """Error reporting is set up by an event handler in this package.
 
+        We test whether the event handler works.
+        """
+        self.createRFAndSM()
+
+        event = DatabaseOpened(self.db)        
+        # this will open and close the database by itself
+        errorlogBootStrapSubscriber(event)
+
+        # this will re-open the database
+        db, connection, root, root_folder = getInformationFromEvent(event)
+
+        got_utility = zope.component.getUtility(IErrorReportingUtility,
+                                                context=root_folder)
+        self.failUnless(IErrorReportingUtility.providedBy(got_utility))
+        # we need to close again in the end
+        connection.close()
+
+        
 class TestConfigurationSchema(unittest.TestCase):
 
     def setUp(self):
