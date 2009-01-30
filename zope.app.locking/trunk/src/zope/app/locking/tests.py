@@ -25,10 +25,10 @@ from transaction import abort
 from zope.interface import Interface
 from zope.traversing.interfaces import IPathAdapter
 from zope.security.testing import Principal, Participation
+from zope.site.folder import Folder
 
 from zope.app.testing import ztapi, setup
 from zope.app.file.file import File
-from zope.app.folder.folder import Folder
 from zope.app.locking.interfaces import ILockable, ILockTracker
 from zope.app.locking.adapter import LockingAdapterFactory
 from zope.app.locking.adapter import LockingPathAdapter

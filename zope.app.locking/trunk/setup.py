@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.locking',
-      version = '3.4.0',
+      version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope3-dev@zope.org',
       description='Simple Object Locking Framework',
@@ -55,7 +55,7 @@ setup(name='zope.app.locking',
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
                                   'zope.app.file',
-                                  'zope.app.folder', ]),
+                                  'zope.site', ]),
       install_requires=['setuptools',
                         'zope.security',
                         'zope.app.keyreference',
