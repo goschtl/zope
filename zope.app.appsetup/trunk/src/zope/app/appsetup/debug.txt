@@ -36,7 +36,7 @@ variable named 'root' in the __main__ module:
 
     >>> main_module = sys.modules['__main__']
     >>> main_module.root            # doctest: +ELLIPSIS
-    <zope.app.folder.folder.Folder object at ...>
+    <zope.site.folder.Folder object at ...>
 
 and we have asked Python to enter interactive mode by setting the
 PYTHONINSPECT environment variable

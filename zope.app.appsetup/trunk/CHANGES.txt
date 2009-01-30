@@ -5,12 +5,16 @@ CHANGES
 Version 3.9.0 (unreleased)
 --------------------------
 
-- Use zope.container instead of zope.app.container
+- Use ``zope.site`` instead of ``zope.app.folder`` and
+  ``zope.app.component``.
+
+- Use ``zope.container`` instead of ``zope.app.container``.
 
 - Move error log bootstrapping logic from ``zope.error`` into this
   package.  This removes a dependency from zope.error to this
   package. Also added a test for bootstrapping the error log here,
   which was missing in ``zope.error``.
+
 
 Version 3.8.0 (2008-08-25)
 --------------------------

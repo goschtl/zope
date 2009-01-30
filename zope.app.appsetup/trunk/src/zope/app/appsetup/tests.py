@@ -30,10 +30,10 @@ from zope.traversing.api import traverse, getPath
 from zope.error.interfaces import IErrorReportingUtility
 from zope.error.error import ErrorReportingUtility
 
-from zope.app.component import hooks
 from zope.app.component.testing import PlacefulSetup
-from zope.app.folder import rootFolder, Folder
-from zope.app.folder.interfaces import IRootFolder
+from zope.site import hooks
+from zope.site.folder import rootFolder, Folder
+from zope.site.interfaces import IRootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.component.site import LocalSiteManager
 

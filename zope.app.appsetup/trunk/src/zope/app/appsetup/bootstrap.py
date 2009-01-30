@@ -28,16 +28,16 @@ import warnings
 import zope.deprecation
 import zope.event
 import zope.lifecycleevent
-from zope.security.management import getSecurityPolicy
-from zope.security.simplepolicies import ParanoidSecurityPolicy
-from zope.traversing.api import traverse
 
-from zope.app.component.interfaces import ISite
-from zope.app.component import site
-from zope.container.interfaces import INameChooser
-from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.appsetup import interfaces
+from zope.container.interfaces import INameChooser
+from zope.location.interfaces import ISite
+from zope.security.management import getSecurityPolicy
+from zope.security.simplepolicies import ParanoidSecurityPolicy
+from zope.site import site
+from zope.site.folder import rootFolder
+from zope.traversing.api import traverse
 
 
 def ensureObject(root_folder, object_name, object_type, object_factory,
