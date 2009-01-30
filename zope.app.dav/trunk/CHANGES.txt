@@ -5,7 +5,9 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
-- Use zope.container instead of zope.app.container.
+- Use ``zope.container`` instead of ``zope.app.container``.
+
+- Use ``zope.site`` instead of ``zope.app.folder``.
 
 3.4.2 (2009-01-27)
 ------------------

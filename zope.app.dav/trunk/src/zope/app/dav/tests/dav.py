@@ -21,10 +21,10 @@ from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
 
 from zope.app.testing.functional import HTTPTestCase
-from zope.app.folder import Folder
+from zope.site.folder import Folder
 
 class Page(Persistent):
-    implements(IAttributeAnnotatable)    
+    implements(IAttributeAnnotatable)
 
 class DAVTestCase(HTTPTestCase):
 

@@ -23,8 +23,8 @@ from zope.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 from zope.container.interfaces import IWriteContainer
+from zope.site.interfaces import IFolder
 from zope.container.directory import noop, Cloner
-from zope.app.folder.interfaces import IFolder
 from zope.app.http.put import NullResource
 from zope.app.dav import mkcol
 from zope.app.dav.tests.test_propfind import _createRequest, File
