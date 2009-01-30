@@ -69,7 +69,7 @@ Now we'll register it as a view:
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...
   ...   <xmlrpc:view
-  ...       for="zope.app.folder.folder.IFolder"
+  ...       for="zope.site.interfaces.IFolder"
   ...       methods="contents"
   ...       class="zope.app.xmlrpcintrospection.README.FolderListing"
   ...       permission="zope.ManageContent"
@@ -85,7 +85,7 @@ Now, we'll add some items to the root folder:
   ... Content-Length: 73
   ... Content-Type: application/x-www-form-urlencoded
   ...
-  ... type_name=BrowserAdd__zope.app.folder.folder.Folder&new_value=f1""")
+  ... type_name=BrowserAdd__zope.site.folder.Folder&new_value=f1""")
   HTTP/1.1 303 See Other
   ...
 
@@ -95,7 +95,7 @@ Now, we'll add some items to the root folder:
   ... Content-Length: 73
   ... Content-Type: application/x-www-form-urlencoded
   ...
-  ... type_name=BrowserAdd__zope.app.folder.folder.Folder&new_value=f2""")
+  ... type_name=BrowserAdd__zope.site.folder.Folder&new_value=f2""")
   HTTP/1.1 303 See Other
   ...
 
@@ -194,7 +194,7 @@ Let's try to add another method, to se if it gets listed...
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...
   ...   <xmlrpc:view
-  ...       for="zope.app.folder.folder.IFolder"
+  ...       for="zope.site.interfaces.IFolder"
   ...       methods="contents2"
   ...       class="zope.app.xmlrpcintrospection.README.FolderListing2"
   ...       permission="zope.ManageContent"
@@ -281,7 +281,7 @@ Let's try out decorated and not decorated methods signatures (*):
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...
   ...   <xmlrpc:view
-  ...       for="zope.app.folder.folder.IFolder"
+  ...       for="zope.site.folder.IFolder"
   ...       methods="says says_not_decorated"
   ...       class="zope.app.xmlrpcintrospection.README.JacksonFiveRPC"
   ...       permission="zope.ManageContent"
@@ -381,7 +381,7 @@ Last, but not least, the method help:
   ...   <include package="zope.app.publisher.xmlrpc" file="meta.zcml" />
   ...
   ...   <xmlrpc:view
-  ...       for="zope.app.folder.folder.IFolder"
+  ...       for="zope.site.folder.IFolder"
   ...       methods="says says_not_documented"
   ...       class="zope.app.xmlrpcintrospection.README.JacksonFiveRPCDocumented"
   ...       permission="zope.ManageContent"

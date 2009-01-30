@@ -18,13 +18,13 @@ $Id$
 
 import re
 import zope.interface
-import zope.app.folder.folder
+import zope.site.interfaces
 import zope.publisher.interfaces.xmlrpc
 from zope.testing import renormalizing
 from zope.app.testing import ztapi, functional, setup
 from zope.app.xmlrpcintrospection.testing import XmlrpcIntrospectionLayer
 
-
+# FIXME: This should be a layer, but maybe people depend on it.
 def setUp(test):
     setup.setUpTestAsModule(test, 'zope.app.xmlrpcintrospection.README')
 
@@ -37,13 +37,13 @@ def tearDown(test):
     # requires the object that was registered and we don't have that handy.
     # (OK, we could get it if we want. Maybe later.)
 
-    ztapi.provideView(zope.app.folder.folder.IFolder,
+    ztapi.provideView(zope.site.interfaces.IFolder,
                         zope.publisher.interfaces.xmlrpc.IXMLRPCRequest,
                         zope.interface,
                         'contents',
                         None,
                         )
-    ztapi.provideView(zope.app.folder.folder.IFolder,
+    ztapi.provideView(zope.site.interfaces.IFolder,
                         zope.publisher.interfaces.xmlrpc.IXMLRPCRequest,
                         zope.interface,
                         'contents',
@@ -58,13 +58,3 @@ checker = renormalizing.RENormalizing([
     ])
 
 
-def test_suite():
-    suite = functional.FunctionalDocFileSuite(
-        'README.txt', setUp=setUp, tearDown=tearDown, checker=checker)
-    suite.layer = XmlrpcIntrospectionLayer
-    return suite
-
-
-if __name__ == '__main__':
-    import unittest
-    unittest.main(defaultTest='test_suite')

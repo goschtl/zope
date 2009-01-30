@@ -16,47 +16,9 @@
 $Id$
 """
 
-import re
-import zope.interface
-import zope.app.folder.folder
-import zope.publisher.interfaces.xmlrpc
-from zope.testing import renormalizing
-from zope.app.testing import ztapi, functional, setup
+from zope.app.testing import functional
+from zope.app.xmlrpcintrospection.ftests import setUp, tearDown, checker
 from zope.app.xmlrpcintrospection.testing import XmlrpcIntrospectionLayer
-
-
-def setUp(test):
-    setup.setUpTestAsModule(test, 'zope.app.xmlrpcintrospection.README')
-
-
-def tearDown(test):
-    # clean up the views we registered:
-
-    # we use the fact that registering None unregisters whatever is
-    # registered. We can't use an unregistration call because that
-    # requires the object that was registered and we don't have that handy.
-    # (OK, we could get it if we want. Maybe later.)
-
-    ztapi.provideView(zope.app.folder.folder.IFolder,
-                        zope.publisher.interfaces.xmlrpc.IXMLRPCRequest,
-                        zope.interface,
-                        'contents',
-                        None,
-                        )
-    ztapi.provideView(zope.app.folder.folder.IFolder,
-                        zope.publisher.interfaces.xmlrpc.IXMLRPCRequest,
-                        zope.interface,
-                        'contents',
-                        None,
-                        )
-
-    setup.tearDownTestAsModule(test)
-
-
-checker = renormalizing.RENormalizing([
-    (re.compile(r"HTTP/1\.([01]) (\d\d\d) .*"), r"HTTP/1.\1 \2 <MESSAGE>"),
-    ])
-
 
 def test_suite():
     suite = functional.FunctionalDocFileSuite(
