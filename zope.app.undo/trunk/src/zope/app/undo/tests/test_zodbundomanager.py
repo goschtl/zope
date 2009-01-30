@@ -30,10 +30,10 @@ from zope.location.traversing import LocationPhysicallyLocatable
 from zope.security.interfaces import IPrincipal
 
 from zope.app.security.principalregistry import PrincipalRegistry
-from zope.app.component import queryNextUtility
-from zope.app.component.hooks import setSite, setHooks
-from zope.app.component.interfaces import ISite
-from zope.app.component.site import SiteManagerAdapter
+from zope.location.interfaces import ISite
+from zope.site import queryNextUtility
+from zope.site.hooks import setSite, setHooks
+from zope.site.site import SiteManagerAdapter
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 
 from zope.app.undo import ZODBUndoManager

@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Adjusted tests so that basic objects and interfaces are pulled from
+  `zope.site` and `zope.location` rather than `zope.app.component`.
+
+
 3.4.0 (2007-10-27)
 ------------------
 
