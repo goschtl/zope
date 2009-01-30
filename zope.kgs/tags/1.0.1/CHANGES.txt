@@ -1,0 +1,41 @@
+=======
+CHANGES
+=======
+
+1.0.1 (2009-01-29)
+------------------
+
+- Fix documentation in all scripts, fixing missing imports and incorrect
+  wording.
+
+- The package should depend on `python-dateutl` and not `datetutil`, since the
+  latter is not available in PyPI anymore.
+
+1.0.0 (2009-01-29)
+------------------
+
+- Initial version as ``zope.kgs``.
+
+  * A script that extracts the relevant part of the changelog of each package
+    in the KGS.
+
+  * A script that lists all versions of a package released after the latest
+    version lsited in the KGS.
+
+  * A script that manages the generation of the entire KGS site.
+
+    + Generates generic and version-specific pages.
+
+    + Page generation is template-based for easy customization.
+
+  * Generate `links.html` file which lists all controlled packages files.
+
+  * Features copied from ``zope.release``:
+
+    + Parser for KGS configuration files.
+
+    + Generate `versions.cfg` and `buildout.cfg` script.
+
+  * Features copied from ``zc.mirrorcheeseshopslashsimple``:
+
+    + Generate new index pages for the controlled packages.
