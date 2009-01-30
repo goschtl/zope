@@ -349,7 +349,7 @@ z3c.formjs
   prefixes for ajax forms.
 
 - Feature: There is now a viewlet manager already registered with all
-  the viewlets necessary to use `z3c.formjs`.  You can now just do:
+  the viewlets necessary to use `z3c.formjs`.  You can now just do::
 
     &lt;script tal:replace="structure
                          provider:z3c.formjs.interfaces.IDynamicJavaScript"&gt;
@@ -2262,9 +2262,6 @@ zope.rdb
 ---------------
 
 Initial release as an independent package
-
-Download
-********
 
 
 ===========
