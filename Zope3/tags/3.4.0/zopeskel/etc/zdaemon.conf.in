@@ -1,0 +1,51 @@
+%define INSTANCE <<INSTANCE_HOME>>
+%define LOGDIR $INSTANCE/log
+%define DATADIR $INSTANCE/var
+
+<runner>
+  # This tells the runner what program to run.  Don't change this.
+  #
+  program $INSTANCE/bin/runzope
+
+  # The "daemon" setting controls whether "zopectl" runs Zope as a
+  # daemon process.  This is normally set to "on" here, but this can
+  # be disabled if necessary.
+  #
+  daemon on
+
+  # If set, this option specifies a file to which all output of the
+  # program being run is written when run in daemon mode.  If not set,
+  # output from the program is discarded.  This has no effect outside
+  # daemon mode.
+  #
+  transcript $LOGDIR/transcript.log
+
+  # Path to the zopectl socket. Should be accessable by the user the
+  # daemon is running under (see below)
+  #
+  socket-name $DATADIR/zopectlsock
+
+  # If you intend to run Zope as the "root" user, you must supply this
+  # directive with an effective username or userid number.
+  #
+  # Default: unset
+  #
+  # Example:
+  #
+  #  user zope1
+  
+</runner>
+
+<eventlog>
+  # This sets up logging to both a file (z3.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path $LOGDIR/z3.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>
