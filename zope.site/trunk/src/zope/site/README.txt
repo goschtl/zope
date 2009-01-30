@@ -37,7 +37,7 @@ bases. Let's first create a global utility::
 
 We create a simple folder hierarchy we can place our utilities in:
 
-  >>> from zope.app.folder import Folder, rootFolder
+  >>> from zope.site.folder import Folder, rootFolder
   >>> root = rootFolder()
   >>> root[u'folder1'] = Folder()
   >>> root[u'folder1'][u'folder1_1'] = Folder()

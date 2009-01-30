@@ -20,7 +20,7 @@ import unittest
 from zope.interface import Interface
 from zope.copypastemove import ObjectCopier
 from zope import site
-from zope.app.folder import Folder
+from zope.site.folder import Folder
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 class I1(Interface):

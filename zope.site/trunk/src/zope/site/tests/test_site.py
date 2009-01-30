@@ -23,7 +23,7 @@ import zope.interface.verify
 from zope.testing import doctest
 from zope.location.interfaces import ISite, IPossibleSite
 
-from zope.app.folder import folder
+from zope.site import folder
 
 from zope.site import interfaces
 from zope import site
