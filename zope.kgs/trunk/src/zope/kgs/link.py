@@ -27,6 +27,7 @@ Usage: %s package-cfg-path [output-links-path]
   name 'links.html'.
 """
 import os
+import sys
 import xmlrpclib
 import zope.kgs.kgs
 
@@ -66,7 +67,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     if len(args) < 1:
-        print __file__.__doc__ % sys.argv[0]
+        print __doc__ % sys.argv[0]
         sys.exit(1)
 
     packageConfigPath = os.path.abspath(args[0])

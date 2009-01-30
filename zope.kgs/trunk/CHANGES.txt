@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+1.0.1 (2009-01-29)
+------------------
+
+- Fix documentation in all scripts, fixing missing imports and incorrect
+  wording.
+
+- The package should depend on `python-dateutl` and not `datetutil`, since the
+  latter is not available in PyPI anymore.
+
 1.0.0 (2009-01-29)
 ------------------
 

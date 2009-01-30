@@ -19,7 +19,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.kgs',
-      version = '1.1.0dev',
+      version = '1.0.1',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Known-Good-Set (KGS) Support',
@@ -49,7 +49,7 @@ setup(name='zope.kgs',
           test=['zope.testing'],
           ),
       install_requires=[
-          'dateutil',
+          'python-dateutil',
           'docutils',
           'lxml',
           'setuptools',

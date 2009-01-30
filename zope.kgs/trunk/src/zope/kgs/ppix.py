@@ -14,7 +14,7 @@
 """Generate a 'Links' HTML page that can be used as a `find-links` entry in
 setuptools.
 
-Usage: %s [-i] package-cfg-path [output-links-path]
+Usage: %s [-i] package-cfg-path [output-index-path]
 
 * -i
 
@@ -25,13 +25,14 @@ Usage: %s [-i] package-cfg-path [output-links-path]
 
   This is the path to the controlled packages configuration file.
 
-* ``output-links-path``
+* ``output-index-path``
 
-  The path of the file under which the generated links file is stored. By
+  The path of the directory under which the generated index is stored. By
   default it is placed in the package configuration file's directory under the
-  name 'links.html'.
+  name 'index'.
 """
 import os
+import sys
 import urllib
 import urllib2
 import xmlrpclib
@@ -97,7 +98,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     if len(args) < 1:
-        print __file__.__doc__ % sys.argv[0]
+        print __doc__ % sys.argv[0]
         sys.exit(1)
 
     createIndex = False
@@ -108,9 +109,11 @@ def main(args=None):
     packageConfigPath = os.path.abspath(args[0])
 
     destDir = os.path.join(
-        os.path.dirname(packageConfigPath), 'links.html')
+        os.path.dirname(packageConfigPath), 'index')
     if len(args) == 2:
         destDir = args[1]
+    if not os.path.exists(destDir):
+        os.mkdir(destDir)
 
     generatePackagePages(packageConfigPath, destDir)
 

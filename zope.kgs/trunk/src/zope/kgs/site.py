@@ -11,16 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Generates a full KGS site with all bells and whistles.
-
-Usage: %s site-dir
-
-* ``site-dir``
-
-  The path to the directory where a ``controlled-packages.cfg`` file is
-  located to generate the site. The generated site is in that directory as
-  well.
-"""
+"""Generates a full KGS site with all bells and whistles."""
 import datetime
 import docutils.core
 import logging

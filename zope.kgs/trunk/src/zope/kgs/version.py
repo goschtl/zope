@@ -14,9 +14,7 @@
 """Generate a ``latest-versions.cfg`` file from the controlled list of
 packages.
 
-This file can
-
-Usage: generate-buildout package-cfg-path [output-cfg-path]
+Usage: %s package-cfg-path [output-cfg-path]
 
 * ``package-cfg-path``
 
@@ -30,6 +28,7 @@ Usage: generate-buildout package-cfg-path [output-cfg-path]
 
 """
 import os
+import sys
 
 from zope.kgs import buildout, kgs
 
@@ -49,7 +48,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     if len(args) < 1:
-        print __file__.__doc__
+        print __doc__ %sys.argv[0]
         sys.exit(1)
 
     packageConfigPath = os.path.abspath(args[0])

@@ -34,6 +34,7 @@ import lxml.etree
 import os
 import pkg_resources
 import re
+import sys
 import urllib
 import urllib2
 import zope.kgs.kgs
@@ -88,7 +89,7 @@ def main(args=None):
         args = sys.argv[1:]
 
     if len(args) < 1 or args[0] in ('-h', '--help'):
-        print __file__.__doc__ % sys.argv[0]
+        print __doc__ % sys.argv[0]
         sys.exit(1)
 
     minorOnly = False
