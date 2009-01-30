@@ -16,5 +16,5 @@ BBB This module moved to zope.container.directory
 """
 
 # BBB
-from zope.container.directoty import (
+from zope.container.directory import (
     MARKER, RootDirectoryFactory, ReadDirectory)
