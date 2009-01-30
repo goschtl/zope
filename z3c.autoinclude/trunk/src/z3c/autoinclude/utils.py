@@ -1,5 +1,6 @@
 import os
 from pkg_resources import find_distributions
+from pprint import pformat
 import sys
 from zope.dottedname.resolve import resolve
 
@@ -96,8 +97,10 @@ def distributionForDottedName(package_dottedname):
             return valid_dists_for_package[0][0]
 
         valid_dists_for_package = non_namespaced_dists ### if we have packages 'foo', 'foo.bar', and 'foo.baz', the correct one is 'foo'.
-        assert len(non_namespaced_dists) == 1          ### we really are in trouble if we get into a situation with more than one
-                                                       ### non-namespaced package at this point.
+
+        ### we really are in trouble if we get into a situation with more than one non-namespaced package at this point.
+        assert len(non_namespaced_dists) == 1, "We have a problem!\nnon_namespaced_dists: %s\nsys.path: %s" % (
+            pformat(non_namespaced_dists), pformat(sys.path))
 
     return valid_dists_for_package[0][0]
 
