@@ -172,7 +172,7 @@ class Recipe(object):
             as_eggs='true',
             no_warnings='true',
             ))
-        recipe.newest = False
+        recipe.newest = True
         recipe.update()
 
     def _remove_develop_eggs(self):
