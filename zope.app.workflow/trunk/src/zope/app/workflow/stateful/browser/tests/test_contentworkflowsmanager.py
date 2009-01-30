@@ -15,6 +15,7 @@
 
 $Id$
 """
+
 import unittest
 import re
 
@@ -30,6 +31,7 @@ from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition,\
      IContentWorkflowsManager
 from zope.app.workflow.testing import AppWorkflowLayer
+
 
 class Test(BrowserTestCase):
 
@@ -66,7 +68,7 @@ class Test(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find(
-            '<option value="zope.app.folder.interfaces.IFolder">'
+            '<option value="zope.site.interfaces.IFolder">'
             ) >= 0)
         self.assert_(body.find(
             '<option value="zope.app.file.interfaces.IFile">'
@@ -76,7 +78,7 @@ class Test(BrowserTestCase):
             self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw',
             form={
-            'field.iface':['zope.app.folder.interfaces.IFolder',
+            'field.iface':['zope.site.interfaces.IFolder',
                            'zope.app.file.interfaces.IFile'],
             'field.name':['dummy-definition'],
             'ADD':'Add'
@@ -89,7 +91,7 @@ class Test(BrowserTestCase):
 
         self.assert_(nameToInterface(
             None,
-            'zope.app.folder.interfaces.IFolder'
+            'zope.site.interfaces.IFolder'
             ) in ifaces)
         self.assert_(nameToInterface(
             None,
@@ -101,7 +103,7 @@ class Test(BrowserTestCase):
             self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw',
             form={
-            'mappings': ['dummy-definition:zope.app.folder.interfaces.IFolder',
+            'mappings': ['dummy-definition:zope.site.interfaces.IFolder',
                          'dummy-definition:zope.app.file.interfaces.IFile'],
             'REMOVE':''
             })
@@ -109,9 +111,7 @@ class Test(BrowserTestCase):
         ifaces = mgr.getInterfacesForProcessName('dummy-definition')
         self.assertEqual(len(ifaces), 0)
 
+
 def test_suite():
     Test.layer = AppWorkflowLayer
     return unittest.makeSuite(Test)
-
-if __name__ == '__main__':
-    unittest.main()
