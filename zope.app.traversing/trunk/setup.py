@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.folder package
+"""Setup for zope.app.traversing package
 
 $Id: setup.py 81038 2007-10-24 14:34:17Z srichter $
 """
