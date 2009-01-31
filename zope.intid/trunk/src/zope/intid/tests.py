@@ -15,13 +15,11 @@
 
 $Id$
 """
-import re
 import unittest
 import BTrees
 
 from persistent import Persistent
 from persistent.interfaces import IPersistent
-from transaction import commit
 from ZODB.interfaces import IConnection
 
 from zope.interface import implements
@@ -31,18 +29,14 @@ from zope.location.interfaces import ILocation
 from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
 
-from zope.traversing.api import traverse
-
 from zope.app.testing import setup, ztapi
 from zope.site.hooks import setSite
+from zope.keyreference.persistent import KeyReferenceToPersistent
+from zope.keyreference.persistent import connectionOfPersistent
+from zope.keyreference.interfaces import IKeyReference
 
-from zope.app.intid import IntIds, intIdEventNotify
-from zope.app.intid.interfaces import IIntIds
-from zope.app.intid.testing import IntIdLayer
-from zope.app.keyreference.persistent import KeyReferenceToPersistent
-from zope.app.keyreference.persistent import connectionOfPersistent
-from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.testing.functional import BrowserTestCase
+from zope.intid import IntIds, intIdEventNotify
+from zope.intid.interfaces import IIntIds
 
 
 class P(Persistent):
@@ -207,9 +201,9 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         provideHandler(intIdEventNotify)
 
     def test_removeIntIdSubscriber(self):
-        from zope.app.intid import removeIntIdSubscriber
         from zope.container.contained import ObjectRemovedEvent
-        from zope.app.intid.interfaces import IIntIdRemovedEvent
+        from zope.intid import removeIntIdSubscriber
+        from zope.intid.interfaces import IIntIdRemovedEvent
         from zope.site.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
@@ -245,9 +239,9 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(objevents[0][1].original_event.object, parent_folder)
 
     def test_addIntIdSubscriber(self):
-        from zope.app.intid import addIntIdSubscriber
         from zope.container.contained import ObjectAddedEvent
-        from zope.app.intid.interfaces import IIntIdAddedEvent
+        from zope.intid import addIntIdSubscriber
+        from zope.intid.interfaces import IIntIdAddedEvent
         from zope.site.interfaces import IFolder
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
@@ -291,60 +285,11 @@ class TestIntIds64(TestIntIds):
         return IntIds(family=BTrees.family64)
 
 
-class TestFunctionalIntIds(BrowserTestCase):
-
-    def setUp(self):
-        from zope.app.intid import IntIds
-        from zope.app.intid.interfaces import IIntIds
-
-        BrowserTestCase.setUp(self)
-
-        self.basepath = '/++etc++site/default'
-        root = self.getRootFolder()
-
-        sm = traverse(root, '/++etc++site')
-        setup.addUtility(sm, 'intid', IIntIds, IntIds())
-        commit()
-
-        type_name = 'BrowserAdd__zope.app.intid.IntIds'
-
-        response = self.publish(
-            self.basepath + '/contents.html',
-            basic='mgr:mgrpw',
-            form={'type_name': type_name,
-                  'new_value': 'mgr' })
-
-    def test(self):
-        response = self.publish(self.basepath + '/intid/@@index.html',
-                                basic='mgr:mgrpw')
-        self.assertEquals(response.getStatus(), 200)
-        # The utility registers in itself when it is being added
-        self.assert_(response.getBody().find('1 objects') > 0)
-        self.assert_('<a href="/++etc++site">/++etc++site</a>'
-                     not in response.getBody())
-
-        response = self.publish(self.basepath + '/intid/@@populate',
-                                basic='mgr:mgrpw')
-        self.assertEquals(response.getStatus(), 302)
-
-        response = self.publish(self.basepath
-                                + '/intid/@@index.html?testing=1',
-                                basic='mgr:mgrpw')
-        self.assertEquals(response.getStatus(), 200)
-        body = response.getBody()
-        self.assert_('3 objects' in body)
-        self.assert_('<a href="/++etc++site">/++etc++site</a>' in body)
-        self.checkForBrokenLinks(body, response.getPath(), basic='mgr:mgrpw')
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestIntIds))
     suite.addTest(unittest.makeSuite(TestIntIds64))
     suite.addTest(unittest.makeSuite(TestSubscribers))
-    # Functional Tests
-    TestFunctionalIntIds.layer = IntIdLayer
-    suite.addTest(unittest.makeSuite(TestFunctionalIntIds))
     return suite
 
 if __name__ == '__main__':

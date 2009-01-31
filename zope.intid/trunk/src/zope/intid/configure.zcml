@@ -31,7 +31,4 @@
 
   <include file="subscribers.zcml" />
 
-  <!-- Views -->
-  <include package=".browser" />
-
 </configure>

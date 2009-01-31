@@ -23,25 +23,21 @@ $Id$
 import random
 import BTrees
 
-from ZODB.interfaces import IConnection
 from persistent import Persistent
+from ZODB.interfaces import IConnection
 
+from zope.component import adapter, getAllUtilitiesRegisteredFor, subscribers
 from zope.event import notify
 from zope.interface import implements
-from zope.security.proxy import removeSecurityProxy
 from zope.location.interfaces import ILocation
-from zope.component import adapter, getAllUtilitiesRegisteredFor, queryUtility, subscribers
-from zope.component.interfaces import IFactory
+from zope.security.proxy import removeSecurityProxy
 
-from zope.container.interfaces import IObjectRemovedEvent
-from zope.container.interfaces import IObjectAddedEvent
+from zope.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.container.contained import Contained
-from zope.app.keyreference.interfaces import IKeyReference, NotYet
+from zope.keyreference.interfaces import IKeyReference, NotYet
 
-from zope.app.intid.interfaces import IIntIds, IIntIdEvent
-from zope.app.intid.interfaces import IntIdRemovedEvent
-from zope.app.intid.interfaces import IntIdAddedEvent
-
+from zope.intid.interfaces import IIntIds, IIntIdEvent
+from zope.intid.interfaces import IntIdAddedEvent, IntIdRemovedEvent
 
 class IntIds(Persistent, Contained):
     """This utility provides a two way mapping between objects and

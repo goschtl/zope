@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.intid package
+"""Setup for zope.intid package
 
 $Id$
 """
@@ -21,10 +21,10 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name = 'zope.app.intid',
-      version = '3.6.1dev',
+setup(name = 'zope.intid',
+      version = '3.7.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Integer Id Utility',
       long_description=(
           read('README.txt')
@@ -42,22 +42,20 @@ setup(name = 'zope.app.intid',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.intid',
+      url='http://cheeseshop.python.org/pypi/zope.intid',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
-      namespace_packages=['zope', 'zope.app'],
+      namespace_packages=['zope'],
       extras_require = dict(test=['zope.app.testing',
-                                  'zope.app.securitypolicy',
-                                  'zope.site',
-                                  'zope.app.zcmlfiles']),
+                                  'zope.site']),
       install_requires = ['setuptools',
                           'ZODB3',
                           'zope.container',
-                          'zope.app.keyreference',
                           'zope.component',
                           'zope.event',
                           'zope.interface',
+                          'zope.keyreference',
                           'zope.location',
                           'zope.security',
                           ],
