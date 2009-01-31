@@ -1,0 +1,14 @@
+=======
+CHANGES
+=======
+
+3.6.0 (2009-1-31)
+-----------------
+
+- Use zope.container instead of zope.app.container.
+
+3.5.1 (2009-01-27)
+------------------
+
+- Extracted from zope.app.component (trunk, 3.5.1 under development)
+  as part of an effort to clean up dependencies between Zope packages.
