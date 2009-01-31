@@ -1,0 +1,169 @@
+===========================
+Zope 3.4.0 beta 2 Released!
+===========================
+
+November 5, 2007 - The Zope 3 development team announces the Zope
+3.4.0b2 release.
+
+This release is the second beta release for Zope 3.4.0. It was preceeded
+by an early beta 1 release back in July.
+
+Zope 3.4 introduces support for binary large objects in the ZODB, and provides
+a new postprocessing hook for publishing results. Many of the packages also
+provide small feature improvements that are too numerous to list at this
+point.
+
+
+Packages and Eggs
+-----------------
+
+Since the first Zope 3.4 alpha and beta releases, we have finished the
+transition to a completely egg-based system. This largely means that most Zope
+3 developers do not use the classic Zope 3 tar ball release anymore. However,
+for your convenience, the Zope 3 developers will provide the classic Zope 3
+tar ball releases for at least the 3.4 series and probably for 3.5 as well.
+
+So how are Zope 3 applications built using only eggs?
+
+The Known Good Set (KGS)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The known good set -- or in short KGS -- is a package index that derives from
+the official Python Package Index (PyPI) and thus contains all available
+packages in the Python world. But for a controlled set of packages, only
+certain versions that are known to work together are available. The list of
+controlled packages and their versions for Zope 3.4 can be found at the index
+page [1]_.
+
+The index can be used in several ways -- described here for `buildout`-based
+projects. The easiest method is to specify the index option in your
+``buildout.cfg`` file::
+
+  [buildout]
+  index = http://download.zope.org/zope3.4
+  ...
+
+You can also "nail" the versions by downloading the versions [2]_ and insert
+them as follows::
+
+  [buildout]
+  versions = versions
+  ...
+
+  [versions]
+  zope.interface = 3.4.0
+  ...
+
+
+``zopeproject`` Project Builder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Philipp von Weitershausen has developed a package called `zopeproject` to
+quickly setup the boilerplate for any Zope 3 based project. Ample
+documentation is provided at the `zopeproject` home page [3]_. `zopeproject`
+uses Paste or ZDaemon to create a working server. Here are the necessary
+commands to get a project started::
+
+  $ easy_install zopeproject
+  $ zopeproject HelloWorld
+  $ cd HelloWorld
+  $ bin/helloworld-ctl foreground
+
+
+Demo Packages
+~~~~~~~~~~~~~
+
+At this point, there is no demo package demonstrating a simple Zope 3
+application setup. (I hope one gets developed before Zope 3.4.0 final.)
+However, the ``z3c.formdemo`` package can be used as a fairly minimal
+setup. To get started with it, do the following::
+
+  $ svn co svn://svn.zope.org/repos/main/z3c.formdemo/tags/1.5.1 formdemo
+  $ cd formdemo
+  $ python bootstrap.py
+  $ ./bin/buildout -v
+  $ ./bin/demo fg
+
+
+.. [1] http://download.zope.org/zope3.4/controlled-packages.cfg
+
+.. [2] http://download.zope.org/zope3.4/versions.cfg
+
+.. [3] http://pypi.python.org/pypi/zopeproject
+
+
+What is Zope 3?
+---------------
+
+Zope 3 is a web application server that continues to build on the heritage of
+Zope.  It was rewritten from scratch based on the latest software design
+patterns and the experiences of Zope 2.
+
+The component architecture is the very core of Zope 3 that allows developers to
+create flexible and powerful web applications.
+
+
+Compatibility with Zope 2
+--------------------------
+
+Zope 3 is not upwards compatible with Zope 2. This means you cannot run Zope 2
+applications in Zope 3.
+
+We continue to work on the transition from Zope 2 to Zope 3 by making Zope 2
+use more and more of the Zope 3 infrastructure. This means that new code
+written in Zope 2 can benefit from Zope 3 technology. Also, with care, code
+can be written that works in both Zope 3 and Zope 2.  This allows a Zope 2
+application to slowly evolve towards Zope 3.  Unchanged Zope 2 applications
+are never expected to work in Zope 3, however.
+
+
+Downloads
+---------
+
+- Zope 3.4 Egg Index:
+    http://download.zope.org/zope3.4
+
+- Zope 3.4 Controlled Packages:
+    http://download.zope.org/zope3.4/controlled-packages.cfg
+
+- Zope 3.4 Latest Versions:
+    http://download.zope.org/zope3.4/versions.cfg
+
+- The classic Zope 3 source release can be downloaded from:
+    http://zope.org/Products/Zope3
+
+Installation instructions for both Windows and Un*x/Linux are now available in
+the top level `README.txt` file of the distribution. The binary installer is
+recommended for Windows.
+
+Zope 3.4 requires Python 2.4.4 to run. You must also have zlib installed on
+your system.
+
+
+Resources
+---------
+
+- Zope 3 Development Web Site:
+    http://wiki.zope.org/zope3
+
+- Zope 3 Developers Mailing List:
+    http://mail.zope.org/mailman/listinfo/zope-dev
+
+    Retired: http://mail.zope.org/mailman/listinfo/zope3-dev
+
+- Zope 3 Users Mailing List:
+    http://mail.zope.org/mailman/listinfo/zope3-users
+
+- Bug tracker at launchpad:
+    https://launchpad.net/zope3
+
+- IRC Channel:
+    #zope3-dev at irc.freenode.net
+
+
+Acknowledgments
+---------------
+
+Much thanks to everyone who contributed to this release. Since all
+contributions are now spread over a multitude of packages, listing all
+contributors is not feasible anymore.
