@@ -21,20 +21,18 @@ This functionality can be used in cataloging.
 $Id$
 """
 import random
-import BTrees
 
+import BTrees
 from persistent import Persistent
 from ZODB.interfaces import IConnection
-
 from zope.component import adapter, getAllUtilitiesRegisteredFor, subscribers
-from zope.event import notify
-from zope.interface import implements
-from zope.location.interfaces import ILocation
-from zope.security.proxy import removeSecurityProxy
-
 from zope.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.container.contained import Contained
+from zope.event import notify
+from zope.interface import implements
 from zope.keyreference.interfaces import IKeyReference, NotYet
+from zope.location.interfaces import ILocation
+from zope.security.proxy import removeSecurityProxy
 
 from zope.intid.interfaces import IIntIds, IIntIdEvent
 from zope.intid.interfaces import IntIdAddedEvent, IntIdRemovedEvent

@@ -16,28 +16,24 @@
 $Id$
 """
 import unittest
-import BTrees
 
+import BTrees
 from persistent import Persistent
 from persistent.interfaces import IPersistent
+from zope.app.testing import setup, ztapi
 from ZODB.interfaces import IConnection
-
-from zope.interface import implements
-from zope.interface.verify import verifyObject
-from zope.location.interfaces import ILocation
-
 from zope.component import getSiteManager
 from zope.component.interfaces import IFactory
-
-from zope.app.testing import setup, ztapi
-from zope.site.hooks import setSite
+from zope.interface import implements
+from zope.interface.verify import verifyObject
 from zope.keyreference.persistent import KeyReferenceToPersistent
 from zope.keyreference.persistent import connectionOfPersistent
 from zope.keyreference.interfaces import IKeyReference
+from zope.location.interfaces import ILocation
+from zope.site.hooks import setSite
 
 from zope.intid import IntIds, intIdEventNotify
 from zope.intid.interfaces import IIntIds
-
 
 class P(Persistent):
     implements(ILocation)
