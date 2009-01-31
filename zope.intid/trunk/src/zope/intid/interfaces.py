@@ -80,7 +80,7 @@ class IIntIdRemovedEvent(IIntIdEvent):
     """
 
 
-class IntIdRemovedEvent:
+class IntIdRemovedEvent(object):
     """The event which is published before the unique id is removed
     from the utility so that the catalogs can unindex the object.
     """
@@ -102,7 +102,7 @@ class IIntIdAddedEvent(IIntIdEvent):
     idmap = Attribute("The dictionary that holds an (utility -> id) mapping of created ids")
 
 
-class IntIdAddedEvent:
+class IntIdAddedEvent(object):
     """The event which gets sent when an object is registered in a
     unique id utility.
     """
