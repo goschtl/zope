@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.7.1 (unreleased)
+------------------
+
+- ...
+
+3.7.0 (2009-02-01)
 ------------------
 
 - Split out this package from ``zope.app.intid``. The latter one
