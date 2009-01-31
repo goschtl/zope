@@ -1,0 +1,12 @@
+=======
+CHANGES
+=======
+
+3.7.0 (unreleased)
+------------------
+
+- Split this package off ``zope.app.container``. This package is
+  intended to have far less dependencies than ``zope.app.container``.
+
+- This package also contains the container implementation that
+  used to be in ``zope.app.folder``.
