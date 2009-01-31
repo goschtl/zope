@@ -19,7 +19,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.release',
-      version = '3.4.0dev',
+      version = '3.4.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Release and Known-Good-Set (KGS) Support',
