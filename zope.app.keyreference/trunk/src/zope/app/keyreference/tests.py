@@ -20,6 +20,10 @@ from zope.testing import doctest
 
 def test_imports():
     """
+    All functionality was moved to zope.keyreference, so the tests are
+    moved as well. Here, we only test that backward-compatibility imports
+    are still working.
+    
     >>> from zope.app.keyreference.interfaces import NotYet, IKeyReference
     >>> NotYet
     <class 'zope.keyreference.interfaces.NotYet'>
