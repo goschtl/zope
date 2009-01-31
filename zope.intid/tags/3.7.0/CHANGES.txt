@@ -1,0 +1,10 @@
+=======
+CHANGES
+=======
+
+3.7.0 (2009-02-01)
+------------------
+
+- Split out this package from ``zope.app.intid``. The latter one
+  now only contains browser views and compatibility imports while
+  whole IntId functionality is moved here. 
