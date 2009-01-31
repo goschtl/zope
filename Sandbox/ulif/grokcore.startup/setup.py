@@ -11,13 +11,13 @@ long_description = (
     )
 
 setup(
-    name='grokcore.security',
-    version='1.1dev',
+    name='grokcore.startup',
+    version='0.1dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
-    download_url='http://pypi.python.org/pypi/grokcore.security',
-    description='Grok-like configuration for Zope security components',
+    download_url='http://pypi.python.org/pypi/grokcore.startup',
+    description='Paster support for Grok projects.',
     long_description=long_description,
     license='ZPL',
     classifiers=['Intended Audience :: Developers',
@@ -36,7 +36,6 @@ setup(
                       'grokcore.component >= 1.5.1',
                       'zope.interface',
                       'zope.component',
-                      'zope.security',
                       'zope.configuration',
                       'zope.testing',
                       ],
