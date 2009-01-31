@@ -12,4 +12,4 @@ All you have to do is, to make this package available during runtime.
 
 With `zc.buildout` or other `setuptools`-related setups this can be
 done by simply adding the package name ``grokcore.startup`` to the
-required packages of your project.
+required packages of your project in ``setup.py``.
