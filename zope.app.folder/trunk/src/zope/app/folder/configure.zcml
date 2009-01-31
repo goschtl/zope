@@ -7,4 +7,9 @@
   <include package="zope.container" />
   <include package=".browser" />
 
+  <interface
+      interface="zope.site.interfaces.IFolder"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
 </configure>
