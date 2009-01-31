@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2009-01-31))
 ------------------
 
 - Everything except zope.app.folder.browser moved to zope.site
