@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-3.7.1dev (unreleased)
-=====================
+3.7.1 (2009-01-31)
+==================
 
 - Adapt to the upcoming zope.schema release 3.5.1 which will also silence the
   spurious `set` failures.
