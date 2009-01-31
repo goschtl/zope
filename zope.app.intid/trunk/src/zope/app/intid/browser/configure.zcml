@@ -7,14 +7,14 @@
   <addMenuItem
       title="Unique Id Utility"
       description="A utility that provides unique ids to objects"
-      class="zope.app.intid.IntIds"
+      class="zope.intid.IntIds"
       permission="zope.ManageSite"
       />
 
   <page
       name="index.html"
       menu="zmi_views" title="Registered Objects"
-      for="zope.app.intid.interfaces.IIntIds"
+      for="zope.intid.interfaces.IIntIds"
       permission="zope.ManageServices"
       class=".IntIdsView"
       template="registrations.pt"
@@ -22,7 +22,7 @@
 
   <page
       name="populate"
-      for="zope.app.intid.interfaces.IIntIds"
+      for="zope.intid.interfaces.IIntIds"
       permission="zope.ManageServices"
       class=".IntIdsView"
       attribute="populate"
@@ -31,7 +31,7 @@
   <icon
       name="zmi_icon"
       file="intids.png"
-      for="zope.app.intid.interfaces.IIntIds"
+      for="zope.intid.interfaces.IIntIds"
       />
 
 </zope:configure>

@@ -2,10 +2,15 @@
 CHANGES
 =======
 
-3.6.1 (unreleased)
+3.7.0 (unreleased)
 ------------------
 
-- ...
+- Move core functionality to new ``zope.intid`` package, leaving only
+  ZMI-related browser views here.
+  
+  Note, that if you used the ``exclude`` directive from ``zc.configuration``
+  package to exclude the ``subscribers.zcml`` file from ``zope.app.intid``,
+  you need to change the directive to exclude it from ``zope.intid`` now.
 
 3.6.0 (2009-01-31)
 ------------------
