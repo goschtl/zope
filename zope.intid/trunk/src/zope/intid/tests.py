@@ -23,7 +23,6 @@ from persistent.interfaces import IPersistent
 from zope.app.testing import setup, ztapi
 from ZODB.interfaces import IConnection
 from zope.component import getSiteManager
-from zope.component.interfaces import IFactory
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.keyreference.persistent import KeyReferenceToPersistent
