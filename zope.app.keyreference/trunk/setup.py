@@ -22,17 +22,12 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'zope.app.keyreference',
-      version = '3.5.0dev',
+      version = '3.6.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Key References',
+      description='Object key references',
       long_description=(
           read('README.txt')
-          + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '----------------------\n'
-          + '\n\n' +
-          read('src', 'zope', 'app', 'keyreference', 'persistent.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -54,11 +49,7 @@ setup(name = 'zope.app.keyreference',
       namespace_packages=['zope', 'zope.app'],
       extras_require={'test': ['zope.testing']},
       install_requires = ['setuptools',
-                          'ZODB3',
-                          'zope.component',
-                          'zope.i18nmessageid',
-                          'zope.interface',
-                          'zope.schema',
+                          'zope.keyreference',
                           ],
       include_package_data = True,
       zip_safe = False,

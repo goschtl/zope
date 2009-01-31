@@ -18,44 +18,30 @@ $Id$
 import unittest
 from zope.testing import doctest
 
-def test_multi_databases():
+def test_imports():
     """
-    >>> from ZODB.tests.util import DB
-    >>> import transaction
-    >>> from BTrees.OOBTree import OOBucket
-
-    >>> databases = {}
-
-    >>> db1 = DB(databases=databases, database_name='1')
-    >>> db2 = DB(databases=databases, database_name='2')
-
-    >>> conn1 = db1.open()
-    >>> conn1.root()['ob'] = OOBucket()
-
-    >>> conn2 = conn1.get_connection('2')
-    >>> conn2.root()['ob'] = OOBucket()
-
-    >>> conn1.root()['ob']._p_oid == conn2.root()['ob']._p_oid
-    True
-
-    >>> transaction.commit()
+    >>> from zope.app.keyreference.interfaces import NotYet, IKeyReference
+    >>> NotYet
+    <class 'zope.keyreference.interfaces.NotYet'>
+    >>> IKeyReference
+    <InterfaceClass zope.keyreference.interfaces.IKeyReference>
 
     >>> from zope.app.keyreference.persistent import KeyReferenceToPersistent
-
-    >>> key1 = KeyReferenceToPersistent(conn1.root()['ob'])
-    >>> key2 = KeyReferenceToPersistent(conn2.root()['ob'])
-
-    >>> key1 != key2, key2 > key1, hash(key1) != hash(key2)
-    (True, True, True)
-
-"""
+    >>> from zope.app.keyreference.persistent import connectionOfPersistent
+    >>> KeyReferenceToPersistent
+    <class 'zope.keyreference.persistent.KeyReferenceToPersistent'>
+    >>> connectionOfPersistent
+    <function connectionOfPersistent at 0x...>
+    
+    >>> from zope.app.keyreference.testing import SimpleKeyReference
+    >>> SimpleKeyReference
+    <class 'zope.keyreference.testing.SimpleKeyReference'>
+    """
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('persistent.txt'),
-        doctest.DocTestSuite(),
+        doctest.DocTestSuite(optionflags=doctest.ELLIPSIS),
         ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-

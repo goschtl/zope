@@ -2,8 +2,14 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.6.0 (unreleased)
 ------------------
+
+- Move all functionality to new ``zope.keyreference`` package. This
+  package only provides backward-compatibility imports now.
+
+3.5.0b2 (unknown)
+-----------------
 
 - Performance related change to the conflict resolution code in
   ``zope.app.keyreference.persistent.KeyReferenceToPersistent.__cmp__``.
