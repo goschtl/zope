@@ -1,7 +1,7 @@
 Catalogs
 ========
 
-Catalogs are simple tools used to suppprt searching.  A catalog
+Catalogs are simple tools used to supppot searching.  A catalog
 manages a collection of indexes, and aranges for objects to indexed
 with it's contained indexes.
 
