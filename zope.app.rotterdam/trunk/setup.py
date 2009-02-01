@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.rotterdam',
       version = '3.5.0',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Rotterdam -- A Zope 3 ZMI Skin',
       long_description=(
           read('README.txt')
@@ -42,7 +42,7 @@ setup(name='zope.app.rotterdam',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.rotterdam',
+      url='http://pypi.python.org/pypi/zope.app.rotterdam',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

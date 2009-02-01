@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-3.5.0 (unrealeased)
--------------------
+3.5.0 (2009-02-01)
+------------------
 
 - Use zope.container instead of zope.app.container.
 
