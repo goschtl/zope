@@ -12,4 +12,5 @@
 #
 ##############################################################################
 # Make this a package.
+from grokcore.startup.startup import application_factory
 
