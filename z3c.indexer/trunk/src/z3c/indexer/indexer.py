@@ -20,7 +20,7 @@ import zope.interface
 import zope.component
 import zope.deferredimport
 from zope.cachedescriptors.property import Lazy
-from zope.app.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIds
 
 from z3c.indexer import interfaces
 

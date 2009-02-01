@@ -19,9 +19,9 @@ __docformat__ = "reStructuredText"
 import unittest
 import zope.component
 from zope.testing import doctest
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
-from zope.app.keyreference.interfaces import IKeyReference
+from zope.intid import IntIds
+from zope.intid.interfaces import IIntIds
+from zope.keyreference.interfaces import IKeyReference
 
 import z3c.testing
 from z3c.indexer import interfaces

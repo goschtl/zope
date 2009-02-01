@@ -23,7 +23,7 @@ from BTrees.IFBTree import difference
 import zope.interface
 from zope.index.field import index as fieldindex
 from zope.index.text import textindex
-from zope.app.container import contained
+from zope.container import contained
 from zc.catalog import index as zcindex
 from z3c.indexer import interfaces
 

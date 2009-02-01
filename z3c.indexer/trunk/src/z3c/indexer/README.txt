@@ -79,7 +79,7 @@ indexer object moved time:    0.00 s
 indexer parent moved time:    15.00 s
 indexer object remove time:   2.08 s
 
-zope.app.catalog
+zope.catalog
 catalog based indexing time:  14.41 s
 catalog based query time:     0.97 s
 catalog based not query time: 3.63 s
@@ -123,7 +123,7 @@ indexer object moved time:    0.00 s
 indexer parent moved time:    15.09 s
 indexer object remove time:   2.09 s
 
-zope.app.catalog
+zope.catalog
 catalog based indexing time:  36.92 s
 catalog based query time:     0.75 s
 catalog based not query time: 2.66 s
@@ -158,7 +158,7 @@ indexing
 
   - Allow to explicitly define of what, where and when get indexed.
 
-  - Reduce index calls. The existing zope.app.catalog implementation forces to
+  - Reduce index calls. The existing zope.catalog implementation forces to
     index every object which raises a ObjectAddedEvent. This ends in trying to
     index each object on every existing index contained in a catalog.
 
@@ -218,8 +218,8 @@ Start a simple test setup
 Setup some helpers:
 
   >>> import zope.component
-  >>> from zope.app import folder
-  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.site import folder
+  >>> from zope.site import LocalSiteManager
   >>> from z3c.indexer import interfaces
   >>> from z3c.indexer import testing
 
@@ -236,13 +236,13 @@ Setup a site
 And set the site as the current site. This is normaly done by traversing to a
 site:
 
-  >>> from zope.app.component import hooks
+  >>> from zope.site import hooks
   >>> hooks.setSite(site)
 
 Setup a IIntIds utility:
 
-  >>> from zope.app.intid import IntIds
-  >>> from zope.app.intid.interfaces import IIntIds
+  >>> from zope.intid import IntIds
+  >>> from zope.intid.interfaces import IIntIds
   >>> intids = IntIds()
   >>> sm['default']['intids'] = intids
   >>> sm.registerUtility(intids, IIntIds)
@@ -299,7 +299,7 @@ Now we define a content object:
 
   >>> import persistent
   >>> import zope.interface
-  >>> from zope.app.container import contained
+  >>> from zope.container import contained
   >>> from zope.schema.fieldproperty import FieldProperty
 
   >>> class IDemoContent(zope.interface.Interface):
@@ -1132,8 +1132,8 @@ same object twice with different values. Let's test the built in union
 which removes such duplications. Since this is the first test which uses
 IIntId subscribers let' register them:
 
-  >>> from zope.app.intid import addIntIdSubscriber
-  >>> from zope.app.intid import removeIntIdSubscriber
+  >>> from zope.intid import addIntIdSubscriber
+  >>> from zope.intid import removeIntIdSubscriber
   >>> zope.component.provideHandler(addIntIdSubscriber)
   >>> zope.component.provideHandler(removeIntIdSubscriber)
 

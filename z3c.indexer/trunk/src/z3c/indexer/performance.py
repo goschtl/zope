@@ -28,29 +28,29 @@ import zope.location.interfaces
 from BTrees.IFBTree import difference, IFBTree
 from zope.index.text.textindex import TextIndex as ZTextIndex
 
-from zope.app.keyreference.interfaces import IKeyReference
-from zope.app.keyreference.testing import SimpleKeyReference
+from zope.keyreference.interfaces import IKeyReference
+from zope.keyreference.testing import SimpleKeyReference
 
-from zope.app.component import hooks
-from zope.app.catalog.interfaces import ICatalog
-from zope.app.catalog.field import FieldIndex as ZFieldIndex
-from zope.app.catalog.interfaces import ICatalogIndex
-from zope.app.catalog.catalog import Catalog
-from zope.app.catalog.catalog import indexAdded
-from zope.app.catalog.catalog import indexDocSubscriber
-from zope.app.catalog.catalog import reindexDocSubscriber
-from zope.app.catalog.catalog import unindexDocSubscriber
-from zope.app.container.interfaces import IReadContainer
-from zope.app.container.interfaces import IObjectAddedEvent
-from zope.app.container.interfaces import IObjectModifiedEvent
-from zope.app.container.interfaces import IObjectMovedEvent
-from zope.app.container import contained
-from zope.app.intid import IntIds
-from zope.app.intid import addIntIdSubscriber
-from zope.app.intid import removeIntIdSubscriber
-from zope.app.intid.interfaces import IIntIds
-from zope.app.intid.interfaces import IIntIdAddedEvent
-from zope.app.intid.interfaces import IIntIdRemovedEvent
+from zope.site import hooks
+from zope.catalog.interfaces import ICatalog
+from zope.catalog.field import FieldIndex as ZFieldIndex
+from zope.catalog.interfaces import ICatalogIndex
+from zope.catalog.catalog import Catalog
+from zope.catalog.catalog import indexAdded
+from zope.catalog.catalog import indexDocSubscriber
+from zope.catalog.catalog import reindexDocSubscriber
+from zope.catalog.catalog import unindexDocSubscriber
+from zope.container.interfaces import IReadContainer
+from zope.container.interfaces import IObjectAddedEvent
+from zope.container.interfaces import IObjectModifiedEvent
+from zope.container.interfaces import IObjectMovedEvent
+from zope.container import contained
+from zope.intid import IntIds
+from zope.intid import addIntIdSubscriber
+from zope.intid import removeIntIdSubscriber
+from zope.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIdAddedEvent
+from zope.intid.interfaces import IIntIdRemovedEvent
 from zope.app.testing import setup
 
 from zc.catalog import index as zcindex
@@ -393,7 +393,7 @@ def runObjectRemove(site):
 #
 # performance test
 #
-# This performance test will show that the default zope.app.catalog based
+# This performance test will show that the default zope.catalog based
 # indexing pattern is very bad on a large set of indexes. Because the default
 # catalog pattern tries to index every object in every index.
 #
@@ -478,8 +478,8 @@ def runTest(repeatTimes, amountOfObjects, amountOfIndexes=0):
 
 
     print ""
-    print "zope.app.catalog"
-    # setup zope.app.catalog based performance test
+    print "zope.catalog"
+    # setup zope.catalog based performance test
     catalogSite = setUpCatalog(amountOfIndexes)
 
     # time catalog indexing

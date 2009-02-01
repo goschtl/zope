@@ -18,8 +18,8 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.component
-from zope.app.intid.interfaces import IIntIdAddedEvent
-from zope.app.intid.interfaces import IIntIdRemovedEvent
+from zope.intid.interfaces import IIntIdAddedEvent
+from zope.intid.interfaces import IIntIdRemovedEvent
 
 from z3c.indexer import interfaces
 from z3c.indexer import indexer

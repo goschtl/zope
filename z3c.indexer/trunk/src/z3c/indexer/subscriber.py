@@ -24,8 +24,8 @@ import zope.component
 import zope.deferredimport
 import zope.lifecycleevent.interfaces
 
-import zope.app.intid.interfaces
-from zope.app.intid.interfaces import IIntIds
+import zope.intid.interfaces
+from zope.intid.interfaces import IIntIds
 
 from z3c.indexer import interfaces
 from z3c.indexer import collector
@@ -69,7 +69,7 @@ zope.deferredimport.deprecated(
 #
 ###############################################################################
 # object added
-@zope.component.adapter(zope.app.intid.interfaces.IIntIdAddedEvent)
+@zope.component.adapter(zope.intid.interfaces.IIntIdAddedEvent)
 def intIdAddedEventDispatcher(event):
     """Event subscriber to dispatch IntIdAddedEvent to IIndexer adapters.
 
@@ -102,7 +102,7 @@ def objectModifiedDispatcher(event):
 
 
 # object removed
-@zope.component.adapter(zope.app.intid.interfaces.IIntIdRemovedEvent)
+@zope.component.adapter(zope.intid.interfaces.IIntIdRemovedEvent)
 def intIdRemovedEventDispatcher(event):
     """Event subscriber to dispatch IIntIdRemovedEvent to interested adapters.
 

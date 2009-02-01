@@ -25,6 +25,9 @@ CHANGES
 
 - Reworded package description to make it nicer. Fix little docstring typos.
 
+- Use new lightweight and ZMI-less versions of packages: zope.keyreference,
+  zope.intid, zope.site, zope.container and zope.catalog (for tests).
+
 0.5.1 (2008-12-11)
 ------------------
 

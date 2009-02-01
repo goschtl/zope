@@ -17,8 +17,8 @@ $Id:$
 __docformat__ = "reStructuredText"
 
 import zope.component
-from zope.app import folder
-from zope.app.keyreference.testing import SimpleKeyReference
+from zope.site import folder
+from zope.keyreference.testing import SimpleKeyReference
 from zope.app.testing import setup
 
 

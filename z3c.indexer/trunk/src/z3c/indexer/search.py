@@ -18,7 +18,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.component
-from zope.app.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIds
 from zope.index.interfaces import IIndexSort
 
 from zc.catalog.index import FamilyProperty

@@ -24,7 +24,7 @@ from transaction.interfaces import IDataManager
 from zope.index.interfaces import IInjection
 from zope.index.interfaces import IIndexSearch
 from zope.index.interfaces import IStatistics
-from zope.app.container.interfaces import IContained
+from zope.container.interfaces import IContained
 
 NOVALUE = object()
 
