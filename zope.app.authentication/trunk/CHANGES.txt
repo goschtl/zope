@@ -2,7 +2,12 @@
 Changes
 =======
 
-3.5.0a2 (unreleased)
+3.5.0a3 (unreleased)
+--------------------
+
+- ...
+
+3.5.0a2 (2009-02-01)
 --------------------
 
 * Make old encoded passwords really work.
