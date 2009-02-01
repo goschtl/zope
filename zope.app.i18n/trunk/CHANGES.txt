@@ -2,45 +2,47 @@
 CHANGES
 =======
 
-Version 3.5.0 (unreleased)
+Version 3.5.0 (2009-02-01)
 --------------------------
 
 - Use zope.container instead of zope.app.container.
 
-Version 3.4.6 (2009/01/27)
+Version 3.4.6 (2009-01-27)
 --------------------------
 
 - Fix a simple inconsistent MRO problem in tests
-- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug 219302 
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See bug
+  219302.
 
 Version 3.4.5 (unreleased)
 --------------------------
 
 - This version was skipped over by accident.
 
-Version 3.4.4 (2007/10/23)
+Version 3.4.4 (2007-10-23)
 --------------------------
 
 - Fix deprecation warning.
 
-Version 3.4.3 (2007/10/23)
+Version 3.4.3 (2007-10-23)
 --------------------------
 
 - Fix imports in tests.
+
 - Clean up long lines.
 
-Version 3.4.2 (2007/9/26)
+Version 3.4.2 (2007-9-26)
 -------------------------
 
 - Release to fix packaging issues with 3.4.1.
 
-Version 3.4.1 (2007/9/25)
+Version 3.4.1 (2007-9-25)
 -------------------------
 
 - Added missing Changes.txt and README.txt files to egg
 
-
-Version 3.4.0 (2007/9/25)
+Version 3.4.0 (2007-9-25)
 -------------------------
 
 - Initial documented release

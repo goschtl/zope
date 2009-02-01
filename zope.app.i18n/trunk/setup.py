@@ -26,7 +26,7 @@ def read(*rnames):
 setup(name='zope.app.i18n',
     version = '3.5.0dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description='Zope i18n',
     long_description=(
         read('README.txt')
@@ -44,7 +44,7 @@ setup(name='zope.app.i18n',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://svn.zope.org/zope.app.i18n',
+    url='http://pypi.python.org/pypi/zope.app.i18n',
     license='ZPL 2.1',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
