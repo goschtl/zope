@@ -29,7 +29,7 @@ setup(name='zope.app.module',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
+          'Detailed Documentation\n' +
           '----------------------\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'module', 'README.txt')
