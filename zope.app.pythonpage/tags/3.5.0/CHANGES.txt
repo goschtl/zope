@@ -1,0 +1,22 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2009-02-01)
+------------------
+
+- Replace ``zope.app.container`` with ``zope.container``.
+
+3.4.1 (2007-07-30)
+------------------
+
+- Get rid of zope.app.zapi as a dependency.
+  See https://bugs.launchpad.net/zope3/+bug/219302
+
+- Fix deprecation warning in zope/app/pythonpage/browser.py: zope.app.i18n
+  was moved to zope.i18nmessageid.
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
