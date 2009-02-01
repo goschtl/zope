@@ -25,7 +25,7 @@ setup(name='zope.app.homefolder',
       version = '3.5.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='User Home Folders',
+      description='User Home Folders for Zope 3 Applications',
       long_description=(
           read('README.txt')
           + '\n\n' +
