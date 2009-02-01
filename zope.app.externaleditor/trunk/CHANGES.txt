@@ -5,8 +5,10 @@ CHANGES
 3.5 (unreleased)
 ----------------
 
-- Change dependency from zope.app.container to zope.container and make it
+- Change dependency from ``zope.app.container`` to ``zope.container``and make it
   a test dependency as it's only used in the tests.
+
+- Remove dependency on deprecated ``zope.app.zapi``.
 
 3.4.0 (2007-11-03)
 ------------------

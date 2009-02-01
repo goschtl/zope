@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.externaleditor',
       version = '3.5dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Editing Zope 3 Content with an External Editor',
       long_description=(
           read('README.txt')
@@ -42,7 +42,7 @@ setup(name='zope.app.externaleditor',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.externaleditor',
+      url='http://pypi.python.org/pypi/zope.app.externaleditor',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
