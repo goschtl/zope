@@ -113,7 +113,7 @@ class MD5PasswordManager(PlainTextPasswordManager):
             salt = storedPassword[5:-32]
             return storedPassword == self.encodePassword(password, salt)
         salt = storedPassword[:-32]
-        return storedPassword == self.encodePassword(password, salt)[6:]
+        return storedPassword == self.encodePassword(password, salt)[5:]
 
 
 class SHA1PasswordManager(PlainTextPasswordManager):
@@ -161,7 +161,7 @@ class SHA1PasswordManager(PlainTextPasswordManager):
             salt = storedPassword[6:-40]
             return storedPassword == self.encodePassword(password, salt)
         salt = storedPassword[:-40]
-        return storedPassword == self.encodePassword(password, salt)[7:]
+        return storedPassword == self.encodePassword(password, salt)[6:]
 
 class SSHAPasswordManager(PlainTextPasswordManager):
     """SSHA password manager.
