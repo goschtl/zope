@@ -11,7 +11,7 @@ TODO: Filters
       separate purposes.  It should be possible to specify a a
       collection of types (interfaces) to be cataloged and a filtering
       expression.  Perhaps another option would be to be the ability
-      to spcify a names filter adapter.
+      to specify a names filter adapter.
 
 Catalogs use a unique-id tool to assign short (integer) ids to
 objects.  Before creating a catalog, you must create a intid tool:
