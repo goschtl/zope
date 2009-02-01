@@ -10,6 +10,11 @@ long_description = (
     read('CHANGES.txt')
     )
 
+tests_require = [
+    'zope.app.testing',
+    'zope.component',
+    ]
+
 setup(
     name='grokcore.startup',
     version='0.1dev',
@@ -32,11 +37,10 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
-                      'martian >= 0.10',
-                      'grokcore.component >= 1.5.1',
-                      'zope.interface',
-                      'zope.component',
-                      'zope.configuration',
-                      'zope.testing',
+                      'zdaemon',
+                      'zope.app.wsgi',
+                      'zope.app.debug',
                       ],
+    tests_require = tests_require,
+    extras_require = dict(test=tests_require),
 )
