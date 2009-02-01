@@ -24,8 +24,8 @@ def read(*rnames):
 setup(name='zope.app.locking',
       version = '3.5.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      description='Simple Object Locking Framework',
+      author_email='zope-dev@zope.org',
+      description='Simple Object Locking Framework for Zope 3 applications',
       long_description=(
           read('README.txt')
           + '\n\n' +
@@ -47,7 +47,7 @@ setup(name='zope.app.locking',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.locking',
+      url='http://pypi.python.org/pypi/zope.app.locking',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

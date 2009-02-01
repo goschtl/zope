@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
------------------
+3.5.0 (2009-02-01)
+------------------
 
 - Use ``zope.site`` instead of ``zope.app.folder`` in test.
+
+- Remove usage of deprecated ``zope.app.zapi``.
 
 3.4.0 (2007-10-25)
 ------------------
