@@ -17,7 +17,7 @@ $Id$
 """
 
 # BBB
-from zope.catalog import (
+from zope.catalog.catalog import (
     ResultSet,
     Catalog,
     indexAdded,
