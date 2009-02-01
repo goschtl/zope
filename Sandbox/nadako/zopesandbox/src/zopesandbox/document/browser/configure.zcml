@@ -1,0 +1,35 @@
+<configure xmlns:browser="http://namespaces.zope.org/browser" i18n_domain="zope">
+
+	<browser:addMenuItem
+	  title="Document"
+	  class="..document.Document"
+	  permission="zope.ManageContent"
+	  view="zopesandbox.Document"
+	  />
+
+	<browser:addform
+	  name="zopesandbox.Document"
+	  permission="zope.ManageContent"
+	  schema="..interfaces.IDocument"
+	  content_factory="..document.Document"
+	  />
+
+	<browser:editform
+	  for="..interfaces.IDocument"
+	  name="edit.html"
+	  permission="zope.ManageContent"
+	  schema="..interfaces.IDocument"
+	  menu="zmi_views"
+	  title="Edit"
+	  />
+
+	<browser:page
+	  for="..interfaces.IDocument"
+	  name="index.html"
+	  permission="zope.View"
+	  template="document.pt"
+	  menu="zmi_views"
+	  title="View"
+	  />
+
+</configure>

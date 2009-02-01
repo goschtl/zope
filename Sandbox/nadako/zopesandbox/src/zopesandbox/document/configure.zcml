@@ -1,0 +1,34 @@
+<configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
+
+	<interface
+	  interface=".interfaces.IDocument"
+	  type="zope.app.content.interfaces.IContentType"
+	  />
+
+	<class class=".document.Document">
+		<require
+		  permission="zope.View"
+		  interface=".interfaces.IDocument"
+		  />
+		<require
+		  permission="zope.ManageContent"
+		  set_schema=".interfaces.IDocument"
+		  />
+	</class>
+
+	<!-- Custom Dublin Core adapter that reuses title and description -->
+	<class class=".document.DocumentDublinCore">
+		<require
+		  like_class="zope.dublincore.annotatableadapter.ZDCAnnotatableAdapter"
+		  />
+	</class>
+	<adapter
+	  factory=".document.DocumentDublinCore"
+	  for=".interfaces.IDocument"
+	  provides="zope.dublincore.interfaces.IWriteZopeDublinCore"
+	  trusted="True"
+	  />
+
+	<include package=".browser" />
+
+</configure>

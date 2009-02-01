@@ -1,0 +1,19 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+
+	<div metal:fill-slot="body">
+
+		<h1 tal:content="context/title">Document Title</h1>
+
+		<p tal:condition="context/description" tal:content="context/description">
+			Short description
+		</p>
+		
+		<div tal:content="structure context/body">
+			Document body text
+		</div>
+		
+	</div>
+
+</body>
+</html>

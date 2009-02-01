@@ -1,0 +1,56 @@
+<configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
+
+	<!-- Common includes -->
+	<include package="zope.app.zcmlfiles" />
+	<include package="zope.formlib" />
+
+	<!-- Pluggable authentication -->
+	<include package="zope.app.authentication" />
+	<include package="zope.session" />
+
+	<!-- Undo -->
+	<include package="zope.app.undo" />
+
+	<!-- Cataloging -->
+	<include package="zope.app.keyreference" />
+	<include package="zope.app.intid" />
+	<include package="zope.app.catalog" />
+
+	<!-- Web server -->
+	<include package="zope.app.twisted" />
+
+	<!-- Mail sending -->
+	<include package="zope.sendmail" file="meta.zcml" />
+	<include package="zope.sendmail" />
+
+	<!-- Content provider and viewlet mechanisms -->
+	<include package="zope.contentprovider" />
+	<include package="zope.viewlet" file="meta.zcml" />
+	<include package="zope.viewlet" />
+
+	<!-- Some content & user stuff -->
+	<include package="zope.app.file" />
+	<include package="zope.app.homefolder" />
+
+	<!-- APIDoc and online help -->
+	<include package="zope.app.tree" />
+	<include package="zope.app.renderer" />
+	<include package="zope.app.preference" file="meta.zcml" />
+	<include package="zope.app.preference" />
+	<include package="zope.app.onlinehelp" file="meta.zcml" />
+	<include package="zope.app.onlinehelp" />
+	<include package="zope.app.apidoc" file="meta.zcml" />
+	<include package="zope.app.apidoc" />
+
+	<!-- Granting views for zope.securitypolicy -->
+	<include package="zope.app.securitypolicy" />
+
+	<adapter factory="zope.app.security.LogoutSupported" />
+
+	<!-- Our own package -->
+	<include package=".document" />
+
+	<include file="securitypolicy.zcml" />
+	<include file="principals.zcml" />
+
+</configure>
