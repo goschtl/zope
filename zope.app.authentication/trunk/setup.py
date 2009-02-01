@@ -40,7 +40,7 @@ setup(name='zope.app.authentication',
         + '\n\n' +
         read('CHANGES.txt')
         ),
-      url='http://cheeseshop.python.org/pypi/zope.app.authentication',
+      url='http://pypi.python.org/pypi/zope.app.authentication',
       license='ZPL 2.1',
       classifiers = [
           'Development Status :: 5 - Production/Stable',
