@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name='zope.app.module',
       version = '3.5.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Zope 3 persistent code/module support',
       long_description=(
           read('README.txt')
@@ -49,7 +49,7 @@ setup(name='zope.app.module',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.module',
+      url='http://pypi.python.org/pypi/zope.app.module',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
