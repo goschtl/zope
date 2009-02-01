@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.catalog.interfaces import ICatalog
+from zope.catalog.interfaces import ICatalog
 
 class Advanced:
     "Provides a user interface for configuring a catalog"

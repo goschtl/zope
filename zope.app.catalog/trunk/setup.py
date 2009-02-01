@@ -22,19 +22,12 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name = 'zope.app.catalog',
-      version = '3.7.1dev',
+      version = '3.8.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Zope Cataloging and Indexing Framework',
+      description='Management pages for Zope Catalog',
       long_description=(
           read('README.txt')
-          + '\n\n' +
-          'Detailed Documentation\n'
-          '**********************\n'
-          + '\n\n' +
-          read('src', 'zope', 'app', 'catalog', 'README.txt')
-          + '\n\n' +
-          read('src', 'zope', 'app', 'catalog', 'event.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -57,6 +50,7 @@ setup(name = 'zope.app.catalog',
       extras_require = dict(
           test=['zope.testing',
                 'zope.app.component',
+                'zope.app.intid',
                 'zope.app.testing',
                 'zope.app.securitypolicy',
                 'zope.app.zcmlfiles',
@@ -64,17 +58,9 @@ setup(name = 'zope.app.catalog',
                 ]),
       install_requires = [
           'setuptools',
-          'ZODB3',
-          'zope.annotation',
-          'zope.app.intid',
-          'zope.component',
-          'zope.container',
-          'zope.index>=3.5.0',
-          'zope.interface',
-          'zope.lifecycleevent',
-          'zope.location',
-          'zope.schema',
-          'zope.traversing',
+          'zope.catalog',
+          'zope.app.publisher',
+          'zope.app.form',
           ],
       include_package_data = True,
       zip_safe = False,

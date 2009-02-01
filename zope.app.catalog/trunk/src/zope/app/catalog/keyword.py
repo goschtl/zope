@@ -15,25 +15,10 @@
 
 $Id:$
 """
-import zope.index.keyword
-import zope.interface
 
-import zope.container.contained
-import zope.app.catalog.attribute
-import zope.app.catalog.interfaces
-
-class IKeywordIndex(zope.app.catalog.interfaces.IAttributeIndex,
-                     zope.app.catalog.interfaces.ICatalogIndex):
-    """Interface-based catalog keyword index"""
-
-class KeywordIndex(zope.app.catalog.attribute.AttributeIndex,
-                    zope.index.keyword.KeywordIndex,
-                    zope.container.contained.Contained):
-
-    zope.interface.implements(IKeywordIndex)
-
-class CaseInsensitiveKeywordIndex(zope.app.catalog.attribute.AttributeIndex,
-                                      zope.index.keyword.CaseInsensitiveKeywordIndex,
-                                      zope.container.contained.Contained):
-
-    zope.interface.implements(IKeywordIndex)
+# BBB
+from zope.catalog.keyword import (
+    IKeywordIndex,
+    KeywordIndex,
+    CaseInsensitiveKeywordIndex
+)

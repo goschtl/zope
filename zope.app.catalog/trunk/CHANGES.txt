@@ -2,10 +2,12 @@
 CHANGES
 =======
 
-3.7.1 (unreleased)
+3.8.0 (unreleased)
 ------------------
 
-- ...
+- Move most of this package's code to new ``zope.catalog`` package,
+  leaving only ZMI-related views and backward-compatibility imports
+  here. 
 
 3.7.0 (2009-01-31)
 ------------------

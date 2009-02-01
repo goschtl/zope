@@ -15,43 +15,5 @@
 
 $Id$
 """
-import zope.index.text
-import zope.index.text.interfaces
-import zope.interface
 
-import zope.app.catalog.attribute
-import zope.app.catalog.interfaces
-import zope.container.contained
-from zope.i18nmessageid import ZopeMessageFactory as _
-
-class ITextIndex(zope.app.catalog.interfaces.IAttributeIndex,
-                 zope.app.catalog.interfaces.ICatalogIndex):
-    """Interface-based catalog text index
-    """
-
-    interface = zope.schema.Choice(
-        title=_(u"Interface"),
-        description=_(u"Objects will be adapted to this interface"),
-        vocabulary=_("Interfaces"),
-        required=False,
-        default=zope.index.text.interfaces.ISearchableText,
-        )
-
-    field_name = zope.schema.BytesLine(
-        title=_(u"Field Name"),
-        description=_(u"Name of the field to index"),
-        default="getSearchableText"
-        )
-
-    field_callable = zope.schema.Bool(
-        title=_(u"Field Callable"),
-        description=_(u"If true, then the field should be called to get the "
-                      u"value to be indexed"),
-        default=True,
-        )
-
-class TextIndex(zope.app.catalog.attribute.AttributeIndex,
-                zope.index.text.TextIndex,
-                zope.container.contained.Contained):
-
-    zope.interface.implements(ITextIndex)
+from zope.catalog.text import ITextIndex, TextIndex # BBB

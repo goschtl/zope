@@ -1,28 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    >
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <subscriber
-      handler=".catalog.indexAdded"
-      for=".interfaces.ICatalogIndex
-           zope.container.interfaces.IObjectAddedEvent"
-      />
-
-  <subscriber
-      handler=".catalog.indexDocSubscriber"
-      for="zope.app.intid.interfaces.IIntIdAddedEvent"
-      />
-
-  <subscriber
-      handler=".catalog.reindexDocSubscriber"
-      for="zope.lifecycleevent.interfaces.IObjectModifiedEvent"
-      />
-
-  <subscriber
-      handler=".catalog.unindexDocSubscriber"
-      for="zope.app.intid.interfaces.IIntIdRemovedEvent"
-      />
+	<include package="zope.catalog" file="subscribers.zcml" />
 
 </configure>

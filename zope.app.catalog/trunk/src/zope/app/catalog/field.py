@@ -15,22 +15,5 @@
 
 $Id$
 """
-import zope.index.field
-import zope.interface
 
-import zope.container.contained
-import zope.app.catalog.attribute
-import zope.app.catalog.interfaces
-
-class IFieldIndex(zope.app.catalog.interfaces.IAttributeIndex,
-                  zope.app.catalog.interfaces.ICatalogIndex):
-    """Interface-based catalog field index
-    """
-
-class FieldIndex(zope.app.catalog.attribute.AttributeIndex,
-                 zope.index.field.FieldIndex,
-                 zope.container.contained.Contained):
-
-    zope.interface.implements(IFieldIndex)
-
-
+from zope.catalog.field import IFieldIndex, FieldIndex # BBB

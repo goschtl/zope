@@ -23,7 +23,7 @@ objects.  Before creating a catalog, you must create a intid tool:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
-  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""",
+  ... type_name=BrowserAdd__zope.intid.IntIds&id=&add=+Add+""",
   ... handle_errors=False)
   HTTP/1.1 303 ...
 
@@ -42,7 +42,7 @@ And register it:
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="field.provided"
   ... 
-  ... zope.app.intid.interfaces.IIntIds
+  ... zope.intid.interfaces.IIntIds
   ... ------------CedQTrEQIEPbgfYhvcITAhQi2aJdgu3tYfJ0WYQmkpLQTt6OTOpd5GJ
   ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
@@ -86,7 +86,7 @@ Once we have a unique-id tool, you can add a catalog:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@+
   ... 
-  ... type_name=BrowserAdd__zope.app.catalog.catalog.Catalog&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.catalog.catalog.Catalog&id=&add=+Add+""")
   HTTP/1.1 303 ...
 
 and register it:
@@ -104,7 +104,7 @@ and register it:
   ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="field.provided"
   ... 
-  ... zope.app.catalog.interfaces.ICatalog
+  ... zope.catalog.interfaces.ICatalog
   ... ------------61t9UJyoacebBevQVdNrlvXP6T9Ik3Xo4RyXkwJJWvuhao65RTuAPRa
   ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
@@ -354,13 +354,13 @@ it.  The catalog is really meant to be used from Python:
 We'll make our root folder the site (this would normally be done by
 the publisher):
 
-  >>> from zope.app.component.hooks import setSite
+  >>> from zope.site.hooks import setSite
   >>> setSite(root)
 
 Now, we'll get the catalog:
 
   >>> import zope.component
-  >>> from zope.app.catalog.interfaces import ICatalog
+  >>> from zope.catalog.interfaces import ICatalog
   >>> catalog = zope.component.getUtility(ICatalog)
 
 And search it to find the names of all of the documents that contain
