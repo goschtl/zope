@@ -22,14 +22,14 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.homefolder',
-      version = '3.5.0dev',
+      version = '3.5.1dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='User Home Folders for Zope 3 Applications',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
+          'Detailed Documentation\n' +
           '======================\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'homefolder', 'README.txt')
