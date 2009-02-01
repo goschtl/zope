@@ -1,0 +1,13 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html metal:use-macro="templates/master.pt/macros/page" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title metal:fill-slot="page-title">Changes</title>
+  </head>
+  <body>
+    <div metal:fill-slot="divider"><a href="..">Go back to the Home Page</a></div>
+    <div metal:fill-slot="content">
+      <h1 id="content-header">Version <span tal:replace="version/name"/> Change Log</h1>
+      <div tal:replace="structure version/changelog/html"/>
+    </div>
+  </body>
+</html>
