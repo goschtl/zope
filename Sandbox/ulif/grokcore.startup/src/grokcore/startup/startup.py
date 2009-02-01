@@ -5,8 +5,8 @@ import zdaemon.zdctl
 import zope.app.wsgi
 import zope.app.debug
 
-def application_factory(global_conf):
-    zope_conf = os.path.join(global_conf['zope_conf'])
+def application_factory(global_conf, **local_conf):
+    zope_conf = local_conf.get('zope_conf', global_conf.get('zope_conf', os.path.join('etc', 'zope.conf')))
     return zope.app.wsgi.getWSGIApplication(zope_conf)
 
 def interactive_debug_prompt(zope_conf=os.path.join('etc', 'zope.conf')):
@@ -33,3 +33,4 @@ class ControllerCommands(zdaemon.zdctl.ZDCmd):
 def zdaemon_controller(zdaemon_conf=os.path.join('etc', 'zdaemon.conf')):
     args = ['-C', zdaemon_conf] + sys.argv[1:]
     zdaemon.zdctl.main(args, options=None, cmdclass=ControllerCommands)
+
