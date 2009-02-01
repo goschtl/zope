@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2009-02-01)
 ------------------
 
 - Adjusted tests so that basic objects and interfaces are pulled from
