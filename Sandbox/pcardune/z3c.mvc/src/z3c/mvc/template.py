@@ -32,7 +32,7 @@ class ModelTemplate(ViewPageTemplateFile):
         # instance is a View component
         namespace = super(ViewPageTemplateFile, self).pt_getContext(**_kw)
         assert interfaces.IModelProvider.providedBy(instance)
-        namespace['model'] = instace.getModel()
+        namespace['model'] = instance.getModel()
         return namespace
 
 

@@ -19,8 +19,13 @@ __docformat__ = 'restructuredtext'
 
 
 from zope.interface import Interface
+from zope.pagetemplate.interfaces import IPageTemplate
 
 class IModelProvider(Interface):
 
     def getModel():
         """returns a model to be used by a view template."""
+
+
+class IModelTemplate(IPageTemplate):
+    """Template for use by a controller."""

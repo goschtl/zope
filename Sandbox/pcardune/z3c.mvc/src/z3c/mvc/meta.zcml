@@ -6,7 +6,7 @@
 
     <meta:directive
         name="mvcTemplate"
-        schema="z3c.template.interfaces.ITemplateDirective"
+        schema="z3c.template.zcml.ITemplateDirective"
         handler=".zcml.templateDirective"
         />
 

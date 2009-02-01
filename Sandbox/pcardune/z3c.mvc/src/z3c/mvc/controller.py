@@ -19,6 +19,8 @@ __docformat__ = 'restructuredtext'
 
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.component import getMultiAdapter
+from zope.interface import implements
 
 from z3c.template.macro import Macro
 from z3c.pagelet.browser import BrowserPagelet
@@ -29,6 +31,7 @@ from z3c.mvc import interfaces
 class Controller(BrowserPagelet):
     """Page Template that only has access to a well defined model
     """
+    implements(interfaces.IModelProvider)
 
     def getModel(self):
         raise NotImplemented("Subclasses must provide the getModel method")
@@ -36,7 +39,7 @@ class Controller(BrowserPagelet):
     def render(self):
         # render content template
         if self.template is None:
-            template = zope.component.getMultiAdapter(
+            template = getMultiAdapter(
                 (self, self.request), interfaces.IModelTemplate)
             return template(self)
         return self.template()
