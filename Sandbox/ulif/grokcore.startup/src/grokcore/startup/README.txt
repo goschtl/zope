@@ -42,7 +42,7 @@ plain::
 
 Now we can call `application_factory` to get a WSGI application::
 
-  >>> from grokcore.startup.startup import application_factory
+  >>> from grokcore.startup import application_factory
   >>> app_factory = application_factory(dict(zope_conf = zope_conf))
   >>> app_factory
   <zope.app.wsgi.WSGIPublisherApplication object at 0x...>
