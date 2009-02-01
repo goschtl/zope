@@ -1,14 +1,7 @@
+import os
 import re
-import unittest, traceback
-from pkg_resources import resource_listdir
-from zope.testing import doctest, cleanup, renormalizing
-import zope.component.eventtesting
-
-def setUpZope(test):
-    zope.component.eventtesting.setUp(test)
-
-def cleanUpZope(test):
-    cleanup.cleanUp()
+import unittest
+from zope.testing import doctest, renormalizing
 
 checker = renormalizing.RENormalizing([
     # str(Exception) has changed from Python 2.4 to 2.5 (due to
@@ -18,46 +11,19 @@ checker = renormalizing.RENormalizing([
                 r'ConfigurationExecutionError: \1:'),
     ])
 
-def suiteFromPackage(name):
-    files = resource_listdir(__name__, name)
-    suite = unittest.TestSuite()
-    for filename in files:
-        if not filename.endswith('.py'):
-            continue
-        if filename.endswith('_fixture.py'):
-            continue
-        if filename == '__init__.py':
-            continue
+optionflags=(doctest.ELLIPSIS+
+            doctest.NORMALIZE_WHITESPACE)
 
-        dottedname = 'grokcore.component.tests.%s.%s' % (name, filename[:-3])
-        try:
-            test = doctest.DocTestSuite(dottedname,
-                                        setUp=setUpZope,
-                                        tearDown=cleanUpZope,
-                                        checker=checker,
-                                        optionflags=doctest.ELLIPSIS+
-                                        doctest.NORMALIZE_WHITESPACE)
-        except ImportError, e:  # or should this accept anything?
-            traceback.print_exc()
-            raise
-        suite.addTest(test)
-    return suite
+main_doctests = ['README.txt',]
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['adapter', 'directive', 'grokker', 'utility', 'view',
-                 'event']:
-        suite.addTest(suiteFromPackage(name))
 
-    api = doctest.DocFileSuite('api.txt')
-    suite.addTest(api)
-
-    # this test cannot follow the normal testing pattern, as the
-    # bug it tests for is only exposed in the context of a doctest
-    grok_component = doctest.DocFileSuite('grok_component.txt',
-                                          setUp=setUpZope,
-                                          tearDown=cleanUpZope)
-    suite.addTest(grok_component)
+    for testfile in main_doctests:
+        suite.addTest(
+            doctest.DocFileSuite(os.path.join('..', testfile),
+                                 optionflags=optionflags,
+                                 checker=checker))
     return suite
 
 if __name__ == '__main__':
