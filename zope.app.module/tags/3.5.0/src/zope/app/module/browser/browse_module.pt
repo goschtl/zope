@@ -1,0 +1,28 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<head>
+  <title metal:fill-slot="title" i18n:translate="">View Module Names</title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+   <table class="listingdescription" summary="Module Listing"
+       cellspacing="0" >
+     <thead>
+       <th>Name</th>
+       <th>Type</th>
+       <th>Description</th>
+      </thead>
+      <tal:repeat tal:repeat="object view/getModuleObjects">
+      <tr tal:define="oddrow repeat/object/odd;"
+          tal:attributes="class python:oddrow and 'even' or 'odd'">
+        <td tal:content="object/name">An name</td>  
+        <td tal:content="object/objtype">Type</td>  
+        <td tal:content="object/doc">DocString</td>
+      </tr>
+    </tal:repeat>
+
+   </table>
+
+</div>
+</body>
+</html>

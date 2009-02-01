@@ -1,0 +1,37 @@
+=====================
+Persistent Interfaces
+=====================
+
+zope.app.module's ModuleManagers behave a little differently when
+interfaces are involved::
+
+  >>> from zope.app.module.manager import ModuleManager
+  >>> manager = ModuleManager()
+  >>> source = """\n
+  ... from zope.interface import Interface
+  ... class IFoo(Interface): pass
+  ... class IBar(IFoo): pass
+  ... """
+  >>> manager.source = source
+
+A ModuleManager doesn't get a name until it's registered and the
+zodbcode wrappers break without a name, so we can't retrieve our
+module until our manager is registered::
+
+  >>> from zope.app.testing import setup
+  >>> from zope.app.module import interfaces
+  >>> root = setup.buildSampleFolderTree()
+  >>> root_sm = setup.createSiteManager(root)
+  >>> manager = setup.addUtility(root_sm, u'foo',
+  ...                            interfaces.IModuleManager, manager)
+
+Now we can compile a module with interfaces and access everything
+appropriately::
+
+  >>> module = manager.getModule()
+  >>> module
+  <PersistentModule foo>
+  >>> module.IFoo
+  <PersistentInterfaceClass foo.IFoo>
+  >>> module.IBar
+  <PersistentInterfaceClass foo.IBar>
