@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directives namespace="http://namespaces.zope.org/z3c">
+
+    <meta:directive
+        name="mvcTemplate"
+        schema="z3c.template.interfaces.ITemplateDirective"
+        handler=".zcml.templateDirective"
+        />
+
+  </meta:directives>
+
+</configure>
+
