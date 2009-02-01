@@ -24,7 +24,7 @@ def read(*rnames):
 setup(name = 'zope.app.dtmlpage',
       version = '3.5.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='DTML Page -- A Zope 3 Content Component',
       long_description=(
           read('README.txt')
@@ -42,7 +42,7 @@ setup(name = 'zope.app.dtmlpage',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.dtmlpage',
+      url='http://pypi.python.org/pypi/zope.app.dtmlpage',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
