@@ -24,12 +24,12 @@ def read(*rnames):
 setup(name='zope.app.xmlrpcintrospection',
       version = '3.5.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='XML-RPC Method Introspection Support for Zope 3',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
+          'Detailed Documentation\n' +
           '======================\n'
           + '\n\n' +
           read('src', 'zope', 'app', 'xmlrpcintrospection', 'README.txt')
@@ -47,7 +47,7 @@ setup(name='zope.app.xmlrpcintrospection',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.xmlrpcintrospection',
+      url='http://pypi.python.org/pypi/zope.app.xmlrpcintrospection',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
