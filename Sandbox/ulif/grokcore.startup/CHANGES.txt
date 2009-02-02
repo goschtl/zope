@@ -1,8 +1,8 @@
 Changes
-=======
+*******
 
 0.1 (unreleased)
-----------------
+================
 
 * Added support for local ``zope_conf`` parameter.
   Fix bug https://bugs.launchpad.net/grok/+bug/320644
