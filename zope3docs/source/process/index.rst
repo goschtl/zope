@@ -11,6 +11,13 @@ developing Zope 3 components.
     reference and to allow us build up new documents on their basis.
 
 .. toctree::
+    :maxdepth: 1
 
-    releasing-components
-
+    releasing-software
+    maintaining-software
+    repository
+    bug-tracking
+    communication
+    proposals
+    tools
+    old-references
