@@ -39,7 +39,7 @@ import urllib
 import urllib2
 import zope.kgs.kgs
 
-SIMPLE_BASE_URL = "http://cheeseshop.python.org/simple/"
+SIMPLE_BASE_URL = "http://pypi.python.org/simple/"
 VERSION_REGEX = '%s-(.*)(?:\.tar\.gz|\.zip)'
 
 def getAllVersions(packageName):
@@ -49,7 +49,11 @@ def getAllVersions(packageName):
     page = urllib2.urlopen(SIMPLE_BASE_URL + packageName + '/').read()
     # Parse the page to find all links that could possibly contain versoin
     # information.
-    tree = lxml.etree.fromstring(page)
+    try:
+        tree = lxml.etree.fromstring(page)
+    except lxml.etree.XMLSyntaxError:
+        print packageName + ': Parsing index page failed.'
+        return []
     # Extract the versions from the links.
     regex = re.compile(VERSION_REGEX %packageName)
     versions = []
