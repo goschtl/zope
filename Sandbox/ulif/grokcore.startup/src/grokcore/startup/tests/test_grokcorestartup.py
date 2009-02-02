@@ -23,6 +23,7 @@ def test_suite():
         suite.addTest(
             doctest.DocFileSuite(os.path.join('..', testfile),
                                  optionflags=optionflags,
+                                 globs=globals(),
                                  checker=checker))
     return suite
 
