@@ -13,9 +13,11 @@ CHANGES
   as well. That method is already used in ``zope.traversing.api.getParents``
   function.
 
-- Make ``getName`` of ILocationInfo always return empty string for
-  the IRoot object, like RootPhysicallyLocatable from zope.traversing
-  did, making the latter one obsolete.
+- Make ``getName`` of LocationPhysicallyLocatable always return empty
+  string for the IRoot object, like RootPhysicallyLocatable from
+  ``zope.traversing`` did. So, now LocationPhysicallyLocatable is
+  fully compatible with RootPhysicallyLocatable, making the latter one
+  obsolete.
 
 - Change package mailing list address to zope-dev at zope.org instead
   of retired zope3-dev at zope.org.
