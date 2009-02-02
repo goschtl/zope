@@ -7,6 +7,8 @@ def read(*rnames):
 long_description = (
     read('README.txt')
     + '\n' +
+    read(os.path.join('src', 'grokcore', 'startup', 'README.txt'))
+    + '\n' +
     read('CHANGES.txt')
     )
 
@@ -25,6 +27,7 @@ setup(
     description='Paster support for Grok projects.',
     long_description=long_description,
     license='ZPL',
+    keywords='zope zope3 grok grokproject WSGI Paste paster',
     classifiers=['Intended Audience :: Developers',
                  'License :: OSI Approved :: Zope Public License',
                  'Programming Language :: Python',
