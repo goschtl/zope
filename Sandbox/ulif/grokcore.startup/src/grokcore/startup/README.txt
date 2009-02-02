@@ -72,12 +72,12 @@ in ``setup.py``. A minimal setup could look like this::
         install_requires=['setuptools',],
         entry_points = """
         [paste.app_factory]
-        main = grokcore.startup:application_factory
+        main = grokcore.startup.startup:application_factory
         """,
         )
 
 Here the `paste.app_factory` entry point pointing to
-`grokcore.startup:application_factory` is important.
+`grokcore.startup.startup:application_factory` is important.
 
 Furthermore we need at least a minimal ``buildout.cfg`` which enables
 `zc.buildout`_ to create the control scripts for our instance::
@@ -232,12 +232,12 @@ sources, then you can do an update in two steps:
 1) In your project's ``setup.py`` modify the lines reading::
 
       [paste.app_factory]
-      main = <myapplication>.startup:application_factory
+      main = <myapplication>.startup.startup:application_factory
 
   to::
 
       [paste.app_factory]
-      main = grokcore.startup:application_factory
+      main = grokcore.startup.startup:application_factory
 
   and rerun buildout::
 
