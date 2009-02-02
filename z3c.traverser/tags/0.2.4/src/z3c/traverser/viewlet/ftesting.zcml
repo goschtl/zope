@@ -1,0 +1,140 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:zcml="http://namespaces.zope.org/zcml"
+           i18n_domain="zope">
+
+  <include
+      zcml:condition="installed zope.app.zcmlfiles"
+      package="zope.app.zcmlfiles"
+      />
+  <include
+      zcml:condition="not-installed zope.app.zcmlfiles"
+      package="zope.app"
+      />
+
+
+  <include package="zope.viewlet" file="meta.zcml"/>
+  <include package="zope.app.securitypolicy" file="meta.zcml" />
+
+
+  <include package="zope.app.authentication" />
+
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+
+  <include package="zope.app.securitypolicy" />
+
+  <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+
+  <role id="zope.Manager" title="Site Manager" />
+
+
+  <principal
+   id="zope.manager"
+   title="Administrator"
+   login="mgr"
+   password="mgrpw" />
+  <grant
+   role="zope.Manager"
+   principal="zope.manager"
+   />
+
+  <unauthenticatedPrincipal
+    id="zope.anybody"
+    title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <include package="zope.contentprovider"/>
+  <include package="zope.viewlet"/>
+  <include package="z3c.traverser.viewlet"/>
+
+  <grant permission="zope.View"
+         role="zope.Anonymous" />
+
+  <grantAll role="zope.Manager" />
+
+  <configure package="z3c.traverser.viewlet.testing">
+  <browser:viewlet
+      name="MyViewlet"
+      manager=".app.IMyManager"
+      class=".app.MyViewlet"
+      permission="zope.Public"/>
+
+  <browser:viewletManager
+      name="IMyManager"
+      provides=".app.IMyManager"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="*"
+      name="test.html"
+      template="test.pt"
+      permission="zope.Public"
+      />
+
+  <!-- nested viewlet manager -->
+  <browser:page
+      for="*"
+      name="nested.html"
+      template="nested.pt"
+      permission="zope.Public"
+      />
+
+  <browser:viewletManager
+      name="IOuterManager"
+      provides=".app.IOuterManager"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      for="zope.location.interfaces.ISite"
+      name="OuterViewlet"
+      manager=".app.IOuterManager"
+      class=".app.OuterViewlet"
+      permission="zope.Public"/>
+
+  <browser:viewletManager
+      name="IInnerManager"
+      provides=".app.IInnerManager"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      for="zope.location.interfaces.ISite"
+      name="InnerViewlet"
+      manager=".app.IInnerManager"
+      class=".app.InnerViewlet"
+      permission="zope.Public"/>
+
+  <browser:viewletManager
+      name="IMostInnerManager"
+      provides=".app.IMostInnerManager"
+      permission="zope.Public"
+      />
+
+  <browser:viewlet
+      for="zope.location.interfaces.ISite"
+      name="MostInnerViewlet"
+      manager=".app.IMostInnerManager"
+      class=".app.MostInnerViewlet"
+      permission="zope.Public"/>
+
+  </configure>
+</configure>
