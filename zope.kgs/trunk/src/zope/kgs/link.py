@@ -45,7 +45,7 @@ LINK_TEMPLATE = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
 def generateLinks(packageConfigPath, outputPath, offline=False):
     """Generate a ``buildout.cfg`` from the list of controlled packages."""
     kgs = zope.kgs.kgs.KGS(packageConfigPath)
-    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+    server = xmlrpclib.Server('http://pypi.python.org/pypi')
 
     # Collect all links
     links = []

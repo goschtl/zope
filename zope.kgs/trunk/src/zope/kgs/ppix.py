@@ -45,7 +45,7 @@ TEMPLATE = ('<html>\n<head>\n<title>%(title)s</title>\n</head>\n'
 LINK_TEMPLATE = '<a href="%(url)s#md5=%(md5_digest)s">%(filename)s</a><br/>'
 SIMPLE_LINK_TEMPLATE = '<a href="%(url)s">%(name)s</a><br/>'
 
-SIMPLE_BASE_URL = "http://cheeseshop.python.org/simple/"
+SIMPLE_BASE_URL = "http://pypi.python.org/simple/"
 
 def generatePackagePage(package, destDir, server, offline=False):
     packagePath = os.path.join(destDir, package.name)
@@ -72,7 +72,7 @@ def generatePackagePage(package, destDir, server, offline=False):
 
 def generatePackagePages(packageConfigPath, destDir, offline=False):
     kgs = zope.kgs.kgs.KGS(packageConfigPath)
-    server = xmlrpclib.Server('http://cheeseshop.python.org/pypi')
+    server = xmlrpclib.Server('http://pypi.python.org/pypi')
 
     for package in kgs.packages:
         generatePackagePage(package, destDir, server, offline=offline)

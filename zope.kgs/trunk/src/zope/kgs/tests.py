@@ -79,7 +79,7 @@ class FakeServer(object):
 
 testpages = {
 
-    'http://cheeseshop.python.org/simple/PIL/': '''\
+    'http://pypi.python.org/simple/PIL/': '''\
 <html><head><title>Links for PIL</title></head><body><h1>Links for PIL</h1><a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5 home_page</a><br/>
 <a href='http://effbot.org/zone/pil-changes-115.htm' rel="download">1.1.5 download_url</a><br/>
 <a href='http://www.pythonware.com/products/pil' rel="homepage">1.1.5a2 home_page</a><br/>
@@ -93,7 +93,7 @@ testpages = {
 <a href='http://effbot.org/downloads/#Imaging' rel="download">1.1.6 download_url</a><br/>
 </body></html>''',
 
-    'http://cheeseshop.python.org/simple/z3c.formdemo/': '''\
+    'http://pypi.python.org/simple/z3c.formdemo/': '''\
 <html><head><title>Links for z3c.formdemo</title></head><body><h1>Links for z3c.formdemo</h1><a href='http://svn.zope.org/z3c.formdemo' rel="homepage">1.3.0b1 home_page</a><br/>
 <a href='http://svn.zope.org/z3c.formdemo' rel="homepage">1.0.0 home_page</a><br/>
 <a href='http://svn.zope.org/z3c.formdemo' rel="homepage">1.2.0 home_page</a><br/>
@@ -131,7 +131,7 @@ testpages = {
 </body></html>
     ''',
 
-    'http://cheeseshop.python.org/simple/zope.component/': '''\
+    'http://pypi.python.org/simple/zope.component/': '''\
 <html><head><title>Links for zope.component</title></head><body><h1>Links for zope.component</h1><a href='http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4.0.tar.gz#md5=94afb57dfe605d7235ff562d1eaa3bed'>zope.component-3.4.0.tar.gz</a><br/>
 <a href='http://pypi.python.org/packages/2.4/z/zope.component/zope.component-3.4.0-py2.4.egg#md5=c0763e94912e4a8ac1e321a068c916ba'>zope.component-3.4.0-py2.4.egg</a><br/>
 <a href='http://pypi.python.org/packages/source/z/zope.component/zope.component-3.4dev-r72747.tar.gz#md5=f352802dfbc1d1728a30784617976137'>zope.component-3.4dev-r72747.tar.gz</a><br/>
@@ -147,7 +147,7 @@ testpages = {
 </body></html>
     ''',
 
-    'http://cheeseshop.python.org/simple/zope.interface/': '''\
+    'http://pypi.python.org/simple/zope.interface/': '''\
 <html><head><title>Links for zope.interface</title></head><body><h1>Links for zope.interface</h1><a href='http://pypi.python.org/packages/2.5/z/zope.interface/zope.interface-3.4.0b1-py2.5-win32.egg#md5=3b069b174f33b4cdcc39002c1419bc74'>zope.interface-3.4.0b1-py2.5-win32.egg</a><br/>
 <a href='http://pypi.python.org/packages/2.4/z/zope.interface/zope.interface-3.3.0.1-py2.4-win32.egg#md5=ffe64dbc3e16af6648a24160cb649435'>zope.interface-3.3.0.1-py2.4-win32.egg</a><br/>
 <a href='http://pypi.python.org/packages/2.4/z/zope.interface/zope.interface-3.4.1-py2.4-win32.egg#md5=e3c6d95903c0c84ffd0a8e1dc1f62619'>zope.interface-3.4.1-py2.4-win32.egg</a><br/>

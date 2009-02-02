@@ -36,7 +36,7 @@ import xmlrpclib
 import pkg_resources
 import zope.kgs.kgs
 
-SERVER_URL = "http://cheeseshop.python.org/pypi"
+SERVER_URL = "http://pypi.python.org/pypi"
 
 def loadCache(fn):
     if os.path.exists(fn):
