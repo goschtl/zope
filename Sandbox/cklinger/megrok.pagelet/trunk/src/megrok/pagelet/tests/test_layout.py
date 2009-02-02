@@ -6,11 +6,14 @@
   >>> from zope.interface import Interface
   >>> from zope.component import getMultiAdapter
   >>> request = TestRequest()
-  >>> layout = getMultiAdapter((manfred, request), ILayoutTemplate)
+  >>> from zope.interface import Interface
+  >>> elephant = Elephant()
+  >>> layout = getMultiAdapter((elephant, request), ILayoutTemplate)
   >>> "<div> Layout </div>" in str(layout._read_file()) 
   True 
 
-  >>> view = getMultiAdapter((manfred, request), name='mylayoutview')
+
+  >>> view = getMultiAdapter((elephant, request), name='mylayoutview')
   >>> print view()
   <div> Layout </div>
 
@@ -28,20 +31,23 @@ from z3c.template.interfaces import ILayoutTemplate
 class Mammoth(grok.Context):
     pass
 
+class Elephant(grok.Context):
+    pass
+
 class MyLayoutView(grok.View):
-    grok.context(Mammoth)
+    grok.context(Elephant)
     layout = None
 
     def render(self):
         if self.layout is None:
             layout = getMultiAdapter(
-                  (self, self.request), ILayoutTemplate)
+                  (self.context, self.request), ILayoutTemplate)
             return layout(self)
         return self.layout()
 
 
 class Layout(megrok.pagelet.LayoutView):
-    grok.context(Interface)
+    grok.context(Elephant)
     #grok.name('layout')
     megrok.pagelet.template('templates/layout.pt')  
 
@@ -52,12 +58,12 @@ class MyContextLayoutView(grok.View):
     def render(self):
         if self.layout is None:
             layout = getMultiAdapter(
-                  (self, self.request), ILayoutTemplate)
+                  (self.context, self.request), ILayoutTemplate)
             return layout(self)
         return self.layout()
 
 class ContextLayout(megrok.pagelet.LayoutView):
-    grok.context(MyContextLayoutView)
+    grok.context(Mammoth)
     megrok.pagelet.template('templates/context_layout.pt')
 
 def test_suite():
