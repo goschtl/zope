@@ -100,7 +100,8 @@ def generateData(src):
             'title': set.name,
             'siteRoot':''}
 
-def generateSite(siteDir, templateDir, force=False, offline=False):
+def generateSite(siteDir, templateDir, force=False, offline=False,
+                 noLinks=False, noIndex=False, noMinimalIndex=False):
     # Create some important variables
     kgsPath = os.path.join(siteDir, 'controlled-packages.cfg')
 
@@ -159,25 +160,28 @@ def generateSite(siteDir, templateDir, force=False, offline=False):
     version.generateVersions(kgsPath, versionsPath)
 
     # Create a links config file and version it
-    linksPath = os.path.join(versionDir, 'links.html')
-    logger.info("generating links")
-    link.generateLinks(kgsPath, linksPath, offline=offline)
+    if not noLinks:
+        linksPath = os.path.join(versionDir, 'links.html')
+        logger.info("generating links")
+        link.generateLinks(kgsPath, linksPath, offline=offline)
 
     # Update the full index (which is assumed to live in the site directory)
-    logger.info("updating the index")
-    idxDir = os.path.join(versionDir, 'index')
-    if not os.path.exists(idxDir):
-        os.mkdir(idxDir)
-    ppix.generatePackagePages(kgsPath, idxDir, offline=offline)
-    ppix.generateIndexPage(kgsPath, idxDir)
+    if not noIndex:
+        logger.info("updating the index")
+        idxDir = os.path.join(versionDir, 'index')
+        if not os.path.exists(idxDir):
+            os.mkdir(idxDir)
+        ppix.generatePackagePages(kgsPath, idxDir, offline=offline)
+        ppix.generateIndexPage(kgsPath, idxDir)
 
     # Update the minimal index
-    logger.info("updating the minimal index")
-    midxDir = os.path.join(versionDir, 'minimal')
-    if not os.path.exists(midxDir):
-        os.mkdir(midxDir)
-    ppix.generatePackagePages(kgsPath, midxDir, offline=offline)
-    ppix.generateIndexPage(kgsPath, midxDir)
+    if not noMinimalIndex:
+        logger.info("updating the minimal index")
+        midxDir = os.path.join(versionDir, 'minimal')
+        if not os.path.exists(midxDir):
+            os.mkdir(midxDir)
+        ppix.generatePackagePages(kgsPath, midxDir, offline=offline)
+        ppix.generateIndexPage(kgsPath, midxDir)
 
     # Generate Web Site
     logger.info("Generating Web Site")
@@ -216,6 +220,16 @@ parser.add_option(
     "-o","--offline", action="store_true", dest="offlineMode", default=False,
     help=("Run in offline mode.  Doesn't really do much, good for "
           "developing templates."))
+parser.add_option(
+    "--no-index", action="store_true", dest="noIndex", default=False,
+    help=("When set, no index is created."))
+parser.add_option(
+    "--no-minimal-index", action="store_true", dest="noMinimalIndex",
+    default=False,
+    help=("When set, no minimal index is created."))
+parser.add_option(
+    "--no-links", action="store_true", dest="noLinks", default=False,
+    help=("When set, no links file is created."))
 
 def main(args=None):
     if args is None:
@@ -243,5 +257,7 @@ def main(args=None):
         template.generateSite(templateDir, siteDir, generateData(siteDir))
         logger.info("finished generating site.")
     else:
-        generateSite(siteDir, templateDir, force=options.force,
-                     offline=options.offlineMode)
+
+        generateSite(
+            siteDir, templateDir, options.force, options.offlineMode,
+            options.noLinks, options.noIndex, options.noMinimalIndex)
