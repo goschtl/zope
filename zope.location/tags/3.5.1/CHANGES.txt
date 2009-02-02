@@ -1,0 +1,34 @@
+=======
+CHANGES
+=======
+
+3.5.1 (2009-02-02)
+------------------
+
+- Improve test coverage.
+
+- The new ``getParents`` method was extracted from ``zope.traversing``
+  and added to ILocationInfo interface in the previous release. Custom
+  ILocationInfo implementations should make sure they have this method
+  as well. That method is already used in ``zope.traversing.api.getParents``
+  function.
+
+- Make ``getName`` of LocationPhysicallyLocatable always return empty
+  string for the IRoot object, like RootPhysicallyLocatable from
+  ``zope.traversing`` did. So, now LocationPhysicallyLocatable is
+  fully compatible with RootPhysicallyLocatable, making the latter one
+  obsolete.
+
+- Change package mailing list address to zope-dev at zope.org instead
+  of retired zope3-dev at zope.org.
+
+3.5.0 (2009-01-31)
+------------------
+
+- Reverse the dependency between zope.location and zope.traversing. This
+  also causes the dependency to various other packages go away.
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the main Zope tree.
