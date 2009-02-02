@@ -2,6 +2,17 @@
 CHANGES
 =======
 
+1.1.0 (2009-02-01)
+------------------
+
+- Added '--no-links', '--no-index', and '--no-minimal-index' options to the
+  site generation sctipt to make it faster.
+
+- Generating list of latest versions does not fail anymore, if downloading and
+  parsing of the index page fails.
+
+- Update links to PyPI web sites.
+
 1.0.1 (2009-01-29)
 ------------------
 
@@ -20,7 +31,7 @@ CHANGES
     in the KGS.
 
   * A script that lists all versions of a package released after the latest
-    version lsited in the KGS.
+    version listed in the KGS.
 
   * A script that manages the generation of the entire KGS site.
 
