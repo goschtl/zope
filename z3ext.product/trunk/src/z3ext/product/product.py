@@ -20,7 +20,9 @@ from BTrees.OOBTree import OOBTree
 from zope import interface, event
 from zope.component import getSiteManager
 from zope.component import getUtility, queryUtility, getUtilitiesFor
+from zope.app.component.hooks import getSite
 from zope.app.component.interfaces import ILocalSiteManager
+from zope.lifecycleevent import ObjectModifiedEvent
 
 from z3c.configurator import configure
 
@@ -79,6 +81,7 @@ class Product(object):
                 subsm.__bases__ = subsm.__bases__
 
         event.notify(interfaces.ProductInstalledEvent(self.__product_name__, self))
+        event.notify(ObjectModifiedEvent(getSite()))
 
         self.update()
 
@@ -90,6 +93,7 @@ class Product(object):
         configure(self, {})
         event.notify(
             interfaces.ProductUpdatedEvent(self.__product_name__, self))
+        event.notify(ObjectModifiedEvent(getSite()))
 
         self._checkRequiredUpdate()
 
@@ -111,6 +115,7 @@ class Product(object):
 
         event.notify(
             interfaces.ProductUninstalledEvent(self.__product_name__, self))
+        event.notify(ObjectModifiedEvent(getSite()))
 
     def _checkInstalled(self, sm, registry, seen):
         if sm in seen:
