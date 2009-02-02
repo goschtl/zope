@@ -181,6 +181,18 @@ So here is the result:
     >>> traverser.publishTraverse(request, 'some')
     <SomeAdapter object at ...>
 
+If the object is not adaptable, we'll get NotFound. Let's register a
+plugin that tries to query a named adapter for ISomeAdapter. The third
+argument for AdapterTraverserPlugin is used to specify the adapter name.
+
+    >>> provideSubscriptionAdapter(
+    ...     AdapterTraverserPlugin('badadapter', ISomeAdapter, 'other'),
+    ...     (IMyContainer, IPublisherRequest))
+
+    >>> traverser.publishTraverse(request, 'badadapter')
+    Traceback (most recent call last):
+    ...
+    NotFound: Object: <MyContainer object at ...>, name: 'badadapter'
 
 Traverser Plugins
 -----------------
@@ -203,7 +215,7 @@ the the `NullTraverserPlugin`, which always just returns the object itself:
     NotFound: Object: <Content object at ...>, name: 'something else'
 
 All of the above traversers with exception of the `ContainerTraverserPlugin`
-are realizations of the abstract `NameTraverserPlugin` class. Name traversers
+are implementation of the abstract `NameTraverserPlugin` class. Name traversers
 are traversers that can resolve one particular name. By using the abstract
 `NameTraverserPlugin` class, all of the traverser boilerplate can be
 avoided. Here is a simple example that always returns a specific value for a
@@ -249,3 +261,22 @@ accessible attributes of an object:
     ...
     NotFound: Object: <MyContainer object at ...>, name: 'some'
 
+
+Browser traverser
+-----------------
+
+There's also a special subclass of the PluggableTraverser that 
+implements the ``IBrowserPublisher`` interface, thus providing the
+``browserDefault`` method that returns a default object and a view
+name to traverse and use if there's no more steps to traverse.
+
+Let's provide a view name registered as an IDefaultView adapter. This
+is usually done by zope.app.publisher's browser:defaultView directive. 
+
+    >>> from zope.component.interfaces import IDefaultViewName
+    >>> provideAdapter('view.html', (IContent, Interface), IDefaultViewName)
+
+    >>> from z3c.traverser.browser import PluggableBrowserTraverser
+    >>> traverser = PluggableBrowserTraverser(content, request)
+    >>> traverser.browserDefault(request)
+    (<Content object at 0x...>, ('@@view.html',))

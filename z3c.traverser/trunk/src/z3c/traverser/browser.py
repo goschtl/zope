@@ -16,14 +16,28 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from zope.app import zapi
+from zope.component import getSiteManager
+from zope.component.interfaces import ComponentLookupError, IDefaultViewName
+from zope.interface import implements, providedBy
+from zope.publisher.interfaces.browser import IBrowserPublisher
+
 from z3c.traverser.traverser import PluggableTraverser
 
+# copy the function from zope.app.publisher not to depend on it
+def getDefaultViewName(object, request):
+    name = getSiteManager().adapters.lookup(
+        (providedBy(object), providedBy(request)), IDefaultViewName)
+    if name is not None:
+        return name
+    raise ComponentLookupError("Couldn't find default view name",
+                               object, request)
 
 class PluggableBrowserTraverser(PluggableTraverser):
 
+    implements(IBrowserPublisher)
+
     def browserDefault(self, request):
         """See zope.publisher.browser.interfaces.IBrowserPublisher"""
-        view_name = zapi.getDefaultViewName(self.context, request)
-        view_uri = "@@%s" %view_name
+        view_name = getDefaultViewName(self.context, request)
+        view_uri = "@@%s" % view_name
         return self.context, (view_uri,)

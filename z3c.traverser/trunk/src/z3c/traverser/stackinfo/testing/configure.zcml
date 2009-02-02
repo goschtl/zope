@@ -4,13 +4,13 @@
            i18n_domain="zope">
 
  <browser:page
-  for="zope.app.component.interfaces.ISite"
+  for="zope.location.interfaces.ISite"
   name="stackinfo.html"
   permission="zope.Public"
   class=".views.StackInfoView"/>
 
  <subscriber
-  for="zope.app.component.interfaces.ISite
+  for="zope.location.interfaces.ISite
        zope.app.publication.interfaces.IBeforeTraverseEvent"
   handler="z3c.traverser.stackinfo.applyStackConsumersHandler"
   />

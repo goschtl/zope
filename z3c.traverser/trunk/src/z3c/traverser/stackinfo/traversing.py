@@ -1,9 +1,12 @@
+import urllib
+
 from zope import component
-import interfaces
+from zope.proxy import sameProxiedObjects
+from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import NotFound
 from zope.traversing.browser.absoluteurl import absoluteURL
-import urllib
-from zope.publisher.browser import BrowserView
+
+import interfaces
 
 CONSUMERS_ANNOTATION_KEY='z3c.traverser.consumers'
 CONSUMED_ANNOTATION_KEY='z3c.traverser.consumed'
@@ -38,7 +41,7 @@ def applyStackConsumers(context, request):
         request.annotations[CONSUMERS_ANNOTATION_KEY] = []
     else:
         for obj, consumed in request.annotations[CONSUMED_ANNOTATION_KEY]:
-            if obj == context:
+            if sameProxiedObjects(obj, context):
                 return
     orgStack = request.getTraversalStack()
     cons = [cons for name, cons in getStackConsumers(
@@ -89,7 +92,7 @@ def unconsumedURL(context, request):
     return url
 
 class UnconsumedURL(BrowserView):
-    # XXX test this
+
     def __unicode__(self):
         return urllib.unquote(self.__str__()).decode('utf-8')
 
@@ -97,7 +100,6 @@ class UnconsumedURL(BrowserView):
         return unconsumedURL(self.context, self.request)
 
     __call__ = __str__
-
 
 class VHStack:
     """Helper class to work around the special case with virtual hosts"""

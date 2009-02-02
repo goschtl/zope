@@ -104,7 +104,7 @@
       />
 
   <browser:viewlet
-      for="zope.app.component.interfaces.ISite"
+      for="zope.location.interfaces.ISite"
       name="OuterViewlet"
       manager=".app.IOuterManager"
       class=".app.OuterViewlet"
@@ -117,7 +117,7 @@
       />
 
   <browser:viewlet
-      for="zope.app.component.interfaces.ISite"
+      for="zope.location.interfaces.ISite"
       name="InnerViewlet"
       manager=".app.IInnerManager"
       class=".app.InnerViewlet"
@@ -130,7 +130,7 @@
       />
 
   <browser:viewlet
-      for="zope.app.component.interfaces.ISite"
+      for="zope.location.interfaces.ISite"
       name="MostInnerViewlet"
       manager=".app.IMostInnerManager"
       class=".app.MostInnerViewlet"

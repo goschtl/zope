@@ -253,3 +253,18 @@ Or only the object below.
   'http://127.0.0.1/content'
   >>> traversing.unconsumedURL(under, request)
   'http://127.0.0.1/content/under/kv/key2/value2'
+
+The unconsumedURL function is also available as a view, named
+``unconsumed_url``, similar to ``absolute_url`` one.
+
+  >>> from zope.component import getMultiAdapter
+  >>> url = getMultiAdapter((under, request), name='unconsumed_url')
+
+  >>> str(url)
+  'http://127.0.0.1/content/under/kv/key2/value2'
+
+  >>> unicode(url)
+  u'http://127.0.0.1/content/under/kv/key2/value2'
+
+  >>> url()
+  'http://127.0.0.1/content/under/kv/key2/value2'

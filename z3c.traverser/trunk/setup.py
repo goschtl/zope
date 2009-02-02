@@ -22,14 +22,14 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='z3c.traverser',
-      version = '0.2.3',
+      version = '0.2.4dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Pluggable Traverser API',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Dcoumentation\n' +
+          'Detailed Documentation\n' +
           '======================\n'
           + '\n\n' +
           read('src', 'z3c', 'traverser', 'README.txt')
@@ -57,7 +57,7 @@ setup(name='z3c.traverser',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.traverser',
+      url='http://pypi.python.org/pypi/z3c.traverser',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

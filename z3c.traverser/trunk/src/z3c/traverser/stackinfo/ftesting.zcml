@@ -20,7 +20,7 @@
     component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
 
   <include package="zope.app.securitypolicy" />
-  <include package="zope.app.session" />
+  <include package="zope.session" />
 
   <include package="z3c.traverser.stackinfo"/>
   <include package="z3c.traverser.stackinfo.testing"/>
