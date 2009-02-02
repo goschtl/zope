@@ -1,7 +1,8 @@
 from zope import interface, component
+from zope.publisher.interfaces.browser import IBrowserRequest
+
 import interfaces
 import traversing
-from zope.publisher.interfaces.browser import IBrowserRequest
 
 @component.adapter(IBrowserRequest)
 @interface.implementer(interfaces.ITraversalStackInfo)

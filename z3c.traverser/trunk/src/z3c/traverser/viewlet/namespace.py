@@ -1,8 +1,8 @@
-from zope.traversing.namespace import SimpleHandler
 from zope import component
 from zope.publisher.interfaces import NotFound
-from zope.viewlet.interfaces import IViewletManager
 from zope.security.proxy import removeSecurityProxy
+from zope.traversing.namespace import SimpleHandler
+from zope.viewlet.interfaces import IViewletManager
 
 class ViewletViewletManagerHandler(SimpleHandler):
 

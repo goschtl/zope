@@ -1,12 +1,13 @@
 import doctest
 import unittest
-from zope.testing.doctestunit import DocFileSuite, DocFileSuite
-from zope.app.testing import setup
+
 import zope.traversing.testing
-from zope.traversing.testing import browserView
+from zope.app.testing import setup
+from zope.testing.doctestunit import DocFileSuite, DocFileSuite
 from zope.traversing.browser import AbsoluteURL, SiteAbsoluteURL
-from zope.traversing.interfaces import IContainmentRoot
 from zope.traversing.browser.interfaces import IAbsoluteURL
+from zope.traversing.interfaces import IContainmentRoot
+from zope.traversing.testing import browserView
 
 def setUp(test):
     root = setup.placefulSetUp(True)

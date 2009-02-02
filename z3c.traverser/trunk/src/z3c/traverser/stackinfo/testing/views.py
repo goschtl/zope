@@ -1,5 +1,6 @@
-from z3c.traverser.stackinfo import interfaces
 from zope.traversing.browser.absoluteurl import absoluteURL
+
+from z3c.traverser.stackinfo import interfaces
 
 class StackInfoView(object):
 

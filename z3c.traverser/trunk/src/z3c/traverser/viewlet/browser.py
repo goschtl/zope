@@ -1,10 +1,11 @@
-from zope.traversing.browser import absoluteurl
-import zope.component
 import urllib
-from zope.security.proxy import removeSecurityProxy
-from zope.publisher.browser import BrowserView
-from zope.contentprovider.interfaces import BeforeUpdateEvent
+
+import zope.component
 from zope import event
+from zope.contentprovider.interfaces import BeforeUpdateEvent
+from zope.publisher.browser import BrowserView
+from zope.security.proxy import removeSecurityProxy
+from zope.traversing.browser import absoluteurl
 
 class ViewletAbsoluteURL(absoluteurl.AbsoluteURL):
 
