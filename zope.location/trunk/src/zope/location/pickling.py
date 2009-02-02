@@ -56,15 +56,15 @@ def locationCopy(loc):
 
     >>> c3 = locationCopy(o1.o3)
     >>> c3 is o1.o3
-    0
+    False
     >>> c3.__parent__ is o1
-    1
+    True
     >>> c3.o5 is o1.o3.o5
-    0
+    False
     >>> c3.o5.__parent__ is c3
-    1
+    True
     >>> c3.o4 is o1.o2.o4
-    1
+    True
 
     """
     tmp = tempfile.TemporaryFile()
@@ -109,27 +109,27 @@ class CopyPersistent(object):
     >>> o3 = Location()
     >>> id3 = persistent.id(o3)
     >>> id3 is None
-    0
+    False
     >>> o4 = Location()
     >>> id4 = persistent.id(o4)
     >>> id4 is None
-    0
+    False
     >>> id4 is id3
-    0
+    False
 
     If we ask for the `id` of an outside location more than once, we
     always get the same `id` back:
 
     >> persistent.id(o4) == id4
-    1
+    True
 
     We also provide a load function that returns the objects for which
     we were given ids:
 
     >>> persistent.load(id3) is o3
-    1
+    True
     >>> persistent.load(id4) is o4
-    1
+    True
 
     """
 
@@ -210,15 +210,22 @@ class PathPersistent(object):
     >>> persistent.id(o4)
     u'/o3/o4'
 
-    We also provide a load function that returns objects by traversing
+    We also provide a load method that returns objects by traversing
     given paths.  It has to find the root based on the object given to
     the constructor.  Therefore, that object must also be rooted:
 
     >>> o1.__parent__ = root
     >>> persistent.load(u'/o3') is o3
-    1
+    True
     >>> persistent.load(u'/o3/o4') is o4
-    1
+    True
+
+    We must provide an absolute path for the load method:
+
+    >>> persistent.load(u'o3')
+    Traceback (most recent call last):
+    ...
+    ValueError: ('Persistent paths must be absolute', u'o3')
 
     """
 
@@ -232,7 +239,7 @@ class PathPersistent(object):
         return None
 
     def load(self, path):
-        if path[:1] != u'/':
-            raise ValueError("ZPersistent paths must be absolute", path)
+        if not path.startswith(u'/'):
+            raise ValueError("Persistent paths must be absolute", path)
         root = LocationPhysicallyLocatable(self.location).getRoot()
         return zope.location.interfaces.ITraverser(root).traverse(path[1:])

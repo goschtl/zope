@@ -5,6 +5,18 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
+- Improve test coverage.
+
+- The new ``getParents`` method was extracted from ``zope.traversing``
+  and added to ILocationInfo interface in the previous release. Custom
+  ILocationInfo implementations should make sure they have this method
+  as well. That method is already used in ``zope.traversing.api.getParents``
+  function.
+
+- Make ``getName`` of ILocationInfo always return empty string for
+  the IRoot object, like RootPhysicallyLocatable from zope.traversing
+  did, making the latter one obsolete.
+
 - Change package mailing list address to zope-dev at zope.org instead
   of retired zope3-dev at zope.org.
 

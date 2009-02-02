@@ -27,6 +27,12 @@ from zope.location.location import Location
 
 class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
+    
+    >>> from zope.interface.verify import verifyObject
+    >>> info = LocationPhysicallyLocatable(Location())
+    >>> verifyObject(ILocationInfo, info)
+    True
+    
     """
 
     zope.component.adapts(ILocation)
@@ -46,15 +52,15 @@ class LocationPhysicallyLocatable(object):
         >>> root = Location()
         >>> zope.interface.directlyProvides(root, IRoot)
         >>> LocationPhysicallyLocatable(root).getRoot() is root
-        1
+        True
 
         >>> o1 = Location(); o1.__parent__ = root
         >>> LocationPhysicallyLocatable(o1).getRoot() is root
-        1
+        True
 
         >>> o2 = Location(); o2.__parent__ = o1
         >>> LocationPhysicallyLocatable(o2).getRoot() is root
-        1
+        True
 
         We'll get a TypeError if we try to get the location fo a
         rootless object:
@@ -162,6 +168,27 @@ class LocationPhysicallyLocatable(object):
         Raises a TypeError if the object is not connected to a containment
         root.
 
+        >>> root = Location()
+        >>> zope.interface.directlyProvides(root, IRoot)
+        >>> LocationPhysicallyLocatable(root).getParents()
+        []
+
+        >>> o1 = Location()
+        >>> o2 = Location()
+        >>> o1.__parent__ = root
+        >>> o2.__parent__ = o1
+        >>> LocationPhysicallyLocatable(o2).getParents() == [o1, root]
+        True
+        
+        If the last parent is not an IRoot object, TypeError will be
+        raised as statet before.
+        
+        >>> zope.interface.noLongerProvides(root, IRoot)
+        >>> LocationPhysicallyLocatable(o2).getParents()
+        Traceback (most recent call last):
+        ...
+        TypeError: Not enough context information to get all parents
+
         """
         # XXX Merge this implementation with getPath. This was refactored
         # from zope.traversing.
@@ -186,11 +213,18 @@ class LocationPhysicallyLocatable(object):
 
         See ILocationInfo
 
-        >>> o1 = Location(); o1.__name__ = 'o1'
+        >>> o1 = Location(); o1.__name__ = u'o1'
         >>> LocationPhysicallyLocatable(o1).getName()
-        'o1'
+        u'o1'
+
+        >>> root = Location()
+        >>> zope.interface.directlyProvides(root, IRoot)
+        >>> LocationPhysicallyLocatable(root).getName()
+        u''
 
         """
+        if IRoot.providedBy(self.context):
+            return u''
         return self.context.__name__
 
     def getNearestSite(self):
@@ -209,7 +243,17 @@ class LocationPhysicallyLocatable(object):
         >>> o1.__name__ = 'o1'
         >>> o1.__parent__ = root
         >>> LocationPhysicallyLocatable(o1).getNearestSite() is root
-        1
+        True
+        
+        >>> zope.interface.directlyProvides(o1, ISite)
+        >>> LocationPhysicallyLocatable(o1).getNearestSite() is o1
+        True
+        
+        >>> o2 = Location()
+        >>> o2.__parent__ = o1
+        >>> LocationPhysicallyLocatable(o2).getNearestSite() is o1
+        True
+        
         """
         if ISite.providedBy(self.context):
             return self.context

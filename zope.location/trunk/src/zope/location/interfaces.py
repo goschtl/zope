@@ -68,6 +68,15 @@ class ILocationInfo(zope.interface.Interface):
 
         """
 
+    def getParents():
+        """Returns a list starting with the object's parent followed by
+        each of its parents.
+
+        Raises a TypeError if the object is not connected to a containment
+        root.
+        
+        """
+
     def getName():
         """Return the last segment of the physical path."""
 
