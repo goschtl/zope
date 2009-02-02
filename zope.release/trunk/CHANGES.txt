@@ -4,6 +4,29 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
+3.5.0 (unreleased)
+------------------
+
+- Upgraded all packages to latest versions.
+- Added new packages:
+  * zope.container
+  * zope.site
+  * zope.keyreference
+  * zope.intid
+  * zope.catalog
+  * z3c.layer.minimal
+  * z3c.layer.pagelet
+  * z3c.layer.ready2go
+  * z3c.layer.trusted
+  * z3c.menu.simple
+  * z3c.menu.ready2go
+  * z3c.schema
+- Removed zope.app.keyreference from KGS, as it was renamed
+  to zope.keyreference and zope.app.keyreference should not
+  be used anymore.
+- Removed z3c.layer as it was splitted (see added packages).
+- Removed z3c.menu as it also was splitted (see added packages).
+
 3.4.0 (2009-01-29)
 ------------------
 
