@@ -1,7 +1,7 @@
 CHANGES
 *******
 
-1.0a3 (unreleased)
+1.0a3 (2009-02-03)
 ==================
 
 * Fix bug where up/down arrows didn't appear for newly added items.
