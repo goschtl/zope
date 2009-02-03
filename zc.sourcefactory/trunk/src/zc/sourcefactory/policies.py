@@ -17,7 +17,7 @@
 __docformat__ = "reStructuredText"
 
 
-import zope.app.intid.interfaces
+import zope.intid.interfaces
 import zope.component
 try:
     from zope.dublincore import interfaces as dublincoreinterfaces
@@ -144,7 +144,7 @@ class IntIdTokenPolicy(object):
     @property
     def intids(self):
         return zope.component.getUtility(
-            zope.app.intid.interfaces.IIntIds)
+            zope.intid.interfaces.IIntIds)
 
 
 # Value policies

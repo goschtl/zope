@@ -8,7 +8,7 @@ def read_file(*args):
 
 setup(
     name="zc.sourcefactory",
-    version="0.4.1dev",
+    version="0.5.0dev",
     author="Zope Corporation and Contributors",
     author_email="zope3-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
@@ -43,7 +43,7 @@ setup(
     install_requires=[
         "setuptools",
         "ZODB3",
-        "zope.app.intid",
+        "zope.intid",
         "zope.browser",
         "zope.component",
         "zope.dublincore",
