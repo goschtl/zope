@@ -10,7 +10,7 @@ setup(
     name="zc.sourcefactory",
     version="0.5.0dev",
     author="Zope Corporation and Contributors",
-    author_email="zope3-dev@zope.org",
+    author_email="zope-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
     keywords="zope zope3 vocabulary source factory",
     description="An easy way to create custom Zope 3 sources.",
