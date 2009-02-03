@@ -170,9 +170,6 @@ class LocationPhysicallyLocatable(object):
 
         >>> root = Location()
         >>> zope.interface.directlyProvides(root, IRoot)
-        >>> LocationPhysicallyLocatable(root).getParents()
-        []
-
         >>> o1 = Location()
         >>> o2 = Location()
         >>> o1.__parent__ = root
@@ -192,9 +189,6 @@ class LocationPhysicallyLocatable(object):
         """
         # XXX Merge this implementation with getPath. This was refactored
         # from zope.traversing.
-        if IRoot.providedBy(self.context):
-            return []
-
         parents = []
         w = self.context
         while 1:
@@ -216,15 +210,7 @@ class LocationPhysicallyLocatable(object):
         >>> o1 = Location(); o1.__name__ = u'o1'
         >>> LocationPhysicallyLocatable(o1).getName()
         u'o1'
-
-        >>> root = Location()
-        >>> zope.interface.directlyProvides(root, IRoot)
-        >>> LocationPhysicallyLocatable(root).getName()
-        u''
-
         """
-        if IRoot.providedBy(self.context):
-            return u''
         return self.context.__name__
 
     def getNearestSite(self):
@@ -261,3 +247,86 @@ class LocationPhysicallyLocatable(object):
             if ISite.providedBy(parent):
                 return parent
         return self.getRoot()
+
+class RootPhysicallyLocatable(object):
+    """Provide location information for the root object
+    
+    >>> from zope.interface.verify import verifyObject
+    >>> info = RootPhysicallyLocatable(None)
+    >>> verifyObject(ILocationInfo, info)
+    True
+    
+    This adapter is very simple, because there's no places to search
+    for parents and nearest sites, so we are only working with context
+    object, knowing that its the root object already.
+    
+    """
+
+    zope.component.adapts(IRoot)
+    zope.interface.implements(ILocationInfo)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getRoot(self):
+        """See ILocationInfo
+
+        No need to search for root when our context is already root :) 
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getRoot() is o1
+        True
+        
+        """
+        return self.context
+
+    def getPath(self):
+        """See ILocationInfo
+
+        Root object is at the top of the tree, so always return ``/``. 
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getPath()
+        u'/'
+        
+        """
+        return u'/'
+
+    def getName(self):
+        """See ILocationInfo
+
+        Always return empty unicode string for the root object
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getName()
+        u''
+        
+        """
+        return u''
+
+    def getParents(self):
+        """See ILocationInfo
+
+        There's no parents for the root object, return empty list.
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getParents()
+        []
+        
+        """
+        return []
+
+    def getNearestSite(self):
+        """See ILocationInfo
+        
+        Return object itself as the nearest site, because there's no
+        other place to look for. It's also usual that the root is the
+        site as well.
+        
+
+        >>> o1 = object()
+        >>> RootPhysicallyLocatable(o1).getNearestSite() is o1
+        True
+        
+        """
+        return self.context

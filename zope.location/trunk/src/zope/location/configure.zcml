@@ -1,6 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <adapter factory=".traversing.LocationPhysicallyLocatable" />
+  <adapter factory=".traversing.RootPhysicallyLocatable" />
   <adapter factory=".location.LocationProxy" />
 
 </configure>

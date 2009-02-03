@@ -5,7 +5,11 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- ...
+- Split RootPhysicallyLocatable adapter back from LocationPhysicallyLocatable,
+  because the IRoot object may not always provide ILocation and the code
+  for the root object is also simplier. It's basically a copy of the
+  RootPhysicallyLocatable adapter from zope.traversing version 3.5.0 and
+  below with ``getParents`` method added (returns an empty list).
 
 3.5.1 (2009-02-02)
 ------------------
