@@ -87,7 +87,6 @@ class GrokForm(object):
 	if self.layout is None:
 	    layout = component.getMultiAdapter(
 	        (self.context, self.request), ILayoutTemplate)
-	    import pdb; pdb.set_trace()
 	    return layout(self)
         return self.layout()
 
