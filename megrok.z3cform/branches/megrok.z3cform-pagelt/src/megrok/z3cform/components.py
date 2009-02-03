@@ -13,7 +13,9 @@ from megrok.z3cform.interfaces import IGrokForm
 
 from z3c.form import form, field
 from z3c.form.interfaces import IFormLayer
+from z3c.template.interfaces import ILayoutTemplate
 
+import megrok.pagelet
 
 class DefaultFields(field.Fields):
     """Marker for default fields.
@@ -26,6 +28,9 @@ class GrokForm(object):
 
     interface.implements(IGrokForm)
     martian.baseclass()
+
+    template = None
+    layout = None
 
     fields = DefaultFields()
 
@@ -54,7 +59,7 @@ class GrokForm(object):
         assert not (self.template is None)
         if IGrokTemplate.providedBy(self.template):
             return super(GrokForm, self)._render_template()
-        return self.template()
+        return self.template(self)
 
     def render(self):
         """People don't have to define a render method here, and we
@@ -72,38 +77,52 @@ class GrokForm(object):
                                 # override it.
 
     def __call__(self):
-        mapply(self.update, (), self.request)
-        if self.request.response.getStatus() in (302, 303):
-            # A redirect was triggered somewhere in update().  Don't
-            # continue rendering the template or doing anything else.
-            return
-
+        #mapply(self.update, (), self.request)
+        #if self.request.response.getStatus() in (302, 303):
+        #    # A redirect was triggered somewhere in update().  Don't
+        #    # continue rendering the template or doing anything else.
+        #    return
+        self.update()
         self.updateForm()
-        return self.render()
+	if self.layout is None:
+	    layout = component.getMultiAdapter(
+	        (self.context, self.request), ILayoutTemplate)
+	    import pdb; pdb.set_trace()
+	    return layout(self)
+        return self.layout()
 
 
-class Form(GrokForm, form.Form, grokcore.view.View):
+class Form(GrokForm, form.Form, megrok.pagelet.Pagelet):
     """Normal z3c form.
     """
 
     martian.baseclass()
 
 
-class AddForm(GrokForm, form.AddForm, grokcore.view.View):
+class AddForm(GrokForm, form.AddForm, megrok.pagelet.Pagelet):
     """z3c add form.
     """
 
     martian.baseclass()
 
+    def _render_template(self):
+	assert not (self.template is None)
+	if self._finishedAdd:
+	    self.request.response.redirect(self.nextURL())
+	    return ""
+	if IGrokTemplate.providedBy(self.template):
+	    return super(GrokForm, self)._render_template()
+	return self.template(self)    
 
-class EditForm(GrokForm, form.EditForm, grokcore.view.View):
+
+class EditForm(GrokForm, form.EditForm, megrok.pagelet.Pagelet):
     """z3c edit form.
     """
 
     martian.baseclass()
 
 
-class DisplayForm(GrokForm, form.DisplayForm, grokcore.view.View):
+class DisplayForm(GrokForm, form.DisplayForm, megrok.pagelet.Pagelet):
     """z3c display form.
     """
     

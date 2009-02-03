@@ -9,6 +9,8 @@ install_requires = [
     'grokcore.view >= 1.1',
     'grokcore.formlib',
     'z3c.form',
+    'z3c.formui',
+    'z3c.layer',
     ]
 
 # The grok dependency is not added explicitly, so we can factor out a
