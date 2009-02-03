@@ -12,7 +12,7 @@ long_description=(
 name='lovely.tal'
 setup(
     name = name,
-    version = '0.5.0a1',
+    version = '0.6.0',
     author = "Lovely Systems GmbH",
     author_email = "office@lovelysystems.com",
     description = "the lovely tal enables new tal expressions",

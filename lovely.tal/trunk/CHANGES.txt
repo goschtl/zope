@@ -5,6 +5,9 @@ lovely.tal
 after
 =====
 
+2009/02/03 0.6.0
+================
+
  - always strip out script-tags 
  - added "allow-scripts" for explicit enabling of script-tags
 
