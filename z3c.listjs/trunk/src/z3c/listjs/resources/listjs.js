@@ -119,8 +119,10 @@ Z3C.namespace = function(name) {
         buttons_el.parentNode.insertBefore(new_tr, buttons_el);
         var td1 = document.createElement('td');
         var td2 = document.createElement('td');
+        var td3 = document.createElement('td');
         new_tr.appendChild(td1);
         new_tr.appendChild(td2);
+        new_tr.appendChild(td3);
         var cb = document.createElement('input');
         cb.className = 'editcheck';
         cb.type = 'checkbox';
@@ -128,6 +130,20 @@ Z3C.namespace = function(name) {
         td1.appendChild(cb);
         td2.innerHTML = template_text;
 
+        // up and down arrows
+        var div_up = document.createElement('div');
+        var div_down = document.createElement('div');
+        var a_up = document.createElement('a');
+        var a_down = document.createElement('a');
+        a_up.className = 'up_button';
+        a_down.className = 'down_button';
+        a_up.onClick = 'Z3C.listjs.up("' + prefix + '", this)';
+        a_down.onClick = 'Z3C.listjs.down("' + prefix + '", this)';
+        td3.appendChild(div_up);
+        td3.appendChild(div_down);
+        div_up.appendChild(a_up);
+        div_down.appendChild(a_down);
+        
         updateAllNumbers(prefix);
     };
    
