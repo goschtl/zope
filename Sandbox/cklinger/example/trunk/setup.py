@@ -22,6 +22,9 @@ setup(name='example',
                         'grok',
                         'grokui.admin',
                         'z3c.testsetup',
+			'megrok.z3cform',
+			'megrok.pagelet',
+			'z3c.csvvocabulary',
                         # Add extra requirements here
                         ],
       entry_points = """
