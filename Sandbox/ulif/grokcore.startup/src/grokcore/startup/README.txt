@@ -227,9 +227,15 @@ Projects with a ``startup.py`` file
 ===================================
 
 If you can find a file ``startup.py`` in your Grok application
-sources, then you can do an update in two steps:
+sources, then chances are good, that your project was already created
+with paster support (and you should be able to find an ``etc/``
+configuration directory in your project root) and you can do an update
+in three steps:
 
-1) In your project's ``setup.py`` modify the lines reading::
+1) In your project's ``setup.py`` add a dependency to
+   ``grokcore.startup``.
+
+2) In your project's ``setup.py`` modify the lines reading::
 
       [paste.app_factory]
       main = <myapplication>.startup:application_factory
@@ -254,7 +260,15 @@ the configuration files needed py `Paste`_.
 
 You can setup those files manually following the instructions above or
 simply create a new grokproject with the same name and copy all source
-files over to the new project directory.
+files (i.e. the stuff below your ``src/`` directory) over to the new
+project directory.
+
+If you decide to switch manually, then chances are that you can reuse
+**parts** of your old ``zope.conf`` or ``site.zcml`` files (located
+somewhere in the ``parts/`` directory) but overall it might be faster
+(and less error-prone) to simply create a new project with the same
+name using a recent `grokproject`_ and copying the old sources (inside
+the ``src/`` directory) over.
 
 Afterwards you should also rerun buildout to make all changes active::
 
