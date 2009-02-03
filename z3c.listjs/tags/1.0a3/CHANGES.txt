@@ -1,0 +1,17 @@
+CHANGES
+*******
+
+1.0a3 (2009-02-03)
+==================
+
+* Fix bug where up/down arrows didn't appear for newly added items.
+
+1.0a2 (2009-01-23)
+==================
+
+* Allow moving individual list items up and down in the list. 
+
+1.0a1 (2009-01-08)
+==================
+
+* Initial public release.
