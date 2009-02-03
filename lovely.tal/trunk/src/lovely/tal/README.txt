@@ -247,6 +247,78 @@ the option softcut works together with cut and prevents cutting words::
   'ein superlangerstring&hellip;'
 
 
+
+Option 'allow-scripts'
+======================
+
+the option 'allow-scripts' has to be set explicitly if you want to include scripts.
+
+  >>> context = Context({'allow-all':True, 'allow-scripts':True})
+  >>> html = """<p>this is html containing a 
+  ...             <script type="text/javascript">
+  ...                alert("i'm not allowed');
+  ...             </script> script.
+  ...           </p>"""
+  >>> print tf._doFormat(html, context)
+  <p>this is html containing a 
+              <script type="text/javascript">
+                 alert("i'm not allowed');
+              </script> script.
+            </p>
+
+
+if not, all scripts will be stripped out although allow-all is enabled::
+
+  >>> context = Context({'allow-all':True})
+  >>> html = """<p>this is html containing a 
+  ...             <script type="text/javascript">
+  ...                alert("i'm not allowed');
+  ...             </script> script.
+  ...           </p>"""
+  >>> print tf._doFormat(html, context)
+  <p>this is html containing a 
+             script.
+          </p>
+
+test uppercase and whitespaces::
+
+  >>> html = """<p>this is html containing a 
+  ...             <   SCRIPT
+  ...                type="text/javascript">
+  ...                alert("i'm not allowed');
+  ...             <  /SCRIPT > script.
+  ...           </p>"""
+  >>> print tf._doFormat(html, context)
+  <p>this is html containing a 
+               script.
+            </p>
+
+escaped scripttags::
+
+  >>> html = """<p>this is html containing a 
+  ...             &lt;script type="text/javascript"&gt;
+  ...                alert("i'm not allowed');
+  ...             &lt;/SCRIPT&gt; script.
+  ...           </p>"""
+  >>> print tf._doFormat(html, context)
+  <p>this is html containing a 
+               script.
+            </p>
+
+
+escaped scripts including whitespace and different case::
+
+  >>> html = """<p>this is html containing a 
+  ...             &lt;SCRIPT 
+  ...                type="text/javascript"&gt;
+  ...                alert("i'm not allowed');
+  ...             &lt; /SCRIPT &gt; script.
+  ...           </p>"""
+  >>> print tf._doFormat(html, context)
+  <p>this is html containing a 
+               script.
+            </p>
+
 Option 'urlparse'
 =================
 

@@ -11,8 +11,11 @@
                    contain no html-tags, therefor the < and > are replaced 
                    by &lt;, &gt;
                    
-   option allow-all: allow all html-tags in the string
+   option allow-all: allow all html-tags in the string (excluding scripts)
    					 e. g. "allow-all: 'True'"
+   
+   option allow-scripts: explicitly allow scripts in the string
+             e. g. "allow-scripts: python:True"
    
    option break-string: force the string to break after a given number of characters
    						e.g. "break-string python:25" breaks the string after 

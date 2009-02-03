@@ -17,6 +17,8 @@ $Id$
 import re
 from zope.tales.expressions import PathExpr
 
+NO_SCRIPTS = re.compile('<\s*script[^>]+>(.*)<\s*\/script\s*>', re.I | re.DOTALL)
+NO_ESCAPED_SCRIPTS = re.compile('&lt;\s*script[^&]+.*&lt;\s*\/script\s*&gt;', re.I | re.DOTALL)
 
 class TextFormatter(PathExpr):
 
@@ -30,6 +32,9 @@ class TextFormatter(PathExpr):
             return rendered
 
         allowAll = ('allow-all' in context.vars)
+
+        if not 'allow-scripts' in context.vars:
+            rendered = self._stripScripts(rendered, context)
 
         if 'clear-html' in context.vars:
             rendered = self._clearHTML(rendered, context)
@@ -158,6 +163,11 @@ class TextFormatter(PathExpr):
         attach = context.vars['attach']
         if attach is not None:
             return rendered + attach
+        return rendered
+
+    def _stripScripts(self, rendered, context):
+        rendered = re.sub(NO_SCRIPTS, '', rendered)
+        rendered = re.sub(NO_ESCAPED_SCRIPTS, '', rendered)
         return rendered
 
     def _urlparse(self, rendered, context):
