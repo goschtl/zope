@@ -8,7 +8,7 @@ def read_file(*args):
 
 setup(
     name="zc.sourcefactory",
-    version="0.5.0dev",
+    version="0.5.1dev",
     author="Zope Corporation and Contributors",
     author_email="zope-dev@zope.org",
     url="http://svn.zope.org/zc.sourcefactory",
