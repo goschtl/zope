@@ -46,14 +46,14 @@
      for="zope.app.component.interfaces.ISite"
      template="layoutviewspace.pt" />
 
-  <z3ext:layout
+  <!--z3ext:layout
      name="workspace"
      layout="portal"
      title="Workspace"
      uid="default.workspace"
      description="Default workspace layout, registered for IDefaultBrowserLayer."
      for="zope.app.component.interfaces.ISite"
-     template="layoutworkspace.pt" />
+     template="layoutworkspace.pt" /-->
 
   <z3ext:layout
      name="portal"
