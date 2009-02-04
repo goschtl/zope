@@ -6,7 +6,7 @@
   <include package="zope.viewlet" file="meta.zcml" />
   <include package="z3c.template" file="meta.zcml" />
   <include package="z3c.macro" file="meta.zcml" />
-
+  <include package="z3c.formui"/>
   <include package="grokcore.view" file="meta-minimal.zcml" />
 
   <grok:grok package=".meta" />
