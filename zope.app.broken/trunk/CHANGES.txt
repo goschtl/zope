@@ -5,7 +5,7 @@ CHANGES
 3.4.1 (unreleased)
 ------------------
 
-- Changed zope.app.appsetup to a test-only dependency.
+- 
 
 3.4.0 (2007-10-11)
 ------------------
