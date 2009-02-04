@@ -26,6 +26,18 @@ What happens if we don´t have a Layout for a pagelet
    ...
    ComponentLookupError: ...
 
+Now I want to see a Pagelet with a template in xxx_templates/xxx.pt
+
+   >>> viewt = getMultiAdapter((page, request), name='pageletwithtemplate')
+   >>> print viewt()
+   <html>
+    <body>
+      <div class="layout"><p> I am a renderd template of a pagelet </p>
+   </div>
+    </body>
+   </html>
+   >>> print viewt.render()
+   <p> I am a renderd template of a pagelet </p>
 """
 import grok
 import megrok.pagelet
@@ -40,6 +52,10 @@ class MyPagelet(megrok.pagelet.Pagelet):
 
     def render(self):
         return "<b> I am a MotherFucking  pagelet </b>"
+
+class PageletWithTemplate(megrok.pagelet.Pagelet):
+    grok.context(Page)
+
 
 class MyLayout(megrok.pagelet.LayoutView):
     grok.context(Page)
@@ -56,9 +72,11 @@ class DocumentPagelet(megrok.pagelet.Pagelet):
 	return "<b> Render without a Pagelet"
 
 
+
 def test_suite():
     from zope.testing import doctest
     from megrok.pagelet.tests import FunctionalLayer
+    import interlude
     suite = doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite

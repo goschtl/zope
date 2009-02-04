@@ -29,17 +29,33 @@ class Pagelet(BrowserPage):
             interface.Interface,
             name=self.module_info.package_dotted_name
             )
-   
+  
+    def default_namespace(self):
+        namespace = {}
+        namespace['context'] = self.context
+        namespace['request'] = self.request
+        namespace['static'] = self.static
+        namespace['view'] = self
+        return namespace
+
+    def namespace(self):
+        return {}
+  
     def update(self):
         pass
 
     def render(self):
         # render content template
-        if self.template is None:
-            template = zope.component.getMultiAdapter(
-                (self, self.request), IContentTemplate)
-            return template(self)
-        return self.template()
+        #if self.template is None:
+        #    template = component.getMultiAdapter(
+        #        (self, self.request), IContentTemplate)
+        #    return template(self)
+        
+        # We don´t work with IContentTemplate for now
+        # We use instead our grok.View behavior with the associated
+        # Templates
+
+        return self.template.render(self)
 
     def __call__(self):
         """Calls update and returns the layout template which calls render."""
