@@ -1,0 +1,39 @@
+<table border="0" class="sequencewidget" 
+  tal:attributes="id string:${view/name}.table"
+  i18n:domain="zope">
+  <tr tal:repeat="widget view/widgets" class="list_item">
+    <td>
+      <input class="editcheck" type="checkbox"
+             tal:attributes="
+                 name string:${view/name}.remove_${repeat/widget/index}"
+             tal:condition="view/need_delete" />
+    </td>
+    <td>
+      <span tal:define="error widget/error"
+            tal:replace="structure error" tal:condition="error" />
+      <input tal:replace="structure widget" />
+    </td>
+    <td>
+      <div><a class="up_button" tal:attributes="onClick string: Z3C.listjs.up('${view/name}', this)"></a></div>
+      <div><a class="down_button" tal:attributes="onClick string: Z3C.listjs.down('${view/name}', this)"></a></div>
+    </td>
+  </tr>
+  <tr tal:attributes="id string:${view/name}.buttons">
+    <td colspan="2">
+      <input type="button" value="Remove selected items"
+             tal:attributes="name string:${view/name}.remove;
+                             onClick string:Z3C.listjs.remove('${view/name}')"
+             i18n:attributes="value remove-selected-items" />
+      <input type="button" value="Add foo"
+             tal:attributes="name string:${view/name}.add;
+                             value view/addButtonLabel;
+                             onClick string:Z3C.listjs.add('${view/name}')"
+             />
+    </td>
+  </tr>
+</table>
+<input type="hidden" tal:attributes="
+            name string:${view/name}.template;
+            id string:${view/name}.template;
+            value view/widgetTemplate" />
+<input tal:replace="structure view/marker" />
