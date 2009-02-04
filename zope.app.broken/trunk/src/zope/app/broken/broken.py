@@ -21,7 +21,7 @@ import ZODB.broken
 import zope.interface
 import zope.location.interfaces
 import zope.security.checker
-from zope.app.broken.interfaces import IBroken
+from zope.broken.interfaces import IBroken
 from zope.annotation.interfaces import IAnnotations
 
 class Broken(ZODB.broken.Broken):

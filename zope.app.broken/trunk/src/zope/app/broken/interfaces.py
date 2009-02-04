@@ -18,8 +18,4 @@ $Id$
 
 __docformat__ = "reStructuredText"
 
-import zope.interface
-
-class IBroken(zope.interface.Interface):
-    """Marker interface for broken objects
-    """
+from zope.broken interfaces import IBroken # BBB

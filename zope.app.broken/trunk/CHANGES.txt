@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.4.1 (unreleased)
+3.5.0 (unreleased)
 ------------------
 
-- 
+- Depend on new ``zope.broken`` package for the ``IBroken`` interface.
 
 3.4.0 (2007-10-11)
 ------------------
