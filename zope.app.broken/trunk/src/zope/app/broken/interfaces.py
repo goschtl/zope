@@ -18,4 +18,4 @@ $Id$
 
 __docformat__ = "reStructuredText"
 
-from zope.broken interfaces import IBroken # BBB
+from zope.broken.interfaces import IBroken # BBB
