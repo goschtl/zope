@@ -20,13 +20,13 @@ To create our site we use the site generator.
   ...                          'z3c.sampledata.site')
   >>> manager = Manager('manager', '')
   >>> manager.add('z3c.sampledata.site')
-  >>> from zope.app.folder.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> infos = manager.generate(context=root,
   ...                          param={'z3c.sampledata.site':
   ...                                      {'sitename':'test'}},
   ...                          seed=None)
   >>> root['test']
-  <zope.app.folder.folder.Folder object at ...>
+  <zope.site.folder.Folder object at ...>
 
 Now that everything is set up we can generate the intids utility-
 

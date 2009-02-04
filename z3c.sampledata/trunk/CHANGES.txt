@@ -13,6 +13,7 @@ ftesting.zcml
 
 - adjust zope.app.securitypolicy to zope.securitpolicy in ftesting.zcml
 
+- fix test after zope packages refactoring. Update imports and dependencies.
 
 0.1.0 (2008-02-14)
 ------------------

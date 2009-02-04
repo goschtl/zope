@@ -17,21 +17,18 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
 import zope.component
 import zope.event
-import zope.schema
+import zope.interface
 import zope.lifecycleevent
+import zope.schema
 from zope.interface import implements
-from zope.app.component import hooks
-
-from zope.app.component.site import LocalSiteManager
-from zope.app.folder.folder import Folder
-
-from z3c.sampledata.interfaces import ISampleDataPlugin
+from zope.site import hooks
+from zope.site.folder import Folder
+from zope.site.site import LocalSiteManager
 
 from z3c.sampledata import _
-
+from z3c.sampledata.interfaces import ISampleDataPlugin
 
 class ISampleSiteParameters(zope.interface.Interface):
     """The parameters for the site creation."""

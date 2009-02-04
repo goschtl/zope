@@ -61,13 +61,13 @@ setup (
         ),
     install_requires = [
         'setuptools',
-        'zope.interface',
-        'zope.component',
-        'zope.schema',
         'ZODB3',
-        'zope.app.container',
-        'zope.app.intid',
-        'zope.i18nmessageid'
+        'zope.component',
+        'zope.i18nmessageid',
+        'zope.interface',
+        'zope.intid',
+        'zope.schema',
+        'zope.site',
         ],
     zip_safe = False,
 )

@@ -17,20 +17,17 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
 import zope.component
 import zope.event
-import zope.schema
+import zope.interface
 import zope.lifecycleevent
+import zope.schema
 from zope.interface import implements
-
-from zope.app.intid import IntIds
-from zope.app.intid.interfaces import IIntIds
-
-from z3c.sampledata.interfaces import ISampleDataPlugin
+from zope.intid import IntIds
+from zope.intid.interfaces import IIntIds
 
 from z3c.sampledata import _
-
+from z3c.sampledata.interfaces import ISampleDataPlugin
 
 class SampleIntIds(object):
 

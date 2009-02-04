@@ -25,13 +25,13 @@ authentican. To create our site we use the site generator.
   >>> manager = Manager('manager', '')
   >>> manager.add('z3c.sampledata.site')
   >>> manager.add('z3c.sampledata.pau', contextFrom='z3c.sampledata.site')
-  >>> from zope.app.folder.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> infos = manager.generate(context=root,
   ...                          param={'z3c.sampledata.site':
   ...                                      {'sitename':'test'}},
   ...                          seed=None)
   >>> root['test']
-  <zope.app.folder.folder.Folder object at ...>
+  <zope.site.folder.Folder object at ...>
 
   >>> principalDataSource = [['batlogg','Jodok Batlogg','bJB'],
   ...                        ['jukart','Juergen Kartnaller','jJK'],
