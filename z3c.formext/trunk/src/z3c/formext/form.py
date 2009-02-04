@@ -94,7 +94,8 @@ class ScriptProvider(object):
 
         jsVars = ''
         if hasattr(self, 'jsproperties'):
-            jsVars = '\n'.join(['    var %s=%s;' % (name, jsonEncode(prop(self)))
+            jsVars = '\n'.join(['    var %s=%s;' % (name,
+                jsonEncode(prop(self), context=self.request))
                                 for name, prop in self.jsproperties.items()])
 
         return tagWrap % (closureWrap % (depWraps % ('%s\n%s' % (jsVars, script))))
@@ -116,7 +117,8 @@ class ExtJSForm(ScriptProvider, AJAXRequestHandler, z3c.form.form.Form):
 
     @property
     def response(self):
-        return jsonEncode(self.jsonResponse or dict(success=True))
+        return jsonEncode(self.jsonResponse or dict(success=True),
+                context=self.request)
 
     def addFormError(self, error):
         self.jsonResponse['success'] = False
@@ -136,7 +138,7 @@ class ExtJSForm(ScriptProvider, AJAXRequestHandler, z3c.form.form.Form):
                 formErrors=[])
             for error in errors:
                 error = removeSecurityProxy(error)
-                message = translate(error.message)
+                message = translate(error.message, context=self.request)
                 if error.widget:
                     self.jsonResponse['errors'][error.widget.id] = message
                 else:

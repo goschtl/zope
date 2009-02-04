@@ -36,19 +36,21 @@ except ImportError:
 
 from zope.i18n import translate
 
-def translateObject(o):
+
+def translateObject(o, context):
     if isinstance(o, list):
         for index, value in enumerate(o):
-            o[index] = translateObject(value)
+            o[index] = translateObject(value, context)
     elif isinstance(o, tuple):
-        o = [translateObject(value) for value in o]
+        o = [translateObject(value, context) for value in o]
     elif isinstance(o, dict):
         for key, value in o.items():
-            o[key] = translateObject(value)
+            o[key] = translateObject(value, context)
     elif isinstance(o, unicode):
-        o = translate(o)
+        o = translate(o, context=context)
     return o
 
-def jsonEncode(o):
-    o = translateObject(o)
+
+def jsonEncode(o, context=None):
+    o = translateObject(o, context)
     return encode(o)

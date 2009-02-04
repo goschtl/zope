@@ -28,7 +28,10 @@ this out.
   ...   })
 
   >>> from zope.component import provideUtility
+  >>> from zope.i18n.negotiator import negotiator
+  >>> from zope.i18n.interfaces import INegotiator
   >>> provideUtility(test, name='test')
+  >>> provideUtility(negotiator, INegotiator)
 
   >>> from zope.i18nmessageid.message import MessageFactory
   >>> _ = MessageFactory('test')
@@ -41,14 +44,15 @@ this out.
 
   >>> from z3c.formext import jsoncompat
   >>> import zope.i18n
-  >>> jsoncompat.translate = lambda s: zope.i18n.translate(s, target_language='es')
-
+  
   >>> zope.i18n.translate(_(u'Hello'), target_language='es')
   u'Hola'
 
 
+  >>> from zope.i18n.tests.test_itranslationdomain import Environment
+  >>> context = Environment(('es',))
   >>> from pprint import pprint as pp
-  >>> pp(jsoncompat.jsonDecode(jsoncompat.jsonEncode(data)))
+  >>> pp(jsoncompat.jsonDecode(jsoncompat.jsonEncode(data, context=context)))
   {'aList': ['Hola', 'Que pasa', 'Como estas'],
    'aNest': [[{'foo': 'Como estas'}, 'Hola'], 'Que pasa'],
    'aTuple': ['Hola', 'Que pasa', 'Como estas']}

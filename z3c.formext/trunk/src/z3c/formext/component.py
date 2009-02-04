@@ -24,10 +24,13 @@ from zope.traversing.browser.absoluteurl import absoluteURL
 from z3c.form.interfaces import IForm, DISPLAY_MODE, HIDDEN_MODE
 from z3c.form.interfaces import IPasswordWidget, IRadioWidget, IButtonAction
 from z3c.form.interfaces import ITextAreaWidget
-from z3c.form.interfaces import ITextWidget, ISelectWidget, ISingleCheckBoxWidget
+from z3c.form.interfaces import ITextWidget
+from z3c.form.interfaces import ISelectWidget
+from z3c.form.interfaces import ISingleCheckBoxWidget
 
 from z3c.formext import interfaces
 from z3c.formext.jsoncompat import jsonEncode
+
 
 class Component(object):
 
@@ -35,7 +38,10 @@ class Component(object):
         return {}
 
     def getConfig(self, json=False):
-        return jsonEncode(self._getConfig()) if json else self._getConfig()
+        if json:
+            return jsonEncode(self._getConfig(), context=self.request)
+        return self._getConfig()
+
 
 class Field(Component):
 
@@ -87,11 +93,13 @@ class DateField(TextField):
 
     xtype = 'datefield'
 
+
 class ComboBox(Field):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(ISelectWidget)
 
     xtype = 'combo'
+
     def _getConfig(self, json=False):
         config = super(ComboBox, self)._getConfig()
         config['hiddenName'] = config['name']+':list'
@@ -103,11 +111,13 @@ class ComboBox(Field):
                            for item in self.widget.items]
         return config
 
+
 class CheckBox(Field):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(ISingleCheckBoxWidget)
 
     xtype = 'checkbox'
+
     def _getConfig(self, json=False):
         config = super(CheckBox, self)._getConfig()
         checkbox = self.widget.items[0]
@@ -115,6 +125,7 @@ class CheckBox(Field):
         config['fieldLabel'] = checkbox['label']
         del config['value']
         return config
+
 
 class RadioGroup(Field):
     zope.interface.implements(interfaces.IExtJSComponent)
@@ -130,7 +141,7 @@ class RadioGroup(Field):
                           name=self.widget.name,
                           inputValue=item['value'],
                           checked=item['checked'])
-                     for index, item in enumerate(self.widget.items)]
+                     for index, item in enumerate(self.widget.items)],
             )
         # we must pass in an items list even if there aren't any.  So
         # we will just pass in one item that is hidden.  This is most
@@ -141,11 +152,13 @@ class RadioGroup(Field):
             config['title'] = self.widget.title
         return config
 
+
 class Button(Field):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(IButtonAction)
 
     xtype = 'button'
+
     def _getConfig(self, json=False):
         config = super(Button, self)._getConfig()
         config['text'] = self.widget.value
@@ -163,6 +176,7 @@ def getButtonsConfig(form, asDict=True):
     return dict([(name, interfaces.IExtJSComponent(action).getConfig())
                  for name, action in form.actions.items()])
 
+
 def getWidgetsConfig(form, asDict=True):
     if not asDict:
         widgets = []
@@ -179,6 +193,7 @@ def getWidgetsConfig(form, asDict=True):
             factory = widget.componentFactory
         widgets[name] = factory(widget).getConfig()
     return widgets
+
 
 class FormPanel(Component):
     zope.interface.implements(interfaces.IExtJSComponent)
@@ -224,6 +239,7 @@ class ClientButton(Button):
             config['handler']['failure'] = self.widget.field.failure
         return config
 
+
 def getAjaxButtonsConfig(form, asDict=True):
     if not asDict:
         buttons = getButtonsConfig(form, asDict=False)
@@ -262,4 +278,3 @@ class ExtFormPanel(FormPanel):
         if hasattr(self.form, 'ownerCt'):
             config['ownerCt'] = self.form.ownerCt
         return config
-
