@@ -1,10 +1,10 @@
 CHANGES
 *******
 
-1.0a4 (unreleased)
+1.0a4 (2008-02-04)
 ==================
 
-* ...
+* Really fixed up/down arrow for added items.
 
 1.0a3 (2009-02-03)
 ==================
