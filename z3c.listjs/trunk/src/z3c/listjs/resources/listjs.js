@@ -137,8 +137,12 @@ Z3C.namespace = function(name) {
         var a_down = document.createElement('a');
         a_up.className = 'up_button';
         a_down.className = 'down_button';
-        a_up.onClick = 'Z3C.listjs.up("' + prefix + '", this)';
-        a_down.onClick = 'Z3C.listjs.down("' + prefix + '", this)';
+        a_up.onclick = function() {
+            Z3C.listjs.up(prefix, this);
+        };
+        a_down.onclick = function() {
+            Z3C.listjs.down(prefix, this);
+        };
         td3.appendChild(div_up);
         td3.appendChild(div_down);
         div_up.appendChild(a_up);
