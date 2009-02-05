@@ -8,6 +8,8 @@ Changes for lovely.remotetask
 - Use dropdown widget with available tasks in the cron job
   adding form, instead of text input.
 
+- Remove dependency on zope.app.zapi by using its wrapped api directly.
+
 2008/11/07 0.2.15a1:
 ====================
 

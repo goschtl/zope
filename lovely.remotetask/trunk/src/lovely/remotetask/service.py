@@ -26,12 +26,12 @@ import zc.queue
 import zope.interface
 from BTrees.IOBTree import IOBTree
 from zope import component
-from zope.app import zapi
 from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
 from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
 from zope.component.interfaces import ComponentLookupError
+from zope.traversing.api import getParents
 from lovely.remotetask import interfaces, job, task, processor
 
 log = logging.getLogger('lovely.remotetask')
@@ -159,7 +159,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         if self._scheduledQueue == None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
-        servicePath = [parent.__name__ for parent in zapi.getParents(self)
+        servicePath = [parent.__name__ for parent in getParents(self)
                        if parent.__name__]
         servicePath.reverse()
         servicePath.append(self.__name__)
@@ -196,7 +196,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         """Return name of the processing thread."""
         # This name isn't unique based on the path to self, but this doesn't
         # change the name that's been used in past versions.
-        path = [parent.__name__ for parent in zapi.getParents(self)
+        path = [parent.__name__ for parent in getParents(self)
                 if parent.__name__]
         path.append('remotetasks')
         path.reverse()
