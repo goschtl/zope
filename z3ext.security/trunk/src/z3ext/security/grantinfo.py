@@ -46,11 +46,6 @@ class ExtendedGrantInfo(object):
         context = removeSecurityProxy(self.context)
 
         roles = {}
-        for name, roleperm in getAdapters((context,), IRolePermissionMap):
-            for role, setting in roleperm.getRolesForPermission(permission):
-                if role not in roles:
-                    roles[role] = setting
-
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for name, setting in globalRolesForPermission(permission):
@@ -62,17 +57,17 @@ class ExtendedGrantInfo(object):
                 if role not in roles:
                     roles[role] = setting
 
+        for name, roleperm in getAdapters((context,), IRolePermissionMap):
+            for role, setting in roleperm.getRolesForPermission(permission):
+                if role not in roles:
+                    roles[role] = setting
+
         return roles.items()
 
     def getRolesForPrincipal(self, principal):
         context = removeSecurityProxy(self.context)
 
         roles = {}
-        for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
-            for role, setting in prinrole.getRolesForPrincipal(principal):
-                if role not in roles:
-                    roles[role] = setting
-
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for role, setting in globalRolesForPrincipal(principal):
@@ -84,17 +79,17 @@ class ExtendedGrantInfo(object):
                 if role not in roles:
                     roles[role] = setting
 
+        for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
+            for role, setting in prinrole.getRolesForPrincipal(principal):
+                if role not in roles:
+                    roles[role] = setting
+
         return roles.items()
 
     def getPrincipalsForRole(self, role):
         context = removeSecurityProxy(self.context)
 
         principals = {}
-        for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
-            for principal, setting in prinrole.getPrincipalsForRole(role):
-                if principal not in principals:
-                    principals[principal] = setting
-
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for principal, setting in globalPrincipalsForRole(role):
@@ -106,17 +101,17 @@ class ExtendedGrantInfo(object):
                 if principal not in principals:
                     principals[principal] = setting
 
+        for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
+            for principal, setting in prinrole.getPrincipalsForRole(role):
+                if principal not in principals:
+                    principals[principal] = setting
+
         return principals.items()
 
     def getPrincipalsForPermission(self, permission):
         context = removeSecurityProxy(self.context)
 
         principals = {}
-        for name, prinper in getAdapters((context,), IPrincipalPermissionMap):
-            for principal, setting in prinper.getPrincipalsForPermission(permission):
-                if principal not in principals:
-                    principals[principal] = setting
-
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for principal, setting in globalPrincipalPermission(permission):
@@ -125,6 +120,11 @@ class ExtendedGrantInfo(object):
         else:
             info = IExtendedGrantInfo(parent)
             for principal, setting in info.getPrincipalsForPermission(permission):
+                if principal not in principals:
+                    principals[principal] = setting
+
+        for name, prinper in getAdapters((context,), IPrincipalPermissionMap):
+            for principal, setting in prinper.getPrincipalsForPermission(permission):
                 if principal not in principals:
                     principals[principal] = setting
 
