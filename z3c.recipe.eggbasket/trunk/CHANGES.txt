@@ -6,6 +6,9 @@
 0.4.2 (unreleased)
 ==================
 
+* Fixed another annoyance with duplicate output lines.
+  https://bugs.launchpad.net/grok/+bug/321178
+
 * When the download-cache has been set in buildout.cfg or in
   .buildout/default.cfg in the user's home directory, download the
   tarball there and do not throw it away afterwards.
