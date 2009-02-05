@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>EXAMPLE</title>
+    <style type="text/css">
+      <!--
+       * {
+         margin: 0;
+         padding: 0;
+       }
+       body {
+         padding: 1em;
+       }
+       #content{
+         border: 5px solid #999;
+         padding: 1em;
+         background: #aaa;
+       }
+      -->
+    </style>
+  </head>
+  <body>
+    <h1>EXAMPLE</h1>
+
+    <!-- Die Magie findet in der naechsten Zeile statt! -->
+    <div id="content"
+         tal:content="structure view/render">Page Content</div>
+
+    <i>Example Tutorial Application</i>
+  </body>
+</html>
+

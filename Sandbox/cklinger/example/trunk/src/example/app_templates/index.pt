@@ -7,5 +7,13 @@
   <p>Your Grok application is up and running.
   Edit <code>example/app_templates/index.pt</code> to change
   this page.</p>
+
+  <ul>
+    <li> <a href="start"> A simple Pagelet with a layout </a> </li>
+    <li> <a href="helloworldaddform"> A simple megrok.z3cform example with a layout </a> </li>
+    <li> <a href="questionnaireaddform"> A other form with a differnt layout </a> </li>
+  </ul>  
+
+
 </body>
 </html>

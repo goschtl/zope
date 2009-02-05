@@ -32,8 +32,10 @@ class ExampleLayout(megrok.pagelet.LayoutView):
 class Start(megrok.pagelet.Pagelet):
     """ This is a simple Pagelet which is renderd in the Layout Template"""
     grok.context(Example)
-    grok.layer(MySkin)
+#    grok.layer(MySkin)
 
     def render(self):
         return "<p> This is the render method of the <b> Start </b> class </p>"
-    
+
+
+

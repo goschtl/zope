@@ -8,12 +8,11 @@ import interfaces, message
 from megrok.z3cform import AddForm, EditForm, DisplayForm
 from example.app import MySkin
 from example.app import Example
+from zope.interface import Interface
+import megrok.pagelet
 
 grok.layer(MySkin)
 
-DefaultDate = widget.ComputedWidgetAttribute(
-    lambda adapter: datetime.date.today(),
-    field=interfaces.IHelloWorld['when'], view=IAddForm)
 
 class HelloWorldAddForm(AddForm):
     """ A sample add form."""
@@ -53,3 +52,7 @@ class HelloWorldDisplayForm(DisplayForm):
     grok.name('index')
     fields = field.Fields(interfaces.IHelloWorld)
 
+
+class NewLayout(megrok.pagelet.LayoutView):
+    grok.context(message.HelloWorld)
+    megrok.pagelet.template('otherlayout.pt')
