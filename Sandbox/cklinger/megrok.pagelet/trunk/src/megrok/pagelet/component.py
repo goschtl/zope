@@ -51,7 +51,7 @@ class Pagelet(BrowserPage):
         #        (self, self.request), IContentTemplate)
         #    return template(self)
         
-        # We don´t work with IContentTemplate for now
+        # We don not work with IContentTemplate for now
         # We use instead our grok.View behavior with the associated
         # Templates
 
