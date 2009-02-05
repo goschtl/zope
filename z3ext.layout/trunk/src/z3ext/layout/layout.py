@@ -22,7 +22,8 @@ from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
 from z3ext.layout.pagelet import queryLayout
-from z3ext.layout.interfaces import LayoutNotFound, ILayout, ILayoutTemplateFile
+from z3ext.layout.interfaces import LayoutNotFound
+from z3ext.layout.interfaces import ILayout, ILayoutView, ILayoutTemplateFile
 
 
 class ViewMapper(object):
@@ -69,6 +70,7 @@ class LayoutTemplateFile(TrustedAppPT, PageTemplateFile):
 class Layout(browser.BrowserPage):
     interface.implements(ILayout)
 
+    template = None
     mainview = None
     maincontext = None
 
@@ -83,6 +85,11 @@ class Layout(browser.BrowserPage):
         pass
 
     def render(self):
+        if self.template is None:
+            view = getMultiAdapter((self, self.request), ILayoutView)
+            view.update()
+            return view.render()
+
         return self.template(self)
 
     def __call__(self, layout=None, view=None, *args, **kw):

@@ -68,6 +68,10 @@ class ILayout(IBrowserPage):
         """Render the layout """
 
 
+class ILayoutView(interface.Interface):
+    """ layout view """
+
+
 class ILayoutTemplateFile(interface.Interface):
     """ layout template file """
 
