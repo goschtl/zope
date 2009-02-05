@@ -110,8 +110,6 @@ the serialize permissions:
     N .../root/
     U .../root/file1.txt
     U .../root/file2.txt
-    N .../@@Zope/Annotations/root/
-    U .../@@Zope/Annotations/root/zope.app.dublincore.ZopeDublinCore
     All done.
 
     >>> localfile1 = os.path.join(checkoutdir, 'root', 'file1.txt')
