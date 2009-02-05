@@ -52,7 +52,7 @@ def getSynchronizer(obj, raise_error=True):
         factory = component.queryUtility(interfaces.ISynchronizerFactory)
     if factory is None:
         if raise_error:
-            raise synchronizer.MissingSerializer(dn)
+            raise synchronizer.MissingSynchronizer(dn)
         return None    
 
     checker = getattr(factory, '__Security_checker__', None)
@@ -79,4 +79,3 @@ def toSNARF(obj, name):
     checkout.perform(obj, name)
     return temp
 
-        
