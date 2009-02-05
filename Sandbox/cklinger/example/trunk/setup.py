@@ -25,6 +25,8 @@ setup(name='example',
 			'megrok.z3cform',
 			'megrok.pagelet',
 			'z3c.csvvocabulary',
+			'zc.resourcelibrary>=0.6',
+			'zc.table',
                         # Add extra requirements here
                         ],
       entry_points = """
