@@ -9,7 +9,7 @@ import tarfile
 from zc.recipe.egg import Eggs
 from z3c.recipe.eggbasket.utils import distributions_are_installed_in_dir
 from z3c.recipe.eggbasket.utils import install_distributions
-from z3c.recipe.eggbasket.utils import download_tarball
+from z3c.recipe.eggbasket.utils import download_tarball, log
 
 
 class Downloader(Eggs):
@@ -18,7 +18,6 @@ class Downloader(Eggs):
     def install(self):
         """Installer
         """
-        log = logging.getLogger(self.name)
         if self.buildout['buildout'].get('offline') == 'true':
             log.error("Cannot run in offline mode.")
             return tuple()
