@@ -1,0 +1,13 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2009-02-05)
+------------------
+
+- Depend on new ``zope.broken`` package for the ``IBroken`` interface.
+
+3.4.0 (2007-10-11)
+------------------
+
+- Initial release independent of the main Zope tree.
