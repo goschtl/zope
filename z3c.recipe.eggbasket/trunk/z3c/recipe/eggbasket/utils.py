@@ -7,11 +7,29 @@ import tarfile
 import tempfile
 import urllib
 
+def remove_additional_root_logger_handlers():
+    """Remove additional root logger handlers.
+
+    Under certain circumstances it might happen, that multiple
+    handlers in the root logger are installed. This leads to duplicate
+    lines in output we want to avoid. Therefore we remove additional
+    handlers.
+    """
+    root_logger = logging.getLogger()
+    if len(root_logger.handlers) > 1:
+        for handler in root_logger.handlers[1:]:
+            if not isinstance(handler, logging.StreamHandler):
+                continue
+            root_logger.removeHandler(handler)
+            break
+    return
+
+remove_additional_root_logger_handlers() # See function docstring
 # XXX We may want to add command line argument handling.
 logging.basicConfig(level=logging.INFO,
                     format='%(levelname)-5s %(name)-12s %(message)s')
-log = logging.getLogger('basket')
 
+log = logging.getLogger('eggbasket')
 
 def install_distributions(distributions, target_dir, links=[],
                           use_empty_index=False):
