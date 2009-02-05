@@ -14,10 +14,7 @@ ldappas changes
  
  * Removed deprecated localUtility ZCML.
  
- * buildout.cfg creates a python-ldap egg
- 
-   (this currently requires openldap install in /sw via Fink - building a
-    python-ldap egg still requires manual assistance in most cases)
+ * buildout.cfg compiles openldap and creates a python-ldap egg
 
  * Compatible with Grok 0.12 and 0.13 releases.
 
