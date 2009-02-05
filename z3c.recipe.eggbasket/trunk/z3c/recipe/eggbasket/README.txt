@@ -137,7 +137,8 @@ We'll start by creating a buildout that does not specify an egg::
 In this case the recipe will do nothing.  So the url does not get
 used.  Running the buildout gives us::
 
-    >>> print system(buildout)
+    >>> print 'start..', system(buildout)
+    start...
     ...
     Installing basket.
     <BLANKLINE>
@@ -150,9 +151,9 @@ Next we will specify an egg but refer to a bad url::
     Installing basket.
     Couldn't find index page for 'orange' (maybe misspelled?)
     Getting distribution for 'orange'.
-    basket: Not all distributions are installed. A tarball will be downloaded.
-    basket: Downloading http://nowhere ...
-    basket: Url not found: http://nowhere.
+    eggbasket: Not all distributions are installed. A tarball will be downloaded.
+    eggbasket: Downloading http://nowhere ...
+    eggbasket: Url not found: http://nowhere.
     <BLANKLINE>
 
 So now we create a tar ball in a directory::
@@ -184,15 +185,13 @@ We make it available on a url and use it in our buildout::
     Installing basket.
     Couldn't find index page for 'orange' (maybe misspelled?)
     Getting distribution for 'orange'.
-    basket: Not all distributions are installed. A tarball will be downloaded.
-    basket: Downloading .../tarserver/colours.tgz ...
-    basket: Finished downloading.
-    basket: Extracting tarball contents...
-    basket: Installing eggs to .../sample-buildout/eggs which will take a while...
+    eggbasket: Not all distributions are installed. A tarball will be downloaded.
+    eggbasket: Downloading /tarserver/colours.tgz ...
+    eggbasket: Finished downloading.
+    eggbasket: Extracting tarball contents...
+    eggbasket: Installing eggs to /sample-buildout/eggs which will take a while...
     Getting distribution for 'orange'.
-    ...
     Got orange 0.1.
     Getting distribution for 'colour'.
-    ...
     Got colour 0.1.
     <BLANKLINE>
