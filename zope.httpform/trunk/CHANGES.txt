@@ -6,7 +6,8 @@ Version 1.0.1 (unreleased)
 
 - Fixed some misleading documentation.
 
-- ...
+- Relaxed the requirement for REQUEST_METHOD because the zope.publisher
+  tests do not set it.
 
 Version 1.0.0 (2009-02-06)
 --------------------------

@@ -95,7 +95,7 @@ class FormParser(object):
         self.form = {}
         self.action = None
 
-        method = self._env['REQUEST_METHOD'].upper()
+        method = self._env.get('REQUEST_METHOD', '').upper()
         if method in ('GET', 'HEAD'):
             # Look for a query string instead of an input body
             fp = None
