@@ -1,0 +1,36 @@
+Migrating from Zope 3.4 to Zope 3.5
+===================================
+
+This document covers major changes since Zope 3.4 release that can lead to
+backward-incompatibilities.
+
+.. contents::
+
+zope.app.keyreference
+---------------------
+
+This package was renamed to ``zope.keyreference`` and all its functionality
+was moved to the new one. The new package contains a little workaround for
+making old persistent keyrerefences loadable without ``zope.app.keyreference``
+installed, so the latter one is not needed at all anymore.
+
+zope.app.intid and zope.app.catalog
+-----------------------------------
+
+The non-browser functionality of these packages was moved to ``zope.intid``
+and ``zope.catalog`` respectively. While backward-compatibility imports are
+maintained, you may want to use use imports from zope.* packages to get less
+dependencies, as the zope.app.* packages contains ZMI-specific browser views.
+
+zope.app.container
+------------------
+
+The exceptions used was changed, so if you code catches them, you need to
+review it.
+
+  * The DuplicationError in ``setitem`` was changed to KeyError.
+  * The UserError in ``NameChooser`` was changed to ValueError.
+
+The non-browser part of code was also splitted off to ``zope.container`` package
+but all backward-compatibility imports are maintained, so that should not be
+a problem.
