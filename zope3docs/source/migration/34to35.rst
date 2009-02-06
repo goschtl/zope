@@ -6,31 +6,113 @@ backward-incompatibilities.
 
 .. contents::
 
-zope.app.keyreference
----------------------
+Introduction
+------------
 
-This package was renamed to ``zope.keyreference`` and all its functionality
-was moved to the new one. The new package contains a little workaround for
-making old persistent keyrerefences loadable without ``zope.app.keyreference``
-installed, so the latter one is not needed at all anymore.
+The 3.5 release of the Zope framework contains a number of
+refactorings that are aimed to clean up dependencies between pieces of
+code. Many packages in ``zope.app`` have had their code moved to
+existing or newly created packages in the ``zope`` namespace. These
+new packages do generally not contain user interface code (typically
+what's in ``.browser``), and have much clearer dependency
+relationships as a result.
 
-zope.app.intid and zope.app.catalog
------------------------------------
+Backwards compatibility imports have been left in place so that your
+existing code should still work. In some cases you will have to
+explicitly add dependencies to a ``zope.app.`` to your code, as due to
+the cleanup they might not come in automatically anymore due to
+indirect dependencies; if you see an import error this is probably the
+case.
 
-The non-browser functionality of these packages was moved to ``zope.intid``
-and ``zope.catalog`` respectively. While backward-compatibility imports are
-maintained, you may want to use use imports from zope.* packages to get less
-dependencies, as the zope.app.* packages contains ZMI-specific browser views.
+We recommend you update your existing code to import from the new
+packages if possible. We list major changes below. We are also working
+on an extension to the Zope testrunner that can indicate indirect
+imports, as well as a tool to upgrade existing ZODBs to make use of
+new import locations.
 
-zope.app.container
-------------------
+zope.app.keyreference -> zope.keyreference
+------------------------------------------
 
-The exceptions used was changed, so if you code catches them, you need to
-review it.
+This package was renamed to ``zope.keyreference`` and all its
+functionality was moved to the new one. The new package contains a
+little workaround for making old persistent keyrerefences loadable
+without ``zope.app.keyreference`` installed, so the latter one is not
+needed at all anymore. Still review your code for any imports coming
+from ``zope.app.keyreference`` and modify it to use
+``zope.keyreference`` instead.
 
-  * The DuplicationError in ``setitem`` was changed to KeyError.
-  * The UserError in ``NameChooser`` was changed to ValueError.
+zope.app.intid -> zope.intid
+-----------------------------
 
-The non-browser part of code was also splitted off to ``zope.container`` package
-but all backward-compatibility imports are maintained, so that should not be
-a problem.
+The non-UI functionality of these packages was moved to ``zope.intid``
+with backwards compatibility imports left in place. Review your
+imports from ``zope.app.intid`` to see whether they cannot come
+directly from ``zope.intid`` instead.
+
+zope.app.catalog -> zope.catalog
+--------------------------------
+
+The non-UI functionality of these packages was moved to
+``zope.catalog``. Review your imports from ``zope.app.catalog`` to see
+whether they cannot come directly from ``zope.catalog`` instead.
+
+zope.app.container -> zope.container
+------------------------------------
+
+The non-UI functionality of these packages was moved to
+``zope.container``. Review your imports from ``zope.app.container`` to
+see whether they cannot come directly from ``zope.container`` instead.
+
+In addition, the exceptions used by ``zope.container`` were changed,
+so if your code catches them, you need to review it:
+
+* The ``DuplicationError`` in ``setitem`` was changed to ``KeyError``.
+
+* The ``UserError`` in ``NameChooser`` was changed to ``ValueError``.
+
+zope.app.component -> zope.security, zope.site
+----------------------------------------------
+
+The implementation of the ``<class>`` ZCML directive moved from this
+package to ``zope.security``. Packages that relied on
+``zope.app.component`` to obtain this directive should declare a
+direct dependency on ``zope.security``, and it may be possible to lose
+the dependency on ``zope.app.component`` altogether.
+
+Non-UI site related functionality has been moved to the ``zope.site``
+package. with backwards compatibility imports left in place. Review
+your imports from ``zope.app.component`` to see whether they cannot
+come directly from ``zope.site`` instead.
+
+zope.app.security -> zope.security
+----------------------------------
+
+The implementation of the ``<module>`` ZCML directive moved from this
+package to ``zope.security``. Packages that relied on
+``zope.app.security`` to obtain this directive should declare a direct
+dependency on ``zope.security``, and it may be possible to lose the
+dependency on ``zope.app.security`` altogether.
+
+
+The ``protectclass`` module in this package has moved to
+``zope.security``, with backwards compatibility imports left in
+place. Review your imports from ``zope.app.security`` to see whether
+they cannot come directly from ``zope.security`` instead.
+
+zope.app.folder -> zope.site, zope.container
+--------------------------------------------
+
+The implementation of the ``zope.app.folder.Folder`` class has moved
+to ``zope.site.folder`` instead, with backwards compatibility imports
+left in place. Review your imports from ``zope.app.folder`` to see
+whether they cannot come directly from ``zope.site`` instead. In
+addition, ``Folder`` is an ``IContainer`` implementation that also
+mixes in site management functionality. If such site management
+support is not necessary, in some cases your code does not need
+``Folder`` but may be able to rely on a ``Container`` implementation
+from ``zope.container`` instead.
+
+A base class with the implementation of the container-like behavior of
+``Folder`` has moved to ``zope.container`` (and ``zope.site`` uses
+this for its implementation of ``Folder``). This is not normally
+something you should need to retain backwards compatibility.
