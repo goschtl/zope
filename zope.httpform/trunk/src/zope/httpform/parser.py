@@ -13,7 +13,7 @@
 ##############################################################################
 """HTTP form parser that supports file uploads, Unicode, and various suffixes.
 
-$Id$
+$Id: $
 """
 
 from cgi import FieldStorage

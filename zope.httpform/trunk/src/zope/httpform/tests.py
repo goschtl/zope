@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests of the zope.httpform package.
 
-$Id$
+$Id: $
 """
 
 import unittest

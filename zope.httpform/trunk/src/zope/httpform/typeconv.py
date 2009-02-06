@@ -13,7 +13,7 @@
 ##############################################################################
 """Simple data type converters for form parsing, registered by name
 
-$Id$
+$Id: $
 """
 
 import re

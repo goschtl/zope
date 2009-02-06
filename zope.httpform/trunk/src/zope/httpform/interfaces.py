@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for the zope.httpform package.
 
-$Id$
+$Id: $
 """
 
 from zope.interface import Interface
