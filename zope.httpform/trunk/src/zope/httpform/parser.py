@@ -26,7 +26,7 @@ from zope.interface.common.mapping import IExtendedReadMapping
 from zope.httpform.interfaces import IFormParser
 from zope.httpform.interfaces import IFormRecord
 from zope.httpform.interfaces import IFileUpload
-from zope.httpform.typeconv import query_converter
+from zope.httpform.typeconv import get_converter
 
 _type_format = re.compile('([a-zA-Z][a-zA-Z0-9_]+|\\.[xy])$')
 
@@ -39,16 +39,23 @@ REC = RECORD | RECORDS
 CONVERTED = 32
 
 
-class FormParser:
+class FormParser(object):
     implements(IFormParser)
 
-    def __init__(self, env, to_unicode=None):
-        """Create a form parser for the given WSGI environment.
+    def __init__(self, env, wsgi_input=None, to_unicode=None):
+        """Create a form parser for the given WSGI or CGI environment.
+
+        The wsgi_input parameter provides the request input stream.
+        If wsgi_input is None (default), the parser tries to get
+        the request input stream from 'wsgi.input' in the environment.
 
         If to_unicode is specified, it is the function to use
         to convert input byte strings to Unicode.
         """
         self._env = env
+        if wsgi_input is None:
+            wsgi_input = env.get('wsgi.input')
+        self._wsgi_input = wsgi_input
         if to_unicode is None:
             # use the default encoding
             def to_unicode(s):
@@ -58,13 +65,14 @@ class FormParser:
         self.action = None
 
     def parse(self):
+        """See IFormParser."""
         method = self._env['REQUEST_METHOD'].upper()
         if method in ('GET', 'HEAD'):
             # Look for a query string instead of an input body
             fp = None
         else:
             # Look for an input body
-            fp = self._env.get('wsgi.input')
+            fp = self._wsgi_input
             if method == 'POST':
                 content_type = self._env.get('CONTENT_TYPE')
                 if content_type and not (
@@ -151,7 +159,7 @@ class FormParser:
             key, type_name = key[:pos], key[pos + 1:]
 
             # find the right type converter
-            c = query_converter(type_name)
+            c = get_converter(type_name)
 
             if c is not None:
                 converter = c

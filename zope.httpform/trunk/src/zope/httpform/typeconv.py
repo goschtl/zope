@@ -98,4 +98,18 @@ type_converters = {
     'boolean':  field2boolean,
     }
 
-query_converter = type_converters.get
+get_converter = type_converters.get
+
+def registerTypeConverter(field_type, converter, replace=False):
+    """Add a custom type converter to the registry.
+
+    If 'replace' is not true, raise a KeyError if a converter is
+    already registered for 'field_type'.
+    """
+    existing = type_converters.get(field_type)
+
+    if existing is not None and not replace:
+        raise KeyError('Existing converter for field_type: %s' % field_type)
+
+    type_converters[field_type] = converter
+
