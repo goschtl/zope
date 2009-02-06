@@ -38,12 +38,12 @@ Lists and Tuples
 
 What happens if variables get repeated?
 
-    >>> env['QUERY_STRING'] = 'x:int=1&x:float=2'
+    >>> env['QUERY_STRING'] = 'x=0&x=a&x=b&x:int=1&x:float=2'
     >>> pprint.pprint(FormParser(env).parse())
-    {u'x': [1, 2.0]}
+    {u'x': [u'0', u'a', u'b', 1, 2.0]}
 
-That's reasonable, but it's even better to use another suffix so that
-certain variables are returned as a list even when they occur only once.
+That's reasonable, but it's even better to use the `:list` suffix so that
+field values are a list even when they occur only once.
 
     >>> env['QUERY_STRING'] = 'x:int:list=1'
     >>> pprint.pprint(FormParser(env).parse())
@@ -80,6 +80,12 @@ of the field values is always preserved.
     >>> pprint.pprint(FormParser(env).parse())
     {u'x': (2, 1)}
 
+A value can become a list:
+
+    >>> env['QUERY_STRING'] = 'x:int=0&x:int:list=1'
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'x': [0, 1]}
+
 Default Values
 --------------
 
@@ -102,14 +108,24 @@ empty value uses the `:ignore_empty` suffix.
     >>> pprint.pprint(FormParser(env).parse())
     {u'country': u'US'}
 
-A default value can take the place of a list.
+A default value takes the place of an empty value.
 
-    >>> env['QUERY_STRING'] = 'x:default=null'
+    >>> env['QUERY_STRING'] = 'x:int:default=0&x:int='
     >>> pprint.pprint(FormParser(env).parse())
-    {u'x': u'null'}
-    >>> env['QUERY_STRING'] = 'x:int:list=1&x:default=null'
+    {u'x': 0}
+
+A default list value will be added to the list unless it has already
+been added.
+
+    >>> env['QUERY_STRING'] = 'x:list:default=always'
     >>> pprint.pprint(FormParser(env).parse())
-    {u'x': [1]}
+    {u'x': [u'always']}
+    >>> env['QUERY_STRING'] = 'x:list:default=always&x:list=always'
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'x': [u'always']}
+    >>> env['QUERY_STRING'] = 'x:list:default=always&x:list=never'
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'x': [u'never', u'always']}
 
 Required Values
 ---------------
@@ -136,7 +152,7 @@ Simple Text Handling
 
 Use `:tokens` to split the input on whitespace.
 
-    >>> env['QUERY_STRING'] = 'x:tokens=a+b++c%0Dd'
+    >>> env['QUERY_STRING'] = 'x:tokens=a+b++c%0Ad'
     >>> pprint.pprint(FormParser(env).parse())
     {u'x': [u'a', u'b', u'c', u'd']}
 
@@ -173,6 +189,13 @@ You can access record values using either attribute or item access.
     >>> x['a']
     1
 
+You can use str(record), although repr(record) is more informative.
+
+    >>> str(x)
+    '{a: 1, b: 2}'
+    >>> repr(x)
+    "{'a': 1, 'b': 2}"
+
 Some attribute names would clash with mapping method names and are thus
 disallowed.
 
@@ -203,6 +226,60 @@ The :records suffix produces multiple record objects.
     >>> pprint.pprint(FormParser(env).parse())
     {u'points': [{'x': 1.0, 'y': 2.0}, {'x': 11.0, 'y': -2.0}]}
 
+A record can contain a tuple.
+
+    >>> q = 'segment.p0:tuple:record=0'
+    >>> q += '&segment.p0:tuple:record=0'
+    >>> q += '&segment.p1:tuple:record=10'
+    >>> q += '&segment.p1:tuple:record=11'
+    >>> env['QUERY_STRING'] = q
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'segment': {'p0': (u'0', u'0'), 'p1': (u'10', u'11')}}
+
+You can put a list or tuple inside a record list, but you need to use
+a non-list record attribute to indiciate the start of each record.
+Here we're going to use the record attribute with an empty name to
+mark new records.
+
+    >>> q = 'points.color:records:default:int=0'
+    >>> q += '&points:records='
+    >>> q += '&points.axes:tuple:int:records=0'
+    >>> q += '&points.axes:tuple:int:records=0'
+    >>> q += '&points.axes:tuple:int:records=0'
+    >>> q += '&points.color:int:records='
+    >>> q += '&points:records='
+    >>> q += '&points.axes:tuple:int:records=1'
+    >>> q += '&points.axes:tuple:int:records=2'
+    >>> q += '&points.axes:tuple:int:records=3'
+    >>> env['QUERY_STRING'] = q
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'points': [{'': u'', 'axes': (0, 0, 0), 'color': 0},
+                 {'': u'', 'axes': (1, 2, 3), 'color': 0}]}
+
+Records can have a default value for each field.
+
+    >>> q = 'friends.birthdate:default:records=unspecified'
+    >>> q += '&friends.name:records=Alice'
+    >>> q += '&friends.name:records=Bob'
+    >>> q += '&friends.name:records=Charlie'
+    >>> q += '&friends.birthdate:records=1/1/1'
+    >>> env['QUERY_STRING'] = q
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'friends': [{'birthdate': u'unspecified', 'name': u'Alice'},
+                  {'birthdate': u'unspecified', 'name': u'Bob'},
+                  {'birthdate': u'1/1/1', 'name': u'Charlie'}]}
+
+There can be a default record.
+
+    >>> q = 'prefs.name:record:default=unnamed'
+    >>> q += '&prefs.address:record:default=unknown'
+    >>> q += '&prefs.age:int:record:default=100'
+    >>> q += '&prefs.address:record=123+Grant+Ave'
+    >>> q += '&prefs.age:int:record='
+    >>> env['QUERY_STRING'] = q
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'prefs': {'address': u'123 Grant Ave', 'age': 100, 'name': u'unnamed'}}
+
 Actions
 -------
 
@@ -219,7 +296,7 @@ By default there is no action:
     >>> parser.action is None
     True
 
-Here's an action:
+Here is an action:
 
     >>> env['QUERY_STRING'] = 'y:int=1&:action=getX'
     >>> parser = FormParser(env)
@@ -265,6 +342,55 @@ A default action can be provided.
     >>> parser.action
     u'prev'
 
+Invalid Input
+-------------
+
+Invalid suffixes are counted as part of the field name.  Valid
+but unrecognized suffixes get ignored.
+
+    >>> env['QUERY_STRING'] = 'x:0:int=1&y:complex=2'
+    >>> pprint.pprint(FormParser(env).parse())
+    {u'x:0': 1, u'y': u'2'}
+
+The int, long, and float types require a valid value.
+
+    >>> env['QUERY_STRING'] = 'x:int='
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: Empty entry when integer expected
+
+    >>> env['QUERY_STRING'] = 'x:int=z'
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: An integer was expected in the value 'z'
+
+    >>> env['QUERY_STRING'] = 'x:long='
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: Empty entry when integer expected
+
+    >>> env['QUERY_STRING'] = 'x:long=z'
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: A long integer was expected in the value 'z'
+
+    >>> env['QUERY_STRING'] = 'x:float='
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: Empty entry when float expected
+
+    >>> env['QUERY_STRING'] = 'x:float=z'
+    >>> pprint.pprint(FormParser(env).parse())
+    Traceback (most recent call last):
+    ...
+    ValueError: A float was expected in the value 'z'
+
+
 URL Encoded POST
 ----------------
 
@@ -281,6 +407,15 @@ This package accepts POST data in addition to query strings.
 The query string is ignored on POST.
 
     >>> env = {'REQUEST_METHOD': 'POST', 'QUERY_STRING': 'x=1'}
+    >>> pprint.pprint(FormParser(env).parse())
+    {}
+
+No form parsing is done for content types that don't look like forms.
+
+    >>> input_fp = StringIO("x:int=1&y:int=2")
+    >>> env = {'REQUEST_METHOD': 'POST',
+    ...        'CONTENT_TYPE': 'text/xml',
+    ...        'wsgi.input': input_fp}
     >>> pprint.pprint(FormParser(env).parse())
     {}
 
@@ -352,4 +487,27 @@ not a Unicode string.
     >>> form = FormParser(env).parse()
     >>> pprint.pprint(form)
     {u'pics': 'I am file1.txt.'}
+
+Send a big file.  (More than 1000 bytes triggers storage to a tempfile.)
+
+    >>> content_type = 'multipart/form-data; boundary=AaB03x'
+    >>> input_body="""\
+    ... --AaB03x
+    ... content-disposition: form-data; name="pics"; filename="file1.txt"
+    ... Content-Type: application/octet-stream
+    ...
+    ... """
+    >>> input_body += 30 * '0123456789012345678901234567890123456789'
+    >>> input_body += "\n--AaB03x--\n"
+    >>> env = {'REQUEST_METHOD': 'POST',
+    ...        'CONTENT_TYPE': content_type,
+    ...        'wsgi.input': StringIO(input_body)}
+    >>> form = FormParser(env).parse()
+    >>> pprint.pprint(form)
+    {u'pics': <zope.httpform.parser.FileUpload object at ...>}
+    >>> data = form['pics'].read()
+    >>> len(data)
+    1200
+    >>> data[:12]
+    '012345678901'
 

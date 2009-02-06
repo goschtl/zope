@@ -294,11 +294,6 @@ class FormParser:
             else:
                 k, attr = self._split_key(key)
 
-                # remove any type_names in the attr
-                i = attr.find(":")
-                if i >= 0:
-                    attr = attr[:i]
-
                 if k in form:
                     item = form[k]
                     if isinstance(item, Record):
