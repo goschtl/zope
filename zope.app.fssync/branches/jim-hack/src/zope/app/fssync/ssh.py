@@ -117,23 +117,22 @@ class SSHConnection(object):
         # start zsync subsystem on server
         self.channel = self.transport.open_session()
         self.channel.invoke_subsystem('zsync')
-        self.channelf = self.channel.makefile('r')
-
+        self.channelr = self.channel.makefile('rb')
+        self.channelw = self.channel.makefile('wb')
+        
         # start sending request
-        self.channel.send('%s %s\r\n' % (method, path))
+        self.channelw.write('%s %s\r\n' % (method, path))
 
     def putheader(self, name, value):
-        self.channel.send('%s: %s\r\n' % (name, value))
+        self.channelw.write('%s: %s\r\n' % (name, value))
 
     def endheaders(self):
-        self.channel.send('\r\n')
+        self.channelw.write('\r\n')
 
     def send(self, data):
-        self.channel.send(data)
+        self.channelw.write(data)
 
     def getresponse(self):
-        response = httplib.HTTPResponse(FileSocket(self.channelf))
+        response = httplib.HTTPResponse(FileSocket(self.channelr))
         response.begin()
-        self.channel.close()
-        self.transport.close()
         return response
