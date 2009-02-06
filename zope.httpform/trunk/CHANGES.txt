@@ -4,6 +4,8 @@ CHANGES
 Version 1.0.1 (unreleased)
 --------------------------
 
+- Fixed some misleading documentation.
+
 - ...
 
 Version 1.0.0 (2009-02-06)
