@@ -4,6 +4,7 @@ from zope.configuration.fields import GlobalObject
 from zope.dottedname.resolve import resolve
 from zope.schema import BytesLine
 
+from z3c.autoinclude import api
 from z3c.autoinclude.dependency import DependencyFinder
 from z3c.autoinclude.utils import distributionForPackage
 from z3c.autoinclude.plugin import PluginFinder
@@ -41,6 +42,11 @@ class IIncludeDependenciesDirective(Interface):
         )
 
 def includeDependenciesDirective(_context, package):
+
+    if api.dependencies_disabled():
+        log.warn('z3c.autoinclude.dependency is disabled but is being invoked by %s' % _context.info)
+        return
+
     dist = distributionForPackage(package)
     info = DependencyFinder(dist).includableInfo(['configure.zcml', 'meta.zcml'])
 
@@ -48,6 +54,11 @@ def includeDependenciesDirective(_context, package):
     includeZCMLGroup(_context, info, 'configure.zcml')
 
 def includeDependenciesOverridesDirective(_context, package):
+
+    if api.dependencies_disabled():
+        log.warn('z3c.autoinclude.dependency is disabled but is being invoked by %s' % _context.info)
+        return
+
     dist = distributionForPackage(package)
     info = DependencyFinder(dist).includableInfo(['overrides.zcml'])
     includeZCMLGroup(_context, info, 'overrides.zcml', override=True)
@@ -76,6 +87,11 @@ class IIncludePluginsDirective(Interface):
 
 
 def includePluginsDirective(_context, package, file=None):
+
+    if api.plugins_disabled():
+        log.warn('z3c.autoinclude.plugin is disabled but is being invoked by %s' % _context.info)
+        return
+
     dotted_name = package.__name__
 
     if file is None:
@@ -88,6 +104,11 @@ def includePluginsDirective(_context, package, file=None):
         includeZCMLGroup(_context, info, filename)
 
 def includePluginsOverridesDirective(_context, package, file=None):
+
+    if api.plugins_disabled():
+        log.warn('z3c.autoinclude.plugin is disabled but is being invoked by %s' % _context.info)
+        return
+
     dotted_name = package.__name__
     if file is None:
         zcml_to_look_for = ['overrides.zcml']

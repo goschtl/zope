@@ -12,6 +12,10 @@ Changes
 * Provide a separate ``includePluginsOverrides`` directive to be used when loading overrides,
   and no longer look for 'overrides.zcml' files by default with ``includePlugins``.
 * Removed the deprecated ``autoinclude`` and ``autoincludeOverrides`` directives.
+* Allow autoinclusion to be disabled by setting `os.environ['Z3C_AUTOINCLUDE_PLUGINS_DISABLED']`
+  and `os.environ['Z3C_AUTOINCLUDE_DEPENDENCIES_DISABLED']`, potentially useful for test runners
+  or debugging sessions. See http://lists.plone.org/pipermail/framework-team/2009-February/002689.html
+  for discussion.
 
 0.2.2 (2008-04-22)
 ------------------
