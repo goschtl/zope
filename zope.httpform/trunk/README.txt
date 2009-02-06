@@ -14,11 +14,11 @@ The available suffixes are:
     - ``:int``      -- convert to an integer
     - ``:float``    -- convert to a float
     - ``:long``     -- convert to a long integer
-    - ``:string``   -- convert to a string instead of Unicode
+    - ``:string``   -- convert to a string (useful for uploads)
     - ``:required`` -- raise ValueError if the field is not provided
     - ``:tokens``   -- split the input on whitespace characters
     - ``:lines``    -- split multiline input into a list of lines
-    - ``:text``     -- convert multiline text to a string instead of Unicode
+    - ``:text``     -- normalize line endings of multiline text
     - ``:boolean``  -- true if nonempty, false if empty
     - ``:list``     -- make a list even if there is only one value
     - ``:tuple``    -- make a tuple
