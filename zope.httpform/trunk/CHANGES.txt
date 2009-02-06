@@ -1,0 +1,7 @@
+CHANGES
+=======
+
+Version 1.0.0 (2009-02-06)
+--------------------------
+
+- First release of zope.httpform.  Extracted from zope.publisher 3.5.5.
