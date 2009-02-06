@@ -38,14 +38,14 @@ several configuration files in the project root:
 
 * ``buildout.cfg`` (optional)
 
-* ``zope.conf`` (normally found in the ``etc/`` subdirectory of your
+* ``zope.conf`` (normally found in the ``parts/etc/`` subdirectory of your
   `Grok`_ project)
 
-* ``site.zcml`` (normally found in the ``etc/`` subdirectory of your
+* ``site.zcml`` (normally found in the ``parts/etc/`` subdirectory of your
   `Grok`_ project)
 
 * ``deploy.ini`` (or any other .ini-file; normally found in the
-  ``etc/`` subdirectory of your `Grok`_ project)
+  ``parts/etc/`` subdirectory of your `Grok`_ project)
 
 
 When we want to setup a Zope instance as `paster`_ served `WSGI`_
