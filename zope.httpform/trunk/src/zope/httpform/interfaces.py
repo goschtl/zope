@@ -28,7 +28,7 @@ class IFormParser(Interface):
         """Parse the form data and return it as a mapping.
 
         Before parsing the form data, this method verifies the
-        WSGI environment contains valid form data.  If it does not,
+        WSGI/CGI environment contains form data.  If it does not,
         this method returns an empty mapping.
 
         Returns the mapping of form data.
@@ -64,7 +64,7 @@ class IFileUpload(Interface):
     """
 
     headers = Attribute("headers",
-        """A dictionary containing the file upload headers""")
+        """An rfc822.Message containing the file upload headers""")
 
     filename = Attribute("filename",
         """The name of the uploaded file, in Unicode""")

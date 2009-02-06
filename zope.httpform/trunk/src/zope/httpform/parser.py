@@ -13,8 +13,35 @@
 ##############################################################################
 """HTTP form parser that supports file uploads, Unicode, and various suffixes.
 
+The FormParser class uses Python's standard ``cgi.FieldStorage`` class,
+but is easier to use than FieldStorage.  The parser converts field names
+and values to Unicode, handles file uploads in a graceful manner, and
+allows field name suffixes that tell the parser how to handle each field.
+The available suffixes are:
+
+    - ``:int``      -- convert to an integer
+    - ``:float``    -- convert to a float
+    - ``:long``     -- convert to a long integer
+    - ``:string``   -- convert to a string instead of Unicode
+    - ``:required`` -- raise ValueError if the field is not provided
+    - ``:tokens``   -- split the input on whitespace characters
+    - ``:lines``    -- split multiline input into a list of lines
+    - ``:text``     -- convert multiline text to a string instead of Unicode
+    - ``:boolean``  -- true if nonempty, false if empty
+    - ``:list``     -- make a list even if there is only one value
+    - ``:tuple``    -- make a tuple
+    - ``:action``   -- specify the form action
+    - ``:method``   -- same as ``:action``
+    - ``:default``  -- provide a default value
+    - ``:record``   -- generate a record object
+    - ``:records``  -- generate a list of record object
+    - ``:ignore_empty``   -- discard the field value if it's empty
+    - ``:default_action`` -- specifies a default form action
+    - ``:default_method`` -- same as ``:default_action``
+
 $Id: $
 """
+__docformat__ = 'restructuredtext'
 
 from cgi import FieldStorage
 from cStringIO import StringIO
@@ -40,6 +67,7 @@ CONVERTED = 32
 
 
 class FormParser(object):
+    """Form data parser."""
     implements(IFormParser)
 
     def __init__(self, env, wsgi_input=None, to_unicode=None):
@@ -61,11 +89,12 @@ class FormParser(object):
             def to_unicode(s):
                 return s.decode()
         self._to_unicode = to_unicode
-        self.form = {}
-        self.action = None
 
     def parse(self):
         """See IFormParser."""
+        self.form = {}
+        self.action = None
+
         method = self._env['REQUEST_METHOD'].upper()
         if method in ('GET', 'HEAD'):
             # Look for a query string instead of an input body

@@ -2,6 +2,8 @@
 Tests of zope.httpform
 ======================
 
+.. contents::
+
 Basic Usage
 -----------
 
@@ -419,8 +421,8 @@ No form parsing is done for content types that don't look like forms.
     >>> pprint.pprint(FormParser(env).parse())
     {}
 
-File Upload
------------
+Uploading Files
+---------------
 
 Here is an example of what browsers send when users upload a file using
 an HTML form:
@@ -511,3 +513,16 @@ Send a big file.  (More than 1000 bytes triggers storage to a tempfile.)
     >>> data[:12]
     '012345678901'
 
+For The Curious
+---------------
+
+What happens if you call the parse() method a second time?  It re-parses the
+WSGI/CGI environment.
+
+    >>> env = {'REQUEST_METHOD': 'GET', 'QUERY_STRING': 'x:int=1'}
+    >>> p = FormParser(env)
+    >>> p.parse()
+    {u'x': 1}
+    >>> env['QUERY_STRING'] = 'y:int=2'
+    >>> p.parse()
+    {u'y': 2}

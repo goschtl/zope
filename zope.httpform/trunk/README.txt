@@ -5,10 +5,10 @@ features to make form handling easier.  This functionality has lived
 for a long time inside Zope's publisher, but has been broken out into
 a separate package to make it easier to test, explain, understand, and use.
 
-The parser uses Python's standard ``cgi.FieldStorage`` class, but is
-easier to use than FieldStorage.  The parser converts field names and
-values to Unicode, handles file uploads in a graceful manner, and allows
-field name suffixes that tell the parser how to handle each field.
+The FormParser class uses Python's standard ``cgi.FieldStorage`` class,
+but is easier to use than FieldStorage.  The parser converts field names
+and values to Unicode, handles file uploads in a graceful manner, and
+allows field name suffixes that tell the parser how to handle each field.
 The available suffixes are:
 
     - ``:int``      -- convert to an integer
@@ -38,8 +38,10 @@ Here are some examples of ways to use these suffixes.
     <input type="text" name="country:ignore_empty" />
     <input type="hidden" name="country:default" value="Chile" />
 
-  The form data returned by the parser will have a Unicode value for the
-  ``country`` field, even if the user does not enter anything into the text box.
+  The FormData class in this package will convert that form submission
+  to a mapping containing a Unicode value for the ``country`` field.
+  If the user leaves the field empty, the ``country`` field will have
+  the value of ``"Chile"``.
 
 * You can ensure that certain variables are placed
   in a list, even when only one value is selected::
