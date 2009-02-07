@@ -1,0 +1,13 @@
+<tal:Make_sure_we_process_the_authorization_challenge_first
+  condition="view/issueChallenge"/>
+<html metal:use-macro="context/@@standard_macros/error">
+  <body i18n:domain="z3c.layer.minimal">
+  <div metal:fill-slot="body">
+    <br/>
+    <br/>
+    <h3 i18n:translate="unauthorized">Unauthorized</h3>
+    <br/>
+    <b i18n:translate="unauthorized-msg">You are not authorized.</b>
+</div>
+</body>
+</html>
