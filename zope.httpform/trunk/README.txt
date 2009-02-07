@@ -1,6 +1,4 @@
 
-.. contents::
-
 ``zope.httpform`` is a library that, given a WSGI or CGI environment
 dictionary, will return a dictionary back containing converted
 form/query string elements.  The form and query string elements
@@ -24,8 +22,11 @@ like so::
 
   {'age':20}
 
-This functionality has lived for a long time inside Zope, but now
-Zope's publisher uses this library.
+This functionality has lived for a long time inside Zope's publisher,
+but now it has been factored into this small library, making it easier
+to explain, test, and use.
+
+.. contents::
 
 Form/Query String Element Parsing
 ---------------------------------
