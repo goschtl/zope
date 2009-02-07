@@ -9,6 +9,9 @@ Version 1.0.1 (unreleased)
 - Relaxed the requirement for REQUEST_METHOD because the zope.publisher
   tests do not set it.
 
+- Used documentation and design ideas from repoze.monty.  Thanks,
+  Chris and Agendaless.
+
 Version 1.0.0 (2009-02-06)
 --------------------------
 

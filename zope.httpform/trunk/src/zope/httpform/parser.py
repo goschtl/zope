@@ -13,11 +13,10 @@
 ##############################################################################
 """HTTP form parser that supports file uploads, Unicode, and various suffixes.
 
-The FormParser class uses Python's standard ``cgi.FieldStorage`` class,
-but is easier to use than FieldStorage.  The parser converts field names
-and values to Unicode, handles file uploads in a graceful manner, and
-allows field name suffixes that tell the parser how to handle each field.
-The available suffixes are:
+The FormParser class uses Python's standard ``cgi.FieldStorage`` class.
+It converts field names and values to Unicode, handles file uploads in
+a graceful manner, and allows field name suffixes that tell the parser
+how to handle each field.  The standard suffixes are:
 
     - ``:int``      -- convert to an integer
     - ``:float``    -- convert to a float
@@ -427,3 +426,7 @@ class FileUpload(object):
         self.headers = field_storage.headers
         self.filename = unicode(field_storage.filename, 'UTF-8')
 
+
+def parse(env, wsgi_input=None, to_unicode=None):
+    """Shortcut for creating a FormParser and calling the parse() method."""
+    return FormParser(env, wsgi_input, to_unicode).parse()
