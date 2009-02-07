@@ -53,6 +53,7 @@ setup(name = 'z3c.layer',
                 'zope.app.securitypolicy',
                 'zope.securitypolicy',
                 'zope.testbrowser',
+                'zope.app.zcmlfiles',
                 ]
           ),
       install_requires = [

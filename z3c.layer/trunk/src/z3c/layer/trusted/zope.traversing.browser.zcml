@@ -13,19 +13,19 @@
       />
 
   <adapter
-      for="zope.app.container.interfaces.IItemContainer
+      for="zope.container.interfaces.IItemContainer
            z3c.layer.trusted.ITrustedBrowserLayer"
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-      factory="zope.app.container.traversal.ItemTraverser"
+      factory="zope.container.traversal.ItemTraverser"
       permission="zope.Public"
       trusted="True"
       />
 
   <adapter
-      for="zope.app.container.interfaces.ISimpleReadContainer
+      for="zope.container.interfaces.ISimpleReadContainer
            z3c.layer.trusted.ITrustedBrowserLayer"
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-      factory="zope.app.container.traversal.ItemTraverser"
+      factory="zope.container.traversal.ItemTraverser"
       permission="zope.Public"
       trusted="True"
       />

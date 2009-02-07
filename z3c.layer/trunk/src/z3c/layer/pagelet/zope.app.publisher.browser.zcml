@@ -3,9 +3,9 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="z3c">
 
-  <browser:page 
+  <browser:page
       name=""
-      for="zope.app.component.interfaces.ISite"
+      for="zope.location.interfaces.ISite"
       class="zope.app.publisher.browser.resources.Resources"
       permission="zope.Public"
       allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"

@@ -2,6 +2,20 @@
 CHANGES
 =======
 
+0.2.4 (unreleased)
+------------------
+
+- Replaced ``zope.app.zapi`` by the original imports.
+
+- Replaced ``zope.app.container`` by ``zope.container``.
+
+- Fixed deprecation warning about importing ``ISite`` from
+  ``zope.app.component.interfaces``.
+
+- Declared ``zope.app.zcmlfiles`` as testing dependency, as otherwise
+  tests break.
+
+
 0.2.3 (2007-11-07)
 ------------------
 
