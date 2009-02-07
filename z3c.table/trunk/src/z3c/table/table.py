@@ -38,9 +38,9 @@ def getWeight(column):
 def getSortMethod(idx):
     def getSortKey(item):
         sublist = item[idx]
-        def getCloumnSortKey(sublist):
+        def getColumnSortKey(sublist):
             return sublist[1].getSortKey(sublist[0])
-        return getCloumnSortKey(sublist)
+        return getColumnSortKey(sublist)
     return getSortKey
 
 
@@ -280,7 +280,7 @@ class Table(zope.location.Location):
         # use batch values from request or the existing ones
         self.batchSize = self.getBatchSize()
         self.batchStart = self.getBatchStart()
-        # use srting values from request or the existing ones
+        # use sorting values from request or the existing ones
         self.sortOn = self.getSortOn()
         self.sortOrder = self.getSortOrder()
 
@@ -305,10 +305,10 @@ class Table(zope.location.Location):
         self.updateBatch()
 
     def render(self):
-        
+
         # allow to use a template for rendering the table, this will allow
         # to position the batch before and after the table
-        
+
         return self.renderTable()
 
     def __repr__(self):
@@ -317,9 +317,9 @@ class Table(zope.location.Location):
 
 class SequenceTable(Table):
     """Sequence table adapts a sequence as context.
-    
+
     This table can be used for adapting a z3c.indexer.search.ResultSet or
-    z3c.batching.batch.Batch instance as context. Batch which wraps a 
+    z3c.batching.batch.Batch instance as context. Batch which wraps a
     ResultSet sequence.
     """
 
