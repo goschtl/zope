@@ -37,7 +37,7 @@
   <!-- default layouts -->
   <z3ext:layout
      layout="viewspace"
-     for="zope.app.component.interfaces.ISite"
+     for="zope.app.component.site.SiteManagerContainer"
      description="Default layout, registered for IDefaultBrowserLayer."
      template="layoutcontent.pt" />
 
@@ -47,24 +47,24 @@
      layout="workspace"
      uid="default.viewspace"
      description="Default viewpsace layout, registered for IDefaultBrowserLayer."
-     for="zope.app.component.interfaces.ISite"
+     for="zope.app.component.site.SiteManagerContainer"
      template="layoutviewspace.pt" />
 
-  <!--z3ext:layout
+  <z3ext:layout
      name="workspace"
      layout="portal"
      title="Workspace"
      uid="default.workspace"
      description="Default workspace layout, registered for IDefaultBrowserLayer."
-     for="zope.app.component.interfaces.ISite"
-     template="layoutworkspace.pt" /-->
+     for="zope.app.component.site.SiteManagerContainer"
+     template="layoutworkspace.pt" />
 
   <z3ext:layout
      name="portal"
      title="Portal"
      uid="default.portal"
      description="Default portal layout, registered for IDefaultBrowserLayer"
-     for="zope.app.component.interfaces.ISite"
+     for="zope.app.component.site.SiteManagerContainer"
      template="layoutportal.pt" />
 
   <!-- Registering documentation with API doc -->
