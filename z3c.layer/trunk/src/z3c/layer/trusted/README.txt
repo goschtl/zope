@@ -1,6 +1,6 @@
-======
-README
-======
+=============
+Trusted layer
+=============
 
 This package contains the trusted layer. This layer support a correct set of
 component registration and can be used for inheritation in custom skins.
@@ -11,7 +11,8 @@ trusted traversal adapters. This means a skin using this layer can traverse
 over a PAU (pluggable IAuthentication utility) without to run into a
 Unautorized exception.
 
-For more information see also the README.txt in z3c.layer.minimal.
+For more information see also the README.txt in
+z3c.layer.minimal. (`Minimal Layer`_)
 
 
 Testing

@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.2.4 (unreleased)
+0.3.0 (2009-02-07)
 ------------------
 
 - Replaced ``zope.app.zapi`` by the original imports.
@@ -14,6 +14,10 @@ CHANGES
 
 - Declared ``zope.app.zcmlfiles`` as testing dependency, as otherwise
   tests break.
+
+- Fixed home page and email address.
+
+- Added README files of layers to long description.
 
 
 0.2.3 (2007-11-07)

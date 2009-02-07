@@ -1,8 +1,8 @@
-======
-README
-======
+=============
+Minimal layer
+=============
 
-This package contains the minimal layer. This layer supports a correct set of 
+This package contains the minimal layer. This layer supports a correct set of
 component registration and can be used for inheritation in custom skins.
 
 Right now the default implementation in Zope3 has different restriction in the
@@ -12,12 +12,12 @@ traversal concept and use to much registration on the default layer.
 IMinimalBrowserLayer
 --------------------
 
-The minimal layer is useful for build custom presentation skins without access 
-to ZMI menus like zmi_views etc. This means there is no menu item registred if 
+The minimal layer is useful for build custom presentation skins without access
+to ZMI menus like zmi_views etc. This means there is no menu item registred if
 you use this layer.
 
-This layer is NOT derived from IDefaultBrowserLayer. Therefore it provides 
-only a minimal set of the most important public views such as @@absolute_url. 
+This layer is NOT derived from IDefaultBrowserLayer. Therefore it provides
+only a minimal set of the most important public views such as @@absolute_url.
 The following packages are accounted:
 
 - zope.app.http.exception
@@ -30,9 +30,9 @@ The following packages are accounted:
 Testing
 -------
 
-For testing the IMinimalBrowserLayer we use the testing skin defined in the 
+For testing the IMinimalBrowserLayer we use the testing skin defined in the
 tests package which uses the IMinimalBrowserLayer as the only base layer.
-This means, that our testing skin provides only the views defined in the 
+This means, that our testing skin provides only the views defined in the
 minimal package and it's testing views defined in tests.
 
 Login as manager first:
@@ -41,7 +41,7 @@ Login as manager first:
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the page.html view which is registred in the 
+Check if we can access the page.html view which is registred in the
 ftesting.zcml file with our skin:
 
   >>> manager = Browser()
@@ -108,7 +108,7 @@ Now check the not found page which is a exception view on the exception
   <BLANKLINE>
   <BLANKLINE>
 
-And check the user error page which is a view registred for 
+And check the user error page which is a view registred for
 ``zope.exceptions.interfaces.IUserError`` exceptions:
 
   >>> manager.open(skinURL + '/@@usererror.html')
@@ -127,7 +127,7 @@ And check the user error page which is a view registred for
   <BLANKLINE>
   <BLANKLINE>
 
-And check error view registred for 
+And check error view registred for
 ``zope.interface.common.interfaces.IException``:
 
   >>> manager.open(skinURL + '/@@systemerror.html')
@@ -153,7 +153,7 @@ And check error view registred for
   <BLANKLINE>
   <BLANKLINE>
 
-And check the ``zope.security.interfaces.IUnauthorized`` view, use a new 
+And check the ``zope.security.interfaces.IUnauthorized`` view, use a new
 unregistred user (test browser) for this:
 
   >>> unauthorized = Browser()

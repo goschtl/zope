@@ -1,6 +1,6 @@
-======
-README
-======
+=============
+Pagelet layer
+=============
 
 This package contains the pagelet layer. This layer supports a correct set of
 component registration and can be used for inheritation in custom skins.

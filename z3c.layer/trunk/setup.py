@@ -25,10 +25,16 @@ def read(*rnames):
 setup(name = 'z3c.layer',
       version = '0.3.0dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Collection of Alternative Base Layers',
       long_description=(
           read('README.txt')
+          + '\n\n' + '.. contents::' + '\n\n' +
+          read('src', 'z3c', 'layer', 'minimal', 'README.txt')
+          + '\n\n' +
+          read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
+          + '\n\n' +
+          read('src', 'z3c', 'layer', 'trusted', 'README.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -43,7 +49,7 @@ setup(name = 'z3c.layer',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.layer',
+      url='http://pypi.python.org/pypi/z3c.layer',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
