@@ -23,4 +23,7 @@
      name="statusMessage"
      factory=".message.StatusMessage" />
 
+  <!-- default styles -->
+  <include file="styles.zcml" />
+
 </configure>
