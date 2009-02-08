@@ -28,7 +28,7 @@ class ResumeCopy(Exception):
 class ICopyHook(zope.interface.Interface):
     """An adapter to an object that is being copied"""
     
-    def __call__(obj, register):
+    def __call__(toplevel, register):
         """Given the top-level object that is being copied, return the
         version of the adapted object that should be used in the new copy.
 
