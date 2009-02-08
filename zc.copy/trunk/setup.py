@@ -2,18 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.copy",
-    version="1.1",
+    version="1.2",
     install_requires=[
         'setuptools',
-        'ZODB3',
-        'zope.component',
-        'zope.interface',
-        'zope.event',
-        'zope.lifecycleevent',
-        'zope.copypastemove',
-        'zope.app.container',
-        'zope.location',
-        'zope.testing',
+        'zope.copy',
+        'zope.copypastemove>=3.5.1',
+        'zope.location>=3.5.3dev',
         ],
     packages=find_packages('src'),
     include_package_data=True,
@@ -24,10 +18,8 @@ setup(
     zip_safe=False,
     author='Zope Project',
     author_email='zope-dev@zope.org',
-    description=open("README.txt").read(),
-    long_description=
-        open("src/zc/copy/CHANGES.txt").read() + '\n\n' +
-        open("src/zc/copy/README.txt").read(),
+    description='Pluggable object copying (deprecated in favor of zope.copy)',
+    long_description=open("README.txt").read(),
     license='ZPL 2.1',
-    keywords="zope zope3",
+    keywords="zope zope3 copy clone",
     )

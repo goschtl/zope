@@ -1,11 +1,8 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    >
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <adapter
-      factory=".ObjectCopier"
-      permission="zope.ManageContent"
-      trusted="y"
-      />
+	<!--
+	The functionality of this package was merged into packages it was
+	overriding. No special configuration is needed anymore.
+	-->
 
 </configure>

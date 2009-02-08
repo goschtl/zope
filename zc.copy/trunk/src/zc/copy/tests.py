@@ -1,28 +1,20 @@
 import unittest
-import zope.testing.module
 from zope.testing import doctest
-from zope.component import testing, eventtesting
-from zope.app.container.tests.placelesssetup import PlacelessSetup
 
-container_setup = PlacelessSetup()
-
-def copierSetUp(test):
-    zope.testing.module.setUp(test, 'zc.copy.doctest')
-    testing.setUp(test)
-    eventtesting.setUp(test)
-    container_setup.setUp()
-
-def copierTearDown(test):
-    zope.testing.module.tearDown(test)
-    testing.tearDown(test)
+def test_imports():
+    '''
+    This tests that old imports still work as the main purpose of this
+    package now is to provide backward-compatibility.
+    
+    >>> from zc.copy import clone, copy, CopyPersistent
+    >>> from zc.copy import location_copyfactory, ObjectCopier
+    
+    >>> from zc.copy.interfaces import ICopyHook, ResumeCopy
+    
+    No ImportErrors should be raised.
+    '''
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt',
-            setUp=copierSetUp,
-            tearDown=copierTearDown),
+        doctest.DocTestSuite(),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')

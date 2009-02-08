@@ -1,13 +1,8 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <adapter factory=".location_copyfactory" />
-
-  <!-- this usually doesn't work here, because it is beneath the level in
-       which zope.copypastemove is loaded.
-       Add its contents yourself to an overrides file specified in
-       site.zcml or a similar high level.
-  <includeOverrides file="overrides.zcml"/>
-  -->
+	<!--
+	The functionality of this package was merged into packages it was
+	overriding. No special configuration is needed anymore.
+	-->
 
 </configure>
