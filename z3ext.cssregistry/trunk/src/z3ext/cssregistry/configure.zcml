@@ -41,11 +41,11 @@
     <property name="contentBackgroundColor" value="white" />
 
     <property name="fontFamily"
-	      value="'Lucida Grande', Verdana, Tahoma, Helvetica, Sans-Serif" />
+	      value="Lucida Grande, Verdana, Tahoma, Helvetica, Sans-Serif" />
     <property name="headingFontFamily"
-	      value="'Lucida Grande', Verdana, Tahoma, Helvetica, Sans-Serif" />
-    <property name="monospaceFontFamily" 
-	      value="Monaco, 'Courier New', Courier, monospace" />
+	      value="Lucida Grande, Verdana, Tahoma, Helvetica, Sans-Serif" />
+    <property name="monospaceFontFamily"
+	      value="Monaco, Courier New, Courier, monospace" />
 
     <property name="fontColor" value="#252525" />
     <property name="fontBaseSize" value="70%" />

@@ -3,11 +3,11 @@
 @media all {
 
   #z-controlpanel {
+    margin: 1.5em;
     padding: 1.5em;
     border: borderWidth borderStyle globalBorderColor;
     background-color: globalBackgroundColor;
-    margin: 2em 1.5em 1.5em 1.5em;
-    font-size: 110%;
+    font-size: 100%;
   }
 
   #z-controlpanel h1 {
