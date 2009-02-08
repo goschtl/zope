@@ -1,0 +1,9 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2009-02-09)
+------------------
+
+- Initial release. The functionality was extracted from ``zc.copy`` to
+  provide a generic object copying mechanism with minimal dependencies.
