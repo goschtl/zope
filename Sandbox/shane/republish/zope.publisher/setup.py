@@ -53,8 +53,7 @@ setup(name='zope.publisher',
                         'zope.httpform',
                         ],
       extras_require=dict(
-          test = ['zope.testing',
-                  'zope.app.testing'],
+          test = ['zope.testing'],
           ),
       include_package_data = True,
 

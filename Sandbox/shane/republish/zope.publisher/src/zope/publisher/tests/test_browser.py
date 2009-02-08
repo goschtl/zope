@@ -17,15 +17,34 @@ $Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-from zope.app.testing import setup
 
 __docformat__ = "reStructuredText"
+
+from zope.component.testing import PlacelessSetup as CAPlacelessSetup
+from zope.component.eventtesting import PlacelessSetup as EventPlacelessSetup
+from zope.i18n.testing import PlacelessSetup as I18nPlacelessSetup
+from zope.security.management import newInteraction
+
+class PlacelessSetup(CAPlacelessSetup,
+                     EventPlacelessSetup,
+                     I18nPlacelessSetup):
+
+    def setUp(self, doctesttest=None):
+        CAPlacelessSetup.setUp(self)
+        EventPlacelessSetup.setUp(self)
+        I18nPlacelessSetup.setUp(self)
+        newInteraction()
+
+    def tearDown_(self, doctesttest=None):
+        self.tearDown()
+
+ps = PlacelessSetup()
 
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite('zope.publisher.browser',
-                     setUp=setup.placelessSetUp,
-                     tearDown=setup.placelessTearDown),
+                     setUp=ps.setUp,
+                     tearDown=ps.tearDown_),
         ))
 
 if __name__ == '__main__':
