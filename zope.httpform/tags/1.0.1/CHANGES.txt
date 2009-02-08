@@ -1,0 +1,18 @@
+CHANGES
+=======
+
+Version 1.0.1 (2009-02-07)
+--------------------------
+
+- Fixed some misleading documentation.
+
+- Relaxed the requirement for REQUEST_METHOD because the zope.publisher
+  tests do not set it.
+
+- Used documentation and design ideas from repoze.monty.  Thanks,
+  Chris and Agendaless.
+
+Version 1.0.0 (2009-02-06)
+--------------------------
+
+- First release of zope.httpform.  Extracted from zope.publisher 3.5.5.
