@@ -15,6 +15,7 @@ setup(
         'zope.location',
         'zope.testing',
         ],
+    extras_require={'test': 'zope.app.testing'},
     packages=find_packages('src'),
     include_package_data=True,
     package_dir= {'':'src'},
