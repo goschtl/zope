@@ -1,12 +1,7 @@
 CHANGES
 =======
 
-Version 1.0.1 (unreleased)
---------------------------
-
-- ...
-
-Version 1.0.0 (2009-02-07)
+Version 1.0.0 (unreleased)
 --------------------------
 
 - First release of zope.httpformdate.  Extracted from zope.app.publisher.

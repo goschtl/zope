@@ -28,7 +28,7 @@ long_description = (read('README.txt') +
 
 setup(
     name='zope.httpformdate',
-    version='1.0.1dev',
+    version='1.0.0',
     url='http://pypi.python.org/pypi/zope.httpformdate',
     license='ZPL 2.1',
     author='Zope Corporation and Contributors',
