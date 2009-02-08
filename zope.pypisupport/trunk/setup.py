@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -23,10 +23,10 @@ def read(*rnames):
 
 setup(
     name='zope.pypisupport',
-    version='0.1.0',
+    version='0.1.1dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
-    description='Zope Viewlets',
+    author_email='zope-dev@zope.org',
+    description='Python Package Index (PyPI) role management tools',
     long_description=(
         read('README.txt')
         + '\n\n' +
@@ -42,7 +42,7 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP'],
-    url='http://cheeseshop.python.org/pypi/zope.pypisupport',
+    url='http://pypi.python.org/pypi/zope.pypisupport',
     license='ZPL 2.1',
     packages=find_packages('src'),
     package_dir = {'': 'src'},

@@ -2,10 +2,22 @@
 CHANGES
 =======
 
+0.1.1 (unreleased)
+------------------
+
+- Show command line help correctly.
+
+- Show a error message instead of exception traceback, when user
+  is not an owner and thus can not give someone else the owner role.
+
+- Change mailing list to zope-dev at zope.org instead of retired one.
+
+- Change "cheeseshop" to "pypi" in the package's url.
+
+- Fix package description.
+
 0.1.0 (2007-11-05)
 ------------------
 
-- Initial release.
-
-  * Implemented `addrole` and `delrole` scripts, which allow one to add and
-    remove roles for a user from one or more packages.
+- Initial release. Implemented `addrole` and `delrole` scripts, which
+  allow one to add and remove roles for a user from one or more packages.
