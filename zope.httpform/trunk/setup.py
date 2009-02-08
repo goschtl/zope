@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""HTTP Form Data Parser setup
+"""zope.httpform setup
 
 $Id: $
 """
@@ -37,14 +37,19 @@ setup(
     long_description=long_description,
 
     # Get more from http://www.python.org/pypi?%3Aaction=list_classifiers
-    classifiers=['Programming Language :: Python',
-                'Environment :: Web Environment',
-                'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
-                'Framework :: Zope3',
-                ],
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        'Programming Language :: Python',
+        'Environment :: Web Environment',
+        'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
+        'Framework :: Zope3',
+        ],
 
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    namespace_packages=['zope'],
+    zip_safe=False,
     install_requires=[
         'setuptools',
         'zope.interface',
