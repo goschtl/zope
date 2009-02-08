@@ -17,147 +17,75 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import cPickle
-import tempfile
-import zope.interface
-import zope.location.interfaces
+from zope.component import adapts
+from zope.copy.interfaces import ICopyHook, ResumeCopy
+from zope.deferredimport import deprecated
+from zope.interface import implements
 
-from zope.location.interfaces import ILocation
-from zope.location.location import Location, inside
+import zope.location.interfaces
+from zope.location.location import inside
 from zope.location.traversing import LocationPhysicallyLocatable
 
-def locationCopy(loc):
-    r"""Return a copy of an object, and anything in it
+class LocationCopyHook(object):
+    """Copy hook to preserve copying referenced objects that are not
+    located inside object that's being copied.
 
-    If object in the location refer to objects outside of the
-    location, then the copies of the objects in the location refer to
-    the same outside objects.
-
-    For example, suppose we have an object (location) hierarchy like this::
-
-           o1
-          /  \
-        o2    o3
-        |     |
-        o4    o5
-
-    >>> o1 = Location()
-    >>> o1.o2 = Location(); o1.o2.__parent__ = o1
-    >>> o1.o3 = Location(); o1.o3.__parent__ = o1
-    >>> o1.o2.o4 = Location(); o1.o2.o4.__parent__ = o1.o2
-    >>> o1.o3.o5 = Location(); o1.o3.o5.__parent__ = o1.o3
-
-    In addition, o3 has a non-location reference to o4.
-
-    >>> o1.o3.o4 = o1.o2.o4
-
-    When we copy o3, we should get a copy of o3 and o5, with
-    references to o1 and o4.
-
-    >>> c3 = locationCopy(o1.o3)
-    >>> c3 is o1.o3
+    To see the problem, imagine we want to copy an ILocation object that
+    contains an attribute-based reference to another ILocation object
+    and the referenced object is not contained inside object being copied. 
+    
+    Without this hook, the referenced object will be cloned:
+    
+    >>> from zope.location.location import Location, locate
+    >>> root = Location()
+    >>> page = Location()
+    >>> locate(page, root, 'page')
+    >>> image = Location()
+    >>> locate(page, root, 'image')
+    >>> page.thumbnail = image
+    
+    >>> from zope.copy import copy
+    >>> page_copy = copy(page)
+    >>> page_copy.thumbnail is image
     False
-    >>> c3.__parent__ is o1
-    True
-    >>> c3.o5 is o1.o3.o5
-    False
-    >>> c3.o5.__parent__ is c3
-    True
-    >>> c3.o4 is o1.o2.o4
-    True
 
+    But if we will provide a hook, the attribute will point to the
+    original object as we might want.
+
+    >>> from zope.component import provideAdapter
+    >>> provideAdapter(LocationCopyHook)
+
+    >>> from zope.copy import copy
+    >>> page_copy = copy(page)
+    >>> page_copy.thumbnail is image
+    True
+    
     """
-    tmp = tempfile.TemporaryFile()
-    persistent = CopyPersistent(loc)
+    
+    adapts(zope.location.interfaces.ILocation)
+    implements(ICopyHook)
+    
+    def __init__(self, context):
+        self.context = context
+    
+    def __call__(self, toplevel, register):
+        if not inside(self.context, toplevel):
+            return self.context
+        raise ResumeCopy
+        
+# BBB 2009/02/09
+deprecated(
+    'The locationCopy was replaced by more generic "clone" function'
+    'in the zope.copy package. This reference may be removed someday.',
+    locationCopy='zope.copy:clone'
+    )
+deprecated(
+    'The CopyPersistent was made more generic and moved to the'
+    'zope.copy package. This reference may be removed someday.',
+    CopyPersistent='zope.copy:CopyPersistent',
+)
 
-    # Pickle the object to a temporary file
-    pickler = cPickle.Pickler(tmp, 2)
-    pickler.persistent_id = persistent.id
-    pickler.dump(loc)
-
-    # Now load it back
-    tmp.seek(0)
-    unpickler = cPickle.Unpickler(tmp)
-    unpickler.persistent_load = persistent.load
-
-    return unpickler.load()
-
-
-class CopyPersistent(object):
-    """Persistence hooks for copying locations
-
-    See `locationCopy` above.
-
-    We get initialized with an initial location:
-
-    >>> o1 = Location()
-    >>> persistent = CopyPersistent(o1)
-
-    We provide an `id` function that returns None when given a non-location:
-
-    >>> persistent.id(42)
-
-    Or when given a location that is inside the initial location:
-
-    >>> persistent.id(o1)
-    >>> o2 = Location(); o2.__parent__ = o1
-    >>> persistent.id(o2)
-
-    But, if we get a location outside the original location, we assign
-    it an `id` and return the `id`:
-
-    >>> o3 = Location()
-    >>> id3 = persistent.id(o3)
-    >>> id3 is None
-    False
-    >>> o4 = Location()
-    >>> id4 = persistent.id(o4)
-    >>> id4 is None
-    False
-    >>> id4 is id3
-    False
-
-    If we ask for the `id` of an outside location more than once, we
-    always get the same `id` back:
-
-    >> persistent.id(o4) == id4
-    True
-
-    We also provide a load function that returns the objects for which
-    we were given ids:
-
-    >>> persistent.load(id3) is o3
-    True
-    >>> persistent.load(id4) is o4
-    True
-
-    """
-
-    def __init__(self, location):
-        self.location = location
-        self.pids_by_id = {}
-        self.others_by_pid = {}
-        self.load = self.others_by_pid.get
-
-    def id(self, object):
-        if ILocation.providedBy(object):
-            if not inside(object, self.location):
-                if id(object) in self.pids_by_id:
-                    return self.pids_by_id[id(object)]
-                pid = len(self.others_by_pid)
-
-                # The following is needed to overcome a bug
-                # in pickle.py. The pickle checks the boolean value
-                # of the id, rather than whether it is None.
-                pid += 1
-
-                self.pids_by_id[id(object)] = pid
-                self.others_by_pid[pid] = object
-                return pid
-
-        return None
-
-
+# XXX: is this actually used anywhere? (nadako, 2009/02/09)
 class PathPersistent(object):
     """Persistence hooks for pickling locations
 
@@ -176,6 +104,7 @@ class PathPersistent(object):
 
     We get initialized with an initial location:
 
+    >>> from zope.location.location import Location
     >>> o1 = Location()
     >>> persistent = PathPersistent(o1)
 
@@ -193,9 +122,9 @@ class PathPersistent(object):
     path. To compute it's path, it must be rooted:
 
     >>> from zope.location.tests import TLocation
+    >>> from zope.interface import directlyProvides
     >>> root = TLocation()
-    >>> zope.interface.directlyProvides(
-    ...     root, zope.location.interfaces.IRoot)
+    >>> directlyProvides(root, zope.location.interfaces.IRoot)
     >>> o3 = TLocation()
     >>> o3.__name__ = 'o3'
     >>> o3.__parent__ = root
@@ -233,7 +162,7 @@ class PathPersistent(object):
         self.location = location
 
     def id(self, object):
-        if ILocation.providedBy(object):
+        if zope.location.interfaces.ILocation.providedBy(object):
             if not inside(object, self.location):
                 return LocationPhysicallyLocatable(object).getPath()
         return None

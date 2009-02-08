@@ -5,7 +5,17 @@ CHANGES
 3.5.3 (unreleased)
 ------------------
 
-- ...
+- Use new zope.copy package for implementing location copying. Thus
+  there's changes in the ``zope.locaton.pickling`` module:
+  
+   * The ``locationCopy`` and ``CopyPersistent`` was removed in prefer
+     to their equivalents in zope.copy. Deprecated backward-compatibility
+     imports provided.
+   
+   * The module now provides a ``zope.copy.interfaces.ICopyHook`` adapter
+     for ``ILocation`` objects that replaces the old CopyPersistent
+     functionality of checking for the need to clone objects based on
+     their location.
 
 3.5.2 (2009-02-04)
 ------------------
