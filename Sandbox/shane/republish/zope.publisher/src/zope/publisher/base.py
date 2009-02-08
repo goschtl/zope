@@ -166,11 +166,10 @@ class BaseRequest(object):
         '_traversed_names',  # The names that have been traversed
         '_last_obj_traversed', # Object that was traversed last
         '_traversal_stack',  # Names to be traversed, in reverse order
-        '_environ',          # The request environment variables
+        '_environ',          # The request environment (CGI. WSGI, or similar)
         '_response',         # The response
         '_args',             # positional arguments
         '_body_instream',    # input stream
-        '_body',             # The request body as a string
         '_publication',      # publication object
         '_principal',        # request principal, set by publication
         'interaction',       # interaction, set by interaction
