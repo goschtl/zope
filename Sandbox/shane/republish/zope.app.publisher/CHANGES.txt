@@ -5,6 +5,9 @@ Changes
 3.6.1 (unreleased)
 ==================
 
+- Moved the zope.app.publisher.fieldconverters module, which contained
+  only the :date converter, to a new package named zope.httpformdate.
+
 - ...
 
 3.6.0 (2009-01-31)
