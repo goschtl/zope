@@ -14,15 +14,6 @@
 """Stub to make old imports work.
 """
 
-import pkg_resources
-
-_dist_name = "zope.app.publisher"
-_extra = 'zope_3_4_compat'
-if _extra not in pkg_resources.get_distribution(_dist_name).extras:
-    raise ImportError("The module '%s' is not available unless "
-        "the %s egg is installed with the '%s' extra option."
-        % (__name__, _dist_name, _extra))
-
 from zope.deferredimport import deprecated
 
 deprecated("This function has moved to zope.httpformdate.",

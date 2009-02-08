@@ -68,7 +68,6 @@ setup(name='zope.app.publisher',
                    'zope.app.securitypolicy',
                    'zope.app.zcmlfiles',
                    'zope.site'],
-          'zope_3_4_compat': ['zope.httpformdate'],
           },
 
       zip_safe = False,
