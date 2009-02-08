@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup(
     name='zope.pypisupport',
-    version='0.1.1dev',
+    version='0.1.2dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
     description='Python Package Index (PyPI) role management tools',
