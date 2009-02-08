@@ -20,8 +20,7 @@ __docformat__ = 'restructuredtext'
 import zope.component
 import zope.interface
 from zope.location.interfaces import ILocationInfo
-from zope.location.interfaces import IRoot, ITraverser
-from zope.location.interfaces import ILocation, ISite
+from zope.location.interfaces import ILocation, IRoot, ISite
 from zope.location.location import Location
 
 
