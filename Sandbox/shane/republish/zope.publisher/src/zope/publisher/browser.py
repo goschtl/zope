@@ -89,7 +89,7 @@ class BrowserRequest(HTTPRequest):
     __slots__ = (
         '__provides__', # Allow request to directly provide interfaces
         'form', # Form data
-        'charsets', # helper attribute
+        '_charsets', # helper attribute
         '__annotations__',
         )
 
@@ -99,25 +99,32 @@ class BrowserRequest(HTTPRequest):
 
     def __init__(self, body_instream, environ, response=None):
         self.form = {}
-        self.charsets = None
+        self._charsets = None
         super(BrowserRequest, self).__init__(body_instream, environ, response)
 
+    def _get_charsets(self):
+        charsets = self._charsets
+        if charsets is None:
+            envadapter = IUserPreferredCharsets(self)
+            charsets = envadapter.getPreferredCharsets() or ['utf-8']
+            self._charsets = charsets
+        return charsets
+
+    charsets = property(_get_charsets)
 
     def _createResponse(self):
         return BrowserResponse()
 
     def _decode(self, text):
         """Try to decode the text using one of the available charsets."""
-        if self.charsets is None:
-            envadapter = IUserPreferredCharsets(self)
-            self.charsets = envadapter.getPreferredCharsets() or ['utf-8']
         for charset in self.charsets:
             try:
-                text = unicode(text, charset)
-                break
+                return unicode(text, charset)
             except UnicodeError:
                 pass
-        return text
+        raise UnicodeError(
+            "Unable to decode %s using any available character set"
+            % repr(text))
 
     def processInputs(self):
         'See IPublisherRequest'
