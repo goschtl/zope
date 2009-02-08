@@ -7,6 +7,15 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 3.5.0 (unreleased)
 ------------------
 
+- Upgraded all packages to latest versions again.
+- Added new ZODB 3.9 dependencies:
+  * transaction
+  * zc.lockfile
+
+- Added new packages:
+  * zope.broken
+  * zope.browser
+
 - Upgraded all packages to latest versions.
 - Added new packages:
   * zope.container
