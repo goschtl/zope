@@ -1,0 +1,27 @@
+=======
+CHANGES
+=======
+
+1.2 (2009-02-09)
+----------------
+
+- Merge this package's functionality back to zope.copypastemove,
+  zope.location and zope.copy. The new zope.copy package now contains
+  copy and clone functions as well as CopyPersistent helper class and
+  doesn't depend on either zope.copypastemove or even zope.location,
+  providing a pluggable object copying mechanism zc.copy used to provide.
+  
+  Now, this package only contains backward-compatibility imports.
+
+1.1 (2009-02-09)
+----------------
+
+- Final 1.1 release. No code changes.
+
+- Change package's mailing list address to zope-dev at zope.org instead
+  of retired one.
+
+1.1b (unknown)
+--------------
+
+- Converted to eggs
