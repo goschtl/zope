@@ -87,7 +87,9 @@ def distributionForDottedName(package_dottedname):
             if package_dottedname not in packages:
                 continue
             valid_dists_for_package.append((dist, ns_packages))
-    assert valid_dists_for_package, "No distributions found for package %s." % package_dottedname
+
+    if len(valid_dists_for_package) == 0:
+        raise LookupError("No distributions found for package `%s`; are you sure it is importable?" % package_dottedname)
     
     if len(valid_dists_for_package) > 1:
         non_namespaced_dists = filter(lambda x: len(x[1]) is 0, valid_dists_for_package)
@@ -99,8 +101,18 @@ def distributionForDottedName(package_dottedname):
         valid_dists_for_package = non_namespaced_dists ### if we have packages 'foo', 'foo.bar', and 'foo.baz', the correct one is 'foo'.
 
         ### we really are in trouble if we get into a situation with more than one non-namespaced package at this point.
-        assert len(non_namespaced_dists) == 1, "We have a problem!\nnon_namespaced_dists: %s\nsys.path: %s" % (
-            pformat(non_namespaced_dists), pformat(sys.path))
+        error_msg = '''
+Multiple distributions were found that claim to provide the `%s` package.
+This is most likely because one or more of them uses `%s` as a namespace package,
+but forgot to declare it in the `namespace_packages` section of its `setup.py`.
+Please make any necessary adjustments and reinstall the modified distribution(s).
+
+Distributions found: %s
+'''
+
+        assert len(non_namespaced_dists) == 1, error_msg % (
+            package_dottedname, package_dottedname,
+            pformat(non_namespaced_dists))
 
     return valid_dists_for_package[0][0]
 
