@@ -6,16 +6,10 @@
    i18n_domain="z3ext.controlpanel">
 
   <z3ext:layout
-     name="portal"
-     layout="portal"
-     for="..interfaces.IRootConfiglet"
-     template="layout.pt" />
-
-  <z3ext:layout
      name="workspace"
      layout="portal"
      for="..interfaces.IRootConfiglet"
-     template="layoutworkspace.pt" />
+     template="layout.pt" />
 
   <browser:icon
      name="zmi_icon"
