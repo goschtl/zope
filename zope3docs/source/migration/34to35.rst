@@ -137,3 +137,6 @@ The ``zope.location.pickling.locationCopy`` and ``zope.location.pickling.CopyPer
 are now deprecated in favor of ``zope.copy`` and were replaced by deprecated
 imports. See ``zope.copy`` package documentation for information on how to
 use the new mechanism.
+
+The new version of the ``zc.copy`` package now only contains backward-compatibility
+imports and is deprecated. ``zope.copy`` should be preferred for new developments.
