@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-1.2 (unreleased)
+1.3 (unreleased)
+----------------
+
+- ...
+
+1.2 (2009-02-09)
 ----------------
 
 - Merge this package's functionality back to zope.copypastemove,

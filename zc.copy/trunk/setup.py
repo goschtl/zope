@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="zc.copy",
-    version="1.2",
+    version="1.3dev",
     install_requires=[
         'setuptools',
         'zope.copy',
         'zope.copypastemove>=3.5.1',
-        'zope.location>=3.5.3dev',
+        'zope.location>=3.5.3',
         ],
     packages=find_packages('src'),
     include_package_data=True,
