@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.5.3 (unreleased)
+3.5.4 (unreleased)
+------------------
+
+- ...
+
+3.5.3 (2009-02-09)
 ------------------
 
 - Use new zope.copy package for implementing location copying. Thus
