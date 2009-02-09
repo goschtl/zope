@@ -8,17 +8,16 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 ------------------
 
 - Upgraded all packages to latest versions again.
+
 - Added new ZODB 3.9 dependencies:
   * transaction
   * zc.lockfile
 
-- Added new packages:
+- Added other new packages:
   * zope.broken
   * zope.browser
-
-- Upgraded all packages to latest versions.
-- Added new packages:
   * zope.container
+  * zope.copy
   * zope.site
   * zope.keyreference
   * zope.intid
@@ -30,10 +29,13 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
   * z3c.menu.simple
   * z3c.menu.ready2go
   * z3c.schema
+
 - Removed zope.app.keyreference from KGS, as it was renamed
   to zope.keyreference and zope.app.keyreference should not
   be used anymore.
+
 - Removed z3c.layer as it was splitted (see added packages).
+
 - Removed z3c.menu as it also was splitted (see added packages).
 
 3.4.0 (2009-01-29)
