@@ -116,3 +116,24 @@ A base class with the implementation of the container-like behavior of
 ``Folder`` has moved to ``zope.container`` (and ``zope.site`` uses
 this for its implementation of ``Folder``). This is not normally
 something you should need to retain backwards compatibility.
+
+zc.copy -> zope.copy, zope.copypastemove, zope.location
+-------------------------------------------------------
+
+The pluggable object copying mechanism once developed in the ``zc.copy``
+package was merged back into ``zope.location``, ``zope.copypastemove``
+and the new ``zope.copy`` package. The ``zope.copy`` package now provides
+a pluggable mechanism for copying objects from ``zc.copy`` and doesn't
+depend on anything but ``zope.interface``. The ``zope.copypastemove``
+uses the ``copy`` function from ``zope.copy`` in its ``ObjectCopier``.
+
+The ``zope.location`` now provides an ``ICopyHook`` adapter that implements
+conditional copy functionality based on object locations, that old
+``zope.location.pickling.CopyPersistent`` used to provide. Note, that if
+you don't use ZCML configuration of ``zope.location``, you may need to
+register ``zope.location.pickling.LocationCopyHook`` yourself.
+
+The ``zope.location.pickling.locationCopy`` and ``zope.location.pickling.CopyPersistent``
+are now deprecated in favor of ``zope.copy`` and were replaced by deprecated
+imports. See ``zope.copy`` package documentation for information on how to
+use the new mechanism.
