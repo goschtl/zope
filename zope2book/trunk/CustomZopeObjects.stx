@@ -1,0 +1,1269 @@
+Extending Zope
+
+  You can extend Zope by creating your own types of objects that are
+  customized to your applications needs.  New kinds of objects are
+  installed in Zope by *Products*.  Products are extensions to Zope that
+  Zope Corporation and many other third party developers create.  There
+  are hundreds of different Products and many serve very specific
+  purposes.  A complete library of Products is at the "Download
+  Section":http://www.zope.org/Products/. of Zope.org.
+
+    % Anonymous User - Sep. 28, 2002 3:54 pm:
+     /complete library/ well, whats the def of *complete* ?
+     CookieCrumbler 0.3  http://www.zope.org/Members/hathawsh/CookieCrumbler
+     CookieCrumbler 0.5  http://hathaway.freezope.org/Software/CookieCrumbler
+     OrderedFolder 0.4.0 http://www.zope.org/Members/srichter/Products/OrderedFolder
+     OrderedFolder 0.5.1 http://62.146.210.79:8080/iuveno/Products/OrderedFolder
+     and there are other products not even hosted at zope.org. blf
+
+    % Anonymous User - Sep. 30, 2002 7:17 pm:
+     http://sourceforge.net/projects/lleu
+
+    % Anonymous User - Oct. 2, 2002 3:00 pm:
+     http://sourceforge.net/projects/localfs/
+
+  Products can be developed two ways, *through the web* using
+  ZClasses, and in the Python programming language. Products can even
+  be a hybrid of both through the web products and Python code.  This
+  chapter discusses building new products through the web, a topic
+  which you've already have some brief exposure to in Chapter 11,
+  "Searching and Categorizing Content".  Developing a Product entirely
+  in Python product programming is the beyond its scope and you should
+  visit Zope.org for specific Product developer documentation.
+
+    % Anonymous User - Sep. 28, 2002 4:23 pm:
+     /is the beyond its scope/is beyond this chapters scope/# far pinter "chapter"
+     oh, what a pity. i have written python products, but was yet too dumb for ZClasses.
+     As for Product developer docs: there is much stuff, most of it dated. You'll end up looking at the source of
+     other products. thanx to python in most cases thats easy+fun. blf
+
+  This chapter shows 
+  you how to:
+
+    o Create new Products in Zope
+
+    o Define ZClasses in Products
+
+    o Integrating Python with ZClasses
+
+    o Distribute Products to other Zope users
+
+  The first step in customizing Zope starts in the next section, where
+  you learn how to create new Zope Products.
+
+  Creating Zope Products
+
+    Through the web Products are stored in the *Product Management*
+    folder in the Control Panel.  Click on the *Control_Panel* in the
+    root folder and then click *Products*.  You are now in the screen
+    shown in [12-1].
+
+    "Installed Products":img:12-1:Figures/12-1.png
+
+    Each blue box represents an installed Product. From this screen,
+    you can manage these Products.  Some Products are built into Zope
+    by default or have been installed by you or your administrator.
+    These products have a *closed* box icon, as shown in [12-1].
+    Closed-box products cannot be managed through the web. You can get
+    information about these products by clicking on them, but you
+    cannot change them.
+
+    You can also create your own Products that you *can* manage
+    through the web. Your products let you create new kinds of objects
+    in Zope.  These through the web managable product have open-box
+    icons.  If you followed the examples in Chapter 11, "Searching and
+    Categorizing Content", then you have a *News* open-box product.
+
+    Why do you want to create products?  For example, all of the
+    various caretakers in the Zoo want an easy way to build simple
+    on-line exhibits about the Zoo.  The exhibits must all be in the
+    same format and contain similar information structure, and each
+    will be specific to a certain animal in the Zoo.
+
+    To accomplish this, you could build an exhibit for one animal, and
+    then copy and paste it for each exhibit, but this would be a
+    difficult and manual process.  All of the information and
+    properties would have to be changed for each new exhibit.
+    Further, there may be thousands of exhibits. 
+
+    To add to this problem, let's say you now want to have information
+    on each exhibit that tells whether the animal is endangered or
+    not.  You would have to change each exhibit, one by one, to do
+    this by using copy and paste.  Clearly, copying and pasting does
+    not scale up to a very large zoo, and could be very expensive.
+
+    You also need to ensure each exhibit is easy to manage.  The
+    caretakers of the individual exhibits should be the ones providing
+    information, but none of the Zoo caretakers know much about Zope
+    or how to create web sites and you certainly don't want to waste
+    their time making them learn.  You just want them to type some
+    simple information into a form about their topic of interest,
+    click submit, and walk away.
+
+    By creating a Zope product, you can acomplish these goals quickly
+    and easily.  You can create easy to manage objects that your
+    caretakers can use.  You can define exhibit templates that you can
+    change once and effect all of the exhibits.  You can do these
+    things by creating Zope Products.
+
+  Creating A Simple Product
+
+    Using Products you can solve the exhibit creation and management
+    problems. Let's begin with an example of how to create a simple
+    product that will allow you to collect information about
+    exhibits and create a customized exhibit. Later in the chapter
+    you see more complex and powerful ways to use products.
+
+    The chief value of a Zope product is that it allows you to
+    create objects in a central location and it gives you access to
+    your objects through the product add list. This gives you the
+    ability to build global services and make them available via a
+    standard part of the Zope management interface. In other words a
+    Product allows you to customize Zope.
+
+      % Anonymous User - Sep. 28, 2002 5:35 pm:
+       /you to create objects in a central location/ 
+       Categorial confusion? The product (=class) is in 1 location, 
+       but instantiated objects thereof may be located everywhere (thru the [ADD] list)
+       Dont confuse the cake with the cake tin. blf
+
+    Begin by going to the *Products* folder in the *Control Panel*.
+    To create a new Product, click the *Add Product* button on the *Product
+    Management* folder.  This will take you to the Product add form.
+    Enter the id "ZooExhibit" and click *Generate*.  You will now
+    see your new Product in the *Product Management* folder.  It
+    should be a blue box with an open lid.  The open lid means you
+    can click on the Product and manage it through the web.
+
+    Select the *ZooExhibit* Product.  This will take you to the Product
+    management screen.
+
+    The management screen for a Product looks and acts just like a Folder
+    except for a few differences:
+
+      1. There is a new view, called *Distribution*, all the way to the
+         right.  This gives you the ability to package and distribute your
+         Product.  This is discussed later.
+
+      2. If you select the add list, you will see some new types of objects
+         you can add including *ZClass*, *Factory*, and *Permission*.
+
+      3. The folder with a question mark on it is the *ZooExhibit*
+         Product's *Help Folder*.  This folder can contain *Help
+         Topics* that tell people how to use your Product.
+
+      4. There is also a new view *Define Permissions* that define
+         the permissions associated with this Product.  This is
+         advanced and is not necessary for this example.
+
+    In the *Contents* View create a DTML Method named *hello* with
+    these contents::
+
+      <dtml-var standard_html_header>
+
+      <h2>Hello from the Zoo Exhibit Product</h2>
+
+      <dtml-var standard_html_footer> 
+
+      % Anonymous User - Nov. 20, 2002 9:55 am:
+       2. If you select the add list, you will see some new types of objects you can add including ZClass, <i>Zope
+       Factory</i>, and <i>Zope Permission</i>.
+
+    This method will allow you to test your product. Next create a
+    Factory. Select *Zope Factory* from the product add list. You
+    will be taken to a Factory add form as shown in [12-2].
+
+    "Adding A Factory":img:12-2:Figures/12-2.png
+
+    Factories create a bridge from the product add list to your
+    Product. Give your Factory an id of *myFactory*. In the *Add
+    list name* field enter *Hello* and in the *Method* selection,
+    choose *hello*. Now click *Generate*. Now click on the new
+    Factory and change the *Permission* to *Add Document, Images,
+    and Files* and click on *Save Changes*. This tells Zope that you
+    must have the *Add Documents, Images, and Files* permission to
+    use the Factory.  Congratulations, you've just customized the
+    Zope management interface. Go to the root folder and click the
+    product add list. Notice that it now includes an entry named
+    *Hello*. Choose *Hello* from the product add list. It calls your
+    *hello* method.
+
+    One of the most common things to do with methods that you link
+    to with Factories is to copy objects into the current Folder. In
+    other words your methods can get access to the location from
+    which they were called and can then perform operations on that
+    Folder including copy objects into it. Just because you can do
+    all kinds of crazy things with Factories and Products doesn't
+    mean that you should. In general people expect that when they
+    select something from the product add list that they will be
+    taken to an add form where they specify the id of a new
+    object. Then they expect that when they click *Add* that a new
+    object with the id they specified will be created in their
+    folder. Let's see how to fulfill these expectations.
+
+    First create a new Folder named *exhibitTemplate* in your
+    Product. This will serve as a template for exhibits. Also in the
+    Product folder create a DTML Method named *addForm*, and Python
+    Script named *add*. These objects will create new exhibit instances.
+    Now go back to your Factory and change it so that the *Add list name*
+    is *Zoo Exhibit* and the method is *addForm*.
+
+    So what's going to happen is that when someone chooses *Zoo Exhibit*
+    from the product add list, the *addForm* method will run. This method
+    should collect information about the id and title of the
+    exhibit. When the user clicks *Add* it should call the *add* script
+    that will copy the *exhibitTemplate* folder into the calling folder
+    and will rename it to have the specified id.  The next step is to
+    edit the *addForm* method to have these contents::
+
+      <dtml-var manage_page_header>
+
+        <h2>Add a Zoo Exhibit</h2>
+
+        <form action="add" method="post">
+        id <input type="text" name="id"><br>
+        title <input type="text" name="title"><br>
+        <input type="submit" value=" Add ">
+        </form>
+
+      <dtml-var manage_page_footer>
+
+    Admittedly this is a rather bleak add form. It doesn't collect
+    much data and it doesn't tell the user what a Zoo Exhibit is and
+    why they'd want to add one. When you create your own web
+    applications you'll want to do better than this example.
+
+    Notice that this method doesn't include the standard HTML headers
+    and footers. By convention Zope management screens don't use the
+    same headers and footers that your site uses. Instead management
+    screens use 'manage_page_header' and 'manage_page_footer'. The
+    management view header and footer ensure that management views
+    have a common look and feel.
+
+    Also notice that the action of the form is the *add* script.  Now
+    paste the following body into the *add* script::
+
+      ## Script (Python) "add"
+      ##parameters=id ,title, REQUEST=None
+      ##
+      """
+      Copy the exhibit template to the calling folder
+      """
+
+      # Clone the template, giving it the new ID. This will be placed
+      # in the current context (the place the factory was called from).
+      exhibit=context.manage_clone(container.exhibitTemplate,id)
+
+      # Change the clone's title
+      exhibit.manage_changeProperties(title=title)
+
+      # If we were called through the web, redirect back to the context
+      if REQUEST is not None:
+          try: u=context.DestinationURL()
+          except: u=REQUEST['URL1']
+          REQUEST.RESPONSE.redirect(u+'/manage_main?update_menu=1')
+          
+    This script clones the *exhibitTemplate* and copies it to the
+    current folder with the specified id. Then it changes the
+    *title* property of the new exhibit. Finally it returns the
+    current folder's main management screen by calling
+    *manage_main*.
+
+    Congratulations, you've now extended Zope by creating a new
+    product. You've created a way to copy objects into Zope via the
+    product add list. However, this solution still suffers from some
+    of the problems we discussed earlier in the chapter. Even though
+    you can edit the exhibit template in a centralized place, it's
+    still only a template. So if you add a new property to the
+    template, it won't affect any of the existing exhibits. To
+    change existing exhibits you'll have to modify each one
+    manually. 
+
+    ZClasses take you one step farther by allowing you to have one
+    central template that defines a new type of object, and when you
+    change that template, all of the objects of that type change
+    along with it.  This central template is called a ZClass.  In
+    the next section, we'll show you how to create ZClasses that
+    define a new *Exhibit* ZClass.
+
+  Creating ZClasses
+
+    ZClasses are tools that help you build new types of objects in
+    Zope by defining a *class*.  A class is like a blueprint for
+    objects.  When defining a class, you are defining what an object
+    will be like when it is created.  A class can define methods,
+    properties, and other attributes.
+
+      % Anonymous User - Nov. 17, 2002 5:15 am:
+       The following question springs to mind at this point: How does one decide (particularly the newbie) whether
+       to use a Zope ('internal') Product, a python-based ('external') Product or ZClasses for e.g. a new
+       project/application?
+       Each *must* have its relative merits, but which, where?
+
+    Objects that you create from a certain class are called *instances*
+    of that class.  For example, there is only one *Folder* class, but
+    you many have many Folder instances in your application.
+
+      % Anonymous User - June 8, 2002 3:12 pm:
+       typo
+       s/but you many have many/but you may have many/
+
+    Instances have the same methods and properties as their class.  If
+    you change the class, then all of the instances reflect that
+    change.  Unlike the templates that you created in the last
+    section, classes continue to exert control over instances.  Keep
+    in mind this only works one way, if you change an instance, no
+    changes are made to the class or any other instances.
+
+    A good real world analogy to ZClasses are word processor templates.
+    Most word processors come with a set of predefined templates that you
+    can use to create a certain kind of document, like a resume.  There may
+    be hundreds of thousands of resumes in the world based on the Microsoft
+    Word Resume template, but there is only one template.  Like the Resume
+    template is to all those resumes, a ZClass is a template for any number
+    of similar Zope objects.
+
+      % cwitty - May 25, 2002 5:30 am:
+       In the previous paragraph, you were emphasizing that the important thing about classes is that if you change
+       a class, instances reflect the change. That makes word processor templates a poor analogy; if the template
+       changes, documents based on the template don't change.
+
+      % mcdonc - May 27, 2002 6:07 pm:
+       This is true for ZClasses and it should be mentioned somewhere... but it's not true for Python disk-based
+       classes.
+
+    ZClasses are classes that you can build through the web using Zope's
+    management interface.  Classes can also be written in Python, but
+    this is not covered in this book.
+
+    ZClasses can inherit attributes from other classes.  Inheritance allows
+    you to define a new class that is based on another class.  For example,
+    say you wanted to create a new kind of document object that had special
+    properties you were interested in.  Instead of building all of the
+    functionality of a document from scratch, you can just *inherit* all of
+    that functionality from the *DTML Document* class and add only the new
+    information you are interested in.
+
+    Inheritance also lets you build generalization relationships
+    between classes.  For example, you could create a class called
+    'Animal' that contains information that all animals have in
+    general.  Then, you could create *Reptile* and *Mammal* classes
+    that both inherit from *Animal*.  Taking it even further, you
+    could create two additional classes *Lizard* and *Snake* that both
+    inherit from *Reptile*, as shown in [12-3].
+
+      % Anonymous User - Aug. 20, 2002 1:35 pm:
+       ...two additional classes Lizard and Snake that both inherit from Reptile, as shown in Figure 12-3. There are
+       classes *Frog* and Snake inheriting from Reptile in fig 12-3.
+
+      % Anonymous User - Sep. 5, 2002 1:37 pm:
+       Uh ... frogs are amphibians, not reptiles.
+
+      % Anonymous User - Sep. 27, 2002 2:02 pm:
+       Any tricky problem on multiple inheritance ? method name resolution ? (when multiple implmentations)... I
+       have big problems while inheriting from both a folder and a zobject
+
+    "Example Class Inheritance":img:12-3:Figures/12-3.png
+
+      % Anonymous User - Sep. 18, 2002 11:33 am:
+       Technically a Frog is-a amphibian rather than a reptile.
+
+    ZClasses can inherit from most of the objects you've used in this
+    book.  In addition, ZClasses can inherit from other ZClasses defined
+    in the same Product.  We will use this technique and others in this
+    chapter.
+
+    Before going on with the next example, you should rename the
+    existing *ZooExhibit* Product in your Zope Products folder to
+    something else, like *ZooTemplate* so that it does not conflict
+    with this example. Now, create a new Product in the Product folder
+    called *ZooExhibit*.
+
+      % Anonymous User - Sep. 19, 2002 11:05 am:
+       I belive you omitted: "Go into the ZooExhibit Product you just created..." Otherwise, the Add ZClass
+       selection in the next step does not appear.
+
+      % Anonymous User - Sep. 19, 2002 11:08 am:
+       Please explain why a containing Product is necessary to create a ZClass.
+
+      % Anonymous User - Nov. 12, 2002 11:21 am:
+       I think ZClasses are tools for Products. In fact before they say that ZClass, Zope Factory and another class
+       appear in the selection box only when you are adding objects in the product creation
+
+    Select *ZClass* from the add list of the *ZooExhibit* Contents
+    view and go to the ZClass add form.  This form is complex, and has
+    lots of elements.  We'll go through them one by one:
+
+      Id -- This is the name of the class to create.  For this
+      example, choose the name *ZooExhibit*.
+
+      Meta Type -- The Meta Type of an object is a name for the type of
+      this object.  This should be something short but descriptive about
+      what the object does.  For this example, choose the meta type "Zoo
+      Exhibit".
+
+      Base Classes -- Base classes define a sequence of classes that you
+      want your class to inherit attributes from.  Your new class can be
+      thought of as *extending* or being *derived from* the functionality
+      of your base classes.  You can choose one or more classes from the
+      list on the left, and click the '->' button to put them in your base
+      class list.  The '<-' button removes any base classes you select on
+      the right.  For this example, don't select any base classes.  Later
+      in this chapter, we'll explain some of the more interesting base
+      classes, like *ObjectManager*.
+
+      Create constructor objects? -- You usually want to leave this
+      option checked unless you want to take care of creating
+      form/action constructor pairs and a Factory object yourself.  If
+      you want Zope to do this task for you, leave this checked.
+      Checking this box means that this add form will create five
+      objects, a Class, a Constructor Form, a Constructor Action, a
+      Permission, and a Factory.  For this example, leave this box
+      checked.
+
+      Include standard Zope persistent object base classes? -- This
+      option should be checked unless you don't want your object to be
+      saved in the database.  This is an advanced option and should
+      only be used for Pluggable Brains.  For this example, leave this
+      box checked.
+
+    Now click *Add*.  This will take you back to the *ZooExhibit* Product
+    and you will see five new objects, as shown in [12-4].
+
+      % Anonymous User - Aug. 21, 2002 9:09 am:
+       I would like to build a ZClass that inherits from class SessionDataManager of the Session product, but no
+       such class shows in the base classes list. Are there any techniques to make it became a base class extensible
+       by ZClasses?
+       The strange thing is that further on an __init__.py example shows how to register a class so to make it
+       available to ZClasses for inheriting, and the __init__.py file of the Session product follows such
+       registration directives!
+       To be honest, it calls context.registerClass(), not context.registerBaseClass().
+       Maybe that's the point? Can I overcome this editing __init__.py and changing
+       context.registerClass() to context.registerBaseClass()?
+
+    "Product with a ZClass":img:12-4:Figures/12-4.png
+
+      % Anonymous User - Aug. 22, 2002 10:43 am:
+       The screen-shot is misleading. Before you asked the reader to rename the ZooExhibit folder to ZooTemplate in
+       order to work with a new / empty ZooExhibit folder. But this screen shows a mixture of the old and new
+       "project". You should take a different screen-shot.
+       -Mac-
+
+    The five objects Zope created are all automatically configured to work
+    properly, you do not need to change them for now.  Here is a brief
+    description of each object that was created:
+
+      *ZooExhibit* -- This is the ZClass itself.  It's icon is a white box
+      with two horizontal lines in it.  This is the traditional symbol for
+      a *class*.
+
+      *ZooExhibit_addForm* -- This DTML Method is the constructor form for
+      the ZClass.  It is a simple form that accepts an id and title.  You
+      can customize this form to accept any kind of input your new object
+      requires.  The is very similar to the add form we created in the
+      first example.
+
+      *ZooExhibit_add* -- This DTML Method gets called by the
+      constructor form, *ZooExhibit_addForm*.  This method actually
+      creates your new object and sets its *id* and *title*.  You can
+      customize this form to do more advanced changes to your object
+      based on input parameters from the *ZooExhibit_addForm*.  This
+      has the same functionality as the Python script we created in
+      the previous example.
+
+      *ZooExhibit_add_permission* -- The curious looking stick-person
+      carrying the blue box is a *Permission*.  This defines a
+      permission that you can associate with adding new *ZooExhibit*
+      objects.  This lets you protect the ability to add new Zoo
+      exhibits.  If you click on this Permission, you can see the name
+      of this new permission is "Add ZooExhibits".
+
+      *ZooExhibit_factory* -- The little factory with a smokestack
+      icon is a *Factory* object.  If you click on this object, you
+      can change the text that shows up in the add list for this
+      object in the *Add list name* box.  The *Method* is the method
+      that gets called when a user selects the *Add list name* from
+      the add list.  This is usually the constructor form for your
+      object, in this case, *ZooExhibit_addForm*.  You can associate
+      the Permission the user must have to add this object, in this
+      case, *ZooExhibit_add_permission*.  You can also specify a
+      regular Zope permission instead.
+
+      % Anonymous User - Sep. 18, 2002 11:44 am:
+       in ZooExibit_addForm explination, it should be "This is very similair to ...", rather than "The is ..."
+
+    That's it, you've created your first ZClass.  Click on the new ZClass
+    and click on its *Basic* tab.  The *Basic* view on your ZClass lets
+    you change some of the information you specified on the ZClass add
+    form.  You cannot change the base classes of a ZClass. As you learned
+    earlier in the chapter, these settings include:
+
+      meta-type -- The name of your ZClass as it appears in the
+      product add list.
+
+      class id -- A unique identifier for your class. You should
+      only change this if you want to use your class definition for
+      existing instances of another ZClass. In this case you should
+      copy the class id of the old class into your new class.
+
+      icon -- The path to your class's icon image. There is little
+      reason to change this. If you want to change your class's
+      icon, upload a new file with the *Browse* button.
+
+      % Anonymous User - June 26, 2002 1:59 pm:
+       I miss a form to delete a zclass based document via HTML. There should be an explanation.
+
+    At this point, you can start creating new instances of the *ZooExhibit*
+    ZClass.  First though, you probably want a common place where all
+    exhibits are defined, so go to your root folder and select *Folder*
+    from the add list and create a new folder with the id "Exhibits".  Now,
+    click on the *Exhibits* folder you just created and pull down the Add
+    list.  As you can see, *ZooExhibit* is now in the add list.
+
+    Go ahead and select *ZooExhibit* from the add list and create a
+    new Exhibit with the id "FangedRabbits".  After creating the new
+    exhibit, select it by clicking on it.
+
+    As you can see your object already has three views, *Undo*,
+    *Ownership*, and *Security*.  You don't have to define these parts of
+    your object, Zope does that for you.  In the next section, we'll add
+    some more views for you to edit your object.
+
+      % Anonymous User - Sep. 19, 2002 11:23 am:
+       I have seven view tabs: Contents, View, Properties, Security, Undo, Ownership, Find. Is this proper? The text
+       infers that I should only have three views.
+
+      % Anonymous User - Sep. 19, 2002 11:27 am:
+       Ah, I forgot to click on FangedRabbits. That's where you get only three views. Since everything in Zope is an
+       object (e.g. both FangedRabbits and its containing folder), it would be great if the text was more specific.
+
+    Creating Views of Your ZClass
+
+      All Zope objects are divided into logical screens called *Views*.
+      Views are used commonly when you work with Zope objects in the
+      management interface, the tabbed screens on all Zope objects are
+      views.  Some views like *Undo*, are standard and come with Zope.
+
+      Views are defined on the *Views* view of a ZClass.  Go to your
+      *ZooExhibit* ZClass and click on the *Views* tab.  The *Views* view
+      looks like [12-5].
+
+      "The Views view.":img:12-5:Figures/12-5.png
+
+      On this view you can see the three views that come automatically with
+      your new object, *Undo*, *Ownership*, and *Security*.  They are
+      automatically configured for you as a convenience, since almost all
+      objects have these interfaces, but you can change them or remove them
+      from here if you really want to (you generally won't).
+
+      The table of views is broken into three columns, *Name*, *Method*,
+      and *Help Topic*.  The *Name* is the name of the view and is the
+      label that gets drawn on the view's tab in the management interface.
+      The *Method* is the method of the class or property sheet that gets
+      called to render the view.  The *Help Topic* is where you associate a
+      *Help Topic* object with this view.  Help Topics are explained more
+      later.
+
+      Views also work with the security system to make sure users only see
+      views on an object that they have permission to see.  Security will
+      be explained in detail a little further on, but it is good to know at
+      this point that views now only divide an object management interfaces
+      into logical chunks, but they also control who can see which view.
+
+        % Anonymous User - Dec. 20, 2003 5:03 pm:
+         s/now only divide/not only divide/
+
+      The *Method* column on the Methods view has select boxes that let you
+      choose which method generates which view.  The method associated with
+      a view can be either an object in the *Methods* view, or a Property
+      Sheet in the *Property Sheets* view.
+
+    Creating Properties on Your ZClass 
+
+      Properties are collections of variables that your object uses to
+      store information.  A Zoo Exhibit object, for example, would need
+      properties to contain information about the exhibit, like what animal
+      is in the exhibit, a description, and who the caretakers are.
+
+      Properties for ZClasses work a little differently than properties on
+      Zope objects.  In ZClasses, Properties come in named groups called
+      *Property Sheets*.  A Property Sheet is a way of organizing a related
+      set of properties together.  Go to your *ZooExhibit* ZClass and click
+      on the *Property Sheets* tab.  To create a new sheet, click *Add
+      Common Instance Property Sheet*.  This will take you to the Property
+      Sheet add form.  Call your new Property Sheet "ExhibitProperties" and
+      click *Add*.
+
+      Now you can see that your new sheet, *ExhibitProperties*, has  been
+      created in the *Property Sheets* view of your ZClass.  Click on the
+      new sheet to manage it, as shown in [12-6].
+
+      "A Property Sheet":img:12-6:Figures/12-6.png
+
+      As you can see, this sheet looks very much like the *Properties* view
+      on Zope objects.  Here, you can create new properties on this sheet.
+      Properties on Property Sheets are exactly like Properties on Zope
+      objects, they have a name, a type, and a value.  
+
+        % Anonymous User - Aug. 31, 2002 2:44 am:
+         If I create a "selection" property, then what is the context in which it searches for the method? Is the
+         context any different between the master class and the instances? Should it be?
+         An example of my problem follows. Create a new ZClass object called "Parrot" in a convenient product folder.
+         Create a method on "Parrot" called "status_list". I suggest a simple Python script will do, such as one that
+         immediately returns a list of strings (like return ["passed on", "ceased to be", ...] etc). Now create a new
+         common instance property sheet for the class, called "properties". In this property sheet, add a property
+         named "status" with a type of "selection" and a value of "status_list". Note that the value appears as "no
+         value for status_list" when added. Now create an instance of "Parrot" somewhere and inspect its properties.
+         Note that the select list is populated with the list of strings returned by the "status_list" method.
+         It seems reasonable to me that you'd want these two cases to behave identically, not differently. In what
+         part of the product folder should such a method/script be placed such that it is equally accessible to the
+         class property sheets and the instance property sheets?
+
+      Create three new properties 
+      on this sheet:
+
+        *animal* -- This property should be of type *string*.  It will hold
+        the name of the animal this exhibit features.
+
+        *description* -- This property should be of type *text*.  It will
+        hold the description of the exhibit.
+
+        *caretakers* -- This property should be of type *lines*.  It will
+        hold a list of names for the exhibit caretakers.
+
+      Property Sheets have two uses.  As you've seen with this example,
+      they are a tool for organizing related sets of properties about your
+      objects, second to that, they are used to generate HTML forms and
+      actions to edit those set of properties.  The HTML edit forms are
+      generated automatically for you, you only need to associate a view
+      with a Property Sheet to see the sheet's edit form.  For example,
+      return to the ZooExhibit ZClass and click on the *Views* tab and
+      create a new view with the name *Edit* and associate it with the
+      method *propertysheets/ExhibitProperties/manage_edit*.
+
+        % Anonymous User - May 22, 2002 6:58 am:
+         Using Zope 2.5.1, I seem to only have "propertysheets/ExhibitProperties/manage" (which seems to do the same
+         as "manage_edit")
+
+        % Anonymous User - Sep. 19, 2002 11:46 am:
+         Before returning to the ZooExhibit ZClass (last sentence), I assume you should "Save changes". WARNING: Your
+         browser may have cached the ZClass Views page, and "propertysheets/ExhibitProperties/manage" will not appear
+         in the Methods list.
+
+      Since you can use Property Sheets to create editing screens you
+      might want to create more than one Property Sheet for your
+      class. By using more than one sheet you can control which
+      properties are displayed together for editing purposes. You can
+      also separate private from public properties on different sheets
+      by associating them with different permissions.
+
+      Now, go back to your *Exhibits* folder and either look at an existing
+      *ZooExhibit* instance or create a new one.  As you can see, a new
+      view called *Edit* has been added to your object, as shown in Figure
+      [12-7].
+
+      "A ZooExhibit Edit view":img:12-7:Figures/12-7.png
+
+      This edit form has been generated for you automatically.  You only
+      needed to create the Property Sheet, and then associate that sheet
+      with a View.  If you add another property to the *ExhibitProperties*
+      Property Sheet, all of your instances will automatically get a new
+      updated edit form, because when you change a ZClass, all of the
+      instances of that class inherit the change.
+
+      It is important to understand that changes made to the class are
+      reflected by all of the instances, but changes to an instance are
+      *not* reflected in the class or in any other instance.  For example,
+      on the *Edit* view for your *ZooExhibit* instance (*not* the class),
+      enter "Fanged Rabbit" for the *animal* property, the description
+      "Fanged, carnivorous rabbits plagued early medieval knights.  They
+      are known for their sharp, pointy teeth." and two caretakers,
+      "Tim" and "Somebody Else".  Now click *Save Changes*.
+
+      As you can see, your changes have obviously effected this instance,
+      but what happened to the class?  Go back to the *ZooExhibit* ZClass
+      and look at the *ExhibitProperties* Property Sheet.  Nothing has
+      changed!  Changes to instances have no effect on the class.
+
+      You can also provide default values for properties on a Property
+      Sheet.  You could, for example, enter the text "Describe your exhibit
+      in this box" in the *description* property of the *ZooExhibit*
+      ZClass.  Now, go back to your *Exhibits* folder and create a *new*
+,      *ZooExhibit* object and click on its *Edit* view.  Here, you see that
+      the value provided in the Property Sheet is the default value for the
+      instance.  Remember, if you change this instance, the default value
+      of the property in the Property Sheet is *not* changed.  Default
+      values let you set up useful information in the ZClass for properties
+      that can later be changed on an instance-by-instance basis.
+
+      You may want to go back to your ZClass and click on the *Views*
+      tab and change the "Edit" view to be the first view by clicking
+      the *First* button.  Now, when you click on your instances, they
+      will show the Edit view  first.
+
+    Creating Methods on your ZClass
+
+      The *Methods* View of your ZClass lets you define the methods for the
+      instances of your ZClass.  Go to your *ZooExhibit* ZClass and click
+      on the *Methods* tab.  The *Methods* view looks like [12-8].
+
+      "The Methods View":img:12-8:Figures/12-8.png
+
+      You can create any kind of Zope object on the *Methods* view,
+      but generally only callable objects (DTML Methods and Scripts,
+      for example) are added.
+
+      Methods are used 
+      for several purposes:
+
+        Presentation  -- When you associate a view with a method, the
+        method is called when a user selects that view on an instance.  For
+        example, if you had a DTML Method called *showAnimalImages*, and a
+        view called *Images*, you could associate the *showAnimalImages*
+        method with the *Images* view.  Whenever anyone clicked on the
+        *Images* view on an instance of your ZClass, the *showAnimalImages*
+        method would get called.
+
+        Logic -- Methods are not necessarily associated with
+        views.  Methods are often created that define how you can work with
+        your object.  
+
+          For example, consider the *isHungry* method of the
+          *ZooExhibit* ZClass defined later in this section. It does
+          not define a view for a *ZooExhibit*, it just provide very
+          specific information about the *ZooExhibit*.  Methods in a
+          ZClass can call each other just like any other Zope methods,
+          so logic methods could be *used* from a presentation method,
+          even though they don't *define* a view.
+
+            % Anonymous User - Dec. 20, 2003 5:29 pm:
+             s/it just provide/it just provides/
+
+        Shared Objects -- As was pointed out earlier, you can create
+        any kind of object on the *Methods* view of a ZClass.  All
+        instances of your ZClass will *share* the objects on the
+        Methods view.  For example, if you create a *Z Gadfly
+        Connection* in the Methods view of your ZClass, then all
+        instances of that class will share the same Gadfly connection.
+        Shared objects can be useful to your class's logic or
+        presentation methods.
+
+      A good example of a presentation method is a DTML Method that
+      displays a Zoo Exhibit to your web site viewers.  This is often
+      called the *public interface* to an object and is usually
+      associated with the *View* view found on most Zope objects.
+
+      Create a new DTML Method on the *Methods* tab of your *ZooExhibit*
+      ZClass called *index_html*.  Like all objects named *index_html*,
+      this will be the default representation for the object it is defined
+      in, namely, instances of your ZClass.  Put the following DTML in the
+      *index_html* Method you just created::
+
+        <dtml-var standard_html_header>
+
+          <h1><dtml-var animal></h1>
+
+          <p><dtml-var description></p>
+
+          <p>The <dtml-var animal> caretakers are:<br>
+            <dtml-in caretakers>
+              <dtml-var sequence-item><br>
+            </dtml-in>
+          </p>
+
+        <dtml-var standard_html_footer>
+
+      Now, you can visit one of your *ZooExhibit* instances directly
+      through the web, for example,
+      *http://www.zopezoo.org/Exhibits/FangedRabbits/* will show you the
+      public interface for the Fanged Rabbit exhibit.
+
+      You can use Python-based or Perl-based Scripts, and even Z SQL
+      Methods to implement logic. Your logic objects can call each other,
+      and can be called from your presentation methods. To create the
+      *isHungry* method, first create two new properties in the
+      *ExhibitProperties* property sheet named "last_meal_time" that is of
+      the type *date* and "isDangerous" that is of the type *boolean*.
+      This adds two new fields to your Edit view where you can enter the
+      last time the animal was fed and select whether or not the animal is
+      dangerous.
+
+        % Anonymous User - May 30, 2002 12:06 pm:
+         You need to enter a date on the last_meal_time property.
+         Zope 2.5.1 will not let you enter a null value in there.
+
+        % Anonymous User - Aug. 20, 2002 4:54 am:
+         for example, date should be like bellow:
+         2002/08/20 13:00:00 GMT+9
+
+      Here is an example of an implementation of the *isHungry* method in
+      Python::
+
+        ## Script (Python) "isHungry"
+        ##
+        """
+        Returns true if the animal hasn't eaten in over 8 hours
+        """
+        from DateTime import DateTime
+        if (DateTime().timeTime() 
+            - container.last_meal_time.timeTime() >  60 * 60 * 8):
+            return 1
+        else:
+            return 0
+
+        % hpaluch - Jan. 27, 2004 2:51 am:
+         It is obvious how to read ZClasses property - using container.last_meal_time.
+         But attempt to assign new value to property, i.e. container.last_meal_time = my_new_time
+         will result in an error: attribute-less object (assign or del)
+         It should be clarified. Now it seems that the only solution is to use manage_changeProperties(...) method.
+
+      The 'container' of this method refers to the ZClass instance. So
+      you can use the 'container' in a ZClass instance in the same way
+      as you use 'self' in normal Python methods.
+
+      You could call this method from your *index_html* display
+      method using this snippet of DTML::
+
+        <dtml-if isHungry>
+          <p><dtml-var animal> is hungry</p>
+        </dtml-if>
+
+      You can even call a number of logic methods from your display
+      methods. For example, you could improve the hunger display like so::
+
+        <dtml-if isHungry>
+
+          <p><dtml-var animal> is hungry.
+
+          <dtml-if isDangerous>
+
+            <a href="notify_hunger">Tell</a> an authorized
+            caretaker.
+
+          <dtml-else>
+
+            <a href="feed">Feed</a> the <dtml-var animal>.
+
+          </dtml-if>
+
+          </p>
+
+        </dtml-if>
+
+      Your display method now calls logic methods to decide what
+      actions are appropriate and creates links to those actions.  For
+      more information on Properties, see Chapter 3, "Using Basic Zope
+      Objects".
+
+    *ObjectManager* ZClasses
+
+      If you choose *ZClasses:ObjectManager* as a base class for your
+      ZClass then instances of your class will be able to contain
+      other Zope objects, just like Folders. Container classes are
+      identical to other ZClasses with the exception that they have an
+      addition view *Subobjects*.
+
+      From this view you can control what kinds of objects your
+      instances can contain. For example if you created a FAQ
+      container class, you might restrict it to holding Question and
+      Answer objects. Select one or more meta-types from the select
+      list and click the *Change* button. The *Objects should appear
+      in folder lists* check box control whether or not instances of
+      your container class are shown in the Navigator pane as
+      expandable objects.
+
+        % Anonymous User - Dec. 31, 2003 9:59 am:
+         Last sentence is quite confusing...
+
+      Container ZClasses can be very powerful. A very common pattern
+      for web applications is to have two classes that work
+      together. One class implements the basic behavior and hold
+      data. The other class contains instances of the basic class and
+      provides methods to organize and list the contained
+      instances. You can model many problems this way, for example a
+      ticket manager can contain problem tickets, or a document
+      repository can contain documents, or an object router can contain
+      routing rules, and so on. Typically the container class will
+      provide methods to add, delete, and query or locate contained
+      objects.
+
+    ZClass Security Controls
+
+      When building new types of objects, security can play an important
+      role.  For example, the following three Roles are needed in your Zoo:
+
+        *Manager* -- This role exists by default in Zope.  This is you, and
+        anyone else who you want to be able to completely manage your Zope
+        system.
+
+        *Caretaker* -- After you create a *ZooExhibit* instance, you
+        want users with the *Caretaker* role to be able to edit
+        exhibits.  Only users with this role should be able to see the
+        *Edit* view of a *ZooExhibit* instance.
+
+        *Anonymous* -- This role exists by default in Zope.  People with
+        the *Anonymous* role should be able to view the exhibit, but not
+        manage it or change it in any way.
+
+      As you learned in Chapter 7, "Users and Security", creating new
+      roles is easy, but how can you control who can create and edit
+      new *ZooExhibit* instances?  To do this, you must define some
+      security policies on the *ZooExhibit* ZClass that control access
+      to the ZClass and its methods and property sheets.
+
+    Controlling access to Methods and Property Sheets
+
+      By default, Zope tries to be sensible about ZClasses and security.
+      You may, however, want to control access to instances of your ZClass
+      in special ways.
+
+      For example, Zoo Caretakers are really only interested in seeing the
+      *Edit* view (and perhaps the *Undo* view, which we'll show later),
+      but definitely not the *Security* or *Ownership* views.  You don't
+      want Zoo caretakers changing the security settings on your Exhibits;
+      you don't even want them to *see* those aspects of an Exhibit, you
+      just want to give them the ability to edit an exhibit and nothing
+      else.
+
+      To do this, you need to create a new *Zope Permission* object in the
+      *ZooExhibit* Product (*not* the ZClass, permissions are defined in
+      Products only).  To do this, go to the *ZooExhibit* Product and
+      select *Zope Permission* from the add list.  Give the new permission
+      the *Id* "edit_exhibit_permission" and the *Name* "Edit Zoo Exhibits"
+      and click *Generate*.
+
+        % cropr - Dec. 29, 2003 4:22 am:
+         If permissions can only be defined in Products, then why is there a "define permissions" tab if one slects
+         the Zclass?
+
+      Now, select your *ZooExhibit* ZClass, and click on the *Permissions*
+      tab.  This will take you to the *Permissions* view as shown in Figure
+      [12-9].
+
+      "The Permissions view":img:12-9:Figures/12-9.png
+
+      This view shows you what permissions your ZClass uses and lets you
+      choose additional permissions to use.  On the right is a list of all
+      of the default Zope permissions your ZClass inherits automatically.
+      On the left is a multiple select box where you can add new
+      permissions to your class.  Select the *Edit Zoo Exhibits* permission
+      in this box and click *Save Changes*.  This tells your ZClass that it is
+      interested in this permission as well as the permissions on the right.
+
+        % Anonymous User - May 8, 2002 1:55 pm:
+         I cant seem to find the "Edit Zoo Exhibits" permission?? Am I crazy? dTb
+
+        % Anonymous User - Aug. 26, 2002 8:00 pm:
+         You could go crazy trying to find it. You must name the Permission you create in the previous step. It
+         appears the Name field on the Permission object is used in this select list. Title is not used. If you do not
+         enter a Name, the new permission appears as a blank line at the top of the select list. -ASD
+
+      Now, click on the *Property Sheets* tab and select the
+      *ExhibitProperties* Property Sheet.  Click on the *Define
+      Permissions* tab.
+
+      You want to tell this Property Sheet that only users who have the
+      *Edit Zoo Exhibits* permission you just created can manage the
+      properties on the *ExhibitProperties* sheet.  On this view, pull down
+      the select box and choose *Edit Zoo Exhibits*.  This will map the
+      *Edit Zoo Exhibits* to the *Manage Properties* permission on the
+      sheet.  This list of permissions you can select from comes from the
+      ZClass *Permissions* view you were just on, and because you selected
+      the *Edit Zoo Exhibits* permission on that screen, it shows up on
+      this list for you to select.  Notice that all options default to
+      *disabled* which means that the property sheet cannot be edited by
+      anyone.
+
+      Now, you can go back to your *Exhibits* folder and select the
+      *Security* view.  Here, you can see your new Permission is on the
+      left in the list of available permission.  What you want to do now is
+      create a new Role called *Caretaker* and map that new Role to the
+      *Edit Zoo Exhibits* permission.
+
+      Now, users must have the *Caretaker* role in order to see or use the
+      *Edit* view on any of your *ZooExhibit* instances.
+
+      Access to objects on your ZClass's *Methods* view are controlled in
+      the same way.
+
+    Controlling Access to instances of Your ZClass
+
+      The previous section explained how you can control access to
+      instances of your ZClass's Methods and Properties.  Access control is
+      controlling who can create new instances of your ZClass. As you saw
+      earlier in the chapter, instances are created by Factories. Factories
+      are associated with permissions. In the case of the Zoo Exhibit, the
+      *Add Zoo Exhibits* permission controls the ability to create Zoo
+      Exhibit instances.
+
+      Normally only Managers will have the *Add Zoo Exhibits* permission,
+      so only Managers will be able to create new Zoo Exhibits. However,
+      like all Zope permissions, you can change which roles have this
+      permissions in different locations of your site. It's important to
+      realize that this permission is controlled separately from the *Edit
+      Zoo Exhibits* permission. This makes it possible to allow some people
+      such as Caretakers to change, but not create Zoo Exhibits.
+
+    Providing Context-Sensitive Help for your ZClass
+
+      On the *View* screen of your ZClass, you can see that each view
+      can be associated with a *Help Topic*.  This allows you to
+      provide a link to a different help topics depending on which
+      view the user is looking at.  For example, let's create a Help
+      Topic for the *Edit* view of the *ZooExhibit* ZClass.
+
+      First, you need to create an actual help topic object.  This is
+      done by going to the *ZooExhibit* Product which contains the
+      *ZooExhibit* ZClass, and clicking on the *Help* folder.  The
+      icon should look like a folder with a blue question mark on it.
+
+      Inside this special folder, pull down the add list and select
+      *Help Topic*.  Give this topic the id "ExhibitEditHelp" and the
+      title "Help for Editing Exhibits" and click *Add*.
+
+      Now you will see the *Help* folder contains a new help topic
+      object called *ExhibitEditHelp*.  You can click on this object
+      and edit it, it works just like a DTML Document.  In this
+      document, you should place the help information you want to show
+      to your users::
+
+        <dtml-var standard_html_header>
+
+          <h1>Help!</h1>
+
+          <p>To edit an exhibit, click on either the <b>animal</b>,
+          <b>description</b>, or <b>caretakers</b> boxes to edit
+          them.</p>
+
+        <dtml-var standard_html_footer>
+
+      Now that you have created the help topic, you need to associate
+      with the *Edit* view of your ZClass.  To do this, select the
+      *ZooExhibit* ZClass and click on the *Views* tab.  At the right,
+      in the same row as the *Edit* view is defined, pull down the
+      help select box and select *ExhibitEditHelp* and click *Change*.
+      Now go to one of your ZooExhibit instances, the *Edit* view now
+      has a *Help!* link that you can click to look at your Help
+      Topic for this view.
+
+    In the next section, you'll see how ZClasses can be cobined with
+    standard Python classes to extend their functionality into raw Python.
+
+      % Anonymous User - Aug. 23, 2002 8:56 am:
+       /cobined/combined/
+       -Mac-
+
+  Using Python Base Classes
+
+    ZClasses give you a web managable interface to design new kinds of
+    objects in Zope.  In the beginning of this chapter, we showed you how
+    you can select from a list of *base classes* to subclass your ZClass
+    from.  Most of these base classes are actually written in Python, and
+    in this section you'll see how you can take your own Python classes and
+    include them in that list so that your ZClasses can extend their
+    methods.
+
+    Writing Python base classes is easy, but it involves a few installation
+    details. To create a Python base class you need access to the
+    filesystem. Create a directory inside your *lib/python/Products*
+    directory named *AnimalBase*. In this directory create a file named
+    *Animal.py* with these contents::
+
+      class Animal: 
+          """
+          A base class for Animals
+          """ 
+
+          _hungry=0
+
+          def eat(self, food, servings=1):
+              """
+              Eat food
+              """
+              self._hungry=0
+
+          def sleep(self):
+              """
+              Sleep
+              """
+              self._hungry=1
+
+          def hungry(self):
+              """
+              Is the Animal hungry?
+              """
+              return self._hungry
+
+      % Anonymous User - Sep. 2, 2002 10:34 am:
+       Let's suppose I need an __init__ method for class Animal: I found that this __init__ method, if present, is
+       automatically called when I create an instance of
+       the ZClass that "wraps" (inherits from) Annimal. But what if __init__ has parameters? Where can I pass these
+       parameters from? I guess the right place is from the Animal_add dtml method that acts as a constructor, but
+       what's the dtml for doing so? Please help!
+
+    This class defines a couple related methods and one default
+    attribute. Notice that like External Methods, the methods of this
+    class can access private attributes.
+
+    Next you need to register your base class with Zope. Create an
+    *__init__.py* file in the *AnimalBase* directory with these
+    contents::
+
+      from Animal import Animal
+
+      def initialize(context):
+          """
+          Register base class
+          """
+          context.registerBaseClass(Animal)  
+
+    Now you need to restart Zope in order for it find out about your
+    base class. After Zope restarts you can verify that your base
+    class has been registered in a couple different ways. First go to
+    the Products Folder in the Control Panel and look for an
+    *AnimalBase* package. You should see a closed box product. If you
+    see broken box, it means that there is something wrong with your
+    *AnimalBase* product.
+
+    Click on the *Traceback* view to see a Python traceback showing
+    you what problem Zope ran into trying to register your base class.
+    Once you resolve any problems that your base class might have
+    you'll need to restart Zope again. Continue this process until
+    Zope successfully loads your product. Now you can create a new
+    ZClass and you should see *AnimalBase:Animal* as a choice in the
+    base classes selection field.
+
+    To test your new base class create a ZClass that inherits from
+    *AnimalBase:Animal*. Embellish you animal however you wish. Create
+    a DTML Method named *care* with these contents::
+
+      <dtml-var standard_html_header>
+
+      <dtml-if give_food>
+        <dtml-call expr="eat('cookie')">
+      </dtml-if>
+
+      <dtml-if give_sleep>
+        <dtml-call sleep>
+      </dtml-if>
+
+      <dtml-if hungry>
+        <p>I am hungry</p>
+      <dtml-else>
+        <p>I am not hungry</p>
+      </dtml-if>
+
+      <form>
+      <input type="submit" value="Feed" name="give_food">
+      <input type="submit" value="Sleep" name="give_sleep">
+      </form>
+
+      <dtml-var standard_html_footer>
+
+    Now create an instance of your animal class and test out its
+    *care* method. The care method lets you feed your animal and give
+    it sleep by calling methods defined in its Python base class. Also
+    notice how after feeding your animal is not hungry, but if you
+    give it a nap it wakes up hungry.
+
+    As you can see, creating your own Products and ZClasses is an
+    involved process, but simple to understand once you grasp the
+    basics.  With ZClasses alone, you can create some pretty complex
+    web applications right in your web browser.
+
+      % Anonymous User - Aug. 27, 2002 12:40 pm:
+       What happens if I create a ZClass that inherits from a persistent base class and I live the 'Include standard
+       Zope persistent object base classes?' box checked in the 'Add ZClass' management view? There's the risk to
+       create buggy objects?
+       BTW, what are the standard Zope persistent object base classes?
+       And what happens if a ZClass inherits, say, from class A and B but B inherits from A as well? Is it safe to
+       make such ZClasses?
+
+    In the next section, you'll see how to create a *distribution* of
+    your Product, so that you can share it with others or deliver it
+    to a customer.
+
+      % Anonymous User - Oct. 13, 2002 10:16 am:
+       I realize that documentation usually lags behind a product, especially when the product is changing. However,
+       I think a lot of the Zope documentation would benefit from consistently showing examples on how to do things
+       in more ways then just the manage screens or dtml methods.
+       For example. After reading this I now feel comfortable creating new ZClasses and adding properties and
+       methods, views etc... But, It is not all together clear to me as a Zope newbie on how to programatically add
+       instances of the class thorugh something other than the management screen.
+       If you were to adopt a standard for examples that consistently included how to access the functionality,
+       (management screens, dtml-methods, zope page templates, and python scripts) I think it would get the message
+       across on how you can work with the zope object framework.
+       I hope this is taken as a suggestion and not a complaint, because I think Zope is a great product and I look
+       forward to working with future versions.
+
+  Distributing Products
+
+    Now you have created your own Product that lets you create any number
+    of exhibits in Zope.  Suppose you have a buddy at another Zoo who is
+    impressed by your new online exhibit system, and wants to get a similar
+    system for his Zoo.  
+
+    Perhaps you even belong to the Zoo keeper's Association of America and
+    you want to be able to give your product to anyone interested in an
+    exhibit system similar to yours.  Zope lets you distribute your
+    Products as one, easy to transport package that other users can
+    download from you and install in their Zope system.
+
+    To distribute your Product, click on the *ZooExhibit* Product and
+    select the *Distribution* tab.  This will take you to the
+    *Distribution* view.
+
+    The form on this view lets you control the distribution you want to
+    create.  The *Version* box lets you specify the version for your
+    Product distribution.  For every distribution you make, Zope will
+    increment this number for you, but you may want to specify it
+    yourself.  Just leave it at the default of "1.0" unless you want to
+    change it.
+
+    The next two radio buttons let you select whether or not you want
+    others to be able to customize or redistribute your Product.  If you
+    want them to be able to customize or redistribute your Product with no
+    restrictions, select the *Allow Redistribution* button.  If you want to
+    disallow their ability to redistribute your Product, select the
+    *Disallow redistribution and allow the user to configure only the
+    selected objects:* button.  If you disallow redistribution, you can
+    choose on an object by object basis what your users can customize in
+    your Product.  If you don't want them to be able to change anything,
+    then don't select any of the items in this list.  If you want them to
+    be able to change the *ZooExhibit* ZClass, then select only that
+    ZClass.  If you want them to be able to change everything (but still
+    not be able to redistribute your Product) then select all the objects
+    in this list.
+
+      % Anonymous User - June 26, 2002 1:55 pm:
+       The redistribution of a Product does not work allways. I can only distribute some of my Products from the
+       machine where they was written.
+       On a other machine (same Zope/Python version) I can't change and re-redistribute the Product again.
+
+      % Anonymous User - July 17, 2002 3:37 pm:
+       I lost my disc - when I tried to import my own product it came as a closed box. I was able modify all the
+       product, but I could not redistribute. So, I´ve made all the product again.
+       I tried again to distribute and install the product (doublechecking at allowing redistribution), it always
+       comes as a closed box - and I can´t redistribute.
+       (Zope 2.5.1 (binary release, python 2.1, linux2-x86), python 2.1.3, linux2).
+
+    Now, you can create a distribution of your Product by clicking *Create
+    a distribution archive*.  Zope will now automatically generate a file
+    called *ZooExhibit-1.0.tar.gz*.  This Product can be installed in any
+    Zope just like any other Product, by unpacking it into the root
+    directory of your Zope installation.
+
+    Don't forget that when you distribute your Product you'll also
+    need to include any files such as External Method files and Python
+    base classes that your class relies on. This requirement makes
+    distribution more difficult and for this reason folks sometimes
+    try to avoid relying on Python files when creating through the web
+    Products for distribution.
+
+      % Anonymous User - July 22, 2002 7:56 pm:
+       Also, when you distribute your product, maybe you could include some instructions on how to import / install
+       it!
+
+      % Anonymous User - Oct. 15, 2002 5:41 pm:
+       How can I insert an instance of my Zclass from a python script?
+       if it where a DTML Method I would use _addDTMLMethod(id,title)

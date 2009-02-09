@@ -1,0 +1,1108 @@
+Chapter 9: Using XML
+
+  XML is becoming an important data interchange format. More and more
+  services are being made available over the web using XML. XML is a
+  format to describe structured documents and data. Since XML is a
+  widely supported standard it provides a good medium for exchanging
+  structured information between systems.
+
+  Zope supports XML on many fronts. You can generate XML from Zope
+  objects thus allowing foreign systems to understand you, and you can
+  import XML into Zope in order to decipher and manage it. Zope also
+  supports exporting Zope objects in an XML format, and it supports
+  several XML-based Internet protocols including WebDAV and XML-RPC. 
+
+  Managing XML with XML Document
+
+    You can use XML in Zope with XML Documents. XML Documents hold XML
+    content that you can upload, download, and edit with the Zope
+    management interface. You can also script XML Documents using the
+    Internet standard Document Object Model (DOM) API. Zope is much
+    more than an XML repository, since once your XML data is in Zope
+    it can take advantage of all Zope's services such as persistence,
+    security, cataloging, presentation, and more.
+
+    Using XML Document
+
+      To create an XML Document, choose *XML Document* from the
+      product add list. Then click the *Add* button. You will be taken
+      to an XML Document add form as shown in Figure 9-1.
+
+      "XML Document add form":img:Figures/uc.png
+
+      The *Id* and *Title* fields allow you to specify a standard Zope
+      id and title for your XML Document. The *File* field lets you
+      upload an XML file from your local computer. You can create the
+      XML Document by either clicking the *Add* or the *Add and Edit*
+      buttons. 
+
+      After you create an XML Document you can change its XML in two
+      different ways. You can edit the XML through the web as text,
+      and you can manipulate the document's XML elements as Zope
+      sub-objects. 
+
+      Editing XML
+
+        To edit a document's XML go to the *Edit* view. Here you can
+        change your document's XML as shown in Figure 9-2.
+
+        "Editing XML":img:Figures/uc.png
+
+        You can type XML right in your browser. If you make an error
+        and enter invalid XML, Zope will complain. After you have
+        changed your document's XML click the *Change* button. Zope
+        does not currently validate XML against a DTD or schema. Later
+        versions of XML Document will probably allow validation.
+
+        You can also change the XML of a document by uploading an XML
+        file from your local computer. Go to the *Upload* view. Here
+        you can select an XML file to upload. When you upload an XML
+        file, you completely replace the contents of your XML
+        Document. As always, you can undo this action if you make a
+        mistake. 
+
+      Accessing Elements
+
+        An interesting feature of XML Documents is that they represent
+        their contents as Zope objects. In other words, you can access
+        your document's XML not just as text, but as objects. Go to
+        the *Contents* view of an XML Document to see it's contents as
+        objects as shown in Figure 9-3.
+
+        "XML Document *Contents* view":img:Figures/uc.png
+
+        As you can see your document's XML elements are represented as
+        Zope objects. You can cut, copy, paste, and delete them like
+        normal Zope objects. This allows you to move XML elements
+        around in your document. Note that you cannot move elements
+        out of your document, nor can you move other types of objects
+        like Folders into your document.
+
+        You can also rearrange the order of your document's XML
+        elements using the *Shift Up* and *Shift Down* buttons. Select
+        an element and click the *Shift Up* button. The element moves
+        up in the list of elements. Notice the element's id may change
+        as a result of shifting it. XML elements are named according
+        to their element name and their position. For example the
+        second *para* element has an id of *para-2*. If you move this
+        element before the first *para* element, its id will change
+        to *para-1*.
+
+        If you click on an element you will then be taken to the
+        element's management screen as shown in Figure 9-4.
+
+        "XML element management":img:Figures/uc.png
+
+        As you can see, elements also can have sub-elements. So not
+        only can you move top-level elements around, but you can
+        elements around into other elements. For example, create an
+        XML Document named *family.xml* with these contents::
+
+          <family>
+
+            <mother>
+              <eyes color="brown"/>
+              <ears size="small"/>
+            </mother>
+
+            <father>
+              <eyes color="blue"/>
+              <ears size="large"/>
+            </father>        
+
+            <child/>
+
+            <child/>
+
+          </family>
+
+        Now go to the *Contents* view of the document and navigate to
+        the *mother-1* element. Select the *eyes-1* element and click
+        *Copy*. Now go back up to the *family-1* element and navigate
+        down into the *child-1* element. Click the *Paste* button. Now
+        return to the document and go to the *Edit* view. You should
+        see that the *child* element now has the same *eyes*
+        sub-element as the *mother* element.
+
+        You may have noticed that elements have ids corresponding to
+        their tag names. For example, the *family* tag has an id of
+        *family-1*. The number following the tag name indicates the
+        number of the element. For example, notice that the first
+        *child* element has an id of *child-1* while the second
+        *child* tag has an id of *child-2*. Since you can have more
+        than one element with the same tag name, it is necessary to
+        use a number in the element id to ensure that each element has
+        a unique id. 
+
+        Since XML elements are Zope objects with unique ids, you can
+        treat them just like other Zope objects. For example, you can
+        visit an XML element at its URL. You can call acquired methods
+        on elements. You can catalog elements. You can walk up to
+        elements and manage them. In the course of this chapter we'll
+        show you how to do all these things with XML elements.
+
+      Editing Elements
+
+        You may have noticed that elements have several views in
+        addition to the *Contents* view. You can edit the XML of an
+        element directly by going to the *Edit* view. You can also
+        replace an element by going to the *Upload* view and uploading
+        an XML file.
+
+        For example, go to the *Edit* view of the *child* node from
+        the last example. You should see::
+
+          <eyes color=brown/>
+
+        This is shows you the element you pasted in from another
+        element. Change the contents of the element to::
+
+          <eyes color="brown"/>
+          <ears size="medium"/>
+
+        Click the *Change* button. Now you can go to the *Contents*
+        view and see that your element now contains an new *ears-1*
+        element. You can also verify you changes by returning to the
+        *Edit* view of the XML Document. You should see that your
+        changes to the element are reflected in the contents of the
+        document. 
+
+      Viewing the DOM 
+
+        XML Documents and elements give you a way to get a graphical
+        view of their contents. Go to the *DOM Hierarchy* view to see
+        tree view of your document's XML as shown in Figure 9-5.
+
+        "XML Document DOM Hierarchy":img:Figures/uc.png
+
+        You can expand and collapse the tree by clicking on the plus
+        and minus signs next to individual nodes. You can also
+        completely expand or collapse the tree with the links at the
+        top of the screen. To manage an element click on it. In
+        addition to viewing the DOM tree from an XML Document, you can
+        view a portion of he DOM tree by navigating to an element and
+        then going to the *DOM Hierarchy* view on that element. This
+        will show you the branch of the DOM tree from your
+        element. The *DOM Hierarchy* view is mostly useful as a way to
+        examine the structure of your XML and quickly navigate to
+        different elements.
+
+    The DOM API
+
+      The DOM API is the standard Internet API for querying and
+      controlling XML documents. Zope supports "DOM Level
+      2":http://www.w3.org/TR/DOM-Level-2 including the traversal
+      extensions as defined by the "World Wide Web
+      Consortium":http://www.w3.org.  Consortium.  The DOM is a fairly
+      complex API that defines how you can access and manipulate an
+      XML document.  A complete discussion of the DOM is beyond the
+      scope of this book. See Appendix A for a summary of the DOM API
+      as supported by XML Document.  You can use the DOM API from
+      DTML, Python, and Perl to query and change XML Documents.
+
+    Displaying XML with DTML
+
+      Until XSLT Methods are available, DTML Methods are your best
+      choice for displaying XML Documents. You can use DTML to display
+      XML Documents exactly the same way you use DTML to display other
+      Zope objects. For example suppose you want an XML Document that
+      describes a number of invoices. Create an XML with an id of
+      *invoices.xml* with these contents::
+
+        <invoices>
+          <invoice>
+            <number>127</number>
+            <company>Acme Feedbags</company>
+            <amount>34.00</amount>
+            <status>Overdue</status>
+          </invoice>
+          <invoice>
+            <number>128</number>
+            <company>Vet Tech</company>
+            <amount>55.00</amount>
+            <status>Normal</status>
+          </invoice>
+        </invoices>
+
+      To display the invoices in HTML create a DTML Method named
+      *viewInvoices* with this DTML code::
+
+        <dtml-var standard_html_header>
+
+        <h2>Invoices</h2>
+        
+        <table>
+          <tr>
+            <th>Invoice Number</th>
+            <th>Company</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        <dtml-in expr="documentElement.getElementsByTagName('invoice')">
+          <tr>
+            <td>
+              <dtml-in expr="getElementsByTagName('number')">
+                <dtml-in childNodes><dtml-var nodeValue></dtml-in>
+              </dtml-in>
+            </td>
+            <td>
+              <dtml-in expr="getElementsByTagName('company')">
+                <dtml-in childNodes><dtml-var nodeValue></dtml-in>
+              </dtml-in>
+            </td>
+            <td>
+              <dtml-in expr="getElementsByTagName('amount')">
+                <dtml-in childNodes><dtml-var nodeValue></dtml-in>
+              </dtml-in>
+            </td>
+            <td>
+              <dtml-in expr="getElementsByTagName('status')">
+                <dtml-in childNodes><dtml-var nodeValue></dtml-in>
+              </dtml-in>
+            </td>
+          </tr>
+        </dtml-in>
+        </table>      
+
+        <dtml-var standard_html_footer>
+ 
+      You can use this method to display your XML data by going to the
+      URL *http://localhost:8080/invoices.xml/viewInvoices*. The
+      resulting web page is shown in Figure 9-6.
+
+      "Displaying an XML Document with DTML":img:Figures/uc.png
+
+      This DTML Method is rather complex since it requires so many DOM
+      method calls. It loops over all the *invoice* elements using the
+      *getElementsByTagName* method. For each *invoice* element it
+      finds the contained *number*, *company*, *amount*, and *status*
+      elements and displays their child text nodes.
+
+      You could also choose to display each invoice on a separate web
+      page. Create a DTML Method named *viewInvoice* with these
+      contents::
+
+        <dtml-var standard_html_header>
+
+        <h2>Invoice</h2>
+
+        <p>
+        <dtml-if previousSibling>
+        <dtml-with previousSibling>
+        <a href="&dtml-absolute_url;/viewInvoice">Previous invoice</a>
+        </dtml-with>
+        </dtml-if>
+
+        <dtml-if nextSibling>
+        <dtml-with nextSibling>
+        <a href="&dtml-absolute_url;/viewInvoice">Next invoice</a>
+        </dtml-with>
+        </dtml-if>
+        </p>
+
+        <table>
+        <tr>
+          <th>Number</th>
+          <td><dtml-in expr="getElementsByTagName('number')">
+        <dtml-in childNodes><dtml-var nodeValue></dtml-in></dtml-in></td>
+        </tr>
+        <tr>
+          <th>Company</th>
+          <td><dtml-in expr="getElementsByTagName('company')">
+        <dtml-in childNodes><dtml-var nodeValue></dtml-in></dtml-in></td>
+        </tr>
+        <tr>
+          <th>Amount</th>
+          <td><dtml-in expr="getElementsByTagName('amount')">
+        <dtml-in childNodes><dtml-var nodeValue></dtml-in></dtml-in></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td><dtml-in expr="getElementsByTagName('status')">
+        <dtml-in childNodes><dtml-var nodeValue></dtml-in></dtml-in></td>
+        </tr>
+        </table> 
+
+        <dtml-var standard_html_footer>         
+     
+      Call this method on the first invoice node by going to this URL
+      *http://localhost:8080/invoices/invoices-1/invoice-1/viewInvoice*. You
+      should see a web page as shown in Figure 9-7.
+
+      "Displaying an XML Element with DTML":img:Figures/uc.png
+
+      An interesting thing to notice is how this display method
+      creates links between invoice elements. It checks the
+      *previousSibling* and *nextSibling* DOM attributes. If they are
+      present, it uses the *absolute_url* method to create a link to
+      the elements.
+
+      It's a fairly common pattern when working with a large XML
+      Document to create templates for elements rather than for the
+      complete document. Each element template can include
+      navigational links to allows you to move between
+      elements.
+
+    Using XML with Python and Perl
+
+      You can use Python and Perl to query and change XML
+      Documents. You can call DOM methods and access DOM attributes on
+      individual elements of an XML Document. For example, create an
+      XML Document with an id of *addressbook.xml* and these contents::
+
+        <addressbook>
+          <item>
+            <name>Bob</name>
+            <address>2118 Wildhare st.</address>
+          </item>
+          <item>
+            <name>Randolf</name>
+            <address>13 E. Roundway</address>
+          </item>
+        </addressbook>
+
+      You can query this XML Document in Python in a number of
+      ways. Here is a Script that does some testing
+      on the XML Document::
+
+        ## Script (Python) "query"
+        ##
+        import string
+        # get the XML Document, must use getattr since
+        # the id is not a legal Python identifier
+        doc=getattr(context, 'addressbook.xml')
+            
+        # get the document element
+        book=doc.documentElement
+             
+        # count items, assuming all children are items
+        print "Number of items", len(book.childNodes)
+
+        # get names of items
+        names=[]
+        for item in book.childNodes:
+            # assumes first child is name
+            name=item.firstChild 
+            # assumes name has one child which is a text node  
+            names.append(name.firstChild.nodeValue)
+        print "Names ", string.join(names, ",")
+        return printed
+
+      Querying an XML Document with DOM may be a bit tedious, but it's
+      relatively straight forward. You can also write scripts in
+      Python and Perl that can query elements of XML Documents. For
+      example, here's a Script that expects to be
+      called on an *item* element. It returns the content of the
+      *name* sub-element::
+
+        ## Script (Python) "itemName"
+        ##
+        # context is assumed to be an item element
+        return context.firstChild.firstChild.nodeValue
+
+      You can call this method on the first item in the
+      *addressbook.xml* document by going to this URL
+      *http://localhost:8080/addressbook.xml/addressbook-1/item-1/itemName*.
+      You could also call this method on an element from another DTML
+      method or a Script. For example, in an earlier section you saw how
+      you can call a DTML Method directly on an element to display
+      it. The DTML Method could call Scripts on the element in
+      order to query the element in ways that would be difficult to do
+      from DTML.
+
+      In addition to querying, Scripts excel at
+      modifying XML. You can call DOM methods to edit elements and
+      move them around. For example, here's a Script to add a
+      new *item* element to the *addressbook.xml* XML Document::
+
+        ## Script (Python) "addItem"
+        ##parameters=name, address
+        ##bind context=doc
+        ##
+        # call this script on an XML Document
+
+        # create item element and its sub-elements
+        item=doc.createElement('item')
+
+        elname=doc.createElement('name')
+        elname.appendChild(doc.createTextNode(name))
+        item.appendChild(elname)
+
+        eladdr=doc.createElement('address')
+        eladdr.appendChild(doc.createTextNode(address))
+        item.appendChild(eladdr)
+            
+        # add complete item to addressbook
+        book=doc.documentElement
+        book.appendChild(item)    
+
+      This script creates a new *item* element along with its
+      sub-elements, *name* and *address*. It then inserts the *item*
+      element into the *addressbook* element.
+
+      Here's another example using two Scripts to
+      rearrange the *item* elements in alphabetical order::
+
+        ## Script (Python) "compareItems"
+        ##parameters=x, y
+        ##
+        """
+        Compares two item elements alphabetically. Returns -1,
+        0, or 1 to indicate less, equal, and greater.
+
+        Used by the sortItems script to sort a list of address
+        elements.
+        """ 
+        return cmp(x.firstChild.firstChild.nodeValue,
+                   y.firstChild.firstChild.nodeValue)
+
+
+        ## Script (Python) "sortItems"
+        ##
+        """
+        Sorts the address elements of an XML Document
+        
+        Call this method on an XML Document
+        """
+        # remove item elements
+        items=[]
+        book=context.documentElement
+        for item in book.childNodes:            
+            book.removeChild(item)
+            items.append(child)
+            
+        # sort item elements
+        items.sort(context.compareItems)            
+            
+        # insert them back
+        for item in items:
+            book.appendChild(item)
+
+        This script works by removing the *item* elements one by one
+        from the *addressbook* element. It builds a Python list of
+        items, and when it finishes removing and sorting the *items*,
+        it adds them back to the *addressbook* in sorted order.
+
+        Rather than adding items to your address book and then sorting
+        the entire thing, it would be more efficient to add items in
+        the correct order in the first place. That way your address
+        book is always in order. Here's a revision of the *addItem*
+        script that adds items in the correct place so that the
+        address book stays sorted::
+
+        ## Script (Python) "addItem"
+        ##parameters=name, address
+        ##bind context=doc
+        # call this method on an XML Document
+
+        # create item element and its sub-elements
+        item=doc.createElementNS('', 'item')
+
+        elname=doc.createElementNS('', 'name')
+        elname.appendChild(doc.createTextNode(name))
+        item.appendChild(elname)
+
+        eladdr=doc.createElementNS('', 'address')
+        eladdr.appendChild(doc.createTextNode(address))
+        item.appendChild(eladdr)
+            
+        # figure out where to insert item using bisect algorithm
+        book=doc.documentElement
+        items=book.childNodes
+        lo=0
+        hi=len(items)
+        while lo < hi:
+            mid = (lo + hi) / 2
+            if name < items[mid].firstChild.firstChild.nodeValue:
+                hi = mid
+            else:
+                lo = mid + 1
+
+        # insert item
+        if lo == len(childNodes):
+            book.appendChild(item)
+        else:
+            before=items[lo]
+            book.insertBefore(item, before)
+
+      Don't worry if you don't understand how this script sorts
+      items. The important point is to see that you can use Python's
+      expressive logic to work on XML data.
+
+      In addition to using Python and Perl to manipulate XML using
+      DOM, you can use Python and Perl to use Zope services with XML
+      data.  For example, instead of maintaining your address book as
+      an XML Document, you could maintain it with Zope objects. You
+      could then restrict your use of XML to importing and exporting
+      data from your Zope address book. While this design may seem
+      more difficult, it often proves better in practice. XML elements
+      can be treated as Zope objects but often these is a mismatch
+      between XML elements and application objects. For example in the
+      address book example, the *name* element is a sub-object of an
+      *item* element. However in your application you may decide that
+      it's better to have *person* objects that contain one or more
+      *address* objects. You may not be able to change your XML format
+      to fit your application design since other services may expect
+      XML in this format. Later in the chapter you'll see an example
+      of how to import and export XML from an application without
+      having to store your data as XML. For serious applications this
+      approach is often better.
+
+    Cataloging XML Documents and Elements
+
+      One especially interesting service that Zope can provide to XML
+      data is searching. Using ZCatalog you can catalog XML Documents
+      and their elements. See Chapter 9 for more information on
+      ZCatalog. With ZCatalog you can perform full-text searching of
+      XML elements. This gives you a lot of control over XML data.
+
+      For example suppose you have an archive of
+      "docbook":http://www.docbook.org/ XML articles. They consist of
+      an *article* with a number of *section* elements. Each *section*
+      element contains a *title* element, some *para* elements, and
+      optionally additional *section* elements. Here's an example
+      document:  
+
+        <article>
+          <title>The History of Haircutting</title>
+          <section>
+            <title>Prehistory of Barbering</title>
+            <para>Before scissors and razors were invented people cut
+            hair with sharp rocks. If rocks were not available a
+            barbers own teeth were his next best option.</para>
+          </section>
+          <section>
+            <title>Modern Haircutting</title>
+            <para>In these enlightened times hair is most often cut
+            with whirling-bladed devices attached to vacuum
+            cleaners.</para>
+            <section>
+              <title>Modern Hairstyles</title>
+              <para>Modern hairstyles favor form over function, and
+              present a true challenge to today's hairstylists.</para>
+            </section>
+          </section>
+        </article>
+      
+      To catalog articles like this you need to create scripts that
+      return the text you'd like to index. For this example, let's
+      index *section* elements. This will allow you to search for text
+      and find all the sections in all the articles that include the
+      search terms. Probably you'll want two scripts: one to return
+      the full text of a *section* element, and another to return the
+      text of the section's title. You'll use the full-text script to
+      index *section* objects, and the title script to get meta-data
+      on the section. This will allow you to return the titles of all
+      the sections that match a given query.
+
+      Create a Script named *section_title* to
+      return the text of a section's title::
+
+         ## Script (Python) "section_title"
+         """
+         Text of a section element's title element.
+         """
+         for child in context.childNodes:
+             if child.tagName == 'title':
+                 return child.firstChild.nodeValue
+
+      Now create a Script named *section_fulltext* to
+      return the full text of the *section* element::
+
+         ## Script (Python) "section_fulltext"
+         """
+         Full text of a section element. Does not include text of
+         contained section elements.
+         """
+         text=""
+         for child in context.childNodes:
+             if child.tagName in ('para', 'title'):
+                 text = text + " " + child.firstChild.nodeValue
+         return text
+
+      This script returns text of all *para* and *title* sub-elements
+      of a *section* element.
+
+      Now that you've created both the necessary scripts, it's time to
+      create a ZCatalog and catalog your articles. Create a ZCatalog
+      at the same level or above the location of you articles. Name
+      the catalog *articleCatalog*. Now go to the *Indexes* view and
+      delete all the existing indexes. Next create a new TextIndex
+      named *section_fulltext*. This tells the catalog to call the
+      *section_fulltext* script on all cataloged objects and to treat
+      the result as full text. Now go to the *MetaData Table* view and
+      delete all the existing meta-data columns. Create a new column
+      named *section_title*. This tells the catalog to call the
+      *section_title* script on all cataloged objects and to store the
+      result as meta-data which will be available on result
+      objects. Now that you've set the indexes and meta-data it's time
+      to find and catalog all the *section* elements in your
+      articles. Go to the *Find Items to ZCatalog* view. In the *expr*
+      field enter *tagName=='section'* and click the *Find*
+      button. This tells the catalog to search for objects whose
+      *tagName* attribute is equal to the string *section*. You should
+      be taken to the *Cataloged Objects* view and you should see that
+      the catalog now contains a list of *section* elements.
+
+      Now you can create a search and results form for the
+      catalog. Create a DTML Method inside the catalog named *Search*
+      with these contents::
+
+        <dtml-var standard_html_header>
+
+        <h2>Search Articles</h2>
+
+        <form action="Results">
+        Search terms <input type="text" name="section_fulltext">
+        <input type="submit" value="Search">
+        </form>
+
+        <dtml-var standard_html_footer>
+
+      Next you need to create a results form that will be called by
+      the search form. Create another DTML Method inside the catalog
+      named *Results* with these contents::
+
+        <dtml-var standard_html_header>
+
+        <h2>Found Articles</h2>
+
+        <dtml-in searchResults>
+        <a href="<dtml-var expr="getpath(data_record_id_)" url_quote>"><dtml-var section_title></a><br>
+        </dtml-in>
+
+        <dtml-var standard_html_footer>
+        
+      Congratulations, you've implemented a fine-grained full text
+      XML search. View the *Search* method to test it out. Sure enough
+      it will find matching *section* element.
+
+      Unfortunately you don't have any way to display the matching
+      *section* elements yet. To complete the example you should
+      create a DTML Method to display a *section* element. Better yet
+      you might want to create a method to display an article that
+      includes internal anchors so that you could call it with a
+      section identifier to display the article beginning with a given
+      section. While XSLT is probably the right choice for such a
+      method, it could be done in DTML. The implementation of the
+      article and section display methods is left as an exercise for
+      the ambitious reader.
+
+    Controlling XML Parsing
+
+      XML Document gives you a fair amount of low-level control over
+      how it parses XML. To tell XML Documents how to parse XML you
+      can create *XML Parsing Option* objects. Right now you can
+      control how Zope handles white space and storage of elements. In
+      the future you'll be able to control XML validation. XML Parsing
+      Options are only needed by advanced users. You can safely ignore
+      them until you find that you need more control over how Zope
+      parses your XML.
+
+      Create a XML Parsing Option named *myOption*. You should see an
+      add screen as shown in Figure 9-8.
+
+      "XML Parsing Option add screen.":Figures/uc.png
+
+      The *ignoreWSTextNodes* option tells Zope to ignore white space
+      between elements when parsing XML. You should ignore white space
+      unless you have a specific reason not to. The second option
+      lets you tell Zope which XML elements you want to store
+      separately in the Zope database. In the *PersistElementTags*
+      field you should enter the namespace and tag name for each type
+      of element that you want to store separately. The reason to
+      store elements separately is control performance and memory
+      use. Increasing the number of persistent elements, increases the
+      performance hit, but lowers the memory usage. The more
+      persistent element you have the more the database needs to work
+      to retrieve them. However by breaking your XML data into a
+      number of persistent elements you lessen the amount of data that
+      needs to be in memory because Zope can move unneeded persistent
+      elements out of memory. These issues only really come into play
+      when you are using very large XML Documents. In these cases
+      you'll need to experiment with different settings to find the
+      right trade off between speed and memory use.  For now leave the
+      *PersistElementTags* field blank and click the *Add* button.
+
+      Now whenever you create an XML Document you'll be able to
+      specify your XML Parsing options. For example create an new XML
+      Document. You should now see the XML Parsing Option you just
+      created as an option available to you on the XML Document add
+      form. 
+
+  Generating XML
+
+    All Zope objects can create XML. In fact, there is no need to use
+    XML Document to create XML. It's fairly easy to create XML with
+    DTML. For example suppose you have a folder that contains a number
+    of documents describing food. You could represent this data with
+    XML like so::
+
+      <documents>
+        <document>
+          <title>Quiche</title>
+        </document>
+        <document>
+          <title>Spaghetti</title>
+        </document>
+        <document>
+          <title>Turnips</title>
+        </document>
+      </documents>
+
+    This XML DTD may not be that complex but it's easy to
+    generate. Create a DTML Method named "documents.xml" with the
+    following contents::
+
+      <documents>
+        <dtml-in expr="objectValues('DTML Document')">
+        <document>
+          <title><dtml-var title></title>
+        </document>
+        </dtml-in>
+      </documents>
+
+    As you can see, DTML is equally adapt at creating XML as it is at
+    creating HTML. Simply embed DTML tags among XML tags and you're
+    set. The only tricky thing that you may wish to do is to set the
+    content-type of the response to *text/xml* which can be done with
+    this DTML code::
+
+      <dtml-call expr="RESPONSE.setHeader('content-type', 'text/xml')">
+
+    The whole point of generating XML is producing data in a format
+    that can be understood by other systems. Therefore you will
+    probably want to create XML in an existing format understood by
+    the systems you want to communicate with. Suppose you have a
+    collection of news items that you want to share with a news
+    service using the RSS (Rich Site Summary) XML format. RSS is a
+    format developed by Netscape for its *my.netscape.com* site, which
+    has since gained popularity among other news sites. Here's what an
+    example RSS file looks like::
+
+      <?xml version="1.0"?>
+
+      <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
+                   "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+
+      <rss version="0.91">
+        <channel>
+          <title>Zope.org</title>
+          <link>http://www.zope.org/</link>
+          <description>News from Zope.org</description>
+          <language>en-us</language>
+
+          <image>
+            <title>Zope.org</title>
+            <url>http://www.zope.org/Images/zbutton</url>
+            <link>http://www.zope.org/</link>
+            <width>78</width>
+            <height>77</height>
+            <description>Zope.org</description>
+          </image>
+
+          <item>
+            <title>Zope hotfix: ZPublisher security update</title>
+            <link>http://www.zope.org/Products/Zope/Hotfix_2000-10-02/security_alert</link>
+          </item>
+
+          <item>
+            <title>First development release of HiperDom</title>
+            <link>http://www.zope.org/Members/lalo/HiperDom/Announce_0.1</link>
+          </item>
+
+          <item>
+            <title>Decode barcodes using DTML</title>
+            <link>http://www.zope.org/Members/stevea/barcode_to_amazon/barcode_to_amazon_news</link>
+          </item>
+        </channel>
+      </rss>
+
+    This is an actual RSS file create using DTML on the
+    *www.zope.org*
+    web site. It is built from a catalog query of news items. The main
+    features of an RSS file are the *channel* and *item*
+    elements. The *channel* element contains information about the
+    news source and also contains the *items* elements. Each *item*
+    element contains information about new items. In this example the
+    *item* elements come from the results of a catalog search. Here's
+    how this RSS is built::
+
+      <dtml-call "RESPONSE.setHeader('content-type', 'text/xml')"><?xml version="1.0"?>
+
+      <!DOCTYPE rss PUBLIC "-//Netscape Communications//DTD RSS 0.91//EN"
+                   "http://my.netscape.com/publish/formats/rss-0.91.dtd">
+
+      <rss version="0.91">
+        <channel>   
+
+          <title>Zope.org</title>
+          <link>http://www.zope.org/</link>
+          <description>News from Zope.org</description>
+          <language>en-us</language>
+
+          <image>
+            <title>Zope.org</title>
+            <url>http://www.zope.org/Images/zbutton</url>
+            <link>http://www.zope.org/</link>
+            <width>78</width>
+            <height>77</height>
+            <description>Zope.org</description>
+          </image>
+
+          <dtml-in expr="searchResults(
+            meta_type='News Item',
+            sort_on='date',
+            sort_order='reverse')" size=3">
+          <item>
+           <title><dtml-var title></title>
+           <link><dtml-var BASE0>/<dtml-var url></link>
+          </item>
+          </dtml-in>
+
+        </channel>
+      </rss>
+
+    This method is mostly static XML, only the *item* elements are
+    dynamically generated. You could support RSS more flexibly by
+    using objects and properties to keep track of channel
+    information. You could also gather information for *item* elements
+    in many way besides searching a catalog. For example you could
+    directly iterate over Zope objects, or you could use Python
+    Scripts to retrieve information from the network or the
+    filesystem.
+
+    If using DTML to create XML is to easy for your taste you can use
+    XML Document instead to programmatically build an XML using
+    DOM. There may be cases where this is necessary, but most often
+    DTML will work fine. It's important to remember that XML is a
+    format for communication. Use it pragmatically to enable your web
+    applications to communicate. Often this is little need to store
+    XML data internally in your application. Usually you can generate
+    XML from Zope objects when you need to send it and parse XML into
+    Zope objects when you need to read it.
+
+  Processing XML
+
+    A common use of XML is to communicate information. For the
+    receiver to understand the communication, it needs to decode the
+    XML message.  Zope already does understands some kinds of XML
+    messages such as XML-RPC and WebDAV. As you create web
+    applications that communicate with other systems you may want to
+    have the ability to receive XML messages. You can receive XML a
+    number of ways, you can read XML file from the file system or over
+    the network, or you can define methods that take XML arguments
+    which can be called by remote systems.
+
+    Once you have received an XML message you must process the XML to
+    find out what it means and how to act on it. You have two basic
+    choices within Zope for processing XML. You can create an XML
+    Document and use the DOM API to examine the XML. Alternately you
+    can manually parse the XML using Python or Perl's XML parsing
+    facilities. Using XML Document and DOM requires less programming
+    for simple cases, but can be unwieldy and inefficient, especially
+    for large amounts of XML.
+
+    You've already seen how to process XML using XML Document and DOM,
+    so now let's take a quick look at how you might parse XML manually
+    using Python. Suppose you want to connect you web application to a
+    "Jabber":http://www.jabber.com/ chat server. You might want to
+    allow users to message you and receive dynamic responses based on
+    the status of your web application. For example suppose you want
+    to allow users to check the status of their items using instant
+    messaging. Your application should respond to XML instant messages
+    like this::
+
+      <message to="webapp@example.com" from="user@host.com">
+        <body>status</body>
+      </message>
+
+    You could scan the body of the message for commands, call method
+    and return responses like this::
+
+      <message to="user@host.com" from="webapp@example.com">
+        <body>All is well as of 3:12pm</body>
+      </message>
+
+    Here's a sketch of how you could implement this XML messaging
+    facility in your web application using a Python External Method::
+
+      # uses Python 2's standard xml processing package
+      # see http://www.python.org/doc/current/lib/module-xml.sax.html
+      # for information about Python's SAX (Simple API for XML) support
+  
+      from xml.sax import parseString
+      from xml.sax.saxlib import DocumentHandler
+
+      class MessageHandler(DocumentHandler):
+          """
+          SAX message handler class
+
+          Extracts a message's to, from, and body
+          """
+
+          inbody=0
+          body=""
+
+          def startElement(self, name, attrs):
+              if name=="message":
+                  self.to=attrs['to']
+                  self.from=attrs['from']
+              elif name=="body":
+                  self.inbody=1
+
+          def endElement(self, name):
+              if name=="body":
+                  self.inbody=0
+
+          def characters(self, data, start, length):
+              if self.inbody:
+                  self.body=self.body + data[start:start+length]
+
+
+      def receiveMessage(self, message):
+          """
+          Called by a Jabber server
+          """
+          handler=MessageHandler()
+          parseString(message, handler)
+
+          # call a method that returns a response string
+          # given a message body string
+          response_body=self.getResponse(handler.body)
+          
+          # create a response XML message
+          response_message="""
+            <message to="%s" from="%s">
+              <body>%s</body>
+            </message>""" % (handler.from, handler.to, reponse_body)
+          
+          # return it to the server
+          return response_message
+
+    This External Method uses Python's SAX (Simple API for
+    XML) package to parse the XML message. The *MessageHandler* class
+    receives callbacks as Python parses the message. The handler saves
+    information its interested in. The method uses the handler
+    class by creating an instance of it, and passing it to the
+    *parseString* function. It then figures out a response message by
+    calling *getResponse* with the message body. This method
+    presumably scans the body for commands, queries the web
+    applications state and returns some response. The *receiveMessage*
+    method then creates a XML message using response and the sender
+    information and returns it.
+
+    The remote server would use this method by calling the
+    *receiveMessage* method using the standard HTTP POST
+    command. Voila, you've implemented a custom XML chat server that
+    runs over HTTP.
+
+  DOM API for All Zope Objects
+
+    In addition to the Zope API, Zope objects support a subset of the
+    DOM (Document Object Model) API. The "DOM":http://www.w3.org/DOM/ is
+    an Internet standard for querying and scripting documents.
+
+    DOM provides an interfaces to hierarchical data. DOM is designed to
+    treat XML and HTML documents as collections of nodes. In the case of
+    Zope's DOM support, you can use the DOM to query the Zope object
+    hierarchy as a collection of nodes.
+
+    DOM is a well documented and well understood API. If you've worked with
+    DOM before you may find it more familiar and comfortable than Zope's
+    API.
+
+    DOM Methods and Attributes
+
+      Zope supports the read-only methods and attributes of the
+      level-2 DOM API.  The DOM API represents Zope objects as DOM
+      elements and string properties as DOM attributes. There are also
+      a few additional bindings. For example, DOM node names
+      correspond to Zope object meta-types. Also DOM node IDs
+      correspond to Zope object ids.
+
+      So for example, this is how you could use the DOM API to return
+      a list of your sub-object's:
+
+        results=[]
+        for child in self.childNodes:
+            results.append(child.nodeName)
+        return results
+
+      This will return a list of object types like so::
+
+        zope:DTMLMethod
+        zope:DTMLDocument
+        zope:Folder
+
+      This shows you that the DOM API interprets sub-objects as child
+      nodes. It also demonstrates that node names are qualified by a
+      namespace with the prefix *zope*. The URI of this namespace is
+      *http://namespaces.zope.org/NullNamespace*. So using the DOM API
+      you can effectively treat your sub-objects like XML nodes.
+
+      Here's how you can use the DOM to find out the title of your
+      first sub-object::
+
+        child=self.firstChild
+        return child.getAttributeNS(
+            'http://namespaces.zope.org/NullNamespace',
+            'title')
+
+      This returns the value of the first child's *title*
+      attribute. Suppose your first child was a DTML Method with a
+      title of *display*. This XML is how the DOM API would understand
+      the method::
+
+        <zope:DTMLMethod
+        xmlns:zope="http://namespaces.zope.org/NullNamespace" title="display">
+        </zope:DTMLMethod>
+
+      Notice that the contents of the DTML Method are not available
+      via the DOM API. Also notice that all spaces in the meta-type
+      have been removed. This is because XML doesn't allow spaces in
+      element names.
+
+      Another useful DOM method is *getElementsByTagNameNS*. This method
+      recursively descends the object hierarchy searching for elements
+      with a given tag name. The tag name of a Zope object is its
+      meta-type (which is also considered its node name). Here is a
+      bit of Python that will return all DTML Documents contained by
+      the current object and all its sub-objects::
+
+        return self.getElementsByTagNameNS(
+            'http://namespaces.zope.org/NullNamespace',
+            'DTMLDocument')
+
+      You can use the asterisk as a tag name to indicate that you want
+      to match all tag names.  You can find further documentation of
+      the Zope object implementation of the DOM API in Appendix B.
+
+    Zope API versus DOM API
+
+      You may have noticed that the DOM API on regular Zope objects
+      doesn't buy you a lot. It's kind of nifty to use DOM methods,
+      but *childNodes* isn't really any better than *objectValues*. In
+      fact, many DOM methods are less flexible than normal Zope API
+      methods. Using the DOM API on Zope objects has two important
+      virtues that make it worthwhile:
+
+        1.  It is a standard, so it's familiar and documented.
+
+        2.  It allows technologies built on the DOM API to be added to
+          Zope.
+
+      Right now the second virtue has yet to flower fully. Two
+      technologies that will be added to Zope on top of the DOM API
+      are XPath and XSLT. For now the familiarity of the DOM is the
+      most important reason to use it. If you already know DOM, then
+      you may find it more comfortable than the normal Zope API for
+      querying Zope about sub-objects and properties.
+
+
+     
+
+
+
+
+
