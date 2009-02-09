@@ -11,10 +11,12 @@ setup(name='stxutils',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-               'zope.structuredtext',
+               'zope.structuredtext>=3.4.0',
+               'docutils>=0.5',
       ],
       entry_points = """\
         [console_scripts]
         stx2html = stxutils.tohtml:main
+        stx2rst = stxutils.torst:main
       """
      )
