@@ -10,6 +10,19 @@
     font-size: 100%;
   }
 
+  .z-controlpanel-wrapper { 
+    padding-bottom: 1em;
+  }
+
+  #z-controlpanel #z-space {
+    margin: 0;
+  }
+
+  #z-controlpanel #z-portal-workspace {
+    padding: 0;
+    background-color: globalBackgroundColor;
+  }
+
   #z-controlpanel h1 {
     padding: 0;
     font-weight: bold;
@@ -34,8 +47,9 @@
   }
   
   #z-controlpanel .z-cp-nav-wrapper {
-    padding-right: 1em;
+    padding-right: 1.5em;
     width: 200px;
+    font-size: 110%;
   }
   
   #z-controlpanel .z-cp-nav {
@@ -164,18 +178,10 @@
   #z-controlpanel .z-form-add,
   #z-controlpanel .z-form-edit,
   #z-controlpanel .z-form-standard {
-    border: borderWidth borderStyle globalExtraBorderColor;
+    padding: 1em;
     margin-top: 0em;
     margin-bottom: 1em;
-    padding: 1em;
     background: contentBackgroundColor;
-  }
-
-  #z-controlpanel #z-content-adding { 
     border: borderWidth borderStyle globalExtraBorderColor;
-    margin-top: 0em;
-    margin-bottom: 1em;
-    padding: 1em;
-    background: contentBackgroundColor;
   }
 }

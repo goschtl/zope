@@ -1,4 +1,4 @@
-<div id="z-portal-workspace">
+<div class="z-controlpanel-wrapper">
   <div id="z-controlpanel"
        tal:define="context nocall:maincontext;
 		   nav provider:z3ext.controlpanel-navigation;
