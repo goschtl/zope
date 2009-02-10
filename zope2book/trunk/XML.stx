@@ -820,7 +820,7 @@ Chapter 9: Using XML
 
     This is an actual RSS file create using DTML on the
     *www.zope.org*
-    web site. It is built from a catalog query of news items. The main
+    website. It is built from a catalog query of news items. The main
     features of an RSS file are the *channel* and *item*
     elements. The *channel* element contains information about the
     news source and also contains the *items* elements. Each *item*

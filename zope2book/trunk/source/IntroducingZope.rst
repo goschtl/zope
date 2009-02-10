@@ -37,10 +37,9 @@ Environment* (the "Z" doesn't really mean anything in particular).
 The Static Web Site Dilemma
 ---------------------------
 
-When a company or organization goes through the process of
-developing and eventually deploying a website, one its most
-important goals is to present timely and
-up-to-date information to its website visitors.
+When a company or organization goes through the process of developing and
+eventually deploying a website, one of its most important goals is to
+present timely and up-to-date information to its website visitors.
 
 Let us consider two examples of such time-dependent sites:
 

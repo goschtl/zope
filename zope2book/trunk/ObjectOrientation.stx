@@ -70,7 +70,7 @@ Object Orientation
 
     When a subclass inherits behavior from another class, it doesn't need to sit idly by and accept all the method definitions of its superclass if they don't suit its needs: if necessary, the subclass can *override* the method definitions of its superclass.  For instance, we may want our ContractedEmployee class to return a different "title" than instances of our Employee class.  In our ContractedEmployee class, we might cause the 'getTitle' method of the Employee class to be *overridden* by creating a method within ContractedEmployee with a different implementation.  For example, it may always return "Contractor" instead of a job-specific title.
 
-    Inheritance is used extensively in Zope objects.  For example, the Zope "Image" class inherits its behavior from the Zope "File" class, since images are really just another kind of file, and both classes share many behavior requirements.  But the "Image" class adds a bit of behavior that allows it to "render itself inline" by printing its content within HTML tag, instead of causing a file download.  It does this by *overriding* the 'index_html' method of the File class.
+    Inheritance is used extensively in Zope objects.  For example, the Zope "Image" class inherits its behavior from the Zope "File" class, since images are really just another kind of file, and both classes share many behavior requirements.  But the "Image" class adds a bit of behavior that allows it to "render itself inline" by printing its content within HTML tags, instead of causing a file download.  It does this by *overriding* the 'index_html' method of the File class.
 
   Object Lifetimes
 

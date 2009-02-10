@@ -84,7 +84,7 @@ Using the Zope Management Interface
 
       "The Workspace Frame":img:3-2:Figures/workspace.jpg
 
-    A series of tabs is displayed cross the top of the screen. The
+    A series of tabs is displayed across the top of the screen. The
     tab that is currently active is highlighted in a lighter color.  Each tab takes you
     to a different *view* of the current object, and each view lets you
     perform a different management function on that object.
@@ -180,7 +180,7 @@ Using the Zope Management Interface
     When you use Zope, you create new objects by following these
     steps:
 
-      1. Enter to the folder where you want to add a new object.
+      1. Enter the folder where you want to add a new object.
 
       2. Choose the type of object you want to add from the add list.
 
@@ -489,7 +489,7 @@ Using the Zope Management Interface
     *Products* installed.  If an import fails, it's likely that you
     don't have the same Products installed in your importing Zope as the
     Products installed in the Zope from whence the export file came.
-    Our example above works because we are exporting an Folder object, which
+    Our example above works because we are exporting a Folder object, which
     is a common, core object type for all Zopes. If you have trouble 
     importing any given exported Zope file, check with the distributor of the exported file to see what Products are necessary for proper import.
 
@@ -577,7 +577,7 @@ Using the Zope Management Interface
 
     The help system has an organization similar to the two primary
     panes of the Zope management interface: it has one frame for
-    navigation, and frame one for displaying the contents of the 
+    navigation, and one frame for displaying the contents of the 
     help system related to the current management screen.
 
   Browsing and Searching Help 

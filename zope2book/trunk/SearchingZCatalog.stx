@@ -1314,7 +1314,7 @@ Searching and Categorizing Content
     they also have specific properties that make them news items.
     Often these Items come in collections that have their own
     properties.  You want to build a News site that collects News
-    Items, reviews them, and posts them online to a web site where
+    Items, reviews them, and posts them online to a website where
     readers can read them.
 
     In this kind of system, you may want to create a new type of

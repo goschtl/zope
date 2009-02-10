@@ -6,7 +6,7 @@ Fundamental Zope Concepts
 =========================
 
 The Zope framework has several fundamental underlying concepts,
-each of which should be understand in order to make the most of your Zope
+each of which should be understood in order to make the most of your Zope
 experience.
 
 Zope Is a Framework
@@ -141,7 +141,7 @@ Security and Safe Delegation
 ----------------------------
 
 One of the things that sets Zope apart from other application
-servers is that it was designed from the start to be tightly
+servers, is that it was designed from the start to be tightly
 coupled with not only the Web object model, but also the Web
 development model. Today's successful web applications require
 the participation of many people across an organization with

@@ -55,6 +55,8 @@ Tres Seaver moved the text into the Zope Subversion repository, and
 helped with the conversion of the text from ``Structured Text``
 to ``ReStructured Text``.
 
+Jo <jo at winfix dot it> has contributed a number of spelling corrections.
+
 Anyone who added a comment to the online BackTalk edition of the
 first online edition of this book contributed greatly.  Thank you!
 

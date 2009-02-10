@@ -43,7 +43,7 @@ Users and Security
     is not possible to control a user's resource consumption with any
     true measure of success within Zope), but it is possible to delegate
     these capabilities to "semi-trusted" users in order to decentralize
-    control of a web site, allowing it to grow faster and require less
+    control of a website, allowing it to grow faster and require less
     oversight from a central source.
 
     In this chapter we will look more closely at administering users,
@@ -412,7 +412,7 @@ Users and Security
       perhaps you want to use other tools to maintain your account
       information. Zope allows you to use alternate sources of data as
       user information repositories. You can find an ever-growing list
-      of alternate user folders at the "Zope web site Products
+      of alternate user folders at the "Zope website Products
       area":http://www.zope.org/Products/user_management. Some of the 
       more popular alternative user folders are available here.
 
@@ -1006,7 +1006,7 @@ Users and Security
       multi-level marketing sales. Then he can create a user folder in
       the multi-level marketing sales folder to delegate control of
       this folder to the multi-level marketing sales manager. And so
-      on. This allows you to create web sites managed by thousands of
+      on. This allows you to create websites managed by thousands of
       people without centralized control.  Higher level managers need
       not concern themselves too much with what their underlings
       do. If they choose they can pay close attention, but they can
@@ -1025,7 +1025,7 @@ Users and Security
       users and set security policies for them.
 
       Before creating new roles make sure that you really need
-      them. Suppose that you have a web site that publishes
+      them. Suppose that you have a website that publishes
       articles. The public reads articles and managers edit and publish
       articles, but there is a third class of user who can author
       articles, but not publish or edit them.

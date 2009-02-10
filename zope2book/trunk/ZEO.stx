@@ -394,7 +394,7 @@ Scalability and ZEO
       is the *Linux Virtual Server* (LVS).  This is an extension to
       the free Linux operating system that lets you turn a Linux
       computer into a Layer 4 switch.  More information on the LVS can
-      be found on "its web site":http://www.linuxvirtualserver.org.
+      be found on "its website":http://www.linuxvirtualserver.org.
 
       There are also a number of hardware solutions that claim higher
       performance than software based solutions like LVS.  Cisco
@@ -629,6 +629,6 @@ Scalability and ZEO
 
     ZEO is not a "magic bullet" solution, and like other system
     designed to work with many computers, it adds another level of
-    complexity to your web site.  This complexity pays off however
+    complexity to your website.  This complexity pays off however
     when you need to serve up lots of dynamic content to your
     audience.

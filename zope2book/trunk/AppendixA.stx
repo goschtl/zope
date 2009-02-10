@@ -1580,7 +1580,7 @@ Appendix A: DTML Reference
         structured-text -- Formats the variable as Structured Text. For
         more information on Structured Text see "Structured Text
         How-To":http://www.zope.org/Members/millejoh/structuredText on
-        the Zope.org web site.
+        the Zope.org website.
 
       null=string -- A default value to use if the variable is None.
 

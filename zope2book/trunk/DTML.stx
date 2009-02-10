@@ -787,7 +787,7 @@ Basic DTML
     'standard_html_footer', providing it with local content as well.
 
     Using this pattern you can quickly change the look and feel of
-    different parts of your web site. If you later decide that an area
+    different parts of your website. If you later decide that an area
     of the site needs a different header, just create one. You don't
     have to change the DTML in any of the web pages; they'll
     automatically find the closest header and use it.
@@ -826,7 +826,7 @@ Basic DTML
     expression must be a combination of values, variables, and Python
     *operators*.  To find out more about Python's expression syntax,
     see the "Python Tutorial":http://www.python.org/doc/current/tut at
-    the Python.org web site.  For more information specifically about
+    the Python.org website.  For more information specifically about
     the differences between Python expressions and statements, see the
     "Variables, expressions, and
     statements"::http://www.ibiblio.org/obp/thinkCSpy/chap02.htm

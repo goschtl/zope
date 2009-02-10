@@ -301,10 +301,10 @@ Zope Services
     done to show the cached copy of the page, many more users could
     see the main page.  If it takes, for example, 10 milliseconds to
     show a cached page, then this page is being served *50 times
-    faster* to your web site visitors.  The actual performance of the
+    faster* to your website visitors.  The actual performance of the
     cache and Zope depends a lot on your computer and your
     application, but this example gives you an idea of how caching can
-    speed up your web site quite a bit.  There are some disadvantages
+    speed up your website quite a bit.  There are some disadvantages
     to caching however:
 
       Cache lifetime -- If pages are cached for a long time, they may

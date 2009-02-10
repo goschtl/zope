@@ -24,7 +24,7 @@ Installing and Starting Zope
     As a general rule of thumb: if
     "Python":http://www.python.org is available for your
     operating system, and if you have a C compiler and associated
-    development utilities, then it id highly likely that you will be able to  compile Zope.
+    development utilities, then it is highly likely that you will be able to compile Zope.
     A notable exception is Mac OS between versions 7 through 9, as Zope does not run at all on these platforms.
     
     Various binary Zope packages exist that are not distributed
@@ -424,7 +424,7 @@ Installing and Starting Zope
     
     Start a web browser on the same machine on which you installed
     Zope, and browse to the URL "http://localhost:8080/":http://localhost:8080/.
-    If your Zope instance has beens properly installed, and you're visiting the correct URL,
+    If your Zope instance has beens installed properly, and you're visiting the correct URL,
     you will be presented with the Zope "QuickStart" screen.
     
       "Zope QuickStart":img:2-8:Figures/quickstart.png
@@ -474,7 +474,7 @@ Installing and Starting Zope
     Clicking *Restart* will cause Zope to shut down and
     then immediately start back up again.  It may take Zope a few
     seconds to come back up and start handling requests.  You
-    needn't shut your web browser down and restart it to resume
+    don't need to shut your web browser down and restart it to resume
     using Zope after pressing *Restart*, as the page refreshes automatically; 
     just wait for the Control Panel display to reappear.
     
@@ -489,7 +489,7 @@ Installing and Starting Zope
     
   Controlling the Zope Process from the Command Line
   
-    To stop a manually-run Zope on Windows, press "Ctrl+C" while
+    To stop a manually-run Zope on Windows, press "Ctrl+C" while in
     the console window under which Zope is running is selected.
     To stop a Zope on Windows that was run as a service, find
     the service with the name you assigned to your Zope
@@ -630,7 +630,7 @@ Installing and Starting Zope
         Let us assume that our HTTP Server's 'address' directive
         is set to 8080, as in our example above, and
         'port-base' is specified as 1000. The port on which the
-        HTTP server will listen be the 'address' value of 8080, plus the 
+        HTTP server will listen, will be the 'address' value of 8080, plus the 
         'port-base' offset value of 1000, or 9080.  Assuming the
         FTP server's 'address' directive is set to 8021, the FTP
         Server will then listen on port 9021, and so on.
@@ -661,9 +661,9 @@ Installing and Starting Zope
       Switch the User the Zope process runs as: 'effective-user'
 
         This directive causes Zope to setuid(2) to the specified
-        user when run as root on a UNIX system.  This method boosts 
-        system security, as a compromised Zope instance would not lend itself to 
-        enable an attacked to easily damage an entire system.  One motivation 
+        user when run as root on a UNIX system.  This method boosts
+        system security, as a compromised Zope instance would not lend itself to
+        enable a compromised user to easily damage an entire system.  One motivation 
         for running Zope as root in the first place is to be able to
         bind to *privileged* ports, or ports with values below 1024.
         
