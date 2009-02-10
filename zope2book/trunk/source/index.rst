@@ -27,6 +27,7 @@ Contents
    AdvZPT.rst
    ScriptingZope.rst
    ZopeServices.rst
+   SearchingZCatalog.rst
    AppendixA.rst
    Contributions.rst
 
