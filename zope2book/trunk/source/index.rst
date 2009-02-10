@@ -28,6 +28,7 @@ Contents
    ScriptingZope.rst
    ZopeServices.rst
    SearchingZCatalog.rst
+   RelationalDatabases.rst
    AppendixA.rst
    Contributions.rst
 
