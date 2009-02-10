@@ -26,6 +26,7 @@ Contents
    AdvDTML.rst
    AdvZPT.rst
    ScriptingZope.rst
+   ZopeServices.rst
    AppendixA.rst
    Contributions.rst
 
