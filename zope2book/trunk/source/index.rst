@@ -18,6 +18,7 @@ Contents
    ObjectOrientation.rst
    UsingZope.rst
    BasicObject.rst
+   Acquisition.rst
    Contributions.rst
    AppendixA.rst
 
