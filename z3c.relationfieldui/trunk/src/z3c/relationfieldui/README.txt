@@ -139,6 +139,81 @@ it's broken)::
   >>> print widget()
   <input class="textType" id="field.rel" name="field.rel" size="20" type="text" value="d"  /><input class="buttonType" onclick="Z3C.relation.popup(this.previousSibling, 'http://grok.zope.org?from_attribute=rel&amp;from_path=c')" type="button" value="get relation" />
 
+Relation Choice
+===============
+
+Let's examine the ``RelationChoice`` field from ``z3c.relationfield``. We
+need to provide a source of possible relations for it, and we can do this
+using the ``RelationSourceFactory``::
+
+  >>> from z3c.relationfieldui import RelationSourceFactory
+  >>> class MyRelationSourceFactory(RelationSourceFactory):
+  ...    def getTargets(self):
+  ...        return [root['a'], root['b'], root['c']]
+
+In the source, we simply return an iterable of objects that are
+possible relation targets.
+
+Let's now create an object that makes use of this source::
+
+  >>> from z3c.relationfield import RelationChoice
+  >>> class IItemChoice(Interface):
+  ...   rel = RelationChoice(title=u"Relation", required=False,
+  ...                        source=MyRelationSourceFactory())
+
+We can now take a look at the widget, using ``ChoiceInputWidget``::
+
+  >>> from zope.app.form.browser import ChoiceInputWidget
+
+  >>> class ItemChoice(Persistent):
+  ...   implements(IItemChoice, IHasRelations)
+  ...   def __init__(self):
+  ...     self.rel = None
+
+  >>> root['choice_a'] = ItemChoice()
+  >>> field = IItemChoice['rel']
+  >>> bound = field.bind(root['choice_a'])
+  >>> widget = ChoiceInputWidget(bound, request)
+
+Let's first render the widget without a particular rendered value set::
+
+  >>> print widget()
+  <div>
+  <div class="value">
+  <select id="field.rel" name="field.rel" size="1" >
+  <option selected="selected" value="">(no value)</option>
+  <option value="a">a</option>
+  <option value="b">b</option>
+  <option value="c">c</option>
+  </select>
+  </div>
+  <input name="field.rel-empty-marker" type="hidden" value="1" />
+  </div>
+
+Let's try it again with a value set as a relation to ``a``::
+
+  >>> choice_b = ItemChoice()
+  >>> choice_b.rel = RelationValue(a_id)
+  >>> root['choice_b'] = choice_b
+  >>> bound = field.bind(root['choice_b'])
+  >>> widget = ChoiceInputWidget(bound, request)
+  >>> widget.setRenderedValue(bound.get(root['b']))
+
+When we look at the widget we see that this relation is indeed selected::
+
+  >>> print widget()
+  <div>
+  <div class="value">
+  <select id="field.rel" name="field.rel" size="1" >
+  <option value="">(no value)</option>
+  <option selected="selected" value="a">a</option>
+  <option value="b">b</option>
+  <option value="c">c</option>
+  </select>
+  </div>
+  <input name="field.rel-empty-marker" type="hidden" value="1" />
+  </div>
+
 Relation display widget
 =======================
 

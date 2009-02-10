@@ -30,8 +30,9 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'z3c.relationfield >= 0.3.1',
+        'z3c.relationfield >= 0.4',
         'z3c.schema2xml >= 1.0',
+        'zc.sourcefactory',
         'grokcore.component',
         'grokcore.view',
         'hurry.resource',

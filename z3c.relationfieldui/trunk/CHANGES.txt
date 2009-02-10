@@ -4,7 +4,10 @@ CHANGES
 0.5 (unreleased)
 ================
 
-* ...
+* Add support for ``RelationChoice`` field. To create a relation field that
+  uses a drop-down list to select the relation target, implement a
+  ``RelationSourceFactory`` (implement the ``getTargets`` method), and
+  pass it as a source to ``RelationChoice``.
 
 0.4 (2009-01-20)
 ================

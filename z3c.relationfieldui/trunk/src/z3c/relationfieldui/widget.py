@@ -7,12 +7,14 @@ from zope.app.form.browser import TextWidget, DisplayWidget
 from zope import component
 from zope.component.interfaces import ComponentLookupError
 from zope.app.form.browser.widget import renderElement
+from zope.app.form.browser.interfaces import ISimpleInputWidget
+from zope.app.form.browser import ChoiceInputWidget
 from zope.traversing.browser import absoluteURL
 
 from z3c.objpath.interfaces import IObjectPath
 from hurry.resource import Library, ResourceInclusion
 
-from z3c.relationfield.schema import IRelation
+from z3c.relationfield.schema import IRelation, IRelationChoice
 from z3c.relationfield import create_relation
 
 relation_lib = Library('z3c.relationfieldui')
@@ -48,6 +50,11 @@ class RelationWidget(grok.MultiAdapter, TextWidget):
         if value is None:
             return ''
         return value.to_path
+
+@grok.adapter(IRelationChoice, IBrowserRequest)
+@grok.implementer(ISimpleInputWidget)
+def RelationChoiceInputWidget(field, request):
+    return ChoiceInputWidget(field, request)
 
 class RelationDisplayWidget(grok.MultiAdapter, DisplayWidget):
     grok.adapts(IRelation, IBrowserRequest)
