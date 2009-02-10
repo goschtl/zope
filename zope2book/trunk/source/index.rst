@@ -19,6 +19,7 @@ Contents
    UsingZope.rst
    BasicObject.rst
    Acquisition.rst
+   DTML.rst
    Contributions.rst
    AppendixA.rst
 
