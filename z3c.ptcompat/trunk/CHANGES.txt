@@ -1,8 +1,8 @@
 Changelog
 ---------
 
-HEAD
-~~~~
+0.4 (released 2/10/2009)
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Rename project to z3c.ptcompat to deal with setuptools issues (as discussed
   on zope-dev http://mail.zope.org/pipermail/zope-dev/2008-December/033820.html)
