@@ -1,15 +1,37 @@
 Introducing Zope
 ================
 
-Zope is a framework that allows developers of varying skill levels to
-build *web applications*.  This chapter explains Zope's purpose, what
-problems it solves and what audience it targets in greater detail.
+Zope is family of related Python packages focussed on web technologies. The
+first version of Zope has originated from a company called `Zope Corporation`_.
+
+Today the `Zope Foundation`_ holds the copyright of the Zope source code and
+supervises a diverse community of open-source contributers working on a
+variety of related projects.
+
+This book is about the original Zope project, today known as Zope2.
+
+Other projects include the `Zope3`_ web application framework, many individual
+packages located in the `Zope Subversion Repository`_ and projects being based
+or related to these packages like `Grok`_ and `Repoze`_. One of the more
+widely known applications based on top of Zope2 is a content management
+system called `Plone`_.
+
+Zope2 itself is a web framework that allows developers of varying skill
+levels to build *web applications*. This chapter explains Zope's purpose,
+what problems it solves and what audience it targets in greater detail.
 It also describes what makes Zope different and more powerful than
 similar applications.
 
 *NOTE*: The moniker "Zope" stands for the *Z Object Publishing
 Environment* (the "Z" doesn't really mean anything in particular).
 
+.. _Zope Corporation: http://www.zope.com/
+.. _Zope Foundation: http://foundation.zope.org/
+.. _Zope3: http://wiki.zope.org/zope3/Zope3Wiki/
+.. _Zope Subversion Repository: http://svn.zope.org/
+.. _Grok: http://grok.zope.org/
+.. _Repoze: http://repoze.org/
+.. _Plone: http://plone.org/
 
 The Static Web Site Dilemma
 ---------------------------
