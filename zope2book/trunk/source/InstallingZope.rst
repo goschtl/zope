@@ -418,7 +418,7 @@ Start a web browser on the same machine on which you installed
 Zope, and browse to the URL `http://localhost:8080/
 <http://localhost:8080/>`_.
 
-If your Zope instance has beens installed properly, and you're visiting the
+If your Zope instance has been properly installed, and you're visiting the
 correct URL, you will be presented with the Zope "QuickStart" screen.
 
 .. figure:: ../Figures/quickstart.png
@@ -485,7 +485,7 @@ Zope is running, so that you can manually restart it later as needed.
 Controlling the Zope Process from the Command Line
 --------------------------------------------------
 
-To stop a manually-run Zope on Windows, press "Ctrl+C" while in the console
+To stop a manually-run Zope on Windows, press "Ctrl+C" while the console
 window under which Zope is running is selected.  To stop a Zope on Windows
 that was run as a service, find the service with the name you assigned to
 your Zope in the Services Control Panel application, and stop the service.
@@ -503,6 +503,118 @@ To stop Zope on UNIX, do one of the following:
   "var/Z2.pid" file inside the Zope instance directory::
 
   $ kill `cat var/Z2.pid`
+
+
+
+Customizing your Zope instance
+------------------------------
+
+As of Zope 2.7.0, configuration is no longer done with a mix of environment
+variables and command line options. Instead, the file
+'$INSTANCE_HOME/etc/zope.conf' contains numerous configuration directives
+for customization.  This configuration scheme greatly enhances Zope
+manageability and configurability.
+
+The ``zope.conf`` file features extensive inline documentation, which we
+will not reproduce here.  Instead, we will give an overview and some
+additional hints for the most-widely used directives:
+
+Server stanzas and ``port-base``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``port-base`` directive, together with stanzas for the individual
+servers, determine the ports on which specific servers listen for incoming
+Zope requests. The stanzas are formed with XML-like constructs::
+
+ <http-server>
+   # valid keys are "address" and "force-connection-close"
+   address 8080
+ </http-server>
+ <ftp-server>
+   ...
+ </ftp-server>
+ <webdav-source-server>
+   ...
+ </webdav-source-server>
+
+The ``address`` directive determines the port on which the respective server
+listens.  The HTTP Server in this example listens on port 8080.
+
+The ``port-base`` directive comes in handy if you want to run several Zope
+instances on one machine.  ``port-base`` specifies an offset to the port on
+which **all** servers listen.  Let us assume that our HTTP Server's
+'address' directive is set to 8080, as in our example above, and
+'port-base' is specified as 1000. The port on which the HTTP server will
+listen, will be the ``address`` value of 8080, plus the ``port-base`` offset
+value of 1000, or 9080.  Assuming the FTP server's ``address`` directive is
+set to 8021, the FTP Server will then listen on port 9021, and so on.
+
+The ``debug-mode`` directive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This directive is a switch, specified as either ``on`` or ``off``.  When
+set to ``on`` (the default), Zope runs in *debug mode*, which causes Zope
+to reload file system-based templates, and several other settings suitable
+for development, in real time.  In a production environment, to reduce
+unnecessary overhead, you should ensure that this directive is set to
+``off`` unless you are actively troubleshooting a problem.
+
+Additional ``products`` directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This directive can be used to specify additional ``Products`` directories,
+or additional folders in which Zope looks for third-party and other add-on
+Zope Products.  Specifying a separate directory for commonly-used,
+third-party Products, such as CookieCrumbler or CMF and Plone packages,
+maintains a better separation of core Zope Products and third-party add-ons
+and improves maintainability.  Another common use for this directive is
+employed by Zope Product developers, who use it to specify a
+version-controlled development directory.
+
+Switch the User the Zope process runs as: ``effective-user``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This directive causes Zope to ``setuid(2)`` to the specified user when run
+as root on a UNIX system.  This method boosts system security, as a
+compromised Zope instance would not enable a compromised user to damage
+easily an entire system.  One motivation for running Zope as root in the
+first place is to be able to bind to *privileged* ports, or ports with
+values below 1024.
+
+Configuring the Session machinery
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Use the ``maximum-number-of-session-objects`` directive to limit the number
+of session objects.  This value defaults to 1000 objects; 0 means
+unlimited.
+
+``session-timeout-minutes`` sets the Session timeout period in minutes. The
+default is 20.
+
+Logging
+~~~~~~~
+
+Three log facilities are provided:
+
+- *Access logging* logs individual HTTP Requests in a common format,
+  by default to the file ``log/Z2.log`` in your instance home.
+
+- *Event logging* logs Zope events, such as start and stop
+  information and debugging messages.
+
+- *Trace logging* logs detailed Zope debugging information.
+
+Each log message has an associated severity level, ranging from
+``CRITICAL``, ``ERROR``, ``WARN``, and ``INFO``, to ``DEBUG`` and ``ALL``.
+You can specify a filter for log messages with the ``level`` directive
+inside a logger stanza.  Set the level to ``ALL`` to get all log messages,
+or to ``ERROR`` or ``CRITICAL`` to see only the most serious messages.
+
+Although the default is to write the messages to a log file, you can
+instead arrange for log messages to be mailed to you, or to go to
+``syslog(3)`` (on UNIX) or the event log (on MS Windows)
+
+For further documentation, see the inline comments in ``zope.conf``.
 
 
 Troubleshooting and Caveats
@@ -582,120 +694,8 @@ restart Zope. See the chapter entitled `Users and Security
 <Security.html>`_ for more information about configuring the initial user
 account.
 
-
-Customizing your Zope instance
-------------------------------
-
-As of Zope 2.7.0, configuration is no longer done with a mix of environment
-variables and command line options. Instead, the file
-'$INSTANCE_HOME/etc/zope.conf' contains numerous configuration directives
-for customization.  This configuration scheme greatly enhances Zope
-manageability and configurability.
-
-The ``zope.conf`` file features extensive inline documentation, which we
-will not reproduce here.  Instead, we will give an overview and some
-additional hints for the most-widely used directives:
-
-Server stanzas and ``port-base``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ``port-base`` directive, together with stanzas for the individual
-servers, determine the ports on which specific servers listen for incoming
-Zope requests. The stanzas are formed with XML-like constructs::
-
- <http-server>
-   # valid keys are "address" and "force-connection-close"
-   address 8080
- </http-server>
- <ftp-server>
-   ...
- </ftp-server>
- <webdav-source-server>
-   ...
- </webdav-source-server>
-
-The ``address`` directive determines the port on which the respective server
-listens.  The HTTP Server in this example listens on port 8080.
-
-The ``port-base`` directive comes in handy if you want to run several Zope
-instances on one machine.  ``port-base`` specifies an offset to the port on
-which **all** servers listen.  Let us assume that our HTTP Server's
-'address' directive is set to 8080, as in our example above, and
-'port-base' is specified as 1000. The port on which the HTTP server will
-listen, will be the ``address`` value of 8080, plus the ``port-base`` offset
-value of 1000, or 9080.  Assuming the FTP server's ``address`` directive is
-set to 8021, the FTP Server will then listen on port 9021, and so on.
-
-The ``debug-mode`` directive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This directive is a switch, specified as either ``on`` or ``off``.  When
-set to ``on`` (the default), Zope runs in *debug mode*, which causes Zope
-to reload file system-based templates, and several other settings suitable
-for development, in real time.  In a production environment, to reduce
-unnecessary overhead, you should ensure that this directive is set to
-``off`` unless you are actively troubleshooting a problem.
-
-Additional ``products`` directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This directive can be used to specify additional ``Products`` directories,
-or additional folders in which Zope looks for third-party and other add-on
-Zope Products.  Specifying a separate directory for commonly-used,
-third-party Products, such as CookieCrumbler or CMF and Plone packages,
-maintains a better separation of core Zope Products and third-party add-ons
-and improves maintainability.  Another common use for this directive is
-employed by Zope Product developers, who use it to specify a
-version-controlled development directory.
-
-Switch the User the Zope process runs as: ``effective-user``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This directive causes Zope to ``setuid(2)`` to the specified user when run
-as root on a UNIX system.  This method boosts system security, as a
-compromised Zope instance would not lend itself to enable a compromised
-user to easily damage an entire system.  One motivation for running Zope as
-root in the first place is to be able to bind to *privileged* ports, or
-ports with values below 1024.
-
-Configuring the Session machinery
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use the ``maximum-number-of-session-objects`` directive to limit the number
-of session objects.  This value defaults to 1000 objects; 0 means
-unlimited.
-
-``session-timeout-minutes`` sets the Session timeout period in minutes. The
-default is 20.
-
-Logging
-~~~~~~~
-
-Three log facilities are provided:
-
-- *Access logging* logs individual HTTP Requests in a common format,
-  by default to the file ``log/Z2.log`` in your instance home.
-
-- *Event logging* logs Zope events, such as start and stop
-  information and debugging messages.
-
-- *Trace logging* logs detailed Zope debugging information.
-
-Each log message has an associated severity level, ranging from
-``CRITICAL``, ``ERROR``, ``WARN``, and ``INFO``, to ``DEBUG`` and ``ALL``.
-You can specify a filter for log messages with the ``level`` directive
-inside a logger stanza.  Set the level to ``ALL`` to get all log messages,
-or to ``ERROR`` or ``CRITICAL`` to see only the most serious messages.
-
-Although the default is to write the messages to a log file, you can
-instead arrange for log messages to be mailed to you, or to go to
-``syslog(3)`` (on UNIX) or the event log (on MS Windows)
-
-For further documentation, see the inline comments in ``zope.conf``.
-
-
 When All Else Fails
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 If there's a problem with your installation that you just cannot solve, do
 not despair.  You have many places to turn for help, including the Zope
