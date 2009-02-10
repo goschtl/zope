@@ -23,6 +23,7 @@ Contents
    ZPT.rst
    SimpleExamples.rst
    Security.rst
+   AdvDTML.rst
    AppendixA.rst
    Contributions.rst
 
