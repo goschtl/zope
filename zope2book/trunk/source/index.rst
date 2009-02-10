@@ -14,6 +14,7 @@ Contents
    Preface.rst
    IntroducingZope.rst
    Contributions.rst
+   ZopeArchitecture.rst
 
 
 Indices and tables
