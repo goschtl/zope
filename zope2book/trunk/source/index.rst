@@ -21,6 +21,7 @@ Contents
    Acquisition.rst
    DTML.rst
    ZPT.rst
+   SimpleExamples.rst
    AppendixA.rst
    Contributions.rst
 
