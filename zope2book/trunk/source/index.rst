@@ -25,6 +25,7 @@ Contents
    Security.rst
    AdvDTML.rst
    AdvZPT.rst
+   ScriptingZope.rst
    AppendixA.rst
    Contributions.rst
 
