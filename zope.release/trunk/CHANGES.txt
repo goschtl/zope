@@ -7,7 +7,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 3.5.0 (unreleased)
 ------------------
 
-- Upgraded all packages to latest versions again.
+- Upgraded all packages to latest versions.
 
 - Added new ZODB 3.9 dependencies:
   * transaction
