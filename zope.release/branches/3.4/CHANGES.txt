@@ -4,6 +4,11 @@ Zope KGS History
 
 NOTE: The releases of this package are synced with the Zope 3 releases.
 
+3.4.1 (unreleased)
+------------------
+
+- Upgraded zope.size to 3.4.1
+
 3.4.0 (2009-01-29)
 ------------------
 
