@@ -20,8 +20,9 @@ Contents
    BasicObject.rst
    Acquisition.rst
    DTML.rst
-   Contributions.rst
+   ZPT.rst
    AppendixA.rst
+   Contributions.rst
 
 Indices and tables
 ------------------
