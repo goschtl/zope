@@ -16,7 +16,7 @@ Contents
    ZopeArchitecture.rst
    InstallingZope.rst
    Contributions.rst
-
+   AppendixA.rst
 
 Indices and tables
 ------------------
