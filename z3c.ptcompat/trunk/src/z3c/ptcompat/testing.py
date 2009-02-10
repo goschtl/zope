@@ -50,7 +50,7 @@ class OutputChecker(lxml.doctestcompare.LHTMLOutputChecker):
             parser = lxml.etree.XML
         elif (want.strip().lower().startswith('<html')
               and got.strip().startswith('<html')):
-            parser = html_fromstring
+            parser = lxml.doctestcompare.html_fromstring
         elif (self._looks_like_markup(want)
               and self._looks_like_markup(got)):
             parser = self.get_default_parser()
