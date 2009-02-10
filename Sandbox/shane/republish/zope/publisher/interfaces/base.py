@@ -5,6 +5,8 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface.common.mapping import IExtendedReadMapping
 
+__all__ = ('IRequest', 'IResponse', 'IResult', 'IHeld', 'IDebugFlags')
+
 
 class IRequest(IExtendedReadMapping):
     """Basic request data.
@@ -13,35 +15,59 @@ class IRequest(IExtendedReadMapping):
     values will be looked up in the order: [TODO].
     """
 
-    environment = Attribute(
-        """Request environment data.
-
-        This is a pointer to the WSGI or CGI environment.
-        """)
-
-    traversal_path = Attribute(
-        """Sequence of steps to traverse, where each step is a unicode.
-        """)
-
-    traversed = Attribute(
-        """List of (name, obj) steps that were traversed.
-
-        The first object is the application root and has an empty name.
-        The last object is the object to call.
-        """)
-
     response = Attribute(
         """The request's IResponse object
         """)
 
-    positional_args = Attribute(
-        """The positional arguments given to the request.
+    def close():
+        """Release resources held by the request.
+        """
+
+    def hold(held):
+        """Hold a reference to an object until the request is closed.
+
+        The object should be an IHeld.  If it is an IHeld, its
+        release method will be called when it is released.
+        """
+
+    traversal_stack = Attribute(
+        """The list of steps to traverse in reverse order.
+
+        Elements will be removed from this list as they are traversed.
+        It is possible to influence traversal by changing this list
+        during traversal.
         """)
 
-    principal = Attribute("""Principal object associated with the request.
+    def getTraversalStack():
+        """Deprecated: use the traversal_stack attribute instead.
+        """
 
-    It should be an IPrincipal wrapped in its AuthenticationService's context.
-    """)
+    def setTraversalStack(stack):
+        """Deprecated: use the traversal_stack attribute instead.
+        """
+
+    positional_arguments = Attribute(
+        """The positional arguments passed to the request.
+        """)
+
+    def getPositionalArguments():
+        """Deprecated: use the positional_arguments attribute instead.
+        """
+
+    def setPrincipal(principal):
+        """Deprecated: use the principal attribute instead.
+        """
+
+    principal = Attribute(
+        """IPrincipal object associated with the request.
+        """)
+
+    def retry():
+        """Returns a re-initialized request to be retried.
+
+        Returns a request suitable for repeating the publication attempt,
+        or raises RetryNotSupported if the response can not be retried.
+        """
 
     bodyStream = Attribute(
         """The stream that provides the data of the request.
@@ -60,6 +86,12 @@ class IRequest(IExtendedReadMapping):
 
     debug = Attribute("""Debug flags (see IDebugFlags).""")
 
+    environment = Attribute(
+        """Request environment data.
+
+        This is a pointer to the WSGI or CGI environment.
+        """)
+
     annotations = Attribute(
         """Stores arbitrary application data under package-unique keys.
 
@@ -75,22 +107,25 @@ class IRequest(IExtendedReadMapping):
           "zope.persistentadapter"
         """)
 
-    def hold(held):
-        """Hold a reference to an object until the request is closed.
+    traversed = Attribute(
+        """List of (name, obj) steps that were traversed.
 
-        The object should be an IHeld.  If it is an IHeld, its
-        release method will be called when it is released.
+        The first object is the application root and has an empty name.
+        The last object is the object to call.
+        """)
+
+    def getBasicCredentials():
+        """Return (login, password) if there are basic credentials.
+
+        Returns None if there aren't.
         """
 
-    def close():
-        """Release resources held by the request.
+    def _authUserPW():
+        """Deprecated: Use getBasicCredentials() instead.
         """
 
-    def retry():
-        """Returns a re-initialized request to be retried.
-
-        Returns a request suitable for repeating the publication attempt,
-        or raises RetryNotSupported if the response can not be retried.
+    def unauthorized(challenge):
+        """Deprecated: use response.unauthorized() instead.
         """
 
 
@@ -115,19 +150,6 @@ class IResponse(Interface):
         code to the client.  If reason is not provided, a standard
         reason will be supplied, falling back to "Unknown" for unregistered
         status codes.
-        """
-
-    def setStandardStatus(name):
-        """Sets the status of the response using a standard status name.
-
-        The name will be converted to a code appropriate for the protocol.
-        For example, the name "NotFound" when applied to an HTTP
-        request will set the response status code to 404 and the name
-        "OK" will set the status to 200.
-
-        If the provided name is not recognized, the response status will
-        be set to a generic error status code (for example,
-        500 for HTTP).
         """
 
     def getHeaders():
@@ -179,6 +201,12 @@ class IResponse(Interface):
         constructed from the result.
         """
 
+    def reset():
+        """Reset the output result.
+
+        Reset the response by nullifying already set variables.
+        """
+
     def retry():
         """Returns a re-initialized response to be retried.
 
@@ -218,7 +246,7 @@ class IResult(Interface):
     def __iter__():
         """iterate over the values that should be returned as the result.
 
-        See IHTTPResponse.setResult.
+        See IResponse.setResult.
         """
 
 
@@ -239,4 +267,3 @@ class IDebugFlags(Interface):
 
     sourceAnnotations = Attribute("""Enable ZPT source annotations""")
     showTAL = Attribute("""Leave TAL markup in rendered page templates""")
-

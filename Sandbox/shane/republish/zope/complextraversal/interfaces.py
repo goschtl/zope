@@ -1,4 +1,5 @@
 
+from zope.interface import Interface
 
 class IPublishTraverse(Interface):
 
@@ -49,8 +50,11 @@ class IBrowserPage(IBrowserPublisher):
     def __call__(*args, **kw):
         """Compute a response body"""
 
-class IBrowserView(IView):
+class IBrowserView(Interface):
     """Browser View"""
 
-class IDefaultBrowserLayer(IBrowserRequest):
-    """The default layer."""
+class IFTPPublisher(IPublishTraverse):
+    """FTP Publisher"""
+
+class IXMLRPCPublisher(IPublishTraverse):
+    """XML-RPC Publisher"""

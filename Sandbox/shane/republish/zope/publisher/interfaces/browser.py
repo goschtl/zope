@@ -1,5 +1,9 @@
 
 
+from zope.interface import Interface
+from zope.interface.interfaces import IInterface
+from zope.deferredimport import deprecatedFrom
+from zope.publisher.interfaces.http import IHTTPRequest
 
 class IBrowserRequest(IHTTPRequest):
     """Browser-specific Request functionality.
@@ -22,3 +26,10 @@ class ISkinChangedEvent(Interface):
     """Event that gets triggered when the skin of a request is changed."""
 
     request = Attribute("The request for which the skin was changed.")
+
+deprecatedFrom("moved to zope.complextraversal.interfaces",
+    "zope.complextraversal.interfaces",
+    "IBrowserPublisher",
+    "IBrowserPage",
+    "IBrowserView",
+    )

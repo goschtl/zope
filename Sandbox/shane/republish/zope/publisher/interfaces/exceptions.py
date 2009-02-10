@@ -1,3 +1,23 @@
+
+from zope.interface import Interface
+from zope.interface.common.interfaces import IException, ILookupError
+
+__all__ = (
+    'IPublishingException',
+    'PublishingException',
+    'ITraversalException',
+    'TraversalException',
+    'INotFound',
+    'NotFound',
+    'IDebugError',
+    'DebugError',
+    'IBadRequest',
+    'BadRequest',
+    'IRetry',
+    'Retry',
+    'IExceptionSideEffects',
+    )
+
 class IPublishingException(IException):
     pass
 
@@ -73,3 +93,38 @@ class BadRequest(PublishingException):
 
     def __str__(self):
         return self.message
+
+class IRetry(IPublishingException):
+    def getOriginalException():
+        'Returns the original exception object.'
+
+class Retry(PublishingException):
+    """Raise this to retry a request."""
+
+    implements(IRetry)
+
+    def __init__(self, orig_exc=None):
+        """orig_exc must be a 3-tuple as returned from sys.exc_info() or None"""
+        self.orig_exc = orig_exc
+
+    def getOriginalException(self):
+        return self.orig_exc
+
+    def __str__(self):
+        if self.orig_exc is None:
+            return 'None'
+        return str(self.orig_exc[1])
+
+class IExceptionSideEffects(Interface):
+    """An exception caught by the publisher is adapted to this so that
+    it can have persistent side-effects."""
+
+    def __call__(obj, request, exc_info):
+        """Effect persistent side-effects.
+
+        Arguments are:
+          obj                 context-wrapped object that was published
+          request             the request
+          exc_info            the exception info being handled
+
+        """

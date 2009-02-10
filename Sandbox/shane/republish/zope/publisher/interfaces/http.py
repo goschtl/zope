@@ -1,4 +1,10 @@
 
+from zope.interface import Attribute
+from zope.interface import Interface
+from zope.deferredimport import deprecatedFrom
+from zope.publisher.interfaces.base import IRequest
+from zope.publisher.interfaces.exceptions import IPublishingException
+from zope.publisher.interfaces.exceptions import PublishingException
 
 
 class IRedirect(IPublishingException):
@@ -44,12 +50,9 @@ class IHTTPRequest(IRequest):
 
     method = Attribute("Request method, normalized to upper case")
 
-    path_suffix = Attribute(
-        """Additional traversal steps to be taken after all other traversal
-
-        This is used to handle HTTP request methods (except for GET
-        and POST in the case of browser requests) and XML-RPC methods.
-        """)
+    def setPathSuffix(steps):
+        """Deprecated: Add to traversal_stack instead.
+        """
 
     locale = Attribute(
         """The locale object associated with this request.""")
@@ -108,7 +111,6 @@ class IHTTPRequest(IRequest):
         path expressions, like 'request/URL/-2'.
         """)
 
-
     def getURL(level=0, path_only=False):
         """Return the published URL with level names removed from the end.
 
@@ -127,7 +129,9 @@ class IHTTPRequest(IRequest):
         Return None if the request does not contain basic credentials.
         """
 
-    _authUserPw = getBasicAuth
+    def _authUserPw():
+        """Deprecated: Use getBasicAuth() instead.
+        """
 
     def unauthorized(challenge):
         """Issue a 401 Unauthorized error (asking for login/password).
@@ -205,3 +209,7 @@ class IHTTPResponse(IResponse):
     def redirect(location, status=302):
         """Causes a redirection without raising an error.
         """
+
+deprecatedFrom("moved to zope.complextraversal.interfaces",
+    "zope.complextraversal.interfaces",
+    "IHTTPPublisher")
