@@ -29,6 +29,7 @@ Contents
    ZopeServices.rst
    SearchingZCatalog.rst
    RelationalDatabases.rst
+   VirtualHosting.rst
    AppendixA.rst
    Contributions.rst
 
