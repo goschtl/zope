@@ -1,5 +1,13 @@
 
+"""
 
+Rules:
+
+    * __getitem__ all path elements except ++, @@, maybe +
+    * Look up a view at the end using getMultiAdapter().
+    * If the view has a capitalized method name matching REQUEST_METHOD,
+      traverse to that.
+"""
 
 class SimpleTraverser(object):
 

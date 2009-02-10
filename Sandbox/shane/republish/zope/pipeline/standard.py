@@ -20,7 +20,6 @@ standard_pipeline = (
 
 def make_app(zope_conf, pipeline=standard_pipeline):
     p = list(pipeline)
-    p.reverse()
     factory = p.pop()
     app = factory(zope_conf)
     while p:
