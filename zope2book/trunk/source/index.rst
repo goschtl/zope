@@ -14,6 +14,7 @@ Contents
    Preface.rst
    IntroducingZope.rst
    ZopeArchitecture.rst
+   InstallingZope.rst
    Contributions.rst
 
 
