@@ -853,7 +853,7 @@ Chapter 8: Variables and Advanced DTML
     to be present in all Zope installations and perform the most
     common kinds of things. However, it is also possible to add new
     tags to a Zope installation. Instructions for doing this are
-    provided at the Zope.org web site, along with an interesting set
+    provided at the Zope.org website, along with an interesting set
     of contributed DTML tags.
 
       % Anonymous User - Sep. 24, 2002 5:02 pm:

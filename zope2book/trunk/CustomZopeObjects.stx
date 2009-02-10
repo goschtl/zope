@@ -95,7 +95,7 @@ Extending Zope
     You also need to ensure each exhibit is easy to manage.  The
     caretakers of the individual exhibits should be the ones providing
     information, but none of the Zoo caretakers know much about Zope
-    or how to create web sites and you certainly don't want to waste
+    or how to create websites and you certainly don't want to waste
     their time making them learn.  You just want them to type some
     simple information into a form about their topic of interest,
     click submit, and walk away.
@@ -749,7 +749,7 @@ Extending Zope
         presentation methods.
 
       A good example of a presentation method is a DTML Method that
-      displays a Zoo Exhibit to your web site viewers.  This is often
+      displays a Zoo Exhibit to your website viewers.  This is often
       called the *public interface* to an object and is usually
       associated with the *View* view found on most Zope objects.
 

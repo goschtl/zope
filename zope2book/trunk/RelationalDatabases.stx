@@ -410,7 +410,7 @@ Relational Database Connectivity
     *employees* table.  You can see all the new employees that you
     added. Zope automatically generates this tabular report screen for
     you. Next we'll show how you can create your own user interface to
-    your Z SQL Methods to integrate them into your web site.
+    your Z SQL Methods to integrate them into your website.
 
   Displaying Results from Z SQL Methods
 
@@ -942,9 +942,9 @@ Relational Database Connectivity
 
       Z SQL can acquire information from other objects and be used to
       modify the SQL query.  Consider the below figure, which shows a
-      collection of Folders in a organization's web site.
+      collection of Folders in a organization's website.
 
-      "Folder structure of an organizational web site":img:17-6:Figures/10-7.png
+      "Folder structure of an organizational website":img:17-6:Figures/10-7.png
 
       Suppose each department folder has a *department_id* string
       property that identifies the accounting ledger id for that

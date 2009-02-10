@@ -2,7 +2,7 @@ Virtual Hosting Services
 
     Zope comes with two objects that help you do virtual hosting,
     *SiteRoot* and *Virtual Host Monster*. Virtual hosting is a way to
-    serve many web sites with one Zope server.
+    serve many websites with one Zope server.
 
     *SiteRoot*s are an artifact of an older generation of Zope virtual
     hosting services that are only retained in current Zope versions

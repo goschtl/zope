@@ -178,7 +178,7 @@ Basic Zope Scripting
       projects.
 
       There are many resources available for learning Python.  The python.org
-      web site has lots of Python documentation including a
+      website has lots of Python documentation including a
       "tutorial":http://www.python.org/doc/current/tut/tut.html by Python's
       creator, Guido van Rossum.
 
@@ -189,7 +189,7 @@ Basic Zope Scripting
       Python comes with a rich set of modules and packages.  You can find out
       more about the "Python standard
       library":http://www.python.org/doc/current/lib/lib.html at the
-      python.org web site.
+      python.org website.
 
       Another highly respected source for reference material is *Python
       Essential Reference* by David Beazley, published by New Riders.

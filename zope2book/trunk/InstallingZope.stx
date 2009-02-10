@@ -162,7 +162,7 @@ Installing and Starting Zope
             
       You can obtain detailed instructions for downloading, compiling, and
       installing Python from source at the
-      "Python.org":http://www.python.org web site.  Some Linux
+      "Python.org":http://www.python.org website.  Some Linux
       distributions ship with a pre-installed Python 2.3, but care
       is required when attempting to use a
       vendor-installed Python to compile Zope: some of these

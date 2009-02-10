@@ -7,10 +7,10 @@ Creating Basic Zope Applications
   This chapter will take you, step by step, through building a basic web
   application in Zope.  As we go through the chapter, we will examine some of
   Zope's main concepts at work.  Using Zope *Folder*, *Script (Python)*, and
-  *Page Template* objects, we'll create a simple web site for an imaginary
+  *Page Template* objects, we'll create a simple website for an imaginary
   zoo: the "Zope Zoo", of course!
 
-  We will develop the web site as a Zope "instance-space" application.  A
+  We will develop the website as a Zope "instance-space" application.  A
   discussion of instance space is at the end of this chapter, but for now it
   is enough to know that instance-space applications are the easiest and
   fastest kind to build, because we can do everything in our favorite web
@@ -19,8 +19,8 @@ Creating Basic Zope Applications
   Goals for the Zope Zoo Web Site
 
     As with any project, we first need to clarify our goals for the Zope Zoo
-    application.  The application's primary goal is to create a web site for
-    the world-renowned Zope Zoo.  Furthermore, we want to make the web site
+    application.  The application's primary goal is to create a website for
+    the world-renowned Zope Zoo.  Furthermore, we want to make the website
     easy to use and manage.  Here are some things we'll do:
 
     o Enable web users to navigate the site easily, as if they were moving
@@ -29,10 +29,10 @@ Creating Basic Zope Applications
     o Keep all our shared web layout tools, like a Cascading Style Sheet
       (CSS), in a single, easy-to-manage location.
 
-    o Design the web site so that future site-wide changes are quick and easy
+    o Design the website so that future site-wide changes are quick and easy
       to implement.
 
-    o Take advantage of Zope to create a dynamic web site in which web pages
+    o Take advantage of Zope to create a dynamic website in which web pages
       build themselves "on the fly" when requested so that they are always up
       to date.
 
@@ -55,7 +55,7 @@ Creating Basic Zope Applications
     add and edit invoices, as well as the actual data of the invoices.  The
     *Invoices* folder thus becomes a small Zope application.
 
-    We begin building our Zope Zoo web site application by creating a Zope
+    We begin building our Zope Zoo website application by creating a Zope
     *Folder* object to hold it all together in one place.
 
     Step 1: Create *ZopeZoo* Folder
@@ -79,7 +79,7 @@ Creating Basic Zope Applications
 
   Designing a Navigable Zoo
 
-    One of our goals is to enable easy user movement around the web site.  A
+    One of our goals is to enable easy user movement around the website.  A
     key to this easy movement is a navigation interface that is consistent
     among the site's pages.  In other words, every web page in the site should
     present a similar set of hyperlinks, in a similar place on the page, on
@@ -92,9 +92,9 @@ Creating Basic Zope Applications
     navigation links.
 
     First, let's define the site structure.  If the Zope Zoo was real, we
-    might model the web site's organization on the zoo's physical or logical
+    might model the website's organization on the zoo's physical or logical
     design.  For our purposes, we will pretend that the zoo houses three
-    classes of animals.  We'll organize the web site by adding folders inside
+    classes of animals.  We'll organize the website by adding folders inside
     our *ZopeZoo* folder.
 
     Step 2: Create Site Organization
@@ -128,7 +128,7 @@ Creating Basic Zope Applications
 
     Step 3: Create the Style Sheet
 
-      1. Go to the top level of our zoo web site, the *ZopeZoo* folder.
+      1. Go to the top level of our zoo website, the *ZopeZoo* folder.
 
       2. Select *File* from the *Add* list.
 
@@ -489,7 +489,7 @@ Creating Basic Zope Applications
 
   Creating a File Library
 
-    File libraries are common on web sites since many sites distribute files
+    File libraries are common on websites since many sites distribute files
     of some sort.  The old fashioned way to create a file library is to upload
     your files, then create a web page that contains links to those files.
     With Zope you can dynamically create links to files.  When you upload,
@@ -894,7 +894,7 @@ Creating Basic Zope Applications
       guest book a reasonable format may be the RSS (Rich Site Summary) XML
       format. RSS is a format developed by Netscape for its
       *my.netscape.com* site, which has since gained popularity among
-      other web logs and news sites.  The Zope.org web site uses DTML to
+      other web logs and news sites.  The Zope.org website uses DTML to
       build a dynamic RSS document.
 
       Congratulations! You've XML-enabled your guest book in just a
@@ -963,7 +963,7 @@ Creating Basic Zope Applications
     This chapter shows how simple web applications can be made.  Zope
     has many more features in addition to these, but these simple
     examples should get you started on create well managed, complex
-    web sites.
+    websites.
 
     In the next chapter, we'll see how the Zope security system lets
     Zope work with many different users at the same time and allows

@@ -7,7 +7,7 @@ Using Zope Page Templates
   in an application.
 
   In this chapter, you'll learn the basic features of *Page Templates*,
-  including how you can use them in your web site to create dynamic web pages
+  including how you can use them in your website to create dynamic web pages
   easily.  The next chapter walks you through a "hands on" example showing how
   to build a Zope web application using scripts and *Page Templates*.  In the
   chapter entitled "Advanced Page Templates":AdvZPT.stx, you'll learn about
@@ -610,7 +610,7 @@ Using Zope Page Templates
     For example, with *Page Templates*, you can have a site that has a
     standard look and feel.  No matter what the "content" of a page, it will
     have a standard header, side-bar, footer, and/or other page elements.
-    This is a very common requirement for web sites.
+    This is a very common requirement for websites.
 
     You can reuse presentation elements across pages with *macros*.  Macros
     define a section of a page that can be reused in other pages.  A macro can

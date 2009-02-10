@@ -367,7 +367,7 @@ Managing Zope Objects Using External Tools
 
         WebDAV is an extension to the HTTP protocol that provides
         features that allow users to concurrently author and edit
-        content on web sites.  WebDAV offers features like locking,
+        content on websites.  WebDAV offers features like locking,
         revision control, and the tagging of objects with properties.
         Because WebDAV's goals of through the web editing match some
         of the goals of Zope, Zope has supported the WebDAV protocol
