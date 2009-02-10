@@ -9,12 +9,12 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    Preface.rst
    IntroducingZope.rst
-   Contributions.rst
    ZopeArchitecture.rst
+   Contributions.rst
 
 
 Indices and tables
