@@ -8,7 +8,8 @@ Today the `Zope Foundation`_ holds the copyright of the Zope source code and
 supervises a diverse community of open-source contributers working on a
 variety of related projects.
 
-This book is about the original Zope project, today known as Zope2.
+This book is about the original Zope project, today known as Zope2. When we
+refer to Zope in this book with a narrower specification we speak of Zope2.
 
 Other projects include the `Zope3`_ web application framework, many individual
 packages located in the `Zope Subversion Repository`_ and projects being based
@@ -144,9 +145,9 @@ computer languages.
 
 Web applications are everywhere.  Common examples of web
 applications are those that let you search the web, like *Google*;
-collaborate on projects, like *SourceForge* or *ProjectPlace*; buy
+collaborate on projects, like *SourceForge*; buy
 items at an auction, like *eBay*; communicate with other people over
-e-mail, like *Hotmail*; or view the latest news ala *CNN.com*.
+e-mail, like *Gmail*; or view the latest news ala *CNN.com*.
 
 In a dynamically-constructed website, the webmaster is not
 required to visit the site "page-by-page" in order to update its
@@ -170,12 +171,12 @@ visited a page in his website.
 A framework that allows people to construct a web application is
 often called a *web application server*, or sometimes just an
 *application server*.  Zope is a web application server, as are
-competing products like `BEA WebLogic`_, `Macromedia ColdFusion`_, and
-(to some extent) `Vignette StoryServer`_.
+competing products like `WebSphere`_, `JBoss`_, and
+(to some extent) `SAP NetWeaver`_.
 
-.. _BEA WebLogic: http://www.bea.com/
-.. _Macromedia ColdFusion: http://www.macromedia.com/
-.. _Vignette StoryServer: http://www.vignette.com/
+.. _WebSphere: http://www.ibm.com/websphere/
+.. _JBoss: http://labs.jboss.com/jbossas/
+.. _SAP NetWeaver: http://www.sap.com/
 
 Zope is a web application server, which is not
 a web application in itself; rather it is *framework that allows
@@ -220,10 +221,9 @@ manage your site's data, business logic, and presentation from a
 single place.  An application server can typically help manage
 your content and presentation in this way.
 
-Build a Content Management System -- A fairly new breed of
-application, a *content management system* allows non-technical
-editors to create and manage content for your website.  Application 
-servers provide the tools with which you can build a
+Build a Content Management System -- A *content management system* allows
+non-technical editors to create and manage content for your website.
+Application servers provide the tools with which you can build a
 content management system.
 
 Build an E-Commerce Application -- Application servers provide a
@@ -302,29 +302,12 @@ This claim is backed by a number of Zope features:
   of your application code.  Many application servers don't scale
   quite as transparently or as predictably.
 
-- Zope allows developers to create web applications using only a
-  web browser.  The Internet Explorer, Mozilla, Netscape, OmniWeb,
-  Konqueror, and Opera browsers are all known to be able to both
-  display and manipulate Zope's development environment
-  (the *Zope Management Interface*, also known as the *ZMI*).  Zope
-  also allows developers to safely delegate application
-  development duties to other developers "through the web" using
-  the same interface.  Very few other application servers, if any,
-  deliver the same level of web functionality.
-
 - Zope provides a granular and extensible security framework.  You
   can easily integrate Zope with diverse authentication and
   authorization systems, such as LDAP, Kerberos, and RADIUS,
   simultaneously and using pre-built modules.  Many other application
   servers lack support for important authentication and
   authorization systems.
-
-- Zope allows teams of developers to collaborate effectively.
-  Collaborative environments require tools that allow users to work
-  without interfering with each other.  Zope has *Undo*,
-  *Versions*, *History*, and other tools to help people work safely
-  together and recover from mistakes.  Many other application
-  servers do not provide these kinds of features.
 
 - Zope runs on most popular microcomputer operating system
   platforms: Linux, Windows, Solaris, FreeBSD, NetBSD,
@@ -357,11 +340,11 @@ create, deploy, and manage a web application.
 *Component Developers*
   create software intended for reuse and distribution.
 
-*Site Developers*
+*Integrators*
   integrate the software written by component developers and native
   application server services, building an application in the process.
 
-*Site Designers*
+*Web Designers*
   create the site's look and feel.
 
 *Content Managers*
@@ -374,9 +357,9 @@ create, deploy, and manage a web application.
   use the site to locate and work with useful content.
 
 Of the parties listed above, Zope is most useful for *component
-developers*, *site developers*, and *site designers*.  These three
+developers*, *integrators*, and *web designers*.  These three
 groups can collaborate to produce an application using
-Zope's native services and third-party Zope *Products*.  They 
+Zope's native services and third-party Zope *Plugins*.  They 
 typically produce applications useful to *content managers* and
 *consumers* under the guide of the *information architect*.
 *Administrators* deploy the application and tend to the
@@ -389,21 +372,21 @@ use "out of the box" for any given application.  For example, Zope
 itself is not a blog, a content management system, or a
 "e-shop-in-a-box" application.
 
-However, freely available *Products* built on top of Zope offer
+However, freely available *Plugins* built on top of Zope offer
 these kinds of services.  At the time of this writing, the
-Zope.org website catalogs roughly 300 `Products that you can
-browse`_ and even reuse in your own applications.  These include Products
-for blogging, content management, and internationalization, and e-commerce.
+`Python Package Index`_ lists roughly 400 `Plugins that you can
+browse`_ and even reuse in your own applications.  These include Plugins
+for blogging, content management, internationalization, and e-commerce.
 
-.. _Products that you can browse: http://www.zope.org/Products/
+.. _Plugins that you can browse: http://pypi.python.org/pypi?:action=browse&c=514
+.. _Python Package Index: http://pypi.python.org/pypi/
 
 Zope is not a visual design tool.  Tools like Macromedia
 Dreamweaver and Adobe GoLive allow designers to create "look and
 feel".  You may use these tools to successfully manage Zope-based
 web sites, but Zope itself does not replace them.  You can edit
-content "through the web" using Zope, but the limitations of current
-cross-platform browser technology prevent Zope from doing as good
-a job as these kinds of tools for designing web presentation.
+content "through the web" using Zope, but it does not try to replace the
+features offered by these kind of tools.
 
 
 Introduction to Zope Maintenance and The Zope Community
@@ -416,7 +399,7 @@ applications using Zope for their own gain.  Others are students
 and curious amateur site developers.  Zope Corporation is a member
 of this community.
 
-Zope Corporation controls the distribution of the defacto,
+The Zope Foundation controls the distribution of the defacto,
 "canonical", official Zope version, and permits its developers, as
 well as other selected developers, to modify the distribution's
 source code.
@@ -426,7 +409,7 @@ commonly discusses all things Zope on the many Zope mailing
 lists and web sites. You can find out more about Zope-related
 mailing lists at `Zope.org's mailing list page`_.
 
-.. _Zope.org's mailing list page: http://www.zope.org/Resources/MailingLists
+.. _Zope.org's mailing list page: http://mail.zope.org/
 
 Zope Corporation makes its revenue by using Zope to create web
 applications for its paying customers, by training prospective
@@ -442,7 +425,7 @@ Zope's Terms of Use and License
 Zope is free of cost. You are permitted to use Zope to create and
 run your web applications without paying licensing or usage fees.
 You may also include Zope in your own products and applications
-without paying royalty fees to Zope's licensor, *Zope Corporation*.
+without paying royalty fees to Zope's licensor, *Zope Foundation*.
 
 Zope is distributed under an open source license, the `Zope Public
 License or 'ZPL'`_.  The terms of the ZPL license stipulate that you will
@@ -483,7 +466,7 @@ Zope History
 ------------
 
 In 1996, Jim Fulton (the current CTO of Zope Corporation, the
-distributors of Zope) was drafted to teach a class on CGI
+orginators of Zope) was drafted to teach a class on CGI
 programming, despite not knowing very much about the subject.  CGI,
 or *common gateway interface*, programming is a commonly-used web
 development model that allows developers to construct dynamic
