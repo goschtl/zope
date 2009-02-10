@@ -1,0 +1,38 @@
+Changelog
+---------
+
+0.4 (released 2/10/2009)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Rename project to z3c.ptcompat to deal with setuptools issues (as discussed
+  on zope-dev http://mail.zope.org/pipermail/zope-dev/2008-December/033820.html)
+
+- Added optional option ``doctest`` for output checker to allow usage
+  with alternative implementations, e.g. the Zope doctest
+  module. [malthe]
+
+- Added tests for meta-directives and fixed some minor errors. [malthe]
+
+- Added update-tool to walk a source tree and automatically rewrite
+  template import statements in each file. [malthe]
+
+- Added meta-directives for browser pages and viewlets. These build
+  upon the original implementations, but make sure that the Chameleon
+  template engine is used. [malthe]
+
+- Added ``PageTemplateFile``. [malthe]
+
+0.3 (released 10/2/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Various changes.
+
+0.2 (released 9/13/2008)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Various changes.
+
+0.1 (released 9/9/2008)
+~~~~~~~~~~~~~~~~~~~~~~~
+
+- Initial release.
