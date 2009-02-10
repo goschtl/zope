@@ -17,6 +17,7 @@ Contents
    InstallingZope.rst
    ObjectOrientation.rst
    UsingZope.rst
+   BasicObject.rst
    Contributions.rst
    AppendixA.rst
 
