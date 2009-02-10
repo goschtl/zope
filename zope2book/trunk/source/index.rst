@@ -15,6 +15,7 @@ Contents
    IntroducingZope.rst
    ZopeArchitecture.rst
    InstallingZope.rst
+   ObjectOrientation.rst
    Contributions.rst
    AppendixA.rst
 
