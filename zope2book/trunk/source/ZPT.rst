@@ -975,7 +975,7 @@ look and feel of templates, but does not allow you to customize the look
 and feel of different objects based on their location in the site.
 
 Using Templates with Content
-============================
+----------------------------
 
 In general Zope supports content, presentation and logic components.
 *Page Templates* are presentation components and they can be used to
