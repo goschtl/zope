@@ -24,6 +24,7 @@ Contents
    SimpleExamples.rst
    Security.rst
    AdvDTML.rst
+   AdvZPT.rst
    AppendixA.rst
    Contributions.rst
 
