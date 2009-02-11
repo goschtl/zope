@@ -56,9 +56,9 @@ class TaskService(contained.Contained, persistent.Persistent):
         super(TaskService, self).__init__()
         self._counter = 1
         self.jobs = IOBTree()
-        self._queue = zc.queue.PersistentQueue()
+        self._queue = zc.queue.Queue()
         self._scheduledJobs = IOBTree()
-        self._scheduledQueue = zc.queue.PersistentQueue()
+        self._scheduledQueue = zc.queue.Queue()
 
     def getAvailableTasks(self):
         """See interfaces.ITaskService"""
