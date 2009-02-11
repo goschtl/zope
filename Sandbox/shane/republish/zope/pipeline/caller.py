@@ -1,5 +1,7 @@
 
+from zope.interface import implements
 from zope.proxy import removeAllProxies
+from zope.publisher.interfaces import IWSGIApplication
 
 class Caller(object):
     """WSGI app that calls the traversed object.
@@ -7,10 +9,12 @@ class Caller(object):
     Requires 'zope.request', which implements IRequest, in the environment.
     The 'traversed' attribute of the request must be set.
     """
+    implements(IWSGIApplication)
+
     def __call__(self, environ, start_response):
         request = environ['zope.request']
         name, ob = request.traversed[-1]
-        result = mapply(ob, request.getPositionalArguments(), request)
+        result = mapply(ob, request.positional_arguments, request)
         response = request.response
         if result is not response:
             response.setResult(result)

@@ -101,17 +101,11 @@ class IRequest(IExtendedReadMapping):
           "zope.persistentadapter"
         """)
 
-    traversed = Attribute(
-        """List of (name, obj) steps that were traversed.
-
-        The first object is the application root and has an empty name.
-        The last object is the object to call.
-        """)
-
     def getBasicCredentials():
-        """Return (login, password) if there are basic credentials.
+        """Return (login, password) if the request contains basic credentials.
 
-        Returns None if there aren't.
+        Returns None if no such credentials are in the request or the
+        credentials are of some other type.
         """
 
     def _authUserPW():
@@ -120,6 +114,24 @@ class IRequest(IExtendedReadMapping):
 
     def unauthorized(challenge):
         """Deprecated: use response.unauthorized() instead.
+        """
+
+    traversed = Attribute(
+        """List of (name, obj) steps that were traversed.
+
+        The first object is the application root and may have an empty name.
+        The last object is the object to call.
+        """)
+
+    traversal_hooks = Attribute(
+        """List of hooks to call before each traversal step.
+
+        Each hook will be called with two parameters, request and ob.
+        The hook does not need to return anything.
+
+        These hooks will be called before traversing an object for the
+        first time.  If the same object is traversed more than
+        once, the hook will still only be called the first time.
         """
 
 

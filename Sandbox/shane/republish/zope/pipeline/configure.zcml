@@ -9,12 +9,12 @@
     # DetailedTracebackGenerator
 
     # stages we're using:
-    'request_logger',
+    'logger',
     'retry',
-    'request_creator',        # also sets locale (?)
-    'traversal_root_opener',
+    'request_factory',        # also sets locale (?)
+    'root_opener',
     'transaction_controller',
-    'app_error_handler',
+    'error_handler',
     'global_authenticator',
     # Note: the traverser also has to invoke authentication at each step.
     'traverser',
@@ -23,22 +23,59 @@
 -->
 
 <pipeline:stages names="
-    request_logger
+    logger
     retry
-    request_creator
-    traversal_root_opener
+    request_factory
+    root_opener
     transaction_controller
-    app_error_handler
-    global_authenticator
+    notifier
+    error_handler
+    authenticator
     traverser
     transaction_annotator
     caller
     " />
 
-<zope:adapter
-    factory=".txnmiddle.TransactionController"
+<adapter
+    factory="..."
+    name="logger" />
+
+<adapter
+    factory=".retry.Retry"
+    name="retry" />
+
+<adapter
+    factory="..."
+    name="request_factory" />
+
+<adapter
+    factory=".rootopen.RootOpener"
+    name="root_opener" />
+
+<adapter
+    factory=".txnctl.TransactionController"
     name="transaction_controller" />
 
-<zope:adapter
-    factory=".txnmiddle.TransactionAnnotator"
+<adapter
+    factory=".event.EventNotifier"
+    name="notifier" />
+
+<adapter
+    factory="..."
+    name="error_handler" />
+
+<adapter
+    factory=".authenticator.Authenticator"
+    name="authenticator" />
+
+<adapter
+    factory="..."
+    name="traverser" />
+
+<adapter
+    factory=".txnctl.TransactionAnnotator"
     name="transaction_annotator" />
+
+<adapter
+    factory=".caller.Caller"
+    name="caller" />

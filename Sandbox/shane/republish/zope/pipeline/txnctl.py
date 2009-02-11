@@ -2,16 +2,16 @@
 
 import transaction
 from zope.location.interfaces import ILocationInfo
-from zope.interface import providedBy
 from zope.interface import adapts
 from zope.interface import implements
+from zope.interface import providedBy
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.proxy import removeSecurityProxy
 
 
 class TransactionController(object):
-    """WSGI middleware that manages transactions.
+    """WSGI middleware that begins and commits/aborts transactions.
     """
     implements(IWSGIApplication)
     adapts(IWSGIApplication)

@@ -1,4 +1,6 @@
 
+from zope.interface import adapts
+from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces.exceptions import Retry
 from ZODB.POSException import ConflictError
@@ -11,8 +13,8 @@ class Retry(object):
 
     This middleware app should enclose the app that creates zope.request.
     It sets an environment variable named 'zope.can_retry'.  Error handlers
-    should propagate Retry or ConflictError when zope.can_retry has
-    a true value.
+    should propagate Retry or ConflictError when 'zope.can_retry' is
+    true.
     """
     implements(IWSGIApplication)
     adapts(IWSGIApplication)
@@ -28,6 +30,7 @@ class Retry(object):
                 # make the input stream rewindable
                 f = AutoTemporaryFile()
                 f.copyfrom(wsgi_input)
+                f.seek(0)
                 environ['wsgi.input'] = wsgi_input = f
 
         def retryable_start_response(status, response_headers, exc_info=None):
@@ -43,6 +46,13 @@ class Retry(object):
             environ['zope.can_retry'] = True
             try:
                 res = self.app(environ, retryable_start_response)
+            except (Retry, ConflictError):
+                if 'zope.request' in environ:
+                    del environ['zope.request']
+                if wsgi_input is not None:
+                    wsgi_input.seek(0)
+                attempt += 1
+            else:
                 if start_response_params:
                     dest = start_response(*tuple(start_response_params))
                     src = output_file[0]
@@ -50,12 +60,6 @@ class Retry(object):
                     src.copyto(dest)
                     src.close()
                 return res
-            except (Retry, ConflictError):
-                if 'zope.request' in environ:
-                    del environ['zope.request']
-                if wsgi_input is not None:
-                    wsgi_input.seek(0)
-                attempt += 1
 
         # try once more, this time without retry support
         environ['zope.can_retry'] = False
