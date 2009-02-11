@@ -24,15 +24,15 @@ import threading
 import time
 import zc.queue
 import zope.interface
+import zope.location
 from BTrees.IOBTree import IOBTree
+from lovely.remotetask import interfaces, job, task, processor
 from zope import component
 from zope.app.appsetup.product import getProductConfiguration
 from zope.app.container import contained
-from zope.app.component.interfaces import ISite
 from zope.app.publication.zopepublication import ZopePublication
 from zope.component.interfaces import ComponentLookupError
 from zope.traversing.api import getParents
-from lovely.remotetask import interfaces, job, task, processor
 
 log = logging.getLogger('lovely.remotetask')
 
@@ -363,7 +363,7 @@ def bootStrapSubscriber(event):
             sites = []
             sites.append(root_folder)
             for folder in root_folder.values():
-                if ISite.providedBy(folder):
+                if zope.location.interfaces.ISite.providedBy(folder):
                     sites.append(folder)
         else:
             sites = [root_folder.get(siteName)]
