@@ -505,6 +505,7 @@ Tag Variables
 -------------
 
 Current Item Variables
+++++++++++++++++++++++
 
 These variables describe the current item.
 
@@ -574,10 +575,11 @@ These variables describe the current item.
   The index of a variable of the current item.
 
 Summary Variables
++++++++++++++++++
 
-These variable summarize information about numeric item
-variables. To use these variable you must loop over objects
-(like database query results) that have numeric variables.
+These variable summarize information about numeric item variables. To use these
+variable you must loop over objects (like database query results) that have
+numeric variables.
 
 - total-*variable*
 
@@ -616,6 +618,7 @@ variables. To use these variable you must loop over objects
   The standard-deviation of an item variable with n degrees of freedom.
 
 Grouping Variables
+++++++++++++++++++
 
 These variables allow you to track changes in current item variables.
 
@@ -628,6 +631,7 @@ These variables allow you to track changes in current item variables.
   True if the current item is the last with a particular value for a variable.
 
 Batch Variables
++++++++++++++++
 
 - sequence-query
 
@@ -823,7 +827,7 @@ This yields::
 See Also
 --------
 
-  with tag
+with tag
 
 mime: Formats data with MIME
 ============================
@@ -850,40 +854,54 @@ Attributes
 
 Both the 'mime' and 'boundry' tags have the same attributes.
 
-XXX Here we need to continue
+- encode=string
 
-  encode=string -- MIME Content-Transfer-Encoding header, defaults
-  to 'base64'.  Valid encoding options include 'base64',
-  'quoted-printable', 'uuencode', 'x-uuencode', 'uue', 'x-uue',
-  and '7bit'.  If the 'encode' attribute is set to '7bit' no
-  encoding is done on the block and the data is assumed to be in a
-  valid MIME format.
+  MIME Content-Transfer-Encoding header, defaults to 'base64'. Valid encoding
+  options include 'base64', 'quoted-printable', 'uuencode', 'x-uuencode',
+  'uue', 'x-uue', and '7bit'. If the 'encode' attribute is set to '7bit' no
+  encoding is done on the block and the data is assumed to be in a valid MIME
+  format.
 
-  type=string -- MIME Content-Type header.
+- type=string
 
-  type_expr=string -- MIME Content-Type header as a variable
-  expression. You cannot use both 'type' and 'type_expr'.
+  MIME Content-Type header.
 
-  name=string -- MIME Content-Type header name.
+- type_expr=string
 
-  name_expr=string -- MIME Content-Type header name as a variable
-  expression. You cannot use both 'name' and 'name_expr'.
+  MIME Content-Type header as a variable expression. You cannot use both 'type'
+  and 'type_expr'.
 
-  disposition=string -- MIME Content-Disposition header.
+- name=string
 
-  disposition_expr=string -- MIME Content-Disposition header as a
-  variable expression. You cannot use both 'disposition' and
-  'disposition_expr'.
+  MIME Content-Type header name.
 
-  filename=string -- MIME Content-Disposition header filename.
+- name_expr=string
 
-  filename_expr=string -- MIME Content-Disposition header filename
-  as a variable expression. You cannot use both 'filename' and
-  'filename_expr'.
+  MIME Content-Type header name as a variable expression. You cannot use both
+  'name' and 'name_expr'.
 
-  skip_expr=string -- A variable expression that if true, skips
-  the block. You can use this attribute to selectively include
-  MIME blocks.
+- disposition=string
+
+  MIME Content-Disposition header.
+
+- disposition_expr=string
+
+  MIME Content-Disposition header as a variable expression. You cannot use both
+  'disposition' and 'disposition_expr'.
+
+- filename=string
+
+  MIME Content-Disposition header filename.
+
+- filename_expr=string
+
+  MIME Content-Disposition header filename as a variable expression. You cannot
+  use both 'filename' and 'filename_expr'.
+
+- skip_expr=string
+
+  A variable expression that if true, skips the block. You can use this
+  attribute to selectively include MIME blocks.
 
 Examples
 --------
@@ -914,35 +932,40 @@ The 'raise' tag raises an exception, mirroring the Python 'raise'
 statement.
 
 Syntax
+------
 
-  'raise' tag syntax::
+'raise' tag syntax::
 
-    <dtml-raise ExceptionName|ExceptionExpression>
-    </dtml-raise>
+  <dtml-raise ExceptionName|ExceptionExpression>
+  </dtml-raise>
 
-  The 'raise' tag is a block tag. It raises an exception. Exceptions
-  can be an exception class or a string. The contents of the tag are
-  passed as the error value.
+The 'raise' tag is a block tag. It raises an exception. Exceptions
+can be an exception class or a string. The contents of the tag are
+passed as the error value.
 
 Examples
+--------
 
-  Raising a KeyError::
+Raising a KeyError::
 
-    <dtml-raise KeyError></dtml-raise>
+  <dtml-raise KeyError></dtml-raise>
 
-  Raising an HTTP 404 error::
+Raising an HTTP 404 error::
 
-    <dtml-raise NotFound>Web Page Not Found</dtml-raise>
+  <dtml-raise NotFound>Web Page Not Found</dtml-raise>
 
 See Also
+--------
 
-  try tag
+try tag
 
-  "Python Tutorial: Errors and
-  Exceptions":http://www.python.org/doc/current/tut/node10.html
+`Python Tutorial Errors and Exceptions`_
 
-  "Python Built-in
-  Exceptions":http://www.python.org/doc/current/lib/module-exceptions.html
+.. _Python Tutorial Errors and Exceptions: http://www.python.org/doc/current/tut/node10.html
+
+`Python Built-in Exceptions`_
+
+.. _Python Built-in Exceptions: http://www.python.org/doc/current/lib/module-exceptions.html
 
 return: Returns data
 ====================
@@ -951,769 +974,850 @@ The 'return' tag stops executing DTML and returns data. It mirrors
 the Python 'return' statement.
 
 Syntax
+------
 
-  'return' tag syntax::
+'return' tag syntax::
 
-    <dtml-return ReturnVariable|expr="ReturnExpression">
+  <dtml-return ReturnVariable|expr="ReturnExpression">
 
-  Stops execution of DTML and returns a variable or expression. The
-  DTML output is not returned. Usually a return expression is more
-  useful than a return variable. Scripts largely obsolete this tag.
-
-    % Anonymous User - June 20, 2002 6:52 pm:
-     Reference Ch. 12 Scripting Zope http://www.zope.org/Documentation/ZopeBook/ScriptingZope.stx
+Stops execution of DTML and returns a variable or expression. The
+DTML output is not returned. Usually a return expression is more
+useful than a return variable. Scripts largely obsolete this tag.
 
 Examples
 
-  Returning a variable::
+Returning a variable::
 
-    <dtml-return result>    
+  <dtml-return result>
 
-  Returning a Python dictionary::
+Returning a Python dictionary::
 
-    <dtml-return expr="{'hi':200, 'lo':5}">
+  <dtml-return expr="{'hi':200, 'lo':5}">
 
 sendmail: Sends email with SMTP
 ===============================
 
-The 'sendmail' tag sends an email message
-using SMTP.
+The 'sendmail' tag sends an email message using SMTP.
 
 Syntax
+------
 
-  'sendmail' tag syntax::
+'sendmail' tag syntax::
 
-    <dtml-sendmail>
-    </dtml-sendmail>
+  <dtml-sendmail>
+  </dtml-sendmail>
 
-  The 'sendmail' tag is a block tag. It either requires a 'mailhost'
-  or a 'smtphost' argument, but not both. The tag block is sent as
-  an email message. The beginning of the block describes the email
-  headers. The headers are separated from the body by a blank
-  line. Alternately the 'To', 'From' and 'Subject' headers can be
-  set with tag arguments.
+The 'sendmail' tag is a block tag. It either requires a 'mailhost' or a
+'smtphost' argument, but not both. The tag block is sent as an email message.
+The beginning of the block describes the email headers. The headers are
+separated from the body by a blank line. Alternately the 'To', 'From' and
+'Subject' headers can be set with tag arguments.
 
 Attributes
+----------
 
-  mailhost -- The name of a Zope MailHost object
-  to use to send email. You cannot specify both a mailhost and a smtphost.
+- mailhost
 
-  smtphost -- The name of a SMTP server used to send email. You
-  cannot specify both a mailhost and a smtphost.
+  The name of a Zope MailHost object to use to send email. You cannot specify
+  both a mailhost and a smtphost.
 
-  port -- If the smtphost attribute is used, then the port attribute
-  is used to specify a port number to connect to. If not specified,
-  then port 25 will be used.
+- smtphost
 
-  mailto -- The recipient address or a list of recipient addresses
-  separated by commas. This can also be specified with the 'To' header.
+  The name of a SMTP server used to send email. You cannot specify both a
+  mailhost and a smtphost.
 
-  mailfrom -- The sender address. This can also be specified with
-  the 'From' header.
+- port
 
-  subject -- The email subject. This can also be specified with the
-  'Subject' header.
+  If the smtphost attribute is used, then the port attribute is used to specify
+  a port number to connect to. If not specified, then port 25 will be used.
+
+- mailto
+
+  The recipient address or a list of recipient addresses separated by commas.
+  This can also be specified with the 'To' header.
+
+- mailfrom
+
+  The sender address. This can also be specified with the 'From' header.
+
+- subject
+
+  The email subject. This can also be specified with the 'Subject' header.
 
 Examples
+--------
 
-  Sending an email message using a Mail Host::
+Sending an email message using a Mail Host::
 
-    <dtml-sendmail mailhost="mailhost">
-    To: <dtml-var recipient>
-    From: <dtml-var sender>
-    Subject: <dtml-var subject>
+  <dtml-sendmail mailhost="mailhost">
+  To: <dtml-var recipient>
+  From: <dtml-var sender>
+  Subject: <dtml-var subject>
 
-    Dear <dtml-var recipient>,
+  Dear <dtml-var recipient>,
 
-    You order number <dtml-var order_number> is ready.
-    Please pick it up at your soonest convenience.
-    </dtml-sendmail>
+  You order number <dtml-var order_number> is ready.
+  Please pick it up at your soonest convenience.
+  </dtml-sendmail>
 
 See Also
+--------
 
-  "RFC 821 (SMTP Protocol)":http://www.ietf.org/rfc/rfc0821.txt
+`RFC 821 (SMTP Protocol)`_
 
-  mime tag
+.. _RFC 821 (SMTP Protocol): http://www.ietf.org/rfc/rfc0821.txt
+
+mime tag
 
 sqlgroup: Formats complex SQL expressions
 =========================================
 
-The 'sqlgroup' tag formats complex boolean SQL expressions. You can
-use it along with the 'sqltest' tag to build dynamic SQL queries
-that tailor themselves to the environment. This tag is used in SQL
-Methods.
-
-  % Anonymous User - May 2, 2002 9:13 am:
-   there is a sql-delimiter not documented here
+The 'sqlgroup' tag formats complex boolean SQL expressions. You can use it
+along with the 'sqltest' tag to build dynamic SQL queries that tailor
+themselves to the environment. This tag is used in SQL Methods.
 
 Syntax
+------
 
-  'sqlgroup' tag syntax::
+'sqlgroup' tag syntax::
 
-    <dtml-sqlgroup>
-    [<dtml-or>]
-    [<dtml-and>]
-    ...
-    </dtml-sqlgroup>
+  <dtml-sqlgroup>
+  [<dtml-or>]
+  [<dtml-and>]
+  ...
+  </dtml-sqlgroup>
 
-  The 'sqlgroup' tag is a block tag. It is divided into blocks with
-  one or more optional 'or' and 'and' tags. 'sqlgroup' tags can be
-  nested to produce complex logic.
+The 'sqlgroup' tag is a block tag. It is divided into blocks with
+one or more optional 'or' and 'and' tags. 'sqlgroup' tags can be
+nested to produce complex logic.
 
 Attributes
+----------
 
-  required=boolean -- Indicates whether the group is required. If it
-  is not required and contains nothing, it is excluded from the DTML
-  output.
+- required=boolean
 
-  where=boolean -- If true, includes the string "where". This is
-  useful for the outermost 'sqlgroup' tag in a SQL 'select' query.
+  Indicates whether the group is required. If it is not required and contains
+  nothing, it is excluded from the DTML output.
+
+- where=boolean
+
+  If true, includes the string "where". This is useful for the outermost
+  'sqlgroup' tag in a SQL 'select' query.
 
 Examples
+--------
 
-  Sample usage::
+Sample usage::
 
-    select * from employees 
-    <dtml-sqlgroup where>
-      <dtml-sqltest salary op="gt" type="float" optional>
+  select * from employees 
+  <dtml-sqlgroup where>
+    <dtml-sqltest salary op="gt" type="float" optional>
+  <dtml-and>
+    <dtml-sqltest first type="nb" multiple optional>
+  <dtml-and>
+    <dtml-sqltest last type="nb" multiple optional>
+  </dtml-sqlgroup>  
+
+If 'first' is 'Bob' and 'last' is 'Smith, McDonald' it renders::
+
+  select * from employees
+  where
+  (first='Bob'
+   and
+   last in ('Smith', 'McDonald')
+  )
+
+If 'salary' is 50000 and 'last' is 'Smith' it renders::
+
+  select * from employees
+  where 
+  (salary > 50000.0
+   and
+   last='Smith'
+  )
+
+Nested 'sqlgroup' tags::
+
+  select * from employees
+  <dtml-sqlgroup where>
+    <dtml-sqlgroup>
+       <dtml-sqltest first op="like" type="nb">
     <dtml-and>
-      <dtml-sqltest first type="nb" multiple optional>
-    <dtml-and>
-      <dtml-sqltest last type="nb" multiple optional>
-    </dtml-sqlgroup>  
-
-  If 'first' is 'Bob' and 'last' is 'Smith, McDonald' it renders::
-
-    select * from employees
-    where
-    (first='Bob'
-     and
-     last in ('Smith', 'McDonald')
-    )
-
-  If 'salary' is 50000 and 'last' is 'Smith' it renders::
-
-    select * from employees
-    where 
-    (salary > 50000.0
-     and
-     last='Smith'
-    )
-
-  Nested 'sqlgroup' tags::
-
-    select * from employees
-    <dtml-sqlgroup where>
-      <dtml-sqlgroup>
-         <dtml-sqltest first op="like" type="nb">
-      <dtml-and>
-         <dtml-sqltest last op="like" type="nb">
-      <dtml-sqlgroup>
-    <dtml-or>
-      <dtml-sqltest salary op="gt" type="float">
+       <dtml-sqltest last op="like" type="nb">
     </dtml-sqlgroup>
+  <dtml-or>
+    <dtml-sqltest salary op="gt" type="float">
+  </dtml-sqlgroup>
 
-    % Anonymous User - May 22, 2002 11:37 am:
-     Looks like the 3rd <dtml-sqlgroup> should be a close tag: </dtml-sqlgroup>
+Given sample arguments, this template renders to SQL like so::
 
-  Given sample arguments, this template renders to SQL like so::
-
-    select * form employees
-    where
+  select * form employees
+  where
+  (
     (
-      (
-       name like 'A*'
-       and
-       last like 'Smith'
-       )
-     or
-     salary > 20000.0
-    )
+     name like 'A*'
+     and
+     last like 'Smith'
+     )
+   or
+   salary > 20000.0
+  )
 
 See Also
+--------
 
-  sqltest tag
+sqltest tag
 
 sqltest: Formats SQL condition tests
 ====================================
 
-The 'sqltest' tag inserts a condition test into SQL code. It tests a
-column against a variable. This tag is used in SQL Methods.
+The 'sqltest' tag inserts a condition test into SQL code. It tests a column
+against a variable. This tag is used in SQL Methods.
 
 Syntax
+------
 
-  'sqltest' tag syntax::
+'sqltest' tag syntax::
 
-    <dtml-sqltest Variable|expr="VariableExpression">
+  <dtml-sqltest Variable|expr="VariableExpression">
 
-  The 'sqltest' tag is a singleton. It inserts a SQL condition test
-  statement. It is used to build SQL queries. The 'sqltest' tag
-  correctly escapes the inserted variable. The named variable or
-  variable expression is tested against a SQL column using the
-  specified comparison operation.
+The 'sqltest' tag is a singleton. It inserts a SQL condition test statement. It
+is used to build SQL queries. The 'sqltest' tag correctly escapes the inserted
+variable. The named variable or variable expression is tested against a SQL
+column using the specified comparison operation.
 
 Attributes
+----------
 
-  type=string -- The type of the variable. Valid types include:
-  'string', 'int', 'float' and 'nb'. 'nb' means non-blank string,
-  and should be used instead of 'string' unless you want to test for
-  blank values. The type attribute is required and is used to
-  properly escape inserted variable.
+- type=string
 
-  column=string -- The name of the SQL column to test against. This
-  attribute defaults to the variable name.
+  The type of the variable. Valid types include: 'string', 'int', 'float' and
+  'nb'. 'nb' means non-blank string, and should be used instead of 'string'
+  unless you want to test for blank values. The type attribute is required and
+  is used to properly escape inserted variable.
 
-  multiple=boolean -- If true, then the variable may be a sequence
-  of values to test the column against.
+- column=string
 
-  optional=boolean -- If true, then the test is optional and will
-  not be rendered if the variable is empty or non-existent.
+  The name of the SQL column to test against. This attribute defaults to the
+  variable name.
 
-  op=string -- The comparison operation. Valid comparisons include: 
+- multiple=boolean
 
-    eq -- equal to
+  If true, then the variable may be a sequence of values to test the column
+  against.
 
-    gt -- greater than
+- optional=boolean
 
-    lt -- less than
+  If true, then the test is optional and will not be rendered if the variable
+  is empty or non-existent.
 
-    ne -- not equal to
+- op=string
 
-    ge -- greater than or equal to
+  The comparison operation. Valid comparisons include: 
 
-    le -- less than or equal to
+  eq -- equal to
 
-    The comparison defaults to equal to. If the comparison is not
-    recognized it is used anyway. Thus you can use comparisons such
-    as 'like'.
+  gt -- greater than
+
+  lt -- less than
+
+  ne -- not equal to
+
+  ge -- greater than or equal to
+
+  le -- less than or equal to
+
+  The comparison defaults to equal to. If the comparison is not
+  recognized it is used anyway. Thus you can use comparisons such
+  as 'like'.
 
 Examples
+--------
 
-  Basic usage::
+Basic usage::
 
-    select * from employees
-      where <dtml-sqltest name type="nb">
+  select * from employees
+    where <dtml-sqltest name type="nb">
 
-  If the 'name' variable is 'Bob' then this renders::
+If the 'name' variable is 'Bob' then this renders::
 
-    select * from employees
-      where name = 'Bob'
+  select * from employees
+    where name = 'Bob'
 
-  Multiple values::
+Multiple values::
 
-    select * from employees
-      where <dtml-sqltest empid type=int multiple>
+  select * from employees
+    where <dtml-sqltest empid type=int multiple>
 
-  If the 'empid' variable is '(12,14,17)' then this renders::
+If the 'empid' variable is '(12,14,17)' then this renders::
 
-    select * from employees
-      where empid in (12, 14, 17)
+  select * from employees
+    where empid in (12, 14, 17)
 
 See Also
+--------
 
-  sqlgroup tag
+sqlgroup tag
 
-  sqlvar tag
+sqlvar tag
 
 sqlvar: Inserts SQL variables
 =============================
 
-The 'sqlvar' tag safely inserts variables into SQL code. This tag is
-used in SQL Methods.
+The 'sqlvar' tag safely inserts variables into SQL code. This tag is used in
+SQL Methods.
 
 Syntax
+------
 
-  'sqlvar' tag syntax::
+'sqlvar' tag syntax::
 
-    <dtml-sqlvar Variable|expr="VariableExpression">
+  <dtml-sqlvar Variable|expr="VariableExpression">
 
-  The 'sqlvar' tag is a singleton. Like the 'var' tag, the 'sqlvar'
-  tag looks up a variable and inserts it. Unlike the var tag, the
-  formatting options are tailored for SQL code.
+The 'sqlvar' tag is a singleton. Like the 'var' tag, the 'sqlvar' tag looks up
+a variable and inserts it. Unlike the var tag, the formatting options are
+tailored for SQL code.
 
 Attributes
+----------
 
-  type=string -- The type of the variable. Valid types include:
-  'string', 'int', 'float' and 'nb'. 'nb' means non-blank string and
-  should be used in place of 'string' unless you want to use blank
-  strings. The type attribute is required and is used to properly
-  escape inserted variable.
+- type=string
 
-  optional=boolean -- If true and the variable is null or
-  non-existent, then nothing is inserted.
+  The type of the variable. Valid types include: 'string', 'int', 'float' and
+  'nb'. 'nb' means non-blank string and should be used in place of 'string'
+  unless you want to use blank strings. The type attribute is required and is
+  used to properly escape inserted variable.
+
+- optional=boolean
+
+  If true and the variable is null or non-existent, then nothing is inserted.
 
 Examples
+--------
 
-  Basic usage::
+Basic usage::
 
-    select * from employees 
-      where name=<dtml-sqlvar name type="nb">
+  select * from employees 
+    where name=<dtml-sqlvar name type="nb">
 
-  This SQL quotes the 'name' string variable.
+This SQL quotes the 'name' string variable.
 
 See Also
+--------
 
-  sqltest tag
+sqltest tag
 
 tree: Inserts a tree widget
 ===========================
 
-The 'tree' tag displays a dynamic tree widget by querying Zope
-objects.
+The 'tree' tag displays a dynamic tree widget by querying Zope objects.
 
 Syntax
+------
 
-  'tree' tag syntax::
+'tree' tag syntax::
 
-    <dtml-tree [VariableName|expr="VariableExpression"]>
-    </dtml-tree>
+  <dtml-tree [VariableName|expr="VariableExpression"]>
+  </dtml-tree>
 
-  The 'tree' tag is a block tag. It renders a dynamic tree widget in
-  HTML. The root of the tree is given by variable name or
-  expression, if present, otherwise it defaults to the current
-  object. The 'tree' block is rendered for each tree node, with the
-  current node pushed onto the DTML namespace.
+The 'tree' tag is a block tag. It renders a dynamic tree widget in
+HTML. The root of the tree is given by variable name or
+expression, if present, otherwise it defaults to the current
+object. The 'tree' block is rendered for each tree node, with the
+current node pushed onto the DTML namespace.
 
-    % Anonymous User - July 15, 2002 10:50 pm:
-     This doesn't work for me (Zope 2.5.1) unless I give it the name of the root folder. <dtml-tree folder
-     [options]>, not <dtml-tree [options]>.
-
-  Tree state is set in HTTP cookies. Thus for trees to work, cookies
-  must be enabled. Also you can only have one tree per page.
+Tree state is set in HTTP cookies. Thus for trees to work, cookies
+must be enabled. Also you can only have one tree per page.
 
 Attributes
+----------
 
-  branches=string -- Finds tree branches by calling the named
-  method. The default method is 'tpValues' which most Zope objects
-  support. 
+- branches=string
 
-  branches_expr=string -- Finds tree branches by evaluating the
-  expression.
+  Finds tree branches by calling the named method. The default method is
+  'tpValues' which most Zope objects support.
 
-  id=string -- The name of a method or id to determine tree
-  state. It defaults to 'tpId' which most Zope objects support. This
-  attribute is for advanced usage only.
+- branches_expr=string
 
-  url=string -- The name of a method or attribute to determine tree
-  item URLs. It defaults to 'tpURL' which most Zope objects
-  support. This attribute is for advanced usage only.
+  Finds tree branches by evaluating the expression.
 
-  leaves=string -- The name of a DTML Document or Method used to
-  render nodes that don't have any children. Note: this document
-  should begin with '<dtml-var standard_html_header>' and end with
-  '<dtml-var standard_html_footer>' in order to ensure proper
-  display in the tree.
+- id=string
 
-  header=string -- The name of a DTML Document or Method displayed
-  before expanded nodes. If the header is not found, it is skipped.
+  The name of a method or id to determine tree state. It defaults to 'tpId'
+  which most Zope objects support. This attribute is for advanced usage only.
 
-  footer=string -- The name of a DTML Document or Method displayed
-  after expanded nodes. If the footer is not found, it is skipped.
+- url=string
 
-  nowrap=boolean -- If true then rather than wrap, nodes may be
-  truncated to fit available space.
+  The name of a method or attribute to determine tree item URLs. It defaults to
+  'tpURL' which most Zope objects support. This attribute is for advanced usage
+  only.
 
-  sort=string -- Sorts the branches by the named attribute.
+- leaves=string
 
-  reverse -- Reverses the order of the branches.
+  The name of a DTML Document or Method used to render nodes that don't have
+  any children. Note: this document should begin with '<dtml-var
+  standard_html_header>' and end with '<dtml-var standard_html_footer>' in
+  order to ensure proper display in the tree.
 
-  assume_children=boolean -- Assumes that nodes have children. This
-  is useful if fetching and querying child nodes is a costly
-  process. This results in plus boxes being drawn next to all nodes.
+- header=string
 
-  single=boolean -- Allows only one branch to be expanded at a
-  time. When you expand a new branch, any other expanded branches
-  close. 
+  The name of a DTML Document or Method displayed before expanded nodes. If the
+  header is not found, it is skipped.
 
-  skip_unauthorized -- Skips nodes that the user is unauthorized to
-  see, rather than raising an error.
+- footer=string
 
-  urlparam=string -- A query string which is included in the
-  expanding and contracting widget links. This attribute is for
-  advanced usage only.
+  The name of a DTML Document or Method displayed after expanded nodes. If the
+  footer is not found, it is skipped.
 
-  prefix=string -- Provide versions of the tag variables that start
-  with this prefix instead of "tree", and that use underscores
-  (_) instead of hyphens (-).  The prefix must start with a letter and
-  contain only alphanumeric characters and underscores (_).
+- nowrap=boolean
+
+  If true then rather than wrap, nodes may be truncated to fit available space.
+
+- sort=string
+
+  Sorts the branches by the named attribute.
+
+- reverse
+
+  Reverses the order of the branches.
+
+- assume_children=boolean
+
+  Assumes that nodes have children. This is useful if fetching and querying
+  child nodes is a costly process. This results in plus boxes being drawn next
+  to all nodes.
+
+- single=boolean
+
+  Allows only one branch to be expanded at a time. When you expand a new
+  branch, any other expanded branches close.
+
+- skip_unauthorized
+
+  Skips nodes that the user is unauthorized to see, rather than raising an
+  error.
+
+- urlparam=string
+
+  A query string which is included in the expanding and contracting widget
+  links. This attribute is for advanced usage only.
+
+- prefix=string
+
+  Provide versions of the tag variables that start with this prefix instead of
+  "tree", and that use underscores (_) instead of hyphens (-). The prefix must
+  start with a letter and contain only alphanumeric characters and underscores
+  (_).
 
 Tag Variables
+-------------
 
-  tree-item-expanded -- True if the current node is expanded.
+- tree-item-expanded
 
-  tree-item-url -- The URL of the current node.
+  True if the current node is expanded.
 
-  tree-root-url -- The URL of the root node.
+- tree-item-url
 
-  tree-level -- The depth of the current node. Top-level nodes have
-  a depth of zero.
+  The URL of the current node.
 
-  tree-colspan -- The number of levels deep the tree is being
-  rendered. This variable along with the 'tree-level' variable can
-  be used to calculate table rows and colspan settings when
-  inserting table rows into the tree table.
+- tree-root-url
 
-  tree-state -- The tree state expressed as a list of ids and
-  sub-lists of ids. This variable is for advanced usage only.
+  The URL of the root node.
+
+- tree-level
+
+  The depth of the current node. Top-level nodes have a depth of zero.
+
+- tree-colspan
+
+  The number of levels deep the tree is being rendered. This variable along
+  with the 'tree-level' variable can be used to calculate table rows and
+  colspan settings when inserting table rows into the tree table.
+
+- tree-state
+
+  The tree state expressed as a list of ids and sub-lists of ids. This variable
+  is for advanced usage only.
 
 Tag Control Variables
+---------------------
 
-  You can control the tree tag by setting
-  these variables.
+You can control the tree tag by setting these variables.
 
-    expand_all -- If this variable is true then the entire tree is
-    expanded. 
+- expand_all
 
-    collapse_all -- If this variable is true then the entire tree is
-    collapsed.
+  If this variable is true then the entire tree is expanded.
+
+- collapse_all
+
+  If this variable is true then the entire tree is collapsed.
 
 Examples
+--------
 
-  Display a tree rooted in the current object::
+Display a tree rooted in the current object::
 
-    <dtml-tree>
-      <dtml-var title_or_id>
-    </dtml-tree>
+  <dtml-tree>
+    <dtml-var title_or_id>
+  </dtml-tree>
 
-    % Anonymous User - June 4, 2002 8:00 am:
-     Is there a way to prevent the tree of showing the user folder?
-     And how can I change the order of the displayed folders?
+Display a tree rooted in another object, using a custom branches
+method::
 
-  Display a tree rooted in another object, using a custom branches
-  method::
-
-    <dtml-tree expr="folder.object" branches="objectValues">
-      Node id : <dtml-var getId>
-    </dtml-tree>
+  <dtml-tree expr="folder.object" branches="objectValues">
+    Node id : <dtml-var getId>
+  </dtml-tree>
 
 try: Handles exceptions
 =======================
 
-The 'try' tag allows exception handling in DTML, mirroring the
-Python 'try/except' and 'try/finally' constructs.
+The 'try' tag allows exception handling in DTML, mirroring the Python
+'try/except' and 'try/finally' constructs.
 
 Syntax
+------
 
-  The 'try' tag has two different syntaxes, 'try/except/else' and
-  'try/finally'.
+The 'try' tag has two different syntaxes, 'try/except/else' and 'try/finally'.
 
-  'try/except/else' Syntax::
+'try/except/else' Syntax::
 
-    <dtml-try>
-    <dtml-except [ExceptionName] [ExceptionName]...>
-    ... 
-    [<dtml-else>]
-    </dtml-try>
+  <dtml-try>
+  <dtml-except [ExceptionName] [ExceptionName]...>
+  ... 
+  [<dtml-else>]
+  </dtml-try>
 
-  The 'try' tag encloses a block in which exceptions can be caught and
-  handled. There can be one or more 'except' tags that handles
-  zero or more exceptions. If an 'except' tag does not specify an
-  exception, then it handles all exceptions.
+The 'try' tag encloses a block in which exceptions can be caught and handled.
+There can be one or more 'except' tags that handles zero or more exceptions. If
+an 'except' tag does not specify an exception, then it handles all exceptions.
 
-  When an exception is raised, control jumps to the first 'except'
-  tag that handles the exception. If there is no 'except' tag to
-  handle the exception, then the exception is raised normally.
+When an exception is raised, control jumps to the first 'except' tag that
+handles the exception. If there is no 'except' tag to handle the exception,
+then the exception is raised normally.
 
-  If no exception is raised, and there is an 'else' tag, then the
-  'else' tag will be executed after the body of the 'try' tag.
+If no exception is raised, and there is an 'else' tag, then the 'else' tag will
+be executed after the body of the 'try' tag.
 
-  The 'except' and 'else' tags are optional.
+The 'except' and 'else' tags are optional.
 
-  'try/finally' Syntax::
+'try/finally' Syntax::
 
-    <dtml-try>
-    <dtml-finally>
-    </dtml-try>
+  <dtml-try>
+  <dtml-finally>
+  </dtml-try>
 
-  The 'finally' tag cannot be used in the same 'try' block as the
-  'except' and 'else' tags. If there is a 'finally' tag, its block
-  will be executed whether or not an exception is raised in the
-  'try' block.
+The 'finally' tag cannot be used in the same 'try' block as the 'except' and
+'else' tags. If there is a 'finally' tag, its block will be executed whether or
+not an exception is raised in the 'try' block.
 
 Attributes
+----------
 
-  except -- Zero or more exception names. If no exceptions are
-  listed then the except tag will handle all exceptions.
+- except
+
+  Zero or more exception names. If no exceptions are listed then the except tag
+  will handle all exceptions.
 
 Tag Variables
+-------------
 
-  Inside the 'except' block these variables
-  are defined.
+Inside the 'except' block these variables are defined.
 
-    error_type -- The exception type.
+- error_type
 
-    error_value -- The exception value.
+  The exception type.
 
-    error_tb -- The traceback.
+- error_value
+
+  The exception value.
+
+- error_tb
+
+  The traceback.
 
 Examples
+--------
 
-  Catching a math error::
+Catching a math error::
 
-    <dtml-try>
-    <dtml-var expr="1/0">
-    <dtml-except ZeroDivisionError>
-    You tried to divide by zero.
-    </dtml-try>
+  <dtml-try>
+  <dtml-var expr="1/0">
+  <dtml-except ZeroDivisionError>
+  You tried to divide by zero.
+  </dtml-try>
 
-  Returning information about the handled exception::
+Returning information about the handled exception::
 
-    <dtml-try>
-    <dtml-call dangerousMethod>
-    <dtml-except>
-    An error occurred.
-    Error type: <dtml-var error_type>
-    Error value: <dtml-var error_value>
-    </dtml-try>
+  <dtml-try>
+  <dtml-call dangerousMethod>
+  <dtml-except>
+  An error occurred.
+  Error type: <dtml-var error_type>
+  Error value: <dtml-var error_value>
+  </dtml-try>
 
-  Using finally to make sure to perform clean up regardless
-  of whether an error is raised or not::
+Using finally to make sure to perform clean up regardless of whether an error
+is raised or not::
 
-    <dtml-call acquireLock>
-    <dtml-try>
-    <dtml-call someMethod>
-    <dtml-finally>
-    <dtml-call releaseLock>
-    </dtml-try>
+  <dtml-call acquireLock>
+  <dtml-try>
+  <dtml-call someMethod>
+  <dtml-finally>
+  <dtml-call releaseLock>
+  </dtml-try>
 
 See Also
+--------
 
-  raise tag
+raise tag
 
-  "Python Tutorial: Errors and
-  Exceptions":http://www.python.org/doc/current/tut/node10.html
+`Python Tutorial Errors and Exceptions`_
 
-  "Python Built-in
-  Exceptions":http://www.python.org/doc/current/lib/module-exceptions.html
+.. _Python Tutorial Errors and Exceptions: http://www.python.org/doc/current/tut/node10.html
+
+`Python Built-in Exceptions`_
+
+.. _Python Built-in Exceptions: http://www.python.org/doc/current/lib/module-exceptions.html
 
 unless: Tests a condition
 =========================
 
-The 'unless' tag provides a shortcut for testing negative
-conditions. For more complete condition testing use the 'if' tag. 
+The 'unless' tag provides a shortcut for testing negative conditions. For more
+complete condition testing use the 'if' tag.
 
 Syntax
+------
 
-  'unless' tag syntax::
+'unless' tag syntax::
 
-    <dtml-unless ConditionVariable|expr="ConditionExpression">
-    </dtml-unless>
+  <dtml-unless ConditionVariable|expr="ConditionExpression">
+  </dtml-unless>
 
-  The 'unless' tag is a block tag. If the condition variable or
-  expression evaluates to false, then the contained block is
-  executed. Like the 'if' tag, variables that are not present are
-  considered false.
+The 'unless' tag is a block tag. If the condition variable or expression
+evaluates to false, then the contained block is executed. Like the 'if' tag,
+variables that are not present are considered false.
 
 Examples
+--------
 
-  Testing a variable::
+Testing a variable::
 
-    <dtml-unless testMode>
-      <dtml-call dangerousOperation>
-    </dtml-unless>
+  <dtml-unless testMode>
+    <dtml-call dangerousOperation>
+  </dtml-unless>
 
-  The block will be executed if 'testMode' does not exist, or exists
-  but is false.
+The block will be executed if 'testMode' does not exist, or exists but is
+false.
 
 See Also
+--------
 
-  if tag
+if tag
 
 var: Inserts a variable
+=======================
 
-The 'var' tags allows you insert variables into
-DTML output.
-
-  % Anonymous User - July 2, 2002 12:11 pm:
-   Is there some place where all predefined variables are listed, e.g. bobobase_modification_time? If so, a link
-   to them at this point seems well-positioned to me.
+The 'var' tags allows you insert variables into DTML output.
 
 Syntax
+------
 
-  'var' tag syntax::
+'var' tag syntax::
 
-    <dtml-var Variable|expr="Expression">
+  <dtml-var Variable|expr="Expression">
 
-    % Anonymous User - Mar. 5, 2004 1:57 pm:
-     The difference between using <dtml-var Variable> and <dtml expr="Expression"> is never mentioned nor linked
-     to other parts of the documentation.
+The 'var' tag is a singleton tag. The 'var' tag finds a variable by searching
+the DTML namespace which usually consists of current object, the current
+object's containers, and finally the web request. If the variable is found, it
+is inserted into the DTML output. If not found, Zope raises an error.
 
-  The 'var' tag is a singleton tag.  The 'var' tag finds a variable
-  by searching the DTML namespace which usually consists of current
-  object, the current object's containers, and finally the web
-  request.  If the variable is found, it is inserted into the DTML
-  output. If not found, Zope raises an error.
+'var' tag entity syntax::
 
-  'var' tag entity syntax::
+  &dtml-variableName;
 
-    &dtml-variableName;
+Entity syntax is a short cut which inserts and HTML quotes the variable. It is
+useful when inserting variables into HTML tags.
 
-  Entity syntax is a short cut which inserts and HTML quotes the
-  variable. It is useful when inserting variables into HTML
-  tags.
+'var' tag entity syntax with attributes::
 
-  'var' tag entity syntax with attributes::
+  &dtml.attribute1[.attribute2]...-variableName;
 
-    &dtml.attribute1[.attribute2]...-variableName;
-
-  To a limited degree you may specify attributes with the entity
-  syntax. You may include zero or more attributes delimited by
-  periods. You cannot provide arguments for attributes using the
-  entity syntax. If you provide zero or more attributes, then the
-  variable is not automatically HTML quoted. Thus you can avoid HTML
-  quoting with this syntax, '&dtml.-variableName;'.
+To a limited degree you may specify attributes with the entity syntax. You may
+include zero or more attributes delimited by periods. You cannot provide
+arguments for attributes using the entity syntax. If you provide zero or more
+attributes, then the variable is not automatically HTML quoted. Thus you can
+avoid HTML quoting with this syntax, '&dtml.-variableName;'.
 
 Attributes
+----------
 
-  html_quote -- Convert characters that have special meaning in
-  HTML to HTML character entities.
+- html_quote
 
-  missing=string -- Specify a default value in case Zope cannot find
-  the variable.
+  Convert characters that have special meaning in HTML to HTML character
+  entities.
 
-  fmt=string -- Format a variable. Zope provides a few built-in
-  formats including C-style format strings. For more information on
-  C-style format strings see the "Python Library
-  Reference":http://www.python.org/doc/current/lib/typesseq-strings.html
-  If the format string is not a built-in format, then it is assumed
-  to be a method of the object, and it called.
+- missing=string
 
-    whole-dollars -- Formats the variable as dollars.
+  Specify a default value in case Zope cannot find the variable.
 
-    dollars-and-cents -- Formats the variable as dollars and cents.
+- fmt=string
 
-    collection-length -- The length of the variable, assuming it is
-    a sequence.
+  Format a variable. Zope provides a few built-in formats including C-style
+  format strings. For more information on C-style format strings see the
+  `Python Library Reference`_. If the format string is not a built-in format,
+  then it is assumed to be a method of the object, and it called.
 
-    structured-text -- Formats the variable as Structured Text. For
-    more information on Structured Text see "Structured Text
-    How-To":http://www.zope.org/Members/millejoh/structuredText on
-    the Zope.org website.
+  * collection-length
 
-  null=string -- A default value to use if the variable is None.
+    The length of the variable, assuming it is a sequence.
 
-  lower -- Converts upper-case letters to lower case. 
+- null=string
 
-  upper -- Converts lower-case letters to upper case. 
+  A default value to use if the variable is None.
 
-  capitalize -- Capitalizes the first character of the inserted
-  word. 
+- lower
 
-  spacify -- Changes underscores in the inserted value to spaces.
+  Converts upper-case letters to lower case. 
 
-  thousands_commas -- Inserts commas every three
-  digits to the left of a decimal point in values containing
-  numbers for example '12000' becomes '12,000'.
+- upper
 
-  url -- Inserts the URL of the object, by calling its
-  'absolute_url' method.
+  Converts lower-case letters to upper case. 
 
-  url_quote -- Converts characters that have special meaning in
-  URLs to HTML character entities.
+- capitalize
 
-  url_quote_plus -- URL quotes character, like 'url_quote' but also
-  converts spaces to plus signs.
+  Capitalizes the first character of the inserted word.
 
-  sql_quote -- Converts single quotes to pairs of single
-  quotes. This is needed to safely include values in SQL strings.
+- spacify
 
-  newline_to_br -- Convert newlines (including carriage returns) to
-  HTML break tags.
+  Changes underscores in the inserted value to spaces.
 
-  size=arg -- Truncates the variable at the given length
-  (Note: if a space occurs in the second half of the truncated
-  string, then the string is further truncated to the right-most space).
+- thousands_commas
 
-  etc=arg -- Specifies a string to add to the end of a string
-  which has been truncated (by setting the 'size' attribute listed
-  above).  By default, this is '...'
+  Inserts commas every three digits to the left of a decimal point in values
+  containing numbers for example '12000' becomes '12,000'.
+
+- url
+
+  Inserts the URL of the object, by calling its 'absolute_url' method.
+
+- url_quote
+
+  Converts characters that have special meaning in URLs to HTML character
+  entities.
+
+- url_quote_plus
+
+  URL quotes character, like 'url_quote' but also converts spaces to plus
+  signs.
+
+- sql_quote
+
+  Converts single quotes to pairs of single quotes. This is needed to safely
+  include values in SQL strings.
+
+- newline_to_br
+
+  Convert newlines (including carriage returns) to HTML break tags.
+
+- size=arg
+
+  Truncates the variable at the given length (Note: if a space occurs in the
+  second half of the truncated string, then the string is further truncated to
+  the right-most space).
+
+- etc=arg
+
+  Specifies a string to add to the end of a string which has been truncated (by
+  setting the 'size' attribute listed above). By default, this is '...'
+
+.. _Python Library Reference: http://www.python.org/doc/current/lib/typesseq-strings.html
 
 Examples
+--------
 
-  Inserting a simple variable into a document::
+Inserting a simple variable into a document::
 
-    <dtml-var standard_html_header>
+  <dtml-var standard_html_header>
 
-    % mcdonc - Aug. 14, 2002 11:47 am:
-     Need docs for url_unquote_plus and url_unquote (added in 2.6)
+Truncation::
 
-  Truncation::
+  <dtml-var colors size=10 etc=", etc.">
 
-    <dtml-var colors size=10 etc=", etc.">
+will produce the following output if *colors* is the string 'red yellow
+green'::
 
-  will produce the following output if *colors* is the string 'red
-  yellow green'::
+  red yellow, etc.
 
-    red yellow, etc.
+C-style string formatting::
 
-  C-style string formatting::
+  <dtml-var expr="23432.2323" fmt="%.2f">
 
-    <dtml-var expr="23432.2323" fmt="%.2f">
+renders to::
 
-  renders to::
+  23432.23
 
-    23432.23
+Inserting a variable, *link*, inside an HTML 'A' tag with the entity syntax::
 
-  Inserting a variable, *link*, inside an HTML 'A' tag with the entity
-  syntax::
+  <a href="&dtml-link;">Link</a>
 
-    <a href="&dtml-link;">Link</a>
+Inserting a link to a document 'doc', using entity syntax with attributes::
 
-  Inserting a link to a document 'doc', using entity syntax with
-  attributes::
+  <a href="&dtml.url-doc;"><dtml-var doc fmt="title_or_id"></a>
 
-    <a href="&dtml.url-doc;"><dtml-var doc fmt="title_or_id"></a>
-
-  This creates an HTML link to an object using its URL and
-  title. This example calls the object's 'absolute_url' method for
-  the URL (using the 'url' attribute) and its 'title_or_id' method
-  for the title.
+This creates an HTML link to an object using its URL and title. This example
+calls the object's 'absolute_url' method for the URL (using the 'url'
+attribute) and its 'title_or_id' method for the title.
 
 with: Controls DTML variable look up
 ====================================
 
-The 'with' tag pushes an object onto the DTML namespace. Variables
-will be looked up in the pushed object first.
+The 'with' tag pushes an object onto the DTML namespace. Variables will be
+looked up in the pushed object first.
 
 Syntax
+------
 
-  'with' tag syntax::
+'with' tag syntax::
 
-    <dtml-with Variable|expr="Expression">
-    </dtml-with>
+  <dtml-with Variable|expr="Expression">
+  </dtml-with>
 
-  The 'with' tag is a block tag. It pushes the named variable or
-  variable expression onto the DTML namespace for the duration of
-  the 'with' block. Thus names are looked up in the pushed object
-  first. 
+The 'with' tag is a block tag. It pushes the named variable or variable
+expression onto the DTML namespace for the duration of the 'with' block. Thus
+names are looked up in the pushed object first.
 
 Attributes
+----------
 
-  only -- Limits the DTML namespace to only include the one defined
-  in the 'with' tag.
+- only
 
-  mapping -- Indicates that the variable or expression is a mapping
-  object. This ensures that variables are looked up correctly in the
-  mapping object.
+  Limits the DTML namespace to only include the one defined in the 'with' tag.
+
+- mapping
+
+  Indicates that the variable or expression is a mapping object. This ensures
+  that variables are looked up correctly in the mapping object.
 
 Examples
+--------
 
-  Looking up a variable in the REQUEST::
+Looking up a variable in the REQUEST::
 
-    <dtml-with REQUEST only>
-      <dtml-if id>
-        <dtml-var id>
-      <dtml-else>
-        'id' was not in the request.
-      </dtml-if>
-    </dtml-with>
+  <dtml-with REQUEST only>
+    <dtml-if id>
+      <dtml-var id>
+    <dtml-else>
+      'id' was not in the request.
+    </dtml-if>
+  </dtml-with>
 
-  Pushing the first child on the DTML namespace::
+Pushing the first child on the DTML namespace::
 
-    <dtml-with expr="objectValues()[0]">
-      First child's id: <dtml-var id>
-    </dtml-with>
+  <dtml-with expr="objectValues()[0]">
+    First child's id: <dtml-var id>
+  </dtml-with>
 
 See Also
+--------
 
-  let tag
+let tag
