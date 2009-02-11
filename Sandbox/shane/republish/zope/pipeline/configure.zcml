@@ -10,6 +10,7 @@
     " />
 
 <wsgi:stage-list require="zope.publisher.interfaces.IRequest" names="
+    logger
     root_opener
     transaction_controller
     notifier
@@ -29,9 +30,26 @@
 <wsgi:pipeline require="zope.publisher.interfaces.http.IHTTPRequest" />
 <wsgi:pipeline require="zope.publisher.interfaces.browser.IBrowserRequest" />
 
-<adapter
-    factory="..."
-    name="logger" />
+<!-- a wsgi:middleware directive is just like an adapter directive,
+     except that the adapter is always registered as requiring
+     two parameters, 'app' and 'request'; the factory may be wrapped
+     to make that happen.  If neither the directive nor the factory
+     says what kind of request is required, assume IRequest. -->
+
+<wsgi:middleware
+    factory=".retry.Retry"
+    name="retry" />
+
+<!-- a wsgi:app directive is just like an adapter directive,
+     except that the adapter is always registered as requiring
+     one parameter, 'request'; the factory may be wrapped
+     to make that happen.  If neither the directive nor the factory
+     says what kind of request is required, assume IRequest. -->
+
+<wsgi:app
+    factory=".caller.Caller"
+    name="caller" />
+
 
 <adapter
     factory=".retry.Retry"
@@ -40,6 +58,14 @@
 <adapter
     factory="..."
     name="request_factory" />
+
+<adapter
+    factory="..."
+    name="select_pipeline" />
+
+<adapter
+    factory="..."
+    name="logger" />
 
 <adapter
     factory=".rootopen.RootOpener"
@@ -69,9 +95,6 @@
     factory=".txnctl.TransactionAnnotator"
     name="transaction_annotator" />
 
-<adapter
-    factory=".caller.Caller"
-    name="caller" />
 
 </configuration>
 
