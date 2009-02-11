@@ -164,14 +164,14 @@ in order to be able to run at all.  While binary versions of Zope ship with
 a recent Python version, the source Zope distribution does not.  Zope
 developers try to use the most recent Python for Zope, but often the latest
 Python version is more recent than the officially-supported Zope version.
-Zope 2.7 requires Python 2.3.2 or later, and Zope versions 2.5 and 2.6
-require a Python 2.1.*x* version equal to or greater than 2.1.3.  For the
+Zope 2.12 requires Python 2.5.4 or later, and Zope versions 2.11 and 2.10
+require a Python 2.4.*x* version equal to or greater than 2.4.3.  For the
 most recent information on which version of Python is required for
 compiling Zope, see the release notes on the release Web page.
 
 You can obtain detailed instructions for downloading, compiling, and
 installing Python from source at the `Python.org <http://www.python.org/>`_
-website.  Some Linux distributions ship with a pre-installed Python 2.3,
+website.  Most Linux distributions ship with a pre-installed Python 2.5,
 but care is required when attempting to use a vendor-installed Python to
 compile Zope: some of these vendor-supplied Python distributions do not
 ship the necessary Python development files needed to compile Zope from
@@ -205,23 +205,23 @@ command::
   $ ./configure --prefix=/where/to/install/zope
 
 Replace */where/to/install/zope* above with an appropriate path, such as
-``~/myzope/zope2.7``.  This path is referred to as the *ZOPE_HOME*.  If you
+``~/myzope/zope2``.  This path is referred to as the *ZOPE_HOME*.  If you
 want to install Zope in a system directory instead of your user home,
-replace ``~/myzope/zope2.7`` with an appropriate path, e.g.,
-``/usr/local/zope2.7``, and make sure that you have suitable privileges for
+replace ``~/myzope/zope2`` with an appropriate path, e.g.,
+``/usr/local/zope2``, and make sure that you have suitable privileges for
 installing and starting Zope ('sudo' or 'root').
 
 If the configure script is unable to find your Python installation, it will
 report an error not unlike this one::
 
-  $ ./configure --prefix=~/myzope/zope2.7
+  $ ./configure --prefix=~/myzope/zope2
 
   Configuring Zope installation
   Testing for an acceptable Python interpreter...
 
   No suitable Python version found. You should install
-  Python version 2.3.3 before continuing. Versions
-  2.3.2 2.3.1 2.3 2.2.3 2.2.2 also work, but not as optimally.
+  Python version 2.5.4 before continuing. Versions
+  2.6.1 2.6.0 also work, but not as optimally.
 
 In this case, you must point the installer to your Python interpreter,
 which you should have installed previously, either from a binary package or
@@ -230,7 +230,7 @@ compiled from source.
 Use the ``--with-python`` option to the configure script, e.g,. for a python
 living under ``/usr/local`` ::
 
-  $ ./configure --prefix=~/myzope/zope2.7 \
+  $ ./configure --prefix=~/myzope/zope2 \
   --with-python=/usr/local/bin/python
 
 Replace ``/usr/local/bin/python`` with the path to your Python executable.
@@ -248,7 +248,7 @@ You are now ready to install Zope. To do this, you will have to execute
   $ make install
   [ lots of output snipped ]
   Zope binaries installed successfully.
-  Now run '~/myzope/zope2.7/bin/mkzopeinstance.py'
+  Now run '~/myzope/zope2/bin/mkzopeinstance.py'
 
 With the Zope binaries installed, you are now ready to create a *Zope
 instance*, which holds configuration and runtime data for a single Zope
@@ -259,7 +259,7 @@ Assuming that you want to install a Zope instance in the directory
 ``~/myzope/instance``, in order to create a Zope instance, you would run
 the following command::
 
-  $ ~/myzope/zope2.7/bin/mkzopeinstance.py
+  $ ~/myzope/zope2/bin/mkzopeinstance.py
 
 You will need to provide the following values:
 
@@ -274,7 +274,7 @@ You will need to provide the following values:
   username or password for your initial Zope user, run::
 
   $ cd ~/myzope/instance
-  $ ~/myzope/zope2.7/bin/zpasswd.py inituser
+  $ ~/myzope/zope2/bin/zpasswd.py inituser
 
 You will have to provide the username and password you wish to set;
 optionally, you can specify the hashing method and an additional domain
@@ -384,9 +384,7 @@ Starting Zope as the Root User
 ``ZServer`` (Zope's server) supports ``setuid()`` on POSIX systems in order
 to be able to listen on low-numbered ports, such as 21 (FTP) and 80 (HTTP),
 but drop root privileges when running; on most POSIX systems, only the
-``root`` user can do this.  Versions of Zope prior to 2.6 had less robust
-versions of this support.  Several problems were corrected for the 2.6
-release.
+``root`` user can do this.
 
 The most important thing to remember about this support is that you don't
 *have* to start ZServer as root, unless you want to listen for requests on
@@ -407,16 +405,9 @@ database files are writeable by this user.
 Your Zope Installation
 ----------------------
 
-To use and manage Zope, you will need a web browser.  Since Zope's
-management interface (ZMI) is written entirely in HTML, any browser that
-understands modern HTML enables you to manage a Zope installation.
-Mozilla, any 3.0+ version of Microsoft Internet Explorer, or Netscape
-Navigator will do.  Other browsers that are known to work with Zope include
-Opera, Galeon, Konqueror, OmniWeb, Lynx, and W3M.
-
-Start a web browser on the same machine on which you installed
-Zope, and browse to the URL `http://localhost:8080/
-<http://localhost:8080/>`_.
+To use and manage Zope, you will need a web browser. Start a web browser on the
+same machine on which you installed Zope, and browse to the URL
+`http://localhost:8080/ <http://localhost:8080/>`_.
 
 If your Zope instance has been properly installed, and you're visiting the
 correct URL, you will be presented with the Zope "QuickStart" screen.
@@ -432,11 +423,10 @@ below.
 Logging In
 ----------
 
-To do anything remotely interesting with Zope, you need to use its
-management interface: the *ZMI*.  Zope is completely web-manageable.  To
-log into the ZMI, use your web browser to navigate to Zope's management
-URL.  Assuming you have Zope installed on the same machine from which you
-are running your web browser, the Zope management URL will be
+For some of the tasks you want to do with Zope, you need to use its management
+interface: the *ZMI*. To log into the ZMI, use your web browser to navigate to
+Zope's management URL. Assuming you have Zope installed on the same machine
+from which you are running your web browser, the Zope management URL will be
 `http://localhost:8080/manage <http://localhost:8080/manage>`_.
 
 Successful contact with Zope via this URL will result in an authentication
@@ -462,7 +452,7 @@ the Zope process.  Find and click the **Control_Panel** object in ZMI.
 
 The Control Panel displays information about your Zope, such as the Zope
 version you are running, the Python version that Zope is using, the system
-platform, the INSTANCE_HOME, the ZOPE_HOME, Zope's process id, the network
+platform, the INSTANCE_HOME, the CLIENT_HOME, Zope's process id, the network
 services that have been started, how long Zope has been running for, and
 other installation specifics.  Several buttons and links will also be
 shown.
@@ -485,13 +475,6 @@ Zope is running, so that you can manually restart it later as needed.
 Controlling the Zope Process from the Command Line
 --------------------------------------------------
 
-To stop a manually-run Zope on Windows, press "Ctrl+C" while the console
-window under which Zope is running is selected.  To stop a Zope on Windows
-that was run as a service, find the service with the name you assigned to
-your Zope in the Services Control Panel application, and stop the service.
-
-To stop Zope on UNIX, do one of the following:
-
 - If you started Zope in the foreground, press "Ctrl+C" in the terminal
   window from which you started Zope.
 
@@ -499,21 +482,17 @@ To stop Zope on UNIX, do one of the following:
 
   $ ~/myzope/instance/bin/zopectl stop
 
-* Use the UNIX "kill" command against the process id in the
+* On Unix use the "kill" command against the process id in the
   "var/Z2.pid" file inside the Zope instance directory::
 
   $ kill `cat var/Z2.pid`
 
 
-
 Customizing your Zope instance
 ------------------------------
 
-As of Zope 2.7.0, configuration is no longer done with a mix of environment
-variables and command line options. Instead, the file
-'$INSTANCE_HOME/etc/zope.conf' contains numerous configuration directives
-for customization.  This configuration scheme greatly enhances Zope
-manageability and configurability.
+Zope's configuration is done via the file '$INSTANCE_HOME/etc/zope.conf'.
+This contains numerous configuration directives for customization.
 
 The ``zope.conf`` file features extensive inline documentation, which we
 will not reproduce here.  Instead, we will give an overview and some
@@ -559,18 +538,6 @@ for development, in real time.  In a production environment, to reduce
 unnecessary overhead, you should ensure that this directive is set to
 ``off`` unless you are actively troubleshooting a problem.
 
-Additional ``products`` directories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This directive can be used to specify additional ``Products`` directories,
-or additional folders in which Zope looks for third-party and other add-on
-Zope Products.  Specifying a separate directory for commonly-used,
-third-party Products, such as CookieCrumbler or CMF and Plone packages,
-maintains a better separation of core Zope Products and third-party add-ons
-and improves maintainability.  Another common use for this directive is
-employed by Zope Product developers, who use it to specify a
-version-controlled development directory.
-
 Switch the User the Zope process runs as: ``effective-user``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -580,16 +547,6 @@ compromised Zope instance would not enable a compromised user to damage
 easily an entire system.  One motivation for running Zope as root in the
 first place is to be able to bind to *privileged* ports, or ports with
 values below 1024.
-
-Configuring the Session machinery
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Use the ``maximum-number-of-session-objects`` directive to limit the number
-of session objects.  This value defaults to 1000 objects; 0 means
-unlimited.
-
-``session-timeout-minutes`` sets the Session timeout period in minutes. The
-default is 20.
 
 Logging
 ~~~~~~~
@@ -620,36 +577,6 @@ For further documentation, see the inline comments in ``zope.conf``.
 Troubleshooting and Caveats
 ---------------------------
 
-Running zopectl returns with an OSError
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-When running Zope on a 2.6.x Linux kernel, Solaris or Mac OS X, zopectl
-returns an error ``OSError: [Errno 10] No child processes``. This is due to
-a bug in Zope 2.7.0. You have the following options:
-
-- Install a patch currently in CVS. See http://zope.org/Collectors/Zope/1235
-  for the collector log and a small patch. The patch file is named
-  ``zdctl.diff``. Download it to a temporary directory, e.g., ``/tmp``. Then
-  'cd' to the directory ``$ZOPE_HOME/lib/python/zdaemon`` (continuing our
-  previous example, this would be ``~/myzope/zope2.7/lib/python/zdaemon``)
-  and run the patch command, e.g.::
-  
-   $ cd ~/myzope/zope2.7/lib/python/zdaemon
-   $ patch < /tmp/zdctl.diff'.
-  
-  The patch program should respond with an output similar to ``patching
-  file zdctl.py``.
-
-- If running on Linux: downgrade to a 2.4.x kernel
-
-- Work around this issue by placing Zope in the background manually with::
-
-   $ nohup ~/myzope/instance/bin/runzope &
-
-Note though that your Zope instance will not be automatically restarted by
-'zdaemon' this way, and that this method should not be used on a production
-server.
-
 Browser cannot connect to port 8080
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -662,11 +589,11 @@ with ``./runzope`` or ``./zopectl fg``. For example::
 
  ...
  ------
- 2004-04-21T21:48:27 INFO(0) ZServer HTTP server started at Wed Apr 21 21:48:27 2004
+ 2009-01-21T21:48:27 INFO(0) ZServer HTTP server started at Wed Jan 21 21:48:27 2009
  Hostname: arod
  Port: 9673
  ------
- 2004-04-21T21:48:27 INFO(0) ZServer FTP server started at Wed Apr 21 21:48:27 2004
+ 2009-01-21T21:48:27 INFO(0) ZServer FTP server started at Wed Jan 21 21:48:27 2009
  Hostname: arod
  Port: 8021
  ...
@@ -679,11 +606,6 @@ As mentioned previously, Zope only prints to the console when started in
 the foreground, with ``./runzope`` or ``runzope.bat``. This logging
 information can be found in the ``log/event.log`` file in your
 ``INSTANCE_HOME`` directory.
-
-Certain versions of Microsoft Internet Explorer 5.0.1 and 5.5 are
-incompatible with the ZMI in some respects, which manifest themselves as an
-inability to properly log in.  If you have trouble logging in with IE 5.0.1
-or IE 5.5, try a different browser or upgrade to a later version.
 
 Forgot administrative password
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -117,25 +117,22 @@ of the *Zope Developer's Guide*.
 Through-The-Web Management
 --------------------------
 
-To create and work with Zope objects, you use your Web browser
-to access the *Zope management interface* (ZMI). All management and
-application development can be done completely through the Web
-using only a browser. The ZMI provides a
-familiar, Windows Explorer-like view of the Zope object
-system. Through the ZMI, a developer can create
-and script Zope objects, or even define new kinds of objects,
-without requiring access to the file system of the web server.
+To create and work with Zope objects, you can use your Web browser to access
+the *Zope management interface* (ZMI). Basic management and application
+configuration tasks can be done completely through the Web using only a
+browser. The ZMI provides a familiar, Windows Explorer-like view of the Zope
+object system.
 
-Objects can be dropped in anywhere in the object hierarchy. Site
-managers can work with their objects by clicking on tabs that
-represent different "views" of an object. These views vary
-depending on the type of object. A "DTML Method" Zope object,
-for example, has an "Edit" tab, which allows you to edit the
-document's source; a "Database Connection" Zope object
-provides views that let you modify its connection string or
-caching parameters. All objects also have a
-"Security" view that allows you to manage their individual access control
-settings.
+Any object in the object hierarchy can be configured. Site managers can work
+with their objects by clicking on tabs that represent different "views" of an
+object. These views vary depending on the type of object. For example a
+"Database Connection" Zope object provides views that let you modify its
+connection string or caching parameters. All objects also have a "Security"
+view that allows you to manage their individual access control settings.
+
+Zope had a much larger focus on Through-The-Web activities in its beginning.
+In recent years the Through-The-Web model has been discouraged for any kind of
+development and reduced to configuration tasks.
 
 Security and Safe Delegation
 ----------------------------
@@ -201,19 +198,18 @@ framework.
 Acquisition
 -----------
 
-One of the most powerful aspects of Zope is *acquisition*, whose
-core concepts are simply that:
+One more prominent aspect of Zope is *acquisition*, whose core concepts are
+simply that:
 
-*  Zope objects are contained inside other objects (such as Folders).
+* Zope objects are contained inside other objects (such as Folders).
 
-*  Objects can "acquire" attributes and behavior from
-   their containers.
+* Objects can "acquire" attributes and behavior from their containers.
 
 The concept of acquisition works with all Zope objects and
 provides an extremely powerful way to centralize common
 resources. A commonly-used SQL query or snippet of HTML, for
 example, can be defined in one Folder, and objects in sub-folders
-can use it automatically through acquisition. If the query needs
+can use it through acquisition. If the query needs
 to be changed, you can change it in one place without worrying
 about all of the sub-objects that use the same query.
 
@@ -226,34 +222,23 @@ Note that some advanced aspects of acquisition may break
 this analogy; these are discussed in the 
 `Advanced Zope Scripting <ScriptingZope.html>`_ chapter.
 
-Because objects are acquired by starting at the current level in
-their containment hierarchy and searching upward, it is easy to
-specialize areas of your site with a minimum level of work. If, for
-example, you had a Folder named "Sports" on your site containing
-sports-related content, you could create a new header and footer
-document in the Sports Folder that use a sports-related
-theme. Content in the Sports folder and its sub-folders will then
-use the specialized sports-related header and footer found in the
-Sports Folder, rather than the site's main header and footer.
-
 Acquisition is explained in further detail in the chapter on
 `Acquisition <Acquisition.html>`_ .
 
 Zope Is Extensible
 ------------------
 
-Zope is highly extensible, and advanced users can create new
-types of Zope objects, either by writing new Zope add-ons in
-Python, or by building them entirely through the Web. The Zope
+Zope is highly extensible, and component developers can create new
+types of Zope objects by writing new Zope add-on in Python. The Zope
 software provides a number of useful, built-in components to aid
 extension authors in development, including a robust set of framework classes
 that take care of most of the details of implementing new Zope
 objects.
 
-A number of Zope add-on products are available that provide
+A number of Zope add-ons are available that provide
 features like drop-in web discussion topics, desktop data
 publishing, XML tools, and e-commerce integration. Many of these
-products have been written by highly active members of the
+add-ons have been written by highly active members of the
 Zope community, and most are also open source.
 
 Fundamental Zope Components
@@ -297,6 +282,7 @@ stored in the ZODB.
 
 Relational database
 -------------------
+
 You don't have to store your information in Zope's object database if you
 don't want to.  Zope also works with other relational databases,
 including *Oracle*, *PostgreSQL*, *Sybase*, and *MySQL*.
@@ -307,14 +293,10 @@ File System
 Zope can, of course, work with documents and other files stored on your
 server's file system.
 
-ZClasses
---------
-
-Zope allows site managers to add new object types to Zope using the ZMI.
-These new object types are called *ZClasses*.
-
 Products
 --------
 
 Zope also allows site managers to add new, pre-built object types to Zope
-by installing *Product* files on the Zope server file system.
+by installing add-ons on the Zope server file system. These are referred to
+as Products or Add-ons. Technically they are normal Python packages.
+
