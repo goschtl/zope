@@ -15,6 +15,8 @@ Changes for lovely.remotetask
 - Use zc.queue.Queue instead of zc.queue.PersistentQueue because
   PersistentQueue is only to be used by the CompositeQueue.
 
+- Changed URL to pypi.
+
 
 2008/11/07 0.2.15a1:
 ====================

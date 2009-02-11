@@ -9,7 +9,7 @@ setup (
     description = "A remotetask client utiltiy for zope 3",
     license = "ZPL 2.1",
     keywords = "zope3 zope remotetask cache ram",
-    url = 'svn://svn.zope.org/repos/main/lovely.remotetask',
+    url = 'http://pypi.python.org/pypi/lovely.remotetask',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
