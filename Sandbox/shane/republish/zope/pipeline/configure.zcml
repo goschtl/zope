@@ -1,15 +1,18 @@
-<configuration>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:wsgi="http://namespaces.zope.org/wsgi">
 
-<!-- a wsgi:stage-list directive registers a bound StageList.adapt() method
-     as an unnamed adapter from the request type to IStageList. -->
+<!-- a wsgi:application-list directive specifies the names of
+     applications to use in a pipeline.  Its implementation
+     registers a bound ApplicationList.adapt() method as an
+     unnamed adapter from the request type to IApplicationList. -->
 
-<wsgi:app-list for=".interfaces.IUndecidedRequest" names="
+<wsgi:application-list for=".interfaces.IUndecidedRequest" names="
     retry
     request_factory
-    pipeline_pivot
+    switch
     " />
 
-<wsgi:app-list for="zope.publisher.interfaces.IRequest" names="
+<wsgi:application-list for="zope.publisher.interfaces.IRequest" names="
     logger
     root_opener
     transaction_controller
@@ -21,48 +24,47 @@
     caller
     " />
 
-<!-- a wsgi:pipeline directive registers a bound Pipeline.adapt() method as
-     an adapter from the request type to IWSGIApplication with name
-     "pipeline". -->
+<!-- a wsgi:pipeline directive creates a pipeline for a particular
+     request type.  Its implementation registers a bound
+     Pipeline.adapt() method as an adapter from the request type
+     to IWSGIApplication with name "pipeline". -->
 
 <wsgi:pipeline for=".interfaces.IUndecidedRequest" />
 <wsgi:pipeline for="zope.publisher.interfaces.IRequest" />
 <wsgi:pipeline for="zope.publisher.interfaces.http.IHTTPRequest" />
 <wsgi:pipeline for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
-<!-- a wsgi:middleware directive is like an adapter directive,
+<!-- a wsgi:middleware directive registers an application for use
+     as middleware in a pipeline.  It is like an adapter directive,
      except that the adapter is registered as requiring
-     two parameters, 'app' and 'request', while only the app is
-     provided to the application factory; the factory is wrapped
+     two parameters, 'app' and 'request', while only the 'app' parameter is
+     provided to the middleware factory; the factory is wrapped
      to make that happen.  If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:middleware
     factory=".retry.Retry"
-    name="retry" />
+    name="retry"
+    for=".interfaces.INoRequest" />
 
-<!-- a wsgi:application directive is like an adapter directive,
-     except that the adapter is registered as requiring
+<wsgi:middleware
+    factory="..."
+    name="request_factory"
+    for=".interfaces.INoRequest" />
+
+<!-- a wsgi:application directive registers an application for use
+     as the final application in a pipeline.  It is like an adapter
+     directive, except that the adapter is registered as requiring
      one parameter, 'request', while no parameters are passed to the
      application factory; the factory is wrapped
      to make that happen.  If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:application
-    factory=".caller.Caller"
-    name="caller" />
+    factory=".switch.Switch"
+    name="switch"
+    for=".interfaces.INoRequest" />
 
-<wsgi:middleware
-    factory=".retry.Retry"
-    name="retry" />
-
-<wsgi:middleware
-    factory="..."
-    name="request_factory" />
-
-<wsgi:application
-    factory="..."
-    name="pipeline_pivot" />
 
 <wsgi:middleware
     factory="..."
@@ -96,8 +98,12 @@
     factory=".txnctl.TransactionAnnotator"
     name="transaction_annotator" />
 
+<wsgi:application
+    factory=".caller.Caller"
+    name="caller" />
 
-</configuration>
+
+</configure>
 
 
 

@@ -30,6 +30,7 @@ from zope.schema import TextLine
 from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces import IRequest
 
+
 class IApplicationListDirective(Interface):
     """Declare a list of application names in a WSGI pipeline"""
 
@@ -45,6 +46,7 @@ class IApplicationListDirective(Interface):
             'the rest declare a middleware application.'),
         required=True)
 
+
 class IPipelineDirective(Interface):
     """Declare a WSGI pipeline"""
 
@@ -52,6 +54,7 @@ class IPipelineDirective(Interface):
         title=_('Request type'),
         description=_('The type of request that should use this pipeline'),
         required=True)
+
 
 class IApplicationDirective(Interface):
     """Declare a simple WSGI application for use at the end of a pipeline"""
@@ -74,13 +77,16 @@ class IApplicationDirective(Interface):
         required=False,
         )
 
+
 class IMiddlewareDirective(IApplicationDirective):
     """Declare a middleware WSGI application for use in a pipeline"""
     # same schema as IApplicationDirective
     pass
 
+
 class IApplicationList(Interface):
     names = Attribute("Application names to use in a pipeline")
+
 
 class ApplicationList(object):
     implements(IApplicationList)
@@ -92,6 +98,7 @@ class ApplicationList(object):
         """Called by adapter lookup"""
         return self
 
+
 class MarkerRequest(object):
     """A marker object that claims to provide a request type.
 
@@ -102,12 +109,13 @@ class MarkerRequest(object):
     def __init__(self, request_type):
         directlyProvides(self, request_type)
 
+
 class Pipeline(object):
     implements(IWSGIApplication)
 
     def __init__(self, request_type):
-        self.app = None
         self.request_type = request_type
+        self.app = None
 
     def adapt(self, request):
         """Called by adapter lookup"""
@@ -130,6 +138,13 @@ class Pipeline(object):
             app = getMultiAdapter(
                 (app, marker_req), IWSGIApplication, name=name)
         return app
+
+    def __repr__(self):
+        if self.app is None:
+            self.app = self.make_app()
+        return '%s(%s, app=%s)' % (
+            self.__class__.__name__, repr(self.request_type), repr(self.app))
+
 
 def application_list(_context, for_, names):
     """Register an application list"""
