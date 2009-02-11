@@ -41,6 +41,9 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
     def __init__(self, context, parentForm, request):
         super(PageletEditSubForm, self).__init__(context, request, parentForm)
 
+    def applyChanges(self, data):
+        return applyChanges(self, self.getContent(), data)
+
     @button.handler(ISaveAction)
     def handleApply(self, action):
         data, errors = self.extractData()
@@ -48,10 +51,8 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
             IStatusMessage(self.request).add(
                 (self.formErrorsMessage,) + errors, 'formError')
         else:
-            content = self.getContent()
-            changed = applyChanges(self, content, data)
-            if changed:
-                event.notify(ObjectModifiedEvent(content))
+            if self.applyChanges(data):
+                event.notify(ObjectModifiedEvent(self.getContent()))
 
     def executeActions(self, form):
         request = self.request
