@@ -352,7 +352,6 @@ You can get a list of all methods:
   <value><string>getError</string></value>
   <value><string>getResult</string></value>
   <value><string>getStatus</string></value>
-  <value><string>skin</string></value>
   </data></array></value>
   </param>
   </params>
