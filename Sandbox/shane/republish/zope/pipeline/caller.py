@@ -5,6 +5,7 @@ class Caller(object):
     """WSGI app that calls the traversed object.
 
     Requires 'zope.request', which implements IRequest, in the environment.
+    The 'traversed' attribute of the request must be set.
     """
     def __call__(self, environ, start_response):
         request = environ['zope.request']

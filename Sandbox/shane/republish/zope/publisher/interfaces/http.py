@@ -51,7 +51,7 @@ class IHTTPRequest(IRequest):
     method = Attribute("Request method, normalized to upper case")
 
     def setPathSuffix(steps):
-        """Deprecated: Add to traversal_stack instead.
+        """Deprecated: Prepend to traversal_stack instead.
         """
 
     locale = Attribute(

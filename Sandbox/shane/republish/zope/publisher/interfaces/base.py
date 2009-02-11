@@ -5,7 +5,8 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface.common.mapping import IExtendedReadMapping
 
-__all__ = ('IRequest', 'IResponse', 'IResult', 'IHeld', 'IDebugFlags')
+__all__ = ('IRequest', 'IResponse', 'IResult', 'IHeld', 'IDebugFlags',
+    'IWSGIApplication')
 
 
 class IRequest(IExtendedReadMapping):
@@ -61,13 +62,6 @@ class IRequest(IExtendedReadMapping):
     principal = Attribute(
         """IPrincipal object associated with the request.
         """)
-
-    def retry():
-        """Returns a re-initialized request to be retried.
-
-        Returns a request suitable for repeating the publication attempt,
-        or raises RetryNotSupported if the response can not be retried.
-        """
 
     bodyStream = Attribute(
         """The stream that provides the data of the request.
@@ -204,14 +198,7 @@ class IResponse(Interface):
     def reset():
         """Reset the output result.
 
-        Reset the response by nullifying already set variables.
-        """
-
-    def retry():
-        """Returns a re-initialized response to be retried.
-
-        Returns a response suitable for repeating the publication attempt,
-        or raises RetryNotSupported if the response can not be retried.
+        Reset the response by clearing the status, headers, and body.
         """
 
 
@@ -267,3 +254,14 @@ class IDebugFlags(Interface):
 
     sourceAnnotations = Attribute("""Enable ZPT source annotations""")
     showTAL = Attribute("""Leave TAL markup in rendered page templates""")
+
+
+class IWSGIApplication(Interface):
+    """Implements the WSGI application spec.  See PEP 333:
+
+    http://www.python.org/dev/peps/pep-0333/
+    """
+
+    def __call__(environ, start_response):
+        """Call the application and return a body iterator."""
+

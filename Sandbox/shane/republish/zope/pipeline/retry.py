@@ -1,0 +1,62 @@
+
+from zope.publisher.interfaces import IWSGIApplication
+from zope.publisher.interfaces.exceptions import Retry
+from ZODB.POSException import ConflictError
+
+from zope.pipeline.autotemp import AutoTemporaryFile
+
+
+class Retry(object):
+    """Retries requests when a Retry or ConflictError propagates.
+
+    This middleware app should enclose the app that creates zope.request.
+    It sets an environment variable named 'zope.can_retry'.  Error handlers
+    should propagate Retry or ConflictError when zope.can_retry has
+    a true value.
+    """
+    implements(IWSGIApplication)
+    adapts(IWSGIApplication)
+
+    def __init__(self, app, max_attempts=3):
+        self.app = app
+        self.max_attempts = max_attempts
+
+    def __call__(self, environ, start_response):
+        wsgi_input = environ.get('wsgi.input')
+        if wsgi_input is not None:
+            if not hasattr(wsgi_input, 'seek'):
+                # make the input stream rewindable
+                f = AutoTemporaryFile()
+                f.copyfrom(wsgi_input)
+                environ['wsgi.input'] = wsgi_input = f
+
+        def retryable_start_response(status, response_headers, exc_info=None):
+            start_response_params[:] = [status, response_headers, exc_info]
+            tmp = AutoTemporaryFile()
+            output_file[:] = [tmp]
+            return tmp
+
+        attempt = 1
+        while attempt < self.max_attempts:
+            start_response_params = []
+            output_file = []
+            environ['zope.can_retry'] = True
+            try:
+                res = self.app(environ, retryable_start_response)
+                if start_response_params:
+                    dest = start_response(*tuple(start_response_params))
+                    src = output_file[0]
+                    src.seek(0)
+                    src.copyto(dest)
+                    src.close()
+                return res
+            except (Retry, ConflictError):
+                if 'zope.request' in environ:
+                    del environ['zope.request']
+                if wsgi_input is not None:
+                    wsgi_input.seek(0)
+                attempt += 1
+
+        # try once more, this time without retry support
+        environ['zope.can_retry'] = False
+        return self.app(environ, start_response)
