@@ -87,6 +87,6 @@ class TransactionAnnotator(object):
         for iface in providedBy(request):
             if iface.extends(IRequest):
                 break
-        iface_dotted = iface.__module__ + '.' + iface.getName()
+        iface_dotted = '%s.%s' % (iface.__module__, iface.getName())
         txn.setExtendedInfo('request_type', iface_dotted)
         return txn

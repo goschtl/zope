@@ -3,13 +3,13 @@
 <!-- a wsgi:stage-list directive registers a bound StageList.adapt() method
      as an unnamed adapter from the request type to IStageList. -->
 
-<wsgi:stage-list require=".interfaces.IUndecidedRequest" names="
+<wsgi:app-list for=".interfaces.IUndecidedRequest" names="
     retry
     request_factory
-    select_pipeline
+    pipeline_pivot
     " />
 
-<wsgi:stage-list require="zope.publisher.interfaces.IRequest" names="
+<wsgi:app-list for="zope.publisher.interfaces.IRequest" names="
     logger
     root_opener
     transaction_controller
@@ -25,14 +25,15 @@
      an adapter from the request type to IWSGIApplication with name
      "pipeline". -->
 
-<wsgi:pipeline require=".interfaces.IUndecidedRequest" />
-<wsgi:pipeline require="zope.publisher.interfaces.IRequest" />
-<wsgi:pipeline require="zope.publisher.interfaces.http.IHTTPRequest" />
-<wsgi:pipeline require="zope.publisher.interfaces.browser.IBrowserRequest" />
+<wsgi:pipeline for=".interfaces.IUndecidedRequest" />
+<wsgi:pipeline for="zope.publisher.interfaces.IRequest" />
+<wsgi:pipeline for="zope.publisher.interfaces.http.IHTTPRequest" />
+<wsgi:pipeline for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
-<!-- a wsgi:middleware directive is just like an adapter directive,
-     except that the adapter is always registered as requiring
-     two parameters, 'app' and 'request'; the factory may be wrapped
+<!-- a wsgi:middleware directive is like an adapter directive,
+     except that the adapter is registered as requiring
+     two parameters, 'app' and 'request', while only the app is
+     provided to the application factory; the factory is wrapped
      to make that happen.  If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
@@ -40,58 +41,58 @@
     factory=".retry.Retry"
     name="retry" />
 
-<!-- a wsgi:app directive is just like an adapter directive,
-     except that the adapter is always registered as requiring
-     one parameter, 'request'; the factory may be wrapped
+<!-- a wsgi:application directive is like an adapter directive,
+     except that the adapter is registered as requiring
+     one parameter, 'request', while no parameters are passed to the
+     application factory; the factory is wrapped
      to make that happen.  If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
-<wsgi:app
+<wsgi:application
     factory=".caller.Caller"
     name="caller" />
 
-
-<adapter
+<wsgi:middleware
     factory=".retry.Retry"
     name="retry" />
 
-<adapter
+<wsgi:middleware
     factory="..."
     name="request_factory" />
 
-<adapter
+<wsgi:application
     factory="..."
-    name="select_pipeline" />
+    name="pipeline_pivot" />
 
-<adapter
+<wsgi:middleware
     factory="..."
     name="logger" />
 
-<adapter
+<wsgi:middleware
     factory=".rootopen.RootOpener"
     name="root_opener" />
 
-<adapter
+<wsgi:middleware
     factory=".txnctl.TransactionController"
     name="transaction_controller" />
 
-<adapter
+<wsgi:middleware
     factory=".event.EventNotifier"
     name="notifier" />
 
-<adapter
+<wsgi:middleware
     factory="..."
     name="error_handler" />
 
-<adapter
+<wsgi:middleware
     factory=".authenticator.Authenticator"
     name="authenticator" />
 
-<adapter
+<wsgi:middleware
     factory="..."
     name="traverser" />
 
-<adapter
+<wsgi:middleware
     factory=".txnctl.TransactionAnnotator"
     name="transaction_annotator" />
 

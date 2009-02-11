@@ -2,7 +2,6 @@
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces import IWSGIApplication
-from zope.publisher.interfaces import IRequest
 
 
 class Caller(object):
@@ -12,10 +11,6 @@ class Caller(object):
     The 'traversed' attribute of the request must be set.
     """
     implements(IWSGIApplication)
-    adapts(IRequest)
-
-    def __init__(self, marker_request=None):
-        pass
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']

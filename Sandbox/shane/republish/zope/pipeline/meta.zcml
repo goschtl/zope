@@ -1,0 +1,31 @@
+<configure xmlns:meta="http://namespaces.zope.org/meta">
+
+<meta:directive
+    namespace="http://namespaces.zope.org/wsgi"
+    name="application-list"
+    schema=".zcml.IApplicationListDirective"
+    handler=".zcml.application_list"
+    />
+
+<meta:directive
+    namespace="http://namespaces.zope.org/wsgi"
+    name="pipeline"
+    schema=".zcml.IPipelineDirective"
+    handler=".zcml.pipeline"
+    />
+
+<meta:directive
+    namespace="http://namespaces.zope.org/wsgi"
+    name="application"
+    schema=".zcml.IApplicationDirective"
+    handler=".zcml.application"
+    />
+
+<meta:directive
+    namespace="http://namespaces.zope.org/wsgi"
+    name="middleware"
+    schema=".zcml.IMiddlewareDirective"
+    handler=".zcml.middleware"
+    />
+
+</configure>
