@@ -75,14 +75,13 @@ We get an error here because we're not running an ssh server on port
 
 Even though we don't have a real encrypted network connection, let's
 see what the connection object would send over the ssh channel.
-
-    >>> class StubChannel(object):
-    ...     def send(self, data):
+    >>> class StubFile(object):
+    ...     def write(self, data):
     ...         print repr(data)
+    >>> class StubChannel(object):
     ...     def close(self): pass
-
     >>> c.channel = StubChannel()
-
+    >>> c.channelw = StubFile()
     >>> c.putheader('Header Name', 'Header value')
     'Header Name: Header value\r\n'
 
@@ -98,7 +97,7 @@ HTTP response. We can demo this by using a fake server response.
     >>> from cStringIO import StringIO
     >>> f = StringIO("""HTTP/1.0 200 OK\r\nHeader: value\r\n\r\nBody""")
     >>> f.seek(0)
-    >>> c.channelf = f
+    >>> c.channelr = f
     >>> class StubTransport(object):
     ...     def close(self): pass
     >>> c.transport = StubTransport()
