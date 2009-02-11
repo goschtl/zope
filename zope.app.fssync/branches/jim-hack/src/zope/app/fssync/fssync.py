@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Highest-level classes to support filesystem synchronization:
 
@@ -43,6 +43,7 @@ from zope.fssync import fsutil
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.passwd import PasswordManager
 from zope.app.fssync.ssh import SSHConnection
+import zope.app.fssync.merge
 
 if sys.platform[:3].lower() == "win":
     DEV_NULL = r".\nul"
@@ -209,7 +210,7 @@ class Network(PasswordManager):
         assert self.rooturl
         if not path.endswith("/"):
             path += "/"
-        path = urllib.quote(path)  
+        path = urllib.quote(path)
         path += view
         if self.roottype == "https":
             conn = httplib.HTTPSConnection(self.host_port)
@@ -217,7 +218,7 @@ class Network(PasswordManager):
             conn = SSHConnection(self.host_port, self.user_passwd)
         else:
             conn = httplib.HTTPConnection(self.host_port)
-         
+
         if datasource is None:
             conn.putrequest("GET", path)
         else:
@@ -232,7 +233,7 @@ class Network(PasswordManager):
             tmp = tempfile.TemporaryFile('w+b')
             datasource(tmp)
             conn.putheader("Content-Length", str(tmp.tell()))
-            
+
         if self.user_passwd:
             if ":" not in self.user_passwd:
                 auth = self.getToken(self.roottype,
@@ -245,7 +246,7 @@ class Network(PasswordManager):
         conn.putheader("Connection", "close")
         conn.endheaders()
         if datasource is not None:
-            #XXX If chunking works again, replace the following lines with 
+            #XXX If chunking works again, replace the following lines with
             # datasource(PretendStream(conn))
             # conn.send("0\r\n\r\n")
             tmp.seek(0)
@@ -253,8 +254,8 @@ class Network(PasswordManager):
             while data:
                 conn.send(data)
                 data = tmp.read(1<<16)
-            tmp.close()   
-                
+            tmp.close()
+
         response = conn.getresponse()
         if response.status != 200:
             raise Error("HTTP error %s (%s); error document:\n%s",
@@ -463,6 +464,35 @@ class FSSync(object):
         finally:
             fp.close()
 
+    def merge(self, args):
+        source = args[0]
+        if len(args) == 1:
+            target = os.curdir
+        else:
+            target = args[1]
+
+        # make sure that we're merging from compatible directories
+        if not self.metadata.getentry(target):
+            target = join(target, 'root')
+        target_entry = self.metadata.getentry(target)
+        if not target_entry:
+            print 'Target must be a fssync checkout directory'
+            return
+        if not self.metadata.getentry(source):
+            source = join(source, 'root')
+        source_entry = self.metadata.getentry(source)
+        if not source_entry:
+            print 'Source must be a fssync checkout directory'
+            return
+        if source_entry[u'id'] != target_entry[u'id']:
+            print 'Cannot merge from %s to %s' % (source_entry[u'id'],
+                                                  target_entry[u'id'])
+            return
+        
+        zope.app.fssync.merge.merge(source, target, self)
+        print 'All done.'
+
+
     def merge_snarffile(self, fp, localdir, tail):
         uns = Unsnarfer(fp)
         tmpdir = tempfile.mktemp()
@@ -533,7 +563,7 @@ class FSSync(object):
     def reporter(self, msg):
         if msg[0] not in "/*":
             print msg.encode('utf-8') # uo: is encode needed here?
-    
+
     def diff(self, target, mode=1, diffopts="", need_original=True):
         assert mode == 1, "modes 2 and 3 are not yet supported"
         entry = self.metadata.getentry(target)

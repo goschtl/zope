@@ -3,14 +3,14 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Filesystem synchronization utility for Zope 3.
 
@@ -352,6 +352,19 @@ def revert(opts, args):
     fs = FSSync()
     fs.multiple(args, fs.revert)
 
+def merge(opts, args):
+    """%(program)s merge [TARGETDIR] SOURCEDIR
+
+    Merge changes from one sandbox directory to another. If two
+    directories are specified then the first one is the target and the
+    second is the source. If only one directory is specified, then the
+    target directory is assumed to the be current sandbox.
+    """
+    if len(args) not in (1,2):
+        raise Usage('Merge requires one or two arguments')
+    fs = FSSync()
+    fs.merge(args)
+
 def extract_message(opts, cmd):
     L = []
     message = None
@@ -387,6 +400,7 @@ command_table = [
     (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
     (login,    "",        "u:",         "user="),
     (logout,   "",        "u:",         "user="),
+    (merge,    "",        "",           ""),
     (mkdir,    "",        "",           ""),
     (remove,   "del delete rm", "",     ""),
     (resolve,  "",        "",           ""),
