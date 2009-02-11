@@ -2,6 +2,8 @@
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces import IWSGIApplication
+from zope.publisher.interfaces import IRequest
+
 
 class Caller(object):
     """WSGI app that calls the traversed object.
@@ -10,6 +12,10 @@ class Caller(object):
     The 'traversed' attribute of the request must be set.
     """
     implements(IWSGIApplication)
+    adapts(IRequest)
+
+    def __init__(self, marker_request=None):
+        pass
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -20,6 +26,9 @@ class Caller(object):
             response.setResult(result)
         start_response(response.getStatusString(), response.getHeaders())
         return response.consumeBodyIter()
+
+    def __repr__(self):
+        return '%s()' % self.__class__.__name__
 
 
 _marker = object()  # Create a new marker object.

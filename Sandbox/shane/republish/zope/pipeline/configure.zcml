@@ -1,31 +1,15 @@
+<configuration>
 
+<!-- a wsgi:stage-list directive registers a bound StageList.adapt() method
+     as an unnamed adapter from the request type to IStageList. -->
 
-<!--
-    # other possible stages:
-    # RequestProfiler
-    # CodeFreshnessChecker
-    # Multiprocessor
-    # ComponentConfigurator
-    # DetailedTracebackGenerator
-
-    # stages we're using:
-    'logger',
-    'retry',
-    'request_factory',        # also sets locale (?)
-    'root_opener',
-    'transaction_controller',
-    'error_handler',
-    'global_authenticator',
-    # Note: the traverser also has to invoke authentication at each step.
-    'traverser',
-    'transaction_annotator',
-    'caller',
--->
-
-<pipeline:stages names="
-    logger
+<wsgi:stage-list require=".interfaces.IUndecidedRequest" names="
     retry
     request_factory
+    select_pipeline
+    " />
+
+<wsgi:stage-list require="zope.publisher.interfaces.IRequest" names="
     root_opener
     transaction_controller
     notifier
@@ -35,6 +19,15 @@
     transaction_annotator
     caller
     " />
+
+<!-- a wsgi:pipeline directive registers a bound Pipeline.adapt() method as
+     an adapter from the request type to IWSGIApplication with name
+     "pipeline". -->
+
+<wsgi:pipeline require=".interfaces.IUndecidedRequest" />
+<wsgi:pipeline require="zope.publisher.interfaces.IRequest" />
+<wsgi:pipeline require="zope.publisher.interfaces.http.IHTTPRequest" />
+<wsgi:pipeline require="zope.publisher.interfaces.browser.IBrowserRequest" />
 
 <adapter
     factory="..."
@@ -79,3 +72,28 @@
 <adapter
     factory=".caller.Caller"
     name="caller" />
+
+</configuration>
+
+
+
+<!--
+    # other possible stages:
+    # RequestProfiler
+    # CodeFreshnessChecker
+    # Multiprocessor
+    # ComponentConfigurator
+    # DetailedTracebackGenerator
+
+    # stages we're using:
+    'logger',
+    'retry',
+    'request_factory',        # also sets locale (?)
+    'root_opener',
+    'transaction_controller',
+    'error_handler',
+    'global_authenticator',
+    'traverser',
+    'transaction_annotator',
+    'caller',
+-->

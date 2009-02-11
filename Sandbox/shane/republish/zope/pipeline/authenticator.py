@@ -16,9 +16,9 @@ class Authenticator(object):
     The WSGI environment must contain 'zope.request'.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
+    adapts(IWSGIApplication, IRequest)
 
-    def __init__(self, app):
+    def __init__(self, app, marker_request=None):
         self.app = app
 
     def __call__(self, environ, start_response):
@@ -38,6 +38,9 @@ class Authenticator(object):
             return self.app(environ, start_response)
         finally:
             endInteraction()
+
+    def __repr__(self):
+        return '%s(%s)' % (self.__class__.__name__, repr(self.app))
 
 
 def placeful_auth(request, ob):
