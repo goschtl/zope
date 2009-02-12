@@ -11,7 +11,7 @@ setup(
     version="0.5.1dev",
     author="Zope Corporation and Contributors",
     author_email="zope-dev@zope.org",
-    url="http://svn.zope.org/zc.sourcefactory",
+    url="http://pypi.python.org/pypi/zc.sourcefactory",
     keywords="zope zope3 vocabulary source factory",
     description="An easy way to create custom Zope 3 sources.",
     license="ZPL 2.1",

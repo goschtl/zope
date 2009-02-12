@@ -5,7 +5,7 @@ Changes
 0.5.1 (unreleased)
 ==================
 
-    -
+    - Change package homepage to PyPI instead of Subversion.
 
 
 0.5.0 (2009-02-03)
