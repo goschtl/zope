@@ -5,10 +5,22 @@
   <meta:directives namespace="http://namespaces.zope.org/z3c">
 
     <meta:directive
-        name="mvcTemplate"
-        schema="z3c.template.zcml.ITemplateDirective"
-        handler=".zcml.templateDirective"
+        name="mvcView"
+        schema=".zcml.IViewDirective"
+        handler=".zcml.viewDirective"
         />
+
+    <meta:directive
+        name="mvcController"
+        schema=".zcml.IControllerDirective"
+        handler=".zcml.controllerDirective"
+        />
+
+    <!--meta:directive
+        name="mvcController"
+        schema="z3c.pagelet.zcml.IControllerDirective"
+        handler="z3c.pagelet.zcml.pageletDirective"
+        /-->
 
   </meta:directives>
 

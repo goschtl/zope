@@ -20,33 +20,92 @@ import os
 
 import zope.interface
 import zope.component.zcml
+import zope.configuration.fields
+import zope.security.zcml
 from zope.configuration.exceptions import ConfigurationError
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.app.component.back35 import LayerField
+from zope.app.publisher.browser import viewmeta
+from zope.app.component.metadirectives import IBasicViewInformation
 
 import z3c.template.interfaces
+from z3c.pagelet.interfaces import IPagelet
+from z3c.pagelet.browser import BrowserPagelet
+from z3c.pagelet.zcml import pageletDirective, IPageletDirective
 
 from z3c.mvc.template import TemplateFactory
 from z3c.mvc.interfaces import IModelTemplate
 
+class IControllerDirective(IPageletDirective):
 
-def templateDirective(
-    _context, template, name=u'',
-    for_=zope.interface.Interface, layer=IDefaultBrowserLayer,
+    permission = zope.security.zcml.Permission(
+        title=u"Permission",
+        description=u"The permission needed to use the pagelet.",
+        required=False,
+        )
+
+    view = zope.configuration.fields.Path(
+        title=u'Layout template.',
+        description=u"Refers to a file containing a page template (should "
+                     "end in extension ``.pt`` or ``.html``).",
+        required=False,
+        )
+
+# Arbitrary keys and values are allowed to be passed to the pagelet.
+IControllerDirective.setTaggedValue('keyword_arguments', True)
+
+def controllerDirective(
+    _context, class_, name, permission="zope.Public", for_=zope.interface.Interface,
+    layer=IDefaultBrowserLayer, view=None, **kwargs):
+    pageletDirective(_context, class_, name, permission, for_=for_,
+                     layer=layer, provides=IPagelet,
+                     allowed_interface=None, allowed_attributes=None, **kwargs)
+
+    if view is not None:
+        viewDirective(_context, view, controller=class_, layer=layer)
+
+
+class IViewDirective(zope.interface.Interface):
+
+    view = zope.configuration.fields.Path(
+        title=u'Layout template.',
+        description=u"Refers to a file containing a page template (should "
+                     "end in extension ``.pt`` or ``.html``).",
+        required=True,
+        )
+
+    controller = zope.configuration.fields.GlobalObject(
+        title = u'View',
+        description = u'The view for which the template should be available',
+        default=zope.interface.Interface,
+        required = False,
+        )
+
+    layer = zope.configuration.fields.GlobalObject(
+        title = u'Layer',
+        description = u'The layer for which the template should be available',
+        required = False,
+        default=IDefaultBrowserLayer,
+        )
+
+def viewDirective(
+    _context, view, name=u'',
+    controller=zope.interface.Interface, layer=IDefaultBrowserLayer,
     provides=IModelTemplate,
     contentType='text/html', macro=None):
 
     # Make sure that the template exists
-    template = os.path.abspath(str(_context.path(template)))
-    if not os.path.isfile(template):
-        raise ConfigurationError("No such file", template)
+    view = os.path.abspath(str(_context.path(view)))
+    if not os.path.isfile(view):
+        raise ConfigurationError("No such file", view)
 
-    factory = TemplateFactory(template, contentType, macro)
+    factory = TemplateFactory(view, contentType, macro)
     zope.interface.directlyProvides(factory, provides)
 
-    # register the template
+    # register the view
     if name:
         zope.component.zcml.adapter(_context, (factory,), provides,
-                                    (for_, layer), name=name)
+                                    (controller, layer), name=name)
     else:
         zope.component.zcml.adapter(_context, (factory,), provides,
-                                    (for_, layer))
+                                    (controller, layer))
