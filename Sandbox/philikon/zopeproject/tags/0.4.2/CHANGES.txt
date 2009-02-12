@@ -1,0 +1,140 @@
+Changes
+=======
+
+0.4.2 (2009-02-12)
+------------------
+
+* Use Zope 3.4.0 KGS in the default deployment buildout.cfg.
+
+* Added blobstorage proxy to default ZODB config in zope.conf.
+
+* Use ZopeSecurityPolicy from zope.securitypolicy instead
+  of zope.app.securitypolicy, which is a deprecated place for
+  that.
+
+* The zope.securitypolicy uses a special role name, 
+  the ``zope.Anonymous`` that every user has, define
+  it in site.zcml and grant view permissions to it,
+  instead of zope.Anybody unauthenticated group.
+  
+
+0.4.1 (2007-09-29)
+------------------
+
+* Improvements to ``README.txt`` and ``var/README.txt`` (it was
+  pointing to the wrong configuration file).  Moved changelog from
+  ``README.txt`` into separate ``CHANGES.txt`` file.
+
+* The ``--no-buildout`` option is no longer ignored now.
+
+* Added a ``bin/python`` script that mimicks an interpreter.
+
+* Enabled the APIDoc tool by default.  You may access it under
+  http://localhost:8080/++apidoc++.
+
+* Simplified ``*package*/testing.py``.
+
+0.4 (2007-09-15)
+----------------
+
+New features
+~~~~~~~~~~~~
+
+* Added a zdaemon controller script much like zopectl called
+  ``*package*-ctl`` (where ``*package*`` is the name of the package
+  created with zopeproject).
+
+* Added a debug script called ``*package*-debug`` that configures the
+  application and drops into an interpreter session.  It is also
+  available via ``*package*-ctl debug``.
+
+* Added ``debug.ini`` which configures a WSGI middleware for
+  intercepting exceptions and live debugging (either using Paste's
+  evalexception middleware or the Python debugger pdb_).
+
+* Added a functional test layer in ``*package*.testing`` which loads
+  the new ``ftesting.zcml``.  Convenience definitions of test suites
+  pre-configured for that layer are available in ``*package*.testing``
+  as well.
+
+* More improvements to the README.txt file.
+
+Bugfixes and restructuring
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Make use of ``zope.app.wsgi.getApplication()`` to reduce the startup
+  boiler-plate in ``startup.py`` (formerly ``application.py``).
+
+* The package that zopeproject creates is now located in a ``src``
+  directory, where it's easier to single out among the other files and
+  directories.
+
+* Fixed a bug when guessing the default eggs-directory: When
+  ~/.buildout/default.cfg did not contain an eggs-directory option,
+  zopeproject failed with a ConfigParser.NoOptionError.
+
+* Renamed ``application.py`` to ``startup.py`` to make the intent of
+  the module much clearer, and to avoid clashes with e.g. Grok (where
+  "application" means something else, and ``app.py`` is commonly used
+  for the application object).
+
+* The eggs directory will no longer be written to ``buildout.cfg`` if
+  it is the same as the buildout default in
+  ``~/.buidout/default.cfg``.
+
+* Cleaned up and enhanced the dependencies of the generated
+  application.  It no longer depends on zope.app.securitypolicy, only
+  the deployment (``site.zcml``) does.  Obsolete dependencies (and
+  their include statements in ZCML) have been removed.
+  ``zope.app.catalog`` and friends have been added as a convenience.
+
+0.3.2 (2007-07-17)
+------------------
+
+* If the user already has a default eggs directory set in
+  ``~/.buildout/default.cfg``, it is used as the default value for the
+  eggs directory.
+
+* Greatly improved the README.txt file.
+
+0.3.1 (2007-07-15)
+------------------
+
+* The ``buildout.cfg`` template was missing settings for the shared
+  eggs directory and thew ``newest`` flag.
+
+* Assemble the default path for the eggs directory in a
+  Windows-friendly way.
+
+0.3 (2007-07-14)
+----------------
+
+* Renamed to ``zopeproject``.
+
+* Incorporated much of the grokproject_ 0.5.x infrastructure.  This
+  makes it much more robust, especially when launching zc.buildout.
+
+* Merged ``make-zope-app`` and ``deploy-zope-app`` back into one
+  command: ``zopeproject``.
+
+0.2 (2007-07-12)
+-----------------
+
+* Renamed to ``make-zope-app``.
+
+* Split ``mkzopeapp`` into two commands: ``make-zope-app`` and
+  ``deploy-zope-app``.
+
+* No longer use ``zope.paste`` for the application factory.  Instead,
+  each application that's created from the skeleton defines its own
+  factory (which is reasonably small and gains flexibility).
+
+* Get rid of the ``start<<Project>>`` script.  Simply use ``bin/paster
+  serve deploy.ini`` for starting the server.
+
+* Use the ``Paste#http`` server by default.
+
+0.1 (2007-07-06)
+-----------------
+
+Initial release as ``mkzopeapp``

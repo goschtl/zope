@@ -1,0 +1,57 @@
+* Allow values to be provided thru command line arguments
+  https://bugs.launchpad.net/zopeproject/+bug/125817
+
+* Need tests!
+
+* README: link to zc.buildout tutorial
+
+* README: document --svn-repository switch and document which stuff
+  should/can be checked in and which stuff never should
+  (buildout-created stuff).
+
+* Generate a something.wsgi script for modwsgi
+
+* zope.conf: Make all paths absolute? Problem: absolute path would be
+  checked in. Solution: Have zope.conf be created by z3c.filetemplate
+  recipe.
+
+* Instead of a --svn-repository command line switch, make it a
+  question (with the default of no repository == no checkin)?
+
+  And if you don't check in on project creation, a tool should allow
+  you to do it later (and it should ignore the right files)
+
+* Synchronize with newest grokproject improvements:
+
+  - version file loaded from HTTP
+
+  - template parameters also available as command line switches
+
+  - username and password for site.zcml are escaped
+
+* Not only allow the creation of new applications but also the
+  deployment of existing applications. Suggested command line usage:
+
+    $ zopeproject app NewApplication
+    $ zopeproject deploy ExistingApplication
+
+  Also consider the library use case:
+
+    $ zopeproject library NewLibrary
+
+  And namespaces:
+
+    $ zopeproject library new.library
+    $ zopeproject app new.application
+
+* Add Windows service support (a la bin/zopeservice.py from instances)
+
+* Bring back i18nextract and friends
+
+* Add a default overrides.zcml?
+
+* We should be able to use prefer-final=true and drop the find-links
+  thing soon
+
+* deploy.ini should be allowed to specify an absolute path of
+  zope.conf
