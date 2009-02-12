@@ -1,7 +1,13 @@
 Changes
 =======
 
-0.4.2 (unreleased)
+0.4.3 (unreleased)
+------------------
+
+- ...
+
+
+0.4.2 (2009-02-12)
 ------------------
 
 * Use Zope 3.4.0 KGS in the default deployment buildout.cfg.
