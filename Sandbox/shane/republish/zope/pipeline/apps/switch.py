@@ -16,6 +16,8 @@
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 
+from zope.pipeline.entry import get_pipeline
+
 class SwitchPipeline(object):
     """WSGI application that switches to a pipeline based on the request type.
 
@@ -25,7 +27,7 @@ class SwitchPipeline(object):
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
-        app = IWSGIApplication(request, name='pipeline')
+        app = get_pipeline(request)
         return app(environ, start_response)
 
     def __repr__(self):
