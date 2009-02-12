@@ -1,38 +1,29 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:wsgi="http://namespaces.zope.org/wsgi">
 
-<!-- a wsgi:application-list directive specifies the names of
+<!-- a wsgi:pipeline directive specifies the names of
      applications to use in a pipeline.  Its implementation
-     registers a bound ApplicationList.adapt() method as an
-     unnamed adapter from the request type to IApplicationList. -->
+     registers a bound PipelineApplicationList.adapt() method as an
+     unnamed adapter from the request type to IPipelineApplicationList. -->
 
-<wsgi:application-list for=".interfaces.IUndecidedRequest" names="
+<wsgi:pipeline for=".interfaces.IUndecidedRequest" names="
     retry
-    request_factory
+    create_request
     switch_pipeline
     " />
 
-<wsgi:application-list for="zope.publisher.interfaces.IRequest" names="
-    logger
-    root_opener
-    transaction_controller
-    notifier
-    error_handler
-    authenticator
-    traverser
-    transaction_annotator
-    caller
+<wsgi:pipeline for="zope.publisher.interfaces.IRequest" names="
+    log
+    open_root
+    control_transaction
+    event
+    handle_error
+    process_form
+    authenticate
+    traverse
+    annotate_transaction
+    call
     " />
-
-<!-- a wsgi:pipeline directive creates a pipeline for a particular
-     request type.  Its implementation registers a bound
-     Pipeline.adapt() method as an adapter from the request type
-     to IWSGIApplication with name "pipeline". -->
-
-<wsgi:pipeline for=".interfaces.IUndecidedRequest" />
-<wsgi:pipeline for="zope.publisher.interfaces.IRequest" />
-<wsgi:pipeline for="zope.publisher.interfaces.http.IHTTPRequest" />
-<wsgi:pipeline for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
 <!-- a wsgi:middleware directive registers an application for use
      as middleware in a pipeline.  It is like an adapter directive,
@@ -49,7 +40,7 @@
 
 <wsgi:middleware
     factory="..."
-    name="request_factory"
+    name="request_setup"
     for=".interfaces.INoRequest" />
 
 <!-- a wsgi:application directive registers an application for use
