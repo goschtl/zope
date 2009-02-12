@@ -57,6 +57,11 @@ IControllerDirective.setTaggedValue('keyword_arguments', True)
 def controllerDirective(
     _context, class_, name, permission="zope.Public", for_=zope.interface.Interface,
     layer=IDefaultBrowserLayer, view=None, **kwargs):
+
+    globalObject = zope.configuration.fields.GlobalObject().bind(_context)
+    for key, value in kwargs.items():
+        kwargs[key] = globalObject.fromUnicode(value)
+
     pageletDirective(_context, class_, name, permission, for_=for_,
                      layer=layer, provides=IPagelet,
                      allowed_interface=None, allowed_attributes=None, **kwargs)
