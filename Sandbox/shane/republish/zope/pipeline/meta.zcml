@@ -28,4 +28,11 @@
     handler=".zcml.middleware"
     />
 
+<meta:directive
+    namespace="http://namespaces.zope.org/zope"
+    name="request-factory"
+    schema=".zcml.IRequestFactoryDirective"
+    handler=".zcml.request_factory"
+    />
+
 </configure>

@@ -184,3 +184,56 @@ def middleware(_context, factory, name, for_=None):
 
     adapter(_context, factory=[app_factory], provides=[IWSGIApplication],
         for_=[IWSGIApplication, for_], name=name)
+
+
+class IRequestFactoryDirective(Interface):
+    """Link information from a request to a request factory"""
+
+    name = TextLine(
+        title=_('Name'),
+        description=_('The name of the request factory.'))
+
+    factory = GlobalObject(
+        title=_('Factory'),
+        description=_('The request factory'))
+
+    protocols = Tokens(
+        title=_('Protocols'),
+        description=_('A list of protocols to support.  Defaults to "HTTP".'),
+        value_type=TextLine(),
+        required=False)
+
+    methods = Tokens(
+        title=u'Methods',
+        description=(u'A list of HTTP method names. If the method is a "*", '
+                     u'then all methods will match. Example: "GET POST"'),
+        value_type=TextLine(),
+        required=False)
+
+    mimetypes = Tokens(
+        title=u'Mime Types',
+        description=(u'A list of content/mime types of the request. If the '
+                     u'type is a "*" then all types will be matched. '
+                     u'Example: "text/html text/xml"'),
+        value_type=TextLine(),
+        required=False)
+
+    priority = Int(
+        title=u'Priority',
+        description=(u'A priority key used to decide between coexistent'
+                     ' request factories.'),
+        required=False)
+
+def request_factory(_context, name, factory,
+    protocols=['HTTP'], methods=['*'], mimetypes=['*'], priority=0):
+
+    factory = factory()
+
+    for protocol in protocols:
+        for method in methods:
+            for mimetype in mimetypes:
+                _context.action(
+                    discriminator = (method, mimetype, priority),
+                    callable = factoryRegistry.register,
+                    args = (protocol, method, mimetype, name, priority, factory)
+                    )

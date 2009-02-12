@@ -9,7 +9,7 @@
 <wsgi:application-list for=".interfaces.IUndecidedRequest" names="
     retry
     request_factory
-    switch
+    switch_pipeline
     " />
 
 <wsgi:application-list for="zope.publisher.interfaces.IRequest" names="
@@ -43,7 +43,7 @@
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:middleware
-    factory=".retry.Retry"
+    factory=".apps.retry.Retry"
     name="retry"
     for=".interfaces.INoRequest" />
 
@@ -61,8 +61,8 @@
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:application
-    factory=".switch.Switch"
-    name="switch"
+    factory=".apps.switch.SwitchPipeline"
+    name="switch_pipeline"
     for=".interfaces.INoRequest" />
 
 
@@ -71,15 +71,15 @@
     name="logger" />
 
 <wsgi:middleware
-    factory=".rootopen.RootOpener"
+    factory=".apps.rootopen.RootOpener"
     name="root_opener" />
 
 <wsgi:middleware
-    factory=".txnctl.TransactionController"
+    factory=".apps.txnctl.TransactionController"
     name="transaction_controller" />
 
 <wsgi:middleware
-    factory=".event.EventNotifier"
+    factory=".apps.notify.EventNotifier"
     name="notifier" />
 
 <wsgi:middleware
@@ -87,7 +87,7 @@
     name="error_handler" />
 
 <wsgi:middleware
-    factory=".authenticator.Authenticator"
+    factory=".apps.authenticator.Authenticator"
     name="authenticator" />
 
 <wsgi:middleware
@@ -95,13 +95,12 @@
     name="traverser" />
 
 <wsgi:middleware
-    factory=".txnctl.TransactionAnnotator"
+    factory=".apps.txnctl.TransactionAnnotator"
     name="transaction_annotator" />
 
 <wsgi:application
-    factory=".caller.Caller"
+    factory=".apps.caller.Caller"
     name="caller" />
-
 
 </configure>
 
