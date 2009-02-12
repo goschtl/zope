@@ -1,9 +1,16 @@
 [buildout]
 develop = .
 parts = app test
-find-links = http://download.zope.org/distribution/
 newest = ${newest}
 ${eggs_dir}
+
+# These settings pin egg versions to the Zope 3.4.0 Known Good Set
+# if you want to upgrade the KGS version, you need to change the URL
+# below. If you will comment/remove these settings, you'll get the
+# latest versions of Zope eggs that are not guaranteed to work well
+# together.
+extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+versions = versions
 
 [app]
 recipe = zc.recipe.egg

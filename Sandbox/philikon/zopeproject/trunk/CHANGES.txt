@@ -4,6 +4,8 @@ Changes
 0.4.2 (unreleased)
 ------------------
 
+* Use Zope 3.4.0 KGS in the default deployment buildout.cfg.
+
 * Added blobstorage proxy to default ZODB config in zope.conf.
 
 * Use ZopeSecurityPolicy from zope.securitypolicy instead
