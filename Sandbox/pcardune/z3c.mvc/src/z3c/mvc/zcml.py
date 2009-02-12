@@ -62,12 +62,76 @@ def controllerDirective(
     for key, value in kwargs.items():
         kwargs[key] = globalObject.fromUnicode(value)
 
-    pageletDirective(_context, class_, name, permission, for_=for_,
-                     layer=layer, provides=IPagelet,
-                     allowed_interface=None, allowed_attributes=None, **kwargs)
-
     if view is not None:
         viewDirective(_context, view, controller=class_, layer=layer)
+
+
+
+
+    provides=IPagelet
+    allowed_interface=None
+    allowed_attributes=None
+
+    # Security map dictionary
+    required = {}
+
+    # Get the permission; mainly to correctly handle CheckerPublic.
+    permission = viewmeta._handle_permission(_context, permission)
+
+    # The class must be specified.
+    if not class_:
+        raise ConfigurationError("Must specify a class.")
+
+    if not zope.interface.interfaces.IInterface.providedBy(provides):
+        raise ConfigurationError("Provides interface provide IInterface.")
+
+    ifaces = list(zope.interface.Declaration(provides).flattened())
+    if IPagelet not in ifaces:
+        raise ConfigurationError("Provides interface must inherit IPagelet.")
+
+    # Build a new class that we can use different permission settings if we
+    # use the class more then once.
+    cdict = {}
+    cdict['__name__'] = name
+    missing = []
+    if class_.__required_kwargs__:
+        for kwarg in class_.__required_kwargs__:
+            if kwarg not in kwargs.keys():
+                missing.append(kwarg)
+    if missing:
+        raise ConfigurationError("Controller requires the following "
+                                 "attributes to be set: %s"%', '.join(missing))
+    cdict.update(kwargs)
+    new_class = type(class_.__name__, (class_, BrowserPagelet), cdict)
+
+    # Set up permission mapping for various accessible attributes
+    viewmeta._handle_allowed_interface(
+        _context, allowed_interface, permission, required)
+    viewmeta._handle_allowed_attributes(
+        _context, allowed_attributes, permission, required)
+    viewmeta._handle_allowed_attributes(
+        _context, kwargs.keys(), permission, required)
+    viewmeta._handle_allowed_attributes(
+        _context, ('__call__', 'browserDefault', 'update', 'render',
+                   'publishTraverse'), permission, required)
+
+    # Register the interfaces.
+    viewmeta._handle_for(_context, for_)
+
+    # provide the custom provides interface if not allready provided
+    if not provides.implementedBy(new_class):
+        zope.interface.classImplements(new_class, provides)
+
+    # Create the security checker for the new class
+    zope.security.checker.defineChecker(new_class,
+        zope.security.checker.Checker(required))
+
+    # register pagelet
+    _context.action(
+        discriminator = ('pagelet', for_, layer, name),
+        callable = zope.component.zcml.handler,
+        args = ('registerAdapter',
+                new_class, (for_, layer), provides, name, _context.info),)
 
 
 class IViewDirective(zope.interface.Interface):

@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-
+import sys
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.component import getMultiAdapter
 from zope.interface import implements
@@ -33,6 +33,8 @@ class Controller(BrowserPagelet):
     """
     implements(interfaces.IModelProvider)
 
+    __required_kwargs__ = ()
+
     def getModel(self):
         raise NotImplemented("Subclasses must provide the getModel method")
 
@@ -43,3 +45,10 @@ class Controller(BrowserPagelet):
                 (self, self.request), interfaces.IModelTemplate)
             return template(self)
         return self.template()
+
+def requires(*attributes):
+    frame = sys._getframe(1)
+    locals = frame.f_locals
+    locals.setdefault('__required_kwargs__', ())
+    locals['__required_kwargs__'] += attributes
+
