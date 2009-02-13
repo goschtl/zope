@@ -10,7 +10,7 @@
       factory="zam.api.browser.plugin.PluginManagement"
       for="zamplugin.authenticator.plugin.AuthenticatorPlugin
            zam.api.layer.IAuthenticatorPluginLayer
-           zope.app.component.interfaces.ISite"
+           zope.location.interfaces.ISite"
       provides="zam.api.interfaces.IPluginManagement"
       />
 
