@@ -5,7 +5,7 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface.common.mapping import IExtendedReadMapping
 
-__all__ = ('IRequest', 'IResponse', 'IResult', 'IHeld', 'IDebugFlags',
+__all__ = ('IRequest', 'IResponse', 'IResult', 'IDebugFlags',
     'IWSGIApplication')
 
 
@@ -16,51 +16,8 @@ class IRequest(IExtendedReadMapping):
     values will be looked up in the order: [TODO].
     """
 
-    response = Attribute(
-        """The request's IResponse object
-        """)
-
-    def close():
-        """Release resources held by the request.
-        """
-
-    def hold(held):
-        """Hold a reference to an object until the request is closed.
-
-        The object should be an IHeld.  If it is an IHeld, its
-        release method will be called when it is released.
-        """
-
-    traversal_stack = Attribute(
-        """The list of steps to traverse in reverse order.
-
-        Elements will be removed from this list as they are traversed.
-        It is possible to influence traversal by changing this list
-        during traversal.
-        """)
-
-    def getTraversalStack():
-        """Deprecated: use the traversal_stack attribute instead.
-        """
-
-    def setTraversalStack(stack):
-        """Deprecated: use the traversal_stack attribute instead.
-        """
-
-    positional_arguments = Attribute(
-        """The positional arguments passed to the request.
-        """)
-
-    def getPositionalArguments():
-        """Deprecated: use the positional_arguments attribute instead.
-        """
-
-    def setPrincipal(principal):
-        """Deprecated: use the principal attribute instead.
-        """
-
-    principal = Attribute(
-        """IPrincipal object associated with the request.
+    environment = Attribute(
+        """WSGI or CGI environment.
         """)
 
     bodyStream = Attribute(
@@ -78,13 +35,43 @@ class IRequest(IExtendedReadMapping):
         possible by other parts of the framework to access the data of the
         request via the ``body`` attribute.""")
 
+    traversal_stack = Attribute(
+        """The list of steps to traverse in reverse order.
+
+        Elements will be removed from this list as they are traversed.
+        It is possible to influence traversal by changing this list
+        during traversal.
+        """)
+
+    traversal_hooks = Attribute(
+        """List of hooks to call before each traversal step.
+
+        Each hook will be called with two parameters, request and ob.
+        The hook does not need to return anything.
+
+        These hooks will be called before traversing an object for the
+        first time.  If the same object is traversed more than
+        once, the hook will still only be called the first time.
+        """
+
+    traversed = Attribute(
+        """List of (name, obj) steps that have been traversed.
+
+        The first object is the application root and may have an empty name.
+        The last object is the object to call.
+        """)
+
+    traversed_default = Attribute(
+        """The number of steps added by default traversal.
+        """)
+
+    principal = Attribute(
+        """IPrincipal object associated with the request.
+        """)
+
     debug = Attribute("""Debug flags (see IDebugFlags).""")
 
-    environment = Attribute(
-        """Request environment data.
-
-        This is a pointer to the WSGI or CGI environment.
-        """)
+    interaction = Attribute("""The Zope security interaction""")
 
     annotations = Attribute(
         """Stores arbitrary application data under package-unique keys.
@@ -101,6 +88,24 @@ class IRequest(IExtendedReadMapping):
           "zope.persistentadapter"
         """)
 
+    response = Attribute(
+        """The request's IResponse object""")
+
+    locale = Attribute(
+        """The locale object associated with this request.""")
+
+    def getTraversalStack():
+        """Deprecated: use the traversal_stack attribute instead.
+        """
+
+    def setTraversalStack(stack):
+        """Deprecated: use the traversal_stack attribute instead.
+        """
+
+    def setPrincipal(principal):
+        """Deprecated: use the principal attribute instead.
+        """
+
     def getBasicCredentials():
         """Return (login, password) if the request contains basic credentials.
 
@@ -114,24 +119,6 @@ class IRequest(IExtendedReadMapping):
 
     def unauthorized(challenge):
         """Deprecated: use response.unauthorized() instead.
-        """
-
-    traversed = Attribute(
-        """List of (name, obj) steps that were traversed.
-
-        The first object is the application root and may have an empty name.
-        The last object is the object to call.
-        """)
-
-    traversal_hooks = Attribute(
-        """List of hooks to call before each traversal step.
-
-        Each hook will be called with two parameters, request and ob.
-        The hook does not need to return anything.
-
-        These hooks will be called before traversing an object for the
-        first time.  If the same object is traversed more than
-        once, the hook will still only be called the first time.
         """
 
 
@@ -248,18 +235,6 @@ class IResult(Interface):
         See IResponse.setResult.
         """
 
-
-class IHeld(Interface):
-    """Object to be held and explicitly released by a request
-    """
-
-    def release():
-        """Release the held object
-
-        This is called by a request that holds the IHeld when the
-        request is closed
-
-        """
 
 class IDebugFlags(Interface):
     """Features that support debugging."""

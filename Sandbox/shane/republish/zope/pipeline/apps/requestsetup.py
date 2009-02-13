@@ -31,6 +31,8 @@ class CreateRequest(object):
 
     Chooses the type of request based on the content of the WSGI
     environment.
+
+    Also sets the request locale and skin.
     """
     implements(IWSGIApplication)
     adapts(IWSGIApplication)
@@ -46,11 +48,34 @@ class CreateRequest(object):
             scheme, method, mimetype, environ)
         environ['zope.request'] = request
 
+        self.set_locale(request)
+        self.set_skin(request)
+
+        return self.app(environ, start_response)
+
+    def set_locale(self, request):
+        envadapter = IUserPreferredLanguages(request, None)
+        if envadapter is None:
+            return
+
+        langs = envadapter.getPreferredLanguages()
+        for httplang in langs:
+            parts = (httplang.split('-') + [None, None])[:3]
+            try:
+                request.locale = locales.getLocale(*parts)
+                return
+            except LoadLocaleError:
+                # Just try the next combination
+                pass
+        else:
+            # No combination gave us an existing locale, so use the default,
+            # which is guaranteed to exist
+            request.locale = locales.getLocale(None, None, None)
+
+    def set_skin(self, request):
         if IBrowserRequest.providedBy(request):
             # only browser requests have skins
             setDefaultSkin(request)
-
-        return self.app(environ, start_response)
 
 
 class ProcessForm(object):
@@ -72,13 +97,12 @@ class ProcessForm(object):
     def __call__(self, environ, start_response):
         request = environ['zope.request']
 
+        charsets = []
         def to_unicode(text):
-            charsets = request.charsets
             if not charsets:
                 envadapter = IUserPreferredCharsets(request)
-                charsets = envadapter.getPreferredCharsets() or ['utf-8']
-                request.charsets = charsets
-
+                charsets.extend(
+                    envadapter.getPreferredCharsets() or ['utf-8'])
             for charset in charsets:
                 try:
                     return unicode(text, charset)

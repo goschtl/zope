@@ -30,12 +30,23 @@ _pipeline_cache = {}
 cleanup.addCleanUp(_pipeline_cache.clear)
 
 def get_database_pipeline(database, global_environ=None):
-    if global_environ is None:
-        global_environ = {}
-    global_environ['zope.database'] = database
+    """Get a pipeline that will connect to the given database.
+
+    The returned pipeline can be used for many requests, even
+    concurrently.
+    """
+    d = {}
+    if global_environ is not None:
+        d.update(global_environ)
+    d['zope.database'] = database
     return get_pipeline(global_environ=global_environ)
 
 def get_pipeline(request=None, global_environ=None):
+    """Get a pipeline.
+
+    The returned pipeline can be used for many requests, even
+    concurrently.
+    """
     if request is None:
         provided = (IUndecidedRequest,)
     else:

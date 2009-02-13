@@ -50,18 +50,14 @@ class IHTTPRequest(IRequest):
 
     method = Attribute("Request method, normalized to upper case")
 
-    def setPathSuffix(steps):
-        """Deprecated: Prepend to traversal_stack instead.
-        """
-
-    locale = Attribute(
-        """The locale object associated with this request.""")
-
     form = Attribute(
         """Form data
 
-        This is a read-only mapping from name to form value for the name.
+        This is a mapping from name to form value for the name.
         """)
+
+    form_action = Attribute(
+        """The :action or :method specified by the form.""")
 
     def getCookies():
         """Return the cookie data

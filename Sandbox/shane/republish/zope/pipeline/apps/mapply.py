@@ -28,7 +28,7 @@ class Caller(object):
     def __call__(self, environ, start_response):
         request = environ['zope.request']
         name, ob = request.traversed[-1]
-        result = mapply(ob, request.positional_arguments, request)
+        result = mapply(ob, (), request)
         response = request.response
         if result is not response:
             response.setResult(result)
