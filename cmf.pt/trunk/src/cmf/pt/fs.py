@@ -11,6 +11,7 @@ from Products.CMFFormController.FSControllerBase import FSControllerBase
 from Shared.DC.Scripts.Script import Script
 from Shared.DC.Scripts.Signature import FuncCode
 from AccessControl import ClassSecurityInfo
+from AccessControl import getSecurityManager
 from RestrictedPython import Utilities
 
 from five.pt.pagetemplate import BaseTemplateFile
@@ -43,6 +44,19 @@ class FSPageTemplate(BaseTemplateFile, FSObject, Script):
     def __call__(self, *args, **kwargs):
         kwargs['args'] = args
         return BaseTemplateFile.__call__(self, self, **kwargs)    
+
+    def _exec(self, bound_names, *args, **kwargs):
+        # execute the template in a new security context.
+        security = getSecurityManager()
+        bound_names['user'] = security.getUser()
+        security.addContext(self)
+
+        try:
+            kwargs.update(bound_names)
+            kwargs['extra_context'] = bound_names
+            return self(*args, **kwargs)
+        finally:
+            security.removeContext(self)
 
 class FSControllerPageTemplate(FSPageTemplate, FSControllerBase, BaseCPT):
     def __init__(self, id, filepath, fullname=None, properties=None):

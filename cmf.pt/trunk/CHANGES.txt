@@ -1,6 +1,12 @@
 Changelog
 =========
 
+In next release
+
+ - Added ``_exec`` method to the file-system based skin template
+   class, largely carried over from
+   ``Products.PageTemplates``. [malthe]
+
 cmf.pt 0.2 (released 12/17/2008)
 
  - The ``func_code`` attribute of file-system page templates should
