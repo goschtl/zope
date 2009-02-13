@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>Pop a new database</title>
+</head>
+
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+ <tbody>
+ 
+  <tr>
+   <td rowspan="1" colspan="3">
+    <h1>Pop a new database</h1>
+  </td>
+ </tr>
+ 
+<!-- Intelligence product creation form --> 
+
+  <tr tal:define="urlparse modules/urlparse;
+                  zapi     modules/zope.app.zapi;
+                  url      context/@@absolute_url;
+                  netloc python: urlparse.urlsplit(url)[1]">
+   <td>open</td>
+   <td>http://<tal:span replace="netloc"/>/@@/selenium-pop.html</td>
+   <td>&nbsp;</td>
+  </tr>
+  <tr>
+   <td>verifyTextPresent</td>
+   <td>Done</td>
+   <td>&nbsp;</td>
+  </tr>
+ </tbody>
+</table>
+</body>
+</html>
