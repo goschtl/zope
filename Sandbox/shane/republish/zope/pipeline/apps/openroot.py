@@ -22,6 +22,8 @@ from zope.security.checker import ProxyFactory
 class RootOpener(object):
     """Puts a root object in 'zope.request' of the WSGI environment.
 
+    Requires the environment to contain 'zope.database',
+    which is normally a ZODB.DB.DB object.
     Sets request.traversed to a list with one element.
     Also closes the database connection on the way out.
 
@@ -30,15 +32,13 @@ class RootOpener(object):
     name as the root object.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication, IZopeConfiguration)
+    adapts(IWSGIApplication)
 
-    database_name = 'main'
     root_name = 'Application'
     app_controller_name = '++etc++process'
 
-    def __init__(self, app, zope_conf):
+    def __init__(self, app):
         self.app = app
-        self.db = zope_conf.databases[self.database_name]
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -52,7 +52,8 @@ class RootOpener(object):
             return self.app(environ, start_response)
 
         # Open the database.
-        conn = self.db.open()
+        db = environ['zope.database']
+        conn = db.open()
 
         request.annotations['ZODB.interfaces.IConnection'] = conn
         root = conn.root()

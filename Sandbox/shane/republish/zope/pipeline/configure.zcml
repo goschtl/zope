@@ -39,8 +39,8 @@
     for=".interfaces.INoRequest" />
 
 <wsgi:middleware
-    factory="..."
-    name="request_setup"
+    factory=".apps.requestsetup.CreateRequest"
+    name="create_request"
     for=".interfaces.INoRequest" />
 
 <!-- a wsgi:application directive registers an application for use
@@ -59,39 +59,51 @@
 
 <wsgi:middleware
     factory="..."
-    name="logger" />
+    name="log" />
 
 <wsgi:middleware
-    factory=".apps.rootopen.RootOpener"
-    name="root_opener" />
+    factory=".apps.openroot.RootOpener"
+    name="open_root" />
 
 <wsgi:middleware
     factory=".apps.txnctl.TransactionController"
-    name="transaction_controller" />
+    name="control_transaction" />
 
 <wsgi:middleware
     factory=".apps.notify.EventNotifier"
-    name="notifier" />
+    name="event" />
 
 <wsgi:middleware
     factory="..."
-    name="error_handler" />
+    name="handle_error" />
+
+<!-- no form processing for non-browser requests -->
+<wsgi:middleware
+    factory=".apps.passthrough"
+    name="process_form"
+    for="zope.publisher.interfaces.IRequest" />
+
+<!-- process forms for browser requests -->
+<wsgi:middleware
+    factory=".apps.requestsetup.ProcessForm"
+    name="process_form"
+    for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
 <wsgi:middleware
-    factory=".apps.authenticator.Authenticator"
-    name="authenticator" />
+    factory=".apps.authenticate.Authenticator"
+    name="authenticate" />
 
 <wsgi:middleware
-    factory="..."
-    name="traverser" />
+    factory=".apps.traversal.Traverser"
+    name="traverse" />
 
 <wsgi:middleware
     factory=".apps.txnctl.TransactionAnnotator"
-    name="transaction_annotator" />
+    name="annotate_transaction" />
 
 <wsgi:application
-    factory=".apps.caller.Caller"
-    name="caller" />
+    factory=".apps.mapply.Caller"
+    name="call" />
 
 </configure>
 

@@ -13,24 +13,40 @@
 ##############################################################################
 """The main entry point for the zope.pipeline package.
 
-Use get_pipeline() to get a WSGI application built from a Zope pipeline.
+Use get_database_pipeline() or get_pipeline() to get a WSGI
+application built from a pipeline.
 """
+
+from zope.component import getMultiAdapter
+from zope.interface import directlyProvides
+from zope.interface import providedBy
+from zope.pipeline.interfaces import IPipelineApplicationList
+from zope.pipeline.interfaces import IUndecidedRequest
+from zope.publisher import IWSGIApplication
+from zope.testing import cleanup
 
 # _pipeline_cache: {(interfaces provided by the request) -> WSGI application}
 _pipeline_cache = {}
+cleanup.addCleanUp(_pipeline_cache.clear)
 
-def get_pipeline(request=None):
+def get_database_pipeline(database, global_environ=None):
+    if global_environ is None:
+        global_environ = {}
+    global_environ['zope.database'] = database
+    return get_pipeline(global_environ=global_environ)
+
+def get_pipeline(request=None, global_environ=None):
     if request is None:
         provided = (IUndecidedRequest,)
     else:
         provided = tuple(providedBy(request))
     pipeline = _pipeline_cache.get(provided)
     if pipeline is None:
-        pipeline = make_pipeline(provided)
+        pipeline = make_pipeline(provided, global_environ)
         _pipeline_cache[provided] = pipeline
     return pipeline
 
-def make_pipeline(provided):
+def make_pipeline(provided, global_environ=None):
     marker_req = MarkerRequest(provided)
     app_list = IPipelineApplicationList(marker_req)
     names = list(app_list.names)  # make a copy
@@ -42,7 +58,15 @@ def make_pipeline(provided):
         name = names.pop()
         app = getMultiAdapter(
             (app, marker_req), IWSGIApplication, name=name)
-    return app
+    if global_environ:
+        # augment the WSGI environment with some data
+        def add_global_environ(environ, start_response):
+            environ.update(global_environ)
+            return inner_app(environ, start_response)
+        directlyProvides(add_global_environ, IWSGIApplication)
+        return add_global_environ
+    else:
+        return app
 
 class MarkerRequest(object):
     """A marker object that claims to provide a request type.

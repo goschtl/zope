@@ -16,6 +16,8 @@
 __docformat__ = 'restructuredtext'
 
 from zope.configuration.exceptions import ConfigurationError
+from zope.httpform import FormParser
+from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
@@ -54,6 +56,9 @@ class CreateRequest(object):
 class ProcessForm(object):
     """WSGI middleware that processes HTML form data.
 
+    This step is separate from request creation so that the
+    error handling step can catch form data errors.
+
     Requires the environment to contain a 'zope.request' that
     is an IHTTPRequest, not just an IRequest.
     """
@@ -85,7 +90,6 @@ class ProcessForm(object):
 
         parser = FormParser(environ, to_unicode=to_unicode)
         request.form = parser.parse()
-
         if parser.action:
             request.traversal_stack.insert(0, parser.action)
 
@@ -93,8 +97,7 @@ class ProcessForm(object):
 
 
 class RequestFactoryRegistry(object):
-    """The registry implements a four stage lookup for registered factories
-    that have to deal with requests::
+    """This registry implements a four stage lookup for request factories::
 
         {scheme -> {method > { mimetype ->
             [
@@ -141,7 +144,7 @@ class RequestFactoryRegistry(object):
                                      'priorities. Please check your ZCML '
                                      'configuration')
 
-    def getFactoriesFor(self, scheme, method, mimetype):
+    def get_factories_for(self, scheme, method, mimetype):
         if ';' in mimetype:
             # `mimetype` might be something like 'text/xml; charset=utf8'. In
             # this case we are only interested in the first part.
@@ -152,7 +155,6 @@ class RequestFactoryRegistry(object):
         except KeyError:
             return None
 
-
     def make_request(self, scheme, method, mimetype, environment):
         """Get a factory given scheme+method+mimetype and an environment."""
 
@@ -162,7 +164,7 @@ class RequestFactoryRegistry(object):
             (scheme, '*', '*')
             ]
         for s, m, mt in variations:
-            factory_lst = self.getFactoriesFor(s, m, mt)
+            factory_lst = self.get_factories_for(s, m, mt)
             if factory_lst:
                 # Try to call each factory.  If the factory can't or
                 # doesn't want to handle the given environment, it should
@@ -178,4 +180,3 @@ class RequestFactoryRegistry(object):
 factoryRegistry = RequestFactoryRegistry()
 
 cleanup.addCleanUp(lambda : factoryRegistry.__init__())
-

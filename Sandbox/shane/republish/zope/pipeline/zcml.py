@@ -30,15 +30,17 @@ from zope.publisher.interfaces import IRequest
 from zope.schema import Int
 from zope.schema import TextLine
 
+from zope.pipeline.interfaces import IPipelineApplicationList
 from zope.pipeline.apps.requestsetup import factoryRegistry
 
 
 class IPipelineDirective(Interface):
     """Declare a list of application names in a WSGI pipeline"""
 
-    for_ = GlobalObject(
-        title=u'Request type',
-        description=u'The type of request that should use this app list',
+    for_ = Tokens(
+        title=u'Request types',
+        description=u'The request types that should use this pipeline',
+        value_type=GlobalObject(),
         required=True)
 
     names = Tokens(
@@ -54,7 +56,8 @@ class IApplicationDirective(Interface):
 
     factory = GlobalObject(
         title=u"Application factory",
-        description=u"A factory that creates the WSGI application.",
+        description=(u"A factory that creates the WSGI application.  "
+                     u"The factory will be called with no parameters."),
         required=True,
         )
 
@@ -64,21 +67,22 @@ class IApplicationDirective(Interface):
         required=True,
         )
 
-    for_ = GlobalObject(
-        title=u"Request type",
-        description=u"The request type that triggers use of this application",
-        required=False,
-        )
+    for_ = Tokens(
+        title=u'Request types',
+        description=u'The request types that should use this application',
+        value_type=GlobalObject(),
+        required=False)
 
 
 class IMiddlewareDirective(IApplicationDirective):
     """Declare a middleware WSGI application for use in a pipeline"""
-    # same schema as IApplicationDirective
-    pass
-
-
-class IPipelineApplicationList(Interface):
-    names = Attribute("Application names to use in a pipeline")
+    factory = GlobalObject(
+        title=u"Application factory",
+        description=(u"A factory that creates the WSGI application.  "
+                     u"The factory will be called with one parameter: "
+                     u"the next application in the pipeline."),
+        required=True,
+        )
 
 
 class PipelineApplicationList(object):
@@ -96,12 +100,12 @@ def pipeline(_context, for_, names):
     """Register a pipeline application list"""
     obj = PipelineApplicationList(names)
     adapter(_context, factory=obj.adapt,
-        provides=[IPipelineApplicationList], for_=[for_])
+        provides=[IPipelineApplicationList], for_=for_)
 
-def application(_context, factory, name, for_=None):
+def application(_context, factory, name, for_=()):
     """Register a simple WSGI app for use at the end of pipeline"""
-    if for_ is None:
-        for_ = getattr(factory, 'request_type', IRequest)
+    if not for_:
+        for_ = [getattr(factory, 'request_type', IRequest)]
 
     def app_factory(marker_request):
         res = factory()
@@ -110,12 +114,13 @@ def application(_context, factory, name, for_=None):
         return res
 
     adapter(_context, factory=[app_factory], provides=[IWSGIApplication],
-        for_=[for_], name=name)
+        for_=for_, name=name)
 
-def middleware(_context, factory, name, for_=None):
+def middleware(_context, factory, name, for_=()):
     """Register a middleware WSGI app for use in a pipeline"""
-    if for_ is None:
-        for_ = getattr(factory, 'request_type', IRequest)
+    if not for_:
+        for_ = [getattr(factory, 'request_type', IRequest)]
+    for_ = [IWSGIApplication] + list(for_)
 
     def app_factory(app, marker_request):
         res = factory(app)
@@ -124,7 +129,7 @@ def middleware(_context, factory, name, for_=None):
         return res
 
     adapter(_context, factory=[app_factory], provides=[IWSGIApplication],
-        for_=[IWSGIApplication, for_], name=name)
+        for_=for_, name=name)
 
 
 class IRequestFactoryDirective(Interface):
@@ -139,8 +144,8 @@ class IRequestFactoryDirective(Interface):
         description=(u'The request factory, which is a callable '
                      u'that accepts one parameter, the WSGI environment, '
                      u'and returns a request object. '
-                     u'The factory can return None to defer to the '
-                     u'next registered factory.'),
+                     u'The factory can return None if it decides it can '
+                     u'not handle the given environment.'),
         required=True)
 
     schemes = Tokens(
@@ -167,8 +172,9 @@ class IRequestFactoryDirective(Interface):
 
     priority = Int(
         title=u'Priority',
-        description=(u'A priority key used to decide between coexistent'
-                     ' request factories.'),
+        description=(u'A priority number used to decide between coexistent '
+                     u'request factories.  A higher priority number '
+                     u'is chosen before a lower priority number.'),
         required=False)
 
 def request_factory(_context, name, factory,

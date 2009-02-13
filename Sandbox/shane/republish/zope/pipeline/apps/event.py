@@ -23,7 +23,7 @@ from zope.publisher.interfaces.event import EndRequestEvent
 class EventNotifier(object):
     """Fires request-related events.
 
-    Fires are BeforeTraverseEvent and EndRequestEvent at the appropriate
+    Fires BeforeTraverseEvent and EndRequestEvent at the appropriate
     times.
     """
     implements(IWSGIApplication)
