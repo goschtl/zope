@@ -26,7 +26,7 @@ class Results(zc.selenium.resource.ResourceBase):
 
     template = zope.app.pagetemplate.ViewPageTemplateFile('results.pt')
 
-    def POST(self):
+    def __call__(self):
         # get the queue used to communicate with the test thread, this will
         # fail horribly if not running in "Selenium test" mode
         messages = sys.modules['__main__'].messages

@@ -18,20 +18,19 @@ $Id: dbs.py 12602 2006-07-06 06:29:48Z fred $
 
 from ZODB.DemoStorage import DemoStorage
 from ZODB.DB import DB
-from zope.exceptions.interfaces import UserError
 
 import zc.selenium.resource
 
 
 class PushDBs(zc.selenium.resource.ResourceBase):
 
-    def GET(self):
+    def __call__(self):
         publication = self.request.publication
         if [1
             for d in publication.db.databases.values()
             if not isinstance(d._storage, DemoStorage)
             ]:
-            raise UserError("Wrong mode")
+            raise RuntimeError("Wrong mode")
 
         databases = {}
         for name, db in publication.db.databases.items():
@@ -47,7 +46,7 @@ class PushDBs(zc.selenium.resource.ResourceBase):
 
 class PopDBs(zc.selenium.resource.ResourceBase):
 
-    def GET(self):
+    def __call__(self):
         publication = self.request.publication
         publication.db = publication.db.pushed_base
 

@@ -16,14 +16,18 @@
 """
 __docformat__ = "reStructuredText"
 
+import zope.app.publisher.browser.resource
 import zope.interface
-import zope.publisher.browser
 import zope.publisher.interfaces.browser
 
-import zope.app.publisher.browser.resource
+# Zope2 compatibility
+try:
+    from zope.publisher.browser import BrowserView
+except ImportError:
+    from zope.app.publisher.browser import BrowserView
 
 
-class ResourceBase(zope.publisher.browser.BrowserView,
+class ResourceBase(BrowserView,
                    zope.app.publisher.browser.resource.Resource):
 
     zope.interface.implements(

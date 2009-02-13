@@ -17,26 +17,31 @@
         />
   </class>
 
-  <browser:resource
+  <browser:page
+      for="*"
       name="selenium_results"
-      factory=".results.Results"
+      class=".results.Results"
       permission="zope.Public"
       />
 
-  <browser:resource
+  <browser:page
+      for="*"
       name="selenium-push.html"
-      factory=".dbs.PushDBs"
+      class=".dbs.PushDBs"
       permission="zope.Public"
       />
 
-  <browser:resource
+  <browser:page
+      for="*"
       name="selenium-pop.html"
-      factory=".dbs.PopDBs"
+      class=".dbs.PopDBs"
       permission="zope.Public"
       />
 
+  <!-- XXX module is unknown in zope2, what to do? -->
+  <!--
   <module module=".pytest">
     <allow attributes="suite" />
   </module>
-
+  -->
 </configure>
