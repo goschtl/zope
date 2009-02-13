@@ -9,7 +9,7 @@ setup(
     version='0.4.3dev',
     author='Philipp von Weitershausen',
     author_email='philipp@weitershausen.de',
-    url='http://cheeseshop.python.org/pypi/zopeproject',
+    url='http://pypi.python.org/pypi/zopeproject',
     download_url='svn://svn.zope.org/repos/main/Sandbox/philikon/zopeproject/trunk#egg=zopeproject-dev',
     description='Tools and scripts for creating development sandboxes for '
                 'web applications that primarily use Zope',

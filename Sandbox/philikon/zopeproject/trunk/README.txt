@@ -488,11 +488,11 @@ v2.1`_. Copyright (c) by Zope Corporation and Contributors.
 
 
 .. _virtual-python: http://peak.telecommunity.com/DevCenter/EasyInstall#creating-a-virtual-python
-.. _workingenv: http://cheeseshop.python.org/pypi/workingenv.py
-.. _zc.buildout: http://cheeseshop.python.org/pypi/zc.buildout
+.. _workingenv: http://pypi.python.org/pypi/workingenv.py
+.. _zc.buildout: http://pypi.python.org/pypi/zc.buildout
 .. _MingW: http://www.mingw.org
 .. _PasteDeploy: http://pythonpaste.org/deploy/
-.. _listed on the Python Cheeseshop: http://cheeseshop.python.org/pypi?:action=browse&c=515
+.. _listed on the Python Cheeseshop: http://pypi.python.org/pypi?:action=browse&c=515
 .. _pdb: http://docs.python.org/lib/module-pdb.html
-.. _grokproject: http://cheeseshop.python.org/pypi/grokproject
+.. _grokproject: http://pypi.python.org/pypi/grokproject
 .. _Zope Public License, v2.1: http://www.zope.org/Resources/ZPL
