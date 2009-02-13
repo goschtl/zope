@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+1.2.1 (Unreleased)
+------------------
+
+- Calculate roles settings dynamicly for <denyAll> and <grantAll>
+  (Check for local roles)
+
+
 1.2.0 (2008-03-21)
 ------------------
 

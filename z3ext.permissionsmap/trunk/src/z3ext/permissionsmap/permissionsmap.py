@@ -16,6 +16,9 @@
 $Id$
 """
 from zope import interface
+from zope.component import getUtilitiesFor
+from zope.securitypolicy.interfaces import IRole
+from zope.securitypolicy.interfaces import Allow, Deny, Unset
 from zope.securitypolicy.securitymap import PersistentSecurityMap
 from zope.securitypolicy.rolepermission import RolePermissionManager
 
@@ -31,5 +34,49 @@ class PermissionsMap(PersistentSecurityMap, RolePermissionManager):
         self.title = title
         self.description = description
 
+        self.denyall = []
+        self.grantall = []
+
     def __repr__(self):
         return 'PermissionsMap(%r)' % self.name
+
+    def getPermissionsForRole(self, role_id):
+        settings = {}
+
+        if self.grantall:
+            settings.update(
+                [(pid, Allow) for pid in self.grantall])
+
+        if self.denyall:
+            settings.update(
+                [(pid, Deny) for pid in self.denyall])
+
+        if settings:
+            settings.update(
+                [(pid, setting) for pid, setting in \
+                     super(PermissionsMap, self).getPermissionsForRole(role_id)])
+            
+            return settings.items()
+
+        else:
+            return super(PermissionsMap, self).getPermissionsForRole(role_id)
+
+    def getRolesForPermission(self, permission_id):
+        all = None
+
+        if permission_id in self.denyall:
+            all = Deny
+        elif permission_id in self.grantall:
+            all = Allow
+
+        if all is not None:
+            settings = dict(
+                [(id, all) for id, role in getUtilitiesFor(IRole)])
+
+            settings.update(
+                [(rid, setting) for rid, setting in \
+                     super(PermissionsMap, self).getRolesForPermission(permission_id)])
+
+            return settings.items()
+        else:
+            return super(PermissionsMap, self).getRolesForPermission(permission_id)

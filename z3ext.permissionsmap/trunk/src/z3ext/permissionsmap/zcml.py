@@ -170,14 +170,20 @@ def directiveHandler(name, method, permissions, roles, check=False):
                 getattr(permissionmap, method)(permission, role)
 
 
-def directiveHandlerAll(name, method, permissions):
+def directiveHandlerAll(name, method, permissions, attr):
     sm = globalregistry.globalSiteManager
 
     permissionmap = sm.getUtility(IPermissionsMap, name)
 
-    for role_id, role in getUtilitiesFor(IRole):
+    if attr == 'unsetall':
+        for role_id, role in getUtilitiesFor(IRole):
+            for permission in permissions:
+                getattr(permissionmap, method)(permission, role_id)
+    else:
+        lst = getattr(permissionmap, attr)
         for permission in permissions:
-            getattr(permissionmap, method)(permission, role_id)
+            if permission not in lst:
+                lst.append(permission)
 
 
 class permissionsMapDirective(object):
@@ -228,7 +234,7 @@ class permissionsMapDirective(object):
                 ('z3ext.permissions.grantAll', 
                  self.name, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'grantPermissionToRole', permission))
+            args = (self.name, 'grantPermissionToRole', permission, 'grantall'))
 
     def denyAll(self, _context, permission):
         _context.action(
@@ -236,7 +242,7 @@ class permissionsMapDirective(object):
                 ('z3ext.permissions.denyAll', 
                  self.name, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'denyPermissionToRole', permission))
+            args = (self.name, 'denyPermissionToRole', permission, 'denyall'))
 
     def unsetAll(self, _context, permission):
         _context.action(
@@ -244,4 +250,4 @@ class permissionsMapDirective(object):
                 ('z3ext.permissions.unsetAll', 
                  self.name, tuple(permission))),
             callable = directiveHandlerAll,
-            args = (self.name, 'unsetPermissionFromRole', permission))
+            args = (self.name, 'unsetPermissionFromRole', permission, 'unsetall'))
