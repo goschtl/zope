@@ -473,13 +473,17 @@ class FSSync(object):
 
         # make sure that we're merging from compatible directories
         if not self.metadata.getentry(target):
-            target = join(target, 'root')
+            names = self.metadata.getnames(target)
+            if len(names) == 1:
+                target = join(target, names[0])
         target_entry = self.metadata.getentry(target)
         if not target_entry:
             print 'Target must be a fssync checkout directory'
             return
         if not self.metadata.getentry(source):
-            source = join(source, 'root')
+            names = self.metadata.getnames(source)
+            if len(names) == 1:
+                source = join(source, names[0])
         source_entry = self.metadata.getentry(source)
         if not source_entry:
             print 'Source must be a fssync checkout directory'
