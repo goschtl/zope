@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.2'
+version = '0.3'
 
 setup(name='cmf.pt',
       version=version,
@@ -25,7 +25,7 @@ setup(name='cmf.pt',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'z3c.pt',
+          'z3c.pt>=1.0b7',
           'five.pt',
       ],
       )

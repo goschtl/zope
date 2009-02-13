@@ -1,7 +1,7 @@
 Changelog
 =========
 
-In next release
+cmf.pt 0.3 (released 2/13/2009)
 
  - Added ``_exec`` method to the file-system based skin template
    class, largely carried over from
