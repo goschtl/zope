@@ -11,7 +11,8 @@ add a new package but forget to include its ZCML.
 z3c.autoinclude lets you circumvent this error-prone process with
 automatic detection and inclusion of ZCML files.
 
-== includeDependencies ==
+includeDependencies
+-------------------
 
 The "includeDependencies" directive searches through the dependencies
 in your setup.py file (install_requires), and includes the ZCML files
@@ -30,7 +31,8 @@ grokproject command will automatically add the ``includeDependencies``
 directive in the ZCML of the project it generates.  You can then stop
 worrying about manual ZCML inclusion in the vast majority of cases.
 
-== includePlugins ==
+includePlugins
+--------------
 
 The "includePlugins" directive uses entry points to find installed
 packages that broadcast themselves as plugins to a particular base
@@ -48,9 +50,11 @@ add the following lines to the plugin package's ``setup.py``::
   target = my_base
   """
 
-== The Details ==
+The Details
+-----------
 
-=== Setup === 
+Setup
+^^^^^
 
 To make the z3c.autoinclude directives available for use in your
 application or framework, you need to include it (in your
@@ -60,7 +64,8 @@ application or framework, you need to include it (in your
 
 Grok already does this for you automatically.
 
-=== Disabling z3c.autoinclude ===
+Disabling z3c.autoinclude
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It is often useful to disable z3c.autoinclude's functionality for
 debugging purposes or test runs.  To disable autoinclusion, set
@@ -70,7 +75,8 @@ the environment variables "Z3C_AUTOINCLUDE_DEPENDENCIES_DISABLED" and
 When autoinclusion is disabled, the autoinclusion directives will
 issue a warning to the log and do nothing.
 
-=== ZCML Filenames ===
+ZCML Filenames
+^^^^^^^^^^^^^^
 
 The includeDependencies directive automatically includes
 ``configure.zcml`` and ``meta.zcml`` files that live in the main
