@@ -60,21 +60,24 @@ setup(
     extras_require = dict(
         test = [
             'zope.testbrowser',
-            'zope.app.securitypolicy',
+            'zope.securitypolicy',
             'zope.app.testing',
             'zope.app.zcmlfiles',
             'zope.app.twisted',
             'zope.viewlet',
             'z3c.pagelet',
             'zc.configuration',
+            'zope.component',
+            'zope.app.component',
             ],
         ),
     install_requires = [
         'setuptools',
         'zope.configuration',
         'zope.traversing',
-        'zope.app.http',
         'zope.app.publisher',
+        'zope.app.security',
+        'zope.app.exception',
         ],
     zip_safe = False,
 )

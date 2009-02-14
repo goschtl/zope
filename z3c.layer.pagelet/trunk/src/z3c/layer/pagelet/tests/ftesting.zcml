@@ -19,17 +19,15 @@
   <exclude package="zope.app.authentication.browser" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
   <exclude package="zope.app.broken" file="browser.zcml" />
-  <exclude package="zope.app.container.browser" />
   <exclude package="zope.app.error.browser" />
   <exclude package="zope.app.folder.browser" />
   <exclude package="zope.app.i18n.browser" />
-  <exclude package="zope.app.securitypolicy.browser" />
   <exclude package="zope.dublincore.browser" />
 
   <!-- meta configure -->
   <include package="zope.i18n" file="meta.zcml" />
+  <include package="zope.component" file="meta.zcml" />
   <include package="zope.app.component" file="meta.zcml" />
-  <include package="zope.app.component.browser" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
@@ -46,14 +44,14 @@
   <include package="zope.annotation" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.component" />
-  <include package="zope.app.container" />
+  <include package="zope.container" />
   <include package="zope.app.error" />
   <include package="zope.app.http.exception" />
   <include package="zope.app.i18n" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
   <include package="zope.app.security" />
-  <include package="zope.app.securitypolicy" />
+  <include package="zope.securitypolicy" />
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
   <include package="zope.component" />
