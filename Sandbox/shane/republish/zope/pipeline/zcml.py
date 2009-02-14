@@ -17,15 +17,10 @@ $Id: metadirectives.py 96177 2009-02-06 07:50:13Z shane $
 """
 __docformat__ = 'restructuredtext'
 
-from zope.component import getMultiAdapter
 from zope.component.zcml import adapter
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
-from zope.interface import alsoProvides
-from zope.interface import Attribute
-from zope.interface import directlyProvides
 from zope.interface import Interface
-from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces import IRequest
 from zope.schema import Int
 from zope.schema import TextLine
