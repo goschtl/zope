@@ -64,6 +64,9 @@ checker = renormalizing.RENormalizing([
     (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'),
      '-pyN.N.egg',
     ),
+    zc.buildout.testing.normalize_path,
+    zc.buildout.testing.normalize_script,
+    zc.buildout.testing.normalize_egg_py,
     ])
 
 

@@ -73,6 +73,8 @@ setup(
         'zc.buildout': [
              'app = z3c.recipe.dev.app:AppSetup',
              'script = z3c.recipe.dev.script:ScriptSetup',
+             'mkdir = z3c.recipe.dev.mkdir:MkdirSetup',
+             'mkfile = z3c.recipe.dev.mkfile:MkfileSetup',
          ]
     },
 )

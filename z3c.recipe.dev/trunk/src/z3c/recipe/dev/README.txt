@@ -94,7 +94,7 @@ We'll create a `buildout.cfg` file that defines our application:
   ...
   ... principals.zcml =
   ...   <unauthenticatedPrincipal
-  ...       id="lovelybooks.anybody"
+  ...       id="zope.anybody"
   ...       title="Unauthenticated User"
   ...       />
   ...
@@ -372,3 +372,230 @@ Now we can call the script:
   Hello World
   foo
   bar
+
+
+Creating Directories
+====================
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = data-dir
+  ... find-links = http://download.zope.org/distribution
+  ...
+  ... [data-dir]
+  ... recipe = z3c.recipe.dev:mkdir
+  ... path = mystuff
+  ... """)
+  >>> print system(buildout),
+  Uninstalling helloworld.
+  Installing data-dir.
+  data-dir: Creating directory mystuff
+
+  >>> ls(sample_buildout)
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  demo1
+  d  demo2
+  d  develop-eggs
+  d  eggs
+  d  hello
+  d  mystuff
+  d  parts
+
+If we change the directory name the old directory ('mystuff') is not deleted.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = data-dir
+  ... find-links = http://download.zope.org/distribution
+  ...
+  ... [data-dir]
+  ... recipe = z3c.recipe.dev:mkdir
+  ... path = otherdir
+  ... """)
+  >>> print system(buildout),
+  Uninstalling data-dir.
+  Installing data-dir.
+  data-dir: Creating directory otherdir
+
+  >>> ls(sample_buildout)
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  demo1
+  d  demo2
+  d  develop-eggs
+  d  eggs
+  d  hello
+  d  mystuff
+  d  otherdir
+  d  parts
+
+We can also create a full path.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = data-dir
+  ... find-links = http://download.zope.org/distribution
+  ...
+  ... [data-dir]
+  ... recipe = z3c.recipe.dev:mkdir
+  ... path = with/subdir
+  ... """)
+  >>> print system(buildout),
+  data-dir: Cannot create /sample-buildout/with/subdir. /sample-buildout/with is not a directory.
+  While:
+    Installing.
+    Getting section data-dir.
+    Initializing part data-dir.
+  Error: Invalid Path
+
+But we need to activate this function explicitely.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = data-dir
+  ... find-links = http://download.zope.org/distribution
+  ...
+  ... [data-dir]
+  ... recipe = z3c.recipe.dev:mkdir
+  ... createpath = True
+  ... path = with/subdir
+  ... """)
+  >>> print system(buildout),
+  Uninstalling data-dir.
+  Installing data-dir.
+  data-dir: Creating directory with/subdir
+
+  >>> ls(sample_buildout)
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  demo1
+  d  demo2
+  d  develop-eggs
+  d  eggs
+  d  hello
+  d  mystuff
+  d  otherdir
+  d  parts
+  d  with
+
+
+Creating Files
+==============
+
+The mkfile recipe creates a file with a given path, content and
+permissions.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = script
+  ...
+  ... [script]
+  ... recipe = z3c.recipe.dev:mkfile
+  ... path = file.sh
+  ... content = hoschi
+  ... mode = 0755
+  ... """)
+  >>> print system(buildout)
+  Uninstalling data-dir.
+  Installing script.
+  script: Writing file /sample-buildout/file.sh
+  <BLANKLINE>
+
+  >>> ls(sample_buildout)
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  demo1
+  d  demo2
+  d  develop-eggs
+  d  eggs
+  -  file.sh
+  d  hello
+  d  mystuff
+  d  otherdir
+  d  parts
+  d  with
+
+The content is written to the file.
+
+  >>> cat(sample_buildout, 'file.sh')
+  hoschi
+
+And the mode is set. Note set a mode is not supported on windows
+
+  >>> import os, stat, sys
+  >>> path = os.path.join(sample_buildout, 'file.sh')
+  >>> if sys.platform[:3].lower() != "win":
+  ...     oct(stat.S_IMODE(os.stat(path)[stat.ST_MODE]))
+  ... else:
+  ...     '0755'
+  '0755'
+
+If we change the filename the old file is deleted.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = script
+  ...
+  ... [script]
+  ... recipe = z3c.recipe.dev:mkfile
+  ... path = newfile.sh
+  ... content = hoschi
+  ... mode = 0755
+  ... """)
+  >>> print system(buildout)
+  Uninstalling script.
+  Installing script.
+  script: Writing file /sample-buildout/newfile.sh
+  <BLANKLINE>
+
+  >>> ls(sample_buildout)
+  -  .installed.cfg
+  d  bin
+  -  buildout.cfg
+  d  demo1
+  d  demo2
+  d  develop-eggs
+  d  eggs
+  d  hello
+  d  mystuff
+  -  newfile.sh
+  d  otherdir
+  d  parts
+  d  with
+
+We can also specify to create the path for the file.
+
+  >>> write(sample_buildout, 'buildout.cfg',
+  ... """
+  ... [buildout]
+  ... parts = script
+  ...
+  ... [script]
+  ... recipe = z3c.recipe.dev:mkfile
+  ... createpath = On
+  ... path = subdir/for/file/file.sh
+  ... content = hoschi
+  ... mode = 0755
+  ... """)
+  >>> print system(buildout)
+  Uninstalling script.
+  Installing script.
+  script: Creating directory /sample-buildout/subdir/for/file
+  script: Writing file /sample-buildout/subdir/for/file/file.sh
+  <BLANKLINE>
+
+  >>> ls(sample_buildout + '/subdir/for/file')
+  -  file.sh
+
+

@@ -5,13 +5,19 @@ CHANGES
 0.5.4 (unreleased)
 ------------------
 
+- Feature: implemented mkdir script
+
+- Feature: implemented mkfile script
+
 - fix tests
+
 
 0.5.3 (2008-04-07)
 ------------------
 
 - Bug: ``script`` ``defaults`` had a bug that prevented it from use
        renamed it to ``arguments``, now it's working
+
 
 0.5.2 (unreleased)
 ------------------
