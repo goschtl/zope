@@ -21,10 +21,12 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+version = '3.5.1'
+
 setup(name='zope.app.folder',
-      version = '3.5.1dev',
+      version=version,
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='Folder and Site -- Zope 3 Content Components',
       long_description=(
           read('README.txt')
@@ -42,7 +44,7 @@ setup(name='zope.app.folder',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zope.app.folder',
+      url='http://pypi.python.org/pypi/zope.app.folder',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
@@ -59,6 +61,7 @@ setup(name='zope.app.folder',
                         'zope.traversing',
                         'zope.app.authentication',
                         'zope.app.component',
+                        'zope.app.content',
                         'zope.app.security',
                         'ZODB3',
                         ],
