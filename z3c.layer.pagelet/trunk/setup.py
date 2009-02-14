@@ -1,7 +1,6 @@
-#!python
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2007-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,10 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup
+"""Setup"""
 
-$Id:$
-"""
 import os
 import xml.sax.saxutils
 from setuptools import setup, find_packages
@@ -24,9 +21,11 @@ def read(*rnames):
     text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
     return xml.sax.saxutils.escape(text)
 
+version = '1.1.0'
+
 setup(
-    name = 'z3c.layer.pagelet',
-    version = '1.0.2dev',
+    name='z3c.layer.pagelet',
+    version=version,
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Pagelet layer setup for Zope3",
