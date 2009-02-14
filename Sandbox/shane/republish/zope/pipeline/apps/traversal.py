@@ -12,7 +12,6 @@
 #
 ##############################################################################
 
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 
@@ -23,15 +22,14 @@ class Traverser(object):
     Requires 'zope.request' in the WSGI environment.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
         self.traverse(request)
-        return self.app(environ, start_response)
+        return self.next_app(environ, start_response)
 
     def traverse(self, request):
         traversal_stack = request.traversal_stack
@@ -63,6 +61,4 @@ class Traverser(object):
 
 class HTTPTraverser(Traverser):
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
-    request_type = IHTTPRequest
 

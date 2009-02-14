@@ -13,7 +13,6 @@
 ##############################################################################
 
 from zope.event import notify
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces.event import BeforeTraverseEvent
@@ -27,16 +26,15 @@ class EventNotifier(object):
     times.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
         request.traversal_hooks.append(fireBeforeTraverse)
         try:
-            return self.app(environ, start_response)
+            return self.next_app(environ, start_response)
         finally:
             if request.traversed:
                 name, ob = request.traversed[-1]

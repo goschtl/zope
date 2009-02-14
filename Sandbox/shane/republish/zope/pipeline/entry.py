@@ -12,72 +12,42 @@
 #
 ##############################################################################
 """The main entry point for the zope.pipeline package.
-
-Use get_database_pipeline() or get_pipeline() to get a WSGI
-application built from a pipeline.
 """
 
-from zope.component import getMultiAdapter
 from zope.interface import directlyProvides
-from zope.interface import providedBy
+from zope.pipeline.interfaces import INoRequest
 from zope.pipeline.interfaces import IPipelineApplicationList
-from zope.pipeline.interfaces import IUndecidedRequest
-from zope.publisher import IWSGIApplication
-from zope.testing import cleanup
+from zope.pipeline.interfaces import IPipelineParticipant
+from zope.pipeline.interfaces import IWSGIApplicationFactory
 
-# _pipeline_cache: {(interfaces provided by the request) -> WSGI application}
-_pipeline_cache = {}
-cleanup.addCleanUp(_pipeline_cache.clear)
 
-def get_database_pipeline(database, global_environ=None):
-    """Get a pipeline that will connect to the given database.
+def create_pipeline(params, request_provides=None):
+    """Return a pipeline as a WSGI application.
 
-    The returned pipeline can be used for many requests, even
-    concurrently.
+    The `params` contains a mapping of application name to
+    factory keyword parameter map.  An example `params` would be
+    ``{'open_root': {'database': zodb_db_object}}``.
+
+    The `request_provides` parameter varies the pipeline according
+    to the type of the `zope.request` in the WSGI environment.
+    If the WSGI environment to process has no `zope.request`, the
+    `request.provides` parameter should be None (the default).
     """
-    d = {}
-    if global_environ is not None:
-        d.update(global_environ)
-    d['zope.database'] = database
-    return get_pipeline(global_environ=global_environ)
+    if request_provides is None:
+        request_provides = (INoRequest,)
+    marker_request = MarkerRequest(request_provides)
+    app_list = IPipelineApplicationList(marker_request)
+    app = None
+    for name in reversed(app_list.names):
+        factory = IWSGIApplicationFactory(marker_request, name=name)
+        app = factory.create(name, params, app)
+        # If the app or some adapter needs to know the parameters
+        # for the whole pipeline, tell it.
+        participant = IPipelineParticipant(app, None)
+        if participant is not None:
+            participant.set_pipeline_params(app_name, params)
+    return app
 
-def get_pipeline(request=None, global_environ=None):
-    """Get a pipeline.
-
-    The returned pipeline can be used for many requests, even
-    concurrently.
-    """
-    if request is None:
-        provided = (IUndecidedRequest,)
-    else:
-        provided = tuple(providedBy(request))
-    pipeline = _pipeline_cache.get(provided)
-    if pipeline is None:
-        pipeline = make_pipeline(provided, global_environ)
-        _pipeline_cache[provided] = pipeline
-    return pipeline
-
-def make_pipeline(provided, global_environ=None):
-    marker_req = MarkerRequest(provided)
-    app_list = IPipelineApplicationList(marker_req)
-    names = list(app_list.names)  # make a copy
-    # The last name in the list is an application.
-    name = names.pop()
-    app = IWSGIApplication(marker_req, name=name)
-    while names:
-        # The rest of the names are middleware.
-        name = names.pop()
-        app = getMultiAdapter(
-            (app, marker_req), IWSGIApplication, name=name)
-    if global_environ:
-        # augment the WSGI environment with some data
-        def add_global_environ(environ, start_response):
-            environ.update(global_environ)
-            return inner_app(environ, start_response)
-        directlyProvides(add_global_environ, IWSGIApplication)
-        return add_global_environ
-    else:
-        return app
 
 class MarkerRequest(object):
     """A marker object that claims to provide a request type.

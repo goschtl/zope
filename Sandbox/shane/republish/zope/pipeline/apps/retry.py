@@ -12,7 +12,6 @@
 #
 ##############################################################################
 
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces.exceptions import Retry
@@ -30,10 +29,9 @@ class Retry(object):
     true.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app, max_attempts=3):
-        self.app = app
+    def __init__(self, next_app, max_attempts=3):
+        self.next_app = next_app
         self.max_attempts = max_attempts
 
     def __call__(self, environ, start_response):
@@ -58,7 +56,7 @@ class Retry(object):
             output_file = []
             environ['zope.can_retry'] = True
             try:
-                res = self.app(environ, retryable_start_response)
+                res = self.next_app(environ, retryable_start_response)
             except (Retry, ConflictError):
                 if 'zope.request' in environ:
                     del environ['zope.request']
@@ -76,4 +74,4 @@ class Retry(object):
 
         # try once more, this time without retry support
         environ['zope.can_retry'] = False
-        return self.app(environ, start_response)
+        return self.next_app(environ, start_response)

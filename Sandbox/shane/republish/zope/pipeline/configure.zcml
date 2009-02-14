@@ -1,12 +1,12 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:wsgi="http://namespaces.zope.org/wsgi">
 
-<!-- a wsgi:pipeline directive specifies the names of
+<!-- A wsgi:pipeline directive specifies the names of
      applications to use in a pipeline.  Its implementation
      registers a bound PipelineApplicationList.adapt() method as an
      unnamed adapter from the request type to IPipelineApplicationList. -->
 
-<wsgi:pipeline for=".interfaces.IUndecidedRequest" names="
+<wsgi:pipeline for=".interfaces.INoRequest" names="
     virtual_host
     retry
     create_request
@@ -27,85 +27,80 @@
     call
     " />
 
-<!-- a wsgi:middleware directive registers an application for use
-     as middleware in a pipeline.  It is like an adapter directive,
-     except that the adapter is registered as requiring
-     two parameters, 'app' and 'request', while only the 'app' parameter is
-     provided to the middleware factory; the factory is wrapped
-     to make that happen.  If neither the directive nor the factory
-     says what kind of request is required, assume IRequest. -->
+<!-- A wsgi:application directive registers an application for use
+     as an application in a pipeline.  If the application is the last
+     element of the pipeline, the factory will be passed no positional
+     parameters.  Otherwise, the application will be passed the next
+     application in the pipeline as the only positional parameter.
 
-<wsgi:middleware
-    factory=".apps.retry.Retry"
-    name="retry"
-    for=".interfaces.INoRequest" />
-
-<wsgi:middleware
-    factory=".apps.requestsetup.CreateRequest"
-    name="create_request"
-    for=".interfaces.INoRequest" />
-
-<!-- a wsgi:application directive registers an application for use
-     as the final application in a pipeline.  It is like an adapter
-     directive, except that the adapter is registered as requiring
-     one parameter, 'request', while no parameters are passed to the
-     application factory; the factory is wrapped
-     to make that happen.  If neither the directive nor the factory
+     The implementation of this directive registers a new
+     WSGIApplicationFactory as an adapter from a marker request to
+     IWSGIApplicationFactory.  If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:application
-    factory=".apps.switch.SwitchPipeline"
+    name="retry"
+    factory=".apps.retry.Retry"
+    for=".interfaces.INoRequest" />
+
+<wsgi:application
+    name="create_request"
+    factory=".apps.requestsetup.CreateRequest"
+    for=".interfaces.INoRequest" />
+
+<wsgi:application
     name="switch_pipeline"
+    factory=".apps.switch.SwitchPipeline"
     for=".interfaces.INoRequest" />
 
 
-<wsgi:middleware
-    factory="..."
-    name="log" />
+<wsgi:application
+    name="log"
+    factory="..." />
 
-<wsgi:middleware
-    factory=".apps.openroot.RootOpener"
-    name="open_root" />
+<wsgi:application
+    name="open_root"
+    factory=".apps.openroot.RootOpener" />
 
-<wsgi:middleware
-    factory=".apps.txnctl.TransactionController"
-    name="control_transaction" />
+<wsgi:application
+    name="control_transaction"
+    factory=".apps.txnctl.TransactionController" />
 
-<wsgi:middleware
-    factory=".apps.notify.EventNotifier"
-    name="event" />
+<wsgi:application
+    name="event"
+    factory=".apps.notify.EventNotifier" />
 
-<wsgi:middleware
-    factory="..."
-    name="handle_error" />
+<wsgi:application
+    name="handle_error"
+    factory="..." />
 
 <!-- no form processing for non-browser requests -->
-<wsgi:middleware
-    factory=".apps.passthrough"
+<wsgi:application
     name="process_form"
+    factory=".apps.passthrough"
     for="zope.publisher.interfaces.IRequest" />
 
 <!-- process forms for browser requests -->
-<wsgi:middleware
-    factory=".apps.requestsetup.ProcessForm"
+<wsgi:application
     name="process_form"
+    factory=".apps.requestsetup.ProcessForm"
     for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
-<wsgi:middleware
-    factory=".apps.authenticate.Authenticator"
-    name="authenticate" />
-
-<wsgi:middleware
-    factory=".apps.traversal.Traverser"
-    name="traverse" />
-
-<wsgi:middleware
-    factory=".apps.txnctl.TransactionAnnotator"
-    name="annotate_transaction" />
+<wsgi:application
+    name="authenticate"
+    factory=".apps.authenticate.Authenticator" />
 
 <wsgi:application
-    factory=".apps.mapply.Caller"
-    name="call" />
+    name="traverse"
+    factory=".apps.traversal.Traverser" />
+
+<wsgi:application
+    name="annotate_transaction"
+    factory=".apps.txnctl.TransactionAnnotator" />
+
+<wsgi:application
+    name="call"
+    factory=".apps.mapply.Caller" />
 
 </configure>
 

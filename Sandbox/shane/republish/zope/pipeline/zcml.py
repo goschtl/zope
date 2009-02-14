@@ -31,6 +31,7 @@ from zope.schema import Int
 from zope.schema import TextLine
 
 from zope.pipeline.interfaces import IPipelineApplicationList
+from zope.pipeline.interfaces import IWSGIApplicationFactory
 from zope.pipeline.apps.requestsetup import factoryRegistry
 
 
@@ -40,50 +41,14 @@ class IPipelineDirective(Interface):
     for_ = Tokens(
         title=u'Request types',
         description=u'The request types that should use this pipeline',
-        value_type=GlobalObject(),
-        required=True)
+        value_type=GlobalObject())
 
     names = Tokens(
         title=u'Application names',
-        description=u'The list of WSGI application names to use.  '
-            'The last name in the list declares a simple application; '
-            'the rest declare a middleware application.',
-        required=True)
-
-
-class IApplicationDirective(Interface):
-    """Declare a simple WSGI application for use at the end of a pipeline"""
-
-    factory = GlobalObject(
-        title=u"Application factory",
-        description=(u"A factory that creates the WSGI application.  "
-                     u"The factory will be called with no parameters."),
-        required=True,
-        )
-
-    name = TextLine(
-        title=u"Name",
-        description=u"The name of the application",
-        required=True,
-        )
-
-    for_ = Tokens(
-        title=u'Request types',
-        description=u'The request types that should use this application',
-        value_type=GlobalObject(),
-        required=False)
-
-
-class IMiddlewareDirective(IApplicationDirective):
-    """Declare a middleware WSGI application for use in a pipeline"""
-    factory = GlobalObject(
-        title=u"Application factory",
-        description=(u"A factory that creates the WSGI application.  "
-                     u"The factory will be called with one parameter: "
-                     u"the next application in the pipeline."),
-        required=True,
-        )
-
+        description=(
+            u'The list of WSGI application names to use. '
+            u'The last name in the list declares a simple application; '
+            u'the rest declare a middleware application.'))
 
 class PipelineApplicationList(object):
     implements(IPipelineApplicationList)
@@ -91,10 +56,9 @@ class PipelineApplicationList(object):
     def __init__(self, names):
         self.names = names
 
-    def adapt(self, request):
+    def adapt(self, marker_request):
         """Called by adapter lookup"""
         return self
-
 
 def pipeline(_context, for_, names):
     """Register a pipeline application list"""
@@ -102,34 +66,65 @@ def pipeline(_context, for_, names):
     adapter(_context, factory=obj.adapt,
         provides=[IPipelineApplicationList], for_=for_)
 
+
+
+class IApplicationDirective(Interface):
+    """Declare a WSGI application."""
+
+    name = TextLine(
+        title=u"Name",
+        description=u"The name of the application")
+
+    factory = GlobalObject(
+        title=u"Application factory",
+        description=(
+            u"A factory that creates the WSGI application. "
+            u"If the application is used in the pipeline as "
+            u"middleware, the factory will be passed a single "
+            u"positional parameter containing the next "
+            u"application in the pipeline.  Other parameters "
+            u"specified for the pipeline may also be passed as "
+            u"keyword parameters."))
+
+    for_ = Tokens(
+        title=u'Request types',
+        description=u'The request types that should use this application',
+        value_type=GlobalObject(),
+        required=False)
+
+class WSGIApplicationFactory(object):
+    implements(IWSGIApplicationFactory)
+
+    def __init__(self, app_factory):
+        self.app_factory = app_factory
+
+    def adapt(self, marker_request):
+        """Called by adapter lookup"""
+        return self
+
+    def create(self, app_name, pipeline_params, next_app=None):
+        kw = pipeline_params.get(app_name)
+        if kw is None:
+            kw = {}
+        if next_app is not None:
+            # middleware
+            app = self.app_factory(next_app, **kw)
+        else:
+            # final app
+            app = self.app_factory(**kw)
+        return app
+
 def application(_context, factory, name, for_=()):
-    """Register a simple WSGI app for use at the end of pipeline"""
+    """Register a WSGI application"""
     if not for_:
-        for_ = [getattr(factory, 'request_type', IRequest)]
-
-    def app_factory(marker_request):
-        res = factory()
-        if not IWSGIApplication.providedBy(res):
-            alsoProvides(res, IWSGIApplication)
-        return res
-
-    adapter(_context, factory=[app_factory], provides=[IWSGIApplication],
+        for_ = [IRequest]
+    factory_factory = WSGIApplicationFactory(factory)
+    adapter(_context,
+        factory=[factory_factory.adapt],
+        provides=[IWSGIApplicationFactory],
         for_=for_, name=name)
 
-def middleware(_context, factory, name, for_=()):
-    """Register a middleware WSGI app for use in a pipeline"""
-    if not for_:
-        for_ = [getattr(factory, 'request_type', IRequest)]
-    for_ = [IWSGIApplication] + list(for_)
 
-    def app_factory(app, marker_request):
-        res = factory(app)
-        if not IWSGIApplication.providedBy(res):
-            alsoProvides(res, IWSGIApplication)
-        return res
-
-    adapter(_context, factory=[app_factory], provides=[IWSGIApplication],
-        for_=for_, name=name)
 
 
 class IRequestFactoryDirective(Interface):

@@ -18,7 +18,6 @@ __docformat__ = 'restructuredtext'
 from zope.configuration.exceptions import ConfigurationError
 from zope.httpform import FormParser
 from zope.i18n.interfaces import IUserPreferredCharsets
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.testing import cleanup
@@ -35,10 +34,9 @@ class CreateRequest(object):
     Also sets the request locale and skin.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         scheme = environ.get('wsgi.url_scheme', 'http').lower()
@@ -51,7 +49,7 @@ class CreateRequest(object):
         self.set_locale(request)
         self.set_skin(request)
 
-        return self.app(environ, start_response)
+        return self.next_app(environ, start_response)
 
     def set_locale(self, request):
         envadapter = IUserPreferredLanguages(request, None)
@@ -88,11 +86,9 @@ class ProcessForm(object):
     is an IHTTPRequest, not just an IRequest.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
-    request_type = IHTTPRequest
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -117,7 +113,7 @@ class ProcessForm(object):
         if parser.action:
             request.traversal_stack.insert(0, parser.action)
 
-        return self.app(environ, start_response)
+        return self.next_app(environ, start_response)
 
 
 class RequestFactoryRegistry(object):

@@ -13,7 +13,6 @@
 ##############################################################################
 
 from zope.component import getUtility
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.checker import ProxyFactory
@@ -32,13 +31,13 @@ class RootOpener(object):
     name as the root object.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
     root_name = 'Application'
     app_controller_name = '++etc++process'
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app, database):
+        self.next_app = next_app
+        self.database = database
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -52,18 +51,15 @@ class RootOpener(object):
             return self.app(environ, start_response)
 
         # Open the database.
-        db = environ['zope.database']
-        conn = db.open()
-
-        request.annotations['ZODB.interfaces.IConnection'] = conn
-        root = conn.root()
-        app = root.get(self.root_name, None)
-        if app is None:
-            raise SystemError("Zope Application Not Found")
-
-        request.traversed = [(self.root_name, ProxyFactory(app))]
-
+        conn = self.database.open()
         try:
-            return self.app(environ, start_response)
+            request.annotations['ZODB.interfaces.IConnection'] = conn
+            root = conn.root()
+            app = root.get(self.root_name, None)
+            if app is None:
+                raise SystemError("Zope Application Not Found")
+            request.traversed = [(self.root_name, ProxyFactory(app))]
+
+            return self.next_app(environ, start_response)
         finally:
             conn.close()

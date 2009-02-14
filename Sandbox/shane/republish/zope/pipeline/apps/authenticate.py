@@ -13,7 +13,6 @@
 ##############################################################################
 
 from zope.component import getGlobalSiteManager
-from zope.interface import adapts
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.management import newInteraction
@@ -29,10 +28,9 @@ class Authenticator(object):
     The WSGI environment must contain 'zope.request'.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication, IRequest)
 
-    def __init__(self, app, marker_request=None):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -48,12 +46,12 @@ class Authenticator(object):
 
         newInteraction(request)
         try:
-            return self.app(environ, start_response)
+            return self.next_app(environ, start_response)
         finally:
             endInteraction()
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, repr(self.app))
+        return '%s(%s)' % (self.__class__.__name__, repr(self.next_app))
 
 
 def placeful_auth(request, ob):

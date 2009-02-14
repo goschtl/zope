@@ -23,12 +23,11 @@ class FixRelativeLinks(object):
     to the response text (after calling the app).
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
     allow_redirect = True
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
@@ -59,7 +58,7 @@ class FixRelativeLinks(object):
 
         if not need_fix:
             # No fix required
-            return self.app(environ, start_response)
+            return self.next_app(environ, start_response)
 
         if redirect:
             # Redirect, then end the pipeline early

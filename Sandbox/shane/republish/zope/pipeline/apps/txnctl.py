@@ -15,7 +15,6 @@
 
 import transaction
 from zope.location.interfaces import ILocationInfo
-from zope.interface import adapts
 from zope.interface import implements
 from zope.interface import providedBy
 from zope.publisher.interfaces import IRequest
@@ -27,15 +26,14 @@ class TransactionController(object):
     """WSGI middleware that begins and commits/aborts transactions.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         transaction.begin()
         try:
-            res = self.app(environ, start_response)
+            res = self.next_app(environ, start_response)
         except:
             transaction.abort()
             raise
@@ -53,10 +51,9 @@ class TransactionAnnotator(object):
     Requires 'zope.request' in the environment.
     """
     implements(IWSGIApplication)
-    adapts(IWSGIApplication)
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self, next_app):
+        self.next_app = next_app
 
     def __call__(self, environ, start_response):
         res = self.app(environ, start_response)

@@ -16,13 +16,6 @@
 
 <meta:directive
     namespace="http://namespaces.zope.org/wsgi"
-    name="middleware"
-    schema=".zcml.IMiddlewareDirective"
-    handler=".zcml.middleware"
-    />
-
-<meta:directive
-    namespace="http://namespaces.zope.org/wsgi"
     name="request-factory"
     schema=".zcml.IRequestFactoryDirective"
     handler=".zcml.request_factory"

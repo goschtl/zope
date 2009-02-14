@@ -14,21 +14,36 @@
 
 
 from zope.interface import implements
+from zope.interface import providedBy
 from zope.publisher.interfaces import IWSGIApplication
 
-from zope.pipeline.entry import get_pipeline
+from zope.pipeline.entry import create_pipeline
+from zope.pipeline.interfaces import IPipelineParticipant
+
 
 class SwitchPipeline(object):
     """WSGI application that switches to a pipeline based on the request type.
 
+    This should be placed at the end of the INoRequest pipeline.
     Requires 'zope.request' in the environment.
     """
-    implements(IWSGIApplication)
+    implements(IWSGIApplication, IPipelineParticipant)
+
+    def __init__(self):
+        # _cache: {(interfaces provided by the request) -> pipeline}
+        self._cache = {}
+
+    def set_pipeline_params(self, name, pipeline_params):
+        self.pipeline_params = pipeline_params
 
     def __call__(self, environ, start_response):
         request = environ['zope.request']
-        app = get_pipeline(request=request)
-        return app(environ, start_response)
+        provided = tuple(providedBy(request))
+        pipeline = self._cache.get(provided)
+        if pipeline is None:
+            pipeline = create_pipeline(self.pipeline_params, provided)
+            self._cache[provided] = pipeline
+        return pipeline(environ, start_response)
 
     def __repr__(self):
         return '%s()' % self.__class__.__name__
