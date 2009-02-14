@@ -32,12 +32,14 @@ def read(*rnames):
 
 setup(
     name="z3c.recipe.sphinxdoc",
-    version='0.0.7dev',
+    version='0.0.7',
     author="Paul Carduner",
     description="Use Sphinx to build documentation for zope.org.",
-    long_description=(read(os.path.join('src','z3c','recipe','sphinxdoc','index.txt'))
-                      +'\n\n'+
-                      read('CHANGES.txt')),
+    long_description=(
+        read(os.path.join('src','z3c','recipe','sphinxdoc','index.txt'))
+        +'\n\n'+
+        read('CHANGES.txt')
+        ),
     license="ZPL 2.1",
     maintainer="Paul Carduner",
     maintainer_email="zope-dev@zope.org",
@@ -51,12 +53,13 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     namespace_packages=['z3c','z3c.recipe'],
-    install_requires=['setuptools',
-                      'zc.buildout',
-                      'zc.recipe.egg',
-                      'docutils', #Sphinx-0.5.1-py2.4.egg is broken does not
-                                  #include docutils as dependency -- this is temporary
-                      'Sphinx'],
+    install_requires=[
+        'setuptools',
+        'zc.buildout',
+        'zc.recipe.egg',
+        'docutils', #Sphinx-0.5.1-py2.4.egg is broken does not
+                    #include docutils as dependency -- this is temporary
+        'Sphinx'],
     entry_points="""
     [zc.buildout]
     default = z3c.recipe.sphinxdoc:ZopeOrgSetup

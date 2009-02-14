@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.0.6 (unreleased)
+0.0.7 (2009-02-15)
 ------------------
 
 - Bug: fix python 2.4 support
