@@ -1,0 +1,57 @@
+=======
+CHANGES
+=======
+
+0.3.1 (2009-02-14)
+------------------
+
+- Marked package as retired.
+
+
+0.3.0 (2009-02-07)
+------------------
+
+- Replaced ``zope.app.zapi`` by the original imports.
+
+- Replaced ``zope.app.container`` by ``zope.container``.
+
+- Fixed deprecation warning about importing ``ISite`` from
+  ``zope.app.component.interfaces``.
+
+- Declared ``zope.app.zcmlfiles`` as testing dependency, as otherwise
+  tests break.
+
+- Fixed home page and email address.
+
+- Added README files of layers to long description.
+
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+0.2.2 (2007-10-31)
+------------------
+
+- Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.

@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    package="z3c.layer.trusted">
+
+  <include package="z3c.layer.minimal.tests" file="ftesting.zcml"/>
+  <include package="z3c.layer.trusted" />
+
+  <interface
+      interface="z3c.layer.trusted.tests.ITrustedTestingSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="TrustedTesting"
+      />
+
+</configure>
