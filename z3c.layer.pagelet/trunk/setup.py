@@ -14,12 +14,10 @@
 """Setup"""
 
 import os
-import xml.sax.saxutils
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 version = '1.1.0'
 
@@ -32,8 +30,7 @@ setup(
     long_description=(
         read('README.txt')
         + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************'
+        '.. contents::'
         + '\n\n' +
         read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
         + '\n\n' +
