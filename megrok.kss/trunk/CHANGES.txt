@@ -3,7 +3,7 @@ Changelog for megrok.kss
 
     (name of developer listed in brackets)
 
-megrok.kss - 0.3 (unreleased)
+megrok.kss - 0.3 Released 2009-02-14
 
     - Fixes for compatibility with grok 1.0a1. We now use
       IGrokSecurityView.
