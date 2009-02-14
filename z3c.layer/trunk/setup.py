@@ -22,25 +22,16 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+version = '0.3.1'
+
 setup(name = 'z3c.layer',
-      version = '0.3.1dev',
+      version=version,
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Collection of Alternative Base Layers',
-      long_description=(
-          read('README.txt')
-          + '\n\n' + '.. contents::' + '\n\n' +
-          read('src', 'z3c', 'layer', 'minimal', 'README.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
-          + '\n\n' +
-          read('src', 'z3c', 'layer', 'trusted', 'README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
-          ),
-      keywords = "zope3 layer",
+      description='DEPRECATED: Collection of Alternative Base Layers',
+      long_description=read('README.txt'),
       classifiers = [
-          'Development Status :: 5 - Production/Stable',
+          'Development Status :: 7 - Inactive',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',

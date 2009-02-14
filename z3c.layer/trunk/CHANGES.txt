@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-0.3.1 (unreleased)
+0.3.1 (2009-02-14)
 ------------------
 
--
+- Marked package as retired.
 
 
 0.3.0 (2009-02-07)

@@ -17,6 +17,13 @@ $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import warnings
+
+warnings.warn(
+    'Package z3c.layer is retired, please use z3c.layer.pagelet package.',
+    DeprecationWarning,
+    stacklevel=2)
+
 
 class IPageletBrowserLayer(IBrowserRequest):
     """Like IDefaultBrowserLayer but only with the most important views

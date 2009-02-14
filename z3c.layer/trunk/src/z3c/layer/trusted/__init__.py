@@ -17,6 +17,13 @@ $Id$
 
 from z3c.layer import minimal
 
+import warnings
+
+warnings.warn(
+    'Package z3c.layer is retired, please use z3c.layer.trusted package.',
+    DeprecationWarning,
+    stacklevel=2)
+
 
 class ITrustedBrowserLayer(minimal.IMinimalBrowserLayer):
     """Like IMinimalBrowserLayer but with trusted traverser."""

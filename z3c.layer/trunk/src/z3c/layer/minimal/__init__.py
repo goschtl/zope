@@ -17,6 +17,13 @@ $Id$
 
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import warnings
+
+warnings.warn(
+    'Package z3c.layer is retired, please use z3c.layer.minimal package.',
+    DeprecationWarning,
+    stacklevel=2)
+
 
 class IMinimalBrowserLayer(IBrowserRequest):
     """Like IDefaultBrowserLayer but only with the most important views."""
