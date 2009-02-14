@@ -13,7 +13,7 @@ from megrok.kss.components import KSS
 
 class KSSGrokker(martian.MethodGrokker):
     martian.component(KSS)
-    martian.directive(grok.directive.view)
+    martian.directive(grok.view)
     martian.directive(grok.require, name='permission')
 
     def execute(self, factory, method, config, view, permission, **kw):
