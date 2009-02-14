@@ -1,8 +1,27 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""HTTP-specific interfaces and exceptions
+
+$Id: browser.py 96546 2009-02-14 20:48:37Z shane $
+"""
 
 from zope.interface import Attribute
+from zope.interface import implements
 from zope.interface import Interface
-from zope.deferredimport import deprecatedFrom
+from zope.publisher.interfaces.base import IPublishTraverse
 from zope.publisher.interfaces.base import IRequest
+from zope.publisher.interfaces.base import IResponse
 from zope.publisher.interfaces.exceptions import IPublishingException
 from zope.publisher.interfaces.exceptions import PublishingException
 
@@ -49,15 +68,6 @@ class MethodNotAllowed(PublishingException):
 class IHTTPRequest(IRequest):
 
     method = Attribute("Request method, normalized to upper case")
-
-    form = Attribute(
-        """Form data
-
-        This is a mapping from name to form value for the name.
-        """)
-
-    form_action = Attribute(
-        """The :action or :method specified by the form.""")
 
     def getCookies():
         """Return the cookie data
@@ -206,6 +216,6 @@ class IHTTPResponse(IResponse):
         """Causes a redirection without raising an error.
         """
 
-deprecatedFrom("moved to zope.complextraversal.interfaces",
-    "zope.complextraversal.interfaces",
-    "IHTTPPublisher")
+
+class IHTTPPublisher(IPublishTraverse):
+    """HTTP-Specific Traversal."""

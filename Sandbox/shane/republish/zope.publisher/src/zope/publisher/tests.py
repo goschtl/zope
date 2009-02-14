@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,14 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for publishing objects.
+"""Tests of this package"""
 
-$Id: browser.py 96546 2009-02-14 20:48:37Z shane $
-"""
+import unittest
 
-from zope.publisher.interfaces.base import *
-from zope.publisher.interfaces.exceptions import *
-from zope.publisher.interfaces.http import IRedirect
-from zope.publisher.interfaces.http import Redirect
+from zope.testing import doctest
 
-__all__ = tuple(name for name in globals() if not name.startswith('_'))
+def test_suite():
+    return unittest.TestSuite([
+        doctest.DocFileSuite(
+            'README.txt',
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+    ])
+
+if __name__ == '__main__':
+    unittest.main()

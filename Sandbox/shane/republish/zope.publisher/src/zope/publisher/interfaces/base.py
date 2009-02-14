@@ -1,3 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Basic publisher interfaces.
+
+$Id: browser.py 96546 2009-02-14 20:48:37Z shane $
+"""
 
 """The base interfaces for request and response objects."""
 
@@ -5,8 +22,15 @@ from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface.common.mapping import IExtendedReadMapping
 
-__all__ = ('IRequest', 'IResponse', 'IResult', 'IDebugFlags',
-    'IWSGIApplication')
+__all__ = (
+    'IRequest',
+    'IResponse',
+    'IResult',
+    'IHeld',
+    'IDebugFlags',
+    'IWSGIApplication',
+    'IPublishTraverse',
+    )
 
 
 class IRequest(IExtendedReadMapping):
@@ -52,7 +76,7 @@ class IRequest(IExtendedReadMapping):
         These hooks will be called before traversing an object for the
         first time.  If the same object is traversed more than
         once, the hook will still only be called the first time.
-        """
+        """)
 
     traversed = Attribute(
         """List of (name, obj) steps that have been traversed.
@@ -119,6 +143,17 @@ class IRequest(IExtendedReadMapping):
 
     def unauthorized(challenge):
         """Deprecated: use response.unauthorized() instead.
+        """
+
+    def hold(held):
+        """Hold a reference to an object until the request is closed.
+
+        If the object is an IHeld, its release method will be called
+        when the request is closed.
+        """
+
+    def close():
+        """Release resources held by the request.
         """
 
 
@@ -235,6 +270,16 @@ class IResult(Interface):
         See IResponse.setResult.
         """
 
+class IHeld(Interface):
+    """Object to be held and explicitly released by a request
+    """
+
+    def release():
+        """Release the held object
+
+        This is called by a request that holds the IHeld when the
+        request is closed.
+        """
 
 class IDebugFlags(Interface):
     """Features that support debugging."""
@@ -252,3 +297,18 @@ class IWSGIApplication(Interface):
     def __call__(environ, start_response):
         """Call the application and return a body iterator."""
 
+
+class IPublishTraverse(Interface):
+
+    def publishTraverse(request, name):
+        """Traverse to a named item.
+
+        The 'request' argument is the publisher request object.  The
+        'name' argument is the name that is to be looked up; it must
+        be an ASCII string or Unicode object.
+
+        If a lookup is not possible, raise a NotFound error.
+
+        This method should return an object that provides ILocation,
+        having the specified name and `self` as parent.
+        """
