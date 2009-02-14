@@ -15,8 +15,8 @@
 import urllib2
 import sys
 import os
-from os.path import join, dirname, isdir
-from email import parser
+from os.path import join, dirname, isdir, normpath
+from email import message_from_string
 
 import shutil
 import zc.recipe.egg
@@ -106,19 +106,21 @@ class ZopeOrgSetup(object):
                 open(join(staticDir,'layout.html'), 'w').write(f.read())
                 installed.append(join(staticDir, 'layout.html'))
 
-            metadata = dict(parser.Parser().parsestr('\n'.join(doc._get_metadata('PKG-INFO'))).items())
+            metadata = dict(message_from_string('\n'.join(
+                doc._get_metadata('PKG-INFO'))).items())
 
             #create conf.py
             confPyPath = join(partDir, 'conf.py')
             confPy = open(confPyPath, 'w')
-            confPy.write(confPyTemplate % dict(project=metadata.get('Name', doc.project_name),
-                                               copyright=metadata.get('Author', 'Zope Community'),
-                                               version=metadata.get('Version', doc.version),
-                                               release=metadata.get('Version', doc.version),
-                                               staticDir=staticDir,
-                                               templatesDir=templatesDir,
-                                               indexDoc=self.options.get('index-doc','index')
-                                               ))
+            confPy.write(confPyTemplate % dict(
+                project=metadata.get('Name', doc.project_name),
+                copyright=metadata.get('Author', 'Zope Community'),
+                version=metadata.get('Version', doc.version),
+                release=metadata.get('Version', doc.version),
+                staticDir=staticDir,
+                templatesDir=templatesDir,
+                indexDoc=self.options.get('index-doc','index')
+                ))
             confPy.close()
             installed.append(confPyPath)
 
@@ -127,10 +129,10 @@ class ZopeOrgSetup(object):
             if not isdir(buildDir):
                 os.mkdir(buildDir)
 
-            srcDir = join(doc.location,
-                          srcDirs.get(doc.project_name,
-                                      self.options.get('src-dir',
-                                                       doc.project_name.replace('.','/'))))
+            srcDir = join(doc.location, srcDirs.get(doc.project_name,
+                self.options.get('src-dir', doc.project_name.replace('.','/'))))
+            # fix bad path on windows (e.g. //foo\bar)
+            srcDir = normpath(srcDir)
 
             projectsData[doc.project_name] = ['-q','-c',partDir,
                                               srcDir, buildDir]
