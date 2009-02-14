@@ -54,6 +54,8 @@ setup(
     install_requires=['setuptools',
                       'zc.buildout',
                       'zc.recipe.egg',
+                      'docutils', #Sphinx-0.5.1-py2.4.egg is broken does not
+                                  #include docutils as dependency -- this is temporary
                       'Sphinx'],
     entry_points="""
     [zc.buildout]
