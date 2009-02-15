@@ -25,7 +25,7 @@ setup (
     name='z3c.template',
     version='1.1.0',
     author = "Roger Ineichen and the Zope Community",
-    author_email = "zope3-dev@zope.org",
+    author_email = "zope-dev@zope.org",
     description = "A package implementing advanced Page Template patterns.",
     long_description=(
         read('README.txt')
@@ -67,7 +67,7 @@ setup (
         'zope.pagetemplate',
         'zope.publisher',
         'zope.schema',
-        'z3c.pt.compat [zpt]',
+        'z3c.ptcompat [zpt]',
         ],
     include_package_data = True,
     zip_safe = False,

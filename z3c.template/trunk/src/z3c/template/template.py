@@ -18,7 +18,7 @@ $Id$
 from zope import component
 from zope.pagetemplate.interfaces import IPageTemplate
 
-from z3c.pt import compat
+from z3c import ptcompat
 from z3c.template import interfaces
 
 class Macro(object):
@@ -30,7 +30,7 @@ class Macro(object):
         self.contentType = contentType
 
     def __call__(self, **kwargs):
-        render = compat.bind_macro(
+        render = ptcompat.bind_macro(
             self.template, self.view, self.request, self.macroName)
         return render(content_type=self.contentType, **kwargs)
         
@@ -42,7 +42,7 @@ class TemplateFactory(object):
     def __init__(self, filename, contentType, macro=None):
         self.macro = macro
         self.contentType = contentType
-        self.template = compat.ViewPageTemplateFile(filename,
+        self.template = ptcompat.ViewPageTemplateFile(filename,
             content_type=contentType)
 
     def __call__(self, view, request):
