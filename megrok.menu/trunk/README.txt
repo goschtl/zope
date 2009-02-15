@@ -23,5 +23,7 @@ The ``title`` and ``description`` directives used here specifie the
 menu item's label and description.  The ``menuitem`` directive takes
 at least one argument, the menu that the item is registered to be for.
 This can either be an identifier string or the menu class
-itself. Other optional parameters include ``icon``, ``filter`` and
-``order``.
+itself. Other optional parameters include ``icon``, ``filter``, ``order``
+and ``extra``.
+
+For more use cases and examples, take a look to tests/test_functional.py
