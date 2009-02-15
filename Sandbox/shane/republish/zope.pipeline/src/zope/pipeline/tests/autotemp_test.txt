@@ -76,3 +76,4 @@ Test of copyto():
     >>> dest.seek(0)
     >>> dest.read()
     '0123456789'
+    >>> temp.close()

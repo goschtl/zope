@@ -14,7 +14,6 @@
 
 from cStringIO import StringIO
 import tempfile
-from zope.hookable import hookable
 
 bufsize = 8192
 
@@ -24,25 +23,33 @@ class AutoTemporaryFile(object):
         self._threshold = threshold
         self._f = f = StringIO()
         self._switched = False
-        # delegate most methods
-        self.read = hookable(f.read)
-        self.seek = hookable(f.seek)
-        self.tell = hookable(f.tell)
-        self.close = hookable(f.close)
+
+    def read(self, count=-1):
+        return self._f.read(count)
+
+    def seek(self, pos, mode=0):
+        self._f.seek(pos, mode)
+
+    def tell(self):
+        return self._f.tell()
+
+    def close(self):
+        self._f.close()
 
     def write(self, data):
         if not self._switched and self.tell() + len(data) >= self._threshold:
             # convert to TemporaryFile
+            old = self._f
             f = tempfile.TemporaryFile()
-            f.write(self._f.getvalue())
-            f.seek(self.tell())
+            f.write(old.getvalue())
+            f.seek(old.tell())
             self._f = f
             self._switched = True
-            # re-delegate all important methods
-            self.read.sethook(f.read)
-            self.seek.sethook(f.seek)
-            self.tell.sethook(f.tell)
-            self.close.sethook(f.close)
+            # delegate to the file directly
+            self.read = f.read
+            self.seek = f.seek
+            self.tell = f.tell
+            self.close = f.close
             self.write = f.write
         self._f.write(data)
 

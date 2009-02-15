@@ -40,7 +40,6 @@ setup(name='zope.pipeline',
       install_requires=['setuptools',
                         'zope.publisher',
                         'zope.interface',
-                        'zope.hookable',
                         ],
       extras_require=dict(
           test = ['zope.testing'],
