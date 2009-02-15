@@ -11,7 +11,20 @@ As an anonymous user, we only see the unprotected menu items:
   >>> from zope.testbrowser.testing import Browser
   >>> browser = Browser('http://localhost/manfred/showmenu')
   >>> print browser.contents
-  [{'action': 'edit',
+  [{'action': '',
+    'description': '',
+    'extra': None,
+    'icon': None,
+    'selected': u'',
+    'submenu': [{'action': 'optionone',
+                 'description': u'',
+                 'extra': None,
+                 'icon': None,
+                 'selected': u'',
+                 'submenu': None,
+                 'title': 'Option one'}],
+    'title': 'Options'},
+   {'action': 'edit',
     'description': u'',
     'extra': None,
     'icon': None,
@@ -31,7 +44,33 @@ After logging in as a manager, we also see the protected one:
   >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
   >>> browser.open('http://localhost/manfred/showmenu')
   >>> print browser.contents
-  [{'action': 'edit',
+  [{'action': '',
+    'description': '',
+    'extra': None,
+    'icon': None,
+    'selected': u'',
+    'submenu': [{'action': 'optionone',
+                 'description': u'',
+                 'extra': None,
+                 'icon': None,
+                 'selected': u'',
+                 'submenu': None,
+                 'title': 'Option one'}],
+    'title': 'Options'},
+   {'action': '',
+    'description': '',
+    'extra': None,
+    'icon': None,
+    'selected': u'',
+    'submenu': [{'action': 'configoption',
+                 'description': u'',
+                 'extra': None,
+                 'icon': None,
+                 'selected': u'',
+                 'submenu': None,
+                 'title': 'Protected configuration'}],
+    'title': 'Setup'},
+   {'action': 'edit',
     'description': u'',
     'extra': None,
     'icon': None,
@@ -86,6 +125,21 @@ class Edit(grok.View):
     def render(self):
         return 'edit'
 
+# also you can define sub-menus items
+class Options(megrok.menu.SubMenuItem):
+    grok.name('options')
+    grok.title('Options')
+    grok.description('')
+
+    megrok.menu.menuitem('actions')
+
+class OptionOne(grok.View):
+    grok.title('Option one')
+    megrok.menu.menuitem('options')
+
+    def render(self):
+        return 'option one'
+
 # Here's a view that's protected by a permission. We expect the menu
 # item that we configure for it to have the same permission setting:
 
@@ -99,6 +153,22 @@ class Manage(grok.View):
 
     def render(self):
         return 'manage'
+
+#Sub menus item are also available to be protected using a permission
+class Setup(megrok.menu.SubMenuItem):
+    grok.require(ManageStuff)
+    grok.name('setup')
+    grok.title('Setup')
+    grok.description('')
+
+    megrok.menu.menuitem('actions')
+
+class ConfigOption(grok.View):
+    grok.title('Protected configuration')
+    megrok.menu.menuitem('setup')
+
+    def render(self):
+        return 'Configuration'
 
 class ShowMenu(grok.View):
 

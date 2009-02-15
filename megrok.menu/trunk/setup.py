@@ -28,7 +28,9 @@ setup(name='megrok.menu',
           'setuptools',
           'martian',
           'grokcore.component',
-          'grok',  # just for the ViewGrokker
+          'grokcore.view',
+          'grokcore.security',
+          'grok', # needed for testing
       ],
       entry_points="""
       # -*- Entry points: -*-
