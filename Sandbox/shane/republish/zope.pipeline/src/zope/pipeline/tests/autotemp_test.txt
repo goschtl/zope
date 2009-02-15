@@ -1,0 +1,78 @@
+
+Tests of autotemp.AutoTemporaryFile
+-----------------------------------
+
+This small module provides a way to use temporary files without paying a
+file I/O performance penalty when the temporary data is small.
+
+    >>> from zope.pipeline.autotemp import AutoTemporaryFile
+    >>> f = AutoTemporaryFile(threshold=1000)
+    >>> f.write('data')
+    >>> f.seek(0)
+    >>> f.read()
+    'data'
+
+Since only a little data has been written, the instance is still using a
+StringIO.
+
+    >>> f._switched
+    False
+
+Write enough data to make it use a TemporaryFile instead.
+
+    >>> f.seek(0)
+    >>> data = '0123456789' * 101
+    >>> write = f.write
+    >>> write(data)
+    >>> f.seek(0)
+    >>> f.read() == data
+    True
+    >>> f.tell()
+    1010
+    >>> f._switched
+    True
+
+It's OK to keep a reference to the write() method.
+
+    >>> write('x')
+    >>> f.write('y')
+    >>> write('z')
+    >>> f.seek(1010)
+    >>> f.read()
+    'xyz'
+
+It's OK to keep a reference to other methods like read().
+
+    >>> f = AutoTemporaryFile(threshold=2)
+    >>> read = f.read
+    >>> f.write('abc')
+    >>> f._switched
+    True
+    >>> f.seek(0)
+    >>> read()
+    'abc'
+
+Convenience methods
+-------------------
+
+AutoTemporaryFile has copyfrom() and copyto(), which copy in chunks
+to avoid swamping the RAM.
+
+Test of copyfrom():
+
+    >>> from cStringIO import StringIO
+    >>> source = StringIO('0123456789')
+    >>> temp = AutoTemporaryFile()
+    >>> temp.copyfrom(source)
+    >>> temp.seek(0)
+    >>> temp.read()
+    '0123456789'
+
+Test of copyto():
+
+    >>> dest = StringIO()
+    >>> temp.seek(0)
+    >>> temp.copyto(dest)
+    >>> dest.seek(0)
+    >>> dest.read()
+    '0123456789'

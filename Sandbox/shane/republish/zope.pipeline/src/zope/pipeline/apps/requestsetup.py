@@ -49,7 +49,11 @@ class CreateRequest(object):
         self.set_locale(request)
         self.set_skin(request)
 
-        return self.next_app(environ, start_response)
+        try:
+            return self.next_app(environ, start_response)
+        finally:
+            request.close()
+            del environ['zope.request']
 
     def set_locale(self, request):
         envadapter = IUserPreferredLanguages(request, None)

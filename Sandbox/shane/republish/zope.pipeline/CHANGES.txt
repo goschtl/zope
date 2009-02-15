@@ -1,0 +1,8 @@
+CHANGES
+=======
+
+0.1 (unreleased)
+----------------
+
+- New package derived from zope.publisher and zope.app.publisher.
+
