@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+3.6.1 (unreleased)
+------------------
+
+- Use template for AuthUtilitySearchView instead of ugly HTML
+  constructing in the python code.
+
 3.6.0 (2009-01-31)
 ------------------
 

@@ -27,45 +27,17 @@ from zope.app.security.interfaces import ILogout, ILogoutSupported
 from zope.app.pagetemplate import ViewPageTemplateFile
 
 
-search_label = _('search-button', 'Search')
-search_title = _('Search String')
-
 class AuthUtilitySearchView(object):
 
-    __used_for__ = IAuthentication
+    template = ViewPageTemplateFile('authutilitysearchview.pt')
+    searchTitle = u'principals.zcml'
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def render(self, name):
-        sourcename = 'principals.zcml'
-        html = []
-
-        # add sub title for source search field
-        html.append('<h4>%s</h4>' % sourcename)
-        # start row for search fields
-        html.append('<div class="row">')
-        html.append('<div class="label">')
-        html.append(translate(search_title, context=self.request))
-        html.append('</div>')
-        html.append('<div class="field">')
-        html.append('<input type="text" name="%s" />' %(name+'.searchstring'))
-        html.append('</div>')
-        html.append('</div>')
-
-        # add search button for search fields
-        html.append('<div class="row">')
-        html.append('<div class="field">')
-        html.append('<input type="submit" name="%s" value="%s" />'
-                    % (name+'.search',
-                       translate(search_label, context=self.request)))
-        html.append('</div>')
-
-        # end row
-        html.append('</div>')
-
-        return '\n'.join(html)
+        return self.template(title=self.searchTitle, name=name)
 
     def results(self, name):
         if not (name+'.search' in self.request):
