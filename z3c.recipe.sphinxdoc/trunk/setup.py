@@ -32,7 +32,7 @@ def read(*rnames):
 
 setup(
     name="z3c.recipe.sphinxdoc",
-    version='0.0.7',
+    version='0.0.8dev',
     author="Paul Carduner",
     description="Use Sphinx to build documentation for zope.org.",
     long_description=(
