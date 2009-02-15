@@ -3,8 +3,11 @@ Changelog
 
 0.2 (unreleased)
 ----------------
-
-* ...
+ * Compatible with grok1.0a1
+ * Add the SubMenuItem base class and it's grokker SubMenuItemGrokker
+ * Add the `extra` parameter to the menuitem directive
+ * Tests for added functionality
+ * Remove version.cfg
 
 0.1 (2008-07-12)
 ----------------
