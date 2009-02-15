@@ -263,10 +263,9 @@ the following command::
 
 You will need to provide the following values:
 
-- The directory where your instance should be located, or the
-  *INSTANCE_HOME*. The instance home will hold your database files, log
-  files, the "Extensions" and "Products" directories, configuration files,
-  and scripts to start and stop the instance.  For our example, we assume
+- The directory where your instance should be located, or the *INSTANCE_HOME*.
+  The instance home will hold your database files, log files, configuration
+  files, and scripts to start and stop the instance. For our example, we assume
   the instance home to be located at ``~/myzope/instance``.
 
 - Username and Password for an initial Zope user. You will log in with

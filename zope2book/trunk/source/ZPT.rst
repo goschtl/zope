@@ -33,35 +33,6 @@ disrupt the application.
 A Page Template is like a model of the pages that it will generate.  In
 particular, it is parseable by most HTML tools.
 
-Zope Page Templates versus DTML
--------------------------------
-
-*Page Templates* use the *Template Attribute Language* (*TAL*), while
-*DTML Methods*, *DTML Documents* and *SQL Methods* use the *Document
-Template Markup Language* (*DTML*).  You may wonder why Zope needs two
-different template languages.
-
-First of all, there are historical reasons.  *Page Templates* are a
-relative new technology.  Zope 2.5 was the first release that shipped with
-*Page Templates*.  There are still many products and howtos that use
-*DTML* for tasks *Page Templates* are designed for.  And some people still
-prefer working with *DTML*.
-
-Secondly, *DTML* and *Page Templates* have different strengths and
-weaknesses.  *Page Templates* are aimed at HTML designers.  Once an HTML
-page has been "dynamicized" by inserting *DTML* into it, the resulting
-page typically becomes un-parseable for HTML tools, making it difficult to
-work with outside Zope.  *Page Templates* also enforce separation of
-presentation, logic and content (data).  This increases the scalability of
-content management and website development efforts that use these systems.
-And *Page Templates* give you better control over name lookups, while
-*DTML*'s namespace model adds too much "magic".
-
-But *DTML* has its strengths if we are dealing with something else than
-HTML/XML presentation, such as dynamically generated email messages and
-SQL queries.  So *DTML* is not a "dead end" and for some advanced tasks
-you might want to learn *DTML*, too.
-
 HTML Page Templates
 -------------------
 
@@ -149,18 +120,11 @@ interact with a credit card processing facility.
 Creating a Page Template
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you design pages, you will probably use FTP or WebDAV instead of the
-Zope Management Interface (ZMI) to edit *Page Templates*.  See "Remote
-Editing With FTP and WebDAV" in the `Advanced Page Templates`_ chapter for
-information on editing *Page Templates* remotely.  For the small
-examples in this chapter, it is easier to use the ZMI.
-
-Use your web browser to log into the Zope Management Interface as a
-manager.  Create a *Folder* to work in named 'template_test' in the root
-of your Zope.  Visit this folder and choose *Page Template* from Zope's
-add list (do *NOT* choose DTML Method or DTML Document, the following
-examples only work inside a Page Template).  Type 'simple_page' in the
-add form's *Id* field, then push the *Add and Edit* button.
+Use your web browser to log into the Zope Management Interface as a manager.
+Create a *Folder* to work in named 'template_test' in the root of your Zope.
+Visit this folder and choose *Page Template* from Zope's add list. Type
+'simple_page' in the add form's *Id* field, then push the *Add and Edit*
+button.
 
 You should now see the main editing page for the new *Page Template*.
 The title is blank and the default template text is in the editing area.
@@ -180,10 +144,7 @@ Now push the *Save Changes* button.  Zope should show a message
 confirming that your changes have been saved.
 
 If you get an error message, check to make sure you typed the example
-correctly and save it again.  Using an external editor, an HTML comment
-starting with *Page Template Diagnostics* is added to the template text
-to show you something went wrong.  You don't need to erase the error
-comment; once the error is corrected it will go away.
+correctly and save it again.
 
 Click on the *Test* tab.  You should see a page with "This is **a Simple
 Page**." at the top.  Notice that the title is bold.  This is because
@@ -268,15 +229,13 @@ Recall the first example of this chapter::
 
 Let's try to rewrite it using a *Python expression*::
 
-  <h1 tal:content="python: context.getProperty('title')">Sample Page
-   Title</h1>
+  <h1 tal:content="python: context.title">Sample Page Title</h1>
 
-While *path expressions* are the default, we need a prefix to indicate
-other expression types.  This expression with the prefix 'python:'
-does (at least here) the same as the *path expression* above, but we
-have to know that 'title' is a property of the context object and how
-to access properties.  *Path expressions* try different ways to access
-'title', so in general they are more flexible, but less explicit.
+While *path expressions* are the default, we need a prefix to indicate other
+expression types. This expression with the prefix 'python:' does (at least
+here) the same as the *path expression* above. *Path expressions* try different
+ways to access 'title', so in general they are more flexible, but less
+explicit.
 
 There are some simple things you can't do with *path expressions*.
 The most common are comparing values like in::
@@ -504,13 +463,13 @@ need to insert this path into the 'src' attribute of an 'img' tag.
 Edit the table cell in the meta-type column of the above example to
 look like this::
 
-  <td><img src="/misc_/OFSP/File_icon.gif"
+  <td><img src="file_icon.gif"
            tal:attributes="src item/icon" />
     <span tal:replace="item/meta_type">Meta-Type</span></td>
 
 The 'tal:attributes' statement replaces the 'src' attribute of the
 'img' tag with the value of 'item/icon'.  The 'src` attribute in the
-template (whose value is "/misc\_/OFSP/File_icon.gif") acts as a placeholder.
+template (whose value is "file_icon.gif") acts as a placeholder.
 
 Notice that we've replaced the 'tal:content' attribute on the table
 cell with a 'tal:replace' statement on a 'span' tag.  This change
@@ -562,12 +521,7 @@ expressions and macros.
 When you're using the Zope management interface to edit *Page Templates*
 it's easy to spot these diagnostic messages, because they are shown in the
 "Errors" header of the management interface page when you save the *Page
-Template*.  However, if you're using WebDAV or FTP it's easy to miss these
-messages.  For example, if you save a template to Zope with FTP, you won't
-get an FTP error telling you about the problem.  In fact, you'll have to
-reload the template from Zope to see the diagnostic message.  When using
-FTP and WebDAV it's a good idea to reload templates after you edit them to
-make sure that they don't contain diagnostic messages.
+Template*.
 
 If you don't notice the diagnostic message and try to render a template
 with problems you'll see a message like this::
@@ -697,7 +651,7 @@ long as it returns a macro.  For example::
 In this case the path expression returns a macro defined dynamically by
 the 'getMacro' script.  Using *Python expressions* to locate macros lets
 you dynamically vary which macro your template uses.  An example
-of the body of a "getMacro" Python script is as follows::
+of the body of a "getMacro" Script (Python) is as follows::
 
   return container.ptMacros.macros['amacroname']
 
@@ -734,12 +688,7 @@ template.
 
 If you check the *Expand macros when editing* option on the *Page
 Template* *Edit* view, then any macros that you use will be expanded in
-your template's source.  When you're editing in the ZMI, rather than
-using a WYSIWYG editing tool, it's more convenient not to expand macros
-when editing.  This is the default for newly created templates.  When
-using WYSIWYG tools, however, it is often desirable to have the macros
-expanded so you are editing a complete page.  In this case, check the
-*Expand macros...* checkbox before editing the page.
+your template's source.
 
 Using Slots
 ~~~~~~~~~~~
@@ -945,35 +894,6 @@ updated.  For example you could put the body of the page in a table and
 add a sidebar on the left and the press release template would
 automatically use these new presentation elements.
 
-This is a much more flexible solution to control page look and feel then
-the DTML 'standard_html_header' and 'standard_html_footer' solution.  In
-fact, Zope comes with a stock page template in the root folder named
-'standard_template.pt' that includes a whole page macro with a 'head'
-and 'body' slot.  Here's how you might use this macro in a template::
-
-  <html metal:use-macro="context/standard_template.pt/macros/page">
-    <div metal:fill-slot="body">
-      <h1 tal:content="context/title">Title</h1>
-      <p tal:content="context/getBody">Body text goes here</p>
-    </div>
-  </html>
-
-Using the 'standard_template.pt' macro is very similar to using other
-whole page macros.  The only subtlety worth pointing out is the path
-used to locate the macro.  In this example the path begins with
-'context'.  This means that Zope will search for the
-'standard_template.pt' object using acquisition starting at the object
-that the template is applied to.  This allows you to customize the look
-and feel of templates by creating custom 'standard_template.pt' objects
-in various locations.  You can choose to start the path to the macro
-with *root* or with *container*, as well as with *context*.  If the path
-begins with *root* then you will always get the standard template which
-is located in the root folder.  If the path begins with *container* then
-Zope will search for a standard template using acquisition starting in
-the folder where the template is defined.  This allows you to customize
-look and feel of templates, but does not allow you to customize the look
-and feel of different objects based on their location in the site.
-
 Using Templates with Content
 ----------------------------
 
@@ -981,18 +901,13 @@ In general Zope supports content, presentation and logic components.
 *Page Templates* are presentation components and they can be used to
 display content components.
 
-Zope ships with several content components: ZSQL Methods, Files, and
-Images.  DTML Documents and methods are not really pure content components
-since they can hold content and execute DTML code.  You can use Files for
-textual content since you can edit the contents of Files if the file is
-less than 64K and contains text.  However, the File object is fairly basic
-and may not provide all of the features or metadata that you need.
+Zope ships with several content components: ZSQL Methods, Files, and Images.
+You can use Files for textual content since you can edit the contents of Files
+if the file is less than 64K and contains text. However, the File object is
+fairly basic and may not provide all of the features or metadata that you need.
 
 Zope's `Content Management Framework <http://cmf.zope.org>`_ (CMF) solves
 this problem by providing an assortment of rich content components.  The
 CMF is Zope's content management add on.  It introduces all kinds of
 enhancements including workflow, skins and content objects.  The CMF makes
-a lot of use of *Page Templates*.  A later release of Zope will probably
-include technologies `from and inspired by
-<http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/FrontPage>`_
-the CMF.
+a lot of use of *Page Templates*.

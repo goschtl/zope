@@ -26,31 +26,25 @@ Content
 
 Presentation
   You can control the look and feel of your site with Zope objects that act
-  as web page "templates". Zope comes with two facilities to help you
-  manage presentation: DTML (which also handles "logic"), and Zope Page
-  Templates (ZPT).  The difference between DTML and ZPT is that DTML allows
-  you to mix presentation and logic, while ZPT does not.
+  as web page "templates". Zope comes with one facility to help you
+  manage presentation: Zope Page Templates (ZPT).
 
 Logic
-  Zope has facilities for scripting business logic using three facilities:
-  Document Template Markup Language (DTML), Python, and Perl (Perl is only
-  available as an add-on).  "Logic" is any kind of programming that does
-  not involve presentation, but rather involves the carrying out of tasks
-  such as changing objects, sending messages, testing conditions, and
-  responding to events.
+  Scripting business logic in Zope is done using Python. "Logic" is any kind of
+  programming that does not involve presentation, but rather involves the
+  carrying out of tasks such as changing objects, sending messages, testing
+  conditions, and responding to events.
 
-The lines between these object categories can become slightly
-fuzzy.  For example, some aspects of DTML fit into *each* of the
-three categories, but since DTML is mostly for presentation, we stick it
-in there.  Zope also has other kinds of objects that fit into none
-of these categories, which are explored further in the chapter
-entitled `Zope Services <ZopeServices.html>`_.  You may also install
-"third party" Zope objects , typically called "Products", to expand 
-Zope's capabilities.  You can browse a list of available Zope Products at
-`Zope.org <http://www.zope.org/Products>`_.
+Zope also has other kinds of objects that fit into none of these categories,
+which are explored further in the chapter entitled `Zope Services
+<ZopeServices.html>`_. You may also install "third party" Zope objects ,
+defined in Python packages, to expand Zope's capabilities. You can browse a
+list of packages specifically aimed at Zope at the
+`Python Package Index <http://pypi.python.org/pypi?:action=browse&c=514>`_.
 
-Content Objects:  Folders, Files, and Images
-============================================
+
+Content Objects: Folders, Files, and Images
+===========================================
 
 Folders
 -------
@@ -66,8 +60,7 @@ kind of "folder within a folder" arrangement provides your Zope site with
 presentation is influenced by your site's folder structure.  Folder
 structure should be very familiar to anyone who has worked with files and
 folders on their computer using a file manager like Microsoft *Windows
-Explorer* or any one of the popular UNIX file managers, like *xfm*, *kfm*,
-and the Gnome file manager.
+Explorer*.
 
 Files
 -----
@@ -76,7 +69,7 @@ Zope Files contain raw data, just as the files on your computer do.
 Software, audio, video and documents are typically transported around the
 Internet and the world as files. A Zope File object is an analogue to these
 kinds of files.  You can use Files to hold any kind of information that
-Zope doesn't specifically support, such as Flash files, Java applets,
+Zope doesn't specifically support, such as Flash files, audio files,
 "tarballs", etc. 
 
 Files do not consider their contents to be of any special format, textual
@@ -133,12 +126,6 @@ object editing interface.  To change the content type of a File object,
 type the new content type into the *Content Type* field and click the *Save
 Changes* button.
 
-You can specify a *precondition* for a file.  A precondition is the name of
-an executable Zope object (such as a DTML Method, a Script (Python), or an
-external method), which is executed before the File is viewed or
-downloaded.  If the precondition raises an exception (an error), the file
-cannot be viewed.  This is a seldom-used feature of Files.
-
 You can change the contents of an existing File object by selecting a new
 file from your local filesystem in the *File Data* form element and
 clicking *Upload*.
@@ -180,40 +167,32 @@ Everything in the previous section about using file objects also applies to
 images. In addition, Image objects display a preview of their images once
 they have been uploaded to Zope.
 
-Presentation Objects:  Zope Page Templates and DTML Objects
-===========================================================
+Presentation Objects:  Zope Page Templates
+==========================================
 
 Zope encourages you to keep your presentation and logic separate by
 providing different objects that are intended to be used expressly for
 "presentation".  "Presentation" is defined as the task of dynamically
 defining layout of web pages and other user-visible data.  Presentation
-objects typically render HTML (and sometimes XML or WML).
+objects typically render HTML (and sometimes XML).
 
-Zope has two "presentation" facilities: *Zope Page Templates* (ZPT) and
-*Document Template Markup Language* (DTML).  ZPT and DTML are similar but
-have slight differences in scope and audience that are explained in a
-succeeding section.
+Zope has one "presentation" facility: *Zope Page Templates* (ZPT). Zope Page
+Templates are objects that allow you to define dynamic presentation for a web
+page. The HTML in your template is made dynamic by inserting special XML
+namespace elements into your HTML that define the dynamic behavior for that
+page.
 
-Zope Page Templates are objects that allow you to define dynamic
-presentation for a web page.  The HTML in your template is made dynamic by
-inserting special XML namespace elements into your HTML that define the
-dynamic behavior for that page.
+ZPT has characteristics of a "server-side" scripting language, like SSI, PHP or
+JSP. This means that ZPT commands are executed by Zope on the server, and the
+result of that execution is sent to your web browser. By contrast, client-side
+scripting languages, like Javascript, are not processed by the server, but are
+rather sent to and executed by your web browser.
 
-Document Template Markup Language objects are objects that also allow you
-to define presentation for a web page.  The HTML in your template is made
-dynamic by inserting special "tags" (directives surrounded by angle
-brackets, typically) into your HTML that define the dynamic behavior for
-that page.
+Zope also has an older version of a presentation facility included, which is
+called *Document Template Markup Language* or short DTML.
 
-Both ZPT and DTML are "server-side" scripting languages, like SSI, PHP,
-Embperl, or JSP.  This means that DTML and ZPT commands are executed by
-Zope on the server, and the result of that execution is sent to your web
-browser. By contrast, client-side scripting languages, like Javascript, are
-not processed by the server, but are rather sent to and executed by your
-web browser.
-
-ZPT vs. DTML:  Same Purpose, Different Audiences
-------------------------------------------------
+ZPT vs. DTML: Same Purpose, Different Approach
+----------------------------------------------
 
 There is a major problem with many languages designed for the purpose of
 creating dynamic HTML content: they don't allow for "separation of
@@ -249,45 +228,14 @@ the most efficient way.
 
 Zope's original dynamic presentation language was DTML.  It soon became
 apparent that DTML was great at allowing programmers to quickly generate
-dynamic web pages, but it failed at times to allow programmers to work
+dynamic web pages, but it failed to allow programmers to work
 effectively together with non-technical graphics designers.  Thus, ZPT was
 born.  ZPT is an "attribute-based" presentation language that tries to
 allow for the "round-tripping" of templates between programmers and
 non-technical designers.
 
-Both ZPT and DTML are fully supported in Zope, for now and in the future.
-Because ZPT and DTML have an overlapping scope, many people are confused
-about which to choose for a given task.  A set of "rules of thumb" are
-appropriate here:
-
-- ZPT is the "tool of choice" if you have a mixed team of programmers
-  and non-technical designers.  Design tools like Macromedia Dreamweaver do
-  not "stomp on" ZPT embedded in a page template, while these tools *do*
-  "stomp on" DTML tags embedded in an HTML page.  Additionally, any given
-  ZPT page template is typically viewable in a browser with "default"
-  (static) content even if it has commands embedded in it, which makes it
-  easier for both programmers and designers to preview their work "on the
-  fly".  Dynamic DTML content, on the other hand, may not be "preview-able"
-  in any meaningful way until it is rendered.
-
-- Use DTML when you need to generate non-XML, non-HTML, or
-  non-XHTML-compliant HTML text.  ZPT requires that you create pages that
-  are XHTML and/or XML-compliant.  ZPT cannot add dynamism to CSS style
-  sheets, SQL statements, or other non-XML-ish text, while DTML excels at
-  this.
-
-- DTML may be easier for some programmers to write because it provides
-  greater control over "conditionals" ("if this, do this; else, do that")
-  than does ZPT.  In this respect, it more closely resembles PHP and
-  ASP-based scripting languages than does ZPT, so it's typically a good
-  "starting place" for programmers coming from these kinds of technologies.
-
-- DTML code can become "logic-heavy" because it does not enforce the
-  "separation of presentation from logic" as strictly as does ZPT.
-  Embedding too much logic in presentation is almost always a bad thing,
-  but it is particularly bad when you are working on a "mixed" team of
-  programmers and designers.  If you're a "separation of presentation from
-  logic" purist, you will almost certainly prefer ZPT.
+While DTML is still supported in Zope, its use is discouraged and you
+shouldn't use it anymore for new projects.
 
 Zope Page Templates
 -------------------
@@ -366,137 +314,9 @@ SalesPage template, and you will see something like the following figure:
 
 You can also view a Page Template by visiting its Zope URL directly.
 
-DTML Objects:  DTML Documents and DTML Methods
-----------------------------------------------
 
-DTML is the "other" Zope facility for the creation of presentation in Zope.
-Two kinds of DTML objects may be added from the Zope Management Interface:
-*DTML Documents* and *DTML Methods*.  Both kinds of objects allow you to
-perform *security-constrained* presentation logic.  The code placed into
-DTML objects is constrained by Zope's *security policy*, which means, for
-the most part, that they are unable to import all but a defined set of
-restricted Python "modules", and they cannot directly access files on your
-filesystem.  This is a security feature, as it allows site administrators
-to safely delegate the ability to create DTML to "untrusted" or
-"semi-trusted" users.  For more information about Zope's security features,
-see `Users and Security <Security.html>`_.
-
-A source of frequent confusion for DTML beginners is the question of when
-to use a DTML Document versus when to use a DTML Method.  On the surface,
-these two options seem identical: they both hold DTML and other content,
-they both execute DTML code, and they both have a similar user interface
-and a similar API. So what's the difference?
-
-DTML Methods are meant to hold bits of dynamic content that are displayed
-by other DTML Methods and other kinds of Zope objects.  For instance, you
-might create a DTML Method that renders the content of a navigation bar, or
-a DTML Method that represents a "standard" header for all of your HTML
-pages.  On the other hand, DTML Documents are meant to hold "document-like"
-content that can stand on its own.  DTML Documents also support properties,
-while DTML Methods do not.  The distinction between DTML Methods and DTML
-Documents is subtle, and if Zope Corporation had it to do "all over
-again", DTML Documents would likely not exist.  (Editor's aside: Believe
-me, I almost certainly enjoy writing about the difference less than you
-like reading about it. ;-) ) There is more information on this topic in
-the chapters entitled `Basic DTML <DTML.html>`_ and `Variables and Advanced
-DTML <AdvDTML.html>`_.
-
-As a general rule, you should use a DTML Method to hold DTML content unless
-you have a really good reason for using a DTML Document, such as a
-requirement that the container of your DTML content must support object
-properties. 
-
-Creating DTML Methods
-~~~~~~~~~~~~~~~~~~~~~
-
-Click on the Sales folder and then choose *DTML Method* from the Add list.
-This process will take you to the Add form for a DTML Method.  Specify the
-'id' "SalesStaff" and the title "The Jungle Sales Staff", and click *Add*.
-An entry for the new DTML Method object will be displayed in the Contents
-view of the Workspace pane.
-
-Editing DTML Methods
-~~~~~~~~~~~~~~~~~~~~
-
-The easiest and quickest way to edit your newly-created DTML Method is
-through the ZMI.  To select your method, click on its name or icon, which
-will bring up the form shown in the following figure:
-
-.. figure:: ../Figures/sales_staff_dtml.jpg
-
-   Editing a DTML Method
-
-This view shows a text area in which you can edit the content of your
-document.  Click the *Save Changes* button to make effective any changes
-you have made in the text area.  You can control the displayed size of the
-text area with the *Taller*, *Shorter*, *Wider*, and *Narrower* buttons.
-You can also upload a new file into the document with the *File* text box
-and the *Upload File* button.
-
-Delete the boilerplate content that is automatically included with a new
-DTML Method, and then add the following HTML content to the textarea::
-
-  <html>
-  <body>
-  <h2>Jungle Sales Staff</h2>
-
-  <ul>
-    <li>Tarzan</li>
-    <li>Cheetah</li>
-    <li>Jane</li>
-  </ul>
-  </body>
-  </html>
-
-Note that the example provided above doesn't do anything "dynamic"; it's
-just some HTML.  We will explore the creation of dynamic content with DTML
-in a later chapter.  For now, we're just getting used to using a DTML
-Method object via the ZMI.
-
-After you have completed the changes to your method, click the *Save
-Changes* button.  Zope returns a message to inform you that your changes
-have taken effect.
-
-Viewing a DTML Method
-~~~~~~~~~~~~~~~~~~~~~
-
-You can view a "rendered" DTML Method in the Workspace frame by clicking
-its *View* tab.  Click the *View* tab of the 'SalesStaff' DTML method, and
-you will be presented with something like the following:
-
-.. figure:: ../Figures/junglesales_view.jpg
-
-   Viewing a Rendered DTML Method
-
-You can also view a DTML Method by visiting its Zope URL directly.  
-
-Uploading an HTML File as Content for a DTML Method
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Suppose you'd prefer not to edit your HTML files in a web browser, or you
-have some existing HTML pages that you'd like to bring into Zope. Zope
-allows you to upload your existing text files and convert them to DTML
-Methods.
-
-Create a text file on your local computer named "upload_dtml.html".
-Populate it with the following content::
-
-  <html>
-    <body>
-      <h1>This is my first uploaded DTML Document!</h1>
-    </body>
-  </html>
-
-While in the Sales folder, choose *DTML Method* from the Add menu, which
-will trigger the DTML Method Add form to be displayed.  The last form
-element on the add form is the *Browse* button.  Click this button, and
-your browser will pop up a file selection dialog.  Choose the
-"upload_dtml.html" file, type in an 'id' of "upload_dtml" for the new DTML
-Method, and click *Add and Edit*.  You will then be taken back to the Edit
-form of your new DTML Method.
-
-Logic Objects:  Script (Python) Objects and External Methods
-============================================================
+Logic Objects:  Script (Python) Objects
+=======================================
 
 "Logic" objects in Zope are objects that typically perform some sort of
 "heavy lifting" or "number crunching" in support of presentation objects.
@@ -518,33 +338,24 @@ be displayed meaningfully in a browser.  However, the return value of a
 logic object can almost always be displayed in a browser, even if the logic
 object does not return HTML.
 
-There are two kinds of logic objects supported by stock Zope: *Script
-(Python)* objects and *External Methods*.  An add-on product allows you to
-code logic in `Perl <http://www.zope.org/Wikis/zope-perl/FAQ>`_.  Several
-community-contributed Products exist which allow you to use Zope to manage
-your PHP and JSP scripts as well, but they are not integrated as tightly as
-the Python- or Perl-based logic objects.  They are
-`PHParser <http://www.zope.org/Members/hewei/PHParser>`_,
-`PHPObject <http://www.zope.org/Members/Ioan/PHPObject>`_, and
-`ZopeJSP <http://www.zope.org/Members/Ioan/ZopeJsp>`_.
+There is one kind of logic objects supported by stock Zope: *Script (Python)*
+objects.
 
-The stock logic objects, External Methods and Script (Python) objects, are
-written in the syntax of the *Python* scripting language.  Python is a
-general-purpose programming language.  You are encouraged to read the
-`Python Tutorial <http://www.python.org/doc/current/tut/tut.html>`_ in
-order to understand the syntax and semantics of the example Script (Python)
-objects and External Methods shown throughout this chapter and throughout
-this book.  And don't panic: Python is very easy to learn and understand.
+The stock logic objects are written in the syntax of the *Python* scripting
+language. Python is a general-purpose programming language. You are encouraged
+to read the `Python Tutorial <http://www.python.org/doc/current/tut/tut.html>`_
+in order to understand the syntax and semantics of the example Script (Python)
+objects shown throughout this chapter and throughout this book. And don't
+panic: Python is very easy to learn and understand.
 
-One important Python feature that must be mentioned here, however: Python
-uses whitespace in the form of indentation to denote block structure.
-Where other languages, such as C, Perl, and PHP might use "curly braces" --
-"{" and "}" -- to express a block of code, Python determines code blocks by
-examining the indentation of code text.  If you're used to other
-programming languages, this may take some "getting-used-to" (typically
-consisting of a few hours of unsavory spoken language ;-) ).  If you have
-problems saving or executing Script or External Method objects, make sure
-to check your Script's indentation.
+One important Python feature that must be mentioned here, however: Python uses
+whitespace in the form of indentation to denote block structure. Where other
+languages, such as C, Perl, and PHP might use "curly braces" -- "{" and "}" --
+to express a block of code, Python determines code blocks by examining the
+indentation of code text. If you're used to other programming languages, this
+may take some "getting-used-to" (typically consisting of a few hours of
+unsavory spoken language ;-) ). If you have problems saving or executing Script
+objects, make sure to check your Script's indentation.
 
 Script (Python) Objects
 -----------------------
@@ -642,7 +453,7 @@ Uploading a Script (Python)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Uploading the body of a Script (Python) object is much like uploading the
-body of a DTML Method or Page Template.  One significant difference is that
+body of a Page Template.  One significant difference is that
 Script (Python) objects interpret text that is offset by "double-pound"
 ('##') at the beginning of the text as data about their parameters, title,
 and "bindings".  For example, if you entered the following in a text editor
@@ -668,104 +479,6 @@ You may also type the "double-pound" quoted text into the "body" textarea,
 along with the actual script lines, and the "double-pound" quoted text will
 be "auto-magically" turned into bindings and parameters for the Script
 (Python) object.
-
-External Methods
-----------------
-
-External Method objects are another type of logic object.  They are very
-similar to Script (Python) objects; in fact, they are scripted in the
-Python programming language, and they are used for the same purpose.  There
-are a few important differences:
-
-- External Methods are not editable using the Zope Management Interface.
-  Instead, their "modules" need to be created on the file system of your
-  Zope server in a special subdirectory of your Zope directory named
-  'Extensions'.
-
-- Because External Methods are not editable via the Zope Management
-  Interface, their execution is not constrained by the Zope "security
-  machinery".  This means that, unlike Script (Python) objects, External
-  Methods can import and execute essentially arbitrary Python code and
-  access files on your Zope server's file system.
-
-- External Methods do not support the concept of "bindings" (which we have
-  not discussed much yet, but please just make note for now).
-
-External methods are often useful as an "escape hatch" when Zope's security
-policy prevents you from using a Script (Python) object or DTML to do a
-particular job that requires more access than is "safe" in
-through-the-web-editable scripts.  For example, a Script (Python) object
-cannot write to files on your server's filesystem that an External Method
-may.
-
-Creating and Editing an External Method File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Minimize the browser you're using to access the ZMI.  In your Zope's
-INSTANCE_HOME (the place where your Zope instance lives; see the
-Installation chapter for details), locate the subfolder named 'Extensions'.
-Navigate into this folder and create a text file with the name
-'SalesEM.py'.  
-
-Within this file, save the following content::
-
-  def SalesEM(self, name="Chris"):
-      id = self.id
-      return 'Hello, %s from the %s external method' % (name, id)
-
-Creating an External Method Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Before you can use an External Method from within Zope, you need to create
-an External Method object in the ZMI that "refers to" the function in the
-file that you just created.  Bring back your browser window and visit the
-ZMI.  Navigate to the Sales folder and select *External Method* from the
-Add list.  The Add form for an External Method will appear.  Provide an
-'Id' of "SalesEM", a 'Title' of "Sales External Method", a 'Module Name' of
-"SalesEM", and a 'Function Name' of "SalesEM".
-
-Then click *Add* at the bottom of the Add form.
-
-Testing an External Method Object
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can test an External Method in the Workspace frame by clicking the
-*Test* tab from the External Method's management screen.  When you test an
-External Method, its output is displayed in your browser.  Unlike Script
-(Python) objects, External Methods provide no mechanism for specifying
-parameter values during testing.  However, like Script (Python) objects,
-their output is influenced by values in a query string when you visit them
-directly.
-
-Click the *Test* tab of the SalesEM object, and you will see something like
-the following figure:
-
-.. figure:: ../Figures/testem.png
-
-   Testing an External Method
-
-If an External Method does not require parameters (or has defaults for its
-parameters, as in the example above), you may visit its URL directly to see
-its output.
-
-Provide alternate values via a query string to influence the execution of
-the External Method.  For example, visiting the SalesEM external Method via
-'http://localhost:8080/Sales/SalesEM?name=Fred' will display the following
-output::
-
-    Hello, Fred from the Sales external method
-
-Astute readers will note that the 'id' provided by the output is *not* the
-'id' of the External Method ('SalesEM'), but is instead the 'id' of the
-"containing" folder, which is named 'Sales'!  This is a demonstration of
-the fact that External Methods (as well as Script (Python) objects) are
-mostly meant to be used in the "context" of another object, which is often
-a Folder.  This is why they are named `methods <ObjectOrientation.html>`_.
-Typically, you don't often want to access information about the External
-Method or Script itself; all the "interesting" information is usually kept
-in other objects (like Folders).  An External Method or Script (Python)
-object "knows about" its context and can display information about the
-context without much fuss.
 
 SQL Methods:  Another Kind of Logic Object
 ------------------------------------------
@@ -883,7 +596,7 @@ Page Template with the id *interestRateDisplay*.  This Page Template is
                       periods request/periods">
       <span tal:content="years">2</span> years is:<br><br>
       <b>$
-      <span tal:content="python: here.calculateCompoundingInterest(principal, 
+      <span tal:content="python: context.calculateCompoundingInterest(principal, 
                                                        interest_rate,
                                                        periods,
                                                        years)" >1.00</span>
@@ -966,28 +679,3 @@ itself if you want to receive replies.  See the `Mailing list
 section <http://www.zope.org/Resources/MailingLists>`_ of Zope.org for
 information about how to subscribe to the Zope (zope@zope.org) mailing
 list.
-
-The Zope Tutorial 
-=================
-
-Zope comes with a built-in tutorial, which reinforces some of the concepts
-you've learned here. As an extension of this book, we recommend that you
-run the tutorial to get a feel for using basic Zope objects, particularly
-DTML objects.  To use the tutorial properly, your browser should support
-*JavaScript* and *cookies*.
-
-To launch the tutorial, navigate to the root folder in the ZMI, and add a
-Zope Tutorial object by choosing *Zope Tutorial* from the Add list. When
-the add form asks for an "id" for the object, give it the id *tutorial* and
-click "Add".  You will be directed to a screen with a "Begin Tutorial"
-button.  When you click "Begin Tutorial", a new browser window that
-resembles the help system will be opened containing the tutorial.  If
-another window does not appear, either your browser does not support
-*JavaScript* or it is configured to disallow the opening of new windows.
-This will prevent you from being able to use the tutorial, so you may want
-to permit these windows to open, or try using a different browser.
-
-If you start the tutorial and want to stop using it before you have
-completed all the lessons, you can later return to your spot in the
-tutorial: just go to the help system and find the appropriate lesson in the
-*Zope Tutorial* help category. There is no need to re-install the tutorial.

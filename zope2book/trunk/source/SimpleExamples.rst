@@ -4,7 +4,6 @@ Creating Basic Zope Applications
 .. todo:
    
    - add new screen shots
-   - convert guest book to zpt
 
 This chapter will take you, step by step, through building a basic web
 application in Zope.  As we go through the chapter, we will examine some of
@@ -41,9 +40,6 @@ easy to use and manage.  Here are some things we'll do:
 
 - Provide a simple file library of various documents that describe the
   animals.
-
-- A guest book must be created so that zoo visitors can give you feedback
-  and comments about your site.
 
 Beginning with a Folder
 -----------------------
@@ -105,10 +101,6 @@ folder.
 
 Step 2: Create Site Organization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. note:
-   
-   Do not create public interfaces for the folders in this step.
 
 1. Enter the *ZopeZoo* folder and create three subfolders with *Ids*:
    'Reptiles', 'Mammals' and 'Fish'.
@@ -692,239 +684,6 @@ to sort the files.  If there is a *sort* variable and if it has a value of
 *modified* then the files are sorted by modification time.  Otherwise the
 files are sorted by *title*.
 
-Building a Guest Book
----------------------
-
-A guest book is a common and useful web application that allows visitors to
-your site to leave messages.  Figure [5-6] shows what the guest book you're
-going to write looks like.
-
-.. figure:: ../Figures/5-6.png
-
-   Zoo guest book
-
-Start by creating a folder called *GuestBook* in the root folder.  Give
-this folder the title 'The Zope Zoo Guest Book'.  The *GuestBook* folder
-will hold the guest book entries and methods to view and add entries. The
-folder will hold everything the guest book needs. After the guest book is
-done you will be able to copy and paste it elsewhere in your site to create
-new guest books.
-
-You can use Zope to create a guest book several ways, but for this example,
-you'll use one of the simplest.  The *GuestBook* folder will hold a bunch
-of Files, one file for each guest book entry.  When a new entry is added to
-the guest book, a new file is created in the *GuestBook* folder.  To delete
-an unwanted entry, just go into the *GuestBook* folder and delete the
-unwanted file using the management interface.
-
-Let's create a method that displays all of the entries.  Call this method
-*index_html* so that it is the default view of the *GuestBook* folder::
-
-  <dtml-var standard_html_header>
-
-  <h2><dtml-var title_or_id></h2>
-
-  <!-- Provide a link to add a new entry, this link goes to the
-  addEntryForm method -->
-
-  <p>
-    <a href="addEntryForm">Sign the guest book</a>
-  </p>
-
-  <!-- Iterate over each File in the folder starting with
-  the newest documents first. -->
-
-  <dtml-in expr="objectValues('File')"
-           sort="bobobase_modification_time" reverse>
-
-  <!-- Display the date, author and contents of each file -->
-
-    <p>
-    <b>On <dtml-var bobobase_modification_time fmt="aCommon">, 
-       <dtml-var guest_name html_quote null="Anonymous"> said:</b><br>
-
-    <dtml-var sequence-item html_quote newline_to_br>
-
-    <!-- Make sure we use html_quote so the users can't sneak any
-    HTML onto our page -->
-
-  </p>
-
-  </dtml-in>
-
-  <dtml-var standard_html_footer>
-
-This method loops over all the files in the folder and displays each one.
-Notice that this method assumes that each file will have a *guest_name*
-property. If that property doesn't exist or is empty, then Zope will use
-*Anonymous* as the guest name. When you create a entry file you'll have to
-make sure to set this property.
-
-Next, let's create a form that your site visitors will use to add new guest
-book entries. In the *index_html* method above we already created a link to
-this form. In your *GuestBook* folder create a new DTML Method named
-*addEntryForm*::
-
-  <dtml-var standard_html_header>
-
-  <p>Type in your name and your comments and we'll add it to the
-  guest book.</p>
-
-  <form action="addEntryAction" method="POST">
-  <p> Your name: 
-    <input type="text" name="guest_name" value="Anonymous">
-  </p>
-  <p> Your comments: <br>
-    <textarea name="comments" rows="10" cols="60"></textarea>
-  </p>
-
-  <p>
-    <input type="submit" value="Send Comments">
-  </p>  
-  </form>
-
-  <dtml-var standard_html_footer>
-
-Now when you click on the *Sign Guest Book* link on the guest book page
-you'll see a form allowing you to type in your comments.  This form
-collects the user's name and comments and submits this information to a
-method named *addEntryAction*.
-
-Now create an *addEntryAction* DTML Method in the *GuestBook* folder to
-handle the form. This form will create a new entry document and return a
-confirmation message::
-
-  <dtml-var standard_html_header>
-
-  <dtml-call expr="addEntry(guest_name, comments)">
-
-  <h1>Thanks for signing our guest book!</h1>
-
-  <p><a href="<dtml-var URL1>">Return</a>
-  to the guest book.</p>
-
-  <dtml-var standard_html_footer>
-
-.. TODO:
-   
-   show how to send the form data straight to the form and then return
-   to the guestbook page with the validated entry
-
-This method creates a new entry by calling the *addEntry* method and
-returns a message letting the user know that their entry has been added.
-
-The last remaining piece of the puzzle is to write the script that will
-create a file and sets its contents and properties. We'll do this in Python
-since it is much clearer than doing it in DTML. Create a Python-based
-Script in the *GuestBook* folder called *addEntry* with parameters
-*guest_name* and *comments*::
-
-  ## Script (Python) "addEntry"
-  ##parameters=guest_name, comments
-  ##
-  """
-  Create a guest book entry.
-  """
-  # create a unique file id
-  id='entry_%d' % len(context.objectIds())
-
-  # create the file
-  context.manage_addProduct['OFSP'].manage_addFile(id,
-                                           title="", file=comments)
-
-  # add a guest_name string property
-  doc=getattr(context, id)
-  doc.manage_addProperty('guest_name', guest_name, 'string')
-
-This script uses Zope API calls to create a File and to create a property
-on it. This script performs the same sort of actions in a script that you
-could do manually; it creates a file, edits it and sets a property.
-
-.. TODO:
-   
-   also explain objectIds, OFSP
-
-The guest book is now almost finished. To use the simple guest book, just
-visit 'http://localhost:8080/ZopeZoo/GuestBook/'.
-
-One final thing is needed to make the guest book complete. More than likely
-your security policy will not allow anonymous site visitors to create
-files. However the guest book application should be able to be used by
-anonymous visitors. In Chapter 7, User and Security, we'll explore this
-scenario more fully. The solution is to grant special permission to the
-*addEntry* method to allow it to do its work of creating a file. You can do
-this by setting the *Proxy role* of the script to *Manager*. This means
-that when the script runs it will work as though it was run by a manager
-regardless of who is actually running the method. To change the proxy roles
-go to the *Proxy* view of the *addEntry* script, as shown in [5-7].
-
-.. figure:: ../Figures/5-7.png
-
-   Setting proxy roles for the *addEntry* script
-
-Now select *Manager* from the list of proxy roles and click *Change*.
-
-Congratulations, you've just completed a functional web application. The
-guest book is complete and can be copied to different sites if you want.
-
-Extending the Guest Book to Generate XML
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-All Zope objects can create XML. It's fairly easy to create XML with DTML.
-XML is just a way of describing information. The power of XML is that it
-lets you easily exchange information across the network. Here's a simple
-way that you could represent your guest book in XML::
-
-  <?xml version="1.0"?>
-  <guestbook>
-    <entry>
-      <author>Tom</author>
-      <comments>My comments</comments>
-    </entry>
-    <entry>
-      <author>Anonymous</author>
-      <comments>I like your web page</comments>
-    </entry>
-    <entry>
-      <author>Laura</author>
-      <comments>Please no blink tags</comments>
-    </entry>
-  </guestbook>
-
-This XML document may not be that complex but it's easy to generate. Create
-a DTML Method named "entries.xml" in your guest book folder with the
-following contents::
-
-  <?xml version="1.0"?>
-  <guestbook>
-    <dtml-in expr="objectValues('File')">
-    <entry>
-      <author><dtml-var guest_name null="Anonymous"></author>
-      <comments><dtml-var sequence-item html_quote></comments>
-    </entry>
-    </dtml-in>
-  </guestbook>
-
-As you can see, DTML is equally adept at creating XML as it is at creating
-HTML. Simply embed DTML tags among XML tags and you're set. The only tricky
-thing that you may wish to do is to set the content-type of the response to
-*text/xml*, which can be done with this DTML code::
-
-  <dtml-call expr="RESPONSE.setHeader('content-type', 'text/xml')">
-
-The whole point of generating XML is producing data in a format that can be
-understood by other systems. Therefore you will probably want to create XML
-in an existing format understood by the systems you want to communicate
-with.  In the case of the guest book a reasonable format may be the RSS
-(Rich Site Summary) XML format. RSS is a format developed by Netscape for
-its *my.netscape.com* site, which has since gained popularity among other
-web logs and news sites.  The Zope.org website uses DTML to build a dynamic
-RSS document.
-
-Congratulations! You've XML-enabled your guest book in just a couple
-minutes. Pat yourself on the back. If you want extra credit, research RSS
-enough to figure out how to change *entries.xml* to generate RSS.
-
 Building "Instance-Space" Applications
 --------------------------------------
 
@@ -956,28 +715,28 @@ object instances in this space and modifying them to act a certain way when
 they are executed.
 
 Instance-space applications are typically created from common Zope objects.
-Script (Python) objects, Folders, DTML Methods, Page Templates, and other
-Zope services can be glued together to build simple applications.
+Script (Python) objects, Folders, Page Templates, and other Zope services can
+be glued together to build simple applications.
 
-Instance-Space Applications vs. Products
-----------------------------------------
+Instance-Space Applications vs. Python packages
+-----------------------------------------------
 
 In contrast to building applications in instance space, you may also build
-applications in Zope by building them as *Products*.  Building an
-application as a Product differs from creating applications in instance
-space inasmuch as the act of creating a Product typically allows you to
-*extend* Zope with new "addable" objects that appear in Zope's "Add" list.
-Building a Product also typically allows you to more easily distribute an
+applications in Zope by building them as Python packages.  Building an
+application as a package differs from creating applications in instance
+space inasmuch as the act of creating a package typically is more familiar to
+developers and does not constrain them in any way.
+
+Building a package also typically allows you to more easily distribute an
 application to other people, and allows you to build objects that may more
 closely resemble your "problem space".  We explore one way to create
-Products in the chapter entitled <Extending Zope
-<CustomZopeObjects.html>`_.
+packages in the chapter entitled <Extending Zope <CustomZopeObjects.html>`_.
 
-Building a Product is typically more complicated than building an
+Building a package is typically more complicated than building an
 "instance-space" application, so we get started here by describing how to
 build instance-space applications.  When you find that it becomes difficult
 to maintain, extend, or distribute an instance-space application you've
-written, it's probably time to reconsider rewriting it as a Product.
+written, it's probably time to reconsider rewriting it as a package.
 
 The Next Step
 -------------

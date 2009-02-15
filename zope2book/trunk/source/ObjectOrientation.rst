@@ -1,13 +1,12 @@
 Object Orientation
 ==================
 
-To make the best use of Zope, you will need a grasp on the concept of
-*object orientation*, which is a software development pattern used in many
-programming languages (C++, Java, Python, Eiffel, Modula-2, and others) and
-computer systems that simulate "real-world" behavior.  It stipulates that
-you should design an application in terms of *objects*.  This chapter
-provides a broad overview of the fundamentals of object orientation from
-the perspective of a Zope developer.
+To make the best use of Zope, you will need a grasp on the concept of *object
+orientation*, which is a software development pattern used in many programming
+languages (C++, Java, Python and others) and computer systems that simulate
+"real-world" behavior. It stipulates that you should design an application in
+terms of *objects*. This chapter provides a broad overview of the fundamentals
+of object orientation from the perspective of a Zope developer.
 
 Objects
 -------
@@ -20,7 +19,7 @@ concepts.
 In a typical, non-object-oriented application, you will have two things:
 
 - Code.  For example, a typical CGI-based web application may have a bit of
-  logic in the form of a Perl script, which retrieves employee data from a
+  logic in the form of a PHP script, which retrieves employee data from a
   database and displays tabular data to a user.
 
 - Data.  For example, you may have employee data stored in a database, such
@@ -29,7 +28,8 @@ In a typical, non-object-oriented application, you will have two things:
   that operates upon it; without this code, the data holds little to no
   value.
 
-In a typical object-oriented application, however, you will have one thing, and one thing only:
+In a typical object-oriented application, however, you will have one thing, and
+one thing only:
 
 - Objects.  Simply stated, these objects are collections of code and data
   wrapped up together.  For example, you may have an "Employee" object that
@@ -39,17 +39,16 @@ In a typical object-oriented application, however, you will have one thing, and 
   or code, that can manipulate and display its data.
 
 In a non-object-oriented application, your data is kept separate from your
-code.  But in an object-oriented application, both your data and your code
-are stored in one or more objects, each of which represents a particular
-"thing".  These objects can represent just about anything.  In Zope, the
-*Control_Panel* is an object, Folders that you create are objects, and even
-the Zope "root folder" is an object.  When you use the Zope "add list" to
-create a new item in the Zope Management Interface, you are creating an
-object.  People who extend Zope by creating *Products* define their own
-types of objects, which are then entered in to the Zope "add list" so that
-you can create objects based on them.  A Product author might define a
-"Form" object or a "Weblog" object.  Basically, anything that can be
-defined  using a noun can be modelled as a Zope object.
+code. But in an object-oriented application, both your data and your code are
+stored in one or more objects, each of which represents a particular "thing".
+These objects can represent just about anything. In Zope, the *Control_Panel*
+is an object, Folders that you create are objects, and even the Zope "root
+folder" is an object. When you use the Zope "add list" to create a new item in
+the Zope Management Interface, you are creating an object. People who extend
+Zope by creating add-ons define their own types of objects, which are then
+entered in to the Zope "add list" so that you can create objects based on them.
+An add-on author might define a "Form" object or a "Weblog" object. Basically,
+anything that can be defined using a noun can be modeled as a Zope object.
 
 As a programming methodology, object orientation allows software developers
 to design and create programs in terms of "real-world" things, such as
@@ -88,9 +87,6 @@ collection of attributes assigned to an object defines that object's
 *state*.  When one or more of an object's attributes are modified, the
 object is said to have *changed its state*.
 
-Special kinds of web-editable object attributes in Zope are sometimes
-referred to as *Properties*.
-
 Methods
 -------
 
@@ -109,14 +105,6 @@ key difference between a method and a function is that a method is "bound"
 to, or attached to, an object: instead of operating solely on "external"
 data that is passed to it via arguments, it may also operate on the
 attributes of the object to which it is bound.
-
-Some objects in Zope are actually called "methods".  For example, there are
-*DTML Methods*, *SQL Methods*, and *External Methods*, because these
-objects are meant to be used in a "method-ish" way.  They are "bound" to
-their containing Folder object by default when called, and the logic that
-they contain typically makes reference to their containing Folder.  *Script
-(Python)* objects in Zope act similarly through their concept of
-"Bindings."
 
 Messages
 --------
@@ -175,7 +163,7 @@ houses can be constructed using the same set of blueprints, many objects
 can be constructed using the same class. Objects that share a class
 typically behave identically to one other.  If you visit two houses that
 share the same set of blueprints, you will likely notice striking
-similaries: the layout will be the same, the light switches will be in the
+similarities: the layout will be the same, the light switches will be in the
 same places, and the fireplace will almost certainly be in the same
 location.  The shower curtains might be different in each house, but this
 is an *attribute* of each particular house that doesn't change its
@@ -194,15 +182,14 @@ definition.  The set of methods assigned to an object's class define the
 *behavior* of that object.
 
 The objects constructed by a class are called *instances of the class*, or
-(more often) just *instances*.  For example, the Zope 'Examples' folder is
-an *instance of* the 'Folder' class. The 'Examples' folder has an 'id'
-attribute of 'Examples', while another folder may have an 'id' attribute of
-'MyFolder'.  However, while they have different attribute values, since
+(more often) just *instances*.  For example, the Zope 'index' page is
+an *instance of* the 'Page Template' class. The 'index' page has an 'id'
+attribute of 'index', while another page may have an 'id' attribute of
+'my_page'.  However, while they have different attribute values, since
 they are both instances of the same class, they both behave identically.
 All the objects that can be administered using the ZMI are instances of a
 class.  Typically, the classes from which these objects are constructed are
-defined in the Zope *Products* created by Zope developers and community
-members.
+defined in the add-ons created by Zope developers and community members.
 
 Inheritance
 -----------
@@ -255,7 +242,7 @@ Object instances have a specific *lifetime*, which is typically controlled
 by either a programmer or a user of the system in which the objects "live".
 
 Instances of web-manageable objects in Zope, such as Files, Folders, and
-DTML Methods, span from the time the user creates them until they are
+Page Templates, span from the time the user creates them until they are
 deleted. You will often hear these kinds of objects described as
 *persistent* objects.  These objects are stored in Zope's object database
 (the ZODB).
@@ -281,10 +268,6 @@ fully requires a grasp of the basic concepts of object orientation,
 including attributes, methods, classes, and inheritance, before setting out
 on a "for-production" Zope development project.
 
-For a more lighthearted description of what object orientation is and how
-it relates to Zope, see Chris McDonough's `Gain Zope Enlightenment by
-Grokking Object Orientation
-<http://www.zope.org/Members/mcdonc/HowTos/gainenlightenment>`_.
 For a more comprehensive treatment on the subject of object orientation,
 buy and read `The Object
 Primer <http://www.ambysoft.com/theObjectPrimer.html>`_ by Scott Ambler.

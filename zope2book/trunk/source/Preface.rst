@@ -12,6 +12,45 @@ You don't need to be a highly-skilled programmer in order to use Zope2,
 but you may find the understanding of some programming concepts (particularly
 in object-oriented programming) to be extremely helpful.
 
+Preface to the 2.12 edition
+---------------------------
+
+This book has originally been written for Zope 2.6 back in 2002. It has been
+available in an almost unmodified form for the last seven years. During those
+many years quite a bit has happened in Zope itself and the general web market.
+
+The 2.12 edition of this book does not try to write a new book on how-to do
+Zope development today. Instead it tries to update the original books content
+to be true and helpful again. Many of the underlying principles of Zope2 have
+not changed in the last years. The ZMI, security machinery, page templates and
+how-to use the ZCatalog are still there in an almost unmodified fashion.
+The general ideas behind object orientation, being Python based and the
+general architecture are still the same.
+
+If you want to understand Zope2 you still need to understand how Acquisition
+works, even though it has been discouraged as a way to design your application
+logic.
+
+One of the most notable differences between the original Zope2 approach and
+todays best-practices is in the way you develop applications with Zope2. The
+original Zope2 approach has focussed on a Through-The-Web (TTW) development
+model. You would create your entire application and manage your data through
+the same browser interface and store everything transparently in the same
+database. This model has worked very well in the beginning of "the web" as
+many dynamic websites have been rather simple and specialized projects.
+
+Over the years websites have grown their requirements and often turned into
+development projects of a considerable size. Today websites are understood
+as applications in themselves and need an approach which is no longer
+compatible with the TTW approach of the early Zope2.
+
+In this book you will still read about using the TTW approach for many of
+the examples. Please understand this as a way to quickly and easily learn
+about the underlying technologies. If you want to built an application based
+on top of Zope2, you are almost always better of approaching the project from
+the so called "file-system based approach" or using Python packages to extend
+Zope in a predictable way.
+
 
 How the Book Is Organized
 -------------------------
@@ -61,63 +100,44 @@ This book is laid out in the following chapters:
     This chapter introduces *acquisition*, which is Zope's
     mechanism for sharing site behavior and content.
 
-8. Basic DTML
-
-    This chapter introduces *DTML*, Zope's tag-based scripting
-    language.  You'll learn DTML syntax, its basic tags, 
-    and how to use DTML templates and
-    scripting facilities.  After reading this chapter,
-    you'll be able to create dynamic web pages.
-
-9. Using Zope Page Templates
+8. Using Zope Page Templates
 
     This chapter introduces *Zope Page Templates*, another Zope tool
     used to create dynamic web pages. You will learn about basic
     template statements that let you insert dynamic content, and how
     to create and edit page templates.
 
-10. Creating Basic Zope Applications  
+9. Creating Basic Zope Applications  
 
     This chapter presents several real-world
     examples of building a Zope application.  You'll learn how to
     use basic Zope objects and how they can work together to form
     basic applications.
 
-11. Users and Security
+10. Users and Security
 
     This chapter looks at how Zope handles users, authentication,
     authorization, and other security-related matters.
 
-12. Advanced DTML
+11. Advanced Page Templates
 
-    This chapter takes a closer look at DTML. You'll learn about DTML
-    security, the tricky issue of how variables are looked up
-    in DTML, advanced use of basic tags, 
-    and the myriad of special purpose tags.
+    This chapter goes into more depth with Zope Page Templates. You will learn
+    all about template statements, expression types, and macros, which let you
+    reuse presentation elements.
 
-13. Advanced Page Templates
+12. Advanced Zope Scripting
 
-    This chapter goes into more depth with Zope Page Templates. You will learn 
-    all about template statements, expression
-    types, and macros, which let you reuse presentation
-    elements.
+    This chapter covers scripting Zope with Python. You will learn how to write
+    business logic in Zope using tools more powerful than TAL, about the idea
+    of *scripts* in Zope, and about Scripts (Python).
 
-14. Advanced Zope Scripting
-
-    This chapter covers scripting Zope with Python and Perl.  You will learn
-    how to write business logic in Zope using tools more
-    powerful than DTML, about the idea of *scripts* in
-    Zope, and about Python and Perl-based scripts.  This
-    chapter shows you how to add industrial-strength scripting to
-    your site.
-
-17. Zope Services
+13. Zope Services
 
     This chapter covers Zope objects that are considered "services," which
     don't readily fit into any of the basic "content,"
     "presentation," or "logic" object groups.
 
-15. Searching and Categorizing Content
+14. Searching and Categorizing Content
 
     This chapter shows you how to index and search objects with
     Zope's built-in search engine: the *Catalog*. You'll learn about 
@@ -125,7 +145,7 @@ This book is laid out in the following chapters:
     indexing and searching, metadata, and
     search results. 
 
-16. Relational Database Connectivity
+15. Relational Database Connectivity
 
     This chapter describes how Zope connects to external
     relational databases.  You'll learn about features that allow you
@@ -133,7 +153,7 @@ This book is laid out in the following chapters:
     objects, and security and performance
     considerations.
 
-17. Virtual Hosting Services
+16. Virtual Hosting Services
 
     This chapter explains how to set up Zope in a "virtual hosting"
     environment, in which Zope sub-folders can be served as "top-level"
@@ -141,12 +161,12 @@ This book is laid out in the following chapters:
     be performed either "natively" or using Apache's 'mod_rewrite'
     facility.
 
-18. Sessions
+17. Sessions
 
     This chapter describes Zope's "sessioning" services, which allow
     Zope developers to "keep state" between HTTP requests.
 
-19. Scalability and ZEO
+18. Scalability and ZEO
 
     This chapter covers issues and solutions for building and
     maintaining large web applications, and focuses on issues of
@@ -155,34 +175,31 @@ This book is laid out in the following chapters:
     tools and techniques needed to turn a small site into a
     large-scale site, servicing many simultaneous visitors.
 
-20. Managing Zope Objects Using External Tools
+19. Managing Zope Objects Using External Tools
 
     This chapter explains how to use tools outside of your web
     browser to manipulate Zope objects.
 
-21. Extending Zope
+20. Extending Zope
 
-    This chapter covers extending Zope by creating your own
-    classes of objects. You'll learn about *ZClasses*, how instances
-    are built from classes, and how to build a ZClass and
-    its attendant security and design issues.  You'll also learn how to create 
-    Python base classes for ZClasses, and about 
-    the base classes that ship with Zope.
+    This chapter covers extending Zope by creating your own classes of objects.
+    You'll learn how to create Python base classes and about the base classes
+    that ship with Zope.
 
-22. Maintaining Zope
+21. Maintaining Zope
 
     This chapter covers Zope maintenance and administration tasks,
-    such as database "packing" and Product installation.
+    such as database "packing" and package installation.
 
-23. Appendix A: DTML Reference
+22. Appendix A: DTML Reference
 
     Reference of DTML syntax and commands.
 
-24. Appendix B:  API Reference
+23. Appendix B:  API Reference
 
     Reference of Zope object APIs.
 
-25. Appendix C:  Page Template Reference
+24. Appendix C:  Page Template Reference
 
     Reference of Zope Page Template syntax and commands.
 
@@ -193,16 +210,3 @@ This book is laid out in the following chapters:
 
 26. Appendix E: DTML Name Lookup Rules
     Describes DTML's name lookup rules.
-
-
-Conventions Used in This Book
------------------------------
-
-This book uses the following typographical conventions:
-
-*Italic*
-  Italics indicate variables and names and is also used to introduce new terms.
-
-``Fixed width``
-  Fixed width text indicates objects, commands, hyperlinks, and code
-  listings.

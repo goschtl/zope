@@ -87,16 +87,12 @@ requirement for users to "log in" or compose their own content.
 Identification and Authentication
 ---------------------------------
 
-When a user accesses a protected resource (for example, by
-attempting to view a "protected" DTML Method) Zope will ask the
-user to log in by presenting an authentication dialog. Once the 
-dialog has been "filled out" and submitted, Zope will look for 
-the user account represented by this set of credentials. By default 
-Zope uses HTTP basic authentication.
-
-A cookie-based authentication can be implemented by adding a 
-CookieCrumbler to the site's base folder. This is also useful in a 
-setup with Zope-Addons like CMF and Plone.
+When a user accesses a protected resource (for example, by attempting to view a
+"protected" Page Template) Zope will ask the user to log in by presenting an
+authentication dialog. Once the dialog has been "filled out" and submitted,
+Zope will look for the user account represented by this set of credentials. By
+default Zope uses HTTP basic authentication. A cookie-based authentication can
+be implemented by adding a CookieCrumbler to the site's base folder.
 
 Zope *identifies* a user by examining the username and password
 provided during the entry into the authentication dialog.  If Zope
@@ -143,8 +139,6 @@ authentication dialog, Zope re-prompts the user for authentication
 information as necessary until the user either "gets it right" or
 gives up.
 
-  % xx Possibility to set a maximum no. of challenges in the conf.?
-
 In general, there is no need for a user to log in to Zope if he
 only wishes to use public resources.  For example, to view the
 parts of your Zope website that are publically available, a user
@@ -178,10 +172,8 @@ These permissions are defined either within Zope itself or by Zope
 A *context* in Zope is a "place" within the Zope object hierarchy.
 In relation to security, a context is an object that has a
 location within the Zope Object Database.  For example, a
-description of a context could be expressed as "the 'Examples'
-Folder object within the Zope root object".  Another example of a
-context might be "a DTML Method object named 'show_css' within the
-Zope root folder".  In essence, a context can be thought of as an
+description of a context could be expressed as "a folder object named zoo'
+within the Zope root object". In essence, a context can be thought of as an
 object's "location" within the Zope Object Database, described by
 its "path".  Each object that exists in the Zope Object Database
 which has a web-manageable interface can be associated with its
@@ -201,7 +193,7 @@ context) may associate the "Manager" role (the roles) with the
 policy allows managers to delete objects in this folder.  If
 objects created within this folder do not override their parents'
 security policy, they acquire this policy.  So, for example, if a
-DTML Method is created within this folder, it may also be deleted
+Page Template is created within this folder, it may also be deleted
 by users with the Manager role.  Subobjects within subfolders of
 the original folder have the same policy unless they override it
 themselves, ad infinitum.
@@ -290,8 +282,7 @@ Zope User accounts defined in the "stock" user folder
 implementation do not support additional properties like
 email addresses and phone numbers.  For support of properties
 like these, you will have to use external User products like the
-CMF Membership Component (in the `CMF <http://cmf.zope.org>`_) or
-`exUserFolder <http://exuserfolder.sourceforge.net>`_.
+CMF Membership Component (in the `CMF <http://cmf.zope.org>`_).
 
 Users can not be copied and pasted between User Folders.  The
 facility does not exist to perform this.
@@ -327,10 +318,7 @@ users.  This may or may not be what you want.
 
 To grant the capability for users to change their own passwords
 without being able to influence other users' information, set up
-a script with *Proxy Roles* to do the work for you.  See `msx's
-mini-how-to
-<http://www.zope.org/Members/msx/ChangeOwnPassword-mini-howto>`_
-for more information, or create a script to do so after reading
+a script with *Proxy Roles* to do the work for you after reading
 the section within this chapter entitled "Proxy Roles".
 
 In general, user folders work like normal Zope folders; you can
@@ -420,43 +408,15 @@ specific groups of users.
 Working with Alternative User Folders  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-It may be that you don't want to manage your user account
-through the web using Zope's "stock" user folder
-implementation. Perhaps you already have a user database, or
-perhaps you want to use other tools to maintain your account
-information. Zope allows you to use alternate sources of data as
-user information repositories. You can find an ever-growing list
-of alternate user folders at the `Zope website Products
-area <http://www.zope.org/Products/user_management>`_. Some of the 
-more popular alternative user folders are available here.
+It may be that you don't want to manage your user account through the web using
+Zope's "stock" user folder implementation. Perhaps you already have a user
+database, or perhaps you want to use other tools to maintain your account
+information. Zope allows you to use alternate sources of data as user
+information repositories. The most popular user folder implementation is called
+`PluggableAuthService`_ which allows you to mix-in and combine a vast number of
+different authentication schemes and backends, like LDAP or MySQL.
 
-`PluggableAuthService <http://zope.org/Members/urbanape/PluggableAuthService>`_ 
-  This product defines a fully-pluggable user folder, intended for use in
-  all Zope sites. It defines a framework for a set of plugins which it
-  orchestrates to generate user objects from requests. 
-
-`Extensible User Folder <http://exuserfolder.sourceforge.net>`_ 
-  exUserFolder allows for authentication from a choice of
-  sources and separate storage of user properties.  It has been
-  designed to be usable out of the box, and requires very little
-  work to set up.  There are authentication sources for
-  Postgresql, RADIUS and SMB and others as well as normal ZODB
-  storage.
-
-`etcUserFolder <http://www.zope.org/Products/etcUserFolder>`_ 
-  This user folder authenticates using standard Unix
-  */etc/password* style files.
-
-`LDAP User Folder <http://www.dataflake.org/software/ldapuserfolder>`_
-  This user folder allows you to authenticate from an LDAP server.
-
-`NTUserFolder <http://www.zope.org/Members/htrd/NTUserFolder>`_
-  This user folder authenticates from NT user accounts. It
-  only works if you are running Zope under Windows NT or Windows
-  2000.
-
-`MySQLUserFolder <http://www.zope.org/Members/vladap/mysqlUserFolder>`_
-  This user folder authenticates from data within a MySQL database.
+.. _PluggableAuthService: http://pypi.python.org/pypi/Products.PluggableAuthService
 
 Some user folders provide alternate login and logout controls in
 the form of web pages, rather than relying on Basic HTTP
@@ -480,22 +440,22 @@ accounts are rarely used but are important to know about.
 Zope Anonymous User
 %%%%%%%%%%%%%%%%%%%
 
-    Zope has a built-in user account for "guests" who possess no
-    credentials.  This is the 'Anonymous' user. If you don't have
-    a user account on Zope, you'll be considered to be the
-    'Anonymous' user.
+Zope has a built-in user account for "guests" who possess no
+credentials.  This is the 'Anonymous' user. If you don't have
+a user account on Zope, you'll be considered to be the
+'Anonymous' user.
 
-    The 'Anonymous' *user* additionally possesses the 'Anonymous'
-    *role*. The "stock" Zope security policy restricts users which
-    possess the 'Anonymous' role from accessing nonpublic
-    resources. You can tailor this policy, but most of the time
-    you'll find the default anonymous security settings adequate.
+The 'Anonymous' *user* additionally possesses the 'Anonymous'
+*role*. The "stock" Zope security policy restricts users which
+possess the 'Anonymous' role from accessing nonpublic
+resources. You can tailor this policy, but most of the time
+you'll find the default anonymous security settings adequate.
 
-    As we mentioned earlier in the chapter, you must try to access
-    a protected resource in order for Zope to attempt
-    authentication.  Even if you've got a user account on the
-    system, Zope will consider you the 'Anonymous' user until you
-    been prompted for login and you've successfully logged in.
+As we mentioned earlier in the chapter, you must try to access
+a protected resource in order for Zope to attempt
+authentication.  Even if you've got a user account on the
+system, Zope will consider you the 'Anonymous' user until you
+been prompted for login and you've successfully logged in.
 
 Zope Emergency User
 %%%%%%%%%%%%%%%%%%%
@@ -668,13 +628,9 @@ combinations, or you wish to manage your Zope site ultra-securely,
 you should manage your Zope site via an SSL (Secured Sockets
 Layer) connection.  The easiest way to do this is to use Apache or
 another webserver which comes with SSL support and put it "in
-front" of Zope.  Some (minimalistic) information about setting up
-Zope behind an SSL server is available at `Unfo's member page on
-Zope.org <http://www.zope.org/Members/unfo/apache_zserver_ssl>`_, on
-`Zopelabs.com <http://www.zopelabs.com/cookbook/1028143332>`_.  The
-chapter of this book entitled `Virtual Hosting <VirtualHosting.html>`_
-also provides some background that may be helpful to set up an SSL
-server in front of Zope.
+front" of Zope. The chapter of this book entitled
+`Virtual Hosting <VirtualHosting.html>`_ provides some background that may be
+helpful to set up an SSL server in front of Zope.
 
 Managing Custom Security Policies
 ---------------------------------
@@ -765,9 +721,9 @@ cannot delete any of the "stock" roles that come with Zope.
 
 You should notice that roles can be used at the level at which
 they are defined and "below" in the object hierarchy.  For
-example, if you create a role in the 'Examples' folder that
+example, if you create a role in a 'myfolder' folder that
 exists in the Zope root folder, that role cannot be used outside
-of the 'Examples' folder and any of its subfolders and
+of the 'myfolder' folder and any of its subfolders and
 subobjects.  If you want to create a role that is appropriate
 for your entire site, create it in the root folder.
 
@@ -792,9 +748,9 @@ without needing to reauthenticate.
 For example, if a user creates an object using the Zope
 Management Interface, they are always given the additional local
 role of *Owner* in the context of that object. A user might not
-have the ability to edit DTML Methods in general if he does not
+have the ability to edit Page Templates in general if he does not
 possess a set of global roles which allow him to do so, but for
-DTML Methods he owns, the user may edit the DTML Method by
+Page Templates he owns, the user may edit the Page Template by
 virtue of possessing the *Owner* local role.
 
 Local roles are a fairly advanced security control. Zope's
@@ -812,17 +768,16 @@ Understanding Permissions
 
 A permission defines a single action which can be taken upon a
 Zope object. Just as roles abstract users, permissions abstract
-objects. For example, many Zope objects, including DTML Methods
-and DTML Documents, can be viewed. This action is protected by
+objects. For example, many Zope objects, including Page Templates
+and Folders, can be viewed. This action is protected by
 the *View* permission.  Permissions are defined by Zope
-*Product* developers and the Zope "core" itself.  *Products* are
+developers in Python packages and the Zope "core" itself. Packages are
 responsible for creating a set of permissions which are relevant
 to the types of objects they expose.
 
-Some permissions are only relevant for one type of object, for
-example, the *Change DTML Methods* permission only protects DTML
-Methods. Other permissions protect many types of objects, such
-as the *FTP access* and *WebDAV access*  permissions which
+Some permissions are only relevant for one type of object.
+Other permissions protect many types of objects, such
+as the *FTP access* and *WebDAV access* permissions which
 control whether objects are available via FTP and WebDAV.
 
 You can find out what permissions are available on a given object
@@ -1181,28 +1136,12 @@ given permission. We use Zope's 'checkPermission' API to do this.
 For example, suppose your application allows some users to upload
 files. This action may be protected by the "Add Documents, Images,
 and Files" standard Zope permission. You can test to see if the
-current user has this permission in DTML::
-
-  <dtml-if expr="_.SecurityCheckPermission(
-                'Add Documents, Images, and Files', this())">
-
-    <form action="upload">
-     ...
-    </form>
-
-  </dtml-if>
-
-The *SecurityCheckPermission* function takes two arguments, a
-permission name, and an object. In DTML we pass 'this()' as the
-object which is a reference to the "current" object.
-
-For Page Templates the syntax is a bit different, but the behavior
-is the same::
+current user has this permission in a Page Template::
 
   <form action="upload" 
     tal:condition="python:
       modules['AccessControl'].getSecurityManager().checkPermission(
-         'Add / Documents, Images, and Files', here)">
+         'Add / Documents, Images, and Files', context)">
   ...
   </form>
 
@@ -1213,7 +1152,7 @@ check out of the Page Template and into a Python Script named
 the Page template::
 
   <form action="upload"
-        tal:condition="python: here.check_security(
+        tal:condition="python: context.check_security(
            'Add Documents, Images and Files', here)">
 
 Here is the 'check_security' Python Script which is referenced
@@ -1247,28 +1186,14 @@ perform actions on it using methods defined in the API
 documentation.
 
 Suppose you wish to display the current user name on a web page to
-personalize the page. You can do this easily in DTML::
-
-  <dtml-var expr="_.SecurityGetUser().getUserName()">
-
-You can retrieve the currently logged in user with the
-*SecurityGetUser* DTML function or the shortcut *user* in Page
-Templates.  This DTML fragment tests the current user by calling
-the *getUserName* method on the current user object. If the user
-is not logged in, you will get the name of the anonymous user,
-which is *Anonymous User*.
-
-You can do the same thing in a Page Template like this::
+personalize the page. You can do this easily in Page Template::
 
   <p tal:content="user/getUserName">username</p>
 
-The Zope security API for Scripts is explained in `Appendix B:
-API Reference <AppendixB.html>`_.  The Zope security API for DTML is
-explained in `Appendix A: DTML Reference <AppendixA.html>`_.  The Zope
-security API for Page Templates is explained in `Appendix C: Zope
-Page Templates Reference <AppendixC.html>`_.  An even better reference
-to these functions exists in the Zope help system, available by
-clicking on 'Help' from any Zope Management Interface page.
+The Zope security API for Scripts is explained in
+`Appendix B: API Reference <AppendixB.html>`_. The Zope security API for Page
+Templates is explained in
+`Appendix C: Zope Page Templates Reference <AppendixC.html>`_.
 
 Advanced Security Issues: Ownership and Executable Content
 ----------------------------------------------------------
@@ -1277,7 +1202,7 @@ You've now covered all the basics of Zope security. What remains
 are the advanced concepts of *ownership* and *executable
 content*. Zope uses ownership to associate objects with users who
 create them, and executable content refers to objects such as
-Scripts, DTML Methods and Documents, which execute user code.
+Scripts, which execute user code.
 
 For small sites with trusted users you can safely ignore these
 advanced issues. However for large sites where you allow untrusted
@@ -1310,8 +1235,8 @@ helps protect your site from server-side Trojan attacks by
 limiting the power of web resources based on who authored them.
 If an untrusted user authors a web page, then the power of the
 web pages to do harm to unsuspecting visitors will be
-limited. For example, suppose an untrusted user creates a DTML
-document or Python script that deletes all the pages in your
+limited. For example, suppose an untrusted user creates a
+Script (Python) that deletes all the pages in your
 site. If anyone attempt to view the page, it will fail since the
 owner of the object does not have adequate permissions. If a
 manager views the page, it will also fail, even though the
@@ -1361,13 +1286,11 @@ object.
 Roles of Executable Content
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-DTML Documents, DTML Methods, SQL Methods, Python-based Scripts,
-and Perl-based Scripts are said to be *executable* since their
-content is generated dynamically.  Their content is also
-editable through the web.
+Python-based Scripts are said to be *executable* since their content is
+generated dynamically. Their content is also editable through the web.
 
 When you view an executable object by visiting its URL or
-calling it from DTML or a script, Zope runs the object's
+calling it from a script, Zope runs the object's
 executable content. The objects actions are restricted by the
 roles of its owner and your roles. In other words an executable
 object can only perform actions that *both* the owner and the
@@ -1401,12 +1324,12 @@ permission. Anonymous users don't normally have this permission
 and for good reason. You don't want just anyone to be able to
 anonymously send email with your Zope server.
 
-The problem with this arrangement is that your DTML Method that
+The problem with this arrangement is that your Script (Python) that
 sends email will fail for anonymous users. How can you get
 around this problem? The answer is to set the proxy roles on the
-DTML Method that sends email so that when it executes it has the
-"Manager" role. Visit the Proxy management tab on your DTML
-Method, as shown in the figure below.
+Script (Python) that sends email so that when it executes it has the
+"Manager" role. Visit the Proxy management tab on your Python
+script, as shown in the figure below.
 
 .. figure:: ../Figures/6-7.png
 

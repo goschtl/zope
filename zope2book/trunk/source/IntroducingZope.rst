@@ -2,20 +2,23 @@ Introducing Zope
 ================
 
 Zope is family of related Python packages focussed on web technologies. The
-first version of Zope has originated from a company called `Zope Corporation`_.
+first version of Zope has originated from a company called
+`Zope Corporation <http://www.zope.com/>`_.
 
-Today the `Zope Foundation`_ holds the copyright of the Zope source code and
-supervises a diverse community of open-source contributers working on a
-variety of related projects.
+Today the `Zope Foundation <http://foundation.zope.org/>`_ holds the copyright
+of the Zope source code and supervises a diverse community of open-source
+contributers working on a variety of related projects.
 
 This book is about the original Zope project, today known as Zope2. When we
-refer to Zope in this book with a narrower specification we speak of Zope2.
+refer to Zope in this book without a narrower specification we speak of Zope2.
 
-Other projects include the `Zope3`_ web application framework, many individual
-packages located in the `Zope Subversion Repository`_ and projects being based
-or related to these packages like `Grok`_ and `Repoze`_. One of the more
-widely known applications based on top of Zope2 is a content management
-system called `Plone`_.
+Other projects include the `Zope3 <http://wiki.zope.org/zope3/Zope3Wiki/>`_ web
+application framework, many individual packages located in the
+`Zope Subversion Repository <http://svn.zope.org/>`_ and projects being based
+or related to these packages like `Grok <http://grok.zope.org/>`_ and
+`Repoze <http://repoze.org/>`_. One of the more widely known applications
+based on top of Zope2 is a content management system called
+`Plone <http://plone.org/>`_.
 
 Zope2 itself is a web framework that allows developers of varying skill
 levels to build *web applications*. This chapter explains Zope's purpose,
@@ -25,14 +28,6 @@ similar applications.
 
 *NOTE*: The moniker "Zope" stands for the *Z Object Publishing
 Environment* (the "Z" doesn't really mean anything in particular).
-
-.. _Zope Corporation: http://www.zope.com/
-.. _Zope Foundation: http://foundation.zope.org/
-.. _Zope3: http://wiki.zope.org/zope3/Zope3Wiki/
-.. _Zope Subversion Repository: http://svn.zope.org/
-.. _Grok: http://grok.zope.org/
-.. _Repoze: http://repoze.org/
-.. _Plone: http://plone.org/
 
 The Static Web Site Dilemma
 ---------------------------
@@ -167,15 +162,11 @@ application to query this database and generate a particular chunk
 of HTML that represented an ad, or an index of ads, when a user
 visited a page in his website.
 
-A framework that allows people to construct a web application is
-often called a *web application server*, or sometimes just an
-*application server*.  Zope is a web application server, as are
-competing products like `WebSphere`_, `JBoss`_, and
-(to some extent) `SAP NetWeaver`_.
-
-.. _WebSphere: http://www.ibm.com/websphere/
-.. _JBoss: http://labs.jboss.com/jbossas/
-.. _SAP NetWeaver: http://www.sap.com/
+A framework that allows people to construct a web application is often called a
+*web application server*, or sometimes just an *application server*. Zope is a
+web application server, as are competing products like `WebSphere
+<http://www.ibm.com/websphere/>`_, `JBoss <http://labs.jboss.com/jbossas/>`_,
+and (to some extent) `SAP NetWeaver <http://www.sap.com/>`_.
 
 Zope is a web application server, which is not
 a web application in itself; rather it is *framework that allows
@@ -287,12 +278,10 @@ This claim is backed by a number of Zope features:
 
 - Zope allows and encourages third-party developers to package and
   distribute ready-made applications.  Due to this, Zope has a
-  wide variety of integrated services and add-on products
+  wide variety of integrated services and add-on packages
   available for immediate use.  Most of these components, like
   Zope itself, are free and open-source.  Zope's popularity has
-  bred a large community of application developers.  Many other
-  application servers do not have a large base of third-party
-  support or a means by which plug-ins are so neatly packaged.
+  bred a large community of application developers.
 
 - Applications created in Zope can scale almost linearly using
   Zope's built-in "Zope Enterprise Objects" (ZEO) clustering
@@ -314,16 +303,13 @@ This claim is backed by a number of Zope features:
   other application server platforms require that you run an
   operating system of their licensor's choosing.
 
-- Zope can be extended using the interpreted `Python`_ scripting language.
-  Python is popular and easy to learn, and it promotes rapid development.
-  Many libraries are available for Python that can be used when
-  creating your own application.  Many other application servers
-  must be extended using compiled languages, such as Java, which
-  cuts down on development speed.  Many other application servers
-  use less popular languages for which there are not as many
-  ready-to-use library features.
-
-.. _Python: http://www.python.org/
+- Zope can be extended using the interpreted `Python <http://www.python.org/>`_
+  scripting language. Python is popular and easy to learn, and it promotes
+  rapid development. Many libraries are available for Python that can be used
+  when creating your own application. Many other application servers must be
+  extended using compiled languages, such as Java, which cuts down on
+  development speed. Many other application servers use less popular languages
+  for which there are not as many ready-to-use library features.
 
 
 Zope Audiences and What Zope Isn't
@@ -371,14 +357,12 @@ use "out of the box" for any given application.  For example, Zope
 itself is not a blog, a content management system, or a
 "e-shop-in-a-box" application.
 
-However, freely available *Plugins* built on top of Zope offer
-these kinds of services.  At the time of this writing, the
-`Python Package Index`_ lists roughly 400 `Plugins that you can
-browse`_ and even reuse in your own applications.  These include Plugins
-for blogging, content management, internationalization, and e-commerce.
-
-.. _Plugins that you can browse: http://pypi.python.org/pypi?:action=browse&c=514
-.. _Python Package Index: http://pypi.python.org/pypi/
+However, freely available *Plugins* built on top of Zope offer these kinds of
+services. At the time of this writing, the `Python Package Index
+<http://pypi.python.org/pypi/>`_ lists roughly 400 `Plugins that you can browse
+<http://pypi.python.org/pypi?:action=browse&c=514>`_ and even reuse in your own
+applications. These include Plugins for blogging, content management,
+internationalization, and e-commerce.
 
 Zope is not a visual design tool.  Tools like Macromedia
 Dreamweaver and Adobe GoLive allow designers to create "look and
@@ -406,9 +390,7 @@ source code.
 The Zope community gets together occasionally at conferences, but it
 commonly discusses all things Zope on the many Zope mailing
 lists and web sites. You can find out more about Zope-related
-mailing lists at `Zope.org's mailing list page`_.
-
-.. _Zope.org's mailing list page: http://mail.zope.org/
+mailing lists at `Zope.org's mailing list page <http://mail.zope.org/>`_.
 
 Zope Corporation makes its revenue by using Zope to create web
 applications for its paying customers, by training prospective
@@ -421,38 +403,32 @@ server itself.
 Zope's Terms of Use and License
 -------------------------------
 
-Zope is free of cost. You are permitted to use Zope to create and
-run your web applications without paying licensing or usage fees.
-You may also include Zope in your own products and applications
-without paying royalty fees to Zope's licensor, *Zope Foundation*.
+Zope is free of cost. You are permitted to use Zope to create and run your web
+applications without paying licensing or usage fees. You may also include Zope
+in your own products and applications without paying royalty fees to Zope's
+licensor, *Zope Foundation*.
 
-Zope is distributed under an open source license, the `Zope Public
-License or 'ZPL'`_.  The terms of the ZPL license stipulate that you will
-be able to obtain and modify the source code for Zope.
+Zope is distributed under an open source license, the `Zope Public License or
+'ZPL' <http://www.zope.org/Resources/License>`_. The terms of the ZPL license
+stipulate that you will be able to obtain and modify the source code for Zope.
 
-.. _Zope Public License or 'ZPL': http://www.zope.org/Resources/License
+The ZPL is different than another popular open source license, the `GNU Public
+License <http://www.gnu.org>`_. The licensing terms of the GPL require that if
+you intend to redistribute a GPL-licensed application, and you modify or extend
+the application in a meaningful way, when you `redistribute
+<http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic>`_ a
+GPL-licensed application, you must distribute it under the terms of the GPL,
+including licensing any modifications or extensions you make under the GPL. You
+must also provide the full source code, including source for your
+modifications.
 
-The ZPL is different than another popular open source license, the
-`GNU Public License`_. The licensing terms of
-the GPL require that if you intend to redistribute a GPL-licensed
-application, and you modify or extend the application in a
-meaningful way, when you `redistribute`_
-a GPL-licensed application, you must distribute it under the terms
-of the GPL, including licensing any modifications or extensions
-you make under the GPL.  You must also provide the full source
-code, including source for your modifications.
+However, this is *not* required for ZPL-licensed applications. You may modify
+and redistribute Zope without contributing your modifications back to Zope
+Corporation, as long as you follow the other terms of the license faithfully.
 
-.. _GNU Public License: http://www.gnu.org
-.. _redistribute: http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic
-
-However, this is *not* required for ZPL-licensed applications.
-You may modify and redistribute Zope without contributing your
-modifications back to Zope Corporation, as long as you follow the
-other terms of the license faithfully.
-
-Note that the ZPL has been `certified`_ as `OSD`_ compliant by
-the `Open Source Initiative`_ and is listed as `GPL compliant`_
-by the `Free Software Foundation`_.
+Note that the ZPL has been `certified`_ as `OSD`_ compliant by the
+`Open Source Initiative`_ and is listed as `GPL compliant`_ by the
+`Free Software Foundation`_.
 
 .. _certified: http://www.opensource.org/licenses/zpl.php
 .. _OSD: http://www.opensource.org/docs/definition.html
@@ -464,28 +440,24 @@ by the `Free Software Foundation`_.
 Zope History
 ------------
 
-In 1996, Jim Fulton (the current CTO of Zope Corporation, the
-orginators of Zope) was drafted to teach a class on CGI
-programming, despite not knowing very much about the subject.  CGI,
-or *common gateway interface*, programming is a commonly-used web
-development model that allows developers to construct dynamic
-websites.  Jim studied all of the existing documentation on CGI on
-his way to the class.  On the way back from the class, Jim
-considered what he didn't like about traditional, CGI-based
-programming environments.  From these initial musings, the core of
-Zope was written on the plane flight back from the class.
+In 1996, Jim Fulton (the current CTO of Zope Corporation, the orginators of
+Zope) was drafted to teach a class on CGI programming, despite not knowing very
+much about the subject. CGI, or *common gateway interface*, programming is a
+commonly-used web development model that allows developers to construct dynamic
+websites. Jim studied all of the existing documentation on CGI on his way to
+the class. On the way back from the class, Jim considered what he didn't like
+about traditional, CGI-based programming environments. From these initial
+musings, the core of Zope was written on the plane flight back from the class.
 
-Zope Corporation (then known as Digital Creations) went on to
-release three open-source software packages to support web
-publishing: *Bobo*, *Document Template*, and *BoboPOS*.  These
-packages were written in a language called Python, and respectively
-provided a web publishing facility, text templating, and an object
-database.  Digital Creations developed a commercial
-application server based on their three open-source components.
-This product was called *Principia*.  In November of 1998,
-investor Hadar Pedhazur convinced Digital Creations to open source
-Principia.  These packages have evolved into what today are the
-core components of Zope.
+Zope Corporation (then known as Digital Creations) went on to release three
+open-source software packages to support web publishing: *Bobo*, *Document
+Template*, and *BoboPOS*. These packages were written in a language called
+Python, and respectively provided a web publishing facility, text templating,
+and an object database. Digital Creations developed a commercial application
+server based on their three open-source components. This product was called
+*Principia*. In November of 1998, investor Hadar Pedhazur convinced Digital
+Creations to open source Principia. These packages have evolved into what today
+are the core components of Zope.
 
-Most of Zope is written in the `Python`_ scripting language, with
-performance-critical pieces written in C.
+Most of Zope is written in the `Python <http://www.python.org/>`_ scripting
+language, with performance-critical pieces written in C.

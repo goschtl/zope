@@ -5,14 +5,14 @@ Introduction
 ------------
 
 When you log in to Zope, you are presented with the Zope Management
-Interface (ZMI).  The ZMI is a management and development environment that
-allows you to control Zope, manipulate Zope objects, and develop web
+Interface (ZMI).  The ZMI is a management and configuration environment that
+allows you to control Zope, manipulate Zope objects, and configure web
 applications.
 
 The Zope Management Interface represents a view into the Zope *object
 hierarchy*.  Almost every link or button in the ZMI represents an action
 that is taken against an *object*.  When you build web applications with
-Zope, you typically spend most of your time creating and managing objects.
+Zope, you typically spend some of your time creating and managing objects.
 
 Don't be frightened if you don't understand the word "object" just yet.
 For the purposes of this chapter, the definition of an "object" is *any
@@ -140,10 +140,6 @@ current login name, along with a pull-down box that lets you select:
   logging out using this method, try closing and reopening your browser to
   log out.
 
-- *Quick Start Links*: Selecting this menu item presents the
-  "QuickStart" page, which contains links to Zope documentation and
-  community resources.
-
 .. figure:: ../Figures/statusframe.jpg
  
    The Status Frame
@@ -267,10 +263,8 @@ Zope will not let you cut, delete, or rename a few particular objects in
 the root folder. These objects include *Control_Panel*,
 *browser_id_manager*, and *temp_folder*.  These objects are necessary for
 Zope's operation.  It is possible to delete other root objects, such as
-*index_html*, *session_data_manager*, *standard_html_header*,
-*standard_html_footer*, *standard_error_message*, and
-*standard_template.pt*, but it is not recommended to do so unless you have
-a very good reason.
+*index_html*, *session_data_manager* and *standard_error_message*,
+but it is not recommended to do so unless you have a very good reason.
 
 Transactions and Undoing Mistakes
 ---------------------------------
@@ -291,7 +285,7 @@ If there is an error, Zope refrains from committing the transaction. Each
 transaction describes all of the changes that happen in the course of
 performing a web request.
 
-Any action in Zope that causes a transaction can be undone via the *Undo*
+Most actions in Zope that causes a transaction can be undone via the *Undo*
 tab.  You can recover from mistakes by undoing the transaction that
 represents the mistake.  This includes undo actions themselves, which can
 also be undone to restore an object to its state before the undo action.
@@ -349,164 +343,6 @@ Reviewing Change History
 The Undo tab will provide you with enough information to know that a change
 has occurred.  However, it will not tell you much about the effect of the
 transaction on the objects that were changed during the transaction.
-"Presentation" and "logic" objects, like DTML Methods, DTML Documents, Zope
-Page Templates, and Script (Python) objects, support *History* for this
-purpose.  If you know a transaction has affected one of these objects, you
-can go to that object's *History* view and look at the previous states of
-the object, as shown in the figure below.
-
-.. figure:: ../Figures/history.png
-
-   The History View
-
-The *History* view of an object supports the comparison of revisions,
-allowing you to track their changes over time.  You may select two
-revisions from an object's History and compare them to one another.  To
-perform a comparison between two object revisions, select two revisions
-using the checkboxes next to the transaction identifiers, and click the
-*Compare* button.
-
-The resulting comparison format is often called a *diff*, as it emphasizes
-the differences in content between the versions.  The diff format shows you
-the lines that have been added to the new document (via a plus), which
-lines have been subtracted from the old document (via a minus), and which
-lines have been replaced or changed (via an exclamation point).
-
-.. figure:: ../Figures/histcompare.png
-
-   Comparing Revisions Via The History View
-
-To revert to an older object revision, click the checkbox next to the
-transaction identifier, then click the *Copy to present* button.
-
-Importing and Exporting Objects
--------------------------------
-
-You can move objects from one Zope system to another using *export* and
-*import*.  You can export all types of Zope objects, with the possible
-exception of External Method objects, to an *export file*.  This file can
-then be imported into any other Zope system.
-
-You can think of exporting an object as cloning a piece of your Zope system
-into a separate file, which you can then move between machines.  You can
-take this file and graft the clone onto any other Zope server.
-
-Suppose you have a folder for home work that you want to export from your
-school's Zope server, and take it home with you to work on in your home
-Zope server.  You'd create a folder in your root folder called "homeWork".
-After creating the folder, you'd click the checkbox next to the *homeWork*
-folder you'd just created, and then click the *Import/Export* button. You
-would then be working in the Import/Export folder view, as shown in the
-figure below.
-
-.. figure:: ../Figures/export.jpg
-
-   Exporting homeWork.zexp
-
-There are two sections to this screen: the upper half is the *export*
-section, and the lower half is the *import* section.  To export an object
-from this screen, type the id of the object into the first form element,
-*Export object id*. In our case, Zope has already filled this field in for
-us, since we had selected the *homeWork* folder on the last screen.
-
-The next form option lets you choose between downloading the export file to
-your computer or leaving it on the server. If you select *Download to local
-machine*, and click the *Export* button, your web browser will prompt you
-to download the export file.  If you select *Save to file on server*, then
-Zope will save the file on the same machine on which Zope is running, and
-you must fetch the file from that location yourself. The export file will
-be written to Zope's *var* directory on its server's file system. By
-default, export files use the file extension *.zexp*.
-
-In general, it's easier to download the export file to your local machine.
-It may be more convenient to save the file to the server instead if you are
-on a slow connection and the export file is very large, or if you are just
-trying to move the exported object to another Zope instance on the same
-server.
-
-The final export form element is the *XML format?* checkbox.  This option
-exports the object in the *eXtensible Markup Language* (XML) format, as
-opposed to exporting the file in Zope's default binary format.  XML format
-exports are much larger but are (mostly) human-readable.  Currently, the
-only tool that understands this XML format is Zope itself, but the future
-may bring along other tools that can understand Zope's XML format.  In
-general, you should leave this box unchecked, unless you're curious about
-what the XML export format looks like and want to examine it by hand.
-
-While you're viewing the export form for *homeWork*, ensure that "download
-to local machine" is selected, "XML format?" is *not* selected, and then
-click the *Export* button.  Your browser will present a file save dialog.
-Save the file, which will be named named *homeWork.zexp*, to a temporary
-location on your local computer.
-
-Suppose that you've later gone home and wanted to import the file into your
-home Zope server.  First, you would copy the exported file into Zope's
-*import* directory on your Zope server's file system, and then import the
-file via the ZMI into your home Zope instance.  Here is an example of a
-Zope import: we are copying the *homeWork.zexp* file, which is in a
-directory named '/tmp' on the local computer, to a remote ("home") computer
-running Zope using the *scp* facility in Linux.  We copy the *.zexp* file
-into our Zope directory's 'import' directory.  In this example, the Zope
-installation directory on the remote computer is named
-'/home/chrism/sandboxes/ZBExample'::
-
-  chrism@saints:/tmp$ ls -al homeWork.zexp 
-  -rw-r--r--    1 chrism   chrism        182 Jul 13 15:44 homeWork.zexp
-  chrism@saints:/tmp$ scp homeWork.zexp saints.homeunix.com:/home/chrism/sandboxes/ZBExample/import
-  chrism@saints.homeunix.com's password: 
-  homeWork.zexp        100% |*****************************|   182       00:00    
-  chrism@saints:/tmp$ 
-
-In the above example, the export file 'homeWork.zexp' was copied from the
-local computer's '/tmp' directory to the remote computer's
-'/home/chrism/sandboxes/ZBExample/import/' directory.  Your local directory
-and your Zope's installation directory will be different.  For the purpose
-of this example, you'd copy the export file you downloaded to your Zope
-installation's "import" directory using whatever facility you're most
-comfortable with (you needn't use scp).
-
-Now, go back to your Zope's ZMI.  Create a Folder named 'import_example'.
-Visit the newly-created 'import_example' folder by clicking on it in the
-ZMI.  Then click the *Import/Export* button from within the
-'import_example' folder, and scroll to the bottom of the Workspace frame.
-Note that Zope gives you the option to either *Take ownership of imported
-objects* or *Retain existing ownership information*.  Ownership will be
-discussed more in the chapter entitled "Users and Security". For now, just
-leave the *Take ownership of imported objects* option selected, enter the
-name of the export file ('homeWork.zexp') in the *Import file name* field,
-and click *Import*.
-
-.. figure:: ../Figures/import.jpg
-
-   Importing homeWork.zexp
-
-You now have a new object in the 'import_example' folder named 'homeWork'.
-Note that Zope informs you of the success of the import operation with a
-status message.
-
-.. figure:: ../Figures/importsuccess.jpg
-
-   Success Importing homeWork.zexp
-
-There are a few caveats to importing and exporting: in order to perform a
-successful import of a Zope export file, you need to ensure that both the
-importing and exporting Zope instances have the same *Products* installed.
-If an import fails, it's likely that you don't have the same Products
-installed in your importing Zope as the Products installed in the Zope from
-whence the export file came.  Our example above works because we are
-exporting a Folder object, which is a common, core object type for all
-Zopes. If you have trouble importing any given exported Zope file, check
-with the distributor of the exported file to see what Products are
-necessary for proper import.
-
-Note that you cannot import an object into a folder that has an existing
-object with the same 'id' as an exported file.  Therefore, when you import
-an export file, you need to ensure that it does not want to install an
-object that has the same name as an existing object in the folder in which
-you wish to import it.  In our example above, in order to bring your
-homework back to school, you'd either need to import it into a folder that
-doesn't already have an existing *homeWork* folder in it, or you'd need to
-delete the existing *homeWork* folder before importing the new one.
 
 Using Object Properties
 -----------------------
@@ -577,57 +413,7 @@ multiple selection
 
 Properties are very useful tools for tagging your Zope objects with bits of
 metadata.  Properties are supported by most Zope objects and are often
-referenced by "dynamic" Zope objects, such as "scripts" and "methods"
-(which we have not yet discussed) for purposes of data display.
-
-Using the Help System
----------------------
-
-Zope has a built-in help system: every management screen has a help button
-in its upper right-hand corner.  This button launches another browser
-window that exposes the Zope Help System.
-
-To see the help system, go to the root folder and click the *Help* link in
-upper right-hand corner of the Workspace frame.
-
-.. figure:: ../Figures/2-7.png
-
-   The Help System
-
-The help system has an organization similar to the two primary panes of the
-Zope management interface: it has one frame for navigation, and one frame
-for displaying the contents of the help system related to the current
-management screen.
-
-Browsing and Searching Help 
----------------------------
-
-Normally you would use the help system to get help on a specific topic.
-However, if you are curious, you can browse through its content.
-
-The help system lets you browse all of the help topics in the *Contents*
-tab of the left-hand help frame, in which you can expand and collapse help
-topics. To view a help topic in the right frame, click on its name in the
-left frame.  By default, no topics are expanded.
-
-Most help pertaining to Zope itself is located in the *Zope Help* folder.
-Click on the "plus" symbol next to the words *Zope Help* in the *Contents*
-tab of the left frame.  The frame will expand to show help topics
-(currently, in an apparently random and somewhat unhelpful order) and
-additional, related help categories, including *API Reference*, *DTML
-Reference*, and *ZPT Reference*. These subcategories contain help on
-scripting Zope, which is explained further in the chapters named "Dynamic
-Content With DTML":DTML.stx, "Using Zope Page Templates":ZPT.stx, and
-"Advanced Zope Scripting":ScriptingZope.stx.
-
-When you install third-party Zope components, they may also include their
-own help content. Each installed component has its own help folder.
-
-You may search for content in the help system by clicking on the Search tab
-in the left frame, and entering one or more search terms. For example, to
-find all of the help topics that mention folder objects, type "folder" into
-the search field and click "Search".  This will return a number of help
-topic links, most of which should pertain to the word "folder".
+referenced by your application logic for purposes of data display.
 
 Logging Out
 -----------

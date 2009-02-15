@@ -19,9 +19,8 @@ problem at hand.  It allows you to utilize the services it
 provides to build web applications more quickly than other
 languages or frameworks, and to write web
 application logic in the `Python <http://www.python.org/>`_
-language.  Zope also comes with two solutions that allow you 
-to "template" text, XML, and HTML: the *Document Template Markup 
-Language* (DTML), and *Zope Page Templates* (ZPT).
+language.  Zope also comes with one solution that allow you 
+to "template" text, XML, and HTML: *Zope Page Templates* (ZPT).
 
 Object Orientation
 ------------------
@@ -165,7 +164,7 @@ control. For example, you can set access control so that content
 managers can use "SQL Method" objects without being able to change them or
 even view their source. You can also set restrictions so that a
 user can only create certain kinds of objects, for instance,
-"Folders" and "DTML Documents," but not "SQL Methods" or other
+"Folders" and "Page Templates," but not "SQL Methods" or other
 objects.
 
 Zope provides the capability to manage users through the web via

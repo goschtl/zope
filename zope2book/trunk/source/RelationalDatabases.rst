@@ -119,9 +119,8 @@ Database Adapters
 
 A database can only be used if a Zope Database Adapter is available,
 though a Database Adapter is fairly easy to write if the database has
-Python support. Database adapters can be downloaded from the `Products
-section of Zope.org <http://www.zope.org/Products/>`_  The exception to
-this is Gadfly, which is included with Zope.
+Python support. Database adapters can be found in the
+`Zope Framework category of the Python Package Index <http://pypi.python.org/pypi?:action=browse&c=514>`_.
 
 At the time of writing the following adapters were available, but this
 list constantly changes as more adapters are added.
@@ -169,9 +168,6 @@ Informix
   which requires the
   `informixdb <http://starship.python.net/crew/sturner/informixdb.html>`_
   package.
-
-Gadfly
-  The Gadfly Database Adapter is built into Zope.
 
 If you will need to connect to more than one database or wish to connect
 as to the same database as different users then you may use multiple
@@ -479,7 +475,7 @@ and the ZPT version::
 
   <div>
     <ul>
-      <li tal:repeat="row here/list_all_employees">
+      <li tal:repeat="row context/list_all_employees">
         <span tal:content="string:${row/id}: ${row/last} ${row/first} 
               makes ${row/salary} Euro a year.
       </li>
@@ -957,7 +953,7 @@ can be used::
 and the ZPT version::
 
   <div>
-    <tal:div  tal:repeat="row python: here.employee_by_id(emp_id=42)">
+    <tal:div  tal:repeat="row python: context.employee_by_id(emp_id=42)">
       <h1 tal:content="string: ${row/last}, ${row/first}" />
       <p>
        <span tal:content="string:${row/first}s employee id is ${row/emp_id}. 
@@ -1146,15 +1142,11 @@ Other Result Object Methods
 Up to now we have just been iterating through the attributes of
 the Result object in DTML. The result object does however provide
 other methods which can be easier in some situations. These
-methods can be accessed from Python scripts, page templates and
-from DTML. For example in Python we could write::
+methods can be accessed from Scripts (Python) and page templates.
+For example in Python we could write::
 
   result=context.list_all_employees()
   return len(result)
-
-which in DTML would be::
-
-  <dtml-var "_.len(list_all_employees())">
 
 and in ZPT::
 

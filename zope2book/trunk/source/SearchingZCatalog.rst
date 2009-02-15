@@ -438,7 +438,7 @@ ZCatalog's indexes for the ZCatalog to find the search terms.
 Here is a report form that works with the search form::
 
   <html>
-  <body tal:define="searchResults here/NewsCatalog;">
+  <body tal:define="searchResults context/NewsCatalog;">
   <table border>
     <tr>
       <th>Item no.</th>
@@ -466,7 +466,7 @@ There are a few things going on here which merit closer
 examination.  The heart of the whole thing is in the definition
 of the 'searchResults' variable::
 
-  <body tal:define="searchResults here/NewsCatalog;">
+  <body tal:define="searchResults context/NewsCatalog;">
 
 This calls the 'NewsCatalog' ZCatalog.  Notice how the form
 parameters from the search form ( 'contentTextIdx' ,
@@ -528,7 +528,7 @@ the main ZopeZoo Page Template::
 
   ...
   <ul>
-    <li tal:repeat="item here/relevantSectionNews">
+    <li tal:repeat="item context/relevantSectionNews">
       <a href="news link" tal:attributes="href item/absolute_url">
         <span tal:replace="item/title">news title</span>
       </a>
@@ -792,7 +792,7 @@ with something a little more useful::
   <td>
     <select name="author:list" size="6" multiple>             
       <option 
-        tal:repeat="item python:here.NewsCatalog.uniqueValuesFor('author')" 
+        tal:repeat="item python:context.NewsCatalog.uniqueValuesFor('author')" 
         tal:content="item"
         value="opt value">
       </option>
@@ -814,7 +814,7 @@ is::
 
     <select name="author:list" size="6" multiple>             
       <option 
-        tal:repeat="item python:here.NewsCatalog.uniqueValuesFor('author')" 
+        tal:repeat="item python:context.NewsCatalog.uniqueValuesFor('author')" 
         tal:content="item"
         value="opt value">
       </option>
@@ -883,7 +883,7 @@ values in the 'keywords' index::
 
   <select name="keywords:list" multiple>
     <option 
-      tal:repeat="item python:here.uniqueValuesFor('keywords')"
+      tal:repeat="item python:context.uniqueValuesFor('keywords')"
       tal:content="item">
         opt value goes here
     </option>
@@ -911,7 +911,7 @@ use path indexes to quickly locate these objects. For example::
 
   <h2>Lizard Pictures</h2>
   <p tal:repeat="item
-      python:here.AnimalCatalog(pathindex='/Zoo/Lizards', 
+      python:context.AnimalCatalog(pathindex='/Zoo/Lizards', 
       meta_type='Image')">
     <a href="url" tal:attributes="href item/getURL" tal:content="item/title">
       document title
@@ -1496,13 +1496,13 @@ from the add drop-down menu, name it 'editPropertiesForm' and fill
 it with::
 
   <html><head>
-  <title tal:content="here/title_or_id">title</title>
+  <title tal:content="context/title_or_id">title</title>
   <link rel="stylesheet" type="text/css" href="/manage_page_style.css">
   </head>
   <body bgcolor="#FFFFFF" link="#000099" vlink="#555555">
   <span 
     tal:define="manage_tabs_message options/manage_tabs_message | nothing"
-    tal:replace="structure here/manage_tabs"> 
+    tal:replace="structure context/manage_tabs"> 
     prefab management tabs 
   </span>
   <form action="manage_editNewsProps" method="get">
@@ -1512,7 +1512,7 @@ it with::
     <td>
       <textarea 
         name="content:text" rows="6" cols="35"
-        tal:content="here/content">content text</textarea>
+        tal:content="context/content">content text</textarea>
     </td>
   </tr>
   <tr>
@@ -1520,7 +1520,7 @@ it with::
     <td>
       <input name="author:string" 
              value="author string"
-             tal:attributes="value here/author">
+             tal:attributes="value context/author">
     </td>
   </tr>
   <tr>
@@ -1528,7 +1528,7 @@ it with::
     <td>
       <input name="date:date"
              value="the date"
-             tal:attributes="value here/date">
+             tal:attributes="value context/date">
     </td>
   </tr>
   <tr><td></td><td>
@@ -1591,13 +1591,13 @@ Add the following to the new template::
   <title tal:content="template/title">The title</title>
   </head><body>
   <h1>News Flash</h1>
-  <p tal:content="here/date">
+  <p tal:content="context/date">
     date goes here
   </p>
-  <p tal:content="here/author">
+  <p tal:content="context/author">
     author goes here
   </p>
-  <p tal:content="here/content">
+  <p tal:content="context/content">
     content goes here
   </p>
   </body></html>

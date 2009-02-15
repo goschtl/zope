@@ -39,7 +39,7 @@ Calling by expression::
 See Also
 --------
 
-var tag
+- var tag
 
 
 comment: Comments DTML
@@ -90,26 +90,22 @@ DTML-specific functions.
 Functions
 ---------
 
-- abs(number)
-
+abs(number)
   Return the absolute value of a number. The argument may be a plain or long
   integer or a floating point number. If the argument is a complex number, its
   magnitude is returned.
 
-- chr(integer)
-
+chr(integer)
   Return a string of one character whose ASCII code is the integer, e.g.,
   'chr(97)' returns the string 'a'. This is the inverse of ord(). The argument
   must be in the range 0 to 255, inclusive; 'ValueError' will be raised if the
   integer is outside that range.
 
-- DateTime()
-
+DateTime()
   Returns a Zope 'DateTime' object given constructor arguments. See the
   DateTime API reference for more information on constructor arguments.
 
-- divmod(number, number)
-
+divmod(number, number)
   Take two numbers as arguments and return a pair of numbers consisting of
   their quotient and remainder when using long division. With mixed operand
   types, the rules for binary arithmetic operators apply. For plain and long
@@ -119,8 +115,7 @@ Functions
   *a*, if 'a % b' is non-zero it has the same sign as *b*, and '0 <= abs(a % b)
   < abs(b)'.
 
-- float(number)
-
+float(number)
   Convert a string or a number to floating point. If the argument is a string,
   it must contain a possibly signed decimal or floating point number, possibly
   embedded in whitespace; this behaves identical to 'string.atof(number)'.
@@ -128,39 +123,33 @@ Functions
   number, and a floating point number with the same value (within Python's
   floating point precision) is returned.
 
-- getattr(object, string)
-
+getattr(object, string)
   Return the value of the named attributed of object. name must be a string. If
   the string is the name of one of the object's attributes, the result is the
   value of that attribute. For example, 'getattr(x, "foobar")' is equivalent to
   'x.foobar'. If the named attribute does not exist, default is returned if
   provided, otherwise 'AttributeError' is raised.
 
-- getitem(variable, render=0)
-
+getitem(variable, render=0)
   Returns the value of a DTML variable. If 'render' is true, the variable is
   rendered. See the 'render' function.
 
-- hasattr(object, string)
-
+hasattr(object, string)
   The arguments are an object and a string. The result is 1 if the string is
   the name of one of the object's attributes, 0 if not. (This is implemented by
   calling getattr(object, name) and seeing whether it raises an exception or
   not.)
 
-- hash(object)
-
+hash(object)
   Return the hash value of the object (if it has one). Hash values are
   integers. They are used to quickly compare dictionary keys during a
   dictionary lookup. Numeric values that compare equal have the same hash value
   (even if they are of different types, e.g. 1 and 1.0).
 
-- has_key(variable)
-
+has_key(variable)
   Returns true if the DTML namespace contains the named variable.
 
-- hex(integer)
-
+hex(integer)
   Convert an integer number (of any size) to a hexadecimal string. The result
   is a valid Python expression. Note: this always yields an unsigned literal,
   e.g. on a 32-bit machine, 'hex(-1)' yields '0xffffffff'. When evaluated on a
@@ -168,8 +157,7 @@ Functions
   different word size, it may turn up as a large positive number or raise an
   'OverflowError' exception.
 
-- int(number)
-
+int(number)
   Convert a string or number to a plain integer. If the argument is a string,
   it must contain a possibly signed decimal number representable as a Python
   integer, possibly embedded in whitespace; this behaves identical to
@@ -180,30 +168,25 @@ Functions
   Conversion of floating point numbers to integers is defined by the C
   semantics; normally the conversion truncates towards zero.
 
-- len(sequence)
-
+len(sequence)
   Return the length (the number of items) of an object. The argument may be a
   sequence (string, tuple or list) or a mapping (dictionary).
 
-- max(s)
-
+max(s)
   With a single argument s, return the largest item of a non-empty sequence
   (e.g., a string, tuple or list). With more than one argument, return the
   largest of the arguments.
 
-- min(s)
-
+min(s)
   With a single argument s, return the smallest item of a non-empty sequence
   (e.g., a string, tuple or list). With more than one argument, return the
   smallest of the arguments.
 
-- namespace([name=value]...)
-
+namespace([name=value]...)
   Returns a new DTML namespace object. Keyword argument 'name=value' pairs are
   pushed into the new namespace.
 
-- oct(integer)
-
+oct(integer)
   Convert an integer number (of any size) to an octal string. The result is a
   valid Python expression. Note: this always yields an unsigned literal, e.g.
   on a 32-bit machine, 'oct(-1)' yields '037777777777'. When evaluated on a
@@ -211,13 +194,11 @@ Functions
   different word size, it may turn up as a large positive number or raise an
   OverflowError exception.
 
-- ord(character)
-
+ord(character)
   Return the ASCII value of a string of one character. E.g., 'ord("a")' returns
   the integer 97. This is the inverse of 'chr()'.
 
-- pow(x, y [,z])
-
+pow(x, y [,z])
   Return *x* to the power *y*; if *z* is present, return *x* to the power *y*,
   modulo *z* (computed more efficiently than 'pow(x, y) % z'). The arguments
   must have numeric types. With mixed operand types, the rules for binary
@@ -225,8 +206,7 @@ Functions
   the result; if the result is not expressible in this type, the function
   raises an exception; e.g., 'pow(2, -1)' or 'pow(2, 35000)' is not allowed.
 
-- range([start,] stop [,step])
-
+range([start,] stop [,step])
   This is a versatile function to create lists containing arithmetic
   progressions. The arguments must be plain integers. If the step argument is
   omitted, it defaults to 1. If the start argument is omitted, it defaults to
@@ -236,78 +216,66 @@ Functions
   is the largest 'start + i * step' greater than *stop*. *step* must not be
   zero (or else 'ValueError' is raised).
 
-- round(x [,n])
-
+round(x [,n])
   Return the floating point value *x* rounded to *n* digits after the decimal
   point. If n is omitted, it defaults to zero. The result is a floating point
   number. Values are rounded to the closest multiple of 10 to the power minus
   n; if two multiples are equally close, rounding is done away from 0 (so e.g.
   round(0.5) is 1.0 and round(-0.5) is -1.0).
 
-- render(object)
-
+render(object)
   Render 'object'. For DTML objects this evaluates the DTML code with the
   current namespace. For other objects, this is equivalent to 'str(object)'.
 
-- reorder(s [,with] [,without])
-
+reorder(s [,with] [,without])
   Reorder the items in s according to the order given in 'with' and without the
   items mentioned in 'without'. Items from s not mentioned in with are removed.
   s, with, and without are all either sequences of strings or sequences of
   key-value tuples, with ordering done on the keys. This function is useful for
   constructing ordered select lists.
 
-- SecurityCalledByExecutable()
-
+SecurityCalledByExecutable()
   Return a true if the current object (e.g. DTML document or method) is being
   called by an executable (e.g. another DTML document or method, a script or a
   SQL method).
 
-- SecurityCheckPermission(permission, object)
-
+SecurityCheckPermission(permission, object)
   Check whether the security context allows the given permission on the given
   object. For example, 'SecurityCheckPermission("Add Documents, Images, and
   Files", this())' would return true if the current user was authorized to
   create documents, images, and files in the current location.
 
-- SecurityGetUser()
-
+SecurityGetUser()
   Return the current user object. This is normally the same as the
   'REQUEST.AUTHENTICATED_USER' object. However, the 'AUTHENTICATED_USER' object
   is insecure since it can be replaced.
 
-- SecurityValidate([object] [,parent] [,name] [,value])
-
+SecurityValidate([object] [,parent] [,name] [,value])
   Return true if the value is accessible to the current user. 'object' is the
   object the value was accessed in, 'parent' is the container of the value, and
   'name' is the named used to access the value (for example, if it was obtained
   via 'getattr'). You may omit some of the arguments, however it is best to
   provide all available arguments.
 
-- SecurityValidateValue(object)
-
+SecurityValidateValue(object)
   Return true if the object is accessible to the current user. This function is
   the same as calling 'SecurityValidate(None, None, None, object)'.
 
-- str(object)
-
+str(object)
   Return a string containing a nicely printable representation of an object.
   For strings, this returns the string itself.
 
-- test(condition, result [,condition, result]... [,default])
-
+test(condition, result [,condition, result]... [,default])
   Takes one or more condition, result pairs and returns the result of the first
   true condition. Only one result is returned, even if more than one condition
   is true. If no condition is true and a default is given, the default is
   returned. If no condition is true and there is no default, None is returned.
 
-- unichr(number)
-
+unichr(number)
   Return a unicode string representing the value of number as a unicode
   character. This is the inverse of ord() for unicode characters.
 
-- unicode(string[, encoding[, errors ] ])
-
+unicode(string[, encoding[, errors ] ])
   Decodes string using the codec for encoding. Error handling is done according
   to errors. The default behavior is to decode UTF-8 in strict mode, meaning
   that encoding errors raise ValueError.
@@ -315,29 +283,20 @@ Functions
 Attributes
 ----------
 
-- None
-
+None
   The 'None' object is equivalent to the Python built-in object 'None'. This is
   usually used to represent a Null or false value.
 
 See Also
 --------
 
-- `string module`_
+- `string module <http://www.python.org/doc/current/lib/module-string.html>`_
 
-.. _string module: http://www.python.org/doc/current/lib/module-string.html
+- `random module <http://www.python.org/doc/current/lib/module-random.html>`_
 
-- `random module`_
+- `math module <http://www.python.org/doc/current/lib/module-math.html>`_
 
-.. _random module: http://www.python.org/doc/current/lib/module-random.html
-
-- `math module`_
-
-.. _math module: http://www.python.org/doc/current/lib/module-math.html
-
-- `sequence module`_
-
-.. _sequence module: http://www.python.org/doc/current/lib/built-in-funcs.html
+- `sequence module <http://www.python.org/doc/current/lib/built-in-funcs.html>`_
 
 
 if: Tests Conditions
@@ -393,9 +352,7 @@ Testing for expression conditions::
 See Also
 --------
 
-`Python Tutorial If Statements`_
-
-.. _Python Tutorial If Statements: http://docs.python.org/tutorial/controlflow.html#if-statements
+`Python Tutorial If Statements <http://docs.python.org/tutorial/controlflow.html#if-statements>`_
 
 
 in: Loops over sequences
@@ -429,37 +386,29 @@ optional 'else' block is executed.
 Attributes
 ----------
 
-- mapping
-
+mapping
   Iterates over mapping objects rather than instances. This allows values of
   the mapping objects to be accessed as DTML variables.
 
-- reverse
-
+reverse
   Reverses the sequence.
 
-- sort=string
-
+sort=string
   Sorts the sequence by the given attribute name.
 
-- start=int
-
+start=int
   The number of the first item to be shown, where items are numbered from 1.
 
-- end=int
-
+end=int
   The number of the last item to be shown, where items are numbered from 1.
 
-- size=int
-
+size=int
   The size of the batch.
 
-- skip_unauthorized
-
+skip_unauthorized
   Don't raise an exception if an unauthorized item is encountered.
 
-- orphan=int
-
+orphan=int
   The desired minimum batch size. This controls how sequences are split into
   batches. If a batch smaller than the orphan size would occur, then no split
   is performed, and a batch larger than the batch size results.
@@ -470,34 +419,28 @@ Attributes
 
   The default value is 0.
 
-- overlap=int
-
+overlap=int
   The number of items to overlap between batches. The default is no overlap.
 
-- previous
-
+previous
   Iterates once if there is a previous batch. Sets batch variables for previous
   sequence.
 
-- next
-
+next
   Iterates once if there is a next batch. Sets batch variables for the next
   sequence.
 
-- prefix=string
-
+prefix=string
   Provide versions of the tag variables that start with this prefix instead of
   "sequence", and that use underscores (_) instead of hyphens (-). The prefix
   must start with a letter and contain only alphanumeric characters and
   underscores (_).
 
-- sort_expr=expression
-
+sort_expr=expression
   Sorts the sequence by an attribute named by the value of the expression. This
   allows you to sort on different attributes.
 
-- reverse_expr=expression
-
+reverse_expr=expression
   Reverses the sequence if the expression evaluates to true. This allows you to
   selectively reverse the sequence.
 
@@ -509,69 +452,54 @@ Current Item Variables
 
 These variables describe the current item.
 
-- sequence-item
-
+sequence-item
   The current item.
 
-- sequence-key
-
+sequence-key
   The current key. When looping over tuples of the form '(key,value)', the 'in'
   tag interprets them as '(sequence-key, sequence-item)'.
 
-- sequence-index
-
+sequence-index
   The index starting with 0 of the current item.
 
-- sequence-number
-
+sequence-number
   The index starting with 1 of the current item.
 
-- sequence-roman
-
+sequence-roman
   The index in lowercase Roman numerals of the current item.
 
-- sequence-Roman
-
+sequence-Roman
   The index in uppercase Roman numerals of the current item.
 
-- sequence-letter
-
+sequence-letter
   The index in lowercase letters of the current item.
 
-- sequence-Letter
-
+sequence-Letter
   The index in uppercase letters of the current item.
 
-- sequence-start
-
+sequence-start
   True if the current item is the first item.
 
-- sequence-end
-
+sequence-end
   True if the current item is the last item.
 
-- sequence-even
-
+sequence-even
   True if the index of the current item is even.
 
-- sequence-odd
-
+sequence-odd
   True if the index of the current item is odd.
 
-- sequence-length
-
+sequence-length
   The length of the sequence.
 
-- sequence-var-*variable*
-
+sequence-var-*variable*
   A variable in the current item. For example, 'sequence-var-title' is the
   'title' variable of the current item. Normally you can access these variables
   directly since the current item is pushed on the DTML namespace. However
   these variables can be useful when displaying previous and next batch
   information.
 
-- sequence-index-*variable*
-
+sequence-index-*variable*
   The index of a variable of the current item.
 
 Summary Variables
@@ -581,40 +509,31 @@ These variable summarize information about numeric item variables. To use these
 variable you must loop over objects (like database query results) that have
 numeric variables.
 
-- total-*variable*
-
+total-*variable*
   The total of all occurrences of an item variable. 
 
-- count-*variable*
-
+count-*variable*
   The number of occurrences of an item variable.
 
-- min-*variable*
-
+min-*variable*
   The minimum value of an item variable.
 
-- max-*variable*
-
+max-*variable*
   The maximum value of an item variable.
 
-- mean-*variable*
-
+mean-*variable*
   The mean value of an item variable.
 
-- variance-*variable*
-
+variance-*variable*
   The variance of an item variable with count-1 degrees of freedom.
 
-- variance-n-*variable*
-
+variance-n-*variable*
   The variance of an item variable with n degrees of freedom.
 
-- standard-deviation-*variable*
-
+standard-deviation-*variable*
   The standard-deviation of an item variable with count-1 degrees of freedom.
 
-- standard-deviation-n-*variable*
-
+standard-deviation-n-*variable*
   The standard-deviation of an item variable with n degrees of freedom.
 
 Grouping Variables
@@ -622,88 +541,70 @@ Grouping Variables
 
 These variables allow you to track changes in current item variables.
 
-- first-*variable*
-
+first-*variable*
   True if the current item is the first with a particular value for a variable.
 
-- last-*variable*
-
+last-*variable*
   True if the current item is the last with a particular value for a variable.
 
 Batch Variables
 +++++++++++++++
 
-- sequence-query
-
+sequence-query
   The query string with the 'start' variable removed. You can use this variable
   to construct links to next and previous batches.
 
-- sequence-step-size
-
+sequence-step-size
   The batch size.
 
-- previous-sequence
-
+previous-sequence
   True if the current batch is not the first one. Note, this variable is only
   true for the first loop iteration.
 
-- previous-sequence-start-index
-
+previous-sequence-start-index
   The starting index of the previous batch.
 
-- previous-sequence-start-number
-
+previous-sequence-start-number
   The starting number of the previous batch. Note, this is the same as
   'previous-sequence-start-index' + 1.
 
-- previous-sequence-end-index
-
+previous-sequence-end-index
   The ending index of the previous batch.
 
-- previous-sequence-end-number
-
+previous-sequence-end-number
   The ending number of the previous batch. Note, this is the same as
   'previous-sequence-end-index' + 1.
 
-- previous-sequence-size
-
+previous-sequence-size
   The size of the previous batch.
 
-- previous-batches
-
+previous-batches
   A sequence of mapping objects with information about all previous batches.
   Each mapping object has these keys 'batch-start-index', 'batch-end-index',
   and 'batch-size'.
 
-- next-sequence
-
+next-sequence
   True if the current batch is not the last batch. Note, this variable is only
   true for the last loop iteration.
 
-- next-sequence-start-index
-
+next-sequence-start-index
   The starting index of the next sequence.
 
-- next-sequence-start-number
-
+next-sequence-start-number
   The starting number of the next sequence. Note, this is the same as
   'next-sequence-start-index' + 1.
 
-- next-sequence-end-index
-
+next-sequence-end-index
   The ending index of the next sequence.
 
-- next-sequence-end-number
-
+next-sequence-end-number
   The ending number of the next sequence. Note, this is the same as
   'next-sequence-end-index' + 1.
 
-- next-sequence-size
-
+next-sequence-size
   The size of the next index.
 
-- next-batches
-
+next-batches
   A sequence of mapping objects with information about all following batches.
   Each mapping object has these keys 'batch-start-index', 'batch-end-index',
   and 'batch-size'.
@@ -827,7 +728,8 @@ This yields::
 See Also
 --------
 
-with tag
+- with tag
+
 
 mime: Formats data with MIME
 ============================
@@ -854,52 +756,42 @@ Attributes
 
 Both the 'mime' and 'boundry' tags have the same attributes.
 
-- encode=string
-
+encode=string
   MIME Content-Transfer-Encoding header, defaults to 'base64'. Valid encoding
   options include 'base64', 'quoted-printable', 'uuencode', 'x-uuencode',
   'uue', 'x-uue', and '7bit'. If the 'encode' attribute is set to '7bit' no
   encoding is done on the block and the data is assumed to be in a valid MIME
   format.
 
-- type=string
-
+type=string
   MIME Content-Type header.
 
-- type_expr=string
-
+type_expr=string
   MIME Content-Type header as a variable expression. You cannot use both 'type'
   and 'type_expr'.
 
-- name=string
-
+name=string
   MIME Content-Type header name.
 
-- name_expr=string
-
+name_expr=string
   MIME Content-Type header name as a variable expression. You cannot use both
   'name' and 'name_expr'.
 
-- disposition=string
-
+disposition=string
   MIME Content-Disposition header.
 
-- disposition_expr=string
-
+disposition_expr=string
   MIME Content-Disposition header as a variable expression. You cannot use both
   'disposition' and 'disposition_expr'.
 
-- filename=string
-
+filename=string
   MIME Content-Disposition header filename.
 
-- filename_expr=string
-
+filename_expr=string
   MIME Content-Disposition header filename as a variable expression. You cannot
   use both 'filename' and 'filename_expr'.
 
-- skip_expr=string
-
+skip_expr=string
   A variable expression that if true, skips the block. You can use this
   attribute to selectively include MIME blocks.
 
@@ -920,10 +812,9 @@ Sending a file attachment::
   </dtml-sendmail>
 
 See Also
+--------
 
-`Python Library mimetools`_
-
-.. _Python Library mimetools: http://www.python.org/doc/current/lib/module-mimetools.html
+- `Python Library mimetools <http://www.python.org/doc/current/lib/module-mimetools.html>`_
 
 raise: Raises an exception
 ==========================
@@ -957,15 +848,11 @@ Raising an HTTP 404 error::
 See Also
 --------
 
-try tag
+- try tag
 
-`Python Tutorial Errors and Exceptions`_
+- `Python Tutorial Errors and Exceptions <http://www.python.org/doc/current/tut/node10.html>`_
 
-.. _Python Tutorial Errors and Exceptions: http://www.python.org/doc/current/tut/node10.html
-
-`Python Built-in Exceptions`_
-
-.. _Python Built-in Exceptions: http://www.python.org/doc/current/lib/module-exceptions.html
+- `Python Built-in Exceptions <http://www.python.org/doc/current/lib/module-exceptions.html>`_
 
 return: Returns data
 ====================
@@ -1016,32 +903,26 @@ separated from the body by a blank line. Alternately the 'To', 'From' and
 Attributes
 ----------
 
-- mailhost
-
+mailhost
   The name of a Zope MailHost object to use to send email. You cannot specify
   both a mailhost and a smtphost.
 
-- smtphost
-
+smtphost
   The name of a SMTP server used to send email. You cannot specify both a
   mailhost and a smtphost.
 
-- port
-
+port
   If the smtphost attribute is used, then the port attribute is used to specify
   a port number to connect to. If not specified, then port 25 will be used.
 
-- mailto
-
+mailto
   The recipient address or a list of recipient addresses separated by commas.
   This can also be specified with the 'To' header.
 
-- mailfrom
-
+mailfrom
   The sender address. This can also be specified with the 'From' header.
 
-- subject
-
+subject
   The email subject. This can also be specified with the 'Subject' header.
 
 Examples
@@ -1063,11 +944,10 @@ Sending an email message using a Mail Host::
 See Also
 --------
 
-`RFC 821 (SMTP Protocol)`_
+- `RFC 821 (SMTP Protocol) <http://www.ietf.org/rfc/rfc0821.txt>`_
 
-.. _RFC 821 (SMTP Protocol): http://www.ietf.org/rfc/rfc0821.txt
+- mime tag
 
-mime tag
 
 sqlgroup: Formats complex SQL expressions
 =========================================
@@ -1094,13 +974,11 @@ nested to produce complex logic.
 Attributes
 ----------
 
-- required=boolean
-
+required=boolean
   Indicates whether the group is required. If it is not required and contains
   nothing, it is excluded from the DTML output.
 
-- where=boolean
-
+where=boolean
   If true, includes the string "where". This is useful for the outermost
   'sqlgroup' tag in a SQL 'select' query.
 
@@ -1166,7 +1044,8 @@ Given sample arguments, this template renders to SQL like so::
 See Also
 --------
 
-sqltest tag
+- sqltest tag
+
 
 sqltest: Formats SQL condition tests
 ====================================
@@ -1189,43 +1068,44 @@ column using the specified comparison operation.
 Attributes
 ----------
 
-- type=string
-
+type=string
   The type of the variable. Valid types include: 'string', 'int', 'float' and
   'nb'. 'nb' means non-blank string, and should be used instead of 'string'
   unless you want to test for blank values. The type attribute is required and
   is used to properly escape inserted variable.
 
-- column=string
-
+column=string
   The name of the SQL column to test against. This attribute defaults to the
   variable name.
 
-- multiple=boolean
-
+multiple=boolean
   If true, then the variable may be a sequence of values to test the column
   against.
 
-- optional=boolean
-
+optional=boolean
   If true, then the test is optional and will not be rendered if the variable
   is empty or non-existent.
 
-- op=string
-
+op=string
   The comparison operation. Valid comparisons include: 
 
-  eq -- equal to
+  eq
+    equal to
 
-  gt -- greater than
+  gt
+    greater than
 
-  lt -- less than
+  lt
+    less than
 
-  ne -- not equal to
+  ne
+    not equal to
 
-  ge -- greater than or equal to
+  ge
+    greater than or equal to
 
-  le -- less than or equal to
+  le
+    less than or equal to
 
   The comparison defaults to equal to. If the comparison is not
   recognized it is used anyway. Thus you can use comparisons such
@@ -1257,9 +1137,10 @@ If the 'empid' variable is '(12,14,17)' then this renders::
 See Also
 --------
 
-sqlgroup tag
+- sqlgroup tag
 
-sqlvar tag
+- sqlvar tag
+
 
 sqlvar: Inserts SQL variables
 =============================
@@ -1281,15 +1162,13 @@ tailored for SQL code.
 Attributes
 ----------
 
-- type=string
-
+type=string
   The type of the variable. Valid types include: 'string', 'int', 'float' and
   'nb'. 'nb' means non-blank string and should be used in place of 'string'
   unless you want to use blank strings. The type attribute is required and is
   used to properly escape inserted variable.
 
-- optional=boolean
-
+optional=boolean
   If true and the variable is null or non-existent, then nothing is inserted.
 
 Examples
@@ -1305,7 +1184,8 @@ This SQL quotes the 'name' string variable.
 See Also
 --------
 
-sqltest tag
+- sqltest tag
+
 
 tree: Inserts a tree widget
 ===========================
@@ -1332,78 +1212,63 @@ must be enabled. Also you can only have one tree per page.
 Attributes
 ----------
 
-- branches=string
-
+branches=string
   Finds tree branches by calling the named method. The default method is
   'tpValues' which most Zope objects support.
 
-- branches_expr=string
-
+branches_expr=string
   Finds tree branches by evaluating the expression.
 
-- id=string
-
+id=string
   The name of a method or id to determine tree state. It defaults to 'tpId'
   which most Zope objects support. This attribute is for advanced usage only.
 
-- url=string
-
+url=string
   The name of a method or attribute to determine tree item URLs. It defaults to
   'tpURL' which most Zope objects support. This attribute is for advanced usage
   only.
 
-- leaves=string
-
+leaves=string
   The name of a DTML Document or Method used to render nodes that don't have
   any children. Note: this document should begin with '<dtml-var
   standard_html_header>' and end with '<dtml-var standard_html_footer>' in
   order to ensure proper display in the tree.
 
-- header=string
-
+header=string
   The name of a DTML Document or Method displayed before expanded nodes. If the
   header is not found, it is skipped.
 
-- footer=string
-
+footer=string
   The name of a DTML Document or Method displayed after expanded nodes. If the
   footer is not found, it is skipped.
 
-- nowrap=boolean
-
+nowrap=boolean
   If true then rather than wrap, nodes may be truncated to fit available space.
 
-- sort=string
-
+sort=string
   Sorts the branches by the named attribute.
 
-- reverse
-
+reverse
   Reverses the order of the branches.
 
-- assume_children=boolean
-
+assume_children=boolean
   Assumes that nodes have children. This is useful if fetching and querying
   child nodes is a costly process. This results in plus boxes being drawn next
   to all nodes.
 
-- single=boolean
-
+single=boolean
   Allows only one branch to be expanded at a time. When you expand a new
   branch, any other expanded branches close.
 
-- skip_unauthorized
-
+skip_unauthorized
   Skips nodes that the user is unauthorized to see, rather than raising an
   error.
 
-- urlparam=string
-
+urlparam=string
   A query string which is included in the expanding and contracting widget
   links. This attribute is for advanced usage only.
 
-- prefix=string
-
+prefix=string
   Provide versions of the tag variables that start with this prefix instead of
   "tree", and that use underscores (_) instead of hyphens (-). The prefix must
   start with a letter and contain only alphanumeric characters and underscores
@@ -1412,30 +1277,24 @@ Attributes
 Tag Variables
 -------------
 
-- tree-item-expanded
-
+tree-item-expanded
   True if the current node is expanded.
 
-- tree-item-url
-
+tree-item-url
   The URL of the current node.
 
-- tree-root-url
-
+tree-root-url
   The URL of the root node.
 
-- tree-level
-
+tree-level
   The depth of the current node. Top-level nodes have a depth of zero.
 
-- tree-colspan
-
+tree-colspan
   The number of levels deep the tree is being rendered. This variable along
   with the 'tree-level' variable can be used to calculate table rows and
   colspan settings when inserting table rows into the tree table.
 
-- tree-state
-
+tree-state
   The tree state expressed as a list of ids and sub-lists of ids. This variable
   is for advanced usage only.
 
@@ -1444,12 +1303,10 @@ Tag Control Variables
 
 You can control the tree tag by setting these variables.
 
-- expand_all
-
+expand_all
   If this variable is true then the entire tree is expanded.
 
-- collapse_all
-
+collapse_all
   If this variable is true then the entire tree is collapsed.
 
 Examples
@@ -1513,8 +1370,7 @@ not an exception is raised in the 'try' block.
 Attributes
 ----------
 
-- except
-
+except
   Zero or more exception names. If no exceptions are listed then the except tag
   will handle all exceptions.
 
@@ -1523,16 +1379,13 @@ Tag Variables
 
 Inside the 'except' block these variables are defined.
 
-- error_type
-
+error_type
   The exception type.
 
-- error_value
-
+error_value
   The exception value.
 
-- error_tb
-
+error_tb
   The traceback.
 
 Examples
@@ -1569,15 +1422,12 @@ is raised or not::
 See Also
 --------
 
-raise tag
+- raise tag
 
-`Python Tutorial Errors and Exceptions`_
+- `Python Tutorial Errors and Exceptions <http://www.python.org/doc/current/tut/node10.html>`_
 
-.. _Python Tutorial Errors and Exceptions: http://www.python.org/doc/current/tut/node10.html
+- `Python Built-in Exceptions <http://www.python.org/doc/current/lib/module-exceptions.html>`_
 
-`Python Built-in Exceptions`_
-
-.. _Python Built-in Exceptions: http://www.python.org/doc/current/lib/module-exceptions.html
 
 unless: Tests a condition
 =========================
@@ -1612,7 +1462,8 @@ false.
 See Also
 --------
 
-if tag
+- if tag
+
 
 var: Inserts a variable
 =======================
@@ -1651,86 +1502,69 @@ avoid HTML quoting with this syntax, '&dtml.-variableName;'.
 Attributes
 ----------
 
-- html_quote
-
+html_quote
   Convert characters that have special meaning in HTML to HTML character
   entities.
 
-- missing=string
-
+missing=string
   Specify a default value in case Zope cannot find the variable.
 
-- fmt=string
-
+fmt=string
   Format a variable. Zope provides a few built-in formats including C-style
   format strings. For more information on C-style format strings see the
-  `Python Library Reference`_. If the format string is not a built-in format,
-  then it is assumed to be a method of the object, and it called.
+  `Python Library Reference <http://www.python.org/doc/current/lib/typesseq-strings.html>`_.
+  If the format string is not a built-in format, then it is assumed to be a
+  method of the object, and it called.
 
-  * collection-length
-
+  collection-length
     The length of the variable, assuming it is a sequence.
 
-- null=string
-
+null=string
   A default value to use if the variable is None.
 
-- lower
-
+lower
   Converts upper-case letters to lower case. 
 
-- upper
-
+upper
   Converts lower-case letters to upper case. 
 
-- capitalize
-
+capitalize
   Capitalizes the first character of the inserted word.
 
-- spacify
-
+spacify
   Changes underscores in the inserted value to spaces.
 
-- thousands_commas
-
+thousands_commas
   Inserts commas every three digits to the left of a decimal point in values
   containing numbers for example '12000' becomes '12,000'.
 
-- url
-
+url
   Inserts the URL of the object, by calling its 'absolute_url' method.
 
-- url_quote
-
+url_quote
   Converts characters that have special meaning in URLs to HTML character
   entities.
 
-- url_quote_plus
-
+url_quote_plus
   URL quotes character, like 'url_quote' but also converts spaces to plus
   signs.
 
-- sql_quote
-
+sql_quote
   Converts single quotes to pairs of single quotes. This is needed to safely
   include values in SQL strings.
 
-- newline_to_br
-
+newline_to_br
   Convert newlines (including carriage returns) to HTML break tags.
 
-- size=arg
-
+size=arg
   Truncates the variable at the given length (Note: if a space occurs in the
   second half of the truncated string, then the string is further truncated to
   the right-most space).
 
-- etc=arg
-
+etc=arg
   Specifies a string to add to the end of a string which has been truncated (by
   setting the 'size' attribute listed above). By default, this is '...'
 
-.. _Python Library Reference: http://www.python.org/doc/current/lib/typesseq-strings.html
 
 Examples
 --------
@@ -1789,12 +1623,10 @@ names are looked up in the pushed object first.
 Attributes
 ----------
 
-- only
-
+only
   Limits the DTML namespace to only include the one defined in the 'with' tag.
 
-- mapping
-
+mapping
   Indicates that the variable or expression is a mapping object. This ensures
   that variables are looked up correctly in the mapping object.
 
@@ -1820,4 +1652,4 @@ Pushing the first child on the DTML namespace::
 See Also
 --------
 
-let tag
+- let tag

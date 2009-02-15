@@ -19,11 +19,9 @@ Contents
    UsingZope.rst
    BasicObject.rst
    Acquisition.rst
-   DTML.rst
    ZPT.rst
    SimpleExamples.rst
    Security.rst
-   AdvDTML.rst
    AdvZPT.rst
    ScriptingZope.rst
    ZopeServices.rst

@@ -56,14 +56,16 @@ click *Set Rule*.  A confirmation screen appears claiming that
 has changed, denoting that it is now the access rule for this
 Folder.
 
-Create a DTML Method named 'test' in the accessrule_test folder
-with the following body::
+Create a page template named 'test' in the accessrule_test folder
+with the following text::
 
-  <dtml-var standard_html_header>
-  <dtml-var REQUEST>
-  <dtml-var standard_html_footer>
+  <html>
+  <body>
+    <pre tal:content="context/REQUEST">request details</pre>
+  </body>
+  </html>
 
-Save the 'test' DTML Method and click its "View" tab.  You will
+Save the 'test' page template and click its "View" tab.  You will
 see a representation of all the variables that exist in the
 REQUEST.  Note that in the **other** category, there is now a
 variable named "OS" with (depending on your browser platform)
@@ -78,25 +80,6 @@ Visit the 'test' script you created previously and click its
 *View* tab.  You will notice that there is now no "OS" variable
 listed in the request because we've turned off the Access Rule
 capability for 'access_rule'.
-
-Access Rules have many potential creative uses.  For example:
-
-- A ZopeLabs recipe submitted by `xzc
-  <http://www.zopelabs.com/cookbook/997210090>`_ shows how to
-  restrict a specific user agent from accessing a particular Zope
-  object.
-  
-- Another tip from `runyaga
-  <http://www.zopelabs.com/cookbook/1017462630>`_ shows how to
-  use an access rule to restrict management access in a
-  `CMF <http://cmf.zope.org>`_ site for non-manager users.
-  
-- Another recipe by `ivo <http://www.zopelabs.com/cookbook/1003844578>`_
-  tells us how to transparently delegate requests for an object to another
-  object using an Access Rule.
-
-Access Rules don't need to be Script (Python) objects, they may
-also be DTML Methods or External Methods.
 
 Temporary Storage Services
 --------------------------
@@ -126,168 +109,19 @@ However, it's a bad idea use temporary folders to store large
 objects because your computer can potentially run out of RAM as
 a result.
 
-Version Services
-----------------
-
-Version objects help coordinate the work of many people on the
-same set of objects.  While you are editing a document, someone
-else can be editing another document at the same time. In a large
-Zope site hundreds or even thousands of people can be using Zope
-simultaneously. For the most part this works well, but problems
-can occur. For example, two people might edit the same document at
-the same time. When the first person finishes their changes they
-are saved in Zope. When the second person finishes their changes
-they over write the first person's changes. You can always work
-around this problem using *Undo* and *History*, but it can still
-be a problem.  To solve this problem, Zope has *Version* objects.
-
-.. warning::
-
-   Aside from the ZCatalog incompatibility noted in the
-   caveat below, Versions have had some serious bugs through their
-   history, including some bugs that lead to ZODB corruption and data
-   loss.  Some of these may be fixed now, but many zope users 
-   have long avoided Versions like the plague. There are other
-   solutions to the same issues, from the simple and kludgey (copy stuff
-   to a private folder and work on it there) to the sophisticated
-   (ZopeVersionControl, available from cvs.zope.org).
-
-Another problem that you may encounter is that you may wish to make
-some changes, but you may not want to make them public until you are
-done. For example, suppose you want to change the menu structure of
-your site. You don't want to work on these changes while folks are
-using your site because it may break the navigation system temporarily
-while you're working.
-
-Versions are a way of making private changes in Zope. You can make
-changes to many different documents without other people seeing
-them. When you decide that you are done you can choose to make
-your changes public, or discard them. You can work in a Version
-for as long as you wish. For example it may take you a week to put
-the finishing touches on your new menu system. Once you're done
-you can make all your changes live at once by committing the
-version.
-
-.. note::
-   Using versions via the Zope Management Interface requires
-   that your browser supports and accepts cookies from the Zope
-   server.
-
-Create a Version by choosing Version from the product add
-list. You should be taken to an add form.  Give your Version an id
-of *MyChanges* and click the *Add* button. Now you have created a
-version, but you are not yet using it. To use your version click
-on it. You should be taken to the *Join/Leave* view of your
-version as shown in the figure below.
-
-.. figure:: ../Figures/3-8.png
-
-   Joining a Version
-
-The Version is telling you that you are not currently using it. Click
-on the *Start Working in MyChanges* button. Now Zope should tell you
-that you are working in a version. Now return to the root
-folder. Notice that everywhere you go you see a small message at the
-top of the screen that says *You are currently working in version
-/MyChanges*. This message lets you know that any changes you make at
-this point will not be public, but will be stored in your version. For
-example, create a new DTML Document named *new*. Notice how it has a
-small red diamond after its id. Now edit your *standard_html_header*
-method. Add a line to it like so::
-
-  <HTML>
-    <HEAD>
-      <TITLE><dtml-var title_or_id></TITLE>
-    </HEAD>
-    <BODY BGCOLOR="#FFFFFF">
-    <H1>Changed in a Version</H1>
-
-Any object that you create or edit while working in a version will
-be marked with a red diamond. Now return to your version and click
-the *Quit working in MyChanges* button. Now try to return to the
-*new* document. Notice that the document you created while in your
-version has now disappeared. Any other changes that you made in
-the version are also gone. Notice how your *standard_html_header*
-method now has a small red diamond and a lock symbol after
-it. This indicates that this object has been changed in a
-version. Changing an object in a version locks it, so no one else
-can change it until you commit or discard the changes you made in
-your version. Locking ensures that your version changes don't
-overwrite changes that other people make while you're working in a
-version. So for example if you want to make sure that only you are
-working on an object at a given time you can change it in a
-version. In addition to protecting you from unexpected changes,
-locking also makes things inconvenient if you want to edit
-something that is locked by someone else. It's a good idea to
-limit your use of versions to avoid locking other people out of
-making changes to objects.
-
-Now return to your version by clicking on it and then clicking the
-*Start working in MyChanges* button. Notice how everything returns
-to the way it was when you left the Version. At this point let's
-make your changes permanent. Go to the *Save/Discard* view as
-shown in the figure below.
-
-.. figure:: ../Figures/3-9.png
-
-   Committing Version changes
-
-Enter a comment like *This is a test* into the comment field and
-click the *Save* button. Your changes are now public, and all
-objects that you changed in your Version are now unlocked. Notice
-that you are still working in your Version. Go to the *Join/Leave*
-view and click the *Quit Working in MyChanges* button. Now verify
-that the document you created in your version is visible. Your
-change to the *standard_html_header* should also be visible. Like
-anything else in Zope you can choose to undo these changes if you
-want. Go to the *Undo* view. Notice that instead of many
-transactions one for each change, you only have one transaction
-for all the changes you made in your version. If you undo the
-transaction, all the changes you made in the version will be
-undone.
-
-Versions are a powerful tool for group collaboration. You don't
-have to run a live server and a test server since versions let you
-make experiments, evaluate them and then make them public when you
-decide that all is well. You are not limited to working in a
-version alone. Many people can work in the same version. This way
-you can collaborate on version's changes together, while keeping
-the changes hidden from the general public.
-
-Caveat: Versions and ZCatalog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-ZCatalog is Zope's indexing and searching engine, covered in
-depth in the chapter entitled `Searching and Categorizing
-Content <SearchingZCatalog.html>`_.
-
-Unfortunately, Versions don't work well with ZCatalog. This is
-because versions lock objects when they are modified in a
-version, preventing changes outside the version. 
-
-ZCatalog has a way of connecting changes made to disparate
-objects. This is because cataloging an object must, by necessity
-change the catalog. Objects that automatically catalog
-themselves when they are changed propagate their changes to the
-catalog. If such an object is changed in a version, then the
-catalog is changed in the version too, thus locking the catalog
-itself. This makes the catalog and versions get along poorly.
-As a rule, versions should not be used in applications that use
-the catalog.
-
 Caching Services
 ----------------
 
 A *cache* is a temporary place to store information that you
 access frequently.  The reason for using a cache is speed.  Any
-kind of dynamic content, like a DTML page or a Script (Python),
+kind of dynamic content, like a a Script (Python),
 must be evaluated each time it is called.  For simple pages or
 quick scripts, this is usually not a problem.  For very complex
-DTML pages or scripts that do a lot of computation or call remote
+scripts that do a lot of computation or call remote
 servers, accessing that page or script could take more than a
-trivial amount of time.  Both DTML and Python can get this
-complex, especially if you use lots of looping (such as the 'in'
-tag or the Python 'for' loop) or if you call lots of scripts, that
+trivial amount of time.  Scripts can get this
+complex, especially if you use lots of looping (such as the
+Python 'for' loop) or if you call lots of scripts, that
 in turn call lots of scripts, and so on.  Computations that take a
 lot of time are said to be *expensive*.
 
@@ -403,7 +237,7 @@ your caching is.
 There is also an *Associate* view that allows you to associate a
 specific type or types of Zope objects with a particular cache
 manager.  For example, you may only want your cache manager to
-cache DTML Documents.  You can change these settings on the
+cache Scripts.  You can change these settings on the
 *Associate* view.
 
 At this point, nothing is cached yet, you have just created a
@@ -417,35 +251,46 @@ Caching any sort of cacheable object is fairly straightforward.
 First, before you can cache an object you must have a cache
 manager like the one you created in the previous section.
 
-To cache a document, create a new DTML Document object in the
+To cache a page, create a new page template object in the
 root folder called *Weather*.  This object will contain some
 weather information.  For example, let's say it contains::
 
-  <dtml-var standard_html_header>
+  <html>
+  <body>
 
     <p>Yesterday it rained.</p>
 
-  <dtml-var standard_html_footer>
+  </body>
+  </html>
 
-Now, click on the *Weather* DTML Document and click on its *Cache*
-view.  This view lets you associate this document with a cache
+Now, click on the *Weather* page template and click on its *Cache*
+view.  This view lets you associate this page with a cache
 manager.  If you pull down the select box at the top of the view,
 you'll see the cache manager you created in the previous section,
 *CacheManager*.  Select this as the cache manager for *Weather*.
 
-Now, whenever anyone visits the *Weather* document, they will get
-the cached copy instead.  For a document as trivial as our
+Now, whenever anyone visits the *Weather* page, they will get
+the cached copy instead.  For a page as trivial as our
 *Weather* example, this is not much of a benefit.  But imagine for
 a moment that *Weather* contained some database queries.  For
 example::
 
-  <dtml-var standard_html_header>
+  <html>
+  <body>
 
-    <p>Yesterday's weather was <dtml-var yesterdayQuery> </p>
+    <p>
+      Yesterday's weather was
+      <tal:yesterday tal:replace="context/yesterdayQuery" />
+    </p>
 
-    <p>The current temperature is <dtml-var currentTempQuery></p>
+    <p>
+      The current temperature is
+      <tal:current tal:replace="context/currentTempQuery" />
+    </p>
 
-  <dtml-var standard_html_footer>
+  </body>
+  </html>
+
 
 Let's suppose that *yesterdayQuery* and *currentTempQuery* are
 SQL Methods that query a database for yesterdays forecast and
@@ -459,10 +304,10 @@ database every time it was viewed.  If the *Weather* document was
 viewed hundreds of times in an hour, then all of those hundreds of
 queries would always contain the same information.
 
-If you specify that the document should be cached, however, then
-the document will only make the query when the cache expires.  The
+If you specify that the page should be cached, however, then
+the page will only make the query when the cache expires.  The
 default cache time is 300 seconds (5 minutes), so setting this
-document up to be cached will save you 91% of your database
+page up to be cached will save you 91% of your database
 queries by doing them only one twelfth as often.  There is a
 trade-off with this method, there is a chance that the data may be
 five minutes out of date, but this is usually an acceptable
@@ -472,11 +317,9 @@ Outbound Mail Services
 ----------------------
 
 Zope comes with an object that is used to send outbound e-mail,
-usually in conjunction with the DTML 'sendmail' tag, described
-more in the chapter entitled `Variables and Advanced
-DTML <AdvDTML.html>`_.
+usually in conjunction with a Script (Python).
 
-Mailhosts can be used from either Python or DTML to send an email
+Mailhosts can be used Python to send an email
 message over the Internet.  They are useful as 'gateways' out to
 the world.  Each mailhost object is associated with one mail
 server, for example, you can associate a mailhost object with
@@ -490,36 +333,7 @@ server and port are "localhost" and "25".  make sure that either
 your localhost machine is running a mail server, or change
 "localhost" to be the name of your outgoing SMTP server.
 
-Now you can use the new MailHost object from a DTML 'sendmail'
-tag.  This is explained in more detail in the chapter entitled
-`Variables and Advanced DTML`_, but we provide a simple
-example below.  In your root folder, create a DTML Method named
-'send_mail' with a body that looks like the following::
-
-  <dtml-sendmail>
-  From: me@nowhere.com
-  To: you@nowhere.com
-  Subject: Stop the madness!
-
-  Take a day off, you need it.
-
-  </dtml-sendmail>
-
-  % Anonymous User - Feb. 9, 2004 9:55 pm:
-   The sendmail tag should be:
-   <dtml-sendmail smtphost="mymailhost.com">
-
-Ensure that all the lines are flush against the left side of the
-textarea for proper function.  When you invoke this DTML Method
-(perhaps by visiting its *View* tab), it will use your
-newly-created MailHost to send an admonishing mail to
-"you@nowhere.com".  Substitute your own email address to try it
-out.
-
-The API for MailHost objects also allows you to send mail from
-Script (Python) objects and External Methods.  See the Zope
-MailHost API in the Zope help system at Zope Help -> API Reference
--> MailHost for more information about the interface it provides.
+Now you can use the new MailHost object from a Script.
 
 Error Logging Services
 ----------------------
@@ -554,9 +368,9 @@ Zope, see the chapter entitled `Virtual Hosting Services
 Searching and Indexing Services
 -------------------------------
 
-For detailed information about using searching and indexing
-services in Zope to index and search a collection of documents, see
-the chapter entitled `Searching and Categorizing Content`_.
+For detailed information about using searching and indexing services in Zope to
+index and search a collection of documents, see the chapter entitled
+`Searching and Categorizing Content <SearchingZCatalog.html>`_.
 
 Sessioning Services
 -------------------
@@ -564,13 +378,3 @@ Sessioning Services
 For detailed information about using Zope's "sessioning" services
 to "keep state" between HTTP requests for anonymous users, see the
 chapter entitled `Sessions <Sessions.html>`_.
-
-Internationalization Services
-------------------------------
-
-This section of the document needs to be expanded.  For now, please see
-documentation for Zope 2.6+ wrt Unicode and object publishing at:
-
-- http://www.zope.org/Members/htrd/howto/unicode-zdg-changes and
-
-- http://www.zope.org/Members/htrd/howto/unicode .
