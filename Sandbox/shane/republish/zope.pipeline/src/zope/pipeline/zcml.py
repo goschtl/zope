@@ -21,6 +21,7 @@ from zope.component.zcml import adapter
 from zope.configuration.fields import GlobalObject
 from zope.configuration.fields import Tokens
 from zope.interface import Interface
+from zope.interface import implements
 from zope.publisher.interfaces import IRequest
 from zope.schema import Int
 from zope.schema import TextLine
@@ -43,7 +44,8 @@ class IPipelineDirective(Interface):
         description=(
             u'The list of WSGI application names to use. '
             u'The last name in the list declares a simple application; '
-            u'the rest declare a middleware application.'))
+            u'the rest declare a middleware application.'),
+        value_type=TextLine())
 
 class PipelineApplicationList(object):
     implements(IPipelineApplicationList)
@@ -58,8 +60,8 @@ class PipelineApplicationList(object):
 def pipeline(_context, for_, names):
     """Register a pipeline application list"""
     obj = PipelineApplicationList(names)
-    adapter(_context, factory=obj.adapt,
-        provides=[IPipelineApplicationList], for_=for_)
+    adapter(_context, factory=(obj.adapt,),
+        provides=IPipelineApplicationList, for_=for_)
 
 
 
@@ -112,11 +114,11 @@ class WSGIApplicationFactory(object):
 def application(_context, factory, name, for_=()):
     """Register a WSGI application"""
     if not for_:
-        for_ = [IRequest]
+        for_ = (IRequest,)
     factory_factory = WSGIApplicationFactory(factory)
     adapter(_context,
-        factory=[factory_factory.adapt],
-        provides=[IWSGIApplicationFactory],
+        factory=(factory_factory.adapt,),
+        provides=IWSGIApplicationFactory,
         for_=for_, name=name)
 
 
@@ -148,7 +150,7 @@ class IRequestFactoryDirective(Interface):
     methods = Tokens(
         title=u'Methods',
         description=(u'A list of HTTP method names. If the method is a "*", '
-                     u'then all methods will match. Example: "GET POST"',
+                     u'then all methods will match. Example: "GET POST"'),
         value_type=TextLine(),
         required=False)
 
@@ -168,7 +170,7 @@ class IRequestFactoryDirective(Interface):
         required=False)
 
 def request_factory(_context, name, factory,
-    schemes=['http', 'https'], methods=['*'], mimetypes=['*'], priority=0):
+    schemes=('http', 'https'), methods=('*',), mimetypes=('*',), priority=0):
 
     factory = factory()
 

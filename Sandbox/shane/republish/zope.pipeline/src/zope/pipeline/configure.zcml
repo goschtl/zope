@@ -54,9 +54,9 @@
     for=".interfaces.INoRequest" />
 
 
-<wsgi:application
+<!--wsgi:application
     name="log"
-    factory="..." />
+    factory="..." /-->
 
 <wsgi:application
     name="open_root"
@@ -68,11 +68,11 @@
 
 <wsgi:application
     name="event"
-    factory=".apps.notify.EventNotifier" />
+    factory=".apps.event.EventNotifier" />
 
-<wsgi:application
+<!--wsgi:application
     name="handle_error"
-    factory="..." />
+    factory="..." /-->
 
 <!-- no form processing for non-browser requests -->
 <wsgi:application
@@ -86,9 +86,9 @@
     factory=".apps.requestsetup.ProcessForm"
     for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
-<wsgi:application
+<!--wsgi:application
     name="authenticate"
-    factory=".apps.authenticate.Authenticator" />
+    factory=".apps.authenticate.Authenticator" /-->
 
 <wsgi:application
     name="traverse"

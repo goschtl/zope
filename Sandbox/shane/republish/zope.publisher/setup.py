@@ -24,31 +24,36 @@ from setuptools import setup, find_packages
 #"""
 
 setup(name='zope.publisher',
-      version = '4.0.0dev',
-      url='http://pypi.python.org/pypi/zope.publisher',
-      license='ZPL 2.1',
-      author='Zope Corporation and Contributors',
-      author_email='zope-dev@zope.org',
-      description="Interfaces for publishing Python objects on the web.",
-      long_description=(open('README.txt').read()
-                        + '\n\n'
-                        + open('CHANGES.txt').read()),
+    version = '4.0.0dev',
+    url='http://pypi.python.org/pypi/zope.publisher',
+    license='ZPL 2.1',
+    author='Zope Corporation and Contributors',
+    author_email='zope-dev@zope.org',
+    description="Interfaces for publishing Python objects on the web.",
+    long_description=(
+        open('README.txt').read()
+        + '\n\n'
+        + open('CHANGES.txt').read()),
 
-      #entry_points = entry_points,
+    #entry_points = entry_points,
 
-      packages=find_packages('src'),
-      package_dir = {'': 'src'},
+    packages=find_packages('src'),
+    package_dir = {'': 'src'},
 
-      namespace_packages=['zope',],
-      install_requires=['setuptools',
-                        #'zope.deferredimport',
-                        'zope.interface',
-                        'zope.location',
-                        ],
-      extras_require=dict(
-          test = ['zope.testing'],
-          ),
-      include_package_data = True,
+    namespace_packages=['zope',],
+    install_requires=[
+        'setuptools',
+        'zope.component',
+        #'zope.deferredimport',
+        'zope.interface',
+        'zope.location',
+        ],
+    extras_require=dict(
+        test=[
+            'zope.testing',
+            ],
+        ),
+    include_package_data = True,
 
-      zip_safe = False,
-      )
+    zip_safe = False,
+    )

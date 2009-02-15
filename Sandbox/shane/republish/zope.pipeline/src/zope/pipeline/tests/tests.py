@@ -16,12 +16,23 @@
 import unittest
 
 from zope.testing import doctest
+from zope.testing.cleanup import cleanUp
+from zope.configuration.xmlconfig import XMLConfig
+
+import zope.pipeline
+
+def setUp(doctest):
+    cleanUp()
+    XMLConfig('meta.zcml', zope.pipeline)()
+    XMLConfig('configure.zcml', zope.pipeline)()
+
+def tearDown(doctest):
+    cleanUp()
 
 def test_suite():
     return unittest.TestSuite([
-        doctest.DocFileSuite(
-            'autotemp_test.txt',
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
+        doctest.DocFileSuite('autotemp_test.txt'),
+        doctest.DocFileSuite('basicconfig.txt', setUp=setUp, tearDown=tearDown),
     ])
 
 if __name__ == '__main__':

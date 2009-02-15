@@ -65,7 +65,7 @@ class IRequestFactoryRegistry(Interface):
 
     Chooses factories based on the wsgi.url_scheme, the
     REQUEST_METHOD, and the CONTENT_TYPE.  Multiple factories
-    can be configured schema, method, and content type.
+    can be configured for each schema, method, and content type.
     The factory itself can introspect the environment to decide
     if it can handle the request as given by the environment or not.
     Factories are sorted in descending order of priority, so a
@@ -81,7 +81,6 @@ class IRequestFactoryRegistry(Interface):
         factories (basically for testing, not for introspection).
         """
 
-    def lookup(method, mimetype, environment):
-        """Lookup a factory for a given method+mimetype and a
-        environment.
+    def make_request(scheme, method, mimetype, environment):
+        """Create a request object.
         """
