@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+- Added module which patches ``zope.app.pagetemplate`` such that
+  template classes depend on ``z3c.pt`` for rendering (import
+  optional). [malthe]
+
 0.4 (released 2/10/2009)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
