@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Demo storage push/pop operations, as resources.
+"""Demo storage push/pop operations.
 
 $Id: dbs.py 12602 2006-07-06 06:29:48Z fred $
 """
@@ -19,10 +19,8 @@ $Id: dbs.py 12602 2006-07-06 06:29:48Z fred $
 from ZODB.DemoStorage import DemoStorage
 from ZODB.DB import DB
 
-import zc.selenium.resource
 
-
-class PushDBs(zc.selenium.resource.ResourceBase):
+class PushDBs(object):
 
     def __call__(self):
         publication = self.request.publication
@@ -44,7 +42,7 @@ class PushDBs(zc.selenium.resource.ResourceBase):
 
         return 'Done'
 
-class PopDBs(zc.selenium.resource.ResourceBase):
+class PopDBs(object):
 
     def __call__(self):
         publication = self.request.publication

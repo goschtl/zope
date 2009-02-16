@@ -71,10 +71,10 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     old_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(5)
     url = base_url % {'port': port}
-    url += ('/@@/selenium/TestRunner.html'
-            '?test=tests%%2FTestSuite.html&'
+    url += ('/++resource++selenium/TestRunner.html'
+            '?test=%%2F@@zc.selenium.suite&'
             'baseUrl=%s&'
-            'resultsUrl=%s/@@/selenium_results' % (url,url,))
+            'resultsUrl=%s/@@zc.selenium.results' % (url,url,))
     time.sleep(1)
     while zope_thread.isAlive():
         try:
@@ -207,11 +207,6 @@ def parseOptions():
 def main():
     global messages
     messages = Queue()
-
-    # Hack around fact that zc.selenium.results expects zope to be run
-    # from __main__:
-    if __name__ != '__main__':
-        sys.modules['__main__'] = sys.modules[__name__]
 
     options = parseOptions()
     if options.random_port:

@@ -74,12 +74,14 @@ def matchesAnyPattern(name, patterns):
 
 
 def suite(request):
-    tests = sorted(component.getAdapters([request], ISeleniumTest))
+    class Dummy(object):
+        interface.implements(interface.Interface)
+    tests = sorted(component.getAdapters((Dummy(), request), ISeleniumTest))
     if PATTERNS:
         tests = [(name, test) for name, test in tests
                  if matchesAnyPattern(name, PATTERNS)]
     return '\n'.join([
-        ('<tr><td><a href="/@@/%s">%s</a></td></tr>' % (
+        ('<tr><td><a href="/@@%s">%s</a></td></tr>' % (
              name,
              (test.__doc__ or '').strip().split('\n')[0] or name,
              )
@@ -159,6 +161,7 @@ header = """<html>
 
 footer = '</tbody></table></body></html>'
 
+
 class Selenium:
 
     def __init__(self, request, title, message=None):
@@ -169,11 +172,11 @@ class Selenium:
         self.server = urlparse.urlsplit(url)[1]
 
     def push(self):
-        self.open('http://%s/@@/selenium-push.html' % self.server,
+        self.open('http://%s/@@zc.selenium.db.push' % self.server,
                   lineno=False)
 
     def pop(self):
-        self.open('http://%s/@@/selenium-pop.html' % self.server,
+        self.open('http://%s/@@zc.selenium.db.pop' % self.server,
                   lineno=False)
 
     def __getattr__(self, name):
@@ -182,11 +185,16 @@ class Selenium:
     def __str__(self):
         return ''.join(self.output) + footer
 
+
 class Test(object):
-    component.adapts(zope.publisher.interfaces.browser.IBrowserRequest)
+    component.adapts(
+        interface.Interface,
+        zope.publisher.interfaces.browser.IDefaultBrowserLayer)
+
     interface.implements(ISeleniumTest)
 
-    def __init__(self, request):
+    def __init__(self, context, request):
+        self.context = context
         self.request = request
         title = (self.__doc__ or '').split('\n')[0]
         mess = ''
@@ -212,7 +220,9 @@ class Test(object):
         self.selenium.pop()
 
     def __call__(self):
-        tests = [name for name in dir(self) if name.startswith('test')]
+        tests = [name for name in dir(self) if name.startswith('test')
+                 # zope2 compatibility
+                 and not name.endswith('__roles__')]
         tests.sort()
         s = self.selenium
         outputDoc(self, self.sharedSetUp.__doc__, 2)

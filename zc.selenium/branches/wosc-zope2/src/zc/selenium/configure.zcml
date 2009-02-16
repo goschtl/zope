@@ -2,6 +2,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
   <browser:resourceDirectory
@@ -19,29 +20,32 @@
 
   <browser:page
       for="*"
-      name="selenium_results"
+      name="zc.selenium.suite"
+      template="suite.pt"
+      permission="zope.Public"
+      />
+
+  <browser:page
+      for="*"
+      name="zc.selenium.results"
       class=".results.Results"
       permission="zope.Public"
       />
 
   <browser:page
       for="*"
-      name="selenium-push.html"
+      name="zc.selenium.db.push"
       class=".dbs.PushDBs"
       permission="zope.Public"
       />
 
   <browser:page
       for="*"
-      name="selenium-pop.html"
+      name="zc.selenium.db.pop"
       class=".dbs.PopDBs"
       permission="zope.Public"
       />
 
-  <!-- XXX module is unknown in zope2, what to do? -->
-  <!--
-  <module module=".pytest">
-    <allow attributes="suite" />
-  </module>
-  -->
+  <include file="zope3.zcml" zcml:condition="not-installed Products.Five"/>
+  <include file="zope2.zcml" zcml:condition="installed Products.Five"/>
 </configure>

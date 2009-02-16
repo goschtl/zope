@@ -1,0 +1,12 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:five="http://namespaces.zope.org/five"
+  >
+
+
+  <five:traversable class="OFS.Application.Application" />
+  <five:implements
+    class="OFS.Application.Application"
+    interface="zope.app.component.interfaces.ISite"
+    />
+</configure>

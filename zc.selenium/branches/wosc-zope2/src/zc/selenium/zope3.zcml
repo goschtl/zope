@@ -1,0 +1,8 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  >
+
+  <module module=".pytest">
+    <allow attributes="suite" />
+  </module>
+</configure>

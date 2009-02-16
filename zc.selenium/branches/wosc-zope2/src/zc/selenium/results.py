@@ -13,22 +13,19 @@
 ##############################################################################
 
 """Result reporting resource for zc.selenium.
-
 """
 
 import sys
-
+import zc.selenium.selenium
 import zope.app.pagetemplate
 
-import zc.selenium.resource
 
-class Results(zc.selenium.resource.ResourceBase):
+class Results(object):
+    """Transports test results from the browser to the selenium test runner"""
 
     template = zope.app.pagetemplate.ViewPageTemplateFile('results.pt')
 
     def __call__(self):
-        # get the queue used to communicate with the test thread, this will
-        # fail horribly if not running in "Selenium test" mode
-        messages = sys.modules['__main__'].messages
-        messages.put(self.request)
+        if hasattr(zc.selenium.selenium, 'messages'):
+            zc.selenium.selenium.messages.put(self.request)
         return self.template(self)

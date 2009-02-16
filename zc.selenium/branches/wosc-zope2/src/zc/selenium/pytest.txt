@@ -79,7 +79,7 @@ If we use this to adapt a request, and call it, we'll get a single
 HTML table:
 
     >>> from zope.publisher.browser import TestRequest
-    >>> print Test(TestRequest())()
+    >>> print Test(None, TestRequest())()
     <html>
     <head>
     <title>My first test</title>
@@ -101,12 +101,12 @@ HTML table:
     <BLANKLINE>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="comment">
@@ -146,7 +146,7 @@ HTML table:
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     <tr class="comment">
@@ -157,7 +157,7 @@ HTML table:
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="comment lineinfo">
@@ -172,12 +172,12 @@ HTML table:
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     </tbody></table></body></html>
@@ -238,7 +238,7 @@ cluttering the test with its own location.
     ...     def my_helper(self):
     ...         self.selenium.sample(frame=sys._getframe(1))
 
-    >>> print FrameSample(TestRequest())()
+    >>> print FrameSample(None, TestRequest())()
     <html>
     <head>
     <title>Frame selection example.</title>
@@ -257,7 +257,7 @@ cluttering the test with its own location.
     <BLANKLINE>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="comment">
@@ -268,7 +268,7 @@ cluttering the test with its own location.
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="comment lineinfo">
@@ -283,12 +283,12 @@ cluttering the test with its own location.
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     </tbody></table></body></html>
@@ -356,7 +356,7 @@ pop the storage that the set up methods pushed.
     ...         s.foo('bar')
     ...         s.baz(lineno=False)
 
-    >>> print Second(TestRequest())()
+    >>> print Second(None, TestRequest())()
     <html>
     <head>
     <title>My second test</title>
@@ -382,7 +382,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-push.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.push</td>
     <td></td>
     </tr>
     <tr class="comment lineinfo">
@@ -460,7 +460,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="open">
     <td>open</td>
-    <td>http://127.0.0.1/@@/selenium-pop.html</td>
+    <td>http://127.0.0.1/@@zc.selenium.db.pop</td>
     <td></td>
     </tr>
     <tr class="comment lineinfo">
@@ -513,8 +513,8 @@ The test suite used the zc.selenium.pytest.suite function to
 compute rows for the test suite:
 
     >>> print zc.selenium.pytest.suite(TestRequest())
-    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
-    <tr><td><a href="/@@/second.html">My second test</a></td></tr>
+    <tr><td><a href="/@@first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@second.html">My second test</a></td></tr>
 
 For each test, a row is output with a link to the test resource and a
 link title computed from the test doc string.  The tests are output in
@@ -524,12 +524,12 @@ You can specify a test filter
 
     >>> zc.selenium.pytest.selectTestsToRun(['first'])
     >>> print zc.selenium.pytest.suite(TestRequest())
-    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@first.html">My first test</a></td></tr>
 
 or reset it
 
     >>> zc.selenium.pytest.selectTestsToRun([])
     >>> print zc.selenium.pytest.suite(TestRequest())
-    <tr><td><a href="/@@/first.html">My first test</a></td></tr>
-    <tr><td><a href="/@@/second.html">My second test</a></td></tr>
+    <tr><td><a href="/@@first.html">My first test</a></td></tr>
+    <tr><td><a href="/@@second.html">My second test</a></td></tr>
 
