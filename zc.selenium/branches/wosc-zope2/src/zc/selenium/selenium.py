@@ -25,7 +25,6 @@ import threading
 import time
 import urllib2
 import webbrowser
-import wsgiref.simple_server
 
 from zope.testing import testrunner
 
@@ -38,13 +37,25 @@ from zc.selenium.pytest import selectTestsToRun
 #
 DEFAULT_PORT = "8034"
 
-def run_zope(config, port):
+def run_zope3(config, port):
     # This removes the script directory from sys.path, which we do
     # since there are no modules here.
     from zope.app.server.main import main
     main(["-C", config, "-X", "http0/address=" + port] + sys.argv[1:])
 
+def run_zope2(config, port):
+    import Zope2.Startup.zopectl
+    # XXX is it really supposed to be this hard to do commandline ZConfig
+    # overrides when using zopectl?
+    original_fg = Zope2.Startup.zopectl.ZopeCmd.do_foreground
+    def do_foreground_port(self, arg):
+        self.options.program[1:1] = ["-X", "http-server/address=" + port]
+        original_fg(self, arg)
+    Zope2.Startup.zopectl.ZopeCmd.do_foreground = do_foreground_port
+    Zope2.Startup.zopectl.main(["-C", config, 'fg'] + sys.argv[1:])
+
 def make_wsgi_run_zope(app_path):
+    import wsgiref.simple_server
     module, name = app_path.rsplit('.', 1)
     app_factory = getattr(__import__(module, globals(), locals(), ["extra"]), name)
     def run_zope(config, port):
@@ -172,6 +183,8 @@ def parseOptions():
                       help='The base URL of the Zope site (may contain skin).')
     parser.add_option('-t', '--test', action="append", dest='tests',
                       help='specify tests to run')
+    parser.add_option('-z', '--zope-runner', dest='runner', default='zope3',
+                      help='which runner to use (zope3 or zope2)')
     parser.add_option(
         '--coverage', action="store", type='string', dest='coverage',
         help="""\
@@ -206,9 +219,9 @@ def main():
 
     selectTestsToRun(options.tests)
 
-    runner = run_zope
     if options.wsgi_app:
         runner = make_wsgi_run_zope(options.wsgi_app)
+    runner = globals()['run_' + options.runner]
 
     if options.server_only:
         runner(options.config, port=options.port)
