@@ -219,9 +219,9 @@ def main():
 
     selectTestsToRun(options.tests)
 
+    runner = globals()['run_' + options.runner]
     if options.wsgi_app:
         runner = make_wsgi_run_zope(options.wsgi_app)
-    runner = globals()['run_' + options.runner]
 
     if options.server_only:
         runner(options.config, port=options.port)
