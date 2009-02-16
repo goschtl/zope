@@ -64,7 +64,7 @@ maintain.  However, DTML is perfect for describing the page that
 the results of the Fibonnacci calculations are inserted into.  You
 can "call out" from DTML to Script (Python) objects as necessary
 and process the results of the call in DTML.  For example, it is
-`trivial in Python <http://www.python.org/doc/current/tut/node6.html>`_
+`trivial in Python <http://docs.python.org/tutorial/introduction.html>`_
 (search for the word Fibonacci on this page) to implement a Fibonacci
 sequence generator, and trivial in DTML to create a dynamic web
 page which shows these numbers in a readable format.  If you find
@@ -800,12 +800,8 @@ DTML expressions.  Likewise, you cannot use the statement 'print
 "x"' in DTML.  It is not an expression.  Essentially, an
 expression must be a combination of values, variables, and Python
 *operators*.  To find out more about Python's expression syntax,
-see the `Python Tutorial <http://www.python.org/doc/current/tut>`_
-at the Python.org website.  For more information specifically about
-the differences between Python expressions and statements, see the
-`Variables, expressions, and statements
-<http://www.ibiblio.org/obp/thinkCSpy/chap02.htm>`_
-chapter of *How To Think Like a Computer Scientist Using Python*.
+see the `Python Tutorial <http://docs.python.org/tutorial/>`_
+at the Python.org website.
 
 An expression always results in a return value.  For example, the
 Python expression "a == 5" returns the integer 1 if "a" is equal
@@ -1293,7 +1289,7 @@ folder. This DTML will loop over all the files in a folder and
 display a link to each one.  This example shows you how to
 display all the "File" objects in a folder, so in order to run
 this example you will need to upload some files into Zope as
-explained in the chapter entitled `Basic Zope Objects`_.
+explained in the chapter entitled `Basic Zope Objects <BasicObject.rst>`_.
 Create a DTML Method with the following body::
 
   <dtml-var standard_html_header>

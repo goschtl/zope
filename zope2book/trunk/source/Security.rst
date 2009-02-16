@@ -784,7 +784,7 @@ You can find out what permissions are available on a given object
 by going to the *Security* management tab.
 
 The default Zope permissions are described in `appendix A
-<http://www.zope.org/Documentation/Books/ZDG/current/AppendixA.html>`_
+<http://www.zope.org/Documentation/Books/ZDG/current/AppendixA.stx>`_
 of the Zope Developer's Guide.
 
 .. figure:: ../Figures/6-3.png     

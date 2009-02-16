@@ -350,7 +350,7 @@ objects.
 
 The stock logic objects are written in the syntax of the *Python* scripting
 language. Python is a general-purpose programming language. You are encouraged
-to read the `Python Tutorial <http://www.python.org/doc/current/tut/tut.html>`_
+to read the `Python Tutorial <http://docs.python.org/tutorial/>`_
 in order to understand the syntax and semantics of the example Script (Python)
 objects shown throughout this chapter and throughout this book. And don't
 panic: Python is very easy to learn and understand.

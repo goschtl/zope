@@ -290,13 +290,13 @@ None
 See Also
 --------
 
-- `string module <http://www.python.org/doc/current/lib/module-string.html>`_
+- `string module <http://docs.python.org/library/string.html>`_
 
-- `random module <http://www.python.org/doc/current/lib/module-random.html>`_
+- `random module <http://docs.python.org/library/random.html>`_
 
-- `math module <http://www.python.org/doc/current/lib/module-math.html>`_
+- `math module <http://docs.python.org/library/math.html>`_
 
-- `sequence module <http://www.python.org/doc/current/lib/built-in-funcs.html>`_
+- `sequence module <http://docs.python.org/library/functions.html>`_
 
 
 if: Tests Conditions
@@ -814,7 +814,7 @@ Sending a file attachment::
 See Also
 --------
 
-- `Python Library mimetools <http://www.python.org/doc/current/lib/module-mimetools.html>`_
+- `Python Library mimetools <http://docs.python.org/library/mimetools.html>`_
 
 raise: Raises an exception
 ==========================
@@ -850,9 +850,9 @@ See Also
 
 - try tag
 
-- `Python Tutorial Errors and Exceptions <http://www.python.org/doc/current/tut/node10.html>`_
+- `Python Tutorial Errors and Exceptions <http://docs.python.org/tutorial/errors.html>`_
 
-- `Python Built-in Exceptions <http://www.python.org/doc/current/lib/module-exceptions.html>`_
+- `Python Built-in Exceptions <http://docs.python.org/library/exceptions.html>`_
 
 return: Returns data
 ====================
@@ -1424,9 +1424,9 @@ See Also
 
 - raise tag
 
-- `Python Tutorial Errors and Exceptions <http://www.python.org/doc/current/tut/node10.html>`_
+- `Python Tutorial Errors and Exceptions <http://docs.python.org/tutorial/errors.html>`_
 
-- `Python Built-in Exceptions <http://www.python.org/doc/current/lib/module-exceptions.html>`_
+- `Python Built-in Exceptions <http://docs.python.org/library/exceptions.html>`_
 
 
 unless: Tests a condition
@@ -1512,7 +1512,7 @@ missing=string
 fmt=string
   Format a variable. Zope provides a few built-in formats including C-style
   format strings. For more information on C-style format strings see the
-  `Python Library Reference <http://www.python.org/doc/current/lib/typesseq-strings.html>`_.
+  `Python Library Reference <http://docs.python.org/library/stdtypes.html#typesseq-strings>`_.
   If the format string is not a built-in format, then it is assumed to be a
   method of the object, and it called.
 

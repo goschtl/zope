@@ -29,27 +29,6 @@ associated development utilities, then it is highly likely that you will be
 able to compile Zope.  A notable exception is Mac OS between versions 7
 through 9, as Zope does not run at all on these platforms.
 
-Various binary Zope packages exist that are not distributed by the `Zope
-Foundation <http://foundation.zope.org/>`_, but are instead distributed by
-third parties.  Provided here is a list of URLs to these for the sake of
-convenience.  While these packages are not directly supported by the Zope
-Foundation, the foundation encourages alternate binary distributions for
-unsupported platforms by third parties. Not all versions of Zope are
-available for all platforms.
-
-- `SPVI's Mac OS X binary distro <http://sourceforge.net/projects/mosxzope>`_
-
-- `Marcus Schopen's Zope packages for Linux <http://zope.org/Members/medienlabor/packages>`_
-
-- `FreeBSD Zope port <http://www.freebsd.org/ports/zope.html>`_
-
-- `Debian Linux Zope package <http://packages.debian.org/zope>`_
-
-- `Gentoo Zope ebuild <http://packages.gentoo.org/ebuilds/?zope-2.6.1>`_
-
-Some other Linux distributions, e.g., SUSE, include Zope with their
-products. Check your vendor's product documentation to find out more.
-
 Installing Zope
 ---------------
 
@@ -184,7 +163,7 @@ source.
 
 After downloading, compiling, and installing Python from source, download
 the current Zope source distribution.  See the Zope.org `Downloads
-<http://www.zope.org:/Products>`_ area for the latest Zope source release.
+<http://www.zope.org/Products>`_ area for the latest Zope source release.
 
 Download the source to your home, or some other directory, 'cd' to that
 directory, and unpack it with something similar to::
@@ -316,9 +295,6 @@ provides rudimentary setup information for configuring Zope behind Apache.
 However, configuring Zope for use behind an existing web server can be a
 complicated task, and there is more than one way to get it done.  Here are
 some additional resources that should get you started:
-
-- Apache: see the excellent DevShed article entitled `Using Zope
-  With Apache <http://devshed.com/Server_Side/Zope/ZopeWithApache>`_ .
 
 - IIS: see `brianh's HowTo
   <http://www.zope.org/Members/brianh/iis_howto>`_ on using IIS with Zope.
@@ -639,5 +615,5 @@ solve the problem.
 For even more immediate help, you may choose to visit the 
 `#zope <irc://irc.freenode.net/#zope>`_ channel on
 the  IRC (Internet Relay Chat) network.  See the `Freenode
-website <http://www.freenode.net>`_ for more information on how to connect
+website <http://freenode.net>`_ for more information on how to connect
 to the FreeNode IRC network.

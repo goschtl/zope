@@ -165,7 +165,7 @@ visited a page in his website.
 A framework that allows people to construct a web application is often called a
 *web application server*, or sometimes just an *application server*. Zope is a
 web application server, as are competing products like `WebSphere
-<http://www.ibm.com/websphere/>`_, `JBoss <http://labs.jboss.com/jbossas/>`_,
+<http://www.ibm.com/websphere/>`_, `JBoss <http://www.jboss.org/jbossas/>`_,
 and (to some extent) `SAP NetWeaver <http://www.sap.com/>`_.
 
 Zope is a web application server, which is not
@@ -390,7 +390,7 @@ source code.
 The Zope community gets together occasionally at conferences, but it
 commonly discusses all things Zope on the many Zope mailing
 lists and web sites. You can find out more about Zope-related
-mailing lists at `Zope.org's mailing list page <http://mail.zope.org/>`_.
+mailing lists at `Zope.org's mailing list page <http://mail.zope.org/mailman/listinfo>`_.
 
 Zope Corporation makes its revenue by using Zope to create web
 applications for its paying customers, by training prospective

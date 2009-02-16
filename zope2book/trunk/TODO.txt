@@ -10,8 +10,6 @@ General
 
 - Some more clarification of Zope3 - Zope Components is required.
 
-- External links needs to be checked and updated (Sphinx: make linkcheck).
-
 InstallingZope
 ==============
 

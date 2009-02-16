@@ -1131,7 +1131,7 @@ get access to it using either of the following statements::
 Many Python modules cannot be accessed from Page Templates
 or Scripts unless you add Zope security assertions to
 them.  See the `Zope Developer's Guide's security
-chapter <http://www.zope.org/Documentation/ZDG/Security.stx>`_
+chapter <http://www.zope.org/Documentation/Books/ZDG/current/Security.stx>`_
 for more information on making more Python modules available
 to your templates and scripts by using "ModuleSecurityInfo".
 

@@ -793,7 +793,7 @@ have been implemented for many languages including Python,
 Java and JavaScript.
 
 In-depth information on XML-RPC can be found at the "XML-RPC
-website":http://www.xmlrpc.org/. 
+website":http://www.xmlrpc.com/. 
 
 All Zope scripts that can be called from URLs can be called via
 XML-RPC. Basically XML-RPC provides a system to marshal

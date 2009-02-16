@@ -110,7 +110,7 @@ evaluation to be returned to your web browser.
 
 For a more detailed explanation of how Zope performs object
 publishing, see the `Object Publishing chapter
-<http://www.zope.org/Documentation/ZDG/ObjectPublishing.stx>`_
+<http://www.zope.org/Documentation/Books/ZDG/current/ObjectPublishing.stx>`_
 of the *Zope Developer's Guide*.
 
 Through-The-Web Management

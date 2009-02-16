@@ -1298,7 +1298,7 @@ Zope has extensive exception handling facilities. You can get
 access to these facilities with the *raise* and *try* tags. For more
 information on exceptions and how they are raised and handled see
 a book on Python or you can read the online `Python
-Tutorial <http://www.python.org/doc/current/tut/node10.html>`_.
+Tutorial <http://docs.python.org/tutorial/errors.html>`_.
 
 The *Raise* Tag
 ~~~~~~~~~~~~~~~
@@ -1418,7 +1418,7 @@ example, if *ArithmeticError* is named in a *except* tag, the
 tag can handle all *ArithmeticError* subclasses including,
 *ZeroDivisionError*. See a Python reference such as the online
 `Python Library Reference
-<http://www.python.org/doc/current/lib/module-exceptions.html>`_
+<http://docs.python.org/library/exceptions.html>`_
 for a list of Python exceptions and their subclasses.  An
 *except* tag can catch multiple exceptions by listing them all
 in the same tag.

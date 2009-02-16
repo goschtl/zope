@@ -47,7 +47,7 @@ Oracle
   Oracle is arguably the most powerful and popular
   commercial relational database. It is, however, relatively
   expensive and complex. Oracle can be purchased or evaluated from
-  the `Oracle Website <http://www.oracle.com/>`_.
+  the `Oracle Website <http://www.oracle.com/index.html>`_.
 
 DB2
   DB2 from IBM is the main commercial competitor to Oracle.
@@ -81,26 +81,6 @@ SQL Server
   preferable to Microsoft Access. Information from
   http://www.microsoft.com/sql/
 
-Interbase
-  Interbase is an open source relational database
-  from Borland/Inprise. You can find more information about
-  Interbase at the `Borland web site <http://www.borland.com/interbase/>`_.
-  You may also be interested in `FireBird
-  <http://sourceforge.net/projects/firebird>`_ which is a
-  community maintained offshoot of Interbase. The Zope Interbase
-  adapter is maintained by Zope community member Bob
-  Tierney.
-
-Gadfly
-  Gadfly is a relational database written in Python by
-  Aaron Waters.  Gadfly is included with Zope for demonstration
-  purposes and small data sets. Gadfly is fast, but is not
-  intended for large amounts of information since it reads its
-  entire data set into memory. You can find out more about Gadfly
-  at http://gadfly.sourceforge.net/.
-  Gadfly should never be used for production systems because it is
-  not thread-safe and does not scale.
-
 The mechanics of setting up relational database is different for
 each database and is thus beyond the scope of this book.  All of the
 relational databases mentioned have their own installation and
@@ -128,10 +108,6 @@ list constantly changes as more adapters are added.
 Oracle
   `DCOracle2 <http://www.zope.org/Members/matt/dco2>`_ package
   from Zope Corporation includes the ZoracleDA
-
-DB2
-  ZDB2DA from `Blue Dynamics
-  <http://products.bluedynamics.org/Products/ZDB2DA>`_
 
 PostgreSQL
   The newest and prefered DA is ZPsycopgDA included in 
@@ -162,12 +138,6 @@ Interbase/Firebird
   There are a number of DAs available including
   `kinterbasdbDA <http://www.zope.org/Members/mwoj/kinterbasdbDA>`_ and
   `gvibDA <http://www.zope.org/Members/bkc/gvibDA>`_.
-
-Informix
-  `ZinformixDA <http://www.zope.org/Members/mark_rees/ZInformixDA>`_
-  which requires the
-  `informixdb <http://starship.python.net/crew/sturner/informixdb.html>`_
-  package.
 
 If you will need to connect to more than one database or wish to connect
 as to the same database as different users then you may use multiple
@@ -1405,7 +1375,7 @@ Further help
 
 The zope-db@zope.org is the place to ask questions about relational
 databases. You can subscribe or browse the archive of previous postings
-at http://lists.zope.org/mailman/listinfo/zope-db
+at http://mail.zope.org/mailman/listinfo/zope-db
 
 Summary
 -------

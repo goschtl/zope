@@ -41,7 +41,7 @@ an object to have a different URL when accessed in a different
 way.  This is most typically useful, for example, when you wish
 to "publish" the contents of a single Zope Folder
 (e.g. '/FooFolder') as a URL that does not actually contain this
-Folder's name (e.g as the hostname 'http://www.foofolder.com/').
+Folder's name (e.g as the hostname 'www.foofolder.com').
 
 The Virtual Host Monster performs this job by intercepting and
 deciphering information passed to Zope within special path
@@ -407,7 +407,7 @@ by loading the corresponding shared modules.
 If you are using the new Apache 2 series, you will also have
 to include the 'mod_proxy_http' module. See the "Apache
 mod_rewrite documentation",
-http://httpd.apache.org/docs/mod/mod_proxy/index.html
+http://httpd.apache.org/docs/trunk/mod/mod_rewrite.html
 for details.
 
 You can check whether you have the required modules installed
@@ -482,7 +482,7 @@ rewritten (e.g. to
 Apache then calls the rewritten URL, and returns the result.
 
 See the "Apache Documentation",
-http://httpd.apache.org/docs-2.0/misc/rewriteguide.html
+http://httpd.apache.org/docs/2.0/misc/rewriteguide.html
 for more information on the subject of rewrite rules.
 
 Virtual Hosting Considerations for Content classes

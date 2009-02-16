@@ -2137,7 +2137,7 @@ especially if you have non-English language documents or expect to
 have users that will want to use a rich query syntax.
 
 Full information on TextIndexNG is available at
-http://www.zope.org/Members/ajung/TextIndexNG.
+http://pypi.python.org/pypi/textindexng.
 
 FieldedTextIndex
 ~~~~~~~~~~~~~~~~

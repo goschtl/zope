@@ -133,7 +133,7 @@ a "sender" object calls a method of a "receiver" object.
 When you access a URL that "points to" a Zope object, you are almost always
 sending that Zope object a message.  When you request a response from Zope
 by way of invoking a Zope URL with a web browser, the Zope `object
-publisher <http://www.zope.org/Documentation/ZDG/ObjectPublishing.stx>`_
+publisher <http://www.zope.org/Documentation/Books/ZDG/current/ObjectPublishing.stx>`_
 receives the request from your browser.  It then sends a Zope object a
 message on your browser's behalf by "calling a method" on the Zope object
 specified in the URL.  The Zope object responds to the object publisher
