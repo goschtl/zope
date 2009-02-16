@@ -35,6 +35,7 @@ Contents
    ZEO.rst
    MaintainingZope.rst
    AppendixA.rst
+   AppendixB.rst
    AppendixD.rst
    AppendixE.rst
    Contributions.rst
