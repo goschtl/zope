@@ -25,6 +25,8 @@ Contents
    AdvZPT.rst
    ScriptingZope.rst
    ZopeServices.rst
+   DTML.rst
+   AdvDTML.rst
    SearchingZCatalog.rst
    RelationalDatabases.rst
    VirtualHosting.rst

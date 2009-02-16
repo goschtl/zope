@@ -137,7 +137,20 @@ This book is laid out in the following chapters:
     don't readily fit into any of the basic "content,"
     "presentation," or "logic" object groups.
 
-14. Searching and Categorizing Content
+14. Basic DTML
+
+    This chapter introduces DTML, the second tag-based scripting language.
+    You'll learn DTML syntax, its basic tags, and how to use DTML templates
+    and scripting facilities. After reading this chapter, you'll be able to
+    create dynamic web pages with DTML.
+
+15. Advanced DTML
+
+    This chapter takes a closer look at DTML. You'll learn about DTML security,
+    the tricky issue of how variables are looked up in DTML, advanced use of
+    basic tags, and the myriad of special purpose tags.
+
+16. Searching and Categorizing Content
 
     This chapter shows you how to index and search objects with
     Zope's built-in search engine: the *Catalog*. You'll learn about 
@@ -145,7 +158,7 @@ This book is laid out in the following chapters:
     indexing and searching, metadata, and
     search results. 
 
-15. Relational Database Connectivity
+17. Relational Database Connectivity
 
     This chapter describes how Zope connects to external
     relational databases.  You'll learn about features that allow you
@@ -153,7 +166,7 @@ This book is laid out in the following chapters:
     objects, and security and performance
     considerations.
 
-16. Virtual Hosting Services
+18. Virtual Hosting Services
 
     This chapter explains how to set up Zope in a "virtual hosting"
     environment, in which Zope sub-folders can be served as "top-level"
@@ -161,12 +174,12 @@ This book is laid out in the following chapters:
     be performed either "natively" or using Apache's 'mod_rewrite'
     facility.
 
-17. Sessions
+19. Sessions
 
     This chapter describes Zope's "sessioning" services, which allow
     Zope developers to "keep state" between HTTP requests.
 
-18. Scalability and ZEO
+20. Scalability and ZEO
 
     This chapter covers issues and solutions for building and
     maintaining large web applications, and focuses on issues of
@@ -175,38 +188,38 @@ This book is laid out in the following chapters:
     tools and techniques needed to turn a small site into a
     large-scale site, servicing many simultaneous visitors.
 
-19. Managing Zope Objects Using External Tools
+21. Managing Zope Objects Using External Tools
 
     This chapter explains how to use tools outside of your web
     browser to manipulate Zope objects.
 
-20. Extending Zope
+22. Extending Zope
 
     This chapter covers extending Zope by creating your own classes of objects.
     You'll learn how to create Python base classes and about the base classes
     that ship with Zope.
 
-21. Maintaining Zope
+23. Maintaining Zope
 
     This chapter covers Zope maintenance and administration tasks,
     such as database "packing" and package installation.
 
-22. Appendix A: DTML Reference
+24. Appendix A: DTML Reference
 
     Reference of DTML syntax and commands.
 
-23. Appendix B:  API Reference
+25. Appendix B:  API Reference
 
     Reference of Zope object APIs.
 
-24. Appendix C:  Page Template Reference
+26. Appendix C:  Page Template Reference
 
     Reference of Zope Page Template syntax and commands.
 
-25. Appendix D:  Zope Resources
+27. Appendix D:  Zope Resources
 
     Reference of "resources" which can be used to further enhance
     your Zope learning experience.
 
-26. Appendix E: DTML Name Lookup Rules
+28. Appendix E: DTML Name Lookup Rules
     Describes DTML's name lookup rules.
