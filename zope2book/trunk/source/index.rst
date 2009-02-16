@@ -36,6 +36,7 @@ Contents
    MaintainingZope.rst
    AppendixA.rst
    AppendixB.rst
+   AppendixC.rst
    AppendixD.rst
    AppendixE.rst
    Contributions.rst
