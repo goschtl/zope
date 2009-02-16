@@ -26,8 +26,13 @@ Content
 
 Presentation
   You can control the look and feel of your site with Zope objects that act
-  as web page "templates". Zope comes with one facility to help you
-  manage presentation: Zope Page Templates (ZPT).
+  as web page "templates". Zope comes with two facilities to help you
+  manage presentation: Zope Page Templates (ZPT) and Document Templates
+  (DTML). In the first part of the book we will only cover page templates
+  and later on expand on document templates. If you already know HTML, page
+  templates are easier to work with and more limited in their options. For
+  some of the more advanced tasks DTML can be a better option as explained
+  later on.
 
 Logic
   Scripting business logic in Zope is done using Python. "Logic" is any kind of
@@ -234,8 +239,10 @@ born.  ZPT is an "attribute-based" presentation language that tries to
 allow for the "round-tripping" of templates between programmers and
 non-technical designers.
 
-While DTML is still supported in Zope, its use is discouraged and you
-shouldn't use it anymore for new projects.
+DTML is still fully supported in Zope. If you are familiar with PHP it might
+fit your mind better then ZPT. For some of the advanced topics covered later
+in the book, like relation database integration or more uncommon tasks like
+dynamic generation of non-xml files, DTML can be easier to work with.
 
 Zope Page Templates
 -------------------
