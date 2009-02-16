@@ -729,8 +729,7 @@ developers and does not constrain them in any way.
 
 Building a package also typically allows you to more easily distribute an
 application to other people, and allows you to build objects that may more
-closely resemble your "problem space".  We explore one way to create
-packages in the chapter entitled <Extending Zope <CustomZopeObjects.html>`_.
+closely resemble your "problem space".
 
 Building a package is typically more complicated than building an
 "instance-space" application, so we get started here by describing how to

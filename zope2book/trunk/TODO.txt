@@ -23,12 +23,6 @@ InstallingZope
   source on Windows. Make sure we get binary eggs of all dependencies and
   ourselves for normal installations.
 
-ZopeArchitecture.rst
-====================
-
-- This uses ../Figures/zopearchitecture.gif which still includes ZClasses and
-  should replace the `Products` naming with a more general packages.
-
 AppendixB.rst
 =============
 

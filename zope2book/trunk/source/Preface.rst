@@ -186,12 +186,6 @@ This book is laid out in the following chapters:
     This chapter explains how to use tools outside of your web browser to
     manipulate Zope objects.
 
-- Extending Zope
-
-    This chapter covers extending Zope by creating your own classes of objects.
-    You'll learn how to create Python base classes and about the base classes
-    that ship with Zope.
-
 - Maintaining Zope
 
     This chapter covers Zope maintenance and administration tasks, such as
