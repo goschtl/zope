@@ -19,6 +19,7 @@ Contents
    UsingZope.rst
    BasicObject.rst
    Acquisition.rst
+   BasicScripting.rst
    ZPT.rst
    SimpleExamples.rst
    Security.rst
@@ -30,7 +31,11 @@ Contents
    SearchingZCatalog.rst
    RelationalDatabases.rst
    VirtualHosting.rst
+   Sessions.rst
+   MaintainingZope.rst
    AppendixA.rst
+   AppendixD.rst
+   AppendixE.rst
    Contributions.rst
 
 Indices and tables

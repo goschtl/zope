@@ -57,169 +57,164 @@ How the Book Is Organized
 
 This book is laid out in the following chapters:
 
-1. Introducing Zope
+- Introducing Zope
 
-    This chapter explains what Zope is and what it can do for you.
-    You'll also learn about the differences between Zope and other
-    web application servers.
+    This chapter explains what Zope is and what it can do for you. You'll also
+    learn about the differences between Zope and other web application servers.
 
-2. Zope Concepts and Architecture
+- Zope Concepts and Architecture
 
-    This chapter explains fundamental Zope concepts and describes
-    the basics about Zope's architecture.
+    This chapter explains fundamental Zope concepts and describes the basics
+    about Zope's architecture.
 
-3. Installing and Starting Zope
+- Installing and Starting Zope
 
-    This chapter explains how to install and start Zope for the
-    first time.  By the end of this chapter, you will have Zope
-    installed and working.
+    This chapter explains how to install and start Zope for the first time. By
+    the end of this chapter, you will have Zope installed and working.
 
-4. Object Orientation
+- Object Orientation
 
-    This chapter explains the concept of *object orientation*,
-    which is the development methodology most often used to
-    create Zope applications.
+    This chapter explains the concept of *object orientation*, which is the
+    development methodology most often used to create Zope applications.
 
-5. Using the Zope Management Interface
+- Using the Zope Management Interface
 
-    This chapter explains how to use Zope's web-based management
-    interface. By the end of this chapter, you will be able to
-    navigate around the Zope object space, copy and move objects,
-    and use other basic Zope features.
+    This chapter explains how to use Zope's web-based management interface. By
+    the end of this chapter, you will be able to navigate around the Zope
+    object space, copy and move objects, and use other basic Zope features.
 
-6. Using Basic Zope Objects
+- Using Basic Zope Objects
 
-    This chapter introduces *objects*, which are the most
-    important elements of Zope.  You'll learn the basic Zope
-    objects: content objects, presentation objects, and logic
-    objects, and you'll build a simple application using these
-    objects.
+    This chapter introduces *objects*, which are the most important elements of
+    Zope. You'll learn the basic Zope objects: content objects, presentation
+    objects, and logic objects, and you'll build a simple application using
+    these objects.
 
-7. Acquisition
+- Acquisition
 
-    This chapter introduces *acquisition*, which is Zope's
-    mechanism for sharing site behavior and content.
+    This chapter introduces *Acquisition*, which is Zope's mechanism for
+    sharing site behavior and content.
 
-8. Using Zope Page Templates
+- Basic Zope Scripting
 
-    This chapter introduces *Zope Page Templates*, another Zope tool
-    used to create dynamic web pages. You will learn about basic
-    template statements that let you insert dynamic content, and how
-    to create and edit page templates.
+    This chapter will introduce you to the basics of scripting.
 
-9. Creating Basic Zope Applications  
+- Using Zope Page Templates
 
-    This chapter presents several real-world
-    examples of building a Zope application.  You'll learn how to
-    use basic Zope objects and how they can work together to form
-    basic applications.
+    This chapter introduces *Zope Page Templates*, another Zope tool used to
+    create dynamic web pages. You will learn about basic template statements
+    that let you insert dynamic content, and how to create and edit page
+    templates.
 
-10. Users and Security
+- Creating Basic Zope Applications  
+
+    This chapter presents several real-world examples of building a Zope
+    application. You'll learn how to use basic Zope objects and how they can
+    work together to form basic applications.
+
+- Users and Security
 
     This chapter looks at how Zope handles users, authentication,
     authorization, and other security-related matters.
 
-11. Advanced Page Templates
+- Advanced Page Templates
 
     This chapter goes into more depth with Zope Page Templates. You will learn
     all about template statements, expression types, and macros, which let you
     reuse presentation elements.
 
-12. Advanced Zope Scripting
+- Advanced Zope Scripting
 
     This chapter covers scripting Zope with Python. You will learn how to write
     business logic in Zope using tools more powerful than TAL, about the idea
     of *scripts* in Zope, and about Scripts (Python).
 
-13. Zope Services
+- Zope Services
 
     This chapter covers Zope objects that are considered "services," which
-    don't readily fit into any of the basic "content,"
-    "presentation," or "logic" object groups.
+    don't readily fit into any of the basic "content," "presentation," or
+    "logic" object groups.
 
-14. Basic DTML
+- Basic DTML
 
     This chapter introduces DTML, the second tag-based scripting language.
-    You'll learn DTML syntax, its basic tags, and how to use DTML templates
-    and scripting facilities. After reading this chapter, you'll be able to
-    create dynamic web pages with DTML.
+    You'll learn DTML syntax, its basic tags, and how to use DTML templates and
+    scripting facilities. After reading this chapter, you'll be able to create
+    dynamic web pages with DTML.
 
-15. Advanced DTML
+- Advanced DTML
 
     This chapter takes a closer look at DTML. You'll learn about DTML security,
     the tricky issue of how variables are looked up in DTML, advanced use of
     basic tags, and the myriad of special purpose tags.
 
-16. Searching and Categorizing Content
+- Searching and Categorizing Content
 
-    This chapter shows you how to index and search objects with
-    Zope's built-in search engine: the *Catalog*. You'll learn about 
-    indexing concepts, different patterns for
-    indexing and searching, metadata, and
-    search results. 
+    This chapter shows you how to index and search objects with Zope's built-in
+    search engine: the *Catalog*. You'll learn about indexing concepts,
+    different patterns for indexing and searching, metadata, and search
+    results.
 
-17. Relational Database Connectivity
+- Relational Database Connectivity
 
-    This chapter describes how Zope connects to external
-    relational databases.  You'll learn about features that allow you
-    to treat relational data as though it were Zope
-    objects, and security and performance
-    considerations.
+    This chapter describes how Zope connects to external relational databases.
+    You'll learn about features that allow you to treat relational data as
+    though it were Zope objects, and security and performance considerations.
 
-18. Virtual Hosting Services
+- Virtual Hosting Services
 
     This chapter explains how to set up Zope in a "virtual hosting"
-    environment, in which Zope sub-folders can be served as "top-level"
-    host names.  It includes examples that allow virtual hosting to
-    be performed either "natively" or using Apache's 'mod_rewrite'
-    facility.
+    environment, in which Zope sub-folders can be served as "top-level" host
+    names. It includes examples that allow virtual hosting to be performed
+    either "natively" or using Apache's 'mod_rewrite' facility.
 
-19. Sessions
+- Sessions
 
-    This chapter describes Zope's "sessioning" services, which allow
-    Zope developers to "keep state" between HTTP requests.
+    This chapter describes Zope's "sessioning" services, which allow Zope
+    developers to "keep state" between HTTP requests.
 
-20. Scalability and ZEO
+- Scalability and ZEO
 
-    This chapter covers issues and solutions for building and
-    maintaining large web applications, and focuses on issues of
-    management and scalability. In particular, the Zope Enterprise
-    Option (ZEO) is covered in detail.  You'll learn about the
-    tools and techniques needed to turn a small site into a
+    This chapter covers issues and solutions for building and maintaining large
+    web applications, and focuses on issues of management and scalability. In
+    particular, the Zope Enterprise Option (ZEO) is covered in detail. You'll
+    learn about the tools and techniques needed to turn a small site into a
     large-scale site, servicing many simultaneous visitors.
 
-21. Managing Zope Objects Using External Tools
+- Managing Zope Objects Using External Tools
 
-    This chapter explains how to use tools outside of your web
-    browser to manipulate Zope objects.
+    This chapter explains how to use tools outside of your web browser to
+    manipulate Zope objects.
 
-22. Extending Zope
+- Extending Zope
 
     This chapter covers extending Zope by creating your own classes of objects.
     You'll learn how to create Python base classes and about the base classes
     that ship with Zope.
 
-23. Maintaining Zope
+- Maintaining Zope
 
-    This chapter covers Zope maintenance and administration tasks,
-    such as database "packing" and package installation.
+    This chapter covers Zope maintenance and administration tasks, such as
+    database "packing" and package installation.
 
-24. Appendix A: DTML Reference
+- Appendix A: DTML Reference
 
     Reference of DTML syntax and commands.
 
-25. Appendix B:  API Reference
+- Appendix B: API Reference
 
     Reference of Zope object APIs.
 
-26. Appendix C:  Page Template Reference
+- Appendix C: Page Template Reference
 
     Reference of Zope Page Template syntax and commands.
 
-27. Appendix D:  Zope Resources
+- Appendix D: Zope Resources
 
-    Reference of "resources" which can be used to further enhance
-    your Zope learning experience.
+    Reference of "resources" which can be used to further enhance your Zope
+    learning experience.
 
-28. Appendix E: DTML Name Lookup Rules
-    Describes DTML's name lookup rules.
+- Appendix E:
+
+    DTML Name Lookup Rules Describes DTML's name lookup rules.
+
