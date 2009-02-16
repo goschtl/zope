@@ -102,14 +102,16 @@ When an element has multiple statements, they are executed in this order:
 6. omit-tag
 
 Since the `on-error` statement is only invoked when an error occurs, it does
-not appear in the list. % XX Add: It may not be apparent that there needs to be
-an ordering. The reason that there must be one is that TAL is XML based. The
-XML specification specifically states that XML processors are free to rewrite
-the terms. In particular, you cannot assume that attributes of an XML statement
-will be processed in the order written, particularly if there is another
-preprocessor involved. To avoid needless proliferation of tags, and still
-permit unambigous execution of complex TAL, a precedence order was chosen
-according to the following rationalle.
+not appear in the list.
+
+It may not be apparent that there needs to be an ordering. The reason that
+there must be one is that TAL is XML based. The XML specification specifically
+states that XML processors are free to rewrite the terms. In particular, you
+cannot assume that attributes of an XML statement will be processed in the
+order written, particularly if there is another preprocessor involved. To avoid
+needless proliferation of tags, and still permit unambiguous execution of
+complex TAL, a precedence order was chosen according to the following
+rationale.
 
 The reasoning behind this ordering goes like this: You often want to set up
 variables for use in other statements, so `define` comes first. The very next
@@ -169,7 +171,7 @@ Examples
 Replacing a link::
 
   <a href="/sample/link.html"
-     tal:attributes="href here/sub/absolute_url">
+     tal:attributes="href context/sub/absolute_url">
 
 Replacing two attributes::
 
@@ -243,7 +245,7 @@ The default replacement behavior is `text`, which replaces angle-brackets and
 ampersands with their HTML entity equivalents. The `structure` keyword passes
 the replacement text through unchanged, allowing HTML/XML markup to be
 inserted. This can break your page if the text contains unanticipated markup
-(eg. text submitted via a web form), which is the reason that it is not the
+(e.g.. text submitted via a web form), which is the reason that it is not the
 default.
 
 Examples
@@ -255,7 +257,7 @@ Inserting the user name::
 
 Inserting HTML/XML::
 
-  <p tal:content="structure here/getStory">
+  <p tal:content="structure context/getStory">
     marked <b>up</b> content goes here.
   </p>
 
@@ -397,16 +399,16 @@ Examples
 Simple error message::
 
   <b tal:on-error="string: Username is not defined!" 
-     tal:content="here/getUsername">Ishmael</b>
+     tal:content="context/getUsername">Ishmael</b>
 
 Removing elements with errors::
 
   <b tal:on-error="nothing"
-     tal:content="here/getUsername">Ishmael</b>
+     tal:content="context/getUsername">Ishmael</b>
 
 Calling an error-handling script::
 
-  <div tal:on-error="structure here/errorScript">
+  <div tal:on-error="structure context/errorScript">
   ...
   </div>
 
@@ -523,7 +525,7 @@ Inserting a sequence of table rows, and using the repeat variable to number the
 rows::
 
   <table>
-    <tr tal:repeat="item here/cart">
+    <tr tal:repeat="item context/cart">
       <td tal:content="repeat/item/number">1</td>
       <td tal:content="item/description">Widget</td>
       <td tal:content="item/price">$1.50</td>
@@ -546,7 +548,7 @@ Nested repeats::
   </table>
 
 
-Insert objects. Seperates groups of objects by meta-type by drawing a rule
+Insert objects. Separate groups of objects by meta-type by drawing a rule
 between them::
 
   <div tal:repeat="object objects">
@@ -676,7 +678,7 @@ These are the names always available to TALES expressions in Zope:
 
 - *root*- - the system's top-most object: the Zope root folder.
 
-- *here*- - the object to which the template is being applied.
+- *context*- - the object to which the template is being applied.
 
 - *container*- - The folder in which the template is located.
 
@@ -690,7 +692,7 @@ These are the names always available to TALES expressions in Zope:
   accessed. Only modules which are approved by the Zope security policy can be
   accessed.
 
-Note the names `root`, `here`, `container`, `template`, `request`, `user`, and
+Note the names `root`, `context`, `container`, `template`, `request`, `user`, and
 `modules` are optional names supported by Zope, but are not required by the
 TALES standard.
 
@@ -751,7 +753,7 @@ Examples
 
 Using nocall to get the properties of a document::
 
-  <span tal:define="doc nocall:here/aDoc"
+  <span tal:define="doc nocall:context/aDoc"
         tal:content="string:${doc/getId}: ${doc/title}">
     Id: Title
   </span>
@@ -804,7 +806,7 @@ Examples
 
 Testing a sequence::
 
-  <p tal:condition="not:here/objectIds">
+  <p tal:condition="not:context/objectIds">
     There are no contained objects.
   </p>
 
@@ -840,16 +842,16 @@ For example::
 
   request/cookies/oatmeal
   nothing
-  here/some-file 2001_02.html.tar.gz/foo
+  context/some-file 2001_02.html.tar.gz/foo
   root/to/branch | default
   request/name | string:Anonymous Coward
-  here/?tname/macros/?mname
+  context/?tname/macros/?mname
 
 When a path expression is evaluated, Zope attempts to traverse the path, from
 left to right, until it succeeds or runs out of paths segments. To traverse a
 path, it first fetches the object stored in the variable. For each path
-segment, it traverses from the current object to the subobject named by the
-path segment. Subobjects are located according to standard Zope traversal rules
+segment, it traverses from the current object to the sub-object named by the
+path segment. Sub-objects are located according to standard Zope traversal rules
 (via getattr, getitem, or traversal hooks).
 
 Once a path has been successfully traversed, the resulting object is the value
@@ -864,7 +866,7 @@ The alternate expression can be any TALES expression. For example::
   request/name | string:Anonymous Coward
 
 is a valid path expression. This is useful chiefly for providing default
-values, such as strings and numbers, which are not expressable as path
+values, such as strings and numbers, which are not expressible as path
 expressions. Since the alternate expression can be a path expression, it is
 possible to "chain" path expressions, as in::
 
@@ -886,7 +888,7 @@ Examples
 
 Inserting a cookie variable or a property::
 
-  <span tal:replace="request/cookies/pref | here/pref">
+  <span tal:replace="request/cookies/pref | context/pref">
     preference
   </span>
 
