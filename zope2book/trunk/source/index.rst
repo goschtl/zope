@@ -33,6 +33,7 @@ Contents
    VirtualHosting.rst
    Sessions.rst
    ZEO.rst
+   ExternalTools.rst
    MaintainingZope.rst
    AppendixA.rst
    AppendixB.rst

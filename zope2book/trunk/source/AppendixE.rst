@@ -1,5 +1,5 @@
-DTML Name Lookup Rules
-######################
+Appendix E: DTML Name Lookup Rules
+##################################
 
 These are the rules which DTML uses to resolve names mentioned in `name=` and
 `expr=` tags. The rules are in order from first to last in the search path.
