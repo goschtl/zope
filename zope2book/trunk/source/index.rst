@@ -32,6 +32,7 @@ Contents
    RelationalDatabases.rst
    VirtualHosting.rst
    Sessions.rst
+   ZEO.rst
    MaintainingZope.rst
    AppendixA.rst
    AppendixD.rst
