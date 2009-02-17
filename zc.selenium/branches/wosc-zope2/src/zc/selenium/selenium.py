@@ -118,6 +118,12 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     if exit_now:
         return False
 
+    if int(results['numTestPasses']) == 0:
+        print
+        print "no tests were run"
+        print
+        return False
+
     print
     print 'Selenium test result:', results['result']
     if results['result'] != 'passed':
