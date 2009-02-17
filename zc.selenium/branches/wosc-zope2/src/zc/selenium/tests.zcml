@@ -1,9 +1,10 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope">
+  xmlns="http://namespaces.zope.org/browser">
 
-  <adapter
-    factory=".tests.TestSelenium"
+  <page
+    for="*"
     name="zc.selenium.tests.TestSelenium"
+    class=".tests.TestSelenium"
     permission="zope.Public"
     />
 

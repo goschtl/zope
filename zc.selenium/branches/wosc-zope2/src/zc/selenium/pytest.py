@@ -187,10 +187,6 @@ class Selenium:
 
 
 class Test(object):
-    component.adapts(
-        interface.Interface,
-        zope.publisher.interfaces.browser.IDefaultBrowserLayer)
-
     interface.implements(ISeleniumTest)
 
     def __init__(self, context, request):

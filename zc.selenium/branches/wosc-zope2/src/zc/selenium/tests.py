@@ -22,6 +22,7 @@ from zope.testing import doctest
 
 
 class TestSelenium(zc.selenium.pytest.Test):
+    """docstring."""
 
     def test_open(self):
         self.selenium.open('http://%s/' % self.selenium.server)
