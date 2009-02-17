@@ -842,7 +842,7 @@ For example::
 
   request/cookies/oatmeal
   nothing
-  context/some-file 2001_02.html.tar.gz/foo
+  context/some-file 2009_02.html.tar.gz/foo
   root/to/branch | default
   request/name | string:Anonymous Coward
   context/?tname/macros/?mname

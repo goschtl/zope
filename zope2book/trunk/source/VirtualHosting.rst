@@ -1,23 +1,9 @@
 Virtual Hosting Services
 ========================
 
-Zope comes with two objects that help you do virtual hosting,
-*SiteRoot* and *Virtual Host Monster*. Virtual hosting is a way to
+Zope comes with one object that help you do virtual hosting:
+*Virtual Host Monster*. Virtual hosting is a way to
 serve many websites with one Zope server.
-
-*SiteRoots* are an artifact of an older generation of Zope virtual
-hosting services that are only retained in current Zope versions
-for backwards-compatibility purposes.  They are not documented in
-this book because they are somewhat "dangerous" for new users, as
-they have the capability of temporarily "locking you out" of your
-Zope instance if you configure them improperly.  Luckily, we have
-*Virtual Host Monsters*, which do everything that SiteRoots do and
-more without any of the dangerous side effects of SiteRoots.  If
-you want to do virtual hosting in Zope, you should almost
-certainly be using a *Virtual Host Monster*.  If you have previously
-added SiteRoot objects to your Zope, you should remove them before
-adding the VirtualHostMonster, in order to avoid having them both
-try to control virtual hosting.
 
 Virtual Host Monster
 --------------------
@@ -73,7 +59,7 @@ Adding a Virtual Host Monster to your Zope
 VirtualHostMonster is one of the add menu items supplied by the
 stock Zope Product, 'SiteAccess'.  You can add one to any folder
 by selecting its entry from the add menu and supplying an ID for
-it (the ID you choose doesn't matter, exept that it must not
+it (the ID you choose doesn't matter, except that it must not
 duplicate the ID of another object in that folder).
 
 Where to Put a Virtual Host Monster And What To Name It
@@ -100,7 +86,7 @@ Hosting" sections below.
 It is possible to modify the VHM settings from the command line
 via Zope debugger;  no documentation for the low-level API
 exists, however, except "the source",
-'$SOFTWARE_HOME/lib/python/Products/SiteAccess/VirtualHostMonster.py,
+'Products.SiteAccess.VirtualHostMonster.py,
 which makes it an inadvisable choice for anyone but an experienced
 Zope developer.
 
@@ -303,17 +289,17 @@ by appending a VirtualHostRoot directive to the incoming URL,
 which essentially says "traverse to the vhm_root folder as if it
 were the root of the site."
 
-Arranginging for Incoming URLs to be Rewritten
-----------------------------------------------
+Arranging for Incoming URLs to be Rewritten
+-------------------------------------------
 
 At this point, you're probably wondering just how in the world
 any of this helps you.  You're certainly not going to ask
 people to use their browser to visit a URL like
 'http://yourserver.com//VirtualHostBase/http/zope.com/vhm_test/VirtualHostRoot/'
 just so your Zope-generated URLs will be "right".  That would
-defeat the pupose of virtual hosting entirely.  The answer is:
+defeat the purpose of virtual hosting entirely.  The answer is:
 don't ask humans to do it, ask your computer to do it.  There
-are two common (but mutually excusive) ways to accomplish
+are two common (but mutually exclusive) ways to accomplish
 this: via the VirtualHostMonster *Mappings* tab and via Apache
 "rewrite rules" (or your webserver's facility to do the same
 thing if you don't use Apache).  Be warned: use either one of
@@ -382,7 +368,7 @@ In the "real world" this means that you are "publishing" the
 Note that it is not possible to rewrite the port part
 (by default, '8080') of the URL this way. To change the
 port Zope is listening on, you will have to configure
-Zopes' start parameter or use Apache rewriting.
+Zope's start parameter or use Apache rewriting.
 
 Apache Rewrite Rules
 ~~~~~~~~~~~~~~~~~~~~
@@ -432,7 +418,7 @@ of this example, we're going to want to contact Zope via the
 hostname 'www.example.com' through a browser (also on your
 local host) and this makes it possible.
 
-Note:  On MacOS X Server 10.3, the 'Server Admin.app' program
+Note:  On MacOS X Server, the 'Server Admin.app' program
 simplifies adding virtual host definitions to your Apache.
 This application can make and maintain virtual host , access
 log, etc. 
@@ -450,7 +436,7 @@ as 'www.example.com' and, add the following to your Apache's
   RewriteRule ^/(.*) http://127.0.0.1:8080/VirtualHostBase/http/www.example.com:80/vhm_test/VirtualHostRoot/$1 [L,P]
   </VirtualHost>
 
-If you want to proxy SSL to Zope, you need a similar diretive
+If you want to proxy SSL to Zope, you need a similar directive
 for port 443::
 
    NameVirtualHost *:443
@@ -492,11 +478,6 @@ Be sure that content objects catalog themselves using as their
 unique ID a "site-relative" path, rather than their full physical
 path;  otherwise, the object will be findable when using the site
 without virtual hosting, but not with, or vice versa.
-
-In the CMF, the 'portal_catalog' tool does not (yet, as of 1.5 beta),
-do the right thing here when indexing content.  Plone (?) has a
-CMFCatalogPathAware class (sp?) which you can use in place of the
-stock CMF's CMFCatalogAware base class to help with this issue.
 
 "Inside-Out" Virtual Hosting
 ----------------------------

@@ -693,17 +693,11 @@ contain the word "catastrophic"::
 
   ## Script (Python) "relevantSectionNews"
   ##
-  """ Returns relevant, non-catastropic news """"
+  """ Returns relevant, non-catastropic news """
   id=context.getId()
   return context.NewsCatalog(
            {'contentTextIdx' : id + ' -catastrophic'}
           )
-
-  % guillaume_benoit - Mar. 4, 2004 8:40 am:
-   Little error:
-   """ Returns relevant, non-catastropic news """"
-   ... should be ...
-   """ Returns relevant, non-catastropic news """
 
 ZCTextIndexes are very powerful.  When mixed with the Automatic
 Cataloging pattern described later in the chapter, they give you
@@ -752,7 +746,7 @@ use this pipeline element in conjunction with the standard text
 processing elements.  Implementing a pipeline element is out of
 the scope of this book; for examples of implementing and
 registering a pipeline element see
-eg. 'lib/python/Products/ZCTextIndex/Lexicon.py'.  A pipeline
+eg. 'Products.ZCTextIndex.Lexicon.py'.  A pipeline
 element should conform to the 'IPipelineElement' interface.
 
 To create a ZCTextIndex, you first have to create a Lexicon
@@ -1490,7 +1484,7 @@ track of things like how often words appear, and which
 words appear earlier in the the stream, but this gives
 you an idea of what is stored.)
 
-This is a neccessary and positive step to make the index
+This is a necessary and positive step to make the index
 use less storage and less memory, and increases search
 results, as your site user doesn't have to worry about
 getting incidental words ("the", "a", etc.) correct,
@@ -1638,23 +1632,23 @@ appropriate object-wide text searching capabilities.
 ZCatalogs and CMF/Plone
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-  The CMF was built from the ground up to understand the
-  difference between things that are "content", such as a news item
-  or press release, and those things that are not, such as
-  a DTMLMethod used to show a press release, or a ZCatalog
-  object.  In addition, the CMF includes several stock items
-  that are intended to be used for content, including:
-  Document, Event, NewsItem, and others.  These content items
-  are already set up for autocataloging, so that any changes
-  made will appear in the catalog.
+The CMF was built from the ground up to understand the
+difference between things that are "content", such as a news item
+or press release, and those things that are not, such as
+a DTMLMethod used to show a press release, or a ZCatalog
+object.  In addition, the CMF includes several stock items
+that are intended to be used for content, including:
+Document, Event, NewsItem, and others.  These content items
+are already set up for autocataloging, so that any changes
+made will appear in the catalog.
 
-  In non-CMF Zope, the traditional name for a general-purpose
-  catalog is 'Catalog' (though you can always create your own
-  catalog with any id you want; we've used the example
-  'AnimalCatalog' in this chapter for a special-purpose catalog
-  for searching animal-specific info in our zoo.)  Even though
-  'Catalog' is the traditional name, Zope does not come with
-  such a catalog in the ZODB already, you have to create it.
+In non-CMF Zope, the traditional name for a general-purpose
+catalog is 'Catalog' (though you can always create your own
+catalog with any id you want; we've used the example
+'AnimalCatalog' in this chapter for a special-purpose catalog
+for searching animal-specific info in our zoo.)  Even though
+'Catalog' is the traditional name, Zope does not come with
+such a catalog in the ZODB already, you have to create it.
 
 In CMF (and Plone, an out-of-the-box portal system built
 on top of the CMF), there is always a catalog created, called
@@ -1673,29 +1667,6 @@ not traditionally used.  Instead, an index is created called
 objects have a 'SearchableText' method that returns things
 like title, description, body, etc., so that they can be
 general-text searched.
-
-Keeping Non-ZODB Content in ZCatalog
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The ZCatalog is such a useful and powerful tool for searching,
-it's possible that you may want to use it to search data that
-is stored in placed other than in the ZODB.  Later in this book,
-you'll learn about storing data in relational databases and
-being able to access and view that data from Zope.  While Zope
-excels at working with relational databases, many databases
-have poor full-text-indexing capabilities.  In addition, site
-visitors may want to search your site, as described above, for
-a single phrase, like "jungle", and not know or care if the 
-information they're looking for is in the ZODB or in a
-relational database.
-
-To help with this, you can store information about relational
-database information in the ZCatalog, too.  It's an advanced
-technique, and will require that you understand ZSQLMethods
-(described in the relational database chapter) and Python
-scripting.  You can learn about this technique in
-`Cataloging SQL Data and Almost Anything Else
-<http://zope.org/Members/rbickers/cataloganything>`_.
 
 Add-On Index Types
 ------------------

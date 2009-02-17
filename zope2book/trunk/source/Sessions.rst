@@ -83,13 +83,15 @@ Some hints:
 Session Manager Components
 ==========================
 
-- **Browser Id Manager**
-  This component determines a remote client's "browser id", which uniquely
-  identifies a particular browser. The browser id is encoded in a
-  form/querystring variable, a cookie variable, or as part of the URL. The
-  browser id manager examines cookies, form and querystring elements, and URLs
-  to determine the client's browser id. It can also modify cookies and URLs
-  automatically in order to differentiate users between requests.
+Browser Id Manager
+++++++++++++++++++
+
+This component determines a remote client's "browser id", which uniquely
+identifies a particular browser. The browser id is encoded in a
+form/querystring variable, a cookie variable, or as part of the URL. The
+browser id manager examines cookies, form and querystring elements, and URLs
+to determine the client's browser id. It can also modify cookies and URLs
+automatically in order to differentiate users between requests.
 
 - There may be more than one browser id manager in a Zope installation, but
   commonly there will only be one. Application developers will generally not
@@ -106,14 +108,16 @@ Session Manager Components
 
     /browser_id_manager object
 
-- **Session Data Manager**
-  This component is responsible for handing out session data to callers. When
-  session data is required, the session data manager:
+Session Data Manager
+++++++++++++++++++++
 
-  * talks to a browser id manager to determine the current browser id-
+This component is responsible for handing out session data to callers. When
+session data is required, the session data manager:
 
-  * creates a new session data object or hands back an existing session data
-    object based on the browser id.
+* talks to a browser id manager to determine the current browser id-
+
+* creates a new session data object or hands back an existing session data
+  object based on the browser id.
 
 - Developers generally do not directly use methods of session data managers to
   obtain session data objects. Instead, they rely on the built-in
@@ -132,9 +136,11 @@ Session Manager Components
 
     /session_data_manager
 
-- **Transient Object Container**
-  Also known as Session Data Containers, these components actually hold
-  information related to sessions.
+Transient Object Container
+++++++++++++++++++++++++++
+
+Also known as Session Data Containers, these components actually hold
+information related to sessions.
 
 - Currently, a Transient Object Container is used to hold a special "transient
   data object" instance for each ongoing session. Developers will generally not
@@ -153,9 +159,11 @@ Session Manager Components
 
   Transient Object container are lost each time Zope is restarted.
 
-- **Transient Data Object**
-  Also known as the Session Data Object. These are the objects which are stored
-  in session data containers and managed by transient data managers.
+Transient Data Object
++++++++++++++++++++++
+
+Also known as the Session Data Object. These are the objects which are stored
+in session data containers and managed by transient data managers.
 
 - Developers interact with a transient data object after obtaining one via
   REQUEST.SESSION or from a session data manager directly. A single transient
@@ -270,9 +278,7 @@ Session data objects have methods of their own, including methods with allow
 developers to get and set data. Session data objects are also "wrapped" in the
 acquisition context of their session data manager, so you may additionally call
 any method on a session data object that you can call on a session data
-manager. For information about the API of a session data manager and a session
-data object, see the Zope Help system item in "Zope Help" -> "API Reference" ->
-"Session API".
+manager.
 
 Obtaining A Session Data Object
 +++++++++++++++++++++++++++++++
@@ -309,7 +315,7 @@ request. To inhibit this behavior, use the create=0 flag to the::
 
 method. In ZPT::
 
-<span tal:define="data python:context.session_data_manager.getSessionData(create=0)">
+  <span tal:define="data python:context.session_data_manager.getSessionData(create=0)">
 
 Note: create=0 means return a reference to the session or None. create=1 means
 return a reference if one exists or create a new Session object and the
@@ -931,7 +937,7 @@ section of a site and an "insecure" section of a site, each using a different
 browser id manager with respectively restrictive security settings.
 
 In the container of your choosing, select "Browser Id Manager" from the add
-dropdown list in the Zope management interface. When you add a new browser id
+drop-down list in the Zope management interface. When you add a new browser id
 manager, the form options available are:
 
 Id
@@ -961,17 +967,13 @@ Automatically Encode Zope-Generated URLs With A Browser Id
   you've also got the `URLs` setting of "Look for Browser Id in" checked off.
 
 Cookie Path
-  this is the `path` element which should be sent in the browser id cookie. For
-  more information, see the Netscape Cookie specification at
-  http://home.netscape.com/newsref/std/cookie_spec.html.
+  this is the `path` element which should be sent in the browser id cookie.
 
 Cookie Domain
   this is the "domain" element which should be sent in the browser id cookie.
-  For more information, see the Netscape Cookie specification at
-  http://home.netscape.com/newsref/std/cookie_spec.html. Leaving this form
-  element blank results in no domain element in the cookie. If you change the
-  cookie domain here, the value you enter must have at least two dots (as per
-  the cookie spec).
+  Leaving this form element blank results in no domain element in the cookie.
+  If you change the cookie domain here, the value you enter must have at least
+  two dots (as per the cookie spec).
 
 Cookie Lifetime In Days
   browser id cookies sent to browsers will last this many days on a remote
@@ -989,10 +991,8 @@ Only Send Cookie Over HTTPS
   the same browser, do not set this flag.
 
 After reviewing and changing these options, click the "Add" button to
-instantiate a browser id manager.
-
-You can change any of a browser id manager's initial settings by visiting it in
-the management interface.
+instantiate a browser id manager. You can change any of a browser id manager's
+initial settings by visiting it in the management interface.
 
 Instantiating A Session Data Manager (Optional)
 +++++++++++++++++++++++++++++++++++++++++++++++
@@ -1013,7 +1013,7 @@ can be acquired from that container. The session data manager will use the
 first acquired browser id manager.
 
 Choose "Session Data Manager" within the container you wish to house the
-session data manager from the "Add" dropdown box in the Zope management
+session data manager from the "Add" drop-down box in the Zope management
 interface.
 
 The session data manager add form displays these options:
@@ -1416,7 +1416,7 @@ ConflictError at most 3 times. If your site is extremely busy, you may notice
 ConflictErrors in the Zope debug log (or they may be printed to the console
 from which you run Zope). An example of one of these errors is as follows::
 
-  2001-01-16T04:26:58 INFO(0) Z2 CONFLICT Competing writes at, /getData
+  2009-01-16T04:26:58 INFO(0) Z2 CONFLICT Competing writes at, /getData
   Traceback (innermost last):
   File /zope/lib/python/ZPublisher/Publish.py, line 175, in publish
   File /zope/lib/python/Zope/__init__.py, line 235, in commit

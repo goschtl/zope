@@ -1,16 +1,15 @@
 Basic DTML
 ==========
 
-DTML (Document Template Markup Language) is a templating facility
-which supports the creation of dynamic HTML and text.  It is
-typically used in Zope to create dynamic web pages.  For example,
-you might use DTML to create a web page which "fills in" rows and
-cells of an HTML table contained within the page from data fetched
-out of a database.
+DTML (Document Template Markup Language) is a templating facility which
+supports the creation of dynamic HTML and text. In Zope it is most often used
+when you want to generate non-HTML or non-XML content, like parts of SQL
+queries, dynamic CSS and JavaScript files or email templates. Generating HTML
+and XML is usually done with page templates inside Zope.
 
 DTML is a *tag-based* presentation and scripting language.  This
-means that *tags* (e.g. '<dtml-var name>') embedded in your HTML
-cause parts of your page to be replaced with "computed" content.
+means that *tags* (e.g. '<dtml-var name>') embedded in your text
+cause parts of your text to be replaced with "computed" content.
 
 DTML is a "server-side" scripting language.  This means that DTML
 commands are executed by Zope at the server, and the result of that
@@ -26,9 +25,9 @@ such as JSP, PHP, or mod_perl.  It differs from these facilities
 inasmuch as it will not allow you to create "inline" Python
 *statements* (if... then.. else..)  in the way that JSP, mod_perl
 or PHP will allow you to embed a block of their respective
-language's code into an HTML page. DTML does allow you to embed
-Python *expressions* (a == 1) into HTML-like tags.  It provides
-flow control and conditional logic by way of "special" HTML tags.
+language's code into a page. DTML does allow you to embed
+Python *expressions* (a == 1) into tags.  It provides
+flow control and conditional logic by way of "special" tags.
 It is more similar to Perl's 'HTML::Template' package than it is
 to mod_perl in this way.  It can also be compared to the web
 server facility of Server Side Includes (SSI), but with far more
@@ -37,12 +36,9 @@ features and flexibility.
 When To Use DTML
 ----------------
 
-If you want to make a set of dynamic web pages that share bits of
-content with each other, and you aren't working on a project that
-calls for a tremendous amount of collaboration between programmers
-and tool-wielding designers, DTML works well.  Likewise, if you
-want to dynamically create non-HTML text (like CSS stylesheets or
-email messages), DTML can help.
+If you don't want to use page templates for whatever reason DTML might work
+well. Likewise, if you want to dynamically create non-HTML text (like CSS
+stylesheets or email messages), DTML can help.
 
 When Not To Use DTML
 --------------------
@@ -54,20 +50,20 @@ language, it instead is a special language designed for formatting
 and displaying content.  While it may be possible to implement
 complex algorithms in DTML, it is often painful.
 
-For example, let's suppose you want to write a web page which
+For example, let's suppose you want to output some text which
 displays a representation of the famous `Fibonacci sequence
 <http://www.mathacademy.com/pr/prime/articles/fibonac/index.asp>`_.
 You would not want to write the program that actually makes the
 calculation of the Fibonacci numbers by writing DTML.  It could be
 done in DTML, but the result would be difficult to understand and
-maintain.  However, DTML is perfect for describing the page that
+maintain.  However, DTML is perfect for describing the output that
 the results of the Fibonnacci calculations are inserted into.  You
 can "call out" from DTML to Script (Python) objects as necessary
 and process the results of the call in DTML.  For example, it is
 `trivial in Python <http://docs.python.org/tutorial/introduction.html>`_
 (search for the word Fibonacci on this page) to implement a Fibonacci
-sequence generator, and trivial in DTML to create a dynamic web
-page which shows these numbers in a readable format.  If you find
+sequence generator, and trivial in DTML to create some dynamic 
+output which shows these numbers in a readable format.  If you find
 yourself creating complex and hard-to-understand logic in DTML,
 it's likely time to explore the the Zope features which allow you
 to script "logic" in Python, while letting DTML do the
@@ -78,25 +74,6 @@ best choice.  If you want to manipulate input from a user in a
 complex way, by using functions that manipulate strings, you are
 better off doing it in Python, which has more powerful string
 processing capabilities than DTML.
-
-Zope has a technology named `Zope Page emplates <ZPT.html>`_
-which has purpose similar to DTML.  DTML and ZPT are both
-facilities which allow you to create dynamic HTML.  However, DTML
-is capable of creating dynamic text which is *not* HTML, while ZPT
-is limited to creating text which is HTML (or XML).  DTML also
-allows users to embed more extensive "logic" in the form of
-conditionals and flow-control than does ZPT.  While the source to
-a ZPT page is almost always "well-formed" HTML through its
-lifetime, the source to DTML pages are not guaranteed to be
-"well-formed" HTML, and thus don't play well in many cases with
-external editing tools such as Dreamweaver.
-
-Both ZPT and DTML are fully supported technologies in Zope, and
-neither is "going away" any time soon.  A discussion about when to
-use one instead of the other is available in the chapter entitled
-`Using Basic Zope Objects <BasicObject.html>`_ in the section entitled
-"ZPT vs. DTML: Same Purpose, Different Audiences", but the choice
-is sometimes subjective.
 
 The Difference Between DTML Documents and DTML Methods
 ------------------------------------------------------
@@ -117,8 +94,8 @@ not have their own properties.
 
 DTML Documents are *content* objects (in the vernacular used in
 the chapter entitled `Using Basic Zope Objects`_).
-If you want to create a "stand-alone" HTML or text document, you
-might create a DTML Document object to hold the HTML or text.
+If you want to create a "stand-alone" text document, you
+might create a DTML Document object to hold the text.
 DTML Document objects have their own *properties* (attributes),
 unlike DTML Methods.
 
@@ -193,7 +170,7 @@ closes the block, and content that goes between them::
 
   <dtml-in mySequence>
 
-    <!-- this is an HTML comment inside the in tag block -->
+    this is a text inside the dtml-in tag block
 
   </dtml-in>
 
@@ -262,7 +239,7 @@ Inserting Text into HTML with DTML
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 DTML commands are written as tags that begin with *dtml-*.  You
-create dynamic content in DTML by mixing HTML tags and DTML tags
+create dynamic content in DTML by mixing content and DTML tags
 together.  Inserting the value of a variable (a variable is also
 known as a "target") into HTML is the most basic task that you can
 perform with DTML.  Many DTML tags insert variable values, and
@@ -620,7 +597,7 @@ method.  Fill in some information in the form elements, and click
    HTTP_ACCEPT_LANGUAGE 'en-us, en;q=0.50'
    REMOTE_ADDR '192.168.1.3'
    SERVER_NAME 'saints'
-   HTTP_USER_AGENT 'Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.1a+) Gecko/20020629'
+   HTTP_USER_AGENT 'Mozilla/5.0 (Windows; U; Windows NT 5.0; en-US; rv:1.1a+)'
    HTTP_ACCEPT_CHARSET 'ISO-8859-1, utf-8;q=0.66, *;q=0.66'
    CONNECTION_TYPE 'keep-alive'
    channel.creation_time 1027876407
@@ -630,7 +607,6 @@ method.  Fill in some information in the form elements, and click
    HTTP_HOST 'localsaints:8084'
    REQUEST_METHOD 'GET'
    PATH_INFO '/DTML_Example/show_request'
-   SERVER_SOFTWARE 'Zope/(unreleased version, python 2.1.3, linux2) ZServer/1.1b1'
    HTTP_REFERER 'http://localsaints:8084/DTML_Example/infoForm'
 
 You have instructed the 'show_request' method to render the
@@ -923,12 +899,11 @@ So::
 
   <dtml-var objectValues>
 
-will call the method.
-However:
+will call the method. However::
 
   <dtml-var expr="objectValues">
 
-... will *not* call the method, it will just try to insert
+will *not* call the method, it will just try to insert
 it. The result will be not a list of objects but a string such
 as '<Python Method object at 8681298>'. If you ever see results
 like this, there is a good chance that you're returning a
@@ -991,14 +966,13 @@ common formatting situations. The attributes are summarized in
 Appendix A. Here's a sampling of *var* tag attributes.
 
 html_quote
-  This attribute causes the inserted values to be HTML quoted.  This means
-  that '<', '>' and '&' are escaped.  Note that as of Zope 2.6, all string
-  values which are retrieved from the REQUEST namespace are HTML-quoted by
-  default.  This helps to prevent "cross-site scripting" security holes
-  present in earlier Zope versions, where a user could insert some clever
-  JavaScript into a page in order to possibly make you divulge information
-  to him which could be private.  For more information, see the `CERT
-  advisory <http://www.cert.org/advisories/CA-2000-02.html>`_ on the topic.
+  This attribute causes the inserted values to be HTML quoted. This means that
+  '<', '>' and '&' are escaped. Note that all string values which are retrieved
+  from the REQUEST namespace are HTML-quoted by default. This helps to prevent
+  "cross-site scripting" security holes, where a user could insert some clever
+  JavaScript into a page in order to possibly make you divulge information to
+  him which could be private. For more information, see the `CERT advisory
+  <http://www.cert.org/advisories/CA-2000-02.html>`_ on the topic.
 
 missing
   The missing attribute allows you to specify a default value to use in
@@ -1016,12 +990,6 @@ fmt
   folder called *adult_rate*.  This property will represent
   the cost for one adult to visit the Zoo.  Give this property
   the value '2.2'.
-
-    % Anonymous User - Oct. 31, 2003 11:02 am:
-     I think this is the first mention of Properties.... Would be
-     helpful to explain that the properties are found with the
-     properties tag....since up until nos almost all additions have
-     been done by the pulldown menu.:)
 
   You can display this cost in a DTML Document or Method like so::
 

@@ -49,11 +49,6 @@ Oracle
   expensive and complex. Oracle can be purchased or evaluated from
   the `Oracle Website <http://www.oracle.com/index.html>`_.
 
-DB2
-  DB2 from IBM is the main commercial competitor to Oracle.
-  It has similar power but also similar expense and complexity.
-  More information from http://www.ibm.com/software/data/db2/ .
-
 PostgreSQL
   PostgreSQL is a leading open source relational
   database with good support for SQL standards.  You can
@@ -64,16 +59,6 @@ MySQL
   MySQL is a fast open source relational database. You
   can find more information about MySQL at the `MySQL web
   site <http://www.mysql.com/>`_. 
-
-SAP DB
-  An open source database developed by SAP. Has an Oracle 7
-  compatibility mode. More information and downloads from 
-  http://www.sapdb.org/ .
-
-Sybase
-  Sybase is another popular commercial relational database.
-  Sybase can be purchased or evaluated from the 
-  `Sybase Website <http://www.sybase.com/>`_.
 
 SQL Server
   Microsoft's full featured SQL Server for the
@@ -119,13 +104,6 @@ MySQL
   `ZMySQLDA <http://www.zope.org/Members/adustman/Products/ZMySQLDA>`_
   Available as source and a Linux binary package.
 
-SAP DB
-  `ZsapdbDA <http://www.zope.org/Members/jack-e/ZsapdbDA>`_ by Ulrich Eck.
-
-Sybase
-  `SybaseDA <http://www.zope.org/Products/DA/SybaseDA/>`_ is 
-  written by Zope Corporation (but no longer maintained).
-
 SQLServer
   `mxODBC <http://www.egenix.com>`_ is written by Egenix
   and very well maintained. There is also
@@ -133,11 +111,6 @@ SQLServer
   written by Zope Corporation. Available
   for the Windows platform only. This DA is no longer actively
   maintainted.
-
-Interbase/Firebird
-  There are a number of DAs available including
-  `kinterbasdbDA <http://www.zope.org/Members/mwoj/kinterbasdbDA>`_ and
-  `gvibDA <http://www.zope.org/Members/bkc/gvibDA>`_.
 
 If you will need to connect to more than one database or wish to connect
 as to the same database as different users then you may use multiple
@@ -999,12 +972,12 @@ Now, you should be able to go to a URL like::
 
   http://example.org/Departments/Support/requisitionSomethingForm
 
-... and requisition some punching bags for the Support department.
+and requisition some punching bags for the Support department.
 Alternatively, you could go to::
 
   http://example.org/Departments/Sales/requisitionSomethingForm
 
-..and requisition some tacky rubber key-chains with your logo on
+and requisition some tacky rubber key-chains with your logo on
 them for the Sales department.  Using Zope's security system as
 described in the chapter entitled `Users and
 Security <Security.html>`_, you can now restrict access to these forms

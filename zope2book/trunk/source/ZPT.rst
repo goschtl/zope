@@ -593,7 +593,7 @@ Macro tag attributes are called *Macro Expansion Tag Attribute Language*
 (*METAL*) statements.  Here's an example macro definition::
 
   <p metal:define-macro="copyright">
-    Copyright 2001, <em>Foo, Bar, and Associates</em> Inc.
+    Copyright 2009, <em>Foo, Bar, and Associates</em> Inc.
   </p>
 
 This 'metal:define-macro' statement defines a macro named "copyright".
@@ -617,7 +617,7 @@ the macro when Zope renders the page::
 
   <hr />
   <p>
-    Copyright 2001, <em>Foo, Bar, and Associates</em> Inc.
+    Copyright 2009, <em>Foo, Bar, and Associates</em> Inc.
   </p>
 
 If you change the macro (for example, if the copyright holder changes)
@@ -855,7 +855,7 @@ possible.  Here's an example macro that defines an entire page::
       </p>
 
       <span metal:define-slot="footer">
-        <p>Copyright 2001 Fluffy Enterprises</p>
+        <p>Copyright 2009 Fluffy Enterprises</p>
       </span>
 
     </body>
