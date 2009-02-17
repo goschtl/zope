@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 2
 
    Outline.rst
+   Introduction.rst
    AppendixA.rst
    AppendixB.rst
 
