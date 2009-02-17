@@ -185,8 +185,15 @@ class Selenium:
     def __str__(self):
         return ''.join(self.output) + footer
 
+# zope2 compatibility
+try:
+    from Products.Five import BrowserView as TestBase
+except ImportError:
+    TestBase = object
 
-class Test(object):
+class Test(TestBase):
+    component.adapts(interface.Interface,
+                     zope.publisher.interfaces.browser.IDefaultBrowserLayer)
     interface.implements(ISeleniumTest)
 
     def __init__(self, context, request):
@@ -199,7 +206,10 @@ class Test(object):
             mess += '<br/>\n'.join((self.__doc__ or '').split('\n')[1:])
 
         self.selenium = Selenium(self.request, title, mess)
+        # XXX zope2 compatibility. I have no idea why we don't get a __name__
+        self.__name__ = 'zc.selenium.' + type(self).__name__
 
+    # we can't use browser:page to register this for us
     def browserDefault(self, request):
         return self, ()
 

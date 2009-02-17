@@ -1,10 +1,11 @@
 <configure
-  xmlns="http://namespaces.zope.org/browser">
+  xmlns="http://namespaces.zope.org/zope">
 
-  <page
-    for="*"
+  <!-- provides is only necessary for zope2 -->
+  <adapter
     name="zc.selenium.tests.TestSelenium"
-    class=".tests.TestSelenium"
+    factory=".tests.TestSelenium"
+    provides="zc.selenium.pytest.ISeleniumTest"
     permission="zope.Public"
     />
 
