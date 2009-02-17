@@ -13,6 +13,7 @@ Contents:
    Outline.rst
    Introduction.rst
    ComponentsAndInterfaces.rst
+   ObjectPublishing.rst
    AppendixA.rst
    AppendixB.rst
 
