@@ -41,7 +41,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Zope Developers' Guide'
+project = u'Zope Developers\' Guide'
 copyright = u'2009, Zope Community'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -168,7 +168,7 @@ htmlhelp_basename = 'ZopeDevelopersGuidedoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'ZopeDevelopersGuide.tex', ur'Zope Developers' Guide Documentation',
+  ('index', 'ZopeDevelopersGuide.tex', ur'Zope Developers\' Guide Documentation',
    ur'Zope Community', 'manual'),
 ]
 
