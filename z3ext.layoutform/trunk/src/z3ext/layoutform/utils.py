@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" 
+"""
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
@@ -34,7 +34,12 @@ def applyChanges(form, content, data):
         except:
             value = object()
 
-        if value != data[name]:
+        try:
+            updated = value != data[name]
+        except TypeError:
+            updated = True
+
+        if updated:
             dm.set(data[name])
             # Record the change using information required later
             changes.setdefault(dm.field.interface, []).append(name)
