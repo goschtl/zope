@@ -494,20 +494,25 @@ Registration
 ------------
 
 To get our tests to be used in the Selenium test suite, we need to
-register them as request adapters.  We would normally use ZCML like
+register them as views for "*".  We would normally use ZCML like
 the following::
 
-    <adapter
-        factory=".Second"
+    <browser:page
+        for="*"
         name="some-url-for-the-second-test.html"
+        class=".Second"
         permission="zope.Public"
         />
 
 We'll illustrate this using the component API:
 
     >>> from zope import component
-    >>> component.provideAdapter(Test, name='first.html')
-    >>> component.provideAdapter(Second, name='second.html')
+    >>> from zope import interface
+    >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+    >>> component.provideAdapter(Test,
+    ...     (interface.Interface, IDefaultBrowserLayer), name='first.html')
+    >>> component.provideAdapter(Second,
+    ...     (interface.Interface, IDefaultBrowserLayer), name='second.html')
 
 The test suite used the zc.selenium.pytest.suite function to
 compute rows for the test suite:
