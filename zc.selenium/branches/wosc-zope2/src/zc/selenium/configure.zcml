@@ -47,6 +47,5 @@
       permission="zope.Public"
       />
 
-  <include file="zope3.zcml" zcml:condition="not-installed Products.Five"/>
   <include file="zope2.zcml" zcml:condition="installed Products.Five"/>
 </configure>
