@@ -10,6 +10,8 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   AppendixA.rst
+
 Indices and tables
 ==================
 
