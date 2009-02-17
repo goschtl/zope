@@ -21,6 +21,7 @@
   <browser:page
       for="*"
       name="zc.selenium.suite"
+      class="zc.selenium.suite.Suite"
       template="suite.pt"
       permission="zope.Public"
       />

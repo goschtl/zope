@@ -13,10 +13,10 @@
   <tr><td><b>Test Suite</b></td></tr>
     <tr tal:replace="
         structure
-        python: modules['zc.selenium.pytest'].suite(request)"
+        view/suite"
         >
       <td>
-        <a href="/@@/selenium-no-publish.html">
+        <a href="/@@selenium-no-publish.html">
         Make sure we can elect not to publish</a>
       </td>
     </tr>
