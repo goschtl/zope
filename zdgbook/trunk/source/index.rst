@@ -12,6 +12,7 @@ Contents:
 
    Outline.rst
    Introduction.rst
+   ComponentsAndInterfaces.rst
    AppendixA.rst
    AppendixB.rst
 
