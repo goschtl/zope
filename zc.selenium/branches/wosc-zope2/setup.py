@@ -20,6 +20,7 @@ setup(
         'setuptools',
         'zope.interface',
         'zope.component',
+        'zope.configuration>=3.4.0',
         'zope.publisher',
         'z3c.zrtresource',
     ]
