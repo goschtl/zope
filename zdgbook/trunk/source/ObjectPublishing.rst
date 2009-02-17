@@ -1074,21 +1074,21 @@ permission.
 Supporting Write Locking
 ------------------------
 
-rite locking is a feature of WebDAV that allows users to put lock on
- objects they are working on. Support write locking s easy. To
- implement write locking you must assert that your lass implements
- the 'WriteLockInterface'. For example::
+Write locking is a feature of WebDAV that allows users to put lock on
+objects they are working on. Support write locking s easy. To
+implement write locking you must assert that your lass implements the
+'WriteLockInterface'. For example::
 
- from webdav.WriteLockInterface import WriteLockInterface
+  from webdav.WriteLockInterface import WriteLockInterface
 
- class MyContentClass(OFS.SimpleItem.Item, Persistent):
-     __implements__ = (WriteLockInterface,)
+  class MyContentClass(OFS.SimpleItem.Item, Persistent):
+      __implements__ = (WriteLockInterface,)
 
-t's sufficient to inherit from 'SimpleItem.Item', since it nherits
+It's sufficient to inherit from 'SimpleItem.Item', since it inherits
 from 'webdav.Resource', which provides write locking long with other
 DAV support.
 
-n addition, your 'PUT' method should begin with calls to dav__init'
+In addition, your 'PUT' method should begin with calls to dav__init'
 and 'dav_simpleifhandler'. For example::
 
  def PUT(self, REQUEST, RESPONSE):
