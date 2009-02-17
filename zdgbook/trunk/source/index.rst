@@ -14,7 +14,8 @@ Contents:
    Introduction.rst
    ComponentsAndInterfaces.rst
    ObjectPublishing.rst
-   Products.rst 
+   Products.rst
+   ZODBPersistentComponents.rst
    AppendixA.rst
    AppendixB.rst
 
