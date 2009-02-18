@@ -18,6 +18,7 @@ Contents:
    ZODBPersistentComponents.rst
    Acquisition.rst
    Security.rst
+   TestingAndDebugging.rst
    AppendixA.rst
    AppendixB.rst
 
