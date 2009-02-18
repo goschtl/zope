@@ -32,7 +32,8 @@ class TestSelenium(zc.selenium.pytest.Test):
 
     def test_open(self):
         self.selenium.open('http://%s/' % self.selenium.server)
-        self.selenium.verifyTextPresent('Zope')
+        # could be zope3 or zope2
+        self.selenium.verifyTextPresent('regexp:Login|Zope Quick Start')
 
 
 class HTTPTest(unittest.TestCase):
