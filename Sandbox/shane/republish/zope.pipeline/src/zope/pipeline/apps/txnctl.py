@@ -12,6 +12,7 @@
 #
 ##############################################################################
 
+from new import instancemethod
 
 import transaction
 from zope.location.interfaces import ILocationInfo
@@ -56,7 +57,7 @@ class TransactionAnnotator(object):
         self.next_app = next_app
 
     def __call__(self, environ, start_response):
-        res = self.app(environ, start_response)
+        res = self.next_app(environ, start_response)
         txn = transaction.get()
         if not txn.isDoomed():
             request = environ['zope.request']

@@ -65,7 +65,7 @@ Tests of ++etc++process
 If the traversal stack contains ++etc++process, the root opener uses
 a utility by that name as the root instead of opening the database.
 
-    >>> from zope.interface import Interface, implements
+    >>> from zope.interface import Interface
     >>> from zope.component import provideUtility
     >>> class ProcessRoot(object):
     ...     pass

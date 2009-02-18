@@ -35,6 +35,8 @@ def test_suite():
         doctest.DocFileSuite('requestsetup.txt', optionflags=flags,
             setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('retry.txt', optionflags=flags),
+        doctest.DocFileSuite('txnctl.txt', optionflags=flags,
+            setUp=setUp, tearDown=tearDown),
     ])
 
 if __name__ == '__main__':
