@@ -18,6 +18,7 @@ $Id: interfaces.py 73003 2007-03-06 10:34:19Z oestermeier $
 __docformat__ = "reStructuredText"
 
 from zope import interface
+import zope.interface.common.mapping
 from zope import component
 from zope import schema
 from zope import lifecycleevent
@@ -31,7 +32,7 @@ class ISynchronizableAnnotations(interface.common.mapping.IMapping):
 
     def modify(target):
         """Modifies the target annotations.
-        
+
         Transfers the synchronizable namespaces to the target annotations.
         Returns an lifecycleevent.interfaces.IModificationDescription
         if changes were detected, None othewise.
@@ -40,7 +41,7 @@ class ISynchronizableAnnotations(interface.common.mapping.IMapping):
 
 class IObjectSynchronized(lifecycleevent.interfaces.IModificationDescription):
     """A unspecific modification description.
-    
+
     Basically says that an object has changed during a sync
     operation. If you can say more specific things you should
     use other modification descriptions.
@@ -48,12 +49,12 @@ class IObjectSynchronized(lifecycleevent.interfaces.IModificationDescription):
 
 class IRepository(interface.Interface):
     """A target system that stores objects as files or directories."""
-    
+
     chunk_size = schema.Int(
         title=u"Chunk Size",
         description=u"The chunk size.",
         default=32768)
-        
+
     case_insensitive = schema.Bool(
         title=u"Case Insensitive",
         description=u"Is this repository case insensitive?",
@@ -96,7 +97,7 @@ class IPickler(interface.Interface):
 
 class IUnpickler(interface.Interface):
     """An unpickler."""
-    
+
     def load(readable):
         """Loads a pickled object from a readable file-like object."""
 
@@ -109,7 +110,7 @@ class IEntryId(interface.Interface):
 
     def __str__():
         """Returns a string representation.
-        
+
         The encoding should be 'UTF-8'.
         """
 
@@ -153,7 +154,7 @@ class IReadable(interface.Interface):
 class ISyncTask(interface.Interface):
     """Base interface for ICheckout, ICommit, and ICheck.
 
-    The repository may be a filesystem, an archive, a database, 
+    The repository may be a filesystem, an archive, a database,
     or something else that is able to store serialized data.
     """
 
@@ -200,14 +201,14 @@ class ICheckin(ISyncTask):
         name -- The name of the object
 
         location -- The location where the object will go
-        
+
         Raises a ``SynchronizationError`` if the object
         already exists at the given location.
         """
 
 
 class ICheck(ISyncTask):
-    """Check that the repository is consistent with the object database.""" 
+    """Check that the repository is consistent with the object database."""
 
     def perform(container, name, fspath):
         """Compare an object or object tree from a repository.
@@ -233,7 +234,7 @@ class ICommit(ISyncTask):
 
 class IFileSystemRepository(IRepository):
     """A filesystem repository.
-    
+
     Stores the data in a directory tree on the filesystem.
     """
 
@@ -253,14 +254,14 @@ class ISVNRepository(IRepository):
 
 class ISynchronizerFactory(component.interfaces.IFactory):
     """A factory for synchronizer, i.e. serializers/de-serializers.
-    
-    The factory should be registered as a named utility with 
-    the dotted name of the adapted class as the lookup key. 
-    
+
+    The factory should be registered as a named utility with
+    the dotted name of the adapted class as the lookup key.
+
     The default factory should be registered without a name.
-    
+
     The call of the factory should return
-    
+
     - an `IDirectorySynchronizer` adapter for the object if the
       object is represented as a directory.
 
@@ -284,14 +285,14 @@ class ISerializer(interface.Interface):
     def annotations():
         """Return annotations for the entry.
 
-        Returns None if the serializer provides 
+        Returns None if the serializer provides
         it's own representation
         """
 
     def extras():
         """Return extra data for the entry.
 
-        Returns None if the serializer provides it's own 
+        Returns None if the serializer provides it's own
         representation of extras.
         """
 
@@ -299,17 +300,17 @@ class ISerializer(interface.Interface):
 class IDeserializer(interface.Interface):
     """The inverse operator of an ISerializer.
 
-    Deserializer consume serialized data and provide 
+    Deserializer consume serialized data and provide
     write access to parts of the deserialized objects.
     """
 
     def setmetadata(metadata):
         """Sets entry metadata.
-        
+
         Returns an lifecycleevent.interfaces.IModificationDescription
         if relevant changes were detected, None othewise.
         """
-        
+
     def setannotations(annotations):
         """Sets deserialized annotations.
 
@@ -371,7 +372,7 @@ class IDirectoryDeserializer(IDeserializer):
         """Deletes an item."""
 
 
-class IDirectorySynchronizer(ISynchronizer, 
+class IDirectorySynchronizer(ISynchronizer,
                                 IDirectorySerializer, IDirectoryDeserializer):
     """A synchronizer for directory-like objects."""
 
@@ -381,7 +382,7 @@ class IDirectorySynchronizer(ISynchronizer,
 
 class IObjectGenerator(interface.Interface):
     """A generator for objects with a special create protocol."""
-    
+
     def create(context, name):
         """Creates the object in the given context."""
 
