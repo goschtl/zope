@@ -2,11 +2,14 @@
 Introduction
 ############
 
-Zope is an open source web application framework.  It has three
-distinct audiences:
+Zope 2 is a free and open-source, object-oriented web application
+server written in the Python programming language.  The term ZOPE is
+an acronym for "Z Object Publishing Environment" (the Z doesn't
+really mean anything in particular).  However, nowadays ZOPE is
+simply written as Zope.  It has three distinct audiences.
 
 *Site Managers*
-  individuals who use of Zope's "out of the box" features to build
+  Individuals who use of Zope's "out of the box" features to build
   websites.  This audience is interested in making use of Zope's
   existing array of features to create content management solutions.
   They will likely make heavy use of "through the web" scripting
@@ -16,30 +19,31 @@ distinct audiences:
   application or website.
 
 *Developers*
-  individuals who wish to extend Zope to create highly customized
+  Individuals who wish to extend Zope to create highly customized
   solutions.  This audience is likely interested in creating highly
   reusable custom code that makes Zope do something new and
-  interesting.
+  interesting.  They will likely make heavy use of "through the
+  file-system" style development.
 
 *Administrators*
-  individuals responsible for keeping a Zope site running and
+  Individuals responsible for keeping a Zope site running and
   performing installations and upgrades.
 
 This guide is intended to document Zope for the second audience,
-developers, as defined above.  If you fit more into the "user"
+Developers, as defined above.  If you fit more into the "user"
 audience defined above, you'll probably want to start by reading `The
-Zope Book <http://docs.zope.org/zope2book>`_ .  If you fit
-more into the "administrator" audience defined above, you'll likely
-be interested in `The Zope Administrator's Guide
+Zope Book <http://docs.zope.org/zope2book>`_ .  If you fit more into
+the "administrator" audience defined above, you'll likely be
+interested in `The Zope Administrator's Guide
 <http://www.zope.org/DocProjects/AdminGuide>`_, although it is
 currently unfinished.
 
 Throughout this guide, it is assumed that you know how to program in
-the `Python <http://www.python.org>`_ programming language.  Most of
-the examples in this guide will be in Python.  There are a number of
-great resources and books for learning Python; the best online
-resource is the `python.org web site <http://www.python.org/>`_ and
-many books can be found on the shelves of your local bookstore.
+the Python programming language.  Most of the examples in this guide
+will be in Python.  There are a number of great resources and books
+for learning Python; the best online resource is the `python.org web
+site <http://www.python.org/>`_ and many books can be found on the
+shelves of your local bookstore.
 
 This book describes Zope's services to the developer from a hands on,
 example-oriented standpoint.  This book is not a complete reference
