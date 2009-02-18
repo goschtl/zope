@@ -1,0 +1,36 @@
+Zope FSSync Changes
+
+  After Zope 3.4.0b1 (trunk only)
+
+    Refactoring of zope.fssync and zope.app.fssync into two clearly 
+    separated packages: 
+
+    - zope.fssync contains now a Python API that has no critical dependencies 
+      on Zope, the ZODB, and the security machinery. 
+
+    - zope.app.fssync contains a protected web-based API and special 
+      synchronizers for zope.app content types. 
+
+    Other major changes are 
+
+    - synchronizers (i.e. serialization/de-serialization adapters) are created 
+      by named utilities which use dotted class names as lookup keys 
+
+    - added doctests
+
+    - support for large files 
+
+    - adapters for pickler, unpickler and handling of persistent pickle ids 
+
+    - binaries are no longer merged 
+
+    - case-insensitive filesystems and repositories use disambiguated names on 
+      export and the original names on import 
+
+    - export and import of directly provided interfaces 
+
+    - direct export to archives/direct import from archives 
+
+    - addressed encoding problems on Mac OSX
+
+    

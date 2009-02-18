@@ -1,0 +1,14 @@
+==========================================================
+Things to do for the next release (in no particular order)
+==========================================================
+
+Miscellaneous
+-------------
+
+- Remove dependency on zope.traversing which presupposes zope.app packages
+- Add a callback for synchronization handlers which allows to
+  update caches, catalogs, etc.
+
+Bug Fixes
+---------
+
