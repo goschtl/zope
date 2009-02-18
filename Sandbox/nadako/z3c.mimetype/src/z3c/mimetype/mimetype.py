@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+'''
+$Id$
+'''
 import os
 from xml.dom import minidom, XML_NAMESPACE
 

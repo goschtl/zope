@@ -11,10 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+'''
+$Id$
+'''
 from zope.interface import Interface
 from zope.schema import ASCIILine, TextLine
 
 class IMIMETypesUtility(Interface):
+    '''MIME type guessing utility'''
     
     def getTypeByFileName(filename):
         '''Return type guessed by filename'''
@@ -26,6 +30,7 @@ class IMIMETypesUtility(Interface):
         '''Try to guess content type either by file name or contents or both'''
 
 class IMIMEType(Interface):
+    '''Single MIME type representation'''
     
     media = ASCIILine(
         title=u'Media',

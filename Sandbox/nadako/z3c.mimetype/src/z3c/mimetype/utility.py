@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+'''
+$Id$
+'''
 import re
 import os
 import fnmatch

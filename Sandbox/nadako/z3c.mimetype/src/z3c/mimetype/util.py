@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+'''
+$Id$
+'''
 import os
 
 XDG_DATA_HOME = os.environ.get('XDG_DATA_HOME', os.path.join(os.environ.get('HOME', '/'), '.local', 'share'))

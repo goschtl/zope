@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+'''
+$Id$
+'''
 from z3c.mimetype.mimetype import lookup
 
 class MagicRule(object):
