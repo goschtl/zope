@@ -142,7 +142,9 @@ function selectionError()
     <td>
       <select id="from" name="from" size="5" multiple=""
           tal:attributes="name string:${view/name}.from;
-                          id string:${view/name}.from">
+                          id string:${view/name}.from;
+                          size view/size"
+                          >
         <option tal:repeat="entry view/choices"
                 tal:attributes="value entry/value"
                 tal:content="entry/text" i18n:translate=""/>
@@ -162,7 +164,8 @@ function selectionError()
     <td>
       <select id="to" name="to" size="5" multiple=""
           tal:attributes="name string:${view/name}.to;
-                          id string:${view/name}.to">
+                          id string:${view/name}.to;
+                          size view/size">
         <option tal:repeat="entry view/selected"
                 tal:attributes="value entry/value"
                 tal:content="entry/text" i18n:translate=""/>

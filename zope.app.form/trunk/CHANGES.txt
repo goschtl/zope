@@ -5,7 +5,8 @@ CHANGES
 3.7.2 (unreleased)
 ==================
 
-- ...
+- Fixed bug where OrderedMultiSelectWidget did not respect the widgets
+  size attribute.
 
 3.7.1 (2009-01-31)
 ==================
