@@ -51,12 +51,24 @@ def run_zope2(config, port):
     import Zope2.Startup.zopectl
     # XXX is it really supposed to be this hard to do commandline ZConfig
     # overrides when using zopectl?
-    original_fg = Zope2.Startup.zopectl.ZopeCmd.do_foreground
-    def do_foreground_port(self, arg):
+    original_start = Zope2.Startup.zopectl.ZopeCmd.do_start
+    def do_start_port(self, arg):
         self.options.program[1:1] = ["-X", "http-server/address=" + port]
-        original_fg(self, arg)
-    Zope2.Startup.zopectl.ZopeCmd.do_foreground = do_foreground_port
-    Zope2.Startup.zopectl.main(["-C", config, 'fg'] + sys.argv[1:])
+        original_start(self, arg)
+    Zope2.Startup.zopectl.ZopeCmd.do_start = do_start_port
+
+    Zope2.Startup.zopectl.main(["-C", config, 'start'] + sys.argv[1:])
+    while True:
+        time.sleep(10000)
+
+def stop_zope2(config, port):
+    import Zope2.Startup.zopectl
+    original_stop = Zope2.Startup.zopectl.ZopeCmd.do_stop
+    def do_stop_port(self, arg):
+        self.options.program[1:1] = ["-X", "http-server/address=" + port]
+        original_stop(self, arg)
+    Zope2.Startup.zopectl.ZopeCmd.do_stop = do_stop_port
+    Zope2.Startup.zopectl.main(["-C", config, 'stop'])
 
 def make_wsgi_run_zope(app_path):
     import wsgiref.simple_server
@@ -260,6 +272,8 @@ def main():
         while True:
             time.sleep(10000)
     else:
+        if options.runner == 'zope2':
+            stop_zope2(options.config, options.port)
         # exit with 0 if all tests passed, 1 if any failed
         sys.exit(not test_result)
 
