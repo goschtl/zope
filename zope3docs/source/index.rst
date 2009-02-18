@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 2
 
    process/index
+   codingstyle/index
    migration/index
 
 Indices and tables
