@@ -1,0 +1,106 @@
+
+Retry Application
+-----------------
+
+The retry application catches certain kinds of exceptions that occur
+later in the pipeline and retries them automatically.  This is useful
+for any transactional system that sometimes generates conflict errors
+that are resolved easily.
+
+To test the retry app, first we'll make a simple app that generates a
+Retry exception the first time, but not the second time.
+
+    >>> from zope.publisher.interfaces.exceptions import Retry
+    >>> attempts = []
+    >>> def my_app(environ, start_response):
+    ...     attempts.append(1)
+    ...     status = '200 OK'
+    ...     response_headers = [('Content-type','text/plain')]
+    ...     response_headers += [('X-Attempts', str(len(attempts)))]
+    ...     start_response(status, response_headers)
+    ...     if len(attempts) == 1:
+    ...         if environ.get('zope.can_retry'):
+    ...             raise Retry()
+    ...         else:
+    ...             raise ValueError()
+    ...     return ['Hello world!\n']
+
+Now put RetryApp in front of the test app and try it out.
+
+    >>> from zope.pipeline.apps.retry import RetryApp
+    >>> app = RetryApp(my_app)
+    >>> env = {}
+    >>> got_headers = []
+    >>> def start_response(status, headers, exc_info=None):
+    ...     got_headers[:] = list(headers)
+    >>> app(env, start_response)
+    ['Hello world!\n']
+
+The test app was called twice.
+
+    >>> attempts
+    [1, 1]
+    >>> got_headers
+    [('Content-type', 'text/plain'), ('X-Attempts', '2')]
+
+Do it again, but this time only allow 2 attempts.
+
+    >>> del attempts[:]
+    >>> del got_headers[:]
+    >>> app = RetryApp(my_app, max_attempts=2)
+    >>> app(env, start_response)
+    ['Hello world!\n']
+
+The test app was called twice.
+
+    >>> attempts
+    [1, 1]
+    >>> got_headers
+    [('Content-type', 'text/plain'), ('X-Attempts', '2')]
+
+Once more, but this time only allow 1 attempt.
+
+    >>> del attempts[:]
+    >>> del got_headers[:]
+    >>> app = RetryApp(my_app, max_attempts=1)
+    >>> app(env, start_response)
+    Traceback (most recent call last):
+    ...
+    ValueError
+
+
+Repeating the input stream
+--------------------------
+
+Create a test app that echoes a stream back.
+
+    >>> del attempts[:]
+    >>> del got_headers[:]
+    >>> def echo_app(environ, start_response):
+    ...     data = environ['wsgi.input'].read()
+    ...     attempts.append(1)
+    ...     status = '200 Ok'
+    ...     response_headers = [('Content-Type', 'text/plain'),
+    ...                         ('Content-Length', str(len(data)))]
+    ...     start_response(status, response_headers)
+    ...     if len(attempts) == 1:
+    ...         if environ.get('zope.can_retry'):
+    ...             raise Retry()
+    ...         else:
+    ...             raise ValueError()
+    ...     return [data]
+    >>> class Stream:
+    ...     def __init__(self, data):
+    ...         self.pos = 0
+    ...         self.data = data
+    ...     def read(self, bytes=-1):
+    ...         if bytes < 0:
+    ...             bytes = len(self.data) - self.pos
+    ...         res = self.data[self.pos : self.pos + bytes]
+    ...         self.pos += bytes
+    ...         return res
+    >>> env = {'wsgi.input': Stream('0123456789' * 4)}
+    >>> app = RetryApp(echo_app)
+    >>> app(env, start_response)
+    ['0123456789012345678901234567890123456789']
+

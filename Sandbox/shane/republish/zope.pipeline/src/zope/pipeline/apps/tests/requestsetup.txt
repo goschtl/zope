@@ -1,0 +1,90 @@
+
+Request Creation
+----------------
+
+The ``CreateRequest`` application puts a Zope-style request object in the
+WSGI environment.  Zope-style request objects are mainly used for
+object traversal.
+
+Create an app that prints the contents of the created request.
+
+    >>> attempts = []
+    >>> def my_app(environ, start_response):
+    ...     status = '200 OK'
+    ...     response_headers = [('Content-type','text/plain')]
+    ...     start_response(status, response_headers)
+    ...     request = environ['zope.request']
+    ...     return [repr(request)]
+
+Now put CreateRequest in front of the test app and try it out.
+
+    >>> from zope.pipeline.apps.requestsetup import CreateRequest
+    >>> app = CreateRequest(my_app)
+    >>> env = {'CONTENT_TYPE': 'text/html; charset=UTF-8'}
+    >>> got_headers = []
+    >>> def start_response(status, headers, exc_info=None):
+    ...     got_headers[:] = list(headers)
+    >>> app(env, start_response)
+    Traceback (most recent call last):
+    ...
+    ConfigurationError: No registered request factory found for (http/GET/text/html; charset=UTF-8)
+
+That happened because no request factories have been registered.  Add one
+and try again.
+
+    >>> class TestRequest(object):
+    ...     def __init__(self, environ):
+    ...         self.environ = environ
+    ...     def close(self):
+    ...         pass
+    >>> from zope.pipeline.apps.requestsetup import factoryRegistry
+    >>> factoryRegistry.register('http', 'GET', '*', 'a', 10, TestRequest)
+    >>> app(env, start_response)
+    ['<TestRequest object at ...>']
+
+Register another type of request and give it a higher priority.
+
+    >>> class HighTestRequest(TestRequest):
+    ...     pass
+    >>> factoryRegistry.register('http', 'GET', '*', 'b', 20, HighTestRequest)
+    >>> app(env, start_response)
+    ['<HighTestRequest object at ...>']
+
+Overwrite the registration by reusing a name.
+
+    >>> class HigherTestRequest(TestRequest):
+    ...     pass
+    >>> factoryRegistry.register('http', 'GET', '*', 'b', 20, HigherTestRequest)
+    >>> app(env, start_response)
+    ['<HigherTestRequest object at ...>']
+
+Try to register another by a different name but with the same priority.
+
+    >>> class XTestRequest(HighTestRequest):
+    ...     pass
+    >>> factoryRegistry.register('http', 'GET', '*', 'c', 20, XTestRequest)
+    Traceback (most recent call last):
+    ...
+    ConfigurationError: All registered publishers for a given scheme+method+mimetype must have distinct priorities. Please check your configuration.
+
+
+Form Parsing
+------------
+
+The ``ParseForm`` application uses ``zope.httpform`` to parse the form
+data in a request.
+
+    >>> from zope.pipeline.apps.requestsetup import ParseForm
+    >>> class FormTestRequest(object):
+    ...     def __init__(self, environ):
+    ...         self.environ = environ
+    ...     def close(self):
+    ...         pass
+    ...     def __repr__(self):
+    ...         return 'FormTestRequest(%s)' % repr(self.form)
+    >>> env = {'QUERY_STRING': 'a:int:list=3&a:int:list=4'}
+    >>> factoryRegistry.__init__()
+    >>> factoryRegistry.register('http', 'GET', '*', 't', 0, FormTestRequest)
+    >>> app = CreateRequest(ParseForm(my_app))
+    >>> app(env, start_response)
+    ["FormTestRequest({u'a': [3, 4]})"]

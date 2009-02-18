@@ -20,10 +20,10 @@ from ZODB.POSException import ConflictError
 from zope.pipeline.autotemp import AutoTemporaryFile
 
 
-class Retry(object):
+class RetryApp(object):
     """Retries requests when a Retry or ConflictError propagates.
 
-    This middleware app should enclose the app that creates zope.request.
+    This app should enclose the app that creates zope.request.
     It sets an environment variable named 'zope.can_retry'.  Error handlers
     should propagate Retry or ConflictError when 'zope.can_retry' is
     true.
@@ -37,7 +37,9 @@ class Retry(object):
     def __call__(self, environ, start_response):
         wsgi_input = environ.get('wsgi.input')
         if wsgi_input is not None:
-            if not hasattr(wsgi_input, 'seek'):
+            try:
+                wsgi_input.seek(0)
+            except (AttributeError, IOError):
                 # make the input stream rewindable
                 f = AutoTemporaryFile()
                 f.copyfrom(wsgi_input)
@@ -58,8 +60,6 @@ class Retry(object):
             try:
                 res = self.next_app(environ, retryable_start_response)
             except (Retry, ConflictError):
-                if 'zope.request' in environ:
-                    del environ['zope.request']
                 if wsgi_input is not None:
                     wsgi_input.seek(0)
                 attempt += 1

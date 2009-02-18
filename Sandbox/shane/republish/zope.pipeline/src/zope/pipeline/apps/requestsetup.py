@@ -18,7 +18,9 @@ __docformat__ = 'restructuredtext'
 from zope.configuration.exceptions import ConfigurationError
 from zope.httpform import FormParser
 from zope.i18n.interfaces import IUserPreferredCharsets
+from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.interface import implements
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces import IWSGIApplication
 from zope.testing import cleanup
 
@@ -80,8 +82,8 @@ class CreateRequest(object):
             setDefaultSkin(request)
 
 
-class ProcessForm(object):
-    """WSGI middleware that processes HTML form data.
+class ParseForm(object):
+    """WSGI middleware that parses HTML form data.
 
     This step is separate from request creation so that the
     error handling step can catch form data errors.
@@ -100,9 +102,13 @@ class ProcessForm(object):
         charsets = []
         def to_unicode(text):
             if not charsets:
-                envadapter = IUserPreferredCharsets(request)
-                charsets.extend(
-                    envadapter.getPreferredCharsets() or ['utf-8'])
+                envadapter = IUserPreferredCharsets(request, None)
+                if envadapter:
+                    pref = envadapter.getPreferredCharsets()
+                    if pref:
+                        charsets.extend(pref)
+                if not charsets:
+                    charsets.append('utf-8')
             for charset in charsets:
                 try:
                     return unicode(text, charset)
@@ -164,9 +170,9 @@ class RequestFactoryRegistry(object):
         priorities = [item['priority'] for item in l]
         if len(set(priorities)) != len(l):
             raise ConfigurationError('All registered publishers for a given '
-                                     'method+mimetype must have distinct '
-                                     'priorities. Please check your ZCML '
-                                     'configuration')
+                                     'scheme+method+mimetype must have '
+                                     'distinct priorities. Please check your '
+                                     'configuration.')
 
     def get_factories_for(self, scheme, method, mimetype):
         if ';' in mimetype:

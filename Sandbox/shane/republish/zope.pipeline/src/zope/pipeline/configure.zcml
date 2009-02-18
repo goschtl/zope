@@ -19,7 +19,7 @@
     control_transaction
     event
     handle_error
-    process_form
+    parse_form
     authenticate
     traverse
     annotate_transaction
@@ -40,7 +40,7 @@
 
 <wsgi:application
     name="retry"
-    factory=".apps.retry.Retry"
+    factory=".apps.retry.RetryApp"
     for=".interfaces.INoRequest" />
 
 <wsgi:application
@@ -76,14 +76,14 @@
 
 <!-- no form processing for non-browser requests -->
 <wsgi:application
-    name="process_form"
+    name="parse_form"
     factory=".apps.passthrough"
     for="zope.publisher.interfaces.IRequest" />
 
 <!-- process forms for browser requests -->
 <wsgi:application
-    name="process_form"
-    factory=".apps.requestsetup.ProcessForm"
+    name="parse_form"
+    factory=".apps.requestsetup.ParseForm"
     for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
 <!--wsgi:application
