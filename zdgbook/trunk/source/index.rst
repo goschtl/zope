@@ -16,6 +16,7 @@ Contents:
    ObjectPublishing.rst
    Products.rst
    ZODBPersistentComponents.rst
+   Acquisition.rst
    AppendixA.rst
    AppendixB.rst
 
