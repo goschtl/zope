@@ -17,6 +17,7 @@ Contents:
    Products.rst
    ZODBPersistentComponents.rst
    Acquisition.rst
+   Security.rst
    AppendixA.rst
    AppendixB.rst
 
