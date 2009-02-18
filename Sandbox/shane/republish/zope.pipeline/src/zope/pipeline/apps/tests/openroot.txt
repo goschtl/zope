@@ -1,0 +1,77 @@
+
+RootOpener Tests
+----------------
+
+The RootOpener application opens a request-specific connection to the
+root database, calls the rest of the pipeline, then closes the connection
+on the way out.
+
+Set up the database.
+
+    >>> from ZODB.DB import DB
+    >>> from ZODB.DemoStorage import DemoStorage
+    >>> import transaction
+    >>> from persistent.mapping import PersistentMapping
+    >>> db = DB(DemoStorage())
+    >>> conn = db.open()
+    >>> conn.root()['Application'] = PersistentMapping({'x': 1})
+    >>> transaction.commit()
+    >>> conn.close()
+
+Create the RootOpener app around a test app.
+
+    >>> from zope.pipeline.apps.openroot import RootOpener
+    >>> def my_app(environ, start_response):
+    ...     status = '200 OK'
+    ...     response_headers = [('Content-type','text/plain')]
+    ...     start_response(status, response_headers)
+    ...     request = environ['zope.request']
+    ...     return [repr(request.traversed)]
+    >>> app = RootOpener(my_app, db)
+
+Call the app.
+
+    >>> class TestRequest(object):
+    ...     def __init__(self):
+    ...         self.traversal_stack = []
+    ...         self.traversed = []
+    ...         self.annotations = {}
+    >>> request = TestRequest()
+    >>> environ = {'zope.request': request}
+    >>> def start_response(status, headers, exc_info=None):
+    ...     pass
+    >>> app(environ, start_response)
+    ["[('Application', {'x': 1})]"]
+
+Try to call the app with no Application at the root.
+
+    >>> conn = db.open()
+    >>> del conn.root()['Application']
+    >>> transaction.commit()
+    >>> conn.close()
+    >>> app(environ, start_response)
+    Traceback (most recent call last):
+    ...
+    SystemError: Zope Application Not Found
+
+Clean up.
+
+    >>> db.close()
+
+
+Tests of ++etc++process
+-----------------------
+
+If the traversal stack contains ++etc++process, the root opener uses
+a utility by that name as the root instead of opening the database.
+
+    >>> from zope.interface import Interface, implements
+    >>> from zope.component import provideUtility
+    >>> class ProcessRoot(object):
+    ...     pass
+    >>> provideUtility(ProcessRoot, name='++etc++process', provides=Interface)
+    >>> request = TestRequest()
+    >>> request.traversal_stack.append('++etc++process')
+    >>> environ = {'zope.request': request}
+    >>> app(environ, start_response)
+    ["[('++etc++process', <class 'ProcessRoot'>)]"]

@@ -29,9 +29,12 @@ def tearDown(test=None):
 
 def test_suite():
     return unittest.TestSuite([
-        doctest.DocFileSuite('retry.txt', optionflags=flags),
+        doctest.DocFileSuite('mapply.txt', optionflags=flags),
+        doctest.DocFileSuite('openroot.txt', optionflags=flags,
+            setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('requestsetup.txt', optionflags=flags,
             setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite('retry.txt', optionflags=flags),
     ])
 
 if __name__ == '__main__':

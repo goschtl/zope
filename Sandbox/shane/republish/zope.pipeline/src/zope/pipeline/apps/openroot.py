@@ -14,6 +14,7 @@
 
 from zope.component import getUtility
 from zope.interface import implements
+from zope.interface import Interface
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.checker import ProxyFactory
 
@@ -46,9 +47,9 @@ class RootOpener(object):
         # then we should get the app controller rather than look
         # in the database.
         if self.app_controller_name in request.traversal_stack:
-            root = getUtility(name=self.app_controller_name)
+            root = getUtility(Interface, name=self.app_controller_name)
             request.traversed = [(self.app_controller_name, root)]
-            return self.app(environ, start_response)
+            return self.next_app(environ, start_response)
 
         # Open the database.
         conn = self.database.open()

@@ -1,0 +1,113 @@
+
+Tests of the Caller app
+-----------------------
+
+The Caller app is the last stage in a pipeline.  It calls the traversed object
+and sets the response according to what the function returned.
+
+    >>> class TestRequest(object):
+    ...     def get(self, key, default=None):
+    ...         if key == 'a':
+    ...             return 6
+    ...         elif key == 'b':
+    ...             return 8
+    ...         else:
+    ...             return default
+    >>> class TestResponse(object):
+    ...     def getStatusString(self):
+    ...         return '200 Ok'
+    ...     def getHeaders(self):
+    ...         return [('Content-Type', 'text/plain')]
+    ...     def setResult(self, data):
+    ...         self.data = data
+    ...     def consumeBodyIter(self):
+    ...         return [self.data]
+    >>> def compute(a, b, c=4):
+    ...     return '%d%d%d' % (a, b, c)
+    >>> r = TestRequest()
+    >>> r.traversed = [('obj', compute)]
+    >>> r.response = TestResponse()
+    >>> from zope.pipeline.apps.mapply import Caller
+    >>> app = Caller()
+    >>> app
+    Caller()
+    >>> env = {'zope.request': r}
+    >>> got_headers = []
+    >>> got_status = []
+    >>> def start_response(status, headers, exc_info=None):
+    ...     got_status[:] = [status]
+    ...     got_headers[:] = list(headers)
+    >>> app(env, start_response)
+    ['684']
+    >>> got_status
+    ['200 Ok']
+    >>> got_headers
+    [('Content-Type', 'text/plain')]
+
+
+Tests of ``mapply()``
+---------------------
+
+The ``mapply`` function calls a function with only the parameters expected
+by the function.
+
+    >>> from zope.pipeline.apps.mapply import mapply
+    >>> def compute(a, b, c=4):
+    ...     return '%d%d%d' % (a, b, c)
+    >>> values = {'a':2, 'b':3, 'c':5, 'd':7}
+    >>> mapply(compute, (), values)
+    '235'
+    >>> mapply(compute, (7,), values)
+    '735'
+
+The ``mapply`` function can call a method of an instance.
+
+    >>> class c(object):
+    ...     a = 3
+    ...     def __call__(self, b, c=4):
+    ...         return '%d%d%d' % (self.a, b, c)
+    ...     compute = __call__
+    >>> cc = c()
+    >>> mapply(cc, (), values)
+    '335'
+    >>> del values['c']
+    >>> mapply(cc.compute, (), values)
+    '334'
+
+It can also use classic classes.
+
+    >>> class c2:
+    ...     """This is a classic class"""
+    >>> c2inst = c2()
+    >>> c2inst.__call__ = cc
+    >>> mapply(c2inst, (), values)
+    '334'
+
+It can call functions that require no parameters.
+
+    >>> def callme():
+    ...     return 'no'
+    >>> mapply(callme)
+    'no'
+
+It refuses to create class instances directly.
+
+    >>> mapply(c2)
+    Traceback (most recent call last):
+    ...
+    TypeError: mapply() can not call class constructors
+
+You have to provide enough parameters.
+
+    >>> mapply(compute, (), {'a': 4})
+    Traceback (most recent call last):
+    ...
+    TypeError: Missing argument to compute(): b
+
+It can provide the request object for functions that need it.
+
+    >>> request = TestRequest()
+    >>> def compute(REQUEST):
+    ...     return '%d%d' % (REQUEST.get('a'), REQUEST.get('b'))
+    >>> mapply(compute, (), request)
+    '68'
