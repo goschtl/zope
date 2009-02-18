@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+'''MIME type guessing framework interface definitions
+
 $Id$
 '''
 from zope.interface import Interface

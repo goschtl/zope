@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+'''Magic type guessing utility classes
+
 $Id$
 '''
 from z3c.mimetype.mimetype import lookup

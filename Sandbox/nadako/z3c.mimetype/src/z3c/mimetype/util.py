@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+'''Utility functions
+
 $Id$
 '''
 import os
@@ -20,6 +21,8 @@ XDG_DATA_HOME = os.environ.get('XDG_DATA_HOME', os.path.join(os.environ.get('HOM
 XDG_DATA_DIRS = [XDG_DATA_HOME] + [dir for dir in os.environ.get('XDG_DATA_DIRS', '/usr/local/share:/usr/share').split(':') if dir]
 
 def iterDataPaths(*resource):
+    '''Iterate over all ``data`` paths as defined by XDG standard'''
+    
     resource = os.path.join(*resource)
     for data_dir in XDG_DATA_DIRS:
         path = os.path.join(data_dir, resource)

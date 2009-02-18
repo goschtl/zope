@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+'''MIME type helper objects
+
 $Id$
 '''
 import os
@@ -31,7 +32,23 @@ msgfactory = MessageFactory('shared-mime-info')
 
 mimeTypesTranslationDomain = SimpleTranslationDomain('shared-mime-info')
 
-class MIMEType(object):
+def lookup(media, subtype=None):
+    '''Lookup a MIMEType object using either two arguments (media and subtype)
+    or one argument in ``media/subtype`` form.
+    '''
+    
+    if subtype is None and '/' in media:
+        media, subtype = media.split('/', 1)
+    if (media, subtype) not in MIME_TYPES:
+        MIME_TYPES[(media, subtype)] = _MIMEType(media, subtype)
+    return MIME_TYPES[(media, subtype)]
+
+class _MIMEType(object):
+    '''Single MIME type representation
+    
+    Never create these objects using this class, use the ``lookup`` function
+    defined above instead.
+    '''
 
     implements(IMIMEType)
 
@@ -62,10 +79,3 @@ class MIMEType(object):
 
     def __str__(self):
         return self.media + '/' + self.subtype
-
-def lookup(media, subtype=None):
-    if subtype is None and '/' in media:
-        media, subtype = media.split('/', 1)
-    if (media, subtype) not in MIME_TYPES:
-        MIME_TYPES[(media, subtype)] = MIMEType(media, subtype)
-    return MIME_TYPES[(media, subtype)]

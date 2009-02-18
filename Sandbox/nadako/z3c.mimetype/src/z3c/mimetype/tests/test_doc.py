@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+'''Tests for z3c.mimetype functionality.
+
 $Id$
 '''
 import os

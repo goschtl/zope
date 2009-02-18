@@ -25,25 +25,23 @@ The core of this package is the global IMIMETypesUtility component.
   >>> verifyObject(IMIMETypesUtility, util)
   True
 
-It has three methods for getting mime type. The mime type is the
-IMIMEType object.
-
-  >>> from zope.interface.verify import verifyClass
-  >>> from z3c.mimetype.mimetype import MIMEType
-  >>> from z3c.mimetype.interfaces import IMIMEType
-
-  >>> verifyClass(IMIMEType, MIMEType)
-  True
-
-Those three methods are ``getTypeByFileName``, ``getTypeByContents`` and
-``getType``. We will describe them in that order, but for applications,
-it's reccommended to use the latter, ``getType`` method as it's most
-generic and easy-to use.
+It has three methods for getting mime type. Those three methods are
+``getTypeByFileName``, ``getTypeByContents`` and ``getType``. We will
+describe them in that order, but for applications, it's reccommended to
+use the latter, ``getType`` method as it's most generic and easy-to use.
 
 The simpliest method is ``getTypeByFileName`` that looks up the type by
 filename.
 
   >>> mt = util.getTypeByFileName('example.doc')
+
+The mime type is the object implementing IMIMEType interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> from z3c.mimetype.interfaces import IMIMEType
+
+  >>> verifyObject(IMIMEType, mt)
+  True
 
   >>> mt.media
   'application'
