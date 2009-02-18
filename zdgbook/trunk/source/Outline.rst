@@ -2,15 +2,13 @@
 Outline
 #######
 
-Introduction
-============
-
 Covers audience, topic, and scope.  Gives brief description of the
 developers guide and what goals the guide tries to acomplish.  Gives
 simple chapter by chapter overview of entire guide.
 
+
 Interfaces
-----------
+==========
 
 Zope is moving toward a more "self-documenting" model, where Zope
 component describe themselves with interfaces.  Many of the prose
@@ -36,8 +34,9 @@ The majority of the content of this chapter will come from the
 
 4. Defining interfaces
 
+
 Publishing
-----------
+==========
 
 One key facility that Zope provides for a component developer is
 access to a component through various network protocols, like HTTP.
@@ -52,24 +51,25 @@ XML-RPC.  This chapter describes how a component developer can
 publish their components "through the web" and other network
 protocols.
 
-      1. Object publishing overview
+1. Object publishing overview
 
-      2. Traversal
+2. Traversal
 
-      3. Network Protocols
+3. Network Protocols
 
-      4. Publishable Interfaces
+4. Publishable Interfaces
 
-      5. Object marshalling
+5. Object marshalling
 
-      6. Creating user interfaces
+6. Creating user interfaces
 
-        * with DTMLFile
+   - with DTMLFile
 
-        * with presentation templates
+   - with presentation templates
+
 
 Products
---------
+========
 
 Zope defines a system that allows component developers to distribute
 their components to other Zope users.  Components can be placed into
@@ -97,8 +97,9 @@ Amos/Shane's `Product Tutorial
 
 7. Evolving Products
 
+
 Persistence
------------
+===========
 
 Most Zope components live in the Zope Object DataBase (ZODB).
 Components that are stored in ZODB are called *persistent*.  Creating
@@ -116,8 +117,9 @@ ZODB.
 
 4. Transactions
 
+
 Security
---------
+========
 
 Zope has a very fine-grained, uniquely powerful security model.  This
 model allows Zope developers to create components that work safely in
@@ -140,8 +142,9 @@ first cut at `Security documentation
 
 4. Security Policies
 
+
 Debugging and Testing
----------------------
+=====================
 
 Covers debugging Zope and unit testing.
 
@@ -153,4 +156,4 @@ Covers debugging Zope and unit testing.
 
 - unit testing
 
-  * zope fixtures for unit testing
+  - zope fixtures for unit testing

@@ -2,10 +2,10 @@
 Components and Interfaces
 #########################
 
-Zope is becoming a component system. Zope components will be Python
-objects with interfaces that describe them. Right now only some of
-the Zope code base uses interfaces. In coming releases more and more
-of Zope will include interfaces. As a Zope developer you can use
+Zope is becoming a component system.  Zope components will be Python
+objects with interfaces that describe them.  Right now only some of
+the Zope code base uses interfaces.  In coming releases more and more
+of Zope will include interfaces.  As a Zope developer you can use
 interfaces right now to build your Zope components.
 
 Zope Components
@@ -21,25 +21,24 @@ Here is a very simple component that says hello.  Like all
 components, this one generally consists of two pieces, an interface,
 and an implementation::
 
-      from Interface import Base
+  from Interface import Base
 
-      class Hello(Base):
-          """ The Hello interface provides greetings. """
+  class Hello(Base):
+      """The Hello interface provides greetings."""
 
-          def hello(self, name):
-              """ Say hello to the name """
+      def hello(self, name):
+          """ Say hello to the name """
 
-      class HelloComponent:
+  class HelloComponent:
 
-          __implements__ = Hello
+      __implements__ = Hello
 
-          def hello(self, name):
-              return "hello %s!" % name
+      def hello(self, name):
+          return "hello %s!" % name
 
 Let's take a look at this step by step.  Here, you see two Python
 class statements.  The first statement creates the *interface*, and
 the second statement creates the *implementation*.
-
 
 The first class statement creates the 'Hello' interface.  This
 interface describes one method, called 'hello'.  Notice that there is
@@ -50,13 +49,13 @@ The second 'class' statement creates the 'HelloComponent' class.
 This class is the actual component that *does* what 'Hello'
 *describes*.  This is usually referred to as the *implementation* of
 'Hello'.  In order for you to know what interfaces 'HelloComponent'
-implements, it must somehow associate itself with an interface. The
-'__implements__' class attribute does just that. It says, "I
+implements, it must somehow associate itself with an interface.  The
+'__implements__' class attribute does just that.  It says, "I
 implement these interfaces".  In this case, 'HelloComponent' asserts
 that it implements one interface, 'Hello'.
 
 The interface describes how you would work with the object, but it
-doesn't dictate how that description is implemented. For example,
+doesn't dictate how that description is implemented.  For example,
 here's a more complex implementation of the 'Hello' interface::
 
       import xmlrpclib
@@ -85,29 +84,28 @@ Python Interfaces
 Interface describe the behavior of an object by containing useful
 information about the object.  This information includes:
 
-o Prose documentation about the object.  In Python terms, this is
+- Prose documentation about the object.  In Python terms, this is
   called the "doc string" of the interface.  In this element, you
   describe how the object works in prose language and any other
   useful information about the object.
 
-o Descriptions of attributes.  Attribute descriptions include the
+- Descriptions of attributes.  Attribute descriptions include the
   name of the attribute and prose documentation describing the
   attributes usage.
 
-o Descriptions of methods.  Method descriptions can include:
+- Descriptions of methods.  Method descriptions can include:
 
-  o Prose "doc string" documentation about the method and its usage.
+  - Prose "doc string" documentation about the method and its usage.
 
-  o A sequence of parameter objects that describes the parameters
+  - A sequence of parameter objects that describes the parameters
     expected by the method.
 
-o Optional tagged data.  Interface objects (and their
-  attributes, methods, and method parameters) can have optional,
-  application specific tagged data associated with them.
-  Examples uses for this are security assertions, pre/post
-  conditions, unit tests, and other possible information you may
-  want to associate with an Interface or its attributes.
-
+- Optional tagged data.  Interface objects (and their attributes,
+  methods, and method parameters) can have optional, application
+  specific tagged data associated with them.  Examples uses for this
+  are security assertions, pre/post conditions, unit tests, and other
+  possible information you may want to associate with an Interface or
+  its attributes.
 
 Not all of this information is mandatory.  For example, you may only
 want the methods of your interface to have prose documentation and
@@ -121,18 +119,18 @@ Why Use Interfaces?
 Interfaces solve a number of problems that arise while developing
 large systems with lots of developers.
 
-o Developers waste a lot of time looking at the source code of your
+- Developers waste a lot of time looking at the source code of your
   system to figure out how objects work.  This is even worse if
   someone else has already wasted their time doing the same thing.
 
-o Developers who are new to your system may misunderstand how your
+- Developers who are new to your system may misunderstand how your
   object works, causing, and possibly propagating, usage errors.
 
-o Because an object's interface is inferred from the source,
+- Because an object's interface is inferred from the source,
   developers may end up using methods and attributes that are meant
   for "internal use only".
 
-o Code inspection can be hard, and very discouraging to novice
+- Code inspection can be hard, and very discouraging to novice
   programmers trying to understand code written by gurus.
 
 Interfaces try to solve these problems by providing a way for you to
@@ -151,16 +149,15 @@ misleading, because interfaces are *not* classes.  It is important to
 understand that using Python's class syntax is just a convenience,
 and that the resulting object is an *interface*, not a class.
 
-
 To create an interface object using Python's class syntax, create a
 Python class that subclasses from 'Interface.Base'::
 
-      from Interface import Base
+  from Interface import Base
 
-      class Hello(Base):
+  class Hello(Base):
 
-          def hello(self, name):
-              """ Say hello to the world """
+      def hello(self, name):
+          """Say hello to the world"""
 
 This interface does not implement behavior for its methods, it just
 describes an interface that a typical "Hello" object would realize.
@@ -168,18 +165,18 @@ By subclassing the 'Interface.Base' interface, the resulting object
 'Hello' is an interface object. The Python interpreter confirms
 this::
 
-      >>> Hello
-      <Interface Hello at 812cbd4>
+  >>> Hello
+  <Interface Hello at 812cbd4>
 
 Now, you can associate the 'Hello' Interface with your new, concrete
 class in which you define your user behavior. For example::
 
-      class HelloComponent:
+  class HelloComponent:
 
-          __implements__ = Hello
+      __implements__ = Hello
 
-          def hello(self, name):
-              return "Hello %s!" % name
+      def hello(self, name):
+          return "Hello %s!" % name
 
 This new class, 'HelloComponent' is a concrete class that implements
 the 'Hello' interface.  A class can realize more than one interface.
@@ -189,18 +186,18 @@ wanted to assert that 'HelloComponent' instances realized the 'Item'
 interface as well as 'Hello', you can provide a sequence of Interface
 objects to the 'HelloComponent' class::
 
-      class HelloComponent:
+  class HelloComponent:
 
-          __implements__ = Hello, Item
+      __implements__ = Hello, Item
 
 This '__implements__' attribute is called an *interface assertion*.
 An interface assertion can be either an interface, or a sequence of
 interface assertions. Here's a more complex example::
 
-      class Sandwich:
+  class Sandwich:
 
-          __implements__ = (Food, (Nourishing, Delicious), (GetsStaleQuickly, 
-                           (EdibleWithHands, GoodForLunch)))
+      __implements__ = (Food, (Nourishing, Delicious), (GetsStaleQuickly, 
+                       (EdibleWithHands, GoodForLunch)))
 
 
 Interface assertions allow complex nesting of interfaces. This is
@@ -208,9 +205,9 @@ mostly useful when you wish to assert that your class implements some
 specific interfaces, along with whatever interfaces your base class
 implements::
 
-      class Sandwich(Food):
+   class Sandwich(Food):
 
-          __implements__ = (EdibleWithHands, GoodForLunch, Food.__implements__)
+       __implements__ = (EdibleWithHands, GoodForLunch, Food.__implements__)
 
 Take care before you assert that your class implements the interfaces
 of your base classes.
@@ -351,8 +348,8 @@ Interface.
 Conclusion
 ==========
 
-Interfaces provide a simple way to describe your Python objects. By
-using interfaces you document your objects' capabilities. As Zope
+Interfaces provide a simple way to describe your Python objects.  By
+using interfaces you document your objects' capabilities.  As Zope
 becomes more component oriented, your objects will fit right in.
 While components and interfaces are forward looking technologies,
 they are useful today for documentation and verification.
