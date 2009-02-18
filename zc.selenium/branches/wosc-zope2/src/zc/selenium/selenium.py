@@ -270,12 +270,14 @@ def main():
 
     if options.keep_running or not options.auto_start:
         while True:
-            time.sleep(10000)
-    else:
-        if options.runner == 'zope2':
-            stop_zope2(options.config, options.port)
-        # exit with 0 if all tests passed, 1 if any failed
-        sys.exit(not test_result)
+            try:
+                time.sleep(10000)
+            except KeyboardInterrupt:
+                break
+    if options.runner == 'zope2':
+        stop_zope2(options.config, options.port)
+    # exit with 0 if all tests passed, 1 if any failed
+    sys.exit(not test_result)
 
 if __name__ == '__main__':
     main()
