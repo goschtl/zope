@@ -10,26 +10,11 @@
       directory="resources"
       />
 
-  <class class=".results.Results">
-    <require
-        permission="zope.Public"
-        interface="zope.publisher.interfaces.IPublishTraverse"
-        attributes="__call__"
-        />
-  </class>
-
   <browser:page
       for="*"
       name="zc.selenium.suite"
       class="zc.selenium.suite.Suite"
       template="suite.pt"
-      permission="zope.Public"
-      />
-
-  <browser:page
-      for="*"
-      name="zc.selenium.results"
-      class=".results.Results"
       permission="zope.Public"
       />
 

@@ -514,9 +514,11 @@ We'll illustrate this using the component API:
     >>> from zope import interface
     >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
     >>> component.provideAdapter(Test,
-    ...     (interface.Interface, IDefaultBrowserLayer), name='first.html')
+    ...     (interface.Interface, IDefaultBrowserLayer), name='first.html',
+    ...     provides=zc.selenium.pytest.ISeleniumTest)
     >>> component.provideAdapter(Second,
-    ...     (interface.Interface, IDefaultBrowserLayer), name='second.html')
+    ...     (interface.Interface, IDefaultBrowserLayer), name='second.html',
+    ...     provides=zc.selenium.pytest.ISeleniumTest)
 
 The test suite used the zc.selenium.pytest.suite function to
 compute rows for the test suite:

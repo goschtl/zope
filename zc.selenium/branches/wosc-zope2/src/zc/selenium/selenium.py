@@ -23,12 +23,15 @@ import socket
 import sys
 import threading
 import time
+import urllib
 import urllib2
 import webbrowser
 
 from zope.testing import testrunner
 
 from zc.selenium.pytest import selectTestsToRun
+import zc.selenium.http
+
 
 # Compute a default port; this is simple and doesn't ensure that the
 # port is available, but does better than just hardcoding a port
@@ -36,6 +39,7 @@ from zc.selenium.pytest import selectTestsToRun
 # changes (especially in JavaScript resources).
 #
 DEFAULT_PORT = "8034"
+RESULTS_PORT = 39589
 
 def run_zope3(config, port):
     # This removes the script directory from sys.path, which we do
@@ -70,11 +74,11 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     # wait for the server to start
     old_timeout = socket.getdefaulttimeout()
     socket.setdefaulttimeout(5)
-    url = base_url % {'port': port}
-    url += ('/++resource++selenium/TestRunner.html'
-            '?test=%%2F@@zc.selenium.suite&'
-            'baseUrl=%s&'
-            'resultsUrl=%s/@@zc.selenium.results' % (url,url,))
+    base_url = base_url % {'port': port}
+    url = base_url + '/++resource++selenium/TestRunner.html?'
+    url += urllib.urlencode(
+        dict(test='/@@zc.selenium.suite', baseUrl=base_url,
+             resultsUrl='http://localhost:%s' % (RESULTS_PORT)))
     time.sleep(1)
     while zope_thread.isAlive():
         try:
@@ -118,7 +122,7 @@ def run_tests(zope_thread, auto_start, browser_name, port, base_url):
     if exit_now:
         return False
 
-    if int(results['numTestPasses']) == 0:
+    if int(results['numTestPasses']) == int(results['numTestFailures']) == 0:
         print
         print "no tests were run"
         print
@@ -217,6 +221,9 @@ def main():
     options = parseOptions()
     if options.random_port:
         options.port = random_port()
+
+    results_thread = zc.selenium.http.ServerThread(RESULTS_PORT)
+    results_thread.start()
 
     selectTestsToRun(options.tests)
 
