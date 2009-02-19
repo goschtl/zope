@@ -12,11 +12,11 @@ structure files, format your source code and naming things.
 .. toctree::
     :maxdepth: 1
 
+    python-style
+    zcml-style
+    todocomments
     interface-style
     optimizations
-    python-style
-    todocomments
-    zcml-style
 
     checkin-guidelines
     writingtests
