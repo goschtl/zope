@@ -1,0 +1,58 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2009-02-19)
+------------------
+
+- Fixed dependency warning about ISite.
+
+- Fixed tests to work with newer zope.testbrowser.
+
+- Using ``zope.container`` instead of ``zope.app.container``.
+
+- Made sure long_description renders properly on pypi.
+
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Improved meta-data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Move ``z3c.layer.minimal`` package to it's own top level
+  package from ``z3c.layer`` to ``z3c.layer.minimal``.
+
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+0.2.2 (2007-10-31)
+------------------
+
+- Bug: Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.
