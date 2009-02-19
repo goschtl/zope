@@ -15,7 +15,6 @@ files, format your source code and naming things.
     python-style
     zcml-style
     todocomments
-    interface-style
     optimizations
 
     checkin-guidelines

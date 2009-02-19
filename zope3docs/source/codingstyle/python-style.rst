@@ -58,12 +58,27 @@ Here is the template::
     count as published? The FSF seemed to understand inclusions in
     release tarballs as publications.
 
-Interface names
----------------
+Interfaces
+----------
 
 Interface names adhere to PEP 8's naming of classes, except that they
 are prefixed with a capital ``I``, as in ``IMagicThing``.
 
+One function of interfaces is to document functionality, so be very
+verbose with the documentation strings.
+
+All public interfaces should go into a file called ``interfaces.py``.
+"Public" interfaces are those that you expect to be implemented more
+than once. Interfaces that are likely to be implemented only once, like
+``IGlobalAdapterService``, should live in the same module as their
+implementation.
+
+.. note::
+    TODO clarify whether the single/multiple implementation rule holds.
+
+    TODO there has been discussion about whether imperative or
+    present tense is to be preferred for describing interfaces. The
+    discussion was not resolved.
 
 Attribute and method names
 --------------------------
