@@ -45,7 +45,7 @@ class MyView(megrok.pagelet.Pagelet):
     def render(self):
 	return "<b>Yeah</b>"
 
-class MyLayout(megrok.pagelet.LayoutView):
+class MyLayout(megrok.pagelet.Layout):
     grok.context(Mammoth)
     megrok.pagelet.template('templates/playout.pt')
 
@@ -57,7 +57,7 @@ class MyNewView(megrok.pagelet.Pagelet):
     def render(self):
         return "<b> This is the view in the Layer </b>"
 
-class MyLayerLayout(megrok.pagelet.LayoutView):
+class MyLayerLayout(megrok.pagelet.Layout):
     grok.context(Mammoth)
     grok.layer(MySkinLayer)
     megrok.pagelet.template('templates/layer_layout.pt')

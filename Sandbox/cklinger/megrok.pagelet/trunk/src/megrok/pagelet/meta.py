@@ -106,7 +106,7 @@ class PageletSecurityGrokker(martian.ClassGrokker):
 
 class LayoutViewGrokker(martian.ClassGrokker):
     """Code resuse for View, ContentProvider and Viewlet grokkers"""
-    martian.component(megrok.pagelet.LayoutView) 
+    martian.component(megrok.pagelet.Layout) 
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)

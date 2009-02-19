@@ -8,16 +8,18 @@ from grokcore.view import interfaces
 from martian.error import GrokImportError
 from zope.interface import implements
 from zope.component import getMultiAdapter
+from z3c.pagelet.interfaces import IPagelet
 from zope.publisher.browser import BrowserPage
 from z3c.template.interfaces import ILayoutTemplate
 from grokcore.view.interfaces import IGrokView
 
-class LayoutView(object):
+class Layout(object):
+    """ A basic class for Layouts"""
     pass
 
 
 class Pagelet(BrowserPage):
-    implements(interfaces.IGrokView)
+    implements(interfaces.IGrokView, IPagelet)
     template = None
     layout = None
 

@@ -46,7 +46,7 @@ class MyLayoutView(grok.View):
         return self.layout()
 
 
-class Layout(megrok.pagelet.LayoutView):
+class Layout(megrok.pagelet.Layout):
     grok.context(Elephant)
     #grok.name('layout')
     megrok.pagelet.template('templates/layout.pt')  
@@ -62,7 +62,7 @@ class MyContextLayoutView(grok.View):
             return layout(self)
         return self.layout()
 
-class ContextLayout(megrok.pagelet.LayoutView):
+class ContextLayout(megrok.pagelet.Layout):
     grok.context(Mammoth)
     megrok.pagelet.template('templates/context_layout.pt')
 

@@ -27,6 +27,7 @@ setup(name='megrok.pagelet',
       install_requires=[
           'setuptools',
           'martian',
+	  'interlude',
           'grokcore.component',
 	  'z3c.template',
 	  'z3c.pagelet',
