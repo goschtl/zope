@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2007-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,9 +21,11 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+version = '0.5.2dev'
+
 setup (
     name='z3c.profiler',
-    version='0.5.2dev',
+    version=version,
     author = "Stephan Richter, Roger Ineichen and the Zope Community",
     author_email = "zope-dev@zope.org",
     description = "Profiler skin for Zope3",
@@ -59,7 +61,11 @@ setup (
             'z3c.coverage',
             'z3c.etestbrowser',
             'zope.app.testing',
-            'zope.app.securitypolicy'],
+            'zope.app.folder',
+            'zope.app.session',
+            'zope.app.schema',
+            'zope.app.zopeappgenerations',
+            ],
         ),
     install_requires = [
         'setuptools',
@@ -68,8 +74,6 @@ setup (
         'zope.app.pagetemplate',
         'zope.app.publisher',
         'zope.app.container',
-        'zope.app.securitypolicy',
-        'zope.app.testing',
         'zope.app.twisted',
         'zope.app.zapi',
         'zope.contentprovider',
@@ -78,16 +82,17 @@ setup (
         'zope.interface',
         'zope.schema',
         'zope.security',
+        'zope.securitypolicy',
         'zope.testing',
         'zope.traversing',
         'zope.viewlet',
         'z3c.i18n',
-        'z3c.layer',
         'z3c.macro',
         'z3c.pagelet',
         'z3c.template',
         'z3c.zrtresource',
         'z3c.layer.pagelet',
+        'z3c.layer.minimal',
         ],
     zip_safe = False,
 )

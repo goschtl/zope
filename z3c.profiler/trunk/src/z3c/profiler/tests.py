@@ -19,7 +19,6 @@ __docformat__ = "reStructuredText"
 
 import unittest
 from zope.testing import doctest
-from zope.app.testing import placelesssetup
 
 from z3c.profiler import testing
 
