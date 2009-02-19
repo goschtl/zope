@@ -182,6 +182,60 @@ ValueError:`` statements::
     except ValueError:
         ...
 
+String handling
+---------------
+
+Use ``startswith`` and ``endswith`` because it is faster, cleaner and less
+error-prone than comparing sliced strings::
+
+    # Yes:
+    if foo.startswith('bar'):
+        ...
+    if foo.endswith('.html'):
+        ...
+
+    # No:
+    if foo[:3]=='bar':
+        ...
+    if foo[-5:]=='.html':
+        ...
+
+.. note::
+    TODO: Is this rule already PEP 8?
+
+When checking if a string is a string, keep in mind that it might be a
+unicode string too! The ``basestring`` type matches both ``str`` and
+``unicode`` objects::
+
+    if isinstance(obj, basestring):
+        ...
+
+.. note::
+    TODO Does PEP 8 talk about this already?
+
+Type checks
+-----------
+
+Constructs like ``if type(obj) is type('')`` should be replaced using
+``isinstance()``::
+
+      # Yes:
+      if isinstance(obj, int):
+        ...
+
+      # No:
+      if type(obj) is type(1):
+        ...
+      if type(obj) is int:
+
+
+Marker objects
+--------------
+
+Use instances of ``object`` if you need to construct marker objects (for
+example when detecting default values).  Compare them using ``is`` as
+recommended by PEP 8.
+
 
 Interfaces
 ----------
