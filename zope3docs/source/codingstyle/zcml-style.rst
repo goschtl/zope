@@ -54,7 +54,7 @@ If a configuration file has many logical sections, then mark the
 sections with comments and indent the sections relative to the comments.
 For example::
 
-    <configure xmlns='http://namespaces.zope.org/zope'>
+    <configure xmlns="http://namespaces.zope.org/zope">
 
       <!-- Configuration registries -->
 
@@ -206,10 +206,10 @@ Example one, good style::
 Example two, could be better::
 
     <configure
-       xmlns='http://namespaces.zope.org/zope'
-       xmlns:security='http://namespaces.zope.org/security'
-       xmlns:zmi='http://namespaces.zope.org/zmi'
-       xmlns:browser='http://namespaces.zope.org/browser'
+       xmlns="http://namespaces.zope.org/zope"
+       xmlns:security="http://namespaces.zope.org/security"
+       xmlns:zmi="http://namespaces.zope.org/zmi"
+       xmlns:browser="http://namespaces.zope.org/browser"
        >
 
     <!-- Standard configuration directives -->
@@ -363,9 +363,9 @@ Example three, could be better::
 Example three reformatted::
 
     <configure
-        xmlns='http://namespaces.zope.org/zope'
-        xmlns:zmi='http://namespaces.zope.org/zmi'
-        xmlns:browser='http://namespaces.zope.org/browser'
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:zmi="http://namespaces.zope.org/zmi"
+        xmlns:browser="http://namespaces.zope.org/browser"
         >
 
       <browser:defaultView 
@@ -412,9 +412,9 @@ Example three reformatted again. Note how putting the attributes of
 so we don't need so much vertical whitespace::
 
     <configure
-        xmlns='http://namespaces.zope.org/zope'
-        xmlns:zmi='http://namespaces.zope.org/zmi'
-        xmlns:browser='http://namespaces.zope.org/browser'
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:zmi="http://namespaces.zope.org/zmi"
+        xmlns:browser="http://namespaces.zope.org/browser"
         >
 
       <browser:defaultView 
