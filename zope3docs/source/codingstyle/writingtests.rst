@@ -47,9 +47,9 @@ on this concept in more detail.
 
 Within the unit tests themselves, the Zope3 style is to use
 the positive rather than the double negative assertions.
-Thus, use 'assertEqual' rather than 'failUnlessEqual', 
-'assertRaises' rather than 'failUnlessRaises', and 'assert_'
-rather than 'failUnless'.  (Yes, 'assert_' is an ugly name,
+Thus, use ``assertEqual`` rather than ``failUnlessEqual``, 
+``assertRaises`` rather than ``failUnlessRaises``, and ``assert_``
+rather than ``failUnless``.  (Yes, ``assert_`` is an ugly name,
 but it is still preferred.)
 
 There are certain other "Best Practices" the following of which
