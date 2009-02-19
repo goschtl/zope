@@ -1,9 +1,9 @@
-Zope 3 coding style
-===================
+Coding style
+============
 
-This area explains certain style elements (how to layout code written in
-Zope 3 projects, naming conventions) that are intended to help with
-achieving and maintaining a consistent code base.
+The coding style is intended to support a more consistent code base by
+laying out rules for how to work with Zope 3 code, for example how to
+structure files, format your source code and naming things.
 
 .. note::
     TODO This area includes code from the original Zope 3 wiki and needs
@@ -12,16 +12,13 @@ achieving and maintaining a consistent code base.
 .. toctree::
     :maxdepth: 1
 
-    checkin-guidelines
-    classesattributesmethods
     file-structure
-    glossary
     interface-style
-    nameskeysids
     optimizations
-    python-naming
     python-style
-    servicesevents
     todocomments
-    writingtests
     zcml-style
+
+    checkin-guidelines
+    writingtests
+    glossary

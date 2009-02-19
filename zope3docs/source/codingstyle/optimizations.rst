@@ -1,3 +1,6 @@
+Optimizations
+=============
+
 Although code optimization is not the primary goal in the current development
 cycle of Zope3, here are some rules that should make further optimizations and the possible use of unicode less painful.
 

@@ -1,3 +1,6 @@
+Writing tests
+=============
+
 For any module 'somepkg.somemod' there should be a corresponding
 unit test module 'somepkg.somemod.tests.testSomemod'.  Or if more than one
 set of unit tests is desired, multiple test modules of the form

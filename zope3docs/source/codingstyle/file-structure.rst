@@ -1,75 +1,8 @@
-Here I would just like to look at Python Source Files. These files should always contain the most actual license comment at the top followed by the
-module documentation string. The doc string will contain a reference about 
-its CVS status in the first line; then the documentation follows. 
-Here is the template::
+Python Source File structure
+============================
 
-  ##############################################################################
-  #
-  # Copyright (c) 2002 Zope Corporation and Contributors. 
-  # All Rights Reserved.
-  # 
-  # This software is subject to the provisions of the Zope Public License,
-  # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
-  # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-  # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-  # FOR A PARTICULAR PURPOSE
-  # 
-  ##############################################################################
-  """One-line summary goes here.
-
-  Module documentation goes here.
-
-  $Id$
-  """
 
 Notes:
-
-  - Doc strings:
-
-    o The first line of the doc string should include a one-line
-      description of the module (or class or function).
-
-    o The first line may be followed by additional documentation
-      paragraphs, if needed. The additional paragraphs must be separated
-      from surrounding text and from each other by blank lines.
-    
-    o The revision id should come last.
-
-    Here's an example::
-
-      """Implement foo interfaces
-
-      Blah blah
-
-      blah some more
-
-      $Id$
-      """
-
-  - Imports
-
-    o All imports should be at the top of the module, after the module
-      docstring and/or comments, but before module globals.
-
-      It is sometimes necessary to violate this to address circular
-      import pronlems. If this is the case, add a comment to the
-      import section at the top of the file to flag that this was done.
-
-    o Ordering
-
-      - Start with imports for standard Python library modules
-
-      - Next come imports from other parts of the Zope library
-
-      - Next come imports from other parts of the current superpackage
-
-      - Last come imports from the current package
-
-      Leave a blank line between each group of imports
-
-
-<hr>
 
 Some questions and suggestions (Guido):
 

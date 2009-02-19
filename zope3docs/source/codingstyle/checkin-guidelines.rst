@@ -1,3 +1,6 @@
+Check-in guidelines
+===================
+
 Please be careful before a check in to make sure:
 
  - All the code you are about to check in has reasonable test coverage.

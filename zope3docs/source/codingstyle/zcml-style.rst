@@ -1,3 +1,6 @@
+ZCML style conventions
+======================
+
 ZCML file naming conventions
 
   zcml configuration for a package should, in general, be placed in a
