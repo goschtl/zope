@@ -11,7 +11,7 @@ CHANGES
 0.6.0 (2009-02-19)
 ------------------
 
-- No longer used deprecated z3c.layer.
+- No longer uses deprecated ``z3c.layer`.
 
 - Fixed dependencies and tests.
 
