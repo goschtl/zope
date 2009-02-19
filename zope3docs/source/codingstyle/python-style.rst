@@ -43,6 +43,20 @@ Here is the template::
   $Id$
   """
 
+.. note::
+    TODO We never finished discussing license years. When should the
+    license year be updated? Do we have to enumerate individual years or
+    is it ok to give ranges?
+
+    Guido (around 2002) pointed out the FSF's rules. Those should be
+    re-evaluated.
+
+    Efge pointed out that in the US only the first year of publication needs to be given. (See http://www.loc.gov/copyright/circs/circ03.html).
+
+    This also points out that we need an understanding of when code is
+    published the first time. Can checking into a public repository can
+    count as published? The FSF seemed to understand inclusions in
+    release tarballs as publications.
 
 Interface names
 ---------------
@@ -112,8 +126,8 @@ The most obviouse case for single-letter variables is for iteration
 variables.
 
 
-Import ordering
----------------
+Imports
+-------
 
 All imports should be at the top of the module, after the module
 docstring and/or comments, but before module globals.
@@ -129,6 +143,21 @@ create blocks of imports with additional empty lines as PEP 8 recommends.
     TODO This rule has been recommended by Jim but hasn't been
     officially established.
 
+
+Refrain from using relative imports.  Instead of::
+
+    import foo # from same package
+
+you can write::
+
+    from Zope.App.ThisPackage import foo
+
+.. note::
+    TODO Clarify, clean up wording. I think we also avoid re-imports of
+    symbols and most times prefer the ``import`` over the ``from`` form.
+
+    Relative imports should be avoided, I'm not sure about the style 
+    once we start getting real relative imports from Python.
 
 Catch specific errors, write small ``try`` blocks
 -------------------------------------------------

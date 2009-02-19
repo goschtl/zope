@@ -12,7 +12,6 @@ structure files, format your source code and naming things.
 .. toctree::
     :maxdepth: 1
 
-    file-structure
     interface-style
     optimizations
     python-style
