@@ -1,5 +1,5 @@
-The Zope 3 development process
-==============================
+Development process
+===================
 
 This area covers the procedures and guidelines we adhere to when
 developing Zope 3 components.
