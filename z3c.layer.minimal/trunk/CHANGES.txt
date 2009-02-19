@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.1.0 (unreleased)
+1.1.0 (2009-02-19)
 ------------------
 
 - Fixed dependency warning about ISite.
