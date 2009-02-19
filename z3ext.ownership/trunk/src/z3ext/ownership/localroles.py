@@ -40,7 +40,7 @@ class LocalRoles(object):
 
     def __init__(self, context, owner):
         self.owner = owner
-        self.ownerId = owner.ownerId
+        self.ownerId = owner.ownerId or u''
 
     def getPrincipalsForRole(self, role_id):
         if (role_id == 'content.Owner'):
