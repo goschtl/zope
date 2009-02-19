@@ -2,7 +2,7 @@ Python code
 ===========
 
 The general rule when writing Python code is to follow PEP 8. The rules
-given below override what is said in PEP 8.
+given below override what is said in `PEP 8`_.
 
 .. note::
     Please be aware that PEP 8 recommends module-level consistency over blind
@@ -11,8 +11,6 @@ given below override what is said in PEP 8.
     modules might not match the current rules. In that case, please make a
     conscious decision about a reasonable level of consistency.
 
-.. note::
-    TODO Provide link to PEP 8.
 
 License statement and module docstring
 --------------------------------------
@@ -160,3 +158,6 @@ these conventions.
 
 A reasonable goal is that code covered by the ZPL should follow these
 conventions.
+
+
+.. _`PEP 8`: http://www.python.org/dev/peps/pep-0008/
