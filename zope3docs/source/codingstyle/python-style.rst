@@ -104,15 +104,12 @@ Avoid single-letter variables
 
 Single-letter variable names should be avoided unless:
 
- - Their meaning is extremly obvious from the context, and
+ - Their meaning is extremely obvious from the context, and
 
  - Brevity is desireable
 
 The most obviouse case for single-letter variables is for iteration
 variables.
-
-.. note::
-    TODO Does PEP 8 talk about this already?
 
 
 Import ordering
