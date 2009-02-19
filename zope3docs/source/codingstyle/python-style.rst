@@ -236,6 +236,9 @@ Use instances of ``object`` if you need to construct marker objects (for
 example when detecting default values).  Compare them using ``is`` as
 recommended by PEP 8.
 
+.. note::
+    TODO This was recommended by Steve Alexander but hasn't been
+    officially approved for inclusion. Clarify its status.
 
 Interfaces
 ----------
