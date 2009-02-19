@@ -5,6 +5,11 @@ When releasing software, the following steps should be taken:
 
 1. Make sure all automated tests of the package pass.
 
+.. note::
+    TODO According to the documentation of TODO comments, we shouldn't
+    release software that has XXX comments in them.  That means we
+    should at least check for them before releasing.
+
 2. Fill in the release date in ``CHANGES.txt``.  Make sure the
    changelog is complete.
 
