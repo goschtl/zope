@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>File-based Test.</title>
+<style type="text/css">
+
+.longpath:before {
+  content: "(";
+  font-size: 90%;
+  }
+
+.longpath {
+  font-size: 90%;
+  }
+
+.longpath:after {
+  content: ")";
+  font-size: 90%;
+  }
+
+</style>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<tbody>
+<tr>
+<td rowspan="1" colspan="3">
+<h1>File-based Test.</h1>
+</td>
+</tr>
+
+<tr class="open">
+<td>open</td>
+<td>/</td>
+<td></td>
+</tr>
+<tr class="verifyTextPresent">
+<td>verifyTextPresent</td>
+<td>regexp:Login|Zope Quick Start</td>
+<td></td>
+</tr>
+</tbody></table></body></html>

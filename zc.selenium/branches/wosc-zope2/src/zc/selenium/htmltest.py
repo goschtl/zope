@@ -21,14 +21,20 @@ import os
 import zope.interface
 from zope.app.component import hooks
 from zc.selenium.pytest import ISeleniumTest
-from zc.selenium.resource import ResourceBase
 from z3c.zrtresource import processor, replace
 
 
-class HTMLTableSeleniumTest(ResourceBase):
+class HTMLTableSeleniumTest(object):
     zope.interface.implementsOnly(ISeleniumTest)
 
     filename = None
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def browserDefault(self, request):
+        return self, ()
 
     def __call__(self):
         data = open(self.filename, 'r').read()
@@ -36,7 +42,6 @@ class HTMLTableSeleniumTest(ResourceBase):
         self.request.response.setHeader('Content-type', 'text/html')
         return p.process(hooks.getSite(), self.request)
 
-    GET = __call__
 
 def createSeleniumTest(filename):
     return type(os.path.split(filename)[-1],

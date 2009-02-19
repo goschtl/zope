@@ -18,14 +18,14 @@ $Id$
 __docformat__ = "reStructuredText"
 import os
 import zope.interface
-from zope.app.component.back35 import LayerField
+from zope.schema import InterfaceField
+from zope.app.publisher.browser import viewmeta
 from zope.component import zcml
-from zope.app.publisher.browser import resourcemeta
 from zope.configuration.fields import Path
-from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.security.checker import CheckerPublic, NamesChecker
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.zcml import Permission
 from zc.selenium import htmltest
+
 
 class ISeleniumTest(zope.interface.Interface):
     """A directive to register an HTML selenium test with the selenium test
@@ -37,7 +37,7 @@ class ISeleniumTest(zope.interface.Interface):
         required=True
         )
 
-    layer = LayerField(
+    layer = InterfaceField(
         title=u"The layer the resource should be found in",
         description=u"""
         For information on layers, see the documentation for the skin
@@ -53,17 +53,18 @@ class ISeleniumTest(zope.interface.Interface):
         required=False
         )
 
-def seleniumTest(_context, file, layer=IBrowserRequest,
+def seleniumTest(_context, file, layer=IDefaultBrowserLayer,
                  permission='zope.Public'):
 
-    if permission == 'zope.Public':
-        permission = CheckerPublic
+#     if permission == 'zope.Public':
+#         permission = CheckerPublic
 
-    checker = NamesChecker(resourcemeta.allowed_names, permission)
+#     checker = NamesChecker(resourcemeta.allowed_names, permission)
 
     SeleniumTestFactory = htmltest.createSeleniumTest(str(file))
-    SeleniumTestFactory.__Security_checker__ = checker
+    #SeleniumTestFactory.__Security_checker__ = checker
     name = os.path.split(file)[-1]
 
-    zcml.adapter(_context,
-                 factory=(SeleniumTestFactory,), for_=(layer,), name=name)
+    zcml.adapter(_context, factory=(SeleniumTestFactory,),
+                 for_=(zope.interface.Interface, layer), name=name,
+                 permission=permission)

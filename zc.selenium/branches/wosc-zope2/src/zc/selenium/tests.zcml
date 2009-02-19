@@ -1,5 +1,7 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:test="http://namespaces.zope.org/test"
+  >
 
   <!-- provides is only necessary for zope2 -->
   <adapter
@@ -9,4 +11,7 @@
     permission="zope.Public"
     />
 
+  <include package="zc.selenium" file="meta.zcml" />
+
+  <test:seleniumTest file="htmltest.html" />
 </configure>
