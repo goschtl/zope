@@ -15,37 +15,74 @@
 
 $Id: dbs.py 12602 2006-07-06 06:29:48Z fred $
 """
-
 from ZODB.DemoStorage import DemoStorage
 from ZODB.DB import DB
 
+ALLOWED_STORAGES = [DemoStorage]
 
-class PushDBs(object):
+# zope2 compatibility
+try:
+    from tempstorage.TemporaryStorage import TemporaryStorage
+    ALLOWED_STORAGES.append(TemporaryStorage)
+except ImportError:
+    pass
+
+
+class DatabaseAware(object):
+    def get_db(self):
+        try:
+            import Zope2
+            DB = Zope2.DB
+        except ImportError:
+            DB = self.request.publication.db
+        return DB
+
+    def set_db(self, db):
+        try:
+            import Zope2
+            Zope2.DB = db
+        except ImportError:
+            self.request.publication.db = db
+        return DB
+
+    db = property(get_db, set_db)
+
+    def is_demo_db(self):
+        for db in self.db.databases.values():
+            if not self.is_demo_storage(db._storage):
+                return False
+        return True
+
+    def is_demo_storage(self, storage):
+        for class_ in ALLOWED_STORAGES:
+            if isinstance(storage, class_):
+                return True
+        return False
+
+
+class PushDBs(DatabaseAware):
+    """Push DB"""
 
     def __call__(self):
-        publication = self.request.publication
-        if [1
-            for d in publication.db.databases.values()
-            if not isinstance(d._storage, DemoStorage)
-            ]:
+        if not self.is_demo_db():
             raise RuntimeError("Wrong mode")
 
         databases = {}
-        for name, db in publication.db.databases.items():
+        for name, db in self.db.databases.items():
             DB(DemoStorage(base=db._storage),
                databases=databases, database_name=name,
                )
 
-        newdb = databases[publication.db.database_name]
-        newdb.pushed_base = publication.db # hacking extra attr onto db
-        publication.db = newdb
+        newdb = databases[self.db.database_name]
+        newdb.pushed_base = self.db # hacking extra attr onto db
+        self.db = newdb
 
         return 'Done'
 
-class PopDBs(object):
+
+class PopDBs(DatabaseAware):
+    """Pop DB"""
 
     def __call__(self):
-        publication = self.request.publication
-        publication.db = publication.db.pushed_base
-
+        self.db = self.db.pushed_base
         return 'Done'
