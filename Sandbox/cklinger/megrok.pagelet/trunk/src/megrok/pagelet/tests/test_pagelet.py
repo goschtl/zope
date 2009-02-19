@@ -57,7 +57,7 @@ class PageletWithTemplate(megrok.pagelet.Pagelet):
     grok.context(Page)
 
 
-class MyLayout(megrok.pagelet.LayoutView):
+class MyLayout(megrok.pagelet.Layout):
     grok.context(Page)
     megrok.pagelet.template('templates/playout.pt')
 
