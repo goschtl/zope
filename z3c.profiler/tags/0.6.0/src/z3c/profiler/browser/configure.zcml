@@ -1,0 +1,85 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+
+  <!-- resources -->
+  <zrt-resource
+      name="profiler.css"
+      file="profiler.css"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+  <resource
+      name="favicon.png"
+      file="favicon.png"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+  <resourceDirectory
+      name="img"
+      directory="img"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+
+  <!-- layout -->
+  <z3c:layout
+      for="*"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      template="template.pt"
+      />
+
+  <!-- menu provider -->
+  <zope:adapter
+      name="IMenuProvider"
+      factory=".menu.MenuProvider"
+      />
+
+  <z3c:template
+      name=""
+      template="menu.pt"
+      for="..interfaces.IMenuProvider"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+  <!-- profiler page -->
+  <z3c:pagelet
+      name="doProfile"
+      for="*"
+      class=".profiler.ProfilerPagelet"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+       permission="zope.ManageServices"
+      />
+
+  <z3c:template
+      for=".profiler.ProfilerPagelet"
+      template="profiler.pt"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+  <defaultView
+      name="doProfile"
+      for="*"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+      
+
+  <!-- credits page -->
+  <z3c:pagelet
+      name="help.html"
+      for="*"
+      class=".help.HelpPagelet"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      permission="zope.View"
+      />
+
+  <z3c:template
+      for=".help.HelpPagelet"
+      template="help.pt"
+      layer="z3c.profiler.layer.IProfilerBrowserLayer"
+      />
+
+</configure>
