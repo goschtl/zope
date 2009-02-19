@@ -1,5 +1,5 @@
-Python code
-===========
+Python
+======
 
 The general rule when writing Python code is to follow PEP 8. The rules
 given below override what is said in `PEP 8`_.
