@@ -20,8 +20,9 @@ The format is dead simple: each file is represented by the string
 
     '<size> <pathname>\n'
 
-followed by exactly <size> bytes.  Directories are not represented
-explicitly.
+followed by exactly <size> bytes.  Directories are represented by
+paths that end in / and have a zero size. The root directory has a
+blank path.
 
 Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
