@@ -127,7 +127,10 @@ class SequenceWidget(BrowserWidget, InputWidget):
     def _getRenderedValue(self):
         """Returns a sequence from the request or _data"""
         if self._renderedValueSet():
-            sequence = list(self._data)
+            if self._data is self.context.missing_value:
+                sequence = []
+            else:
+                sequence = list(self._data)
         elif self.hasInput():
             sequence = self._generateSequence()
         elif self.context.default is not None:

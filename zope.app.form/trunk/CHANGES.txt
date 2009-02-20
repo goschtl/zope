@@ -8,6 +8,9 @@ CHANGES
 - Fixed bug where OrderedMultiSelectWidget did not respect the widgets
   size attribute.
 
+- Fixed bug in SequenceWidget where it crashed while trying to iterate
+  a missing_value (None in most of cases) on _getRenderedValue.
+
 3.7.1 (2009-01-31)
 ==================
 
