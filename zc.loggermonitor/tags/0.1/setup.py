@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-name, version = 'zc.loggermonitor', '0'
+name, version = 'zc.loggermonitor', '0.1'
 
 import os
 from setuptools import setup, find_packages
