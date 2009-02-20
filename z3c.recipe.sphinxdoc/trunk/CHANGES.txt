@@ -5,7 +5,12 @@ CHANGES
 0.0.8 (unreleased)
 ------------------
 
-- ...
+- Feature: Added new option `doc-eggs` which specifies the list of eggs for
+  which to create documentation explicitely.
+
+- Feature: Changed building behavior so that the documentation for each
+  package is built in it sown sub-directory.
+
 
 0.0.7 (2009-02-15)
 ------------------

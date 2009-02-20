@@ -58,11 +58,14 @@ class ZopeOrgSetup(object):
     def install(self):
         installed = []
         eggs, workingSet = self.egg.working_set()
+        if 'doc-eggs' in self.options:
+            eggs = self.options['doc-eggs'].split()
         docs = [workingSet.find(pkg_resources.Requirement.parse(spec))
                 for spec in eggs]
 
         # Create parts directory for configuration files.
-        installDir = join(self.buildout['buildout']['parts-directory'], self.name)
+        installDir = join(
+            self.buildout['buildout']['parts-directory'], self.name)
         if not isdir(installDir):
             os.mkdir(installDir)
 
@@ -129,12 +132,16 @@ class ZopeOrgSetup(object):
             if not isdir(buildDir):
                 os.mkdir(buildDir)
 
+            buildDir = os.path.join(buildDir, doc.project_name)
+            if not isdir(buildDir):
+                os.mkdir(buildDir)
+
             srcDir = join(doc.location, srcDirs.get(doc.project_name,
                 self.options.get('src-dir', doc.project_name.replace('.','/'))))
             # fix bad path on windows (e.g. //foo\bar)
             srcDir = normpath(srcDir)
 
-            projectsData[doc.project_name] = ['-q','-c',partDir,
+            projectsData[doc.project_name] = ['-q','-c', partDir,
                                               srcDir, buildDir]
 
         installed.extend(zc.buildout.easy_install.scripts(
