@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Simple New ARchival Format (SNARF).
 
@@ -20,8 +20,9 @@ The format is dead simple: each file is represented by the string
 
     '<size> <pathname>\n'
 
-followed by exactly <size> bytes.  Directories are not represented
-explicitly.
+followed by exactly <size> bytes.  Directories are represented by
+paths that end in / and have a zero size. The root directory has a
+blank path.
 
 Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
@@ -62,6 +63,7 @@ class Snarfer(object):
                 return True
         names = os.listdir(root)
         names.sort()
+        self.adddir(prefix)
         for name in names:
             fspath = os.path.join(root, name)
             if not filter(fspath):
@@ -82,6 +84,10 @@ class Snarfer(object):
             self.addstream(f, size, path)
         finally:
             f.close()
+
+    def adddir(self, path):
+        path = fsutil.encode(path, 'utf-8')
+        self.ostr.write("0 %s\n" % path)
 
     def addstream(self, istr, size, path):
         """Snarf a single file from a data stream.
@@ -120,13 +126,18 @@ class Unsnarfer(object):
             infoline = infoline[:-1]
             sizestr, path = infoline.split(" ", 1)
             size = int(sizestr)
-            f = self.createfile(path)
-            try:
-                copybytes(size, self.istr, f)
-            finally:
-                f.close()
+            if size == 0 and (path == "" or path.endswith("/")):
+                self.makedir(path)
+            else:
+                f = self.createfile(path)
+                try:
+                    copybytes(size, self.istr, f)
+                finally:
+                    f.close()
 
     def makedir(self, path):
+        if path.endswith('/'):
+            path = path[:-1]
         fspath = self.translatepath(path)
         self.ensuredir(fspath)
 
@@ -140,6 +151,8 @@ class Unsnarfer(object):
             os.makedirs(fspath)
 
     def translatepath(self, path):
+        if path == "":
+            return self.root
         if ":" in path and os.name != "posix":
             raise IOError("path cannot contain colons: $r" % path)
         if "\\" in path and os.name != "posix":
