@@ -173,6 +173,49 @@ the default, ``None``::
   >>> layer.bind().get(testmodule.Foo, testmodule) is None
   True
 
+
+
+
+Like with CLASS scope directive where values set are inherited by subclasses,
+values set on a class or module level are inherited too, even if the subclass
+is defined another module::
+
+  >>> class testmodule_a(FakeModule):
+  ...   layer('Value set on baseclass module')
+  ...   class FooA(object):
+  ...      pass
+  >>> from martiantest.fake import testmodule_a
+  >>>
+  >>> class testmodule_b(FakeModule):
+  ...   class FooB(testmodule_a.FooA):
+  ...      pass
+  >>> from martiantest.fake import testmodule_b
+
+On the baseclass::
+
+  >>> layer.bind().get(testmodule_a.FooA)
+  'Value set on baseclass module'
+
+Inherited by the subclass::
+
+  >>> layer.bind().get(testmodule_b.FooB)
+  'Value set on baseclass module'
+
+Whenever there's a directive set on the baseclass' module, it will take
+precedence like with "normal" inheritance::
+
+  >>> class testmodule_c(FakeModule):
+  ...   layer('Value set on subclass module')
+  ...   class FooC(testmodule_a.FooA):
+  ...      pass
+  >>> from martiantest.fake import testmodule_c
+
+  >>> layer.bind().get(testmodule_c.FooC)
+  'Value set on subclass module'
+
+
+
+
 Let's now look at this using a directive with CLASS scope only::
 
   >>> class layer2(Directive):
@@ -898,7 +941,7 @@ The ``validateClass`` validator only accepts a class::
 
   >>> from martian import validateClass
   >>> class klass(Directive):
-  ...    scope = CLASS 
+  ...    scope = CLASS
   ...    store = ONCE
   ...    validate = validateClass
 

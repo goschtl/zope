@@ -161,11 +161,8 @@ class ClassOrModuleScope(object):
             return result
 
         # we may be really dealing with an instance or a module here
-        #if not util.isclass(component):
-        #    result = directive.store.get(directive, component, _USE_DEFAULT)
-        #    if result is not _USE_DEFAULT:
-        #        return result
-        #    return get_default(component, component)
+        if not util.isclass(component):
+            return get_default(component, component)
 
         # now we need to loop through the mro, potentially twice
         mro = inspect.getmro(component)
