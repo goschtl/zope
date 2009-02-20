@@ -27,13 +27,39 @@ import zc.selenium.pytest
 import zc.selenium.selenium
 
 
-class TestSelenium(zc.selenium.pytest.Test):
+class Zope3Test(zc.selenium.pytest.Test):
+    def test_open(self):
+        self.selenium.open('/')
+        self.selenium.verifyTextPresent('Login')
+
+    # XXX missing
+#     def test_add_foo(self)
+
+#     # should work because of zc.selenium's DemoStorage-Stack
+#     def test_add_foo_again(self):
+#         self.test_add_foo()
+
+# Zope2 requires docstrings on views
+class Zope2Test(zc.selenium.pytest.Test):
     """Selenium self-test."""
 
     def test_open(self):
-        self.selenium.open('http://%s/' % self.selenium.server)
-        # could be zope3 or zope2
-        self.selenium.verifyTextPresent('regexp:Login|Zope Quick Start')
+        self.selenium.open('/')
+        self.selenium.verifyTextPresent('Zope Quick Start')
+
+    def test_add_foo(self):
+        s = self.selenium
+        s.open('http://admin:admin@%s/manage' % self.selenium.server)
+        # XXX: I wish we had some ids to go on...
+        s.select('//form[@method="get"]/select[@name=":action"]', 'Folder')
+        s.type('name=id', 'foo')
+        s.click('//input[@value="Add"]')
+        s.verifyTextNotPresent('it is already in use')
+        s.waitForElementPresent('link=foo')
+
+    # should work because of zc.selenium's DemoStorage-Stack
+    def test_add_foo_again(self):
+        self.test_add_foo()
 
 
 class HTTPTest(unittest.TestCase):

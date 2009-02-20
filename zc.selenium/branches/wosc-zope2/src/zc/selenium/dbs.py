@@ -32,7 +32,7 @@ class DatabaseAware(object):
     def get_db(self):
         try:
             import Zope2
-            DB = Zope2.DB
+            DB = Zope2.bobo_application._stuff[0]
         except ImportError:
             DB = self.request.publication.db
         return DB
@@ -40,7 +40,8 @@ class DatabaseAware(object):
     def set_db(self, db):
         try:
             import Zope2
-            Zope2.DB = db
+            old_db, aname, version_support = Zope2.bobo_application._stuff
+            Zope2.bobo_application._stuff = db, aname, version_support
         except ImportError:
             self.request.publication.db = db
         return DB

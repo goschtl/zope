@@ -3,11 +3,9 @@
   xmlns:test="http://namespaces.zope.org/test"
   >
 
-  <!-- provides is only necessary for zope2 -->
   <adapter
-    name="zc.selenium.tests.TestSelenium"
-    factory=".tests.TestSelenium"
-    provides="zc.selenium.pytest.ISeleniumTest"
+    name="zc.selenium.tests.Zope3Test"
+    factory=".tests.Zope3Test"
     permission="zope.Public"
     />
 
