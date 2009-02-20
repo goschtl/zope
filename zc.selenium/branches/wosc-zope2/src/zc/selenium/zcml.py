@@ -56,15 +56,8 @@ class ISeleniumTest(zope.interface.Interface):
 def seleniumTest(_context, file, layer=IDefaultBrowserLayer,
                  permission='zope.Public'):
 
-#     if permission == 'zope.Public':
-#         permission = CheckerPublic
-
-#     checker = NamesChecker(resourcemeta.allowed_names, permission)
-
     SeleniumTestFactory = htmltest.createSeleniumTest(str(file))
-    #SeleniumTestFactory.__Security_checker__ = checker
     name = os.path.split(file)[-1]
-
     zcml.adapter(_context, factory=(SeleniumTestFactory,),
                  for_=(zope.interface.Interface, layer), name=name,
                  permission=permission)
