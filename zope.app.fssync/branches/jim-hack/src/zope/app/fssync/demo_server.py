@@ -32,8 +32,8 @@ class Server(paramiko.ServerInterface):
 
     def check_auth_publickey(self, username, key):
         # All public keys are accepted for the demo, in a real server
-        # you would check public keys against keys of authorized
-        # users.
+        # you would probably check public keys against keys of
+        # authorized users.
         return paramiko.AUTH_SUCCESSFUL
 
     def get_allowed_auths(self, username):
@@ -63,7 +63,7 @@ class ZsyncHandler(paramiko.SubsystemHandler):
         if length:
             body = f.read(length)
         return command, path, headers, body
-            
+
     def start_subsystem(self, name, transport, channel):
         command, path, headers, body = self.parse_request(channel, transport)
         connection = httplib.HTTPConnection('localhost', 8080)
@@ -76,11 +76,11 @@ class ZsyncHandler(paramiko.SubsystemHandler):
                 response.status, response.reason))
         for name, value in response.getheaders():
             channel.send('%s: %s\r\n' % (name, value))
-        channel.send('\r\n')    
+        channel.send('\r\n')
         body = response.read()
-        channel.send(body)
-        
-            
+        channel.sendall(body)
+
+
 def main(port=2200):
     # read host keys
     host_key = paramiko.RSAKey(filename = '/etc/ssh/ssh_host_rsa_key')

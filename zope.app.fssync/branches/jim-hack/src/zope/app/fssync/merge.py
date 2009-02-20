@@ -38,7 +38,7 @@ class MergeCopier(zope.fssync.copier.ObjectCopier):
             for name in self.sync.metadata.getnames(src):
                 copier.copy(os.path.join(src, name), os.path.join(dst, name))
             self.sync.metadata.flush()
-    
+
     def _syncadd(self, target, type, factory):
         pass
 
@@ -75,7 +75,7 @@ def same_entries(path1, path2, metadata):
         if not same_file(f1, f2):
             return False
     return True
-        
+
 def same_specials(path1, path2, metadata):
     extra1 = zope.fssync.fsutil.getextra(path1)
     extra2 = zope.fssync.fsutil.getextra(path2)
@@ -108,7 +108,7 @@ def merge(source, target, sync):
     metadata = sync.metadata
     object_copier = zope.fssync.copier.ObjectCopier(sync)
     merge_copier = MergeCopier(sync)
-    
+
     for root, dirs, files in os.walk(source):
         if '@@Zope' in dirs:
             dirs.remove('@@Zope')

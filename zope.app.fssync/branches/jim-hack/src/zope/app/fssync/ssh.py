@@ -119,7 +119,7 @@ class SSHConnection(object):
         self.channel.invoke_subsystem('zsync')
         self.channelr = self.channel.makefile('rb')
         self.channelw = self.channel.makefile('wb')
-        
+
         # start sending request
         self.channelw.write('%s %s\r\n' % (method, path))
 
