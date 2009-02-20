@@ -1,16 +1,25 @@
-#######################
+.. _contents:
+
 Zope 3 Developer's Book
-#######################
+=======================
 
 .. toctree::
    :maxdepth: 2
 
-   Preface.rst
-   InstallingZope3.rst
+   introduction
+   getting-started
+   development-tools
+   interfaces
+   component-architecture
+   testing
+   browser-resouces
+   browser-pages
+   content-components
+   skinning
 
-##################
+
 Indices and tables
-##################
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`
