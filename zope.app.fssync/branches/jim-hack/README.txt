@@ -9,10 +9,10 @@ synchronization of Zope3 content that resides in a ZODB. This package defines
 a Web-based API with basic support for some standard zope.app content 
 types and the standard security policy.
 
-This project is build on top of the more general zope.fssync package which 
-provides object serialization and deserialization tools. If you need a pure 
-Python API which is independent of the ZODB and the Zope3 security machinery you 
-should look at zope.fssync. 
+This project is build on top of the more general zope.fssync package
+which provides object serialization and deserialization tools. If you
+need a pure Python API which is independent of the ZODB and the Zope3
+security machinery you should look at zope.fssync.
 
 FSSync includes a command line client that resembles svn or cvs. Type 
 
@@ -21,11 +21,12 @@ FSSync includes a command line client that resembles svn or cvs. Type
 for available commands and further information. If you want to see the zsync 
 client in action you can run the demo application:
 
-    bin/demo -fg
+    bin/demo start
 
-Open http://localhost:8080/manage in your browser and login with ``zsync`` as your
-username and password. Add a ``demo`` folder with some files via the ZMI.
-After that run the command line client for an initial checkout:
+Open http://localhost:8080/manage in your browser and login with
+``zsync`` as your username and password. Add a ``demo`` folder with
+some files via the ZMI.  After that run the command line client for an
+initial checkout:
 
     bin/zsync checkout http://zsync:zsync@localhost:8080/demo ./parts/checkout
 
