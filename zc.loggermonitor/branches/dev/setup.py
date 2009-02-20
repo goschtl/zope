@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-name, version = '', '0'
+name, version = 'zc.loggermonitor', '0'
 
 import os
 from setuptools import setup, find_packages
@@ -25,7 +25,7 @@ def read(rname):
                              )).read()
 
 long_description = (
-        read('src/zc/?/README.txt')
+        read('src/%s/README.txt' % '/'.join(name.split('.')))
         + '\n' +
         'Download\n'
         '--------\n'
@@ -39,7 +39,7 @@ setup(
     description = '',
     long_description=long_description,
     license = 'ZPL 2.1',
-    
+
     include_package_data = True,
     packages = find_packages('src'),
     namespace_packages = ['zc'],
@@ -47,5 +47,4 @@ setup(
     install_requires = ['setuptools'],
     zip_safe = False,
     entry_points=entry_points,
-    include_package_data = True,
     )

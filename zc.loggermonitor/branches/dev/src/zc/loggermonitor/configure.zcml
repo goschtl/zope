@@ -1,0 +1,5 @@
+<utility
+   component=".level"
+   provides="zc.monitor.interfaces.IMonitorPlugin"
+   name="loglevel"
+   />
