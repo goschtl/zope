@@ -1,6 +1,9 @@
 Preface
 -------
 
+.. note:: This is the preface of the original book.  We need to
+  create another preface for the new version.
+
 The preface will be a brief introduction into Zope 3 and its capabilities as
 well as into Python , the programming language Zope is written in.
 
