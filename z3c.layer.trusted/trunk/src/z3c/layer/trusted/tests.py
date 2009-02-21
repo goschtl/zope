@@ -14,38 +14,27 @@
 """
 $Id$
 """
-import re
+
 import unittest
-from zope.testing import renormalizing
-from zope.app.testing import functional
-
-from z3c.layer import trusted
-
-layer = functional.defineLayer('TestLayer', 'ftesting.zcml')
+import z3c.layer
+import zope.app.testing.functional
 
 
-class ITrustedTestingSkin(trusted.ITrustedBrowserLayer):
+layer = zope.app.testing.functional.defineLayer('TestLayer', 'ftesting.zcml')
+
+
+class ITrustedTestingSkin(z3c.layer.trusted.ITrustedBrowserLayer):
     """The ITrustedBrowserLayer testing skin."""
-
-
-def getRootFolder():
-    return functional.FunctionalTestSetup().getRootFolder()
 
 
 def test_suite():
     suite = unittest.TestSuite()
-
-    s = functional.FunctionalDocFileSuite(
-        'README.txt',
-        globs={'getRootFolder': getRootFolder},
-        checker = renormalizing.RENormalizing([
-            (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
-            ])
-        )
+    s = zope.app.testing.functional.FunctionalDocFileSuite('README.txt')
     s.layer = TestLayer
     suite.addTest(s)
 
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

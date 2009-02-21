@@ -2,6 +2,19 @@
 CHANGES
 =======
 
+1.1.0 (unreleased)
+------------------
+
+- Doctests show that removing security proxies from traversed
+  objects is the desired behavior.
+
+- Using ``zope.container`` instead of ``zope.app.container``.
+
+- Made sure that long_description renders properly on pypi.
+
+- Cleaned up dependencies.
+
+
 1.0.1 (2008-01-24)
 ------------------
 

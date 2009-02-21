@@ -17,24 +17,23 @@
 $Id:$
 """
 import os
-import xml.sax.saxutils
 from setuptools import setup, find_packages
 
 def read(*rnames):
-    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+version = '1.0.2dev'
 
 setup(
-    name = 'z3c.layer.trusted',
-    version = '1.0.2dev',
+    name='z3c.layer.trusted',
+    version=version,
     author='Zope Foundation and Contributors',
     author_email='zope-dev@zope.org',
     description = "Trusted layer setup for Zope3",
     long_description=(
         read('README.txt')
         + '\n\n' +
-        'Detailed Documentation\n'
-        '**********************'
+        '.. contents::\n'
         + '\n\n' +
         read('src', 'z3c', 'layer', 'trusted', 'README.txt')
         + '\n\n' +
@@ -60,15 +59,16 @@ setup(
     extras_require = dict(
         test = [
             'zope.testbrowser',
+            'zope.app.testing',
+            'zope.app.zcmlfiles',
+            'z3c.layer.minimal [test]',
             ],
         ),
     install_requires = [
         'setuptools',
-        'zope.configuration',
-        'zope.traversing',
-        'zope.app.http',
-        'zope.app.publisher',
-        'zope.app.securitypolicy',
+        'zope.publisher',
+        'zope.app.publication',
+        'zope.container',
         'z3c.layer.minimal',
         ],
     zip_safe = False,

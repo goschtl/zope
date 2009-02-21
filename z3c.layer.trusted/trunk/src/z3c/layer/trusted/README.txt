@@ -165,3 +165,16 @@ unregistred user (test browser) for this:
   </html>
   <BLANKLINE>
   <BLANKLINE>
+
+When an object gets traversed, its security proxy is removed, so its
+sub-objects can be publically accessed, too:
+
+  >>> import zope.site.folder
+  >>> getRootFolder()['test'] = zope.site.folder.Folder()
+  >>> manager.open(skinURL + '/container_contents.html')
+
+The view displays the types of the content objects inside the root
+folder. The content objects are not security proxied:
+
+  >>> print manager.contents
+  [<class 'zope.site.folder.Folder'>]
