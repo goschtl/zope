@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 
-version = '1.0dev'
+version = '0.1dev'
 
 long_description = (open('README.txt').read() +
                     '\n\n' +
                     open('CHANGES.txt').read())
 
-setup(name='megrok.genshi',
+setup(name='megrok.chameleon',
       version=version,
-      description="Genshi integration in Grok",
+      description="Chameleon page template support for Grok",
       long_description=long_description,
       # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=['Development Status :: 3 - Alpha',
@@ -19,10 +19,10 @@ setup(name='megrok.genshi',
                    'Operating System :: OS Independent',
                    'Topic :: Internet :: WWW/HTTP',
                    ], 
-      keywords="grok genshi",
-      author="Lennart Regebro, Guido Wesdorp",
-      author_email="regebro@gmail.com",
-      url="http://svn.zope.org/megrok.genshi/",
+      keywords="grok chameleon template",
+      author="Uli Fouquet",
+      author_email="grok-dev@zope.org",
+      url="http://pypi.python.org/pypi/megrok.chameleon",
       license="ZPL",
       package_dir={'': 'src'},
       packages=find_packages('src'),
@@ -30,7 +30,7 @@ setup(name='megrok.genshi',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
-                        'Genshi',
+                        'chameleon.zpt',
                         ],
       entry_points="""
       # Add entry points here
