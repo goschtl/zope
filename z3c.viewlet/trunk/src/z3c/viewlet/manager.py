@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2005 Zope Foundation and Contributors.
+# Copyright (c) 2005-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,17 +15,10 @@
 $Id$
 """
 
-from zope.viewlet import manager
+import zope.deferredimport
 
-
-def getWeight((name, viewlet)):
-    try:
-        return int(viewlet.weight)
-    except AttributeError:
-        return 0
-
-
-class WeightOrderedViewletManager(manager.ViewletManagerBase):
-
-    def sort(self, viewlets):
-        return sorted(viewlets, key=getWeight)
+zope.deferredimport.initialize()
+zope.deferredimport.deprecated(
+    "z3c.viewlet is deprecated, all its functionality moved to zope.viewlet.",
+    getWeight = 'zope.viewlet.manager:getWeight',
+    WeightOrderedViewletManager = 'zope.viewlet.manager:WeightOrderedViewletManager')

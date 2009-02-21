@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2007-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -21,24 +21,17 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+version = '1.1.0'
+
 setup(name='z3c.viewlet',
-      version = '1.1.0',
+      version = version,
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      description='Collection of Viewlet Extensions',
-      long_description=(
-          read('README.txt')
-          + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '======================\n'
-          + '\n\n' +
-          read('src', 'z3c', 'viewlet', 'README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
-          ),
+      author_email='zope-dev@zope.org',
+      description='DEPRCATED: Collection of Viewlet Extensions',
+      long_description=read('README.txt'),
       keywords = "zope3 viewlet extension weight ordered",
       classifiers = [
-          'Development Status :: 5 - Production/Stable',
+          'Development Status :: 7 - Inactive',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
@@ -47,14 +40,16 @@ setup(name='z3c.viewlet',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.viewlet',
+      url='http://pypi.python.org/pypi/z3c.viewlet',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},
       namespace_packages=['z3c'],
       extras_require=dict(test=['zope.testing']),
       install_requires=['setuptools',
-                        'zope.viewlet'],
+                        'zope.viewlet',
+                        'zope.deferredimport',
+                        ],
       include_package_data = True,
       zip_safe = False,
       )
