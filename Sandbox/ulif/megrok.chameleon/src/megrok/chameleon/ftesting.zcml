@@ -1,8 +1,8 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:grok="http://namespaces.zope.org/grok"
-   i18n_domain="megrok.genshi"
-   package="megrok.genshi"
+   i18n_domain="megrok.chameleon"
+   package="megrok.chameleon"
    >
 
   <include package="grok" />
