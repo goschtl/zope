@@ -1,0 +1,5 @@
+z3c.menu is **RETIRED** Please use one of the following:
+
+    * z3c.menu.simple
+
+    * z3c.menu.ready2go
