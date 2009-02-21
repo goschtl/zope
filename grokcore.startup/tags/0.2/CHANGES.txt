@@ -1,0 +1,17 @@
+Changes
+*******
+
+0.2 (2009-02-21)
+================
+
+* Made main functions available package wide.
+
+0.1 (2009-01-15)
+================
+
+* Added support for local ``zope_conf`` parameter.
+  Fix bug https://bugs.launchpad.net/grok/+bug/320644
+
+* Created ``grokcore.startup`` in January 2009 by factoring paster
+  related application code out of grokcore templates.
+
