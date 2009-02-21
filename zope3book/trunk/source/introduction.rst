@@ -70,15 +70,16 @@ Audience
 --------
 
 The target audience of this book are Python programmers looking for
-developing web applications.  However, the book doesn't assume you are
-familiar with any other web framework.
+developing web applications.  However, the book doesn't assume you
+are familiar with any other web framework.  The audience is expected
+to have some exposure to the basics of HTML, CSS and JavaScript.
 
 
 Prerequisites
 -------------
 
-This book will require prior knowledge Python programming language and
-at least some exposure to the basics of HTML, CSS and JavaScript.
+This book will require prior knowledge Python programming language
+and at least some exposure to the basics of HTML, CSS and JavaScript.
 
 
 Brief history
@@ -91,9 +92,9 @@ much about the subject.  CGI programming is a commonly-used web
 development model that allows developers to construct dynamic
 websites.  On his way to the class, Jim studied all the existing
 documentation on CGI.  On the way back, Jim considered what he didn't
-like about traditional, CGI-based programming environments.  From these
-initial musings, the core of Zope was written while flying back from
-the CGI class.
+like about traditional, CGI-based programming environments.  From
+these initial musings, the core of Zope was written while flying back
+from the CGI class.
 
 Zope Corporation (then known as Digital Creations) went on to release
 three open-source software packages to support web publishing: Bobo,
@@ -101,21 +102,21 @@ Document Template, and BoboPOS.  These packages were written in a
 language called Python, and provided a web publishing facility, text
 templating, and an object database, respectively.  Digital Creations
 developed a commercial application server based on their three
-opensource components.  This product was called Principia.  In November
-of 1998, investor Hadar Pedhazur convinced Digital Creations to open
-source Principia.  These packages evolved into what are now the core
-components of Zope 2.
+opensource components.  This product was called Principia.  In
+November of 1998, investor Hadar Pedhazur convinced Digital Creations
+to open source Principia.  These packages evolved into what are now
+the core components of Zope 2.
 
 In 2001, the Zope community began working on a component architecture
 for Zope, but after several years they ended up with something much
 more: Zope 3.  While Zope 2 was powerful and popular, Zope 3 was
-designed to bring web application development to the next level.  This
-book is about this Zope 3, which is not really a new version of Zope
-2.
+designed to bring web application development to the next level.
+This book is about this Zope 3, which is not really a new version of
+Zope 2.
 
 Most recently, in 2007 the Zope community created yet another
-framework based on Zope 3 called Grok.  The original Zope which is now
-known as Zope 2 is also widely used.
+framework based on Zope 3 called Grok.  The original Zope which is
+now known as Zope 2 is also widely used.
 
 
 Organization of the book
@@ -136,23 +137,24 @@ organization of the book.  And finish with a thanks section.
 Getting Started
 ~~~~~~~~~~~~~~~
 
-This chapter begins with installation details of Python and Zope 3.
-Then introduce Buildout, the build system we use to setup an isolated
-Python working environment and its configurations.  Later, it explore
+This chapter begins with installation details of Python.  Then,
+introduce Buildout, the build system used to setup an isolated Python
+working environment and its configurations.  Later, it explore
 setting up development sandbox using Buildout.  A simple application
-is developed further and it ends with a `hello world` page.  During
-the application development we see how to use ZMI (Zope Management
-Interface) briefly.  This chapter also provides a brief overview of
-important packages and installation of additional packages.
+is developed further and it ends with creating a `Hello world!` web
+page.  During the application development we see how to use ZMI (Zope
+Management Interface) briefly.  This chapter also provides a brief
+overview of important packages and installation of additional
+packages.
 
 
 Development Tools
 ~~~~~~~~~~~~~~~~~
 
-This chapter is going to the details about how to develop a web
-application using Python and Zope components.  You should familiarize
-some essential tools like Python eggs, setuptools and buildouts.  If
-you are already familiar with these you may skip this chapter.
+This chapter is going to the details of tools required to develop a
+web application using Python and Zope components.  You should
+familiarize tools like Python eggs, setuptools and buildouts.  If you
+are already familiar with these you may skip this chapter.
 
 
 Interfaces
