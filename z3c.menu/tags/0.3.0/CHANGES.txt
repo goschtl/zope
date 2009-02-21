@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+
+0.3.0 (2009-02-21)
+------------------
+
+- Marked as retired.
+
+
+0.2.0 (2007-11-01)
+------------------
+
+- Initial release.
+
+    * A simple menu implementation based on viewlets.
