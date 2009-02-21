@@ -22,4 +22,4 @@ Usage
   $ python2.5 bootstrap/bootstrap.py
   $ ./bin/buildout
   $ ./bin/test
-  $ ./bin/instance start
+  $ ./bin/instance
