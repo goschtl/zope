@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '1.2.1'
+version = '1.2.2 dev'
 
 setup(
     name='z3c.layer.pagelet',
