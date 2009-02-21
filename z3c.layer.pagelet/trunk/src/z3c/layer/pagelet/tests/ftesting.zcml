@@ -119,6 +119,14 @@
         layer="z3c.layer.pagelet.IPageletBrowserLayer"
         class=".SystemErrorPage"
         />
+
+    <browser:page
+        for="*"
+        name="container_contents.html"
+        permission="zope.View"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        class=".ContainerContentsPage"
+        />
   </configure>
 
 

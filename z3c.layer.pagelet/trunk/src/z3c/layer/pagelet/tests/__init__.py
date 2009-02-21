@@ -53,3 +53,10 @@ class SystemErrorPage(BrowserPage):
     def __call__(self):
         raise Exception('simply system error')
         return u''
+
+
+class ContainerContentsPage(BrowserPage):
+    """Contents of a conatiner."""
+
+    def __call__(self):
+        return str([type(x) for x in self.context.values()])
