@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,47 +11,40 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Genshi components"""
-import zope.interface
-import genshi.template
-import grokcore.view.components
-import grok
+"""Chameleon page template components"""
+import os
+from chameleon.zpt.template import PageTemplateFile, PageTemplate
+from grokcore.component import GlobalUtility, implements, name
+from grokcore.view import interfaces
+from grokcore.view.components import GrokTemplate
 
-class GenshiTemplateBase(grokcore.view.components.GrokTemplate):
-        
-    def render(self, view):
-        stream = self._template.generate(**self.getNamespace(view))
-        return stream.render(self.result_type)
-
+class ChameleonPageTemplate(GrokTemplate):
+    filename = None
+    
     def setFromString(self, string):
-        self._template = self.cls(string)
-        
+        self._filename = None
+        self._template = PageTemplate(string)
+
     def setFromFilename(self, filename, _prefix=None):
-        loader = genshi.template.TemplateLoader(_prefix)
-        self._template = loader.load(filename, cls=self.cls)
+        print "SETFROMFILE"
+        self._filename = filename
+        self._prefix = _prefix
+        self._template = PageTemplate(
+            open(os.path.join(_prefix, filename), 'rb').read())
+        return
 
-class GenshiMarkupTemplate(GenshiTemplateBase):
-    
-    result_type = 'xhtml'
-    cls = genshi.template.MarkupTemplate
-    
-class GenshiTextTemplate(GenshiTemplateBase):
+    def render(self, view):
+        print "RENDER: ", view, dir(self)
+        if self._filename is not None:
+            self.setFromFilename(self._filename, self._prefix)
+        return self._template(**self.getNamespace(view))
 
-    result_type = 'text'
-    cls = genshi.template.TextTemplate
-        
-class GenshiMarkupTemplateFactory(grok.GlobalUtility):
-
-    zope.interface.implements(grok.interfaces.ITemplateFileFactory)
-    grok.name('g')
-    
-    def __call__(self, filename, _prefix=None):
-        return GenshiMarkupTemplate(filename=filename, _prefix=_prefix)
-
-class GenshiTextTemplateFactory(grok.GlobalUtility):
-
-    zope.interface.implements(grok.interfaces.ITemplateFileFactory)
-    grok.name('gt')
+class ChameleonPageTemplateFactory(GlobalUtility):
+    implements(grokcore.view.interfaces.ITemplateFileFactory)
+    name('cpt')
 
     def __call__(self, filename, _prefix=None):
-        return GenshiTextTemplate(filename=filename, _prefix=_prefix)
+        print "CALL: ", filename, _prefix
+        return ChameleonPageTemplate(filename=filename, _prefix=_prefix)
+
+    
