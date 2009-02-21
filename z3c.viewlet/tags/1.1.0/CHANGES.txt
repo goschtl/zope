@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2009-02-21)
+------------------
+
+- Marked as deprecated, as all functionality has already been moved
+  to ``zope.viewlet``.
+
+
+1.0.0 (2007-10-30)
+------------------
+
+- Initial release.
+
+  * Weight-ordered viewlet manager.
