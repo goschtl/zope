@@ -129,4 +129,12 @@
       class=".SystemErrorPage"
       />
 
+    <browser:page
+        for="*"
+        name="container_contents.html"
+        permission="zope.View"
+        layer="z3c.layer.minimal.IMinimalBrowserLayer"
+        class=".ContainerContentsPage"
+        />
+
 </configure>

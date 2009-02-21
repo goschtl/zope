@@ -44,7 +44,7 @@ class TestingStandardMacros(BrowserView):
         context = self.context
         request = self.request
         for name in self.macro_pages:
-            page = zope.component.getMultiAdapter((context, request), 
+            page = zope.component.getMultiAdapter((context, request),
                 name=name)
             try:
                 v = page[key]
@@ -77,3 +77,10 @@ class SystemErrorPage(BrowserPage):
     def __call__(self):
         raise Exception('simply system error')
         return u''
+
+
+class ContainerContentsPage(BrowserPage):
+    """Contents of a conatiner."""
+
+    def __call__(self):
+        return str([type(x) for x in self.context.values()])

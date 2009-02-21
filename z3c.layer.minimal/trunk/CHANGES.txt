@@ -5,7 +5,10 @@ CHANGES
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- **Security issue:** The traverser defined for
+  ``IMinimalBrowserLayer`` was a trusted adapter, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
 
 
 1.1.0 (2009-02-19)
@@ -17,7 +20,7 @@ CHANGES
 
 - Using ``zope.container`` instead of ``zope.app.container``.
 
-- Made sure long_description renders properly on pypi.
+- Made sure that long_description renders properly on pypi.
 
 
 1.0.1 (2008-01-24)
