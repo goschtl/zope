@@ -21,24 +21,17 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
+version = '0.3.0'
+
 setup(name='z3c.menu',
-      version = '0.3.0dev',
+      version=version,
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
-      description='Collection of Viewlet-based Menus',
-      long_description=(
-          read('README.txt')
-          + '\n\n' +
-          'Detailed Dcoumentation\n' +
-          '======================\n'
-          + '\n\n' +
-          read('src', 'z3c', 'menu', 'simple', 'README.txt')
-          + '\n\n' +
-          read('CHANGES.txt')
-          ),
+      author_email='zope-dev@zope.org',
+      description='DEPRECATED: Collection of Viewlet-based Menus',
+      long_description=read('README.txt'),
       keywords = "zope3 menu viewlet simple",
       classifiers = [
-          'Development Status :: 5 - Production/Stable',
+          'Development Status :: 7 - Inactive',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: Zope Public License',
@@ -47,7 +40,7 @@ setup(name='z3c.menu',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/z3c.menu',
+      url='http://pypi.python.org/pypi/z3c.menu',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

@@ -14,3 +14,9 @@
 """
 $Id$
 """
+import warnings
+
+warnings.warn(
+    'Package z3c.menu is retired, please use z3c.menu.simple package.',
+    DeprecationWarning,
+    stacklevel=2)
