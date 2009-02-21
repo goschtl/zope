@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-1.2.1 (unreleased)
+1.2.1 (2009-02-21)
 ------------------
 
-- Nothing changed yet.
+- Release 1.2.0 was missing the test file for the secrity issue.
 
 
 1.2.0 (2009-02-21)
