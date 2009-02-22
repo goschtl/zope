@@ -13,9 +13,9 @@
 ##############################################################################
 # $Id$ $Rev$ $Author$ $Date$
 import os.path
-import megrok.genshi
+import megrok.chameleon
 from zope.app.testing.functional import ZCMLLayer
 
 ftesting_zcml = os.path.join(
-    os.path.dirname(megrok.genshi.__file__), 'ftesting.zcml')
+    os.path.dirname(megrok.chameleon.__file__), 'ftesting.zcml')
 FunctionalLayer = ZCMLLayer(ftesting_zcml, __name__, 'FunctionalLayer')
