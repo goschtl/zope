@@ -7,22 +7,12 @@ class Mammoth(grok.Application, grok.Container):
 class CavePainting(grok.View):
     pass
 
-class Static(grok.View):
-    pass
-
-class Gatherer(grok.View):
-    pass
-    
 class Food(grok.View):
     
     text = "ME GROK EAT MAMMOTH!"
     
     def me_do(self):
         return self.text
-
-class Hunter(grok.View):
-    
-    game = "MAMMOTH!"
 
 class Inline(grok.View):
     sometext = 'Some Text'
