@@ -19,7 +19,7 @@ Retry exception the first time, but not the second time.
     ...     response_headers += [('X-Attempts', str(len(attempts)))]
     ...     start_response(status, response_headers)
     ...     if len(attempts) == 1:
-    ...         if environ.get('zope.can_retry'):
+    ...         if environ.get('zope.pipeline.can_retry'):
     ...             raise Retry()
     ...         else:
     ...             raise ValueError()
@@ -84,7 +84,7 @@ Create a test app that echoes a stream back.
     ...                         ('Content-Length', str(len(data)))]
     ...     start_response(status, response_headers)
     ...     if len(attempts) == 1:
-    ...         if environ.get('zope.can_retry'):
+    ...         if environ.get('zope.pipeline.can_retry'):
     ...             raise Retry()
     ...         else:
     ...             raise ValueError()

@@ -25,19 +25,20 @@ Create the RootOpener app around a test app.
     ...     status = '200 OK'
     ...     response_headers = [('Content-type','text/plain')]
     ...     start_response(status, response_headers)
-    ...     request = environ['zope.request']
-    ...     return [repr(request.traversed)]
+    ...     request = environ['zope.pipeline.request']
+    ...     traversed = environ['zope.pipeline.traversed']
+    ...     return [repr(traversed)]
     >>> app = RootOpener(my_app, db)
 
 Call the app.
 
     >>> class TestRequest(object):
     ...     def __init__(self):
-    ...         self.traversal_stack = []
-    ...         self.traversed = []
     ...         self.annotations = {}
     >>> request = TestRequest()
-    >>> environ = {'zope.request': request}
+    >>> environ = {
+    ...     'zope.pipeline.request': request,
+    ... }
     >>> def start_response(status, headers, exc_info=None):
     ...     pass
     >>> app(environ, start_response)
@@ -71,7 +72,9 @@ a utility by that name as the root instead of opening the database.
     ...     pass
     >>> provideUtility(ProcessRoot, name='++etc++process', provides=Interface)
     >>> request = TestRequest()
-    >>> request.traversal_stack.append('++etc++process')
-    >>> environ = {'zope.request': request}
+    >>> environ = {
+    ...     'zope.pipeline.request': request,
+    ...     'PATH_INFO': '/++etc++process/',
+    ... }
     >>> app(environ, start_response)
     ["[('++etc++process', <class 'ProcessRoot'>)]"]

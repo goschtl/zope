@@ -14,17 +14,20 @@
 
 from new import instancemethod
 
-import transaction
-from zope.location.interfaces import ILocationInfo
 from zope.interface import implements
 from zope.interface import providedBy
+from zope.location.interfaces import ILocationInfo
 from zope.publisher.interfaces import IRequest
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.proxy import removeSecurityProxy
+import transaction
+
+from zope.pipeline.envkeys import REQUEST_KEY
+from zope.pipeline.envkeys import TRAVERSED_KEY
 
 
 class TransactionController(object):
-    """WSGI middleware that begins and commits/aborts transactions.
+    """WSGI application that begins and commits/aborts transactions.
     """
     implements(IWSGIApplication)
 
@@ -47,9 +50,10 @@ class TransactionController(object):
 
 
 class TransactionAnnotator(object):
-    """WSGI middleware that annotates transactions.
+    """WSGI application that annotates transactions.
 
-    Requires 'zope.request' in the environment.
+    Requires 'zope.pipeline.request' and 'zope.pipeline.traversed'
+    in the environment.
     """
     implements(IWSGIApplication)
 
@@ -60,8 +64,8 @@ class TransactionAnnotator(object):
         res = self.next_app(environ, start_response)
         txn = transaction.get()
         if not txn.isDoomed():
-            request = environ['zope.request']
-            name, ob = request.traversed[-1]
+            request = environ[REQUEST_KEY]
+            name, ob = environ[TRAVERSED_KEY][-1]
             self.annotate(txn, request, ob)
         return res
 

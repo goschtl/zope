@@ -12,32 +12,38 @@
 #
 ##############################################################################
 
+from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IFallbackUnauthenticatedPrincipal
 from zope.component import getGlobalSiteManager
 from zope.interface import implements
 from zope.publisher.interfaces import IWSGIApplication
-from zope.security.management import newInteraction
 from zope.security.management import endInteraction
+from zope.security.management import newInteraction
 
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import IFallbackUnauthenticatedPrincipal
+from zope.pipeline.envkeys import REQUEST_KEY
+from zope.pipeline.envkeys import TRAVERSAL_HOOKS_KEY
 
 
 class Authenticator(object):
     """WSGI app that hooks into Zope-based authentication.
 
-    The WSGI environment must contain 'zope.request'.
+    The WSGI environment must contain 'zope.pipeline.request'.
+    Adds a traversal hook if local authentication is enabled.
     """
     implements(IWSGIApplication)
 
-    def __init__(self, next_app):
+    def __init__(self, next_app, local_auth=True):
         self.next_app = next_app
+        self.local_auth = local_auth
 
     def __call__(self, environ, start_response):
-        request = environ['zope.request']
+        request = environ[REQUEST_KEY]
         auth = getGlobalSiteManager().getUtility(IAuthentication)
         principal = auth.authenticate(request)
         if principal is None:
-            request.traversal_hooks.append(placeful_auth)
+            if self.local_auth:
+                hooks = environ.setdefault(TRAVERSAL_HOOKS_KEY, [])
+                hooks.append(placeful_auth)
             principal = auth.unauthenticatedPrincipal()
             if principal is None:
                 # Get the fallback unauthenticated principal

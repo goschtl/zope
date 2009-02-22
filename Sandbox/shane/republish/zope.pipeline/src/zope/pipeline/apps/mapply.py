@@ -16,19 +16,24 @@ from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces import IWSGIApplication
 
+from zope.pipeline.envkeys import REQUEST_KEY
+from zope.pipeline.envkeys import TRAVERSED_KEY
+
 
 class Caller(object):
     """WSGI app that calls the traversed object.
 
-    Requires 'zope.request', which implements IRequest, in the environment.
-    The 'traversed' attribute of the request must be set.
+    Requires 'zope.pipeline.request' and 'zope.pipeline.traversed' in
+    the environment.
     """
     implements(IWSGIApplication)
 
     def __call__(self, environ, start_response):
-        request = environ['zope.request']
-        name, ob = request.traversed[-1]
-        result = mapply(ob, (), request)
+        traversed = environ[TRAVERSED_KEY]
+        request = environ[REQUEST_KEY]
+        positional = request.getPositionalArguments()
+        name, ob = traversed[-1]
+        result = mapply(ob, positional, request)
         response = request.response
         if result is not response:
             response.setResult(result)

@@ -24,14 +24,13 @@ from zope.pipeline.interfaces import IWSGIApplicationFactory
 def create_pipeline(params, request_provides=None):
     """Return a pipeline as a WSGI application.
 
-    The `params` contains a mapping of application name to
-    factory keyword parameter map.  An example `params` would be
-    ``{'open_root': {'database': zodb_db_object}}``.
+    The `params` contains a mapping of application name to factory
+    keyword parameter map. An example `params` would be ``{'open_root':
+    {'database': zodb_db_object}}``.
 
-    The `request_provides` parameter varies the pipeline according
-    to the type of the `zope.request` in the WSGI environment.
-    If the WSGI environment to process has no `zope.request`, the
-    `request.provides` parameter should be None (the default).
+    The `request_provides` parameter varies the pipeline according to
+    the interfaces provided by a request object. If `request_provides`
+    is not specified, the pipeline for INoRequest is created.
     """
     if request_provides is None:
         request_provides = (INoRequest,)

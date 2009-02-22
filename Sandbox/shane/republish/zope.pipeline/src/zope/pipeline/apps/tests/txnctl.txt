@@ -87,7 +87,7 @@ TransactionAnnotator Tests
 --------------------------
 
 The TransactionAnnotator application adds information to the
-zope.request after the rest of the pipeline has finished.
+zope.pipeline.request after the rest of the pipeline has finished.
 
 Set up enough of a request to make the TransactionAnnotator work.
 
@@ -104,7 +104,6 @@ Set up enough of a request to make the TransactionAnnotator work.
     >>> class TestRequest(object):
     ...     pass
     >>> request = TestRequest()
-    >>> request.traversed = [('xyz', TestRoot().mymethod)]
     >>> class TestPrincipal(object):
     ...     pass
     >>> request.principal = TestPrincipal()
@@ -116,7 +115,10 @@ Create and run an app with a TransactionAnnotator.
     ...     return ['done annotating']
     >>> from zope.pipeline.apps.txnctl import TransactionAnnotator
     >>> app = TransactionAnnotator(my_app)
-    >>> environ = {'zope.request': request}
+    >>> environ = {
+    ...     'zope.pipeline.request': request,
+    ...     'zope.pipeline.traversed': [('xyz', TestRoot().mymethod)],
+    ...     }
     >>> app(environ, None)
     ['done annotating']
 

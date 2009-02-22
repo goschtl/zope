@@ -12,21 +12,23 @@
 #
 ##############################################################################
 
-from zope.interface import implements
-from zope.publisher.interfaces import IWSGIApplication
-from zope.publisher.interfaces.exceptions import Retry
 from ZODB.POSException import ConflictError
+from zope.interface import implements
+from zope.publisher.interfaces.exceptions import Retry
+from zope.publisher.interfaces import IWSGIApplication
 
 from zope.pipeline.autotemp import AutoTemporaryFile
+from zope.pipeline.envkeys import CAN_RETRY_KEY
+from zope.pipeline.envkeys import RESETTABLE_KEYS
 
 
 class RetryApp(object):
     """Retries requests when a Retry or ConflictError propagates.
 
-    This app should enclose the app that creates zope.request.
-    It sets an environment variable named 'zope.can_retry'.  Error handlers
-    should propagate Retry or ConflictError when 'zope.can_retry' is
-    true.
+    This app should enclose the app that creates zope.pipeline.request.
+    It sets an environment variable named 'zope.pipeline.can_retry'.
+    The 'handle_error' app should propagate Retry or ConflictError
+    when 'zope.pipeline.can_retry' is true.
     """
     implements(IWSGIApplication)
 
@@ -56,12 +58,13 @@ class RetryApp(object):
         while attempt < self.max_attempts:
             start_response_params = []
             output_file = []
-            environ['zope.can_retry'] = True
+            environ[CAN_RETRY_KEY] = True
             try:
                 res = self.next_app(environ, retryable_start_response)
             except (Retry, ConflictError):
                 if wsgi_input is not None:
                     wsgi_input.seek(0)
+                self.reset_environ(environ)
                 attempt += 1
             else:
                 if start_response_params:
@@ -73,5 +76,10 @@ class RetryApp(object):
                 return res
 
         # try once more, this time without retry support
-        environ['zope.can_retry'] = False
+        environ[CAN_RETRY_KEY] = False
         return self.next_app(environ, start_response)
+
+    def reset_environ(self, environ):
+        for key in RESETTABLE_KEYS:
+            if key in environ:
+                del environ[key]

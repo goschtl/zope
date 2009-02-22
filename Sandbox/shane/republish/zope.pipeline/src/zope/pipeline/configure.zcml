@@ -17,9 +17,10 @@
     log
     open_root
     control_transaction
+    set_site
     event
     handle_error
-    parse_form
+    process_input
     authenticate
     traverse
     annotate_transaction
@@ -74,15 +75,15 @@
     name="handle_error"
     factory="..." /-->
 
-<!-- no form processing for non-browser requests -->
+<!-- no input processing for non-browser requests -->
 <wsgi:application
-    name="parse_form"
+    name="process_input"
     factory=".apps.passthrough"
     for="zope.publisher.interfaces.IRequest" />
 
-<!-- process forms for browser requests -->
+<!-- parse forms for browser requests -->
 <wsgi:application
-    name="parse_form"
+    name="process_input"
     factory=".apps.requestsetup.ParseForm"
     for="zope.publisher.interfaces.browser.IBrowserRequest" />
 

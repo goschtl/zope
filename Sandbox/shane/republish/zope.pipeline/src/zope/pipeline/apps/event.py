@@ -18,12 +18,16 @@ from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces.event import BeforeTraverseEvent
 from zope.publisher.interfaces.event import EndRequestEvent
 
+from zope.pipeline.envkeys import TRAVERSAL_HOOKS_KEY
+from zope.pipeline.envkeys import TRAVERSED_KEY
+
 
 class EventNotifier(object):
     """Fires request-related events.
 
-    Fires BeforeTraverseEvent and EndRequestEvent at the appropriate
-    times.
+    Adds a traversal hook to the environment. Fires BeforeTraverseEvent
+    and EndRequestEvent at the appropriate times. Requires the
+    'zope.pipeline.traversed' key for firing events.
     """
     implements(IWSGIApplication)
 
@@ -31,16 +35,17 @@ class EventNotifier(object):
         self.next_app = next_app
 
     def __call__(self, environ, start_response):
-        request = environ['zope.request']
-        request.traversal_hooks.append(fireBeforeTraverse)
+        hooks = environ.setdefault(TRAVERSAL_HOOKS_KEY, [])
+        hooks.append(fire_before_traverse)
         try:
             return self.next_app(environ, start_response)
         finally:
-            if request.traversed:
-                name, ob = request.traversed[-1]
+            traversed = environ.get(TRAVERSED_KEY)
+            if traversed:
+                name, ob = traversed[-1]
             else:
                 ob = None
             notify(EndRequestEvent(ob, request))
 
-def fireBeforeTraverse(request, ob):
+def fire_before_traverse(request, ob):
     notify(BeforeTraverseEvent(ob, request))

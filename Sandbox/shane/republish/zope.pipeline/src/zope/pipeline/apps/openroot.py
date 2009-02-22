@@ -12,54 +12,65 @@
 #
 ##############################################################################
 
+import re
+
 from zope.component import getUtility
 from zope.interface import implements
 from zope.interface import Interface
 from zope.publisher.interfaces import IWSGIApplication
 from zope.security.checker import ProxyFactory
 
+from zope.pipeline.envkeys import REQUEST_KEY
+from zope.pipeline.envkeys import TRAVERSED_KEY
+
 
 class RootOpener(object):
-    """Puts a root object in 'zope.request' of the WSGI environment.
+    """Establishes the traversal root in the WSGI environment.
 
-    Requires the environment to contain 'zope.database',
-    which is normally a ZODB.DB.DB object.
-    Sets request.traversed to a list with one element.
+    Opens the database, finds the Zope application root, puts a
+    security proxy on the root object, and sets
+    'zope.pipeline.traversed' in the environment to a list with one
+    element containing (root_name, root). If the environment contains
+    'zope.pipeline.request', an annotation is added to the request.
     Also closes the database connection on the way out.
 
-    Special case: if the traversal stack contains "++etc++process",
-    instead of opening the database, this uses the utility by that
-    name as the root object.
+    Special case: if the PATH_INFO contains "++etc++process", instead
+    of opening the database, this uses the utility by that name as the
+    root object.
     """
     implements(IWSGIApplication)
 
     root_name = 'Application'
     app_controller_name = '++etc++process'
+    use_app_controller_re = re.compile('/[+][+]etc[+][+]process(/|$)')
 
     def __init__(self, next_app, database):
         self.next_app = next_app
         self.database = database
+        self.proxy_factory = ProxyFactory
 
     def __call__(self, environ, start_response):
-        request = environ['zope.request']
-
-        # If the traversal stack contains self.app_controller_name,
-        # then we should get the app controller rather than look
-        # in the database.
-        if self.app_controller_name in request.traversal_stack:
+        # If the PATH_INFO contains the app controller name,
+        # then we should use the app controller rather than open
+        # the database.
+        path = environ.get('PATH_INFO', '')
+        if self.use_app_controller_re.search(path) is not None:
             root = getUtility(Interface, name=self.app_controller_name)
-            request.traversed = [(self.app_controller_name, root)]
+            environ[TRAVERSED_KEY] = [(self.app_controller_name, root)]
             return self.next_app(environ, start_response)
 
         # Open the database.
         conn = self.database.open()
         try:
-            request.annotations['ZODB.interfaces.IConnection'] = conn
+            request = environ.get(REQUEST_KEY)
+            if request is not None:
+                request.annotations['ZODB.interfaces.IConnection'] = conn
             root = conn.root()
             app = root.get(self.root_name, None)
             if app is None:
                 raise SystemError("Zope Application Not Found")
-            request.traversed = [(self.root_name, ProxyFactory(app))]
+            environ[TRAVERSED_KEY] = [
+                (self.root_name, self.proxy_factory(app))]
 
             return self.next_app(environ, start_response)
         finally:

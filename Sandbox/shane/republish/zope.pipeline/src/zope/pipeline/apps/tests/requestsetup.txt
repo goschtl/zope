@@ -13,7 +13,7 @@ Create an app that prints the contents of the created request.
     ...     status = '200 OK'
     ...     response_headers = [('Content-type','text/plain')]
     ...     start_response(status, response_headers)
-    ...     request = environ['zope.request']
+    ...     request = environ['zope.pipeline.request']
     ...     return [repr(request)]
 
 Now put CreateRequest in front of the test app and try it out.

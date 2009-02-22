@@ -16,9 +16,6 @@
 import unittest
 
 from zope.testing import doctest
-
-flags = doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS
-
 from zope.testing.cleanup import cleanUp
 
 def setUp(test=None):
@@ -28,16 +25,19 @@ def tearDown(test=None):
     cleanUp()
 
 def test_suite():
-    return unittest.TestSuite([
-        doctest.DocFileSuite('mapply.txt', optionflags=flags),
-        doctest.DocFileSuite('openroot.txt', optionflags=flags,
-            setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('requestsetup.txt', optionflags=flags,
-            setUp=setUp, tearDown=tearDown),
-        doctest.DocFileSuite('retry.txt', optionflags=flags),
-        doctest.DocFileSuite('txnctl.txt', optionflags=flags,
-            setUp=setUp, tearDown=tearDown),
-    ])
+    suites = []
+    for name in [
+            'mapply.txt',
+            'openroot.txt',
+            'requestsetup.txt',
+            'retry.txt',
+            'txnctl.txt',
+            ]:
+        suites.append(doctest.DocFileSuite(
+            name,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            setUp=setUp, tearDown=tearDown))
+    return unittest.TestSuite(suites)
 
 if __name__ == '__main__':
     unittest.main()

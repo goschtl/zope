@@ -24,6 +24,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces import IWSGIApplication
 from zope.testing import cleanup
 
+from zope.pipeline.envkeys import REQUEST_KEY
 from zope.pipeline.interfaces import IRequestFactoryRegistry
 
 
@@ -46,7 +47,7 @@ class CreateRequest(object):
         mimetype = environ.get('CONTENT_TYPE', '')
         request = factoryRegistry.make_request(
             scheme, method, mimetype, environ)
-        environ['zope.request'] = request
+        environ[REQUEST_KEY] = request
 
         self.set_locale(request)
         self.set_skin(request)
@@ -55,7 +56,7 @@ class CreateRequest(object):
             return self.next_app(environ, start_response)
         finally:
             request.close()
-            del environ['zope.request']
+            del environ[REQUEST_KEY]
 
     def set_locale(self, request):
         envadapter = IUserPreferredLanguages(request, None)
@@ -88,7 +89,7 @@ class ParseForm(object):
     This step is separate from request creation so that the
     error handling step can catch form data errors.
 
-    Requires the environment to contain a 'zope.request' that
+    Requires the environment to contain a 'zope.pipeline.request' that
     is an IHTTPRequest, not just an IRequest.
     """
     implements(IWSGIApplication)
@@ -97,7 +98,7 @@ class ParseForm(object):
         self.next_app = next_app
 
     def __call__(self, environ, start_response):
-        request = environ['zope.request']
+        request = environ[REQUEST_KEY]
 
         charsets = []
         def to_unicode(text):
@@ -115,8 +116,8 @@ class ParseForm(object):
                 except UnicodeError:
                     pass
             raise UnicodeError(
-                "Unable to decode %s using any available character set"
-                % repr(text))
+                "Unable to decode %s using any of the character sets: %s"
+                % (repr(text), repr(charsets)))
 
         parser = FormParser(environ, to_unicode=to_unicode)
         request.form = parser.parse()

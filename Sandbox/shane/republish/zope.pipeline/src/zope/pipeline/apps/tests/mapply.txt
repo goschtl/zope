@@ -6,6 +6,8 @@ The Caller app is the last stage in a pipeline.  It calls the traversed object
 and sets the response according to what the function returned.
 
     >>> class TestRequest(object):
+    ...     def getPositionalArguments(self):
+    ...         return ()
     ...     def get(self, key, default=None):
     ...         if key == 'a':
     ...             return 6
@@ -24,20 +26,22 @@ and sets the response according to what the function returned.
     ...         return [self.data]
     >>> def compute(a, b, c=4):
     ...     return '%d%d%d' % (a, b, c)
-    >>> r = TestRequest()
-    >>> r.traversed = [('obj', compute)]
-    >>> r.response = TestResponse()
+    >>> request = TestRequest()
+    >>> request.response = TestResponse()
     >>> from zope.pipeline.apps.mapply import Caller
     >>> app = Caller()
     >>> app
     Caller()
-    >>> env = {'zope.request': r}
+    >>> environ = {
+    ...     'zope.pipeline.request': request,
+    ...     'zope.pipeline.traversed': [('obj', compute)]
+    ... }
     >>> got_headers = []
     >>> got_status = []
     >>> def start_response(status, headers, exc_info=None):
     ...     got_status[:] = [status]
     ...     got_headers[:] = list(headers)
-    >>> app(env, start_response)
+    >>> app(environ, start_response)
     ['684']
     >>> got_status
     ['200 Ok']
