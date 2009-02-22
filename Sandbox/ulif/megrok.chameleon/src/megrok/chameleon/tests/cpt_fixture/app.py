@@ -25,8 +25,8 @@ class Hunter(grok.View):
     game = "MAMMOTH!"
 
 class Inline(grok.View):
-    pass
+    sometext = 'Some Text'
 
 inline = components.ChameleonPageTemplate(
-    "<html><body>ME GROK HAS INLINES!</body></html>")
+    "<html><body>ME GROK HAS INLINES! ${view.sometext}</body></html>")
 

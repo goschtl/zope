@@ -123,7 +123,28 @@ The rendered view looks like this::
     </body>
     </html>
 
+Inline Templates
+----------------
 
+We can also define inline templates. In our ``app.py`` we defined an
+inline template like this::
+
+  import grok
+  from megrok.chameleon import components
+
+  ...
+
+  class Inline(grok.View):
+    sometext = 'Some Text'
+
+  inline = components.ChameleonPageTemplate(
+      "<html><body>ME GROK HAS INLINES! ${view.sometext}</body></html>")
+
+If we render this view we get::
+
+    >>> view = getMultiAdapter((manfred, request), name='inline')
+    >>> print view()
+    <html><body>ME GROK HAS INLINES! Some Text</body></html>
 
 Clean up::
 
