@@ -91,17 +91,39 @@
     name="authenticate"
     factory=".apps.authenticate.Authenticator" /-->
 
+<!-- Normal traversal for non-browser requests -->
 <wsgi:application
     name="traverse"
     factory=".apps.traversal.Traverser" />
+
+<!-- Extra traversal for browser requests -->
+<wsgi:application
+    name="traverse"
+    factory=".apps.traversal.BrowserTraverser"
+    for="zope.publisher.interfaces.browser.IBrowserRequest" />
 
 <wsgi:application
     name="annotate_transaction"
     factory=".apps.txnctl.TransactionAnnotator" />
 
+<!-- Just use mapply for non-HTTP requests -->
 <wsgi:application
     name="call"
     factory=".apps.mapply.Caller" />
+
+<!-- For browser requests, treat the HEAD method specially -->
+<wsgi:application
+    name="call"
+    factory=".apps.mapply.HTTPCaller"
+    for="zope.publisher.interfaces.browser.IBrowserRequest"
+    />
+
+<!-- For non-browser HTTP requests, look up method-specific views -->
+<wsgi:application
+    name="call"
+    factory=".apps.mapply.HTTPRequestMethodCaller"
+    for="zope.publisher.interfaces.http.IHTTPRequest"
+    />
 
 </configure>
 

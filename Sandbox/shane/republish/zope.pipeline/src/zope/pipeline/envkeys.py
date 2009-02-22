@@ -46,9 +46,9 @@ This module contains an alias for each of the environment keys below.
     first element of this list. Used by at least the `traverse` and
     `call` applications.
 
-'zope.pipeline.implicit_traversal_steps'
-    Number of steps that were traversed implicitly. Implicit traversal
-    adds automatic traversal steps to the end of the path; this is
+'zope.pipeline.default_traversal_steps'
+    Number of steps that were traversed implicitly. Default traversal
+    adds implicit traversal steps to the end of the path; this is
     primarily used for default views of folders. Created by the
     `traverse` application and used by the `fix_relative_links`
     application.
@@ -72,7 +72,7 @@ CAN_RETRY_KEY = "zope.pipeline.can_retry"
 REQUEST_KEY = "zope.pipeline.request"
 TRAVERSAL_HOOKS_KEY = "zope.pipeline.traversal_hooks"
 TRAVERSED_KEY = "zope.pipeline.traversed"
-IMPLICIT_TRAVERSAL_STEPS_KEY = "zope.pipeline.implicit_traversal_steps"
+DEFAULT_TRAVERSAL_STEPS_KEY = "zope.pipeline.default_traversal_steps"
 STRING_RESULT_HOOKS_KEY = "zope.pipeline.string_result_hooks"
 
 RESETTABLE_KEYS = [

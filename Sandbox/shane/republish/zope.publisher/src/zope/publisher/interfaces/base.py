@@ -18,9 +18,9 @@ $Id: browser.py 96546 2009-02-14 20:48:37Z shane $
 
 """The base interfaces for request and response objects."""
 
+from zope.interface.common.mapping import IExtendedReadMapping
 from zope.interface import Attribute
 from zope.interface import Interface
-from zope.interface.common.mapping import IExtendedReadMapping
 
 __all__ = (
     'IRequest',
@@ -28,8 +28,8 @@ __all__ = (
     'IResult',
     'IHeld',
     'IDebugFlags',
-    'IWSGIApplication',
     'IPublishTraverse',
+    'IWSGIApplication',
     )
 
 
@@ -58,36 +58,6 @@ class IRequest(IExtendedReadMapping):
         If you access this stream directly to retrieve data, it will not be
         possible by other parts of the framework to access the data of the
         request via the ``body`` attribute.""")
-
-    traversal_stack = Attribute(
-        """The list of steps to traverse in reverse order.
-
-        Elements will be removed from this list as they are traversed.
-        It is possible to influence traversal by changing this list
-        during traversal.
-        """)
-
-    traversal_hooks = Attribute(
-        """List of hooks to call before each traversal step.
-
-        Each hook will be called with two parameters, request and ob.
-        The hook does not need to return anything.
-
-        These hooks will be called before traversing an object for the
-        first time.  If the same object is traversed more than
-        once, the hook will still only be called the first time.
-        """)
-
-    traversed = Attribute(
-        """List of (name, obj) steps that have been traversed.
-
-        The first object is the application root and may have an empty name.
-        The last object is the object to call.
-        """)
-
-    traversed_default = Attribute(
-        """The number of steps added by default traversal.
-        """)
 
     principal = Attribute(
         """IPrincipal object associated with the request.
@@ -118,31 +88,8 @@ class IRequest(IExtendedReadMapping):
     locale = Attribute(
         """The locale object associated with this request.""")
 
-    def getTraversalStack():
-        """Deprecated: use the traversal_stack attribute instead.
-        """
-
-    def setTraversalStack(stack):
-        """Deprecated: use the traversal_stack attribute instead.
-        """
-
     def setPrincipal(principal):
         """Deprecated: use the principal attribute instead.
-        """
-
-    def getBasicCredentials():
-        """Return (login, password) if the request contains basic credentials.
-
-        Returns None if no such credentials are in the request or the
-        credentials are of some other type.
-        """
-
-    def _authUserPW():
-        """Deprecated: Use getBasicCredentials() instead.
-        """
-
-    def unauthorized(challenge):
-        """Deprecated: use response.unauthorized() instead.
         """
 
     def hold(held):
@@ -158,14 +105,15 @@ class IRequest(IExtendedReadMapping):
 
 
 class IResponse(Interface):
-    """Holds a response result."""
+    """Collects information for a response and produces an iterable result."""
 
     def getStatus():
         """Returns the current status code as an integer.
         """
 
     def getStatusString():
-        """Return the status followed by the reason."""
+        """Return the status and status message, joined by a space character.
+        """
 
     def setStatus(status, reason=None):
         """Sets the status code of the response
@@ -288,16 +236,6 @@ class IDebugFlags(Interface):
     showTAL = Attribute("""Leave TAL markup in rendered page templates""")
 
 
-class IWSGIApplication(Interface):
-    """Implements the WSGI application spec.  See PEP 333:
-
-    http://www.python.org/dev/peps/pep-0333/
-    """
-
-    def __call__(environ, start_response):
-        """Call the application and return a body iterator."""
-
-
 class IPublishTraverse(Interface):
 
     def publishTraverse(request, name):
@@ -312,3 +250,12 @@ class IPublishTraverse(Interface):
         This method should return an object that provides ILocation,
         having the specified name and `self` as parent.
         """
+
+class IWSGIApplication(Interface):
+    """Implements the WSGI application spec.  See PEP 333:
+
+    http://www.python.org/dev/peps/pep-0333/
+    """
+
+    def __call__(environ, start_response):
+        """Call the application and return a body iterator."""

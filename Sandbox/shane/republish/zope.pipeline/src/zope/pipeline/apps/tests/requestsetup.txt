@@ -3,8 +3,7 @@ Request Creation
 ----------------
 
 The ``CreateRequest`` application puts a Zope-style request object in the
-WSGI environment.  Zope-style request objects are mainly used for
-object traversal.
+WSGI environment.
 
 Create an app that prints the contents of the created request.
 

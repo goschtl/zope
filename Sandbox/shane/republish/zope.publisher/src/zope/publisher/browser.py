@@ -60,3 +60,6 @@ class BrowserPage(BrowserView):
     def __call__(self, *args, **kw):
         raise NotImplementedError("Subclasses should override __call__ to "
                                   "provide a response body")
+
+def applySkin():
+    pass

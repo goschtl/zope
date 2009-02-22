@@ -13,7 +13,7 @@
 ##############################################################################
 
 from zope.interface import implements
-from zope.pipeline.envkeys import IMPLICIT_TRAVERSAL_STEPS_KEY
+from zope.pipeline.envkeys import DEFAULT_TRAVERSAL_STEPS_KEY
 from zope.pipeline.envkeys import REQUEST_KEY
 from zope.pipeline.envkeys import STRING_RESULT_HOOKS_KEY
 from zope.publisher.interfaces import IWSGIApplication
@@ -47,8 +47,6 @@ class FixRelativeLinks(object):
             need_fix = True
 
         else:
-            actual_steps = environ[IMPLICIT_TRAVERSAL_STEPS_KEY]
-
             # If the URL ends with a slash, the URL specified one
             # default traversal step, otherwise the URL specified zero.
             if environ['PATH_INFO'].endswith('/'):
@@ -60,6 +58,7 @@ class FixRelativeLinks(object):
             # by the URL with the number of default traversal steps
             # actually performed. Set need_fix to True if the specified
             # number does not match the actual.
+            actual_steps = environ[DEFAULT_TRAVERSAL_STEPS_KEY]
             if actual_steps != specified_steps:
                 need_fix = True
                 allow_redirect = (

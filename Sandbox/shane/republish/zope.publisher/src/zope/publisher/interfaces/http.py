@@ -129,23 +129,6 @@ class IHTTPRequest(IRequest):
         If path_only is true, then only a path will be returned.
         """
 
-    def getBasicAuth():
-        """Return (login, password) if there are basic credentials.
-
-        Return None if the request does not contain basic credentials.
-        """
-
-    def _authUserPw():
-        """Deprecated: Use getBasicAuth() instead.
-        """
-
-    def unauthorized(challenge):
-        """Issue a 401 Unauthorized error (asking for login/password).
-
-        Sets the WWW-Authenticate header to the value of the
-        challenge parameter.
-        """
-
 
 class IHTTPResponse(IResponse):
     """An object representation of an HTTP response."""

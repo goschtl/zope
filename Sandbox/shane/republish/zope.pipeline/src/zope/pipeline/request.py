@@ -48,10 +48,6 @@ class BaseRequest(object):
         '__provides__',      # Allow request to directly provide interfaces
         'environment',       # The request environment (CGI. WSGI, or similar)
         'bodyStream',        # body input stream
-        'traversal_stack',   # Names to be traversed, in reverse order
-        'traversal_hooks',   # list of functions to call during traversal
-        'traversed',         # list of (name, obj) that have been traversed
-        'traversed_default', # number of steps added by default traversal
         'principal',         # authorized principal
         'debug',             # debug flags
         'interaction',       # interaction, set by interaction
@@ -65,10 +61,6 @@ class BaseRequest(object):
     def __init__(self, environ):
         self.environment = environ
         self.bodyStream = environ.get('wsgi.input')
-        self.traversal_stack = []
-        self.traversal_hooks = []
-        self.traversed = []
-        self.traversed_default = 0
         self.principal = None
         self.debug = DebugFlags()
         self.interaction = None

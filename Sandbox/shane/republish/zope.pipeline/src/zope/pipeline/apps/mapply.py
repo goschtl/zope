@@ -14,6 +14,7 @@
 
 from zope.interface import implements
 from zope.proxy import removeAllProxies
+from zope.publisher.interfaces.http import MethodNotAllowed
 from zope.publisher.interfaces import IWSGIApplication
 
 from zope.pipeline.envkeys import REQUEST_KEY
@@ -28,11 +29,16 @@ class Caller(object):
     """
     implements(IWSGIApplication)
 
-    def __call__(self, environ, start_response):
+    def get_target(self, environ):
+        """Returns the object to call."""
         traversed = environ[TRAVERSED_KEY]
+        name, ob = traversed[-1]
+        return ob
+
+    def __call__(self, environ, start_response):
+        ob = self.get_target(environ)
         request = environ[REQUEST_KEY]
         positional = request.getPositionalArguments()
-        name, ob = traversed[-1]
         result = mapply(ob, positional, request)
         response = request.response
         if result is not response:
@@ -42,6 +48,54 @@ class Caller(object):
 
     def __repr__(self):
         return '%s()' % self.__class__.__name__
+
+
+class HTTPCaller(Caller):
+    """Caller for HTTP: Returns an empty body for HEAD requests.
+
+    Other request methods 
+    """
+    implements(IWSGIApplication)
+
+    def __call__(self, environ, start_response):
+        res = super(HTTPCaller, self)(environ, start_response)
+        if request.method == 'HEAD':
+            # Send the headers, but discard the body.
+            # Note that a HEAD request can have a nonzero Content-Length
+            # header, while the body has zero length.  This seems to follow
+            # the HTTP spec.
+            if hasattr(res, 'close'):
+                res.close()
+            res = ('',)
+        return res
+
+
+class HTTPRequestMethodCaller(HTTPCaller):
+    """Caller for HTTP: calls the view and method specified by REQUEST_METHOD.
+
+    This is normally used for non-browser requests such as PUT, DELETE, etc.
+    """
+
+    def get_target(self, environ):
+        """Returns the object to call."""
+        orig = super(HTTPRequestMethodCaller, self).get_target(environ)
+
+        # The commented code below matches the behavior of
+        # zope.app.publication, but that behavior is strange and
+        # undocumented.  If anyone needs this code, please explain
+        # why.
+
+        #if IHTTPException.providedBy(orig):
+        #    return orig
+
+        request = environ[REQUEST_KEY]
+        # Get the view named by the request method
+        ob = queryMultiAdapter((orig, request), name=request.method)
+        # Get the method of that view with the same name
+        ob = getattr(ob, request.method, None)
+        if ob is None:
+            raise MethodNotAllowed(orig, request)
+        return ob
 
 
 _marker = object()  # Create a new marker object.

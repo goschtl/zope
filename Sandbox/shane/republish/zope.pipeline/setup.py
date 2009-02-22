@@ -49,6 +49,7 @@ setup(
         'zope.i18n',
         'zope.interface',
         'zope.publisher',
+        'zope.traversing', # for namespace traversal
         'zope.security',
         ],
     extras_require=dict(
