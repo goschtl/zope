@@ -1,0 +1,9 @@
+<html>
+<body>
+<span tal:define="foo 'a FOO'" />
+${view.me_do()}
+CSS-URL: ${static['test.css']()}
+My context is: ${view.url(context)}
+${foo}
+</body>
+</html>
