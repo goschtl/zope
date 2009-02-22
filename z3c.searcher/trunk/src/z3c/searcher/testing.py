@@ -16,6 +16,7 @@ $Id:$
 """
 
 import zope.component
+from zope.keyreference.testing import SimpleKeyReference
 from zope.publisher.interfaces import IRequest
 from zope.session import session
 from zope.session.http import CookieClientIdManager
@@ -24,7 +25,6 @@ from zope.session.interfaces import IClientIdManager
 from zope.session.interfaces import ISession
 from zope.session.interfaces import ISessionDataContainer
 from zope.app.authentication.tests import TestClientId
-from zope.app.keyreference.testing import SimpleKeyReference
 from zope.app.testing import setup
 
 

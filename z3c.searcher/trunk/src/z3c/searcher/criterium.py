@@ -21,9 +21,9 @@ import zope.interface
 from zope.schema.fieldproperty import FieldProperty
 from zope.container import contained
 
-from z3c.i18n import MessageFactory as _
 from z3c.indexer import query
 from z3c.searcher import interfaces
+from z3c.searcher.interfaces import _
 
 
 class SearchCriterium(persistent.Persistent, contained.Contained):

@@ -5,7 +5,8 @@ CHANGES
 0.5.2dev (unreleased)
 ---------------------
 
-- ...
+- Cleanup dependencies. Change package's mailing list address to
+  zope-dev at zope.org instead of retired one.
 
 
 0.5.1 (2009-02-22)

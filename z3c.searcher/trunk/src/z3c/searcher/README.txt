@@ -41,8 +41,8 @@ site:
 
 Setup a IIntIds utility:
 
-  >>> from zope.app.intid import IntIds
-  >>> from zope.app.intid.interfaces import IIntIds
+  >>> from zope.intid import IntIds
+  >>> from zope.intid.interfaces import IIntIds
   >>> intids = IntIds()
   >>> sm['default']['intids'] = intids
   >>> sm.registerUtility(intids, IIntIds)

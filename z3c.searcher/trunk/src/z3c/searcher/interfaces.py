@@ -16,17 +16,19 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+import zope.i18nmessageid
 import zope.interface
 import zope.schema
 from zope.schema import vocabulary
 from zope.session.interfaces import ISession
 from zope.location.interfaces import ILocation
 
-from z3c.i18n import MessageFactory as _
 from z3c.indexer import interfaces
 from z3c.indexer import query
 from z3c.form.interfaces import IForm
 from z3c.table.interfaces import ITable
+
+_ = zope.i18nmessageid.MessageFactory('z3c')
 
 
 SEARCH_SESSION = u'z3c.search.intefaces.ISearchSession'

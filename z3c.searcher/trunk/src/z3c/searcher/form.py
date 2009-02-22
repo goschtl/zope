@@ -27,7 +27,6 @@ from z3c.indexer.search import SearchQuery
 from z3c.template.template import getPageTemplate
 from z3c.template.template import getLayoutTemplate
 
-from z3c.i18n import MessageFactory as _
 from z3c.form.interfaces import IWidgets
 from z3c.form import button
 from z3c.form import field
@@ -35,6 +34,7 @@ from z3c.form import form
 from z3c.formui import form as formui
 from z3c.form.browser.radio import RadioFieldWidget
 from z3c.searcher import interfaces
+from z3c.searcher.interfaces import _
 from z3c.searcher import criterium
 from z3c.searcher import filter
 

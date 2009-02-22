@@ -21,9 +21,9 @@ import z3c.formui.form
 import z3c.table.table
 from z3c.form import button
 from z3c.template.template import getPageTemplate
-from z3c.i18n import MessageFactory as _
 
 from z3c.searcher import interfaces
+from z3c.searcher.interfaces import _
 from z3c.searcher import filter
 from z3c.searcher import form
 
