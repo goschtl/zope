@@ -26,7 +26,7 @@ def read(*rnames):
 
 setup(
     name = 'z3c.recipe.dev',
-    version = '0.5.4dev',
+    version = '0.5.4',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 development server setup recipes',
