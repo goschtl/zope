@@ -52,8 +52,9 @@ are registered with the framework::
     >>> grok.testing.grok('megrok.chameleon')
     >>> grok.testing.grok('megrok.chameleon.tests.cpt_fixture')
 
-We create a mammoth, which should provide us a bunch of Genshi driven
-views and put it in the database to setup location info::
+We create a mammoth, which should provide us a bunch of chameleon page
+template driven views and put it in the database to setup location
+info::
 
     >>> from megrok.chameleon.tests.cpt_fixture.app import Mammoth
     >>> manfred = Mammoth()
@@ -64,6 +65,61 @@ Furthermore we prepare for getting the different views on manfred::
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.component import getMultiAdapter
     >>> request = TestRequest()
+
+Simple templates
+----------------
+
+We prepared a plain cavepainting view. The template looks like this::
+
+    >>> cavepainting_cpt = os.path.join(template_dir, 'cavepainting.cpt')
+    >>> print open(cavepainting_cpt, 'rb').read()
+    <html>
+      <body>
+        A cave painting.
+      </body>
+    </html>
+
+The rendered view looks like this::
+
+    >>> view = getMultiAdapter((manfred, request),
+    ...                         name='cavepainting')
+    >>> print view()
+    <html>
+      <body>
+        A cave painting.
+      </body>
+    </html>
+
+Substituting variables
+----------------------
+
+A template can access variables like ``view``, ``context`` and its
+methods and attributes. The ``food`` view does exactly this. The
+template looks like this::
+
+    >>> food_cpt = os.path.join(template_dir, 'food.cpt')
+    >>> print open(food_cpt, 'rb').read()
+    <html>
+    <body>
+    ${view.me_do()}
+    CSS-URL: ${static['test.css']()}
+    My context is: ${view.url(context)}
+    </body>
+    </html>
+
+The rendered view looks like this::
+
+    >>> view = getMultiAdapter((manfred, request), name='food')
+    >>> print view()
+    <html>
+    <body>
+    ME GROK EAT MAMMOTH!
+    CSS-URL: http://127.0.0.1/@@/megrok.chameleon.tests.cpt_fixture/test.css
+    My context is: http://127.0.0.1/manfred
+    </body>
+    </html>
+
+
 
 Clean up::
 
