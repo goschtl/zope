@@ -33,7 +33,41 @@ chameleon page templates.
 
 See the `chameleon.zpt` page for more information.
 
+Prerequisites
+-------------
 
+Before we can see the templates in action, we care for correct
+registration and set some used variables::
+
+    >>> import os
+    >>> testdir = os.path.join(os.path.dirname(__file__), 'tests')
+    >>> cpt_fixture = os.path.join(testdir, 'cpt_fixture')
+    >>> template_dir = os.path.join(cpt_fixture, 'app_templates')
+
+We register everything. Before we can grok our fixture, we have to
+grok the `megrok.chameleon` package. This way the new template types
+are registered with the framework::
+
+    >>> import grok
+    >>> grok.testing.grok('megrok.chameleon')
+    >>> grok.testing.grok('megrok.chameleon.tests.cpt_fixture')
+
+We create a mammoth, which should provide us a bunch of Genshi driven
+views and put it in the database to setup location info::
+
+    >>> from megrok.chameleon.tests.cpt_fixture.app import Mammoth
+    >>> manfred = Mammoth()
+    >>> getRootFolder()['manfred'] = manfred
+
+Furthermore we prepare for getting the different views on manfred::
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.component import getMultiAdapter
+    >>> request = TestRequest()
+
+Clean up::
+
+    >>> del getRootFolder()['manfred']
 
 
 Chameleon Genshi templates
