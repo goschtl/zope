@@ -30,8 +30,14 @@ setup (
     long_description=(
         read('README.txt')
         + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n\n' +
+        read('src', 'z3c', 'searcher', 'README.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
+
     license = "ZPL 2.1",
     keywords = "zope3 z3c catalog index indexer search searcher",
     classifiers = [
