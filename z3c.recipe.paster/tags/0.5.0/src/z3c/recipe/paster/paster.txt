@@ -1,0 +1,106 @@
+========================
+z3c.recipe.paster:paster
+========================
+
+This Zope 3 recipes offers a Paste Deploy script setup for Zope3 projects.
+
+The paster part allows us to setup a plain paster executable which could be 
+used for start up your zope server using the paste deploy ".ini file like:
+``bin/paster serve app.ini``. This recipe inherits the zc.recipe.egg class
+and will setup the paster within your egg dependency. All you have to do is
+to define your eggs. The benefit of this recipe compared with the built in
+PasteScript it the option to choose another name if you need more then one 
+paster script. This is required if you have paster with different egg 
+dependencies in one buildout configuration.
+
+
+Options
+-------
+
+The 'serve' recipe accepts the following options:
+
+eggs
+  The names of one or more eggs, with their dependencies that should
+  be included in the Python path of the generated scripts.
+
+ini
+  The paste deploy ``*.ini`` file content.
+
+zope.conf
+  The zope.conf file defining the DB used in the WSGI app and the error log
+  section.
+
+site.zcml
+  The zope site.zcml file used by the zope application.
+
+
+Test
+----
+
+Lets define a (bogus) eggs that we can use in our application:
+
+  >>> mkdir('sample')
+  >>> write('sample', 'setup.py',
+  ... '''
+  ... from setuptools import setup
+  ... setup(name = 'sample')
+  ... ''')
+
+Now check if the setup was correct:
+
+  >>> ls('bin')
+  -  buildout-script.py
+  -  buildout.exe
+
+We'll create a ``buildout.cfg`` file that defines our paster configuration:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... develop = sample
+  ... parts = mypaster
+  ... 
+  ... [mypaster]
+  ... recipe = z3c.recipe.paster:paster
+  ... eggs = sample
+  ...  
+  ... ''' % globals())
+
+  >>> ls('bin')
+  -  buildout-script.py
+  -  buildout.exe
+
+Now, Let's run the buildout and see what we get:
+
+  >>> print system(join('bin', 'buildout')),
+  Develop: '/sample-buildout/sample'
+  Installing mypaster.
+  Generated script '/sample-buildout/bin/mypaster'.
+
+Now check if the setup was correct:
+
+  >>> ls('bin')
+  -  buildout-script.py
+  -  buildout.exe
+  -  mypaster-script.py
+  -  mypaster.exe
+
+Check the content of our new generated paster script. As you can see, the 
+generated script uses the ``paste.script.command.run`` for starting our server.
+This script is generic but uses the path of our eggs and uses the given name:
+
+  >>> cat('bin', 'mypaster-script.py')
+  <BLANKLINE>
+  import sys
+  sys.path[0:0] = [
+    '/sample-buildout/sample',
+    '/sample-pyN.N.egg',
+    'c:\\python24\\lib\\site-packages',
+    '/sample-pyN.N.egg',
+    '/sample-pyN.N.egg',
+    ]
+  <BLANKLINE>
+  import paste.script.command
+  <BLANKLINE>
+  if __name__ == '__main__':
+      paste.script.command.run()
