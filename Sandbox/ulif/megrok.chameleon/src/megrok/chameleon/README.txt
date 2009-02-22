@@ -12,6 +12,29 @@ supported.
 Chameleon Zope page templates
 =============================
 
+Chameleon provides support for Zope page templates which can be used
+from grok writing templates with the ``.cpt`` (=Chameleon Page
+Template) filename extension.
+
+Chameleon page templates differ from standard Zope page templates in a
+few aspects, most notably:
+
+* Expressions are parsed in ``Python-mode`` by default. This means,
+  instead of ``tal:content="view/value"`` you must use
+  ``tal:content="view.value"``. Every occurence of TAL-expressions
+  starting with ``python:`` now can be shortened by skipping this
+  marker.
+
+* Also genshi-like variable substitutions are supported. For example
+  you can write ``${myvar}`` instead of ``tal:content="myvar"``.
+
+Beside this, most rules for regular Zope page templates apply also to
+chameleon page templates.
+
+See the `chameleon.zpt` page for more information.
+
+
+
 
 Chameleon Genshi templates
 ==========================
