@@ -1,5 +1,5 @@
-megrok.chameleon
-****************
+Detailed Description
+********************
 
 Grok-support for using chameleon driven templates.
 
@@ -31,7 +31,9 @@ few aspects, most notably:
 Beside this, most rules for regular Zope page templates apply also to
 chameleon page templates.
 
-See the `chameleon.zpt` page for more information.
+See the `chameleon.zpt`_ page for more information.
+
+.. _chameleon.zpt: http://pypi.python.org/pypi/chameleon.zpt
 
 Prerequisites
 -------------
@@ -163,6 +165,11 @@ extension.
 Note, that chameleon genshi templates might not cover the full range
 of functionality offered by native genshi parsers. Use `megrok.genshi`
 if you want native genshi support.
+
+See the `chameleon.genshi`_ page for more information.
+
+.. _chameleon.genshi: http://pypi.python.org/pypi/chameleon.genshi
+
 
 Prerequisites
 -------------
@@ -296,8 +303,8 @@ looks like so::
     >>> print open(hunter_cgt, 'rb').read()
     ME GROK HUNT ${view.game}!
 
-Note, that this template has the ``.cgt`` (= **c**ameleon **g**genshi
-**t**ext template) file extension.
+Note, that this template has the ``.cgt`` (= **c**\ ameleon **g**\ enshi
+**t**\ ext template) file extension.
 
 If we render it, all expressions are substituted::
 

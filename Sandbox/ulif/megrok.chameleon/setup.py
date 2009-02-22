@@ -1,8 +1,12 @@
+import os
 from setuptools import setup, find_packages
 
 version = '0.1dev'
 
 long_description = (open('README.txt').read() +
+                    '\n\n' +
+                    open(os.path.join('src', 'megrok', 'chameleon',
+                                      'README.txt')).read() +
                     '\n\n' +
                     open('CHANGES.txt').read())
 
