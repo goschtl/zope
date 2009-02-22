@@ -16,14 +16,13 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
+import zope.interface
+import z3c.formui.form
+import z3c.table.table
+from z3c.form import button
 from z3c.template.template import getPageTemplate
-from z3c.template.template import getLayoutTemplate
-
 from z3c.i18n import MessageFactory as _
 
-import z3c.formui.form
-from z3c.table import table
-from z3c.form import button
 from z3c.searcher import interfaces
 from z3c.searcher import filter
 from z3c.searcher import form
@@ -38,7 +37,7 @@ def canCancel(form):
     return form.supportsCancel
 
 
-class SearchTable(table.Table, z3c.formui.form.Form):
+class SearchTable(z3c.table.table.Table, z3c.formui.form.Form):
     """Search form with result table."""
 
     zope.interface.implements(interfaces.ISearchTable)

@@ -496,6 +496,10 @@ Before we can render the form, we need to register the templates:
   ...      template="search.pt"
   ...      for=".form.SearchForm"
   ...      />
+  ...  <z3c:template
+  ...      template="table.pt"
+  ...      for=".table.SearchTable"
+  ...      />
   ... </configure>
   ... </configure>
   ... """, context=context)
@@ -658,6 +662,74 @@ content search filter and of corse the criteria configured for this filter.
     </div>
       <div>
       </div>
+    </div>
+    <div>
+      <div class="buttons">
+      </div>
+    </div>
+  </form>
+
+
+Search Table
+------------
+
+There is also a search table. This search table uses the criterium and filter
+form and allows you to simply create a search page which will list the results
+as table. Let's define a custom search table:
+
+  >>> from z3c.searcher import table
+  >>> class ContentSearchTable(table.SearchTable):
+  ... 
+  ...     filterFactory = ContentSearchFilter
+
+Before we can use the form, our request needs to provide the form UI layer:
+
+  >>> from zope.interface import alsoProvides
+  >>> from z3c.formui.interfaces import IDivFormLayer
+  >>> alsoProvides(request, IDivFormLayer)
+
+That's all you need for write a simple search form. This form uses it's own
+content search filter and of corse the criteria configured for this filter.
+
+  >>> searchTable = ContentSearchTable(object(), request)
+  >>> searchTable.update()
+  >>> print searchTable.render()
+  <form action="http://127.0.0.1" method="post"
+        enctype="multipart/form-data" class="edit-form"
+        name="formTable" id="formTable">
+    <div class="viewspace">
+        <div class="required-info">
+           <span class="required">*</span>
+           &ndash; required
+        </div>
+      <div>
+      <div class="filterForm">
+        <fieldset>
+  <legend>Filter</legend>
+  <div>
+    <label for="filterformnewCriterium">
+      New Criterium
+    </label>
+    <select name="filterformnewCriterium" size="1">
+      <option value="fullText">fullText</option>
+    </select>
+    <input type="submit" id="filterform-buttons-add"
+         name="filterform.buttons.add"
+         class="submit-widget button-field" value="Add" />
+  </div>
+  <div>
+    <input type="submit" id="filterform-buttons-search"
+         name="filterform.buttons.search"
+         class="submit-widget button-field" value="Search" />
+    <input type="submit" id="filterform-buttons-clear"
+         name="filterform.buttons.clear"
+         class="submit-widget button-field" value="Clear" />
+  </div>
+  </fieldset>
+      </div>
+      <div>
+      </div>
+    </div>
     </div>
     <div>
       <div class="buttons">
