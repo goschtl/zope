@@ -1,0 +1,17 @@
+=======
+CHANGES
+=======
+
+0.5.1 (2009-02-22)
+------------------
+
+- Fix: added missing zope.interface import in z3c.searcher.table and added
+  tests for SearchTable
+
+
+0.5.0 (2009-02-22)
+------------------
+
+- Added initial generations configuration files
+
+- Initial Release
