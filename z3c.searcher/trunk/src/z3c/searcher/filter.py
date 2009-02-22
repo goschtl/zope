@@ -23,7 +23,7 @@ import zope.interface
 import zope.event
 import zope.lifecycleevent
 from zope.location import location
-from zope.app.container import contained
+from zope.container import contained
 
 from z3c.indexer import query
 from z3c.indexer.search import SearchQuery

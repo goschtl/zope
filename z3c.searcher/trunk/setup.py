@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.searcher',
-    version='0.5.0dev',
+    version='0.5.0',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Persistent and session based search form for Zope3",
@@ -73,7 +73,7 @@ setup (
         'z3c.table',
         'zc.catalog',
         'zope.app.intid',
-        'zope.app.container',
+        'zope.container',
         'zope.component',
         'zope.event',
         'zope.index',

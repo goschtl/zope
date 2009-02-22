@@ -16,14 +16,6 @@ $Id:$
 """
 __docformat__ = "reStructuredText"
 
-import zope.component
-import zope.event
-import zope.lifecycleevent
-
-from zope.index.text import parsetree
-from zope.location import location
-
-from z3c.indexer.search import SearchQuery
 from z3c.template.template import getPageTemplate
 from z3c.template.template import getLayoutTemplate
 

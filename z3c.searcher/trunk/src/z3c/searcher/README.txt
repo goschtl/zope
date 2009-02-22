@@ -19,8 +19,8 @@ Start a simple test setup
 Setup some helpers:
 
   >>> import zope.component
-  >>> from zope.app import folder
-  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.site import folder
+  >>> from zope.site import LocalSiteManager
   >>> from z3c.indexer.interfaces import IIndex
 
 Setup a site

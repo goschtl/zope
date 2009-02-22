@@ -19,7 +19,7 @@ __docformat__ = "reStructuredText"
 import persistent
 import zope.interface
 from zope.schema.fieldproperty import FieldProperty
-from zope.app.container import contained
+from zope.container import contained
 
 from z3c.i18n import MessageFactory as _
 from z3c.indexer import query
