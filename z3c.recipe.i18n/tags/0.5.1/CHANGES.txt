@@ -1,0 +1,23 @@
+=======
+CHANGES
+=======
+
+Version 0.5.1 (2009-02-22)
+--------------------------
+
+- fix tests
+
+- Updated docs to render nicely when fed to docutils. [ulif]
+
+- Added `zip_safe` flag in `setup.py` to avoid meaningless warnings
+  when used with buildout. [ulif]
+
+
+Version 0.5.0 (2009-09-09)
+--------------------------
+
+- Implemented environment section argument support for i18nextract.py script. 
+  This is a name of a section which defines a set of environment variables that 
+  should be exported before starting the extraction.
+
+- Initial Release
