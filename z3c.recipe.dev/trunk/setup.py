@@ -21,12 +21,11 @@ from setuptools import setup, find_packages
 
 
 def read(*rnames):
-    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
     name = 'z3c.recipe.dev',
-    version = '0.5.4',
+    version = '0.5.5dev',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 development server setup recipes',

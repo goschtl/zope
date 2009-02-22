@@ -18,7 +18,7 @@ configuration files from the relevant parts folder.
 
 
 Options
-*******
+~~~~~~~
 
 The 'app' recipe accepts the following options:
 
@@ -46,7 +46,7 @@ site.zcml
 
 
 Test
-****
+~~~~
 
 Lets define some (bogus) eggs that we can use in our application:
 
@@ -217,7 +217,7 @@ script which knows about some egg packages.
 
 
 Options
-*******
+~~~~~~~
 
 The 'script' recipe accepts the following options:
 
@@ -238,7 +238,7 @@ arguments
 
 
 Test
-****
+~~~~
 
 Lets define a egg that we can use in our application:
 
@@ -314,15 +314,15 @@ Now we can call the script:
 
 
 Test with parameters
-********************
+--------------------
 
 Of the same script defined above.
 
-Use the option `arguments = ` to pass arguments to the script.
-All the string will be copied to the script 1:1.
+Use the option ``arguments = `` to pass arguments to the script.
+All the string will be copied to the script ``1:1``.
 So what you enter here is what you get.
 
-We'll create a `buildout.cfg` file that defines our script:
+We'll create a ``buildout.cfg`` file that defines our script:
 
   >>> write('buildout.cfg',
   ... '''
@@ -375,7 +375,7 @@ Now we can call the script:
 
 
 Creating Directories
-====================
+--------------------
 
   >>> write(sample_buildout, 'buildout.cfg',
   ... """
@@ -488,7 +488,7 @@ But we need to activate this function explicitely.
 
 
 Creating Files
-==============
+--------------
 
 The mkfile recipe creates a file with a given path, content and
 permissions.
