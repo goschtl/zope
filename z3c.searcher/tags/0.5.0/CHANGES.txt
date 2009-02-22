@@ -1,0 +1,10 @@
+=======
+CHANGES
+=======
+
+Version 0.5.0 (2009-02-22)
+--------------------------
+
+- Added initial generations configuration files
+
+- Initial Release

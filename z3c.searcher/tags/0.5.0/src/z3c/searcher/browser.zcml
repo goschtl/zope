@@ -1,0 +1,34 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <!-- SearchCriterium row views -->
+  <page
+      name="row"
+      for=".interfaces.ISearchCriterium"
+      class=".form.CriteriumForm"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      permission="zope.Public"
+      />
+
+  <z3c:template
+      template="criterium.pt"
+      for=".form.CriteriumForm"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <z3c:template
+      template="filter.pt"
+      for=".form.FilterForm"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+  <z3c:template
+      template="table.pt"
+      for=".interfaces.ISearchTable"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      />
+
+</configure>
