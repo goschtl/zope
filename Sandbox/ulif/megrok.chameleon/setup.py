@@ -30,7 +30,9 @@ setup(name='megrok.chameleon',
       zip_safe=False,
       install_requires=['setuptools',
                         'grok',
+                        'z3c.testsetup',
                         'chameleon.zpt',
+                        'chameleon.genshi',
                         ],
       entry_points="""
       # Add entry points here
