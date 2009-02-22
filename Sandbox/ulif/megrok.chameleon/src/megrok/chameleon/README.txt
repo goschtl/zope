@@ -101,9 +101,11 @@ template looks like this::
     >>> print open(food_cpt, 'rb').read()
     <html>
     <body>
+    <span tal:define="foo 'a FOO'" />
     ${view.me_do()}
     CSS-URL: ${static['test.css']()}
     My context is: ${view.url(context)}
+    ${foo}
     </body>
     </html>
 
@@ -113,9 +115,11 @@ The rendered view looks like this::
     >>> print view()
     <html>
     <body>
+    <span />
     ME GROK EAT MAMMOTH!
     CSS-URL: http://127.0.0.1/@@/megrok.chameleon.tests.cpt_fixture/test.css
     My context is: http://127.0.0.1/manfred
+    a FOO
     </body>
     </html>
 
