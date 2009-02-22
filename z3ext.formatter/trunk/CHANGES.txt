@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.2.6 (Unreleased)
+------------------
+
+- Added 'human' datetime formatter (XX minute(s) ago)
+
+- Do not show seconds for fancyDatetime fomratter
+
+
 1.2.5 (2008-11-23)
 ------------------
 

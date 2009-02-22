@@ -17,10 +17,17 @@
      handler=".expression.FormatterExpression" />
 
   <!-- formatters -->
-  <adapter name="date" factory=".dformatter.DateFormatterFactory" />
-  <adapter name="dateTime" factory=".dtformatter.DatetimeFormatterFactory" />
+  <adapter name="date"
+	   factory=".dformatter.DateFormatterFactory" />
+
+  <adapter name="dateTime"
+	   factory=".dtformatter.DatetimeFormatterFactory" />
+
   <adapter name="fancyDatetime"
 	   factory=".fancydatetime.FancyDatetimeFormatterFactory" />
+
+  <adapter name="humanDatetime"
+	   factory=".humandatetime.HumanDatetimeFormatterFactory" />
 
   <!-- vocabularies -->
   <utility

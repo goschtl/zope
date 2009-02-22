@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" ``fancyDatetime`` formatter implementation
+""" ``humanDatetime`` formatter implementation
 
 $Id$
 """
-
 from pytz import utc, timezone
 from datetime import datetime
 from zope import interface, component
@@ -23,24 +22,17 @@ from zope.component import getUtility
 from zope.interface.common.idatetime import ITZInfo
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from interfaces import _, IFormatter, IFormatterFactory, IFormatterConfiglet
+from z3ext.formatter.interfaces import _, \
+    IFormatter, IFormatterFactory, IFormatterConfiglet
 
 
-class FancyDatetimeFormatter(object):
+class HumanDatetimeFormatter(object):
     interface.implements(IFormatter)
 
     def __init__(self, request, *args):
-        try:
-            self.tp = args[0]
-        except:
-            self.tp = 'medium'
-
         self.request = request
-        self.formatter = request.locale.dates.getFormatter('dateTime', self.tp)
 
     def format(self, value):
-        formatter = self.formatter
-
         configlet = getUtility(IFormatterConfiglet)
         tz = None
         if configlet.principalTimezone:
@@ -57,51 +49,49 @@ class FancyDatetimeFormatter(object):
 
         timezoneFormat = configlet.timezoneFormat
 
-        d1 = datetime.now(utc).date()
-        d2 = value.astimezone(utc).date()
+        d1 = datetime.now(utc)
+        d2 = value.astimezone(utc)
 
         delta = d1 - d2
 
-        pattern = formatter.getPattern()
-        if ':ss' in pattern:
-            formatter.setPattern(pattern.replace(':ss', '').strip())
+        years, months, weeks, hours, minutes = (
+            delta.days/365, delta.days/30, delta.days/7,
+            delta.seconds/3600, delta.seconds/60)
 
-        if delta.days == 0:
-            pattern = formatter.getPattern()
-            pos = pattern.find('h')
-            if pos < 0:
-                pos = pattern.find('H')
+        if years > 0:
+            return _(u'${value} year(s) ago',
+                     mapping={'value': years})
 
-            formatter.setPattern(pattern[pos:])
-            return _(u'Today at ${value}',
-                     mapping={'value': formatter.format(value)})
+        if months > 0:
+            return _(u'${value} month(s) ago',
+                     mapping={'value': months})
 
-        if delta.days == 1:
-            pattern = formatter.getPattern()
-            pos = pattern.find('h')
-            if pos < 0:
-                pos = pattern.find('H')
+        if weeks > 0:
+            return _(u'${value} week(s) ago',
+                     mapping={'value': weeks})
 
-            formatter.setPattern(pattern[pos:])
-            return _(u'Yesterday at ${value}',
-                     mapping={'value': formatter.format(value)})
+        if delta.days > 0:
+            return _(u'${value} day(s) ago',
+                     mapping={'value': delta.days})
 
-        if timezoneFormat == 3:
-            if self.tp in ('full',):
-                formatter.setPattern(
-                    formatter.getPattern().replace('z', '').strip())
-                formatted = formatter.format(value)
-                return u'%s %s'%(formatted, tz.zone)
+        if hours > 0:
+            return _(u'${value} hour(s) ago',
+                     mapping={'value': hours})
 
-        return formatter.format(value)
+        if minutes > 0:
+            return _(u'${value} minute(s) ago',
+                     mapping={'value': minutes})
+
+        return _(u'${value} second(s) ago',
+                 mapping={'value': delta.seconds})
 
 
-class FancyDatetimeFormatterFactory(object):
+class HumanDatetimeFormatterFactory(object):
     component.adapts(IHTTPRequest)
     interface.implements(IFormatterFactory)
 
     def __init__(self, request):
         self.request = request
-        
+
     def __call__(self, *args, **kw):
-        return FancyDatetimeFormatter(self.request, *args)
+        return HumanDatetimeFormatter(self.request, *args)
