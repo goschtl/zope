@@ -2,6 +2,14 @@
 CHANGES
 =======
 
+1.3.3 (unreleased)
+------------------
+
+- Added a patched sequence converters that don't raise a LookupError
+  when dealing with values that are removed from the terms. This
+  is fixed in z3c.form's 2.0.0, so it's only needed when using z3c.form
+  1.9.x and below. Include the ``converter.zcml`` file with the
+  ``includeOverrides`` directive, if you need it.
 
 - Added applyChanges method to subform
 
