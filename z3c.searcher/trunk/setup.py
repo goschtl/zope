@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='z3c.searcher',
-    version='0.5.0',
+    version='0.5.1dev',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Persistent and session based search form for Zope3",
@@ -50,7 +50,7 @@ setup (
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url = 'http://cheeseshop.python.org/pypi/z3c.searcher',
+    url = 'http://pypi.python.org/pypi/z3c.searcher',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
