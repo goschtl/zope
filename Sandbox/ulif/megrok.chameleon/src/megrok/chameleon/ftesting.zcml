@@ -11,7 +11,7 @@
 
   <!-- Typical functional testing security setup -->
   <securityPolicy
-      component="zope.app.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
 
   <unauthenticatedPrincipal
