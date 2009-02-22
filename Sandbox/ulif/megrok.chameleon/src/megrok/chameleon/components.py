@@ -45,7 +45,6 @@ class ChameleonPageTemplateFactory(GlobalUtility):
     name('cpt')
 
     def __call__(self, filename, _prefix=None):
-        #print "CALL: ", filename, _prefix
         return ChameleonPageTemplate(filename=filename, _prefix=_prefix)
 
 #
