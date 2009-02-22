@@ -1,15 +1,8 @@
-======
-README
-======
-
-z3c.recipe.paster
------------------
+========================
+z3c.recipe.paster:paster
+========================
 
 This Zope 3 recipes offers a Paste Deploy script setup for Zope3 projects.
-
-
-z3c.recipe.paster:paster
-------------------------
 
 The paster part allows us to setup a plain paster executable which could be 
 used for start up your zope server using the paste deploy ".ini file like:
@@ -22,7 +15,7 @@ dependencies in one buildout configuration.
 
 
 Options
-*******
+-------
 
 The 'serve' recipe accepts the following options:
 
@@ -31,7 +24,7 @@ eggs
   be included in the Python path of the generated scripts.
 
 ini
-  The paste deploy *.ini file content.
+  The paste deploy ``*.ini`` file content.
 
 zope.conf
   The zope.conf file defining the DB used in the WSGI app and the error log
@@ -42,7 +35,7 @@ site.zcml
 
 
 Test
-****
+----
 
 Lets define a (bogus) eggs that we can use in our application:
 

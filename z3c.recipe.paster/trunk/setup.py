@@ -19,19 +19,25 @@ import os
 import xml.sax.saxutils
 from setuptools import setup, find_packages
 
-
 def read(*rnames):
-    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
-    return xml.sax.saxutils.escape(text)
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
 
 setup(
     name = 'z3c.recipe.paster',
-    version = '0.5.0dev',
+    version = '0.5.0',
     author = 'Roger Ineichen and the Zope Community',
     author_email = 'zope-dev@zope.org',
     description = 'Zope3 paste deploy setup recipe',
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n\n' +
+        read('src', 'z3c', 'recipe', 'paster', 'README.txt')
+        + '\n\n' +
+        read('src', 'z3c', 'recipe', 'paster', 'paster.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),

@@ -1,18 +1,15 @@
-======
-README
-======
-
-z3c.recipe.paster
------------------
+=======================
+z3c.recipe.paster:serve
+=======================
 
 This Zope 3 recipes offers a Paste Deploy setup for Zope3 projects. It requires
-to define a PAste DEploy *.ini file in the buoldout.cfg. If you need a simple 
+to define a Paste Deploy *.ini file in the buoldout.cfg. If you need a simple 
 PasteScript setup you can use the z3c.recipe.paster:paster recipe which allows
-to run already existing *.ini files.
+to run already existing ``*.ini`` files.
 
 
 Options
-*******
+-------
 
 The 'serve' recipe accepts the following options:
 
@@ -21,7 +18,7 @@ eggs
   be included in the Python path of the generated scripts.
 
 ini
-  The paste deploy *.ini file content.
+  The paste deploy ``*.ini`` file content.
 
 zope.conf
   The zope.conf file defining the DB used in the WSGI app and the error log
@@ -32,7 +29,7 @@ site.zcml
 
 
 Test
-****
+----
 
 Lets define a (bogus) eggs that we can use in our application:
 
@@ -156,10 +153,10 @@ projects setup.py file. Without them, the ``app:main`` isn't available. You can
 define such a app:main entry point using the default ``application_factory``
 offered from the ``z3c.recipe.paster.wsgi`` package. Of corse you can define
 your own application factory if you need to pass some additional configuration
-for your app to the factroy defined in your custom *.ini file.
+for your app to the factroy defined in your custom ``*.ini`` file.
 
 The default entry_point offered from the z3c.recipe.paster could be included in
-your custom setup.py file like:
+your custom setup.py file like::
 
   setup(
       name = 'something',
