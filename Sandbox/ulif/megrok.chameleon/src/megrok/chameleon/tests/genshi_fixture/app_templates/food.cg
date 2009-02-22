@@ -1,7 +1,0 @@
-<html>
-<body>
-${view.me_do()}
-CSS-URL: ${static['test.css']()}
-My context is: ${view.url(context)}
-</body>
-</html>
