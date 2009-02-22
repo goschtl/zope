@@ -17,6 +17,7 @@ $Id$
 """
 from zope import interface
 from zope.component import getUtility
+from zope.proxy import removeAllProxies
 from zope.traversing.api import getParents
 from zope.app.intid.interfaces import IIntIds
 from zc.catalog.index import SetIndex, parseQuery
@@ -39,7 +40,7 @@ class PathIndex(SetIndex):
 
         ids = []
         for ob in parents:
-            id = intid.queryId(ob)
+            id = intid.queryId(removeAllProxies(ob))
             if id is not None:
                 ids.append(id)
 
