@@ -10,7 +10,7 @@
   >>> print view()
   <html>
    <body>
-     <div class="layout"><b> I am a MotherFucking  pagelet </b></div>
+     <div class="layout"><b> I am a pagelet </b></div>
    </body>
   </html>
 
@@ -51,7 +51,7 @@ class MyPagelet(megrok.pagelet.Pagelet):
     grok.context(Page)
 
     def render(self):
-        return "<b> I am a MotherFucking  pagelet </b>"
+        return "<b> I am a pagelet </b>"
 
 class PageletWithTemplate(megrok.pagelet.Pagelet):
     grok.context(Page)
