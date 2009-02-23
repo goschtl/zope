@@ -11,6 +11,7 @@ this problem, resources were developed, which are presentation
 components that do not require any context.  This mini-chapter will
 demonstrate how resources are created and registered with Zope 3.
 
+
 File Resource
 -------------
 
@@ -53,8 +54,8 @@ Image resource
 --------------
 
 If you have an image resource, you might want to use different
-configuration.  Create a simple image called img.png and register it
-as follows::
+configuration.  Create a simple image called `img.png` and register
+it as follows::
 
   <browser:resource
     name="img.png"
@@ -73,9 +74,9 @@ specified inside a resource directive.
 Line 4: A final optional attribute is the ''permission'' one must
 have to view the resource.  To demonstrate the security, I set the
 permission required for viewing the image to `zope.ManageContent`, so
-that you must log in as an administrator/- manager to be able to view
-it.  The default of the attribute is `zope.Public` so that everyone
-can see the resource.
+that you must log in as a manager to be able to view it.  The default
+of the attribute is `zope.Public` so that everyone can see the
+resource.
 
 
 Directory resource
@@ -109,18 +110,52 @@ only Browser-displayable images must be recognized.
 ZRT resource
 ------------
 
+While working with CSS and JavaScript resource files, it would be
+useful if it works locally as well as with Zope 3.  This will help us
+to test those files without running application server.  Zope
+Resource Templates (ZRT) allows for locally working resources to work
+with Zope 3 as well.  It will rewrite text segments in a resource.
+It is a Zope 3 community package originally developed by Stephan
+Richter for Lovely Systems.  The package is available from PyPI_.
+
+.. _PyPI: http://pypi.python.org/pypi/z3c.zrtresource
+
+
+Installation
+~~~~~~~~~~~~
+
+- Go to setup.py
+
+- Add "z3c.zrtresource" to the install_requires list making it a new
+  dependency.
+
+- In application.zcml, add::
+
+    <include package="z3c.zrtresource" file="meta.zcml" />
+
+
+Usage
+~~~~~
+
 When working locally, you may be storing your image resources in a
 directory.  If you have a subfolder called `images` with an image
-`logo.png`.  And you have a template, so here is the HTML to insert
-the logo::
+`logo.png`.  And you have a resource html file, so here is the HTML
+to insert the logo::
 
+  <html>
   <img src="./images/logo.png" />
+  </html>
 
-Now you can see that the template locally works.
+This is the resource registration::
 
-If you view the HTML via Zope, you can see that it is broken.
+  <resource
+    name="helloworld.html"
+    file="helloworld.html"
+    />
 
-Now, let's try to register the logo with the system like this::
+Now you can see that the template locally works.  Then, if you view
+the HTML via Zope, you can see that it is broken.  Now, let's try to
+register the logo with the system like this::
 
   <resource
     name="logo.png"
@@ -130,29 +165,30 @@ Now, let's try to register the logo with the system like this::
 Now try again, after restarting Zope 3, you can see that it is still
 broken!.  So, relative path is not correct.
 
-Zope Resource Templates (ZRT) allows for locally working resources to
-work with Zope 3 as well.  It will rewrite text segments in a
-resource.  It is a 3rd party package developed by Stephan Richter for
-Lovely Systems.  The package is available from here:
-`http://pypi.python.org/pypi/z3c.zrtresource`
-
-To use the zrt-resource add the following lines to the page
-template::
+To use the zrt-resource add the following lines to the resource html file::
 
   <!--
-    /* zrt-replace: "./images/logo.png" \
-                    tal"string:${context/++resource++logo.png}" */
+    /*
+    zrt-replace: "./images/logo.png" tal"string:${context/++resource++logo.png}"
+    */
   -->
 
-Then convert HTML resource registration to::
+Then convert resource registration to::
 
-  <zrt-resource
+  <resource
     name="helloworld.html"
     file="helloworld.html"
     />
+
+Now if you try to access the `helloworld.html`, you can see that the
+image is rendering properly.  For XML-based files we could have also
+have used TAL, thus ZRT resources are most interesting for CSS and
+JavaScript files.  To use TAL for resources, simply have the template
+end in .pt instead of .html.
 
 
 Summary
 -------
 
 This chapter introduced browser resources and narrated its usage.
+Finally we have covered ZRT resource also.
