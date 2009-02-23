@@ -7,23 +7,21 @@ essential tools like Python eggs, setuptools and buildouts.  If you
 are already familiar with these you may skip this chapter.
 
 
-Eggs
-----
+Eggs and setuptools
+-------------------
 
-Eggs are Python's new distribution format managed using `setuptool`
-package http://peak.telecommunity.com/DevCenter/PythonEggs .
-
-To install an egg, you can use easy_install program
-http://peak.telecommunity.com/DevCenter/EasyInstall .
-
-An easy way to automate the installtion would be to use
-easy_setup.py program.
-
-::
+Eggs_ are Python's new distribution format.  We can make Python
+packages in Egg format using setuptool package.  To install an egg,
+you can use easy_install_.  An easy way to automate the installtion
+would be to use `easy_setup.py` program.  To install setuptool, these
+two steps are enough::
 
   $ wget -c http://peak.telecommunity.com/dist/ez_setup.py
   $ python easy_setup.py
 
+
+.. _Eggs: http://peak.telecommunity.com/DevCenter/PythonEggs
+.. _easy_install: http://peak.telecommunity.com/DevCenter/EasyInstall
 
 Buildout
 --------

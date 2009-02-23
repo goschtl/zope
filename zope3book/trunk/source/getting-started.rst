@@ -144,11 +144,11 @@ Setting up development sandbox
 ------------------------------
 
 To demonstrate the concepts, tools and techniques, we are going to
-develop a ticket collector application.  To begin the work, first
-create a directory for the project.  After creating the directory,
-create a configuration file, `buildout.cfg` as given below.  To
-bootstrap this application checkout bootstrap.py and run it using a
-clean Python.
+develop a ticket collector application.  The application can be used
+for issue/bug tracking.  To begin the work, first create a directory
+for the project.  After creating the directory, create a
+configuration file, `buildout.cfg` as given below.  To bootstrap this
+application checkout bootstrap.py and run it using a clean Python.
 
 ::
 
@@ -216,8 +216,8 @@ To make this package buildout aware, we have to modify the
   eggs = ticketcollector
   interpreter = python
 
-Now run the `buildout` script inside `bin` directory.  This will download
-all necessary eggs and install it.
+Now run the `buildout` script inside `bin` directory.  It will
+download all eggs and install it inside `~/eggs` directory.
 
 ::
 
@@ -241,15 +241,13 @@ A simple application
 Configuring application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We are going to continue the Ticket Collector application in this
-section.  In the last section when you run `./bin/buildout` command
-all necessary Zope 3 packages required for running our application is
-downloaded inside `~/eggs` directory.  Now to run the bare minimum
-Zope 3, we have to create Zope Configuration Markup Language (ZCML)
-file and extend the `buildout.cfg` with appropriate Buildout recipes.
-We are going to use `zc.zope3recipes:app`, `zc.zope3recipes:instance`
-and `zc.recipe.filestorage` recipes for setting up our application.
-Here is our modified buildout.cfg (inside the ticketcollector project
+We are going to continue the ticketcollector application in this
+section.  To run the bare minimum Zope 3, we have to create Zope
+Configuration Markup Language (ZCML) file and extend the
+`buildout.cfg` with appropriate Buildout recipes.  We are going to
+use `zc.zope3recipes:app`, `zc.zope3recipes:instance` and
+`zc.recipe.filestorage` recipes for setting up our application.  Here
+is our modified buildout.cfg (inside the ticketcollector project
 directory)::
 
   [buildout]
@@ -276,7 +274,7 @@ directory)::
   [database]
   recipe = zc.recipe.filestorage
 
-Then we will create `application.zcml` inside `src/ticketcollector`
+Then, we will create `application.zcml` inside `src/ticketcollector`
 directory with the following text.  Consider it as boiler plate code
 now, we will explain this in detail later::
 
@@ -356,9 +354,7 @@ Running application
 ~~~~~~~~~~~~~~~~~~~
 
 Now you can run the application by executing `./bin/buildout` command
-followed by `./bin/instance` command.
-
-::
+followed by `./bin/instance` command as given below::
 
   $ ./bin/buildout
   $ ./bin/instance fg
@@ -428,4 +424,4 @@ Conclusion
 ----------
 
 Setting up a Zope 3 project sandbox is nothing but creating a proper
-Buildout configuration.
+Buildout configuration which use various Buildout recipes.
