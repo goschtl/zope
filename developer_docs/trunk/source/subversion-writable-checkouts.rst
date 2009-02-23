@@ -132,12 +132,3 @@ session for Zope svn+ssh access:
   For the rest, follow the instructions in the non-Windows section above,
   but use your PuTTY session name as the hostname.
 
-  Line endings
-
-    See the **important note on SubversionConfigurationForLineEndings**.   
-
-  Rules
-
-    If you plan to do any checkins, make sure you know and follow the
-    CommitterGuidelines!
-
