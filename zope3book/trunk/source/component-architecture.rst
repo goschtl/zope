@@ -405,3 +405,10 @@ it will raise `ComponentLookupError` exception.  Remember, it will
 not return some random component registered with some other name.
 The adapter look up functions, `getAdapter` and `queryAdapter` also
 works similarly.
+
+
+Summary
+-------
+
+Adapters and utilities are the building blocks of Zope Component
+Architecture.
