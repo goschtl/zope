@@ -1,6 +1,10 @@
 Browser Pages
 =============
 
+
+Introduction
+------------
+
 In the last chapter we have seen how to use resources HTML.  The
 resource HTML will be only available on site-level with the `\@\@`
 prefix.
@@ -59,3 +63,6 @@ by the template, they should return simple iterable objects
 
 View components - integration
 -----------------------------
+
+Summary
+-------
