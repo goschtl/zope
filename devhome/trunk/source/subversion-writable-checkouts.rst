@@ -46,7 +46,7 @@ shell, and not have to specify it again while you're issuing commands from the
 same shell.  It's worthwhile getting acquainted with ssh-agent - check the man
 pages.
 
-    Now you're ready to do a checkout.  The best way to convey the specifics is
+Now you're ready to do a checkout.  The best way to convey the specifics is
 with an example::
 
     % svn co svn+ssh://username@svn.zope.org/repos/main/Zope/trunk Zope
@@ -58,11 +58,6 @@ Subversion commands using SSH this way will require you to provide the
 passphrase for the key being invoked - you will be prompted for it
 unless you have ssh-agent taking care of that for you.
 
-The same sort of thing applies when you do updates or other Subversion
-commands on a checked-out hierarchy.  You do *not* need to specify the
-repository, however - Subversion has stashed that info in its checkout
-bookkeeping (in the Subversion directories) - so the command to do an update
-(with all the trimmings) would look like::
 
 
 Doing Checkouts (Windows)
