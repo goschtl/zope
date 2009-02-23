@@ -5,12 +5,13 @@
 Welcome to Zope Developer Information's documentation!
 ======================================================
 
-Contents:
+Zope Subversion Repository
 
 .. toctree::
    :maxdepth: 2
 
-   subversion
+   subversion-readonly-checkouts
+   subversion-writable-checkouts
 
 Indices and tables
 ==================
