@@ -126,8 +126,8 @@ Installation
 
 - Go to setup.py
 
-- Add "z3c.zrtresource" to the install_requires list making it a new
-  dependency.
+- Add `z3c.zrtresource` to the `install_requires` list making it a
+  new dependency.
 
 - In application.zcml, add::
 
@@ -137,50 +137,60 @@ Installation
 Usage
 ~~~~~
 
+Explaining the idea of ZRT with CSS or JavaScript will be bit
+lengthy.  So, here we are going for unrealistic example with an HTML
+file as the resource file.
+
 When working locally, you may be storing your image resources in a
 directory.  If you have a subfolder called `images` with an image
-`logo.png`.  And you have a resource html file, so here is the HTML
-to insert the logo::
+`logo.png`.  And you have a resource html file with the following
+content to display the logo::
 
   <html>
   <img src="./images/logo.png" />
   </html>
 
-This is the resource registration::
+Here is the html resource file registration::
 
-  <resource
+  <browser:resource
     name="helloworld.html"
     file="helloworld.html"
     />
 
-Now you can see that the template locally works.  Then, if you view
-the HTML via Zope, you can see that it is broken.  Now, let's try to
-register the logo with the system like this::
+Now you can see that the template locally works.  You can access this
+resource at via Zope at `http://localhost:8080/@@/helloworld.html`
+(Replace the `8080` port with the actual one).  Then, if you view the
+HTML via Zope, you can see that it is broken.  This is because the
+logo image resource is not available.  Now, let's try to register the
+logo with the system like this::
 
-  <resource
+  <browser:resource
     name="logo.png"
     file="images/logo.png"
     />
 
 Now try again, after restarting Zope 3, you can see that it is still
-broken!.  So, relative path is not correct.
+broken!.  This reason is the relative path to image is not correct.
+The location of logo resource will be at
+http://localhost:8080/@@/logo.png .
 
-To use the zrt-resource add the following lines to the resource html file::
+This problem can be solved using ZRT resource.  To use the
+`zrt-resource` add the following lines to the resource html file::
 
   <!--
-    /*
+  /*
     zrt-replace: "./images/logo.png" tal"string:${context/++resource++logo.png}"
-    */
+  */
   -->
 
-Then convert resource registration to::
+Then change resource registration like this::
 
-  <resource
+  <browser:zrt-resource
     name="helloworld.html"
     file="helloworld.html"
     />
 
-Now if you try to access the `helloworld.html`, you can see that the
+Now, if you try to access the `helloworld.html`, you can see that the
 image is rendering properly.  For XML-based files we could have also
 have used TAL, thus ZRT resources are most interesting for CSS and
 JavaScript files.  To use TAL for resources, simply have the template
