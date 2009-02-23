@@ -12,6 +12,7 @@ Zope Subversion Repository
 
    subversion-readonly-checkouts
    subversion-writable-checkouts
+   becoming-a-contributor
 
 Indices and tables
 ==================
