@@ -2,18 +2,30 @@ Testing
 =======
 
 
+Introduction
+------------
+
+As you know by now, Zope 3 gains its incredible stability from
+testing any code in great detail.  The currently most common method
+is to write unit tests. This chapter introduces unit tests - which
+are Zope 3 independent - and introduces some of the subtleties.
+
+
 Unit testing
 ------------
 
-This chapter will discuss about unit testing and integration testing.
-Doctest-based testing is heavily used in Zope 3.  And test driven
-development (TDD) is prefered in Zope 3.  To explain the idea,
-consider a use case.  A module is required with a function which
-returns "Good morning, name!".  The name will be given as an
-argument.  Before writing the real code write the unit test for this.
-In fact, you will be writing the real code and it's test cases almost
-in parallel.  So, create a file named `example1.py` with the
-following function definition::
+Unit test can be written using `unittest`, `zope.unittest`, `nose`,
+`py.test` etc.  Another approach to write unit test is using doctest.
+Doctest-based unit tests are the most used way to write unit tests in
+Zope 3.  During the development and maintenance of Zope 3 packages
+developers use test driven development (TDD) style process.
+
+To explain the idea of unit testing, consider a use case.  A module
+is required with a function which returns "Good morning, name!".  The
+name will be given as an argument.  Before writing the real code
+write the unit test for this.  In fact, you will be writing the real
+code and it's test cases almost in parallel.  So, create a file named
+`example1.py` with the following function definition::
 
   def goodmorning(name):
       "This returns a good morning message"
@@ -84,13 +96,35 @@ finish your requirements.
 Running tests
 -------------
 
-By conventions your test modules are put in tests module under each
+The Buildout recipe named `zc.recipe.testrunner` would be convenient
+for running test cases.  It will create a script to run the test
+cases.  For a typical project you can add `test` part in
+configuration like this::
+
+  [buildout]
+  parts = test
+
+  [test]
+  recipe = zc.recipe.testrunner
+  eggs = ticketcollector [test]
+
+Here the package names is assumed as `ticketcollector` (this is the
+name you given in `setup.py`).  Also here I assume that there is an
+`extras_require` argument for `setup` function in `setup.py`.
+The argument can be given something like this::
+
+  extras_require=dict(test=['zope.app.testing',
+                            'zope.testbrowser',
+			   ]),
+
+
+By conventions your test modules are put in `tests` module under each
 package.  But the doctest files can be placed in the package itself.
-For example if the package is ticketcollector.  Then the main doctest
-file can be placed in ticketcollector/README.txt.  And create a
-sub-package zopetic.tests, under this package create test modules
-like test_main.py, test_extra.py etc.  To run the unit tests, change
-to instance home::
+For example if the package is `ticketcollector`, then, the main
+doctest file can be placed in `ticketcollector/README.txt`.  And
+create a sub-package `ticketcollector.tests`, under this package
+create test modules like `test_main.py`, `test_extra.py` etc.  To run
+the unit tests, change to instance home::
 
   $ cd ticketcollector
   $ ./bin/test
