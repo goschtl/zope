@@ -2,14 +2,17 @@ Browser Resources
 =================
 
 
-File Resource
--------------
+Introduction
+------------
 
 Certain presentation, like images and style sheets are not associated
 with any other component, so that one cannot create a view.  To solve
 this problem, resources were developed, which are presentation
 components that do not require any context.  This mini-chapter will
 demonstrate how resources are created and registered with Zope 3.
+
+File Resource
+-------------
 
 The first goal is to register a simple plain-text file called
 `resource.txt` as a browser resource.  The first step is to create
@@ -18,7 +21,7 @@ following content::
 
   Hello, I am a Zope 3 Resource Component!
 
-Now just register the resource in a ZCML configuration file using the
+Then, register the resource in a ZCML configuration file using the
 `browser` resource directive::
 
   <browser:resource
@@ -147,3 +150,9 @@ Then convert HTML resource registration to::
     name="helloworld.html"
     file="helloworld.html"
     />
+
+
+Summary
+-------
+
+This chapter introduced browser resources and narrated its usage.
