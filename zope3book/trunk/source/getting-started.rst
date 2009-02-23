@@ -29,14 +29,14 @@ GNU/Linux
 ~~~~~~~~~
 
 To install Python, you will be required to install gcc, g++ and other
-development tools in your system.  A typical installation of Python can
-be done like this:
+development tools in your system.  A typical installation of Python
+can be done like this:
 
 ::
 
-  $ wget -c http://www.python.org/ftp/python/2.4.5/Python-2.4.5.tar.bz2
-  $ tar jxvf Python-2.4.5.tar.bz2
-  $ cd Python-2.4.5
+  $ wget -c http://www.python.org/ftp/python/2.5.4/Python-2.5.4.tar.bz2
+  $ tar jxvf Python-2.5.4.tar.bz2
+  $ cd Python-2.5.4
   $ ./configure --prefix=/home/guest/usr
   $ make
   $ make install

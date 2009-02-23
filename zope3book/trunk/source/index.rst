@@ -12,6 +12,7 @@ Zope 3 Developer's Book
    interfaces
    component-architecture
    testing
+   virtual-hosting
    browser-resouces
    browser-pages
    content-components

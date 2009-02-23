@@ -1,25 +1,37 @@
 Content Components
 ==================
 
+
 Introduction
 ------------
 
-See this example::
+Of course it is essential for any serious Zope 3 developer to know
+how to implement new content objects.  Using the example of a ticket
+collector, this chapter will outline the main steps required to
+implement and register a new content component in Zope 3.  This
+chapter is the beginning of the development of TicketCollector
+content type and everything that is to it.
+
+A content component is the component which holds the data of the
+application.  See this example::
 
   >>> from zope import interface
 
   >>> class IPerson(interface.Interface):
   ...     name = interface.Attribute("Name")
+
   >>> class Person(object):
   ...     interface.implements(IPerson)
   ...     name = None
+
   >>> jack = Person()
   >>> jack.name = "Jack"
 
-Here `jack` is a content component.  So a content component is nothing but an
-object which provides a particular interface.  As said in the previous chapter,
-use ``zope.schema`` to define fields of interface.  The above interface can be
-declared like this::
+Here `jack` is a content component.  So, a content component is
+nothing but an object which provides a particular interface.  As
+mentioned in the previous chapter, use ``zope.schema`` to define
+fields of interface.  The above interface can be declared in a better
+way like this::
 
   >>> from zope import interface
   >>> from zope import schema
@@ -31,13 +43,17 @@ declared like this::
   ...         default=u"",
   ...         required=True)
 
-If you are developing an enterprise application content will be the most
-important thing you have to organize first.  To learn Zope 3 application
-development with content components, this chapter introduce a simple
-ticket/issue collector application.
+If you are developing an enterprise application, content components
+are the most important thing you have to organize first.  To learn
+Zope 3 application development with content components, this chapter
+will continue the ticket collector application.
 
-First look at the user stories, this book will implement these stories in
-coming chapters.
+
+User stories
+------------
+
+First look at the user stories, this book will implement these
+stories in coming chapters.
 
   1. Individual small ticket collector for each project.  Many collectors can
      be added to one running zope.
@@ -50,64 +66,71 @@ coming chapters.
 
 This chapter starts a simple implementation of ticket collector.
 
-As stated above, our goal is to develop a fully functional, though not
-great-looking, web-based ticket collector application.  The root object will be
-the ``Collector``, which can contain ``Ticket`` objects from various users.
-Since you want to allow people to respond to various tickets, you have to allow
-tickets to contain replies, which are ``Comment`` objects.
+As stated above, our goal is to develop a fully functional, though
+not great-looking, web-based ticket collector application.  The root
+object will be the ``Collector``, which can contain ``Ticket``
+objects from various users.  Since you want to allow people to
+respond to various tickets, you have to allow tickets to contain
+replies, which are ``Comment`` objects.
 
-That means you have two container-based components: The ``Collector`` contains
-only tickets and can be added to any Folder or container that wishes to be able
-to contain it.  To make the ticket collector more interesting, it also has a
-description, which briefly introduces the subject/theme of the discussions
-hosted.  ``Tickets``, on the other hand should be only contained by ticket
-collector.  They will each have a summary and a description.  And last
-``Comment`` should be only contained by tickets.
+That means you have two container-based components: The ``Collector``
+contains only tickets and can be added to any Folder or container
+that wishes to be able to contain it.  To make the ticket collector
+more interesting, it also has a description, which briefly introduces
+the subject/theme of the discussions hosted.  ``Tickets``, on the
+other hand should be only contained by ticket collector.  They will
+each have a summary and a description.  And last ``Comment`` should
+be only contained by tickets.
 
-This setup should contain all the essential things that you need to make the
-object usable.  Later on you will associate a lot of other meta-data with these
-components to integrate them even better into Zope 3 and add additional
-functionality.
+This setup should contain all the essential things that you need to
+make the object usable.  Later on you will associate a lot of other
+meta-data with these components to integrate them even better into
+Zope 3 and add additional functionality.
 
-The most convenient place to put your package is ``$HOME/myzope/lib/python``.
-To create that package, add a directory using::
+The most convenient place to put your package is
+``$HOME/myzope/lib/python``.  To create that package, add a directory
+using::
 
   $ cd $HOME/myzope/lib/python/
   $ mkdir collector
 
 on GNU/Linux.
 
-To make this directory a package, place an empty __init__.py file in the new
-directory.  In GNU/Linux you can do something like::
+To make this directory a package, place an empty __init__.py file in
+the new directory.  In GNU/Linux you can do something like::
 
   $ echo "# Make it a Python package" >> collector/__init__.py
 
-but you can of course also just use a text editor and save a file of this name.
-Just make sure that there is valid Python code in the file.  The file should at
-least contain some whitespace, since empty files confuse some archive programs.
+but you can of course also just use a text editor and save a file of
+this name.  Just make sure that there is valid Python code in the
+file.  The file should at least contain some whitespace, since empty
+files confuse some archive programs.
 
-From now on you are only going to work inside this ``collector`` package, which
-should be located at ``$HOME/myzope/lib/python/collector``.
+From now on you are only going to work inside this ``collector``
+package, which should be located at
+``$HOME/myzope/lib/python/collector``.
 
 
 Interfaces
 ----------
 
-The very first step of the coding process is always to define your interfaces,
-which represent your external API. You should be aware that software that is
-built on top of your packages expect the interfaces to behave exactly the way
-you specify them. This is often less of an issue for attributes and arguments
-of a method, but often enough developers forget to specify what the expected
-return value of a method or function is or which exceptions it can raise or
-catch.
+The very first step of the coding process is always to define your
+interfaces, which represent your external API. You should be aware
+that software that is built on top of your packages expect the
+interfaces to behave exactly the way you specify them. This is often
+less of an issue for attributes and arguments of a method, but often
+enough developers forget to specify what the expected return value of
+a method or function is or which exceptions it can raise or catch.
 
-Interfaces are commonly stored in an ``interfaces`` module or package. Since
-our package is not that big, you are going to use a file-based module; therefore
-start editing a file called ``interfaces.py`` in your favorite editor.
+Interfaces are commonly stored in an ``interfaces`` module or
+package. Since our package is not that big, you are going to use a
+file-based module; therefore start editing a file called
+``interfaces.py`` in your favorite editor.
 
-In this initial step of our application, you are only interested in defining one
-interface for the ticket collector itself and one for a single ticket, which
-are listed below (add these to the file ``interfaces.py``)::
+In this initial step of our application, you are only interested in
+defining one interface for the ticket collector itself and one for a
+single ticket, which are listed below (add these to the file
+``interfaces.py``)::
 
   from zope.interface import Interface
   from zope.schema import Text, TextLine, Field
@@ -166,8 +189,8 @@ are listed below (add these to the file ``interfaces.py``)::
 
       containers(ITicket)
 
-If you want a hierarchy of comments, the ``IComment`` and ``ICommentContained``
-can be changed like this::
+If you want a hierarchy of comments, the ``IComment`` and
+``ICommentContained`` can be changed like this::
 
   class IComment(Interface):
       """Comment for Ticket"""
@@ -186,20 +209,21 @@ can be changed like this::
 
       containers(ITicket, IComment)
 
-See the ``IComment`` interface calls ``contains`` function with ``.IComment``
-as argument.  And in ``ICommentContained`` interface, ``IComment`` is also
-added.  But for simplicity these interfaces are not used in this chapter.
+See the ``IComment`` interface calls ``contains`` function with
+``.IComment`` as argument.  And in ``ICommentContained`` interface,
+``IComment`` is also added.  But for simplicity these interfaces are
+not used in this chapter.
 
 
 Unit tests
 ----------
 
-Unit testing is explained in another chapter_ .  Here you can see some
-boiler-plate code which helps to run the doctest based unittests which you will
-write later.  Since `Collector` and `Ticket` objects are containers, this code
-also run common tests for containers.  By convention write all unit test files
-under `tests` directory.  But doctest files are placed in the package directory
-itself.
+Unit testing is explained in another chapter_ .  Here you can see
+some boiler-plate code which helps to run the doctest based unittests
+which you will write later.  Since `Collector` and `Ticket` objects
+are containers, this code also run common tests for containers.  By
+convention write all unit test files under `tests` directory.  But
+doctest files are placed in the package directory itself.
 
 .. _chapter: /ZopeGuideUnitTesting
 
