@@ -15,14 +15,13 @@ Once that's done, you're set to do the checkouts, all detailed
 below.
 
 
-Depositing Your SSH Public Keys
+Depositing your SSH public keys
 ###############################
 
 When you're registered for public access, you'll get an email directing you
 to
 
     - https://cvs.zope.org/account.php
-
 
 
 where you can deposit your SSH public keys.  Your key deposit is protected
@@ -39,7 +38,7 @@ since the process replaces the entire corresponding authorized keys file
 (authorized_keys or authorized_keys2).
 
 
-Doing Checkouts (Linux, MacOS-X, Un*X)
+Doing checkouts (Linux, MacOS-X, Un*X)
 ######################################
 
 Any time ssh makes an RSA-key connection for subversion it will require
@@ -62,7 +61,7 @@ unless you have ssh-agent taking care of that for you.
 
 
 
-Doing Checkouts (Windows)
+Doing checkouts (Windows)
 #########################
 
 Some of the command line access methods that work on non-Windows systems
