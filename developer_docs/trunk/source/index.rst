@@ -6,19 +6,29 @@ Welcome to Zope Developer Information's documentation!
 ======================================================
 
 Zope Subversion Repository
+--------------------------
 
 .. toctree::
    :maxdepth: 2
 
    subversion-readonly-checkouts
    subversion-writable-checkouts
+
+Becoming a Zope contributor
+---------------------------
+
+.. toctree::
+   :maxdepth: 2
+
    becoming-a-contributor
    contributor-faq
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Zope CVS Repository (obsolete)
+------------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   cvs-access
 
