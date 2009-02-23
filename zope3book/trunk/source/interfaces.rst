@@ -5,6 +5,8 @@ Interfaces
 Introduction
 ------------
 
+.. index:: interface
+
 Interfaces are objects that specify (document) the external behavior
 of objects that "provide" them.  An interface specifies behavior
 through:
@@ -42,6 +44,9 @@ from.
 
 Types of contract
 -----------------
+
+.. index::
+   single: contract; interface
 
 :"I can do X": Describing the ability to do something is the classical
   definition of an API.  Those abilities are defined and implemented as
@@ -249,6 +254,9 @@ the class statement, you can write like this::
 Marker interfaces
 -----------------
 
+.. index::
+   single: marker interface; interfaces
+
 An interface can be used to declare that a particular object belongs
 to a special type.  An interface without any attribute or method is
 called marker interface.
@@ -266,6 +274,9 @@ This interface can be used to declare an object is a special guest.
 
 Invariants
 ----------
+
+.. index::
+   single: invariant; interfaces
 
 Sometimes you will be required to use some rule for your component
 which involve one or more normal attributes.  These kind of rule is

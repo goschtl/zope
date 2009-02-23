@@ -10,6 +10,8 @@ are already familiar with these you may skip this chapter.
 Eggs and setuptools
 -------------------
 
+.. index:: egg, setuptools
+
 Eggs_ are Python's new distribution format.  We can make Python
 packages in Egg format using setuptool package.  To install an egg,
 you can use easy_install_.  An easy way to automate the installtion
@@ -25,6 +27,8 @@ two steps are enough::
 
 Buildout
 --------
+
+.. index:: buildout
 
 The Buildout project provides support for creating applications,
 especially Python applications.  It provides tools for assembling
@@ -53,6 +57,9 @@ a Zope~3 application in the getting started chapter.
 
 Buildout recipes
 ----------------
+
+.. index::
+   single: recipe; buildout
 
 Buildout recipes are distributed in egg formats.  Some examples of
 recipes are:

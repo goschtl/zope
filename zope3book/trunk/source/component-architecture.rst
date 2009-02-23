@@ -1,6 +1,9 @@
 Component Architecture
 ======================
 
+.. index::
+   single: ZCA; component
+
 `Zope Component Architecture (ZCA)` is a framework for supporting
 component based design and programming.  It is very well suited to
 developing large Python software systems.  The ZCA is not specific to
@@ -65,9 +68,12 @@ access the interpreter created by the Buildout recipe like this::
   $ ./bin/mypython
   >>> import zope.component
 
+
 Adapters
 --------
 
+.. index::
+   single: adapter; component
 
 Implementation
 ~~~~~~~~~~~~~~
@@ -130,6 +136,9 @@ create other adapters which handles guest registration differently.
 Registration
 ~~~~~~~~~~~~
 
+.. index::
+   single: registration; component
+
 To use this adapter component, you have to register this in a
 component registry also known as site manager.  A site manager
 normally resides in a site.  A site and site manager will be more
@@ -184,6 +193,9 @@ registered without name, it will default to an empty string.
 
 Querying adapter
 ~~~~~~~~~~~~~~~~
+
+.. index::
+   single: querying adapter; component
 
 Retrieving registered components from component registry is achieved
 through two functions available in `zope.component` package.  One of
@@ -296,6 +308,9 @@ For simple cases, you may use interface to get adapter components.
 Utility
 -------
 
+.. index::
+   single: utility; component
+
 Now you know the concept of interface, adapter and component registry.
 Sometimes it would be useful to register an object which is not
 adapting anything.  Database connection, XML parser, object returning
@@ -371,6 +386,9 @@ created whenever you query for it.
 Named utility
 ~~~~~~~~~~~~~
 
+.. index::
+   single: named utility; component
+
 When registering a utility component, like adapter, you can use a
 name.  As mentioned in the previous section, a utility registered with
 a particular name is called named utility.
@@ -379,6 +397,9 @@ This is how you can register the `greeter` utility with a name::
 
   >>> greet = Greeter()
   >>> gsm.registerUtility(greet, IGreeter, 'new')
+
+.. index::
+   single: querying utility; component
 
 In this example you registered the utility with a name as providing
 the `IGreeter` interface.  You can look up the interface with either

@@ -14,6 +14,9 @@ are Zope 3 independent - and introduces some of the subtleties.
 Unit testing
 ------------
 
+.. index::
+   single: unit testing; testing
+
 Unit test can be written using `unittest`, `zope.unittest`, `nose`,
 `py.test` etc.  Another approach to write unit test is using doctest.
 Doctest-based unit tests are the most used way to write unit tests in
@@ -96,6 +99,9 @@ finish your requirements.
 Running tests
 -------------
 
+.. index::
+   single: running tests; testing
+
 The Buildout recipe named `zc.recipe.testrunner` would be convenient
 for running test cases.  It will create a script to run the test
 cases.  For a typical project you can add `test` part in
@@ -108,6 +114,9 @@ configuration like this::
   recipe = zc.recipe.testrunner
   eggs = ticketcollector [test]
 
+.. index::
+   single: test runner; testing
+
 Here the package names is assumed as `ticketcollector` (this is the
 name you given in `setup.py`).  Also here I assume that there is an
 `extras_require` argument for `setup` function in `setup.py`.
@@ -116,7 +125,6 @@ The argument can be given something like this::
   extras_require=dict(test=['zope.app.testing',
                             'zope.testbrowser',
 			   ]),
-
 
 By conventions your test modules are put in `tests` module under each
 package.  But the doctest files can be placed in the package itself.

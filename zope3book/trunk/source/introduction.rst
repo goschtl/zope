@@ -85,6 +85,8 @@ and at least some exposure to the basics of HTML, CSS and JavaScript.
 Brief history
 -------------
 
+.. index:: history
+
 The beginning of Zope's story goes something like this, in 1996, Jim
 Fulton (CTO of Zope Corporation) was drafted to teach a class on
 common gateway interface (CGI) programming, despite not knowing very

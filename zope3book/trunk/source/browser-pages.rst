@@ -1,6 +1,9 @@
 Browser Pages
 =============
 
+.. index:: browser page
+.. index:: browser view
+.. index:: view component; component
 
 Introduction
 ------------
@@ -15,6 +18,8 @@ particular objects/components.
 If you have a template like this (helloworld.pt)::
 
   Hello, World !
+
+.. index:: registration; browser page
 
 Here is how to register a page for `IFolder` interface::
 
@@ -95,6 +100,11 @@ listing at http://localhost:8080/@@helloworld.html (Replace the
 
 Template Attribute Language (TAL)
 ---------------------------------
+
+.. index:: TAL ; page template
+
+.. index::
+   single: template attribute language ; page template
 
 * Attribute-based templating language
 * Allows designer to modify templates without having to worry about TAL
@@ -251,6 +261,8 @@ Template (ZPT)
 
 TALES Namespaces
 ~~~~~~~~~~~~~~~~
+
+.. index:: TALES ; page template
 
 TALES namespaces effectively specify the expression type. The default
 is the path TALES namespace. See TALES Specification 1.3

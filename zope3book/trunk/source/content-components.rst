@@ -1,6 +1,7 @@
 Content Components
 ==================
 
+.. index:: content component; component
 
 Introduction
 ------------
@@ -542,3 +543,6 @@ Views
 
 Functional testing
 ------------------
+
+Summary
+-------

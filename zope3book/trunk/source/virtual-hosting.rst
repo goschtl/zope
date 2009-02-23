@@ -1,6 +1,9 @@
 Setting Up Virtual Hosting
 ==========================
 
+.. index::
+   single: virtual hosting; apache
+
 Introduction
 ------------
 

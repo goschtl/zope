@@ -1,6 +1,7 @@
 Browser Resources
 =================
 
+.. index:: browser resource
 
 Introduction
 ------------
@@ -14,6 +15,9 @@ demonstrate how resources are created and registered with Zope 3.
 
 File Resource
 -------------
+
+.. index::
+   single: file resource; browser resource
 
 The first goal is to register a simple plain-text file called
 `resource.txt` as a browser resource.  The first step is to create
@@ -53,6 +57,9 @@ object is a resource.
 Image resource
 --------------
 
+.. index::
+   single: image resource; browser resource
+
 If you have an image resource, you might want to use different
 configuration.  Create a simple image called `img.png` and register
 it as follows::
@@ -82,6 +89,9 @@ resource.
 Directory resource
 ------------------
 
+.. index::
+   single: directory resource; browser resource
+
 If you have many resource files to register, it can be very tedious
 to write a single directive for every resource.  For this purpose the
 `resourceDirectory` is provided, with which you can simply declare an
@@ -109,6 +119,9 @@ only Browser-displayable images must be recognized.
 
 ZRT resource
 ------------
+
+.. index::
+   single: zrt resource; browser resource
 
 While working with CSS and JavaScript resource files, it would be
 useful if it works locally as well as with Zope 3.  This will help us

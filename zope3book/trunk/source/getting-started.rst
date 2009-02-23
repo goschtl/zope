@@ -19,6 +19,8 @@ in `setup.py` and other configuration details in `buildout.cfg`.
 Python installation
 -------------------
 
+.. index:: installation
+
 The Zope community has always recommended using a custom built Python
 for development and deployment.  Both Python 2.4 and 2.5 should work
 for Zope 3.4 KGS packages.  As of now, the author reccomend using
@@ -70,6 +72,8 @@ installer package from python.org
 
 Buildout
 --------
+
+.. index:: buildout
 
 Introduction
 ~~~~~~~~~~~~
@@ -142,6 +146,8 @@ system.
 
 Setting up development sandbox
 ------------------------------
+
+.. index:: sandbox
 
 To demonstrate the concepts, tools and techniques, we are going to
 develop a ticket collector application.  The application can be used
@@ -362,6 +368,8 @@ followed by `./bin/instance` command as given below::
 
 Using ZMI
 ~~~~~~~~~
+
+.. index:: ZMI
 
 After running your instance, If you open a web browser and go to
 `http://localhost:8080 <http://localhost:8080>`_ you'll see the ZMI
