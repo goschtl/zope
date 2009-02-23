@@ -71,14 +71,6 @@ class PageletGrokker(martian.ClassGrokker):
 
     def checkTemplates(self, templates, module_info, factory):
 
-        #def has_render(factory):
-        #    render = getattr(factory, 'render', None)
-        #    base_method = getattr(render, 'base_method', False)
-        #    return render and not base_method
-
-        #def has_no_render(factory):
-        #    return not getattr(factory, 'render', None)
-
         def has_render(factory):
             return factory.render != megrok.pagelet.component.Pagelet.render
         def has_no_render(factory):
@@ -110,7 +102,6 @@ class LayoutViewGrokker(martian.ClassGrokker):
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
-    martian.directive(megrok.pagelet.layout)
     martian.directive(megrok.pagelet.template)
 
     def grok(self, name, factory, module_info, **kw):
@@ -119,12 +110,12 @@ class LayoutViewGrokker(martian.ClassGrokker):
         factory.module_info = module_info
         return super(LayoutViewGrokker, self).grok(name, factory, module_info, **kw)
 
-    def execute(self, factory, config, context, layer, name, layout, template, **kw):
+    def execute(self, factory, config, context, layer, name, template, **kw):
         # __view_name__ is needed to support IAbsoluteURL on views
         factory.__view_name__ = name
         adapts = (context, layer)
 	#from grokcore.component.directive import name
-        # Let´s register it only for the given grok.name
+        # Let register it only for the given grok.name
 	name = grokcore.component.directive.name.bind().get(self)
 	path = '/'.join(factory.module_info.path.split('/')[:-1])
 	template = "%s/%s" %(path, template)

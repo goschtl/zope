@@ -47,12 +47,6 @@ class Pagelet(BrowserPage):
         pass
 
     def render(self):
-        # render content template
-        #if self.template is None:
-        #    template = component.getMultiAdapter(
-        #        (self, self.request), IContentTemplate)
-        #    return template(self)
-        
         # We don not work with IContentTemplate for now
         # We use instead our grok.View behavior with the associated
         # Templates
