@@ -324,3 +324,10 @@ Now use `validateInvariants` method of the interface to validate::
 As you can see `jack` object validated without raising any exception.
 But `jill` object didn't validated the invariant constraint, so it
 raised exception.
+
+
+Summary
+-------
+
+Interfaces are objects that specify (document) the external behavior
+of objects that "provide" them.

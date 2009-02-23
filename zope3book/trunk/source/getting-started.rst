@@ -420,8 +420,8 @@ After restarting Zope, open `http://localhost:8080/hello
 World!`.
 
 
-Conclusion
-----------
+Summary
+-------
 
 Setting up a Zope 3 project sandbox is nothing but creating a proper
 Buildout configuration which use various Buildout recipes.
