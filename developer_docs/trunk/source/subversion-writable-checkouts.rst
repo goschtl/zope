@@ -2,8 +2,7 @@ Writable checkouts
 ------------------
 
 Below are instructions for hooking up with our Public Subversion repository
-with checkin ability.  (The instructions will only work for "those that have
-checkin privileges", see WriteAccessRationale...)
+with checkin ability.  See the `Contributor documentation <contributor-faq.html>`_.
 
 Overview
 ########
@@ -24,6 +23,8 @@ to
 
     - https://cvs.zope.org/account.php
 
+
+
 where you can deposit your SSH public keys.  Your key deposit is protected
 by your zope.org account name and password.  (Until we finish institution of
 the new Zope.org site, the synchronization of the key-deposit view of the
@@ -38,7 +39,8 @@ since the process replaces the entire corresponding authorized keys file
 (authorized_keys or authorized_keys2).
 
 
-Doing Checkouts (not Windows)
+Doing Checkouts (Linux, MacOS-X, Un*X)
+######################################
 
 Any time ssh makes an RSA-key connection for subversion it will require
 your key passphrase.  You can use ssh-agent to stash that key once for your
