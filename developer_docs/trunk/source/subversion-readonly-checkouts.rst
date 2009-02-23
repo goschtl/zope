@@ -33,4 +33,8 @@ For a Zope 3.4 checkout::
 
     svn co svn://svn.zope.org/repos/main/Zope/branches/3.4 Zope
 
+Mirrors
++++++++
 
+A read-only `SVN mirror http://svn.zope.de <http://svn.zope.de>`_  that can be
+accessed through HTTP is provided by the `Deutschsprachige Zope User Group (DZUG) <http://www.zope.de>`_.  

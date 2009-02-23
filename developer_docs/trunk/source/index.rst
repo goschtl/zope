@@ -13,6 +13,7 @@ Zope Subversion Repository
 
    subversion-readonly-checkouts
    subversion-writable-checkouts
+   subversion-ui
 
 Becoming a Zope contributor
 ---------------------------
