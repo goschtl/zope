@@ -1,0 +1,79 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <class class=".authentication.OpenIDConsumer">
+    <require
+        permission="zope.ManageSite"
+        interface=".interfaces.IOpenIDConsumerConfig"
+        set_schema=".interfaces.IOpenIDConsumerConfig"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="registrationManager"
+        />
+  </class>
+
+  <browser:addform
+      schema=".interfaces.IOpenIDConsumerConfig"
+      label="Add OpenID Consumer"
+      content_factory=".authentication.OpenIDConsumer"
+      name="AddOpenIDConsumer"
+      permission="zope.ManageServices"
+      >
+
+    <browser:widget
+        field="identity_provider"
+        class="zope.app.form.browser.TextWidget"
+        required="False"
+        convert_missing_value="False"
+        />
+
+  </browser:addform>
+
+  <browser:addMenuItem
+      class=".authentication.OpenIDConsumer"
+      view="AddOpenIDConsumer"
+      title="OpenID Authentication Consumer"
+      description="Consumer of OpenID authentication services"
+      permission="zope.ManageServices"
+      />
+
+  <browser:page
+      for=".interfaces.IOpenIDConsumerConfig"
+      name="addRegistration.html"
+      permission="zope.ManageSite"
+      class=".register.Registration"
+      />
+
+  <browser:editform
+      schema=".interfaces.IOpenIDConsumerConfig"
+      label="Edit OpenID Authentication Consumer"
+      name="configure"
+      menu="zmi_views" title="Configure"
+      permission="zope.ManageServices"
+      />
+
+  <browser:view
+      name="openid"
+      for="zope.location.interfaces.ISite"
+      permission="zope.Public"
+      class=".view.OpenIDView"
+      >
+    <browser:page
+        name="choose_identity"
+        attribute="choose_identity"
+        />
+    <browser:page
+        name="login"
+        attribute="login"
+        />
+    <browser:page
+        name="complete"
+        attribute="complete"
+        />
+  </browser:view>
+
+</configure>
