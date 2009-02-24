@@ -28,7 +28,13 @@ class IMIMETypesUtility(Interface):
         '''Return type guessed by data. Accepts file-like object'''
         
     def getType(filename=None, file=None):
-        '''Try to guess content type either by file name or contents or both'''
+        '''Guess content type either by file name or contents or both.
+        
+        At least one of these arguments should be provided.
+        
+        This method always returns some useful mimetype, 
+        ``application/octet-stream`` or ``text/plain``.
+        '''
 
 class IMIMEType(Interface):
     '''Single MIME type representation'''
@@ -50,3 +56,20 @@ class IMIMEType(Interface):
 
     def __str__():
         '''Return a ``media/subtype`` presentation of mime type'''
+
+class IConvenienceAPI(Interface):
+    '''Convenience API to be provided by the __init__ module.'''
+    
+    def getType(filename=None, file=None):
+        '''Guess content type either by file name or contents or both
+        
+        See IMIMETypesUtility.getType documentation.
+        '''
+    
+    def lookup(media, subtype=None):
+        '''Return a IMIMEType object for given string representation.
+        
+        If ``media`` argument is in the "media/subtype" form, then the
+        ``subtype`` argument should't be specified and will be extracted
+        from the ``media`` argument.
+        '''

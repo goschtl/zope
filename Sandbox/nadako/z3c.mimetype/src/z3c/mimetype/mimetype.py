@@ -79,3 +79,6 @@ class _MIMEType(object):
 
     def __str__(self):
         return self.media + '/' + self.subtype
+
+    def __repr__(self):
+        return '<%s %s/%s>' % (self.__class__.__name__, self.media, self.subtype)

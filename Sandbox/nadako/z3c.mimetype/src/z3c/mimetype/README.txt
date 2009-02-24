@@ -1,3 +1,4 @@
+==================
 Mime type guessing
 ==================
 
@@ -170,3 +171,58 @@ But if we translate it, we'll get a human-friendly string.
 
   >>> translate(mt.title, target_language='ru')
   u'\u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 PNG'
+
+Convenience API
+---------------
+
+The root module, ``z3c.mimetype`` provides a convenience API for easy using
+MIME types detection and lookup. It provides a IConvenienceAPI interface::
+
+  >>> import z3c.mimetype
+  >>> from z3c.mimetype.interfaces import IConvenienceAPI
+  >>> IConvenienceAPI.providedBy(z3c.mimetype)
+  True
+  
+This interface defines two functions::
+
+  >>> sorted(IConvenienceAPI)
+  ['getType', 'lookup']
+
+The lookup function is used for getting IMIMEType objects by their media and
+subtype names. You can specify media and subtype as two arguments or as one,
+first argument in the "media/subtype" form.
+
+Here's how to use it with single argument::
+
+  >>> mt = z3c.mimetype.lookup('text/plain')
+  >>> mt
+  <_MIMEType text/plain>
+  
+  >>> IMIMEType.providedBy(mt)
+  True
+
+Here's how to use passing separate media and subtype arguments::
+
+  >>> z3c.mimetype.lookup('image', 'png')
+  <_MIMEType image/png>
+
+The ``getType`` function is just a wrapper for the ``getType`` function of
+global mimetype utility, so it works like described above::
+
+  >>> z3c.mimetype.getType()
+  Traceback (most recent call last):
+  ...
+  TypeError: Either filename or file should be provided or both of them
+
+  >>> print z3c.mimetype.getType(filename='wrong.doc')
+  application/msword
+
+  >>> fpng = openSample('png')
+  >>> print z3c.mimetype.getType(file=fpng)
+  image/png
+
+  >>> funknownbinary = openSample('binary')
+  >>> print util.getType(filename='somefile2.txt', file=funknownbinary)
+  text/plain
+
+  >>> del fpng, funknownbinary
