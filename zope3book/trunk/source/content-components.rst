@@ -480,7 +480,7 @@ file::
       xmlns="http://namespaces.zope.org/browser">
 
     <addMenuItem
-        class="collector.ticketcollector.Collector"
+        class="ticketcollector.ticketcollector.Collector"
         title="Collector"
         description="A Collector"
         permission="zope.ManageContent"
@@ -491,7 +491,7 @@ file::
 The ``class`` attribute specifies the module path for the class, a
 leading dot means to make the import relative to the package
 containing the ZCML file.  Therefore in this case Zope will import
-the collector.ticketcollector module, then import "Collector" from
+the ticketcollector.ticketcollector module, then import "Collector" from
 that module.
 
 The ``title`` attribute provides the title to display in the add
@@ -514,10 +514,6 @@ Now if you start Zope back up, you can go to the ZMI and add our
 content type by clicking on "Add Collector" and entering a name for
 our object; name it "MyCollector".
 
-Now restart Zope and visit http://localhost:8080/manage .  You can
-add collector from menu.
-
-
 Views
 -----
 
@@ -525,5 +521,8 @@ Views
 Functional testing
 ------------------
 
+
 Summary
 -------
+
+This chapter introduced content components.
