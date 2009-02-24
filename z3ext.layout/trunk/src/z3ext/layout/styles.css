@@ -221,6 +221,7 @@
   table.z-listing td {
     border-right: borderWidth borderStyle globalBorderColor;
     padding: 0.25em 1em;
+    vertical-align: middle;
   }
 
   table.z-listing a {
