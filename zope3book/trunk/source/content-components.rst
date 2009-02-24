@@ -184,8 +184,9 @@ If you want a hierarchy of comments, the ``IComment`` and
       contains('.IComment')
 
   class ICommentContained(IContained):
-      """Interface that specifies the type of objects that can contain
-      comments.  So a comment can contain in a ticket or a comment itself."""
+      """Interface that specifies the type of objects that can
+      contain comments.  So a comment can contain in a ticket or a
+      comment itself."""
 
       containers(ITicket, IComment)
 
