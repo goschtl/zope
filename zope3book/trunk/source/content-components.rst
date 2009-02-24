@@ -514,8 +514,32 @@ Now if you start Zope back up, you can go to the ZMI and add our
 content type by clicking on "Add Collector" and entering a name for
 our object; name it "MyCollector".
 
+
 Views
 -----
+
+Now we have one content component ready to use.  In this section, we
+will add a view for the content component we created.
+
+First we need to create a template for the view.  Create a file named
+`main_index.pt` inside `browser` folder, and add this content::
+
+  Welcome to TicketCollector !
+
+
+Now you can register a view using `browser:page` directive inside
+`browser/configure.zcml` like this::
+
+  <page
+     name="index.html"
+     for="ticketcollector.interfaces.ICollector"
+     template="main_index.pt"
+     permission="zope.ManageContent"
+     />
+
+This will register a browser page.  And you can see it here:
+http://localhost:8080/collector/index.html (Change the `collector`
+name in URL to your actual name for that object)
 
 
 Functional testing

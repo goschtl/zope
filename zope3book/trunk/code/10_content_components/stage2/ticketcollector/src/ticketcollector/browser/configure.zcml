@@ -8,4 +8,11 @@
      permission="zope.ManageContent"
      />
 
+  <page
+     name="index.html"
+     for="ticketcollector.interfaces.ICollector"
+     template="main_index.pt"
+     permission="zope.ManageContent"
+     />
+
 </configure>
