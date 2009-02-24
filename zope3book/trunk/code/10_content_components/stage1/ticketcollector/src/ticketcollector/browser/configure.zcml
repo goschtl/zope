@@ -1,0 +1,11 @@
+<configure
+   xmlns="http://namespaces.zope.org/browser">
+
+  <addMenuItem
+     class="ticketcollector.ticketcollector.Collector"
+     title="Collector"
+     description="A Collector"
+     permission="zope.ManageContent"
+     />
+
+</configure>
