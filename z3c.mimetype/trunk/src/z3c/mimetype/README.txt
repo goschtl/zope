@@ -5,6 +5,11 @@ Mime type guessing
 This package provides an utility for guessing mime type from filename and/or 
 file contents. It's based on freedesktop.org's shared-mime-info database.
 
+.. contents::
+
+Shared MIME info database
+-------------------------
+
 The `shared-mime-info <http://freedesktop.org/wiki/Software/shared-mime-info>`_
 is a extensible database of common mime types. It provides powerful mime type
 detection mechanism as well as multi-lingual type descriptions.
@@ -16,7 +21,10 @@ other ways to install and extend the database.
 
 .. _specification: http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.13.html#s2_layout
 
-The core of this package is the global IMIMETypesUtility component.
+MIME type detection utility
+---------------------------
+
+The core of this package is the global IMIMETypesUtility component::
 
   >>> from zope.component import getUtility
   >>> from zope.interface.verify import verifyObject
@@ -31,12 +39,15 @@ It has three methods for getting mime type. Those three methods are
 describe them in that order, but for applications, it's reccommended to
 use the latter, ``getType`` method as it's most generic and easy-to use.
 
+Detection by file name
+~~~~~~~~~~~~~~~~~~~~~~
+
 The simpliest method is ``getTypeByFileName`` that looks up the type by
-filename.
+filename::
 
   >>> mt = util.getTypeByFileName('example.doc')
 
-The mime type is the object implementing IMIMEType interface.
+The mime type is the object implementing IMIMEType interface::
 
   >>> from zope.interface.verify import verifyObject
   >>> from z3c.mimetype.interfaces import IMIMEType
@@ -53,7 +64,7 @@ The mime type is the object implementing IMIMEType interface.
   >>> str(mt)
   'application/msword'
 
-MIMEType object also has a title attribute that is a translatable string.
+MIMEType object also has a title attribute that is a translatable string::
 
   >>> mt.title
   u'application/msword'  
@@ -63,13 +74,13 @@ MIMEType object also has a title attribute that is a translatable string.
   True
 
 Shared-Mime-Info is nice, it can even detect mime type for file names like
-``Makefile``.
+``Makefile``::
 
   >>> print util.getTypeByFileName('Makefile')
   text/x-makefile
 
 Also, it know the difference in extension letter case. For example the ``.C``
-should be detected as C++ file, when ``.c`` is plain C file.
+should be detected as C++ file, when ``.c`` is plain C file::
 
   >>> print util.getTypeByFileName('hello.C')
   text/x-c++src
@@ -77,16 +88,19 @@ should be detected as C++ file, when ``.c`` is plain C file.
   >>> print util.getTypeByFileName('main.c')
   text/x-csrc
 
-The method returns None if it can determine type from file name.
+The method returns ``None`` if it can determine type from file name::
 
   >>> print util.getTypeByFileName('somefilename')
   None
 
+Detection by contents
+~~~~~~~~~~~~~~~~~~~~~
+
 Another useful method is ``getTypeByContents``. It's first argument should
-be an opened file. Also, it can take min_priority and max_priority arguments,
+be an opened file. Also, it can take ``min_priority`` and ``max_priority`` arguments,
 but it's only useful if you know the shared-mime-info specification.
 
-We have some sample files that should be detected by contents
+We have some sample files that should be detected by contents::
 
   >>> import os
   >>> def openSample(extension):
@@ -108,11 +122,14 @@ We have some sample files that should be detected by contents
   >>> print util.getTypeByContents(fpng)
   image/png
 
-If we pass the file without any magic bytes, it will return None
+If we pass the file without any magic bytes, it will return ``None``::
 
   >>> funknown = openSample('unknown')
   >>> print util.getTypeByContents(funknown)
   None
+
+Detection by both file name and contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 And finally, the most useful method is simply ``getType``. It accepts
 two arguments - the filename and opened file object. At least one of
@@ -121,7 +138,7 @@ as specified in shared-mime-info specification document and always returns
 some useful mimetype (application/octet-stream or text/plain if cannot 
 detect).
 
-It needs at least one argument, so you can't call it with no arguments.
+It needs at least one argument, so you can't call it with no arguments::
 
   >>> util.getType()
   Traceback (most recent call last):
@@ -134,9 +151,9 @@ It needs at least one argument, so you can't call it with no arguments.
   >>> print util.getType(file=fpng)
   image/png
 
-If type cannot be detected, it WILL return either text/plain or
-application/octet-stream mime type. It will try to guess is it text
-or binary by checking first 32 bytes. 
+If type cannot be detected, it WILL return either ``text/plain`` or
+``application/octet-stream`` mime type. It will try to guess is it text
+or binary by checking first 32 bytes:: 
 
   >>> print util.getType(filename='somefile', file=funknown)
   text/plain
@@ -145,24 +162,27 @@ or binary by checking first 32 bytes.
   >>> print util.getType(filename='somefile2', file=funknownbinary)
   application/octet-stream
 
-Let's close files, because we won't need them anymore.
+Let's close files, because we won't need them anymore::
 
   >>> del fdoc, fhtml, fpdf, fpng, funknown, funknownbinary
+
+Internationalization
+--------------------
 
 Finally, let's check the i18n features that comes with shared-mime-info
 and are supported by this package. All mimetype titles are translatable
 messages and can be easily rendered in UI.
 
-Let's get some mime type to play with.
+Let's get some mime type to play with::
 
   >>> mt = util.getTypeByFileName('example.png')
 
-By default, mimetype title message id is its media/subtype form.
+By default, mimetype title message id is its media/subtype form::
 
   >>> mt.title
   u'image/png'
 
-But if we translate it, we'll get a human-friendly string.
+But if we translate it, we'll get a human-friendly string::
 
   >>> from zope.i18n import translate
   
