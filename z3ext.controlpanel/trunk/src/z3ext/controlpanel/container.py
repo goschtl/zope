@@ -55,13 +55,14 @@ class ContentContainerConfiglet(ContentContainer, Configlet):
 
         return ItemLocationProxy(removeAllProxies(item), self)
 
+    def __contains__(self, key):
+        return key in self.data
+
     def __iter__(self):
         return iter(self.data)
 
     def __getitem__(self, key):
-        item = super(ContentContainerConfiglet, self).__getitem__(key)
-
-        return ItemLocationProxy(removeAllProxies(item), self)
+        return ItemLocationProxy(removeAllProxies(self.data[key]), self)
 
     def __delitem__(self, key):
         uncontained(self[key], self, key)
