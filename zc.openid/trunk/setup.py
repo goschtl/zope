@@ -14,9 +14,7 @@
 
 from setuptools import setup, find_packages
 
-setup(name='zope.app.openidconsumer',
-
-      # Fill in project info below
+setup(name='zc.openid',
       version='0.1',
       description="",
       long_description="",
@@ -34,6 +32,7 @@ setup(name='zope.app.openidconsumer',
 
       packages=find_packages('src'),
       package_dir = {'': 'src'},
+      namespace_packages = ['zc'],
       include_package_data=True,
       zip_safe=False,
       install_requires=['setuptools',
