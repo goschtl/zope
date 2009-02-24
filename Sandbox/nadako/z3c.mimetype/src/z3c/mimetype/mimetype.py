@@ -26,15 +26,17 @@ from z3c.mimetype.interfaces import IMIMEType
 from z3c.mimetype.util import iterDataPaths
 
 SMI_NAMESPACE = 'http://www.freedesktop.org/standards/shared-mime-info'
-MIME_TYPES = {}
 
 msgfactory = MessageFactory('shared-mime-info')
-
 mimeTypesTranslationDomain = SimpleTranslationDomain('shared-mime-info')
 
+MIME_TYPES = {}
+
 def lookup(media, subtype=None):
-    '''Lookup a MIMEType object using either two arguments (media and subtype)
-    or one argument in ``media/subtype`` form.
+    '''Lookup an IMIMEType object.
+    
+    Either a pair of arguments (media and subtype) or single argument in
+    the ``media/subtype`` form can be used.
     '''
     
     if subtype is None and '/' in media:
