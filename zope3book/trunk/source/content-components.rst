@@ -16,29 +16,30 @@ content type and everything that is to it.
 A content component is the component which holds the data of the
 application.  See this example::
 
-  >>> from zope import interface
+  >>> from zope.interface import Interface
+  >>> from zope.interface import Attribute
+  >>> from zope.interface import implements
 
-  >>> class IPerson(interface.Interface):
-  ...     name = interface.Attribute("Name")
+  >>> class IPerson(Interface):
+  ...     name = Attribute("Name")
 
   >>> class Person(object):
-  ...     interface.implements(IPerson)
+  ...     implements(IPerson)
   ...     name = None
 
   >>> jack = Person()
   >>> jack.name = "Jack"
 
 Here `jack` is a content component.  So, a content component is
-nothing but an object which provides a particular interface.  As
-mentioned in the previous chapter, use ``zope.schema`` to define
-fields of interface.  The above interface can be declared in a better
-way like this::
+nothing but an object which provides a particular interface.  You can
+use ``zope.schema`` to define fields of interface.  This will help to
+generate web forms easily.  The above interface can be declared in a
+better way like this::
 
-  >>> from zope import interface
-  >>> from zope import schema
+  >>> from zope.schema import TextLine
 
-  >>> class IPerson(interface.Interface):
-  ...     name = schema.TextLine(
+  >>> class IPerson(Interface):
+  ...     name = TextLine(
   ...         title=u"Name",
   ...         description=u"Name of person",
   ...         default=u"",
@@ -56,14 +57,15 @@ User stories
 First look at the user stories, this book will implement these
 stories in coming chapters.
 
-  1. Individual small ticket collector for each project.  Many collectors can
-     be added to one running zope.
+1. Individual small ticket collector for each project.  Many
+   collectors can be added to one running zope.
 
-  2. Any number of tickets can be added to one collector.
+2. Any number of tickets can be added to one collector.
 
-  3. Each ticket will be added with a description and one initial comment.
+3. Each ticket will be added with a description and one initial
+   comment.
 
-  4. Additional comments can be added to tickets.
+4. Additional comments can be added to tickets.
 
 This chapter starts a simple implementation of ticket collector.
 
@@ -88,43 +90,20 @@ make the object usable.  Later on you will associate a lot of other
 meta-data with these components to integrate them even better into
 Zope 3 and add additional functionality.
 
-The most convenient place to put your package is
-``$HOME/myzope/lib/python``.  To create that package, add a directory
-using::
-
-  $ cd $HOME/myzope/lib/python/
-  $ mkdir collector
-
-on GNU/Linux.
-
-To make this directory a package, place an empty __init__.py file in
-the new directory.  In GNU/Linux you can do something like::
-
-  $ echo "# Make it a Python package" >> collector/__init__.py
-
-but you can of course also just use a text editor and save a file of
-this name.  Just make sure that there is valid Python code in the
-file.  The file should at least contain some whitespace, since empty
-files confuse some archive programs.
-
-From now on you are only going to work inside this ``collector``
-package, which should be located at
-``$HOME/myzope/lib/python/collector``.
-
 
 Interfaces
 ----------
 
 The very first step of the coding process is always to define your
-interfaces, which represent your external API. You should be aware
+interfaces, which represent your external API.  You should be aware
 that software that is built on top of your packages expect the
-interfaces to behave exactly the way you specify them. This is often
+interfaces to behave exactly the way you specify them.  This is often
 less of an issue for attributes and arguments of a method, but often
 enough developers forget to specify what the expected return value of
 a method or function is or which exceptions it can raise or catch.
 
 Interfaces are commonly stored in an ``interfaces`` module or
-package. Since our package is not that big, you are going to use a
+package.  Since our package is not that big, you are going to use a
 file-based module; therefore start editing a file called
 ``interfaces.py`` in your favorite editor.
 
@@ -219,14 +198,12 @@ not used in this chapter.
 Unit tests
 ----------
 
-Unit testing is explained in another chapter_ .  Here you can see
-some boiler-plate code which helps to run the doctest based unittests
-which you will write later.  Since `Collector` and `Ticket` objects
-are containers, this code also run common tests for containers.  By
-convention write all unit test files under `tests` directory.  But
-doctest files are placed in the package directory itself.
-
-.. _chapter: /ZopeGuideUnitTesting
+Here you can see some boiler-plate code which helps to run the
+doctest based unittests which you will write later.  Since
+`Collector` and `Ticket` objects are containers, this code also run
+common tests for containers.  By convention write all unit test files
+under `tests` directory.  But doctest files are placed in the package
+directory itself.
 
 First create ``tests/test_collector.py``::
 
@@ -292,19 +269,20 @@ Then ``tests/test_ticket.py``::
 
 To run the unit test::
 
-  $ cd $HOME/myzope/etc
-  $ ../bin/test -vpu --dir collector
+  $ ./bin/buildout
+  $ ./bin/test
 
-Of course now all tests should fail.  In next section you will write doctests
-along with implemetation.
+Of course now all tests should fail.  In next section you will write
+doctests along with implemetation.
 
 
 Implementation
 --------------
 
-As you can see in the unit test module, collector is going to be implemented in
-``ticketcollector.py``.  A base class, ``BTreeContainer`` is used to implement
-the container.  This will make the implementation easier.
+As you can see in the unit test module, collector is going to be
+implemented in ``ticketcollector.py``.  A base class,
+``BTreeContainer`` is used to implement the container.  This will
+make the implementation easier.
 
 Here is the ``ticketcollector.py``::
 
@@ -411,11 +389,11 @@ Then `comment.py`::
 Registration
 ------------
 
-You have written interfaces and its implementations, now how to bind this with
-Zope 3 framework.  You can use use Zope Configuration Markup Language (ZCML)
-based configuration file for this.
+You have written interfaces and its implementations, now how to bind
+this with Zope 3 framework.  You can use use Zope Configuration
+Markup Language (ZCML) based configuration file for this.
 
-This is our configure.zcml::
+This is our ``configure.zcml``::
 
   <configure
       xmlns="http://namespaces.zope.org/zope"
@@ -509,32 +487,34 @@ file::
 
   </configure>
 
-The ``class`` attribute specifies the module path for the class, a leading dot
-means to make the import relative to the package containing the ZCML file.
-Therefore in this case Zope will import the collector.ticketcollector module,
-then import "Collector" from that module.
+The ``class`` attribute specifies the module path for the class, a
+leading dot means to make the import relative to the package
+containing the ZCML file.  Therefore in this case Zope will import
+the collector.ticketcollector module, then import "Collector" from
+that module.
 
-The ``title`` attribute provides the title to display in the add menu.
-
-The ``permission`` attribute is used to describe what permission is required
-for a person to be able to add one of these objects.  The
-``zope.ManageContent`` permission means that the user can add, remove, and
-modify content (the "admin" user you created while making the instance is one
-such user).
-
-You have to tell Zope to read our ZCML file, and the easiest way to do that is
-to put a "slug" in the $HOME/myzope/etc/package-includes/ directory.  A
-``slug`` is a ZCML file that just includes another file.  Here's what our slug
-should look like (save it as "collector-configure.zcml")::
-
-  <include package="collector" />
-
-Now if you start Zope back up, you can go to the ZMI and add our content type by
-clicking on "Add Collector" and entering a name for our object; name it
-"MyCollector".
-
-Now restart Zope and visit http://localhost:8080 .  You can add collector from
+The ``title`` attribute provides the title to display in the add
 menu.
+
+The ``permission`` attribute is used to describe what permission is
+required for a person to be able to add one of these objects.  The
+``zope.ManageContent`` permission means that the user can add,
+remove, and modify content (the "admin" user you created while making
+the instance is one such user).
+
+You have to tell Zope to read our ZCML file, and the easiest way to
+do that is to put a "slug" in the ``applcation.zcml``.  A ``slug`` is
+a ZCML file that just includes another file.  Here's what our slug
+should look like::
+
+  <include package="ticketcollector" />
+
+Now if you start Zope back up, you can go to the ZMI and add our
+content type by clicking on "Add Collector" and entering a name for
+our object; name it "MyCollector".
+
+Now restart Zope and visit http://localhost:8080/manage .  You can
+add collector from menu.
 
 
 Views
