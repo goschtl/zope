@@ -83,6 +83,13 @@ An addition.
     >>> zsync.add(localfile3)
     A .../test/file3.txt
 
+A new directory.
+
+    >>> sitedir = os.path.join(checkoutdir, 'test', 'newfolder')
+    >>> os.mkdir(sitedir)
+    >>> zsync.add(sitedir)
+    A .../test/newfolder/
+
 Here's a deletion.
 
     >>> os.unlink(os.path.join(checkoutdir, 'test', 'file2.txt'))
@@ -104,6 +111,9 @@ Now we commit our changes.
     U .../test/@@Zope/Extra/file3.txt/contentType
     N .../test/@@Zope/Annotations/file3.txt/
     U .../test/@@Zope/Annotations/file3.txt/zope.app.dublincore.ZopeDublinCore
+    U .../test/newfolder/
+    N .../test/@@Zope/Annotations/newfolder/
+    U .../test/@@Zope/Annotations/newfolder/zope.app.dublincore.ZopeDublinCore
     All done.
 
 At this point the two checkouts are not in sync.
@@ -121,6 +131,7 @@ Now we'll merge changes from one checkout to the other.
     >>> zsync.merge((checkoutdir, checkoutdir2))
     M .../test/file1.txt
     A .../test/file3.txt
+    A .../test/newfolder/
     All done.
 
 The status command reflects the local changes.
@@ -130,6 +141,7 @@ The status command reflects the local changes.
     M .../test/file1.txt
     = .../test/file2.txt
     A .../test/file3.txt
+    A .../test/newfolder/
 
 The change and the addition were picked up, but the deletion wasn't.
 
@@ -150,6 +162,9 @@ Let's confirm that the changed and added files made it.
 
     >>> f1.close()
     >>> f2.close()
+
+    >>> os.path.isdir(os.path.join(checkoutdir2, 'test', 'newfolder'))
+    True
 
 Let's make sure that extras were also copied over.
 

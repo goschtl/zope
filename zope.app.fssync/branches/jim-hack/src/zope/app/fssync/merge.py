@@ -19,6 +19,7 @@ are not considered changes to the orginal.
 """
 import os
 import os.path
+import shutil
 
 import zope.fssync.fsutil
 import zope.fssync.copier
@@ -29,6 +30,15 @@ class MergeCopier(zope.fssync.copier.ObjectCopier):
     entries in the destination checkout, since they should already be
     present.
     """
+
+    def copy(self, source, target, children=True):
+        if os.path.isdir(source):
+            shutil.copymode(source, target)
+            self.addEntry(source, target)
+        else:
+            shutil.copy(source, target)
+            self.addEntry(source, target)
+
     def _copyspecials(self, source, target, getwhat):
         src = getwhat(source)
         if os.path.isdir(src):
@@ -112,7 +122,7 @@ def merge(source, target, sync):
     for root, dirs, files in os.walk(source):
         if '@@Zope' in dirs:
             dirs.remove('@@Zope')
-        for filename in (files + ['']):
+        for filename in ([''] + files):
             source_path = os.path.join(root, filename)
             if metadata.getentry(source_path):
                 directory = root[len(source) + 1:]

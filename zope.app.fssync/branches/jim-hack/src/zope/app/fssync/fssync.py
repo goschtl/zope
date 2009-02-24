@@ -32,6 +32,7 @@ import formatter
 
 from StringIO import StringIO
 
+import os.path
 from os.path import exists, isfile, isdir
 from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
@@ -492,8 +493,9 @@ class FSSync(object):
             print 'Cannot merge from %s to %s' % (source_entry[u'id'],
                                                   target_entry[u'id'])
             return
-        
-        zope.app.fssync.merge.merge(source, target, self)
+
+        zope.app.fssync.merge.merge(os.path.abspath(source),
+                                    os.path.abspath(target), self)
         print 'All done.'
 
 
