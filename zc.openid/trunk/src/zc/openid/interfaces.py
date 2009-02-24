@@ -17,10 +17,14 @@ from zope.interface import Interface
 from zope.schema import URI
 
 class IOpenIDConsumerConfig(Interface):
-    identity_provider = URI(
-        title=u'Identity Provider URI',
+    single_provider = URI(
+        title=u'Single Identity Provider URI',
+        description=(u'If you want all identities to come from a single '
+                     u'provider, set this to the server URI.  The '
+                     u'URI must contain an OpenID service description.'),
         required=False
         )
+
 
 class IOpenIDConsumer(IOpenIDConsumerConfig, IAuthentication):
     pass

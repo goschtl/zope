@@ -13,7 +13,7 @@
 ##############################################################################
 
 
-from zope.app.openidconsumer.interfaces import IOpenIDConsumer
+from zc.openid.interfaces import IOpenIDConsumer
 from zope.app.component.browser.registration import AddUtilityRegistration
 
 class Registration(AddUtilityRegistration):

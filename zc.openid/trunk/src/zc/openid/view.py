@@ -21,7 +21,7 @@ from zope.interface import Interface
 from zope.publisher.browser import BrowserView
 from zope.schema import TextLine
 
-from zope.app.openidconsumer.interfaces import IOpenIDConsumer
+from zc.openid.interfaces import IOpenIDConsumer
 
 
 class IChooseIdentitySchema(Interface):

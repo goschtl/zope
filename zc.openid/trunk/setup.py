@@ -50,4 +50,7 @@ setup(name='zc.openid',
                         'zope.formlib',
                         'zope.schema',
                         ],
+      extras_require={
+          'test': ['zope.app.testing'],
+          }
       )

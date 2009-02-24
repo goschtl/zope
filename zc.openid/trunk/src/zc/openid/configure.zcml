@@ -18,20 +18,11 @@
 
   <browser:addform
       schema=".interfaces.IOpenIDConsumerConfig"
-      label="Add OpenID Consumer"
+      label="Add OpenID Authentication Consumer"
       content_factory=".authentication.OpenIDConsumer"
       name="AddOpenIDConsumer"
       permission="zope.ManageServices"
-      >
-
-    <browser:widget
-        field="identity_provider"
-        class="zope.app.form.browser.TextWidget"
-        required="False"
-        convert_missing_value="False"
-        />
-
-  </browser:addform>
+      />
 
   <browser:addMenuItem
       class=".authentication.OpenIDConsumer"

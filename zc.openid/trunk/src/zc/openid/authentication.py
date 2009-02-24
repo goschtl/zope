@@ -29,13 +29,14 @@ from zope.publisher.interfaces import Redirect
 from zope.session.interfaces import ISession
 from zope.security.interfaces import IPrincipal
 
-from zope.app.openidconsumer.interfaces import AuthenticationFailed
-from zope.app.openidconsumer.interfaces import IOpenIDConsumer
+from zc.openid.interfaces import AuthenticationFailed
+from zc.openid.interfaces import IOpenIDConsumer
 
-PACKAGE = 'zope.app.openidconsumer'
+PACKAGE = 'zc.openid'
 PRINCIPAL = 'principal'
 CONSUMER = 'consumer'
 
+# XXX This needs to be in ZODB.
 store = MemoryStore()
 
 
@@ -51,7 +52,7 @@ class OpenIDPrincipal(object):
 class OpenIDConsumer(Persistent, Location):
     implements(IOpenIDConsumer)
 
-    identity_provider = None
+    single_provider = None
 
     def authenticate(self, request):
         """Identify a principal for a request.
@@ -85,9 +86,9 @@ class OpenIDConsumer(Persistent, Location):
         return res
 
     def login(self, request, identity_url=None):
-        if self.identity_provider:
+        if self.single_provider:
             # override
-            identity_url = self.identity_provider
+            identity_url = self.single_provider
         if identity_url:
             consumer = self._get_consumer(request)
             auth_req = consumer.begin(identity_url)
