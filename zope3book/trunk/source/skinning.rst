@@ -29,6 +29,7 @@ There are two terms associated with skinning named, `layer` and
 `skin`.  Before proceeding, it would be better to understand the
 meaning these two terms in Zope 3 skinning.
 
+
 Layers
 ~~~~~~
 
@@ -43,6 +44,7 @@ Layers
 
 * Developed by Zope 3 Python developers
 
+
 Skins
 ~~~~~
 
@@ -56,7 +58,8 @@ Skins
 
 * Developed by HTML and Graphic Designer/Scripter
 
-Layers versus Skins
+
+Layers versus skins
 ~~~~~~~~~~~~~~~~~~~
 
 * Both are implemented as interfaces
@@ -77,7 +80,8 @@ later.
 
 Skins are directly provided by a request
 
-Core Skins
+
+Core skins
 ----------
 
 * Access skin using ++skin++Name after the server root
@@ -101,7 +105,8 @@ pattern.  Thus, it is better if you start from scratch.  This will
 also avoid a lot of the overhead that comes with the over-generalized
 core skins.
 
-A New Skin
+
+A new skin
 ----------
 
 * Views registered for default layer by default
@@ -178,7 +183,7 @@ A typical ``browser:page`` with with layer specified is like this::
       />
 
 
-Setting up a Skin
+Setting up a skin
 ~~~~~~~~~~~~~~~~~
 
 Skins are technically interfaces defined using ``zope.interface``
@@ -193,8 +198,8 @@ defined in ``foo.browser.skin.interfaces``.
 Write an interface for each new skin that inherits the Hello World
 application layer::
 
-      class IBasicSkin(IHelloWorldLayer):
-          """Basic Skin for Hello World App."""
+  class IBasicSkin(IHelloWorldLayer):
+      """Basic Skin for Hello World App."""
 
 To register this we will use ``interface`` and ``utility`` directives
 in ``zope`` namespace.  The type of the ``IShanghaiSkin`` skin is
@@ -222,10 +227,9 @@ same effect as the two above regarding the skin registration::
       name="BasicSkin"
       />
 
-Register all templates for this skin by adding the layer attribute:
+Register all templates for this skin by adding the layer attribute::
 
-      layer=".interfaces.IBasicSkin"
-
+  layer=".interfaces.IBasicSkin"
 
 
 Using the skin
