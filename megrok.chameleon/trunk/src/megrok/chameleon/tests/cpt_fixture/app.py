@@ -9,7 +9,7 @@ class CavePainting(grok.View):
 
 class Food(grok.View):
     
-    text = "ME GROK EAT MAMMOTH!"
+    text = "<ME GROK EAT MAMMOTH!>"
     
     def me_do(self):
         return self.text
@@ -20,3 +20,5 @@ class Inline(grok.View):
 inline = components.ChameleonPageTemplate(
     "<html><body>ME GROK HAS INLINES! ${view.sometext}</body></html>")
 
+class Vars(grok.View):
+    pass
