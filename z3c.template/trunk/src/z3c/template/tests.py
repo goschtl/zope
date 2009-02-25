@@ -25,6 +25,7 @@ from zope.app.testing import setup
 from zope.configuration import xmlconfig
 
 import z3c.ptcompat
+from z3c.ptcompat.testing import OutputChecker
 
 def setUp(test):
     root = setup.placefulSetUp(site=True)
@@ -43,13 +44,17 @@ def setUpZ3CPT(suite):
     xmlconfig.XMLConfig('configure.zcml', z3c.pt)()
 
 def test_suite():
+    checker = OutputChecker(doctest)
     tests = ((
         DocFileSuite('README.txt',
             setUp=setUp, tearDown=tearDown,
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            checker=checker,
             ),
         DocFileSuite('zcml.txt', setUp=setUp, tearDown=tearDown,
-            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,)
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            checker=checker,
+            ),
         ) for setUp in (setUpZPT, setUpZ3CPT,))
 
     return unittest.TestSuite(itertools.chain(*tests))
