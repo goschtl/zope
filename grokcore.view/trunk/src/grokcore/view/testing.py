@@ -14,6 +14,7 @@
 """Grok test helpers
 """
 import sys
+import grokcore.view
 from zope.configuration.config import ConfigurationMachine
 from grokcore.component import zcml
 
@@ -26,6 +27,7 @@ def grok(module_name):
     zcml.do_grok(module_name, config)
     config.execute_actions()
 
+lastwarning = '' # Here we collect warnings.
 def warn(message, category=None, stacklevel=1):
     """Intended to replace warnings.warn in tests.
 
@@ -48,10 +50,12 @@ def warn(message, category=None, stacklevel=1):
     for i in range(lineno):
         line = file.readline()
 
-    print "%s:%s: %s: %s\n  %s" % (
+    warning ="%s:%s: %s: %s\n  %s" % (
         path,
         frame.f_lineno,
         category.__name__,
         message,
         line.strip(),
         )
+    grokcore.view.testing.lastwarning += warning
+    print warning
