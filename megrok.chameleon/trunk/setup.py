@@ -37,6 +37,7 @@ setup(name='megrok.chameleon',
                         'z3c.testsetup',
                         'chameleon.zpt',
                         'chameleon.genshi',
+                        'z3c.pt',
                         ],
       entry_points="""
       # Add entry points here
