@@ -4,7 +4,6 @@
 
   <include package="grok" />
   <include package="chameleon.zpt" />
-  <include package="chameleon.genshi" />
   <include package="z3c.pt" />
   <grok:grok package="." />
   
