@@ -49,7 +49,7 @@ inside ``/home/guest/usr`` directory.
 
 After installation, you can invoke the Python interpreter like this::
 
-  $ ~/usr/bin/python2.4
+  $ ~/usr/bin/python2.5
   >>> print "Hello, world!"
   Hello, world!
 
