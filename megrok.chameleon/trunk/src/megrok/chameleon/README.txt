@@ -105,9 +105,11 @@ template looks like this::
     <body>
     <span tal:define="foo 'a FOO'" />
     ${view.me_do()}
+    <span tal:replace="view.me_do()" />
     CSS-URL: ${static['test.css']()}
     My context is: ${view.url(context)}
     ${foo}
+    <span tal:replace="foo" />
     </body>
     </html>
 
@@ -118,12 +120,111 @@ The rendered view looks like this::
     <html>
     <body>
     <span />
-    ME GROK EAT MAMMOTH!
+    <ME GROK EAT MAMMOTH!>
+    &lt;ME GROK EAT MAMMOTH!&gt;
     CSS-URL: http://127.0.0.1/@@/megrok.chameleon.tests.cpt_fixture/test.css
     My context is: http://127.0.0.1/manfred
     a FOO
+    a FOO
     </body>
     </html>
+
+As we can see, there is a difference between Genshi-like substitution
+and TAL-like substitution: while both expressions::
+
+  ${view.me_do()}
+
+and::
+
+  <span tal:replace="view.me_do()" />
+
+actually render the same string ``<ME GROK EAT MAMMOTH!>``, the former
+does this straight and plain, while the latter performs additionally
+HTML-encoding of the string. Therefore the output of both expressions
+differ. It's::
+
+  <ME GROK EAT MAMMOTH!>
+
+for the former expression and::
+
+  &lt;ME GROK EAT MAMMOTH!&gt;
+
+for the latter.
+
+
+Supported variables
+-------------------
+
+Each template provides at least the following vars:
+
+* ``template``
+    the template instance
+
+* ``view``
+    the associated view
+
+* ``context``
+    the context of the view
+
+* ``request``
+    the current request
+
+* ``static`` 
+    the static dir of the application
+
+as we can see, when we look at the ``vars.cpt`` from our fixture::
+
+    >>> cpt_file = os.path.join(template_dir, 'vars.cpt')
+    >>> print open(cpt_file, 'rb').read()
+    <html>
+    <body>
+    This template knows about the following vars:
+    <BLANKLINE>
+      template (the template instance):
+       ${template}
+    <BLANKLINE>
+      view (the associated view):
+       ${view}
+    <BLANKLINE>
+      context (the context of the view):
+       ${context}
+    <BLANKLINE>
+      request (the current request):
+       ${request}
+    <BLANKLINE>
+      static (the static dir of the application):
+       ${static}
+    </body>
+    </html>
+
+and render it::
+
+    >>> view = getMultiAdapter((manfred, request), name='vars')
+    >>> print view()
+    <html>
+    <body>
+    This template knows about the following vars:
+    <BLANKLINE>
+      template (the template instance):
+       <vars template in ...vars.cpt>
+    <BLANKLINE>
+      view (the associated view):
+       <megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...>
+    <BLANKLINE>
+      context (the context of the view):
+       <megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...>
+    <BLANKLINE>
+      request (the current request):
+       CONTENT_LENGTH:	0
+    GATEWAY_INTERFACE:	TestFooInterface/1.0
+    HTTP_HOST:	127.0.0.1
+    SERVER_URL:	http://127.0.0.1
+    <BLANKLINE>
+      static (the static dir of the application):
+       <grokcore.view.components.DirectoryResource object at 0x...>
+    </body>
+    </html>
+
 
 Inline Templates
 ----------------
@@ -148,9 +249,15 @@ If we render this view we get::
     >>> print view()
     <html><body>ME GROK HAS INLINES! Some Text</body></html>
 
+
 Clean up::
 
     >>> del getRootFolder()['manfred']
+
+
+Differences from regular Zope page templates
+--------------------------------------------
+
 
 
 Chameleon Genshi templates
