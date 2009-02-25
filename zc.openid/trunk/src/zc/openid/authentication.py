@@ -53,6 +53,7 @@ class OpenIDConsumer(Persistent, Location):
     implements(IOpenIDConsumer)
 
     single_provider = None
+    _consumer_class = Consumer
 
     def authenticate(self, request):
         """Identify a principal for a request.
@@ -74,7 +75,7 @@ class OpenIDConsumer(Persistent, Location):
             session[CONSUMER] = consumer_session_data
         else:
             consumer_session_data._p_changed = True
-        return Consumer(consumer_session_data, store)
+        return self._consumer_class(consumer_session_data, store)
 
     def _get_view_url(self, request, name):
         site = getSite()

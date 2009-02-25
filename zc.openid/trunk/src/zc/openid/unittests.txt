@@ -1,0 +1,63 @@
+
+Unit tests of OpenIDConsumer
+----------------------------
+
+Create an OpenIDConsumer instance and link it to a MockConsumer.
+
+    >>> from zc.openid.authentication import OpenIDConsumer
+    >>> from zc.openid.tests import MockConsumer
+    >>> auth = OpenIDConsumer()
+    >>> auth._consumer_class = MockConsumer
+
+Set up session support and some foundational stuff.
+
+    >>> from zc.openid.tests import configure
+    >>> configure()
+    >>> from pprint import pprint
+
+Make a TestRequest and try to authenticate it. Authentication should
+fail, since no one has logged in yet.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> auth.authenticate(request) is None
+    True
+
+Start the login process with no identity URL.  Users should be
+redirected to a page where they can enter their identity.
+
+    >>> auth.login(request)
+    >>> request.response.getStatus()
+    302
+    >>> request.response.getHeader('Location')
+    'http://127.0.0.1/@@openid/choose_identity'
+
+After the user submits the form, start the login process again, now
+with an identity URL. The browser should be redirected to
+http://example.com/openidserver for login.
+
+    >>> auth.login(request, "http://example.com/id/alice")
+    >>> request.response.getStatus()
+    302
+    >>> url = request.response.getHeader('Location')
+    >>> len(url)
+    390
+    >>> u, query = url.split('?', 1)
+    >>> u
+    'http://example.com/openidserver'
+    >>> from cgi import parse_qs
+    >>> pprint(parse_qs(query))
+    {'openid.assoc_handle': ['{HMAC-SHA1}{49a5be49}{co7U9w==}'],
+     'openid.claimed_id': ['http://example.com/id/alice'],
+     'openid.identity': ['http://example.com/id/alice'],
+     'openid.mode': ['checkid_setup'],
+     'openid.ns': ['http://specs.openid.net/auth/2.0'],
+     'openid.realm': ['http://127.0.0.1'],
+     'openid.return_to': ['http://127.0.0.1/@@openid/complete']}
+
+The identity provider should redirect the user back to the
+@@openid/complete view, which calls auth.complete().
+
+    >>> request = TestRequest()
+    >>> #auth.complete(request)
+
