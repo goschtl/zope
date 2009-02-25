@@ -41,6 +41,9 @@ class TemplateRegistry(object):
         for template_file in os.listdir(template_dir):
             if template_file.startswith('.') or template_file.endswith('~'):
                 continue
+            if template_file.endswith('.cache'):
+                # chameleon creates '<tpl_name>.cache' files on the fly
+                continue
 
             template_name, extension = os.path.splitext(template_file)
             extension = extension[1:] # Get rid of the leading dot.
