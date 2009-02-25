@@ -4,6 +4,10 @@ Changelog
 0.3 - unreleased
 ----------------
 
+- Changed an import of Zope.App to Zope2.App for compatibility with recent
+  Zope versions.
+  [hannosch]
+
 - Added package infrastructure.
   [hannosch]
 

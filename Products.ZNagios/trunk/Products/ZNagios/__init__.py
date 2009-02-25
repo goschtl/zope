@@ -6,7 +6,7 @@
 
 import DateTime
 import OFS.Application
-import Zope.App.startup
+import Zope2.App.startup
 import time
 
 
@@ -110,9 +110,9 @@ def munin(self):
     # ... number of errors in the log
     data['errors-total'] = len(self.error_log._getLog())
     # ... number of all conflict errors since startup
-    data['conflicts-total'] = Zope.App.startup.conflict_errors
+    data['conflicts-total'] = Zope2.App.startup.conflict_errors
     # ... number of all unresolved conflict errors since startup
-    data['conflicts-unresolved'] = Zope.App.startup.unresolved_conflict_errors
+    data['conflicts-unresolved'] = Zope2.App.startup.unresolved_conflict_errors
 
     # RRDTool: everything's a float
     for key, value in data.items():
