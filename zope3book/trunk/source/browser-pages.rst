@@ -98,8 +98,8 @@ listing at http://localhost:8080/@@helloworld.html (Replace the
 `8080` port with the actual one)
 
 
-Template Attribute Language (TAL)
----------------------------------
+Template attribute language
+---------------------------
 
 .. index:: TAL ; page template
 
@@ -112,8 +112,8 @@ Template Attribute Language (TAL)
 * See TAL Specification 1.4
 
 
-TAL Features - tal:content
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:content
+~~~~~~~~~~~
 
 Insert content into the element and remove all of the element's
 children.
@@ -123,8 +123,8 @@ Examples::
   <p tal:content="request/principal/title">Gandalf</p>
 
 
-TAL Features - tal:replace
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:replace
+~~~~~~~~~~~
 
 Replace the current element and all its content by the evaluated
 expression.
@@ -137,8 +137,8 @@ Examples::
   <span tal:replace="nothing">This element is a comment.</span>
 
 
-TAL Features - tal:attributes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:attributes
+~~~~~~~~~~~~~~
 
 * Replaces the value of an XML attribute
 
@@ -152,8 +152,8 @@ TAL Features - tal:attributes
                 tal:attributes="rows request/rows; cols request/cols" />
 
 
-TAL Features - tal:repeat (1)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:repeat (1)
+~~~~~~~~~~~~~~
 
 * Replicate a subtree once for each item in a sequence
 
@@ -169,8 +169,8 @@ TAL Features - tal:repeat (1)
     </ul>
 
 
-TAL Features - tal:repeat (2)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:repeat (2)
+~~~~~~~~~~~~~~
 
 Global repeat namespace provides many organizational features
 
@@ -187,8 +187,8 @@ Global repeat namespace provides many organizational features
 - Letter - upper-case version of letter.
 
 
-TAL Features - tal:condition
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:condition
+~~~~~~~~~~~~~
 
 Include a section of the XML document, only under a certain condition
 
@@ -198,8 +198,8 @@ Examples::
      tal:content="view/copyright">(c) Stephan Richter 2006</p>
 
 
-TAL Features - tal:define
-~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:define
+~~~~~~~~~~
 
 Allows you to declare new local and global variables
 
@@ -209,8 +209,8 @@ Examples::
   tal:define="global company_name string:Web2k"
 
 
-TAL Features - tal:on-error
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:on-error
+~~~~~~~~~~~~
 
 * After an error occurred in any TAL statement, it is caught and the
   error expression is evaluated and inserted.
@@ -225,8 +225,8 @@ TAL Features - tal:on-error
       </p>
 
 
-TAL Features - tal:omit-tag
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tal:omit-tag
+~~~~~~~~~~~~
 
 * Omit a tag, if the provided expression evaluates to true
 
@@ -240,7 +240,7 @@ TAL Features - tal:omit-tag
     <b tal:omit-tag="not:bold">I may not be bold.</b>
 
 
-Common TAL Top-Level Namespaces
+Common TAL top-level namespaces
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are a few common top-level namespaces available in a Zope Page
@@ -259,7 +259,7 @@ Template (ZPT)
   server data, input data and principal information.
 
 
-TALES Namespaces
+TALES namespaces
 ~~~~~~~~~~~~~~~~
 
 .. index:: TALES ; page template

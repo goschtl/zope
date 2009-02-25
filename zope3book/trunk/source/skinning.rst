@@ -135,7 +135,7 @@ A new skin
 
 
 Setting up a layer
-------------------
+~~~~~~~~~~~~~~~~~~
 
 Write an interface for the layer that inherits the minimal layer::
 

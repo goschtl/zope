@@ -13,7 +13,7 @@ components that do not require any context.  This mini-chapter will
 demonstrate how resources are created and registered with Zope 3.
 
 
-File Resource
+File resource
 -------------
 
 .. index::
