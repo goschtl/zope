@@ -20,12 +20,12 @@ from chameleon.genshi.template import (GenshiTemplateFile, GenshiTemplate,
 from grokcore.component import GlobalUtility, implements, name
 from grokcore.view import interfaces
 from grokcore.view.components import GrokTemplate
+from z3c.pt.pagetemplate import evaluate_exists, evaluate_path
 
 #
 # Chameleon Zope Page Templates...
 #
 class ChameleonPageTemplate(GrokTemplate):
-    filename = None
     
     def setFromString(self, string):
         self._filename = None
@@ -37,6 +37,21 @@ class ChameleonPageTemplate(GrokTemplate):
         self._template = PageTemplateFile(os.path.join(_prefix, filename))
         return
 
+    def getNamespace(self, view):
+        """Extend namespace.
+
+        Beside the vars defined in standard grok templates, we inject
+        some vars and functions to be more compatible with official
+        ZPTs.
+        """
+        namespace = super(ChameleonPageTemplate, self).getNamespace(view)
+        namespace.update(dict(
+                template=self,
+                nothing=None,
+                path=evaluate_path,
+                exists=evaluate_exists))
+        return namespace
+    
     def render(self, view):
         return self._template(**self.getNamespace(view))
 
