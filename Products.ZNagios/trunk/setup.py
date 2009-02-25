@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.3'
+version = '0.4dev'
 
 setup(name='Products.ZNagios',
       version=version,
@@ -14,7 +14,7 @@ setup(name='Products.ZNagios',
         "License :: OSI Approved :: Zope Public License",
         "Programming Language :: Python",
       ],
-      keywords='Zope CMF Plone i18n l10n flags',
+      keywords='Zope Nagios Munin',
       author="Zope Corporation and contributors",
       author_email="zope-dev@zope.org",
       url='http://pypi.python.org/pypi/Products.ZNagios',
