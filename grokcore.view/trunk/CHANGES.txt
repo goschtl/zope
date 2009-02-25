@@ -6,6 +6,9 @@ Changes
 
 * Use zope.container instead of zope.app.container.
 
+* Ignore '<tpl>.cache' files when looking up template files in a
+  template dir. Fix bug https://bugs.launchpad.net/grok/+bug/332747
+
 1.3 (2009-01-28)
 ----------------
 
