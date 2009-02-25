@@ -47,8 +47,14 @@ class ContentContainerConfiglet(ContentContainer, Configlet):
     def _SampleContainer__data(self):
         return self.data
 
+    def keys(self):
+        return self.data.keys()
+
+    def items(self):
+        return [(name, self[name]) for name in self]
+
     def get(self, key, default=None):
-        item = super(ContentContainerConfiglet, self).get(key, default)
+        item = self.data.get(key, default)
 
         if item is default:
             return item
