@@ -6,7 +6,7 @@
    >
 
   <include package="grok" />
-  <grok:grok package="." />
+  <include package="megrok.chameleon" />
   <grok:grok package=".tests" />
 
   <!-- Typical functional testing security setup -->
