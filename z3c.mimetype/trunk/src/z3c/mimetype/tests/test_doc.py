@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''Tests for z3c.mimetype functionality.
+"""Tests for z3c.mimetype functionality.
 
 $Id$
-'''
+"""
 import os
 import unittest
 
@@ -24,10 +24,12 @@ from zope.component import provideUtility
 from z3c.mimetype.utility import globalMIMETypesUtility
 from z3c.mimetype.mimetype import mimeTypesTranslationDomain
 
+
 def setUp(test):
     provideUtility(globalMIMETypesUtility)
     provideUtility(mimeTypesTranslationDomain, name='shared-mime-info')
     test.globs['SAMPLE_DATA_DIR'] = os.path.join(os.path.dirname(__file__), 'sample_data')
+
 
 def test_suite():
     return unittest.TestSuite(

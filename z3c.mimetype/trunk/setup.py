@@ -27,7 +27,7 @@ setup(
     version='0.1.0dev',
     url='http://pypi.python.org/pypi/z3c.mimetype',
     license='ZPL 2.1',
-    description='',
+    description='MIME type guessing framework for Zope, based on shared-mime-info',
     author='Dan Korostelev and Zope Community',
     author_email='zope-dev@zope.org',
     long_description=\
@@ -39,10 +39,10 @@ setup(
     namespace_packages=['z3c'],
     install_requires=[
       'setuptools',
-      'zope.component [zcml]',
-      'zope.interface',
+      'zope.component',
       'zope.i18n',
       'zope.i18nmessageid',
+      'zope.interface',
       'zope.schema',
       ],
     extras_require = dict(

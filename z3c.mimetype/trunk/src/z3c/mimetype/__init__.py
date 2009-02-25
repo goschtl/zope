@@ -11,16 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''
+"""
 $Id$
-'''
+"""
 from zope.interface import moduleProvides
 from z3c.mimetype.interfaces import IConvenienceAPI
 from z3c.mimetype.utility import globalMIMETypesUtility
+
+
 from z3c.mimetype.mimetype import lookup
 
 def getType(filename=None, file=None):
     return globalMIMETypesUtility.getType(filename, file)
+
 
 moduleProvides(IConvenienceAPI)
 __all__ = tuple(IConvenienceAPI)

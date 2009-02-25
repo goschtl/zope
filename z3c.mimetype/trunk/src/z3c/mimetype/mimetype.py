@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''MIME type helper objects
+"""MIME type helper objects
 
 $Id$
-'''
+"""
 import os
 from xml.dom import minidom, XML_NAMESPACE
 
@@ -32,12 +32,13 @@ mimeTypesTranslationDomain = SimpleTranslationDomain('shared-mime-info')
 
 MIME_TYPES = {}
 
+
 def lookup(media, subtype=None):
-    '''Lookup an IMIMEType object.
+    """Lookup an IMIMEType object.
     
     Either a pair of arguments (media and subtype) or single argument in
     the ``media/subtype`` form can be used.
-    '''
+    """
     
     if subtype is None and '/' in media:
         media, subtype = media.split('/', 1)
@@ -45,12 +46,13 @@ def lookup(media, subtype=None):
         MIME_TYPES[(media, subtype)] = _MIMEType(media, subtype)
     return MIME_TYPES[(media, subtype)]
 
+
 class _MIMEType(object):
-    '''Single MIME type representation
+    """Single MIME type representation
     
     Never create these objects using this class, use the ``lookup`` function
     defined above instead.
-    '''
+    """
 
     implements(IMIMEType)
 

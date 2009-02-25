@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''The actual MIME type guessing utility class and global object (see the end
+"""The actual MIME type guessing utility class and global object (see the end
 of file). You want to use the guessing via this utility. :-)
 
 $Id$
-'''
+"""
 import re
 import os
 import fnmatch
@@ -29,8 +29,9 @@ from z3c.mimetype.interfaces import IMIMETypesUtility
 
 findBinary = re.compile('[\0-\7]').search
 
+
 class MIMETypesUtility(object):
-    '''MIME type guessing utility'''
+    """MIME type guessing utility"""
     
     implements(IMIMETypesUtility)
 
@@ -73,7 +74,7 @@ class MIMETypesUtility(object):
                 self._literals[pattern] = mtype
 
     def getTypeByFileName(self, filename):
-        '''Return type guessed by filename'''
+        """Return type guessed by filename"""
 
         if filename in self._literals:
             return self._literals[filename]
@@ -109,12 +110,12 @@ class MIMETypesUtility(object):
         return None
 
     def getTypeByContents(self, file, min_priority=0, max_priority=100):
-        '''Return type guessed by data. Accepts file-like object'''
+        """Return type guessed by data. Accepts file-like object"""
 
         return self._magicDB.match(file, min_priority, max_priority)
 
     def getType(self, filename=None, file=None):
-        '''Try to guess content type either by file name or contents or both'''
+        """Try to guess content type either by file name or contents or both"""
 
         if (filename is None) and (file is None):
             raise TypeError('Either filename or file should be provided or both of them')
@@ -138,5 +139,6 @@ class MIMETypesUtility(object):
                     type = lookup('text', 'plain')
 
         return type
+
 
 globalMIMETypesUtility = MIMETypesUtility()

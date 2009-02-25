@@ -11,33 +11,35 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-'''MIME type guessing framework interface definitions
+"""MIME type guessing framework interface definitions
 
 $Id$
-'''
+"""
 from zope.interface import Interface
 from zope.schema import ASCIILine, TextLine
 
+
 class IMIMETypesUtility(Interface):
-    '''MIME type guessing utility'''
+    """MIME type guessing utility"""
     
     def getTypeByFileName(filename):
-        '''Return type guessed by filename'''
+        """Return type guessed by filename"""
     
     def getTypeByContents(file, min_priority=0, max_priority=100):
-        '''Return type guessed by data. Accepts file-like object'''
+        """Return type guessed by data. Accepts file-like object"""
         
     def getType(filename=None, file=None):
-        '''Guess content type either by file name or contents or both.
+        """Guess content type either by file name or contents or both.
         
         At least one of these arguments should be provided.
         
         This method always returns some useful mimetype, 
         ``application/octet-stream`` or ``text/plain``.
-        '''
+        """
+
 
 class IMIMEType(Interface):
-    '''Single MIME type representation'''
+    """Single MIME type representation"""
     
     media = ASCIILine(
         title=u'Media',
@@ -55,21 +57,22 @@ class IMIMEType(Interface):
         readonly=True)
 
     def __str__():
-        '''Return a ``media/subtype`` presentation of mime type'''
+        """Return a ``media/subtype`` presentation of mime type"""
+
 
 class IConvenienceAPI(Interface):
-    '''Convenience API to be provided by the __init__ module.'''
+    """Convenience API to be provided by the __init__ module."""
     
     def getType(filename=None, file=None):
-        '''Guess content type either by file name or contents or both
+        """Guess content type either by file name or contents or both
         
         See IMIMETypesUtility.getType documentation.
-        '''
+        """
     
     def lookup(media, subtype=None):
-        '''Return a IMIMEType object for given string representation.
+        """Return a IMIMEType object for given string representation.
         
         If ``media`` argument is in the "media/subtype" form, then the
         ``subtype`` argument should't be specified and will be extracted
         from the ``media`` argument.
-        '''
+        """
