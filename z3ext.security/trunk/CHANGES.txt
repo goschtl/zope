@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.4 (2009-??-??)
+------------------
+
+- Fixed permissions/roles calculation in IExtendedGrantInfo
+
+
 1.2.3 (2009-01-19)
 ------------------
 

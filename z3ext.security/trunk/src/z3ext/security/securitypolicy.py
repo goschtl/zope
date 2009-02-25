@@ -124,7 +124,7 @@ class SecurityPolicy(ZopeSecurityPolicy):
 
         cache_principal_roles[principal] = roles
         return roles
-        
+
     def cached_prinper(self, parent, principal, groups, permission):
         # Compute the permission, if any, for the principal.
         cache = self.cache(parent)

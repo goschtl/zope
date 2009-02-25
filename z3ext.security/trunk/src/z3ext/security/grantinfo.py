@@ -49,18 +49,15 @@ class ExtendedGrantInfo(object):
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for name, setting in globalRolesForPermission(permission):
-                if name not in roles:
-                    roles[name] = setting
+                roles[name] = setting
         else:
             info = IExtendedGrantInfo(parent)
             for role, setting in info.getRolesForPermission(permission):
-                if role not in roles:
-                    roles[role] = setting
+                roles[role] = setting
 
         for name, roleperm in getAdapters((context,), IRolePermissionMap):
             for role, setting in roleperm.getRolesForPermission(permission):
-                if role not in roles:
-                    roles[role] = setting
+                roles[role] = setting
 
         return roles.items()
 
@@ -71,18 +68,15 @@ class ExtendedGrantInfo(object):
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for role, setting in globalRolesForPrincipal(principal):
-                if role not in roles:
-                    roles[role] = setting
+                roles[role] = setting
         else:
             info = IExtendedGrantInfo(parent)
             for role, setting in info.getRolesForPrincipal(principal):
-                if role not in roles:
-                    roles[role] = setting
+                roles[role] = setting
 
         for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
             for role, setting in prinrole.getRolesForPrincipal(principal):
-                if role not in roles:
-                    roles[role] = setting
+                roles[role] = setting
 
         return roles.items()
 
@@ -93,18 +87,15 @@ class ExtendedGrantInfo(object):
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for principal, setting in globalPrincipalsForRole(role):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
         else:
             info = IExtendedGrantInfo(parent)
             for principal, setting in info.getPrincipalsForRole(role):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
 
         for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
             for principal, setting in prinrole.getPrincipalsForRole(role):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
 
         return principals.items()
 
@@ -115,17 +106,14 @@ class ExtendedGrantInfo(object):
         parent = getattr(context, '__parent__', None)
         if parent is None:
             for principal, setting in globalPrincipalPermission(permission):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
         else:
             info = IExtendedGrantInfo(parent)
             for principal, setting in info.getPrincipalsForPermission(permission):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
 
         for name, prinper in getAdapters((context,), IPrincipalPermissionMap):
             for principal, setting in prinper.getPrincipalsForPermission(permission):
-                if principal not in principals:
-                    principals[principal] = setting
+                principals[principal] = setting
 
         return principals.items()
