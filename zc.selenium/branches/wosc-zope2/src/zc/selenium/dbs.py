@@ -49,6 +49,15 @@ class DatabaseAware(object):
     db = property(get_db, set_db)
 
     def is_demo_db(self):
+        try:
+            import Zope2
+            # Zope2 stores authentication infos inside the ZODB,
+            # so insisting on a DemoStorage is a bit beside the point.
+            # XXX this is a security risk
+            return True
+        except ImportError:
+            pass
+
         for db in self.db.databases.values():
             if not self.is_demo_storage(db._storage):
                 return False
