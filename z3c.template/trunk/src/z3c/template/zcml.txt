@@ -109,6 +109,72 @@ and check them:
   <div>layout</div>
 
 
+Context-specific template
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Most of views have some object as their context and it's ofter very
+useful to be able register context-specific template. We can do that
+using the ``context`` argument of the ZCML directive.
+
+Let's define some content type:
+
+  >>> class IContent(zope.interface.Interface):
+  ...     pass
+  >>> class Content(object):
+  ...     zope.interface.implements(IContent)
+
+  >>> sys.modules['custom'].IContent = IContent
+
+Now, we can register a template for this class. Let's create one and
+register:
+
+  >>> file = os.path.join(temp_dir, 'context.pt')
+  >>> open(file, 'w').write('''<div>i'm context-specific</div>''')
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:template
+  ...       template="%s"
+  ...       for="custom.IView"
+  ...       context="custom.IContent"
+  ...       />
+  ... </configure>
+  ... """ % file, context=context)
+
+We can now lookup it using the (view, request, context) discriminator:
+
+  >>> content = Content()
+  >>> view = View(content, request)
+
+  >>> template = zope.component.queryMultiAdapter((view, request, content), 
+  ...     interface=IContentTemplate)
+
+  >>> print template(view)
+  <div>i'm context-specific</div>
+
+The same will work with layout registration directive:
+
+  >>> file = os.path.join(temp_dir, 'context_layout.pt')
+  >>> open(file, 'w').write('''<div>context-specific layout</div>''')
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:layout
+  ...       template="%s"
+  ...       for="custom.IView"
+  ...       context="custom.IContent"
+  ...       />
+  ... </configure>
+  ... """ % file, context=context)
+
+  >>> layout = zope.component.queryMultiAdapter((view, request, content), 
+  ...     interface=ILayoutTemplate)
+
+  >>> print layout(view)
+  <div>context-specific layout</div>
+
+
 Named template
 --------------
 

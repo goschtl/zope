@@ -45,7 +45,7 @@ class TemplateFactory(object):
         self.template = ptcompat.ViewPageTemplateFile(filename,
             content_type=contentType)
 
-    def __call__(self, view, request):
+    def __call__(self, view, request, context=None):
         if self.macro is None:
             return self.template
         return Macro(
@@ -76,8 +76,13 @@ class ViewTemplate(object):
         self.name = name
 
     def __call__(self, instance, *args, **keywords):
-        template = component.getMultiAdapter(
-                (instance, instance.request), self.provides, name=self.name)
+        template = component.queryMultiAdapter(
+            (instance, instance.request, instance.context),
+            self.provides, name=self.name)
+        if template is None:
+            template = component.getMultiAdapter(
+                    (instance, instance.request),
+                    self.provides, name=self.name)
         return template(instance, *args, **keywords)
 
     def __get__(self, instance, type):

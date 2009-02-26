@@ -5,6 +5,12 @@ CHANGES
 1.2.0 (unreleased)
 ------------------
 
+* Add support for context-specific templates. Now, templates can be
+  registered and looked up using (view, request, context) triple.
+  To do that, pass the ``context`` argument to the ZCML directives.
+  The ``getPageTemplate`` and friends will now try to lookup context
+  specific template first and then fall back to (view, request) lookup.
+
 * Allow use of ``z3c.pt`` using ``z3c.ptcompat`` compatibility layer.
 
 * Forward the template kwargs to the options of the macro

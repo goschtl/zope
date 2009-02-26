@@ -74,6 +74,12 @@ class ITemplateDirective(zope.interface.Interface):
         default=IDefaultBrowserLayer,
         )
 
+    context = zope.configuration.fields.GlobalObject(
+        title = u'Context',
+        description = u'The context for which the template should be available',
+        required = False,
+        )
+
     provides = zope.configuration.fields.GlobalInterface(
         title=u"Interface the template provides",
         description=u"This attribute specifies the interface the template"
@@ -106,7 +112,7 @@ def templateDirective(
     _context, template, name=u'',
     for_=zope.interface.Interface, layer=IDefaultBrowserLayer,
     provides=z3c.template.interfaces.IContentTemplate,
-    contentType='text/html', macro=None):
+    contentType='text/html', macro=None, context=None):
 
     # Make sure that the template exists
     template = os.path.abspath(str(_context.path(template)))
@@ -116,20 +122,25 @@ def templateDirective(
     factory = TemplateFactory(template, contentType, macro)
     zope.interface.directlyProvides(factory, provides)
 
+    if context is not None:
+        for_ = (for_, layer, context)
+    else:
+        for_ = (for_, layer)
+
     # register the template
     if name:
         zope.component.zcml.adapter(_context, (factory,), provides,
-                                    (for_, layer), name=name)
+                                    for_, name=name)
     else:
         zope.component.zcml.adapter(_context, (factory,), provides,
-                                    (for_, layer))
+                                    for_)
 
 
 def layoutTemplateDirective(
     _context, template, name=u'',
     for_=zope.interface.Interface, layer=IDefaultBrowserLayer,
     provides=z3c.template.interfaces.ILayoutTemplate,
-    contentType='text/html', macro=None):
+    contentType='text/html', macro=None, context=None):
 
     templateDirective(_context, template, name, for_, layer, provides,
-                      contentType, macro)
+                      contentType, macro, context)
