@@ -1,0 +1,20 @@
+
+Changes
+*******
+
+1.1
+===
+
+- Move the ``exclude`` directive into the original ``zope.configuration``
+  package.
+  
+  So, this package is currently contains only a backward-compatibility
+  import for ``exclude`` directive and is not useful anymore. However
+  it's intended to contain miscellaneous extensions to the configuration
+  framework and may contain more in future, so we are not marking is
+  as deprecated for now.
+
+1.0
+===
+
+Initial release.
