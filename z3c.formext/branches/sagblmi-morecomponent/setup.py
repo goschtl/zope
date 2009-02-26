@@ -53,6 +53,7 @@ setup (
             'z3c.coverage',
             'z3c.template',
             'zope.app.i18n',
+            'z3c.form [test]',
             ],
         adding = ['zope.app.container'],
         ),

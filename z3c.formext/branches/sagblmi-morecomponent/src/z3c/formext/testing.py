@@ -17,29 +17,99 @@ $Id$
 """
 import zope.component
 import zope.interface
+import zope.schema.interfaces
 from zope.traversing.testing import setUp as setupTraversing
 from zope.traversing.interfaces import IContainmentRoot
 
 import z3c.form.testing
 from z3c.form.interfaces import IButtonAction
+from z3c.form.interfaces import ITextWidget
+from z3c.form.interfaces import ITextAreaWidget
+from z3c.form.interfaces import ISelectWidget
+from z3c.form.interfaces import ISingleCheckBoxWidget
+from z3c.form.interfaces import IRadioWidget
+
 from z3c.form.testing import setupFormDefaults
-from z3c.formext import component, form, converter
+from z3c.formext import component, form, converter, interfaces
 
 TestRequest = z3c.form.testing.TestRequest
 
+
 def setupExtJSComponents():
-    zope.component.provideAdapter(component.TextField)
-    zope.component.provideAdapter(component.TextArea)
-    zope.component.provideAdapter(component.DateField)
+    zope.component.provideAdapter(component.SimpleFiedWidgetFactory)
+    #TextWidget
+    #     TextField
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IBytesLine),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IASCIILine),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.ITextLine),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IId),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IDatetime),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.ITimedelta),
+            interfaces.IExtJSComponent)
+    #     DateField
+    zope.component.provideAdapter(component.DateField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IDate),
+            interfaces.IExtJSComponent)
+    #     TimeField
+    zope.component.provideAdapter(component.TimeField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.ITime),
+            interfaces.IExtJSComponent)
+    #     NumberField
+    zope.component.provideAdapter(component.NumberField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IInt),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.NumberField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IFloat),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.NumberField,
+            (None, None, None, ITextWidget, zope.schema.interfaces.IDecimal),
+            interfaces.IExtJSComponent)
+    #    PasswordField
+    zope.component.provideAdapter(component.Password,
+            (None, None, None, ITextWidget,
+                zope.schema.interfaces.IPassword),
+            interfaces.IExtJSComponent)
+    #TextAreaWidget
+    zope.component.provideAdapter(component.TextArea,
+            (None, None, None, ITextAreaWidget, zope.schema.interfaces.IText),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.TextArea,
+            (None, None, None, ITextAreaWidget, zope.schema.interfaces.IASCII),
+            interfaces.IExtJSComponent)
+    #RadioWidget
+    zope.component.provideAdapter(component.RadioGroup,
+            (None, None, None, IRadioWidget, zope.schema.interfaces.IBool),
+            interfaces.IExtJSComponent)
+    #other widgets
+    zope.component.provideAdapter(component.DateWidget,
+            (None, None, None,
+                interfaces.IExtJSDateWidget, zope.schema.interfaces.IDate),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.ComboBox,
+            (None, None, None, ISelectWidget, zope.schema.interfaces.IChoice),
+            interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.CheckBox,
+            (None, None, None,
+                ISingleCheckBoxWidget, zope.schema.interfaces.IField),
+            interfaces.IExtJSComponent)
     zope.component.provideAdapter(component.FormPanel)
     zope.component.provideAdapter(component.ExtFormPanel)
-    zope.component.provideAdapter(component.ComboBox)
-    zope.component.provideAdapter(component.CheckBox)
-    zope.component.provideAdapter(component.RadioGroup)
     zope.component.provideAdapter(component.Button)
     zope.component.provideAdapter(component.ClientButton)
     zope.component.provideAdapter(form.ClientButtonAction,
                                   provides=IButtonAction)
+
 
 def setupFormExt():
     setupExtJSComponents()
@@ -52,6 +122,7 @@ def setupFormExt():
 class Context(object):
     zope.interface.implements(IContainmentRoot)
     __name__ = ''
+
 
 class TestingForm(object):
 

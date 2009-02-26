@@ -24,36 +24,7 @@
       />
 
   <!-- ExtJS Component adapters -->
-  <adapter
-      factory=".component.FormPanel"
-      />
-  <adapter
-      factory=".component.ExtFormPanel"
-      />
-  <adapter
-      factory=".component.TextField"
-      />
-  <adapter
-      factory=".component.TextArea"
-      />
-  <adapter
-      factory=".component.DateField"
-      />
-  <adapter
-      factory=".component.ComboBox"
-      />
-  <adapter
-      factory=".component.CheckBox"
-      />
-  <adapter
-      factory=".component.RadioGroup"
-      />
-  <adapter
-      factory=".component.Button"
-      />
-  <adapter
-      factory=".component.ClientButton"
-      />
+  <include file="component.zcml"/>
 
   <adapter
       factory=".form.ClientButtonAction"

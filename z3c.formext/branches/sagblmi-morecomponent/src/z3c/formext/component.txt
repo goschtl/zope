@@ -4,7 +4,7 @@ ExtJS Components
 
 We can construct configuration objects for basic extjs components.
 
-  >>> from z3c.formext import interfaces, component, testing
+  >>> from z3c.formext import interfaces, testing
 
   >>> from pprint import pprint
 
@@ -19,156 +19,517 @@ Setup
 Widgets
 -------
 
-TextWidget
-..........
+  >>> from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE, IFieldWidget
+  >>> from z3c.form.browser.text import TextWidget
 
-    >>> from z3c.form.interfaces import HIDDEN_MODE, DISPLAY_MODE
-    >>> from z3c.form.browser.text import TextWidget
+  >>> widget = TextWidget(TestRequest())
+  >>> widget.label = u'Widget Label'
+  >>> widget.id = 'widget-id'
+  >>> widget.name = 'widget.name'
+  >>> widget.value = 'widget value'
+  >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ... <InterfaceClass z3c.formext.interfaces.IExtJSComponent>, u'')                                                               
 
-    >>> widget = TextWidget(TestRequest())
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
+A widget provides a representation for a field. Since the representation
+depends on the field itself, we need to associate a field to the widget to get
+the right configuration. Let's create a field first:
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'value': 'widget value',
-     'xtype': 'textfield'}
+  >>> import zope.schema
+  >>> labelField = zope.schema.TextLine(
+  ...   __name__ = 'label',
+  ...   title = u'Label title')
 
-    >>> widget.mode = HIDDEN_MODE
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'hidden': True,
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'value': 'widget value',
-     'xtype': 'textfield'}
+We associate the widget and the field
 
-    >>> widget.mode = DISPLAY_MODE
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'disabled': True,
-     'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'value': 'widget value',
-     'xtype': 'textfield'}
+  >>> import z3c.form.widget
+  >>> labelWidget = z3c.form.widget.FieldWidget(labelField, widget)
+  >>> labelWidget
+  <TextWidget 'label'>
 
-TextArea
-........
+Of course, this is more commonly done using an adapter:
+  >>> request = TestRequest()
+  >>> labelWidget = zope.component.getMultiAdapter((labelField, request),
+  ...     IFieldWidget)
+  >>> labelWidget
+  <TextWidget 'label'>
+  >>> labelWidget.update()
 
-    >>> from z3c.form.browser.textarea import TextAreaWidget
+We can now get the configuration
 
-    >>> widget = TextAreaWidget(TestRequest())
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
+  >>> pprint(interfaces.IExtJSComponent(labelWidget).getConfig())
+  {'allowBlank': False,                                                                                            
+   'fieldLabel': u'Label title',                                                                                   
+   'id': 'label',                                                                                                  
+   'itemCls': 'required',                                                                                          
+   'minLength': 0,                                                                                                 
+   'name': 'label',                                                                                                
+   'value': u'',                                                                                        
+   'xtype': 'textfield'}
+  
+  >>> labelWidget.request = TestRequest(form = {'label': 'widget value'})
+  >>> labelWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(labelWidget).getConfig())
+  {'allowBlank': False,                                                                                            
+   'fieldLabel': u'Label title',                                                                                   
+   'id': 'label',                                                                                                  
+   'itemCls': 'required',                                                                                          
+   'minLength': 0,                                                                                                 
+   'name': 'label',                                                                                                
+   'value': 'widget value',                                                                                        
+   'xtype': 'textfield'}
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'value': 'widget value',
-     'xtype': 'textarea'}
+  >>> labelWidget.mode = HIDDEN_MODE
+  >>> pprint(interfaces.IExtJSComponent(labelWidget).getConfig())
+  {'allowBlank': False,                                                                                            
+   'fieldLabel': u'Label title',                                                                                   
+   'hidden': True,                                                                                                 
+   'id': 'label',                                                                                                  
+   'itemCls': 'required',                                                                                          
+   'minLength': 0,                                                                                                 
+   'name': 'label',                                                                                                
+   'value': 'widget value',                                                                                        
+   'xtype': 'textfield'}       
+  
+  >>> labelWidget.mode = DISPLAY_MODE
+  >>> pprint(interfaces.IExtJSComponent(labelWidget).getConfig())
+   {'allowBlank': False,                                                                                            
+   'disabled': True,                                                                                               
+   'fieldLabel': u'Label title',                                                                                   
+   'id': 'label',                                                                                                  
+   'itemCls': 'required',                                                                                          
+   'minLength': 0,                                                                                                 
+   'name': 'label',                                                                                                
+   'value': 'widget value',                                                                                        
+   'xtype': 'textfield'}
 
-Date Widget
+Off course, the config also provides constrains specific to the field.
+
+  >>> labelField.min_length = 1
+  >>> labelField.max_length = 200
+  >>> labelField.required = False 
+  >>> labelWidget = zope.component.getMultiAdapter((labelField, request),
+  ...     IFieldWidget)
+  >>> pprint(interfaces.IExtJSComponent(labelWidget).getConfig())
+   {'allowBlank': True,
+   'fieldLabel': u'Label title',
+   'id': 'label',
+   'maxLength': 200,
+   'minLength': 1,
+   'name': 'label',
+   'value': u'',
+   'xtype': 'textfield'}
+
+Let's test config for a lot of possible fields
+  >>> from z3c.formext.tests.interfaces import IAllFields
+
+ASCIIWidget
 ...........
 
-    >>> from z3c.formext.widget import ExtJSDateWidget
+  >>> asciiWidget = zope.component.queryMultiAdapter(
+  ...     (IAllFields['asciiField'], request),
+  ...     IFieldWidget)
+  >>> asciiWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(asciiWidget).getConfig())
+  {'allowBlank': False,                                                                                             
+   'fieldLabel': u'ASCII',                                                                                          
+   'id': 'asciiField',                                                                                              
+   'itemCls': 'required',                                                                                           
+   'minLength': 0,                                                                                                  
+   'name': 'asciiField',                                                                                            
+   'value': u'This is\n ASCII.',                                                                                    
+   'xtype': 'textarea'}
 
-    >>> widget = ExtJSDateWidget(TestRequest())
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
+ASCIILineWidget
+...............
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'value': 'widget value',
-     'xtype': 'datefield'}
+  >>> asciiLineWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['asciiLineField'], request),
+  ...     IFieldWidget)
+  >>> asciiLineWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(asciiLineWidget).getConfig())
+  {'allowBlank': False,                                                                                             
+   'fieldLabel': u'ASCII Line',                                                                                     
+   'id': 'asciiLineField',                                                                                          
+   'itemCls': 'required',                                                                                           
+   'minLength': 0,                                                                                                  
+   'name': 'asciiLineField',                                                                                        
+   'value': u'An ASCII line.',                                                                                      
+   'xtype': 'textfield'}
 
-Select Widget
+BOOLWidget
+..........
+
+  >>> boolWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['boolField'], request),
+  ...     IFieldWidget)
+  >>> boolWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(boolWidget).getConfig())
+  {'fieldLabel': u'Boolean',
+  'id': 'boolField',
+  'items': [{'boxLabel': u'yes',
+             'checked': True,
+             'id': 'boolField-0',
+             'inputValue': 'true',
+             'name': 'boolField'},
+             {'boxLabel': u'no',
+              'checked': False, 
+              'id': 'boolField-1',
+              'inputValue': 'false',
+              'name': 'boolField'}],
+  'xtype': 'radiogroup'} 
+
+BytesFied (TODO)
+................
+
+  >>> bytesWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['bytesField'], request),
+  ...     IFieldWidget)
+  >>> bytesWidget.update()
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ...                                                                  
+  >>> pprint(interfaces.IExtJSComponent(bytesWidget).getConfig())
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ... <InterfaceClass z3c.formext.interfaces.IExtJSComponent>, u'')                                                                 
+
+
+BytesLineFied
 .............
 
-    >>> from z3c.form.browser.select import SelectFieldWidget
-    >>> from zope.schema import Choice
+  >>> bytesLineWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['bytesLineField'], request),
+  ...     IFieldWidget)
+  >>> bytesLineWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(bytesLineWidget).getConfig())
+  {'allowBlank': False,                                                                                                               
+  'fieldLabel': u'Bytes Line',                                                                                                        
+  'id': 'bytesLineField',                                                                                                                             
+  'itemCls': 'required',
+  'minLength': 0,
+  'name': 'bytesLineField',
+  'value': u'A Bytes line.',
+  'xtype': 'textfield'}
 
-    >>> widget = SelectFieldWidget(
-    ...     Choice(values=[1,2,3,4]),
-    ...     TestRequest())
-    >>> widget.update()
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'editable': False,
-     'fieldLabel': u'Widget Label',
-     'hiddenName': 'widget.name:list',
-     'id': 'widget-id',
-     'name': 'widget.name',
-     'store': [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4')],
-     'triggerAction': 'all',
-     'value': 'widget value',
-     'xtype': 'combo'}
+ChoiceField
+...........
 
-Radio Widget
-............
+  >>> choiceWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['choiceField'], request),
+  ...     IFieldWidget)
+  >>> choiceWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
+  {'editable': False,
+   'fieldLabel': u'Choice',
+   'hiddenName': 'choiceField:list',
+   'id': 'choiceField',
+   'itemCls': 'required',
+   'name': 'choiceField',
+   'store': [('1', u'One'),
+             ('2', u'Two'),
+             ('3', u'Three'),
+             ('4', u'Four'),
+             ('5', u'Five')],
+   'triggerAction': 'all',
+   'value': ['3'],
+   'xtype': 'combo'}
 
-    >>> from z3c.form.browser.radio import RadioFieldWidget
-    >>> widget = RadioFieldWidget(
-    ...     Choice(values=[1, 2, 3]),
-    ...     TestRequest())
-    >>> widget.update()
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
+Works also with optional choice
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'items': [{'boxLabel': '1',
-                'checked': False,
-                'id': 'widget-id-0',
-                'inputValue': '1',
-                'name': 'widget.name'},
-               {'boxLabel': '2',
-                'checked': False,
-                'id': 'widget-id-1',
-                'inputValue': '2',
-                'name': 'widget.name'},
-               {'boxLabel': '3',
-                'checked': False,
-                'id': 'widget-id-2',
-                'inputValue': '3',
-                'name': 'widget.name'}],
-     'xtype': 'radiogroup'}
+  >>> choiceWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['optionalChoiceField'], request),
+  ...     IFieldWidget)
+  >>> choiceWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
+  {'editable': False,                                                                                               
+   'fieldLabel': u'Choice (Not Required)',                                                                          
+   'hiddenName': 'optionalChoiceField:list',                                                                        
+   'id': 'optionalChoiceField',                                                                                     
+   'name': 'optionalChoiceField',                                                                                   
+   'store': [('--NOVALUE--', u'no value'),                                                                          
+             ('1', u'One'),                                                                                         
+             ('2', u'Two'),                                                                                         
+             ('3', u'Three'),                                                                                       
+             ('4', u'Four'),                                                                                        
+             ('5', u'Five')],                                                                                       
+   'triggerAction': 'all',                                                                                          
+   'value': (),                                                                                                     
+   'xtype': 'combo'}
 
-An edge case is a radio widget that has no values to select.  ExtJS
-requires there to be an items attribute that is a non empty list.  To
-get a similar effect, we just add one hidden item to the items list.
+DateField
+.........
+  
+  >>> dateWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['dateField'], request),
+  ...     IFieldWidget)
+  >>> dateWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(dateWidget).getConfig())
+   {'allowBlank': False,                                                                                             
+   'fieldLabel': u'Date',                                                                                           
+   'id': 'dateField',                                                                                               
+   'itemCls': 'required',                                                                                           
+   'name': 'dateField',                                                                                             
+   'value': u'07/04/01',                                                                                            
+   'xtype': 'datefield'}
 
-    >>> widget = RadioFieldWidget(
-    ...     Choice(values=[]),
-    ...     TestRequest())
-    >>> widget.update()
-    >>> widget.label = u'Widget Label'
-    >>> widget.id = 'widget-id'
-    >>> widget.name = 'widget.name'
-    >>> widget.value = 'widget value'
 
-    >>> pprint(interfaces.IExtJSComponent(widget).getConfig())
-    {'fieldLabel': u'Widget Label',
-     'id': 'widget-id',
-     'items': [{'hidden': True}],
-     'xtype': 'radiogroup'}
+DatetimeField
+.............
+
+DateTime field has no specific widget. It use the textfield widget
+
+  >>> datetimeWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['datetimeField'], request),
+  ...     IFieldWidget)
+  >>> datetimeWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(datetimeWidget).getConfig())
+  {'allowBlank': False,                                                                                             
+   'fieldLabel': u'Date/Time',                                                                                      
+   'id': 'datetimeField',                                                                                           
+   'itemCls': 'required',                                                                                           
+   'name': 'datetimeField',                                                                                         
+   'value': u'07/04/01 12:00',                                                                                      
+   'xtype': 'textfield'}
+
+DecimalField
+.............
+
+  >>> decimalWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['decimalField'], request),
+  ...     IFieldWidget)
+  >>> decimalWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(decimalWidget).getConfig())
+  {'allowBlank': False,
+   'allowDecimals': True,
+   'fieldLabel': u'Decimal',
+   'id': 'decimalField',
+   'itemCls': 'required',
+   'name': 'decimalField',
+   'value': u'12.87',
+   'xtype': 'numberfield'}
+
+DottedNameField
+...............
+
+  >>> dottedNameWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['dottedNameField'], request),
+  ...     IFieldWidget)
+  >>> dottedNameWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(dottedNameWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Dotted Name',
+   'id': 'dottedNameField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'dottedNameField',
+   'value': u'z3c.form',
+   'xtype': 'textfield'}
+
+FloatField
+..........
+  
+  >>> floatWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['floatField'], request),
+  ...     IFieldWidget)
+  >>> floatWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(floatWidget).getConfig())
+  {'allowBlank': False,
+   'allowDecimals': True,
+   'fieldLabel': u'Float',
+   'id': 'floatField',
+   'itemCls': 'required',
+   'name': 'floatField',
+   'value': u'12.8',
+   'xtype': 'numberfield'}
+
+FrozenSetField (TODO)
+.....................
+
+  >>> frozenSetWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['frozenSetField'], request),
+  ...     IFieldWidget)
+  >>> frozenSetWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(frozenSetWidget).getConfig())
+  Traceback (most recent call last):
+  ...
+  ComponentLookupError: ... <InterfaceClass z3c.formext.interfaces.IExtJSComponent>, u'')                                                                
+
+
+IdField
+.......
+
+  >>> idWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['idField'], request),
+  ...     IFieldWidget)
+  >>> idWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(idWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Id',
+   'id': 'idField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'idField',
+   'value': u'z3c.form',
+   'xtype': 'textfield'}
+
+IntField
+........
+  >>> intWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['intField'], request),
+  ...     IFieldWidget)
+  >>> intWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(intWidget).getConfig())
+  {'allowBlank': False,
+   'allowDecimals': False,
+   'fieldLabel': u'Integer',
+   'id': 'intField',
+   'itemCls': 'required',
+   'name': 'intField',
+   'value': u'12,345',
+   'xtype': 'numberfield'}
+
+ListField
+.........
+
+TODO
+
+ObjectField
+...........
+
+TODO
+
+PasswordField
+.............
+  
+  >>> passwordWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['passwordField'], request),
+  ...     IFieldWidget)
+  >>> passwordWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(passwordWidget).getConfig())
+  {'allowBlank': True,
+   'fieldLabel': u'Password',
+   'id': 'passwordField',
+   'inputType': 'password',
+   'minLength': 0,
+   'name': 'passwordField',
+   'value': u'mypwd',
+   'xtype': 'textfield'}
+
+setField
+........
+
+TODO
+
+SourceTextField
+...............
+
+  >>> sourceTextWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['sourceTextField'], request),
+  ...     IFieldWidget)
+  >>> sourceTextWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(sourceTextWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Source Text',
+   'id': 'sourceTextField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'sourceTextField',
+   'value': u'<source />',
+   'xtype': 'textarea'}
+
+TextField
+.........
+ 
+  >>> textWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['textField'], request),
+  ...     IFieldWidget)
+  >>> textWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(textWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Text',
+   'id': 'textField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'textField',
+   'value': u'Some\n Text.',
+   'xtype': 'textarea'}
+
+TextLineField
+.............
+
+  >>> textLineWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['textLineField'], request),
+  ...     IFieldWidget)
+  >>> textLineWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(textLineWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Text Line',
+   'id': 'textLineField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'textLineField',
+   'value': u'Some Text line.',
+   'xtype': 'textfield'}
+
+TimeField
+.........
+
+  >>> timeWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['timeField'], request),
+  ...     IFieldWidget)
+  >>> timeWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(timeWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Time',
+   'id': 'timeField',
+   'itemCls': 'required',
+   'name': 'timeField',
+   'value': u'12:00',
+   'xtype': 'timefield'}
+
+TimedeltaField
+..............
+
+Timedelta field has no specific widget. It use the textfield widget
+
+  >>> timedeltaWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['timedeltaField'], request),
+  ...     IFieldWidget)
+  >>> timedeltaWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(timedeltaWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'Time Delta',
+   'id': 'timedeltaField',
+   'itemCls': 'required',
+   'name': 'timedeltaField',
+   'value': u'3 days, 0:00:00',
+   'xtype': 'textfield'}
+
+TupleField
+..........
+
+TODO
+
+UriField
+........
+
+  >>> uriWidget = zope.component.getMultiAdapter(
+  ...     (IAllFields['uriField'], request),
+  ...     IFieldWidget)
+  >>> uriWidget.update()
+  >>> pprint(interfaces.IExtJSComponent(uriWidget).getConfig())
+  {'allowBlank': False,
+   'fieldLabel': u'URI',
+   'id': 'uriField',
+   'itemCls': 'required',
+   'minLength': 0,
+   'name': 'uriField',
+   'value': u'http://zope.org',
+   'xtype': 'textfield'}
+
 
 
 Form Panels
@@ -184,63 +545,60 @@ from z3c.form.
 
   >>> class IPerson(zope.interface.Interface):
   ...
-  ...     id = zope.schema.TextLine(
-  ...         title=u'ID',
-  ...         readonly=True,
-  ...         required=True)
+  ...   id = zope.schema.TextLine(
+  ...       title=u'ID',
+  ...       readonly=True,
+  ...       required=True)
   ...
-  ...     isCool = zope.schema.Bool(
-  ...         title=u'Are you Cool?',
-  ...         required=True)
+  ...   isCool = zope.schema.Bool(
+  ...       title=u'Are you Cool?',
+  ...       required=True)
   ...
-  ...     name = zope.schema.TextLine(
-  ...         title=u'Name',
-  ...         required=True)
+  ...   name = zope.schema.TextLine(
+  ...       title=u'Name',
+  ...       required=True)
   ...
-  ...     gender = zope.schema.Choice(
-  ...         title=u'Gender',
-  ...         values=('male', 'female'),
-  ...         required=False)
+  ...   gender = zope.schema.Choice(
+  ...       title=u'Gender',
+  ...       values=('male', 'female'),
+  ...       required=False)
   ...
-  ...     age = zope.schema.Int(
-  ...         title=u'Age',
-  ...         description=u"The person's age.",
-  ...         min=0,
-  ...         default=20,
-  ...         required=False)
+  ...   age = zope.schema.Int(
+  ...       title=u'Age',
+  ...       description=u"The person's age.",
+  ...       min=0,
+  ...       default=20,
+  ...       required=False)
   ...
-  ...     passwd = zope.schema.Password(
-  ...         title=u'Password',
-  ...         required=True)
+  ...   passwd = zope.schema.Password(
+  ...       title=u'Password',
+  ...       required=True)
   ...
-  ...     birthDay = zope.schema.Date(
-  ...         title=u'Birthday')
+  ...   birthDay = zope.schema.Date(
+  ...       title=u'Birthday')
   ...
-  ...     isNice = zope.schema.Bool(
-  ...         title=u'Are you Nice?',
-  ...         required=True)
+  ...   isNice = zope.schema.Bool(
+  ...       title=u'Are you Nice?',
+  ...       required=True)
   ...
 
   >>> from z3c.form.browser.checkbox import SingleCheckBoxFieldWidget
-  >>> from z3c.form.browser.password import PasswordFieldWidget
   >>> from z3c.form.interfaces import HIDDEN_MODE
-  >>> from z3c.formext.widget import ExtJSDateFieldWidget
   >>> class ContactForm(form.Form):
-  ...     label = u'My Contact Form'
-  ...     ignoreContext = True
-  ...     fields = field.Fields(IPerson)
-  ...     fields['isCool'].widgetFactory = SingleCheckBoxFieldWidget
-  ...     fields['passwd'].widgetFactory = PasswordFieldWidget
-  ...     fields['birthDay'].widgetFactory = ExtJSDateFieldWidget
-  ...     buttons = button.Buttons(button.Button(__name__='save', title=u'Save'))
-  ...     renderTo = 'my-dom-id'
-  ...     def updateWidgets(self):
-  ...         super(ContactForm, self).updateWidgets()
-  ...         self.widgets['id'].mode = HIDDEN_MODE
+  ...   label = u'My Contact Form'
+  ...   ignoreContext = True
+  ...   fields = field.Fields(IPerson)
+  ...   fields['isCool'].widgetFactory = SingleCheckBoxFieldWidget
+  ...   buttons = button.Buttons(button.Button(__name__='save', title=u'Save'))
+  ...   renderTo = 'my-dom-id'
+  ...   def updateWidgets(self):
+  ...       super(ContactForm, self).updateWidgets()
+  ...       self.widgets['id'].mode = HIDDEN_MODE
 
   >>> myForm = ContactForm('context', TestRequest())
 
   >>> formPanel = interfaces.IExtJSComponent(myForm)
+  >>> myForm.update()
   >>> config = formPanel.getConfig()
 
 Now we can look more closely at what we actually get
@@ -257,9 +615,12 @@ Now we can look more closely at what we actually get
 Here is a simple text widget
 
   >>> pprint(config['items'][0])
-  {'fieldLabel': u'ID',
+  {'allowBlank': False,
+   'fieldLabel': u'ID',
    'hidden': True,
    'id': 'form-widgets-id',
+   'itemCls': 'required',
+   'minLength': 0,
    'name': 'form.widgets.id',
    'value': u'',
    'xtype': 'textfield'}
@@ -270,67 +631,36 @@ Here is a single checkbox widget
   {'checked': False,
    'fieldLabel': u'Are you Cool?',
    'id': 'form-widgets-isCool',
+   'itemCls': 'required',
    'name': 'form.widgets.isCool',
    'xtype': 'checkbox'}
 
 Here is another simple text widget
 
   >>> pprint(config['items'][2])
-  {'fieldLabel': u'Name',
+  {'allowBlank': False,
+   'fieldLabel': u'Name',
    'id': 'form-widgets-name',
+   'itemCls': 'required',
+   'minLength': 0,
    'name': 'form.widgets.name',
    'value': u'',
    'xtype': 'textfield'}
 
 Here is a select widget
 
-    >>> pprint(config['items'][3])
-    {'editable': False,
-     'fieldLabel': u'Gender',
-     'hiddenName': 'form.widgets.gender:list',
-     'id': 'form-widgets-gender',
-     'name': 'form.widgets.gender',
-     'store': [('--NOVALUE--', u'no value'),
-               ('male', 'male'),
-               ('female', 'female')],
-     'triggerAction': 'all',
-     'value': (),
-     'xtype': 'combo'}
-
-  >>> pprint(config['buttons'])
-  [{'id': 'form-buttons-save',
-    'name': 'form.buttons.save',
-    'text': u'Save',
-    'title': u'Save',
-    'xtype': 'button'}]
-
-Here is an integer widget
-
-  >>> pprint(config['items'][4])
-  {'fieldLabel': u'Age',
-   'id': 'form-widgets-age',
-   'name': 'form.widgets.age',
-   'value': u'20',
-   'xtype': 'textfield'}
-
-Here is a password widget
-
-  >>> pprint(config['items'][5])
-  {'fieldLabel': u'Password',
-   'id': 'form-widgets-passwd',
-   'inputType': 'password',
-   'name': 'form.widgets.passwd',
-   'value': u'',
-   'xtype': 'textfield'}
-
-Here is a date widget
-
-  >>> pprint(config['items'][6])
-  {'fieldLabel': u'Birthday',
-   'id': 'form-widgets-birthDay',
-   'name': 'form.widgets.birthDay',
-   'value': u'',
-   'xtype': 'datefield'}
+  >>> pprint(config['items'][3])
+  {'editable': False,
+   'fieldLabel': u'Gender',
+   'hiddenName': 'form.widgets.gender:list',
+   'id': 'form-widgets-gender',
+   'name': 'form.widgets.gender',
+   'store': [('--NOVALUE--', u'no value'),
+             ('male', 'male'),
+             ('female', 'female')],
+   'triggerAction': 'all',
+   'value': (),
+   'xtype': 'combo'}
 
 Here is a radio group
 
@@ -349,8 +679,9 @@ Here is a radio group
               'name': 'form.widgets.isNice'}],
    'xtype': 'radiogroup'}
 
+
 Helper functions
-----------------
+-----------------
 
 It is sometimes the case that we want to provide information about an
 extjs component in a format that doesn't quite fit what extjs wants to
@@ -366,7 +697,7 @@ Buttons
 For example, we can get the set of buttons in either a dictionary
 based format (easy for rearraging) or a list format (the way extjs
 likes it).
-
+  >>> from z3c.formext import component
   >>> pprint(component.getButtonsConfig(myForm))
   {'save': {'id': 'form-buttons-save',
             'name': 'form.buttons.save',
@@ -388,26 +719,30 @@ This works just like buttons, except for widgets.
 
   >>> pprint(component.getWidgetsConfig(myForm)['isNice'])
   {'fieldLabel': u'Are you Nice?',
-   'id': 'form-widgets-isNice',
-   'items': [{'boxLabel': u'yes',
-              'checked': False,
-              'id': 'form-widgets-isNice-0',
-              'inputValue': 'true',
-              'name': 'form.widgets.isNice'},
-             {'boxLabel': u'no',
-              'checked': False,
-              'id': 'form-widgets-isNice-1',
-              'inputValue': 'false',
-              'name': 'form.widgets.isNice'}],
-   'xtype': 'radiogroup'}
+     'id': 'form-widgets-isNice',
+     'items': [{'boxLabel': u'yes',
+                'checked': False,
+                'id': 'form-widgets-isNice-0',
+                'inputValue': 'true',
+                'name': 'form.widgets.isNice'},
+               {'boxLabel': u'no',
+                'checked': False,
+                'id': 'form-widgets-isNice-1',
+                'inputValue': 'false',
+                'name': 'form.widgets.isNice'}],
+     'xtype': 'radiogroup'}
 
   >>> pprint(component.getWidgetsConfig(myForm, asDict=False)[0])
-  {'fieldLabel': u'ID',
+  {'allowBlank': False,
+   'fieldLabel': u'ID',
    'hidden': True,
    'id': 'form-widgets-id',
+   'itemCls': 'required',
+   'minLength': 0,
    'name': 'form.widgets.id',
    'value': u'',
    'xtype': 'textfield'}
+
 
 
 Custom Widget Component Factories
@@ -425,14 +760,17 @@ We can also specify custom components for widgets.
   ...         self.widgets['id'].componentFactory = MyComponent
 
   >>> myForm = ContactForm('context', TestRequest())
+  >>> myForm.update()
 
   >>> formPanel = interfaces.IExtJSComponent(myForm)
   >>> config = formPanel.getConfig()
   >>> pprint(config['items'][0])
-  {'disabled': True,
+  {'allowBlank': False,
+   'disabled': True,
    'fieldLabel': u'ID',
    'id': 'form-widgets-id',
+   'itemCls': 'required',
+   'minLength': 0,
    'name': 'form.widgets.id',
    'value': u'',
    'xtype': 'my-component'}
-

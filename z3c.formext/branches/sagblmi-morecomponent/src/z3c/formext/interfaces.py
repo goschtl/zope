@@ -23,6 +23,8 @@ import zope.schema
 from z3c.form.interfaces import ITextWidget
 from z3c.form.interfaces import ISingleCheckBoxWidget
 from z3c.form.interfaces import IForm
+from z3c.form.interfaces import IGroup
+from z3c.form.interfaces import IGroupForm
 from z3c.form.interfaces import IButton
 from z3c.form.interfaces import IButtonAction
 from z3c.form.interfaces import ISelectionManager
@@ -89,6 +91,20 @@ class IExtJSComponent(zope.interface.Interface):
 
 class IJSProperties(ISelectionManager):
     """A Selection Manager for JavaScript Properties"""
+
+
+class IExtJSGroup(IGroup):
+    """The EXTJS translation of a group of fiels/widgets within a form
+
+    see z3c.form.interfaces.IGroup
+    """
+
+
+class IExtJSGroupForm(IGroupForm):
+    """An extjs form that supports groups
+
+    see z3c.form.interfaces.IGroupForm
+    """
 
 
 class IExtJSForm(IAJAXRequestHandler, IForm):

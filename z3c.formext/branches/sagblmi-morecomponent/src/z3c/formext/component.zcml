@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c.formext">
+
+  <adapter
+      factory=".component.FormPanel"
+      />
+  <adapter
+      factory=".component.ExtFormPanel"
+      />
+
+  <!-- Adapt TextWidget -->
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IBytesLine"
+      />
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IASCIILine"
+      />
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.ITextLine"
+      />
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IId"
+      />
+  
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IDatetime"
+      />
+  
+  <adapter
+      factory=".component.TextField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.ITimedelta"
+      />
+  
+  <adapter
+      factory=".component.NumberField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IInt"
+      />
+  
+  <adapter
+      factory=".component.NumberField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IFloat"
+      />
+  
+  <adapter
+      factory=".component.NumberField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IDecimal"
+      />
+  
+  <adapter
+      factory=".component.DateField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IDate"
+      />
+  
+  <adapter
+      factory=".component.TimeField"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.ITime"
+      />
+  
+  <adapter
+      factory=".component.Password"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextWidget
+           zope.schema.interfaces.IPassword"
+      />
+
+  <!-- Adapt TextAreaWidget -->
+  <adapter
+      factory=".component.TextArea"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextAreaWidget
+           zope.schema.interfaces.IText"
+      />
+
+  <adapter
+      factory=".component.TextArea"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.ITextAreaWidget
+           zope.schema.interfaces.IASCII"
+      />
+
+  <!-- Radio Widget -->
+  <adapter
+      factory=".component.RadioGroup"
+      for="*
+           z3c.form.interfaces.IFormLayer
+           z3c.form.interfaces.IForm
+           z3c.form.interfaces.IRadioWidget
+           zope.schema.interfaces.IBool"
+      />
+  <!-- other widgets -->
+  <adapter
+      factory=".component.DateWidget"
+      />
+  <adapter
+      factory=".component.ComboBox"
+      />
+  <adapter
+      factory=".component.CheckBox"
+      />
+  <adapter
+      factory=".component.Button"
+      />
+  <adapter
+      factory=".component.ClientButton"
+      />
+
+
+</configure>
+
