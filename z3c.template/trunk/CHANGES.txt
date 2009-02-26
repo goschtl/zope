@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-1.2.0 (unreleased)
+1.2.1 (unreleased)
+------------------
+
+* ...
+
+1.2.0 (2009-02-26)
 ------------------
 
 * Add support for context-specific templates. Now, templates can be
