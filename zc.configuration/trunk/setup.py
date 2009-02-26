@@ -34,6 +34,6 @@ setup(
     install_requires = [
         'setuptools',
         'zope.testing',
-        'zope.configuration>=3.5.0dev',
+        'zope.configuration>=3.5.0',
         ],
     )
