@@ -24,7 +24,7 @@ setup(
     name = "zc.configuration",
     description = "Extensions to zope.configuration",
     long_description = long_description,
-    version = "1.1dev",
+    version = "1.2dev",
     license = "ZPL 1.1",
     packages = find_packages('src'),
     include_package_data = True,
