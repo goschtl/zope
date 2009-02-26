@@ -1,0 +1,238 @@
+==================
+JavaScript Modules
+==================
+
+When writing a big application built on top of ExtJS, you often don't
+want to load *all* the client JavaScript at the same time.  Instead,
+it is much better to load only the javascript necessary to run a
+particular part of the application.  Unfortunately, JavaScript itself
+has no concept of a module which can be imported as needed, so the
+server side application must provide this concept.
+
+Here we provide a ``jsmodule`` zcml directive that allows you to
+declare a javascript file as a module (and also as a versioned
+resource).  The idea is that by declaring a bunch of javascript
+modules up front, we can generate a dependency graph that can be sent
+to the client for use by a client side lazy module loader.
+
+Setup
+~~~~~
+
+In order to test the zcml directives, we have to do some setup.  First
+lets set the path to some of our testing files.
+
+  >>> import os.path
+  >>> import z3c.formext.tests
+  >>> modulesdir = os.path.join(
+  ...     os.path.dirname(z3c.formext.tests.__file__),
+  ...     'jsmodules')
+
+Since our jsmodules are just another incarnation of a versioned
+resource, we have to set up the version manager.
+
+  >>> from z3c.versionedresource import version
+  >>> manager = version.VersionManager('1.0.0')
+  >>> import zope.component
+  >>> zope.component.provideUtility(manager)
+
+Now we will create a resources view so we can traverse to the
+resources we will be creating.
+
+  >>> from zope.publisher.browser import TestRequest
+  >>> from z3c.versionedresource import resource
+  >>> request = TestRequest()
+  >>> context = object()
+  >>> resources = resource.Resources(context, request)
+
+Finally, we have to set up the zcml context by loading the meta.zcml
+file:
+
+  >>> from zope.configuration import xmlconfig
+  >>> import z3c.formext
+  >>> context = xmlconfig.file('meta.zcml', z3c.formext)
+
+
+ZCML Directive
+~~~~~~~~~~~~~~
+
+Simple Modules
+--------------
+
+Using the ``jsmodule`` directive, we can now register a javascript
+module.  All we need to specify is the file.
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:jsmodule
+  ...       file="%s"
+  ...       />
+  ... </configure>
+  ... """ % os.path.join(modulesdir, 'my.module.js') , context=context)
+
+We want all of our modules to have a namespace associated with them so
+they can be sanely referenced within the dependency graph and by the
+client-side lazy loader.  If we do not specify the ``namespace``
+attribute in the zcml, as we did in this case, then the namespace will
+be extracted from the file.  See the *Extracting Namespaces* section
+for how this works.  Now the javascript resource can be accessed using
+a name generated from the extracted namespace (which just happens to
+be the same as the file name.
+
+  >>> moduleResource = resources.publishTraverse(request, '1.0.0')\
+  ...                           .publishTraverse(request, 'my.module.js')
+
+The resource we get is just a plain FileResource object except that it
+contains some additional metadata used by the dependency graph
+generator.  In particular, we store the namespace and dependencies
+associated with this file resource.
+
+  >>> moduleResource
+  <FileResource u'.../z3c/formext/tests/jsmodules/my.module.js'>
+  >>> moduleResource.namespace
+  'my.module'
+  >>> moduleResource.dependencies
+  []
+  >>> moduleResource()
+  'http://127.0.0.1/@@/1.0.0/my.module.js'
+
+
+Modules with dependencies
+-------------------------
+
+We can also declar that a jsmodule has dependencies on other modules
+by specifying the ``dependencies`` attribute.
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:jsmodule
+  ...       file="%s"
+  ...       dependencies="my.module jQuery"
+  ...       />
+  ... </configure>
+  ... """ % os.path.join(modulesdir, 'my.other.js') , context=context)
+
+This attribtute gets converted into a list.
+
+  >>> moduleResource = resources.publishTraverse(request, '1.0.0')\
+  ...                           .publishTraverse(request, 'my.other.js')
+  >>> moduleResource.dependencies
+  [u'my.module', u'jQuery']
+
+
+Third Party Modules
+-------------------
+
+In cases where we are using third party libraries which do not have
+namespaces defined within the file.  We must specify the namespace
+manually.  One example where the namespace extraction won't work is
+for jQuery.  If the namespace extraction fails and we do not specify a
+namepsace manually, we get a configuration error:
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:jsmodule
+  ...       file="%s"
+  ...       />
+  ... </configure>
+  ... """ % os.path.join(modulesdir, 'thirdParty.js') , context=context)
+  Traceback (most recent call last):
+  ...
+  ZopeXMLConfigurationError: File "<string>", line 4.2-6.8
+      ConfigurationError: No namespace was specified and no namespace could be extracted
+
+We know however that jQuery uses the ``jQuery`` namespace so we can
+declare that manually and no namespace extraction will be attempted.
+
+  >>> context = xmlconfig.string("""
+  ... <configure
+  ...     xmlns:z3c="http://namespaces.zope.org/z3c">
+  ...   <z3c:jsmodule
+  ...       file="%s"
+  ...       namespace="jQuery"
+  ...       />
+  ... </configure>
+  ... """ % os.path.join(modulesdir, 'thirdParty.js') , context=context)
+  >>> resources.publishTraverse(request, '1.0.0')\
+  ...          .publishTraverse(request, 'jQuery.js')()
+  'http://127.0.0.1/@@/1.0.0/jQuery.js'
+
+Note that the name of the resource is based on the namespace and *not*
+the filename.  You can also specify a ``name`` attribtue manually, but
+this is not recommended.
+
+Listing ``JSModule``s
+---------------------
+
+Now that we have a couple JavaScript modules registered, we can get a
+list of all the modules pretty easily:
+
+  >>> import zope.component
+  >>> from z3c.formext import interfaces
+  >>> for name, resource in zope.component.getAdapters((request,), interfaces.IJSModule):
+  ...   print resource.namespace.ljust(10), str(resource.dependencies).ljust(25), resource()
+  jQuery     []                        http://127.0.0.1/@@/1.0.0/jQuery.js
+  my.module  []                        http://127.0.0.1/@@/1.0.0/my.module.js
+  my.other   [u'my.module', u'jQuery'] http://127.0.0.1/@@/1.0.0/my.other.js
+
+The ``JSModulesViewlet``
+------------------------
+
+We can also render a viewlet that makes all the jsmodule information
+available on the client.
+
+  >>> from z3c.formext import jsmodule
+  >>> viewlet = jsmodule.JSModulesViewlet(
+  ...     'fake context', request,
+  ...     'fake view','fake manager')
+  >>> print viewlet.render()
+  <script type="text/javascript">Ext.ns("z3c.formext"); z3c.formext.JS_MODULES = {"jQuery": {"url": "http://127.0.0.1/@@/1.0.0/jQuery.js", "dependencies": [], "requires": [], "name": "jQuery", "scripts": ["http://127.0.0.1/@@/1.0.0/jQuery.js"]}, "my.other": {"url": "http://127.0.0.1/@@/1.0.0/my.other.js", "dependencies": ["my.module", "jQuery"], "requires": ["my.module", "jQuery"], "name": "my.other", "scripts": ["http://127.0.0.1/@@/1.0.0/my.other.js"]}, "my.module": {"url": "http://127.0.0.1/@@/1.0.0/my.module.js", "dependencies": [], "requires": [], "name": "my.module", "scripts": ["http://127.0.0.1/@@/1.0.0/my.module.js"]}};for (pkg in z3c.formext.JS_MODULES){z3c.formext.ModuleLoader.register(z3c.formext.JS_MODULES[pkg]);}</script>
+
+
+Extracting Namespaces
+~~~~~~~~~~~~~~~~~~~~~
+
+In ExtJS, we can declare namespaces using the ``Ext.ns`` or
+``Ext.namespace`` functions.  Namespaces for JavaScript modules are
+extracted by looking for these patterns in the JavaScript file.
+
+  >>> from z3c.formext import zcml
+
+Here we test the usage of Ext.ns with double quotes,
+
+  >>> import re
+  >>> contents = """
+  ... Ext.ns("my.module");
+  ... """
+  >>> match = re.search(zcml.EXTNamespaceRE, contents)
+  >>> print contents[match.start(): match.end()]
+  my.module
+
+and single quotes:
+
+  >>> contents = """
+  ... Ext.ns('my.module');
+  ... """
+  >>> match = re.search(zcml.EXTNamespaceRE, contents)
+  >>> print contents[match.start(): match.end()]
+  my.module
+
+Here we test the usage of Ext.namespace with double quotes,
+
+  >>> contents = """
+  ... Ext.namespace("my.module");
+  ... """
+  >>> match = re.search(zcml.EXTNamespaceRE, contents)
+  >>> print contents[match.start(): match.end()]
+  my.module
+
+and single quotes:
+
+  >>> contents = """
+  ... Ext.namespace('my.module');
+  ... """
+  >>> match = re.search(zcml.EXTNamespaceRE, contents)
+  >>> print contents[match.start(): match.end()]
+  my.module
