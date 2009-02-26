@@ -24,7 +24,7 @@ setup(
     name = "zc.configuration",
     description = "Extensions to zope.configuration",
     long_description = long_description,
-    version = "1.0",
+    version = "1.1dev",
     license = "ZPL 1.1",
     packages = find_packages('src'),
     include_package_data = True,
@@ -34,6 +34,6 @@ setup(
     install_requires = [
         'setuptools',
         'zope.testing',
-        'zope.configuration',
+        'zope.configuration>=3.5.0dev',
         ],
     )

@@ -1,14 +1,18 @@
 Configuration Extensions for Filtering or Inhibiting Configuration
 ==================================================================
 
-The zc.configuration package provides some configuration directives
-for inhibiting configuration.  The first of these is the exclude
-directive.  It is used to exclude processing of configuration
-files. It is useful when including a configuration that includes some
-other configuration that you don't want.  It must be used before
-including the files to be excluded.
+The zc.configuration package used to provide the ``exclude`` directive
+for inhibiting configuration. It was included in the zope.configuration
+and this package currently provides a backward-compatibility imports
+and tests that ensure that it will work for people who are already
+using zc.configuration and not the newer zope.configuration.
 
-First, let's look at an example.  The zope.configuration.demo package
+This package may contain more configuration extensions in future, but
+currently, it's not useful anymore as the only feature it provided,
+the ``exclude`` directive was merged into the original
+``zope.configuration`` package.
+
+First, let's look at an example.  The zc.configuration.demo package
 has a ZCML configuration that includes some other configuration files.
 
 We'll set a log handler so we can see what's going on:
