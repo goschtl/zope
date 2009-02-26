@@ -22,13 +22,11 @@ from rwproperty import getproperty, setproperty
 import zope.interface
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.i18n import translate
-from zope.pagetemplate.interfaces import IPageTemplate
 from zope.schema.fieldproperty import FieldProperty
 from zope.security.proxy import removeSecurityProxy
 
 import z3c.form.form
 from z3c.form.button import Button, Buttons
-from z3c.form.button import ButtonAction
 from z3c.form.button import ButtonAction
 from z3c.form.interfaces import IFormLayer
 from z3c.form.util import SelectionManager
@@ -73,21 +71,17 @@ def dependencyWrap(dep):
             '    %%s\n'
             '  });' % dep)
 
+
 class ScriptProvider(object):
 
     script = ''
     scriptDependencies = ()
 
     @property
-    def scriptTag(self):
-        tagWrap = '<script type="text/javascript" language="Javascript">\n%s\n</script>'
+    def scriptCode(self):
         closureWrap = '  (function(){\n%s\n})();'
-
-        depWraps = '%s'
-        for dep in self.scriptDependencies:
-            depWraps = depWraps % dependencyWrap(dep)
-
         script = self.script
+
         if hasattr(script, '__call__'):
             #this is a page template.
             script = script()
@@ -97,8 +91,15 @@ class ScriptProvider(object):
             jsVars = '\n'.join(['    var %s=%s;' % (name,
                 jsonEncode(prop(self), context=self.request))
                                 for name, prop in self.jsproperties.items()])
+        depWraps = '%s'
+        for dep in self.scriptDependencies:
+            depWraps = depWraps % dependencyWrap(dep)
+        return closureWrap % (depWraps % ('%s\n%s' % (jsVars, script)))
 
-        return tagWrap % (closureWrap % (depWraps % ('%s\n%s' % (jsVars, script))))
+    @property
+    def scriptTag(self):
+        tagWrap = '<script type="text/javascript" language="Javascript">\n%s\n</script>'
+        return tagWrap % (self.scriptCode)
 
 
 class ScriptPagelet(ScriptProvider, AJAXRequestHandler, BrowserPagelet):
