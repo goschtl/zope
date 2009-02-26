@@ -53,6 +53,8 @@ def run_zope2(config, port):
     # overrides when using zopectl?
     original_start = Zope2.Startup.zopectl.ZopeCmd.do_start
     def do_start_port(self, arg):
+        self.options.zdrun = os.path.join(os.path.dirname(os.path.dirname(Zope2.__file__)),
+                                          'zdaemon', 'zdrun.py')
         self.options.program[1:1] = ["-X", "http-server/address=" + port]
         original_start(self, arg)
     Zope2.Startup.zopectl.ZopeCmd.do_start = do_start_port
