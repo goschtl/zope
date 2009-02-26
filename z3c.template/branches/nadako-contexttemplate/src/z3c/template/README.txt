@@ -435,12 +435,13 @@ Now, let's provide a (view, request, context) adapter using TemplateFactory.
   >>> factory = TemplateFactory(contextTemplate, 'text/html')
 
   >>> component.provideAdapter(factory,
-  ...     (IUseOfViewTemplate, IDefaultBrowserLayer, IContent), IPageTemplate)
+  ...     (IUseOfViewTemplate, IDefaultBrowserLayer, IContent),
+  ...     interfaces.IContentTemplate)
 
 First. Let's try to simply get it as a multi-adapter.
 
   >>> template = zope.component.getMultiAdapter((view, request, content),
-  ...                 interfaces.IPageTemplate)
+  ...                 interfaces.IContentTemplate)
   >>> print template(view)
   <div>context-specific</div>
 
