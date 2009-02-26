@@ -392,9 +392,8 @@ system with all existing implementations such as `zope.formlib` and
   ...         self.context = context
   ...         self.request = request
 
-By defining the "template" property as a "RegisteredPageTemplate" a lookup for
-a registered template is done when it is called. Also notice that it is no
-longer necessary to derive the view from BaseView!
+By defining the "template" property as a "getPageTemplate" a lookup for
+a registered template is done when it is called.
 
   >>> simple = UseOfViewTemplate(root, request)
   >>> print simple.template()
@@ -402,7 +401,7 @@ longer necessary to derive the view from BaseView!
 
 Because the demo template was registered for any ("None") interface we see the
 demo template when rendering our new view. We register a new template
-especially for the new view. Also not that the "macroTemplate" has been
+especially for the new view. Also note that the "macroTemplate" has been
 created earlier in this test.
 
   >>> factory = TemplateFactory(contentTemplate, 'text/html')
