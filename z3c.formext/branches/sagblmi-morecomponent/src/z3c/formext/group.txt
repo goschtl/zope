@@ -239,7 +239,7 @@ Let's create a FormPanel with 1 fieldset and 2 tabs
   >>> class TabGroup(Group):
   ...     groups = (LicenseGroup, CarGroup)
 
-  >>> class RegistrationTabForm(group.ExtJSGroupForm, testing.TestingForm, form.ExtJSForm):
+  >>> class ComplexRegistrationForm(group.ExtJSGroupForm, testing.TestingForm, form.ExtJSForm):
   ...     ignoreContext = True
   ...     groups = (PersonFieldset, TabGroup)
   ...
@@ -272,9 +272,9 @@ Let's create a FormPanel with 1 fieldset and 2 tabs
   >>> zope.component.provideAdapter(FieldsetAdapter)
   >>> zope.component.provideAdapter(TabAdapter)
   
-  >>> tabForm = RegistrationTabForm(None, request)
-  >>> tabForm.update()
-  >>> pprint(interfaces.IExtJSComponent(tabForm).getConfig())
+  >>> complexForm = ComplexRegistrationForm(None, request)
+  >>> complexForm.update()
+  >>> pprint(interfaces.IExtJSComponent(complexForm).getConfig())
   {'ajaxHandlers': {'form-buttons-save': 'http://127.0.0.1/index.html/@@ajax/save'},                        
   'buttons': [{'handler': {'success': 'handleSave'},                                                       
                'id': 'form-buttons-save',                                                                  
