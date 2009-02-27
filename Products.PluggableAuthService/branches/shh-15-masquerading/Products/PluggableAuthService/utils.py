@@ -210,3 +210,19 @@ def createKeywords(**kw):
 
     return {'keywords': keywords.hexdigest()}
 
+#
+#   Masquerading helpers
+#
+_MASQ = '/'
+
+def splitmasq( user_id ):
+    if user_id is not None:
+        if user_id.find(_MASQ) > 0:
+            return user_id.split(_MASQ, 1)
+    return user_id, None
+
+def joinmasq( auth_user_id, role_user_id ):
+    if None in (auth_user_id, role_user_id):
+        return auth_user_id
+    return _MASQ.join((auth_user_id, role_user_id))
+
