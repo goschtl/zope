@@ -1,0 +1,33 @@
+=======
+CHANGES
+=======
+
+1.0.3 (2009-02-27)
+------------------
+
+* Allow use of ``z3c.pt`` using ``z3c.ptcompat`` compatibility layer.
+
+* Add support for context-specific layout and content template lookup,
+  using (view, request, context) discriminator. This is compatible with
+  context-specific templates introduced in z3c.template 1.2.0. 
+
+* Don't do rendering in pagelet's __call__ method when request is a redirection.
+
+* Add sphinx-based HTML documentation building part to the buildout.
+
+
+1.0.2 (2008-01-21)
+------------------
+
+* Added a `form.zcml` which can be included to have a template for
+  ``PageletAddForm``, ``PageletEditForm`` and ``PageletDisplayForm``.
+
+
+1.0.1 (2007-10-08)
+------------------
+
+* Added ``update()`` and ``render()`` method to ``IPagelet`` which was
+  not specified but used.
+
+* Fixed a infinite recursion bug when a layout template was registered for "*"
+  but no content template was registered for a pagelet.
