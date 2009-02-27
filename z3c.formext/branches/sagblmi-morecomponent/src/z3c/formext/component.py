@@ -130,6 +130,7 @@ class TimeField(TextField):
 
     xtype = 'timefield'
 
+
 class NumberField(TextField):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(
@@ -443,16 +444,8 @@ class ExtFormPanel(FormPanel):
                         absoluteURL(self.form, self.form.request), name)
         if hasattr(self.form, 'ownerCt'):
             config['ownerCt'] = self.form.ownerCt
-        return config
-
-
-class ExtGroupFormPanel(ExtFormPanel):
-    zope.interface.implements(interfaces.IExtJSComponent)
-    zope.component.adapts(interfaces.IExtJSGroupForm)
-
-    def _getConfig(self, json=False):
-        config = super(ExtGroupFormPanel, self)._getConfig()
-        items = config.get("items", [])
-        items += getGroupsConfig(self.form, json)
-        config['items'] = items
+        if hasattr(self.form, 'groups'):
+            items = config.get("items", [])
+            items += getGroupsConfig(self.form, json)
+            config['items'] = items
         return config

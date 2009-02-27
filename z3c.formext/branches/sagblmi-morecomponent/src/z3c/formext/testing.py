@@ -108,7 +108,6 @@ def setupExtJSComponents():
     zope.component.provideAdapter(component.GroupPanel)
     zope.component.provideAdapter(component.FormPanel)
     zope.component.provideAdapter(component.ExtFormPanel)
-    zope.component.provideAdapter(component.ExtGroupFormPanel)
     zope.component.provideAdapter(component.Button)
     zope.component.provideAdapter(component.ClientButton)
     zope.component.provideAdapter(form.ClientButtonAction,

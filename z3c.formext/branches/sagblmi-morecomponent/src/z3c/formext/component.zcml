@@ -17,9 +17,8 @@
       factory=".component.ExtFormPanel"
       />
   <adapter
-      factory=".component.ExtGroupFormPanel"
+      factory=".component.SimpleFiedWidgetFactory"
       />
-
 
   <!-- Adapt TextWidget -->
   <adapter
