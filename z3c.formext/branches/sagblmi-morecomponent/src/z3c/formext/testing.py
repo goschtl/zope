@@ -28,6 +28,7 @@ from z3c.form.interfaces import ITextAreaWidget
 from z3c.form.interfaces import ISelectWidget
 from z3c.form.interfaces import ISingleCheckBoxWidget
 from z3c.form.interfaces import IRadioWidget
+from z3c.form.form import BaseForm
 
 from z3c.form.testing import setupFormDefaults
 from z3c.formext import component, form, converter, interfaces
@@ -103,8 +104,11 @@ def setupExtJSComponents():
             (None, None, None,
                 ISingleCheckBoxWidget, zope.schema.interfaces.IField),
             interfaces.IExtJSComponent)
+    zope.component.provideAdapter(component.Panel)
+    zope.component.provideAdapter(component.GroupPanel)
     zope.component.provideAdapter(component.FormPanel)
     zope.component.provideAdapter(component.ExtFormPanel)
+    zope.component.provideAdapter(component.ExtGroupFormPanel)
     zope.component.provideAdapter(component.Button)
     zope.component.provideAdapter(component.ClientButton)
     zope.component.provideAdapter(form.ClientButtonAction,
@@ -115,6 +119,7 @@ def setupFormExt():
     setupExtJSComponents()
     setupFormDefaults()
     setupTraversing()
+    zope.interface.classImplements(BaseForm, interfaces.IBaseForm)
     zope.component.provideAdapter(converter.ExtJSDateDataConverter)
     zope.component.provideAdapter(converter.ExtJSSingleCheckBoxDataConverter)
 

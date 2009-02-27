@@ -1,0 +1,352 @@
+ExtJS Group Form Integration
+============================
+
+This package also provides a tight integration between z3c.form.group -
+which allow you to split up a form into selevral logical units (See
+z3c.form.group), and Ext JS forms which provide an advanced client side form
+model.
+
+For the example work, we have to bring a most of the formext framework:
+
+  >>> from z3c.formext import testing
+  >>> testing.setupFormExt()
+  
+  >>> from z3c.formext import form, group, interfaces
+
+So let's first define a complex content component that warrants setting up
+multiple groups:
+
+  >>> from zope.interface import Interface
+  >>> from zope.interface import implements
+  >>> import zope.schema
+
+  >>> class IVehicleRegistration(Interface):
+  ...     firstName = zope.schema.TextLine(title=u'First Name')
+  ...     lastName = zope.schema.TextLine(title=u'Last Name')
+  ...
+  ...     license = zope.schema.TextLine(title=u'License')
+  ...     address = zope.schema.TextLine(title=u'Address')
+  ...
+  ...     model = zope.schema.TextLine(title=u'Model')
+  ...     make = zope.schema.TextLine(title=u'Make')
+  ...     year = zope.schema.TextLine(title=u'Year')
+
+  >>> class VehicleRegistration(object):
+  ...     implements(IVehicleRegistration)
+  ...
+  ...     def __init__(self, **kw):
+  ...         for name, value in kw.items():
+  ...             setattr(self, name, value)
+
+The schema above can be separated into basic, license, and car information,
+where the latter two will be placed into groups. First we create the two
+groups:
+
+  >>> from z3c.form import field
+  >>> from z3c.form.group import Group
+
+  >>> class LicenseGroup(Group):
+  ...     label = u'License'
+  ...     fields = field.Fields(IVehicleRegistration).select(
+  ...         'license', 'address')
+
+  >>> class CarGroup(Group):
+  ...     label = u'Car'
+  ...     fields = field.Fields(IVehicleRegistration).select(
+  ...         'model', 'make', 'year')
+
+Most of the group is setup like any other (sub)form. Additionally, you can
+specify a label, which is a human-readable string that can be used for layout
+purposes.
+
+Let's now create an extjs form for the entire vehicle registration. In
+comparison to a regular form, you only need to add the ``ExtJSGroupForm``
+as one of the base classes. The groups are specified in a simple tuple:
+
+  >>> class RegistrationForm(group.ExtJSGroupForm, testing.TestingForm, form.ExtJSForm):
+  ...     ignoreContext = True
+  ...     fields = field.Fields(IVehicleRegistration).select(
+  ...         'firstName', 'lastName')
+  ...     groups = (LicenseGroup, CarGroup)
+  ...
+  ...     @form.buttonAndHandler(title=u'Save', success='handleSave')
+  ...     def handleSave(self):
+  ...         pass
+
+
+Note: The order of the base classes is very important here. The ``ExtJSGroupForm``
+class must be left of the ``ExtJSForm`` class, because the ``ExtJSGroupForm`` class
+overrides some methods of the ``ExtJSForm`` class.
+
+Now we can instantiate the form:
+
+  >>> request = testing.TestRequest()
+
+  >>> myForm = RegistrationForm(None, request)
+  >>> myForm.update()
+
+After the form is updated the tuple of group classes is converted to group
+instances:
+
+  >>> myForm.groups
+  (<LicenseGroup object at ...>, <CarGroup object at ...>)
+
+If we happen to update the form again, the groups that have
+already been converted to instances ares skipped.
+
+  >>> myForm.update()
+  >>> myForm.groups
+  (<LicenseGroup object at ...>, <CarGroup object at ...>)
+
+So far, everything works as in z3c.form except base classes.
+
+Now we can invoke the form and try to extract the data.
+   
+   >>> data, errors = myForm.extractData()
+
+Since we have not entered in any data, there will be errors.
+
+   >>> len(errors)
+   7
+
+As other ExtJSForm, error are propafated to the client side as a json response.
+
+  >>> from pprint import pprint
+  >>> pprint(myForm.jsonResponse)
+  {'errors': {'form-widgets-address': u'Required input is missing.',
+              'form-widgets-firstName': u'Required input is missing.',
+              'form-widgets-lastName': u'Required input is missing.',
+              'form-widgets-license': u'Required input is missing.',
+              'form-widgets-make': u'Required input is missing.',
+              'form-widgets-model': u'Required input is missing.',
+              'form-widgets-year': u'Required input is missing.'},
+   'formErrors': [],
+   'success': False}
+
+We can now get the form definition
+
+  >>> pprint(interfaces.IExtJSComponent(myForm).getConfig()['items'])
+  [{'allowBlank': False,                                                                                    
+      'fieldLabel': u'First Name',                                                                            
+      'id': 'form-widgets-firstName',                                                                         
+      'itemCls': 'required',                                                                                  
+      'minLength': 0,                                                                                         
+      'name': 'form.widgets.firstName',                                                                       
+      'value': u'',                                                                                           
+      'xtype': 'textfield'},                                                                                  
+     {'allowBlank': False,                                                                                    
+      'fieldLabel': u'Last Name',                                                                             
+      'id': 'form-widgets-lastName',                                                                          
+      'itemCls': 'required',                                                                                  
+      'minLength': 0,                                                                                         
+      'name': 'form.widgets.lastName',
+      'value': u'',
+      'xtype': 'textfield'},
+     {'items': [{'allowBlank': False,
+                 'fieldLabel': u'License',
+                 'id': 'form-widgets-license',
+                 'itemCls': 'required',
+                 'minLength': 0,
+                 'name': 'form.widgets.license',
+                 'value': u'',
+                 'xtype': 'textfield'},
+                {'allowBlank': False,
+                 'fieldLabel': u'Address',
+                 'id': 'form-widgets-address',
+                 'itemCls': 'required',
+                 'minLength': 0,
+                 'name': 'form.widgets.address',
+                 'value': u'',
+                 'xtype': 'textfield'}],
+      'title': u'License',
+      'xtype': 'panel'},
+     {'items': [{'allowBlank': False,
+                 'fieldLabel': u'Model',
+                 'id': 'form-widgets-model',
+                 'itemCls': 'required',
+                 'minLength': 0,
+                 'name': 'form.widgets.model',
+                 'value': u'',
+                 'xtype': 'textfield'},
+                {'allowBlank': False,
+                 'fieldLabel': u'Make',
+                 'id': 'form-widgets-make',
+                 'itemCls': 'required',
+                 'minLength': 0,
+                 'name': 'form.widgets.make',
+                 'value': u'',
+                 'xtype': 'textfield'},
+                {'allowBlank': False,
+                 'fieldLabel': u'Year',
+                 'id': 'form-widgets-year',
+                 'itemCls': 'required',
+                 'minLength': 0,
+                 'name': 'form.widgets.year',
+                 'value': u'',
+                 'xtype': 'textfield'}],
+      'title': u'Car',
+      'xtype': 'panel'}]
+
+
+Ext JS provide a lot of way to support grouping fields.
+
+ * Panel
+ * TabPanel
+ * FieldSet
+
+By default, group are rendered as 'panel'
+
+  >>> interfaces.IExtJSComponent(myForm.groups[0])._getConfig()['xtype']
+  'panel'
+
+You can override this attribute by providing an adapter for IExtJSConfigValue
+
+  >>> class ConfigAdapter(object):
+  ...     zope.component.adapts(zope.interface.Interface,
+  ...           zope.interface.Interface,  LicenseGroup)
+  ...     zope.interface.implements(interfaces.IExtJSConfigValue)
+  ...
+  ...     def __init__(self, context, request, form):
+  ...         pass
+  ...
+  ...     def get(self):
+  ...         return dict(xtype='tabpanel')
+  >>> zope.component.provideAdapter(ConfigAdapter)
+  >>> interfaces.IExtJSComponent(myForm.groups[0])._getConfig()['xtype']
+  'tabpanel'
+
+Only the LicenseGroup class is affected by the adapter
+  >>> interfaces.IExtJSComponent(myForm.groups[1])._getConfig()['xtype']
+  'panel'
+
+  >>> from zope.component import getGlobalSiteManager
+  >>> gsm = getGlobalSiteManager()
+  >>> gsm.unregisterAdapter(ConfigAdapter)
+  True
+
+You can use the same strategy to provide additional attributes for each object
+implementing ``z3c.form.interfaces.IForm``
+
+By mixing Nested group and IExtJSComponent adapters you can build complex Extjs
+form. 
+
+Let's create a FormPanel with 1 fieldset and 2 tabs
+  >>> class PersonFieldset(Group):
+  ...     label = 'Person'
+  ...     fields = field.Fields(IVehicleRegistration).select(
+  ...         'firstName', 'lastName')
+
+  >>> class TabGroup(Group):
+  ...     groups = (LicenseGroup, CarGroup)
+
+  >>> class RegistrationTabForm(group.ExtJSGroupForm, testing.TestingForm, form.ExtJSForm):
+  ...     ignoreContext = True
+  ...     groups = (PersonFieldset, TabGroup)
+  ...
+  ...     @form.buttonAndHandler(title=u'Save', success='handleSave')
+  ...     def handleSave(self):
+  ...         pass
+  
+  >>> class TabAdapter(object):
+  ...     zope.component.adapts(zope.interface.Interface,
+  ...           zope.interface.Interface,  TabGroup)
+  ...     zope.interface.implements(interfaces.IExtJSConfigValue)
+  ...
+  ...     def __init__(self, context, request, form):
+  ...         pass
+  ...
+  ...     def get(self):
+  ...         return dict(xtype='tabpanel')
+  
+  >>> class FieldsetAdapter(object):
+  ...     zope.component.adapts(zope.interface.Interface,
+  ...           zope.interface.Interface,  PersonFieldset)
+  ...     zope.interface.implements(interfaces.IExtJSConfigValue)
+  ...
+  ...     def __init__(self, context, request, form):
+  ...         pass
+  ...
+  ...     def get(self):
+  ...         return dict(xtype='fieldset')
+  
+  >>> zope.component.provideAdapter(FieldsetAdapter)
+  >>> zope.component.provideAdapter(TabAdapter)
+  
+  >>> tabForm = RegistrationTabForm(None, request)
+  >>> tabForm.update()
+  >>> pprint(interfaces.IExtJSComponent(tabForm).getConfig())
+  {'ajaxHandlers': {'form-buttons-save': 'http://127.0.0.1/index.html/@@ajax/save'},                        
+  'buttons': [{'handler': {'success': 'handleSave'},                                                       
+               'id': 'form-buttons-save',                                                                  
+               'name': 'form.buttons.save',                                                                
+               'text': u'Save',                                                                            
+               'title': u'Save',                                                                           
+               'url': 'http://127.0.0.1/index.html/@@ajax/save',                                           
+               'xtype': 'button'}],                                                                        
+  'id': 'form',                                                                                            
+  'items': [{'items': [{'allowBlank': False,                                                               
+                        'fieldLabel': u'First Name',                                                       
+                        'id': 'form-widgets-firstName',                                                    
+                        'itemCls': 'required',                                                             
+                        'minLength': 0,                                                                    
+                        'name': 'form.widgets.firstName',                                                  
+                        'value': u'',                                                                      
+                        'xtype': 'textfield'},                                                             
+                       {'allowBlank': False,                                                               
+                        'fieldLabel': u'Last Name',                                                        
+                        'id': 'form-widgets-lastName',                                                     
+                        'itemCls': 'required',                                                             
+                        'minLength': 0,                                                                    
+                        'name': 'form.widgets.lastName',                                                   
+                        'value': u'',                                                                      
+                        'xtype': 'textfield'}],                                                            
+             'title': 'Person',                                                                            
+             'xtype': 'fieldset'},                                                                         
+            {'items': [{'items': [{'allowBlank': False,
+                                   'fieldLabel': u'License',
+                                   'id': 'form-widgets-license',
+                                   'itemCls': 'required',
+                                   'minLength': 0,
+                                   'name': 'form.widgets.license',
+                                   'value': u'',
+                                   'xtype': 'textfield'},
+                                  {'allowBlank': False,
+                                   'fieldLabel': u'Address',
+                                   'id': 'form-widgets-address',
+                                   'itemCls': 'required',
+                                   'minLength': 0,
+                                   'name': 'form.widgets.address',
+                                   'value': u'',
+                                   'xtype': 'textfield'}],
+                        'title': u'License',
+                        'xtype': 'panel'},
+                       {'items': [{'allowBlank': False,
+                                   'fieldLabel': u'Model',
+                                   'id': 'form-widgets-model',
+                                   'itemCls': 'required',
+                                   'minLength': 0,
+                                   'name': 'form.widgets.model',
+                                   'value': u'',
+                                   'xtype': 'textfield'},
+                                  {'allowBlank': False,
+                                   'fieldLabel': u'Make',
+                                   'id': 'form-widgets-make',
+                                   'itemCls': 'required',
+                                   'minLength': 0,
+                                   'name': 'form.widgets.make',
+                                   'value': u'',
+                                   'xtype': 'textfield'},
+                                  {'allowBlank': False,
+                                   'fieldLabel': u'Year',
+                                   'id': 'form-widgets-year',
+                                   'itemCls': 'required',
+                                   'minLength': 0,
+                                   'name': 'form.widgets.year',
+                                   'value': u'',
+                                   'xtype': 'textfield'}],
+                        'title': u'Car',
+                        'xtype': 'panel'}],
+             'xtype': 'tabpanel'}],
+  'submitURL': 'http://127.0.0.1',
+  'xtype': 'formpanel'}
+

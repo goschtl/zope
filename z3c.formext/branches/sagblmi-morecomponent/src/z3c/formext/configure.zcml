@@ -1,8 +1,14 @@
+<?xml version="1.0"?>
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c">
 
+  <!-- Add marker interface on BaseForm -->
+  <class class="z3c.form.form.BaseForm">
+      <implements
+          interface=".interfaces.IBaseForm"/>
+  </class>
 
   <!-- Data Converters -->
   <adapter

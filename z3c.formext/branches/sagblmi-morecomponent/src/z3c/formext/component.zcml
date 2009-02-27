@@ -5,11 +5,21 @@
     i18n_domain="z3c.formext">
 
   <adapter
+      factory=".component.Panel"
+      />
+  <adapter
+      factory=".component.GroupPanel"
+      />
+  <adapter
       factory=".component.FormPanel"
       />
   <adapter
       factory=".component.ExtFormPanel"
       />
+  <adapter
+      factory=".component.ExtGroupFormPanel"
+      />
+
 
   <!-- Adapt TextWidget -->
   <adapter

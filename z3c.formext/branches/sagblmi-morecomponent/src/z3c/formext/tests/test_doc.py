@@ -61,4 +61,11 @@ def test_suite():
             optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
             ),
 
+        doctest.DocFileSuite(
+            '../group.txt',
+            setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+            optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS,
+            ),
+
+
         ))

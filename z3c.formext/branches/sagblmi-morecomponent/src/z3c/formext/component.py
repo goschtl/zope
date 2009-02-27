@@ -24,6 +24,7 @@ from zope.traversing.browser.absoluteurl import absoluteURL
 
 from z3c.form.interfaces import IDataConverter
 from z3c.form.interfaces import IForm, DISPLAY_MODE, HIDDEN_MODE
+from z3c.form.interfaces import IGroup
 from z3c.form.interfaces import IRadioWidget, IButtonAction
 from z3c.form.interfaces import IWidget
 from z3c.form.interfaces import ITextAreaWidget
@@ -330,20 +331,28 @@ def getWidgetsConfig(form, asDict=True):
     return widgets
 
 
-class FormPanel(Component):
+def getGroupsConfig(form, json=False):
+    items = []
+    if form.groups:
+        for group in form.groups:
+            groupComponent = interfaces.IExtJSComponent(group)
+            groupConfig = groupComponent._getConfig(json)
+            items.append(groupConfig)
+    return items
+
+
+class Panel(Component):
     zope.interface.implements(interfaces.IExtJSComponent)
     zope.component.adapts(IForm)
 
-    xtype = 'formpanel'
+    xtype = 'panel'
 
     def __init__(self, form):
         self.form = form
 
     def _getConfig(self, json=False):
         config = dict(
-            xtype=self.xtype,
-            id=self.form.id,
-            submitURL=self.form.action)
+            xtype=self.xtype)
         if self.form.label:
             config['title'] = self.form.label
         if not self.form.widgets:
@@ -351,13 +360,42 @@ class FormPanel(Component):
         items = getWidgetsConfig(self.form, asDict=False)
         if items:
             config['items'] = items
+        if hasattr(self.form, 'renderTo'):
+            config['renderTo'] = self.form.renderTo
+        #update config
+        cfg = zope.component.queryMultiAdapter(
+                (self.form.context, self.form.request, self.form),
+                interfaces.IExtJSConfigValue)
+        if cfg:
+            config.update(cfg.get())
+        return config
 
+
+class GroupPanel(Panel):
+    zope.interface.implements(interfaces.IExtJSComponent)
+    zope.component.adapts(IGroup)
+
+    def _getConfig(self, json=False):
+        config = super(GroupPanel, self)._getConfig(json)
+        items = config.get("items", [])
+        items += getGroupsConfig(self.form, json)
+        config['items'] = items
+        return config
+
+
+class FormPanel(Panel):
+    zope.interface.implements(interfaces.IExtJSComponent)
+    zope.component.adapts(interfaces.IBaseForm)
+
+    xtype = 'formpanel'
+
+    def _getConfig(self, json=False):
+        config = super(FormPanel, self)._getConfig(json)
+        config['id'] = self.form.id
+        config['submitURL'] = self.form.action
         buttons = getButtonsConfig(self.form, asDict=False)
         if buttons:
             config['buttons'] = buttons
-        if hasattr(self.form, 'renderTo'):
-            config['renderTo'] = self.form.renderTo
-
         return config
 
 
@@ -412,4 +450,16 @@ class ExtFormPanel(FormPanel):
                         absoluteURL(self.form, self.form.request), name)
         if hasattr(self.form, 'ownerCt'):
             config['ownerCt'] = self.form.ownerCt
+        return config
+
+
+class ExtGroupFormPanel(ExtFormPanel):
+    zope.interface.implements(interfaces.IExtJSComponent)
+    zope.component.adapts(interfaces.IExtJSGroupForm)
+
+    def _getConfig(self, json=False):
+        config = super(ExtGroupFormPanel, self)._getConfig()
+        items = config.get("items", [])
+        items += getGroupsConfig(self.form, json)
+        config['items'] = items
         return config

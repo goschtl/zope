@@ -604,11 +604,9 @@ from z3c.form.
 Now we can look more closely at what we actually get
 
   >>> config['xtype']
-  'formpanel'
+  'panel'
   >>> config['title']
   u'My Contact Form'
-  >>> config['id']
-  'form'
   >>> config['renderTo']
   'my-dom-id'
 

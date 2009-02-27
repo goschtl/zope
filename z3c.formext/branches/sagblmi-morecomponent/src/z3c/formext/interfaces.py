@@ -18,13 +18,10 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.interface
-import zope.schema
 
 from z3c.form.interfaces import ITextWidget
 from z3c.form.interfaces import ISingleCheckBoxWidget
 from z3c.form.interfaces import IForm
-from z3c.form.interfaces import IGroup
-from z3c.form.interfaces import IGroupForm
 from z3c.form.interfaces import IButton
 from z3c.form.interfaces import IButtonAction
 from z3c.form.interfaces import ISelectionManager
@@ -40,6 +37,7 @@ class IClientButton(IButton):
     failure = zope.schema.ASCIILine(
         title=u'Failure function',
         required=False)
+
 
 class IClientButtonAction(IButtonAction):
     success = zope.schema.ASCIILine(
@@ -75,6 +73,15 @@ class IExtJSSingleCheckBoxWidget(ISingleCheckBoxWidget):
     """
 
 
+class IExtJSConfigValue(zope.interface.Interface):
+    """An object providing additional or overriding config
+    attributes as a dict
+    """
+
+    def get():
+        """Returns the value"""
+
+
 class IExtJSComponent(zope.interface.Interface):
     """An object that represents and ExtJS component.
 
@@ -89,18 +96,17 @@ class IExtJSComponent(zope.interface.Interface):
         serialization form.
         """
 
+
 class IJSProperties(ISelectionManager):
     """A Selection Manager for JavaScript Properties"""
 
 
-class IExtJSGroup(IGroup):
-    """The EXTJS translation of a group of fiels/widgets within a form
-
-    see z3c.form.interfaces.IGroup
+class IBaseForm(zope.interface.Interface):
+    """Marker interface for discribing  z3c.form.form.BaseForm
     """
 
 
-class IExtJSGroupForm(IGroupForm):
+class IExtJSGroupForm(zope.interface.Interface):
     """An extjs form that supports groups
 
     see z3c.form.interfaces.IGroupForm
