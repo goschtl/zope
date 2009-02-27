@@ -305,13 +305,6 @@ def getWidgetConfig(widget):
     if factory is not None:
         component = factory(widget.context, widget.request,
                 widget.form, widget, widget.field)
-    #if not provided try to get one from the registry
-    if component is None:
-        component = zope.component.queryMultiAdapter(
-            (widget.context, widget.request,
-                widget.form, widget, widget.field),
-            interfaces.IExtJSComponent)
-    #fallback to a simple adapter
     if component is None:
         component = interfaces.IExtJSComponent(widget)
     return component.getConfig()
