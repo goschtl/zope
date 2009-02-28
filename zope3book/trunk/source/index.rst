@@ -19,6 +19,7 @@ Zope 3 Developer's Book
    content-components
    skinning
    schema
+   fieldsandwidgets
 
 
 Indices and tables
