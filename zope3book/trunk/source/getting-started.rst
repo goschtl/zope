@@ -22,6 +22,13 @@ be given in **setuptools** configuration file (`setup.py`), and other
 configuration details in Buildout configuration file
 (`buildout.cfg`).
 
+Zope 3 is now fully converted to an egg-based system.  The known good
+set -- or in short **KGS** -- is a configuration of packages and
+their versions that are known to work well together.  The list of
+controlled packages and their versions for Zope 3 can be found at the
+Zope 3 KGS site.  This chapter will explain using KGS for a Zope 3
+project.
+
 
 Python installation
 -------------------
@@ -30,8 +37,10 @@ Python installation
 
 The Zope community has always recommended using a custom built Python
 for development and deployment.  Both Python 2.4 and 2.5 should work
-for Zope 3.4 KGS packages.  As of now, the author recommend using
-Python 2.5 for any new project.
+with `Zope 3.4 KGS`_ packages.  This book authors would recommend
+using Python 2.5 for any new project.
+
+.. _Zope 3.4 KGS: http://download.zope.org/zope3.4/
 
 
 GNU/Linux
