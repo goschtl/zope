@@ -6,28 +6,28 @@ Skinnig
 Introduction
 ------------
 
-It is often we need to build web applications with equal/similar
+It is often required to build web applications with equal/similar
 features, but different look and feel.  Variation of look and feel
 can be simple or complex.  It can be either just an exchange of a CSS
-file and some images.  Sometimes, we need to reconfigure the
-application to have different UI components, such as widgets, tables
-etc.  Also we need to mix and match UI components from multiple
-packages.
+file and some images.  Sometimes, you will be required to reconfigure
+the application to have different user interface components, such as
+widgets, tables etc.  Also you will be required to mix and match user
+interface components from multiple packages.
 
 The level of customization of Zope (2 and 3) has been a strong point
-for years.  Initially the UI was customized relying on implicit
-acquisition, where it was simply a matter of adding an object higher
-in the object path to customize the UI.  Since implicit acquisition
-is often hard to debug, the CMF introduced the concept of skins,
-where a skin describes the look and feel of a site.  Skins could
-acquire from other skins explicitly.
+for years.  Initially the user interface was customized relying on
+implicit acquisition, where it was simply a matter of adding an
+object higher in the object path to customize the user interface.
+Since implicit acquisition is often hard to debug, the CMF introduced
+the concept of skins, where a skin describes the look and feel of a
+site.  Skins could acquire from other skins explicitly.
 
 In Zope 3 the concept of skins was reconsidered and re-implemented to
 use the component architecture.
 
 There are two terms associated with skinning named, `layer` and
 `skin`.  Before proceeding, it would be better to understand the
-meaning these two terms in Zope 3 skinning.
+meaning of these two terms in Zope 3 skinning.
 
 
 Layers
@@ -75,8 +75,8 @@ Layers versus skins
 * Both support inheritance/acquisition
 
 This is realized through a combination of interface inheritance and
-component lookup techniques.  We will discuss this in more detail
-later.
+component lookup techniques.  This book will discuss this in more
+detail later.
 
 Skins are directly provided by a request
 
@@ -112,7 +112,7 @@ A new skin
 * Views registered for default layer by default
   zope.publisher.interfaces.browser.IDefaultBrowserLayer
 
-* Default layer contains a lot of things we do not need (security
+* Default layer contains a lot of things you do not need (security
   concerns)
 
 * Since pretty much everything in zope.app is registered into the
@@ -167,8 +167,8 @@ simply register them on the skin directly::
       layer=".interfaces.IBasicSkin"
       />
 
-As you can see, we don't have to create an extra layer just to create
-a custom skin.  We were also able to use standard Component
+As you can see, you don't have to create an extra layer just to
+create a custom skin.  You were also able to use standard Component
 Architecture ZCML directives instead of custom ones whose special
 syntax the developer needs to remember additionally.
 
@@ -201,7 +201,7 @@ application layer::
   class IBasicSkin(IHelloWorldLayer):
       """Basic Skin for Hello World App."""
 
-To register this we will use ``interface`` and ``utility`` directives
+To register this you can use ``interface`` and ``utility`` directives
 in ``zope`` namespace.  The type of the ``IShanghaiSkin`` skin is
 ``zope.publisher.interfaces.browser.IBrowserSkinType``.  Here is a
 sample ``configure.zcml``::
@@ -217,7 +217,7 @@ sample ``configure.zcml``::
       name="BasicSkin"
       />
 
-As a shortcut, we can also just use the ``interface`` directive and
+As a shortcut, you can also just use the ``interface`` directive and
 pass the new name parameter.  The following one directive has the
 same effect as the two above regarding the skin registration::
 
