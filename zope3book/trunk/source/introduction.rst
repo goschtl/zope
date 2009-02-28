@@ -135,9 +135,10 @@ chapter is given below.
 Introduction
 ~~~~~~~~~~~~
 
-This chapter introduce Zope 3 with an overview and scope of the book,
-then briefly go through the history of Zope 3.  Later discuss
-organization of the book.  And finish with a thanks section.
+Introduce Zope 3 with an overview and scope of the book.  Mention
+targetted audience and prerequisites for this book.  Then, briefly go
+through the history of Zope 3.  Later, discuss the organization of
+the book, and finish with a thanks section.
 
 
 Getting Started
@@ -175,6 +176,30 @@ Component Architecture
 
 This chapter introduce Zope component architecture.  If you are
 already familiar with this you may skip this chapter.
+
+
+Testing
+~~~~~~~
+
+
+Setting Up Virtual Hosting
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Browser Resources
+~~~~~~~~~~~~~~~~~
+
+
+Browser Pages
+~~~~~~~~~~~~~
+
+
+Content Components
+~~~~~~~~~~~~~~~~~~
+
+
+Skinnig
+~~~~~~~
 
 
 Thanks
