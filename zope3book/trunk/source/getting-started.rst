@@ -46,11 +46,10 @@ using Python 2.5 for any new project.
 GNU/Linux
 ~~~~~~~~~
 
-To install Python, you will be required to install gcc, g++ and other
-development tools in your system.  A typical installation of Python
-can be done like this:
-
-::
+Python can be installed from source in GNU/Linux and other UNIX like
+systems.  To install Python, you will be required to install gcc, g++
+and other development tools in your system.  A typical installation
+of Python can be done like this::
 
   $ wget -c http://www.python.org/ftp/python/2.5.4/Python-2.5.4.tar.bz2
   $ tar jxvf Python-2.5.4.tar.bz2
@@ -61,29 +60,32 @@ can be done like this:
 
 As given above, you can provide an option, ``--prefix`` to install
 Python in a particular location.  The above steps install Python
-inside ``/home/guest/usr`` directory.
+inside ``/home/guest/usr`` directory, and you can change it.
 
 After installation, you can invoke the Python interpreter like this::
 
   $ ~/usr/bin/python2.5
+  Python 2.5.4 (r254:67916, Jan 23 2009, 15:53:17) 
+  [GCC 4.3.2] on linux2
+  Type "help", "copyright", "credits" or "license" for more information.
   >>> print "Hello, world!"
   Hello, world!
 
 .. note::
 
   If you are not getting old statements in Python interactive prompt
-  when using up-arrow key, try installing libreadline development
+  when using up-arrow key, try installing `libreadline` development
   libraries (Hint: apt-cache search libreadline).  After installing
   this library, you should install Python again.  You also will be
   required to install zlib (Hint: apt-cache search zlib compression
-  library) to properly install Zope 3.
+  library) to properly install Zope 3 packages.
 
 
 MS Windows
 ~~~~~~~~~~
 
 Python provide binaries for MS Windows.  You can use the MSI
-installer package from python.org
+installer package from http://www.python.org
 
 
 Buildout
@@ -94,7 +96,7 @@ Buildout
 Introduction
 ~~~~~~~~~~~~
 
-We are going to use a build tool called Buildout for developing Zope
+You are going to use a build tool called Buildout for developing Zope
 3 applications from multiple parts.  Buildout will give you an
 isolated working environment for developing applications.  The
 Buildout package, named `zc.buildout` is available for download from
@@ -134,7 +136,7 @@ and the location can be changed from the configuration file.  It is
 better to give a system-wide location for eggs directory.  And this
 configuration can be added to your system-wide configuration file.
 The default configuration file for Buildout is
-`~/.buildout/default.cfg` .  We are going to use `eggs` directory
+`~/.buildout/default.cfg` .  You are going to use `eggs` directory
 inside your home directory to keep all eggs, so first create those
 directories and global configuration file::
 
@@ -165,7 +167,7 @@ Setting up development sandbox
 
 .. index:: sandbox
 
-To demonstrate the concepts, tools and techniques, we are going to
+To demonstrate the concepts, tools and techniques, you are going to
 develop a ticket collector application.  The application can be used
 for issue/bug tracking.  To begin the work, first create a directory
 for the project.  After creating the directory, create a
@@ -190,10 +192,10 @@ Buildout configuration.
   using svn for managing repository, create an `svn:external` to the
   svn URL given above.
 
-Our application is basically a Python package.  First, we will create
-an `src` directory to place our package.  Inside the `src` directory,
-you can create `ticketcollector` Python package.  You can create the
-`src` and the `ticketcollector` package like this::
+Our application is basically a Python package.  First, you will
+create an `src` directory to place our package.  Inside the `src`
+directory, you can create `ticketcollector` Python package.  You can
+create the `src` and the `ticketcollector` package like this::
 
   $ mkdir src
   $ mkdir src/ticketcollector
@@ -220,11 +222,11 @@ The `setup.py` should have the minimum details as given below::
       zip_safe=False,
       )
 
-We have included the bare minimum packages required for installation
+You have included the bare minimum packages required for installation
 in `install_requires` argument: `zope.app.zcmlfiles`,
 `zope.app.twisted` , `zope.app.securitypolicy` and `setuptools`.
 
-To make this package buildout aware, we have to modify the
+To make this package buildout aware, you have to modify the
 `buildout.cfg` as given below::
 
   [buildout]
@@ -251,9 +253,10 @@ a buildout with `setup.py` with proper packages given as
 
 .. note::
 
-  Unless you specify a parts section which use `ticketcollector` in some
-  way, Buildout will not download dependency packages.  In the above
-  example, we created a `[py]` section with `zc.recipe.egg` recipe.
+  Unless you specify a parts section which use `ticketcollector` in
+  some way, Buildout will not download dependency packages.  In the
+  above example, you created a `[py]` section with `zc.recipe.egg`
+  recipe.
 
 
 A simple application
@@ -263,10 +266,10 @@ A simple application
 Configuring application
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We are going to continue the ticketcollector application in this
-section.  To run the bare minimum Zope 3, we have to create Zope
+You are going to continue the ticketcollector application in this
+section.  To run the bare minimum Zope 3, you have to create Zope
 Configuration Markup Language (ZCML) file and extend the
-`buildout.cfg` with appropriate Buildout recipes.  We are going to
+`buildout.cfg` with appropriate Buildout recipes.  You are going to
 use `zc.zope3recipes:app`, `zc.zope3recipes:instance` and
 `zc.recipe.filestorage` recipes for setting up our application.  Here
 is our modified buildout.cfg (inside the ticketcollector project
@@ -296,9 +299,9 @@ directory)::
   [database]
   recipe = zc.recipe.filestorage
 
-Then, we will create `application.zcml` inside `src/ticketcollector`
+Then, you will create `application.zcml` inside `src/ticketcollector`
 directory with the following text.  Consider it as boiler plate code
-now, we will explain this in detail later::
+now, this book will explain this in detail later::
 
   <configure
     xmlns="http://namespaces.zope.org/zope"
