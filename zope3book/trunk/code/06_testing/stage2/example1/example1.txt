@@ -1,0 +1,17 @@
+These are test cases for example1 module.
+
+First import the module::
+
+  >>> import example1
+
+Now call the function `goodmorning` without any arguments::
+
+  >>> example1.goodmorning()
+  Traceback (most recent call last):
+  ...
+  TypeError: goodmorning() takes exactly 1 argument (0 given)
+
+Now call the function goodmorning with one argument::
+
+  >>> example1.goodmorning('Jack')
+  'Good morning, Jack!'

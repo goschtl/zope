@@ -5,10 +5,11 @@ Testing
 Introduction
 ------------
 
-As you know by now, Zope 3 gains its incredible stability from
-testing any code in great detail.  The currently most common method
-is to write unit tests. This chapter introduces unit tests - which
-are Zope 3 independent - and introduces some of the subtleties.
+Zope 3 gained its incredible stability from testing any code in great
+detail.  Zope 3 packages has almost 100% test coverage.  Zope 3
+developers write unit tests, and integration tests wherever required.
+This chapter introduces unit tests and integration tests and some of
+the subtleties.
 
 
 Unit testing
@@ -17,24 +18,26 @@ Unit testing
 .. index::
    single: unit testing; testing
 
-Unit test can be written using `unittest`, `zope.unittest`, `nose`,
-`py.test` etc.  Another approach to write unit test is using doctest.
-Doctest-based unit tests are the most used way to write unit tests in
-Zope 3.  During the development and maintenance of Zope 3 packages
-developers use test driven development (TDD) style process.
+You can write unit tests using Python's built-in module called,
+`unittest` or other third party modules like `zope.testing`, `nose`
+and `py.test`.  There is another approach called, doctest which use
+plain text files to write unit tests.  Doctests are the most widely
+technique to write unit tests in Zope 3.  During the development and
+maintenance of Zope 3 packages, developers use test driven
+development (TDD) style process.
 
 To explain the idea of unit testing, consider a use case.  A module
-is required with a function which returns "Good morning, name!".  The
-name will be given as an argument.  Before writing the real code
-write the unit test for this.  In fact, you will be writing the real
-code and it's test cases almost in parallel.  So, create a file named
+is required with a function which accepts one argument (`name`) and
+return: "Good morning, name!".  Before writing the real code, write
+the unit test for this.  In fact, you will be writing the real code
+and its test cases almost in parallel.  So, create a file named
 `example1.py` with the following function definition::
 
   def goodmorning(name):
       "This returns a good morning message"
 
-See, you have not yet written the logic.  But this is necessary to
-run tests successfully with failures!.  Ok, now create a file named
+Here, you have not yet written the logic.  But this is necessary to
+run tests, initially with failures.  Now, create a file named
 `example1.txt` with test cases.  You can use reStructuredText
 format::
 
@@ -56,9 +59,9 @@ format::
     >>> example1.goodmorning('Jack')
     'Good morning, Jack!'
 
-See, the examples are written like executed from prompt.  You can use
-your python prompt and copy paste from there.  Now create another
-file names `test_example1.py` with this content::
+Here, the examples are written like executed from prompt.  You can
+use your python prompt and copy paste from there.  Finally, create
+another file names `test_example1.py` with this content::
 
   import unittest
   import doctest
@@ -71,9 +74,9 @@ file names `test_example1.py` with this content::
   if __name__ == '__main__':
       unittest.main(defaultTest='test_suite')
 
-This is just boilerplate code for running the test.  Now run the test
-using python2.4 test_example1.py command.  You will get output with
-following text::
+This is just a boilerplate code for running the tests.  Now, run the
+test using ``python2.5 test_example1.py`` command.  You will get
+output with following text::
 
   File "example1.txt", line 16, in example1.txt
   Failed example:
@@ -82,17 +85,17 @@ following text::
       'Good morning, Jack!'
   Got nothing
 
-Now, one test failed, so, implement the function now::
+As you can see, one test is failed.  So, implement the function now::
 
   def goodmorning(name):
       "This returns a good morning message"
       return "Good morning, %s!" % name
 
-Run the test again, it should run without failures.
+Run the test again, it should run without any failures.
 
 Now start thinking about other functionalities required for the
-module.  Before start coding write about it in text file.  Decide
-API, write test, write code, than continue this cycle until you
+module.  Before start coding, write about it in text file.  Decide
+API, write test, write code, then continue this cycle until you
 finish your requirements.
 
 
@@ -102,10 +105,10 @@ Running tests
 .. index::
    single: running tests; testing
 
-The Buildout recipe named `zc.recipe.testrunner` would be convenient
-for running test cases.  It will create a script to run the test
-cases.  For a typical project you can add `test` part in
-configuration like this::
+In Zope 3, you can use the Buildout recipe named
+`zc.recipe.testrunner` for running test cases.  It will create a
+script to run the test cases.  For a typical project, you can add
+`test` part in configuration like this::
 
   [buildout]
   parts = test
@@ -117,10 +120,10 @@ configuration like this::
 .. index::
    single: test runner; testing
 
-Here the package names is assumed as `ticketcollector` (this is the
+Here, the package names is assumed as `ticketcollector` (this is the
 name you given in `setup.py`).  Also here I assume that there is an
-`extras_require` argument for `setup` function in `setup.py`.
-The argument can be given something like this::
+`extras_require` argument for `setup` function in `setup.py`.  The
+argument can be given something like this::
 
   extras_require=dict(test=['zope.app.testing',
                             'zope.testbrowser',
@@ -135,7 +138,66 @@ create test modules like `test_main.py`, `test_extra.py` etc.  To run
 the unit tests, change to instance home::
 
   $ cd ticketcollector
+  $ ./bin/buildout
   $ ./bin/test
+
+
+Integration testing
+-------------------
+
+A doctest based testing module named, ``zope.testbrowser`` is used
+for integration/functional testing in Zope 3.  Zope use the term
+"functional" more frequently than "integration".  Unlike unit tests,
+functional tests are user interface (view) oriented.
+
+The central part of this package is a browser object.  First you have
+to create the browser object, to do so, import ``Browser`` class from
+``zope.testbrowser.testing``::
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+
+To open a page::
+
+  >>> browser.open('http://localhost/zopetest/simple.html')
+  >>> browser.url
+  'http://localhost/zopetest/simple.html'
+
+The ``zope.testbrowser.browser`` module exposes a ``Browser`` class that
+simulates a web browser similar to Mozilla Firefox or IE.
+
+    >>> from zope.testbrowser.browser import Browser
+    >>> browser = Browser()
+
+This version of the browser object can be used to access any web site just as
+you would do using a normal web browser.
+
+There is also a special version of the ``Browser`` class used to do
+functional testing of Zope 3 applications, it can be imported from
+``zope.testbrowser.testing``:
+
+    >>> from zope.testbrowser.testing import Browser
+    >>> browser = Browser()
+
+An initial page to load can be passed to the ``Browser`` constructor:
+
+    >>> browser = Browser('http://localhost/@@/testbrowser/simple.html')
+    >>> browser.url
+    'http://localhost/@@/testbrowser/simple.html'
+
+The browser can send arbitrary headers; this is helpful for setting the
+"Authorization" header or a language value, so that your tests format values
+the way you expect in your tests, if you rely on zope.i18n locale-based
+formatting or a similar approach.
+
+    >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+    >>> browser.addHeader('Accept-Language', 'en-US')
+
+An existing browser instance can also `open` web pages:
+
+    >>> browser.open('http://localhost/@@/testbrowser/simple.html')
+    >>> browser.url
+    'http://localhost/@@/testbrowser/simple.html'
 
 
 Summary
