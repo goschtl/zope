@@ -7,13 +7,20 @@ Introduction
 This chapter cover the details of setting up an isolated working
 environment for web application development using Python and Zope
 components.  As the first step, you will be required to install
-Python.  Then, a basic understanding of Buildout, the build system
-used to set up development sandbox is required.  More details about
-Buildout is given in the next chapter.  Buildout will take care of
-download and installion of all the dependency packages.  To create a
-project code base, you need to provide the minimal meta-data required
-for your project like name, version etc.  These details can be given
-in `setup.py` and other configuration details in `buildout.cfg`.
+Python.  It is recommended to use a clean custom Python, that is, a
+fresh Python installation without any third party packages installed
+in global `site-packages`.
+
+**Buildout**, a build tool for setting up development sandboxes can
+be used to setup an isolated working environment for Zope 3.  You
+need not to manually install any Zope 3 packages, because Buildout
+will download and install all required packages.  More details about
+Buildout is given in the next chapter.  To create a working
+environment for a new project, you should provide minimal meta-data
+required for the project like name, version etc.  These details can
+be given in **setuptools** configuration file (`setup.py`), and other
+configuration details in Buildout configuration file
+(`buildout.cfg`).
 
 
 Python installation
@@ -23,7 +30,7 @@ Python installation
 
 The Zope community has always recommended using a custom built Python
 for development and deployment.  Both Python 2.4 and 2.5 should work
-for Zope 3.4 KGS packages.  As of now, the author reccomend using
+for Zope 3.4 KGS packages.  As of now, the author recommend using
 Python 2.5 for any new project.
 
 
