@@ -6,48 +6,53 @@ Overview
 --------
 
 This book is about `Zope 3`_, a Python_ framework for web application
-development.  Zope 3 was developed by the Zope_ community with the
-leadership of Jim Fulton, the creator of original Zope.  Zope 3
-consists of a number of small frameworks and libraries written in
-Python programming language and it is usable in pieces or in whole.
+development.  The goal of this book project is to create a complete,
+free, open-content, well-organized book for Zope 3.  Zope 3 is
+developed by the Zope_ community with the leadership of Jim Fulton,
+the creator of original Zope.
+
+Zope 3 consists of a number of small frameworks and libraries written
+in Python programming language, and it is usable in whole or in part.
 These frameworks and libraries can be put together to build any kind
-of web application.  Most of of the Zope 3 packages are built on top
-of a `component architecture`_ which helps to separate presentation
-code from the problem domain code and to create reusable components
-(zope.component).
-
-The goal for this book project is to create a complete, free,
-open-content, well-organized book for Zope 3.  The target audience of
-this book are Python programmers looking for developing web
-applications.  However, the book doesn't assume you are familiar with
-any other web framework.  This book will require prior knowledge
-Python programming language and at least some exposure to the basics
-of HTML, CSS and JavaScript.
-
-Zope 3 has an object publisher (zope.publisher), web server
-(zope.server), transactional object database (ZODB), XML based
-configuration language for registering components
-(zope.configuration), flexible security architecture with pluggable
-security policies (zope.security), unit and functional testing
-frameworks (zope.testing , zope.testbrowser), XHTML-compliant
-templating language (zope.pagetemplate), schema engine and automatic
-form generation machinery (zope.schema , z3c.form) and many more core
-and third-party packages.
+of web applications.  Most of of the Zope 3 packages are built on top
+of a `component architecture`_.  The component architecture helps to
+separate presentation code from the problem domain code, and to
+create reusable components.
 
 Originally, the term ZOPE was used as an acronym for Z Object
 Publishing Environment (the Z doesn't really mean anything in
 particular).  However, now-a-days ZOPE is simply written as Zope .
 
 Zope 3 is a ZPL (BSD like, GPL compatible license) licensed free/open
-source software.  It was developed by the Zope community with the
-leadership of Jim Fulton.  A brief history is given in the next
-section.
+source software.  You can use it for developing commercial and
+non-free applications without any licensing fee.
+
+The major components of Zope 3 are:
+
+- object publisher (zope.publisher),
+- web server (zope.server)
+- transactional object database (ZODB)
+- XML based configuration language for registering components
+  (zope.configuration)
+- flexible security architecture with pluggable security policies
+  (zope.security)
+- unit and functional testing frameworks (zope.testing,
+  zope.testbrowser)
+- XHTML-compliant templating language (zope.pagetemplate)
+- schema engine and automatic form generation machinery (zope.schema,
+  z3c.form)
+
+Apart from the above mentioned packages, there are numerous `packages
+available for Zope 3`_.
 
 .. _Zope 3: http://en.wikipedia.org/wiki/Zope_3
 .. _Python: http://en.wikipedia.org/wiki/Python_Programming
 .. _Zope: http://en.wikipedia.org/wiki/Zope
-.. _component architecture: http://wiki.zope.org/zope3/ComponentArchitecture
+.. _component architecture:
+   http://wiki.zope.org/zope3/ComponentArchitecture
 .. _Buildout: http://pypi.python.org/pypi/zc.buildout
+.. _packages available for Zope 3:
+   http://wiki.zope.org/zope3/Zope3PackageGuide
 
 
 Scope of the book
@@ -71,8 +76,7 @@ Audience
 
 The target audience of this book are Python programmers looking for
 developing web applications.  However, the book doesn't assume you
-are familiar with any other web framework.  The audience is expected
-to have some exposure to the basics of HTML, CSS and JavaScript.
+are familiar with any other web framework.
 
 
 Prerequisites
