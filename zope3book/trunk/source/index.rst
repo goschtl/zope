@@ -17,6 +17,7 @@ Zope 3 Developer's Book
    browser-pages
    content-components
    skinning
+   schema
 
 
 Indices and tables
