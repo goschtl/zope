@@ -725,6 +725,24 @@ class PluggableAuthService( Folder, Cacheable ):
 
         return PropertiedUser( user_id, name ).__of__( self )
 
+    security.declarePrivate( '_canMasquerade' )
+    def _canMasquerade( self, plugins, user_id, name=None, request=None ):
+
+        """ Return True if user_id has the Manager role.
+        """
+        user = PropertiedUser( user_id, name )
+
+        rolemakers = plugins.listPlugins( IRolesPlugin )
+
+        for rolemaker_id, rolemaker in rolemakers:
+
+            roles = rolemaker.getRolesForPrincipal( user, request )
+
+            if roles and 'Manager' in roles:
+                return True
+
+        return False
+
     security.declarePrivate( '_findUser' )
     def _findUser( self, plugins, user_id, name=None, request=None ):
 
@@ -746,14 +764,11 @@ class PluggableAuthService( Folder, Cacheable ):
 
         # Masquerading: Check if auth_user is eligible for masquerading
         if role_user_id is not None:
-            rolemakers = plugins.listPlugins( IRolesPlugin )
-            auth_user = PropertiedUser( auth_user_id, auth_user_id )
-            auth_user_roles = []
-            for rolemaker_id, rolemaker in rolemakers:
-                roles = rolemaker.getRolesForPrincipal( auth_user, request )
-                if roles:
-                    auth_user_roles.extend(roles)
-            if 'Manager' in auth_user_roles:
+            if self._canMasquerade( plugins
+                                  , auth_user_id
+                                  , auth_user_login
+                                  , request
+                                  ):
                 logger.info('Masquerading allowed: %s' % (saved_id,))
             else:
                 logger.warn('Masquerading denied: %s' % (saved_id,))
