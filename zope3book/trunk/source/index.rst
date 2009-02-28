@@ -12,6 +12,7 @@ Zope 3 Developer's Book
    interfaces
    component-architecture
    testing
+   zcml
    virtual-hosting
    browser-resouces
    browser-pages
