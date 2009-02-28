@@ -1,2 +1,2 @@
-This package allows for local component registries and local component
-management.
+This package adds support for persistent local component registries for
+the zope component architecture.
