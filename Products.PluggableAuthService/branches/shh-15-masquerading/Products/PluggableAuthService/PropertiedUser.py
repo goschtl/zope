@@ -27,8 +27,6 @@ from utils import classImplements
 from Products.PluggableAuthService.interfaces.propertysheets \
     import IPropertySheet
 
-from Products.PluggableAuthService.utils import splitmasq
-
 class PropertiedUser( BasicUser ):
 
     """ User objects which manage propertysheets, obtained from decorators.
@@ -99,12 +97,6 @@ class PropertiedUser( BasicUser ):
           no other extension mechanism. :(
         """
         user_id = self.getId()
-
-        # Masquerading: Return role_user roles
-        auth_user_id, role_user_id = splitmasq( user_id )
-        if role_user_id is not None:
-            user_id = role_user_id
-
         # [ x.getId() for x in self.getGroups() ]
         group_ids = self.getGroups()
 
@@ -195,12 +187,6 @@ class PropertiedUser( BasicUser ):
         # we can incur only the overhead required to find a match.
         inner_obj = aq_inner( object )
         user_id = self.getId()
-
-        # Masquerading: Check role_user roles
-        auth_user_id, role_user_id = splitmasq( user_id )
-        if role_user_id is not None:
-            user_id = role_user_id
-
         # [ x.getId() for x in self.getGroups() ]
         group_ids = self.getGroups()
 
