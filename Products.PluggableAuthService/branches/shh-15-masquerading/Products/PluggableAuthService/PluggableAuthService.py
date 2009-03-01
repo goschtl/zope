@@ -609,12 +609,13 @@ class PluggableAuthService( Folder, Cacheable ):
                             if role_user_id is not None:
                                 credentials['login'] = auth_user_id
 
-                            uid_and_info = auth.authenticateCredentials(
-                                credentials )
-
-                            # Masquerading: Restore credentials before continue
-                            if role_user_id is not None:
-                                credentials['login'] = login
+                            try:
+                                uid_and_info = auth.authenticateCredentials(
+                                    credentials )
+                            finally:
+                                # Masquerading: Restore credentials
+                                if role_user_id is not None:
+                                    credentials['login'] = login
 
                             if uid_and_info is None:
                                 continue

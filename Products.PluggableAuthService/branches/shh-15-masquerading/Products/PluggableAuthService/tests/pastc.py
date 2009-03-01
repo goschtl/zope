@@ -24,13 +24,17 @@ from Testing.ZopeTestCase import user_name
 from Testing.ZopeTestCase import user_password
 from Testing.ZopeTestCase import user_role
 
-from base64 import encodestring
-user_auth = encodestring('%s:%s' % (user_name, user_password)).rstrip()
-
 from Products.PluggableAuthService.interfaces.plugins import \
     IAuthenticationPlugin, IUserEnumerationPlugin, IRolesPlugin, \
     IRoleEnumerationPlugin, IRoleAssignerPlugin, \
     IChallengePlugin, IExtractionPlugin, IUserAdderPlugin
+
+from base64 import encodestring
+
+def mkauth(name, password):
+    return encodestring('%s:%s' % (name, password)).rstrip()
+
+user_auth = mkauth(user_name, user_password)
 
 
 class PASTestCase(ZopeTestCase.ZopeTestCase):
