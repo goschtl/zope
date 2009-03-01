@@ -104,6 +104,10 @@ class MasqueradingTests(pastc.PASTestCase):
         self.assertEqual(user.getId(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
+    def test__findUser_masquerading_denied(self):
+        user = self.pas._findUser(self.pas.plugins, 'wilma/fred')
+        self.failUnless(user is None)
+
     def test__verifyUser(self):
         info = self.pas._verifyUser(self.pas.plugins, 'fred/wilma')
         self.assertEqual(info['id'], 'wilma')
