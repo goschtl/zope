@@ -41,6 +41,8 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 - Removed z3c.viewlet package, as its functionality was included in
   zope.viewlet ages ago.
 
+- Remove deprecated packages, zope.thread and zope.app.annotation.
+
 3.4.0 (2009-01-29)
 ------------------
 
