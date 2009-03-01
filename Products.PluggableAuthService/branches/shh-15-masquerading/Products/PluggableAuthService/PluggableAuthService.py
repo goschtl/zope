@@ -731,7 +731,7 @@ class PluggableAuthService( Folder, Cacheable ):
 
         """ Return True if user_id has the Manager role.
         """
-        user = PropertiedUser( user_id, name )
+        user = self._createUser( plugins, user_id, name )
 
         rolemakers = plugins.listPlugins( IRolesPlugin )
 
