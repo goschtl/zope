@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-from zope.app.container.tests.test_icontainer import \
+from zope.container.tests.test_icontainer import \
      BaseTestIContainer, DefaultTestData
 
 from zwiki.wiki import Wiki

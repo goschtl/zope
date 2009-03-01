@@ -54,6 +54,7 @@ setup(
                       'zope.app.skins',
                       'zope.app.renderer',
                       'zope.app.apidoc',
+                      'zope.app.zapi',
                       'Pygments',
                       ],
     extras_require=dict(test=['zope.app.testing',

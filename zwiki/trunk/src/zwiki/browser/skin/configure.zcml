@@ -1,41 +1,46 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="zwiki"
-    >
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zwiki"
+   >
 
-<!-- BBB 2006/02/18, to be removed after 12 months -->
-<browser:layer
-    interface=".IWikiLayer"
-    name="wiki"
-    bbb_aware="true"
-    />
+  <interface
+     interface=".IWikiSkin"
+     type="zope.publisher.interfaces.browser.IBrowserSkinType"
+     />
 
-<interface
-    interface=".IWikiSkin"
-    type="zope.publisher.interfaces.browser.IBrowserSkinType"
-    name="wiki"
-    />
+  <utility
+     component=".IWikiSkin"
+     provides="zope.publisher.interfaces.browser.IBrowserSkinType"
+     name="wiki"
+     />
 
-<browser:resource
-    name="wiki.css" file="wiki.css" layer="wiki" />
+  <browser:resource
+     name="wiki.css"
+     file="wiki.css"
+     layer=".IWikiLayer"
+     />
 
-<browser:resource
-    name="pygments-default.css" file="pygments-default.css" layer="wiki" />
+  <browser:resource
+     name="pygments-default.css"
+     file="pygments-default.css"
+     layer=".IWikiLayer"
+     />
 
-<browser:page
-    for="*"
-    name="skin_macros"
-    permission="zope.View"
-    layer="wiki"
-    template="template.pt"
-    />
+  <browser:page
+     for="*"
+     name="skin_macros"
+     permission="zope.View"
+     template="template.pt"
+     layer=".IWikiLayer"
+     />
 
-<browser:page
-    for="*"
-    name="dialog_macros"
-    permission="zope.View"
-    layer="wiki"
-    template="dialog_macros.pt" />
+  <browser:page
+     for="*"
+     name="dialog_macros"
+     permission="zope.View"
+     template="dialog_macros.pt"
+     layer=".IWikiLayer"
+     />
 
 </configure>
