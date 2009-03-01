@@ -65,10 +65,12 @@ More specifically, this book is not going to cover using Zope 3
 technology in Zope 2, Plone, Grok or any other Python
 application/framework.  WSGI is also not a current focus of this
 book.  This book is not going to cover using `zopeproject` to
-bootstrap application (it's very easy, look at the PyPI page for
-zopeproject).  This book use Buildout for setting up an isolated
+bootstrap application (it's very easy, look at the `PyPI page for
+zopeproject`_).  This book use Buildout for setting up an isolated
 development environment for building applications.  Setuptools and
 vitualenv are also covered.
+
+.. _PyPI page for zopeproject: http://pypi.python.org/pypi/zopeproject
 
 
 Audience
