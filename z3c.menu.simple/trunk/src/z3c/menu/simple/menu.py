@@ -25,7 +25,7 @@ from zope.app.component import hooks
 from zope.app.publisher.browser import menu
 from zope.app.publisher.interfaces.browser import IBrowserMenu
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.zapi import absoluteURL
+from zope.traversing.browser.absoluteurl import absoluteURL
 
 from z3c.i18n import MessageFactory as _
 from z3c.menu.simple.interfaces import ISimpleMenuItem
