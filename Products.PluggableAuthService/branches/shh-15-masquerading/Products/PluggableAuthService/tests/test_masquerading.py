@@ -90,6 +90,8 @@ class MasqueradingTests(pastc.PASTestCase):
         self.folder.manage_addDTMLMethod('doc', file='the document')
         self.doc = self.folder.doc
         self.doc.manage_permission(View, [pastc.user_role], acquire=False)
+        # Start out as Anonymous User
+        self.logout()
 
     def test__extractUserIds(self):
         request = self.app.REQUEST
@@ -100,46 +102,75 @@ class MasqueradingTests(pastc.PASTestCase):
         self.assertEqual(info, 'fred/wilma')
 
     def test__findUser(self):
-        user = self.pas._findUser(self.pas.plugins, 'fred/wilma')
+        # User decoration does not find the real user name but uses the
+        # passed-in value. This is ok as PAS always passes a useful name.
+        user = self.pas._findUser(self.pas.plugins, 'fred/wilma', 'SomeValue')
         self.assertEqual(user.getId(), 'wilma')
+        self.assertEqual(user.getUserName(), 'SomeValue')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
     def test__findUser_masquerading_denied(self):
         user = self.pas._findUser(self.pas.plugins, 'wilma/fred')
-        self.failUnless(user is None)
+        self.assertEqual(user, None)
 
-    def test__verifyUser(self):
-        info = self.pas._verifyUser(self.pas.plugins, 'fred/wilma')
+    def test__verifyUser_by_login(self):
+        info = self.pas._verifyUser(self.pas.plugins, login='fred/wilma')
+        self.assertEqual(info['id'], 'wilma')
+        self.assertEqual(info['login'], 'wilma')
+
+    def test__verifyUser_by_id(self):
+        info = self.pas._verifyUser(self.pas.plugins, user_id='fred/wilma')
         self.assertEqual(info['id'], 'wilma')
         self.assertEqual(info['login'], 'wilma')
 
     def test_getUser(self):
         user = self.pas.getUser('fred/wilma')
         self.assertEqual(user.getId(), 'wilma')
+        self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
     def test_getUserById(self):
         user = self.pas.getUserById('fred/wilma')
         self.assertEqual(user.getId(), 'wilma')
+        self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
     def test_validate(self):
         # Rig the request so it looks like we traversed to doc
         request = self.app.REQUEST
         request['PUBLISHED'] = self.doc
-        request['PARENTS'] = [self.app, self.folder]
+        request['PARENTS'] = [self.folder, self.app]
         request.steps = list(self.doc.getPhysicalPath())
         request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
 
         user = self.pas.validate(request)
         self.failIf(user is None)
         self.assertEqual(user.getId(), 'wilma')
+        self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
         user = getSecurityManager().getUser()
         self.failIf(user is None)
         self.assertEqual(user.getId(), 'wilma')
+        self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
+
+    def test_validate_masquerading_denied(self):
+        # Rig the request so it looks like we traversed to doc
+        request = self.app.REQUEST
+        request['PUBLISHED'] = self.doc
+        request['PARENTS'] = [self.folder, self.app]
+        request.steps = list(self.doc.getPhysicalPath())
+        request._auth = 'Basic %s' % pastc.mkauth('wilma/fred', 'geheim')
+
+        user = self.pas.validate(request)
+        self.assertEqual(user, None)
+
+        user = getSecurityManager().getUser()
+        self.failIf(user is None)
+        self.assertEqual(user.getId(), None)
+        self.assertEqual(user.getUserName(), 'Anonymous User')
+        self.assertEqual(user.getRoles(), ('Anonymous',))
 
 
 def test_suite():
