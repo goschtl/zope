@@ -1,7 +1,10 @@
 Changelog
 =========
 
-0.2 (unreleased)
+0.3 (unreleased)
+----------------
+
+0.2 (2009-03-02)
 ----------------
  * Compatible with grok1.0a1
  * Add the SubMenuItem base class and it's grokker SubMenuItemGrokker
