@@ -17,6 +17,9 @@ Changes for lovely.remotetask
 
 - Changed URL to pypi.
 
+- Using the correct plural form of status (which is status) in
+  ITaskService.clean
+
 
 2008/11/07 0.2.15a1:
 ====================

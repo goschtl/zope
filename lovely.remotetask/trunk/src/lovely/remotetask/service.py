@@ -110,14 +110,14 @@ class TaskService(contained.Contained, persistent.Persistent):
     def reschedule(self, jobid):
         self._scheduledQueue.put(self.jobs[jobid])
 
-    def clean(self, stati=[interfaces.CANCELLED, interfaces.ERROR,
-                           interfaces.COMPLETED]):
+    def clean(self, status=[interfaces.CANCELLED, interfaces.ERROR,
+                            interfaces.COMPLETED]):
         """See interfaces.ITaskService"""
         allowed = [interfaces.CANCELLED, interfaces.ERROR,
                    interfaces.COMPLETED]
         for key in list(self.jobs.keys()):
             job = self.jobs[key]
-            if job.status in stati:
+            if job.status in status:
                 if job.status not in allowed:
                     raise ValueError('Not allowed status for removing. %s' % \
                         job.status)
