@@ -48,6 +48,7 @@
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
   <include package="zope.app.security" />
+  <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
@@ -58,6 +59,7 @@
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
   <include package="zope.viewlet" />
+  <include package="zope.session" />
 
 
   <!-- z3c component -->
@@ -117,6 +119,7 @@
         class=".SystemErrorPage"
         />
 
+    <!-- page for bugfix.txt -->
     <browser:page
         for="*"
         name="container_contents.html"
@@ -126,12 +129,26 @@
         />
 
     <!-- definitions for login-logout tests -->
+    <!-- use special template for default.html view -->
     <z3c:layout
-        for="zope.container.interfaces.IContainer"
+        for=".LoginLogoutPage"
         layer="z3c.layer.pagelet.IPageletBrowserLayer"
         template="login-logout-template.pt"
         />
 
+    <z3c:pagelet
+        for="zope.container.interfaces.IContainer"
+        name="default.html"
+        permission="zope.View"
+        class=".LoginLogoutPage"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        />
+
+    <browser:defaultView
+       name="default.html"
+       for="zope.container.interfaces.IContainer"
+       layer="z3c.layer.pagelet.IPageletBrowserLayer"
+       />
 
   </configure>
 
@@ -149,8 +166,8 @@
   <principal
       id="zope.manager"
       title="Manager"
-      login="Manager"
-      password="password"
+      login="mgr"
+      password="mgrpw"
       />
 
   <grant

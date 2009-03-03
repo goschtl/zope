@@ -1,8 +1,10 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain="z3c">
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
+   i18n_domain="z3c">
 
+  <!-- viewlets for login and logout links -->
   <browser:viewletManager
      name="login-logout"
      provides=".auth.ILoginLogoutViewletManager"
@@ -51,6 +53,73 @@
      permission="zope.Public"
      allowed_interface="zope.app.publisher.interfaces.http.ILogin"
      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <z3c:pagelet
+     name="login_failed.html"
+     class=".auth.LoginFailedPagelet"
+     permission="zope.Public"
+     for=".auth.HTTPAuthenticationLogin"
+     />
+
+  <z3c:template
+     for=".auth.LoginFailedPagelet"
+     template="login_failed.pt"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <z3c:pagelet
+     name="login_success.html"
+     class=".auth.LoginSuccessfulPagelet"
+     permission="zope.Public"
+     for=".auth.HTTPAuthenticationLogin"
+     />
+
+  <z3c:template
+     for=".auth.LoginSuccessfulPagelet"
+     template="login_success.pt"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <z3c:pagelet
+     name="redirect.html"
+     class=".auth.LogoutRedirectPagelet"
+     permission="zope.Public"
+     for=".auth.HTTPAuthenticationLogout"
+     />
+
+  <z3c:template
+     for=".auth.LogoutRedirectPagelet"
+     template="redirect.pt"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <z3c:pagelet
+     name="logout_success.html"
+     class=".auth.LogoutSuccessPagelet"
+     permission="zope.Public"
+     for=".auth.HTTPAuthenticationLogout"
+     />
+
+  <z3c:template
+     for=".auth.LogoutSuccessPagelet"
+     template="logout.pt"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <!-- login form for session credentials  -->
+  <z3c:pagelet
+     name="loginForm.html"
+     for="*"
+     class=".auth.SessionCredentialsLoginForm"
+     permission="zope.Public"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <z3c:template
+     for=".auth.SessionCredentialsLoginForm"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     template="session_cred_loginform.pt"
      />
 
 </configure>

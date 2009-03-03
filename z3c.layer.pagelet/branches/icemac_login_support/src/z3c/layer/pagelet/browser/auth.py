@@ -16,6 +16,7 @@
 $Id$
 """
 import urllib
+import z3c.template.interfaces
 import zope.app.pagetemplate
 import zope.app.publisher.interfaces.http
 import zope.app.security.interfaces
@@ -23,6 +24,7 @@ import zope.component
 import zope.i18n
 import zope.i18nmessageid
 import zope.interface
+import zope.publisher.interfaces.browser
 import zope.viewlet.interfaces
 import zope.viewlet.manager
 import zope.viewlet.viewlet
@@ -47,8 +49,30 @@ def authenticated(principal):
 
 def logout_supported(request):
     "Tell whether logout is supported."
-    logout = zope.app.security.interfaces.ILogoutSupported(self.request, None)
+    logout = zope.app.security.interfaces.ILogoutSupported(request, None)
     return logout is not None
+
+
+def get_view_url(context, request, view_name):
+    "Compute the url of a view."
+    if view_name.startswith('@@'):
+        view_name = view_name[2:]
+        view_truncated = True
+    else:
+        view_truncated = False
+    view = zope.component.getMultiAdapter((context, request), name=view_name)
+    view_url = zope.component.getMultiAdapter(
+        (view, request), name='absolute_url')()
+    if view_truncated:
+        view_url = view_url.replace(view_name, '@@'+view_name)
+    return view_url
+
+
+def render_pagelet(context, request, view_name):
+    "Render a pagelet."
+    pagelet =  zope.component.getMultiAdapter(
+        (context, request), z3c.pagelet.interfaces.IPagelet, name=view_name)
+    return pagelet()
 
 
 class LoginViewlet(zope.viewlet.viewlet.ViewletBase):
@@ -60,7 +84,7 @@ class LoginViewlet(zope.viewlet.viewlet.ViewletBase):
 
     def render(self):
         return u'<a href="%s?nextURL=%s">%s</a>' % (
-                self.viewName,
+                get_view_url(self. context, self.request, self.viewName),
                 urllib.quote(self.request.getURL()),
                 zope.i18n.translate(
                     _('[Login]', default='Login'), context=self.request))
@@ -78,7 +102,7 @@ class LogoutViewlet(zope.viewlet.viewlet.ViewletBase):
 
     def render(self):
         return u'<a href="%s?nextURL=%s">%s</a>' % (
-                self.viewName,
+                get_view_url(self. context, self.request, self.viewName),
                 urllib.quote(self.request.getURL()),
                 zope.i18n.translate(
                     _('[Logout]', default='Logout'), context=self.request))
@@ -88,22 +112,28 @@ class HTTPAuthenticationLogin(object):
 
     zope.interface.implements(zope.app.publisher.interfaces.http.ILogin)
 
-#     confirmation = zope.app.pagetemplate.ViewPageTemplateFile('login.pt')
-#     failed = zope.app.pagetemplate.ViewPageTemplateFile('login_failed.pt')
-
     def login(self, nextURL=None):
         # we don't want to keep challenging if we're authenticated
-        if zope.app.security.interfaces.IUnauthenticatedPrincipal.providedBy(
-            self.request.principal):
+        if not authenticated(self.request.principal):
             auth = zope.component.getUtility(
                 zope.app.security.interfaces.IAuthentication)
-            auth.unauthorized(self.request.principal.id, self.request)
-            return self.failed()
+            auth.unauthorized(
+                #self.request.principal.id, self.request)
+                None, self.request) # XXX correct this way?
+            return render_pagelet(self, self.request, 'login_failed.html')
         else:
             if nextURL is None:
-                return self.confirmation()
+                return render_pagelet(self, self.request, 'login_success.html')
             else:
                 self.request.response.redirect(nextURL)
+
+
+class LoginFailedPagelet(object):
+    "Pagelet to display login failed notice."
+
+
+class LoginSuccessfulPagelet(object):
+    "Pagelet to display login succecc notice."
 
 
 class HTTPAuthenticationLogout(object):
@@ -112,24 +142,28 @@ class HTTPAuthenticationLogout(object):
 
     zope.interface.implements(zope.app.security.interfaces.ILogout)
 
-#     redirect = zope.app.pagetemplate.ViewPageTemplateFile('redirect.pt')
-#     confirmation = zope.app.pagetemplate.ViewPageTemplateFile('logout.pt')
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
     def logout(self, nextURL=None):
-        if zope.app.security.interfaces.IUnauthenticatedPrincipal.providedBy(
-            self.request.principal):
-            pass
-        else:
+        if authenticated(self.request.principal):
             auth = zope.component.getUtility(
                 zope.app.security.interfaces.IAuthentication)
             zope.app.security.interfaces.ILogout(auth).logout(self.request)
             if nextURL:
-                return self.redirect()
+                return render_pagelet(self, self.request, 'redirect.html')
         if nextURL is None:
-            return self.confirmation()
+            return render_pagelet(self, self.request, 'logout_success.html')
         else:
             return self.request.response.redirect(nextURL)
+
+
+class LogoutRedirectPagelet(object):
+    "Pagelet to display logout redirect."
+
+
+class LogoutSuccessPagelet(object):
+    "Pagelet to display logout success."
+
+
+class SessionCredentialsLoginForm(object):
+    "Login form using session credentials."
+
+
