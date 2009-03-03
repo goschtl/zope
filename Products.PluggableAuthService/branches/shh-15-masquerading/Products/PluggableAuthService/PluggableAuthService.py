@@ -87,7 +87,6 @@ from utils import createViewName
 from utils import createKeywords
 from utils import classImplements
 from utils import splitmasq
-from utils import joinmasq
 
 security = ModuleSecurityInfo(
     'Products.PluggableAuthService.PluggableAuthService' )
@@ -242,10 +241,6 @@ class PluggableAuthService( Folder, Cacheable ):
         for user_id, login in user_ids:
 
             user = self._findUser(plugins, user_id, login, request=request)
-
-            # Masquerading may reset the user
-            if user is None:
-                continue
 
             if aq_base( user ) is emergency_user:
 
@@ -604,28 +599,39 @@ class PluggableAuthService( Folder, Cacheable ):
 
                         try:
                             # Masquerading: Authenticate auth_user
-                            login = credentials.get('login', '')
-                            auth_user_id, role_user_id = splitmasq( login )
-                            if role_user_id is not None:
-                                credentials['login'] = auth_user_id
+                            auth_user_credentials = credentials.copy()
 
-                            try:
-                                uid_and_info = auth.authenticateCredentials(
-                                    credentials )
-                            finally:
-                                # Masquerading: Restore credentials
-                                if role_user_id is not None:
-                                    credentials['login'] = login
+                            login = credentials.get('login', '')
+
+                            auth_user_login, role_user_login = splitmasq( login )
+
+                            if role_user_login is not None:
+                                auth_user_credentials['login'] = auth_user_login
+
+                            uid_and_info = auth.authenticateCredentials(
+                                auth_user_credentials )
 
                             if uid_and_info is None:
                                 continue
 
                             user_id, info = uid_and_info
 
-                            # Masquerading: Decorate id and login with masquerading info
-                            if role_user_id is not None:
-                                user_id = joinmasq( user_id, role_user_id )
-                                info = joinmasq( info, role_user_id )
+                            if role_user_login is not None:
+
+                                # Masquerading: Check if auth_user is allowed to masquerade
+                                if self._canMasquerade( plugins, user_id, info, request ):
+                                    logger.info('Masquerading allowed: %s', login)
+                                else:
+                                    logger.warn('Masquerading denied: %s', login)
+                                    continue
+
+                                # Masquerading: Return role_user
+                                role_user_info = self._verifyUser( plugins, login=role_user_login )
+
+                                if role_user_info is None:
+                                    continue
+
+                                user_id, info = role_user_info['id'], role_user_info['login']
 
                         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                             msg = 'AuthenticationPlugin %s error' % ( 
@@ -752,29 +758,6 @@ class PluggableAuthService( Folder, Cacheable ):
         if user_id == self._emergency_user.getUserName():
             return self._emergency_user
 
-        # Masquerading: Lookup role_user
-        saved_id = user_id
-
-        auth_user_id, role_user_id = splitmasq( user_id )
-        if role_user_id is not None:
-            user_id = role_user_id
-
-        auth_user_login, role_user_login = splitmasq( name )
-        if role_user_login is not None:
-            name = role_user_login
-
-        # Masquerading: Check if auth_user is eligible for masquerading
-        if role_user_id is not None:
-            if self._canMasquerade( plugins
-                                  , auth_user_id
-                                  , auth_user_login
-                                  , request
-                                  ):
-                logger.info('Masquerading allowed: %s' % (saved_id,))
-            else:
-                logger.warn('Masquerading denied: %s' % (saved_id,))
-                return None
-
         # See if the user can be retrieved from the cache
         view_name = createViewName('_findUser', user_id)
         keywords = createKeywords(user_id=user_id, name=name)
@@ -827,15 +810,6 @@ class PluggableAuthService( Folder, Cacheable ):
             # Avoid possible hugely expensive and/or wrong behavior of
             # plugin enumerators.
             return None
-
-        # Masquerading: Lookup role_user
-        auth_user_id, role_user_id = splitmasq( user_id )
-        if role_user_id is not None:
-            user_id = role_user_id
-
-        auth_user_login, role_user_login = splitmasq( login )
-        if role_user_login is not None:
-            login = role_user_login
 
         criteria = {'exact_match': True}
 

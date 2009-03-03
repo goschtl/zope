@@ -222,8 +222,3 @@ def splitmasq( user_id ):
             return tuple(split)
     return (user_id, None)
 
-def joinmasq( auth_user_id, role_user_id ):
-    if not auth_user_id or not role_user_id:
-        return auth_user_id
-    return _MASQ.join((auth_user_id, role_user_id))
-
