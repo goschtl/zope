@@ -21,7 +21,6 @@ import logging
 import sys
 import re
 import types
-import os
 
 from ZPublisher import BeforeTraverse
 
@@ -737,7 +736,7 @@ class PluggableAuthService( Folder, Cacheable ):
     security.declarePrivate( '_canMasquerade' )
     def _canMasquerade( self, plugins, user_id, name=None, request=None ):
 
-        """ Return True if masquerading is enabled and user_id has the Manager role.
+        """ Return True if masquerading is enabled and user_id has the Manager or Masquerader role.
         """
         if not masquerading():
             return False
@@ -750,7 +749,8 @@ class PluggableAuthService( Folder, Cacheable ):
 
             roles = rolemaker.getRolesForPrincipal( user, request )
 
-            if roles and 'Manager' in roles:
+            if roles and ('Manager' in roles or
+                'Masquerader' in roles):
                 return True
 
         return False

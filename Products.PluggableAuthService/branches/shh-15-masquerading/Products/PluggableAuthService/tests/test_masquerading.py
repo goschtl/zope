@@ -57,9 +57,13 @@ class MasqueradingTests(pastc.PASTestCase):
 
     def afterSetUp(self):
         self.pas = self.folder.acl_users
-        # Create a masquerading user
+        # Create a masquerading user (Manager)
         self.pas.users.addUser('fred_id', 'fred', 'r0ck')
         self.pas.roles.assignRoleToPrincipal('Manager', 'fred_id')
+        # Create a masquerading user (Masquerader)
+        self.pas.users.addUser('barney_id', 'barney', 'p4per')
+        self.pas.roles.addRole('Masquerader')
+        self.pas.roles.assignRoleToPrincipal('Masquerader', 'barney_id')
         # Create a masqueraded user
         self.pas.users.addUser('wilma_id', 'wilma', 'geheim')
         self.pas.roles.assignRoleToPrincipal(pastc.user_role, 'wilma_id')
@@ -76,9 +80,20 @@ class MasqueradingTests(pastc.PASTestCase):
         # Disable masquerading
         masquerading(False)
 
-    def test__extractUserIds(self):
+    def test__extractUserIds_Manager(self):
         request = self.app.REQUEST
         request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
+
+        uids = self.pas._extractUserIds(request, self.pas.plugins)
+        self.assertEqual(len(uids), 1)
+
+        user_id, info = uids[0]
+        self.assertEqual(user_id, 'wilma_id')
+        self.assertEqual(info, 'wilma')
+
+    def test__extractUserIds_Masquerader(self):
+        request = self.app.REQUEST
+        request._auth = 'Basic %s' % pastc.mkauth('barney/wilma', 'p4per')
 
         uids = self.pas._extractUserIds(request, self.pas.plugins)
         self.assertEqual(len(uids), 1)
@@ -124,13 +139,33 @@ class MasqueradingTests(pastc.PASTestCase):
         info = self.pas._verifyUser(self.pas.plugins, login='fred/betty')
         self.assertEqual(info, None)
 
-    def test_validate(self):
+    def test_validate_Manager(self):
         # Rig the request so it looks like we traversed to doc
         request = self.app.REQUEST
         request['PUBLISHED'] = self.doc
         request['PARENTS'] = [self.folder, self.app]
         request.steps = list(self.doc.getPhysicalPath())
         request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
+
+        user = self.pas.validate(request)
+        self.failIfEqual(user, None)
+        self.assertEqual(user.getId(), 'wilma_id')
+        self.assertEqual(user.getUserName(), 'wilma')
+        self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
+
+        user = getSecurityManager().getUser()
+        self.failIfEqual(user, None)
+        self.assertEqual(user.getId(), 'wilma_id')
+        self.assertEqual(user.getUserName(), 'wilma')
+        self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
+
+    def test_validate_Masquerader(self):
+        # Rig the request so it looks like we traversed to doc
+        request = self.app.REQUEST
+        request['PUBLISHED'] = self.doc
+        request['PARENTS'] = [self.folder, self.app]
+        request.steps = list(self.doc.getPhysicalPath())
+        request._auth = 'Basic %s' % pastc.mkauth('barney/wilma', 'p4per')
 
         user = self.pas.validate(request)
         self.failIfEqual(user, None)
