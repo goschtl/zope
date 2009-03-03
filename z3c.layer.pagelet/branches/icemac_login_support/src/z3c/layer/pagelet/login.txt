@@ -226,3 +226,182 @@ confirmation page telling that logout was successfull:
   </body>
   </html>
 
+
+Cookie auth
+~~~~~~~~~~~
+
+To do cookie auth we have to set up a pluggable auth utility (PAU)
+with a authenticator plug-in (principal folder) first:
+
+  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+  >>> from zope.app.appsetup.bootstrap import ensureUtility
+  >>> from zope.app.authentication.authentication import PluggableAuthentication
+  >>> from zope.app.authentication.principalfolder import PrincipalFolder
+  >>> from zope.site import site
+
+  >>> auth = ensureUtility(
+  ...     getRootFolder(), IAuthentication, '', PluggableAuthentication,
+  ...     asObject=True)
+  >>> auth.credentialsPlugins = (u'Session Credentials',)
+  >>> principal_folder = ensureUtility(getRootFolder(), IAuthenticatorPlugin,
+  ...     '', PrincipalFolder, name=u'principal_folder', asObject=True)
+  >>> auth.authenticatorPlugins = (u'principal_folder',)
+
+We need a principal inside the principal folder:
+
+  >>> from zope.app.authentication.principalfolder import InternalPrincipal
+  >>> principal_folder['1'] = InternalPrincipal('tester', 'tpass', 'Tester')
+
+We use a new browser, so the principal is not logged in and the login
+link is displayed:
+
+  >>> browser = Browser()
+  >>> browser.open(skinURL + 'container/@@default.html')
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Login</a>
+    </body>
+  </html>
+
+Selecting the link leads to the login page:
+
+  >>> browser.getLink('Login').click()
+  >>> login_url = browser.url
+  >>> login_url
+  'http://localhost/++skin++PageletTestSkin/@@loginForm.html?camefrom=%2F%2B%2Bskin%2B%2BPageletTestSkin%2Fcontainer%2F%40%40login.html%3FnextURL%3Dhttp%253A%2F%2Flocalhost%2F%252B%252Bskin%252B%252BPageletTestSkin%2Fcontainer%2F%2540%2540default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+    <p>
+      Please provide Login Information
+    </p>
+    <form action="" method="post">
+      <div class="row">
+        <div class="label"><label for="login">User Name</label></div>
+        <div class="field">
+          <input type="text" name="login" id="login" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><label for="password">Password</label></div>
+        <div class="field">
+          <input type="password" name="password" id="password" />
+        </div>
+      </div>
+      <div class="row">
+        <input class="form-element" type="submit"
+               name="SUBMIT" value="Log in" />
+      </div>
+      <input type="hidden" name="camefrom"
+             value="/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">
+    </form>
+  </div>
+  </body>
+  </html>
+
+Entering wrong username does not authorize but display an error
+message:
+
+  >>> browser.getControl('User Name').value = 'me'
+  >>> browser.getControl('Password').value = 'tpass'
+  >>> browser.getControl('Log in').click()
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/@@loginForm.html?camefrom=%2F%2B%2Bskin%2B%2BPageletTestSkin%2Fcontainer%2F%40%40login.html%3FnextURL%3Dhttp%253A%2F%2Flocalhost%2F%252B%252Bskin%252B%252BPageletTestSkin%2Fcontainer%2F%2540%2540default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+    <p>
+      Please provide Login Information
+    </p>
+    <form action="" method="post">
+      <div class="row">
+        <div class="label"><label for="login">User Name</label></div>
+        <div class="field">
+          <input type="text" name="login" id="login" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><label for="password">Password</label></div>
+        <div class="field">
+          <input type="password" name="password" id="password" />
+        </div>
+      </div>
+      <div class="row">
+        <input class="form-element" type="submit"
+               name="SUBMIT" value="Log in" />
+      </div>
+      <input type="hidden" name="camefrom"
+             value="/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">
+    </form>
+  </div>
+  </body>
+  </html>
+
+Entering wrong password does not authorize either:
+
+  >>> browser.getControl('User Name').value = 'tester'
+  >>> browser.getControl('Password').value = 'let me in'
+  >>> browser.getControl('Log in').click()
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/@@loginForm.html?camefrom=%2F%2B%2Bskin%2B%2BPageletTestSkin%2Fcontainer%2F%40%40login.html%3FnextURL%3Dhttp%253A%2F%2Flocalhost%2F%252B%252Bskin%252B%252BPageletTestSkin%2Fcontainer%2F%2540%2540default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+    <p>
+      Please provide Login Information
+    </p>
+    <form action="" method="post">
+      <div class="row">
+        <div class="label"><label for="login">User Name</label></div>
+        <div class="field">
+          <input type="text" name="login" id="login" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="label"><label for="password">Password</label></div>
+        <div class="field">
+          <input type="password" name="password" id="password" />
+        </div>
+      </div>
+      <div class="row">
+        <input class="form-element" type="submit"
+               name="SUBMIT" value="Log in" />
+      </div>
+      <input type="hidden" name="camefrom"
+             value="/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">
+    </form>
+  </div>
+  </body>
+  </html>
+
+
+After entering correct username and passord the user gets authorized:
+
+  >>> browser.getControl('User Name').value = 'tester'
+  >>> browser.getControl('Password').value = 'tpass'
+  >>> browser.handleErrors = False
+  >>> browser.getControl('Log in').click()
+

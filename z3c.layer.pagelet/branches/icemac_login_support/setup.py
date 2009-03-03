@@ -34,6 +34,8 @@ setup(
         + '\n\n' +
         read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
         + '\n\n' +
+        read('src', 'z3c', 'layer', 'pagelet', 'login.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     keywords = "z3c pagelet layer zope zope3",
