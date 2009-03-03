@@ -1,0 +1,56 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c">
+
+  <browser:viewletManager
+     name="login-logout"
+     provides=".auth.ILoginLogoutViewletManager"
+     class=".auth.LoginLogoutViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     permission="zope.Public"
+     />
+
+  <browser:viewlet
+     manager=".auth.ILoginLogoutViewletManager"
+     name="Login"
+     for="*"
+     class=".auth.LoginViewlet"
+     permission="zope.Public"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     weight="1"
+     viewName="@@login.html"
+     />
+
+  <browser:viewlet
+     manager=".auth.ILoginLogoutViewletManager"
+     name="Logout"
+     for="*"
+     class=".auth.LogoutViewlet"
+     permission="zope.Public"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     weight="2"
+     viewName="@@logout.html"
+     />
+
+  <browser:page
+     name="logout.html"
+     for="*"
+     class=".auth.HTTPAuthenticationLogout"
+     attribute="logout"
+     permission="zope.Public"
+     allowed_interface="zope.app.publisher.interfaces.http.ILogout"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+  <browser:page
+     name="login.html"
+     for="*"
+     class=".auth.HTTPAuthenticationLogin"
+     attribute="login"
+     permission="zope.Public"
+     allowed_interface="zope.app.publisher.interfaces.http.ILogin"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     />
+
+</configure>

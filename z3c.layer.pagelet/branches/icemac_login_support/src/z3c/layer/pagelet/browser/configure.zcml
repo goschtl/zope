@@ -98,4 +98,6 @@
       layer="z3c.layer.pagelet.IPageletBrowserLayer"
       />
 
+  <include file="zope.app.security.browser.zcml" />
+
 </configure>

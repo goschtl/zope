@@ -5,13 +5,14 @@ CHANGES
 1.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Updated tests to use new ``zope.configuration``which containts the
+  exclude directive.
 
 
 1.2.1 (2009-02-21)
 ------------------
 
-- Release 1.2.0 was missing the test file for the secrity issue.
+- Release 1.2.0 was missing the test file for the security issue.
 
 
 1.2.0 (2009-02-21)

@@ -5,9 +5,6 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="zope">
 
-  <!-- load meta configuration for exclude -->
-  <include package="zc.configuration" file="meta.zcml" />
-
   <!-- exclude will prevent from include -->
   <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
   <exclude package="zope.app.authentication" file="groupfolder.zcml" />
@@ -20,7 +17,6 @@
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
   <exclude package="zope.app.broken" file="browser.zcml" />
   <exclude package="zope.app.error.browser" />
-  <exclude package="zope.app.folder.browser" />
   <exclude package="zope.app.i18n.browser" />
   <exclude package="zope.dublincore.browser" />
 
@@ -33,6 +29,7 @@
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
 
 
   <!-- 3rd party meta configure -->
@@ -127,6 +124,15 @@
         layer="z3c.layer.pagelet.IPageletBrowserLayer"
         class=".ContainerContentsPage"
         />
+
+    <!-- definitions for login-logout tests -->
+    <z3c:layout
+        for="zope.container.interfaces.IContainer"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
+
   </configure>
 
 
