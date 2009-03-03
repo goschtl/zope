@@ -403,7 +403,7 @@ command_table = [
     (merge,    "",        "",           ""),
     (mkdir,    "",        "",           ""),
     (remove,   "del delete rm", "",     ""),
-    (resolve,  "",        "",           ""),
+    (resolve,  "resolved","",           ""),
     (revert,   "",        "",           ""),
     (status,   "stat st", "",           ""),
     (update,   "up",      "",           ""),
