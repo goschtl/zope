@@ -40,8 +40,3 @@ class IFormButtons(interface.Interface):
 
 class IErrorView(interface.Interface):
     """ Error view snippet view """
-
-
-class IFormWrapper(interface.Interface):
-    """ """
-

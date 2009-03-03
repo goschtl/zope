@@ -26,6 +26,7 @@ from z3c.form.interfaces import IForm, IGroup, ISubForm
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
 
+from interfaces import IFormWrapper
 from interfaces import IPageletForm, IPageletSubform
 from interfaces import IPageletDisplayForm, IPageletFormView
 
@@ -94,6 +95,7 @@ class PageletForm(form.Form, PageletBaseForm):
             elif ISubForm.providedBy(form):
                 subforms.append((form.weight, form.__name__, form))
             elif IPageletForm.providedBy(form):
+                interface.alsoProvides(form, IFormWrapper)
                 forms.append((form.weight, form.__name__, form))
             else:
                 views.append((form.weight, form.__name__, form))

@@ -121,3 +121,7 @@ class ISaveButton(ISaveAction):
 
 class ICancelButton(ICancelAction):
     """ cancel button """
+
+
+class IFormWrapper(interface.Interface):
+    """ """

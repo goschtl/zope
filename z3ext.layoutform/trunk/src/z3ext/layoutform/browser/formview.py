@@ -15,13 +15,13 @@
 
 $Id:  2007-12-12 12:27:02Z fafhrd $
 """
-from interfaces import IFormWrapper
+from z3ext.layoutform.interfaces import IFormWrapper
 
 
 class FormView(object):
 
     def isWrapped(self):
-        context = self.context.__parent__
+        context = self.context
 
         while 1:
             if IFormWrapper.providedBy(context):
