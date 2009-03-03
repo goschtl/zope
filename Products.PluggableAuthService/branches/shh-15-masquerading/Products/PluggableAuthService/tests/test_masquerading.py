@@ -14,10 +14,12 @@
 ##############################################################################
 
 import unittest
+import os
 
 from Products.PluggableAuthService.tests import pastc
 
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
+from Products.PluggableAuthService.utils import masquerading
 from Products.PluggableAuthService.utils import splitmasq
 
 from AccessControl.SecurityManagement import getSecurityManager
@@ -67,6 +69,12 @@ class MasqueradingTests(pastc.PASTestCase):
         self.doc.manage_permission(View, [pastc.user_role], acquire=False)
         # Start out as Anonymous User
         self.logout()
+        # Enable masquerading
+        masquerading(True)
+
+    def afterClear(self):
+        # Disable masquerading
+        masquerading(False)
 
     def test__extractUserIds(self):
         request = self.app.REQUEST
@@ -78,6 +86,15 @@ class MasqueradingTests(pastc.PASTestCase):
         user_id, info = uids[0]
         self.assertEqual(user_id, 'wilma_id')
         self.assertEqual(info, 'wilma')
+
+    def test__extractUserIds_masquerading_disabled(self):
+        request = self.app.REQUEST
+        request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
+
+        masquerading(False)
+
+        uids = self.pas._extractUserIds(request, self.pas.plugins)
+        self.assertEqual(len(uids), 0)
 
     def test__extractUserIds_masquerading_denied(self):
         request = self.app.REQUEST
@@ -102,16 +119,35 @@ class MasqueradingTests(pastc.PASTestCase):
         request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
 
         user = self.pas.validate(request)
-        self.failIf(user is None)
+        self.failIfEqual(user, None)
         self.assertEqual(user.getId(), 'wilma_id')
         self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
 
         user = getSecurityManager().getUser()
-        self.failIf(user is None)
+        self.failIfEqual(user, None)
         self.assertEqual(user.getId(), 'wilma_id')
         self.assertEqual(user.getUserName(), 'wilma')
         self.assertEqual(user.getRoles(), ['Authenticated', pastc.user_role])
+
+    def test_validate_masquerading_disabled(self):
+        # Rig the request so it looks like we traversed to doc
+        request = self.app.REQUEST
+        request['PUBLISHED'] = self.doc
+        request['PARENTS'] = [self.folder, self.app]
+        request.steps = list(self.doc.getPhysicalPath())
+        request._auth = 'Basic %s' % pastc.mkauth('fred/wilma', 'r0ck')
+
+        masquerading(False)
+
+        user = self.pas.validate(request)
+        self.assertEqual(user, None)
+
+        user = getSecurityManager().getUser()
+        self.failIfEqual(user, None)
+        self.assertEqual(user.getId(), None)
+        self.assertEqual(user.getUserName(), 'Anonymous User')
+        self.assertEqual(user.getRoles(), ('Anonymous',))
 
     def test_validate_masquerading_denied(self):
         # Rig the request so it looks like we traversed to doc
@@ -125,7 +161,7 @@ class MasqueradingTests(pastc.PASTestCase):
         self.assertEqual(user, None)
 
         user = getSecurityManager().getUser()
-        self.failIf(user is None)
+        self.failIfEqual(user, None)
         self.assertEqual(user.getId(), None)
         self.assertEqual(user.getUserName(), 'Anonymous User')
         self.assertEqual(user.getRoles(), ('Anonymous',))
@@ -142,7 +178,7 @@ class MasqueradingTests(pastc.PASTestCase):
         self.assertEqual(user, None)
 
         user = getSecurityManager().getUser()
-        self.failIf(user is None)
+        self.failIfEqual(user, None)
         self.assertEqual(user.getId(), None)
         self.assertEqual(user.getUserName(), 'Anonymous User')
         self.assertEqual(user.getRoles(), ('Anonymous',))

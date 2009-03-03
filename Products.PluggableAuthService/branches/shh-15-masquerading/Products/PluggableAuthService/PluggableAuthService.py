@@ -21,6 +21,7 @@ import logging
 import sys
 import re
 import types
+import os
 
 from ZPublisher import BeforeTraverse
 
@@ -86,6 +87,7 @@ from utils import _wwwdir
 from utils import createViewName
 from utils import createKeywords
 from utils import classImplements
+from utils import masquerading
 from utils import splitmasq
 
 security = ModuleSecurityInfo(
@@ -735,8 +737,11 @@ class PluggableAuthService( Folder, Cacheable ):
     security.declarePrivate( '_canMasquerade' )
     def _canMasquerade( self, plugins, user_id, name=None, request=None ):
 
-        """ Return True if user_id has the Manager role.
+        """ Return True if masquerading is enabled and user_id has the Manager role.
         """
+        if not masquerading():
+            return False
+
         user = self._createUser( plugins, user_id, name )
 
         rolemakers = plugins.listPlugins( IRolesPlugin )
