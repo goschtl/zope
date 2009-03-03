@@ -118,8 +118,7 @@ class HTTPAuthenticationLogin(object):
             auth = zope.component.getUtility(
                 zope.app.security.interfaces.IAuthentication)
             auth.unauthorized(
-                #self.request.principal.id, self.request)
-                None, self.request) # XXX correct this way?
+                self.request.principal.id, self.request)
             return render_pagelet(self, self.request, 'login_failed.html')
         else:
             if nextURL is None:

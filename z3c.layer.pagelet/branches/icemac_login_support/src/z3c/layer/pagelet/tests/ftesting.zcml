@@ -158,6 +158,27 @@
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
 
+  <!-- default principals -->
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <!-- default users -->
   <role
       id="zope.Manager"
       title="Manager"
