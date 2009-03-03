@@ -110,6 +110,20 @@ class MasqueradingTests(pastc.PASTestCase):
         uids = self.pas._extractUserIds(request, self.pas.plugins)
         self.assertEqual(len(uids), 0)
 
+    def test__verifyUser_by_id(self):
+        info = self.pas._verifyUser(self.pas.plugins, user_id='fred_id/wilma_id')
+        self.assertEqual(info['id'], 'wilma_id')
+        self.assertEqual(info['login'], 'wilma')
+
+    def test__verifyUser_by_login(self):
+        info = self.pas._verifyUser(self.pas.plugins, login='fred/wilma')
+        self.assertEqual(info['id'], 'wilma_id')
+        self.assertEqual(info['login'], 'wilma')
+
+    def test__verifyUser_bad_role_user(self):
+        info = self.pas._verifyUser(self.pas.plugins, login='fred/betty')
+        self.assertEqual(info, None)
+
     def test_validate(self):
         # Rig the request so it looks like we traversed to doc
         request = self.app.REQUEST
