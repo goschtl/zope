@@ -108,9 +108,11 @@
       permission="zope.ManageContent"
       />
 
+  <adapter factory=".copy.BlobFileCopyHook" />
+
   <!-- TODO: have a look later
   <adapter
-      for="zope.app.folder.interfaces.IFolder"
+      for="zope.site.interfaces.IFolder"
       provides="zope.filerepresentation.interfaces.IFileFactory"
       factory=".image.FileFactory"
       permission="zope.ManageContent"

@@ -219,3 +219,26 @@ Even implementation details like the _data attribute still work:
     >>> root[u'file']._data
     'A text file'
     
+
+Copying
+-------
+
+Let's check that blob files can be copied successfully. This
+functionality requires the new "zope.copy" package and the
+version of zope.copypastemove that uses zope.copy (>=3.5.1).
+
+    >>> from zope.copy import copy
+    >>> file = z3c.blobfile.file.File()
+    >>> file.data = u'hello, world'
+    >>> image = z3c.blobfile.file.File()
+    >>> image.data = 'some image bytes'
+    >>> transaction.commit()
+
+    >>> file_copy = copy(file)
+    >>> file_copy.data == file.data
+    True
+
+    >>> image_copy = copy(image)
+    >>> image_copy.data == image.data
+    True
+    
