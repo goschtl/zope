@@ -36,7 +36,6 @@ class UnauthorizedPage(BrowserPage):
 
     def __call__(self):
         raise Unauthorized('not authorized')
-        return u''
 
 
 class UserErrorPage(BrowserPage):
@@ -44,7 +43,6 @@ class UserErrorPage(BrowserPage):
 
     def __call__(self):
         raise UserError('simply user error')
-        return u''
 
 
 class SystemErrorPage(BrowserPage):
@@ -52,7 +50,6 @@ class SystemErrorPage(BrowserPage):
 
     def __call__(self):
         raise Exception('simply system error')
-        return u''
 
 
 class ContainerContentsPage(BrowserPage):
@@ -60,3 +57,6 @@ class ContainerContentsPage(BrowserPage):
 
     def __call__(self):
         return str([type(x) for x in self.context.values()])
+
+class LoginLogoutPage(browser.BrowserPagelet):
+    """Login and logout page."""
