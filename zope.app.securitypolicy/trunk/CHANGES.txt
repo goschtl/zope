@@ -5,7 +5,10 @@ CHANGES
 3.5.2 (unreleased)
 ------------------
 
-- 
+- Remove deprecated compatibility imports. Now, this package only
+  contains ZMI views for zope.securitypolicy.
+
+- Update package's description and mailing list address.
 
 3.5.1 (2009-01-27)
 ------------------

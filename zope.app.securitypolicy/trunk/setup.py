@@ -26,8 +26,8 @@ def read(*rnames):
 setup(name='zope.app.securitypolicy',
     version = '3.5.2dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
-    description="Zope's Default Security Policy ZMI Support",
+    author_email='zope-dev@zope.org',
+    description="ZMI-based management views for zope.securitypolicy",
     long_description=(
         read('README.txt')
         + '\n\n' +
