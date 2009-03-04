@@ -22,6 +22,11 @@ generation = 1
 
 
 def evolve(context):
+    """Upgrade the order storage of those OrderedDicts which can be reached
+    through a hierarchy of mappings. Applications that use OrderedDicts as
+    internal data structures need to take care of upgrading themselves.
+
+    """
     root = context.connection.root()
     for obj in zope.app.generations.utility.findObjectsMatching(
         root, lambda obj: isinstance(obj, zc.dict.OrderedDict)):

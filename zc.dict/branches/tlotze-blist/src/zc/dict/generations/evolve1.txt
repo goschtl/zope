@@ -8,6 +8,10 @@ lists, which have bad behaviour for large amounts of data. This was changed
 into using BLists. The evolution of database generation 1 handles the
 conversion of these structures.
 
+Note: It does so only for those OrderedDicts which can be reached through a
+hierarchy of mappings. Applications that use OrderedDicts as internal data
+structures need to take care of upgrading themselves.
+
 Let's create some ordered dicts [testdb]_:
 
 >>> from zc.dict import OrderedDict

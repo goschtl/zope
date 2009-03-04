@@ -1,7 +1,11 @@
 1.3 (unreleased)
 ----------------
 
-* changed the implementation of OrderedDict to store the order in buckets
+* Changed the implementation of OrderedDict to store the order in buckets
+  using zc.blist. At present, this improves performance only for those
+  operations that add or remove single items of an OrderedDict. Reordering the
+  existing items still results in the order being rewritten as a whole. A
+  better, more granular reordering API is planned for a future release.
 
 1.2.1 (2007-3-5)
 ----------------
