@@ -35,7 +35,7 @@ from synchronizer import dottedname
 
 class SynchronizationError(Exception):
     pass
-    
+
 @zope.component.adapter(zope.interface.Interface)
 @zope.interface.implementer(interfaces.IEntryId)
 def EntryId(obj):
@@ -56,7 +56,7 @@ class ObjectSynchronized(object):
 class SyncTask(object):
     """Convenient base class for synchronization tasks."""
 
-    def __init__(self, getSynchronizer, 
+    def __init__(self, getSynchronizer,
                        repository,
                        context=None):
         self.getSynchronizer = getSynchronizer
@@ -83,7 +83,7 @@ class Checkout(SyncTask):
 
     def serializableItems(self, items, dirpath):
         """Returns items which have synchronizer.
-        
+
         Returns a tuple of disambiguated name, original key, and synchronizer.
         """
         result = []
@@ -173,40 +173,57 @@ class Commit(SyncTask):
     """
 
     zope.interface.implements(interfaces.ICommit)
-    
+
     debug = False
-    
+
     def __init__(self, getSynchronizer, repository):
         super(Commit, self).__init__(getSynchronizer, repository)
         self.metadata = self.repository.getMetadata()
 
     def perform(self, container, name, fspath):
-        self.synchronize(container, name, fspath)
+        callbacks = []
+        add_callback = callbacks.append
+        self.synchronize(container, name, fspath, add_callback)
 
-    def synchronize(self, container, name, fspath):
+        # process callbacks
+        passes = 0
+        callbacks = [cb for cb in callbacks if cb is not None]
+        while passes < 10 and callbacks:
+            new_callbacks = []
+            for callback in callbacks:
+                new_callbacks.append(callback())
+            callbacks = [cb for cb in new_callbacks if cb is not None]
+            passes += 1
+
+        # fail if there are still callbacks after 10 passes. this
+        # suggests an infinate loop in callback creation.
+        if callbacks:
+            raise SynchronizationError(
+                'Too many synchronizer callback passes %s' % callbacks)
+
+    def synchronize(self, container, name, fspath, add_callback):
         """Synchronize an object or object tree from a repository.
 
         ``SynchronizationError`` is raised for errors that can't be
         corrected by a update operation, including invalid object
         names.
         """
-        
         self.context = container
         modifications = []
         if invalidName(name):
             raise SynchronizationError("invalid separator in name %r" % name)
-                
+
         if not name:
-            self.synchDirectory(container, fspath)
+            self.synchDirectory(container, fspath, add_callback)
         else:
             synchronizer = self.getSynchronizer(container)
             key = originalKey(fspath, name, self.metadata)
             try:
                 traverseKey(container, key)
             except:
-                self.synchNew(container, key, fspath)
+                self.synchNew(container, key, fspath, add_callback)
             else:
-                modified = self.synchOld(container, key, fspath)
+                modified = self.synchOld(container, key, fspath, add_callback)
                 if modified:
                     modifications.append(modified)
             # Now update extra and annotations
@@ -220,31 +237,32 @@ class Commit(SyncTask):
                 modified = synchronizer.setmetadata(metadata)
                 if modified:
                     modifications.append(modified)
-                        
+
                 extrapath = fsutil.getextra(fspath)
                 if self.repository.exists(extrapath):
                     extras = synchronizer.extras()
-                    extras = self.synchSpecials(extrapath, extras)
+                    extras = self.synchSpecials(extrapath, extras, add_callback)
                     modified = synchronizer.setextras(extras)
                     if modified:
                         modifications.append(modified)
-                
+
                 annpath = fsutil.getannotations(fspath)
                 if self.repository.exists(annpath):
                     annotations = synchronizer.annotations()
-                    annotations = self.synchSpecials(annpath, annotations)
+                    annotations = self.synchSpecials(annpath, annotations,
+                                                     add_callback)
                     modified = synchronizer.setannotations(annotations)
                     if modified:
                         modifications.append(modified)
-                        
+
             if modifications:
                 zope.event.notify(
                     zope.lifecycleevent.ObjectModifiedEvent(
-                        obj, 
+                        obj,
                         *modifications))
 
 
-    def synchSpecials(self, fspath, specials):
+    def synchSpecials(self, fspath, specials, add_callback):
         """Synchronize an extra or annotation mapping."""
         repository = self.repository
         md = self.metadata.getmanager(fspath)
@@ -253,7 +271,7 @@ class Commit(SyncTask):
         if interfaces.IDirectorySynchronizer.providedBy(synchronizer):
             for name, entry in entries.items():
                 path = self.repository.join(fspath, name)
-                self.synchronize(specials, name, path)
+                self.synchronize(specials, name, path, add_callback)
         else:
             if interfaces.IDefaultSynchronizer.providedBy(synchronizer):
                 fp = self.repository.readable(fspath)
@@ -262,12 +280,12 @@ class Commit(SyncTask):
                 fp.close()
             elif interfaces.IFileSynchronizer.providedBy(synchronizer):
                 fp = self.repository.readable(fspath)
-                synchronizer.load(fp)
+                add_callback(synchronizer.load(fp))
                 fp.close()
 
         return specials
 
-    def synchDirectory(self, container, fspath):
+    def synchDirectory(self, container, fspath, add_callback):
         """Helper to synchronize a directory."""
         adapter = self.getSynchronizer(container)
         nameset = {}
@@ -280,10 +298,10 @@ class Commit(SyncTask):
                 nameset[key] = self.repository.join(fspath, key)
         for name in self.metadata.getnames(fspath):
             nameset[name] = self.repository.join(fspath, name)
-            
+
         # Sort the list of keys for repeatability
         names_paths = nameset.items()
-            
+
         names_paths.sort()
         subdirs = []
         # Do the non-directories first.
@@ -293,31 +311,32 @@ class Commit(SyncTask):
             if self.repository.isdir(path):
                 subdirs.append((name, path))
             else:
-                self.synchronize(container, name, path)
+                self.synchronize(container, name, path, add_callback)
         # Now do the directories
         for name, path in subdirs:
-            self.synchronize(container, name, path)
+            self.synchronize(container, name, path, add_callback)
 
-    def synchNew(self, container, name, fspath):
+    def synchNew(self, container, name, fspath, add_callback):
         """Helper to synchronize a new object."""
         entry = self.metadata.getentry(fspath)
         if entry:
             # In rare cases (e.g. if the original name and replicated name
-            # differ and the replica has been deleted) we can get 
+            # differ and the replica has been deleted) we can get
             # something apparently new that is marked for deletion. Since the
             # names are provided by the synchronizer we must at least
             # inform the synchronizer.
             if entry.get("flag") == "removed":
                 self.deleteItem(container, name)
                 return
-            obj = self.createObject(container, name, entry, fspath)
+            obj = self.createObject(container, name, entry, fspath,
+                                    add_callback)
             synchronizer = self.getSynchronizer(obj)
             if interfaces.IDirectorySynchronizer.providedBy(synchronizer):
-                self.synchDirectory(obj, fspath)
+                self.synchDirectory(obj, fspath, add_callback)
 
-    def synchOld(self, container, name, fspath):
+    def synchOld(self, container, name, fspath, add_callback):
         """Helper to synchronize an existing object."""
-        
+
         modification = None
         entry = self.metadata.getentry(fspath)
         if entry.get("flag") == "removed":
@@ -331,11 +350,12 @@ class Commit(SyncTask):
         obj = traverseKey(container, key)
         synchronizer = self.getSynchronizer(obj)
         if interfaces.IDirectorySynchronizer.providedBy(synchronizer):
-            self.synchDirectory(obj, fspath)
+            self.synchDirectory(obj, fspath, add_callback)
         else:
             type = entry.get("type")
             if type and typeIdentifier(obj) != type:
-                self.createObject(container, key, entry, fspath, replace=True)
+                self.createObject(container, key, entry, fspath, add_callback,
+                                  replace=True)
             else:
                 original_fn = fsutil.getoriginal(fspath)
                 if self.repository.exists(original_fn):
@@ -353,7 +373,8 @@ class Commit(SyncTask):
                 if new:
                     if not entry.get("factory"):
                         # If there's no factory, we can't call load
-                        self.createObject(container, key, entry, fspath, True)
+                        self.createObject(container, key, entry, fspath,
+                                          add_callback, True)
                         obj = traverseKey(container, key)
                         modification = ObjectSynchronized()
                     else:
@@ -361,12 +382,13 @@ class Commit(SyncTask):
                         modified = not compare(fp, synchronizer)
                         if modified:
                             fp.seek(0)
-                            synchronizer.load(fp)
+                            add_callback(synchronizer.load(fp))
                             modification = ObjectSynchronized()
                         fp.close()
         return modification
 
-    def createObject(self, container, name, entry, fspath, replace=False):
+    def createObject(self, container, name, entry, fspath, add_callback,
+                     replace=False):
         """Helper to create a deserialized object."""
         factory_name = entry.get("factory")
         type = entry.get("type")
@@ -391,7 +413,7 @@ class Commit(SyncTask):
                 fp.close()
             elif interfaces.IFileSynchronizer.providedBy(synchronizer):
                 fp = self.repository.readable(fspath)
-                synchronizer.load(fp)
+                add_callback(synchronizer.load(fp))
                 fp.close()
         elif type:
             fp = self.repository.readable(fspath)
@@ -423,9 +445,9 @@ class Commit(SyncTask):
                     pickler = interfaces.IUnpickler(self.context)
                     obj = pickler.load(fp)
                 else:
-                    generator.load(obj, fp)
+                    add_callback(generator.load(obj, fp))
                 fp.close()
-        
+
         if not added:
             self.setItem(container, name, obj, replace)
         return obj
@@ -451,7 +473,7 @@ class Commit(SyncTask):
 
         Uses the synchronizer if possible.
         """
-        
+
         dir = self.getSynchronizer(container)
         if interfaces.IDirectorySynchronizer.providedBy(dir):
             del dir[key]
@@ -465,19 +487,38 @@ class Checkin(Commit):
 
     def perform(self, container, name, fspath):
         """Checkin a new object tree.
-        
+
         Raises a ``SynchronizationError`` if the name already exists
         in the object database.
         """
-        
+        callbacks = []
+        add_callback = callbacks.append
+
         self.context = container    # use container as context of reference
         self.metadata.added()
         try:
             traverseKey(container, name)
         except:
-            self.synchronize(container, name, fspath)
+            self.synchronize(container, name, fspath, add_callback)
         else:
             raise SynchronizationError("object already exists %r" % name)
+
+        # process callbacks
+        passes = 0
+        callbacks = [cb for cb in callbacks if cb is not None]
+        while passes < 10 and callbacks:
+            new_callbacks = []
+            for callback in callbacks:
+                new_callbacks.append(callback())
+            callbacks = [cb for cb in new_callbacks if cb is not None]
+            passes += 1
+
+        # fail if there are still callbacks after 10 passes. this
+        # suggests an infinate loop in callback creation.
+        if callbacks:
+            raise SynchronizationError(
+                'Too many synchronizer callback passes %s' % callbacks)
+
 
 
 class Check(SyncTask):
@@ -492,7 +533,7 @@ class Check(SyncTask):
         self.metadata = repository.getMetadata()
         self.conflicts = []
         self.raise_on_conflicts = raise_on_conflicts
-        
+
     def errors(self):
         """Return a list of errors (conflicts).
 
@@ -553,7 +594,7 @@ class Check(SyncTask):
                 extrapath = fsutil.getextra(fspath)
                 if extras and self.repository.exists(extrapath):
                     self.checkSpecials(extras, extrapath)
-                    
+
                 annotations = adapter.annotations()
                 annpath = fsutil.getannotations(fspath)
                 if annotations and self.repository.exists(annpath):
@@ -561,7 +602,7 @@ class Check(SyncTask):
 
     def checkSpecials(self, container, fspath):
         """Helper to check a directory."""
-        
+
         nameset = {}
         for key in container:
             nameset[key] = 1
@@ -620,7 +661,7 @@ class Check(SyncTask):
         else:
             if not self.repository.exists(fspath):
                 self.conflict(fspath)
-                
+
         synchronizer = self.getSynchronizer(container)
         key = originalKey(fspath, name, self.metadata)
         obj = traverseKey(container, key)
@@ -636,7 +677,7 @@ class Check(SyncTask):
                 cmppath = oldfspath
             else:
                 cmppath = fspath
-                
+
             fp = self.repository.readable(cmppath)
             if not compare(fp, adapter):
                 self.conflict(fspath)
@@ -683,7 +724,7 @@ def resolveDottedname(dottedname):
 
 def compare(readable, dumper):
     """Help function for the comparison of a readable and a synchronizer.
-        
+
     Simulates a writeable that raises an exception if the serializer
     dumps data which do not match the content of the readable.
     """
@@ -703,10 +744,10 @@ def compare(readable, dumper):
 
 
 class ComparePickles(object):
-    
+
     def __init__(self, context, pickler):
         self.context = context
         self.pickler = pickler
-        
+
     def dump(self, writeable):
         self.pickler.dump(self.context, writeable)

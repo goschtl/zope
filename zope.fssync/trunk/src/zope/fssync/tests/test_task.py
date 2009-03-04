@@ -42,31 +42,31 @@ from zope.fssync import synchronizer
 from zope.fssync import interfaces
 from zope.fssync import repository
 from zope.fssync import pickle
-from zope.fssync import task 
+from zope.fssync import task
 
 def provideSynchronizer(klass, Synchronizer):
     zope.component.provideUtility(Synchronizer, interfaces.ISynchronizerFactory,
                                         name=synchronizer.dottedname(klass))
-        
+
 class Sample(object):
     pass
 
 class IPretendFile(zope.interface.Interface):
     pass
-   
+
 class PretendFile(object):
     zope.interface.implements(IPretendFile)
-    
+
     data = ''
     contentType = ''
-    
+
     def __init__(self, data, contentType):
         self.data = data
         self.contentType = contentType
 
 class IPretendContainer(zope.interface.Interface):
     pass
-    
+
 class PretendContainer(Location):
     zope.interface.implements(IPretendContainer, ITraversable, ITraverser)
 
@@ -125,7 +125,7 @@ class TestBase(PlacelessSetup, TempFiles):
         super(TestBase, self).setUp()
 
         # Set up serializer factory
-        zope.component.provideUtility(synchronizer.DefaultSynchronizer, 
+        zope.component.provideUtility(synchronizer.DefaultSynchronizer,
                                         interfaces.ISynchronizerFactory)
 
         zope.component.provideAdapter(pickle.XMLPickler)
@@ -186,7 +186,7 @@ class TestCommitClass(TestBase):
     def create_committer(self):
         filesystem = repository.FileSystemRepository()
         return task.Commit(synchronizer.getSynchronizer, filesystem)
-        
+
     def test_set_item_without_serializer(self):
         committer = self.create_committer()
         container = {}
@@ -247,7 +247,7 @@ class TestCommitClass(TestBase):
         name = "contentType"
         root = TestRoot()
         try:
-            self.create_object(container, name, {}, fspath) #, context=root)
+            self.create_object(container, name, {}, fspath, list().append) #, context=root)
         finally:
             os.remove(fspath)
         self.assertEqual(container.name, name)
@@ -259,7 +259,7 @@ class TestCommitClass(TestBase):
         tfn = os.path.join(self.tempdir(), "foo")
         data = {"hello": "world"}
         self.writefile(dumps(data), tfn)
-        self.create_object_debug(container, "foo", entry, tfn)
+        self.create_object_debug(container, "foo", entry, tfn, list().append)
         self.assertEqual(container, {"foo": data})
 
     def test_create_object_factory_directory(self):
@@ -268,7 +268,7 @@ class TestCommitClass(TestBase):
         entry = {"flag": "added", "factory": PCname}
         tfn = os.path.join(self.tempdir(), "foo")
         os.mkdir(tfn)
-        self.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn, list().append)
         self.assertEqual(container.keys(), ["foo"])
         self.assertEqual(container["foo"].__class__, PretendContainer)
 
@@ -278,7 +278,7 @@ class TestCommitClass(TestBase):
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn, "wb")
-        self.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn, list().append)
         self.assertEqual(container.items(), [("foo", ["hello", "world"])])
 
     def test_create_object_ifilefactory(self):
@@ -288,7 +288,7 @@ class TestCommitClass(TestBase):
         data = "hello world"
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(data, tfn, "wb")
-        self.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn, list().append)
         self.assertEqual(container.holding["foo"].__class__, PretendFile)
         self.assertEqual(container.holding["foo"].data, "hello world")
 
@@ -298,7 +298,7 @@ class TestCommitClass(TestBase):
         entry = {"flag": "added"}
         tfn = os.path.join(self.tempdir(), "foo")
         os.mkdir(tfn)
-        self.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn, list().append)
         self.assertEqual(container.holding["foo"].__class__, PretendContainer)
 
 
@@ -615,7 +615,7 @@ class TestCheckAndCommit(TestCheckClass):
 
     def verify_file_changed(self):
         self.assertEqual(self.child["foo"], self.newfoo)
-    
+
     def verify_file_removed(self):
         self.assertEqual(self.child.keys(), ["grandchild"])
 
@@ -651,12 +651,102 @@ class TestCheckAndCommit(TestCheckClass):
         self.assertEqual(self.parent.keys(), [])
 
 
+class ExampleFile(object):
+    fixed_up1 = False
+    fixed_up2 = False
+
+    def __init__(self, data=''):
+        self.data = data
+
+class SynchronizerWithCB(synchronizer.FileSynchronizer):
+
+    def load(self, readable):
+        self.context.fixed_up1 = False
+        self.context.fixed_up2 = False
+        self.context.data = readable.read()
+        return self.callback1
+
+    def callback1(self):
+        self.context.fixed_up1 = True
+        return self.callback2
+
+    def callback2(self):
+        self.context.fixed_up2 = True
+
+class SynchronizerWithBadCB(SynchronizerWithCB):
+
+    def callback2(self):
+        return self.callback1
+
+
+class TestCallback(TestCheckClass):
+    """
+    Test that synchronizer callbacks work
+    """
+
+    def test_callback(self):
+        # set up a synchronizer that provides callbacks
+        zope.component.provideUtility(
+            SynchronizerWithCB, interfaces.ISynchronizerFactory,
+            name = synchronizer.dottedname(ExampleFile))
+
+        # add a file that uses a cb synchronizer to the repo
+        self.example_file = self.child['file.txt'] = ExampleFile()
+        self.file_path = os.path.join(self.childdir, 'file.txt')
+        entry = self.getentry(self.file_path)
+        entry["path"] = "/parent/child/file.txt"
+        entry["factory"] = "fake factory name"
+
+        # make sure the before the commit the file is OK
+        self.assertEqual(self.example_file.fixed_up1, False)
+        self.assertEqual(self.example_file.fixed_up2, False)
+
+        # update the file
+        self.writefile('new data', self.file_path)
+
+        # commit the changes
+        committer = task.Commit(synchronizer.getSynchronizer,
+                                self.checker.repository)
+        committer.perform(self.parent, "", self.parentdir)
+
+        # make sure that after the commit the fix ups have been done
+        self.assertEqual(self.example_file.data, 'new data')
+        self.assertEqual(self.example_file.fixed_up1, True)
+        self.assertEqual(self.example_file.fixed_up2, True)
+
+    def test_infinite_loop(self):
+        # set up a synchronizer that provides bad callbacks
+        zope.component.provideUtility(
+            SynchronizerWithBadCB, interfaces.ISynchronizerFactory,
+            name = synchronizer.dottedname(ExampleFile))
+
+        # add a file that uses a cb synchronizer to the repo
+        self.example_file = self.child['file.txt'] = ExampleFile()
+        self.file_path = os.path.join(self.childdir, 'file.txt')
+        entry = self.getentry(self.file_path)
+        entry["path"] = "/parent/child/file.txt"
+        entry["factory"] = "fake factory name"
+
+        # update the file
+        self.writefile('new data', self.file_path)
+
+        # commit the changes
+        committer = task.Commit(synchronizer.getSynchronizer,
+                                self.checker.repository)
+
+        # a synchronization error is raised
+        self.assertRaises(task.SynchronizationError, committer.perform,
+                          self.parent, "", self.parentdir)
+
+
+
 def test_suite():
     s = unittest.TestSuite()
     s.addTest(unittest.makeSuite(TestTaskModule))
     s.addTest(unittest.makeSuite(TestCommitClass))
     s.addTest(unittest.makeSuite(TestCheckClass))
     s.addTest(unittest.makeSuite(TestCheckAndCommit))
+    s.addTest(unittest.makeSuite(TestCallback))
     return s
 
 def test_main():
