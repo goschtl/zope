@@ -55,7 +55,6 @@ setup(name='zope.app.exception',
       ]),
       install_requires=['setuptools',
                         'zope.app.pagetemplate',
-                        'zope.deferredimport',
                         # This is a dependency we can avaid:
                         'zope.formlib',
                         'zope.interface',

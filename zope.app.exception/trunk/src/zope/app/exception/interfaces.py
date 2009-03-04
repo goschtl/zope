@@ -17,19 +17,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 
-##############################################################################
-# BBB 2006/04/03 - to be removed after 12 months
-
-import zope.deferredimport
-zope.deferredimport.deprecated(
-    "UserError has been moved to zope.exceptions.interfaces. This "
-    "reference will be removed in Zope 3.5.",
-    UserError = 'zope.exceptions.interfaces:UserError',
-    IUserError = 'zope.exceptions.interfaces:IUserError',
-    )
-
-#
-##############################################################################
 
 class ISystemErrorView(Interface):
     """Error views that can classify their contexts as system errors
