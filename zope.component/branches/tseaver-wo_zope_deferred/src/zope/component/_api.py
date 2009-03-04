@@ -31,12 +31,12 @@ from zope.component._declaration import adaptedBy
 from zope.component._declaration import adapter
 from zope.component._declaration import adapts
 
-# Try to be hookable. Do so in a try/except to avoid a hard dependency.
+# Use the C implementation in zope.hookable, if available;  fall back
+# to our Python version if not.
 try:
     from zope.hookable import hookable
 except ImportError:
-    def hookable(ob):
-        return ob
+    from zope.component.hookable import hookable
 
 # getSiteManager() returns a component registry.  Although the term
 # "site manager" is deprecated in favor of "component registry",

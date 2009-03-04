@@ -4,6 +4,9 @@ CHANGES
 3.6.0 (unreleased)
 ==================
 
+- Added a pure-Python 'hookable' implementation, for use when
+  'zope.hookable' is not present.
+
 - Cleanup package documentation and changelog a bit. Add sphinx-based
   documentation building command to the buildout.
 
