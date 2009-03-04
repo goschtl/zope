@@ -1,8 +1,14 @@
 in no particular order, some notes on things that I think ought to happen to this code:
 
  * Profiling.  As far as I know, none has been done, and I expect that the code is *very* slow. Then, obviously, optimizations should be considered.
- * Documentation.  It's still fairly poor; I think the whole damn thing is just so abstract that I can't figure out how to talk about it.
- * May as well figure out how to make a PasteScript template to auto-generate the entry point.
- * Better debugging tools/APIs: to see what will be autoincluded, turn on and off autoinclusion for individual packages, and freeze a ZCML file capturing autoinclusion information a la pip.
+   See also http://mail.zope.org/pipermail/zope-dev/2009-February/034866.html
+ * Documentation.  I'm trying to keep user and developer documentation both up-to-date and helpful, but I'm not sure I'm doing a very good job of
+   keeping it helpful.  Please let me know what's missing or unclear.
+ * I want to figure out how to make a PasteScript template to auto-generate the entry point for a plugin package, but I never seem to find the time
+   to learn how to write PasteScript templates.
+ * Better debugging tools/APIs are one of my highest priorities for this package in the short and long term.  I'd like to make it very easy to see
+   what will be autoincluded, turn on and off autoinclusion for individual packages, and freeze a ZCML file to capture static autoinclusion information
+   (a la pip).
 
-One day I also want to add another directive to autoinclude subpackages' ZCML; this is a frequent annoyance for me (see https://svn.openplans.org/svn/opencore/trunk/opencore/configuration/configure.zcml for an illustrative example)
+One day I also want to add another directive(s) to autoinclude subpackages' ZCML; this is a frequent annoyance for me (see
+https://svn.openplans.org/svn/opencore/trunk/opencore/configuration/configure.zcml for an illustrative example)

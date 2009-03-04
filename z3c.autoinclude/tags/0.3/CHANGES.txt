@@ -1,8 +1,8 @@
 Changes
 =======
 
-0.3 (unreleased)
-------------------
+0.3 (2009-03-03)
+----------------
 
 * Allow virtual namespace packages like 'plone' to be specified for the package. I think this
   may need more thought for the dependency case.
