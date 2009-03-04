@@ -110,7 +110,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         sub_folder = root_folder['sub_folder']
         ensureUtility(sub_folder, IErrorReportingUtility,
                      'ErrorReporting', ErrorReportingUtility,
-                     'ErrorReporting', asObject=True)
+                     'ErrorReporting')
 
         # Make sure it was created on the sub folder, not the root folder
         got_utility = zope.component.getUtility(IErrorReportingUtility,
@@ -131,10 +131,10 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
             cx = self.db.open()
             utility = ensureUtility(root_folder, IErrorReportingUtility,
                                     'ErrorReporting', ErrorReportingUtility,
-                                    'ErrorReporting', asObject=True)
+                                    'ErrorReporting')
             utility2 = ensureUtility(root_folder, IErrorReportingUtility,
                                      'ErrorReporting2', ErrorReportingUtility,
-                                     'ErrorReporting2', asObject=True)
+                                     'ErrorReporting2')
             if utility != None:
                 name = utility.__name__
                 name2 = utility2.__name__

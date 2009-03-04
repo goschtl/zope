@@ -5,7 +5,13 @@ CHANGES
 Version 3.9.1 (unreleased)
 --------------------------
 
-- ...
+- Finally deprecate the "asObject" argument of helper functions in the
+  ``zope.app.appsetup.bootstrap`` module. If your code uses any of these
+  functions, please remove the "asObject=True" argument passing anywhere,
+  because the support for that argument will be dropped soon. 
+
+- Remove one more deprecated function.
+
 
 Version 3.9.0 (2009-01-31)
 --------------------------
