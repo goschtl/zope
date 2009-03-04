@@ -26,17 +26,6 @@ from zope.security.interfaces import IPermission
 
 NULL_ID = _('<permission not activated>')
 
-##############################################################################
-# BBB 2006/04/03 -- to be removed after 12 months
-
-import zope.deferredimport
-zope.deferredimport.deprecatedFrom(
-    "It has been moved to zope.security.permission.  This reference "
-    "will be gone in Zope 3.5", 'zope.security.permission',
-    'Permission', 'checkPermission', 'allPermissions'
-    )
-
-##############################################################################
 
 class LocalPermission(Persistent, Location):
     implements(IPermission)

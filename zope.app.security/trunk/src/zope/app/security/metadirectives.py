@@ -18,17 +18,6 @@ $Id$
 from zope.interface import Interface
 from zope.schema import Id, TextLine
 
-##############################################################################
-# BBB 2006/04/03 -- to be removed after 12 months
-
-import zope.deferredimport
-zope.deferredimport.deprecated(
-    "It has been renamed to zope.security.zcml.IPermissionDirective.  "
-    "This reference will be gone in Zope 3.5",
-    IBaseDefineDirective = 'zope.security.zcml:IPermissionDirective'
-    )
-
-##############################################################################
 
 class IBasePrincipalDirective(Interface):
     """Base interface for principal definition directives."""

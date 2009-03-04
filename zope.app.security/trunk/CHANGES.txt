@@ -5,6 +5,9 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Remove deprecated code, thus removing explicit dependency on
+  zope.deprecation and zope.deferredimport.
+
 - Use template for AuthUtilitySearchView instead of ugly HTML
   constructing in the python code.
 

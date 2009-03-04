@@ -138,13 +138,6 @@ class IAuthentication(Interface):
         object hierarchy.
         """
 
-class IAuthenticationUtility(IAuthentication):
-    """This interface is deprecated
-    """
-
-    def getPrincipals(name):
-        """This interface is deprecated
-        """
 
 class ILoginPassword(Interface):
     """A password based login.
