@@ -9,7 +9,7 @@
       name="Base Components"
       />
 
-  <class class="zope.app.component.site.LocalSiteManager">
+  <class class="zope.site.site.LocalSiteManager">
     <implements interface=".base.IComponentsBases" />
     <require
         permission="zope.Public"
@@ -21,7 +21,7 @@
 
   <browser:page
       name="setBases.html"
-      for="zope.app.component.interfaces.ILocalSiteManager"
+      for="zope.site.interfaces.ILocalSiteManager"
       class=".base.SetBasesPage"
       permission="zope.ManageSite"
       menu="zmi_views" title="Bases"

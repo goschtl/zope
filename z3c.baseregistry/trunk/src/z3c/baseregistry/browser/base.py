@@ -20,21 +20,40 @@ import zope.interface
 import zope.component
 import zope.schema
 from zope.i18nmessageid import ZopeMessageFactory as _
-from zope.app.component import vocabulary
-from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.formlib import form
+from zope.security.proxy import removeSecurityProxy
+from zope.site.interfaces import ILocalSiteManager
 
 BASENAME = _('-- Global Base Registry --')
+PARENTNAME = _('-- Parent Local Registry --')
 
-class BaseComponentsVocabulary(vocabulary.UtilityVocabulary):
+class BaseComponentsVocabulary(zope.schema.vocabulary.SimpleVocabulary):
     """A vocabulary for ``IComponents`` utilities."""
 
-    interface = zope.component.interfaces.IComponents
+    zope.interface.classProvides(zope.schema.interfaces.IVocabularyFactory)
 
-    def __init__(self, context, **kw):
-        super(BaseComponentsVocabulary, self).__init__(context, **kw)
-        self._terms[BASENAME] = vocabulary.UtilityTerm(
-            zope.component.globalregistry.base, BASENAME)
+    def __init__(self, context):
+        terms = []
+        utils = set()
+        
+        # add available registry utilities
+        for name, util in \
+            zope.component.getUtilitiesFor(
+                zope.component.interfaces.IComponents, context):
+            
+            terms.append(zope.schema.vocabulary.SimpleTerm(util, name))
+            utils.add(util)
+
+        # add location parent registry if any
+        lsm = [removeSecurityProxy(sm) for sm in context.__bases__ \
+               if sm not in utils and ILocalSiteManager.providedBy(sm)]
+        if lsm:
+            terms.append(zope.schema.vocabulary.SimpleTerm(lsm[0], PARENTNAME))
+
+        # add the base registry
+        terms.append(zope.schema.vocabulary.SimpleTerm(zope.component.globalregistry.base, BASENAME))
+        
+        super(BaseComponentsVocabulary, self).__init__(terms)
 
 class IComponentsBases(zope.interface.Interface):
     """An interface describing the bases API of the IComponents object."""

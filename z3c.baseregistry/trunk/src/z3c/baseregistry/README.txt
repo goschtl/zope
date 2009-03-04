@@ -105,9 +105,9 @@ However, when reading the jar, we get an error:
   >>> cPickle.loads(jar)
   Traceback (most recent call last):
   ...
-  ComponentLookupError: (<zope.component.interfaces.ComponentLookupError ...>,
-                         <function BC at ...>,
-                         (<BaseGlobalComponents base>, 'myRegistry'))
+  ComponentLookupError: (ComponentLookupError(<InterfaceClass zope.component.interfaces.IComponents>, 'myRegistry'),
+                        <function BC at 0x...>,
+                        (<BaseGlobalComponents base>, 'myRegistry'))
 
 This is because we have not registered the registry in its parent as an
 ``IComponents`` utility, yet:
@@ -270,10 +270,10 @@ Using Base Registries
 Most commonly base registries will be used in local site managers. So let's
 create a local site:
 
-  >>> from zope.app.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> site = Folder()
 
-  >>> from zope.app.component.site import LocalSiteManager
+  >>> from zope.site.site import LocalSiteManager
   >>> site.setSiteManager(LocalSiteManager(site))
   >>> sm = site.getSiteManager()
 

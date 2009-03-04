@@ -2,7 +2,18 @@
 CHANGES
 =======
 
-Version 1.0.0 (2008-01-24)
---------------------------
+1.1.0 (unreleased)
+------------------
+
+- Fix base registry management form failure in case, when a site has its
+  parent's local site manager (that isn't registered as utility) in its
+  __bases__.
+
+- Use zope.site instead of zope.app.component.
+
+- Drop unused dependencies on zope.app.i18n and zope.app.pagetemplate.
+
+1.0.0 (2008-01-24)
+------------------
 
 - Initial Release

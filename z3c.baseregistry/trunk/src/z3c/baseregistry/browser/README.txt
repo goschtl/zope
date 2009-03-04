@@ -15,7 +15,7 @@ By setting the root folder site as the current site, we can simulate the
 behavior of calling from within the root folder:
 
   >>> import zope.component
-  >>> from zope.app.component import hooks
+  >>> from zope.site import hooks
 
   >>> site = getRootFolder()
   >>> hooks.setSite(site)
