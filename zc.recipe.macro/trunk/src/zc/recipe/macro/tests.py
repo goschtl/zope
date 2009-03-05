@@ -136,10 +136,21 @@ def dict_to_cfg(d):
 
 
 START_RE = re.compile(r'^Buildout::$', re.MULTILINE)
-END_RE = re.compile(r'(.+?)\n(?=\n\S).+?Result::(.+?)\n(?=\n\S)',
+END_RE = re.compile(r'(.+?)\n(?=\n\S).+?Result::(.+?)\n(?=\Z|\n\S)',
     re.DOTALL)
 
-class BuildoutManuel(object):
+class BuildoutManuel(manuel.Manuel):
+
+    # This uses the Manuel decorator methos in the __init__ so that the object
+    # can be a subclass of Manuel and have access to the tests it runs.
+
+    def __init__(self, setUp, *args, **kwargs):
+        super(BuildoutManuel, self).__init__(*args, **kwargs)
+        self.exteriorSetUp = setUp
+        self.parser(timing='early')(self.parse)
+        self.evaluater(self.evaluate)
+        self.formatter(self.format)
+
     def parse(self, document):
         document.regions = document.find_regions(START_RE, END_RE)
         for region in document:
@@ -189,7 +200,7 @@ class BuildoutManuel(object):
 
     def setUp(self, test):
         self.test = test
-        setUp(test)
+        self.exteriorSetUp(test)
 
 
 def setUp(test):
@@ -228,13 +239,9 @@ def test_suite():
         optionflags=(zope.testing.doctest.NORMALIZE_WHITESPACE |
                      zope.testing.doctest.ELLIPSIS))
 
-    bm = BuildoutManuel()
-    manuel_test = manuel.Manuel()
-    manuel_test.parser(timing='early')(bm.parse)
-    manuel_test.evaluater(bm.evaluate)
-    manuel_test.formatter(bm.format)
+    bm = BuildoutManuel(setUp)
 
-    m.extend(manuel_test)
+    m.extend(bm)
     quickstart = manuel.testing.TestSuite(m, 'QUICKSTART.txt', setUp=bm.setUp)
     suite.addTest(quickstart)
     readme = manuel.testing.TestSuite(m, 'README.txt', setUp=bm.setUp)
