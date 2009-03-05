@@ -1,3 +1,3 @@
-This package implements annotation for Zope publisher principals. Common
-annotation techniques cannot be applied to principals, since they are created
-on the fly for every request.
+This package implements annotations for Zope security principals. Common
+annotation techniques, like AttributeAnnotations cannot be applied to
+principals, since they are created on the fly for every request.
