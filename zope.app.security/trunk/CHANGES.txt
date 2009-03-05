@@ -5,6 +5,14 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Bug: The `sha` and `md5` modules has been deprecated in Python 2.6.
+  Whenever the ZCML of this package was included when using Python 2.6,
+  a deprecation warning had been raised stating that `md5` and `sha` have
+  been deprecated. Provided a simple condition to check whether Python 2.6
+  or later is installed by checking for the presense of `json` module
+  thas was added only in Python 2.6 and thus optionally load the security
+  declaration for `md5` and `sha`.
+
 - Remove deprecated code, thus removing explicit dependency on
   zope.deprecation and zope.deferredimport.
 

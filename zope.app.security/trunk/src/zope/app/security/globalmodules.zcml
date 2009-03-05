@@ -418,11 +418,16 @@
     <allow attributes="new" />
   </module>
 
-  <module module="md5">
+  <!-- These packages has been deprecated in Python 2.6 in favor of hashlib;
+       let's use a cheap way of detecting Python<=2.5 by checking whether the
+       package "json" is not available, which has been added only in Python 2.6. -->
+  <module module="md5"
+          zcml:condition="not-installed json">
     <allow attributes="new digest_size" />
   </module>
 
-  <module module="sha">
+  <module module="sha"
+          zcml:condition="not-installed json">
     <allow attributes="new blocksize digest_size" />
   </module>
 
