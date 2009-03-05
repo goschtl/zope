@@ -20,10 +20,22 @@ __docformat__ = "reStructuredText"
 import zope.interface
 from zope.i18n import translate
 from zope.security.proxy import removeSecurityProxy
+from rwproperty import setproperty, getproperty
 
 from z3c.formext import interfaces
 
 from z3c.form import group
+
+
+class ExtJSGroup(group.Group):
+
+    @getproperty
+    def scriptDependencies(self):
+        return self.parentForm.scriptDependencies
+
+    @setproperty
+    def scriptDependencies(self, value):
+        self.parentForm.scriptDependencies = value
 
 
 class ExtJSGroupForm(group.GroupForm):

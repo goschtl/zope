@@ -264,6 +264,14 @@ class RadioGroup(Field):
 @zope.component.adapter(IWidget)
 @zope.interface.implementer(interfaces.IExtJSComponent)
 def SimpleFiedWidgetFactory(widget):
+    #first try to get one for the given mode
+    factory = zope.component.queryMultiAdapter(
+            (widget.context, widget.request, widget.form,
+            widget, widget.field),
+            interfaces.IExtJSComponent,
+            name=widget.mode)
+    if factory is not None:
+        return factory
     return zope.component.getMultiAdapter(
             (widget.context, widget.request, widget.form,
             widget, widget.field),
