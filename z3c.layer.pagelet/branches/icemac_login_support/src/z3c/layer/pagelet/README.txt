@@ -161,7 +161,7 @@ unregistred user (test browser) for this:
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 403: Forbidden
+  HTTPError: HTTP Error 401: Unauthorized
 
   >>> print unauthorized.contents
   <!DOCTYPE ...
