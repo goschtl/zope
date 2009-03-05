@@ -1,0 +1,250 @@
+Macro Quickstart
+================
+
+zc.recipe.macro is a set of recipes allowing sections, or even parts, to be
+created dynamically from a macro section and a parameter section.  This enables
+the buildout to keep its data seperate from its output format.
+
+Basic Use
+---------
+
+In the most basic use of a macro, a section invokes the macro on itself, and
+uses itself as the parameter provider.
+Buildout::
+
+    [buildout]
+    parts = hard-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+
+    [hard-rocker]
+    recipe = zc.recipe.macro
+    macro = rock
+    rocking-style = so hard
+
+Result::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker
+    rocking-style = so hard
+    question = Why do I rock so hard?
+
+The recipe gets changed to zc.recipe.macro:empty, which is a do nothing recipe,
+because the invoking secion must be a part in order to execute recipes, and
+buildout demands that parts have a recipe, so it couldn't be emptied.
+
+Default Values
+--------------
+
+It is possible to include default values for parameters in a macro.
+
+Buildout::
+
+    [buildout]
+    parts = hard-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = so hard
+
+    [hard-rocker]
+    recipe = zc.recipe.macro
+    macro = rock
+
+Result::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker
+    rocking-style = so hard
+    question = Why do I rock so hard?
+
+Creating Parts
+--------------
+
+Of course, there wouldn't much point to this if one could only create sections
+with a dummy recipe.  This is where the result-recipe option comes in.
+
+Buildout::
+
+    [buildout]
+    parts = hard-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+
+    [hard-rocker]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test
+    macro = rock
+    rocking-style = so hard
+
+Result::
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:test
+    result-sections = hard-rocker
+    question = Why do I rock so hard?
+    rocking-style = so hard
+
+Targets
+-------
+
+Often, one wants to create multiple new sections.  This is possible with the
+targets option.  This is only useful, however, if one can provide multiple
+sources for parameters.  Fortunately, you can.  Each new section can optionally
+be followed by a colon and the name of a section to use for parameters.
+
+Buildout::
+
+    [buildout]
+    parts = rockers hard-rocker socks-rocker tired-rocker
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:empty
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        tired-rocker:tired-rocker-parameters
+
+Result::
+
+    [rockers]
+    recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker socks-rocker tired-rocker
+
+    [hard-rocker]
+    recipe = zc.recipe.macro:empty
+    rocking-style = so hard
+    question = Why do I rock so hard?
+
+    [socks-rocker]
+    recipe = zc.recipe.macro:empty
+    rocking-style = my socks
+    question = Why do I rock my socks?
+
+    [tired-rocker]
+    recipe = zc.recipe.macro:empty
+    rocking-style = all night
+    question = Why do I rock all night?
+
+In the previous example we hardcoded the result parts after the invoker in
+${buildout:parts}.  This is brittle, because someone might change the names of
+the targets or alphabetize the parts list. An invocation will have a list of
+the sections it modified in its result-sections variable, which is created when
+the macro is executed.
+
+Buildout::
+
+    [buildout]
+    parts = ${rockers:result-sections}
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        tired-rocker:tired-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test
+    rocking-style = so hard
+
+    [socks-rocker]
+    question = Why do I rock my socks?
+    recipe = zc.recipe.macro:test
+    rocking-style = my socks
+
+    [tired-rocker]
+    question = Why do I rock all night?
+    recipe = zc.recipe.macro:test
+    rocking-style = all night
+
+
+Special Variables
+-----------------
+
+zc.recipe.macro uses __name__ to mean the name of the section the macro is
+being invoked upon.  This allows one to not know the name of particular
+section, but still use it in output.
+
+Buildout::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why does $${:__name__} rock $${:rocking-style}?
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [socks-rocker-parameters]
+    rocking-style = my socks
+
+    [tired-rocker-parameters]
+    rocking-style = all night
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:empty
+    macro = rock
+    targets =
+        hard-rocker:hard-rocker-parameters
+        socks-rocker:socks-rocker-parameters
+        tired-rocker:tired-rocker-parameters
+
+Result::
+
+    [rockers]
+    recipe = zc.recipe.macro:empty
+    result-sections = hard-rocker socks-rocker tired-rocker
+
+    [hard-rocker]
+    question = Why does hard-rocker rock so hard?
+    recipe = zc.recipe.macro:empty
+
+    [socks-rocker]
+    question = Why does socks-rocker rock my socks?
+    recipe = zc.recipe.macro:empty
+
+    [tired-rocker]
+    question = Why does tired-rocker rock all night?
+    recipe = zc.recipe.macro:empty
+
+Done Now.
