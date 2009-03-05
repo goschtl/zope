@@ -742,15 +742,12 @@ class PluggableAuthService( Folder, Cacheable ):
         if not masquerading():
             return False
 
-        user = self._createUser( plugins, user_id, name )
+        user = self._findUser( plugins, user_id, name, request )
 
-        rolemakers = plugins.listPlugins( IRolesPlugin )
+        if user is not None:
+            roles = user.getRoles()
 
-        for rolemaker_id, rolemaker in rolemakers:
-
-            roles = rolemaker.getRolesForPrincipal( user, request )
-
-            if roles and ('Manager' in roles or 'Masquerader' in roles):
+            if 'Manager' in roles or 'Masquerader' in roles:
                 return True
 
         return False
