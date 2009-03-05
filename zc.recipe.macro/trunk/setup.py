@@ -86,7 +86,6 @@ setuptools.setup(
     description="Macro-recipe for buildout.",
     long_description=text(
         'src/zc/recipe/macro/QUICKSTART.txt',
-        "=======\nChanges\n=======\n\n",
         'CHANGES.txt',
         out=True),
     keywords="development build macro",

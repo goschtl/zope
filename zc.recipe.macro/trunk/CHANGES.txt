@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-1.2.5 (unreleased)
+1.2.5 (2009-03-05)
 ------------------
 
 - Removed version sections from the documentation.
@@ -24,12 +24,10 @@ CHANGES
 - Fixed addition of targets so that they will show up properly when one calls
   buildout.keys().
 
-
 1.2.3 (2008-07-11)
 ------------------
 
 - Fixed a bug in the CHANGES ReST
-
 
 1.2.2 (2008-07-11)
 ------------------
@@ -37,12 +35,10 @@ CHANGES
 - Fixed a bug in setup.py where setuptools was not being imported
 - Changed date format in CHANGES.txt to YYYY-MM-DD
 
-
 1.2.1 (2008-07-10)
 ------------------
 
 - Fixed a typo in the quickstart
-
 
 1.2.0 (2008-07-10)
 ------------------
