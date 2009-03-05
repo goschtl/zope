@@ -4,7 +4,7 @@
     >
 
   <subscriber
-      for="zope.app.appsetup.IDatabaseOpenedEvent"
+      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
       handler=".bootstrap.bootStrapSubscriber"
       />
 

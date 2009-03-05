@@ -24,12 +24,12 @@ from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
 import zope.security.interfaces
 from zope import interface, component
-from zope.location import Location
 from zope.annotation.interfaces import IAnnotations
-
 from zope.container.contained import Contained
+from zope.location import Location
+from zope.site.next import queryNextUtility
+
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.component import queryNextUtility
 
 class PrincipalAnnotationUtility(Persistent, Contained):
     """Stores `IAnnotations` for `IPrinicipals`.

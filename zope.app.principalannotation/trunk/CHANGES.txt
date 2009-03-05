@@ -5,7 +5,11 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Make boostrap subscriber called on IDatabaseOpenedWithRootEvent
+  instead of IDatabaseOpenedEvent, because this can cause bug if
+  subscriber will be called before root object is created.
+
+- Use zope.site instead of zope.app.component.
 
 3.5.0 (2009-02-01)
 ------------------

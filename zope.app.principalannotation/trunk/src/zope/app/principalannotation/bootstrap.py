@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap code for principal annotation utility.
 
-$Id: bootstrap.py 28023 2004-10-12 18:11:29Z anguenot $
+$Id$
 """
 
 import transaction
@@ -24,7 +24,7 @@ from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 def bootStrapSubscriber(event):
-    """Subscriber to the IDataBaseOpenedEvent
+    """Subscriber to the IDatabaseOpenedWithRootEvent
 
     Create utility at that time if not yet present
     """
