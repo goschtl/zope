@@ -29,4 +29,6 @@ class FormView(object):
 
             context = getattr(context, '__parent__', None)
             if context is None:
-                return False
+                break
+
+        return False

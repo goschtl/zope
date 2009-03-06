@@ -81,6 +81,8 @@ class PageletForm(form.Form, PageletBaseForm):
                 getAdapters((self.context, self, self.request), IPageletSubform)]
 
     def updateForms(self):
+        wrapped = IFormWrapper.providedBy(self)
+
         forms = []
         groups = []
         subforms = []
@@ -95,7 +97,8 @@ class PageletForm(form.Form, PageletBaseForm):
             elif ISubForm.providedBy(form):
                 subforms.append((form.weight, form.__name__, form))
             elif IPageletForm.providedBy(form):
-                interface.alsoProvides(form, IFormWrapper)
+                if wrapped:
+                    interface.alsoProvides(form, IFormWrapper)
                 forms.append((form.weight, form.__name__, form))
             else:
                 views.append((form.weight, form.__name__, form))
