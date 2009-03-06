@@ -2,8 +2,8 @@
 Changes
 =======
 
-3.5.0a3 (unreleased)
---------------------
+3.5.0 (unreleased)
+------------------
 
 * Split password manager functionality off to the new ``zope.password``
   package. Backward-compatibility imports are left in place.
