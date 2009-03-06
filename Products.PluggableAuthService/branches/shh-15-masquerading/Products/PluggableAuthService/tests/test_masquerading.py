@@ -14,11 +14,19 @@
 ##############################################################################
 
 import unittest
-import os
+
+from base64 import decodestring
+from urllib import unquote
+
+from Testing.ZopeTestCase import Functional
 
 from Products.PluggableAuthService.tests import pastc
 
+from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin
+
 from Products.PluggableAuthService.utils import masquerading
 from Products.PluggableAuthService.utils import splitmasq
 
@@ -258,10 +266,105 @@ class MasqueradingTests(pastc.PASTestCase):
         self.assertEqual(user.getRoles(), ('Anonymous',))
 
 
+class BasicAuthTests(Functional, pastc.PASTestCase):
+
+    def afterSetUp(self):
+        self.pas = self.folder.acl_users
+        # Create a masquerading user (Manager)
+        self.pas.users.addUser('fred_id', 'fred', 'r0ck')
+        self.pas.roles.assignRoleToPrincipal('Manager', 'fred_id')
+        # Create a masqueraded user
+        self.pas.users.addUser('wilma_id', 'wilma', 'geheim')
+        self.pas.roles.assignRoleToPrincipal(pastc.user_role, 'wilma_id')
+        # Create a protected document
+        self.folder.manage_addDTMLMethod('doc', file='the document')
+        self.doc = self.folder.doc
+        self.doc.manage_permission(View, [pastc.user_role], acquire=False)
+        # Enable masquerading
+        masquerading(True)
+
+    def afterClear(self):
+        # Disable masquerading
+        masquerading(False)
+
+    def testCredentials(self):
+        doc_path = self.doc.absolute_url_path()
+
+        name = 'fred/wilma'
+        password = 'r0ck'
+
+        credentials = '%s:%s' % (name, password)
+
+        response = self.publish(doc_path)
+        self.assertEqual(response.getStatus(), 401)
+
+        response = self.publish(doc_path, basic=credentials)
+        self.assertEqual(response.getStatus(), 200)
+
+
+class CookieAuthTests(BasicAuthTests):
+
+    def afterSetUp(self):
+        BasicAuthTests.afterSetUp(self)
+        # Add a cookie_auth plugin
+        factory = self.pas.manage_addProduct['PluggableAuthService']
+        factory.addCookieAuthHelper('cookie_auth')
+        self.cookie_auth = self.pas.cookie_auth
+        # Activate it
+        plugins = self.pas.plugins
+        plugins.activatePlugin(IChallengePlugin, 'cookie_auth')
+        plugins.movePluginsUp(IChallengePlugin, ['cookie_auth'])
+        plugins.activatePlugin(IExtractionPlugin, 'cookie_auth')
+        plugins.activatePlugin(ICredentialsUpdatePlugin, 'cookie_auth')
+        plugins.activatePlugin(ICredentialsResetPlugin, 'cookie_auth')
+
+    def testCredentials(self):
+        doc_path = self.doc.absolute_url_path()
+        doc_url = self.doc.absolute_url()
+
+        cookie_auth_path = self.cookie_auth.absolute_url_path()
+        cookie_auth_url = self.cookie_auth.absolute_url()
+
+        name = 'fred/wilma'
+        password = 'r0ck'
+
+        # Accessing doc sends us to login_form
+        response = self.publish(doc_path)
+        self.assertEqual(response.getStatus(), 302)
+
+        location = response.getHeader('Location')
+        location, came_from = location.split('?')
+        self.assertEqual(location, cookie_auth_url+'/login_form')
+
+        # Fill the form and submit
+        login_path = cookie_auth_path+'/login'
+        credentials = '?__ac_name=%s&__ac_password=%s&%s' % (name, password, came_from)
+
+        # We are logged in and sent back to where we came_from
+        response = self.publish(login_path+credentials)
+        self.assertEqual(response.getStatus(), 302)
+
+        location = response.getHeader('Location')
+        self.assertEqual(location, doc_url)
+
+        # We also receive an auth cookie
+        cookie_name = self.cookie_auth.cookie_name
+        cookie_value = response.getCookie(cookie_name)['value']
+
+        name, password = decodestring(unquote(cookie_value)).split(':')
+        name = name.decode('hex')
+        password = password.decode('hex')
+
+        self.assertEqual(name, 'fred/wilma')
+        self.assertEqual(password, 'r0ck')
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(SplitMasqTests),
         unittest.makeSuite(MasqueradingTests),
+        unittest.makeSuite(BasicAuthTests),
+        unittest.makeSuite(CookieAuthTests),
     ))
 
 if __name__ == '__main__':
