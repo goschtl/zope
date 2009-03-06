@@ -26,10 +26,10 @@ setup(name='z3c.recipe.template',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'zc.buildout',
       ],
       extras_require=dict(
         test = [
-            'zc.buildout',
             'zope.testing',
             ]
         ),
