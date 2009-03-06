@@ -814,10 +814,6 @@ class PluggableAuthService( Folder, Cacheable ):
             return None
 
         # Masquerading: Lookup role_user
-        auth_user_id, role_user_id = splitmasq( user_id )
-        if role_user_id is not None:
-            user_id = role_user_id
-
         auth_user_login, role_user_login = splitmasq( login )
         if role_user_login is not None:
             login = role_user_login
