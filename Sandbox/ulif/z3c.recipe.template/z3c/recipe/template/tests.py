@@ -24,17 +24,7 @@ from zope.testing import doctest, renormalizing
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
-    zc.buildout.testing.install_develop('z3c.recipe.i18n', test)
-    zc.buildout.testing.install('ZConfig', test)
-    zc.buildout.testing.install('zc.lockfile', test)
-    zc.buildout.testing.install('zc.recipe.egg', test)
-    zc.buildout.testing.install('zope.app.locales', test)
-    zc.buildout.testing.install('zope.configuration', test)
-    zc.buildout.testing.install('zope.deprecation', test)
-    zc.buildout.testing.install('zope.event', test)
-    zc.buildout.testing.install('zope.i18nmessageid', test)
-    zc.buildout.testing.install('zope.interface', test)
-    zc.buildout.testing.install('zope.schema', test)
+    zc.buildout.testing.install_develop('z3c.recipe.template', test)
     zc.buildout.testing.install('zope.testing', test)
 
 
