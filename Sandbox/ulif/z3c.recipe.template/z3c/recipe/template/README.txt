@@ -1,6 +1,9 @@
 Detailed Description
 ********************
 
+Simple creation of a file out of a template
+===========================================
+
 Lets create a minimal `buildout.cfg` file::
 
   >>> write('buildout.cfg',
@@ -35,3 +38,59 @@ The template was indeed created::
   My template knows about buildout path:
   .../sample-buildout
 
+The variable ``buildout:directory`` was also substituted by a path.
+
+
+Creating a template in a variable path
+======================================
+
+Lets create a minimal `buildout.cfg` file. This time the output should
+happen in a variable path::
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = template
+  ... offline = true
+  ...
+  ... [template]
+  ... recipe = z3c.recipe.template
+  ... input = template.in
+  ... output = ${buildout:parts-directory}/template
+  ... ''')
+
+Now we can run buildout::
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling template.
+  Installing template.
+
+The template was indeed created::
+
+  >>> cat('parts', 'template')
+  #
+  My template knows about buildout path:
+  .../sample-buildout
+
+
+Creating missing paths
+======================
+
+If an output file should be created in a path that does not yet exist,
+then the missing items will be created for us::
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = template
+  ... offline = true
+  ...
+  ... [template]
+  ... recipe = z3c.recipe.template
+  ... input = template.in
+  ... output = ${buildout:parts-directory}/etc/template
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling template.
+  Installing template.
