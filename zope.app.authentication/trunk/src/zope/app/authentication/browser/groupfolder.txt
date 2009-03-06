@@ -634,7 +634,7 @@ Now, with these groups set up, we should see these groups on the
 affected principals.  First, we'll make the root folder the
 thread-local site:
 
-  >>> from zope.app.component.hooks import setSite
+  >>> from zope.site.hooks import setSite
   >>> setSite(getRootFolder())
 
 and we'll get the pluggable authentication utility:

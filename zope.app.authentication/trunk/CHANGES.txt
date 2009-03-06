@@ -8,6 +8,8 @@ Changes
 * Split password manager functionality off to the new ``zope.password``
   package. Backward-compatibility imports are left in place.
 
+* Use ``zope.site`` instead of ``zope.app.component``.
+
 3.5.0a2 (2009-02-01)
 --------------------
 
