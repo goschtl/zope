@@ -6,7 +6,9 @@ version = '0.1dev'
 setup(name='z3c.recipe.template',
       version=version,
       description="Buildout recipe to generate a text file from a template",
-      long_description=open("README.txt").read() + "\n" +
+      long_description=open("README.txt").read() + "\n\n" +
+                       open(os.path.join("z3c", "recipe", "template",
+                                         "README.txt")).read() + "\n\n" +
                        open("CHANGES.txt").read(),
       classifiers=[
         "Development Status :: 3 - Alpha",
