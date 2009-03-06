@@ -17,19 +17,10 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.app.testing import ztapi
-from zope.app.authentication.interfaces import IPasswordManager
-from zope.app.authentication.password import PlainTextPasswordManager
-from zope.app.authentication.password import MD5PasswordManager
-from zope.app.authentication.password import SHA1PasswordManager
-from zope.app.authentication.password import SSHAPasswordManager
-
+# BBB: the password managers were moved to zope.password package
+from zope.password.testing import setUpPasswordManagers
 
 class PlacelessSetup(object):
 
     def setUp(self):
-        ztapi.provideUtility(IPasswordManager, PlainTextPasswordManager(),
-            "Plain Text")
-        ztapi.provideUtility(IPasswordManager, MD5PasswordManager(), "MD5")
-        ztapi.provideUtility(IPasswordManager, SHA1PasswordManager(), "SHA1")
-        ztapi.provideUtility(IPasswordManager, SSHAPasswordManager(), "SSHA")
+        setUpPasswordManagers()

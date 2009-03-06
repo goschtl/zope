@@ -28,6 +28,7 @@ from zope.container.interfaces import DuplicateIDError
 from zope.container.contained import Contained
 from zope.container.constraints import contains, containers
 from zope.container.btree import BTreeContainer
+from zope.password.interfaces import IPasswordManager
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 from zope.app.security.interfaces import IAuthentication
 
@@ -141,7 +142,7 @@ class InternalPrincipal(Persistent, Contained):
 
     def _getPasswordManager(self):
         return component.getUtility(
-            interfaces.IPasswordManager, self.passwordManagerName)
+            IPasswordManager, self.passwordManagerName)
 
     def getPassword(self):
         return self._password
