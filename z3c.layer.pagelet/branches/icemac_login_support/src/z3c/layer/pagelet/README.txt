@@ -154,8 +154,11 @@ And check error view registred for
   </html>
   <BLANKLINE>
 
-And check the ``zope.security.interfaces.IUnauthorized`` view, use a new
-unregistred user (test browser) for this:
+To check the ``zope.security.interfaces.IUnauthorized`` view, we use a
+new unregistred user (test browser). As we have defined an
+unauthenticatedPrincipal in ZCML (see tests/ftesting.zcml) ``401
+Unauthorized`` is returned instead of ``403 Forbidden`` which would
+show up otherwise:
 
   >>> unauthorized = Browser()
   >>> unauthorized.open(skinURL + '/@@forbidden.html')

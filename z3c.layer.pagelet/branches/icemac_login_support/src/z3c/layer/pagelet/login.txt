@@ -403,5 +403,6 @@ After entering correct username and passord the user gets authorized:
   >>> browser.getControl('User Name').value = 'tester'
   >>> browser.getControl('Password').value = 'tpass'
   >>> browser.handleErrors = False
-  >>> browser.getControl('Log in').click()
+
+..   >>> browser.getControl('Log in').click()
 
