@@ -1,15 +1,30 @@
 Changelog
----------
+=========
 
-0.5 (released 2/16/2009)
-~~~~~~~~~~~~~~~~~~~~~~~~
+0.5.1 (unreleased)
+------------------
+
+- Added missing ``lxml`` test dependency.
+
+- Fixed tests to work with current version of z3c.pt.
+
+- Fixed autor e-mail address.
+
+- Added doctests and change log to long description to show up at pypi
+  homepage.
+
+- Reformatted release dates in change log to use iso dates.
+
+
+0.5 (2009-02-16)
+----------------
 
 - Added module which patches ``zope.app.pagetemplate`` such that
   template classes depend on ``z3c.pt`` for rendering (import
   optional). [malthe]
 
-0.4 (released 2/10/2009)
-~~~~~~~~~~~~~~~~~~~~~~~~
+0.4 (2009-02-10)
+----------------
 
 - Rename project to z3c.ptcompat to deal with setuptools issues (as discussed
   on zope-dev http://mail.zope.org/pipermail/zope-dev/2008-December/033820.html)
@@ -29,17 +44,17 @@ Changelog
 
 - Added ``PageTemplateFile``. [malthe]
 
-0.3 (released 10/2/2008)
-~~~~~~~~~~~~~~~~~~~~~~~~
+0.3 (2008-10-02)
+----------------
 
 - Various changes.
 
-0.2 (released 9/13/2008)
-~~~~~~~~~~~~~~~~~~~~~~~~
+0.2 (2008-09-13)
+----------------
 
 - Various changes.
 
-0.1 (released 9/9/2008)
-~~~~~~~~~~~~~~~~~~~~~~~
+0.1 (2008-09-09)
+----------------
 
 - Initial release.

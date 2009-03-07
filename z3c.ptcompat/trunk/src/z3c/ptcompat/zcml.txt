@@ -9,33 +9,33 @@ actions are executed, the configuration machine is emptied.
 
 Pages
 -----
-  
+
   >>> from z3c.ptcompat import zcml
   >>> zcml.page_directive(
   ...    context, "test1", "zope.View", None,
   ...    template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
 Verify that page has been registered as a component.
-  
+
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
   >>> factory = component.getSiteManager().adapters.lookup(
   ...     (interface.Interface, IDefaultBrowserLayer),
   ...     interface.Interface, name="test1")
 
   >>> factory.index
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
 We can base the view on an existing class.
-  
+
   >>> class View(object):
   ...     pass
 
   >>> zcml.page_directive(
   ...    context, "test2", "zope.View", None,
   ...    class_=View, template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
   >>> factory = component.getSiteManager().adapters.lookup(
@@ -43,7 +43,7 @@ We can base the view on an existing class.
   ...     interface.Interface, name="test2")
 
   >>> factory.index
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
   >>> issubclass(factory, View)
   True
@@ -54,21 +54,21 @@ Viewlet managers
   >>> zcml.viewlet_manager_directive(
   ...    context, "test1", "zope.View",
   ...    template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
 Verify that page has been registered as a component.
-  
+
   >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
   >>> from zope.publisher.interfaces.browser import IBrowserView
   >>> from zope.viewlet.interfaces import IViewletManager
-  
+
   >>> factory = component.getSiteManager().adapters.lookup(
   ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView),
   ...     IViewletManager, name="test1")
 
   >>> factory.template
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
 We can base the viewlet manager on an existing class.
 
@@ -78,17 +78,17 @@ We can base the viewlet manager on an existing class.
   >>> zcml.viewlet_manager_directive(
   ...    context, "test2", "zope.View",
   ...    class_=ViewletManager, template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
 Verify that page has been registered as a component.
-  
+
   >>> factory = component.getSiteManager().adapters.lookup(
   ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView),
   ...     IViewletManager, name="test2")
 
   >>> factory.template
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
   >>> issubclass(factory, ViewletManager)
   True
@@ -99,17 +99,17 @@ Viewlets
   >>> zcml.viewlet_directive(
   ...    context, "test1", "zope.View",
   ...    template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
 Verify that page has been registered as a component.
-  
+
   >>> factory = component.getSiteManager().adapters.lookup(
   ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView, IViewletManager),
   ...     interface.Interface, name="test1")
 
   >>> factory.index
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
 We can base the viewlet on an existing class.
 
@@ -119,17 +119,17 @@ We can base the viewlet on an existing class.
   >>> zcml.viewlet_directive(
   ...    context, "test2", "zope.View",
   ...    class_=Viewlet, template=os.path.join(path, "test.pt"))
-  
+
   >>> context.execute_actions()
 
 Verify that page has been registered as a component.
-  
+
   >>> factory = component.getSiteManager().adapters.lookup(
   ...     (interface.Interface, IDefaultBrowserLayer, IBrowserView, IViewletManager),
   ...     interface.Interface, name="test2")
 
   >>> factory.index
-  <z3c.ptcompat.ViewPageTemplateFile object at ...>
+  <ViewPageTemplateFile .../z3c.ptcompat/src/z3c/ptcompat/tests/test.pt>
 
   >>> issubclass(factory, Viewlet)
   True

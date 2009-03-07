@@ -1,19 +1,32 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.5'
 
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+
+version = '0.5.1dev'
 tests_require = ['z3c.pt',
                  'zope.tal',
                  'zope.viewlet',
                  'zope.app.publisher',
                  'zope.app.pagetemplate',
+                 'lxml',
                  ],
+
 
 setup(name='z3c.ptcompat',
       version=version,
       description="Compatibility-layer for Zope Page Template engines.",
-      long_description=open('README.txt').read(),
+      long_description=(
+        ".. contents::\n\n" +
+        read('README.txt')
+        + "\n\n" +
+        read('src', 'z3c', 'ptcompat', 'zcml.txt')
+        + "\n\n" +
+        read("CHANGES.txt")
+        ),
       classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",
@@ -21,9 +34,10 @@ setup(name='z3c.ptcompat',
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-      keywords='zpt',
+      keywords='zpt template zope',
+      url = 'http://pypi.python.org/pypi/z3c.ptcompat',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       url='',
       license='ZPL',
       packages=find_packages('src'),
@@ -38,7 +52,7 @@ setup(name='z3c.ptcompat',
         zpt = ['zope.app.pagetemplate', 'zope.tal'],
         z3cpt = ['z3c.pt'],
         test = tests_require, # used by buildout.cfg testrunner
-        ), 
+        ),
       tests_require = tests_require,
       test_suite="z3c.ptcompat.tests.test_doctests.test_suite",
       )
