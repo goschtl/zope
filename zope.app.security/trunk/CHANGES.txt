@@ -5,6 +5,13 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
+- Depend on new ``zope.password`` package instead of ``zope.app.authentication``
+  to get password managers for the authentication utility, thus remove
+  dependency on ``zope.app.authentication``.
+
+- Use template for AuthUtilitySearchView instead of ugly HTML
+  constructing in the python code.
+
 - Bug: The `sha` and `md5` modules has been deprecated in Python 2.6.
   Whenever the ZCML of this package was included when using Python 2.6,
   a deprecation warning had been raised stating that `md5` and `sha` have
@@ -15,9 +22,6 @@ CHANGES
 
 - Remove deprecated code, thus removing explicit dependency on
   zope.deprecation and zope.deferredimport.
-
-- Use template for AuthUtilitySearchView instead of ugly HTML
-  constructing in the python code.
 
 3.6.0 (2009-01-31)
 ------------------

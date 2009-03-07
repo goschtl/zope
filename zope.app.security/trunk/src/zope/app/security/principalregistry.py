@@ -18,12 +18,12 @@ $Id$
 from zope.component import getUtility
 from zope.interface import implements
 
-from zope.app.authentication.interfaces import IPasswordManager
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.security.interfaces import IGroupAwarePrincipal
 import zope.security.management
 from zope.app.security import interfaces
 from zope.container.contained import Contained, contained
+from zope.password.interfaces import IPasswordManager
 
 
 class DuplicateLogin(Exception): pass
