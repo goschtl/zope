@@ -48,6 +48,8 @@ setup(name=name,
       long_description=(
         read('README.txt')
         + '\n' +
+        read('CHANGES.txt')
+        + '\n' +
         read('INSTALL.txt')
         + '\n' +
         'Detailed Documentation\n'
