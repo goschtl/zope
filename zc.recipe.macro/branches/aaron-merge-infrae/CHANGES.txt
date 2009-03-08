@@ -1,6 +1,20 @@
 CHANGES
 =======
 
+1.2.6 (unreleased)
+------------------
+
+- The recipe option for result sections is now pulled from the following
+  sources, in this order:
+
+    1) recipe in the parameters section of the macro target
+    2) result-recipe in the parameters section for the macro target
+    3) result-recipe in the macro invocation
+    4) recipe in the macro definition
+
+- Correct a rest error, that prevent the package of being installed with
+  docutils 0.4.
+
 1.2.5 (2009-03-05)
 ------------------
 

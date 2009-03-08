@@ -75,7 +75,10 @@ def text(*args, **kwargs):
 ENTRY_POINTS = """
 [zc.buildout]
 default = zc.recipe.macro:Macro
-test = zc.recipe.macro:Test
+test1 = zc.recipe.macro:Test
+test2 = zc.recipe.macro:Test
+test3 = zc.recipe.macro:Test
+test4 = zc.recipe.macro:Test
 empty = zc.recipe.macro:Empty
 """
 
