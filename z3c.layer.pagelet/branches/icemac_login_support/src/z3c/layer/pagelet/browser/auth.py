@@ -25,6 +25,7 @@ import zope.i18n
 import zope.i18nmessageid
 import zope.interface
 import zope.publisher.interfaces.browser
+import zope.traversing.browser.interfaces
 import zope.viewlet.interfaces
 import zope.viewlet.manager
 import zope.viewlet.viewlet
@@ -57,13 +58,13 @@ def get_view_url(context, request, view_name):
     "Compute the url of a view."
     if view_name.startswith('@@'):
         view_name = view_name[2:]
-        view_truncated = True
+        view_name_truncated = True
     else:
-        view_truncated = False
+        view_name_truncated = False
     view = zope.component.getMultiAdapter((context, request), name=view_name)
     view_url = zope.component.getMultiAdapter(
         (view, request), name='absolute_url')()
-    if view_truncated:
+    if view_name_truncated:
         view_url = view_url.replace(view_name, '@@'+view_name)
     return view_url
 

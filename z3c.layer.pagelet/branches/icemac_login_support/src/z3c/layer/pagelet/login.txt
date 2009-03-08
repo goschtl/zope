@@ -398,11 +398,35 @@ Entering wrong password does not authorize either:
   </html>
 
 
-After entering correct username and passord the user gets authorized:
+After entering a correct username and password the user gets
+authorized:
 
   >>> browser.getControl('User Name').value = 'tester'
   >>> browser.getControl('Password').value = 'tpass'
-  >>> browser.handleErrors = False
+  >>> browser.getControl('Log in').click()
 
-..   >>> browser.getControl('Log in').click()
+The user gets redirected to the page where he selected the login
+link. After logging in the login link is no longer displayed. As we
+already specified that logout is supported, a logout link is
+displayed:
 
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Logout</a>
+    </body>
+  </html>
+
+
+Calling the login URL again leads directly to the page referred in
+nextURL:
+
+  >>> browser.open(login_url)
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@default.html'

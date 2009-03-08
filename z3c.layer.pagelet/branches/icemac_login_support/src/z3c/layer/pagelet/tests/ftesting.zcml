@@ -8,7 +8,6 @@
   <!-- exclude will prevent from include -->
   <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
   <exclude package="zope.app.authentication" file="groupfolder.zcml" />
-  <exclude package="zope.app.authentication" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" />
   <exclude package="zope.app.authentication.browser" file="configure.zcml" />
   <exclude package="zope.app.authentication.browser" file="groupfolder.zcml" />
