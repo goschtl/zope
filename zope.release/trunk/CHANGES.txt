@@ -22,6 +22,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
   * zope.keyreference
   * zope.intid
   * zope.catalog
+  * zope.password
   * z3c.layer.minimal
   * z3c.layer.pagelet
   * z3c.layer.ready2go
