@@ -77,14 +77,14 @@ Buildout::
 
     [hard-rocker]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:test
+    result-recipe = zc.recipe.macro:test1
     macro = rock
     rocking-style = so hard
 
 Result::
 
     [hard-rocker]
-    recipe = zc.recipe.macro:test
+    recipe = zc.recipe.macro:test1
     result-sections = hard-rocker
     question = Why do I rock so hard?
     rocking-style = so hard
@@ -171,7 +171,7 @@ Buildout::
 
     [rockers]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:test
+    result-recipe = zc.recipe.macro:test1
     macro = rock
     targets =
         hard-rocker:hard-rocker-parameters
@@ -180,20 +180,149 @@ Buildout::
 
 Result::
 
+    [rockers]
+    result-sections = hard-rocker socks-rocker tired-rocker
+
     [hard-rocker]
     question = Why do I rock so hard?
-    recipe = zc.recipe.macro:test
+    recipe = zc.recipe.macro:test1
     rocking-style = so hard
 
     [socks-rocker]
     question = Why do I rock my socks?
-    recipe = zc.recipe.macro:test
+    recipe = zc.recipe.macro:test1
     rocking-style = my socks
 
     [tired-rocker]
     question = Why do I rock all night?
-    recipe = zc.recipe.macro:test
+    recipe = zc.recipe.macro:test1
     rocking-style = all night
+
+
+Order of Precedence for Recipes for Result Sections
+---------------------------------------------------
+
+The source for the `recipe` option for result sections has a particular
+precedence, as follows::
+
+    1) recipe in the parameters section of the macro target
+    2) result-recipe in the parameters section for the macro target
+    3) result-recipe in the macro invocation
+    4) recipe in the macro definition
+
+The following tests will illustrate these rules, starting with rule 4 and
+building up.
+
+In the following buildout, rock:recipe will be used in the [hard-rockers]
+section as the recipe, because of rule 4.
+Buildout::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+    recipe = zc.recipe.macro:test4
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [rockers]
+    recipe = zc.recipe.macro
+    macro = rock
+    targets = hard-rocker:hard-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test4
+    rocking-style = so hard
+
+In the following buildout, ${rockers:result-recipe} will be used because of rule 3.
+Buildout::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+    recipe = zc.recipe.macro:test4
+
+    [hard-rocker-parameters]
+    rocking-style = so hard
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test3
+    macro = rock
+    targets = hard-rocker:hard-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test3
+    rocking-style = so hard
+
+In the following buildout, ${hard-rocker-paramers:result-recipe} will be used because of rule 2.
+Buildout::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+    recipe = zc.recipe.macro:test4
+
+    [hard-rocker-parameters]
+    result-recipe = zc.recipe.macro:test2
+    rocking-style = so hard
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test3
+    macro = rock
+    targets = hard-rocker:hard-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test2
+    rocking-style = so hard
+
+In the following buildout, ${hard-rocker-parameters:recipe} will be used because of rule 1.
+Buildout::
+
+    [buildout]
+    parts = rockers
+
+    [rock]
+    question = Why do I rock $${:rocking-style}?
+    rocking-style = $${:rocking-style}
+    recipe = zc.recipe.macro:test4
+
+    [hard-rocker-parameters]
+    recipe = zc.recipe.macro:test1
+    result-recipe = zc.recipe.macro:test2
+    rocking-style = so hard
+
+    [rockers]
+    recipe = zc.recipe.macro
+    result-recipe = zc.recipe.macro:test3
+    macro = rock
+    targets = hard-rocker:hard-rocker-parameters
+
+Result::
+
+    [hard-rocker]
+    question = Why do I rock so hard?
+    recipe = zc.recipe.macro:test1
+    rocking-style = so hard
 
 
 Special Variables

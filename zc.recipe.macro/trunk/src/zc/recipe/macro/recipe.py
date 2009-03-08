@@ -35,7 +35,7 @@ def evaluate_macro(buildout, name, macro, input, recipe):
             new_macro[key] = c_re.sub(
                 replace_match, value.replace('$${:__name__}', name))
     if recipe:
-        new_macro['recipe'] = new_macro.get('recipe', recipe)
+        new_macro['recipe'] = recipe
     return new_macro
 
 def parse_target(invoker, target):
@@ -44,9 +44,21 @@ def parse_target(invoker, target):
         target, input_section = target.split(':')
     return target, input_section
 
+def get_recipe(invocation_section, macro_section, parameter_section, default=None):
+    if 'recipe' in parameter_section:
+        return parameter_section['recipe']
+    elif 'result-recipe' in parameter_section:
+        return parameter_section['result-recipe']
+    elif 'result-recipe' in invocation_section:
+        return invocation_section['result-recipe']
+    elif 'recipe' in macro_section:
+        return macro_section['recipe']
+    else:
+        return default
+
+
 def Macro(buildout, name, options):
     del options['recipe']
-    recipe = options.pop('result-recipe', '')
     macro = options.pop('macro').strip()
     targets = options.pop('targets', name).strip().split()
     macro_summation = {}
@@ -55,12 +67,14 @@ def Macro(buildout, name, options):
 
     new_sections = []
     for output, input in (parse_target(name, target) for target in targets):
+        recipe = get_recipe(options, macro_summation, buildout[input])
         new_sections.append(output)
         opt = Options(
                 buildout,
                 output,
                 evaluate_macro(
                     buildout, output, macro_summation, input, recipe))
+        opt.pop('result-recipe', '')
         if output == name:
             # If we're targetting the invoker
             options._raw.update(opt._raw)
@@ -68,7 +82,7 @@ def Macro(buildout, name, options):
         else:
             # If we're targetting some other section
             buildout._raw[output] = opt._raw
-            #opt._initialize()
+    options.pop('result-recipe', '')
 
     #Make a result-sections variable holding the sections that are modified
     if new_sections:
@@ -116,3 +130,5 @@ class Test(object):
 
     def uninstall(self):
         pass
+
+

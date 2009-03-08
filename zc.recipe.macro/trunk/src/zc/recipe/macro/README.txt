@@ -38,14 +38,14 @@ Buildout::
 
     [instance0]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:test
+    result-recipe = zc.recipe.macro:test1
     macro = instance-macro
     address = 8080
     monitor-port = 8089
 
     [instance1]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:test
+    result-recipe = zc.recipe.macro:test1
     macro = instance-macro
     address = 9080
     monitor-port = 9089
@@ -56,7 +56,7 @@ Buildout::
 - These parts in turn specified that they would be using the
   macro system: ``recipe = zc.recipe.macro``.
 
-- The output of the macro should be used with the ``zc.recipe.macro:test``
+- The output of the macro should be used with the ``zc.recipe.macro:test1``
   recipe, as specified by the ``result-recipe`` option.
 
 - This resulting recipe will receive the ``address`` option from the two
@@ -337,7 +337,7 @@ Buildout::
 
     [instance0]
     recipe = zc.recipe.macro
-    result-recipe = zc.recipe.macro:test
+    result-recipe = zc.recipe.macro:test1
     macro = instance-macro
 
 Result::
@@ -346,7 +346,7 @@ Result::
     address = 8080
     application = application
     monitor-port = 8089
-    recipe = zc.recipe.macro:test
+    recipe = zc.recipe.macro:test1
     result-sections = instance0
     zope.conf =
         <eventlog>
@@ -421,7 +421,7 @@ subclass will be created that returns it's keys in a particular order.
     ...
     ... [instance0]
     ... recipe = zc.recipe.macro
-    ... result-recipe = zc.recipe.macro:test
+    ... result-recipe = zc.recipe.macro:test1
     ... macro = instance-macro
     ... """)
     >>> buildout.install([])
@@ -442,7 +442,7 @@ subclass will be created that returns it's keys in a particular order.
      'instance0': {'address': '8080',
                    'application': 'application',
                    'monitor-port': '8089',
-                   'recipe': 'zc.recipe.macro:test',
+                   'recipe': 'zc.recipe.macro:test1',
                    'result-sections': 'instance0',
                    'zope.conf': '
             <eventlog>
