@@ -45,7 +45,7 @@ from zope.app.form.interfaces import IWidget
 from zope.app.form.interfaces import WidgetsError, MissingInputError
 from zope.app.form.interfaces import InputErrors
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
-from zope.component.interfaces import IViewFactory
+from zope.app.form.interfaces import IWidgetFactory
 
 # A marker that indicates 'no value' for any of the utility functions that
 # accept a 'value' argument.
@@ -96,7 +96,7 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
         # does not exist - create it
         widget = _createWidget(context, field, viewType, view.request)
         setattr(view, widgetName, widget)
-    elif IViewFactory.providedBy(widget):
+    elif IWidgetFactory.providedBy(widget):
         # exists, but is actually a factory - use it to create the widget
         widget = widget(field.bind(context), view.request)
         setattr(view, widgetName, widget)

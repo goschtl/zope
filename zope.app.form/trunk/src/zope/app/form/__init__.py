@@ -17,10 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.form.interfaces import IWidget, InputErrors
+from zope.app.form.interfaces import IWidget, InputErrors, IWidgetFactory
 from zope.cachedescriptors.property import readproperty
-from zope.component.interfaces import IViewFactory
-from zope.deprecation import deprecated
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import IChoice, ICollection
@@ -100,7 +98,7 @@ class InputWidget(Widget):
 
 class CustomWidgetFactory(object):
     """Custom Widget Factory."""
-    implements(IViewFactory)
+    implements(IWidgetFactory)
 
     def __init__(self, widget_factory, *args, **kw):
         self._widget_factory = widget_factory

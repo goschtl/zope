@@ -19,7 +19,6 @@ from unittest import TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
 
 from zope.interface.verify import verifyClass, verifyObject
-from zope.component.interfaces import IViewFactory
 from zope.publisher.browser import TestRequest
 from zope.schema import Text
 

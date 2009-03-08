@@ -17,15 +17,14 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import zope.deferredimport
 from zope.interface import Interface
 from zope.schema import TextLine, Bool
 from zope.app.form.interfaces import IWidget, IInputWidget
 
-zope.deferredimport.deprecated(
-    "It has moved to zope.browser.interfaces This reference will be gone sometimes.",
-    ITerms = 'zope.browser.interfaces:ITerms',
-    )
+# BBB: ITerms are also used by z3c.form and possibly other form
+# frameworks, so it was moved to zope.browser.interfaces and it's
+# preferred to import from there now.
+from zope.browser.interfaces import ITerms
 
 
 class IBrowserWidget(IWidget):

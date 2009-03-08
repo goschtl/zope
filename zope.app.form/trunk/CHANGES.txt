@@ -11,6 +11,12 @@ CHANGES
 - Fixed bug in SequenceWidget where it crashed while trying to iterate
   a missing_value (None in most of cases) on _getRenderedValue.
 
+- Adapt to removal of deprecated interfaces from zope.component.interfaces.
+  The IView was moved to zope.publisher and we use our custom IWidgetFactory
+  interface instead of removed zope.component.interfaces.IViewFactory.
+
+- Fix tests to work on Python 2.6.
+
 3.7.1 (2009-01-31)
 ==================
 

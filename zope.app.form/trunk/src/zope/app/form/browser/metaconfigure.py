@@ -22,7 +22,6 @@ import os
 import zope.component
 from zope.security.checker import CheckerPublic
 from zope.interface import implementedBy
-from zope.component.interfaces import IViewFactory
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema import getFieldNamesInOrder
@@ -34,6 +33,7 @@ from zope.app.publisher.browser.menumeta import menuItemDirective
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser.i18n import _
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import IWidgetFactory
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
 from formview import FormView
@@ -87,7 +87,7 @@ class BaseFormDirective(object):
             class_ = self._default_widget_factory
         
         # don't wrap a factory into a factory
-        if IViewFactory.providedBy(class_):
+        if IWidgetFactory.providedBy(class_):
             factory = class_
         else:
             factory = CustomWidgetFactory(class_, **attrs)

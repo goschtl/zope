@@ -49,8 +49,7 @@ store the data in a global attribute called name:
 We now imitate the form-directive's behavior and create the view class:
 
   >>> from zope.app.form.browser.formview import FormView
-  >>> View = type('View', bases=(DataHandler, FormView), 
-  ...             dict={'schema': IName})
+  >>> View = type('View', (DataHandler, FormView), {'schema': IName})
 
 To initialize the view, you still need a context and a request. The context is
 useful because it gives you a location, so that you can look up local

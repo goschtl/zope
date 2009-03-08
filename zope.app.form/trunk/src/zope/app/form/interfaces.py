@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.schema.interfaces import ValidationError
-from zope.component.interfaces import IView
+from zope.publisher.interfaces import IView
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Bool
 from zope.exceptions.interfaces import UserError
@@ -237,3 +237,9 @@ class IDisplayWidget(IWidget):
 
         Display widgets should never be required.
         """)
+
+class IWidgetFactory(Interface):
+    """A factory that creates the widget"""
+    
+    def __call__(context, request):
+        """Return a widget"""

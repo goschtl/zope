@@ -19,7 +19,7 @@ $Id$
 from zope.testing import doctest
 import zope.security.checker
 from zope.interface import Interface, implements
-from zope.component.interfaces import IViewFactory, ComponentLookupError
+from zope.component.interfaces import ComponentLookupError
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.schema import Field, Int, accessors
@@ -29,6 +29,7 @@ from zope.app.testing import ztapi, placelesssetup
 from zope.app.form import Widget
 from zope.app.form.interfaces import IWidget, IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError, InputErrors, WidgetsError
+from zope.app.form.interfaces import IWidgetFactory
 from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
 from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
 from zope.app.form.utility import getWidgetsData, viewHasInput
@@ -150,15 +151,15 @@ class TestSetUpWidget(object):
         If the view already has an attribute with that name, it attempts to
         use the existing value to create a widget. Two types are supported:
            
-            - IViewFactory
+            - IWidgetFactory
             - IWidget
            
-        If the existing attribute value implements IViewFactory, it is used
+        If the existing attribute value implements IWidgetFactory, it is used
         to create a widget:
            
             >>> widget = FooWidget(IContent['foo'], request)
             >>> class Factory(object):
-            ...     implements(IViewFactory)
+            ...     implements(IWidgetFactory)
             ...     def __call__(self, request, context):
             ...         return widget
             >>> setattr(view, 'foo_widget', Factory())
@@ -197,7 +198,7 @@ class TestSetUpWidget(object):
         TypeError. 
         
         E.g., if a view already has a widget attribute of the name 
-        <field_name> + '_widget' that does not implement IViewFactory or
+        <field_name> + '_widget' that does not implement IWidgetFactory or
         IWidget, setUpWidget raises a TypeError: 
         
             >>> view = BrowserView(Content(), request)
@@ -207,10 +208,10 @@ class TestSetUpWidget(object):
             True
             
         Similarly, if a view has a widget attribute that implements 
-        IViewFactory, the object created by the factory must implement IWidget.
+        IWidgetFactory, the object created by the factory must implement IWidget.
         
             >>> class Factory(object):
-            ...     implements(IViewFactory)
+            ...     implements(IWidgetFactory)
             ...     def __call__(self, request, context):
             ...         return 'not a widget'
             >>> setattr(view, 'foo_widget', Factory())
