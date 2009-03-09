@@ -64,6 +64,7 @@ class PrincipalAnnotationUtility(Persistent, Contained):
         """Return boolean indicating if given principal has `IAnnotations`."""
         return principal.id in self.annotations
 
+
 class Annotations(Persistent, Location):
     """Stores annotations."""
 
