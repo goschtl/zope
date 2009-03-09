@@ -5,7 +5,10 @@ CHANGES
 3.6.0 (unreleased)
 ------------------
 
-- ...
+- Most of functionality is now moved to the ``zope.principalannotation``
+  package. This package now only provides the bootstrap subscriber
+  for the `zope3 application server` as well as browser menu item for
+  adding PrincipalAnnotationUtility using ZMI.
 
 3.5.1 (2009-03-06)
 ------------------
