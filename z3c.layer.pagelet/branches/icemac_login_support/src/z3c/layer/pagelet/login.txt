@@ -57,11 +57,11 @@ When the user is not logged in the login link is displayed:
 Selecting the link leads to the login page, as we use basic auth here,
 we get an HTTP error 401 (unauthorized):
 
+  >>> login_url = browser.getLink('Login').url
   >>> browser.getLink('Login').click()
   Traceback (most recent call last):
   httperror_seek_wrapper: HTTP Error 401: Unauthorized
-  >>> login_url = browser.url
-  >>> login_url
+  >>> browser.url
   'http://localhost/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html'
 
 When adding correct credentials we get authorized:
@@ -253,6 +253,7 @@ We need a principal inside the principal folder:
   >>> from zope.app.authentication.principalfolder import InternalPrincipal
   >>> principal_folder['1'] = InternalPrincipal('tester', 'tpass', 'Tester')
 
+
 We use a new browser, so the principal is not logged in and the login
 link is displayed:
 
@@ -273,9 +274,9 @@ link is displayed:
 
 Selecting the link leads to the login page:
 
+  >>> login_url = browser.getLink('Login').url
   >>> browser.getLink('Login').click()
-  >>> login_url = browser.url
-  >>> login_url
+  >>> browser.url
   'http://localhost/++skin++PageletTestSkin/@@loginForm.html?camefrom=%2F%2B%2Bskin%2B%2BPageletTestSkin%2Fcontainer%2F%40%40login.html%3FnextURL%3Dhttp%253A%2F%2Flocalhost%2F%252B%252Bskin%252B%252BPageletTestSkin%2Fcontainer%2F%2540%2540default.html'
   >>> print browser.contents
   <!DOCTYPE ...>
@@ -424,9 +425,19 @@ displayed:
   </html>
 
 
-Calling the login URL again leads directly to the page referred in
-nextURL:
+Calling the login URL again leads directly to the page referred in nextURL:
 
   >>> browser.open(login_url)
   >>> browser.url
   'http://localhost/++skin++PageletTestSkin/container/@@default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Logout</a>
+    </body>
+  </html>
+
