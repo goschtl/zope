@@ -40,16 +40,6 @@ class PluggableAuthentication(zope.container.btree.BTreeContainer):
         super(PluggableAuthentication, self).__init__()
         self.prefix = prefix
 
-    @property
-    def registrationManager(self):
-        import warnings
-        warnings.warn(
-            "The registration manager is deprecated and will go away in "
-            "Zope 3.5.  Use the simpler registration api (registerUtility) "
-            "instead.",
-            DeprecationWarning, 2)
-        return self.__parent__.registrationManager
-
     def _plugins(self, names, interface):
         for name in names:
             plugin = self.get(name)

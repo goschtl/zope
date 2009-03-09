@@ -13,10 +13,6 @@
         interface=".interfaces.IPluggableAuthentication"
         set_schema=".interfaces.IPluggableAuthentication"
         />
-    <require
-        permission="zope.ManageServices"
-        attributes="registrationManager"
-        />
   </class>
 
   <adapter

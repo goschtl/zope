@@ -5,7 +5,7 @@ Changes
 3.5.1 (unreleased)
 ------------------
 
-* ...
+* Remove deprecated code.
 
 3.5.0 (2009-03-06)
 ------------------
