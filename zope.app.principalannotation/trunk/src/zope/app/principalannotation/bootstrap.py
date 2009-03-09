@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002, 2004 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,8 +20,8 @@ import transaction
 
 from zope.app.appsetup.bootstrap import ensureUtility, getInformationFromEvent
 
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.principalannotation.utility import PrincipalAnnotationUtility
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 def bootStrapSubscriber(event):
     """Subscriber to the IDatabaseOpenedWithRootEvent

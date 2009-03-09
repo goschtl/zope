@@ -15,79 +15,34 @@
 
 $Id$
 """
+import unittest
 from zope.testing import doctest
-from unittest import TestCase, TestLoader, TextTestRunner
 
-import zope.component
-from zope.interface import implements
-from zope.security.interfaces import IPrincipal
+def test_bbb_imports():
+    """
+    The most of functionality was moved to zope.principalannotation.
+    Let's test if old imports still work::
+    
+      >>> from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+      >>> IPrincipalAnnotationUtility
+      <InterfaceClass zope.principalannotation.interfaces.IPrincipalAnnotationUtility>
+    
+      >>> from zope.app.principalannotation import PrincipalAnnotationUtility
+      >>> from zope.app.principalannotation import Annotations
+      >>> from zope.app.principalannotation import annotations
+    
+      >>> PrincipalAnnotationUtility
+      <class 'zope.principalannotation.utility.PrincipalAnnotationUtility'>
 
-from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.component.testing import PlacefulSetup
-from zope.app.testing import setup
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+      >>> Annotations
+      <class 'zope.principalannotation.utility.Annotations'>
 
-class Principal(object):
-    implements(IPrincipal)
-
-    def __init__(self, id):
-        self.id = id
-
-
-class PrincipalAnnotationTests(PlacefulSetup, TestCase):
-
-    def setUp(self):
-        PlacefulSetup.setUp(self)
-        sm = self.buildFolders(site='/')
-        self.util = PrincipalAnnotationUtility()
-        zope.component.provideUtility(self.util, IPrincipalAnnotationUtility)
-
-    def testGetSimple(self):
-        prince = Principal('somebody')
-        self.assert_(not self.util.hasAnnotations(prince))
-
-        princeAnnotation = self.util.getAnnotations(prince)
-        # Just getting doesn't actualy store. We don't want to store unless
-        # we make a change.
-        self.assert_(not self.util.hasAnnotations(prince))
-
-        princeAnnotation['something'] = 'whatever'
-
-        # But now we should have the annotation:
-        self.assert_(self.util.hasAnnotations(prince))
-
-    def testGetFromLayered(self):
-        princeSomebody = Principal('somebody')
-        sm1 = self.makeSite('folder1')
-        subUtil = setup.addUtility(sm1, '', IPrincipalAnnotationUtility,
-                                   PrincipalAnnotationUtility())
-
-        parentAnnotation = self.util.getAnnotations(princeSomebody)
-
-        # Just getting doesn't actualy store. We don't want to store unless
-        # we make a change.
-        self.assert_(not subUtil.hasAnnotations(princeSomebody))
-
-        parentAnnotation['hair_color'] = 'blue'
-
-        # But now we should have the annotation:
-        self.assert_(self.util.hasAnnotations(princeSomebody))
-
-        subAnnotation = subUtil.getAnnotations(princeSomebody)
-        self.assertEquals(subAnnotation['hair_color'], 'blue')
-
-        subAnnotation['foo'] = 'bar'
-
-        self.assertEquals(parentAnnotation.get("foo"), None)
+      >>> print annotations.__module__ + '.' + annotations.__name__
+      zope.principalannotation.utility.annotations
+    
+    """
 
 def test_suite():
-    loader=TestLoader()
-    tests = loader.loadTestsFromTestCase(PrincipalAnnotationTests)
-    import zope.app.principalannotation
-    tests.addTest(doctest.DocTestSuite(zope.app.principalannotation,
-                                       setUp=setup.placelessSetUp,
-                                       tearDown=setup.placelessTearDown))
-    return tests
-
-if __name__=='__main__':
-    TextTestRunner().run(test_suite())
+    return unittest.TestSuite((
+        doctest.DocTestSuite()
+        ))

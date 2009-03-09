@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,28 +15,4 @@
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
-
-from zope.interface import Interface
-
-
-class IPrincipalAnnotationUtility(Interface):
-    """Stores `IAnnotations` for `IPrinicipals`."""
-
-    def getAnnotations(principal):
-        """Return object implementing `IAnnotations` for the given
-        `IPrinicipal`.
-
-        If there is no `IAnnotations` it will be created and then returned.
-        """
-
-    def getAnnotationsById(principalId):
-        """Return object implementing `IAnnotations` for the given
-        `prinicipalId`.
-
-        If there is no `IAnnotations` it will be created and then returned.
-        """
-
-    def hasAnnotations(principal):
-        """Return boolean indicating if given `IPrincipal` has
-        `IAnnotations`."""
+from zope.principalannotation.interfaces import IPrincipalAnnotationUtility # BBB
