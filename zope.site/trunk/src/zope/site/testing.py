@@ -19,6 +19,7 @@ from zope.component.interfaces import IComponentLookup
 from zope.interface import Interface
 
 from zope.site import LocalSiteManager, SiteManagerAdapter
+from zope.site.folder import rootFolder
 from zope.location.interfaces import ISite
 from zope.site.hooks import setSite
 import zope.site.hooks
