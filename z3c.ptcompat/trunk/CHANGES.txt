@@ -6,6 +6,8 @@ Changelog
 
 - Nothing changed yet.
 
+- Added support for browser:addform, browser:editform, browser:form,
+  and browser:schemadisplay directives.
 
 0.5.2 (2009-03-09)
 ------------------

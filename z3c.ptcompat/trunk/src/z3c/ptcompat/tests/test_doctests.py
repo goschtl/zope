@@ -11,6 +11,7 @@ OPTIONFLAGS = (doctest.ELLIPSIS |
 import zope.component.testing
 import zope.configuration.xmlconfig
 
+import z3c.pt
 import z3c.ptcompat
 
 class TestParticipation(object):
@@ -21,7 +22,7 @@ def setUp(test):
     zope.component.testing.setUp(test)
     zope.configuration.xmlconfig.XMLConfig('meta.zcml', z3c.ptcompat)()
     zope.configuration.xmlconfig.XMLConfig('configure.zcml', z3c.pt)()
-    
+
 def tearDown(test):
     zope.component.testing.tearDown(test)
 

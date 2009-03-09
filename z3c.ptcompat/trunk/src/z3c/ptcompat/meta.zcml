@@ -18,12 +18,81 @@
        schema="zope.viewlet.metadirectives.IViewletDirective"
        handler=".zcml.viewlet_directive"
        />
-    
+
     <meta:directive
        name="viewletManager"
        schema="zope.viewlet.metadirectives.IViewletManagerDirective"
        handler=".zcml.viewlet_manager_directive"
        />
+
+
+    <meta:complexDirective
+        name="form"
+        schema="zope.app.form.browser.metadirectives.IFormDirective"
+        handler=".zcml.FormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+
+    <meta:complexDirective
+        name="editform"
+        schema="zope.app.form.browser.metadirectives.IEditFormDirective"
+        handler=".zcml.EditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+
+    <meta:complexDirective
+        name="subeditform"
+        schema="zope.app.form.browser.metadirectives.ISubeditFormDirective"
+        handler=".zcml.SubeditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+
+    <meta:complexDirective
+        name="addform"
+        schema="zope.app.form.browser.metadirectives.IAddFormDirective"
+        handler=".zcml.AddFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+
+    <meta:complexDirective
+        name="schemadisplay"
+        schema="zope.app.form.browser.metadirectives.ISchemaDisplayDirective"
+        handler=".zcml.SchemaDisplayDirective">
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
 
   </meta:directives>
 
