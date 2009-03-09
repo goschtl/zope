@@ -1,0 +1,9 @@
+=======
+CHANGES
+=======
+
+3.6.0 (unreleased)
+------------------
+
+Initial release. This package was splitted off zope.app.principalannotation
+to remove its dependencies on "zope 3 application server" components.
