@@ -1,10 +1,10 @@
 Changelog
 =========
 
-0.5.2 (unreleased)
+0.5.2 (2009-03-09)
 ------------------
 
-- Nothing changed yet.
+- Fixing brown-bag release 0.5.1.
 
 
 0.5.1 (2009-03-09)

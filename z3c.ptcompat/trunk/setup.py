@@ -6,7 +6,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-version = '0.5.2 dev'
+version = '0.5.2'
 tests_require = ['z3c.pt',
                  'zope.tal',
                  'zope.viewlet',
@@ -35,10 +35,9 @@ setup(name='z3c.ptcompat',
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='zpt template zope',
-      url = 'http://pypi.python.org/pypi/z3c.ptcompat',
+      url='http://pypi.python.org/pypi/z3c.ptcompat',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      url='',
       license='ZPL',
       packages=find_packages('src'),
       package_dir={'': 'src'},
