@@ -62,9 +62,9 @@ class FancyDatetimeFormatter(object):
 
         delta = d1 - d2
 
-        pattern = formatter.getPattern()
-        if ':ss' in pattern:
-            formatter.setPattern(pattern.replace(':ss', '').strip())
+        oldpattern = formatter.getPattern()
+        if ':ss' in oldpattern:
+            formatter.setPattern(oldpattern.replace(':ss', '').strip())
 
         if delta.days == 0:
             pattern = formatter.getPattern()
@@ -73,8 +73,10 @@ class FancyDatetimeFormatter(object):
                 pos = pattern.find('H')
 
             formatter.setPattern(pattern[pos:])
-            return _(u'Today at ${value}',
-                     mapping={'value': formatter.format(value)})
+            value = _(u'Today at ${value}',
+                      mapping={'value': formatter.format(value)})
+            formatter.setPattern(oldpattern)
+            return value
 
         if delta.days == 1:
             pattern = formatter.getPattern()
@@ -83,17 +85,22 @@ class FancyDatetimeFormatter(object):
                 pos = pattern.find('H')
 
             formatter.setPattern(pattern[pos:])
-            return _(u'Yesterday at ${value}',
-                     mapping={'value': formatter.format(value)})
+            value = _(u'Yesterday at ${value}',
+                      mapping={'value': formatter.format(value)})
+            formatter.setPattern(oldpattern)
+            return value
 
         if timezoneFormat == 3:
             if self.tp in ('full',):
                 formatter.setPattern(
                     formatter.getPattern().replace('z', '').strip())
                 formatted = formatter.format(value)
+                formatter.setPattern(oldpattern)
                 return u'%s %s'%(formatted, tz.zone)
 
-        return formatter.format(value)
+        value = formatter.format(value)
+        formatter.setPattern(oldpattern)
+        return value
 
 
 class FancyDatetimeFormatterFactory(object):
