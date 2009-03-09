@@ -17,17 +17,20 @@ $Id$
 """
 from zope.component import getUtility
 from zope.interface import implements
-
-from zope.app.security.interfaces import PrincipalLookupError
-from zope.security.interfaces import IGroupAwarePrincipal
-import zope.security.management
-from zope.app.security import interfaces
 from zope.container.contained import Contained, contained
+
+import zope.security.management
+from zope.security.interfaces import IGroupAwarePrincipal
 from zope.password.interfaces import IPasswordManager
 
+from zope.app.security import interfaces
 
-class DuplicateLogin(Exception): pass
-class DuplicateId(Exception): pass
+
+class DuplicateLogin(Exception):
+    pass
+
+class DuplicateId(Exception):
+    pass
 
 class PrincipalRegistry(object):
 
@@ -75,7 +78,7 @@ class PrincipalRegistry(object):
                 return self.__defaultObject
             if id == zope.security.management.system_user.id:
                 return zope.security.management.system_user
-            raise PrincipalLookupError(id)
+            raise interfaces.PrincipalLookupError(id)
         return r
 
     def getPrincipalByLogin(self, login):

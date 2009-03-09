@@ -15,14 +15,14 @@
 
 $Id$
 """
+from zope.component import adapts
 from zope.publisher.interfaces.ftp import IFTPCredentials
-from loginpassword import LoginPassword
+from zope.app.security.loginpassword import LoginPassword
 
 class FTPAuth(LoginPassword):
-    """Adapter for handling common FTP authentication.""" 
-    __used_for__ = IFTPCredentials
+    """Adapter for handling common FTP authentication."""
 
-    __request = None
+    adapts(IFTPCredentials)
 
     def __init__(self, request):
         self.__request = request
@@ -31,7 +31,7 @@ class FTPAuth(LoginPassword):
             login, password = None, None
         else:
             login, password = lpw
-        LoginPassword.__init__(self, login, password)
+        super(FTPAuth, self).__init__(login, password)
 
     def needLogin(self, realm):
         self.__request.unauthorized("Did not work")

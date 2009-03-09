@@ -15,16 +15,15 @@
 
 $Id$
 """
+from zope.component import adapts
 from zope.publisher.interfaces.http import IHTTPCredentials
-from loginpassword import LoginPassword
+from zope.app.security.loginpassword import LoginPassword
 
 
 class BasicAuthAdapter(LoginPassword):
     """Adapter for handling HTTP Basic Auth."""
 
-    __used_for__ = IHTTPCredentials
-
-    __request = None
+    adapts(IHTTPCredentials)
 
     def __init__(self, request):
         self.__request = request
@@ -34,7 +33,7 @@ class BasicAuthAdapter(LoginPassword):
             login, password = None, None
         else:
             login, password = lpw
-        LoginPassword.__init__(self, login, password)
+        super(BasicAuthAdapter, self).__init__(login, password)
 
     def needLogin(self, realm):
-        self.__request.unauthorized('basic realm="%s"'% realm)
+        self.__request.unauthorized('basic realm="%s"' % realm)

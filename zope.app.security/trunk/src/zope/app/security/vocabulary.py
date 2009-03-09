@@ -25,11 +25,11 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables, IVocabularyFactory
 from zope.security.interfaces import IPermission
 from zope.security.checker import CheckerPublic
+from zope.site.next import queryNextUtility
 
 from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.interfaces import IPrincipalSource
-from zope.app.component import queryNextUtility
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component.vocabulary import UtilityVocabulary
 
 

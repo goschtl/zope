@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.interface import implements
-from interfaces import ILoginPassword
+from zope.app.security.interfaces import ILoginPassword
 
 class LoginPassword(object):
 

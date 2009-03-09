@@ -18,11 +18,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from persistent import Persistent
-
-from zope.app.security.i18n import _
 from zope.interface import implements
 from zope.location import Location
 from zope.security.interfaces import IPermission
+from zope.app.security.i18n import _
 
 NULL_ID = _('<permission not activated>')
 

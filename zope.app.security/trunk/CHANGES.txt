@@ -23,6 +23,9 @@ CHANGES
 - Remove deprecated code, thus removing explicit dependency on
   zope.deprecation and zope.deferredimport.
 
+- Cleanup code a bit, replace old __used_for__ statements by ``adapts``
+  calls.
+
 3.6.0 (2009-01-31)
 ------------------
 

@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.component import getUtility
+from zope.component import getUtility, adapts
 from zope.interface import implements
 from zope.browser.interfaces import ITerms
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -33,7 +33,7 @@ class Term(object):
 
 class PrincipalTerms(object):
     implements(ITerms)
-    __used_for__ = IPrincipalSource, IBrowserRequest
+    adapts(IPrincipalSource, IBrowserRequest)
 
     def __init__(self, context, request):
         self.context = context
