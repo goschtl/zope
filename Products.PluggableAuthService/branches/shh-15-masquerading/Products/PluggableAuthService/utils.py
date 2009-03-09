@@ -217,9 +217,10 @@ def createKeywords(**kw):
 _ENVAR = 'PAS_MASQUERADING'
 
 def masquerading( enabled=None ):
+    value = os.environ.get(_ENVAR, 'off')
     if enabled is not None:
         os.environ[_ENVAR] = enabled and 'on' or 'off'
-    return os.environ.get(_ENVAR, '') == 'on'
+    return value == 'on'
 
 _MASQ = '/'
 
@@ -228,5 +229,5 @@ def splitmasq( user_id ):
         split = user_id.split(_MASQ, 1)
         if len(split) == 2 and '' not in split:
             return tuple(split)
-    return (user_id, None)
+    return user_id, None
 
