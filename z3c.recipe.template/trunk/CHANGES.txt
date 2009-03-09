@@ -1,0 +1,9 @@
+Changes
+*******
+
+0.1 (unreleased)
+================
+
+Initial build based on `collective.recipe.template`_
+
+.. _collective.recipe.template: http://pypi.python.org/pypi/collective.recipe.template
