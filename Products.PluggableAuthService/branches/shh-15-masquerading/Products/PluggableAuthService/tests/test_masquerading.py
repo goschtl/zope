@@ -353,6 +353,10 @@ class CookieAuthTests(BasicAuthTests):
         self.assertEqual(name, 'fred/wilma')
         self.assertEqual(password, 'r0ck')
 
+        # Which we can then use to access doc
+        response = self.publish(doc_path, extra={cookie_name: cookie_value})
+        self.assertEqual(response.getStatus(), 200)
+
 
 def test_suite():
     return unittest.TestSuite((
