@@ -94,3 +94,34 @@ then the missing items will be created for us::
   >>> print system(join('bin', 'buildout')),
   Uninstalling template.
   Installing template.
+
+Also creation of several subdirectories is supported::
+
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... parts = template
+  ... offline = true
+  ...
+  ... [template]
+  ... recipe = z3c.recipe.template
+  ... input = template.in
+  ... output = ${buildout:parts-directory}/foo/bar/template
+  ... ''')
+
+  >>> print system(join('bin', 'buildout')),
+  Uninstalling template.
+  Installing template.
+
+  >>> cat('parts', 'foo', 'bar', 'template')
+  #
+  My template knows about buildout path:
+  .../sample-buildout
+
+When changes happen to the output path, then the old path is removed
+on uninstall. Therefore the ``etc/`` directory created above has
+vanished now::
+
+  >>> ls('parts')
+  d  foo
