@@ -196,7 +196,6 @@ class Bucket(persistent.list.PersistentList, AbstractData):
             right = self.collection._mutable(right)
             right[0:0] = moved
             del self[:]
-        
 
     supercall('__setitem__')
     supercall('__delitem__')
@@ -212,20 +211,41 @@ class Bucket(persistent.list.PersistentList, AbstractData):
     supercall('sort')
     supercall('extend')
 
-class Index(BTrees.family32.II.Bucket, AbstractData):
+
+def wrap_bucket(name):
+    sys._getframe(1).f_locals[name] = method(
+        lambda self, *args, **kwargs:
+            getattr(self._bucket, name)(*args, **kwargs))
+
+
+def call_bucket(name):
+    sys._getframe(1).f_locals[name] = (
+        lambda self, *args, **kwargs:
+            getattr(self._bucket, name)(*args, **kwargs))
+
+
+class Index(AbstractData):
     """Indexes index buckets and sub-indexes."""
 
-    supercall('clear')
-    supercall('update')
-    supercall('__setitem__')
-    supercall('__delitem__')
-    supercall('setdefault')
-    supercall('pop')
+    wrap_bucket('clear')
+    wrap_bucket('update')
+    wrap_bucket('__setitem__')
+    wrap_bucket('__delitem__')
+    wrap_bucket('setdefault')
+    wrap_bucket('pop')
+    call_bucket('__getitem__')
+    call_bucket('__len__')
+    call_bucket('maxKey')
+    call_bucket('minKey')
+    call_bucket('keys')
+    call_bucket('values')
+    call_bucket('items')
 
     def __init__(self, collection,
                  identifier, previous=None, next=None, parent=None):
         AbstractData.__init__(
             self, collection, identifier, previous, next, parent)
+        self._bucket = BTrees.family32.II.Bucket()
 
     def _p_resolveConflict(self, oldstate, committedstate, newstate):
         # disable conflict resolution; thinking about its effect in terms of
@@ -317,7 +337,7 @@ class Index(BTrees.family32.II.Bucket, AbstractData):
         self.collections.remove(collection)
         res = Index(collection, self.identifier, self.previous, self.next,
                     self.parent)
-        res.update(self)
+        res._bucket.update(self._bucket)
         return res
 
 class BList(persistent.Persistent):

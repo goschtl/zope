@@ -1,6 +1,9 @@
 1.0b2 (unreleased)
 ==================
 
+- fixed: internal data structures were not stored correctly in the ZODB, so
+  BLists loaded from a fresh DB connection would break.
+
 
 1.0b1 (2008-10-06)
 ==================
