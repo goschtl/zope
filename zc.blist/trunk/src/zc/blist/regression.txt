@@ -185,3 +185,40 @@ indexes.
     >>> del comparison[-1:5:-2]
     >>> [len(v) for v in check()]
     [56, 7, 10]
+
+Let's make sure that BLists are correctly stored in the ZODB (which hadn't
+been the case with zc.blist 1.0b1):
+
+>>> import tempfile
+>>> import ZODB.FileStorage
+>>> import ZODB
+>>> import transaction
+>>> handle, filename = tempfile.mkstemp()
+>>> fs = ZODB.FileStorage.FileStorage(filename)
+>>> db = ZODB.DB(fs)
+>>> conn = db.open()
+>>> root = conn.root()
+>>> root['foo'] = zc.blist.BList(range(60))
+>>> root['bar'] = zc.blist.BList(range(31))
+>>> transaction.commit()
+
+The sequence with a length of 60 (the default bucket size being 30) lost the
+collections attribute of its index:
+
+>>> db = ZODB.DB(fs)
+>>> conn = db.open()
+>>> root = conn.root()
+>>> root['foo'].append(0)
+
+The sequence with a length of 31 produced a TypeError when accessing its
+bucket-and-index mapping internally:
+
+>>> db = ZODB.DB(fs)
+>>> conn = db.open()
+>>> root = conn.root()
+>>> root['bar'].append(0)
+
+Clean up:
+
+>>> import os
+>>> os.unlink(filename)
