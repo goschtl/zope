@@ -360,6 +360,116 @@ or existing data can get screwed:
     SynchronizationError: object already exists 'test'
 
 
+Let's test changing metadata.
+
+First let's examine an existing metadata file.
+
+    >>> path = (os.path.join(localdir, '@@Zope', 'Extra', 'file1.txt',
+    ...     'contentType'))
+    >>> open(path).read()
+    '<?xml version="1.0" encoding="utf-8" ?>\n<pickle> <string>text/plain</string> </pickle>\n'
+
+Now let's change it.
+
+    >>> f = open(path, 'w')
+    >>> f.write('<?xml version="1.0" encoding="utf-8" ?>\n<pickle>\n')
+    >>> f.write('<string>text/html</string>\n</pickle>\n')
+    >>> f.close()
+
+Now we commit our changes.
+
+    >>> zsync.update(localdir)
+    BeforeTraverseEvent None
+    BeforeTraverseEvent test
+    BeforeTraverseEvent toFS.snarf
+    EndRequestEvent show
+    M .../test/@@Zope/Extra/file1.txt/contentType
+    U .../test/@@Zope/Annotations/file1.txt/zope.app.dublincore.ZopeDublinCore
+    U .../test/@@Zope/Annotations/file2.txt/zope.app.dublincore.ZopeDublinCore
+    U .../test/@@Zope/Annotations/file3.txt/zope.app.dublincore.ZopeDublinCore
+    All done.
+
+    >>> zsync.commit(localdir)
+    BeforeTraverseEvent None
+    BeforeTraverseEvent test
+    BeforeTraverseEvent fromFS.snarf
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent file1.txt Attributes
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    EndRequestEvent run
+    C .../test/@@Zope/Extra/file1.txt/contentType
+    U .../test/@@Zope/Annotations/file1.txt/zope.app.dublincore.ZopeDublinCore
+    All done.
+
+The problem is that we formatted the XML slightly differently than the
+synchronizer does. Thus the client thinks there's a conflict after the
+commit. The solution is to set overwrite_local to True on the FSSync's
+merger object. (This is normally done in the FSSync constructor, but
+we'll do it manually in this test.)
+
+Let's return things to how they were.
+
+    >>> zsync.revert(path)
+    Reverted .../test/@@Zope/Extra/file1.txt/contentType
+
+    >>> serverfile1.contentType = 'text/plain'
+    >>> zsync.update(localdir)
+    BeforeTraverseEvent None
+    BeforeTraverseEvent test
+    BeforeTraverseEvent toFS.snarf
+    EndRequestEvent show
+    U .../test/@@Zope/Extra/file1.txt/contentType
+    All done.
+
+Make our metadata change again.
+
+    >>> f = open(path, 'w')
+    >>> f.write('<?xml version="1.0" encoding="utf-8" ?>\n<pickle>\n')
+    >>> f.write('<string>text/html</string>\n</pickle>\n')
+    >>> f.close()
+    >>> zsync.update(localdir)
+    BeforeTraverseEvent None
+    BeforeTraverseEvent test
+    BeforeTraverseEvent toFS.snarf
+    EndRequestEvent show
+    M .../test/@@Zope/Extra/file1.txt/contentType
+    All done.
+
+Now we commit again, but this time using overwrite_local.
+
+    >>> zsync.fsmerger.overwrite_local = True
+    >>> zsync.commit(localdir)
+    BeforeTraverseEvent None
+    BeforeTraverseEvent test
+    BeforeTraverseEvent fromFS.snarf
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent file1.txt Attributes
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    ObjectModifiedEvent  ObjectSynchronized
+    EndRequestEvent run
+    U .../test/@@Zope/Extra/file1.txt/contentType
+    U .../test/@@Zope/Annotations/file1.txt/zope.app.dublincore.ZopeDublinCore
+    All done.
+
+Let's confirm that the change was made.
+
+    >>> serverfile1.contentType
+    'text/html'
+
+Also, note that our metadata file was overwritten with the server verion.
+
+    >>> open(path).read()
+    '<?xml version="1.0" encoding="utf-8" ?>/n<pickle> <string>text/html</string> </pickle>/n'
+
 Clean up
 --------
 

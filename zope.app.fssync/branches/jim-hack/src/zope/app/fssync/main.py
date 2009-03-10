@@ -127,7 +127,7 @@ def commit(opts, args):
     for o, a in opts:
         if o in ("-r", "--raise-on-conflicts"):
             raise_on_conflicts = True
-    fs = FSSync()
+    fs = FSSync(overwrite_local=True)
     fs.multiple(args, fs.commit, message, raise_on_conflicts)
 
 def update(opts, args):
@@ -287,7 +287,7 @@ def checkin(opts, args):
             raise Usage("checkin requires at most one TARGETDIR argument")
     else:
         target = os.curdir
-    fs = FSSync(rooturl=rooturl)
+    fs = FSSync(rooturl=rooturl, overwrite_local=True)
     fs.checkin(target, message)
 
 def login(opts, args):

@@ -315,7 +315,8 @@ class DataSource(object):
 
 class FSSync(object):
 
-    def __init__(self, metadata=None, network=None, rooturl=None):
+    def __init__(self, metadata=None, network=None, rooturl=None,
+                 overwrite_local=False):
         if metadata is None:
             metadata = Metadata()
         if network is None:
@@ -323,7 +324,8 @@ class FSSync(object):
         self.metadata = metadata
         self.network = network
         self.network.setrooturl(rooturl)
-        self.fsmerger = FSMerger(self.metadata, self.reporter)
+        self.fsmerger = FSMerger(self.metadata, self.reporter,
+                                 overwrite_local)
 
     def login(self, url=None, user=None):
         scheme, host_port, user = self.get_login_info(url, user)
