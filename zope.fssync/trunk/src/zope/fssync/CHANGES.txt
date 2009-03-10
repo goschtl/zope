@@ -10,6 +10,10 @@ Zope FSSync Changes
       when adding multiple objects at the same time that depend on
       each other. Callbacks can in turn return callbacks.
 
+    - Add support to FSMerger to allow locally modified files to be
+      overwritten by files returned from the server. The purpose of
+      this is to avoid conflicts after commit on files that are
+      formatted differently on the server from local versions.
 
   After Zope 3.4.0b1 (trunk only)
 

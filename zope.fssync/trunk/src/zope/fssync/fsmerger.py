@@ -29,9 +29,13 @@ from zope.fssync import fsutil
 
 class FSMerger(object):
 
-    """Higher-level three-way file and directory merger."""
+    """Higher-level three-way file and directory merger.
 
-    def __init__(self, metadata, reporter):
+    If overwrite_local is True, then local should be replaced with
+    the remote, regardless of local changes.
+    """
+
+    def __init__(self, metadata, reporter, overwrite_local=False):
         """Constructor.
 
         Arguments are a metadata database and a reporting function.
@@ -39,6 +43,7 @@ class FSMerger(object):
         self.metadata = metadata
         self.reporter = reporter
         self.merger = Merger(metadata)
+        self.overwrite_local = overwrite_local
 
     def merge(self, local, remote):
         """Merge remote file or directory into local file or directory."""
@@ -155,7 +160,6 @@ class FSMerger(object):
 
     def merge_files(self, local, remote):
         """Merge remote file into local file."""
-
         # Reset sticky conflict if file was removed
         entry = self.metadata.getentry(local)
         conflict = entry.get("conflict")
@@ -164,6 +168,9 @@ class FSMerger(object):
 
         original = fsutil.getoriginal(local)
         action, state = self.merger.classify_files(local, original, remote)
+        if action == 'Merge' and state == 'Modified' and self.overwrite_local:
+            action = 'Copy'
+            state = 'Uptodate'
         state = self.merger.merge_files(local, original, remote,
                                         action, state) or state
         self.reportaction(action, state, local)

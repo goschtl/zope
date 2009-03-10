@@ -211,10 +211,11 @@ class TestFSMerger(TempFiles):
                   localentry, remoteentry,
                   expected_reports_template,
                   expected_localdata, expected_origdata, expected_remotedata,
-                  expected_localentry, expected_remoteentry):
+                  expected_localentry, expected_remoteentry,
+                  overwrite_local=False):
         # Generic test setup to test merging files
         reports = []
-        m = FSMerger(self.metadata, reports.append)
+        m = FSMerger(self.metadata, reports.append, overwrite_local)
 
         localtopdir = self.tempdir()
         remotetopdir = self.tempdir()
@@ -466,6 +467,64 @@ class TestFSMerger(TempFiles):
                        ["D %l"],
                        None, None, None,
                        {}, {})
+
+
+    def test_overwrite_local(self):
+        # make sure that we normally get a conflict when the orginal,
+        # local, and remote versions are different
+        conflict = "<<<<<<< %l\nl\n=======\nr\n>>>>>>> %r\n"
+        self.mergetest("foo", "l\n", "a\n", "r\n", self.entry, self.entry,
+                       ["C %l"], conflict, "r\n", "r\n",
+                       self.make_conflict_entry, self.entry)
+
+        # now try to same thing but with overwrite_local set to
+        # true. This time the local and original should be replaced
+        # with the remote file.
+        self.mergetest("foo", "l\n", "a\n", "r\n", self.entry, self.entry,
+                       ["U %l"], "r\n", "r\n", "r\n",
+                       self.entry, self.entry, True)
+
+        # try it when the original and local are the same, but the
+        # remote is different. In this case the overwrite_local
+        # setting doesn't change things.
+        self.mergetest("foo", "a\n", "a\n", "r\n", self.entry, self.entry,
+                       ["U %l"], "r\n", "r\n", "r\n",
+                       self.entry, self.entry, True)
+
+        self.mergetest("foo", "a\n", "a\n", "r\n", self.entry, self.entry,
+                       ["U %l"], "r\n", "r\n", "r\n",
+                       self.entry, self.entry)
+
+        # testing if remote is the same as local. Again,
+        # overwrite_local shouldn't change things.
+        self.mergetest("foo", "l\n", "a\n", "l\n", self.entry, self.entry,
+                       ["U %l"], "l\n", "l\n", "l\n",
+                       self.entry, self.entry, True)
+
+        self.mergetest("foo", "l\n", "a\n", "l\n", self.entry, self.entry,
+                       ["U %l"], "l\n", "l\n", "l\n",
+                       self.entry, self.entry)
+
+        # How about when all are the same? Again overwrite_local
+        # shouldn't change anything.
+        self.mergetest("foo", "a\n", "a\n", "a\n", self.entry, self.entry,
+                       [], "a\n", "a\n", "a\n",
+                       self.entry, self.entry, True)
+
+        self.mergetest("foo", "a\n", "a\n", "a\n", self.entry, self.entry,
+                       [], "a\n", "a\n", "a\n",
+                       self.entry, self.entry)
+
+        # test when original and remote are the same. Again,
+        # overwrite_local shouldn't make any difference.
+        self.mergetest("foo", "l\n", "a\n", "a\n", self.entry, self.entry,
+                       ["M %l"], "l\n", "a\n", "a\n",
+                       self.entry, self.entry, True)
+
+        self.mergetest("foo", "l\n", "a\n", "a\n", self.entry, self.entry,
+                       ["M %l"], "l\n", "a\n", "a\n",
+                       self.entry, self.entry)
+
 
 def test_suite():
     s = unittest.TestSuite()
