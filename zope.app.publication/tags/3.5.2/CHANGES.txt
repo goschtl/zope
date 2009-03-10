@@ -1,0 +1,58 @@
+=======
+CHANGES
+=======
+
+3.5.2 (2009-03-10)
+------------------
+
+- Use ISkinnable.providedBy(request) instead of IBrowserRequest as condition
+  for calling setDefaultSkin. This at the same time removes dependency to
+  the browser part of zope.publisher.
+
+- Remove deprecated code.
+
+- Use built-in set class instead of the deprecated sets.Set and thus
+  don't cause deprecation warning in Python 2.6.
+
+3.5.1 (2009-01-31)
+------------------
+
+- Import ISite from zope.location.interfaces instead of deprecated place
+  in zope.app.component.interfaces.
+
+3.5.0 (2008-10-09)
+------------------
+
+- Now ``zope.app.publication.zopepublication.ZopePublication`` annotates the
+  request with the connection to the main ZODB when ``getApplication`` is
+  called.
+
+- Removed support for non-existent Zope versions.
+
+
+3.4.3 (2007-11-01)
+------------------
+
+- Removed unused imports.
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.2 (2007-09-26)
+------------------
+
+- Added missing files to egg distribution.
+
+
+3.4.1 (2007-09-26)
+------------------
+
+- Added missing files to egg distribution.
+
+
+3.4.0 (2007-09-25)
+------------------
+
+- Initial documented release.
+
+- Reflect changes form ``zope.app.error`` refactoring.
