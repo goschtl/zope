@@ -7,6 +7,9 @@ Changes
 
 * Remove deprecated code.
 
+* The "Password Manager Names" vocabulary was moved to the ``zope.password``
+  package.
+
 3.5.0 (2009-03-06)
 ------------------
 
