@@ -6,7 +6,7 @@ Changes
 
 - New Feature XXX
 
-1.0.0 (2008-11-21)
+1.0.0 (2009-03-10)
 ------------------
 
 - Initial Release
