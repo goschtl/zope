@@ -1,0 +1,23 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <!-- Note: this method only returns what the user has permission for
+       the permission check is done inside based on the different permission
+       the different items have -->
+  <z3c:jsonrpc
+      for="*"
+      class="z3c.jsontree.jsonrpc.NoneJSONTreeItems"
+      permission="zope.Public"
+      methods="loadJSONTreeItems"
+      />
+
+  <z3c:jsonrpc
+      for="zope.app.container.interfaces.IReadContainer"
+      class="z3c.jsontree.jsonrpc.JSONTreeItems"
+      permission="zope.Public"
+      methods="loadJSONTreeItems"
+      />
+
+</configure>

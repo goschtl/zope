@@ -1,0 +1,37 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="z3c">
+
+  <adapter
+      for="zope.interface.Interface
+           zope.publisher.interfaces.browser.IBrowserRequest
+           z3c.jsontree.interfaces.ISubItemAware"
+      factory=".subitem.NoneTreeItems"
+      />
+
+  <adapter
+      for="zope.app.container.interfaces.IReadContainer
+           zope.publisher.interfaces.browser.IBrowserRequest
+           z3c.jsontree.interfaces.ISubItemAware"
+      factory=".subitem.ContainerTreeItems"
+      />
+
+  <adapter
+      for="zope.interface.Interface
+           z3c.jsonrpc.interfaces.IJSONRPCRequest
+           z3c.jsontree.interfaces.ISubItemAware"
+      factory=".subitem.NoneTreeItems"
+      />
+
+  <adapter
+      for="zope.app.container.interfaces.IReadContainer
+           z3c.jsonrpc.interfaces.IJSONRPCRequest
+           z3c.jsontree.interfaces.ISubItemAware"
+      factory=".subitem.ContainerTreeItems"
+      />
+
+  <include file="jsonrpc.zcml" />
+  <include package=".browser" />
+
+</configure>

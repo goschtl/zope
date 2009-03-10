@@ -1,0 +1,42 @@
+/*---[ z3c.jsontree styles ]-------------------------------------------------*/
+ul.z3cJSONTree {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+} 
+
+ul.z3cJSONTree ul {
+    margin-left: 12px;
+    padding: 0px;
+}
+
+ul.z3cJSONTree li {
+    list-style: none;
+    white-space: nowrap;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.z3cJSONTree img {
+    height: 16px;
+}
+
+ul.z3cJSONTree a {
+    text-decoration: none;
+}
+
+ul.z3cJSONTree .z3cJSONTreeIcon {
+    cursor: pointer;
+}
+
+ul.z3cJSONTree li.z3cJSONTreeItem .z3cJSONTreeIcon {
+    cursor: default;
+}
+
+ul.z3cJSONTree li.z3cJSONTreeExpanded ul {
+    display: block;
+}
+
+ul.z3cJSONTree li.z3cJSONTreeCollapsed ul {
+    display: none;
+}
