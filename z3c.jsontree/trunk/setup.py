@@ -23,12 +23,17 @@ def read(*rnames):
 
 setup (
     name='z3c.jsontree',
-    version='0.5.1dev',
+    version='0.5.1',
     author = "Roger Ineichen and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "JSON RPC item tree for Zope3",
     long_description=(
         read('README.txt')
+        + '\n\n' +
+        'Detailed Documentation\n'
+        '**********************'
+        + '\n\n' +
+        read('src', 'z3c', 'jsontree', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),

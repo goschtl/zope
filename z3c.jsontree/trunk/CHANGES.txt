@@ -2,15 +2,15 @@
 CHANGES
 =======
 
-Version 0.5.1dev (unreleased)
------------------------------
+0.5.1 (2009-03-10)
+------------------
 
 - Fix: use imports from newest packages e.g. zope.site.folder.Folder
 
 - Fix: be smart to NotFound error objects. NotFound errors are not locatable.
 
-Version 0.5.0 (2008-04-16)
---------------------------
+0.5.0 (2008-04-16)
+------------------
 
 - Fix: adjust ITreeItems adapter. Added additional discriminator which 
   prevents to get missused as /@@/ adapter if configured with base registry
