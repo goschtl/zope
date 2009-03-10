@@ -11,69 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Security setting constants.
-
-The `Allow`, `Deny`, and `Unset` constants are exposed by the
-`zope.app.securitypolicy.interfaces` module, and should be imported
-from there.
+"""Backward-compatibility import for security policy constants to allow
+unpickling of old pickled security settings.
 
 $Id$
 """
-
-# The location of this module within the package hierarchy is an
-# accident of implementation.  This may change; see the issue:
-# http://www.zope.org/Collectors/Zope3-dev/712
-
-
-class PermissionSetting(object):
-    """PermissionSettings should be considered as immutable.
-    They can be compared by identity. They are identified by
-    their name.
-    """
-
-    def __new__(cls, name, description=None):
-        """Keep a dict of PermissionSetting instances, indexed by
-        name. If the name already exists in the dict, return that
-        instance rather than creating a new one.
-        """
-        instances = cls.__dict__.get('__instances__')
-        if instances is None:
-            cls.__instances__ = instances = {}
-        it = instances.get(name)
-        if it is None:
-            instances[name] = it = object.__new__(cls)
-            it._init(name, description)
-        return it
-
-    def _init(self, name, description):
-        self.__name = name
-        self.__description = description
-
-    def getDescription(self):
-        return self.__description
-
-    def getName(self):
-        return self.__name
-
-    def __str__(self):
-        return "PermissionSetting: %s" % self.__name
-
-    __repr__ = __str__
-
-# register PermissionSettings to be symbolic constants by identity,
-# even when pickled and unpickled.
-import copy_reg
-copy_reg.constructor(PermissionSetting)
-copy_reg.pickle(PermissionSetting,
-                PermissionSetting.getName,
-                PermissionSetting)
-
-
-Allow = PermissionSetting('Allow',
-    'Explicit allow setting for permissions')
-
-Deny = PermissionSetting('Deny',
-    'Explicit deny setting for permissions')
-
-Unset = PermissionSetting('Unset',
-    'Unset constant that denotes no setting for permission')
+try:
+    from zope.securitypolicy.settings import Allow, Deny, Unset
+except ImportError:
+    import logging
+    logging.error('Allow, Unset and Deny constants are now '
+                  'moved from zope.app.security.settings to '
+                  'zope.securitypolicy.settings and you don\'t '
+                  'seem to have it installed. This is very rare '
+                  'case and you should manually install '
+                  'the ``zope.securitypolicy`` package.')

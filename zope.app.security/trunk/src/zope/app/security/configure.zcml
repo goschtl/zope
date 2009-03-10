@@ -68,13 +68,6 @@
         />
   </class>
 
-  <class class=".settings.PermissionSetting">
-    <require
-        permission="zope.Public"
-        attributes="getName getDescription __str__"
-        />
-  </class>
-
   <adapter factory=".NoLogout" />
 
   <!-- Standard Permissions -->

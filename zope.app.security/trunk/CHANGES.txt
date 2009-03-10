@@ -5,7 +5,13 @@ CHANGES
 3.6.2 (unreleased)
 ------------------
 
-- ...
+- The `Allow`, `Deny` and `Unset` permission settings was preferred to
+  be imported from ``zope.securitypolicy.interfaces`` for a long time
+  and now they are completely moved there from ``zope.app.security.settings``
+  as well as the ``PermissionSetting`` class. The only thing left for
+  backward compatibility is the import of Allow/Unset/Deny constants if
+  ``zope.securitypolicy`` is installed to allow unpickling of security
+  settings.
 
 3.6.1 (2009-03-09)
 ------------------
