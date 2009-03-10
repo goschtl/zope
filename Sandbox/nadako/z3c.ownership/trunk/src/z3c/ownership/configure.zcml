@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.ownership"
+    >
+
+  <role
+      id="z3c.ownership.Owner"
+      title="Owner"
+      description="Principal that owns the context object"
+      />
+
+  <permission
+      id="z3c.ownership.ChangeOwner"
+      title="Change object owner"
+      />
+
+  <class class=".ownership.Ownership">
+    <allow attributes="owner" />
+    <require
+        permission="z3c.ownership.ChangeOwner"
+        set_attributes="owner"
+        />
+  </class>
+
+  <adapter factory=".ownership.Ownership" />
+
+  <subscriber handler=".subscriber.setOwner" />
+
+</configure>
