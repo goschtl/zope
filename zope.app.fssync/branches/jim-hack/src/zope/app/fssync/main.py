@@ -28,7 +28,7 @@ Command line syntax summary:
 %(program)s remove [options] TARGET ...
 %(program)s resolve PATH ...
 %(program)s revert PATH ...
-%(program)s status [TARGET ...]
+%(program)s status [options] [TARGET ...]
 %(program)s update [TARGET ...]
 
 ``%(program)s help'' prints the global help (this message)
@@ -254,13 +254,20 @@ def diff(opts, args):
     fs.multiple(args, fs.diff, mode, diffopts, need_original)
 
 def status(opts, args):
-    """%(program)s status [TARGET ...]
+    """%(program)s status [-v] [--verbose] [TARGET ...]
 
     Print brief (local) status for each target, without changing any
     files or contacting the Zope server.
+
+    If the -v or --verbose switches are provided, prints a complete
+    list of local files regardless of their status.
     """
+    verbose = False
+    for o, a in opts:
+        if o in ('-v', '--verbose'):
+            verbose = True
     fs = FSSync()
-    fs.multiple(args, fs.status)
+    fs.multiple(args, fs.status, False, verbose)
 
 def checkin(opts, args):
     """%(program)s checkin [-m message] URL [TARGETDIR]
@@ -405,6 +412,6 @@ command_table = [
     (remove,   "del delete rm", "",     ""),
     (resolve,  "resolved","",           ""),
     (revert,   "",        "",           ""),
-    (status,   "stat st", "",           ""),
+    (status,   "stat st", "v",          "verbose"),
     (update,   "up",      "",           ""),
     ]

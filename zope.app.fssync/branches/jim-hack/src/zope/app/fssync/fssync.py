@@ -711,7 +711,7 @@ class FSSync(object):
         self.metadata.flush()
         print "R", path
 
-    def status(self, target, descend_only=False):
+    def status(self, target, descend_only=False, verbose=True):
         entry = self.metadata.getentry(target)
         flag = entry.get("flag")
         if isfile(target):
@@ -726,7 +726,8 @@ class FSSync(object):
                 original = fsutil.getoriginal(target)
                 if isfile(original):
                     if filecmp.cmp(target, original):
-                        print "=", target
+                        if verbose:
+                            print "=", target
                     else:
                         print "M", target
                 else:
@@ -740,7 +741,7 @@ class FSSync(object):
                 print "A", pname
             elif flag == "removed":
                 print "R(reborn)", pname
-            else:
+            elif verbose:
                 print "/", pname
             if entry:
                 # Recurse down the directory
@@ -755,7 +756,8 @@ class FSSync(object):
                 ncnames = namesdir.keys()
                 ncnames.sort()
                 for ncname in ncnames:
-                    self.status(join(target, namesdir[ncname]))
+                    self.status(join(target, namesdir[ncname]),
+                                verbose=verbose)
         elif exists(target):
             if not entry:
                 if not self.fsmerger.ignore(target):
@@ -775,10 +777,10 @@ class FSSync(object):
                 print "lost", target
         annotations = fsutil.getannotations(target)
         if isdir(annotations):
-            self.status(annotations, True)
+            self.status(annotations, True, verbose=verbose)
         extra = fsutil.getextra(target)
         if isdir(extra):
-            self.status(extra, True)
+            self.status(extra, True, verbose=verbose)
 
 def quote(s):
     """Helper to put quotes around arguments passed to shell if necessary."""

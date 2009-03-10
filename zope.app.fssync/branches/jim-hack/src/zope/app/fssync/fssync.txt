@@ -199,6 +199,11 @@ The status command lists all local modifications:
     M .../test/file1.txt
     = .../test/file2.txt
 
+You can also turn off verbose mode to have it only list interesting lines.
+
+    >>> zsync.status(localdir, verbose=False)
+    M .../test/file1.txt
+
 If we want to add a file to the repository we must update the local
 list of entries by calling the add command explicitely:
 
