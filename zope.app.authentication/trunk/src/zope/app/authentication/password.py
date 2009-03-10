@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.app.component.vocabulary import UtilityVocabulary
+
 # BBB: the password managers were moved into zope.password package.
 from zope.password.password import (
     PlainTextPasswordManager,
@@ -25,7 +27,6 @@ from zope.password.password import (
     SSHAPasswordManager
     )
 from zope.password.interfaces import IPasswordManager
-from zope.password.vocabulary import PasswordManagerNamesVocabulary
 
 # Simple registry used by mkzopeinstance script
 managers = [
@@ -34,3 +35,10 @@ managers = [
     ("SHA1", SHA1PasswordManager()),
     ("SSHA", SSHAPasswordManager()),
 ]
+
+
+class PasswordManagerNamesVocabulary(UtilityVocabulary):
+    """Vocabulary of password managers."""
+
+    interface = IPasswordManager
+    nameOnly = True
