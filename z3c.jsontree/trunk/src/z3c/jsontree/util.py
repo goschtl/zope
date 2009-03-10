@@ -35,11 +35,14 @@ def getIconURL(item, request, name='icon'):
 
 def isChildOf(child, parent):
     """Check if object is a child of the parent."""
-    if parent in api.getParents(child):
-        return True
-    else:
+    try:
+        if parent in api.getParents(child):
+            return True
+        else:
+            return False
+    except TypeError, e:
+        # could be a not locatable NotFound object
         return False
-
 
 def getParentsFromContextToObject(context, obj):
     """Returns a list starting with the given context's parent followed by

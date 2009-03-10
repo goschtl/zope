@@ -25,7 +25,7 @@ from zope.configuration.xmlconfig import XMLConfig
 from zope.pagetemplate.tests.util import check_xml
 from zope.publisher.browser import TestRequest
 from zope.app.component import testing
-from zope.app.folder import Folder
+from zope.site.folder import Folder
 
 from z3c.testing import TestCase
 from z3c.jsontree.browser.tests import util

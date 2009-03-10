@@ -23,10 +23,28 @@ Let's show how we can register our jsonrpc tree view:
 
 Now we will setup some content structure based on the default zope folder class:
 
-  >>> from zope.app.folder.folder import Folder
+  >>> from zope.site.folder import Folder
   >>> site  = getRootFolder()
   >>> content = Folder()
   >>> site['content'] = content
+
+And we need to be able to get an absoluteURL for the form:
+
+  >>> import zope.interface
+  >>> import zope.component
+  >>> from zope.location.interfaces import ILocation
+  >>> from zope.traversing.browser.interfaces import IAbsoluteURL
+  >>> class FakeURL(object):
+  ...     zope.interface.implements(IAbsoluteURL)
+  ...     zope.component.adapts(ILocation, zope.interface.Interface)
+  ...     def __init__(self, context, request):
+  ...         pass
+  ...     def __str__(self):
+  ...         return u'http://fake/url'
+  ...     def __call__(self):
+  ...         return str(self)
+
+  >>> zope.component.provideAdapter(FakeURL)
 
 
 JSON-RPC proxy
@@ -46,10 +64,12 @@ on the different contexts:
   >>> proxy.loadJSONTreeItems('z3cJSONTree')
   {u'treeChilds': {u'childs':
   [{u'hasChilds': False,
-    u'contextURL': u'http://localhost/++skin++JSONRPCTestSkin/content',
-    u'url': u'http://localhost/++skin++JSONRPCTestSkin/content/@@SelectedManagementView.html',
-    u'linkHandler': u'', u'content': u'content', u'iconURL': u'', u'id':
-    u'z3cJSONTree.::content'}],
+    u'contextURL': u'http://fake/url',
+    u'url': u'http://fake/url/@@SelectedManagementView.html',
+    u'linkHandler': u'',
+    u'content': u'content',
+    u'iconURL': u'',
+    u'id': u'z3cJSONTree.::content'}],
     u'id': u'z3cJSONTree'}}
 
 The content object has no items and returns some empty JSON data:
