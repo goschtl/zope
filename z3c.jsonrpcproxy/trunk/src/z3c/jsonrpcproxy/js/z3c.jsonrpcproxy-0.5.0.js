@@ -140,7 +140,7 @@ JSONRPCMethod.prototype.notify = function(){
 
 JSONRPCMethod.prototype.handleResponse = function(resp){
     // TODO: Implement better error handling support since we have error codes 
-    // offer an argument onError which defines a function for custom 
+    // offer an argument xmlhttp.onError which defines a function for custom 
     // error handling.
     var status=null;
     try{
