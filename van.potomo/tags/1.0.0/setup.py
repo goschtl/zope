@@ -10,7 +10,7 @@ long_description = (
 
 
 setup(name="van.potomo",
-      version='1.0.1dev',
+      version='1.0.0',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.potomo',
       author_email='zope-dev@zope.org',
