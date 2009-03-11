@@ -1,8 +1,7 @@
-zope.fssync Package Readme
-==========================
+zope.fssync Package
+===================
 
-Overview
---------
+This package provides filesystem synchronization utilities for Zope
+3. It is used by the zope.app.fssync package.
 
-Filesystem synchronization utility for Zope 3.
-
+See src/zope/fssync/README.txt for the details.
