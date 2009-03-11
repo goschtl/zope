@@ -94,6 +94,50 @@ We'll test some of the other methods
     >>> comparison.insert(995, 5)
     >>> matches(b, comparison)
     True
+    >>> 999 in b
+    True
+    >>> 1000 in b
+    False
+    >>> b == zc.blist.BList(range(1000))
+    False
+    >>> b.sort()
+    >>> comparison.sort()
+    >>> matches(b, comparison)
+    True
+    >>> b == range(1000)
+    False
+    >>> b == zc.blist.BList(range(1000))
+    True
+    >>> b != range(1000)
+    True
+    >>> b != zc.blist.BList(range(1000))
+    False
+    >>> b.remove(999)
+    >>> comparison.remove(999)
+    >>> matches(b, comparison)
+    True
+    >>> b.count(999)
+    0
+    >>> b.append(999)
+    >>> b.count(999)
+    1
+    >>> b.append(999)
+    >>> b.count(999)
+    2
+
+Regression tests for accessing the last list item, which would fail in 1.0b1:
+
+    >>> len(b)
+    1001
+
+    >>> b[-1] = 1000
+    >>> b[-1]
+    1000
+    >>> del b[-1]
+    >>> b[-1]
+    999
+    >>> len(b)
+    1000
 
 These are some more stress and regression tests.
 

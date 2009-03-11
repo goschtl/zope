@@ -479,7 +479,7 @@ class BList(persistent.Persistent):
         if isinstance(index, slice):
             return self.iterSlice(index) # XXX return view?
         if index < 0:
-            index += length
+            index += len(self)
             if index < 0:
                 raise IndexError('list index out of range')
         elif index > len(self):
@@ -499,9 +499,13 @@ class BList(persistent.Persistent):
 
     def __delitem__(self, index):
         if not isinstance(index, slice):
-            if index > len(self):
+            length = len(self)
+            if index >= length or index < -length:
                 raise IndexError('list assignment index out of range')
-            index = slice(index, index+1)
+            if index == -1:
+                index = slice(-1, None)
+            else:
+                index = slice(index, index+1)
         elif index.step == 1:
             index = slice(index.start, index.stop)
         elif index.step is not None:
