@@ -6,6 +6,9 @@
 
 - removed unused code and the dependency on rwproperty
 
+- improved test coverage of the BList API, fixed access to items at index -1
+  or at the ends of the valid index range
+
 
 1.0b1 (2008-10-06)
 ==================

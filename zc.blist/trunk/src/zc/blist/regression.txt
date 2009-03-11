@@ -64,9 +64,9 @@ bucket health.
     >>> list(b[:])
     [11, 99]
     >>> b[0] = 0
-    >>> b[2] = 100
-    >>> b[3] = 101
-    >>> b[4] = 102
+    >>> b.append(100)
+    >>> b.append(101)
+    >>> b.append(102)
     >>> matches(b, [0, 99, 100, 101, 102])
     True
 
@@ -138,6 +138,29 @@ Regression tests for accessing the last list item, which would fail in 1.0b1:
     999
     >>> len(b)
     1000
+
+Regression tests for accessing items at the edges of the valid index range
+(which would also fail in 1.0b1):
+
+    >>> b[1000]
+    Traceback (most recent call last):
+    IndexError: list index out of range
+    >>> b[1000] = None
+    Traceback (most recent call last):
+    IndexError: list assignment index out of range
+    >>> del b[1000]
+    Traceback (most recent call last):
+    IndexError: list assignment index out of range
+
+    >>> b[-1001]
+    Traceback (most recent call last):
+    IndexError: list index out of range
+    >>> b[-1001] = None
+    Traceback (most recent call last):
+    IndexError: list assignment index out of range
+    >>> del b[-1001]
+    Traceback (most recent call last):
+    IndexError: list assignment index out of range
 
 These are some more stress and regression tests.
 

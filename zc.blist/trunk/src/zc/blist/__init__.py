@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007-2008 Zope Corporation and Contributors.
+# Copyright (c) 2007-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -478,7 +478,7 @@ class BList(persistent.Persistent):
     # Everything relies on __setitem__ to reduce duplicated logic
 
     def append(self, value):
-        self[len(self)] = value
+        self[len(self):] = (value,)
 
     def insert(self, index, value):
         self[index:index] = (value,)
@@ -601,13 +601,11 @@ class BList(persistent.Persistent):
         # To reduce the amount of duplicated code, everything is based on
         # slices. Either you are replacing specific items (index is an integer
         # less than len or a slice with an explicit step) or deleting/inserting
-        # ranges (index is an integer equal to len or a slice with an implicit
-        # step of 1).  We convert integer requests to slice requests here.
+        # ranges (index is a slice with an implicit step of 1). We convert
+        # integer requests to slice requests here.
         if not isinstance(index, slice):
             value = (value,)
-            if index == length:
-                index = slice(length, length)
-            elif index > length:
+            if index >= length or index < -length:
                 raise IndexError('list assignment index out of range')
             elif index == -1:
                 index = slice(length-1, length, 1) # we specify a step to use
