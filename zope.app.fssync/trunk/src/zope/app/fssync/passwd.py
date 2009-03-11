@@ -22,6 +22,7 @@ import os
 
 from cStringIO import StringIO
 
+from zope.fssync import fsutil
 
 DEFAULT_FILENAME = os.path.expanduser(os.path.join("~", ".zsyncpass"))
 
@@ -179,6 +180,8 @@ def _normalize_host(scheme, host_port):
         return _normalize_port(host_port, httplib.HTTP_PORT)
     elif scheme == "https":
         return _normalize_port(host_port, httplib.HTTPS_PORT)
+    elif scheme == "zsync+ssh":
+        return _normalize_port(host_port, None)
     else:
         raise fsutil.Error("unsupported URL scheme: %r" % scheme)
 

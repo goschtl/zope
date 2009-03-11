@@ -29,7 +29,7 @@ from zope.publisher.browser import BrowserView
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.fssync.metadata import Metadata
 from zope.app.fssync import syncer
-from zope.app.i18n import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 from zope.fssync import task
 from zope.fssync import repository

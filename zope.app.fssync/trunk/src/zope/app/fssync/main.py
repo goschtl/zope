@@ -3,14 +3,14 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Filesystem synchronization utility for Zope 3.
 
@@ -28,7 +28,7 @@ Command line syntax summary:
 %(program)s remove [options] TARGET ...
 %(program)s resolve PATH ...
 %(program)s revert PATH ...
-%(program)s status [TARGET ...]
+%(program)s status [options] [TARGET ...]
 %(program)s update [TARGET ...]
 
 ``%(program)s help'' prints the global help (this message)
@@ -127,7 +127,7 @@ def commit(opts, args):
     for o, a in opts:
         if o in ("-r", "--raise-on-conflicts"):
             raise_on_conflicts = True
-    fs = FSSync()
+    fs = FSSync(overwrite_local=True)
     fs.multiple(args, fs.commit, message, raise_on_conflicts)
 
 def update(opts, args):
@@ -254,13 +254,20 @@ def diff(opts, args):
     fs.multiple(args, fs.diff, mode, diffopts, need_original)
 
 def status(opts, args):
-    """%(program)s status [TARGET ...]
+    """%(program)s status [-v] [--verbose] [TARGET ...]
 
     Print brief (local) status for each target, without changing any
     files or contacting the Zope server.
+
+    If the -v or --verbose switches are provided, prints a complete
+    list of local files regardless of their status.
     """
+    verbose = False
+    for o, a in opts:
+        if o in ('-v', '--verbose'):
+            verbose = True
     fs = FSSync()
-    fs.multiple(args, fs.status)
+    fs.multiple(args, fs.status, False, verbose)
 
 def checkin(opts, args):
     """%(program)s checkin [-m message] URL [TARGETDIR]
@@ -287,7 +294,7 @@ def checkin(opts, args):
             raise Usage("checkin requires at most one TARGETDIR argument")
     else:
         target = os.curdir
-    fs = FSSync(rooturl=rooturl)
+    fs = FSSync(rooturl=rooturl, overwrite_local=True)
     fs.checkin(target, message)
 
 def login(opts, args):
@@ -352,6 +359,19 @@ def revert(opts, args):
     fs = FSSync()
     fs.multiple(args, fs.revert)
 
+def merge(opts, args):
+    """%(program)s merge [TARGETDIR] SOURCEDIR
+
+    Merge changes from one sandbox directory to another. If two
+    directories are specified then the first one is the target and the
+    second is the source. If only one directory is specified, then the
+    target directory is assumed to the be current sandbox.
+    """
+    if len(args) not in (1,2):
+        raise Usage('Merge requires one or two arguments')
+    fs = FSSync()
+    fs.merge(args)
+
 def extract_message(opts, cmd):
     L = []
     message = None
@@ -387,10 +407,11 @@ command_table = [
     (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
     (login,    "",        "u:",         "user="),
     (logout,   "",        "u:",         "user="),
+    (merge,    "",        "",           ""),
     (mkdir,    "",        "",           ""),
     (remove,   "del delete rm", "",     ""),
-    (resolve,  "",        "",           ""),
+    (resolve,  "resolved","",           ""),
     (revert,   "",        "",           ""),
-    (status,   "stat st", "",           ""),
+    (status,   "stat st", "v",          "verbose"),
     (update,   "up",      "",           ""),
     ]

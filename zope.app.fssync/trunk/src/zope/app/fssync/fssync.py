@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Highest-level classes to support filesystem synchronization:
 
@@ -32,6 +32,7 @@ import formatter
 
 from StringIO import StringIO
 
+import os.path
 from os.path import exists, isfile, isdir
 from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
@@ -42,6 +43,8 @@ from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.passwd import PasswordManager
+from zope.app.fssync.ssh import SSHConnection
+import zope.app.fssync.merge
 
 if sys.platform[:3].lower() == "win":
     DEV_NULL = r".\nul"
@@ -136,8 +139,9 @@ class Network(PasswordManager):
             rooturl = roottype = rootpath = user_passwd = host_port = None
         else:
             roottype, rest = urllib.splittype(rooturl)
-            if roottype not in ("http", "https"):
-                raise Error("root url must be 'http' or 'https'", rooturl)
+            if roottype not in ("http", "https", "zsync+ssh"):
+                raise Error("root url must be 'http', 'https', or 'zsync+ssh'",
+                            rooturl)
             if roottype == "https" and not hasattr(httplib, "HTTPS"):
                 raise Error("https not supported by this Python build")
             netloc, rootpath = urllib.splithost(rest)
@@ -207,13 +211,15 @@ class Network(PasswordManager):
         assert self.rooturl
         if not path.endswith("/"):
             path += "/"
-        path = urllib.quote(path)  
+        path = urllib.quote(path)
         path += view
         if self.roottype == "https":
             conn = httplib.HTTPSConnection(self.host_port)
+        elif self.roottype == "zsync+ssh":
+            conn = SSHConnection(self.host_port, self.user_passwd)
         else:
             conn = httplib.HTTPConnection(self.host_port)
-         
+
         if datasource is None:
             conn.putrequest("GET", path)
         else:
@@ -228,7 +234,7 @@ class Network(PasswordManager):
             tmp = tempfile.TemporaryFile('w+b')
             datasource(tmp)
             conn.putheader("Content-Length", str(tmp.tell()))
-            
+
         if self.user_passwd:
             if ":" not in self.user_passwd:
                 auth = self.getToken(self.roottype,
@@ -241,7 +247,7 @@ class Network(PasswordManager):
         conn.putheader("Connection", "close")
         conn.endheaders()
         if datasource is not None:
-            #XXX If chunking works again, replace the following lines with 
+            #XXX If chunking works again, replace the following lines with
             # datasource(PretendStream(conn))
             # conn.send("0\r\n\r\n")
             tmp.seek(0)
@@ -249,8 +255,8 @@ class Network(PasswordManager):
             while data:
                 conn.send(data)
                 data = tmp.read(1<<16)
-            tmp.close()   
-                
+            tmp.close()
+
         response = conn.getresponse()
         if response.status != 200:
             raise Error("HTTP error %s (%s); error document:\n%s",
@@ -309,7 +315,8 @@ class DataSource(object):
 
 class FSSync(object):
 
-    def __init__(self, metadata=None, network=None, rooturl=None):
+    def __init__(self, metadata=None, network=None, rooturl=None,
+                 overwrite_local=False):
         if metadata is None:
             metadata = Metadata()
         if network is None:
@@ -317,7 +324,8 @@ class FSSync(object):
         self.metadata = metadata
         self.network = network
         self.network.setrooturl(rooturl)
-        self.fsmerger = FSMerger(self.metadata, self.reporter)
+        self.fsmerger = FSMerger(self.metadata, self.reporter,
+                                 overwrite_local)
 
     def login(self, url=None, user=None):
         scheme, host_port, user = self.get_login_info(url, user)
@@ -459,6 +467,40 @@ class FSSync(object):
         finally:
             fp.close()
 
+    def merge(self, args):
+        source = args[0]
+        if len(args) == 1:
+            target = os.curdir
+        else:
+            target = args[1]
+
+        # make sure that we're merging from compatible directories
+        if not self.metadata.getentry(target):
+            names = self.metadata.getnames(target)
+            if len(names) == 1:
+                target = join(target, names[0])
+        target_entry = self.metadata.getentry(target)
+        if not target_entry:
+            print 'Target must be a fssync checkout directory'
+            return
+        if not self.metadata.getentry(source):
+            names = self.metadata.getnames(source)
+            if len(names) == 1:
+                source = join(source, names[0])
+        source_entry = self.metadata.getentry(source)
+        if not source_entry:
+            print 'Source must be a fssync checkout directory'
+            return
+        if source_entry[u'id'] != target_entry[u'id']:
+            print 'Cannot merge from %s to %s' % (source_entry[u'id'],
+                                                  target_entry[u'id'])
+            return
+
+        zope.app.fssync.merge.merge(os.path.abspath(source),
+                                    os.path.abspath(target), self)
+        print 'All done.'
+
+
     def merge_snarffile(self, fp, localdir, tail):
         uns = Unsnarfer(fp)
         tmpdir = tempfile.mktemp()
@@ -529,7 +571,7 @@ class FSSync(object):
     def reporter(self, msg):
         if msg[0] not in "/*":
             print msg.encode('utf-8') # uo: is encode needed here?
-    
+
     def diff(self, target, mode=1, diffopts="", need_original=True):
         assert mode == 1, "modes 2 and 3 are not yet supported"
         entry = self.metadata.getentry(target)
@@ -669,7 +711,7 @@ class FSSync(object):
         self.metadata.flush()
         print "R", path
 
-    def status(self, target, descend_only=False):
+    def status(self, target, descend_only=False, verbose=True):
         entry = self.metadata.getentry(target)
         flag = entry.get("flag")
         if isfile(target):
@@ -684,7 +726,8 @@ class FSSync(object):
                 original = fsutil.getoriginal(target)
                 if isfile(original):
                     if filecmp.cmp(target, original):
-                        print "=", target
+                        if verbose:
+                            print "=", target
                     else:
                         print "M", target
                 else:
@@ -698,7 +741,7 @@ class FSSync(object):
                 print "A", pname
             elif flag == "removed":
                 print "R(reborn)", pname
-            else:
+            elif verbose:
                 print "/", pname
             if entry:
                 # Recurse down the directory
@@ -713,7 +756,8 @@ class FSSync(object):
                 ncnames = namesdir.keys()
                 ncnames.sort()
                 for ncname in ncnames:
-                    self.status(join(target, namesdir[ncname]))
+                    self.status(join(target, namesdir[ncname]),
+                                verbose=verbose)
         elif exists(target):
             if not entry:
                 if not self.fsmerger.ignore(target):
@@ -733,10 +777,10 @@ class FSSync(object):
                 print "lost", target
         annotations = fsutil.getannotations(target)
         if isdir(annotations):
-            self.status(annotations, True)
+            self.status(annotations, True, verbose=verbose)
         extra = fsutil.getextra(target)
         if isdir(extra):
-            self.status(extra, True)
+            self.status(extra, True, verbose=verbose)
 
 def quote(s):
     """Helper to put quotes around arguments passed to shell if necessary."""
