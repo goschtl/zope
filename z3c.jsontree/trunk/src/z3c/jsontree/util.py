@@ -17,7 +17,8 @@ $Id:$
 __docformat__ = 'restructuredtext'
 
 import zope.component
-from zope.traversing import api
+import zope.traversing.api
+import zope.publisher.interfaces
 from zope.proxy import sameProxiedObjects
 from zope.traversing.interfaces import TraversalError
 
@@ -36,7 +37,7 @@ def getIconURL(item, request, name='icon'):
 def isChildOf(child, parent):
     """Check if object is a child of the parent."""
     try:
-        if parent in api.getParents(child):
+        if parent in zope.traversing.api.getParents(child):
             return True
         else:
             return False
@@ -51,6 +52,12 @@ def getParentsFromContextToObject(context, obj):
     If the child object is not a child of the parent a empty list
     will return.
     """
+    # this is a very bad situation. The context could be a NotFound error.
+    # Such NotFound objects provide a LocationProxy with the site as parent
+    # even if we don't allow the site in our possible parent chain. So skip it.
+    if zope.publisher.interfaces.INotFound.providedBy(context):
+        return []
+
     if not isChildOf(context, obj):
         return []
     

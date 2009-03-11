@@ -5,7 +5,10 @@ CHANGES
 0.5.2 (unreleased)
 ------------------
 
-- ...
+- Fix: getParentsFromContextToObject, don't return a parent chain if an item 
+  is a location proxied NotFound error object. It's possible that such a
+  NotFound object will wrap a context which we don't allow in our parent
+  chain at all.
 
 0.5.1 (2009-03-10)
 ------------------

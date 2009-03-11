@@ -123,11 +123,16 @@ class TreeBase(subitem.SubItemAware):
         return util.getIconURL(item, request, name=name)
 
     def getParents(self):
+        """This method returns a parent chain.
+        
+        The method is also responsible for skip objects which should get
+        excluded e.g. the sitemanager items.
+        """
         root = self.getRoot()
         return util.getParentsFromContextToObject(self.context, root)
 
     def update(self):
-        """Returns HTML code for representing a <ul> tag tree with the 
+        """Update HTML code for representing a <ul> tag tree with the 
         siblings and parents of an object.
 
         There is only one branch expanded, in other words, the tree is
