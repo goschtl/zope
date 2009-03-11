@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-2.0.6 (Unreleased)
+2.0.6 (2009-03-11)
 ------------------
 
 - Fixed discriminator for z3ext:pagelet directive
