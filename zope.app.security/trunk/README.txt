@@ -1,2 +1,2 @@
-This package implements local persistent permissions for zope.security that
-can be added and registered per site.
+This package provides several components integrating the Zope security
+implementation into zope 3 applications.
