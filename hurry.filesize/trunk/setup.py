@@ -4,23 +4,20 @@ import os
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-#long_description = (
-#    read('src/hurry/file/README.txt')
-#    + '\n' +
-#    read('src/hurry/file/browser/file.txt')
-#    + '\n' + 
-#    read('CHANGES.txt')
-#    )
+long_description = (
+    read('src', 'hurry', 'filesize', 'README.txt')
+    + '\n' +
+    read('CHANGES.txt')
+    + '\n' +
+    'Download\n'
+    '========\n'
+    )
 
 setup(
     name="hurry.filesize",
-    version="09ev",
-    description="""\
-hurry.filesize is a simple Python library to make display human readable
-sizes of files (or anything that is sized in bytes), in kilobytes, megabytes,
-etc.
-""",
-#    long_description=long_description,
+    version="0.9dev",
+    description="A simple Python library for human readable file sizes (or anything sized in bytes).",
+    long_description=long_description,    
     classifiers=[
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",

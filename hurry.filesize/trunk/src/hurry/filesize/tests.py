@@ -2,5 +2,6 @@ import unittest, doctest
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('hurry.filesize.filesize'),
+            doctest.DocFileSuite('README.txt'),
+            doctest.DocTestSuite('hurry.filesize.filesize'),
         ))
