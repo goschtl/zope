@@ -8,6 +8,10 @@ CHANGES
 
 - Fixed discriminator for z3ext:pagelet directive
 
+- Allow use 'layout' pagelet type as template for layout
+
+- Update styles
+
 
 2.0.5 (2009-01-26)
 ------------------

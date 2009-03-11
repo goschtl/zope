@@ -90,7 +90,6 @@
     clear: both;
     list-style: none;
     list-style-image: none;
-    border: 1px solid transparent;
   }
 
   ul.z-hlisting {
@@ -113,6 +112,12 @@
     float: left;
     padding-top: 8px;
     padding-right: 0.5em;
+    padding-bottom: 0.5em;
+  }
+
+  ul.z-listing li .z-listing-details { 
+    float: left;
+    padding-bottom: 0.5em;
   }
 
   ul.z-listing li a,
@@ -160,8 +165,12 @@
 
   ul.z-listing li .z-listing-details div,
   ul.z-hlisting li .z-listing-details div {
-    color: discreetColor;
     font-size: fontSmallSize;
+  }
+
+  ul.z-listing li .byline,
+  ul.z-hlisting li .byline {
+    color: discreetColor;
   }
   
   ul.z-listing li ul.z-listing,
