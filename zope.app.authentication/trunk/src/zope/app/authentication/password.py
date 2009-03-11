@@ -11,34 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Password managers
+"""Backward compatibility imports for password managers
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
-from zope.app.component.vocabulary import UtilityVocabulary
 
 # BBB: the password managers were moved into zope.password package.
 from zope.password.password import (
     PlainTextPasswordManager,
     MD5PasswordManager,
     SHA1PasswordManager,
-    SSHAPasswordManager
+    SSHAPasswordManager,
+    managers,
     )
-from zope.password.interfaces import IPasswordManager
-
-# Simple registry used by mkzopeinstance script
-managers = [
-    ("Plain Text", PlainTextPasswordManager()), # default
-    ("MD5", MD5PasswordManager()),
-    ("SHA1", SHA1PasswordManager()),
-    ("SSHA", SSHAPasswordManager()),
-]
-
-
-class PasswordManagerNamesVocabulary(UtilityVocabulary):
-    """Vocabulary of password managers."""
-
-    interface = IPasswordManager
-    nameOnly = True
+from zope.password.vocabulary import PasswordManagerNamesVocabulary
