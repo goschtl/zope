@@ -18,8 +18,23 @@ $Id$
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 
+def test_bbb_imports():
+    """
+    Let's check that permission vocabularies that were moved to
+    zope.security are still importable from original place.
+    
+      >>> import zope.security.permission as new
+      >>> import zope.app.security.vocabulary as old
+      >>> old.PermissionsVocabulary is new.PermissionsVocabulary
+      True
+      >>> old.PermissionIdsVocabulary is new.PermissionIdsVocabulary
+      True
+    
+    """
+
 def test_suite():
     return unittest.TestSuite((
+        DocTestSuite(),
         DocTestSuite('zope.app.security.vocabulary'),
         ))
 

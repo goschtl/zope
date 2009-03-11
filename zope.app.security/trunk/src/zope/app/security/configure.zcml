@@ -3,22 +3,8 @@
     i18n_domain="zope"
     >
 
-  <permission
-      id="zope.Public"
-      title="[public-permission] Public"
-      description="Special permission indicating unconditional access.
-                   Public resources are always accessible."
-      />
-
-  <utility
-      component=".vocabulary.PermissionsVocabulary"
-      name="Permissions"
-      />
-
-  <utility
-      component=".vocabulary.PermissionIdsVocabulary"
-      name="Permission Ids"
-      />
+  <include package="zope.security" />
+  <include package="zope.localpermission" />
 
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
@@ -28,7 +14,6 @@
       component=".principalregistry.principalRegistry"
       />
 
-  <include package="zope.localpermission" />
 
   <class class="zope.security.permission.Permission">
     <allow

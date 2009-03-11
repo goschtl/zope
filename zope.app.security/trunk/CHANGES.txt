@@ -5,6 +5,13 @@ CHANGES
 3.7.0 (unreleased)
 ------------------
 
+- The PermissionsVocabulary and PermissionIdsVocabulary has been moved
+  to the ``zope.security`` package. Backward-compatibility imports are
+  provided.
+
+- The registration of the "zope.Public" permission has been moved to
+  ``zope.security``. Its configure.zcml is now included by this package.
+
 - The ``LocalPermission`` class is now moved to new ``zope.localpermission``
   package. This package now only has backward-compatibility imports and browser
   views and menu items for ZMI.
