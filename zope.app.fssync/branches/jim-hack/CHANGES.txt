@@ -1,0 +1,18 @@
+Changes
+=======
+
+3.5
+---
+
+* Added -v --verbose switches to zsync status command. Verbose is off
+  by default.
+
+* Added support for avoiding conflicts after commiting metadata files.
+
+* Added 'resolved' as an alias for the 'resolve' command.
+
+* Added a 'merge' command. It allows merging changes from one checkout
+  to another.
+
+* Added ssh network transport. The client can now use zsync+ssh://
+  urls to communicate with the server.
