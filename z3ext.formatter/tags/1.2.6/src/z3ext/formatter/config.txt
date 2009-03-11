@@ -1,0 +1,62 @@
+config.py - load configuration from zope.conf <product-config z3ext.formatter>
+
+By default it uses this settings
+
+<product-config z3ext.formatter>
+  timezone UTC
+  timezoneFormat 2
+  principalTimezone true
+</product-config>
+
+Usually initFormatter() function is colled during IDatabaseOpenedEvent event,
+we simply call it directly:
+
+   >>> from z3ext.formatter.config import initFormatter
+   >>> initFormatter(None)
+
+Now we can get IFormatterConfiglet utility
+
+   >>> from zope.component import getUtility
+   >>> from zope.interface.verify import verifyObject
+   >>> from z3ext.formatter.interfaces import IFormatterConfiglet
+
+   >>> IFormatterConfiglet['timezone'].default
+   u'US/Pacific'
+
+   >>> IFormatterConfiglet['timezoneFormat'].default
+   2
+
+   >>> IFormatterConfiglet['principalTimezone'].default
+   True
+
+
+Now let's emulate <product-config>
+
+   >>> from zope.app.appsetup import product
+   >>> product._configs['z3ext.formatter'] = {
+   ...   'timezone': u'UTC', 'timezoneFormat': '2', 'principalTimezone': 'false'}
+
+   >>> initFormatter(None)
+
+   >>> IFormatterConfiglet['timezone'].default
+   u'UTC'
+
+   >>> IFormatterConfiglet['timezoneFormat'].default
+   2
+
+   >>> IFormatterConfiglet['principalTimezone'].default
+   False
+
+
+If we supply wrong values config will use default values
+
+   >>> product._configs['z3ext.formatter'] = {
+   ...   'timezone': u'wrong', 'timezoneFormat': 'wrong'}
+
+   >>> initFormatter(None)
+
+   >>> IFormatterConfiglet['timezone'].default
+   u'US/Pacific'
+
+   >>> IFormatterConfiglet['timezoneFormat'].default
+   2
