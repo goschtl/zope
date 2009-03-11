@@ -1,0 +1,1 @@
+from zope.localpermission.permission import LocalPermission
