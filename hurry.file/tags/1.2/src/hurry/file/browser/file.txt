@@ -1,0 +1,179 @@
+hurry.file widgets
+==================
+
+This is an infrastructure to create a file widget that behaves as much
+as possible like a normal text widget in formlib. Normally a file
+widget loses its file data when a form is re-presented for reasons of
+failing form validation. A ``hurry.file`` widget retains the file, for
+example by storing it in a session.
+
+In order to do this, we have a special way to store file data along with
+its filename::
+
+  >>> from hurry.file import HurryFile
+  >>> some_file = HurryFile('foo.txt', 'the contents')
+  >>> some_file.filename
+  'foo.txt'
+  >>> some_file.data
+  'the contents'
+
+We can provide a download widget. In this case, there's nothing
+to download::
+
+  >>> from hurry.file.browser import DownloadWidget
+  >>> from hurry.file.schema import File
+  >>> from zope.publisher.browser import TestRequest
+  >>> field = File(__name__='foo', title=u'Foo')
+  >>> field = field.bind(None)
+  >>> request = TestRequest()
+  >>> widget = DownloadWidget(field, request)
+  >>> widget()
+  u'<div>Download not available</div>'
+ 
+Even if there were data in the request, there'd be nothing to download::
+
+  >>> from zope.publisher.browser import FileUpload
+  >>> request = TestRequest(form={'field.foo': FileUpload(some_file)})
+  >>> widget = DownloadWidget(field, request)
+  >>> widget()
+  u'<div>Download not available</div>'
+
+Now set a value::
+
+  >>> widget.setRenderedValue(some_file)
+  >>> widget()
+  u'<a href="foo.txt">foo.txt</a>'
+
+Now on to an edit widget. First the case in an add form with no
+data already available, and no data in request::
+
+  >>> from hurry.file.browser import EncodingFileWidget
+  >>> field = File(__name__='foo', title=u'Foo', required=False)
+  >>> field = field.bind(None)
+  >>> request = TestRequest()
+  >>> widget = EncodingFileWidget(field, request)
+ 
+  >>> def normalize(s):
+  ...   return '\n  '.join(filter(None, s.split(' ')))
+
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+
+Now let's try a situation where data is available in the request, but
+it's an empty string for the file::
+
+  >>> request = TestRequest(form={'field.foo': u''})
+  >>> widget = EncodingFileWidget(field, request)
+ 
+  >>> def normalize(s):
+  ...   return '\n  '.join(filter(None, s.split(' ')))
+
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+
+Now let's render again when there's already available data. What should show
+up is an extra, hidden field which contains the file_id::
+
+  >>> widget.setRenderedValue(some_file)
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+    (foo.txt)<input
+    class="hiddenType"
+    id="field.foo.file_id"
+    name="field.foo.file_id"
+    type="hidden"
+    value="Zm9vLnR4dAp0aGUgY29udGVudHM="
+    />
+
+Now let's render again, this time with file data available in the request
+instead. The same should happen::
+
+  >>> request = TestRequest(form={'field.foo': FileUpload(some_file)})
+  >>> widget = EncodingFileWidget(field, request)
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+    (foo.txt)<input
+    class="hiddenType"
+    id="field.foo.file_id"
+    name="field.foo.file_id"
+    type="hidden"
+    value="Zm9vLnR4dAp0aGUgY29udGVudHM="
+    />
+
+Now let's render again, this time not with file data available in the
+request, but an id. Again, we should see the same::
+
+  >>> request = TestRequest(form={'field.foo.file_id': 
+  ...                             'Zm9vLnR4dAp0aGUgY29udGVudHM='})
+  >>> widget = EncodingFileWidget(field, request)
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+    (foo.txt)<input
+    class="hiddenType"
+    id="field.foo.file_id"
+    name="field.foo.file_id"
+    type="hidden"
+    value="Zm9vLnR4dAp0aGUgY29udGVudHM="
+    />
+
+If there is both file data and an id, something else happens. First, let's
+prepare some new file::
+
+  >>> another_file = HurryFile('bar.txt', 'bar contents')
+
+We happen to know, due to the implementation of EncodingFileWidget,
+that the file_id is going to be "YmFyLnR4dApiYXIgY29udGVudHM=". Let's
+make a request with the original id, but a new file upload::
+
+  >>> request = TestRequest(form={'field.foo': FileUpload(another_file),
+  ...                             'field.foo.file_id': 
+  ...                             'Zm9vLnR4dAp0aGUgY29udGVudHM='})
+
+We expect the new file to be the one that's uploaded::
+
+  >>> widget = EncodingFileWidget(field, request)
+  >>> print normalize(widget())
+  <input
+    class="fileType"
+    id="field.foo"
+    name="field.foo"
+    size="20"
+    type="file"
+    />
+    (bar.txt)<input
+    class="hiddenType"
+    id="field.foo.file_id"
+    name="field.foo.file_id"
+    type="hidden"
+    value="YmFyLnR4dApiYXIgY29udGVudHM="
+    />
