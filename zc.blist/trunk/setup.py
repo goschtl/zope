@@ -87,7 +87,6 @@ setup(
     license='ZPL',
     install_requires=[
         'ZODB3 >= 3.7',
-        'rwproperty',
         'setuptools',
         'zope.testing',
         ],

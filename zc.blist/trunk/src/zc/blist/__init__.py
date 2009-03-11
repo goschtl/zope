@@ -18,9 +18,8 @@ import itertools
 import ZODB.POSException
 import persistent
 import persistent.list
-import BTrees.OOBTree
-import BTrees.Length
-import rwproperty
+import BTrees
+
 
 def method(f):
     def wrapper(self, *args, **kwargs):
@@ -28,16 +27,6 @@ def method(f):
             raise RuntimeError('cannot mutate shared object')
         return f(self, *args, **kwargs)
     return wrapper
-
-class setproperty(rwproperty.rwproperty):
-
-    @staticmethod
-    def createProperty(func):
-        return property(None, method(func))
-
-    @staticmethod
-    def enhanceProperty(oldprop, func):
-        return property(oldprop.fget, method(func), oldprop.fdel)
 
 def supercall(name):
     sys._getframe(1).f_locals[name] = method(
@@ -67,9 +56,6 @@ class Collections(persistent.Persistent):
     # bucket or index
     def __init__(self, *collections):
         self._collections = collections
-
-    def __iter__(self):
-        return iter(self._collections)
 
     def add(self, collection):
         if collection not in self:

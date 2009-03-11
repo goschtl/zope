@@ -4,6 +4,8 @@
 - fixed: internal data structures were not stored correctly in the ZODB, so
   BLists loaded from a fresh DB connection would break.
 
+- removed unused code and the dependency on rwproperty
+
 
 1.0b1 (2008-10-06)
 ==================
