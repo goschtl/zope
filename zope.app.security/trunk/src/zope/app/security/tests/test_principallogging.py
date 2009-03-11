@@ -16,34 +16,24 @@
 $Id$
 """
 import unittest
-from zope.interface.verify import verifyObject
+from zope.testing.doctestunit import DocTestSuite
 
-class PrincipalStub(object):
-
-    id = 42
-
-
-class TestPrincipalLogging(unittest.TestCase):
-
-    def test_interface(self):
-        from zope.app.security.principallogging import PrincipalLogging
-        from zope.publisher.interfaces.logginginfo import ILoggingInfo
-        principal = PrincipalStub()
-        pl = PrincipalLogging(principal)
-        verifyObject(ILoggingInfo, pl)
-
-    def test_getLogMessage(self):
-        from zope.app.security.principallogging import PrincipalLogging
-        principal = PrincipalStub()
-        pl = PrincipalLogging(principal)
-        self.assertEquals(pl.getLogMessage(), "42")
-
+def test_bbb_imports():
+    """
+    Let's check that permission vocabularies that were moved to
+    zope.security are still importable from original place.
+    
+      >>> import zope.publisher.principallogging as new
+      >>> import zope.app.security.principallogging as old
+      >>> old.PrincipalLogging is new.PrincipalLogging
+      True
+    
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestPrincipalLogging))
-    return suite
-
+    return unittest.TestSuite((
+        DocTestSuite(),
+        ))
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')

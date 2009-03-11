@@ -5,6 +5,10 @@ CHANGES
 3.7.0 (unreleased)
 ------------------
 
+- The IPrincipal -> zope.publisher.interfaces.logginginfo.ILoggingInfo
+  adapter was moved to ``zope.publisher``. Backward-compatibility import
+  is provided.
+
 - The PermissionsVocabulary and PermissionIdsVocabulary has been moved
   to the ``zope.security`` package. Backward-compatibility imports are
   provided.

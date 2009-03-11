@@ -91,12 +91,6 @@
       for="zope.publisher.interfaces.ftp.IFTPCredentials"
       />
 
-  <adapter
-      factory=".principallogging.PrincipalLogging"
-      provides="zope.publisher.interfaces.logginginfo.ILoggingInfo"
-      for=".interfaces.IPrincipal"
-      />
-
   <utility
       component=".principalregistry.fallback_unauthenticated_principal"
       provides=".interfaces.IFallbackUnauthenticatedPrincipal"

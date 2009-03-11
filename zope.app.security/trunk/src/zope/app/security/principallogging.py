@@ -11,19 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""An adapter from IPrincipal to the ILoggingInfo.
+"""Backward-compatibility import for PrincipalLogging
 
 $Id$
 """
-from zope.interface import implements
-from zope.publisher.interfaces.logginginfo import ILoggingInfo
 
-class PrincipalLogging(object):
-
-    implements(ILoggingInfo)
-
-    def __init__(self, principal):
-        self.principal = principal
-
-    def getLogMessage(self):
-        return str(self.principal.id)
+# BBB: this was moved to zope.publisher.
+from zope.publisher.principallogging import PrincipalLogging
