@@ -13,6 +13,8 @@ CHANGES
 
 - Added applyChanges method to subform
 
+- Do not insert <form> html tag if form wrapped with other <form>
+
 
 1.3.2 (2009-01-22)
 ------------------
