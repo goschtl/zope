@@ -15,10 +15,11 @@
 
 $Id$
 """
+import decimal
 import re
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.schema import Field, Text, Int
+from zope.schema import Field, Text, Int, Decimal
 from zope.schema.interfaces import ValidationError, RequiredMissing
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.testing.doctestunit import DocTestSuite
@@ -138,6 +139,41 @@ class FieldDefaultBehaviour(TestCase):
         field = MyField(title=u'my')
         self.assert_(field.required)
 
+class StubProxy(object):
+
+    def __init__(self, fld):
+        self.proxied_object = fld
+
+    def __getattribute__(self, name):
+        if name in ['proxied_object']:
+            val = object.__getattribute__(self, name)
+        elif name in ['__class__']:
+            val = StubProxy(getattr(self.proxied_object, name))
+        else:
+            val = getattr(self.proxied_object, name)
+        return val
+
+class ProxiedValuesValidationTest(TestCase):
+    """Test the validate method when the value is wrapped in a proxy.
+
+    A common use case for this is the `Decimal` type that is wrapped in
+    a security proxy because it is not considered as a "rock".
+    """
+
+    def testValidate(self):
+        field = Decimal(
+            title=u'Not required field', description=u'',
+            readonly=False, required=False)
+        field.validate(StubProxy(decimal.Decimal("1000.0003")))
+
+    def testValidateRequired(self):
+        field = Decimal(
+            title=u'Required field', description=u'',
+            readonly=False, required=True)
+        field.validate(StubProxy(decimal.Decimal('12.0')))
+
+
+
 def test_suite():
     checker = renormalizing.RENormalizing([
         (re.compile(r" with base 10: '125.6'"),
@@ -146,6 +182,7 @@ def test_suite():
     return TestSuite((
         makeSuite(FieldTest),
         makeSuite(FieldDefaultBehaviour),
+        makeSuite(ProxiedValuesValidationTest),
         DocTestSuite("zope.schema._field"),
         DocTestSuite("zope.schema._bootstrapfields",checker=checker),
         ))

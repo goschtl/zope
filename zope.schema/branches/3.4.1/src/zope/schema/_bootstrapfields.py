@@ -161,8 +161,16 @@ class Field(Attribute):
         return not self.__eq__(other)
 
     def _validate(self, value):
-        if self._type is not None and not isinstance(value, self._type):
-            raise WrongType(value, self._type)
+        if self._type is not None:
+            # the complexity of the next few lines of code is required to make
+            # it proxy aware
+            if isinstance(self._type, tuple):
+                check_mro = [
+                    _type in value.__class__.__mro__ for _type in self._type]
+                if True not in check_mro:
+                    raise WrongType(value, self._type)
+            elif self._type not in value.__class__.__mro__:
+                raise WrongType(value, self._type)
 
         if not self.constraint(value):
             raise ConstraintNotSatisfied(value)
