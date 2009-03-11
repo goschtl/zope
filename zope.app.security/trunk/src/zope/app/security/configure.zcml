@@ -28,33 +28,7 @@
       component=".principalregistry.principalRegistry"
       />
 
-  <class class=".permission.LocalPermission">
-    <factory
-        id="zope.app.security.Permission"
-        />
-    <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable"
-        />
-    <allow
-        interface="zope.security.interfaces.IPermission"
-        />
-    <require
-        permission="zope.Security"
-        set_schema="zope.security.interfaces.IPermission"
-        />
-  </class>
-
-  <subscriber
-      for="zope.security.interfaces.IPermission
-           zope.component.interfaces.IRegistered"
-      handler=".permission.setIdOnActivation"
-      />
-
-  <subscriber
-      for="zope.security.interfaces.IPermission
-           zope.component.interfaces.IUnregistered"
-      handler=".permission.unsetIdOnDeactivation"
-      />
+  <include package="zope.localpermission" />
 
   <class class="zope.security.permission.Permission">
     <allow

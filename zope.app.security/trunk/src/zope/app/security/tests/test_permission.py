@@ -16,14 +16,27 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+import doctest
 
+def test_bbb_imports():
+    """
+    Let's test that backward-compatibility imports still work:
+    
+      >>> from zope.app.security import permission as old
+      >>> from zope.localpermission import permission as new
+    
+      >>> old.NULL_ID is new.NULL_ID
+      True
+      >>> old.LocalPermission is new.LocalPermission
+      True
+      >>> old.setIdOnActivation is new.setIdOnActivation
+      True
+      >>> old.unsetIdOnDeactivation is new.unsetIdOnDeactivation
+      True
+
+    """
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.security.permission'),
+        doctest.DocTestSuite(),
         ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-

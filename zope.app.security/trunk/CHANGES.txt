@@ -2,10 +2,17 @@
 CHANGES
 =======
 
-3.6.3 (unreleased)
+3.7.0 (unreleased)
 ------------------
 
-- ...
+- The ``LocalPermission`` class is now moved to new ``zope.localpermission``
+  package. This package now only has backward-compatibility imports and browser
+  views and menu items for ZMI.
+
+- The browser views and menu item for ``LocalPermission`` was moved into a
+  separate `browser/localpermission.zcml` file that is included by
+  `browser/configure.zcml`. This adds a possibility to exclude ZMI-related
+  configuration for local permissions.
 
 3.6.2 (2009-03-10)
 ------------------
