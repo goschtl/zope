@@ -33,7 +33,16 @@ class HurryFile(Persistent):
         return storage.getFile(self.data)
 
     file = property(_get_file)
-    
+
+    @property
+    def size(self):
+        file = self.file
+        if isinstance(file, StringIO):
+            return len(file.getvalue())
+        else:
+            info = os.fstat(file.fileno())
+            return info.st_size
+
     def __eq__(self, other):
         try:
             return (self.filename == other.filename and

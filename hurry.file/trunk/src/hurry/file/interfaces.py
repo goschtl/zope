@@ -24,6 +24,7 @@ class IHurryFile(Interface):
     data = Bytes(title=u'Data in file')
     file = Attribute('File-like object with data')
     headers = Attribute('Headers associated with file')
+    size = Attribute('The size of the file in bytes.')
 
 class IFileRetrieval(Interface):
     def getFile(data):

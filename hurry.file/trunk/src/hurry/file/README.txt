@@ -9,6 +9,8 @@ The file widget is built on top of the HurryFile object::
   'foo.txt'
   >>> file.data
   'mydata'
+  >>> file.size
+  6
   >>> f = file.file
   >>> f.read()
   'mydata'
@@ -22,6 +24,8 @@ We can also create HurryFile objects from file-like objects::
   >>> file = fileretrieval.createFile('bar.txt', StringIO('test data'))
   >>> file.filename
   'bar.txt'
+  >>> file.size
+  9
   >>> file.data
   'test data'
   >>> f = file.file
@@ -34,7 +38,9 @@ This does exactly the same, but may be easier to use::
   >>> file = createHurryFile('test2.txt', StringIO('another test file'))
   >>> file.filename
   'test2.txt'
- 
+  >>> file.size
+  17
+
 The HurryFile object normally stores the file data using ZODB
 persistence. Files can however also be stored by tramline.  If
 tramline is installed in Apache, the Tramline takes care of generating
@@ -69,11 +75,12 @@ Now let's store a file the way tramline would during upload::
   >>> f.write('test data')
   >>> f.close()
 
-The file with the data '1' will now be created::
+The file with underlying name '1' (the data stored in the ZODB will be
+just '1') will now be created::
 
   >>> file = HurryFile('foo.txt', '1')
 
-The data is now '1'::
+The data is now '1', referring to the real file::
 
   >>> file.data
   '1'
@@ -83,6 +90,11 @@ Retrieving the file results in the real file::
   >>> f = file.file
   >>> f.read()
   'test data'
+
+We can also retrieve its size::
+
+  >>> file.size
+  9L
 
 It should be possible to create Hurry File objects that are stored in
 the directory structure directly::
@@ -101,6 +113,8 @@ And we can retrieve the file itself::
   >>> f = file.file
   >>> f.read()
   'my test data'
+  >>> file.size
+  12L
 
 Now let's disable tramline in our utility::
 
@@ -117,6 +131,8 @@ We expect the same behavior as when tramline is not installed::
   >>> f = file.file
   >>> f.read()
   'data'
+  >>> file.size
+  4
 
 Clean up::
 

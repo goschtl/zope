@@ -4,7 +4,8 @@ hurry.file changes
 1.2 (unreleased)
 ----------------
 
-* ...
+* Add a 'size' attribute that knows the size of the file in bytes (no
+  matter whether it's stored using tramline or in the ZODB).
 
 1.1 (2008-08-07)
 ----------------
