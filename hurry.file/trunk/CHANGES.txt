@@ -1,7 +1,7 @@
 hurry.file changes
 ==================
 
-1.2 (unreleased)
+1.2 (2009-03-11)
 ----------------
 
 * Add a 'size' attribute that knows the size of the file in bytes (no
