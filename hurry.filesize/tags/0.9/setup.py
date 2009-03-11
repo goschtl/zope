@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name="hurry.filesize",
-    version="0.9dev",
+    version="0.9",
     description="A simple Python library for human readable file sizes (or anything sized in bytes).",
     long_description=long_description,    
     classifiers=[
