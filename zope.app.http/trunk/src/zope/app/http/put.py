@@ -105,7 +105,7 @@ class FilePUT(object):
         file = self.context
         adapter = IWriteFile(file)
 
-        length = self.request.get('CONTENT_LENGTH', -1)
+        length = int(self.request.get('CONTENT_LENGTH', -1))
         adapter.write(body.read(length))
 
         return ''

@@ -41,7 +41,7 @@ Authorization: Basic bWdyOm1ncnB3""")
         # now modify it
         response = HTTPCaller()(r"""PUT /testfile.txt HTTP/1.1
 Authorization: Basic bWdyOm1ncnB3
-Content-Length: 22
+Content-Length: 23
 Content-Type: text/plain
 
 And now it is modified.""")
