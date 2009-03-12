@@ -22,8 +22,9 @@ CHANGES
   to the ``zope.security`` package. Backward-compatibility imports are
   provided.
 
-- The registration of the "zope.Public" permission has been moved to
-  ``zope.security``. Its configure.zcml is now included by this package.
+- The registration of the "zope.Public" permission as well as some other
+  common permissions, like "zope.View" have been moved to ``zope.security``.
+  Its configure.zcml is now included by this package.
 
 - The "protect" function is now a no-op and is not needed anymore, because
   zope.security now knows about i18n messages and __name__ and __parent__

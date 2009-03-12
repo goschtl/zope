@@ -3,23 +3,10 @@
     i18n_domain="zope"
     >
 
-  <!-- XXX: this will be moved -->
+  <!-- Common permissions were moved into zope.security -->
+  <include package="zope.security" file="permissions.zcml" />
 
-  <permission
-      id="zope.View"
-      title="[view-permission] View"
-      />
-
-  <permission
-      id="zope.Security"
-      title="[change-security-settings-permission] Change security settings"
-      />
-
-  <permission
-      id="zope.ManageContent"
-      title="[manage-content-permission] Manage Content"
-      />
-
+  <!-- These are either deprecated or TTW/Application Server specific -->
   <permission
       id="zope.ManageBindings"
       title="[manage-service-bindings-permission] Manage Service Bindings"
@@ -29,16 +16,6 @@
       id="zope.ManageCode"
       title="[manage-code-permission] Manage Code"
       description="Manage executable code, including Python, SQL, ZPT, etc."
-      />
-
-  <permission
-      id="zope.ManageServices"
-      title="[manage-services-permission] Manage Services"
-      />
-
-  <permission
-      id="zope.ManageSite"
-      title="[manage-site-permission] Manage Site"
       />
 
   <permission
