@@ -21,5 +21,6 @@ from zope.site.site import (SiteManagerContainer, SiteManagementFolder,
 from zope.site.site import LocalSiteManager, changeSiteConfigurationAfterMove
 from zope.site.site import threadSiteSubscriber
 from zope.site.site import clearThreadSiteSubscriber
-from zope.site.next import getNextUtility, queryNextUtility
 
+# BBB
+from zope.component import getNextUtility, queryNextUtility
