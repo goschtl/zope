@@ -61,8 +61,8 @@ This flags to LoginLogout that the site supports logout. There is a 'no-op'
 adapter that can be registered for this:
 
   >>> from zope.authentication.logout import LogoutSupported
-  >>> from zope.app.testing import ztapi
-  >>> ztapi.provideAdapter(None, ILogoutSupported, LogoutSupported)
+  >>> from zope.component import provideAdapter
+  >>> provideAdapter(LogoutSupported, (None,), ILogoutSupported)
 
 Now when we use LoginLogout with an unauthenticated principal, we get a logout
 prompt:

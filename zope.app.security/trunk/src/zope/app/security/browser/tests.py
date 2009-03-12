@@ -18,7 +18,6 @@ $Id$
 __docformat__ = "reStructuredText"
 import unittest
 from zope.testing import doctest
-from zope.app.testing import placelesssetup
 
 def test_bbb_imports():
     """
@@ -35,10 +34,6 @@ def test_bbb_imports():
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        doctest.DocFileSuite('authutilitysearchview.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
-        doctest.DocFileSuite('loginlogout.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
+        doctest.DocFileSuite('authutilitysearchview.txt'),
+        doctest.DocFileSuite('loginlogout.txt'),
         ))

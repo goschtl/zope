@@ -29,7 +29,7 @@ CHANGES
   zope.security now knows about i18n messages and __name__ and __parent__
   attributes and won't protect them by default.
 
-- The addCheckerPublic was moved from zope.app.testing.tests to
+- The addCheckerPublic was moved from zope.app.security.tests to
   zope.security.testing. Backward-compatibility import is provided.
 
 - The ``LocalPermission`` class is now moved to new ``zope.localpermission``
@@ -40,6 +40,9 @@ CHANGES
   separate `browser/localpermission.zcml` file that is included by
   `browser/configure.zcml`. This adds a possibility to exclude ZMI-related
   configuration for local permissions.
+
+- Cleanup dependencies after refactorings. Also, don't depend on
+  zope.app.testing for tests anymore.
 
 3.6.2 (2009-03-10)
 ------------------

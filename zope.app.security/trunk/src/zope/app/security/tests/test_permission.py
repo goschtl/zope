@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-import doctest
+from zope.testing import doctest
 
 def test_bbb_imports():
     """
