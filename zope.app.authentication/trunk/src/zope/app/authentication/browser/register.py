@@ -18,11 +18,11 @@ $Id$
 
 from zope.app.authentication.i18n import ZopeMessageFactory as _
 import zope.app.component.browser.registration
-import zope.app.security.interfaces
+import zope.authentication.interfaces
 
 class AddAuthenticationRegistration(
     zope.app.component.browser.registration.AddUtilityRegistration,
     ):
     label = _("Register a pluggable authentication utility")
     name = ''
-    provided = zope.app.security.interfaces.IAuthentication
+    provided = zope.authentication.interfaces.IAuthentication

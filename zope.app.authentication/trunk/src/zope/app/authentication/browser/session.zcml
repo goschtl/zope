@@ -20,6 +20,7 @@
       name="loginForm.html" 
       for="*"
       template="loginform.pt"
+      class=".session.LoginForm"
       permission="zope.Public" 
       />
 

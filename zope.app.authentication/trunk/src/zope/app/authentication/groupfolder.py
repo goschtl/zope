@@ -28,8 +28,8 @@ from zope.container.btree import BTreeContainer
 import zope.container.constraints
 import zope.container.interfaces
 from zope.app.authentication.i18n import ZopeMessageFactory as _
-import zope.app.security.vocabulary
-from zope.app.security.interfaces import (
+import zope.authentication.principal
+from zope.authentication.interfaces import (
     IAuthentication, IAuthenticatedGroup, IEveryoneGroup)
 from zope.app.authentication import principalfolder, interfaces
 
@@ -49,7 +49,7 @@ class IGroupInformation(interface.Interface):
     principals = schema.List(
         title=_("Principals"),
         value_type=schema.Choice(
-            source=zope.app.security.vocabulary.PrincipalSource()),
+            source=zope.authentication.principal.PrincipalSource()),
         description=_(
         "List of ids of principals which belong to the group"),
         required=False)

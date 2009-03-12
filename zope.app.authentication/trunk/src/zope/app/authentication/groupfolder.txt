@@ -31,8 +31,8 @@ To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
   >>> from zope import interface
-  >>> from zope.app.security.interfaces import IAuthentication
-  >>> from zope.app.security.interfaces import PrincipalLookupError
+  >>> from zope.authentication.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import PrincipalLookupError
   >>> from zope.security.interfaces import IGroupAwarePrincipal
   >>> from zope.app.authentication.groupfolder import setGroupsForPrincipal
 
@@ -295,12 +295,12 @@ because the groups haven't been defined:
 
 Now, if we define the Everybody group:
 
-  >>> import zope.app.security.interfaces
+  >>> import zope.authentication.interfaces
   >>> class EverybodyGroup(Principal):
-  ...     interface.implements(zope.app.security.interfaces.IEveryoneGroup)
+  ...     interface.implements(zope.authentication.interfaces.IEveryoneGroup)
 
   >>> everybody = EverybodyGroup('all')
-  >>> ztapi.provideUtility(zope.app.security.interfaces.IEveryoneGroup,
+  >>> ztapi.provideUtility(zope.authentication.interfaces.IEveryoneGroup,
   ...                      everybody)
 
 Then the group will be added to the principal:
@@ -313,10 +313,10 @@ Similarly for the authenticated group:
 
   >>> class AuthenticatedGroup(Principal):
   ...     interface.implements(
-  ...         zope.app.security.interfaces.IAuthenticatedGroup)
+  ...         zope.authentication.interfaces.IAuthenticatedGroup)
 
   >>> authenticated = AuthenticatedGroup('auth')
-  >>> ztapi.provideUtility(zope.app.security.interfaces.IAuthenticatedGroup,
+  >>> ztapi.provideUtility(zope.authentication.interfaces.IAuthenticatedGroup,
   ...                      authenticated)
 
 Then the group will be added to the principal:

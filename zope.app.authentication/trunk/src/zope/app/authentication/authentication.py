@@ -21,7 +21,7 @@ from zope.schema.interfaces import ISourceQueriables
 from zope.location.interfaces import ILocation
 from zope.site.next import queryNextUtility
 
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
 import zope.container.btree
 
 from zope.app.authentication import interfaces

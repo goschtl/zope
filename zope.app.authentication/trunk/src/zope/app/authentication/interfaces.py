@@ -21,7 +21,7 @@ import zope.interface
 import zope.schema
 import zope.security.interfaces
 from zope.app.authentication.i18n import ZopeMessageFactory as _
-from zope.app.security.interfaces import ILogout
+from zope.authentication.interfaces import ILogout
 from zope.container.constraints import contains, containers
 from zope.container.interfaces import IContainer
 
@@ -36,7 +36,7 @@ class IPluggableAuthentication(ILogout, IContainer):
     """Provides authentication services with the help of various plugins.
     
     IPluggableAuthentication implementations will also implement
-    zope.app.security.interfaces.IAuthentication.  The `authenticate` method
+    zope.authentication.interfaces.IAuthentication.  The `authenticate` method
     of this interface in an IPluggableAuthentication should annotate the
     IPrincipalInfo with the credentials plugin and authentication plugin used.
     The `getPrincipal` method should annotate the IPrincipalInfo with the

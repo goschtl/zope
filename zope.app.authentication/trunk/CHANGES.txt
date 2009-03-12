@@ -2,13 +2,20 @@
 Changes
 =======
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-* Remove deprecated code.
+* Separate the presentation template and camefrom/redirection logic for the
+  ``loginForm.html`` view. Now the logic is contained in the
+  ``zope.app.authentication.browser.session.LoginForm`` class.
+
+* Use the new ``zope.authentication`` package instead of ``zope.app.security``. 
 
 * The "Password Manager Names" vocabulary and simple password manager registry
   were moved to the ``zope.password`` package.
+
+* Remove deprecated code.
+
 
 3.5.0 (2009-03-06)
 ------------------

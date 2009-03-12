@@ -639,8 +639,8 @@ thread-local site:
 
 and we'll get the pluggable authentication utility:
 
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> from zope.component import getUtility
-  >>> from zope.app.security.interfaces import IAuthentication
   >>> principals = getUtility(IAuthentication)
 
 Finally we'll get Betty and see that she is in the admin and
