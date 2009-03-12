@@ -11,26 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Register protection information for some standard low-level types
-
+"""
 $Id$
 """
 
-# XXX this will be moved
 def protect():
-    # Add message id types to the basic types, so their setting cannot be
-    # overridden, once set. `protect()` was not guranteed to run after
-    # zope.security.checker._clear, so that sometimes the proxies were not set.
-    # This is not the ideal solution, but it is effective.
-
-    # Make sure the message id gets never proxied.  This is not a
-    # security hole because Messages are immutable.
-    import zope.security.checker
-    from zope.security.checker import NoProxy
-    from zope.i18nmessageid import Message
-    zope.security.checker.BasicTypes[Message] = NoProxy
-
-    # add __parent__ and __name__ to always available names
-    for name in ['__name__', '__parent__']:
-        if name not in zope.security.checker._available_by_default:
-            zope.security.checker._available_by_default.append(name)
+    pass # this function is not needed anymore

@@ -15,10 +15,5 @@
 
 $Id$
 """
-# Register some standard types
-import _protections
-_protections.protect()
-del _protections
-
 # BBB: the code was moved to zope.authentication
 from zope.authentication.logout import LogoutSupported, NoLogout

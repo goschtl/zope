@@ -25,6 +25,10 @@ CHANGES
 - The registration of the "zope.Public" permission has been moved to
   ``zope.security``. Its configure.zcml is now included by this package.
 
+- The "protect" function is now a no-op and is not needed anymore, because
+  zope.security now knows about i18n messages and __name__ and __parent__
+  attributes and won't protect them by default.
+
 - The ``LocalPermission`` class is now moved to new ``zope.localpermission``
   package. This package now only has backward-compatibility imports and browser
   views and menu items for ZMI.
