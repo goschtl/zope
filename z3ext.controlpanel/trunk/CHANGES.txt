@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-1.4.0 (Unreleased)
+1.4.0 (2009-03-12)
 ------------------
 
 - Added helper class for creating content container configlet
