@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0.2 (unreleased)
+1.0.2 (2009-03-12)
 ------------------
 
 - Remove all proxies before trying to query int id for object.
