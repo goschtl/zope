@@ -9,6 +9,8 @@ Changes
   ``loginForm.html`` view. Now the logic is contained in the
   ``zope.app.authentication.browser.session.LoginForm`` class.
 
+* Fix login form redirection failure in some cases with Python 2.6.
+
 * Use the new ``zope.authentication`` package instead of ``zope.app.security``. 
 
 * The "Password Manager Names" vocabulary and simple password manager registry

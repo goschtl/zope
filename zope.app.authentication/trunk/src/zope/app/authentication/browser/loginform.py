@@ -34,7 +34,7 @@ class LoginForm(object):
             camefrom = camefrom[0]
         self.camefrom = camefrom
         
-        if ('SUBMIT' in request) and not unauthenticated:
+        if (not unauthenticated) and ('SUBMIT' in request):
             # authenticated by submitting
             request.response.redirect(camefrom or '.')
             return ''
