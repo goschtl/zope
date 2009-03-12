@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <include package="zope.component" file="meta.zcml" />
+
+  <!-- BBB this include is for backwards-compatibility after directives were
+       moved from here. -->
+  <include package="zope.security" file="meta.zcml" />
+
+  <meta:directives namespace="http://namespaces.zope.org/zope">
+
+    <meta:directive
+        name="view"
+        schema=".metadirectives.IViewDirective"
+        handler="zope.app.component.metaconfigure.view"
+        />
+
+    <!-- BBB: Deprecated. Will go away in 3.3 -->
+    <meta:directive
+        name="defaultView"
+        schema=".metadirectives.IDefaultViewDirective"
+        handler="zope.app.component.metaconfigure.defaultView"
+        />
+
+    <meta:directive
+        name="resource"
+        schema=".metadirectives.IResourceDirective"
+        handler="zope.app.component.metaconfigure.resource"
+        />
+
+  </meta:directives>
+
+</configure>
