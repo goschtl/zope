@@ -32,8 +32,6 @@ setup(name='zope.app.security',
           'Detailed Documentation\n' +
           '======================\n'
           + '\n\n' +
-          read('src', 'zope', 'app', 'security', 'globalprincipals.txt')
-          + '\n\n' +
           read('src', 'zope', 'app', 'security', 'browser',
                'authutilitysearchview.txt')
           + '\n\n' +
