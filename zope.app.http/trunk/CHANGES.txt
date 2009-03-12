@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.2 (unreleased)
+------------------
+
+- ...
+
+3.5.1 (2009-03-12)
 ------------------
 
 - If the 'CONTENT_LENGTH' header is provided, provide this length as
