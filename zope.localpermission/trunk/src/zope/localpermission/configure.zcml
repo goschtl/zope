@@ -33,10 +33,4 @@
       handler=".permission.unsetIdOnDeactivation"
       />
 
-  <!-- XXX: This should be moved elsewhere -->
-  <permission
-      id="zope.Security"
-      title="[change-security-settings-permission] Change security settings"
-      />
-
 </configure>
