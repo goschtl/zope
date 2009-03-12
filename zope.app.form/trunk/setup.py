@@ -22,9 +22,9 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.form',
-      version = '3.7.2dev',
+      version = '3.7.3dev',
       author='Zope Corporation and Contributors',
-      author_email='zope3-dev@zope.org',
+      author_email='zope-dev@zope.org',
       description='The Original Zope 3 Form Framework',
       long_description=(
           read('README.txt')
