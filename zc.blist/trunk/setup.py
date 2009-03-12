@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2008 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -72,7 +72,7 @@ def text(*args, **kwargs):
 
 setup(
     name='zc.blist',
-    version='1.0b2dev',
+    version='1.0dev',
     packages=find_packages('src'),
     package_dir={'':'src'},
     zip_safe=False,
