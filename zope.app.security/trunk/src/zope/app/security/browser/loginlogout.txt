@@ -12,8 +12,8 @@ logging out based on whether or not the current principal is authenticated.
 When the current principal is unauthenticated, it provides
 IUnauthenticatedPrincipal:
 
-  >>> from zope.app.security.interfaces import IUnauthenticatedPrincipal
-  >>> from zope.app.security.principalregistry import UnauthenticatedPrincipal
+  >>> from zope.authentication.interfaces import IUnauthenticatedPrincipal
+  >>> from zope.principalregistry.principalregistry import UnauthenticatedPrincipal
   >>> anonymous = UnauthenticatedPrincipal('anon', '', '')
   >>> IUnauthenticatedPrincipal.providedBy(anonymous)
   True
@@ -55,12 +55,12 @@ In this case, the default behavior is to return None for the snippet:
 To show a logout prompt, an admin must register a marker adapter that provides
 the interface:
 
-  >>> from zope.app.security.interfaces import ILogoutSupported
+  >>> from zope.authentication.interfaces import ILogoutSupported
 
 This flags to LoginLogout that the site supports logout. There is a 'no-op'
 adapter that can be registered for this:
 
-  >>> from zope.app.security import LogoutSupported
+  >>> from zope.authentication.logout import LogoutSupported
   >>> from zope.app.testing import ztapi
   >>> ztapi.provideAdapter(None, ILogoutSupported, LogoutSupported)
 

@@ -15,20 +15,5 @@
 
 $Id$
 """
-import zope.component
-from zope.security.interfaces import IPermission
-from zope.security.permission import Permission
 
-# XXX: move this to zope.security.testing
-def addCheckerPublic():
-    """Add the CheckerPublic permission as 'zope.Public'"""
-
-    perm = Permission('zope.Public', 'Public',
-            """Special permission used for resources that are always public
-
-            The public permission is effectively an optimization, sine
-            it allows security computation to be bypassed.
-            """
-            )
-    gsm = zope.component.getGlobalSiteManager()
-    gsm.registerUtility(perm, IPermission, perm.id)
+from zope.security.testing import addCheckerPublic # BBB

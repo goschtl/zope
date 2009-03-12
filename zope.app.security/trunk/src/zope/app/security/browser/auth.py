@@ -16,15 +16,17 @@
 $Id$
 """
 import urllib
-from zope.interface import implements
-from zope.i18n import translate
+
 from zope import component
-from zope.app.publisher.interfaces.http import ILogin
-from zope.app.security.i18n import _
-from zope.app.security.interfaces import IAuthentication
-from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.security.interfaces import ILogout, ILogoutSupported
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.publisher.interfaces.http import ILogin
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import IUnauthenticatedPrincipal
+from zope.authentication.interfaces import ILogout, ILogoutSupported
+from zope.i18n import translate
+from zope.interface import implements
+
+from zope.app.security.i18n import _
 
 
 class AuthUtilitySearchView(object):

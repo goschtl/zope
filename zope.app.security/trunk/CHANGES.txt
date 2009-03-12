@@ -29,6 +29,9 @@ CHANGES
   zope.security now knows about i18n messages and __name__ and __parent__
   attributes and won't protect them by default.
 
+- The addCheckerPublic was moved from zope.app.testing.tests to
+  zope.security.testing. Backward-compatibility import is provided.
+
 - The ``LocalPermission`` class is now moved to new ``zope.localpermission``
   package. This package now only has backward-compatibility imports and browser
   views and menu items for ZMI.
