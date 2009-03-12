@@ -19,6 +19,7 @@ import zope.component
 from zope.security.interfaces import IPermission
 from zope.security.permission import Permission
 
+# XXX: move this to zope.security.testing
 def addCheckerPublic():
     """Add the CheckerPublic permission as 'zope.Public'"""
 

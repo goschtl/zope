@@ -16,6 +16,7 @@
 $Id$
 """
 
+# XXX this will be moved
 def protect():
     # Add message id types to the basic types, so their setting cannot be
     # overridden, once set. `protect()` was not guranteed to run after

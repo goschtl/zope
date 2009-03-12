@@ -10,6 +10,10 @@ CHANGES
   into the new ``zope.authentication`` package. Backward-compatibility imports
   are provided.
 
+- The "global principal registry" along with its zcml directives was moved into
+  new "zope.principalregistry" package. Backward-compatibility imports are
+  provided.
+
 - The IPrincipal -> zope.publisher.interfaces.logginginfo.ILoggingInfo
   adapter was moved to ``zope.publisher``. Backward-compatibility import
   is provided.
