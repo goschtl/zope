@@ -5,6 +5,7 @@
 
   <include package="zope.security" />
   <include package="zope.localpermission" />
+  <include package="zope.authentication" />
 
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
@@ -14,20 +15,11 @@
       component=".principalregistry.principalRegistry"
       />
 
-
-  <class class="zope.security.permission.Permission">
-    <allow
-        interface="zope.security.interfaces.IPermission"
-        />
-  </class>
-
   <class class=".principalregistry.Principal">
     <allow
         interface=".interfaces.IPrincipal"
         />
   </class>
-
-  <adapter factory=".NoLogout" />
 
   <!-- Standard Permissions -->
 
@@ -77,18 +69,6 @@
       title="[manage-application-permission] Manage Application"
       description="Manage the Zope Application, such as Restart/Shutdown or
                    packing the ZODB."
-      />
-
-  <adapter
-      factory=".basicauthadapter.BasicAuthAdapter"
-      provides=".interfaces.ILoginPassword"
-      for="zope.publisher.interfaces.http.IHTTPCredentials"
-      />
-
-  <adapter
-      factory=".ftpauth.FTPAuth"
-      provides=".interfaces.ILoginPassword"
-      for="zope.publisher.interfaces.ftp.IFTPCredentials"
       />
 
   <utility

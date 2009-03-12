@@ -5,6 +5,11 @@ CHANGES
 3.7.0 (unreleased)
 ------------------
 
+- All interfaces, as well as some authentication-related helper classes and
+  functions (checkPrincipal, PrincipalSource, PrincipalTerms, etc.) were moved
+  into the new ``zope.authentication`` package. Backward-compatibility imports
+  are provided.
+
 - The IPrincipal -> zope.publisher.interfaces.logginginfo.ILoggingInfo
   adapter was moved to ``zope.publisher``. Backward-compatibility import
   is provided.

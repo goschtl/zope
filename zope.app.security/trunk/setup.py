@@ -34,15 +34,10 @@ setup(name='zope.app.security',
           + '\n\n' +
           read('src', 'zope', 'app', 'security', 'globalprincipals.txt')
           + '\n\n' +
-          read('src', 'zope', 'app', 'security', 'logout.txt')
-          + '\n\n' +
           read('src', 'zope', 'app', 'security', 'browser',
                'authutilitysearchview.txt')
           + '\n\n' +
           read('src', 'zope', 'app', 'security', 'browser', 'loginlogout.txt')
-          + '\n\n' +
-          read('src', 'zope', 'app', 'security', 'browser',
-               'principalterms.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -69,6 +64,7 @@ setup(name='zope.app.security',
                         'zope.app.form',
                         'zope.app.pagetemplate',
                         'zope.app.publisher',
+                        'zope.authentication',
                         'zope.component',
                         'zope.configuration',
                         'zope.container',

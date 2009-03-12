@@ -16,29 +16,21 @@
 $Id$
 """
 import unittest
+from zope.testing import doctest
 
-from zope.app.security.loginpassword import LoginPassword
-
-class Test(unittest.TestCase):
-
-    def testLoginPassword(self):
-        lp = LoginPassword("tim", "123")
-        self.assertEqual(lp.getLogin(), "tim")
-        self.assertEqual(lp.getPassword(), "123")
-        lp = LoginPassword(None, None)
-        self.assertEqual(lp.getLogin(), None)
-        self.assertEqual(lp.getPassword(), None)
-        lp = LoginPassword(None, "123")
-        self.assertEqual(lp.getLogin(), None)
-        self.assertEqual(lp.getPassword(), None)
-        lp = LoginPassword("tim", None)
-        self.assertEqual(lp.getLogin(), "tim")
-        self.assertEqual(lp.getPassword(), "")
-        lp.needLogin("tim") # This method should exist
+def test_bbb_imports():
+    """
+    Let's check that permission vocabularies that were moved to
+    zope.security are still importable from original place.
+    
+      >>> import zope.authentication.loginpassword as new
+      >>> import zope.app.security.loginpassword as old
+      >>> old.LoginPassword is new.LoginPassword
+      True
+    
+    """
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
-
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+    return unittest.TestSuite((
+        doctest.DocTestSuite(),
+        ))

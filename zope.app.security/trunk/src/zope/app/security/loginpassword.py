@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,29 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Login/Password provider
+"""Backward-compatibility import for base ILoginPassword implementation.
 
 $Id$
 """
-from zope.interface import implements
-from zope.app.security.interfaces import ILoginPassword
 
-class LoginPassword(object):
-
-    implements(ILoginPassword)
-
-    def __init__(self, login, password):
-        self.__login = login
-        if login is None:
-            self.__password = None
-        else:
-            self.__password = password or ""
-
-    def getLogin(self):
-        return self.__login
-
-    def getPassword(self):
-        return self.__password
-
-    def needLogin(self, realm):
-        pass
+# BBB
+from zope.authentication.loginpassword import LoginPassword

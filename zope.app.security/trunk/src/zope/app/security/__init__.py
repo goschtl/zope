@@ -15,36 +15,10 @@
 
 $Id$
 """
-from zope.component import adapts
-from zope.interface import implements, Interface
-from zope.app.security import interfaces
-
 # Register some standard types
 import _protections
 _protections.protect()
 del _protections
 
-
-class LogoutSupported(object):
-    """A class that can be registered as an adapter to flag logout support."""
-
-    adapts(Interface)
-
-    implements(interfaces.ILogoutSupported)
-
-    def __init__(self, dummy):
-        pass
-
-
-class NoLogout(object):
-    """An adapter for IAuthentication utilities that don't implement ILogout."""
-
-    adapts(interfaces.IAuthentication)
-
-    implements(interfaces.ILogout)
-
-    def __init__(self, auth):
-        pass
-
-    def logout(self, request):
-        pass
+# BBB: the code was moved to zope.authentication
+from zope.authentication.logout import LogoutSupported, NoLogout

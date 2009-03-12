@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Principals.
+"""Backward-compatibility import for the checkPrincipal function
 
 $Id$
 """
-from zope.component import getUtility
-from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.interfaces import IAuthentication
 
-def checkPrincipal(context, principal_id):
-    auth = getUtility(IAuthentication, context=context)
-    try:
-        if auth.getPrincipal(principal_id):
-            return
-    except PrincipalLookupError:
-        pass
-
-    raise ValueError("Undefined principal id", principal_id)
+# BBB
+from zope.authentication.principal import checkPrincipal

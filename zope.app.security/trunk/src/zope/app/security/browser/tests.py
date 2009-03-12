@@ -20,12 +20,22 @@ import unittest
 from zope.testing import doctest
 from zope.app.testing import placelesssetup
 
+def test_bbb_imports():
+    """
+      >>> import zope.app.security.browser.principalterms as old
+      >>> import zope.authentication.principal as new
+      
+      >>> old.PrincipalTerms is new.PrincipalTerms
+      True
+      >>> old.Term is new.PrincipalTerm
+      True
+    
+    """
+
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite(),
         doctest.DocFileSuite('authutilitysearchview.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown),
-        doctest.DocFileSuite('principalterms.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),
         doctest.DocFileSuite('loginlogout.txt',

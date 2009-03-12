@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Permission vocabluary doc tests.
+"""Test bbb imports for checkPrincipal
 
 $Id$
 """
@@ -20,18 +20,9 @@ from zope.testing import doctest
 
 def test_bbb_imports():
     """
-    Let's check that permission vocabularies that were moved to
-    zope.security are still importable from original place.
-    
-      >>> import zope.security.permission as new
-      >>> import zope.app.security.vocabulary as old
-      >>> old.PermissionsVocabulary is new.PermissionsVocabulary
-      True
-      >>> old.PermissionIdsVocabulary is new.PermissionIdsVocabulary
-      True
-
       >>> import zope.authentication.principal as new
-      >>> old.PrincipalSource is new.PrincipalSource
+      >>> import zope.app.security.principal as old
+      >>> old.checkPrincipal is new.checkPrincipal
       True
     
     """

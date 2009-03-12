@@ -16,43 +16,21 @@
 $Id$
 """
 import unittest
+from zope.testing import doctest
 
-from zope.app.security.basicauthadapter import BasicAuthAdapter
-
-class Request(object):
-
-    def __init__(self, lpw):
-        self.lpw = lpw
-
-    def _authUserPW(self):
-        return self.lpw
-
-    challenge = None
-    def unauthorized(self, challenge):
-        self.challenge = challenge
-
-
-class Test(unittest.TestCase):
-
-    def testBasicAuthAdapter(self):
-        r = Request(None)
-        a = BasicAuthAdapter(r)
-        self.assertEqual(a.getLogin(), None)
-        self.assertEqual(a.getPassword(), None)
-        r = Request(("tim", "123"))
-        a = BasicAuthAdapter(r)
-        self.assertEqual(a.getLogin(), "tim")
-        self.assertEqual(a.getPassword(), "123")
-
-    def testUnauthorized(self):
-        r = Request(None)
-        a = BasicAuthAdapter(r)
-        a.needLogin("tim")
-        self.assertEqual(r.challenge, 'basic realm="tim"')
+def test_bbb_imports():
+    """XXX: the place may change
+    Let's check if original imports still work:
+    
+      >>> import zope.app.security.basicauthadapter as old
+      >>> import zope.authentication.basicauthadapter as new
+      
+      >>> old.BasicAuthAdapter is new.BasicAuthAdapter
+      True
+    
+    """
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
-
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+    return unittest.TestSuite((
+        doctest.DocTestSuite(),
+        ))

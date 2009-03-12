@@ -15,43 +15,22 @@
 
 $Id$
 """
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.publisher.interfaces.ftp import IFTPCredentials
-from zope.app.security.ftpauth import FTPAuth
-from zope.interface import implements
+import unittest
+from zope.testing import doctest
 
-class FTPCredentials(object):
-    __doc__ = IFTPCredentials.__doc__
-
-    implements(IFTPCredentials)
-
-    def __init__(self, credentials):
-        self.credentials = credentials
-
-    def _authUserPW(self):
-        return self.credentials
-
-    unauth = 0
-    def unauthorized(self, challenge):
-        self.unauth += 1
-
-
-class Test(TestCase):
-
-    def test(self):
-        request = FTPCredentials(('bob', '123'))
-        auth = FTPAuth(request)
-        self.assertEqual(auth.getLogin(), 'bob')
-        self.assertEqual(auth.getPassword(), '123')
-
-        unauth = request.unauth
-        auth.needLogin('xxx')
-        self.assertEqual(request.unauth, unauth+1)
+def test_bbb_imports():
+    """XXX: the place may change
+    Let's check if original imports still work:
+    
+      >>> import zope.app.security.ftpauth as old
+      >>> import zope.authentication.ftpauth as new
+      
+      >>> old.FTPAuth is new.FTPAuth
+      True
+    
+    """
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
+    return unittest.TestSuite((
+        doctest.DocTestSuite(),
         ))
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')
