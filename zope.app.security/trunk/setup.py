@@ -25,7 +25,7 @@ setup(name='zope.app.security',
       version = '3.7.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Security Components for Zope 3 Applications',
+      description='ZMI Views For Zope3 Security Components',
       long_description=(
           read('README.txt')
           + '\n\n' +
@@ -39,7 +39,7 @@ setup(name='zope.app.security',
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords = "zope3 security authentication principal ftp http",
+      keywords = "zope security authentication principal ftp http",
       classifiers = [
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',

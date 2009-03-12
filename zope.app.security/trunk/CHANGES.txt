@@ -43,6 +43,8 @@ CHANGES
 
 - Cleanup dependencies after refactorings. Also, don't depend on
   zope.app.testing for tests anymore.
+  
+- Update package's description to point about refactorings done.
 
 3.6.2 (2009-03-10)
 ------------------
