@@ -273,7 +273,7 @@ name to traverse and use if there's no more steps to traverse.
 Let's provide a view name registered as an IDefaultView adapter. This
 is usually done by zope.app.publisher's browser:defaultView directive. 
 
-    >>> from zope.component.interfaces import IDefaultViewName
+    >>> from zope.publisher.interfaces import IDefaultViewName
     >>> provideAdapter('view.html', (IContent, Interface), IDefaultViewName)
 
     >>> from z3c.traverser.browser import PluggableBrowserTraverser

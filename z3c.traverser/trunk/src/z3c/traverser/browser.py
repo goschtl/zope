@@ -17,8 +17,9 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 from zope.component import getSiteManager
-from zope.component.interfaces import ComponentLookupError, IDefaultViewName
+from zope.component.interfaces import ComponentLookupError
 from zope.interface import implements, providedBy
+from zope.publisher.interfaces import IDefaultViewName
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from z3c.traverser.traverser import PluggableTraverser
