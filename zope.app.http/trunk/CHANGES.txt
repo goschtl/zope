@@ -5,7 +5,8 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- If the 'CONTENT_LENGTH' header is provided, provide this length as
+  argument to the ``read`` method of the input stream object.
 
 3.5.0 (2009-02-01)
 ------------------
