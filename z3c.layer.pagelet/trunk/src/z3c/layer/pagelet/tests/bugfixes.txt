@@ -2,8 +2,8 @@
  Bugfixes
 ==========
 
-Traversed objects where not security proxied
-============================================
+Traversed objects were not security proxied
+===========================================
 
 When an object got traversed its security proxy was removed, so its
 sub-objects could be publically accessed. To show that this behavior

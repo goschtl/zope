@@ -5,13 +5,9 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="zope">
 
-  <!-- load meta configuration for exclude -->
-  <include package="zc.configuration" file="meta.zcml" />
-
   <!-- exclude will prevent from include -->
   <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
   <exclude package="zope.app.authentication" file="groupfolder.zcml" />
-  <exclude package="zope.app.authentication" file="principalfolder.zcml" />
   <exclude package="zope.app.authentication.browser" />
   <exclude package="zope.app.authentication.browser" file="configure.zcml" />
   <exclude package="zope.app.authentication.browser" file="groupfolder.zcml" />
@@ -20,7 +16,6 @@
   <exclude package="zope.app.authentication.browser" file="session.zcml" />
   <exclude package="zope.app.broken" file="browser.zcml" />
   <exclude package="zope.app.error.browser" />
-  <exclude package="zope.app.folder.browser" />
   <exclude package="zope.app.i18n.browser" />
   <exclude package="zope.dublincore.browser" />
 
@@ -33,6 +28,7 @@
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
+  <include package="zope.viewlet" file="meta.zcml" />
 
 
   <!-- 3rd party meta configure -->
@@ -51,6 +47,7 @@
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
   <include package="zope.app.security" />
+  <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.app.twisted" />
   <include package="zope.app.wsgi" />
@@ -61,6 +58,7 @@
   <include package="zope.traversing" />
   <include package="zope.traversing.browser" />
   <include package="zope.viewlet" />
+  <include package="zope.session" />
 
 
   <!-- z3c component -->
@@ -120,6 +118,7 @@
         class=".SystemErrorPage"
         />
 
+    <!-- page for bugfix.txt -->
     <browser:page
         for="*"
         name="container_contents.html"
@@ -127,6 +126,42 @@
         layer="z3c.layer.pagelet.IPageletBrowserLayer"
         class=".ContainerContentsPage"
         />
+
+    <!-- definitions for login-logout tests -->
+    <!-- use special template for default.html view -->
+    <z3c:layout
+        for=".LoginLogoutPage"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
+    <z3c:pagelet
+        for="zope.container.interfaces.IContainer"
+        name="default.html"
+        permission="zope.View"
+        class=".LoginLogoutPage"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        />
+
+    <browser:defaultView
+       name="default.html"
+       for="zope.container.interfaces.IContainer"
+       layer="z3c.layer.pagelet.IPageletBrowserLayer"
+       />
+
+    <!-- use tempate with head slot for logout pagelets -->
+    <z3c:layout
+        for="..browser.auth.LogoutRedirectPagelet"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
+    <z3c:layout
+        for="..browser.auth.LogoutSuccessPagelet"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
   </configure>
 
 
@@ -135,6 +170,27 @@
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
       />
 
+  <!-- default principals -->
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users"
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users"
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users"
+    />
+
+  <!-- default users -->
   <role
       id="zope.Manager"
       title="Manager"
@@ -143,8 +199,8 @@
   <principal
       id="zope.manager"
       title="Manager"
-      login="Manager"
-      password="password"
+      login="mgr"
+      password="mgrpw"
       />
 
   <grant

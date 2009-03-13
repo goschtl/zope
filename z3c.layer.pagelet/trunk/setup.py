@@ -34,6 +34,8 @@ setup(
         + '\n\n' +
         read('src', 'z3c', 'layer', 'pagelet', 'README.txt')
         + '\n\n' +
+        read('src', 'z3c', 'layer', 'pagelet', 'login.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     keywords = "z3c pagelet layer zope zope3",
@@ -60,9 +62,7 @@ setup(
             'zope.app.testing',
             'zope.app.zcmlfiles',
             'zope.app.twisted',
-            'zope.viewlet',
-            'z3c.pagelet',
-            'zc.configuration',
+            'zope.configuration>=3.5.0',
             'zope.component',
             'zope.app.component',
             ],
@@ -74,6 +74,8 @@ setup(
         'zope.app.publisher',
         'zope.app.security',
         'zope.app.exception',
+        'z3c.pagelet',
+        'zope.viewlet',
         ],
     zip_safe = False,
 )

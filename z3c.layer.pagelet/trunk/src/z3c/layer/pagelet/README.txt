@@ -45,7 +45,6 @@ Login as manager first:
 
   >>> from zope.testbrowser.testing import Browser
   >>> manager = Browser()
-  >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
 Check if we can access the ``page.html`` view which is registred in the
 ``ftesting.zcml`` file with our skin:
@@ -155,14 +154,17 @@ And check error view registred for
   </html>
   <BLANKLINE>
 
-And check the ``zope.security.interfaces.IUnauthorized`` view, use a new
-unregistred user (test browser) for this:
+To check the ``zope.security.interfaces.IUnauthorized`` view, we use a
+new unregistred user (test browser). As we have defined an
+unauthenticatedPrincipal in ZCML (see tests/ftesting.zcml) ``401
+Unauthorized`` is returned instead of ``403 Forbidden`` which would
+show up otherwise:
 
   >>> unauthorized = Browser()
   >>> unauthorized.open(skinURL + '/@@forbidden.html')
   Traceback (most recent call last):
   ...
-  httperror_seek_wrapper: HTTP Error 403: Forbidden
+  HTTPError: HTTP Error 401: Unauthorized
 
   >>> print unauthorized.contents
   <!DOCTYPE ...
