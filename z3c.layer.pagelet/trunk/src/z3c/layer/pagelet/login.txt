@@ -132,7 +132,8 @@ confirmation page telling that login was successfull:
   </html>
 
 Selecting the ``Back to the main page.`` link send the user back to
-the default view of the container. (``ftesting.zcml`` defines ``@@default.html``as the default view.):
+the default view of the container. (``ftesting.zcml`` defines
+``@@default.html`` as the default view.):
 
   >>> browser.getLink('Back to the main page.').click()
   >>> browser.url
@@ -496,7 +497,8 @@ confirmation page telling that login was successfull:
   </html>
 
 Selecting the ``Back to the main page.`` link send the user back to
-the default view of the container. (``ftesting.zcml`` defines ``@@default.html``as the default view.):
+the default view of the container. (``ftesting.zcml`` defines
+``@@default.html`` as the default view.):
 
   >>> browser.getLink('Back to the main page.').click()
   >>> browser.url
