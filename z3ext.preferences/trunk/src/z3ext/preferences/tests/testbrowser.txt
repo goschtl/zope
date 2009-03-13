@@ -70,8 +70,8 @@ Browser
   <div class="z-page-description">This area allows you to change personal preferences.</div>
   <div class="z-prefs-content"><div class="z-form">
   <ul class="z-listing">
-     <li>
-        <div class="z-listing-details">
+    <li>
+       <div class="z-listing-details">
           <a href="category/">
             Category</a>
           <div> &nbsp;</div>
@@ -93,6 +93,7 @@ Browser
             </div>
           </li>
         </ul>
+        <div class="visualClear"></div>
       </div>
     </li>
     <li>
@@ -100,9 +101,11 @@ Browser
         <a href="portal/">
            Portal preferences</a>
         <div>These are all the preferences related to common portal settings. &nbsp;</div>
+        <div class="visualClear"></div>
       </div>
     </li>
   </ul>
+  <div class="visualClear"></div>
   ...
   </html>
 
