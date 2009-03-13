@@ -441,3 +441,114 @@ Calling the login URL again leads directly to the page referred in nextURL:
     </body>
   </html>
 
+Calling the login URL again without the query parameter leeds to a
+confirmation page telling that login was successfull:
+
+  >>> browser.open(login_url.split('?')[0])
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@login.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+     <h1>Login successful!</h1>
+     <p style="font-size: 200%"> You are now logged in as <em>Tester</em>. </p>
+     <a href=".">Back to the main page.</a>
+    </div>
+  </body>
+  </html>
+
+Selecting the ``Back to the main page.`` link send the user back to
+the default view of the container. (``ftesting.zcml`` defines ``@@default.html``as the default view.):
+
+  >>> browser.getLink('Back to the main page.').click()
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Logout</a>
+    </body>
+  </html>
+
+
+Selecting the displayed logout link drops authentication information
+and displays a confirmation page, which redirects to the default page
+where the login link is displayed again:
+
+  >>> logout_url = browser.getLink('Logout').url
+  >>> browser.getLink('Logout').click()
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+    <h1>You are being redirected!</h1>
+    <p style="font-size: 150%">
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@default.html">
+        If you see this screen for more than 5 seconds, click here.
+      </a>
+    </p>
+  </div>
+  </body>
+  </html>
+  >>> browser.getLink('If you see this screen for more than 5 seconds').click()
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Login</a>
+    </body>
+  </html>
+
+Calling the logout URL again after logout leads directly to the page
+referred in nextURL:
+
+  >>> browser.open(logout_url)
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@default.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+    <head>
+      <title>PageletTest</title>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Login</a>
+    </body>
+  </html>
+
+Calling the logout URL again without the query parameter leeds to a
+confirmation page telling that logout was successfull:
+
+  >>> browser.open(logout_url.split('?')[0])
+  >>> browser.url
+  'http://localhost/++skin++PageletTestSkin/container/@@logout.html'
+  >>> print browser.contents
+  <!DOCTYPE ...>
+  <html ...>
+  <head>
+  <title>PageletTestLayout</title>
+  </head>
+  <body>
+    <div>
+      <h1>Logout successful!</h1>
+      <p style="font-size: 200%"> You are now logged out. </p>
+      <a href=".">Back to the main page.</a>
+    </div>
+  </body>
+  </html>
