@@ -4,122 +4,167 @@
    xmlns:z3c="http://namespaces.zope.org/z3c"
    i18n_domain="z3c">
 
-  <!-- viewlets for login and logout links -->
+  <!-- viewlets in head tag supporting login and logout
+       (viewlets are defined together with the pagelets below) -->
   <browser:viewletManager
-     name="login-logout"
-     provides=".auth.ILoginLogoutViewletManager"
-     class=".auth.LoginLogoutViewletManager"
+     provides=".auth.ILoginLogoutHeadViewletManager"
      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="login-logout-head"
+     class=".auth.LoginLogoutHeadViewletManager"
+     permission="zope.Public"
+     />
+
+  <!-- viewlet manager and viewlets for login and logout links -->
+  <browser:viewletManager
+     provides=".auth.ILoginLogoutViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="login-logout"
+     class=".auth.LoginLogoutViewletManager"
      permission="zope.Public"
      />
 
   <browser:viewlet
      manager=".auth.ILoginLogoutViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      name="Login"
-     for="*"
      class=".auth.LoginViewlet"
      permission="zope.Public"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      weight="1"
      viewName="@@login.html"
      />
 
   <browser:viewlet
      manager=".auth.ILoginLogoutViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      name="Logout"
-     for="*"
      class=".auth.LogoutViewlet"
      permission="zope.Public"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      weight="2"
      viewName="@@logout.html"
      />
 
+  <!-- login page (executing login and redirecting user) -->
   <browser:page
-     name="logout.html"
      for="*"
-     class=".auth.HTTPAuthenticationLogout"
-     attribute="logout"
-     permission="zope.Public"
-     allowed_interface="zope.app.publisher.interfaces.http.ILogout"
      layer="z3c.layer.pagelet.IPageletBrowserLayer"
-     />
-
-  <browser:page
      name="login.html"
-     for="*"
      class=".auth.HTTPAuthenticationLogin"
      attribute="login"
-     permission="zope.Public"
      allowed_interface="zope.app.publisher.interfaces.http.ILogin"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
-     />
-
-  <z3c:pagelet
-     name="login_failed.html"
-     class=".auth.LoginFailedPagelet"
      permission="zope.Public"
-     for=".auth.HTTPAuthenticationLogin"
-     />
-
-  <z3c:template
-     for=".auth.LoginFailedPagelet"
-     template="login_failed.pt"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
-     />
-
-  <z3c:pagelet
-     name="login_success.html"
-     class=".auth.LoginSuccessfulPagelet"
-     permission="zope.Public"
-     for=".auth.HTTPAuthenticationLogin"
-     />
-
-  <z3c:template
-     for=".auth.LoginSuccessfulPagelet"
-     template="login_success.pt"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
-     />
-
-  <z3c:pagelet
-     name="redirect.html"
-     class=".auth.LogoutRedirectPagelet"
-     permission="zope.Public"
-     for=".auth.HTTPAuthenticationLogout"
-     />
-
-  <z3c:template
-     for=".auth.LogoutRedirectPagelet"
-     template="redirect.pt"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
-     />
-
-  <z3c:pagelet
-     name="logout_success.html"
-     class=".auth.LogoutSuccessPagelet"
-     permission="zope.Public"
-     for=".auth.HTTPAuthenticationLogout"
-     />
-
-  <z3c:template
-     for=".auth.LogoutSuccessPagelet"
-     template="logout.pt"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      />
 
   <!-- login form for session credentials  -->
   <z3c:pagelet
-     name="loginForm.html"
      for="*"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="loginForm.html"
      class=".auth.SessionCredentialsLoginForm"
      permission="zope.Public"
-     layer="z3c.layer.pagelet.IPageletBrowserLayer"
      />
 
   <z3c:template
      for=".auth.SessionCredentialsLoginForm"
      layer="z3c.layer.pagelet.IPageletBrowserLayer"
      template="session_cred_loginform.pt"
+     />
+
+  <!-- login failed -->
+  <z3c:pagelet
+     for=".auth.HTTPAuthenticationLogin"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="login_failed.html"
+     class=".auth.LoginFailedPagelet"
+     permission="zope.Public"
+     />
+
+  <z3c:template
+     for=".auth.LoginFailedPagelet"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     template="login_failed.pt"
+     />
+
+  <!-- login success confirmation -->
+  <z3c:pagelet
+     for=".auth.HTTPAuthenticationLogin"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="login_success.html"
+     class=".auth.LoginSuccessfulPagelet"
+     permission="zope.Public"
+     />
+
+  <z3c:template
+     for=".auth.LoginSuccessfulPagelet"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     template="login_success.pt"
+     />
+
+  <!-- logout page (executing logout and redirecting user) -->
+  <browser:page
+     for="*"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="logout.html"
+     class=".auth.HTTPAuthenticationLogout"
+     attribute="logout"
+     allowed_interface="zope.app.publisher.interfaces.http.ILogout"
+     permission="zope.Public"
+     />
+
+  <!-- redirecting logout confirmation -->
+  <z3c:pagelet
+     for=".auth.HTTPAuthenticationLogout"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="redirect.html"
+     class=".auth.LogoutRedirectPagelet"
+     permission="zope.Public"
+     />
+
+  <z3c:template
+     for=".auth.LogoutRedirectPagelet"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     template="redirect.pt"
+     />
+
+  <browser:viewlet
+     manager=".auth.ILoginLogoutHeadViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     view=".auth.LogoutRedirectPagelet"
+     name="Redirect"
+     template="redirect_head.pt"
+     permission="zope.Public"
+     />
+
+  <browser:viewlet
+     manager=".auth.ILoginLogoutHeadViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     view=".auth.LogoutRedirectPagelet"
+     name="Logout"
+     template="logout_head.pt"
+     permission="zope.Public"
+     />
+
+  <!-- not redirecting logout confirmation -->
+  <z3c:pagelet
+     for=".auth.HTTPAuthenticationLogout"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     name="logout_success.html"
+     class=".auth.LogoutSuccessPagelet"
+     permission="zope.Public"
+     />
+
+  <z3c:template
+     for=".auth.LogoutSuccessPagelet"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     template="logout.pt"
+     />
+
+  <browser:viewlet
+     manager=".auth.ILoginLogoutHeadViewletManager"
+     layer="z3c.layer.pagelet.IPageletBrowserLayer"
+     view=".auth.LogoutSuccessPagelet"
+     name="Logout"
+     template="logout_head.pt"
+     permission="zope.Public"
      />
 
 </configure>

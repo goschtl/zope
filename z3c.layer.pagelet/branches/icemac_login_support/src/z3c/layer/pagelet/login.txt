@@ -7,9 +7,16 @@ Login and logout work both for basic auth and cookie auth.
 Setup
 ~~~~~
 
-To get login resp. logout links, the layout page template has to
-include the login-logout viewlet manger. Our sample template looks
-like this:
+The layout page template has to include two content providers (viewlet
+mangers):
+
+  - ``login-logout-head`` inside the head tag to get automatic
+    redirects and JavaScript code which does the logout for basic
+    auth and
+
+  - ``login-logout`` inside the body tag to get login and logout links.
+
+The sample template looks like this:
 
   >>> import os.path
   >>> template_path = os.path.join(os.path.dirname(__file__), "tests",
@@ -19,14 +26,16 @@ like this:
   <html ...>
     <head>
       <title>PageletTest</title>
+      <tal:block replace="structure provider:login-logout-head" />
     </head>
     <body>
       <tal:block replace="structure provider:login-logout" />
+      <tal:block replace="structure provider:pagelet" />
     </body>
   </html>
 
-This template is registered for the ``IContainer`` interface in the
-``ftesting.zcml`` file. After creating a container the template is
+This template is registered for the ``IContainer`` interface in
+``ftesting.zcml``. After creating a container the template is
 used when browsing the container:
 
   >>> from zope.container.btree import BTreeContainer
@@ -40,6 +49,7 @@ When the user is not logged in the login link is displayed:
   >>> from zope.testbrowser.testing import Browser
   >>> skinURL = 'http://localhost/++skin++PageletTestSkin/'
   >>> browser = Browser()
+  >>> browser.handleErrors = False
   >>> browser.open(skinURL + 'container/@@default.html')
   >>> browser.url
   'http://localhost/++skin++PageletTestSkin/container/@@default.html'
@@ -163,21 +173,36 @@ displayed:
     </body>
   </html>
 
-Logout is done using JavaScript and a redirect. As testbrowser is not
-able to execute JavaScript the user remains authenticated:
+Logout is done using JavaScript and a redirect. zope.testbrowser
+follows the redirects even if they use the meta tag instead of the
+status code. So I have to use a non API call to change this behavior
+to show the file contents:
 
+  >>> browser.mech_browser.set_handle_refresh(False)
+
+As testbrowser is not able to execute JavaScript the user remains
+authenticated:
+
+  >>> logout_url = browser.getLink('Logout').url
   >>> browser.getLink('Logout').click()
-  >>> logout_url = browser.url
-  >>> logout_url
+  >>> browser.url
   'http://localhost/++skin++PageletTestSkin/container/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html'
   >>> print browser.contents
   <!DOCTYPE ...>
   <html ...>
-  <head>
-  <title>PageletTestLayout</title>
-  </head>
-  <body>
-    <div>
+    <head>
+      <title>PageletTest</title>
+      <script type="text/javascript"><!--
+    // clear HTTP Authentication
+    ...
+    //-->
+  </script>
+  <meta http-equiv="refresh"
+        content="0;url=http://localhost/++skin++PageletTestSkin/container/@@default.html" />
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@logout.html/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40logout.html">Logout</a>
+      <div>
     <h1>You are being redirected!</h1>
     <p style="font-size: 150%">
       <a href="http://localhost/++skin++PageletTestSkin/container/@@default.html">
@@ -185,7 +210,7 @@ able to execute JavaScript the user remains authenticated:
       </a>
     </p>
   </div>
-  </body>
+    </body>
   </html>
 
 Calling the logout URL again after logout (simulated using a new
@@ -214,16 +239,24 @@ confirmation page telling that logout was successfull:
   >>> print browser2.contents
   <!DOCTYPE ...>
   <html ...>
-  <head>
-  <title>PageletTestLayout</title>
-  </head>
-  <body>
-    <div>
-      <h1>Logout successful!</h1>
-      <p style="font-size: 200%"> You are now logged out. </p>
-      <a href=".">Back to the main page.</a>
-    </div>
-  </body>
+    <head>
+      <title>PageletTest</title>
+      <script type="text/javascript"><!--
+    // clear HTTP Authentication
+    ...
+    //-->
+  </script>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/logout.html/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40logout.html">Login</a>
+      <div>
+    <h1>Logout successful!</h1>
+    <p style="font-size: 200%">
+      You are now logged out.
+    </p>
+    <a href=".">Back to the main page.</a>
+  </div>
+    </body>
   </html>
 
 
@@ -482,26 +515,38 @@ the default view of the container. (``ftesting.zcml`` defines ``@@default.html``
 
 Selecting the displayed logout link drops authentication information
 and displays a confirmation page, which redirects to the default page
-where the login link is displayed again:
+where the login link is displayed again (as redirection is done
+automatically by testbrowser I have to use the non API call trick
+again to show the displayed page):
 
+  >>> browser.mech_browser.set_handle_refresh(False)
   >>> logout_url = browser.getLink('Logout').url
   >>> browser.getLink('Logout').click()
   >>> print browser.contents
   <!DOCTYPE ...>
   <html ...>
-  <head>
-  <title>PageletTestLayout</title>
-  </head>
-  <body>
-    <div>
+    <head>
+      <title>PageletTest</title>
+      <script type="text/javascript"><!--
+    // clear HTTP Authentication
+    ...
+    //-->
+  </script>
+  <meta http-equiv="refresh"
+        content="0;url=http://localhost/++skin++PageletTestSkin/container/@@default.html" />
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/@@logout.html/@@logout.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40logout.html">Logout</a>
+      <div>
     <h1>You are being redirected!</h1>
+  <BLANKLINE>
     <p style="font-size: 150%">
       <a href="http://localhost/++skin++PageletTestSkin/container/@@default.html">
         If you see this screen for more than 5 seconds, click here.
       </a>
     </p>
   </div>
-  </body>
+    </body>
   </html>
   >>> browser.getLink('If you see this screen for more than 5 seconds').click()
   >>> print browser.contents
@@ -514,6 +559,7 @@ where the login link is displayed again:
       <a href="http://localhost/++skin++PageletTestSkin/container/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40default.html">Login</a>
     </body>
   </html>
+  >>> browser.mech_browser.set_handle_refresh(True)
 
 Calling the logout URL again after logout leads directly to the page
 referred in nextURL:
@@ -541,14 +587,22 @@ confirmation page telling that logout was successfull:
   >>> print browser.contents
   <!DOCTYPE ...>
   <html ...>
-  <head>
-  <title>PageletTestLayout</title>
-  </head>
-  <body>
-    <div>
-      <h1>Logout successful!</h1>
-      <p style="font-size: 200%"> You are now logged out. </p>
-      <a href=".">Back to the main page.</a>
-    </div>
-  </body>
+    <head>
+      <title>PageletTest</title>
+      <script type="text/javascript"><!--
+    // clear HTTP Authentication
+    ...
+    //-->
+  </script>
+    </head>
+    <body>
+      <a href="http://localhost/++skin++PageletTestSkin/container/logout.html/@@login.html?nextURL=http%3A//localhost/%2B%2Bskin%2B%2BPageletTestSkin/container/%40%40logout.html">Login</a>
+      <div>
+    <h1>Logout successful!</h1>
+    <p style="font-size: 200%">
+      You are now logged out.
+    </p>
+    <a href=".">Back to the main page.</a>
+  </div>
+    </body>
   </html>

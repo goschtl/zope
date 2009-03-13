@@ -2,8 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>PageletTest</title>
+    <tal:block replace="structure provider:login-logout-head" />
   </head>
   <body>
     <tal:block replace="structure provider:login-logout" />
+    <tal:block replace="structure provider:pagelet" />
   </body>
 </html>

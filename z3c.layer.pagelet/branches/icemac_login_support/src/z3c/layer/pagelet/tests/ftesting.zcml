@@ -149,6 +149,19 @@
        layer="z3c.layer.pagelet.IPageletBrowserLayer"
        />
 
+    <!-- use tempate with head slot for logout pagelets -->
+    <z3c:layout
+        for="..browser.auth.LogoutRedirectPagelet"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
+    <z3c:layout
+        for="..browser.auth.LogoutSuccessPagelet"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        template="login-logout-template.pt"
+        />
+
   </configure>
 
 

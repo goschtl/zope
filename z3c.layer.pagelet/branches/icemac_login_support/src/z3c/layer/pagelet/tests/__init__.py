@@ -58,5 +58,10 @@ class ContainerContentsPage(BrowserPage):
     def __call__(self):
         return str([type(x) for x in self.context.values()])
 
+
 class LoginLogoutPage(browser.BrowserPagelet):
     """Login and logout page."""
+
+    # make sure the pagelet renders no content, as this is not what we
+    # want to show with this pagelet
+    template = lambda self: ''

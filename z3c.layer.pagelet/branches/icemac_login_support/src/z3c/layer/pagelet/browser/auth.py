@@ -33,6 +33,14 @@ import zope.viewlet.viewlet
 _ = zope.i18nmessageid.MessageFactory("z3c")
 
 
+class ILoginLogoutHeadViewletManager(zope.viewlet.interfaces.IViewletManager):
+    """ViewletManager for supporting header contents (e. g. JavaScript)."""
+
+
+LoginLogoutHeadViewletManager = zope.viewlet.manager.ViewletManager(
+    'login-logout-head', ILoginLogoutHeadViewletManager)
+
+
 class ILoginLogoutViewletManager(zope.viewlet.interfaces.IViewletManager):
     """ViewletManager for login and logout viewlets."""
 
