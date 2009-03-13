@@ -16,5 +16,5 @@
 $Id$
 """
 
-# BBB, XXX: this may change in near future
-from zope.authentication.basicauthadapter import BasicAuthAdapter
+# BBB
+from zope.publisher.http import BasicAuthAdapter

@@ -19,11 +19,11 @@ import unittest
 from zope.testing import doctest
 
 def test_bbb_imports():
-    """XXX: the place may change
+    """
     Let's check if original imports still work:
     
       >>> import zope.app.security.ftpauth as old
-      >>> import zope.authentication.ftpauth as new
+      >>> import zope.publisher.ftp as new
       
       >>> old.FTPAuth is new.FTPAuth
       True

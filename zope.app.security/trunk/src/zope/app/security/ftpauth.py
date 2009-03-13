@@ -16,5 +16,5 @@
 $Id$
 """
 
-# BBB, XXX: this may change in near future
-from zope.authentication.ftpauth import FTPAuth
+# BBB
+from zope.publisher.ftp import FTPAuth

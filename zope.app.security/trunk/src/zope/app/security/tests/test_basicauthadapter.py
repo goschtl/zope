@@ -19,11 +19,11 @@ import unittest
 from zope.testing import doctest
 
 def test_bbb_imports():
-    """XXX: the place may change
+    """
     Let's check if original imports still work:
     
       >>> import zope.app.security.basicauthadapter as old
-      >>> import zope.authentication.basicauthadapter as new
+      >>> import zope.publisher.http as new
       
       >>> old.BasicAuthAdapter is new.BasicAuthAdapter
       True
