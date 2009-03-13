@@ -17,8 +17,26 @@ $Id$
 
 import unittest
 
+from Acquisition import Implicit
+from zope.interface import implements
+from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
+class FakeFolder(Implicit):
+    id = 'portal'
+
+class FakeCatalog(Implicit):
+    implements(ICatalogTool)
+    id = 'portal_catalog'
+
+class FakeWorkflowTool(Implicit):
+    id = 'portal_workflow'
+
+    def __init__(self, vars):
+        self._vars = vars
+
+    def getCatalogVariablesFor(self):
+        return self._vars
 
 class IndexableObjectWrapperTests(unittest.TestCase):
 
@@ -27,11 +45,16 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
         return IndexableObjectWrapper
 
-    def _makeOne(self, *args, **kw):
-        return self._getTargetClass()(*args, **kw)
+    def _makeOne(self, obj, vars):
+        self.root = FakeFolder()
+        self.root.portal_catalog = FakeFolder('portal_catalog')
+        self.root.portal_workflow = FakeWorkflowTool(vars)
+        catalog = self.root.portal_catalog
+        return self._getTargetClass()(obj, catalog)
 
     def _makeContent(self, *args, **kw):
         from Products.CMFCore.tests.base.dummy import DummyContent
+
         return DummyContent(*args, **kw)
 
     def test_interfaces(self):
@@ -74,7 +97,6 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         w = self._makeOne({}, obj)
         self.failUnless(IContentish.providedBy(w))
         self.failUnless(IIndexableObjectWrapper.providedBy(w))
-
 
 class CatalogToolTests(SecurityTest):
 

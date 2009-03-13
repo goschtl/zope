@@ -131,6 +131,7 @@ class TraversingEventZCMLLayer:
         zcml.load_config('traversing.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.Five)
         zcml.load_config('event.zcml', Products.CMFCore)
+        zcml.load_config('implements.zcml', Products.CMFCore)
         setHooks()
 
     @classmethod

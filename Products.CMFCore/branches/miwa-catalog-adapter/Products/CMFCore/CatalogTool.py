@@ -43,8 +43,12 @@ from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
 
+from zope.component import getMultiAdapter
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
+
+    # This class makes the wrapper transparent, adapter lookup is
+    # carried out based on the interfaces of the wrapped object. 
 
     def __get__(self, inst, cls=None):
         if inst is None:
@@ -60,8 +64,11 @@ class IndexableObjectWrapper(object):
     implements(IIndexableObjectWrapper)
     __providedBy__ = IndexableObjectSpecification()
 
-    def __init__(self, vars, ob):
-        self.__vars = vars
+    def __init__(self, ob, catalog):
+        # look up the workflow variables for the object
+        wftool = getToolByName(catalog, 'portal_workflow', None)
+        if wftool is not None:
+            self.__vars = wftool.getCatalogVariablesFor(ob)
         self.__ob = ob
 
     def __str__(self):
@@ -246,12 +253,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        wftool = getToolByName(self, 'portal_workflow', None)
-        if wftool is not None:
-            vars = wftool.getCatalogVariablesFor(obj)
-        else:
-            vars = {}
-        w = IndexableObjectWrapper(vars, obj)
+        w = getMultiAdapter((object, self), IIndexableObjectWrapper)
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 
