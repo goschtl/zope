@@ -44,6 +44,6 @@
       permission="zope.Public"
       />
 
-  <include file="localpermission.zcml" />
+  <include package="zope.app.localpermission" file="browser.zcml" />
 
 </configure>

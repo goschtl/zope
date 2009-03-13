@@ -33,14 +33,9 @@ CHANGES
 - The addCheckerPublic was moved from zope.app.security.tests to
   zope.security.testing. Backward-compatibility import is provided.
 
-- The ``LocalPermission`` class is now moved to new ``zope.localpermission``
-  package. This package now only has backward-compatibility imports and browser
-  views and menu items for ZMI.
-
-- The browser views and menu item for ``LocalPermission`` was moved into a
-  separate `browser/localpermission.zcml` file that is included by
-  `browser/configure.zcml`. This adds a possibility to exclude ZMI-related
-  configuration for local permissions.
+- The ``LocalPermission`` class is now moved to new ``zope.app.localpermission``
+  package. This package now only has backward-compatibility imports and
+  zcml includes.
 
 - Cleanup dependencies after refactorings. Also, don't depend on
   zope.app.testing for tests anymore.

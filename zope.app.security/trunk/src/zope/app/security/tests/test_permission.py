@@ -23,7 +23,7 @@ def test_bbb_imports():
     Let's test that backward-compatibility imports still work:
     
       >>> from zope.app.security import permission as old
-      >>> from zope.localpermission import permission as new
+      >>> from zope.app.localpermission import permission as new
     
       >>> old.NULL_ID is new.NULL_ID
       True

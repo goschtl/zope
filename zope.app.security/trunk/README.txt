@@ -8,8 +8,8 @@ The functionality was splitted into these new packages:
 
  * zope.authentication - the IAuthentication interface and related utilities.
  * zope.principalregistry - the global principal registry and its zcml directives.
- * zope.localpermission - the LocalPermission class that implements persistent
-   permissions.
+ * zope.app.localpermission - the LocalPermission class that implements
+   persistent permissions.
 
 The rest of functionality that were provided by this package is merged into
 ``zope.security`` and ``zope.publisher``.

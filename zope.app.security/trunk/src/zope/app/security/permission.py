@@ -11,14 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Backward compatibility imports for zope.localpermission.
+"""Backward compatibility imports for zope.app.localpermission.
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# BBB: the functionality was moved to zope.localpermission
-from zope.localpermission.permission import (
+# BBB: the functionality was moved to zope.app.localpermission
+from zope.app.localpermission.permission import (
     NULL_ID,
     LocalPermission,
     setIdOnActivation,
