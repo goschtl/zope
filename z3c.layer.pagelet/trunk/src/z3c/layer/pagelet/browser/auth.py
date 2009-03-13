@@ -16,16 +16,13 @@
 $Id$
 """
 import urllib
-import z3c.template.interfaces
-import zope.app.pagetemplate
+import z3c.pagelet.interfaces
 import zope.app.publisher.interfaces.http
 import zope.app.security.interfaces
 import zope.component
 import zope.i18n
 import zope.i18nmessageid
 import zope.interface
-import zope.publisher.interfaces.browser
-import zope.traversing.browser.interfaces
 import zope.viewlet.interfaces
 import zope.viewlet.manager
 import zope.viewlet.viewlet
