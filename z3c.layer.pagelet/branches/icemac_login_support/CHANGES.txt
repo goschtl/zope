@@ -7,10 +7,7 @@ CHANGES
 
 - Implemented login and logout using pagelets resp. viewlets.
 
-  **TODO:** viewlet for JavaScript at original logout.pt and redirect.pt.
-            implement session cred login using a form library.
-
-- Updated tests to use new ``zope.configuration``which containts the
+- Updated tests to use new ``zope.configuration`` which containts the
   exclude directive.
 
 
