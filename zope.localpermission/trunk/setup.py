@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.localpermission package
+"""Setup for zope.app.localpermission package
 
 $Id$
 """
@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.localpermission',
+setup(name='zope.app.localpermission',
       version = '3.7.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
@@ -42,7 +42,7 @@ setup(name='zope.localpermission',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://pypi.python.org/pypi/zope.localpermission',
+      url='http://pypi.python.org/pypi/zope.app.localpermission',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir = {'': 'src'},

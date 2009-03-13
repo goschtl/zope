@@ -20,5 +20,5 @@ import doctest
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.localpermission.permission'),
+        doctest.DocTestSuite('zope.app.localpermission.permission'),
         ))
