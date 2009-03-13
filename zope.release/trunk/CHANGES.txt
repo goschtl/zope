@@ -40,10 +40,13 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 
 - Removed z3c.menu as it also was splitted (see added packages).
 
+- Removed z3c.skin.pagelet as it uses deprecated z3c.menu and z3c.layer
+  packages. You can use z3c.layer.pagelet and z3c.layer.ready2go instead.
+
 - Removed z3c.viewlet package, as its functionality was included in
   zope.viewlet ages ago.
 
-- Remove deprecated packages, zope.thread and zope.app.annotation.
+- Remove deprecated packages, zope.thread and zope.app.annotation, zope.app.pluggableauth.
 
 3.4.0 (2009-01-29)
 ------------------
