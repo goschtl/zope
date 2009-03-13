@@ -1,0 +1,86 @@
+=======
+CHANGES
+=======
+
+1.3.0 (2009-03-13)
+------------------
+
+- Implemented login and logout using pagelets resp. viewlets.
+
+- Updated tests to use new ``zope.configuration`` which containts the
+  exclude directive.
+
+
+1.2.1 (2009-02-21)
+------------------
+
+- Release 1.2.0 was missing the test file for the security issue.
+
+
+1.2.0 (2009-02-21)
+------------------
+
+- **Security issue:** The traverser defined for
+  ``IPageletBrowserLayer`` was a trusted adapter, so the security
+  proxy got removed from each traversed object. Thus all sub-objects
+  were publically accessable, too.
+
+
+1.1.0 (2009-02-14)
+------------------
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered.
+
+- Using ``zope.location.interfaces.ISite`` instead of
+  ``zope.app.component.interfaces.ISite``.
+
+- Using ``zope.container`` instead of ``zope.app.container``.
+
+- Cleaned up dependencies.
+
+
+1.0.1 (2008-01-24)
+------------------
+
+- Bug: Update meta data.
+
+
+1.0.0 (2008-01-21)
+------------------
+
+- Restructure: Move ``z3c.layer.pagelet`` package to it's own top level
+  package form ``z3c.layer`` to ``z3c.layer.pagelet``.
+
+- Restructure: Removed ``zope.app.form`` support from pagelet layer.
+
+
+0.2.3 (2007-11-07)
+------------------
+
+- Forward-Bug: Due to a bug in mechanize, the testbrowser throws
+  ``httperror_seek_wrapper`` instead of ``HTTPError`` errors. Thanks to RE
+  normalizers, the code will now work whether the bug is fixed or not in
+  mechanize.
+
+
+0.2.2 (2007-10-31)
+------------------
+
+- Bug: Fixed package meta-data.
+
+- Bug: Fixed test failures due to depency updates.
+
+- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+
+
+0.2.1 (2007-??-??)
+------------------
+
+- Changes unknown.
+
+
+0.2.0 (2007-??-??)
+------------------
+
+- Initial release.
