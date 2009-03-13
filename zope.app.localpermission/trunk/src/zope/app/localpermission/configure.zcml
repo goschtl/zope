@@ -33,6 +33,4 @@
       handler=".permission.unsetIdOnDeactivation"
       />
 
-  <include file="browser.zcml" />
-
 </configure>
