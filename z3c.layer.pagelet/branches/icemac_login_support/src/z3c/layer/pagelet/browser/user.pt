@@ -1,3 +1,0 @@
-<div>
-  <div tal:repeat="part context" tal:content="part">Error message</div>
-</div>
