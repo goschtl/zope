@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.7.0 (unreleased)
+3.7.1 (unreleased)
+------------------
+
+- ...
+
+3.7.0 (2009-03-14)
 ------------------
 
 - All interfaces, as well as some authentication-related helper classes and
