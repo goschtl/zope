@@ -2,7 +2,13 @@
 Changes
 =======
 
-3.6.0 (unreleased)
+3.6.1 (unreleased)
+------------------
+
+* ...
+
+
+3.6.0 (2009-03-14)
 ------------------
 
 * Separate the presentation template and camefrom/redirection logic for the
