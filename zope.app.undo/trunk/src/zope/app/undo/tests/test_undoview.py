@@ -18,14 +18,14 @@ $Id$
 from datetime import datetime
 from unittest import TestCase, main, makeSuite
 
+from zope.component import provideUtility
 from zope.interface import implements
+from zope.principalregistry.principalregistry import principalRegistry
 from zope.publisher.browser import TestRequest
 
-from zope.app.testing import ztapi
 from zope.app.component.testing import PlacefulSetup
 from zope.app.undo.interfaces import IUndoManager
 from zope.app.undo.browser import UndoView
-from zope.app.security.principalregistry import principalRegistry
 
 class TestIUndoManager(object):
     implements(IUndoManager)
@@ -87,7 +87,7 @@ class Test(PlacefulSetup, TestCase):
         super(Test, self).setUp()
         self.request = TestRequest()
         self.undo = TestIUndoManager()
-        ztapi.provideUtility(IUndoManager, self.undo)
+        provideUtility(self.undo, IUndoManager)
         principalRegistry.definePrincipal('monkey', 'Monkey Patch',
                                           login='monkey')
         principalRegistry.definePrincipal('bonobo', 'Bonobo Abdul-Fasil',

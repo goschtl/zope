@@ -5,7 +5,9 @@ CHANGES
 3.5.1 (unreleased)
 ------------------
 
-- ...
+- Use ``zope.authentication`` instead of ``zope.app.security``.
+
+- Remove zcml slug file and zpkg stuff.
 
 3.5.0 (2009-02-01)
 ------------------

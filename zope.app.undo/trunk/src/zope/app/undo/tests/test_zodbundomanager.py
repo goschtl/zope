@@ -27,14 +27,14 @@ from zope.component.registry import Components
 from zope.component.testing import PlacelessSetup
 from zope.location import Location
 from zope.location.traversing import LocationPhysicallyLocatable
+from zope.principalregistry.principalregistry import PrincipalRegistry
 from zope.security.interfaces import IPrincipal
 
-from zope.app.security.principalregistry import PrincipalRegistry
+from zope.authentication.interfaces import IAuthentication, PrincipalLookupError
 from zope.location.interfaces import ISite
 from zope.site import queryNextUtility
 from zope.site.hooks import setSite, setHooks
 from zope.site.site import SiteManagerAdapter
-from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 
 from zope.app.undo import ZODBUndoManager
 from zope.app.undo.interfaces import UndoError
@@ -129,7 +129,7 @@ class Test(PlacelessSetup, TestCase):
         zope.component.provideAdapter(SiteManagerAdapter)
 
         # define global principals
-        from zope.app.security.principalregistry import principalRegistry
+        from zope.principalregistry.principalregistry import principalRegistry
         principalRegistry.definePrincipal('jim', 'Jim Fulton', login='jim')
         principalRegistry.definePrincipal('anthony', 'Anthony Baxter',
                                           login='anthony')

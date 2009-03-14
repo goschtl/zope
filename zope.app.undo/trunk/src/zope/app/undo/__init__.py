@@ -21,12 +21,13 @@ from datetime import datetime
 
 import transaction
 import zope.component
+from zope.authentication.interfaces import IAuthentication
+from zope.authentication.interfaces import PrincipalLookupError
 from zope.interface import implements
+from zope.security.interfaces import IPrincipal
 from zope.traversing.interfaces import IPhysicallyLocatable
 
 from zope.app.undo.interfaces import IUndoManager, UndoError
-from zope.app.security.interfaces import IAuthentication, IPrincipal
-from zope.app.security.interfaces import PrincipalLookupError
 
 def undoSetup(event):
     # setup undo functionality
