@@ -1,0 +1,10 @@
+=======
+CHANGES
+=======
+
+3.7.0 (2009-03-14)
+------------------
+
+Initial release. This package was splitted off from ``zope.app.security`` to
+provide a separate common interface definition for authentication utilities
+without extra dependencies.
