@@ -8,9 +8,6 @@
   <!-- Turn on the devmode -->
   <meta:provides feature="devmode" />
 
-  <!-- load meta configuration for exclude -->
-  <include package="zc.configuration" file="meta.zcml" />
-
   <!-- exclude will prevent from include -->
   <exclude package="zope.app.authentication" file="ftpplugins.zcml" />
   <exclude package="zope.app.authentication" file="groupfolder.zcml" />

@@ -2,16 +2,17 @@
 CHANGES
 =======
 
-0.6.1 (unreleased)
+0.7.0 (2009-03-14)
 ------------------
 
-- Nothing changed yet.
+- Use current ``zope.configuration`` instead of deprecated
+  ``zc.configuration`` to get exclude directive.
 
 
 0.6.0 (2009-02-19)
 ------------------
 
-- No longer uses deprecated ``z3c.layer`.
+- No longer uses deprecated ``z3c.layer``.
 
 - Fixed dependencies and tests.
 

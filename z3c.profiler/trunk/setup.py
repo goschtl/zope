@@ -21,7 +21,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.6.1 dev'
+version = '0.7.0'
 
 setup (
     name='z3c.profiler',
@@ -69,7 +69,7 @@ setup (
         ),
     install_requires = [
         'setuptools',
-        'zc.configuration',
+        'zope.configuration >= 3.5.0',
         'zope.app.component',
         'zope.app.pagetemplate',
         'zope.app.publisher',
