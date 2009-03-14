@@ -14,6 +14,7 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
   * zc.lockfile
 
 - Added other new packages:
+  * zope.authentication
   * zope.broken
   * zope.browser
   * zope.container
@@ -24,6 +25,8 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
   * zope.catalog
   * zope.password
   * zope.principalannotation
+  * zope.principalregistry
+  * zope.app.localpermission
   * z3c.layer.minimal
   * z3c.layer.pagelet
   * z3c.layer.ready2go
@@ -46,7 +49,8 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 - Removed z3c.viewlet package, as its functionality was included in
   zope.viewlet ages ago.
 
-- Remove deprecated packages, zope.thread and zope.app.annotation, zope.app.pluggableauth.
+- Remove deprecated packages, zope.thread and zope.app.annotation,
+  zope.app.pluggableauth.
 
 3.4.0 (2009-01-29)
 ------------------
