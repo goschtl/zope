@@ -5,7 +5,10 @@ CHANGES
 1.2.1 (unreleased)
 ------------------
 
-* ...
+* Corrected description of ``ITemplateDirective.name``.
+
+* Removed zpkg helper files and zcml slugs.
+
 
 1.2.0 (2009-02-26)
 ------------------
@@ -26,7 +29,7 @@ CHANGES
 1.1.0 (2007-10-08)
 ------------------
 
-* Added an ``IContentTemplate`` interface which is used for 
+* Added an ``IContentTemplate`` interface which is used for
   ``<z3c:template>``.
 
 1.0.0 (2007-??-??)

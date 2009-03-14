@@ -40,9 +40,8 @@ class ITemplateDirective(zope.interface.Interface):
         )
 
     name = zope.schema.TextLine(
-        title=u"The name of the pagelet.",
-        description=u"The name is used in the IController to look up the "
-                      "pagelet.",
+        title=u"The name of the template.",
+        description=u"The name is used to look up the template.",
         default=u'',
         required=False)
 
