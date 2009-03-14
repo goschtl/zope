@@ -5,8 +5,11 @@ CHANGES
 3.4.3 (unreleased)
 ------------------
 
+- Use new ``zope.authentication`` instead of ``zope.app.security``.
+
 - Remove deprecated code and thus remove dependency on zope.deferredimport.
 
+- Remove old zpkg-related SETUP.cfg file.
 
 3.4.2 (2009-01-27)
 ------------------

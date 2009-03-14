@@ -19,8 +19,9 @@ from unittest import TestCase, main, makeSuite
 from zope import component, interface
 import zope.formlib.namedtemplate
 from zope.publisher.browser import TestRequest
+from zope.authentication.interfaces import IAuthentication
+from zope.security.interfaces import IPrincipal
 from zope.app.testing import ztapi
-from zope.app.security.interfaces import IAuthentication, IPrincipal
 from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.testing.placelesssetup import PlacelessSetup
 

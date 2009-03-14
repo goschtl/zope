@@ -17,11 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.authentication.interfaces import IAuthentication
 from zope.publisher.browser import BrowserPage
 from zope.formlib import namedtemplate
 from zope.component import getUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.security.interfaces import IAuthentication
 
 class Unauthorized(BrowserPage):
 
