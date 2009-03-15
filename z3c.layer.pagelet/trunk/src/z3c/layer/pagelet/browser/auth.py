@@ -18,7 +18,7 @@ $Id$
 import urllib
 import z3c.pagelet.interfaces
 import zope.app.publisher.interfaces.http
-import zope.app.security.interfaces
+import zope.authentication.interfaces
 import zope.component
 import zope.i18n
 import zope.i18nmessageid
@@ -49,13 +49,13 @@ LoginLogoutViewletManager = zope.viewlet.manager.ViewletManager(
 
 def authenticated(principal):
     "Tell whether the principal is authenticated."
-    unauthenticated = zope.app.security.interfaces.IUnauthenticatedPrincipal
+    unauthenticated = zope.authentication.interfaces.IUnauthenticatedPrincipal
     return not unauthenticated.providedBy(principal)
 
 
 def logout_supported(request):
     "Tell whether logout is supported."
-    logout = zope.app.security.interfaces.ILogoutSupported(request, None)
+    logout = zope.authentication.interfaces.ILogoutSupported(request, None)
     return logout is not None
 
 
@@ -122,7 +122,7 @@ class HTTPAuthenticationLogin(object):
         # we don't want to keep challenging if we're authenticated
         if not authenticated(self.request.principal):
             auth = zope.component.getUtility(
-                zope.app.security.interfaces.IAuthentication)
+                zope.authentication.interfaces.IAuthentication)
             auth.unauthorized(
                 self.request.principal.id, self.request)
             return render_pagelet(self, self.request, 'login_failed.html')
@@ -145,13 +145,13 @@ class HTTPAuthenticationLogout(object):
     """Since HTTP Authentication really does not know about logout, we are
     simply challenging the client again."""
 
-    zope.interface.implements(zope.app.security.interfaces.ILogout)
+    zope.interface.implements(zope.authentication.interfaces.ILogout)
 
     def logout(self, nextURL=None):
         if authenticated(self.request.principal):
             auth = zope.component.getUtility(
-                zope.app.security.interfaces.IAuthentication)
-            zope.app.security.interfaces.ILogout(auth).logout(self.request)
+                zope.authentication.interfaces.IAuthentication)
+            zope.authentication.interfaces.ILogout(auth).logout(self.request)
             if nextURL:
                 return render_pagelet(self, self.request, 'redirect.html')
         if nextURL is None:
