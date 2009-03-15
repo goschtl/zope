@@ -154,12 +154,12 @@ displayed:
 
   >>> from zope.app.testing import ztapi
   >>> import zope.interface
-  >>> import zope.app.security
-  >>> import zope.app.security.interfaces
+  >>> import zope.authentication.logout
+  >>> import zope.authentication.interfaces
   >>> ztapi.provideAdapter(
   ...     zope.interface.Interface,
   ...     zope.app.security.interfaces.ILogoutSupported,
-  ...     zope.app.security.LogoutSupported)
+  ...     zope.authentication.logout.LogoutSupported)
   >>> browser.reload()
   >>> browser.url
   'http://localhost/++skin++PageletTestSkin/container/'
@@ -267,7 +267,7 @@ Cookie auth
 To do cookie auth we have to set up a pluggable auth utility (PAU)
 with a authenticator plug-in (principal folder) first:
 
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
   >>> from zope.app.appsetup.bootstrap import ensureUtility
   >>> from zope.app.authentication.authentication import PluggableAuthentication

@@ -72,10 +72,10 @@ setup(
         'zope.configuration',
         'zope.traversing',
         'zope.app.publisher',
-        'zope.app.security',
         'zope.app.exception',
         'z3c.pagelet',
         'zope.viewlet',
+        'zope.authentication',
         ],
     zip_safe = False,
 )

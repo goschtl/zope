@@ -20,7 +20,7 @@ from zope.app.exception.systemerror import SystemErrorView
 from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.exception.browser.user import UserErrorView
 from zope.app.exception.browser.notfound import NotFound
-from zope.app.security.interfaces import IAuthentication
+from zope.authentication.interfaces import IAuthentication
 from z3c.template.interfaces import IContentTemplate
 from z3c.pagelet import browser
 

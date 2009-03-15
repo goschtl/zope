@@ -26,7 +26,7 @@
   <include package="zope.app.pagetemplate" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
-  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.principalregistry" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml" />
   <include package="zope.viewlet" file="meta.zcml" />
 
@@ -38,6 +38,8 @@
 
   <!-- zope core component -->
   <include package="zope.annotation" />
+  <include package="zope.authentication" />
+  <include package="zope.principalregistry" />
   <include package="zope.app.appsetup" />
   <include package="zope.app.component" />
   <include package="zope.container" />
@@ -46,7 +48,6 @@
   <include package="zope.app.i18n" />
   <include package="zope.app.publication" />
   <include package="zope.app.publisher.browser" />
-  <include package="zope.app.security" />
   <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
   <include package="zope.app.twisted" />
@@ -59,6 +60,7 @@
   <include package="zope.traversing.browser" />
   <include package="zope.viewlet" />
   <include package="zope.session" />
+  <include package="zope.security" file="permissions.zcml" />
 
 
   <!-- z3c component -->
