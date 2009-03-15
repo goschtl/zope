@@ -116,6 +116,8 @@ class SecurityPolicy(ZopeSecurityPolicy):
         adapters = cache.principal_roles_adapters
         if adapters is None:
             adapters = tuple(getAdapters((parent,), IPrincipalRoleMap))
+            if adapters and adapters[0][0] == '':
+                adapters = adapters[1:] + adapters[:1]
             cache.principal_roles_adapters = adapters
 
         for name, prinrole in adapters:

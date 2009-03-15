@@ -74,7 +74,11 @@ class ExtendedGrantInfo(object):
             for role, setting in info.getRolesForPrincipal(principal):
                 roles[role] = setting
 
-        for name, prinrole in getAdapters((context,), IPrincipalRoleMap):
+        adapters = tuple(getAdapters((context,), IPrincipalRoleMap))
+        if adapters and adapters[0][0] == '':
+            adapters = adapters[1:] + adapters[:1]
+
+        for name, prinrole in adapters:
             for role, setting in prinrole.getRolesForPrincipal(principal):
                 roles[role] = setting
 
