@@ -158,7 +158,7 @@ displayed:
   >>> import zope.authentication.interfaces
   >>> ztapi.provideAdapter(
   ...     zope.interface.Interface,
-  ...     zope.app.security.interfaces.ILogoutSupported,
+  ...     zope.authentication.interfaces.ILogoutSupported,
   ...     zope.authentication.logout.LogoutSupported)
   >>> browser.reload()
   >>> browser.url

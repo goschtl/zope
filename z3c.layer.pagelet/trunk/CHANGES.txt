@@ -5,7 +5,7 @@ CHANGES
 1.3.1 (unreleased)
 ------------------
 
-- Removed dependency on ``zope.app.security`` by using the new
+- Removed direct dependency on ``zope.app.security`` by using the new
   packages ``zope.authentication`` and ``zope.principalregistry``.
 
 
