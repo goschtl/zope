@@ -11,32 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zc.dict
+"""Database generations for zc.dict -- A BTree based persistent mapping
 
 $Id$
 """
-import unittest
-from zope.testing import doctest
+
+from zope.app.generations.generations import SchemaManager
 
 
-optionflags = (doctest.INTERPRET_FOOTNOTES |
-               doctest.REPORT_NDIFF |
-               doctest.ELLIPSIS)
-
-
-def test_suite():
-    return unittest.TestSuite([
-        doctest.DocFileSuite('dict.txt', 'ordered.txt',
-                             optionflags=optionflags),
-        ])
-
-
-def test_suite_generations():
-    suite = test_suite()
-    suite.addTest(doctest.DocFileSuite('generations/evolve1.txt',
-                                       optionflags=optionflags))
-    return suite
-
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+schema_manager = SchemaManager(
+    minimum_generation=1,
+    generation=1,
+    package_name=__name__)

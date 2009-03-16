@@ -20,7 +20,7 @@ import copy
 import BTrees
 import BTrees.Length
 import persistent
-import persistent.list
+import zc.blist
 
 
 class Dict(persistent.Persistent):
@@ -126,12 +126,11 @@ class Dict(persistent.Persistent):
             raise KeyError, 'container is empty'
         return (key, self.pop(key))
 
+
 class OrderedDict(Dict):
-    """A Ordered BTree-based dict-like persistent object that can be safely
+    """An ordered BTree-based dict-like persistent object that can be safely
     inherited from.
-    
-    This class does not have as good behavior with large numbers of members
-    as the Dict class because the _order object is not in buckets.
+
     """
 
     # what do we get from the superclass:
@@ -139,11 +138,11 @@ class OrderedDict(Dict):
     # get, __delitem__
 
     def __init__(self, *args, **kwargs):
-        self._order = persistent.list.PersistentList()
+        self._order = zc.blist.BList()
         super(OrderedDict, self).__init__(*args, **kwargs)
 
     def keys(self):
-        return self._order[:]
+        return list(self._order)
 
     def __iter__(self):
         return iter(self._order)
@@ -155,29 +154,26 @@ class OrderedDict(Dict):
         return [(key, self._data[key]) for key in self._order]
 
     def __setitem__(self, key, value):
-        delta = 1
-        if key in self._data:
-            delta = 0
-        self._data[key] = value
-        if delta:
+        if key not in self._data:
             self._order.append(key)
-            self._len.change(delta)
+            self._len.change(1)
+        self._data[key] = value
 
     def updateOrder(self, order):
-        order = persistent.list.PersistentList(order)
+        order = list(order)
 
         if len(order) != len(self._order):
             raise ValueError("Incompatible key set.")
 
         order_set = set(order)
-        
+
         if len(order) != len(order_set):
             raise ValueError("Duplicate keys in order.")
 
         if order_set.difference(self._order):
             raise ValueError("Incompatible key set.")
 
-        self._order = order
+        self._order[:] = order
 
     def clear(self):
         super(OrderedDict, self).clear()
@@ -190,7 +186,7 @@ class OrderedDict(Dict):
         order = self._order
         try:
             self._data = OOBTree()
-            self._order = persistent.list.PersistentList()
+            self._order = zc.blist.BList()
             c = copy.copy(self)
         finally:
             self._data = data
@@ -219,5 +215,3 @@ class OrderedDict(Dict):
             self._len.change(-1)
             self._order.remove(key)
         return res
-
-    

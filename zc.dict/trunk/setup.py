@@ -5,7 +5,7 @@ long_description = (open("src/zc/dict/dict.txt").read() +
                     open("src/zc/dict/ordered.txt").read())
 setup(
     name="zc.dict",
-    version="1.2.1",
+    version="1.3dev",
     license="ZPL 2.1",
     author="Zope Corporation",
     author_email="zope3-dev@zope.org",
@@ -14,7 +14,8 @@ setup(
     packages=["zc", "zc.dict"],
     package_dir={"": "src"},
     include_package_data=True,
-    install_requires=["setuptools", "zope.interface", "ZODB3"],
+    install_requires=["setuptools", "zope.interface", "ZODB3", "zc.blist"],
+    extras_require={"generations": ["zope.app.generations"]},
     tests_require=["zope.testing"],
     description=open('README.txt').read(),
     long_description=long_description,

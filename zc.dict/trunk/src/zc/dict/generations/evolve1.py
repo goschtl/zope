@@ -11,32 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zc.dict
 
-$Id$
-"""
-import unittest
-from zope.testing import doctest
+import zope.app.generations.utility
 
-
-optionflags = (doctest.INTERPRET_FOOTNOTES |
-               doctest.REPORT_NDIFF |
-               doctest.ELLIPSIS)
+import zc.blist
+import zc.dict
 
 
-def test_suite():
-    return unittest.TestSuite([
-        doctest.DocFileSuite('dict.txt', 'ordered.txt',
-                             optionflags=optionflags),
-        ])
+generation = 1
 
 
-def test_suite_generations():
-    suite = test_suite()
-    suite.addTest(doctest.DocFileSuite('generations/evolve1.txt',
-                                       optionflags=optionflags))
-    return suite
+def evolve(context):
+    """Upgrade the order storage of those OrderedDicts which can be reached
+    through a hierarchy of mappings. Applications that use OrderedDicts as
+    internal data structures need to take care of upgrading themselves.
 
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    """
+    root = context.connection.root()
+    for obj in zope.app.generations.utility.findObjectsMatching(
+        root, lambda obj: isinstance(obj, zc.dict.OrderedDict)):
+        if type(obj._order) is not zc.blist.BList:
+            obj._order = zc.blist.BList(obj._order)
