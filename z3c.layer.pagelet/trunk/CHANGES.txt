@@ -8,6 +8,10 @@ CHANGES
 - Removed direct dependency on ``zope.app.security`` by using the new
   packages ``zope.authentication`` and ``zope.principalregistry``.
 
+- Removed not needed test-dependency on ``zope.app.zcmlfiles``.
+
+- Fixed namespace package declaration in ``setup.py``.
+
 
 1.3.0 (2009-03-13)
 ------------------

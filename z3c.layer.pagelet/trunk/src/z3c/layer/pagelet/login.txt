@@ -269,23 +269,26 @@ with a authenticator plug-in (principal folder) first:
 
   >>> from zope.authentication.interfaces import IAuthentication
   >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
-  >>> from zope.app.appsetup.bootstrap import ensureUtility
   >>> from zope.app.authentication.authentication import PluggableAuthentication
   >>> from zope.app.authentication.principalfolder import PrincipalFolder
   >>> from zope.site import site
 
-  >>> auth = ensureUtility(
-  ...     getRootFolder(), IAuthentication, '', PluggableAuthentication,
-  ...     asObject=True)
-  >>> auth.credentialsPlugins = (u'Session Credentials',)
-  >>> principal_folder = ensureUtility(getRootFolder(), IAuthenticatorPlugin,
-  ...     '', PrincipalFolder, name=u'principal_folder', asObject=True)
-  >>> auth.authenticatorPlugins = (u'principal_folder',)
+  >>> root = getRootFolder()
+  >>> root['principal_folder'] = PrincipalFolder()
+  >>> sm = root.getSiteManager()
+  >>> sm.registerUtility(
+  ...     root['principal_folder'], IAuthenticatorPlugin, 'principal_folder')
+
+  >>> root['auth'] = PluggableAuthentication()
+  >>> sm.registerUtility(root['auth'], IAuthentication, '')
+  >>> root['auth'].credentialsPlugins = (u'Session Credentials',)
+  >>> root['auth'].authenticatorPlugins = (u'principal_folder',)
 
 We need a principal inside the principal folder:
 
   >>> from zope.app.authentication.principalfolder import InternalPrincipal
-  >>> principal_folder['1'] = InternalPrincipal('tester', 'tpass', 'Tester')
+  >>> root['principal_folder']['1'] = InternalPrincipal(
+  ...     'tester', 'tpass', 'Tester')
 
 
 We use a new browser, so the principal is not logged in and the login

@@ -54,13 +54,13 @@ setup(
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
-    namespace_packages = ['z3c'],
+    namespace_packages = ['z3c', 'z3c.layer'],
     extras_require = dict(
         test = [
             'zope.testbrowser',
             'zope.securitypolicy',
             'zope.app.testing',
-            'zope.app.zcmlfiles',
+            'zope.app.i18n',
             'zope.app.twisted',
             'zope.configuration>=3.5.0',
             'zope.component',
