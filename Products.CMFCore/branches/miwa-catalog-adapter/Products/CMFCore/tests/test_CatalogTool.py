@@ -19,6 +19,7 @@ import unittest
 
 from Acquisition import Implicit
 from zope.interface import implements
+from zope.component import getMultiAdapter
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
@@ -35,7 +36,7 @@ class FakeWorkflowTool(Implicit):
     def __init__(self, vars):
         self._vars = vars
 
-    def getCatalogVariablesFor(self):
+    def getCatalogVariablesFor(self, ob):
         return self._vars
 
 class IndexableObjectWrapperTests(unittest.TestCase):
@@ -45,9 +46,9 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
         return IndexableObjectWrapper
 
-    def _makeOne(self, obj, vars):
+    def _makeOne(self, vars, obj):
         self.root = FakeFolder()
-        self.root.portal_catalog = FakeFolder('portal_catalog')
+        self.root.portal_catalog = FakeCatalog()
         self.root.portal_workflow = FakeWorkflowTool(vars)
         catalog = self.root.portal_catalog
         return self._getTargetClass()(obj, catalog)
@@ -98,6 +99,15 @@ class IndexableObjectWrapperTests(unittest.TestCase):
         self.failUnless(IContentish.providedBy(w))
         self.failUnless(IIndexableObjectWrapper.providedBy(w))
 
+    def test_adapts(self):
+        from zope.component import adaptedBy
+        from Products.CMFCore.interfaces import IContentish
+        from Products.CMFCore.interfaces import ICatalogTool
+
+        w = self._getTargetClass()
+        adapts =  adaptedBy(w) 
+        self.assertEqual(adapts, (IContentish, ICatalogTool))
+
 class CatalogToolTests(SecurityTest):
 
     def _getTargetClass(self):
@@ -110,6 +120,15 @@ class CatalogToolTests(SecurityTest):
 
     def _makeContent(self, *args, **kw):
         from Products.CMFCore.tests.base.dummy import DummyContent
+        from Products.CMFCore.interfaces import ICatalogTool
+        from Products.CMFCore.interfaces import IContentish
+        from Products.CMFCore.interfaces import IIndexableObjectWrapper
+        from Products.CMFCore.CatalogTool import IndexableObjectWrapper
+
+        from zope.component import getSiteManager
+        self.sm = getSiteManager()
+        self.sm.registerAdapter(IndexableObjectWrapper, (IContentish, ICatalogTool), IIndexableObjectWrapper)
+
         return DummyContent(*args, **kw)
 
     def test_interfaces(self):

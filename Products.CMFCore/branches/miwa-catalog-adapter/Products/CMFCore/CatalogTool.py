@@ -25,6 +25,7 @@ from DateTime.DateTime import DateTime
 from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.interface import implements
+from zope.component import adapts
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
@@ -33,6 +34,7 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IIndexableObjectWrapper
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.permissions import AccessInactivePortalContent
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
@@ -62,6 +64,7 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 class IndexableObjectWrapper(object):
 
     implements(IIndexableObjectWrapper)
+    adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
     def __init__(self, ob, catalog):
@@ -69,6 +72,8 @@ class IndexableObjectWrapper(object):
         wftool = getToolByName(catalog, 'portal_workflow', None)
         if wftool is not None:
             self.__vars = wftool.getCatalogVariablesFor(ob)
+        else:
+            self.__vars = {}
         self.__ob = ob
 
     def __str__(self):
@@ -253,7 +258,7 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        w = getMultiAdapter((object, self), IIndexableObjectWrapper)
+        w = getMultiAdapter((obj, self), IIndexableObjectWrapper)
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 
