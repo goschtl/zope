@@ -84,6 +84,7 @@ setup(name = 'z3ext.preferences',
       extras_require = dict(test=['zope.app.testing',
                                   'zope.testing',
 				  'zope.testbrowser',
+				  'zope.app.zcmlfiles',
                                   ]),
       include_package_data = True,
       zip_safe = False
