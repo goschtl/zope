@@ -1,0 +1,228 @@
+An efficient, persistent and subclassable dict
+==============================================
+
+PersistentDict is very inefficient if it contains more than a couple
+of values, and BTrees are not recommended to inherit from.
+
+This class is a simple wrapper over a BTree.  It retains the
+efficiency of BTrees and is safe to use as a base class.  Also, it
+implements the full Python dict interface.
+
+    >>> from zc.dict import Dict
+    >>> d = Dict()
+    >>> d
+    <zc.dict.dict.Dict object at ...>
+ 
+    >>> d['foo'] = 'bar'
+    >>> len(d)
+    1
+ 
+    >>> d['bar'] = 'baz'
+    >>> len(d)
+    2
+
+Note that an important difference between the Python dict and this Dict is
+that the Python dict uses hashes, and this uses BTree comparisons.
+Practically, this means that your keys should be of homogenous types.
+We use strings in these examples.
+
+Length is maintained separately, because len on a BTree is inefficient,
+as it has to wake up all buckets in the tree from the database.
+
+    >>> d._len
+    <BTrees.Length.Length object at ...>
+    >>> d._len()
+    2
+
+In order to keep updates efficient for small changes, we unroll them
+as a series of setitems.
+
+    >>> d.update({'bar': 'moo', 'ding': 'dong', 'beep': 'beep'})
+    >>> len(d)
+    4
+
+The Dict supports the full ``update`` interface.
+
+    >>> d.update([['sha', 'zam'], ['ka', 'pow']])
+    >>> len(d)
+    6
+    >>> d['ka']
+    'pow'
+    >>> d.update(left='hook', right='jab')
+    >>> len(d)
+    8
+    >>> d['left']
+    'hook'
+
+``pop`` needs to update the length.
+
+    >>> d.pop('sha')
+    'zam'
+    >>> d.pop('ka')
+    'pow'
+    >>> d.pop('left')
+    'hook'
+    >>> d.pop('right')
+    'jab'
+    >>> len(d)
+    4
+
+...except when it doesn't.
+
+    >>> d.pop('nonexistent')
+    Traceback (most recent call last):
+    ...
+    KeyError: 'nonexistent'
+    >>> d.pop('nonexistent', 42)
+    42
+    >>> len(d)
+    4
+
+``setdefault`` also sometimes needs to update the length.
+
+    >>> len(d)
+    4
+    >>> d.setdefault('newly created', 'value')
+    'value'
+    >>> d['newly created']
+    'value'
+    >>> len(d)
+    5
+
+    >>> d.setdefault('newly created', 'other')
+    'value'
+    >>> d['newly created']
+    'value'
+    >>> len(d)
+    5
+
+    >>> del d['newly created'] # set things back to the way they were...
+
+``keys``, ``values`` and ``items`` return normal Python lists.  Because of
+the underlying BTree, these are always in sort order of the keys.
+
+    >>> d.keys()
+    ['bar', 'beep', 'ding', 'foo']
+ 
+    >>> d.values()
+    ['moo', 'beep', 'dong', 'bar']
+ 
+    >>> d.items()
+    [('bar', 'moo'), ('beep', 'beep'), ('ding', 'dong'), ('foo', 'bar')]
+
+However, efficient BTree iterators are available via the iter methods:
+
+    >>> iter(d)
+    <OO-iterator object at ...>
+    >>> d.iterkeys()
+    <OO-iterator object at ...>
+ 
+    >>> d.iteritems()
+    <OO-iterator object at ...>
+ 
+    >>> d.itervalues()
+    <OO-iterator object at ...>
+
+popitem removes from the dict and returns a key-value pair:
+
+    >>> len(d)
+    4
+ 
+    >>> d.popitem()
+    ('bar', 'moo')
+ 
+    >>> len(d)
+    3
+
+The copy method creates a copy of a Dict:
+
+    >>> c = d.copy()
+    >>> c.items() == d.items()
+    True
+
+However we don't support comparison, except for identity, because of
+cowardice:
+
+    >>> c == d
+    False
+    >>> Dict() == {}
+    False
+    >>> d == d
+    True
+
+clear removes all the keys from the dict:
+
+    >>> d.clear()
+    >>> d.keys()
+    []
+    >>> len(d)
+    0
+
+The rest of the dict methods are delegated to the underlying BTree:
+
+    >>> c.has_key('beep')
+    True
+    >>> 'BEEP' in c
+    False
+    >>> c.get('nonexistent', 'default')
+    'default'
+
+Subclassing
+-----------
+
+For easy subclassing, the dict is intended to have three important
+characteristics:
+
+- All addition is done with __setitem__ so overriding it will control
+  addition.
+
+- All removal is done with either ``pop`` or ``clear`` so overriding these
+  methods will control removal.
+
+- Calling __init__ without passing an argument will not try to access the
+  ``update`` method.
+
+Let's demonstrate these with a quick subclass.
+
+    >>> class Demo(Dict):
+    ...     def __setitem__(self, key, value):
+    ...         print '__setitem__', key, value
+    ...         super(Demo, self).__setitem__(key, value)
+    ...     def pop(self, key, *args):
+    ...         print 'pop', key, args and arg[0] or '---'
+    ...         return super(Demo, self).pop(key, *args)
+    ...     def update(self, *args, **kwargs):
+    ...         print 'update'
+    ...         super(Demo, self).update(*args, **kwargs)
+    ...     def clear(self):
+    ...         print 'clear'
+    ...         super(Demo, self).clear()
+    ...
+    
+    >>> demo1 = Demo()
+    >>> demo2 = Demo([['foo', 'bar'], ['bing', 'baz']], sha='zam')
+    update
+    __setitem__ foo bar
+    __setitem__ bing baz
+    __setitem__ sha zam
+    >>> demo2.setdefault('babble')
+    __setitem__ babble None
+    >>> del demo2['bing']
+    pop bing ---
+    >>> demo2.popitem()
+    pop babble ---
+    ('babble', None)
+    >>> demo2.clear()
+    clear
+
+Regression tests
+----------------
+
+When setting an item that's already in the dict, the length is not
+increased:
+
+    >>> d.clear()
+    >>> d['foo'] = 'bar'
+    >>> d['foo'] = 'baz'
+    >>> len(d)
+    1
