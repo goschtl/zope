@@ -1,0 +1,63 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext"
+   i18n_domain="z3ext.preferences">
+
+  <includeDependencies package="z3ext.preferences" />
+
+  <permission
+     id="z3ext.ModifyPreference"
+     title="Modify preference" />
+
+  <role
+     id="preference.Owner"
+     title="Preference group owner" />
+
+  <grant
+     permission="z3ext.ModifyPreference"
+     role="preference.Owner" />
+
+  <!-- default preference group storage -->
+  <adapter factory=".storage.getDefaultStorage" />
+
+  <!-- root preference group -->
+  <utility
+     provides=".interfaces.IPreferenceGroup"
+     factory=".root.PersonalPreferences" />
+
+  <class class=".root.PersonalPreferences">
+    <require
+       permission="zope.Public"
+       interface=".interfaces.IPreferenceGroup
+                  zope.interface.common.mapping.IEnumerableMapping" />
+  </class>
+
+  <!-- preference group roles -->
+  <adapter factory=".roles.PreferenceGroupRoles" />
+
+  <!-- preference group publisher -->
+  <adapter
+     for=".interfaces.IPreferenceGroup *"
+     factory="z3c.traverser.traverser.PluggableTraverser"
+     provides="zope.publisher.interfaces.IPublishTraverse" />
+
+  <subscriber
+     for=".interfaces.IPreferenceGroup *"
+     provides="z3c.traverser.interfaces.ITraverserPlugin"
+     factory=".publisher.PreferenceTraverserPlugin" />
+
+  <!-- predefined preference group -->
+  <z3ext:preferenceGroup
+     id="portal"
+     title="Portal preferences"
+     description="These are all the preferences related to common portal settings."
+     schema="z3ext.preferences.interfaces.IPortalPreferences" />
+
+  <!-- browser views -->
+  <include package=".browser" />
+
+  <!-- translations -->
+  <i18n:registerTranslations directory="locales"/>
+
+</configure>
