@@ -10,6 +10,9 @@ Version 3.9.1 (unreleased)
   functions, please remove the "asObject=True" argument passing anywhere,
   because the support for that argument will be dropped soon. 
 
+- Move session utility bootstrapping logic from ``zope.session`` into this
+  package. This removes a dependency from zope.session to this package.
+
 - Remove one more deprecated function.
 
 

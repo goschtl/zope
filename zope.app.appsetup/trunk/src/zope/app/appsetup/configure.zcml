@@ -15,4 +15,9 @@
       for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
       />
 
+  <subscriber
+      handler=".session.bootStrapSubscriber"
+      for="zope.app.appsetup.interfaces.IDatabaseOpenedWithRootEvent"
+      />
+
 </configure>

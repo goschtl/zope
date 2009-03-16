@@ -61,6 +61,7 @@ setup(
                       'zope.event',
                       'zope.interface',
                       'zope.location',
+                      'zope.session',
                       'zope.site',
                       'zope.security',
                       'zope.traversing',

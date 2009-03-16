@@ -42,6 +42,9 @@ from zope.app.appsetup.bootstrap import getInformationFromEvent, \
      ensureObject, ensureUtility
 from zope.app.appsetup.interfaces import DatabaseOpened
 from zope.app.appsetup.errorlog import bootStrapSubscriber as errorlogBootStrapSubscriber
+from zope.app.appsetup.session import bootStrapSubscriber as sessionBootstrapSubscriber
+from zope.session.interfaces import IClientIdManager
+from zope.session.interfaces import ISessionDataContainer
 
 from zope.app.testing import placelesssetup
 
@@ -182,7 +185,27 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         # we need to close again in the end
         connection.close()
 
+    def test_bootstrapSusbcriber(self):
+        self.createRFAndSM()
+
+        event = DatabaseOpened(self.db)        
+        # this will open and close the database by itself
+        sessionBootstrapSubscriber(event)
+
+        db, connection, root, root_folder = getInformationFromEvent(event)
+
+        got_utility = zope.component.getUtility(IClientIdManager,
+                                                context=root_folder)
+        self.failUnless(IClientIdManager.providedBy(got_utility))
+
+        got_utility = zope.component.getUtility(ISessionDataContainer,
+                                                context=root_folder)
+        self.failUnless(ISessionDataContainer.providedBy(got_utility))
         
+        # we need to close again in the end
+        connection.close()
+        
+
 class TestConfigurationSchema(unittest.TestCase):
 
     def setUp(self):
