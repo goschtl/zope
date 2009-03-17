@@ -13,6 +13,4 @@
 
   <include file="tool.zcml"/>
 
-  <include file="implements.zcml"/>
-
 </configure>

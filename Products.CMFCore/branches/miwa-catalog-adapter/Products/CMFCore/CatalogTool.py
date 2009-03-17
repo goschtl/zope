@@ -34,7 +34,8 @@ from zope.interface.declarations import ObjectSpecificationDescriptor
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IIndexableObjectWrapper
-from Products.CMFCore.interfaces import IContentish
+from Products.CMFCore.interfaces import IIndexableObject
+from Products.CMFCore.interfaces import ICatalogAware
 from Products.CMFCore.permissions import AccessInactivePortalContent
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
@@ -44,8 +45,6 @@ from Products.CMFCore.utils import _getAuthenticatedUser
 from Products.CMFCore.utils import _mergedLocalRoles
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.utils import UniqueObject
-
-from zope.component import getMultiAdapter
 
 class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
@@ -63,8 +62,8 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 
 class IndexableObjectWrapper(object):
 
-    implements(IIndexableObjectWrapper)
-    adapts(IContentish, ICatalogTool)
+    implements(IIndexableObjectWrapper, IIndexableObject)
+    adapts(ICatalogAware, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
     def __init__(self, ob, catalog):
@@ -258,7 +257,10 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        w = getMultiAdapter((obj, self), IIndexableObjectWrapper)
+        if not IIndexableObject.providedBy(obj):
+            w = IIndexableObject((obj, self))
+        else:
+            w = obj
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 

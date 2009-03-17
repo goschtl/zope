@@ -21,6 +21,10 @@ from Acquisition import Implicit
 from zope.interface import implements
 from zope.component import getMultiAdapter
 from Products.CMFCore.interfaces import ICatalogTool
+from Products.CMFCore.tests.base.dummy import DummyContent
+from Products.CMFCore.interfaces import IIndexableObject
+from Products.CMFCore.interfaces import ICatalogAware
+
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
 class FakeFolder(Implicit):
@@ -38,6 +42,22 @@ class FakeWorkflowTool(Implicit):
 
     def getCatalogVariablesFor(self, ob):
         return self._vars
+
+class CatalogDummyContent(DummyContent):
+
+    """ Dummy content that already provides IIndexableObject
+        and therefore does not need a wrapper to be registered
+    """
+
+    implements(IIndexableObject, ICatalogAware)
+    allowedRolesAndUsers = ['Manager'] # default value
+
+class CatalogDummyContent2(DummyContent):
+
+    """ Dummy content that needs a wrapper to be registered
+    """
+
+    implements(ICatalogAware)
 
 class IndexableObjectWrapperTests(unittest.TestCase):
 
@@ -101,12 +121,12 @@ class IndexableObjectWrapperTests(unittest.TestCase):
 
     def test_adapts(self):
         from zope.component import adaptedBy
-        from Products.CMFCore.interfaces import IContentish
+        from Products.CMFCore.interfaces import ICatalogAware
         from Products.CMFCore.interfaces import ICatalogTool
 
         w = self._getTargetClass()
         adapts =  adaptedBy(w) 
-        self.assertEqual(adapts, (IContentish, ICatalogTool))
+        self.assertEqual(adapts, (ICatalogAware, ICatalogTool))
 
 class CatalogToolTests(SecurityTest):
 
@@ -119,17 +139,7 @@ class CatalogToolTests(SecurityTest):
         return self._getTargetClass()(*args, **kw)
 
     def _makeContent(self, *args, **kw):
-        from Products.CMFCore.tests.base.dummy import DummyContent
-        from Products.CMFCore.interfaces import ICatalogTool
-        from Products.CMFCore.interfaces import IContentish
-        from Products.CMFCore.interfaces import IIndexableObjectWrapper
-        from Products.CMFCore.CatalogTool import IndexableObjectWrapper
-
-        from zope.component import getSiteManager
-        self.sm = getSiteManager()
-        self.sm.registerAdapter(IndexableObjectWrapper, (IContentish, ICatalogTool), IIndexableObjectWrapper)
-
-        return DummyContent(*args, **kw)
+        return CatalogDummyContent(*args, **kw)
 
     def test_interfaces(self):
         from zope.interface.verify import verifyClass
@@ -185,7 +195,7 @@ class CatalogToolTests(SecurityTest):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Blob')
@@ -197,7 +207,7 @@ class CatalogToolTests(SecurityTest):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Blob')
@@ -210,7 +220,7 @@ class CatalogToolTests(SecurityTest):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRoleAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Waggle')
@@ -222,7 +232,7 @@ class CatalogToolTests(SecurityTest):
         catalog = self._makeOne()
         catalog.addIndex('allowedRolesAndUsers', 'KeywordIndex')
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
         catalog.catalog_object(dummy, '/dummy')
 
         self.loginWithRoles('Waggle')
@@ -239,7 +249,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
@@ -300,7 +310,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
@@ -334,7 +344,7 @@ class CatalogToolTests(SecurityTest):
         catalog.addIndex('expires', 'DateIndex')
         now = DateTime()
         dummy = self._makeContent(catalog=1)
-        dummy._View_Permission = ('Blob',)
+        dummy.allowedRolesAndUsers = ('Blob',)
 
         self.loginWithRoles('Blob')
 
@@ -480,6 +490,39 @@ class CatalogToolTests(SecurityTest):
         self.failUnless('Blob' in arus)
         self.failUnless('user:%s' % user.getId() in arus)       
 
+    def test_wrapping1(self):
+        # DummyContent implements IIndexableObject
+        # so should be indexed
+        dummy = self._makeContent(catalog=1)
+        ctool = self._makeOne()
+        ctool.catalog_object(dummy, '/dummy')
+        self.assertEqual(1, len(ctool._catalog.searchResults()))
+
+    def test_wrapping2(self):
+        # DummyContent does not implement IIndexableObject
+        # no wrapper registered - should create an error
+        dummy = DummyContent(catalog=1)
+        ctool = self._makeOne()
+        self.assertRaises(TypeError, ctool.catalog_object, 
+                              dummy, '/dummy')
+
+    def test_wrapping3(self):
+        # DummyContent does not implement IIndexableObject
+        # wrapper registered - should look this up
+
+        def FakeWrapper(object, catalog):
+            return object
+
+        from zope.component import getSiteManager
+        self.sm = getSiteManager()
+        self.sm.registerAdapter( FakeWrapper
+                               , (ICatalogAware, ICatalogTool)
+                               , IIndexableObject )
+
+        dummy = CatalogDummyContent2(catalog=1)
+        ctool = self._makeOne()
+        ctool.catalog_object(dummy, '/dummy')
+        self.assertEqual(1, len(ctool._catalog.searchResults()))
 
 def test_suite():
     return unittest.TestSuite((
