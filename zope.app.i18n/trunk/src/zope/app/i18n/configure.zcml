@@ -2,30 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     >
 
-  <!-- Setup language negotiation -->
-  <utility
-      provides="zope.i18n.interfaces.INegotiator"
-      component="zope.i18n.negotiator.negotiator"
-      />
-
-  <adapter
-      factory="zope.app.publisher.browser.ModifiableBrowserLanguages"
-      for="zope.publisher.interfaces.http.IHTTPRequest"
-      provides="zope.i18n.interfaces.IModifiableUserPreferredLanguages"
-      />
-
-  <class class="zope.publisher.http.HTTPRequest">
-    <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable"
-        />
-  </class>
-
-  <!-- Setup charset negotiation -->
-  <adapter
-      factory="zope.publisher.http.HTTPCharsets"
-      for="zope.publisher.interfaces.http.IHTTPRequest"
-      provides="zope.i18n.interfaces.IUserPreferredCharsets"
-      />
+  <!-- BBB -->
+  <include package="zope.i18n" />
 
   <!-- Register the Translation Domain as a content object -->
   <class class=".translationdomain.TranslationDomain">
@@ -95,7 +73,6 @@
       provides="zope.i18n.interfaces.IMessageImportFilter"
       />
 
-  <include package="zope.i18n.locales" />
   <include package=".xmlrpc" />
   <include package=".browser" />
 
