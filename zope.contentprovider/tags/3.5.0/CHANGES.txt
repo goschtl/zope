@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+3.5.0 (2009-03-18)
+------------------
+
+- Add very simple, but useful base class for implementing content
+  providers, see ``zope.contentprovider.provider.ContentProviderBase``.
+
+- Remove unneeded testing dependencies. We only need zope.testing and
+  zope.app.pagetemplate.
+
+- Remove zcml slug and old zpkg-related files.
+
+- Added setuptools dependency to setup.py.
+
+- Clean up package's description and documentation a bit. Remove
+  duplicate text in README.
+
+- Change mailing list address to zope-dev at zope.org instead of
+  retired one.
+
+- Change ``cheeseshop`` to ``pypi`` in the package url.
+
+3.4.0 (2007-10-02)
+------------------
+
+- Initial release independent of the main Zope tree.
