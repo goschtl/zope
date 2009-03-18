@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.6.1 (unreleased)
+------------------
+
+- ...
+
+3.6.0 (2009-03-18)
 ------------------
 
 - Some of ZCML configuration was moved into another packages:
