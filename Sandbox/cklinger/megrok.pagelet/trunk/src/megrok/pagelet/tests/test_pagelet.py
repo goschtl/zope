@@ -15,9 +15,9 @@
   </html>
 
   >>> print view.render()
-  <b> I am a MotherFucking  pagelet </b>
+  <b> I am a pagelet </b>
 
-What happens if we don´t have a Layout for a pagelet
+What happens if we don not have a Layout for a pagelet
 
    >>> document = Document()
    >>> view = getMultiAdapter((document, request), name='documentpagelet')
