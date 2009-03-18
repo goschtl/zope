@@ -17,6 +17,9 @@ CHANGES
    * The IUserPreferredCharsets adapter registration was also moved into
      ``zope.publisher``.
 
+- Depend on zope.component >= 3.6 instead of zope.app.component as the
+  `queryNextUtility` function was moved there. 
+
 3.5.0 (2009-02-01)
 ------------------
 

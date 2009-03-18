@@ -30,7 +30,6 @@ from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.container.btree import BTreeContainer
 from zope.container.contained import Contained
 from zope.app.i18n.interfaces import ILocalTranslationDomain
-from zope.app.component import queryNextUtility
 
 
 class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
@@ -82,7 +81,8 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         else:
             # If nothing found, delegate to a translation server higher up the
             # tree.
-            domain = queryNextUtility(self, ITranslationDomain, self.domain)
+            domain = zope.component.queryNextUtility(self, ITranslationDomain,
+                                                     self.domain)
             if domain is not None:
                 return domain.translate(msgid, mapping, context,
                                         target_language, default=default)
