@@ -27,7 +27,7 @@ setup(name='zope.app.i18n',
     version = '3.6.0dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
-    description='Zope i18n',
+    description='Persistent translation domains and message catalogs',
     long_description=(
         read('README.txt')
         + '\n\n' +
