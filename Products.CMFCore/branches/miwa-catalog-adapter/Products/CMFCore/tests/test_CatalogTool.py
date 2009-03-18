@@ -500,11 +500,12 @@ class CatalogToolTests(SecurityTest):
 
     def test_wrapping2(self):
         # DummyContent does not implement IIndexableObject
-        # no wrapper registered - should create an error
+        # no wrapper registered - should fall back to using
+        # wrapper class directly
         dummy = DummyContent(catalog=1)
         ctool = self._makeOne()
-        self.assertRaises(TypeError, ctool.catalog_object, 
-                              dummy, '/dummy')
+        ctool.catalog_object(dummy, '/dummy')
+        self.assertEqual(1, len(ctool._catalog.searchResults()))
 
     def test_wrapping3(self):
         # DummyContent does not implement IIndexableObject

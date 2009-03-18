@@ -26,6 +26,7 @@ from Products.PluginIndexes.common import safe_callable
 from Products.ZCatalog.ZCatalog import ZCatalog
 from zope.interface import implements
 from zope.component import adapts
+from zope.component import queryMultiAdapter
 from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
@@ -257,10 +258,13 @@ class CatalogTool(UniqueObject, ZCatalog, ActionProviderBase):
         # information just before cataloging.
         # XXX: this method violates the rules for tools/utilities:
         # it depends on a non-utility tool
-        if not IIndexableObject.providedBy(obj):
-            w = IIndexableObject((obj, self))
-        else:
+        if IIndexableObject.providedBy(obj):
             w = obj
+        else:
+            w = queryMultiAdapter( (obj, self), IIndexableObject )
+            if w is None:
+                # BBB
+                w = IndexableObjectWrapper(obj, self)
         ZCatalog.catalog_object(self, w, uid, idxs, update_metadata,
                                 pghandler)
 
