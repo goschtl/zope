@@ -23,7 +23,7 @@ from zope.component import getMultiAdapter
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.tests.base.dummy import DummyContent
 from Products.CMFCore.interfaces import IIndexableObject
-from Products.CMFCore.interfaces import ICatalogAware
+from Products.CMFCore.interfaces import IContentish
 
 from Products.CMFCore.tests.base.testcase import SecurityTest
 
@@ -49,15 +49,8 @@ class CatalogDummyContent(DummyContent):
         and therefore does not need a wrapper to be registered
     """
 
-    implements(IIndexableObject, ICatalogAware)
+    implements(IIndexableObject)
     allowedRolesAndUsers = ['Manager'] # default value
-
-class CatalogDummyContent2(DummyContent):
-
-    """ Dummy content that needs a wrapper to be registered
-    """
-
-    implements(ICatalogAware)
 
 class IndexableObjectWrapperTests(unittest.TestCase):
 
@@ -113,20 +106,22 @@ class IndexableObjectWrapperTests(unittest.TestCase):
     def test_provided(self):
         from Products.CMFCore.interfaces import IContentish
         from Products.CMFCore.interfaces import IIndexableObjectWrapper
+        from Products.CMFCore.interfaces import IIndexableObject
 
         obj = self._makeContent()
         w = self._makeOne({}, obj)
         self.failUnless(IContentish.providedBy(w))
         self.failUnless(IIndexableObjectWrapper.providedBy(w))
+        self.failUnless(IIndexableObject.providedBy(w))
 
     def test_adapts(self):
         from zope.component import adaptedBy
-        from Products.CMFCore.interfaces import ICatalogAware
+        from Products.CMFCore.interfaces import IContentish
         from Products.CMFCore.interfaces import ICatalogTool
 
         w = self._getTargetClass()
         adapts =  adaptedBy(w) 
-        self.assertEqual(adapts, (ICatalogAware, ICatalogTool))
+        self.assertEqual(adapts, (IContentish, ICatalogTool))
 
 class CatalogToolTests(SecurityTest):
 
@@ -517,10 +512,10 @@ class CatalogToolTests(SecurityTest):
         from zope.component import getSiteManager
         self.sm = getSiteManager()
         self.sm.registerAdapter( FakeWrapper
-                               , (ICatalogAware, ICatalogTool)
+                               , (IContentish, ICatalogTool)
                                , IIndexableObject )
 
-        dummy = CatalogDummyContent2(catalog=1)
+        dummy =DummyContent(catalog=1)
         ctool = self._makeOne()
         ctool.catalog_object(dummy, '/dummy')
         self.assertEqual(1, len(ctool._catalog.searchResults()))

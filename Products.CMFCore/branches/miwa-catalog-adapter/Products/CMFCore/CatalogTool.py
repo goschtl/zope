@@ -36,7 +36,7 @@ from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.interfaces import ICatalogTool
 from Products.CMFCore.interfaces import IIndexableObjectWrapper
 from Products.CMFCore.interfaces import IIndexableObject
-from Products.CMFCore.interfaces import ICatalogAware
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.permissions import AccessInactivePortalContent
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.permissions import View
@@ -64,7 +64,7 @@ class IndexableObjectSpecification(ObjectSpecificationDescriptor):
 class IndexableObjectWrapper(object):
 
     implements(IIndexableObjectWrapper, IIndexableObject)
-    adapts(ICatalogAware, ICatalogTool)
+    adapts(IContentish, ICatalogTool)
     __providedBy__ = IndexableObjectSpecification()
 
     def __init__(self, ob, catalog):
