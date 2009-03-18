@@ -16,8 +16,8 @@
 $Id$
 """
 from zope import interface, component
-from zope.app.security.settings import Allow, Unset, Deny
 from zope.securitypolicy.interfaces import IPrincipalRoleMap
+from zope.securitypolicy.interfaces import Allow, Unset, Deny
 
 from interfaces import \
      IOwnership, IInheritOwnership, IOwnerAware, IOwnerGroupAware
