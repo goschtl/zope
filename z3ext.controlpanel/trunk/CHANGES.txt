@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+1.4.1 (Unreleased)
+------------------
+
+- Do not inherit ContentContainerConfiglet from ContentContainer
+
 
 1.4.0 (2009-03-12)
 ------------------

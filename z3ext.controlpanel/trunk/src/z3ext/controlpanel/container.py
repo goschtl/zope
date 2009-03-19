@@ -22,15 +22,16 @@ from zope.proxy.decorator import DecoratorSpecificationDescriptor
 from zope.security.decorator import DecoratedSecurityCheckerDescriptor
 from zope.location.interfaces import ILocation
 from zope.location.location import ClassAndInstanceDescr
+from zope.app.container.btree import BTreeContainer
 from zope.app.container.contained import uncontained
 
 from z3ext.content.type.order import Reordable
-from z3ext.content.type.interfaces import IOrder
-from z3ext.content.type.container import ContentContainer
 from z3ext.controlpanel.configlet import Configlet
+from z3ext.content.type.interfaces import IItem, IOrder, IContentContainer
 
 
-class ContentContainerConfiglet(ContentContainer, Configlet):
+class ContentContainerConfiglet(BTreeContainer, Configlet):
+    interface.implements(IItem, IContentContainer)
 
     def __init__(self, tests=()):
         Configlet.__init__(self, tests)
