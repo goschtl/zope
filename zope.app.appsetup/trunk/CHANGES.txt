@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-Version 3.9.1 (unreleased)
+Version 3.10.0 (unreleased)
 --------------------------
 
 - Finally deprecate the "asObject" argument of helper functions in the
