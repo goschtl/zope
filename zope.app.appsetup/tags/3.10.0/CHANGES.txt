@@ -1,0 +1,76 @@
+=======
+CHANGES
+=======
+
+Version 3.10.0 (2009-03-19)
+--------------------------
+
+- Finally deprecate the "asObject" argument of helper functions in the
+  ``zope.app.appsetup.bootstrap`` module. If your code uses any of these
+  functions, please remove the "asObject=True" argument passing anywhere,
+  because the support for that argument will be dropped soon. 
+
+- Move session utility bootstrapping logic from ``zope.session`` into this
+  package. This removes a dependency from zope.session to this package.
+
+- Remove one more deprecated function.
+
+
+Version 3.9.0 (2009-01-31)
+--------------------------
+
+- Use ``zope.site`` instead of ``zope.app.folder`` and
+  ``zope.app.component``.
+
+- Use ``zope.container`` instead of ``zope.app.container``.
+
+- Move error log bootstrapping logic from ``zope.error`` into this
+  package.  This removes a dependency from zope.error to this
+  package. Also added a test for bootstrapping the error log here,
+  which was missing in ``zope.error``.
+
+
+Version 3.8.0 (2008-08-25)
+--------------------------
+
+- Feature: Developed an entry point that allows you to quickly bring up an
+  application instance for debugging purposes. (Implemented by Marius Gedminas
+  and Stephan Richter.)
+
+
+Version 3.7.0 (2008-08-19)
+--------------------------
+
+- Added ``.product.loadConfiguration`` test-support function; loads product
+  configuration (only) from a file object, allowing test code (including
+  setup) to make use of the same configuration schema support used by normal
+  startup.
+
+
+Version 3.6.0 (2008-07-23)
+--------------------------
+
+- Added additional test support functions to set the configuration for a
+  single section, and save/restore the entire configuration.
+
+
+Version 3.5.0 (2008-06-17)
+--------------------------
+
+- Added helper class for supporting product configuration tests.
+
+- Added documentation for the product configuration API, with tests.
+
+
+Version 3.4.1 (2007-09-27)
+--------------------------
+
+- Egg was faulty, re-released
+
+
+Version 3.4.0 (2007-09-25)
+--------------------------
+
+- Initial documented release
+
+- Reflect changes form zope.app.error refactoring
