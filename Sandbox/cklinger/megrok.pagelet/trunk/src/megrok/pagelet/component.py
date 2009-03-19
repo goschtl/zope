@@ -1,10 +1,12 @@
 import martian.util
 import grokcore.component 
+import z3c.flashmessage.interfaces
 
 from zope import interface
 from zope import component
-from grokcore.view import View
-from grokcore.view import interfaces
+from grok import Application
+from grokcore.view import View, util
+from grok.interfaces import IGrokView 
 from martian.error import GrokImportError
 from zope.interface import implements
 from zope.component import getMultiAdapter
@@ -19,7 +21,7 @@ class Layout(object):
 
 
 class Pagelet(BrowserPage):
-    implements(interfaces.IGrokView, IPagelet)
+    implements(IGrokView, IPagelet)
     template = None
     layout = None
 
@@ -31,7 +33,24 @@ class Pagelet(BrowserPage):
             interface.Interface,
             name=self.module_info.package_dotted_name
             )
-  
+ 
+    def application_url(self, name=None):
+        """Return the URL of the nearest enclosing `grok.Application`."""
+        obj = self.context
+        while obj is not None:
+            if isinstance(obj, Application):
+                return self.url(obj, name)
+            obj = obj.__parent__
+        raise ValueError("No application found.")
+
+    def flash(self, message, type='message'):
+        """Send a short message to the user."""
+        # XXX this has no tests or documentation, anywhere
+        source = component.getUtility(
+            z3c.flashmessage.interfaces.IMessageSource, name='session')
+        source.send(message, type)
+
+
     def default_namespace(self):
         namespace = {}
         namespace['context'] = self.context
@@ -50,7 +69,6 @@ class Pagelet(BrowserPage):
         # We don not work with IContentTemplate for now
         # We use instead our grok.View behavior with the associated
         # Templates
-
         return self.template.render(self)
 
     def __call__(self):
@@ -61,3 +79,31 @@ class Pagelet(BrowserPage):
                 (self.context, self.request), ILayoutTemplate)
             return layout(self)
         return self.layout()
+
+
+    def url(self, obj=None, name=None, data=None):
+        """Return string for the URL based on the obj and name. The data
+        argument is used to form a CGI query string.
+        """
+        if isinstance(obj, basestring):
+            if name is not None:
+                raise TypeError(
+                    'url() takes either obj argument, obj, string arguments, '
+                    'or string argument')
+            name = obj
+            obj = None
+
+        if name is None and obj is None:
+            # create URL to view itself
+            obj = self
+        elif name is not None and obj is None:
+            # create URL to view on context
+            obj = self.context
+
+        if data is None:
+            data = {}
+        else:
+            if not isinstance(data, dict):
+                raise TypeError('url() data argument must be a dict.')
+
+        return util.url(self.request, obj, name, data=data)	

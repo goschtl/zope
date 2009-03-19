@@ -38,6 +38,20 @@ Now I want to see a Pagelet with a template in xxx_templates/xxx.pt
    </html>
    >>> print viewt.render()
    <p> I am a renderd template of a pagelet </p>
+
+grok.View has this nice url method. This should of course work in
+the Pagelets, too.
+
+   >>> from zope.app.folder import Folder
+   >>> from zope.app.testing.functional import getRootFolder
+   >>> folder = Folder()
+   >>> app = App()
+   >>> getRootFolder()['app'] = app 
+   >>> pagelet = getMultiAdapter((app, request), name="applicationpagelet")
+   >>> pagelet.url() 
+   'http://127.0.0.1/app/applicationpagelet'
+   >>> pagelet.application_url()
+   'http://127.0.0.1/app'
 """
 import grok
 import megrok.pagelet
@@ -70,6 +84,17 @@ class DocumentPagelet(megrok.pagelet.Pagelet):
 
     def render(self):
 	return "<b> Render without a Pagelet"
+
+
+class App(grok.Application, grok.Container):
+    pass
+
+class ApplicationPagelet(megrok.pagelet.Pagelet):
+    grok.context(App)
+
+    def render(self):
+	return "Pagelet"
+
 
 
 
