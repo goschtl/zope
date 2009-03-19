@@ -1,3 +1,4 @@
+import os
 import grok
 import martian
 import zope.component
@@ -48,8 +49,12 @@ class LayoutViewGrokker(martian.ClassGrokker):
 	#from grokcore.component.directive import name
         # Let register it only for the given grok.name
 	name = grokcore.component.directive.name.bind().get(self)
-	path = '/'.join(factory.module_info.path.split('/')[:-1])
-	template = "%s/%s" %(path, template)
+	module_info = factory.module_info
+	path = module_info.getResourcePath('')
+	template = "%s%s" %(path, template)
+	if not os.path.isfile(template):
+	    raise GrokError("The Template %s is not found in module %s.py" 
+	                     %(template, module_info.getModule()), module_info.getModule())
         layoutfactory = TemplateFactory(template, 'text/html')
         config.action(
             discriminator = ('layoutTemplate', context, layer, name),
