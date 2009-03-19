@@ -30,7 +30,6 @@ setup(name='megrok.pagelet',
 	  'interlude',
           'grokcore.component',
 	  'z3c.template',
-	  'z3c.pagelet',
           'grok',  # just for the ViewGrokker
       ],
       entry_points="""
