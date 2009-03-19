@@ -2,7 +2,12 @@
 CHANGES
 =======
 
-1.1.0 (unreleased)
+1.1.1 (unreleased)
+------------------
+
+- ...
+
+1.1.0 (2009-03-19)
 ------------------
 
 - Fix base registry management form failure in case, when a site has its
