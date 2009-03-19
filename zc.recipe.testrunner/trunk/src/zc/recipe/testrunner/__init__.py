@@ -58,6 +58,15 @@ class TestRunner:
                 os.mkdir(wd)
             dest.append(wd)
         wd = os.path.abspath(wd)
+
+        if self.egg._relative_paths:
+            wd = _relativize(self.egg._relative_paths, wd)
+            test_paths = [_relativize(self.egg._relative_paths, p)
+                          for p in test_paths]
+        else:
+            wd = repr(wd)
+            test_paths = map(repr, test_paths)
+
         initialization = initialization_template % wd
 
         env_section = options.get('environment', '').strip()
@@ -75,11 +84,13 @@ class TestRunner:
             ws, options['executable'],
             self.buildout['buildout']['bin-directory'],
             extra_paths=self.egg.extra_paths,
-            arguments = defaults + (arg_template % dict(
-                TESTPATH=repr(test_paths)[1:-1].replace(
-                               ', ', ",\n  '--test-path', "),
-                )),
+            arguments = defaults + (
+                    '[\n'+
+                    ''.join(("        '--test-path', %s,\n" % p)
+                            for p in test_paths)
+                    +'        ]'),
             initialization = initialization,
+            relative_paths = self.egg._relative_paths,
             ))
 
         return dest
@@ -92,8 +103,16 @@ arg_template = """[
 
 initialization_template = """import os
 sys.argv[0] = os.path.abspath(sys.argv[0])
-os.chdir(%r)
+os.chdir(%s)
 """
 
 env_template = """os.environ['%s'] = %r
 """
+
+def _relativize(base, path):
+    base += os.path.sep
+    if path.startswith(base):
+        path = 'join(base, %r)' % path[len(base):]
+    else:
+        path = repr(path)
+    return path

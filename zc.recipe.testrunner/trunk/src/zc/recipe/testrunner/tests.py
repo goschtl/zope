@@ -31,7 +31,7 @@ def setUp(test):
 def test_suite():
     return unittest.TestSuite((
         zope.testing.doctest.DocFileSuite(
-            'README.txt', 
+            'README.txt',
             'bugfixes.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
             checker=zope.testing.renormalizing.RENormalizing(
@@ -44,7 +44,6 @@ def test_suite():
                      (re.compile('setuptools-[^-]+-'), 'setuptools-X-'),
                      (re.compile('zope.interface-[^-]+-'), 'zope.interface-X-'),
                      ]),
-            optionflags=doctest.REPORT_NDIFF,
             ),
         ))
 

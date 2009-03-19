@@ -22,7 +22,7 @@ extra-paths
 defaults
     The defaults option lets you specify testrunner default
     options. These are specified as Python source for an expression
-    yielding a list, typically a list literal. 
+    yielding a list, typically a list literal.
 
 working-directory
     The working-directory option lets to specify a directory where the
@@ -33,6 +33,12 @@ working-directory
 environment
     A set of environment variables that should be exported before
     starting the tests.
+
+initialization
+    Provide initialization code to run before running tests.
+
+relative-paths
+    Use egg, test, and working-directory paths relative to the test script.
 
 (Note that, at this time, due to limitations in the Zope test runner, the
 distributions cannot be zip files. TODO: Fix the test runner!)
@@ -58,7 +64,7 @@ buildout:
     >>> write(sample_buildout, 'demo', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demo")
     ... """)
 
@@ -82,7 +88,7 @@ buildout:
     >>> write(sample_buildout, 'demo2', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demo2", install_requires= ['demoneeded'])
     ... """)
 
@@ -108,7 +114,7 @@ Demo 2 depends on demoneeded:
     >>> write(sample_buildout, 'demoneeded', 'setup.py',
     ... """
     ... from setuptools import setup
-    ... 
+    ...
     ... setup(name = "demoneeded")
     ... """)
 
@@ -126,7 +132,7 @@ develop egg and to create the test script:
     ...
     ... [testdemo]
     ... recipe = zc.recipe.testrunner
-    ... eggs = 
+    ... eggs =
     ...    demo
     ...    demo2
     ... script = test
@@ -153,6 +159,7 @@ We also get a part directory for the tests to run in:
 
     >>> ls(sample_buildout, 'parts')
     d  testdemo
+
 
 And updating leaves its contents intact:
 
@@ -228,7 +235,7 @@ extra-paths option to specify them:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -249,8 +256,8 @@ extra-paths option to specify them:
     <BLANKLINE>
     if __name__ == '__main__':
         zope.testing.testrunner.run([
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
 
 We can use the working-directory option to specify a working
 directory:
@@ -271,7 +278,7 @@ directory:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -292,8 +299,8 @@ directory:
     <BLANKLINE>
     if __name__ == '__main__':
         zope.testing.testrunner.run([
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
 
 Now that out tests use a specified working directory, their designated
 part directory is gone:
@@ -319,14 +326,14 @@ using the -v option:
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... """)
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') 
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -349,8 +356,8 @@ using the -v option:
         zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
 
 Some things to note from this example:
 
@@ -424,7 +431,7 @@ the environment variable. Also, the tests pass again:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -445,8 +452,8 @@ the environment variable. Also, the tests pass again:
     <BLANKLINE>
     if __name__ == '__main__':
         zope.testing.testrunner.run([
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'testdemo') + ' -vv'),
     Running tests at level 1
@@ -472,7 +479,7 @@ end of the script:
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... initialization = print 'Hello all you egg-laying pythons!'
@@ -480,7 +487,7 @@ end of the script:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -503,8 +510,8 @@ end of the script:
         zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
 
 This will also work with a multi-line initialization section:
 
@@ -519,7 +526,7 @@ This will also work with a multi-line initialization section:
     ... recipe = zc.recipe.testrunner
     ... eggs = demo
     ... extra-paths = /usr/local/zope/lib/python
-    ... defaults = ['--tests-pattern', '^f?tests$', 
+    ... defaults = ['--tests-pattern', '^f?tests$',
     ...             '-v'
     ...            ]
     ... initialization = print 'Hello all you egg-laying pythons!'
@@ -528,7 +535,7 @@ This will also work with a multi-line initialization section:
 
     >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
 
-    >>> cat(sample_buildout, 'bin', 'testdemo') # doctest: +REPORT_NDIFF
+    >>> cat(sample_buildout, 'bin', 'testdemo')
     #!/usr/local/bin/python2.4
     <BLANKLINE>
     import sys
@@ -552,5 +559,107 @@ This will also work with a multi-line initialization section:
         zope.testing.testrunner.run((['--tests-pattern', '^f?tests$',
     '-v'
     ]) + [
-      '--test-path', '/sample-buildout/demo',
-      ])
+            '--test-path', '/sample-buildout/demo',
+            ])
+
+If the relative-paths option is used, egg (and extra) paths are
+generated relative to the test script.
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... extra-paths = /usr/local/zope/lib/python
+    ...               ${buildout:directory}/sources
+    ... relative-paths = true
+    ... """)
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo')
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import os
+    <BLANKLINE>
+    join = os.path.join
+    base = os.path.dirname(__file__)
+    base = os.path.dirname(base)
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      join(base, 'demo'),
+      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+      '/usr/local/zope/lib/python',
+      join(base, 'sources'),
+      ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir(join(base, 'parts/testdemo'))
+    <BLANKLINE>
+    <BLANKLINE>
+    import zope.testing.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testing.testrunner.run([
+            '--test-path', join(base, 'demo'),
+            ])
+
+The relative-paths option can be specified at the buildout level:
+
+    >>> write(sample_buildout, 'buildout.cfg',
+    ... """
+    ... [buildout]
+    ... develop = demo
+    ... parts = testdemo
+    ... offline = true
+    ... relative-paths = true
+    ...
+    ... [testdemo]
+    ... recipe = zc.recipe.testrunner
+    ... eggs = demo
+    ... extra-paths = /usr/local/zope/lib/python
+    ...               ${buildout:directory}/sources
+    ... """)
+
+    >>> print system(os.path.join(sample_buildout, 'bin', 'buildout') + ' -q'),
+
+    >>> cat(sample_buildout, 'bin', 'testdemo')
+    #!/usr/local/bin/python2.4
+    <BLANKLINE>
+    import os
+    <BLANKLINE>
+    join = os.path.join
+    base = os.path.dirname(__file__)
+    base = os.path.dirname(base)
+    <BLANKLINE>
+    import sys
+    sys.path[0:0] = [
+      join(base, 'demo'),
+      join(base, 'eggs/zope.testing-3.7.1-py2.4.egg'),
+      join(base, 'eggs/zope.interface-3.5.1-py2.4-linux-i686.egg'),
+      join(base, 'eggs/setuptools-0.6c9-py2.4.egg'),
+      '/usr/local/zope/lib/python',
+      join(base, 'sources'),
+      ]
+    <BLANKLINE>
+    import os
+    sys.argv[0] = os.path.abspath(sys.argv[0])
+    os.chdir(join(base, 'parts/testdemo'))
+    <BLANKLINE>
+    <BLANKLINE>
+    import zope.testing.testrunner
+    <BLANKLINE>
+    if __name__ == '__main__':
+        zope.testing.testrunner.run([
+            '--test-path', join(base, 'demo'),
+            ])
+

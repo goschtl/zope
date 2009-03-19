@@ -2,10 +2,11 @@
 Change History
 **************
 
-1.1.1 (unreleased)
+1.2.0 (2009-03-19)
 ==================
 
-- 
+- Added a relative-paths option to use egg, test, and
+  working-directory paths relative to the test script.
 
 
 1.1.0 (2008-08-25)
