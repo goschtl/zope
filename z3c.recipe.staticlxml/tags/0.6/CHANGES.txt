@@ -1,0 +1,50 @@
+0.6 (2009-03-19)
+================
+
+- Switching off building of the exslt crypt functionality. That crypt
+  functionality isn't found anymore on exslt.org itself. And it uses
+  libgcrypt, which somehow leads to runtime errors regarding 'gcry_*' on osx
+  and sometimes on linux.  [reinout]
+
+0.5 (2009-03-16)
+================
+
+- The recipe checks for an existing egg before doing expensive
+  download/compiles. Previously, the check was implicitly done *after*
+  compiling libmxl/libxslt. The egg name is printed with a warning to delete
+  it if this isn't a proper static egg.  [reinout]
+
+- Fixed readme typos. [seletz]
+
+0.4 (2009-02-18)
+================
+
+- Fix to prevent rebuilding lxml all the time, thus reducing the lxml tax. [seletz]
+
+0.3 (2008-12-01)
+================
+
+- Only add ``iconv`` on darwin. [seletz]
+
+0.2.1 (2008-11-28)
+==================
+
+- Made ``static-build`` default to ``true`` on OS X [seletz]
+- Made ``build-libxslt`` and ``build-libxml2`` default to ``true`` [seletz]
+- Document default options [seletz]
+
+0.2 (2008-11-27)
+================
+
+- Fix Documentation REsT [seletz]
+- Rerelease due to setup.cfg messup [seletz]
+
+0.1 (2008-11-27)
+================
+
+- Added ``iconv`` library, which enables fully static builds. This is
+  actually a bug in lxml's setup. [seletz]
+- Updated docs, removed junk code [seletz]
+- Added tweaks needed for Mac OS X [seletz]
+- Added basic build steps for liblxml2, libxslt and lxml. [seletz]
+- Created recipe with ZopeSkel [seletz].
