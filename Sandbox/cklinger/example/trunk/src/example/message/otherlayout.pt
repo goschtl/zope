@@ -13,7 +13,7 @@
          padding: 1em;
        }
        #content{
-         border: 5px solid #999;
+         border: 5px solid #FFFFFF;
          padding: 1em;
          background: #aaa;
        }

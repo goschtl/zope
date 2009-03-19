@@ -53,6 +53,6 @@ class HelloWorldDisplayForm(DisplayForm):
     fields = field.Fields(interfaces.IHelloWorld)
 
 
-class NewLayout(megrok.pagelet.LayoutView):
+class NewLayout(megrok.pagelet.Layout):
     grok.context(message.HelloWorld)
     megrok.pagelet.template('otherlayout.pt')

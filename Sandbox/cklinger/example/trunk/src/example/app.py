@@ -24,7 +24,7 @@ class Index(grok.View):
     pass # see app_templates/index.pt
 
 
-class ExampleLayout(megrok.pagelet.LayoutView):
+class ExampleLayout(megrok.pagelet.Layout):
     """ This is our general Layout Template"""
     grok.context(Interface)
     megrok.pagelet.template('layout.pt')
