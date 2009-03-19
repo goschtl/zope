@@ -65,7 +65,6 @@ We can now get the configuration
    'itemCls': 'required',                                                                                          
    'minLength': 0,                                                                                                 
    'name': 'label',                                                                                                
-   'value': u'',                                                                                        
    'xtype': 'textfield'}
   
   >>> labelWidget.request = TestRequest(form = {'label': 'widget value'})
@@ -118,7 +117,6 @@ Off course, the config also provides constrains specific to the field.
    'maxLength': 200,
    'minLength': 1,
    'name': 'label',
-   'value': u'',
    'xtype': 'textfield'}
 
 Let's test config for a lot of possible fields
@@ -222,7 +220,7 @@ ChoiceField
   ...     IFieldWidget)
   >>> choiceWidget.update()
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
-  {'editable': False,
+  {'editable': True,
    'fieldLabel': u'Choice',
    'hiddenName': 'choiceField:list',
    'id': 'choiceField',
@@ -244,7 +242,7 @@ Works also with optional choice
   ...     IFieldWidget)
   >>> choiceWidget.update()
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
-  {'editable': False,                                                                                               
+  {'editable': True,                                                                                               
    'fieldLabel': u'Choice (Not Required)',                                                                          
    'hiddenName': 'optionalChoiceField:list',                                                                        
    'id': 'optionalChoiceField',                                                                                     
@@ -620,7 +618,6 @@ Here is a simple text widget
    'itemCls': 'required',
    'minLength': 0,
    'name': 'form.widgets.id',
-   'value': u'',
    'xtype': 'textfield'}
 
 Here is a single checkbox widget
@@ -642,13 +639,12 @@ Here is another simple text widget
    'itemCls': 'required',
    'minLength': 0,
    'name': 'form.widgets.name',
-   'value': u'',
    'xtype': 'textfield'}
 
 Here is a select widget
 
   >>> pprint(config['items'][3])
-  {'editable': False,
+  {'editable': True,
    'fieldLabel': u'Gender',
    'hiddenName': 'form.widgets.gender:list',
    'id': 'form-widgets-gender',
@@ -738,7 +734,6 @@ This works just like buttons, except for widgets.
    'itemCls': 'required',
    'minLength': 0,
    'name': 'form.widgets.id',
-   'value': u'',
    'xtype': 'textfield'}
 
 
@@ -770,5 +765,4 @@ We can also specify custom components for widgets.
    'itemCls': 'required',
    'minLength': 0,
    'name': 'form.widgets.id',
-   'value': u'',
    'xtype': 'my-component'}

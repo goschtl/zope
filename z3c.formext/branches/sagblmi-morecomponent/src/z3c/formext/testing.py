@@ -121,7 +121,6 @@ def setupFormExt():
     zope.interface.classImplements(BaseForm, interfaces.IBaseForm)
     zope.component.provideAdapter(converter.ExtJSDateDataConverter)
     zope.component.provideAdapter(converter.ExtJSSingleCheckBoxDataConverter)
-    zope.component.provideAdapter(converter.SingleCheckBoxDataConverter)
 
 
 class Context(object):

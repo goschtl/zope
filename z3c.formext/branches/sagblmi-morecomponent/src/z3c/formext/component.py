@@ -63,8 +63,10 @@ class Field(Component):
         config = dict(
             name = self.widget.name,
             fieldLabel = self.widget.label,
-            id = self.widget.id,
-            value = self.widget.value)
+            id = self.widget.id)
+        value = self.widget.value
+        if value is not None and value != "":
+            config["value"] = self.widget.value
         if self.xtype:
             config['xtype'] = self.xtype
         title = self.widget.title
@@ -201,7 +203,7 @@ class ComboBox(Field):
         config.update(dict(
             hiddenName = config['name']+':list',
             triggerAction = 'all',
-            editable = False,
+            editable = True,
             store= [(item['value'], item['content'])
                 for item in self.widget.items],
             ))
@@ -290,8 +292,9 @@ class Button(Field):
     def _getConfig(self, json=False):
         config = super(Button, self)._getConfig()
         config['text'] = self.widget.value
-        del config['value']
         del config['fieldLabel']
+        if 'value' in config:
+            del config['value']
         return config
 
 
