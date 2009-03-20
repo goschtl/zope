@@ -145,9 +145,9 @@ class StubProxy(object):
         self.proxied_object = fld
 
     def __getattribute__(self, name):
-        if name in ['proxied_object']:
+        if name == 'proxied_object':
             val = object.__getattribute__(self, name)
-        elif name in ['__class__']:
+        elif name == '__class__':
             val = StubProxy(getattr(self.proxied_object, name))
         else:
             val = getattr(self.proxied_object, name)

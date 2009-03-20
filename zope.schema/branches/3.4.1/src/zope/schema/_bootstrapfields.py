@@ -165,9 +165,8 @@ class Field(Attribute):
             # the complexity of the next few lines of code is required to make
             # it proxy aware
             if isinstance(self._type, tuple):
-                check_mro = [
-                    _type in value.__class__.__mro__ for _type in self._type]
-                if True not in check_mro:
+                if not [type_ for type_ in self._type
+                        if type_ in value.__class__.__mro__]:
                     raise WrongType(value, self._type)
             elif self._type not in value.__class__.__mro__:
                 raise WrongType(value, self._type)
