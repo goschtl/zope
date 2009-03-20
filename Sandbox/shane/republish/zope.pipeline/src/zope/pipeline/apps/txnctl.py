@@ -26,8 +26,29 @@ from zope.pipeline.envkeys import REQUEST_KEY
 from zope.pipeline.envkeys import TRAVERSED_KEY
 
 
+class TransactionScrubber(object):
+    """WSGI application that scrubs transaction state.
+
+    Aborts the transaction on the way in and on the way out.
+    """
+    implements(IWSGIApplication)
+
+    def __init__(self, next_app):
+        self.next_app = next_app
+
+    def __call__(self, environ, start_response):
+        transaction.abort()
+        try:
+            res = self.next_app(environ, start_response)
+        finally:
+            transaction.abort()
+
+
 class TransactionController(object):
     """WSGI application that begins and commits/aborts transactions.
+
+    Also annotates the transaction.  Requires 'zope.pipeline.request'
+    and 'zope.pipeline.traversed' in the environment.
     """
     implements(IWSGIApplication)
 
@@ -45,28 +66,10 @@ class TransactionController(object):
         if txn.isDoomed():
             txn.abort()
         else:
-            txn.commit()
-        return res
-
-
-class TransactionAnnotator(object):
-    """WSGI application that annotates transactions.
-
-    Requires 'zope.pipeline.request' and 'zope.pipeline.traversed'
-    in the environment.
-    """
-    implements(IWSGIApplication)
-
-    def __init__(self, next_app):
-        self.next_app = next_app
-
-    def __call__(self, environ, start_response):
-        res = self.next_app(environ, start_response)
-        txn = transaction.get()
-        if not txn.isDoomed():
             request = environ[REQUEST_KEY]
             name, ob = environ[TRAVERSED_KEY][-1]
             self.annotate(txn, request, ob)
+            txn.commit()
         return res
 
     def annotate(self, txn, request, ob):

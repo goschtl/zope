@@ -16,27 +16,27 @@
 <wsgi:pipeline for="zope.publisher.interfaces.IRequest" names="
     log
     open_root
-    control_transaction
+    scrub_transaction
     set_site
     event
     handle_error
-    process_input
+    control_transaction
+    process_inputs
     authenticate
     traverse
-    annotate_transaction
     fix_relative_links
     call
     " />
 
 <!-- A wsgi:application directive registers an application for use
-     as an application in a pipeline.  If the application is the last
-     element of the pipeline, the factory will be passed no positional
-     parameters.  Otherwise, the application will be passed the next
-     application in the pipeline as the only positional parameter.
+     in a pipeline. If the application is the last element of the
+     pipeline, the factory will be passed no positional parameters.
+     Otherwise, the application will be passed the next application in
+     the pipeline as the only positional parameter.
 
      The implementation of this directive registers a new
      WSGIApplicationFactory as an adapter from a marker request to
-     IWSGIApplicationFactory.  If neither the directive nor the factory
+     IWSGIApplicationFactory. If neither the directive nor the factory
      says what kind of request is required, assume IRequest. -->
 
 <wsgi:application
@@ -64,8 +64,8 @@
     factory=".apps.openroot.RootOpener" />
 
 <wsgi:application
-    name="control_transaction"
-    factory=".apps.txnctl.TransactionController" />
+    name="scrub_transaction"
+    factory=".apps.txnctl.TransactionScrubber" />
 
 <wsgi:application
     name="event"
@@ -74,6 +74,10 @@
 <!--wsgi:application
     name="handle_error"
     factory="..." /-->
+
+<wsgi:application
+    name="control_transaction"
+    factory=".apps.txnctl.TransactionController" />
 
 <!-- no input processing for non-browser requests -->
 <wsgi:application
@@ -101,10 +105,6 @@
     name="traverse"
     factory=".apps.traversal.BrowserTraverser"
     for="zope.publisher.interfaces.browser.IBrowserRequest" />
-
-<wsgi:application
-    name="annotate_transaction"
-    factory=".apps.txnctl.TransactionAnnotator" />
 
 <!-- Just use mapply for non-HTTP requests -->
 <wsgi:application

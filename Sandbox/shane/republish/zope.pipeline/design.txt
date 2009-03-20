@@ -1,0 +1,32 @@
+
+
+The zope.pipeline package uses WSGI endware as the overarching design
+pattern. The use of a single design pattern is intended to make most
+publisher functionality discoverable and comprehensible. Endware
+components are configured through ZCML and the endware choices vary
+according to the interfaces provided by the request object.
+
+By contrast, the IPublication interface in zope.publisher makes some
+functionality discoverable but obscures other functionality. For
+example, the IPublication interface has the notion of object traversal,
+so it is easy to see where traversal happens, but the interface does
+not have a notion of transactions, so it is difficult to see where all
+transaction boundaries are (including special cases) without searching
+a lot of source code. In zope.pipeline, transaction boundaries are
+neatly encapsulated in endware components.
+
+In the current zope.publisher, we vary the publication type and the
+request type according to a set of rules. In zope.pipeline, there is a
+similar capability, but it is implemented in endware components to make
+the publication variance easier to understand and customize. One
+endware application creates a request object (and may annotate it with
+a skin), while another application chooses and caches a pipeline based
+on the request interfaces. Even these endware components are easily
+replaced.
+
+
+
+
+TODO: add this text to the zope.pipeline proposal.  Then rewrite the
+proposal without any reference to the "old way" and call it a first
+draft of the docs.

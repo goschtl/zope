@@ -2,8 +2,29 @@
 TransactionController Tests
 ---------------------------
 
-The TransactionController commits or aborts the current transaction after
-the pipeline processing.
+The TransactionController commits or aborts the current transaction
+after the pipeline processing. It also annotates the transaction with
+info about what the user did in that transaction.
+
+Set up enough of a request to make the annotation work.
+
+    >>> from zope.interface import classImplements
+    >>> from zope.location.interfaces import IRoot
+    >>> from zope.location.traversing import RootPhysicallyLocatable
+    >>> from zope.component import provideAdapter
+    >>> provideAdapter(RootPhysicallyLocatable)
+
+    >>> class TestRoot(object):
+    ...     def mymethod(self):
+    ...         pass
+    >>> classImplements(TestRoot, IRoot)
+    >>> class TestRequest(object):
+    ...     pass
+    >>> request = TestRequest()
+    >>> class TestPrincipal(object):
+    ...     pass
+    >>> request.principal = TestPrincipal()
+    >>> request.principal.id = 'testuser'
 
 Create a data manager object and an application that registers that data
 manager with the transaction in progress.
@@ -14,12 +35,16 @@ manager with the transaction in progress.
     ...         self.phase = ''
     ...         self.committed = []
     ...         self.aborted = []
+    ...         self.committed_user = None
+    ...         self.committed_extension = None
     ...     def tpc_begin(self, txn):
     ...         self.phase = 'begin'
     ...     def tpc_vote(self, txn):
     ...         self.phase = 'vote'
     ...     def tpc_finish(self, txn):
     ...         self.phase = 'finish'
+    ...         self.committed_user = txn.user
+    ...         self.committed_extension = txn._extension
     ...     def tpc_abort(self, txn):
     ...         self.phase = 'abort'
     ...     def commit(self, obj, txn):
@@ -35,7 +60,10 @@ manager with the transaction in progress.
 
 Run the app.
 
-    >>> environ = {}
+    >>> environ = {
+    ...     'zope.pipeline.request': request,
+    ...     'zope.pipeline.traversed': [('xyz', TestRoot().mymethod)],
+    ...     }
     >>> app(environ, None)
     ['done']
     >>> dm.phase
@@ -44,6 +72,14 @@ Run the app.
     [<TestDataManager object at ...>]
     >>> dm.aborted
     []
+
+Examine the annotations.
+
+    >>> dm.committed_user
+    '/ testuser'
+    >>> from pprint import pprint
+    >>> pprint(dm.committed_extension)
+    {'location': u'/', 'request_type': 'zope.publisher.interfaces.base.IRequest'}
 
 Make the app raise an exception.
 
@@ -82,51 +118,3 @@ but the pipeline can return a normal (non-exception) response.
     >>> dm.aborted
     [<TestDataManager object at ...>]
 
-
-TransactionAnnotator Tests
---------------------------
-
-The TransactionAnnotator application adds information to the
-zope.pipeline.request after the rest of the pipeline has finished.
-
-Set up enough of a request to make the TransactionAnnotator work.
-
-    >>> from zope.interface import classImplements
-    >>> from zope.location.interfaces import IRoot
-    >>> from zope.location.traversing import RootPhysicallyLocatable
-    >>> from zope.component import provideAdapter
-    >>> provideAdapter(RootPhysicallyLocatable)
-
-    >>> class TestRoot(object):
-    ...     def mymethod(self):
-    ...         pass
-    >>> classImplements(TestRoot, IRoot)
-    >>> class TestRequest(object):
-    ...     pass
-    >>> request = TestRequest()
-    >>> class TestPrincipal(object):
-    ...     pass
-    >>> request.principal = TestPrincipal()
-    >>> request.principal.id = 'testuser'
-
-Create and run an app with a TransactionAnnotator.
-
-    >>> def my_app(environ, start_response):
-    ...     return ['done annotating']
-    >>> from zope.pipeline.apps.txnctl import TransactionAnnotator
-    >>> app = TransactionAnnotator(my_app)
-    >>> environ = {
-    ...     'zope.pipeline.request': request,
-    ...     'zope.pipeline.traversed': [('xyz', TestRoot().mymethod)],
-    ...     }
-    >>> app(environ, None)
-    ['done annotating']
-
-Examine the annotations.
-
-    >>> transaction.get().user
-    '/ testuser'
-    >>> from pprint import pprint
-    >>> pprint(transaction.get()._extension)
-    {'location': u'/', 'request_type': 'zope.publisher.interfaces.base.IRequest'}
-    >>> transaction.abort()
