@@ -52,10 +52,13 @@ class LayoutViewGrokker(martian.ClassGrokker):
 	module_info = factory.module_info
 	path = module_info.getResourcePath('')
 	template = "%s%s" %(path, template)
-	if not os.path.isfile(template):
-	    raise GrokError("The Template %s is not found in module %s.py" 
+        # Ok i use now the check in the zope.pagetemplatefile package.
+        # I think this need some imporovement.
+	try:
+            layoutfactory = TemplateFactory(template, 'text/html')
+	except ValueError, e:
+	    raise GrokError("The Template %s is not found in module %s"
 	                     %(template, module_info.getModule()), module_info.getModule())
-        layoutfactory = TemplateFactory(template, 'text/html')
         config.action(
             discriminator = ('layoutTemplate', context, layer, name),
             callable = component.provideAdapter,

@@ -66,9 +66,9 @@ class ContextLayout(megrok.pagelet.Layout):
     grok.context(Mammoth)
     megrok.pagelet.template('templates/context_layout.pt')
 
-#class NoTemplateLayout(megrok.pagelet.Layout):
-#    grok.context(Mammoth)
-#    megrok.pagelet.template('template/no_template.pt')
+class NoTemplateLayout(megrok.pagelet.Layout):
+    grok.context(Mammoth)
+    megrok.pagelet.template('template/no_template.pt')
 
 
 def test_suite():
