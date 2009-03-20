@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.3'
+version = '0.4'
 
 setup(name='cmf.pt',
       version=version,
@@ -11,7 +11,6 @@ setup(name='cmf.pt',
         "Programming Language :: Python",
         "Topic :: Text Processing :: Markup :: HTML",
         "Topic :: Text Processing :: Markup :: XML",
-        "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='',
       author='Malthe Borch and the Zope community',

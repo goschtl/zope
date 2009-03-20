@@ -1,4 +1,8 @@
-import Globals
+# BBB for Zope 2.10
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 
 from Products.CMFCore.FSObject import FSObject
 from Products.CMFCore import DirectoryView
@@ -81,8 +85,8 @@ class FSControllerPageTemplate(FSPageTemplate, FSControllerBase, BaseCPT):
     def __call__(self, *args, **kwargs):
         return self._call(FSPageTemplate.__call__, *args, **kwargs)
 
-Globals.InitializeClass(FSPageTemplate)
-Globals.InitializeClass(FSControllerPageTemplate)
+InitializeClass(FSPageTemplate)
+InitializeClass(FSControllerPageTemplate)
 
 DirectoryView.registerFileExtension('pt', FSPageTemplate)
 DirectoryView.registerFileExtension('zpt', FSPageTemplate)

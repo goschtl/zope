@@ -1,18 +1,24 @@
 Changelog
 =========
 
-cmf.pt 0.3 (released 2/13/2009)
+0.4 - unreleased
+----------------
 
- - Added ``_exec`` method to the file-system based skin template
-   class, largely carried over from
-   ``Products.PageTemplates``. [malthe]
+- Avoid a deprecation warning for Globals.InitializeClass. [hannosch]
 
-cmf.pt 0.2 (released 12/17/2008)
+0.3 - 2009-02-13
+----------------
 
- - The ``func_code`` attribute of file-system page templates should
-   simulate a function taking no arguments.
- 
-cmf.pt 0.1 (released 11/29/2008)
+- Added ``_exec`` method to the file-system based skin template class, largely
+  carried over from `Products.PageTemplates`. [malthe]
 
- - Initial release.
+0.2 - 2008-12-17
+----------------
 
+- The ``func_code`` attribute of file-system page templates should simulate a
+  function taking no arguments. [malthe]
+
+0.1 - 2008-11-29
+----------------
+
+- Initial release. [malthe]
