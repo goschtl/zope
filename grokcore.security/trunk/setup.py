@@ -36,7 +36,7 @@ setup(
                       'grokcore.component >= 1.5.1',
                       'zope.interface',
                       'zope.component',
-                      'zope.security',
+                      'zope.security >= 3.6.2',
                       'zope.configuration',
                       'zope.testing',
                       ],
