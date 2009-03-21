@@ -19,7 +19,7 @@ import os
 import transaction
 import unittest
 
-from zope.app.folder.interfaces import IRootFolder
+from zope.site.interfaces import IRootFolder
 from zope.app.file import File
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.onlinehelp.tests.test_onlinehelp import testdir
@@ -37,8 +37,8 @@ class Test(BrowserTestCase):
 
         transaction.commit()
 
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.content.File', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.content.File',
                                       'id':u'file'})
 
         self.assertEqual(response.getStatus(), 302)
@@ -57,7 +57,7 @@ class Test(BrowserTestCase):
         body = ' '.join(response.getBody().split())
         self.assert_(body.find("This is another help!") >= 0)
 
-        response = self.publish('/index.html/++help++/@@contexthelp.html', 
+        response = self.publish('/index.html/++help++/@@contexthelp.html',
                                 basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
