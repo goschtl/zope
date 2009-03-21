@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.5.1 (2009-03-21)
 ------------------
 
 - Use ``zope.site`` instead of ``zope.app.folder``.
@@ -10,11 +10,11 @@ CHANGES
 3.5.0 (2009-02-01)
 ------------------
 
-- Removed `OnlineHelpTopicFactory`, `simple` and
-  `SimpleViewClass`. All of them where using old deprecated and
+- Removed ``OnlineHelpTopicFactory``, ``simple`` and
+  ``SimpleViewClass``. All of them where using old deprecated and
   removed Zope3 imports. None of them where used and tested.
 
-- Use `zope.container` instead of `zope.app.container`.
+- Use ``zope.container`` instead of ``zope.app.container``.
 
 - Removed use of ``zope.app.zapi``.
 
