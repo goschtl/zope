@@ -1,0 +1,4 @@
+    >>> from zc.testbrowser.real import Browser
+    >>> browser = Browser()
+    >>> browser.open('http://localhost:%s/index.html' % TEST_PORT)
+    >>> browser.execute('tb_take_screen_shot("/tmp/1.png")')
