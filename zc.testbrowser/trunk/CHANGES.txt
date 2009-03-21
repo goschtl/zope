@@ -1,7 +1,11 @@
 Changes
 =======
 
-1.0a5 (2008-05-??)
+1.0a6 (unreleased)
+------------------
+
+
+1.0a5 (2009-03-20)
 ------------------
 
 - Bugfix: Fixed setting the value on text area for the real test
