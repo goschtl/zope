@@ -341,6 +341,7 @@ class Link(zc.testbrowser.browser.SetattrErrorsMixin):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token)
+        self.browser.wait()
         self.browser._changed()
 
     @property
@@ -556,6 +557,7 @@ class SubmitControl(Control):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token)
+        self.browser.wait()
         self.browser._changed()
 
 
@@ -566,6 +568,7 @@ class ImageControl(Control):
         if self._browser_counter != self.browser._counter:
             raise zc.testbrowser.interfaces.ExpiredError
         self.browser.js.tb_click_token(self.token, *coord)
+        self.browser.wait()
         self.browser._changed()
 
     @property
@@ -702,6 +705,7 @@ class Form(zc.testbrowser.browser.SetattrErrorsMixin):
             button = self.browser.getControlToken(
                 label, name, index, self.token)
             self.browser.js.tb_click_token(button, *coord)
+        self.browser.wait()
         self.browser._changed()
 
     def getControl(self, label=None, name=None, index=None):
