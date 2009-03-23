@@ -148,7 +148,7 @@ class MemberDataToolTests(unittest.TestCase):
         # check we got the right vars and output class
         self.assertEqual(result.tool, pm)
         self.assertEqual(result.id, 'username')
-        self._assert(isinstance(result, DummyMemberData)
+        self.assert_(isinstance(result, DummyMemberData))
         # check acquisition context is made right
         self.assertEqual(aq_parent(aq_inner(result)), pm)
         self.assertEqual(aq_parent(result), u)
@@ -163,7 +163,7 @@ class MemberDataToolTests(unittest.TestCase):
         result = pm.wrapUser(u)
 
         # check we got the default class
-        self._assert(isInstance(result, MemberData))
+        self.assert_(isinstance(result, MemberData))
         # check acquisition context is made right
         self.assertEqual(aq_parent(aq_inner(result)), pm)
         self.assertEqual(aq_parent(result), u)
