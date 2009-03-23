@@ -4,7 +4,11 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
-- PortalCatalog: Changed to use a multi-adaptor to allow a pluggable
+- MemberDataTool: Register an adapter for creation of MemberData.  This 
+  will allow other applications to provide custom MemberData without needing 
+  to provide their own implementation of the tool itself.
+
+- CatalogTool: Changed to use a multi-adaptor to allow a pluggable
   IndexableObjectWrapper class.  Objects that implement IIndexableObject
   are not wrapped.  The change will assist in integrating with
   other indexing strategies from third-party packages.

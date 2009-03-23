@@ -60,10 +60,18 @@ class DummyUser(Acquisition.Implicit):
     def getDomains(self):
         return self.domains
 
+    def getId(self):
+        return self.name
+
 
 class DummyMemberDataTool(Acquisition.Implicit):
     pass
 
+class DummyMemberData(Acquisition.Implicit):
+
+    def __init__(self, tool, id):
+        self.id = id
+        self.tool = tool
 
 class MemberDataToolTests(unittest.TestCase):
 
@@ -120,6 +128,56 @@ class MemberDataToolTests(unittest.TestCase):
         self.assertEqual(info_dict['member_count'], 0)
         self.assertEqual(info_dict['orphan_count'], 0)
 
+    def test_wrapUser(self):
+        # test using the factory to create memberdata
+        from Products.CMFCore.interfaces import IMemberData
+        from Acquisition import aq_parent, aq_inner
+        from zope.component import getSiteManager
+      
+        pm = self._makeOne()
+        u = DummyUser('username','password',[],[] )
+
+        def memberfactory(tool, id):
+            return DummyMemberData(tool, id)
+
+        sm = getSiteManager()
+        sm.registerUtility(memberfactory, IMemberData)
+
+        result = pm.wrapUser(u)
+
+        # check we got the right vars and output class
+        self.assertEqual(result.tool, pm)
+        self.assertEqual(result.id, 'username')
+        self._assert(isinstance(result, DummyMemberData)
+        # check acquisition context is made right
+        self.assertEqual(aq_parent(aq_inner(result)), pm)
+        self.assertEqual(aq_parent(result), u)
+
+    def test_wrapUser2(self):
+        from Products.CMFCore.interfaces import IMemberData
+        from Products.CMFCore.MemberDataTool import MemberData
+        from Acquisition import aq_parent, aq_inner
+
+        pm = self._makeOne()
+        u = DummyUser('username','password',[],[] )
+        result = pm.wrapUser(u)
+
+        # check we got the default class
+        self._assert(isInstance(result, MemberData))
+        # check acquisition context is made right
+        self.assertEqual(aq_parent(aq_inner(result)), pm)
+        self.assertEqual(aq_parent(result), u)
+
+
+class MemberDataFactoryTests(unittest.TestCase):
+
+    def test_interfaces(self):
+        from Products.CMFCore.MemberDataTool import MemberDataFactory
+        from Products.CMFCore.interfaces import IMemberData
+        from zope.component import IFactory
+
+        verifyClass(IFactory, MemberDataFactory)
+        verifyClass(IMemberData, MemberDataFactory)
 
 class MemberDataTests(unittest.TestCase):
 

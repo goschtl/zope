@@ -36,4 +36,9 @@
       provides=".interfaces.IIndexableObject"
       factory=".CatalogTool.IndexableObjectWrapper" />
 
+  <!-- factory for MemberData objects -->
+  <utility
+      component=".MemberDataTool.MemberDataFactory"
+      />
+
 </configure>

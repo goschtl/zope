@@ -23,6 +23,8 @@ from BTrees.OOBTree import OOBTree
 from OFS.PropertyManager import PropertyManager
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
+from zope.component.factory import Factory
+from zope.component import queryUtility
 from ZPublisher.Converters import type_converters
 
 from Products.CMFCore.exceptions import BadRequest
@@ -194,7 +196,8 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         members = self._members
         if not id in members:
             base = aq_base(self)
-            members[id] = MemberData(base, id)
+            factory = queryUtility(IMemberData, default=MemberData)
+            members[id] = factory(base, id)
         # Return a wrapper with self as containment and
         # the user as context.
         return members[id].__of__(self).__of__(u)
@@ -405,3 +408,4 @@ class MemberData(SimpleItem):
     # deprecated for use with CMF applications.
 
 InitializeClass(MemberData)
+MemberDataFactory = Factory(MemberData)
