@@ -37,7 +37,7 @@ Usage:
       install : Installs the service
 
       update : Updates the service, use this when you change
-               the service class implementation 
+               the service class implementation
 
       remove : Removes the service
 
@@ -89,6 +89,7 @@ PYTHON = r'<<PYTHON>>'
 PYTHONDIR = os.path.split(PYTHON)[0]
 PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
 PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
+TOSTART = r'<<RUNZOPE>>'
 
 
 # the max seconds we're allowed to spend backing off
@@ -145,9 +146,15 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     _svc_description_ = r'<<SERVICE_DESCRIPTION>>'
 
     _exe_name_ = PYTHONSERVICE_EXE
-    start_cmd = '"%s" "%s"' % (PYTHONW, r'<<RUNZOPE>>')
+    start_cmd = '"%s" "%s"' % (PYTHONW, TOSTART)
 
     def __init__(self, args):
+        if not os.path.exists(PYTHONW):
+            raise OSError("%s does not exist" % PYTHON)
+
+        if not os.path.exists(TOSTART):
+            raise OSError("%s does not exist" % TOSTART)
+
         win32serviceutil.ServiceFramework.__init__(self, args)
         # Create an event which we will use to wait on.
         # The "service stop" request will set this event.

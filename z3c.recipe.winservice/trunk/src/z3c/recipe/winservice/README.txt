@@ -7,7 +7,7 @@ z3c.recipe.winservice
 
 This Zope 3 recipes offers windows service installation support.
 
-The 'service' recipe installes the required scripts and files whihc can be 
+The 'service' recipe installes the required scripts and files whihc can be
 used for install a windwos service.
 
 
@@ -23,8 +23,8 @@ description
   The windows service description option.
 
 runzope
-  The script name which get used by the winservice. This script must exist in 
-  the bin folder and before we run this recipe exist. This script can get setup 
+  The script name which get used by the winservice. This script must exist in
+  the bin folder and before we run this recipe exist. This script can get setup
   with the z3c.recipe.dev.app recipe.
 
 
@@ -96,7 +96,7 @@ The bin folder contains the windows service installer script:
   -  buildout.exe
   -  winservice.py
 
-The winservice-scrip.py contains the service setup for our zope windows service:
+The winservice.py contains the service setup for our zope windows service:
 
   >>> cat('bin', 'winservice.py')
   ##############################################################################
@@ -186,10 +186,11 @@ The winservice-scrip.py contains the service setup for our zope windows service:
   import win32process
   <BLANKLINE>
   # these are replacements from winservice recipe
-  PYTHON = r'C:\Python24\python.exe'
+  PYTHON = r'U:\Python24\python.exe'
   PYTHONDIR = os.path.split(PYTHON)[0]
   PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
   PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
+  TOSTART = r'/sample-buildout/bin/app-script.py'
   <BLANKLINE>
   <BLANKLINE>
   # the max seconds we're allowed to spend backing off
@@ -241,14 +242,20 @@ The winservice-scrip.py contains the service setup for our zope windows service:
       # each instance.  The below-defined start_cmd (and _svc_display_name_
       # and _svc_name_) are just examples.
   <BLANKLINE>
-      _svc_name_ = '870810267'
+      _svc_name_ = '..._bin_app_script_py'
       _svc_display_name_ = r'Zope 3 Windows Service'
       _svc_description_ = r'Zope 3 Windows Service description'
   <BLANKLINE>
       _exe_name_ = PYTHONSERVICE_EXE
-      start_cmd = '"%s" "%s"' % (PYTHONW, r'/sample-buildout/bin/app-script.py')
+      start_cmd = '"%s" "%s"' % (PYTHONW, TOSTART)
   <BLANKLINE>
       def __init__(self, args):
+          if not os.path.exists(PYTHONW):
+              raise OSError("%s does not exist" % PYTHON)
+  <BLANKLINE>
+          if not os.path.exists(TOSTART):
+              raise OSError("%s does not exist" % TOSTART)
+  <BLANKLINE>
           win32serviceutil.ServiceFramework.__init__(self, args)
           # Create an event which we will use to wait on.
           # The "service stop" request will set this event.
@@ -398,3 +405,77 @@ The winservice-scrip.py contains the service setup for our zope windows service:
           # This ensures that pythonservice.exe is registered...
           os.system('"%s" -register' % PYTHONSERVICE_EXE)
       win32serviceutil.HandleCommandLine(Zope3Service)
+
+
+Debug
+-----
+
+This option is for service scripts having fundamental problems.
+The problem with those scripts is that they are starting and stopping at once.
+Seemingly there is no output, no sing that the script did something.
+And because they run in a subprocess until those scripts have logging established
+they won't have any chance to report the error.
+For this we'll setup a bare catch-all around the whole script and log any
+exceptions to the windows event log.
+CAUTION: this takes a copy of the app-script.py but does not update the patched
+result when it changes!
+
+We can enable the ``debug`` option:
+
+  >>> write('buildout.cfg',
+  ... '''
+  ... [buildout]
+  ... develop = demo1 demo2
+  ... parts = winservice
+  ...
+  ... [winservice]
+  ... recipe = z3c.recipe.winservice:service
+  ... name = Zope 3 Windows Service
+  ... description = Zope 3 Windows Service description
+  ... runzope = app
+  ... debug = true
+  ...
+  ... ''' % globals())
+
+Now, Let's run the buildout and see what we get:
+
+  >>> print system(join('bin', 'buildout')),
+  Develop: '/sample-buildout/demo1'
+  Develop: '/sample-buildout/demo2'
+  Uninstalling winservice.
+  Installing winservice.
+
+
+The bin folder contains the windows service installer script:
+
+  >>> ls('bin')
+  -  app-script.py
+  -  app-servicedebug.py
+  -  buildout-script.py
+  -  buildout.exe
+  -  winservice.py
+
+The winservice.py file gets changed according to the new script name:
+
+  >>> cat('bin', 'winservice.py')
+  ##############################################################################
+  ...TOSTART = r'/sample-buildout/bin/app-servicedebug.py'...
+  ..._svc_name_ = '...bin_app_script_py'...
+
+The debug script contains a bare catch-all and a logger:
+
+  >>> cat('bin', 'app-servicedebug.py')
+  <BLANKLINE>
+  def exceptionlogger():
+      import servicemanager
+      import traceback
+      servicemanager.LogErrorMsg("Script %s had an exception: %s" % (
+        __file__, traceback.format_exc()
+      ))
+  <BLANKLINE>
+  try:
+  <BLANKLINE>
+      dummy start script
+  <BLANKLINE>
+  except Exception, e:
+      exceptionlogger()
