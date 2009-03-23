@@ -196,7 +196,10 @@ class MemberDataTool(UniqueObject, SimpleItem, PropertyManager):
         members = self._members
         if not id in members:
             base = aq_base(self)
-            factory = queryUtility(IMemberData, default=MemberData)
+            factory = queryUtility(IMemberData)
+            if factory is None:
+                # BBB
+                factory = MemberData
             members[id] = factory(base, id)
         # Return a wrapper with self as containment and
         # the user as context.
