@@ -2,7 +2,7 @@
 Change History
 **************
 
-1.2.0 (2009-03-19)
+1.2.0 (2009-03-23)
 ==================
 
 - Added a relative-paths option to use egg, test, and
