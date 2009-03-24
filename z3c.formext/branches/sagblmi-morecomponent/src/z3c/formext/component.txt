@@ -222,6 +222,7 @@ ChoiceField
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
   {'editable': True,
    'fieldLabel': u'Choice',
+   'forceSelection': True,
    'hiddenName': 'choiceField:list',
    'id': 'choiceField',
    'itemCls': 'required',
@@ -244,6 +245,7 @@ Works also with optional choice
   >>> pprint(interfaces.IExtJSComponent(choiceWidget).getConfig())
   {'editable': True,                                                                                               
    'fieldLabel': u'Choice (Not Required)',                                                                          
+   'forceSelection': True,
    'hiddenName': 'optionalChoiceField:list',                                                                        
    'id': 'optionalChoiceField',                                                                                     
    'name': 'optionalChoiceField',                                                                                   
@@ -646,6 +648,7 @@ Here is a select widget
   >>> pprint(config['items'][3])
   {'editable': True,
    'fieldLabel': u'Gender',
+   'forceSelection': True,
    'hiddenName': 'form.widgets.gender:list',
    'id': 'form-widgets-gender',
    'name': 'form.widgets.gender',

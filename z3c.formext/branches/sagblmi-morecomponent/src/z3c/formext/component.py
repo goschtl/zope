@@ -204,6 +204,7 @@ class ComboBox(Field):
             hiddenName = config['name']+':list',
             triggerAction = 'all',
             editable = True,
+            forceSelection = True,
             store= [(item['value'], item['content'])
                 for item in self.widget.items],
             ))
