@@ -1,0 +1,7 @@
+<html>
+ <body>
+   <div class="layer_layout" tal:content="structure view/render">
+         here comes the content
+   </div>
+ </body>
+</html>
