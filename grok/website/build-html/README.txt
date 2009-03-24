@@ -4,7 +4,7 @@ virtualenv
 
 required packages
 -----------------
-Sphinx, docutils
+Sphinx, docutils, tetex or texlive
 
 files
 -----
