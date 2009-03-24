@@ -6,7 +6,7 @@ long_description = (open("README.txt").read()
 
 setup(name='megrok.pagelet',
       version='0.1',
-      description="Grok extension to configure z3c.pagelets",
+      description="z3c.template / z3c.layout support for Grok",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=['Programming Language :: Python',
@@ -27,7 +27,6 @@ setup(name='megrok.pagelet',
       install_requires=[
           'setuptools',
           'martian',
-	  'interlude',
           'grokcore.component',
 	  'z3c.template',
           'grok',  # just for the ViewGrokker
