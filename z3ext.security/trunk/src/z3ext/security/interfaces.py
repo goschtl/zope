@@ -18,6 +18,10 @@ $Id$
 from zope import interface
 
 
+class IZ3extSecurityPolicy(interface.Interface):
+    """ z3ext security policy """
+
+
 class IPrincipalGroups(interface.Interface):
     """ principal groups """
 

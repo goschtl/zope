@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.2.6 (2009-03-25)
+------------------
+
+- Added 'checkPermissionForPrincipal' helper function
+
+
 1.2.5 (2009-03-15)
 ------------------
 

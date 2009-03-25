@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope import interface
 from zope.component import getAdapters
 from zope.security.proxy import removeSecurityProxy
 from zope.app.security.settings import Allow
@@ -29,6 +30,8 @@ from zope.securitypolicy.zopepolicy import SettingAsBoolean
 from zope.securitypolicy.zopepolicy import globalRolesForPrincipal
 from zope.securitypolicy.zopepolicy import globalRolesForPermission
 from zope.securitypolicy.zopepolicy import globalPrincipalPermissionSetting
+
+from interfaces import IZ3extSecurityPolicy
 
 
 class CacheEntry(object):
@@ -46,6 +49,7 @@ class CacheEntry(object):
 
 
 class SecurityPolicy(ZopeSecurityPolicy):
+    interface.implements(IZ3extSecurityPolicy)
 
     def cache(self, parent):
         cache = self._cache

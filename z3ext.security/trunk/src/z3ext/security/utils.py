@@ -16,8 +16,11 @@
 $Id$
 """
 from zope.component import getUtility
+from zope.security.proxy import removeSecurityProxy
 from zope.security.management import queryInteraction
 from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
+
+from interfaces import IZ3extSecurityPolicy
 
 
 def getPrincipal(id=None):
@@ -34,3 +37,14 @@ def getPrincipal(id=None):
             return getUtility(IAuthentication).getPrincipal(id)
         except PrincipalLookupError:
             return None
+
+
+def checkPermissionForPrincipal(principal, permission, object):
+    interaction = queryInteraction()
+
+    if IZ3extSecurityPolicy.providedBy(interaction):
+        return interaction.cached_decision(
+            removeSecurityProxy(object), principal.id,
+            interaction._groupsFor(principal), permission)
+
+    return False
