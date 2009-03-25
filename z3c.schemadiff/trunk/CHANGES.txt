@@ -1,0 +1,11 @@
+Changelog
+=========
+
+In next release:
+
+- Drop field if either value is ``None``. [malthe]
+
+0.1 (2008-04-30)
+----------------
+
+- Initial release.

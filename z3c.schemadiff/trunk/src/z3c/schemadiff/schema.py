@@ -16,10 +16,16 @@ def diff(source, target, *interfaces):
                 diff = IFieldDiff(field)
             except TypeError:
                 continue
-                
-            a = diff.lines(getattr(source, name, field.default))
-            b = diff.lines(getattr(target, name, field.default))
 
+            source_value = getattr(source, name, field.default)
+            target_value = getattr(target, name, field.default)
+
+            if source_value is None or target_value is None:
+                continue
+            
+            a = diff.lines(source_value)
+            b = diff.lines(target_value)
+                
             results[field] = (a, b)
 
     return results
