@@ -5,7 +5,7 @@ CHANGES
 Version 0.6.1 (unreleased)
 --------------------------
 
-- ...
+- Added french translations
 
 Version 0.6.0 (2009-01-26)
 --------------------------
