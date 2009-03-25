@@ -90,6 +90,9 @@ PYTHONDIR = os.path.split(PYTHON)[0]
 PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
 PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
 TOSTART = r'<<RUNZOPE>>'
+SERVICE_NAME = '<<SERVICE_NAME>>'
+SERVICE_DISPLAY_NAME = r'<<SERVICE_DISPLAY_NAME>>'
+SERVICE_DESCRIPTION = r'<<SERVICE_DESCRIPTION>>'
 
 
 # the max seconds we're allowed to spend backing off
@@ -141,19 +144,25 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     # each instance.  The below-defined start_cmd (and _svc_display_name_
     # and _svc_name_) are just examples.
 
-    _svc_name_ = '<<SERVICE_NAME>>'
-    _svc_display_name_ = r'<<SERVICE_DISPLAY_NAME>>'
-    _svc_description_ = r'<<SERVICE_DESCRIPTION>>'
+    _svc_name_ = SERVICE_NAME
+    _svc_display_name_ = SERVICE_DISPLAY_NAME
+    _svc_description_ = SERVICE_DESCRIPTION
 
     _exe_name_ = PYTHONSERVICE_EXE
-    start_cmd = '"%s" "%s"' % (PYTHONW, TOSTART)
+    start_cmd = ''
 
     def __init__(self, args):
+        python = PYTHONW
         if not os.path.exists(PYTHONW):
-            raise OSError("%s does not exist" % PYTHON)
+            #virtualenv misses pythonw.exe, fall back to python.exe
+            python = PYTHON
+            if not os.path.exists(PYTHON):
+                raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
 
         if not os.path.exists(TOSTART):
             raise OSError("%s does not exist" % TOSTART)
+
+        self.start_cmd = '"%s" "%s"' % (python, TOSTART)
 
         win32serviceutil.ServiceFramework.__init__(self, args)
         # Create an event which we will use to wait on.

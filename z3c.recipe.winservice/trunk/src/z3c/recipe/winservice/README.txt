@@ -191,6 +191,9 @@ The winservice.py contains the service setup for our zope windows service:
   PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
   PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
   TOSTART = r'/sample-buildout/bin/app-script.py'
+  SERVICE_NAME = '..._bin_app_script_py'
+  SERVICE_DISPLAY_NAME = r'Zope 3 Windows Service'
+  SERVICE_DESCRIPTION = r'Zope 3 Windows Service description'
   <BLANKLINE>
   <BLANKLINE>
   # the max seconds we're allowed to spend backing off
@@ -242,19 +245,25 @@ The winservice.py contains the service setup for our zope windows service:
       # each instance.  The below-defined start_cmd (and _svc_display_name_
       # and _svc_name_) are just examples.
   <BLANKLINE>
-      _svc_name_ = '..._bin_app_script_py'
-      _svc_display_name_ = r'Zope 3 Windows Service'
-      _svc_description_ = r'Zope 3 Windows Service description'
+      _svc_name_ = SERVICE_NAME
+      _svc_display_name_ = SERVICE_DISPLAY_NAME
+      _svc_description_ = SERVICE_DESCRIPTION
   <BLANKLINE>
       _exe_name_ = PYTHONSERVICE_EXE
-      start_cmd = '"%s" "%s"' % (PYTHONW, TOSTART)
+      start_cmd = ''
   <BLANKLINE>
       def __init__(self, args):
+          python = PYTHONW
           if not os.path.exists(PYTHONW):
-              raise OSError("%s does not exist" % PYTHON)
+              #virtualenv misses pythonw.exe, fall back to python.exe
+              python = PYTHON
+              if not os.path.exists(PYTHON):
+                  raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
   <BLANKLINE>
           if not os.path.exists(TOSTART):
               raise OSError("%s does not exist" % TOSTART)
+  <BLANKLINE>
+          self.start_cmd = '"%s" "%s"' % (python, TOSTART)
   <BLANKLINE>
           win32serviceutil.ServiceFramework.__init__(self, args)
           # Create an event which we will use to wait on.
@@ -407,6 +416,7 @@ The winservice.py contains the service setup for our zope windows service:
       win32serviceutil.HandleCommandLine(Zope3Service)
 
 
+
 Debug
 -----
 
@@ -460,7 +470,7 @@ The winservice.py file gets changed according to the new script name:
   >>> cat('bin', 'winservice.py')
   ##############################################################################
   ...TOSTART = r'/sample-buildout/bin/app-servicedebug.py'...
-  ..._svc_name_ = '...bin_app_script_py'...
+  ...SERVICE_NAME = '...bin_app_script_py'...
 
 The debug script contains a bare catch-all and a logger:
 
