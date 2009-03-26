@@ -113,15 +113,16 @@ class Recipe:
         options = self.options
         name = options.get('deployment-name', self.name)
         if self.deployment:
-            script = os.path.join(options['dest'], name+'-'+part)
+            path = os.path.join(options['dest'], name+'-'+part)
+            script = 'echo %s: \n%s' % ( name+'-'+part, path)
         else:
-            script = os.path.join(options['dest'], part)
-            
-        if not os.path.exists(script):
+            path = os.path.join(options['dest'], part)
+            script = 'echo %s: \n%s' % (part, path)
+        if not os.path.exists(path):
             logger.error("Part %s doesn't define run-script "
                          "and %s doesn't exist."
-                         % (part, script))
-            raise zc.buildout.UserError("No script for %s" % part)
+                         % (part, path))
+            raise zc.buildout.UserError("No script for %s", part)
 
         return script + ' "$@"'
 

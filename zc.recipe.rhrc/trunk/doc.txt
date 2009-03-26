@@ -1,3 +1,41 @@
+*****************************************
+ZC Buildout recipe for Redhat RC scripts
+*****************************************
+
+This package provides a zc.buildout recipe for creating Red-Hat Linux
+compatible run-control scripts.
+
+.. contents::
+
+Changes
+*******
+
+1.2.0 (2009/03/26)
+==================
+
+Display the name of the script being run
+for each script when it is started, stopped, or restarted
+
+1.1.0 (2008/02/01)
+==================
+
+Use the deployment name option (as provided by zc.recipe.deployment
+0.6.0 and later) if present when generating script names.
+
+Use the deployment rc-directory as the destination when a deployment
+is used.
+
+Use /sbin/chkconfig rather than chkconfig, as I'm told it is always in
+that location and rarely in anyone's path. :)
+
+1.0.0 (2008/01/15)
+==================
+
+Initial public release
+
+Detailed Documentation
+**********************
+
 Create Red-Hat Linux (chkconfig) rc scripts
 ===========================================
 
@@ -409,8 +447,7 @@ Now we can remove the run-script option from the Zope section:
     case $1 in 
       stop)
     <BLANKLINE>
-        echo zope: 
-    /demo/zope "$@" \
+        /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -423,8 +460,7 @@ Now we can remove the run-script option from the Zope section:
         ;;
       *) 
     <BLANKLINE>
-        echo zope: 
-    /demo/zope "$@" \
+        /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -492,8 +528,7 @@ Note that for instance 2, we are arranging for the script to pre-exist.
     case $1 in 
       stop)
     <BLANKLINE>
-        echo instance2: 
-    /demo/instance2 "$@" \
+        /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -516,8 +551,7 @@ Note that for instance 2, we are arranging for the script to pre-exist.
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        echo instance2: 
-    /demo/instance2 "$@" \
+        /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -648,8 +682,7 @@ to reflect that:
     case $1 in 
       stop)
     <BLANKLINE>
-        echo acme-instance2: 
-    /demo/acme-instance2 "$@" \
+        /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -672,13 +705,15 @@ to reflect that:
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        echo acme-instance2: 
-    /demo/acme-instance2 "$@" \
+        /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
     esac
-    <BLANKLINE> 
+    <BLANKLINE>
+
+
+.. 
 
   Edge case, when we remove the part, we uninstall acme:
 
@@ -719,3 +754,6 @@ formatted exception string, contained literal '%s'):
     .. While:
     ..   Installing zoperc.
     .. Error: No script for zope
+
+Download
+**********************
