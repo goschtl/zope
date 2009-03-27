@@ -1,0 +1,17 @@
+=====================
+ZBoiler Documentation
+=====================
+
+See also the Builder_ and Feature_ documentation.
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   README
+
+
+.. _Builder: ../z3c.builder/index.html
+
+.. _Feature: ../z3c.feature.core/index.html
