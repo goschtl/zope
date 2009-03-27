@@ -1,0 +1,393 @@
+=================
+Metadata Features
+=================
+
+The `metadata` module provides several features related to the overall setup
+of a package.
+
+  >>> from z3c.feature.core import metadata, interfaces
+
+Meta-Data Feature
+-----------------
+
+The meta-data feature maintains all attributes that are needed for the
+`setup.py` file.
+
+  >>> feature = metadata.MetaDataFeature()
+  >>> feature
+  <MetaDataFeature u'Metadata'>
+
+  >>> feature.version = u'0.0.1'
+  >>> feature.author = u'Paul Carduner'
+  >>> feature.keywords = [u'test', u'some', u'more']
+
+Let's verify that both, the `IFeature` and `IMetaDataFeature` interface, are
+provided:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.IMetaDataFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> from z3c.feature.core import base
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.IMetaDataFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  Metadata
+  >>> print feature.featureDocumentation
+  The Metadata feature sets up the setup.py file which is what
+  setuptools uses to generate distributable python eggs.
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:meta-data">
+    <author>Paul Carduner</author>
+    <version>0.0.1</version>
+    <keywords>
+      <item>test</item>
+      <item>some</item>
+      <item>more</item>
+    </keywords>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = metadata.MetaDataFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:meta-data">
+  ...       <author>Paul Carduner</author>
+  ...       <version>0.0.1</version>
+  ...       <keywords>
+  ...         <item>test</item>
+  ...         <item>some</item>
+  ...         <item>more</item>
+  ...       </keywords>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <MetaDataFeature u'Metadata'>
+
+  >>> feature.author
+  u'Paul Carduner'
+  >>> feature.version
+  u'0.0.1'
+  >>> feature.keywords
+  [u'test', u'some', u'more']
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> prj.setup.author
+  u'Paul Carduner'
+  >>> prj.setup.version
+  u'0.0.1'
+  >>> prj.setup.keywords
+  [u'test', u'some', u'more']
+
+Okay, we applied the feature successfully by updating the necessary meta-data.
+
+
+ZPL Comment Header
+------------------
+
+This feature sets the comment header for a given project. That header will be
+applied to all Python code files.
+
+  >>> feature = metadata.CommentHeaderZPLFeature()
+  >>> feature
+  <CommentHeaderZPLFeature u'ZPL Header'>
+
+  >>> feature.year = 2008
+  >>> feature.author = u'Paul Carduner'
+
+Let's verify that both, the `IFeature` and `ICommentHeaderZPLFeature`
+interface, are provided:
+
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.ICommentHeaderZPLFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.ICommentHeaderZPLFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  ZPL Header
+  >>> print feature.featureDocumentation
+  <BLANKLINE>
+  The Zope Public License file header looks something like this::
+  <BLANKLINE>
+    ##############################################################################
+    #
+    # Copyright (c) 2008 Paul Carduner.
+    # All Rights Reserved.
+    #
+    # This software is subject to the provisions of the Zope Public License,
+    # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+    # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+    # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+    # FOR A PARTICULAR PURPOSE.
+    #
+    ##############################################################################
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:comment-header-ZPL">
+    <year>2008</year>
+    <author>Paul Carduner</author>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = metadata.CommentHeaderZPLFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:comment-header-ZPL">
+  ...       <year>2008</year>
+  ...       <author>Paul Carduner</author>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <CommentHeaderZPLFeature u'ZPL Header'>
+
+  >>> feature.author
+  u'Paul Carduner'
+  >>> feature.year
+  2008
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> print prj.commentHeader
+  ##############################################################################
+  #
+  # Copyright (c) 2008 Paul Carduner.
+  # All Rights Reserved.
+  #
+  # This software is subject to the provisions of the Zope Public License,
+  # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+  # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+  # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+  # FOR A PARTICULAR PURPOSE.
+  #
+  ##############################################################################
+
+
+Proprietary Comment Header
+--------------------------
+
+This feature sets the proprietary comment header for a given project. That
+header will be applied to all Python code files.
+
+  >>> feature = metadata.ProprietaryHeaderFeature()
+  >>> feature
+  <ProprietaryHeaderFeature u'Proprietary Header'>
+
+  >>> feature.year = 2008
+  >>> feature.company = u'Paulo, Inc.'
+  >>> feature.location = u'Berkeley, CA, USA'
+
+Let's verify that both, the `IFeature` and `IProprietaryHeaderFeature`
+interface, are provided:
+
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.IProprietaryHeaderFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.IProprietaryHeaderFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  Proprietary Header
+  >>> print feature.featureDocumentation
+  <BLANKLINE>
+  The proprietary header looks something like this::
+  <BLANKLINE>
+    ###############################################################################
+    #
+    # Copyright 2008 by Paulo, Inc., Berkeley, CA, USA
+    #
+    ###############################################################################
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:proprietary-header">
+    <company>Paulo, Inc.</company>
+    <location>Berkeley, CA, USA</location>
+    <year>2008</year>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = metadata.ProprietaryHeaderFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:proprietary-header">
+  ...       <company>Paulo, Inc.</company>
+  ...       <location>Berkeley, CA, USA</location>
+  ...       <year>2008</year>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <ProprietaryHeaderFeature u'Proprietary Header'>
+
+  >>> feature.year
+  2008
+  >>> feature.company
+  u'Paulo, Inc.'
+  >>> feature.location
+  u'Berkeley, CA, USA'
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> print prj.commentHeader
+  ###############################################################################
+  #
+  # Copyright 2008 by Paulo, Inc., Berkeley, CA, USA
+  #
+  ###############################################################################
+
+
+Documentation Feature
+---------------------
+
+This feature installs a buildout part that creates a script for a
+documentation generator of the package.
+
+  >>> feature = metadata.DocumentationFeature()
+  >>> feature
+  <DocumentationFeature u'Restructured Text Documentation'>
+
+  >>> feature.additionalEggs = [u'package2']
+
+Let's verify that both, the `IFeature` and `IDocumentationFeature`
+interface, are provided:
+
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.IDocumentationFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.IDocumentationFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  Restructured Text Documentation
+  >>> print feature.featureDocumentation
+  <BLANKLINE>
+  The ReSTructured Text Documentation feature hooks up scripts
+  for generating html (or latex for that matter) documentation
+  from ReSTructured text files using Sphinx.  There are a few
+  pieces involved in this hookup:
+  ...
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:documentation">
+    <additionalEggs>
+      <item>package2</item>
+    </additionalEggs>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = metadata.DocumentationFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:documentation">
+  ...       <additionalEggs>
+  ...         <item>package2</item>
+  ...       </additionalEggs>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <DocumentationFeature u'Restructured Text Documentation'>
+
+  >>> feature.additionalEggs
+  [u'package2']
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> prj.update()
+  >>> print prj.buildout.render()
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = docs
+  versions = versions
+  <BLANKLINE>
+  [docs]
+  recipe = z3c.recipe.sphinxdoc
+  eggs = z3c.recipe.sphinxdoc
+         test [docs]
+         package2
+  layout.html =
+  default.css =

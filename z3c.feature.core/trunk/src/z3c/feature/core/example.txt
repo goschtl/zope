@@ -1,0 +1,312 @@
+============================
+XML Configuration Processing
+============================
+
+We have an xml configuration layer for the project builder.
+
+  >>> from z3c.feature.core import xml
+
+Let's start by defining the simplest possible project definition in
+xml:
+
+  >>> hw = xml.xmlToProject('<project name="HelloWorld"/>')
+
+This provides you with a full project using default settings, once
+you've run the update method.
+
+  >>> hw.setup.update()
+  >>> hw.name
+  u'HelloWorld'
+  >>> hw.setup.version
+  u'0.1.0'
+  >>> hw.setup.license
+  u'GPLv3'
+  >>> hw.setup.url
+  u'http://pypi.python.org/pypi/HelloWorld'
+  >>> hw.setup.keywords
+  []
+  >>> hw.setup.author
+  u''
+  >>> hw.setup.author_email
+  u''
+  >>> hw.setup.description
+  u''
+  >>> print hw.commentHeader
+  ##############################################################################
+  #
+  # This file is part of %(name)s.
+  #
+  # %(name)s is free software: you can redistribute it and/or modify
+  # it under the terms of the GNU General Public License as published by
+  # the Free Software Foundation, either version 3 of the License, or
+  # (at your option) any later version.
+  #
+  # %(name)s is distributed in the hope that it will be useful,
+  # but WITHOUT ANY WARRANTY; without even the implied warranty of
+  # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  # GNU General Public License for more details.
+  #
+  # You should have received a copy of the GNU General Public License
+  # along with %(name)s.  If not, see <http://www.gnu.org/licenses/>.
+  #
+  ##############################################################################
+
+
+Project Metadata
+----------------
+
+We can customize this project by adding some features.  The simplest
+feature is the meta-data feature which lets you define some typical
+project meta-data:
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:meta-data">
+  ...     <license>Zope Public License</license>
+  ...     <version>0.5.0</version>
+  ...     <author>Paul Carduner and Stephan Richter</author>
+  ...     <author-email>zope-dev@zope.org</author-email>
+  ...     <description>A simple Zope 3 Application</description>
+  ...     <license>ZPL 2.1</license>
+  ...     <keywords>
+  ...       <item>zope3</item>
+  ...       <item>HelloWorld</item>
+  ...       <item>project</item>
+  ...     </keywords>
+  ...     <url>http://svn.zope.org/HelloWorld/trunk</url>
+  ...     <commentHeader># Copyright 2009 Cool People.</commentHeader>
+  ...   </feature>
+  ... </project>''')
+
+  >>> hw.name
+  u'HelloWorld'
+  >>> hw.setup.version
+  u'0.5.0'
+  >>> hw.setup.license
+  u'Zope Public License'
+  >>> hw.setup.url
+  u'http://svn.zope.org/HelloWorld/trunk'
+  >>> hw.setup.keywords
+  [u'zope3', u'HelloWorld', u'project']
+  >>> hw.setup.author
+  u'Paul Carduner and Stephan Richter'
+  >>> hw.setup.author_email
+  u'zope-dev@zope.org'
+  >>> hw.setup.description
+  u'A simple Zope 3 Application'
+  >>> hw.commentHeader
+  u'# Copyright 2009 Cool People.'
+
+We can also use a custom comment header feature.  Since it apepars
+after the meta data feature, it can overwrite anything done by the
+meta data feature.
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:meta-data" />
+  ...   <feature type="z3c.feature.core:comment-header-ZPL">
+  ...     <year>2009</year>
+  ...     <author>Paul Carduner</author>
+  ...   </feature>
+  ... </project>''')
+
+  >>> hw
+  <BuildoutProjectBuilder u'HelloWorld'>
+
+  >>> print hw.commentHeader
+  ##############################################################################
+  #
+  # Copyright (c) 2009 Paul Carduner.
+  # All Rights Reserved.
+  #
+  # This software is subject to the provisions of the Zope Public License,
+  # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+  # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+  # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+  # FOR A PARTICULAR PURPOSE.
+  #
+  ##############################################################################
+
+Here is another example of a nest feature that adds a proprietary
+copyright header.
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:proprietary-header">
+  ...     <year>2009</year>
+  ...     <company>Awesomeness LLC.</company>
+  ...     <location>Heaven on Earth</location>
+  ...   </feature>
+  ... </project>''')
+  >>> print hw.commentHeader
+  ###############################################################################
+  #
+  # Copyright 2009 by Awesomeness LLC., Heaven on Earth
+  #
+  ###############################################################################
+
+
+Buildout
+--------
+
+We can also configure buildout related features that go beyond the
+defaults.  Let's first look at the defaults.
+
+  >>> hw = xml.xmlToProject('<project name="HelloWorld"/>')
+  >>> hw.buildout
+  <BuildoutConfigBuilder for u'HelloWorld'>
+  >>> hw.buildout.extends
+  [u'http://download.zope.org/zope3.4/3.4.0/versions.cfg']
+
+Lets add a python interpreter feature
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:python-interpreter"/>
+  ... </project>''')
+
+  >>> hw.buildout
+  <BuildoutConfigBuilder for u'HelloWorld'>
+
+
+Testing
+-------
+
+Let's add some unit testing features:
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:unit-testing"/>
+  ... </project>''')
+
+  >>> hw.update()
+  >>> hw.buildout.names
+  [u'test', u'coverage-test', u'coverage-report']
+
+  >>> hw.buildout['test']
+  <PartBuilder u'test'>
+
+  >>> hw.buildout['coverage-test']
+  <PartBuilder u'coverage-test'>
+
+  >>> hw.buildout['coverage-report']
+  <PartBuilder u'coverage-report'>
+
+  >>> hw.setup.extras_requires
+  {'test': ['z3c.coverage', 'zope.testing']}
+
+  >>> hw.package['tests']['test_doc.py']
+  <SimpleFileBuilder u'test_doc.py'>
+
+  >>> hw.package['README.txt']
+  <SimpleFileBuilder u'README.txt'>
+
+
+Python Shell Script
+-------------------
+
+Lets add a python shell script feature:
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:script"/>
+  ... </project>''')
+
+  >>> hw.update()
+  >>> hw.setup.entry_points
+  {'console_scripts': [u'HelloWorld = HelloWorld.script:main']}
+  >>> hw.package['script.py']
+  <ModuleBuilder u'script.py'>
+
+  >>> print hw.package['script.py'].render()
+  ##############################################################################
+  #
+  # This file is part of HelloWorld....
+  #
+  ##############################################################################
+  """Module Documentation"""
+  <BLANKLINE>
+  def main(args=None):
+      """Runs the HelloWorld script from the HelloWorld project"""
+      print "Successfully ran the HelloWorld script"
+
+
+Documentation Generation
+------------------------
+
+Lets add some documentation generation.
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:documentation"/>
+  ... </project>''')
+
+  >>> hw.update()
+
+We now have a docs buildout section.
+
+  >>> print hw.buildout['docs'].render()
+  [docs]
+  recipe = z3c.recipe.sphinxdoc
+  eggs = z3c.recipe.sphinxdoc
+         HelloWorld [docs]
+  layout.html =
+  default.css =
+
+and a docs extras_require section:
+
+  >>> print hw.setup.extras_requires
+  {'docs': ['Sphinx']}
+
+and an index.txt template file:
+
+  >>> hw.package['index.txt']
+  <DocumentationFileBuilder u'index.txt'>
+
+  >>> print hw.package['index.txt'].render()
+  ========================
+  HelloWorld Documentation
+  ========================
+  <BLANKLINE>
+  Contents:
+  <BLANKLINE>
+  .. toctree::
+     :maxdepth: 2
+  <BLANKLINE>
+  Indices and tables
+  ==================
+  <BLANKLINE>
+  * :ref:`genindex`
+  * :ref:`modindex`
+  * :ref:`search`
+
+If we do this in combination with other builders that produce *.txt
+files (like the doctest builder), then those get added to the
+contents.
+
+  >>> hw = xml.xmlToProject('''
+  ... <project name="HelloWorld">
+  ...   <feature type="z3c.feature.core:documentation"/>
+  ...   <feature type="z3c.feature.core:unit-testing"/>
+  ... </project>''')
+
+  >>> hw.update()
+  >>> print hw.package['index.txt'].render()
+  ========================
+  HelloWorld Documentation
+  ========================
+  <BLANKLINE>
+  Contents:
+  <BLANKLINE>
+  .. toctree::
+     :maxdepth: 2
+     README
+  <BLANKLINE>
+  Indices and tables
+  ==================
+  <BLANKLINE>
+  * :ref:`genindex`
+  * :ref:`modindex`
+  * :ref:`search`
+  <BLANKLINE>

@@ -1,0 +1,4 @@
+<div metal:use-macro="macro:form"/>
+
+<p>The comment header will look like this:</p>
+<pre tal:content="view/commentHeader"/>
