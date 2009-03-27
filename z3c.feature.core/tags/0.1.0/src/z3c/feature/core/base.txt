@@ -1,0 +1,413 @@
+=================
+Building Features
+=================
+
+Features are the high-level concept that is used to build projects. This
+document provides developers with a brief introduction on developing features
+for ZBoiler.
+
+Let's use an example. Let's say that we would like to implement a a feature
+called "Project Management" that creates a few text files -- `CHANGES.txt`,
+`TODO.txt`, and `AUTHORS.txt` -- in the project root.
+
+
+Getting Started
+---------------
+
+While not necessary, it is highly recommended to use the `BaseFeature` class
+as the base implementation, as it fulfills the entire feature API:
+
+  >>> from z3c.feature.core import base
+
+  >>> class ProjectManagementFeature(base.BaseFeature):
+  ...     pass
+
+Let's now instantiate the feature and ensure that the interface is fulfilled.
+
+  >>> pm = ProjectManagementFeature()
+
+  >>> from zope.interface.verify import verifyObject
+  >>> from z3c.feature.core import interfaces
+
+  >>> verifyObject(interfaces.IFeature, pm)
+  True
+
+Every feature must provide an interface that describes its configuration
+parameters. This interface is extracted using a small helper function:
+
+  >>> base.getFeatureSchema(pm)
+  <InterfaceClass z3c.feature.core.interfaces.IBaseFeatureSchema>
+
+In this case, the schema is trivial and we will later see how it can be
+changed. If no schema is found, `None` is returned:
+
+  >>> base.getFeatureSchema(object())
+
+A feature also provides a title and some documentation about itself.
+
+    >>> print pm.featureTitle
+    ProjectManagementFeature
+
+    >>> print pm.featureDocumentation
+    <BLANKLINE>
+    Sorry, but the authors of the "ProjectManagementFeature" feature are big
+    meanies who don't like to make software accessible.
+
+Clearly the default values are not desirable and we will change them in the
+next iteration of our project management feature.
+
+Since pluggability is an important aspect of the system, each feature should
+be registered as an entry point for the group:
+
+  >>> interfaces.FEATURE_GROUP
+  'z3c.feature'
+
+Since we have not yet registered the new feature as an entry point, finding
+the entry point results in nothing:
+
+  >>> pm.findEntryPoint()
+  (None, None)
+
+Usually, the first part of the result is the egg name and the latter is the
+entry point name within the group.
+
+Once the feature is setup, we can apply it to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.ProjectBuilder(u'test')
+
+Before the feature can be applied, it is updated, so that it has the chance to
+fill in missing values. The `update()` method takes an optional argument that
+is a list of all features to be applied. This allows the feature to access
+other features data.
+
+  >>> pm.update({})
+
+Now we can apply the feature to the project:
+
+  >>> pm.applyTo(prj)
+
+Since we have not implemented any behavior, applying the project management
+feature has no visible effect:
+
+  >>> sorted(prj.keys())
+  []
+
+However, there is also a helper function that applies a list of features to a
+project:
+
+  >>> base.applyFeatures([pm], prj)
+
+A nice side effect of this function is that it tells the project the features
+it has applied:
+
+  >>> interfaces.IHaveAppliedFeatures.providedBy(prj)
+  True
+  >>> prj.appliedFeatures
+  [<ProjectManagementFeature 'ProjectManagementFeature'>]
+
+Another big part of the story is the ability to import from and export to XML,
+so that project definitions can be easily shared. Let's export our project
+management feature first:
+
+  >>> print pm.toXML(asString=True, prettyPrint=True)
+  <feature type="unknown"/>
+
+Pretty boring, simply because our feature dows not have a schema yet and has
+not been registered as an entry point. Let's register our feature as an entry
+point now:
+
+  >>> import pkg_resources
+  >>> from z3c.feature.core import testing
+
+  >>> dist = testing.FeatureDistribution()
+  >>> pkg_resources.working_set.add(dist)
+
+  >>> dist.addEntryPoint(
+  ...   interfaces.FEATURE_GROUP, 'ProjectManagement', ProjectManagementFeature)
+
+Now that the entry point is defined, the feature also finds it easily:
+
+  >>> pm.findEntryPoint()
+  ('z3c.feature.testing', 'ProjectManagement')
+
+Let's render the XML again:
+
+  >>> print pm.toXML(asString=True, prettyPrint=True)
+  <feature type="z3c.feature.testing:ProjectManagement"/>
+
+Of course we can also load a feature from XML. This is realized via a static
+method.
+
+  >>> ProjectManagementFeature.fromXML(
+  ...     '<feature type="z3c.feature.testing:ProjectManagement"/>')
+  <ProjectManagementFeature 'ProjectManagementFeature'>
+
+Again, since no feature schema is defined, importing is pretty simple as
+well. Let's now look into developing a more interesting feature.
+
+
+A Complete Feature
+------------------
+
+Let's now implement a complete feature that actually generates the promised
+files and provides better documentation as well.
+
+  >>> from z3c.builder.core.base import FileBuilder
+  >>> class HeaderFileBuilder(FileBuilder):
+  ...     def __init__(self, name, title=''):
+  ...         super(HeaderFileBuilder, self).__init__(name)
+  ...         self.title = title
+  ...     def render(self):
+  ...         cols = len(self.title)
+  ...         return '='*cols + '\n'+self.title+'\n' + '='*cols if cols else ''
+
+  >>> import zope.interface
+  >>> class IProjectManagementSchema(zope.interface.Interface):
+  ...     includeHeaders = zope.schema.Bool(
+  ...         title=u'Include Headers',
+  ...         description=u'If set, include headers in generated files.',
+  ...         default=False)
+  >>> zope.interface.alsoProvides(
+  ...     IProjectManagementSchema, interfaces.IFeatureSchema)
+
+  >>> class ProjectManagementFeature(base.BaseFeature):
+  ...     zope.interface.implements(IProjectManagementSchema)
+  ...
+  ...     featureTitle = u'Project Management'
+  ...     featureDocumentation = (
+  ...         u'Adds a CHANGES.txt, TODO.txt, and AUTHORS.txt to the '
+  ...         u'project root.')
+  ...
+  ...     includeHeaders = False
+  ...
+  ...     def _applyTo(self, context):
+  ...         for name in (u'TODO.txt', u'CHANGES.txt', u'AUTHORS.txt'):
+  ...             title = name[:-4] if self.includeHeaders else ''
+  ...             builder = HeaderFileBuilder(name, title)
+  ...             context.add(builder)
+
+Everything is pretty straightforward. The only part to look out for is that
+instead of implementing ``applyTo()``, you should implement the ``_applyTo()``
+method. Let's now try it out.
+
+  >>> pm = ProjectManagementFeature()
+  >>> pm
+  <ProjectManagementFeature u'Project Management'>
+  >>> pm.featureTitle
+  u'Project Management'
+  >>> pm.featureDocumentation
+  u'Adds a CHANGES.txt, TODO.txt, and AUTHORS.txt to the project root.'
+
+Now we are ready to apply the feature on the project.
+
+  >>> pm.update()
+  >>> pm.applyTo(prj)
+
+  >>> sorted(prj)
+  [u'AUTHORS.txt', u'CHANGES.txt', u'TODO.txt']
+
+Since we did not set the `includeHeader` flag, all files should be empty:
+
+  >>> prj['AUTHORS.txt'].render()
+  ''
+
+Let's now try with the flag turned on:
+
+  >>> pm.includeHeaders = True
+  >>> prj = project.ProjectBuilder(u'test')
+
+  >>> pm.update()
+  >>> pm.applyTo(prj)
+
+  >>> print prj['AUTHORS.txt'].render()
+  =======
+  AUTHORS
+  =======
+
+Let's also look at XML serialization again. First the serialization to XML:
+
+  >>> dist.addEntryPoint(
+  ...   interfaces.FEATURE_GROUP, 'ProjectManagement', ProjectManagementFeature)
+
+  >>> print pm.toXML(True, True)
+  <feature type="z3c.feature.testing:ProjectManagement">
+    <includeHeaders>True</includeHeaders>
+  </feature>
+
+Let's now take that output and generate the feature again:
+
+  >>> pm2 = ProjectManagementFeature.fromXML('''\
+  ... <feature type="z3c.feature.testing:ProjectManagement">
+  ...   <includeHeaders>True</includeHeaders>
+  ... </feature>
+  ... ''')
+  >>> pm2
+  <ProjectManagementFeature u'Project Management'>
+  >>> pm2.includeHeaders
+  True
+
+  >>> pm2 = ProjectManagementFeature.fromXML('''\
+  ... <feature type="z3c.feature.testing:ProjectManagement">
+  ...   <includeHeaders>False</includeHeaders>
+  ... </feature>
+  ... ''')
+  >>> pm2.includeHeaders
+  False
+
+And that's it! Let's now talk about some advanced features.
+
+
+Project Singletons
+------------------
+
+Features can be used in two ways: singletons and multiples. A singleton
+feature instance can only be applied once to the project. Examples include
+the meta-data, project setup, documentation features. Multiples, on the other
+hand, can have multiple instances applied to a project. Good examples include
+interface, class and HTML page features. By default, the singleton flag is
+set.
+
+  >>> pm.featureSingleton
+  True
+
+
+Dependencies
+------------
+
+In some cases, features depend on other features. Those dependencies come in
+two flavors:
+
+(1) A particular feature must be applied before another feature can be
+    applied.
+
+(2) A particular feature needs to access information of another feature.
+
+Dependencies are specified as part of the feature and are referenced by entry
+point name.
+
+Let's first look at case (1). As an example, we create a feature that creates
+a directory and one that puts a file in that directory.
+
+  >>> from z3c.builder.core.base import DirectoryBuilder
+  >>> class DocsDirectoryFeature(base.BaseFeature):
+  ...     name = u'docs'
+  ...     def _applyTo(self, context):
+  ...         builder = DirectoryBuilder(self.name)
+  ...         context.add(builder)
+  >>> docs = DocsDirectoryFeature()
+
+  >>> dist.addEntryPoint(
+  ...   interfaces.FEATURE_GROUP, 'DocsDirectoryFeature', DocsDirectoryFeature)
+
+  >>> class IndexFileFeature(base.BaseFeature):
+  ...     featureDependencies = ('DocsDirectoryFeature',)
+  ...
+  ...     def _applyTo(self, context):
+  ...         builder = HeaderFileBuilder(u'index.rst', u'Index')
+  ...         context['docs'].add(builder)
+  >>> index = IndexFileFeature()
+
+Let's now apply the two features to a newly created project:
+
+  >>> prj = project.ProjectBuilder(u'test')
+  >>> base.applyFeatures([index, docs], prj)
+
+  >>> prj.appliedFeatures
+  [<DocsDirectoryFeature 'DocsDirectoryFeature'>,
+   <IndexFileFeature 'IndexFileFeature'>]
+
+  >>> sorted(prj)
+  [u'docs']
+  >>> sorted(prj['docs'])
+  [u'index.rst']
+
+It worked. Note that the applied features list even provides the correct order
+in which the features were applied.
+
+Let's now look at case (2). Here the file builder simply wants to access the
+information of the directory builder. In this case dependency resolution is
+not necessary, though having it does not provide a problem either.
+
+To access a feature, we need to implement the `update()` method. So in this
+case, we would like to reuse the name of the docs directory feature.
+
+  >>> class IndexFileFeature(base.BaseFeature):
+  ...     featureDependencies = ('DocsDirectoryFeature',)
+  ...
+  ...     def update(self, features):
+  ...         self.dirName = features['DocsDirectoryFeature'].name
+  ...
+  ...     def _applyTo(self, context):
+  ...         builder = HeaderFileBuilder(
+  ...             u'index.rst', u'Index for `%s`' %self.dirName)
+  ...         context.add(builder)
+  >>> index = IndexFileFeature()
+
+Let's now apply the two features to a newly created project:
+
+  >>> prj = project.ProjectBuilder(u'test')
+  >>> base.applyFeatures([index, docs], prj)
+
+  >>> prj.appliedFeatures
+  [<DocsDirectoryFeature 'DocsDirectoryFeature'>,
+   <IndexFileFeature 'IndexFileFeature'>]
+
+  >>> sorted(prj)
+  [u'docs', u'index.rst']
+  >>> print prj['index.rst'].render()
+  ================
+  Index for `docs`
+  ================
+
+
+Enforcing Uniqueness by Feature Type
+------------------------------------
+
+It is sometimes necessary to enforce that only one feature of a particular
+*type* of feature is applied. For example, it makes little sense to apply a
+Google App Engine and Zope 3 project feature in the same run.
+
+You can get a list of all feature types using a simple function call:
+
+  >>> single = base.BaseFeature()
+  >>> base.getFeatureTypes(single)
+  []
+
+So our little single feature does not have any types. Let's now create a
+feature type:
+
+  >>> class ISingle(zope.interface.Interface):
+  ...     pass
+  >>> zope.interface.alsoProvides(ISingle, interfaces.IFeatureType)
+
+Once the new type is applied to the single feature, it is found via the query:
+
+  >>> zope.interface.alsoProvides(single, ISingle)
+  >>> base.getFeatureTypes(single)
+  [<InterfaceClass __builtin__.ISingle>]
+
+Let's new create a second feature:
+
+  >>> double = base.BaseFeature()
+  >>> zope.interface.alsoProvides(double, ISingle)
+
+Since both features support the `ISingle` feature type, they cannot be applied
+to the sam eproject:
+
+  >>> prj = project.ProjectBuilder(u'test')
+  >>> base.applyFeatures([single, double], prj)
+  Traceback (most recent call last):
+  ...
+  DuplicateFeatureConflictError: <InterfaceClass __builtin__.ISingle>
+
+However, when the features are not singletons, they can be applied together:
+
+  >>> single.featureSingleton = False
+  >>> double.featureSingleton = False
+
+  >>> base.applyFeatures([single, double], prj)
+  >>> prj.appliedFeatures
+  [<BaseFeature 'BaseFeature'>, <BaseFeature 'BaseFeature'>]
+
+And that's it.

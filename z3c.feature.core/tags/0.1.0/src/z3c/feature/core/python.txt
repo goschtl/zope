@@ -1,0 +1,230 @@
+===============
+Python Features
+===============
+
+The Python features are designed to write Python code and setup the Python
+interpreter.
+
+  >>> from z3c.feature.core import python, interfaces
+
+
+Python Interpreter
+------------------
+
+This feature installs the buildout recipe to create a Python interpreter with
+the context of the package.
+
+  >>> feature = python.PythonInterpreterFeature()
+  >>> feature
+  <PythonInterpreterFeature u'Python Interpreter'>
+
+  >>> feature.executableName = 'py'
+
+Let's verify that both, the `IFeature` and `IPythonInterpreterFeature`
+interface, are provided:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.IPythonInterpreterFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> from z3c.feature.core import base
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.IPythonInterpreterFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  Python Interpreter
+  >>> print feature.featureDocumentation
+  <BLANKLINE>
+  The Python Interpreter feature creates an alias to whatever python
+  interpreter you want inside your project's bin/ directory.
+  Furthermore, it adds your project and all its egg dependencies to the
+  python path.  After running buildout from your project directory you
+  can start up the interpreter as normal::
+  <BLANKLINE>
+    $ ./bin/python
+  ...
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:python-interpreter">
+    <executableName>py</executableName>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = python.PythonInterpreterFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:python-interpreter">
+  ...       <executableName>py</executableName>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <PythonInterpreterFeature u'Python Interpreter'>
+
+  >>> feature.executableName
+  'py'
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> prj.buildout.update()
+  >>> print prj.buildout.render()
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = python
+  versions = versions
+  <BLANKLINE>
+  [python]
+  recipe = zc.recipe.egg
+  interpreter = py
+  eggs = test
+
+Okay, we applied the feature successfully by creating an interpreter part.
+
+
+Script Feature
+--------------
+
+This feature installs the buildout recipe to create a Python interpreter with
+the context of the package.
+
+  >>> feature = python.ScriptFeature()
+  >>> feature
+  <ScriptFeature u'Command Line Script'>
+
+  >>> feature.scriptName = u'demo'
+  >>> feature.scriptFile = u'demo.py'
+  >>> feature.scriptFunction = u'script'
+
+Let's verify that both, the `IFeature` and `IScriptFeature` interface, are
+provided:
+
+  >>> verifyObject(interfaces.IFeature, feature)
+  True
+  >>> verifyObject(interfaces.IScriptFeature, feature)
+  True
+
+The feature schema is:
+
+  >>> base.getFeatureSchema(feature)
+  <InterfaceClass z3c.feature.core.interfaces.IScriptFeature>
+
+Good documentation is also provided:
+
+  >>> print feature.featureTitle
+  Command Line Script
+  >>> print feature.featureDocumentation
+  The Command Line Script Feature exposes a python function in your
+  project as a command line script.  There are several pieces to this...
+
+This is a singleton feature:
+
+  >>> feature.featureSingleton
+  True
+
+Serialization to XML works:
+
+  >>> print feature.toXML(True, True)
+  <feature type="z3c.feature.core:script">
+    <scriptName>demo</scriptName>
+    <scriptFile>demo.py</scriptFile>
+    <scriptFunction>script</scriptFunction>
+  </feature>
+
+Deserialization from XML works:
+
+  >>> feature = python.ScriptFeature.fromXML('''\
+  ...     <feature type="z3c.feature.core:script">
+  ...       <scriptName>demo</scriptName>
+  ...       <scriptFile>demo.py</scriptFile>
+  ...       <scriptFunction>script</scriptFunction>
+  ...     </feature>
+  ... ''')
+  >>> feature
+  <ScriptFeature u'Command Line Script'>
+
+  >>> feature.scriptName
+  u'demo'
+  >>> feature.scriptFile
+  u'demo.py'
+  >>> feature.scriptFunction
+  u'script'
+
+Let's now apply the feature to a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.BuildoutProjectBuilder(u'test')
+
+  >>> feature.update()
+  >>> feature.applyTo(prj)
+
+And the data is applied:
+
+  >>> prj.update()
+
+  >>> print prj.buildout.render()
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = scripts
+  versions = versions
+  <BLANKLINE>
+  [scripts]
+  recipe = zc.recipe.egg:scripts
+  eggs = test
+  script = demo
+
+  >>> print prj.setup.render()
+  #...
+  setup (
+      name = 'test',
+      version = '0.1.0',
+      author = u"",
+      author_email = u"",
+      description = u"",
+      license = "GPLv3",
+      keywords = u"",
+      url = "http://pypi.python.org/pypi/test",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [],
+      extras_require = {},
+      install_requires = [
+          'setuptools',
+          ],
+      zip_safe = False,
+      entry_points = {'console_scripts': [u'demo = test.demo:script']},
+      )
+
+  >>> print prj.package['demo.py'].render()
+  ##############################################################################
+  #
+  # This file is part of test...
+  #
+  ##############################################################################
+  """Module Documentation"""
+  <BLANKLINE>
+  def script(args=None):
+      """Runs the demo script from the test project"""
+      print "Successfully ran the demo script"
