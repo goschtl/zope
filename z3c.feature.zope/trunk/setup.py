@@ -11,9 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Setup"""
+import os
+import xml.sax.saxutils
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    text = unicode(text, 'utf-8').encode('ascii', 'xmlcharrefreplace')
+    return xml.sax.saxutils.escape(text)
 
 setup (
     name = 'z3c.feature.zope',
@@ -21,6 +27,11 @@ setup (
     author = u"Paul Carduner and Stephan Richter",
     author_email = u"zope-dev@zope.org",
     description = u"Zope Features to use with z3c.builder.core",
+    long_description=(
+        read('README.txt')
+        +"\n\n"+
+        read('CHANGES.txt')
+        ),
     license = "ZPL",
     keywords = u"zope3 project builder feature",
     url = "http://pypi.python.org/pypi/z3c.feature.zope",
