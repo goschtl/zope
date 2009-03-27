@@ -1,0 +1,891 @@
+=========================
+The "Hello World" Example
+=========================
+
+This document describes how to build a Zope 3 based hello world Web
+application. Without much chatter, let's get started. In the simplest case, we
+just have a plain project builder:
+
+  >>> from z3c.builder.core import interfaces, project
+  >>> builder = project.BuildoutProjectBuilder(u'helloworld')
+  >>> builder
+  <BuildoutProjectBuilder u'helloworld'>
+
+This object provides the ``IProjectBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IProjectBuilder, builder)
+  True
+
+We can now write the project to a directory of our choice.
+
+  >>> import tempfile
+  >>> buildDir = tempfile.mkdtemp()
+
+  >>> builder.update()
+  >>> builder.write(buildDir)
+
+We now have a very basic project:
+
+  >>> ls(buildDir)
+  helloworld/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      helloworld/
+        __init__.py
+
+
+Configuring the Buildout
+------------------------
+
+Initially, the buildout should be completely empty:
+
+  >>> more(buildDir, 'helloworld', 'buildout.cfg')
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts =
+  versions = versions
+
+Let's now add a part that installs a Python interpreter:
+
+  >>> from z3c.builder.core import buildout
+  >>> part = buildout.PartBuilder(u'python')
+  >>> part.addValue(u'recipe', 'zc.recipe.egg')
+  >>> part.addValue(u'interpreter', 'python')
+  >>> part.addValue(u'eggs', builder.name)
+
+  >>> builder.buildout.add(part)
+  u'python'
+
+When rebuilding the project, the part should now be available.
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> more(buildDir, 'helloworld', 'buildout.cfg')
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = python
+  versions = versions
+  <BLANKLINE>
+  [python]
+  recipe = zc.recipe.egg
+  interpreter = python
+  eggs = helloworld
+
+
+Configuring the setup.py file
+-----------------------------
+
+A setup.py file is always directly associated with a project, and
+every project has one by default.
+
+    >>> builder.setup
+    <SetupBuilder for u'helloworld'>
+
+    >>> verifyObject(interfaces.ISetupBuilder, builder.setup)
+    True
+
+We can add some additional packages that we want to depend on.
+
+    >>> builder.setup.install_requires.append('zope.component')
+    >>> builder.setup.install_requires.append('zope.interface')
+    >>> builder.setup.install_requires.append('zope.container')
+
+And some other meta data:
+
+    >>> builder.setup.version = u'0.5.0dev'
+    >>> builder.setup.author = u'Paul Carduner'
+    >>> builder.setup.license = u'ZPL'
+    >>> builder.setup.author_email = u'paul@carduner.net'
+
+And also some extra specialized requirements:
+
+    >>> builder.setup.extras_require
+    {}
+    >>> builder.setup.addExtrasRequires('test', ['z3c.coverage', 'zope.testing'])
+    >>> builder.setup.addExtrasRequires('test', ['zope.app.testing'])
+    >>> builder.setup.extras_require
+    {'test': ['z3c.coverage', 'zope.testing', 'zope.app.testing']}
+
+Now we can render the setup.py file.
+
+    >>> builder.update()
+    >>> print builder.setup.render()
+    #######################################################################...
+    #
+    # This file is part of helloworld. ...
+    #
+    #######################################################################...
+    <BLANKLINE>
+    """Setup"""
+    from setuptools import setup, find_packages
+    <BLANKLINE>
+    setup (
+        name = 'helloworld',
+        version = '0.5.0dev',
+        author = u"Paul Carduner",
+        author_email = u"paul@carduner.net",
+        description = u"",
+        license = "ZPL",
+        keywords = u"",
+        url = "http://pypi.python.org/pypi/helloworld",
+        classifiers = [],
+        packages = find_packages('src'),
+        include_package_data = True,
+        package_dir = {'':'src'},
+        namespace_packages = [],
+        extras_require = {'test': ['z3c.coverage',
+               'zope.testing',
+               'zope.app.testing']},
+        install_requires = [
+            'setuptools',
+            'zope.component',
+            'zope.interface',
+            'zope.container',
+            ],
+        zip_safe = False,
+        entry_points = {},
+        )
+
+
+Rendering Interfaces
+--------------------
+
+We are now ready to generate the actual code. To do that, let's create an
+`interfaces.py` file module:
+
+  >>> from z3c.builder.core import python
+  >>> ifaces = python.ModuleBuilder(u'interfaces.py')
+  >>> builder.package['interfaces'] = ifaces
+
+Next we add a simple interface.
+
+  >>> ihw = python.InterfaceBuilder(u'IHelloWorld')
+  >>> ifaces.add(ihw)
+  u'IHelloWorld'
+
+Let's now create the project again:
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> ls(buildDir)
+  helloworld/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      helloworld/
+        __init__.py
+        interfaces.py
+
+  >>> more(buildDir, 'helloworld', 'src', 'helloworld', 'interfaces.py')
+  #######################################################################...
+  #
+  # This file is part of helloworld. ...
+  #
+  #######################################################################...
+  from zope.interface import Interface
+  <BLANKLINE>
+  class IHelloWorld(Interface):
+      """"""
+  <BLANKLINE>
+
+Next we add some fields and methods to the interface:
+
+  >>> ihw.add(python.FieldBuilder(
+  ...     name = u'who',
+  ...     type = 'zope.schema.TextLine',
+  ...     title=u'Who',
+  ...     description=u'Name of the person sending the message',
+  ...     required=True))
+  u'who'
+
+  >>> ihw.add(python.FieldBuilder(
+  ...     name = u'when',
+  ...     type = 'zope.schema.Date',
+  ...     title=u'When',
+  ...     description=u'Date of the message sent.',
+  ...     required=True))
+  u'when'
+
+  >>> ihw.add(python.FieldBuilder(
+  ...     name = u'what',
+  ...     type = 'zope.schema.Choice',
+  ...     title = u'What',
+  ...     description = u'What type of message it is.',
+  ...     values = ['cool', 'sunny', 'best'],
+  ...     default=u'cool',
+  ...     required=True))
+  u'what'
+
+  >>> ihw.add(python.FunctionBuilder(
+  ...     name = u'getMessage',
+  ...     args = (),
+  ...     kwargs = {'template':'A %(what)s world from %(who)s on %(when)s.'},
+  ...     docstring = 'Return the full hello world message'
+  ...     ))
+  u'getMessage'
+
+Now a full interface/schema should be rendered:
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> more(buildDir, 'helloworld', 'src', 'helloworld', 'interfaces.py')
+  #######################################################################...
+  #
+  # This file is part of helloworld. ...
+  #
+  #######################################################################...
+  """Module Documentation"""
+  from zope.interface import Interface
+  from zope.schema import Choice
+  from zope.schema import Date
+  from zope.schema import TextLine
+  <BLANKLINE>
+  class IHelloWorld(Interface):
+      """"""
+      who = TextLine(
+          title=u'Who',
+          description=u'Name of the person sending the message',
+          required=True,
+          )
+  <BLANKLINE>
+      when = Date(
+          title=u'When',
+          description=u'Date of the message sent.',
+          required=True,
+          )
+  <BLANKLINE>
+      what = Choice(
+          title=u'What',
+          description=u'What type of message it is.',
+          values=['cool', 'sunny', 'best'],
+          required=True,
+          default=u'cool',
+          )
+  <BLANKLINE>
+      def getMessage(template='A %(what)s world from %(who)s on %(when)s.'):
+          """Return the full hello world message"""
+
+
+Rendering Classes
+-----------------
+
+Now that we have an interface, let's create a content class for it:
+
+  >>> content = python.ModuleBuilder(u'content.py')
+  >>> builder.package.add(content)
+  u'content.py'
+
+  >>> chw = python.ClassFromInterfaceBuilder(
+  ...     name = u'HelloWorld',
+  ...     interface = 'helloworld.interfaces.IHelloWorld',
+  ...     bases = ('persistent.Persistent',
+  ...              'zope.container.contained.Contained'),
+  ...     )
+
+  >>> chw.addImplementation(
+  ...     'getMessage',
+  ...     'return template %self.__dict__')
+
+  >>> content.add(chw)
+  u'HelloWorld'
+
+Let's see what the output looks like.
+
+    >>> builder.update()
+    >>> builder.write(buildDir, True)
+
+    >>> ls(buildDir)
+    helloworld/
+      bootstrap.py
+      buildout.cfg
+      setup.py
+      src/
+        helloworld/
+          __init__.py
+          content.py
+          interfaces.py
+
+    >>> more(buildDir, 'helloworld', 'src', 'helloworld', 'content.py')
+    #######################################################################...
+    #
+    # This file is part of helloworld. ...
+    #
+    #######################################################################...
+    """Module Documentation"""
+    from helloworld.interfaces import IHelloWorld
+    from persistent import Persistent
+    from zope.container.contained import Contained
+    from zope.interface import implements
+    from zope.schema.fieldproperty import FieldProperty
+    <BLANKLINE>
+    class HelloWorld(Persistent, Contained):
+        """Implementation of ``helloworld.interfaces.IHelloWorld``"""
+        implements(IHelloWorld)
+    <BLANKLINE>
+        who = FieldProperty(IHelloWorld['who'])
+        when = FieldProperty(IHelloWorld['when'])
+        what = FieldProperty(IHelloWorld['what'])
+    <BLANKLINE>
+        def getMessage(self, template='A %(what)s world ...'):
+            """See ``helloworld.interfaces.IHelloWorld``."""
+            return template %self.__dict__
+
+
+Rendering Configuration
+-----------------------
+
+Now that we have a content, we have content, let's secure it using ZCML
+configuration. First we create a ZCML file builder.
+
+  >>> from z3c.builder.core import zcml
+  >>> config = zcml.ZCMLFileBuilder(u'configure.zcml')
+  >>> builder.package.add(config)
+  u'configure'
+
+Next we add a class directive with the necessary security declarations:
+
+  >>> shw = zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'class',
+  ...     attributes = {'class': '.content.HelloWorld'}
+  ...     )
+  >>> config.add(shw)
+  '...'
+
+  >>> shw.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'allow',
+  ...     attributes = {'interface': '.interfaces.IHelloWorld'}
+  ...     ))
+  '...'
+
+  >>> shw.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'allow',
+  ...     attributes = {'set_schema': '.interfaces.IHelloWorld'}
+  ...     ))
+  '...'
+
+Let's now render the project again to see the result:
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> ls(buildDir)
+  helloworld/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      helloworld/
+        __init__.py
+        configure.zcml
+        content.py
+        interfaces.py
+
+  >>> more(buildDir, 'helloworld', 'src', 'helloworld', 'configure.zcml')
+  <configure
+      xmlns:zope="http://namespaces.zope.org/zope"
+      i18n_domain="helloworld"
+      >
+    <zope:class
+        class=".content.HelloWorld"
+        >
+      <zope:allow
+          interface=".interfaces.IHelloWorld"
+          />
+      <zope:allow
+          set_schema=".interfaces.IHelloWorld"
+          />
+    </zope:class>
+  </configure>
+
+
+Rendering Forms
+---------------
+
+All browser code usually lives in a sub-package of that name.
+
+  >>> builder.package.add(python.PackageBuilder(u'browser'))
+  u'browser'
+
+  >>> config.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'include',
+  ...     attributes = {
+  ...         'package': '.browser'}
+  ...     ))
+  '3ed2441d-fbb9-4b32-864a-2786516ee4ba'
+
+  >>> config = zcml.ZCMLFileBuilder(u'configure.zcml')
+  >>> builder.package['browser'].add(config)
+  u'configure'
+
+We'll also create a module for the forms.
+
+  >>> forms = python.ModuleBuilder(u'form.py')
+  >>> builder.package['browser'].add(forms)
+  u'form.py'
+
+Let's see what we got:
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> ls(buildDir)
+  helloworld/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      helloworld/
+        __init__.py
+        configure.zcml
+        content.py
+        interfaces.py
+        browser/
+          __init__.py
+          configure.zcml
+          form.py
+
+Let's first build an add form and register it:
+
+  >>> from z3c.builder.core import form
+  >>> forms.add(form.AddFormBuilder(
+  ...     name=u'HelloWorldAddForm',
+  ...     interface='helloworld.interfaces.IHelloWorld',
+  ...     fields=('who', 'when', 'what'),
+  ...     factory='helloworld.content.HelloWorld',
+  ...     next='index.html'
+  ...     ))
+  u'HelloWorldAddForm'
+
+  >>> config.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = u'page',
+  ...     attributes = {
+  ...         'name': 'index.html',
+  ...         'for': 'zope.container.interfaces.IContainer',
+  ...         'class': '.forms.HelloWorldAddForm',
+  ...         'permission': 'zope.Public'}
+  ...     ))
+  '...'
+
+Next is the edit form:
+
+  >>> forms.add(form.EditFormBuilder(
+  ...     name=u'HelloWorldEditForm',
+  ...     interface='helloworld.interfaces.IHelloWorld',
+  ...     fields=('who', 'when', 'what')
+  ...     ))
+  u'HelloWorldEditForm'
+
+  >>> config.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = u'page',
+  ...     attributes = {
+  ...         'name': 'edit.html',
+  ...         'for': 'helloworld.interfaces.IHelloWorld',
+  ...         'class': '.forms.HelloWorldEditForm',
+  ...         'permission': 'zope.Public'}
+  ...     ))
+  '...'
+
+Finally the display form:
+
+  >>> builder.package['browser']['form.py'].add(form.SimpleDisplayFormBuilder(
+  ...     name=u'HelloWorldDisplayForm',
+  ...     interface='helloworld.interfaces.IHelloWorld',
+  ...     fields=('who', 'when', 'what'),
+  ...     template = u'A %(what)s world from %(who)s on %(when)s.'
+  ...     ))
+  u'HelloWorldDisplayForm'
+
+  >>> config.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = 'page',
+  ...     attributes = {
+  ...         'name': 'index.html',
+  ...         'for': 'helloworld.interfaces.IHelloWorld',
+  ...         'class': '.forms.HelloWorldDisplayForm',
+  ...         'permission': 'zope.Public'}
+  ...     ))
+  '...'
+
+New we are finally ready to generate the code:
+
+    >>> builder.update()
+    >>> builder.write(buildDir, True)
+
+    >>> more(buildDir, 'helloworld', 'src', 'helloworld',
+    ...      'browser', 'form.py')
+    #######################################################################...
+    #
+    # This file is part of helloworld. ...
+    #
+    #######################################################################...
+    """Module Documentation"""
+    from helloworld.content import HelloWorld
+    from helloworld.interfaces import IHelloWorld
+    from z3c.form.field import Fields
+    from z3c.form.form import AddForm
+    from z3c.form.form import DisplayForm
+    from z3c.form.form import EditForm
+    from z3c.form.form import Form
+    from zope.traversing.browser import absoluteURL
+    <BLANKLINE>
+    class HelloWorldAddForm(AddForm):
+        """Add form for IHelloWorld"""
+    <BLANKLINE>
+        label = u'Add Form'
+        fields = Fields(IHelloWorld).select('who', 'when', 'what')
+    <BLANKLINE>
+        def create(self, data):
+            object = HelloWorld()
+            for name, value in data.items():
+                setattr(object, name, value)
+            return object
+    <BLANKLINE>
+        def add(self, object):
+            count = 0
+            while 'HelloWorld-%i' %count in self.context:
+                count += 1;
+            self._name = 'HelloWorld-%i' %count
+            self.context[self._name] = object
+            return object
+    <BLANKLINE>
+        def nextURL(self):
+            return absoluteURL(
+                self.context[self._name], self.request) + '/index.html'
+    <BLANKLINE>
+    <BLANKLINE>
+    class HelloWorldEditForm(EditForm):
+        """Edit form for IHelloWorld"""
+    <BLANKLINE>
+        label = u'Edit Form'
+        fields = Fields(IHelloWorld).select('who', 'when', 'what')
+    <BLANKLINE>
+    <BLANKLINE>
+    class HelloWorldDisplayForm(DisplayForm, Form):
+        """Display form for IHelloWorld"""
+        fields = Fields(IHelloWorld).select('who', 'when', 'what')
+
+    >>> more(buildDir, 'helloworld', 'src', 'helloworld',
+    ...      'browser', 'configure.zcml')
+    <configure
+        xmlns:browser="http://namespaces.zope.org/browser"
+        i18n_domain="helloworld"
+        >
+      <browser:page
+          class=".forms.HelloWorldAddForm"
+          for="zope.container.interfaces.IContainer"
+          name="index.html"
+          permission="zope.Public"
+          />
+      <browser:page
+          class=".forms.HelloWorldEditForm"
+          for="helloworld.interfaces.IHelloWorld"
+          name="edit.html"
+          permission="zope.Public"
+          />
+      <browser:page
+          class=".forms.HelloWorldDisplayForm"
+          for="helloworld.interfaces.IHelloWorld"
+          name="index.html"
+          permission="zope.Public"
+          />
+    </configure>
+
+Note that we also got an include statement in the main configuration file now:
+
+  >>> more(buildDir, 'helloworld', 'src', 'helloworld', 'configure.zcml')
+  <configure
+      xmlns:zope="http://namespaces.zope.org/zope"
+      i18n_domain="helloworld"
+      >
+    ...
+    <zope:include
+        package=".browser"
+        />
+  </configure>
+
+
+Finishing the Application
+-------------------------
+
+Now that we have all the business objects built, we have to provide some
+additional setup.
+
+1. Create an overall application ZCML file.
+
+  >>> appConfig = zcml.ZCMLFileBuilder(u'application.zcml')
+  >>> builder.package['appConfig'] = appConfig
+
+  >>> for name in ('zope.app.component',
+  ...              'zope.app.component.browser',
+  ...              'zope.app.form.browser',
+  ...              'zope.app.pagetemplate',
+  ...              'zope.app.publication',
+  ...              'zope.app.publisher',
+  ...              'zope.app.security',
+  ...              'zope.app.securitypolicy',
+  ...              'zope.viewlet',
+  ...              'z3c.form',
+  ...              'z3c.macro',
+  ...              'z3c.pagelet',
+  ...              'z3c.template'):
+  ...     id = appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...         namespace = zcml.ZOPE_NS,
+  ...         name = 'include',
+  ...         attributes = {
+  ...             'package': name,
+  ...             'file': 'meta.zcml'}
+  ...         ))
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = 'menu',
+  ...     attributes = {
+  ...         'id': 'zmi_views',
+  ...         'title': 'Views'}
+  ...     ))
+  '...'
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = 'menu',
+  ...     attributes = {
+  ...         'id': 'zmi_actions',
+  ...         'title': 'Actions'}
+  ...     ))
+  '...'
+
+  >>> for name in ('zope.app.appsetup',
+  ...              'zope.app.component',
+  ...              'zope.app.container',
+  ...              'zope.app.error',
+  ...              'zope.app.i18n',
+  ...              'zope.app.publication',
+  ...              'zope.app.security',
+  ...              'zope.app.securitypolicy',
+  ...              'zope.app.session',
+  ...              'zope.app.twisted',
+  ...              'zope.app.wsgi',
+  ...              'zope.annotation',
+  ...              'zope.component',
+  ...              'zope.contentprovider',
+  ...              'zope.location',
+  ...              'zope.publisher',
+  ...              'zope.traversing',
+  ...              'zope.traversing.browser',
+  ...              'zope.viewlet',
+  ...              'z3c.form',
+  ...              'z3c.formui',
+  ...              'z3c.layer.pagelet',
+  ...              'z3c.macro',
+  ...              'z3c.pagelet'):
+  ...     id = appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...         namespace = zcml.ZOPE_NS,
+  ...         name = 'include',
+  ...         attributes = {'package': name}
+  ...         ))
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.BROWSER_NS,
+  ...     name = 'defaultView',
+  ...     attributes = {
+  ...         'name': 'index.html'}
+  ...     ))
+  '...'
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'securityPolicy',
+  ...     attributes = {
+  ...         'component': 'zope.securitypolicy.zopepolicy.ZopeSecurityPolicy'}
+  ...     ))
+  '...'
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'role',
+  ...     attributes = {
+  ...         'id': 'zope.Anonymous',
+  ...         'title': 'Everybody'}
+  ...     ))
+  '...'
+
+  >>> appConfig.add(zcml.ZCMLDirectiveBuilder(
+  ...     namespace = zcml.ZOPE_NS,
+  ...     name = 'grantAll',
+  ...     attributes = {
+  ...         'role': 'zope.Anonymous'}
+  ...     ))
+  '...'
+
+2. We need to create a few more buildout parts.
+
+  >>> builder.buildout.add(buildout.PartBuilder(
+  ...     u'zope3',
+  ...     [('location', '.')],
+  ...     autoBuild=False
+  ...     ))
+  u'zope3'
+
+  >>> builder.buildout.add(buildout.PartBuilder(
+  ...     u'%s-app' %builder.name,
+  ...     [('recipe', 'zc.zope3recipes:app'),
+  ...      ('site.zcml',
+  ...       '<include package="helloworld" file="application.zcml" />'),
+  ...      ('eggs', builder.name)]
+  ...     ))
+  u'helloworld-app'
+
+  >>> builder.buildout.add(buildout.PartBuilder(
+  ...     builder.name,
+  ...     [('recipe', 'zc.zope3recipes:instance'),
+  ...      ('application', '%s-app' %builder.name),
+  ...      ('zope.conf', '${database:zconfig}'),
+  ...      ('eggs', builder.name)]
+  ...     ))
+  u'helloworld'
+
+  >>> builder.buildout.add(buildout.PartBuilder(
+  ...     u'database',
+  ...     [('recipe', 'zc.recipe.filestorage')],
+  ...     autoBuild=False
+  ...     ))
+  u'database'
+
+  >>> builder.buildout.add(buildout.PartBuilder(
+  ...     u'versions',
+  ...     [('z3c.layer.pagelet', '1.0.1')],
+  ...     autoBuild=False
+  ...     ))
+  u'versions'
+
+3. We also need a add a bunch of dependencies:
+
+  >>> builder.setup.install_requires += [
+  ...     'zdaemon',
+  ...     'z3c.form',
+  ...     'z3c.formui',
+  ...     'z3c.layer.pagelet',
+  ...     'z3c.pagelet',
+  ...     'z3c.template',
+  ...     'zc.zope3recipes',
+  ...     'zope.app.securitypolicy',
+  ...     'zope.app.session',
+  ...     'zope.app.twisted',
+  ...     'zope.viewlet',
+  ...     ]
+
+Let's do a final rendering now:
+
+  >>> builder.update()
+  >>> builder.write(buildDir, True)
+
+  >>> ls(buildDir)
+  helloworld/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      helloworld/
+        __init__.py
+        application.zcml
+        configure.zcml
+        content.py
+        interfaces.py
+        browser/
+          __init__.py
+          configure.zcml
+          display.pt
+          form.py
+
+  >>> more(buildDir, 'helloworld', 'buildout.cfg')
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = python helloworld-app helloworld
+  versions = versions
+  <BLANKLINE>
+  [python]
+  recipe = zc.recipe.egg
+  interpreter = python
+  eggs = helloworld
+  <BLANKLINE>
+  [zope3]
+  location = .
+  <BLANKLINE>
+  [helloworld-app]
+  recipe = zc.zope3recipes:app
+  site.zcml = <include package="helloworld" file="application.zcml" />
+  eggs = helloworld
+  <BLANKLINE>
+  [helloworld]
+  recipe = zc.zope3recipes:instance
+  application = helloworld-app
+  zope.conf = ${database:zconfig}
+  eggs = helloworld
+  <BLANKLINE>
+  [database]
+  recipe = zc.recipe.filestorage
+  <BLANKLINE>
+  [versions]
+  z3c.layer.pagelet = 1.0.1
+
+
+Building the Application
+------------------------
+
+Now that we have generated the full application, let's try building it.
+
+  >>> import sys
+  >>> projectDir = buildDir + '/helloworld'
+
+  >>> print cmd((sys.executable, 'bootstrap.py'), projectDir)
+  Exit Status: 0...
+  Creating directory '.../helloworld/bin'.
+  Creating directory '.../helloworld/parts'.
+  Creating directory '.../helloworld/develop-eggs'.
+  Generated script '.../helloworld/bin/buildout'.
+
+  >>> print cmd(('./bin/buildout', '-N'), projectDir)
+  Exit Status: 0
+  Develop: '.../helloworld/.'
+  Installing python.
+  Generated interpreter '.../helloworld/bin/python'.
+  Installing helloworld-app.
+  Generated script '.../helloworld/parts/helloworld-app/runzope'.
+  Generated script '.../helloworld/parts/helloworld-app/debugzope'.
+  Installing database.
+  Installing helloworld.
+  Generated script '.../helloworld/bin/helloworld'.
+
+Let's now load the configuration to check that we have a fully functioning
+package.
+
+  >>> testCode = '''
+  ... import zope.app.twisted.main
+  ... from zc.zope3recipes import debugzope
+  ... options = debugzope.load_options(
+  ...     ('-C', '%(dir)s/parts/helloworld/zope.conf',),
+  ...     zope.app.twisted.main)
+  ... print debugzope.zglobals(options.configroot)['root']
+  ... ''' % {'dir': projectDir}
+
+  >>> print cmd(('./bin/python', '-c', testCode), projectDir)
+  Exit Status: 0
+  <zope.app.folder.folder.Folder object at ...>
+
+And that's it! We have a functioning Zope 3 application.

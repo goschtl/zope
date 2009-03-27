@@ -1,0 +1,198 @@
+======
+Design
+======
+
+Challenge
+---------
+
+There exists a natural impedence mismatch between the setup necessary to start
+a zope 3 application and the level and detail of information that a new user
+is willing or able to give.
+
+Solution
+--------
+
+`z3c.builder` will attempt to bridge that mismatch by generating functional
+Zope 3 applications from high-level feature descriptions. The user will, with
+the help of some UI (CLI or Web page), create an XML file with formal
+descriptions of the features. See `sample-project.xml`. The software will then
+process this XML file to produce an internal representation of the
+project. That internal representation is then used to render the action
+source.
+
+UI -> Feature XML -> Project Object -> Project Soruce
+
+The main purpose of `z3c.builder` is to convert the feature XML to the project
+object.
+
+Details
+-------
+
+Two models:
+
+- Project Definition
+
+  The project definition is a Python representation of the XML file
+
+- Project
+
+  The Python object representing the actual code to be generated.
+
+
+ProjectDefinition
+  name
+  features = []
+  update(project)
+
+Feature
+  interface
+  dependencies = ()
+  update(project)
+
+---
+
+Project
+  name
+  setup --> setup.py content
+  buildout --> buildout.cfg content
+  package
+  render(directory)
+
+Package
+  interfaces --> interfaces
+  content --> content classes
+  classes --> other classes
+  configuration --> list of configuration directives
+  subPackages --> list of sub-packages
+
+Note: Key is naming conventions.
+
+Example
+-------
+
+The goal is to create a simple "Hello World" CRUD application.
+
+Initialize project with minimal amount of data.
+
+  >>> from z3c.builder import project
+  >>> hw = project.ProjectBuilder('helloworld')
+
+  >>> hw.setup.version = '0.1.0'
+  >>> hw.setup.license = 'ZPL 2.1'
+
+At this point, the project should render, but nothing very useful is produced.
+
+Let's add some buildout configuration. First we set the KGS version:
+
+  >>> hw.buildout.sections['buildout'].extends = 'versions-3.4.0.cfg'
+
+Next we create the necessary sections for a Zope 3 application:
+
+  >>> from z3c.builder import buildout
+  >>> hw.buildout.sections.add(buildout.SectionBuilder('zope3'))
+  >>> hw.buildout.sections['zope3'].location = '.'
+
+  >>> hw.buildout.sections.add(buildout.SectionBuilder('app'))
+  >>> hw.buildout.sections['app'].recipe = 'zc.zope3recipes:app'
+  >>> hw.buildout.sections['app'].site_zcml = '<include package="hell .../>'
+  >>> hw.buildout.sections['app'].eggs = 'helloworld'
+
+  >>> hw.buildout.sections.add(buildout.SectionBuilder('hw'))
+  >>> hw.buildout.sections['hw'].recipe = 'zc.zope3recipes:instance'
+  >>> hw.buildout.sections['hw'].application = 'app'
+  >>> hw.buildout.sections['hw'].zope_conf = ${database:zconfig}'
+
+  >>> hw.buildout.sections.add(buildout.SectionBuilder('database'))
+  >>> hw.buildout.sections['database'].recipe = 'zc.recipe.filestorage'
+
+At this point the project should render and produce a working Zope 3 server.
+
+Let's now create a simple hello world content object and its CRUD
+forms. First, we need to create an interface:
+
+  >>> from z3c.builder import iface
+  >>> # could be even the real iface class.
+  >>> ihw = iface.InterfaceBuilder('IHelloWorld')
+  >>> ihw['who'] = iface.TextLine()
+  >>> ihw['when'] = iface.Datetime()
+  >>> ihw['what'] = iface.Choice(values=['sunny', 'quiet', 'nice'])
+
+  >>> hw.package.interfaces.add(ihw)
+
+Next we create a content class:
+
+  >>> from z3c.builder import content
+  >>> chw = content.ContentClass('HelloWorld')
+  >>> chw.interface = 'IHelloWorld'
+  >>> chw.inheritsFrom = ('persistent.Persistent', 'zope.location.Location')
+
+  >>> hw.package.classes.add(chw)
+
+We also need to declare security:
+
+  >>> from z3c.builder import security
+  >>> sec = security.SecurityBuilder('HelloWorld')
+  >>> sec.allow(schema='IHelloWorld')
+  >>> sec.allow(setSchema='IHelloWorld')
+
+  >>> hw.package.configuration.add(sec)
+
+Let's now create the forms. First we need to create an add form:
+
+  >>> from z3c.builder import form
+  >>> addForm = form.AddFormBuilder('HelloWorldAddForm')
+  >>> addForm.interface = 'IHelloWorld'
+  >>> addForm.fields = ('who', 'when', 'what')
+  >>> addForm.factory = 'HelloWorld'
+  >>> addForm.visitAfterCreation = True
+
+  >>> hw.package.subPackages['browser'].classes.add(addForm)
+
+  >>> from z3c.builder import page
+  >>> addReg = page.PageRegistrationBuilder()
+  >>> addReg.name = 'add.html'
+  >>> addReg.view = 'HelloWorldAddForm'
+  >>> addReg.permission = 'zope.Public' # should be default
+
+  >>> hw.package.subPackages['browser'].configuration.add(addReg)
+
+Next is the simple display form.
+
+  >>> displayForm = form.DisplayFormBuilder('HelloWorldDusplayForm')
+  >>> displayForm.interface = 'IHelloWorld'
+  >>> displayForm.fields = ('who', 'when', 'what')
+  >>> displayForm.simpleTemplate = \
+  ...     'A ${what} Hello World from ${who} on ${when}.'
+  >>> displayForm.linkToAddForm = 'add.html'
+  >>> displayForm.linkToEditForm = 'edit.html'
+
+  >>> hw.package.subPackages['browser'].classes.add(displayForm)
+
+  >>> displayReg = page.PageRegistrationBuilder()
+  >>> displayReg.name = 'index.html'
+  >>> displayReg.view = 'HelloWorldDisplayForm'
+
+  >>> hw.package.subPackages['browser'].configuration.add(displayReg)
+
+Finally the edit form.
+
+  >>> editForm = form.EditFormBuilder('HelloWorldEditForm')
+  >>> editForm.interface = 'IHelloWorld'
+  >>> editForm.fields = ('who', 'when', 'what')
+  >>> editForm.linkAfterEdit = 'index.html'
+
+  >>> hw.package.subPackages['browser'].classes.edit(editForm)
+
+  >>> editReg = page.PageRegistrationBuilder()
+  >>> editReg.name = 'edit.html'
+  >>> editReg.view = 'HelloWorldEditForm'
+
+  >>> hw.package.subPackages['browser'].configuration.edit(editReg)
+
+If we now render the project, we should have a fully functional package:
+
+  >>> import os
+  >>> import tempfile
+  >>> dir = os.path.join(tempfile.mkdtemp(), 'hw')
+
+  >>> hw(dir)

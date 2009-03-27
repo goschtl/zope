@@ -1,0 +1,5 @@
+<html>
+  <body>
+    <h1 tal:content="structure context/getContent">Data</h1>
+  </body>
+</html>

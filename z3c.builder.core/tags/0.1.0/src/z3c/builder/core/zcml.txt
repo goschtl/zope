@@ -1,0 +1,84 @@
+==========================
+ZCML Configuration Builder
+==========================
+
+This builder creates ZCML configuration files and its directives. The builder
+is not repsonsible for validating that it creates valid directives as this
+would require the availability of all packages providing ZCML directives.
+
+  >>> from z3c.builder.core import interfaces, zcml
+  >>> builder = zcml.ZCMLFileBuilder(u'configure.zcml')
+  >>> builder
+  <ZCMLFileBuilder 'configure.zcml'>
+
+This object provides the ``IZCMLFileBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IZCMLFileBuilder, builder)
+  True
+
+Let's now render the builder:
+
+  >>> builder.update()
+  Traceback (most recent call last):
+  ...
+  ValueError: No project builder was found and the root node of the
+              project tree was reached.
+
+The project is needed so that the i18n domain can be looked up.
+
+  >>> from z3c.builder.core import project
+  >>> builder.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+
+  >>> builder.update()
+  >>> print builder.render()
+  <configure
+      i18n_domain="z3c.myproject"
+      />
+
+Let's now add a directive:
+
+  >>> builder.add(zcml.ZCMLDirectiveBuilder(
+  ...     None,
+  ...     'include',
+  ...     {'file': 'content.zcml'}
+  ...     ))
+  'f726bcc8-1d3d-4f71-a241-53999e1aa734'
+
+  >>> builder.update()
+  >>> print builder.render()
+  <configure
+      i18n_domain="z3c.myproject"
+      >
+    <include
+        file="content.zcml"
+        />
+  <BLANKLINE>
+  </configure>
+
+Let's now add a directive with a namespace:
+
+  >>> builder.add(zcml.ZCMLDirectiveBuilder(
+  ...     'http://namespaces.zope.org/zope',
+  ...     'adapter',
+  ...     {'factory': 'z3c.project.code.MyAdapter'}
+  ...     ))
+  '739f00eb-5235-49c5-959e-340583586a5f'
+
+  >>> builder.update()
+  >>> print builder.render()
+  <configure
+      xmlns:zope="http://namespaces.zope.org/zope"
+      i18n_domain="z3c.myproject"
+      >
+    <include
+        file="content.zcml"
+        />
+  <BLANKLINE>
+    <zope:adapter
+        factory="z3c.project.code.MyAdapter"
+        />
+  <BLANKLINE>
+  </configure>
+
+And that's it.

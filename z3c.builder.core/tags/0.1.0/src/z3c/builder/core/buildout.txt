@@ -1,0 +1,93 @@
+==============================
+Buildout Configuration Builder
+==============================
+
+The buildout configuration builder creates the `buildout.cfg` file, which
+drives the behavior of `zc.buildout`. Buildout is a software building and
+deployment tool, similar to `make` and `ant`.
+
+  >>> from z3c.builder.core import buildout, interfaces
+  >>> builder = buildout.BuildoutConfigBuilder()
+
+This object provides the ``IBuildoutConfigBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IBuildoutConfigBuilder, builder)
+  True
+
+Like most builders, this builder also expects to be able to reach its project
+builder:
+
+  >>> from z3c.builder.core import project
+  >>> builder.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+  >>> builder
+  <BuildoutConfigBuilder for u'z3c.myproject'>
+
+One of the important global settings is the list of other buildout
+configuration this one extends. By default it points to the versions of the
+latest stable set of packages:
+
+  >>> builder.extends
+  [u'http://download.zope.org/zope3.4/3.4.0/versions.cfg']
+
+There is also a `names` attribute that lists all the part names that should be
+automatically build. But first we need some parts.
+
+  >>> part = buildout.PartBuilder(u'python')
+  >>> part
+  <PartBuilder u'python'>
+
+Let's now add some values to the part.
+
+  >>> part.addValue(u'recipe', 'zc.recipe.egg')
+  >>> part.addValue(u'interpreter', 'python')
+  >>> part.addValue(u'eggs', 'myproject')
+  >>> part.addValue(u'foo', 'bar')
+
+Unfortunately, the last value was unwanted, so let's remove it again.
+
+  >>> part.removeValue('foo')
+
+Now, we can also specify whether a part should be built whenever buildout is
+run:
+
+  >>> part.autoBuild
+  True
+
+Let's now render the part:
+
+  >>> part.update()
+  >>> print part.render()
+  [python]
+  recipe = zc.recipe.egg
+  interpreter = python
+  eggs = myproject
+  <BLANKLINE>
+
+We can now add the part to the buildout configuration and update it:
+
+  >>> builder.add(part)
+  u'python'
+  >>> builder.update()
+
+Since auto-build is turned on for the part, the builder now has it in its
+list:
+
+  >>> builder.names
+  [u'python']
+
+Okay, enough of the details. Here is the rendered builder:
+
+  >>> print builder.render()
+  [buildout]
+  extends = http://download.zope.org/zope3.4/3.4.0/versions.cfg
+  develop = .
+  parts = python
+  versions = versions
+  <BLANKLINE>
+  [python]
+  recipe = zc.recipe.egg
+  interpreter = python
+  eggs = myproject
+
+And that's it.

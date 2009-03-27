@@ -1,0 +1,466 @@
+====================
+Python Code Builders
+====================
+
+The `python.py` module contains a collection of builders that help building
+Python code.
+
+  >>> from z3c.builder.core import interfaces, python
+
+This document is split up into several section, each concentrating on a
+different aspect of code generation.
+
+Package Builders
+----------------
+
+Package builders generate directories that act as Python packages by also
+adding an `__init__.py` file.
+
+  >>> pkg = python.PackageBuilder(u'project')
+  >>> pkg
+  <PackageBuilder u'project'>
+
+The name is also automatically the package name.
+
+  >>> pkg.packageName
+  'project'
+
+However, you can instantiate the builder also with a separate builder and
+package name:
+
+  >>> pkg = python.PackageBuilder(u'my.project', 'project')
+  >>> pkg
+  <PackageBuilder u'my.project'>
+
+Of course, the package builder implements the `IPackageBuilder` interface:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IPackageBuilder, pkg)
+  True
+
+Let's now update the builder.
+
+  >>> pkg.update()
+
+When no `__init__.py` file was manually added to the package builder, the
+update procedure will do that for you:
+
+  >>> pkg.keys()
+  ['__init__.py']
+
+Let's now write out the directory:
+
+  >>> pkg.write(buildPath)
+
+  >>> ls(buildPath)
+  project/
+    __init__.py
+
+  >>> more(buildPath, 'project', '__init__.py')
+  # Make a package.
+  <BLANKLINE>
+
+We can also ask a package for its full Python path:
+
+  >>> pkg.getPythonPath()
+  'project'
+
+Let's now add a sub-package:
+
+  >>> sub = python.PackageBuilder(u'rest')
+  >>> pkg.add(sub)
+  u'rest'
+
+  >>> sub.getPythonPath()
+  'project.rest'
+
+
+Module Builders
+---------------
+
+Let's now have a look at module builders, which create Python code files.
+
+  >>> module = python.ModuleBuilder(u'code.py')
+  >>> module
+  <ModuleBuilder u'code.py'>
+
+  >>> module.moduleName
+  'code'
+
+Of course, the module builder implements the `IModuleBuilder` interface:
+
+  >>> verifyObject(interfaces.IModuleBuilder, module)
+  True
+
+Once we add the module builder to the package, we can ask for the Python path:
+
+  >>> pkg.add(module)
+  u'code.py'
+
+  >>> module.getPythonPath()
+  'project.code'
+
+We can now render the module:
+
+  >>> module.update()
+  >>> print module.render()
+  Traceback (most recent call last):
+  ...
+  ValueError: No project builder was found and the root node of the
+              project tree was reached.
+
+It failed because we need to be able to reach a project:
+
+  >>> from z3c.builder.core import project
+  >>> prj = project.ProjectBuilder(u'my.project')
+  >>> prj.update()
+  >>> pkg.__parent__ = prj
+  >>> from zope.interface import alsoProvides
+  >>> alsoProvides(prj, interfaces.IPythonPathRoot)
+  >>> module.update()
+  >>> print module.render()
+  ##############################################################################
+  #
+  # This file is part of my.project...
+  #
+  ##############################################################################
+  """Module Documentation"""
+
+We will later render the module again, once the module builder contains other
+code builders.
+
+
+Function Builder
+----------------
+
+The simplest code to generate is a function.
+
+  >>> func = python.FunctionBuilder(
+  ...     name=u'add',
+  ...     args=('x', 'y'),
+  ...     kwargs={'base': None},
+  ...     docstring='Add two numbers.',
+  ...     code='return x+y if base == None else (x+y)%base')
+  >>> func
+  <FunctionBuilder u'add'>
+
+The arguments should all be obvious. Of course, the function builder implements
+the `IFunctionBuilder` interface:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IFunctionBuilder, func)
+  True
+
+Let's now render the function:
+
+  >>> func.update()
+  >>> print func.render()
+  def add(x, y, base=None):
+      """Add two numbers."""
+      return x+y if base == None else (x+y)%base
+
+Let's make sure that the function as generated workd:
+
+  >>> exec func.render()
+  >>> add(3, 4)
+  7
+  >>> add(3, 4, 5)
+  2
+
+Let's try a few different configurations now:
+
+- The simplest possible function:
+
+  >>> testFunc = python.FunctionBuilder(
+  ...     name=u'test')
+  >>> testFunc.update()
+  >>> print testFunc.render()
+  def test():
+      pass
+
+- Function with arguments:
+
+  >>> testFunc.args = ('x',)
+  >>> print testFunc.render()
+  def test(x):
+      pass
+
+  >>> testFunc.args = ('x', 'y')
+  >>> print testFunc.render()
+  def test(x, y):
+      pass
+
+- Function with keyword arguments:
+
+  >>> testFunc.args = ()
+
+  >>> testFunc.kwargs = {'x': 1}
+  >>> print testFunc.render()
+  def test(x=1):
+      pass
+
+  >>> testFunc.kwargs = {'x': 1, 'y': None}
+  >>> print testFunc.render()
+  def test(y=None, x=1):
+      pass
+
+- Function with docstring:
+
+  >>> testFunc.kwargs = {}
+
+  >>> testFunc.docstring = 'documentation'
+  >>> print testFunc.render()
+  def test():
+      """documentation"""
+
+- Function with code:
+
+  >>> testFunc.docstring = ''
+
+  >>> testFunc.code = 'return 1'
+  >>> print testFunc.render()
+  def test():
+      return 1
+
+There is also an `indent` attribute that allows one to place the function
+inside a class or interface. But testing that makes only sense, once we
+demonstrate the interface and class builder.
+
+
+Interface Builder
+-----------------
+
+The interface builder constructs an interface compatible with interfaces of
+the `zope.interface` package.
+
+  >>> iface = python.InterfaceBuilder(u'IProject')
+  >>> iface
+  <InterfaceBuilder u'IProject'>
+
+Of course, the interface builder implements the `IInterfaceBuilder` interface:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IInterfaceBuilder, iface)
+  True
+
+Let's render the interface now:
+
+  >>> iface.update()
+  Traceback (most recent call last):
+  ...
+  ValueError: No module builder was found and the root node of the
+              project tree was reached.
+
+The rendering failed, because an interface builder must be added to a module
+before rendering.
+
+  >>> module.add(iface)
+  u'IProject'
+
+  >>> module.update()
+  >>> print iface.render()
+  class IProject(Interface):
+      """"""
+
+Once the module is set, we can also ask for the interface's Python path:
+
+  >>> iface.getPythonPath()
+  'project.code.IProject'
+
+Now, when rendering the module, the import for the `Interface` meta-class is
+already added.
+
+  >>> print module.render()
+  ##############################################################################
+  #
+  # This file is part of my.project...
+  #
+  ##############################################################################
+  """Module Documentation"""
+  from zope.interface import Interface
+  <BLANKLINE>
+  class IProject(Interface):
+      """"""
+
+Let's now add a function to the interface and see what happens:
+
+  >>> iface.add(python.FunctionBuilder(u'do'))
+  u'do'
+
+  >>> iface.update()
+  >>> print iface.render()
+  class IProject(Interface):
+      """"""
+      def do():
+          pass
+
+Let's now add a docstring and a "real" base interface to the interfac buider:
+
+  >>> iface.docstring = 'Documentation'
+  >>> iface.bases = ['zope.app.container.interfaces.IContainer']
+
+  >>> module.update()
+  >>> print module.render()
+  ##############################################################################
+  #
+  # This file is part of my.project...
+  #
+  ##############################################################################
+  """Module Documentation"""
+  from zope.app.container.interfaces import IContainer
+  <BLANKLINE>
+  class IProject(IContainer):
+      """Documentation"""
+      def do():
+          pass
+
+Finally, we add some fields:
+
+  >>> iface.add(python.FieldBuilder(
+  ...     name=u'state',
+  ...     type='zope.schema.Field'))
+  u'state'
+
+Now let's render the module again:
+
+  >>> module.update()
+  >>> print module.render()
+  ##############################################################################
+  #
+  # This file is part of my.project...
+  #
+  ##############################################################################
+  """Module Documentation"""
+  from zope.app.container.interfaces import IContainer
+  from zope.schema import Field
+  <BLANKLINE>
+  class IProject(IContainer):
+      """Documentation"""
+      def do():
+          pass
+  <BLANKLINE>
+      state = Field()
+
+Let's now create a field with several attributes:
+
+  >>> field = python.FieldBuilder(
+  ...     name=u'number',
+  ...     type='zope.schema.Int',
+  ...     title=u'Number',
+  ...     description=u'The number.',
+  ...     min=0,
+  ...     max=10,
+  ...     default=5)
+  >>> field.__parent__ = module
+
+  >>> field.update()
+  >>> print field.render()
+  number = Int(
+      title=u'Number',
+      description=u'The number.',
+      min=0,
+      max=10,
+      default=5,
+      )
+
+Of course, the field builder implements the `IFieldBuilder` interface:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IFieldBuilder, field)
+  True
+
+The field builder does not attempt to validate any of the attribute names or
+values. It is assumed that the callee knows what it is doing.
+
+
+Class Generator
+---------------
+
+The `ClassFromInterfaceBuilder` builder renders a class from a given interface
+builder.
+
+  >>> cls = python.ClassFromInterfaceBuilder(
+  ...     u'Project', iface)
+  >>> cls
+  <ClassFromInterfaceBuilder u'Project'>
+
+Of course, the class builder implements the `IClassFromInterfaceBuilder`
+interface:
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IClassFromInterfaceBuilder, cls)
+  True
+
+Once the class has a module, we can also get its Python path:
+
+  >>> module.add(cls)
+  u'Project'
+  >>> cls.getPythonPath()
+  'project.code.Project'
+
+Let's now render the class:
+
+    >>> cls.update()
+    >>> print cls.render()
+    class Project(object):
+        """Implementation of ``project.code.IProject``"""
+        implements(IProject)
+    <BLANKLINE>
+        state = FieldProperty(IProject['state'])
+    <BLANKLINE>
+        def do(self):
+            """See ``project.code.IProject``."""
+
+We can also add an implementation for our function:
+
+    >>> cls.addImplementation('do', 'return 1')
+
+    >>> cls.update()
+    >>> print cls.render()
+    class Project(object):
+        """Implementation of ``project.code.IProject``"""
+        implements(IProject)
+    <BLANKLINE>
+        state = FieldProperty(IProject['state'])
+    <BLANKLINE>
+        def do(self):
+            """See ``project.code.IProject``."""
+            return 1
+
+Alternatively, we can instantiate the builder from a dotted name of the
+interface builder.
+
+  >>> cls = python.ClassFromInterfaceBuilder(
+  ...     u'Project', 'project.code.IProject')
+
+  >>> del module['Project']
+  >>> module.add(cls)
+  u'Project'
+
+The path is not immediately converted to an interface builder. You have to
+call update for this to happen:
+
+  >>> cls.interface
+  'project.code.IProject'
+
+  >>> cls.update()
+
+  >>> cls.interface
+  <InterfaceBuilder u'IProject'>
+
+Let's just render the class one more time:
+
+    >>> cls.docstring = 'Simple IProject implementation.'
+
+    >>> cls.update()
+    >>> print cls.render()
+    class Project(object):
+        """Simple IProject implementation."""
+        implements(IProject)
+    <BLANKLINE>
+        state = FieldProperty(IProject['state'])
+    <BLANKLINE>
+        def do(self):
+            """See ``project.code.IProject``."""
+
+That's it.

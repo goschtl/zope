@@ -1,0 +1,188 @@
+digraph Z3cBuilderClassDiagram {
+  nodesep=0.3;
+  ranksep=0.9;
+
+  fontname = "Bitstream Vera Sans"
+  fontsize = 8
+
+  node [
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    shape = "record"
+  ];
+  edge [
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    arrowhead = "empty"
+  ]
+
+  OrderedContainer [
+      label = "{OrderedContainer}"
+  ];
+  BuilderContainer [
+      label = "{BuilderContainer|add(builder)\lremove(builder)}"
+      style = filled
+      fillcolor = "#FF000033"
+  ];
+  Contained [
+      label = "{Contained|object : __parent__\lunicode : __name__}"
+  ];
+
+  PythonPathGetter [
+      label = "{PythonPathGetter|getPythonPath()}"
+      style = filled
+      fillcolor = "#0000FF33"
+  ];
+  ProjectGetter [
+      label = "{ProjectGetter|getProject()}"
+      style = filled
+      fillcolor = "#0000FF33"
+  ];
+
+
+  BaseBuilder [
+      label = "{BaseBuilder|unicode : name|update()}"
+      style = filled
+      fillcolor = "#FF000033"
+  ];
+
+  FilesystemBuilder [
+      label = "{FilessytemBuilder|write(target)}"
+      style = filled
+      fillcolor = "#FFFF0033"
+  ];
+
+  ContentBuilder [
+      label = "{ContentBuilder|render()}"
+      style = filled
+      fillcolor = "#FFFF0033"
+  ];
+
+  DirectoryBuilder [
+      label = "{DirectoryBuilder|str : dirname}"
+      style = filled
+      fillcolor = "#FFFF0033"
+  ];
+  FileBuilder [
+      label = "{FileBuilder|str : filename}"
+      style = filled
+      fillcolor = "#FFFF0033"
+  ];
+
+  ClassBuilder [
+      label = "{ClassBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  InterfaceBuilder [
+      label = "{InterfaceBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  BuildoutPartBuilder [
+      label = "{BuildoutPartBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+
+  ProjectBuilder [
+      label = "{ProjectBuilder|str : projectName|write(target, force=False)}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  SrcDirectoryBuilder [
+      label = "{SrcDirectoryBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  PackageBuilder [
+      label = "{PackageBuilder|str : packageName\lpath : initTemplate}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  NamespacePackageBuilder [
+      label = "{NamespacePackageBuilder}"
+      style = filled
+      fillcolor = "#00FF0066"
+  ];
+
+  SimpleFileBuilder [
+      label = "{SimpleFileBuilder|str : template}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  ModuleBuilder [
+      label = "{ModuleBuilder|str : moduleName\llist : imports}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  SetupFileBuilder [
+      label = "{SetupFileBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  BuildoutFileBuilder [
+      label = "{BuildoutFileBuilder}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+  ZCMLFileBuilder [
+      label = "{ZCMLFileBuilder|list : namespaces}"
+      style = filled
+      fillcolor = "#00FF0033"
+  ];
+
+  BuildoutProjectBuilder [
+      label = "{BuildoutProjectBuilder|PackageBuilder : package \lSetupFileBuilder : setup \lBuildoutFileBuilder : buildout}"
+      style = filled
+      fillcolor = "#00FF0066"
+  ];
+
+  BaseBuilder -> Contained;
+  BuilderContainer -> OrderedContainer;
+  BuilderContainer -> BaseBuilder;
+
+  FilesystemBuilder -> BaseBuilder;
+  ContentBuilder -> BaseBuilder;
+
+  FilesystemBuilder -> ProjectGetter;
+  ContentBuilder -> ProjectGetter;
+
+  DirectoryBuilder -> FilesystemBuilder;
+  FileBuilder -> FilesystemBuilder;
+  FileBuilder -> ContentBuilder;
+
+  ClassBuilder -> ContentBuilder;
+  InterfaceBuilder -> ContentBuilder;
+  BuildoutPartBuilder -> ContentBuilder;
+
+  ProjectBuilder -> DirectoryBuilder;
+  SrcDirectoryBuilder -> DirectoryBuilder;
+  PackageBuilder -> DirectoryBuilder;
+
+  SimpleFileBuilder -> FileBuilder;
+  ModuleBuilder -> FileBuilder;
+  SetupFileBuilder -> FileBuilder;
+  BuildoutFileBuilder -> FileBuilder;
+  ZCMLFileBuilder -> FileBuilder;
+
+  BuildoutProjectBuilder -> ProjectBuilder;
+
+  PackageBuilder -> PythonPathGetter;
+  ModuleBuilder -> PythonPathGetter;
+
+  DirectoryBuilder -> BuilderContainer;
+  ModuleBuilder -> BuilderContainer;
+  BuildoutFileBuilder -> BuilderContainer;
+  ZCMLFileBuilder -> BuilderContainer;
+
+  NamespacePackageBuilder -> PackageBuilder;
+
+  {rank=same; FileBuilder; DirectoryBuilder}
+  {rank=same; BuilderContainer; BaseBuilder}
+  {rank=same; Contained; OrderedContainer}
+//  {rank=same; PackageBuilder; ModuleBuilder; SrcDirectoryBuilder;
+//              ProjectBuilder; BuildoutFileBuilder; ZCMLFileBuilder;
+//              SimpleFileBuilder; SetupFileBuilder; BuildoutPartBuilder;
+//              ClassBuilder; InterfaceBuilder}
+}

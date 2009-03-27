@@ -1,0 +1,17 @@
+===========
+Assumptions
+===========
+
+In order to make this a successful tool that can be implemented in a decent
+amount of time, we need to make some hard assumptions that restrict the scope.
+
+- Do not support any possible configuration.
+
+- Only support WSGI setups.
+
+- Support paster setups only (?)
+
+- only support z3c.form (for now)
+
+- all references should be by string, so that we do nto create insane
+  dependency trees.
