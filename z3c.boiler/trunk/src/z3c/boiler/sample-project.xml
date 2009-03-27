@@ -1,0 +1,37 @@
+<project name="z3c.sampleproject">
+
+  <feature type="z3c.feature.core:meta-data">
+    <license>ZPL</license>
+    <version>0.1.0</version>
+    <author>Paul Carduner and Stephan Richter</author>
+    <author-email>zope-dev@zope.org</author-email>
+    <description>A utility to help jump start Zope 3 projects</description>
+    <license>ZPL 2.1</license>
+    <keywords><item>zope3</item><item>project</item><item>builder</item></keywords>
+    <url>http://pypi.python.org/pypi/z3c.builder</url>
+    <namespace-packages><item>z3c</item></namespace-packages>
+    <feature type="z3c.feature.core:comment-header-ZPL">
+      <year>2009</year>
+    </feature>
+
+  </feature>
+
+  <feature type="z3c.feature.core:python-interpreter">
+    <executableName>py</executableName>
+  </feature>
+
+  <feature type="z3c.feature.core:unit-testing" />
+  <feature type="z3c.feature.core:documentation" />
+
+  <feature type="z3c.feature.zope:zope-project" />
+  <feature type="z3c.feature.zope:zope-skin" />
+  <feature type="z3c.feature.zope:content-type">
+    <className>Message</className>
+    <fields>
+      <field name="receiver" type="zope.schema.TextLine"/>
+      <field name="sender" type="zope.schema.TextLine"/>
+      <field name="message" type="zope.schema.Text"/>
+    </fields>
+  </feature>
+
+</project>
