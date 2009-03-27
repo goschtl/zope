@@ -1,0 +1,17 @@
+<project name="helloworld">
+  <feature type="z3c.feature.core:meta-data">
+    <author>?</author>
+    <author-email>?</author-email>
+    <description>?</description>
+    <version>?</version>
+    <license>?</license>
+    <url>?</url>
+    <keywords>?</keywords>
+    <namespace-packages>?</namespace-packages>
+    <install-requires>?</install-requires>
+  </feature>
+  <feature type="z3c.feature.core:python-interpreter" />
+  <feature type="z3c.feature.core:unit-testing" />
+  <feature type="z3c.feature.core:script" />
+  <feature type="z3c.feature.core:documentation" />
+</project>

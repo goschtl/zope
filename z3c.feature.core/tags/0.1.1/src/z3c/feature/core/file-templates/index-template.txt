@@ -1,0 +1,15 @@
+%(heading)s
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   %(TOC)s
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
