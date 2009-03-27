@@ -16,14 +16,30 @@
 $Id$
 """
 import os
+import xml.sax.saxutils
 from setuptools import setup, find_packages
+
+def read(*rnames):
+    text = open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    text = unicode(text, 'utf-8').encode('ascii', 'xmlcharrefreplace')
+    return xml.sax.saxutils.escape(text)
 
 setup (
     name='z3c.boiler',
-    version='0.1.0dev',
+    version='0.1.0',
     author = "Paul Carduner, Stephan Richter, and hopefully others...",
     author_email = "zope-dev@zope.org",
     description = "A utility to help jump start Zope 3 projects",
+    long_description=(
+        read('README.txt') +
+        "\n\n" +
+        "Detailed Documentation\n" +
+        "**********************\n" +
+        "\n\n" +
+        read('src', 'z3c', 'boiler', 'README.txt') +
+        "\n\n" +
+        read('CHANGES.txt')
+        ),
     license = "ZPL 2.1",
     keywords = "zope3 project builder boiler",
     url = 'http://pypi.python.org/pypi/z3c.boiler',
