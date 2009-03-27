@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name = 'z3c.feature.zope',
-    version = '0.1.0',
+    version = '0.2.0dev',
     author = u"Paul Carduner and Stephan Richter",
     author_email = u"zope-dev@zope.org",
     description = u"Zope Features to use with z3c.builder.core",
