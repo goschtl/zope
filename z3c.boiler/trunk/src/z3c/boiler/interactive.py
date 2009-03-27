@@ -19,6 +19,7 @@ import logging
 from z3c.feature.core import xml, template
 from z3c.feature.core.xml import etree
 from z3c.builder.core import project, base
+from z3c.feature.core.base import getFeatureSchema
 from zope.schema import List
 
 def prompt(field):
@@ -74,15 +75,16 @@ def xmlToProject(node):
     # fill in missing xml by prompting
     for featureNode in node.xpath('//feature'):
         factory = xml.getFeatureFactory(featureNode)
-        data = xml.extractData(featureNode, factory.iface, convert=False)
-        fieldNames = [n for n in factory.iface if data.get(n) == '?']
+        schema = getFeatureSchema(factory)
+        data = xml.extractData(featureNode, schema, convert=False)
+        fieldNames = [n for n in schema if data.get(n) == '?']
         if fieldNames:
             print ""
             header = "Options for: "+featureNode.get("type")
             print header
             print "-"*len(header)
         for fieldName in fieldNames:
-            fieldValue = prompt(factory.iface[fieldName])
+            fieldValue = prompt(schema[fieldName])
             fieldNode = featureNode.xpath('./%s' % fieldName.replace('_','-'))[0]
             if isinstance(fieldValue, unicode):
                 fieldNode.text = fieldValue
