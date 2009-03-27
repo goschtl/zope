@@ -1,0 +1,5 @@
+<a tal:attributes="href context/__parent__/@@absolute_url"
+   style="float: right;">
+  &lt;&lt; Back to <span tal:replace="context/__parent__/name"/>
+</a>
+<div tal:replace="structure view/featureView"></div>

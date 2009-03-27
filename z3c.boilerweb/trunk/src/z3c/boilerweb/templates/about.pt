@@ -1,0 +1,39 @@
+<div class="text">
+  <p>
+    <strong>ZBoiler</strong> is an open source project started by
+    <a href="http://www.google.com/search?q=Zope+Stephan+Richter">srichter</a> and
+    <a href="http://www.carduner.net">pcardune</a>.
+  </p>
+  <h2>Documentation</h2>
+  <p>
+    Documentation can be primarily found on the PyPI pages for the
+    various python packages that support ZBoiler:
+  </p>
+  <ul>
+    <li>
+      z3c.builder.core - <a href="http://pypi.python.org/pypi/z3c.builder.core">http://pypi.python.org/pypi/z3c.builder.core</a>
+    </li>
+    <li>
+      z3c.feature.core - <a href="http://pypi.python.org/pypi/z3c.feature.core">http://pypi.python.org/pypi/z3c.feature.core</a>
+    </li>
+    <li>
+      z3c.boilerweb - <a href="http://pypi.python.org/pypi/z3c.boilerweb">http://pypi.python.org/pypi/z3c.boilerweb</a>
+    </li>
+    <li>
+      z3c.boiler - <a href="http://pypi.python.org/pypi/z3c.boiler">http://pypi.python.org/pypi/z3c.boiler</a>
+    </li>
+  </ul>
+
+  <h2>Contributors</h2>
+  <p>
+    Want your name here?  Contact srichter or pcardune to find out how
+    you can contribute to ZBoiler.
+  </p>
+
+  <h2>Donations</h2>
+  <p>
+    Got a spare server and some bandwidth laying around? We will
+    gladly use it for hosting!
+  </p>
+
+</div>

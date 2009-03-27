@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="logo.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <filter
+       inkscape:collect="always"
+       id="filter3927"
+       x="-0.027727134"
+       width="1.0554543"
+       y="-0.13092518"
+       height="1.2618504">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="7.5673304"
+         id="feGaussianBlur3929" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       id="filter3172">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="7.6994709"
+         id="feGaussianBlur3174" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="193.16835"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1141"
+     inkscape:window-height="773"
+     inkscape:window-x="0"
+     inkscape:window-y="25" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:199.30651855px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#1a38ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3172);font-family:URW Chancery L;-inkscape-font-specification:URW Chancery L Italic"
+       x="39.43438"
+       y="557.28204"
+       id="text2394"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/pcardune/Work/Paulo/repo/packages/z3c.boilerweb/src/z3c/boilerweb/templates/images/logo-on.png"
+       inkscape:export-xdpi="22.58"
+       inkscape:export-ydpi="22.58"><tspan
+         sodipodi:role="line"
+         id="tspan2396"
+         x="39.43438"
+         y="557.28204">ZBoiler</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:199.30651855px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:125%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:URW Chancery L;-inkscape-font-specification:URW Chancery L Italic"
+       x="39.43438"
+       y="557.28204"
+       id="text2383"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/pcardune/Work/Paulo/repo/packages/z3c.boilerweb/src/z3c/boilerweb/templates/images/logo-on.png"
+       inkscape:export-xdpi="22.58"
+       inkscape:export-ydpi="22.58"><tspan
+         sodipodi:role="line"
+         id="tspan2385"
+         x="39.43438"
+         y="557.28204">ZBoiler</tspan></text>
+  </g>
+</svg>

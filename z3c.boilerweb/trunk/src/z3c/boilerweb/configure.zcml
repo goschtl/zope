@@ -1,0 +1,171 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c">
+
+  <class class=".main.BuildSession">
+    <allow interface=".interfaces.IBuildSession" />
+    <require permission="zope.Public"
+             set_schema=".interfaces.IBuildSession" />
+  </class>
+
+  <interface
+      interface=".interfaces.IBuilderBrowserSkin"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="zbuilder"
+      />
+
+  <!-- set up form widget hints -->
+  <adapter
+      factory="z3c.form.hint.FieldDescriptionAsHint"
+      name="title"/>
+
+  <!-- versioned resource setup -->
+  <browser:page
+      name=""
+      for="zope.app.component.interfaces.ISite"
+      class="z3c.versionedresource.resource.Resources"
+      layer=".interfaces.IBuilderBrowserLayer"
+      permission="zope.Public"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+      />
+  <class class="zope.app.publisher.browser.resources.Resources">
+    <allow interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
+  </class>
+  <utility component=".version.BuilderResourceVersion" />
+
+
+
+  <browser:versionedResourceDirectory
+      name="ui"
+      directory="templates/static/"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <browser:page
+      name="nav-menu"
+      for="*"
+      template="templates/nav-menu.pt"
+      class=".main.NavMenu"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <browser:page
+      name="breadcrumbs"
+      for="*"
+      template="templates/breadcrumbs.pt"
+      class=".main.Breadcrumbs"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <browser:page
+      name="google-analytics"
+      for="*"
+      template="templates/google-analytics.pt"
+      class=".support.GoogleAnalytics"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:layout
+      template="templates/page-layout.pt"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for="z3c.feature.core.interfaces.IFeature"
+      class=".main.FeatureView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:template
+      template="templates/feature.pt"
+      for=".main.FeatureView"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for="zope.app.folder.interfaces.IRootFolder"
+      class=".main.FrontPageView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:template
+      for=".main.FrontPageView"
+      template="templates/front-page.pt"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="about.html"
+      for="zope.app.folder.interfaces.IRootFolder"
+      class=".main.AboutView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:template
+      for=".main.AboutView"
+      template="templates/about.pt"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="build.html"
+      for="zope.app.folder.interfaces.IRootFolder"
+      class=".main.BuildView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="index.html"
+      for=".interfaces.IBuildSession"
+      class=".main.BuildView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:template
+      for=".main.BuildView"
+      template="templates/build.pt"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:pagelet
+      name="download.html"
+      for=".interfaces.IBuildSession"
+      class=".main.DownloadView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <z3c:template
+      for=".main.DownloadView"
+      template="templates/download.pt"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <browser:page
+      name="project.tar.gz"
+      for=".interfaces.IBuildSession"
+      class=".main.TarballView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+  <browser:page
+      name="project.xml"
+      for=".interfaces.IBuildSession"
+      class=".main.XMLExportView"
+      permission="zope.Public"
+      layer=".interfaces.IBuilderBrowserLayer"
+      />
+
+</configure>

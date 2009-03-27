@@ -1,0 +1,56 @@
+<form tal:attributes="action view/action;
+                      method view/method">
+  <div>
+    <span tal:replace="structure view/widgets/name/label"/>:
+    <span tal:replace="structure view/widgets/name/render"/>
+    <span tal:replace="structure view/actions/apply/render"/>
+  </div>
+  <div id="buildit-wrapper">
+    <a id="buildit"
+       tal:attributes="href string:${context/@@absolute_url}/download.html">Boil It!</a>
+  </div>
+  <hr />
+  <div>
+    Project Features:
+    <div tal:condition="not:context/values|nothing">
+      You haven't added any features yet!
+    </div>
+    <ul>
+      <li tal:repeat="feature context/values|nothing">
+        <input type="submit" value="X" class="delete"
+               tal:attributes="name string:${feature/__name__}.delete;
+                               title string:Delete ${feature/featureTitle|feature/__name__} Feature"/>
+        <a tal:attributes="href feature/@@absolute_url"
+           tal:content="feature/featureTitle|feature/__name__"/>
+      </li>
+    </ul>
+  </div>
+</form>
+
+<hr />
+<form tal:define="addForm nocall:view/addFeatureForm"
+      tal:attributes="action view/action;
+                      method view/method">
+  <div>
+    Add a Feature:
+    <!--span tal:replace="structure addForm/widgets/feature/render"/>
+    <span tal:replace="structure addForm/actions/add/render"/-->
+    <table class="feature-list">
+      <tr tal:repeat="feature addForm/features"
+          tal:attributes="class feature/cssClass">
+        <td>
+          <input type="submit" value="Add" class="add-feature"
+                 tal:condition="not:feature/added"
+                 tal:attributes="name string:${feature/name}.add"/>
+        </td>
+        <td>
+          <strong tal:content="feature/data/title|nothing"/>
+          <div tal:content="structure feature/data/description|nothing"/>
+        </td>
+      </tr>
+    </table>
+  </div>
+</form>
+<hr />
+<a id="startover"
+   href="/build.html?startover=True">Start Over</a>

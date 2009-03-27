@@ -1,0 +1,6 @@
+<ul>
+  <li tal:repeat="item view/items">
+    <a tal:attributes="href item/url; class item/cssClass|nothing"
+       tal:content="item/title"></a>
+  </li>
+</ul>

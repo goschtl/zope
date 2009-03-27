@@ -1,0 +1,46 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="z3c.boilerweb" file="app.zcml" />
+
+  <include package="zope.app.server" />
+  <include package="zc.selenium" />
+
+  <configure package="zc.selenium">
+    <browser:resourceDirectory
+        name="selenium"
+        directory="resources"
+        layer="z3c.boilerweb.interfaces.IBuilderBrowserLayer"
+        />
+
+    <browser:resource
+        name="selenium_results"
+        factory=".results.Results"
+        permission="zope.Public"
+        layer="z3c.boilerweb.interfaces.IBuilderBrowserLayer"
+        />
+
+    <browser:resource
+        name="selenium-push.html"
+        factory=".dbs.PushDBs"
+        permission="zope.Public"
+        layer="z3c.boilerweb.interfaces.IBuilderBrowserLayer"
+        />
+
+    <browser:resource
+        name="selenium-pop.html"
+        factory=".dbs.PopDBs"
+        permission="zope.Public"
+        layer="z3c.boilerweb.interfaces.IBuilderBrowserLayer"
+        />
+  </configure>
+
+
+  <adapter
+      factory="z3c.boilerweb.tests.test_selenium.Test"
+      name="test.html"
+      permission="zope.Public"
+      />
+
+
+</configure>

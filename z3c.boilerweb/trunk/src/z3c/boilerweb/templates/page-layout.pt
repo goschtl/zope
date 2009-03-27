@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>ZBoiler</title>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"
+          tal:attributes="href context/++resource++ui/favicon.ico"/>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon"
+          tal:attributes="href context/++resource++ui/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/combo?2.6.0/build/reset-fonts/reset-fonts.css"/>
+    <!--link rel="stylesheet" type="text/css" tal:attributes="href context/++resource++ui/reset-fonts.css"/-->
+    <link rel="stylesheet" href="style.css" tal:attributes="href context/++resource++ui/style.css"/>
+    <!--script tal:attributes="src context/++resource++ui/jquery.min.js"
+            type="text/javascript"
+            language="Javascript"></script-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.0/jquery.min.js"
+            type="text/javascript"
+            language="Javascript"></script>
+  </head>
+  <body>
+    <div id="owrap">
+      <div id="header">
+        <h1 id="logo"><a href="/">ZBoiler</a></h1>
+        <span id="version">PRE-ALPHA</span>
+        <div id="nav-menu" tal:content="structure context/@@nav-menu" />
+      </div>
+      <div id="iwrap">
+        <div id="breadcrumbs" tal:content="structure context/@@breadcrumbs"
+             tal:on-error="nothing"/>
+        <div tal:replace="structure provider:pagelet" />
+      </div>
+
+      <div id="footer">
+        built on <a href="http://wiki.zope.org/zope3/Zope3Wiki">Zope 3</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp; created by
+        <a href="http://www.google.com/search?q=Zope+Stephan+Richter">srichter</a> and
+        <a href="http://www.carduner.net">pcardune</a>
+      </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.5.3/jquery-ui.min.js"
+            type="text/javascript"
+            language="Javascript"></script>
+    <script src="static/js/global.js"
+            type="text/javascript"
+            language="Javascript"
+            tal:attributes="src context/++resource++ui/js/global.js"></script>
+    <div tal:replace="structure context/@@google-analytics"></div>
+  </body>
+</html>

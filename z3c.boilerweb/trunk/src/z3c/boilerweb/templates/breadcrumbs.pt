@@ -1,0 +1,10 @@
+
+<ul tal:condition="view/crumbs">
+  <li tal:repeat="crumb view/crumbs">
+    /
+    <a tal:attributes="href crumb/url;
+                       class crumb/cssClass|nothing"
+       tal:content="crumb/title">
+    </a>
+  </li>
+</ul>

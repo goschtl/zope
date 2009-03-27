@@ -1,0 +1,36 @@
+<div class="text">
+  <p>
+    Welcome to <strong>ZBoiler</strong>.
+  </p>
+  <p>
+    <strong>ZBoiler</strong> will help you get started on your next
+    Python project by providing a simple user interface for specifying
+    the basic features of your project, like package metadata and
+    automated testing.  Once you have the basic details of your
+    project entered, <strong>ZBoiler</strong> will generate all the
+    boilerplate code you need and provide an easy to download tarball.
+  </p>
+  <img id="screenshot"
+       alt="ZBoiler Screenshot"
+       tal:attributes="src context/++resource++ui/images/Screenshot.png" />
+
+  <p>
+    So whenever you're ready, just
+    <strong><a href="build.html"
+       tal:attributes="href string:${context/@@absolute_url}/build.html">
+      start building!
+    </a></strong>
+  </p>
+
+  <p tal:condition="view/projectTemplates">
+    Or get jump-started by using a project template:
+  </p>
+  <ul tal:condition="view/projectTemplates">
+    <li tal:repeat="template view/projectTemplates">
+      <strong>
+        <a tal:attributes="href string:build.html?template=${template/name}"
+         tal:content="template/title"></a>
+      </strong> - <span tal:replace="template/description"/>
+    </li>
+  </ul>
+</div>

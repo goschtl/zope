@@ -1,0 +1,280 @@
+img, div, a, h1 { behavior: url(iepngfix.htc) }
+html{
+  background: white;
+}
+body{
+  background: white;
+  color: #555;
+  padding-bottom: 30px;
+}
+a,
+a:visited{
+  color: blue;
+  text-decoration: none;
+}
+
+hr{
+  border: 0px;
+  border-top: 1px solid #e9e9e9;
+}
+strong{
+  font-weight: bold;
+}
+ul,ol{
+  padding-left: 1em;
+}
+input, textarea, select{
+  border: 1px solid #eee;
+  padding: 2px;
+  margin: 1px;
+}
+input:focus, textarea:focus, select:focus{
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+}
+input[type="button"],
+input[type="submit"]{
+  border: 1px solid #ccc;
+  background: #eee;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover{
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+span.hint{
+  color: #999;
+  padding-left: 10px;
+  font-size: 90%;
+}
+
+div.viewspace h1{
+  font-weight: bold;
+  font-size: 120%;
+  margin-bottom: 1em;
+}
+
+div.required-info span.required,
+label span.required{
+  color: #f00;
+}
+div.viewspace div.row{
+  padding-top: 10px;
+}
+div.buttons{
+  margin-top: 10px;
+}
+
+#owrap{
+  margin: auto;
+  width: 900px;
+  -moz-border-radius: 0px 0px 10px 10px;
+  -webkit-border-radius: 0px 0px 10px 10px;
+  padding-bottom: 20px;
+}
+
+#iwrap{
+  border-top: 1px solid #ccc;
+  min-height: 300px;
+  margin-top: 2px;
+  padding: 15px;
+}
+
+#header{
+  height: 60px;
+  padding: 20px;
+}
+
+#logo{
+  font-size: 300%;
+  font-weight: bold;
+  color: black;
+  width: 180px;
+  text-indent: -9999px;
+  background: url(images/logo.png) no-repeat top left;
+  cursor: pointer;
+}
+#logo:hover{
+  background: url(images/logo-on.png) no-repeat top left;
+}
+
+#version{
+  color: #ccc;
+  float: left;
+  font-weight: bold;
+  position: relative;
+  left: 95px;
+  font-size: 60%;
+}
+
+#nav-menu{
+  margin: auto;
+  margin-top: 10px;
+  position: relative;
+  top: 15px;
+  float: right;
+}
+#breadcrumbs li,
+#nav-menu li{
+  display: inline;
+}
+#breadcrumbs li a,
+#nav-menu li a{
+  color: #77f;
+}
+#breadcrumbs li a:hover,
+#nav-menu li a.selected,
+#nav-menu li a:hover{
+  color: #00f;
+}
+
+#nav-menu li a{
+  background: white;
+  margin-right: 10px;
+  padding: 4px;
+  border: 1px solid #ccc;
+}
+#nav-menu li a.selected,
+#nav-menu li a:hover{
+  border-color: #777;
+}
+
+
+#breadcrumbs{
+  color: #ccc;
+  margin-top: -10px;
+  padding-bottom: 15px;
+}
+#breadcrumbs ul{
+  padding: 0px;
+}
+
+#screenshot{
+  float: right;
+  position: relative;
+  bottom: 100px;
+}
+
+#buildit-wrapper{
+  text-align: center;
+  margin: 40px;
+}
+
+#buildit{
+  background: #fee;
+  border: 1px solid #fcc;
+  color: #900;
+  padding: 5px 40px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  font-weight: bold;
+  font-size: 150%;
+}
+#buildit:hover{
+  background: #fcc;
+  border: 1px solid #f99;
+}
+
+#startover{
+  float: right;
+}
+
+input.delete{
+  border: 0px solid transparent;
+  cursor: pointer;
+  text-indent: -9999px;
+  width: 10px;
+  height: 10px;
+  margin: 2px 5px 0 0;
+  display: block;
+  float: left;
+  background: transparent url(images/delete.gif) no-repeat scroll -0px 0;
+}
+input.delete:hover{
+  border: 0;
+  background: transparent url(images/delete.gif) no-repeat scroll -10px 0;
+}
+
+table.feature-list tr{
+  border-bottom: 1px dashed #ccc;
+}
+table.feature-list tr.added{
+  opacity: .5;
+}
+table.feature-list tr td{
+  padding: 10px;
+}
+input.add-feature{
+  background: #eef;
+  border: 1px solid #ccf;
+  color: #009;
+  padding: 0px 5px;
+  margin: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-weight: bold;
+  font-size: 120%;
+  cursor: pointer;
+}
+input.add-feature:hover{
+  background: #ccf;
+  border: 1px solid #99f;
+}
+
+div.document{
+  width: 80ex;
+}
+div.document h1 a {
+  color: inherit;
+}
+div.text p{
+  margin-bottom: 10px;
+  width: 80ex;
+}
+
+div.text h1,
+div.text h2,
+div.text h3,
+div.text h4,
+div.text h5,
+div.text h6{
+  font-weight: bold;
+  font-size: 120%;
+  margin-top: 15px;
+}
+div.document ul li p.first,
+div.document ol li p.first{
+  display: inline;
+}
+div.text ul li{
+  list-style: inside disc;
+}
+div.text ol li{
+  list-style: inside decimal;
+}
+div.text blockquote{
+  margin: 15px;
+}
+div.text pre.literal-block{
+  margin: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+#footer {
+  text-align: right;
+  font-size: 75%;
+  color: #aaa;
+  clear: both;
+}
+
+#footer a{
+  color: inherit;
+  text-decoration: underline;
+}

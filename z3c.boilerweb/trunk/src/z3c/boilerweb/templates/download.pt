@@ -1,0 +1,27 @@
+<div class="text">
+  <h2>"<span tal:replace="context/name"/>" has been boiled!</h2>
+</div>
+  <p>
+    We've finished creating your project and it is ready to download.
+  </p>
+<div id="buildit-wrapper">
+  <a id="buildit"
+     tal:attributes="href string:${context/@@absolute_url}/project.tar.gz">Download!</a>
+</div>
+<p>
+  Alternatively, you can just download the xml project definition for
+  use on the command line here:
+  <a tal:attributes="href string:${context/@@absolute_url}/project.xml"
+     tal:content="string:${context/name}.xml">myproject.xml</a>
+</p>
+
+<p>
+  We've also taken the liberty to gather some documentation about
+  what to do next with your project which you can read below.  This
+  information can also be found in the ZBOILER.txt file in your
+  project directory.
+</p>
+<hr/>
+<div class="text">
+  <div tal:replace="structure view/documentation"></div>
+</div>
