@@ -26,7 +26,7 @@ def read(*rnames):
 
 setup (
     name='z3c.builder.core',
-    version='0.1.0',
+    version='0.2.0',
     author = "Paul Carduner, Stephan Richter, and hopefully others...",
     author_email = "zope-dev@zope.org",
     description = "A utility to help jump start Zope 3 projects",
