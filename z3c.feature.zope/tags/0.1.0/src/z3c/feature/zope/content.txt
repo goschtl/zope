@@ -1,0 +1,252 @@
+====================
+Zope Content Feature
+====================
+
+    >>> from z3c.feature.zope import interfaces, content
+    >>> message = content.ZopeContentFeature()
+    >>> message
+    <ZopeContentFeature u'Zope Content Type (MyContent)'>
+
+The ``ZopeContentFeature`` class implements the
+``IZopeContentFeature`` schema.
+
+    >>> from zope.interface.verify import verifyObject
+    >>> verifyObject(interfaces.IZopeContentFeature, message)
+    True
+
+It also implements the ``IFeature`` interface.
+
+    >>> from z3c.feature.core.interfaces import IFeature
+    >>> verifyObject(IFeature, message)
+    True
+
+Here are some of the ``IFeature`` related attributes.
+
+    >>> print message.featureTitle
+    Zope Content Type (MyContent)
+    >>> print message.featureDocumentation
+    The Zope Content Feature lets you define a basic content type that can
+    be stored in a database and that has a simple page for creating,
+    reading, updating, and deleting the content item.
+
+    >>> message.featureSingleton
+    False
+    >>> message.featureDependencies
+    ()
+
+There are some fields specific to this feature.
+
+    >>> message.className
+    u'MyContent'
+
+Notice that this affects the feature title as well.
+
+    >>> message.className = u"Message"
+    >>> print message.featureTitle
+    Zope Content Type (Message)
+
+Most importantly though, we have the ``fields`` attribute:
+
+    >>> message.fields
+    {}
+
+Let's go ahead and add a few fields:
+
+    >>> import zope.schema
+    >>> message.addField(u'sender','zope.schema.TextLine')
+    >>> message.addField(u'receiver','zope.schema.TextLine')
+    >>> message.addField(u'message','zope.schema.Text')
+
+Now we can apply this to a project.
+
+    >>> from z3c.builder.core.project import BuildoutProjectBuilder
+    >>> demo = BuildoutProjectBuilder(u'demo')
+
+    >>> message.update()
+    >>> message.applyTo(demo)
+
+Now let's take a look at what got added to the project.
+
+    >>> demo.package['interfaces.py']
+    <ModuleBuilder u'interfaces.py'>
+
+    >>> demo.package['interfaces.py'][u'IMessage']
+    <InterfaceBuilder u'IMessage'>
+
+    >>> demo.update()
+    >>> demo.write(buildPath)
+    >>> ls(buildPath)
+    demo/
+      bootstrap.py
+      buildout.cfg
+      setup.py
+      src/
+        demo/
+          __init__.py
+          configure.zcml
+          interfaces.py
+          message.py
+          browser/
+            __init__.py
+            configure.zcml
+            message.py
+
+There is an interfaces.py file with the IMessage interface.
+
+    >>> more(buildPath,'demo','src','demo','interfaces.py')
+    <BLANKLINE>
+    ...
+    from zope.interface import Interface
+    from zope.schema import Text
+    from zope.schema import TextLine
+    <BLANKLINE>
+    class IMessage(Interface):
+        """The ``Message`` Content Type"""
+        message = Text(
+            title=u'Message',
+            )
+    <BLANKLINE>
+        sender = TextLine(
+            title=u'Sender',
+            )
+    <BLANKLINE>
+        receiver = TextLine(
+            title=u'Receiver',
+            )
+
+There is an implementation of the IMessage interface.
+
+    >>> more(buildPath, 'demo','src','demo','message.py')
+    <BLANKLINE>
+    ...
+    from demo.interfaces import IMessage
+    from persistent import Persistent
+    from zope.container.contained import Contained
+    from zope.interface import implements
+    from zope.schema.fieldproperty import FieldProperty
+    <BLANKLINE>
+    class Message(Persistent, Contained):
+        """Implementation of ``demo.interfaces.IMessage``"""
+        implements(IMessage)
+    <BLANKLINE>
+        message = FieldProperty(IMessage['message'])
+        sender = FieldProperty(IMessage['sender'])
+        receiver = FieldProperty(IMessage['receiver'])
+
+    >>> more(buildPath, 'demo','src','demo','configure.zcml')
+    <configure
+        xmlns:zope="http://namespaces.zope.org/zope"
+        i18n_domain="demo"
+        >
+      <zope:class
+          class=".message.Message"
+          >
+        <allow
+            set_schema=".interfaces.IMessage"
+            interface=".interfaces.IMessage"
+            />
+      </zope:class>
+      <zope:include package=".browser" />
+    </configure>
+
+There is configuration for the IMessage implementation.
+
+    >>> more(buildPath,'demo','src','demo','browser','configure.zcml')
+    <configure
+        xmlns:browser="http://namespaces.zope.org/browser"
+        i18n_domain="demo"
+        >
+      <browser:page
+          class="demo.browser.message.MessageAddForm"
+          for="zope.container.interfaces.IContainer"
+          name="index.html"
+          permission="zope.Public"
+          />
+    <BLANKLINE>
+      <browser:page
+          class="demo.browser.message.MessageEditForm"
+          for="demo.interfaces.IMessage"
+          name="edit.html"
+          permission="zope.Public"
+          />
+    <BLANKLINE>
+      <browser:page
+          class="demo.browser.message.MessageDisplayForm"
+          for="demo.interfaces.IMessage"
+          name="index.html"
+          permission="zope.Public"
+          />
+    <BLANKLINE>
+    </configure>
+
+There is a browser package with forms for IMessage.
+
+    >>> more(buildPath, 'demo','src','demo','browser','message.py')
+    <BLANKLINE>
+    ...
+    from demo.interfaces import IMessage
+    from demo.message import Message
+    from z3c.form.field import Fields
+    from z3c.form.form import AddForm
+    from z3c.form.form import DisplayForm
+    from z3c.form.form import EditForm
+    from zope.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+    from zope.traversing.browser import absoluteURL
+    <BLANKLINE>
+    class MessageAddForm(AddForm):
+        """Add form for IMessage"""
+    <BLANKLINE>
+        label = u'Add Form'
+        fields = Fields(IMessage).select('message', 'sender', 'receiver')
+    <BLANKLINE>
+        def create(self, data):
+            object = Message()
+            for name, value in data.items():
+                setattr(object, name, value)
+            return object
+    <BLANKLINE>
+        def add(self, object):
+            count = 0
+            while 'Message-%i' %count in self.context:
+                count += 1;
+            self._name = 'Message-%i' %count
+            self.context[self._name] = object
+            return object
+    <BLANKLINE>
+        def nextURL(self):
+            return absoluteURL(
+                self.context[self._name], self.request) + '/index.html'
+    <BLANKLINE>
+    <BLANKLINE>
+    class MessageEditForm(EditForm):
+        """Edit form for IMessage"""
+    <BLANKLINE>
+        label = u'Edit Form'
+        fields = Fields(IMessage).select('message', 'sender', 'receiver')
+    <BLANKLINE>
+    <BLANKLINE>
+    class MessageDisplayForm(DisplayForm):
+        """Display form for IMessage"""
+        fields = Fields(IMessage).select('message', 'sender', 'receiver')
+
+
+Generating from xml
+-------------------
+
+    >>> feature = content.ZopeContentFeature.fromXML('''\
+    ...     <feature type="z3c.feature.zope:content-type">
+    ...       <className>Message</className>
+    ...       <fields>
+    ...         <field name="receiver" type="zope.schema.TextLine"/>
+    ...         <field name="sender" type="zope.schema.TextLine"/>
+    ...         <field name="message" type="zope.schema.Text"/>
+    ...       </fields>
+    ...     </feature>
+    ... ''')
+
+    >>> feature
+    <ZopeContentFeature u'Zope Content Type (Message)'>
+    >>> feature.fields
+    {u'message': u'zope.schema.Text',
+     u'sender': u'zope.schema.TextLine',
+     u'receiver': u'zope.schema.TextLine'}
