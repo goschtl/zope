@@ -108,7 +108,11 @@ class BaseFeature(object):
 
 
 def getFeatureSchema(feature):
-    for iface in zope.interface.providedBy(feature).flattened():
+    if isinstance(feature, type):
+        ifaces = zope.interface.implementedBy(feature).flattened()
+    else:
+        ifaces = zope.interface.providedBy(feature).flattened()
+    for iface in ifaces:
         if interfaces.IFeatureSchema.providedBy(iface):
             return iface
     return None
