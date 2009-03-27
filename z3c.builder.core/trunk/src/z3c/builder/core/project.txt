@@ -1,0 +1,171 @@
+====================
+The Project Builders
+====================
+
+The root node of the builder object tree is the project builder. As with all
+builders, the project builder has a name:
+
+  >>> from z3c.builder.core import interfaces, project
+  >>> builder = project.ProjectBuilder(u'myproject')
+  >>> builder
+  <ProjectBuilder u'myproject'>
+
+This object provides the ``IProjectBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IProjectBuilder, builder)
+  True
+
+By default, the project name is equal to the builder name, except that the
+latter is a simple string:
+
+  >>> builder.name
+  u'myproject'
+  >>> builder.projectName
+  'myproject'
+
+Optionally, you can specify a different string for the project name.
+
+  >>> builder = project.ProjectBuilder(u'MyProject', 'myproject')
+  >>> builder
+  <ProjectBuilder u'MyProject'>
+
+  >>> builder.name
+  u'MyProject'
+  >>> builder.projectName
+  'myproject'
+
+When rendering the project, always the directory name is used, which is set to
+the project name:
+
+  >>> builder.update()
+  >>> builder.write(buildPath)
+
+  >>> ls(buildPath)
+  myproject/
+
+Trying to rebuild the project fails, because the directory now exists already:
+
+  >>> builder.write(buildPath)
+  Traceback (most recent call last):
+  ...
+  FileExistsException
+
+So we can optionally force a rebuild:
+
+  >>> builder.write(buildPath, force=True)
+
+  >>> ls(buildPath)
+  myproject/
+
+
+Buildout Project
+----------------
+
+An extension to the simple project builder is the `BuildoutProjectBuilder`
+class, which provides a setup for buildout-based projects.
+
+  >>> builder = project.BuildoutProjectBuilder(u'myproject')
+  >>> builder
+  <BuildoutProjectBuilder u'myproject'>
+
+This object provides the ``IBuildoutProjectBuilder`` interface.
+
+  >>> verifyObject(interfaces.IBuildoutProjectBuilder, builder)
+  True
+
+In particular, this version of a project builder exposes several other
+builders:
+
+- Buildout Configuration Builder
+
+    >>> builder.buildout
+    <BuildoutConfigBuilder for u'myproject'>
+
+    >>> builder['buildout.cfg']
+    <BuildoutConfigBuilder for u'myproject'>
+
+  See `buildout.txt` for more details of this builder.
+
+- Setup Builder
+
+    >>> builder.setup
+    <SetupBuilder for u'myproject'>
+
+    >>> builder['setup.py']
+    <SetupBuilder for u'myproject'>
+
+  See `setup.txt` for more details of this builder.
+
+- Python Package Builder
+
+    >>> builder.package
+    <PackageBuilder u'myproject'>
+
+  Initially the name of the package builder is empty, until we update the
+  project builder:
+
+    >>> builder.update()
+    >>> builder.package
+    <PackageBuilder u'myproject'>
+
+The builder also installs a source directory builder, which does the package
+source setup.
+
+  >>> builder['src']
+  <SrcDirectoryBuilder for u'myproject'>
+
+Let's now render the project and see what it creates:
+
+  >>> builder.update()
+  >>> builder.write(buildPath, True)
+
+  >>> ls(buildPath)
+  myproject/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      myproject/
+        __init__.py
+
+Note that the project also installed the `bootstrap.py` file, which is used to
+initialize the buildout script.
+
+  >>> import os, shutil
+  >>> shutil.rmtree(os.path.join(buildPath, 'myproject'))
+
+Let's now create a project with a namespace and see what is being generated.
+
+  >>> builder = project.BuildoutProjectBuilder(u'z3c.myproject')
+  >>> builder
+  <BuildoutProjectBuilder u'z3c.myproject'>
+
+Let's now render the builder:
+
+  >>> builder.update()
+  >>> builder.write(buildPath, True)
+
+  >>> ls(buildPath)
+  z3c.myproject/
+    bootstrap.py
+    buildout.cfg
+    setup.py
+    src/
+      z3c/
+        __init__.py
+        myproject/
+          __init__.py
+
+Note that the source directory builder also correctly created the namespace
+`__init__.py` file:
+
+  >>> more(buildPath, 'z3c.myproject', 'src', 'z3c', '__init__.py')
+  try:
+      # Declare this a namespace package if pkg_resources is available.
+      import pkg_resources
+      pkg_resources.declare_namespace(__name__)
+  except ImportError:
+      pass
+
+Look in the other text files for more details on the various builders.

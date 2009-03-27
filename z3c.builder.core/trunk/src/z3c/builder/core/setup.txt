@@ -1,0 +1,221 @@
+=================
+The Setup Builder
+=================
+
+This builder creates a Python project's or package's `setup.py` file. This
+file contains build meta data necessary to make the package a proper egg.
+
+  >>> from z3c.builder.core import interfaces, setup
+  >>> builder = setup.SetupBuilder()
+
+This object provides the ``ISetupBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.ISetupBuilder, builder)
+  True
+
+Like most builders, this builder also expects to be able to reach its project
+builder:
+
+  >>> from z3c.builder.core import project
+  >>> builder.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+  >>> builder
+  <SetupBuilder for u'z3c.myproject'>
+
+Let's now render the file to see what it does out of the box:
+
+  >>> builder.update()
+  >>> builder.__parent__.update()
+  >>> print builder.render()
+  ##############################################################################
+  #
+  # This file is part of z3c.myproject. ...
+  #
+  ##############################################################################
+  """Setup"""
+  from setuptools import setup, find_packages
+  <BLANKLINE>
+  setup (
+      name = 'z3c.myproject',
+      version = '0.1.0',
+      author = u"",
+      author_email = u"",
+      description = u"",
+      license = "GPLv3",
+      keywords = u"",
+      url = "http://pypi.python.org/pypi/z3c.myproject",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [u'z3c'],
+      extras_require = {},
+      install_requires = [
+          'setuptools',
+          ],
+      zip_safe = False,
+      entry_points = {},
+      )
+
+Note that the namespace packages argument is automatically populated. Let's
+now specify a little bit more data:
+
+  >>> builder.author = u'Paul and Stephan'
+  >>> builder.description = u'My Project'
+  >>> builder.keywords = [u'sample', u'python', u'project']
+  >>> builder.install_requires.append('zope.component')
+  >>> builder.addExtrasRequires(
+  ...     'test', ('zope.testing', 'zope.testbrowser'))
+
+So let's render this builder again.
+
+  >>> builder.update()
+  >>> builder.__parent__.update()
+  >>> print builder.render()
+  ##############################################################################
+  #
+  # This file is part of z3c.myproject. ...
+  #
+  ##############################################################################
+  """Setup"""
+  from setuptools import setup, find_packages
+  <BLANKLINE>
+  setup (
+      name = 'z3c.myproject',
+      version = '0.1.0',
+      author = u"Paul and Stephan",
+      author_email = u"",
+      description = u"My Project",
+      license = "GPLv3",
+      keywords = u"sample python project",
+      url = "http://pypi.python.org/pypi/z3c.myproject",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [u'z3c'],
+      extras_require = {'test': ['zope.testing',
+            'zope.testbrowser']},
+      install_requires = [
+          'setuptools',
+          'zope.component',
+          ],
+      zip_safe = False,
+      entry_points = {},
+      )
+
+You can also remove an extra requires section:
+
+  >>> builder.removeExtrasRequires('test')
+
+  >>> builder.update()
+  >>> print builder.render()
+  ##############################################################################
+  #
+  # This file is part of z3c.myproject. ...
+  #
+  ##############################################################################
+  """Setup"""
+  from setuptools import setup, find_packages
+  <BLANKLINE>
+  setup (
+      name = 'z3c.myproject',
+      version = '0.1.0',
+      author = u"Paul and Stephan",
+      author_email = u"",
+      description = u"My Project",
+      license = "GPLv3",
+      keywords = u"sample python project",
+      url = "http://pypi.python.org/pypi/z3c.myproject",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [u'z3c'],
+      extras_require = {},
+      install_requires = [
+          'setuptools',
+          'zope.component',
+          ],
+      zip_safe = False,
+      entry_points = {},
+      )
+
+Let's now add a console script entry point:
+
+  >>> builder.addEntryPoints(
+  ...     'console_script', ('z3c.myproject.script:main',)
+  ...     )
+
+  >>> builder.update()
+  >>> print builder.render()
+  ##############################################################################
+  #
+  # This file is part of z3c.myproject...
+  #
+  ##############################################################################
+  """Setup"""
+  from setuptools import setup, find_packages
+  <BLANKLINE>
+  setup (
+      name = 'z3c.myproject',
+      version = '0.1.0',
+      author = u"Paul and Stephan",
+      author_email = u"",
+      description = u"My Project",
+      license = "GPLv3",
+      keywords = u"sample python project",
+      url = "http://pypi.python.org/pypi/z3c.myproject",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [u'z3c'],
+      extras_require = {},
+      install_requires = [
+          'setuptools',
+          'zope.component',
+          ],
+      zip_safe = False,
+      entry_points = {'console_script': ['z3c.myproject.script:main']},
+      )
+
+Let's remove the entry point again:
+
+  >>> builder.removeEntryPoints('console_script')
+
+  >>> builder.update()
+  >>> print builder.render()
+  ##############################################################################
+  #
+  # This file is part of z3c.myproject. ...
+  #
+  ##############################################################################
+  """Setup"""
+  from setuptools import setup, find_packages
+  <BLANKLINE>
+  setup (
+      name = 'z3c.myproject',
+      version = '0.1.0',
+      author = u"Paul and Stephan",
+      author_email = u"",
+      description = u"My Project",
+      license = "GPLv3",
+      keywords = u"sample python project",
+      url = "http://pypi.python.org/pypi/z3c.myproject",
+      classifiers = [],
+      packages = find_packages('src'),
+      include_package_data = True,
+      package_dir = {'':'src'},
+      namespace_packages = [u'z3c'],
+      extras_require = {},
+      install_requires = [
+          'setuptools',
+          'zope.component',
+          ],
+      zip_safe = False,
+      entry_points = {},
+      )
+
+And that's it. This simple implementation does not support setting up
+arbitrarily complex build instructions.

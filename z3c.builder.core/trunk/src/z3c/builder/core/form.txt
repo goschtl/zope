@@ -1,0 +1,172 @@
+============
+Form Builder
+============
+
+The `form` module provides a set of simple builders to produce add, edit and
+display forms.
+
+  >>> from z3c.builder.core import form, interfaces
+
+Add Form
+--------
+
+The add form produces a simple add form.
+
+  >>> builder = form.AddFormBuilder(
+  ...     u'AddProjectForm',
+  ...     'my.project.interfaces.IProject',
+  ...     'my.project.content.Project',
+  ...     ('name', 'author', 'version'))
+  >>> builder
+  <AddFormBuilder u'AddProjectForm'>
+
+This object provides the ``IAddFormBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IAddFormBuilder, builder)
+  True
+
+Let's now render the builder:
+
+  >>> builder.update()
+  Traceback (most recent call last):
+  ...
+  ValueError: No module builder was found and the root node of the
+              project tree was reached.
+
+We have to add a module and project:
+
+  >>> from z3c.builder.core import python, project
+
+  >>> module = python.ModuleBuilder(u'browser')
+  >>> module.update()
+  >>> module.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+
+  >>> builder.__parent__ = module
+
+Let's try this again:
+
+  >>> builder.update()
+  >>> print builder.render()
+  class AddProjectForm(AddForm):
+      """Add form for IProject"""
+  <BLANKLINE>
+      label = u'Add Form'
+      fields = Fields(IProject).select('name', 'author', 'version')
+  <BLANKLINE>
+      def create(self, data):
+          object = Project()
+          for name, value in data.items():
+              setattr(object, name, value)
+          return object
+  <BLANKLINE>
+      def add(self, object):
+          count = 0
+          while 'Project-%i' %count in self.context:
+              count += 1;
+          self._name = 'Project-%i' %count
+          self.context[self._name] = object
+          return object
+  <BLANKLINE>
+      def nextURL(self):
+          return absoluteURL(
+              self.context[self._name], self.request) + '/index.html'
+
+That's it.
+
+
+Edit Form
+---------
+
+The edit form produces a simple edit form.
+
+  >>> builder = form.EditFormBuilder(
+  ...     u'EditProjectForm',
+  ...     'my.project.interfaces.IProject',
+  ...     ('name', 'author', 'version'))
+  >>> builder
+  <EditFormBuilder u'EditProjectForm'>
+
+This object provides the ``IEditFormBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IEditFormBuilder, builder)
+  True
+
+Let's now render the builder:
+
+  >>> builder.update()
+  Traceback (most recent call last):
+  ...
+  ValueError: No module builder was found and the root node of the
+              project tree was reached.
+
+We have to edit a module and project:
+
+  >>> from z3c.builder.core import python, project
+
+  >>> module = python.ModuleBuilder(u'browser')
+  >>> module.update()
+  >>> module.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+
+  >>> builder.__parent__ = module
+
+Let's try this again:
+
+  >>> builder.update()
+  >>> print builder.render()
+  class EditProjectForm(EditForm):
+      """Edit form for IProject"""
+  <BLANKLINE>
+      label = u'Edit Form'
+      fields = Fields(IProject).select('name', 'author', 'version')
+
+That's it.
+
+
+Simple Display Form
+-------------------
+
+The display form produces a simple display form.
+
+  >>> builder = form.SimpleDisplayFormBuilder(
+  ...     u'DisplayProjectForm',
+  ...     'my.project.interfaces.IProject',
+  ...     u'%(name)s %(version)s by %(author)s.',
+  ...     ('name', 'author', 'version'))
+  >>> builder
+  <SimpleDisplayFormBuilder u'DisplayProjectForm'>
+
+This object provides the ``IDisplayFormBuilder`` interface.
+
+  >>> from zope.interface.verify import verifyObject
+  >>> verifyObject(interfaces.IDisplayFormBuilder, builder)
+  True
+
+Let's now render the builder:
+
+  >>> builder.update()
+  Traceback (most recent call last):
+  ...
+  ValueError: No module builder was found and the root node of the
+              project tree was reached.
+
+We have to display a module and project:
+
+  >>> from z3c.builder.core import python, project
+
+  >>> module = python.ModuleBuilder(u'browser')
+  >>> module.update()
+  >>> module.__parent__ = project.ProjectBuilder(u'z3c.myproject')
+
+  >>> builder.__parent__ = module
+
+Let's try this again:
+
+  >>> builder.update()
+  >>> print builder.render()
+  class DisplayProjectForm(DisplayForm, Form):
+      """Display form for IProject"""
+      fields = Fields(IProject).select('name', 'author', 'version')
+
+That's it.

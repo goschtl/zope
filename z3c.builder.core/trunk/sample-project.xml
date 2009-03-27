@@ -1,0 +1,124 @@
+<project name="z3c.sampleproject">
+
+  <feature type="z3c.feature.core:meta-data">
+    <license>ZPL</license>
+    <version>0.1.0</version>
+    <author>Paul Carduner and Stephan Richter</author>
+    <author-email>zope-dev@zope.org</author-email>
+    <description>A utility to help jump start Zope 3 projects</description>
+    <license>ZPL 2.1</license>
+    <keywords>zope3 project builder</keywords>
+    <url>http://pypi.python.org/pypi/z3c.builder</url>
+    <namespace-packages>z3c</namespace-packages>
+    <feature type="z3c.feature.core:comment-header-ZPL">
+      <year>2009</year>
+    </feature>
+
+  </feature>
+
+  <feature type="z3c.feature.core:python-interpreter">
+    <executableName>py</executableName>
+  </feature>
+
+  <feature type="z3c.feature.core:unit-testing"/>
+  <feature type="z3c.feature.core:script"/>
+  <feature type="z3c.feature.core:documentation"/>
+
+  <!--feature type="z3c.builder:application">
+    <database type="zodb">
+      <name>main</name>
+      <storage type="filestorage">
+        <file>Data.fs</file>
+      </storage>
+    </database>
+  </feature-->
+
+  <!--feature type="z3c.builder:server">
+    <server>zope.server</server>
+    <port>8080</port>
+    <interface>0.0.0.0</interface>
+  </feature-->
+
+  <!--feature type="z3c.builder:test">
+    <functional-layer name="SPLayer" zcml="ftesting.zcml" />
+  </feature-->
+
+  <!--feature type="z3c.builder:coverage">
+    <script-name>coverage</script-name>
+    <directory>coverage</directory>
+  </feature-->
+
+  <!--feature type="z3c.builder:importchecker">
+    <script-name>check</script-name>
+  </feature-->
+
+  <!--feature type="z3c.builder:package">
+    <name>z3c.rml</name>
+    <version>0.7.3</version>
+  </feature-->
+
+  <!-- Simple Hello World Example -->
+
+  <!--feature type="z3c.builder:page">
+    <name>hello-world.html</name>
+    <!- - By default the template, some sample content and view class is
+          created by default. - ->
+  </feature-->
+
+  <!-- Simple Content Component with CRUD -->
+
+  <!--feature type="z3c.builder:skin" name="hw-skin">
+    <name>hw</name>
+  </feature-->
+
+  <!--feature type="z3c.builder:simple-content-crud" depends-on="hw-skin">
+    <content>
+      <name>HelloWorld</name>
+      <schema>
+        <field name="who" type="TextLine" />
+        <field name="when" type="Date" />
+        <field name="what" type="Choice">
+          <choices>
+            <choice name="cool">cool</choice>
+            <choice name="sunny">sunny</choice>
+            <choice name="silent">silent</choice>
+            <choice name="best">best</choice>
+          </choices>
+        </field>
+      </schema>
+    </content>
+    <!- - Optional - ->
+    <forms type="z3c.builder:z3c.form">
+      <skin>hw</skin>
+    </forms>
+  </feature-->
+
+  <!-- OR -->
+
+  <!--feature type="z3c.builder:content">
+    <name>HelloWorld</name>
+    <schema>
+      <field name="who" type="TextLine" />
+      <field name="when" type="Date" />
+      <field name="what" type="Choice">
+        <choices>
+          <choice name="cool">cool</choice>
+          <choice name="sunny">sunny</choice>
+          <choice name="silent">silent</choice>
+          <choice name="best">best</choice>
+        </choices>
+      </field>
+    </schema>
+  </feature-->
+
+  <!--feature type="z3c.builder:form-crud" depends-on="content">
+    <content>HelloWorld</content>
+    <skin>hw-skin</skin>
+    <fields>
+      <field>who</field>
+      <field>when</field>
+      <field>what</field>
+    </fields>
+  </feature-->
+
+</project>
