@@ -75,11 +75,11 @@ class SortingColumnHeader(ColumnHeader):
         try:
             currentSortID = int(currentSortID)
         except ValueError:
-            currentSortID = currentSortID.split('-')[2]
+            currentSortID = currentSortID.rsplit('-', 1)[-1]
 
         currentSortOrder = table.getSortOrder()
 
-        sortID = colID.split('-')[2]
+        sortID = colID.rsplit('-', 1)[-1]
 
         sortOrder = table.sortOrder
         if int(sortID) == int(currentSortID):
