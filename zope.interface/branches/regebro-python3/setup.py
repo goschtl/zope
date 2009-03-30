@@ -18,17 +18,12 @@ $Id$
 
 import os, sys
 
-from distutils.errors import (CCompilerError, DistutilsExecError, 
-                              DistutilsPlatformError)
-
 try:
     from setuptools import setup, Extension, Feature
-    from setuptools.command.build_ext import build_ext
-except ImportError, e:
+except ImportError:
     # do we need to support plain distutils for building when even
     # the package itself requires setuptools for installing?
     from distutils.core import setup, Extension
-    from distutils.command.build_ext import build_ext
 
     if sys.version_info[:2] >= (2, 4):
         extra = dict(
@@ -82,37 +77,22 @@ long_description=(
         '********\n'
         )
 
-
-class optional_build_ext(build_ext):
-    """This class subclasses build_ext and allows
-       the building of C extensions to fail.
-    """
-    def run(self):
-        try:
-            build_ext.run(self)
-        
-        except DistutilsPlatformError, e:
-            self._unavailable(e)
-
-    def build_extension(self, ext):
-       try:
-           build_ext.build_extension(self, ext)
-        
-       except (CCompilerError, DistutilsExecError), e:
-           self._unavailable(e)
-
-    def _unavailable(self, e):
-        print >> sys.stderr, '*' * 80
-        print >> sys.stderr, """WARNING:
-
-        An optional code optimization (C extension) could not be compiled.
-
-        Optimizations for this package will not be available!"""
-        print >> sys.stderr
-        print >> sys.stderr, e
-        print >> sys.stderr, '*' * 80
+try: # Zope 3 setuptools versions
+    from build_ext_3 import build_py_2to3 as build_py
+    from build_ext_3 import optional_build_ext
+    from build_ext_3 import test_2to3 as test
+except (ImportError, SyntaxError):
+    try: # Zope 2 setuptools versions
+        from setuptools.command.build_py import build_py
+        from setuptools.command.test import test
+        from build_ext_2 import optional_build_ext
+    except ImportError:
+        # Zope 2 distutils
+        from distutils.command.build_py import build_py
+        from distutils.command.test import test
+        from build_ext_2 import optional_build_ext
     
-
+        
 setup(name='zope.interface',
       version = '3.5.2dev',
       url='http://pypi.python.org/pypi/zope.interface',
@@ -122,8 +102,11 @@ setup(name='zope.interface',
       author_email='zope-dev@zope.org',
       long_description=long_description,
 
-      packages = ['zope', 'zope.interface'],
+      packages = ['zope', 'zope.interface', 'zope.interface.tests'],
       package_dir = {'': 'src'},
-      cmdclass = {'build_ext': optional_build_ext},
+      cmdclass = {'build_ext': optional_build_ext,
+                  'build_py': build_py,
+                  'test': test,
+                  },
       test_suite = 'zope.interface.tests',
       **extra)

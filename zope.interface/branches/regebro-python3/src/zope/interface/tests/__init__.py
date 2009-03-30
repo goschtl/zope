@@ -1,9 +1,7 @@
 #
 # This file is necessary to make this directory a package.
-
 import os
 import unittest
-
 
 def additional_tests():
     suites = unittest.TestSuite()

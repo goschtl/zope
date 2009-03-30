@@ -33,7 +33,7 @@ import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
 import exceptions
-from types import ClassType, ModuleType
+from types import ModuleType
 from zope.interface.advice import addClassAdvisor
 
 # Registry of class-implementation specifications
@@ -755,8 +755,12 @@ def Provides(*interfaces):
     return spec
 Provides.__safe_for_unpickling__ = True
 
-
-DescriptorAwareMetaClasses = ClassType, type
+try:
+    from types import ClassType
+    DescriptorAwareMetaClasses = ClassType, type
+except ImportError: # Python 3
+    DescriptorAwareMetaClasses = (type,)
+    
 def directlyProvides(object, *interfaces):
     """Declare interfaces declared directly for an object
 
