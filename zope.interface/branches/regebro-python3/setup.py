@@ -55,7 +55,7 @@ else:
         namespace_packages=["zope"],
         include_package_data = True,
         zip_safe = False,
-        tests_require = ['zope.testing'],
+        tests_require = [],
         install_requires = ['setuptools'],
         extras_require={'docs': ['z3c.recipe.sphinxdoc']},
         features = {'codeoptimization': codeoptimization}
@@ -113,7 +113,6 @@ class optional_build_ext(build_ext):
         print >> sys.stderr, '*' * 80
     
 
-
 setup(name='zope.interface',
       version = '3.5.2dev',
       url='http://pypi.python.org/pypi/zope.interface',
@@ -126,4 +125,5 @@ setup(name='zope.interface',
       packages = ['zope', 'zope.interface'],
       package_dir = {'': 'src'},
       cmdclass = {'build_ext': optional_build_ext},
+      test_suite = 'zope.interface.tests',
       **extra)
