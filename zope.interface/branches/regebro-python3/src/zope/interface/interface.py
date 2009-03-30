@@ -603,7 +603,6 @@ class InterfaceClass(Element, InterfaceBase, Specification):
 
         for k, v in self.__attrs.items():
             if isinstance(v, Method) and not (k in dict):
-                import pdb;pdb.set_trace()
                 dict[k]=v
 
         for b in self.__bases__:
