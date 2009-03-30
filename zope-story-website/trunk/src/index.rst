@@ -58,7 +58,7 @@ example:
     * `TurboGears`_, a Python web framework which utilizes zope.interface
       as well as Zope's transaction library.
       
-    * `zc.buildout`_, developed at Zope Corporation, has gained traction outside
+    * `buildout`_, developed at Zope Corporation, has gained traction outside
       Zope Community as a Python-based build system for creating, assembling and 
       deploying applications from multiple components.
 
