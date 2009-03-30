@@ -18,11 +18,14 @@ including:
     * `Zope 2 Application Server`_, a mature application server which
       has thrived in enterprise production systems for nearly 10 years.
 
-    * `Grok`_, a heavyweight Python web framework aimed at making
+.. image:: _static/grok_logo.gif
+
+`Grok`_, a heavyweight Python web framework aimed at making
       the full power of the Zope Framework accessible to the average
       Python developer.
 
-    * `Repoze`_, a web framework toolkit integrating WSGI middleware with Zope.
+.. image:: _static/repoze_logo.gif
+`Repoze`_, a web framework toolkit integrating WSGI middleware with Zope.
 
 
     * ...and a collection of individual web applications
