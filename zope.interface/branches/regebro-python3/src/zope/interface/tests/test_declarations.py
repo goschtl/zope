@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from zope.interface import *
-from zope.testing.doctestunit import DocTestSuite
+from doctest import DocTestSuite
 from zope.interface import Interface
 
 class I1(Interface): pass

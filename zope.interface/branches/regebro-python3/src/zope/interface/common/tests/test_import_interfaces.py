@@ -12,7 +12,7 @@
 #
 ##############################################################################
 import unittest
-from zope.testing import doctest
+import doctest
 
 def test_interface_import():
     """

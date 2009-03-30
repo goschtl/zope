@@ -51,7 +51,7 @@ And define another subscription adapter::
     >>> meals = list(registry.subscriptions([IChicken], IRecipe))
     >>> meals.sort()
     >>> meals
-    ['kfc', 'noodles', 'sausages']
+    ['kfdc', 'noodles', 'sausages']
 
 And the answer for poultry hasn't changed::
 

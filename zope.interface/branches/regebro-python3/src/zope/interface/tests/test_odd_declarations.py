@@ -195,7 +195,7 @@ class Test(unittest.TestCase):
 
 
 def test_suite():
-    from zope.testing import doctest
+    import doctest
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(doctest.DocTestSuite(odd))

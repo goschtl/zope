@@ -17,7 +17,7 @@ $Id$
 """
 import sys
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from doctest import DocTestSuite
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation, Invalid
 from zope.interface import implementedBy, providedBy
@@ -328,7 +328,7 @@ a set of bases and the bases were changed:
 """
 
 def test_suite():
-    from zope.testing import doctest
+    import doctest
     suite = unittest.makeSuite(InterfaceTests)
     suite.addTest(doctest.DocTestSuite("zope.interface.interface"))
     if sys.version_info >= (2, 4):
