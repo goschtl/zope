@@ -42,7 +42,7 @@ Rerun buildout (bin/buildout), giving you something like:
     Getting distribution for 'megrok.cheetah'.
     Got megrok.cheetah 0.1
 
-That's it. You can now place Cheetah templates (with the .ch extension)
+That's it. You can now place Cheetah templates (with the .tmpl extension)
 into any template directory used within your project. 
 
 Usage
