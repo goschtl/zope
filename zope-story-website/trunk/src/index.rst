@@ -1,11 +1,7 @@
-Welcome to the Zope Framework 
-=============================
-
-We are devoted to solutions to the perennial problems encountered
-when building complex, scalable web applications. We offer tools
-for all, from small nonprofits to large enterprise systems and
-high traffic public web applications.
-
+..      \ image:: _static/bg.png
+We are devoted to solutions to the perennial problems encountered when building
+complex, scalable web applications. We offer tools for all, from small
+nonprofits to large enterprise systems and high traffic public web applications.
 
 Frameworks
 ==========
@@ -15,7 +11,7 @@ they are looking at entering the world of Zope.
 
 .. raw:: html
 
-  `<div align="center">
+  <div align="center">
     <table width="80%">
         <tr>
             <td align="center" valign="top">            
@@ -56,7 +52,7 @@ experiences.
 
 .. raw:: html
 
-  `<div align="center">
+  <div align="center">
     <table width="80%">
         <tr>
             <td align="center" valign="top">            
