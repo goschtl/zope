@@ -1,7 +1,7 @@
 import grok
 from z3c.menu.simple import menu
 
-class TabMenuManager(menu.Tab, grok.ViewletManager):
+class TabMenu(menu.Tab, grok.ViewletManager):
     grok.baseclass()
     template = grok.PageTemplateFile('templates/tab.pt')
 
@@ -11,3 +11,12 @@ class TabMenuManager(menu.Tab, grok.ViewletManager):
             return u''
         return self.template.render(self)
 
+class ActionMenu(menu.Action, grok.ViewletManager):
+    grok.baseclass()
+    template = grok.PageTemplateFile('templates/action.pt')
+
+    def render(self):
+        """Return the template with the option 'menus'"""
+        if not self.viewlets:
+            return u''
+        return self.template.render(self)
