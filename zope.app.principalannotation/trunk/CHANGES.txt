@@ -5,7 +5,9 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- ...
+- Got rid of ``DeprecationWarning`` in ``zope.app.appsetup`` >=
+  3.10. Ironically older versions now produce a ``DeprecationWarning``.
+
 
 3.6.0 (2009-03-09)
 ------------------
