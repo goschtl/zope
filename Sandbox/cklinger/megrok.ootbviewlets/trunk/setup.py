@@ -33,8 +33,8 @@ setup (
                       'zope.testing']},
     install_requires = [
         'setuptools',
-	'z3c.menu.ready2go',
-	'grokcore.viewlet',
+	'z3c.menu.simple',
+	'grok',
         ],
     zip_safe = False,
     entry_points = {},
