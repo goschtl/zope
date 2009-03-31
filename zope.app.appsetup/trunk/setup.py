@@ -32,6 +32,14 @@ setup(
     long_description=(
         read('README.txt')
         + '\n\n' +
+        '.. contents::'
+        + '\n\n' +
+        read('src', 'zope', 'app', 'appsetup', 'bootstrap.txt')
+        + '\n\n' +
+        read('src', 'zope', 'app', 'appsetup', 'debug.txt')
+        + '\n\n' +
+        read('src', 'zope', 'app', 'appsetup', 'product.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     license='ZPL 2.1',

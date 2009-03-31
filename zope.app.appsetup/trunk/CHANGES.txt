@@ -1,4 +1,3 @@
-=======
 CHANGES
 =======
 
@@ -7,9 +6,11 @@ Version 3.10.1 (unreleased)
 
 - Fixed a ``DeprecationWarning`` introduced in 3.10.0.
 
+- Added doctests to long description to show up at pypi.
+
 
 Version 3.10.0 (2009-03-19)
---------------------------
+---------------------------
 
 - Finally deprecate the "asObject" argument of helper functions in the
   ``zope.app.appsetup.bootstrap`` module. If your code uses any of these
