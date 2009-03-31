@@ -1,16 +1,16 @@
 CHANGES
 =======
 
-Version 3.10.1 (unreleased)
----------------------------
+3.10.1 (2009-03-31)
+-------------------
 
 - Fixed a ``DeprecationWarning`` introduced in 3.10.0.
 
 - Added doctests to long description to show up at pypi.
 
 
-Version 3.10.0 (2009-03-19)
----------------------------
+3.10.0 (2009-03-19)
+-------------------
 
 - Finally deprecate the "asObject" argument of helper functions in the
   ``zope.app.appsetup.bootstrap`` module. If your code uses any of these
@@ -23,8 +23,8 @@ Version 3.10.0 (2009-03-19)
 - Remove one more deprecated function.
 
 
-Version 3.9.0 (2009-01-31)
---------------------------
+3.9.0 (2009-01-31)
+------------------
 
 - Use ``zope.site`` instead of ``zope.app.folder`` and
   ``zope.app.component``.
@@ -37,16 +37,16 @@ Version 3.9.0 (2009-01-31)
   which was missing in ``zope.error``.
 
 
-Version 3.8.0 (2008-08-25)
---------------------------
+3.8.0 (2008-08-25)
+------------------
 
 - Feature: Developed an entry point that allows you to quickly bring up an
   application instance for debugging purposes. (Implemented by Marius Gedminas
   and Stephan Richter.)
 
 
-Version 3.7.0 (2008-08-19)
---------------------------
+3.7.0 (2008-08-19)
+------------------
 
 - Added ``.product.loadConfiguration`` test-support function; loads product
   configuration (only) from a file object, allowing test code (including
@@ -54,30 +54,30 @@ Version 3.7.0 (2008-08-19)
   startup.
 
 
-Version 3.6.0 (2008-07-23)
---------------------------
+3.6.0 (2008-07-23)
+------------------
 
 - Added additional test support functions to set the configuration for a
   single section, and save/restore the entire configuration.
 
 
-Version 3.5.0 (2008-06-17)
---------------------------
+3.5.0 (2008-06-17)
+------------------
 
 - Added helper class for supporting product configuration tests.
 
 - Added documentation for the product configuration API, with tests.
 
 
-Version 3.4.1 (2007-09-27)
---------------------------
+3.4.1 (2007-09-27)
+------------------
 
-- Egg was faulty, re-released
+- Egg was faulty, re-released.
 
 
-Version 3.4.0 (2007-09-25)
---------------------------
+3.4.0 (2007-09-25)
+------------------
 
-- Initial documented release
+- Initial documented release.
 
-- Reflect changes form zope.app.error refactoring
+- Reflect changes form zope.app.error refactoring.
