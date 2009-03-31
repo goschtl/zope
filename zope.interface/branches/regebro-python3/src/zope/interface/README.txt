@@ -231,15 +231,18 @@ classes).  We do this using a Python-2.4-style decorator named
 Note that the implementer decorator may modify it's argument. Callers
 should not assume that a new object is created.
 
-Also note that, at least for now, implementer can't be used with
-classes::
+XXX: Double check and update these version numbers:
 
-  >>> zope.interface.implementer(IFoo)(Foo)
-  ... # doctest: +NORMALIZE_WHITESPACE
-  Traceback (most recent call last):
-    ...
-  TypeError: Can't use implementer with classes.
-  Use one of the class-declaration functions instead.
+In zope.interface 3.5.1 and lower, the implementor decorator can not
+be used for classes, but in 3.5.2 and higher it can:
+
+  >>> Foo = zope.interface.implementer(IFoo)(Foo)
+  >>> list(zope.interface.providedBy(Foo()))
+  [<InterfaceClass __main__.IFoo>]
+  
+Note that class decorators using the @implementor(IFoo) syntax are only 
+supported in Python 2.6 and later.
+
 
 Declaring provided interfaces
 -----------------------------

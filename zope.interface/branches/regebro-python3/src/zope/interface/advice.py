@@ -109,6 +109,7 @@ def addClassAdvisor(callback, depth=2):
 
     previousMetaclass = caller_locals.get('__metaclass__')
     if __python3:
+        # XXX This is probably not gonna work.
         defaultMetaclass  = caller_globals.get('__metaclass__', type)
     else:
         defaultMetaclass  = caller_globals.get('__metaclass__', ClassType)

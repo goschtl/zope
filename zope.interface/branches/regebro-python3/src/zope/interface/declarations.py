@@ -492,9 +492,9 @@ class implementer:
 
     def __call__(self, ob):
         if isinstance(ob, DescriptorAwareMetaClasses):
-            raise TypeError("Can't use implementer with classes.  Use one of "
-                            "the class-declaration functions instead."
-                            )
+            # XXX Here I am!
+            classImplements(ob, *self.interfaces)
+            return ob
         spec = Implements(*self.interfaces)
         try:
             ob.__implemented__ = spec

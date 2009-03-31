@@ -31,7 +31,6 @@ $Id$
 import unittest
 from unittest import TestCase, makeSuite, TestSuite
 from zope.interface.advice import *
-from types import ClassType
 import sys
 
 def ping(log, value):
@@ -42,9 +41,14 @@ def ping(log, value):
 
     addClassAdvisor(pong)
 
-class ClassicClass:
-    __metaclass__ = ClassType
-    classLevelFrameInfo = getFrameInfo(sys._getframe())
+try:
+    from types import ClassType
+    
+    class ClassicClass:
+        __metaclass__ = ClassType
+        classLevelFrameInfo = getFrameInfo(sys._getframe())
+except ImportError:
+    pass
 
 class NewStyleClass:
     __metaclass__ = type

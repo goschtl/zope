@@ -476,6 +476,9 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         # Make sure that all recorded attributes (and methods) are of type
         # `Attribute` and `Method`
         for name, attr in attrs.items():
+            if name == '__locals__':
+                # This happens under Python 3 sometimes
+                continue
             if isinstance(attr, Attribute):
                 attr.interface = self
                 if not attr.__name__:
@@ -570,7 +573,7 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         exec "class %s: pass" % self.__name__ in klass
         klass=klass[self.__name__]
 
-        self.__d(klass.__dict__)
+        self.__d(klass)
 
         self._deferred=klass
 
@@ -599,14 +602,13 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         """Retrieve a named interface."""
         return None
 
-    def __d(self, dict):
-
+    def __d(self, klass):
         for k, v in self.__attrs.items():
-            if isinstance(v, Method) and not (k in dict):
-                dict[k]=v
+            if isinstance(v, Method) and not (k in klass.__dict__):
+                setattr(klass, k, v)
 
         for b in self.__bases__:
-            b.__d(dict)
+            b.__d(klass)
 
     def __repr__(self):
         try:
