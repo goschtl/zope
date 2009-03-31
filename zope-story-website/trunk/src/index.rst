@@ -34,7 +34,7 @@ they are looking at entering the world of Zope.
                 <img src="_static/zope2_logo.png" 
                     href="http://repoze.org/" alt=""
                     width="129" height="50" align="center"></img><BR>
-                <a href="http://repoze.org">Zope 2,</a>
+                <a href="http://zope2.zope.org">Zope 2,</a>
                 a mature application server which
                 has thrived in enterprise production systems for nearly 10
                 years. 
