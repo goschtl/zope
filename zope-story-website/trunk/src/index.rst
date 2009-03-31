@@ -15,29 +15,29 @@ they are looking at entering the world of Zope.
 
 .. raw:: html
 
+  `<div align="center">
     <table width="80%">
         <tr>
-            <td align="center">            
-                <img src="_static/grok_logo.gif" 
+            <td align="center" valign="top">            
+                <img src="_static/grok_logo.png" 
                     href="http://grok.zope.org" alt=""
-                    width="124" height="75"
-                    align="center"></img><BR>
+                    width="200" height="50" align="center"></img><BR>
                 <a href="http://grok.zope.org">Grok</a>
                 a  Python web framework aimed at making
                 the full power of the Zope Framework accessible to any
                 Python developer.
             </td>
-            <td align="center">            
+            <td align="center" valign="top">            
                 <img src="_static/repoze_logo.gif" 
-                    href="http://http://repoze.org" alt=""
-                    align="center"></img><BR>
+                    href="http://repoze.org/" alt=""
+                    width="152" height="50" align="center"></img><BR>
                 <a href="http://repoze.org">Repoze,</a>
                 a web framework toolkit integrating WSGI middleware with Zope.
             </td>
-            <td align="center">            
+            <td align="center" valign="top">            
                 <img src="_static/zope2_logo.png" 
-                    href="http://http://repoze.org" alt=""
-                    align="center"></img><BR>
+                    href="http://repoze.org/" alt=""
+                    width="129" height="50" align="center"></img><BR>
                 <a href="http://repoze.org">Zope 2,</a>
                 a mature application server which
                 has thrived in enterprise production systems for nearly 10
@@ -45,24 +45,50 @@ they are looking at entering the world of Zope.
             </td>
         </tr>
     </table>
-
+  </div>
 
 Applications
 ============
 
 Several applications are built atop the Zope Framework, providing rich user
-experiences.
+experiences.  
 
-* `Plone`_, A powerful, flexible Content Management solution that is easy to
- install, use and extend.
 
-* `Schooltool`_, SchoolTool is a project to develop a common global school
- administration infrastructure that is freely available under an Open Source
- license.
+.. raw:: html
 
-* `Launchpad`_, a web application and web site supporting software development,
- particularly that of free software. Launchpad is developed and maintained by
- Canonical Ltd.
+  `<div align="center">
+    <table width="80%">
+        <tr>
+            <td align="center" valign="top">            
+                <img src="_static/plone_logo.png" 
+                    href="http://www.plone.org" alt=""
+                    width="193" height="50" align="center"></img><BR>
+                <a href="http://www.plone.org">Plone</a>
+                A powerful, flexible Content Management solution that is easy to
+                install, use and extend.
+            </td>
+            <td align="center" valign="top">            
+                <img src="_static/schooltool_logo.png" 
+                    href="http://www.schooltool.org/" alt=""
+                    width="174" height="50" align="center"></img><BR>
+                <a href="http://www.schooltool.org">Schooltool,</a>
+                a project to develop a common global school
+                administration infrastructure that is freely available under an
+                Open Source license.
+            </td>
+            <td align="center" valign="top">            
+                <img src="_static/launchpad_logo.png" 
+                    href="http://launchpad.net" alt=""
+                    width="232" height="50" align="center"></img><BR>
+                <a href="http://launchpad.net">Launchpad,</a>
+                a web application and web site supporting software development,
+                particularly that of free software. Launchpad is developed and maintained by
+                Canonical Ltd.
+            </td>
+        </tr>
+    </table>
+  </div>
+
 
 Compose Your Own
 ================
