@@ -5,7 +5,7 @@ CHANGES
 Version 3.10.1 (unreleased)
 ---------------------------
 
-- ...
+- Fixed a ``DeprecationWarning`` introduced in 3.10.0.
 
 
 Version 3.10.0 (2009-03-19)
@@ -14,7 +14,7 @@ Version 3.10.0 (2009-03-19)
 - Finally deprecate the "asObject" argument of helper functions in the
   ``zope.app.appsetup.bootstrap`` module. If your code uses any of these
   functions, please remove the "asObject=True" argument passing anywhere,
-  because the support for that argument will be dropped soon. 
+  because the support for that argument will be dropped soon.
 
 - Move session utility bootstrapping logic from ``zope.session`` into this
   package. This removes a dependency from zope.session to this package.

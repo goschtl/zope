@@ -93,8 +93,7 @@ def addConfigureUtility(
         warnings.warn("asObject argument is deprecated and will be "
                       "removed in Zope 3.6", DeprecationWarning, 2)
 
-    utility = addUtility(root_folder, utility_type, utility_factory, True,
-                         **kw)
+    utility = addUtility(root_folder, utility_type, utility_factory, **kw)
     root_folder.getSiteManager().registerUtility(utility, interface, name)
     return utility
 
