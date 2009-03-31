@@ -46,10 +46,10 @@ class ExtJSGroupForm(group.GroupForm):
 
     zope.interface.implements(interfaces.IExtJSGroupForm)
 
-    def extractData(self):
+    def extractData(self, setErrors=True):
         """See z3c.form.interfaces.IForm
         """
-        data, errors = super(ExtJSGroupForm, self).extractData()
+        data, errors = super(ExtJSGroupForm, self).extractData(setErrors)
         self.jsonResponse = dict(success=True)
         if errors:
             self.jsonResponse = dict(

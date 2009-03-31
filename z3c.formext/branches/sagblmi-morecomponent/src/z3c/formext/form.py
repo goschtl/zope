@@ -128,8 +128,8 @@ class ExtJSForm(ScriptProvider, AJAXRequestHandler, z3c.form.form.Form):
             error = translate(error)
         self.jsonResponse['formErrors'].append(str(error))
 
-    def extractData(self):
-        data, errors = super(ExtJSForm, self).extractData()
+    def extractData(self, setErrors=True):
+        data, errors = super(ExtJSForm, self).extractData(setErrors)
         self.jsonResponse = dict(success=True)
         if errors:
             self.jsonResponse = dict(
