@@ -6,13 +6,6 @@ when building complex, scalable web applications. We offer tools
 for all, from small nonprofits to large enterprise systems and
 high traffic public web applications.
 
-Unity in Diversity
-==================
-
-The Zope Framework is collection of Python-based software
-components used as building blocks for building frameworks, applications, or
-custom composing your own bits from scratch.
-including:
 
 Frameworks
 ==========
@@ -20,14 +13,39 @@ Frameworks
 The following are notable frameworks which users are adivsed to look at if
 they are looking at entering the world of Zope.
 
-.. image:: _static/grok_logo.gif
+.. raw:: html
 
-`Grok`_, a  Python web framework aimed at making the full power of the Zope
-Framework accessible to any Python developer.
+    <table width="80%">
+        <tr>
+            <td align="center">            
+                <img src="_static/grok_logo.gif" 
+                    href="http://grok.zope.org" alt=""
+                    width="124" height="75"
+                    align="center"></img><BR>
+                <a href="http://grok.zope.org">Grok</a>
+                a  Python web framework aimed at making
+                the full power of the Zope Framework accessible to any
+                Python developer.
+            </td>
+            <td align="center">            
+                <img src="_static/repoze_logo.gif" 
+                    href="http://http://repoze.org" alt=""
+                    align="center"></img><BR>
+                <a href="http://repoze.org">Repoze,</a>
+                a web framework toolkit integrating WSGI middleware with Zope.
+            </td>
+            <td align="center">            
+                <img src="_static/zope2_logo.png" 
+                    href="http://http://repoze.org" alt=""
+                    align="center"></img><BR>
+                <a href="http://repoze.org">Zope 2,</a>
+                a mature application server which
+                has thrived in enterprise production systems for nearly 10
+                years. 
+            </td>
+        </tr>
+    </table>
 
-.. image:: _static/repoze_logo.gif
-  
-`BFG`_, a web framework toolkit integrating WSGI middleware with Zope.
 
 Applications
 ============
