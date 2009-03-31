@@ -1,4 +1,4 @@
-Welcome to the Zope Community
+Welcome to the Zope Framework 
 =============================
 
 We are devoted to solutions to the perennial problems encountered
@@ -10,27 +10,54 @@ Unity in Diversity
 ==================
 
 The Zope Framework is collection of Python-based software
-components used as building blocks for a variety of projects,
+components used as building blocks for building frameworks, applications, or
+custom composing your own bits from scratch.
 including:
 
-* `Plone`_, A powerful, flexible Content Management solution that is 
-  easy to install, use and extend.
+Frameworks
+==========
+
+The following are notable frameworks which users are adivsed to look at if
+they are looking at entering the world of Zope.
+
+.. image:: _static/grok_logo.gif
+
+`Grok`_, a  Python web framework aimed at making the full power of the Zope
+Framework accessible to any Python developer.
+
+.. image:: _static/repoze_logo.gif
+  
+`BFG`_, a web framework toolkit integrating WSGI middleware with Zope.
+
+Applications
+============
+
+Several applications are built atop the Zope Framework, providing rich user
+experiences.
+
+* `Plone`_, A powerful, flexible Content Management solution that is easy to
+ install, use and extend.
+
+* `Schooltool`_, SchoolTool is a project to develop a common global school
+ administration infrastructure that is freely available under an Open Source
+ license.
+
+* `Launchpad`_, a web application and web site supporting software development,
+ particularly that of free software. Launchpad is developed and maintained by
+ Canonical Ltd.
+
+Compose Your Own
+================
+
+To compose your own application or framwork from scratch, or see how the
+packages within the Zope Framework can work for you, see more information
+below.
 
 * `Zope 2 Application Server`_, a mature application server which
-  has thrived in enterprise production systems for nearly 10 years.
+      has thrived in enterprise production systems for nearly 10 years.
 
-* .. image:: _static/grok_logo.gif
-
-  `Grok`_, a  Python web framework aimed at making
-  the full power of the Zope Framework accessible to any
-  Python developer.
-
-* .. image:: _static/repoze_logo.gif
-  
-  `Repoze`_, a web framework toolkit integrating WSGI middleware with Zope.
-
-* ...and a collection of individual web applications
-  built using the Zope Framework Components  [#more_zca]_
+* `Zope Framework Wiki`_, a place where more information about the Zope
+ framwork can be found.
 
 This variety of open source and commercial applications built from
 Zope Framework demonstrates a community with years of expertise solving
@@ -65,20 +92,13 @@ example:
   deploying applications from multiple components.
 
 .. _Zope 2 Application Server: http://zope2.zopyx.de/
+.. _Zope Framework Wiki: http://wiki.zope.org/zope3/Zope3Wiki/
 .. _Plone: http://plone.org
-.. _Repoze: http://repoze.org
+.. _BFG: http://static.repoze.org/bfgdocs/
 .. _Twisted: http://twistedmatrix.com/trac/
 .. _Grok: http://grok.zope.org
 .. _Zope Foundation: http://foundation.zope.org/about
 .. _Turbogears: http://turbogears.org/
 .. _buildout: http://buildout.org
-
-Footnotes
-=========================
-.. [#more_zca]
-
-   - `Schooltool`_
-   - `Launchpad`_
-
 .. _Schooltool: http://www.schooltool.org/
 .. _Launchpad:  http://launchpad.net  
