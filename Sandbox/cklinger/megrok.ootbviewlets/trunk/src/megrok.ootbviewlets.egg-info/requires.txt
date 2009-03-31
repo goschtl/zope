@@ -1,0 +1,10 @@
+setuptools
+z3c.menu.ready2go
+grokcore.viewlet
+
+[test]
+z3c.coverage
+zope.testing
+
+[docs]
+Sphinx
