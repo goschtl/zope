@@ -3,6 +3,8 @@ import os
 GENERATE = "./bin/%(scriptname)s -x -d %(package)s -i setuptools > %(output)s"
 TRED = "tred %(input)s > %(output)s"
 GRAPH = "dot -Tsvg %(input)s > %(output)s"
+SCCMAP = "sccmap -d %(input)s > %(output)s"
+SCCGRAPH = "dot -Tsvg %(input)s -O"
 
 PACKAGE_EXCEPTIONS = {
     'Plone' : 'Products.CMFPlone',
@@ -42,3 +44,10 @@ def main(args):
         execute(GRAPH,
             input=specfile + '-tred.dot',
             output=specfile + '-tred.svg')
+
+        execute(SCCMAP,
+            input=specfile + '.dot',
+            output=specfile + '-sccmap')
+
+        execute(SCCGRAPH,
+            input=specfile + '-sccmap')
