@@ -25,6 +25,7 @@ Who is Zope
         Repose.BFG
         Zope 2
         Plone Community
+        `Planet Zope <http://planet.zope.org/>`_ 
         
         
     Zope Community Intersections
@@ -36,6 +37,8 @@ Who is Zope
         Pylons
         Buildout
         LaunchPad
+        
+        
         
 .. container::
     :class: MiddleCol
