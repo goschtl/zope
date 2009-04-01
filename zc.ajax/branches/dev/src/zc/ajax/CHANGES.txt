@@ -1,0 +1,8 @@
+Release history
+***************
+
+0.1.0 (unreleased)
+==================
+
+Forked from the zc.extjs and narrowed scope to just ajax APIs.
+Removed Javascript frameworks.

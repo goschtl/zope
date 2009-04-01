@@ -1,0 +1,334 @@
+Form Processing
+===============
+
+zc.ext.form provides support for server-generated EXT forms based on
+the zope.formlib library.
+
+Forms are meant to be used as parts of larger applications.  A form
+provides output of JSON data for building Ext forms.  Forms also
+provide validation and call actions with validated data to perform
+actions on form submit.
+
+To create a form, just create a form class as a subclass of
+zc.ajax.form.Form. This base class provides:
+
+- an ajax __call__ method that returns a form definition,
+
+- traversal to form actions, in much the same way that
+  zc.ajax.application.Application [#application]_ provides traversal
+  to json methods,
+
+- a definitions method that can be used by ajax methods to get a form
+  definition as Python data, and
+
+- a getObjectData method for getting initial form data from an
+  existing object.
+
+Here's a simple example:
+
+.. include:: form_example.py
+   :literal:
+
+Note that we've nested our form definition in an application.  We can
+define the form class elsewhere and use it, but if a form is only used
+in an application, then it's often easiest to define it within an
+application class.  Forms are instantiated by calling them with a
+single argument.  This argument, the application, becomes the form's `app`
+attribute.  The application's context becomes the form's context.  Form
+classes are automatically instantiated when a form class is assigned to
+an attribute in a class and accessed through an instance
+[#form_classes_are_descriptors]_.
+
+Let's try accessing our form:
+
+    >>> import zope.testbrowser.testing
+    >>> from zc.ajax.testing import print_form
+    >>> browser = zope.testbrowser.testing.Browser()
+    >>> browser.handleErrors = False
+    >>> browser.open('http://localhost/form.html?login')
+    >>> print_form(browser, 'http://localhost/form.html/ExampleForm')
+    ... # doctest: +NORMALIZE_WHITESPACE
+    {u'definition': {u'actions': [{u'label': u'Register',
+                                   u'name': u'ExampleForm.actions.register',
+                                   u'url': u'ExampleForm/register'}],
+                     u'widget_names': {u'ExampleForm.age': 3,
+                                       u'ExampleForm.favorite_color': 2,
+                                       u'ExampleForm.first_name': 0,
+                                       u'ExampleForm.last_name': 1},
+                     u'widgets': [{u'fieldHint': u'Given name.',
+                                   u'fieldLabel': u'First name',
+                                   u'id': u'ExampleForm.first_name',
+                                   u'itemCls': u'zc-required-field',
+                                   u'minLength': 0,
+                                   u'name': u'ExampleForm.first_name',
+                                   u'xtype': u'textfield'},
+                                  {u'fieldHint': u'Family name.',
+                                   u'fieldLabel': u'Last name',
+                                   u'id': u'ExampleForm.last_name',
+                                   u'itemCls': u'zc-required-field',
+                                   u'minLength': 0,
+                                   u'name': u'ExampleForm.last_name',
+                                   u'xtype': u'textfield'},
+                                  {u'fieldHint': u'',
+                                   u'fieldLabel': u'Favorite color',
+                                   u'id': u'ExampleForm.favorite_color',
+                                   u'minLength': 0,
+                                   u'name': u'ExampleForm.favorite_color',
+                                   u'xtype': u'textfield'},
+                                  {u'allowBlank': False,
+                                   u'fieldHint': u'Age in years',
+                                   u'fieldLabel': u'Age',
+                                   u'field_min': 0,
+                                   u'id': u'ExampleForm.age',
+                                   u'itemCls': u'zc-required-field',
+                                   u'name': u'ExampleForm.age',
+                                   u'widget_constructor':
+                                    u'zc.ajax.widgets.InputInt'}]},
+     u'success': True}
+
+Our application is at: "http://localhost/form.html". The form is
+exposed as an ajax method named "ExampleForm", which comes from the attribute
+name in the class definition.
+
+The form definition contains both action definitions and widget
+definitions. The widget definitions may be full ext field definitions
+or name a widget_constructor, which is a Javascript helper provided by
+the zc.ajax resource library that provides additional information,
+like Javascript validators, that can't be expressed in JSON.
+
+There is an action definition for each action defined in the form.  The
+action information includes the url to post the result to, relative to
+the application.
+
+Note that the name of the form class is used as the form prefix and
+that the form prefix is used as the prefix for widget and action names
+and ids [#actionids]_.
+
+The widget_names property helps the Javascript code to access the
+widgets by name, which is useful when doing custon form layouts.
+
+Let's post a result back:
+
+    >>> browser.handleErrors = False
+    >>> print_form(browser, 'http://localhost/form.html/ExampleForm/register',
+    ...            {'ExampleForm.first_name': 'Bob', 
+    ...             'ExampleForm.last_name': '',
+    ...             'ExampleForm.favorite_color': '',
+    ...             'ExampleForm.age': '-1',
+    ...             })
+    ... # doctest: +NORMALIZE_WHITESPACE
+    {u'errors': {u'ExampleForm.age':
+                 u'<span class="error">Value is too small</span>',
+                 u'ExampleForm.last_name': u'<span class="error"></span>'},
+     u'success': False}
+
+The result had 2 problems:
+
+- We didn't provide a last name, which was required, and 
+
+- We specified an invalid age.
+
+(Note that both of these errors would have been caught on the client,
+but we also validate on the server.)
+
+Let's pass valid data:
+
+    >>> print_form(browser, 'http://localhost/form.html/ExampleForm/register',
+    ...            {'ExampleForm.first_name': 'Bob', 
+    ...             'ExampleForm.last_name': 'Zope',
+    ...             'ExampleForm.favorite_color': '',
+    ...             'ExampleForm.age': '11',
+    ...             })
+    {u'data': {u'age': 11,
+               u'favorite_color': u'',
+               u'first_name': u'Bob',
+               u'last_name': u'Zope'},
+     u'self_app_class_name': u'FormExample',
+     u'self_class_name': u'ExampleForm',
+     u'self_context_class_name': u'Folder',
+     u'success': True}
+
+Here we get a successful result.  Our contrived action in the example
+simply echoed back the data it was passed,  Note, in particular that:
+
+- the data keys have the form prefix removed, and
+
+- the value of the age key is an integer, since the field was an
+  integer field.
+
+The action also prints out the classes of its self argument, its app
+and its context. Actions are methods of forms so their `self` argument is the
+form. The form's `app` is the app through which it is accessed and
+`context` is the app's context.
+
+
+Getting definitions from Python
+-------------------------------
+
+Sometimes we want to get form definitions from Python.  The form
+__call__ method returns a JSON string.  We can get Python data by
+calling get_definition.
+
+    >>> import zc.ajax.form_example
+    >>> import zope.publisher.browser
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> import zc.ajax.interfaces
+    >>> import zope.interface
+    >>> zope.interface.alsoProvides(request, 
+    ...                                 zc.ajax.interfaces.IAjaxRequest)
+    >>> ex = zc.ajax.form_example.FormExample(None, request)
+    >>> from pprint import pprint
+    >>> pprint(ex.ExampleForm.get_definition(), width=1)
+    {'actions': [{'label': 'Register',
+                  'name': u'ExampleForm.actions.register',
+                  'url': u'ExampleForm/register'}],
+     'widget_names': {'ExampleForm.age': 3,
+                      'ExampleForm.favorite_color': 2,
+                      'ExampleForm.first_name': 0,
+                      'ExampleForm.last_name': 1},
+     'widgets': [{'fieldHint': u'Given name.',
+                  'fieldLabel': u'First name',
+                  'id': 'ExampleForm.first_name',
+                  'itemCls': 'zc-required-field',
+                  'minLength': 0,
+                  'name': 'ExampleForm.first_name',
+                  'xtype': 'textfield'},
+                 {'fieldHint': u'Family name.',
+                  'fieldLabel': u'Last name',
+                  'id': 'ExampleForm.last_name',
+                  'itemCls': 'zc-required-field',
+                  'minLength': 0,
+                  'name': 'ExampleForm.last_name',
+                  'xtype': 'textfield'},
+                 {'fieldHint': u'',
+                  'fieldLabel': u'Favorite color',
+                  'id': 'ExampleForm.favorite_color',
+                  'minLength': 0,
+                  'name': 'ExampleForm.favorite_color',
+                  'xtype': 'textfield'},
+                 {'allowBlank': False,
+                  'fieldHint': u'Age in years',
+                  'fieldLabel': u'Age',
+                  'field_min': 0,
+                  'id': 'ExampleForm.age',
+                  'itemCls': 'zc-required-field',
+                  'name': 'ExampleForm.age',
+                  'widget_constructor': 'zc.ajax.widgets.InputInt'}]}
+
+Note that we had to stamp the request with IAjaxRequest.  This is done
+during application traversal.  We need it so widgets can get looked
+up.
+
+
+Base and prefix
+---------------
+
+Forms have base_href and prefix variables.  The base_href is used to compute
+URLs for form actions.  A form's base_href defaults to its class name.
+The form's base_href also includes the base_href of its app, if its app has
+a base_href. This is useful for sub-applications. Let's give our sample
+application a base_href attribute as if it were a sub-application:
+
+    >>> ex = zc.ajax.form_example.FormExample(None, request)
+    >>> ex.base_href = 'sample'
+    >>> ex.ExampleForm.base_href
+    'sample/ExampleForm'
+
+    >>> pprint(ex.ExampleForm.get_definition(), width=1)
+    {'actions': [{'label': 'Register',
+                  'name': u'sample.ExampleForm.actions.register',
+                  'url': u'sample/ExampleForm/register'}],
+     'widget_names': {'sample.ExampleForm.age': 3,
+                      'sample.ExampleForm.favorite_color': 2,
+                      'sample.ExampleForm.first_name': 0,
+                      'sample.ExampleForm.last_name': 1},
+     'widgets': [{'fieldHint': u'Given name.',
+                  'fieldLabel': u'First name',
+                  'id': 'sample.ExampleForm.first_name',
+                  'itemCls': 'zc-required-field',
+                  'minLength': 0,
+                  'name': 'sample.ExampleForm.first_name',
+                  'xtype': 'textfield'},
+                 {'fieldHint': u'Family name.',
+                  'fieldLabel': u'Last name',
+                  'id': 'sample.ExampleForm.last_name',
+                  'itemCls': 'zc-required-field',
+                  'minLength': 0,
+                  'name': 'sample.ExampleForm.last_name',
+                  'xtype': 'textfield'},
+                 {'fieldHint': u'',
+                  'fieldLabel': u'Favorite color',
+                  'id': 'sample.ExampleForm.favorite_color',
+                  'minLength': 0,
+                  'name': 'sample.ExampleForm.favorite_color',
+                  'xtype': 'textfield'},
+                 {'allowBlank': False,
+                  'fieldHint': u'Age in years',
+                  'fieldLabel': u'Age',
+                  'field_min': 0,
+                  'id': 'sample.ExampleForm.age',
+                  'itemCls': 'zc-required-field',
+                  'name': 'sample.ExampleForm.age',
+                  'widget_constructor': 'zc.ajax.widgets.InputInt'}]}
+
+Note that the action URL now includes "sample/" as a prefix.  Also
+note that the widget and action names have "sample." as a prefix.  The
+form prefix is simply its base with "/"s converted to "."s.
+
+    >>> ex.ExampleForm.prefix
+    'sample.ExampleForm'
+
+
+Form data
+---------
+
+Ajax forms are a bit different from normal web forms because the data
+and the form definition can be fetched separately.  For example, we
+may use the same form to edit multiple objects.  Form objects have a
+getObjectData method that returns data suitable for editing form field
+values.  Let's create a person and use out form to get data for them:
+
+    >>> bob = zc.ajax.form_example.Person('bob', 'smith', None, 11)
+    >>> pprint(ex.ExampleForm.getObjectData(bob), width=1)
+    {'sample.ExampleForm.age': u'11',
+     'sample.ExampleForm.first_name': u'bob',
+     'sample.ExampleForm.last_name': u'smith'}
+
+We didn't set the favorite_color for the person, so it is ommitted
+from the data.
+
+We can pass in a dictionary of values that take precedence over object data:
+
+    >>> pprint(ex.ExampleForm.getObjectData(
+    ...            bob, {'sample.ExampleForm.age': u'1'}),
+    ...        width=1)
+    {'sample.ExampleForm.age': u'1',
+     'sample.ExampleForm.first_name': u'bob',
+     'sample.ExampleForm.last_name': u'smith'}
+
+
+To-do (maybe)
+-------------
+
+More widgets!
+
+Interface invariants
+
+Actions:
+
+- conditions
+
+- validators
+
+- failure handlers
+
+
+
+.. [#application] See application.txt
+
+.. [#form_classes_are_descriptors] Form classes are also
+   descriptors. They get called with the instance they're accessed
+   through.
+
+.. [#actionids] The Javascript code that sets up action buttons uses
+   action name as the button's ID.

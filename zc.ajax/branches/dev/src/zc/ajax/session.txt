@@ -1,0 +1,44 @@
+Supporting session authentication
+=================================
+
+Session authentication provides a challenge for AJAX applications.
+For normal page loads, the user is redirected to a login page. This
+isn't useful for AJAX requests.  The zc.ajax package provides an
+Unauthorized error view that return a JSON page with a session_expired
+flag set if the request has an X-Requested-With header set to
+xmlhttprequest.
+
+To get this view, you need to include session.zcml::
+
+  <include package="zc.ajax" file="session.zcml" />
+
+Tou need to do this before zope.app.exception.browser is included::
+
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zc.ajax" file="session.zcml" />
+
+
+We have a calculator application set up [#application]_.  If we access
+it using an ordinary unauthenticated browser, we get an unauthorized error:
+
+    >>> import zope.testbrowser.testing
+    >>> browser = zope.testbrowser.testing.Browser()
+    >>> browser.open('http://localhost/@@index.html/about')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 401: Unauthorized
+
+We get an unauthorized error, rather than getting redirected because
+we're using basic authentication in the test setup.  Had we been using
+session authentication, we'd have been redirected.
+
+If we set the X-Requested-With header:
+
+    >>> browser.addHeader('X-Requested-With', 'XMLHTTPRequest')
+    >>> browser.open('http://localhost/@@index.html/about')
+    >>> import simplejson
+    >>> simplejson.loads(browser.contents)
+    {u'session_expired': True, u'success': False}
+
+
+.. [#application] See application.txt

@@ -1,0 +1,580 @@
+Application support
+===================
+
+The zc.ajax.application module provides support for writing ajax
+[#ajax]_ applications.  This framework started out as an experiment in
+simplifying writing applications with Zope 3.  I was frustrated with
+ZCML situps and generally too much indirection.  I ended up with a
+model that I'm pretty happy with.  It might not be for everybody. :)
+
+The basic idea is that an application can be provided using a single
+Zope 3 view plus necessary resource-library definitions.  This view
+has a URL.  It typically provides many ajax methods whose URLs have the
+view URL as a base.
+
+Many applications can be implemented using a simple class that can be
+registered as a view.
+
+Let's look at a simple stupid application. :)
+
+.. include:: calculator_example.py
+   :literal:
+
+We subclass zc.ajax.application.Trusted. This is a minimal
+base class that provides a constructor that takes a context and a
+request and removes the security proxy from the context.  It
+overrides the constructor from zc.ajax.application.Application.
+
+We also subclass zc.ajax.application.Application.  This is a base
+class that provides:
+
+- a basic constructor that takes context and request arguments and sets
+  corresponding attributes,
+
+- traversal to attributes that provide IBrowserPublisher with
+  conversion of dots to underscores,
+
+- a default "page" named index.html,
+
+- a template method that returns an HTML page with an empty head.
+
+- an index_html method that loads a resource library and calls the
+  template,
+
+- an interface declaration that it provides IBrowserPublisher, and
+
+- an adapter declaration that adapts
+  zope.traversing.interfaces.IContainmentRoot and
+  zope.publisher.interfaces.browser.IBrowserRequest.
+
+The main goals of this base class are to make it easy to load
+Javascript and to make it easy to define ajax methods to support the
+Javascript. For that reason, we provide a traverser that traverses to
+object attributes that provide IBrowserPublisher.  The
+zc.ajax.application.jsonpage decorator is also an important part of
+this. It makes methods accessible and automatically marshals their
+result to JSON [#jsoninput]_.  There's also a
+zc.ajax.application.page decorator that makes methods accessible
+without the automatic marshalling.  The use of a default page, rather
+than just a __call__ method is to cause the URL base to be the view,
+rather than the view's context.  This allows the Javascript code to
+use relative URLs to refer to the ajax methods.
+
+The class expects subclasses to define a resource_library_name
+attribute [#missing_resource_library_name]_.  For these applications,
+you pretty much always want to use an associated Javascript file and
+other resources (supporting JS, CSS, etc.).  You can suppress the use
+of the resource library by setting the value of this attribute to
+None.
+
+For applications that build pages totally in Javascript, the default
+template is adequate.  For applications that need to support
+non-Javascript-enabled browsers, that want to support search-engine
+optimization [#sso]_, or that want to provide some Javascript data
+during the initial page load, a custom template can be provided by
+simply overriding the template method with a page template or a method
+that calls one.
+
+The view can be registered with a simple adapter registration:
+
+.. include:: calculator_example.zcml
+   :literal:
+
+If we wanted to register it for an object other than the an
+IContainmentRoot, we could just provide specifically adapted interfaces
+or classes in the registration.
+
+Let's access the calculator with a test browser
+
+    >>> import zope.testbrowser.testing
+    >>> browser = zope.testbrowser.testing.Browser()
+    >>> browser.open('http://localhost/')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 401: Unauthorized
+
+Because our view was registered to require zope.View, the request was
+unauthorized.  Let's login. In the demo setup, we login by just
+providing a login form variable. 
+
+    >>> browser.open('http://localhost/calculator.html?login')
+    >>> print browser.contents # doctest: +NORMALIZE_WHITESPACE
+    <html><head>
+    <base href="http://localhost/calculator.html/index.html" />
+    </head></html>
+
+We registered our view as calculator.html. Because of the way it sets the
+browser default page for itself, it becomes the base href for the
+page.  This allows us to access ajax methods using relative URLs.
+
+Our calculator view provides a value method.  It uses the
+zc.ajax.application.jsonpage decorator. This does 2 things:
+
+- Arranges that the method can be traversed to,
+
+- marshals the result to JSON.
+
+The way results are marshalled to JSON deserves some
+explanation.  To support automation of ajax calls, we:
+
+- Always return objects
+- Always include a "success" property, and
+- If there is an error, we include:
+  - an error property providing an error messahe, and/or
+  - when handling form submissions, an errors property with am object value
+    mapping field names to field-specific error messages.
+
+::
+
+    >>> import simplejson
+
+    >>> browser.open('http://localhost/@@calculator.html/value')
+    >>> simplejson.loads(browser.contents)
+    {u'value': 0, u'success': True}
+
+    >>> browser.open('http://localhost/@@calculator.html/add?value=hi')
+    >>> simplejson.loads(browser.contents)
+    {u'success': False, u'error': u'The value must be an integer!'}
+
+Also, if a method returns None, an object with a true success property
+is returned:
+
+    >>> browser.open('http://localhost/@@calculator.html/noop')
+    >>> simplejson.loads(browser.contents)
+    {u'success': True}
+
+If something other than a dictionary is returned from a Python
+method, no success attribute is added:
+
+    >>> browser.open('http://localhost/@@calculator.html/about')
+    >>> simplejson.loads(browser.contents)
+    u'Calculator 1.0'
+
+    >>> browser.open('http://localhost/@@calculator.html/operations')
+    >>> simplejson.loads(browser.contents)
+    [u'add', u'subtract']
+
+If you want to marshal JSON yourself, you can use the
+zc.ajax.application.jsonpage decorator:
+
+    >>> browser.open('http://localhost/@@calculator.html/none')
+
+An alternative way to return errors is to raise user errors, as is
+done by the subtract method in our example:
+
+    >>> browser.open('http://localhost/@@calculator.html/subtract?value=hi')
+    >>> simplejson.loads(browser.contents)
+    {u'success': False, u'error': u'The value must be an integer!'}
+
+This works because there is a view registered for
+zope.exceptions.interfaces.IUserError, and
+zc.ajax.interfaces.IAjaxRequest.
+
+Testing support
+===============
+
+zc.ajax.testing has some helper functions to make it easier to test
+ajax calls.
+
+The zc.ajax.testing.FormServer class provides some convenience for
+making ajax calls in which data are sent as form data and returned as
+JSON.  The class takes a browser and returns an object that can be
+called to make server calls:
+
+    >>> import zc.ajax.testing, pprint
+    >>> server = zc.ajax.testing.FormServer(browser)
+
+    >>> pprint.pprint(server('/calculator.html/echo_form',
+    ...               {'a': 1.0}, b=[1, 2, 3], c=True, d='d', e=u'e\u1234'
+    ...               ), width=1)
+    {u'a': u'1.0',
+     u'b': [u'1',
+            u'2',
+            u'3'],
+     u'c': u'1',
+     u'd': u'd',
+     u'e': u'e\u1234',
+     u'success': True}
+
+When we call the server, we pass a URL to invoke, which may be
+relative, a optional dictionary of parameter values, and optional
+keyword arguments.  
+
+Note that the application will recieve data as strings, which is what
+we see echoed back in the example above.
+
+If the application is written using Zope, then we can enable Zope form
+marshalling, by passing a True value when we create the server:
+
+    >>> server = zc.ajax.testing.FormServer(browser, True)
+    >>> pprint.pprint(server('/calculator.html/echo_form',
+    ...               {'a': 1.0}, b=[1, 2, 3], c=True, d='d', e=u'e\u1234'
+    ...               ), width=1)
+    {u'a': 1.0,
+     u'b': [1,
+            2,
+            3],
+     u'c': True,
+     u'd': u'd',
+     u'e': u'e\u1234',
+     u'success': True}
+
+    >>> pprint.pprint(server('/calculator.html/add', {'value': 1}), width=1)
+    {u'success': True,
+     u'value': 1}
+
+    >>> pprint.pprint(server('/calculator.html/add', value=1), width=1)
+    {u'success': True,
+     u'value': 2}
+
+The methods called are assumed to return JSON and the resulting data
+is converted back into Python.
+
+The function pprint method combines pprint and calling:
+
+    >>> server.pprint('/calculator.html/add', {'value': 1})
+    {u'success': True,
+     u'value': 3}
+
+    >>> server.pprint('/calculator.html/add', value=1)
+    {u'success': True,
+     u'value': 4}
+
+    >>> server.pprint('/calculator.html/echo_form',
+    ...               {'a': 1.0}, b=[1, 2, 3], c=True, d='d', e=u'e\u1234'
+    ...               )
+    {u'a': 1.0,
+     u'b': [1,
+            2,
+            3],
+     u'c': True,
+     u'd': u'd',
+     u'e': u'e\u1234',
+     u'success': True}
+
+In the future, there will be versions of these functions that send
+data as JSON.
+
+We can include file-upload data by including a 3-tuple with a file
+name, a content type, and a data string:
+
+    >>> server.pprint('/calculator.html/echo_form',
+    ...               b=[1, 2, 3], c=True, d='d',
+    ...               file=('foo.xml', 'test/xml', '<foo></foo>'), 
+    ...               )
+    {u'b': [1,
+            2,
+            3],
+     u'c': True,
+     u'd': u'd',
+     u'file': u"<File upload name=u'foo.xml' content-type='test/xml' size=11>",
+     u'success': True}
+
+as a convenience, you can pass a URL string to the server constructor,
+which will create a browser for you that has opened that URL.  You can
+also omit the brower and an unopened browser will be created.
+
+
+    >>> server = zc.ajax.testing.FormServer(
+    ...     'http://localhost/calculator.html?login')
+    >>> server.browser.url
+    'http://localhost/calculator.html?login'
+
+    >>> server.pprint('/calculator.html/echo_form', x=1)
+    {u'success': True,
+     u'x': u'1'}
+
+    >>> server = zc.ajax.testing.FormServer(zope_form_marshalling=True)
+    >>> server.browser.open('http://localhost/calculator.html?login')
+    >>> server.pprint('/calculator.html/echo_form', x=1)
+    {u'success': True,
+     u'x': 1}
+
+In the example above, we didn't provide a browser, but we provided the
+zope_form_marshalling flag as a keyword option.
+
+
+.. Edge case: we can't traverse to undecorated methods:
+
+    >>> server.pprint('/calculator.html/do_add', value=1)
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 404: Not Found
+
+
+"Library" applications
+======================
+
+The "application" model described above is pretty appealing in its
+simplicity -- at least to me. :)  Usually, we'd like to make out
+applications a bit more flexible in their use.  In particular, we
+often want to assemble applications together. At the Javascript level,
+this often means having an application return a panel that can be used
+in some higher-level layout.  At the server level, we need to provide
+a way to access application logic within some larger context.  There
+are two parts to this:
+
+1. The containing application needs to support traversal to the
+   sub-application.  
+
+2. The subapplication needs to know how it was traversed to, at least
+   if it generates URLs.  For example, the form machinery [#forms]_
+   generates URLs for action handlers.
+
+Sub-application should expose the URL needed to access then as a
+base_href attribute. This is usually a relative URL relative to the base
+application. 
+
+There are a number of classes defined in zc.ajax.application that
+help with creating sub-applications:
+
+SubApplication
+    This class, which Application subclasses, provides traversal to
+    attributes that provide IBrowserPublisher.  It also stamps
+    IAjaxRequest on the request object when an object is traversed
+    [#iajaxrequest]_ .
+
+    (Maybe this request stamping should be done further down the
+    traversal chain or perhaps only done if X-Requested-With is
+    xmlhttprequest.)
+
+PublicTraversable
+    This class provides security declarations that allow objects to be
+    traversable publically.  This is appropriate for sub-applications
+    that want the same protections as the object being traversed.
+
+Let's look at our calculator example as a subapplication:
+
+.. include:: calculator_subapplication_example.py
+   :literal:
+
+Here, we've defined a container application that simply provides
+traversal to a calculator subapplication as a static property.  It
+creates the calculator with the application's context and request.  It
+passes a base_href as a keyword argument, which SubApplication's
+constructor accepts.  Our ZCML configuration is pretty simple:
+
+.. include:: calculator_subapplication_example.zcml
+   :literal:
+
+Using the container application, we access the calculator via the
+container:
+
+    >>> server.pprint('http://localhost/@@container.html/calc/add', value=1)
+    {u'success': True,
+     u'value': 5}
+
+We've updated the operations method to include the URL for each
+operation, which is computed based on the base_href:
+
+    >>> server.pprint('http://localhost/@@container.html/calc/operations')
+    [[u'add',
+      u'calc/add'],
+     [u'add',
+      u'calc/subtract']]
+
+
+Note that we didn't make any security declarations for the Calculator
+class.  We're relying on the protection for the container.  If we
+restart the browser, we see, indeed, that we can't access the
+calculator:
+
+    >>> server = zc.ajax.testing.FormServer()
+    >>> server.pprint('http://localhost/@@container.html/calc/operations')
+    {u'session_expired': True,
+     u'success': False}
+
+Dynamic Traversal
+=================
+
+In the previous example, we traversed to a sub-application using a
+static property.  Sometimes, we need to traverse dynamically.  We
+might have a container application with a variable number of
+subapplications. Examples include a portlet container and a system for
+managing user-defined data types.  In the later case, as users define
+new data types, one or more applications get defined for each type.
+
+zc.ajax.application provides a helper descriptor that allows custom
+traversers to be implemented with simple Python methods.  Let's look
+at a simple example.
+
+    >>> import zc.ajax.application   
+    >>> class Foo:
+    ...     def __str__(self):
+    ...         return 'a '+self.__class__.__name__
+    ...
+    ...     @zc.ajax.application.traverser
+    ...     def demo_traverse(self, request, name):
+    ...         return "traverse: %s %s %s" % (self, request, name)
+
+This is a rather silly traverser for demonstration purposes that just
+returnes a transformed name.
+
+    >>> foo = Foo()
+    >>> foo.demo_traverse.publishTraverse("a request", "xxx")
+    'traverse: a Foo a request xxx'
+
+We can still call the method:
+
+    >>> foo.demo_traverse("a request", "xxx")
+    'traverse: a Foo a request xxx'
+
+The method provides IBrowserPublisher:
+
+    >>> import zope.publisher.interfaces.browser
+    >>> zope.publisher.interfaces.browser.IBrowserPublisher.providedBy(
+    ...     foo.demo_traverse)
+    True
+
+The descriptor has a security declaration that allows it to be
+traversed but not called from untrusted code:
+
+    >>> import zope.security.checker
+    >>> checker = zope.security.checker.getChecker(
+    ...     zope.security.checker.ProxyFactory(foo.demo_traverse))
+    >>> checker.get_permissions
+    {'publishTraverse': Global(CheckerPublic,zope.security.checker)}
+
+    >>> checker.set_permissions
+    {}
+
+Acquisition
+===========
+
+Applications and sub-applications have __parent__ properties that
+return their context.  This is to support frameworks that ise
+__parent__ to perform acquisition.
+
+   >>> class MyApp(zc.ajax.application.Application):
+   ...     pass
+
+   >>> myapp = MyApp(foo, None)
+   >>> myapp.__parent__ is foo
+   True
+
+   >>> class MySubApp(zc.ajax.application.SubApplication):
+   ...     pass
+
+   >>> mysubapp = MySubApp(foo, None)
+   >>> mysubapp.__parent__ is foo
+   True
+
+
+System Errors
+=============
+
+    System errors will be rendered as json.
+
+    >>> server = zc.ajax.testing.FormServer(
+    ...     'http://localhost/calculator.html?login')
+    >>> server('/calculator.html/doh')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 500: Internal Server Error
+
+    >>> pprint.pprint(simplejson.loads(server.browser.contents), width=1)
+    {u'error': u'TypeError: Doh!',
+     u'success': False}
+
+.. [#ajax] Technically, these aren't really AJAX applications, since
+   we rarely. if ever, use XML as a serialization format.  To
+   emphasize this I'll use lower-case "ajax" to refer to the generic
+   approach of making low-level calls from Javascript rather than
+   doing page loads.
+
+.. [#jsoninput] In the near future, there will also be support for
+   JSON method input.  This will provide a number of benefits:
+
+   - It will provide more automatic marshaling of non-string
+     data. Now, we either have to de-marshal in the server application
+     code or embed marshaling data into parameter names in client
+     code.
+
+   - It will allow richer data structures than is practical with form data.
+
+   - It will probably allow faster ajax requests because:
+
+     - Server-side de-marshalling is done with highly optimized code
+       in simplejson.
+
+     - We will assume that data passed are valid method arguments and
+       avoid method introspection.
+
+.. [#missing_resource_library_name] A custom attribute error message
+   is used if this attribute is missing that tries to be more
+   informative than the default attribute error.
+
+.. [#sso]  For search-engine optimization, one generally wants a
+   content page to actually contain its content.  If one depends on
+   Javascript-enabled browsers, one can improve performance and
+   search-engine optimization by adding ancilary data in Javascript,
+   so as not to dilute the content.
+
+.. [#forms] See form.txt.
+
+.. [#iajaxrequest] Traversing into a subapplication adds IAjaxRequest to the
+   list of interfaces provided by the request.
+
+    >>> import zc.ajax.application
+    >>> import zc.ajax.interfaces
+    >>> import zope.publisher.browser
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> class SubApp(zc.ajax.application.SubApplication):
+    ...      @zc.ajax.application.jsonpage
+    ...      def foo(self):
+    ...          return 'bar'
+    >>> subapp = SubApp(object(), request)
+
+  Now let's try traversing into the subapplication:
+
+    >>> zc.ajax.interfaces.IAjaxRequest.providedBy(request)
+    False
+    >>> subapp.publishTraverse(request, 'foo')()
+    '"bar"'
+    >>> zc.ajax.interfaces.IAjaxRequest.providedBy(request)
+    True
+
+  Note that the request keeps any provided interfaces:
+
+    >>> request = zope.publisher.browser.TestRequest()
+    >>> class IMyInterface(zope.interface.Interface):
+    ...     pass
+    >>> zope.interface.directlyProvides(request, IMyInterface)
+    >>> subapp.publishTraverse(request, 'foo')()
+    '"bar"'
+    >>> IMyInterface.providedBy(request)
+    True
+
+
+System Error Logging
+====================
+
+When an error is generated, zope.app.publishing checks to see if the
+error handler provides the System Error interface. If so, zope.app.publishing
+logs the error.
+
+Rather than use this indirect method of logging, there is an explicit
+statement in ExceptionView that imports the logging module and logs and error
+itself. We can test this with the zope.testing.loggingsupport functions.
+
+    First we set up loggingsupport. This keeps track of all error messages
+    written via the module passed as the parameter. In this case, zc.ajax.
+
+    >>> import logging
+    >>> import zope.testing.loggingsupport
+    >>> log_handler = zope.testing.loggingsupport.InstalledHandler('zc.ajax')
+
+    Then we create an error.
+
+    >>> server = zc.ajax.testing.FormServer(
+    ...     'http://localhost/calculator.html?login')
+    >>> server('/calculator.html/doh')
+    Traceback (most recent call last):
+    ...
+    HTTPError: HTTP Error 500: Internal Server Error
+
+    ...And check to see that it was logged.
+
+    >>> print log_handler
+    zc.ajax.application ERROR
+      SysError created by zc.ajax

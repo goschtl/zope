@@ -1,0 +1,15 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+  <include file="widgets.zcml" />
+
+  <adapter factory=".application.UserError" name="index.html" />
+  <adapter factory=".application.ExceptionView" name="index.html" />
+
+  <class class=".form.Action">
+    <allow attributes="__call__ browserDefault" />
+  </class>
+
+</configure>

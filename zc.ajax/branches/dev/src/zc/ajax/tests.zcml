@@ -1,0 +1,17 @@
+<configure xmlns="http://namespaces.zope.org/zope" package="zc.ajax">
+
+  <include package="zope.app.zcmlfiles" file="meta.zcml" /> <!-- Gaaaah -->
+  <include file="session.zcml" />
+  <include package="zc.ajax" />
+  <include package="zope.app.zcmlfiles" /> <!-- Gaaaah -->
+  <include package="zope.formlib" />
+
+  <utility factory=".testing.DumbAuth" />
+  <securityPolicy component=".testing.AuthenticatedAllowed" />
+  <adapter factory=".testing.unauth_template" name="default" />
+
+  <include file="calculator_example.zcml" />
+  <include file="form_example.zcml" />
+  <include file="calculator_subapplication_example.zcml" />
+
+</configure>

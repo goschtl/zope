@@ -1,0 +1,7 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+  <include package="zope.app.component" file="meta.zcml" />
+  <adapter name="container.html"
+           factory="zc.ajax.calculator_subapplication_example.Container"
+           permission="zope.View"
+           />
+</configure>
