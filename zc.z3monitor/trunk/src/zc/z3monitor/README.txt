@@ -241,7 +241,7 @@ data for the last 10 seconds:
     0   0   0   1   1 
     -> CLOSE
 
-ZEO cache statistics
+ZEO Cache Statistics
 ====================
 
 You can get ZEO cache statistics using the zeocache command.
@@ -278,8 +278,8 @@ You can specify a database name:
     42 4200 23 2300 1000 
     -> CLOSE
 
-ZEO Cache status
-================
+ZEO Connection Status
+=====================
 
 The zeostatus command lets you get information about ZEO connection status:
 
