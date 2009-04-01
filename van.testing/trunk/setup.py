@@ -23,7 +23,7 @@ long_description = (
     )
 
 setup(name="van.testing",
-      version='1.0.1dev',
+      version='2.0.0dev',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.timeformat',
       author_email='zope-dev@zope.org',
@@ -33,7 +33,8 @@ setup(name="van.testing",
       namespace_packages=["van"],
       install_requires=[
           'setuptools',
-          'zope.app.appsetup',
+          'zope.app.component',
+          'zope.configuration',
           'zope.testing',
           ],
     classifiers=[

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.app.appsetup import config
+from zope.configuration import xmlconfig
+from zope.app.component import hooks # BBB: import from zope.site at a later date
 from zope.testing.cleanup import cleanUp
 
 def null_layer(layer):
@@ -75,7 +76,8 @@ def zcml_layer(layer):
     """
 
     def setUp(cls):
-        config(cls.zcml)
+        hooks.setHooks()
+        context = xmlconfig.file(cls.zcml)
     layer.setUp = classmethod(setUp)
 
     def tearDown(cls):
