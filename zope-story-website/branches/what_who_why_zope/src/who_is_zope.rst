@@ -21,20 +21,28 @@ Who is Zope?
    + Grok
    + Repoze
    + Repoze.BFG
-   + Zope 2
+   + Zope 2 community (mailing lists, irc, etc.)
    + Plone Community
    + `Planet Zope <http://planet.zope.org/>`_
 
    .. rubric:: Zope Community Intersections
 
-   + Python Community
-   + Twisted
-   + Zope 2 community (mailing lists, irc, etc.)
-   + Turbogears
+   + `Python`_ has a substantial worldwide open source `community 
+     <http://www.python.org/>`_
+   + `Twisted`_, an asynchronous network server written in Python
+     utilizes *zope.interface*. Some Zope projects come bundled with
+     Twisted to provide Zope with a powerful multi-protocol network layer.
+   + `TurboGears`_, a Python web framework which utilizes zope.interface
+     as well as Zope's transaction library.
    + Pylons
-   + Buildout
+   + `buildout`_, originally developed at Zope Corporation, has gained traction outside the
+     Zope Community as a Python-based build system for creating, assembling and
+     deploying applications from multiple components.
+  
    + LaunchPad
 
+  
+  
 .. container::
    :class: MiddleColOfThree
 
@@ -85,3 +93,12 @@ Who is Zope?
    Source: The Zope 3 Book
 
 .. _`Zope Foundation`: http://foundation.zope.org/
+.. _`Zope 2 Application Server`: http://zope2.zopyx.de/
+.. _`Zope Framework`: http://docs.zope.org/zopeframework/
+.. _`BFG`: http://static.repoze.org/bfgdocs/
+.. _`Twisted`: http://twistedmatrix.com/trac/
+.. _`Turbogears`: http://turbogears.org/
+.. _`buildout`: http://buildout.org
+.. _`Zope Public License`: http://www.zope.org/Resources/License/
+.. _`Python`: http://www.python.org/
+.. _`Launchpad`:  http://launchpad.net

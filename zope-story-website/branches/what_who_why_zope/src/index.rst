@@ -15,7 +15,7 @@
 
    Hundreds of companies and thousands of developers devoted to solutions to
    the perennial problems of building complex, scalable web applications.
-   `More... <who_is_zope.rst>`__
+   `More... <who_is_zope.html>`__
 
    .. rubric:: Zope is Open Source
 
@@ -26,7 +26,7 @@
 
    .. rubric:: Zope is a Broad Software Technology
 
-   The base Zope Framework has powered web development frameworks, web
+   The base `Zope Framework`_ powers web development frameworks, web
    application servers, content management systems, and many other software
    components.
 
@@ -35,13 +35,22 @@
    Zope's robust technologies are born of 10 years of hard-won real world
    experience in building production web applications for every level
    of organization, ranging from small nonprofits to large enterprise systems
-   and high traffic public web applications. `More... <why_use_zope.rst>`__
+   and high traffic public web applications. `More... <why_use_zope.html>`__
 
    .. rubric:: Zope is Python-based
 
    Zope is written in `Python`_, a highly-productive, object-oriented
-   scripting language.
+   programming language with a strong emphasis on clear, elegant,
+   manageable code.
 
+   .. rubric:: Zope is Secure
+    
+   The Zope Framework offers significant security advantages in the form of a
+   fine-grained and highly manageable infrastructure, including support for
+   pluggable authentication and permission-based security policies for object
+   publishing, down to the level of methods and attributes. `More... 
+   <why_use_zope.html>`__
+    
 
 .. container::
    :class: RightCol
@@ -49,50 +58,50 @@
    .. container::
       :class: frameworks
 
-      :zsection:`Frameworks`
-
-      The following are notable frameworks which users are advised to look at if
-      they are looking at entering the world of Zope.
-
+      :zsection:`Web Frameworks Built with Zope`
+      
       .. container::
          :class: framework
 
          |Grok|_
 
-         aimed at making the full power of the Zope Framework accessible to any
-         Python developer.
+         Grok is aimed at making the full power of the Zope Framework accessible
+         to any Python developer.
 
       .. container::
          :class: framework
 
          |Repoze|_
 
-         a web framework toolkit integrating WSGI middleware with Zope.
+         Repoze, a toolkit for integrating WSGI middleware with Zope.
+         In addition, a new web framework called Repoz.BFG has spun
+         out of the Repoze project.
 
       .. container::
          :class: framework
 
          |Zope 2|_
 
-         a mature application server which has thrived in enterprise production
-         systems for nearly 10 years.
+         Zope 2 is a mature application server which has thrived in enterprise
+         production systems for nearly 10 years. The "granddaddy of Python
+         web frameworks" is alive and kicking, re-energized by the
+         regular injection of new technologies such as `Zope Framework`_,
+         `Twisted`_, and `Python`_ community innovations.
+         
 
 
    .. container::
       :class: applications
 
-      :zsection:`Applications`
-
-      Several applications are built atop the Zope Framework, providing rich user
-      experiences.
+      :zsection:`A Few Example Applications Built with Zope`
 
       .. container::
          :class: application
 
          |Plone|_
 
-         a powerful, flexible Content Management solution that is easy to
-         install, use and extend.
+         Plone is a powerful, flexible Content Management solution that is
+         easy to install, use and extend.
 
       .. container::
          :class: application
@@ -107,9 +116,9 @@
 
          |Launchpad|_
 
-         both an application and a web site supporting software development,
-         particularly that of free software.  Launchpad is developed and
-         maintained by Canonical Ltd.
+         Both an application and a web site supporting software development,
+         particularly that of free software, `Launchpad`_ is developed and
+         maintained by `Cannonical Ltd`_.
 
 
    .. container::
@@ -124,7 +133,7 @@
       * `Zope 2 Application Server`_, a mature application server which has
         thrived in enterprise production systems for nearly 10 years.
 
-      * `Zope Framework Wiki`_, a place where more information about the Zope
+      * `Zope Framework`_, a place where more information about the Zope
          framework can be found.
 
       This variety of open source and commercial applications built from Zope
@@ -138,22 +147,6 @@
    <br clear="all" />
 
 
-Python Community Cross-Pollination
-===================================
-
-Zope software components are also deployed in the wider Python community; for
-example:
-
-* `Twisted`_, an asynchronous network server written in Python
-  utilizes *zope.interface*. Some Zope projects come bundled with
-  Twisted to provide Zope with a powerful multi-protocol network layer.
-
-* `TurboGears`_, a Python web framework which utilizes zope.interface
-  as well as Zope's transaction library.
-
-* `buildout`_, originally developed at Zope Corporation, has gained traction outside the
-  Zope Community as a Python-based build system for creating, assembling and
-  deploying applications from multiple components.
 
 .. |Grok| image:: _static/grok_logo.png
 .. _`Grok`: http://grok.zope.org
@@ -175,7 +168,7 @@ example:
 
 
 .. _`Zope 2 Application Server`: http://zope2.zopyx.de/
-.. _`Zope Framework Wiki`: http://wiki.zope.org/zope3/Zope3Wiki/
+.. _`Zope Framework`: http://docs.zope.org/zopeframework/
 .. _`BFG`: http://static.repoze.org/bfgdocs/
 .. _`Twisted`: http://twistedmatrix.com/trac/
 .. _`Zope Foundation`: http://foundation.zope.org/about
@@ -183,3 +176,4 @@ example:
 .. _`buildout`: http://buildout.org
 .. _`Zope Public License`: http://www.zope.org/Resources/License/
 .. _`Python`: http://www.python.org/
+.. _`Cannonical Ltd`: http://www.canonical.com/

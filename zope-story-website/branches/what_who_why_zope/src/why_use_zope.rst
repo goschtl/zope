@@ -2,7 +2,7 @@ Why Use Zope?
 =============
 
 Zope applications, libraries, and frameworks are suited for different purposes
-and environments; each has a set of strengths and weaknesses.
+and environments; but most share these common advantages:
 
 Zope is Mature
 --------------
@@ -44,11 +44,19 @@ Persistence Options
 Zope applications traditionally benefit from the use of a mature
 high-performance transactional object database called ZODB, which increases
 developer productivity by avoiding the complexity of a relational database
-layer.
+layer. This benefit multiplies when combined with Zope schema classes
+to marry content objects and metadata with web forms.
 
 However, relational databases (RDBMs) are also a popular persistence option
 for Zope applications, and good options exist for using object relational
-mappers such as SQLAlchemy and Storm.
+mappers such as SQLAlchemy and Storm. 
+
+See also:
+    + `ZODB in Python Package Index`_
+    + `ZODB/ZEO Programming Guide`_
+    + `ZODB vs Relational Database: a simple benchmark`_
+    + `SQLAlchemy`_
+    + `Storm`_
 
 Zope Component Architecture (ZCA)
 ---------------------------------
@@ -59,5 +67,79 @@ tight coupling between application parts so that components can be swapped
 without causing breakage. The Zope Component Architecture provides and elegant
 solution which helps manage complexity and encourage component reusability.
 
+See also:
+    + `A Comprehensive Guide to Zope Component Architecture`_
+    + `Zope Component Architecture Overview`_
+    + `Grok Explains Zope Component Architecture`_
 
-RDBMs
+Security
+-------------------
+
+The Zope Framework offers significant security advantages in the form of
+a fine-grained and highly manageable infrastructure, including support
+for pluggable authentication and permission-based security policies for object
+publishing, down to the level of methods and attributes. 
+
+By default, nothing is published unless an explicit security declaration is
+attached either within application code or within configuration.
+
+For applications needing less security and more simplicity, Zope Framework
+security can be relaxed to allow convenient, free-form web object publishing.
+
+When it comes to security, one size does NOT fit all.
+
+See also:
+    + `Pluggable Authenication for Plone and Zope 2 <http://plone.org/documentation/manual/pas-reference-manual/referencemanual-all-pages>`__
+
+
+MetaData and Dublin Core
+-------------------------
+
+Zope supports attaching metadata for application content objects, adhering
+to the `Dublin Core <http://dublincore.org/>`_ metadata standard.
+
+
+I18n and L10n Support
+-------------------------------------------------------------
+
+Zope Framework supports a manageable approach to internationalization and
+localization, to make Zope applications easily translatable.
+
+
+Twisted Server Integration
+---------------------------
+
+While Zope does have a robust built-in HTTP server for publishing objects to
+the web, it also comes bundled with the powerful `Twisted`_ server, an 
+"event-driven networking engine" designed to support not only HTTP but
+many other network protocols in a concurrently asynchronous fashion.
+
+
+WSGI Integration Options
+---------------------------
+
+Zope plays well with `WSGI`_ HTTP pipelines, enabling layering
+of `WSGI "middleware"`_ applications between the web server and the main
+"endware" application. Zope applications can play the role of either
+WSGI middleware or endware.
+
+See also:
+    + `Repoze: Integrating Zope Into a WSGI World`_
+    + `PasteDeploy`_
+
+
+
+
+.. _`WSGI`: http://wsgi.org/wsgi/
+.. _`WSGI "middleware"`: http://wsgi.org/wsgi/Middleware_and_Utilities
+.. _`Twisted`: http://twistedmatrix.com/trac/wiki
+.. _`PasteDeploy`: http://docs.zope.org/zope3/Code/zope/publisher/paste.txt/index.html
+.. _`Repoze: Integrating Zope Into a WSGI World`: http://repoze.org/about.html
+.. _`ZODB vs Relational Database: a simple benchmark`: http://pyinsci.blogspot.com/2007/09/zodb-vs-relational-database-simple.html
+.. _`ZODB/ZEO Programming Guide`: http://wiki.zope.org/ZODB/guide/index.html
+.. _`ZODB in Python Package Index`: http://pypi.python.org/pypi/ZODB3
+.. _`SQLAlchemy`: http://www.sqlalchemy.org/
+.. _`Storm`: https://storm.canonical.com/
+.. _`A Comprehensive Guide to Zope Component Architecture`: http://muthukadan.net/docs/zca.html
+.. _`Zope Component Architecture Overview`: http://wiki.zope.org/zope3/ComponentArchitectureOverview
+.. _`Grok Explains Zope Component Architecture`: http://grok.zope.org/about/component-architecture
