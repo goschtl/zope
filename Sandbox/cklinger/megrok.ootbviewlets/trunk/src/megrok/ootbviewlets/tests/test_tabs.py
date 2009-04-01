@@ -19,7 +19,7 @@ the print in link in the right context.
   >>> print browser.contents
   <div class="tabMenu">
     <span class="inactive-menu-item">
-    <a href="">print</a>
+    <a href="http://localhost/tabs/delete">delete</a>
   </span>
   <BLANKLINE>
   </div> 
@@ -37,10 +37,10 @@ class MyManager(TabMenu):
     grok.name('mymanager')
 
 class MyTab(TabItem):
-    grok.name('print')
+    grok.name('delete')
 
-    urlEndings = ['print', ]
-    viewURL = 'print'
+    urlEndings = ['delete', ]
+    viewURL = 'delete'
 
 def test_suite():
     from zope.testing import doctest

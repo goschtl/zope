@@ -20,7 +20,7 @@ the print in link in the right context.
   <div class="actionMenuWrapper">
     <ul class="actionMenu">
       <li class="inactive-menu-item">
-    <a href="">
+    <a href="http://localhost/actions/print"> 
       <div>print</div>
     </a>
   </li>

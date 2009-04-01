@@ -18,27 +18,24 @@ the print in link in the right context.
 
   >>> browser.open("http://localhost/fred/@@myview")
   >>> print browser.contents
-  <a href="http://localhost/fred/print"
-     class="inactive-menu-item">printviewlet</a>
+  <a href="http://localhost/fred/print" class="myInActiveCss">printviewlet</a>
 
 Now look if we get the right link in the context of klaus too
 
   >>> browser.open("http://localhost/klaus/@@myview")
   >>> print browser.contents
-  <a href="http://localhost/klaus/print"
-     class="inactive-menu-item">printviewlet</a>
+  <a href="http://localhost/klaus/print" class="myInActiveCss">printviewlet</a>
 
 Now check if we get the right css class if we had the same url
 endings in our view and the urlEndings in our Viewlet
 
   >>> browser.open("http://localhost/klaus/@@print")
   >>> print browser.contents
-  <a href="http://localhost/klaus/print"
-     class="active-menu-item">printviewlet</a>
+  <a href="http://localhost/klaus/print" class="myCustomCss">printviewlet</a>
 
 """
 import grok
-from megrok.ootbviewlets import ContextViewlet
+from megrok.ootbviewlets import ContextMenuItem
 
 class MyContext(grok.Context):
     pass
@@ -52,12 +49,11 @@ class Print(grok.View):
 class MyManager(grok.ViewletManager):
     grok.name('mymanager')
 
-class PrintViewlet(ContextViewlet):
-
+class PrintViewlet(ContextMenuItem):
     urlEndings = ['print', ]
     viewURL = 'print'
-
-
+    activeCSS = u'myCustomCss'
+    inActiveCSS = u'myInActiveCss'
 
 
 def test_suite():

@@ -1,2 +1,2 @@
 from managers import TabMenu, ActionMenu
-from viewlets import ContextViewlet, GlobalMenuViewlet, TabItem, ActionItem
+from viewlets import ContextMenuItem, GlobalMenuItem, TabItem, ActionItem

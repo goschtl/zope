@@ -4,9 +4,8 @@ Set up a content object in the application root::
   >>> from zope.app.testing.functional import getRootFolder
   >>> from zope.app.component.hooks import setSite 
   >>> root = getRootFolder()
-  >>> root['app'] = MyApp()
-  >>> root['app']['klaus'] = MyContext()
-  >>> setSite(root['app'])
+  >>> root['base'] = App()
+  >>> setSite(root['base'])
 
 Traverse to the view on the model object. We get the viewlets
 registered for the default layer, with the anybody permission::
@@ -15,43 +14,38 @@ registered for the default layer, with the anybody permission::
   >>> browser = Browser()
   >>> browser.handleErrors = False
 
-Open the myview in context of our application should give us
-the logout link in the right context.
+The GlobalMenuItem should now act as a normal grok.Viewlet.
+This means it should not return the GlobalMenuItem, it should 
+return a simple <p> tag. This demonstrates that the normal
+update render pattern, known from grok.Viewlet works
+as expected.
 
-  >>> browser.open("http://localhost/app/@@myview")
+  >>> browser.open("http://localhost/base/@@myview")
   >>> print browser.contents
-  <a href="http://localhost/app/logout.html"
-     class="inactive-menu-item">logoutviewlet</a>
-
-  >>> browser.open("http://localhost/app/klaus/@@myview")
-  >>> print browser.contents
-  <a href="http://localhost/app/logout.html"
-     class="inactive-menu-item">logoutviewlet</a>
-
+  <p> This message was stored in the update method </p>
 """
 import grok
 from zope.interface import Interface
 from megrok.ootbviewlets import GlobalMenuItem
 
-class MyApp(grok.Application, grok.Container):
-    pass
-
-class MyContext(grok.Context):
+class App(grok.Application, grok.Container):
     pass
 
 class MyView(grok.View):
-    grok.context(Interface)
     pass
 
 class MyManager(grok.ViewletManager):
-    grok.context(Interface)
     grok.name('mymanager')
 
-class LogoutViewlet(GlobalMenuItem):
-    grok.context(Interface)
+class CustomViewlet(GlobalMenuItem):
 
     viewURL = 'logout.html'
 
+    def update(self):
+	self.message = "This message was stored in the update method"
+
+    def render(self):
+	return "<p> %s </p>" %self.message
 
 def test_suite():
     from zope.testing import doctest
