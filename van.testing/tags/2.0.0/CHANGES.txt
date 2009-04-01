@@ -1,0 +1,20 @@
+Changes
+=======
+
+2.0.1 (unknown)
+------------------
+
+2.0.0 (2009-04-01)
+------------------
+
+- Remove dependencies by using zope.configuration.xmlconfig to setup zcml
+  rather than zope.app.appsetup.  This leaves out some security configuration
+  but the win from less dependencies is massive. In my tests, no tests had any
+  issues with this.
+- Add a wsgi_intercept layer and a functional_layer that combines both zcml
+  and wsgi_intercept layer.
+
+1.0.0 (2008-11-21)
+------------------
+
+- Initial Release
