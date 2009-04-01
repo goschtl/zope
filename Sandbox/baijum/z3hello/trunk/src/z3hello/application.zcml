@@ -1,0 +1,34 @@
+<configure
+    i18n_domain="z3hello"
+    xmlns="http://namespaces.zope.org/zope">
+
+    <include package="zope.app.zcmlfiles" />
+    <include package="zope.app.authentication" />
+    <include package="zope.app.securitypolicy" />
+    <include package="zope.app.twisted" />
+    <unauthenticatedPrincipal
+        id="zope.anybody"
+        title="Unauthenticated User" />
+    <include package="zope.app.securitypolicy" file="meta.zcml"/>
+    <securityPolicy
+        component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
+    <role id="zope.Anonymous" title="Everybody"
+        description="All users have this role implicitly" />
+    <grant permission="zope.View"
+          role="zope.Anonymous" />
+    <include package="z3hello" />
+    <principal
+        id="zope.manager"
+        title="Manager"
+        login="admin"
+        password="admin"
+        />
+    <role id="zope.Manager" title="Site Manager" />
+    <grant
+        role="zope.Manager"
+        principal="zope.manager"
+        />
+
+    <include package="z3hello" />
+
+</configure>
