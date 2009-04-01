@@ -47,6 +47,14 @@ However, relational databases (RDBMs) are also a popular persistence option
 for Zope applications, and good options exist for using object relational
 mappers such as SQLAlchemy and Storm.
 
+Zope Component Architecture (ZCA)
+----------------------------------
+One of the lessons learned over the years was the need for a component
+architecture; using object composition instead of object inheritance
+avoids tight coupling between application parts so that components can
+be swapped without causing breakage. The Zope Component Architecture
+provides and elegant solution which helps manage complexity and encourage
+component reusability.
 
 
 RDBMs 
