@@ -22,7 +22,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.http',
-      version = '3.5.2dev',
+      version='3.5.2dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='HTTP Behavior for the Zope Publisher',
@@ -31,8 +31,8 @@ setup(name='zope.app.http',
           + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords = "zope3 http publisher view",
-      classifiers = [
+      keywords="zope3 http publisher view",
+      classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Intended Audience :: Developers',
@@ -45,7 +45,7 @@ setup(name='zope.app.http',
       url='http://pypi.python.org/pypi/zope.app.http',
       license='ZPL 2.1',
       packages=find_packages('src'),
-      package_dir = {'': 'src'},
+      package_dir={'': 'src'},
       namespace_packages=['zope', 'zope.app'],
       extras_require=dict(
           test=['zope.app.testing',
@@ -59,6 +59,6 @@ setup(name='zope.app.http',
                         'zope.app.publication',
                         'zope.filerepresentation',
                         ],
-      include_package_data = True,
-      zip_safe = False,
+      include_package_data=True,
+      zip_safe=False,
       )
