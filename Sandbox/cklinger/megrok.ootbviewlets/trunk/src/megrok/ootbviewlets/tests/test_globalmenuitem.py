@@ -20,13 +20,13 @@ the logout link in the right context.
 
   >>> browser.open("http://localhost/app/@@myview")
   >>> print browser.contents
-  &lt;a href="http://localhost/app/logout.html"
-          class="inactive-menu-item"&gt;logoutviewlet&lt;/a&gt;
+  <a href="http://localhost/app/logout.html"
+     class="inactive-menu-item">logoutviewlet</a>
 
   >>> browser.open("http://localhost/app/klaus/@@myview")
   >>> print browser.contents
-  &lt;a href="http://localhost/app/logout.html"
-          class="inactive-menu-item"&gt;logoutviewlet&lt;/a&gt;
+  <a href="http://localhost/app/logout.html"
+     class="inactive-menu-item">logoutviewlet</a>
 
 """
 import grok

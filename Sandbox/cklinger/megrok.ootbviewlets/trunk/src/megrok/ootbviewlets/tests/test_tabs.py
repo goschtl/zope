@@ -17,12 +17,12 @@ the print in link in the right context.
 
   >>> browser.open("http://localhost/tabs/@@myview")
   >>> print browser.contents
-  &lt;div class="tabMenu"&gt;
-    &lt;span class="inactive-menu-item"&gt;
-    &lt;a href=""&gt;print&lt;/a&gt;
-  &lt;/span&gt;
+  <div class="tabMenu">
+    <span class="inactive-menu-item">
+    <a href="">print</a>
+  </span>
   <BLANKLINE>
-  &lt;/div&gt;
+  </div> 
 """
 import grok
 from megrok.ootbviewlets import TabItem, TabMenu

@@ -18,25 +18,23 @@ the print in link in the right context.
 
   >>> browser.open("http://localhost/fred/@@myview")
   >>> print browser.contents
-  &lt;a href="http://localhost/fred/print"
-          class="inactive-menu-item"&gt;printviewlet&lt;/a&gt;
+  <a href="http://localhost/fred/print"
+     class="inactive-menu-item">printviewlet</a>
 
 Now look if we get the right link in the context of klaus too
 
   >>> browser.open("http://localhost/klaus/@@myview")
   >>> print browser.contents
-  &lt;a href="http://localhost/klaus/print"
-          class="inactive-menu-item"&gt;printviewlet&lt;/a&gt;
-
+  <a href="http://localhost/klaus/print"
+     class="inactive-menu-item">printviewlet</a>
 
 Now check if we get the right css class if we had the same url
 endings in our view and the urlEndings in our Viewlet
 
   >>> browser.open("http://localhost/klaus/@@print")
   >>> print browser.contents
-  &lt;a href="http://localhost/klaus/print"
-          class="active-menu-item"&gt;printviewlet&lt;/a&gt;
-
+  <a href="http://localhost/klaus/print"
+     class="active-menu-item">printviewlet</a>
 
 """
 import grok

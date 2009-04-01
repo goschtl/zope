@@ -17,6 +17,19 @@ the print in link in the right context.
 
   >>> #browser.open("http://localhost/actions/@@myview")
   >>> print browser.contents
+  <div class="actionMenuWrapper">
+    <ul class="actionMenu">
+      <li class="inactive-menu-item">
+    <a href="">
+      <div>print</div>
+    </a>
+  </li>
+  <BLANKLINE>
+    </ul>
+  </div>
+  <div class="clearActionMenu" />
+  <BLANKLINE>
+  <BLANKLINE>
 """
 import grok
 from megrok.ootbviewlets import ActionItem, ActionMenu 
@@ -42,4 +55,3 @@ def test_suite():
     suite = doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS|doctest.REPORT_NDIFF)
     suite.layer = FunctionalLayer
     return suite
-
