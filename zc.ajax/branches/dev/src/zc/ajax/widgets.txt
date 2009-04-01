@@ -37,7 +37,7 @@ are:
 
   value(v)
       Convert a raw value sent from the client to an application value.
-  
+
   _is_missing(self, v)
       Return a boolean value indicating whether the given raw value is
       equivalent to the user not providing a value.
@@ -67,19 +67,20 @@ To see how this works, we'll try some examples with the base widget:
     >>> pprint(w.js_config(), width=1)
     Traceback (most recent call last):
     ...
-    ValueError: Neither xtype nor widget_constructor are defined.
+    AttributeError: 'Base' object has no attribute 'widget_constructor'
 
 Oops, let's make this a text widget. Normally we'd do this in a widget
 class. We'll just hack the widget instance. :)
 
-    >>> w.xtype = 'textfield'
+
+    >>> w.widget_constructor = 'zc.ajax.widgets.InputTextLine'
     >>> pprint(w.js_config(), width=1)
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
-     'xtype': 'textfield'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputTextLine'}
 
 We can also (or instead) provide a widget constructor:
 
@@ -88,11 +89,10 @@ We can also (or instead) provide a widget constructor:
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
-     'widget_constructor': 'my.widget.constructor',
-     'xtype': 'textfield'}
-   
+     'required': True,
+     'widget_constructor': 'my.widget.constructor'}
+
 Let's add some data to the request:
 
     >>> request.form['field.f'] = 'xxx'
@@ -136,21 +136,19 @@ Let's try overriding some methods:
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
-     'widget_constructor': 'my.widget.constructor',
-     'xtype': 'textfield'}
+     'required': True,
+     'widget_constructor': 'my.widget.constructor'}
 
     >>> w.setRenderedValue(w.getInputValue())
     >>> pprint(w.js_config(), width=1)
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'value': u'foo',
-     'widget_constructor': 'my.widget.constructor',
-     'xtype': 'textfield'}
+     'widget_constructor': 'my.widget.constructor'}
 
 The field constraint doesn't get checked on the client, but is checked
 on the server:
@@ -195,9 +193,9 @@ The boolean widget uses a Ext checkbox field:
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
-     'xtype': 'checkbox'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputBool'}
 
     >>> w.formValue(None), w.formValue(True), w.formValue(False)
     (None, True, False)
@@ -239,10 +237,10 @@ There are widgets for both single- and multi-line text.
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'minLength': 0,
      'name': 'field.f',
-     'xtype': 'textfield'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputTextLine'}
 
     >>> w.formValue(None), w.formValue(u'xxx')
     (None, u'xxx')
@@ -272,11 +270,11 @@ server:
      'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'maxLength': 30,
      'minLength': 5,
      'name': 'field.f',
-     'xtype': 'textfield'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputTextLine'}
 
     >>> w.required, w.hasInput(), w.hasValidInput()
     (True, True, False)
@@ -321,10 +319,10 @@ Text fields become text areas:
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'minLength': 0,
      'name': 'field.f',
-     'xtype': 'textarea'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputText'}
 
     >>> w.required, w.hasInput(), w.hasValidInput()
     (True, False, False)
@@ -351,11 +349,11 @@ server:
      'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'maxLength': 30,
      'minLength': 5,
      'name': 'field.f',
-     'xtype': 'textarea'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.InputText'}
 
     >>> w.required, w.hasInput(), w.hasValidInput()
     (True, True, False)
@@ -399,8 +397,8 @@ Integers
      'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'widget_constructor': 'zc.ajax.widgets.InputInt'}
 
 Note that we use a custom widget constructor, which provides
@@ -444,8 +442,8 @@ server:
      'field_max': 9,
      'field_min': 1,
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'widget_constructor': 'zc.ajax.widgets.InputInt'}
 
     >>> w.required, w.hasInput(), w.hasValidInput()
@@ -482,8 +480,8 @@ vocabulary, and a request.
      'fieldLabel': u'label',
      'hiddenName': 'field.f.value',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'values': [['red',
                  u'red'],
                 ['green',
@@ -553,8 +551,8 @@ of values is included in the Javascript config:
      'fieldLabel': u'label',
      'hiddenName': 'field.f.value',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'values': [['0x41',
                  'A'],
                 ['0x42',
@@ -603,8 +601,8 @@ Timezones
      'fieldLabel': u'Timezone',
      'hiddenName': 'field.tz.value',
      'id': 'field.tz',
-     'itemCls': 'zc-required-field',
      'name': 'field.tz',
+     'required': True,
      'values': [['Africa/Abidjan',
                  u'Africa/Abidjan'],
                 ...],
@@ -641,8 +639,8 @@ Decimals
      'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
+     'required': True,
      'widget_constructor': 'zc.ajax.widgets.InputDecimal'}
 
 Note that we use a custom widget constructor, which provides
@@ -684,9 +682,9 @@ Hidden fields
     {'fieldHint': u'hint',
      'fieldLabel': u'label',
      'id': 'field.f',
-     'itemCls': 'zc-required-field',
      'name': 'field.f',
-     'xtype': 'hidden'}
+     'required': True,
+     'widget_constructor': 'zc.ajax.widgets.Hidden'}
 
     >>> w.formValue(None), w.formValue(u'xxx')
     (None, u'xxx')

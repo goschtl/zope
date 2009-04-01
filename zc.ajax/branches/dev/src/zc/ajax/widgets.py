@@ -30,9 +30,6 @@ class Base(zope.app.form.InputWidget):
 
     zope.interface.implements(zc.ajax.interfaces.IInputWidget)
 
-    xtype = None
-    widget_constructor = None
-
     def js_config(self, **kw):
         config = dict(
             fieldLabel = self.label,
@@ -41,24 +38,17 @@ class Base(zope.app.form.InputWidget):
             id = self.name,
             **kw)
 
-        if self.xtype:
-            config['xtype'] = self.xtype
-        elif not self.widget_constructor:
-            raise ValueError(
-                'Neither xtype nor widget_constructor are defined.')
+        config['widget_constructor'] = self.widget_constructor
 
-        if self.widget_constructor:
-            config['widget_constructor'] = self.widget_constructor
-        
         if self.required:
-            config['itemCls'] = 'zc-required-field'
+            config['required'] = True
 
         if self._renderedValueSet():
             value = self.formValue(self._data)
             if value is not None:
                 config['value'] = value
-        
-        return config 
+
+        return config
 
     def formValue(self, v):
         if v == self.context.missing_value:
@@ -67,7 +57,7 @@ class Base(zope.app.form.InputWidget):
 
     def value(self, raw):
         return self._toValue(raw)
-    
+
     def _toValue(self, v):              # for backward compat for a while
         return v
 
@@ -92,18 +82,18 @@ class Base(zope.app.form.InputWidget):
                     self.name, self.label, None)
             else:
                 return self.context.missing_value
-            
+
         value = self.value(raw)
-        
+
         # value must be valid per the field constraints
         try:
             self.context.validate(value)
         except zope.schema.interfaces.ValidationError, v:
             raise zope.app.form.interfaces.WidgetInputError(
                 self.context.__name__, self.label, v)
-            
+
         return value
- 
+
     @zope.cachedescriptors.property.Lazy
     def required(self):
         return self.context.required
@@ -115,11 +105,11 @@ class InputBool(Base):
         zc.ajax.interfaces.IAjaxRequest,
         )
 
-    xtype = 'checkbox'
+    widget_constructor = 'zc.ajax.widgets.InputBool'
 
     def hasInput(self):
         return True
-        
+
     def getInputValue(self):
         return self.request.form.get(self.name, '') == 'on'
 
@@ -165,7 +155,7 @@ class InputChoiceIterable(Base):
             [term.token, term.title]
             for term in (terms.getTerm(v) for v in self.source)
             ]
-        
+
         if self.required:
             result['allowBlank'] = False
 
@@ -186,7 +176,7 @@ class InputChoiceIterable(Base):
             zope.app.form.browser.interfaces.ITerms,
             )
         return terms.getValue(v)
-    
+
 class InputChoiceTokenized(InputChoiceIterable):
 
     zope.component.adapts(
@@ -203,7 +193,7 @@ class InputChoiceTokenized(InputChoiceIterable):
             [term.token, term.title or unicode(term.value)]
             for term in self.source
             ]
-        
+
         if self.required:
             result['allowBlank'] = False
 
@@ -249,7 +239,7 @@ class InputInt(Base):
 
         if self.required:
             config['allowBlank'] = False
-        
+
         if self.context.min is not None:
             config['field_min'] = self.context.min
         if self.context.max is not None:
@@ -303,11 +293,11 @@ class InputTextLine(Base):
         zc.ajax.interfaces.IAjaxRequest,
         )
 
-    xtype = 'textfield'
+    widget_constructor = 'zc.ajax.widgets.InputTextLine'
 
     def _is_missing(self, raw):
         return (not raw) and self.required
-    
+
     def js_config(self):
         config = Base.js_config(self)
         if self.context.min_length is not None:
@@ -317,7 +307,7 @@ class InputTextLine(Base):
 
         if self.context.max_length is not None:
             config['maxLength'] = self.context.max_length
-            
+
         return config
 
 class InputText(InputTextLine):
@@ -327,8 +317,8 @@ class InputText(InputTextLine):
         zc.ajax.interfaces.IAjaxRequest,
         )
 
-    xtype = 'textarea'
+    widget_constructor = 'zc.ajax.widgets.InputText'
 
 class Hidden(Base):
 
-    xtype = 'hidden'
+    widget_constructor = 'zc.ajax.widgets.Hidden'
