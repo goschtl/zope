@@ -113,15 +113,18 @@ class ErrorHandler:
 
 def wsgi_intercept_layer(layer):
 
+    domain = getattr(layer, 'domain', 'localhost')
+    port = getattr(layer, 'port', 80)
+
     def make_debug_application():
         return ErrorHandler(layer.make_application())
 
     def setUp(cls):
-        wsgi_intercept.add_wsgi_intercept('localhost', 80, make_debug_application)
+        wsgi_intercept.add_wsgi_intercept(domain, port, make_debug_application)
     layer.setUp = classmethod(setUp)
 
     def tearDown(cls):
-        wsgi_intercept.remove_wsgi_intercept('localhost', 80)
+        wsgi_intercept.remove_wsgi_intercept(domain, port)
 
     def null(cls):
         pass
