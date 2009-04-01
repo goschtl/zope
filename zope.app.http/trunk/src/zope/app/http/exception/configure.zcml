@@ -1,5 +1,6 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
 <view
     for="zope.security.interfaces.IUnauthorized"
@@ -9,9 +10,9 @@
     factory=".unauthorized.Unauthorized"
     />
 
-<defaultView
+<browser:defaultView
     for="zope.security.interfaces.IUnauthorized"
-    type="zope.publisher.interfaces.http.IHTTPRequest"
+    layer="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     />
 
@@ -23,9 +24,9 @@
     factory=".notfound.NotFound"
     />
 
-<defaultView
+<browser:defaultView
     for="zope.publisher.interfaces.ITraversalException"
-    type="zope.publisher.interfaces.http.IHTTPRequest"
+    layer="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     />
 
@@ -37,9 +38,9 @@
     permission="zope.Public"
     />
 
-<defaultView
+<browser:defaultView
     for="zope.app.publication.http.IMethodNotAllowed"
-    type="zope.publisher.interfaces.http.IHTTPRequest"
+    layer="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     />
 
