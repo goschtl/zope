@@ -1,6 +1,38 @@
 Testing Utilities
 =================
 
+The most common use of this testing module is functional testing zope
+applications. It provides tools to setup layers which load the configuration
+ZCML as well as setting up wsgi_intercept in a layer.
+
+This test is part of such a layer (setup in van.testing.tests.FunctionalLayer):
+
+    >>> from wsgi_intercept import WSGI_HTTPConnection as HTTPConnection
+    >>> conn = HTTPConnection('localhost', 80)
+
+    >>> conn.request('GET', '/')
+    >>> r = conn.getresponse()
+    >>> print r.read() # doctest: +ELLIPSIS
+    {'HTTP_ACCEPT_ENCODING': 'identity',
+     'HTTP_HOST': 'localhost',
+     'PATH_INFO': '/',
+     'QUERY_STRING': '',
+     'REMOTE_ADDR': '127.0.0.1',
+     'REQUEST_METHOD': 'GET',
+     'SCRIPT_NAME': '',
+     'SERVER_NAME': 'localhost',
+     'SERVER_PORT': '80',
+     'SERVER_PROTOCOL': 'HTTP/1.1\r\n',
+     'wsgi.errors': <cStringIO.StringO object at ...>,
+     'wsgi.input': <cStringIO.StringI object at ...>,
+     'wsgi.multiprocess': 0,
+     'wsgi.multithread': 0,
+     'wsgi.run_once': 0,
+     'wsgi.url_scheme': 'http',
+     'wsgi.version': (1, 0)}
+    Marker: MARKER
+
+
 Layers
 ------
 
