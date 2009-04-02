@@ -5,7 +5,13 @@ CHANGES
 0.1.2 (unreleased)
 ------------------
 
-- ...
+- The PyPI Web site slightly changed it behavior, so the code had to be
+  adjusted:
+
+    * Users can only login if the qury parameter "?:action=login" is given.
+
+    * The HTML now contains HTML entities, so that it was easier to switch to
+      `lxml.html`.
 
 0.1.1 (2009-02-08)
 ------------------

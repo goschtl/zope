@@ -16,24 +16,23 @@
 import sys
 import optparse
 import base64
-import lxml.etree
+import lxml.html
 import mechanize
 import zope.testbrowser.browser
 import urllib2
 
-BASE_URL = 'http://pypi.python.org/pypi/'
+BASE_URL = 'http://pypi.python.org/pypi'
 
-ALL_PACKAGES_XPATH = ("//html:div[@id='document-navigation']/"
-                      "html:ul/html:li[position()=1]/html:a/text()")
-PACKAGE_DISTS_XPATH = "//html:table[@class='list']/html:tr/html:td/html:a/@href"
-NS_MAP = {'html': 'http://www.w3.org/1999/xhtml'}
+ALL_PACKAGES_XPATH = ("//div[@id='document-navigation']/"
+                      "ul/li[position()=1]/a/text()")
+PACKAGE_DISTS_XPATH = "//table[@class='list']/tr/td/a/@href"
 
 def getPackages(options, browser):
     if not options.allPackages:
         return options.packages
     browser.open(BASE_URL)
-    tree = lxml.etree.fromstring(browser.contents)
-    return tree.xpath(ALL_PACKAGES_XPATH, NS_MAP)
+    tree = lxml.html.fromstring(browser.contents)
+    return tree.xpath(ALL_PACKAGES_XPATH)
 
 def changeRole(browser, user, action):
     # Try to get to the admin link and click it.
@@ -60,9 +59,10 @@ def manipulateRole(options):
     # Log in as the specified user.
     creds = base64.b64encode('%s:%s' %(options.username, options.password))
     browser.addHeader('Authorization', 'Basic ' + creds)
+    browser.open(BASE_URL + '?:action=login')
     # Execute the action for each specified package.
     for package in getPackages(options, browser):
-        url = BASE_URL + package
+        url = BASE_URL + '/' + package
         print '%s %s as Owner to: %s' %(options.action, options.targetUser, url)
         try:
             browser.open(url)
@@ -71,8 +71,8 @@ def manipulateRole(options):
             continue
         # Some packages list all of their versions
         if 'Index of Packages' in browser.contents:
-            tree = lxml.etree.fromstring(browser.contents)
-            for href in tree.xpath(PACKAGE_DISTS_XPATH, NS_MAP):
+            tree = lxml.html.fromstring(browser.contents)
+            for href in tree.xpath(PACKAGE_DISTS_XPATH):
                 browser.open(href)
                 changeRole(browser, options.targetUser, options.action)
         else:
