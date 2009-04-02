@@ -13,13 +13,10 @@
 ##############################################################################
 
 from ZODB.POSException import ConflictError
-from zope.interface import implements
 from zope.publisher.interfaces.exceptions import Retry
-from zope.publisher.interfaces import IWSGIApplication
 
 from zope.pipeline.autotemp import AutoTemporaryFile
 from zope.pipeline.envkeys import CAN_RETRY_KEY
-from zope.pipeline.envkeys import RESETTABLE_KEYS
 
 
 class RetryApp(object):
@@ -30,10 +27,11 @@ class RetryApp(object):
     The 'handle_error' app should propagate Retry or ConflictError
     when 'zope.pipeline.can_retry' is true.
     """
-    implements(IWSGIApplication)
 
-    def __init__(self, next_app, max_attempts=3):
+    def __init__(self, next_app, retry_errors=(ConflictError, Retry),
+            max_attempts=3):
         self.next_app = next_app
+        self.retry_errors = retry_errors
         self.max_attempts = max_attempts
 
     def __call__(self, environ, start_response):
@@ -46,7 +44,7 @@ class RetryApp(object):
                 f = AutoTemporaryFile()
                 f.copyfrom(wsgi_input)
                 f.seek(0)
-                environ['wsgi.input'] = wsgi_input = f
+                wsgi_input = f
 
         def retryable_start_response(status, response_headers, exc_info=None):
             start_response_params[:] = [status, response_headers, exc_info]
@@ -58,13 +56,14 @@ class RetryApp(object):
         while attempt < self.max_attempts:
             start_response_params = []
             output_file = []
-            environ[CAN_RETRY_KEY] = True
+            env_copy = environ.copy()
+            env_copy['wsgi.input'] = wsgi_input
+            env_copy[CAN_RETRY_KEY] = True
             try:
-                res = self.next_app(environ, retryable_start_response)
-            except (Retry, ConflictError):
+                res = self.next_app(env_copy, retryable_start_response)
+            except self.retry_errors:
                 if wsgi_input is not None:
                     wsgi_input.seek(0)
-                self.reset_environ(environ)
                 attempt += 1
             else:
                 if start_response_params:
@@ -76,10 +75,4 @@ class RetryApp(object):
                 return res
 
         # try once more, this time without retry support
-        environ[CAN_RETRY_KEY] = False
         return self.next_app(environ, start_response)
-
-    def reset_environ(self, environ):
-        for key in RESETTABLE_KEYS:
-            if key in environ:
-                del environ[key]

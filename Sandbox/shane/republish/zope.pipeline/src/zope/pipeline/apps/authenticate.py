@@ -15,8 +15,6 @@
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IFallbackUnauthenticatedPrincipal
 from zope.component import getGlobalSiteManager
-from zope.interface import implements
-from zope.publisher.interfaces import IWSGIApplication
 from zope.security.management import endInteraction
 from zope.security.management import newInteraction
 
@@ -30,7 +28,6 @@ class Authenticator(object):
     The WSGI environment must contain 'zope.pipeline.request'.
     Adds a traversal hook if local authentication is enabled.
     """
-    implements(IWSGIApplication)
 
     def __init__(self, next_app, local_auth=True):
         self.next_app = next_app

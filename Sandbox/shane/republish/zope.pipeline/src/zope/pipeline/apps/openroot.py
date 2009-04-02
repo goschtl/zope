@@ -15,9 +15,7 @@
 import re
 
 from zope.component import getUtility
-from zope.interface import implements
 from zope.interface import Interface
-from zope.publisher.interfaces import IWSGIApplication
 from zope.security.checker import ProxyFactory
 
 from zope.pipeline.envkeys import REQUEST_KEY
@@ -38,7 +36,6 @@ class RootOpener(object):
     of opening the database, this uses the utility by that name as the
     root object.
     """
-    implements(IWSGIApplication)
 
     root_name = 'Application'
     app_controller_name = '++etc++process'

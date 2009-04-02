@@ -13,8 +13,6 @@
 ##############################################################################
 
 from zope.event import notify
-from zope.interface import implements
-from zope.publisher.interfaces import IWSGIApplication
 from zope.publisher.interfaces.event import BeforeTraverseEvent
 from zope.publisher.interfaces.event import EndRequestEvent
 
@@ -29,7 +27,6 @@ class EventNotifier(object):
     and EndRequestEvent at the appropriate times. Requires the
     'zope.pipeline.traversed' key for firing events.
     """
-    implements(IWSGIApplication)
 
     def __init__(self, next_app):
         self.next_app = next_app

@@ -12,10 +12,8 @@
 #
 ##############################################################################
 
-from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.http import MethodNotAllowed
-from zope.publisher.interfaces import IWSGIApplication
 
 from zope.pipeline.envkeys import REQUEST_KEY
 from zope.pipeline.envkeys import TRAVERSED_KEY
@@ -27,7 +25,6 @@ class Caller(object):
     Requires 'zope.pipeline.request' and 'zope.pipeline.traversed' in
     the environment.
     """
-    implements(IWSGIApplication)
 
     def get_target(self, environ):
         """Returns the object to call."""

@@ -12,11 +12,9 @@
 #
 ##############################################################################
 
-from zope.interface import implements
 from zope.pipeline.envkeys import DEFAULT_TRAVERSAL_STEPS_KEY
 from zope.pipeline.envkeys import REQUEST_KEY
 from zope.pipeline.envkeys import STRING_RESULT_HOOKS_KEY
-from zope.publisher.interfaces import IWSGIApplication
 
 
 class FixRelativeLinks(object):
@@ -28,7 +26,6 @@ class FixRelativeLinks(object):
     either redirecting (before calling the app) or adding a base tag
     to the response text (after calling the app).
     """
-    implements(IWSGIApplication)
 
     allow_redirect = True
 

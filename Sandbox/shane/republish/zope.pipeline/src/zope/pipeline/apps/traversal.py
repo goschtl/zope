@@ -13,11 +13,9 @@
 ##############################################################################
 
 from zope.component import queryMultiAdapter
-from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.publisher.interfaces.exceptions import NotFound
 from zope.publisher.interfaces import IPublishTraverse
-from zope.publisher.interfaces import IWSGIApplication
 from zope.security.checker import ProxyFactory
 from zope.traversing.namespace import namespaceLookup
 from zope.traversing.namespace import nsParse
@@ -37,7 +35,6 @@ class Traverser(object):
     'zope.pipeline.traversed' and sets
     'zope.pipeline.default_traversal_steps'.
     """
-    implements(IWSGIApplication)
 
     def __init__(self, next_app):
         self.next_app = next_app
@@ -153,7 +150,6 @@ class Traverser(object):
 
 class BrowserTraverser(Traverser):
     # includes form_action and browserDefault traversal
-    implements(IWSGIApplication)
 
     def get_steps(self, environ):
         """Return the list of names to traverse.

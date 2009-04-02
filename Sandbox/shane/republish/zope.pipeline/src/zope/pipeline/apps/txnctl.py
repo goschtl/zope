@@ -14,11 +14,9 @@
 
 from new import instancemethod
 
-from zope.interface import implements
 from zope.interface import providedBy
 from zope.location.interfaces import ILocationInfo
 from zope.publisher.interfaces import IRequest
-from zope.publisher.interfaces import IWSGIApplication
 from zope.security.proxy import removeSecurityProxy
 import transaction
 
@@ -31,7 +29,6 @@ class TransactionScrubber(object):
 
     Aborts the transaction on the way in and on the way out.
     """
-    implements(IWSGIApplication)
 
     def __init__(self, next_app):
         self.next_app = next_app
@@ -50,7 +47,6 @@ class TransactionController(object):
     Also annotates the transaction.  Requires 'zope.pipeline.request'
     and 'zope.pipeline.traversed' in the environment.
     """
-    implements(IWSGIApplication)
 
     def __init__(self, next_app):
         self.next_app = next_app
