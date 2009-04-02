@@ -1,0 +1,103 @@
+
+
+
+
+
+
+Retry
+    Depends on:
+        zope.publisher[.interfaces]
+        AutoTemporaryFile
+    ConflictError dep will go in zope.pipeline
+    [put in zope.publisher]
+
+RequestCreator - needed for events?
+    Depends on:
+        WebOb
+    [zope.webob? - perhaps propose inclusion in WebOb]
+
+WebObRequest (adapts IWebObRequest to IBrowserRequest)
+
+
+Request dispatcher
+    Use Paste or Repoze work
+
+RootOpener
+    Depends on:
+        zope.interface
+    ProxyFactory dep will go in zope.pipeline
+    * Document the database and connection interfaces required by this
+    component.
+    [put in zope.traversing? - it's a ZODB root opener for traversal]
+
+    [super-simple version: a root opener that takes a callable and
+       installs the traversal root in an env var]
+
+TransactionScrubber
+    Depends on:
+        transaction
+    enhance repoze.tm2
+
+EventNotifier
+    Depends on:
+        zope.event
+        zope.publisher[.interfaces]
+    [put in zope.publisher]
+
+ErrorHandler
+    Needs an IRequest
+    Depends on:
+        transaction
+        ZODB
+        zope.publisher
+        
+
+TransactionController
+    Depends on:
+        transaction
+
+    Generates TransactionCommitEvent.
+    TransactionCommitEvent causes annotation.
+    enhance repoze.tm2?  have to depend on zope.event?
+
+TransactionCommitSubscriber
+    Depends on:
+        zope.location
+        zope.security [for removeSecurityProxy]
+        zope.interface
+        (transaction)
+    [put in new package: zope.transaction?]
+    [maybe depend on zope.proxy instead]
+
+InputProcessor (i18n?)
+    Depends on:
+        zope.i18n (need to set charset)
+        zope.interface
+        zope.httpform
+    [put in zope.httpform; make zope.httpform require i18n]
+
+Authenticator
+    Depends on:
+        zope.authentication (? -- need ifaces formerly in zope.app.security)
+        zope.component
+        zope.security[.management]
+    hope: put in zope.authentication
+
+Traverser
+    Depends on:
+        zope.component
+        zope.publisher[.interfaces]
+        zope.traversing
+    ProxyFactory dep will go in zope.pipeline
+    put in zope.traversing
+
+RelativeLinkFixer
+    Depends on:
+        zope.component??
+    [maybe in zope.publisher]
+
+Caller
+    Depends on:
+        zope.publisher.mapply
+        zope.publisher[.interfaces]
+    [put in zope.publisher or wherever mapply goes]
