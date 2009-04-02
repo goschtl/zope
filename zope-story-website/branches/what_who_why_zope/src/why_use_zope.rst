@@ -1,8 +1,19 @@
+.. role:: header
+.. role:: zsection
+
+.. container::
+   :class: menuacross
+
+   + `What is Zope? <index.html>`_
+   + `Who is Zope? <who_is_zope.html>`_
+   + `Why Zope? <why_use_zope.html>`_
+   
+
 Why Use Zope?
 =============
 
 Zope applications, libraries, and frameworks are suited for different purposes
-and environments; but most share these common advantages:
+and environments; but most share common advantages:
 
 Zope is Mature
 --------------
@@ -43,8 +54,8 @@ Persistence Options
 
 Zope applications traditionally benefit from the use of a mature
 high-performance transactional object database called ZODB, which increases
-developer productivity by avoiding the complexity of a relational database
-layer. This benefit multiplies when combined with Zope schema classes
+developer productivity by avoiding the management overhead of a relational
+database layer. This benefit multiplies when combined with Zope schema classes
 to marry content objects and metadata with web forms.
 
 However, relational databases (RDBMs) are also a popular persistence option
@@ -75,7 +86,7 @@ See also:
 Security
 -------------------
 
-The Zope Framework offers significant security advantages in the form of
+The `Zope Framework`_ offers significant security advantages in the form of
 a fine-grained and highly manageable infrastructure, including support
 for pluggable authentication and permission-based security policies for object
 publishing, down to the level of methods and attributes. 
@@ -102,7 +113,7 @@ to the `Dublin Core <http://dublincore.org/>`_ metadata standard.
 I18n and L10n Support
 -------------------------------------------------------------
 
-Zope Framework supports a manageable approach to internationalization and
+`Zope Framework`_ supports a manageable approach to internationalization and
 localization, to make Zope applications easily translatable.
 
 
@@ -130,6 +141,7 @@ See also:
 
 
 
+.. _`Zope Framework`: http://docs.zope.org/zopeframework/
 .. _`WSGI`: http://wsgi.org/wsgi/
 .. _`WSGI "middleware"`: http://wsgi.org/wsgi/Middleware_and_Utilities
 .. _`Twisted`: http://twistedmatrix.com/trac/wiki

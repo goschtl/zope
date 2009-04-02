@@ -1,7 +1,13 @@
-Who is Zope?
-============
-
 .. role:: header
+.. role:: zsection
+
+.. container::
+   :class: menuacross
+
+   + `What is Zope? <index.html>`_
+   + `Who is Zope? <who_is_zope.html>`_
+   + `Why Zope? <why_use_zope.html>`_
+
 
 .. container::
    :class: LeftColOfThree
@@ -14,16 +20,17 @@ Who is Zope?
    Community.  A liberal BSD-style license called ZPL enables the Zope
    Framework projects to freely intermingle code and ideas.
 
-   .. rubric:: Zope Community Projects
+   .. rubric:: Zope Community Links
 
    + Zope Framework
-   + Plone
-   + Grok
+   + `Plone`_
+   + `Grok Community`_ 
    + Repoze
    + Repoze.BFG
    + Zope 2 community (mailing lists, irc, etc.)
-   + Plone Community
    + `Planet Zope <http://planet.zope.org/>`_
+   + Central index of `Zope-related mailing lists`
+
 
    .. rubric:: Zope Community Intersections
 
@@ -38,9 +45,8 @@ Who is Zope?
    + `buildout`_, originally developed at Zope Corporation, has gained traction outside the
      Zope Community as a Python-based build system for creating, assembling and
      deploying applications from multiple components.
-  
-   + LaunchPad
-
+   + `Launchpad`_ hosts many software projects, including several involving
+     Zope, and is itself built `Zope Framework`_.
   
   
 .. container::
@@ -53,9 +59,11 @@ Who is Zope?
    The `Zope Foundation`_ takes care of business, shepherding Zope's
    intellectual property and providing the server infrastructure needed to
    support community projects.
-
-   + Partners (is there an existing page?)
-   + Solution Providers (link to existing page)
+   
+   Professional support and training for Zope solutions can be obtained from
+   companies such as `Zope Corporation`_ (the originator of Zope)  and other
+   `Zope Solution Providers`_. In addition, the various Zope community sites
+   are good places to check for consultants and potential hires.
 
 .. container::
    :class: RightColOfThree
@@ -94,6 +102,9 @@ Who is Zope?
 
 .. _`Zope Foundation`: http://foundation.zope.org/
 .. _`Zope 2 Application Server`: http://zope2.zopyx.de/
+.. _`Plone`: http://plone.org
+.. _`Grok`: http://grok.zope.org
+.. _`Grok Community`: http://grok.zope.org/community
 .. _`Zope Framework`: http://docs.zope.org/zopeframework/
 .. _`BFG`: http://static.repoze.org/bfgdocs/
 .. _`Twisted`: http://twistedmatrix.com/trac/
@@ -101,4 +112,10 @@ Who is Zope?
 .. _`buildout`: http://buildout.org
 .. _`Zope Public License`: http://www.zope.org/Resources/License/
 .. _`Python`: http://www.python.org/
+.. _`Launchpad`:  http://launchpad.net
+.. _`Zope User Groups`: http://www.zope.org/Resources/UserGroups
+.. _`Zope-related mailing lists`: http://www.zope.org/Resources/MailingLists
+.. _`Zope Solution Providers`: http://www.zope.org/Resources/ZSP/
+.. _`Zope Corporation`: http://www.zope.com/
+.. _`Zope Solution Providers`: http://www.zope.org/Resources/ZSP/
 .. _`Launchpad`:  http://launchpad.net

@@ -86,7 +86,7 @@
          production systems for nearly 10 years. The "granddaddy of Python
          web frameworks" is alive and kicking, re-energized by the
          regular injection of new technologies such as `Zope Framework`_,
-         `Twisted`_, and `Python`_ community innovations.
+         `Twisted`_, and other `Python`_ community innovations.
          
 
 
