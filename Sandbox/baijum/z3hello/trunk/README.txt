@@ -2,9 +2,7 @@
 z3hello
 *******
 
-A Zope 3 hello application for demonstarting
-use of buildout and zc.zope3recipes for building
-application soley from eggs.
+A Zope 3 hello application 
 
 Releases
 ********

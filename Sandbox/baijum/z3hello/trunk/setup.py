@@ -47,4 +47,8 @@ setup(name = 'z3hello',
 
       include_package_data = True,
       zip_safe = False,
+      entry_points = """
+      [paste.app_factory]
+      main = z3hello.startup:application_factory
+      """
       )
