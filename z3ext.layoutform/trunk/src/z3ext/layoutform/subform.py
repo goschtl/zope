@@ -18,7 +18,7 @@ $Id:  2007-12-12 12:27:02Z fafhrd $
 from zope import interface, event
 from zope.component import queryMultiAdapter
 from zope.traversing.browser import absoluteURL
-from zope.lifecycleevent import ObjectModifiedEvent
+from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 
 from z3c.form import subform, button
 from z3c.form.interfaces import ISubForm, IActionHandler
@@ -51,8 +51,13 @@ class PageletEditSubForm(subform.EditSubForm, PageletBaseForm):
             IStatusMessage(self.request).add(
                 (self.formErrorsMessage,) + errors, 'formError')
         else:
-            if self.applyChanges(data):
-                event.notify(ObjectModifiedEvent(self.getContent()))
+            changes = self.applyChanges(data)
+            if changes:
+                descriptions = []
+                for interface, names in changes.items():
+                    descriptions.append(Attributes(interface, *names))
+
+                event.notify(ObjectModifiedEvent(self.getContent(), *descriptions))
 
     def executeActions(self, form):
         request = self.request

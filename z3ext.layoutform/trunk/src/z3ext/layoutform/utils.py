@@ -28,6 +28,7 @@ def applyChanges(form, content, data):
 
         # Get the datamanager and get the original value
         dm = getMultiAdapter((content, field.field), IDataManager)
+
         # Only update the data, if it is different
         try:
             value = dm.get()
