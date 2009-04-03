@@ -6,28 +6,40 @@ Becoming a contributor
 
 2. Print, fill out and sign the `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
 
-3. Submit the agreement in one of 3 ways as a scanned copy or through fax
-   or through postal mail to the `Zope Foundation <http://foundation.zope.org/about>`_
+3. Submit the agreement to the Zope Foundation.
+   This can be done by either email, fax or post (in order from fastest to slowest).
+   The contact details can be found on the `Zope Foundation website <http://foundation.zope.org/about>`_.
 
 4. Wait for an acknowledgement. If you don't get this in a reasonable amount of
    time, then nag jim@zope.com, or J1m on the freenode #zope3 IRC channel.  A
    reasonable time depends on the way the agreement was sent, as described above.
 
-4. Upload your SSH public key at: https://cvs.zope.org/upload-key.html
+5. Deposit your SSH public key(s) as described in the section below.
 
-   When you go to that page, you'll get a basic auth login prompt.  Use your
-   www.zope.org login and password.
+6. Do a :doc:`writeable checkout <subversion-writable-checkouts>`.
 
-   If you have trouble, **do not ask Jim Fulton for help.**  Ask for help on
-   the IRC channels. People there may ask me to look at ssh logs on the server or
-   at the uploaded keys, as I am able to access those.
+Depositing your SSH public key(s)
+---------------------------------
 
-   One thing to keep in mind is that the user id you use to access the
-   subversion and CVS repositories is your zope.org user id.  This means that you
-   might have to specify a id explicitly. I know of two ways to do this:
+Your SSH public key(s) must be uploaded using the application at: 
+https://cvs.zope.org/upload-key.html
 
-   - Include it in the subversion url: svn+ssh://your_zope_org_id@svn.zope.org/repos/main/some_path
+When you go to that url, you'll get a basic auth login prompt.  Use your
+www.zope.org login and password.
 
-   - Specify the user if to use for svn.zope.org (or cvs.zope.org) in your SSH configuration.
-     See the SSH documentation for details.
+Your keys can use RSA or DSA, ssh v1 or v2. If the file being uploaded
+contains more than one public key, it should be formatted as if it
+were an authorized_keys file.
+
+You can revisit the key deposit page any time to put in new keys.
+Make sure you submit all keys that you wish to have work in any file
+that you upload as your previous upload will be overwritten.
+
+
+
+
+
+
+
+
 

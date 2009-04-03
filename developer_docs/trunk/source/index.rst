@@ -5,6 +5,15 @@
 Welcome to Zope Developer Information's documentation!
 ======================================================
 
+Becoming a Zope contributor
+---------------------------
+
+.. toctree::
+   :maxdepth: 2
+
+   becoming-a-contributor
+
+
 Zope Subversion Repository
 --------------------------
 
@@ -14,15 +23,6 @@ Zope Subversion Repository
    subversion-readonly-checkouts
    subversion-writable-checkouts
    subversion-ui
-
-Becoming a Zope contributor
----------------------------
-
-.. toctree::
-   :maxdepth: 2
-
-   becoming-a-contributor
-
 
 Zope CVS Repository (obsolete)
 ------------------------------
