@@ -47,7 +47,7 @@ Login as manager first:
   >>> manager = Browser()
   >>> manager.addHeader('Authorization', 'Basic mgr:mgrpw')
 
-Check if we can access the ``page.html`` view which is registred in the
+Check if we can access the ``page.html`` view which is registered in the
 ``ftesting.zcml`` file with our skin:
 
   >>> manager = Browser()

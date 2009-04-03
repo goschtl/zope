@@ -9,7 +9,6 @@
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
       factory="zope.app.publication.traversers.SimpleComponentTraverser"
       permission="zope.Public"
-      trusted="True"
       />
 
   <adapter
@@ -18,7 +17,6 @@
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
       factory="zope.app.container.traversal.ItemTraverser"
       permission="zope.Public"
-      trusted="True"
       />
 
   <adapter
@@ -27,7 +25,6 @@
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
       factory="zope.app.container.traversal.ItemTraverser"
       permission="zope.Public"
-      trusted="True"
       />
 
   <view

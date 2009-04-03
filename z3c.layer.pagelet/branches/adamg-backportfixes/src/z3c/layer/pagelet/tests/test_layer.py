@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2007-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -20,19 +20,27 @@ import unittest
 from zope.testing import renormalizing
 from zope.app.testing import functional
 
+
 functional.defineLayer('TestLayer', 'ftesting.zcml')
+
 
 checker = renormalizing.RENormalizing([
     (re.compile(r'httperror_seek_wrapper:', re.M), 'HTTPError:'),
     ])
 
 
+def create_suite(*args, **kw):
+    suite = functional.FunctionalDocFileSuite(*args, **kw)
+    suite.layer = TestLayer
+    return suite
+
+
 def test_suite():
     suite = unittest.TestSuite()
-    s = functional.FunctionalDocFileSuite('../README.txt', checker=checker)
-    s.layer = TestLayer
-    suite.addTest(s)
+    suite.addTest(create_suite('../README.txt', checker=checker))
+    suite.addTest(create_suite('bugfixes.txt'))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

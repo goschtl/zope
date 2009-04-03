@@ -45,6 +45,7 @@
   <!-- zope core component -->
   <include package="zope.annotation" />
   <include package="zope.app.appsetup" />
+  <include package="zope.app.authentication" />
   <include package="zope.app.component" />
   <include package="zope.app.container" />
   <include package="zope.app.error" />
@@ -121,6 +122,14 @@
         layer="z3c.layer.pagelet.IPageletBrowserLayer"
         class=".SystemErrorPage"
         />
+
+    <browser:page
+        for="*"
+        name="container_contents.html"
+        permission="zope.View"
+        layer="z3c.layer.pagelet.IPageletBrowserLayer"
+        class=".ContainerContentsPage"
+        />
   </configure>
 
 
@@ -137,8 +146,8 @@
   <principal
       id="zope.manager"
       title="Manager"
-      login="Manager"
-      password="password"
+      login="mgr"
+      password="mgrpw"
       />
 
   <grant
