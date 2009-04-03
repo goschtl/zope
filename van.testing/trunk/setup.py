@@ -34,7 +34,6 @@ setup(name="van.testing",
       install_requires=[
           'setuptools',
           'wsgi_intercept',
-          'zope.app.component',
           'zope.component',
           'zope.configuration',
           'zope.testing',

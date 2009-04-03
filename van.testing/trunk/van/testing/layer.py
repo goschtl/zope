@@ -12,7 +12,6 @@
 #
 ##############################################################################
 from zope.configuration import xmlconfig
-from zope.app.component import hooks # BBB: import from zope.site at a later date
 from zope.testing.cleanup import cleanUp
 import wsgi_intercept
 
@@ -77,7 +76,6 @@ def zcml_layer(layer):
     """
 
     def setUp(cls):
-        hooks.setHooks()
         context = xmlconfig.file(cls.zcml)
     layer.setUp = classmethod(setUp)
 
