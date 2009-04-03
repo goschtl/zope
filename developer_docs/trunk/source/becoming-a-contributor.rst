@@ -4,7 +4,7 @@ Becoming a contributor and getting commit access
 1. Get an account at http://www.zope.org.  Pick a user id that is a valid Unix
    user id. Include this id when you fill out the contributor form.
 
-2. Print, fill out and sign the `Zope Contributor Agreement <_static/Contributor.pdf>`_
+2. Print, fill out and sign the `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
 
 
 3. Submit the agreement in one of 3 ways (in order from fastest to slowest):
