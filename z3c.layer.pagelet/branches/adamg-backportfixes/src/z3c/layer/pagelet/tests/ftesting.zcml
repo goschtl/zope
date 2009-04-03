@@ -49,6 +49,7 @@
   <include package="zope.app.component" />
   <include package="zope.app.container" />
   <include package="zope.app.error" />
+  <include package="zope.app.folder" />
   <include package="zope.app.http.exception" />
   <include package="zope.app.i18n" />
   <include package="zope.app.publication" />
