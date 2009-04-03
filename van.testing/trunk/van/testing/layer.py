@@ -17,7 +17,7 @@ from zope.testing.cleanup import cleanUp
 import wsgi_intercept
 
 def null_layer(layer):
-    """Sets up a class as a layer that doesn nothing.
+    """Sets up a class as a layer that does nothing.
 
     Useful if you want a layer to inherit from other layers but not inherit
     their methods. Inheriting the method can cause it to be triggered twice as
