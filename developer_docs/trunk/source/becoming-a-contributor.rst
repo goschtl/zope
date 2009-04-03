@@ -1,3 +1,5 @@
+Becoming a contributor
+----------------------
 
 1. Get an account at http://www.zope.org.  Pick a user id that is a valid Unix
    user id. Include this id when you fill out the contributor form.
