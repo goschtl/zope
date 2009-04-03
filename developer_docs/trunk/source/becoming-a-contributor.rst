@@ -1,38 +1,11 @@
-Becoming a contributor and getting commit access
-================================================
 
 1. Get an account at http://www.zope.org.  Pick a user id that is a valid Unix
    user id. Include this id when you fill out the contributor form.
 
 2. Print, fill out and sign the `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
 
-
-3. Submit the agreement in one of 3 ways (in order from fastest to slowest):
-
-   - Email a scanned copy to jim@zope.com.  In the email, CC and also mention
-     an existing contributor who can vouch for you. 
-
-     Turnaround for this is typically less than a business day, unless I miss
-     your email.
-
-   - Fax the agreement to: +1.703.995.0412
-
-     Include the name and email address of an existing contributor who can
-     vouch for you.  Please write this in the margins of the agreement.  If I ever
-     revise the agreement, I'll include a space for this....
-
-     Turnaround for this is typically a business day or two, mainly because I
-     don't get faxes directly.  Someone has to forward faxes to me by email.
-
-   - Mail the agreement to the address given on the agreement.
-
-     Include the name and email address of an existing contributor who can
-     vouch for you.  Please write this in the margins of the agreement.  If I ever
-     revise the agreement, I'll include a space for this....
-
-     Turnaround for this is typically a few day, if mailed from the US to an
-     almost indeterminate amount of time if mailed from outside of the US.
-     Agreements mailed from outside the US have taken weeks on occasion.
+3. Submit the agreement in one of 3 ways as a scanned copy or through fax
+   or through postal mail to the `Zope Foundation <http://foundation.zope.org/about>`_
 
 4. Wait for an acknowledgement. If you don't get this in a reasonable amount of
    time, then nag jim@zope.com, or J1m on the freenode #zope3 IRC channel.  A
