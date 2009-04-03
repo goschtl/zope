@@ -2,7 +2,7 @@ Writable checkouts
 ------------------
 
 Below are instructions for hooking up with our Public Subversion repository
-with checkin ability.  See the `Contributor documentation <contributor-faq.html>`_.
+with checkin ability.  
 
 Overview
 ########

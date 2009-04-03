@@ -22,7 +22,6 @@ Becoming a Zope contributor
    :maxdepth: 2
 
    becoming-a-contributor
-   contributor-faq
 
 
 Zope CVS Repository (obsolete)
@@ -31,5 +30,5 @@ Zope CVS Repository (obsolete)
 .. toctree::
    :maxdepth: 2
 
-   cvs-access
+   cvs
 
