@@ -21,7 +21,7 @@ from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.exception.browser.user import UserErrorView
 from zope.app.exception.browser.notfound import NotFound
 from zope.app.security.interfaces import IAuthentication
-from z3c.template.interfaces import IPageTemplate
+from z3c.template.interfaces import IContentTemplate
 from z3c.pagelet import browser
 
 
@@ -49,7 +49,7 @@ class UnauthorizedPagelet(browser.BrowserPagelet, Unauthorized):
         auth.unauthorized(principal.id, self.request)
         if self.request.response.getStatus() not in (302, 303):
             template = zope.component.getMultiAdapter((self, self.request), 
-                IPageTemplate)
+                IContentTemplate)
             return template(self)
         
 
@@ -63,5 +63,5 @@ class NotFoundPagelet(browser.BrowserPagelet, NotFound):
     def render(self):
         self.request.response.setStatus(404)
         template = zope.component.getMultiAdapter((self, self.request), 
-            IPageTemplate)
+            IContentTemplate)
         return template(self)

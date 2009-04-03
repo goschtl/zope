@@ -1,14 +1,14 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="z3c">
 
-  <browser:view
+  <view
       for="zope.app.publication.interfaces.IFileContent"
+      type="z3c.layer.pagelet.IPageletBrowserLayer"
       provides="zope.publisher.interfaces.browser.IBrowserPublisher"
-      class="zope.app.publication.traversers.FileContentTraverser"
+      factory="zope.app.publication.traversers.FileContentTraverser"
       permission="zope.Public"
-      layer="z3c.layer.pagelet.IPageletBrowserLayer"
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
       />
 
 </configure>

@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+1.0.2dev (unreleased)
+---------------------
+
+- Bugfix: use IContentTemplate instead of IPageTemplate which avoids to get the
+  layout template if no IPageTemplate is registered
+
+
 1.0.1 (2008-01-24)
 ------------------
 
@@ -36,7 +43,7 @@ CHANGES
 
 - Bug: Fixed test failures due to depency updates.
 
-- Restructure: Fixed deprecation warninf for ``ZopeSecurityPolicy``.
+- Restructure: Fixed deprecation warning for ``ZopeSecurityPolicy``.
 
 
 0.2.1 (2007-??-??)
