@@ -1,5 +1,8 @@
+van.testing provides tools for testing zope3/WSGI based applications that do
+not use the ZODB or local utilities.
+
 Testing Utilities
-=================
+-----------------
 
 The most common use of this testing module is functional testing zope
 applications. It provides tools to setup layers which load the configuration
@@ -31,7 +34,6 @@ This test is part of such a layer (setup in van.testing.tests.FunctionalLayer):
      'wsgi.url_scheme': 'http',
      'wsgi.version': (1, 0)}
     Marker: MARKER
-
 
 Layers
 ------
