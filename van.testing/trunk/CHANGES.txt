@@ -6,6 +6,8 @@ Changes
 
 - Allow users to specify the domain and port of the wsgi_intercept_layer by
   adding those attributes to the class.
+- Fix testbrowser support a bit so that it performs more like
+  zope.testbrowser.testing.Browser.
 
 2.0.0 (2009-04-01)
 ------------------

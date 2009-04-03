@@ -104,10 +104,14 @@ class ErrorHandler:
     def __call__(self, environ, start_response):
         if environ.get('HTTP_X_ZOPE_HANDLE_ERRORS') == 'False':
             environ['wsgi.handleErrors'] = False
+        if 'HTTP_X_ZOPE_HANDLE_ERRORS' in environ:
+            del environ['HTTP_X_ZOPE_HANDLE_ERRORS']
         def my_start_response(status, headers, exc_info=None):
+            # Behave like zope.testbrowser.testing:
+            # sort response headers and insert status code in first place.
             headers = sorted(headers)
             headers.insert(0, ('Status', status))
-            return start_response(status, sorted(headers), exc_info=exc_info)
+            return start_response(status, headers, exc_info=exc_info)
         return self.application(environ, my_start_response)
 
 

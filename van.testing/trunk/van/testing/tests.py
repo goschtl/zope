@@ -19,14 +19,24 @@ from van.testing.layer import zcml_layer, wsgi_intercept_layer
 from zope.component import getUtility
 from zope.interface import Interface
 
+try:
+    import zope.testbrowser
+    have_testbrowser = True
+except:
+    have_testbrowser = False
+
 MARKER = 'MARKER'
 _HERE = os.path.dirname(__file__)
 
 def simple_app(environ, start_response):
     """Simplest possible application object"""
-    start_response('200 OK', [('Content-type','text/plain')])
     marker = getUtility(Interface, name=u"test")
-    return [pformat(environ), "\nMarker: %s" % marker]
+    response = pformat(environ) + "\nMarker: %s" % marker
+    start_response('200 OK', [('Content-type', 'text/plain'),
+                              ('X-Powered-By', 'WSGI'),
+                              ('Content-length', len(response)),
+                              ])
+    return [response]
 
 class ZCMLLayer:
     zcml = os.path.join(_HERE, 'ftesting.zcml')
@@ -39,9 +49,11 @@ class FunctionalLayer(ZCMLLayer):
 wsgi_intercept_layer(FunctionalLayer)
 
 def test_suite():
-    ftest = doctest.DocFileSuite('README.txt')
-    ftest.layer = FunctionalLayer
+    ftests = unittest.TestSuite([doctest.DocFileSuite('README.txt')])
+    ftests.layer = FunctionalLayer
+    if have_testbrowser:
+        ftests.addTest(doctest.DocFileSuite('testbrowser.txt'))
     return unittest.TestSuite([
-            ftest,
+        ftests,
             doctest.DocTestSuite('van.testing.layer'),
             ])
