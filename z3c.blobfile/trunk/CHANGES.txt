@@ -5,14 +5,15 @@ CHANGES
 0.1.5 (unreleased)
 ------------------
 
-- ...
+- Made tests compatible with ZODB 3.9.
+
 
 0.1.4 (2009-03-03)
 ------------------
 
 - Add copy hook for zope.copy to fix blob file/image copying.
 - Change package's mailing list address to zope-dev at zope.org
-  instead of retired zope3-dev. 
+  instead of retired zope3-dev.
 
 0.1.3 (2008-10-20)
 ------------------

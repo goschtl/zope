@@ -31,7 +31,7 @@ import interfaces
 class File(Persistent):
     """A persistent content component storing binary file data."""
 
-    implements(zope.app.publication.interfaces.IFileContent, 
+    implements(zope.app.publication.interfaces.IFileContent,
                interfaces.IBlobFile)
 
     def __init__(self, data='', contentType=''):
@@ -56,7 +56,7 @@ class File(Persistent):
         # Search for a storable that is able to store the data
         dottedName = ".".join((data.__class__.__module__,
                                data.__class__.__name__))
-        storable = zope.component.getUtility(interfaces.IStorage, 
+        storable = zope.component.getUtility(interfaces.IStorage,
                                              name=dottedName)
         storable.store(data, self._blob)
 
@@ -65,9 +65,9 @@ class File(Persistent):
         data = fp.read()
         fp.close()
         return data
-        
-    _data = property(_getData, _setData)   
-    data = property(_getData, _setData)    
+
+    _data = property(_getData, _setData)
+    data = property(_getData, _setData)
 
     @property
     def size(self):
@@ -85,7 +85,7 @@ class File(Persistent):
 
 class FileReadFile(object):
     """Adapter for file-system style read access."""
-    
+
     def __init__(self, context):
         self.context = context
 
@@ -98,7 +98,7 @@ class FileReadFile(object):
 
 class FileWriteFile(object):
     """Adapter for file-system style write access."""
-    
+
     def __init__(self, context):
         self.context = context
 
@@ -107,9 +107,9 @@ class FileWriteFile(object):
 
 class FileReplacedEvent(zope.component.interfaces.ObjectEvent):
     """Notifies about the replacement of a zope.app.file with a z3c.blobfile."""
-    
+
     def __init__(self, object, blobfile):
         super(FileReplacedEvent, self).__init__(object)
         self.blobfile = blobfile
 
-    
+

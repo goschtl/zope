@@ -25,6 +25,7 @@ import transaction
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
 from ZODB.blob import BlobStorage
+import ZODB.interfaces
 
 import zope.interface
 from zope.testing import doctest
@@ -60,10 +61,11 @@ class MyFile(persistent.Persistent):
 
     data = 'My data'
     contentType = 'text/plain'
-    
+
 class FunctionalBlobTestSetup(zope.app.testing.functional.FunctionalTestSetup):
 
     temp_dir_name = None
+    direct_blob_support = False
 
     def setUp(self):
         """Prepares for a functional test case."""
@@ -71,10 +73,14 @@ class FunctionalBlobTestSetup(zope.app.testing.functional.FunctionalTestSetup):
         transaction.abort()
         self.db.close()
         storage = DemoStorage("Demo Storage", self.base_storage)
-        # make a dir
-        temp_dir_name = self.temp_dir_name = tempfile.mkdtemp()
-        # wrap storage with BlobStorage
-        storage = BlobStorage(temp_dir_name, storage)
+        if ZODB.interfaces.IBlobStorage.providedBy(storage):
+            # at least ZODB 3.9
+            self.direct_blob_support = True
+        else:
+            # make a dir
+            temp_dir_name = self.temp_dir_name = tempfile.mkdtemp()
+            # wrap storage with BlobStorage
+            storage = BlobStorage(temp_dir_name, storage)
         self.db = self.app.db = DB(storage)
         self.connection = None
 
@@ -85,23 +91,23 @@ class FunctionalBlobTestSetup(zope.app.testing.functional.FunctionalTestSetup):
             self.connection.close()
             self.connection = None
         self.db.close()
-        # del dir named '__blob_test__%s' % self.name
-        if self.temp_dir_name is not None:
+        if not self.direct_blob_support and self.temp_dir_name is not None:
+            # del dir named '__blob_test__%s' % self.name
             shutil.rmtree(self.temp_dir_name, True)
             self.temp_dir_name = None
         setSite(None)
-        
+
     def closeDB(self):
         if self.connection:
             self.connection.close()
             self.connection = None
         self.db.close()
-        
+
     def reopenDB(self):
         storage = BlobStorage(temp_dir_name, storage)
         self.db = self.app.db = DB(storage)
         self.connection = None
-        
+
 
 
 class ZCMLLayer(zope.app.testing.functional.ZCMLLayer):
@@ -143,7 +149,7 @@ def FunctionalBlobDocFileSuite(*paths, **kw):
     suite = doctest.DocFileSuite(*paths, **kw)
     suite.layer = zope.app.testing.functional.Functional
     return suite
-    
+
 BlobFileLayer = ZCMLLayer(
     os.path.join(os.path.split(__file__)[0], 'ftesting.zcml'),
     __name__, 'BlobFileLayer', allow_teardown=True)
