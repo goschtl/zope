@@ -1,11 +1,10 @@
 <configure
    i18n_domain="z3hello"
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+   xmlns="http://namespaces.zope.org/zope">
 
   <include package="zope.app.component" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
-  <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.security" file="meta.zcml" />
   <include package="zope.app.publication" file="meta.zcml" />
   <include package="zope.securitypolicy" file="meta.zcml"/>
 
