@@ -370,17 +370,17 @@ class JobsOverview(BrowserPage):
             self.status = u'Cleaned %r Jobs' % cleaned
         elif 'CLEAN_ERROR' in self.request:
             jobs = len(list(self.context.jobs.keys()))
-            self.context.clean(stati=[interfaces.ERROR])
+            self.context.clean(status=[interfaces.ERROR])
             cleaned = jobs - len(list(self.context.jobs.keys()))
             self.status = u'Cleaned %r Jobs' % cleaned
         elif 'CLEAN_CANCELLED' in self.request:
             jobs = len(list(self.context.jobs.keys()))
-            self.context.clean(stati=[interfaces.CANCELLED])
+            self.context.clean(status=[interfaces.CANCELLED])
             cleaned = jobs - len(list(self.context.jobs.keys()))
             self.status = u'Cleaned %r Jobs' % cleaned
         elif 'CLEAN_COMPLETED' in self.request:
             jobs = len(list(self.context.jobs.keys()))
-            self.context.clean(stati=[interfaces.COMPLETED])
+            self.context.clean(status=[interfaces.COMPLETED])
             cleaned = jobs - len(list(self.context.jobs.keys()))
             self.status = u'Cleaned %r Jobs' % cleaned
         elif 'CANCEL_ALL' in self.request:
