@@ -12,7 +12,7 @@ CHANGES
 ------------------
 
 - Moved ``getRootFolder`` utility method from
-  ``zope.app.zopeappgenerations`` to ``zope.app.generations.utils``.
+  ``zope.app.zopeappgenerations`` to ``zope.app.generations.utility``.
 
 - Removed not necessary install dependency on ``zope.app.testing``.
 
