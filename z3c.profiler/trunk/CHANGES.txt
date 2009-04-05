@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-0.7.1 (unreleased)
+0.7.1 (2009-04-05)
 ------------------
 
 - Removed unnecessary dependencies on ``zope.app.twisted`` and
