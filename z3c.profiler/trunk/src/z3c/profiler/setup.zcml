@@ -21,6 +21,7 @@
   <exclude package="zope.app.folder.browser" />
   <exclude package="zope.app.session" file="browser.zcml" />
   <exclude package="zope.dublincore.browser" />
+  <exclude package="zope.app.generations.browser" />
 
 
   <!-- meta configure -->
@@ -49,13 +50,10 @@
 
   <!-- bootstrap Database -->
   <include package="zope.app.appsetup" />
-  <include package="zope.app.zopeappgenerations" />
+  <include package="zope.app.generations" />
 
   <!-- zope server -->
   <include package="zope.app.server" />
-  <include package="zope.app.twisted" />
-  <include package="zope.app.wsgi" />
-
 
   <!-- zope packages -->
   <include package="zope.annotation" />

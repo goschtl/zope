@@ -64,7 +64,7 @@ setup (
             'zope.app.folder',
             'zope.app.session',
             'zope.app.schema',
-            'zope.app.zopeappgenerations',
+            'zope.app.generations',
             ],
         ),
     install_requires = [
@@ -74,7 +74,7 @@ setup (
         'zope.app.pagetemplate',
         'zope.app.publisher',
         'zope.app.container',
-        'zope.app.twisted',
+        'zope.app.server',
         'zope.app.zapi',
         'zope.contentprovider',
         'zope.i18n',

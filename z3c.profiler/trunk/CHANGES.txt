@@ -5,14 +5,15 @@ CHANGES
 0.7.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed unnecessary dependencies on ``zope.app.twisted`` and
+  ``zope.app.zopeappgenerations``.
 
 
 0.7.0 (2009-03-14)
 ------------------
 
 - Use current ``zope.configuration`` instead of deprecated
-  ``zc.configuration`` to get exclude directive.
+  ``zc.configuration`` to get ``exclude`` directive.
 
 
 0.6.0 (2009-02-19)
