@@ -5,7 +5,8 @@ CHANGES
 3.4.3 (unreleased)
 ------------------
 
--
+- Moved ``getRootFolder`` utility method from
+  ``zope.app.zopeappgenerations`` to ``zope.app.generations.utils``.
 
 
 3.4.2 (2009-01-27)
