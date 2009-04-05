@@ -1,0 +1,8 @@
+<ul
+  ><li tal:repeat="item view/items"
+    ><a href="#" class="selected"
+       tal:attributes="href item/url;
+                       class item/css"
+       tal:content="item/name">Profiler</a
+  ></li>
+</ul>
