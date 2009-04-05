@@ -210,7 +210,7 @@ Notice how the name of the first package is used to create a namespace
 for dependent packages.  This is not a requirement of the framework,
 but a convenient pattern for this usage.
 
-Let's evolve the database to establish these generations::
+Let's evolve the database to establish these generations:
 
     >>> event = DatabaseOpenedEventStub(db)
     >>> evolveMinimumSubscriber(event)
@@ -224,7 +224,7 @@ Let's assume that for some reason each of these subsystems needs to
 add a generation, and that generation 1 of 'another.app-extension'
 depends on generation 1 of 'another.app'.  We'll need to provide
 schema managers for each that record that they've been run so we can
-verify the result::
+verify the result:
 
     >>> ztapi.unprovideUtility(ISchemaManager, name='another.app')
     >>> ztapi.unprovideUtility(ISchemaManager, name='another.app-extension')
@@ -272,7 +272,7 @@ verify the result::
     ...     ISchemaManager, manager2, name='another.app-extension')
 
 Evolving the database now will always run the 'another.app' evolver
-before the 'another.app-extension' evolver::
+before the 'another.app-extension' evolver:
 
     >>> event = DatabaseOpenedEventStub(db)
     >>> evolveMinimumSubscriber(event)
