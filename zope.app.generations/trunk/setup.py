@@ -60,6 +60,7 @@ setup(name='zope.app.generations',
       install_requires=['setuptools',
                         'zope.app.renderer',
                         'zope.interface',
+                        'zope.app.publication',
                         'ZODB3'
                         ],
       include_package_data = True,
