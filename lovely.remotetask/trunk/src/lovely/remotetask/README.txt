@@ -2,6 +2,8 @@
 Remote Task Execution
 =====================
 
+.. contents::
+
 This package provides an implementation of a remote task execution Web service
 that allows to execute pre-defined tasks on another server. It is also
 possible to run cron jobs at specific times. Those services are useful in two
@@ -151,7 +153,7 @@ Note that `RootTaskService` is for a use-case where the service is directly
 registered at the root. We test this use-case in a separate footnote so that
 the flow of this document is not broken. [#1]_
 
-To get a clean logging environment let's clear the logging stack::
+To get a clean logging environment let's clear the logging stack:
 
   >>> log_info.clear()
 
@@ -166,7 +168,7 @@ the ``bootStrap()`` method:
   >>> conn.root()[ZopePublication.root_name] = root
   >>> transaction.commit()
 
-Fire the event::
+Fire the event:
 
   >>> from zope.app.appsetup.interfaces import DatabaseOpenedWithRoot
   >>> from lovely.remotetask.service import bootStrapSubscriber
@@ -178,7 +180,7 @@ and voila - the service is processing:
   >>> service.isProcessing()
   True
 
-Checking out the logging will prove the started service::
+Checking out the logging will prove the started service:
 
   >>> print log_info
   lovely.remotetask INFO
@@ -195,9 +197,9 @@ footnote [#2]_
 
 To deal with a lot of services in one sites it will be possible to use
 asterisks (*) to start services. In case of using site@* means start all
-services in that site::
+services in that site:
 
-But first stop all processing services::
+But first stop all processing services:
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
@@ -209,18 +211,18 @@ But first stop all processing services::
 
   >>> import time; time.sleep(STOP_SLEEP_TIME)
 
-And reset the logger::
+And reset the logger:
 
   >>> log_info.clear()
 
-Reset the product configuration with the asterisked service names::
+Reset the product configuration with the asterisked service names:
 
   >>> config.mapping['autostart'] = 'site1@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['site1@*']
 
-Firing the event again will start all services in the configured site::
+Firing the event again will start all services in the configured site:
 
   >>> bootStrapSubscriber(event)
 
@@ -230,7 +232,7 @@ Firing the event again will start all services in the configured site::
   >>> root_service.isProcessing()
   False
 
-Let's checkout the logging::
+Let's checkout the logging:
 
   >>> print log_info
   lovely.remotetask INFO
@@ -240,7 +242,7 @@ Let's checkout the logging::
 
 To deal with a lot of services in a lot of sites it possible to use
 asterisks (*) to start services. In case of using *@* means start all
-services on all sites::
+services on all sites:
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
@@ -248,18 +250,18 @@ services on all sites::
 
   >>> import time; time.sleep(STOP_SLEEP_TIME)
 
-Reset the product configuration with the asterisked service names::
+Reset the product configuration with the asterisked service names:
 
   >>> config.mapping['autostart'] = '*@*'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['*@*']
 
-...and reset the logger::
+...and reset the logger:
 
   >>> log_info.clear()
 
-And fire the event again. All services should be started now::
+And fire the event again. All services should be started now:
 
   >>> bootStrapSubscriber(event)
 
@@ -269,7 +271,7 @@ And fire the event again. All services should be started now::
   >>> root_service.isProcessing()
   True
 
-Let's check the logging::
+Let's check the logging:
 
   >>> print log_info
   lovely.remotetask INFO
@@ -281,8 +283,8 @@ Let's check the logging::
 
 
 To deal with a specific service in a lot of sites it possible to use
-asterisks (*) to start services. In case of using *@service means start the
-service called `service` on all sites::
+asterisks (*) to start services. In case of using \*@service means start the
+service called `service` on all sites:
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
@@ -294,18 +296,18 @@ service called `service` on all sites::
 
   >>> import time; time.sleep(STOP_SLEEP_TIME)
 
-Reset the product configuration with the asterisked service names::
+Reset the product configuration with the asterisked service names:
 
   >>> config.mapping['autostart'] = '*@TestTaskService1'
   >>> setProductConfigurations([config])
   >>> getAutostartServiceNames()
   ['*@TestTaskService1']
 
-...and reset the logger::
+...and reset the logger:
 
   >>> log_info.clear()
 
-And fire the event again. All services should be started now::
+And fire the event again. All services should be started now:
 
   >>> bootStrapSubscriber(event)
 
@@ -315,7 +317,7 @@ And fire the event again. All services should be started now::
   >>> root_service.isProcessing()
   False
 
-Let's checkout the logging::
+Let's checkout the logging:
 
   >>> print log_info
   lovely.remotetask INFO
@@ -324,7 +326,7 @@ Let's checkout the logging::
     service TestTaskService1 on site site1 started
 
 In case of configuring a directive which does not match any service on
-any site logging will show a warning message::
+any site logging will show a warning message:
 
   >>> service.stopProcessing()
   >>> service.isProcessing()
@@ -605,7 +607,7 @@ independently.  Tasks should be designed to avoid conflict errors in
 the database.
 
 Let's start the task services we have defined at this point, and see
-what threads are running as a result::
+what threads are running as a result:
 
   >>> service.startProcessing()
   >>> root_service.startProcessing()
@@ -624,7 +626,7 @@ what threads are running as a result::
    <Thread(remotetasks.site1.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's add a second site containing a task service with the same name as the
-service in the first site::
+service in the first site:
 
   >>> site2 = Folder()
   >>> service2 = remotetask.TaskService()
@@ -636,18 +638,18 @@ service in the first site::
   >>> sm['default']['testTaskService1'] = service2
   >>> service2 = sm['default']['testTaskService1'] # caution! proxy
 
-Let's register it under the name `TestTaskService1`::
+Let's register it under the name `TestTaskService1`:
 
   >>> sm = site2.getSiteManager()
   >>> sm.registerUtility(
   ...     service2, interfaces.ITaskService, name='TestTaskService1')
 
 The service requires that it's been committed to the database before it can
-be used::
+be used:
 
   >>> transaction.commit()
 
-The new service isn't currently processing::
+The new service isn't currently processing:
 
   >>> service2.isProcessing()
   False
@@ -662,7 +664,7 @@ threads:
    <Thread(remotetasks.site2.++etc++site.default.testTaskService1, started daemon)>]
 
 Let's stop the services, and give the background threads a chance to get the
-message::
+message:
 
   >>> service.stopProcessing()
   >>> service2.stopProcessing()
@@ -670,7 +672,7 @@ message::
 
   >>> import time; time.sleep(STOP_SLEEP_TIME)
 
-The threads have exited now::
+The threads have exited now:
 
   >>> print [t for t in threading.enumerate()
   ...        if t.getName().startswith('remotetasks.')]
@@ -688,7 +690,7 @@ Footnotes
      >>> component.provideUtility(root_service, interfaces.ITaskService,
      ...                          name='RootTaskService')
 
-   The object should be located, so it get's a name::
+   The object should be located, so it get's a name:
 
      >>> root['rootTaskService'] = root_service
      >>> root_service = root['rootTaskService'] # caution! proxy

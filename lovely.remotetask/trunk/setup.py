@@ -1,12 +1,22 @@
 #!python
 from setuptools import setup, find_packages
+import os.path
+
+
+def read(*names):
+    return open(os.path.join(os.path.dirname(__file__), *names)).read()
+
 
 setup (
     name='lovely.remotetask',
-    version='0.2.15a1',
+    version='0.3dev',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     description = "A remotetask client utiltiy for zope 3",
+    long_description=(
+        read('src', 'lovely', 'remotetask', 'README.txt')
+        + '\n\n'
+        + read('CHANGES.txt')),
     license = "ZPL 2.1",
     keywords = "zope3 zope remotetask cache ram",
     url = 'http://pypi.python.org/pypi/lovely.remotetask',
