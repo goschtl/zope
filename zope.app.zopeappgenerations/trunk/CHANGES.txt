@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Moved ``getRootFolder`` utility method from
+  ``zope.app.zopeappgenerations`` to ``zope.app.generations.utility``.
+
+- Fixed author email and home page address.
+
+
 3.4.0 (2007-10-29)
 ------------------
 

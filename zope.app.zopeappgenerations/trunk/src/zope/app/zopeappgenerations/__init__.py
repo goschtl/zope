@@ -16,8 +16,11 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 from zope.app.generations.generations import SchemaManager
-from zope.app.publication.zopepublication import ZopePublication
+# BBB import
+from zope.app.generations.utility import getRootFolder
+
 
 key = 'zope.app.zopeappgenerations'
 
@@ -26,7 +29,3 @@ ZopeAppSchemaManager = SchemaManager(
     minimum_generation=1,
     generation=5,
     package_name=key)
-
-
-def getRootFolder(context):
-    return context.connection.root().get(ZopePublication.root_name, None)
