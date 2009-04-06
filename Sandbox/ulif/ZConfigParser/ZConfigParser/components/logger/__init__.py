@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZConfig schema component package for logging configuration."""
+"""ZConfigParser schema component package for logging configuration."""
 
 # Make sure we can't import this if "logging" isn't available; we
 # don't want partial imports to appear to succeed.

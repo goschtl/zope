@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZConfig factory datatypes for loggers."""
+"""ZConfigParser factory datatypes for loggers."""
 
-from ZConfig.components.logger.factory import Factory
+from ZConfigParser.components.logger.factory import Factory
 
 
 class LoggerFactoryBase(Factory):
@@ -42,7 +42,7 @@ class LoggerFactoryBase(Factory):
                 handler = handler_factory()
                 logger.addHandler(handler)
         else:
-            from ZConfig.components.logger import loghandler
+            from ZConfigParser.components.logger import loghandler
             logger.addHandler(loghandler.NullHandler())
         return logger
 

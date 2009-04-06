@@ -11,7 +11,7 @@
 #
 ##############################################################################
 
-"""ZConfig datatypes for logging support."""
+"""ZConfigParser datatypes for logging support."""
 
 
 _logging_levels = {

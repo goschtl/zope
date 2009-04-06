@@ -13,14 +13,14 @@
 ##############################################################################
 """Structured, schema-driven configuration library.
 
-ZConfig is a configuration library intended for general use.  It
+ZConfigParser is a configuration library intended for general use.  It
 supports a hierarchical schema-driven configuration model that allows
 a schema to specify data conversion routines written in Python.
-ZConfig's model is very different from the model supported by the
+ZConfigParser's model is very different from the model supported by the
 ConfigParser module found in Python's standard library, and is more
 suitable to configuration-intensive applications.
 
-ZConfig schema are written in an XML-based language and are able to
+ZConfigParser schema are written in an XML-based language and are able to
 ``import`` schema components provided by Python packages.  Since
 components are able to bind to conversion functions provided by Python
 code in the package (or elsewhere), configuration objects can be
@@ -38,12 +38,12 @@ __docformat__ = "reStructuredText"
 version_info = (2, 3)
 __version__ = ".".join([str(n) for n in version_info])
 
-from ZConfig.loader import loadConfig, loadConfigFile
-from ZConfig.loader import loadSchema, loadSchemaFile
+from ZConfigParser.loader import loadConfig, loadConfigFile
+from ZConfigParser.loader import loadSchema, loadSchemaFile
 
 
 class ConfigurationError(Exception):
-    """Base class for ZConfig exceptions."""
+    """Base class for ZConfigParser exceptions."""
  
     # The 'message' attribute was deprecated for BaseException with
     # Python 2.6; here we create descriptor properties to continue using it

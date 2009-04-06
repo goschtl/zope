@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Substitution support for ZConfig values."""
+"""Substitution support for ZConfigParser values."""
 
-import ZConfig
+import ZConfigParser
 
 
 def substitute(s, mapping):
@@ -27,7 +27,7 @@ def substitute(s, mapping):
             if name:
                 v = mapping.get(name)
                 if v is None:
-                    raise ZConfig.SubstitutionReplacementError(s, namecase)
+                    raise ZConfigParser.SubstitutionReplacementError(s, namecase)
                 result += v
         return result
     else:
@@ -54,7 +54,7 @@ def _split(s):
         i = s.find("$")
         c = s[i+1:i+2]
         if c == "":
-            raise ZConfig.SubstitutionSyntaxError(
+            raise ZConfigParser.SubstitutionSyntaxError(
                 "illegal lone '$' at end of source")
         if c == "$":
             return s[:i+1], None, None, s[i+2:]
@@ -62,17 +62,17 @@ def _split(s):
         if c == "{":
             m = _name_match(s, i + 2)
             if not m:
-                raise ZConfig.SubstitutionSyntaxError(
+                raise ZConfigParser.SubstitutionSyntaxError(
                     "'${' not followed by name")
             name = m.group(0)
             i = m.end() + 1
             if not s.startswith("}", i - 1):
-                raise ZConfig.SubstitutionSyntaxError(
+                raise ZConfigParser.SubstitutionSyntaxError(
                     "'${%s' not followed by '}'" % name)
         else:
             m = _name_match(s, i+1)
             if not m:
-                raise ZConfig.SubstitutionSyntaxError(
+                raise ZConfigParser.SubstitutionSyntaxError(
                     "'$' not followed by '$' or name")
             name = m.group(0)
             i = m.end()

@@ -1,15 +1,15 @@
-<component prefix="ZConfig.components.logger.logger">
+<component prefix="ZConfigParser.components.logger.logger">
   <description>
   </description>
 
-  <import package="ZConfig.components.logger" file="abstract.xml"/>
-  <import package="ZConfig.components.logger" file="base-logger.xml"/>
-  <import package="ZConfig.components.logger" file="eventlog.xml"/>
+  <import package="ZConfigParser.components.logger" file="abstract.xml"/>
+  <import package="ZConfigParser.components.logger" file="base-logger.xml"/>
+  <import package="ZConfigParser.components.logger" file="eventlog.xml"/>
 
   <sectiontype name="logger"
                datatype=".LoggerFactory"
-               extends="ZConfig.logger.base-logger"
-               implements="ZConfig.logger.log">
+               extends="ZConfigParser.logger.base-logger"
+               implements="ZConfigParser.logger.log">
     <key name="propagate"
          datatype="boolean"
          default="true">

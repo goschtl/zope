@@ -1,16 +1,16 @@
-<component prefix="ZConfig.components.logger.logger">
+<component prefix="ZConfigParser.components.logger.logger">
 
-  <import package="ZConfig.components.logger" file="abstract.xml"/>
+  <import package="ZConfigParser.components.logger" file="abstract.xml"/>
 
-  <sectiontype name="ZConfig.logger.base-logger">
+  <sectiontype name="ZConfigParser.logger.base-logger">
     <description>
       Base definition for the logger types defined by
-      ZConfig.components.logger.  This exists entirely to provide
+      ZConfigParser.components.logger.  This exists entirely to provide
       shared key definitions and documentation.
     </description>
 
     <key name="level"
-         datatype="ZConfig.components.logger.datatypes.logging_level"
+         datatype="ZConfigParser.components.logger.datatypes.logging_level"
          default="info">
       <description>
         Verbosity setting for the logger.  Values must be a name of
@@ -36,7 +36,7 @@
       </description>
     </key>
 
-    <multisection type="ZConfig.logger.handler"
+    <multisection type="ZConfigParser.logger.handler"
                   attribute="handlers" name="*">
       <description>
         Handlers to install on this logger.  Each handler describes

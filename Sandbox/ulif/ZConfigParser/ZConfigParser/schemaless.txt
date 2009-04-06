@@ -1,13 +1,13 @@
-=================================
-Using ZConfig data without schema
-=================================
+=======================================
+Using ZConfigParser data without schema
+=======================================
 
-Sometimes it's useful to use ZConfig configuration data without a
+Sometimes it's useful to use ZConfigParser configuration data without a
 schema.  This is most interesting when assembling a configuration from
 fragments, as some buildout recipes do.  This is not recommended for
 general application use.
 
-The ``ZConfig.schemaless`` module provides some support for working
+The ``ZConfigParser.schemaless`` module provides some support for working
 without schema.  Something things are not (currently) supported,
 including the %define and %include directives.  The %import directive
 is supported.
@@ -15,7 +15,7 @@ is supported.
 This module provides basic support for loading configuration,
 inspecting and modifying it, and re-serializing the result.
 
-  >>> from ZConfig import schemaless
+  >>> from ZConfigParser import schemaless
 
 There is a single function which loads configuration data from a file
 open for reading.  Let's take a look at this, and what it returns::
@@ -99,7 +99,7 @@ Child sections are again available via the ``sections`` attribute::
   1
 
 In addition, the section has ``type`` and ``name`` attributes that
-record the type and name of the section as ZConfig understands them::
+record the type and name of the section as ZConfigParser understands them::
 
   >>> section.type
   'section'
@@ -242,8 +242,8 @@ Multiple imports of the same name are removed::
 Limitations
 -----------
 
-There are some limitations of handling ZConfig-based configurations
-using the ``ZConfig.schemaless`` module.  Some of these are
+There are some limitations of handling ZConfigParser-based configurations
+using the ``ZConfigParser.schemaless`` module.  Some of these are
 implementation issues, and may be corrected in the future:
 
 - %define is not supported.
@@ -261,7 +261,7 @@ be avoided:
   be equivalent.  Examples of this are unusual, but exist.
 
 Limitations related to the non-processing of the schema cannot be
-detected by the ``ZConfig.schemaless``, so no errors are reported in
+detected by the ``ZConfigParser.schemaless``, so no errors are reported in
 these situations.
 
 For the strictly syntactic limitations, we do get errors when the

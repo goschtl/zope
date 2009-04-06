@@ -13,9 +13,9 @@
 ##############################################################################
 """Utility that manages the binding of configuration data to a section."""
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.info import ValueInfo
+from ZConfigParser.info import ValueInfo
 
 
 class BaseMatcher:
@@ -45,7 +45,7 @@ class BaseMatcher:
     def addSection(self, type, name, sectvalue):
         if name:
             if self._sectionnames.has_key(name):
-                raise ZConfig.ConfigurationError(
+                raise ZConfigParser.ConfigurationError(
                     "section names must not be re-used within the"
                     " same container:" + `name`)
             self._sectionnames[name] = name
@@ -57,14 +57,14 @@ class BaseMatcher:
         elif v is None:
             self._values[attr] = sectvalue
         else:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "too many instances of %s section" % `ci.sectiontype.name`)
 
     def addValue(self, key, value, position):
         try:
             realkey = self.type.keytype(key)
         except ValueError, e:
-            raise ZConfig.DataConversionError(e, key, position)
+            raise ZConfigParser.DataConversionError(e, key, position)
         arbkey_info = None
         for i in range(len(self.type)):
             k, ci = self.type[i]
@@ -74,7 +74,7 @@ class BaseMatcher:
                 arbkey_info = k, ci
         else:
             if arbkey_info is None:
-                raise ZConfig.ConfigurationError(
+                raise ZConfigParser.ConfigurationError(
                     `key` + " is not a known key name")
             k, ci = arbkey_info
         if ci.issection():
@@ -82,7 +82,7 @@ class BaseMatcher:
                 extra = " in %s sections" % `self.type.name`
             else:
                 extra = ""
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "%s is not a valid key name%s" % (`key`, extra))
 
         ismulti = ci.ismulti()
@@ -97,10 +97,10 @@ class BaseMatcher:
             self._values[attr] = v
         elif not ismulti:
             if k != '+':
-                raise ZConfig.ConfigurationError(
+                raise ZConfigParser.ConfigurationError(
                     `key` + " does not support multiple values")
         elif len(v) == ci.maxOccurs:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "too many values for " + `name`)
 
         value = ValueInfo(value, position)
@@ -112,7 +112,7 @@ class BaseMatcher:
                     v[realkey] = [value]
             else:
                 if v.has_key(realkey):
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         "too many values for " + `key`)
                 v[realkey] = value
         elif ismulti:
@@ -124,7 +124,7 @@ class BaseMatcher:
         ci = self.type.getsectioninfo(type.name, name)
         assert not ci.isabstract()
         if not ci.isAllowedName(name):
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "%s is not an allowed name for %s sections"
                 % (`name`, `ci.sectiontype.name`))
         return SectionMatcher(ci, type, name, self.handlers)
@@ -144,13 +144,13 @@ class BaseMatcher:
             if ci.name == '+' and not ci.issection():
                 # v is a dict
                 if ci.minOccurs > len(v):
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         "no keys defined for the %s key/value map; at least %d"
                         " must be specified" % (attr, ci.minOccurs))
             if v is None and ci.minOccurs:
                 default = ci.getdefault()
                 if default is None:
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         "no values for %s; %s required" % (key, ci.minOccurs))
                 else:
                     v = values[attr] = default[:]
@@ -162,7 +162,7 @@ class BaseMatcher:
                     else:
                         v[:] = default
                 if len(v) < ci.minOccurs:
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         "not enough values for %s; %d found, %d required"
                         % (key, len(v), ci.minOccurs))
             if v is None and not ci.issection():
@@ -187,7 +187,7 @@ class BaseMatcher:
                             try:
                                 s = st.datatype(s)
                             except ValueError, e:
-                                raise ZConfig.DataConversionError(
+                                raise ZConfigParser.DataConversionError(
                                     e, s, (-1, -1, None))
                         v.append(s)
                 elif ci.name == '+':
@@ -202,7 +202,7 @@ class BaseMatcher:
                     try:
                         v = st.datatype(values[attr])
                     except ValueError, e:
-                        raise ZConfig.DataConversionError(
+                        raise ZConfigParser.DataConversionError(
                             e, values[attr], (-1, -1, None))
                 else:
                     v = None
@@ -232,7 +232,7 @@ class SectionMatcher(BaseMatcher):
         if name or info.allowUnnamed():
             self.name = name
         else:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 `type.name` + " sections may not be unnamed")
         BaseMatcher.__init__(self, info, type, handlers)
 

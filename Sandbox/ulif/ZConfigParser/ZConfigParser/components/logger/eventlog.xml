@@ -1,12 +1,12 @@
-<component prefix="ZConfig.components.logger.logger">
+<component prefix="ZConfigParser.components.logger.logger">
 
-  <import package="ZConfig.components.logger" file="abstract.xml"/>
-  <import package="ZConfig.components.logger" file="base-logger.xml"/>
+  <import package="ZConfigParser.components.logger" file="abstract.xml"/>
+  <import package="ZConfigParser.components.logger" file="base-logger.xml"/>
 
   <sectiontype name="eventlog"
                datatype=".EventLogFactory"
-               extends="ZConfig.logger.base-logger"
-               implements="ZConfig.logger.log">
+               extends="ZConfigParser.logger.base-logger"
+               implements="ZConfigParser.logger.log">
     <description>
       Configuration for the root logger.
     </description>

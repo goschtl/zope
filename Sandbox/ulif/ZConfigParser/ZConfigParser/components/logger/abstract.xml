@@ -2,6 +2,6 @@
   <description>
   </description>
 
-  <abstracttype name="ZConfig.logger.handler"/>
-  <abstracttype name="ZConfig.logger.log"/>
+  <abstracttype name="ZConfigParser.logger.handler"/>
+  <abstracttype name="ZConfigParser.logger.log"/>
 </component>

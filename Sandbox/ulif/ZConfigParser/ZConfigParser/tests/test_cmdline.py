@@ -16,10 +16,10 @@
 
 import unittest
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.cmdline import ExtendedConfigLoader
-from ZConfig.tests.support import TestBase
+from ZConfigParser.cmdline import ExtendedConfigLoader
+from ZConfigParser.tests.support import TestBase
 
 
 class CommandLineTest(TestBase):
@@ -117,19 +117,19 @@ class CommandLineTest(TestBase):
     def test_unknown_key(self):
         self.clopts = [("foo=bar", None)]
         schema = self.get_simple_schema()
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_too_many_keys(self):
         self.clopts = [("k1=v1", None), ("k1=v2", None)]
         schema = self.get_simple_schema()
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_bad_datatype(self):
         self.clopts = [("k2=42.0", None)]
         schema = self.get_simple_schema()
-        self.assertRaises(ZConfig.DataConversionError,
+        self.assertRaises(ZConfigParser.DataConversionError,
                           self.load_config_text, schema, "")
 
     def test_without_clopts(self):

@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZConfig factory datatypes for log handlers."""
+"""ZConfigParser factory datatypes for log handlers."""
 
 import sys
 
-from ZConfig.components.logger.factory import Factory
+from ZConfigParser.components.logger.factory import Factory
 
 
 _log_format_variables = {
@@ -93,7 +93,7 @@ class HandlerFactory(Factory):
 
 class FileHandlerFactory(HandlerFactory):
     def create_loghandler(self):
-        from ZConfig.components.logger import loghandler
+        from ZConfigParser.components.logger import loghandler
         path = self.section.path
         max_bytes = self.section.max_size
         old_files = self.section.old_files
@@ -161,13 +161,13 @@ def syslog_facility(value):
 
 class SyslogHandlerFactory(HandlerFactory):
     def create_loghandler(self):
-        from ZConfig.components.logger import loghandler
+        from ZConfigParser.components.logger import loghandler
         return loghandler.SysLogHandler(self.section.address.address,
                                         self.section.facility)
 
 class Win32EventLogFactory(HandlerFactory):
     def create_loghandler(self):
-        from ZConfig.components.logger import loghandler
+        from ZConfigParser.components.logger import loghandler
         return loghandler.Win32EventLogHandler(self.section.appname)
 
 def http_handler_url(value):
@@ -200,13 +200,13 @@ def get_or_post(value):
 
 class HTTPHandlerFactory(HandlerFactory):
     def create_loghandler(self):
-        from ZConfig.components.logger import loghandler
+        from ZConfigParser.components.logger import loghandler
         host, selector = self.section.url
         return loghandler.HTTPHandler(host, selector, self.section.method)
 
 class SMTPHandlerFactory(HandlerFactory):
     def create_loghandler(self):
-        from ZConfig.components.logger import loghandler
+        from ZConfigParser.components.logger import loghandler
         host, port = self.section.smtp_server
         if not port:
             mailhost = host

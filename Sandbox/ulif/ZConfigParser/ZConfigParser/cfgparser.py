@@ -13,13 +13,13 @@
 ##############################################################################
 """Configuration parser."""
 
-import ZConfig
-import ZConfig.url
+import ZConfigParser
+import ZConfigParser.url
 
-from ZConfig.substitution import isname, substitute
+from ZConfigParser.substitution import isname, substitute
 
 
-class ZConfigParser:
+class ZConfigParserParser:
     __metaclass__ = type
     __slots__ = ('resource', 'context', 'lineno',
                  'stack', 'defines', 'file', 'url')
@@ -88,7 +88,7 @@ class ZConfigParser:
             name = self._normalize_case(name)
         try:
             newsect = self.context.startSection(section, type, name)
-        except ZConfig.ConfigurationError, e:
+        except ZConfigParser.ConfigurationError, e:
             self.error(e[0])
 
         if isempty:
@@ -108,7 +108,7 @@ class ZConfigParser:
         try:
             self.context.endSection(
                 prevsection, type, name, section)
-        except ZConfig.ConfigurationError, e:
+        except ZConfigParser.ConfigurationError, e:
             self.error(e[0])
         return prevsection
 
@@ -123,7 +123,7 @@ class ZConfigParser:
             value = self.replace(value)
         try:
             section.addValue(key, value, (self.lineno, None, self.url))
-        except ZConfig.ConfigurationError, e:
+        except ZConfigParser.ConfigurationError, e:
             self.error(e[0])
 
     def handle_directive(self, section, rest):
@@ -150,7 +150,7 @@ class ZConfigParser:
 
     def handle_include(self, section, rest):
         rest = self.replace(rest.strip())
-        newurl = ZConfig.url.urljoin(self.url, rest)
+        newurl = ZConfigParser.url.urljoin(self.url, rest)
         self.context.includeConfiguration(section, newurl, self.defines)
 
     def handle_define(self, section, rest):
@@ -168,13 +168,13 @@ class ZConfigParser:
     def replace(self, text):
         try:
             return substitute(text, self.defines)
-        except ZConfig.SubstitutionReplacementError, e:
+        except ZConfigParser.SubstitutionReplacementError, e:
             e.lineno = self.lineno
             e.url = self.url
             raise
 
     def error(self, message):
-        raise ZConfig.ConfigurationSyntaxError(message, self.url, self.lineno)
+        raise ZConfigParser.ConfigurationSyntaxError(message, self.url, self.lineno)
 
     def _normalize_case(self, string):
         # This method is factored out solely to allow subclasses to modify

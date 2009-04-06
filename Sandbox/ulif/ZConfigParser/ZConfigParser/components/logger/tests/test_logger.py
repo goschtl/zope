@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-"""Tests for logging configuration via ZConfig."""
+"""Tests for logging configuration via ZConfigParser."""
 
 import cStringIO as StringIO
 import logging
@@ -21,11 +21,11 @@ import sys
 import tempfile
 import unittest
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.components.logger import datatypes
-from ZConfig.components.logger import handlers
-from ZConfig.components.logger import loghandler
+from ZConfigParser.components.logger import datatypes
+from ZConfigParser.components.logger import handlers
+from ZConfigParser.components.logger import loghandler
 
 
 class CustomFormatter(logging.Formatter):
@@ -89,11 +89,11 @@ class LoggingTestBase(unittest.TestCase):
     def get_schema(self):
         if self._schema is None:
             sio = StringIO.StringIO(self._schematext)
-            self.__class__._schema = ZConfig.loadSchemaFile(sio)
+            self.__class__._schema = ZConfigParser.loadSchemaFile(sio)
         return self._schema
 
     def get_config(self, text):
-        conf, handler = ZConfig.loadConfigFile(self.get_schema(),
+        conf, handler = ZConfigParser.loadConfigFile(self.get_schema(),
                                                StringIO.StringIO(text))
         self.assert_(not handler)
         return conf
@@ -103,7 +103,7 @@ class TestConfig(LoggingTestBase):
 
     _schematext = """
       <schema>
-        <import package='ZConfig.components.logger'/>
+        <import package='ZConfigParser.components.logger'/>
         <section type='eventlog' name='*' attribute='eventlog'/>
       </schema>
     """
@@ -268,7 +268,7 @@ class TestConfig(LoggingTestBase):
         conf = self.get_config("""
         <eventlog>
         <logfile>
-        formatter ZConfig.components.logger.tests.test_logger.CustomFormatter
+        formatter ZConfigParser.components.logger.tests.test_logger.CustomFormatter
         level info
         path STDOUT
         </logfile>
@@ -361,7 +361,7 @@ class TestReopeningLogfilesBase(LoggingTestBase):
 
     _schematext = """
       <schema>
-        <import package='ZConfig.components.logger'/>
+        <import package='ZConfigParser.components.logger'/>
         <multisection type='logger' name='*' attribute='loggers'/>
       </schema>
     """

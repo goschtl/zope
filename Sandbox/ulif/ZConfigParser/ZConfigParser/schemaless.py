@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """\
-Support for working with ZConfig data without a schema.
+Support for working with ZConfigParser data without a schema.
 
 """
 __docformat__ = "reStructuredText"
 
-import ZConfig.cfgparser
+import ZConfigParser.cfgparser
 
 
 def loadConfigFile(file, url=None):
@@ -110,7 +110,7 @@ class Context:
         raise NotImplementedError('includes are not supported')
 
 
-class Parser(ZConfig.cfgparser.ZConfigParser):
+class Parser(ZConfigParser.cfgparser.ZConfigParserParser):
 
     def handle_define(self, section, rest):
         raise NotImplementedError('defines are not supported')

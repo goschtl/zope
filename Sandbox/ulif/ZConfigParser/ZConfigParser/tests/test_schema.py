@@ -11,13 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests of ZConfig schemas."""
+"""Tests of ZConfigParser schemas."""
 
 import unittest
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.tests.support import TestBase, CONFIG_BASE
+from ZConfigParser.tests.support import TestBase, CONFIG_BASE
 
 
 def uppercase(value):
@@ -48,7 +48,7 @@ class SchemaTestCase(TestBase):
         self.assertEqual(len(schema), 0)
         self.assertRaises(IndexError,
                           lambda schema=schema: schema[0])
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           schema.getinfo, "foo")
 
     def test_simple(self):
@@ -221,7 +221,7 @@ class SchemaTestCase(TestBase):
               <multikey name='k' required='yes'/>
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_multisection_required(self):
@@ -231,7 +231,7 @@ class SchemaTestCase(TestBase):
               <multisection name='*' attribute='s' type='s' required='yes'/>
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_key_required_but_missing(self):
@@ -240,7 +240,7 @@ class SchemaTestCase(TestBase):
               <key name='k' required='yes'/>
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_section_required_but_missing(self):
@@ -250,12 +250,12 @@ class SchemaTestCase(TestBase):
               <section name='k' type='k' required='yes'/>
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "")
 
     def test_key_default_element(self):
         self.assertRaises(
-            ZConfig.SchemaError, self.load_schema_text, """\
+            ZConfigParser.SchemaError, self.load_schema_text, """\
             <schema>
               <key name='name'>
                 <default>text</default>
@@ -276,9 +276,9 @@ class SchemaTestCase(TestBase):
                                      """, num_handlers=2)
         self.assertEqual(get_section_attributes(conf),
                          ["a", "b"])
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.handlers, {'abc': id, 'ABC': id, 'def': id})
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.handlers, {})
 
     def test_handler_ordering(self):
@@ -315,7 +315,7 @@ class SchemaTestCase(TestBase):
               <section name='a' type='nesting'/>
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError, self.load_config_text,
+        self.assertRaises(ZConfigParser.ConfigurationError, self.load_config_text,
                           schema, """\
                           <sect a/>
                           <sect a/>
@@ -327,7 +327,7 @@ class SchemaTestCase(TestBase):
                                      """)
 
     def test_disallowed_duplicate_attribute(self):
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <key name='a'/>
                             <key name='b' attribute='a'/>
@@ -335,7 +335,7 @@ class SchemaTestCase(TestBase):
                           """)
 
     def test_unknown_datatype_name(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, "<schema datatype='foobar'/>")
 
     def test_load_abstracttype(self):
@@ -362,7 +362,7 @@ class SchemaTestCase(TestBase):
         t2 = schema.gettype("t2")
         self.assert_(not t2.isabstract())
         self.assert_(t.getsubtype("t2") is t2)
-        self.assertRaises(ZConfig.ConfigurationError, t.getsubtype, "group")
+        self.assertRaises(ZConfigParser.ConfigurationError, t.getsubtype, "group")
         self.assert_(t1 is not t2)
         # try loading a config that relies on this schema
         conf = self.load_config_text(schema, """\
@@ -408,13 +408,13 @@ class SchemaTestCase(TestBase):
 
     def test_abstracttype_extension_errors(self):
         # specifying a non-existant abstracttype
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <sectiontype name='s' implements='group'/>
                           </schema>
                           """)
         # specifying something that isn't an abstracttype
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <sectiontype name='t1'/>
                             <sectiontype name='t2' implements='t1'/>
@@ -490,7 +490,7 @@ class SchemaTestCase(TestBase):
                                        'b': ['value-b']})
 
     def test_arbitrary_multikey_with_unkeyed_default(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
                           <schema>
                             <multikey name='+' attribute='keymap'>
@@ -512,7 +512,7 @@ class SchemaTestCase(TestBase):
         self.assertEqual(conf.keymap, {'a': 'value-a', 'b': 'value-b'})
 
     def test_arbitrary_key_with_unkeyed_default(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
                           <schema>
                             <key name='+' attribute='keymap'>
@@ -546,11 +546,11 @@ class SchemaTestCase(TestBase):
               <key name='+' required='yes' attribute='keymap' />
             </schema>
             """)
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "# empty config file")
 
     def test_arbitrary_key_bad_schema(self):
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <key name='+' attribute='attr1'/>
                             <key name='+' attribute='attr2'/>
@@ -633,7 +633,7 @@ class SchemaTestCase(TestBase):
         self.assertEqual(conf.attr.getSectionName(), "name")
 
         # if we omit the name, it's an error
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "<sect/>")
 
     def test_nested_abstract_sectiontype(self):
@@ -680,7 +680,7 @@ class SchemaTestCase(TestBase):
             """
         def check(thing, self=self, template=template):
             text = template % thing
-            self.assertRaises(ZConfig.SchemaError,
+            self.assertRaises(ZConfigParser.SchemaError,
                               self.load_schema_text, text)
 
         check("<key name='a' attribute='getSection'/>")
@@ -735,10 +735,10 @@ class SchemaTestCase(TestBase):
     def get_data_conversion_error(self, schema, src, url):
         try:
             self.load_config_text(schema, src, url=url)
-        except ZConfig.DataConversionError, e:
+        except ZConfigParser.DataConversionError, e:
             return e
         else:
-            self.fail("expected ZConfig.DataConversionError")
+            self.fail("expected ZConfigParser.DataConversionError")
 
     def test_numeric_section_name(self):
         schema = self.load_schema_text("""\
@@ -776,7 +776,7 @@ class SchemaTestCase(TestBase):
 
     def test_sectiontype_extension_errors(self):
         # cannot override key from base
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <sectiontype name='t1'>
                               <key name='k1'/>
@@ -787,13 +787,13 @@ class SchemaTestCase(TestBase):
                           </schema>
                           """)
         # cannot extend non-existing section
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <sectiontype name='t2' extends='t1'/>
                           </schema>
                           """)
         # cannot extend abstract type
-        self.assertRaises(ZConfig.SchemaError, self.load_schema_text, """\
+        self.assertRaises(ZConfigParser.SchemaError, self.load_schema_text, """\
                           <schema>
                             <abstracttype name='t1'/>
                             <sectiontype name='t2' extends='t1'/>
@@ -870,7 +870,7 @@ class SchemaTestCase(TestBase):
         self.assertEqual(items, [("bar", "24"), ("foo", "42")])
 
     def test_duplicate_default_key_checked_in_schema(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
             <schema>
               <sectiontype name='sect'>
@@ -887,7 +887,7 @@ class SchemaTestCase(TestBase):
         # If the default values associated with a <key name="+"> can't
         # be supported by a new keytype for a derived sectiontype, an
         # error should be indicated.
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
             <schema>
               <sectiontype name='base' keytype='identifier'>
@@ -937,7 +937,7 @@ class SchemaTestCase(TestBase):
 
     def test_sectiontype_inherited_datatype(self):
         schema = self.load_schema_text("""\
-            <schema prefix='ZConfig.tests.test_schema'>
+            <schema prefix='ZConfigParser.tests.test_schema'>
               <sectiontype name='base' datatype='.get_foo'>
                 <key name="foo"/>
               </sectiontype>
@@ -968,7 +968,7 @@ class SchemaTestCase(TestBase):
         self.assertEqual(L, [("host.example.com", "127.0.0.1"),
                              ("www.example.org", "127.0.0.2")])
 
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "abc.  127.0.0.1")
 
     def test_keytype_identifier(self):
@@ -985,11 +985,11 @@ class SchemaTestCase(TestBase):
         self.assertEqual(conf.Foo, "Foo-value")
         self.assertEqual(get_section_attributes(conf), ["Foo", "foo"])
         # key mis-match based on case:
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load_config_text, schema, "FOO frob\n")
         # attribute names conflict, since the keytype isn't used to
         # generate attribute names
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
                           <schema keytype='identifier'>
                             <key name='foo'/>
@@ -1009,7 +1009,7 @@ class SchemaTestCase(TestBase):
         self._verifySimpleConf(self.load_config(schema, "simple.conf"))
 
     def test_extends_fragment_failure(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text,
             "<schema extends='%s/library.xml#foo'/>" % CONFIG_BASE)
 
@@ -1063,19 +1063,19 @@ class SchemaTestCase(TestBase):
            """ % (CONFIG_BASE, CONFIG_BASE, __name__))
 
     def test_multi_extends_datatype_conflict(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
             <schema extends='%s/base-datatype1.xml %s/base-datatype2.xml'/>
             """ % (CONFIG_BASE, CONFIG_BASE))
 
     def test_multi_extends_keytype_conflict(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
             <schema extends='%s/base-keytype1.xml %s/base-keytype2.xml'/>
             """ % (CONFIG_BASE, CONFIG_BASE))
 
     def test_multiple_descriptions_is_error(self):
-        self.assertRaises(ZConfig.SchemaError,
+        self.assertRaises(ZConfigParser.SchemaError,
                           self.load_schema_text, """\
             <schema>
               <description>  foo  </description>

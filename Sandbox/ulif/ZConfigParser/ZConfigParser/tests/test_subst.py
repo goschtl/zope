@@ -18,8 +18,8 @@ from __future__ import nested_scopes
 
 import unittest
 
-from ZConfig import SubstitutionReplacementError, SubstitutionSyntaxError
-from ZConfig.substitution import isname, substitute
+from ZConfigParser import SubstitutionReplacementError, SubstitutionSyntaxError
+from ZConfigParser.substitution import isname, substitute
 
 
 class SubstitutionTestCase(unittest.TestCase):

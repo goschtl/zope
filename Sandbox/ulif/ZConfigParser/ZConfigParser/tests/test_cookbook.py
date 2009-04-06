@@ -14,15 +14,15 @@
 """Tests of examples from the online cookbook, so we don't break them
 down the road.  Unless we really mean to.
 
-The ZConfig Cookbook is available online at:
+The ZConfigParser Cookbook is available online at:
 
-    http://dev.zope.org/Zope3/ZConfig
+    http://dev.zope.org/Zope3/ZConfigParser
 
 """
 
 import unittest
 
-from ZConfig.tests.support import TestBase
+from ZConfigParser.tests.support import TestBase
 
 
 def basic_key_mapping_password_to_passwd(key):

@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Objects that can describe a ZConfig schema."""
+"""Objects that can describe a ZConfigParser schema."""
 
 import copy
 
-import ZConfig
+import ZConfigParser
 
 
 class UnboundedThing:
@@ -59,7 +59,7 @@ class ValueInfo:
         try:
             return datatype(self.value)
         except ValueError, e:
-            raise ZConfig.DataConversionError(e, self.value, self.position)
+            raise ZConfigParser.DataConversionError(e, self.value, self.position)
 
 
 class BaseInfo:
@@ -73,10 +73,10 @@ class BaseInfo:
                  attribute):
         if maxOccurs is not None and maxOccurs < 1:
             if maxOccurs < 1:
-                raise ZConfig.SchemaError(
+                raise ZConfigParser.SchemaError(
                     "maxOccurs must be at least 1")
             if minOccurs is not None and minOccurs < maxOccurs:
-                raise ZConfig.SchemaError(
+                raise ZConfigParser.SchemaError(
                     "minOccurs must be at least maxOccurs")
         self.name = name
         self.datatype = datatype
@@ -112,20 +112,20 @@ class BaseKeyInfo(BaseInfo):
 
     def finish(self):
         if self._finished:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "cannot finish KeyInfo more than once")
         self._finished = True
 
     def adddefault(self, value, position, key=None):
         if self._finished:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "cannot add default values to finished KeyInfo")
         # Check that the name/keyed relationship is right:
         if self.name == "+" and key is None:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "default values must be keyed for name='+'")
         elif self.name != "+" and key is not None:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "unexpected key for default value")
         self.add_valueinfo(ValueInfo(value, position), key)
 
@@ -164,11 +164,11 @@ class KeyInfo(BaseKeyInfo):
             if self._default.has_key(key):
                 # not ideal: we're presenting the unconverted
                 # version of the key
-                raise ZConfig.SchemaError(
+                raise ZConfigParser.SchemaError(
                     "duplicate default value for key %s" % `key`)
             self._default[key] = vi
         elif self._default is not None:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "cannot set more than one default to key with maxOccurs == 1")
         else:
             self._default = vi
@@ -231,11 +231,11 @@ class SectionInfo(BaseInfo):
         # attribute   - name of the attribute on the SectionValue object
         if maxOccurs > 1:
             if name not in ('*', '+'):
-                raise ZConfig.SchemaError(
+                raise ZConfigParser.SchemaError(
                     "sections which can occur more than once must"
                     " use a name of '*' or '+'")
             if not attribute:
-                raise ZConfig.SchemaError(
+                raise ZConfigParser.SchemaError(
                     "sections which can occur more than once must"
                     " specify a target attribute name")
         if sectiontype.isabstract():
@@ -291,7 +291,7 @@ class AbstractType:
         try:
             return self._subtypes[name]
         except KeyError:
-            raise ZConfig.SchemaError("no sectiontype %s in abstracttype %s"
+            raise ZConfigParser.SchemaError("no sectiontype %s in abstracttype %s"
                                       % (`name`, `self.name`))
 
     def hassubtype(self, name):
@@ -331,7 +331,7 @@ class SectionType:
         try:
             return self._types[n]
         except KeyError:
-            raise ZConfig.SchemaError("unknown type name: " + `name`)
+            raise ZConfigParser.SchemaError("unknown type name: " + `name`)
 
     def gettypenames(self):
         return self._types.keys()
@@ -346,10 +346,10 @@ class SectionType:
         # check naming constraints
         assert key or info.attribute
         if key and self._keymap.has_key(key):
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "child name %s already used" % key)
         if info.attribute and self._attrmap.has_key(info.attribute):
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "child attribute name %s already used" % info.attribute)
         # a-ok, add the item to the appropriate maps
         if info.attribute:
@@ -367,12 +367,12 @@ class SectionType:
 
     def getinfo(self, key):
         if not key:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "cannot match a key without a name")
         try:
             return self._keymap[key]
         except KeyError:
-            raise ZConfig.ConfigurationError("no key matching " + `key`)
+            raise ZConfigParser.ConfigurationError("no key matching " + `key`)
 
     def getrequiredtypes(self):
         d = {}
@@ -394,40 +394,40 @@ class SectionType:
             if key:
                 if key == name:
                     if not info.issection():
-                        raise ZConfig.ConfigurationError(
+                        raise ZConfigParser.ConfigurationError(
                             "section name %s already in use for key" % key)
                     st = info.sectiontype
                     if st.isabstract():
                         try:
                             st = st.getsubtype(type)
-                        except ZConfig.ConfigurationError:
-                            raise ZConfig.ConfigurationError(
+                        except ZConfigParser.ConfigurationError:
+                            raise ZConfigParser.ConfigurationError(
                                 "section type %s not allowed for name %s"
                                 % (`type`, `key`))
                     if not st.name == type:
-                        raise ZConfig.ConfigurationError(
+                        raise ZConfigParser.ConfigurationError(
                             "name %s must be used for a %s section"
                             % (`name`, `st.name`))
                     return info
             # else must be a sectiontype or an abstracttype:
             elif info.sectiontype.name == type:
                 if not (name or info.allowUnnamed()):
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         `type` + " sections must be named")
                 return info
             elif info.sectiontype.isabstract():
                 st = info.sectiontype
                 if st.name == type:
-                    raise ZConfig.ConfigurationError(
+                    raise ZConfigParser.ConfigurationError(
                         "cannot define section with an abstract type")
                 try:
                     st = st.getsubtype(type)
-                except ZConfig.ConfigurationError:
+                except ZConfigParser.ConfigurationError:
                     # not this one; maybe a different one
                     pass
                 else:
                     return info
-        raise ZConfig.ConfigurationError(
+        raise ZConfigParser.ConfigurationError(
             "no matching section defined for type='%s', name='%s'" % (
             type, name))
 
@@ -447,7 +447,7 @@ class SchemaType(SectionType):
     def addtype(self, typeinfo):
         n = typeinfo.name
         if self._types.has_key(n):
-            raise ZConfig.SchemaError("type name cannot be redefined: "
+            raise ZConfigParser.SchemaError("type name cannot be redefined: "
                                       + `typeinfo.name`)
         self._types[n] = typeinfo
 
@@ -477,7 +477,7 @@ class SchemaType(SectionType):
 
     def deriveSectionType(self, base, name, keytype, valuetype, datatype):
         if isinstance(base, SchemaType):
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "cannot derive sectiontype from top-level schema")
         t = self.createSectionType(name, keytype, valuetype, datatype)
         t._attrmap.update(base._attrmap)
@@ -495,7 +495,7 @@ class SchemaType(SectionType):
 
     def addComponent(self, name):
         if self._components.has_key(name):
-            raise ZConfig.SchemaError("already have component %s" % name)
+            raise ZConfigParser.SchemaError("already have component %s" % name)
         self._components[name] = name
 
     def hasComponent(self, name):

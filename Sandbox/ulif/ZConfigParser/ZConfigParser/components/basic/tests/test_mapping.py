@@ -13,22 +13,22 @@
 ##############################################################################
 
 """Tests of the 'basic' section types provided as part of
-ZConfig.components.basic."""
+ZConfigParser.components.basic."""
 
 import unittest
 
-from ZConfig.tests import support
+from ZConfigParser.tests import support
 
 
 SIMPLE_SCHEMA = '''\
 <schema>
-  <import package="ZConfig.components.basic" file="mapping.xml" />
+  <import package="ZConfigParser.components.basic" file="mapping.xml" />
 
   <sectiontype name="dict"
-               extends="ZConfig.basic.mapping" />
+               extends="ZConfigParser.basic.mapping" />
 
   <sectiontype name="intkeys"
-               extends="ZConfig.basic.mapping"
+               extends="ZConfigParser.basic.mapping"
                keytype="integer" />
 
   <section name="*"

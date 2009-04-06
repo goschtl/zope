@@ -11,15 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Parser for ZConfig schemas."""
+"""Parser for ZConfigParser schemas."""
 
 import os
 import xml.sax
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig import info
-from ZConfig import url
+from ZConfigParser import info
+from ZConfigParser import url
 
 
 def parseResource(resource, loader):
@@ -454,7 +454,7 @@ class BaseParser(xml.sax.ContentHandler):
         return e
 
     def error(self, message):
-        raise self.initerror(ZConfig.SchemaError(message))
+        raise self.initerror(ZConfigParser.SchemaError(message))
 
 
 class SchemaParser(BaseParser):

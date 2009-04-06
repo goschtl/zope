@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests of standard ZConfig datatypes."""
+"""Tests of standard ZConfigParser datatypes."""
 
 import os
 import sys
@@ -21,7 +21,7 @@ import datetime
 import tempfile
 import unittest
 
-import ZConfig.datatypes
+import ZConfigParser.datatypes
 
 try:
     here = __file__
@@ -39,7 +39,7 @@ else:
 
 
 class DatatypeTestCase(unittest.TestCase):
-    types = ZConfig.datatypes.Registry()
+    types = ZConfigParser.datatypes.Registry()
 
     def test_datatype_basickey(self):
         convert = self.types.get("basic-key")
@@ -181,7 +181,7 @@ class DatatypeTestCase(unittest.TestCase):
     def test_datatype_inet_address(self):
         convert = self.types.get("inet-address")
         eq = self.assertEqual
-        defhost = ZConfig.datatypes.DEFAULT_HOST
+        defhost = ZConfigParser.datatypes.DEFAULT_HOST
         eq(convert("Host.Example.Com:80"), ("host.example.com", 80))
         eq(convert(":80"),                 (defhost, 80))
         eq(convert("80"),                  (defhost, 80))
@@ -258,7 +258,7 @@ class DatatypeTestCase(unittest.TestCase):
         convert = self.types.get("socket-address")
         eq = self.assertEqual
         AF_INET = socket.AF_INET
-        defhost = ZConfig.datatypes.DEFAULT_HOST
+        defhost = ZConfigParser.datatypes.DEFAULT_HOST
 
         def check(value, family, address, self=self, convert=convert):
             a = convert(value)
@@ -385,7 +385,7 @@ class RegistryTestCase(unittest.TestCase):
         f = open(fn, "w")
         f.write(TEST_DATATYPE_SOURCE)
         f.close()
-        registry = ZConfig.datatypes.Registry()
+        registry = ZConfigParser.datatypes.Registry()
 
         # we really want the temp area to override everything else:
         sys.path.insert(0, tmpdir)

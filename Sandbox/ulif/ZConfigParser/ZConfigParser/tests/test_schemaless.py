@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """\
-Test driver for ZConfig.schemaless.
+Test driver for ZConfigParser.schemaless.
 
 """
 __docformat__ = "reStructuredText"
@@ -24,4 +24,4 @@ except ImportError:
 
 
 def test_suite():
-    return doctest.DocFileSuite("schemaless.txt", package="ZConfig")
+    return doctest.DocFileSuite("schemaless.txt", package="ZConfigParser")

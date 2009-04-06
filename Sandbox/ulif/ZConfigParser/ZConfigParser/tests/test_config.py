@@ -18,9 +18,9 @@ import StringIO
 import tempfile
 import unittest
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.tests.support import CONFIG_BASE
+from ZConfigParser.tests.support import CONFIG_BASE
 
 
 class ConfigurationTestCase(unittest.TestCase):
@@ -29,13 +29,13 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def get_schema(self):
         if self.schema is None:
-            ConfigurationTestCase.schema = ZConfig.loadSchema(
+            ConfigurationTestCase.schema = ZConfigParser.loadSchema(
                 CONFIG_BASE + "simple.xml")
         return self.schema
 
     def load(self, relurl, context=None):
         url = CONFIG_BASE + relurl
-        self.conf, self.handlers = ZConfig.loadConfig(self.get_schema(), url)
+        self.conf, self.handlers = ZConfigParser.loadConfig(self.get_schema(), url)
         conf = self.conf
         #self.assertEqual(conf.url, url)
         self.assert_(conf.getSectionName() is None)
@@ -49,7 +49,7 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def loadfile(self, file):
         schema = self.get_schema()
-        self.conf, self.handlers = ZConfig.loadConfigFile(schema, file)
+        self.conf, self.handlers = ZConfigParser.loadConfigFile(schema, file)
         return self.conf
 
     def check_simple_gets(self, conf):
@@ -74,7 +74,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.check_simple_gets(conf)
 
     def test_type_errors(self):
-        Error = ZConfig.DataConversionError
+        Error = ZConfigParser.DataConversionError
         raises = self.assertRaises
         raises(Error, self.loadtext, "int-var true")
         raises(Error, self.loadtext, "float-var true")
@@ -84,7 +84,7 @@ class ConfigurationTestCase(unittest.TestCase):
         raises(Error, self.loadtext, "true-var-1 -1")
 
     def test_simple_sections(self):
-        self.schema = ZConfig.loadSchema(CONFIG_BASE + "simplesections.xml")
+        self.schema = ZConfigParser.loadSchema(CONFIG_BASE + "simplesections.xml")
         conf = self.load("simplesections.conf")
         self.assertEqual(conf.var, "foo")
         # check each interleaved position between sections
@@ -109,7 +109,7 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(conf.var4, "value")
 
     def test_includes_with_defines(self):
-        self.schema = ZConfig.loadSchemaFile(StringIO.StringIO("""\
+        self.schema = ZConfigParser.loadSchemaFile(StringIO.StringIO("""\
             <schema>
               <key name='refinner' />
               <key name='refouter' />
@@ -128,15 +128,15 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(conf.getwords, "abc two words def")
 
     def test_define_errors(self):
-        self.assertRaises(ZConfig.ConfigurationSyntaxError,
+        self.assertRaises(ZConfigParser.ConfigurationSyntaxError,
                           self.loadtext, "%define\n")
-        self.assertRaises(ZConfig.ConfigurationSyntaxError,
+        self.assertRaises(ZConfigParser.ConfigurationSyntaxError,
                           self.loadtext, "%define abc-def\n")
-        self.assertRaises(ZConfig.ConfigurationSyntaxError,
+        self.assertRaises(ZConfigParser.ConfigurationSyntaxError,
                           self.loadtext, "%define a value\n%define a value\n")
 
     def test_fragment_ident_disallowed(self):
-        self.assertRaises(ZConfig.ConfigurationError,
+        self.assertRaises(ZConfigParser.ConfigurationError,
                           self.load, "simplesections.conf#another")
 
     def test_load_from_fileobj(self):
@@ -172,7 +172,7 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def check_load_from_path(self, path):
         schema = self.get_schema()
-        ZConfig.loadConfig(schema, path)
+        ZConfigParser.loadConfig(schema, path)
 
 
 def test_suite():

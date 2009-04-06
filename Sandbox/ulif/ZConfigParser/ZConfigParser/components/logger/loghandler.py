@@ -30,7 +30,7 @@ from logging.handlers import NTEventLogHandler as Win32EventLogHandler
 _reopenable_handlers = []
 
 def closeFiles():
-    """Reopen all logfiles managed by ZConfig configuration."""
+    """Reopen all logfiles managed by ZConfigParser configuration."""
     while _reopenable_handlers:
         wr = _reopenable_handlers.pop()
         h = wr()
@@ -38,7 +38,7 @@ def closeFiles():
             h.close()
 
 def reopenFiles():
-    """Reopen all logfiles managed by ZConfig configuration."""
+    """Reopen all logfiles managed by ZConfigParser configuration."""
     for wr in _reopenable_handlers[:]:
         h = wr()
         if h is None:

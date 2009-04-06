@@ -20,36 +20,36 @@ import unittest
 
 from StringIO import StringIO
 
-import ZConfig
-import ZConfig.tests.support
+import ZConfigParser
+import ZConfigParser.tests.support
 
 
-class TestImportFromConfiguration(ZConfig.tests.support.TestBase):
+class TestImportFromConfiguration(ZConfigParser.tests.support.TestBase):
 
     def test_simple_import(self):
         schema = self.load_schema_text("<schema/>")
         loader = self.create_config_loader(schema)
         config, _ = loader.loadFile(
-            StringIO("%import ZConfig.tests.library.widget\n"))
+            StringIO("%import ZConfigParser.tests.library.widget\n"))
         # make sure we now have a "private" schema object; the only
         # way to get it is from the loader itself
         self.assert_(schema is not loader.schema)
         # make sure component types are only found on the private schema:
         loader.schema.gettype("widget-b")
-        self.assertRaises(ZConfig.SchemaError, schema.gettype, "widget-b")
+        self.assertRaises(ZConfigParser.SchemaError, schema.gettype, "widget-b")
 
     def test_repeated_import(self):
         schema = self.load_schema_text("<schema/>")
         loader = self.create_config_loader(schema)
         config, _ = loader.loadFile(
-            StringIO("%import ZConfig.tests.library.widget\n"
-                     "%import ZConfig.tests.library.widget\n"))
+            StringIO("%import ZConfigParser.tests.library.widget\n"
+                     "%import ZConfigParser.tests.library.widget\n"))
 
     def test_missing_import(self):
         schema = self.load_schema_text("<schema/>")
         loader = self.create_config_loader(schema)
-        self.assertRaises(ZConfig.SchemaError, loader.loadFile,
-                          StringIO("%import ZConfig.tests.missing\n"))
+        self.assertRaises(ZConfigParser.SchemaError, loader.loadFile,
+                          StringIO("%import ZConfigParser.tests.missing\n"))
 
 
 def test_suite():

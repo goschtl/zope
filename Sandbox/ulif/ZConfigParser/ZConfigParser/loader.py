@@ -19,13 +19,13 @@ import sys
 import urllib
 import urllib2
 
-import ZConfig
-import ZConfig.cfgparser
-import ZConfig.datatypes
-import ZConfig.info
-import ZConfig.matcher
-import ZConfig.schema
-import ZConfig.url
+import ZConfigParser
+import ZConfigParser.cfgparser
+import ZConfigParser.datatypes
+import ZConfigParser.info
+import ZConfigParser.matcher
+import ZConfigParser.schema
+import ZConfigParser.url
 
 
 def loadSchema(url):
@@ -43,7 +43,7 @@ def loadConfigFile(schema, file, url=None, overrides=()):
 
 def _get_config_loader(schema, overrides):
     if overrides:
-        from ZConfig import cmdline
+        from ZConfigParser import cmdline
         loader = cmdline.ExtendedConfigLoader(schema)
         for opt in overrides:
             loader.addOption(opt)
@@ -114,16 +114,16 @@ class BaseLoader:
         else:
             what = "URL"
             ident = url
-        raise ZConfig.ConfigurationError(
+        raise ZConfigParser.ConfigurationError(
             "error opening %s %s: %s" % (what, ident, message),
             url)
 
     def normalizeURL(self, url):
         if self.isPath(url):
             url = "file://" + urllib.pathname2url(os.path.abspath(url))
-        newurl, fragment = ZConfig.url.urldefrag(url)
+        newurl, fragment = ZConfigParser.url.urldefrag(url)
         if fragment:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "fragment identifiers are not supported",
                 url)
         return newurl
@@ -152,12 +152,12 @@ def openPackageResource(package, path):
             if os.path.exists(filename):
                 break
         else:
-            raise ZConfig.SchemaResourceError("schema component not found",
+            raise ZConfigParser.SchemaResourceError("schema component not found",
                                               filename=path,
                                               package=package,
                                               path=pkg.__path__)
         url = "file:" + urllib.pathname2url(filename)
-        url = ZConfig.url.urlnormalize(url)
+        url = ZConfigParser.url.urlnormalize(url)
         return urllib2.urlopen(url)
     else:
         loadpath = os.path.join(os.path.dirname(pkg.__file__), path)
@@ -175,7 +175,7 @@ def _url_from_file(file):
 class SchemaLoader(BaseLoader):
     def __init__(self, registry=None):
         if registry is None:
-            registry = ZConfig.datatypes.Registry()
+            registry = ZConfigParser.datatypes.Registry()
         BaseLoader.__init__(self)
         self.registry = registry
         self._cache = {}
@@ -184,7 +184,7 @@ class SchemaLoader(BaseLoader):
         if resource.url and self._cache.has_key(resource.url):
             schema = self._cache[resource.url]
         else:
-            schema = ZConfig.schema.parseResource(resource, self)
+            schema = ZConfigParser.schema.parseResource(resource, self)
             self._cache[resource.url] = schema
         return schema
 
@@ -193,23 +193,23 @@ class SchemaLoader(BaseLoader):
     def schemaComponentSource(self, package, file):
         parts = package.split(".")
         if not parts:
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "illegal schema component name: " + `package`)
         if "" in parts:
             # '' somewhere in the package spec; still illegal
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "illegal schema component name: " + `package`)
         file = file or "component.xml"
         try:
             __import__(package)
         except ImportError, e:
-            raise ZConfig.SchemaResourceError(
+            raise ZConfigParser.SchemaResourceError(
                 "could not load package %s: %s" % (package, str(e)),
                 filename=file,
                 package=package)
         pkg = sys.modules[package]
         if not hasattr(pkg, "__path__"):
-            raise ZConfig.SchemaResourceError(
+            raise ZConfigParser.SchemaResourceError(
                 "import name does not refer to a package",
                 filename=file, package=package)
         return "package:%s:%s" % (package, file)
@@ -218,7 +218,7 @@ class SchemaLoader(BaseLoader):
 class ConfigLoader(BaseLoader):
     def __init__(self, schema):
         if schema.isabstract():
-            raise ZConfig.SchemaError(
+            raise ZConfigParser.SchemaError(
                 "cannot check a configuration an abstract type")
         BaseLoader.__init__(self)
         self.schema = schema
@@ -231,14 +231,14 @@ class ConfigLoader(BaseLoader):
         return result
 
     def createSchemaMatcher(self):
-        return ZConfig.matcher.SchemaMatcher(self.schema)
+        return ZConfigParser.matcher.SchemaMatcher(self.schema)
 
     # config parser support API
 
     def startSection(self, parent, type, name):
         t = self.schema.gettype(type)
         if t.isabstract():
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "concrete sections cannot match abstract section types;"
                 " found abstract type " + `type`)
         return parent.createChildMatcher(t, name)
@@ -252,7 +252,7 @@ class ConfigLoader(BaseLoader):
         if not self._private_schema:
             # replace the schema with an extended schema on the first %import
             self._loader = SchemaLoader(self.schema.registry)
-            schema = ZConfig.info.createDerivedSchema(self.schema)
+            schema = ZConfigParser.info.createDerivedSchema(self.schema)
             self._private_schema = True
             self.schema = schema
         url = self._loader.schemaComponentSource(pkgname, '')
@@ -261,7 +261,7 @@ class ConfigLoader(BaseLoader):
         resource = self.openResource(url)
         schema.addComponent(url)
         try:
-            ZConfig.schema.parseComponent(resource, self._loader, schema)
+            ZConfigParser.schema.parseComponent(resource, self._loader, schema)
         finally:
             resource.close()
 
@@ -276,7 +276,7 @@ class ConfigLoader(BaseLoader):
     # internal helper
 
     def _parse_resource(self, matcher, resource, defines=None):
-        parser = ZConfig.cfgparser.ZConfigParser(resource, self, defines)
+        parser = ZConfigParser.cfgparser.ZConfigParserParser(resource, self, defines)
         parser.parse(matcher)
 
 
@@ -291,7 +291,7 @@ class CompositeHandler:
         for name, callback in handlermap.items():
             n = self._convert(name)
             if d.has_key(n):
-                raise ZConfig.ConfigurationError(
+                raise ZConfigParser.ConfigurationError(
                     "handler name not unique when converted to a basic-key: "
                     + `name`)
             d[n] = callback
@@ -300,7 +300,7 @@ class CompositeHandler:
             if not d.has_key(handler):
                 L.append(handler)
         if L:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "undefined handlers: " + ", ".join(L))
         for handler, value in self._handlers:
             f = d[handler]

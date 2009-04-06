@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Selection of standard datatypes for ZConfig."""
+"""Selection of standard datatypes for ZConfigParser."""
 
 import os
 import re

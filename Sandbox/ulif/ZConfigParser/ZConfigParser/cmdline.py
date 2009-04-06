@@ -21,21 +21,21 @@ setting is described by a string of the form::
     some/path/to/key=value
 """
 
-import ZConfig
-import ZConfig.loader
-import ZConfig.matcher
+import ZConfigParser
+import ZConfigParser.loader
+import ZConfigParser.matcher
 
 
-class ExtendedConfigLoader(ZConfig.loader.ConfigLoader):
+class ExtendedConfigLoader(ZConfigParser.loader.ConfigLoader):
     def __init__(self, schema):
-        ZConfig.loader.ConfigLoader.__init__(self, schema)
+        ZConfigParser.loader.ConfigLoader.__init__(self, schema)
         self.clopts = []   # [(optpath, value, source-position), ...]
 
     def addOption(self, spec, pos=None):
         if pos is None:
             pos = "<command-line option>", -1, -1
         if "=" not in spec:
-            e = ZConfig.ConfigurationSyntaxError(
+            e = ZConfigParser.ConfigurationSyntaxError(
                 "invalid configuration specifier", *pos)
             e.specifier = spec
             raise e
@@ -45,7 +45,7 @@ class ExtendedConfigLoader(ZConfig.loader.ConfigLoader):
         optpath = opt.split("/")
         if "" in optpath:
             # // is not allowed in option path
-            e = ZConfig.ConfigurationSyntaxError(
+            e = ZConfigParser.ConfigurationSyntaxError(
                 "'//' is not allowed in an option path", *pos)
             e.specifier = spec
             raise e
@@ -56,7 +56,7 @@ class ExtendedConfigLoader(ZConfig.loader.ConfigLoader):
             sm = ExtendedSchemaMatcher(self.schema)
             sm.set_optionbag(self.cook())
         else:
-            sm = ZConfig.loader.ConfigLoader.createSchemaMatcher(self)
+            sm = ZConfigParser.loader.ConfigLoader.createSchemaMatcher(self)
         return sm
 
     def cook(self):
@@ -85,7 +85,7 @@ class OptionBag:
         try:
             return self._basic_key(s)
         except ValueError:
-            raise ZConfig.ConfigurationSyntaxError(
+            raise ZConfigParser.ConfigurationSyntaxError(
                 "could not convert basic-key value", *pos)
 
     def add_value(self, name, val, pos):
@@ -135,7 +135,7 @@ class OptionBag:
 
     def finish(self):
         if self.sectitems or self.keypairs:
-            raise ZConfig.ConfigurationError(
+            raise ZConfigParser.ConfigurationError(
                 "not all command line options were consumed")
 
     def _normalize_case(self, string):
@@ -150,13 +150,13 @@ class MatcherMixin:
         try:
             realkey = self.type.keytype(key)
         except ValueError, e:
-            raise ZConfig.DataConversionError(e, key, position)
+            raise ZConfigParser.DataConversionError(e, key, position)
         if self.optionbag.has_key(realkey):
             return
-        ZConfig.matcher.BaseMatcher.addValue(self, key, value, position)
+        ZConfigParser.matcher.BaseMatcher.addValue(self, key, value, position)
 
     def createChildMatcher(self, type, name):
-        sm = ZConfig.matcher.BaseMatcher.createChildMatcher(self, type, name)
+        sm = ZConfigParser.matcher.BaseMatcher.createChildMatcher(self, type, name)
         bag = self.optionbag.get_section_info(type.name, name)
         if bag is not None:
             sm = ExtendedSectionMatcher(
@@ -167,16 +167,16 @@ class MatcherMixin:
     def finish_optionbag(self):
         for key in self.optionbag.keys():
             for val, pos in self.optionbag.get_key(key):
-                ZConfig.matcher.BaseMatcher.addValue(self, key, val, pos)
+                ZConfigParser.matcher.BaseMatcher.addValue(self, key, val, pos)
         self.optionbag.finish()
 
 
-class ExtendedSectionMatcher(MatcherMixin, ZConfig.matcher.SectionMatcher):
+class ExtendedSectionMatcher(MatcherMixin, ZConfigParser.matcher.SectionMatcher):
     def finish(self):
         self.finish_optionbag()
-        return ZConfig.matcher.SectionMatcher.finish(self)
+        return ZConfigParser.matcher.SectionMatcher.finish(self)
 
-class ExtendedSchemaMatcher(MatcherMixin, ZConfig.matcher.SchemaMatcher):
+class ExtendedSchemaMatcher(MatcherMixin, ZConfigParser.matcher.SchemaMatcher):
     def finish(self):
         self.finish_optionbag()
-        return ZConfig.matcher.SchemaMatcher.finish(self)
+        return ZConfigParser.matcher.SchemaMatcher.finish(self)

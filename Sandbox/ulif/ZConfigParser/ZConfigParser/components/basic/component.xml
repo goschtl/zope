@@ -4,6 +4,6 @@
     loaded.
   </description>
 
-  <import package="ZConfig.components.basic" file="mapping.xml"/>
+  <import package="ZConfigParser.components.basic" file="mapping.xml"/>
 
 </component>

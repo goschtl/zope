@@ -19,10 +19,10 @@ import StringIO
 import unittest
 import urllib
 
-import ZConfig
+import ZConfigParser
 
-from ZConfig.loader import ConfigLoader
-from ZConfig.url import urljoin
+from ZConfigParser.loader import ConfigLoader
+from ZConfigParser.url import urljoin
 
 
 try:
@@ -45,13 +45,13 @@ class TestBase(unittest.TestCase):
 
     def load_schema(self, relurl):
         self.url = urljoin(CONFIG_BASE, relurl)
-        self.schema = ZConfig.loadSchema(self.url)
+        self.schema = ZConfigParser.loadSchema(self.url)
         self.assert_(self.schema.issection())
         return self.schema
 
     def load_schema_text(self, text, url=None):
         sio = StringIO.StringIO(text)
-        self.schema = ZConfig.loadSchemaFile(sio, url)
+        self.schema = ZConfigParser.loadSchemaFile(sio, url)
         return self.schema
 
     def load_config(self, schema, conf_url, num_handlers=0):
