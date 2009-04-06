@@ -1,0 +1,35 @@
+Converting ZConfigs to ConfigParser
+===================================
+
+We can convert old-style ZConfig files to be ConfigParser
+compatible. Hereby we follow the proposals in
+http://wiki.zope.org/zope3/UseConfigParserForHighLevelConfiguration
+
+Let's start with a simple filestorage definition:
+
+    >>> open('oldstyle.conf', 'wb').write("""
+    ... <zodb>
+    ...   <filestorage>
+    ...     path Data.fs
+    ...   </filestorage>
+    ... </zodb>
+    ... """)
+
+We convert that file:
+
+    >>> from ZConfigParser.convert import convertFile
+    >>> result = convertFile('oldstyle.conf')
+    >>> print result
+    zodb = zope/zodb
+    <BLANKLINE>
+    [zope/zodb]
+    filestorage = zope/zodb/filestorage
+    <BLANKLINE>
+    [zope/zodb/filestorage]
+    path = Data.fs
+    <BLANKLINE>
+
+Clean up:
+
+    >>> import os
+    >>> os.unlink('oldstyle.conf')
