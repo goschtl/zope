@@ -1,6 +1,6 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   i18n_domain="z3ext" package="z3ext">
+   i18n_domain="zope">
 
   <!-- This file is the equivalent of site.zcml and it is -->
   <!-- used for functional testing setup -->
@@ -19,8 +19,18 @@
   <include package="zope.app.authentication" />
   <include package="zope.session" />
 
-  <include package="z3c.autoinclude" file="meta.zcml" />
+  <include package="z3c.form" file="meta.zcml" />
+  <include package="z3c.form" />
+
+  <include package="z3ext.resource" file="meta.zcml" />
+  <include package="z3ext.resourcepackage" file="meta.zcml" />
   <include package="z3ext.controlpanel" file="meta.zcml" />
+  <include package="z3ext.layout" file="meta.zcml" />
+  <include package="z3ext.layout" />
+  <include package="z3ext.layoutform" />
+  <include package="z3ext.resource" />
+  <include package="z3ext.resourcepackage" />
+  <include package="z3ext.statusmessage" />
   <include package="z3ext.controlpanel" />
   <include package="z3ext.controlpanel.browser.tests" />
 

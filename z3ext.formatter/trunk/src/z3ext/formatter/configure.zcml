@@ -6,8 +6,6 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.formatter">
 
-  <includeDependencies package="z3ext.formatter" />
-
   <!-- zope.conf configuration -->
   <subscriber handler=".config.initFormatter" />
 

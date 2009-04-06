@@ -4,8 +4,6 @@
    xmlns:z3ext="http://namespaces.zope.org/z3ext"
    i18n_domain="z3ext.controlpanel">
 
-  <includeDependencies package="." />
-
   <permission
      id="z3ext.Configure"
      title="Configure control panel's configlets." />

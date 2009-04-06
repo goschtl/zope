@@ -3,8 +3,6 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    i18n_domain="z3ext.cssregistry">
 
-  <includeDependencies package="." />
-
   <utility
      name="cssregistry"
      provides="z3c.zrtresource.interfaces.IZRTCommandFactory"

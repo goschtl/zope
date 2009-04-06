@@ -5,8 +5,6 @@
    xmlns:tales="http://namespaces.zope.org/tales"
    i18n_domain="z3ext.layout">
 
-  <includeDependencies package="z3ext.layout" />
-
   <z3ext:pageletType
      name="pagelet"
      interface="z3ext.layout.interfaces.IPagelet" />
