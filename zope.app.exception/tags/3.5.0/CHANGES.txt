@@ -1,0 +1,31 @@
+CHANGES
+=======
+
+3.5.0 (2009-04-06)
+------------------
+
+- Use new ``zope.authentication`` instead of ``zope.app.security``.
+
+- Remove deprecated code and thus remove dependency on zope.deferredimport.
+
+- Remove old zpkg-related SETUP.cfg file.
+
+3.4.2 (2009-01-27)
+------------------
+
+- Substitute zope.app.zapi by direct calls to its wrapped apis. See
+  bug 219302.
+
+- Fixed author email and home page.
+
+
+3.4.1 (2007-10-31)
+------------------
+
+- Resolve ``ZopeSecurityPolicy`` deprecation warning.
+
+
+3.4.0 (2007-10-24)
+------------------
+
+- Initial release independent of the main Zope tree.
