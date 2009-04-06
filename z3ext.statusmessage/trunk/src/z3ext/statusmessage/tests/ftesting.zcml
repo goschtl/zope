@@ -11,13 +11,18 @@
   <include package="zope.app.component" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
   <include package="zope.app.pagetemplate" file="meta.zcml" />
+  <include package="z3ext.resource" file="meta.zcml" />
+  <include package="z3ext.resourcepackage" file="meta.zcml" />
 
   <include package="zope.securitypolicy" />
+  <include package="zope.contentprovider" />
   <include package="zope.app.security" />
   <include package="zope.app.zcmlfiles" />
   <include package="zope.app.authentication" />
+  <include package="zope.session" />
 
-  <include package="z3c.autoinclude" file="meta.zcml" />
+  <include package="z3ext.resource" />
+  <include package="z3ext.resourcepackage" />
   <include package="z3ext.statusmessage" />
 
   <browser:page
