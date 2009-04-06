@@ -10,11 +10,12 @@ compatible run-control scripts.
 Changes
 *******
 
-1.2.0 (2009/03/26)
+1.2.0 (2009/04/06)
 ==================
 
-Display the name of the script being run
+displays the name of the script being run
 for each script when it is started, stopped, or restarted
+
 
 1.1.0 (2008/02/01)
 ==================
@@ -447,7 +448,8 @@ Now we can remove the run-script option from the Zope section:
     case $1 in 
       stop)
     <BLANKLINE>
-        /demo/zope "$@" \
+        echo zope: 
+    /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -460,7 +462,8 @@ Now we can remove the run-script option from the Zope section:
         ;;
       *) 
     <BLANKLINE>
-        /demo/zope "$@" \
+        echo zope: 
+    /demo/zope "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -528,7 +531,8 @@ Note that for instance 2, we are arranging for the script to pre-exist.
     case $1 in 
       stop)
     <BLANKLINE>
-        /demo/instance2 "$@" \
+        echo instance2: 
+    /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -551,7 +555,8 @@ Note that for instance 2, we are arranging for the script to pre-exist.
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        /demo/instance2 "$@" \
+        echo instance2: 
+    /demo/instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
@@ -682,7 +687,8 @@ to reflect that:
     case $1 in 
       stop)
     <BLANKLINE>
-        /demo/acme-instance2 "$@" \
+        echo acme-instance2: 
+    /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         LD_LIBRARY_PATH=/opt/foolib \
@@ -705,15 +711,13 @@ to reflect that:
           "/opt/zope/bin/zopectl -C /etc/instance1.conf $*" \
           </dev/null
     <BLANKLINE>
-        /demo/acme-instance2 "$@" \
+        echo acme-instance2: 
+    /demo/acme-instance2 "$@" \
           </dev/null
     <BLANKLINE>
         ;;
     esac
-    <BLANKLINE>
-
-
-.. 
+    <BLANKLINE> 
 
   Edge case, when we remove the part, we uninstall acme:
 
