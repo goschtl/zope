@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-3.4.3 (unreleased)
+3.5.0 (2009-04-06)
 ------------------
 
 - Use new ``zope.authentication`` instead of ``zope.app.security``.
