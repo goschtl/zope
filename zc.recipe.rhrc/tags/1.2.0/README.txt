@@ -10,6 +10,13 @@ compatible run-control scripts.
 Changes
 *******
 
+1.2.0 (2009/04/06)
+==================
+
+displays the name of the script being run
+for each script when it is started, stopped, or restarted
+
+
 1.1.0 (2008/02/01)
 ==================
 
