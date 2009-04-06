@@ -22,12 +22,16 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.app.exception',
-      version = '3.4.3dev',
+      version='3.4.3dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope 3 exception views',
       long_description=(
           read('README.txt')
+          + '\n\n' +
+          '.. contents::'
+          + '\n\n' +
+          read('src', 'zope', 'app', 'exception', 'browser', 'systemerror.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
