@@ -5,7 +5,7 @@ CHANGES
 1.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Removed not necessary test dependency on ``zope.app.twisted``.
 
 
 1.4.0 (2009-03-16)

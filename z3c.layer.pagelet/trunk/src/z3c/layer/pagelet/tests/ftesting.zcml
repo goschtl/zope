@@ -47,8 +47,6 @@
   <include package="zope.app.publisher.browser" />
   <include package="zope.app.authentication" />
   <include package="zope.securitypolicy" />
-  <include package="zope.app.twisted" />
-  <include package="zope.app.wsgi" />
   <include package="zope.component" />
   <include package="zope.contentprovider" />
   <include package="zope.location" />

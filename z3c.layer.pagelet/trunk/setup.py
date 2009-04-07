@@ -61,7 +61,6 @@ setup(
             'zope.securitypolicy',
             'zope.app.testing',
             'zope.app.i18n',
-            'zope.app.twisted',
             'zope.configuration>=3.5.0',
             'zope.component',
             'zope.app.component',
