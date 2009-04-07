@@ -17,25 +17,13 @@ from jinja2.ext import Extension, InternationalizationExtension
 from jinja2.utils import contextfunction
 from zope.component import getUtility
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
+from zope.cachedescriptors import method
 
 class DomainNotDefined(Exception):
     def __str__(self):
         return """
     Domain translations it's required.
     Use {% set i18n_domain='your-domain' %} in the top of your template."""
-
-@contextfunction
-def translator(context, msg):
-    request = context.resolve('view').request
-    domain = context.resolve('i18n_domain')
-    if not domain:
-        raise DomainNotDefined
-
-    langs = IUserPreferredLanguages(request).getPreferredLanguages()
-
-    translation_domain = getUtility(ITranslationDomain, domain)
-
-    return translation_domain.translate(msg, target_language=langs[0])
 
 @contextfunction
 def _translator_alias(context, string):
@@ -65,7 +53,27 @@ class i18nExtension(InternationalizationExtension):
         We override this method to use a different translator
         allowing dynamic domains using zope.i18n machinery.
         """
-        self.environment.globals.update(gettext=translator)
+        self.environment.globals.update(gettext=self.translator)
+
+    @method.cachedIn('_cache')
+    def trans_domain(self, domain):
+        """
+        Domains names are cached in order to avoid
+        the getUtility call for each translation in the template.
+        """
+        return getUtility(ITranslationDomain, domain)
+
+    @contextfunction
+    def translator(self, context, msg):
+        request = context.resolve('view').request
+        domain = context.resolve('i18n_domain')
+        if not domain:
+            raise DomainNotDefined
+
+        langs = IUserPreferredLanguages(request).getPreferredLanguages()
+
+        return self.trans_domain(domain).translate(msg,
+                                                   target_language=langs[0])
 
     def _make_node(self, singular, plural, variables, plural_expr):
         """
