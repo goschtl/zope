@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    package="van.testing"
+    >
+
+  <include package="zope.component" file="meta.zcml"/>
+
+  <!-- Test declaration so we can see if it was registered -->
+  <utility
+      name="test"
+      component=".tests.MARKER"
+      provides="zope.interface.Interface"
+      />
+
+</configure>
