@@ -35,7 +35,19 @@
   <a href="http://localhost/manfred/++resource++five.grok.ftests.view/style.css">A link to some style for life!</a>
   </body>
   </html>
+
+  We can use exists on resource files:
+
   >>> browser.open("http://localhost/manfred/exists")
+  >>> print browser.contents
+  <html>
+  <body>
+  <span>Test succeed</span>
+  <BLANKLINE>
+  </body>
+  </html>
+  <BLANKLINE>
+  >>> browser.open("http://localhost/manfred/existsandtraverse")
   >>> print browser.contents
   <html>
   <body>
@@ -81,6 +93,21 @@ exists = grok.PageTemplate("""\
    tal:condition="exists: view/static/style.css">Test succeed</span>
 <span
    tal:condition="exists: view/static/nonexistant.css">Test failed</span>
+</body>
+</html>
+""")
+
+
+class ExistsAndTraverse(grok.View):
+    pass
+
+existsandtraverse = grok.PageTemplate("""\
+<html>
+<body>
+<span
+   tal:condition="exists: context/++resource++five.grok.ftests.view/style.css">Test succeed</span>
+<span
+   tal:condition="exists: context/++resource++five.grok.ftests.view/nonexistant.css">Test failed</span>
 </body>
 </html>
 """)
