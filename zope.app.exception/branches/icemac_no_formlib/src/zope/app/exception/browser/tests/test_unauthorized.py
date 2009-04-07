@@ -17,13 +17,14 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope import component, interface
-import zope.formlib.namedtemplate
+import z3c.template.interfaces
 from zope.publisher.browser import TestRequest
 from zope.authentication.interfaces import IAuthentication
 from zope.security.interfaces import IPrincipal
 from zope.app.testing import ztapi
 from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.testing.placelesssetup import PlacelessSetup
+import zope.publisher.interfaces.browser
 
 class DummyPrincipal(object):
     interface.implements(IPrincipal)  # this is a lie
@@ -47,13 +48,14 @@ class DummyAuthUtility(object):
 
 class DummyTemplate (object):
 
-    def __init__(self, context):
+    def __init__(self, context, request):
         self.context = context
 
-    component.adapts(Unauthorized)
-    interface.implements(zope.formlib.namedtemplate.INamedTemplate)
+    component.adapts(Unauthorized,
+                     zope.publisher.interfaces.browser.IDefaultBrowserLayer)
+    interface.implements(z3c.template.interfaces.IContentTemplate)
 
-    def __call__(self):
+    def __call__(self, view):
         return 'You are not authorized'
 
 class Test(PlacelessSetup, TestCase):
@@ -83,7 +85,7 @@ class Test(PlacelessSetup, TestCase):
 
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
-        
+
         # check headers that work around squid "negative_ttl"
         self.assertEqual(request.response.getHeader('Expires'),
                          'Mon, 26 Jul 1997 05:00:00 GMT')
@@ -105,9 +107,9 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
-        
+
         self.auth.status = 303
-        
+
         res = u()
 
         # Make sure that the template was not rendered

@@ -20,8 +20,9 @@ __docformat__ = 'restructuredtext'
 from zope.authentication.interfaces import IAuthentication
 from zope.publisher.browser import BrowserPage
 from zope.formlib import namedtemplate
-from zope.component import getUtility
+import zope.component
 from zope.app.pagetemplate import ViewPageTemplateFile
+import z3c.template.interfaces
 
 class Unauthorized(BrowserPage):
 
@@ -36,12 +37,10 @@ class Unauthorized(BrowserPage):
         self.request.response.setHeader('Pragma', 'no-cache')
 
         principal = self.request.principal
-        auth = getUtility(IAuthentication)
+        auth = zope.component.getUtility(IAuthentication)
         auth.unauthorized(principal.id, self.request)
         if self.request.response.getStatus() not in (302, 303):
-            return self.template()
-
-    template = namedtemplate.NamedTemplate('default')
-
-default_template = namedtemplate.NamedTemplateImplementation(
-    ViewPageTemplateFile('unauthorized.pt'), Unauthorized)
+            template = zope.component.getMultiAdapter(
+                (self, self.request), z3c.template.interfaces.IContentTemplate,
+                name='default')
+            return template(self)

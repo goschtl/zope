@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Got rid of ``zope.formlib`` dependency by using ``z3c.template`` for
+  the named template of the ``Unauthorized`` view.
 
 
 3.5.0 (2009-04-06)

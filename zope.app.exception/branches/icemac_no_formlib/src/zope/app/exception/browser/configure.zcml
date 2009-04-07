@@ -1,5 +1,6 @@
 <zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns:z3c="http://namespaces.zope.org/z3c"
    xmlns="http://namespaces.zope.org/browser">
 
   <page
@@ -17,7 +18,11 @@
       class=".unauthorized.Unauthorized"
       />
 
-  <zope:adapter factory=".unauthorized.default_template" name="default" />
+  <z3c:template
+     for=".unauthorized.Unauthorized"
+     template="unauthorized.pt"
+     name="default"
+      />
 
   <page
       for="zope.exceptions.interfaces.IUserError"
