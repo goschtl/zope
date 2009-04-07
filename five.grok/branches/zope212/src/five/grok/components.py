@@ -19,7 +19,6 @@ import os.path
 import sys
 
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope import interface, component
 
 from grokcore.component.interfaces import IContext
@@ -34,17 +33,12 @@ import grokcore.security
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile \
     as BaseViewPageTemplateFile
-from Products.Five.browser.pagetemplatefile import getEngine
 from Products.Five.browser import resource
 from Products.Five.formlib import formbase
 from Products.Five.viewlet.manager import ViewletManagerBase as \
     ZopeTwoBaseViewletManager
-from Products.PageTemplates.Expressions import SecureModuleImporter
-from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 from OFS.SimpleItem import SimpleItem
 from OFS.Folder import Folder
-
-import Acquisition
 
 
 class Model(SimpleItem):
@@ -55,60 +49,8 @@ class Container(Folder):
     interface.implements(IAttributeAnnotatable, IContext)
 
 
-class View(grokcore.view.View, Acquisition.Explicit):
-
-    def __init__(self, *args):
-        super(View, self).__init__(*args)
-        if not (self.static is None):
-            # static should be wrapper correctly with acquisition,
-            # otherwise you will not be able to compute URL for
-            # resources.
-            self.static = self.static.__of__(self)
-
-    # We let getPhysicalPath to be acquired. This make static URL's
-    # work, and prevent us to inherit from Acquisition.Implicit
-    getPhysicalPath = Acquisition.Acquired
-
-
-# TODO: This should probably move to Products.Five.browser
-
-class ViewAwareZopePageTemplate(ZopePageTemplate):
-
-    def pt_getEngine(self):
-        return getEngine()
-
-    def pt_getContext(self):
-        try:
-            root = self.getPhysicalRoot()
-        except AttributeError:
-            try:
-                root = self.context.getPhysicalRoot()
-            except AttributeError:
-                root = None
-
-        view = self._getContext()
-        here = Acquisition.aq_inner(self.context)
-
-        request = getattr(root, 'REQUEST', None)
-        c = {'template': self,
-             'here': here,
-             'context': here,
-             'container': here,
-             'nothing': None,
-             'options': {},
-             'root': root,
-             'request': request,
-             'modules': SecureModuleImporter,
-             }
-        if view is not None:
-            c['view'] = view
-            c['views'] = ViewMapper(here, request)
-
-        if hasattr(self, 'pt_grokContext'):
-            c.update(self.pt_grokContext)
-
-        return c
-
+class View(grokcore.view.View):
+    pass
 
 class ViewPageTemplateFile(BaseViewPageTemplateFile):
 
@@ -120,9 +62,6 @@ class ViewPageTemplateFile(BaseViewPageTemplateFile):
         return c
 
 class ZopeTwoPageTemplate(PageTemplate):
-
-    def setFromString(self, string):
-        self._template = ViewAwareZopePageTemplate(id=None, text=string)
 
     def setFromFilename(self, filename, _prefix=None):
         self._template = ViewPageTemplateFile(filename, _prefix)
@@ -219,9 +158,6 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
             # XXX See View
             self.static = self.static.__of__(self)
 
-    # XXX See View
-    getPhysicalPath = Acquisition.Acquired
-
     def filter(self, viewlets):
         # XXX Need Zope 2 filter
         return ZopeTwoBaseViewletManager.filter(self, viewlets)
@@ -231,15 +167,6 @@ class ViewletManager(BaseViewletManager, ZopeTwoBaseViewletManager):
         return ZopeTwoBaseViewletManager.__getitem__(self, key)
 
 
-class Viewlet(BaseViewlet, Acquisition.Explicit):
+class Viewlet(BaseViewlet):
 
     martian.baseclass()
-
-    def __init__(self, context, request, view, manager):
-        super(Viewlet, self).__init__(context, request, view, manager)
-        if not (self.static is None):
-            # XXX See View
-            self.static = self.static.__of__(self)
-
-    # XXX See View
-    getPhysicalPath = Acquisition.Acquired
