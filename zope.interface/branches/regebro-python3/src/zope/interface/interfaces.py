@@ -621,6 +621,8 @@ class IInterfaceDeclaration(Interface):
 
         after the class has been created.
         """
+    def provider(*interfaces):
+        """A class decorator version of classProvides"""
 
     def moduleProvides(*interfaces):
         """Declare interfaces provided by a module

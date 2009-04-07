@@ -255,6 +255,9 @@ class InterfaceTests(unittest.TestCase):
 
     def testIssue228(self):
         # Test for http://collector.zope.org/Zope3-dev/228
+        if sys.version[0] == '3':
+            # No old style classes in Python 3, so the test becomes moot.
+            return
         class I(Interface):
             "xxx"
         class Bad:

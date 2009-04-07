@@ -1127,13 +1127,6 @@ def classProvides(*interfaces):
         >>> [i.getName() for i in C().__providedBy__]
         ['IFoo']
 
-      If classProvides is called outside of a class definition, it fails.
-
-        >>> classProvides(IFooFactory)
-        Traceback (most recent call last):
-        ...
-        TypeError: classProvides can be used only from a class definition.
-
       """
     frame = sys._getframe(1)
     locals = frame.f_locals
@@ -1155,6 +1148,16 @@ def _classProvides_advice(cls):
     del cls.__provides__
     directlyProvides(cls, *interfaces)
     return cls
+
+class provider:
+    """Class decorator version of classProvides"""
+
+    def __init__(self, *interfaces):
+        self.interfaces = interfaces
+
+    def __call__(self, ob):
+        directlyProvides(ob, *self.interfaces)
+        return ob            
 
 def moduleProvides(*interfaces):
     """Declare interfaces provided by a module

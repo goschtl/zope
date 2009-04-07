@@ -140,6 +140,7 @@ try:
             self.fixer_names = get_fixers_from_package('lib2to3.fixes') + \
                 get_fixers_from_package('zope.fixers')
             self.run_2to3(self.updated_files)
+            self.run_2to3(self.updated_files, doctests_only=True)
             self.run_2to3(self.possible_doctests, doctests_only=True)
     
             # Remaining base class code
