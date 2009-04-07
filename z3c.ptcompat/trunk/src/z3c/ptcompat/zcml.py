@@ -8,7 +8,6 @@ from zope.viewlet import metaconfigure as viewletmeta
 from zope.viewlet.interfaces import IViewletManager
 from zope.app.publisher.browser import viewmeta
 from zope.app.pagetemplate import simpleviewclass
-from zope.app.form.browser import metaconfigure as formmeta
 
 from z3c.ptcompat import ViewPageTemplateFile
 from z3c.ptcompat import config
@@ -112,56 +111,63 @@ def viewlet_manager_directive(_context, name, *args, **kwargs):
 
     return viewletmeta.viewletManagerDirective(_context, name, *args, **kwargs)
 
-if config.PREFER_Z3C_PT:
-    # Replace globals in *Factory by the ones from our package, cloning
-    # the existing functions so we don't have to re-define them.
-    new_factory_globals = dict(ViewPageTemplateFile=ViewPageTemplateFile,
-                               SimpleViewClass=SimpleViewClass)
-
-    AddViewFactory = clone_and_replace_globals(formmeta.AddViewFactory,
-                                               new_factory_globals)
-    EditViewFactory = clone_and_replace_globals(formmeta.EditViewFactory,
-                                                new_factory_globals)
-    DisplayViewFactory = clone_and_replace_globals(formmeta.DisplayViewFactory,
-                                                   new_factory_globals)
-
-    # Now, replace globals in the directive handlers' __call__ by our own
-    # factories that were cloned right above.
-    new_form_globals = dict(AddViewFactory=AddViewFactory,
-                            EditViewFactory=EditViewFactory,
-                            DisplayViewFactory=DisplayViewFactory)
-
-    class AddFormDirective(formmeta.AddFormDirective):
-        __call__ = clone_and_replace_globals(
-            formmeta.AddFormDirective.__call__.im_func,
-            new_form_globals)
-
-    class EditFormDirective(formmeta.EditFormDirective):
-        __call__ = clone_and_replace_globals(
-            formmeta.EditFormDirective.__call__.im_func,
-            new_form_globals)
-
-    class FormDirective(formmeta.FormDirective):
-        __call__ = clone_and_replace_globals(
-            formmeta.FormDirective.__call__.im_func,
-            new_form_globals)
-
-    class SubeditFormDirective(formmeta.SubeditFormDirective):
-        __call__ = clone_and_replace_globals(
-            formmeta.SubeditFormDirective.__call__.im_func,
-            new_form_globals)
-
-    class SchemaDisplayDirective(formmeta.SchemaDisplayDirective):
-        __call__ = clone_and_replace_globals(
-            formmeta.SchemaDisplayDirective.__call__.im_func,
-            new_form_globals)
+try:
+    # Make zope.app.form a soft-dependency. We only register custom
+    # directives if it is available.
+    from zope.app.form.browser import metaconfigure as formmeta
+except ImportError:
+    pass
 else:
-    AddViewFactory = formmeta.AddViewFactory
-    EditViewFactory = formmeta.EditViewFactory
-    DisplayViewFactory = formmeta.DisplayViewFactory
+    if config.PREFER_Z3C_PT:
+        # Replace globals in *Factory by the ones from our package, cloning
+        # the existing functions so we don't have to re-define them.
+        new_factory_globals = dict(ViewPageTemplateFile=ViewPageTemplateFile,
+                                   SimpleViewClass=SimpleViewClass)
 
-    AddFormDirective = formmeta.AddFormDirective
-    EditFormDirective = formmeta.EditFormDirective
-    FormDirective = formmeta.FormDirective
-    SubeditFormDirective = formmeta.SubeditFormDirective
-    SchemaDisplayDirective = formmeta.SchemaDisplayDirective
+        AddViewFactory = clone_and_replace_globals(formmeta.AddViewFactory,
+                                                   new_factory_globals)
+        EditViewFactory = clone_and_replace_globals(formmeta.EditViewFactory,
+                                                    new_factory_globals)
+        DisplayViewFactory = clone_and_replace_globals(formmeta.DisplayViewFactory,
+                                                       new_factory_globals)
+
+        # Now, replace globals in the directive handlers' __call__ by our own
+        # factories that were cloned right above.
+        new_form_globals = dict(AddViewFactory=AddViewFactory,
+                                EditViewFactory=EditViewFactory,
+                                DisplayViewFactory=DisplayViewFactory)
+
+        class AddFormDirective(formmeta.AddFormDirective):
+            __call__ = clone_and_replace_globals(
+                formmeta.AddFormDirective.__call__.im_func,
+                new_form_globals)
+
+        class EditFormDirective(formmeta.EditFormDirective):
+            __call__ = clone_and_replace_globals(
+                formmeta.EditFormDirective.__call__.im_func,
+                new_form_globals)
+
+        class FormDirective(formmeta.FormDirective):
+            __call__ = clone_and_replace_globals(
+                formmeta.FormDirective.__call__.im_func,
+                new_form_globals)
+
+        class SubeditFormDirective(formmeta.SubeditFormDirective):
+            __call__ = clone_and_replace_globals(
+                formmeta.SubeditFormDirective.__call__.im_func,
+                new_form_globals)
+
+        class SchemaDisplayDirective(formmeta.SchemaDisplayDirective):
+            __call__ = clone_and_replace_globals(
+                formmeta.SchemaDisplayDirective.__call__.im_func,
+                new_form_globals)
+    else:
+        AddViewFactory = formmeta.AddViewFactory
+        EditViewFactory = formmeta.EditViewFactory
+        DisplayViewFactory = formmeta.DisplayViewFactory
+
+        AddFormDirective = formmeta.AddFormDirective
+        EditFormDirective = formmeta.EditFormDirective
+        FormDirective = formmeta.FormDirective
+        SubeditFormDirective = formmeta.SubeditFormDirective
+        SchemaDisplayDirective = formmeta.SchemaDisplayDirective
