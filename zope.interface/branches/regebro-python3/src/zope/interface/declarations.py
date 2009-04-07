@@ -33,7 +33,7 @@ import weakref
 from zope.interface.interface import InterfaceClass, Specification
 from ro import mergeOrderings, ro
 import exceptions
-from types import ModuleType
+from types import ModuleType, MethodType, FunctionType
 from zope.interface.advice import addClassAdvisor
 
 # Registry of class-implementation specifications
@@ -491,16 +491,17 @@ class implementer:
         self.interfaces = interfaces
 
     def __call__(self, ob):
-        if isinstance(ob, DescriptorAwareMetaClasses):
-            # XXX Here I am!
-            classImplements(ob, *self.interfaces)
+        if isinstance(ob, (FunctionType, MethodType)):
+            spec = Implements(*self.interfaces)
+            try:
+                ob.__implemented__ = spec
+            except AttributeError:
+                raise TypeError("Can't declare implements", ob)
             return ob
-        spec = Implements(*self.interfaces)
-        try:
-            ob.__implemented__ = spec
-        except AttributeError:
-            raise TypeError("Can't declare implements", ob)
-        return ob
+        else:
+            # Assume it's a class:
+            classImplements(ob, *self.interfaces)
+            return ob            
 
 def _implements(name, interfaces, classImplements):
     frame = sys._getframe(2)
