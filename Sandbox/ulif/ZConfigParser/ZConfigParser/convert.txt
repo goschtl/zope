@@ -20,6 +20,7 @@ We convert that file:
     >>> from ZConfigParser.convert import convertFile
     >>> result = convertFile('oldstyle.conf')
     >>> print result
+    [zope]
     zodb = zope/zodb
     <BLANKLINE>
     [zope/zodb]
@@ -28,6 +29,164 @@ We convert that file:
     [zope/zodb/filestorage]
     path = Data.fs
     <BLANKLINE>
+
+Now something more complex:
+
+    >>> open('oldstyle.conf', 'wb').write("""
+    ... # This is the configuration file for the Zope Application Server.
+    ...
+    ... %define INSTANCE  /home/jim/sample_instance
+    ...
+    ... %define CONFDIR   $INSTANCE/etc
+    ... %define DATADIR   $INSTANCE/var
+    ... %define LOGDIR    $INSTANCE/log
+    ...
+    ... # identify the component configuration used to define the site:
+    ... #
+    ... site-definition $INSTANCE/etc/site.zcml
+    ...
+    ... # number of bytecode instructions to execute between checks for
+    ... # interruptions (SIGINTR, thread switches):
+    ... #
+    ... interrupt-check-interval 200
+    ...
+    ... <server HTTP0>
+    ...   type HTTP
+    ...   address 8080
+    ... </server>
+    ... <server HTTP1>
+    ...   type HTTP
+    ...   address 8081
+    ... </server>
+    ... <server>
+    ...   type PostmortemDebuggingHTTP
+    ...   address 8082
+    ... </server>
+    ...
+    ... <zodb main>
+    ...   <filestorage>
+    ...     path $DATADIR/Data.fs
+    ...   </filestorage>
+    ... </zodb>
+    ... <zodb a>
+    ...   <filestorage>
+    ...     path $DATADIR/A.fs
+    ...   </filestorage>
+    ... </zodb>
+    ...
+    ... # Access log
+    ...
+    ... <accesslog>
+    ...
+    ...   <logfile>
+    ...     path $LOGDIR/access.log
+    ...   </logfile>
+    ...
+    ...   <logfile>
+    ...     path STDOUT
+    ...   </logfile>
+    ...
+    ... </accesslog>
+    ...
+    ... <eventlog>
+    ...
+    ...   <logfile>
+    ...     path $LOGDIR/z3.log
+    ...     formatter zope.exceptions.log.Formatter
+    ...   </logfile>
+    ...
+    ...   <logfile>
+    ...     path STDOUT
+    ...     formatter zope.exceptions.log.Formatter
+    ...   </logfile>
+    ... </eventlog>
+    ...
+    ... devmode off
+    ... """)
+
+
+    >>> result = convertFile('oldstyle.conf')
+    >>> print result
+    [DEFAULT]
+    INSTANCE = /home/jim/sample_instance
+    CONFDIR = %(INSTANCE)s/etc
+    DATADIR = %(INSTANCE)s/var
+    LOGDIR = %(INSTANCE)s/log
+    <BLANKLINE>
+    [zope]
+    # This is the configuration file for the Zope Application Server.
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    # identify the component configuration used to define the site:
+    #
+    site-definition = %(INSTANCE)s/etc/site.zcml
+    <BLANKLINE>
+    # number of bytecode instructions to execute between checks for
+    # interruptions (SIGINTR, thread switches):
+    #
+    interrupt-check-interval = 200
+    server = zope/server
+             zope/server.1
+             zope/server.2
+    zodb = zope/zodb
+           zope/zodb.1
+    # Access log
+    accesslog = zope/accesslog
+    eventlog = zope/eventlog
+    devmode = off
+    <BLANKLINE>
+    [zope/server]
+    config-section-label = http0
+    type = HTTP
+    address = 8080
+    <BLANKLINE>
+    [zope/server.1]
+    config-section-label = http1
+    type = HTTP
+    address = 8081
+    <BLANKLINE>
+    [zope/server.2]
+    type = PostmortemDebuggingHTTP
+    address = 8082
+    <BLANKLINE>
+    [zope/zodb]
+    config-section-label = main
+    filestorage = zope/zodb/filestorage
+    <BLANKLINE>
+    [zope/zodb/filestorage]
+    path = %(DATADIR)s/Data.fs
+    <BLANKLINE>
+    [zope/zodb.1]
+    config-section-label = a
+    filestorage = zope/zodb.1/filestorage
+    <BLANKLINE>
+    [zope/zodb.1/filestorage]
+    path = %(DATADIR)s/A.fs
+    <BLANKLINE>
+    [zope/accesslog]
+    logfile = zope/accesslog/logfile
+    logfile.1 = zope/accesslog/logfile.1
+    <BLANKLINE>
+    [zope/accesslog/logfile]
+    path = %(LOGDIR)s/access.log
+    <BLANKLINE>
+    [zope/accesslog/logfile.1]
+    path = STDOUT
+    <BLANKLINE>
+    [zope/eventlog]
+    logfile = zope/eventlog/logfile
+    logfile.1 = zope/eventlog/logfile.1
+    <BLANKLINE>
+    [zope/eventlog/logfile]
+    path = %(LOGDIR)s/z3.log
+    formatter = zope.exceptions.log.Formatter
+    <BLANKLINE>
+    [zope/eventlog/logfile.1]
+    path = STDOUT
+    formatter = zope.exceptions.log.Formatter
+    <BLANKLINE>
+
 
 Clean up:
 
