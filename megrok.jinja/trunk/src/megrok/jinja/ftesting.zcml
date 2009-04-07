@@ -1,0 +1,41 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:grok="http://namespaces.zope.org/grok"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   i18n_domain="megrok.jinja.ftests"
+   package="megrok.jinja.ftests"
+   >
+
+  <include package="grok" />
+  <include package="megrok.jinja" />
+  <grok:grok package="megrok.jinja.ftests" />
+
+
+  <i18n:registerTranslations directory="locales/mo" />
+
+  <!-- Typical functional testing security setup -->
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+  <grant
+      permission="zope.View"
+      principal="zope.anybody"
+      />
+
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <grant role="zope.Manager" principal="zope.mgr" />
+
+</configure>

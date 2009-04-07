@@ -1,0 +1,96 @@
+##############################################################################
+#
+# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
+from jinja2 import nodes
+from jinja2.ext import Extension, InternationalizationExtension
+from jinja2.utils import contextfunction
+from zope.component import getUtility
+from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
+
+class DomainNotDefined(Exception):
+    def __str__(self):
+        return """
+    Domain translations it's required.
+    Use {% set i18n_domain='your-domain' %} in the top of your template."""
+
+@contextfunction
+def translator(context, msg):
+    request = context.resolve('view').request
+    domain = context.resolve('i18n_domain')
+    if not domain:
+        raise DomainNotDefined
+
+    langs = IUserPreferredLanguages(request).getPreferredLanguages()
+
+    translation_domain = getUtility(ITranslationDomain, domain)
+
+    return translation_domain.translate(msg, target_language=langs[0])
+
+@contextfunction
+def _translator_alias(context, string):
+    return context.resolve('gettext')(context, string)
+
+class i18nExtension(InternationalizationExtension):
+    """
+    Jinja2 extension based on the `InternationalizationExtension`
+    extension from jinja2.ext.
+    """
+    # We use the same tag that InternationalizationExtension
+    # in order to be able to reuse the parser method
+    tags = set(['trans'])
+
+    def __init__(self, environment):
+        Extension.__init__(self, environment)
+        environment.globals['_'] = _translator_alias
+        environment.extend(
+            install_gettext_translations=self._install,
+            install_null_translations=self._install_null,
+            uninstall_gettext_translations=self._uninstall,
+            extract_translations=self._extract
+        )
+
+    def _install(self):
+        """
+        We override this method to use a different translator
+        allowing dynamic domains using zope.i18n machinery.
+        """
+        self.environment.globals.update(gettext=translator)
+
+    def _make_node(self, singular, plural, variables, plural_expr):
+        """
+        This method it's called from the `parser` defined in
+        `jinja2.ext.InternationalizationExtension` class.
+
+        We need to override this method to handle the pluralize tag.
+        """
+
+        # singular only:
+        if plural_expr is None:
+            gettext = nodes.Name('gettext', 'load')
+            node = nodes.Call(gettext, [nodes.Const(singular)],
+                              [], None, None)
+
+        # singular and plural
+        else:
+            #TODO: implement {%pluralize%} tag.
+            raise NotImplementedError("{% pluralize %} was not implemented yet")
+
+        # mark the return value as safe if we are in an
+        # environment with autoescaping turned on
+        if self.environment.autoescape:
+            node = nodes.MarkSafe(node)
+
+        if variables:
+            node = nodes.Mod(node, variables)
+        return nodes.Output([node])
