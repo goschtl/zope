@@ -166,7 +166,7 @@ Now something more complex:
     <BLANKLINE>
     [zope/accesslog]
     logfile = zope/accesslog/logfile
-    logfile.1 = zope/accesslog/logfile.1
+              zope/accesslog/logfile.1
     <BLANKLINE>
     [zope/accesslog/logfile]
     path = %(LOGDIR)s/access.log
@@ -176,7 +176,7 @@ Now something more complex:
     <BLANKLINE>
     [zope/eventlog]
     logfile = zope/eventlog/logfile
-    logfile.1 = zope/eventlog/logfile.1
+              zope/eventlog/logfile.1
     <BLANKLINE>
     [zope/eventlog/logfile]
     path = %(LOGDIR)s/z3.log

@@ -53,13 +53,20 @@ class ZConfConverter(object):
             # occur in the same section.
             num = 0
             child_name = child.nodeName
+            child_is_list_item = False
             while child_name in references:
+                child_is_list_item = True
                 num += 1
                 child_name = '%s.%s' % (child.nodeName, num)
             references.append(child_name)
         
             child_prefix = '%s/%s' % (prefix, child_name)
-            body += '%s = %s\n' % (child_name, child_prefix)
+            if not child_is_list_item:
+                body += '%s = %s\n' % (child_name, child_prefix)
+            else:
+                body += '%s%s\n' % (' '*(len(child.nodeName) + 3),
+                                    child_prefix)
+
             subsections += "\n[%s]\n" % child_prefix
             if child.hasAttributes() and 'name' in child.attributes.keys():
                 label = child.getAttribute('name').lower()
