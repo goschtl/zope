@@ -83,7 +83,7 @@ def suiteFromPackage(name):
 
 def test_suite():
     suite = unittest.TestSuite()
-    for name in ['module_directory', 'inline', 'i18n']:
+    for name in ['module_directory', 'inline', 'i18n', 'providers']:
         suite.addTest(suiteFromPackage(name))
     return suite
 

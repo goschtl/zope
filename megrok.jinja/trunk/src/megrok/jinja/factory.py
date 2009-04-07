@@ -19,14 +19,14 @@ import yaml, simplejson, grok, os
 from grokcore.view.components import GrokTemplate
 from grokcore.view.interfaces import ITemplate, ITemplateFileFactory
 
-from extensions import i18nExtension
+from extensions import i18nExtension, ContentProviderExtension
 
 # Create an Environment instance with the i18n extension
 # and the FileSystemLoader class loader that will look for
 # absolute path templates.
 # By default, auto_reload = True, for production system
 # should be set to False for higher performance
-env = Environment(extensions=[i18nExtension],
+env = Environment(extensions=[i18nExtension, ContentProviderExtension],
                   loader=FileSystemLoader('/'))
 
 env.install_gettext_translations()

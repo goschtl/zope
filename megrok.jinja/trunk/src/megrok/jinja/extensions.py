@@ -15,8 +15,9 @@
 from jinja2 import nodes
 from jinja2.ext import Extension, InternationalizationExtension
 from jinja2.utils import contextfunction
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
+from zope.contentprovider.interfaces import IContentProvider
 from zope.cachedescriptors import method
 
 class DomainNotDefined(Exception):
@@ -102,3 +103,25 @@ class i18nExtension(InternationalizationExtension):
         if variables:
             node = nodes.Mod(node, variables)
         return nodes.Output([node])
+
+class ContentProviderExtension(Extension):
+    """
+    Jinja2 extension to support the use of viewlets (content
+    providers).
+
+    It doesn't define any `tag`, just set the `provider` name function
+    in the `Environment.globals`
+    """
+    def __init__(self, environment):
+        Extension.__init__(self, environment)
+        environment.globals['provider'] = self._get_content_provider
+
+    @contextfunction
+    def _get_content_provider(self, context, name):
+        view = context.resolve('view')
+
+        provider = getMultiAdapter((view.context, view.request, view),
+                                    IContentProvider,
+                                    name=name)
+        provider.update()
+        return provider.render()
