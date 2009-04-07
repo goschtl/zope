@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="five.grok">
+
+  <include package="five.grok" file="meta.zcml" />
+
+  <include package="grokcore.view" />
+  <include package="grokcore.viewlet" />
+
+  <browser:defaultView
+      for="grokcore.component.interfaces.IContext"
+      name="index"
+      />
+
+  <permission
+      id="zope.View"
+      title="View"
+      zcml:condition="not-installed kss.core"
+      />
+
+  <includeOverrides file="overrides.zcml" />
+
+</configure>
