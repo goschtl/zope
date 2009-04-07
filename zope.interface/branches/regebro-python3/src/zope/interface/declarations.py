@@ -503,6 +503,23 @@ class implementer:
             classImplements(ob, *self.interfaces)
             return ob            
 
+class implementer_only:
+
+    def __init__(self, *interfaces):
+        self.interfaces = interfaces
+
+    def __call__(self, ob):
+        if isinstance(ob, (FunctionType, MethodType)):
+            # XXX Does this decorator make sense for anything but classes?
+            # I don't think so. There can be no inheritance of interfaces
+            # on a method pr function....
+            raise ValueError('The implementor_only decorator is not '
+                             'supported for methods or functions.')
+        else:
+            # Assume it's a class:
+            classImplementsOnly(ob, *self.interfaces)
+            return ob            
+        
 def _implements(name, interfaces, classImplements):
     frame = sys._getframe(2)
     locals = frame.f_locals
