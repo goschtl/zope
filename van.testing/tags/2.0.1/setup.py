@@ -23,7 +23,7 @@ long_description = (
     )
 
 setup(name="van.testing",
-      version='2.0.0dev',
+      version='2.0.1',
       license='ZPL 2.1',
       url='http://pypi.python.org/pypi/van.testing',
       author_email='zope-dev@zope.org',
