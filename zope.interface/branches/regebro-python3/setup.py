@@ -81,6 +81,9 @@ try: # Zope 3 setuptools versions
     from build_ext_3 import build_py_2to3 as build_py
     from build_ext_3 import optional_build_ext
     from build_ext_3 import test_2to3 as test
+    # This is Python 3. Setuptools is now required, and so is zope.fixers.
+    extra['install_requires'] = ['setuptools', 'zope.fixers' ],
+
 except (ImportError, SyntaxError):
     try: # Zope 2 setuptools versions
         from setuptools.command.build_py import build_py
@@ -92,7 +95,6 @@ except (ImportError, SyntaxError):
         from distutils.command.test import test
         from build_ext_2 import optional_build_ext
     
-        
 setup(name='zope.interface',
       version = '3.5.2dev',
       url='http://pypi.python.org/pypi/zope.interface',

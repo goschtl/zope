@@ -42,6 +42,7 @@ class optional_build_ext(build_ext):
         
 try:
     from distutils import log
+    from lib2to3.refactor import RefactoringTool, get_fixers_from_package
     # These should be a part of the Python 3 setuptools port
     def run_2to3(files, fixer_names=None, options=None, explicit=None, doctests_only=False):
         """Invoke 2to3 on a list of Python files.
@@ -54,7 +55,6 @@ try:
             return
     
         # Make this class local, to delay import of 2to3
-        from lib2to3.refactor import RefactoringTool, get_fixers_from_package
         class DistutilsRefactoringTool(RefactoringTool):
             def log_error(self, msg, *args, **kw):
                 log.error(msg, *args)
@@ -67,7 +67,7 @@ try:
     
         if fixer_names is None:
             fixer_names = get_fixers_from_package('lib2to3.fixes')
-        r = DistutilsRefactoringTool(fixer_names, options=options)
+        r = DistutilsRefactoringTool(fixer_names, options=options, explicit=explicit)
         r.refactor(files, write=True, doctests_only=doctests_only)
         
     class Mixin2to3:
@@ -137,6 +137,9 @@ try:
                 self.build_package_data()
     
             # 2to3
+            self.fixer_names = get_fixers_from_package('lib2to3.fixes') + \
+                ['zope.fixers.fix_implements',]
+            #self.fixer_names = ['fix_implements',]
             self.run_2to3(self.updated_files)
             self.run_2to3(self.possible_doctests, doctests_only=True)
     
