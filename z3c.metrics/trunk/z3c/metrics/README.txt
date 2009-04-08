@@ -1,4 +1,4 @@
-;-*-Doctest-*-
+.. -*-Doctest-*-
 
 ===========
 z3c.metrics
