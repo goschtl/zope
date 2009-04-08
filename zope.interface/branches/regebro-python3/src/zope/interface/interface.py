@@ -336,12 +336,8 @@ class Specification(SpecificationBase):
           >>> spec = Specification((I2, I3))
           >>> spec = Specification((I4, spec))
           >>> i = spec.interfaces()
-          >>> i.next().getName()
-          'I4'
-          >>> i.next().getName()
-          'I2'
-          >>> i.next().getName()
-          'I3'
+          >>> [x.getName() for x in i]
+          ['I4', 'I2', 'I3']
           >>> list(i)
           []
         """
@@ -504,8 +500,8 @@ class InterfaceClass(Element, InterfaceBase, Specification):
           ...
           >>>
           >>> i = I1.interfaces()
-          >>> i.next().getName()
-          'I1'
+          >>> [x.getName() for x in i]
+          ['I1']
           >>> list(i)
           []
         """

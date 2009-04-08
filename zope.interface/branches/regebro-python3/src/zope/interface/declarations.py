@@ -96,12 +96,8 @@ class Declaration(Specification):
           >>> spec = Declaration(I2, I3)
           >>> spec = Declaration(I4, spec)
           >>> i = iter(spec)
-          >>> i.next().getName()
-          'I4'
-          >>> i.next().getName()
-          'I2'
-          >>> i.next().getName()
-          'I3'
+          >>> [x.getName() for x in i]
+          ['I4', 'I2', 'I3']
           >>> list(i)
           []
         """
@@ -124,16 +120,8 @@ class Declaration(Specification):
           >>> spec = Declaration(I2, I3)
           >>> spec = Declaration(I4, spec)
           >>> i = spec.flattened()
-          >>> i.next().getName()
-          'I4'
-          >>> i.next().getName()
-          'I2'
-          >>> i.next().getName()
-          'I1'
-          >>> i.next().getName()
-          'I3'
-          >>> i.next().getName()
-          'Interface'
+          >>> [x.getName() for x in i]
+          ['I4', 'I2', 'I1', 'I3', 'Interface']
           >>> list(i)
           []
 
