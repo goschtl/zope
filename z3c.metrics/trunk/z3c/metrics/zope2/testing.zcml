@@ -4,6 +4,8 @@
 
   <include package="Products.Five" file="meta.zcml" />
 
+  <adapter factory="Products.Five.component.siteManagerAdapter" />
+
   <include file="index.zcml" />
 
 </configure>
