@@ -304,12 +304,14 @@ if sys.version_info >= (2, 4):
           ...     def __init__(self, min, max):
           ...         self.min, self.max = min, max
 
+          >>> from zope.interface.exceptions import Invalid
           >>> IRange.validateInvariants(Range(1,2))
           >>> IRange.validateInvariants(Range(1,1))
-          >>> IRange.validateInvariants(Range(2,1))
-          Traceback (most recent call last):
-          ...
-          Invalid: max < min
+          >>> try:
+          ...     IRange.validateInvariants(Range(2,1))
+          ... except Invalid, e:
+          ...     str(e)
+          'max < min'
 
 
         """

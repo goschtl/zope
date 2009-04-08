@@ -660,11 +660,13 @@ IBase::
 будет выкинуто единственное исключение `Invalid` со списком исключений
 как аргументом::
 
+  >>> from zope.interface.exceptions import Invalid
   >>> errors = []
-  >>> IRange.validateInvariants(Range(2,1), errors)
-  Traceback (most recent call last):
-  ...
-  Invalid: [RangeError(Range(2, 1))]
+  >>> try:
+  ...     IRange.validateInvariants(Range(2,1), errors)
+  ... except Invalid, e:
+  ...     str(e)
+  '[RangeError(Range(2, 1))]'
 
 И список будет заполнен индивидуальными исключениями::
 

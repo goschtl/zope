@@ -176,7 +176,11 @@ class AdviceTests(TestCase):
 TestClasses = (AdviceTests, FrameInfoTest)
 
 def test_suite():
-    return TestSuite([makeSuite(t,'check') for t in TestClasses])
+    if sys.version[0] == '2':
+        return TestSuite([makeSuite(t,'check') for t in TestClasses])
+    else:
+        # Advise metaclasses doesn't work in Python 3
+        return []
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

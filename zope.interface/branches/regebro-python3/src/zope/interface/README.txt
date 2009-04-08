@@ -662,12 +662,14 @@ after the first error.  If you pass a list to `validateInvariants`,
 then a single `Invalid` exception will be raised with the list of
 exceptions as it's argument::
 
+  >>> from zope.interface.exceptions import Invalid
   >>> errors = []
-  >>> IRange.validateInvariants(Range(2,1), errors)
-  Traceback (most recent call last):
-  ...
-  Invalid: [RangeError(Range(2, 1))]
-
+  >>> try:
+  ...     IRange.validateInvariants(Range(2,1), errors)
+  ... except Invalid, e:
+  ...     str(e)
+  '[RangeError(Range(2, 1))]'
+  
 And the list will be filled with the individual exceptions::
 
   >>> errors
