@@ -70,7 +70,8 @@ class MetricsIndex(index.Index, SimpleItem.SimpleItem):
         reg = getattr(sm, 'registerUtility', None)
         if reg is None:
             reg = sm.provideUtility
-        reg(utility_interface, self, utility_name)
+        reg(component=self, provided=utility_interface,
+            name=utility_name)
 
     def _getCatalog(self):
         zcatalog = Acquisition.aq_parent(Acquisition.aq_inner(
