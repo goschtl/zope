@@ -3,11 +3,13 @@ from zope import component
 from Products.CMFCore import utils as cmf_utils
 
 from Products.remember import interfaces as remember_ifaces
-from Products.TeamSpace import interfaces as ts_ifaces
+from Products.TeamSpace.interfaces import (
+    membership as membership_ifaces)
+from Products.TeamSpace.interfaces import space as space_ifaces
 
 from z3c.metrics import interfaces
 
-@component.adapter(ts_ifaces.ITeamMembership,
+@component.adapter(membership_ifaces.ITeamMembership,
                    interfaces.IChangeScoreEvent)
 def dispatchToSpaces(membership, event):
     for space in membership.getTeam().getTeamSpaces():
@@ -15,7 +17,7 @@ def dispatchToSpaces(membership, event):
             [membership, event, space], None):
             pass # Just make sure the handlers run
 
-@component.adapter(ts_ifaces.ISpace,
+@component.adapter(space_ifaces.ISpace,
                    interfaces.IBuildScoreEvent)
 def dispatchToTeamMemberships(space, event):
     for team in space.getSpaceTeams():
@@ -24,7 +26,7 @@ def dispatchToTeamMemberships(space, event):
                 [membership, event, space], None):
                 pass # Just make sure the handlers run
 
-@component.adapter(ts_ifaces.ITeamMembership,
+@component.adapter(membership_ifaces.ITeamMembership,
                    interfaces.IChangeScoreEvent)
 def dispatchToMember(membership, event):
     for _ in component.subscribers(
