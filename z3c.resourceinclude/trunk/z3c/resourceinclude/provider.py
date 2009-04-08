@@ -6,23 +6,28 @@ from zope.publisher.interfaces.browser import IBrowserView
 from zope.contentprovider.interfaces import IContentProvider
 
 from z3c.resourceinclude.interfaces import IResourceCollector
-from z3c.pt.pagetemplate import ViewPageTemplateFile
+from chameleon.zpt.template import PageTemplateFile
 
-def html_comment(u):
-    return u'<!-- %s -->' % u
+import os.path
 
 import mimetypes
 if not '.kss' in mimetypes.types_map:
     mimetypes.add_type('text/kss', '.kss')
 
+
 def guess_mimetype(resource):
     return resource.context.content_type
+
+
+def local_file(filename):
+    return os.path.join(os.path.dirname(__file__), filename)
+
 
 class ResourceIncludeProvider(object):
     interface.implements(IContentProvider)
     component.adapts(interface.Interface, IBrowserRequest, IBrowserView)
 
-    template = ViewPageTemplateFile("provider.pt")
+    template = PageTemplateFile(local_file("provider.pt"))
 
     def __init__(self, context, request, view):
         self.context = context
@@ -37,4 +42,4 @@ class ResourceIncludeProvider(object):
                       'url': resource()} for \
                      resource in self.collector.collect()]
 
-        return self.template(resources=resources, comment=html_comment)
+        return self.template(resources=resources)
