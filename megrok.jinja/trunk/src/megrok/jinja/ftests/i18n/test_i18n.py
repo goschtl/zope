@@ -45,6 +45,9 @@ with some short msgid::
   >>> view = getMultiAdapter((context, request), name='underscoretranslate')
   >>> print view()
   <BLANKLINE>
+  <BLANKLINE>
+  Probando la extension i18n en megrok.jinja usando la funcion `_`
+  <BLANKLINE>
   Probando la extension i18n en megrok.jinja usando la funcion `_`
 
 If we don't use {% set i18n_domain='some-domain' %} at the top
@@ -70,6 +73,9 @@ class TransTagTranslate(grok.View):
 
 class UnderscoreTranslate(grok.View):
     grok.context(Context)
+
+    def update(self):
+        self.msg = 'testing-underscore'
 
 class NoDomain(grok.View):
     grok.context(Context)

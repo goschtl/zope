@@ -108,6 +108,42 @@ You will get the next JSON:
                 {"key-3": "whatever 3"},
                 {"key-4": "whatever 4"}]}
 
+
+TODO
+-----
+It's important to note that, `messages` created in python classes
+won't be translated like in Zope Page Templates.
+
+If you write:
+
+view.py
+
+    from zope import i18nmessageid
+    _ = i18nmessageid.MessageFactory('some.domain')
+
+    class Something(grok.View):
+        def update(self):
+            self.msg = _('Some msg id')
+view.jinja
+
+    {{ view.msg }}
+
+You will always get 'Some msg id'.
+
+What you do could write is:
+
+view.py
+
+    class Something(grok.View):
+        def update(self):
+            self.msg = 'Some msg id'
+
+view.jinja
+
+    {% set i18n_domain='some.domain' %}
+
+    {{ _(view.msg) }}
+
 Authors
 -------
 
