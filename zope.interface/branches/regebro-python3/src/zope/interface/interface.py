@@ -675,7 +675,7 @@ class InterfaceClass(Element, InterfaceBase, Specification):
         n2 = (getattr(o2, '__name__', ''),
               getattr(getattr(o2,  '__module__', None), '__name__', ''))
 
-        return cmp(n1, n2)
+        return (n1 > n2) - (n1 < n2)
 
     def __lt__(self, other):
         c = self.__cmp(self, other)
