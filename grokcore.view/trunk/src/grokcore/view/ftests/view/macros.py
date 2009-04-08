@@ -44,6 +44,34 @@ You can skip the "macro" part of the macro call, but this is deprecated:
 
   >>> warnings.warn = saved_warn
 
+Filesystem-based templates, once grokked, can be changed.  The change will
+automatically be picked up, reloading Zope is not necessary.  (Generic reload
+tests are in ``grokcore/view/tests/view/templatereload.py``) Reload also
+applies to macros::
+
+  >>> import os.path
+  >>> here = os.path.dirname(__file__)
+  >>> template_file = os.path.join(here, 'macros_templates', 'layout.pt')
+  >>> before = open(template_file, 'r').read()
+  >>> changed = before.replace('GROK', 'GROK RELOADED')
+  >>> open(template_file, 'w').write(changed)
+  >>> browser.open("http://localhost/manfred/@@painting")
+  >>> print browser.contents
+  <html>
+  <body>
+  <h1>GROK RELOADED MACRO!</h1>
+  <div>
+  GROK SLOT!
+  </div>
+  </body>
+  </html>
+
+Restore situation::
+
+  >>> open(template_file, 'w').write(before)
+
+
+
 """
 import grokcore.view as grok
 
@@ -72,16 +100,9 @@ GROK SLOT!
 """)
 
 class Layout(grok.View):
+    # Layout template is in macros_templates/layout.pt for reload test
+    # purposes.
     pass
-
-layout = grok.PageTemplate("""\
-<html metal:define-macro="main">
-<body>
-<h1>GROK MACRO!</h1>
-<div metal:define-slot="slot">
-</div>
-</body>
-</html>""")
 
 class Dancing(grok.View):
     pass

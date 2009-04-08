@@ -210,7 +210,12 @@ class PageTemplate(GrokTemplate):
         self._template = TrustedFilePageTemplate(filename, _prefix)
 
     def _initFactory(self, factory):
-        factory.macros = self._template.macros
+        def _get_macros(self):
+            return self.template._template.macros
+        # _template.macros is a property that does template reloading in debug
+        # mode.  A direct "factory.macros = macros" basically caches the
+        # template.  So we use a property.
+        factory.macros = property(_get_macros)
 
     def render(self, view):
         namespace = self.getNamespace(view)

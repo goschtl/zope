@@ -4,6 +4,9 @@ Changes
 1.4 (unreleased)
 ----------------
 
+* Page template reloading now also works for macros. Fixes
+  https://bugs.launchpad.net/grok/+bug/162261.
+
 * Use zope.container instead of zope.app.container.
 
 * Ignore '<tpl>.cache' files when looking up template files in a
