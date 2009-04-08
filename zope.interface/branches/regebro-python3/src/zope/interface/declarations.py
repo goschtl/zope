@@ -575,10 +575,10 @@ def implements(*interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A(object): implements(IA1, IA2)
-        ...
-        >>> class B(object): implements(IB)
-        ...
+        >>> class A(object):
+        ...     implements(IA1, IA2)
+        >>> class B(object):
+        ...     implements(IB)
 
         >>> class C(A, B):
         ...    implements(IC)
@@ -632,10 +632,10 @@ def implementsOnly(*interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A(object): implements(IA1, IA2)
-        ...
-        >>> class B(object): implements(IB)
-        ...
+        >>> class A(object):
+        ...     implements(IA1, IA2)
+        >>> class B(object):
+        ...     implements(IB)
 
         >>> class C(A, B):
         ...    implementsOnly(IC)
@@ -803,10 +803,10 @@ def directlyProvides(object, *interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A(object): implements(IA1, IA2)
-        ...
-        >>> class B(object): implements(IB)
-        ...
+        >>> class A(object):
+        ...     implements(IA1, IA2)
+        >>> class B(object):
+        ...     implements(IB)
 
         >>> class C(A, B):
         ...    implements(IC)
@@ -907,10 +907,10 @@ def alsoProvides(object, *interfaces):
       ...
       >>> class IC(Interface): pass
       ...
-      >>> class A(object): implements(IA1, IA2)
-      ...
-      >>> class B(object): implements(IB)
-      ...
+      >>> class A(object):
+      ...     implements(IA1, IA2)
+      >>> class B(object):
+      ...     implements(IB)
 
       >>> class C(A, B):
       ...    implements(IC)
@@ -1221,12 +1221,12 @@ def ObjectSpecification(direct, cls):
       ...
       >>> class I5(Interface): pass
       ...
-      >>> class A(object): implements(I1)
-      ...
+      >>> class A(object):
+      ...     implements(I1)
       >>> class B(object): __implemented__ = I2
       ...
-      >>> class C(A, B): implements(I31)
-      ...
+      >>> class C(A, B):
+      ...     implements(I31)
       >>> c = C()
       >>> directlyProvides(c, I4)
       >>> [i.getName() for i in providedBy(c)]
@@ -1243,10 +1243,10 @@ def ObjectSpecification(direct, cls):
       1
       >>> int(providedBy(c).extends(I5))
       0
-      >>> class COnly(A, B): implementsOnly(I31)
-      ...
-      >>> class D(COnly): implements(I5)
-      ...
+      >>> class COnly(A, B):
+      ...     implementsOnly(I31)
+      >>> class D(COnly):
+      ...     implements(I5)
       >>> c = D()
       >>> directlyProvides(c, I4)
       >>> [i.getName() for i in providedBy(c)]
