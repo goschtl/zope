@@ -71,10 +71,8 @@ class i18nExtension(InternationalizationExtension):
         if not domain:
             raise DomainNotDefined
 
-        langs = IUserPreferredLanguages(request).getPreferredLanguages()
-
         return self.trans_domain(domain).translate(msg,
-                                                   target_language=langs[0])
+                                                   context=request)
 
     def _make_node(self, singular, plural, variables, plural_expr):
         """
