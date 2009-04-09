@@ -36,12 +36,16 @@ class View(BrowserPage):
 
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
-        self.__name__ = self.__view_name__
-        self.static = component.queryAdapter(
-            self.request,
-            interface.Interface,
-            name=self.module_info.package_dotted_name
-            )
+        self.__name__ = getattr(self, '__view_name__', None)
+        
+        if getattr(self, 'module_info', None) is not None:
+            self.static = component.queryAdapter(
+                self.request,
+                interface.Interface,
+                name=self.module_info.package_dotted_name
+                )
+        else:
+            self.static = None
 
     @property
     def response(self):

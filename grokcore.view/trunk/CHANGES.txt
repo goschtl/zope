@@ -4,8 +4,8 @@ Changes
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Make it possible to instantiate an ungrokked view by being slightly more
+  defensive in __init__. This makes it easier to write unit tests.
 
 1.4 (2009-04-08)
 ----------------
