@@ -139,9 +139,9 @@ We can now render the resource includes.
 
    >>> provider.update()
    >>> print provider.render()
-   <script src="http://nohost/site/@@/mock" type="text/javascript">
+   <script type="text/javascript" src="http://nohost/site/@@/mock">
    </script>
    <style media="all" type="text/css">
        <!-- @import url("http://nohost/site/@@/mock"); -->
    </style>
-   <link href="http://nohost/site/@@/mock" rel="kinetic-stylesheet" type="text/kss" />
+   <link type="text/kss" rel="kinetic-stylesheet" href="http://nohost/site/@@/mock" />

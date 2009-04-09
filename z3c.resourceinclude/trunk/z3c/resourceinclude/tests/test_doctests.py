@@ -7,16 +7,15 @@ OPTIONFLAGS = (zope.testing.doctest.ELLIPSIS |
 import zope.component
 import zope.component.testing
 import zope.configuration.xmlconfig
-
-import z3c.pt
+import z3c.resourceinclude
 import z3c.resourceinclude.testing
 
 def setUp(suite):
     zope.component.testing.setUp(suite)
     z3c.resourceinclude.testing.setSite()
     zope.component.provideAdapter(z3c.resourceinclude.testing.MockSiteURL)
-    zope.configuration.xmlconfig.XMLConfig('configure.zcml', z3c.pt)()
-    
+    zope.configuration.xmlconfig.XMLConfig('configure.zcml', z3c.resourceinclude)()
+
 def test_suite():
     doctests = ('README.txt', 'zcml.txt')
 

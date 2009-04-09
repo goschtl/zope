@@ -9,11 +9,11 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 def setSite():
     hooks.setHooks()
     hooks.setSite(MockSite())
-   
+
 class MockSite(object):
     def getSiteManager(self):
         return component.getSiteManager()
-    
+
 class MockSiteURL(object):
     interface.implements(IAbsoluteURL)
     component.adapts(MockSite, IBrowserRequest)
@@ -30,14 +30,14 @@ class MockResourceContext(object):
 
 class MockResource(Resource):
     __name__ = 'mock'
-    
+
     def __init__(self, request, content_type):
         self.context = MockResourceContext(content_type)
         self.request = request
-        
+
     def browserDefault(self, request):
         return self, ()
-    
+
     def __repr__(self):
         return u'<MockResource type="%s">' % self.context.content_type
 
