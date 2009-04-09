@@ -1,0 +1,15 @@
+CHANGES
+*******
+
+0.2 (unreleased)
+================
+
+* Added support for `path()` and `exists()` in page templates. This
+  was introduced from `z3c.pt`.
+
+* Fix ZCML includes.
+
+0.1 (2009-02-22)
+================
+
+* Initial release
