@@ -47,7 +47,9 @@ See YAML documentation to learn how to say what you want
 """
 
 
-import grok
+from grokcore.component import Context, context
+from grokcore.view import View
+
 from zope.interface import Interface
 from megrok.jinja.factory import JinjaTemplate, JsonTemplate
 
@@ -56,18 +58,19 @@ import os
 import megrok.jinja.ftests.inline as inline
 templates = os.path.join(os.path.dirname(inline.__file__),
                          'test_inline_templates')
-class Mammoth(grok.Model):
+
+class Mammoth(Context):
     pass
 
-class Macros(grok.View):
+class Macros(View):
     """
     Templates that define blocks to be
     extended must use a template file
     """
-    grok.context(Mammoth)
+    context(Mammoth)
 
-class SayHi(grok.View):
-    grok.context(Mammoth)
+class SayHi(View):
+    context(Mammoth)
 
     def update(self):
         self.macros_tpl = "%s/macros.jinja" % templates
@@ -78,16 +81,16 @@ GROK SAY HI!
 {% endblock %}
 """)
 
-class CavePainting(grok.View):
-    grok.context(Mammoth)
+class CavePainting(View):
+    context(Mammoth)
 
     def update(self):
         self.color = 'BROWN'
 
 cavepainting = JinjaTemplate("GROK SAY: I LIKE {{ view.color }} COLOR")
 
-class JsonView(grok.View):
-    grok.context(Mammoth)
+class JsonView(View):
+    context(Mammoth)
 
     def update(self):
         self.dict = {'k1' : 'val1', 'k2' : 'val2'}

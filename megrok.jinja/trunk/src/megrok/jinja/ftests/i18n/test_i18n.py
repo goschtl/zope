@@ -63,19 +63,20 @@ of our template, an exception it's raised::
 """
 
 
-import grok
+from grokcore.component import Context, context
+from grokcore.view import View
 
-class Context(grok.Context):
+class Context(Context):
     pass
 
-class TransTagTranslate(grok.View):
-    grok.context(Context)
+class TransTagTranslate(View):
+    context(Context)
 
-class UnderscoreTranslate(grok.View):
-    grok.context(Context)
+class UnderscoreTranslate(View):
+    context(Context)
 
     def update(self):
         self.msg = 'testing-underscore'
 
-class NoDomain(grok.View):
-    grok.context(Context)
+class NoDomain(View):
+    context(Context)

@@ -13,13 +13,14 @@
 ##############################################################################
 
 from jinja2 import Environment, FileSystemLoader
+from extensions import i18nExtension, ContentProviderExtension
 
-import yaml, simplejson, grok, os
+import yaml, simplejson, os
+
+from grokcore.component import GlobalUtility, implements, name
 
 from grokcore.view.components import GrokTemplate
 from grokcore.view.interfaces import ITemplate, ITemplateFileFactory
-
-from extensions import i18nExtension, ContentProviderExtension
 
 # Create an Environment instance with the i18n extension
 # and the FileSystemLoader class loader that will look for
@@ -52,31 +53,31 @@ class JTemplate(object):
         self.filepath = os.path.join(_prefix, filename)
 
 class JsonTemplate(JTemplate, GrokTemplate):
-    grok.implements(ITemplate)
+    implements(ITemplate)
 
     def render(self, view):
         jinja_render = self.template.render(**self.getNamespace(view))
         yaml_loader = yaml.load(jinja_render)
         return simplejson.dumps(yaml_loader)
 
-class JsonTemplateFactory(grok.GlobalUtility):
+class JsonTemplateFactory(GlobalUtility):
 
-    grok.implements(ITemplateFileFactory)
-    grok.name('json')
+    implements(ITemplateFileFactory)
+    name('json')
 
     def __call__(self, filename, _prefix=None):
         return JsonTemplate(filename=filename, _prefix=_prefix)
 
 class JinjaTemplate(JTemplate, GrokTemplate):
-    grok.implements(ITemplate)
+    implements(ITemplate)
 
     def render(self, view):
         return self.template.render(**self.getNamespace(view))
 
-class JinjaTemplateFactory(grok.GlobalUtility):
+class JinjaTemplateFactory(GlobalUtility):
 
-    grok.implements(ITemplateFileFactory)
-    grok.name('jinja')
+    implements(ITemplateFileFactory)
+    name('jinja')
 
     def __call__(self, filename, _prefix=None):
         return JinjaTemplate(filename=filename, _prefix=_prefix)

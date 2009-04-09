@@ -15,8 +15,9 @@
 from jinja2 import nodes
 from jinja2.ext import Extension, InternationalizationExtension
 from jinja2.utils import contextfunction
+
 from zope.component import getUtility, getMultiAdapter
-from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
+from zope.i18n.interfaces import ITranslationDomain
 from zope.contentprovider.interfaces import IContentProvider
 from zope.cachedescriptors import method
 
@@ -107,7 +108,7 @@ class ContentProviderExtension(Extension):
     Jinja2 extension to support the use of viewlets (content
     providers).
 
-    It doesn't define any `tag`, just set the `provider` name function
+    It doesn't define any `tag`, just set the `provider` function name
     in the `Environment.globals`
     """
     def __init__(self, environment):

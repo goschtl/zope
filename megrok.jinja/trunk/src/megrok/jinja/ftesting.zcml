@@ -6,12 +6,24 @@
    package="megrok.jinja.ftests"
    >
 
-  <include package="grok" />
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.authentication" />
+
+  <!-- Load minimal support of grokcore.view, views + templates  -->
+  <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.view" />
+
+  <include package="grokcore.viewlet" file="meta.zcml" />
+
+  <include package="zope.i18n" file="meta.zcml" />
+  <i18n:registerTranslations directory="locales/mo" />
+
   <include package="megrok.jinja" />
   <grok:grok package="megrok.jinja.ftests" />
 
-
-  <i18n:registerTranslations directory="locales/mo" />
 
   <!-- Typical functional testing security setup -->
   <securityPolicy
@@ -37,5 +49,6 @@
   <role id="zope.Manager" title="Site Manager" />
   <grantAll role="zope.Manager" />
   <grant role="zope.Manager" principal="zope.mgr" />
+
 
 </configure>

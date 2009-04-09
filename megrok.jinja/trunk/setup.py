@@ -32,7 +32,9 @@ setup(name='megrok.jinja',
       zip_safe=True,
       install_requires=[
           'setuptools',
-          'grok',
+          'grokcore.component',
+          'grokcore.view',
+          'grokcore.viewlet',
           'Jinja2',
           'simplejson',
           'pyyaml'

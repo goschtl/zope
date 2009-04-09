@@ -11,7 +11,7 @@ For more information about Grok and Jinja2 visit:
 Requirements
 ------------
 
-- Grok v1.0a or later. Tested with Grok v1.0a.
+- Grok v1.0a or later. Tested with Grok v1.0a2.
 - Jinja v2.1.1 or later. Tested with Jinja v2.1.1
 - PyYAML v3.08 or later. Tested with PyYAML v3.08
 - simplejson v1.7.1 or later. Tested with simplejson v1.7.1

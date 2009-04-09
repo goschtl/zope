@@ -29,22 +29,25 @@ we use: {{ provider('manager')}} ::
   From the viewlet: A viewlet variable
 """
 
-import grok
+from grokcore.component import Context, context, name
+from grokcore.view import View
+from grokcore.viewlet import Viewlet, ViewletManager, viewletmanager
 
-class Context(grok.Context):
+
+class Context(Context):
     pass
 
-class UsingViewlets(grok.View):
+class UsingViewlets(View):
     def update(self):
         self.something = 'A view variable'
 
-class ViewletMgr(grok.ViewletManager):
-    grok.context(Context)
-    grok.name('manager')
+class ViewletMgr(ViewletManager):
+    context(Context)
+    name('manager')
 
-class Viewlet(grok.Viewlet):
-    grok.context(Context)
-    grok.viewletmanager(ViewletMgr)
+class Viewlet(Viewlet):
+    context(Context)
+    viewletmanager(ViewletMgr)
 
     def update(self):
         self.another = 'A viewlet variable'
