@@ -88,6 +88,10 @@ class StaticResourcesGrokker(martian.GlobalGrokker):
         if not module_info.isPackage():
             return False
         resource_path = _get_resource_path(module_info, 'static')
+        
+        if not os.path.exists(resource_path):
+            return False
+        
         name = module_info.dotted_name
         layer = IDefaultBrowserLayer
         return _register(config, resource_path, name, layer)

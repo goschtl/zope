@@ -4,6 +4,9 @@ Changes
 1.5 (unreleased)
 ----------------
 
+- Don't register a 'static' resource directory if the 'static' directory does
+  not exist.
+
 - Make it possible to instantiate an ungrokked view by being slightly more
   defensive in __init__. This makes it easier to write unit tests.
 
