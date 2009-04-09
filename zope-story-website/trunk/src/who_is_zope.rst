@@ -18,11 +18,11 @@
 
    Hundreds of companies and thousands of developers participate in the Zope
    Community.  A liberal BSD-style license called ZPL enables the Zope
-   Framework projects to freely intermingle code and ideas.
+   Toolkit projects to freely intermingle code and ideas.
 
    .. rubric:: Zope Community Links
 
-   + Zope Framework
+   + Zope Toolkit
    + `Plone`_
    + `Grok Community`_ 
    + Repoze
@@ -46,7 +46,7 @@
      Zope Community as a Python-based build system for creating, assembling and
      deploying applications from multiple components.
    + `Launchpad`_ hosts many software projects, including several involving
-     Zope, and is itself built `Zope Framework`_.
+     Zope, and is itself built `Zope Toolkit`_.
   
   
 .. container::
@@ -105,7 +105,7 @@
 .. _`Plone`: http://plone.org
 .. _`Grok`: http://grok.zope.org
 .. _`Grok Community`: http://grok.zope.org/community
-.. _`Zope Framework`: http://docs.zope.org/zopeframework/
+.. _`Zope Toolkit`: http://docs.zope.org/zopetoolkit/
 .. _`BFG`: http://static.repoze.org/bfgdocs/
 .. _`Twisted`: http://twistedmatrix.com/trac/
 .. _`Turbogears`: http://turbogears.org/

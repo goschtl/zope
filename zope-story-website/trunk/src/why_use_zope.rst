@@ -12,8 +12,8 @@
 Why Use Zope?
 =============
 
-Zope applications, libraries, and frameworks are suited for different purposes
-and environments; but most share common advantages:
+Zope applications and libraries are suited for different purposes and
+environments; but most share common advantages:
 
 Zope is Mature
 --------------
@@ -27,14 +27,15 @@ Zope's groundbreaking innovations over the years led the way in demonstrating
 the practicality of powerful software patterns, including object databases,
 object publishing, and component architecture.
 
-All the applications built using the Zope Framework benefit from this
+All the applications built using the Zope Toolkit benefit from this
 maturity, For example, the older projects, the Zope 2 app server as well as
 Plone, both increasingly make use of the newest Zope library versions while
 still maintaining the feature set that makes it useful in heavy production
 settings.
 
-Meanwhile, younger Zope web frameworks such as Grok and Repoze.BFG, leverage
-the mature Zope Framework libraries to bring new ideas to web development.
+Meanwhile, younger Zope web frameworks such as Grok and repoze.bfg,
+leverage the mature Zope Toolkit libraries to bring new ideas to web
+development.
 
 Designed for Automated Testing
 ------------------------------
@@ -86,7 +87,7 @@ See also:
 Security
 -------------------
 
-The `Zope Framework`_ offers significant security advantages in the form of
+The `Zope Toolkit`_ offers significant security advantages in the form of
 a fine-grained and highly manageable infrastructure, including support
 for pluggable authentication and permission-based security policies for object
 publishing, down to the level of methods and attributes. 
@@ -94,7 +95,7 @@ publishing, down to the level of methods and attributes.
 By default, nothing is published unless an explicit security declaration is
 attached either within application code or within configuration.
 
-For applications needing less security and more simplicity, Zope Framework
+For applications needing less security and more simplicity, Zope Toolkit
 security can be relaxed to allow convenient, free-form web object publishing.
 
 When it comes to security, one size does NOT fit all.
@@ -113,7 +114,7 @@ to the `Dublin Core <http://dublincore.org/>`_ metadata standard.
 I18n and L10n Support
 -------------------------------------------------------------
 
-`Zope Framework`_ supports a manageable approach to internationalization and
+`Zope Toolkit`_ supports a manageable approach to internationalization and
 localization, to make Zope applications easily translatable.
 
 
@@ -141,7 +142,7 @@ See also:
 
 
 
-.. _`Zope Framework`: http://docs.zope.org/zopeframework/
+.. _`Zope Toolkit`: http://docs.zope.org/zopetoolkit/
 .. _`WSGI`: http://wsgi.org/wsgi/
 .. _`WSGI "middleware"`: http://wsgi.org/wsgi/Middleware_and_Utilities
 .. _`Twisted`: http://twistedmatrix.com/trac/wiki

@@ -19,14 +19,14 @@
 
    .. rubric:: Zope is Open Source
 
-   All Zope libraries, frameworks, and applications managed by the `Zope
+   All Zope libraries, toolkits, and applications managed by the `Zope
    Foundation`_ are licensed under the OSS-Certified `Zope Public License`_.
    This BSD-style license allows use in both open source projects and closed
    proprietary product offerings.
 
    .. rubric:: Zope is a Broad Software Technology
 
-   The base `Zope Framework`_ powers web development frameworks, web
+   The base `Zope Toolkit`_ powers web development frameworks, web
    application servers, content management systems, and many other software
    components.
 
@@ -45,7 +45,7 @@
 
    .. rubric:: Zope is Secure
     
-   The Zope Framework offers significant security advantages in the form of a
+   The Zope Toolkit offers significant security advantages in the form of a
    fine-grained and highly manageable infrastructure, including support for
    pluggable authentication and permission-based security policies for object
    publishing, down to the level of methods and attributes. `More... 
@@ -65,7 +65,7 @@
 
          |Grok|_
 
-         Grok is aimed at making the full power of the Zope Framework accessible
+         Grok is aimed at making the full power of the Zope Toolkit accessible
          to any Python developer.
 
       .. container::
@@ -74,8 +74,8 @@
          |Repoze|_
 
          Repoze, a toolkit for integrating WSGI middleware with Zope.
-         In addition, a new web framework called Repoz.BFG has spun
-         out of the Repoze project.
+         In addition, a new web framework called ``repoze.bfg`` has
+         spun out of the Repoze project.
 
       .. container::
          :class: framework
@@ -85,7 +85,7 @@
          Zope 2 is a mature application server which has thrived in enterprise
          production systems for nearly 10 years. The "granddaddy of Python
          web frameworks" is alive and kicking, re-energized by the
-         regular injection of new technologies such as `Zope Framework`_,
+         regular injection of new technologies such as `Zope Toolkit`_,
          `Twisted`_, and other `Python`_ community innovations.
          
 
@@ -127,17 +127,17 @@
       :zsection:`Compose Your Own`
 
       To compose your own application or framework from scratch, or see how the
-      packages within the Zope Framework can work for you, see more information
+      packages within the Zope Toolkit can work for you, see more information
       below.
 
       * `Zope 2 Application Server`_, a mature application server which has
         thrived in enterprise production systems for nearly 10 years.
 
-      * `Zope Framework`_, a place where more information about the Zope
-         framework can be found.
+      * `Zope Toolkit`_, a place where more information about the Zope
+         Toolkit can be found.
 
       This variety of open source and commercial applications built from Zope
-      Framework demonstrates a community with years of expertise solving a wide
+      Toolkit demonstrates a community with years of expertise solving a wide
       range of problems. A deeper inspection of the technology reveals powerful
       tools for managing complexity by fully leveraging the best dynamic features
       of the Python programming language.
@@ -168,7 +168,7 @@
 
 
 .. _`Zope 2 Application Server`: http://zope2.zopyx.de/
-.. _`Zope Framework`: http://docs.zope.org/zopeframework/
+.. _`Zope Toolkit`: http://docs.zope.org/zopetoolkit/
 .. _`BFG`: http://static.repoze.org/bfgdocs/
 .. _`Twisted`: http://twistedmatrix.com/trac/
 .. _`Zope Foundation`: http://foundation.zope.org/about
