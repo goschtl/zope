@@ -1,10 +1,13 @@
-trunk (2009-03-24)
-==================
+Changelog
+=========
 
-  - xxx [Ingeniweb]
+0.2 (unreleased)
+----------------
+
+- ...
 
 0.1 (2009-03-24)
-------------------
+----------------
 
-Initial release as egg.
+- Initial release as egg.
 

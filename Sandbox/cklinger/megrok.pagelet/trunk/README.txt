@@ -1,66 +1,63 @@
 MEGROK PAGELET
 ==============
 
-This package try to bring the functionality of z3c.template and
-z3c.pagelet to grok.
- 
-z3c.template gives us a alternative for the zpt:metal layout based system in grok.
-The z3c.pagelet has the advantage that it´s possible to register layouts with help of
-the zope-component-architecuture this allows us to change or modify layouts 
-without touching the *master* macro.
+This package try to bring the functionality of `z3c.template`_ and
+`z3c.pagelet`_ to Grok.
 
-This means you have megrok.pagelet.Layout component which holds
-the layout. Instead of using grok.View you have to take 
-megrok.pagelet.Pagelet for normal BrowserViews.
+`z3c.template`_ gives an alternative way to the ``zpt:metal`` layout
+based system in Grok.  `z3c.pagelet`_ provides the possibility to
+register layouts with the help of the zope component
+architecture. This allows to separate the rendering of the layout and
+the content.
 
-If you need more information about z3c.template please look here [1].
+This is implemented with the help of the ``megrok.pagelet.Layout``
+component which holds the layout.
 
-The Layout
-----------
-
-The first thing we have to do is set up a layout for our pagelet.
-
-class MyLayout(megrok.pagelet.Layout):
-    grok.context()
-    grok.layer()
-
-    megrok.pagelet.template('my_layout_template.pt')
-
-This configures the template ('my_layout_template.pt') as a layout for the given
-context and layer. Of course it´s possible to specify different 
-layouts for different layers or contexts.
-
-
-In the content of my_layout_template.pt is something like this:
-
-<html>
- <body>
-   <div class="layout" tal:content="structure view/render">
-         here comes the content
-   </div>
- </body>
-</html>
-
-The Pagelt (View)
+The Layout (Skin)
 -----------------
 
-Ok instead of using the common grok.View for our BrowserViews we use now
-megrok.pagelet.Paglet. This component has one difference to a normal
-grok.View. This difference is in the __call__ method of the megrok.pagelet.Pagelet.
-This means that the  __call__ method of a  Pagelet does not only return the renderd 
-"template" of the Pagelet. The __call__ first search for the layout in given context
-and layer and  then it renders the "template" in this layout.
+The first thing we have to do is to define a layout::
 
-class View(megrok.pagelet.Pagelet)
-    grok.context()
-    grok.layer()
-    grok.name()
+  class MyLayout(megrok.pagelet.Layout):
+      grok.context()
+      grok.layer()
 
-    def render(self)
-	return "..."
+      megrok.pagelet.template('my_layout_template.pt')
+
+The template ``my_layout_template.pt`` is registered as a layout for
+the given context and layer. Of course it's possible to specify
+different layouts for different layers or contexts.
+
+In the content of ``my_layout_template.pt`` is something like this::
+
+  <html>
+    <body>
+      <div class="layout" tal:content="structure view/render">
+           here comes the content
+      </div>
+    </body>
+  </html>
+
+The Pagelet (View)
+------------------
+
+Instead of using the common ``grok.View`` for our views we use now
+``megrok.pagelet.Paglet``. This component has one difference to a
+normal view, it does not only return the rendered content of the
+component, it first search for the layout in given context and layer
+and then it renders the content in this layout::
+
+  class View(megrok.pagelet.Pagelet)
+      grok.context()
+      grok.layer()
+      grok.name()
+
+      def render(self)
+          return u"Something"
 
 
-Now if you point your browser on .../view you sould see the renderd view in the
-given layout.
+Now if you point your browser on ``.../view`` you sould see the
+rendered view in the given layout.
 
-[1] http://pypi.python.org/pypi/z3c.template/1.1.0
+.. _z3c.template: http://pypi.python.org/pypi/z3c.template
+.. _z3c.pagelet: http://pypi.python.org/pypi/z3c.pagelet

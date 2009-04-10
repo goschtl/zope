@@ -5,18 +5,19 @@ long_description = (open("README.txt").read()
                     open("CHANGES.txt").read())
 
 setup(name='megrok.pagelet',
-      version='0.1',
+      version='0.2dev',
       description="z3c.template / z3c.layout support for Grok",
       long_description=long_description,
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
-      classifiers=['Programming Language :: Python',
-                   'Environment :: Web Environment',
-                   'Framework :: Zope3',
-                   'License :: OSI Approved :: Zope Public License',
-                   ],
-      keywords='',
-      author='',
-      author_email='',
+      classifiers=[
+        'Programming Language :: Python',
+        'Environment :: Web Environment',
+        'Framework :: Zope3',
+        'License :: OSI Approved :: Zope Public License',
+        ],
+      keywords='grok pagelet layout',
+      author='Grok Team',
+      author_email='grok-dev@zope.org',
       url='http://pypi.python.org/pypi/megrok.pagelet',
       license='ZPL',
       packages=find_packages('src'),
@@ -29,9 +30,6 @@ setup(name='megrok.pagelet',
           'martian',
           'grokcore.component',
 	  'z3c.template',
-          'grok',  # just for the ViewGrokker
+          'grok',
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
       )
