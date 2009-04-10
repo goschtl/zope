@@ -26,11 +26,9 @@ setup(name='megrok.menu',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'martian',
           'grokcore.component',
           'grokcore.view',
           'grokcore.security',
-          'grok', # needed for testing
       ],
       entry_points="""
       # -*- Entry points: -*-

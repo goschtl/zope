@@ -32,21 +32,24 @@ to the request:
     'title': 'View'}]
 
 """
-import grok
+
+from grokcore.component import Context, name, title, description
+from grokcore.view import View
+from grokcore.security import Permission, require
 import megrok.menu
 
-class Mammoth(grok.Model):
+class Mammoth(Context):
     pass
 
 class Tabs(megrok.menu.Menu):
-    grok.name('tabs')
-    grok.title('Tabs')
-    grok.description('')
+    name('tabs')
+    title('Tabs')
+    description('')
 
 # You can either refer to the menu class itself:
 
-class Index(grok.View):
-    grok.title('View')
+class Index(View):
+    title('View')
     megrok.menu.menuitem(Tabs)
 
     def render(self):
@@ -54,8 +57,8 @@ class Index(grok.View):
 
 # or you can refer to its identifier:
 
-class Edit(grok.View):
-    grok.title('Edit')
+class Edit(View):
+    title('Edit')
     megrok.menu.menuitem('tabs')
 
     def render(self):

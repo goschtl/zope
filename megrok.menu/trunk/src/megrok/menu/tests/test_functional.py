@@ -93,24 +93,28 @@ After logging in as a manager, we also see the protected one:
     'title': 'Manage'}]
 
 """
-import grok
+from grokcore.component import Context, name, title, description
+from grokcore.view import View
+from grokcore.security import Permission, require
+
 import megrok.menu
+
 from pprint import pformat
 from zope.component import getUtility
 from zope.app.publisher.interfaces.browser import IBrowserMenu
 
-class Mammoth(grok.Model):
+class Mammoth(Context):
     pass
 
 class Actions(megrok.menu.Menu):
-    grok.name('actions')
-    grok.title('Actions')
-    grok.description('')
+    name('actions')
+    title('Actions')
+    description('')
 
 # You can either refer to the menu class itself:
 
-class Index(grok.View):
-    grok.title('View')
+class Index(View):
+    title('View')
     megrok.menu.menuitem(Actions)
 
     def render(self):
@@ -118,8 +122,8 @@ class Index(grok.View):
 
 # or you can refer to its identifier:
 
-class Edit(grok.View):
-    grok.title('Edit')
+class Edit(View):
+    title('Edit')
     megrok.menu.menuitem('actions')
 
     def render(self):
@@ -127,14 +131,14 @@ class Edit(grok.View):
 
 # also you can define sub-menus items
 class Options(megrok.menu.SubMenuItem):
-    grok.name('options')
-    grok.title('Options')
-    grok.description('')
+    name('options')
+    title('Options')
+    description('')
 
     megrok.menu.menuitem('actions')
 
-class OptionOne(grok.View):
-    grok.title('Option one')
+class OptionOne(View):
+    title('Option one')
     megrok.menu.menuitem('options')
 
     def render(self):
@@ -143,12 +147,12 @@ class OptionOne(grok.View):
 # Here's a view that's protected by a permission. We expect the menu
 # item that we configure for it to have the same permission setting:
 
-class ManageStuff(grok.Permission):
-    grok.name('my.ManageStuff')
+class ManageStuff(Permission):
+    name('my.ManageStuff')
 
-class Manage(grok.View):
-    grok.require(ManageStuff)
-    grok.title('Manage')
+class Manage(View):
+    require(ManageStuff)
+    title('Manage')
     megrok.menu.menuitem('actions')
 
     def render(self):
@@ -156,21 +160,21 @@ class Manage(grok.View):
 
 #Sub menus item are also available to be protected using a permission
 class Setup(megrok.menu.SubMenuItem):
-    grok.require(ManageStuff)
-    grok.name('setup')
-    grok.title('Setup')
-    grok.description('')
+    require(ManageStuff)
+    name('setup')
+    title('Setup')
+    description('')
 
     megrok.menu.menuitem('actions')
 
-class ConfigOption(grok.View):
-    grok.title('Protected configuration')
+class ConfigOption(View):
+    title('Protected configuration')
     megrok.menu.menuitem('setup')
 
     def render(self):
         return 'Configuration'
 
-class ShowMenu(grok.View):
+class ShowMenu(View):
 
     def render(self):
         menu = getUtility(IBrowserMenu, 'actions')
