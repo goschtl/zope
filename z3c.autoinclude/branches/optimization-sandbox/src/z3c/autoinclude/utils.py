@@ -166,3 +166,14 @@ def find_packages(where='.', exclude=()):
         from fnmatch import fnmatchcase
         out = [item for item in out if not fnmatchcase(item,pat)]
     return out
+
+def cached(func):
+    cache = {}
+    def inner(*args):
+        if (func, args) not in cache:
+            cache[(func, args)] = list(func(*args)) #guard against generators
+        return cache[(func, args)]
+    return inner
+
+find_packages = cached(find_packages)
+find_distributions = cached(find_distributions)
