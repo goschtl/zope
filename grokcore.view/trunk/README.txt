@@ -101,12 +101,12 @@ it would be found automatically.
 Static resources
 ----------------
 
-Browser pages often need additional static resources like CSS and
-JavaScript files.  These can be conveniently placed into a directory
-called ``static`` in the package that contains the view code.  This
-directory will automatically be registered as a resource directory.
-It is available as the ``static`` variable in all views of this
-package and you can refer to files inside this directory like so::
+Browser pages often need additional static resources like CSS and JavaScript
+files. These can be conveniently placed into a directory called ``static`` in
+the package that contains the view code. When this directory exists it will
+automatically be registered as a resource directory. It then is available as
+the ``static`` variable in all views of this package and you can refer to files
+inside this directory like so::
 
   <img src="hello.png" tal:attributes="src static/hello.png" />
 
@@ -192,7 +192,8 @@ bit more to the developer using it as a base class, though:
     The response object, typically provides ``IHTTPResponse``.
 
 ``static``
-    Directory resource representing the package's ``static`` directory.
+    Directory resource representing the package's ``static`` directory or None
+    if no such directory was found during grokking.
 
 ``redirect(url)``
     Redirect to the given URL.
