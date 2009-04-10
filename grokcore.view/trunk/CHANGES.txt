@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5 (unreleased)
+1.5 (2009-04-10)
 ----------------
 
 - Don't register a 'static' resource directory if the 'static' directory does
