@@ -42,9 +42,9 @@
     + `TurboGears`_, a Python web framework which utilizes zope.interface
       as well as Zope's transaction library.
     + Pylons
-    + `buildout`_, originally developed at Zope Corporation, has gained traction outside the
-      Zope Community as a Python-based build system for creating, assembling and
-      deploying applications from multiple components.
+    + `buildout`_, originally developed at Zope Corporation, has gained
+      traction outside the Zope Community as a Python-based build system for
+      creating, assembling and deploying applications from multiple components.
     + `Launchpad`_ hosts many software projects, including several involving
       Zope, and is itself built `Zope Toolkit`_.
   

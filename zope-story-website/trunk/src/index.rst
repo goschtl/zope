@@ -65,8 +65,8 @@
 
             |Grok|_
 
-            Grok is aimed at making the full power of the Zope Toolkit accessible
-            to any Python developer.
+            Grok is aimed at making the full power of the Zope Toolkit
+            accessible to any Python developer.
 
         ..  container::
             :class: framework
@@ -82,9 +82,9 @@
 
             |Zope 2|_
 
-            Zope 2 is a mature application server which has thrived in enterprise
-            production systems for nearly 10 years. The "granddaddy of Python
-            web frameworks" is alive and kicking, re-energized by the
+            Zope 2 is a mature application server which has thrived in
+            enterprise production systems for nearly 10 years. The "granddaddy
+            of Python web frameworks" is alive and kicking, re-energized by the
             regular injection of new technologies such as `Zope Toolkit`_,
             `Twisted`_, and other `Python`_ community innovations.
 
@@ -126,9 +126,9 @@
         
         :zsection:`Compose Your Own`
         
-        To compose your own application or framework from scratch, or see how the
-        packages within the Zope Toolkit can work for you, see more information
-        below.
+        To compose your own application or framework from scratch, or see how
+        the packages within the Zope Toolkit can work for you, see more
+        information below.
         
         * `Zope 2 Application Server`_, a mature application server which has
           thrived in enterprise production systems for nearly 10 years.
@@ -138,9 +138,9 @@
         
         This variety of open source and commercial applications built from Zope
         Toolkit demonstrates a community with years of expertise solving a wide
-        range of problems. A deeper inspection of the technology reveals powerful
-        tools for managing complexity by fully leveraging the best dynamic features
-        of the Python programming language.
+        range of problems. A deeper inspection of the technology reveals
+        powerful tools for managing complexity by fully leveraging the best
+        dynamic features of the Python programming language.
 
 .. raw:: html
 
