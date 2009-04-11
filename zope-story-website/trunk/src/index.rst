@@ -2,145 +2,145 @@
 .. role:: zsection
 
 .. container::
-   :class: menuacross
-
-   + `What is Zope? <index.html>`_
-   + `Who is Zope? <who_is_zope.html>`_
-   + `Why Zope? <why_use_zope.html>`_
+    :class: menuacross
+    
+    + `What is Zope? <index.html>`_
+    + `Who is Zope? <who_is_zope.html>`_
+    + `Why Zope? <why_use_zope.html>`_
 
 .. container::
-   :class: LeftCol
+    :class: LeftCol
 
-   .. rubric:: Zope is a Community
+    .. rubric:: Zope is a Community
 
-   Hundreds of companies and thousands of developers devoted to solutions to
-   the perennial problems of building complex, scalable web applications.
-   `More... <who_is_zope.html>`__
+    Hundreds of companies and thousands of developers devoted to solutions to
+    the perennial problems of building complex, scalable web applications.
+    `More... <who_is_zope.html>`__
 
-   .. rubric:: Zope is Open Source
+    .. rubric:: Zope is Open Source
 
-   All Zope libraries, toolkits, and applications managed by the `Zope
-   Foundation`_ are licensed under the OSS-Certified `Zope Public License`_.
-   This BSD-style license allows use in both open source projects and closed
-   proprietary product offerings.
+    All Zope libraries, toolkits, and applications managed by the `Zope
+    Foundation`_ are licensed under the OSS-Certified `Zope Public License`_.
+    This BSD-style license allows use in both open source projects and closed
+    proprietary product offerings.
 
-   .. rubric:: Zope is a Broad Software Technology
+    .. rubric:: Zope is a Broad Software Technology
 
-   The base `Zope Toolkit`_ powers web development frameworks, web
-   application servers, content management systems, and many other software
-   components.
+    The base `Zope Toolkit`_ powers web development frameworks, web
+    application servers, content management systems, and many other software
+    components.
 
-   .. rubric:: Zope is Mature
+    .. rubric:: Zope is Mature
 
-   Zope's robust technologies are born of 10 years of hard-won real world
-   experience in building production web applications for every level
-   of organization, ranging from small nonprofits to large enterprise systems
-   and high traffic public web applications. `More... <why_use_zope.html>`__
+    Zope's robust technologies are born of 10 years of hard-won real world
+    experience in building production web applications for every level
+    of organization, ranging from small nonprofits to large enterprise systems
+    and high traffic public web applications. `More... <why_use_zope.html>`__
 
-   .. rubric:: Zope is Python-based
+    .. rubric:: Zope is Python-based
 
-   Zope is written in `Python`_, a highly-productive, object-oriented
-   programming language with a strong emphasis on clear, elegant,
-   manageable code.
+    Zope is written in `Python`_, a highly-productive, object-oriented
+    programming language with a strong emphasis on clear, elegant,
+    manageable code.
 
-   .. rubric:: Zope is Secure
-    
-   The Zope Toolkit offers significant security advantages in the form of a
-   fine-grained and highly manageable infrastructure, including support for
-   pluggable authentication and permission-based security policies for object
-   publishing, down to the level of methods and attributes. `More... 
-   <why_use_zope.html>`__
-    
+    .. rubric:: Zope is Secure
+
+    The Zope Toolkit offers significant security advantages in the form of a
+    fine-grained and highly manageable infrastructure, including support for
+    pluggable authentication and permission-based security policies for object
+    publishing, down to the level of methods and attributes. `More... 
+    <why_use_zope.html>`__
+
 
 .. container::
-   :class: RightCol
+    :class: RightCol
 
-   .. container::
-      :class: frameworks
+    .. container::
+        :class: frameworks
 
-      :zsection:`Web Frameworks Built with Zope`
-      
-      .. container::
-         :class: framework
+        :zsection:`Web Frameworks Built with Zope`
 
-         |Grok|_
+        .. container::
+            :class: framework
 
-         Grok is aimed at making the full power of the Zope Toolkit accessible
-         to any Python developer.
+            |Grok|_
 
-      .. container::
-         :class: framework
+            Grok is aimed at making the full power of the Zope Toolkit accessible
+            to any Python developer.
 
-         |Repoze|_
+        ..  container::
+            :class: framework
 
-         Repoze, a toolkit for integrating WSGI middleware with Zope.
-         In addition, a new web framework called ``repoze.bfg`` has
-         spun out of the Repoze project.
+            |Repoze|_
 
-      .. container::
-         :class: framework
+            Repoze, a toolkit for integrating WSGI middleware with Zope.
+            In addition, a new web framework called ``repoze.bfg`` has
+            spun out of the Repoze project.
 
-         |Zope 2|_
+        .. container::
+            :class: framework
 
-         Zope 2 is a mature application server which has thrived in enterprise
-         production systems for nearly 10 years. The "granddaddy of Python
-         web frameworks" is alive and kicking, re-energized by the
-         regular injection of new technologies such as `Zope Toolkit`_,
-         `Twisted`_, and other `Python`_ community innovations.
-         
+            |Zope 2|_
 
-
-   .. container::
-      :class: applications
-
-      :zsection:`A Few Example Applications Built with Zope`
-
-      .. container::
-         :class: application
-
-         |Plone|_
-
-         Plone is a powerful, flexible Content Management solution that is
-         easy to install, use and extend.
-
-      .. container::
-         :class: application
-
-         |Schooltool|_
-
-         a project to develop a common global school administration
-         infrastructure that is freely available under an Open Source license.
-
-      .. container::
-         :class: application
-
-         |Launchpad|_
-
-         Both an application and a web site supporting software development,
-         particularly that of free software, `Launchpad`_ is developed and
-         maintained by `Cannonical Ltd`_.
+            Zope 2 is a mature application server which has thrived in enterprise
+            production systems for nearly 10 years. The "granddaddy of Python
+            web frameworks" is alive and kicking, re-energized by the
+            regular injection of new technologies such as `Zope Toolkit`_,
+            `Twisted`_, and other `Python`_ community innovations.
 
 
-   .. container::
-      :class: composeyourown
 
-      :zsection:`Compose Your Own`
+    .. container::
+        :class: applications
 
-      To compose your own application or framework from scratch, or see how the
-      packages within the Zope Toolkit can work for you, see more information
-      below.
+        :zsection:`A Few Example Applications Built with Zope`
 
-      * `Zope 2 Application Server`_, a mature application server which has
-        thrived in enterprise production systems for nearly 10 years.
+        .. container::
+           :class: application
 
-      * `Zope Toolkit`_, a place where more information about the Zope
-         Toolkit can be found.
+           |Plone|_
 
-      This variety of open source and commercial applications built from Zope
-      Toolkit demonstrates a community with years of expertise solving a wide
-      range of problems. A deeper inspection of the technology reveals powerful
-      tools for managing complexity by fully leveraging the best dynamic features
-      of the Python programming language.
+           Plone is a powerful, flexible Content Management solution that is
+           easy to install, use and extend.
+
+        .. container::
+           :class: application
+
+           |Schooltool|_
+
+           a project to develop a common global school administration
+           infrastructure that is freely available under an Open Source license.
+
+        .. container::
+            :class: application
+
+            |Launchpad|_
+
+            Both an application and a web site supporting software development,
+            particularly that of free software, `Launchpad`_ is developed and
+            maintained by `Cannonical Ltd`_.
+
+
+    .. container::
+        :class: composeyourown
+        
+        :zsection:`Compose Your Own`
+        
+        To compose your own application or framework from scratch, or see how the
+        packages within the Zope Toolkit can work for you, see more information
+        below.
+        
+        * `Zope 2 Application Server`_, a mature application server which has
+          thrived in enterprise production systems for nearly 10 years.
+        
+        * `Zope Toolkit`_, a place where more information about the Zope
+           Toolkit can be found.
+        
+        This variety of open source and commercial applications built from Zope
+        Toolkit demonstrates a community with years of expertise solving a wide
+        range of problems. A deeper inspection of the technology reveals powerful
+        tools for managing complexity by fully leveraging the best dynamic features
+        of the Python programming language.
 
 .. raw:: html
 
