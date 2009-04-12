@@ -39,8 +39,8 @@
     + `Twisted`_, an asynchronous network server written in Python
       utilizes *zope.interface*. Some Zope projects come bundled with
       Twisted to provide Zope with a powerful multi-protocol network layer.
-    + `TurboGears`_, a Python web framework which utilizes zope.interface
-      as well as Zope's transaction library.
+    + `TurboGears`_, a Python web framework which utilizes Zope's transaction 
+       library.
     + Pylons
     + `buildout`_, originally developed at Zope Corporation, has gained
       traction outside the Zope Community as a Python-based build system for
