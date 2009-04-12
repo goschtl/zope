@@ -1,0 +1,104 @@
+Parsing ZConfigParser files
+===========================
+
+We can parse old style configs:
+
+    >>> open('oldstyle.conf', 'wb').write("""
+    ... # This is the configuration file for the Zope Application Server.
+    ...
+    ... %define INSTANCE  /home/jim/sample_instance
+    ...
+    ... %define CONFDIR   $INSTANCE/etc
+    ... %define DATADIR   $INSTANCE/var
+    ... %define LOGDIR    $INSTANCE/log
+    ...
+    ... # identify the component configuration used to define the site:
+    ... #
+    ... site-definition $INSTANCE/etc/site.zcml
+    ...
+    ... # number of bytecode instructions to execute between checks for
+    ... # interruptions (SIGINTR, thread switches):
+    ... #
+    ... interrupt-check-interval 200
+    ...
+    ... <server HTTP0>
+    ...   type HTTP
+    ...   address 8080
+    ... </server>
+    ... <server HTTP1>
+    ...   type HTTP
+    ...   address 8081
+    ... </server>
+    ... <server>
+    ...   type PostmortemDebuggingHTTP
+    ...   address 8082
+    ... </server>
+    ...
+    ... <zodb main>
+    ...   <filestorage>
+    ...     path $DATADIR/Data.fs
+    ...   </filestorage>
+    ... </zodb>
+    ... <zodb a>
+    ...   <filestorage>
+    ...     path $DATADIR/A.fs
+    ...   </filestorage>
+    ... </zodb>
+    ...
+    ... # Access log
+    ...
+    ... <accesslog>
+    ...
+    ...   <logfile>
+    ...     path $LOGDIR/access.log
+    ...   </logfile>
+    ...
+    ...   <logfile>
+    ...     path STDOUT
+    ...   </logfile>
+    ...
+    ... </accesslog>
+    ...
+    ... <eventlog>
+    ...
+    ...   <logfile>
+    ...     path $LOGDIR/z3.log
+    ...     formatter zope.exceptions.log.Formatter
+    ...   </logfile>
+    ...
+    ...   <logfile>
+    ...     path STDOUT
+    ...     formatter zope.exceptions.log.Formatter
+    ...   </logfile>
+    ... </eventlog>
+    ...
+    ... devmode off
+    ... """)
+
+    >>> from ZConfigParser.parser import ZConfigParser
+    >>> parser = ZConfigParser()
+    >>> success = parser.read('oldstyle.conf')
+
+    >>> import pprint
+    >>> pprint.pprint(sorted(parser.sections()))
+    ['zope',
+     'zope/accesslog',
+     'zope/accesslog/logfile',
+     'zope/accesslog/logfile.1',
+     'zope/eventlog',
+     'zope/eventlog/logfile',
+     'zope/eventlog/logfile.1',
+     'zope/server',
+     'zope/server.1',
+     'zope/server.2',
+     'zope/zodb',
+     'zope/zodb.1',
+     'zope/zodb.1/filestorage',
+     'zope/zodb/filestorage']
+
+
+
+Clean up:
+
+    >>> import os
+    >>> os.unlink('oldstyle.conf')
