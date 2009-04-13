@@ -1,3 +1,4 @@
+import os
 import sys
 from new import function
 
@@ -11,6 +12,10 @@ from zope.app.pagetemplate import simpleviewclass
 
 from z3c.ptcompat import ViewPageTemplateFile
 from z3c.ptcompat import config
+
+def package_home(gdict):
+    filename = gdict["__file__"]
+    return os.path.dirname(filename)
 
 def clone_and_replace_globals(func, new_globals):
     func_globals = func.func_globals.copy()
@@ -28,6 +33,9 @@ def SimpleViewClass(src, offering=None, used_for=None, bases=(), name=u''):
     if offering is None:
         offering = sys._getframe(1).f_globals
 
+    if isinstance(offering, dict):
+        offering = package_home(offering)
+
     bases += (simpleviewclass.simple, )
 
     class_ = type("SimpleViewClass from %s" % src, bases,
@@ -43,6 +51,9 @@ def SimpleViewletClass(src, offering=None, bases=(),
                        attributes=None, name=u''):
     if offering is None:
         offering = sys._getframe(1).f_globals
+
+    if isinstance(offering, dict):
+        offering = package_home(offering)
 
     # Create the base class hierarchy
     bases += (viewlet.simple, viewlet.ViewletBase)
@@ -85,6 +96,12 @@ def page_directive(_context, name, *args, **kwargs):
         del kwargs['template']
 
     return viewmeta.page(_context, name, *args, **kwargs)
+
+new_page_globals = dict(page=page_directive)
+class pages_directive(viewmeta.pages):
+
+    page = clone_and_replace_globals(viewmeta.pages.page.im_func,
+                                     new_page_globals)
 
 def viewlet_directive(_context, name, *args, **kwargs):
     class_ = kwargs.get('class_')

@@ -13,6 +13,19 @@
 	handler=".zcml.page_directive"
 	/>
 
+    <meta:complexDirective
+        name="pages"
+        schema="zope.app.publisher.browser.metadirectives.IPagesDirective"
+        handler=".zcml.pages_directive"
+        >
+
+      <meta:subdirective
+          name="page"
+          schema="zope.app.publisher.browser.metadirectives.IPagesPageSubdirective"
+          />
+
+    </meta:complexDirective>
+
     <meta:directive
 	name="viewlet"
 	schema="zope.viewlet.metadirectives.IViewletDirective"
