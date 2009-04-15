@@ -26,6 +26,7 @@ from z3c.form.interfaces import IForm, IGroup, ISubForm
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
 
+from interfaces import _
 from interfaces import IFormWrapper
 from interfaces import IPageletForm, IPageletSubform
 from interfaces import IPageletDisplayForm, IPageletFormView
@@ -60,6 +61,8 @@ class PageletForm(form.Form, PageletBaseForm):
 
     render = PageletBaseForm.render
     __call__ = PageletBaseForm.__call__
+
+    formErrorsMessage = _(u'Please fix indicated errors.')
 
     def extractData(self):
         data, errors = super(PageletForm, self).extractData()

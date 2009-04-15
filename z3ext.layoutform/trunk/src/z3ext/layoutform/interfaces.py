@@ -51,12 +51,14 @@ class IPageletForm(IPageletBaseForm):
     """Form mixin for pagelet implementation."""
 
     label = interface.Attribute('Form label')
-
     description = interface.Attribute('Form label')
 
     forms = interface.Attribute('Ordered list of managed forms')
     groups = interface.Attribute('Ordered list of managed groups')
     subforms = interface.Attribute('Ordered list of managed subforms')
+    views = interface.Attribute('Ordered list of managed views')
+
+    formErrorsMessage = interface.Attribute('Error message')
 
     def updateForms():
         """Update pagelet subforms."""

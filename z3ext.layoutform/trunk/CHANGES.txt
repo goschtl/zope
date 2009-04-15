@@ -6,6 +6,8 @@ CHANGES
 1.3.5 (2009-04-??)
 ------------------
 
+- Added 'formErrorMessage' to base class
+
 - Do not use z3c.autoinclude
 
 
