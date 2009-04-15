@@ -68,7 +68,6 @@ setup(name='z3ext.resource',
                                   'zope.app.testing',
                                   'zope.testing',
                                   'zope.testbrowser',
-                                  'z3c.autoinclude',
                                   ]),
       include_package_data = True,
       zip_safe = False
