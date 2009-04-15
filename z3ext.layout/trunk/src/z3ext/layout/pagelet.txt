@@ -376,7 +376,10 @@ doesn't call.
 
 We can get default pagelet view for content. First register default view
 
-  >>> from zope.component.interfaces import IDefaultViewName
+  >>> try:
+  ...     from zope.component.interfaces import IDefaultViewName
+  ... except:
+  ...     from zope.publisher.interfaces import IDefaultViewName
   >>> component.getSiteManager().registerAdapter(
   ...     'index.html', (interface.Interface, interface.Interface),
   ...     IDefaultViewName)
