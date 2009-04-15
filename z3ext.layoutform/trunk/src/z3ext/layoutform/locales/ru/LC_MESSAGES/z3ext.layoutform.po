@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Tue Oct 21 20:29:16 2008\n"
+"POT-Creation-Date: Wed Apr 15 11:37:16 2009\n"
 "PO-Revision-Date: 2008-10-20 14:35+0600\n"
 "Last-Translator: Nikolay Kim <fafhrd91@gmail.com>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -47,7 +47,10 @@ msgstr ""
 "Имя не должно содержать пробелов, подчеркивания и смешанный регистр. "
 "Короткое имя часть веб адреса элемента."
 
-#: src/z3ext/layoutform/edit.py:38
+#: src/z3ext/layoutform/edit.py:35
 msgid "Save"
 msgstr "Сохранить"
 
+#: src/z3ext/layoutform/form.py:65
+msgid "Please fix indicated errors."
+msgstr ""

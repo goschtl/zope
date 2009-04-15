@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Unknown\n"
-"POT-Creation-Date: Tue Oct 21 20:29:16 2008\n"
+"POT-Creation-Date: Wed Apr 15 11:37:16 2009\n"
 "PO-Revision-Date: 2008-10-14 17:25+0100\n"
 "Last-Translator: F. Kooman <fkooman@tuxed.net>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -47,6 +47,10 @@ msgstr ""
 "Mag geen spaties, underscores of wisselend hoofdlettergebruik bevatten. "
 "Korte naam is onderdeel van het webadres."
 
-#: src/z3ext/layoutform/edit.py:38
+#: src/z3ext/layoutform/edit.py:35
 msgid "Save"
 msgstr "Opslaan"
+
+#: src/z3ext/layoutform/form.py:65
+msgid "Please fix indicated errors."
+msgstr ""
