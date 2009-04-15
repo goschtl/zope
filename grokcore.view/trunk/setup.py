@@ -34,12 +34,12 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'martian >= 0.10',
-                      'grokcore.component >= 1.5.1',
+                      'grokcore.component >= 1.5',
                       'grokcore.security',
                       'zope.schema',
                       'zope.security',
                       'zope.traversing',
-                      'zope.app.publisher',
+                      'zope.app.publisher >= 3.5',
                       'zope.app.pagetemplate',
                       # for ftests:
                       # TODO move these to extra_requires?

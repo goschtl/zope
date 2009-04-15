@@ -37,7 +37,7 @@ class View(BrowserPage):
     def __init__(self, context, request):
         super(View, self).__init__(context, request)
         self.__name__ = getattr(self, '__view_name__', None)
-        
+
         if getattr(self, 'module_info', None) is not None:
             self.static = component.queryAdapter(
                 self.request,
@@ -237,10 +237,8 @@ class PageTemplateFile(PageTemplate):
         self.setFromFilename(filename, _prefix)
 
 class DirectoryResource(directoryresource.DirectoryResource):
-    # We subclass this, because we want to override the default factories for
-    # the resources so that .pt and .html do not get created as page
-    # templates
-
+    # We subclass this, because we want to override factories for
+    # .pt and .html file types, not creating pagetemplate resources.
     resource_factories = {}
     for type, factory in (directoryresource.DirectoryResource.
                           resource_factories.items()):
@@ -248,15 +246,12 @@ class DirectoryResource(directoryresource.DirectoryResource):
             continue
         resource_factories[type] = factory
 
-class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
-    # We need this to allow hooking up our own GrokDirectoryResource
-    # and to set the checker to None (until we have our own checker)
+    # Hook for our own DirectoryResourceFactory. Can only be set *after*
+    # having defined the DirectoryResourceFactory class.
+    directory_factory = None
 
-    def __call__(self, request):
-        # Override this method for the following line, in which our
-        # custom DirectoryResource class is instantiated.
-        resource = DirectoryResource(self.__dir, request)
-        resource.directory_factory = DirectoryResourceFactory
-        resource.__Security_checker__ = self.__checker
-        resource.__name__ = self.__name
-        return resource
+class DirectoryResourceFactory(directoryresource.DirectoryResourceFactory):
+    # We need this to allow hooking up our own DirectoryResource class.
+    factoryClass = DirectoryResource
+
+DirectoryResource.directory_factory = DirectoryResourceFactory

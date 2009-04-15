@@ -4,8 +4,9 @@ Changes
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Simplify the DirectoryResource and DirectoryResourceFactory
+  implementations by making better use of the hook points provided by
+  zope.app.publisher.browser.directoryresource.
 
 1.5 (2009-04-10)
 ----------------
