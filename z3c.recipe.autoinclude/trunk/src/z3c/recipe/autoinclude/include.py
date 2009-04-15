@@ -40,10 +40,11 @@ class AutoIncludeSetup(object):
         meta = []
         configure = []
         overrides = []
+        exclude = []
 
         for dist in dists:
             info = DependencyFinder(dist, ws).includableInfo(
-                ['meta.zcml', 'configure.zcml', 'overrides.zcml'])
+                ['meta.zcml', 'configure.zcml', 'overrides.zcml', 'exclude.zcml'])
 
             for pkg in info['meta.zcml']:
                 if pkg not in meta:
@@ -57,15 +58,33 @@ class AutoIncludeSetup(object):
                 if pkg not in overrides:
                     overrides.append(pkg)
 
+            for pkg in info['exclude.zcml']:
+                if pkg not in exclude:
+                    exclude.append(pkg)
+
         meta = ''.join(
             ['<include package="%s" file="meta.zcml" />\n'%pkg for pkg in meta])
-
-        configure = ''.join(
-            ['<include package="%s" />\n'%pkg for pkg in configure])
 
         overrides = ''.join(
             ['<includeOverrides package="%s" file="overrides.zcml" />\n'%pkg 
              for pkg in overrides])
+
+        exclude = ''.join(
+            ['<include package="%s" file="exclude.zcml" />\n'%pkg for pkg in exclude])
+
+        configureData = ''.join(
+            ['<include package="%s" />\n'%pkg for pkg in configure])
+
+        # fix zope.app.xxx dependencies problem
+        if 'zope.app.appsetup' in configure:
+            configureData = (
+                '<include package="zope.app.appsetup" />\n' +
+                configureData)
+
+        if 'zope.app.zcmlfiles' in configure:
+            configureData = (
+                '<include package="zope.app.zcmlfiles" file="menus.zcml" />\n' +
+                configureData)
 
         dest = []
 
@@ -79,10 +98,13 @@ class AutoIncludeSetup(object):
             packages_zcml_template % meta)
 
         open(os.path.join(location, 'packages-configure.zcml'), 'w').write(
-            packages_zcml_template % configure)
+            packages_zcml_template % configureData)
 
         open(os.path.join(location, 'packages-overrides.zcml'), 'w').write(
             packages_zcml_template % overrides)
+
+        open(os.path.join(location, 'packages-exclude.zcml'), 'w').write(
+            packages_zcml_template % exclude)
 
         return dest
 
