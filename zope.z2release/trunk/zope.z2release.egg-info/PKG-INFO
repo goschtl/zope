@@ -1,0 +1,25 @@
+Metadata-Version: 1.0
+Name: zope.z2release
+Version: 0.1dev
+Summary: Zope 2 release helper
+Home-page: UNKNOWN
+Author: Andreas Jung
+Author-email: info@zopyx.com
+License: ZPL
+Description: Introduction
+        ============
+        
+        
+        
+        Changelog
+        =========
+        
+        0.1 - Unreleased
+        ----------------
+        
+        * Initial release
+        
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
