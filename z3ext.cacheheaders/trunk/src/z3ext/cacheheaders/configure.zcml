@@ -27,7 +27,7 @@
      factory=".default.ModificationInfo" />
 
   <adapter
-     for="zope.component.interfaces.IView"
+     for="*"
      factory=".default.viewModificationInfo" />
 
 </configure>

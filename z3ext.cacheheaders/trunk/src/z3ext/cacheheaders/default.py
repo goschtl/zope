@@ -38,6 +38,7 @@ class ModificationInfo(object):
     def modified(self, default=long(0)):
         return self.time
 
+
 @interface.implementer(IModificationInfo)
 def viewModificationInfo(view):
     return IModificationInfo(view.context)
