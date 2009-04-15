@@ -26,7 +26,7 @@ setup(name='zope.z2release',
           'setuptools',
           # -*- Extra requirements: -*-
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points=dict(console_scripts=[
+        'z2_kgs=zope.z2release.cli:main'
+        ]),
       )
