@@ -34,6 +34,9 @@ class Recipe(object):
         if not os.path.exists(self.output):
             os.mkdir(self.output)
 
+        variants = options.get('variants', 'base tred scc')
+        variants = [v.strip() for v in variants.split()]
+
         # Install an interpreter
         packages = set(ws.by_key.keys()) - EXCLUDE_PACKAGES - self.exclude
         packages = list(packages)
@@ -41,7 +44,12 @@ class Recipe(object):
         easy_install.scripts(
             [('graph-%s' % self.name, 'z3c.recipe.depgraph.runner', 'main')],
             ws, options['executable'], options['bin-directory'],
-            arguments=dict(packages=packages, name=self.name, path=self.output),
+            arguments=dict(
+                packages=packages,
+                name=self.name,
+                path=self.output,
+                variants=variants
+                ),
             )
 
         reqs = ['tl.eggdeps']

@@ -12,3 +12,11 @@ eggs
 
 exclude
   A list of eggs which should be excluded from the graph processing.
+
+variants
+  A whitespace separated list of variants of graphs to create. The available
+  options are:
+
+    base - The basic full graphs.
+    tred - The transitive reduction of the graphs.
+    scc - Extracts graphs of strongly connected components.

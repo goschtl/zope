@@ -19,6 +19,7 @@ def main(args):
     packages = args.get('packages')
     path = args.get('path')
     scriptname = name + '-eggdeps'
+    variants = args.get('variants', ['base', 'tred', 'scc'])
 
     for package in packages:
         package = PACKAGE_EXCEPTIONS.get(package, package)
@@ -37,17 +38,19 @@ def main(args):
             input=specfile + '.dot',
             output=specfile + '.svg')
 
-        execute(TRED,
-            input=specfile + '.dot',
-            output=specfile + '-tred.dot')
+        if 'tred' in variants:
+            execute(TRED,
+                input=specfile + '.dot',
+                output=specfile + '-tred.dot')
 
-        execute(GRAPH,
-            input=specfile + '-tred.dot',
-            output=specfile + '-tred.svg')
+            execute(GRAPH,
+                input=specfile + '-tred.dot',
+                output=specfile + '-tred.svg')
 
-        execute(SCCMAP,
-            input=specfile + '.dot',
-            output=specfile + '-sccmap')
+        if 'scc' in variants:
+            execute(SCCMAP,
+                input=specfile + '.dot',
+                output=specfile + '-sccmap')
 
-        execute(SCCGRAPH,
-            input=specfile + '-sccmap')
+            execute(SCCGRAPH,
+                input=specfile + '-sccmap')
