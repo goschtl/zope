@@ -26,9 +26,13 @@ def InstallHook():
 
     Note that we can not change Zope2.zpublisher_validated_hook since
     the Zope startup code sets that *after* product initialization.
+    However, when testing (presumably with ZopeTestCase) we need to
+    set it because it's already set.
     """
+    import Zope2
     from Zope2.App import startup
     startup.validated_hook=ValidateHookWrapper(startup.validated_hook)
+    Zope2.zpublisher_validated_hook = startup.validated_hook
 
     logger.info("Wrapped the Zope2 zpublisher validation hook")
 

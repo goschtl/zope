@@ -1,6 +1,13 @@
 Changelog
 =========
 
+trunk
+-----
+
+* Also set ``Zope2.zpublisher_validated_hook`` in InstallHook, since
+  the order of execution is different with tests, and it's been
+  already set, thus our patch has no effect otherwise.
+
 1.0 - October 15, 2008
 ----------------------
 
