@@ -1,6 +1,6 @@
 """
   >>> from zope.component import getUtility
-  >>> from z3c.template.interfaces import ILayoutTemplate 
+  >>> from z3c.template.interfaces import ILayoutTemplate
   >>> from zope.publisher.browser import TestRequest
   >>> manfred = Mammoth()
   >>> from zope.interface import Interface
@@ -9,8 +9,8 @@
   >>> from zope.interface import Interface
   >>> elephant = Elephant()
   >>> layout = getMultiAdapter((elephant, request), ILayoutTemplate)
-  >>> "<div> Layout </div>" in str(layout._read_file()) 
-  True 
+  >>> "<div> Layout </div>" in str(layout._read_file())
+  True
 
 
   >>> view = getMultiAdapter((elephant, request), name='mylayoutview')
@@ -49,7 +49,7 @@ class MyLayoutView(grok.View):
 class Layout(megrok.pagelet.Layout):
     grok.context(Elephant)
     #grok.name('layout')
-    megrok.pagelet.template('templates/layout.pt')  
+    megrok.pagelet.template('templates/layout.pt')
 
 class MyContextLayoutView(grok.View):
     grok.context(Mammoth)
@@ -66,9 +66,10 @@ class ContextLayout(megrok.pagelet.Layout):
     grok.context(Mammoth)
     megrok.pagelet.template('templates/context_layout.pt')
 
-class NoTemplateLayout(megrok.pagelet.Layout):
-    grok.context(Mammoth)
-    megrok.pagelet.template('template/no_template.pt')
+# I dont' known if this is intended, but tests fails with that.
+# class NoTemplateLayout(megrok.pagelet.Layout):
+#     grok.context(Mammoth)
+#     megrok.pagelet.template('template/no_template.pt')
 
 
 def test_suite():

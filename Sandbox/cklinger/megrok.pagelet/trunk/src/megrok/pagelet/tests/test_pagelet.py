@@ -46,9 +46,9 @@ the Pagelets, too.
    >>> from zope.app.testing.functional import getRootFolder
    >>> folder = Folder()
    >>> app = App()
-   >>> getRootFolder()['app'] = app 
+   >>> getRootFolder()['app'] = app
    >>> pagelet = getMultiAdapter((app, request), name="applicationpagelet")
-   >>> pagelet.url() 
+   >>> pagelet.url()
    'http://127.0.0.1/app/applicationpagelet'
    >>> pagelet.application_url()
    'http://127.0.0.1/app'
@@ -101,7 +101,7 @@ class ApplicationPagelet(megrok.pagelet.Pagelet):
 def test_suite():
     from zope.testing import doctest
     from megrok.pagelet.tests import FunctionalLayer
-    import interlude
+
     suite = doctest.DocTestSuite(optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS)
     suite.layer = FunctionalLayer
     return suite

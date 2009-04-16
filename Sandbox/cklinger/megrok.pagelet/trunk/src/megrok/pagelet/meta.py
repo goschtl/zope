@@ -1,24 +1,14 @@
-import os
-import grok
 import martian
-import zope.component
-import zope.interface
 
 import grokcore.view
 import megrok.pagelet
 import grokcore.component
-import zope.component.zcml
 
-from martian import util
 from zope import component
-from zope import interface
 from martian.error import GrokError
 
-from z3c.template.zcml import layoutTemplateDirective
 from z3c.template.interfaces import ILayoutTemplate
 from z3c.template.template import TemplateFactory
-from zope.publisher.interfaces.browser import IBrowserPage
-from grokcore.security.util import protect_getattr
 
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
@@ -28,7 +18,7 @@ def default_view_name(factory, module=None, **data):
 
 class LayoutViewGrokker(martian.ClassGrokker):
     """Code resuse for View, ContentProvider and Viewlet grokkers"""
-    martian.component(megrok.pagelet.Layout) 
+    martian.component(megrok.pagelet.Layout)
     martian.directive(grokcore.component.context)
     martian.directive(grokcore.view.layer, default=IDefaultBrowserLayer)
     martian.directive(grokcore.component.name, get_default=default_view_name)
