@@ -37,7 +37,6 @@ SVN=svn://svn.zope.org/repos/main/grok
 #  svnfolder: relative to svn://svn.zope.org/repos/main/grok
 #  buildfolder: folder id for the built docs
 builddocs 1.0b1dev trunk dev
-builddocs 1.0a3 tags/1.0a3 1.0a3
-builddocs 1.0a2 tags/1.0a2 1.0a2
+builddocs 1.0a4 tags/1.0a4 1.0a4
 builddocs 0.14.1 tags/0.14.1 0.14.1
 builddocs 0.13.1 tags/0.13.1 0.13.1
