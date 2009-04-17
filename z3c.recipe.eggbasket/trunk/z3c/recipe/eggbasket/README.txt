@@ -112,8 +112,8 @@ We have a package ``orange`` that depends on the package ``colour``::
 We create source distributions for them in a directory::
 
     >>> colours = tmpdir('colours')
-    >>> sdist(orange, colours)
     >>> sdist(colour, colours)
+    >>> sdist(orange, colours)
     >>> ls(colours)
     -  colour-0.1.zip
     -  orange-0.1.zip
@@ -137,8 +137,8 @@ We'll start by creating a buildout that does not specify an egg::
 In this case the recipe will do nothing.  So the url does not get
 used.  Running the buildout gives us::
 
-    >>> print 'start..', system(buildout)
-    start...
+    >>> print 'start..\n', system(buildout)
+    start.. 
     ...
     Installing basket.
     <BLANKLINE>
@@ -169,8 +169,9 @@ be a test failure here:
 
     >>> tarball.list(verbose=False)
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/
-    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
     tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/colour-0.1.zip
+    tmp/tmpDlQSIQbuildoutSetUp/_TEST_/colours/orange-0.1.zip
+
     >>> tarball.close()
     >>> ls(tarserver)
     -  colours.tgz

@@ -107,9 +107,26 @@ class Downloader(Eggs):
                     log.error("Failed to install required eggs with the tar "
                               "ball.")
             finally:
+                # The Windows CPython has issues in the urllib module.
+                # urllib keeps files open in specific cases that can not
+                # be closed without finishing the process.
+                # Failing to remove temporary files should not stop the
+                # entire process. User is warned and can take action.
                 if not keep_tarball:
-                    os.unlink(tarball_location)
-                shutil.rmtree(extraction_dir)
+                    try:
+                        os.unlink(tarball_location)
+                    except OSError, win_error:
+                        log.warn("Could not remove temporary file %s: %s"
+                                 % (tarball_location, win_error))
+                        log.warn("Please remove the file manually")
+                                 
+                try:
+                    shutil.rmtree(extraction_dir)
+                except OSError, win_error:
+                    log.warn("Could not remove temporary directory %s: %s"
+                             % (extraction_dir, win_error))
+                    log.warn("Please remove the directory manually.")
+                                 
 
         # Return files that were created by the recipe. The buildout
         # will remove all returned files upon reinstall.
