@@ -13,6 +13,12 @@
   .buildout/default.cfg in the user's home directory, download the
   tarball there and do not throw it away afterwards.
 
+* Fixed an issue with Windows interaction in the urllib module.
+   https://bugs.launchpad.net/grok/+bug/362833
+
+* Fixed minor doctest issue where the expected output order
+  was not respected on Mac.
+
 0.4.1 (2009-01-12)
 ==================
 
