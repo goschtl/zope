@@ -1,31 +1,31 @@
-import grok
+import grokcore.view
 from megrok.chameleon import components
 
-class Mammoth(grok.Application, grok.Container):
+class Mammoth(grokcore.view.Context):
     pass
 
-class CavePainting(grok.View):
+class CavePainting(grokcore.view.View):
     pass
 
-class Static(grok.View):
+class Static(grokcore.view.View):
     def render(self): return
     pass
 
-class Gatherer(grok.View):
+class Gatherer(grokcore.view.View):
     pass
-    
-class Food(grok.View):
-    
+
+class Food(grokcore.view.View):
+
     text = "ME GROK EAT MAMMOTH!"
-    
+
     def me_do(self):
         return self.text
 
-class Hunter(grok.View):
-    
+class Hunter(grokcore.view.View):
+
     game = "MAMMOTH!"
 
-class Inline(grok.View):
+class Inline(grokcore.view.View):
     pass
 
 inline = components.ChameleonPageTemplate(

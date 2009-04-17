@@ -50,9 +50,9 @@ We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
 are registered with the framework::
 
-    >>> import grok
-    >>> grok.testing.grok('megrok.chameleon')
-    >>> grok.testing.grok('megrok.chameleon.tests.cpt_fixture')
+    >>> import grokcore.view
+    >>> grokcore.view.testing.grok('megrok.chameleon')
+    >>> grokcore.view.testing.grok('megrok.chameleon.tests.cpt_fixture')
 
 We create a mammoth, which should provide us a bunch of chameleon page
 template driven views and put it in the database to setup location
@@ -206,13 +206,13 @@ and render it::
     This template knows about the following vars:
     <BLANKLINE>
       template (the template instance):
-       <vars template in ...vars.cpt>
+       &lt;vars template in ...vars.cpt&gt;
     <BLANKLINE>
       view (the associated view):
-       <megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...>
+       &lt;megrok.chameleon.tests.cpt_fixture.app.Vars object at 0x...&gt;
     <BLANKLINE>
       context (the context of the view):
-       <megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...>
+       &lt;megrok.chameleon.tests.cpt_fixture.app.Mammoth object at 0x...&gt;
     <BLANKLINE>
       request (the current request):
        CONTENT_LENGTH:	0
@@ -221,7 +221,7 @@ and render it::
     SERVER_URL:	http://127.0.0.1
     <BLANKLINE>
       static (the static dir of the application):
-       <grokcore.view.components.DirectoryResource object at 0x...>
+       &lt;grokcore.view.components.DirectoryResource object at 0x...&gt;
     </body>
     </html>
 
@@ -232,12 +232,11 @@ Inline Templates
 We can also define inline templates. In our ``app.py`` we defined an
 inline template like this::
 
-  import grok
   from megrok.chameleon import components
 
   ...
 
-  class Inline(grok.View):
+  class Inline(grokcore.view.View):
     sometext = 'Some Text'
 
   inline = components.ChameleonPageTemplate(
@@ -293,9 +292,8 @@ We register everything. Before we can grok our fixture, we have to
 grok the `megrok.chameleon` package. This way the new template types
 are registered with the framework::
 
-    >>> import grok
-    >>> grok.testing.grok('megrok.chameleon')
-    >>> grok.testing.grok('megrok.chameleon.tests.genshi_fixture')
+    >>> grokcore.view.testing.grok('megrok.chameleon')
+    >>> grokcore.view.testing.grok('megrok.chameleon.tests.genshi_fixture')
 
 We create a mammoth, which should provide us a bunch of Genshi driven
 views and put it in the database to setup location info::
