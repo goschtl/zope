@@ -26,7 +26,7 @@ from z3c.pt.pagetemplate import evaluate_exists, evaluate_path
 # Chameleon Zope Page Templates...
 #
 class ChameleonPageTemplate(GrokTemplate):
-    
+
     def setFromString(self, string):
         self._filename = None
         self._template = PageTemplate(string)
@@ -51,7 +51,11 @@ class ChameleonPageTemplate(GrokTemplate):
                 path=evaluate_path,
                 exists=evaluate_exists))
         return namespace
-    
+
+    @property
+    def macros(self):
+        return self._template.macros
+
     def render(self, view):
         return self._template(**self.getNamespace(view))
 
@@ -68,7 +72,7 @@ class ChameleonPageTemplateFactory(GlobalUtility):
 class ChameleonGenshiTemplate(GrokTemplate):
     filename = None
     _format = None
-    
+
     def setFromString(self, string):
         self._filename = None
         self._template = GenshiTemplate(string, format=self._format)
@@ -95,7 +99,7 @@ class ChameleonGenshiTemplateFactory(GlobalUtility):
 
 class ChameleonGenshiTextTemplate(GrokTemplate):
     filename = None
-    
+
     def setFromString(self, string):
         self._filename = None
         self._template = GenshiTextTemplate(string)
@@ -111,7 +115,7 @@ class ChameleonGenshiTextTemplate(GrokTemplate):
         if self._filename is not None:
             self.setFromFilename(self._filename, self._prefix)
         return self._template(**self.getNamespace(view))
-    
+
 class ChameleonGenshiTextTemplateFactory(GlobalUtility):
     implements(interfaces.ITemplateFileFactory)
     name('cgt')
