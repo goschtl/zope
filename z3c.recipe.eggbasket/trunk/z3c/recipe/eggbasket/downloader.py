@@ -30,6 +30,10 @@ class Downloader(Eggs):
 
         url = self.options.get('url')
 
+        # Keep track of warnings and mention them at the end of
+        # the install() method.
+        temp_obj_warn = []
+        
         if not distributions_are_installed_in_dir(distributions,
                                                   options['eggs-directory']):
             log.info("Not all distributions are installed. "
@@ -112,10 +116,6 @@ class Downloader(Eggs):
                 # be closed without finishing the process.
                 # Failing to remove temporary files should not stop the
                 # entire process. User is warned and can take action.
-                
-                # Keep track of warnings and mention them at the end of
-                # the install() method.
-                temp_obj_warn = []
                 if not keep_tarball:
                     try:
                         os.unlink(tarball_location)
@@ -127,14 +127,14 @@ class Downloader(Eggs):
                 except OSError, os_error: # Most likely a WindowsError
                     temp_obj_warn.append(('directory', extraction_dir, os_error))
 
-                if len(temp_obj_warn):
-                    for warning_ in temp_obj_warn:
-                        type_, location_, except_ = warning_
-                        log.warn("Could not remove temporary %s %s"
-                                 % (type_, tarball_location))
-                        log.warn(os_error)
-                        log.warn("!!** Please remove the %s manually **!!"
-                                 % (type_,))
+        if len(temp_obj_warn):
+            for warning_ in temp_obj_warn:
+                type_, location_, except_ = warning_
+                log.warn("Could not remove temporary %s %s"
+                         % (type_, tarball_location))
+                log.warn(os_error)
+                log.warn("!!** Please remove the %s manually **!!"
+                         % (type_,))
 
 
         # Return files that were created by the recipe. The buildout
