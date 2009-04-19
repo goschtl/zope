@@ -38,3 +38,7 @@ Mirrors
 
 A read-only `SVN mirror http://svn.zope.de <http://svn.zope.de>`_  that can be
 accessed through HTTP is provided by the `Deutschsprachige Zope User Group (DZUG) <http://www.zope.de>`_.  
+Using the SVN mirror over HTTP is convinient if you are behind a firewall.
+Note that some Zope modules reference to other parts of the repository through
+svn:externals using the ``svn://`` protocol. You will not be able to check out
+such modules correctly - in fact you may encounter timeouts.
