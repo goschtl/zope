@@ -1,78 +1,230 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Language" content="en-us">
-
-<title>Python Community Cross-Pollination &mdash; Zope v0.1 documentation</title>
-<link rel="stylesheet" type="text/css" href="stylesheets.css">
+  <meta http-equiv="Content-Language" content="en-us" />
+  <title>Why Use Zope?</title>
+  <link rel="stylesheet" type="text/css" href="stylesheets.css" />
 </head>
 <body>
-<div align="center">
-  <center>
   <div class="holder">
-<div class="topbar"></div>
-<div class="menu-container">
-<div class="logo-holder">
-  <img src="images/logo-zope.gif" alt="Logo" width="225" height="82" /></div>
-<div id="menu">
-		<ul>
-			<li><a href="index.htm">What is Zope?</a></li>
-			<li><a href="whoiszope.htm">Who is Zope?</a></li>
-			<li class="current-page-item"><a href="whyzope.htm">Why Zope?</a></li>
-		</ul>
-<div class="brclear"></div>
-</div>
-<div class="brclear"></div>
-</div>
+    <div class="topbar"></div>
+    <div class="menu-container">
+      <div class="logo-holder">
+        <img src="images/logo-zope.gif" alt="Logo" width="225" height="82" />
+      </div>
+      <div id="menu">
+        <ul>
+          <li><a href="index.htm">What is Zope?</a></li>
+          <li><a href="whoiszope.htm">Who is Zope?</a></li>
+          <li class="current-page-item"><a href="whyzope.htm">Why Zope?</a></li>
+        </ul>
+        <div class="brclear"></div>
+      </div>
+      <div class="brclear"></div>
+    </div>
+    <div>
+      <div class="panel-five">
+      
+      
+      
+        <p class="text">
+            Zope applications and libraries are suited for different purposes and
+            environments; but most share common advantages:
+        </p>
+        <p class="textbold-one">Zope is Mature</p>
+        <p class="text">
+            Zope&#8217;s robust technologies are born of 10 years of hard-won real world
+            experience in building production web applications for every level of
+            organization, ranging from small nonprofits to large enterprise systems and
+            high traffic public web applications
+        </p>
+        <p class="text">
+            Zope&#8217;s groundbreaking innovations over the years led the way in demonstrating
+            the practicality of powerful software patterns, including object databases,
+            object publishing, and component architecture.
+        </p>
+        <p class="text">
+            All the applications built using the Zope Toolkit benefit from this
+            maturity, For example, the older projects, the Zope 2 app server as well as
+            Plone, both increasingly make use of the newest Zope library versions while
+            still maintaining the feature set that makes it useful in heavy production
+            settings.
+        </p>
+        <p class="text">
+            Meanwhile, younger Zope web frameworks such as Grok and repoze.bfg,
+            leverage the mature Zope Toolkit libraries to bring new ideas to web
+            development.
+        </p>
+        <p class="textbold-one">Designed for Automated Testing</p>
+        <p class="text">
+            All the major Zope frameworks and libraries are built around a culture of 
+            automated testing.</p>
+        <p class="textbold-one">Scalable Performance</p>
+        <p class="text">
+            Applications built using the Zope Object Database can benefit from ZEO
+            Clustering, which allow multiple applications to share a single object
+            database.
+        </p>
+        <p class="textbold-one">Persistence Options</p>
+        <p class="text">
+            Zope applications traditionally benefit from the use of a mature
+            high-performance transactional object database called ZODB, which increases
+            developer productivity by avoiding the management overhead of a relational
+            database layer. This benefit multiplies when combined with Zope schema classes
+            to marry content objects and metadata with web forms.
+        </p>
+        <p class="text">
+            However, relational databases (RDBMs) are also a popular persistence option
+            for Zope applications, and good options exist for using object relational
+            mappers such as SQLAlchemy and Storm.
+        </p>
+            
+            <ul>
+                <li>
+                    <a class="reference external" href="http://pypi.python.org/pypi/ZODB3">
+                        ZODB in Python Package Index
+                    </a>
+                </li>
+                <li>
+                    <a class="reference external" href="http://wiki.zope.org/ZODB/guide/index.html">
+                        ZODB/ZEO Programming Guide
+                    </a>
+                </li>
+                <li>
+                    <a class="reference external" 
+                    href="http://pyinsci.blogspot.com/2007/09/zodb-vs-relational-database-simple.html">
+                        ZODB vs Relational Database: a simple benchmark
+                    </a>
+                </li>
+                <li>
+                    <a class="reference external" href="http://www.sqlalchemy.org/">
+                        SQLAlchemy
+                    </a></li>
+                <li>
+                    <a class="reference external" href="https://storm.canonical.com/">
+                        Storm
+                    </a>
+                </li>
+            </ul>
+        
 
-<div>
-<div class="panel-five">
-  <div class="rgtpanel-he1">Why Zope?</div>
-  <p class="text">Zope applications, libraries, and frameworks are suited for 
-  different purposes and environments; each has a set of strengths and 
-  weaknesses.</p>
-  <p class="textbold-one">Zope is Mature</p>
-  <p class="text">Zope’s robust technologies are born of 10 years of hard-won real world 
-experience in building production web applications for every level of 
-organization, ranging from small nonprofits to large enterprise systems and high 
-traffic public web applications.</p>
-<p class="text">Zope’s groundbreaking innovations over the years led the way in demonstrating 
-the practicality of powerful software patterns, including object databases, 
-object publishing, and component architecture.</p>
-<p class="text">All the applications built using the Zope Framework benefit from this 
-maturity, For example, the older projects, the Zope 2 app server as well as 
-Plone, both increasingly make use of the newest Zope library versions while 
-still maintaining the feature set that makes it useful in heavy production 
-settings.</p>
-<p class="text">Meanwhile, younger Zope web frameworks such as Grok and Repoze.BFG, leverage 
-the mature Zope Framework libraries to bring new ideas to web development.</p>
-<p class="textbold-one">Designed for Automated Testing</p>
-<p class="text">All the major Zope frameworks and libraries are built around a culture of 
-automated testing.</p>
-<p class="textbold-one">Scalable Performance</p>
-<p class="text">Applications built using the Zope Object Database can benefit from ZEO 
-Clustering, which allow multiple applications to share a single object database</p>
-<p class="textbold-one">Persistence Options</p>
-<p class="text">Zope applications traditionally benefit from the use of a mature 
-high-performance transactional object database called ZODB, which increases 
-developer productivity by avoiding the complexity of a relational database 
-layer.</p>
-<p class="text">However, relational databases (RDBMs) are also a popular persistence option 
-for Zope applications, and good options exist for using object relational 
-mappers such as SQLAlchemy and Storm.</p>
-<p class="textbold-one">Zope Component Architecture</p>
-<p class="text">One of the lessons learned over the years was the need for a component 
-architecture; using object composition instead of object inheritance avoids 
-tight coupling between application parts so that components can be swapped 
-without causing breakage. The Zope Component Architecture provides and elegant 
-solution which helps manage complexity and encourage component reusability.</p>
-</div>
-</div>
-</div>
-<div class="brclear"></div>
-</div>
-<div>&nbsp;</div>
-<div class="footer">© Copyright 2009, Zope Developers. Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.1</div>
-</div>
-</center>
+
+        <p class="textbold-one">Zope Component Architecture</p>
+        <p class="text">
+            One of the lessons learned over the years was the need for a component
+            architecture; using object composition instead of object inheritance avoids
+            tight coupling between application parts so that components can be swapped
+            without causing breakage. The Zope Component Architecture provides and elegant
+            solution which helps manage complexity and encourage component reusability.
+        </p>
+        <p class="text"> See also:</p>
+        <ul>
+            <li><a class="reference external" href="http://muthukadan.net/docs/zca.html">
+                A Comprehensive Guide to Zope Component Architecture
+            </a></li>
+            <li><a class="reference external" 
+                href="http://wiki.zope.org/zope3/ComponentArchitectureOverview">
+                    Zope Component Architecture Overview
+                </a>
+            </li>
+            <li>
+                <a class="reference external" 
+                href="http://grok.zope.org/about/component-architecture">
+                    Doctor Grok Explains Zope Component Architecture
+                </a>
+            </li>
+        </ul>
+        
+        
+        <p class="textbold-one">Security</p>
+        
+        <p class="text">
+            The <a class="reference external" 
+            href="http://docs.zope.org/zopetoolkit/"> Zope Toolkit</a> 
+            offers significant security advantages in the form of a fine-grained and
+            highly manageable infrastructure, including support for pluggable
+            authentication and permission-based security policies for object
+            publishing, down to the level of methods and attributes.
+        </p>
+          
+        <p class="text">
+            By default, nothing is published unless an explicit security
+            declaration is attached either within application code or within
+            configuration.
+        </p>
+        
+        <p class="text">
+            For applications needing less security and more simplicity, Zope
+            Toolkit security can be relaxed to allow convenient, free-form web
+            object publishing.
+        </p>
+        <p class="text">
+            When it comes to security, one size does NOT fit all.
+        </p>
+        
+        <p class="text">See also:</p>
+          <ul class="first last simple">
+            <li><a class="reference external" 
+            href="http://plone.org/documentation/manual/pas-reference-manual/referencemanual-all-pages">
+             Pluggable Authenication for Plone and Zope 2
+            </a></li>
+          </ul>
+    
+    
+        <p class="textbold-one">MetaData and Dublin Core</p>
+        <p class="text">
+            Zope supports attaching metadata for application content objects, adhering to the 
+            <a class="reference external" href="http://dublincore.org/">Dublin Core</a>
+            metadata standard.
+        </p>
+
+        <p class="textbold-one">I18n and L10n Support</p>
+        <p class="text">
+            <a class="reference external" href="http://docs.zope.org/zopetoolkit/">
+            Zope Toolkit</a> 
+            supports a manageable approach to internationalization and localization, 
+            to make Zope applications easily translatable.
+        </p>
+    
+        <p class="textbold-one">Twisted Server Integration</p>
+        <p class="text">
+            While Zope does have a robust built-in HTTP server for
+            publishing objects to the web, it also comes bundled with
+            the powerful <a class="reference external"
+            href="http://twistedmatrix.com/trac/wiki">Twisted</a>
+            server, an &ldquo;event-driven networking engine&rdquo;
+            designed to support not only HTTP but many other network
+            protocols in a concurrently asynchronous fashion.
+        </p>
+        
+        <p class="textbold-one">WSGI Integration Options</p>
+        <p class="text">
+            Zope plays well with <a class="reference external" href="http://wsgi.org/wsgi/">WSGI</a>
+            HTTP pipelines, enabling layering of <a class="reference external" 
+            href="http://wsgi.org/wsgi/Middleware_and_Utilities">WSGI &ldquo;middleware&rdquo;</a> 
+            applications between the web server and the main &ldquo;endware&rdquo; application. 
+            Zope applications can play the role of either WSGI middleware or endware.
+        </p>
+
+        <ul>
+          <li><a class="reference external" href="http://repoze.org/about.html">Repoze: Integrating Zope Into a WSGI World</a></li>
+          <li><a class="reference external" href="http://docs.zope.org/zope3/Code/zope/publisher/paste.txt/index.html">PasteDeploy</a></li>
+        </ul>
+
+    </div> <!-- end for <div class="panel-five"> -->
+        
+
+        
+      </div>
+    </div>
+  
+  <div class="brclear"></div>
+  <div>
+    &nbsp;
+  </div>
+  <div class="footer">
+    &copy; Copyright 2009, Zope Developers. 
+  </div>
 </body>
 </html>
