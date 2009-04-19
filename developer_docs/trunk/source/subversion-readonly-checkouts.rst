@@ -41,4 +41,8 @@ accessed through HTTP is provided by the `Deutschsprachige Zope User Group (DZUG
 Using the SVN mirror over HTTP is convinient if you are behind a firewall.
 Note that some Zope modules reference to other parts of the repository through
 svn:externals using the ``svn://`` protocol. You will not be able to check out
-such modules correctly - in fact you may encounter timeouts.
+such modules correctly - in fact you may encounter timeouts..
+
+You can also access the official SVN repository through HTTP read-only through
+`http://svn.zope.org/repos/main/ <http://svn.zope.org/repos/main/>`_ .
+
