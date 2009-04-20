@@ -1,7 +1,8 @@
+import os.path
 from z3c.filetype import magic
 import interfaces
 from interfaces import filetypes
-from zope.contenttype import guess_content_type
+from zope.contenttype import guess_content_type, add_files
 from zope import interface, component
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
@@ -118,3 +119,8 @@ def handleModified(typeableFile, event):
 def handleCreated(typeableFile, event):
     """handles modification of data"""
     applyInterfaces(typeableFile)
+
+# add our mimetypes definitions to pythons mimetypes module
+here = os.path.dirname(os.path.abspath(__file__))
+add_files([os.path.join(here, "mime.types")])
+

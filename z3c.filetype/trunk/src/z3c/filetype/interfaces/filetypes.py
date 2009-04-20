@@ -109,6 +109,11 @@ class IAudioMPEGFile(IAudioFile, IBinaryFile):
 IAudioMPEGFile.setTaggedValue(MTM,re.compile('audio/mpeg'))
 IAudioMPEGFile.setTaggedValue(MT,'audio/mpeg')
 
+class IWMAFile(IAudioFile, IBinaryFile):
+    """Windows Media File Format"""
+    interface.taggedValue(MTM,re.compile('audio/x-ms-wma'))
+    interface.taggedValue(MT,'audio/x-ms-wma')
+
 class IHTMLFile(ITextFile):
     """HTML file"""
 IHTMLFile.setTaggedValue(MTM,re.compile('text/html'))

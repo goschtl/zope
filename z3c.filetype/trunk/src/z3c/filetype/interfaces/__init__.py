@@ -14,5 +14,4 @@ class ITypeableFile(interface.Interface):
     """A file object that is typeable"""
 
     data = interface.Attribute('Data of the file')
-    
-    
+

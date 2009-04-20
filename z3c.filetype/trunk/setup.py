@@ -20,7 +20,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="z3c.filetype",
-    version="1.2.0",
+    version="1.2.1",
     namespace_packages=["z3c"],
     packages=find_packages("src"),
     package_dir={"": "src"},

@@ -91,6 +91,16 @@ The only way right now is to use the filename.
   word.doc
   [<InterfaceClass z3c.filetype.interfaces.filetypes.IMSWordFile>]
 
+WMA files are alway detected as video/x-ms-asf. The only way is to use the
+file extension. To be able to detect WMA file this package adds its own
+mime.types file to the python mimetypes module.
+
+  >>> import mimetypes
+  >>> mimetypes.knownfiles
+  [... '.../z3c.filetype/src/z3c/filetype/mime.types'...
+
+  >>> sorted(api.getInterfacesFor(filename='test.wma'))
+  [<InterfaceClass z3c.filetype.interfaces.filetypes.IWMAFile>]
 
 The filename is only used if no interface is found, because we should
 not trust the filename in most cases.
