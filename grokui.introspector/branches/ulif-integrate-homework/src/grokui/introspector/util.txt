@@ -1,0 +1,119 @@
+grokui.introspector.util
+************************
+
+:Test-Layer: functional
+
+Helpers for the ``grokui.introspector`` package.
+
+dotted_name_url
+===============
+
+Create a URL out of a dotted name.
+
+We get an HTML fragment, which provides links to every part of the
+dotted name. As an example we generate the fragment which provides us
+a link to the ``zope`` package::
+
+  >>> from grokui.introspector.util import dotted_name_url
+  >>> dotted_name_url('zope')
+  '<a href="/++inspect++/+code/zope">zope</a>'
+
+The HTML for the ``zope.introspector`` package is the same but a link
+to the ``introspector subpackage appended::
+
+  >>> dotted_name_url('zope.introspector')
+  '...<a href="/++inspect++/+code/zope/introspector">introspector</a>'
+
+If we want a part of the dotted path to persist, for instance, because
+it is not an individual part of the dotted name but a file extension,
+we can do so by providing the `preserve_last` option::
+
+  >>> dotted_name_url('zope.README.txt', preserve_last=1)
+  '...<a href="/++inspect++/+code/zope/README.txt">README.txt</a>'
+
+The default value for `preserve_last` is zero, which means that every
+dot in the dotted name means a new component. Larger values handle
+also components with more than one dot in their name::
+
+  >>> dotted_name_url('zope.README.txt.gz', preserve_last=2)
+  '...<a href="/++inspect++/+code/zope/README.txt.gz">README.txt.gz</a>'
+
+render_text(text, module=None, format=None)
+===========================================
+
+A function stolen from ``zope.app.apidoc`` that quickly renders the
+given text using the specified format.
+
+If the `module` argument is specified, the function will try to determine the
+format using the module. If the `format` argument is given, it is simply
+used. Clearly, you cannot specify both, the `module` and `format` argument.
+
+You specify the format as follows:
+
+  >>> from grokui.introspector.util import render_text
+  >>> render_text('Hello!\n', format='zope.source.rest')
+  u'<p>Hello!</p>\n'
+
+Note that the format string must be a valid source factory id; if the factory
+id is not given, 'zope.source.rest' is used. Thus, specifying the module is
+often safer (if available):
+
+  >>> from grokui import introspector
+  >>> render_text('Hello!\n', module=introspector)
+  u'<p>Hello!</p>\n'
+
+render_docstring(docstring, heading_only=False, format=None)
+============================================================
+
+A function that renders a docstring as restructured text::
+
+  >>> from grokui.introspector.util import render_docstring
+  >>> render_docstring('''A Docstring.
+  ... ''')
+  u'<p>A Docstring.</p>\n'
+
+Leading and trailing whitespaces are stripped::
+
+  >>> render_docstring('''
+  ...  Some text
+  ...
+  ... ''')
+  u'<p>Some text</p>\n'
+
+If a docstring contains a heading, then only this can be requested::
+
+  >>> docstring = '''Some Heading.
+  ... 
+  ... The following text.'''
+
+  >>> render_docstring(docstring)
+  u'<p>Some Heading.</p>\n<p>The following text.</p>\n'
+
+Now the same string, but with `heading_only` option::
+
+  >>> render_docstring(docstring, heading_only=True)
+  u'<p>Some Heading.</p>\n'
+
+CVS '$Id' tags are silently skipped from output::
+
+  >>> render_docstring('''
+  ... A function to boze bazzles.
+  ... $Id$ foo bar
+  ...
+  ... Use it to bazzle bozes.''')
+  u'<p>A function to boze bazzles.</p>\n<p>Use it to bazzle bozes.</p>\n'
+
+By default the docstring will be rendered as ReSTructured Text, but we
+can require a different format::
+
+  >>> render_docstring('''
+  ... A line
+  ... Another line''')
+  u'<p>A line\nAnother line</p>\n'
+
+Now the same string rendered as plain text::
+
+  >>> render_docstring('''
+  ... A line
+  ... Another line''', format='zope.source.plaintext')
+  u'A line<br />\nAnother line'

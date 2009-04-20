@@ -1,0 +1,34 @@
+<html>
+  <body>
+    <h1>Content browser</h1>
+    
+    <h2>Content</h2>
+    <tal:content define="content context/keys | nothing" >
+      <span tal:condition="not: content">
+	No content found...
+      </span>
+      <span tal:condition="content"
+	    tal:repeat="item content">
+	<div tal:content="item" /> 
+      </span>
+    </tal:content>
+    <h2>Object Info</h2>
+    <span tal:content="context"/>
+
+    <div>
+      <p tal:content="view/getTypeName">
+	type.name
+      </p>
+    </div>
+
+    <div>
+      <p tal:content="structure view/getTypeInspectURL">
+      </p>
+    </div>
+
+    <h2>Available views</h2>
+    <div tal:repeat="info view/getViews" tal:content="info">
+      All views...
+    </div>
+  </body>
+</html>

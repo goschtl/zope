@@ -1,0 +1,83 @@
+grokui.introspector.code
+************************
+
+Browsing the code base (Python packages, modules and more).
+
+:Test-Layer: functional
+
+Browsing code (classes, packages, etc.)
+=======================================
+
+Before we can access any pages, we have to initialize the test
+browser::
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization', 'Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+
+The code browser is linked from the general grokui overview page::
+
+  >>> browser.open('http://localhost/++inspect++/')
+
+The code browser assists in giving us an overview over the available
+code basis. The overview page is where we can start::
+
+  >>> browser.getLink(
+  ... "Browse classes, packages and other filesystem based information"
+  ... ).click()
+  >>> print browser.contents
+  <!DOCTYPE html...
+  <h1>Code</h1>
+  ...
+
+The overview page provides already some starting points to explore the
+whole code basis. We can go to the ``zope`` package::
+
+  >>> zope_link = browser.getLink('Browse the zope package')
+  >>> zope_link.click()
+
+The general schema how to translate a dotted name into a URL path is
+described in detail below, but it is rather self-explanatory.
+
+Browsing Python packages
+------------------------
+
+We can browse Python packages::
+
+  >>> base_url = 'http://localhost/++inspect++/+code/'
+  >>> browser.open(base_url + 'grokui/introspector')
+  
+Translating a dotted name into an URL path
+------------------------------------------
+
+The system detects from the URL what thing we want to examine. It
+interpretes it as a dotted name like `mypkg.somemod.someclass`. We
+look for the ``grokui.introspector`` package by browsing::
+
+  >>> base_url = 'http://localhost/++inspect++/+code/'
+
+This URL has two important parts:
+
+1) the `++inspect++` tells, that we want to get introspector
+   informations of some kind.
+
+2) the following `+code/` part of the URL tells, that we want to
+   explore the code bases (and not the registries or content).
+
+We now only add the interesting package ``grokui.introspector`` by
+adding its dotted name with dots replaced by slashes::
+
+  >>> browser.open(base_url + 'grokui/introspector')
+  ...
+
+So, the general schema of using the grokui code browser is to enter an
+URL that starts with:
+
+  `/++inspect++/+code/`
+
+and then adding a dotted name with the dots replaced by slashes, so
+that `mypkg.modname.someclass` translates to:
+
+  `/++inspect++/+code/mypkg/modname/someclass`
+

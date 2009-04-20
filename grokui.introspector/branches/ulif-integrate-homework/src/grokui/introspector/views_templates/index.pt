@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <body>
+  <div>
+    <h1>The Grok Introspector</h1>
+
+    <h2>Registries</h2>
+
+    <div class="docgrok-annotation1">
+      <a tal:attributes="href string:+registry/@@index">
+	Browse the registries (utilitites, adapters, etc.)
+      </a>
+    </div>
+
+    <h2>Code</h2>
+
+    <div class="docgrok-annotation1">
+      <a tal:attributes="href string:+code/@@index">
+	Browse classes, packages and other filesystem based information
+      </a>
+    </div>
+    
+    <h2>Content</h2>
+
+    <div class="docgrok-annotation1">
+      <a tal:attributes="href string:+content/@@index">
+	Browse the content
+      </a>
+    </div>
+
+  </div>
+  </body>
+</html>
