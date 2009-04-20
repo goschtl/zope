@@ -4,13 +4,13 @@ z3c.recipe.paster:paster
 
 This Zope 3 recipes offers a Paste Deploy script setup for Zope3 projects.
 
-The paster part allows us to setup a plain paster executable which could be 
+The paster part allows us to setup a plain paster executable which could be
 used for start up your zope server using the paste deploy ".ini file like:
 ``bin/paster serve app.ini``. This recipe inherits the zc.recipe.egg class
 and will setup the paster within your egg dependency. All you have to do is
 to define your eggs. The benefit of this recipe compared with the built in
-PasteScript it the option to choose another name if you need more then one 
-paster script. This is required if you have paster with different egg 
+PasteScript it the option to choose another name if you need more then one
+paster script. This is required if you have paster with different egg
 dependencies in one buildout configuration.
 
 
@@ -59,11 +59,11 @@ We'll create a ``buildout.cfg`` file that defines our paster configuration:
   ... [buildout]
   ... develop = sample
   ... parts = mypaster
-  ... 
+  ...
   ... [mypaster]
   ... recipe = z3c.recipe.paster:paster
   ... eggs = sample
-  ...  
+  ...
   ... ''' % globals())
 
   >>> ls('bin')
@@ -85,18 +85,17 @@ Now check if the setup was correct:
   -  mypaster-script.py
   -  mypaster.exe
 
-Check the content of our new generated paster script. As you can see, the 
+Check the content of our new generated paster script. As you can see, the
 generated script uses the ``paste.script.command.run`` for starting our server.
 This script is generic but uses the path of our eggs and uses the given name:
 
-  >>> cat('bin', 'mypaster-script.py')
+  >>> cat('bin', 'mypaster')
   <BLANKLINE>
   import sys
   sys.path[0:0] = [
     '/sample-buildout/sample',
     '/sample-pyN.N.egg',
-    'c:\\python24\\lib\\site-packages',
-    '/sample-pyN.N.egg',
+    ...
     '/sample-pyN.N.egg',
     ]
   <BLANKLINE>

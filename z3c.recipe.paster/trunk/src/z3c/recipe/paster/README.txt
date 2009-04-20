@@ -3,7 +3,7 @@ z3c.recipe.paster:serve
 =======================
 
 This Zope 3 recipes offers a Paste Deploy setup for Zope3 projects. It requires
-to define a Paste Deploy *.ini file in the buoldout.cfg. If you need a simple 
+to define a Paste Deploy *.ini file in the buoldout.cfg. If you need a simple
 PasteScript setup you can use the z3c.recipe.paster:paster recipe which allows
 to run already existing ``*.ini`` files.
 
@@ -43,8 +43,7 @@ Lets define a (bogus) eggs that we can use in our application:
 Now check if the setup was correct:
 
   >>> ls('bin')
-  -  buildout-script.py
-  -  buildout.exe
+  -  buildout
 
 We'll create a ``buildout.cfg`` file that defines our paster serve configuration:
 
@@ -53,26 +52,26 @@ We'll create a ``buildout.cfg`` file that defines our paster serve configuration
   ... [buildout]
   ... develop = demo
   ... parts = var myapp
-  ... 
+  ...
   ... [var]
   ... recipe = zc.recipe.filestorage
-  ... 
+  ...
   ... [myapp]
   ... eggs = demo
   ... recipe = z3c.recipe.paster:serve
-  ... ini = 
+  ... ini =
   ...   [app:main]
   ...   use = egg:demo
-  ...   
+  ...
   ...   [server:main]
   ...   use = egg:Paste#http
   ...   host = 127.0.0.1
   ...   port = 8080
-  ... 
+  ...
   ... zope.conf =
-  ...   
+  ...
   ...   ${var:zconfig}
-  ...   
+  ...
   ...   <eventlog>
   ...     <logfile>
   ...       formatter zope.exceptions.log.Formatter
@@ -83,14 +82,14 @@ We'll create a ``buildout.cfg`` file that defines our paster serve configuration
   ...       path STDOUT
   ...     </logfile>
   ...   </eventlog>
-  ...  
+  ...
   ...  devmode on
   ...
-  ... site.zcml = 
+  ... site.zcml =
   ...   <!-- inlcude other zcml files like principals.zcml or securitypolicy.zcml
   ...        and your app configuration -->
   ...   <include package="demo" file="app.zcml" />
-  ...  
+  ...
   ... ''' % globals())
 
 Now, Let's run the buildout and see what we get:
@@ -105,15 +104,13 @@ The bin folder contains the scripts for serve our new created paste deploy
 server:
 
   >>> ls('bin')
-  -  buildout-script.py
-  -  buildout.exe
-  -  myapp-script.py
-  -  myapp.exe
+  -  buildout
+  -  myapp
 
-Check the content of our new generated myapp script. As you can see, the 
+Check the content of our new generated myapp script. As you can see, the
 generated script uses the ``paste.script.command.run`` for starting our server:
 
-  >>> cat('bin', 'myapp-script.py')
+  >>> cat('bin', 'myapp')
   #!"C:\Python24\python.exe"
   <BLANKLINE>
   import sys
@@ -148,7 +145,7 @@ Entry point
 -----------
 
 As you probably know, there is some magic going on during startup. The section
-``app:main`` in the myapp.ini file above must be defined as entry_point in your 
+``app:main`` in the myapp.ini file above must be defined as entry_point in your
 projects setup.py file. Without them, the ``app:main`` isn't available. You can
 define such a app:main entry point using the default ``application_factory``
 offered from the ``z3c.recipe.paster.wsgi`` package. Of corse you can define
@@ -173,4 +170,4 @@ your custom setup.py file like::
           main = z3c.recipe.paster.wsgi:application_factory
           """,
   )
-  
+

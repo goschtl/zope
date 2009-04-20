@@ -43,7 +43,10 @@ def setUp(test):
     zc.buildout.testing.install('zope.annotation', test)
     zc.buildout.testing.install('zope.app.applicationcontrol', test)
     zc.buildout.testing.install('zope.app.appsetup', test)
-    zc.buildout.testing.install('zope.app.authentication', test)
+    zc.buildout.testing.install('zope.authentication', test)
+    zc.buildout.testing.install('zope.principalregistry', test)
+    zc.buildout.testing.install('zope.app.localpermission', test)
+    zc.buildout.testing.install('zope.password', test)
     zc.buildout.testing.install('zope.app.basicskin', test)
     zc.buildout.testing.install('zope.app.component', test)
     zc.buildout.testing.install('zope.app.container', test)
@@ -107,9 +110,10 @@ checker = renormalizing.RENormalizing([
     (re.compile("""['"][^\n"']+z3c.recipe.paster[^\n"']*['"],"""),
      "'/z3c.recipe.paster',"),
     (re.compile('#![^\n]+\n'), ''),
-    (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'),
-     '-pyN.N.egg',
-    ),
+    (re.compile('-\S+-py\d[.]\d(-\S+)?.egg'), '-pyN.N.egg'),
+    # the following are for compatibility with Windows
+    (re.compile('-  .*\.exe\n'), ''),
+    (re.compile('-script.py'), ''),
     ])
 
 
