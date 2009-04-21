@@ -33,6 +33,7 @@ import threading
 import time
 import traceback
 import unittest
+import pkg_resources
 
 from zope.testing import doctest
 from zope.testing.testrunner.find import find_tests, test_dirs
@@ -55,7 +56,6 @@ import zope.testing.testrunner.debug
 
 PYREFCOUNT_PATTERN = re.compile('\[[0-9]+ refs\]')
 
-is_jython = sys.platform.startswith('java')
 
 class SubprocessError(Exception):
     """An error occurred when running a subprocess
@@ -67,6 +67,11 @@ class SubprocessError(Exception):
 
     def __str__(self):
         return '%s: %s' % (self.reason, self.stderr)
+
+
+FEATURE_ORDER = [
+    'selftest', 'logging', 'coverage', 'doctest', 'profiling', 'threshold',
+    'debug', 'find', 'subprocess', 'filter', 'listing', 'statistics']
 
 
 class CanNotTearDown(Exception):
@@ -97,7 +102,10 @@ class Runner(object):
         self.show_report = True
         self.do_run_tests = True
 
-        self.features = []
+        features = pkg_resources.iter_entry_points(
+            'zope.testing.testrunner.features')
+        self.features = list(features)
+        self.features.sort(key=lambda x:FEATURE_ORDER.index(x.name))
 
         self.tests_by_layer_name = {}
 
@@ -180,25 +188,8 @@ class Runner(object):
         # XXX I moved this here mechanically. Move to find feature?
         self.test_directories = test_dirs(self.options, {})
 
-        self.features.append(zope.testing.testrunner.selftest.SelfTest(self))
-        self.features.append(zope.testing.testrunner.logsupport.Logging(self))
-        self.features.append(zope.testing.testrunner.coverage.Coverage(self))
-        self.features.append(zope.testing.testrunner.doctest.DocTest(self))
-        self.features.append(zope.testing.testrunner.profiling.Profiling(self))
-        if is_jython:
-            # Jython GC support is not yet implemented
-            pass
-        else:
-            self.features.append(zope.testing.testrunner.garbagecollection.Threshold(self))
-            self.features.append(zope.testing.testrunner.garbagecollection.Debug(self))
-
-        self.features.append(zope.testing.testrunner.find.Find(self))
-        self.features.append(zope.testing.testrunner.subprocess.SubProcess(self))
-        self.features.append(zope.testing.testrunner.filter.Filter(self))
-        self.features.append(zope.testing.testrunner.listing.Listing(self))
-        self.features.append(zope.testing.testrunner.statistics.Statistics(self))
-
-        # Remove all features that aren't activated
+        # Activate features
+        self.features = [f.load()(self) for f in self.features]
         self.features = [f for f in self.features if f.active]
 
     def run_tests(self):
@@ -252,12 +243,8 @@ def run_tests(options, tests, name, failures, errors):
 
     output = options.output
 
-    if is_jython:
-        # Jython has no GC suppport - set count to 0
-        lgarbage = 0
-    else:
-        gc.collect()
-        lgarbage = len(gc.garbage)
+    gc.collect()
+    lgarbage = len(gc.garbage)
 
     sumrc = 0
     if options.report_refcounts:
@@ -317,13 +304,10 @@ def run_tests(options, tests, name, failures, errors):
         output.summary(result.testsRun, len(result.failures), len(result.errors), t)
         ran = result.testsRun
 
-        if is_jython:
-            lgarbage = 0
-        else:
-            gc.collect()
-            if len(gc.garbage) > lgarbage:
-                output.garbage(gc.garbage[lgarbage:])
-                lgarbage = len(gc.garbage)
+        gc.collect()
+        if len(gc.garbage) > lgarbage:
+            output.garbage(gc.garbage[lgarbage:])
+            lgarbage = len(gc.garbage)
 
         if options.report_refcounts:
 
@@ -618,13 +602,10 @@ class TestResult(unittest.TestResult):
         self.testTearDown()
         self.options.output.stop_test(test)
 
-        if is_jython:
-            pass
-        else:
-            if gc.garbage:
-                self.options.output.test_garbage(test, gc.garbage)
-                # TODO: Perhaps eat the garbage here, so that the garbage isn't
-                #       printed for every subsequent test.
+        if gc.garbage:
+            self.options.output.test_garbage(test, gc.garbage)
+            # TODO: Perhaps eat the garbage here, so that the garbage isn't
+            #       printed for every subsequent test.
 
         # Did the test leave any new threads behind?
         new_threads = [t for t in threading.enumerate()

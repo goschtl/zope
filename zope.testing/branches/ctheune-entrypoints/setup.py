@@ -89,4 +89,21 @@ setup(
 
     packages=["zope", "zope.testing"],
     package_dir = {'': 'src'},
+
+    entry_points="""
+    [zope.testing.testrunner.features]
+    selftest = zope.testing.testrunner.selftest:SelfTest
+    logging = zope.testing.testrunner.logsupport:Logging
+    coverage = zope.testing.testrunner.coverage:Coverage
+    doctest = zope.testing.testrunner.doctest:DocTest
+    profiling = zope.testing.testrunner.profiling:Profiling
+    threshold = zope.testing.testrunner.garbagecollection:Threshold
+    debug = zope.testing.testrunner.garbagecollection:Debug
+    find = zope.testing.testrunner.find:Find
+    subprocess = zope.testing.testrunner.subprocess:SubProcess
+    filter = zope.testing.testrunner.filter:Filter
+    listing = zope.testing.testrunner.listing:Listing
+    statistics = zope.testing.testrunner.statistics:Statistics
+
+    """,
     **extra)
