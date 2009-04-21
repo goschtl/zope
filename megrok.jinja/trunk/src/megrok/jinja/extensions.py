@@ -28,8 +28,11 @@ class DomainNotDefined(Exception):
     Use {% set i18n_domain='your-domain' %} in the top of your template."""
 
 @contextfunction
-def _translator_alias(context, string):
-    return context.resolve('gettext')(context, string)
+def _translator_alias(context, msgid, domain=None, mapping=None, ctx=None,
+                      target_language=None, default=None):
+
+    return context.resolve('gettext')(context, msgid, domain, mapping, ctx,
+                                      target_language, default)
 
 class i18nExtension(InternationalizationExtension):
     """
@@ -66,14 +69,19 @@ class i18nExtension(InternationalizationExtension):
         return getUtility(ITranslationDomain, domain)
 
     @contextfunction
-    def translator(self, context, msg):
-        request = context.resolve('view').request
-        domain = context.resolve('i18n_domain')
+    def translator(self, context, msg, domain=None, mapping=None, ctx=None,
+                   target_language=None, default=None):
+
+        ctx = ctx or context.resolve('view').request
+        domain = domain or context.resolve('i18n_domain')
         if not domain:
             raise DomainNotDefined
 
         return self.trans_domain(domain).translate(msg,
-                                                   context=request)
+                                                   mapping=mapping,
+                                                   context=ctx,
+                                                   target_language=target_language,
+                                                   default=default)
 
     def _make_node(self, singular, plural, variables, plural_expr):
         """

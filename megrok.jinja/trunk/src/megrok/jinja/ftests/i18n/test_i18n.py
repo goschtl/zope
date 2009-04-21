@@ -60,6 +60,13 @@ of our template, an exception it's raised::
   DomainNotDefined:
       Domain translations it's required.
       Use {% set i18n_domain='your-domain' %} in the top of your template.
+
+When using `_` alias translator, we could use all the parameters in
+zope.i18n.interfaces.ITranslationDomain.translate
+
+  >>> view = getMultiAdapter((context, request), name='usingparams')
+  >>> print view()
+  Probando el mapeo con algo
 """
 
 
@@ -80,3 +87,11 @@ class UnderscoreTranslate(View):
 
 class NoDomain(View):
     context(Context)
+
+class UsingParams(View):
+    context(Context)
+
+    def update(self):
+        self.domain = 'test_domain'
+        self.mapping = {'something' : 'algo'}
+

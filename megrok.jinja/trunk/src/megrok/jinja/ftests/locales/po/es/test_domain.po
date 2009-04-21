@@ -25,3 +25,6 @@ msgstr "Probando el tag `trans` de i18n sin saltos de linea."
 
 msgid "testing-underscore"
 msgstr "Probando la extension i18n en megrok.jinja usando la funcion `_`"
+
+msgid "Testing mapping with ${somthing}"
+msgstr "Probando el mapeo con ${something}"
