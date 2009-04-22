@@ -85,7 +85,6 @@ setup (
             'z3c.template',
             'z3c.zrtresource',
             'zam.api',
-            'zc.configuration',
             'zope.app.appsetup',
             'zope.app.authentication',
             'zope.app.component',

@@ -7,6 +7,11 @@ Version 0.5.3dev (unreleased)
 
 - Removed duplicated zam.api configure.zcml file include
 
+- Import IDefaultViewName from the new location at zope.publisher.interfaces
+
+- Removed zc.configuration package from dependency list since this is a part
+  of zope.configuration
+
 Version 0.5.2 (2008-04-16)
 --------------------------
 
