@@ -1,13 +1,15 @@
 Becoming a contributor
 ----------------------
 
-1. Get an account at http://www.zope.org.  Pick a user id that is a valid Unix
-   user id. Include this id when you fill out the contributor form.
+1. Mail webmaster@zope.org for a new user account at www.zope.org.
+   Pick a user id that is a valid Unix user id. Include this id when
+   you fill out the contributor form.
 
 2. Print, fill out and sign the `Zope Committer Agreement <http://foundation.zope.org/agreements>`_
 
-3. Submit the agreement to the Zope Foundation.
-   This can be done by either email, fax or post (in order from fastest to slowest).
+3. Submit the agreement to the Zope Foundation. This can be done by
+   either email, fax or post (in order from fastest to slowest).
+
    The contact details can be found on the `Zope Foundation website <http://foundation.zope.org/about>`_.
 
 4. Wait for an acknowledgement. If you don't get this in a reasonable amount of
