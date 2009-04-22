@@ -74,7 +74,6 @@ setup (
             'z3c.xmlhttp',
             'zam.api',
             'zam.skin',
-            'zc.configuration',
             'zope.app.component',
             'zope.app.http',
             'zope.app.intid',
