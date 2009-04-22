@@ -91,7 +91,6 @@ setup (
         'z3c.xmlhttp',
         'z3c.zrtresource',
         'zam.api',
-        'zc.configuration',
         'zope.app.component',
         'zope.app.http',
         'zope.app.intid',
