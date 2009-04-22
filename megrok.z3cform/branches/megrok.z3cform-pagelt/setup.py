@@ -5,18 +5,18 @@ version = '0.1'
 
 install_requires = [
     'setuptools',
-    'grokcore.component',
-    'grokcore.view >= 1.1',
-    'grokcore.formlib',
+    'grok',
     'z3c.form',
     'z3c.formui',
     'z3c.layer',
+    'z3c.wizard',
+    'megrok.pagelet'
     ]
 
 # The grok dependency is not added explicitly, so we can factor out a
 # version of this package for Zope 2 which is not going to install
 # grok. But we want the dependency to run tests.
-test_requires = install_requires + ['grok >= 0.14',]
+test_requires = install_requires + ['grok',]
 
 setup(name='megrok.z3cform',
       version=version,
