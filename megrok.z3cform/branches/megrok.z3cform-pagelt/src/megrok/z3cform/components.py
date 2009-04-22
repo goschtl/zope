@@ -7,6 +7,7 @@ from zope.pagetemplate.interfaces import IPageTemplate
 
 import martian
 import grokcore.view
+import grokcore.component
 from grokcore.view.interfaces import ITemplate as IGrokTemplate
 
 from megrok.z3cform.interfaces import IGrokForm
@@ -14,6 +15,9 @@ from megrok.z3cform.interfaces import IGrokForm
 from z3c.form import form, field
 from z3c.form.interfaces import IFormLayer
 from z3c.template.interfaces import ILayoutTemplate
+
+from z3c.wizard import wizard, step
+import z3c.wizard.interfaces
 
 import megrok.pagelet
 
@@ -77,12 +81,12 @@ class GrokForm(object):
                                 # override it.
 
     def __call__(self):
-        #mapply(self.update, (), self.request)
-        #if self.request.response.getStatus() in (302, 303):
-        #    # A redirect was triggered somewhere in update().  Don't
-        #    # continue rendering the template or doing anything else.
-        #    return
-        self.update()
+        mapply(self.update, (), self.request)
+        if self.request.response.getStatus() in (302, 303):
+            # A redirect was triggered somewhere in update().  Don't
+            # continue rendering the template or doing anything else.
+            return
+        #self.update()
         self.updateForm()
 	if self.layout is None:
 	    layout = component.getMultiAdapter(
@@ -127,3 +131,15 @@ class DisplayForm(GrokForm, form.DisplayForm, megrok.pagelet.Pagelet):
     
     martian.baseclass()
 
+class WizardForm(GrokForm, wizard.Wizard, megrok.pagelet.Pagelet):
+    """z3c wizdard.
+    """
+
+    martian.baseclass()
+
+
+class Step(step.EditStep, grokcore.component.MultiAdapter):
+    """A Step for the Witzard
+    """
+    grokcore.component.provides(z3c.wizard.interfaces.IStep)
+    martian.baseclass()

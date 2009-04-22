@@ -8,6 +8,7 @@
   <include package="z3c.macro" file="meta.zcml" />
   <include package="z3c.formui"/>
   <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="megrok.pagelet" file="meta.zcml" />
 
   <grok:grok package=".meta" />
 
