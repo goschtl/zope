@@ -53,6 +53,14 @@
      provides=".interfaces.ICategory"
      permission="zope.Public" />
 
+  <z3ext:configlet
+     name="content"
+     schema=".interfaces.IContentConfiglet"
+     title="Content types"
+     description="This area allows you to configure portal content types."
+     provides=".interfaces.ICategory"
+     permission="zope.Public" />
+
   <!-- settings view -->
   <adapter
      name="settings"

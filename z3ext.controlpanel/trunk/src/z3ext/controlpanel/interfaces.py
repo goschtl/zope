@@ -34,6 +34,10 @@ class ISystemConfiglet(interface.Interface):
     """This area allows you to configure system."""
 
 
+class IContentConfiglet(interface.Interface):
+    """This area allows you to configure portal content types."""
+
+
 class IPrincipalsConfiglet(interface.Interface):
     """ Portal principals related settings """
 

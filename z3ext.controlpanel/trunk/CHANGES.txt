@@ -5,6 +5,8 @@ CHANGES
 1.4.1 (Unreleased)
 ------------------
 
+- Added 'Content types' configlet category
+
 - Do not use z3c.autoinclude
 
 - Do not inherit ContentContainerConfiglet from ContentContainer
