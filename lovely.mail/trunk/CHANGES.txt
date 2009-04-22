@@ -5,6 +5,12 @@ Changes for lovely.mail
 After
 =====
 
+2009/04/22 0.2.0
+================
+
+ - stop remaining QueueProcessThread on tearDown because python 2.5 doesn't
+   terminate.
+
 2008/04/22 0.1.3
 ================
 

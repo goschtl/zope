@@ -16,14 +16,14 @@ long_description=(
 name = 'lovely.mail'
 setup(
     name = name,
-    version = '0.1.3',
+    version = '0.2.0',
     author = "Lovely Systems",
     author_email = "office@lovelysystems.com",
     license = "ZPL 2.1",
     keywords = "mail zope zope3",
     url = 'http://launchpad.net/lovely.mail',
     description = "sending emails via remotetask",
-    long_description = long_description,    
+    long_description = long_description,
     zip_safe = False,
     packages = find_packages('src'),
     include_package_data = True,
@@ -43,7 +43,6 @@ setup(
        'Intended Audience :: Developers',
        'License :: OSI Approved :: Zope Public License',
        'Topic :: Software Development :: Libraries :: Python Modules',
-       ],    
-    
+       ],
     )
 

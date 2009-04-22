@@ -120,6 +120,10 @@ def tearDownSMTPTesting():
     global oldSMTP, oldQueuePath, mailer, delivery, thread
     mailer.smtp = oldSMTP
     delivery._queuePath = oldQueuePath
+    import threading
+    for t in threading.enumerate():
+        if isinstance(t, QueueProcessorThread):
+            t.stop()
     thread = None
     del sentMails[:]
 
