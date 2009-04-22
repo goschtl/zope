@@ -1,0 +1,39 @@
+=======================
+Changes for lovely.mail
+=======================
+
+After
+=====
+
+2009/04/22 0.2.0
+================
+
+ - stop remaining QueueProcessThread on tearDown because python 2.5 doesn't
+   terminate.
+
+2008/04/22 0.1.3
+================
+
+- make the testmailer compatible to the latest zope.sendmail package
+
+2007/12/10 0.1.2
+================
+
+- move stuff to zope.org and pypi
+
+2007/08/23 0.1.1
+================
+
+- added remotemail.py for remote sendmail tasks
+
+2007/06/20 0.1.0a1
+==================
+
+- added TestMailDelivery utility implementation
+
+- changed to current bootstrap.py
+
+- added this file
+
+- cleaned imports
+
