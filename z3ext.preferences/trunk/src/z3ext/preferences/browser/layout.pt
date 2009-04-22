@@ -5,9 +5,14 @@
 		 rendered view/render">
   <table class="z-prefs-layout" tal:omit-tag="noNav">
     <tr tal:omit-tag="noNav">
-      <td class="z-prefs-nav-wrapper"
-	  tal:condition="nav" tal:content="structure nav"></td>
-      <td tal:omit-tag="noNav" tal:content="structure rendered"></td>
+      <td class="z-prefs-nav-column" tal:condition="nav">
+	<div class="z-prefs-nav-wrapper"
+	     tal:content="structure nav"></div>
+      </td>
+      <td class="z-prefs-content-column" tal:omit-tag="noNav">
+	<div class="z-prefs-content-wrapper"
+	     tal:content="structure rendered"></div>
+      </td>
     </tr>
   </table>
 </div>

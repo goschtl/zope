@@ -35,9 +35,12 @@
     vertical-align: top;
   }
   
-  #z-preferences .z-prefs-nav-wrapper {
-    padding-right: 1em;
+  #z-preferences .z-prefs-nav-column {
     width: 200px;
+  }
+
+  #z-preferences .z-prefs-nav-wrapper { 
+    padding-right: 1em;
   }
   
   .z-prefs-nav {
