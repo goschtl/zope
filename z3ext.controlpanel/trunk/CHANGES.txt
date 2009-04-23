@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.4.1 (Unreleased)
+1.4.1 (2009-04-23)
 ------------------
 
 - Added 'Content types' configlet category
