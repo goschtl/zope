@@ -57,6 +57,8 @@ def main():
     tag = sys.argv[1]
     dirname = sys.argv[2]
 
+    version = tag.split('/')[-1]
+
     versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
     print >>sys.stderr, 'Fetching %s' % versions_url
     data = urllib.urlopen(versions_url).read()
@@ -69,7 +71,7 @@ def main():
     server = Server('http://pypi.python.org/pypi')
     links = list()
 
-    write_index('Zope2', '2.12.0a3', dirname)
+    write_index('Zope2', version, dirname)
     for package in CP.options('versions'):
 
         # options() returns all options in lowercase but
