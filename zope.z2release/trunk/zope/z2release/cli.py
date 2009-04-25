@@ -14,7 +14,6 @@ import os
 import sys
 import urlparse
 import urllib
-import tempfile
 from xmlrpclib import Server
 from ConfigParser import RawConfigParser as ConfigParser
 
@@ -56,17 +55,19 @@ def main():
 
     tag = sys.argv[1]
     dirname = sys.argv[2]
+    if not os.path.exists(dirname):
+        print >>sys.stderr, 'Creating index directory: %s' % dirname
+        os.makedirs(dirname)
 
     version = tag.split('/')[-1]
-
     versions_url = 'http://svn.zope.org/*checkout*/Zope/%s/versions.cfg' % tag
     print >>sys.stderr, 'Fetching %s' % versions_url
     data = urllib.urlopen(versions_url).read()
-    tmp_version_file = tempfile.mktemp()
-    file(tmp_version_file, 'w').write(data)
+    version_file = os.path.join(dirname, 'versions.cfg')
+    file(version_file, 'w').write(data)
 
     CP = ConfigParser()
-    CP.read(tmp_version_file)
+    CP.read(version_file)
 
     server = Server('http://pypi.python.org/pypi')
     links = list()
