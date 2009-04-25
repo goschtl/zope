@@ -52,7 +52,8 @@ def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
               pollinterval = 30, nightlyhour=3,
               poller = None, makefactory = make_factory,
-              maxConcurrent = 2):
+              maxConcurrent = 2,
+              svnbin = 'svn'):
     """Creates a buildout master configuration.
 
     The configuration returned is almost functional. You just need to add
@@ -74,6 +75,8 @@ def configure(svn_url, http_port=8010, allowForce=False,
           first when there is none for a project
         * bsquare reverts to make_factory as last
     * maxConcurrent: maximum number of concurrent builds
+    * svnbin: passed directly to SVNPoller (win32 seems to be picky about
+                                            svn location)
 
     """
     c = {}
@@ -83,7 +86,8 @@ def configure(svn_url, http_port=8010, allowForce=False,
                                        split_file=split_file,
                                        svnuser=svnuser,
                                        svnpasswd=svnpasswd,
-                                       pollinterval=pollinterval)
+                                       pollinterval=pollinterval,
+                                       svnbin=svnbin)
     else:
         c['change_source'] = poller
     c['schedulers'] = []
