@@ -1,5 +1,6 @@
 # A buildbot master configuration for buildout-based project repositories
 
+import sys
 import os.path
 import subprocess
 from twisted.python import log
@@ -17,6 +18,7 @@ from buildbot.scheduler import Scheduler, Nightly
 
 from gocept.bsquare import status
 
+is_win32 = sys.platform == 'win32'
 
 def split_file(path):
     pieces = path.split("/")
@@ -35,12 +37,20 @@ def make_factory(svn_url):
                 command='buildout bootstrap .',
                 description=['bootstrapping'],
                 descriptionDone=['bootstrap']))
+    if is_win32:
+        command = "bin\\buildout.exe"
+    else:
+        command = 'bin/buildout'
     f.addStep(Compile(name="buildout",
-                command='bin/buildout',
+                command=command,
                 description=['building'],
                 descriptionDone=['build']))
+    if is_win32:
+        command = "bin\\test.exe --exit-with-status -1"
+    else:
+        command = 'bin/test --exit-with-status -1' #-1 == stop on first error
     f.addStep(Compile(name="test",
-                command='bin/test --exit-with-status -1',
+                command=command,
                 description=['testing'],
                 descriptionDone=['tests']))
 
