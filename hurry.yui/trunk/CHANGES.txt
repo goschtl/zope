@@ -1,6 +1,13 @@
 CHANGES
 *******
 
+2.6.0.4 (unreleased) (YUI version 2.6.0)
+========================================
+
+* Add ZCML configuration from `hurry.zopeyui`. With Zope you can now
+  use `hurry.yui` without additional `hurry.zopeyui`. Please make
+  sure, however, that `hurry.zoperesource` is available at runtime.
+
 2.6.0.3 (2008-12-03) (YUI version 2.6.0)
 ========================================
 
