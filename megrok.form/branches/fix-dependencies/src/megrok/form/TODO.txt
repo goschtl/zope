@@ -1,0 +1,15 @@
+================
+megrok.form TODO
+================
+
+- Add input tests for all widgets
+
+- Get rid of megrok.form.browser.tzinfo
+
+- Create a widget for zope.interface.schema.Time (based on z3c.widget.dropdowndatewidget)
+
+- Create / find a field for Reference (take a look at zc.relation, zc.relationship and lovely.relation)
+
+- Look at kupu/formlib integration (http://svn.plone.org/svn/plone/plone.app.form/branches/plip200-kupu-widget)
+
+- Look at KSS-based form validation (http://svn.plone.org/svn/plone/plone.app.form/branches/plip202-formlib-kss)
