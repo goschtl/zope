@@ -11,6 +11,7 @@ import martian
 
 from megrok.z3cform import components
 from z3c.form import field
+from z3c.wizard.zcml import wizardStepDirective
 
 def get_auto_fields(context):
     """Get the form fields for context.
@@ -52,3 +53,12 @@ class FormGrokker(martian.ClassGrokker):
 
         return True
 
+
+class WizardStepGrokker(martian.ClassGrokker):
+    martian.component(components.Step)
+    martian.directive(grokcore.component.context)
+    martian.directive(grokcore.component.name)
+
+    def execute(self, factory, config, context, name, **kw):
+        wizardStepDirective(config, factory, name, 'zope.Public', wizard=context)
+        return True

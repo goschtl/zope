@@ -138,8 +138,6 @@ class WizardForm(GrokForm, wizard.Wizard, megrok.pagelet.Pagelet):
     martian.baseclass()
 
 
-class Step(step.EditStep, grokcore.component.MultiAdapter):
+class Step(step.EditStep):
     """A Step for the Witzard
     """
-    grokcore.component.provides(z3c.wizard.interfaces.IStep)
-    martian.baseclass()
