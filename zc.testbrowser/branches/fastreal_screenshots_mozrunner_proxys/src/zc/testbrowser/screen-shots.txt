@@ -1,0 +1,13 @@
+Taking screenshots
+----------------------------
+
+    >>> from zc.testbrowser.real import Browser
+    >>> import tempfile
+    >>> f = tempfile.mkdtemp()
+    >>> browser = Browser('http://localhost:%s/print_request' % TEST_PORT)
+    >>> browser.screenshot(f)
+    >>> browser.stop_ff()
+    >>> 'PNG' in open(os.path.join(f, "screenshot.png")).read()
+    True
+
+

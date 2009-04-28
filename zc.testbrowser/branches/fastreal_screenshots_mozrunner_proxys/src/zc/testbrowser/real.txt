@@ -1,0 +1,91 @@
+
+Controlling rael browsers: the firefox case
+=====================================================
+We will use an extension, **mozrepl**, to control firefox.
+It's a little piece of software that enables you to connect to your firefox via telnet, and controls what's controllable via javascript.
+See http://wiki.github.com/bard/mozrepl for further documentation .
+
+The profile
+-----------------------------
+Configuring firefox can be a heck, we will provide a default profile, whith mozrepl installed a configured to run on localhost/4242.
+We configured also this profile to stop firefox being interactive (eg: the session restore thing)
+
+    >>> profile = MozReplProfile()
+    >>> profile.profile
+    '...mozrunner'
+    >>> profile.preferences
+    {'browser.shell.checkDefaultBrowser': False, 'extensions.mozrepl.loopbackOnly': False, 'browser.sessionstore.resume_from_crash': False, 'browser.warnOnQuit': False, 'extensions.update.enabled': False, 'browser.tabs.warnOnClose': False, 'extensions.update.notifyUser': False, 'extensions.mozlab.mozrepl.port': 4242, 'extensions.mozlab.mozrepl.autoStart': True, 'extensions.mozrepl.autoStart': True, 'extensions.mozlab.mozrepl.loopbackOnly': False, 'extensions.mozrepl.port': 4242}
+
+    >>> profile.plugins
+    ['...zc/testbrowser/firefox/mozrepl.xpi']
+    >>> profile.plugins_installed
+    ['...mozrunner/extensions/mozrepl@hyperstruct.net']
+
+Controlling firefox
+--------------------------------
+
+    >>> noecho = os.system("ps aux|grep firefox|awk '{print $2}'|xargs kill -9")
+    >>> url = '%s/print_request' % proxies[0]
+    >>> b = RealBrowser(url)
+    >>> print b.contents
+    <html>...
+    >>> b.firefox_running
+    True
+
+Stopping it
+--------------------
+
+    >>> b.stop_ff()
+    >>> b.firefox_running
+    False
+    >>> b.contents
+    Traceback (most recent call last):
+    ...
+    AssertionError: MozRepl is not initialized
+
+Restarting it
+-------------------
+
+    >>> b.restart_ff()
+    >>> b.firefox_running
+    True
+
+Taking screenshots
+-------------------------
+You can take screenshots of the running firefox, too::
+
+    >>> f = tempfile.mkdtemp()
+    >>> b.screenshot(f, "screenshot")
+    >>> 'PNG' in open(os.path.join(f, "screenshot.png")).read()
+    True
+
+
+Executing arbitrary JavaScript in the current context
+-------------------------------------------------------------
+
+    >>> b.open(url)
+    >>> b.url
+    'http://localhost:.../print_request'
+    >>> b.exec_contentjs('content.location')
+    'http://localhost:.../print_request \xe2\x80\x94 {host: "localhost:...", hostname: "localhost", port: "..."}'
+
+
+Configuration settings
+--------------------------------------
+
+You can play with some keys in the section ``zc.testbrowser`` if you provide a configuration file::
+
+    - firefox-host
+          mozrepl host
+    - firefox-port
+          mozrepl-port
+    - firefox
+          firefox binary to use
+
+Cleaning
+----------------
+
+    >>> b.stop_ff()
+    >>> remove(b.firefox_profile.profile)
+    >>> remove(f)
+

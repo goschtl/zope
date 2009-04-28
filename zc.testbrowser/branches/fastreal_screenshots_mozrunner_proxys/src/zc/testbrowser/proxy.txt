@@ -1,0 +1,290 @@
+The proxified browsers
+=======================
+
+
+A proxified abstract class
+---------------------------
+
+We provide an abstract class to enable you to easily develop your own specialized proxies.
+All that you need to do is to inherit this class, and your browser one, and then play with the ``browser_open`` method.
+
+
+We need to monkey patch expand user not to alterate our configuration files in ~/
+
+    >>> config = tempfile.mkstemp()[1]
+    >>> remove(config)
+    >>> zc.testbrowser.utils.__CONFIGFILE__  = config
+
+Install some magic to get the logs
+
+    >>> from zope.testing.loggingsupport import InstalledHandler
+    >>> log_handler = InstalledHandler('zc.testbrowser.proxy')
+
+Here is how you can implement a proxified class
+
+    >>> class MyBrowser:
+    ...     """My original browser"""
+    ...     def __init__(self):
+    ...         """."""
+    ...     def open(self, *args, **kwargs):
+    ...         print 'But I ll do the same proxified or not!'
+    >>>
+
+Heritage order is important !!!
+
+    >>> class ProxifiedBrowser(BaseAnonymousBrowser, MyBrowser):
+    ...    """."""
+    ...    def __init__(self, proxies=None, *args, **kwargs):
+    ...
+    ...        # in the real life, specify real constructor arguments
+    ...        BaseAnonymousBrowser.__init__(self, proxies=proxies)
+    ...        MyBrowser.__init__(self)
+    ...
+    ...    def reset(self):
+    ...         pass
+    ...    def fake_user_agent(self, force=False):
+    ...         print "ua:%s" % self.user_agent
+    ...    def proxify(self, force=False):
+    ...         print "proxies:%s" % self.proxies
+    ...    def browser_open(self, *args, **kwargs):
+    ...        print 'I am wrapped'
+    ...        return MyBrowser.open(self, *args, **kwargs)
+    >>>
+
+And when you instantiate it, here is the magic
+
+   >>> mybrowser = ProxifiedBrowser(proxies=['a'])
+   >>> mybrowser.open('')
+   proxies:['a']
+   ua:Mozilla/5.0 (Windows; U; Windows NT 5.1; fr; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14
+   I am wrapped
+   But I ll do the same proxified or not!
+
+
+But, we want to be anonymous, and we ll set a proxy
+To define those proxies, Either:
+
+    * Set  a config.ini file like::
+
+        [zc.testbrowser]
+        proxies =
+            host1:port
+            host2:port
+
+    * give a ``proxies`` list to the browser constructor.
+
+        >>> b = BaseAnonymousBrowser(proxies=['http://foo.net:3128'])
+        >>> b.proxies
+        ['http://foo.net:3128']
+
+The first time you launch the browser, if no config is present, it will be created for you in ~/.zc.testbrowser.cfg:
+
+    >>> cat(config)
+    [zc.testbrowser]
+    proxies =
+    <BLANKLINE>
+
+The implementation of the abstract class is somehow, ..., limited
+
+    >>> b.browser_open('')
+    Traceback (most recent call last):
+    Exception: not implemented
+    >>> b.proxify()
+    Traceback (most recent call last):
+    Exception: not implemented
+    >>> b.fake_user_agent()
+    Traceback (most recent call last):
+    Exception: not implemented
+    >>> b.reset(None, None)
+    Traceback (most recent call last):
+    Exception: not implemented
+
+When the browser has many proxies defined, it will circly through those ones.
+But, it will not use the same host indefinitivly, just set the ``proxy_max_use`` argument::
+
+    >>> sproxies = [proxy.replace('http:', '').replace('/', '') for proxy in proxies]
+    >>> proxy = sproxies[0]
+    >>> url = '%s/print_request' % proxies[0]
+    >>> b = AnonymousBrowser(proxies=sproxies, proxy_max_use=3)
+    >>> b.config
+    {'__name__': 'zc.testbrowser', 'proxies': ''}
+    >>> b.proxies == sproxies
+    True
+    >>> b.proxified
+    True
+
+
+The most important of the class is the proxy balancing mode.
+Naturally, a thing to verify is that we have our pseudo-random loop running.
+First thing is we will choose 2 times the 2nd proxy, then the third
+And of course, we will set the mocker to change the proxy at each row.
+
+    >>> import mocker
+    >>> import random
+    >>> mocked = mocker.Mocker()
+    >>> custom_random_int = mocked.replace('random.randint')
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(2)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(2)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(2)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(3)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(2)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> custom_random_int(0, 3)
+    <mocker.Mock object at ...>
+    >>> mocked.result(1)
+    >>> custom_random_int(0,1)
+    <mocker.Mock object at ...>
+    >>> mocked.result(0)
+    >>> mocked.replay()
+
+Live !
+
+    >>> b = AnonymousBrowser(url=url, proxies=sproxies, proxy_max_use=3)
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 2}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 2, 'proxy': 2}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 3, 'proxy': 2}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 0}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 3}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 0}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 2}
+    >>> b.open(url)
+    >>> b._lastproxy
+    {'count': 1, 'proxy': 1}
+    >>> mocked.restore()
+
+If the proxies are dead, we just remove them from the list.
+
+    >>> wproxies = [ 'localhost:35675', 'localhost:35676', 'localhost:35677', proxy,]
+    >>> mybrowser = AnonymousBrowser(proxies=wproxies, proxy_max_use=3)
+    >>> mybrowser.proxies
+    ['localhost:35675', 'localhost:35676', 'localhost:35677', 'localhost:...']
+    >>> mybrowser.open(url)
+    >>> mybrowser.proxies
+    ['localhost:...']
+
+This may arrive, your proxies list is totally invalid, no proxy can be reached
+
+    >>> mybrowser.proxies = ['localhost:invalid']
+    >>> mybrowser.open(url)
+    Traceback (most recent call last):
+    ...
+    Exception: There are no valid proxies left
+
+
+The loop is recursion protected. If we return always the same host, so the chooser cannot choose anything else.
+It will loop until it crashes or it handle the recursion::
+
+    >>> def randomint(a,b):
+    ...     return 2
+    >>> import random; random.randint = randomint
+    >>> b2 = AnonymousBrowser(proxies=sproxies, proxy_max_use=3)
+    >>> b2.proxy_max_use
+    3
+    >>> b2._lastproxy['count']
+    0
+    >>> b2.chooseProxy()
+    '...
+    >>> b2._lastproxy['count']
+    1
+    >>> b2.chooseProxy()
+    '...
+    >>> b2._lastproxy['count']
+    2
+    >>> b2.chooseProxy()
+    '...
+    >>> b2._lastproxy['count']
+    3
+    >>> b2.chooseProxy()
+    '...
+    >>> b2.chooseProxy()
+    'localhost:...'
+    >>> log_handler.records[-1].msg
+    'Ho, seems we got the max wills to choose, something has gone wrong'
+
+Controlling automaticly the User Agent
+------------------------------------------
+Hay, we have a brand new default user agent::
+
+    >>> br = AnonymousBrowser()
+    >>> br.open(url)
+    >>> FF2_USERAGENT in br.contents
+    True
+    >>> br2 = AnonymousBrowser(url)
+    >>> FF2_USERAGENT in br2.contents
+    True
+
+The mechanize proxified browser
+----------------------------------
+Use this browser to have a proxified version of the
+basic mechanize browser (zc.testbrowser.browser.Browser)
+
+    >>> b = AnonymousBrowser(proxies=sproxies,**{"test":True})
+    >>> b.open('%s/print_request' % url)
+    >>> 'Host: localhost:' in b.contents
+    True
+    >>> b._lastproxy['count'] == 1
+    True
+    >>> b._lastproxy['proxy'] in [0,1,2,3,4]
+    True
+
+The firefox based anonymous browser
+---------------------------------------
+
+    >>> noecho = os.system("ps aux|grep firefox|awk '{print $2}'|xargs kill -9")
+    >>> ff = FirefoxBrowser(url=url, proxies = sproxies)
+    >>> 'Host: localhost:' in ff.contents
+    True
+    >>> FF2_USERAGENT in ff.contents
+    True
+    >>> ff.stop_ff()
+
+Cleanup
+-----------
+
+    >>> remove(config)
+    >>> remove(ff.firefox_profile.profile)
+
