@@ -19,7 +19,7 @@ long_description = (
 
 setup(
     name='hurry.yui',
-    version=YUI_VERSION + '.4' + 'dev',
+    version=YUI_VERSION + '.4',
     description="hurry.resource style resources for YUI.",
     long_description = long_description,
     classifiers=[],
