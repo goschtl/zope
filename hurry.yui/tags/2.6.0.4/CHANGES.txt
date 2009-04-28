@@ -1,0 +1,32 @@
+CHANGES
+*******
+
+2.6.0.4 (2009-04-28) (YUI version 2.6.0)
+========================================
+
+* Add ZCML configuration from `hurry.zopeyui`. With Zope you can now
+  use `hurry.yui` without additional `hurry.zopeyui`. Please make
+  sure, however, that `hurry.zoperesource` is available at runtime.
+
+2.6.0.3 (2008-12-03) (YUI version 2.6.0)
+========================================
+
+* Add the sam skin to hurry.yui. This is the consolidated minified SAM
+  skin - the split up .css files would require more work to implement.
+
+2.6.0.2 (2008-10-15) (YUI version 2.6.0)
+========================================
+
+* Update to work with hurry.resource 0.3.
+
+* Extend tests to exercise minification of rolled up resources.
+
+2.6.0.1 (2008-10-13) (YUI version 2.6.0)
+========================================
+
+* Much improved documentation.
+
+2.6.0 (2008-10-11) (YUI version 2.6.0)
+======================================
+
+* Initial public release.
