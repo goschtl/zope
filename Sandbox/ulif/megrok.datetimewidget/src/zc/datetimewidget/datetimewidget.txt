@@ -1,0 +1,117 @@
+===============
+Calendar Widget
+===============
+
+
+Configuration
+-------------
+
+    >>> from zope.interface.verify import verifyObject
+    >>> from zc.datetimewidget.datetimewidget import (
+    ...     CalendarWidgetConfiguration, ICalendarWidgetConfiguration)
+
+Let's create a standard configuration object:
+
+    >>> conf = CalendarWidgetConfiguration('field.x')
+    >>> verifyObject(ICalendarWidgetConfiguration, conf)
+    True
+
+Fields have their default values:
+
+    >>> conf.daFormat
+    u'%Y/%m/%d'
+    >>> conf.singleClick
+    True
+    >>> print conf.flat
+    None
+
+We can customize some attributes during instantiation:
+
+    >>> import datetime
+    >>> conf = CalendarWidgetConfiguration('x', date=datetime.date(2006, 8, 25))
+    >>> conf.date
+    datetime.date(2006, 8, 25)
+
+
+Dumping JavaScript
+------------------
+
+Configuration can be dumped as JavaScript.  First an empty configuration:
+
+    >>> print CalendarWidgetConfiguration('field.x').dumpJS()
+    Calendar.setup({
+    <BLANKLINE>
+    });
+
+Now let's add a few customizations:
+
+    >>> conf = CalendarWidgetConfiguration('x', daFormat=u'%m-%d',
+    ...     inputField='inp', eventName=None, date=conf.date)
+    >>> print conf.dumpJS()
+    Calendar.setup({
+      inputField: 'inp',
+      eventName: null,
+      daFormat: '%m-%d',
+      date: new Date(2006, 7, 25)
+    });
+
+Invalid arguments are not accepted:
+
+    >>> conf = CalendarWidgetConfiguration('x', foo='bar')
+    Traceback (most recent call last):
+        ...
+    ValueError: unknown arguments: foo
+
+
+Date set widget
+---------------
+
+    >>> from zc.datetimewidget.datetimewidget import DateSetWidget
+    >>> from zope.schema import Set
+    >>> from zope.publisher.browser import TestRequest
+
+    >>> class Context(object):
+    ...     somedates = set()
+    >>> context = Context()
+
+    >>> request = TestRequest()
+    >>> field = Set(__name__='somedates')
+    >>> field.set(context, set([datetime.date(2006, 12, 6),
+    ...                         datetime.date(2006, 12, 7)]))
+    >>> field = field.bind(context)
+    >>> widget = DateSetWidget(field, object(), request)
+
+    >>> print widget() # doctest: +REPORT_NDIFF
+    <BLANKLINE>
+    <input class="textType" id="field.somedates" name="field.somedates" size="30" type="text" value=""  />
+    <input type="button" value="..." id="field.somedates_trigger">
+    <script type="text/javascript">
+    <BLANKLINE>
+      var multi_field_somedates = [new Date(2006, 11, 6), new Date(2006, 11, 7)];
+      Calendar.setup({
+      inputField: 'field.somedates',
+      button: 'field.somedates_trigger',
+      ifFormat: '%Y-%m-%d',
+      onClose: getMultipleDateClosedHandler("field.somedates", multi_field_somedates),
+      multiple: multi_field_somedates
+    });
+    <BLANKLINE>
+    </script>
+    <BLANKLINE>
+
+    >>> print widget.hidden() # doctest: +REPORT_NDIFF
+    <input class="hiddenType" id="field.somedates" name="field.somedates" type="hidden" value=""  />
+    <input type="button" value="..." id="field.somedates_trigger">
+    <script type="text/javascript">
+    <BLANKLINE>
+      var multi_field_somedates = [new Date(2006, 11, 6), new Date(2006, 11, 7)];
+      Calendar.setup({
+      inputField: 'field.somedates',
+      button: 'field.somedates_trigger',
+      ifFormat: '%Y-%m-%d',
+      onClose: getMultipleDateClosedHandler("field.somedates", multi_field_somedates),
+      multiple: multi_field_somedates
+    });
+    <BLANKLINE>
+    </script>
+
