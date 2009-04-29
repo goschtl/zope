@@ -25,24 +25,19 @@ from zope.interface.common.idatetime import ITZInfo
 from zope.datetime import parseDatetimetz, DateTimeError
 from zope.app.form.browser import textwidgets
 from zope.app.form.browser.widget import renderElement
+from hurry.resource import Library, ResourceInclusion
 import zope.datetime
 import zc.i18n.date
 import glob
 import os
 
-from hurry.resource import Library, ResourceInclusion, NeededInclusions
+# register ECMAScript and CSS resources
 megrok_datetimewidget = Library('megrokdatetimewidget')
-inc1 = ResourceInclusion(megrok_datetimewidget,
-                         'calendar-system.css')
-inc2 = ResourceInclusion(megrok_datetimewidget,
-                         'calendar.js')
-inc3 = ResourceInclusion(megrok_datetimewidget,
-                         'datetimewidget.js')
-inc4 = ResourceInclusion(megrok_datetimewidget,
-                         'lang/calendar-en.js')
+resources = [ResourceInclusion(megrok_datetimewidget, x)
+             for x in ['calendar-system.css', 'calendar.js',
+                       'datetimewidget.js', 'lang/calendar-en.js']]
 datetimewidget = ResourceInclusion(megrok_datetimewidget,
-                                   'calendar-setup.js',
-                                   depends=[inc1, inc2, inc3, inc4])
+                                   'calendar-setup.js', depends=resources)
 
 # initialize the language files
 LANGS = []
