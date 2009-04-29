@@ -1,3 +1,0 @@
-Outstanding issues:
-
-- The stylesheet is a bit crummy, causing slight resizing on various mouseovers
