@@ -276,7 +276,7 @@ class DatetimeBase(object):
             # en is always loaded via the resourcelibrary, so that all
             # variables are defined in js
             # TODO: do not hardcode this
-            langFile = '/@@/zc.datetimewidget/lang/calendar-%s.js' % lang
+            langFile = '/@@/megrok.datetimewidget/lang/calendar-%s.js' % lang
             langDef = "dateTimeWidgetLoadLanguageFile('%s');" % langFile
         else:
             langDef = ''
