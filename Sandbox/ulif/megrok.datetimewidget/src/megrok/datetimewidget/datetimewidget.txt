@@ -74,7 +74,34 @@ Date set widget
     ...     somedates = set()
     >>> context = Context()
 
-    >>> request = TestRequest()
+To make requests care for the JavaScript resources needed, we have
+modify regular TestRequests slightly and provide an
+ICurrentNeededInclusions utility as shown on
+
+  http://pypi.python.org/pypi/hurry.resource
+
+Let's create a resources-aware request:
+
+    >>> from hurry.resource import NeededInclusions
+    >>> class ResourceAwareTestRequest(TestRequest):
+    ...     def __init__(self, *args, **kw):
+    ...         self.needed = NeededInclusions()
+    ...         return super(ResourceAwareTestRequest, self).__init__(
+    ...             *args, **kw)
+    >>> request = ResourceAwareTestRequest()
+
+We provide the utility mentioned above:
+
+    >>> def currentNeededInclusions():
+    ...    return request.needed
+
+    >>> from zope import component
+    >>> from hurry.resource.interfaces import ICurrentNeededInclusions
+    >>> component.provideUtility(currentNeededInclusions,
+    ...     ICurrentNeededInclusions)
+
+Now we can go on with the real stuff.
+
     >>> field = Set(__name__='somedates')
     >>> field.set(context, set([datetime.date(2006, 12, 6),
     ...                         datetime.date(2006, 12, 7)]))
