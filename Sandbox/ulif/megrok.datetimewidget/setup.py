@@ -21,10 +21,10 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zc.datetimewidget',
-      version='0.6.2dev',
+setup(name='megrok.datetimewidget',
+      version='0.1dev',
       author='Zope Corporation and Contributors',
-      author_email='zope-dev@zope.org',
+      author_email='grok-dev@zope.org',
       description='Javascript-based widgets for date and datetime fields.',
       long_description=(
           read('README.txt')
@@ -32,9 +32,9 @@ setup(name='zc.datetimewidget',
           'Detailed Dcoumentation\n' +
           '======================\n'
           + '\n\n' +
-          read('src', 'zc', 'datetimewidget', 'widgets.txt')
+          read('src', 'megrok', 'datetimewidget', 'widgets.txt')
           + '\n\n' +
-          read('src', 'zc', 'datetimewidget', 'demo', 'README.txt')
+          read('src', 'megrok', 'datetimewidget', 'demo', 'README.txt')
           + '\n\n' +
           read('CHANGES.txt')
           ),
@@ -49,11 +49,11 @@ setup(name='zc.datetimewidget',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://cheeseshop.python.org/pypi/zc.datetimewidget',
+      url='http://cheeseshop.python.org/pypi/megrok.datetimewidget',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      namespace_packages=['zc'],
+      namespace_packages=['megrok'],
       extras_require=dict(
           test=['zope.app.zcmlfiles',
                 'zope.app.securitypolicy',
