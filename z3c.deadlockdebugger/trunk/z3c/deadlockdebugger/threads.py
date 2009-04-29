@@ -1,4 +1,8 @@
-from zope.publisher.browser import BrowserView
+try:
+    from zope.publisher.browser import BrowserView
+except ImportError:
+    # zope 2.9
+    from zope.app.publisher.browser import BrowserView
 
 import thread
 import threadframe
