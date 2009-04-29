@@ -7,7 +7,7 @@ Configuration
 -------------
 
     >>> from zope.interface.verify import verifyObject
-    >>> from zc.datetimewidget.datetimewidget import (
+    >>> from megrok.datetimewidget.datetimewidget import (
     ...     CalendarWidgetConfiguration, ICalendarWidgetConfiguration)
 
 Let's create a standard configuration object:
@@ -66,7 +66,7 @@ Invalid arguments are not accepted:
 Date set widget
 ---------------
 
-    >>> from zc.datetimewidget.datetimewidget import DateSetWidget
+    >>> from megrok.datetimewidget.datetimewidget import DateSetWidget
     >>> from zope.schema import Set
     >>> from zope.publisher.browser import TestRequest
 

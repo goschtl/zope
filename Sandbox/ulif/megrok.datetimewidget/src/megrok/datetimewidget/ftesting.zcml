@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:zcml="http://namespaces.zope.org/zcml"
-           i18n_domain="zc.datetimewidget">
+           i18n_domain="megrok.datetimewidget">
 
   <include
       zcml:condition="installed zope.app.zcmlfiles"
@@ -21,8 +21,8 @@
   <include package="zope.app.securitypolicy" />
   <include package="zc.resourcelibrary" file="meta.zcml"/>
   <include package="zc.resourcelibrary" />
-  <include package="zc.datetimewidget" />
-  <include package="zc.datetimewidget.demo"/>
+  <include package="megrok.datetimewidget" />
+  <include package="megrok.datetimewidget.demo"/>
   <!-- we ought to use this for the tests
   <include package="zope.app.i18n.tests" />
   -->
@@ -31,7 +31,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDatetime"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory="zc.datetimewidget.datetimewidget.DatetimeWidget"
+      factory="megrok.datetimewidget.datetimewidget.DatetimeWidget"
       permission="zope.Public"
       />
 
@@ -39,7 +39,7 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IDate"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory="zc.datetimewidget.datetimewidget.DateWidget"
+      factory="megrok.datetimewidget.datetimewidget.DateWidget"
       permission="zope.Public"
       />
 

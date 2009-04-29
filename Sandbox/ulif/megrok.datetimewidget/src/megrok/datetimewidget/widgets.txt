@@ -13,9 +13,9 @@ timezone aware. We use the demo package here to have a content class.
 
     >>> from zope import component
     >>> from datetime import datetime, date
-    >>> from zc.datetimewidget import datetimewidget
-    >>> from zc.datetimewidget.demo.content import DemoContent
-    >>> from zc.datetimewidget.demo.interfaces import IDemoContent
+    >>> from megrok.datetimewidget import datetimewidget
+    >>> from megrok.datetimewidget.demo.content import DemoContent
+    >>> from megrok.datetimewidget.demo.interfaces import IDemoContent
     >>> from zope.publisher.browser import TestRequest, BrowserLanguages
     >>> component.provideAdapter(BrowserLanguages)
     >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='en-US')
@@ -55,7 +55,7 @@ returns Europe/Vienna as timezone.
 The field's missing value results in an empty string.
 
     >>> import pytz
-    >>> from zc.datetimewidget.demo import timezone
+    >>> from megrok.datetimewidget.demo import timezone
     >>> component.provideAdapter(timezone.tzinfo)
     >>> tz = pytz.timezone('Europe/Vienna')
     >>> request = TestRequest(HTTP_ACCEPT_LANGUAGE='en-US')
