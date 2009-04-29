@@ -27,10 +27,22 @@ from zope.app.form.browser import textwidgets
 from zope.app.form.browser.widget import renderElement
 import zope.datetime
 import zc.i18n.date
-import zc.resourcelibrary
 import glob
 import os
 
+from hurry.resource import Library, ResourceInclusion, NeededInclusions
+megrok_datetimewidget = Library('megrokdatetimewidget')
+inc1 = ResourceInclusion(megrok_datetimewidget,
+                         'calendar-system.css')
+inc2 = ResourceInclusion(megrok_datetimewidget,
+                         'calendar.js')
+inc3 = ResourceInclusion(megrok_datetimewidget,
+                         'datetimewidget.js')
+inc4 = ResourceInclusion(megrok_datetimewidget,
+                         'lang/calendar-en.js')
+datetimewidget = ResourceInclusion(megrok_datetimewidget,
+                                   'calendar-setup.js',
+                                   depends=[inc1, inc2, inc3, inc4])
 
 # initialize the language files
 LANGS = []
@@ -262,7 +274,7 @@ class DatetimeBase(object):
         `widget_html` is the HTML for the simple date field.  This method
         wraps that field in some extra code for the advanced JavaScript widget.
         """
-        zc.resourcelibrary.need('zc.datetimewidget')
+        datetimewidget.need()
         lang = self.request.locale.id.language
         lang = lang in LANGS and lang or 'en'
         if lang != 'en':
