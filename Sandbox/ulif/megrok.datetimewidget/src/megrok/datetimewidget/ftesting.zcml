@@ -19,8 +19,8 @@
   <securityPolicy
       component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy" />
   <include package="zope.app.securitypolicy" />
-  <include package="zc.resourcelibrary" file="meta.zcml"/>
-  <include package="zc.resourcelibrary" />
+  <include package="hurry.zoperesource" />
+
   <include package="megrok.datetimewidget" />
   <include package="megrok.datetimewidget.demo"/>
   <!-- we ought to use this for the tests
