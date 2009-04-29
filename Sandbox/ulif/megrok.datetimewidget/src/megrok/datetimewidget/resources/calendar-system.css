@@ -33,7 +33,7 @@
 }
 
 .calendar .nav {
-  background: ButtonFace url(/@@/zc.datetimewidget/menuarrow.gif) no-repeat 100% 100%;
+  background: ButtonFace url(/@@/megrok.datetimewidget/menuarrow.gif) no-repeat 100% 100%;
 }
 
 .calendar thead .title { /* This holds the current "month, year" */
