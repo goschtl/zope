@@ -13,7 +13,7 @@
 ##############################################################################
 
 from jinja2 import Environment, FileSystemLoader
-from extensions import i18nExtension, ContentProviderExtension
+from extensions import translator, _translator_alias, _get_content_provider
 
 import yaml, simplejson, os
 
@@ -27,11 +27,14 @@ from grokcore.view.interfaces import ITemplate, ITemplateFileFactory
 # absolute path templates.
 # By default, auto_reload = True, for production system
 # should be set to False for higher performance
-env = Environment(extensions=[i18nExtension, ContentProviderExtension],
+env = Environment(extensions=['jinja2.ext.i18n'],
                   loader=FileSystemLoader('/'))
 
-env.install_gettext_translations()
-
+#Just set the functions used to resolve translations and
+#contents providers instead of full Extension classes
+env.globals['_'] = _translator_alias
+env.globals.update(gettext=translator)
+env.globals['provider'] = _get_content_provider
 
 class JTemplate(object):
     """
