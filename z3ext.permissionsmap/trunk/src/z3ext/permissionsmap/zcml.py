@@ -194,7 +194,7 @@ class permissionsMapDirective(object):
         self.override = override
 
         _context.action(
-            discriminator = ('z3ext.permissions', name, hash(self)),
+            discriminator = self.discriminator(('z3ext.permissions', name)),
             callable = permissionsHandler,
             args = (name, for_, title, description))
 
