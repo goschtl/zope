@@ -34,7 +34,7 @@ from zope.app.interface import queryType
 name = getName
 
 def principals():
-    from zope.app.security.interfaces import IAuthentication
+    from zope.authentication.interfaces import IAuthentication
     return getUtility(IAuthentication)
 
 # BBB 2006/04/27 -- to be removed after 12 months

@@ -18,13 +18,13 @@ service is defined, a ComponentLookupError is raised:
   Traceback (most recent call last):
   ...
   ComponentLookupError:
-  (<InterfaceClass zope.app.security.interfaces.IAuthentication>, '')
+  (<InterfaceClass zope.authentication.interfaces.IAuthentication>, '')
 
 
 But if we provide an authentication service:
 
   >>> import zope.interface
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.authentication.interfaces import IAuthentication
   >>> class FakeAuthenticationUtility:
   ...     zope.interface.implements(IAuthentication)
   >>> fake = FakeAuthenticationUtility()
