@@ -36,6 +36,7 @@ pygments_style = 'sphinx'
 html_style = 'default.css'
 html_static_path = ['%(staticDir)s']
 html_last_updated_fmt = '%%b %%d, %%Y'
+extensions = %(extensions)r
 """
 
 class ZopeOrgSetup(object):
@@ -122,7 +123,8 @@ class ZopeOrgSetup(object):
                 release=metadata.get('Version', doc.version),
                 staticDir=staticDir,
                 templatesDir=templatesDir,
-                indexDoc=self.options.get('index-doc','index')
+                indexDoc=self.options.get('index-doc','index'),
+                extensions=self.options.get('extensions','').split()
                 ))
             confPy.close()
             installed.append(confPyPath)
