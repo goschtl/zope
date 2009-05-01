@@ -1,10 +1,16 @@
 CHANGES
 *******
 
-3.2.0.2.1 (unreleased)
-======================
+3.2.3.0.1 (unreleased) (TinyMCE version: 3.2.3)
+===============================================
 
-* ...
+* Upgrade to TinyMCE version 3.2.3.
+
+* Add ZCML configuration from `hurry.zopetinymce`. With Zope you can
+  now use `hurry.tinymce` without additional
+  `hurry.zopetinymce`. Please make sure, however, that
+  `hurry.zoperesource` is available at runtime.
+
 
 3.2.0.2 (2008-10-13) (TinyMCE version: 3.2.0.2)
 ===============================================
