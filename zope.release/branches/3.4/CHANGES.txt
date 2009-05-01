@@ -7,8 +7,29 @@ NOTE: The releases of this package are synced with the Zope 3 releases.
 3.4.1 (unreleased)
 ------------------
 
-- Upgraded zope.size to 3.4.1
+- Upgraded RestrictedPython to 3.5.1
+- Upgraded zdaemon to 2.0.4
+- Upgraded zope.annotation to 3.4.2
+- Upgraded zope.app.catalog to 3.5.2
+- Upgraded zope.app.dav to 3.4.2
+- Upgraded zope.app.error to 3.5.2
+- Upgraded zope.app.exception to 3.4.2
+- Upgraded zope.app.file to 3.4.6
+- Upgraded zope.app.generations to 3.4.2
+- Upgraded zope.app.http to 3.4.4
+- Upgraded zope.app.session to 3.5.2
+- Upgraded zope.app.workflow to 3.4.2
+- Upgraded zope.configuration to 3.4.1
+- Upgraded zope.contenttype to 3.4.1
+- Upgraded zope.copypastemove to 3.4.1
+- Upgraded zope.documenttemplate to 3.4.2
+- Upgraded zope.dottedname to 3.4.5
+- Upgraded zope.dublincore to 3.4.2
 - Upgraded zope.event to 3.4.1
+- Upgraded zope.hookable to 3.4.1
+- Upgraded zope.pagetemplate to 3.4.2
+- Upgraded zope.securitypolicy to 3.4.2
+- Upgraded zope.size to 3.4.1
 
 3.4.0 (2009-01-29)
 ------------------
