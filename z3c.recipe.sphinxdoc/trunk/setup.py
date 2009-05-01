@@ -44,7 +44,7 @@ setup(
     maintainer="Paul Carduner",
     maintainer_email="zope-dev@zope.org",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Zope Public License",
         "Operating System :: OS Independent",
