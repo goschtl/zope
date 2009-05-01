@@ -54,9 +54,9 @@ class Inspect(grok.View):
             '<', '&lt;').replace(
             '>', '&gt;')
         return text
-    
-    def getYUIIncludes(self):
-        # XXX: This is most probably the wrong approach
-        needed = NeededInclusions()
-        needed.need(yui.datatable)
-        return needed.render()
+
+    def update(self):
+        # Incluide stylesheets and scripts for rendering datatables
+        # with YUI.
+        yui.datatable.need()
+        yui.sam.need()
