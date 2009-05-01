@@ -48,6 +48,7 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Zope Public License",
         "Operating System :: OS Independent",
+        "Framework :: Buildout",
         "Programming Language :: Python"],
     url='http://pypi.python.org/pypi/z3c.recipe.sphinxdoc/',
     packages=find_packages('src'),

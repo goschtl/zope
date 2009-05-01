@@ -2,14 +2,14 @@
 CHANGES
 =======
 
-0.0.8 (unreleased)
+0.0.8 (2009-05-01)
 ------------------
 
 - Feature: Added new option `doc-eggs` which specifies the list of eggs for
   which to create documentation explicitely.
 
 - Feature: Changed building behavior so that the documentation for each
-  package is built in it sown sub-directory.
+  package is built in its own sub-directory.
 
 - Feature: Added new option `extensions` which takes a whitespace
   separated list of sphinx extension modules. This extensions can be
