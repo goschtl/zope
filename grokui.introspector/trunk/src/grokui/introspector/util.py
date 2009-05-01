@@ -83,3 +83,38 @@ def render_docstring(docstring, heading_only=False, format=None):
     # Get rid of possible CVS id.
     lines = [line for line in lines if not line.startswith('$Id')]
     return render_text('\n'.join(lines), format=format)
+
+def datatable_init(tableid, containerid, columns):
+    """Initialize a YUI datatable
+    """
+    fielddefs = ",".join(['{key:"%s"}' % x['key'] for x in columns])
+    col_defs = []
+    for col in columns:
+        key = col['key']
+        label = key
+        if 'label' in col.keys():
+            label = col['label']
+        sortable = 'false'
+        if 'sortable' in col.keys():
+            sortable = str(col['sortable']).lower()
+        col_defs.append('{key:"%s",label:"%s",sortable:%s}' % (
+                key, label, sortable))
+    col_defs = ','.join(col_defs)
+    result = """
+    <script type="text/javascript">
+      var %sDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("%s"));
+      %sDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+      %sDataSource.responseSchema = {
+        fields: [%s
+                ]
+      };
+
+      var %sColumnDefs = [%s
+      ];
+
+      var %sDataTable = new YAHOO.widget.DataTable("%s", %sColumnDefs,
+                                                   %sDataSource);
+    </script>
+""" % (tableid, tableid, tableid, tableid, fielddefs, tableid, col_defs,
+       tableid, containerid, tableid, tableid)
+    return result
