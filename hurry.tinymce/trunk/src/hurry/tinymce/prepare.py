@@ -20,6 +20,10 @@ def main():
     def copy_tinymce(ex_path):
         """Copy to location 'tinymce-build' in package."""
         build_path = os.path.join(ex_path, 'tinymce', 'jscripts', 'tiny_mce')
+        if not os.path.exists(build_path):
+            # Some versions of tinyMCE are packaged without a
+            # top-level ``tinymce`` directory.
+            build_path = os.path.join(ex_path, 'jscripts', 'tiny_mce')
         shutil.copytree(build_path, dest_path)
 
     download(version, copy_tinymce)
