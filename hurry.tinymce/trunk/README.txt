@@ -29,7 +29,10 @@ published to some URL.
 
 The package has already been integrated for Grok_ and Zope 3. If you
 depend on the `hurry.zopetinymce`_ package in your ``setup.py``, the
-above example should work out of the box.
+above example should work out of the box. Starting with version
+3.2.3.0.1 you do not need `hurry.zopetinymce`_ anymore. Instead it is
+sufficient to depend on the `hurry.zoperesource`_ package in your
+``setup.py``.
 
 .. _`hurry.zopetinymce`: http://pypi.python.org/pypi/hurry.zopetinymce
 
