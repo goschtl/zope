@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-TINYMCE_VERSION = '3.2.0.2'
+TINYMCE_VERSION = '3.2.3.0'
 
 import sys, os
 
