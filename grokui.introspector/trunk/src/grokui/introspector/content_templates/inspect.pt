@@ -1,8 +1,6 @@
 <html>
   <head>
     <title>Grok Content Browser</title>
-    <link type="text/css" rel="stylesheet" 
-	  href="http://yui.yahooapis.com/2.7.0/build/datatable/assets/skins/sam/datatable.css">
 
     <link tal:attributes="href static/content.css"
 	  rel="stylesheet" type="text/css" />
@@ -61,7 +59,7 @@
     <h2>Available Views</h2>
 
     <div class="yui-skin-sam">
-      <div tal:content="structure view/getYUIIncludes" />
+
       <div id="myMarkedUpContainer">
 	<table id="myTable">
           <thead>
