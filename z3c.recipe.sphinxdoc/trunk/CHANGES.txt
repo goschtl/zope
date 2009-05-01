@@ -10,7 +10,7 @@ CHANGES
 
 - Feature: Changed building behavior so that the documentation for each
   package is built in it sown sub-directory.
-  
+
 - Feature: Added new option `extensions` which takes a whitespace
   separated list of sphinx extension modules. This extensions can be
   used to build the documentation.
