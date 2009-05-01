@@ -5,8 +5,7 @@ from zope import interface
 
 from zope.introspector.interfaces import IObjectInfo
 from zope.introspector.viewinfo import ViewInfo
-from grokui.introspector.util import dotted_name_url
-
+from grokui.introspector.util import dotted_name_url, datatable_init
 
 class Inspect(grok.View):
     grok.context(interface.Interface)
@@ -60,3 +59,11 @@ class Inspect(grok.View):
         # with YUI.
         yui.datatable.need()
         yui.sam.need()
+
+    def getViewsTableInit(self):
+        result = datatable_init(
+            'ViewsTable', 'ViewsTableContainer',
+            (dict(key='skin', label='Skin', sortable=True),
+             dict(key='name', label='Name', sortable=True),
+             dict(key='iface', label='Interfaces', sortable=True)))
+        return result
