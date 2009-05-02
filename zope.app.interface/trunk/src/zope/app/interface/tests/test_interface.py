@@ -25,7 +25,9 @@ from persistent import Persistent
 
 import transaction
 
-from ZODB.tests.util import DB
+from ZODB.FileStorage import FileStorage
+from ZODB.DB import DB
+from ZODB.tests import util
 from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface, implements, directlyProvides
@@ -77,11 +79,12 @@ class Baz(Persistent): pass
 
 class IQux(Interface): pass
 
-class PersistentInterfaceTest(unittest.TestCase):
+class PersistentInterfaceTest(util.TestCase):
 
     def setUp(self):
-
-        self.db = DB()
+        super(PersistentInterfaceTest, self).setUp()
+        util.setUp(self)
+        self.db = DB(FileStorage('PersistentInterfaceTest.fs'))
         self.conn = self.db.open()
         self.root = self.conn.root()
         self.registry = ManagedRegistry()
@@ -89,6 +92,7 @@ class PersistentInterfaceTest(unittest.TestCase):
         transaction.commit()
 
     def tearDown(self):
+        util.tearDown(self)
         transaction.abort() # just in case
 
     def test_creation(self):
@@ -139,8 +143,10 @@ class PersistentInterfaceTest(unittest.TestCase):
                                    bar_code + '\nfoo = 1')
 
         transaction.commit()
+
         self.db.close()
-        root = self.db.open().root()
+        db = DB(FileStorage('PersistentInterfaceTest.fs'))
+        root = db.open().root()
 
         barmodule = root['registry'].findModule("barmodule")
 
