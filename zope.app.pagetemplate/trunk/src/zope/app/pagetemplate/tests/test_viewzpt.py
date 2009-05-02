@@ -64,13 +64,12 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         def ViewMaker(*args, **kw):
             return the_view
 
-        from zope.component.interfaces import IPresentationRequest
+        from zope.publisher.interfaces import IRequest
 
-        ztapi.provideView(I1, IPresentationRequest, Interface,
-                          the_view_name, ViewMaker)
+        ztapi.provideView(I1, IRequest, Interface, the_view_name, ViewMaker)
 
         class MyRequest(object):
-            implements(IPresentationRequest)
+            implements(IRequest)
 
         request = MyRequest()
 
