@@ -29,7 +29,7 @@ setup(name='megrok.jinja',
       package_dir = {'': 'src'},
       namespace_packages=['megrok'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       install_requires=[
           'setuptools',
           'grokcore.component',
