@@ -21,7 +21,7 @@ Installation
 
 To use the Jinja2 templates within Grok, megrok.jinja must be first
 installed as an egg, and its ZCML included. After using grokproject,
-amend the setup.py to look like this:
+amend the setup.py to look like this::
 
     install_requires=[''setuptools',
                       'grok',
@@ -50,7 +50,7 @@ into any template directory used within your project.
 Jinja2 Environment
 ------------------
 
-megrok.jinja create an Environment using `jinja2.ext.i18n` extension and overrides
+megrok.jinja creates an Environment using `jinja2.ext.i18n` extension and overrides
 the globals variables `_` and `gettext` in order to use custom functions to resolve
 translations. It also set the global variable `provider` as a function to resolve
 the call to a content provider (viewlet manager).
@@ -78,6 +78,48 @@ Also it's possible to use the {%trans%} tag::
     {% trans %}
     Whatever you may want to translate.
     {% endtrans %}
+
+
+It's important to note that, `messages` created in python classes
+won't be translated like in Zope Page Templates.
+
+If you write:
+
+view.py::
+
+    from zope import i18nmessageid
+    _ = i18nmessageid.MessageFactory('some.domain')
+
+    class Something(grok.View):
+        def update(self):
+            self.msg = _('Some msg id')
+
+view.jinja::
+
+    {{ view.msg }}
+
+You will always get 'Some msg id'. What you do could write is:
+
+view.py::
+
+    class Something(grok.View):
+        def update(self):
+            self.msg = 'Some msg id'
+
+view.jinja::
+
+    {% set i18n_domain='some.domain' %}
+
+    {{ _(view.msg) }}
+
+Note that megrok.jinja uses the `translate` function from
+zope.i18n.interfaces.ITranslationDomains, so using::
+
+    {{ _('msg_id') }}
+
+you can pass all the parameters accepted by `translate`::
+
+    {{ _('msg_id', domain='another_domain', target_language='es') }}
 
 If you want to call some content provider named 'manager', just write::
 
@@ -113,41 +155,6 @@ You will get the next JSON::
                 {"key-3": "whatever 3"},
                 {"key-4": "whatever 4"}]}
 
-
-TODO
------
-It's important to note that, `messages` created in python classes
-won't be translated like in Zope Page Templates.
-
-If you write:
-
-view.py::
-
-    from zope import i18nmessageid
-    _ = i18nmessageid.MessageFactory('some.domain')
-
-    class Something(grok.View):
-        def update(self):
-            self.msg = _('Some msg id')
-
-view.jinja::
-
-    {{ view.msg }}
-
-You will always get 'Some msg id'.
-What you do could write is
-
-view.py::
-
-    class Something(grok.View):
-        def update(self):
-            self.msg = 'Some msg id'
-
-view.jinja::
-
-    {% set i18n_domain='some.domain' %}
-
-    {{ _(view.msg) }}
 
 Authors
 -------
