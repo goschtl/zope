@@ -30,7 +30,7 @@ amend the setup.py to look like this:
                       ],
 
 Then include megrok.jinja in your configure.zcml. It should look
-something like this:
+something like this::
 
     <configure xmlns="http://namespaces.zope.org/zope"
                xmlns:grok="http://namespaces.zope.org/grok">
@@ -47,36 +47,41 @@ Rerun buildout (bin/buildout), giving you something like:
 That's it. You can now place Jinja2 templates (with the `.jinja` extension)
 into any template directory used within your project.
 
-Extensions
-----------
+Jinja2 Environment
+------------------
 
-megrok.jinja defines two Jinja2 Extensions classes. For more information
-about Jinja2 Extensions visit:
+megrok.jinja create an Environment using `jinja2.ext.i18n` extension and overrides
+the globals variables `_` and `gettext` in order to use custom functions to resolve
+translations. It also set the global variable `provider` as a function to resolve
+the call to a content provider (viewlet manager).
 
-- http://jinja.pocoo.org/2/documentation/extensions
+For more information about Jinja2 Environment and Global variables visit:
+
+- http://jinja.pocoo.org/2/documentation/api#high-level-api
+- http://jinja.pocoo.org/2/documentation/api#the-global-namespace
 
 With the extensions added you are able to use
  - zope.i18n messages factory
  - content providers like viewlets
 
 To translate your templates, just register your translations domain and then
-you can write:
+you can write::
 
-{% set i18n_domain='test_domain' %}
+    {% set i18n_domain='test_domain' %}
 
-{{ _('some-msgid')}}
+    {{ _('some-msgid')}}
 
-Also it's possible to use the {%trans%} tag:
+Also it's possible to use the {%trans%} tag::
 
-{% set i18n_domain='test_domain' %}
+    {% set i18n_domain='test_domain' %}
 
-{% trans %}
-Whatever you may want to translate.
-{% endtrans %}
+    {% trans %}
+    Whatever you may want to translate.
+    {% endtrans %}
 
-If you want to call some content provider named 'manager', just write:
+If you want to call some content provider named 'manager', just write::
 
-{{ provider('manager') }}
+    {{ provider('manager') }}
 
 About `.json` extension and PyYAML
 ----------------------------------
@@ -93,7 +98,8 @@ able to load the string passed, the result it's returned with simplejson.dumps
 
 If you write this in a template with `.json` extension
 
-dicts :
+dicts ::
+
    - key1 : some_text
    - key2 : {{ 'Some Jinja2 expression' }}
      {% set l = ['3','4'] %}
@@ -101,7 +107,7 @@ dicts :
    - {{ 'key-' + v }} : whatever {{ v }}
      {% endfor %}
 
-You will get the next JSON:
+You will get the next JSON::
 
      {"dicts": [{"key1": "some_text"},
                 {"key2": "Some Jinja2 expression"},
@@ -116,7 +122,7 @@ won't be translated like in Zope Page Templates.
 
 If you write:
 
-view.py
+view.py::
 
     from zope import i18nmessageid
     _ = i18nmessageid.MessageFactory('some.domain')
@@ -124,21 +130,21 @@ view.py
     class Something(grok.View):
         def update(self):
             self.msg = _('Some msg id')
-view.jinja
+
+view.jinja::
 
     {{ view.msg }}
 
 You will always get 'Some msg id'.
+What you do could write is
 
-What you do could write is:
-
-view.py
+view.py::
 
     class Something(grok.View):
         def update(self):
             self.msg = 'Some msg id'
 
-view.jinja
+view.jinja::
 
     {% set i18n_domain='some.domain' %}
 

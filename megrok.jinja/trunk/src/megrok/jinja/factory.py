@@ -22,13 +22,15 @@ from grokcore.component import GlobalUtility, implements, name
 from grokcore.view.components import GrokTemplate
 from grokcore.view.interfaces import ITemplate, ITemplateFileFactory
 
+from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
 # Create an Environment instance with the i18n extension
 # and the FileSystemLoader class loader that will look for
 # absolute path templates.
-# By default, auto_reload = True, for production system
-# should be set to False for higher performance
+
+#XXX passing in a None value here is a hack.
+in_dev_mode = RuntimeInfo(None).getDeveloperMode() == 'On'
 env = Environment(extensions=['jinja2.ext.i18n'],
-                  loader=FileSystemLoader('/'))
+                  loader=FileSystemLoader('/'), auto_reload=in_dev_mode)
 
 #Just set the functions used to resolve translations and
 #contents providers instead of full Extension classes
