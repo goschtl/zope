@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1dev'
+version = '0.2dev'
 
 long_description = (open('README.txt').read() +
                     '\n\n' +
@@ -29,7 +29,7 @@ setup(name='megrok.jinja',
       package_dir = {'': 'src'},
       namespace_packages=['megrok'],
       include_package_data=True,
-      zip_safe=True,
+      zip_safe=False,
       install_requires=[
           'setuptools',
           'grokcore.component',
