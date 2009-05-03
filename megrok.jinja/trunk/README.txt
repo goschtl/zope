@@ -96,16 +96,15 @@ First, megrok.jinja will try to parse the template using Jinja2
 and the result it's passed to the PyYAML loader. If PyYAML it's
 able to load the string passed, the result it's returned with simplejson.dumps
 
-If you write this in a template with `.json` extension
+If you write this in a template with `.json` extension::
 
-dicts ::
-
-   - key1 : some_text
-   - key2 : {{ 'Some Jinja2 expression' }}
-     {% set l = ['3','4'] %}
-     {% for v in l %}
-   - {{ 'key-' + v }} : whatever {{ v }}
-     {% endfor %}
+    dicts :
+       - key1 : some_text
+       - key2 : {{ 'Some Jinja2 expression' }}
+         {% set l = ['3','4'] %}
+         {% for v in l %}
+       - {{ 'key-' + v }} : whatever {{ v }}
+         {% endfor %}
 
 You will get the next JSON::
 
