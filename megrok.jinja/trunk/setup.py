@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.3dev'
+version = '0.1dev'
 
 long_description = (open('README.txt').read() +
                     '\n\n' +
@@ -20,7 +20,7 @@ setup(name='megrok.jinja',
                    'Operating System :: OS Independent',
                    'Topic :: Internet :: WWW/HTTP',
                    ],
-      keywords='grok jinja2',
+      keywords='grok Jinja2',
       author='Santiago Videla',
       author_email='santiago.videla@gmail.com',
       url="http://svn.zope.org/megrok.jinja/",
