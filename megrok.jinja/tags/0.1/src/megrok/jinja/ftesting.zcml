@@ -1,0 +1,54 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:grok="http://namespaces.zope.org/grok"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   i18n_domain="megrok.jinja.ftests"
+   package="megrok.jinja.ftests"
+   >
+
+  <include package="zope.app.zcmlfiles" file="meta.zcml" />
+  <include package="zope.securitypolicy" file="meta.zcml" />
+
+  <include package="zope.app.zcmlfiles" />
+  <include package="zope.app.authentication" />
+
+  <!-- Load minimal support of grokcore.view, views + templates  -->
+  <include package="grokcore.view" file="meta-minimal.zcml" />
+  <include package="grokcore.view" />
+
+  <include package="grokcore.viewlet" file="meta.zcml" />
+
+  <include package="zope.i18n" file="meta.zcml" />
+  <i18n:registerTranslations directory="locales/mo" />
+
+  <include package="megrok.jinja" />
+  <grok:grok package="megrok.jinja.ftests" />
+
+
+  <!-- Typical functional testing security setup -->
+  <securityPolicy
+      component="zope.securitypolicy.zopepolicy.ZopeSecurityPolicy"
+      />
+
+  <unauthenticatedPrincipal
+      id="zope.anybody"
+      title="Unauthenticated User"
+      />
+  <grant
+      permission="zope.View"
+      principal="zope.anybody"
+      />
+
+  <principal
+      id="zope.mgr"
+      title="Manager"
+      login="mgr"
+      password="mgrpw"
+      />
+
+  <role id="zope.Manager" title="Site Manager" />
+  <grantAll role="zope.Manager" />
+  <grant role="zope.Manager" principal="zope.mgr" />
+
+
+</configure>

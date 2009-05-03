@@ -1,0 +1,10 @@
+#We are going to render a list of dictionaries
+dicts :
+   - key1 : some_text
+   - key2 : {{ 'Some Jinja2 expression' }}
+     {% set l = ['3','4'] %}
+     {% for v in l %}
+   - {{ 'key-' + v }} : whatever {{ v }}
+     {% endfor %}
+   - {{ view.dict }}
+
