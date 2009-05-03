@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.2 (2009-05-03)
+----------------
+
+* Fix 0.1 release version
+* Use auto_reload=True in the Jinja2 environment
+
 0.1 (2009-05-02)
 ----------------
 

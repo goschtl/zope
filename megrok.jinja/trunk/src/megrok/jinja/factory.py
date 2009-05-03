@@ -28,9 +28,10 @@ from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
 # absolute path templates.
 
 #XXX passing in a None value here is a hack.
-in_dev_mode = RuntimeInfo(None).getDeveloperMode() == 'On'
+#in_dev_mode = RuntimeInfo(None).getDeveloperMode() == 'On'
+# Didn't work as expected. We use auto_reload=True by now.
 env = Environment(extensions=['jinja2.ext.i18n'],
-                  loader=FileSystemLoader('/'), auto_reload=in_dev_mode)
+                  loader=FileSystemLoader('/'))
 
 #Just set the functions used to resolve translations and
 #contents providers instead of full Extension classes
