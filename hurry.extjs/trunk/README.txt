@@ -4,18 +4,19 @@ hurry.extjs
 Introduction
 ============
 
-This library packages ExtJS_ for `hurry.resource`_.
+This library provides a simple API to use ExtJS_ with `hurry.resource`_.
 
 .. _`hurry.resource`: http://pypi.python.org/pypi/hurry.resource
 
 .. _ExtJS: http://www.extjs.com/
 
+Due to licenses conflicts, `hurry.extjs` can't packages the sources of ExtJS. So you need
+to do it manually.
+
 How to use?
 ===========
 
-In order to avoid licenses conflicts, first you need to download ExtJS_ and place it in your
-project. Once it's finished, add `hurry.zoperesource` and `hurry.extjs` to your setup.py
-and run ./bin/buildout::
+Add `hurry.zoperesource` and `hurry.extjs` to your setup.py and run ./bin/buildout::
 
         install_requires=[
            ...,
@@ -23,8 +24,9 @@ and run ./bin/buildout::
            'hurry.extjs',
         ],
 
-Next step, it's to publish the sources of ExtJS as a resource directory. Using Grok,
-you should have something like this in your configure.zcml::
+Download ExtJS_ and place it in your project. Next step, it's to publish the sources of
+ExtJS as a resource directory. Using Grok, you should have something like this in your
+configure.zcml ::
 
     <configure xmlns="http://namespaces.zope.org/zope"
                xmlns:grok="http://namespaces.zope.org/grok"
@@ -43,7 +45,7 @@ you should have something like this in your configure.zcml::
     </configure>
 
 `hurry.extjs` will look for the resourceDirectory named `extjs`, so it's important that
-you use the same name in the resourceDirectory statement.
+you use the same `name` in the resourceDirectory statement.
 
 Now, you can import ``extjs`` like this::
 

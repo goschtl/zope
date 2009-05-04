@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
 import sys, os, shutil, tempfile
 
+EXTJS_VERSION = '2.2.1'
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
@@ -15,7 +17,7 @@ long_description = (
 
 setup(
     name='hurry.extjs',
-    version='0.1dev',
+    version= EXTJS_VERSION + 'dev',
     description="ExtJS for hurry.resource.",
     long_description=long_description,
     classifiers=[],
