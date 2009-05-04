@@ -25,7 +25,6 @@ setup(name='z3c.autoinclude',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          'PasteScript',
           'setuptools',
           'zope.dottedname',
 	  'zope.interface',
