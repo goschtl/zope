@@ -4,7 +4,7 @@ Changes
 0.3.1 (2009-05-04)
 ------------------
 
-* z3c.autoinclude longer (spuriously) depends on PasteScript.
+* z3c.autoinclude no longer (spuriously) depends on PasteScript.
 
 0.3 (2009-03-03)
 ------------------
