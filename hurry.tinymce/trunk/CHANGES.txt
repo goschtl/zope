@@ -11,6 +11,8 @@ CHANGES
   `hurry.zopetinymce`. Please make sure, however, that
   `hurry.zoperesource` is available at runtime.
 
+* Modified ``prepare.py`` to also cope with changed directory
+  structure of TinyMCE 3.2.3.
 
 3.2.0.2 (2008-10-13) (TinyMCE version: 3.2.0.2)
 ===============================================
