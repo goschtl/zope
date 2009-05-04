@@ -17,7 +17,7 @@ long_description = (
 
 setup(
     name='hurry.extjs',
-    version= EXTJS_VERSION + 'dev',
+    version= EXTJS_VERSION,
     description="ExtJS for hurry.resource.",
     long_description=long_description,
     classifiers=[],
