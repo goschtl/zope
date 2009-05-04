@@ -18,7 +18,7 @@ long_description = (
 
 setup(
     name='hurry.tinymce',
-    version=TINYMCE_VERSION + '.1' + 'dev',
+    version=TINYMCE_VERSION + '.1',
     description="TinyMCE for hurry.resource.",
     long_description=long_description,
     classifiers=[],
