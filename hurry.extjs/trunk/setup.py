@@ -18,7 +18,7 @@ dest_path = os.path.join(package_dir, 'extjs-build')
 # remove previous ExtJS
 shutil.rmtree(dest_path, ignore_errors=True)
 
-build_path = os.path.join(ex_path, 'ext-%s' % EXTJS_VERSION)
+build_path = os.path.join(ex_path)
 shutil.copytree(build_path, dest_path)
 
 shutil.rmtree(dirpath, ignore_errors=True)
