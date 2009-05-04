@@ -13,9 +13,9 @@ This library packages ExtJS_ for `hurry.resource`_.
 How to use?
 ===========
 
-ExtJS is distributed under the terms of the GPL v3 ::
+ExtJS_ is distributed under the terms of the GPL v3 :
 
- - http://extjs.com/products/license.php
+- http://extjs.com/products/license.php
 
 In order to avoid licenses conflicts, first you need to download ExtJS_ and place it in your
 home directory. Once it's finished, add `hurry.extjs` to your setup.py and run ./bin/buildout::
@@ -25,7 +25,8 @@ home directory. Once it's finished, add `hurry.extjs` to your setup.py and run .
            'hurry.extjs==2.2.1',
         ],
 
-Note that you `must` always download and include the same versions of ExtJS and `hurry.extjs`
+`hurry.extjs` will try to extract and copy the sources of ExtJS to a known location.
+Note that you `must` always download and include the same versions of ExtJS_ and `hurry.extjs`
 
 Now, you can import ``extjs`` like this::
 
@@ -36,3 +37,9 @@ your page or widget rendering code, do this::
 
   extjs_all.need()
   extjs_css.need()
+
+
+Authors
+-------
+
+- Santiago Videla
