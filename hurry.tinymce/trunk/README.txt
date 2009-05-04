@@ -36,6 +36,8 @@ sufficient to depend on the `hurry.zoperesource`_ package in your
 
 .. _`hurry.zopetinymce`: http://pypi.python.org/pypi/hurry.zopetinymce
 
+.. _`hurry.zoperesource`: http://pypi.python.org/pypi/hurry.zoperesource
+
 .. _Grok: http://grok.zope.org
 
 Preparing hurry.tinymce before release
