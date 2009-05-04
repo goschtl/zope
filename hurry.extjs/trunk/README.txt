@@ -13,15 +13,19 @@ This library packages ExtJS_ for `hurry.resource`_.
 How to use?
 ===========
 
-First download ExtJS_ and place it in your home directory.
-Once it's finished, add `hurry.extjs` to your setup.py and run ./bin/buildout::
+ExtJS is distributed under the terms of the GPL v3 ::
+
+ - http://extjs.com/products/license.php
+
+In order to avoid licenses conflicts, first you need to download ExtJS_ and place it in your
+home directory. Once it's finished, add `hurry.extjs` to your setup.py and run ./bin/buildout::
 
         install_requires=[
            ...,
            'hurry.extjs==2.2.1',
         ],
 
-Note that you `must` use always the same versions of ExtJS and `hurry.extjs`
+Note that you `must` always download and include the same versions of ExtJS and `hurry.extjs`
 
 Now, you can import ``extjs`` like this::
 
