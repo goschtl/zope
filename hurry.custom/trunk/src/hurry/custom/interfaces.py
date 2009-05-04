@@ -99,7 +99,7 @@ class IManagedTemplate(ITemplate):
     def load():
         """Load the template from the filesystem.
         """
-
+    
     def samples():
         """Get samples.
 
@@ -109,12 +109,25 @@ class IManagedTemplate(ITemplate):
         values are the actual template-language native data structures.
         """
 
+class NotSupported(Exception):
+    pass
+
 class ITemplateDatabase(Interface):
     """A per-collection template database.
     """
     id = Attribute("The id of the collection")
     title = Attribute("The title of the collection")
-    
+
+    def update(template_id, source):
+        """Update the source for a given template.
+
+        Updates the source and modification time for the template with
+        that id.
+
+        If this operation is not supported, a NotSupported error is
+        raised.
+        """
+
     def get_source(template_id):
         """Get the source of a given template.
 

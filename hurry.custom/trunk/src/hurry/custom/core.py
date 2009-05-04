@@ -2,6 +2,7 @@ import os, time, glob
 from datetime import datetime
 from zope.interface import implements
 from zope import component
+from hurry.custom.interfaces import NotSupported
 from hurry.custom.interfaces import (
     ITemplate, IManagedTemplate, ITemplateDatabase, IDataLanguage,
     ISampleExtension)
@@ -67,7 +68,7 @@ class ManagedTemplate(object):
         if mtime > self._last_updated:
             self._last_updated = mtime
             self.load()
-    
+
     @property
     def source(self):
         self.check()
@@ -130,6 +131,10 @@ class FilesystemTemplateDatabase(object):
             f.close()
             result[name] = parse(data)
         return result
+
+    def update(self, template_id, source):
+        raise NotSupported(
+            "Cannot update templates in FilesystemTemplateDatabase.")
 
 class InMemoryTemplateSource(object):
     def __init__(self, source):

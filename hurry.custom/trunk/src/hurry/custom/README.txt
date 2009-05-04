@@ -167,6 +167,13 @@ Now the template will have changed::
 Customization database
 ----------------------
 
+So far all our work was done in the root (filesystem) database. We can
+get it now::
+
+  >>> from zope import component
+  >>> from hurry.custom.interfaces import ITemplateDatabase
+  >>> root_db = component.getUtility(ITemplateDatabase, name='templates')
+
 Let's now register a customization database for our collection, in a
 particular site. This means in such a site, the new customized
 template database will be used (with a fallback on the original one if
@@ -180,7 +187,6 @@ We register a customization database for our collection named
 ``templates``. For the purposes of testing we will use an in-memory
 database::
 
-  >>> from hurry.custom.interfaces import ITemplateDatabase
   >>> mem_db = custom.InMemoryTemplateDatabase('templates', 'Templates')
   >>> sm1 = site1.getSiteManager()
   >>> sm1.registerUtility(mem_db, provided=ITemplateDatabase, 
@@ -204,19 +210,31 @@ Customization of a template
 Now that we have a locally set up customization database, we can
 customize the ``test1.st`` template. 
 
-In this customization we change 'Bye' to 'Goodbye'. For now, ``hurry.custom``
-does not yet specify a database-agnostic update mechanism, so 
-we will use the update mechanism that is particular to the in-memory
-database::
+In this customization we change 'Bye' to 'Goodbye'::
 
   >>> source = template.source
   >>> source = source.replace('Bye', 'Goodbye')
+
+We now need to update the database so that it has this customized
+version of the template. We do this by calling the ``update`` method
+on the database with the template id and the new source.
+
+This update operation is not supported on the default filesystem
+database::
+
+   >>> root_db.update('test1.st', source)
+   Traceback (most recent call last):
+     ...
+   NotSupported: Cannot update templates in FilesystemTemplateDatabase.
+
+It is supported on the site-local in-memory database we've just
+installed though::
+
   >>> mem_db.update('test1.st', source)
 
-Another database might have an entirely different storage and update
-mechanism; this is just an example. All you need to do to hook in your
-own database is to implement the ``ITemplateDatabase`` interface and
-register it (either globally or locally in a site).
+All you need to do to hook in your own database is to implement the
+``ITemplateDatabase`` interface and register it (either globally or
+locally in a site).
 
 Let's see whether we get the customized template now::
 
