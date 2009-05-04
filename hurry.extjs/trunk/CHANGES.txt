@@ -1,0 +1,7 @@
+CHANGES
+*******
+
+2.2.1 (ExtJS version: 2.2.1)
+===============================================
+
+* Initial public release.
