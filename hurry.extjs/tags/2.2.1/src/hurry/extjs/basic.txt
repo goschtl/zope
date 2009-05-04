@@ -1,0 +1,44 @@
+hurry.extjs basic tests
+=======================
+
+Here are some basic tests for hurry.extjs.
+
+Let's set up a way to render URLs; typically the framework has already
+done this::
+
+  >>> def get_library_url(library):
+  ...    return 'http://localhost/static/%s' % (
+  ...      library.name)
+  >>> from hurry.resource import Library
+  >>> from hurry.resource.interfaces import ILibraryUrl
+  >>> from zope import component
+  >>> component.provideAdapter(
+  ...     factory=get_library_url,
+  ...     adapts=(Library,),
+  ...     provides=ILibraryUrl)
+
+
+Let's check the ExtJS libraries. First we just include the default styles::
+
+  >>> from hurry import extjs
+  >>> from hurry.resource import NeededInclusions
+  >>> needed = NeededInclusions()
+  >>> needed.need(extjs.extjs_css)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/extjs/resources/css/ext-all.css" />
+
+Now, we will include all the ExtJS framework
+
+  >>> needed.need(extjs.extjs_all)
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/extjs/resources/css/ext-all.css" />
+  <script type="text/javascript" src="http://localhost/static/extjs/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost/static/extjs/ext-all.js"></script>
+
+  >>> needed.mode('debug')
+  >>> print needed.render()
+  <link rel="stylesheet" type="text/css" href="http://localhost/static/extjs/resources/css/ext-all.css" />
+  <script type="text/javascript" src="http://localhost/static/extjs/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="http://localhost/static/extjs/ext-all-debug.js"></script>
+
+
