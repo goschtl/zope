@@ -13,20 +13,37 @@ This library packages ExtJS_ for `hurry.resource`_.
 How to use?
 ===========
 
-ExtJS_ is distributed under the terms of the GPL v3 :
-
-- http://extjs.com/products/license.php
-
 In order to avoid licenses conflicts, first you need to download ExtJS_ and place it in your
-home directory. Once it's finished, add `hurry.extjs` to your setup.py and run ./bin/buildout::
+project. Once it's finished, add `hurry.zoperesource` and `hurry.extjs` to your setup.py
+and run ./bin/buildout::
 
         install_requires=[
            ...,
-           'hurry.extjs==2.2.1',
+           'hurry.zoperesource'
+           'hurry.extjs',
         ],
 
-`hurry.extjs` will try to extract and copy the sources of ExtJS to a known location.
-Note that you `must` always download and include the same versions of ExtJS_ and `hurry.extjs`
+Next step, it's to publish the sources of ExtJS as a resource directory. Using Grok,
+you should have something like this in your configure.zcml::
+
+    <configure xmlns="http://namespaces.zope.org/zope"
+               xmlns:grok="http://namespaces.zope.org/grok"
+               xmlns:browser="http://namespaces.zope.org/browser">
+
+      <include package="grok" />
+      <includeDependencies package="." />
+      <grok:grok package="." />
+
+      <include package="hurry.zoperesource" />
+
+      <browser:resourceDirectory
+          name="extjs"
+          directory="ext-2.2.1" />
+
+    </configure>
+
+`hurry.extjs` will look for the resourceDirectory named `extjs`, so it's important that
+you use the same name in the resourceDirectory statement.
 
 Now, you can import ``extjs`` like this::
 

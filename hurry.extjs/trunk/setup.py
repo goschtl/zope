@@ -1,28 +1,6 @@
 from setuptools import setup, find_packages
 import sys, os, shutil, tempfile
 
-EXTJS_VERSION = '2.2.1'
-
-extzip = os.path.expanduser('~') + '/ext-%s.zip' % EXTJS_VERSION
-
-dirpath = tempfile.mkdtemp()
-extjs_path = os.path.join(dirpath, 'extjs.zip')
-ex_path = os.path.join(dirpath, 'extjs_ex')
-try:
-    shutil.copy(extzip, extjs_path)
-    os.system('unzip -qq "%s" -d "%s"' % (extjs_path, ex_path))
-
-    package_dir = './src/hurry/extjs/'
-    dest_path = os.path.join(package_dir, 'extjs-build')
-
-    # remove previous ExtJS
-    shutil.rmtree(dest_path, ignore_errors=True)
-
-    build_path = os.path.join(ex_path)
-    shutil.copytree(build_path, dest_path)
-finally:
-    shutil.rmtree(dirpath, ignore_errors=True)
-
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
@@ -37,7 +15,7 @@ long_description = (
 
 setup(
     name='hurry.extjs',
-    version=EXTJS_VERSION + 'dev',
+    version='0.1dev',
     description="ExtJS for hurry.resource.",
     long_description=long_description,
     classifiers=[],

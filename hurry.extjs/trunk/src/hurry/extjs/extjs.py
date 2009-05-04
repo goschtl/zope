@@ -2,8 +2,8 @@ from hurry.resource import Library, ResourceInclusion
 
 extjs = Library('extjs')
 
-extjs_base = ResourceInclusion(extjs, 'ext-base.js',
-                               debug='ext-base-debug.js')
+extjs_core = ResourceInclusion(extjs, 'ext-core.js',
+                               debug='ext-core-debug.js')
 
 extjs_all = ResourceInclusion(extjs, 'ext-all.js', depends=[extjs_base],
                               debug='ext-all-debug.js')
