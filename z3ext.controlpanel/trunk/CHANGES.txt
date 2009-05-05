@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+1.4.2 (Unreleased)
+------------------
+
+- Moved ContentContainerConfiglet implementation to z3ext.content.type package
+
+
 1.4.1 (2009-04-23)
 ------------------
 
