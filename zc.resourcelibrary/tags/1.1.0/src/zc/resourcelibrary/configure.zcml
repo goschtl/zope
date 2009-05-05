@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:tales="http://namespaces.zope.org/tales"
+    i18n_domain="zc.resourcelibrary"
+    >
+
+  <tales:expressiontype
+      name="resource_library"
+      handler=".tal.ResourceLibraryExpression"
+      />
+
+  <utility
+      component=".publication.Request"
+      provides="zope.app.publication.interfaces.IBrowserRequestFactory"
+      />
+
+  <class class=".publication.Request">
+    <require like_class="zope.publisher.browser.BrowserRequest" />
+  </class>
+
+  <class class=".publication.Response">
+    <require like_class="zope.publisher.browser.BrowserResponse" />
+  </class>
+
+</configure>
