@@ -124,10 +124,14 @@ We can now look up the template in this collection::
 We got our proper template::
 
   >>> template.source
-  'Hello $thing'
+  u'Hello $thing'
+
+As we can see the source text of the template was interpreted as a
+UTF-8 string. The template source should always be in unicode format
+(or in plain ASCII).
 
   >>> template({'thing': 'world'})
-  'Hello world'
+  u'Hello world'
 
 The underlying template will not be reloaded unless it is changed on
 the filesystem::
@@ -138,7 +142,7 @@ When we trigger a potential reload nothing happens - the template did
 not change on the filesystem::
 
   >>> template.source
-  'Hello $thing'
+  u'Hello $thing'
   >>> template.template is orig
   True
   
@@ -159,10 +163,10 @@ time as a hack::
 Now the template will have changed::
 
   >>> template.source
-  'Bye $thing'
+  u'Bye $thing'
   
   >>> template({'thing': 'world'})
-  'Bye world'
+  u'Bye world'
 
 Customization database
 ----------------------
@@ -202,7 +206,7 @@ template::
 
   >>> template = custom.lookup('templates', 'test1.st')
   >>> template({'thing': "universe"})
-  'Bye universe'
+  u'Bye universe'
 
 Customization of a template
 ---------------------------
@@ -240,13 +244,13 @@ Let's see whether we get the customized template now::
 
   >>> template = custom.lookup('templates', 'test1.st')
   >>> template({'thing': 'planet'})
-  'Goodbye planet'
+  u'Goodbye planet'
 
 It is sometimes useful to be able to retrieve the original version of
 the template, before customization::
 
   >>> template.original_source
-  'Bye $thing'
+  u'Bye $thing'
 
 This could be used to implement a "revert" functionality in a
 customization UI, for instance.
@@ -383,7 +387,7 @@ By definition, we can use the sample data for a template and pass it
 to the template itself::
 
   >>> template(r['sample1'])
-  'Goodbye galaxy'
+  u'Goodbye galaxy'
 
 Error handling
 --------------

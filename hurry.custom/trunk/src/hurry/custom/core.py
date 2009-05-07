@@ -91,6 +91,8 @@ class ManagedTemplate(object):
         
 class FilesystemTemplateDatabase(object):
     implements(ITemplateDatabase)
+
+    template_encoding = 'UTF-8'
     
     def __init__(self, id, path, title):
         self.id = id
@@ -102,7 +104,7 @@ class FilesystemTemplateDatabase(object):
         f = open(template_path, 'r')
         result = f.read()
         f.close()
-        return result
+        return unicode(result, self.template_encoding)
     
     def get_modification_time(self, template_id):
         template_path = os.path.join(self.path, template_id)
