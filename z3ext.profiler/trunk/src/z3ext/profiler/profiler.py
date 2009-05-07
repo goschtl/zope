@@ -16,7 +16,7 @@
 $Id$
 """
 import time
-import cProfile
+import profile
 from threading import RLock
 
 from zope.app.wsgi import WSGIPublisherApplication
@@ -33,7 +33,7 @@ def monkey_call(self, environ, start_response):
         environ.get('REQUEST_URI', '').endswith('z3ext.profiler')):
         return orig_call(self, environ, start_response)
 
-    prof = cProfile.Profile(time.time)
+    prof = profile.Profile(time.time)
     response = prof.runcall(orig_call, self, environ, start_response)
     
     lock= _lock
