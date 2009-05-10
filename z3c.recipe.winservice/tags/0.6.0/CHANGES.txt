@@ -1,0 +1,29 @@
+=======
+CHANGES
+=======
+
+Version 0.6.0 (2009-05-10)
+--------------------------
+
+- Added debug option to log exceptions for totally misbehaving scripts
+
+- Slight changes to service manager
+
+- virtualenv creates no pythonw.exe -- fallback to python.exe
+
+- tested on winXP pro workstation:
+  - from service manager:
+    - service start: OK
+    - service stop: OK
+    - service restart: OK
+  - net
+    - net start: OK
+    - net stop: OK
+  - from instance:
+    - ``ZMI restart``: OK (restarts)
+    - task manager kill ``python.exe``: OK (starts again)
+
+Version 0.5.0 (2008-04-12)
+--------------------------
+
+- Initial Release
