@@ -2,10 +2,8 @@
 CHANGES
 =======
 
-Version 0.6.0dev (unreleased)
------------------------------
-
-- ...
+Version 0.6.0 (2009-05-10)
+--------------------------
 
 - Added debug option to log exceptions for totally misbehaving scripts
 
