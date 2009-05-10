@@ -5,7 +5,7 @@ CHANGES
 Version 0.7.0 (unreleased)
 --------------------------
 
-- ...
+- Use python.exe in debug mode -- it will display/log exceptions
 
 
 Version 0.6.0 (2009-05-10)

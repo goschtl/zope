@@ -191,7 +191,7 @@ The winservice.py contains the service setup for our zope windows service:
   PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
   PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
   TOSTART = r'/sample-buildout/bin/app-script.py'
-  SERVICE_NAME = '..._bin_app_script_py'
+  SERVICE_NAME = '...sample_buildout_bin_app_script_py'
   SERVICE_DISPLAY_NAME = r'Zope 3 Windows Service'
   SERVICE_DESCRIPTION = r'Zope 3 Windows Service description'
   <BLANKLINE>
@@ -253,11 +253,15 @@ The winservice.py contains the service setup for our zope windows service:
       start_cmd = ''
   <BLANKLINE>
       def __init__(self, args):
-          python = PYTHONW
-          if not os.path.exists(PYTHONW):
+          if TOSTART.endswith('-servicedebug.py'):
+              #we're better off with python.exe
+              python = PYTHON
+          else:
+              python = PYTHONW
+          if not os.path.exists(python):
               #virtualenv misses pythonw.exe, fall back to python.exe
               python = PYTHON
-              if not os.path.exists(PYTHON):
+              if not os.path.exists(python):
                   raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
   <BLANKLINE>
           if not os.path.exists(TOSTART):

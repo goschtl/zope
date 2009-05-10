@@ -152,11 +152,15 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     start_cmd = ''
 
     def __init__(self, args):
-        python = PYTHONW
-        if not os.path.exists(PYTHONW):
+        if TOSTART.endswith('-servicedebug.py'):
+            #we're better off with python.exe
+            python = PYTHON
+        else:
+            python = PYTHONW
+        if not os.path.exists(python):
             #virtualenv misses pythonw.exe, fall back to python.exe
             python = PYTHON
-            if not os.path.exists(PYTHON):
+            if not os.path.exists(python):
                 raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
 
         if not os.path.exists(TOSTART):
