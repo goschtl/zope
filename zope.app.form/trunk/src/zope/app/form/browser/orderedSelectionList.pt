@@ -69,7 +69,7 @@ function moveUp(name)
       selectionError();
   else if (toSel.options[0].selected)
       alert("Cannot move further up!");
-  else for (var i = 0; i < toSel.length; i++)
+  else for (var i = 0; toSel.length > i; i++)
     if (toSel.options[i].selected)
       {
       swapFields(toSel.options[i-1], toSel.options[i]);
@@ -110,7 +110,7 @@ function copyDataForSubmit(name)
 
   // create new hidden input fields - one for each selection item of
   // "to" selection
-  for (var i = 0; i < toSel.options.length; i++)
+  for (var i = 0; toSel.options.length > i; i++)
     {
     // create virtual node with suitable attributes
     var newNode = document.createElement("input");
