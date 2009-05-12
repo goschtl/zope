@@ -107,16 +107,16 @@ class PageletForm(form.Form, PageletBaseForm):
                 views.append((form.weight, form.__name__, form))
 
         groups.sort()
-        self.groups = [form for weight, name, form in groups]
+        self.groups = tuple([form for weight, name, form in groups])
 
         subforms.sort()
-        self.subforms = [form for weight, name, form in subforms]
+        self.subforms = tuple([form for weight, name, form in subforms])
 
         forms.sort()
-        self.forms = [form for weight, name, form in forms]
+        self.forms = tuple([form for weight, name, form in forms])
 
         views.sort()
-        self.views = [view for weight, name, view in views]
+        self.views = tuple([view for weight, name, view in views])
 
     def update(self):
         self.updateWidgets()
