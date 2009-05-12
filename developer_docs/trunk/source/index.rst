@@ -13,6 +13,15 @@ Becoming a Zope contributor
 
    becoming-a-contributor
 
+Bugtracker
+----------
+
+.. toctree::
+   :maxdepth: 2
+
+   bugtracker
+
+
 
 Zope Subversion Repository
 --------------------------
