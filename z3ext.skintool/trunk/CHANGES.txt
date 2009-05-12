@@ -5,6 +5,8 @@ CHANGES
 1.1.3 (2009-04-??)
 ------------------
 
+- Check is skin exists, if not use z3ext as default
+
 - Do not use z3c.autoinclude
 
 

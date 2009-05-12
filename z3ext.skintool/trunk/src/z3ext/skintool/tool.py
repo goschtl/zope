@@ -33,6 +33,8 @@ skins_registry = {}
 layers_byname = {}
 layers_registry = {}
 
+default_skin = 'z3ext'
+
 
 class SkinTool(object):
     interface.implements(ISkinTool)
@@ -53,6 +55,9 @@ class SkinTool(object):
         # second add skin
         if self.skin:
             skin = skins_byname.get(self.skin)
+            if not skin:
+                skin = skins_byname.get(default_skin)
+
             if skin:
                 bases.append(skin)
                 info = skins_registry.get(skin)
