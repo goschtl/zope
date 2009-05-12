@@ -87,7 +87,6 @@ import win32process
 # these are replacements from winservice recipe
 PYTHON = r'<<PYTHON>>'
 PYTHONDIR = os.path.split(PYTHON)[0]
-PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
 PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
 TOSTART = r'<<RUNZOPE>>'
 SERVICE_NAME = '<<SERVICE_NAME>>'
@@ -152,21 +151,12 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     start_cmd = ''
 
     def __init__(self, args):
-        if TOSTART.endswith('-servicedebug.py'):
-            #we're better off with python.exe
-            python = PYTHON
-        else:
-            python = PYTHONW
-        if not os.path.exists(python):
-            #virtualenv misses pythonw.exe, fall back to python.exe
-            python = PYTHON
-            if not os.path.exists(python):
-                raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
-
+        if not os.path.exists(PYTHON):
+            raise OSError("%s does not exist" % PYTHON)
         if not os.path.exists(TOSTART):
             raise OSError("%s does not exist" % TOSTART)
 
-        self.start_cmd = '"%s" "%s"' % (python, TOSTART)
+        self.start_cmd = '"%s" "%s"' % (PYTHON, TOSTART)
 
         win32serviceutil.ServiceFramework.__init__(self, args)
         # Create an event which we will use to wait on.

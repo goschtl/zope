@@ -188,7 +188,6 @@ The winservice.py contains the service setup for our zope windows service:
   # these are replacements from winservice recipe
   PYTHON = r'U:\Python24\python.exe'
   PYTHONDIR = os.path.split(PYTHON)[0]
-  PYTHONW = os.path.join(PYTHONDIR, 'pythonw.exe')
   PYTHONSERVICE_EXE = r'%s\Lib\site-packages\win32\pythonservice.exe' % PYTHONDIR
   TOSTART = r'/sample-buildout/bin/app-script.py'
   SERVICE_NAME = '...sample_buildout_bin_app_script_py'
@@ -253,21 +252,12 @@ The winservice.py contains the service setup for our zope windows service:
       start_cmd = ''
   <BLANKLINE>
       def __init__(self, args):
-          if TOSTART.endswith('-servicedebug.py'):
-              #we're better off with python.exe
-              python = PYTHON
-          else:
-              python = PYTHONW
-          if not os.path.exists(python):
-              #virtualenv misses pythonw.exe, fall back to python.exe
-              python = PYTHON
-              if not os.path.exists(python):
-                  raise OSError("%s or %s does not exist" % (PYTHONW, PYTHON))
-  <BLANKLINE>
+          if not os.path.exists(PYTHON):
+              raise OSError("%s does not exist" % PYTHON)
           if not os.path.exists(TOSTART):
               raise OSError("%s does not exist" % TOSTART)
   <BLANKLINE>
-          self.start_cmd = '"%s" "%s"' % (python, TOSTART)
+          self.start_cmd = '"%s" "%s"' % (PYTHON, TOSTART)
   <BLANKLINE>
           win32serviceutil.ServiceFramework.__init__(self, args)
           # Create an event which we will use to wait on.

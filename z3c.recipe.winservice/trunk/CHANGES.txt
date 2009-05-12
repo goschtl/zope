@@ -5,6 +5,9 @@ CHANGES
 Version 0.7.0 (unreleased)
 --------------------------
 
+- kill off pythonw.exe - it just causes problems when something is
+  written to stdout
+
 - Use python.exe in debug mode -- it will display/log exceptions
 
 
