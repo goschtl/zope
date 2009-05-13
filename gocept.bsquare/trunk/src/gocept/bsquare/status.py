@@ -1,5 +1,6 @@
 # An extended web status display providing a cruise-control-like UI.
 
+import urllib
 import buildbot.status.web.base
 import datetime
 import os.path
@@ -22,7 +23,7 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
         return stat
 
     def head(self, request):
-        return ('<link href="%s" rel="stylesheet" type="text/css" />' % 
+        return ('<link href="%s" rel="stylesheet" type="text/css" />' %
                 request.sibLink('cruise.css'))
 
     def body(self, request):
@@ -37,7 +38,7 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
 
         data += "<h1>%s</h1>" % projectName
 
-        builders = [status.getBuilder(x) for x in 
+        builders = [status.getBuilder(x) for x in
                 status.getBuilderNames()]
 
         # Setup filters
@@ -89,9 +90,12 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
         # Create detail view panels
         for builder in builders:
             activity = builder.getState()[0]
-            data += '<div class="project %s %s"><h2>%s</h2>' % (self._builder_status(builder),
-                    activity, builder.getName())
-            data += '<p>This builder is currently %s.</p>' % activity
+            data += '<div class="project %s %s"><h2>%s</h2>' % (
+                self._builder_status(builder),
+                activity, builder.getName())
+            data += '<p><a href="%s">This builder is currently %s.</a></p>' % (
+                request.childLink("../builders/" + urllib.quote(builder.name)),
+                activity)
             data += "<ul>"
             for x in range(1,6):
                 build = builder.getBuild(-x)
@@ -127,4 +131,3 @@ class ExtendedWebStatus(buildbot.status.web.baseweb.WebStatus):
         for image in ['headerbg.png', 'headerbg2.png', 'errorbg.png']:
             data = open(os.path.join(STATIC_DIR, image)).read()
             self.putChild(image, twisted.web.static.Data(data, 'image/png'))
-

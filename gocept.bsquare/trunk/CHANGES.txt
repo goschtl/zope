@@ -1,0 +1,36 @@
+0.1.0 2009-04-25
+----------------
+Added svnbin parameter, win32 seems to be picky about the svn.exe location
+
+Different commands for win32
+
+pythonic version of update-config.sh -- for win32
+
+0.1.0 2008-04-14
+----------------
+Added "-1" parameter to 'bin/test --exit-with-status'
+
+0.1.0 2008-04-09
+----------------
+Added links to cruise builders
+
+0.1.0 2008-04-09
+----------------
+More options for configure:
+- maxConcurrent: maximum number of concurrent builds
+
+0.1.0 2008-04-08
+----------------
+More options for configure:
+- nightlyhour
+- makefactory
+Added docs for options
+
+0.1.0 2008-04-07
+----------------
+Added the options to configure:
+- svnuser = None, svnpassword = None,
+- pollinterval = 30,
+- poller = None,
+- makefactory = make_factory
+to help override them

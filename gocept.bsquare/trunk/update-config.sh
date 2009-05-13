@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 HOME=$1
 BASE=$2
@@ -8,7 +8,7 @@ rm -f project-updates
 for PROJECT in `svn ls $BASE`; do
     svn ls $BASE/$PROJECT/trunk/buildout.cfg &> /dev/null
     if [ "$?" != "0" ]; then
-        continue; 
+        continue;
     fi
     echo $PROJECT >> project-updates
 done
@@ -20,4 +20,4 @@ rm -f project-updates
 # Restart the master
 make reconfig > /dev/null
 
-# vi: 
+# vi:
