@@ -31,6 +31,60 @@ class IBrowserView(IView):
       etc..
     """
 
+class IAdding(IBrowserView):
+    """ Multi-adapter interface for views which add items to containers.
+
+    o The 'context' of the view must implement ``zope.container.IContainer``.
+    """
+    def add(content):
+        """Add content object to context.
+
+        Add using the name in `contentName`.
+        
+        Return the added object in the context of its container.
+
+        If `contentName` is already used in container, raise
+        ``zope.container.interfaces.DuplicateIDError``.
+        """
+
+    contentName = Attribute(
+         """The content name, usually set by the Adder traverser.
+
+         If the content name hasn't been defined yet, returns ``None``.
+
+         Some creation views might use this to optionally display the
+         name on forms.
+         """
+         )
+
+    def nextURL():
+        """Return the URL that the creation view should redirect to.
+
+        This is called by the creation view after calling add.
+
+        It is the adder's responsibility, not the creation view's to
+        decide what page to display after content is added.
+        """
+
+    def nameAllowed():
+        """Return whether names can be input by the user.
+        """
+
+    def addingInfo():
+        """Return add menu data as a sequence of mappings.
+
+        Each mapping contains 'action', 'title', and possibly other keys.
+
+        The result is sorted by title.
+        """
+
+    def isSingleMenuItem():
+        """Return whether there is single menu item or not."""
+
+    def hasCustomAddView():
+        "This should be called only if there is `singleMenuItem` else return 0"
+
+
 class ITerms(Interface):
     """ Adapter providing lookups for vocabulary terms.
     """

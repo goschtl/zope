@@ -31,6 +31,23 @@ and an interface derived from ``IView``:
   >>> IBrowserView.extends(IView)
   True
 
+IAdding
+-------
+
+Adding views manage how newly-created items get added to containers.
+
+There is not much we can test except that ``IAdding`` is importable
+and an interface derived from ``IBrowserView``:
+
+.. doctest::
+
+  >>> from zope.interface import Interface
+  >>> from zope.browser.interfaces import IAdding
+  >>> Interface.providedBy(IBrowserView)
+  True
+  >>> IAdding.extends(IBrowserView)
+  True
+
 ITerms
 ------
 
