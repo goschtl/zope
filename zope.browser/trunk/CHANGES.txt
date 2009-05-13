@@ -1,7 +1,7 @@
 zope.browser Changelog
 ======================
 
-1.0 (unreleased)
+1.0 (2009-05-13)
 ----------------
 
 - Moved ``IView`` and ``IBrowserView`` interfaces here from

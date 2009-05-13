@@ -24,17 +24,17 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.browser',
-    version = '1.0dev',
+    version = '1.0',
     author='Zope Corporation and Contributors',
     author_email='zope3-dev@zope.org',
-    description='Shared dependency less Zope 3 browser components',
+    description='Shared Zope Toolkit browser components',
     long_description=(
         read('README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
     license='ZPL 2.1',
-    keywords = "zope3 browser component ITerms",
+    keywords = "zope browser component",
     classifiers = [
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
