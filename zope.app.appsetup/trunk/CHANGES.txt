@@ -1,10 +1,11 @@
-CHANGES
-=======
+zope.app.appsetup Changelog
+===========================
 
-3.10.2 (unreleased)
--------------------
+3.11 (unreleased)
+-----------------
 
-- Nothing changed yet.
+- Event interfaces / implementations moved to ``zope.processlifetime``,
+  version 1.0.  Depend on this package, and add BBB imports.
 
 
 3.10.1 (2009-03-31)

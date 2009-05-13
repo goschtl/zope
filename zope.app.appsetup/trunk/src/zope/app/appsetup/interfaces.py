@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,37 +15,15 @@
 
 $Id$
 """
+# BBB imports
+from zope.processlifetime import IDatabaseOpened
+from zope.processlifetime import DatabaseOpened
+from zope.processlifetime import IDatabaseOpenedWithRoot
+from zope.processlifetime import DatabaseOpenedWithRoot
+from zope.processlifetime import IProcessStarting
+from zope.processlifetime import ProcessStarting
 
-from zope import interface
-
-
-class IDatabaseOpenedEvent(interface.Interface):
-    """The main database has been opened."""
-
-    database = interface.Attribute("The main database.")
-
-class DatabaseOpened(object):
-    interface.implements(IDatabaseOpenedEvent)
-
-    def __init__(self, database):
-        self.database = database
-
-class IDatabaseOpenedWithRootEvent(interface.Interface):
-    """The main database has been opened."""
-
-    database = interface.Attribute("The main database.")
-
-class DatabaseOpenedWithRoot(object):
-    interface.implements(IDatabaseOpenedWithRootEvent)
-
-    def __init__(self, database):
-        self.database = database
-
-class IProcessStartingEvent(interface.Interface):
-    """The application server process is starting."""
-
-class ProcessStarting(object):
-    interface.implements(IProcessStartingEvent)
-
-
-    
+# BBB aliases
+IDatabaseOpenedEvent = IDatabaseOpened
+IDatabaseOpenedWithRootEvent = IDatabaseOpenedWithRoot
+IProcessStartingEvent = IProcessStarting
