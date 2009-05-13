@@ -1,7 +1,7 @@
 zope.app.appsetup Changelog
 ===========================
 
-3.11 (unreleased)
+3.11 (2009-05-13)
 -----------------
 
 - Event interfaces / implementations moved to ``zope.processlifetime``,
