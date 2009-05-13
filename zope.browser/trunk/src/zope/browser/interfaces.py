@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,17 +12,28 @@
 #
 ##############################################################################
 """Shared dependency less Zope3 brwoser components.
-
-$Id:$
 """
-
-import zope.interface
-
 __docformat__ = 'restructuredtext'
 
+from zope.interface import Attribute
+from zope.interface import Interface
 
-class ITerms(zope.interface.Interface):
+class IView(Interface):
+    """ Views are multi-adapters for context and request objects.
+    """
+    context = Attribute("The context object the view renders")
+    request = Attribute("The request object driving the view")
 
+class IBrowserView(IView):
+    """ Views which are specialized for requests from a browser
+    
+    o Such views are distinct from those geerated via WebDAV, FTP, XML-RPC,
+      etc..
+    """
+
+class ITerms(Interface):
+    """ Adapter providing lookups for vocabulary terms.
+    """
     def getTerm(value):
         """Return an ITitledTokenizedTerm object for the given value
 
