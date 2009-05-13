@@ -21,6 +21,7 @@ import os
 import subprocess
 
 SVNBIN = 'svn'
+#SSL certificate you still need to accept by 'hand'
 #usually authentication will be cached by svn, in case not fill in below
 SVNUSER = ''
 SVNPASS = ''
@@ -28,7 +29,8 @@ SVNPASS = ''
 is_win32 = sys.platform == 'win32'
 
 def system(command, input=''):
-    print command
+    #enable for debugging
+    #print command
 
     p = subprocess.Popen(command,
                          shell=True,
@@ -73,7 +75,7 @@ def svnls(url):
     else:
         svnpass = ''
 
-    return system("svn ls %s%s%s" % (url, svnuser, svnpass))
+    return system("svn ls --non-interactive %s%s%s" % (url, svnuser, svnpass))
 
 def main():
     if len(sys.argv) < 3:
