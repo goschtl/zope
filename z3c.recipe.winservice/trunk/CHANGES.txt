@@ -5,7 +5,8 @@ CHANGES
 Version 0.7.0 (unreleased)
 --------------------------
 
-- ...
+- Set current dir for CreateProcess to INSTANCE_HOME otherwise pkg_resources will
+  be pissed (in a combination with paster)
 
 Version 0.6.1 (2009-05-12)
 --------------------------

@@ -92,6 +92,7 @@ TOSTART = r'<<RUNZOPE>>'
 SERVICE_NAME = '<<SERVICE_NAME>>'
 SERVICE_DISPLAY_NAME = r'<<SERVICE_DISPLAY_NAME>>'
 SERVICE_DESCRIPTION = r'<<SERVICE_DESCRIPTION>>'
+INSTANCE_HOME = os.path.dirname(os.path.dirname(TOSTART))
 
 
 # the max seconds we're allowed to spend backing off
@@ -195,8 +196,11 @@ class Zope3Service(win32serviceutil.ServiceFramework):
     SvcShutdown = SvcStop
 
     def createProcess(self, cmd):
+        #need to set current dir to INSTANCE_HOME otherwise pkg_resources will
+        #be pissed (in a combination with paster)
         return win32process.CreateProcess(
-            None, cmd, None, None, 0, 0, None, None,
+            None, cmd, None, None, 0, 0, None,
+            INSTANCE_HOME,
             win32process.STARTUPINFO())
 
     def SvcDoRun(self):

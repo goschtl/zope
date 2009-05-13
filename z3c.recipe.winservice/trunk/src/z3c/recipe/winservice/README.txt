@@ -193,6 +193,7 @@ The winservice.py contains the service setup for our zope windows service:
   SERVICE_NAME = '...sample_buildout_bin_app_script_py'
   SERVICE_DISPLAY_NAME = r'Zope 3 Windows Service'
   SERVICE_DESCRIPTION = r'Zope 3 Windows Service description'
+  INSTANCE_HOME = os.path.dirname(os.path.dirname(TOSTART))
   <BLANKLINE>
   <BLANKLINE>
   # the max seconds we're allowed to spend backing off
@@ -296,8 +297,11 @@ The winservice.py contains the service setup for our zope windows service:
       SvcShutdown = SvcStop
   <BLANKLINE>
       def createProcess(self, cmd):
+          #need to set current dir to INSTANCE_HOME otherwise pkg_resources will
+          #be pissed (in a combination with paster)
           return win32process.CreateProcess(
-              None, cmd, None, None, 0, 0, None, None,
+              None, cmd, None, None, 0, 0, None,
+              INSTANCE_HOME,
               win32process.STARTUPINFO())
   <BLANKLINE>
       def SvcDoRun(self):
