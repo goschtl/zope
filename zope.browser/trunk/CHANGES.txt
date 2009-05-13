@@ -1,7 +1,7 @@
 zope.browser Changelog
 ======================
 
-1.1 (unreleased)
+1.1 (2009-05-13)
 ----------------
 
 - Moved ``IAdding`` interface here from ``zope.app.container.interfaces``
