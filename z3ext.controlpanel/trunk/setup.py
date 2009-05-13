@@ -85,6 +85,7 @@ setup(name = 'z3ext.controlpanel',
                                   'zope.testing',
                                   'zope.testbrowser',
 				  'z3ext.autoinclude',
+				  'z3ext.security',
                                   ]),
       include_package_data = True,
       zip_safe = False

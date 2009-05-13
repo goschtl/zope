@@ -3,6 +3,7 @@ Site copy/move
 ==============
 
   >>> from zope import component, interface
+  >>> from zope.proxy import removeAllProxies
   >>> from zope.app.folder.folder import Folder
   >>> from zope.app.component.site import LocalSiteManager
   >>> from zope.component.eventtesting import getEvents, clearEvents
@@ -49,8 +50,12 @@ Copy site
 
   >>> newsite = root['subfolder']['site']
   >>> newsm = newsite.getSiteManager()
+  >>> configlet = newsm.getUtility(IConfiglet)
 
-  >>> newsm.getUtility(IMyUtility, name='my') is myutility
+  newsm.getUtility(IMyUtility, name='my') is myutility
+  False
+
+  newsm.getUtility(IMyUtility, name='my') is configlet.data['myutility']
   True
 
 getEvents()
