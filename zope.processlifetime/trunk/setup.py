@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup for zope.app.appsetup package
+"""Setup for zope.processlifetime package
 
 $Id$
 """
@@ -24,26 +24,15 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(
-    name='zope.app.appsetup',
-    version = '3.10.2 dev',
+    name='zope.processlifetime',
+    version = '1.0dev',
     author='Zope Corporation and Contributors',
     author_email='zope-dev@zope.org',
-    description="Zope app setup helper",
-    long_description=(
-        read('README.txt')
-        + '\n\n' +
-        '.. contents::'
-        + '\n\n' +
-        read('src', 'zope', 'app', 'appsetup', 'bootstrap.txt')
-        + '\n\n' +
-        read('src', 'zope', 'app', 'appsetup', 'debug.txt')
-        + '\n\n' +
-        read('src', 'zope', 'app', 'appsetup', 'product.txt')
-        + '\n\n' +
-        read('CHANGES.txt')
-        ),
+    description="Zope process lifetime events",
+    long_description=(read('README.txt') + '\n\n' +
+                      read('CHANGES.txt')),
     license='ZPL 2.1',
-    keywords="zope3 app setup",
+    keywords="zope process lifetime events",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -53,32 +42,17 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
-        'Framework :: Zope3'],
-    url='http://pypi.python.org/pypi/zope.app.appsetup',
+        'Framework :: Zope3',
+        'Framework :: Zope2',
+        ],
+    url='http://pypi.python.org/pypi/zope.processlifetime',
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    extras_require=dict(test=['zope.app.testing']),
-    namespace_packages=['zope', 'zope.app'],
+    test_suite='zope.processlifetime.tests',
+    namespace_packages=['zope'],
     install_requires=['setuptools',
-                      'zope.app.component',
-                      'zope.app.publication',
-                      'zope.component',
-                      'zope.configuration',
-                      'zope.container',
-                      'zope.error',
-                      'zope.event',
                       'zope.interface',
-                      'zope.location',
-                      'zope.session',
-                      'zope.site',
-                      'zope.security',
-                      'zope.traversing',
-                      'ZODB3',
-                      ],
+                     ],
     include_package_data=True,
     zip_safe=False,
-    entry_points = """
-        [console_scripts]
-        debug = zope.app.appsetup.debug:main
-        """,
     )

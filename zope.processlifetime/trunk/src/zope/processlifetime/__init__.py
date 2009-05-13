@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2004-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,41 +11,37 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""API for working installing things on startup.
-
-$Id$
+"""Events in the lifetime of a server process.
 """
+from zope.interface import Attribute
+from zope.interface import Interface
+from zope.interface import implements
 
-from zope import interface
-
-
-class IDatabaseOpenedEvent(interface.Interface):
-    """The main database has been opened."""
-
-    database = interface.Attribute("The main database.")
+class IDatabaseOpened(Interface):
+    """The main database has been opened.
+    """
+    database = Attribute("The main database.")
 
 class DatabaseOpened(object):
-    interface.implements(IDatabaseOpenedEvent)
+    implements(IDatabaseOpened)
 
     def __init__(self, database):
         self.database = database
 
-class IDatabaseOpenedWithRootEvent(interface.Interface):
-    """The main database has been opened."""
-
-    database = interface.Attribute("The main database.")
+class IDatabaseOpenedWithRoot(Interface):
+    """The main database has been opened.
+    """
+    database = Attribute("The main database.")
 
 class DatabaseOpenedWithRoot(object):
-    interface.implements(IDatabaseOpenedWithRootEvent)
+    implements(IDatabaseOpenedWithRoot)
 
     def __init__(self, database):
         self.database = database
 
-class IProcessStartingEvent(interface.Interface):
-    """The application server process is starting."""
+class IProcessStarting(Interface):
+    """The application server process is starting.
+    """
 
 class ProcessStarting(object):
-    interface.implements(IProcessStartingEvent)
-
-
-    
+    implements(IProcessStarting)
