@@ -11,7 +11,7 @@ def read(path):
 
 def long_description():
     return "\n\n".join([read("README.txt"),
-                        read("src/zc/iso8601/CHANGES.txt")])
+                        read("CHANGES.txt")])
 
 
 setuptools.setup(
