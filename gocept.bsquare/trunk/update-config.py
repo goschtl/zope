@@ -106,7 +106,7 @@ def main():
         bbservice = os.path.join(os.path.dirname(sys.executable),
                                  'scripts', 'buildbot_service.py')
         if os.path.exists(bbservice):
-            system('"%s" %s restart %s' % (sys.executable, bbservice, home))
+            system('"%s" %s restart' % (sys.executable, bbservice))
         else:
             print "Missing %s, unable to reconfig buildbot!" % bbservice
             sys.exit(1)
