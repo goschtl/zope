@@ -13,7 +13,7 @@ Becoming a Zope contributor
 
    becoming-a-contributor
 
-Bugtracker
+Resources
 ----------
 
 .. toctree::

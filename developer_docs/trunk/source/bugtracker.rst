@@ -5,7 +5,13 @@ The Zope 2 project uses the `Launchpad platform <http://launchpad.net>`_ for man
 
 https://bugs.launchpad.net/zope2/
 
-For receiving notifications from the Zope 2 bugtracker on Launchpad, you need
-an account on Launchpad and join the Zope 2 team:
+As an active Zope 2 committer you should be subscribed to the zope2-tracker
+notifications mailinglist. This list will receive notifications from the 
+for each updated bugtracker issue.
 
-https://launchpad.net/~zope2-dev/+join
+http://mail.zope.org/mailman/listinfo/zope2-tracker
+
+For working on bugs you need to be member of the Zope 2 developer team on Launchpad.
+Join the team.
+
+https://launchpad.net/~zope2-dev
