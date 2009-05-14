@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <tal:loop repeat="css options/stylesheets">
+            <style type="text/css"
+                   tal:content="structure options/stylesheets/?css"  
+            />
+        </tal:loop>
+    </head>
+    <body>
+        <div class="block" id="logo">
+            <img src="http://zopyx.com/test_resources/zopyx1.png" />
+        </div>
+        <div class="block" id="desc">
+            <ul>
+                <li>
+            Python, Zope &amp; Plone
+                </li>
+                <li>
+            Software Development
+                </li>
+                <li>
+            Training and Coaching
+                <li>
+            E-Publishing, Web-to-Print
+            </li>
+        </ul>
+        </div>
+            
+        <div class="block" id="address">
+            <span tal:replace="options/fullname | nothing">Fullname</span>
+            <br/>
+            <span tal:replace="options/position| nothing">Position</span>
+            <br/>
+            Charlottenstr. 37/1
+            <br/>
+            D-72070 T&uuml;bingen
+            <br/>
+            <span tal:replace="options/phone| nothing">Phone number</span>
+            <br/>
+            Fax. +49-(0)7071-7936840
+            <br/>
+            E-Mail: info@zopyx.com
+            <br/>
+            Web: www.zopyx.com
+         </div>
+         <svg viewBox="0 0 200 200" 
+             width="5cm" height="5cm">
+      <g fill="none" stroke="gray" stroke-width="20">
+     <circle cx="100" cy="100" r="100"/>
+ </g>
+ </svg>
+  </body>
+</html>
