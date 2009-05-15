@@ -5,7 +5,9 @@ CHANGES
 3.7.1 (unreleased)
 ------------------
 
-- ...
+- Remove a dependency on ``zope.container.contained.Contained``
+  (this is a dumb base class that defines __parent__ and __name__
+  as None and declares that the class implements IContained).
 
 3.7.0 (2009-02-01)
 ------------------
