@@ -212,28 +212,3 @@ class BaseForm(grok.AddForm):
                      toAscii(os.path.basename(filename)))
         return file(filename)
 
-
-#######################################
-# Businesscard demo
-#######################################
-
-class IBusinessCard(interface.Interface):
-    fullname = schema.TextLine(title=u"Fullname (firstname + lastname)")
-    position = schema.Choice(('CEO', 'Developer', 'Facility manager'), 
-                             title=u"Position")
-    phone = schema.TextLine(title=u"Phone", default=u'+49-7071-793257')
-    orientation= schema.Choice(('horizontal', 'vertical'), 
-                             title=u"Businesscard layout")
-
-
-class generateBusinessCard(BaseForm):
-    grok.name('generateBusinessCard')
-    grok.context(Zopyx_smartprintng_server)
-    form_fields = grok.AutoFields(IBusinessCard)
-
-    @grok.action('Generate businesscard')
-    def add(self, **data):
-        from zopyx.smartprintng.core.demo2 import demo_app as demo2
-        filename = demo2.demo_convert(**data)
-        return self._deliver(filename)
-
