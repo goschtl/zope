@@ -1,0 +1,4 @@
+setuptools
+grok
+grokui.admin
+z3c.testsetup
