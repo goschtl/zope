@@ -1,0 +1,16 @@
+<html metal:use-macro="context/@@master/macros/master">
+    <metal:slot fill-slot="main">
+        <h1>Accounting</h1>
+        <table border="1">
+
+            <tal:loop repeat="job view/getJobs">
+                <tr>
+                    <td tal:content="python: job.created.strftime('%d.%m.%Y %H:%M:%S')" />
+                    <td tal:content="job/duration" />
+                    <td tal:content="job/pages" />
+                    <td tal:content="job/converter_name" />
+                <tr>
+            </tal:loop>
+        </table>
+    </metal:slot>
+</html>

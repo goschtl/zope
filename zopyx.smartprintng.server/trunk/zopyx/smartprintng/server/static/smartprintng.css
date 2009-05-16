@@ -1,0 +1,17 @@
+* {
+    font-family: Georgia,"Bitstream Vera Serif","New York",Palatino,serif;
+    font-weight:normal;    
+}
+
+.footer {
+    font-size: 11px;
+    font-style:italic;
+}
+
+img {
+    border: 0;
+}          
+
+a {
+    text-decoration: none;
+}

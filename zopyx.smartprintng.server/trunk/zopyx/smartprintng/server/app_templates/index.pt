@@ -1,0 +1,9 @@
+<html metal:use-macro="context/@@master/macros/master">
+  <metal:slot fill-slot="main">
+  <ul>
+    <li>
+      <a href="generateBusinessCard">Businesscard generator demo</a>
+    </li>
+  </ul>
+  </metal:slot>
+</html>

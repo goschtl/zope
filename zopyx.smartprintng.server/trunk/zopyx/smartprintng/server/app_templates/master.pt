@@ -1,0 +1,26 @@
+<metal:page define-macro="master">
+    <html>
+        <head>
+            <title tal:content="context/title" />
+            <link rel="stylesheet" type="text/css"
+                  tal:attributes="href static/smartprintng.css"
+            />
+            <metal:slot define-slot="css_slot" />
+            <metal:slot define-slot="js_slot" />
+        </head>
+        <body>
+            <a href="http://www.zopyx.com" border="0">
+                <img tal:attributes="src static/zopyx_logo.gif" />
+            </a>
+            <h1 i18n:translate="" tal:content="context/title" />
+
+            <metal:slot define-slot="main" />
+
+            <hr/>
+            <div class="footer">
+                The SmartPrintNG server is (C) 2008, ZOPYX Ltd. &amp; Co. KG, D-72070 T&uuml;bingen, 
+                Germany, www.zopyx.com. All rights reserved!
+            </div>
+        </body>
+    </html>    
+</metal:page>
