@@ -1,0 +1,12 @@
+#!/opt/python-2.4.4/bin/python
+
+import sys
+sys.path[0:0] = [
+  '/Users/ajung/.buildout/eggs/setuptools-0.6c9-py2.4.egg',
+  '/Users/ajung/.buildout/eggs/zc.buildout-1.2.1-py2.4.egg',
+  ]
+
+import zc.buildout.buildout
+
+if __name__ == '__main__':
+    zc.buildout.buildout.main()
