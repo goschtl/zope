@@ -25,12 +25,13 @@ import random
 import BTrees
 from persistent import Persistent
 from zope.component import adapter, getAllUtilitiesRegisteredFor, subscribers
-from zope.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
-from zope.container.interfaces import IContained
 from zope.event import notify
 from zope.interface import implements
 from zope.keyreference.interfaces import IKeyReference, NotYet
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.lifecycleevent.interfaces import IObjectRemovedEvent
 from zope.location.interfaces import ILocation
+from zope.location.interfaces import IContained
 from zope.security.proxy import removeSecurityProxy
 
 from zope.intid.interfaces import IIntIds, IIntIdEvent

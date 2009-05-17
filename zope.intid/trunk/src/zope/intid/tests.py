@@ -196,7 +196,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         provideHandler(intIdEventNotify)
 
     def test_removeIntIdSubscriber(self):
-        from zope.container.contained import ObjectRemovedEvent
+        from zope.lifecycleevent import ObjectRemovedEvent
         from zope.intid import removeIntIdSubscriber
         from zope.intid.interfaces import IIntIdRemovedEvent
         from zope.site.interfaces import IFolder
@@ -234,7 +234,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(objevents[0][1].original_event.object, parent_folder)
 
     def test_addIntIdSubscriber(self):
-        from zope.container.contained import ObjectAddedEvent
+        from zope.lifecycleevent import ObjectAddedEvent
         from zope.intid import addIntIdSubscriber
         from zope.intid.interfaces import IIntIdAddedEvent
         from zope.site.interfaces import IFolder
