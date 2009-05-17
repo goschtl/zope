@@ -1,5 +1,11 @@
+"""Formlib based view for folders
+$Id$"""
+
 import urllib
 
+from ZTUtils import Batch
+from ZTUtils import LazyFilter
+from ZTUtils import make_query
 from DocumentTemplate import sequence
 
 from zope.interface import Interface, directlyProvides
@@ -33,6 +39,7 @@ def contents_delta_vocabulary(context):
             for i in range(1, min(5, length)) + range(5, length, 5)]
     return SimpleVocabulary(deltas)
 
+
 class IFolderItem(Interface):
     """Schema for folderish objects contents."""
     
@@ -44,6 +51,7 @@ class IFolderItem(Interface):
         required=False,
         readonly=True)
 
+
 class IDeltaItem(Interface):
     """Schema for delta"""    
     delta = Choice(
@@ -52,9 +60,121 @@ class IDeltaItem(Interface):
         required=False,
         vocabulary=u'cmf.contents delta vocabulary',
         default=u'1')
-        
 
-class ContentsView(ContentEditFormBase):
+class BatchViewBase(ViewBase):
+
+    # helpers
+
+    _BATCH_SIZE = 2
+
+    @memoize
+    def _getBatchStart(self):
+        return self.request.form.get('b_start', 0)
+
+    @memoize
+    def _getBatchObj(self):
+        b_start = self._getBatchStart()
+        items = self._get_items()
+        return Batch(items, self._BATCH_SIZE, b_start, orphan=0)
+
+    @memoize
+    def _getHiddenVars(self):
+        return {}
+
+    @memoize
+    def _getNavigationVars(self):
+        return self._getHiddenVars()
+
+    @memoize
+    def _getNavigationURL(self, b_start):
+        target = self._getViewURL()
+        kw = self._getNavigationVars().copy()
+
+        kw['b_start'] = b_start
+        for k, v in kw.items():
+            if not v or k == 'portal_status_message':
+                del kw[k]
+
+        query = kw and ('?%s' % make_query(kw)) or ''
+        return u'%s%s' % (target, query)
+
+    # interface
+
+    @memoize
+    @decode
+    def listItemInfos(self):
+        batch_obj = self._getBatchObj()
+        portal_url = self._getPortalURL()
+
+        items = []
+        for item in batch_obj:
+            item_description = item.Description()
+            item_icon = item.getIcon(1)
+            item_title = item.Title()
+            item_type = remote_type = item.Type()
+            if item_type == 'Favorite' and not item_icon == 'p_/broken':
+                item = item.getObject()
+                item_description = item_description or item.Description()
+                item_title = item_title or item.Title()
+                remote_type = item.Type()
+            is_file = remote_type in ('File', 'Image')
+            is_link = remote_type == 'Link'
+            items.append({'description': item_description,
+                          'format': is_file and item.Format() or '',
+                          'icon': item_icon and ('%s/%s' %
+                                               (portal_url, item_icon)) or '',
+                          'size': is_file and ('%0.0f kb' %
+                                            (item.get_size() / 1024.0)) or '',
+                          'title': item_title,
+                          'type': item_type,
+                          'url': is_link and item.getRemoteUrl() or
+                                 item.absolute_url()})
+        return tuple(items)
+
+    @memoize
+    def navigation_previous(self):
+        batch_obj = self._getBatchObj().previous
+        if batch_obj is None:
+            return None
+
+        length = len(batch_obj)
+        url = self._getNavigationURL(batch_obj.first)
+        if length == 1:
+            title = _(u'Previous item')
+        else:
+            title = _(u'Previous ${count} items', mapping={'count': length})
+        return {'title': title, 'url': url}
+
+    @memoize
+    def navigation_next(self):
+        batch_obj = self._getBatchObj().next
+        if batch_obj is None:
+            return None
+
+        length = len(batch_obj)
+        url = self._getNavigationURL(batch_obj.first)
+        if length == 1:
+            title = _(u'Next item')
+        else:
+            title = _(u'Next ${count} items', mapping={'count': length})
+        return {'title': title, 'url': url}
+
+    @memoize
+    def summary_length(self):
+        length = self._getBatchObj().sequence_length
+        return length and thousands_commas(length) or ''
+
+    @memoize
+    def summary_type(self):
+        length = self._getBatchObj().sequence_length
+        return (length == 1) and _(u'item') or _(u'items')
+
+    @memoize
+    @decode
+    def summary_match(self):
+        return self.request.form.get('SearchableText')       
+
+class ContentsView(ContentEditFormBase, BatchViewBase):
     """Folder contents view"""
     
     template = ViewPageTemplateFile('templates/contents.pt')
@@ -212,9 +332,11 @@ class ContentsView(ContentEditFormBase):
     
     def layout_fields(self):
         """Return the widgets for the form in the interface field order"""
+        batch_obj = self._getBatchObj()
+        portal_url = self._getPortalURL()
         fields = []
 
-        for item in self._get_items():
+        for item in batch_obj:
             field = {'ModificationDate':item.ModificationDate()}
             field['select'] = self.widgets['%s.select' % item.getId()]
             field['name'] = self.widgets['%s.name' % item.getId()]

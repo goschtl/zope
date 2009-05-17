@@ -70,7 +70,7 @@
    tal:replace="structure action/render" />
 </div>
 </form>
-
+<metal:macro metal:use-macro="context/@@batch_widget/navigation" />
 </metal:slot>
 
 </body>
