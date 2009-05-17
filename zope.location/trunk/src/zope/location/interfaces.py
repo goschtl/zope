@@ -50,6 +50,13 @@ class ILocation(zope.interface.Interface):
         required=False,
         default=None)
 
+# The IContained interface was moved from zope.container to here in
+# zope.container 3.8.2 to break dependency cycles.  It is not actually
+# used within this package, but is depended upon by external
+# consumers.
+
+class IContained(ILocation):
+    """Objects contained in containers."""
 
 class ILocationInfo(zope.interface.Interface):
     """Provides supplemental information for located objects.

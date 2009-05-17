@@ -5,7 +5,11 @@ CHANGES
 3.5.4 (unreleased)
 ------------------
 
-- ...
+- Add ``IContained`` interface to ``zope.location.interfaces`` module.
+  This interface was moved from ``zope.container`` (after
+  ``zope.container`` 3.8.2); consumers of ``IContained`` may now
+  depend on zope.location rather than zope.container to reduce
+  dependency cycles.
 
 3.5.3 (2009-02-09)
 ------------------
