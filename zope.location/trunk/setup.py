@@ -21,7 +21,7 @@ def read(*rnames):
     return text
 
 setup(name='zope.location',
-      version = '3.5.4dev',
+      version = '3.5.4',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Zope Location',

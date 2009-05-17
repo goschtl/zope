@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.4 (unreleased)
+3.5.4 (2009-05-17)
 ------------------
 
 - Add ``IContained`` interface to ``zope.location.interfaces`` module.
