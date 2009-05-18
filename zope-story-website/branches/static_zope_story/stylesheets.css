@@ -7,7 +7,6 @@ body, td{
 	color: black;
 }
 .header{
-	background-image: url(images/0-header-back.gif);
 	background-position: right;
 	background-repeat: no-repeat;
 	background-color: white;
@@ -268,7 +267,6 @@ ul.four{
 }
 
 .menu-container {
-	background-image: url(images/0-header-back.gif);
 	background-color: white;
 	background-position: right;
 	background-repeat: no-repeat;
