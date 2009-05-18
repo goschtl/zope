@@ -1,0 +1,137 @@
+=========================
+Changes for lovely.recipe
+=========================
+
+2009/05/18 1.0.0b4
+==================
+
+ - mkdir recipe: was not working on win32 because win32 does not have the
+   pwd module. That means it's not possible to set an owner on win32.
+
+
+2009/04/14 1.0.0b3
+==================
+
+ - do not use -U for msgmerge because it doesn't work on MAC and verion 0.17
+   of msgmerge.
+
+2009/04/03 1.0.0b2
+==================
+
+- added missing import in mkfile recipe
+
+- fix test setup
+
+2009/02/05 1.0.0b1
+==================
+
+- do the same upon install in update, to recreate directories in
+  mkdir. fixes https://bugs.launchpad.net/lovely.recipe/+bug/322275
+
+- added the variation option to the mkfile recipe
+
+2008/10/03 1.0.0a1
+==================
+
+- added the lovely.recipe:eggbox recipe
+
+- INCOMPATIBLE CHANGE: moved zope recipies into an extra called "zope"
+  this requires one to write the extra in the recipe declaraion like
+  this lovely.recipe[zope]:<name>
+
+- BIG TODO: add tests for lovely.recipe.zeo and lovely.recipe.zope to
+  test and to show what this all is for.
+
+- Added a way to change the owner of created directories.
+
+- INCOMPATIBLE CHANGE: When creating directories the path used to be
+  automatically joined with the buildout:directory. This was removed in favour
+  of explicit joining in buildout.cfg.
+
+2008/07/16 0.3.1b8
+==================
+
+- changed homepage url and uploaded release to pypi to make philikon happy :)
+
+2008/07/16 0.3.1b7
+==================
+
+- make sure we don't fail if the directory to create already exists
+
+2008/07/16 0.3.1b6
+==================
+
+- added option extract-html to i18n recipe, i18nextract will then also parse
+  "*.html" files.
+
+2008/06/02 0.3.1b5
+==================
+
+- Re-arranged the fs recipe code to not check for directory existence during
+  initialisation phase.
+
+- Fixed some test issues.
+
+2008/04/24 0.3.1b4:
+===================
+
+- fixed os error if a path already exists
+
+2008/04/24 0.3.1b3:
+===================
+
+- added option "createpath" to mkfile and mkdir recipe
+
+2008/02/24 0.3.1b2:
+===================
+
+- Added ``i18nstats`` as an additional script.
+
+2007/09/21 0.3.1b1:
+===================
+
+- mkdir makes sure directories are never deleted
+
+
+2007/08/31 0.3.1a3:
+===================
+
+- generated script names are created from the section name to allow more than
+  just one extractor in one buildout.
+
+
+2007/08/31 0.3.1a2:
+===================
+
+- merge from lovely-instance branch
+
+- i18nextract allows the definition of a custem configure.zcml which is needed
+  to be able to use it with package who do not contain a full configuration
+  setup.
+
+- fix tests to run not only on jukart's mac
+
+
+2007/06/04 0.3.0a2:
+===================
+
+- recipe for zope instances (instance, app); no tests as well :(
+
+
+2007/06/04 0.3.0a1:
+===================
+
+- recipe for importchecker
+
+
+2007/06/04 0.2.0a1:
+===================
+
+- Recipe for i18nextract and i18nmerge
+- no tests right now because of the complex setup (will come soon)
+
+
+2007/06/04 0.1a1:
+=================
+
+- first release. mkdir and mkfile implemented
