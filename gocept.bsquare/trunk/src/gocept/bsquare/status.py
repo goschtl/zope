@@ -2,6 +2,7 @@
 
 import urllib
 import buildbot.status.web.base
+from buildbot.status.builder import SUCCESS, WARNINGS, FAILURE, EXCEPTION
 import datetime
 import os.path
 import twisted.web.static
@@ -14,13 +15,25 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
 
     title = "Buildbot Cruise-control"
 
+    def getBuildColor(self, build):
+        try:
+            stat = build.getColor()
+        except AttributeError:
+            #never buildbots don't have getColor
+            results = build.getResults()
+            if results == FAILURE:
+                stat = 'red'
+            else:
+                stat = 'green'
+        return stat
+
+
     def _builder_status(self, builder):
         build = builder.getLastFinishedBuild()
         if build is None:
             stat = 'never'
         else:
-            stat = build.getColor()
-        return stat
+            return self.getBuildColor(build)
 
     def head(self, request):
         return ('<link href="%s" rel="stylesheet" type="text/css" />' %
@@ -108,7 +121,7 @@ class OverviewStatusResource(buildbot.status.web.base.HtmlResource):
                     change = build.source.changes[0]
                     reason = "%s by %s: %s" % (change.revision, change.who, change.comments)
                 data += '<li style="color:%s;">%s &ndash; %s</li>' % (
-                        build.color, started, reason)
+                        self.getBuildColor(build), started, reason)
             data += "</ul>"
             data += "</div>"
 
