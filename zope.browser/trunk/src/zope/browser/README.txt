@@ -6,8 +6,6 @@ Views adapt both a context and a request.
 There is not much we can test except that ``IView`` is importable
 and an interface:
 
-.. doctest::
-
   >>> from zope.interface import Interface
   >>> from zope.browser.interfaces import IView
   >>> Interface.providedBy(IView)
@@ -21,8 +19,6 @@ as distinct from WebDAV, FTP, XML-RPC, etc.).
 
 There is not much we can test except that ``IBrowserView`` is importable
 and an interface derived from ``IView``:
-
-.. doctest::
 
   >>> from zope.interface import Interface
   >>> from zope.browser.interfaces import IBrowserView
@@ -38,8 +34,6 @@ Adding views manage how newly-created items get added to containers.
 
 There is not much we can test except that ``IAdding`` is importable
 and an interface derived from ``IBrowserView``:
-
-.. doctest::
 
   >>> from zope.interface import Interface
   >>> from zope.browser.interfaces import IAdding
@@ -63,9 +57,22 @@ possible to share them without undesirable dependencies.
 There is not much we can test except that ITerms is importable
 and an interface:
 
-.. doctest::
-
   >>> from zope.interface import Interface
   >>> from zope.browser.interfaces import ITerms
   >>> Interface.providedBy(ITerms)
+  True
+
+ISystemErrorView
+----------------
+
+Views providing this interface can classify their contexts as system
+errors. These errors can be handled in a special way (e. g. more
+detailed logging).
+
+There is not much we can test except that ISystemErrorView is importable
+and an interface:
+
+  >>> from zope.interface import Interface
+  >>> from zope.browser.interfaces import ISystemErrorView
+  >>> Interface.providedBy(ISystemErrorView)
   True

@@ -1,10 +1,16 @@
-zope.browser Changelog
-======================
+Changelog
+=========
 
 1.2 (unreleased)
 ----------------
 
-- TBD
+- Moved ``ISystemErrorView`` interface here from
+  ``zope.app.exception`` to break undesirable dependencies.
+
+- Fixed home page and author's e-mail address.
+
+- Added doctests to long_description.
+
 
 1.1 (2009-05-13)
 ----------------

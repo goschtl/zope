@@ -26,10 +26,12 @@ def read(*rnames):
 setup(name='zope.browser',
     version = '1.2dev',
     author='Zope Corporation and Contributors',
-    author_email='zope3-dev@zope.org',
+    author_email='zope-dev@zope.org',
     description='Shared Zope Toolkit browser components',
     long_description=(
         read('README.txt')
+        + '\n\n.. contents::\n\n' +
+        read('src', 'zope', 'browser', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -45,7 +47,7 @@ setup(name='zope.browser',
         'Operating System :: OS Independent',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Zope3'],
-    url='http://cheeseshop.python.org/pypi/zope.browser',
+    url='http://pypi.python.org/pypi/zope.browser',
     packages=find_packages('src'),
     package_dir = {'': 'src'},
     namespace_packages=['zope',],

@@ -26,7 +26,7 @@ class IView(Interface):
 
 class IBrowserView(IView):
     """ Views which are specialized for requests from a browser
-    
+
     o Such views are distinct from those geerated via WebDAV, FTP, XML-RPC,
       etc..
     """
@@ -40,7 +40,7 @@ class IAdding(IBrowserView):
         """Add content object to context.
 
         Add using the name in `contentName`.
-        
+
         Return the added object in the context of its container.
 
         If `contentName` is already used in container, raise
@@ -98,4 +98,12 @@ class ITerms(Interface):
         """Return a value for a given identifier token
 
         LookupError is raised if there isn't a value in the source.
+        """
+
+class ISystemErrorView(Interface):
+    """Error views that can classify their contexts as system errors
+    """
+
+    def isSystemError():
+        """Return a boolean indicating whether the error is a system errror
         """
