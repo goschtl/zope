@@ -14,3 +14,4 @@ To enable Chameleon, simply include the ZCML configuration::
 
 For general information about Chameleon, see
 http://chameleon.repoze.org/.
+
