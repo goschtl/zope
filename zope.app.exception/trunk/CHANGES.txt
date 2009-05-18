@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-3.6.0 (unreleased)
+3.6.0 (2009-05-18)
 ------------------
 
 - ``ISystemErrorView`` interface has been moved to
