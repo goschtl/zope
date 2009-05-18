@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope import component, interface
-import zope.formlib.namedtemplate
+import zope.app.pagetemplate.namedtemplate
 from zope.publisher.browser import TestRequest
 from zope.authentication.interfaces import IAuthentication
 from zope.security.interfaces import IPrincipal
@@ -45,13 +45,13 @@ class DummyAuthUtility(object):
         if self.status is not None:
             self.request.response.setStatus(self.status)
 
-class DummyTemplate (object):
+class DummyTemplate(object):
 
     def __init__(self, context):
         self.context = context
 
     component.adapts(Unauthorized)
-    interface.implements(zope.formlib.namedtemplate.INamedTemplate)
+    interface.implements(zope.app.pagetemplate.namedtemplate.INamedTemplate)
 
     def __call__(self):
         return 'You are not authorized'
@@ -83,7 +83,7 @@ class Test(PlacelessSetup, TestCase):
 
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
-        
+
         # check headers that work around squid "negative_ttl"
         self.assertEqual(request.response.getHeader('Expires'),
                          'Mon, 26 Jul 1997 05:00:00 GMT')
@@ -105,9 +105,9 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setPrincipal(DummyPrincipal(23))
         u = Unauthorized(exception, request)
-        
+
         self.auth.status = 303
-        
+
         res = u()
 
         # Make sure that the template was not rendered

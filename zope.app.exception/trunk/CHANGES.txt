@@ -7,6 +7,9 @@ CHANGES
 - ``ISystemErrorView`` interface has been moved to
   ``zope.browser.interfaces``, leaving BBB import here.
 
+- Cut dependency on ``zope.formlib`` by requiring newer version of
+  ``zope.app.pagetemplate`` which now contains ``namedtemplate``.
+
 
 3.5.0 (2009-04-06)
 ------------------

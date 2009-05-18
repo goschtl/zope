@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.authentication.interfaces import IAuthentication
 from zope.publisher.browser import BrowserPage
-from zope.formlib import namedtemplate
+from zope.app.pagetemplate import namedtemplate
 from zope.component import getUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
 

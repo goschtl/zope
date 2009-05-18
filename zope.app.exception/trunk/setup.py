@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -60,9 +60,7 @@ setup(name='zope.app.exception',
           'zope.app.zptpage',
       ]),
       install_requires=['setuptools',
-                        'zope.app.pagetemplate',
-                        # This is a dependency we can avaid:
-                        'zope.formlib',
+                        'zope.app.pagetemplate>=3.6',
                         'zope.interface',
                         'zope.publisher',
                         'zope.browser>=1.2',
