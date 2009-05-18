@@ -2,7 +2,7 @@
  Changes
 =========
 
-3.6.0 (unreleased)
+3.6.0 (2009-05-18)
 ------------------
 
 * Moved ``namedtemplate.*`` from ``zope.formlib`` here as it is more
