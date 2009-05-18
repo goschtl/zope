@@ -401,6 +401,17 @@ ul.four{
 	border-bottom:3px solid #CC9933;
 }
 
+.intro-title {
+	font-weight: normal;
+	color: #333333;
+	font-size: 18px;
+	border-bottom-width: 5px;
+	padding-left: 10px;
+	padding-top: 0px;
+	padding-bottom:10px;
+	height: 26px;
+}
+
 .contact {
 	margin: 0px;
 	padding: 0px;
