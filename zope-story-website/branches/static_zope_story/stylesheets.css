@@ -302,9 +302,9 @@ ul.four{
 #menu a {
 	display: block;
 	float: left;
-	margin: 0px 0px 0px 0px;
+	margin: 0px 20px 0px 0px;
 	padding: 0px;
-	text-decoration: none;
+	#text-decoration: none;
 	font-size: 13px;
 	font-weight: bold;
 	color: #666666;
@@ -327,6 +327,7 @@ ul.four{
 #menu .current-page-item a {
 	background: url(images/button_highlight.gif);
 	background-repeat: no-repeat;
+	font-size: 18px;
 	height: 33px;
 	width: 149px;
 	color: #FFFFFF;
