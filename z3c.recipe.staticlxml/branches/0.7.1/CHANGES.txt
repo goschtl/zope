@@ -1,7 +1,4 @@
-Trunk
-=====
-
-0.7.1 (unreleased)
+0.7.1 (2009-05-18)
 ==================
 
 - Removed accidentally checked in pdb [wosc]

@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-version = '0.8dev'
+version = '0.7.1'
 
 long_description = (
     read('README.txt')
@@ -50,7 +50,7 @@ setup(name='z3c.recipe.staticlxml',
       keywords='buildout recipe lxml static',
       author='Stefan Eletzhofer',
       author_email='stefan.eletzhofer@inquant.de',
-      url='http://svn.zope.org/z3c.recipe.staticlxml/trunk',
+      url='http://svn.zope.org/z3c.recipe.staticlxml/branches/0.7.1',
       license='ZPL',
       packages=find_packages('src', exclude=['ez_setup']),
       package_dir = {'': 'src'},
