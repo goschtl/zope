@@ -1,6 +1,3 @@
-.. role:: header
-.. role:: zsection
-
 .. container::
     :class: menuacross
     

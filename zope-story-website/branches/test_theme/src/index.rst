@@ -1,23 +1,16 @@
-.. role:: header
-.. role:: zsection
 
 .. container::
-    :class: menuacross
+    :class: leftcontainer
     
-    + `What is Zope? <index.html>`_
-    + `Who is Zope? <who_is_zope.html>`_
-    + `Why Zope? <why_use_zope.html>`_
-
-.. container::
-    :class: LeftCol
-
     .. rubric:: Zope is a Community
-
+        :class: textbold-four
+    
     Hundreds of companies and thousands of developers devoted to solutions to
     the perennial problems of building complex, scalable web applications.
     `More... <who_is_zope.html>`__
 
     .. rubric:: Zope is Open Source
+        :class: textbold-four
 
     All Zope libraries, toolkits, and applications managed by the `Zope
     Foundation`_ are licensed under the OSS-Certified `Zope Public License`_.
@@ -25,12 +18,14 @@
     proprietary product offerings.
 
     .. rubric:: Zope is a Broad Software Technology
+        :class: textbold-four
 
     The base `Zope Toolkit`_ powers web development frameworks, web
     application servers, content management systems, and many other software
     components.
 
     .. rubric:: Zope is Mature
+        :class: textbold-four
 
     Zope's robust technologies are born of 10 years of hard-won real world
     experience in building production web applications for every level
@@ -38,12 +33,14 @@
     and high traffic public web applications. `More... <why_use_zope.html>`__
 
     .. rubric:: Zope is Python-based
+        :class: textbold-four
 
     Zope is written in `Python`_, a highly-productive, object-oriented
     programming language with a strong emphasis on clear, elegant,
     manageable code.
 
     .. rubric:: Zope is Secure
+        :class: textbold-four
 
     The Zope Toolkit offers significant security advantages in the form of a
     fine-grained and highly manageable infrastructure, including support for
@@ -53,12 +50,12 @@
 
 
 .. container::
-    :class: RightCol
+    :class: rightcontainer
 
     .. container::
-        :class: frameworks
+        :class: rgtpanel-he1
 
-        :zsection:`Web Frameworks Built with Zope`
+        Web Frameworks Built with Zope
 
         .. container::
             :class: framework
@@ -93,7 +90,7 @@
     .. container::
         :class: applications
 
-        :zsection:`A Few Example Applications Built with Zope`
+        A Few Example Applications Built with Zope
 
         .. container::
            :class: application
@@ -124,7 +121,7 @@
     .. container::
         :class: composeyourown
         
-        :zsection:`Compose Your Own`
+        Compose Your Own
         
         To compose your own application or framework from scratch, or see how
         the packages within the Zope Toolkit can work for you, see more
@@ -147,6 +144,7 @@
    <br clear="all" />
 
 
+.. |Zope Logo| image:: _static/images/logo-zope.gif :width:225 :height:82
 
 .. |Grok| image:: _static/grok_logo.png
 .. _`Grok`: http://grok.zope.org

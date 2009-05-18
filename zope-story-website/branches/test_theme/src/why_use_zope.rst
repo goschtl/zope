@@ -1,17 +1,3 @@
-.. role:: header
-.. role:: zsection
-
-.. container::
-   :class: menuacross
-
-   + `What is Zope? <index.html>`_
-   + `Who is Zope? <who_is_zope.html>`_
-   + `Why Zope? <why_use_zope.html>`_
-   
-
-Why Use Zope?
-=============
-
 Zope applications and libraries are suited for different purposes and
 environments; but most share common advantages:
 
