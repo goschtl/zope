@@ -1,16 +1,27 @@
 from setuptools import setup, find_packages
+import os.path
 
-long_description = (open('README.txt').read() +
-                    '\n\n' +
-                    open('CHANGES.txt').read())
+def read(*rnames):
+    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+
+version = '3.6.0dev'
+
 
 setup(name='zope.app.pagetemplate',
-      version = '3.5.1dev',
+      version=version,
       url='http://pypi.python.org/pypi/zope.app.pagetemplate',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='PageTemplate integration for Zope 3',
-      long_description=long_description,
+      long_description=(
+        read('README.txt')
+        + '\n\n.. contents::\n\n' +
+        read('src', 'zope', 'app', 'pagetemplate', 'tests', 'test_nested.txt')
+        + '\n\n' +
+        read('src', 'zope', 'app', 'pagetemplate', 'namedtemplate.txt')
+        + '\n\n' +
+        read('CHANGES.txt')
+        ),
       license='ZPL 2.1',
       classifiers=['Environment :: Web Environment',
                    'Intended Audience :: Developers',
@@ -18,7 +29,6 @@ setup(name='zope.app.pagetemplate',
                    'Programming Language :: Python',
                    'Framework :: Zope3',
                    ],
-
       packages=find_packages('src'),
       package_dir={'': 'src'},
       namespace_packages=['zope', 'zope.app'],

@@ -8,7 +8,7 @@
       for="*"
       provides="zope.traversing.interfaces.IPathAdapter"
       factory=".talesapi.ZopeTalesAPI"
-      name="zope" 
+      name="zope"
       />
 
   <class class=".talesapi.ZopeTalesAPI">
@@ -20,11 +20,11 @@
       for="*"
       provides="zope.traversing.interfaces.IPathAdapter"
       factory=".urlquote.URLQuote"
-      name="url"/> 
+      name="url"/>
 
   <class class=".urlquote.URLQuote">
     <allow attributes="quote quote_plus unquote unquote_plus"/>
-  </class> 
+  </class>
 
  <class class="zope.tales.tales.Iterator">
     <allow interface="zope.tales.interfaces.ITALESIterator" />
@@ -59,5 +59,12 @@
      provides="zope.publisher.interfaces.browser.IBrowserPublisher"
      factory="zope.app.publication.traversers.NoTraverser"
      />
+
+  <!-- TALES namespace allows view/template:default etc -->
+  <adapter
+      for="*"
+      factory=".namedtemplate.NamedTemplatePathAdapter"
+      name="template"
+      />
 
 </configure>

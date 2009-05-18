@@ -1,15 +1,20 @@
-Changes
-=======
+=========
+ Changes
+=========
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-* ...
+* Moved ``namedtemplate.*`` from ``zope.formlib`` here as it is more
+  about a page template engine than a formular library. This also
+  breaks some dependencies on ``zope.formlib``.
+
+* Added doctests to long_description to show up on pypi.
 
 3.5.0 (2009-02-01)
 ------------------
 
-* Use `zope.container` instead of `zope.app.container`.
+* Use ``zope.container`` instead of ``zope.app.container``.
 
 3.4.1 (2008-07-30)
 ------------------
