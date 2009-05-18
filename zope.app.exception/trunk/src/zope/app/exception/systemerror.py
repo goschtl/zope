@@ -17,11 +17,11 @@ $Id$
 """
 
 import zope.interface
-import zope.app.exception.interfaces
+import zope.browser.interfaces
 
 class SystemErrorView:
-    zope.interface.implements(zope.app.exception.interfaces.ISystemErrorView)
+    zope.interface.implements(zope.browser.interfaces.ISystemErrorView)
 
     def isSystemError(self):
         return True
-    
+

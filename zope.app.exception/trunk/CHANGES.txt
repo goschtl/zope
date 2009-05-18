@@ -1,10 +1,11 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- ``ISystemErrorView`` interface has been moved to
+  ``zope.browser.interfaces``, leaving BBB import here.
 
 
 3.5.0 (2009-04-06)
@@ -12,9 +13,9 @@ CHANGES
 
 - Use new ``zope.authentication`` instead of ``zope.app.security``.
 
-- Remove deprecated code and thus remove dependency on zope.deferredimport.
+- Removed deprecated code and thus removed dependency on zope.deferredimport.
 
-- Remove old zpkg-related SETUP.cfg file.
+- Removed old zpkg-related SETUP.cfg file.
 
 3.4.2 (2009-01-27)
 ------------------
