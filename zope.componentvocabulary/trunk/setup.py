@@ -12,8 +12,6 @@
 #
 ##############################################################################
 """Setup for zope.app.catalog package
-
-$Id: setup.py 80209 2007-09-27 09:38:31Z berndroessl $
 """
 import os
 from setuptools import setup, find_packages
@@ -22,7 +20,7 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup(name='zope.componentvocabulary',
-      version='1.0',
+      version='1.0dev',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
       description='Component vocabularies',
