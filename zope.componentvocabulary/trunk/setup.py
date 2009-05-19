@@ -21,20 +21,17 @@ from setuptools import setup, find_packages
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(name='zope.app.component',
-      version='3.7.1dev',
+setup(name='zope.componentvocabulary',
+      version='1.0',
       author='Zope Corporation and Contributors',
       author_email='zope-dev@zope.org',
-      description='Local Zope Component Support',
+      description='Component vocabularies',
       long_description=(
           read('README.txt')
           + '\n\n' +
-          'Detailed Documentation\n'
-          '**********************\n'
-          + '\n\n' +
           read('CHANGES.txt')
           ),
-      keywords="zope component architecture local",
+      keywords="zope component architecture vocabulary",
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
@@ -45,44 +42,17 @@ setup(name='zope.app.component',
           'Operating System :: OS Independent',
           'Topic :: Internet :: WWW/HTTP',
           'Framework :: Zope3'],
-      url='http://pypi.python.org/pypi/zope.app.component',
+      url='http://pypi.python.org/pypi/zope.componentvocabulary',
       license='ZPL 2.1',
       packages=find_packages('src'),
       package_dir={'': 'src'},
-      namespace_packages=['zope', 'zope.app'],
-      extras_require=dict(
-          test=['zope.app.testing',
-                'zope.app.securitypolicy',
-                'zope.app.zcmlfiles',
-                'zope.app.schema',
-                'zope.testbrowser',
-                'zope.app.security',
-                ]),
+      namespace_packages=['zope'],
       install_requires=[
           'setuptools',
-          'zope.site',
-          'zope.annotation',
-          'zope.app.container',
-          'zope.app.interface',
-          'zope.app.pagetemplate',
-          'zope.cachedescriptors',
-          'zope.component [hook]',
-          'zope.configuration',
-          'zope.deferredimport',
-          'zope.deprecation',
-          'zope.event',
-          'zope.exceptions',
-          'zope.filerepresentation',
-          'zope.formlib',
           'zope.i18nmessageid',
           'zope.interface',
-          'zope.lifecycleevent',
-          'zope.location>3.4.0b1',
-          'zope.publisher>=3.6.0',
           'zope.schema',
           'zope.security',
-          'zope.traversing',
-          'ZODB3',
           ],
       include_package_data=True,
       zip_safe=False,

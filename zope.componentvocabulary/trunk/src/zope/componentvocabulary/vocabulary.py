@@ -20,15 +20,17 @@ $Id$
 __docformat__ = "reStructuredText"
 
 import zope.component
-from zope.interface import implements, classProvides, Interface
+from zope.component.interface import interfaceToName
+from zope.component.interfaces import IUtilityRegistration
+from zope.interface import implements, classProvides, Interface, providedBy
 from zope.interface.interfaces import IInterface
+from zope.security.proxy import removeSecurityProxy
 from zope.schema.interfaces import IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
-from zope.app.component.i18n import ZopeMessageFactory as _
-from zope.app.interface.vocabulary import ObjectInterfacesVocabulary
-from zope.component.interfaces import IUtilityRegistration
+from zope.componentvocabulary.i18n import ZopeMessageFactory as _
 
 class UtilityTerm(object):
     """A term representing a utility.
@@ -82,13 +84,13 @@ class UtilityVocabulary(object):
 
     Now we register some utilities for IObject
 
-    >>> from zope.app.testing import ztapi
+    >>> from zope import component
     >>> object1 = Object('object1')
-    >>> ztapi.provideUtility(IObject, object1, 'object1')
+    >>> component.provideUtility(object1, IObject, 'object1')
     >>> object2 = Object('object2')
-    >>> ztapi.provideUtility(IObject, object2, 'object2')
+    >>> component.provideUtility(object2, IObject, 'object2')
     >>> object3 = Object('object3')
-    >>> ztapi.provideUtility(IObject, object3, 'object3')
+    >>> component.provideUtility(object3, IObject, 'object3')
     >>> object4 = Object('object4')
 
     We are now ready to create a vocabulary that we can use; in our case
@@ -158,7 +160,7 @@ class UtilityVocabulary(object):
         factory='zope.app.utility.vocabulary.UtilityVocabulary'
         interface='zope.app.utility.vocabulary.IObject' />
 
-    >>> ztapi.provideUtility(IInterface, IObject,
+    >>> component.provideUtility(IObject, IInterface, 
     ...                      'zope.app.utility.vocabulary.IObject')
     >>> vocab = UtilityVocabulary(
     ...     None, interface='zope.app.utility.vocabulary.IObject')
@@ -233,6 +235,43 @@ class InterfacesVocabulary(UtilityVocabulary):
     classProvides(IVocabularyFactory)
     interface = IInterface
 
+class ObjectInterfacesVocabulary(SimpleVocabulary):
+    """A vocabulary that provides a list of all interfaces that its context
+    provides.
+
+    Here a quick demonstration:
+
+    >>> from zope.interface import Interface, implements
+    >>> class I1(Interface):
+    ...     pass
+    >>> class I2(Interface):
+    ...     pass
+    >>> class I3(I2):
+    ...     pass
+
+    >>> class Object(object):
+    ...     implements(I3, I1)
+
+    >>> vocab = ObjectInterfacesVocabulary(Object())
+    >>> import pprint
+    >>> names = [term.token for term in vocab]
+    >>> names.sort()
+    >>> pprint.pprint(names)
+    ['zope.componentvocabulary.vocabulary.I1',
+     'zope.componentvocabulary.vocabulary.I2',
+     'zope.componentvocabulary.vocabulary.I3',
+     'zope.interface.Interface']
+    """
+    classProvides(IVocabularyFactory)
+
+    def __init__(self, context):
+        # Remove the security proxy so the values from the vocabulary
+        # are the actual interfaces and not proxies.
+        component = removeSecurityProxy(context)
+        interfaces = providedBy(component).flattened()
+        terms = [SimpleTerm(interface, interfaceToName(context, interface))
+                 for interface in interfaces]
+        super(ObjectInterfacesVocabulary, self).__init__(terms)
 
 class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
     classProvides(IVocabularyFactory)
@@ -313,12 +352,13 @@ class UtilityNames:
     >>> IVocabularyTokenized.providedBy(vocab)
     True
 
-    >>> from zope.app.testing import placelesssetup
-    >>> from zope.app.testing import ztapi
-    >>> placelesssetup.setUp()
+    >>> from zope.component.testing import PlacelessSetup
+    >>> from zope import component
+    >>> ps = PlacelessSetup()
+    >>> ps.setUp()
 
-    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'one')
-    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'two')
+    >>> component.provideUtility(MyUtility(), IMyUtility, 'one')
+    >>> component.provideUtility(MyUtility(), IMyUtility, 'two')
 
     >>> unames = UtilityNames(IMyUtility)
     >>> len(list(unames))
@@ -332,11 +372,11 @@ class UtilityNames:
     True
     >>> u'three' in vocab
     False
-    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'three')
+    >>> component.provideUtility(MyUtility(), IMyUtility, 'three')
     >>> u'three' in vocab
     True
 
-    >>> ztapi.provideUtility(IMyUtility, MyUtility())
+    >>> component.provideUtility(MyUtility(), IMyUtility)
     >>> u'' in vocab
     True
     >>> term1 = vocab.getTerm(u'')
@@ -350,7 +390,7 @@ class UtilityNames:
     >>> term3.value
     u'one'
 
-    >>> placelesssetup.tearDown()
+    >>> ps.tearDown()
     """
 
     implements(IVocabularyTokenized)

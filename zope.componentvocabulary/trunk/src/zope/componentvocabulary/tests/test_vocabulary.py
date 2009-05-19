@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2007 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,34 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Components for testing
+"""Vocabulary tests
 
 $Id$
 """
-from zope.interface import Interface, Attribute, implements
-from zope.component import adapts
+__docformat__ = "reStructuredText"
+import doctest
 
-class IAppb(Interface):
-    a = Attribute('test attribute')
-    def f(): "test func"
 
-class IApp(IAppb):
-    pass
-
-class IContent(Interface): pass
-
-class Content(object):
-    implements(IContent)
-
-class Comp(object):
-    adapts(IContent)
-    implements(IApp)
-
-    def __init__(self, *args):
-        # Ignore arguments passed to constructor
-        pass
-
-    a = 1
-    def f(): pass
-
-comp = Comp()
+def test_suite():
+    return doctest.DocTestSuite('zope.componentvocabulary.vocabulary')

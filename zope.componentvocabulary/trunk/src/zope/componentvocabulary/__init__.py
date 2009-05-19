@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,13 +11,5 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Vocabulary tests
-
-$Id$
+"""Component vocabularies.
 """
-__docformat__ = "reStructuredText"
-import doctest
-
-
-def test_suite():
-    return doctest.DocTestSuite('zope.app.component.vocabulary')
