@@ -22,7 +22,7 @@ Now let's use url on some things::
   >>> browser.open("http://localhost/herd/manfred/another")
   >>> print browser.contents
   http://localhost/herd/manfred/another
-  
+
 We get the views manually so we can do a greater variety of url() calls:
 
   >>> from zope import component
@@ -64,7 +64,7 @@ It works properly in the face of non-ascii characters in URLs:
 """
 import grokcore.view as grok
 from grokcore.view import url
-from zope.container.contained import Contained
+from zope.app.container.contained import Contained
 
 class Mammoth(Contained):
     pass
@@ -74,7 +74,7 @@ grok.context(Mammoth)
 class Index(grok.View):
     def render(self):
         return url(self.request, self)
-    
+
 class Another(grok.View):
     def render(self):
         return url(self.request, self)

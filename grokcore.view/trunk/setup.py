@@ -43,9 +43,9 @@ setup(
                       'zope.app.pagetemplate',
                       # for ftests:
                       # TODO move these to extra_requires?
-                      'zope.container',
                       'zope.testbrowser',
                       'zope.securitypolicy',
+                      'zope.app.container',
                       'zope.app.zcmlfiles',
                       'zope.app.authentication',
                       ],
