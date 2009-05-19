@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.7 (unreleased)
+1.7 (2009-05-19)
 ----------------
 
 - Revert dependency from zope.container back to zope.app.container.
