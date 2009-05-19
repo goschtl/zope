@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.5.0 (unreleased)
+------------------
+
+- Factor out ObjectInterfacesVocabulary into zope.componentvocabulary.
+
+- Remove various test dependencies.
+
 3.4.0 (2007-10-24)
 ------------------
 

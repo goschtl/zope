@@ -74,7 +74,9 @@ from zope.interface.declarations import providedBy
 def queryType(object, interface):
     """Returns the object's interface which implements interface.
 
-    >>> from zope.app.content.interfaces import IContentType
+    >>> from zope.interface import Interface
+    >>> class IContentType(Interface):
+    ...    pass
     >>> from zope.interface import Interface, implements, directlyProvides
     >>> class I(Interface):
     ...     pass
