@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-1.0 (unreleased)
+1.0 (2009-05-19)
 ----------------
 
 * Initial public release, derived from zope.app.component and
