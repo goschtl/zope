@@ -1,0 +1,420 @@
+===============================
+Remote Task Service XML-RPC API
+===============================
+
+Before we can demonstrate the XML-RPC API of the task service, we need to add
+a task service first ...
+
+  >>> from zope.testbrowser.testing import Browser
+  >>> browser = Browser()
+  >>> browser.addHeader('Authorization','Basic mgr:mgrpw')
+  >>> browser.handleErrors = False
+
+  >>> browser.open('http://localhost/manage')
+  >>> browser.getLink(text='Remote Task Service').click()
+  >>> browser.getControl(name='new_value').value = 'tasks'
+  >>> browser.getControl('Apply').click()
+
+... and add a few tasks to the system:
+
+  >>> import lovely.remotetask.task
+  >>> import zope.component
+
+  >>> def echo(input):
+  ...     return input
+
+  >>> echoTask = lovely.remotetask.task.SimpleTask(echo)
+  >>> zope.component.provideUtility(echoTask, name='echo')
+
+  >>> def error(input):
+  ...     raise lovely.remotetask.task.TaskError('An error occurred.')
+
+  >>> errorTask = lovely.remotetask.task.SimpleTask(error)
+  >>> zope.component.provideUtility(errorTask, name='error')
+
+
+``getAvailableTasks()`` Method
+------------------------------
+
+Get the available tasks of the service:
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getAvailableTasks</methodName>
+  ... <params>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  Content-Length: 255
+  Content-Type: text/xml;charset=utf-8
+  <BLANKLINE>
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><string>echo</string></value>
+  <value><string>error</string></value>
+  <value><string>exception</string></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+``add(task, input)`` Method
+---------------------------
+
+Add a job to the service.
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>add</methodName>
+  ... <params>
+  ... <value><string>echo</string></value>
+  ... <value><struct>
+  ... <key><string>foo</string></key>
+  ... <value><string>bar</string></value>
+  ... </struct></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><int>1392637175</int></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+
+``cancel(jobid)`` Method
+------------------------
+
+Cancel a job.
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>cancel</methodName>
+  ... <params>
+  ... <value><int>1392637175</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><boolean>1</boolean></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+
+``getStatus(jobid)`` Method
+---------------------------
+
+Get the status of a job.
+
+  >>> result = http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>add</methodName>
+  ... <params>
+  ... <value><string>echo</string></value>
+  ... <value><struct>
+  ... <key><string>foo</string></key>
+  ... <value><string>bar</string></value>
+  ... </struct></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getStatus</methodName>
+  ... <params>
+  ... <value><int>1392637176</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>queued</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+  >>> getRootFolder()['tasks'].process()
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getStatus</methodName>
+  ... <params>
+  ... <value><int>1392637176</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>completed</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+
+``getResult(jobid)`` Method
+---------------------------
+
+Once the job is completed we can get the result:
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getResult</methodName>
+  ... <params>
+  ... <value><int>1392637176</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><struct>
+  <member>
+  <name>foo</name>
+  <value><string>bar</string></value>
+  </member>
+  </struct></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+
+``getError(jobid)`` Method
+--------------------------
+
+When an error occured, you can get it. If no error occured, 'None' (string) is
+returned:
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getError</methodName>
+  ... <params>
+  ... <value><int>1392637176</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>None</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+Now let's check for real:
+
+  >>> result = http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>add</methodName>
+  ... <params>
+  ... <value><string>error</string></value>
+  ... <value><struct>
+  ... </struct></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+
+  >>> getRootFolder()['tasks'].process()
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>getError</methodName>
+  ... <params>
+  ... <value><int>1392637177</int></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>An error occurred.</string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+Introspection
+-------------
+
+You can get a list of all methods:
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>listMethods</methodName>
+  ... <params>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><string>add</string></value>
+  <value><string>cancel</string></value>
+  <value><string>getAvailableTasks</string></value>
+  <value><string>getError</string></value>
+  <value><string>getResult</string></value>
+  <value><string>getStatus</string></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+You can also inspect each method:
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodHelp</methodName>
+  ... <params>
+  ... <value><string>add</string></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><string>Add a new job to the service.
+  <BLANKLINE>
+  The result will be the id of the new job.
+  </string></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>
+
+  >>> print http(r"""
+  ... POST /tasks/ HTTP/1.0
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: text/xml
+  ...
+  ... <?xml version='1.0'?>
+  ... <methodCall>
+  ... <methodName>methodSignature</methodName>
+  ... <params>
+  ... <value><string>add</string></value>
+  ... </params>
+  ... </methodCall>
+  ... """)
+  HTTP/1.0 200 Ok
+  ...
+  <?xml version='1.0'?>
+  <methodResponse>
+  <params>
+  <param>
+  <value><array><data>
+  <value><array><data>
+  <value><string>int</string></value>
+  <value><string>str</string></value>
+  <value><string>dict</string></value>
+  </data></array></value>
+  </data></array></value>
+  </param>
+  </params>
+  </methodResponse>
+  <BLANKLINE>

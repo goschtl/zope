@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/xmlrpc">
+
+  <view
+      for=".interfaces.ITaskService"
+      methods="getAvailableTasks add cancel getStatus getResult getError"
+      class=".xmlrpc.RemoteTaskServiceXMLRPCAPI"
+      permission="zope.View"
+      />
+
+</configure>
