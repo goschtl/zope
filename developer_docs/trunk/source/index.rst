@@ -20,6 +20,7 @@ Resources
    :maxdepth: 2
 
    bugtracker
+   mailinglists
 
 
 
