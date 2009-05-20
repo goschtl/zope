@@ -1,7 +1,10 @@
-The Zope 2 Bugtracker
----------------------
+The Zope Bugtrackers
+--------------------
 
-The Zope 2 project uses the `Launchpad platform <http://launchpad.net>`_ for managing bugreports:
+The Zope project uses the `Launchpad platform <http://launchpad.net>`_ for managing bugreports:
+
+Zope 2
+++++++
 
 https://bugs.launchpad.net/zope2/
 
@@ -15,3 +18,8 @@ For working on bugs you need to be member of the Zope 2 developer team on Launch
 Join the team.
 
 https://launchpad.net/~zope2-dev
+
+Zope 3
+++++++
+
+https://bugs.launchpad.net/zope3
