@@ -2,7 +2,7 @@
 Changes for lovely.remotetask
 =============================
 
-unreleased (0.4):
+2009/05/20 (0.4):
 -----------------
 
 - Randomized the generation of new job ids like intid does it: Try to allocate
