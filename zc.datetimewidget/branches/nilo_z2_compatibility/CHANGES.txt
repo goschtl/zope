@@ -2,11 +2,22 @@
 CHANGES
 =======
 
+0.6.2 (unreleased)
+------------------
+
+- Using ++resource++ instead of @@/ to load resources.
+
+- Renaming "lang" directory (ZPublisher gets confused 
+  because of a view with the same same in zope.traversing.namespace).
+
+(See gocept.datetimewidget for more details on how to use
+zc.datetimewidget with zope2.)
+
 0.6.1 (2008-05-29)
 ------------------
 
-Unchanged from 0.5.2, but released with a new version number thanks to a
-package with an 0.6.1dev-rBFN revision found in the wild.
+- Unchanged from 0.5.2, but released with a new version number thanks to a
+  package with an 0.6.1dev-rBFN revision found in the wild.
 
 0.5.2 (2007-11-03)
 ------------------
