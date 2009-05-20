@@ -164,7 +164,7 @@ Once you know that jobs are available, you can claim a job:
 
   >>> jobid = proc.claimNextJob()
   >>> jobid
-  5
+  1392637179
 
 We need to claim a job before executing it, so that the database marks the job
 as claimed and no new thread picks up the job. Once we claimed a particular

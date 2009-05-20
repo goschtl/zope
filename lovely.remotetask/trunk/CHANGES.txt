@@ -5,6 +5,10 @@ Changes for lovely.remotetask
 unreleased (0.4):
 -----------------
 
+- Randomized the generation of new job ids like intid does it: Try to allocate
+  sequential ids so they fall into the same BTree bucket, and randomize if
+  stumble upon a used one.
+
 2009/04/05 (0.3):
 -----------------
 

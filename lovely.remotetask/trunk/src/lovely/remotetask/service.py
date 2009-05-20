@@ -20,12 +20,13 @@ __docformat__ = 'restructuredtext'
 import datetime
 import logging
 import persistent
+import random
 import threading
 import time
 import zc.queue
 import zope.interface
 import zope.location
-from BTrees.IOBTree import IOBTree
+import BTrees
 from lovely.remotetask import interfaces, job, task, processor
 from zope import component
 from zope.app.appsetup.product import getProductConfiguration
@@ -51,13 +52,14 @@ class TaskService(contained.Contained, persistent.Persistent):
 
     _scheduledJobs  = None
     _scheduledQueue = None
+    _v_nextid = None
+    family = BTrees.family32
 
     def __init__(self):
         super(TaskService, self).__init__()
-        self._counter = 1
-        self.jobs = IOBTree()
+        self.jobs = self.family.IO.BTree()
         self._queue = zc.queue.Queue()
-        self._scheduledJobs = IOBTree()
+        self._scheduledJobs = self.family.IO.BTree()
         self._scheduledQueue = zc.queue.Queue()
 
     def getAvailableTasks(self):
@@ -68,8 +70,7 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if task not in self.getAvailableTasks():
             raise ValueError('Task does not exist')
-        jobid = self._counter
-        self._counter += 1
+        jobid = self._generateId()
         newjob = job.Job(jobid, task, input)
         self.jobs[jobid] = newjob
         if startLater:
@@ -87,8 +88,7 @@ class TaskService(contained.Contained, persistent.Persistent):
                    dayOfWeek=(),
                    delay=None,
                   ):
-        jobid = self._counter
-        self._counter += 1
+        jobid = self._generateId()
         newjob = job.CronJob(jobid, task, input,
                 minute, hour, dayOfMonth, month, dayOfWeek, delay)
         self.jobs[jobid] = newjob
@@ -119,7 +119,7 @@ class TaskService(contained.Contained, persistent.Persistent):
             job = self.jobs[key]
             if job.status in status:
                 if job.status not in allowed:
-                    raise ValueError('Not allowed status for removing. %s' % \
+                    raise ValueError('Not allowed status for removing. %s' %
                         job.status)
                 del self.jobs[key]
 
@@ -154,9 +154,9 @@ class TaskService(contained.Contained, persistent.Persistent):
         """See interfaces.ITaskService"""
         if self.__parent__ is None:
             return
-        if self._scheduledJobs == None:
-            self._scheduledJobs = IOBTree()
-        if self._scheduledQueue == None:
+        if self._scheduledJobs is None:
+            self._scheduledJobs = self.family.IOB.Tree()
+        if self._scheduledQueue is None:
             self._scheduledQueue = zc.queue.PersistentQueue()
         # Create the path to the service within the DB.
         servicePath = [parent.__name__ for parent in getParents(self)
@@ -328,6 +328,23 @@ class TaskService(contained.Contained, persistent.Persistent):
             self._scheduledJobs[nextCallTime] = ()
         jobs = self._scheduledJobs[nextCallTime]
         self._scheduledJobs[nextCallTime] = jobs + (job,)
+
+    def _generateId(self):
+        """Generate an id which is not yet taken.
+
+        This tries to allocate sequential ids so they fall into the
+        same BTree bucket, and randomizes if it stumbles upon a
+        used one.
+        """
+        while True:
+            if self._v_nextid is None:
+                self._v_nextid = random.randrange(0, self.family.maxint)
+            uid = self._v_nextid
+            self._v_nextid += 1
+            if uid not in self.jobs:
+                return uid
+            self._v_nextid = None
+
 
 
 def getAutostartServiceNames():

@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import doctest
 import logging
+import random
 import unittest
 from zope.app.testing import placelesssetup
 from zope.app.testing.setup import (placefulSetUp,
@@ -29,6 +30,7 @@ from zope.testing.loggingsupport import InstalledHandler
 
 from lovely.remotetask import service
 
+
 def setUp(test):
     root = placefulSetUp(site=True)
     test.globs['root'] = root
@@ -37,16 +39,47 @@ def setUp(test):
     test.globs['log_info'] = log_info
     test.origArgs = service.TaskService.processorArguments
     service.TaskService.processorArguments = {'waitTime': 0.0}
+    # Make tests predictable
+    random.seed(27)
 
 def tearDown(test):
+    random.seed()
     placefulTearDown()
     log_info = test.globs['log_info']
     log_info.clear()
     log_info.uninstall()
     service.TaskService.processorArguments = test.origArgs
 
+
+
+class TestIdGenerator(unittest.TestCase):
+
+    def setUp(self):
+        random.seed(27)
+        self.service = service.TaskService()
+
+    def tearDown(self):
+        random.seed()
+
+    def test_sequence(self):
+        self.assertEquals(1392637175, self.service._generateId())
+        self.assertEquals(1392637176, self.service._generateId())
+        self.assertEquals(1392637177, self.service._generateId())
+        self.assertEquals(1392637178, self.service._generateId())
+
+    def test_in_use_randomises(self):
+        self.assertEquals(1392637175, self.service._generateId())
+        self.service.jobs[1392637176] = object()
+        self.assertEquals(1506179619, self.service._generateId())
+        self.assertEquals(1506179620, self.service._generateId())
+        self.service.jobs[1506179621] = object()
+        self.assertEquals(2055242787, self.service._generateId())
+
+
+
 def test_suite():
     return unittest.TestSuite((
+        unittest.makeSuite(TestIdGenerator),
         DocFileSuite('README.txt',
                      setUp=setUp,
                      tearDown=tearDown,

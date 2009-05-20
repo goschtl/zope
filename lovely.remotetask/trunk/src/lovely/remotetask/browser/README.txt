@@ -57,15 +57,14 @@ If we now refresh the screen, we will see the new job:
 
   >>> browser.reload()
   >>> print browser.contents
-  <!DOCTYPE
-  ...
+  <!DOCTYPE ...
   <tbody>
   <tr class="odd">
     <td class="">
-      <input type="checkbox" name="jobs:list" value="1">
+      <input type="checkbox" name="jobs:list" value="1506179619">
     </td>
     <td class="tableId">
-      1
+      1506179619
     </td>
     <td class="tableTask">
       echo
@@ -123,7 +122,8 @@ You can cancel scheduled jobs:
   >>> 'No jobs were selected.' in browser.contents
   True
 
-  >>> browser.getControl(name='jobs:list').getControl(value='1').click()
+  >>> browser.getControl(name='jobs:list').getControl(
+  ...     value='1506179619').click()
   >>> browser.getControl('Cancel', index=0).click()
   >>> 'Jobs were successfully cancelled.' in browser.contents
   True

@@ -96,7 +96,7 @@ Add a job to the service.
   <methodResponse>
   <params>
   <param>
-  <value><int>1</int></value>
+  <value><int>1392637175</int></value>
   </param>
   </params>
   </methodResponse>
@@ -117,7 +117,7 @@ Cancel a job.
   ... <methodCall>
   ... <methodName>cancel</methodName>
   ... <params>
-  ... <value><int>1</int></value>
+  ... <value><int>1392637175</int></value>
   ... </params>
   ... </methodCall>
   ... """)
@@ -166,7 +166,7 @@ Get the status of a job.
   ... <methodCall>
   ... <methodName>getStatus</methodName>
   ... <params>
-  ... <value><int>2</int></value>
+  ... <value><int>1392637176</int></value>
   ... </params>
   ... </methodCall>
   ... """)
@@ -193,7 +193,7 @@ Get the status of a job.
   ... <methodCall>
   ... <methodName>getStatus</methodName>
   ... <params>
-  ... <value><int>2</int></value>
+  ... <value><int>1392637176</int></value>
   ... </params>
   ... </methodCall>
   ... """)
@@ -224,7 +224,7 @@ Once the job is completed we can get the result:
   ... <methodCall>
   ... <methodName>getResult</methodName>
   ... <params>
-  ... <value><int>2</int></value>
+  ... <value><int>1392637176</int></value>
   ... </params>
   ... </methodCall>
   ... """)
@@ -261,7 +261,7 @@ returned:
   ... <methodCall>
   ... <methodName>getError</methodName>
   ... <params>
-  ... <value><int>2</int></value>
+  ... <value><int>1392637176</int></value>
   ... </params>
   ... </methodCall>
   ... """)
@@ -306,7 +306,7 @@ Now let's check for real:
   ... <methodCall>
   ... <methodName>getError</methodName>
   ... <params>
-  ... <value><int>3</int></value>
+  ... <value><int>1392637177</int></value>
   ... </params>
   ... </methodCall>
   ... """)

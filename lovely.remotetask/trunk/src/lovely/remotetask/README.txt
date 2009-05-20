@@ -104,7 +104,7 @@ managed by a queue. First we request the echo task to be executed:
 
   >>> jobid = service.add(u'echo', {'foo': 'bar'})
   >>> jobid
-  1
+  1392637175
 
 The ``add()`` function schedules the task called "echo" to be executed with
 the specified arguments. The method returns a job id with which we can inquire
@@ -401,7 +401,7 @@ Let's now see what happened:
 For management purposes, the service also allows you to inspect all jobs:
 
   >>> dict(service.jobs)
-  {1: <Job 1>, 2: <Job 2>, 3: <Job 3>}
+  {1392637176: <Job 1392637176>, 1392637177: <Job 1392637177>, 1392637175: <Job 1392637175>}
 
 
 To get rid of jobs not needed anymore one can use the clean method.
@@ -702,7 +702,7 @@ Footnotes
      >>> r_jobid = root_service.add(
      ...     u'echo', {'foo': 'this is for root_service'})
      >>> r_jobid
-     1
+     1506179619
 
 
 .. [#2] We verify the root_service does get processed:
