@@ -13,10 +13,17 @@
 ##############################################################################
 """Task Service Implementation
 
-$Id$
 """
 __docformat__ = 'restructuredtext'
 
+from lovely.remotetask import interfaces, job, task, processor
+from zope import component
+from zope.app.appsetup.product import getProductConfiguration
+from zope.app.container import contained
+from zope.app.publication.zopepublication import ZopePublication
+from zope.component.interfaces import ComponentLookupError
+from zope.traversing.api import getParents
+import BTrees
 import datetime
 import logging
 import persistent
@@ -26,18 +33,12 @@ import time
 import zc.queue
 import zope.interface
 import zope.location
-import BTrees
-from lovely.remotetask import interfaces, job, task, processor
-from zope import component
-from zope.app.appsetup.product import getProductConfiguration
-from zope.app.container import contained
-from zope.app.publication.zopepublication import ZopePublication
-from zope.component.interfaces import ComponentLookupError
-from zope.traversing.api import getParents
+
 
 log = logging.getLogger('lovely.remotetask')
 
 storage = threading.local()
+
 
 class TaskService(contained.Contained, persistent.Persistent):
     """A persistent task service.
