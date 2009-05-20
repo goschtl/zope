@@ -35,7 +35,7 @@ import os
 # initialize the language files
 LANGS = []
 for langFile in glob.glob(
-    os.path.join(os.path.dirname(__file__),'resources','lang') + '/calendar-??.js'):
+    os.path.join(os.path.dirname(__file__),'resources','languages') + '/calendar-??.js'):
     LANGS.append(os.path.basename(langFile)[9:11])
 
 def normalizeDateTime(dt, request):
@@ -269,7 +269,8 @@ class DatetimeBase(object):
             # en is always loaded via the resourcelibrary, so that all
             # variables are defined in js
             # TODO: do not hardcode this
-            langFile = '/@@/zc.datetimewidget/lang/calendar-%s.js' % lang
+            langFile = '/++resource++zc.datetimewidget/'\
+                    'languages/calendar-%s.js' % lang
             langDef = "dateTimeWidgetLoadLanguageFile('%s');" % langFile
         else:
             langDef = ''

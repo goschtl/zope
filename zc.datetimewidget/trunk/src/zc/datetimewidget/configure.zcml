@@ -9,7 +9,7 @@
     <directory
         source="resources"
         include="calendar-system.css calendar.js datetimewidget.js
-                 lang/calendar-en.js
+                 languages/calendar-en.js
                  calendar-setup.js"/>
   </resourceLibrary>
 
