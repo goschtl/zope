@@ -1,7 +1,6 @@
 from zope import component
 from zope.event import notify
 
-from sqlalchemy.orm import mapper
 from sqlalchemy.ext.declarative import instrument_declarative
 from sqlalchemy.schema import Table
 
@@ -40,9 +39,28 @@ def reflectTables(metadata):
     metadata.reflect(bind=engine)
     if not hasattr(metadata, '_decl_registry'):
         metadata._decl_registry = {}
-    # now declaratively set up any reflected classes
-    for class_ in metadata._reflected_registry.keys():
+
+    # XXX should sort by the inheritance tree
+    for class_ in sorted(metadata._reflected_registry.keys(), key=lambda a: getattr(a, 'megrok.rdb.directive.inherits', 0)):
+        class_args = metadata._reflected_registry[class_]
+        polymorphic_on = class_args['polymorphic_on']
+        polymorphic_identity = class_args['polymorphic_identity']
+        inherits = class_args['inherits']
+        mapper_args = getattr(class_, '__mapper_args__', {})
+
+        if polymorphic_on:
+            tablename, column = polymorphic_on
+            mapper_args['polymorphic_on'] = getattr(metadata.tables[tablename].c, column)
+        if polymorphic_identity:
+            mapper_args['polymorphic_identity'] = polymorphic_identity
+        if inherits:
+            mapper_args['inherits'] = inherits
+                    
+        if mapper_args:
+            class_.__mapper_args__ = mapper_args
+
         instrument_declarative(class_, metadata._decl_registry, metadata)
+
     # XXX thread safety?
     metadata._reflected_completed = True
 
