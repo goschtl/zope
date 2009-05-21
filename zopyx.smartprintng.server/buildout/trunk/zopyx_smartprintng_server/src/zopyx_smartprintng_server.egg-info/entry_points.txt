@@ -1,7 +1,0 @@
-
-      [console_scripts]
-      zopyx_smartprintng_server-debug = zopyx_smartprintng_server.startup:interactive_debug_prompt
-      zopyx_smartprintng_server-ctl = zopyx_smartprintng_server.startup:zdaemon_controller
-      [paste.app_factory]
-      main = zopyx_smartprintng_server.startup:application_factory
-      
