@@ -3,7 +3,7 @@ import os
 
 version = '0.1'
 
-setup(name='zopyx.smartprintng.server',
+setup(name='zopyx_smartprintng_server',
       version=version,
       description="SmartPrintNG backend server",
       long_description=open("README.txt").read() + "\n" +
@@ -18,8 +18,7 @@ setup(name='zopyx.smartprintng.server',
       author_email='info@zopyx.com',
       url='',
       license='ZPL',
-      packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['zopyx', 'zopyx.smartprintng'],
+      packages=['zopyx_smartprintng_server'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
