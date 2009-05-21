@@ -1,0 +1,11 @@
+setup.py
+src/zopyx_smartprintng_server/__init__.py
+src/zopyx_smartprintng_server/app.py
+src/zopyx_smartprintng_server/tests.py
+src/zopyx_smartprintng_server.egg-info/PKG-INFO
+src/zopyx_smartprintng_server.egg-info/SOURCES.txt
+src/zopyx_smartprintng_server.egg-info/dependency_links.txt
+src/zopyx_smartprintng_server.egg-info/entry_points.txt
+src/zopyx_smartprintng_server.egg-info/not-zip-safe
+src/zopyx_smartprintng_server.egg-info/requires.txt
+src/zopyx_smartprintng_server.egg-info/top_level.txt
