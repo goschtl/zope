@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.5.0 (unreleased)
+3.5.0 (2009-05-21)
 ------------------
 
 - Factor out ObjectInterfacesVocabulary into zope.componentvocabulary.
