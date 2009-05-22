@@ -4,7 +4,7 @@ from zope.configuration.fields import GlobalObject, Path
 
 from hurry import custom
 
-class TemplateLanguage(Interface):
+class ITemplateLanguage(Interface):
     template_class = GlobalObject(
         title=u'Template Class',
         description=u'The class that implements the template language')
@@ -20,7 +20,7 @@ class TemplateLanguage(Interface):
         description=u'The filesystem extension used for sample input data.',
         required=False)
 
-class DataLanguage(Interface):
+class IDataLanguage(Interface):
     parse_func = GlobalObject(
         title=u'Parse function',
         description=u'A function that can parse text and deliver input data.')
@@ -31,7 +31,7 @@ class DataLanguage(Interface):
                     u'for example .json) '
                     u'recognzied for this input language')
 
-class Collection(Interface):
+class ICollection(Interface):
     id = TextLine(
         title=u'Collection ID',
         description=u"Globally unique collection id")
