@@ -1,5 +1,5 @@
 from zope.interface import Interface
-from schema import TextLine
+from zope.schema import TextLine
 from zope.configuration.fields import GlobalObject, Path
 
 from hurry import custom
