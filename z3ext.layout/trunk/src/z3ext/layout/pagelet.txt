@@ -533,8 +533,8 @@ We can provide additional context for pagelet
 
   >>> provideInterface('myPagelet4', IMyPagelet4, IPageletType)
 
-  >>> template4 = os.path.join(temp_dir, 'pagelet4.pt')
-  >>> open(template4, 'w').write('''<div>My pagelet4</div>''')
+  >>> template41 = os.path.join(temp_dir, 'pagelet41.pt')
+  >>> open(template41, 'w').write('''<div>My pagelet4</div>''')
 
   >>> context = xmlconfig.string("""
   ... <configure xmlns:z3ext="http://namespaces.zope.org/z3ext">
@@ -543,7 +543,7 @@ We can provide additional context for pagelet
   ...       template="%s"
   ...       type="myPagelet4"
   ...       permission="zope.Public" />
-  ... </configure>"""%template4, context)
+  ... </configure>"""%template41, context)
 
   >>> pagelet = component.getMultiAdapter((Content(), request), name='pagelet')
   >>> print pagelet.publishTraverse(request, 'myPagelet4')
