@@ -15,6 +15,7 @@ def setUpReadMe(test):
 def tearDownReadMe(test):
     # clean up Zope
     cleanup.cleanUp()
+    setSite(None)
 
 def test_suite():
     optionflags = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS
@@ -27,7 +28,7 @@ def test_suite():
     suite = unittest.TestSuite()
     
     suite.addTest(doctest.DocFileSuite(
-        'README.txt',
+        'README.txt', 'jsontemplate.txt',
         optionflags=optionflags,
         setUp=setUpReadMe,
         tearDown=tearDownReadMe,

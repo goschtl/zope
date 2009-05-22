@@ -12,5 +12,7 @@ from hurry.custom.core import (FilesystemTemplateDatabase,
 
 from hurry.custom.interfaces import IHurryCustomAPI
 
+from hurry.custom.jsont import JsonTemplate
+
 moduleProvides(IHurryCustomAPI)
 __all__ = list(IHurryCustomAPI)

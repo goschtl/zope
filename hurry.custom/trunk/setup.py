@@ -37,5 +37,7 @@ setup(
        'zope.component',
        'zope.interface',
        'zope.hookable',
+       'jsontemplate',
+       'zope.configuration',
        ],
     )
