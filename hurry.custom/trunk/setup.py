@@ -15,7 +15,7 @@ long_description = (
 
 setup(
     name="hurry.custom",
-    version="0.5dev",
+    version = '0.5',
     description="A framework for allowing customizing templates",
     long_description=long_description,    
     classifiers=[
