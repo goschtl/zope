@@ -1,0 +1,154 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:z3ext="http://namespaces.zope.org/z3ext">
+
+  <include file="buttons.zcml" />
+
+  <!-- TextArea widget -->
+  <class class=".textarea.TextAreaWidget">
+    <require
+       permission="zope.Public"
+       interface="z3c.form.interfaces.ITextAreaWidget" />
+  </class>
+  
+  <adapter 
+     for="zope.schema.interfaces.IText
+          ..interfaces.ILayoutFormLayer"
+     factory=".textarea.TextAreaFieldWidget" />
+
+  <!-- templates -->
+  <z3ext:pagelet
+     type="form"
+     template="form.pt"
+     for="..interfaces.IPageletForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3ext:pagelet
+     type="form"
+     template="formadd.pt"
+     for="..interfaces.IPageletAddForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3ext:pagelet
+     type="form"
+     template="formedit.pt"
+     for="..interfaces.IPageletEditForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3ext:pagelet
+     type="form"
+     template="formdisp.pt"
+     for="..interfaces.IPageletDisplayForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3ext:pagelet
+     type="form"
+     template="subform.pt"
+     for="z3c.form.interfaces.ISubForm"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <z3ext:pagelet
+     type="form"
+     template="formgroup.pt"
+     for="z3c.form.interfaces.IGroup"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <!-- Error View -->
+  <z3ext:pageletType
+     name="form.errorView"
+     interface=".interfaces.IErrorView" />
+
+  <z3ext:pagelet
+     type="form.errorView"
+     for="z3c.form.interfaces.IErrorViewSnippet"
+     template="error.pt"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <!-- form view -->
+  <z3ext:pageletType
+     name="form.view"
+     interface="z3ext.layoutform.browser.interfaces.IForm" />
+
+  <z3ext:pagelet
+     type="form.view"
+     for="..interfaces.IPageletForm"
+     template="formview.pt"
+     class=".formview.FormView"
+     layer="..interfaces.ILayoutFormLayer" />
+
+  <!-- viewspace view -->
+  <z3ext:pageletType
+     name="form.viewspace"
+     interface="z3ext.layoutform.browser.interfaces.IViewspace" />
+
+  <z3ext:pageletType
+     name="form.viewspaceInfo"
+     interface="z3ext.layoutform.browser.interfaces.IExtraViewspaceInfo" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formviewspace.pt"
+     layer="..interfaces.ILayoutFormLayer"
+     type="form.viewspace" />
+
+  <!-- form buttons -->
+  <z3ext:pageletType
+     name="form.buttons"
+     interface="z3ext.layoutform.browser.interfaces.IFormButtons" />
+
+  <z3ext:pagelet
+     for="..interfaces.IPageletForm"
+     template="formbuttons.pt"
+     layer="..interfaces.ILayoutFormLayer"
+     type="form.buttons" />
+
+  <!-- widget view -->
+  <z3ext:pageletType
+     name="form.widget"
+     interface="z3ext.layoutform.browser.interfaces.IWidget" />
+
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IForm"
+     template="widget.pt"
+     type="form.widget" />
+
+  <adapter 
+     name="form.widget"
+     factory=".widget.getWidgetManager" />
+
+  <!-- display widget view -->
+  <z3ext:pagelet
+     for="z3c.form.interfaces.IWidget
+	  zope.schema.interfaces.IField
+	  z3c.form.interfaces.IDisplayForm"
+     template="widgetDisplay.pt"
+     type="form.widget"  />
+
+  <!-- add form buttons -->
+  <z3ext:pagelet
+     for="..interfaces.IPageletAddForm"
+     template="formaddbuttons.pt"
+     layer="..interfaces.ILayoutFormLayer"
+     type="form.buttons" />
+
+  <!-- styles -->
+  <z3ext:resourceinclude
+     name="z3ext-layoutform.css"
+     library="z3ext" type="stylesheet"
+     file="styles.css" filetype="zrt" />
+
+  <z3ext:resource
+     file="required.gif"
+     name="z3ext-layoutform-required.gif" />
+
+  <z3ext:resource
+     file="linkOpaque.gif"
+     name="z3ext-layoutform-linkOpaque.gif" />
+
+  <z3ext:resource
+     file="linkTransparent.gif"
+     name="z3ext-layoutform-linkTransparent.gif" />
+
+</configure>
