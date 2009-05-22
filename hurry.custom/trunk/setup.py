@@ -22,7 +22,7 @@ setup(
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
-    keywords='file size bytes',
+    keywords='template custom templating customization',
     author='Martijn Faassen, Startifact',
     author_email='faassen@startifact.com',
     url='',
