@@ -17,7 +17,7 @@ $Id$
 """
 from zope import interface, schema
 from zope.i18nmessageid import MessageFactory
-from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import IFormLayer, ISelectionManager
 from z3ext.layout.interfaces import IPagelet
 
 _ = MessageFactory('z3ext.layoutform')
@@ -127,3 +127,6 @@ class ICancelButton(ICancelAction):
 
 class IFormWrapper(interface.Interface):
     """ """
+
+class IForms(ISelectionManager):
+    """ Forms manager """

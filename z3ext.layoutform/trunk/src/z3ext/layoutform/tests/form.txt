@@ -29,7 +29,7 @@ PageletForm
   ...
   ...     ignoreContext = True
   ...     fields = Fields(IPerson)
-  ...     
+  ...
   ...     @button.buttonAndHandler(u'Save', name='save',
   ...                              provides=interfaces.ISaveAction)
   ...     def handleSave(self, action):
@@ -99,21 +99,21 @@ Group
 
   >>> class PersonEducation(group.Group):
   ...     interface.implements(interfaces.IPageletSubform)
-  ...     
+  ...
   ...     weight = 10
   ...     fields = Fields(IPersonEducation)
   ...     ignoreContext = True
-  ...     
+  ...
   ...     def __init__(self, context, form, request):
   ...         super(PersonEducation, self).__init__(context, request, form)
-  ...         
+  ...
   ...     def isAvailable(self):
   ...         return True
-  ...     
+  ...
   ...     def postUpdate(self):
   ...         pass
 
-  >>> form.groups
+  >>> tuple(form.groups)
   ()
 
   >>> component.getSiteManager().registerAdapter(
@@ -122,7 +122,7 @@ Group
 
   >>> form.update()
 
-  >>> print form.groups
+  >>> print tuple(form.groups)
   (<PersonEducation ...>,)
 
   >>> print form.render()
@@ -181,15 +181,15 @@ Subform
 
   >>> class PersonInfo(subform.PageletEditSubForm):
   ...     interface.implements(interfaces.IPageletSubform)
-  ...     
+  ...
   ...     weight = 10
   ...     fields = Fields(IPersonInfo)
   ...     ignoreContext = True
-  ...     
+  ...
   ...     def getContent(self):
   ...         return {}
 
-  >>> form.subforms
+  >>> tuple(form.subforms)
   ()
 
   >>> component.getSiteManager().registerAdapter(
@@ -198,7 +198,7 @@ Subform
 
   >>> form.update()
 
-  >>> print form.subforms
+  >>> print tuple(form.subforms)
   (<PersonInfo ...>,)
 
   >>> print form.render()
@@ -266,7 +266,7 @@ Subform
 
 
   >>> class IItem(interface.Interface):
-  ...     
+  ...
   ...     title = schema.TextLine(
   ...         title = u'Title',
   ...         required = True)
@@ -293,6 +293,10 @@ Subform
   >>> form = PersonForm(root, request)
   >>> form.update()
 
-  >>> form.forms
+  >>> tuple(form.forms)
   (<ItemForm object ...>,)
 
+We can get forms, subforms, groups by name
+
+  >>> form.forms['item']
+  <ItemForm object ...>

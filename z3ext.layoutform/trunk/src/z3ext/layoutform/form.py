@@ -20,17 +20,32 @@ from zope.component import getAdapters
 from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.pagetemplate.interfaces import IPageTemplate
 
-from z3c.form import form
+from z3c.form import form, util
 from z3c.form.interfaces import IForm, IGroup, ISubForm
 
 from z3ext.layout.interfaces import IPagelet
 from z3ext.layout.pagelet import BrowserPagelet
 
 from interfaces import _
-from interfaces import IFormWrapper
+from interfaces import IFormWrapper, IForms
 from interfaces import IPageletForm, IPageletSubform
 from interfaces import IPageletDisplayForm, IPageletFormView
 
+
+class Views(util.SelectionManager):
+    """Forms manager."""
+    interface.implements(IForms)
+    managerInterface = IForms
+
+    def __init__(self, *args, **kw):
+        super(Views, self).__init__()
+        for view in args:
+            self._data_values.append(view)
+            self._data_keys.append(view.__name__)
+            self._data[view.__name__] = view
+
+    def __iter__(self):
+        return iter(self._data_values)
 
 class PageletBaseForm(form.BaseForm, BrowserPagelet):
 
@@ -80,7 +95,7 @@ class PageletForm(form.Form, PageletBaseForm):
         return data, errors
 
     def _loadSubforms(self):
-        return [form for name, form in 
+        return [(name, form) for name, form in
                 getAdapters((self.context, self, self.request), IPageletSubform)]
 
     def updateForms(self):
@@ -90,7 +105,8 @@ class PageletForm(form.Form, PageletBaseForm):
         groups = []
         subforms = []
         views = []
-        for form in self._loadSubforms():
+        for name, form in self._loadSubforms():
+            form.__name__ = name
             form.update()
             if not form.isAvailable():
                 continue
@@ -107,16 +123,16 @@ class PageletForm(form.Form, PageletBaseForm):
                 views.append((form.weight, form.__name__, form))
 
         groups.sort()
-        self.groups = tuple([form for weight, name, form in groups])
+        self.groups = Views(*[form for weight, name, form in groups])
 
         subforms.sort()
-        self.subforms = tuple([form for weight, name, form in subforms])
+        self.subforms = Views(*[form for weight, name, form in subforms])
 
         forms.sort()
-        self.forms = tuple([form for weight, name, form in forms])
+        self.forms = Views(*[form for weight, name, form in forms])
 
         views.sort()
-        self.views = tuple([view for weight, name, view in views])
+        self.views = Views(*[view for weight, name, view in views])
 
     def update(self):
         self.updateWidgets()
