@@ -18,6 +18,14 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface, Attribute
+import zope.deferredimport
+
+zope.deferredimport.deprecatedFrom(
+    "This import has moved to zope.publisher.interfaces.http. "
+    "This import will stop working in the future.",
+    'zope.publisher.interfaces.http',
+    'IHTTPException',
+    )
 
 class INullResource(Interface):
     """Placeholder objects for new container items to be created via PUT
@@ -25,9 +33,4 @@ class INullResource(Interface):
 
     container = Attribute("The container of the future resource")
     name = Attribute("The name of the object to be created.")
-
-class IHTTPException(Interface):
-    """Marker interface for http exceptions views
-    """
-    pass
 

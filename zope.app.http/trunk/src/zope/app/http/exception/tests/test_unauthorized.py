@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.http.interfaces import IHTTPException
+from zope.publisher.interfaces.http import IHTTPException
 
 class Test(TestCase):
 

@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.http.interfaces import IHTTPException
+from zope.publisher.interfaces.http import IHTTPException
 from zope.interface import implements
 
 class Unauthorized(object):
