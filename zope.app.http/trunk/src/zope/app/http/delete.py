@@ -16,7 +16,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.filerepresentation.interfaces import IWriteDirectory
-from zope.app.publication.http import MethodNotAllowed
+from zope.publisher.interfaces.http import MethodNotAllowed
 
 
 class DELETE(object):

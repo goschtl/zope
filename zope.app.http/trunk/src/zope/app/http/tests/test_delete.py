@@ -24,7 +24,7 @@ from zope.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 import zope.app.http.delete
 from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.container.contained import contained
-from zope.app.publication.http import MethodNotAllowed
+from zope.publisher.interfaces.http import MethodNotAllowed
 
 class UnwritableContainer(object):
     pass

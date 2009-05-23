@@ -15,7 +15,7 @@ $Id$
 """
 from zope.component import getAdapters
 from zope.interface import Interface
-from zope.app.publication.http import IMethodNotAllowed
+from zope.publisher.interfaces.http import IMethodNotAllowed
 
 
 class MethodNotAllowedView(object):

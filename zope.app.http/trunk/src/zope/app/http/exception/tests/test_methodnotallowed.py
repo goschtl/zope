@@ -59,7 +59,7 @@ class TestMethodNotAllowedView(PlacelessSetup, TestCase):
         ztapi.provideView(I, IHTTPRequest, Interface, 'also_irr.', DeleteView)
 
     def test(self):
-        from zope.app.publication.http import MethodNotAllowed
+        from zope.publisher.interfaces.http import MethodNotAllowed
         from zope.app.http.exception.methodnotallowed \
              import MethodNotAllowedView
         from zope.publisher.http import HTTPRequest

@@ -31,7 +31,7 @@
     />
 
 <view
-    for="zope.app.publication.http.IMethodNotAllowed"
+    for="zope.publisher.interfaces.http.IMethodNotAllowed"
     factory="zope.app.http.exception.methodnotallowed.MethodNotAllowedView"
     name="index.html"
     type="zope.publisher.interfaces.http.IHTTPRequest"
@@ -39,7 +39,7 @@
     />
 
 <browser:defaultView
-    for="zope.app.publication.http.IMethodNotAllowed"
+    for="zope.publisher.interfaces.http.IMethodNotAllowed"
     layer="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     />
