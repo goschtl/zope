@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.2 (unreleased)
+0.2 (2009-05-24)
 ----------------
 
 - Do not use ``-d`` option for degenerate nodes for sccmap, as this
