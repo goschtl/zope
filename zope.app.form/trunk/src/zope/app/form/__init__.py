@@ -37,30 +37,8 @@ class Widget(object):
         self.context = context
         self.request = request
         self.name = self._prefix + context.__name__
-
-    def get_label(self):
-        """The widget label.
-
-        This read-write attribute defaults to the title of the context.
-        """
-        return self.context.title
-
-    def set_label(self, value):
-        self.context.title = value
-
-    label = property(get_label, set_label)
-
-    def get_hint(self):
-        """A hint regarding the use of the widget.
-
-        This read-write attribute defaults to the description of the context.
-        """
-        return self.context.description
-
-    def set_hint(self, value):
-        self.context.description = value
-
-    hint = property(get_hint, set_hint)
+        self.label = self.context.title
+        self.hint = self.context.description
 
     def _translate(self, text):
         return translate(text, context=self.request, default=text)
