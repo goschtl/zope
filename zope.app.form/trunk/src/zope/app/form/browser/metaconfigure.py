@@ -24,8 +24,8 @@ from zope.security.checker import CheckerPublic
 from zope.interface import implementedBy
 from zope.configuration.exceptions import ConfigurationError
 
+from zope.browser.interfaces import IAdding
 from zope.schema import getFieldNamesInOrder
-from zope.app.container.interfaces import IAdding
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.publisher.browser.menumeta import menuItemDirective

@@ -22,8 +22,8 @@ import zope.interface
 import zope.configuration.xmlconfig
 import zope.publisher.browser
 import zope.schema
+from zope.browser.interfaces import IAdding
 
-import zope.app.container.interfaces
 import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
 from zope.app.form.tests import utils
@@ -54,8 +54,7 @@ class Content(object):
 
 class Adding(object):
 
-    zope.interface.implements(
-        zope.app.container.interfaces.IAdding)
+    zope.interface.implements(IAdding)
 
     def add(self, content):
         self.content = content

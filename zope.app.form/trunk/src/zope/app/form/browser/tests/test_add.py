@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 
+from zope.browser.interfaces import IAdding
 from zope.component import getMultiAdapter
 from zope.component.interfaces import IFactory
 from zope.component.interfaces import IComponentLookup
@@ -31,7 +32,6 @@ from zope.component.eventtesting import getEvents
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 
 from zope.app.component.site import SiteManagerAdapter
-from zope.app.container.interfaces import IAdding
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.add import AddViewFactory, AddView
