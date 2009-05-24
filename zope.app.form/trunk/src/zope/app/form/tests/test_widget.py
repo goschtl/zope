@@ -118,11 +118,7 @@ class TestInputWidget(object):
 
         >>> from zope.schema import Field
         >>> field = Field()
-        >>> from zope.interface import Interface
-        >>> class ITestRequest(Interface):
-        ...     pass
-        >>> from zope.app.component.tests.views import Request
-        >>> widget = TestInputWidget(field, Request(ITestRequest))
+        >>> widget = TestInputWidget(field, TestRequest())
 
     The default implementation of hasValidInput relies on
     getInputValue to perform the validation of the current widget input.

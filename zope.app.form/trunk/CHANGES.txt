@@ -5,6 +5,8 @@ CHANGES
 3.8.0 (unreleased)
 ==================
 
+- Use standard properties instead of `zope.cachedescriptors`.
+
 - Require `zope.browser` 1.1 instead of `zope.app.container` for IAdding.
 
 3.7.3 (2009-05-11)

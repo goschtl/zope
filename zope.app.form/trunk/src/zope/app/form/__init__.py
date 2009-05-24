@@ -18,7 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.form.interfaces import IWidget, InputErrors, IWidgetFactory
-from zope.cachedescriptors.property import readproperty
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import IChoice, ICollection
@@ -39,21 +38,29 @@ class Widget(object):
         self.request = request
         self.name = self._prefix + context.__name__
 
-    @readproperty
-    def label(self):
+    def get_label(self):
         """The widget label.
 
         This read-write attribute defaults to the title of the context.
         """
         return self.context.title
 
-    @readproperty
-    def hint(self):
+    def set_label(self, value):
+        self.context.title = value
+
+    label = property(get_label, set_label)
+
+    def get_hint(self):
         """A hint regarding the use of the widget.
 
         This read-write attribute defaults to the description of the context.
         """
         return self.context.description
+
+    def set_hint(self, value):
+        self.context.description = value
+
+    hint = property(get_hint, set_hint)
 
     def _translate(self, text):
         return translate(text, context=self.request, default=text)
