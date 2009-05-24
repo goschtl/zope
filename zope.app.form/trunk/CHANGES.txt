@@ -2,7 +2,7 @@
 CHANGES
 =======
 
-3.8.0 (unreleased)
+3.8.0 (2009-05-24)
 ==================
 
 - Use standard properties instead of `zope.cachedescriptors`.
