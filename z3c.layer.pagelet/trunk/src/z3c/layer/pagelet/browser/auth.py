@@ -61,11 +61,10 @@ def logout_supported(request):
 
 def get_view_url(context, request, view_name):
     "Compute the url of a view."
+    view_name_truncated = False
     if view_name.startswith('@@'):
         view_name = view_name[2:]
         view_name_truncated = True
-    else:
-        view_name_truncated = False
     view = zope.component.getMultiAdapter((context, request), name=view_name)
     view_url = zope.component.getMultiAdapter(
         (view, request), name='absolute_url')()
