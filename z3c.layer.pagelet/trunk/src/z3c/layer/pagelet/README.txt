@@ -67,6 +67,9 @@ Check if we can access the ``page.html`` view which is registred in the
   </html>
   <BLANKLINE>
 
+Not Found
+~~~~~~~~~
+
 Now check the not found page which is a exception view on the exception
 ``zope.publisher.interfaces.INotFound``:
 
@@ -109,6 +112,9 @@ Now check the not found page which is a exception view on the exception
   </html>
   <BLANKLINE>
 
+User error
+~~~~~~~~~~
+
 And check the user error page which is a view registred for
 ``zope.exceptions.interfaces.IUserError`` exceptions:
 
@@ -127,6 +133,9 @@ And check the user error page which is a view registred for
   </body>
   </html>
   <BLANKLINE>
+
+Common exception (system error)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 And check error view registred for
 ``zope.interface.common.interfaces.IException``:
@@ -153,6 +162,9 @@ And check error view registred for
   </body>
   </html>
   <BLANKLINE>
+
+Unauthorized
+~~~~~~~~~~~~
 
 To check the ``zope.security.interfaces.IUnauthorized`` view, we use a
 new unregistred user (test browser). As we have defined an

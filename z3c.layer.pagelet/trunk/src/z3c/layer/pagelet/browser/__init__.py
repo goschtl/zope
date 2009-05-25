@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2007 Zope Foundation and Contributors.
+# Copyright (c) 2007-2009 Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,21 +15,24 @@
 $Id: __init__.py 97 2007-03-29 22:58:27Z rineichen $
 """
 
+import z3c.pagelet.browser
+import z3c.template.interfaces
+import zope.authentication.interfaces
+import zope.browser.interfaces
 import zope.component
-from zope.app.exception.systemerror import SystemErrorView
-from zope.app.exception.browser.unauthorized import Unauthorized
-from zope.app.exception.browser.user import UserErrorView
-from zope.app.exception.browser.notfound import NotFound
-from zope.authentication.interfaces import IAuthentication
-from z3c.template.interfaces import IContentTemplate
-from z3c.pagelet import browser
+import zope.interface
 
 
-class SystemErrorPagelet(browser.BrowserPagelet, SystemErrorView):
+class SystemErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
     """SystemError pagelet."""
 
+    zope.interface.implements(zope.browser.interfaces.ISystemErrorView)
 
-class UnauthorizedPagelet(browser.BrowserPagelet, Unauthorized):
+    def isSystemError(self):
+        return True
+
+
+class UnauthorizedPagelet(z3c.pagelet.browser.BrowserPagelet):
     """Unauthorized pagelet."""
 
     def render(self):
@@ -45,23 +48,24 @@ class UnauthorizedPagelet(browser.BrowserPagelet, Unauthorized):
         self.request.response.setHeader('Pragma', 'no-cache')
 
         principal = self.request.principal
-        auth = zope.component.getUtility(IAuthentication)
+        auth = zope.component.getUtility(
+            zope.authentication.interfaces.IAuthentication)
         auth.unauthorized(principal.id, self.request)
         if self.request.response.getStatus() not in (302, 303):
-            template = zope.component.getMultiAdapter((self, self.request),
-                IContentTemplate)
+            template = zope.component.getMultiAdapter(
+                (self, self.request), z3c.template.interfaces.IContentTemplate)
             return template(self)
 
 
-class UserErrorPagelet(browser.BrowserPagelet, UserErrorView):
+class UserErrorPagelet(z3c.pagelet.browser.BrowserPagelet):
     """UserError pagelet."""
 
 
-class NotFoundPagelet(browser.BrowserPagelet, NotFound):
+class NotFoundPagelet(z3c.pagelet.browser.BrowserPagelet):
     """NotFound pagelet."""
 
     def render(self):
         self.request.response.setStatus(404)
-        template = zope.component.getMultiAdapter((self, self.request),
-            IContentTemplate)
+        template = zope.component.getMultiAdapter(
+            (self, self.request), z3c.template.interfaces.IContentTemplate)
         return template(self)

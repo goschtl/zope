@@ -5,6 +5,11 @@ CHANGES
 1.4.1 (unreleased)
 ------------------
 
+- Removed dependency on ``zope.app.exception`` by using a current
+  version of ``zope.browser`` and by implementing the exception view
+  classes directly instead of inheriting them (Quite nothing of the
+  base classes was in use here.)
+
 - Removed not necessary test dependency on ``zope.app.twisted``.
 
 
