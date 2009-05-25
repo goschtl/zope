@@ -2,7 +2,7 @@
  Changes
 =========
 
-3.7.0 (unreleased)
+3.7.0 (2009-05-25)
 ------------------
 
 - Moved the ``engine`` module and associated testing machinery to
