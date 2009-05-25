@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.component import getMultiAdapter
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
-from zope.app.pagetemplate.engine import TrustedAppPT
+from zope.pagetemplate.engine import TrustedAppPT
 
 class ViewPageTemplateFile(TrustedAppPT, PageTemplateFile):
     """Page Templates used as methods of views defined as Python classes.

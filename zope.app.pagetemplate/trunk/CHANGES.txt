@@ -2,11 +2,11 @@
  Changes
 =========
 
-3.6.1 (unreleased)
+3.7.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Moved the ``engine`` module and associated testing machinery to
+  ``zope.pagetemplate`` (version 3.5.0).
 
 3.6.0 (2009-05-18)
 ------------------

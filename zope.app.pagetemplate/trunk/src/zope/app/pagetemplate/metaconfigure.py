@@ -18,10 +18,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.pagetemplate.engine import Engine, _Engine
-from zope.app.pagetemplate.engine import TrustedEngine, _TrustedEngine
-from zope.interface import Interface
 from zope.configuration.fields import GlobalObject
+from zope.interface import Interface
+from zope.pagetemplate.engine import Engine
+from zope.pagetemplate.engine import _Engine
+from zope.pagetemplate.engine import TrustedEngine
+from zope.pagetemplate.engine import _TrustedEngine
 from zope.schema import TextLine
 
 class IExpressionTypeDirective(Interface):

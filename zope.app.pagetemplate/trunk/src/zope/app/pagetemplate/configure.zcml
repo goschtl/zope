@@ -30,16 +30,16 @@
     <allow interface="zope.tales.interfaces.ITALESIterator" />
  </class>
 
- <class class=".engine.ZopePathExpr">
+ <class class="zope.pagetemplate.engine.ZopePathExpr">
     <allow attributes="__call__" />
  </class>
- <class class=".engine.TrustedZopePathExpr">
+ <class class="zope.pagetemplate.engine.TrustedZopePathExpr">
     <allow attributes="__call__" />
  </class>
- <class class=".engine.ZopePythonExpr">
+ <class class="zope.pagetemplate.engine.ZopePythonExpr">
     <allow attributes="__call__" />
  </class>
- <class class=".engine.PythonExpr">
+ <class class="zope.pagetemplate.engine.PythonExpr">
     <allow attributes="__call__" />
  </class>
 

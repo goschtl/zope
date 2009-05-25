@@ -16,13 +16,8 @@
 $Id$
 """
 import unittest
-from cStringIO import StringIO
 
-from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-
-import zope.app.pagetemplate
 from zope.app.testing.placelesssetup import PlacelessSetup
-from zope.app.pagetemplate.engine import Engine
 
 template = """<configure 
    xmlns='http://namespaces.zope.org/zope'
@@ -37,10 +32,15 @@ class Handler(object):
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        from zope.configuration.xmlconfig import XMLConfig
+        import zope.app.pagetemplate
         super(Test, self).setUp()
         XMLConfig('meta.zcml', zope.app.pagetemplate)()
 
     def testExpressionType(self):
+        from cStringIO import StringIO
+        from zope.configuration.xmlconfig import xmlconfig
+        from zope.pagetemplate.engine import Engine
         xmlconfig(StringIO(template % (
             """
             <tales:expressiontype
