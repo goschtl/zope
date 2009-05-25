@@ -19,10 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface, Attribute
 
-from zope.publisher.interfaces.http import IHTTPException
-from zope.deprecation import deprecated
-deprecated(
-    'IHTTPException', "moved to zope.publisher.interfaces.http")
+from zope.publisher.interfaces.http import IHTTPException #BBB import
 
 class INullResource(Interface):
     """Placeholder objects for new container items to be created via PUT

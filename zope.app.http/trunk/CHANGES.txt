@@ -5,7 +5,9 @@ CHANGES
 3.6.1 (unreleased)
 ------------------
 
-- ...
+- Replaced the dependency on zope.deprecation with BBB imports
+
+- Made the dependency on zope.app.publisher explicit
 
 3.6.0 (2009-05-23)
 ------------------
