@@ -119,13 +119,13 @@ def main(argv=sys.argv):
         >>> import os
         >>> here = os.path.dirname(__file__)
         >>> ex1 = os.path.join(here, 'tests', 'dummy.foo.egg-info')
-        >>> exitcode = main(['bin', 'depends', '--egg_info', ex1])
+        >>> exitcode = main(['bin', 'depends', '--egg-info', ex1])
         python-bar (<< 0.3~c~pre1), python-dummy, python-foo (>> 0.1), python-foobar
         >>> exitcode
         0
     """
     parser = optparse.OptionParser(usage="usage: %prog command [options]")
-    parser.add_option("--egg_info", dest="egg_info",
+    parser.add_option("--egg-info", dest="egg_info",
                       help="The egg-info directory to use.")
     parser.add_option("--exclude-extra", dest="exclude_extras", action="append",
                       help="Exclude extras from dependencies")
