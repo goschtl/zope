@@ -1,0 +1,41 @@
+=========
+ Changes
+=========
+
+3.7.0 (2009-05-25)
+------------------
+
+- Moved the ``engine`` module and associated testing machinery to
+  ``zope.pagetemplate`` (version 3.5.0).
+
+3.6.0 (2009-05-18)
+------------------
+
+* Moved ``namedtemplate.*`` from ``zope.formlib`` here as it is more
+  about a page template engine than a formular library. This also
+  breaks some dependencies on ``zope.formlib``.
+
+* Added doctests to long_description to show up on pypi.
+
+3.5.0 (2009-02-01)
+------------------
+
+* Use ``zope.container`` instead of ``zope.app.container``.
+
+3.4.1 (2008-07-30)
+------------------
+
+* Substitute zope.app.zapi by direct calls to its wrapped apis.
+  See http://launchpad.net/bugs/219302
+
+* Fix deprecation warning in ftesting.zcml: ZopeSecurityPolicy now lives in
+  zope.securitypolicy.
+
+3.4.0 (2007-09-28)
+------------------
+
+* Initial release as standalone package.
+
+* Dependency on zope.app.interpreter moved to an extra
+  [inline-evaluation].  It is only needed by zope.app.pythonpage,
+  which is an oddity.
