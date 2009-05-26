@@ -98,7 +98,7 @@ class ITable(IContentProvider):
             description=_(u'Reverse sort order name')
         ),
         default=[u'descending', u'reverse', u'down'],
-        required=False) 
+        required=False)
 
     # batch attributes
     batchStart = zope.schema.Int(
@@ -126,6 +126,9 @@ class ITable(IContentProvider):
 
     def updateColumns():
         """Update columns."""
+
+    def initColumns():
+        """Initialize columns definitions used by the table"""
 
     def orderColumns():
         """Order columns."""
@@ -187,9 +190,9 @@ class ITable(IContentProvider):
 
 class ISequenceTable(ITable):
     """Sequence table adapts a sequence as context.
-    
+
     This table can be used for adapting a z3c.indexer.search.ResultSet or
-    z3c.batching.batch.Batch instance as context. Batch which wraps a 
+    z3c.batching.batch.Batch instance as context. Batch which wraps a
     ResultSet sequence.
     """
 

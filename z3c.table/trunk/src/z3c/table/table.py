@@ -55,15 +55,6 @@ class Table(zope.location.Location):
 
     zope.interface.implements(interfaces.ITable)
 
-    # private variables will be set in update call
-    batchProvider = None
-    columnCounter = 0
-    columnIndexById = {}
-    columnByName = {}
-    columns = None
-    rows = None
-    selectedItems = []
-
     # customize this part if needed
     prefix = 'table'
 
@@ -89,6 +80,21 @@ class Table(zope.location.Location):
         self.context = context
         self.request = request
         self.__parent__ = context
+        # private variables will be set in update call
+        self.batchProvider = None
+        self.columnCounter = 0
+        self.columnIndexById = {}
+        self.columnByName = {}
+        self.columns = None
+        self.rows = []
+        self.selectedItems = []
+
+
+    def initColumns(self):
+        # setup columns
+        self.columns = self.setUpColumns()
+        # order columns
+        self.orderColumns()
 
     def getCSSClass(self, element, cssClass=None):
         klass = self.cssClasses.get(element)
@@ -117,6 +123,7 @@ class Table(zope.location.Location):
             col.update()
 
     def orderColumns(self):
+        self.columnCounter = 0
         self.columns = sorted(self.columns, key=getWeight)
         for col in self.columns:
             self.columnByName[col.__name__] = col
@@ -280,15 +287,12 @@ class Table(zope.location.Location):
         # use batch values from request or the existing ones
         self.batchSize = self.getBatchSize()
         self.batchStart = self.getBatchStart()
-        # use sorting values from request or the existing ones
+        # use srting values from request or the existing ones
         self.sortOn = self.getSortOn()
         self.sortOrder = self.getSortOrder()
 
-        # setup columns
-        self.columns = self.setUpColumns()
-
-        # order columns
-        self.orderColumns()
+        # initialize columns
+        self.initColumns()
 
         # update columns
         self.updateColumns()

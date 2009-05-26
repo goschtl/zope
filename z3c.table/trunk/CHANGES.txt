@@ -5,7 +5,7 @@ CHANGES
 Version 0.6.2dev (unreleased)
 -----------------------------
 
-- ...
+- Allow to initialze the column definitions without requiring an entire table update. 
 
 
 Version 0.6.1 (2009-02-22)

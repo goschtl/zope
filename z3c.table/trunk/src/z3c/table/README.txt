@@ -1742,6 +1742,31 @@ Try to render an empty table adapting an empty mapping:
   >>> simpleTable.render()
   u''
 
+Since we have registered 3 adapters for IColumn on None (IOW on an empty mapping), 
+initializing rows definitions for the empty table will initiliaze the columns attribute list
+
+  >>> simpleTable.columns
+  
+  >>> simpleTable.initColumns()
+  >>> simpleTable.columns
+  [<CorrectColspanColumn u'colspanColumn'>, <NameColumn u'secondColumn'>, <TitleColumn u'firstColumn'>]
+
+Rendering the empty table now return the string:
+
+  >>> print simpleTable.render()
+  <table>
+    <thead>
+      <tr>
+        <th>Colspan</th>
+        <th><a href="?table-sortOrder=ascending&table-sortOn=table-secondColumn-1" title="Sort">Name</a></th>
+        <th><a href="?table-sortOrder=ascending&table-sortOn=table-firstColumn-2" title="Sort">Title</a></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+
 Let's see if the addColumn raises a ValueError if there is no Column class:
 
   >>> column.addColumn(simpleTable, column.Column, u'dummy')
