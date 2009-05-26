@@ -25,6 +25,7 @@ from rwproperty import setproperty, getproperty
 from z3c.formext import interfaces
 
 from z3c.form import group
+from z3c.form.interfaces import IMultipleErrors
 
 
 class ExtJSGroup(group.Group):
@@ -57,11 +58,24 @@ class ExtJSGroupForm(group.GroupForm):
                 # I shouldn't need the below security proxy
                 errors={},
                 formErrors=[])
-            for error in errors:
-                error = removeSecurityProxy(error)
-                message = translate(error.message, context=self.request)
-                if error.widget:
-                    self.jsonResponse['errors'][error.widget.id] = message
-                else:
-                    self.jsonResponse['formErrors'].append(message)
+            #recursively extrat errors from subforms
+            def _extractErrors(errors):
+                if IMultipleErrors.providedBy(errors):
+                    errors = errors.errors
+
+                for error in errors:
+                    if IMultipleErrors.providedBy(error.error):
+                        _extractErrors(error.error)
+                        continue
+                    #XXX
+                    if hasattr(error.error, "message"):
+                        error = removeSecurityProxy(error.error)
+                    else:
+                        error = removeSecurityProxy(error)
+                    message = translate(error.message, context=self.request)
+                    if error.widget:
+                        self.jsonResponse['errors'][error.widget.id] = message
+                    else:
+                        self.jsonResponse['formErrors'].append(message)
+            _extractErrors(errors)
         return data, errors
