@@ -1,0 +1,10 @@
+1.1.0 (2009-05-26)
+------------------
+
+* Obligatory "How could I have done that" release smoothing out documentation
+  bugs and making the command line options more complete.
+
+1.0.0 (2009-05-26)
+------------------
+
+* Initial Release.

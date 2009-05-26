@@ -1,0 +1,76 @@
+Setuptools Extras Handling
+==========================
+
+Setup
+-----
+ 
+    >>> import os
+    >>> from van.pydeb import tests, main
+    >>> here = os.path.dirname(tests.__file__)
+    >>> zope_component = os.path.join(here, 'zope.component.egg-info')
+    >>> zope_security = os.path.join(here, 'zope.security.egg-info')
+    >>> zope_app_publication = os.path.join(here, 'zope.app.publication.egg-info')
+
+    >>> def runit(string):
+    ...     main(['bin'] + string.split())
+
+The basic case: package depends directly on all extra dependencies
+------------------------------------------------------------------
+
+zope.component has a 'zcml' extra, we should check that by the the dependencies
+of this extra are shown in the depends and provides line:
+  
+    >>> runit('depends --egg-info %s' % zope_component)
+    python-setuptools, python-z3c.recipe.sphinxdoc, python-zodb, python-zope, python-zope.configuration, python-zope.event, python-zope.hookable, python-zope.i18nmessageid, python-zope.interface, python-zope.location, python-zope.proxy, python-zope.security, python-zope.testing
+
+We can have create a provides line for all extras:
+
+    >>> runit('provides --egg-info %s' % zope_component)
+    python-zope.component-docs, python-zope.component-hook, python-zope.component-persistentregistry, python-zope.component-test, python-zope.component-zcml
+
+Moving an extra's dependencies into "Suggests:"
+-----------------------------------------------
+
+We notice that the "docs" dependency us not a hard one and decide to exclude it
+(it goes into Suggests:):
+
+    >>> runit('depends --egg-info %s --exclude-extra docs' % zope_component)
+    python-setuptools, python-zodb, python-zope, python-zope.configuration, python-zope.event, python-zope.hookable, python-zope.i18nmessageid, python-zope.interface, python-zope.location, python-zope.proxy, python-zope.security, python-zope.testing
+
+We could also exclude it from the "provides" list:
+
+    >>> runit('provides --egg-info %s --exclude-extra docs' % zope_component)
+    python-zope.component-hook, python-zope.component-persistentregistry, python-zope.component-test, python-zope.component-zcml
+
+Moving an extra into a metapackage
+----------------------------------
+
+Now we decide to move the 'zcml' extra to it's own metapackage, thus we need to separate out it's dependencies:
+
+    >>> runit('depends --egg-info %s --exclude-extra docs --exclude-extra zcml' % zope_component)
+    python-setuptools, python-zodb, python-zope, python-zope.event, python-zope.hookable, python-zope.interface, python-zope.location, python-zope.testing
+    >>> runit('depends --egg-info %s --extra zcml' % zope_component)
+    python-zope.configuration, python-zope.i18nmessageid, python-zope.proxy, python-zope.security
+
+We could also have the docs extra included in the metapackage if we wanted:
+
+    >>> runit('depends --egg-info %s --extra zcml --extra docs' % zope_component)
+    python-z3c.recipe.sphinxdoc, python-zope.configuration, python-zope.i18nmessageid, python-zope.proxy, python-zope.security
+
+And make a "Provides" list for that:
+
+    >>> runit('provides --egg-info %s --extra docs --extra zcml' % zope_component)
+    python-zope.component-docs, python-zope.component-zcml
+
+Packages that depend on extras
+------------------------------
+
+Depend on the provides list:
+
+    >>> runit('depends --egg-info %s' % zope_app_publication) # doctest: +ELLIPSIS
+    python-..., python-zope.component-zcml, ...
+
+But packages that don't, get the original dependency:
+
+    >>> runit('depends --egg-info %s' % zope_security) # doctest: +ELLIPSIS
+    python-..., python-zope.component, ...
