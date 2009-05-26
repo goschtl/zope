@@ -1,0 +1,39 @@
+Test various builtin translations
+=================================
+
+
+    >>> from van import pydeb
+
+Paste
+-----
+
+    >>> print pydeb.py_to_bin("Paste")
+    python-paste
+    >>> print pydeb.py_to_bin("PasteDeploy")
+    python-pastedeploy
+    >>> print pydeb.py_to_bin("PasteScript")
+    python-pastescript
+
+ZODB3
+-----
+
+    >>> print pydeb.py_to_bin("ZODB3")
+    python-zodb
+    >>> print pydeb.py_to_src("ZODB3")
+    zodb
+    >>> print pydeb.bin_to_py("python-zodb")
+    ZODB3
+    >>> print pydeb.src_to_py("zodb")
+    ZODB3
+
+zope.interface
+--------------
+    
+    >>> print pydeb.py_to_bin("zope.interface")
+    python-zope.interface
+    >>> print pydeb.py_to_src("zope.interface")
+    zope.interface
+    >>> print pydeb.bin_to_py("python-zope.interface")
+    zope.interface
+    >>> print pydeb.src_to_py("zope.interface")
+    zope.interface
