@@ -12,7 +12,7 @@
 #
 ##############################################################################
 name = 'bobo'
-version = '0'
+version = '0.2.0'
 
 long_description = """
 Bobo is a light-weight framework for creating WSGI web applications.
@@ -72,6 +72,7 @@ setup(
     package_dir = {'':'src'},
     install_requires = install_requires,
     entry_points = entry_points,
-    tests_require = ['bobodoctestumentation', 'webtest', 'zope.testing'],
+    tests_require = ['bobodoctestumentation ==%s' % version,
+                     'webtest', 'zope.testing'],
     test_suite = 'bobodoctestumentation.tests.test_suite',
     )
