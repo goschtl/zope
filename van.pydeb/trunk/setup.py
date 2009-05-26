@@ -15,13 +15,15 @@ import os
 from setuptools import setup, find_packages
 
 long_description = open('README.txt', 'r').read()
+long_description += '\n'
+long_description += open('CHANGES.txt', 'r').read()
 
 setup(name="van.pydeb",
       description='Make egg metadata information available for Debian packaging',
       long_description=long_description,
       author="Vanguardistas",
       url='http://pypi.python.org/pypi/van.pydeb',
-      version='1.0.0dev',
+      version='1.0.0',
       license = 'ZPL 2.1',
       packages=find_packages(),
       entry_points = {'console_scripts': ['van_pydeb = van.pydeb:main',]},
