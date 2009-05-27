@@ -2,7 +2,7 @@
  Changes
 =========
 
-3.7.1 (unreleased)
+3.7.1 (2009-05-27)
 ------------------
 
 - Restored ``zope.app.pagetemplate.engine`` module, using BBB imports from
