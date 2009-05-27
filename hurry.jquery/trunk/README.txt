@@ -13,8 +13,8 @@ structure and different modes (normal, minified).
 How to use?
 ===========
 
-You can import various bits of jQuery from ``hurry.jquery`` and ``.need``
-them where you want these resources to be included on a page::
+You can import jQuery from ``hurry.jquery`` and ``.need`` it where you want
+these resources to be included on a page::
 
   from hurry import jquery
 
