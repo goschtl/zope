@@ -4,7 +4,7 @@ CHANGES
 0.4 (unreleased)
 ================
 
-* ...
+* Updated required packages.
 
 0.3 (2008-12-05)
 ================
