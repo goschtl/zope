@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) Zope Corporation and Contributors.
+# Copyright (c) Zope Foundation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,40 +11,32 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+name, version = 'bozo.component', '0'
 
-name, version = '', '0'
-
-import os
-from setuptools import setup, find_packages
+install_requires = ['setuptools', 'zope.compoent', 'bobo']
+extras_require = dict(test=['zope.testing'])
 
 entry_points = """
 """
 
-def read(rname):
-    return open(os.path.join(os.path.dirname(__file__), *rname.split('/')
-                             )).read()
-
-long_description = (
-        read('src/%s/README.txt' % '/'.join(name.split('.')))
-        + '\n' +
-        'Download\n'
-        '--------\n'
-        )
+from setuptools import setup
 
 setup(
-    name = name,
-    version = version,
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
-    description = '',
-    long_description=long_description,
     license = 'ZPL 2.1',
-    
-    packages = find_packages('src'),
-    namespace_packages = ['zc'],
+
+    name = name, version = version,
+    long_description=open('README.txt').read(),
+    description = open('README.txt').read().strip().split('\n')[0],
+    packages = [name.split('.')[0], name],
+    namespace_packages = [name.split('.')[0]],
     package_dir = {'': 'src'},
-    install_requires = ['setuptools'],
+    install_requires = install_requires,
     zip_safe = False,
     entry_points=entry_points,
-    include_package_data = True,
+    package_data = {name: ['*.txt', '*.test', '*.html']},
+    extras_require = extras_require,
+    tests_require = extras_require['test'],
+    test_suite = name+'.tests.test_suite',
     )
