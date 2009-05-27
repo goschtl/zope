@@ -1,0 +1,6 @@
+Credit due where credit is due
+******************************
+
+Much of this package is inspired by the hurry.yui package that in turn could
+not exist without the very cool hurry.resource package. Both mainly written
+by Martijn Faasen. Thanks!
