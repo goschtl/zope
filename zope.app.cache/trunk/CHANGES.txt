@@ -2,10 +2,10 @@
 CHANGES
 =======
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- ...
+- Use zope.componentvocabulary instead of zope.app.component.
 
 3.5.0 (2009-01-31)
 ------------------

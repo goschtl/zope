@@ -19,9 +19,9 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import classProvides
 from zope.component import ComponentLookupError, getUtility
+from zope.componentvocabulary.vocabulary import UtilityVocabulary
 from zope.schema.interfaces import IVocabularyFactory
 from zope.app.cache.interfaces import ICacheable, ICache
-from zope.app.component.vocabulary import UtilityVocabulary
 from zope.traversing.api import getPath
 
 def getCacheForObject(obj):
