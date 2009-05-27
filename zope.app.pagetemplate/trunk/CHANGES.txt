@@ -5,7 +5,8 @@
 3.7.1 (unreleased)
 ------------------
 
-- TBD
+- Restored ``zope.app.pagetemplate.engine`` module, using BBB imports from
+  ``zope.pagetemplate.engine``.
 
 3.7.0 (2009-05-25)
 ------------------
