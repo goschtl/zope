@@ -24,7 +24,7 @@ setup(
     classifiers=[],
     keywords='',
     author='Jan-Wijbrand Kolman',
-    author_email='jkolman@thehealthagency.com',
+    author_email='jw@n--tree.net',
     license='ZPL 2.1',
     packages=find_packages('src'),
     namespace_packages=['hurry'],
