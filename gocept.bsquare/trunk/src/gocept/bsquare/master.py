@@ -30,7 +30,7 @@ def split_file(path):
     return ("%s/%s" % (project, branch), "/".join(pieces[2:]))
 
 
-def make_factory(svn_url):
+def make_factory(svn_url, passOnNoTest=True):
     f = BuildFactory()
     f.addStep(SVN(baseURL=svn_url, mode='clobber'))
     f.addStep(Compile(name='bootstrap',
@@ -45,11 +45,19 @@ def make_factory(svn_url):
                 command=command,
                 description=['building'],
                 descriptionDone=['build']))
-    #-1 == stop on first error
-    if is_win32:
-        command = "if EXIST bin\\test.exe bin\\test.exe --exit-with-status -1"
+
+    if passOnNoTest:
+        #-1 == stop on first error
+        if is_win32:
+            command = "if EXIST bin\\test.exe bin\\test.exe --exit-with-status -1"
+        else:
+            command = 'if [ -e bin/test ]; then bin/test --exit-with-status -1; fi'
     else:
-        command = 'if [ -e bin/test ]; then bin/test --exit-with-status -1; fi'
+        if is_win32:
+            command = "bin\\test.exe --exit-with-status -1"
+        else:
+            command = 'bin/test --exit-with-status -1'
+
     f.addStep(Compile(name="test",
                 command=command,
                 description=['testing'],
@@ -58,6 +66,12 @@ def make_factory(svn_url):
     f.treeStableTimer = 300
     return f
 
+def make_factory_strict(svn_url):
+    """Same as make_factory, but will fail when no bin/test exists
+    That's somehow a must be solution, because bin/buildout does NOT
+    return an exitstatus on an error
+    """
+    return make_factory(svn_url, passOnNoTest=False)
 
 def configure(svn_url, http_port=8010, allowForce=False,
               svnuser = None, svnpasswd = None,
@@ -78,6 +92,7 @@ def configure(svn_url, http_port=8010, allowForce=False,
     * svnpasswd: password to be passed to svn
     * pollinterval: interval in seconds to poll the svn repo for changes
     * nightlyhour: run nightly builds at this hour
+                   pass None to disable nightly
     * poller: custom poller object instance to be used instead of SVNPoller
     * makefactory:
       * can a simple callable factory that gets the svn_url
@@ -127,9 +142,10 @@ def configure(svn_url, http_port=8010, allowForce=False,
 
         c['schedulers'].append(Scheduler(
             project, "%s/trunk" % project, pollinterval+10, [project]))
-        c['schedulers'].append(Nightly(
-            "%s nightly" % project, [project], hour=[nightlyhour],
-            branch="%s/trunk" % project))
+        if nightlyhour is not None:
+            c['schedulers'].append(Nightly(
+                "%s nightly" % project, [project], hour=[nightlyhour],
+                branch="%s/trunk" % project))
 
     # Status display(s)
     c['status'] = []
