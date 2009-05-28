@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Grok - Quickstart</title>
+    <style type="text/css">
+    body {margin:0px;background-color:#DDDDDD;color:black;font-family:"Lucida Grande",Verdana,FreeSans,sans-serif;}
+    #header {background-color:#DDDDDD;min-height:120px;}
+    #logo {float:left;margin:23px;}
+    #version {padding-top:78px;}
+    #content {background-color:White;padding: 23px 0px 23px 170px;min-height:250px;}
+    #login {}
+    #manage {}
+    #logout {}
+    #footer {padding-left:46px;}
+    #footer dl {display:inline-block;vertical-align:top;width:19%;}
+    #footer dl dt {font-weight:bold;margin:0;padding:0;}
+    #footer dl dd {margin:0;padding:0;}
+    a {text-decoration:none;}
+    a:hover {background-color:#DDDDDD;color:black;}
+    #footer a:hover {background-color:white;color:black;}
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <div id="logo"><img tal:attributes="src static/grok-logo-name.gif" alt="Grok Logo" title="Grok Logo"></div>
+      <div id="version">You are running <b>Grok</b> release <b tal:content="view/grok_version" /></div>
+    </div>
+    <div id="content">
+      <div tal:condition="view/logged_in">
+        <div><b>Available applications</b></div>
+        <ul tal:condition="view/available_apps">
+          <li tal:repeat="app view/available_apps">
+            <a tal:attributes="href app/url"
+               tal:content="app/name" />
+          </li>
+        </ul>
+        <div tal:condition="not:view/available_apps">No apps available<br><br></div>
+      </div>
+      <div id="login" tal:condition="not:view/logged_in">&raquo; <a href="/@@login.html?nextURL=/applications">Login & manage applications</a></div>
+      <div id="manage" tal:condition="view/logged_in">&raquo; <a href="/applications">Manage applications</a></div>
+      <div id="logout" tal:condition="view/logged_in">&raquo; <a href="/@@logout.html?nextURL=/">Logout</a></div>
+    </div>
+    <div id="footer">
+      <dl>
+        <dt>Documention</dt>
+        <dd><a href="http://grok.zope.org/doc/current/">Official Docs</a></dd>
+        <dd><a href="http://grok.zope.org/documentation">Community Docs</a></dd>
+        <dd>
+          <form action="http://grok.zope.org/documentation/phc_search">
+            <input type="text" size="10" name="SearchableText">
+            <input type="submit" value="Search">
+          </form>
+        </dd>
+      </dl>
+      <dl>
+        <dt>Code</dt>
+        <dd><a href="http://svn.zope.org/grok/">SVN Repository</a></dd>
+        <dd><a href="http://grok.zope.org/about/download">Download</a></dd>
+        <dd><a href="http://pypi.python.org/pypi/grok">PyPI</a></dd>
+      </dl>
+      <dl>
+        <dt>Community</dt>
+        <dd><a href="irc://irc.freenode.net/#grok">IRC Channel</a></dd>
+        <dd><a href="http://mail.zope.org/mailman/listinfo/grok-dev">Mailing list</a></dd>
+      </dl>
+      <dl>
+        <dt>Links</dt>
+        <dd><a href="http://grok.zope.org">Grok Website</a></dd>
+        <dd><a href="http://wiki.zope.org/grok">Grok Wiki</a></dd>
+        <dd><a href="http://wiki.zope.org/zope3">Zope3 Wiki</a></dd>
+        <dd><a href="http://planetzope.org">PlanetZope</a></dd>
+      </dl>
+      <dl>
+        <dt><img tal:attributes="src static/grok-relax5.gif" alt="Grok relax" title="Grok relax"></dt>
+      </dl>
+    </div>
+  </body>
+</html>
