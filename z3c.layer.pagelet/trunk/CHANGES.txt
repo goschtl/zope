@@ -2,13 +2,13 @@
 CHANGES
 =======
 
-1.4.1 (unreleased)
+1.5.0 (2009-05-28)
 ------------------
 
-- Removed dependency on ``zope.app.exception`` by using a current
-  version of ``zope.browser`` and by implementing the exception view
-  classes directly instead of inheriting them (Quite nothing of the
-  base classes was in use here.)
+- Removed dependency on ``zope.app.exception`` by using
+  ``zope.browser>=1.2`` and by implementing the exception view classes
+  directly instead of inheriting them (Quite nothing of the base
+  classes was in use here.)
 
 - Removed not necessary test dependency on ``zope.app.twisted``.
 
