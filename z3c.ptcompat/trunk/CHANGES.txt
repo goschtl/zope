@@ -1,10 +1,8 @@
 Changelog
 =========
 
-0.5.3 (unreleased)
+0.5.3 (2009-05-28)
 ------------------
-
-- Nothing changed yet.
 
 - Added support for browser:addform, browser:editform, browser:form,
   and browser:schemadisplay directives.
@@ -13,7 +11,6 @@ Changelog
 ------------------
 
 - Fixing brown-bag release 0.5.1.
-
 
 0.5.1 (2009-03-09)
 ------------------
@@ -28,7 +25,6 @@ Changelog
   homepage.
 
 - Reformatted release dates in change log to use iso dates.
-
 
 0.5 (2009-02-16)
 ----------------
