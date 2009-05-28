@@ -18,8 +18,15 @@ class QuickStart(grok.View):
     def logged_in(self):
         return not IUnauthenticatedPrincipal.providedBy(self.request.principal)
 
-    def available_apps(self):
+    def apps_available(self):
         apps=[]
         for item in list(self.context.values()):
             apps.append({'name':item.__name__,'url':self.url(item)})
         return apps
+
+    def admin_available(self):
+        try:
+            admin=bool(pkg_resources.require('grokui.admin')[0])
+        except pkg_resources.DistributionNotFound:
+            admin=False
+        return admin

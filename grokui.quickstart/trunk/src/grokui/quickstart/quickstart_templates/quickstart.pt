@@ -28,16 +28,16 @@
     <div id="content">
       <div tal:condition="view/logged_in">
         <div><b>Available applications</b></div>
-        <ul tal:condition="view/available_apps">
-          <li tal:repeat="app view/available_apps">
+        <ul tal:condition="view/apps_available">
+          <li tal:repeat="app view/apps_available">
             <a tal:attributes="href app/url"
                tal:content="app/name" />
           </li>
         </ul>
-        <div tal:condition="not:view/available_apps">No apps available<br><br></div>
+        <div tal:condition="not:view/apps_available">No apps available<br><br></div>
       </div>
-      <div id="login" tal:condition="not:view/logged_in">&raquo; <a href="/@@login.html?nextURL=/applications">Login & manage applications</a></div>
-      <div id="manage" tal:condition="view/logged_in">&raquo; <a href="/applications">Manage applications</a></div>
+      <div id="login" tal:condition="not:view/logged_in">&raquo; <a href="/@@login.html?nextURL=/">Login</a></div>
+      <div id="manage" tal:condition="python:view.logged_in() and view.admin_available()">&raquo; <a href="/applications">Manage applications</a></div>
       <div id="logout" tal:condition="view/logged_in">&raquo; <a href="/@@logout.html?nextURL=/">Logout</a></div>
     </div>
     <div id="footer">
