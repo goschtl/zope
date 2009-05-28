@@ -27,6 +27,10 @@
     padding: 0em;
   }
 
+  .z-form a {
+    text-decoration: none;
+  }
+
   .z-add-form {
     padding: 1em;
   }
