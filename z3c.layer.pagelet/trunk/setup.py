@@ -63,8 +63,8 @@ setup(
             'zope.app.i18n',
             'zope.configuration>=3.5.0',
             'zope.component',
-            'zope.app.component',
             'zope.app.authentication',
+            'zope.principalregistry',
             ],
         ),
     install_requires = [

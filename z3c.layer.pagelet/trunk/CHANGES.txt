@@ -12,6 +12,8 @@ CHANGES
 
 - Removed not necessary test dependency on ``zope.app.twisted``.
 
+- Removed no longer necessary test dependency on ``zope.app.component``.
+
 
 1.4.0 (2009-03-16)
 ------------------
