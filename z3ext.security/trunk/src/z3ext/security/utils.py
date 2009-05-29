@@ -39,6 +39,18 @@ def getPrincipal(id=None):
             return None
 
 
+def getPrincipals(ids):
+    auth = getUtility(IAuthentication)
+
+    for pid in ids:
+        try:
+            principal = auth.getPrincipal(pid)
+        except PrincipalLookupError:
+            continue
+
+        yield principal
+
+
 def checkPermissionForPrincipal(principal, permission, object):
     interaction = queryInteraction()
 

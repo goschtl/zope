@@ -45,3 +45,23 @@ class IExtendedGrantInfo(interface.Interface):
 
     def getPrincipalsForPermission(permission):
         """ Get principals for permission """
+
+
+class IPublicRole(interface.Interface):
+    """ public role """
+
+
+class IManagerRole(interface.Interface):
+    """ marker interface for manager role """
+
+
+class IPublicPermission(interface.Interface):
+    """ marker interface for allowed permissins """
+
+
+class IPermissionCategory(interface.Interface):
+    """ permissions category """
+
+
+class IPermissionCategoryType(interface.interfaces.IInterface):
+    """Permission category type"""
