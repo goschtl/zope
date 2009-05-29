@@ -1,0 +1,65 @@
+Test various builtin translations
+=================================
+
+    >>> from van import pydeb
+    >>> from van.pydeb.tests import runit
+
+We can translate package names between setuptools names and debian
+source/binary names using the python API. By default package names convert as
+follows:
+ 
+    >>> print pydeb.py_to_bin("foo")
+    python-foo
+    >>> print pydeb.py_to_src("foo")
+    foo
+    >>> print pydeb.bin_to_py("python-foo")
+    foo
+    >>> print pydeb.src_to_py("foo")
+    foo
+
+These conversions are also exposed in the command line interface:
+
+    >>> runit('van-pydeb py_to_bin foo')
+    python-foo
+    >>> runit('van-pydeb py_to_src foo')
+    foo
+    >>> runit('van-pydeb bin_to_py python-foo')
+    foo
+    >>> runit('van-pydeb src_to_py foo')
+    foo
+
+Paste
+-----
+
+    >>> print pydeb.py_to_bin("Paste")
+    python-paste
+    >>> print pydeb.py_to_bin("PasteDeploy")
+    python-pastedeploy
+    >>> print pydeb.py_to_bin("PasteScript")
+    python-pastescript
+
+ZODB3
+-----
+
+ZODB3 doesn't follow convention:
+
+    >>> print pydeb.py_to_bin("ZODB3")
+    python-zodb
+    >>> print pydeb.py_to_src("ZODB3")
+    zodb
+    >>> print pydeb.bin_to_py("python-zodb")
+    ZODB3
+    >>> print pydeb.src_to_py("zodb")
+    ZODB3
+
+zope.interface
+--------------
+    
+    >>> print pydeb.py_to_bin("zope.interface")
+    python-zope.interface
+    >>> print pydeb.py_to_src("zope.interface")
+    zope.interface
+    >>> print pydeb.bin_to_py("python-zope.interface")
+    zope.interface
+    >>> print pydeb.src_to_py("zope.interface")
+    zope.interface
