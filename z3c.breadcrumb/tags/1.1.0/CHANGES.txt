@@ -1,0 +1,40 @@
+=======
+CHANGES
+=======
+
+1.1.0 (2009-05-29)
+------------------
+
+- Feature: Added ability to register a Null-adapter as a breadcrumb. A
+  null-breadcrumb will cause the item not to be displayed in the breadcrumbs.
+
+1.0.3 (2008-12-13)
+------------------
+
+- Bug: Fixed ``IBreadcrumbs`` to match implementation.
+- Clean up dependencies.
+
+
+1.0.2 (2008-01-23)
+------------------
+
+- Bug: Fixed the package's long description.
+
+- Feature: Use the correct ``DocFileSuite`` class that counts tests properly.
+
+
+1.0.1 (2007-01-21)
+------------------
+
+- Bug: Test coverage brought up to 100%.
+
+- Feature: Register default ``IBreadcrumbs`` adapter.
+
+- Bug: Default ``IBreadcrumbs`` stops only on virtual host root, not on
+  ``ISite`` object
+
+
+1.0.0 (7/10/2007)
+-----------------
+
+- Initial Release
