@@ -1,7 +1,11 @@
-1.1.1 (unreleased)
+Changes
+=======
+
+1.2.0 (unreleased)
 ------------------
 
-* ???
+* Improve README.txt. Thanks to Fabio Tranchitella for a better looking way of
+  calling van-pydeb in the rules file.
 
 1.1.0 (2009-05-26)
 ------------------
