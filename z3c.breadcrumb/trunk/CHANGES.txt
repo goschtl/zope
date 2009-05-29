@@ -2,9 +2,11 @@
 CHANGES
 =======
 
-1.0.4 (unreleased)
+1.1.0 (2009-05-29)
+------------------
 
-- ...
+- Feature: Added ability to register a Null-adapter as a breadcrumb. A
+  null-breadcrumb will cause the item not to be displayed in the breadcrumbs.
 
 1.0.3 (2008-12-13)
 ------------------

@@ -60,8 +60,10 @@ class Breadcrumbs(zope.location.Location):
 
         objects.reverse()
         for object in objects:
-            info = zope.component.getMultiAdapter(
+            info = zope.component.queryMultiAdapter(
                 (object, self.request), interfaces.IBreadcrumb)
+            if info is None:
+                continue
             yield {'name': info.name,
                    'url': info.url,
                    'activeURL': info.activeURL}

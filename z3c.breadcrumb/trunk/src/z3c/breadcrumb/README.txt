@@ -137,9 +137,9 @@ Now we can collect breadcrumbs for our items. You can see the url is correct
 and the label ``Zope Foundation`` is collected by the custom IBreadcrumb
 adapter:
 
-  >>> breadcrumb = zope.component.getMultiAdapter((office, request),
+  >>> breadcrumbs = zope.component.getMultiAdapter((office, request),
   ...     interfaces.IBreadcrumbs)
-  >>> list(breadcrumb.crumbs)
+  >>> list(breadcrumbs.crumbs)
   [{'url': 'http://127.0.0.1',
     'activeURL': True,
     'name': 'top'},
@@ -147,12 +147,27 @@ adapter:
     'activeURL': True,
     'name': u'Zope Foundation'}]
 
-  >>> breadcrumb.__parent__ is office
+  >>> breadcrumbs.__parent__ is office
   True
 
 Default breadcrumbs stops on virtual host root
- 
+
   >>> request._vh_root = office
-  >>> list(breadcrumb.crumbs)
+  >>> list(breadcrumbs.crumbs)
   [{'url': 'http://127.0.0.1', 'activeURL': True, 'name': u'Zope Foundation'}]
 
+If the breadcrumb of an item is a Null-adapter, then the item is ignored.
+
+  >>> from zope.traversing.interfaces import IContainmentRoot
+  >>> zope.component.provideAdapter(
+  ...     lambda c, r: None,
+  ...     (IContainmentRoot, IHTTPRequest),
+  ...     interfaces.IBreadcrumb)
+
+  >>> request = TestRequest()
+  >>> breadcrumbs = zope.component.getMultiAdapter(
+  ...     (office, request), interfaces.IBreadcrumbs)
+  >>> list(breadcrumbs.crumbs)
+  [{'url': 'http://127.0.0.1/office',
+    'activeURL': True,
+    'name': u'Zope Foundation'}]
