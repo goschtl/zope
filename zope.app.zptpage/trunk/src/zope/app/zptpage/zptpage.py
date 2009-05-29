@@ -26,7 +26,7 @@ from zope.traversing.api import getPath
 from zope.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.filerepresentation.interfaces import IFileFactory
 
-from zope.app.pagetemplate.engine import AppPT
+from zope.pagetemplate.engine import AppPT
 from zope.app.zptpage.i18n import ZopeMessageFactory as _
 from zope.container.contained import Contained
 from zope.app.publication.interfaces import IFileContent

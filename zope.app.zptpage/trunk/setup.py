@@ -52,7 +52,6 @@ setup(
     include_package_data=True,
     install_requires=['setuptools',
                       'zope.container',
-                      'zope.app.pagetemplate',
                       'zope.app.publication',
                       'zope.filerepresentation',
                       'zope.formlib',
