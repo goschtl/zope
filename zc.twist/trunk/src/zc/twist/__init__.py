@@ -79,21 +79,17 @@ def Reference(obj):
     return obj
 
 def availableConnectionCount(db, version=''):
-    # we're entering into protected name land :-(  It would be nice to
-    # have APIs to get the current pool size, and available pool size in
-    # addition to the target pool size
-    try:
+    try:                    # ZODB 3.9 and newer
+        pool = db.pool
+    except AttributeError:  # ZODB 3.8 and older
         pools = db._pools
-    except AttributeError:
-        return True # TODO: log this
-    else:
         pool = pools.get(version)
         if pool is None:
             return True
-        size = db.getPoolSize()
-        all = len(pool.all)
-        available = len(pool.available) + (size - all)
-        return available
+    size = db.getPoolSize()
+    all = len(pool.all)
+    available = len(pool.available) + (size - all)
+    return available
 
 missing = object()
 

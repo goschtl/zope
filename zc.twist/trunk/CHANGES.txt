@@ -1,7 +1,10 @@
-(unreleased)
-------------
+1.4 (unreleased)
+----------------
 
-* added missing import of twisted.python.failure
+* Added missing import of twisted.python.failure.
+
+* Use db.pool with ZODB >= 3.9 and db._pools with ZODB < 3.9.
+  The tests now pass with ZODB 3.9.
 
 1.3 (2008-06-19)
 ----------------
