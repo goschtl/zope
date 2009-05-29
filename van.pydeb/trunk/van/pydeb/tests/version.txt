@@ -1,10 +1,36 @@
-Test conversion between setuptools and debian version numbers
+Setup
+-----
 
-Setup a testing function:
-
+    >>> from van.pydeb.tests import runit
     >>> from van.pydeb import py_version_to_deb
     >>> from pkg_resources import parse_version
     >>> from subprocess import call
+
+Python API
+----------
+        
+    >>> py_version_to_deb('2.8.0')
+    '2.8.0'
+    >>> py_version_to_deb('2.8.0pre1')
+    '2.8.0~c~pre1'
+
+Command Line Interface
+----------------------
+
+Version comparison is also exposed via the command line interface, which prints
+out the result on stdout.
+
+    >>> runit('van-pydeb py_version_to_deb 2.8.0')
+    2.8.0
+    >>> runit('van-pydeb py_version_to_deb 2.8.0pre1')
+    2.8.0~c~pre1
+
+Sort Order
+----------
+
+Test conversion between setuptools and debian version numbers
+
+Setup a testing function:
 
     >>> def dpkg_is_gt(v1, v2):
     ...     return call(['dpkg', '--compare-versions', v1, '>>', v2]) == 0

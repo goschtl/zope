@@ -19,6 +19,21 @@ from pkg_resources import PathMetadata, Distribution
 from pkg_resources import component_re # Is this a public interface?
 
 _HERE = os.path.dirname(__file__)
+
+#
+# Command Line Interface
+#
+
+_COMMANDS = {}
+
+def main(argv=sys.argv):
+    # Handle global options and dispatch the command 
+    assert len(argv) >= 2, "You need to specify a command"
+    command = _COMMANDS.get(argv[1])
+    if command is None:
+        raise Exception("No Command: %s" % argv[1])
+    return command(argv)
+
 #
 # Package name conversion
 #
@@ -64,6 +79,21 @@ def bin_to_py(binary_package):
 def src_to_py(source_package):
     """Convert a debian source package name to a setuptools project name"""
     return _SRC_TO_PY.get(source_package, source_package)
+
+def _string_command(argv):
+    command = argv[1]
+    parser = optparse.OptionParser(usage="usage: %%prog %s argument" % command)
+    options, args = parser.parse_args(argv)
+    assert len(argv) == 3, "Too many or few arguments"
+    print {'py_to_src': py_to_src,
+           'py_to_bin': py_to_bin,
+           'bin_to_py': bin_to_py,
+           'src_to_py': src_to_py,
+           'py_version_to_deb': py_version_to_deb}[command](argv[2])
+    return 0
+_COMMANDS['py_to_src'] = _COMMANDS['py_to_bin'] = _string_command
+_COMMANDS['src_to_py'] = _COMMANDS['bin_to_py'] = _string_command
+_COMMANDS['py_version_to_deb'] = _string_command
 
 #
 # Version Conversion
@@ -113,7 +143,7 @@ _setuptools_debian_operators = {'>=': '>=',
                                 '!=': None, # != not supported by debian, use conflicts in future for this
                                 '<=': '<='}
 
-def main(argv=sys.argv):
+def _depends_or_provides(argv):
     """Run the dependency calculation program.
 
         >>> import os
@@ -144,6 +174,7 @@ def main(argv=sys.argv):
     else:
         raise Exception("Unknown command: %s" % command)
     return 0
+_COMMANDS['depends'] = _COMMANDS['provides'] = _depends_or_provides
 
 def _get_debian_provides(file, extras=None, exclude_extras=None):
     # get provides for extras

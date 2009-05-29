@@ -6,6 +6,10 @@ Changes
 
 * Improve README.txt. Thanks to Fabio Tranchitella for a better looking way of
   calling van-pydeb in the rules file.
+* Expose version and package name conversion functions via the command line interface.
+  e.g. This command will print out the debian binary package name::
+
+    $ van-pydeb py_to_bin foo
 
 1.1.0 (2009-05-26)
 ------------------
