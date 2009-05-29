@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.2.0 (unreleased)
+1.2.0 (2009-05-29)
 ------------------
 
 * Improve README.txt. Thanks to Fabio Tranchitella for a better looking way of
