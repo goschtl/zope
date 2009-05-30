@@ -17,7 +17,7 @@ $Id$
 """
 import zope.interface
 
-from topia.postag import interfaces, tag
+from topia.termextract import interfaces, tag
 
 SEARCH = 0
 NOUN = 1

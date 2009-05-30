@@ -20,7 +20,7 @@ Since words can have multiple tags, the determination of the correct tag is
 not always simple. This implementation, however, does not try to infer
 linguistic use and simply chooses the first tag in the lexicon.
 
-  >>> from topia.postag import tag
+  >>> from topia.termextract import tag
   >>> tagger = tag.Tagger()
   >>> tagger
   <Tagger for english>
@@ -194,7 +194,7 @@ Keywordword Extraction
 
 Now that we can tag a text, let's have a look at the keyword extractions.
 
-  >>> from topia.postag import extract
+  >>> from topia.termextract import extract
   >>> extractor = extract.KeywordExtractor()
   >>> extractor
   <KeywordExtractor using <Tagger for english>>

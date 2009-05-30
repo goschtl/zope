@@ -357,7 +357,7 @@ TreeTagger and Yahoo Keyword Extraction. We try to achieve that by first using
 a POS Tagger followed by applying a simple term constructor and relevance
 calculation,
 
-  >>> from topia.postag import extract
+  >>> from topia.termextract import extract
   >>> extractor = extract.KeywordExtractor()
 
 Let's look at the result of the tagger first:

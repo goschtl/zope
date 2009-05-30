@@ -19,7 +19,7 @@ import os
 import re
 import zope.interface
 
-from topia.postag import interfaces
+from topia.termextract import interfaces
 
 TERM_SPEC = re.compile('([^a-zA-Z]*)([a-zA-Z-\.]*[a-zA-Z])([^a-zA-Z]*[a-zA-Z]*)')
 DATA_DIRECTORY = os.path.join(os.path.dirname(__file__), 'data')

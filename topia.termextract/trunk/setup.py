@@ -22,18 +22,18 @@ def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 setup (
-    name='topia.postag',
+    name='topia.termextract',
     version='0.1.0dev',
     author = "Stephan Richter, Russ Ferriday and the Zope Community",
     author_email = "zope3-dev@zope.org",
-    description = "A Part-Of-Speech (POS) Content Tagger",
+    description = "Content Term Extraction using POS Tagging",
     long_description=(
         read('README.txt')
         + '\n\n' +
         'Detailed Documentation\n'
         '**********************\n'
         + '\n' +
-        read('src', 'topia', 'postag', 'README.txt')
+        read('src', 'topia', 'termextract', 'README.txt')
         + '\n\n' +
         read('CHANGES.txt')
         ),
@@ -47,7 +47,7 @@ setup (
         'Programming Language :: Python',
         'Natural Language :: English',
         'Operating System :: OS Independent'],
-    url = 'http://pypi.python.org/pypi/topia.postag',
+    url = 'http://pypi.python.org/pypi/topia.termextract',
     packages = find_packages('src'),
     include_package_data = True,
     package_dir = {'':'src'},
