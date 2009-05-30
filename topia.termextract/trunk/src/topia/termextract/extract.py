@@ -69,8 +69,6 @@ class TermExtractor(object):
                 _add(term, norm, multiterm, terms)
             elif state == NOUN and tag.startswith('N'):
                 _add(term, norm, multiterm, terms)
-            elif state == NOUN and tag == 'JJ' and term[0].isupper():
-                _add(term, norm, multiterm, terms)
             elif state == NOUN and not tag.startswith('N'):
                 state = SEARCH
                 if len(multiterm) > 1:
