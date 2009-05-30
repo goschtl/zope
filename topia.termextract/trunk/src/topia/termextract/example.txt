@@ -1,6 +1,6 @@
-==============
-A News Article
-==============
+===========================
+An Exmaple - A News Article
+===========================
 
 This document provides a simple example of extracting the terms of a BBC
 article from May 29, 2009. We will use several term extraction tools to
@@ -348,14 +348,20 @@ A POS tagger that uses some linguistics to tag a text. Here is its output::
   area            NN        area
   .               SENT      .
 
+As you can see, the identification of TreeTagger is pretty good, but the
+output would need some analysis to produce a useful set of terms. Furthermore,
+TreeTagger is not free for commercial use.
 
-Topia POS Tag
--------------
+Topia's Term Extractor
+----------------------
 
-Topia POS Tag tries to produce results somewhere between a simple tagger like
-TreeTagger and Yahoo Keyword Extraction. We try to achieve that by first using
-a POS Tagger followed by applying a simple term constructor and relevance
-calculation,
+Topia's Term Extractor tries to produce results somewhere between a POS
+tagger like TreeTagger and Yahoo Keyword Extraction.
+
+Since we are only interested in nouns, a very simple POS tagging algorithm can
+be deployed, which will provide good results most of the time. We then use
+some simple statistics and linguistics to produce a narrow but strong list of
+terms for the content.
 
   >>> from topia.termextract import extract
   >>> extractor = extract.TermExtractor()

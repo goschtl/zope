@@ -35,6 +35,8 @@ setup (
         + '\n' +
         read('src', 'topia', 'termextract', 'README.txt')
         + '\n\n' +
+        read('src', 'topia', 'termextract', 'example.txt')
+        + '\n\n' +
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
