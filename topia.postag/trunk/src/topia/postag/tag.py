@@ -46,6 +46,21 @@ def verifyProperNounAtSentenceStart(idx, tagged_term, tagged_terms, lexicon):
             tagged_term[0] = tagged_term[2] = lower_term
             tagged_term[1] = lower_tag
 
+def determineVerbAfterModal(idx, tagged_term, tagged_terms, lexicon):
+    "Determine the verb after a modal verb to avoid accidental noun detection."
+    term, tag, norm = tagged_term
+    if tag != 'MD':
+        return
+    len_terms = len(tagged_terms)
+    idx += 1
+    while idx < len_terms:
+        if tagged_terms[idx][1] == 'RB':
+            idx += 1
+            continue
+        if tagged_terms[idx][1] == 'NN':
+            tagged_terms[idx][1] = 'VB'
+        break
+
 def normalizePluralForms(idx, tagged_term, tagged_terms, lexicon):
     term, tag, norm = tagged_term
     if tag in ('NNS', 'NNPS') and term == norm:
@@ -75,6 +90,7 @@ class Tagger(object):
     rules = (
         correctDefaultNounTag,
         verifyProperNounAtSentenceStart,
+        determineVerbAfterModal,
         normalizePluralForms,
         )
 

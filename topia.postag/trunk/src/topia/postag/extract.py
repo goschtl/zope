@@ -22,9 +22,18 @@ from topia.postag import interfaces, tag
 SEARCH = 0
 NOUN = 1
 
-def defaultFilter(word, occur, strength):
-    return ((strength == 1 and occur >= 3) or
-            (strength >= 2))
+def permissiveFilter(word, occur, strength):
+    return True
+
+class DefaultFilter(object):
+
+    def __init__(self, singleStrengthMinOccur=3, noLimitStrength=2):
+        self.singleStrengthMinOccur = singleStrengthMinOccur
+        self.noLimitStrength = noLimitStrength
+
+    def __call__(self, word, occur, strength):
+        return ((strength == 1 and occur >= self.singleStrengthMinOccur) or
+                (strength >= self.noLimitStrength))
 
 def _add(term, norm, keyword, keywords):
     keyword.append((term, norm))
@@ -34,11 +43,13 @@ def _add(term, norm, keyword, keywords):
 class KeywordExtractor(object):
     zope.interface.implements(interfaces.IKeywordExtractor)
 
-    def __init__(self, tagger=None, filter=defaultFilter):
+    def __init__(self, tagger=None, filter=None):
         if tagger is None:
             tagger = tag.Tagger()
             tagger.initialize()
         self.tagger = tagger
+        if filter is None:
+            filter = DefaultFilter()
         self.filter = filter
 
     def extract(self, terms):

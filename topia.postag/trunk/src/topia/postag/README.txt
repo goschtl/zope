@@ -128,8 +128,30 @@ what happens:
    ['examples', 'NNS', 'example'],
    ['.', '.', '.']]
 
-So far so good. Let's now test the phase 2 rules.
+So far so good. Let's test a few more cases:
 
+  >>> tagger("The fox's tail is red.")
+  [['The', 'DT', 'The'],
+   ['fox', 'NN', 'fox'],
+   ["'s", 'POS', "'s"],
+   ['tail', 'NN', 'tail'],
+   ['is', 'VBZ', 'is'],
+   ['red', 'JJ', 'red'],
+   ['.', '.', '.']]
+
+  >>> tagger("The fox can't really jump over the fox's tail.")
+  [['The', 'DT', 'The'],
+   ['fox', 'NN', 'fox'],
+   ['can', 'MD', 'can'],
+   ["'t", 'RB', "'t"],
+   ['really', 'RB', 'really'],
+   ['jump', 'VB', 'jump'],
+   ['over', 'IN', 'over'],
+   ['the', 'DT', 'the'],
+   ['fox', 'NN', 'fox'],
+   ["'s", 'POS', "'s"],
+   ['tail', 'NN', 'tail'],
+   ['.', '.', '.']]
 
 Rules
 ~~~~~
@@ -165,3 +187,59 @@ Rules
     [['men', 'NNS', 'men']]
     >>> tagger('feet')
     [['feet', 'NNS', 'feet']]
+
+
+Keywordword Extraction
+----------------------
+
+Now that we can tag a text, let's have a look at the keyword extractions.
+
+  >>> from topia.postag import extract
+  >>> extractor = extract.KeywordExtractor()
+  >>> extractor
+  <KeywordExtractor using <Tagger for english>>
+
+As you can see, the extractor maintains a tagger:
+
+  >>> extractor.tagger
+  <Tagger for english>
+
+When creating an extractor, you can also pass in a tagger to avoid frequent
+tagger initialization:
+
+  >>> extractor = extract.KeywordExtractor(tagger)
+  >>> extractor.tagger is tagger
+  True
+
+Let's get the keywords for a simple text.
+
+  >>> extractor("The fox can't jump over the fox's tail.")
+  []
+
+We got no keywords. That's because by default at least 3 occurences of a
+keyword must be detected, if the keyword consists of a single word.
+
+The extractor maintains a filter component. Let's register the trivial
+permissive filter, which simply return everything that the extractor suggests:
+
+  >>> extractor.filter = extract.permissiveFilter
+  >>> extractor("The fox can't jump over the fox's tail.")
+  [('tail', 1, 1), ('fox', 2, 1)]
+
+But let's look at the default filter again, since it allows tweaking its
+parameters:
+
+  >>> extractor.filter = extract.DefaultFilter(singleStrengthMinOccur=2)
+  >>> extractor("The fox can't jump over the fox's tail.")
+  [('fox', 2, 1)]
+
+Let's now have a look at multi-word keywords. Oftentimes multi-word nouns and
+proper names occur only once or twice in a text. But they are often great
+keywords! To handle this scenario, the concept of "strength" was
+introduced. Currently the strength is simply the amount of words in the
+keyword/term. By default, all keywords with a strength larger than 1 are
+selected regardless of the number of occurances.
+
+  >>> extractor('The German consul of Boston resides in Newton.')
+  [('German consul', 1, 2)]
+
