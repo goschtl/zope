@@ -38,7 +38,7 @@ setup (
         read('CHANGES.txt')
         ),
     license = "ZPL 2.1",
-    keywords = "pos taggerlinguistics",
+    keywords = "content term extract pos tagger linguistics",
     classifiers = [
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

@@ -1,8 +1,8 @@
-==================
-Keyword Extraction
-==================
+===============
+Term Extraction
+===============
 
-This package implements text keyword extraction by making use of a simple
+This package implements text term extraction by making use of a simple
 Parts-Of-Speech (POS) tagging algorithm.
 
 http://bioie.ldc.upenn.edu/wiki/index.php/Part-of-Speech
@@ -41,7 +41,7 @@ The first step of tagging is to tokenize the text into terms.
   ['This', 'is', 'a', 'simple', 'example', '.']
 
 While most tokenizers ignore punctuation, it is important for us to keep it,
-since we need it later for the keyword extraction. Let's now look at some more
+since we need it later for the term extraction. Let's now look at some more
 complex cases:
 
 - Quoted Text
@@ -172,6 +172,26 @@ Rules
     >>> tagger('. Stephan')
     [['.', '.', '.'], ['Stephan', 'NNP', 'Stephan']]
 
+- Determine Verb after Modal Verb
+
+    >>> tagger('The fox can jump')
+    [['The', 'DT', 'The'],
+     ['fox', 'NN', 'fox'],
+     ['can', 'MD', 'can'],
+     ['jump', 'VB', 'jump']]
+    >>> tagger("The fox can't jump")
+    [['The', 'DT', 'The'],
+     ['fox', 'NN', 'fox'],
+     ['can', 'MD', 'can'],
+     ["'t", 'RB', "'t"],
+     ['jump', 'VB', 'jump']]
+    >>> tagger('The fox can really jump')
+    [['The', 'DT', 'The'],
+     ['fox', 'NN', 'fox'],
+     ['can', 'MD', 'can'],
+     ['really', 'RB', 'really'],
+     ['jump', 'VB', 'jump']]
+
 - Normalize Plural Forms
 
     >>> tagger('examples')
@@ -189,15 +209,15 @@ Rules
     [['feet', 'NNS', 'feet']]
 
 
-Keywordword Extraction
-----------------------
+Term Extraction
+---------------
 
-Now that we can tag a text, let's have a look at the keyword extractions.
+Now that we can tag a text, let's have a look at the term extractions.
 
   >>> from topia.termextract import extract
-  >>> extractor = extract.KeywordExtractor()
+  >>> extractor = extract.TermExtractor()
   >>> extractor
-  <KeywordExtractor using <Tagger for english>>
+  <TermExtractor using <Tagger for english>>
 
 As you can see, the extractor maintains a tagger:
 
@@ -207,17 +227,17 @@ As you can see, the extractor maintains a tagger:
 When creating an extractor, you can also pass in a tagger to avoid frequent
 tagger initialization:
 
-  >>> extractor = extract.KeywordExtractor(tagger)
+  >>> extractor = extract.TermExtractor(tagger)
   >>> extractor.tagger is tagger
   True
 
-Let's get the keywords for a simple text.
+Let's get the terms for a simple text.
 
   >>> extractor("The fox can't jump over the fox's tail.")
   []
 
-We got no keywords. That's because by default at least 3 occurences of a
-keyword must be detected, if the keyword consists of a single word.
+We got no terms. That's because by default at least 3 occurences of a
+term must be detected, if the term consists of a single word.
 
 The extractor maintains a filter component. Let's register the trivial
 permissive filter, which simply return everything that the extractor suggests:
@@ -233,12 +253,12 @@ parameters:
   >>> extractor("The fox can't jump over the fox's tail.")
   [('fox', 2, 1)]
 
-Let's now have a look at multi-word keywords. Oftentimes multi-word nouns and
+Let's now have a look at multi-word terms. Oftentimes multi-word nouns and
 proper names occur only once or twice in a text. But they are often great
-keywords! To handle this scenario, the concept of "strength" was
+terms! To handle this scenario, the concept of "strength" was
 introduced. Currently the strength is simply the amount of words in the
-keyword/term. By default, all keywords with a strength larger than 1 are
-selected regardless of the number of occurances.
+term. By default, all terms with a strength larger than 1 are selected
+regardless of the number of occurances.
 
   >>> extractor('The German consul of Boston resides in Newton.')
   [('German consul', 1, 2)]

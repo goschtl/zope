@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""POS Tagger
+"""Term Extractor
 
 $Id$
 """
@@ -35,13 +35,13 @@ class DefaultFilter(object):
         return ((strength == 1 and occur >= self.singleStrengthMinOccur) or
                 (strength >= self.noLimitStrength))
 
-def _add(term, norm, keyword, keywords):
-    keyword.append((term, norm))
-    keywords.setdefault(norm, 0)
-    keywords[norm] += 1
+def _add(term, norm, multiterm, terms):
+    multiterm.append((term, norm))
+    terms.setdefault(norm, 0)
+    terms[norm] += 1
 
-class KeywordExtractor(object):
-    zope.interface.implements(interfaces.IKeywordExtractor)
+class TermExtractor(object):
+    zope.interface.implements(interfaces.ITermExtractor)
 
     def __init__(self, tagger=None, filter=None):
         if tagger is None:
@@ -52,41 +52,41 @@ class KeywordExtractor(object):
             filter = DefaultFilter()
         self.filter = filter
 
-    def extract(self, terms):
-        """See interfaces.IKeywordExtractor"""
-        keywords = {}
+    def extract(self, taggedTerms):
+        """See interfaces.ITermExtractor"""
+        terms = {}
         # Phase 1: A little state machine is used to build simple and
-        # composite keywords.
-        keyword = []
+        # composite terms.
+        multiterm = []
         state = SEARCH
-        while terms:
-            term, tag, norm = terms.pop(0)
+        while taggedTerms:
+            term, tag, norm = taggedTerms.pop(0)
             if state == SEARCH and tag.startswith('N'):
                 state = NOUN
-                _add(term, norm, keyword, keywords)
+                _add(term, norm, multiterm, terms)
             elif state == SEARCH and tag == 'JJ' and term[0].isupper():
                 state = NOUN
-                _add(term, norm, keyword, keywords)
+                _add(term, norm, multiterm, terms)
             elif state == NOUN and tag.startswith('N'):
-                _add(term, norm, keyword, keywords)
+                _add(term, norm, multiterm, terms)
             elif state == NOUN and tag == 'JJ' and term[0].isupper():
-                _add(term, norm, keyword, keywords)
+                _add(term, norm, multiterm, terms)
             elif state == NOUN and not tag.startswith('N'):
                 state = SEARCH
-                if len(keyword) > 1:
-                    word = ' '.join([word for word, norm in keyword])
-                    keywords.setdefault(word, 0)
-                    keywords[word] += 1
-                keyword = []
-        # Phase 2: Only select the keywords that fulfill the filter criteria.
-        # Also create the keyword strength.
+                if len(multiterm) > 1:
+                    word = ' '.join([word for word, norm in multiterm])
+                    terms.setdefault(word, 0)
+                    terms[word] += 1
+                multiterm = []
+        # Phase 2: Only select the terms that fulfill the filter criteria.
+        # Also create the term strength.
         return [
             (word, occur, len(word.split()))
-            for word, occur in keywords.items()
+            for word, occur in terms.items()
             if self.filter(word, occur, len(word.split()))]
 
     def __call__(self, text):
-        """See interfaces.IKeywordExtractor"""
+        """See interfaces.ITermExtractor"""
         terms = self.tagger(text)
         return self.extract(terms)
 

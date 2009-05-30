@@ -44,9 +44,9 @@ class ITagger(zope.interface.Interface):
         """Get a tagged list of words."""
 
 
-class IKeywordExtractor(zope.interface.Interface):
-    """Extract important keywords from a given text."""
+class ITermExtractor(zope.interface.Interface):
+    """Extract important terms from a given text."""
 
     def __call__(text):
-        """Returns a list of extracted keywords, the amount of occurences and
+        """Returns a list of extracted terms, the amount of occurences and
         their search strength."""

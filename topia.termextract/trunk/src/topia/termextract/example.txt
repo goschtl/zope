@@ -2,8 +2,8 @@
 A News Article
 ==============
 
-This document provides a simple example of extracting the keywords of a BBC
-article from May 29, 2009. We will use several keyword extraction tools to
+This document provides a simple example of extracting the terms of a BBC
+article from May 29, 2009. We will use several term extraction tools to
 compare the outcome.
 
   >>> text ='''
@@ -52,7 +52,7 @@ compare the outcome.
 Yahoo Keyword Extractor
 -----------------------
 
-Yahoo provides a service that extracts keywords from a piece of content using
+Yahoo provides a service that extracts terms from a piece of content using
 its immense search database.
 
 http://developer.yahoo.com/search/content/V1/termExtraction.html
@@ -358,7 +358,7 @@ a POS Tagger followed by applying a simple term constructor and relevance
 calculation,
 
   >>> from topia.termextract import extract
-  >>> extractor = extract.KeywordExtractor()
+  >>> extractor = extract.TermExtractor()
 
 Let's look at the result of the tagger first:
 
