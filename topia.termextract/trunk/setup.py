@@ -23,7 +23,7 @@ def read(*rnames):
 
 setup (
     name='topia.termextract',
-    version='1.0.0',
+    version='1.1.0dev',
     author = "Stephan Richter, Russ Ferriday and the Zope Community",
     author_email = "zope3-dev@zope.org",
     description = "Content Term Extraction using POS Tagging",
