@@ -149,6 +149,9 @@ class ZopeTwoDirectoryResource(resource.DirectoryResource):
     # the resources so that .pt and .html do not get created as page
     # templates
 
+    # Allow traversal to contained resources from protected code
+    __allow_access_to_unprotected_subobjects__ = True
+
     resource_factories = {}
     for type, factory in (resource.DirectoryResource.resource_factories.items()):
         if factory is resource.PageTemplateResourceFactory:

@@ -4,6 +4,10 @@ Changelog for five.grok
 five.grok - 1.0b1 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+* Let static resource directories allow access to unprotected subattributes
+  to avoid authorisation problems when accessing them from protected code.
+  [optilude]
+
 * Do not create static resource directories if the 'static' directory does
   not actually exist.
   [optilude]
