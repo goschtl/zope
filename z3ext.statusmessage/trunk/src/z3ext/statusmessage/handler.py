@@ -30,18 +30,16 @@ def newAfterCall(self, request, ob):
     status = response.getStatus()
     if status not in (302, 303):
         service = IStatusMessage(request, None)
-        if service is None:
-            return
+        if service is not None:
+            messages = service.clear()
 
-        messages = service.clear()
+            if messages:
+                msg = u'\n'.join(messages)
+                msg = msg.encode('utf-8', 'ignore')
 
-        if messages:
-            msg = u'\n'.join(messages)
-            msg = msg.encode('utf-8', 'ignore')
-
-            body = response.consumeBody()
-            body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
-            response.setResult(body)
+                body = response.consumeBody()
+                body = body.replace('<!--z3ext-statusmessage-->', msg, 1)
+                response.setResult(body)
 
     afterCall(self, request, ob)
 
