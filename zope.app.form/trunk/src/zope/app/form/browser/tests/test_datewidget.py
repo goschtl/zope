@@ -101,14 +101,14 @@ class DateI18nWidgetTest(SimpleInputWidgetTest):
         super(DateI18nWidgetTest, self).testRender(
             datetime.datetime(2004, 3, 26, 12, 58, 59),
             ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                u'value="26 \u041c\u0430\u0440\u0442 2004 \u0433."'))
+                u'value="26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433."'))
 
     def testRenderFull(self):
         self._widget.displayStyle = "full"
         super(DateI18nWidgetTest, self).testRender(
             datetime.datetime(2004, 3, 26, 12, 58, 59),
             ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                u'value="26 \u041c\u0430\u0440\u0442 2004 \u0433."'))
+                u'value="26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433."'))
 
     def test_hasInput(self):
         del self._widget.request.form['field.foo']
@@ -139,13 +139,13 @@ class DateI18nWidgetTest(SimpleInputWidgetTest):
     def test_getLongInputValue(self):
         self._widget.displayStyle = "long"
         self.test_getDefaultInputValue(
-            u'26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+            u'26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
             )
 
     def test_getFullInputValue(self):
         self._widget.displayStyle = "full"
         self.test_getDefaultInputValue(
-            u'26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+            u'26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
             )
 
 

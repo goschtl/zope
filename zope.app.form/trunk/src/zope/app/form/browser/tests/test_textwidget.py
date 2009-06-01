@@ -202,7 +202,7 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"1 \u0414\u0435\u043a\u0430\u0431\u0440\u044c"
+                           u"1 \u0434\u0435\u043a\u0430\u0431\u0440\u044f"
                                 u" 2004 \u0433.",
                            "</span"])
 
@@ -212,7 +212,7 @@ class DateDisplayWidgetTest(BrowserWidgetTest):
         self.verifyResult(self._widget(),
                           ["<span",
                            'class="%s"' % self.expected_class,
-                           u"1 \u0414\u0435\u043a\u0430\u0431\u0440\u044c"
+                           u"1 \u0434\u0435\u043a\u0430\u0431\u0440\u044f"
                                 u" 2004 \u0433.",
                            "</span"])
 

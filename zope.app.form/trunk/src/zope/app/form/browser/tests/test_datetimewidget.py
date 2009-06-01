@@ -103,7 +103,7 @@ class DatetimeI18nWidgetTest(SimpleInputWidgetTest):
         super(DatetimeI18nWidgetTest, self).testRender(
             datetime.datetime(2004, 3, 26, 12, 58, 59),
             ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                u'value="26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+                u'value="26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
                 u' 12:58:59 +000"'))
 
     def testRenderFull(self):
@@ -111,7 +111,7 @@ class DatetimeI18nWidgetTest(SimpleInputWidgetTest):
         super(DatetimeI18nWidgetTest, self).testRender(
             datetime.datetime(2004, 3, 26, 12, 58, 59),
             ('type="text"', 'id="field.foo"', 'name="field.foo"',
-                u'value="26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+                u'value="26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
                 u' 12:58:59 +000"'))
 
     def test_hasInput(self):
@@ -150,7 +150,7 @@ class DatetimeI18nWidgetTest(SimpleInputWidgetTest):
     def test_getLongInputValue(self):
         self._widget.displayStyle = "long"
         self.test_getDefaultInputValue(
-            value=(u'26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+            value=(u'26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
                 u' 12:58:59 +030'),
             check_value=datetime.datetime(2004, 3, 26, 12, 58, 59,
                 tzinfo=tzinfo(30))
@@ -159,7 +159,7 @@ class DatetimeI18nWidgetTest(SimpleInputWidgetTest):
     def test_getFullInputValue(self):
         self._widget.displayStyle = "full"
         self.test_getDefaultInputValue(
-            value=(u'26 \u041c\u0430\u0440\u0442 2004 \u0433.'
+            value=(u'26 \u043c\u0430\u0440\u0442\u0430 2004 \u0433.'
                 u' 12:58:59 +030'),
             check_value=datetime.datetime(2004, 3, 26, 12, 58, 59,
                 tzinfo=tzinfo(30))
