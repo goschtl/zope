@@ -18,6 +18,10 @@
     margin: 0;
   }
 
+  #z-controlpanel #z-content {
+    margin: font-size: 110%;
+  }
+
   #z-controlpanel #z-portal-workspace {
     padding: 0;
     background-color: globalBackgroundColor;

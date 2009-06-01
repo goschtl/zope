@@ -18,13 +18,14 @@ $Id$
 from zope import interface
 from zope.component import getUtility
 from z3ext.layoutform import Fields, PageletEditForm
-from z3ext.wizard import WizardWithTabs, WizardStepForm
-from z3ext.wizard.step import WizardStep
-from z3ext.wizard.interfaces import ISaveable
-from z3ext.principal.registration.interfaces import \
-    IPortalRegistration, IInvitationConfiglet
+from z3ext.wizard import WizardWithTabs
+from z3ext.wizard.step import WizardStep, WizardStepForm
+from z3ext.wizard.button import WizardButton
+from z3ext.wizard.interfaces import ISaveable, IForwardAction
+from z3ext.layoutform.interfaces import ISaveAction
+from z3ext.controlpanel.interfaces import _
 
-from interfaces import _, IConfigletEditWizard
+from interfaces import IConfigletEditWizard
 
 
 class ConfigletEditWizard(WizardWithTabs):
@@ -42,27 +43,27 @@ class ConfigletEditWizard(WizardWithTabs):
         return self.context.__description__
 
 
-class ConfigletEditStep(WizardStepForm, PageletEditForm):
+class ConfigletEditStep(WizardStepForm):
+    interface.implements(ISaveable)
 
     name = 'configlet'
-    title = _('Configlet')
-    label = _('Modify configlet')
+    title = _('Configure')
+    label = _('Configure configlet')
 
     @property
     def fields(self):
         return Fields(self.getContent().__schema__)
 
 
-class InvitationsEditStep(WizardStep):
+next = WizardButton(
+    title = _(u'Next'),
+    condition = lambda form: not form.isLastStep() \
+        and not form.step.isSaveable(),
+    weight = 300,
+    provides = IForwardAction)
 
-    name = 'invitations'
-    label = title = _('Invitations')
-    description = u''
-
-    def update(self):
-        super(InvitationsEditStep, self).update()
-
-        self.configlet = getUtility(IInvitationConfiglet)
-
-    def isAvailable(self):
-        return getUtility(IPortalRegistration).invitation
+save = WizardButton(
+    title = _(u'Save'),
+    condition = lambda form: form.step.isSaveable(),
+    weight = 400,
+    provides = ISaveAction)

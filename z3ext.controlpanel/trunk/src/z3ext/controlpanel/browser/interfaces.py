@@ -15,8 +15,13 @@
 
 $Id$
 """
+from zope import interface
 from zope.viewlet.interfaces import IViewletManager
 
 
 class IConfigletNavigation(IViewletManager):
     """ extra configlet navigation viewlet manager """
+
+
+class IConfigletEditWizard(interface.Interface):
+    """ """

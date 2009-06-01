@@ -73,6 +73,30 @@
      zcml:condition="installed z3c.breadcrumb"
      factory=".breadcrumb.ConfigletBreadcrumb" />
 
+  <!-- wizard -->
+  <z3ext:pagelet
+     name="configlet"
+     type="wizard.step"
+     for="* .interfaces.IConfigletEditWizard"
+     class=".wizard.ConfigletEditStep"
+     weight="100"
+     permission="zope.View"
+     zcml:condition="installed z3ext.wizard" />
+
+  <adapter
+     name="next"
+     for="* .wizard.ConfigletEditWizard *"
+     provides="z3ext.wizard.interfaces.IWizardButton"
+     factory=".wizard.next"
+     zcml:condition="installed z3ext.wizard"/>
+
+  <adapter
+     name="save"
+     for="* .wizard.ConfigletEditWizard *"
+     provides="z3ext.wizard.interfaces.IWizardButton"
+     factory=".wizard.save" 
+     zcml:condition="installed z3ext.wizard"/>
+
   <!-- css styles -->
   <z3ext:resourceinclude
      name="z3ext-controlpanel.css"
