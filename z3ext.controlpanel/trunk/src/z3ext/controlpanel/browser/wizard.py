@@ -49,6 +49,7 @@ class ConfigletEditStep(WizardStepForm):
     name = 'configlet'
     title = _('Configure')
     label = _('Configure configlet')
+    permission = 'zope.Public'
 
     @property
     def fields(self):
