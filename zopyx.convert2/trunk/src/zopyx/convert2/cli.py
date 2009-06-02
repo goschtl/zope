@@ -37,8 +37,8 @@ def convert(options, args):
                 C = Converter(tmpf + '.html', verbose=True)
                 try:
                     output_filename = C(name, output_filename=tmpf + '.' + cls.output_format)
-                except:
-                    print 'FAILED'
+                except Exception, e:
+                    print 'FAILED (%s)' % e
 
             print
 
