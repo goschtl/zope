@@ -1,0 +1,24 @@
+2.0.1 (2009-06-02)
+====================
+- added environment variable ZOPYX_CONVERT_EXECUTE_METHOD to control the usage
+  of the process module vs. os.system() (in case of hanging Java processes)
+
+2.0.0 (2009-05-14)
+====================
+- final release
+
+2.0.0b3 (25.12.2008)
+====================
+- tidy: rewrite image references relative to the html
+  file to be converted
+
+2.0.0b2 (05.10.2008)
+====================
+- fixed some import errors
+- now working with zopyx.smartprintng.core
+
+2.0.0b1 (04.10.2008)
+====================
+- initial release
+- complete new reimplementation of zopyx.convert
+- added support for PrinceXML
