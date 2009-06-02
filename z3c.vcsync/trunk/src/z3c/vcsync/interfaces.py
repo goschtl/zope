@@ -229,3 +229,11 @@ class IDump(Interface):
 
         Returns the path just created.
         """
+
+    def save_bytes(checkout):
+        """Save context object to bytes.
+
+        Returns the name of the file to be created as well as the bytes to
+        write.
+        """
+

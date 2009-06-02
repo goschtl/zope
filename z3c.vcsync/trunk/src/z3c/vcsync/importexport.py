@@ -12,25 +12,26 @@ def export(root, path):
             export(obj, path.join(obj.__name__))
 
 def export_zip(root, name, zippath):
-    tmp_dir = py.path.local(tempfile.mkdtemp())
-    try:
-        save_path = tmp_dir.join(name)
-        save_path.ensure(dir=True)
-        export(root, save_path)
-        zf = zipfile.ZipFile(zippath.strpath, 'w')
-        _export_zip_helper(zf, tmp_dir, save_path)
-        zf.close()
-    finally:
-        tmp_dir.remove()
+    zf = zipfile.ZipFile(zippath.strpath, 'w')
+    zf.writestr('data/', '')
+    _export_zip_helper(root, zf, 'data')
+    zf.close()
     
-def _export_zip_helper(zf, save_path, path):
-    if path.check(dir=True):
-        zf.writestr(path.relto(save_path) + '/', '')
-        for p in path.listdir():
-            _export_zip_helper(zf, save_path, p)
-    else:
-        zf.write(path.strpath, path.relto(save_path))
-
+def _export_zip_helper(root, zf, save_path):
+    for obj in root.values():
+        name, bytes = IDump(obj).save_bytes()
+        if save_path:
+            sub_path = save_path + '/' + name
+        else:
+            sub_path = name
+        sub_path = sub_path.encode('cp437')
+        if IContainer.providedBy(obj):
+            # create a directory 
+            zf.writestr(sub_path + '/', '')
+            _export_zip_helper(obj, zf, sub_path)
+        else:
+            zf.writestr(sub_path, bytes)
+        
 def import_(root, path, modified_function=None):
     modified_objects = _import_helper(root, path)
     if modified_function is not None:

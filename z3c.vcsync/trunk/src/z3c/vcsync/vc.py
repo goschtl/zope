@@ -1,5 +1,6 @@
 import os
 import py
+from StringIO import StringIO
 from datetime import datetime
 
 from zope.interface import Interface
@@ -29,7 +30,16 @@ class Dump(grok.Adapter):
         serializer.serialize(f)
         f.close()
         return path
-    
+
+    def save_bytes(self):
+        serializer = ISerializer(self.context)
+        name = serializer.name()
+        f = StringIO()
+        serializer.serialize(f)
+        bytes = f.getvalue()
+        f.close()
+        return name, bytes
+
 class ContainerDump(grok.Adapter):
     grok.provides(IDump)
     grok.context(IContainer)
@@ -38,6 +48,9 @@ class ContainerDump(grok.Adapter):
         path = path.join(self.context.__name__)
         path.ensure(dir=True)
 
+    def save_bytes(self):
+        return self.context.__name__, ''
+    
 def resolve(root, root_path, path):
     """Resolve checkout path to obj in state.
 

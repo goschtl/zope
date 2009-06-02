@@ -4,7 +4,10 @@ z3c.vcsync changes
 0.16 (unreleased)
 -----------------
 
-* ...
+* Change the method by which zip files are created for export to a
+  less filesystem-intensive method; files are directly added to the
+  zip file. This hopefully brings performance benefits on platforms
+  where accessing many small files is slow.
 
 0.15 (2008-08-19)
 -----------------
