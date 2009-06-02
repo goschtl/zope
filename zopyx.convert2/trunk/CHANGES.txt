@@ -1,7 +1,8 @@
 2.0.1 (2009-06-02)
 ====================
 - added environment variable ZOPYX_CONVERT_EXECUTE_METHOD to control the usage
-  of the process module vs. os.system() (in case of hanging Java processes)
+  of the process module vs. os.system() (in case of hanging Java processes).
+  Possible values: 'process' (default), 'system'
 
 2.0.0 (2009-05-14)
 ====================
