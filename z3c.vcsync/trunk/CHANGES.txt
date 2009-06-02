@@ -1,7 +1,7 @@
 z3c.vcsync changes
 ==================
 
-0.16 (unreleased)
+0.16 (2009-06-02)
 -----------------
 
 * Change the method by which zip files are created for export to a
