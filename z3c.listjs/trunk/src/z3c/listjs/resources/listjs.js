@@ -61,7 +61,7 @@ Z3C.namespace = function(name) {
         var elements = root_el.getElementsByTagName(tag);
         
         for (var i = 0, len = elements.length; i < len; ++i) {
-            if (elements[i].className) {
+            if (elements[i].className == class_name) {
                 result[result.length] = elements[i];
             }
         }
@@ -77,7 +77,7 @@ Z3C.namespace = function(name) {
         var i;
         var attributes = ['id', 'name', 'for'];
         for (i = 0; i < attributes.length; i++) {
-            attr = el.getAttribute(attributes[i]);
+            var attr = el.getAttribute(attributes[i]);
             if (attr && startswith(attr, prefix)) {
                 el.setAttribute(attributes[i], renumber(attr, nr));
             }
@@ -97,7 +97,7 @@ Z3C.namespace = function(name) {
         var els = getElementsByClassName('list_item', table_el, 'tr');
         var i;
         for (i = 0; i < els.length; i++) {
-            updateNumbers(els[i], i, 'form.');
+            updateNumbers(els[i], i, prefix);
         }
         // update count
         var count_el = document.getElementById(prefix + '.count');

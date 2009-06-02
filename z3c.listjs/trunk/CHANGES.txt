@@ -1,10 +1,16 @@
 CHANGES
 *******
 
-1.0a5 (unreleased)
+1.0b1 (unreleased)
 ==================
 
-* ...
+* A few small bugfixes:
+
+  * prefix is passed along to update_numbers
+
+  * ``attr`` is a local as it should be.
+
+  * ``getElementsByClassName`` actually filters by class name.
 
 1.0a4 (2008-02-04)
 ==================
