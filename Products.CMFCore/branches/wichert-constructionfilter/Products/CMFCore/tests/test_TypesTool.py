@@ -468,6 +468,18 @@ class FTIConstructionTestCase:
     def test_isConstructionAllowed_w_Role(self):
         self.failUnless(self.ti.isConstructionAllowed(self.f))
 
+    def test_isConstructionAllowed_w_Filter(self):
+        from Products.CMFCore.interfaces import ITypeConstructionFilter
+        from zope.component import provideAdapter
+        class Block:
+            def __init__(self, fti, container):
+                pass
+            def allowed(self):
+                return False
+        provideAdapter(Block, (None, None), ITypeConstructionFilter, "test")
+        self.failIf(self.ti.isConstructionAllowed(self.f))
+
+
     def test_isConstructionAllowed_wo_Role(self):
         from AccessControl.SecurityManagement import newSecurityManager
         from Products.CMFCore.tests.base.security import UserWithRoles

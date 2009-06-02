@@ -1436,6 +1436,24 @@ class ITypeInformation(Interface):
         Returns:  Method ID or default value
         """
 
+class ITypeConstructionFilter(Interface):
+
+    """ Extra content construction filters.
+    
+    This adapter adds filters that are in the tests done by the construction
+    logic in the types tool.
+
+    """
+
+    def __init__(fti, container):
+        """Adapt on the FTI of the new and the target container."""
+
+    def allowed():
+        """Check if construction is allowed.
+         
+        o Return True if creation of a new object is allowed.
+        """
+
 
 class ITypesTool(Interface):
 

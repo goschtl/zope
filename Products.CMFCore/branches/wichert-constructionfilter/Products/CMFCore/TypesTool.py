@@ -29,6 +29,7 @@ from OFS.ObjectManager import IFAwareObjectManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.app.container.contained import ObjectAddedEvent
 from zope.app.container.contained import notifyContainerModified
+from zope.component import getAdapters
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.component.interfaces import IFactory
@@ -45,6 +46,7 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.interfaces import IAction
 from Products.CMFCore.interfaces import ITypeInformation
 from Products.CMFCore.interfaces import ITypesTool
+from Products.CMFCore.interfaces import ITypeConstructionFilter
 from Products.CMFCore.permissions import AccessContentsInformation
 from Products.CMFCore.permissions import AddPortalContent
 from Products.CMFCore.permissions import ManagePortal
@@ -509,8 +511,13 @@ class FactoryTypeInformation(TypeInformation):
 
         if not ti_check:
             return False
-        else :
-            return self._checkWorkflowAllowed(container)
+
+        for name, filter in getAdapters((self, container), ITypeConstructionFilter):
+            if not filter.allowed():
+                return False
+
+        return self._checkWorkflowAllowed(container)
+
 
     security.declarePrivate('_constructInstance')
     def _constructInstance(self, container, id, *args, **kw):

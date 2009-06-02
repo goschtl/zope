@@ -4,6 +4,9 @@ Products.CMFCore Changelog
 2.2.0 (unreleased)
 ------------------
 
+- Add new ITypeConstructionFilter adapter hook to allow extra type
+  construction filters to be defined.
+
 - Fixed typo in the acquisition wrapping of the found utility in
   getToolByName.
 
