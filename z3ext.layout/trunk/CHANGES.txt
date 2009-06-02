@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+2.0.8 (2009-06-03)
+------------------
+
+- Fixed next layout calculation for root object
+
+
 2.0.7 (2009-04-15)
 ------------------
 

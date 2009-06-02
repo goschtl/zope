@@ -18,6 +18,7 @@ $Id$
 from zope import interface
 from zope.publisher import browser
 from zope.component import getMultiAdapter
+from zope.traversing.api import getRoot
 from zope.app.pagetemplate.engine import TrustedAppPT
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 
@@ -119,11 +120,16 @@ class Layout(browser.BrowserPage):
             else:
                 context = getattr(context.__parent__, '__parent__', None)
 
+            if context is None:
+                context = getRoot(self.context)
+
             layout = queryLayout(self, self.request, context, name=self.layout)
             if layout is not None:
                 return layout(view=view, *args, **kw)
 
-        layout = queryLayout(self.view, self.context, self.request, name=self.layout)
+        layout = queryLayout(
+            self.view, self.context, self.request, name=self.layout)
+
         if layout is not None:
             return layout(*args, **kw)
 
