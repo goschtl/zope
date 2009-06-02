@@ -1,0 +1,265 @@
+bozo.reuse.application.Request supports the WebOb requeest API
+==============================================================
+
+Sort of. There are some differences.
+
+- bozo requests support Zope form value marshalling
+- bozo requests make no distinction between POST body and query string
+  variables.
+- webob requests support mutation.  You may be able to mutate webob
+  requests, but the effects of the mutation may not be visible.
+- a bozo request always has a charset and therefor request form data and
+  cookies are always unicode.
+
+
+The webob reference examples are reused below, with some modifications.
+
+
+    >>> from bozo.reuse.application import Request
+
+    >>> req = Request.blank('/article?id=1')
+    >>> from pprint import pprint
+    >>> pprint(dict(req.environ), width=1)
+    {'HTTP_HOST': 'localhost:80',
+     'PATH_INFO': u'/article',
+     'QUERY_STRING': 'id=1',
+     'REQUEST_METHOD': 'GET',
+     'SCRIPT_NAME': '',
+     'SERVER_NAME': 'localhost',
+     'SERVER_PORT': '80',
+     'SERVER_PROTOCOL': 'HTTP/1.0',
+     'wsgi.errors': <open file '<stderr>', mode 'w' at 0x3120c0>,
+     'wsgi.input': <cStringIO.StringI object at 0x12f6410>,
+     'wsgi.multiprocess': False,
+     'wsgi.multithread': False,
+     'wsgi.run_once': False,
+     'wsgi.url_scheme': 'http',
+     'wsgi.version': (1,
+                      0)}
+
+
+    >>> req.body
+    ''
+    >>> req.method
+    'GET'
+    >>> req.scheme
+    'http'
+    >>> req.script_name  # The base of the URL
+    ''
+    >>> req.script_name = '/blog' # make it more interesting
+    >>> req.path_info    # The yet-to-be-consumed part of the URL
+    u'/article'
+    >>> req.content_type # Content-Type of the request body
+    ''
+    >>> print req.remote_user  # The authenticated user (there is none set)
+    None
+    >>> print req.remote_addr  # The remote IP
+    None
+    >>> req.host
+    'localhost:80'
+    >>> req.host_url
+    'http://localhost'
+    >>> req.application_url
+    'http://localhost/blog'
+    >>> req.path_url
+    'http://localhost/blog/article'
+    >>> req.url
+    'http://localhost/blog/article?id=1'
+    >>> req.path
+    '/blog/article'
+    >>> req.path_qs
+    '/blog/article?id=1'
+    >>> req.query_string
+    'id=1'
+
+    >>> req.relative_url('archive')
+    'http://localhost/blog/archive'
+
+    >>> req.path_info_peek() # Doesn't change request
+    u'article'
+    >>> req.path_info_pop()  # Does change request!
+    u'article'
+    >>> req.script_name
+    u'/blog/article'
+    >>> req.path_info
+    ''
+
+    >>> from webob.compat import sorted
+    >>> req.headers['content-type'] = 'application/x-www-urlencoded'
+    >>> sorted(req.headers.items())
+    [('Content-Type', 'application/x-www-urlencoded'), ('Host', 'localhost:80')]
+    >>> req.environ['CONTENT_TYPE']
+    'application/x-www-urlencoded'
+
+    >>> req = Request.blank('/test?check=a&check=b&name=Bob')
+    >>> req.GET
+    BozoMultiDict([(u'check', u'a'), (u'check', u'b'), (u'name', u'Bob')])
+    >>> req.GET['check']
+    u'b'
+    >>> req.GET.getall('check')
+    [u'a', u'b']
+    >>> req.GET.items()
+    [(u'check', u'a'), (u'check', u'b'), (u'name', u'Bob')]
+
+    >>> req.POST
+    <NoVars: Not a POST request>
+    >>> req.POST.items()  # NoVars can be read like a dict, but not written
+    []
+
+    >>> from cStringIO import StringIO
+    >>> def post_environ(body, **kw):
+    ...     return dict({'wsgi.input': StringIO(body)},
+    ...                 REQUEST_METHOD='POST',
+    ...                 CONTENT_TYPE='application/x-www-form-urlencoded',
+    ...                 CONTENT_LENGTH=len(body),
+    ...                 **kw)
+
+
+    >>> req = Request.blank('/test?check=a&check=b&name=Bob',
+    ...    environ=post_environ('name=Joe&email=joe@example.com'))
+
+Note that, unlike webob, POST and GET returns all the form data,
+
+    >>> req.POST # doctest: +NORMALIZE_WHITESPACE
+    BozoMultiDict([(u'check', u'a'), (u'check', u'b'),
+      (u'email', u'joe@example.com'), (u'name', u'Joe'), (u'name', u'Bob')])
+
+    >>> req.POST['name']
+    u'Bob'
+
+    >>> req.params # doctest: +NORMALIZE_WHITESPACE
+    BozoMultiDict([(u'check', u'a'), (u'check', u'b'),
+      (u'email', u'joe@example.com'), (u'name', u'Joe'), (u'name', u'Bob')])
+
+    >>> req.params['name']
+    u'Bob'
+
+    >>> req.params.getall('name')
+    [u'Joe', u'Bob']
+    >>> for name, value in req.params.items():
+    ...     print '%s: %r' % (name, value)
+    check: u'a'
+    check: u'b'
+    email: u'joe@example.com'
+    name: u'Joe'
+    name: u'Bob'
+
+    >>> req = Request.blank('/test?check=a&check=b&name=Bob',
+    ...         environ=post_environ('var1=value1&var2=value2&rep=1&rep=2'))
+    >>> req.GET # doctest: +NORMALIZE_WHITESPACE
+    BozoMultiDict([(u'check', u'a'), (u'check', u'b'), (u'name', u'Bob'),
+        (u'rep', u'1'), (u'rep', u'2'), (u'var1', u'value1'),
+        (u'var2', u'value2')])
+
+    >>> req.POST # doctest: +NORMALIZE_WHITESPACE
+    BozoMultiDict([(u'check', u'a'), (u'check', u'b'), (u'name', u'Bob'),
+        (u'rep', u'1'), (u'rep', u'2'), (u'var1', u'value1'),
+        (u'var2', u'value2')])
+
+
+    >>> req = Request.blank('/test?check=a&check=b&name=Bob',
+    ...         environ=post_environ('var1=value1&var2=value2&rep=1&rep=2',
+    ...                              HTTP_COOKIE='test=value'))
+
+
+    >>> req.headers['Cookie'] = 'test=value'
+    >>> req.cookies.items()
+    [(u'test', u'value')]
+
+    >>> 'text/html' in req.accept
+    True
+
+    >>> req.accept = 'text/html;q=0.5, application/xhtml+xml;q=1'
+    >>> req.accept
+    <MIMEAccept at 0x1342810 Accept: text/html;q=0.5, application/xhtml+xml>
+
+    >>> 'text/html' in req.accept
+    True
+
+    >>> req.accept.first_match(['text/html', 'application/xhtml+xml'])
+    'text/html'
+
+    >>> req.accept.best_match(['text/html', 'application/xhtml+xml'])
+    'application/xhtml+xml'
+
+    >>> req.accept.best_matches()
+    ['application/xhtml+xml', 'text/html']
+
+    >>> req.accept_language = 'es, pt-BR'
+    >>> req.accept_language.best_matches('en-US')
+    ['es', 'pt-BR', 'en-US']
+    >>> req.accept_language.best_matches('es')
+    ['es']
+
+    >>> server_token = 'opaque-token'
+    >>> server_token in req.if_none_match # You shouldn't return 304
+    False
+    >>> req.if_none_match = server_token
+    >>> req.if_none_match
+    <ETag opaque-token>
+    >>> server_token in req.if_none_match # You *should* return 304
+    True
+
+    >>> from webob import UTC
+    >>> from datetime import datetime
+    >>> req.if_modified_since = datetime(2006, 1, 1, 12, 0, tzinfo=UTC)
+    >>> req.headers['If-Modified-Since']
+    'Sun, 01 Jan 2006 12:00:00 GMT'
+    >>> server_modified = datetime(2005, 1, 1, 12, 0, tzinfo=UTC)
+    >>> req.if_modified_since and req.if_modified_since >= server_modified
+    True
+
+    >>> req.if_range
+    <Empty If-Range>
+    >>> req.if_range.match(etag='some-etag', last_modified=datetime(2005, 1, 1, 12, 0))
+    True
+    >>> req.if_range = 'opaque-etag'
+    >>> req.if_range.match(etag='other-etag')
+    False
+    >>> req.if_range.match(etag='opaque-etag')
+    True
+
+    >>> from webob import Response
+    >>> res = Response(etag='opaque-etag')
+    >>> req.if_range.match_response(res)
+    True
+
+    >>> req.range = 'bytes=0-100'
+    >>> req.range
+    <Range ranges=(0, 99)>
+    >>> cr = req.range.content_range(length=1000)
+    >>> cr.start, cr.stop, cr.length
+    (0, 99, 1000)
+
+    >>> server_token in req.if_match # No If-Match means everything is ok
+    True
+    >>> req.if_match = server_token
+    >>> server_token in req.if_match # Still OK
+    True
+    >>> req.if_match = 'other-token'
+    >>> # Not OK, should return 412 Precondition Failed:
+    >>> server_token in req.if_match 
+    False
+
+    >>> req = Request.blank('/')
+    >>> def wsgi_app(environ, start_response):
+    ...     start_response('200 OK', [('Content-type', 'text/plain')])
+    ...     return ['Hi!']
+    >>> req.call_application(wsgi_app)
+    ('200 OK', [('Content-type', 'text/plain')], ['Hi!'])
+
+    >>> res = req.get_response(wsgi_app)
+    >>> res
+    <Response at 0x13427d0 200 OK>
+
+    >>> res.status
+    '200 OK'
+    >>> res.headers
+    HeaderDict([('Content-type', 'text/plain')])
+    >>> res.body
+    'Hi!'
+
+
+it also supports the zope.publisher browser requeest API
+========================================================
+
