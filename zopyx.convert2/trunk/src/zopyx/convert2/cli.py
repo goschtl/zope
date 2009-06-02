@@ -29,7 +29,7 @@ def convert(options, args):
             tmpf = newTempfile()
             print fn
             print '-'*len(fn)
-            file(tmpf + '.html', 'wb').write(pkg_resources.resource_string('zopyx.convert.tests.data', fn))
+            file(tmpf + '.html', 'wb').write(pkg_resources.resource_string('zopyx.convert2.tests.data', fn))
 
             for name in registry.availableConverters():
                 cls = registry.converter_registry[name]

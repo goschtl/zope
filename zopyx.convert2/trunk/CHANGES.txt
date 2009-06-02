@@ -1,3 +1,7 @@
+2.0.2 (2009-06-02)
+====================
+- fixed broken path for test data files
+
 2.0.1 (2009-06-02)
 ====================
 - added environment variable ZOPYX_CONVERT_EXECUTE_METHOD to control the usage
