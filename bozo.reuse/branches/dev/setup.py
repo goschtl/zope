@@ -13,7 +13,8 @@
 ##############################################################################
 name, version = 'bozo.reuse', '0'
 
-install_requires = ['setuptools']
+install_requires = [
+    'setuptools', 'bobo', 'zope.event', 'zope.i18n', 'zope.publisher']
 extras_require = dict(test=['zope.testing'])
 
 entry_points = """
