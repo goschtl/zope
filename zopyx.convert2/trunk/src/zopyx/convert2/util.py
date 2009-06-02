@@ -12,6 +12,7 @@ from subprocess import Popen, PIPE
 from logger import LOG
 
 win32 = (sys.platform=='win32')
+execute_mode = os.environ.get('ZOPYX_CONVERT_EXECUTE_MODE', 'process')
 
 
 def newTempfile(suffix=''):
@@ -27,26 +28,35 @@ def runcmd(cmd):
         s.wait()
         return 0, ''
 
-    else:      
+    else:
 
-        stdin = open('/dev/null')
-        stdout = stderr = PIPE
-        p = Popen(cmd, 
-                  shell=True,
-                  stdin=stdin,
-                  stdout=stdout,
-                  stderr=stderr,
-                  )
+        if execute_mode == 'system':
+            status = os.system(cmd)
+            return status, ''
 
-        status = p.wait()
-        stdout_ = p.stdout.read().strip()
-        stderr_ = p.stderr.read().strip()
+        elif execute_mode == 'process':
 
-        if stdout_:
-            LOG.info(stdout_)
-        if stderr_:
-            LOG.info(stderr_)
-        return status, stdout_ + stderr_
+            stdin = open('/dev/null')
+            stdout = stderr = PIPE
+            p = Popen(cmd, 
+                      shell=True,
+                      stdin=stdin,
+                      stdout=stdout,
+                      stderr=stderr,
+                      )
+
+            status = p.wait()
+            stdout_ = p.stdout.read().strip()
+            stderr_ = p.stderr.read().strip()
+
+            if stdout_:
+                LOG.info(stdout_)
+            if stderr_:
+                LOG.info(stderr_)
+            return status, stdout_ + stderr_
+
+        else:
+            raise ValueError('Unknown value for $ZOPYX_CONVERT_EXECUTE_MODE')
 
 
 def checkEnvironment(envname):
