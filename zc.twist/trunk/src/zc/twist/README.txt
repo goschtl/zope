@@ -270,8 +270,7 @@ one.  This behavior may change.
     2
 
 Without a running reactor, this functionality will not work
-[#teardown_monkeypatch]_.  Also, it relies on an undocumented, protected
-attribute on the ZODB.DB, so is fragile across ZODB versions.
+[#teardown_monkeypatch]_.
 
 You can also specify a reactor for the partial using ``setReactor``, if
 you don't want to use the standard one installed by twisted in

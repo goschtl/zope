@@ -78,12 +78,12 @@ def Reference(obj):
         return DeferredReferenceToPersistent(obj)
     return obj
 
-def availableConnectionCount(db, version=''):
+def availableConnectionCount(db):
     try:                    # ZODB 3.9 and newer
         pool = db.pool
     except AttributeError:  # ZODB 3.8 and older
         pools = db._pools
-        pool = pools.get(version)
+        pool = pools.get('')    # version = ''
         if pool is None:
             return True
     size = db.getPoolSize()
