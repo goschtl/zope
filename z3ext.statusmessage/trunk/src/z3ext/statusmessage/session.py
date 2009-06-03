@@ -20,6 +20,7 @@ from zope.component import getAdapter
 from zope.session.interfaces import ISession
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+from null import NullMessageService
 from interfaces import SESSIONKEY, IMessage, IStatusMessage
 
 
@@ -29,7 +30,7 @@ def getMessageService(request):
     try:
         session = ISession(request)
     except:
-        return
+        return NullMessageService(request)
 
     return MessageService(request, session)
 
