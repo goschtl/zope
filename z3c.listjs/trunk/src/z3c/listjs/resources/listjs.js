@@ -20,7 +20,9 @@ Z3C.namespace = function(name) {
 
 (function() {
     Z3C.namespace('listjs');
-        
+
+    var disconnected_editor_ids = [];
+
     // return true if string starts with a prefix
     var startswith = function(s, prefix) {
         return (s.substring(0, prefix.length) == prefix);
@@ -51,7 +53,17 @@ Z3C.namespace = function(name) {
         return result.join('.');
     };
 
-    
+    var renumberScript = function(s, nr, prefix) {
+        var tomatch = new RegExp(prefix + '[^"\']*', 'g');
+        var potentials = s.match(tomatch);
+        if (potentials == null) {
+            return s; // nothing to replace
+        }
+        var original = potentials[0];
+        var renumbered = renumber(original, nr);
+        return s.replace(original, renumbered);
+    };
+
     // simplistic implementation that doesn't understand 
     // multiple classes per element
     var getElementsByClassName = function(class_name, root_el, tag) {
@@ -74,6 +86,13 @@ Z3C.namespace = function(name) {
         if (el.nodeType != 1) {
             return;
         }
+
+        // if this is a script tag, do textual replace
+        if (el.tagName.toLowerCase() == 'script') {
+            el.text = renumberScript(el.text, nr, prefix);
+            return;
+        }
+
         var i;
         var attributes = ['id', 'name', 'for'];
         for (i = 0; i < attributes.length; i++) {
@@ -82,6 +101,12 @@ Z3C.namespace = function(name) {
                 el.setAttribute(attributes[i], renumber(attr, nr));
             }
         }
+        
+        var onclick_attr = el.getAttribute('onclick');
+        if (onclick_attr) {
+            el.setAttribute('onclick', renumberScript(onclick_attr, nr, prefix));
+        }
+
         // recursion
         var node = el.firstChild;
         while (node) {
@@ -98,10 +123,95 @@ Z3C.namespace = function(name) {
         var i;
         for (i = 0; i < els.length; i++) {
             updateNumbers(els[i], i, prefix);
+            runScripts(els[i]);
         }
         // update count
         var count_el = document.getElementById(prefix + '.count');
         count_el.value = els.length;
+    };
+    
+    // disconnect all editors in affected elements
+    var disconnectEditors = function(affected_elements) {
+       // if tinyMCE is installed, disconnect all editors
+        if (tinyMCE) {
+            //tinyMCE.triggerSave();
+            disconnected_editor_ids = [];
+            for (var n in tinyMCE.editors) {
+                var inst = tinyMCE.editors[n];
+                if (!inAffectedElements(inst.getElement(), 
+                                        affected_elements)) {
+                    continue;
+                }
+                disconnected_editor_ids.push(inst.id);
+                tinyMCE.execCommand('mceFocus', false, inst.id);
+                tinyMCE.execCommand('mceRemoveControl', false, inst.id);
+            }
+        }
+    };
+
+    // reconnect all editors that aren't reconnected already
+    var reconnectEditors = function() {
+        // reconnect all editors
+        if (tinyMCE) {
+           for (i = 0; i < disconnected_editor_ids.length; i++) {
+               var editor_id = disconnected_editor_ids[i];
+               if (!tinyMCE.get(editor_id)) {
+                   tinyMCE.execCommand('mceAddControl', false, editor_id);
+               }
+           }
+        }
+    };
+
+    // return true if el is inside one of affected_elements
+    var inAffectedElements = function(el, affected_elements) {
+        for (var i = 0; i < affected_elements.length; i++) {
+            if (isAncestor(affected_elements[i], el)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // return true if a is an ancestor of b
+    var isAncestor = function(a, b) {
+        while (b) {
+            if (a === b) {
+                return true;
+            }
+            b = b.parentNode;
+        }
+        return false;
+    }
+
+
+    // run all embedded scripts (after setting innerHTML)
+    // see http://brightbyte.de/page/Loading_script_tags_via_AJAX
+    // combined with 
+    // http://caih.org/open-source-software/loading-javascript-execscript-and-testing/
+    // to eval in the global scope
+    var runScripts  = function(e) { 
+        if (e.nodeType != 1) {
+            return;
+        }
+        
+        // run any script tag
+        if (e.tagName.toLowerCase() == 'script') {
+            if (window.execScript) {
+                window.execScript(e.text);
+            } else {
+                with (window) {
+                    window.eval(e.text);
+                }
+            }
+        } else {
+            var n = e.firstChild;
+            while (n) {
+                if (n.nodeType == 1) {
+                    runScripts(n);
+                }
+                n = n.nextSibling;
+            }
+        }
     };
 
     // add a new repeating element to the list
@@ -186,8 +296,13 @@ Z3C.namespace = function(name) {
         if (previous_el == null) {
             return;
         }
+
+        disconnectEditors([el, previous_el]);
+
         previous_el.parentNode.insertBefore(el, previous_el);
         updateAllNumbers(prefix);
+
+        reconnectEditors();
     };
 
     Z3C.listjs.down = function(prefix, el) {
@@ -202,8 +317,12 @@ Z3C.namespace = function(name) {
         if (next_el == null) {
             return;
         }
+        disconnectEditors([el, next_el]);
+
         next_el.parentNode.insertBefore(el, next_el.nextSibling);
         updateAllNumbers(prefix);
+
+        reconnectEditors();
     };
     
 })();
