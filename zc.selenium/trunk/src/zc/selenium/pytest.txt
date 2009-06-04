@@ -116,7 +116,7 @@ HTML table:
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[1]>:11 ...</td>
+    <td><doctest pytest.txt[line 54, example 1]>:11 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -126,7 +126,7 @@ HTML table:
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[1]>:12 ...</td>
+    <td><doctest pytest.txt[line 54, example 1]>:12 ...</td>
     <td></td>
     </tr>
     <tr class="splat">
@@ -136,7 +136,7 @@ HTML table:
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[1]>:13 ...</td>
+    <td><doctest pytest.txt[line 54, example 1]>:13 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -162,7 +162,7 @@ HTML table:
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[1]>:19 ...</td>
+    <td><doctest pytest.txt[line 54, example 1]>:19 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -273,7 +273,7 @@ cluttering the test with its own location.
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[5]>:6 ...</td>
+    <td><doctest pytest.txt[line 231, example 5]>:6 ...</td>
     <td></td>
     </tr>
     <tr class="sample">
@@ -387,7 +387,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[8]>:11 ...</td>
+    <td><doctest pytest.txt[line 324, example 8]>:11 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -402,7 +402,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[8]>:27 ...</td>
+    <td><doctest pytest.txt[line 324, example 8]>:27 ...</td>
     <td></td>
     </tr>
     <tr class="open">
@@ -434,7 +434,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[8]>:33 ...</td>
+    <td><doctest pytest.txt[line 324, example 8]>:33 ...</td>
     <td></td>
     </tr>
     <tr class="foo">
@@ -465,7 +465,7 @@ pop the storage that the set up methods pushed.
     </tr>
     <tr class="comment lineinfo">
     <td>comment</td>
-    <td><doctest pytest.txt[8]>:15 ...</td>
+    <td><doctest pytest.txt[line 324, example 8]>:15 ...</td>
     <td></td>
     </tr>
     <tr class="foo">

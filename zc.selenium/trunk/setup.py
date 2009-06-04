@@ -22,5 +22,7 @@ setup(
         'zope.component',
         'zope.publisher',
         'z3c.zrtresource',
+        'zope.testing>=3.7.4',
+        'wsgiref',
     ]
 )
