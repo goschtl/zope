@@ -16,7 +16,7 @@ long_description = (
 
 setup(
     name='z3c.listjs',
-    version='1.0b1dev',
+    version = '1.0b1',
     description="A formlib list widget that uses Javascript",
     long_description=long_description,
     keywords='zope3 form widget',
