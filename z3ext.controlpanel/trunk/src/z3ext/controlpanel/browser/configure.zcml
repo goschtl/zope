@@ -74,28 +74,31 @@
      factory=".breadcrumb.ConfigletBreadcrumb" />
 
   <!-- wizard -->
-  <z3ext:pagelet
-     name="configlet"
-     type="wizard.step"
-     for="* .interfaces.IConfigletEditWizard"
-     class=".wizard.ConfigletEditStep"
-     weight="100"
-     permission="zope.View"
-     zcml:condition="installed z3ext.wizard" />
+  <zcml:configure zcml:condition="installed z3ext.wizard">
+    <z3ext:pageletType
+       name="wizard.step"
+       interface="z3ext.wizard.interfaces.IWizardStep" />
 
-  <adapter
-     name="next"
-     for="* .wizard.ConfigletEditWizard *"
-     provides="z3ext.wizard.interfaces.IWizardButton"
-     factory=".wizard.next"
-     zcml:condition="installed z3ext.wizard"/>
+    <z3ext:pagelet
+       name="configlet"
+       type="wizard.step"
+       for="* .interfaces.IConfigletEditWizard"
+       class=".wizard.ConfigletEditStep"
+       weight="100"
+       permission="zope.View" />
 
-  <adapter
-     name="save"
-     for="* .wizard.ConfigletEditWizard *"
-     provides="z3ext.wizard.interfaces.IWizardButton"
-     factory=".wizard.save" 
-     zcml:condition="installed z3ext.wizard"/>
+    <adapter
+       name="next"
+       for="* .wizard.ConfigletEditWizard *"
+       provides="z3ext.wizard.interfaces.IWizardButton"
+       factory=".wizard.next" />
+
+    <adapter
+       name="save"
+       for="* .wizard.ConfigletEditWizard *"
+       provides="z3ext.wizard.interfaces.IWizardButton"
+       factory=".wizard.save" />
+  </zcml:configure>
 
   <!-- css styles -->
   <z3ext:resourceinclude
