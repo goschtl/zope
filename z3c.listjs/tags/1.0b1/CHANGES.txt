@@ -1,0 +1,46 @@
+CHANGES
+*******
+
+1.0b1 (2009-06-04)
+==================
+
+* Javascript in ``<script>`` blocks and ``onclick`` handlers are also
+  renumbered so that references to the element id in question are
+  updated. This won't be reliable in the (assumed to uncommon) case
+  where a widget id is referenced within the HTML that is *not* the
+  field of the widget being rendered.
+
+* If TinyMCE is installed, care is taken to disconnect TinyMCE editors
+  before moving. Reconnection of the moved editors is assumed to take
+  place in the included HTML for the new element, using something
+  like::
+
+    tinyMCE.execCommand('mceAddControl', false, 'id_of_element');
+
+* A few small bugfixes:
+
+  * prefix is passed along to update_numbers
+
+  * ``attr`` is a local as it should be.
+
+  * ``getElementsByClassName`` actually filters by class name.
+
+1.0a4 (2008-02-04)
+==================
+
+* Really fixed up/down arrow for added items.
+
+1.0a3 (2009-02-03)
+==================
+
+* Fix bug where up/down arrows didn't appear for newly added items.
+
+1.0a2 (2009-01-23)
+==================
+
+* Allow moving individual list items up and down in the list. 
+
+1.0a1 (2009-01-08)
+==================
+
+* Initial public release.

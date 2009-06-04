@@ -1,0 +1,11 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <include package="hurry.zoperesource" />
+
+  <browser:resourceDirectory 
+      name="z3c.listjs"
+      directory="resources" />
+  
+</configure>

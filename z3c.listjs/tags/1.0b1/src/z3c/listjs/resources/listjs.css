@@ -1,0 +1,21 @@
+.up_button {
+  background: transparent url('up.gif') no-repeat scroll top right;
+  float: left;
+  height: 24px;
+  width: 24px;
+  margin-right: 0px;
+  padding-right: 0px;
+  display: block;
+  text-decoration: none;
+}
+
+.down_button {
+  background: transparent url('down.gif') no-repeat scroll top right;
+  float: left;
+  height: 24px;
+  width: 24px;
+  margin-right: 0px;
+  padding-right: 0px;
+  display: block;
+  text-decoration: none;
+}
