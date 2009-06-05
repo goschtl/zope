@@ -34,6 +34,7 @@ setup(
     zip_safe=False,
     install_requires=['setuptools',
                       'martian',
+                      'ZODB3',
                       'zope.component',
                       'zope.interface',
                       'zope.app.component',

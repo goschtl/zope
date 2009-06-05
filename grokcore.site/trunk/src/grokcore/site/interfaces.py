@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,9 +14,11 @@
 
 from zope.interface import Interface, Attribute
 
+
 class IBaseClasses(Interface):
     Site = Attribute("Mixin class for sites.")
     LocalUtility = Attribute("Base class for local utilities.")
+
 
 class IDirectives(Interface):
     def local_utility(factory, provides=None, name=u'',
@@ -33,11 +35,12 @@ class IDirectives(Interface):
                  The site should in this case be a container.
         name_in_container - the name to use for storing the utility
         """
-        
+
     def provides(interface):
         """Explicitly specify with which interface a component will be
         looked up."""
-    
+
+
 class IGrokcoreSiteAPI(IBaseClasses, IDirectives):
     """grokcore.site's public API."""
 

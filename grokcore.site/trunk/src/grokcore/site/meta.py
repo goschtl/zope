@@ -1,6 +1,6 @@
 #############################################################################
 #
-# Copyright (c) 2006-2007 Zope Corporation and Contributors.
+# Copyright (c) 2006-2009 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -19,9 +19,9 @@ from zope.app.container.interfaces import INameChooser
 
 import martian
 from martian.error import GrokError
-from martian import util
 
 import grokcore.site
+
 
 class SiteGrokker(martian.ClassGrokker):
     martian.component(grokcore.site.Site)

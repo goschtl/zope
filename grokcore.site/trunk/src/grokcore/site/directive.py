@@ -72,7 +72,17 @@ class local_utility(martian.Directive):
 
 
 class LocalUtilityInfo(object):
+    """The information about how to register a local utility.
 
+    An instance of this class is created for each `grok.local_utility()`
+    in a Grok application's code, to remember how the user wants their
+    local utility registered.  Later, whenever the application creates
+    new instances of the site or application for which the local utility
+    directive was supplied, this block of information is used as the
+    parameters to the creation of the local utility which is created
+    along with the new site in the Zope database.
+
+    """
     _order = 0
 
     def __init__(self, factory, provides, name=u'',
