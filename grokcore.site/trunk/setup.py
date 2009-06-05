@@ -12,18 +12,19 @@ long_description = (
 
 setup(
     name='grokcore.site',
-    version='0.9dev',
+    version='1.0dev',
     author='Grok Team',
     author_email='grok-dev@zope.org',
     url='http://grok.zope.org',
-    download_url='http://pypi.python.org/pypi/grokcore.component',
-    description='Grok-like configuration for basic components '
-                '(adapters, utilities, subscribers)',
+    download_url='http://pypi.python.org/pypi/grokcore.site',
+    description='Grok-like configuration for Zope local site and utilities',
     long_description=long_description,
     license='ZPL',
-    classifiers=['Intended Audience :: Developers',
+    classifiers=['Environment :: Web Environment',
+                 'Intended Audience :: Developers',
                  'License :: OSI Approved :: Zope Public License',
                  'Programming Language :: Python',
+                 'Framework :: Zope3',
                  ],
 
     packages=find_packages('src'),
@@ -32,11 +33,13 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools',
+                      'martian',
+                      'zope.component',
+                      'zope.interface',
                       'zope.app.component',
+                      'zope.app.container',
                       'grokcore.component',
-
                       # for ftests:
-                      # TODO move these to extra_requires?
                       'zope.app.zcmlfiles',
                       ],
 )
