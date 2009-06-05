@@ -14,6 +14,7 @@
 
 from grokcore.component import *
 from grokcore.security import *
+from grokcore.site import *
 from grokcore.view import *
 from grokcore.viewlet import *
 from grokcore.formlib import *

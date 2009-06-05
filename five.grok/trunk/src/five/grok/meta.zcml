@@ -5,6 +5,7 @@
 
   <include package="grokcore.component" file="meta.zcml" />
   <include package="grokcore.security" file="meta.zcml" />
+  <include package="grokcore.site" file="meta.zcml" />
 
   <!-- Load minimal support of grokcore.view, views + templates  -->
   <include package="grokcore.view" file="meta-minimal.zcml" />

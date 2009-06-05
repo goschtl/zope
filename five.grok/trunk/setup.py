@@ -34,5 +34,6 @@ setup(name='five.grok',
         'grokcore.view >= 1.2',
         'grokcore.viewlet',
         'grokcore.security',
+        'grokcore.site',
         ],
       )

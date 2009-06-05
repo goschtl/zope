@@ -6,12 +6,20 @@
 
   <include package="five.grok" file="meta.zcml" />
 
+  <include package="grokcore.site" />
   <include package="grokcore.view" />
   <include package="grokcore.viewlet" />
 
   <browser:defaultView
       for="grokcore.component.interfaces.IContext"
       name="index"
+      />
+
+  <!-- ZCML of zope.app.container to add local utility to local site -->
+  <adapter
+      provides="zope.app.container.interfaces.INameChooser"
+      for="zope.app.container.interfaces.IWriteContainer"
+      factory="zope.app.container.contained.NameChooser"
       />
 
   <permission

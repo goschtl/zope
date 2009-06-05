@@ -21,7 +21,7 @@ Implemented features
 Coming from Grok, the following components are available to Zope 2
 developers:
 
-- Zope 3 Component (Adapter, Utility, Subscribers),
+- Zope 3 Component (Adapter, Global utilities, Subscribers),
 
 - Permissions,
 
@@ -32,6 +32,8 @@ developers:
 - Page Templates (using the Zope 2 Page Templates),
 
 - Formlib forms.
+
+- Local sites and utilities.
 
 All those components are available with exactly the same syntax than
 in grok. You just have to do::

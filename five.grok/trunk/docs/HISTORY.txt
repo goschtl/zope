@@ -4,8 +4,11 @@ Changelog for five.grok
 five.grok - 1.0b1 (unreleased)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Fix EditForm when used with grokcore.formlib 1.1. The Apply actions
-  was gone. [thefunny42]
+* Added support for local site and utilities with `grokcore.site`_.
+  [thefunny42]
+
+* Fix grok.EditForm when used with grokcore.formlib 1.1. The Apply
+  action was gone. [thefunny42]
 
 * Let static resource directories allow access to unprotected subattributes
   to avoid authorisation problems when accessing them from protected code.
@@ -14,6 +17,7 @@ five.grok - 1.0b1 (unreleased)
 * Do not create static resource directories if the 'static' directory does
   not actually exist.
   [optilude]
+
 
 five.grok - 1.0a2 (2008-11-23)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +71,7 @@ five.grok - 1.0a1 (2008-10-22)
   views).
   [regebro, gotcha]
 
+.. _grokcore.site: http://pypi.python.org/pypi/grokcore.site
 .. _grokcore.view: http://pypi.python.org/pypi/grokcore.view
 .. _grokcore.viewlet: http://pypi.python.org/pypi/grokcore.viewlet
 .. _grokcore.formlib: http://pypi.python.org/pypi/grokcore.formlib
