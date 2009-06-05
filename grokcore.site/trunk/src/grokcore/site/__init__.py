@@ -12,8 +12,9 @@
 #
 ##############################################################################
 
+
+from grokcore.component import *
 from grokcore.site.directive import local_utility
-from grokcore.component import provides
 from grokcore.site.components import Site, LocalUtility
 
 import grokcore.site.testing
