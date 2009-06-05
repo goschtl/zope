@@ -4,8 +4,10 @@ z3c.vcsync changes
 0.17 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+* Depend only on ``grokcore.component`` and ``zope.app.container``
+  directly, not on ``grok`` itself. We want instead to depend only 
+  on ``zope.container``, but we cannot do this yet as we need
+  compatibility with Grok 0.14.
 
 0.16 (2009-06-02)
 -----------------
