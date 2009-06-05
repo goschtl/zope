@@ -43,7 +43,7 @@ each user). Let's represent this tree in ``state1`` first::
 Let's make sure we can save and load the objects by grokking the
 right serializers, parser and factories::
 
-  >>> import grok  
+  >>> import grokcore.component as grok  
   >>> from z3c.vcsync.tests import (ItemSerializer, ItemParser, ItemFactory, 
   ...    ContainerParser, ContainerFactory)
   >>> grok.testing.grok('z3c.vcsync')

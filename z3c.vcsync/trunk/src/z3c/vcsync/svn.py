@@ -1,4 +1,4 @@
-import grok
+import grokcore.component as grok
 
 import py
 from datetime import datetime

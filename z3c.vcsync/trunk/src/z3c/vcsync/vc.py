@@ -12,7 +12,7 @@ from z3c.vcsync.interfaces import (IDump, ISerializer, IParser,
                                    IState, IFactory, ISynchronizer,
                                    ISynchronizationInfo)
 
-import grok
+import grokcore.component as grok
 
 class Dump(grok.Adapter):
     """General dump for arbitrary objects.

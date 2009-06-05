@@ -37,13 +37,13 @@ Writing to the filesystem
 First we need to grok this package itself (normally done when you use
 it)::
 
-  >>> import grok.testing
-  >>> grok.testing.grok('z3c.vcsync')
+  >>> import grokcore.component.testing
+  >>> grokcore.component.testing.grok('z3c.vcsync')
 
 In order to be able to export instances of ``Item``, we need to set up
 an ``ISerializer``::
 
-  >>> import grok
+  >>> import grokcore.component as grok
   >>> from z3c.vcsync.interfaces import ISerializer
   >>> class ItemSerializer(grok.Adapter):
   ...     grok.provides(ISerializer)

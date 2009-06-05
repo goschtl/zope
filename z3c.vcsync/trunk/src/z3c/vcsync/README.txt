@@ -153,7 +153,7 @@ parse it back to an object again.
 Let's grok this package first, as it provides some of the required
 infrastructure::
 
-  >>> import grok.testing
+  >>> import grokcore.component as grok
   >>> grok.testing.grok('z3c.vcsync')
   
 We need to provide a serializer for the Item class that takes an item
