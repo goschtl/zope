@@ -11,6 +11,13 @@ z3c.vcsync changes
 
 * Use a somewhat less verbose way to set up the tests.
 
+* An issue existed when a common filesystem representation was used
+  that could be translated (by a single factory) into a number of
+  different classes. If an object was added, synchronized, then
+  removed and an object of the name but different class was added, an
+  error would occur when synchronizing this. This bug has been fixed
+  at the (small) cost of a few-reparses here and there.
+
 0.16 (2009-06-02)
 -----------------
 

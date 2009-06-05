@@ -244,14 +244,26 @@ class Synchronizer(object):
             name = file_path.purebasename
             ext = file_path.ext
 
+            # we always use the factory to create an item
+            factory = getUtility(IFactory, name=ext)
+            created = factory(file_path)
+            
+            # we observe the stored item in the container
+            stored = container.get(name, None)
+
+            # if the object stored is not the object just created, we need
+            # to remove the stored object first
+            if stored is not None and type(stored) is not type(created):
+                del container[name]
+                stored = None
+
             # if we already have the object, overwrite it, otherwise
             # create a new one
-            if name in container:
+            if stored is not None:
                 parser = getUtility(IParser, name=ext)
-                parser(container[name], file_path)
+                parser(stored, file_path)
             else:
-                factory = getUtility(IFactory, name=ext)
-                container[name] = factory(file_path)
+                container[name] = created
             modified_objects.append(container[name])
         return modified_objects
     

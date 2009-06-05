@@ -1,0 +1,127 @@
+Changing the class of an object
+-------------------------------
+
+In some uses of z3c.vcsync, the extension of the object remains the
+same (say, ``.xml``), and the same parser and serializer are in use
+for all objects, but the class of the object that is represented by
+this XML can actually change.
+
+This can lead to some problems during synchronization that will be
+explored here.
+
+We set up a repository and a checkout::
+
+  >>> from z3c.vcsync.tests import svn_repo_wc
+  >>> repo, wc1 = svn_repo_wc('typechange')
+  >>> from z3c.vcsync.svn import SvnCheckout
+  >>> checkout1 = SvnCheckout(wc1)
+
+For testing purposes we need to make sure that each ``BaseItem`` subclass
+has a ``get_revision_nr`` method. We can't really set up a correct one
+here, but we'll need a temporary one::
+
+  >>> from z3c.vcsync.tests import BaseItem
+  >>> def get_revision_nr(self):
+  ...    return 0
+  >>> BaseItem.get_revision_nr = get_revision_nr
+
+Now we set up a container with some content for the state. Note that
+the state is of type ``SubItem1``::
+
+  >>> from z3c.vcsync.tests import Container
+  >>> root1 = Container()
+  >>> root1.__name__ = 'root'
+  >>> root1['data'] = data1 = Container()
+  >>> root1['found'] = Container()
+  >>> from z3c.vcsync.tests import SubItem1
+  >>> data1['foo'] = SubItem1(payload=1)
+  >>> from z3c.vcsync.tests import TestState
+  >>> state1 = TestState(root1)
+
+We can now create the first synchronizer::
+
+  >>> from z3c.vcsync import Synchronizer
+  >>> s1 = Synchronizer(checkout1, state1)
+
+Now we can set up a proper ``get_revision_nr``::
+
+  >>> current_synchronizer = s1
+  >>> def get_revision_nr(self):
+  ...    return current_synchronizer.state.get_revision_nr()
+  >>> BaseItem.get_revision_nr = get_revision_nr
+
+Now we'll grok the serializers and parser. Note that these are generic
+ones and can deal with both ``SubItem1`` and ``SubItem2`` subclasses::
+
+  >>> import grokcore.component as grok  
+  >>> from z3c.vcsync.tests import (BaseItemSerializer, BaseItemParser, BaseItemFactory, 
+  ...    ContainerParser, ContainerFactory)
+  >>> grok.testing.grok('z3c.vcsync')
+  >>> grok.testing.grok_component('BaseItemSerializer', BaseItemSerializer)
+  True
+  >>> grok.testing.grok_component('BaseItemParser', BaseItemParser)
+  True
+  >>> grok.testing.grok_component('BaseItemFactory', BaseItemFactory)
+  True
+  >>> grok.testing.grok_component('ContainerParser', ContainerParser)
+  True
+  >>> grok.testing.grok_component('ContainerFactory', ContainerFactory)
+  True
+
+We can now synchronize the data::
+
+  >>> info = s1.sync("synchronize")
+
+We'll now set up a second synchronizer that can load up the data::
+
+  >>> import py
+  >>> wc2 = py.test.ensuretemp('wc2-2')
+  >>> wc2 = py.path.svnwc(wc2)
+  >>> wc2.checkout(repo)
+  >>> checkout2 = SvnCheckout(wc2)
+  >>> root2 = Container()
+  >>> root2.__name__ = 'root'
+  >>> state2 = TestState(root2)
+  >>> s2 = Synchronizer(checkout2, state2)
+  >>> current_synchronizer = s2
+
+We can now synchronize the data into s2::
+
+  >>> info = s2.sync("synchronize")
+
+We will now also have a ``SubItem1`` object in the second tree::
+
+  >>> root2['data']['foo'].payload
+  1  
+  >>> isinstance(root2['data']['foo'], SubItem1)
+  True
+
+We go back to the first synchronizer::
+
+  >>> current_synchronizer = s1 
+
+We'll remove ``foo``::
+
+  >>> del data1['foo']
+
+And replace it with a ``foo`` (same name!) but of the class
+``SubItem2``::
+ 
+  >>> from z3c.vcsync.tests import SubItem2
+  >>> data1['foo'] = SubItem2(payload2=2)
+
+We synchronize again::
+
+  >>> info = s1.sync("synchronize")
+
+Going back to the second synchronizer and synchronizing we should get a proper
+``SubItem2`` object without errors::
+
+  >>> current_synchronizer = s2
+  >>> info = s2.sync("synchronize")
+  
+  >>> root2['data']['foo'].payload2
+  2
+  >>> isinstance(root2['data']['foo'], SubItem2)
+  True
+
