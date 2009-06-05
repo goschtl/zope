@@ -9,6 +9,8 @@ z3c.vcsync changes
   on ``zope.container``, but we cannot do this yet as we need
   compatibility with Grok 0.14.
 
+* Use a somewhat less verbose way to set up the tests.
+
 0.16 (2009-06-02)
 -----------------
 

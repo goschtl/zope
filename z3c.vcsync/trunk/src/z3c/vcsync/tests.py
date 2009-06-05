@@ -205,28 +205,8 @@ globs = {}
 def test_suite():
     suite = unittest.TestSuite([
         doctest.DocFileSuite(
-        'internal.txt',
-        setUp=setUpZope,
-        tearDown=cleanUpZope,
-        globs=globs,
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
-
-        doctest.DocFileSuite(
-        'importexport.txt',
-        setUp=setUpZope,
-        tearDown=cleanUpZope,
-        globs=globs,
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
-
-        doctest.DocFileSuite(
-        'README.txt',
-        setUp=setUpZope,
-        tearDown=cleanUpZope,
-        globs=globs,
-        optionflags=doctest.ELLIPSIS + doctest.NORMALIZE_WHITESPACE),
-
-        doctest.DocFileSuite(
-        'conflict.txt',
+        'internal.txt', 'importexport.txt',
+         'README.txt', 'conflict.txt',
         setUp=setUpZope,
         tearDown=cleanUpZope,
         globs=globs,
