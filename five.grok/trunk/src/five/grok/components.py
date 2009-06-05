@@ -202,6 +202,10 @@ class EditForm(GrokForm, formbase.EditForm, View):
     martian.baseclass()
     template = default_form_template
 
+    # grokcore.formlib defines empty actions since 1.1. Restore save
+    # option here.
+    actions = formbase.EditForm.actions
+
 
 class DisplayForm(GrokForm, formbase.DisplayForm, View):
 

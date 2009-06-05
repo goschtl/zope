@@ -5,7 +5,7 @@
   >>> from Products.Five.testbrowser import Browser
   >>> browser = Browser()
   >>> browser.handleErrors = False
-  
+
   We can test the display form as default view:
 
   >>> browser.open("http://localhost/manfred")
@@ -16,7 +16,7 @@
   </html>
 
   But we have an edition form:
-  
+
   >>> browser.open("http://localhost/manfred/edit")
   >>> browser.getControl('Name').value = 'Arthur'
   >>> browser.getControl('Age').value = '325'
@@ -42,22 +42,25 @@ from zope import interface, schema
 from zope.schema.fieldproperty import FieldProperty
 
 class IMammoth(interface.Interface):
-    
+
     name = schema.TextLine(title=u"Name")
     age = schema.Int(title=u"Age")
 
+
 class Mammoth(grok.Model):
-    
+
     grok.implements(IMammoth)
 
     name = FieldProperty(IMammoth['name'])
     age = FieldProperty(IMammoth['age'])
 
+
 class Edit(grok.EditForm):
 
     grok.context(IMammoth)
 
+
 class Index(grok.DisplayForm):
-    
+
     grok.context(IMammoth)
 
