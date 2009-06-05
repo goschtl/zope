@@ -1,0 +1,75 @@
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# Values lifted from setup.py and control file
+PYVERS=$(shell pyversions -vr debian/control)
+
+build: $(PYVERS:%=build-python%)
+	touch $@
+build-python%:
+	dh_testdir
+	python$* setup.py build
+	touch $@
+
+.PHONY: clean
+clean:
+	dh_testdir
+	dh_testroot
+	$(MAKE) -f debian/rules $(PYVERS:%=clean-python%)
+	rm -f build-python?.?
+	rm -rf build
+	rm -rf dist
+	find -iname '*.pyc' -exec rm -f {} \;
+	dh_clean
+
+clean-python%:
+	python$* setup.py clean
+
+.PHONY: install
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+	$(MAKE) -f debian/rules $(PYVERS:%=install-python%)
+
+install-python%:
+	python$* setup.py install --no-compile --single-version-externally-managed --root=debian/$(PACKAGE) --install-data=usr/lib/$(PACKAGE)
+	mv debian/$(PACKAGE)/usr/lib/python$*/site-packages/$(EGG_NAME)-*-py$*.egg-info \
+	   debian/$(PACKAGE)/usr/lib/python$*/site-packages/$(EGG_NAME).egg-info 
+	find debian/$(PACKAGE)/usr/lib/python$*/site-packages -name "$(EGG_NAME)-*-nspkg.pth" -exec \
+	   mv {} debian/$(PACKAGE)/usr/lib/python$*/site-packages/$(EGG_NAME)-nspkg.pth \;
+	
+	i="$$($(DEB_SETUPTOOLS) --depends --egg_info debian/$(PACKAGE)/usr/lib/python$*/site-packages/$(EGG_NAME).egg-info)" && echo "setuptools:Depends=$$i" >> debian/$(PACKAGE).substvars
+	i="$$($(DEB_SETUPTOOLS) --conflicts --egg_info debian/$(PACKAGE)/usr/lib/python$*/site-packages/$(EGG_NAME).egg-info)" && echo "setuptools:Conflicts=$$i" >> debian/$(PACKAGE).substvars
+
+.PHONY: binary-common
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_pycentral
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+.PHONY: binary-indep
+binary-indep: install
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+.PHONY: binary-arch
+binary-arch: install
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+.PHONY: binary
+binary: binary-indep binary-arch
