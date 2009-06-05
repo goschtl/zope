@@ -53,7 +53,7 @@ class RolesVocabulary(object):
     >>> for term in factory(None):
     ...     print term.value, term.title
     portal.Member Portal member
-    
+
     """
     interface.implements(IVocabularyFactory)
 
@@ -87,7 +87,7 @@ class PermissionsVocabulary(object):
     >>> for term in factory(None):
     ...     print term.value, term.title
     permission1 Permission1
-    
+
     """
     interface.implements(IVocabularyFactory)
 

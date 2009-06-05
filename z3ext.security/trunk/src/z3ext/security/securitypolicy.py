@@ -95,7 +95,7 @@ class SecurityPolicy(ZopeSecurityPolicy):
         cache_roles[permission] = roles
         return roles
 
-    def cached_principal_roles(self, parent, principal, 
+    def cached_principal_roles(self, parent, principal,
                                SettingAsBoolean=SettingAsBoolean):
         cache = self.cache(parent)
         cache_principal_roles = cache.principal_roles
@@ -140,7 +140,7 @@ class SecurityPolicy(ZopeSecurityPolicy):
             cache_prin_per = cache_prin[principal]
         else:
             cache_prin_per = cache_prin[principal] = {}
-        
+
         if permission in cache_prin_per:
             return cache_prin_per[permission]
 

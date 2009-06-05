@@ -52,16 +52,16 @@ class IPublicPermissionDirective(interface.Interface):
 
 def publicRoleHandler(_context, role, manager=False):
     _context.action(
-	discriminator = ('z3ext:role', role),
-	callable = publicRole,
-	args = (role, manager))
+        discriminator = ('z3ext:role', role),
+        callable = publicRole,
+        args = (role, manager))
 
 
 def publicRole(roleId, manager):
     sm = component.getSiteManager()
 
     role = sm.getUtility(IRole, roleId)
-    
+
     if not manager:
         interface.directlyProvides(role, IPublicRole)
     else:
@@ -75,9 +75,9 @@ def publicPermissionHandler(_context, permission, category=None):
         raise TypeError('zope.Public permission is not allowed.')
 
     _context.action(
-	discriminator = ('z3ext:permission', permission),
-	callable = publicPermission,
-	args = (permission, category))
+        discriminator = ('z3ext:permission', permission),
+        callable = publicPermission,
+        args = (permission, category))
 
 
 def publicPermission(name, category):

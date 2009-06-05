@@ -46,6 +46,6 @@ def test_suite():
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             doctest.DocTestSuite(
                 'z3ext.security.vocabulary',
-                setUp=setup.placelessSetUp, tearDown=setup.placelessTearDown, 
+                setUp=setup.placelessSetUp, tearDown=setup.placelessTearDown,
                 optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS),
             ))
