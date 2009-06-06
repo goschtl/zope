@@ -40,3 +40,14 @@ Use the folder contents form without input.
     >>> browser.open('http://localhost/site/myFolder/@@edit.html')
     >>> '[[cmf_default][Folder Contents: ]]' in browser.contents
     True
+
+Try to add something to this folder.
+
+    >>> browser.open('http://localhost/site/myFolder/++add++Document')
+    >>> '[[cmf_default][Add [[cmf_default][Document]]]]' in browser.contents
+    True
+    >>> browser.getControl(name='form.id').value = 'myDocument'
+    >>> browser.getControl('[[zope][Add]]').click()
+    >>> '[[cmf_default][[[cmf_default][Document]] added.]]' in browser.contents
+    True
+
