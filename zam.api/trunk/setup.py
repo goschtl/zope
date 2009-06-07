@@ -60,6 +60,7 @@ setup (
             'zope.app.server',
             'zope.app.testing',
             'zope.app.twisted',
+            'zope.app.session',
             'zope.testbrowser',
             'zope.testing',
             ],
