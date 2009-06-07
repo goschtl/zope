@@ -24,8 +24,8 @@ from Products.CMFDefault.exceptions import CopyError
 from Products.CMFDefault.exceptions import zExceptions_Unauthorized
 from Products.CMFDefault.permissions import ListFolderContents
 from Products.CMFDefault.permissions import ManageProperties
-from Products.CMFDefault.formlib.form import ContentEditFormBase
 from Products.CMFDefault.utils import Message as _
+from Products.CMFDefault.formlib.form import ContentEditFormBase
 
 from utils import ViewBase
 from utils import decode
@@ -38,7 +38,7 @@ def contents_delta_vocabulary(context):
     """Vocabulary for the pulldown for moving objects up
     and down."""
     length = len(context.contentIds())
-    deltas = [SimpleTerm(str(i), str(i), str(i)) 
+    deltas = [SimpleTerm(i, str(i), str(i)) 
             for i in range(1, min(5, length)) + range(5, length, 5)]
     return SimpleVocabulary(deltas)
 
@@ -62,7 +62,7 @@ class IDeltaItem(Interface):
         description=u"Move an object up or down the chosen number of places.",
         required=False,
         vocabulary=u'cmf.contents delta vocabulary',
-        default=u'1')
+        default=1)
 
 class BatchViewBase(ViewBase):
 
@@ -297,7 +297,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                 self.form_fields, self.prefix, self.context,
                 self.request, data=data, ignore_request=ignore_request)
         self.widgets += form.setUpDataWidgets(self.delta_field, self.prefix,
-                        self.context, self.request, ignore_request=ignore_request)
+                        self.context, self.request,
+                        ignore_request=ignore_request)
                 
     def _get_sorting(self):
         """How should the contents be sorted"""
@@ -353,7 +354,6 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
                 
     def _get_ids(self, data):
         """Strip prefixes from ids that have been selected"""
-        LOG.info(str(data))
         ids = [k.split(".")[0] for k, v in data.items() if v == True]
         return ids
     
@@ -382,13 +382,12 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
             reorded."""
         (key, reverse) = self._get_sorting()        
         return key == 'position' and len(self.contents) > 1
-
+    
     #Action validators
     def validate_items(self, action=None, data=None):
         """Check whether any items have been selected for 
         the requested action."""
-        LOG.info(str(data))
-        LOG.info(str(self.request.form))
+        errors = form.getWidgetsData(self.widgets, self.prefix, data)
         if data is None:
             data = {}
         if len(self._get_ids(data)) == 0:
@@ -414,7 +413,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
             self.status = _(u'CopyError: Cut failed.')
         except zExceptions_Unauthorized:
             self.status = _(u'Unauthorized: Cut failed.')
-        return self._setRedirect('portal_types', 'object/folderContents')    
+        return self._setRedirect('portal_types', 'object/new_contents')    
 
     def handle_copy(self, action, data):
         """Copy the selected objects to the clipboard"""
@@ -459,9 +458,9 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     def handle_up(self, action, data):
         """Move the selected objects up the selected number of places"""
         ids = self._get_ids(data)
-        delta = self.request.form.get('delta', 1)
-        subset_ids = [ obj.getId()
-                       for obj in self.context.listFolderContents() ]
+        delta = data.get('delta', 1)
+        subset_ids = [obj.getId()
+                       for obj in self.context.listFolderContents()]
         try:
             attempt = self.context.moveObjectsUp(ids, delta,
                                                  subset_ids=subset_ids)
@@ -478,9 +477,9 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     def handle_down(self, action, data):
         """Move the selected objects down the selected number of places"""
         ids = self._get_ids(data)
-        delta = self.request.form.get('delta', 1)
-        subset_ids = [ obj.getId()
-                       for obj in self.context.listFolderContents() ]
+        delta = data.get('delta', 1)
+        subset_ids = [obj.getId()
+                       for obj in self.context.listFolderContents()]
         try:
             attempt = self.context.moveObjectsDown(ids, delta,
                                                  subset_ids=subset_ids)
@@ -497,8 +496,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     def handle_top(self, action, data):
         """Move the selected objects to the top of the page"""
         ids = self._get_ids(data)
-        subset_ids = [ obj.getId()
-                       for obj in self.context.listFolderContents() ]
+        subset_ids = [obj.getId()
+                       for obj in self.context.listFolderContents()]
         try:
             attempt = self.context.moveObjectsToTop(ids,
                                                     subset_ids=subset_ids)
@@ -515,8 +514,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     def handle_bottom(self, action, data):
         """Move the selected objects to the bottom of the page"""
         ids = self._get_ids(data)
-        subset_ids = [ obj.getId()
-                       for obj in self.context.listFolderContents() ]
+        subset_ids = [obj.getId()
+                       for obj in self.context.listFolderContents()]
         try:
             attempt = self.context.moveObjectsToBottom(ids,
                                                        subset_ids=subset_ids)
