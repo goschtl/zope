@@ -1,0 +1,7 @@
+=====
+TODO
+=====
+
+- Move all ZMI codes in zope.app.
+
+- Fix dependencies of deprecated packages
