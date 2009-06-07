@@ -1,0 +1,3 @@
+[console_scripts]
+xslfo-convert = zopyx.convert.cli:main
+
