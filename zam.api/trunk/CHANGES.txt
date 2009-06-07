@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-Version 0.5.3dev (unreleased)
+Version 0.5.3 (2008-06-07)
 -----------------------------
 
 - A test dependency (zope.app.session) was missing
