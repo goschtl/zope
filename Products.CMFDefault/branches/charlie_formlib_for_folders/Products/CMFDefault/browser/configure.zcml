@@ -6,7 +6,7 @@
       for="Products.CMFCore.interfaces.IFolderish"
       layer="..interfaces.ICMFDefaultSkin"
       name="view.html"
-      class=".folder.FolderView"
+      class=".new_folder.FolderView"
       template="templates/folder.pt"
       permission="zope2.View"
       />

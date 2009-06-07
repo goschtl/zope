@@ -17,14 +17,14 @@ $Id$
 import unittest
 
 from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.User import UnrestrictedUser
 
 from zope.component import getSiteManager
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from Products.CMFCore.PortalFolder import PortalFolder
-from Products.CMFCore.tests.base.dummy import DummySite
-from Products.CMFCore.tests.base.dummy import DummyTool
+from Products.CMFCore.tests.base.dummy import DummySite, DummyTool
 from Products.CMFCore.tests.base.dummy import DummyUserFolder, DummyContent
 from Products.CMFCore.interfaces import IPropertiesTool
 
@@ -44,6 +44,7 @@ class FolderBrowserViewTests(unittest.TestCase):
         utool = site._setObject('portal_url', DummyTool())
         folder = PortalFolder('test_folder')
         self.folder = site._setObject('test_folder', folder)
+        self.uf = self.site._setObject('acl_users', DummyUserFolder())
     
     def test_view(self):
         view = ContentsView(self.folder, TestRequest())
@@ -51,11 +52,12 @@ class FolderBrowserViewTests(unittest.TestCase):
         
     def test_up_info(self):
         view = ContentsView(self.folder, TestRequest())
-        self.assertEquals({'url':u'', 'id':u'Root', 'icon':u''}, view.up_info())
+        self.assertEquals({'url':u'', 'id':u'Root', 'icon':u''},
+                            view.up_info())
         
-    def test_layout_fields(self):
+    def test_list_batch_items(self):
         view = ContentsView(self.folder, TestRequest())
-        self.assertEquals(view.layout_fields(), [])
+        self.assertEquals(view.list_batch_items(), [])
     
     def test_is_orderable(self):
         view = ContentsView(self.folder, TestRequest())
@@ -75,8 +77,51 @@ class FolderBrowserViewTests(unittest.TestCase):
     
     def test_check_validator(self):
         view = ContentsView(self.folder, TestRequest())
-        self.assertEquals(view.validate_items(), [u'Please select one or more items first.'])
+        self.assertEquals(view.validate_items(), 
+                    [u'Please select one or more items first.'])
         self.assertEquals(view.validate_items(data={'foo':True}), [])
+        
+    def _make_batch(self):
+        """Add enough objects to force pagination"""
+        batch_size = ContentsView._BATCH_SIZE
+        for i in range(batch_size + 2):
+            content_id = "Dummy%s" % i
+            content_obj = DummyContent(content_id)
+            content_obj.portal_type = "Dummy Content"
+            obj = self.folder._setObject(content_id, content_obj)
+
+    def site_login(self):
+        newSecurityManager(None, 
+                    UnrestrictedUser('god', '', ['Manager'], ''))
+                    
+    def test_no_batches(self):
+        """Empty folder should have no next or previous pages"""
+        self.site_login()
+        request = TestRequest(ACTUAL_URL='http://foo.com/bar')
+        view = ContentsView(self.folder, request)
+        self.failIf(view.navigation_next())
+        self.failIf(view.navigation_previous())
+    
+    def test_check_next_page(self):
+        """First page has a next but no previous page"""
+        self.site_login()
+        self._make_batch()
+        request = TestRequest(ACTUAL_URL='http://foo.com/bar')
+        view = ContentsView(self.folder, request)
+        self.assertEquals(view.navigation_next()['title'], 
+                            "Next ${count} items")
+        self.failIf(view.navigation_previous())
+                            
+    def test_check_prev_page(self):
+        """Last page has a previous but no next page"""
+        self.site_login()
+        self._make_batch()
+        request = TestRequest(ACTUAL_URL='http://foo.com/bar')
+        request.form = {'b_start':25}
+        view = ContentsView(self.folder, request)
+        self.assertEquals(view.navigation_previous()['title'], 
+                            "Previous ${count} items")
+        self.failIf(view.navigation_next())
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -31,6 +31,9 @@ from utils import ViewBase
 from utils import decode
 from utils import memoize
 
+import logging
+LOG = logging.getLogger("formlib for folders")
+
 def contents_delta_vocabulary(context):
     """Vocabulary for the pulldown for moving objects up
     and down."""
@@ -65,30 +68,30 @@ class BatchViewBase(ViewBase):
 
     # helpers
 
-    _BATCH_SIZE = 2
+    _BATCH_SIZE = 25
 
     @memoize
-    def _getBatchStart(self):
+    def _get_batch_start(self):
         return self.request.form.get('b_start', 0)
 
     @memoize
-    def _getBatchObj(self):
-        b_start = self._getBatchStart()
+    def _get_batch_obj(self):
+        b_start = self._get_batch_start()
         items = self._get_items()
         return Batch(items, self._BATCH_SIZE, b_start, orphan=0)
 
     @memoize
-    def _getHiddenVars(self):
+    def _get_hidden_vars(self):
         return {}
 
     @memoize
-    def _getNavigationVars(self):
-        return self._getHiddenVars()
+    def _get_navigation_vars(self):
+        return self._get_hidden_vars()
 
     @memoize
-    def _getNavigationURL(self, b_start):
+    def _get_navigation_url(self, b_start):
         target = self._getViewURL()
-        kw = self._getNavigationVars().copy()
+        kw = self._get_navigation_vars().copy()
 
         kw['b_start'] = b_start
         for k, v in kw.items():
@@ -102,8 +105,8 @@ class BatchViewBase(ViewBase):
 
     @memoize
     @decode
-    def listItemInfos(self):
-        batch_obj = self._getBatchObj()
+    def list_batch_items(self):
+        batch_obj = self._get_batch_obj()
         portal_url = self._getPortalURL()
 
         items = []
@@ -133,12 +136,12 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def navigation_previous(self):
-        batch_obj = self._getBatchObj().previous
+        batch_obj = self._get_batch_obj().previous
         if batch_obj is None:
             return None
 
         length = len(batch_obj)
-        url = self._getNavigationURL(batch_obj.first)
+        url = self._get_navigation_url(batch_obj.first)
         if length == 1:
             title = _(u'Previous item')
         else:
@@ -147,12 +150,12 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def navigation_next(self):
-        batch_obj = self._getBatchObj().next
+        batch_obj = self._get_batch_obj().next
         if batch_obj is None:
             return None
 
         length = len(batch_obj)
-        url = self._getNavigationURL(batch_obj.first)
+        url = self._get_navigation_url(batch_obj.first)
         if length == 1:
             title = _(u'Next item')
         else:
@@ -161,12 +164,12 @@ class BatchViewBase(ViewBase):
 
     @memoize
     def summary_length(self):
-        length = self._getBatchObj().sequence_length
+        length = self._get_batch_obj().sequence_length
         return length and thousands_commas(length) or ''
 
     @memoize
     def summary_type(self):
-        length = self._getBatchObj().sequence_length
+        length = self._get_batch_bj().sequence_length
         return (length == 1) and _(u'item') or _(u'items')
 
     @memoize
@@ -174,7 +177,8 @@ class BatchViewBase(ViewBase):
     def summary_match(self):
         return self.request.form.get('SearchableText')       
 
-class ContentsView(ContentEditFormBase, BatchViewBase):
+
+class ContentsView(BatchViewBase, ContentEditFormBase):
     """Folder contents view"""
     
     template = ViewPageTemplateFile('templates/contents.pt')
@@ -251,7 +255,6 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
             )
             
     actions = object_actions + delta_actions + absolute_actions + sort_actions
-    
     errors = ()
     
     def __init__(self, *args, **kw):
@@ -330,10 +333,9 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
         return sequence.sort(items,
                              ((key, 'cmp', reverse and 'desc' or 'asc'),))
     
-    def layout_fields(self):
+    def list_batch_items(self):
         """Return the widgets for the form in the interface field order"""
-        batch_obj = self._getBatchObj()
-        portal_url = self._getPortalURL()
+        batch_obj = self._get_batch_obj()
         fields = []
 
         for item in batch_obj:
@@ -343,16 +345,17 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
             field['url'] = item.absolute_url()
             field['title'] = item.TitleOrId()
             field['icon'] = item.icon
-            field['position'] = self.context.contentIds().index(item.getId()) + 1
+            field['position'] = self.context.contentIds().index(
+                                                item.getId()) + 1
             field['type'] = item.Type() or None
             fields.append(field.copy())
         return fields
                 
     def _get_ids(self, data):
         """Strip prefixes from ids that have been selected"""
+        LOG.info(str(data))
         ids = [k.split(".")[0] for k, v in data.items() if v == True]
         return ids
-        
     
     #Action conditions
     @memoize
@@ -380,10 +383,12 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
         (key, reverse) = self._get_sorting()        
         return key == 'position' and len(self.contents) > 1
 
-    #Actions validators
+    #Action validators
     def validate_items(self, action=None, data=None):
         """Check whether any items have been selected for 
         the requested action."""
+        LOG.info(str(data))
+        LOG.info(str(self.request.form))
         if data is None:
             data = {}
         if len(self._get_ids(data)) == 0:
@@ -399,7 +404,6 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
     def handle_cut(self, action, data):
         """Cut the selected objects and put them in the clipboard"""
         ids = self._get_ids(data)
-        
         try:
             self.context.manage_cutObjects(ids, self.request)
             if len(ids) == 1:
@@ -415,7 +419,6 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
     def handle_copy(self, action, data):
         """Copy the selected objects to the clipboard"""
         ids = self._get_ids(data)
-
         try:
             self.context.manage_copyObjects(ids, self.request)
             if len(ids) == 1:
@@ -534,3 +537,21 @@ class ContentsView(ContentEditFormBase, BatchViewBase):
         self.context.setDefaultSorting(key, reverse)
         self.status = _(u"Sort order changed")
         return self._setRedirect('portal_types', 'object/new_contents')
+        
+
+class FolderView(BatchViewBase):
+
+    """View for IFolderish.
+    """
+
+    @memoize
+    def _get_items(self):
+        (key, reverse) = self.context.getDefaultSorting()
+        items = self.context.contentValues()
+        items = sequence.sort(items,
+                              ((key, 'cmp', reverse and 'desc' or 'asc'),))
+        return LazyFilter(items, skip='View')
+
+    @memoize
+    def has_local(self):
+        return 'local_pt' in self.context.objectIds()

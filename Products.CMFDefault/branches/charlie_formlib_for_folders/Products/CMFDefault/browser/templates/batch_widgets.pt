@@ -14,7 +14,7 @@
 ></metal:macro>
 
  <metal:macro metal:define-macro="listing" i18n:domain="cmf_default">
- <p class="BatchListing" tal:repeat="item_info view/listItemInfos"
+ <p class="BatchListing" tal:repeat="item_info view/list_batch_items"
  ><a href="" tal:attributes="href item_info/url"
   ><img src="" alt="" title="" border="0" width="16" height="16"
       tal:attributes="src item_info/icon; alt item_info/type;

@@ -33,7 +33,7 @@
          tal:attributes="href column/url"
          >Column Title</a></th>
      </tr>
-   <tr tal:repeat="item view/layout_fields" 
+   <tr tal:repeat="item view/list_batch_items" 
       tal:attributes="class python: (repeat['item'].even() and 'row-hilite') or ''">
      <td tal:content="structure item/select">Checkbox</td>
      <td><a href="" tal:attributes="href item/url"
