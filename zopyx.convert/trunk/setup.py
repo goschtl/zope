@@ -21,7 +21,7 @@ long_description = desc + '\n\nChanges:\n========\n\n' + changes
 
 setup(name='zopyx.convert',
       version=version,
-      license='ZPL (see LICENSE.txt)',
+      license='ZPL 2.1 (see LICENSE.txt)',
       author='Andreas Jung',
       author_email='info@zopyx.com',
       maintainer='Andreas Jung',
