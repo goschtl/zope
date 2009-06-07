@@ -73,7 +73,6 @@ levels of verbosity.
                      ##r##
         34/34 (100.0%)##r##
                       ##r##
-    <BLANKLINE>
       Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
@@ -148,7 +147,6 @@ Running samplelayers.Layer122 tests:
                                                ##r##
     34/34 (100.0%) ... pe/testing/testrunner-ex/sampletests/../sampletestsl.txt##r##
                                                                                ##r##
-<BLANKLINE>
   Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
 Tearing down left over layers:
   Tear down samplelayers.Layer122 in 0.000 seconds.
@@ -225,7 +223,6 @@ that, we'll provide a fake curses module:
                                                    ##r##
         34/34 (100.0%) ... r-ex/sampletests/../sampletestsl.txt##r##
                                                                ##r##
-    <BLANKLINE>
       Ran 34 tests with 0 failures and 0 errors in 0.008 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
@@ -294,7 +291,6 @@ information.
                                                   ##r##
         24/24 (100.0%) test_z1 (sampletests.test122)##r##
                                                    ##r##
-    <BLANKLINE>
       Ran 24 tests with 0 failures and 0 errors in 0.006 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
@@ -349,7 +345,6 @@ with '!' to exclude tests containing the string "txt".
                                                               ##r##
         18/18 (100.0%) test_z1 (sampletests.test122) (0.001 s)##r##
                                                                ##r##
-    <BLANKLINE>
       Ran 18 tests with 0 failures and 0 errors in 0.006 seconds.
     Tearing down left over layers:
       Tear down samplelayers.Layer122 in 0.000 seconds.
@@ -399,7 +394,6 @@ Let's pretend we have a terminal
                    ##r##
         6/6 (100.0%)##r##
                     ##r##
-    <BLANKLINE>
       Ran 6 tests with 0 failures and 0 errors in N.NNN seconds.
     Tearing down left over layers:
       Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.

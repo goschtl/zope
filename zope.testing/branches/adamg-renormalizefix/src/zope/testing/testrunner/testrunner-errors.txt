@@ -354,7 +354,6 @@ Similarly for progress output, the progress ticker will be interrupted:
                      ##r##
         56/56 (100.0%)##r##
                       ##r##
-    <BLANKLINE>
       Ran 56 tests with 3 failures and 1 errors in 0.054 seconds.
     Tearing down left over layers:
       Tear down zope.testing.testrunner.layer.UnitTests in N.NNN seconds.

@@ -55,11 +55,14 @@ if sys.platform == 'win32':
         (re.compile(r'\\'), '/'), # even more Windows happiness
                                   # replaces backslashes in paths
 
-        (re.compile('/r'), '\\\\r'), # undo damage from previous
+        #(re.compile('/r'), '\\r'), # undo damage from previous
 
         #(re.compile(r'\\r'), '\\\\r\n'),
-        (re.compile('##r##'), '\r'), #this is a magic to put linefeeds into the
+        #(re.compile('##r##'), r'\r'), #this is a magic to put linefeeds into the
                                      #doctest
+        #(re.compile(r'\r'), '\\\\r\n'),
+
+        (re.compile('##r##\n'), '\r'),
 
         #(re.compile(r'/r'), ' '),
 
