@@ -1,1 +1,13 @@
-<include package="zmi.core.zcmlfiles" />
+<configure>
+  <include package=".applicationcontrol" />
+  <include package=".authentication" />
+  <include package=".broken" />
+  <include package=".component" />
+  <include package=".container" />
+  <include package=".error" />
+  <include package=".exception" />
+  <include package=".folder" />
+  <include package=".i18n" />
+  <include package=".intid" />
+  <include package=".principalannotation" />
+</configure>
