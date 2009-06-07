@@ -1,3 +1,8 @@
+1.1.11 (07.06.2009)
+------------------
+- moved code repository to svn.zope.org
+- changed license to ZPL
+
 1.1.10 (29.05.2009)
 ------------------
 - support for USE_OS_SYSTEM environment variable (as workaround
