@@ -5,7 +5,7 @@ CHANGES
 3.7.1 (unreleased)
 ------------------
 
-- ...
+- Fix ftesting.zcml due to the zope.securitypolicy update.
 
 3.7.0 (2009-02-01)
 ------------------
