@@ -26,6 +26,8 @@ from zope.testing import doctest
 from zope.testing import renormalizing
 
 
+#separated checkers for the different platform,
+#because it s...s to maintain just one
 if sys.platform == 'win32':
     checker = renormalizing.RENormalizing([
         # 2.5 changed the way pdb reports exceptions
@@ -98,6 +100,9 @@ else:
         (re.compile(r"<type 'exceptions.(\w+)Error'>:"),
                     r'exceptions.\1Error:'),
 
+        #this is a magic to put linefeeds into the doctest
+        #on win it takes one step, linux is crazy about the same...
+        (re.compile('##r##'), r'\r'),
         (re.compile(r'\r'), '\\\\r\n'),
 
         (re.compile(r'\d+[.]\d\d\d seconds'), 'N.NNN seconds'),
