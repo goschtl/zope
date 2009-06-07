@@ -5,6 +5,4 @@ CHANGES
 3.5.0 (unreleased)
 ------------------
 
-- TBD
-
-
+- Copy browser code from zope.app.*.
