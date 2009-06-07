@@ -124,7 +124,7 @@ Author
 License
 =======
 
-**zopyx.convert** is published under the Lesser GNU Public License V 2.1 (LGPL 2.1).
+**zopyx.convert** is published under the Zope Public License 2.1 (ZPL).
 See LICENSE.txt.
 
 
