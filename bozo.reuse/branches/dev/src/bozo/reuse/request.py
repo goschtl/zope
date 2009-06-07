@@ -12,13 +12,13 @@
 #
 ##############################################################################
 
-import bobo
-import zope.event
-import zope.i18n.interfaces
-import zope.publisher.browser
-import zope.publisher.http
+import interfaces
 import webob
 import webob.multidict
+import zope.i18n.interfaces
+import zope.interface
+import zope.publisher.browser
+import zope.publisher.http
 
 class BozoMultiDict:
 
@@ -96,11 +96,57 @@ class BozoMultiDict:
 
 class Request(zope.publisher.browser.BrowserRequest):
 
-    __slots__ = ('_webob', '_form', '_charsets')
+    zope.interface.implements(interfaces.IRequest)
+
+    __slots__ = (
+        '_webob', '_form', '_charsets',
+
+        # We have to repeat the __provides__ slot here to deal with
+        # conflicting magic between a descriptor inserted by the interface
+        # machinery and slots.  A consequence is that any subclass of Request
+        # also has to repeat this slot. Obviously, this is unfortunate. :(
+        '__provides__',
+        )
 
     def __init__(self, *args):
         zope.publisher.browser.BrowserRequest.__init__(self, *args)
-        self.processInputs()
+        del self._form
+
+    # Form handling is a bit tricky
+    # Goals:
+    # - be backward compat with BrowserRequest and with zope.publisher
+    #   - Can call processInputs after the request is created
+    # - Don't require that processInputs be (externally) called at all.
+    # - Work with the BrowserRequest tests, which assume that form processing
+    #   doesn't happen until processInputs is called.
+    #
+    # Extra credit:
+    # - Don't do form processing unless someone asks for form data.
+    #
+    # Solution:
+    # - After creation:
+    #   processInputs will be called either when called explicitly, or
+    #   the first time someone gets the form attr
+
+    @apply
+    def form():
+        def get_form(self):
+            try:
+                return self._form
+            except AttributeError:
+                self._form = {}
+                self.processInputs()
+                return self._form
+
+        def set_form(self, form):
+            assert not form
+            self._form = form
+
+        return property(get_form, set_form)
+
+    def processInputs(self):
+        self._form = {}
+        super(Request, self).processInputs()
 
     @classmethod
     def blank(class_, *args, **kw):
@@ -196,43 +242,3 @@ class Request(zope.publisher.browser.BrowserRequest):
                 ):
                 return self.params
         return webob.multidict.NoVars('Not a POST request')
-
-
-class Application(bobo.Application):
-
-    def __call__(self, environ, start_response):
-        request = Request(environ['wsgi.input'], environ)
-        zope.event.notify(BeginRequest(request))
-        try:
-            return self.bobo_response(
-                request, request.path_info, request.method
-                )(environ, start_response)
-        finally:
-            zope.event.notify(EndRequest(request))
-
-    def build_response(self, request, method, data):
-        content_type = data.content_type
-        response = request.response
-        if content_type:
-            response.setHeader('Content-Type', content_type)
-        for name, value in data.headers:
-            response.setHeader(name, value)
-        result = data.body
-        if result is not response:
-            response.setResult(result)
-
-        def wsgiresponse(environ, start_response):
-            start_response(response.getStatusString(), response.getHeaders())
-            return response.consumeBodyIter()
-
-        return wsgiresponse
-
-class RequestEvent:
-    def __init__(self, request):
-        self.request = request
-
-class BeginRequest(RequestEvent):
-    "A request has begun"
-
-class EndRequest(RequestEvent):
-    "A request has finished processing"
