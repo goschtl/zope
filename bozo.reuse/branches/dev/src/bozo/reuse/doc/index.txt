@@ -1,0 +1,175 @@
+Introduction
+============
+
+The ``bozo.reuse`` package provides facilities for reusing
+zope.publisher-based components in bobo-based applications and for
+reusing bobo resources in zope.publisher-based applications.
+
+A core facility is a request implementation that provides both
+``zope.publiher`` request APIs [#ibrowserrequest]_ and `webob request
+APIs <http://pythonpaste.org/webob/reference.html#id1>`_.
+
+Using bobo resources in zope.publisher-based applications
+=========================================================
+
+The bozo.reuse.inpub module provides adapters that provide adapters
+from ``bozo.component.interfaces.IResource`` to
+``zope.publisher.interfaces.browser.IBrowserPublisher``.  To use these,
+you need to register them.  You can do this by registering the
+adapter, ``bozo.reuse.inpub.Resource2Publisher``.  If you're using the
+Zope Configuration Markup Language (ZCML), you can just include the
+file ``inpub.zcml`` in the package ``bozo.reuse`` package::
+
+   <include file="inpub.zcml" package="bozo.reuse" />
+
+In addition, you need to cause bobo resources to provide the
+``bozo.component.interfaces.IResource`` interface. For resources
+created with the bobo decorators, this happens automatically with the
+resources created with class decorators.  For resources defined by
+classes, you have to ake the declaration yourself.  You can do this in
+the class it self, or externally using the ZCML class directive.
+
+With the resource to publisher adapter, when you traverse to a
+resource, the publisher will be able to use the resource.  How do you
+cause the publisher to traverse to your resource?  The simplest way is
+to register your resource as a named view.  Let's look at an
+example. Consider a publisher-based application that supports
+traversal to employees with URLs like
+``http://localhost/employees/42``.  If we have a bobo resource::
+
+   import bobo
+
+   bobo.scan_class
+   class EmployeeResource:
+
+       def __init__(self, employee, request):
+           self.employee = employee
+           self.request = request
+
+       @bobo.query('/')
+       def sumary(self):
+           body = """
+           Name: %s
+           Phone: %s
+           <a href="details.html">details</a>
+           """ % (self.employee.name, self.employee.phone)
+           template % (self.employee.name, body)
+
+       @bobo.query
+       def details(self):
+           body = """
+           Name: %s
+           Phone: %s
+           Office: %s
+           <a href="update.html">update</a>
+           """ % (self.employee.name,
+                  self.employee.phone,
+                  self.employee.office)
+           template % (self.employee.name, body)
+
+       @bobo.POST('update.html')
+       def update_post(self, name, phone, office):
+           self.employee.name = name
+           self.employee.phone = phone
+           self.employee.office = office
+           bobo.redirect('details.html', 303)
+
+       @bobo.query
+       def update(self):
+           body = """
+           <form method="POST">
+           Name: <input type="text" value="%s">
+           Phone: <input type="text" value="%s">
+           Office: <input type="text" value="%s">
+           <input type="submit">
+           <form/>
+           """ % (self.employee.name,
+                  self.employee.phone,
+                  self.employee.office)
+           template % (self.employee.name, body)
+
+    template = """<html>
+    <head><title>%s</title></head>
+    <body>
+    %s
+    </body></html>"""
+
+If this class is in the module ``helloapp``, then we can use the
+following ZCML to register it::
+
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns="http://namespaces.zope.org/browser"
+        >
+
+      <include file="inpub.zcml" package="bozo.reuse" />
+
+      <class class="employeeapp.EmployeeResource">
+        <implements interface="bozo.component.interfaces.IResource" />
+      </class>
+
+      <browser:view
+          name="index.html"
+          for="employees.Employee"
+          factory="employeeapp.EmployeeResource"
+          permission="zope.Public"
+          >
+
+    </configure>
+
+With this, we can get a summary using a URL like::
+
+    http://localhost/employees/42
+
+or::
+
+    http://localhost/employees/42/
+
+which will redirect to::
+
+    http://localhost/employees/42/index.html/
+
+and details with::
+
+    http://localhost/employees/42/index.html/details.html
+
+This works, but the URLs, are a bit long and ugly.  We might lke the
+reource methods in ``EmployeeResource`` to be usable directly on
+employees as in::
+
+    http://localhost/employees/42/
+
+for the summary and
+
+    http://localhost/employees/42/details.html
+
+for the details.  We can arrange this using the ``bozo:views`` directive::
+
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns="http://namespaces.zope.org/bozo"
+        >
+
+      <include file="inpub.zcml" package="bozo.reuse" />
+
+      <class class="employeeapp.EmployeeResource">
+        <implements interface="bozo.component.interfaces.IResource" />
+      </class>
+
+      <bozo:views
+          for="employees.Employee"
+          class="employeeapp.EmployeeResource"
+          permission="zope.Public"
+          >
+
+    </configure>
+
+The ``bozo:views`` directive scans a class for resource methods
+[#introspectable]_ and registers each method as a view.
+
+----------------------------------------------------------------
+
+.. [#ibrowserrequest] ``zope.publisher.interfaces.browser.IBrowserRequest``
+
+.. [#introspectable] To be more precise, it scans the class for
+   introspectable resources, which have a ``bobo_route`` attribute.
