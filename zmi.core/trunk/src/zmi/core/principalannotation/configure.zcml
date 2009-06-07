@@ -1,0 +1,10 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <browser:addMenuItem
+      class="zope.app.principalannotation.PrincipalAnnotationUtility"
+      permission="zope.ManageServices"
+      title="Principal Annotation Utility"
+      description="Stores Annotations for Principals"
+      />
+
+</configure>
