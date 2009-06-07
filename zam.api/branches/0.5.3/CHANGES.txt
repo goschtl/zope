@@ -1,0 +1,32 @@
+=======
+CHANGES
+=======
+
+
+Version 0.5.3 (2008-06-07)
+-----------------------------
+
+- A test dependency (zope.app.session) was missing
+  (still checking with KGS 3.4)
+
+Version 0.5.2 (2008-04-11)
+--------------------------
+
+- Simplify ftesting setup, removed duplicated configuration. Make it better
+  reusable. Now we can include app.zcml and mixin ftesting.zcml at the same
+  time in plugin tests.
+
+Version 0.5.1 (2008-04-13)
+--------------------------
+
+- Added new plugin layer for zamplugin.contents plugin
+
+Version 0.5.0 (2008-04-11)
+--------------------------
+
+- Now plugin provides it's own management form. By default the PluginManagement
+  page can be used which is a mixin of IContentProvider and IForm. This makes
+  it possible to write intelligent plugin management views which can do more
+  then just install and uninstall.
+
+- Initial Release
