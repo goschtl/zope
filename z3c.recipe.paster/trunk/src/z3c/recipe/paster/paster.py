@@ -16,7 +16,6 @@
 $Id:$
 """
 
-import os
 import zc.recipe.egg
 
 

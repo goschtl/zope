@@ -17,8 +17,6 @@ $Id:$
 """
 
 import os
-import sys
-import shutil
 import cStringIO
 import ZConfig.schemaless
 import zc.buildout

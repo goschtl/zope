@@ -26,15 +26,14 @@ import zc.buildout.testing
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
-    zc.buildout.testing.install_develop('z3c.recipe.paster', test)
     zc.buildout.testing.install('Paste', test)
     zc.buildout.testing.install('PasteDeploy', test)
     zc.buildout.testing.install('PasteScript', test)
     zc.buildout.testing.install('RestrictedPython', test)
-    zc.buildout.testing.install('transaction', test)
     zc.buildout.testing.install('ZConfig', test)
     zc.buildout.testing.install('ZODB3', test)
     zc.buildout.testing.install('pytz', test)
+    zc.buildout.testing.install('transaction', test)
     zc.buildout.testing.install('zc.lockfile', test)
     zc.buildout.testing.install('zc.recipe.egg', test)
     zc.buildout.testing.install('zc.recipe.filestorage', test)
@@ -43,10 +42,6 @@ def setUp(test):
     zc.buildout.testing.install('zope.annotation', test)
     zc.buildout.testing.install('zope.app.applicationcontrol', test)
     zc.buildout.testing.install('zope.app.appsetup', test)
-    zc.buildout.testing.install('zope.authentication', test)
-    zc.buildout.testing.install('zope.principalregistry', test)
-    zc.buildout.testing.install('zope.app.localpermission', test)
-    zc.buildout.testing.install('zope.password', test)
     zc.buildout.testing.install('zope.app.basicskin', test)
     zc.buildout.testing.install('zope.app.component', test)
     zc.buildout.testing.install('zope.app.container', test)
@@ -55,15 +50,18 @@ def setUp(test):
     zc.buildout.testing.install('zope.app.form', test)
     zc.buildout.testing.install('zope.app.http', test)
     zc.buildout.testing.install('zope.app.interface', test)
+    zc.buildout.testing.install('zope.app.localpermission', test)
     zc.buildout.testing.install('zope.app.pagetemplate', test)
     zc.buildout.testing.install('zope.app.publication', test)
     zc.buildout.testing.install('zope.app.publisher', test)
     zc.buildout.testing.install('zope.app.security', test)
     zc.buildout.testing.install('zope.app.wsgi', test)
-    zc.buildout.testing.install('zope.browser', test)
+    zc.buildout.testing.install('zope.authentication', test)
     zc.buildout.testing.install('zope.broken', test)
+    zc.buildout.testing.install('zope.browser', test)
     zc.buildout.testing.install('zope.cachedescriptors', test)
     zc.buildout.testing.install('zope.component', test)
+    zc.buildout.testing.install('zope.componentvocabulary', test)
     zc.buildout.testing.install('zope.configuration', test)
     zc.buildout.testing.install('zope.container', test)
     zc.buildout.testing.install('zope.contenttype', test)
@@ -87,6 +85,9 @@ def setUp(test):
     zc.buildout.testing.install('zope.location', test)
     zc.buildout.testing.install('zope.minmax', test)
     zc.buildout.testing.install('zope.pagetemplate', test)
+    zc.buildout.testing.install('zope.password', test)
+    zc.buildout.testing.install('zope.principalregistry', test)
+    zc.buildout.testing.install('zope.processlifetime', test)
     zc.buildout.testing.install('zope.proxy', test)
     zc.buildout.testing.install('zope.publisher', test)
     zc.buildout.testing.install('zope.schema', test)
@@ -98,15 +99,17 @@ def setUp(test):
     zc.buildout.testing.install('zope.tales', test)
     zc.buildout.testing.install('zope.testing', test)
     zc.buildout.testing.install('zope.traversing', test)
+    zc.buildout.testing.install_develop('z3c.recipe.paster', test)
 
 
 checker = renormalizing.RENormalizing([
     zc.buildout.testing.normalize_path,
-    (re.compile(
-    "Couldn't find index page for '[a-zA-Z0-9.]+' "
-    "\(maybe misspelled\?\)"
-    "\n"
-    ), ''),
+    # note sure if misspelled?) has \n at the end on linux?
+    (re.compile("Couldn't find index page for '[a-zA-Z0-9.]+' "
+     "\(maybe misspelled\?\)\n"), ''),
+    # windows doesn't have \n at the end of misspelled?)
+    (re.compile("Couldn't find index page for '[a-zA-Z0-9.]+' "
+     "\(maybe misspelled\?\)"), ''),
     (re.compile("""['"][^\n"']+z3c.recipe.paster[^\n"']*['"],"""),
      "'/z3c.recipe.paster',"),
     (re.compile('#![^\n]+\n'), ''),
