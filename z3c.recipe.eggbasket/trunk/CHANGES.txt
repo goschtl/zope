@@ -3,7 +3,7 @@
 .. pinned there.
 
 
-0.4.2 (unreleased)
+0.4.2 (2009-06-09)
 ==================
 
 * Made the automated tests work when running bin/test.
