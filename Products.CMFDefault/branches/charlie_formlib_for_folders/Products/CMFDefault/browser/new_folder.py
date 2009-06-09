@@ -16,7 +16,6 @@ from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.formlib import form
 
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from Products.Five.formlib.formbase import PageForm
 
 from Products.CMFCore.interfaces import IDynamicType
 
@@ -353,7 +352,7 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
         return fields
                 
     def _get_ids(self, data):
-        """Strip prefixes from ids that have been selected"""
+        """Identify objects that have been selected"""
         ids = [k.split(".")[0] for k, v in data.items() if v == True]
         return ids
     
@@ -387,10 +386,8 @@ class ContentsView(BatchViewBase, ContentEditFormBase):
     def validate_items(self, action=None, data=None):
         """Check whether any items have been selected for 
         the requested action."""
-        errors = form.getWidgetsData(self.widgets, self.prefix, data)
-        if data is None:
-            data = {}
-        if len(self._get_ids(data)) == 0:
+        super(ContentsView, self).validate(action, data)
+        if data is None or data == {}:
             return [_(u"Please select one or more items first.")]
         else:
             return []

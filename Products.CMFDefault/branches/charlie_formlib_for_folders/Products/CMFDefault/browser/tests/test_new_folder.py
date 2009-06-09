@@ -67,29 +67,47 @@ class FolderBrowserViewTests(unittest.TestCase):
         view = ContentsView(self.folder, TestRequest())
         self.failIf(view.can_sort_be_changed())
     
-    def test_has_subobjects(self):
+    def test_empty_has_subobjects(self):
         view = ContentsView(self.folder, TestRequest())
         self.failIf(view.has_subobjects())
+        
+    def test_has_subobjects(self):
+        self._make_one()
+        view = ContentsView(self.folder, TestRequest())
+        self.failUnless(view.has_subobjects())
         
     def test_check_clipboard_data(self):
         view = ContentsView(self.folder, TestRequest())
         self.failIf(view.check_clipboard_data())
     
-    # This test is flawed and always fails on empty folders
-    # def test_check_validator(self):
-    #     view = ContentsView(self.folder, TestRequest())
-    #     self.assertEquals(view.validate_items(), 
-    #                 [u'Please select one or more items first.'])
-    #     self.assertEquals(view.validate_items(data={'foo':True}), [])
+    def test_validate_items(self):
+        """Cannot validate forms without widgets"""
+        view = ContentsView(self.folder, TestRequest())
+        self.assertRaises(AttributeError, 
+                            view.validate_items, "", {'foo':'bar'})
+                            
+    def test_get_ids(self):
+        view = ContentsView(self.folder, TestRequest())
+        self.assertEquals(
+                        view._get_ids({'foo':'bar'}),
+                        [])
+        self.assertEquals(
+                        view._get_ids({'DummyItem1.select':True,
+                                       'DummyItem2.select':False,
+                                       'DummyItem3.select':True}),
+                        ['DummyItem1', 'DummyItem3'])
+        
+    def _make_one(self, name="DummyItem"):
+        content = DummyContent(name)
+        content.portal_type = "Dummy Content"
+        self.folder._setObject(name, content)
         
     def _make_batch(self):
         """Add enough objects to force pagination"""
         batch_size = ContentsView._BATCH_SIZE
         for i in range(batch_size + 2):
             content_id = "Dummy%s" % i
-            content_obj = DummyContent(content_id)
-            content_obj.portal_type = "Dummy Content"
-            obj = self.folder._setObject(content_id, content_obj)
+            self._make_one(content_id)
 
     def site_login(self):
         newSecurityManager(None, 
@@ -128,5 +146,3 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FolderBrowserViewTests))
     return suite
-    
-# bin/test -s ~/CMF-Sandbox/cmf-trunk/src/Products.CMFDefault/Products/CMFDefault/browser
