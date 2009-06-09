@@ -122,6 +122,7 @@ We will define a buildout template that uses the recipe::
 
     >>> buildout_template = """
     ... [buildout]
+    ... index = http://pypi.python.org/simple
     ... parts = basket
     ...
     ... [basket]

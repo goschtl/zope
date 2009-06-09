@@ -6,6 +6,8 @@
 0.4.2 (unreleased)
 ==================
 
+* Made the automated tests work when running bin/test.
+
 * Fixed Windows problem: sometimes on Windows temporary dirs/files
   cannot be removed while installing. Now a warning is issued and the
   process continues. Fix contributed by Ben Dadsetan.
